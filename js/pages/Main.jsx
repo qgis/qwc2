@@ -9,6 +9,7 @@
 const React = require('react');
 const {connect} = require('react-redux');
 const {loadMapConfig} = require('../../MapStore2/web/client/actions/config');
+require('./css/mapStyle.css');
 
 const MapViewer = connect(() => ({}), {
     loadMapConfig: loadMapConfig.bind(null, "config.json", false)

@@ -9,7 +9,9 @@
 module.exports = {
     plugins: {
         MapPlugin: require('../MapStore2/web/client/plugins/Map'),
-        HomePlugin: require('../MapStore2/web/client/plugins/Home')
+        HomePlugin: require('../MapStore2/web/client/plugins/Home'),
+        ZoomInPlugin: require('../MapStore2/web/client/plugins/ZoomIn'),
+        ZoomOutPlugin: require('../MapStore2/web/client/plugins/ZoomOut')
     },
     requires: {}
 };

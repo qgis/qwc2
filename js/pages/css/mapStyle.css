@@ -1,0 +1,19 @@
+#zoomin-btn, #zoomout-btn {
+    z-index: 1;
+    position: absolute !important;
+    right: 0.5cm;
+    background-color: #595959;
+    width: 1.2cm;
+    height: 1.2cm;
+    border-radius: 0.6cm;
+    color: white;
+    border: none;
+}
+
+#zoomin-btn {
+  bottom: 3.5cm;
+}
+
+#zoomout-btn {
+  bottom: 2cm;
+}

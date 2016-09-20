@@ -1,4 +1,4 @@
-html, body, #map {
+html, body, #map, .fill, .viewer {
     position: absolute;
     top: 0;
     left: 0;
