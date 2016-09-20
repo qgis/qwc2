@@ -12,23 +12,10 @@
 					}
 				},
 				{
-					"name": "Home"
-				},
-				{
-		      "name":"ZoomIn",
-					"override": {
-						"Toolbar": {
-							"alwaysVisible": true
-						}
-					}
+		      "name": "ZoomIn"
 		    },
 		    {
-		      "name":"ZoomOut",
-					"override": {
-						"Toolbar": {
-							"alwaysVisible": true
-						}
-					}
+		      "name": "ZoomOut"
 		    }
 			]
 	}
