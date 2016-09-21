@@ -8,12 +8,14 @@
 
 const {connect} = require('react-redux');
 const assign = require('object-assign');
+const {createSelector} = require('reselect');
+const {textSearch, resultsPurge, resetSearch, searchTextChanged} = require("../../MapStore2/web/client/actions/search");
+const {qwc2TextSearch} = require("../actions/search")
 
-// TODO
-const {textSearch, resultsPurge, resetSearch, addMarker, searchTextChanged} = require("../../MapStore2/web/client/actions/search");
-
- const SearchBar = connect(() => ({}), {
-     onSearch: textSearch,
+ const SearchBar = connect((state) => ({
+     searchText: state && state.search ? state.search.searchText : ""
+ }), {
+     onSearch: qwc2TextSearch,
      onPurgeResults: resultsPurge,
      onSearchReset: resetSearch,
      onSearchTextChange: searchTextChanged

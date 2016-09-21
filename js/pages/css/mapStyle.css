@@ -49,3 +49,15 @@
   border: 2px solid #6a6a6a;
   color: #6a6a6a;
 }
+
+.search-result-list {
+  position: absolute!important;
+  left: 201px!important;
+  top: 39px!important;
+  border: 1px solid #cccccc!important;
+  border-radius: 3px!important;
+}
+
+.search-result-list .search-result {
+  border-radius: 0!important;
+}

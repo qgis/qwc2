@@ -14,7 +14,8 @@ module.exports = {
         ZoomInPlugin: require('../MapStore2/web/client/plugins/ZoomIn'),
         ZoomOutPlugin: require('../MapStore2/web/client/plugins/ZoomOut'),
         BackgroundLayerButtonPlugin: require('./plugins/BackgroundLayerButton'),
-        SearchBarPlugin: require('./plugins/SearchBar')
+        SearchBarPlugin: require('./plugins/SearchBar'),
+        SearchResultListPlugin: require('./plugins/SearchResultList')
     },
     requires: {}
 };
