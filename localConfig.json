@@ -2,6 +2,7 @@
   "proxyUrl": "/mapstore/proxy/?url=",
   "geoStoreUrl": "/mapstore/rest/geostore",
   "printUrl": "http://demo.geo-solutions.it/geoserver/pdf/info.json",
+  "searchUrl": "http://localhost:5000/search?query=",
   "bingApiKey": "AhuXBu7ipR1gNbBfXhtUAyCZ6rkC5PkWpxs2MnMRZ1ZupxQfivjLCch22ozKSCAn",
   "translationsPath": "./MapStore2/web/client/translations",
   "plugins": {

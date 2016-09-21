@@ -7,6 +7,7 @@
  */
 
 const {TEXT_SEARCH_RESULTS_LOADED} = require("../../MapStore2/web/client/actions/search");
+const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 
  function searchResultLoaded(results) {
    console.log(results);
@@ -18,18 +19,7 @@ const {TEXT_SEARCH_RESULTS_LOADED} = require("../../MapStore2/web/client/actions
 
 function qwc2TextSearch(text) {
     return (dispatch) => {
-      /*dispatch(searchResultLoaded({data: [
-        {
-          boundingbox: [288838,4642322,288839,4642323],
-          display_name: "Greifensee (Niederuster, Gewässer stehendes)",
-          searchtable: "av_user.suchtabelle"
-        },{
-          boundingbox: [288838,4642322,288839,4642323],
-          display_name: "Greifensee (Flurname, Uster)",
-          searchtable: "av_user.suchtabelle"
-        }
-      ]}));*/
-      fetch('http://localhost:5000/search?query=' + text)
+      fetch(ConfigUtils.getConfigProp("searchUrl") + text)
       .then((response) => { return response.json() })
       .then((obj) => { dispatch(searchResultLoaded(obj.results)); });
     };
