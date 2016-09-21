@@ -9,12 +9,20 @@
       20037508.34, 20037508.34
     ],
     "layers": [{
-      "type": "osm",
-      "title": "Open Street Map",
-      "name": "mapnik",
-            "source": "osm",
-      "group": "background",
-            "visibility": true
-        }]
+        "type": "osm",
+        "title": "Open Street Map",
+        "name": "mapnik",
+        "source": "osm",
+        "group": "background",
+        "visibility": true
+      },
+      {
+        "group": "background",
+        "name": "HYBRID",
+        "source": "google",
+        "title": "Google HYBRID",
+        "type": "google",
+        "visibility": false
+    }]
   }
 }

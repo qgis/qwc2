@@ -21,6 +21,9 @@
           "name": "BackgroundLayerButton"
         },
         {
+          "name": "BackgroundSwitcherMenu"
+        },
+        {
           "name": "OmniBar",
           "cfg": {
             "className": "navbar shadow navbar-home",
