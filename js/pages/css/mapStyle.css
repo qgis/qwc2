@@ -27,3 +27,25 @@
   border-radius: 0 0 0.6cm 0.6cm;
   background-color: blue;
 }
+
+#qwc2-navbar-container {
+  background-color: rgba(255,255, 255, 0.75);
+  box-shadow: 0px 5px 10px rgba(136, 136, 136, 0.5);
+}
+
+#qwc2-navbar-container .MapSearchBar {
+  left: 200px;
+  top: 5px;
+}
+
+#qwc2-burger-menu {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
+#qwc2-burger-menu .btn-primary {
+  background-color: transparent;
+  border: 2px solid #6a6a6a;
+  color: #6a6a6a;
+}

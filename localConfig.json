@@ -19,6 +19,22 @@
         },
         {
           "name": "BackgroundLayerButton"
+        },
+        {
+          "name": "OmniBar",
+          "cfg": {
+            "className": "navbar shadow navbar-home",
+            "id": "qwc2-navbar"
+          }
+        },
+        {
+            "name": "SearchBar"
+        },
+        {
+            "name": "BurgerMenu",
+            "cfg": {
+              "id": "qwc2-burger-menu"
+            }
         }
       ]
   }
