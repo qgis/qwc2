@@ -10,7 +10,8 @@ module.exports = {
     plugins: {
         MapPlugin: require('../MapStore2/web/client/plugins/Map'),
         ZoomInPlugin: require('../MapStore2/web/client/plugins/ZoomIn'),
-        ZoomOutPlugin: require('../MapStore2/web/client/plugins/ZoomOut')
+        ZoomOutPlugin: require('../MapStore2/web/client/plugins/ZoomOut'),
+        BackgroundLayerButtonPlugin: require('./plugins/BackgroundLayerButton')
     },
     requires: {}
 };
