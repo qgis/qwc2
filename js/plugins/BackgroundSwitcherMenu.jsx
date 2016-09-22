@@ -9,7 +9,7 @@
 const React = require('react');
 const {connect} = require('react-redux');
 const BackgroundSwitcher = require('../../MapStore2/web/client/components/TOC/background/BackgroundSwitcher');
-const {changeLayerProperties} = require('../../MapStore2/web/client/actions/layers');
+const {changeLayerProperties} = require('../actions/layers');
 
 const BackgroundSwitcherMenu = React.createClass({
   propTypes: {
