@@ -10,38 +10,55 @@ const {configureMap, configureError} = require('../../MapStore2/web/client/actio
 const {searchTextChanged} = require('../../MapStore2/web/client/actions/search');
 const {changeLayerProperties} = require('../../MapStore2/web/client/actions/layers');
 const UrlParams = require("../utils/UrlParams");
-var axios = require('../../MapStore2/web/client/libs/ajax');
+const assign = require('object-assign');
+const axios = require('../../MapStore2/web/client/libs/ajax');
 
 function loadMapConfig(configName, mapId) {
     return (dispatch) => {
-      var params = UrlParams.getParams();
-      if(params.s) {
-        dispatch(searchTextChanged(params.s));
-      }
+        var params = UrlParams.getParams();
+        if(params.s) {
+            dispatch(searchTextChanged(params.s));
+        }
 
-      axios.get(configName).then((response) => {
-          if (typeof response.data === 'object') {
+        axios.get(configName).then((response) => {
+            if (typeof response.data === 'object') {
             // Tweak active layer based on url bl param
             if(params.bl) {
                 try {
-                  if(response.data.map.layers.find((obj) => { return obj.name === params.bl})) {
-                    response.data.map.layers.map((entry) => {
-                      entry.visibility = entry.name === params.bl;
-                    });
-                  }
+                    if(response.data.map.layers.find((obj) => { return obj.name === params.bl})) {
+                        response.data.map.layers.map((entry) => {
+                            entry.visibility = entry.name === params.bl;
+                        });
+                    }
                 } catch(e) {}
-              }
-              dispatch(configureMap(response.data, mapId));
-          } else {
-              try {
+            }
+            // Set map center based on x, y params
+            if(params.x && params.y) {
+                try {
+                    response.data.map.center = assign(response.data.map.center, {
+                        x: params.x,
+                        y: params.y,
+                        crs: "EPSG:4326"
+                    });
+                } catch(e) {}
+            }
+            // Set map zoom based on z param
+            if(params.z) {
+                try {
+                    response.data.map.zoom = params.z;
+                } catch(e) {}
+            }
+            dispatch(configureMap(response.data, mapId));
+            } else {
+                try {
                   JSON.parse(response.data);
-              } catch(e) {
+                } catch(e) {
                   dispatch(configureError('Configuration file broken (' + configName + '): ' + e.message));
-              }
-          }
-      }).catch((e) => {
-          dispatch(configureError(e));
-      });
+                }
+            }
+        }).catch((e) => {
+            dispatch(configureError(e));
+        });
     };
 }
 

@@ -9,7 +9,7 @@
 module.exports = {
     plugins: {
         BurgerMenu: require('../MapStore2/web/client/plugins/BurgerMenu'),
-        MapPlugin: require('../MapStore2/web/client/plugins/Map'),
+        MapPlugin: require('./plugins/Map'),
         OmniBarPlugin: require('../MapStore2/web/client/plugins/OmniBar'),
         ZoomInPlugin: require('../MapStore2/web/client/plugins/ZoomIn'),
         ZoomOutPlugin: require('../MapStore2/web/client/plugins/ZoomOut'),
