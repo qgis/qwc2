@@ -6,26 +6,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
- const url = require('url');
- const assign = require('object-assign');
+const url = require('url');
+const assign = require('object-assign');
 
 var UrlParams = {
-   updateParams: function(dict)
-   {
-     var urlObj = url.parse(window.location.href, true);
-     urlObj.query = assign(urlObj.query, dict);
-     delete urlObj.search;
-     history.pushState({id: urlObj.host}, '', url.format(urlObj));
+   updateParams: function(dict) {
+       var urlObj = url.parse(window.location.href, true);
+       urlObj.query = assign(urlObj.query, dict);
+       delete urlObj.search;
+       history.pushState({id: urlObj.host}, '', url.format(urlObj));
    },
-   getParam: function(key)
-   {
-     var urlObj = url.parse(window.location.href, true);
-     return urlObj.query[key];
+   getParam: function(key) {
+       var urlObj = url.parse(window.location.href, true);
+       return urlObj.query[key];
    },
-   getParams: function()
-   {
-     return url.parse(window.location.href, true).query;
+   getParams: function() {
+       return url.parse(window.location.href, true).query;
    }
-}
+};
 
 module.exports = UrlParams;

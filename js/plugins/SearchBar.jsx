@@ -8,11 +8,10 @@
 
 const {connect} = require('react-redux');
 const assign = require('object-assign');
-const {createSelector} = require('reselect');
-const {textSearch, resultsPurge, resetSearch, searchTextChanged} = require("../../MapStore2/web/client/actions/search");
-const {qwc2TextSearch} = require("../actions/search")
+const {resultsPurge, resetSearch, searchTextChanged} = require("../../MapStore2/web/client/actions/search");
+const {qwc2TextSearch} = require("../actions/search");
 
- const SearchBar = connect((state) => ({
+const SearchBar = connect((state) => ({
      searchText: state && state.search ? state.search.searchText : ""
  }), {
      onSearch: qwc2TextSearch,
@@ -21,7 +20,7 @@ const {qwc2TextSearch} = require("../actions/search")
      onSearchTextChange: searchTextChanged
  })(require("../../MapStore2/web/client/components/mapcontrols/search/SearchBar"));
 
- module.exports = {
+module.exports = {
      SearchBarPlugin: assign(SearchBar, {
          OmniBar: {
              name: 'search',

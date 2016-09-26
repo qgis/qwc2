@@ -8,27 +8,26 @@
 
 const React = require('react');
 const {connect} = require('react-redux');
-const ToggleButton = require('../../MapStore2/web/client/components/buttons/ToggleButton');
-const {Button, Glyphicon, OverlayTrigger} = require('react-bootstrap');
+const {Button, Glyphicon} = require('react-bootstrap');
 const {toggleControl} = require('../../MapStore2/web/client/actions/controls');
 
 const BackgroundLayerButton = React.createClass({
   propTypes: {
     onClick: React.PropTypes.func,
-    className: React.PropTypes.string,
+    className: React.PropTypes.string
   },
   getDefaultProps() {
-    return {
-      onClick: () => {},
-      className: ''
-    };
+      return {
+          onClick: () => {},
+          className: ''
+      };
   },
   render() {
-    return (
-      <Button id="background-layer-button" className={this.props.className} onClick={this.props.onClick}>
-        <Glyphicon glyph="book"/>
-      </Button>
-    );
+      return (
+          <Button id="background-layer-button" className={this.props.className} onClick={this.props.onClick}>
+              <Glyphicon glyph="book"/>
+          </Button>
+      );
   }
 });
 

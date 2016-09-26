@@ -18,14 +18,14 @@ const BackgroundSwitcherMenu = React.createClass({
     propertiesChangeHandler: React.PropTypes.func
   },
   getDefaultProps() {
-    return {
-      visible: false
-    }
+      return {
+          visible: false
+      };
   },
   render() {
-    return (<div id="background-switcher-menu" className={this.props.visible === true ? "visible" : ""}>
-      <BackgroundSwitcher layers={this.props.layers} propertiesChangeHandler={this.props.propertiesChangeHandler} />
-    </div>);
+      return (<div id="background-switcher-menu" className={this.props.visible === true ? "visible" : ""}>
+        <BackgroundSwitcher layers={this.props.layers} propertiesChangeHandler={this.props.propertiesChangeHandler} />
+        </div>);
   }
 });
 

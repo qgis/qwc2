@@ -10,7 +10,7 @@ const {TEXT_SEARCH_RESULTS_LOADED} = require("../../MapStore2/web/client/actions
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const UrlParams = require("../utils/UrlParams");
 
- function searchResultLoaded(results) {
+function searchResultLoaded(results) {
      return {
          type: TEXT_SEARCH_RESULTS_LOADED,
          results: results
@@ -21,10 +21,10 @@ function qwc2TextSearch(text) {
     UrlParams.updateParams({s: text});
 
     return (dispatch) => {
-      fetch(ConfigUtils.getConfigProp("searchUrl") + text)
-      .then((response) => { return response.json() })
-      .then((obj) => { dispatch(searchResultLoaded(obj.results)); });
+        fetch(ConfigUtils.getConfigProp("searchUrl") + text)
+        .then((response) => { return response.json(); })
+        .then((obj) => { dispatch(searchResultLoaded(obj.results)); });
     };
 }
 
-module.exports = {qwc2TextSearch}
+module.exports = {qwc2TextSearch};
