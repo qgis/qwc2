@@ -41,13 +41,21 @@
             "name": "SearchResultList"
         },
         {
-            "name": "BurgerMenu",
-            "cfg": {
-              "id": "qwc2-burger-menu"
-            }
+            "name": "BottomBar"
         },
         {
-            "name": "BottomBar"
+          "name": "AppMenu",
+          "cfg": {
+            "menuItems": [
+              {"key": "topic", "icon": "assets/img/layers.png"},
+              {"key": "link", "icon": "assets/img/share.png"},
+              {"key": "tools", "icon": "assets/img/tools.png", "subitems": [
+                {"key": "measure"},
+                {"key": "draw"}
+              ]},
+              {"key": "help", "icon": "assets/img/info.png"}
+            ]
+          }
         }
       ]
   }

@@ -8,7 +8,6 @@
 
 module.exports = {
     plugins: {
-        BurgerMenu: require('../MapStore2/web/client/plugins/BurgerMenu'),
         MapPlugin: require('./plugins/Map'),
         OmniBarPlugin: require('../MapStore2/web/client/plugins/OmniBar'),
         ZoomInPlugin: require('../MapStore2/web/client/plugins/ZoomIn'),
@@ -17,7 +16,8 @@ module.exports = {
         BackgroundSwitcherMenuPlugin: require('./plugins/BackgroundSwitcherMenu'),
         SearchBarPlugin: require('./plugins/SearchBar'),
         SearchResultListPlugin: require('./plugins/SearchResultList'),
-        BottomBarPlugin: require('./plugins/BottomBar')
+        BottomBarPlugin: require('./plugins/BottomBar'),
+        AppMenuPlugin: require('./plugins/AppMenu')
     },
     requires: {}
 };

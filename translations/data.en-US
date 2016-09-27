@@ -661,6 +661,17 @@
             "deleteButton": "Delete",
             "cancelButton": "Cancel"
         },
+        "appmenu": {
+            "menulabel": "Map & Tools",
+            "items": {
+                "topic": "Select Topic",
+                "link": "Create link",
+                "tools": "Map Tools",
+                "measure": "Measure",
+                "draw": "Draw",
+                "help": "Help"
+            }
+        },
         "qwc2": {
             "mousepos_label": "Coordinates",
             "viewertitle_label": "QWC2 Demo",
