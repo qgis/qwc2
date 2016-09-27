@@ -19,11 +19,14 @@ module.exports = {
     pluginsDef: require('./plugins.js'),
     initialState: {
         defaultState: {
-          controls: {
-            BackgroundLayerButton: {
-              enabled: false
+            mousePosition: {
+                enabled: true
+            },
+            controls: {
+                BackgroundLayerButton: {
+                    enabled: false
+                }
             }
-          }
         },
         mobile: {}
     }

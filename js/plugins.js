@@ -16,7 +16,8 @@ module.exports = {
         BackgroundLayerButtonPlugin: require('./plugins/BackgroundLayerButton'),
         BackgroundSwitcherMenuPlugin: require('./plugins/BackgroundSwitcherMenu'),
         SearchBarPlugin: require('./plugins/SearchBar'),
-        SearchResultListPlugin: require('./plugins/SearchResultList')
+        SearchResultListPlugin: require('./plugins/SearchResultList'),
+        BottomBarPlugin: require('./plugins/BottomBar')
     },
     requires: {}
 };
