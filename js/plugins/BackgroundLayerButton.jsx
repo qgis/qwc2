@@ -33,7 +33,7 @@ const BackgroundLayerButton = React.createClass({
 
 const selector = (state) => ({
     className: state.controls.BackgroundLayerButton.enabled ? 'pressed' : ''
-  });
+});
 
 module.exports = {
     BackgroundLayerButtonPlugin: connect(selector, {

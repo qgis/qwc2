@@ -13,16 +13,21 @@ const {MapPlugin} = require('../../MapStore2/web/client/plugins/Map');
 
 const QWCMapPlugin = React.createClass({
     propTypes: {
-      zoomControl: React.PropTypes.bool
+      zoomControl: React.PropTypes.bool,
+      mapType: React.PropTypes.string
     },
     getDefaultProps() {
         return {
-            zoomControl: true
+            zoomControl: true,
+            mapType: 'openlayers'
         };
     },
     render() {
         return (
-            <MapPlugin changeMapViewAction={changeMapView} zoomControl={this.props.zoomControl} />
+            <MapPlugin
+                actions={{onMapViewChanges: changeMapView}}
+                zoomControl={this.props.zoomControl}
+                mapType={this.props.mapType} />
         );
     }
 });

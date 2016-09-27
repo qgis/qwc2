@@ -9,7 +9,8 @@
       "desktop": [{
           "name": "Map",
           "cfg": {
-            "zoomControl": false
+            "zoomControl": false,
+            "mapType": "openlayers"
           }
         },
         {

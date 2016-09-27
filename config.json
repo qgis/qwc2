@@ -17,11 +17,12 @@
         "visibility": true
       },
       {
+        "type": "tileprovider",
+        "title": "NASAGIBS Night 2012",
+        "provider": "NASAGIBS.ViirsEarthAtNight2012",
+        "name": "Night2012",
+        "source": "nasagibs",
         "group": "background",
-        "name": "HYBRID",
-        "source": "google",
-        "title": "Google HYBRID",
-        "type": "google",
         "visibility": false
     }]
   }
