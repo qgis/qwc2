@@ -36,8 +36,8 @@ function loadMapConfig(configName, mapId) {
             if(params.x && params.y) {
                 try {
                     response.data.map.center = assign(response.data.map.center, {
-                        x: params.x,
-                        y: params.y,
+                        x: float(params.x),
+                        y: float(params.y),
                         crs: "EPSG:4326"
                     });
                 } catch(e) {}
@@ -45,7 +45,7 @@ function loadMapConfig(configName, mapId) {
             // Set map zoom based on z param
             if(params.z) {
                 try {
-                    response.data.map.zoom = params.z;
+                    response.data.map.zoom = int(params.z);
                 } catch(e) {}
             }
             dispatch(configureMap(response.data, mapId));
