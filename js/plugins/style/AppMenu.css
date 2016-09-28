@@ -43,6 +43,7 @@
     transition: transform 0.1s;
     background-color: #f2f2f2;
     padding: 0;
+    z-index: 2;
 }
 
 #appmenu.appmenu_visible ul.appmenu_menu {
