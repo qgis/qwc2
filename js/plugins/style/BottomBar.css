@@ -41,3 +41,9 @@
     cursor: pointer;
     line-height: 30px;
 }
+
+/** Hack for placing the OpenLayers scalebar above the bottombar */
+div.ol-scale-line {
+    z-index: 3;
+    bottom: 5px !important;
+}
