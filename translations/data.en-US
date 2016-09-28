@@ -673,7 +673,7 @@
                 "help": "Help"
             }
         },
-        "qwc2": {
+        "bottombar": {
             "mousepos_label": "Coordinates",
             "viewertitle_label": "QWC2 Demo",
             "terms_label": "Terms of use"
