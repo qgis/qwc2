@@ -18,7 +18,7 @@ div.dialogbody {
     padding: 5px;
 }
 
-div.dialogbody div.tabbar span {
+div.dialogbody div.tabbar > span {
     background-color: #f2f2f2;
     border-style: solid;
     border-color: #9f9f9e #9f9f9e #595959 #9f9f9e;
@@ -29,7 +29,7 @@ div.dialogbody div.tabbar span {
     cursor: default;
 }
 
-div.dialogbody div.tabbar span.activetab {
+div.dialogbody div.tabbar > span.activetab {
     font-weight: bold;
     background-color: white;
     border-color: #595959 #595959 transparent #595959;
