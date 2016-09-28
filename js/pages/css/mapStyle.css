@@ -41,18 +41,6 @@
   top: 5px;
 }
 
-#qwc2-burger-menu {
-  position: absolute;
-  right: 5px;
-  top: 5px;
-}
-
-#qwc2-burger-menu .btn-primary {
-  background-color: transparent;
-  border: 2px solid #6a6a6a;
-  color: #6a6a6a;
-}
-
 .search-result-list {
   position: absolute!important;
   left: 201px!important;
