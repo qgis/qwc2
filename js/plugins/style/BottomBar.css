@@ -10,6 +10,14 @@
     font-size: 9pt;
 }
 
+#bottombar select {
+    border: 1px solid #888888;
+    border-radius: 0 2px 2px 0;
+    background-color: #f2f2f2;
+    height: 20px;
+    vertical-align: middle;
+}
+
 #bottombar .mousepos_label {
     margin-left: 200px;
     line-height: 30px;
@@ -28,18 +36,19 @@
     vertical-align: middle;
 }
 
-#bottombar #crssselector {
-    border: 1px solid #888888;
-    border-radius: 0 2px 2px 0;
-    height: 20px;
-    vertical-align: middle;
-}
-
 #bottombar span.bottomlinks {
     float: right;
     margin-right: 10px;
     cursor: pointer;
     line-height: 30px;
+}
+
+#bottombar .scale_label {
+    margin-left: 10px;
+}
+
+#bottombar #scaleselector {
+    display: inline-block;
 }
 
 /** Hack for placing the OpenLayers scalebar above the bottombar */

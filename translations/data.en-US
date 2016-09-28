@@ -675,6 +675,7 @@
         },
         "bottombar": {
             "mousepos_label": "Coordinates",
+            "scale_label" : "Scale",
             "viewertitle_label": "QWC2 Demo",
             "terms_label": "Terms of use"
         }

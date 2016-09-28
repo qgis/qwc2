@@ -12,20 +12,25 @@
  const Message = require('../../MapStore2/web/client/components/I18N/Message');
  const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
  const CRSSelector = require("../../MapStore2/web/client/components/mapcontrols/mouseposition/CRSSelector");
+ const ScaleBox = require("../../MapStore2/web/client/components/mapcontrols/scale/ScaleBox");
  const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
- const {changeMousePositionState,changeMousePositionCrs} = require('../../MapStore2/web/client/actions/mousePosition');
+ const {changeMousePositionState, changeMousePositionCrs} = require('../../MapStore2/web/client/actions/mousePosition');
+ const {changeZoomLevel} = require('../../MapStore2/web/client/actions/map');
  require('./style/BottomBar.css');
 
  const BottomBar = React.createClass({
      propTypes: {
          mousepos: React.PropTypes.object,
          displaycrs:  React.PropTypes.string,
-         onCRSChange: React.PropTypes.funct
+         onCRSChange: React.PropTypes.func,
+         mapscale: React.PropTypes.number,
+         onScaleChange: React.PropTypes.func
      },
      getDefaultProps() {
          return {
              mousepos: {x: 0, y: 0, crs: "EPSG:4326"},
              displaycrs: "EPSG:4326",
+             mapscale: 0
          }
      },
      render() {
@@ -36,6 +41,8 @@
                 <span className="mousepos_label"><Message msgId="bottombar.mousepos_label" />: </span>
                 <span className="mouseposition">{x.toFixed(digits)} {y.toFixed(digits)}</span>
                 <CRSSelector enabled={true} crs={this.props.displaycrs} id="crssselector" onCRSChange={this.props.onCRSChange}/>
+                <span className="scale_label"><Message msgId="bottombar.scale_label" />: </span>
+                <ScaleBox id="scaleselector" currentZoomLvl={this.props.mapscale} onChange={this.props.onScaleChange} />
                 <span className="bottomlinks">
                     <a href={ConfigUtils.getConfigProp("viewertitle_link")}>
                         <Message className="viewertitle_label" msgId="bottombar.viewertitle_label" />
@@ -57,12 +64,14 @@ const selector = (state) => ({
         y: state && state.mousePosition && state.mousePosition.position ? state.mousePosition.position.y : 0,
         crs: state && state.mousePosition && state.mousePosition.position ? state.mousePosition.position.crs : "EPSG:4326"
     },
-    displaycrs: state && state.mousePosition && state.mousePosition ? state.mousePosition.crs : "EPSG:4326"
+    displaycrs: state && state.mousePosition && state.mousePosition ? state.mousePosition.crs : "EPSG:4326",
+    mapscale: state && state.map && state.map.present ? state.map.present.zoom : 0
 });
 
  module.exports = {
      BottomBarPlugin: connect(selector, {
-         onCRSChange: changeMousePositionCrs
+         onCRSChange: changeMousePositionCrs,
+         onScaleChange: changeZoomLevel
      })(BottomBar),
      reducers: {
          mousePosition: require('../../MapStore2/web/client/reducers/mousePosition')
