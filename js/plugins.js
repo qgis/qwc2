@@ -17,7 +17,8 @@ module.exports = {
         SearchBarPlugin: require('./plugins/SearchBar'),
         SearchResultListPlugin: require('./plugins/SearchResultList'),
         BottomBarPlugin: require('./plugins/BottomBar'),
-        AppMenuPlugin: require('./plugins/AppMenu')
+        AppMenuPlugin: require('./plugins/AppMenu'),
+        MeasurePlugin: require('./plugins/Measure')
     },
     requires: {}
 };

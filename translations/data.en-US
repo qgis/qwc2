@@ -200,6 +200,7 @@
             "lengthButtonText": "Line",
             "areaButtonText": "Area",
             "resetButtonText": "Reset",
+            "pointLabel": "Position",
             "lengthLabel": "Length",
             "areaLabel": "Area",
             "bearingLabel": "Bearing"

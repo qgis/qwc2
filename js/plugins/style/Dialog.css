@@ -1,0 +1,45 @@
+div.dialogheader {
+    background: #595959;
+    color: white;
+    padding: 5px;
+    cursor: default;
+}
+
+div.dialogheader > span.dialogtitle {
+    font-weight: bold;
+}
+
+div.dialogheader > span.dialogclose {
+    float: right;
+    cursor: pointer;
+}
+
+div.dialogbody {
+    padding: 5px;
+}
+
+div.dialogbody div.tabbar span {
+    background-color: #f2f2f2;
+    border-style: solid;
+    border-color: #9f9f9e #9f9f9e #595959 #9f9f9e;
+    border-width: 1px;
+    border-radius: 3px 3px 0 0;
+    padding: 5px;
+    display: inline-block;
+    cursor: default;
+}
+
+div.dialogbody div.tabbar span.activetab {
+    font-weight: bold;
+    background-color: white;
+    border-color: #595959 #595959 transparent #595959;
+    position: relative;
+    z-index: 1;
+}
+
+div.dialogbody div.tabarea {
+    border: 1px solid #595959;
+    position: relative;
+    top: -1px;
+    padding: 15px;
+}

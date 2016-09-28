@@ -10,7 +10,7 @@ const React = require('react');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const {toggleAppMenu, toggleAppSubmenu} = require('../actions/AppMenu');
+const {toggleAppMenu, toggleAppSubmenu, triggerAppMenuitem} = require('../actions/AppMenu');
 require('./style/AppMenu.css');
 
 
@@ -20,7 +20,8 @@ const AppMenu = React.createClass({
         menuVisible: React.PropTypes.bool,
         submenusVisible: React.PropTypes.array,
         menuClicked: React.PropTypes.func,
-        submenuClicked: React.PropTypes.func
+        submenuClicked: React.PropTypes.func,
+        menuitemClicked: React.PropTypes.func
     },
     getDefaultProps() {
         return {
@@ -31,13 +32,15 @@ const AppMenu = React.createClass({
     onMenuClicked(ev) {
         this.props.menuClicked(!this.props.menuVisible);
     },
-    onSubmenuClicked(ev, key,level) {
+    onSubmenuClicked(ev, key, level) {
         ev.stopPropagation();
         var a = this.props.submenusVisible[level] === key ? [] : [key];
         this.props.submenuClicked(this.props.submenusVisible.slice(0, level).concat(a));
     },
-    onMenuitemClicked(ev) {
+    onMenuitemClicked(ev, key) {
         ev.stopPropagation();
+        this.props.menuitemClicked(key);
+        this.props.menuClicked(!this.props.menuVisible);
     },
     render() {
         return(
@@ -68,7 +71,7 @@ const AppMenu = React.createClass({
                     );
                 } else {
                     return (
-                        <li key={item.key} onClick={this.onMenuitemClicked}>
+                        <li key={item.key} onClick={(ev)=>{this.onMenuitemClicked(ev, item.key);}}>
                             <img src={item.icon} />
                             <Message msgId={"appmenu.items." + item.key} />
                         </li>
@@ -89,7 +92,8 @@ const selector = (state) => ({
 module.exports = {
     AppMenuPlugin: connect(selector, {
         menuClicked: toggleAppMenu,
-        submenuClicked: toggleAppSubmenu
+        submenuClicked: toggleAppSubmenu,
+        menuitemClicked: triggerAppMenuitem
     })(AppMenu),
     reducers: {
         appmenu: require("../reducers/AppMenu")
