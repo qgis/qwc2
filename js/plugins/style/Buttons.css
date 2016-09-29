@@ -1,0 +1,31 @@
+#zoomin-btn, #zoomout-btn, #background-layer-button {
+    z-index: 1;
+    position: absolute !important;
+    right: 0.5cm;
+    background-color: #595959;
+    width: 1.2cm;
+    height: 1.2cm;
+    border-radius: 0.6cm;
+    color: white;
+    border: none;
+    box-shadow: 0px 5px 10px rgba(136, 136, 136, 0.5);
+}
+
+#zoomin-btn {
+  bottom: 5.5cm;
+}
+
+#zoomout-btn {
+  bottom: 4cm;
+}
+
+#background-layer-button {
+  bottom: 2.5cm;
+  transition: border-radius 0.5s, background-color 0.5s, color 0.5s;
+}
+
+#background-layer-button.pressed {
+  border-radius: 0 0 0.6cm 0.6cm;
+  background-color: white;
+  color: #595959;
+}

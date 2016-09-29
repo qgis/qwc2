@@ -10,6 +10,7 @@ const React = require('react');
 const {connect} = require('react-redux');
 const {Button, Glyphicon} = require('react-bootstrap');
 const {toggleControl} = require('../../MapStore2/web/client/actions/controls');
+require('./style/Buttons.css');
 
 const BackgroundLayerButton = React.createClass({
   propTypes: {

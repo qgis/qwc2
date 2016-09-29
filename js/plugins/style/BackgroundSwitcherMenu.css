@@ -1,0 +1,20 @@
+#background-switcher-menu {
+  position: absolute;
+  right: 0.5cm;
+  bottom: 3.7cm;
+  background: rgba(255, 255, 255, 0.75);
+  z-index: 2;
+  padding-top: 20px;
+  box-shadow: 0px 5px 10px rgba(136, 136, 136, 0.5);
+  border: 1px solid #cccccc;
+  border-radius: 3px 3px 0 3px;
+  display: none;
+}
+
+#background-switcher-menu.visible {
+  display: block;
+}
+
+#background-switcher-menu #background-switcher {
+  width: auto!important;
+}
