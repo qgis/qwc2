@@ -31,34 +31,24 @@
           "name": "BackgroundSwitcherMenu"
         },
         {
-          "name": "OmniBar",
-          "cfg": {
-            "className": "navbar shadow navbar-home",
-            "id": "qwc2-navbar"
-          }
-        },
-        {
-            "name": "SearchBar"
+            "name": "TopBar",
+            "cfg": {
+              "menuItems": [
+                {"key": "topic", "icon": "assets/img/layers.png"},
+                {"key": "link", "icon": "assets/img/share.png"},
+                {"key": "tools", "icon": "assets/img/tools.png", "subitems": [
+                  {"key": "measure"},
+                  {"key": "draw"}
+                ]},
+                {"key": "help", "icon": "assets/img/info.png"}
+              ]
+            }
         },
         {
             "name": "SearchResultList"
         },
         {
             "name": "BottomBar"
-        },
-        {
-          "name": "AppMenu",
-          "cfg": {
-            "menuItems": [
-              {"key": "topic", "icon": "assets/img/layers.png"},
-              {"key": "link", "icon": "assets/img/share.png"},
-              {"key": "tools", "icon": "assets/img/tools.png", "subitems": [
-                {"key": "measure"},
-                {"key": "draw"}
-              ]},
-              {"key": "help", "icon": "assets/img/info.png"}
-            ]
-          }
         },
         {
           "name": "Measure"

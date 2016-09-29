@@ -85,17 +85,14 @@ const AppMenu = React.createClass({
 });
 
 const selector = (state) => ({
-    menuVisible: state.appmenu.visible,
-    submenusVisible: state.appmenu.submenus
+    menuVisible: state.appmenu && state.appmenu.visible,
+    submenusVisible: state.appmenu ? state.appmenu.submenus : []
 });
 
 module.exports = {
-    AppMenuPlugin: connect(selector, {
+    AppMenu: connect(selector, {
         menuClicked: toggleAppMenu,
         submenuClicked: toggleAppSubmenu,
         menuitemClicked: triggerAppMenuitem
-    })(AppMenu),
-    reducers: {
-        appmenu: require("../reducers/AppMenu")
-    }
+    })(AppMenu)
 };
