@@ -3,24 +3,28 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 30px;
+    height: 0.75cm;
     z-index: 2;
     background-color: rgba(255,255, 255, 0.75);
-    box-shadow: 0px -5px 10px rgba(136, 136, 136, 0.5);
+    box-shadow: 0px -1mm 3mm rgba(136, 136, 136, 0.5);
     font-size: 9pt;
 }
 
 #bottombar select {
     border: 1px solid #888888;
-    border-radius: 0 2px 2px 0;
+    border-radius: 1mm;
     background-color: #f2f2f2;
-    height: 20px;
+    height: 0.5cm;
     vertical-align: middle;
+}
+
+#bottombar select#crssselector {
+    border-radius: 0 1mm 1mm 0!important;
 }
 
 #bottombar .mousepos_label {
     margin-left: 200px;
-    line-height: 30px;
+    line-height: 0.75cm;
 }
 
 #bottombar span.mouseposition {
@@ -30,21 +34,21 @@
     border-style: solid;
     border-color: #888888;
     border-width: 1px 0px 1px 1px;
-    border-radius: 2px 0 0 2px;
+    border-radius: 1mm 0 0 1mm;
     background-color: rgba(255, 255, 255, 0.75);
-    height: 20px;
+    height: 0.5cm;
     vertical-align: middle;
 }
 
 #bottombar span.bottomlinks {
     float: right;
-    margin-right: 10px;
+    margin-right: 5mm;
     cursor: pointer;
-    line-height: 30px;
+    line-height: 0.75cm;
 }
 
 #bottombar .scale_label {
-    margin-left: 10px;
+    margin-left: 5mm;
 }
 
 #bottombar #scaleselector {
@@ -54,5 +58,5 @@
 /** Hack for placing the OpenLayers scalebar above the bottombar */
 div.ol-scale-line {
     z-index: 3;
-    bottom: 5px !important;
+    bottom: 3px !important;
 }
