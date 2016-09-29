@@ -1,4 +1,4 @@
-#zoomin-btn, #zoomout-btn, #background-layer-button {
+#zoomin-btn, #zoomout-btn, #background-layer-button, #locate-btn {
     z-index: 1;
     position: absolute !important;
     right: 0.5cm;
@@ -17,6 +17,10 @@
 
 #zoomout-btn {
   bottom: 4cm;
+}
+
+#locate-btn {
+    bottom: 7cm;
 }
 
 #background-layer-button {

@@ -13,6 +13,7 @@ module.exports = {
         ZoomInPlugin: require('./plugins/ZoomButtons'),
         ZoomOutPlugin: require('./plugins/ZoomButtons'),
         BackgroundLayerButtonPlugin: require('./plugins/BackgroundLayerButton'),
+        LocateButtonPlugin: require('./plugins/LocateButton'),
         BackgroundSwitcherMenuPlugin: require('./plugins/BackgroundSwitcherMenu'),
         SearchBarPlugin: require('./plugins/SearchBar'),
         SearchResultListPlugin: require('./plugins/SearchResultList'),
