@@ -11,3 +11,7 @@
 #topbar div.MapSearchBar > div.form-group > div.input-group {
     box-shadow: none;
 }
+
+#topbar div.MapSearchBar > div.form-group > div.input-group > input.form-control {
+    position: static!important;
+}

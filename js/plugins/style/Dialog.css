@@ -1,3 +1,7 @@
+div.modal-dialog {
+    z-index: 4!important;
+}
+
 div.dialogheader {
     background: #595959;
     color: white;

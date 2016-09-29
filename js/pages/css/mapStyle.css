@@ -1,3 +1,6 @@
+html, body {
+    overflow: hidden;
+}
 
 .search-result-list {
   position: absolute!important;
