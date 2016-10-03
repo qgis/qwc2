@@ -1,0 +1,24 @@
+#fullscreenswitcher {
+    display: inline-block;
+    width: 5mm;
+    height: 100%;
+    cursor: pointer;
+}
+
+#fullscreenswitcher  > span {
+    display: inline-block;
+    vertical-align: top;
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+#fullscreenswitcher  > span.maximize {
+    border-width: 0 5mm 5mm 0;
+    border-color: transparent #595959 transparent transparent;
+}
+
+#fullscreenswitcher  > span.minimize {
+    border-width: 5mm 0 0 5mm;
+    border-color: transparent transparent transparent #595959;
+}

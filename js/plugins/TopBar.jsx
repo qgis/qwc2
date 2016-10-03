@@ -9,6 +9,7 @@
 const React = require('react');
 const {connect} = require('react-redux');
 const {AppMenu} = require("../components/AppMenu");
+const {FullscreenSwitcher} = require("../components/FullscreenSwitcher");
 const {SearchBar} = require("../components/SearchBar");
 const {resultsPurge, resetSearch, searchTextChanged} = require("../../MapStore2/web/client/actions/search");
 const {qwc2TextSearch} = require("../actions/search");
@@ -35,6 +36,7 @@ const TopBar = React.createClass({
                 <img className="logo" src="assets/img/logo.svg" />
                 <SearchBar {...this.props.searchActions} searchText={this.props.searchText} />
                 <AppMenu menuItems={this.props.menuItems} />
+                <FullscreenSwitcher />
             </div>
          );
      }
@@ -44,6 +46,7 @@ module.exports = {
     TopBarPlugin: TopBar,
     reducers: {
         appmenu: require("../reducers/AppMenu"),
-        search: require('../../MapStore2/web/client/reducers/search')
+        display: require("../reducers/display"),
+        search: require('../../MapStore2/web/client/reducers/search'),
     }
 };

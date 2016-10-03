@@ -17,7 +17,15 @@
 #topbar #appmenu {
     position: absolute;
     top: 0;
-    right: 0;
+    right: 5mm;
     height: 1.25cm;
     width: 6cm;
+}
+
+#topbar #fullscreenswitcher {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 1.25cm;
+    width: 5mm;
 }
