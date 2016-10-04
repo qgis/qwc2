@@ -40,9 +40,9 @@ const BottomBar = React.createClass({
             <div id="bottombar">
                 <span className="mousepos_label"><Message msgId="bottombar.mousepos_label" />: </span>
                 <span className="mouseposition">{x.toFixed(digits)} {y.toFixed(digits)}</span>
-                <CRSSelector enabled={true} crs={this.props.displaycrs} id="crssselector" onCRSChange={this.props.onCRSChange}/>
+                <CRSSelector useRawInput={true} enabled={true} crs={this.props.displaycrs} id="crssselector" onCRSChange={this.props.onCRSChange}/>
                 <span className="scale_label"><Message msgId="bottombar.scale_label" />: </span>
-                <ScaleBox id="scaleselector" currentZoomLvl={this.props.mapscale} onChange={this.props.onScaleChange} />
+                <ScaleBox useRawInput={true} id="scaleselector" currentZoomLvl={this.props.mapscale} onChange={this.props.onScaleChange} />
                 <span className="bottomlinks">
                     <a href={ConfigUtils.getConfigProp("viewertitle_link")}>
                         <Message className="viewertitle_label" msgId="bottombar.viewertitle_label" />
