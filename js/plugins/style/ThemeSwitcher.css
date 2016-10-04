@@ -1,0 +1,95 @@
+#ThemeSwitcher {
+    position: absolute;
+    top: 1.25cm;
+    bottom: 0.75cm;
+    right: -6cm;
+    width: 6cm;
+    z-index: 2;
+    background: right;
+    background-color: rgba(255,255, 255, 0.85);
+    box-shadow: -1mm 0mm 3mm rgba(136, 136, 136, 0.5);
+    border: 1px solid rgba(136, 136, 136, 0.5);
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: right 0.25s;
+}
+
+#ThemeSwitcher.themeswitcher-visible {
+    right: 0;
+}
+
+#ThemeSwitcher div.themeswitcher-title {
+    background-color:  #808080;
+    color: white;
+    font-weight: bold;
+    padding: 2px;
+}
+
+#ThemeSwitcher div.themeswitcher-title span.glyphicon {
+    float: right;
+    cursor: pointer;
+}
+
+#ThemeSwitcher input.theme-filter {
+    width: 100%;
+}
+
+#ThemeSwitcher ul {
+    padding: 0;
+    list-style-type: none;
+}
+
+#ThemeSwitcher li.theme-group > span {
+    font-weight: bold;
+    display: block;
+    border-bottom: 1px solid rgba(136, 136, 136, 0.5);
+    color: #078aa3;
+    padding-left: 5mm;
+    margin: 0 2mm;
+}
+
+#ThemeSwitcher li.theme-item {
+    background-color: white;
+    font-weight: bold;
+    border-radius: 3mm;
+    box-shadow: 0mm 0mm 1.5mm rgba(136, 136, 136, 0.5);
+    padding: 2px;
+    margin: 5mm;
+    text-align: center;
+    transition: box-shadow 0.5s;
+    border: 1px solid white;
+}
+
+#ThemeSwitcher li.theme-item > img {
+    width: 3cm;
+    height: auto;
+}
+
+#ThemeSwitcher li.theme-item:hover {
+    box-shadow: 0mm 0mm 2mm #078aa3;
+}
+
+#ThemeSwitcher div.theme-item-keywords {
+    position: relative;
+    display: inline-block;
+    color: gray;
+    font-size: x-small;
+    font-weight: normal;
+    max-width: 3cm;
+    overflow-x: hidden;
+    white-space: nowrap
+}
+
+#ThemeSwitcher div.theme-item-keywords:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 3mm;
+    left: 2.7cm;
+    background: linear-gradient(to right, rgba(0,0,0,0), #FFF);
+}
+
+#ThemeSwitcher li.theme-item-active {
+    border: 1px solid #078aa3;
+}

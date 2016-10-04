@@ -665,7 +665,7 @@
         "appmenu": {
             "menulabel": "Map & Tools",
             "items": {
-                "topic": "Select Topic",
+                "themes": "Select Theme",
                 "link": "Create link",
                 "tools": "Map Tools",
                 "measure": "Measure",
@@ -678,6 +678,10 @@
             "scale_label" : "Scale",
             "viewertitle_label": "QWC2 Demo",
             "terms_label": "Terms of use"
+        },
+        "themeswitcher": {
+            "title": "Themes",
+            "filter": "Filter..."
         }
     }
 }

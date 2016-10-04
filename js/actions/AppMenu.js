@@ -7,6 +7,7 @@
  */
 
 const {CHANGE_MEASUREMENT_STATE} = require('../../MapStore2/web/client/actions/measurement');
+const {SET_THEME_SWITCHER_VISIBILITY} = require('./themeswitcher');
 const TOGGLE_APP_MENU = 'TOGGLE_APP_MENU';
 const TOGGLE_APP_SUBMENU = 'TOGGLE_APP_SUBMENU';
 
@@ -30,6 +31,11 @@ function triggerAppMenuitem(key) {
             type: CHANGE_MEASUREMENT_STATE,
             lineMeasureEnabled: true
         };
+    } else if(key === 'themes') {
+        return {
+            type: SET_THEME_SWITCHER_VISIBILITY,
+            visible: true
+        }
     }
     return (dispatch) => {};
 }

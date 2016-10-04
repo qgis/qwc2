@@ -3,6 +3,7 @@
   "geoStoreUrl": "/mapstore/rest/geostore",
   "printUrl": "http://demo.geo-solutions.it/geoserver/pdf/info.json",
   "searchUrl": "http://localhost:5000/search?query=",
+  "qwc2serverUrl": "http://localhost:5000",
   "viewertitle_link": "http://qgis.org/",
   "terms_link":  "http://qgis.org/",
   "bingApiKey": "AhuXBu7ipR1gNbBfXhtUAyCZ6rkC5PkWpxs2MnMRZ1ZupxQfivjLCch22ozKSCAn",
@@ -34,7 +35,7 @@
             "name": "TopBar",
             "cfg": {
               "menuItems": [
-                {"key": "topic", "icon": "assets/img/layers.png"},
+                {"key": "themes", "icon": "assets/img/layers.png"},
                 {"key": "link", "icon": "assets/img/share.png"},
                 {"key": "tools", "icon": "assets/img/tools.png", "subitems": [
                   {"key": "measure"},
@@ -52,6 +53,9 @@
         },
         {
           "name": "Measure"
+        },
+        {
+          "name": "ThemeSwitcher"
         }
       ]
   }

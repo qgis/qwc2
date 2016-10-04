@@ -8,6 +8,7 @@
 
 const {configureMap, configureError} = require('../../MapStore2/web/client/actions/config');
 const {searchTextChanged} = require('../../MapStore2/web/client/actions/search');
+const {setCurrentTheme} = require('./themeswitcher');
 const {changeLayerProperties} = require('../../MapStore2/web/client/actions/layers');
 const UrlParams = require("../utils/UrlParams");
 const assign = require('object-assign');
@@ -15,9 +16,20 @@ const axios = require('../../MapStore2/web/client/libs/ajax');
 
 function loadMapConfig(configName, mapId) {
     return (dispatch) => {
+
         var params = UrlParams.getParams();
+
+        // Set search text based on url s param
         if(params.s) {
             dispatch(searchTextChanged(params.s));
+        }
+
+        // Set active theme based on url t param
+        if(params.t || params.l) {
+            dispatch(setCurrentTheme(
+                params.t ? params.t : "",
+                params.l ? params.l.split(",") : []
+            ));
         }
 
         axios.get(configName).then((response) => {
