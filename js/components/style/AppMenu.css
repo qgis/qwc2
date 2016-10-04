@@ -46,7 +46,7 @@
     transition: transform 0.1s;
     background-color: #f2f2f2;
     padding: 0;
-    z-index: 2;
+    z-index: 3;
 }
 
 #appmenu.appmenu_visible ul.appmenu_menu {
@@ -57,7 +57,7 @@
     color: #595959;
     list-style-type: none;
     margin: 0;
-    font-size: 9pt;
+    font-size: x-small;
     font-weight: bold;
 }
 
