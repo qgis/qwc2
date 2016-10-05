@@ -18,7 +18,8 @@ module.exports = {
         TopBarPlugin: require('./plugins/TopBar'),
         BottomBarPlugin: require('./plugins/BottomBar'),
         MeasurePlugin: require('./plugins/Measure'),
-        ThemeSwitcherPlugin: require('./plugins/ThemeSwitcher')
+        ThemeSwitcherPlugin: require('./plugins/ThemeSwitcher'),
+        LayerTree: require('./plugins/LayerTree')
     },
     requires: {}
 };

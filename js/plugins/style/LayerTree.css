@@ -1,0 +1,113 @@
+#LayerTree {
+    position: absolute;
+    left: 0;
+    top: 30%;
+    bottom: 30%;
+    border-radius: 0 3mm 3mm 0;
+    width: 5cm;
+    z-index: 2;
+    background-color: rgba(255,255, 255, 0.85);
+    box-shadow: 0mm 0mm 4mm rgba(136, 136, 136, 0.5);
+    border: 1px solid rgba(136, 136, 136, 0.5);
+}
+
+#LayerTree ul {
+    padding: 0 0 0 3mm;
+}
+
+#LayerTree li {
+    list-style-type: none;
+    margin: 2mm 0;
+}
+
+#LayerTree span.layertree-item-checkbox {
+    display: inline-block;
+    width: 6mm;
+    height: 6mm;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-right: 2mm;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+#LayerTree span.layertree-item-legend {
+    position: relative;
+}
+
+#LayerTree img.layertree-item-legend-thumbnail {
+    height: 6mm;
+    width: auto;
+    margin-right: 2mm;
+    border: 1px solid #cccccc;
+}
+
+#LayerTree img.layertree-item-legend-tooltip {
+    position: absolute;
+    top: 6mm;
+    z-index: 2;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.5s;
+    box-shadow: 0px 5px 10px rgba(136, 136, 136, 0.5);
+    border-radius: 1mm;
+    border: 1px solid #cccccc;
+}
+
+#LayerTree span.layertree-item-legend:hover > img.layertree-item-legend-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+#LayerTree span.layertree-item-checkbox-unchecked {
+    background-image: url('/assets/img/unchecked.svg');
+}
+
+#LayerTree span.layertree-item-checkbox-checked {
+    background-image: url('/assets/img/checked.svg');
+}
+
+#LayerTree span.layertree-item-queryable {
+    margin: 0mm 1mm;
+    color: #bbbbbb;
+    font-size: x-small;
+    vertical-align: top;
+}
+
+#LayerTree span.layertree-item-edit {
+    position: relative;
+    float: right;
+}
+
+#LayerTree span.layertree-item-edit > span.glyphicon {
+    border-radius: 1mm 1mm 0 0;
+    cursor: pointer;
+    padding: 1mm 2mm;
+    color: #9c9b9c;
+}
+
+#LayerTree span.layertree-item-edit-active > span.glyphicon {
+    display: inline-block;
+    background-color: #9c9b9c;
+    color: white;
+}
+
+#LayerTree ul.layertree-item-edit-menu {
+    position: absolute;
+    left: 0;
+    background-color: #f2f2f2;
+    box-shadow: 0px 5px 10px rgba(136, 136, 136, 0.5);
+    color: #595959;
+    font-size: small;
+    font-weight: bold;
+    border: 1px solid #cccccc;
+    visibility: hidden;
+    padding: 2mm;
+    margin: 0;
+    z-index: 2;
+    border-radius: 0 1mm 1mm 1mm;
+}
+
+#LayerTree span.layertree-item-edit-active > ul.layertree-item-edit-menu {
+    visibility: visible;
+}
