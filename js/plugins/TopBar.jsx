@@ -17,12 +17,6 @@ require('./style/TopBar.css');
 
 const TopBar = React.createClass({
     propTypes: {
-        searchActions: React.PropTypes.shape({
-            onSearch: React.PropTypes.func,
-            onPurgeResults: React.PropTypes.func,
-            onSearchReset: React.PropTypes.func,
-            onSearchTextChange: React.PropTypes.func
-        }),
         searchText: React.PropTypes.string,
         menuItems: React.PropTypes.array
     },
@@ -34,7 +28,7 @@ const TopBar = React.createClass({
         return (
             <div id="topbar">
                 <img className="logo" src="assets/img/logo.svg" />
-                <SearchBar {...this.props.searchActions} searchText={this.props.searchText} />
+                <SearchBar searchText={this.props.searchText} />
                 <AppMenu menuItems={this.props.menuItems} />
                 <FullscreenSwitcher />
             </div>
