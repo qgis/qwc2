@@ -6,23 +6,30 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {SET_THEME_FILTER, SET_CURRENT_THEME, SET_THEME_SWITCHER_VISIBILITY} = require('../actions/themeswitcher');
+const {
+    SET_STARTUP_THEME,
+    SET_CURRENT_THEME,
+    SET_THEME_SWITCHER_FILTER,
+    SET_THEME_SWITCHER_VISIBILITY} = require('../actions/theme');
 const assign = require('object-assign');
 
-function themeSwitcher(state = {filter: "", theme: ""}, action) {
+function themeSwitcher(state = {switchervisible: false, switcherfilter: "", current: null}, action) {
     switch (action.type) {
-        case SET_THEME_FILTER:
+        case SET_STARTUP_THEME:
             return assign({}, state, {
-                filter: action.filter
+                startuptheme: action.theme
             });
         case SET_CURRENT_THEME:
             return assign({}, state, {
-                theme: action.theme,
-                layers: action.layers
+                current: action.theme
+            });
+        case SET_THEME_SWITCHER_FILTER:
+            return assign({}, state, {
+                switcherfilter: action.filter
             });
         case SET_THEME_SWITCHER_VISIBILITY:
             return assign({}, state, {
-                visible: action.visible
+                switchervisible: action.visible
             });
         default:
             return state;

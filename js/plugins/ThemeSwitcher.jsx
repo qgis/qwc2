@@ -7,21 +7,25 @@
  */
 
 const React = require('react');
+const assign = require('object-assign');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2/web/client/utils/LocaleUtils");
-const {setThemeFilter,setCurrentTheme,setThemeSwitcherVisibility} = require("../actions/themeswitcher");
+const {setCurrentTheme,setThemeSwitcherFilter,setThemeSwitcherVisibility} = require("../actions/theme");
 require('./style/ThemeSwitcher.css');
 
 const ThemeSwitcher = React.createClass({
     propTypes: {
         paneVisible: React.PropTypes.bool,
         filter: React.PropTypes.string,
+        startuptheme: React.PropTypes.shape({
+            id: React.PropTypes.string,
+            activelayers: React.PropTypes.array}),
         activeTheme: React.PropTypes.string,
-        onFilterChanged: React.PropTypes.func,
-        onThemeChanged: React.PropTypes.func,
+        changeTheme: React.PropTypes.func,
+        changeFilter: React.PropTypes.func,
         changeVisibility: React.PropTypes.func
     },
     contextTypes: {
@@ -40,6 +44,26 @@ const ThemeSwitcher = React.createClass({
     },
     populateThemesList(object) {
         this.setState({themes: object.themes});
+        if(this.props.startuptheme) {
+            let theme = this.getThemeById(object.themes, this.props.startuptheme.id);
+            if(theme) {
+                this.props.changeTheme(assign({}, theme, {activelayers: this.props.startuptheme.activelayers}));
+            }
+        }
+    },
+    getThemeById(dir, id) {
+        for(let i = 0, n = dir.items.length; i < n; ++i) {
+            if(dir.items[i].id === id) {
+                return dir.items[i];
+            }
+        }
+        for(let i = 0, n = dir.subdirs.length; i < n; ++i) {
+            var theme = this.getThemeById(dir.subdirs[i], id);
+            if(theme) {
+                return theme;
+            }
+        }
+        return null;
     },
     groupMatchesFilter(group) {
         if(group.items) {
@@ -69,7 +93,7 @@ const ThemeSwitcher = React.createClass({
         return (<ul>
             {(group.items ? group.items : []).map(item => {
                 return item.name.includes(this.props.filter) || item.keywords.includes(this.props.filter) ? (
-                    <li key={item.id} className={this.props.activeTheme === item.id ? "theme-item theme-item-active" : "theme-item"} onClick={(ev)=>{this.themeClicked(item.id, item.layers);}}>
+                    <li key={item.id} className={this.props.activeTheme === item.id ? "theme-item theme-item-active" : "theme-item"} onClick={(ev)=>{this.themeClicked(item);}}>
                         {item.name}<br /><img src={"data:image/png;base64," + item.thumbnail} /><br />
                     <div className="theme-item-keywords" title={item.keywords}>{item.keywords}</div>
                     </li>) : null;
@@ -81,18 +105,18 @@ const ThemeSwitcher = React.createClass({
         return (
             <div id="ThemeSwitcher" className={this.props.paneVisible ? "themeswitcher-visible" : ""}>
                 <div className="themeswitcher-title"><Message msgId="themeswitcher.title" /><Glyphicon onClick={this.closeClicked} glyph="remove"/></div>
-                <input type="text" value={this.props.filter} onChange={this.filterChanged} className="theme-filter" placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
-                <div className="theme-container">
+                <input className="themeswitcher-filter" type="text" value={this.props.filter} onChange={this.filterChanged} placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
+                <div className="themeswitcher-container">
                     {this.renderThemeGroup(this.state.themes)}
                 </div>
             </div>
         );
     },
-    filterChanged(ev) {
-        this.props.onFilterChanged(ev.target.value);
+    themeClicked(theme) {
+        this.props.changeTheme(assign({}, theme, {activelayers: theme.layers}));
     },
-    themeClicked(themeid, layers) {
-        this.props.onThemeChanged(themeid, layers);
+    filterChanged(ev) {
+        this.props.changeFilter(ev.target.value);
     },
     closeClicked() {
         this.props.changeVisibility(!this.props.paneVisible);
@@ -100,19 +124,20 @@ const ThemeSwitcher = React.createClass({
 });
 
 const selector = (state) => ({
-    paneVisible: state.themeswitcher && state.themeswitcher.visible,
-    activeTheme: state.themeswitcher ? state.themeswitcher.theme : "",
-    filter: state.themeswitcher ? state.themeswitcher.filter : ""
+    paneVisible: state.theme && state.theme.switchervisible,
+    activeTheme: state.theme && state.theme.current ? state.theme.current.id : "",
+    filter: state.theme ? state.theme.switcherfilter : "",
+    startuptheme: state.theme ? state.theme.startuptheme : null
 });
 
 
 module.exports = {
     ThemeSwitcherPlugin: connect(selector, {
-        onFilterChanged: setThemeFilter,
-        onThemeChanged: setCurrentTheme,
+        changeTheme: setCurrentTheme,
+        changeFilter: setThemeSwitcherFilter,
         changeVisibility: setThemeSwitcherVisibility
     })(ThemeSwitcher),
     reducers: {
-        themeswitcher: require('../reducers/themeswitcher')
+        theme: require('../reducers/theme')
     }
 };

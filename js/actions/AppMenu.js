@@ -7,7 +7,7 @@
  */
 
 const {CHANGE_MEASUREMENT_STATE} = require('../../MapStore2/web/client/actions/measurement');
-const {SET_THEME_SWITCHER_VISIBILITY} = require('./themeswitcher');
+const {SET_THEME_SWITCHER_VISIBILITY} = require('./theme');
 const TOGGLE_APP_MENU = 'TOGGLE_APP_MENU';
 const TOGGLE_APP_SUBMENU = 'TOGGLE_APP_SUBMENU';
 
