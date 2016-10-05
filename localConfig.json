@@ -35,13 +35,13 @@
             "name": "TopBar",
             "cfg": {
               "menuItems": [
-                {"key": "themes", "icon": "assets/img/layers.png"},
-                {"key": "link", "icon": "assets/img/share.png"},
-                {"key": "tools", "icon": "assets/img/tools.png", "subitems": [
+                {"key": "themes", "icon": "assets/img/layers.svg"},
+                {"key": "link", "icon": "assets/img/share.svg"},
+                {"key": "tools", "icon": "assets/img/tools.svg", "subitems": [
                   {"key": "measure"},
                   {"key": "draw"}
                 ]},
-                {"key": "help", "icon": "assets/img/info.png"}
+                {"key": "help", "icon": "assets/img/info.svg"}
               ]
             }
         },
