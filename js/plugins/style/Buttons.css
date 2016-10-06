@@ -1,35 +1,35 @@
 #zoomin-btn, #zoomout-btn, #background-layer-button, #locate-btn {
     z-index: 1;
     position: absolute !important;
-    right: 0.5cm;
+    right: 1.5em;
     background-color: #595959;
-    width: 1.2cm;
-    height: 1.2cm;
-    border-radius: 0.6cm;
+    width: 3em;
+    height: 3em;
+    border-radius: 1.5em;
     color: white;
     border: none;
     box-shadow: 0px 5px 10px rgba(136, 136, 136, 0.5);
 }
 
+#locate-btn {
+    bottom: 17em;
+}
+
 #zoomin-btn {
-  bottom: 5.5cm;
+    bottom: 13em;
 }
 
 #zoomout-btn {
-  bottom: 4cm;
-}
-
-#locate-btn {
-    bottom: 7cm;
+    bottom: 9em;
 }
 
 #background-layer-button {
-  bottom: 2.5cm;
-  transition: border-radius 0.5s, background-color 0.5s, color 0.5s;
+    bottom: 5em;
+    transition: border-radius 0.5s, background-color 0.5s, color 0.5s;
 }
 
 #background-layer-button.pressed {
-  border-radius: 0 0 0.6cm 0.6cm;
+  border-radius: 0 0 1.5em 1.5em;
   background-color: white;
   color: #595959;
 }

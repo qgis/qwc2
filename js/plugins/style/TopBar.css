@@ -3,29 +3,32 @@
     left: 0;
     top: 0;
     right: 0;
-    height: 1.25cm;
+    height: 3.5em;
     background-color: rgba(255,255, 255, 0.75);
-    box-shadow: 0px 1mm 3mm rgba(136, 136, 136, 0.5);
+    box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
 }
 
 #topbar img.logo {
     width: auto;
-    height: 1.25cm;
-    margin-right: 1cm;
+    height: 3.5em;
+    margin-right: 2em;
 }
 
-#topbar #appmenu {
+#topbar #AppMenu {
     position: absolute;
     top: 0;
     right: 5mm;
-    height: 1.25cm;
-    width: 6cm;
+    height: 3.5em;
+    width: 25ch;
+}
+
+#topbar #AppMenu .appmenu-label {
+    line-height: 3.5em;
 }
 
 #topbar #fullscreenswitcher {
     position: absolute;
     top: 0;
     right: 0;
-    height: 1.25cm;
-    width: 5mm;
+    height: 3.5em;
 }

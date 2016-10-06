@@ -1,12 +1,12 @@
 #ThemeSwitcher {
     position: absolute;
-    top: 1.25cm;
-    bottom: 0.75cm;
-    right: -6cm;
-    width: 6cm;
+    top: 3.5em;
+    bottom: 2.25em; /* bottombar is high 3em at 75% font size, hence at 100% font size it is 0.75 * 3em = 2.25em */
+    right: -15%;
+    width: 15%;
     z-index: 2;
     background-color: rgba(255,255, 255, 0.85);
-    box-shadow: -1mm 0mm 3mm rgba(136, 136, 136, 0.5);
+    box-shadow: -2px 0mm 4px rgba(136, 136, 136, 0.5);
     border: 1px solid rgba(136, 136, 136, 0.5);
     transition: right 0.25s;
 }
@@ -19,8 +19,9 @@
     background-color:  #808080;
     color: white;
     font-weight: bold;
-    padding: 2px;
-    height: 0.6cm;
+    padding: 0.5em;
+    height: 2em;
+    line-height: 1em;
 }
 
 #ThemeSwitcher div.themeswitcher-title span.glyphicon {
@@ -30,11 +31,12 @@
 
 #ThemeSwitcher input.themeswitcher-filter {
     width: 100%;
-    height: 0.8cm;
+    height: 2em;
+    padding: 0 0.5em;
 }
 
 #ThemeSwitcher div.themeswitcher-container {
-    height: calc(100% - 0.6cm - 0.8cm);
+    height: calc(100% - 4em);
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -49,29 +51,29 @@
     display: block;
     border-bottom: 1px solid rgba(136, 136, 136, 0.5);
     color: #078aa3;
-    padding-left: 5mm;
-    margin: 0 2mm;
+    padding-left: 0.5em;
+    margin: 0 0.5em;
 }
 
 #ThemeSwitcher li.theme-item {
     background-color: white;
     font-weight: bold;
-    border-radius: 3mm;
-    box-shadow: 0mm 0mm 1.5mm rgba(136, 136, 136, 0.5);
-    padding: 2px;
-    margin: 5mm;
+    border-radius: 0.5em;
+    box-shadow: 0mm 0mm 4px rgba(136, 136, 136, 1);
+    padding: 0.5em;
+    margin: 1em;
     text-align: center;
     transition: box-shadow 0.5s;
     border: 1px solid white;
 }
 
 #ThemeSwitcher li.theme-item > img {
-    width: 3cm;
-    height: auto;
+    height: 5em;
+    width: auto;
 }
 
 #ThemeSwitcher li.theme-item:hover {
-    box-shadow: 0mm 0mm 2mm #078aa3;
+    box-shadow: 0mm 0mm 4px #078aa3;
 }
 
 #ThemeSwitcher div.theme-item-keywords {
@@ -80,19 +82,10 @@
     color: gray;
     font-size: x-small;
     font-weight: normal;
-    max-width: 3cm;
+    max-width: 80%;
     overflow-x: hidden;
-    white-space: nowrap
-}
-
-#ThemeSwitcher div.theme-item-keywords:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 3mm;
-    left: 2.7cm;
-    background: linear-gradient(to right, rgba(0,0,0,0), #FFF);
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 #ThemeSwitcher li.theme-item-active {

@@ -44,12 +44,10 @@ const AppMenu = React.createClass({
     },
     render() {
         return(
-            <div id="appmenu" className={this.props.menuVisible ? "appmenu_visible" : ""} onClick={this.onMenuClicked}>
-                <span className="appmenu_label"><Message msgId="appmenu.menulabel" /></span>
-                <span className="appmenu_button">
-                    <Glyphicon glyph="menu-hamburger"/>
-                </span>
-                <ul className="appmenu_menu">
+            <div id="AppMenu" className={this.props.menuVisible ? "appmenu-visible" : ""} onClick={this.onMenuClicked}>
+                <span className="appmenu-label"><Message msgId="appmenu.menulabel" /></span>
+                <Glyphicon className="appmenu-icon" glyph="menu-hamburger"/>
+                <ul className="appmenu-menu">
                     {this.renderMenuItems(this.props.menuItems, 0)}
                 </ul>
             </div>

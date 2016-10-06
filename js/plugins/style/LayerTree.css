@@ -3,8 +3,7 @@
     left: 0;
     top: 30%;
     bottom: 30%;
-    border-radius: 0 3mm 3mm 0;
-    width: 5cm;
+    border-radius: 0 1em 1em 0;
     z-index: 2;
     background-color: rgba(255,255, 255, 0.85);
     box-shadow: 0mm 0mm 4mm rgba(136, 136, 136, 0.5);
@@ -12,21 +11,21 @@
 }
 
 #LayerTree ul {
-    padding: 0 0 0 3mm;
+    padding: 0 0 0 1em;
 }
 
 #LayerTree li {
     list-style-type: none;
-    margin: 2mm 0;
+    margin: 0.5em 0;
 }
 
 #LayerTree span.layertree-item-checkbox {
     display: inline-block;
-    width: 6mm;
-    height: 6mm;
+    width: 1.5em;
+    height: 1.5em;
     background-repeat: no-repeat;
     background-size: contain;
-    margin-right: 2mm;
+    margin-right: 0.5em;
     vertical-align: middle;
     cursor: pointer;
 }
@@ -36,21 +35,21 @@
 }
 
 #LayerTree img.layertree-item-legend-thumbnail {
-    height: 6mm;
+    height: 1.5em;
     width: auto;
-    margin-right: 2mm;
+    margin-right: 0.5em;
     border: 1px solid #cccccc;
 }
 
 #LayerTree img.layertree-item-legend-tooltip {
     position: absolute;
-    top: 6mm;
+    top: 1.5em;
     z-index: 2;
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.5s;
-    box-shadow: 0px 5px 10px rgba(136, 136, 136, 0.5);
-    border-radius: 1mm;
+    box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
+    border-radius: 0.5em;
     border: 1px solid #cccccc;
 }
 
@@ -68,7 +67,7 @@
 }
 
 #LayerTree span.layertree-item-queryable {
-    margin: 0mm 1mm;
+    margin: 0mm 0.5em;
     color: #bbbbbb;
     font-size: x-small;
     vertical-align: top;
@@ -77,12 +76,14 @@
 #LayerTree span.layertree-item-edit {
     position: relative;
     float: right;
+    margin-left: 1em;
 }
 
 #LayerTree span.layertree-item-edit > span.glyphicon {
-    border-radius: 1mm 1mm 0 0;
     cursor: pointer;
-    padding: 1mm 2mm;
+    height: 1.5em;
+    line-height: 1.5em;
+    padding: 0 0.5em;
     color: #9c9b9c;
 }
 
@@ -96,16 +97,15 @@
     position: absolute;
     left: 0;
     background-color: #f2f2f2;
-    box-shadow: 0px 5px 10px rgba(136, 136, 136, 0.5);
+    box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
     color: #595959;
     font-size: small;
     font-weight: bold;
     border: 1px solid #cccccc;
     visibility: hidden;
-    padding: 2mm;
+    padding: 0.5em;
     margin: 0;
     z-index: 2;
-    border-radius: 0 1mm 1mm 1mm;
 }
 
 #LayerTree span.layertree-item-edit-active > ul.layertree-item-edit-menu {
