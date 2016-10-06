@@ -1,5 +1,15 @@
+* { cursor:inherit }
 html, body {
     overflow: hidden;
+    cursor: default;
+}
+
+input[type=text], input[type=password], textarea {
+    cursor:text;
+}
+
+a {
+    cursor:pointer;
 }
 
 .search-result-list {

@@ -39,7 +39,7 @@ const BottomBar = React.createClass({
         return (
             <div id="bottombar">
                 <span className="mousepos_label"><Message msgId="bottombar.mousepos_label" />: </span>
-                <span className="mouseposition">{x.toFixed(digits)} {y.toFixed(digits)}</span>
+                <input type="text" className="mouseposition" value={x.toFixed(digits) + " " + y.toFixed(digits)} readOnly="readOnly"/>
                 <CRSSelector useRawInput={true} enabled={true} crs={this.props.displaycrs} id="crssselector" onCRSChange={this.props.onCRSChange}/>
                 <span className="scale_label"><Message msgId="bottombar.scale_label" />: </span>
                 <ScaleBox useRawInput={true} id="scaleselector" currentZoomLvl={this.props.mapscale} onChange={this.props.onScaleChange} />
