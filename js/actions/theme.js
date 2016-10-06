@@ -21,12 +21,11 @@ function setStartupTheme(themeid, activelayers) {
     }
 }
 
-function setCurrentTheme(theme) {
-    UrlParams.updateParams({t: theme.id});
-    UrlParams.updateParams({l: theme.activelayers.join(",")});
+function setCurrentTheme(themeid) {
+    UrlParams.updateParams({t: themeid});
     return {
         type: SET_CURRENT_THEME,
-        theme: theme
+        theme: themeid
     };
 }
 

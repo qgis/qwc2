@@ -3,11 +3,12 @@
     left: 0;
     top: 30%;
     bottom: 30%;
-    border-radius: 0 1em 1em 0;
+    border-radius: 0 0.5em 0.5em 0;
     z-index: 2;
     background-color: rgba(255,255, 255, 0.85);
     box-shadow: 0mm 0mm 4mm rgba(136, 136, 136, 0.5);
     border: 1px solid rgba(136, 136, 136, 0.5);
+    width: 25ch;
 }
 
 #LayerTree ul {

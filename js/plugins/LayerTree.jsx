@@ -11,118 +11,150 @@ const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
 const assign = require('object-assign');
 import classnames from 'classnames';
-const {setCurrentTheme} = require('../actions/theme');
+const Message = require('../../MapStore2/web/client/components/I18N/Message');
+const {changeLayerProperties} = require('../../MapStore2/web/client/actions/layers')
+const UrlParams = require("../utils/UrlParams");
 require('./style/LayerTree.css');
 
 
 const LayerTree = React.createClass({
     propTypes: {
-        theme: React.PropTypes.shape({
-            id: React.PropTypes.string,
-            name: React.PropTypes.string,
-            keywords: React.PropTypes.string,
-            layers: React.PropTypes.array,
-            activelayers: React.PropTypes.array,
-            thumbnail: React.PropTypes.string,
-            url: React.PropTypes.string,
-        }),
+        layers: React.PropTypes.array,
         visible: React.PropTypes.bool,
-        updateTheme: React.PropTypes.func
+        changeLayerProperties: React.PropTypes.func
     },
     getDefaultProps() {
         return {
+            layers: [],
             visible: false,
         };
     },
     getInitialState: function() {
         return {activemenu: null};
     },
-    getLegendGraphicURL(theme, layer) {
-        return theme.url + "?SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=1.3.0&FORMAT=image/png&LAYER=" + layer;
-    },
-    render() {
-        var layerTreeContents = null;
-        var theme = this.props.theme;
-        if(theme) {
-            layerTreeContents = (
-                <ul>
-                    <li>{theme.name}</li>
-                    <ul>
-                        {theme.layers.map((layer) => {
-                            let liclasses = classnames({
-                                "layertree-item": true,
-                                "layertree-item-queryable": layer.queryable
-                            });
-                            let checkclasses = classnames({
-                                "layertree-item-checkbox": true,
-                                "layertree-item-checkbox-unchecked": !theme.activelayers.includes(layer.name),
-                                "layertree-item-checkbox-checked": theme.activelayers.includes(layer.name),
-                            });
-                            let editclasses = classnames({
-                                "layertree-item-edit": true,
-                                "layertree-item-edit-active": this.state.activemenu === layer.name
-                            })
-                            return (
-                                <li className="layertree-item" key={layer.name}>
-                                    <span className={checkclasses} onClick={() => this.layerToggled(layer.name)}></span>
-                                    <span className="layertree-item-legend">
-                                        <img className="layertree-item-legend-tooltip" src={this.getLegendGraphicURL(theme, layer.name)} />
-                                        <img className="layertree-item-legend-thumbnail" src={this.getLegendGraphicURL(theme, layer.name)} />
-                                    </span>
-                                    <span>{layer.name}</span>
-                                    {layer.queryable ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
-                                    <span className={editclasses}>
-                                        <Glyphicon glyph="cog" onClick={() => this.layerMenuToggled(layer.name)}/>
-                                        <ul className="layertree-item-edit-menu">
-                                            <li>
-                                                <span>Transparency</span>
-                                                <input type="range" min="0" max="100" step="1" value={theme.transparencies && theme.transparencies[layer.name] != undefined ? theme.transparencies[layer.name] : 0} onChange={(ev) => this.layerTransparencyChanged(layer.name, ev.target.value)} />
-                                            </li>
-                                        </ul>
-                                    </span>
-                                </li>
-                            )
-                        })}
-                    </ul>
-                </ul>
-            )
+    getLegendGraphicURL(layer, sublayer) {
+        if(layer.type !== "wms") {
+            return "";
         }
+        return layer.url + "?SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=1.3.0&FORMAT=image/png&LAYER=" + sublayer;
+    },
+    renderSubLayers(layer) {
+        let sublayers = layer.sublayers || [];
+        let opacities = layer.opacities || [];
+        while(opacities.length < sublayers.length) {
+            opacities.push(255);
+        }
+        let activesublayers = layer.params && layer.params.LAYERS ? layer.params.LAYERS : [];
         return (
-            <div id="LayerTree">{layerTreeContents}</div>
+            sublayers.map((sublayer, idx) => {
+                let checkclasses = classnames({
+                    "layertree-item-checkbox": true,
+                    "layertree-item-checkbox-unchecked": !activesublayers.includes(sublayer),
+                    "layertree-item-checkbox-checked": activesublayers.includes(sublayer),
+                });
+                let editclasses = classnames({
+                    "layertree-item-edit": true,
+                    "layertree-item-edit-active": this.state.activemenu === layer.id + "/" + sublayer
+                })
+                return (
+                    <li className="layertree-item" key={sublayer}>
+                        <span className={checkclasses} onClick={() => this.sublayerToggled(layer, sublayer)}></span>
+                        <span className="layertree-item-legend">
+                            <img className="layertree-item-legend-tooltip" src={this.getLegendGraphicURL(layer, sublayer)} />
+                            <img className="layertree-item-legend-thumbnail" src={this.getLegendGraphicURL(layer, sublayer)} />
+                        </span>
+                        <span>{sublayer}</span>
+                        {layer.queryable.includes(sublayer) ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
+                        <span className={editclasses}>
+                            <Glyphicon glyph="cog" onClick={() => this.sublayerMenuToggled(layer.id + "/" + sublayer)}/>
+                            <ul className="layertree-item-edit-menu">
+                                <li>
+                                    <span><Message msgId="layertree.transparency" /></span>
+                                    <input type="range" min="0" max="255" step="1" defaultValue={255-opacities[idx]} onMouseUp={(ev) => this.sublayerTransparencyChanged(layer, sublayer, ev.target.value)} />
+                                </li>
+                            </ul>
+                        </span>
+                    </li>
+                )
+            })
         );
     },
-    layerToggled(name) {
-        var activelayers;
-        var theme = this.props.theme;
-        if(theme.activelayers.includes(name)) {
-            let idx = theme.activelayers.indexOf(name);
-            activelayers = [...theme.activelayers.slice(0, idx),
-                            ...theme.activelayers.slice(idx+1)]
-        } else {
-            activelayers = [...theme.activelayers, name];
+    renderLayerTree(layer) {
+        if(layer.group === 'background') {
+            return null;
         }
-        this.props.updateTheme(assign({}, theme, {activelayers: activelayers}));
+        let checkclasses = classnames({
+            "layertree-item-checkbox": true,
+            "layertree-item-checkbox-unchecked": !layer.visibility,
+            "layertree-item-checkbox-checked": layer.visibility,
+        });
+        return (
+            <ul key={layer.name}>
+                <li><span className={checkclasses} onClick={() => this.layerToggled(layer)}></span> {layer.title}
+                    <ul>{layer.visibility ? this.renderSubLayers(layer) : null}</ul>
+                </li>
+            </ul>
+        )
     },
-    layerMenuToggled(name) {
+    render() {
+        return (
+            <div id="LayerTree">{this.props.layers.map(this.renderLayerTree)}</div>
+        );
+    },
+    layerToggled(layer) {
+        let newlayerprops = assign({}, layer, {visibility: !layer.visibility});
+        this.props.changeLayerProperties(layer.id, newlayerprops);
+    },
+    buildLayerParams(layer, visiblelayers) {
+        let newparams = assign({}, layer.params, {LAYERS: [], OPACITIES: []});
+        let layers = [];
+        let opacities = [];
+        for(let i = 0, n = layer.sublayers.length; i < n; ++i) {
+            if(visiblelayers.includes(layer.sublayers[i])) {
+                layers.push(layer.sublayers[i]);
+                opacities.push(layer.opacities[i].toString());
+            }
+        }
+        newparams.LAYERS = layers.join(",");
+        newparams.OPACITIES = opacities.join(",");
+        return newparams;
+    },
+    sublayerToggled(layer, sublayer) {
+        let visiblelayers = layer.params && layer.params.LAYERS ? layer.params.LAYERS.split(",") : [];
+        if(visiblelayers.includes(sublayer)) {
+            visiblelayers.splice(visiblelayers.indexOf(sublayer), 1);
+        } else {
+            visiblelayers.push(sublayer);
+        }
+        UrlParams.updateParams({l: visiblelayers.join(",")});
+
+        let newlayerprops = assign({}, layer, {params: this.buildLayerParams(layer, visiblelayers)});
+        this.props.changeLayerProperties(layer.id, newlayerprops);
+    },
+    sublayerMenuToggled(name) {
         this.setState({activemenu: this.state.activemenu === name ? null : name});
     },
-    layerTransparencyChanged(layer, value) {
-        var diff = {};
-        diff[layer] = value;
-        var transparencies = assign({}, this.props.theme.transparencies, diff);
-        this.props.updateTheme(assign({}, this.props.theme, {transparencies: transparencies}));
+    sublayerTransparencyChanged(layer, sublayer, value) {
+        let newlayerprops = assign({}, layer);
+        let idx = newlayerprops.sublayers.indexOf(sublayer);
+        if(idx != -1) {
+            newlayerprops.opacities = [...layer.opacities.slice(0, idx), 255-value, ...layer.opacities.slice(idx+1)];
+        }
+        let sublayers = layer.params && layer.params.LAYERS ? layer.params.LAYERS : [];
+        newlayerprops.params = this.buildLayerParams(layer, sublayers);
+        this.props.changeLayerProperties(layer.id, newlayerprops);
     }
 });
 
 const selector = (state) => ({
-    theme: state.theme ? state.theme.current : null,
+    layers: state.layers && state.layers.flat ? state.layers.flat : [],
 });
 
 module.exports = {
     LayerTreePlugin: connect(selector, {
-        updateTheme: setCurrentTheme
+        changeLayerProperties: changeLayerProperties
     })(LayerTree),
     reducers: {
-        theme: require('../reducers/theme')
+        layers: require('../../MapStore2/web/client/reducers/layers')
     }
 };

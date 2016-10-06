@@ -682,6 +682,9 @@
         "themeswitcher": {
             "title": "Themes",
             "filter": "Filter..."
+        },
+        "layertree": {
+            "transparency" : "Transparency"
         }
     }
 }

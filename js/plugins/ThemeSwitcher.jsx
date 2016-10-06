@@ -14,6 +14,7 @@ const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2/web/client/utils/LocaleUtils");
 const {setCurrentTheme,setThemeSwitcherFilter,setThemeSwitcherVisibility} = require("../actions/theme");
+const {addLayer} = require("../../MapStore2/web/client/actions/layers");
 require('./style/ThemeSwitcher.css');
 
 const ThemeSwitcher = React.createClass({
@@ -26,7 +27,8 @@ const ThemeSwitcher = React.createClass({
         activeTheme: React.PropTypes.string,
         changeTheme: React.PropTypes.func,
         changeFilter: React.PropTypes.func,
-        changeVisibility: React.PropTypes.func
+        changeVisibility: React.PropTypes.func,
+        addLayer: React.PropTypes.func
     },
     contextTypes: {
         messages: React.PropTypes.object
@@ -47,7 +49,8 @@ const ThemeSwitcher = React.createClass({
         if(this.props.startuptheme) {
             let theme = this.getThemeById(object.themes, this.props.startuptheme.id);
             if(theme) {
-                this.props.changeTheme(assign({}, theme, {activelayers: this.props.startuptheme.activelayers}));
+                this.props.changeTheme(theme.id);
+                this.props.addLayer(this.createLayerForTheme(theme, this.props.startuptheme.activelayers));
             }
         }
     },
@@ -112,8 +115,35 @@ const ThemeSwitcher = React.createClass({
             </div>
         );
     },
+    createLayerForTheme(theme, visiblelayers=undefined) {
+        var sublayers = [];
+        if(visiblelayers !== undefined) {
+            sublayers = theme.layers.filter(name => visiblelayers.includes(name));
+        } else {
+            sublayers = theme.layers.splice(0);
+        }
+        return {
+            type: "wms",
+            url: theme.url,
+            visibility: true,
+            name: theme.name,
+            title: theme.name,
+            boundingBox: {
+                extent: theme.extent,
+                crs: theme.crs
+            },
+            sublayers: (theme.layers || []).splice(0),
+            opacities: Array.apply(null, Array(theme.layers.length)).map(() => 255),
+            queryable: (theme.queryable || []).splice(0),
+            params: {
+                LAYERS: sublayers.join(","),
+                OPACITIES: Array.apply(null, Array(sublayers.length)).map(() => "255").join(",")
+            }
+        }
+    },
     themeClicked(theme) {
-        this.props.changeTheme(assign({}, theme, {activelayers: theme.layers}));
+        this.props.changeTheme(theme.id);
+        this.props.addLayer(this.createLayerForTheme(theme));
     },
     filterChanged(ev) {
         this.props.changeFilter(ev.target.value);
@@ -125,7 +155,7 @@ const ThemeSwitcher = React.createClass({
 
 const selector = (state) => ({
     paneVisible: state.theme && state.theme.switchervisible,
-    activeTheme: state.theme && state.theme.current ? state.theme.current.id : "",
+    activeTheme: state.theme ? state.theme.current : "",
     filter: state.theme ? state.theme.switcherfilter : "",
     startuptheme: state.theme ? state.theme.startuptheme : null
 });
@@ -135,9 +165,11 @@ module.exports = {
     ThemeSwitcherPlugin: connect(selector, {
         changeTheme: setCurrentTheme,
         changeFilter: setThemeSwitcherFilter,
-        changeVisibility: setThemeSwitcherVisibility
+        changeVisibility: setThemeSwitcherVisibility,
+        addLayer: addLayer
     })(ThemeSwitcher),
     reducers: {
-        theme: require('../reducers/theme')
+        theme: require('../reducers/theme'),
+        layers: require('../../MapStore2/web/client/reducers/layers')
     }
 };

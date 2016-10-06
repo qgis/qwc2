@@ -29,6 +29,7 @@ function loadMapConfig(configName, mapId) {
             dispatch(setStartupTheme(params.t, params.l ? params.l.split(",") : []));
         }
 
+        console.log(configName);
         axios.get(configName).then((response) => {
             if (typeof response.data === 'object') {
             // Tweak active layer based on url bl param
