@@ -21,7 +21,8 @@ function themeSwitcher(state = {switchervisible: false, switcherfilter: "", curr
             });
         case SET_CURRENT_THEME:
             return assign({}, state, {
-                current: action.theme
+                current: action.theme,
+                currentlayer: action.layer
             });
         case SET_THEME_SWITCHER_FILTER:
             return assign({}, state, {
