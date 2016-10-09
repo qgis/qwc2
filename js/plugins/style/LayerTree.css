@@ -1,14 +1,48 @@
 #LayerTree {
     position: absolute;
-    left: 0;
+    left: -25ch;
     top: 30%;
     bottom: 30%;
-    border-radius: 0 0.5em 0.5em 0;
     z-index: 2;
     background-color: rgba(255,255, 255, 0.85);
     box-shadow: 0mm 0mm 4mm rgba(136, 136, 136, 0.5);
-    border: 1px solid rgba(136, 136, 136, 0.5);
+    border: 1px solid #595959;
     width: 25ch;
+    transition: left 0.25s;
+}
+
+#LayerTree.expanded {
+    left: 0;
+}
+
+#LayerTree div.layertree-expander {
+    position: absolute;
+    left: 100%;
+    top: 0;
+    bottom: 0;
+    z-index: 2;
+    background-color: #595959;
+    color: white;
+    border-radius: 0 0.5em 0.5em 0;
+    border: 1px solid #595959;
+}
+
+#LayerTree div.layertree-expander > div {
+    display: table;
+    height: 100%;
+    cursor: pointer;
+}
+
+#LayerTree div.layertree-expander > div > span.glyphicon {
+    display: table-cell;
+    vertical-align: middle;
+    margin: 0 0.5em;
+}
+
+#LayerTree div.layertree-container {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 #LayerTree ul {

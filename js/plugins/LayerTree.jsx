@@ -13,6 +13,7 @@ const assign = require('object-assign');
 import classnames from 'classnames';
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {changeLayerProperties} = require('../../MapStore2/web/client/actions/layers')
+const {toggleLayertree} = require('../actions/layertree');
 const UrlParams = require("../utils/UrlParams");
 require('./style/LayerTree.css');
 
@@ -20,8 +21,9 @@ require('./style/LayerTree.css');
 const LayerTree = React.createClass({
     propTypes: {
         layers: React.PropTypes.array,
-        visible: React.PropTypes.bool,
-        changeLayerProperties: React.PropTypes.func
+        expanded: React.PropTypes.bool,
+        changeLayerProperties: React.PropTypes.func,
+        toggleLayertree: React.PropTypes.func
     },
     getDefaultProps() {
         return {
@@ -97,9 +99,17 @@ const LayerTree = React.createClass({
         )
     },
     render() {
+        let expanderIcon = this.props.expanded ? 'triangle-left' : 'triangle-right';
+        let expandedClass = this.props.expanded ? 'expanded' : 'collapsed';
         return (
-            <div id="LayerTree">{this.props.layers.map(this.renderLayerTree)}</div>
+            <div id="LayerTree" className={expandedClass}>
+                <div className="layertree-container">{this.props.layers.map(this.renderLayerTree)}</div>
+                <div className="layertree-expander"><div><Glyphicon glyph={expanderIcon} onClick={this.layerTreeVisibilityToggled}/></div></div>
+            </div>
         );
+    },
+    layerTreeVisibilityToggled() {
+        this.props.toggleLayertree(!this.props.expanded);
     },
     layerToggled(layer) {
         let newlayerprops = assign({}, layer, {visibility: !layer.visibility});
@@ -148,13 +158,16 @@ const LayerTree = React.createClass({
 
 const selector = (state) => ({
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
+    expanded: state.layertree ? state.layertree.expanded : true
 });
 
 module.exports = {
     LayerTreePlugin: connect(selector, {
-        changeLayerProperties: changeLayerProperties
+        changeLayerProperties: changeLayerProperties,
+        toggleLayertree: toggleLayertree
     })(LayerTree),
     reducers: {
-        layers: require('../../MapStore2/web/client/reducers/layers')
+        layers: require('../../MapStore2/web/client/reducers/layers'),
+        layertree: require('../reducers/layertree')
     }
 };
