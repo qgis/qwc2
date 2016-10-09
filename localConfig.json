@@ -17,16 +17,16 @@
           }
         },
         {
+          "name": "LocateButton"
+        },
+        {
           "name": "ZoomIn"
         },
         {
           "name": "ZoomOut"
         },
         {
-          "name": "BackgroundLayerButton"
-        },
-        {
-          "name": "LocateButton"
+          "name": "BackgroundSwitcherButton"
         },
         {
           "name": "BackgroundSwitcherMenu"

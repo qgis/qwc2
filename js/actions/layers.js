@@ -16,7 +16,7 @@ function changeLayerProperties(layer, properties) {
         try {
           // Find name for layerid
           var layerObj = getState().layers.flat.find((obj) => {return obj.id === layer});
-          if(layerObj) {
+          if(layerObj && layerObj.group === 'background') {
             UrlParams.updateParams({bl: layerObj.name});
           }
         } catch(e) {}

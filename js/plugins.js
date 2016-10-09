@@ -9,10 +9,10 @@
 module.exports = {
     plugins: {
         MapPlugin: require('./plugins/Map'),
+        LocateButtonPlugin: require('./plugins/LocateButton'),
         ZoomInPlugin: require('./plugins/ZoomButtons'),
         ZoomOutPlugin: require('./plugins/ZoomButtons'),
-        BackgroundLayerButtonPlugin: require('./plugins/BackgroundLayerButton'),
-        LocateButtonPlugin: require('./plugins/LocateButton'),
+        BackgroundSwitcherButtonPlugin: require('./plugins/BackgroundSwitcherButton'),
         BackgroundSwitcherMenuPlugin: require('./plugins/BackgroundSwitcherMenu'),
         SearchResultListPlugin: require('./plugins/SearchResultList'),
         TopBarPlugin: require('./plugins/TopBar'),

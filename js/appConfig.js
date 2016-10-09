@@ -21,11 +21,6 @@ module.exports = {
         defaultState: {
             mousePosition: {
                 enabled: true
-            },
-            controls: {
-                BackgroundLayerButton: {
-                    enabled: false
-                }
             }
         },
         mobile: {}
