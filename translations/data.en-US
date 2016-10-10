@@ -206,7 +206,16 @@
             "bearingLabel": "Bearing"
         },
         "search":{
-            "placeholder": "Search by location name or coordinates ..."
+            "placeholder": "Search by location name or coordinates ...",
+            "geoadmin": {
+                "gg25": "Municipalities",
+                "kantone": "Cantons",
+                "district": "Districts",
+                "sn25": "Places",
+                "zipcode": "Zip Codes",
+                "address": "Address",
+                "gazetteer": "General place name directory"
+            }
         },
         "drawLocal": {
             "draw": {

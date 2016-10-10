@@ -18,11 +18,6 @@ function loadMapConfig(configName, mapId) {
 
         var params = UrlParams.getParams();
 
-        // Set search text based on url s param
-        if(params.s) {
-            dispatch(searchTextChanged(params.s));
-        }
-
         axios.get(configName).then((response) => {
             if (typeof response.data === 'object') {
                 // Tweak active layer based on url bl param
@@ -52,6 +47,11 @@ function loadMapConfig(configName, mapId) {
                     } catch(e) {}
                 }
                 dispatch(configureMap(response.data, mapId));
+
+                // Set search text based on url s param
+                if(params.s) {
+                    dispatch(searchTextChanged(params.s));
+                }
             } else {
                 try {
                   JSON.parse(response.data);

@@ -10,14 +10,13 @@ const React = require('react');
 const {connect} = require('react-redux');
 const {AppMenu} = require("../components/AppMenu");
 const {FullscreenSwitcher} = require("../components/FullscreenSwitcher");
-const {SearchBar} = require("../components/SearchBar");
+const {Search} = require("../components/Search");
 const {resultsPurge, resetSearch, searchTextChanged} = require("../../MapStore2/web/client/actions/search");
 const {qwc2TextSearch} = require("../actions/search");
 require('./style/TopBar.css');
 
 const TopBar = React.createClass({
     propTypes: {
-        searchText: React.PropTypes.string,
         menuItems: React.PropTypes.array
     },
     getDefaultProps() {
@@ -28,7 +27,7 @@ const TopBar = React.createClass({
         return (
             <div id="topbar">
                 <img className="logo" src="assets/img/logo.svg" />
-                <SearchBar searchText={this.props.searchText} />
+                <Search />
                 <AppMenu menuItems={this.props.menuItems} />
                 <FullscreenSwitcher />
             </div>

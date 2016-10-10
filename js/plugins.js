@@ -14,7 +14,6 @@ module.exports = {
         ZoomOutPlugin: require('./plugins/ZoomButtons'),
         BackgroundSwitcherButtonPlugin: require('./plugins/BackgroundSwitcherButton'),
         BackgroundSwitcherMenuPlugin: require('./plugins/BackgroundSwitcherMenu'),
-        SearchResultListPlugin: require('./plugins/SearchResultList'),
         TopBarPlugin: require('./plugins/TopBar'),
         BottomBarPlugin: require('./plugins/BottomBar'),
         MeasurePlugin: require('./plugins/Measure'),
