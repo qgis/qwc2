@@ -15,11 +15,11 @@ const ZoomButton = require('../../MapStore2/web/client/components/buttons/ZoomBu
 require('./style/Buttons.css');
 
 const zoomInSelector = createSelector([mapSelector], (map) => (
-    {currentZoom: map && map.zoom, id: "zoomin-btn", step: 1, glyphicon: "plus"}
+    {currentZoom: map && map.zoom, id: "ZoomInBtn", step: 1, glyphicon: "plus"}
 ));
 
 const zoomOutSelector = createSelector([mapSelector], (map) => (
-    {currentZoom: map && map.zoom, id: "zoomout-btn", step: -1, glyphicon: "minus"}
+    {currentZoom: map && map.zoom, id: "ZoomOutBtn", step: -1, glyphicon: "minus"}
 ));
 
 module.exports = {

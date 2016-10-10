@@ -1,4 +1,4 @@
-#bottombar {
+#BottomBar {
     position: absolute;
     left: 0;
     right: 0;
@@ -11,22 +11,22 @@
     line-height: 3em;
 }
 
-#bottombar select {
+#BottomBar select {
     border: 1px solid #888888;
     border-radius: 0.35em;
     background-color: #f2f2f2;
     height: 2em;
 }
 
-#bottombar select#crssselector {
+#BottomBar select#crssselector {
     border-radius: 0 0.35em 0.35em 0!important;
 }
 
-#bottombar .mousepos_label {
+#BottomBar .mousepos_label {
     margin-left: 200px;
 }
 
-#bottombar input.mouseposition {
+#BottomBar input.mouseposition {
     width: 20ch;
     text-align: center;
     border-style: solid;
@@ -37,19 +37,19 @@
     height: 2em;
 }
 
-#bottombar span.mouseposition > span {
+#BottomBar span.mouseposition > span {
     line-height: 2em;
 }
 
-#bottombar .scale_label {
+#BottomBar .scale_label {
     margin-left: 1em;
 }
 
-#bottombar #scaleselector {
+#BottomBar #scaleselector {
     display: inline-block;
 }
 
-#bottombar span.bottomlinks {
+#BottomBar span.bottomlinks {
     float: right;
     margin-right: 1em;
     line-height: 3em;

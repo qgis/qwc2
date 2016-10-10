@@ -84,7 +84,7 @@ const FullscreenSwitcher = React.createClass({
     },
     render() {
         return (
-            <span id="fullscreenswitcher" onClick={this.toggleFullscreen}>
+            <span id="FullScreenSwitcher" onClick={this.toggleFullscreen}>
                 <span className={this.props.fullscreen ? "minimize" : "maximize"}></span>
             </span>
         );

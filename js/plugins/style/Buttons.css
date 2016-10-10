@@ -1,4 +1,4 @@
-#zoomin-btn, #zoomout-btn, #BackgroundSwitcherButton, #locate-btn {
+#ZoomInBtn, #ZoomOutBtn, #BackgroundSwitcherButton, #LocateBtn {
     z-index: 1;
     position: absolute !important;
     right: 1.5em;
@@ -11,15 +11,15 @@
     box-shadow: 0px 5px 10px rgba(136, 136, 136, 0.5);
 }
 
-#locate-btn {
+#LocateBtn {
     bottom: 17em;
 }
 
-#zoomin-btn {
+#ZoomInBtn {
     bottom: 13em;
 }
 
-#zoomout-btn {
+#ZoomOutBtn {
     bottom: 9em;
 }
 

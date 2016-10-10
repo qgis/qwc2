@@ -37,7 +37,7 @@ const BottomBar = React.createClass({
         let {x, y} = CoordinatesUtils.reproject([this.props.mousepos.x, this.props.mousepos.y], this.props.mousepos.crs, this.props.displaycrs);
         let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 3 : 0;
         return (
-            <div id="bottombar">
+            <div id="BottomBar">
                 <span className="mousepos_label"><Message msgId="bottombar.mousepos_label" />: </span>
                 <input type="text" className="mouseposition" value={x.toFixed(digits) + " " + y.toFixed(digits)} readOnly="readOnly"/>
                 <CRSSelector useRawInput={true} enabled={true} crs={this.props.displaycrs} id="crssselector" onCRSChange={this.props.onCRSChange}/>

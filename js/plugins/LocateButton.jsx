@@ -12,7 +12,7 @@ require('./style/Buttons.css');
 
 const locateSelector = (state) => ({
     locate: state.locate && state.locate.state || 'DISABLED',
-    id: "locate-btn"
+    id: "LocateBtn"
 });
 
 module.exports = {

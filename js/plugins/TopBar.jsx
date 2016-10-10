@@ -25,7 +25,7 @@ const TopBar = React.createClass({
     },
     render() {
         return (
-            <div id="topbar">
+            <div id="TopBar">
                 <img className="logo" src="assets/img/logo.svg" />
                 <Search />
                 <AppMenu menuItems={this.props.menuItems} />

@@ -123,7 +123,7 @@ require('./style/Measure.css');
              return null;
          }
          return (
-             <Dialog id="measuredialog" headerClassName="" bodyClassName="">
+             <Dialog id="MeasureDialog" headerClassName="" bodyClassName="">
                  {this.renderHeader()}
                  {this.renderBody()}
              </Dialog>
