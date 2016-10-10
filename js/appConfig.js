@@ -20,7 +20,8 @@ module.exports = {
     initialState: {
         defaultState: {
             mousePosition: {
-                enabled: true
+                enabled: true,
+                crs: "EPSG:4326"
             }
         },
         mobile: {}

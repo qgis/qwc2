@@ -14,7 +14,7 @@ const {resultsPurge, resetSearch, searchTextChanged, addMarker} = require("../..
 const {changeMapView} = require('../../MapStore2/web/client/actions/map');
 const mapUtils = require('../../MapStore2/web/client/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
-const {geoAdminLocationSearch} = require("../actions/search");
+const {startSearch} = require("../actions/search");
 require('./style/Search.css');
 
 const Search = React.createClass({
@@ -22,6 +22,7 @@ const Search = React.createClass({
         searchText: React.PropTypes.string,
         results: React.PropTypes.array,
         mapConfig: React.PropTypes.object,
+        displaycrs: React.PropTypes.string,
         onSearch: React.PropTypes.func,
         onPurgeResults: React.PropTypes.func,
         onSearchReset: React.PropTypes.func,
@@ -44,7 +45,9 @@ const Search = React.createClass({
                     onSearch={this.props.onSearch}
                     onPurgeResults={this.props.onPurgeResults}
                     onSearchReset={this.props.onSearchReset}
-                    onSearchTextChange={this.props.onSearchTextChange} />
+                    onSearchTextChange={this.props.onSearchTextChange}
+                    delay={500}
+                    displaycrs={this.props.displaycrs} />
                 <ul className="search-results">
                     {(this.props.results || []).map(category => this.renderCategory(category))}
                 </ul>
@@ -91,12 +94,13 @@ const Search = React.createClass({
 const selector = (state) => ({
     searchText: state.search ? state.search.searchText : "",
     results: state.search ? state.search.results : [],
-    mapConfig: state.map ? state.map.present : undefined
+    mapConfig: state.map ? state.map.present : undefined,
+    displaycrs: state.mousePosition ? state.mousePosition.crs : "EPSG:4326"
 });
 
 module.exports = {
     Search: connect(selector, {
-        onSearch: geoAdminLocationSearch,
+        onSearch: startSearch,
         onPurgeResults: resultsPurge,
         onSearchReset: resetSearch,
         onSearchTextChange: searchTextChanged,

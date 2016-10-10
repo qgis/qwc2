@@ -207,6 +207,7 @@
         },
         "search":{
             "placeholder": "Search by location name or coordinates ...",
+            "coordinates": "Coordinates",
             "geoadmin": {
                 "gg25": "Municipalities",
                 "kantone": "Cantons",
