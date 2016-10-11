@@ -184,6 +184,12 @@
         },
         "noFeatureInfo": "There is no information available for the point you clicked",
         "noInfoForLayers": "There are no features for the following layers: ",
+        "identify": {
+            "layer": "Layer",
+            "theme": "Theme",
+            "feature": "Feature",
+            "querying": "Querying..."
+        },
         "history":{
             "barLabel": "Map history",
             "undoBtnTooltip": "Go back",

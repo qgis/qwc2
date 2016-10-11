@@ -1,5 +1,5 @@
 {
-  "proxyUrl": "/mapstore/proxy/?url=",
+  "proxyUrl": "http://localhost:5000/proxy?url=",
   "geoStoreUrl": "/mapstore/rest/geostore",
   "printUrl": "http://demo.geo-solutions.it/geoserver/pdf/info.json",
   "searchUrl": "http://localhost:5000/search?query=",
@@ -56,6 +56,9 @@
         },
         {
           "name": "LayerTree"
+        },
+        {
+          "name": "Identify"
         }
       ]
   }
