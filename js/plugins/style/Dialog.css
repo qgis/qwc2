@@ -1,5 +1,7 @@
 div.modal-dialog {
     z-index: 4!important;
+    border-radius: 0.5em;
+    border-width: 0!important;
 }
 
 div.dialogheader {
@@ -7,6 +9,7 @@ div.dialogheader {
     color: white;
     padding: 0.5em;
     cursor: default;
+    border-radius: 0.5em 0.5em 0 0;
 }
 
 div.dialogheader > span.dialogtitle {

@@ -130,7 +130,7 @@
 
 #LayerTree ul.layertree-item-edit-menu {
     position: absolute;
-    left: 0;
+    right: 0;
     background-color: #f2f2f2;
     box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
     color: #595959;
