@@ -1,0 +1,72 @@
+#IdentifyViewer {
+    padding: 0.5em;
+}
+
+#IdentifyViewer ul {
+    list-style-type: none;
+    padding: 0.25em 0 0.25em 1em;
+    font-size: small;
+}
+
+#IdentifyViewer li.clickable {
+    cursor: pointer;
+}
+
+#IdentifyViewer li.active {
+    font-weight: bold;
+    color: #595959;
+}
+
+#IdentifyViewer li.expandable {
+    position: relative;
+}
+
+#IdentifyViewer li.expandable > span {
+    cursor: pointer;
+}
+
+#IdentifyViewer li.expandable > ul {
+    display: none;
+}
+
+#IdentifyViewer li.expandable.expanded > ul {
+    display: block;
+}
+
+#IdentifyViewer li.expandable:before {
+    content: "";
+    border-color: transparent #111;
+    border-width: 0.35em 0 0.35em 0.45em;
+    border-style: solid;
+    display: block;
+    height: 0;
+    width: 0;
+    left: -1em;
+    top: 0.3em;
+    position: absolute;
+}
+
+#IdentifyViewer li.expandable.expanded:before {
+    border-color: #111 transparent;
+    border-width: 0.45em 0.35em 0 0.35em;
+    top: 0.4em;
+}
+
+#IdentifyViewer ul.attribute-list {
+    border: 1px solid #9c9b9c;
+    background-color: #f2f2f2;
+    border-radius: 0.25em;
+}
+#IdentifyViewer span.identify-attr-title {
+    width: 15ch;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#IdentifyViewer span.identify-attr-value {
+    display: inline-block;
+    vertical-align: middle;
+}
