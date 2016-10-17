@@ -42,7 +42,8 @@ require('./style/Measure.css');
          var diff = {
              lineMeasureEnabled: false,
              areaMeasureEnabled: false,
-             bearingMeasureEnabled: false
+             bearingMeasureEnabled: false,
+             geomType: ''
          }
         this.props.updateMeasureState(assign({}, this.props.measureState, diff));
      },

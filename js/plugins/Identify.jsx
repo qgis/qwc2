@@ -39,7 +39,7 @@ const Identify = React.createClass({
     },
     getDefaultProps() {
         return {
-            enabled: true,
+            enabled: false,
             format: 'application/vnd.ogc.gml',
             panelClassName: "identify-dialog",
             headerClassName: "identify-dialog-header",
@@ -54,6 +54,7 @@ const Identify = React.createClass({
 
 const selector = (state) => ({
     //enabled: state.mapInfo && state.mapInfo.enabled,
+    enabled: !state.measurement || (!state.measurement.lineMeasureEnabled && !state.measurement.areaMeasureEnabled && !state.measurement.bearingMeasureEnabled),
     responses: state.mapInfo && state.mapInfo.responses || [],
     requests: state.mapInfo && state.mapInfo.requests || [],
     format: state.mapInfo && state.mapInfo.infoFormat,

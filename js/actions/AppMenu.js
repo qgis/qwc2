@@ -29,7 +29,8 @@ function triggerAppMenuitem(key) {
     if(key === 'measure') {
         return {
             type: CHANGE_MEASUREMENT_STATE,
-            lineMeasureEnabled: true
+            lineMeasureEnabled: true,
+            geomType: 'LineString'
         };
     } else if(key === 'themes') {
         return {
