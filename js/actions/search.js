@@ -27,12 +27,13 @@ function coordinatesSearch(text, displaycrs, dispatch) {
         let y = parseFloat(matches[2]);
         let items = [];
         if(displaycrs !== "EPSG:4326") {
+            let coord = CoordinatesUtils.reproject([x, y], displaycrs, "EPSG:4326");
             items.push({
                 id: "coord0",
                 text: x + ", " + y + " (" + displaycrs + ")",
-                x: x,
-                y: y,
-                crs: displaycrs,
+                x: coord.x,
+                y: coord.y,
+                crs: "EPSG:4326",
                 bbox: [x, y, x, y]
             });
         }
@@ -44,8 +45,8 @@ function coordinatesSearch(text, displaycrs, dispatch) {
                 text: title,
                 x: x,
                 y: y,
-                crs: "EPSG:4326",
-                bbox: [x, y, x, y]
+                crs: coord.crs,
+                bbox: [coord.x, coord.y, coord.x, coord.y]
             });
         }
         if(x >= -90 && x <= 90 && y >= -180 && y <= 180) {
