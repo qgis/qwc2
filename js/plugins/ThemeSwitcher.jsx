@@ -151,9 +151,9 @@ const ThemeSwitcher = React.createClass({
                 extent: theme.extent,
                 crs: theme.crs
             },
-            sublayers: (theme.layers || []).slice(0),
+            subLayers: (theme.layers || []).slice(0),
             opacities: Array.apply(null, Array(theme.layers.length)).map(() => 255),
-            queryable: (theme.queryable || []).slice(0),
+            queryLayers: (theme.queryable || []).slice(0),
             params: {
                 LAYERS: sublayers.join(","),
                 OPACITIES: Array.apply(null, Array(sublayers.length)).map(() => "255").join(",")

@@ -41,7 +41,7 @@ const LayerTree = React.createClass({
         return layer.url + "?SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=1.3.0&FORMAT=image/png&LAYER=" + sublayer;
     },
     renderSubLayers(layer) {
-        let sublayers = layer.sublayers || [];
+        let sublayers = layer.subLayers || [];
         let opacities = layer.opacities || [];
         while(opacities.length < sublayers.length) {
             opacities.push(255);
@@ -66,7 +66,7 @@ const LayerTree = React.createClass({
                             <img className="layertree-item-legend-thumbnail" src={this.getLegendGraphicURL(layer, sublayer)} />
                         </span>
                         <span>{sublayer}</span>
-                        {layer.queryable.includes(sublayer) ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
+                        {layer.queryLayers.includes(sublayer) ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
                         <span className={editclasses}>
                             <Glyphicon glyph="cog" onClick={() => this.sublayerMenuToggled(layer.id + "/" + sublayer)}/>
                             <ul className="layertree-item-edit-menu">
@@ -119,9 +119,9 @@ const LayerTree = React.createClass({
         let newparams = assign({}, layer.params, {LAYERS: [], OPACITIES: []});
         let layers = [];
         let opacities = [];
-        for(let i = 0, n = layer.sublayers.length; i < n; ++i) {
-            if(visiblelayers.includes(layer.sublayers[i])) {
-                layers.push(layer.sublayers[i]);
+        for(let i = 0, n = layer.subLayers.length; i < n; ++i) {
+            if(visiblelayers.includes(layer.subLayers[i])) {
+                layers.push(layer.subLayers[i]);
                 opacities.push(layer.opacities[i].toString());
             }
         }
@@ -146,7 +146,7 @@ const LayerTree = React.createClass({
     },
     sublayerTransparencyChanged(layer, sublayer, value) {
         let newlayerprops = assign({}, layer);
-        let idx = newlayerprops.sublayers.indexOf(sublayer);
+        let idx = newlayerprops.subLayers.indexOf(sublayer);
         if(idx != -1) {
             newlayerprops.opacities = [...layer.opacities.slice(0, idx), 255-value, ...layer.opacities.slice(idx+1)];
         }
