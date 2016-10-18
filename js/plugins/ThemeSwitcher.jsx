@@ -11,6 +11,7 @@ const assign = require('object-assign');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
+const {zoomToExtent} = require("../../MapStore2/web/client/actions/map");
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2/web/client/utils/LocaleUtils");
 const {setCurrentTheme,setThemeSwitcherFilter,setThemeSwitcherVisibility} = require("../actions/theme");
@@ -30,7 +31,8 @@ const ThemeSwitcher = React.createClass({
         changeTheme: React.PropTypes.func,
         changeFilter: React.PropTypes.func,
         changeVisibility: React.PropTypes.func,
-        addLayer: React.PropTypes.func
+        addLayer: React.PropTypes.func,
+        zoomToExtent: React.PropTypes.func
     },
     contextTypes: {
         messages: React.PropTypes.object
@@ -160,6 +162,7 @@ const ThemeSwitcher = React.createClass({
     },
     themeClicked(theme) {
         this.props.changeTheme(theme.id, this.createLayerForTheme(theme), this.props.activeThemeLayer);
+        this.props.zoomToExtent(theme.extent, theme.crs);
     },
     filterChanged(ev) {
         this.props.changeFilter(ev.target.value);
@@ -183,7 +186,8 @@ module.exports = {
     ThemeSwitcherPlugin: connect(selector, {
         changeTheme: setCurrentTheme,
         changeFilter: setThemeSwitcherFilter,
-        changeVisibility: setThemeSwitcherVisibility
+        changeVisibility: setThemeSwitcherVisibility,
+        zoomToExtent: zoomToExtent
     })(ThemeSwitcher),
     reducers: {
         theme: require('../reducers/theme'),
