@@ -138,7 +138,10 @@ const GmlIdentifyViewer = React.createClass({
             return null;
         }
         let path = response.layerMetadata.title;
-        let features = [].slice.call(doc.firstChild.getElementsByTagName("featureMember"));
+        let features = [].slice.call(doc.firstChild.getElementsByTagName("gml:featureMember"));
+        if(features.length === 0) {
+            features = [].slice.call(doc.firstChild.getElementsByTagName("featureMember"));
+        }
         let layerFeatures = {};
         features.map((featureMember) => {
             let layer = featureMember.firstElementChild.nodeName;
