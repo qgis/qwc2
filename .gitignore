@@ -1,6 +1,7 @@
 node_modules/
 node/
 dist/
+prod/
 target/
 *.sublime-*
 npm-debug.log
@@ -9,3 +10,4 @@ web/.classpath
 web/.project
 backend/.classpath
 backend/.project
+mapConfig.json
