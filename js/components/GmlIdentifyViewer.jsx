@@ -40,7 +40,6 @@ const GmlIdentifyViewer = React.createClass({
             let haveLayer = this.props.layers.find(layer => layer.id === 'identifyselection') !== undefined;
             if(!nextState.currentFeatureId && haveLayer) {
                 this.props.removeLayer('identifyselection');
-                console.log("Removing layer");
             } else if(nextState.currentFeatureId && !haveLayer) {
                 let layer = {
                     id: 'identifyselection',
@@ -48,12 +47,11 @@ const GmlIdentifyViewer = React.createClass({
                     title: 'Selection',
                     type: "vector",
                     features: this.getFeatures(nextState.currentFeature),
-                    featureFormat: "GML2",
                     featuresCrs: "EPSG:3857",
                     visibility: true,
                     zIndex: 10000
                 };
-                this.props.addLayer(layer);
+                this.props.addLayer(layer, true);
             } else if(nextState.currentFeatureId && haveLayer) {
                 let diff = {
                     visibility: true,
@@ -62,6 +60,12 @@ const GmlIdentifyViewer = React.createClass({
                 let newlayerprops = assign({}, this.props.layer, diff);
                 this.props.changeLayerProperties('identifyselection', newlayerprops);
             }
+        }
+    },
+    componentWillUnmount() {
+        let haveLayer = this.props.layers.find(layer => layer.id === 'identifyselection') !== undefined;
+        if(haveLayer) {
+            this.props.removeLayer('identifyselection');
         }
     },
     getFeatures(feature) {
