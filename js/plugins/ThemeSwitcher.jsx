@@ -49,7 +49,7 @@ const ThemeSwitcher = React.createClass({
         return {themes: null };
     },
     componentDidMount() {
-        fetch(ConfigUtils.getConfigProp("qwc2serverUrl") + "/getthemes")
+        fetch("themes.json")
         .then(function(response){ return response.json() })
         .then(function(obj){ this.populateThemesList(obj); }.bind(this));
     },

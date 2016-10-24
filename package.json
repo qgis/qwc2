@@ -135,14 +135,15 @@
     "scripts": {
         "clean": "rimraf dist",
         "compile": "npm run clean && mkdirp ./dist && webpack --config prod-webpack.config.js",
-        "start": "npm run mapconfig && webpack-dev-server --progress --colors --port 8081 --hot --inline --content-base .",
+        "start": "npm run mapconfig && npm run themesconfig && webpack-dev-server --progress --colors --port 8081 --hot --inline --content-base .",
         "test": "karma start ./karma.conf.single-run.js",
         "continuoustest": "karma start ./karma.conf.continuous-test.js",
         "mvntest": "karma start ./karma.conf.single-run.js --reporters junit,dots,coverage",
         "lint": "eslint js --ext .jsx,.js",
         "travis": "eslint js --ext .jsx,.js && karma start ./karma.conf.single-run.js --browsers Firefox --reporters dots,junit,coverage,coveralls",
         "mapconfig": "node mapConfig.js",
-        "prod": "npm run compile && npm run mapconfig && rimraf prod && mkdirp ./prod && cp -a ./dist ./index.html ./assets ./mapConfig.json ./localConfig.json ./translations ./prod"
+        "themesconfig": "node themesConfig.js",
+        "prod": "npm run compile && npm run mapconfig && npm run themesconfig && rimraf prod && mkdirp ./prod && cp -a ./dist ./index.html ./assets ./mapConfig.json ./themes.json ./localConfig.json ./translations ./prod"
     },
     "author": "GeoSolutions",
     "license": "BSD-2-Clause"

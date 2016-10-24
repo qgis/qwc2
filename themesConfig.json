@@ -1,0 +1,21 @@
+{
+  "themes": {
+    "items": [
+      {
+        "name": "QWC2 Test",
+        "url": "http://qwc2.sourcepole.ch/wms/themes/test"
+      }
+    ],
+    "groups": [
+      {
+        "name": "Group",
+        "items": [
+          {
+            "url": "http://qwc2.sourcepole.ch/wms/themes/test"
+          }
+        ],
+        "groups": []
+      }
+    ]
+  }
+}
