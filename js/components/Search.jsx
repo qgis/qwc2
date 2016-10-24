@@ -47,7 +47,7 @@ const Search = React.createClass({
                     onSearchReset={this.props.onSearchReset}
                     onSearchTextChange={this.props.onSearchTextChange}
                     delay={500}
-                    displaycrs={this.props.displaycrs} />
+                    searchOptions={{displaycrs: this.props.displaycrs}} />
                 <ul className="search-results">
                     {(this.props.results || []).map(category => this.renderCategory(category))}
                 </ul>

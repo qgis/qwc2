@@ -11,11 +11,11 @@ const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
 const UrlParams = require("../utils/UrlParams");
 
-function startSearch(text, displaycrs) {
+function startSearch(text, searchOptions) {
     UrlParams.updateParams({s: text});
     return (dispatch) => {
         dispatch(resultsPurge());
-        coordinatesSearch(text, displaycrs, dispatch);
+        coordinatesSearch(text, searchOptions.displaycrs || "EPSG:4326", dispatch);
         geoAdminLocationSearch(text, dispatch);
     }
 }
@@ -45,11 +45,11 @@ function coordinatesSearch(text, displaycrs, dispatch) {
                 text: title,
                 x: x,
                 y: y,
-                crs: coord.crs,
-                bbox: [coord.x, coord.y, coord.x, coord.y]
+                crs: "EPSG:4326",
+                bbox: [x, y, x, y]
             });
         }
-        if(x >= -90 && x <= 90 && y >= -180 && y <= 180) {
+        if(x >= -90 && x <= 90 && y >= -180 && y <= 180 && x != y) {
             let title = Math.abs(y) + (y >= 0 ? "°E" : "°W") + ", "
                       + Math.abs(x) + (x >= 0 ? "°N" : "°S");
             items.push({
