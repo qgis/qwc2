@@ -31,7 +31,6 @@ const GmlIdentifyViewer = React.createClass({
     },
     componentWillReceiveProps(nextProps) {
         if(nextProps.responses !== this.props.responses) {
-            console.log("Clearing");
             this.setState({expanded: {}, currentFeature: null, currentFeatureId: null});
         }
     },
@@ -48,8 +47,7 @@ const GmlIdentifyViewer = React.createClass({
                     type: "vector",
                     features: this.getFeatures(nextState.currentFeature),
                     featuresCrs: "EPSG:3857",
-                    visibility: true,
-                    zIndex: 10000
+                    visibility: true
                 };
                 this.props.addLayer(layer, true);
             } else if(nextState.currentFeatureId && haveLayer) {
@@ -63,10 +61,7 @@ const GmlIdentifyViewer = React.createClass({
         }
     },
     componentWillUnmount() {
-        let haveLayer = this.props.layers.find(layer => layer.id === 'identifyselection') !== undefined;
-        if(haveLayer) {
-            this.props.removeLayer('identifyselection');
-        }
+        this.props.removeLayer('identifyselection');
     },
     getFeatures(feature) {
         // The framework needs feature in GeoJSON format...
@@ -161,15 +156,12 @@ const GmlIdentifyViewer = React.createClass({
         }
 
         return (
-            <div>
-                <ul key={response.layerMetadata.title}>
-                    <li className={this.getExpandedClass(path, true)}>
-                        <span onClick={()=> this.toggleExpanded(path, true)}><Message msgId="identify.theme" /> <b>{response.layerMetadata.title}</b></span>
-                        <ul>{layersContents}</ul>
-                    </li>
-                </ul>
-                {this.renderFeatureAttributes()}
-            </div>
+            <ul key={response.layerMetadata.title}>
+                <li className={this.getExpandedClass(path, true)}>
+                    <span onClick={()=> this.toggleExpanded(path, true)}><Message msgId="identify.theme" /> <b>{response.layerMetadata.title}</b></span>
+                    <ul>{layersContents}</ul>
+                </li>
+            </ul>
         );
     },
     render() {
@@ -182,7 +174,10 @@ const GmlIdentifyViewer = React.createClass({
             }
         }
         return (
-            <div id="IdentifyViewer">{responseContents}</div>
+            <div id="IdentifyViewer">
+                {responseContents}
+                {this.renderFeatureAttributes()}
+            </div>
         );
     }
 });
