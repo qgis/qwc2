@@ -27,19 +27,45 @@ const GmlIdentifyViewer = React.createClass({
         };
     },
     getInitialState: function() {
-        return {expanded: {}, currentFeature: null, currentFeatureId: null};
+        return {expanded: {}, resultTree: {}, currentFeature: null};
+    },
+    parseResponse(response, result, stats) {
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(response.response, "text/xml");
+        if(!doc) {
+            return;
+        }
+        let path = response.layerMetadata.title;
+        let features = [].slice.call(doc.firstChild.getElementsByTagName("gml:featureMember"));
+        if(features.length === 0) {
+            features = [].slice.call(doc.firstChild.getElementsByTagName("featureMember"));
+        }
+        let layerFeatures = {};
+        features.map((featureMember) => {
+            let layer = featureMember.firstElementChild.nodeName;
+            if(layerFeatures[layer] === undefined) {
+                layerFeatures[layer] = [];
+            }
+            layerFeatures[layer].push(featureMember.firstElementChild);
+            stats.count += 1;
+            stats.lastFeature = featureMember.firstElementChild;
+        });
+        result[response.layerMetadata.title] = layerFeatures;
     },
     componentWillReceiveProps(nextProps) {
         if(nextProps.responses !== this.props.responses) {
-            this.setState({expanded: {}, currentFeature: null, currentFeatureId: null});
+            let result = {};
+            let stats = {count: 0, lastFeature: null};
+            (nextProps.responses || []).map(response => this.parseResponse(response, result, stats));
+            this.setState({expanded: {}, resultTree: result, currentFeature: stats.count === 1 ? stats.lastFeature : null});
         }
     },
     componentWillUpdate(nextProps, nextState) {
-        if(nextState.currentFeatureId !== this.state.currentFeatureId) {
+        if(nextState.currentFeature !== this.state.currentFeature) {
             let haveLayer = this.props.layers.find(layer => layer.id === 'identifyselection') !== undefined;
-            if(!nextState.currentFeatureId && haveLayer) {
+            if(!nextState.currentFeature && haveLayer) {
                 this.props.removeLayer('identifyselection');
-            } else if(nextState.currentFeatureId && !haveLayer) {
+            } else if(nextState.currentFeature && !haveLayer) {
                 let layer = {
                     id: 'identifyselection',
                     name: 'identifyselection',
@@ -50,7 +76,7 @@ const GmlIdentifyViewer = React.createClass({
                     visibility: true
                 };
                 this.props.addLayer(layer, true);
-            } else if(nextState.currentFeatureId && haveLayer) {
+            } else if(nextState.currentFeature && haveLayer) {
                 let diff = {
                     visibility: true,
                     features: this.getFeatures(nextState.currentFeature)
@@ -83,8 +109,8 @@ const GmlIdentifyViewer = React.createClass({
         diff[path] = newstate;
         this.setState(assign({}, this.state, {expanded: assign({}, this.state.expanded, diff)}));
     },
-    setCurrentFeature(feature, featureid) {
-        this.setState(assign({}, this.state, {currentFeature: feature, currentFeatureId: featureid}));
+    setCurrentFeature(feature) {
+        this.setState(assign({}, this.state, {currentFeature: feature}));
     },
     renderFeatureAttributes() {
         let feature = this.state.currentFeature;
@@ -111,18 +137,19 @@ const GmlIdentifyViewer = React.createClass({
     renderFeature(feature) {
         let featureid = feature.attributes.fid.value;
         return (
-            <li key={feature.attributes.fid.value} className={this.state.currentFeatureId === featureid ? "active clickable" : "clickable" }>
-                <span onClick={()=> this.setCurrentFeature(feature, featureid)}><Message msgId="identify.feature" /> <b>{featureid}</b></span>
+            <li key={featureid} className={this.state.currentFeature === feature ? "active clickable" : "clickable" }>
+                <span onClick={()=> this.setCurrentFeature(feature)}><Message msgId="identify.feature" /> <b>{featureid}</b></span>
             </li>
         );
     },
-    renderLayer(layer, features, parentpath) {
-        let path = parentpath + "/" + layer;
+    renderSublayer(layer, sublayer) {
+        let path = layer + "/" + sublayer;
+        let features = this.state.resultTree[layer][sublayer];
         if(features.length === 0) {
             return null;
         }
         return (
-            <li key={layer} className={this.getExpandedClass(path, true)}>
+            <li key={sublayer} className={this.getExpandedClass(path, true)}>
                 <span onClick={()=> this.toggleExpanded(path, true)}><Message msgId="identify.layer" /> <b>{layer.substr(layer.indexOf(':') + 1)}</b></span>
                 <ul>
                     {features.map(feature => this.renderFeature(feature))}
@@ -130,52 +157,33 @@ const GmlIdentifyViewer = React.createClass({
             </li>
         );
     },
-    renderResponse(response) {
-        let parser = new DOMParser();
-        let doc = parser.parseFromString(response.response, "text/xml");
-        if(!doc) {
+    renderLayer(layer) {
+        let keys = Object.keys(this.state.resultTree[layer]);
+        if(keys.length === 0) {
             return null;
         }
-        let path = response.layerMetadata.title;
-        let features = [].slice.call(doc.firstChild.getElementsByTagName("gml:featureMember"));
-        if(features.length === 0) {
-            features = [].slice.call(doc.firstChild.getElementsByTagName("featureMember"));
-        }
-        let layerFeatures = {};
-        features.map((featureMember) => {
-            let layer = featureMember.firstElementChild.nodeName;
-            if(layerFeatures[layer] === undefined) {
-                layerFeatures[layer] = [];
-            }
-            layerFeatures[layer].push(featureMember.firstElementChild);
-        });
-
-        let layersContents = Object.keys(layerFeatures).map(key => this.renderLayer(key, layerFeatures[key], path));
-        if(layersContents.every(item => item == null)) {
-            return null;
-        }
-
+        let layerContents = keys.map(sublayer => this.renderSublayer(layer, sublayer));
         return (
-            <ul key={response.layerMetadata.title}>
-                <li className={this.getExpandedClass(path, true)}>
-                    <span onClick={()=> this.toggleExpanded(path, true)}><Message msgId="identify.theme" /> <b>{response.layerMetadata.title}</b></span>
-                    <ul>{layersContents}</ul>
+            <ul key={layer}>
+                <li className={this.getExpandedClass(layer, true)}>
+                    <span onClick={()=> this.toggleExpanded(layer, true)}><Message msgId="identify.theme" /> <b>{layer}</b></span>
+                    <ul>{layerContents}</ul>
                 </li>
             </ul>
         );
     },
     render() {
-        let responseContents = (this.props.responses || []).map(response => this.renderResponse(response));
-        if(responseContents.every(item => item == null)) {
+        let contents = Object.keys(this.state.resultTree).map(layer => this.renderLayer(layer));
+        if(contents.every(item => item == null)) {
             if(this.props.missingResponses > 0) {
-                responseContents = (<Message msgId="identify.querying" />);
+                contents = (<Message msgId="identify.querying" />);
             } else {
-                responseContents = (<Message msgId="noFeatureInfo" />);
+                contents = (<Message msgId="noFeatureInfo" />);
             }
         }
         return (
             <div id="IdentifyViewer">
-                {responseContents}
+                {contents}
                 {this.renderFeatureAttributes()}
             </div>
         );
