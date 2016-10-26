@@ -2,15 +2,18 @@
   "themes": {
     "items": [
       {
-        "name": "QWC2 Test",
-        "url": "http://qwc2.sourcepole.ch/wms/themes/test"
+        "url": "http://qwc2.sourcepole.ch/wms/wolfsburg/qwc2_demo"
+      },
+      {
+        "url": "http://qwc2.sourcepole.ch/wms/ktgr/NUP_RK_Ftan"
       }
     ],
     "groups": [
       {
-        "name": "Group",
+        "title": "Group",
         "items": [
           {
+            "title": "QWC2 Test",
             "url": "http://qwc2.sourcepole.ch/wms/themes/test"
           }
         ],

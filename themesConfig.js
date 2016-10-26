@@ -83,6 +83,30 @@ function getThumbnail(configItem, resultItem, layer, resolve) {
     });
 }
 
+// recursively get layer tree
+function getLayerTree(layer, resultLayers) {
+    var layerEntry = {
+        name: layer.name,
+        title: layer.title
+    };
+    if (layer.layer === undefined) {
+        // layer
+        layerEntry.visibility = true;
+        layerEntry.queryable = layer.queryable === '1';
+        if (layer.attribution !== undefined) {
+            layerEntry.attribution = layer.attribution.title;
+        }
+        layerEntry.opacity = 255;
+    } else {
+        // group
+        layerEntry.sublayers = [];
+        for (var subLayer of layer.layer) {
+            getLayerTree(subLayer, layerEntry.sublayers);
+        }
+    }
+    resultLayers.push(layerEntry);
+}
+
 // parse GetCapabilities for theme
 function getTheme(configItem, resultItem) {
     resultItem.url = configItem.url;
@@ -112,7 +136,7 @@ function getTheme(configItem, resultItem) {
             const themeId = topLayer.name + "_" + Date.now().toString();
 
             // use name from config or fallback to WMS title
-            const wmsTitle = configItem.name || capabilities.value.service.title || topLayer.title;
+            const wmsTitle = configItem.title || capabilities.value.service.title || topLayer.title;
 
             // keywords
             const keywords = capabilities.value.service.keywordList.keyword.map((entry) => {
@@ -134,26 +158,19 @@ function getTheme(configItem, resultItem) {
                 }
             }
 
-            // collect available and queryable layers
-            var layers = [];
-            var queryLayers = [];
-            if (topLayer.layer !== undefined) {
-                topLayer.layer.map((entry) => {
-                    layers.push(entry.name);
-                    if (entry.queryable === '1') {
-                        queryLayers.push(entry.name);
-                    }
-                });
-            }
+            // layer tree
+            var layerTree = [];
+            getLayerTree(topLayer, layerTree);
 
             // update theme config
             resultItem.id = themeId;
-            resultItem.name = wmsTitle;
+            resultItem.name = topLayer.name;
+            resultItem.title = wmsTitle;
             resultItem.keywords = keywords.join(', ');
             resultItem.crs = srs;
             resultItem.extent = extent;
-            resultItem.layers = layers;
-            resultItem.queryable = queryLayers;
+            // NOTE: skip root WMS layer
+            resultItem.sublayers = layerTree[0].sublayers;
 
             // get thumbnail asynchronously
             getThumbnail(configItem, resultItem, topLayer.name, resolve);
@@ -181,7 +198,7 @@ function getGroupThemes(configGroup, resultGroup) {
     if (configGroup.groups !== undefined) {
         for (var group of configGroup.groups) {
             var groupEntry = {
-                name: group.name,
+                title: group.title,
                 items: [],
                 subdirs: []
             };
@@ -197,13 +214,13 @@ function getGroupThemes(configGroup, resultGroup) {
       "items": [
         {
           "url": "<http://localhost/wms/theme>",
-          "name": "<Custom theme title>",             // optional, use WMS title if not set
+          "title": "<Custom theme title>",            // optional, use WMS title if not set
           "thumbnail": "<theme.png>"                  // optional image file in assets/img/mapthumbs/, use WMS GetMap if not set
         }
       ],
       "groups": [                                     // optional, nested groups
         {
-          "name": "<Group name>",
+          "title": "<Group title>",
           "items": [
             {
               "url": "<http://localhost/wms/group_theme>"
@@ -223,7 +240,7 @@ var config = require('./themesConfig.json');
 var result = {
     themes:
     {
-        name: "root",
+        title: "root",
         subdirs: [],
         items: []
     }
