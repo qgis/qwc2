@@ -16,6 +16,7 @@ const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2/web/client/utils/LocaleUtils");
 const {setCurrentTheme,setThemeSwitcherFilter,setThemeSwitcherVisibility} = require("../actions/theme");
 const UrlParams = require("../utils/UrlParams");
+const LayerUtils = require('../utils/LayerUtils');
 require('./style/ThemeSwitcher.css');
 
 const ThemeSwitcher = React.createClass({
@@ -68,8 +69,10 @@ const ThemeSwitcher = React.createClass({
         var params = UrlParams.getParams();
         if(params.t) {
             let theme = this.getThemeById(this.state.themes, params.t);
-            let layer = this.createLayerForTheme(theme, params.l ? params.l.split(",") : undefined);
-            this.props.changeTheme(theme.id, layer, this.props.activeThemeLayer);
+            if(theme) {
+                let layer = this.createLayerForTheme(theme, params.l ? params.l.split(",") : undefined);
+                this.props.changeTheme(theme.id, layer, this.props.activeThemeLayer);
+            }
         }
     },
     getThemeById(dir, id) {
@@ -89,7 +92,7 @@ const ThemeSwitcher = React.createClass({
     groupMatchesFilter(group) {
         if(group && group.items) {
             for(let i = 0, n = group.items.length; i < n; ++i) {
-                if(group.items[i].name.includes(this.props.filter) ||
+                if(group.items[i].title.includes(this.props.filter) ||
                    group.items[i].keywords.includes(this.props.filter)) {
                     return true;
                 }
@@ -108,14 +111,14 @@ const ThemeSwitcher = React.createClass({
         var subtree = null;
         if(this.props.filter === "" || this.groupMatchesFilter(group)) {
             subtree = (group && group.subdirs ? group.subdirs : []).map(subdir =>
-                (<li key={subdir.name} className="theme-group"><span>{subdir.name}</span><ul>{this.renderThemeGroup(subdir)}</ul></li>)
+                (<li key={subdir.title} className="theme-group"><span>{subdir.title}</span><ul>{this.renderThemeGroup(subdir)}</ul></li>)
             );
         }
         return (<ul>
             {(group && group.items ? group.items : []).map(item => {
-                return item.name.includes(this.props.filter) || item.keywords.includes(this.props.filter) ? (
+                return item.title.includes(this.props.filter) || item.keywords.includes(this.props.filter) ? (
                     <li key={item.id} className={this.props.activeTheme === item.id ? "theme-item theme-item-active" : "theme-item"} onClick={(ev)=>{this.themeClicked(item);}}>
-                        {item.name}<br /><img src={"data:image/png;base64," + item.thumbnail} /><br />
+                        {item.title}<br /><img src={"data:image/png;base64," + item.thumbnail} /><br />
                     <div className="theme-item-keywords" title={item.keywords}>{item.keywords}</div>
                     </li>) : null;
             })}
@@ -134,11 +137,10 @@ const ThemeSwitcher = React.createClass({
         );
     },
     createLayerForTheme(theme, visiblelayers=undefined) {
-        var sublayers = [];
+        console.log(theme);
+        let sublayers = theme.sublayers;
         if(visiblelayers !== undefined) {
-            sublayers = theme.layers.filter(name => visiblelayers.includes(name));
-        } else {
-            sublayers = theme.layers.slice(0);
+            sublayers = LayerUtils.restoreVisibleLayers(sublayers, visiblelayers);
         }
         return {
             id: theme.name + Date.now().toString(),
@@ -146,18 +148,13 @@ const ThemeSwitcher = React.createClass({
             url: theme.url,
             visibility: true,
             name: theme.name,
-            title: theme.name,
+            title: theme.title,
             boundingBox: {
                 extent: theme.extent,
                 crs: theme.crs
             },
-            subLayers: (theme.layers || []).slice(0),
-            opacities: Array.apply(null, Array(theme.layers.length)).map(() => 255),
-            queryLayers: (theme.queryable || []).slice(0),
-            params: {
-                LAYERS: sublayers.join(","),
-                OPACITIES: Array.apply(null, Array(sublayers.length)).map(() => "255").join(",")
-            }
+            sublayers : sublayers,
+            params: LayerUtils.buildLayerParams(sublayers)
         }
     },
     themeClicked(theme) {

@@ -1,13 +1,13 @@
 #LayerTree {
     position: absolute;
-    left: -25ch;
-    top: 30%;
-    bottom: 30%;
+    left: -30ch;
+    top: 20%;
+    height: 60%;
     z-index: 2;
     background-color: rgba(255,255, 255, 0.85);
     box-shadow: 0mm 0mm 4mm rgba(136, 136, 136, 0.5);
     border: 1px solid #595959;
-    width: 25ch;
+    width: 30ch;
     transition: left 0.25s;
 }
 
@@ -46,12 +46,17 @@
 }
 
 #LayerTree ul {
-    padding: 0 0 0 1em;
+    padding: 0;
+    position: relative;
 }
 
 #LayerTree li {
     list-style-type: none;
-    margin: 0.5em 0;
+    white-space: nowrap;
+}
+
+#LayerTree li.layertree-item {
+    margin: 0.5em 0 0.5em 1em;
 }
 
 #LayerTree span.layertree-item-checkbox {
@@ -72,6 +77,7 @@
 #LayerTree img.layertree-item-legend-thumbnail {
     height: 1.5em;
     width: auto;
+    max-width: 2em;
     margin-right: 0.5em;
     border: 1px solid #cccccc;
 }
@@ -101,6 +107,10 @@
     background-image: url('/assets/img/checked.svg');
 }
 
+#LayerTree span.layertree-item-checkbox-tristate {
+    background-image: url('/assets/img/tristate.svg');
+}
+
 #LayerTree span.layertree-item-queryable {
     margin: 0mm 0.5em;
     color: #bbbbbb;
@@ -109,9 +119,8 @@
 }
 
 #LayerTree span.layertree-item-edit {
-    position: relative;
-    float: right;
-    margin-left: 1em;
+    position: absolute;
+    right: 0;
 }
 
 #LayerTree span.layertree-item-edit > span.glyphicon {
