@@ -9,7 +9,7 @@
 const url = require('url');
 const assign = require('object-assign');
 
-var UrlParams = {
+const UrlParams = {
    updateParams: function(dict) {
        var urlObj = url.parse(window.location.href, true);
        urlObj.query = assign(urlObj.query, dict);
