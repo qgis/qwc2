@@ -8,6 +8,7 @@
 
 
 const TOGGLE_LAYERTREE = 'TOGGLE_LAYERTREE';
+const TOGGLE_MAPTIPS = 'TOGGLE_MAPTIPS';
 
 
 function toggleLayertree(expanded) {
@@ -17,7 +18,16 @@ function toggleLayertree(expanded) {
     };
 }
 
+function toggleMapTips(active) {
+    return {
+        type: TOGGLE_MAPTIPS,
+        active: active
+    }
+}
+
 module.exports = {
     TOGGLE_LAYERTREE,
-    toggleLayertree
+    TOGGLE_MAPTIPS,
+    toggleLayertree,
+    toggleMapTips
  }

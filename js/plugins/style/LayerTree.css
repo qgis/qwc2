@@ -41,8 +41,25 @@
 
 #LayerTree div.layertree-container {
     height: 100%;
+    padding: 0.25em;
+}
+
+#LayerTree div.layertree-tree {
+    height: calc(100% - 1.5em);
     overflow-x: hidden;
     overflow-y: auto;
+}
+
+#LayerTree div.laytree-maptip-option {
+    height: 2em;
+    line-height: 1.5em;
+    padding: 0.25em;
+    border-top: 1px solid #cccccc;
+    font-size: 75%;
+}
+
+#LayerTree div.laytree-maptip-option > span {
+    cursor: pointer;
 }
 
 #LayerTree ul {

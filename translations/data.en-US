@@ -700,7 +700,8 @@
             "filter": "Filter..."
         },
         "layertree": {
-            "transparency" : "Transparency"
+            "transparency" : "Transparency",
+            "maptip": "Show layer map tips"
         }
     }
 }

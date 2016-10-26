@@ -13,7 +13,7 @@ const assign = require('object-assign');
 import classnames from 'classnames';
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {changeLayerProperties} = require('../../MapStore2/web/client/actions/layers')
-const {toggleLayertree} = require('../actions/layertree');
+const {toggleLayertree, toggleMapTips} = require('../actions/layertree');
 const UrlParams = require("../utils/UrlParams");
 const LayerUtils = require('../utils/LayerUtils');
 require('./style/LayerTree.css');
@@ -23,8 +23,10 @@ const LayerTree = React.createClass({
     propTypes: {
         layers: React.PropTypes.array,
         expanded: React.PropTypes.bool,
+        mapTipsEnabled: React.PropTypes.bool,
         changeLayerProperties: React.PropTypes.func,
-        toggleLayertree: React.PropTypes.func
+        toggleLayertree: React.PropTypes.func,
+        toggleMapTips: React.PropTypes.func
     },
     getDefaultProps() {
         return {
@@ -124,9 +126,20 @@ const LayerTree = React.createClass({
     render() {
         let expanderIcon = this.props.expanded ? 'triangle-left' : 'triangle-right';
         let expandedClass = this.props.expanded ? 'expanded' : 'collapsed';
+        let maptipcheckclasses = classnames({
+            "layertree-item-checkbox": true,
+            "layertree-item-checkbox-unchecked": !this.props.mapTipsEnabled,
+            "layertree-item-checkbox-checked": this.props.mapTipsEnabled,
+        });
         return (
             <div id="LayerTree" className={expandedClass}>
-                <div className="layertree-container">{this.props.layers.map(this.renderLayerTree)}</div>
+                <div className="layertree-container">
+                    <div className="layertree-tree">{this.props.layers.map(this.renderLayerTree)}</div>
+                    <div className="laytree-maptip-option">
+                        <span className={maptipcheckclasses} onClick={this.toggleMapTips}></span>
+                        <span onClick={this.toggleMapTips}><Message msgId="layertree.maptip" /></span>
+                    </div>
+                </div>
                 <div className="layertree-expander"><div><Glyphicon glyph={expanderIcon} onClick={this.layerTreeVisibilityToggled}/></div></div>
             </div>
         );
@@ -174,18 +187,23 @@ const LayerTree = React.createClass({
     },
     sublayerMenuToggled(sublayerpath) {
         this.setState({activemenu: this.state.activemenu === sublayerpath ? null : sublayerpath});
+    },
+    toggleMapTips() {
+        this.props.toggleMapTips(!this.props.mapTipsEnabled)
     }
 });
 
 const selector = (state) => ({
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
-    expanded: state.layertree ? state.layertree.expanded : true
+    expanded: state.layertree ? state.layertree.expanded : true,
+    mapTipsEnabled: state.layertree && state.layertree.maptips
 });
 
 module.exports = {
     LayerTreePlugin: connect(selector, {
         changeLayerProperties: changeLayerProperties,
-        toggleLayertree: toggleLayertree
+        toggleLayertree: toggleLayertree,
+        toggleMapTips: toggleMapTips
     })(LayerTree),
     reducers: {
         layers: require('../../MapStore2/web/client/reducers/layers'),

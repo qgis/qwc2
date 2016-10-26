@@ -19,7 +19,8 @@ module.exports = {
         MeasurePlugin: require('./plugins/Measure'),
         ThemeSwitcherPlugin: require('./plugins/ThemeSwitcher'),
         LayerTreePlugin: require('./plugins/LayerTree'),
-        IdentifyPlugin: require('./plugins/Identify')
+        IdentifyPlugin: require('./plugins/Identify'),
+        MapTipPlugin: require('./plugins/MapTip')
     },
     requires: {}
 };

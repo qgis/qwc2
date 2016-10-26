@@ -59,6 +59,9 @@
         },
         {
           "name": "Identify"
+        },
+        {
+          "name": "MapTip"
         }
       ]
   }
