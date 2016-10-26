@@ -14,7 +14,7 @@ const SET_THEME_SWITCHER_FILTER = 'SET_THEME_FILTER';
 const SET_THEME_SWITCHER_VISIBILITY = 'SET_THEME_SWITCHER_VISIBILITY';
 
 function setCurrentTheme(themeid, layer, prevlayerid) {
-    UrlParams.updateParams({t: themeid});
+    UrlParams.updateParams({t: themeid, l: undefined});
     return (dispatch) => {
         if(prevlayerid) {
             dispatch(removeLayer(prevlayerid));
