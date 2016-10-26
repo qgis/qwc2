@@ -10,6 +10,7 @@ const {connect} = require('react-redux');
 const assign = require('object-assign');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {addLayer, removeLayer, changeLayerProperties} = require('../../MapStore2/web/client/actions/layers');
+const IdentifyUtils = require('../utils/IdentifyUtils');
 require('./style/GmlIdentifyViewer.css');
 
 const GmlIdentifyViewer = React.createClass({
@@ -30,27 +31,7 @@ const GmlIdentifyViewer = React.createClass({
         return {expanded: {}, resultTree: {}, currentFeature: null};
     },
     parseResponse(response, result, stats) {
-        let parser = new DOMParser();
-        let doc = parser.parseFromString(response.response, "text/xml");
-        if(!doc) {
-            return;
-        }
-        let path = response.layerMetadata.title;
-        let features = [].slice.call(doc.firstChild.getElementsByTagName("gml:featureMember"));
-        if(features.length === 0) {
-            features = [].slice.call(doc.firstChild.getElementsByTagName("featureMember"));
-        }
-        let layerFeatures = {};
-        features.map((featureMember) => {
-            let layer = featureMember.firstElementChild.nodeName;
-            if(layerFeatures[layer] === undefined) {
-                layerFeatures[layer] = [];
-            }
-            layerFeatures[layer].push(featureMember.firstElementChild);
-            stats.count += 1;
-            stats.lastFeature = featureMember.firstElementChild;
-        });
-        result[response.layerMetadata.title] = layerFeatures;
+        result[response.layerMetadata.title] = IdentifyUtils.parseGmlResponse(response.response, stats);
     },
     componentWillReceiveProps(nextProps) {
         if(nextProps.responses !== this.props.responses) {
@@ -71,7 +52,7 @@ const GmlIdentifyViewer = React.createClass({
                     name: 'identifyselection',
                     title: 'Selection',
                     type: "vector",
-                    features: this.getFeatures(nextState.currentFeature),
+                    features: IdentifyUtils.gmlFeatureGeometryAsGeoJson(nextState.currentFeature),
                     featuresCrs: "EPSG:3857",
                     visibility: true
                 };
@@ -79,7 +60,7 @@ const GmlIdentifyViewer = React.createClass({
             } else if(nextState.currentFeature && haveLayer) {
                 let diff = {
                     visibility: true,
-                    features: this.getFeatures(nextState.currentFeature)
+                    features: IdentifyUtils.gmlFeatureGeometryAsGeoJson(nextState.currentFeature)
                 };
                 let newlayerprops = assign({}, this.props.layer, diff);
                 this.props.changeLayerProperties('identifyselection', newlayerprops);
@@ -88,16 +69,6 @@ const GmlIdentifyViewer = React.createClass({
     },
     componentWillUnmount() {
         this.props.removeLayer('identifyselection');
-    },
-    getFeatures(feature) {
-        // The framework needs feature in GeoJSON format...
-        let gmlFeature = '<wfs:FeatureCollection xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:wfs="http://www.opengis.net/wfs" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://qgis.org/gml" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns:qgs="http://qgis.org/gml">' +
-                         '<gml:featureMember>' +
-                         feature.outerHTML +
-                         '</gml:featureMember>' +
-                         '</wfs:FeatureCollection>';
-        let features = (new ol.format.GML2()).readFeatures(gmlFeature);
-        return (new ol.format.GeoJSON()).writeFeaturesObject(features).features;
     },
     getExpandedClass(path, deflt) {
         let expanded = this.state.expanded[path] !== undefined ? this.state.expanded[path] : deflt;
