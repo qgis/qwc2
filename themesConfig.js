@@ -139,8 +139,11 @@ function getTheme(configItem, resultItem) {
             const wmsTitle = configItem.title || capabilities.value.service.title || topLayer.title;
 
             // keywords
-            const keywords = capabilities.value.service.keywordList.keyword.map((entry) => {
-                return entry.value;
+            var keywords = [];
+            capabilities.value.service.keywordList.keyword.map((entry) => {
+                if (entry.value !== "infoMapAccessService") {
+                    keywords.push(entry.value);
+                }
             });
 
             // use first SRS
