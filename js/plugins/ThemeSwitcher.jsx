@@ -137,7 +137,6 @@ const ThemeSwitcher = React.createClass({
         );
     },
     createLayerForTheme(theme, visiblelayers=undefined) {
-        console.log(theme);
         let sublayers = theme.sublayers;
         if(visiblelayers !== undefined) {
             sublayers = LayerUtils.restoreVisibleLayers(sublayers, visiblelayers);
