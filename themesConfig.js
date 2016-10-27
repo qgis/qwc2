@@ -10,35 +10,8 @@
 
 const urlUtil = require('url');
 const axios = require('axios');
-const Jsonix = require('jsonix').Jsonix;
+const xml2js = require('xml2js');
 const fs = require('fs');
-
-// setup WMS GetCapabilities parser
-const OWS_1_0_0 = require('ogc-schemas').OWS_1_0_0;
-const WMS_1_0_0 = require('ogc-schemas').WMS_1_0_0;
-const WMS_1_1_0 = require('ogc-schemas').WMS_1_1_0;
-const WMS_1_1_1 = require('ogc-schemas').WMS_1_1_1;
-const WMS_1_3_0 = require('ogc-schemas').WMS_1_3_0;
-const XLink_1_0 = require('w3c-schemas').XLink_1_0;
-
-const context = new Jsonix.Context([
-    OWS_1_0_0,
-    XLink_1_0,
-    WMS_1_0_0,
-    WMS_1_1_0,
-    WMS_1_1_1,
-    WMS_1_3_0
-    ], {
-    namespacePrefixes: {
-        "http://www.opengis.net/ogc": 'ogc',
-        "http://www.opengis.net/wms": "wms",
-        "http://purl.org/dc/elements/1.1/": "dc",
-        "http://www.opengis.net/ows": "ows",
-        "http://inspire.ec.europa.eu/schemas/inspire_vs/1.0": "inspire_vs",
-        "http://inspire.ec.europa.eu/schemas/common/1.0": "inspire_common"
-    }
-});
-const unmarshaller = context.createUnmarshaller();
 
 // load thumbnail from file or GetMap
 function getThumbnail(configItem, resultItem, layer, resolve) {
@@ -83,24 +56,33 @@ function getThumbnail(configItem, resultItem, layer, resolve) {
     });
 }
 
+// convert non-array object to array containing the object
+// used to restore arrays lost by 'explicitArray: false' xml2js option
+function toArray(obj) {
+    if (!Array.isArray(obj)) {
+        return [obj];
+    }
+    return obj;
+}
+
 // recursively get layer tree
 function getLayerTree(layer, resultLayers) {
     var layerEntry = {
-        name: layer.name,
-        title: layer.title
+        name: layer.Name,
+        title: layer.Title
     };
-    if (layer.layer === undefined) {
+    if (layer.Layer === undefined) {
         // layer
         layerEntry.visibility = true;
-        layerEntry.queryable = layer.queryable === '1';
-        if (layer.attribution !== undefined) {
-            layerEntry.attribution = layer.attribution.title;
+        layerEntry.queryable = layer.$.queryable === '1';
+        if (layer.Attribution !== undefined) {
+            layerEntry.attribution = layer.Attribution.Title;
         }
         layerEntry.opacity = 255;
     } else {
         // group
         layerEntry.sublayers = [];
-        for (var subLayer of layer.layer) {
+        for (var subLayer of toArray(layer.Layer)) {
             getLayerTree(subLayer, layerEntry.sublayers);
         }
     }
@@ -114,48 +96,56 @@ function getTheme(configItem, resultItem) {
     var parsedUrl = urlUtil.parse(configItem.url, true);
     parsedUrl.search = '';
     parsedUrl.query.SERVICE = "WMS";
-    parsedUrl.query.VERSION = "1.1.1";
+    parsedUrl.query.VERSION = "1.3.0";
     parsedUrl.query.REQUEST = "GetCapabilities";
     const getCapabilitiesUrl = urlUtil.format(parsedUrl);
 
     return new Promise((resolve) => {
         axios.get(getCapabilitiesUrl).then((response) => {
+            // parse capabilities
             var capabilities;
-            try {
-                capabilities = unmarshaller.unmarshalString(response.data);
-            } catch(error) {
-                // show response data on parse error
-                throw (response.data + "\n" + error);
-            }
+            xml2js.parseString(response.data, {
+                tagNameProcessors: [xml2js.processors.stripPrefix],
+                explicitArray: false
+            },
+            (ignore, result) => {
+                if (result === undefined || result.WMS_Capabilities === undefined) {
+                    // show response data on parse error
+                    throw new Error(response.data);
+                } else {
+                    capabilities = result.WMS_Capabilities;
+                }
+            });
 
             console.log("Parsing WMS GetCapabilities of " + configItem.url);
 
-            const topLayer = capabilities.value.capability.layer;
+            const topLayer = capabilities.Capability.Layer;
 
             // unique id
-            const themeId = topLayer.name + "_" + Date.now().toString();
+            const themeId = topLayer.Name + "_" + Date.now().toString();
 
             // use name from config or fallback to WMS title
-            const wmsTitle = configItem.title || capabilities.value.service.title || topLayer.title;
+            const wmsTitle = configItem.title || capabilities.Service.Title || topLayer.Title;
 
             // keywords
             var keywords = [];
-            capabilities.value.service.keywordList.keyword.map((entry) => {
-                if (entry.value !== "infoMapAccessService") {
-                    keywords.push(entry.value);
+            toArray(capabilities.Service.KeywordList.Keyword).map((entry) => {
+                var value = (typeof entry === 'object') ? entry._ : entry;
+                if (value !== "infoMapAccessService") {
+                    keywords.push(value);
                 }
             });
 
             // use first SRS
-            const srs = topLayer.srs[0].value;
+            const srs = toArray(topLayer.CRS)[0];
             var extent = [];
-            for (var bbox of topLayer.boundingBox) {
-                if (bbox.srs === srs) {
+            for (var bbox of toArray(topLayer.BoundingBox)) {
+                if (bbox.$.CRS === srs) {
                     extent = [
-                        parseFloat(bbox.minx),
-                        parseFloat(bbox.miny),
-                        parseFloat(bbox.maxx),
-                        parseFloat(bbox.maxy)
+                        parseFloat(bbox.$.minx),
+                        parseFloat(bbox.$.miny),
+                        parseFloat(bbox.$.maxx),
+                        parseFloat(bbox.$.maxy)
                     ];
                     break;
                 }
@@ -167,7 +157,7 @@ function getTheme(configItem, resultItem) {
 
             // update theme config
             resultItem.id = themeId;
-            resultItem.name = topLayer.name;
+            resultItem.name = topLayer.Name;
             resultItem.title = wmsTitle;
             resultItem.keywords = keywords.join(', ');
             resultItem.crs = srs;
@@ -176,7 +166,7 @@ function getTheme(configItem, resultItem) {
             resultItem.sublayers = layerTree[0].sublayers;
 
             // get thumbnail asynchronously
-            getThumbnail(configItem, resultItem, topLayer.name, resolve);
+            getThumbnail(configItem, resultItem, topLayer.Name, resolve);
         }).catch((error) => {
             console.error("ERROR reading WMS GetCapabilities of " + configItem.url + ":\n", error);
             resultItem.error = "Could not read GetCapabilities";
