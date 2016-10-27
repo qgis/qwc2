@@ -29,8 +29,8 @@ const assign = require('object-assign');
             LayerUtils.parseSublayer(sublayer, layerNames, opacities, queryable);
         });
         return {
-            LAYERS: layerNames.join(","),
-            OPACITIES: opacities.join(","),
+            LAYERS: layerNames.reverse().join(","),
+            OPACITIES: opacities.reverse().join(","),
             query_layers: queryable
         }
     },
