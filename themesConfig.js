@@ -14,7 +14,7 @@ const xml2js = require('xml2js');
 const fs = require('fs');
 
 // load thumbnail from file or GetMap
-function getThumbnail(configItem, resultItem, layer, resolve) {
+function getThumbnail(configItem, resultItem, layer, crs, extent, resolve) {
     if (configItem.thumbnail !== undefined) {
         // read thumbnail file
         try {
@@ -32,15 +32,15 @@ function getThumbnail(configItem, resultItem, layer, resolve) {
     var parsedUrl = urlUtil.parse(configItem.url, true);
     parsedUrl.search = '';
     parsedUrl.query.SERVICE = "WMS";
-    parsedUrl.query.VERSION = "1.1.1";
+    parsedUrl.query.VERSION = "1.3.0";
     parsedUrl.query.REQUEST = "GetMap";
     parsedUrl.query.FORMAT = "image/png; mode=8bit";
     parsedUrl.query.TRANSPARENT = "TRUE";
     parsedUrl.query.STYLES = "";
     parsedUrl.query.WIDTH = 128;
     parsedUrl.query.HEIGHT = 96;
-    parsedUrl.query.CRS = resultItem.crs;
-    parsedUrl.query.BBOX = resultItem.extent.join(',');
+    parsedUrl.query.CRS = crs;
+    parsedUrl.query.BBOX = extent.join(',');
     parsedUrl.query.LAYERS = layer;
     const getMapUrl = urlUtil.format(parsedUrl);
 
@@ -73,12 +73,27 @@ function getLayerTree(layer, resultLayers) {
     };
     if (layer.Layer === undefined) {
         // layer
-        layerEntry.visibility = true;
+        layerEntry.visibility = layer.$.visible === '1';
         layerEntry.queryable = layer.$.queryable === '1';
         if (layer.Attribution !== undefined) {
             layerEntry.attribution = layer.Attribution.Title;
+            if (layer.Attribution.OnlineResource !== undefined) {
+                layerEntry.attributionUrl = layer.Attribution.OnlineResource.$['xlink:href'];
+            }
         }
         layerEntry.opacity = 255;
+        if (layer.MinScaleDenominator !== undefined) {
+            layerEntry.minScale = parseInt(layer.MinScaleDenominator, 10);
+            layerEntry.maxScale = parseInt(layer.MaxScaleDenominator, 10);
+        }
+        // use geographic bounding box, as default CRS may have inverted axis order with WMS 1.3.0
+        layerEntry.crs = "EPSG:4326";
+        layerEntry.extent = [
+            parseFloat(layer.EX_GeographicBoundingBox.westBoundLongitude),
+            parseFloat(layer.EX_GeographicBoundingBox.southBoundLatitude),
+            parseFloat(layer.EX_GeographicBoundingBox.eastBoundLongitude),
+            parseFloat(layer.EX_GeographicBoundingBox.northBoundLatitude)
+        ];
     } else {
         // group
         layerEntry.sublayers = [];
@@ -97,7 +112,7 @@ function getTheme(configItem, resultItem) {
     parsedUrl.search = '';
     parsedUrl.query.SERVICE = "WMS";
     parsedUrl.query.VERSION = "1.3.0";
-    parsedUrl.query.REQUEST = "GetCapabilities";
+    parsedUrl.query.REQUEST = "GetProjectSettings";
     const getCapabilitiesUrl = urlUtil.format(parsedUrl);
 
     return new Promise((resolve) => {
@@ -136,11 +151,11 @@ function getTheme(configItem, resultItem) {
                 }
             });
 
-            // use first SRS
-            const srs = toArray(topLayer.CRS)[0];
+            // use first CRS for thumbnail request
+            const crs = toArray(topLayer.CRS)[0];
             var extent = [];
             for (var bbox of toArray(topLayer.BoundingBox)) {
-                if (bbox.$.CRS === srs) {
+                if (bbox.$.CRS === crs) {
                     extent = [
                         parseFloat(bbox.$.minx),
                         parseFloat(bbox.$.miny),
@@ -160,16 +175,22 @@ function getTheme(configItem, resultItem) {
             resultItem.name = topLayer.Name;
             resultItem.title = wmsTitle;
             resultItem.keywords = keywords.join(', ');
-            resultItem.crs = srs;
-            resultItem.extent = extent;
+            // use geographic bounding box for theme, as default CRS may have inverted axis order with WMS 1.3.0
+            resultItem.crs = "EPSG:4326";
+            resultItem.extent = [
+                parseFloat(topLayer.EX_GeographicBoundingBox.westBoundLongitude),
+                parseFloat(topLayer.EX_GeographicBoundingBox.southBoundLatitude),
+                parseFloat(topLayer.EX_GeographicBoundingBox.eastBoundLongitude),
+                parseFloat(topLayer.EX_GeographicBoundingBox.northBoundLatitude)
+            ];
             // NOTE: skip root WMS layer
             resultItem.sublayers = layerTree[0].sublayers;
 
             // get thumbnail asynchronously
-            getThumbnail(configItem, resultItem, topLayer.Name, resolve);
+            getThumbnail(configItem, resultItem, topLayer.Name, crs, extent, resolve);
         }).catch((error) => {
-            console.error("ERROR reading WMS GetCapabilities of " + configItem.url + ":\n", error);
-            resultItem.error = "Could not read GetCapabilities";
+            console.error("ERROR reading WMS GetProjectSettings of " + configItem.url + ":\n", error);
+            resultItem.error = "Could not read GetProjectSettings";
             resultItem.name = "Error";
             // finish task
             resolve(false);
