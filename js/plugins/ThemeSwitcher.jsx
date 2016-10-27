@@ -116,7 +116,7 @@ const ThemeSwitcher = React.createClass({
         }
         return (<ul>
             {(group && group.items ? group.items : []).map(item => {
-                return item.title.includes(this.props.filter) || item.keywords.includes(this.props.filter) ? (
+                return item.title.includes(this.props.filter) || (item.keywords || []).includes(this.props.filter) ? (
                     <li key={item.id} className={this.props.activeTheme === item.id ? "theme-item theme-item-active" : "theme-item"} onClick={(ev)=>{this.themeClicked(item);}}>
                         {item.title}<br /><img src={"data:image/png;base64," + item.thumbnail} /><br />
                     <div className="theme-item-keywords" title={item.keywords}>{item.keywords}</div>
