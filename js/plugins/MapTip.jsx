@@ -50,6 +50,9 @@ const MapTip = React.createClass({
                 this.props.removeLayer('maptipselection');
             }
             maptip = null;
+        } else if(!newProps.mapTipsEnabled && maptip) {
+            maptip = null;
+            this.props.removeLayer('maptipselection');
         }
         this.setState({layer: layer, maptip: maptip});
     },
