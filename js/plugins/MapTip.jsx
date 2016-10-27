@@ -133,5 +133,7 @@ module.exports = {
         addLayer: addLayer,
         removeLayer: removeLayer,
     })(MapTip),
-    reducers: {measurement: require('../../MapStore2/web/client/reducers/mousePosition')}
+    reducers: {
+        mousePosition: require('../../MapStore2/web/client/reducers/mousePosition')
+    }
 }

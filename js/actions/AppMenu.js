@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {CHANGE_MEASUREMENT_STATE} = require('../../MapStore2/web/client/actions/measurement');
+const {CHANGE_MEASUREMENT_TOOL} = require('../../MapStore2/web/client/actions/measurement');
 const {SET_THEME_SWITCHER_VISIBILITY} = require('./theme');
 const TOGGLE_APP_MENU = 'TOGGLE_APP_MENU';
 const TOGGLE_APP_SUBMENU = 'TOGGLE_APP_SUBMENU';
@@ -28,8 +28,7 @@ function toggleAppSubmenu(submenus) {
 function triggerAppMenuitem(key) {
     if(key === 'measure') {
         return {
-            type: CHANGE_MEASUREMENT_STATE,
-            lineMeasureEnabled: true,
+            type: CHANGE_MEASUREMENT_TOOL,
             geomType: 'LineString'
         };
     } else if(key === 'themes') {

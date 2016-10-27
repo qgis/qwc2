@@ -14,21 +14,19 @@ const assign = require('object-assign');
 const Dialog = require('../../MapStore2/web/client/components/misc/Dialog');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const measureUtils = require('../../MapStore2/web/client/utils/MeasureUtils');
-const {changeMeasurementState} = require('../../MapStore2/web/client/actions/measurement.js');
+const {changeMeasurement, changeMeasurementState} = require('../../MapStore2/web/client/actions/measurement.js');
 require('./style/Dialog.css');
 require('./style/Measure.css');
 
  const Measure = React.createClass({
      propTypes: {
         measureState: React.PropTypes.object,
-        updateMeasureState: React.PropTypes.func,
+        changeMeasurement: React.PropTypes.func,
+        changeMeasurementState: React.PropTypes.func
      },
      getDefaultProps() {
         return {
             measureState: {
-                lineMeasureEnabled: false,
-                areaMeasureEnabled: false,
-                bearingMeasureEnabled: false,
                 geomType: "LineString",
                 len: 0,
                 area: 0,
@@ -39,28 +37,16 @@ require('./style/Measure.css');
         }
     },
      onClose() {
-         var diff = {
-             lineMeasureEnabled: false,
-             areaMeasureEnabled: false,
-             bearingMeasureEnabled: false,
-             geomType: ''
-         }
-        this.props.updateMeasureState(assign({}, this.props.measureState, diff));
+        this.props.changeMeasurement(assign({}, this.props.measureState, {geomType: null}));
      },
      setMeasureMode(mode) {
-         var diff = {
-             lineMeasureEnabled: mode === "LineString",
-             areaMeasureEnabled: mode === "Polygon",
-             bearingMeasureEnabled: mode === "Bearing",
-             geomType: mode
-         }
-         this.props.updateMeasureState(assign({}, this.props.measureState, diff));
+         this.props.changeMeasurement(assign({}, this.props.measureState, {geomType: mode}));
      },
      changeLengthUnit(ev) {
-         this.props.updateMeasureState(assign({}, this.props.measureState, {lenUnit: ev.target.value}));
+         this.props.changeMeasurementState(assign({}, this.props.measureState, {lenUnit: ev.target.value}));
      },
      changeAreaUnit(ev) {
-         this.props.updateMeasureState(assign({}, this.props.measureState, {areaUnit: ev.target.value}));
+         this.props.changeMeasurementState(assign({}, this.props.measureState, {areaUnit: ev.target.value}));
      },
      renderHeader() {
          return (
@@ -72,7 +58,7 @@ require('./style/Measure.css');
      },
      renderBody() {
          let decimalFormat = {style: "decimal", minimumIntegerDigits: 1, maximumFractionDigits: 2, minimumFractionDigits: 2};
-         if(this.props.measureState.lineMeasureEnabled) {
+         if(this.props.measureState.geomType === "LineString") {
              var resultBody = (
                  <div>
                  <span><Message msgId="measureComponent.lengthLabel" />: </span>
@@ -85,7 +71,7 @@ require('./style/Measure.css');
                  </select>
                  </div>
              );
-         } else if(this.props.measureState.areaMeasureEnabled) {
+         } else if(this.props.measureState.geomType === "Polygon") {
              var resultBody = (
                  <div>
                  <span><Message msgId="measureComponent.areaLabel" />: </span>
@@ -98,7 +84,7 @@ require('./style/Measure.css');
                  </select>
                  </div>
              );
-         } else if(this.props.measureState.bearingMeasureEnabled) {
+         } else if(this.props.measureState.geomType === "Bearing") {
              var resultBody = (
                  <div>
                  <span><Message msgId="measureComponent.bearingLabel" />: </span>
@@ -109,9 +95,9 @@ require('./style/Measure.css');
          return (
              <div className="dialogbody" role="body">
                  <div className="tabbar">
-                     <span onClick={()=>{this.setMeasureMode("LineString");}} className={this.props.measureState.lineMeasureEnabled ? "activetab" : ""}><Message msgId="measureComponent.lengthLabel" /></span>
-                     <span onClick={()=>{this.setMeasureMode("Polygon");}} className={this.props.measureState.areaMeasureEnabled ? "activetab" : ""}><Message msgId="measureComponent.areaLabel" /></span>
-                     <span onClick={()=>{this.setMeasureMode("Bearing");}} className={this.props.measureState.bearingMeasureEnabled ? "activetab" : ""}><Message msgId="measureComponent.bearingLabel" /></span>
+                     <span onClick={()=>{this.setMeasureMode("LineString");}} className={this.props.measureState.geomType === "LineString" ? "activetab" : ""}><Message msgId="measureComponent.lengthLabel" /></span>
+                     <span onClick={()=>{this.setMeasureMode("Polygon");}} className={this.props.measureState.geomType === "Polygon" ? "activetab" : ""}><Message msgId="measureComponent.areaLabel" /></span>
+                     <span onClick={()=>{this.setMeasureMode("Bearing");}} className={this.props.measureState.geomType === "Bearing" ? "activetab" : ""}><Message msgId="measureComponent.bearingLabel" /></span>
                  </div>
                  <div className="tabarea">
                     {resultBody}
@@ -120,7 +106,7 @@ require('./style/Measure.css');
          )
      },
      render() {
-         if(!this.props.measureState.lineMeasureEnabled && !this.props.measureState.areaMeasureEnabled && !this.props.measureState.bearingMeasureEnabled) {
+         if(!this.props.measureState.geomType) {
              return null;
          }
          return (
@@ -133,12 +119,22 @@ require('./style/Measure.css');
  });
 
  const selector = (state) => ({
-     measureState: state.measurement
+     measureState: {
+         geomType: state.measurement ? state.measurement.geomType : null,
+         len: state.measurement ? state.measurement.len : 0,
+         area: state.measurement ? state.measurement.area : 0,
+         bearing: state.measurement ? state.measurement.bearing : 0,
+         lenUnit: state.measurement && state.measurement.lenUnit ? state.measurement.lenUnit : 'm',
+         areaUnit: state.measurement && state.measurement.areaUnit ? state.measurement.areaUnit : 'sqm'
+     }
  });
 
  module.exports = {
      MeasurePlugin: connect(selector, {
-         updateMeasureState: changeMeasurementState
+         changeMeasurement: changeMeasurement,
+         changeMeasurementState: changeMeasurementState
      })(Measure),
-     reducers: {measurement: require('../../MapStore2/web/client/reducers/measurement')}
+     reducers: {
+         measurement: require('../../MapStore2/web/client/reducers/measurement')
+     }
  }
