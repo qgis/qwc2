@@ -41,13 +41,14 @@
 
 #LayerTree div.layertree-container {
     height: 100%;
-    margin-left: -0.25em;
 }
 
 #LayerTree div.layertree-tree {
     height: calc(100% - 1.5em);
     overflow-x: hidden;
     overflow-y: auto;
+    padding-left: 0.25em;
+    position: relative;
 }
 
 #LayerTree div.laytree-maptip-option {
@@ -62,15 +63,15 @@
     cursor: pointer;
 }
 
-#LayerTree ul {
-    padding: 0;
-    position: relative;
+#LayerTree div.layertree-group {
+    margin-left: 0.5em;
 }
 
-#LayerTree li {
-    list-style-type: none;
+#LayerTree div.layertree-item {
     white-space: nowrap;
-    margin: 0.5em 0 0.5em 1em;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    margin: 0.25em 0.5em 0.25em 0;
 }
 
 #LayerTree span.layertree-item-checkbox {
@@ -84,10 +85,6 @@
     cursor: pointer;
 }
 
-#LayerTree span.layertree-item-legend {
-    position: relative;
-}
-
 #LayerTree img.layertree-item-legend-thumbnail {
     height: 1.5em;
     width: auto;
@@ -98,17 +95,18 @@
 
 #LayerTree img.layertree-item-legend-tooltip {
     position: absolute;
-    top: 1.5em;
-    z-index: 2;
+    z-index: 3;
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.5s;
     box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
     border-radius: 0.5em;
     border: 1px solid #cccccc;
+    padding: 0.25em;
+    background-color: white;
 }
 
-#LayerTree span.layertree-item-legend:hover > img.layertree-item-legend-tooltip {
+#LayerTree span.layertree-item-legend:hover img.layertree-item-legend-tooltip {
     visibility: visible;
     opacity: 1;
 }
@@ -126,9 +124,9 @@
 }
 
 #LayerTree span.layertree-item-queryable {
-    margin: 0mm 0.5em;
+    margin-left: 0.25em;
     color: #bbbbbb;
-    font-size: x-small;
+    font-size: xx-small;
     vertical-align: top;
 }
 
@@ -164,6 +162,10 @@
     padding: 0.5em;
     margin: 0;
     z-index: 2;
+}
+
+#LayerTree ul.layertree-item-edit-menu > li {
+    list-style-type: none;
 }
 
 #LayerTree span.layertree-item-edit-active > ul.layertree-item-edit-menu {

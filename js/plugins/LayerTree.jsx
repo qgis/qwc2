@@ -69,25 +69,21 @@ const LayerTree = React.createClass({
         });
         let sublayersContent = null;
         if(visibility > 0 && group.sublayers) {
-            sublayersContent = (
-                <ul>
-                    {group.sublayers.map((sublayer, idx) => {
-                        let subpath = [...path, idx];
-                        if(sublayer.sublayers) {
-                            return this.renderLayerGroup(layer, sublayer, subpath)
-                        } else {
-                            return this.renderSubLayer(layer, sublayer, subpath);
-                        }
-
-                    })}
-                </ul>);
+            sublayersContent = group.sublayers.map((sublayer, idx) => {
+                let subpath = [...path, idx];
+                if(sublayer.sublayers) {
+                    return this.renderLayerGroup(layer, sublayer, subpath)
+                } else {
+                    return this.renderSubLayer(layer, sublayer, subpath);
+                }
+            });
         }
         return (
-            <ul key={group.name}>
-                <li><span className={checkclasses} onClick={() => this.groupToggled(layer, path, visibility)}></span> {group.title}
+            <div key={group.name} className="layertree-item"><span className={checkclasses} onClick={() => this.groupToggled(layer, path, visibility)}></span> <span title={group.title}>{group.title}</span>
+                <div className="layertree-group">
                     {sublayersContent}
-                </li>
-            </ul>
+                </div>
+            </div>
         )
     },
     renderSubLayer(layer, sublayer, path) {
@@ -102,13 +98,13 @@ const LayerTree = React.createClass({
             "layertree-item-edit-active": this.state.activemenu === pathstr
         })
         return (
-            <li className="layertree-item" key={sublayer.name}>
+            <div className="layertree-item" key={sublayer.name}>
                 <span className={checkclasses} onClick={() => this.sublayerToggled(layer, path)}></span>
                 <span className="layertree-item-legend">
-                    <img className="layertree-item-legend-tooltip" src={this.getLegendGraphicURL(layer, sublayer)} />
                     <img className="layertree-item-legend-thumbnail" src={this.getLegendGraphicURL(layer, sublayer)} />
+                    <img className="layertree-item-legend-tooltip" src={this.getLegendGraphicURL(layer, sublayer)} />
                 </span>
-                <span className="layertree-item-title">{sublayer.title}</span>
+                <span className="layertree-item-title" title={sublayer.title}>{sublayer.title}</span>
                 {sublayer.queryable ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
                 <span className={editclasses}>
                     <Glyphicon glyph="cog" onClick={() => this.sublayerMenuToggled(pathstr)}/>
@@ -119,7 +115,7 @@ const LayerTree = React.createClass({
                         </li>
                     </ul>
                 </span>
-            </li>
+            </div>
         )
     },
     renderLayerTree(layer) {
