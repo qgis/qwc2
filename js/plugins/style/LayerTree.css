@@ -41,7 +41,7 @@
 
 #LayerTree div.layertree-container {
     height: 100%;
-    padding: 0.25em;
+    margin-left: -0.25em;
 }
 
 #LayerTree div.layertree-tree {
@@ -70,9 +70,6 @@
 #LayerTree li {
     list-style-type: none;
     white-space: nowrap;
-}
-
-#LayerTree li.layertree-item {
     margin: 0.5em 0 0.5em 1em;
 }
 
