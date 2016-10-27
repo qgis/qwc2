@@ -17,7 +17,7 @@ Proj4js.defs("EPSG:21781", "+proj=somerc +lat_0=46.95240555555556 +lon_0=7.43958
 Proj4js.defs("EPSG:25832", "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 
 const MapViewer = connect(() => ({}), {
-    loadMapConfig: loadMapConfig.bind(null, "mapConfig.json", false)
+    loadMapConfig: loadMapConfig.bind(null, "config.json", false)
 })(require('../../MapStore2/web/client/containers/MapViewer'));
 
 const Main = (props) => <MapViewer plugins={props.plugins} params={{mapType: "leaflet"}}/>;
