@@ -35,16 +35,19 @@ const assign = require('object-assign');
         }
     },
     parseSublayer: function(sublayer, layerNames, opacities, queryable) {
-        if(sublayer.sublayers) {
-            // Is group
-            sublayer.sublayers.map(sublayer => {
-                LayerUtils.parseSublayer(sublayer, layerNames, opacities, queryable)
-            });
-        } else if(sublayer.visibility){
-            layerNames.push(sublayer.name);
-            opacities.push(sublayer.opacity || 255);
-            if(sublayer.queryable) {
-                queryable.push(sublayer.name)
+        let visibility = sublayer.visibility === undefined ? true : sublayer.visibility;
+        if(visibility) {
+            if(sublayer.sublayers) {
+                // Is group
+                sublayer.sublayers.map(sublayer => {
+                    LayerUtils.parseSublayer(sublayer, layerNames, opacities, queryable)
+                });
+            } else {
+                layerNames.push(sublayer.name);
+                opacities.push(sublayer.opacity || 255);
+                if(sublayer.queryable) {
+                    queryable.push(sublayer.name)
+                }
             }
         }
     }

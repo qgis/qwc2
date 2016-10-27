@@ -49,21 +49,23 @@ const LayerTree = React.createClass({
         }
         let visible = 0;
         group.sublayers.map(sublayer => {
-            if(sublayer.sublayers) {
+            let sublayervisibility = sublayer.visibility === undefined ? true : sublayer.visibility;
+            if(sublayer.sublayers && sublayervisibility) {
                 visible += this.getGroupVisibility(sublayer);
             } else {
-                visible += sublayer.visibility ? 1 : 0;
+                visible += sublayervisibility ? 1 : 0;
             }
         });
         return visible / group.sublayers.length;
     },
     renderLayerGroup(layer, group, path) {
-        let visibility = this.getGroupVisibility(group);
+        let visibility = group.visibility === undefined ? true : group.visibility;
+        let subtreevisibility = this.getGroupVisibility(group);
         let checkclasses = classnames({
             "layertree-item-checkbox": true,
-            "layertree-item-checkbox-unchecked": visibility === 0,
-            "layertree-item-checkbox-checked": visibility === 1,
-            "layertree-item-checkbox-tristate": visibility > 0 && visibility < 1,
+            "layertree-item-checkbox-unchecked": visibility === false,
+            "layertree-item-checkbox-checked": visibility === true && subtreevisibility === 1,
+            "layertree-item-checkbox-tristate": visibility === true && subtreevisibility < 1,
         });
         let sublayersContent = null;
         if(visibility > 0 && group.sublayers) {
@@ -161,14 +163,17 @@ const LayerTree = React.createClass({
         }
         return {newlayer, newsublayer: cur};
     },
-    groupToggled(layer, path, oldvisibility) {
-        if(path.length === 0) {
+    groupToggled(layer, grouppath, oldvisibility) {
+        if(grouppath.length === 0) {
             // Toggle entire layer
-            let newlayerprops = assign({}, layer, {visibility: !layer.visibility});
-            this.props.changeLayerProperties(layer.id, newlayerprops);
+            let newlayer = assign({}, layer, {visibility: !oldvisibility});
+            this.props.changeLayerProperties(layer.id, newlayer);
         } else {
-            // TODO: Toggle group children
-
+            // Toggle group
+            let {newlayer, newsublayer} = this.cloneLayerTree(layer, grouppath);
+            newsublayer.visibility = !oldvisibility;
+            assign(newlayer, {params: LayerUtils.buildLayerParams(newlayer.sublayers)});
+            this.props.changeLayerProperties(layer.id, newlayer);
         }
     },
     sublayerToggled(layer, sublayerpath) {
