@@ -29,10 +29,12 @@ const assign = require('object-assign');
             LayerUtils.parseSublayer(sublayer, layerNames, opacities, queryable);
         });
         return {
-            LAYERS: layerNames.reverse().join(","),
-            OPACITIES: opacities.reverse().join(","),
-            query_layers: queryable
-        }
+            params: {
+                LAYERS: layerNames.reverse().join(","),
+                OPACITIES: opacities.reverse().join(",")
+            },
+            queryLayers: queryable
+        };
     },
     parseSublayer: function(sublayer, layerNames, opacities, queryable) {
         let visibility = sublayer.visibility === undefined ? true : sublayer.visibility;

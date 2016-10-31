@@ -7,7 +7,9 @@
  */
 const React = require('react');
 const {connect} = require('react-redux');
-const {getFeatureInfo, getVectorInfo, purgeMapInfoResults, showMapinfoMarker, hideMapinfoMarker, showMapinfoRevGeocode, hideMapinfoRevGeocode} = require('../../MapStore2/web/client/actions/mapInfo');
+const {getVectorInfo, purgeMapInfoResults, showMapinfoMarker, hideMapinfoMarker, showMapinfoRevGeocode, hideMapinfoRevGeocode} = require('../../MapStore2/web/client/actions/mapInfo');
+const {getFeatureInfo} = require('../actions/mapInfo');
+const {defaultQueryableFilter} = require('../../MapStore2/web/client/utils/MapInfoUtils');
 const {changeMousePointer} = require('../../MapStore2/web/client/actions/map');
 const {changeMapInfoFormat} = require('../../MapStore2/web/client/actions/mapInfo');
 const {GmlIdentifyViewer} = require('../components/GmlIdentifyViewer');
@@ -20,6 +22,7 @@ const Identify = React.createClass({
         responses: React.PropTypes.array,
         requests: React.PropTypes.array,
         format: React.PropTypes.string,
+        params: React.PropTypes.object, // additional GetFeatureInfo params
         map: React.PropTypes.object,
         layers: React.PropTypes.array,
         point: React.PropTypes.object,
@@ -28,6 +31,7 @@ const Identify = React.createClass({
         sendRequest: React.PropTypes.func,
         localRequest: React.PropTypes.func,
         purgeResults: React.PropTypes.func,
+        queryableLayersFilter: React.PropTypes.func,
         changeMousePointer: React.PropTypes.func,
         showMarker: React.PropTypes.func,
         hideMarker: React.PropTypes.func,
@@ -41,6 +45,12 @@ const Identify = React.createClass({
         return {
             enabled: false,
             format: 'application/vnd.ogc.gml',
+            params: {},
+            queryableLayersFilter: (l) => {
+                return defaultQueryableFilter(l) &&
+                    // skip WMS layers with empty query layers
+                    (l.type !== 'wms' || (l.queryLayers || []).length > 0);
+            },
             panelClassName: "identify-dialog",
             headerClassName: "identify-dialog-header",
             closeGlyph: "remove"
@@ -59,7 +69,6 @@ const selector = (state) => ({
     requests: state.mapInfo && state.mapInfo.requests || [],
     format: state.mapInfo && state.mapInfo.infoFormat,
     map: state.map ? state.map.present : null,
-    layers: state.layers && state.layers.flat ? state.layers.flat : [],
     point: state.mapInfo && state.mapInfo.clickPoint,
     showModalReverse: state.mapInfo && state.mapInfo.showModalReverse,
     reverseGeocodeData: state.mapInfo && state.mapInfo.reverseGeocodeData,

@@ -141,6 +141,7 @@ const ThemeSwitcher = React.createClass({
         if(visiblelayers !== undefined) {
             sublayers = LayerUtils.restoreVisibleLayers(sublayers, visiblelayers);
         }
+        let {params, queryLayers} = LayerUtils.buildLayerParams(sublayers);
         return {
             id: theme.name + Date.now().toString(),
             type: "wms",
@@ -153,7 +154,8 @@ const ThemeSwitcher = React.createClass({
                 crs: theme.crs
             },
             sublayers : sublayers,
-            params: LayerUtils.buildLayerParams(sublayers)
+            params: params,
+            queryLayers: queryLayers
         }
     },
     themeClicked(theme) {

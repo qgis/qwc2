@@ -58,7 +58,14 @@
           "name": "LayerTree"
         },
         {
-          "name": "Identify"
+          "name": "Identify",
+          "cfg": {
+            "params": {
+              "FI_POINT_TOLERANCE": 16,
+              "FI_LINE_TOLERANCE": 8,
+              "FI_POLYGON_TOLERANCE": 4
+            }
+          }
         },
         {
           "name": "MapTip"
