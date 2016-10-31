@@ -682,7 +682,7 @@
             "menulabel": "Map & Tools",
             "items": {
                 "themes": "Select Theme",
-                "link": "Create link",
+                "link": "Share link",
                 "tools": "Map Tools",
                 "measure": "Measure",
                 "draw": "Draw",
@@ -702,6 +702,9 @@
         "layertree": {
             "transparency" : "Transparency",
             "maptip": "Show layer map tips"
+        },
+        "sharelink": {
+            "title": "Share link"
         }
     }
 }

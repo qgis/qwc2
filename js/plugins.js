@@ -20,7 +20,8 @@ module.exports = {
         ThemeSwitcherPlugin: require('./plugins/ThemeSwitcher'),
         LayerTreePlugin: require('./plugins/LayerTree'),
         IdentifyPlugin: require('./plugins/Identify'),
-        MapTipPlugin: require('./plugins/MapTip')
+        MapTipPlugin: require('./plugins/MapTip'),
+        ShareDialogPlugin: require('./plugins/ShareDialog')
     },
     requires: {}
 };

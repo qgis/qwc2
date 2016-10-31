@@ -8,6 +8,7 @@
 
 const {CHANGE_MEASUREMENT_TOOL} = require('../../MapStore2/web/client/actions/measurement');
 const {SET_THEME_SWITCHER_VISIBILITY} = require('./theme');
+const {CHANGE_DIALOG_STATE} = require('./dialog');
 const TOGGLE_APP_MENU = 'TOGGLE_APP_MENU';
 const TOGGLE_APP_SUBMENU = 'TOGGLE_APP_SUBMENU';
 
@@ -35,6 +36,11 @@ function triggerAppMenuitem(key) {
         return {
             type: SET_THEME_SWITCHER_VISIBILITY,
             visible: true
+        }
+    } else if(key === 'link') {
+        return {
+            type: CHANGE_DIALOG_STATE,
+            statechange: {share: true}
         }
     }
     return (dispatch) => {};
