@@ -21,7 +21,8 @@ module.exports = {
         LayerTreePlugin: require('./plugins/LayerTree'),
         IdentifyPlugin: require('./plugins/Identify'),
         MapTipPlugin: require('./plugins/MapTip'),
-        ShareDialogPlugin: require('./plugins/ShareDialog')
+        ShareDialogPlugin: require('./plugins/ShareDialog'),
+        MapCopyright: require('./plugins/MapCopyright')
     },
     requires: {}
 };

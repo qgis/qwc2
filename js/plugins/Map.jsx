@@ -23,11 +23,21 @@ const QWCMapPlugin = React.createClass({
         };
     },
     render() {
+        let options = {
+            mapOptions: {
+                controls: {
+                    attributionOptions: {
+                        collapsible: true
+                    }
+                }
+            }
+        }
         return (
             <MapPlugin
                 actions={{onMapViewChanges: changeMapView}}
                 zoomControl={this.props.zoomControl}
-                mapType={this.props.mapType} />
+                mapType={this.props.mapType}
+                options={options} />
         );
     }
 });
