@@ -54,7 +54,8 @@ const GmlIdentifyViewer = React.createClass({
                     type: "vector",
                     features: IdentifyUtils.gmlFeatureGeometryAsGeoJson(nextState.currentFeature),
                     featuresCrs: "EPSG:3857",
-                    visibility: true
+                    visibility: true,
+                    queryable: false
                 };
                 this.props.addLayer(layer, true);
             } else if(nextState.currentFeature && haveLayer) {
