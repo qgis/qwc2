@@ -10,7 +10,7 @@ const React = require('react');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const {triggerAppMenuitem} = require('../actions/AppMenu');
+const {triggerAppMenuitem} = require('../actions/appmenu');
 require('./style/AppMenu.css');
 
 
