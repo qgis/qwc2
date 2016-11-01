@@ -16,7 +16,7 @@ const assign = require('object-assign');
                   // Is group
                   newsublayers[idx] = assign({}, sublayer, {sublayers: LayerUtils.restoreVisibleLayers(sublayer.sublayers, visiblelayers)});
              } else {
-                 newsublayers[idx] = assign({}, sublayer, {visiblity: visiblelayers.includes(sublayer.name)});
+                 newsublayers[idx] = assign({}, sublayer, {visibility: visiblelayers.includes(sublayer.name)});
              }
          });
          return newsublayers;
