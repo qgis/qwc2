@@ -9,12 +9,14 @@
 const React = require('react');
 const {Glyphicon} = require('react-bootstrap');
 const {connect} = require('react-redux');
+const axios = require('axios');
 const Dialog = require('../../MapStore2/web/client/components/misc/Dialog');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const ShareSocials = require('../../MapStore2/web/client/components/share/ShareSocials');
 const ShareLink = require('../../MapStore2/web/client/components/share/ShareLink');
 const ShareEmbed = require('../../MapStore2/web/client/components/share/ShareEmbed');
 const ShareQRCode = require('../../MapStore2/web/client/components/share/ShareQRCode');
+const ConfigUtils = require('../../MapStore2/web/client/utils/ConfigUtils');
 const {changeDialogState} = require('../actions/dialog');
 require('./style/Dialog.css');
 require('./style/ShareDialog.css');
@@ -30,33 +32,44 @@ const ShareDialog = React.createClass({
         }
     },
     getInitialState() {
-        return {location: window.location.href};
+        return {location: null};
     },
     onClose() {
         this.props.changeDialogState({share: false});
     },
-    componentDidMount() {
-        let ret = window.addEventListener('popstate', this.updateUrlEntry);
-    },
-    componentWillUnmount() {
-        window.removeEventListener('popstate', this.updateUrlEntry);
+    componentWillReceiveProps(newProps) {
+        if(newProps.visible && newProps.visible !== this.props.visible) {
+            this.setState({location: null});
+            fetch(ConfigUtils.getConfigProp("qwc2serverUrl") + "/createpermalink?url=" + encodeURIComponent(window.location.href))
+            .then(response => response.json())
+            .then(obj => this.setState({location: obj.permalink}));
+        }
     },
     renderHeader() {
         return (
             <div className="dialogheader" role="header">
-                <span className="dialogtitle"><Message msgId="sharelink.title" /></span>
+                <span className="dialogtitle"><Message msgId="sharedialog.title" /></span>
                 <span className="dialogclose" onClick={this.onClose}><Glyphicon glyph="remove"/></span>
             </div>
         );
     },
     renderBody() {
-        return (
-            <div role="body" className="share-panels">
-                <ShareSocials shareUrl={this.state.location} shareTitle="QWC2" getCount={this.props.getCount}/>
-                <ShareLink shareUrl={this.state.location}/>
-                <ShareQRCode shareUrl={this.state.location}/>
-            </div>
-        );
+        if(this.state.location) {
+            return (
+                <div role="body" className="share-panels">
+                    <ShareSocials shareUrl={this.state.location} shareTitle="QWC2" getCount={this.props.getCount}/>
+                    <ShareLink shareUrl={this.state.location}/>
+                    <ShareQRCode shareUrl={this.state.location}/>
+                </div>
+            );
+        } else {
+            return (
+                <div role="body" className="share-panels">
+                    <div style={{padding: "1em"}}>
+                        <Message msgId="sharedialog.generatingpermalink" />
+                    </div>
+                </div>);
+        }
     },
     render() {
         if(!this.props.visible) {
@@ -69,9 +82,6 @@ const ShareDialog = React.createClass({
             </Dialog>
         );
     },
-    updateUrlEntry() {
-        this.setState({location: window.location.href});
-    }
 });
 
 const selector = (state) => ({

@@ -703,8 +703,9 @@
             "transparency" : "Transparency",
             "maptip": "Show layer map tips"
         },
-        "sharelink": {
-            "title": "Share link"
+        "sharedialog": {
+            "title": "Share link",
+            "generatingpermalink": "Generating permalink..."
         }
     }
 }
