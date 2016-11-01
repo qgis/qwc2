@@ -49,30 +49,21 @@ const ThemeSwitcher = React.createClass({
     getInitialState: function() {
         return {themes: null };
     },
-    componentDidMount() {
-        fetch("themes.json")
-        .then(function(response){ return response.json() })
-        .then(function(obj){ this.populateThemesList(obj); }.bind(this));
-    },
     componentWillReceiveProps(nextProps) {
-        if(this.props.map === null && nextProps.map !== null && this.state.themes !== null) {
-            this.setInitialTheme();
+        if(this.props.map === null && nextProps.map !== null) {
+            // As soon as map is set, fetch themes and restore initial theme
+            fetch("themes.json")
+            .then(response => response.json())
+            .then(obj => this.populateThemesList(obj));
         }
     },
     populateThemesList(object) {
         this.setState({themes: object.themes});
-        if(this.props.map !== null) {
-            this.setInitialTheme();
-        }
-    },
-    setInitialTheme() {
         var params = UrlParams.getParams();
-        if(params.t) {
-            let theme = this.getThemeById(this.state.themes, params.t);
-            if(theme) {
-                let layer = this.createLayerForTheme(theme, params.l ? params.l.split(",") : undefined);
-                this.props.changeTheme(theme.id, layer, this.props.activeThemeLayer);
-            }
+        let theme = this.getThemeById(this.state.themes, params.t);
+        if(theme) {
+            let layer = this.createLayerForTheme(theme, params.l ? params.l.split(",") : undefined);
+            this.props.changeTheme(theme.id, layer, this.props.activeThemeLayer);
         }
     },
     getThemeById(dir, id) {
