@@ -51,12 +51,6 @@
 
 #BottomBar span.bottomlinks {
     float: right;
-    margin-right: 1em;
+    margin-right: 4em;
     line-height: 3em;
-}
-
-/** Hack for placing the OpenLayers scalebar above the bottombar */
-div.ol-scale-line {
-    z-index: 3;
-    bottom: 3px !important;
 }

@@ -10,6 +10,7 @@ const React = require('react');
 const {changeMapView} = require('../actions/map');
 
 const {MapPlugin} = require('../../MapStore2/web/client/plugins/Map');
+require('./style/Map.css');
 
 const QWCMapPlugin = React.createClass({
     propTypes: {
@@ -27,7 +28,7 @@ const QWCMapPlugin = React.createClass({
             mapOptions: {
                 controls: {
                     attributionOptions: {
-                        collapsible: true
+                        collapsible: false
                     }
                 }
             }
