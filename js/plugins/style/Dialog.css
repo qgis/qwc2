@@ -1,5 +1,5 @@
 div.modal-dialog {
-    z-index: 4!important;
+    z-index: 100!important;
     border-radius: 0.5em;
     border-width: 0!important;
 }
