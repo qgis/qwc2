@@ -17,16 +17,21 @@ const MapCopyright = React.createClass({
       layers: React.PropTypes.array,
       map: React.PropTypes.object
     },
+    getDefaultProps() {
+        return {
+            layers: [],
+            map: null
+        };
+    },
     getInitialState() {
         return {currentCopyrights: []};
     },
     componentWillReceiveProps(newProps) {
-        if(newProps.map || newProps.layers) {
-            let srcmapbbox = newProps.map.bbox;
+        if(newProps.map && newProps.map.bbox && newProps.layers) {
             let transformedbboxes = {};
             transformedbboxes[newProps.map.bbox.crs] = newProps.map.bbox.bounds;
             let copyrights = [];
-            newProps.layers.map(layer => this.collectCopyrigths(layer, srcmapbbox, transformedbboxes, copyrights));
+            newProps.layers.map(layer => this.collectCopyrigths(layer, newProps.map.bbox, transformedbboxes, copyrights));
             this.setState({currentCopyrights: copyrights});
         }
     },
@@ -49,12 +54,6 @@ const MapCopyright = React.createClass({
             // Extents overlap
             copyrights.push({label: layer.attribution, url: layer.attributionUrl});
         }
-    },
-    getDefaultProps() {
-        return {
-            layers: [],
-            map: null
-        };
     },
     render() {
         let copyrights = this.state.currentCopyrights.map((attribution, index) => {
