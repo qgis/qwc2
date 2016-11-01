@@ -9,10 +9,14 @@
 
 const IdentifyUtils = {
     parseGmlResponse: function(response, stats) {
+        if (typeof response !== 'string') {
+            // skip non-string response, e.g. from vector layer
+            return {};
+        }
         let parser = new DOMParser();
         let doc = parser.parseFromString(response, "text/xml");
-        if(!doc) {
-            return;
+        if (doc.activeElement.tagName === 'parsererror') {
+            return {};
         }
         let features = [].slice.call(doc.firstChild.getElementsByTagName("gml:featureMember"));
         if(features.length === 0) {
