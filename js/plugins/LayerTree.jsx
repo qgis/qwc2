@@ -21,6 +21,7 @@ require('./style/LayerTree.css');
 
 const LayerTree = React.createClass({
     propTypes: {
+        mobile: React.PropTypes.bool,
         layers: React.PropTypes.array,
         expanded: React.PropTypes.bool,
         mapTipsEnabled: React.PropTypes.bool,
@@ -30,8 +31,7 @@ const LayerTree = React.createClass({
     },
     getDefaultProps() {
         return {
-            layers: [],
-            visible: false,
+            layers: []
         };
     },
     getInitialState: function() {
@@ -129,14 +129,20 @@ const LayerTree = React.createClass({
             "layertree-item-checkbox-unchecked": !this.props.mapTipsEnabled,
             "layertree-item-checkbox-checked": this.props.mapTipsEnabled,
         });
+        let maptipCheckbox = null;
+        if(!this.props.mobile) {
+            maptipCheckbox = (
+                <div className="laytree-maptip-option">
+                    <span className={maptipcheckclasses} onClick={this.toggleMapTips}></span>
+                    <span onClick={this.toggleMapTips}><Message msgId="layertree.maptip" /></span>
+                </div>
+            );
+        }
         return (
             <div id="LayerTree" className={expandedClass}>
                 <div className="layertree-container">
                     <div className="layertree-tree">{this.props.layers.map(this.renderLayerTree)}</div>
-                    <div className="laytree-maptip-option">
-                        <span className={maptipcheckclasses} onClick={this.toggleMapTips}></span>
-                        <span onClick={this.toggleMapTips}><Message msgId="layertree.maptip" /></span>
-                    </div>
+                    {maptipCheckbox}
                 </div>
                 <div className="layertree-expander"><div><Glyphicon glyph={expanderIcon} onClick={this.layerTreeVisibilityToggled}/></div></div>
             </div>
@@ -196,8 +202,9 @@ const LayerTree = React.createClass({
 });
 
 const selector = (state) => ({
+    mobile: state.browser ? state.browser.mobile : false,
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
-    expanded: state.layertree ? state.layertree.expanded : true,
+    expanded: state.layertree && state.layertree.expanded !== undefined ? state.layertree.expanded : state.browser ? !state.browser.mobile : true,
     mapTipsEnabled: state.layertree && state.layertree.maptips
 });
 

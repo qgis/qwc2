@@ -9,7 +9,7 @@
 const {TOGGLE_LAYERTREE, TOGGLE_MAPTIPS} = require('../actions/layertree');
 const assign = require('object-assign');
 
-function layerTree(state = {expanded: true, maptips: false}, action) {
+function layerTree(state = {maptips: false}, action) {
     switch (action.type) {
         case TOGGLE_LAYERTREE:
             return assign({}, state, {
