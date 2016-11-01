@@ -8,7 +8,71 @@
   "bingApiKey": "AhuXBu7ipR1gNbBfXhtUAyCZ6rkC5PkWpxs2MnMRZ1ZupxQfivjLCch22ozKSCAn",
   "translationsPath": "./translations",
   "plugins": {
-      "desktop": [{
+      "mobile": [
+        {
+          "name": "Map",
+          "cfg": {
+            "zoomControl": false,
+            "mapType": "openlayers"
+          }
+        },
+        {
+          "name": "LocateButton"
+        },
+        {
+          "name": "ZoomIn"
+        },
+        {
+          "name": "ZoomOut"
+        },
+        {
+          "name": "BackgroundSwitcherButton"
+        },
+        {
+          "name": "BackgroundSwitcherMenu"
+        },
+        {
+            "name": "TopBar",
+            "cfg": {
+              "menuItems": [
+                {"key": "themes", "icon": "assets/img/layers.svg"},
+                {"key": "link", "icon": "assets/img/share.svg"},
+                {"key": "tools", "icon": "assets/img/tools.svg", "subitems": [
+                  {"key": "measure"},
+                  {"key": "draw"}
+                ]},
+                {"key": "help", "icon": "assets/img/info.svg"}
+              ]
+            }
+        },
+        {
+          "name": "ThemeSwitcher"
+        },
+        {
+          "name": "Measure"
+        },
+        {
+          "name": "Identify",
+          "cfg": {
+            "params": {
+              "FI_POINT_TOLERANCE": 16,
+              "FI_LINE_TOLERANCE": 8,
+              "FI_POLYGON_TOLERANCE": 4
+            }
+          }
+        },
+        {
+          "name": "ShareDialog"
+        },
+        {
+          "name": "MapCopyright"
+        },
+        {
+          "name": "LayerTree"
+        }
+      ],
+      "desktop": [
+        {
           "name": "Map",
           "cfg": {
             "zoomControl": false,
