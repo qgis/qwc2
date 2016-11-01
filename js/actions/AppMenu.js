@@ -9,22 +9,6 @@
 const {CHANGE_MEASUREMENT_TOOL} = require('../../MapStore2/web/client/actions/measurement');
 const {SET_THEME_SWITCHER_VISIBILITY} = require('./theme');
 const {CHANGE_DIALOG_STATE} = require('./dialog');
-const TOGGLE_APP_MENU = 'TOGGLE_APP_MENU';
-const TOGGLE_APP_SUBMENU = 'TOGGLE_APP_SUBMENU';
-
-function toggleAppMenu(visible) {
-    return {
-        type: TOGGLE_APP_MENU,
-        visible: visible
-    };
-}
-
-function toggleAppSubmenu(submenus) {
-    return {
-        type: TOGGLE_APP_SUBMENU,
-        submenus: submenus
-    }
-}
 
 function triggerAppMenuitem(key) {
     if(key === 'measure') {
@@ -47,9 +31,5 @@ function triggerAppMenuitem(key) {
 }
 
 module.exports = {
-    TOGGLE_APP_MENU,
-    TOGGLE_APP_SUBMENU,
-    toggleAppMenu,
-    toggleAppSubmenu,
     triggerAppMenuitem
 }

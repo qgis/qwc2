@@ -10,41 +10,38 @@ const React = require('react');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const {toggleAppMenu, toggleAppSubmenu, triggerAppMenuitem} = require('../actions/AppMenu');
+const {triggerAppMenuitem} = require('../actions/AppMenu');
 require('./style/AppMenu.css');
 
 
 const AppMenu = React.createClass({
     propTypes: {
         menuItems: React.PropTypes.array,
-        menuVisible: React.PropTypes.bool,
-        submenusVisible: React.PropTypes.array,
-        menuClicked: React.PropTypes.func,
-        submenuClicked: React.PropTypes.func,
         menuitemClicked: React.PropTypes.func
     },
     getDefaultProps() {
         return {
-            menuVisible: false,
-            submenusVisible: []
         };
     },
-    onMenuClicked(ev) {
-        this.props.menuClicked(!this.props.menuVisible);
+    getInitialState() {
+        return { menuVisible: false, submenusVisible: [] };
+    },
+    onMenuClicked() {
+        this.setState({ menuVisible: !this.state.menuVisible });
     },
     onSubmenuClicked(ev, key, level) {
         ev.stopPropagation();
-        var a = this.props.submenusVisible[level] === key ? [] : [key];
-        this.props.submenuClicked(this.props.submenusVisible.slice(0, level).concat(a));
+        var a = this.state.submenusVisible[level] === key ? [] : [key];
+        this.setState({ submenusVisible: this.state.submenusVisible.slice(0, level).concat(a) });
     },
     onMenuitemClicked(ev, key) {
         ev.stopPropagation();
         this.props.menuitemClicked(key);
-        this.props.menuClicked(!this.props.menuVisible);
+        this.onMenuClicked();
     },
     render() {
         return(
-            <div id="AppMenu" className={this.props.menuVisible ? "appmenu-visible" : ""} onClick={this.onMenuClicked}>
+            <div id="AppMenu" className={this.state.menuVisible ? "appmenu-visible" : ""} onClick={this.onMenuClicked}>
                 <span className="appmenu-label"><Message msgId="appmenu.menulabel" /></span>
                 <Glyphicon className="appmenu-icon" glyph="menu-hamburger"/>
                 <ul className="appmenu-menu">
@@ -58,7 +55,7 @@ const AppMenu = React.createClass({
             return items.map(item => {
                 if(item.subitems) {
                     return (
-                        <li key={item.key} className={this.props.submenusVisible[level] === item.key ? "expanded" : ""} onClick={(ev)=>{this.onSubmenuClicked(ev, item.key, level)}}>
+                        <li key={item.key} className={this.state.submenusVisible[level] === item.key ? "expanded" : ""} onClick={(ev)=>{this.onSubmenuClicked(ev, item.key, level)}}>
                             <img src={item.icon} />
                             <Message msgId={"appmenu.items." + item.key} />
                             {item.title}
@@ -82,15 +79,8 @@ const AppMenu = React.createClass({
     }
 });
 
-const selector = (state) => ({
-    menuVisible: state.appmenu && state.appmenu.visible,
-    submenusVisible: state.appmenu ? state.appmenu.submenus : []
-});
-
 module.exports = {
-    AppMenu: connect(selector, {
-        menuClicked: toggleAppMenu,
-        submenuClicked: toggleAppSubmenu,
+    AppMenu: connect(() => { return {}; }, {
         menuitemClicked: triggerAppMenuitem
     })(AppMenu)
 };
