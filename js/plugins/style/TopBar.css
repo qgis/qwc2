@@ -11,24 +11,60 @@
 #TopBar img.logo {
     width: auto;
     height: 3.5em;
-    margin-right: 2em;
+    margin-right: 1em;
+}
+
+#TopBar #Search {
+    max-width: calc(100% - 9em);
 }
 
 #TopBar #AppMenu {
-    position: absolute;
-    top: 0;
-    right: 5mm;
+    float: right;
     height: 3.5em;
-    width: 25ch;
 }
 
-#TopBar #AppMenu .appmenu-label {
+#TopBar.mobile #AppMenu {
+    width: 3.5em;
+    text-align: right,
+}
+
+#TopBar.mobile #AppMenu ul.appmenu-menu {
+    position: absolute;
+    right: 0;
+    width: 100%;
+    max-width: 40em;
+}
+
+#TopBar #AppMenu .appmenu-button {
     line-height: 3.5em;
 }
 
+#TopBar #AppMenu .appmenu-label {
+    color: #595959;
+    font-weight: bold;
+    transition: color 0.25s;
+    padding-left: 5em;
+}
+
+#TopBar #AppMenu:hover .appmenu-label,
+#TopBar #AppMenu.appmenu-visible .appmenu-label {
+    color: white;
+}
+
+#TopBar #AppMenu .appmenu-icon {
+    color: #808080;
+    padding: 0.25em;
+    margin: 0 1em;
+    border: 2px solid #595959;
+    transition: background-color 0.25s;
+}
+
+#TopBar #AppMenu:hover .appmenu-icon,
+#TopBar #AppMenu.appmenu-visible .appmenu-icon {
+    background-color: white;
+}
+
 #TopBar #FullScreenSwitcher {
-    position: absolute;
-    top: 0;
-    right: 0;
+    float: right;
     height: 3.5em;
 }

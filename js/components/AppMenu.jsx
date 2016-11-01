@@ -8,7 +8,7 @@
 
 const React = require('react');
 const {connect} = require('react-redux');
-const {Glyphicon} = require('react-bootstrap');
+const Swipeable = require('react-swipeable');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {triggerAppMenuitem} = require('../actions/appmenu');
 require('./style/AppMenu.css');
@@ -16,11 +16,13 @@ require('./style/AppMenu.css');
 
 const AppMenu = React.createClass({
     propTypes: {
+        buttonContents: React.PropTypes.object,
         menuItems: React.PropTypes.array,
         menuitemClicked: React.PropTypes.func
     },
     getDefaultProps() {
         return {
+            buttonContents: null
         };
     },
     getInitialState() {
@@ -28,6 +30,9 @@ const AppMenu = React.createClass({
     },
     onMenuClicked() {
         this.setState({ menuVisible: !this.state.menuVisible });
+    },
+    hideMenu() {
+        this.setState({ menuVisible: false });
     },
     onSubmenuClicked(ev, key, level) {
         ev.stopPropagation();
@@ -37,16 +42,17 @@ const AppMenu = React.createClass({
     onMenuitemClicked(ev, key) {
         ev.stopPropagation();
         this.props.menuitemClicked(key);
-        this.onMenuClicked();
+        this.hideMenu();
     },
     render() {
         return(
-            <div id="AppMenu" className={this.state.menuVisible ? "appmenu-visible" : ""} onClick={this.onMenuClicked}>
-                <span className="appmenu-label"><Message msgId="appmenu.menulabel" /></span>
-                <Glyphicon className="appmenu-icon" glyph="menu-hamburger"/>
-                <ul className="appmenu-menu">
-                    {this.renderMenuItems(this.props.menuItems, 0)}
-                </ul>
+            <div tabIndex="1" id="AppMenu" className={this.state.menuVisible ? "appmenu-visible" : ""} onClick={this.onMenuClicked} onBlur={this.hideMenu}>
+                {this.props.buttonContents}
+                <Swipeable onSwipedUp={this.hideMenu}>
+                    <ul className="appmenu-menu">
+                        {this.renderMenuItems(this.props.menuItems, 0)}
+                    </ul>
+                </Swipeable>
             </div>
         );
     },

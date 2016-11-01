@@ -9,30 +9,6 @@
     background-color: rgba(128, 128, 128, 0.75);
 }
 
-#AppMenu .appmenu-label {
-    color: #595959;
-    font-weight: bold;
-    transition: color 0.25s;
-}
-
-#AppMenu:hover .appmenu-label,
-#AppMenu.appmenu-visible .appmenu-label {
-    color: white;
-}
-
-#AppMenu .appmenu-icon {
-    color: #808080;
-    padding: 0.25em;
-    margin: 0 1em;
-    border: 2px solid #595959;
-    transition: background-color 0.25s;
-}
-
-#AppMenu:hover .appmenu-icon,
-#AppMenu.appmenu-visible .appmenu-icon {
-    background-color: white;
-}
-
 #AppMenu ul.appmenu-menu {
     transform-origin: top;
     transform: scaleY(0);

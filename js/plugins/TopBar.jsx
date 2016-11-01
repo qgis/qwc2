@@ -8,6 +8,8 @@
 
 const React = require('react');
 const {connect} = require('react-redux');
+const {Glyphicon} = require('react-bootstrap');
+const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {AppMenu} = require("../components/AppMenu");
 const {FullscreenSwitcher} = require("../components/FullscreenSwitcher");
 const {Search} = require("../components/Search");
@@ -17,28 +19,53 @@ require('./style/TopBar.css');
 
 const TopBar = React.createClass({
     propTypes: {
-        menuItems: React.PropTypes.array
+        mobile: React.PropTypes.bool,
+        menuItems: React.PropTypes.array,
+        fullscreen: React.PropTypes.bool
     },
     getDefaultProps() {
         return {
         }
     },
     render() {
+        let buttonContents;
+        let logo;
+        if(this.props.mobile) {
+            buttonContents = (
+                <span className="appmenu-button">
+                    <Glyphicon className="appmenu-icon" glyph="menu-hamburger"/>
+                </span>
+            );
+            logo = "assets/img/logo-mobile.svg";
+        } else {
+            buttonContents = (
+                <span className="appmenu-button">
+                    <span className="appmenu-label"><Message msgId="appmenu.menulabel" /></span>
+                    <Glyphicon className="appmenu-icon" glyph="menu-hamburger"/>
+                </span>
+            );
+            logo = "assets/img/logo.svg";
+        }
+
         return (
-            <div id="TopBar">
-                <img className="logo" src="assets/img/logo.svg" />
+            <div id="TopBar" className={this.props.mobile ? "mobile" : ""}>
+                <img className="logo" src={logo} />
                 <Search />
-                <AppMenu menuItems={this.props.menuItems} />
-                <FullscreenSwitcher />
+                {this.props.mobile ? null : <FullscreenSwitcher />}
+                <AppMenu menuItems={this.props.menuItems} buttonContents={buttonContents} />
             </div>
          );
      }
 });
 
+const selector = (state) => ({
+    mobile: state.browser ? state.browser.mobile : false,
+    fullscreen: state.display && state.display.fullscreen
+});
+
 module.exports = {
-    TopBarPlugin: TopBar,
+    TopBarPlugin: connect(selector, {})(TopBar),
     reducers: {
-        appmenu: require("../reducers/AppMenu"),
         display: require("../reducers/display"),
         search: require('../../MapStore2/web/client/reducers/search'),
     }
