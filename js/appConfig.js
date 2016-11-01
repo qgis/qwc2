@@ -8,12 +8,8 @@
 
 module.exports = {
     pages: [{
-        name: "home",
-        path: "/",
-        component: require('./pages/Home')
-    }, {
         name: "main",
-        path: "/main",
+        path: "/",
         component: require('./pages/Main')
     }],
     pluginsDef: require('./plugins.js'),
