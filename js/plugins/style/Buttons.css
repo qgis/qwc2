@@ -12,19 +12,19 @@
 }
 
 #LocateBtn {
-    bottom: 17em;
+    bottom: 8em;
 }
 
 #ZoomInBtn {
-    bottom: 13em;
+    bottom: 16em;
 }
 
 #ZoomOutBtn {
-    bottom: 9em;
+    bottom: 12em;
 }
 
 #BackgroundSwitcherButton {
-    bottom: 5em;
+    bottom: 4em;
     transition: border-radius 0.5s, background-color 0.5s, color 0.5s;
 }
 

@@ -2,7 +2,7 @@
     display: inline-block;
     height: 100%;
     cursor: pointer;
-    width: 1.5em;
+    width: 1em;
 }
 
 #FullScreenSwitcher > span {
@@ -14,11 +14,11 @@
 }
 
 #FullScreenSwitcher > span.maximize {
-    border-width: 0 1.5em 1.5em 0;
+    border-width: 0 1em 1em 0;
     border-color: transparent #595959 transparent transparent;
 }
 
 #FullScreenSwitcher > span.minimize {
-    border-width: 1.5em 0 0 1.5em;
+    border-width: 1em 0 0 1em;
     border-color: transparent transparent transparent #595959;
 }
