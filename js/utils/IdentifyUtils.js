@@ -15,7 +15,7 @@ const IdentifyUtils = {
         }
         let parser = new DOMParser();
         let doc = parser.parseFromString(response, "text/xml");
-        if (doc.activeElement.tagName === 'parsererror') {
+        if (doc && doc.activeElement && doc.activeElement.tagName === 'parsererror') {
             return {};
         }
         let features = [].slice.call(doc.firstChild.getElementsByTagName("gml:featureMember"));
