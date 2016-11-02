@@ -2,7 +2,13 @@
   "themes": {
     "items": [
       {
-        "url": "http://qwc2.sourcepole.ch/wms/wolfsburg/qwc2_demo"
+        "url": "http://qwc2.sourcepole.ch/wms/wolfsburg/qwc2_demo",
+        "backgroundLayers": [
+          {
+            "name": "mapnik",
+            "printLayer": "osm_farbig"
+          }
+        ]
       },
       {
         "url": "http://qwc2.sourcepole.ch/wms/ktgr/NUP_RK_Ftan"

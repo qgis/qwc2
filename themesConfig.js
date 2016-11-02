@@ -66,7 +66,12 @@ function toArray(obj) {
 }
 
 // recursively get layer tree
-function getLayerTree(layer, resultLayers) {
+function getLayerTree(layer, resultLayers, printLayers) {
+    if (printLayers.indexOf(layer.Name) !== -1) {
+        // skip print layers
+        return;
+    }
+
     var layerEntry = {
         name: layer.Name,
         title: layer.Title
@@ -98,7 +103,11 @@ function getLayerTree(layer, resultLayers) {
         // group
         layerEntry.sublayers = [];
         for (var subLayer of toArray(layer.Layer)) {
-            getLayerTree(subLayer, layerEntry.sublayers);
+            getLayerTree(subLayer, layerEntry.sublayers, printLayers);
+        }
+        if (layerEntry.sublayers.length === 0) {
+            // skip empty groups
+            return;
         }
     }
     resultLayers.push(layerEntry);
@@ -166,9 +175,17 @@ function getTheme(configItem, resultItem) {
                 }
             }
 
+            // collect WMS layers for printing
+            var printLayers = [];
+            if (configItem.backgroundLayers !== undefined) {
+                printLayers = configItem.backgroundLayers.map((entry) => {
+                    return entry.printLayer;
+                });
+            }
+
             // layer tree
             var layerTree = [];
-            getLayerTree(topLayer, layerTree);
+            getLayerTree(topLayer, layerTree, printLayers);
 
             // print templates
             var printTemplates = [];
@@ -210,6 +227,7 @@ function getTheme(configItem, resultItem) {
             ];
             // NOTE: skip root WMS layer
             resultItem.sublayers = layerTree[0].sublayers;
+            resultItem.backgroundLayers = configItem.backgroundLayers;
             if (printTemplates.length > 0) {
                 resultItem.print = printTemplates;
             }
@@ -257,7 +275,13 @@ function getGroupThemes(configGroup, resultGroup) {
         {
           "url": "<http://localhost/wms/theme>",
           "title": "<Custom theme title>",            // optional, use WMS title if not set
-          "thumbnail": "<theme.png>"                  // optional image file in assets/img/mapthumbs/, use WMS GetMap if not set
+          "thumbnail": "<theme.png>",                 // optional image file in assets/img/mapthumbs/, use WMS GetMap if not set
+          "backgroundLayers": [                       // optional background layers
+            {
+              "name": "<background layer name>",      // background layer name from config.json
+              "printLayer": "<WMS layer name>"        // equivalent WMS layer name for printing
+            }
+          ]
         }
       ],
       "groups": [                                     // optional, nested groups
