@@ -71,8 +71,10 @@ function loadMapConfig(configName, mapId) {
             fetch(ConfigUtils.getConfigProp("qwc2serverUrl") + "/resolvepermalink?key=" + params.k)
             .then(response => response.json())
             .then(obj => {
-                assign(params, obj.query);
-                UrlParams.updateParams(params);
+                if(obj.query) {
+                    assign(params, obj.query);
+                    UrlParams.updateParams(params);
+                }
                 restoreMapConfig(dispatch, configName, mapId, params);
             });
         } else {
