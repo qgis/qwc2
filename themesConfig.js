@@ -170,6 +170,31 @@ function getTheme(configItem, resultItem) {
             var layerTree = [];
             getLayerTree(topLayer, layerTree);
 
+            // print templates
+            var printTemplates = [];
+            if (capabilities.Capability.ComposerTemplates !== undefined) {
+                for (var composerTemplate of capabilities.Capability.ComposerTemplates.ComposerTemplate) {
+                    var printTemplate = {
+                        name: composerTemplate.$.name
+                    };
+                    if (composerTemplate.ComposerMap !== undefined) {
+                        // use first map from GetProjectSettings
+                        var composerMap = toArray(composerTemplate.ComposerMap)[0];
+                        printTemplate.map = {
+                            name: composerMap.$.name,
+                            width: parseFloat(composerMap.$.width),
+                            height: parseFloat(composerMap.$.height)
+                        };
+                    }
+                    if (composerTemplate.ComposerLabel !== undefined) {
+                        printTemplate.labels = toArray(composerTemplate.ComposerLabel).map((entry) => {
+                            return entry.$.name;
+                        });
+                    }
+                    printTemplates.push(printTemplate);
+                }
+            }
+
             // update theme config
             resultItem.id = themeId;
             resultItem.name = topLayer.Name;
@@ -185,13 +210,16 @@ function getTheme(configItem, resultItem) {
             ];
             // NOTE: skip root WMS layer
             resultItem.sublayers = layerTree[0].sublayers;
+            if (printTemplates.length > 0) {
+                resultItem.print = printTemplates;
+            }
 
             // get thumbnail asynchronously
             getThumbnail(configItem, resultItem, topLayer.Name, crs, extent, resolve);
         }).catch((error) => {
             console.error("ERROR reading WMS GetProjectSettings of " + configItem.url + ":\n", error);
             resultItem.error = "Could not read GetProjectSettings";
-            resultItem.name = "Error";
+            resultItem.title = "Error";
             // finish task
             resolve(false);
         });
