@@ -10,6 +10,7 @@ const React = require('react');
 const assign = require('object-assign');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
+const Swipeable = require('react-swipeable');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {zoomToExtent} = require("../../MapStore2/web/client/actions/map");
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
@@ -118,13 +119,15 @@ const ThemeSwitcher = React.createClass({
     },
     render() {
         return (
-            <div id="ThemeSwitcher" className={this.props.paneVisible ? "themeswitcher-visible" : ""}>
-                <div className="themeswitcher-title"><Message msgId="themeswitcher.title" /><Glyphicon onClick={this.closeClicked} glyph="remove"/></div>
-                <input className="themeswitcher-filter" type="text" value={this.props.filter} onChange={this.filterChanged} placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
-                <div className="themeswitcher-container">
-                    {this.renderThemeGroup(this.state.themes)}
+            <Swipeable onSwipedRight={this.closeClicked}>
+                <div id="ThemeSwitcher" className={this.props.paneVisible ? "themeswitcher-visible" : ""}>
+                    <div className="themeswitcher-title"><Message msgId="themeswitcher.title" /><Glyphicon onClick={this.closeClicked} glyph="remove"/></div>
+                    <input className="themeswitcher-filter" type="text" value={this.props.filter} onChange={this.filterChanged} placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
+                    <div className="themeswitcher-container">
+                        {this.renderThemeGroup(this.state.themes)}
+                    </div>
                 </div>
-            </div>
+            </Swipeable>
         );
     },
     createLayerForTheme(theme, visiblelayers=undefined) {

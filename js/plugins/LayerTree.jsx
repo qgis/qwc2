@@ -9,6 +9,7 @@
 const React = require('react');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
+const Swipeable = require('react-swipeable');
 const assign = require('object-assign');
 import classnames from 'classnames';
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
@@ -139,17 +140,29 @@ const LayerTree = React.createClass({
             );
         }
         return (
-            <div id="LayerTree" className={expandedClass}>
-                <div className="layertree-container">
-                    <div className="layertree-tree">{this.props.layers.map(this.renderLayerTree)}</div>
-                    {maptipCheckbox}
+            <Swipeable onSwipedLeft={this.hideLayerTree} onSwipedRight={this.showLayerTree}>
+                <div id="LayerTree" className={expandedClass}>
+                    <div className="layertree-container">
+                        <div className="layertree-tree">{this.props.layers.map(this.renderLayerTree)}</div>
+                        {maptipCheckbox}
+                    </div>
+                    <div className="layertree-expander"><div><Glyphicon glyph={expanderIcon} onClick={this.layerTreeVisibilityToggled}/></div></div>
                 </div>
-                <div className="layertree-expander"><div><Glyphicon glyph={expanderIcon} onClick={this.layerTreeVisibilityToggled}/></div></div>
-            </div>
+            </Swipeable>
         );
     },
     layerTreeVisibilityToggled() {
         this.props.toggleLayertree(!this.props.expanded);
+    },
+    hideLayerTree() {
+        if(this.props.expanded) {
+            this.props.toggleLayertree(false);
+        }
+    },
+    showLayerTree() {
+        if(!this.props.expanded) {
+            this.props.toggleLayertree(true);
+        }
     },
     cloneLayerTree(layer, sublayerpath)
     {
