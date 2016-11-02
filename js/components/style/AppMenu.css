@@ -2,6 +2,7 @@
     text-align: right;
     cursor: default;
     transition: background-color 0.25s;
+    outline: none;
 }
 
 #AppMenu:hover,
