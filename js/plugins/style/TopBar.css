@@ -14,7 +14,16 @@
     margin-right: 1em;
 }
 
+#TopBar #Search div.MapSearchBar {
+    width: auto!important;
+    max-width: 50ch;
+}
+
 #TopBar #Search {
+    max-width: calc(100% - 32em);
+}
+
+#TopBar.mobile #Search {
     max-width: calc(100% - 9em);
 }
 
