@@ -283,8 +283,9 @@ function getGroupThemes(configGroup, resultGroup) {
           "thumbnail": "<theme.png>",                 // optional image file in assets/img/mapthumbs/, use WMS GetMap if not set
           "backgroundLayers": [                       // optional background layers
             {
-              "name": "<background layer name>",      // background layer name from config.json
-              "printLayer": "<WMS layer name>"        // equivalent WMS layer name for printing
+              "name": "<background layer name>",      // background layer name from list below
+              "printLayer": "<WMS layer name>",       // optional equivalent WMS layer name for printing
+              "visibility": true                      // optional initial visibility on topic selection
             }
           ]
         }
@@ -301,6 +302,13 @@ function getGroupThemes(configGroup, resultGroup) {
             // subgroups
           ]
         }
+      ],
+      "backgroundLayers": [                              // optional list of background layers for themes
+        {
+          "name": "<background layer name>",             // referenced by themes
+          "title": "<Background layer title>",
+          ...                                            // layer params like in config.json (excluding "group" and "visibility")
+        }
       ]
     }
   }
@@ -309,11 +317,11 @@ console.log("Reading themesConfig.json");
 var config = require('./themesConfig.json');
 
 var result = {
-    themes:
-    {
+    themes: {
         title: "root",
         subdirs: [],
-        items: []
+        items: [],
+        backgroundLayers: config.themes.backgroundLayers
     }
 };
 getGroupThemes(config.themes, result.themes);

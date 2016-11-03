@@ -13,13 +13,26 @@ const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
 const SET_THEME_SWITCHER_FILTER = 'SET_THEME_FILTER';
 const SET_THEME_SWITCHER_VISIBILITY = 'SET_THEME_SWITCHER_VISIBILITY';
 
-function setCurrentTheme(theme, layer, prevlayerid) {
-    UrlParams.updateParams({t: theme.id, l: undefined});
+function setCurrentTheme(theme, layer, backgroundLayers, prevlayerid, prevBackgroundLayerIds) {
+    UrlParams.updateParams({t: theme.id, l: undefined, bl: undefined});
     return (dispatch) => {
+        // remove previous layers
+        for (let backgroundLayerId of prevBackgroundLayerIds) {
+            dispatch(removeLayer(backgroundLayerId));
+        }
         if(prevlayerid) {
             dispatch(removeLayer(prevlayerid));
         }
+
+        // add theme layers
+        for (let backgroundLayer of backgroundLayers) {
+            if (backgroundLayer.visibility) {
+                UrlParams.updateParams({bl: backgroundLayer.name});
+            }
+            dispatch(addLayer(backgroundLayer));
+        }
         dispatch(addLayer(layer));
+
         dispatch({
             type: SET_CURRENT_THEME,
             theme: theme,

@@ -6,12 +6,19 @@
         "backgroundLayers": [
           {
             "name": "mapnik",
-            "printLayer": "osm_farbig"
+            "printLayer": "osm_farbig",
+            "visibility": true
           }
         ]
       },
       {
-        "url": "http://qwc2.sourcepole.ch/wms/uster/bauprojekte"
+        "url": "http://qwc2.sourcepole.ch/wms/uster/bauprojekte",
+        "backgroundLayers": [
+          {
+            "name": "mapnik",
+            "visibility": true
+          }
+        ]
       }
     ],
     "groups": [
@@ -20,10 +27,54 @@
         "items": [
           {
             "title": "QWC2 Test",
-            "url": "http://qwc2.sourcepole.ch/wms/themes/test"
+            "url": "http://qwc2.sourcepole.ch/wms/themes/test",
+            "backgroundLayers": [
+              {
+                "name": "mapnik",
+                "visibility": true
+              },
+              {
+                "name": "Night2012"
+              },
+              {
+                "name": "StamenToner"
+              },
+              {
+                "name": "StamenWatercolor"
+              }
+            ]
           }
         ],
         "groups": []
+      }
+    ],
+    "backgroundLayers": [
+      {
+        "name": "mapnik",
+        "title": "Open Street Map",
+        "type": "osm",
+        "source": "osm"
+      },
+      {
+        "name": "Night2012",
+        "title": "NASAGIBS Night 2012",
+        "type": "tileprovider",
+        "source": "nasagibs",
+        "provider": "NASAGIBS.ViirsEarthAtNight2012"
+      },
+      {
+        "name": "StamenWatercolor",
+        "title": "Stamen Watercolor/OSM",
+        "type": "tileprovider",
+        "source": "stamen",
+        "provider": "Stamen.Watercolor"
+      },
+      {
+        "name": "StamenToner",
+        "title": "Stamen Toner/OSM",
+        "type": "tileprovider",
+        "source": "stamen",
+        "provider": "Stamen.Toner"
       }
     ]
   }

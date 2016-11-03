@@ -31,7 +31,7 @@ The viewer application is configured in `localConfig.json`.
 
 ### Map
 
-The map is configured in `config.json`.
+The map and initial background layers are configured in `config.json`.
 
 
 ### Themes
@@ -49,8 +49,9 @@ Configuration format:
         "thumbnail": "<theme.png>",                 // optional image file in assets/img/mapthumbs/, use WMS GetMap if not set
         "backgroundLayers": [                       // optional background layers
           {
-            "name": "<background layer name>",      // background layer name from config.json
-            "printLayer": "<WMS layer name>"        // equivalent WMS layer name for printing
+            "name": "<background layer name>",      // background layer name from list below
+            "printLayer": "<WMS layer name>",       // optional equivalent WMS layer name for printing
+            "visibility": true                      // optional initial visibility on topic selection
           }
         ]
       }
@@ -66,6 +67,13 @@ Configuration format:
         "groups": [
           // subgroups
         ]
+      }
+    ],
+    "backgroundLayers": [                              // optional list of background layers for themes
+      {
+        "name": "<background layer name>",             // referenced by themes
+        "title": "<Background layer title>",
+        ...                                            // layer params like in config.json (excluding "group" and "visibility")
       }
     ]
   }

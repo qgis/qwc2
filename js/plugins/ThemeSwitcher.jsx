@@ -30,6 +30,7 @@ const ThemeSwitcher = React.createClass({
         activeTheme: React.PropTypes.object,
         activeThemeLayer: React.PropTypes.string,
         map: React.PropTypes.object,
+        layers: React.PropTypes.array,
         changeTheme: React.PropTypes.func,
         changeFilter: React.PropTypes.func,
         changeVisibility: React.PropTypes.func,
@@ -64,7 +65,7 @@ const ThemeSwitcher = React.createClass({
         let theme = this.getThemeById(this.state.themes, params.t);
         if(theme) {
             let layer = this.createLayerForTheme(theme, params.l ? params.l.split(",") : undefined);
-            this.props.changeTheme(theme, layer, this.props.activeThemeLayer);
+            this.props.changeTheme(theme, layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds());
         }
     },
     getThemeById(dir, id) {
@@ -153,8 +154,35 @@ const ThemeSwitcher = React.createClass({
             queryLayers: queryLayers
         }
     },
+    createBackgroundLayersForTheme(theme, visibleBackgroundLayer=undefined) {
+        let backgroundLayers = [];
+        for (let themeBackgroundLayer of (theme.backgroundLayers || [])) {
+            // lookup background layer
+            let backgroundLayer = this.state.themes.backgroundLayers.find((layer) => layer.name === themeBackgroundLayer.name);
+            if (backgroundLayer !== undefined) {
+                let visibility = themeBackgroundLayer.visibility || false;
+                if (visibleBackgroundLayer !== undefined) {
+                    visibility = (backgroundLayer.name === visibleBackgroundLayer);
+                }
+                backgroundLayers.push(assign({}, backgroundLayer, {
+                    group: 'background',
+                    visibility: visibility
+                }));
+            } else {
+                console.warn("Could not find background layer " + themeBackgroundLayer.name);
+            }
+        };
+        return backgroundLayers;
+    },
+    currentBackgroundLayerIds() {
+        return this.props.layers.filter((layer) => {
+            return layer.group === 'background';
+        }).map((layer) => {
+            return layer.id;
+        });
+    },
     themeClicked(theme) {
-        this.props.changeTheme(theme, this.createLayerForTheme(theme), this.props.activeThemeLayer);
+        this.props.changeTheme(theme, this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme), this.props.activeThemeLayer, this.currentBackgroundLayerIds());
         this.props.zoomToExtent(theme.extent, theme.crs);
     },
     filterChanged(ev) {
@@ -171,7 +199,8 @@ const selector = (state) => ({
     activeThemeLayer: state.theme ? state.theme.currentlayer : null,
     filter: state.theme ? state.theme.switcherfilter : "",
     startuptheme: state.theme ? state.theme.startuptheme : null,
-    map: state.map
+    map: state.map,
+    layers: state.layers && state.layers.flat ? state.layers.flat : []
 });
 
 
