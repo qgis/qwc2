@@ -77,6 +77,11 @@ function getLayerTree(layer, resultLayers, printLayers) {
         title: layer.Title
     };
     if (layer.Layer === undefined) {
+        if (layer.$.geometryType == "WKBNoGeometry") {
+            // skip layers without geometry
+            return;
+        }
+
         // layer
         layerEntry.visibility = layer.$.visible === '1';
         layerEntry.queryable = layer.$.queryable === '1';
@@ -141,7 +146,7 @@ function getTheme(configItem, resultItem) {
                 }
             });
 
-            console.log("Parsing WMS GetCapabilities of " + configItem.url);
+            console.log("Parsing WMS GetProjectSettings of " + configItem.url);
 
             const topLayer = capabilities.Capability.Layer;
 
