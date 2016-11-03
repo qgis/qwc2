@@ -3,11 +3,13 @@
     cursor: default;
     transition: background-color 0.25s;
     outline: none;
+    overflow: hidden;
 }
 
-#AppMenu:hover,
+#AppMenu div.appmenu-button-container:hover,
 #AppMenu.appmenu-visible {
     background-color: rgba(128, 128, 128, 0.75);
+    overflow: visible;
 }
 
 #AppMenu ul.appmenu-menu {
@@ -19,7 +21,6 @@
     padding: 0;
     transition: transform 0.1s;
     background-color: #f2f2f2;
-    padding: 0;
     z-index: 3;
 }
 

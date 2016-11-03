@@ -47,7 +47,9 @@ const AppMenu = React.createClass({
     render() {
         return(
             <div tabIndex="1" id="AppMenu" className={this.state.menuVisible ? "appmenu-visible" : ""} onClick={this.onMenuClicked} onBlur={this.hideMenu}>
-                {this.props.buttonContents}
+                <div className="appmenu-button-container">
+                    {this.props.buttonContents}
+                </div>
                 <Swipeable onSwipedUp={this.hideMenu}>
                     <ul className="appmenu-menu">
                         {this.renderMenuItems(this.props.menuItems, 0)}

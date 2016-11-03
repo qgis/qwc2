@@ -55,7 +55,7 @@
     padding-left: 5em;
 }
 
-#TopBar #AppMenu:hover .appmenu-label,
+#TopBar #AppMenu div.appmenu-button-container:hover .appmenu-label,
 #TopBar #AppMenu.appmenu-visible .appmenu-label {
     color: white;
 }
@@ -68,7 +68,7 @@
     transition: background-color 0.25s;
 }
 
-#TopBar #AppMenu:hover .appmenu-icon,
+#TopBar #AppMenu div.appmenu-button-container:hover .appmenu-icon,
 #TopBar #AppMenu.appmenu-visible .appmenu-icon {
     background-color: white;
 }
