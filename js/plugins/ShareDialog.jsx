@@ -64,10 +64,8 @@ const ShareDialog = React.createClass({
             );
         } else {
             return (
-                <div role="body" className="share-panels">
-                    <div style={{padding: "1em"}}>
-                        <Message msgId="sharedialog.generatingpermalink" />
-                    </div>
+                <div role="body" className="share-panels" style={{padding: "1em"}}>
+                    <Message msgId="sharedialog.generatingpermalink" />
                 </div>);
         }
     },
