@@ -150,8 +150,7 @@ function getTheme(configItem, resultItem) {
 
             const topLayer = capabilities.Capability.Layer;
 
-            // unique id
-            const themeId = topLayer.Name + "_" + Date.now().toString();
+            const themeId = topLayer.Name;
 
             // use name from config or fallback to WMS title
             const wmsTitle = configItem.title || capabilities.Service.Title || topLayer.Title;
