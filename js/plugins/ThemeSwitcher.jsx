@@ -27,7 +27,7 @@ const ThemeSwitcher = React.createClass({
         startuptheme: React.PropTypes.shape({
             id: React.PropTypes.string,
             activelayers: React.PropTypes.array}),
-        activeTheme: React.PropTypes.string,
+        activeTheme: React.PropTypes.object,
         activeThemeLayer: React.PropTypes.string,
         map: React.PropTypes.object,
         changeTheme: React.PropTypes.func,
@@ -64,7 +64,7 @@ const ThemeSwitcher = React.createClass({
         let theme = this.getThemeById(this.state.themes, params.t);
         if(theme) {
             let layer = this.createLayerForTheme(theme, params.l ? params.l.split(",") : undefined);
-            this.props.changeTheme(theme.id, layer, this.props.activeThemeLayer);
+            this.props.changeTheme(theme, layer, this.props.activeThemeLayer);
         }
     },
     getThemeById(dir, id) {
@@ -106,10 +106,11 @@ const ThemeSwitcher = React.createClass({
                 (<li key={subdir.title} className="theme-group"><span>{subdir.title}</span><ul>{this.renderThemeGroup(subdir)}</ul></li>)
             );
         }
+        let activeThemeId = this.props.activeTheme ? this.props.activeTheme.id : null;
         return (<ul>
             {(group && group.items ? group.items : []).map(item => {
                 return item.title.includes(this.props.filter) || (item.keywords || []).includes(this.props.filter) ? (
-                    <li key={item.id} className={this.props.activeTheme === item.id ? "theme-item theme-item-active" : "theme-item"} onClick={(ev)=>{this.themeClicked(item);}}>
+                    <li key={item.id} className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"} onClick={(ev)=>{this.themeClicked(item);}}>
                         {item.title}<br /><img src={"data:image/png;base64," + item.thumbnail} /><br />
                     <div className="theme-item-keywords" title={item.keywords}>{item.keywords}</div>
                     </li>) : null;
@@ -153,7 +154,7 @@ const ThemeSwitcher = React.createClass({
         }
     },
     themeClicked(theme) {
-        this.props.changeTheme(theme.id, this.createLayerForTheme(theme), this.props.activeThemeLayer);
+        this.props.changeTheme(theme, this.createLayerForTheme(theme), this.props.activeThemeLayer);
         this.props.zoomToExtent(theme.extent, theme.crs);
     },
     filterChanged(ev) {
