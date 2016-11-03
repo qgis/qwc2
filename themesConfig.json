@@ -11,12 +11,12 @@
         ]
       },
       {
-        "url": "http://qwc2.sourcepole.ch/wms/ktgr/NUP_RK_Ftan"
+        "url": "http://qwc2.sourcepole.ch/wms/uster/bauprojekte"
       }
     ],
     "groups": [
       {
-        "title": "Group",
+        "title": "Dev Tests",
         "items": [
           {
             "title": "QWC2 Test",
