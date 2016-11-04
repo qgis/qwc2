@@ -64,10 +64,14 @@ const ThemeSwitcher = React.createClass({
     populateThemesList(object) {
         this.setState({themes: object.themes});
         var params = UrlParams.getParams();
-        let theme = this.getThemeById(this.state.themes, params.t);
+        let theme = this.getThemeById(this.state.themes, params.t || this.state.themes.defaultTheme);
         if(theme) {
             let layer = this.createLayerForTheme(theme, params.l ? params.l.split(",") : undefined);
             this.props.changeTheme(theme, layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds());
+            if (params.t === undefined) {
+                // zoom to default theme
+                this.props.zoomToExtent(theme.extent, theme.crs);
+            }
         }
     },
     getThemeById(dir, id) {

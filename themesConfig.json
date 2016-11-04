@@ -3,6 +3,7 @@
     "items": [
       {
         "url": "http://qwc2.sourcepole.ch/wms/wolfsburg/qwc2_demo",
+        "default": true,
         "backgroundLayers": [
           {
             "name": "mapnik",

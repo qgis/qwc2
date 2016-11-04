@@ -242,6 +242,11 @@ function getTheme(configItem, resultItem) {
                 resultItem.print = printTemplates;
             }
 
+            // set default theme
+            if (configItem.default) {
+                result.themes.defaultTheme = resultItem.name;
+            }
+
             // get thumbnail asynchronously
             getThumbnail(configItem, resultItem, visibleLayers, crs, extent, resolve);
         }).catch((error) => {
@@ -286,6 +291,7 @@ function getGroupThemes(configGroup, resultGroup) {
           "url": "<http://localhost/wms/theme>",
           "title": "<Custom theme title>",            // optional, use WMS title if not set
           "thumbnail": "<theme.png>",                 // optional image file in assets/img/mapthumbs/, use WMS GetMap if not set
+          "default": true,                            // optional, set this as the initial theme
           "backgroundLayers": [                       // optional background layers
             {
               "name": "<background layer name>",      // background layer name from list below
@@ -326,6 +332,7 @@ var result = {
         title: "root",
         subdirs: [],
         items: [],
+        defaultTheme: undefined,
         backgroundLayers: config.themes.backgroundLayers
     }
 };

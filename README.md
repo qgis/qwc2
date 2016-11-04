@@ -32,6 +32,7 @@ The viewer application is configured in `localConfig.json`.
 ### Map
 
 The map and initial background layers are configured in `config.json`.
+Setting a default theme in `themesConfig.json` will override the initial center and zoom settings from this configuration.
 
 
 ### Themes
@@ -47,6 +48,7 @@ Configuration format:
         "url": "<http://localhost/wms/theme>",
         "title": "<Custom theme title>",            // optional, use WMS title if not set
         "thumbnail": "<theme.png>",                 // optional image file in assets/img/mapthumbs/, use WMS GetMap if not set
+        "default": true,                            // optional, set this as the initial theme
         "backgroundLayers": [                       // optional background layers
           {
             "name": "<background layer name>",      // background layer name from list below
