@@ -443,7 +443,8 @@
             "embeddedLinkTitle": "Via the embedded code",
             "QRCodeLinkTitle": "qr code",
             "msgCopiedUrl":"Copied",
-            "msgToCopyUrl":"Click to copy"
+            "msgToCopyUrl":"Click to copy",
+            "generatingpermalink": "Generating permalink..."
         },
         "snapshot": {
             "title": "Snapshot Preview",
@@ -685,7 +686,7 @@
             "menulabel": "Map & Tools",
             "items": {
                 "themes": "Select Theme",
-                "link": "Share link",
+                "share": "Share link",
                 "tools": "Map Tools",
                 "measure": "Measure",
                 "draw": "Draw",
@@ -706,10 +707,6 @@
         "layertree": {
             "transparency" : "Transparency",
             "maptip": "Show layer map tips"
-        },
-        "sharedialog": {
-            "title": "Share link",
-            "generatingpermalink": "Generating permalink..."
         }
     }
 }

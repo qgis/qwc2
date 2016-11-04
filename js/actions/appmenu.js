@@ -21,10 +21,10 @@ function triggerAppMenuitem(key) {
             type: SET_CURRENT_SIDEBAR,
             current: 'themeswitcher'
         }
-    } else if(key === 'link') {
+    } else if(key === 'share') {
         return {
-            type: CHANGE_DIALOG_STATE,
-            statechange: {share: true}
+            type: SET_CURRENT_SIDEBAR,
+            current: 'Share'
         }
     } else if(key === 'print') {
         return {

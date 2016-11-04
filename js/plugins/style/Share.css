@@ -1,18 +1,14 @@
-#ShareLinkDialog {
-    width: 40ch!important;
-}
-
-#ShareLinkDialog div.social-links,
-#ShareLinkDialog div.input-link,
-#ShareLinkDialog div.qr-code {
+#Share div.social-links,
+#Share div.input-link,
+#Share div.qr-code {
     padding: 0.5em 1em;
 }
 
-#ShareLinkDialog div.SocialMediaShareButton {
+#Share div.SocialMediaShareButton {
     cursor: pointer;
 }
 
-#ShareLinkDialog div.input-link span.input-group-addon {
+#Share div.input-link span.input-group-addon {
     font-size: inherit;
     padding: 0;
     width: 3em;
@@ -24,7 +20,7 @@
     border-width: 1px 1px 1px 0;
 }
 
-#ShareLinkDialog div.input-link button.buttonCopy {
+#Share div.input-link button.buttonCopy {
     padding: 0;
     margin: 0;
     font-size: inherit;

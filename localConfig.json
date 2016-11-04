@@ -30,7 +30,7 @@
             "cfg": {
               "menuItems": [
                 {"key": "themes", "icon": "assets/img/layers.svg"},
-                {"key": "link", "icon": "assets/img/share.svg"},
+                {"key": "share", "icon": "assets/img/share.svg"},
                 {"key": "tools", "icon": "assets/img/tools.svg", "subitems": [
                   {"key": "measure"},
                   {"key": "draw"}
@@ -57,7 +57,7 @@
           }
         },
         {
-          "name": "ShareDialog"
+          "name": "Share"
         },
         {
           "name": "Print"
@@ -97,7 +97,7 @@
             "cfg": {
               "menuItems": [
                 {"key": "themes", "icon": "assets/img/layers.svg"},
-                {"key": "link", "icon": "assets/img/share.svg"},
+                {"key": "share", "icon": "assets/img/share.svg"},
                 {"key": "tools", "icon": "assets/img/tools.svg", "subitems": [
                   {"key": "measure"},
                   {"key": "draw"}
@@ -133,7 +133,7 @@
           "name": "MapTip"
         },
         {
-          "name": "ShareDialog"
+          "name": "Share"
         },
         {
           "name": "Print"
