@@ -9,22 +9,18 @@
 const React = require('react');
 const assign = require('object-assign');
 const {connect} = require('react-redux');
-const {Glyphicon} = require('react-bootstrap');
-const Swipeable = require('react-swipeable');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {zoomToExtent} = require("../../MapStore2/web/client/actions/map");
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2/web/client/utils/LocaleUtils");
 const {setCurrentTheme,setThemeSwitcherFilter} = require("../actions/theme");
-const {setCurrentSidebar} = require("../actions/sidebar");
+const {SideBar} = require('../components/SideBar');
 const UrlParams = require("../utils/UrlParams");
 const LayerUtils = require('../utils/LayerUtils');
-require('./style/SideBar.css');
 require('./style/ThemeSwitcher.css');
 
 const ThemeSwitcher = React.createClass({
     propTypes: {
-        sidebarVisible: React.PropTypes.bool,
         filter: React.PropTypes.string,
         startuptheme: React.PropTypes.shape({
             id: React.PropTypes.string,
@@ -44,7 +40,6 @@ const ThemeSwitcher = React.createClass({
     },
     getDefaultProps() {
         return {
-            sidebarVisible: false,
             filter: "",
             activeTheme: null,
             activeThemeLayer: null,
@@ -127,15 +122,14 @@ const ThemeSwitcher = React.createClass({
     },
     render() {
         return (
-            <Swipeable onSwipedRight={this.closeClicked}>
-                <div id="ThemeSwitcher" className={this.props.sidebarVisible ? "sidebar sidebar-visible" : "sidebar"}>
-                    <div className="sidebar-title"><Message msgId="themeswitcher.title" /><Glyphicon onClick={this.closeClicked} glyph="remove"/></div>
+            <SideBar id="ThemeSwitcher" width="15em" title="themeswitcher.title">
+                <div role="body" style={{height: '100%'}}>
                     <input className="themeswitcher-filter" type="text" value={this.props.filter} onChange={this.filterChanged} placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
                     <div className="themeswitcher-container">
                         {this.renderThemeGroup(this.state.themes)}
                     </div>
                 </div>
-            </Swipeable>
+            </SideBar>
         );
     },
     createLayerForTheme(theme, visiblelayers=undefined) {
@@ -193,16 +187,10 @@ const ThemeSwitcher = React.createClass({
     },
     filterChanged(ev) {
         this.props.changeFilter(ev.target.value);
-    },
-    closeClicked() {
-        if(this.props.sidebarVisible) {
-            this.props.setCurrentSidebar(null);
-        }
     }
 });
 
 const selector = (state) => ({
-    sidebarVisible: state.sidebar ? state.sidebar.current === 'themeswitcher' : false,
     activeTheme: state.theme ? state.theme.current : null,
     activeThemeLayer: state.theme ? state.theme.currentlayer : null,
     filter: state.theme ? state.theme.switcherfilter : "",
@@ -216,7 +204,6 @@ module.exports = {
     ThemeSwitcherPlugin: connect(selector, {
         changeTheme: setCurrentTheme,
         changeFilter: setThemeSwitcherFilter,
-        setCurrentSidebar: setCurrentSidebar,
         zoomToExtent: zoomToExtent
     })(ThemeSwitcher),
     reducers: {

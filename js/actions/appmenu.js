@@ -19,7 +19,7 @@ function triggerAppMenuitem(key) {
     } else if(key === 'themes') {
         return {
             type: SET_CURRENT_SIDEBAR,
-            current: 'themeswitcher'
+            current: 'ThemeSwitcher'
         }
     } else if(key === 'share') {
         return {
