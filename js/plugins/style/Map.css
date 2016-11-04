@@ -3,6 +3,7 @@ div.ol-scale-line {
     z-index: 3;
     bottom: 3px !important;
     left: 3px!important;
+    z-index: 5;
 }
 
 /** Hide attribution element */
@@ -14,7 +15,7 @@ div.ol-attribution {
 div.ol-overviewmap {
     bottom: 0.25em!important;
     right: 0.25em!important;
-    z-index: 5;
+    z-index: 6;
 }
 
 div.ol-overviewmap button {
@@ -26,5 +27,5 @@ div.ol-overviewmap button:focus {
 }
 
 div.ol-overviewmap div.ol-overviewmap-map {
-    z-index: 4;
+    z-index: 5;
 }

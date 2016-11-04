@@ -21,7 +21,6 @@
     padding: 0;
     transition: transform 0.1s;
     background-color: #f2f2f2;
-    z-index: 3;
 }
 
 #AppMenu.appmenu-visible ul.appmenu-menu {
