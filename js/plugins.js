@@ -22,7 +22,8 @@ module.exports = {
         IdentifyPlugin: require('./plugins/Identify'),
         MapTipPlugin: require('./plugins/MapTip'),
         ShareDialogPlugin: require('./plugins/ShareDialog'),
-        MapCopyright: require('./plugins/MapCopyright')
+        MapCopyrightPlugin: require('./plugins/MapCopyright'),
+        PrintPlugin: require('./plugins/Print')
     },
     requires: {}
 };

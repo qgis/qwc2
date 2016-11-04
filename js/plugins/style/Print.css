@@ -1,0 +1,25 @@
+#Print span.option-label {
+    margin-right: 1em;
+    width: 10em;
+}
+
+#Print table.options-table td {
+    padding: 0.25em;
+}
+
+#Print table.options-table select {
+    width: 100%;
+}
+
+#Print table.options-table span.input-frame {
+    border: 1px solid #a5a5a5;
+    border-radius: 3px;
+    padding: 0.25em;
+    background-color: white;
+    display: block;
+}
+
+#Print table.options-table input {
+    border: 0;
+    width: 10ch;
+}

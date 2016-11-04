@@ -26,6 +26,11 @@ function triggerAppMenuitem(key) {
             type: CHANGE_DIALOG_STATE,
             statechange: {share: true}
         }
+    } else if(key === 'print') {
+        return {
+            type: SET_CURRENT_SIDEBAR,
+            current: 'print'
+        }
     }
     return (dispatch) => {};
 }

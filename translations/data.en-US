@@ -136,7 +136,7 @@
         },
         "print":{
             "paneltitle": "Print",
-            "layout": "Layout",
+            "layout": "Layout:",
             "sheetsize": "Sheet size:",
             "legendoptions": "Legend options",
             "submit": "Print",
@@ -160,7 +160,10 @@
                 "iconsSize": "Icons size:",
                 "dpi": "Dpi:"
             },
-            "layoutWarning": "Not allowed layout"
+            "layoutWarning": "Not allowed layout",
+            "scale": "Scale:",
+            "notheme": "No theme selected",
+            "nolayouts": "The selected theme does not support printing"
         },
         "backgroundSwither":{
             "tooltip": "Select Background"
@@ -686,6 +689,7 @@
                 "tools": "Map Tools",
                 "measure": "Measure",
                 "draw": "Draw",
+                "print": "Print",
                 "help": "Help"
             }
         },
