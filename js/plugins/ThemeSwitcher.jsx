@@ -15,14 +15,16 @@ const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {zoomToExtent} = require("../../MapStore2/web/client/actions/map");
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2/web/client/utils/LocaleUtils");
-const {setCurrentTheme,setThemeSwitcherFilter,setThemeSwitcherVisibility} = require("../actions/theme");
+const {setCurrentTheme,setThemeSwitcherFilter} = require("../actions/theme");
+const {setCurrentSidebar} = require("../actions/sidebar");
 const UrlParams = require("../utils/UrlParams");
 const LayerUtils = require('../utils/LayerUtils');
+require('./style/SideBar.css');
 require('./style/ThemeSwitcher.css');
 
 const ThemeSwitcher = React.createClass({
     propTypes: {
-        paneVisible: React.PropTypes.bool,
+        sidebarVisible: React.PropTypes.bool,
         filter: React.PropTypes.string,
         startuptheme: React.PropTypes.shape({
             id: React.PropTypes.string,
@@ -33,7 +35,7 @@ const ThemeSwitcher = React.createClass({
         layers: React.PropTypes.array,
         changeTheme: React.PropTypes.func,
         changeFilter: React.PropTypes.func,
-        changeVisibility: React.PropTypes.func,
+        setCurrentSidebar: React.PropTypes.func,
         addLayer: React.PropTypes.func,
         zoomToExtent: React.PropTypes.func
     },
@@ -42,7 +44,7 @@ const ThemeSwitcher = React.createClass({
     },
     getDefaultProps() {
         return {
-            paneVisible: false,
+            sidebarVisible: false,
             filter: "",
             activeTheme: null,
             activeThemeLayer: null,
@@ -122,8 +124,8 @@ const ThemeSwitcher = React.createClass({
     render() {
         return (
             <Swipeable onSwipedRight={this.closeClicked}>
-                <div id="ThemeSwitcher" className={this.props.paneVisible ? "themeswitcher-visible" : ""}>
-                    <div className="themeswitcher-title"><Message msgId="themeswitcher.title" /><Glyphicon onClick={this.closeClicked} glyph="remove"/></div>
+                <div id="ThemeSwitcher" className={this.props.sidebarVisible ? "sidebar sidebar-visible" : "sidebar"}>
+                    <div className="sidebar-title"><Message msgId="themeswitcher.title" /><Glyphicon onClick={this.closeClicked} glyph="remove"/></div>
                     <input className="themeswitcher-filter" type="text" value={this.props.filter} onChange={this.filterChanged} placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
                     <div className="themeswitcher-container">
                         {this.renderThemeGroup(this.state.themes)}
@@ -189,12 +191,14 @@ const ThemeSwitcher = React.createClass({
         this.props.changeFilter(ev.target.value);
     },
     closeClicked() {
-        this.props.changeVisibility(!this.props.paneVisible);
+        if(this.props.sidebarVisible) {
+            this.props.setCurrentSidebar(null);
+        }
     }
 });
 
 const selector = (state) => ({
-    paneVisible: state.theme && state.theme.switchervisible,
+    sidebarVisible: state.sidebar ? state.sidebar.current === 'themeswitcher' : false,
     activeTheme: state.theme ? state.theme.current : null,
     activeThemeLayer: state.theme ? state.theme.currentlayer : null,
     filter: state.theme ? state.theme.switcherfilter : "",
@@ -208,11 +212,12 @@ module.exports = {
     ThemeSwitcherPlugin: connect(selector, {
         changeTheme: setCurrentTheme,
         changeFilter: setThemeSwitcherFilter,
-        changeVisibility: setThemeSwitcherVisibility,
+        setCurrentSidebar: setCurrentSidebar,
         zoomToExtent: zoomToExtent
     })(ThemeSwitcher),
     reducers: {
         theme: require('../reducers/theme'),
-        layers: require('../../MapStore2/web/client/reducers/layers')
+        sidebar: require('../reducers/sidebar'),
+        layers: require('../../MapStore2/web/client/reducers/layers'),
     }
 };

@@ -11,7 +11,6 @@ const {addLayer,removeLayer} = require("../../MapStore2/web/client/actions/layer
 
 const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
 const SET_THEME_SWITCHER_FILTER = 'SET_THEME_FILTER';
-const SET_THEME_SWITCHER_VISIBILITY = 'SET_THEME_SWITCHER_VISIBILITY';
 
 function setCurrentTheme(theme, layer, backgroundLayers, prevlayerid, prevBackgroundLayerIds) {
     UrlParams.updateParams({t: theme.id, l: undefined, bl: undefined});
@@ -48,19 +47,9 @@ function setThemeSwitcherFilter(filter) {
     };
 }
 
-function setThemeSwitcherVisibility(visible)
-{
-    return {
-        type: SET_THEME_SWITCHER_VISIBILITY,
-        visible: visible
-    }
-}
-
 module.exports = {
     SET_CURRENT_THEME,
     SET_THEME_SWITCHER_FILTER,
-    SET_THEME_SWITCHER_VISIBILITY,
     setCurrentTheme,
     setThemeSwitcherFilter,
-    setThemeSwitcherVisibility
 }

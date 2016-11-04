@@ -7,7 +7,7 @@
  */
 
 const {CHANGE_MEASUREMENT_TOOL} = require('../../MapStore2/web/client/actions/measurement');
-const {SET_THEME_SWITCHER_VISIBILITY} = require('./theme');
+const {SET_CURRENT_SIDEBAR} = require('./sidebar');
 const {CHANGE_DIALOG_STATE} = require('./dialog');
 
 function triggerAppMenuitem(key) {
@@ -18,8 +18,8 @@ function triggerAppMenuitem(key) {
         };
     } else if(key === 'themes') {
         return {
-            type: SET_THEME_SWITCHER_VISIBILITY,
-            visible: true
+            type: SET_CURRENT_SIDEBAR,
+            current: 'themeswitcher'
         }
     } else if(key === 'link') {
         return {

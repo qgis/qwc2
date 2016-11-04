@@ -9,8 +9,7 @@
 const {
     SET_STARTUP_THEME,
     SET_CURRENT_THEME,
-    SET_THEME_SWITCHER_FILTER,
-    SET_THEME_SWITCHER_VISIBILITY} = require('../actions/theme');
+    SET_THEME_SWITCHER_FILTER} = require('../actions/theme');
 const assign = require('object-assign');
 
 function themeSwitcher(state = {switchervisible: false, switcherfilter: "", current: null}, action) {
@@ -27,10 +26,6 @@ function themeSwitcher(state = {switchervisible: false, switcherfilter: "", curr
         case SET_THEME_SWITCHER_FILTER:
             return assign({}, state, {
                 switcherfilter: action.filter
-            });
-        case SET_THEME_SWITCHER_VISIBILITY:
-            return assign({}, state, {
-                switchervisible: action.visible
             });
         default:
             return state;
