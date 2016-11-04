@@ -29,7 +29,7 @@ const Print = React.createClass({
     },
     getDefaultProps() {
         return {
-            visible: false
+            sidebarVisible: false
         }
     },
     getInitialState() {
