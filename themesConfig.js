@@ -14,7 +14,7 @@ const xml2js = require('xml2js');
 const fs = require('fs');
 
 // load thumbnail from file or GetMap
-function getThumbnail(configItem, resultItem, layer, crs, extent, resolve) {
+function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
     if (configItem.thumbnail !== undefined) {
         // read thumbnail file
         try {
@@ -41,7 +41,7 @@ function getThumbnail(configItem, resultItem, layer, crs, extent, resolve) {
     parsedUrl.query.HEIGHT = 96;
     parsedUrl.query.CRS = crs;
     parsedUrl.query.BBOX = extent.join(',');
-    parsedUrl.query.LAYERS = layer;
+    parsedUrl.query.LAYERS = layers.join(',');
     const getMapUrl = urlUtil.format(parsedUrl);
 
     axios.get(getMapUrl, {responseType: "arraybuffer"}).then((response) => {
@@ -66,7 +66,7 @@ function toArray(obj) {
 }
 
 // recursively get layer tree
-function getLayerTree(layer, resultLayers, printLayers) {
+function getLayerTree(layer, resultLayers, visibleLayers, printLayers) {
     if (printLayers.indexOf(layer.Name) !== -1) {
         // skip print layers
         return;
@@ -84,6 +84,10 @@ function getLayerTree(layer, resultLayers, printLayers) {
 
         // layer
         layerEntry.visibility = layer.$.visible === '1';
+        if (layerEntry.visibility) {
+            // collect visible layers
+            visibleLayers.push(layer.Name);
+        }
         layerEntry.queryable = layer.$.queryable === '1';
         if (layer.Attribution !== undefined) {
             layerEntry.attribution = layer.Attribution.Title;
@@ -108,7 +112,7 @@ function getLayerTree(layer, resultLayers, printLayers) {
         // group
         layerEntry.sublayers = [];
         for (var subLayer of toArray(layer.Layer)) {
-            getLayerTree(subLayer, layerEntry.sublayers, printLayers);
+            getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers);
         }
         if (layerEntry.sublayers.length === 0) {
             // skip empty groups
@@ -187,9 +191,11 @@ function getTheme(configItem, resultItem) {
                 });
             }
 
-            // layer tree
+            // layer tree and visible layers
             var layerTree = [];
-            getLayerTree(topLayer, layerTree, printLayers);
+            var visibleLayers = [];
+            getLayerTree(topLayer, layerTree, visibleLayers, printLayers);
+            visibleLayers.reverse();
 
             // print templates
             var printTemplates = [];
@@ -237,7 +243,7 @@ function getTheme(configItem, resultItem) {
             }
 
             // get thumbnail asynchronously
-            getThumbnail(configItem, resultItem, topLayer.Name, crs, extent, resolve);
+            getThumbnail(configItem, resultItem, visibleLayers, crs, extent, resolve);
         }).catch((error) => {
             console.error("ERROR reading WMS GetProjectSettings of " + configItem.url + ":\n", error);
             resultItem.error = "Could not read GetProjectSettings";
