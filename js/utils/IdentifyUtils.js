@@ -24,13 +24,15 @@ const IdentifyUtils = {
         }
         let layerFeatures = {};
         features.map((featureMember) => {
-            let layer = featureMember.firstElementChild.nodeName;
-            if(layerFeatures[layer] === undefined) {
-                layerFeatures[layer] = [];
+            if (featureMember.firstElementChild !== null) {
+                let layer = featureMember.firstElementChild.nodeName;
+                if(layerFeatures[layer] === undefined) {
+                    layerFeatures[layer] = [];
+                }
+                layerFeatures[layer].push(featureMember.firstElementChild);
+                stats.count += 1;
+                stats.lastFeature = featureMember.firstElementChild;
             }
-            layerFeatures[layer].push(featureMember.firstElementChild);
-            stats.count += 1;
-            stats.lastFeature = featureMember.firstElementChild;
         });
         return layerFeatures;
     },
