@@ -29,7 +29,7 @@ function triggerAppMenuitem(key) {
     } else if(key === 'print') {
         return {
             type: SET_CURRENT_SIDEBAR,
-            current: 'print'
+            current: 'Print'
         }
     }
     return (dispatch) => {};

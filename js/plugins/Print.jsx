@@ -7,29 +7,25 @@
  */
 
 const React = require('react');
-const {Glyphicon} = require('react-bootstrap');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
-const Swipeable = require('react-swipeable');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const MapUtils = require('../../MapStore2/web/client/utils/MapUtils');
 const {configurePrintFrame, clearPrintFrame} = require('../../MapStore2/web/client/actions/printframe');
-const {setCurrentSidebar} = require("../actions/sidebar");
-require('./style/SideBar.css');
+const {SideBar} = require('../components/SideBar');
 require('./style/Print.css');
 
 const Print = React.createClass({
     propTypes: {
-        sidebarVisible: React.PropTypes.bool,
+        visible: React.PropTypes.bool,
         theme: React.PropTypes.object,
-        setCurrentSidebar: React.PropTypes.func,
         map: React.PropTypes.object,
         configurePrintFrame: React.PropTypes.func,
         clearPrintFrame: React.PropTypes.func
     },
     getDefaultProps() {
         return {
-            sidebarVisible: false
+            visible: false
         }
     },
     getInitialState() {
@@ -44,64 +40,57 @@ const Print = React.createClass({
             }
             newState["layout"] = layout;
         }
-        if(newProps.sidebarVisible && !this.props.sidebarVisible) {
-            newState["scale"] = Math.round(MapUtils.getGoogleMercatorScale(newProps.map.zoom + 1));
-        }
         this.setState(newState);
-        if(newProps.sidebarVisible) {
+        if(newProps.visible) {
             this.updatePrintArea(newProps.map, newState.scale, newState.layout);
         }
     },
-    closeClicked() {
-        if(this.props.sidebarVisible) {
-            this.props.setCurrentSidebar(null);
-        }
+    onShow() {
+        let mapScale = Math.round(MapUtils.getGoogleMercatorScale(newProps.map.zoom + 1));
+        this.setState({scale: mapscale});
+    },
+    onHide() {
         this.props.clearPrintFrame();
     },
     renderBody() {
-        if(!this.props.sidebarVisible) {
-            return null;
-        } else if(!this.props.theme) {
-            return (<Message msgId="print.notheme" />);
+        if(!this.props.theme) {
+            return (<div role="body"><Message msgId="print.notheme" /></div>);
         } else if(!this.props.theme.print || this.props.theme.print.length === 0) {
-            return (<Message msgId="print.nolayouts" />);
+            return (<div role="body"><Message msgId="print.nolayouts" /></div>);
         }
         let currentLayoutname = this.state.layout ? this.state.layout.name : "";
         return (
-            <table className="options-table"><tbody>
-                <tr>
-                    <td><Message msgId="print.layout" /></td>
-                    <td>
-                        <select onChange={this.changeLayout} value={currentLayoutname}>
-                            {this.props.theme.print.map(item => {
-                                return (
-                                    <option key={item.name} value={item.name}>{item.name}</option>
-                                )
-                            })}
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><Message msgId="print.scale" /></td>
-                    <td><span className="input-frame">1 : <input type="number" value={this.state.scale} onChange={this.changeScale}/></span></td>
-                </tr>
-                <tr>
-                    <td><Message msgId="print.resolution" /></td>
-                    <td><span className="input-frame"><input type="number" value={this.state.dpi} onChange={this.changeResolution}/> dpi</span></td>
-                </tr>
-            </tbody></table>
+            <div role="body">
+                <table className="options-table"><tbody>
+                    <tr>
+                        <td><Message msgId="print.layout" /></td>
+                        <td>
+                            <select onChange={this.changeLayout} value={currentLayoutname}>
+                                {this.props.theme.print.map(item => {
+                                    return (
+                                        <option key={item.name} value={item.name}>{item.name}</option>
+                                    )
+                                })}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><Message msgId="print.scale" /></td>
+                        <td><span className="input-frame">1 : <input type="number" value={this.state.scale} onChange={this.changeScale}/></span></td>
+                    </tr>
+                    <tr>
+                        <td><Message msgId="print.resolution" /></td>
+                        <td><span className="input-frame"><input type="number" value={this.state.dpi} onChange={this.changeResolution}/> dpi</span></td>
+                    </tr>
+                </tbody></table>
+            </div>
         );
     },
     render() {
         return (
-            <Swipeable onSwipedRight={this.closeClicked}>
-                <div id="Print" className={this.props.sidebarVisible ? "sidebar sidebar-visible" : "sidebar"}>
-                    <div className="sidebar-title"><Message msgId="print.paneltitle" /><Glyphicon onClick={this.closeClicked} glyph="remove"/></div>
-                    <div className="print-body">
-                        {this.renderBody()}
-                    </div>
-                </div>
-            </Swipeable>
+            <SideBar id="Print" onHide={this.onHide} width="16em" title="print.paneltitle">
+                {this.renderBody()}
+            </SideBar>
         );
     },
     changeLayout(ev) {
@@ -127,14 +116,13 @@ const Print = React.createClass({
 });
 
 const selector = (state) => ({
-    sidebarVisible: state.sidebar ? state.sidebar.current === 'print' : false,
+    visible: state.sidebar ? state.sidebar.current === 'Print': false,
     theme: state.theme ? state.theme.current : null,
     map: state.map ? state.map.present : null
 });
 
 module.exports = {
     PrintPlugin: connect(selector, {
-        setCurrentSidebar: setCurrentSidebar,
         configurePrintFrame: configurePrintFrame,
         clearPrintFrame: clearPrintFrame
     })(Print),
