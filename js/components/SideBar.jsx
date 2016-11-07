@@ -35,14 +35,15 @@ const SideBar = React.createClass({
         let newVisible = newProps.currentSidebar === newProps.id;
         let oldVisible = this.props.currentSidebar === this.props.id;
         if(newVisible && !oldVisible) {
-            this.props.onShow();
+            newProps.onShow();
+        } else if(!newVisible && oldVisible) {
+            newProps.onHide();
         }
     },
     closeClicked() {
         if(this.props.currentSidebar === this.props.id) {
             this.props.setCurrentSidebar(null);
         }
-        this.props.onHide();
     },
     renderRole(role) {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
