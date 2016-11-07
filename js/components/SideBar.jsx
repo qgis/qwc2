@@ -32,8 +32,8 @@ const SideBar = React.createClass({
         }
     },
     componentWillReceiveProps(newProps) {
-        let newVisible = newProps.currentSidebar == newProps.id;
-        let oldVisible = this.props.currentSidebar == this.props.id;
+        let newVisible = newProps.currentSidebar === newProps.id;
+        let oldVisible = this.props.currentSidebar === this.props.id;
         if(newVisible && !oldVisible) {
             this.props.onShow();
         }
