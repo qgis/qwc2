@@ -46,8 +46,8 @@ const Print = React.createClass({
         }
     },
     onShow() {
-        let mapScale = Math.round(MapUtils.getGoogleMercatorScale(newProps.map.zoom + 1));
-        this.setState({scale: mapscale});
+        let mapScale = Math.round(MapUtils.getGoogleMercatorScale(this.props.map.zoom + 1));
+        this.setState({scale: mapScale});
     },
     onHide() {
         this.props.clearPrintFrame();
@@ -88,7 +88,7 @@ const Print = React.createClass({
     },
     render() {
         return (
-            <SideBar id="Print" onHide={this.onHide} width="16em" title="print.paneltitle">
+            <SideBar id="Print" onHide={this.onHide} onShow={this.onShow} width="16em" title="print.paneltitle">
                 {this.renderBody()}
             </SideBar>
         );
