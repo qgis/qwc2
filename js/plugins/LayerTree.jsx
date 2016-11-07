@@ -146,7 +146,7 @@ const LayerTree = React.createClass({
                         <div className="layertree-tree">{this.props.layers.map(this.renderLayerTree)}</div>
                         {maptipCheckbox}
                     </div>
-                    <div className="layertree-expander"><div><Glyphicon glyph={expanderIcon} onClick={this.layerTreeVisibilityToggled}/></div></div>
+                    <div className="layertree-expander" onClick={this.layerTreeVisibilityToggled}><div><Glyphicon glyph={expanderIcon}/></div></div>
                 </div>
             </Swipeable>
         );
