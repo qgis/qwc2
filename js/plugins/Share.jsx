@@ -36,7 +36,7 @@ const Share = React.createClass({
     renderBody() {
         if(this.state.location) {
             return (
-                <div role="body">
+                <div role="body" className="scrollable">
                     <ShareSocials shareUrl={this.state.location} shareTitle="QWC2" getCount={this.props.getCount}/>
                     <ShareLink shareUrl={this.state.location}/>
                     <ShareQRCode shareUrl={this.state.location}/>

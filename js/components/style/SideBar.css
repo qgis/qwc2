@@ -22,3 +22,8 @@ div.sidebar div.sidebar-title span.glyphicon {
     float: right;
     cursor: pointer;
 }
+
+div.sidebar div.scrollable {
+    overflow-y: auto;
+    height: calc(100% - 2em);
+}
