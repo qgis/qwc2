@@ -3,8 +3,16 @@
     width: 10em;
 }
 
+#Print table.options-table {
+    width: 100%;
+}
+
 #Print table.options-table td {
     padding: 0.25em;
+}
+
+#Print table.options-table td:nth-child(2) {
+    width: 99%;
 }
 
 #Print table.options-table select {
@@ -16,10 +24,17 @@
     border-radius: 3px;
     padding: 0.25em;
     background-color: white;
-    display: block;
+    display: flex;
+    align-items: center;
 }
 
-#Print table.options-table input {
+#Print table.options-table span.input-frame input {
     border: 0;
-    width: 10ch;
+    flex: 1;
+    width: 0;
+}
+
+#Print div.button-bar {
+    margin: 1em;
+    text-align: center;
 }

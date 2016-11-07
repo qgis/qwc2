@@ -162,6 +162,7 @@
             },
             "layoutWarning": "Not allowed layout",
             "scale": "Scale:",
+            "rotation": "Rotation:",
             "notheme": "No theme selected",
             "nolayouts": "The selected theme does not support printing"
         },
