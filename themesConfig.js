@@ -227,6 +227,7 @@ function getTheme(configItem, resultItem) {
             resultItem.name = topLayer.Name;
             resultItem.title = wmsTitle;
             resultItem.keywords = keywords.join(', ');
+            resultItem.tiled = configItem.tiled;
             // use geographic bounding box for theme, as default CRS may have inverted axis order with WMS 1.3.0
             resultItem.crs = "EPSG:4326";
             resultItem.extent = [
@@ -292,6 +293,7 @@ function getGroupThemes(configGroup, resultGroup) {
           "title": "<Custom theme title>",            // optional, use WMS title if not set
           "thumbnail": "<theme.png>",                 // optional image file in assets/img/mapthumbs/, use WMS GetMap if not set
           "default": true,                            // optional, set this as the initial theme
+          "tiled": true,                              // optional, use tiled WMS (default is false)
           "backgroundLayers": [                       // optional background layers
             {
               "name": "<background layer name>",      // background layer name from list below

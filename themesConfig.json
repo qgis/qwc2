@@ -29,6 +29,7 @@
           {
             "title": "QWC2 Test",
             "url": "http://qwc2.sourcepole.ch/wms/themes/test",
+            "tiled": true,
             "backgroundLayers": [
               {
                 "name": "mapnik",

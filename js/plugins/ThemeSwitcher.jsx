@@ -138,6 +138,11 @@ const ThemeSwitcher = React.createClass({
             sublayers = LayerUtils.restoreVisibleLayers(sublayers, visiblelayers);
         }
         let {params, queryLayers} = LayerUtils.buildLayerParams(sublayers);
+        // untiled WMS by default
+        let singleTile = true;
+        if (theme.tiled !== undefined) {
+            singleTile = !theme.tiled;
+        }
         return {
             id: theme.name + Date.now().toString(),
             type: "wms",
@@ -151,7 +156,9 @@ const ThemeSwitcher = React.createClass({
             },
             sublayers : sublayers,
             params: params,
-            queryLayers: queryLayers
+            queryLayers: queryLayers,
+            singleTile: singleTile,
+            ratio: singleTile ? 1 : undefined
         }
     },
     createBackgroundLayersForTheme(theme, visibleBackgroundLayer=undefined) {

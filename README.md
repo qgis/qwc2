@@ -49,6 +49,7 @@ Configuration format:
         "title": "<Custom theme title>",            // optional, use WMS title if not set
         "thumbnail": "<theme.png>",                 // optional image file in assets/img/mapthumbs/, use WMS GetMap if not set
         "default": true,                            // optional, set this as the initial theme
+        "tiled": true,                              // optional, use tiled WMS (default is false)
         "backgroundLayers": [                       // optional background layers
           {
             "name": "<background layer name>",      // background layer name from list below
