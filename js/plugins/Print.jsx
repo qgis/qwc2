@@ -60,7 +60,19 @@ const Print = React.createClass({
         }
         let currentLayoutname = this.state.layout ? this.state.layout.name : "";
         let mapName = this.state.layout ? this.state.layout.map.name : "";
+
         let themeLayer = this.props.layers.find(layer => layer.id === this.props.themeLayerId);
+        let printLayers = themeLayer ? themeLayer.params.LAYERS : "";
+        let printOpacities = themeLayer ? themeLayer.params.OPACITIES : "";
+
+        let backgroundLayer = this.props.layers.find(layer => layer.group === 'background' && layer.visibility === true);
+        let themeBackgroundLayer = backgroundLayer ? this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayer.name) : null;
+        let printBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
+        if(printBackgroundLayer) {
+            printLayers = printBackgroundLayer + "," + printLayers;
+            printOpacities = "255," + printOpacities;
+        }
+
         let extent = this.computeCurrentExtent();
         let formvisibility = 'hidden';
         return (
@@ -114,11 +126,11 @@ const Print = React.createClass({
                         <input readOnly="true" name="FORMAT" type={formvisibility} value="pdf" />
                         <input readOnly="true" name="TRANSPARENT" type={formvisibility} value="true" />
                         <input readOnly="true" name="SRS" type={formvisibility} value="EPSG:3857" />
-                        <input readOnly="true" name="LAYERS" type={formvisibility} value={themeLayer ? themeLayer.params.LAYERS : ""} />
-                        <input readOnly="true" name="OPACITIES" type={formvisibility} value={themeLayer ? themeLayer.params.OPACITIES : ""} />
+                        <input readOnly="true" name="LAYERS" type={formvisibility} value={printLayers} />
+                        <input readOnly="true" name="OPACITIES" type={formvisibility} value={printOpacities} />
                     </div>
                     <div className="button-bar">
-                        <button type="submit">Print</button>
+                        <button type="submit"><Message msgId="print.submit" /></button>
                     </div>
                 </form>
             </div>
