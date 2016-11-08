@@ -687,7 +687,7 @@
             "menulabel": "Map & Tools",
             "items": {
                 "themes": "Select Theme",
-                "share": "Share link",
+                "share": "Share Link",
                 "tools": "Map Tools",
                 "measure": "Measure",
                 "draw": "Draw",
