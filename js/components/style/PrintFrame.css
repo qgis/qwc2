@@ -1,0 +1,15 @@
+#PrintFrame {
+    position: absolute;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 0 0 30000px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+#PrintFrameEventLayer {
+    z-index: 2;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}

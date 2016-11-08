@@ -13,8 +13,8 @@ const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const MapUtils = require('../../MapStore2/web/client/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
 const {changeRotation,zoomToExtent} = require('../../MapStore2/web/client/actions/map');
-const {configurePrintFrame, clearPrintFrame} = require('../../MapStore2/web/client/actions/printframe');
 const {SideBar} = require('../components/SideBar');
+const PrintFrame = require('../components/PrintFrame');
 require('./style/Print.css');
 
 const Print = React.createClass({
@@ -22,8 +22,6 @@ const Print = React.createClass({
         visible: React.PropTypes.bool,
         theme: React.PropTypes.object,
         map: React.PropTypes.object,
-        configurePrintFrame: React.PropTypes.func,
-        clearPrintFrame: React.PropTypes.func,
         themeLayerId: React.PropTypes.string,
         layers: React.PropTypes.array,
         changeRotation: React.PropTypes.func,
@@ -50,12 +48,8 @@ const Print = React.createClass({
             newState["scale"] = Math.round(MapUtils.getGoogleMercatorScale(newProps.map.zoom + 1));
         }
         this.setState(newState);
-        if(newProps.visible) {
-            this.updatePrintArea(newProps.map, newState.scale, newState.layout);
-        }
     },
     onHide() {
-        this.props.clearPrintFrame();
         this.setState({scale: null});
         this.props.changeRotation(0);
     },
@@ -132,20 +126,27 @@ const Print = React.createClass({
         );
     },
     render() {
+        let printFrame = null;
+        if(this.props.visible && this.state.layout) {
+            printFrame = (<PrintFrame map={this.props.map} scale={this.state.scale}
+                widthmm={this.state.layout.map.width}
+                heightmm={this.state.layout.map.height} />);
+        }
         return (
-            <SideBar id="Print" onHide={this.onHide} width="16em" title="print.paneltitle">
-                {this.renderBody()}
-            </SideBar>
+            <div>
+                <SideBar id="Print" onHide={this.onHide} width="16em" title="print.paneltitle">
+                    {this.renderBody()}
+                </SideBar>
+                {printFrame}
+            </div>
         );
     },
     changeLayout(ev) {
         let layout = this.props.theme.print.find(item => item.name == ev.target.value);
         this.setState({layout: layout});
-        this.updatePrintArea(this.props.map, this.state.scale, layout);
     },
     changeScale(ev) {
         this.setState({scale: ev.target.value});
-        this.updatePrintArea(this.props.map, ev.target.value, this.state.layout);
     },
     changeResolution(ev) {
         this.setState({dpi: ev.target.value});
@@ -159,14 +160,6 @@ const Print = React.createClass({
             angle -= 360;
         }
         this.props.changeRotation(angle / 180. * Math.PI);
-    },
-    updatePrintArea(map, scale, layout) {
-        if(!this.state.layout) {
-            return;
-        }
-        let widthmm = layout.map.width;
-        let heightmm = layout.map.height;
-        this.props.configurePrintFrame(map.center, scale, widthmm, heightmm);
     },
     computeCurrentExtent() {
         if(!this.props.map || !this.state.layout || !this.state.scale) {
@@ -193,13 +186,10 @@ const selector = (state) => ({
 
 module.exports = {
     PrintPlugin: connect(selector, {
-        configurePrintFrame: configurePrintFrame,
-        clearPrintFrame: clearPrintFrame,
         changeRotation: changeRotation,
         zoomToExtent: zoomToExtent
     })(Print),
     reducers: {
-        sidebar: require('../reducers/sidebar'),
-        printframe: require('../../MapStore2/web/client/reducers/printframe')
+        sidebar: require('../reducers/sidebar')
     }
 }
