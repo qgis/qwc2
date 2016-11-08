@@ -12,7 +12,7 @@ const assign = require('object-assign');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const MapUtils = require('../../MapStore2/web/client/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
-const {changeRotation,zoomToExtent} = require('../../MapStore2/web/client/actions/map');
+const {changeRotation} = require('../../MapStore2/web/client/actions/map');
 const {SideBar} = require('../components/SideBar');
 const PrintFrame = require('../components/PrintFrame');
 require('./style/Print.css');
@@ -24,8 +24,7 @@ const Print = React.createClass({
         map: React.PropTypes.object,
         themeLayerId: React.PropTypes.string,
         layers: React.PropTypes.array,
-        changeRotation: React.PropTypes.func,
-        zoomToExtent: React.PropTypes.func
+        changeRotation: React.PropTypes.func
     },
     getDefaultProps() {
         return {
@@ -186,8 +185,7 @@ const selector = (state) => ({
 
 module.exports = {
     PrintPlugin: connect(selector, {
-        changeRotation: changeRotation,
-        zoomToExtent: zoomToExtent
+        changeRotation: changeRotation
     })(Print),
     reducers: {
         sidebar: require('../reducers/sidebar')
