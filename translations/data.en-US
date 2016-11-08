@@ -166,6 +166,9 @@
             "notheme": "No theme selected",
             "nolayouts": "The selected theme does not support printing"
         },
+        "dxfexport": {
+            "selectinfo": "Drag a rectangle around the region to export..."
+        },
         "backgroundSwither":{
             "tooltip": "Select Background"
         },
@@ -692,6 +695,7 @@
                 "measure": "Measure",
                 "draw": "Draw",
                 "print": "Print",
+                "dxfexport": "DXF Export",
                 "help": "Help"
             }
         },

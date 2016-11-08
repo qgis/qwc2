@@ -23,7 +23,8 @@ module.exports = {
         MapTipPlugin: require('./plugins/MapTip'),
         SharePlugin: require('./plugins/Share'),
         MapCopyrightPlugin: require('./plugins/MapCopyright'),
-        PrintPlugin: require('./plugins/Print')
+        PrintPlugin: require('./plugins/Print'),
+        DxfExportPlugin: require('./plugins/DxfExport')
     },
     requires: {}
 };

@@ -7,6 +7,7 @@
  */
 
 const {CHANGE_MEASUREMENT_TOOL} = require('../../MapStore2/web/client/actions/measurement');
+const {SET_CONTROL_PROPERTY} = require('../../MapStore2/web/client/actions/controls');
 const {SET_CURRENT_SIDEBAR} = require('./sidebar');
 const {CHANGE_DIALOG_STATE} = require('./dialog');
 
@@ -30,6 +31,13 @@ function triggerAppMenuitem(key) {
         return {
             type: SET_CURRENT_SIDEBAR,
             current: 'Print'
+        }
+    } else if(key === 'dxfexport') {
+        return {
+            type: SET_CONTROL_PROPERTY,
+            control: 'dxfexport',
+            property: 'visible',
+            value: true
         }
     }
     return (dispatch) => {};

@@ -1,0 +1,22 @@
+
+#DxfInfoBar {
+    position: absolute;
+    top: 3.5em;
+    left: calc(50% - 30ch);
+    right: calc(50% - 30ch);
+    padding: 0.5em;
+    background-color: orange;
+    z-index: 3;
+    border-radius: 0 0 4px 4px;
+    display: flex;
+    align-items: center;
+}
+
+#DxfInfoBar span.message {
+    flex: 1;
+    font-style: italic;
+}
+
+#DxfInfoBar form {
+    display: none;
+}

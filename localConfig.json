@@ -36,6 +36,7 @@
                   {"key": "draw"}
                 ]},
                 {"key": "print", "icon": "assets/img/print.svg"},
+                {"key": "dxfexport", "icon": "assets/img/dxfexport.svg"},
                 {"key": "help", "icon": "assets/img/info.svg"}
               ]
             }
@@ -67,6 +68,9 @@
         },
         {
           "name": "LayerTree"
+        },
+        {
+            "name": "DxfExport"
         }
       ],
       "desktop": [
@@ -103,6 +107,7 @@
                   {"key": "draw"}
                 ]},
                 {"key": "print", "icon": "assets/img/print.svg"},
+                {"key": "dxfexport", "icon": "assets/img/dxfexport.svg"},
                 {"key": "help", "icon": "assets/img/info.svg"}
               ]
             }
@@ -140,6 +145,9 @@
         },
         {
           "name": "MapCopyright"
+        },
+        {
+            "name": "DxfExport"
         }
       ]
   }
