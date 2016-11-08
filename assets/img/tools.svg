@@ -12,8 +12,8 @@
    viewBox="0 0 18 18"
    version="1.1"
    id="svg9"
-   inkscape:version="0.92pre1 r"
-   sodipodi:docname="toolsnew.svg">
+   inkscape:version="0.92pre2 r"
+   sodipodi:docname="tools.svg">
   <metadata
      id="metadata15">
     <rdf:RDF>
@@ -38,33 +38,40 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1280"
-     inkscape:window-height="965"
+     inkscape:window-height="995"
      id="namedview11"
-     showgrid="false"
+     showgrid="true"
      units="px"
-     inkscape:zoom="9.8333333"
-     inkscape:cx="-2.1355932"
-     inkscape:cy="12"
-     inkscape:window-x="0"
+     inkscape:zoom="19.666667"
+     inkscape:cx="11.657363"
+     inkscape:cy="15.234107"
+     inkscape:window-x="1280"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg9" />
+     inkscape:current-layer="surface1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4468" />
+  </sodipodi:namedview>
   <g
      id="surface1">
     <path
        style="fill:#575757;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       d="M 1.09375,15.921875 H 16.972656 V 8.976562 h -4.960937 v 1.984376 H 6.054688 V 8.976562 H 1.09375 Z m 0,0"
+       d="m 1.125,16.125 h 15.75 v -6.75 h -4.5 v 1.5 h -6.75 v -1.5 h -4.5 z"
        id="path2"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccc" />
     <path
        style="fill:#575757;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       d="M 16.972656,7.984375 V 5.996094 H 1.09375 v 1.988281 z m 0,0"
+       d="m 16.875,7.875 v -1.5 H 1.125 v 1.5 z"
        id="path4"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
     <path
        style="fill:#575757;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       d="M 13.003906,5.996094 V 2.027344 H 5.0625 v 3.96875 H 6.054688 V 3.019531 h 5.957031 v 2.976563 z m 0,0"
+       d="m 13.125,6.375 v -4.5 h -8.25 v 4.5 h 1.5 v -3 h 5.25 v 3 z"
        id="path6"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccc" />
   </g>
 </svg>
