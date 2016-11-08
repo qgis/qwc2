@@ -49,7 +49,7 @@ const ThemeSwitcher = React.createClass({
         return {themes: null };
     },
     componentWillReceiveProps(nextProps) {
-        if(this.props.map === null && nextProps.map !== null) {
+        if(this.props.map === null && nextProps.map !== null || this.props.map && !this.state.themes) {
             // As soon as map is set, fetch themes and restore initial theme
             fetch("themes.json")
             .then(response => response.json())
