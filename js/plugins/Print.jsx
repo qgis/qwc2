@@ -43,13 +43,14 @@ const Print = React.createClass({
             }
             newState["layout"] = layout;
         }
-        if(!this.state.scale && newProps.map) {
+        if(newProps.visible && !this.state.scale && newProps.map) {
             newState["scale"] = Math.round(MapUtils.getGoogleMercatorScale(newProps.map.zoom + 1));
+        } else if(!newProps.visible && this.state.scale) {
+            newState["scale"] = null;
         }
         this.setState(newState);
     },
     onHide() {
-        this.setState({scale: null});
         this.props.changeRotation(0);
     },
     renderBody() {
