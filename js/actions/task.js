@@ -7,12 +7,18 @@
  */
 
 const SET_CURRENT_TASK = 'SET_CURRENT_TASK';
+const {changeMeasurement} = require('../../MapStore2/web/client/actions/measurement');
+const {changeMapInfoState} = require('../../MapStore2/web/client/actions/mapInfo');
 
 function setCurrentTask(task) {
-    return {
-        type: SET_CURRENT_TASK,
-        current: task
-    };
+    return (dispatch) => {
+        dispatch(changeMeasurement({geomType: null}));
+        dispatch(changeMapInfoState(task === null));
+        dispatch({
+            type: SET_CURRENT_TASK,
+            current: task
+        });
+    }
 }
 
 module.exports = {
