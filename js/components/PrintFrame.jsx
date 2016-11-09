@@ -84,9 +84,9 @@ const PrintFrame = React.createClass({
                     onMouseDown={this.startSelection}
                     onMouseMove={this.updateSelection}
                     onMouseUp={this.endSelection}
-                    onTouchStart={this.startSelection}
-                    onTouchMove={this.updateSelection}
-                    onTouchEnd={this.endSelection}>
+                    onTouchStart={(ev) => this.startSelection(ev.changedTouches[0])}
+                    onTouchMove={(ev) => this.updateSelection(ev.changedTouches[0])}
+                    onTouchEnd={(ev) => this.endSelection(ev.changedTouches[0])}>
                     <div id="PrintFrame" style={boxStyle}></div>
                 </div>
             );
