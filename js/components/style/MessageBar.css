@@ -12,7 +12,7 @@
     display:inline-flex;
     max-width: 80%;
     pointer-events:all;
-    padding: 0.5em;
+    padding: 0 0.5em;
     background-color: #fae3c4;
     border-radius: 0 0 4px 4px;
     align-items: center;
@@ -20,7 +20,7 @@
 }
 
 #MessageBar span.messagebody {
-    padding: 0.5em;
     flex: 1;
+    padding: 0.5em;
     display: inline-block;
 }
