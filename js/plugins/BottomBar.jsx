@@ -14,6 +14,7 @@ const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const CRSSelector = require("../../MapStore2/web/client/components/mapcontrols/mouseposition/CRSSelector");
 const ScaleBox = require("../../MapStore2/web/client/components/mapcontrols/scale/ScaleBox");
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
+const {getScales} = require('../../MapStore2/web/client/utils/MapUtils');
 const {changeMousePositionState, changeMousePositionCrs} = require('../../MapStore2/web/client/actions/mousePosition');
 const {changeZoomLevel} = require('../../MapStore2/web/client/actions/map');
 require('./style/BottomBar.css');
@@ -23,6 +24,7 @@ const BottomBar = React.createClass({
         mousepos: React.PropTypes.object,
         displaycrs:  React.PropTypes.string,
         onCRSChange: React.PropTypes.func,
+        mapcrs:  React.PropTypes.string,
         mapscale: React.PropTypes.number,
         onScaleChange: React.PropTypes.func
     },
@@ -30,19 +32,21 @@ const BottomBar = React.createClass({
         return {
             mousepos: {x: 0, y: 0, crs: "EPSG:4326"},
             displaycrs: "EPSG:4326",
+            mapcrs: "EPSG:3857",
             mapscale: 0
         }
     },
     render() {
         let {x, y} = CoordinatesUtils.reproject([this.props.mousepos.x, this.props.mousepos.y], this.props.mousepos.crs, this.props.displaycrs);
         let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 3 : 0;
+        const scales = getScales(this.props.mapcrs);
         return (
             <div id="BottomBar">
                 <span className="mousepos_label"><Message msgId="bottombar.mousepos_label" />: </span>
                 <input type="text" className="mouseposition" value={x.toFixed(digits) + " " + y.toFixed(digits)} readOnly="readOnly"/>
                 <CRSSelector useRawInput={true} enabled={true} crs={this.props.displaycrs} id="crssselector" onCRSChange={this.props.onCRSChange}/>
                 <span className="scale_label"><Message msgId="bottombar.scale_label" />: </span>
-                <ScaleBox useRawInput={true} id="scaleselector" currentZoomLvl={this.props.mapscale} onChange={this.props.onScaleChange} />
+                <ScaleBox useRawInput={true} id="scaleselector" scales={scales} currentZoomLvl={this.props.mapscale} onChange={this.props.onScaleChange} />
                 <span className="bottomlinks">
                     <a href={ConfigUtils.getConfigProp("viewertitle_link")}>
                         <Message className="viewertitle_label" msgId="bottombar.viewertitle_label" />
@@ -65,6 +69,7 @@ const selector = (state) => ({
         crs: state && state.mousePosition && state.mousePosition.position ? state.mousePosition.position.crs : "EPSG:4326"
     },
     displaycrs: state && state.mousePosition && state.mousePosition ? state.mousePosition.crs : "EPSG:4326",
+    mapcrs: state && state.map && state.map.present ? state.map.present.projection : "EPSG:3857",
     mapscale: state && state.map && state.map.present ? state.map.present.zoom : 0
 });
 

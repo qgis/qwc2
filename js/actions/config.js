@@ -14,6 +14,8 @@ const ConfigUtils = require('../../MapStore2/web/client/utils/ConfigUtils');
 const UrlParams = require("../utils/UrlParams");
 const assign = require('object-assign');
 const axios = require('../../MapStore2/web/client/libs/ajax');
+const Proj4js = require('proj4');
+const {DEFAULT_SCREEN_DPI} = require('../../MapStore2/web/client/utils/MapUtils');
 
 function restoreMapConfig(dispatch, configName, mapId, params) {
     axios.get(configName).then((response) => {
@@ -43,6 +45,21 @@ function restoreMapConfig(dispatch, configName, mapId, params) {
                 try {
                     response.data.map.zoom = parseInt(params.z);
                 } catch(e) {}
+            }
+            // Set map resolutions based on scales config
+            if (response.data.map && response.data.map.scales) {
+                // calculate resolutions from scales for map projection
+                const proj = new Proj4js.Proj(response.data.map.projection || "EPSG:3857");
+                const metersPerUnit = proj.units === 'degrees' ? 111194.87428468118 : 1;
+                const resolutions = response.data.map.scales.map((scale) => {
+                    return scale / (metersPerUnit * (DEFAULT_SCREEN_DPI / 0.0254));
+                });
+
+                let mapOptions = assign({}, response.data.map.mapOptions);
+                mapOptions.view = assign({}, mapOptions.view, {
+                    resolutions: resolutions
+                });
+                response.data.map.mapOptions = mapOptions;
             }
             dispatch(configureMap(response.data, mapId));
 

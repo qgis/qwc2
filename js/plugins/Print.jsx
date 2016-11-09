@@ -44,7 +44,7 @@ const Print = React.createClass({
             newState["layout"] = layout;
         }
         if(newProps.visible && !this.state.scale && newProps.map) {
-            newState["scale"] = Math.round(MapUtils.getGoogleMercatorScale(newProps.map.zoom + 1));
+            newState["scale"] = Math.round(MapUtils.getScales(newProps.map.projection)[newProps.map.zoom] / 2);
             newState["initialRotation"] = newProps.map.bbox.rotation;
         } else if(!newProps.visible && this.state.scale) {
             newState["scale"] = null;
