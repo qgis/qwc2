@@ -32,7 +32,7 @@ const Print = React.createClass({
         }
     },
     getInitialState() {
-        return {layout: null, scale: null, dpi: 300};
+        return {layout: null, scale: null, dpi: 300, initialRotation: 0};
     },
     componentWillReceiveProps(newProps) {
         let newState = assign({}, this.state);
@@ -45,13 +45,14 @@ const Print = React.createClass({
         }
         if(newProps.visible && !this.state.scale && newProps.map) {
             newState["scale"] = Math.round(MapUtils.getGoogleMercatorScale(newProps.map.zoom + 1));
+            newState["initialRotation"] = newProps.map.bbox.rotation;
         } else if(!newProps.visible && this.state.scale) {
             newState["scale"] = null;
         }
         this.setState(newState);
     },
     onHide() {
-        this.props.changeRotation(0);
+        this.props.changeRotation(this.state.initialRotation);
     },
     renderBody() {
         if(!this.props.theme) {
