@@ -14,6 +14,7 @@ const {zoomToExtent} = require("../../MapStore2/web/client/actions/map");
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2/web/client/utils/LocaleUtils");
 const {setCurrentTheme,setThemeSwitcherFilter} = require("../actions/theme");
+const {setCurrentTask} = require("../actions/task");
 const {SideBar} = require('../components/SideBar');
 const UrlParams = require("../utils/UrlParams");
 const LayerUtils = require('../utils/LayerUtils');
@@ -32,7 +33,8 @@ const ThemeSwitcher = React.createClass({
         changeTheme: React.PropTypes.func,
         changeFilter: React.PropTypes.func,
         addLayer: React.PropTypes.func,
-        zoomToExtent: React.PropTypes.func
+        zoomToExtent: React.PropTypes.func,
+        setCurrentTask: React.PropTypes.func
     },
     contextTypes: {
         messages: React.PropTypes.object
@@ -190,6 +192,7 @@ const ThemeSwitcher = React.createClass({
     themeClicked(theme) {
         this.props.changeTheme(theme, this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme), this.props.activeThemeLayer, this.currentBackgroundLayerIds());
         this.props.zoomToExtent(theme.extent, theme.crs);
+        this.props.setCurrentTask(null);
     },
     filterChanged(ev) {
         this.props.changeFilter(ev.target.value);
@@ -210,7 +213,8 @@ module.exports = {
     ThemeSwitcherPlugin: connect(selector, {
         changeTheme: setCurrentTheme,
         changeFilter: setThemeSwitcherFilter,
-        zoomToExtent: zoomToExtent
+        zoomToExtent: zoomToExtent,
+        setCurrentTask: setCurrentTask
     })(ThemeSwitcher),
     reducers: {
         theme: require('../reducers/theme'),
