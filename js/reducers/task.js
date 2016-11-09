@@ -6,18 +6,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {SET_CURRENT_SIDEBAR} = require('../actions/sidebar');
+const {SET_CURRENT_TASK} = require('../actions/task');
 const assign = require('object-assign');
 
 
-function sidebar(state = {}, action)
+function task(state = {}, action)
 {
     switch (action.type) {
-        case SET_CURRENT_SIDEBAR:
+        case SET_CURRENT_TASK:
             return assign({}, state, {current: action.current});
         default:
             return state;
     }
 }
 
-module.exports = sidebar;
+module.exports = task;

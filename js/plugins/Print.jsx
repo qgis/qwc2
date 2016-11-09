@@ -189,7 +189,7 @@ const Print = React.createClass({
 });
 
 const selector = (state) => ({
-    visible: state.sidebar ? state.sidebar.current === 'Print': false,
+    visible: state.task ? state.task.current === 'Print': false,
     theme: state.theme ? state.theme.current : null,
     map: state.map ? state.map.present : null,
     themeLayerId: state.theme ? state.theme.currentlayer : "",
@@ -201,6 +201,6 @@ module.exports = {
         changeRotation: changeRotation
     })(Print),
     reducers: {
-        sidebar: require('../reducers/sidebar')
+        task: require('../reducers/task')
     }
 }

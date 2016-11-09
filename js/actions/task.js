@@ -6,16 +6,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const SET_CURRENT_SIDEBAR = 'SET_CURRENT_SIDEBAR';
+const SET_CURRENT_TASK = 'SET_CURRENT_TASK';
 
-function setCurrentSidebar(sidebar) {
+function setCurrentTask(task) {
     return {
-        type: SET_CURRENT_SIDEBAR,
-        current: sidebar
+        type: SET_CURRENT_TASK,
+        current: task
     };
 }
 
 module.exports = {
-    SET_CURRENT_SIDEBAR,
-    setCurrentSidebar
+    SET_CURRENT_TASK,
+    setCurrentTask
 }

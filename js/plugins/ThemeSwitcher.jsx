@@ -31,7 +31,6 @@ const ThemeSwitcher = React.createClass({
         layers: React.PropTypes.array,
         changeTheme: React.PropTypes.func,
         changeFilter: React.PropTypes.func,
-        setCurrentSidebar: React.PropTypes.func,
         addLayer: React.PropTypes.func,
         zoomToExtent: React.PropTypes.func
     },
@@ -215,7 +214,7 @@ module.exports = {
     })(ThemeSwitcher),
     reducers: {
         theme: require('../reducers/theme'),
-        sidebar: require('../reducers/sidebar'),
+        task: require('../reducers/task'),
         layers: require('../../MapStore2/web/client/reducers/layers'),
     }
 };

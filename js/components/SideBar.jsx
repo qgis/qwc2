@@ -11,13 +11,13 @@ const {connect} = require('react-redux');
 const Swipeable = require('react-swipeable');
 const {Glyphicon} = require('react-bootstrap');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const {setCurrentSidebar} = require("../actions/sidebar");
+const {setCurrentTask} = require("../actions/task");
 require('./style/SideBar.css');
 
 const SideBar = React.createClass({
     propTypes: {
         id: React.PropTypes.string.isRequired,
-        currentSidebar: React.PropTypes.string,
+        currentTask: React.PropTypes.string,
         onShow: React.PropTypes.func,
         onHide: React.PropTypes.func,
         title: React.PropTypes.string,
@@ -25,15 +25,15 @@ const SideBar = React.createClass({
     },
     getDefaultProps() {
         return {
-            currentSidebar: null,
+            currentTask: null,
             onShow: () => {},
             onHide: () => {},
             width: '15em'
         }
     },
     componentWillReceiveProps(newProps) {
-        let newVisible = newProps.currentSidebar === newProps.id;
-        let oldVisible = this.props.currentSidebar === this.props.id;
+        let newVisible = newProps.currentTask === newProps.id;
+        let oldVisible = this.props.currentTask === this.props.id;
         if(newVisible && !oldVisible) {
             newProps.onShow();
         } else if(!newVisible && oldVisible) {
@@ -41,15 +41,15 @@ const SideBar = React.createClass({
         }
     },
     closeClicked() {
-        if(this.props.currentSidebar === this.props.id) {
-            this.props.setCurrentSidebar(null);
+        if(this.props.currentTask === this.props.id) {
+            this.props.setCurrentTask(null);
         }
     },
     renderRole(role) {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
     },
     render() {
-        let visible = this.props.currentSidebar === this.props.id;
+        let visible = this.props.currentTask === this.props.id;
         let style = {
             width: this.props.width,
             right: visible ? 0 : '-' + this.props.width
@@ -70,11 +70,11 @@ const SideBar = React.createClass({
 });
 
 const selector = (state) => ({
-    currentSidebar: state.sidebar ? state.sidebar.current : null
+    currentTask: state.task ? state.task.current : null
 });
 
 module.exports = {
     SideBar: connect(selector, {
-        setCurrentSidebar: setCurrentSidebar,
+        setCurrentTask: setCurrentTask,
     })(SideBar)
 }

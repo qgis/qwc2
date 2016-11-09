@@ -61,6 +61,6 @@ const Share = React.createClass({
 module.exports = {
     SharePlugin: Share,
     reducers: {
-        sidebar: require('../reducers/sidebar')
+        task: require('../reducers/task')
     }
 }

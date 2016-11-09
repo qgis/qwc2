@@ -8,7 +8,7 @@
 
 const {CHANGE_MEASUREMENT_TOOL} = require('../../MapStore2/web/client/actions/measurement');
 const {SET_CONTROL_PROPERTY} = require('../../MapStore2/web/client/actions/controls');
-const {SET_CURRENT_SIDEBAR} = require('./sidebar');
+const {SET_CURRENT_TASK} = require('./task');
 const {CHANGE_DIALOG_STATE} = require('./dialog');
 
 function triggerAppMenuitem(key) {
@@ -19,17 +19,17 @@ function triggerAppMenuitem(key) {
         };
     } else if(key === 'themes') {
         return {
-            type: SET_CURRENT_SIDEBAR,
+            type: SET_CURRENT_TASK,
             current: 'ThemeSwitcher'
         }
     } else if(key === 'share') {
         return {
-            type: SET_CURRENT_SIDEBAR,
+            type: SET_CURRENT_TASK,
             current: 'Share'
         }
     } else if(key === 'print') {
         return {
-            type: SET_CURRENT_SIDEBAR,
+            type: SET_CURRENT_TASK,
             current: 'Print'
         }
     } else if(key === 'dxfexport') {
