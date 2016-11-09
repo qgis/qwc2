@@ -21,7 +21,8 @@ const SideBar = React.createClass({
         onShow: React.PropTypes.func,
         onHide: React.PropTypes.func,
         title: React.PropTypes.string,
-        width: React.PropTypes.string
+        width: React.PropTypes.string,
+        setCurrentTask: React.PropTypes.func
     },
     getDefaultProps() {
         return {
