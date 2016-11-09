@@ -102,6 +102,7 @@ const Measure = React.createClass({
                         <span onClick={()=>{this.setMeasureMode("Polygon");}} className={this.props.measureState.geomType === "Polygon" ? "active" : ""}><Message msgId="measureComponent.areaLabel" /></span>
                         <span onClick={()=>{this.setMeasureMode("Bearing");}} className={this.props.measureState.geomType === "Bearing" ? "active" : ""}><Message msgId="measureComponent.bearingLabel" /></span>
                     </span>
+                    <span> </span>
                     {resultBody}
                 </span>
             </MessageBar>
