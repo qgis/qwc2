@@ -80,7 +80,13 @@ const PrintFrame = React.createClass({
             );
         } else if(this.props.interactive) {
             return (
-                <div id="PrintFrameEventLayer" onMouseDown={this.startSelection} onMouseMove={this.updateSelection} onMouseUp={this.endSelection}>
+                <div id="PrintFrameEventLayer"
+                    onMouseDown={this.startSelection}
+                    onMouseMove={this.updateSelection}
+                    onMouseUp={this.endSelection}
+                    onTouchStart={this.startSelection}
+                    onTouchMove={this.updateSelection}
+                    onTouchEnd={this.endSelection}>
                     <div id="PrintFrame" style={boxStyle}></div>
                 </div>
             );
@@ -111,9 +117,7 @@ const PrintFrame = React.createClass({
         }
     },
     endSelection(ev) {
-        this.setState({
-            moving: false
-        })
+        this.setState({moving: false});
         let getCoordinateFromPixel = MapUtils.getHook(MapUtils.GET_COORDINATES_FROM_PIXEL_HOOK);
         let p1 = getCoordinateFromPixel([this.state.x, this.state.y]);
         let p2 = getCoordinateFromPixel([this.state.x + this.state.width, this.state.y + this.state.height]);
