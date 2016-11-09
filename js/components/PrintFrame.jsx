@@ -41,7 +41,7 @@ const PrintFrame = React.createClass({
         this.recomputeBox(newProps, this.props);
     },
     recomputeBox(newProps, oldProps) {
-        if(!newProps.interactive && (newProps.widthmm !== oldProps.widthmm || newProps.heightmm !== oldProps.heightmm)) {
+        if(!newProps.interactive) {
             let getPixelFromCoordinate = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK);
             let newState = this.getInitialState();
             let angle = -newProps.map.bbox.rotation;
