@@ -10,7 +10,6 @@ const {connect} = require('react-redux');
 const {getVectorInfo, purgeMapInfoResults, showMapinfoMarker, hideMapinfoMarker, showMapinfoRevGeocode, hideMapinfoRevGeocode} = require('../../MapStore2/web/client/actions/mapInfo');
 const {getFeatureInfo} = require('../actions/mapInfo');
 const {defaultQueryableFilter} = require('../../MapStore2/web/client/utils/MapInfoUtils');
-const {changeMousePointer} = require('../../MapStore2/web/client/actions/map');
 const {changeMapInfoFormat} = require('../../MapStore2/web/client/actions/mapInfo');
 const {GmlIdentifyViewer} = require('../components/GmlIdentifyViewer');
 
@@ -32,7 +31,6 @@ const Identify = React.createClass({
         localRequest: React.PropTypes.func,
         purgeResults: React.PropTypes.func,
         queryableLayersFilter: React.PropTypes.func,
-        changeMousePointer: React.PropTypes.func,
         showMarker: React.PropTypes.func,
         hideMarker: React.PropTypes.func,
         showRevGeocode: React.PropTypes.func,
@@ -79,7 +77,6 @@ const IdentifyPlugin = connect(selector, {
     sendRequest: getFeatureInfo,
     localRequest: getVectorInfo,
     purgeResults: purgeMapInfoResults,
-    changeMousePointer,
     showMarker: showMapinfoMarker,
     hideMarker: hideMapinfoMarker,
     showRevGeocode: showMapinfoRevGeocode,
