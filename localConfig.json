@@ -1,8 +1,8 @@
 {
-  "proxyUrl": "http://localhost:5000/proxy?url=",
+  "proxyUrl": "http://qwc2.sourcepole.ch/api/proxy?url=",
   "geoStoreUrl": "/mapstore/rest/geostore",
   "printUrl": "http://demo.geo-solutions.it/geoserver/pdf/info.json",
-  "qwc2serverUrl": "http://localhost:5000",
+  "qwc2serverUrl": "http://qwc2.sourcepole.ch/api/",
   "viewertitle_link": "http://qgis.org/",
   "terms_link":  "http://qgis.org/",
   "bingApiKey": "AhuXBu7ipR1gNbBfXhtUAyCZ6rkC5PkWpxs2MnMRZ1ZupxQfivjLCch22ozKSCAn",
