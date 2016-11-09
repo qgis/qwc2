@@ -34,10 +34,8 @@ function triggerAppMenuitem(key) {
         }
     } else if(key === 'dxfexport') {
         return {
-            type: SET_CONTROL_PROPERTY,
-            control: 'dxfexport',
-            property: 'visible',
-            value: true
+            type: SET_CURRENT_TASK,
+            current: 'dxfexport'
         }
     }
     return (dispatch) => {};

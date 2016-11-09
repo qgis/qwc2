@@ -8,11 +8,10 @@
 
 const React = require('react');
 const {connect} = require('react-redux');
-const assign = require('object-assign');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const {setControlProperty} = require('../../MapStore2/web/client/actions/controls');
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
-const {Glyphicon} = require('react-bootstrap');
+const {setCurrentTask} = require('../actions/task');
+const MessageBar = require('../components/MessageBar');
 const PrintFrame = require('../components/PrintFrame');
 require('./style/DxfExport.css');
 
@@ -20,13 +19,27 @@ const DxfExport = React.createClass({
     propTypes: {
         visible: React.PropTypes.bool,
         theme: React.PropTypes.object,
-        setControlProperty: React.PropTypes.func,
-        map: React.PropTypes.object
+        map: React.PropTypes.object,
+        setCurrentTask: React.PropTypes.func
     },
     getDefaultProps() {
         return {
-            visible: false
         }
+    },
+    renderBody() {
+        return (
+            <span role="body">
+                <Message msgId="dxfexport.selectinfo" />
+                <form style={{display: 'none'}} ref={form => this.form = form} action={this.props.theme.url} method="POST" target="_blank">
+                    <input type="hidden" name="SERVICE" value="WMS" readOnly="true" />
+                    <input type="hidden" name="VERSION" value="1.3" readOnly="true" />
+                    <input type="hidden" name="REQUEST" value="GetMap" readOnly="true" />
+                    <input type="hidden" name="FORMAT" value="application/dxf" readOnly="true" />
+                    <input type="hidden" name="SRS" value="EPSG:3857" readOnly="true" />
+                    <input ref={input => this.extentInput = input} type="hidden" name="EXTENT" value="" readOnly="true" />
+                </form>
+            </span>
+        );
     },
     render() {
         if(!this.props.visible) {
@@ -34,26 +47,12 @@ const DxfExport = React.createClass({
         }
         return (
             <div>
-                <div id="DxfInfoBar">
-                    <span className="message">
-                        <Message msgId="dxfexport.selectinfo" />
-                    </span>
-                    <Glyphicon className="close" glyph="remove" onClick={this.close}/>
-                    <form ref={form => this.form = form} action={this.props.theme.url} method="POST" target="_blank">
-                        <input type="hidden" name="SERVICE" value="WMS" readOnly="true" />
-                        <input type="hidden" name="VERSION" value="1.3" readOnly="true" />
-                        <input type="hidden" name="REQUEST" value="GetMap" readOnly="true" />
-                        <input type="hidden" name="FORMAT" value="application/dxf" readOnly="true" />
-                        <input type="hidden" name="SRS" value="EPSG:3857" readOnly="true" />
-                        <input ref={input => this.extentInput = input} type="hidden" name="EXTENT" value="" readOnly="true" />
-                    </form>
-                </div>
+                <MessageBar name="dxfexport" onClose={this.close}>
+                    {this.renderBody()}
+                </MessageBar>
                 <PrintFrame map={this.props.map} interactive={true} bboxSelected={this.bboxSelected} />
             </div>
         );
-    },
-    close() {
-        this.props.setControlProperty('dxfexport', 'visible', false);
     },
     bboxSelected(bbox) {
         bbox = CoordinatesUtils.reprojectBbox(bbox, bbox.crs, "EPSG:3857");
@@ -61,18 +60,21 @@ const DxfExport = React.createClass({
         this.extentInput.value = extent;
         this.form.submit();
         this.close();
+    },
+    close() {
+        this.props.setCurrentTask(null);
     }
 });
 
 const selector = (state) => ({
     theme: state.theme ? state.theme.current : null,
-    visible: state.controls && state.controls.dxfexport ? state.controls.dxfexport.visible : false,
+    visible: state.task ? state.task.current === 'dxfexport' : false,
     map: state.map ? state.map.present : null
 });
 
 module.exports = {
     DxfExportPlugin: connect(selector, {
-        setControlProperty: setControlProperty
+        setCurrentTask: setCurrentTask
     })(DxfExport),
     reducers: {
         controls: require('../../MapStore2/web/client/reducers/controls')
