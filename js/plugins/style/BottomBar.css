@@ -4,7 +4,7 @@
     right: 0;
     bottom: 0;
     height: 3em;
-    z-index: 4;
+    z-index: 5;
     background-color: rgba(255,255, 255, 0.75);
     box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
     font-size: 75%;

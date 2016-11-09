@@ -3,7 +3,7 @@
     left: -30ch;
     top: calc(50% - 2em);
     height: 4em;
-    z-index: 3;
+    z-index: 4;
     background-color: rgba(255,255, 255, 0.85);
     box-shadow: 0mm 0mm 4mm rgba(136, 136, 136, 0.5);
     border: 1px solid #595959;
