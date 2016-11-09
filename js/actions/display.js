@@ -8,8 +8,34 @@
 
 const TOGGLE_FULLSCREEN = 'TOGGLE_FULLSCREEN';
 
+function requestFullscreen() {
+    if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+    } else if (document.documentElement.mozRequestFullScreen) {
+        document.documentElement.mozRequestFullScreen();
+    } else if (document.documentElement.webkitRequestFullScreen) {
+        document.documentElement.webkitRequestFullScreen();
+    }
+}
+
+function endFullscreen() {
+    if(document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if(document.msExitFullscreen) {
+        document.msExitFullscreen();
+    } else if(document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+    } else if(document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+    }
+}
 
 function toggleFullscreen(fullscreen) {
+    if(fullscreen) {
+        requestFullscreen();
+    } else {
+        endFullscreen();
+    }
     return {
         type: TOGGLE_FULLSCREEN,
         fullscreen: fullscreen

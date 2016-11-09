@@ -9,19 +9,22 @@
 const React = require('react');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
+const Swipeable = require('react-swipeable');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {AppMenu} = require("../components/AppMenu");
 const {FullscreenSwitcher} = require("../components/FullscreenSwitcher");
 const {Search} = require("../components/Search");
 const {resultsPurge, resetSearch, searchTextChanged} = require("../../MapStore2/web/client/actions/search");
 const {qwc2TextSearch} = require("../actions/search");
+const {toggleFullscreen} = require('../actions/display');
 require('./style/TopBar.css');
 
 const TopBar = React.createClass({
     propTypes: {
         mobile: React.PropTypes.bool,
         menuItems: React.PropTypes.array,
-        fullscreen: React.PropTypes.bool
+        fullscreen: React.PropTypes.bool,
+        toggleFullscreen: React.PropTypes.func
     },
     getDefaultProps() {
         return {
@@ -48,13 +51,18 @@ const TopBar = React.createClass({
         }
 
         return (
-            <div id="TopBar" className={this.props.mobile ? "mobile" : ""}>
-                <img className="logo" src={logo} />
-                <Search />
-                {this.props.mobile ? null : <FullscreenSwitcher />}
-                <AppMenu menuItems={this.props.menuItems} buttonContents={buttonContents} />
-            </div>
+            <Swipeable onSwipedUp={this.triggerFullscreen}>
+                <div id="TopBar" className={this.props.mobile ? "mobile" : ""}>
+                    <img className="logo" src={logo} />
+                    <Search />
+                    {this.props.mobile ? null : <FullscreenSwitcher />}
+                    <AppMenu menuItems={this.props.menuItems} buttonContents={buttonContents} />
+                </div>
+            </Swipeable>
          );
+     },
+     triggerFullscreen() {
+         this.props.toggleFullscreen(true);
      }
 });
 
@@ -64,7 +72,9 @@ const selector = (state) => ({
 });
 
 module.exports = {
-    TopBarPlugin: connect(selector, {})(TopBar),
+    TopBarPlugin: connect(selector, {
+        toggleFullscreen: toggleFullscreen
+    })(TopBar),
     reducers: {
         display: require("../reducers/display"),
         search: require('../../MapStore2/web/client/reducers/search'),

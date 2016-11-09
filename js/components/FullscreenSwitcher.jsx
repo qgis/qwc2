@@ -22,11 +22,6 @@ const FullscreenSwitcher = React.createClass({
         };
     },
     toggleFullscreen() {
-        if(!this.props.fullscreen) {
-            this.requestFullscreen();
-        } else {
-            this.endFullscreen();
-        }
         this.props.fullscreenToggled(!this.props.fullscreen);
     },
     componentDidMount() {
@@ -47,26 +42,6 @@ const FullscreenSwitcher = React.createClass({
             document.onmozfullscreenerror = this.checkFullscreenState;
         } else if(document.onmsfullscreenerror !== undefined) {
             document.onmsfullscreenerror = this.checkFullscreenState;
-        }
-    },
-    requestFullscreen() {
-        if (document.documentElement.requestFullscreen) {
-            document.documentElement.requestFullscreen();
-        } else if (document.documentElement.mozRequestFullScreen) {
-            document.documentElement.mozRequestFullScreen();
-        } else if (document.documentElement.webkitRequestFullScreen) {
-            document.documentElement.webkitRequestFullScreen();
-        }
-    },
-    endFullscreen() {
-        if(document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if(document.msExitFullscreen) {
-            document.msExitFullscreen();
-        } else if(document.mozCancelFullScreen) {
-            document.mozCancelFullScreen();
-        } else if(document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
         }
     },
     checkFullscreenState() {
