@@ -61,8 +61,7 @@ const Identify = React.createClass({
 });
 
 const selector = (state) => ({
-    //enabled: state.mapInfo && state.mapInfo.enabled,
-    enabled: !state.measurement || (!state.measurement.geomType),
+    enabled: state.mapInfo && state.mapInfo.enabled,
     responses: state.mapInfo && state.mapInfo.responses || [],
     requests: state.mapInfo && state.mapInfo.requests || [],
     format: state.mapInfo && state.mapInfo.infoFormat,
