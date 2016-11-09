@@ -124,7 +124,9 @@ const PrintFrame = React.createClass({
             maxy: Math.max(p1[1], p2[1]),
             crs: this.props.map.projection
         }
-        this.props.bboxSelected(bbox);
+        if(bbox.minx !== bbox.maxx && bbox.miny !== bbox.maxy) {
+            this.props.bboxSelected(bbox);
+        }
     }
 });
 
