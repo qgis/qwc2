@@ -6,15 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {CHANGE_MEASUREMENT_TOOL} = require('../../MapStore2/web/client/actions/measurement');
+const {changeMeasurement} = require('../../MapStore2/web/client/actions/measurement');
 const {setCurrentTask} = require('./task');
 
 function triggerAppMenuitem(key) {
     if(key === 'measure') {
-        return {
-            type: CHANGE_MEASUREMENT_TOOL,
-            geomType: 'LineString'
-        };
+        return (dispatch => {
+            dispatch(setCurrentTask('Measure'));
+            dispatch(changeMeasurement({geomType: 'LineString'}));
+        });
     } else if(key === 'themes') {
         return setCurrentTask('ThemeSwitcher');
     } else if(key === 'share') {

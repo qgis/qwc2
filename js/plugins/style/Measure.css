@@ -1,3 +1,26 @@
-#MeasureDialog {
-    width: 20em!important;
+span.buttonbar > span {
+    border-top: 1px solid #808080;
+    border-bottom: 1px solid #808080;
+    border-right: 1px solid #808080;
+    padding: 0.5em;
+    cursor: pointer;
+    color: #808080;
+}
+
+span.buttonbar > span:first-child {
+    border-left: 1px solid #808080;
+    border-radius: 4px 0 0 4px;
+}
+
+span.buttonbar > span:last-child {
+    border-radius: 0 4px 4px 0;
+}
+
+span.buttonbar > span.active {
+    background-color: #327ece;
+    color: white;
+}
+
+span.resultbody {
+    padding: 0.5em;
 }
