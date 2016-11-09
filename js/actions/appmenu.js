@@ -7,9 +7,7 @@
  */
 
 const {CHANGE_MEASUREMENT_TOOL} = require('../../MapStore2/web/client/actions/measurement');
-const {SET_CONTROL_PROPERTY} = require('../../MapStore2/web/client/actions/controls');
-const {SET_CURRENT_TASK} = require('./task');
-const {CHANGE_DIALOG_STATE} = require('./dialog');
+const {setCurrentTask} = require('./task');
 
 function triggerAppMenuitem(key) {
     if(key === 'measure') {
@@ -18,25 +16,13 @@ function triggerAppMenuitem(key) {
             geomType: 'LineString'
         };
     } else if(key === 'themes') {
-        return {
-            type: SET_CURRENT_TASK,
-            current: 'ThemeSwitcher'
-        }
+        return setCurrentTask('ThemeSwitcher');
     } else if(key === 'share') {
-        return {
-            type: SET_CURRENT_TASK,
-            current: 'Share'
-        }
+        return setCurrentTask('Share');
     } else if(key === 'print') {
-        return {
-            type: SET_CURRENT_TASK,
-            current: 'Print'
-        }
+        return setCurrentTask('Print');
     } else if(key === 'dxfexport') {
-        return {
-            type: SET_CURRENT_TASK,
-            current: 'dxfexport'
-        }
+        return setCurrentTask('dxfexport');
     }
     return (dispatch) => {};
 }
