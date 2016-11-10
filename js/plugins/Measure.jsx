@@ -8,10 +8,10 @@
 
 const React = require('react');
 const FormattedNumber = require('react-intl').FormattedNumber;
-const {Glyphicon} = require('react-bootstrap');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
-const Dialog = require('../../MapStore2/web/client/components/misc/Dialog');
+const proj4js = require('proj4');
+const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const measureUtils = require('../../MapStore2/web/client/utils/MeasureUtils');
 const {changeMeasurement, changeMeasurementState} = require('../../MapStore2/web/client/actions/measurement.js');
@@ -24,13 +24,15 @@ const Measure = React.createClass({
     propTypes: {
         setCurrentTask: React.PropTypes.func,
         measureState: React.PropTypes.object,
+        displaycrs: React.PropTypes.string,
         changeMeasurement: React.PropTypes.func,
         changeMeasurementState: React.PropTypes.func
     },
     getDefaultProps() {
         return {
             measureState: {
-                geomType: "LineString",
+                geomType: "Point",
+                point: null,
                 len: 0,
                 area: 0,
                 bearing: 0,
@@ -59,7 +61,16 @@ const Measure = React.createClass({
             return null;
         }
         let decimalFormat = {style: "decimal", minimumIntegerDigits: 1, maximumFractionDigits: 2, minimumFractionDigits: 2};
-        if(this.props.measureState.geomType === "LineString") {
+        if(this.props.measureState.geomType === "Point" && this.props.measureState.point) {
+            let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 3 : 0;
+            let {x, y} = CoordinatesUtils.reproject([this.props.measureState.point.x, this.props.measureState.point.y], this.props.measureState.point.srs, this.props.displaycrs);
+            var resultBody = (
+                <span className="resultbody">
+                    <span><Message msgId="measureComponent.pointLabel" />: </span>
+                    <span>{x.toFixed(digits) + " " + y.toFixed(digits)}</span>
+                </span>
+            );
+        } else if(this.props.measureState.geomType === "LineString") {
             var resultBody = (
                 <span className="resultbody">
                     <span><Message msgId="measureComponent.lengthLabel" />: </span>
@@ -98,6 +109,7 @@ const Measure = React.createClass({
             <MessageBar name="Measure" onClose={this.onClose}>
                 <span role="body">
                     <span className="buttonbar">
+                        <span onClick={()=>{this.setMeasureMode("Point");}} className={this.props.measureState.geomType === "Point" ? "active" : ""}><Message msgId="measureComponent.pointLabel" /></span>
                         <span onClick={()=>{this.setMeasureMode("LineString");}} className={this.props.measureState.geomType === "LineString" ? "active" : ""}><Message msgId="measureComponent.lengthLabel" /></span>
                         <span onClick={()=>{this.setMeasureMode("Polygon");}} className={this.props.measureState.geomType === "Polygon" ? "active" : ""}><Message msgId="measureComponent.areaLabel" /></span>
                         <span onClick={()=>{this.setMeasureMode("Bearing");}} className={this.props.measureState.geomType === "Bearing" ? "active" : ""}><Message msgId="measureComponent.bearingLabel" /></span>
@@ -113,12 +125,14 @@ const Measure = React.createClass({
 const selector = (state) => ({
     measureState: {
         geomType: state.measurement ? state.measurement.geomType : null,
+        point: state.measurement ? state.measurement.point : null,
         len: state.measurement ? state.measurement.len : 0,
         area: state.measurement ? state.measurement.area : 0,
         bearing: state.measurement ? state.measurement.bearing : 0,
         lenUnit: state.measurement && state.measurement.lenUnit ? state.measurement.lenUnit : 'm',
         areaUnit: state.measurement && state.measurement.areaUnit ? state.measurement.areaUnit : 'sqm'
-    }
+    },
+    displaycrs: state && state.mousePosition && state.mousePosition ? state.mousePosition.crs : "EPSG:4326"
 });
 
 module.exports = {

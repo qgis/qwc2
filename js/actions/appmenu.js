@@ -13,7 +13,7 @@ function triggerAppMenuitem(key) {
     if(key === 'measure') {
         return (dispatch => {
             dispatch(setCurrentTask('Measure'));
-            dispatch(changeMeasurement({geomType: 'LineString'}));
+            dispatch(changeMeasurement({geomType: 'Point'}));
         });
     } else if(key === 'themes') {
         return setCurrentTask('ThemeSwitcher');
