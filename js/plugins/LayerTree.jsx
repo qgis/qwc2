@@ -11,7 +11,7 @@ const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
 const Swipeable = require('react-swipeable');
 const assign = require('object-assign');
-import classnames from 'classnames';
+const classnames = require('classnames');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {changeLayerProperties} = require('../../MapStore2/web/client/actions/layers')
 const {toggleLayertree, toggleMapTips} = require('../actions/layertree');

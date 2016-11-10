@@ -9,7 +9,7 @@
 const React = require('react');
 const {connect} = require('react-redux');
 const {changeLayerProperties} = require('../actions/layers');
-import classnames from 'classnames';
+const classnames = require('classnames');
 require('./style/BackgroundSwitcherMenu.css');
 
 const BackgroundSwitcherMenu = React.createClass({
