@@ -141,9 +141,11 @@ const Print = React.createClass({
     render() {
         let printFrame = null;
         if(this.props.visible && this.state.layout) {
-            printFrame = (<PrintFrame map={this.props.map} scale={this.state.scale}
-                widthmm={this.state.layout.map.width}
-                heightmm={this.state.layout.map.height} />);
+            let frame = {
+                width: this.state.scale * this.state.layout.map.width / 1000.,
+                height: this.state.scale * this.state.layout.map.height / 1000.,
+            };
+            printFrame = (<PrintFrame map={this.props.map} fixedFrame={frame} />);
         }
         return (
             <div>

@@ -50,7 +50,7 @@ const DxfExport = React.createClass({
                 <MessageBar name="dxfexport" onClose={this.close}>
                     {this.renderBody()}
                 </MessageBar>
-                <PrintFrame map={this.props.map} interactive={true} bboxSelected={this.bboxSelected} />
+                <PrintFrame map={this.props.map} bboxSelected={this.bboxSelected} />
             </div>
         );
     },

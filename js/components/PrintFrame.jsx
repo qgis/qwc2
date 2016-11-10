@@ -14,20 +14,16 @@ require('./style/PrintFrame.css');
 
 const PrintFrame = React.createClass({
     propTypes: {
-        map: React.PropTypes.object,
-        scale: React.PropTypes.number,
-        widthmm: React.PropTypes.number,
-        heightmm: React.PropTypes.number,
-        interactive: React.PropTypes.bool,
+        map: React.PropTypes.object.isRequired,
+        fixedFrame: React.PropTypes.shape({
+            width: React.PropTypes.number, // in meters
+            height: React.PropTypes.number // in meters
+        }),
         bboxSelected: React.PropTypes.func
     },
     getDefaultProps() {
         return {
-            map: null,
-            scale: 0,
-            widthmm: 0,
-            heightmm: 0,
-            interactive: false,
+            fixedFrame: null,
             bboxSelected: () => {}
         }
     },
@@ -41,17 +37,14 @@ const PrintFrame = React.createClass({
         this.recomputeBox(newProps, this.props);
     },
     recomputeBox(newProps, oldProps) {
-        if(!newProps.interactive) {
+        if(newProps.fixedFrame) {
             let getPixelFromCoordinate = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK);
             let newState = this.getInitialState();
-            let angle = -newProps.map.bbox.rotation;
-            let cosa = Math.cos(angle);
-            let sina = Math.sin(angle);
-
-            let mapProj = newProps.map.projection;
-            let center = CoordinatesUtils.reproject(newProps.map.center, newProps.map.center.crs, mapProj);
-            let width = newProps.scale * newProps.widthmm / 1000.;
-            let height = newProps.scale * newProps.heightmm / 1000.;
+            let cosa = Math.cos(-newProps.map.bbox.rotation);
+            let sina = Math.sin(-newProps.map.bbox.rotation);
+            let width = newProps.fixedFrame.width;
+            let height = newProps.fixedFrame.height;
+            let center = CoordinatesUtils.reproject(newProps.map.center, newProps.map.center.crs, newProps.map.projection);
             let mapp1 = [center.x - .5 * width * cosa - .5 * height * sina,
                          center.y + .5 * width * sina - .5 * height * cosa];
             let mapp2 = [center.x + .5 * width * cosa + .5 * height * sina,
@@ -74,11 +67,11 @@ const PrintFrame = React.createClass({
             width: this.state.width + 'px',
             height: this.state.height + 'px'
         };
-        if((this.state.width !== 0 || this.state.height !== 0) && !this.props.interactive) {
+        if(this.props.fixedFrame) {
             return (
                 <div id="PrintFrame" style={boxStyle}></div>
             );
-        } else if(this.props.interactive) {
+        } else {
             return (
                 <div id="PrintFrameEventLayer"
                     onMouseDown={this.startSelection}
@@ -91,7 +84,6 @@ const PrintFrame = React.createClass({
                 </div>
             );
         }
-        return null;
     },
     startSelection(ev) {
         let x = ev.clientX;
