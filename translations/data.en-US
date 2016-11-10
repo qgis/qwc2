@@ -167,7 +167,8 @@
             "nolayouts": "The selected theme does not support printing"
         },
         "dxfexport": {
-            "selectinfo": "Drag a rectangle around the region to export..."
+            "selectinfo": "Drag a rectangle around the region to export...",
+            "symbologyscale": "Symbology scale:"
         },
         "backgroundSwither":{
             "tooltip": "Select Background"

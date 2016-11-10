@@ -20,6 +20,8 @@ const DxfExport = React.createClass({
         visible: React.PropTypes.bool,
         theme: React.PropTypes.object,
         map: React.PropTypes.object,
+        themeLayerId: React.PropTypes.string,
+        layers: React.PropTypes.array,
         setCurrentTask: React.PropTypes.func
     },
     getDefaultProps() {
@@ -27,16 +29,21 @@ const DxfExport = React.createClass({
         }
     },
     renderBody() {
+        let themeLayer = this.props.layers.find(layer => layer.id === this.props.themeLayerId);
+        let filename = this.props.theme.name + ".dxf";
         return (
             <span role="body">
-                <Message msgId="dxfexport.selectinfo" />
-                <form style={{display: 'none'}} ref={form => this.form = form} action={this.props.theme.url} method="POST" target="_blank">
-                    <input type="hidden" name="SERVICE" value="WMS" readOnly="true" />
-                    <input type="hidden" name="VERSION" value="1.3" readOnly="true" />
-                    <input type="hidden" name="REQUEST" value="GetMap" readOnly="true" />
-                    <input type="hidden" name="FORMAT" value="application/dxf" readOnly="true" />
-                    <input type="hidden" name="SRS" value="EPSG:3857" readOnly="true" />
-                    <input ref={input => this.extentInput = input} type="hidden" name="EXTENT" value="" readOnly="true" />
+                <form ref={form => this.form = form} action={this.props.theme.url + "#" + filename} method="POST" target="_blank">
+                <div className="help-text"><Message msgId="dxfexport.selectinfo" /></div>
+                <div className="export-settings"><Message msgId="dxfexport.symbologyscale" /> <span className="input-frame"><span>1&nbsp;:&nbsp;</span><input type="number" name="SCALE" defaultValue="500" /></span></div>
+                <input type="hidden" name="SERVICE" value="WMS" readOnly="true" />
+                <input type="hidden" name="VERSION" value="1.3" readOnly="true" />
+                <input type="hidden" name="REQUEST" value="GetMap" readOnly="true" />
+                <input type="hidden" name="FORMAT" value="application/dxf" readOnly="true" />
+                <input type="hidden" name="LAYERS" value={themeLayer.params.LAYERS} readOnly="true" />
+                <input type="hidden" name="CRS" value="EPSG:3857" readOnly="true" />
+                <input type="hidden" name="FILENAME" value={this.props.theme.name + ".dxf"} readOnly="true" />
+                <input ref={input => this.extentInput = input} type="hidden" name="BBOX" value="" readOnly="true" />
                 </form>
             </span>
         );
@@ -46,7 +53,7 @@ const DxfExport = React.createClass({
             return null;
         }
         return (
-            <div>
+            <div id="DxfExport">
                 <MessageBar name="dxfexport" onClose={this.close}>
                     {this.renderBody()}
                 </MessageBar>
@@ -69,7 +76,9 @@ const DxfExport = React.createClass({
 const selector = (state) => ({
     theme: state.theme ? state.theme.current : null,
     visible: state.task ? state.task.current === 'dxfexport' : false,
-    map: state.map ? state.map.present : null
+    map: state.map ? state.map.present : null,
+    themeLayerId: state.theme ? state.theme.currentlayer : "",
+    layers: state.layers ? state.layers.flat : []
 });
 
 module.exports = {

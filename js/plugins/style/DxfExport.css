@@ -1,0 +1,24 @@
+#DxfExport div.help-text {
+    font-style: italic;
+    padding-bottom: 0.5em;
+}
+
+#DxfExport div.export-settings {
+    font-size: small;
+}
+
+#DxfExport span.input-frame {
+    border: 1px solid #a5a5a5;
+    border-radius: 3px;
+    padding: 0.25em;
+    background-color: white;
+    display: inline-flex;
+    align-items: center;
+}
+
+#DxfExport span.input-frame input {
+    border: 0;
+    flex: 1;
+    width: 8ch;
+    min-width: 0;
+}
