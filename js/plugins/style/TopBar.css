@@ -16,7 +16,6 @@
 }
 
 #TopBar #Search div.MapSearchBar {
-    width: auto!important;
     max-width: 50ch;
 }
 
