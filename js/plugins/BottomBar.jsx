@@ -26,6 +26,7 @@ const BottomBar = React.createClass({
         onCRSChange: React.PropTypes.func,
         mapcrs:  React.PropTypes.string,
         mapscale: React.PropTypes.number,
+        fullscreen: React.PropTypes.bool,
         onScaleChange: React.PropTypes.func
     },
     getDefaultProps() {
@@ -37,6 +38,9 @@ const BottomBar = React.createClass({
         }
     },
     render() {
+        if(this.props.fullscreen) {
+            return null;
+        }
         let {x, y} = CoordinatesUtils.reproject([this.props.mousepos.x, this.props.mousepos.y], this.props.mousepos.crs, this.props.displaycrs);
         let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 3 : 0;
         const scales = getScales(this.props.mapcrs);
@@ -70,7 +74,8 @@ const selector = (state) => ({
     },
     displaycrs: state && state.mousePosition && state.mousePosition ? state.mousePosition.crs : "EPSG:4326",
     mapcrs: state && state.map && state.map.present ? state.map.present.projection : "EPSG:3857",
-    mapscale: state && state.map && state.map.present ? state.map.present.zoom : 0
+    mapscale: state && state.map && state.map.present ? state.map.present.zoom : 0,
+    fullscreen: state.display && state.display.fullscreen
 });
 
 module.exports = {

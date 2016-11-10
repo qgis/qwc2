@@ -7,6 +7,7 @@
  */
 
 const React = require('react');
+const classnames = require('classnames');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
 const Swipeable = require('react-swipeable');
@@ -50,9 +51,13 @@ const TopBar = React.createClass({
             logo = "assets/img/logo.svg";
         }
 
+        let classes = classnames({
+            "mobile": this.props.mobile,
+            "fullscreen": this.props.fullscreen
+        });
         return (
             <Swipeable onSwipedUp={this.triggerFullscreen}>
-                <div id="TopBar" className={this.props.mobile ? "mobile" : ""}>
+                <div id="TopBar" className={classes}>
                     <img className="logo" src={logo} />
                     <Search />
                     {this.props.mobile ? null : <FullscreenSwitcher />}

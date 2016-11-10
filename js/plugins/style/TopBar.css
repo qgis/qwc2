@@ -15,6 +15,20 @@
     margin-right: 1em;
 }
 
+#TopBar.fullscreen {
+    background-color: transparent;
+    box-shadow: none;
+}
+
+#TopBar.fullscreen img.logo {
+    visibility: hidden;
+    width: 0;
+}
+
+#TopBar.fullscreen #AppMenu .appmenu-label {
+    display: none;
+}
+
 #TopBar #Search div.MapSearchBar {
     max-width: 50ch;
 }
@@ -37,11 +51,13 @@
     text-align: right,
 }
 
-#TopBar.mobile #AppMenu ul.appmenu-menu {
+#TopBar.mobile #AppMenu ul.appmenu-menu,
+#TopBar.fullscreen #AppMenu ul.appmenu-menu
+ {
     position: absolute;
     right: 0;
     width: 100%;
-    max-width: 40em;
+    max-width: 30em;
 }
 
 #TopBar #AppMenu .appmenu-button {
