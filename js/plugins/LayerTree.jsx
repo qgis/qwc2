@@ -105,7 +105,7 @@ const LayerTree = React.createClass({
             <div className="layertree-item" key={sublayer.name}>
                 <span className={checkclasses} onClick={() => this.sublayerToggled(layer, path)}></span>
                 <span className="layertree-item-legend">
-                    <img className="layertree-item-legend-thumbnail" src={this.getLegendGraphicURL(layer, sublayer)} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} />
+                    <img className="layertree-item-legend-thumbnail" src={this.getLegendGraphicURL(layer, sublayer)} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />
                 </span>
                 <span className="layertree-item-title" title={sublayer.title}>{sublayer.title}</span>
                 {sublayer.queryable ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
@@ -148,7 +148,7 @@ const LayerTree = React.createClass({
                 top: this.state.legendTooltip.y
             };
             legendTooltip = (
-                <img className="layertree-item-legend-tooltip" style={style} src={this.state.legendTooltip.img}></img>
+                <img className="layertree-item-legend-tooltip" style={style} src={this.state.legendTooltip.img} onTouchStart={this.hideLegendTooltip}></img>
             );
         }
         return (
@@ -165,11 +165,12 @@ const LayerTree = React.createClass({
         );
     },
     layerTreeVisibilityToggled() {
-        this.props.toggleLayertree(!this.props.expanded);
+        this.props.expanded ? this.hideLayerTree() : this.showLayerTree();
     },
     hideLayerTree() {
         if(this.props.expanded) {
             this.props.toggleLayertree(false);
+            this.hideLegendTooltip();
         }
     },
     showLayerTree() {
