@@ -141,16 +141,17 @@ const LayerTree = React.createClass({
                 </div>
             );
         }
-        let legendTooltip = null;
-        if (this.state.legendTooltip) {
-            let style = {
-                left: this.state.legendTooltip.x,
-                top: this.state.legendTooltip.y
-            };
-            legendTooltip = (
-                <img className="layertree-item-legend-tooltip" style={style} src={this.state.legendTooltip.img} onTouchStart={this.hideLegendTooltip}></img>
-            );
-        }
+        let style = {
+            left: this.state.legendTooltip ? this.state.legendTooltip.x : -10000,
+            top: this.state.legendTooltip ? this.state.legendTooltip.y : -10000,
+        };
+        let tooltipClasses = classnames({
+            "layertree-item-legend-tooltip": true,
+            "layertree-item-legend-tooltip-visible": this.state.legendTooltip
+        });
+        let legendTooltip = (
+            <img className={tooltipClasses} style={style} src={this.state.legendTooltip ? this.state.legendTooltip.img : ""} onTouchStart={this.hideLegendTooltip}></img>
+        );
         return (
             <Swipeable onSwipedLeft={this.hideLayerTree} onSwipedRight={this.showLayerTree}>
                 <div id="LayerTree" className={expandedClass}>
@@ -226,7 +227,7 @@ const LayerTree = React.createClass({
         this.setState({
             legendTooltip: {
                 x: ev.target.getBoundingClientRect().right,
-                y: ev.target.getBoundingClientRect().y,
+                y: ev.target.getBoundingClientRect().top,
                 img: ev.target.src
             }
         });

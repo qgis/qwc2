@@ -111,6 +111,12 @@ img.layertree-item-legend-tooltip {
     margin-left: 0.25em;
     padding: 0.25em;
     background-color: white;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+img.layertree-item-legend-tooltip-visible {
+    opacity: 1;
 }
 
 #LayerTree span.layertree-item-checkbox-unchecked {
