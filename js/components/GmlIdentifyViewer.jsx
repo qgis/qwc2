@@ -31,7 +31,7 @@ const GmlIdentifyViewer = React.createClass({
         return {expanded: {}, resultTree: {}, currentFeature: null};
     },
     parseResponse(response, result, stats) {
-        result[response.layerMetadata.title] = IdentifyUtils.parseGmlResponse(response.response, stats);
+        result[response.layerMetadata.title] = IdentifyUtils.parseGmlResponsesGroupedByLayer(response.response, stats);
     },
     componentWillReceiveProps(nextProps) {
         if(nextProps.responses !== this.props.responses) {

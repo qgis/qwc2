@@ -11,28 +11,30 @@ const IdentifyUtils = {
     parseGmlResponse: function(response, stats) {
         if (typeof response !== 'string') {
             // skip non-string response, e.g. from vector layer
-            return {};
+            return [];
         }
         let parser = new DOMParser();
         let doc = parser.parseFromString(response, "text/xml");
         if (doc && doc.activeElement && doc.activeElement.tagName === 'parsererror') {
-            return {};
+            return [];
         }
         let features = [].slice.call(doc.firstChild.getElementsByTagName("gml:featureMember"));
         if(features.length === 0) {
             features = [].slice.call(doc.firstChild.getElementsByTagName("featureMember"));
         }
+        return features.map(feature => feature.firstElementChild);
+    },
+    parseGmlResponsesGroupedByLayer(response, stats) {
+        let features = IdentifyUtils.parseGmlResponse(response, stats);
         let layerFeatures = {};
-        features.map((featureMember) => {
-            if (featureMember.firstElementChild !== null) {
-                let layer = featureMember.firstElementChild.nodeName;
-                if(layerFeatures[layer] === undefined) {
-                    layerFeatures[layer] = [];
-                }
-                layerFeatures[layer].push(featureMember.firstElementChild);
-                stats.count += 1;
-                stats.lastFeature = featureMember.firstElementChild;
+        features.map((feature) => {
+            let layer = feature.nodeName;
+            if(layerFeatures[layer] === undefined) {
+                layerFeatures[layer] = [];
             }
+            layerFeatures[layer].push(feature);
+            stats.count += 1;
+            stats.lastFeature = feature;
         });
         return layerFeatures;
     },
