@@ -75,7 +75,12 @@ const MapTip = React.createClass({
             version: '1.1.1',
             request: 'GetFeatureInfo'
         };
-        const params = assign({}, baseParams, request, {info_format: 'application/vnd.ogc.gml'});
+        const params = assign({}, baseParams, request, {
+            info_format: 'application/vnd.ogc.gml',
+            FI_POINT_TOLERANCE: 16,
+            FI_LINE_TOLERANCE: 8,
+            FI_POLYGON_TOLERANCE: 4
+        });
         const reqId = uuid.v1();
         axios.get(url, {params: params}).then(response => {
             let stats = {count: 0, lastFeature: null};
