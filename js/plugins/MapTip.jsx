@@ -84,11 +84,12 @@ const MapTip = React.createClass({
         const reqId = uuid.v1();
         axios.get(url, {params: params}).then(response => {
             let stats = {count: 0, lastFeature: null};
-            IdentifyUtils.parseGmlResponse(response.data, stats);
-            if(stats.count === 1) {
-                let mapTips = stats.lastFeature.getElementsByTagName("qgs:maptip");
+            let features = IdentifyUtils.parseGmlResponse(response.data, stats);
+            // layerFeatures are sorted by query_layers
+            for(let i = 0, n = features.length; i < n; ++i) {
+                let mapTips = features[i].getElementsByTagName("qgs:maptip");
                 if(mapTips.length === 0) {
-                    mapTips = stats.lastFeature.getElementsByTagName("maptip");
+                    mapTips = features[i].getElementsByTagName("maptip");
                 }
                 if(mapTips.length > 0) {
                     let layer = {
@@ -96,13 +97,15 @@ const MapTip = React.createClass({
                         name: 'maptipselection',
                         title: 'Maptip selecton',
                         type: "vector",
-                        features: IdentifyUtils.gmlFeatureGeometryAsGeoJson(stats.lastFeature),
+                        features: IdentifyUtils.gmlFeatureGeometryAsGeoJson(features[i]),
                         featuresCrs: "EPSG:3857",
                         visibility: true
                     };
+                    this.props.removeLayer('maptipselection');
                     this.props.addLayer(layer, true);
                     this.setState({maptip: mapTips[0].textContent});
                 }
+                break;
             }
         });
     },
