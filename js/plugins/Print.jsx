@@ -12,6 +12,7 @@ const assign = require('object-assign');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const MapUtils = require('../../MapStore2/web/client/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
+const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const {changeRotation} = require('../../MapStore2/web/client/actions/map');
 const {SideBar} = require('../components/SideBar');
 const PrintFrame = require('../components/PrintFrame');
@@ -77,9 +78,10 @@ const Print = React.createClass({
 
         let extent = this.computeCurrentExtent();
         let formvisibility = 'hidden';
+        let action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(this.props.theme.url) + "&filename=" + encodeURIComponent(this.props.theme.name + ".pdf");
         return (
             <div role="body" className="scrollable">
-                <form action={this.props.theme.url} method="POST" target="_blank">
+                <form action={action} method="POST" target="_blank">
                     <table className="options-table"><tbody>
                         <tr>
                             <td><Message msgId="print.layout" /></td>

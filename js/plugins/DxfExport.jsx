@@ -10,6 +10,7 @@ const React = require('react');
 const {connect} = require('react-redux');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
+const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const {setCurrentTask} = require('../actions/task');
 const MessageBar = require('../components/MessageBar');
 const PrintFrame = require('../components/PrintFrame');
@@ -31,9 +32,10 @@ const DxfExport = React.createClass({
     renderBody() {
         let themeLayer = this.props.layers.find(layer => layer.id === this.props.themeLayerId);
         let filename = this.props.theme.name + ".dxf";
+        let action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(this.props.theme.url) + "&filename=" + encodeURIComponent(this.props.theme.name + ".dxf");
         return (
             <span role="body">
-                <form ref={form => this.form = form} action={this.props.theme.url + "#" + filename} method="POST" target="_blank">
+                <form ref={form => this.form = form} action={action} method="POST" target="_blank">
                 <div className="help-text"><Message msgId="dxfexport.selectinfo" /></div>
                 <div className="export-settings"><Message msgId="dxfexport.symbologyscale" /> <span className="input-frame"><span>1&nbsp;:&nbsp;</span><input type="number" name="SCALE" defaultValue="500" /></span></div>
                 <input type="hidden" name="SERVICE" value="WMS" readOnly="true" />
