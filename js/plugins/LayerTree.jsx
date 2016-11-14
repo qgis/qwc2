@@ -36,7 +36,10 @@ const LayerTree = React.createClass({
         };
     },
     getInitialState: function() {
-        return {activemenu: null};
+        return {
+            activemenu: null,
+            legendTooltip: undefined
+        };
     },
     getLegendGraphicURL(layer, sublayer) {
         if(layer.type !== "wms") {
@@ -102,8 +105,7 @@ const LayerTree = React.createClass({
             <div className="layertree-item" key={sublayer.name}>
                 <span className={checkclasses} onClick={() => this.sublayerToggled(layer, path)}></span>
                 <span className="layertree-item-legend">
-                    <img className="layertree-item-legend-thumbnail" src={this.getLegendGraphicURL(layer, sublayer)} />
-                    <img className="layertree-item-legend-tooltip" src={this.getLegendGraphicURL(layer, sublayer)} />
+                    <img className="layertree-item-legend-thumbnail" src={this.getLegendGraphicURL(layer, sublayer)} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} />
                 </span>
                 <span className="layertree-item-title" title={sublayer.title}>{sublayer.title}</span>
                 {sublayer.queryable ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
@@ -139,6 +141,16 @@ const LayerTree = React.createClass({
                 </div>
             );
         }
+        let legendTooltip = null;
+        if (this.state.legendTooltip) {
+            let style = {
+                left: this.state.legendTooltip.x,
+                top: this.state.legendTooltip.y
+            };
+            legendTooltip = (
+                <img className="layertree-item-legend-tooltip" style={style} src={this.state.legendTooltip.img}></img>
+            );
+        }
         return (
             <Swipeable onSwipedLeft={this.hideLayerTree} onSwipedRight={this.showLayerTree}>
                 <div id="LayerTree" className={expandedClass}>
@@ -148,6 +160,7 @@ const LayerTree = React.createClass({
                     </div>
                     <div className="layertree-expander" onClick={this.layerTreeVisibilityToggled}><div><Glyphicon glyph={expanderIcon}/></div></div>
                 </div>
+                {legendTooltip}
             </Swipeable>
         );
     },
@@ -207,6 +220,18 @@ const LayerTree = React.createClass({
     },
     sublayerMenuToggled(sublayerpath) {
         this.setState({activemenu: this.state.activemenu === sublayerpath ? null : sublayerpath});
+    },
+    showLegendTooltip(ev) {
+        this.setState({
+            legendTooltip: {
+                x: ev.target.getBoundingClientRect().right,
+                y: ev.target.getBoundingClientRect().y,
+                img: ev.target.src
+            }
+        });
+    },
+    hideLegendTooltip(ev) {
+        this.setState({legendTooltip: undefined});
     },
     toggleMapTips() {
         this.props.toggleMapTips(!this.props.mapTipsEnabled)

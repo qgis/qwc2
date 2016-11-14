@@ -102,22 +102,15 @@
     border: 1px solid #cccccc;
 }
 
-#LayerTree img.layertree-item-legend-tooltip {
+img.layertree-item-legend-tooltip {
     position: absolute;
-    z-index: 3;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.5s;
+    z-index: 4;
     box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
     border-radius: 0.5em;
     border: 1px solid #cccccc;
+    margin-left: 0.25em;
     padding: 0.25em;
     background-color: white;
-}
-
-#LayerTree span.layertree-item-legend:hover img.layertree-item-legend-tooltip {
-    visibility: visible;
-    opacity: 1;
 }
 
 #LayerTree span.layertree-item-checkbox-unchecked {
