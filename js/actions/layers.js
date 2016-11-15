@@ -8,7 +8,6 @@
 
 
 const UrlParams = require("../utils/UrlParams");
-const store = require("../stores/store");
 
 function changeLayerProperties(layer, properties) {
     return (dispatch, getState) => {
