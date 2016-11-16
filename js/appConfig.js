@@ -7,12 +7,6 @@
  */
 
 module.exports = {
-    pages: [{
-        name: "main",
-        path: "/",
-        component: require('./Main')
-    }],
-    pluginsDef: require('./plugins.js'),
     initialState: {
         defaultState: {
             mousePosition: {
