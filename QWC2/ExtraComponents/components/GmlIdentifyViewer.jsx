@@ -89,7 +89,7 @@ const GmlIdentifyViewer = React.createClass({
         if(!feature) {
             return null;
         }
-        let attribs = [].slice.call(feature.children).filter(node => node.nodeName !== "gml:boundedBy" && node.nodeName != "qgs:geometry");
+        let attribs = [].slice.call(feature.childNodes).filter(node => node.nodeName !== "gml:boundedBy" && node.nodeName != "qgs:geometry" && node.nodeName != "#text");
         if(attribs.length === 0) {
             return null;
         }

@@ -15,7 +15,7 @@ const IdentifyUtils = {
         }
         let parser = new DOMParser();
         let doc = parser.parseFromString(response, "text/xml");
-        if (doc && doc.activeElement && doc.activeElement.tagName === 'parsererror') {
+        if (!doc ||!doc.firstChild) {
             return [];
         }
         let features = [].slice.call(doc.firstChild.getElementsByTagName("gml:featureMember"));
@@ -42,7 +42,7 @@ const IdentifyUtils = {
         // The framework needs feature in GeoJSON format...
         let gmlFeature = '<wfs:FeatureCollection xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:wfs="http://www.opengis.net/wfs" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://qgis.org/gml" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns:qgs="http://qgis.org/gml">' +
                          '<gml:featureMember>' +
-                         feature.outerHTML +
+                         new XMLSerializer().serializeToString(feature) +
                          '</gml:featureMember>' +
                          '</wfs:FeatureCollection>';
         let features = (new ol.format.GML2()).readFeatures(gmlFeature);
