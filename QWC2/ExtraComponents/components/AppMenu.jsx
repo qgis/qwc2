@@ -29,20 +29,22 @@ const AppMenu = React.createClass({
         return { menuVisible: false, submenusVisible: [] };
     },
     onMenuClicked() {
-        this.setState({ menuVisible: !this.state.menuVisible });
+        this.setState({ menuVisible: !this.state.menuVisible, submenusVisible: [] });
     },
     hideMenu() {
-        this.setState({ menuVisible: false });
+        this.setState({ menuVisible: false, submenusVisible: [] });
     },
     onSubmenuClicked(ev, key, level) {
-        ev.stopPropagation();
+        this.killEvent(ev);
         var a = this.state.submenusVisible[level] === key ? [] : [key];
         this.setState({ submenusVisible: this.state.submenusVisible.slice(0, level).concat(a) });
     },
     onMenuitemClicked(ev, key) {
-        ev.stopPropagation();
         this.props.menuitemClicked(key);
-        this.hideMenu();
+    },
+    killEvent(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
     },
     render() {
         return(
@@ -63,7 +65,12 @@ const AppMenu = React.createClass({
             return items.map(item => {
                 if(item.subitems) {
                     return (
-                        <li key={item.key} className={this.state.submenusVisible[level] === item.key ? "expanded" : ""} onClick={(ev)=>{this.onSubmenuClicked(ev, item.key, level)}}>
+                        <li key={item.key}
+                            className={this.state.submenusVisible[level] === item.key ? "expanded" : ""}
+                            onMouseDown={(ev)=>{this.onSubmenuClicked(ev, item.key, level)}}
+                            onMouseUp={this.killEvent}
+                            onClick={this.killEvent}
+                        >
                             <img src={item.icon} />
                             <Message msgId={"appmenu.items." + item.key} />
                             {item.title}
@@ -74,7 +81,7 @@ const AppMenu = React.createClass({
                     );
                 } else {
                     return (
-                        <li key={item.key} onClick={(ev)=>{this.onMenuitemClicked(ev, item.key);}}>
+                        <li key={item.key} onMouseDown={(ev)=>{this.onMenuitemClicked(ev, item.key);}}>
                             <img src={item.icon} />
                             <Message msgId={"appmenu.items." + item.key} />
                         </li>
