@@ -8,6 +8,7 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const {connect} = require('react-redux');
+require("babel-polyfill"); // Needed for IE11 to avoid 'Promise not defined' error in axios
 
 const {initialState} = require('./appConfig');
 const Localized = require('../QWC2/MapStore2/web/client/components/I18N/Localized');
