@@ -31,7 +31,9 @@ const MessageBar = React.createClass({
                     <span className="messagebody">
                         {this.renderRole("body")}
                     </span>
-                    <Glyphicon className="close" onClick={this.props.onClose} glyph="remove"/>
+                    <span className="closewrapper">
+                        <Glyphicon className="close" onClick={this.props.onClose} glyph="remove"/>
+                    </span>
                 </div>
             </div>
         );
