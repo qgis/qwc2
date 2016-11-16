@@ -10,7 +10,7 @@ module.exports = {
     pages: [{
         name: "main",
         path: "/",
-        component: require('./pages/Main')
+        component: require('./Main')
     }],
     pluginsDef: require('./plugins.js'),
     initialState: {

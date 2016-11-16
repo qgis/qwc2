@@ -26,9 +26,9 @@ module.exports = {
         new DefinePlugin({
             "__DEVTOOLS__": true
         }),
-        new NormalModuleReplacementPlugin(/leaflet$/, path.join(__dirname, "MapStore2", "web", "client", "libs", "leaflet")),
-        new NormalModuleReplacementPlugin(/openlayers$/, path.join(__dirname, "MapStore2", "web", "client", "libs", "openlayers")),
-        new NormalModuleReplacementPlugin(/proj4$/, path.join(__dirname, "MapStore2", "web", "client", "libs", "proj4")),
+        new NormalModuleReplacementPlugin(/leaflet$/, path.join(__dirname, "QWC2", "MapStore2", "web", "client", "libs", "leaflet")),
+        new NormalModuleReplacementPlugin(/openlayers$/, path.join(__dirname, "QWC2", "MapStore2", "web", "client", "libs", "openlayers")),
+        new NormalModuleReplacementPlugin(/proj4$/, path.join(__dirname, "QWC2", "MapStore2", "web", "client", "libs", "proj4")),
         new NoErrorsPlugin()
     ],
     resolve: {
@@ -45,12 +45,12 @@ module.exports = {
                 test: /\.jsx?$/,
                 exclude: /ol\.js$/,
                 loader: "react-hot",
-                include: [path.join(__dirname, "js"), path.join(__dirname, "MapStore2", "web", "client")]
+                include: [path.join(__dirname, "js"), path.join(__dirname, "QWC2", "ExtraComponents"), path.join(__dirname, "QWC2", "MapStore2", "web", "client")]
             }, {
                 test: /\.jsx?$/,
                 exclude: /ol\.js$/,
                 loader: "babel-loader",
-                include: [path.join(__dirname, "js"), path.join(__dirname, "MapStore2", "web", "client")]
+                include: [path.join(__dirname, "js"), path.join(__dirname, "QWC2", "ExtraComponents"), path.join(__dirname, "QWC2", "MapStore2", "web", "client")]
             }
         ]
     },

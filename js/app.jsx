@@ -9,16 +9,16 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const {connect} = require('react-redux');
 
-const StandardApp = require('../MapStore2/web/client/components/app/StandardApp');
+const StandardApp = require('../QWC2/MapStore2/web/client/components/app/StandardApp');
 
 const {pages, pluginsDef, initialState, storeOpts} = require('./appConfig');
 
 const StandardRouter = connect((state) => ({
     locale: state.locale || {},
     pages
-}))(require('../MapStore2/web/client/components/app/StandardRouter'));
+}))(require('../QWC2/MapStore2/web/client/components/app/StandardRouter'));
 
-const appStore = require('../MapStore2/web/client/stores/StandardStore').bind(null, initialState, {});
+const appStore = require('../QWC2/MapStore2/web/client/stores/StandardStore').bind(null, initialState, {});
 
 const appConfig = {
     storeOpts,

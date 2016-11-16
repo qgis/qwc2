@@ -8,23 +8,23 @@
 
 module.exports = {
     plugins: {
-        MapPlugin: require('./plugins/Map'),
-        LocateButtonPlugin: require('./plugins/LocateButton'),
-        ZoomInPlugin: require('./plugins/ZoomButtons'),
-        ZoomOutPlugin: require('./plugins/ZoomButtons'),
-        BackgroundSwitcherButtonPlugin: require('./plugins/BackgroundSwitcherButton'),
-        BackgroundSwitcherMenuPlugin: require('./plugins/BackgroundSwitcherMenu'),
-        TopBarPlugin: require('./plugins/TopBar'),
-        BottomBarPlugin: require('./plugins/BottomBar'),
-        MeasurePlugin: require('./plugins/Measure'),
-        ThemeSwitcherPlugin: require('./plugins/ThemeSwitcher'),
-        LayerTreePlugin: require('./plugins/LayerTree'),
-        IdentifyPlugin: require('./plugins/Identify'),
-        MapTipPlugin: require('./plugins/MapTip'),
-        SharePlugin: require('./plugins/Share'),
-        MapCopyrightPlugin: require('./plugins/MapCopyright'),
-        PrintPlugin: require('./plugins/Print'),
-        DxfExportPlugin: require('./plugins/DxfExport')
+        MapPlugin: require('../QWC2/ExtraComponents/plugins/Map'),
+        LocateButtonPlugin: require('../QWC2/ExtraComponents/plugins/LocateButton'),
+        ZoomInPlugin: require('../QWC2/ExtraComponents/plugins/ZoomButtons'),
+        ZoomOutPlugin: require('../QWC2/ExtraComponents/plugins/ZoomButtons'),
+        BackgroundSwitcherButtonPlugin: require('../QWC2/ExtraComponents/plugins/BackgroundSwitcherButton'),
+        BackgroundSwitcherMenuPlugin: require('../QWC2/ExtraComponents/plugins/BackgroundSwitcherMenu'),
+        TopBarPlugin: require('../QWC2/ExtraComponents/plugins/TopBar'),
+        BottomBarPlugin: require('../QWC2/ExtraComponents/plugins/BottomBar'),
+        MeasurePlugin: require('../QWC2/ExtraComponents/plugins/Measure'),
+        ThemeSwitcherPlugin: require('../QWC2/ExtraComponents/plugins/ThemeSwitcher'),
+        LayerTreePlugin: require('../QWC2/ExtraComponents/plugins/LayerTree'),
+        IdentifyPlugin: require('../QWC2/ExtraComponents/plugins/Identify'),
+        MapTipPlugin: require('../QWC2/ExtraComponents/plugins/MapTip'),
+        SharePlugin: require('../QWC2/ExtraComponents/plugins/Share'),
+        MapCopyrightPlugin: require('../QWC2/ExtraComponents/plugins/MapCopyright'),
+        PrintPlugin: require('../QWC2/ExtraComponents/plugins/Print'),
+        DxfExportPlugin: require('../QWC2/ExtraComponents/plugins/DxfExport')
     },
     requires: {}
 };
