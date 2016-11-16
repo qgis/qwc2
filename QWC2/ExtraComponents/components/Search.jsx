@@ -37,6 +37,16 @@ const Search = React.createClass({
             mapConfig: undefined
         }
     },
+    renderSearchResults() {
+        if(!this.props.results || this.props.results.length === 0) {
+            return null;
+        }
+        return (
+            <ul className="search-results">
+                {this.props.results.map(category => this.renderCategory(category))}
+            </ul>
+        );
+    },
     render() {
         return (
             <div id="Search">
@@ -48,9 +58,7 @@ const Search = React.createClass({
                     onSearchTextChange={this.props.onSearchTextChange}
                     delay={500}
                     searchOptions={{displaycrs: this.props.displaycrs}} />
-                <ul className="search-results">
-                    {(this.props.results || []).map(category => this.renderCategory(category))}
-                </ul>
+                {this.renderSearchResults()}
             </div>
         )
     },
