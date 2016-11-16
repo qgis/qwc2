@@ -10,7 +10,7 @@ const ReactDOM = require('react-dom');
 const {connect} = require('react-redux');
 require("babel-polyfill"); // Needed for IE11 to avoid 'Promise not defined' error in axios
 
-const {initialState} = require('./appConfig');
+const {initialState, pluginsDef} = require('./appConfig');
 const Localized = require('../QWC2/MapStore2/web/client/components/I18N/Localized');
 const Main = require('./Main');
 
@@ -34,7 +34,7 @@ const appComponent = React.createClass({
 const appConfig = {
     storeOpts: {},
     appStore: StandardStore,
-    pluginsDef: require('./plugins.js'),
+    pluginsDef: pluginsDef,
     initialActions: [],
     appComponent: connect(state => ({
         locale: state.locale || {messages: {}, current: ''}
