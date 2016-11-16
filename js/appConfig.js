@@ -12,6 +12,9 @@ module.exports = {
             mousePosition: {
                 enabled: true,
                 crs: "EPSG:4326"
+            },
+            mapInfo: {
+                enabled: true
             }
         },
         mobile: {}
