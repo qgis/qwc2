@@ -9,6 +9,7 @@
 const React = require('react');
 const assign = require('object-assign');
 const {connect} = require('react-redux');
+const axios = require('axios');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {zoomToExtent} = require("../../MapStore2/web/client/actions/map");
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
@@ -54,9 +55,8 @@ const ThemeSwitcher = React.createClass({
             // As soon as map is set, fetch themes and restore initial theme
             // NOTE: set dummy themes state to fetch themes only once
             this.setState({themes: {}}, () => {
-                fetch("themes.json")
-                .then(response => response.json())
-                .then(obj => this.populateThemesList(obj));
+                axios.get("themes.json")
+                .then(response => this.populateThemesList(response.data));
             });
         }
     },

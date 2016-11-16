@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const axios = require('axios');
 const {TEXT_SEARCH_RESULTS_LOADED, resultsPurge} = require("../../MapStore2/web/client/actions/search");
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
@@ -74,9 +75,8 @@ function coordinatesSearch(text, displaycrs, dispatch) {
 }
 
 function geoAdminLocationSearch(text, dispatch) {
-    fetch("http://api3.geo.admin.ch/rest/services/api/SearchServer?searchText="+ encodeURIComponent(text) + "&type=locations&limit=20")
-    .then(response => response.json())
-    .then(result => dispatch(geoAdminLocationSearchResults(result)));
+    axios.get("http://api3.geo.admin.ch/rest/services/api/SearchServer?searchText="+ encodeURIComponent(text) + "&type=locations&limit=20")
+    .then(response => dispatch(geoAdminLocationSearchResults(response.data)));
 }
 
 function parseItemBBox(bboxstr) {

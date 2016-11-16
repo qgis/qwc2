@@ -13,7 +13,7 @@ const {setCurrentTheme} = require('./theme');
 const ConfigUtils = require('../../MapStore2/web/client/utils/ConfigUtils');
 const UrlParams = require("../utils/UrlParams");
 const assign = require('object-assign');
-const axios = require('../../MapStore2/web/client/libs/ajax');
+const axios = require('axios');
 const Proj4js = require('proj4');
 const {DEFAULT_SCREEN_DPI} = require('../../MapStore2/web/client/utils/MapUtils');
 
@@ -85,11 +85,10 @@ function loadMapConfig(configName, mapId) {
         var params = UrlParams.getParams();
 
         if(params.k) {
-            fetch(ConfigUtils.getConfigProp("qwc2serverUrl") + "/resolvepermalink?key=" + params.k)
-            .then(response => response.json())
-            .then(obj => {
-                if(obj.query) {
-                    assign(params, obj.query);
+            axios.get(ConfigUtils.getConfigProp("qwc2serverUrl") + "/resolvepermalink?key=" + params.k)
+            .then(response => {
+                if(response.data.query) {
+                    assign(params, response.data.query);
                     UrlParams.updateParams(params);
                 }
                 restoreMapConfig(dispatch, configName, mapId, params);
