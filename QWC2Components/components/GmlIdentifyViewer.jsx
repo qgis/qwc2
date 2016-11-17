@@ -136,12 +136,7 @@ const GmlIdentifyViewer = React.createClass({
         }
         let layerContents = keys.map(sublayer => this.renderSublayer(layer, sublayer));
         return (
-            <ul key={layer}>
-                <li className={this.getExpandedClass(layer, true)}>
-                    <span onClick={()=> this.toggleExpanded(layer, true)}><Message msgId="identify.theme" /> <b>{layer}</b></span>
-                    <ul>{layerContents}</ul>
-                </li>
-            </ul>
+            <ul key={layer}>{layerContents}</ul>
         );
     },
     render() {
