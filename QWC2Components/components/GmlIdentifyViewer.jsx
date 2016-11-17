@@ -122,7 +122,7 @@ const GmlIdentifyViewer = React.createClass({
         }
         return (
             <li key={sublayer} className={this.getExpandedClass(path, true)}>
-                <span onClick={()=> this.toggleExpanded(path, true)}><Message msgId="identify.layer" /> <b>{layer.substr(layer.indexOf(':') + 1)}</b></span>
+                <span onClick={()=> this.toggleExpanded(path, true)}><Message msgId="identify.layer" /> <b>{sublayer.substr(sublayer.indexOf(':') + 1)}</b></span>
                 <ul>
                     {features.map(feature => this.renderFeature(feature))}
                 </ul>
