@@ -87,18 +87,18 @@ const ThemeSwitcher = React.createClass({
         }
         return null;
     },
-    groupMatchesFilter(group) {
+    groupMatchesFilter(group, filter) {
         if(group && group.items) {
             for(let i = 0, n = group.items.length; i < n; ++i) {
-                if(group.items[i].title.includes(this.props.filter) ||
-                   group.items[i].keywords.includes(this.props.filter)) {
+                if(group.items[i].title.match(filter) ||
+                   group.items[i].keywords.match(filter)) {
                     return true;
                 }
             }
         }
         if(group && group.subdirs) {
             for(let i = 0, n = group.subdirs.length; i < n; ++i) {
-                if(this.groupMatchesFilter(group.subdirs[i])) {
+                if(this.groupMatchesFilter(group.subdirs[i], filter)) {
                     return true;
                 }
             }
@@ -106,16 +106,18 @@ const ThemeSwitcher = React.createClass({
         return false;
     },
     renderThemeGroup(group) {
-        var subtree = null;
-        if(this.props.filter === "" || this.groupMatchesFilter(group)) {
-            subtree = (group && group.subdirs ? group.subdirs : []).map(subdir =>
-                (<li key={subdir.title} className="theme-group"><span>{subdir.title}</span><ul>{this.renderThemeGroup(subdir)}</ul></li>)
-            );
+        let filter = new RegExp(this.props.filter.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
+        let subdirs = (group && group.subdirs ? group.subdirs : []);
+        if(this.props.filter !== "") {
+            subdirs = subdirs.filter(subdir => this.groupMatchesFilter(subdir, filter));
         }
+        let subtree = subdirs.map(subdir =>
+            (<li key={subdir.title} className="theme-group"><span>{subdir.title}</span><ul>{this.renderThemeGroup(subdir)}</ul></li>)
+        );
         let activeThemeId = this.props.activeTheme ? this.props.activeTheme.id : null;
         return (<ul>
             {(group && group.items ? group.items : []).map(item => {
-                return item.title.includes(this.props.filter) || (item.keywords || []).includes(this.props.filter) ? (
+                return item.title.match(filter) || item.keywords.match(filter) ? (
                     <li key={item.id} className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"} onClick={(ev)=>{this.themeClicked(item);}}>
                         {item.title}<br /><img src={"data:image/png;base64," + item.thumbnail} /><br />
                     <div className="theme-item-keywords" title={item.keywords}>{item.keywords}</div>
