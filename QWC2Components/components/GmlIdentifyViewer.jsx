@@ -94,16 +94,18 @@ const GmlIdentifyViewer = React.createClass({
             return null;
         }
         return (
-            <ul className="attribute-list">
-                {attribs.map(attrib => {
-                    return (
-                        <li key={attrib.nodeName}>
-                            <span className="identify-attr-title"><i>{attrib.nodeName.substr(attrib.nodeName.indexOf(':') + 1)}</i></span>
-                            <span className="identify-attr-value">{attrib.textContent}</span>
-                        </li>
-                    );
-                })}
-            </ul>
+            <div className="attribute-list-box">
+                <table className="attribute-list"><tbody>
+                    {attribs.map(attrib => {
+                        return (
+                            <tr key={attrib.nodeName}>
+                                <td className="identify-attr-title"><i>{attrib.nodeName.substr(attrib.nodeName.indexOf(':') + 1)}</i></td>
+                                <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: attrib.textContent}}></td>
+                            </tr>
+                        );
+                    })}
+                </tbody></table>
+            </div>
         );
     },
     renderFeature(feature) {

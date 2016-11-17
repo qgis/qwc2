@@ -52,21 +52,29 @@
     top: 0.4em;
 }
 
-#IdentifyViewer ul.attribute-list {
+#IdentifyViewer div.attribute-list-box {
     border: 1px solid #9c9b9c;
     background-color: #f2f2f2;
     border-radius: 0.25em;
-}
-#IdentifyViewer span.identify-attr-title {
-    width: 15ch;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    display: inline-block;
-    vertical-align: middle;
+    font-size: small;
+    padding: 0.25em;
 }
 
-#IdentifyViewer span.identify-attr-value {
-    display: inline-block;
+#IdentifyViewer table.attribute-list {
+    table-layout: fixed;
+    width: 100%;
+}
+
+#IdentifyViewer td.identify-attr-title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
     vertical-align: middle;
+    width: 15ch;
+}
+
+#IdentifyViewer td.identify-attr-value {
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
