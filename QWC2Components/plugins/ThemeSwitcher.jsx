@@ -26,7 +26,7 @@ const ThemeSwitcher = React.createClass({
         filter: React.PropTypes.string,
         activeTheme: React.PropTypes.object,
         activeThemeLayer: React.PropTypes.string,
-        map: React.PropTypes.object,
+        haveMap: React.PropTypes.bool,
         layers: React.PropTypes.array,
         changeTheme: React.PropTypes.func,
         changeFilter: React.PropTypes.func,
@@ -48,7 +48,7 @@ const ThemeSwitcher = React.createClass({
         return {themes: null };
     },
     componentWillReceiveProps(nextProps) {
-        if(this.props.map === null && nextProps.map !== null || this.props.map && !this.state.themes) {
+        if(!this.props.haveMap && nextProps.haveMap || this.props.haveMap && !this.state.themes) {
             // As soon as map is set, fetch themes and restore initial theme
             // NOTE: set dummy themes state to fetch themes only once
             this.setState({themes: {}}, () => {
@@ -205,7 +205,7 @@ const selector = (state) => ({
     activeTheme: state.theme ? state.theme.current : null,
     activeThemeLayer: state.theme ? state.theme.currentlayer : null,
     filter: state.theme ? state.theme.switcherfilter : "",
-    map: state.map,
+    haveMap: state.map ? true : false,
     layers: state.layers && state.layers.flat ? state.layers.flat : []
 });
 
