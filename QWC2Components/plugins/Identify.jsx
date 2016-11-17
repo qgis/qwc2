@@ -56,7 +56,7 @@ const Identify = React.createClass({
     },
     render() {
         const Identify = require("../../MapStore2/web/client/components/data/identify/Identify.jsx");
-        return (<Identify {...this.props} viewer={GmlIdentifyViewer} viewerOptions={{map: this.props.map}} />);
+        return (<Identify {...this.props} asPanel={false} viewer={GmlIdentifyViewer} viewerOptions={{map: this.props.map}} />);
     }
 });
 

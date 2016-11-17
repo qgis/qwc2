@@ -3,6 +3,7 @@
     border-radius: 0.5em;
     box-shadow: 0 0 5px 1px rgba(94, 94, 94, 1)!important;
     border-width: 0!important;
+    background-color: white;
 }
 
 #mapstore-getfeatureinfo  div.panel-body {
