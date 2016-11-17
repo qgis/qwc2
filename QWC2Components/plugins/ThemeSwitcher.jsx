@@ -24,9 +24,6 @@ require('./style/ThemeSwitcher.css');
 const ThemeSwitcher = React.createClass({
     propTypes: {
         filter: React.PropTypes.string,
-        startuptheme: React.PropTypes.shape({
-            id: React.PropTypes.string,
-            activelayers: React.PropTypes.array}),
         activeTheme: React.PropTypes.object,
         activeThemeLayer: React.PropTypes.string,
         map: React.PropTypes.object,
@@ -208,7 +205,6 @@ const selector = (state) => ({
     activeTheme: state.theme ? state.theme.current : null,
     activeThemeLayer: state.theme ? state.theme.currentlayer : null,
     filter: state.theme ? state.theme.switcherfilter : "",
-    startuptheme: state.theme ? state.theme.startuptheme : null,
     map: state.map,
     layers: state.layers && state.layers.flat ? state.layers.flat : []
 });

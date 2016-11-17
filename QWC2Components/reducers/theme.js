@@ -7,17 +7,12 @@
  */
 
 const {
-    SET_STARTUP_THEME,
     SET_CURRENT_THEME,
     SET_THEME_SWITCHER_FILTER} = require('../actions/theme');
 const assign = require('object-assign');
 
 function themeSwitcher(state = {switchervisible: false, switcherfilter: "", current: null}, action) {
     switch (action.type) {
-        case SET_STARTUP_THEME:
-            return assign({}, state, {
-                startuptheme: action.theme
-            });
         case SET_CURRENT_THEME:
             return assign({}, state, {
                 current: action.theme,
