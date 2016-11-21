@@ -8,13 +8,24 @@
     font-size: small;
 }
 
-#IdentifyViewer li.clickable {
+#IdentifyViewer li.identify-feature-result span.clickable {
     cursor: pointer;
 }
 
-#IdentifyViewer li.active {
+#IdentifyViewer li.identify-feature-result span.active {
     font-weight: bold;
     color: #595959;
+}
+
+#IdentifyViewer span.identify-remove-result {
+    margin-left: 0.5em;
+    color: #878787;
+    cursor: pointer;
+    visibility: hidden;
+}
+
+#IdentifyViewer li.identify-feature-result:hover span.identify-remove-result {
+    visibility: visible;
 }
 
 #IdentifyViewer li.expandable {

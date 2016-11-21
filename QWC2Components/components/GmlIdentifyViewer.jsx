@@ -8,6 +8,7 @@
 const React = require('react');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
+const {Glyphicon} = require('react-bootstrap');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {addLayer, removeLayer, changeLayerProperties} = require('../../MapStore2/web/client/actions/layers');
 const IdentifyUtils = require('../utils/IdentifyUtils');
@@ -108,11 +109,12 @@ const GmlIdentifyViewer = React.createClass({
             </div>
         );
     },
-    renderFeature(feature) {
+    renderFeature(layer, sublayer, feature) {
         let featureid = feature.attributes.fid.value;
         return (
-            <li key={featureid} className={this.state.currentFeature === feature ? "active clickable" : "clickable" }>
-                <span onClick={()=> this.setCurrentFeature(feature)}><Message msgId="identify.feature" /> <b>{featureid}</b></span>
+            <li key={featureid} className="identify-feature-result">
+                <span className={this.state.currentFeature === feature ? "active clickable" : "clickable"} onClick={()=> this.setCurrentFeature(feature)}><Message msgId="identify.feature" /> <b>{featureid}</b></span>
+                <Glyphicon className="identify-remove-result" glyph="minus" onClick={() => this.removeResult(layer, sublayer, feature)} />
             </li>
         );
     },
@@ -126,7 +128,7 @@ const GmlIdentifyViewer = React.createClass({
             <li key={sublayer} className={this.getExpandedClass(path, true)}>
                 <span onClick={()=> this.toggleExpanded(path, true)}><Message msgId="identify.layer" /> <b>{sublayer.substr(sublayer.indexOf(':') + 1)}</b></span>
                 <ul>
-                    {features.map(feature => this.renderFeature(feature))}
+                    {features.map(feature => this.renderFeature(layer, sublayer, feature))}
                 </ul>
             </li>
         );
@@ -137,13 +139,16 @@ const GmlIdentifyViewer = React.createClass({
             return null;
         }
         let layerContents = keys.map(sublayer => this.renderSublayer(layer, sublayer));
+        if(layerContents.every(item => item === null)) {
+            return null;
+        }
         return (
             <ul key={layer}>{layerContents}</ul>
         );
     },
     render() {
         let contents = Object.keys(this.state.resultTree).map(layer => this.renderLayer(layer));
-        if(contents.every(item => item == null)) {
+        if(contents.every(item => item === null)) {
             if(this.props.missingResponses > 0) {
                 contents = (<Message msgId="identify.querying" />);
             } else {
@@ -156,6 +161,16 @@ const GmlIdentifyViewer = React.createClass({
                 {this.renderFeatureAttributes()}
             </div>
         );
+    },
+    removeResult(layer, sublayer, feature) {
+        let newFeatures = this.state.resultTree[layer][sublayer].filter(item => item !== feature);
+        let newResultTree = assign({}, this.state.resultTree);
+        newResultTree[layer] = assign({}, this.state.resultTree[layer]);
+        newResultTree[layer][sublayer] = newFeatures;
+        this.setState({
+            resultTree: newResultTree,
+            currentFeature: this.state.currentFeature === feature ? null : this.state.currentFeature
+        });
     }
 });
 
