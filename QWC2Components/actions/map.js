@@ -11,7 +11,9 @@ const UrlParams = require("../utils/UrlParams");
 
 function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
     return (dispatch) => {
-        UrlParams.updateParams({x: center.x, y: center.y, z: zoom});
+        let x = Math.round(center.x * 100000.) / 100000.;
+        let y = Math.round(center.y * 100000.) / 100000.;
+        UrlParams.updateParams({x: x, y: y, z: zoom});
         dispatch(require('../../MapStore2/web/client/actions/map').changeMapView(center, zoom, bbox, size, mapStateSource, projection));
     };
 }
