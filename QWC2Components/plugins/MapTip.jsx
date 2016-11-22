@@ -76,7 +76,7 @@ const MapTip = React.createClass({
             request: 'GetFeatureInfo'
         };
         const params = assign({}, baseParams, request, {
-            info_format: 'application/vnd.ogc.gml',
+            info_format: 'text/xml',
             FI_POINT_TOLERANCE: 16,
             FI_LINE_TOLERANCE: 8,
             FI_POLYGON_TOLERANCE: 4
@@ -84,28 +84,25 @@ const MapTip = React.createClass({
         const reqId = uuid.v1();
         axios.get(url, {params: params}).then(response => {
             let stats = {count: 0, lastFeature: null};
-            let features = IdentifyUtils.parseGmlResponse(response.data, stats);
-            // layerFeatures are sorted by query_layers
-            for(let i = 0, n = features.length; i < n; ++i) {
-                let mapTips = features[i].getElementsByTagName("qgs:maptip");
-                if(mapTips.length === 0) {
-                    mapTips = features[i].getElementsByTagName("maptip");
-                }
-                if(mapTips.length > 0) {
+            let result = IdentifyUtils.parseXmlResponse(response.data, stats);
+            let layers = Object.keys(result);
+            for(let i = 0; i < layers.length; ++i) {
+                let feature = result[layers[i]].find(feature => feature.attributes.maptip);
+                if(feature) {
                     let layer = {
                         id: 'maptipselection',
                         name: 'maptipselection',
                         title: 'Maptip selecton',
                         type: "vector",
-                        features: IdentifyUtils.gmlFeatureGeometryAsGeoJson(features[i]),
+                        features: [IdentifyUtils.wktToGeoJSON(feature.geometry)],
                         featuresCrs: "EPSG:3857",
                         visibility: true
                     };
                     this.props.removeLayer('maptipselection');
                     this.props.addLayer(layer, true);
-                    this.setState({maptip: mapTips[0].textContent});
+                    this.setState({maptip: feature.attributes.maptip});
+                    break;
                 }
-                break;
             }
         });
     },

@@ -12,10 +12,11 @@ const {Glyphicon} = require('react-bootstrap');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {addLayer, removeLayer, changeLayerProperties} = require('../../MapStore2/web/client/actions/layers');
 const IdentifyUtils = require('../utils/IdentifyUtils');
-require('./style/GmlIdentifyViewer.css');
+require('./style/IdentifyViewer.css');
 
-const GmlIdentifyViewer = React.createClass({
+const IdentifyViewer = React.createClass({
     propTypes: {
+        theme: React.PropTypes.object,
         missingResponses: React.PropTypes.number,
         responses: React.PropTypes.array,
         layers: React.PropTypes.array,
@@ -29,19 +30,45 @@ const GmlIdentifyViewer = React.createClass({
         };
     },
     getInitialState: function() {
-        return {expanded: {}, resultTree: {}, currentFeature: null};
+        return {expanded: {}, resultTree: {}, currentFeature: null, displayFieldMap: null};
+    },
+    populateDisplayFieldMap(displayFieldMap, item) {
+        if(item.sublayers) {
+            item.sublayers.map(child => this.populateDisplayFieldMap(displayFieldMap, child));
+        } else if(item.displayField){
+            displayFieldMap[item.title] = item.displayField;
+        }
     },
     parseResponse(response, result, stats) {
-        if(!(response.layerMetadata.title in result)) {
-            result[response.layerMetadata.title] = {};
-        }
-        let newResult = IdentifyUtils.parseGmlResponsesGroupedByLayer(response.response, stats);
-        let newLayers = Object.keys(newResult);
-        newLayers.map(layer => {
-            result[response.layerMetadata.title][layer] = (result[response.layerMetadata.title][layer] || []).concat(newResult[layer]);
+        let newResult = IdentifyUtils.parseXmlResponse(response.response);
+        // Merge with previous
+        Object.keys(newResult).map(layer => {
+            if(layer in result) {
+                newResult[layer].map(feature => {
+                    if(!result[layer].find(f => f.id === feature.id)) {
+                        result[layer].push(feature);
+                    }
+                })
+            } else {
+                result[layer] = newResult[layer];
+            }
         });
+        // Stats
+        Object.keys(result).map(layer => {
+            result[layer].map(feature => {
+                stats.count += 1;
+                stats.lastFeature = feature;
+            })
+        })
     },
     componentWillReceiveProps(nextProps) {
+        if(nextProps.theme && !this.state.displayFieldMap) {
+            let displayFieldMap = {};
+            if(nextProps.theme) {
+                this.populateDisplayFieldMap(displayFieldMap, nextProps.theme);
+            }
+            this.setState({displayFieldMap: displayFieldMap});
+        }
         if(nextProps.responses !== this.props.responses) {
             let result = {};
             let stats = {count: 0, lastFeature: null};
@@ -60,7 +87,7 @@ const GmlIdentifyViewer = React.createClass({
                     name: 'identifyselection',
                     title: 'Selection',
                     type: "vector",
-                    features: IdentifyUtils.gmlFeatureGeometryAsGeoJson(nextState.currentFeature),
+                    features: [IdentifyUtils.wktToGeoJSON(nextState.currentFeature.geometry)],
                     featuresCrs: "EPSG:3857",
                     visibility: true,
                     queryable: false
@@ -69,7 +96,7 @@ const GmlIdentifyViewer = React.createClass({
             } else if(nextState.currentFeature && haveLayer) {
                 let diff = {
                     visibility: true,
-                    features: IdentifyUtils.gmlFeatureGeometryAsGeoJson(nextState.currentFeature)
+                    features: [IdentifyUtils.wktToGeoJSON(nextState.currentFeature.geometry)]
                 };
                 let newlayerprops = assign({}, this.props.layer, diff);
                 this.props.changeLayerProperties('identifyselection', newlayerprops);
@@ -97,18 +124,18 @@ const GmlIdentifyViewer = React.createClass({
         if(!feature) {
             return null;
         }
-        let attribs = [].slice.call(feature.childNodes).filter(node => node.nodeName !== "gml:boundedBy" && node.nodeName != "qgs:geometry" && node.nodeName != "#text");
-        if(attribs.length === 0) {
+        let attributes = Object.keys(feature.attributes);
+        if(attributes.length === 0) {
             return null;
         }
         return (
             <div className="attribute-list-box">
                 <table className="attribute-list"><tbody>
-                    {attribs.map(attrib => {
+                    {attributes.map(attrib => {
                         return (
-                            <tr key={attrib.nodeName}>
-                                <td className="identify-attr-title"><i>{attrib.nodeName.substr(attrib.nodeName.indexOf(':') + 1)}</i></td>
-                                <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: attrib.textContent}}></td>
+                            <tr key={attrib}>
+                                <td className="identify-attr-title"><i>{attrib}</i></td>
+                                <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: feature.attributes[attrib]}}></td>
                             </tr>
                         );
                     })}
@@ -116,64 +143,58 @@ const GmlIdentifyViewer = React.createClass({
             </div>
         );
     },
-    renderFeature(layer, sublayer, feature) {
-        let featureid = feature.attributes.fid.value;
-        return (
-            <li key={featureid} className="identify-feature-result">
-                <span className={this.state.currentFeature === feature ? "active clickable" : "clickable"} onClick={()=> this.setCurrentFeature(feature)}><Message msgId="identify.feature" /> <b>{featureid}</b></span>
-                <Glyphicon className="identify-remove-result" glyph="minus" onClick={() => this.removeResult(layer, sublayer, feature)} />
-            </li>
-        );
-    },
-    renderSublayer(layer, sublayer) {
-        let path = layer + "/" + sublayer;
-        let features = this.state.resultTree[layer][sublayer];
-        if(features.length === 0) {
-            return null;
+    renderFeature(layer, feature) {
+        let displayName = "";
+        try {
+            let displayFieldName = this.state.displayFieldMap[layer];
+            displayName = feature.attributes[displayFieldName];
+        } catch(e) {
+        }
+        if(!displayName || displayName[0] === "<") {
+            displayName = feature.attributes.name || feature.attributes.Name || feature.attributes.NAME || feature.id;
         }
         return (
-            <li key={sublayer} className={this.getExpandedClass(path, true)}>
-                <span onClick={()=> this.toggleExpanded(path, true)}><Message msgId="identify.layer" /> <b>{sublayer.substr(sublayer.indexOf(':') + 1)}</b></span>
-                <ul>
-                    {features.map(feature => this.renderFeature(layer, sublayer, feature))}
-                </ul>
+            <li key={feature.id} className="identify-feature-result">
+                <span className={this.state.currentFeature === feature ? "active clickable" : "clickable"} onClick={()=> this.setCurrentFeature(feature)}><b>{displayName}</b></span>
+                <Glyphicon className="identify-remove-result" glyph="minus" onClick={() => this.removeResult(layer, feature)} />
             </li>
         );
     },
     renderLayer(layer) {
-        let keys = Object.keys(this.state.resultTree[layer]);
-        if(keys.length === 0) {
-            return null;
-        }
-        let layerContents = keys.map(sublayer => this.renderSublayer(layer, sublayer));
-        if(layerContents.every(item => item === null)) {
+        let features = this.state.resultTree[layer];
+        if(features.length === 0) {
             return null;
         }
         return (
-            <ul key={layer}>{layerContents}</ul>
+            <li key={layer} className={this.getExpandedClass(layer, true)}>
+                <span onClick={()=> this.toggleExpanded(layer, true)}><b>{layer}</b></span>
+                <ul>
+                    {features.map(feature => this.renderFeature(layer, feature))}
+                </ul>
+            </li>
         );
     },
     render() {
         let contents = Object.keys(this.state.resultTree).map(layer => this.renderLayer(layer));
         if(contents.every(item => item === null)) {
             if(this.props.missingResponses > 0) {
-                contents = (<Message msgId="identify.querying" />);
+                return (<div id="IdentifyViewer"><Message msgId="identify.querying" /></div>);
             } else {
-                contents = (<Message msgId="noFeatureInfo" />);
+                return (<div id="IdentifyViewer"><Message msgId="noFeatureInfo" /></div>);
             }
         }
         return (
             <div id="IdentifyViewer">
-                {contents}
+                <div className="identify-results-container">
+                    <ul>{contents}</ul>
+                </div>
                 {this.renderFeatureAttributes()}
             </div>
         );
     },
-    removeResult(layer, sublayer, feature) {
-        let newFeatures = this.state.resultTree[layer][sublayer].filter(item => item !== feature);
+    removeResult(layer, feature) {
         let newResultTree = assign({}, this.state.resultTree);
-        newResultTree[layer] = assign({}, this.state.resultTree[layer]);
-        newResultTree[layer][sublayer] = newFeatures;
+        newResultTree[layer] = this.state.resultTree[layer].filter(item => item !== feature);
         this.setState({
             resultTree: newResultTree,
             currentFeature: this.state.currentFeature === feature ? null : this.state.currentFeature
@@ -182,12 +203,13 @@ const GmlIdentifyViewer = React.createClass({
 });
 
 const selector = (state) => ({
+    theme: state.theme ? state.theme.current : null,
     layers: state.layers && state.layers.flat || []
 });
 module.exports = {
-    GmlIdentifyViewer: connect(selector, {
+    IdentifyViewer: connect(selector, {
         addLayer: addLayer,
         removeLayer: removeLayer,
         changeLayerProperties: changeLayerProperties
-    })(GmlIdentifyViewer)
+    })(IdentifyViewer)
 };

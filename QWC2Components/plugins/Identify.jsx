@@ -11,7 +11,7 @@ const {getVectorInfo, purgeMapInfoResults, showMapinfoMarker, hideMapinfoMarker,
 const {getFeatureInfo} = require('../actions/mapInfo');
 const {defaultQueryableFilter} = require('../../MapStore2/web/client/utils/MapInfoUtils');
 const {changeMapInfoFormat} = require('../../MapStore2/web/client/actions/mapInfo');
-const {GmlIdentifyViewer} = require('../components/GmlIdentifyViewer');
+const {IdentifyViewer} = require('../components/IdentifyViewer');
 
 require('./style/Identify.css');
 
@@ -42,7 +42,7 @@ const Identify = React.createClass({
     getDefaultProps() {
         return {
             enabled: false,
-            format: 'application/vnd.ogc.gml',
+            format: 'text/xml',
             params: {},
             queryableLayersFilter: (l) => {
                 return defaultQueryableFilter(l) &&
@@ -56,7 +56,7 @@ const Identify = React.createClass({
     },
     render() {
         const Identify = require("../../MapStore2/web/client/components/data/identify/Identify.jsx");
-        return (<Identify {...this.props} asPanel={false} viewer={GmlIdentifyViewer} viewerOptions={{map: this.props.map}} />);
+        return (<Identify {...this.props} asPanel={false} viewer={IdentifyViewer} viewerOptions={{map: this.props.map}} />);
     }
 });
 
