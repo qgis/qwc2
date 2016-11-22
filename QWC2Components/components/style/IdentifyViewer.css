@@ -27,6 +27,8 @@
     color: #878787;
     cursor: pointer;
     visibility: hidden;
+    float: right;
+    margin-right: 1em;
 }
 
 #IdentifyViewer li.identify-feature-result:hover span.identify-remove-result {
@@ -80,20 +82,21 @@
 }
 
 #IdentifyViewer table.attribute-list {
-    table-layout: fixed;
     width: 100%;
 }
 
 #IdentifyViewer td.identify-attr-title {
-    white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
     vertical-align: middle;
-    width: 15ch;
+    width: 10ch;
 }
 
 #IdentifyViewer td.identify-attr-value {
-    vertical-align: middle;
+    max-width: 0;
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    overflow: hidden;
+    vertical-align: middle;
 }
