@@ -13,6 +13,7 @@ require('./style/FullscreenSwitcher.css');
 
 const FullscreenSwitcher = React.createClass({
     propTypes: {
+        mobile: React.PropTypes.bool,
         fullscreen: React.PropTypes.bool,
         fullscreenToggled: React.PropTypes.func
     },
@@ -58,6 +59,10 @@ const FullscreenSwitcher = React.createClass({
         }
     },
     render() {
+        // Render nothing on mobile, but keep the component for the onfullscreenchange logic
+        if(this.props.mobile) {
+            return null;
+        }
         return (
             <span id="FullScreenSwitcher" onClick={this.toggleFullscreen}>
                 <span className={this.props.fullscreen ? "minimize" : "maximize"}></span>
@@ -67,6 +72,7 @@ const FullscreenSwitcher = React.createClass({
 });
 
 const selector = (state) => ({
+    mobile: state.browser ? state.browser.mobile : false,
     fullscreen: state.display && state.display.fullscreen
 });
 
