@@ -62,7 +62,7 @@ const Measure = React.createClass({
         }
         let decimalFormat = {style: "decimal", minimumIntegerDigits: 1, maximumFractionDigits: 2, minimumFractionDigits: 2};
         if(this.props.measureState.geomType === "Point" && this.props.measureState.point) {
-            let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 3 : 0;
+            let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
             let {x, y} = CoordinatesUtils.reproject([this.props.measureState.point.x, this.props.measureState.point.y], this.props.measureState.point.srs, this.props.displaycrs);
             var resultBody = (
                 <span className="resultbody">

@@ -49,7 +49,7 @@ const BottomBar = React.createClass({
             return null;
         }
         let {x, y} = CoordinatesUtils.reproject([this.props.mousepos.x, this.props.mousepos.y], this.props.mousepos.crs, this.props.displaycrs);
-        let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 3 : 0;
+        let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
         return (
             <div id="BottomBar">
                 <span className="mousepos_label"><Message msgId="bottombar.mousepos_label" />: </span>
