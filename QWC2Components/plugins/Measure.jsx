@@ -67,14 +67,14 @@ const Measure = React.createClass({
             var resultBody = (
                 <span className="resultbody">
                     <span><Message msgId="measureComponent.pointLabel" />: </span>
-                    <span>{x.toFixed(digits) + " " + y.toFixed(digits)}</span>
+                    <span className="measurement">{x.toFixed(digits) + " " + y.toFixed(digits)}</span>
                 </span>
             );
         } else if(this.props.measureState.geomType === "LineString") {
             var resultBody = (
                 <span className="resultbody">
                     <span><Message msgId="measureComponent.lengthLabel" />: </span>
-                    <span><FormattedNumber {...decimalFormat} value={measureUtils.getFormattedLength(this.props.measureState.lenUnit, this.props.measureState.len)} /> </span>
+                    <span className="measurement"><FormattedNumber {...decimalFormat} value={measureUtils.getFormattedLength(this.props.measureState.lenUnit, this.props.measureState.len)} /> </span>
                     <select onChange={this.changeLengthUnit} value={this.props.measureState.lenUnit}>
                         <option value="m">m</option>
                         <option value="ft">ft</option>
@@ -87,7 +87,7 @@ const Measure = React.createClass({
             var resultBody = (
                 <span className="resultbody">
                     <span><Message msgId="measureComponent.areaLabel" />: </span>
-                    <span><FormattedNumber {...decimalFormat} value={measureUtils.getFormattedArea(this.props.measureState.areaUnit, this.props.measureState.area)} /> </span>
+                    <span className="measurement"><FormattedNumber {...decimalFormat} value={measureUtils.getFormattedArea(this.props.measureState.areaUnit, this.props.measureState.area)} /> </span>
                     <select onChange={this.changeAreaUnit} value={this.props.measureState.areaUnit}>
                         <option value="sqm">m&#178;</option>
                         <option value="sqft">ft&#178;</option>
@@ -100,7 +100,7 @@ const Measure = React.createClass({
             var resultBody = (
                 <span className="resultbody">
                     <span><Message msgId="measureComponent.bearingLabel" />: </span>
-                    <span>{measureUtils.getFormattedBearingValue(this.props.measureState.bearing)}</span>
+                    <span className="measurement">{measureUtils.getFormattedBearingValue(this.props.measureState.bearing)}</span>
                 </span>
             );
         }

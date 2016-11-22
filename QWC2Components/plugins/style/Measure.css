@@ -27,3 +27,9 @@ span.resultbody {
     padding: 0.5em;
     white-space: nowrap;
 }
+
+span.measurement {
+    display: inline-block;
+    min-width: 15ch;
+    text-align: center;
+}
