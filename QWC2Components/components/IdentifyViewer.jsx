@@ -94,11 +94,10 @@ const IdentifyViewer = React.createClass({
                 };
                 this.props.addLayer(layer, true);
             } else if(nextState.currentFeature && haveLayer) {
-                let diff = {
+                let newlayerprops = {
                     visibility: true,
                     features: [IdentifyUtils.wktToGeoJSON(nextState.currentFeature.geometry)]
                 };
-                let newlayerprops = assign({}, this.props.layer, diff);
                 this.props.changeLayerProperties('identifyselection', newlayerprops);
             }
         }

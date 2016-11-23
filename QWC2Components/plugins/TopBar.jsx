@@ -25,7 +25,8 @@ const TopBar = React.createClass({
         mobile: React.PropTypes.bool,
         menuItems: React.PropTypes.array,
         fullscreen: React.PropTypes.bool,
-        toggleFullscreen: React.PropTypes.func
+        toggleFullscreen: React.PropTypes.func,
+        searchProviders: React.PropTypes.object
     },
     getDefaultProps() {
         return {
@@ -59,7 +60,7 @@ const TopBar = React.createClass({
             <Swipeable onSwipedUp={this.triggerFullscreen}>
                 <div id="TopBar" className={classes}>
                     <img className="logo" src={logo} />
-                    <Search />
+                    <Search searchProviders={this.props.searchProviders} />
                     <FullscreenSwitcher />
                     <AppMenu menuItems={this.props.menuItems} buttonContents={buttonContents} />
                 </div>
@@ -71,17 +72,16 @@ const TopBar = React.createClass({
      }
 });
 
-const selector = (state) => ({
-    mobile: state.browser ? state.browser.mobile : false,
-    fullscreen: state.display && state.display.fullscreen
-});
-
-module.exports = {
-    TopBarPlugin: connect(selector, {
+module.exports = (searchProviders) => { return {
+    TopBarPlugin: connect((state) => ({
+        mobile: state.browser ? state.browser.mobile : false,
+        fullscreen: state.display && state.display.fullscreen,
+        searchProviders: searchProviders
+    }), {
         toggleFullscreen: toggleFullscreen
     })(TopBar),
     reducers: {
         display: require("../reducers/display"),
         search: require('../../MapStore2/web/client/reducers/search'),
     }
-};
+}};

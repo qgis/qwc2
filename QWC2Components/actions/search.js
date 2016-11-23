@@ -12,7 +12,7 @@ const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
 const UrlParams = require("../utils/UrlParams");
 
-function startSearch(text, searchOptions) {
+function startSearch(text, searchOptions, searchProviders) {
     UrlParams.updateParams({s: text});
     return (dispatch) => {
         dispatch(resultsPurge());

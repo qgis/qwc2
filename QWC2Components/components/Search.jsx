@@ -28,7 +28,8 @@ const Search = React.createClass({
         onSearchReset: React.PropTypes.func,
         onSearchTextChange: React.PropTypes.func,
         panToResult: React.PropTypes.func,
-        addMarker: React.PropTypes.func
+        addMarker: React.PropTypes.func,
+        searchProviders: React.PropTypes.object
     },
     getDefaultProps() {
         return {
@@ -48,11 +49,12 @@ const Search = React.createClass({
         );
     },
     render() {
+        console.log(this.props.searchProviders);
         return (
             <div id="Search">
                 <SearchBar
                     searchText={this.props.searchText}
-                    onSearch={this.props.onSearch}
+                    onSearch={this.onSearch}
                     onPurgeResults={this.props.onPurgeResults}
                     onSearchReset={this.props.onSearchReset}
                     onSearchTextChange={this.props.onSearchTextChange}
@@ -96,6 +98,9 @@ const Search = React.createClass({
                 null,
                 this.props.mapConfig.projection);
         }
+    },
+    onSearch(text, searchOptions) {
+        this.props.onSearch(text, searchOptions, this.props.searchProviders);
     }
 });
 
