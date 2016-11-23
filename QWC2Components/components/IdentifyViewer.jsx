@@ -88,7 +88,7 @@ const IdentifyViewer = React.createClass({
                     title: 'Selection',
                     type: "vector",
                     features: [IdentifyUtils.wktToGeoJSON(nextState.currentFeature.geometry)],
-                    featuresCrs: "EPSG:3857",
+                    featuresCrs: nextState.currentFeature.bbox.srs,
                     visibility: true,
                     queryable: false
                 };
@@ -96,7 +96,8 @@ const IdentifyViewer = React.createClass({
             } else if(nextState.currentFeature && haveLayer) {
                 let newlayerprops = {
                     visibility: true,
-                    features: [IdentifyUtils.wktToGeoJSON(nextState.currentFeature.geometry)]
+                    features: [IdentifyUtils.wktToGeoJSON(nextState.currentFeature.geometry)],
+                    featuresCrs: nextState.currentFeature.bbox.srs
                 };
                 this.props.changeLayerProperties('identifyselection', newlayerprops);
             }
