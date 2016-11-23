@@ -78,29 +78,32 @@ const IdentifyViewer = React.createClass({
     },
     componentWillUpdate(nextProps, nextState) {
         if(nextState.currentFeature !== this.state.currentFeature) {
-            let haveLayer = this.props.layers.find(layer => layer.id === 'identifyselection') !== undefined;
-            if(!nextState.currentFeature && haveLayer) {
-                this.props.removeLayer('identifyselection');
-            } else if(nextState.currentFeature && !haveLayer) {
-                let layer = {
-                    id: 'identifyselection',
-                    name: 'identifyselection',
-                    title: 'Selection',
-                    type: "vector",
-                    features: [IdentifyUtils.wktToGeoJSON(nextState.currentFeature.geometry)],
-                    featuresCrs: nextState.currentFeature.bbox.srs,
-                    visibility: true,
-                    queryable: false
-                };
-                this.props.addLayer(layer, true);
-            } else if(nextState.currentFeature && haveLayer) {
-                let newlayerprops = {
-                    visibility: true,
-                    features: [IdentifyUtils.wktToGeoJSON(nextState.currentFeature.geometry)],
-                    featuresCrs: nextState.currentFeature.bbox.srs
-                };
-                this.props.changeLayerProperties('identifyselection', newlayerprops);
-            }
+            this.setVisibleFeatureGeometry(nextState.currentFeature);
+        }
+    },
+    setVisibleFeatureGeometry(feature) {
+        let haveLayer = this.props.layers.find(layer => layer.id === 'identifyselection') !== undefined;
+        if(!feature && haveLayer) {
+            this.props.removeLayer('identifyselection');
+        } else if(feature && !haveLayer) {
+            let layer = {
+                id: 'identifyselection',
+                name: 'identifyselection',
+                title: 'Selection',
+                type: "vector",
+                features: [IdentifyUtils.wktToGeoJSON(feature.geometry)],
+                featuresCrs: feature.bbox.srs,
+                visibility: true,
+                queryable: false
+            };
+            this.props.addLayer(layer, true);
+        } else if(feature && haveLayer) {
+            let newlayerprops = {
+                visibility: true,
+                features: [IdentifyUtils.wktToGeoJSON(feature.geometry)],
+                featuresCrs: feature.bbox.srs
+            };
+            this.props.changeLayerProperties('identifyselection', newlayerprops);
         }
     },
     componentWillUnmount() {
@@ -154,7 +157,11 @@ const IdentifyViewer = React.createClass({
             displayName = feature.attributes.name || feature.attributes.Name || feature.attributes.NAME || feature.id;
         }
         return (
-            <li key={feature.id} className="identify-feature-result">
+            <li key={feature.id}
+                className="identify-feature-result"
+                onMouseOver={() => this.setVisibleFeatureGeometry(feature)}
+                onMouseOut={() => this.setVisibleFeatureGeometry(this.state.currentFeature)}
+            >
                 <span className={this.state.currentFeature === feature ? "active clickable" : "clickable"} onClick={()=> this.setCurrentFeature(feature)}><b>{displayName}</b></span>
                 <Glyphicon className="identify-remove-result" glyph="minus" onClick={() => this.removeResult(layer, feature)} />
             </li>
