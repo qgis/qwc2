@@ -216,7 +216,7 @@ const LayerTree = React.createClass({
     },
     sublayerTransparencyChanged(layer, sublayerpath, value) {
         let {newlayer, newsublayer} = this.cloneLayerTree(layer, sublayerpath);
-        newsublayer.opacity = 255 - value;
+        newsublayer.opacity = Math.max(1, 255 - value);
         assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers));
         this.props.changeLayerProperties(layer.id, newlayer);
     },
