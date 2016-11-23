@@ -26,6 +26,7 @@ const BottomBar = React.createClass({
         onCRSChange: React.PropTypes.func,
         mapcrs:  React.PropTypes.string,
         mapscale: React.PropTypes.number,
+        activeThemeId: React.PropTypes.string,
         fullscreen: React.PropTypes.bool,
         onScaleChange: React.PropTypes.func
     },
@@ -40,7 +41,7 @@ const BottomBar = React.createClass({
         return {mapscales: undefined};
     },
     componentWillReceiveProps(nextProps) {
-        if ((this.props.mapcrs != nextProps.mapcrs) || (this.state.mapscales === undefined && nextProps.mapcrs !== undefined)) {
+        if ((this.props.mapcrs != nextProps.mapcrs) || (this.props.activeThemeId != nextProps.activeThemeId) || (this.state.mapscales === undefined && nextProps.mapcrs !== undefined)) {
             this.setState({mapscales: getScales(nextProps.mapcrs)});
         }
     },
@@ -81,6 +82,7 @@ const selector = (state) => ({
     displaycrs: state && state.mousePosition && state.mousePosition ? state.mousePosition.crs : "EPSG:4326",
     mapcrs: state && state.map && state.map.present ? state.map.present.projection : undefined,
     mapscale: state && state.map && state.map.present ? state.map.present.zoom : 0,
+    activeThemeId: state.theme && state.theme.current ? state.theme.current.id : undefined,
     fullscreen: state.display && state.display.fullscreen
 });
 

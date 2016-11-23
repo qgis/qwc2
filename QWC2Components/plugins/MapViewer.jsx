@@ -10,7 +10,7 @@
  const {loadMapConfig} = require('../actions/config');
 
 const MapViewer = connect(() => ({}), {
-    loadMapConfig: loadMapConfig.bind(null, "config.json", false)
+    loadMapConfig: loadMapConfig
 })(require('../../MapStore2/web/client/containers/MapViewer'));
 
 module.exports = MapViewer;
