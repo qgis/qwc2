@@ -61,60 +61,55 @@ const Measure = React.createClass({
             return null;
         }
         let decimalFormat = {style: "decimal", minimumIntegerDigits: 1, maximumFractionDigits: 2, minimumFractionDigits: 2};
-        if(this.props.measureState.geomType === "Point" && this.props.measureState.point) {
+        if(this.props.measureState.geomType === "Point") {
             let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
-            let {x, y} = CoordinatesUtils.reproject([this.props.measureState.point.x, this.props.measureState.point.y], this.props.measureState.point.srs, this.props.displaycrs);
-            var resultBody = (
-                <span className="resultbody">
-                    <span><Message msgId="measureComponent.pointLabel" />: </span>
-                    <span className="measurement">{x.toFixed(digits) + " " + y.toFixed(digits)}</span>
-                </span>
-            );
+            let text = "0 0";
+            if(this.props.measureState.point) {
+                let {x, y} = CoordinatesUtils.reproject([this.props.measureState.point.x, this.props.measureState.point.y], this.props.measureState.point.srs, this.props.displaycrs);
+                text = x.toFixed(digits) + " " + y.toFixed(digits);
+            }
+            var resultBody = (<div className="resultbody">{text}</div>);
         } else if(this.props.measureState.geomType === "LineString") {
             var resultBody = (
-                <span className="resultbody">
-                    <span><Message msgId="measureComponent.lengthLabel" />: </span>
-                    <span className="measurement"><FormattedNumber {...decimalFormat} value={measureUtils.getFormattedLength(this.props.measureState.lenUnit, this.props.measureState.len)} /> </span>
+                <div className="resultbody">
+                    <FormattedNumber {...decimalFormat} value={measureUtils.getFormattedLength(this.props.measureState.lenUnit, this.props.measureState.len)} />
                     <select onChange={this.changeLengthUnit} value={this.props.measureState.lenUnit}>
                         <option value="m">m</option>
                         <option value="ft">ft</option>
                         <option value="km">km</option>
                         <option value="mi">mi</option>
                     </select>
-                </span>
+                </div>
             );
         } else if(this.props.measureState.geomType === "Polygon") {
             var resultBody = (
-                <span className="resultbody">
-                    <span><Message msgId="measureComponent.areaLabel" />: </span>
-                    <span className="measurement"><FormattedNumber {...decimalFormat} value={measureUtils.getFormattedArea(this.props.measureState.areaUnit, this.props.measureState.area)} /> </span>
+                <div className="resultbody">
+                    <FormattedNumber {...decimalFormat} value={measureUtils.getFormattedArea(this.props.measureState.areaUnit, this.props.measureState.area)} />
                     <select onChange={this.changeAreaUnit} value={this.props.measureState.areaUnit}>
                         <option value="sqm">m&#178;</option>
                         <option value="sqft">ft&#178;</option>
                         <option value="sqkm">km&#178;</option>
                         <option value="sqmi">mi&#178;</option>
                     </select>
-                </span>
+                </div>
             );
         } else if(this.props.measureState.geomType === "Bearing") {
             var resultBody = (
-                <span className="resultbody">
-                    <span><Message msgId="measureComponent.bearingLabel" />: </span>
-                    <span className="measurement">{measureUtils.getFormattedBearingValue(this.props.measureState.bearing)}</span>
-                </span>
+                <div className="resultbody">
+                    {measureUtils.getFormattedBearingValue(this.props.measureState.bearing)}
+                </div>
             );
         }
 
         return (
             <MessageBar name="Measure" onClose={this.onClose}>
                 <span role="body">
-                    <span className="buttonbar">
+                    <div className="buttonbar">
                         <span onClick={()=>{this.setMeasureMode("Point");}} className={this.props.measureState.geomType === "Point" ? "active" : ""}><Message msgId="measureComponent.pointLabel" /></span>
                         <span onClick={()=>{this.setMeasureMode("LineString");}} className={this.props.measureState.geomType === "LineString" ? "active" : ""}><Message msgId="measureComponent.lengthLabel" /></span>
                         <span onClick={()=>{this.setMeasureMode("Polygon");}} className={this.props.measureState.geomType === "Polygon" ? "active" : ""}><Message msgId="measureComponent.areaLabel" /></span>
                         <span onClick={()=>{this.setMeasureMode("Bearing");}} className={this.props.measureState.geomType === "Bearing" ? "active" : ""}><Message msgId="measureComponent.bearingLabel" /></span>
-                    </span>
-                    <span> </span>
+                    </div>
                     {resultBody}
                 </span>
             </MessageBar>
