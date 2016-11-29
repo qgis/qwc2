@@ -1,3 +1,7 @@
+#Print div.print-body {
+    padding: 0.25em;
+}
+
 #Print span.option-label {
     margin-right: 1em;
     width: 10em;
@@ -17,11 +21,13 @@
 
 #Print table.options-table select {
     width: 100%;
+    border: 1px solid #a6a6a6;
+    background-color: white;
+    padding: 0.25em;
 }
 
 #Print table.options-table span.input-frame {
-    border: 1px solid #a5a5a5;
-    border-radius: 3px;
+    border: 1px solid #a6a6a6;
     padding: 0.25em;
     background-color: white;
     display: flex;
