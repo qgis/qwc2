@@ -52,7 +52,8 @@ const SideBar = React.createClass({
         let visible = this.props.currentTask === this.props.id;
         let style = {
             width: this.props.width,
-            right: visible ? 0 : '-' + this.props.width
+            right: visible ? 0 : 'calc(-' + this.props.width + ' - 8px)',
+            zIndex: visible ? 5 : 4
         }
         let body = null;
         if(visible) {
