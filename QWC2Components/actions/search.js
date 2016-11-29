@@ -10,14 +10,16 @@ const {TEXT_SEARCH_RESULTS_LOADED, resultsPurge} = require("../../MapStore2/web/
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
 const UrlParams = require("../utils/UrlParams");
 
-function startSearch(text, searchOptions, searchProviders) {
+function startSearch(text, searchOptions, searchProviders, activeProviders) {
     UrlParams.updateParams({s: text});
     return (dispatch) => {
         dispatch(resultsPurge());
         coordinatesSearch(text, searchOptions.displaycrs || "EPSG:4326", dispatch);
         if(searchProviders) {
             Object.keys(searchProviders).map(provider => {
-                searchProviders[provider].onSearch(text, searchOptions, dispatch)
+                if(activeProviders.indexOf(provider) >= 0) {
+                    searchProviders[provider].onSearch(text, searchOptions, dispatch)
+                }
             });
         }
     }

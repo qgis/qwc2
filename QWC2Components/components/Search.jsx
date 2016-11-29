@@ -34,7 +34,8 @@ const Search = React.createClass({
         addMarker: React.PropTypes.func,
         searchProviders: React.PropTypes.object,
         addLayer: React.PropTypes.func,
-        removeLayer: React.PropTypes.func
+        removeLayer: React.PropTypes.func,
+        theme: React.PropTypes.object
     },
     getDefaultProps() {
         return {
@@ -82,7 +83,7 @@ const Search = React.createClass({
     renderItem(item) {
         if(item.more) {
             return (
-                <li key={item.id} onClick={() => this.props.searchMore(item, this.props.searchText, this.props.searchProviders)}><i><Message msgId="search.more" /></i></li>
+                <li key={item.id} onClick={() => this.props.searchMore(item, this.props.searchText, this.props.searchProviders, this.props.theme.searchProviders)}><i><Message msgId="search.more" /></i></li>
             );
         }
         return (
@@ -134,7 +135,7 @@ const Search = React.createClass({
         this.props.addLayer(layer, true);
     },
     onSearch(text, searchOptions) {
-        this.props.onSearch(text, searchOptions, this.props.searchProviders);
+        this.props.onSearch(text, searchOptions, this.props.searchProviders, this.props.theme.searchProviders);
     },
     resetSearch() {
         this.setState({currentResult: null});
@@ -147,7 +148,8 @@ const selector = (state) => ({
     searchText: state.search ? state.search.searchText : "",
     results: state.search ? state.search.results : null,
     mapConfig: state.map ? state.map.present : undefined,
-    displaycrs: state.mousePosition ? state.mousePosition.crs : "EPSG:4326"
+    displaycrs: state.mousePosition ? state.mousePosition.crs : "EPSG:4326",
+    theme: state.theme ? state.theme.current : null
 });
 
 module.exports = {
