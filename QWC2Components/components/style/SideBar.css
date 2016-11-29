@@ -9,21 +9,33 @@ div.sidebar {
     transition: right 0.25s;
 }
 
-div.sidebar div.sidebar-title {
-    background-color:  #808080;
+div.sidebar div.sidebar-titlebar {
     color: white;
-    font-weight: bold;
-    padding: 0.5em;
-    height: 2em;
-    line-height: 1em;
+    background-color: #595959;
+    padding: 0.25em;
+    height: 2.5em;
+    line-height: 2em;
 }
 
-div.sidebar div.sidebar-title span.glyphicon {
+div.sidebar div.sidebar-titlebar span.glyphicon {
     float: right;
     cursor: pointer;
+    padding: 0.25em;
 }
 
-div.sidebar div.scrollable {
+div.sidebar div.sidebar-titlebar span.sidebar-title {
+    font-weight: bold;
+    display: inline-block;
+    vertical-align: top;
+}
+
+div.sidebar div.sidebar-titlebar span.sidebar-title > img {
+    padding-right: 0.5em;
+    vertical-align: top;
+}
+
+div.sidebar div.sidebar-body {
     overflow-y: auto;
-    height: calc(100% - 2em);
+    overflow-x: hidden;
+    height: calc(100% - 2.5em);
 }

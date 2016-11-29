@@ -20,7 +20,6 @@ const SideBar = React.createClass({
         currentTask: React.PropTypes.string,
         onShow: React.PropTypes.func,
         onHide: React.PropTypes.func,
-        title: React.PropTypes.string,
         width: React.PropTypes.string,
         setCurrentTask: React.PropTypes.func
     },
@@ -62,8 +61,10 @@ const SideBar = React.createClass({
         return (
             <Swipeable onSwipedRight={this.closeClicked}>
                 <div id={this.props.id} className="sidebar" style={style}>
-                    <div className="sidebar-title"><Message msgId={this.props.title} /><Glyphicon onClick={this.closeClicked} glyph="remove"/></div>
-                    {body}
+                    <div className="sidebar-titlebar">{this.renderRole("title")}<Glyphicon onClick={this.closeClicked} glyph="chevron-right"/></div>
+                    <div className="sidebar-body">
+                        {body}
+                    </div>
                 </div>
             </Swipeable>
         );

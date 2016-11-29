@@ -50,7 +50,11 @@ const Share = React.createClass({
     },
     render() {
         return (
-            <SideBar id="Share" onShow={this.onShow} width="20em" title="share.title">
+            <SideBar id="Share" onShow={this.onShow} width="20em">
+                <span className="sidebar-title" role="title">
+                    <img src="assets/img/share_white.svg"/>
+                    <Message msgId="appmenu.items.share" />
+                </span>
                 {this.renderBody()}
             </SideBar>
         );

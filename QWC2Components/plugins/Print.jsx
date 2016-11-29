@@ -57,9 +57,9 @@ const Print = React.createClass({
     },
     renderBody() {
         if(!this.props.theme) {
-            return (<div role="body"><Message msgId="print.notheme" /></div>);
+            return (<div role="body" className="print-body"><Message msgId="print.notheme" /></div>);
         } else if(!this.props.theme.print || this.props.theme.print.length === 0) {
-            return (<div role="body"><Message msgId="print.nolayouts" /></div>);
+            return (<div role="body" className="print-body"><Message msgId="print.nolayouts" /></div>);
         }
         let currentLayoutname = this.state.layout ? this.state.layout.name : "";
         let mapName = this.state.layout ? this.state.layout.map.name : "";
@@ -80,7 +80,7 @@ const Print = React.createClass({
         let formvisibility = 'hidden';
         let action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(this.props.theme.url) + "&filename=" + encodeURIComponent(this.props.theme.name + ".pdf");
         return (
-            <div role="body" className="scrollable">
+            <div role="body" className="print-body">
                 <form action={action} method="POST" target="_blank">
                     <table className="options-table"><tbody>
                         <tr>
@@ -151,7 +151,11 @@ const Print = React.createClass({
         }
         return (
             <div>
-                <SideBar id="Print" onHide={this.onHide} width="16em" title="print.paneltitle">
+                <SideBar id="Print" onHide={this.onHide} width="16em">
+                    <span className="sidebar-title" role="title">
+                        <img src="assets/img/print_white.svg"/>
+                        <Message msgId="appmenu.items.print" />
+                    </span>
                     {this.renderBody()}
                 </SideBar>
                 {printFrame}

@@ -109,7 +109,7 @@ const ThemeSwitcher = React.createClass({
             (<li key={subdir.title} className="theme-group"><span>{subdir.title}</span><ul>{this.renderThemeGroup(subdir)}</ul></li>)
         );
         let activeThemeId = this.props.activeTheme ? this.props.activeTheme.id : null;
-        return (<ul>
+        return (<ul role="body">
             {(group && group.items ? group.items : []).map(item => {
                 return item.title.match(filter) || item.keywords.match(filter) ? (
                     <li key={item.id} className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"} onClick={(ev)=>{this.themeClicked(item);}}>
@@ -122,13 +122,13 @@ const ThemeSwitcher = React.createClass({
     },
     render() {
         return (
-            <SideBar id="ThemeSwitcher" width="15em" title="themeswitcher.title">
-                <div role="body" style={{height: '100%'}}>
-                    <input className="themeswitcher-filter" type="text" value={this.props.filter} onChange={this.filterChanged} placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
-                    <div className="themeswitcher-container">
-                        {this.renderThemeGroup(this.state.themes)}
-                    </div>
-                </div>
+            <SideBar id="ThemeSwitcher" width="85%">
+                <span className="sidebar-title" role="title">
+                    <img src="assets/img/themes.svg"/>
+                    <Message msgId="appmenu.items.themes" />
+                    <input type="text" value={this.props.filter} onChange={this.filterChanged} placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
+                </span>
+                {this.renderThemeGroup(this.state.themes)}
             </SideBar>
         );
     },
