@@ -1,59 +1,9 @@
-#LayerTree {
-    position: absolute;
-    left: -30ch;
-    top: calc(50% - 2em);
-    height: 4em;
-    z-index: 4;
-    background-color: rgba(255,255, 255, 0.85);
-    box-shadow: 0mm 0mm 4mm rgba(136, 136, 136, 0.5);
-    border: 1px solid #595959;
-    width: 30ch;
-    transition: left 0.25s, height 0.25s, top 0.25s;
-}
-
-#LayerTree.expanded {
-    left: 0;
-    top: 20%;
-    height: 60%;
-}
-
-#LayerTree div.layertree-expander {
-    position: absolute;
-    left: 100%;
-    top: 0;
-    bottom: 0;
-    z-index: 2;
-    background-color: #595959;
-    color: white;
-    border-radius: 0 0.5em 0.5em 0;
-    border: 1px solid #595959;
-    cursor: pointer;
-    width: 2em;
-    transition: width 0.25s;
-}
-
-#LayerTree.expanded div.layertree-expander {
-    width: auto;
-}
-
-#LayerTree div.layertree-expander > div {
-    display: table;
-    height: 100%;
-    width: 100%;
-}
-
-#LayerTree div.layertree-expander > div > span.glyphicon {
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-}
-
 #LayerTree div.layertree-container {
     height: 100%;
 }
 
 #LayerTree div.layertree-tree {
-    height: calc(100% - 1.5em);
+    height: calc(100% - 2.25em);
     overflow-x: hidden;
     overflow-y: auto;
     padding-left: 0.25em;
@@ -62,10 +12,8 @@
 
 #LayerTree div.laytree-maptip-option {
     height: 2em;
-    line-height: 1.5em;
-    padding: 0.25em;
+    padding: 0.25em 0.5em 0 0.5em;
     border-top: 1px solid #cccccc;
-    font-size: 75%;
 }
 
 #LayerTree div.laytree-maptip-option > span {
@@ -78,9 +26,10 @@
 
 #LayerTree div.layertree-item {
     white-space: nowrap;
-    overflow-x: hidden;
+    overflow: hidden;
     text-overflow: ellipsis;
     margin: 0.25em 0.5em 0.25em 0;
+    line-height: 2em;
 }
 
 #LayerTree span.layertree-item-checkbox {
@@ -104,19 +53,13 @@
 
 img.layertree-item-legend-tooltip {
     position: absolute;
-    z-index: 4;
+    z-index: 6;
     box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
     border-radius: 0.5em;
     border: 1px solid #cccccc;
     margin-left: 0.25em;
     padding: 0.25em;
     background-color: white;
-    opacity: 0;
-    transition: opacity 0.5s;
-}
-
-img.layertree-item-legend-tooltip-visible {
-    opacity: 1;
 }
 
 #LayerTree span.layertree-item-checkbox-unchecked {
@@ -145,8 +88,8 @@ img.layertree-item-legend-tooltip-visible {
 
 #LayerTree span.layertree-item-edit > span.glyphicon {
     cursor: pointer;
-    height: 1.5em;
-    line-height: 1.5em;
+    height: 2em;
+    line-height: 2em;
     padding: 0 0.5em;
     color: #9c9b9c;
 }

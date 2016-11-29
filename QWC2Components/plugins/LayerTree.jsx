@@ -14,7 +14,9 @@ const assign = require('object-assign');
 const classnames = require('classnames');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {changeLayerProperties} = require('../../MapStore2/web/client/actions/layers')
-const {toggleLayertree, toggleMapTips} = require('../actions/layertree');
+const {toggleMapTips} = require('../actions/layertree');
+const {setCurrentTask} = require("../actions/task");
+const {SideBar} = require('../components/SideBar');
 const UrlParams = require("../utils/UrlParams");
 const LayerUtils = require('../utils/LayerUtils');
 require('./style/LayerTree.css');
@@ -22,12 +24,10 @@ require('./style/LayerTree.css');
 
 const LayerTree = React.createClass({
     propTypes: {
-        mobile: React.PropTypes.bool,
         layers: React.PropTypes.array,
-        expanded: React.PropTypes.bool,
+        mobile: React.PropTypes.bool,
         mapTipsEnabled: React.PropTypes.bool,
         changeLayerProperties: React.PropTypes.func,
-        toggleLayertree: React.PropTypes.func,
         toggleMapTips: React.PropTypes.func
     },
     getDefaultProps() {
@@ -125,8 +125,6 @@ const LayerTree = React.createClass({
         return layer.group === 'background' ? null: this.renderLayerGroup(layer, layer, []);
     },
     render() {
-        let expanderIcon = this.props.expanded ? 'triangle-left' : 'triangle-right';
-        let expandedClass = this.props.expanded ? 'expanded' : 'collapsed';
         let maptipcheckclasses = classnames({
             "layertree-item-checkbox": true,
             "layertree-item-checkbox-unchecked": !this.props.mapTipsEnabled,
@@ -141,46 +139,33 @@ const LayerTree = React.createClass({
                 </div>
             );
         }
-        let style = {
-            left: this.state.legendTooltip ? this.state.legendTooltip.x : -10000,
-            top: this.state.legendTooltip ? this.state.legendTooltip.y : -10000,
-        };
-        let tooltipClasses = classnames({
-            "layertree-item-legend-tooltip": true,
-            "layertree-item-legend-tooltip-visible": this.state.legendTooltip
-        });
-        let legendTooltip = (
-            <img className={tooltipClasses} style={style} src={this.state.legendTooltip ? this.state.legendTooltip.img : ""} onTouchStart={this.hideLegendTooltip}></img>
-        );
+        let legendTooltip = null;
+        if(this.state.legendTooltip) {
+            let style = {
+                left: this.state.legendTooltip.x,
+                top: this.state.legendTooltip.y
+            };
+            legendTooltip = (
+                <img className="layertree-item-legend-tooltip" style={style} src={this.state.legendTooltip.img} onTouchStart={this.hideLegendTooltip}></img>
+            );
+        }
         return (
-            <Swipeable onSwipedLeft={this.hideLayerTree} onSwipedRight={this.showLayerTree}>
-                <div id="LayerTree" className={expandedClass}>
-                    <div className="layertree-container">
+            <div>
+                <SideBar id="LayerTree" width="20em" onHide={this.hideLegendTooltip}>
+                    <span className="sidebar-title" role="title">
+                        <img src="assets/img/layers_white.svg"/>
+                        <Message msgId="appmenu.items.layers" />
+                    </span>
+                    <div role="body" className="layertree-container">
                         <div className="layertree-tree">{this.props.layers.map(this.renderLayerTree)}</div>
                         {maptipCheckbox}
                     </div>
-                    <div className="layertree-expander" onClick={this.layerTreeVisibilityToggled}><div><Glyphicon glyph={expanderIcon}/></div></div>
-                </div>
+                </SideBar>
                 {legendTooltip}
-            </Swipeable>
+            </div>
         );
     },
-    layerTreeVisibilityToggled() {
-        this.props.expanded ? this.hideLayerTree() : this.showLayerTree();
-    },
-    hideLayerTree() {
-        if(this.props.expanded) {
-            this.props.toggleLayertree(false);
-            this.hideLegendTooltip();
-        }
-    },
-    showLayerTree() {
-        if(!this.props.expanded) {
-            this.props.toggleLayertree(true);
-        }
-    },
-    cloneLayerTree(layer, sublayerpath)
-    {
+    cloneLayerTree(layer, sublayerpath) {
         let newlayer = assign({}, layer);
         let cur = newlayer;
         for(let i = 0; i < sublayerpath.length; ++i) {
@@ -243,14 +228,12 @@ const LayerTree = React.createClass({
 const selector = (state) => ({
     mobile: state.browser ? state.browser.mobile : false,
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
-    expanded: state.layertree && state.layertree.expanded !== undefined ? state.layertree.expanded : state.browser ? !state.browser.mobile : true,
     mapTipsEnabled: state.layertree && state.layertree.maptips
 });
 
 module.exports = {
     LayerTreePlugin: connect(selector, {
         changeLayerProperties: changeLayerProperties,
-        toggleLayertree: toggleLayertree,
         toggleMapTips: toggleMapTips
     })(LayerTree),
     reducers: {

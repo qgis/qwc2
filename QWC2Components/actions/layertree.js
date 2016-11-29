@@ -6,17 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-
-const TOGGLE_LAYERTREE = 'TOGGLE_LAYERTREE';
 const TOGGLE_MAPTIPS = 'TOGGLE_MAPTIPS';
-
-
-function toggleLayertree(expanded) {
-    return {
-        type: TOGGLE_LAYERTREE,
-        expanded: expanded
-    };
-}
 
 function toggleMapTips(active) {
     return {
@@ -26,8 +16,6 @@ function toggleMapTips(active) {
 }
 
 module.exports = {
-    TOGGLE_LAYERTREE,
     TOGGLE_MAPTIPS,
-    toggleLayertree,
     toggleMapTips
  }

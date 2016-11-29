@@ -17,6 +17,8 @@ function triggerAppMenuitem(key) {
         });
     } else if(key === 'themes') {
         return setCurrentTask('ThemeSwitcher');
+    } else if(key === 'layers') {
+        return setCurrentTask('LayerTree');
     } else if(key === 'share') {
         return setCurrentTask('Share');
     } else if(key === 'print') {
