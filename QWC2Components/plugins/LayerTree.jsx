@@ -15,7 +15,6 @@ const classnames = require('classnames');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {changeLayerProperties} = require('../../MapStore2/web/client/actions/layers')
 const {toggleMapTips} = require('../actions/layertree');
-const {setCurrentTask} = require("../actions/task");
 const {SideBar} = require('../components/SideBar');
 const UrlParams = require("../utils/UrlParams");
 const LayerUtils = require('../utils/LayerUtils');
