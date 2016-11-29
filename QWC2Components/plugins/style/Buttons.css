@@ -1,4 +1,4 @@
-#ZoomInBtn, #ZoomOutBtn, #BackgroundSwitcherButton, #LocateBtn {
+#ZoomInBtn, #ZoomOutBtn, #BackgroundSwitcherBtn, #LocateBtn {
     z-index: 1;
     position: absolute !important;
     right: 1.5em;
@@ -23,14 +23,6 @@
     bottom: 12em;
 }
 
-#BackgroundSwitcherButton {
+#BackgroundSwitcherBtn {
     bottom: 4em;
-    transition: border-radius 0.5s, background-color 0.5s, color 0.5s;
-}
-
-#BackgroundSwitcherButton.pressed {
-  border-radius: 0 0 1.5em 1.5em;
-  background-color: white;
-  color: #595959;
-  z-index: 3!important;
 }
