@@ -11,7 +11,7 @@ const {connect} = require('react-redux');
 const classnames = require('classnames');
 const {Button, Glyphicon} = require('react-bootstrap');
 const {changeLayerProperties} = require('../actions/layers');
-const {toggleBackgroundswitcher} = require('../actions/backgroundswitcher');
+const {setCurrentTask} = require('../actions/task');
 require('./style/BackgroundSwitcher.css');
 
 const BackgroundSwitcher = React.createClass({
@@ -56,25 +56,24 @@ const BackgroundSwitcher = React.createClass({
         );
     },
     buttonClicked() {
-        this.props.toggleBackgroundswitcher(!this.props.visible);
+        this.props.setCurrentTask(this.props.visible ? null : 'BackgroundSwitcher');
     },
     backgroudLayerClicked(layer) {
         this.props.changeLayerProperties(layer.id, {visibility: true});
-        this.props.toggleBackgroundswitcher(!this.props.visible);
+        this.props.setCurrentTask(null);
     }
 });
 
 const selector = (state) => ({
-    visible: state.backgroundswicher && state.backgroundswicher.visible,
+    visible: state.task ? state.task.current === 'BackgroundSwitcher' : false,
     layers: state.layers && state.layers.flat && state.layers.flat.filter((layer) => layer.group === "background") || []
 });
 
 module.exports = {
     BackgroundSwitcherPlugin: connect(selector, {
-      toggleBackgroundswitcher: toggleBackgroundswitcher,
+      setCurrentTask: setCurrentTask,
       changeLayerProperties: changeLayerProperties
     })(BackgroundSwitcher),
     reducers: {
-        backgroundswicher: require('../reducers/backgroundswitcher')
     }
 };
