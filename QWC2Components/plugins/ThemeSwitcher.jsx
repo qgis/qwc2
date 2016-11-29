@@ -11,7 +11,6 @@ const assign = require('object-assign');
 const {connect} = require('react-redux');
 const axios = require('axios');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const {zoomToExtent} = require("../../MapStore2/web/client/actions/map");
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2/web/client/utils/LocaleUtils");
 const {setCurrentTheme,setThemeSwitcherFilter} = require("../actions/theme");
@@ -31,7 +30,6 @@ const ThemeSwitcher = React.createClass({
         changeTheme: React.PropTypes.func,
         changeFilter: React.PropTypes.func,
         addLayer: React.PropTypes.func,
-        zoomToExtent: React.PropTypes.func,
         setCurrentTask: React.PropTypes.func
     },
     contextTypes: {
@@ -63,11 +61,10 @@ const ThemeSwitcher = React.createClass({
         let theme = this.getThemeById(this.state.themes, params.t || this.state.themes.defaultTheme);
         if(theme) {
             let layer = this.createLayerForTheme(theme, params.l ? params.l.split(",") : undefined);
-            this.props.changeTheme(theme, layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds());
-            if (params.t === undefined) {
-                // zoom to default theme
-                this.props.zoomToExtent(theme.extent, theme.crs);
-            }
+            const scales = theme.scales || this.state.themes.defaultScales;
+            // zoom to extent if default theme
+            const zoomToExtent = (params.t === undefined);
+            this.props.changeTheme(theme, layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, zoomToExtent);
         }
     },
     getThemeById(dir, id) {
@@ -192,8 +189,8 @@ const ThemeSwitcher = React.createClass({
         });
     },
     themeClicked(theme) {
-        this.props.changeTheme(theme, this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme), this.props.activeThemeLayer, this.currentBackgroundLayerIds());
-        this.props.zoomToExtent(theme.extent, theme.crs);
+        const scales = theme.scales || this.state.themes.defaultScales;
+        this.props.changeTheme(theme, this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, true);
         this.props.setCurrentTask(null);
     },
     filterChanged(ev) {
@@ -214,7 +211,6 @@ module.exports = {
     ThemeSwitcherPlugin: connect(selector, {
         changeTheme: setCurrentTheme,
         changeFilter: setThemeSwitcherFilter,
-        zoomToExtent: zoomToExtent,
         setCurrentTask: setCurrentTask
     })(ThemeSwitcher),
     reducers: {
