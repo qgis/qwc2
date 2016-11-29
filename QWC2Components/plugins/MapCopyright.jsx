@@ -14,8 +14,9 @@ require('./style/MapCopyright.css');
 
 const MapCopyright = React.createClass({
     propTypes: {
-      layers: React.PropTypes.array,
-      map: React.PropTypes.object
+        activeTheme: React.PropTypes.object,
+        layers: React.PropTypes.array,
+        map: React.PropTypes.object
     },
     getDefaultProps() {
         return {
@@ -31,6 +32,9 @@ const MapCopyright = React.createClass({
             let transformedbboxes = {};
             transformedbboxes[newProps.map.bbox.crs] = newProps.map.bbox.bounds;
             let copyrights = [];
+            if (newProps.activeTheme && newProps.activeTheme.attribution) {
+                copyrights.push({label: newProps.activeTheme.attribution, url: newProps.activeTheme.attributionUrl});
+            }
             newProps.layers.map(layer => this.collectCopyrigths(layer, newProps.map.bbox, transformedbboxes, copyrights));
             this.setState({currentCopyrights: copyrights});
         }
@@ -71,6 +75,7 @@ const MapCopyright = React.createClass({
 });
 
 const selector = (state) => ({
+    activeTheme: state.theme ? state.theme.current : null,
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
     map: state.map ? state.map.present : null
 });
