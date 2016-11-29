@@ -165,16 +165,19 @@ const ThemeSwitcher = React.createClass({
         let backgroundLayers = [];
         for (let themeBackgroundLayer of (theme.backgroundLayers || [])) {
             // lookup background layer
-            let backgroundLayer = this.state.themes.backgroundLayers.find((layer) => layer.name === themeBackgroundLayer.name);
+            const backgroundLayer = this.state.themes.backgroundLayers.find((layer) => layer.name === themeBackgroundLayer.name);
             if (backgroundLayer !== undefined) {
                 let visibility = themeBackgroundLayer.visibility || false;
                 if (visibleBackgroundLayer !== undefined) {
                     visibility = (backgroundLayer.name === visibleBackgroundLayer);
                 }
-                backgroundLayers.push(assign({}, backgroundLayer, {
+                let newBackgroundLayer = assign({}, backgroundLayer, {
                     group: 'background',
                     visibility: visibility
-                }));
+                });
+                // remove thumbnail data from layer config
+                delete newBackgroundLayer.thumbnail;
+                backgroundLayers.push(newBackgroundLayer);
             } else {
                 console.warn("Could not find background layer " + themeBackgroundLayer.name);
             }
