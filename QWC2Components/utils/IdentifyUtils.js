@@ -55,7 +55,7 @@ const IdentifyUtils = {
         return {
             "geometry": parse(wkt),
             "type": "Feature",
-            "properties": null
+            "properties": {}
         };
     }
 }
