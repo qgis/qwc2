@@ -9,17 +9,17 @@
     box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
     font-size: 75%;
     line-height: 3em;
+    color: #595959;
 }
 
 #BottomBar select {
-    border: 1px solid #888888;
-    border-radius: 0.35em;
-    background-color: #f2f2f2;
+    border: 1px solid #a6a6a6;
+    background-color: white;
     height: 2em;
 }
 
 #BottomBar select#crssselector {
-    border-radius: 0 0.35em 0.35em 0!important;
+    border-radius: 0!important;
 }
 
 #BottomBar .mousepos_label {
@@ -30,9 +30,8 @@
     width: 20ch;
     text-align: center;
     border-style: solid;
-    border-color: #888888;
+    border-color: #a6a6a6;
     border-width: 1px 0px 1px 1px;
-    border-radius: 0.35em 0 0 0.35em;
     background-color: rgba(255, 255, 255, 0.75);
     height: 2em;
     line-height: normal;
