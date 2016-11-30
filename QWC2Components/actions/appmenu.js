@@ -25,6 +25,8 @@ function triggerAppMenuitem(key) {
         return setCurrentTask('Print');
     } else if(key === 'dxfexport') {
         return setCurrentTask('dxfexport');
+    } else if(key === 'help') {
+        return setCurrentTask('Help');
     }
     return (dispatch) => {};
 }
