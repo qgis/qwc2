@@ -96,7 +96,8 @@ const MapTip = React.createClass({
                         type: "vector",
                         features: [IdentifyUtils.wktToGeoJSON(feature.geometry)],
                         featuresCrs: feature.bbox.srs,
-                        visibility: true
+                        visibility: true,
+                        queryable: false
                     };
                     this.props.removeLayer('maptipselection');
                     this.props.addLayer(layer, true);

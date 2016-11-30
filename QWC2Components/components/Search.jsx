@@ -144,7 +144,8 @@ const Search = React.createClass({
             type: "vector",
             features: [IdentifyUtils.wktToGeoJSON(geometry)],
             featuresCrs: crs,
-            visibility: true
+            visibility: true,
+            queryable: false
         };
         this.props.addLayer(layer, true);
     },
