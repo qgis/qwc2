@@ -8,13 +8,15 @@
 
 const React = require('react');
 const {connect} = require('react-redux');
+const {Input, Glyphicon} = require('react-bootstrap');
+const Spinner = require('react-spinkit');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const SearchBar = require('../../MapStore2/web/client/components/mapcontrols/search/SearchBar');
 const {resultsPurge, resetSearch, searchTextChanged, addMarker} = require("../../MapStore2/web/client/actions/search");
-const {changeMapView} = require('../actions/map');
+const LocaleUtils = require('../../MapStore2/web/client/utils/LocaleUtils');
 const mapUtils = require('../../MapStore2/web/client/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
 const {addLayer, removeLayer} = require('../../MapStore2/web/client/actions/layers');
+const {changeMapView} = require('../actions/map');
 const {startSearch,searchMore} = require("../actions/search");
 const IdentifyUtils = require('../utils/IdentifyUtils');
 require('./style/Search.css');
@@ -41,7 +43,7 @@ const Search = React.createClass({
     getDefaultProps() {
         return {
             searchText: "",
-            results: [],
+            results: null,
             mapConfig: undefined,
             minScale: 1000
         }
@@ -49,8 +51,83 @@ const Search = React.createClass({
     getInitialState() {
         return {currentResult: null}
     },
+    contextTypes: {
+        messages: React.PropTypes.object
+    },
+    componentDidMount() {
+        this.searchTimer = 0;
+    },
+    componentWillReceiveProps(newProps) {
+        if(this.props.theme && newProps.theme !== this.props.theme) {
+            this.resetSearch();
+        }
+    },
+    killEvent(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+    },
+    search() {
+        if(this.props.searchText) {
+            this.props.onPurgeResults();
+            this.props.onSearch(
+                this.props.searchText, {displaycrs: this.props.displaycrs},
+                this.props.searchProviders, this.props.theme.searchProviders);
+        } else {
+            this.resetSearch();
+        }
+    },
+    resetSearch() {
+        this.setState({currentResult: null, focused: false});
+        this.props.onSearchReset();
+        this.props.removeLayer("searchselection");
+    },
+    onChange(ev) {
+        this.props.onSearchTextChange(ev.target.value);
+        clearTimeout(this.searchTimer);
+        this.searchTimer = setTimeout(this.search, 500);
+    },
+    onFocus() {
+        if(this.props.searchText && !this.props.results) {
+            this.search();
+        }
+        this.setState({focused: true});
+    },
+    onKeyDown(ev) {
+        if(ev.keyCode === 13) {
+            this.search();
+        } else if(ev.keyCode === 27) {
+            ev.target.blur();
+        }
+    },
+    render() {
+        let placeholder = LocaleUtils.getMessageById(this.context.messages, "search.placeholder");
+        if(!this.props.searchText) {
+            var addonAfter = (<Glyphicon glyph="search"/>);
+        } else if(this.props.searchText && !this.props.results && this.state.focused) {
+            var addonAfter = (<Spinner spinnerName="circle" noFadeIn/>);
+        } else {
+            var addonAfter = (<Glyphicon glyph="remove" onClick={this.resetSearch}/>);
+        }
+
+        return (
+            <div id="Search">
+                <Input
+                    className="search-bar"
+                    placeholder={placeholder}
+                    type="text"
+                    ref="input"
+                    value={this.props.searchText}
+                    addonAfter={addonAfter}
+                    onBlur={() => this.setState({focused: false})}
+                    onFocus={this.onFocus}
+                    onKeyDown={this.onKeyDown}
+                    onChange={this.onChange} />
+                {this.renderSearchResults()}
+            </div>
+        )
+    },
     renderSearchResults() {
-        if(!this.props.results || this.props.results.length === 0) {
+        if(!this.props.results || this.props.results.length === 0 || !this.state.focused) {
             return null;
         }
         return (
@@ -58,21 +135,6 @@ const Search = React.createClass({
                 {this.props.results.map(category => this.renderCategory(category))}
             </ul>
         );
-    },
-    render() {
-        return (
-            <div id="Search">
-                <SearchBar
-                    searchText={this.props.searchText}
-                    onSearch={this.onSearch}
-                    onPurgeResults={this.props.onPurgeResults}
-                    onSearchReset={this.resetSearch}
-                    onSearchTextChange={this.props.onSearchTextChange}
-                    delay={500}
-                    searchOptions={{displaycrs: this.props.displaycrs}} />
-                {this.renderSearchResults()}
-            </div>
-        )
     },
     renderCategory(category) {
         return (
@@ -85,12 +147,21 @@ const Search = React.createClass({
     renderItem(item) {
         if(item.more) {
             return (
-                <li key={item.id} onClick={() => this.props.searchMore(item, this.props.searchText, this.props.searchProviders, this.props.theme.searchProviders)}><i><Message msgId="search.more" /></i></li>
+                <li key={item.id}
+                    onMouseDown={this.killEvent}
+                    onClick={() => this.moreClicked(item)}>
+                    <i><Message msgId="search.more" /></i>
+                </li>
             );
         }
         return (
-            <li key={item.id} title={item.text} onClick={() => this.itemClicked(item)} dangerouslySetInnerHTML={{__html: item.text}}></li>
+            <li key={item.id} title={item.text}
+                onMouseDown={() => this.itemClicked(item)}
+                dangerouslySetInnerHTML={{__html: item.text}}></li>
         );
+    },
+    moreClicked(item) {
+        this.props.searchMore(item, this.props.searchText, this.props.searchProviders, this.props.theme.searchProviders)
     },
     itemClicked(item) {
         this.props.removeLayer("searchselection");
@@ -148,14 +219,6 @@ const Search = React.createClass({
             queryable: false
         };
         this.props.addLayer(layer, true);
-    },
-    onSearch(text, searchOptions) {
-        this.props.onSearch(text, searchOptions, this.props.searchProviders, this.props.theme.searchProviders);
-    },
-    resetSearch() {
-        this.setState({currentResult: null});
-        this.props.onSearchReset();
-        this.props.removeLayer("searchselection");
     }
 });
 

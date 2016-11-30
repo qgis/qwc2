@@ -1,26 +1,27 @@
 #Search {
     display: inline-block;
     position: relative;
-}
-
-#Search div.MapSearchBar {
-    position: static!important;
-    display: inline-block;
     vertical-align: middle;
 }
 
-#Search div.MapSearchBar > div.form-group {
+#Search div.form-group {
     margin: 0;
+    max-width: 50ch;
 }
 
-#Search div.MapSearchBar > div.form-group > div.input-group {
-    box-shadow: none;
+#Search input.search-bar {
+    border-radius: 0;
 }
 
-#Search div.MapSearchBar > div.form-group > div.input-group > input.form-control {
-    position: static!important;
+#Search span.input-group-addon {
+    border-radius: 0;
 }
 
+#Search div.spinner {
+    width: 15px;
+    height: 15px;
+    margin-right: 0;
+}
 
 #Search ul.search-results {
     position: absolute;
