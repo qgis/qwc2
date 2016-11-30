@@ -26,11 +26,13 @@ const TopBar = React.createClass({
         menuItems: React.PropTypes.array,
         fullscreen: React.PropTypes.bool,
         toggleFullscreen: React.PropTypes.func,
-        searchProviders: React.PropTypes.object
+        searchProviders: React.PropTypes.object,
+        search: React.PropTypes.object
     },
     getDefaultProps() {
         return {
-        }
+            search: {}
+        };
     },
     render() {
         let buttonContents;
@@ -60,7 +62,7 @@ const TopBar = React.createClass({
             <Swipeable onSwipedUp={this.triggerFullscreen}>
                 <div id="TopBar" className={classes}>
                     <img className="logo" src={logo} />
-                    <Search searchProviders={this.props.searchProviders} />
+                    <Search searchProviders={this.props.searchProviders} minScale={this.props.search.minScale} />
                     <FullscreenSwitcher />
                     <AppMenu menuItems={this.props.menuItems} buttonContents={buttonContents} />
                 </div>

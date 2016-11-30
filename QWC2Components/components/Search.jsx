@@ -25,6 +25,7 @@ const Search = React.createClass({
         results: React.PropTypes.array,
         mapConfig: React.PropTypes.object,
         displaycrs: React.PropTypes.string,
+        minScale: React.PropTypes.number,
         onSearch: React.PropTypes.func,
         searchMore: React.PropTypes.func,
         onPurgeResults: React.PropTypes.func,
@@ -41,7 +42,8 @@ const Search = React.createClass({
         return {
             searchText: "",
             results: [],
-            mapConfig: undefined
+            mapConfig: undefined,
+            minScale: 1000
         }
     },
     getInitialState() {
@@ -96,7 +98,19 @@ const Search = React.createClass({
         let wgsextent = CoordinatesUtils.reprojectBbox(item.bbox, item.crs, "EPSG:4326");
         this.props.addMarker({lat: wgscenterlatlon.y, lng: wgscenterlatlon.x});
         if(this.props.mapConfig !== undefined) {
-            let newZoom = mapUtils.getZoomForExtent(CoordinatesUtils.reprojectBbox(item.bbox, item.crs, this.props.mapConfig.projection), this.props.mapConfig.size, 0, 21, null);
+            // find max zoom level greater than min scale
+            let maxZoom = 0;
+            const scales = mapUtils.getScales(this.props.mapConfig.projection);
+            for (let i in scales) {
+                if (scales[i] < this.props.minScale) {
+                    break;
+                } else {
+                    maxZoom = i;
+                }
+            }
+
+            // zoom to result using max zoom level
+            const newZoom = mapUtils.getZoomForExtent(CoordinatesUtils.reprojectBbox(item.bbox, item.crs, this.props.mapConfig.projection), this.props.mapConfig.size, 0, maxZoom, null);
             this.props.panToResult(
                 {x: wgscenterlatlon.x, y: wgscenterlatlon.y, crs: "EPSG:4326"},
                 newZoom,
