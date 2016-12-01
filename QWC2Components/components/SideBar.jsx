@@ -28,7 +28,7 @@ const SideBar = React.createClass({
             currentTask: null,
             onShow: () => {},
             onHide: () => {},
-            width: '15em'
+            width: '15em',
         }
     },
     componentWillReceiveProps(newProps) {
@@ -55,16 +55,12 @@ const SideBar = React.createClass({
             right: visible ? 0 : 'calc(-' + this.props.width + ' - 8px)',
             zIndex: visible ? 5 : 4
         }
-        let body = null;
-        if(visible) {
-            body = this.renderRole("body");
-        }
         return (
             <Swipeable onSwipedRight={this.closeClicked}>
                 <div id={this.props.id} className="sidebar" style={style}>
                     <div className="sidebar-titlebar">{this.renderRole("title")}<Glyphicon onClick={this.closeClicked} glyph="chevron-right"/></div>
                     <div className="sidebar-body">
-                        {body}
+                        {this.renderRole("body")}
                     </div>
                 </div>
             </Swipeable>

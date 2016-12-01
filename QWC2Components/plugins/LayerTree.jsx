@@ -110,12 +110,10 @@ const LayerTree = React.createClass({
                 {sublayer.queryable ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
                 <span className={editclasses}>
                     <Glyphicon glyph="cog" onClick={() => this.sublayerMenuToggled(pathstr)}/>
-                    <ul className="layertree-item-edit-menu">
-                        <li>
-                            <span><Message msgId="layertree.transparency" /></span>
-                            <input type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.sublayerTransparencyChanged(layer, path, ev.target.value)} />
-                        </li>
-                    </ul>
+                    <div className="layertree-item-edit-menu">
+                        <span><Message msgId="layertree.transparency" /></span>
+                        <input type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.sublayerTransparencyChanged(layer, path, ev.target.value)} />
+                    </div>
                 </span>
             </div>
         )

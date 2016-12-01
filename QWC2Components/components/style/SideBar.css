@@ -1,10 +1,13 @@
 div.sidebar {
     position: absolute;
     top: 3.5em;
-    bottom: 2.25em; /* bottombar is high 3em at 75% font size, hence at 100% font size it is 0.75 * 3em = 2.25em */
+    /* bottombar is high 3em at 75% font size, hence at 100% font size it is 0.75 * 3em = 2.25em */
+    max-height: calc(100% - 5.75em);
     background-color: #f2f2f2;
     transition: right 0.25s;
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.75);
+    display: flex;
+    flex-direction: column;
 }
 
 div.sidebar div.sidebar-titlebar {
@@ -13,6 +16,7 @@ div.sidebar div.sidebar-titlebar {
     padding: 0.25em;
     height: 2.5em;
     line-height: 2em;
+    flex: 0;
 }
 
 div.sidebar div.sidebar-titlebar span.glyphicon {
@@ -43,6 +47,6 @@ div.sidebar div.sidebar-titlebar span.sidebar-title > span {
 
 div.sidebar div.sidebar-body {
     overflow-y: auto;
-    overflow-x: hidden;
-    height: calc(100% - 2.5em);
+    max-height: calc(100vh - 8.25em);
+    flex: 1;
 }

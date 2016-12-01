@@ -1,16 +1,17 @@
-#LayerTree div.layertree-container {
-    height: 100%;
+#LayerTree div.sidebar-body {
+    margin-bottom: 2em;
 }
 
 #LayerTree div.layertree-tree {
-    height: calc(100% - 2.25em);
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding-left: 0.25em;
+    padding-left: 0.5em;
     position: relative;
 }
 
 #LayerTree div.laytree-maptip-option {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
     height: 2em;
     padding: 0.25em 0.5em 0 0.5em;
     border-top: 1px solid #cccccc;
@@ -100,7 +101,7 @@ img.layertree-item-legend-tooltip {
     color: white;
 }
 
-#LayerTree ul.layertree-item-edit-menu {
+#LayerTree div.layertree-item-edit-menu {
     position: absolute;
     right: 0;
     background-color: #f2f2f2;
@@ -115,10 +116,6 @@ img.layertree-item-legend-tooltip {
     z-index: 2;
 }
 
-#LayerTree ul.layertree-item-edit-menu > li {
-    list-style-type: none;
-}
-
-#LayerTree span.layertree-item-edit-active > ul.layertree-item-edit-menu {
+#LayerTree span.layertree-item-edit-active > div.layertree-item-edit-menu {
     visibility: visible;
 }
