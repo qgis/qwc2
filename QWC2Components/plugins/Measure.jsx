@@ -17,7 +17,6 @@ const measureUtils = require('../../MapStore2/web/client/utils/MeasureUtils');
 const {changeMeasurement, changeMeasurementState} = require('../../MapStore2/web/client/actions/measurement.js');
 const {setCurrentTask} = require('../actions/task');
 const MessageBar = require('../components/MessageBar');
-require('./style/Dialog.css');
 require('./style/Measure.css');
 
 const Measure = React.createClass({
