@@ -40,6 +40,7 @@ const AppMenu = React.createClass({
         this.setState({ submenusVisible: this.state.submenusVisible.slice(0, level).concat(a) });
     },
     onMenuitemClicked(ev, key) {
+        this.refs.appmenu.blur();
         this.props.menuitemClicked(key);
     },
     killEvent(ev) {
@@ -48,7 +49,7 @@ const AppMenu = React.createClass({
     },
     render() {
         return(
-            <div tabIndex="1" id="AppMenu" className={this.state.menuVisible ? "appmenu-visible" : ""} onClick={this.onMenuClicked} onBlur={this.hideMenu}>
+            <div tabIndex="1" id="AppMenu" className={this.state.menuVisible ? "appmenu-visible" : ""} onClick={this.onMenuClicked} onBlur={()=> {console.log("blurxx"); this.hideMenu();}} ref="appmenu">
                 <div className="appmenu-button-container">
                     {this.props.buttonContents}
                 </div>
@@ -68,7 +69,6 @@ const AppMenu = React.createClass({
                         <li key={item.key}
                             className={this.state.submenusVisible[level] === item.key ? "expanded" : ""}
                             onMouseDown={(ev)=>{this.onSubmenuClicked(ev, item.key, level)}}
-                            onMouseUp={this.killEvent}
                             onClick={this.killEvent}
                         >
                             <img src={item.icon} />
@@ -81,7 +81,9 @@ const AppMenu = React.createClass({
                     );
                 } else {
                     return (
-                        <li key={item.key} onMouseDown={(ev)=>{this.onMenuitemClicked(ev, item.key);}}>
+                        <li key={item.key}
+                            onMouseDown={(ev)=>{this.onMenuitemClicked(ev, item.key);}}
+                            onClick={this.killEvent}>
                             <img src={item.icon} />
                             <Message msgId={"appmenu.items." + item.key} />
                         </li>
