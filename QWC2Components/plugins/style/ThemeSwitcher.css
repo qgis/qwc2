@@ -1,8 +1,10 @@
 #ThemeSwitcher span.sidebar-title > input {
+    flex: 100;
     font-weight: normal;
     padding: 0 0.5em;
     margin: 0 0 0 1em;
-    width: 22.5em;
+    max-width: 15em;
+    min-width: 0;
     line-height: 1.5em;
     color: #595959;
 }
