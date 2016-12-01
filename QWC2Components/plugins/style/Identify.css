@@ -1,9 +1,9 @@
 #mapstore-getfeatureinfo  {
     width: 40ch;
-    border-radius: 0.5em;
-    box-shadow: 0 0 5px 1px rgba(94, 94, 94, 1)!important;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.75)!important;
     border-width: 0!important;
     background-color: white;
+    z-index: 6!important;
 }
 
 #mapstore-getfeatureinfo  div.panel-body {
@@ -11,18 +11,19 @@
 }
 
 #mapstore-getfeatureinfo div.identify-dialog-header {
-    border-radius: 0.5em 0.5em 0 0;
-    background: #595959;
     color: white;
-    padding: 0.5em;
-    cursor: default;
+    background-color: #595959;
+    padding: 0.25em;
+    height: 2.5em;
+    line-height: 2em;
     font-weight: bold;
+    cursor: default;
 }
 
 #mapstore-getfeatureinfo div.identify-dialog-header button.close {
-    font-size: medium!important;
+    font-size: large!important;
     color: white;
+    padding: 0.15em;
     opacity: 1!important;
     text-shadow: none!important;
-    font-size: inherit!important;
 }
