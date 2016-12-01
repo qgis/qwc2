@@ -7,6 +7,7 @@
  */
 
 const {changeMeasurement} = require('../../MapStore2/web/client/actions/measurement');
+const {changeDrawingStatus} = require('../../MapStore2/web/client/actions/draw');
 const {setCurrentTask} = require('./task');
 
 function triggerAppMenuitem(key) {
@@ -14,6 +15,11 @@ function triggerAppMenuitem(key) {
         return (dispatch => {
             dispatch(setCurrentTask('Measure'));
             dispatch(changeMeasurement({geomType: 'Point'}));
+        });
+    } else if(key === 'draw') {
+        return (dispatch => {
+            dispatch(setCurrentTask('Draw'));
+            dispatch(changeDrawingStatus('create'));
         });
     } else if(key === 'themes') {
         return setCurrentTask('ThemeSwitcher');
