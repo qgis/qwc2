@@ -163,7 +163,7 @@ const IdentifyViewer = React.createClass({
                 onMouseOut={() => this.setVisibleFeatureGeometry(this.state.currentFeature)}
             >
                 <span className={this.state.currentFeature === feature ? "active clickable" : "clickable"} onClick={()=> this.setCurrentFeature(feature)}><b>{displayName}</b></span>
-                <Glyphicon className="identify-remove-result" glyph="minus" onClick={() => this.removeResult(layer, feature)} />
+                <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResult(layer, feature)} />
             </li>
         );
     },

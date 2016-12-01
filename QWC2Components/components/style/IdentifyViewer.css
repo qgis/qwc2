@@ -29,9 +29,14 @@
     visibility: hidden;
     float: right;
     margin-right: 1em;
+    font-size: large;
 }
 
 #IdentifyViewer li.identify-feature-result:hover span.identify-remove-result {
+    visibility: visible;
+}
+
+#IdentifyViewer li.identify-feature-result span.active+span.identify-remove-result {
     visibility: visible;
 }
 
