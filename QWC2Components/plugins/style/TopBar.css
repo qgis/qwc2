@@ -29,10 +29,6 @@
     display: none;
 }
 
-#TopBar #Search div.MapSearchBar {
-    max-width: 50ch;
-}
-
 #TopBar #Search {
     max-width: calc(100% - 32em);
 }
