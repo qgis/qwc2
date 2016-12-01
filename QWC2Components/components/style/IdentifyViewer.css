@@ -91,6 +91,7 @@
     white-space: nowrap;
     vertical-align: middle;
     width: 10ch;
+    padding-right: 0.25em;
 }
 
 #IdentifyViewer td.identify-attr-value {
