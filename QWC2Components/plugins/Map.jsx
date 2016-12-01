@@ -44,7 +44,8 @@ const QWCMapPlugin = React.createClass({
                 actions={{onMapViewChanges: changeMapView}}
                 zoomControl={this.props.zoomControl}
                 mapType={this.props.mapType}
-                options={options} />
+                options={options}
+                tools={['measurement', 'draw', 'locate', 'overview', 'scalebar']} />
         );
     }
 });
