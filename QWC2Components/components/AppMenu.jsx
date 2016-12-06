@@ -49,7 +49,7 @@ const AppMenu = React.createClass({
     },
     render() {
         return(
-            <div tabIndex="1" id="AppMenu" className={this.state.menuVisible ? "appmenu-visible" : ""} onClick={this.onMenuClicked} onBlur={()=> {console.log("blurxx"); this.hideMenu();}} ref="appmenu">
+            <div tabIndex="1" id="AppMenu" className={this.state.menuVisible ? "appmenu-visible" : ""} onClick={this.onMenuClicked} onBlur={()=> {this.hideMenu();}} ref="appmenu">
                 <div className="appmenu-button-container">
                     {this.props.buttonContents}
                 </div>
