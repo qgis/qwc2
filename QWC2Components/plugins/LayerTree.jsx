@@ -148,7 +148,7 @@ const LayerTree = React.createClass({
         }
         return (
             <div>
-                <SideBar id="LayerTree" width="20em" onHide={this.hideLegendTooltip}>
+                <SideBar id="LayerTree" extraClasses={this.props.mobile ? "" : "desktop"} width="20em" onHide={this.hideLegendTooltip}>
                     <span className="sidebar-title" role="title">
                         <img src="assets/img/layers_white.svg"/>
                         <Message msgId="appmenu.items.layers" />

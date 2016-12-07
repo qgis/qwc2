@@ -17,6 +17,7 @@ require('./style/SideBar.css');
 const SideBar = React.createClass({
     propTypes: {
         id: React.PropTypes.string.isRequired,
+        extraClasses: React.PropTypes.string,
         currentTask: React.PropTypes.string,
         onShow: React.PropTypes.func,
         onHide: React.PropTypes.func,
@@ -25,6 +26,7 @@ const SideBar = React.createClass({
     },
     getDefaultProps() {
         return {
+            extraClasses: '',
             currentTask: null,
             onShow: () => {},
             onHide: () => {},
@@ -57,7 +59,7 @@ const SideBar = React.createClass({
         }
         return (
             <Swipeable onSwipedRight={this.closeClicked}>
-                <div id={this.props.id} className="sidebar" style={style}>
+                <div id={this.props.id} className={"sidebar" + " " + this.props.extraClasses} style={style}>
                     <div className="sidebar-titlebar">{this.renderRole("title")}<Glyphicon onClick={this.closeClicked} glyph="chevron-right"/></div>
                     <div className="sidebar-body">
                         {this.renderRole("body")}
