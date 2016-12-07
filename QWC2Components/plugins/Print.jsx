@@ -79,6 +79,7 @@ const Print = React.createClass({
         let extent = this.computeCurrentExtent();
         let formvisibility = 'hidden';
         let action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(this.props.theme.url) + "&filename=" + encodeURIComponent(this.props.theme.name + ".pdf");
+        let rotation = this.props.map.bbox ? this.props.map.bbox.rotation : 0;
         return (
             <div role="body" className="print-body">
                 <form action={action} method="POST" target="_blank">
@@ -117,7 +118,7 @@ const Print = React.createClass({
                             <td><Message msgId="print.rotation" /></td>
                             <td>
                                 <span className="input-frame">
-                                    <input name={mapName + ":rotation"} type="number" value={Math.round(this.props.map.bbox.rotation / Math.PI * 180.)} onChange={this.changeRotation}/>
+                                    <input name={mapName + ":rotation"} type="number" value={Math.round(rotation / Math.PI * 180.)} onChange={this.changeRotation}/>
                                 </span>
                             </td>
                         </tr>
