@@ -18,12 +18,13 @@ const QWCMapPlugin = React.createClass({
         maxExtent: React.PropTypes.array,
         scales: React.PropTypes.array,
         zoomControl: React.PropTypes.bool,
-        mapType: React.PropTypes.string
+        mapType: React.PropTypes.string,
+        actions: React.PropTypes.object
     },
     getDefaultProps() {
         return {
             zoomControl: true,
-            mapType: 'openlayers'
+            actions: {onMapViewChanges: changeMapView}
         };
     },
     render() {
@@ -41,7 +42,7 @@ const QWCMapPlugin = React.createClass({
         };
         return (
             <MapPlugin
-                actions={{onMapViewChanges: changeMapView}}
+                actions={this.props.actions}
                 zoomControl={this.props.zoomControl}
                 mapType={this.props.mapType}
                 options={options}
