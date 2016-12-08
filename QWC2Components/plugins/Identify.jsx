@@ -37,7 +37,8 @@ const Identify = React.createClass({
         hideRevGeocode: React.PropTypes.func,
         panelClassName: React.PropTypes.string,
         headerClassName: React.PropTypes.string,
-        closeGlyph: React.PropTypes.string
+        closeGlyph: React.PropTypes.string,
+        allowMultiselection: React.PropTypes.bool
     },
     getDefaultProps() {
         return {
@@ -51,7 +52,8 @@ const Identify = React.createClass({
             },
             panelClassName: "identify-dialog",
             headerClassName: "identify-dialog-header",
-            closeGlyph: "remove"
+            closeGlyph: "remove",
+            allowMultiselection: true
         }
     },
     render() {
