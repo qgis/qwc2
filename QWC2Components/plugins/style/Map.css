@@ -1,10 +1,16 @@
 /** Hack for placing the OpenLayers scalebar above the bottombar */
-div.ol-scale-line {
+div.ol-scale-line,
+div.leaflet-control-scale-line {
     z-index: 3;
     bottom: 3px !important;
     left: 3px!important;
     z-index: 7;
     background-color: transparent!important;
+}
+
+div.leaflet-control-scale-line {
+    color: #595959!important;
+    border-color: #595959!important;
 }
 
 div.ol-scale-line > div.ol-scale-line-inner {
@@ -13,15 +19,28 @@ div.ol-scale-line > div.ol-scale-line-inner {
 }
 
 /** Hide attribution element */
-div.ol-attribution {
+div.ol-attribution,
+div.leaflet-control-attribution {
     display: none;
 }
 
 /* Move overview button */
-div.ol-overviewmap {
+div.ol-overviewmap,
+div.leaflet-control-minimap {
     bottom: 0.25em!important;
     right: 0.25em!important;
     z-index: 8;
+}
+
+div.leaflet-control-minimap {
+    border: 3px solid #595959!important;
+    box-shadow: none;
+    margin: 0!important;
+}
+
+div.leaflet-control-minimap a.leaflet-control-minimap-toggle-display {
+    background-color: #595959!important;
+    background-image: url("/assets/img/toggle.svg")!important;
 }
 
 div.ol-overviewmap button {
