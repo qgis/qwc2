@@ -13,6 +13,12 @@ const UrlParams = {
    updateParams: function(dict) {
        var urlObj = url.parse(window.location.href, true);
        urlObj.query = assign(urlObj.query, dict);
+       var propNames = Object.getOwnPropertyNames(urlObj.query);
+       for (let propName of propNames) {
+           if(urlObj.query[propName] === undefined) {
+               delete urlObj.query[propName];
+           }
+       }
        delete urlObj.search;
        history.pushState({id: urlObj.host}, '', url.format(urlObj));
    },

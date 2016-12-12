@@ -9,6 +9,7 @@
 const {configureMap} = require('../../MapStore2/web/client/actions/config');
 const {searchTextChanged} = require('../../MapStore2/web/client/actions/search');
 const ConfigUtils = require('../../MapStore2/web/client/utils/ConfigUtils');
+const MapUtils = require('../../MapStore2/web/client/utils/MapUtils');
 const UrlParams = require("../utils/UrlParams");
 const assign = require('object-assign');
 const axios = require('axios');
@@ -26,21 +27,23 @@ function restoreMapConfig(dispatch, params) {
         }
     };
 
-    // Set map center based on x, y params
-    if (params.x && params.y) {
-        try {
-            mapConfig.map.center = assign(mapConfig.map.center, {
-                x: parseFloat(params.x),
-                y: parseFloat(params.y),
-                crs: "EPSG:4326"
-            });
-        } catch(e) {}
-    }
-    // Set map zoom based on z param
-    if (params.z) {
-        try {
-            mapConfig.map.zoom = parseInt(params.z);
-        } catch(e) {}
+    // Set map center and zoom based on extent param
+    let bounds = (params.e || "").split(";").map(x => parseFloat(x));
+    if (bounds.length === 4) {
+        let bbox = {
+            bounds: {
+                minx: bounds[0],
+                miny: bounds[1],
+                maxx: bounds[2],
+                maxy: bounds[3]
+            },
+            crs: "EPSG:4326",
+            rotation: 0
+        };
+        mapConfig.map.bbox = bbox;
+        UrlParams.updateParams({i: undefined});
+    } else {
+        UrlParams.updateParams({i: 1});
     }
 
     dispatch(configureMap(mapConfig, false));

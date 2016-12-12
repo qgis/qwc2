@@ -62,8 +62,9 @@ const ThemeSwitcher = React.createClass({
         if(theme) {
             let layer = this.createLayerForTheme(theme, params.l ? params.l.split(",") : undefined);
             const scales = theme.scales || this.state.themes.defaultScales;
-            // zoom to extent if default theme
-            const zoomToExtent = (params.t === undefined);
+            // zoom to extent if no theme or valid extent set in url
+            const zoomToExtent = (params.t === undefined || params.i === "1");
+            UrlParams.updateParams({i: undefined});
             this.props.changeTheme(theme, layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, zoomToExtent);
         }
     },
