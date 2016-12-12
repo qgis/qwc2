@@ -66,7 +66,7 @@ const ThemeSwitcher = React.createClass({
             let extent = {
                 bounds: (params.ie || "").split(";").map(x => parseFloat(x)),
                 crs: "EPSG:4326"
-            }
+            };
             if(params.t === undefined || extent.bounds.length !== 4) {
                 extent.bounds = theme.extent;
                 extent.crs = theme.crs;
@@ -201,7 +201,11 @@ const ThemeSwitcher = React.createClass({
     },
     themeClicked(theme) {
         const scales = theme.scales || this.state.themes.defaultScales;
-        this.props.changeTheme(theme, this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, true);
+        const zoomExtent = {
+            bounds: theme.extent,
+            crs: theme.crs
+        };
+        this.props.changeTheme(theme, this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, zoomExtent);
         this.props.setCurrentTask(null);
     },
     filterChanged(ev) {
