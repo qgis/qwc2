@@ -27,24 +27,8 @@ function restoreMapConfig(dispatch, params) {
         }
     };
 
-    // Set map center and zoom based on extent param
-    let bounds = (params.e || "").split(";").map(x => parseFloat(x));
-    if (bounds.length === 4) {
-        let bbox = {
-            bounds: {
-                minx: bounds[0],
-                miny: bounds[1],
-                maxx: bounds[2],
-                maxy: bounds[3]
-            },
-            crs: "EPSG:4326",
-            rotation: 0
-        };
-        mapConfig.map.bbox = bbox;
-        UrlParams.updateParams({i: undefined});
-    } else {
-        UrlParams.updateParams({i: 1});
-    }
+    // Set initial extent parameter
+    UrlParams.updateParams({ie: params.e});
 
     dispatch(configureMap(mapConfig, false));
 

@@ -13,7 +13,7 @@ const {changeMapScales, zoomToExtent} = require("../../MapStore2/web/client/acti
 const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
 const SET_THEME_SWITCHER_FILTER = 'SET_THEME_FILTER';
 
-function setCurrentTheme(theme, layer, backgroundLayers, prevlayerid, prevBackgroundLayerIds, scales, zoomToThemeExtent) {
+function setCurrentTheme(theme, layer, backgroundLayers, prevlayerid, prevBackgroundLayerIds, scales, zoomExtent) {
     UrlParams.updateParams({t: theme.id, l: undefined, bl: undefined});
     return (dispatch) => {
         // remove previous layers
@@ -38,10 +38,8 @@ function setCurrentTheme(theme, layer, backgroundLayers, prevlayerid, prevBackgr
             resolve(dispatch(changeMapScales(scales)));
         });
         p.then(() => {
-            if (zoomToThemeExtent) {
-                // zoom to extent only after new scales have been set
-                dispatch(zoomToExtent(theme.extent, theme.crs));
-            }
+            // zoom to extent only after new scales have been set
+            dispatch(zoomToExtent(zoomExtent.bounds, zoomExtent.crs));
         });
 
         dispatch({
