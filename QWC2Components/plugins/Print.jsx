@@ -78,7 +78,11 @@ const Print = React.createClass({
 
         let extent = this.computeCurrentExtent();
         let formvisibility = 'hidden';
-        let action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(this.props.theme.url) + "&filename=" + encodeURIComponent(this.props.theme.name + ".pdf");
+        if (ConfigUtils.getConfigProp("proxyUrl")) {
+            action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(this.props.theme.url) + "&filename=" + encodeURIComponent(this.props.theme.name + ".pdf");
+        } else {
+            action = this.props.theme.url;
+        }
         let rotation = this.props.map.bbox ? this.props.map.bbox.rotation : 0;
         return (
             <div role="body" className="print-body">
