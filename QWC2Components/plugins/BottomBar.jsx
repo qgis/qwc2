@@ -10,7 +10,6 @@ const React = require('react');
 const {connect} = require('react-redux');
 const proj4js = require('proj4');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const CRSSelector = require("../../MapStore2/web/client/components/mapcontrols/mouseposition/CRSSelector");
 const ScaleBox = require("../../MapStore2/web/client/components/mapcontrols/scale/ScaleBox");
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
@@ -21,10 +20,12 @@ require('./style/BottomBar.css');
 
 const BottomBar = React.createClass({
     propTypes: {
+        viewertitleUrl: React.PropTypes.string,
+        termsUrl: React.PropTypes.string,
         mousepos: React.PropTypes.object,
         displaycrs:  React.PropTypes.string,
         onCRSChange: React.PropTypes.func,
-        mapcrs:  React.PropTypes.string,
+        mapcrs: React.PropTypes.string,
         mapscale: React.PropTypes.number,
         activeThemeId: React.PropTypes.string,
         fullscreen: React.PropTypes.bool,
@@ -51,6 +52,34 @@ const BottomBar = React.createClass({
         }
         let {x, y} = CoordinatesUtils.reproject([this.props.mousepos.x, this.props.mousepos.y], this.props.mousepos.crs, this.props.displaycrs);
         let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
+
+        let viewertitleLink;
+        if (this.props.viewertitleUrl) {
+            viewertitleLink = (
+                <a href={this.props.viewertitleUrl}>
+                    <Message className="viewertitle_label" msgId="bottombar.viewertitle_label" />
+                </a>
+            )
+        }
+        let termsLink;
+        if (this.props.termsUrl) {
+            termsLink = (
+                <a href={this.props.termsUrl}>
+                    <Message className="terms_label" msgId="bottombar.terms_label" />
+                </a>
+            );
+        }
+        let bottomLinks;
+        if (viewertitleLink || termsLink) {
+            bottomLinks = (
+                <span className="bottomlinks">
+                    {viewertitleLink}
+                    {viewertitleLink && termsLink ? " | " : null}
+                    {termsLink}
+                </span>
+            );
+        }
+
         return (
             <div id="BottomBar">
                 <span className="mousepos_label"><Message msgId="bottombar.mousepos_label" />: </span>
@@ -58,13 +87,7 @@ const BottomBar = React.createClass({
                 <CRSSelector useRawInput={true} enabled={true} crs={this.props.displaycrs} id="crssselector" onCRSChange={this.props.onCRSChange}/>
                 <span className="scale_label"><Message msgId="bottombar.scale_label" />: </span>
                 <ScaleBox useRawInput={true} id="scaleselector" scales={this.state.mapscales} currentZoomLvl={this.props.mapscale} onChange={this.props.onScaleChange} />
-                <span className="bottomlinks">
-                    <a href={ConfigUtils.getConfigProp("viewertitle_link")}>
-                        <Message className="viewertitle_label" msgId="bottombar.viewertitle_label" />
-                    </a> | <a href={ConfigUtils.getConfigProp("terms_link")}>
-                        <Message className="terms_label" msgId="bottombar.terms_label" />
-                    </a>
-                </span>
+                {bottomLinks}
             </div>
         );
     },
