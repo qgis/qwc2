@@ -53,9 +53,12 @@
 
 #AppMenu ul.appmenu-menu li ul {
     background-color: @appmenu_bg2@;
-    color: @appmenu_fg2@;
     padding: 0;
     display: none;
+}
+
+#AppMenu ul.appmenu-menu li ul li {
+    color: @appmenu_fg2@;
 }
 
 #AppMenu ul.appmenu-menu li.expanded ul {

@@ -1,15 +1,15 @@
 div.buttonbar > span {
     display: inline-block;
-    border-top: 1px solid @item_fg@;
-    border-bottom: 1px solid @item_fg@;
-    border-right: 1px solid @item_fg@;
+    border-top: 1px solid @input_border@;
+    border-bottom: 1px solid @input_border@;
+    border-right: 1px solid @input_border@;
     padding: 0.25em 0.5em;
     cursor: pointer;
     color: @item_fg@;
 }
 
 div.buttonbar > span:first-child {
-    border-left: 1px solid @item_fg@;
+    border-left: 1px solid @input_border@;
 }
 
 div.buttonbar > span.active {
