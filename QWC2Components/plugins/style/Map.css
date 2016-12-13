@@ -9,13 +9,13 @@ div.leaflet-control-scale-line {
 }
 
 div.leaflet-control-scale-line {
-    color: #595959!important;
-    border-color: #595959!important;
+    color: @panel_fg@!important;
+    border-color: @panel_fg@!important;
 }
 
 div.ol-scale-line > div.ol-scale-line-inner {
-    color: #595959!important;
-    border-color: #595959!important;
+    color: @panel_fg@!important;
+    border-color: @panel_fg@!important;
 }
 
 /** Hide attribution element */
@@ -33,23 +33,23 @@ div.leaflet-control-minimap {
 }
 
 div.leaflet-control-minimap {
-    border: 3px solid #595959!important;
+    border: 3px solid @panel_fg@!important;
     box-shadow: none;
     margin: 0!important;
 }
 
 div.leaflet-control-minimap a.leaflet-control-minimap-toggle-display {
-    background-color: #595959!important;
-    background-image: url("/assets/img/toggle.svg")!important;
+    background-color: @panel_fg@!important;
+    background-image: url("@assets_path@/img/toggle.svg")!important;
 }
 
 div.ol-overviewmap button {
     font-size: 1.0em!important;
-    background-color: #595959!important;
+    background-color: @panel_fg@!important;
 }
 
 div.ol-overviewmap button:focus {
-    background-color: rgba(0,60,136,0.7);
+    background-color: rgba(0, 60, 136, 0.7);
 }
 
 div.ol-overviewmap div.ol-overviewmap-map {

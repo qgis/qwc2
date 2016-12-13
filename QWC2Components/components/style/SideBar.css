@@ -3,7 +3,7 @@ div.sidebar {
     top: 3.5em;
     /* bottombar is high 3em at 75% font size, hence at 100% font size it is 0.75 * 3em = 2.25em */
     max-height: calc(100% - 5.75em);
-    background-color: #f2f2f2;
+    background-color: @dialog_bg@;
     transition: right 0.25s;
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.75);
     display: flex;
@@ -11,8 +11,8 @@ div.sidebar {
 }
 
 div.sidebar div.sidebar-titlebar {
-    color: white;
-    background-color: #595959;
+    color: @titlebar_fg@;
+    background-color: @titlebar_bg@;
     padding: 0.25em;
     height: 2.5em;
     line-height: 2em;

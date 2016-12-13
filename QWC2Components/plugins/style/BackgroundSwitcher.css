@@ -13,22 +13,23 @@
 }
 
 #BackgroundSwitcher div.background-layer-item {
-    background-color: white;
+    background-color: @item_bg@;
+    color: @item_fg@;
     cursor: pointer;
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
     display: inline-block;
     margin: 0.5em;
     width: 8em;
-    border: 1px solid #a6a6a6;
+    border: 1px solid @item_border@;
 }
 
 #BackgroundSwitcher div.background-layer-item:hover {
-    border: 1px solid #078aa3;
+    border: 1px solid @item_active@;
 }
 
 #BackgroundSwitcher div.background-layer-item-active {
-    border: 1px solid #078aa3;
-    color: #078aa3;
+    border: 1px solid @item_active@;
+    color: @item_active@;
 }
 
 #BackgroundSwitcher div.background-layer-thumbnail > img {
@@ -50,6 +51,6 @@
 }
 
 #BackgroundSwitcherBtn.active {
-    background-color: #f2f2f2;
-    color: #595959;
+    background-color: @button_active_bg@;
+    color: @button_active_fg@;
 }

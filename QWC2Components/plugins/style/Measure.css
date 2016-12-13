@@ -1,25 +1,25 @@
 div.buttonbar > span {
     display: inline-block;
-    border-top: 1px solid #808080;
-    border-bottom: 1px solid #808080;
-    border-right: 1px solid #808080;
+    border-top: 1px solid @item_fg@;
+    border-bottom: 1px solid @item_fg@;
+    border-right: 1px solid @item_fg@;
     padding: 0.25em 0.5em;
     cursor: pointer;
-    color: #808080;
+    color: @item_fg@;
 }
 
 div.buttonbar > span:first-child {
-    border-left: 1px solid #808080;
+    border-left: 1px solid @item_fg@;
 }
 
 div.buttonbar > span.active {
-    background-color: #327ece;
+    background-color: @item_active@;
     color: white;
 }
 
 div.resultbody {
     margin-top: 0.25em;
-    border: 1px solid #a6a6a6;
+    border: 1px solid @input_border@;
     padding: 0.25em;
     white-space: nowrap;
     overflow: hidden;

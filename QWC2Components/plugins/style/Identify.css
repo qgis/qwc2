@@ -11,8 +11,8 @@
 }
 
 #mapstore-getfeatureinfo div.identify-dialog-header {
-    color: white;
-    background-color: #595959;
+    color: @titlebar_fg@;
+    background-color: @titlebar_bg@;
     padding: 0.25em;
     height: 2.5em;
     line-height: 2em;

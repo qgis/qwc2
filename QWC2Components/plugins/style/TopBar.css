@@ -4,7 +4,8 @@
     top: 0;
     right: 0;
     height: 3.5em;
-    background-color: rgba(255,255, 255, 0.75);
+    color: @panel_fg@;
+    background-color: @panel_bg@;
     box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
     z-index: 6;
 }
@@ -61,7 +62,6 @@
 }
 
 #TopBar #AppMenu .appmenu-label {
-    color: #595959;
     font-weight: bold;
     transition: color 0.25s;
     padding-left: 5em;
@@ -73,10 +73,10 @@
 }
 
 #TopBar #AppMenu .appmenu-icon {
-    color: #808080;
+    color: @panel_fg@;
     padding: 0.25em;
     margin: 0 1em;
-    border: 2px solid #595959;
+    border: 2px solid @panel_fg@;
     transition: background-color 0.25s;
 }
 

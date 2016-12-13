@@ -55,8 +55,8 @@
 }
 
 #Search ul.search-results .search-results-category-title {
-    background-color: #f2f2f2;
-    color: #595959;
+    background-color: @dialog_bg@;
+    color: @dialog_fg@;
     font-weight: bold;
     display: block;
     padding: 0.5em;

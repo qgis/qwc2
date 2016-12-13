@@ -12,5 +12,5 @@
 }
 
 #MapCopyright a:not(:first-child) {
-    border-left: 1px solid #595959;
+    border-left: 1px solid @panel_fg@;
 }

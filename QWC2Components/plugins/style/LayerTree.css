@@ -14,7 +14,7 @@
     bottom: 0;
     height: 2em;
     padding: 0.25em 0.5em 0 0.5em;
-    border-top: 1px solid #cccccc;
+    border-top: 1px solid @control_border@;
 }
 
 #LayerTree div.laytree-maptip-option > span {
@@ -49,7 +49,7 @@
     width: auto;
     max-width: 2em;
     margin-right: 0.5em;
-    border: 1px solid #cccccc;
+    border: 1px solid @control_border@;
 }
 
 img.layertree-item-legend-tooltip {
@@ -57,22 +57,22 @@ img.layertree-item-legend-tooltip {
     z-index: 6;
     box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
     border-radius: 0.5em;
-    border: 1px solid #cccccc;
+    border: 1px solid @control_border@;
     margin-left: 0.25em;
     padding: 0.25em;
     background-color: white;
 }
 
 #LayerTree span.layertree-item-checkbox-unchecked {
-    background-image: url('/assets/img/unchecked.svg');
+    background-image: url('@assets_path@/img/unchecked.svg');
 }
 
 #LayerTree span.layertree-item-checkbox-checked {
-    background-image: url('/assets/img/checked.svg');
+    background-image: url('@assets_path@/img/checked.svg');
 }
 
 #LayerTree span.layertree-item-checkbox-tristate {
-    background-image: url('/assets/img/tristate.svg');
+    background-image: url('@assets_path@/img/tristate.svg');
 }
 
 #LayerTree span.layertree-item-queryable {
@@ -92,24 +92,24 @@ img.layertree-item-legend-tooltip {
     height: 2em;
     line-height: 2em;
     padding: 0 0.5em;
-    color: #9c9b9c;
+    color: @input_border@;
 }
 
 #LayerTree span.layertree-item-edit-active > span.glyphicon {
     display: inline-block;
-    background-color: #9c9b9c;
+    background-color: @input_border@;
     color: white;
 }
 
 #LayerTree div.layertree-item-edit-menu {
     position: absolute;
     right: 0;
-    background-color: #f2f2f2;
+    background-color: @dialog_bg@;
     box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
-    color: #595959;
+    color: @titlebar_bg@;
     font-size: small;
     font-weight: bold;
-    border: 1px solid #cccccc;
+    border: 1px solid @control_border@;
     visibility: hidden;
     padding: 0.5em;
     margin: 0;

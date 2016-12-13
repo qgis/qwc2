@@ -5,15 +5,15 @@
     bottom: 0;
     height: 3em;
     z-index: 6;
-    background-color: rgba(255,255, 255, 0.75);
+    color: @panel_fg@;
+    background-color: @panel_bg@;
     box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
     font-size: 75%;
     line-height: 3em;
-    color: #595959;
 }
 
 #BottomBar select {
-    border: 1px solid #a6a6a6;
+    border: 1px solid @input_border@;
     background-color: white;
     height: 2em;
 }
@@ -30,7 +30,7 @@
     width: 20ch;
     text-align: center;
     border-style: solid;
-    border-color: #a6a6a6;
+    border-color: @input_border@;
     border-width: 1px 0px 1px 1px;
     background-color: rgba(255, 255, 255, 0.75);
     height: 2em;

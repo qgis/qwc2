@@ -1,5 +1,6 @@
 #IdentifyViewer {
     padding: 0.5em;
+    background-color: @dialog_bg@;
 }
 
 #IdentifyViewer div.identify-results-container {
@@ -19,12 +20,12 @@
 
 #IdentifyViewer li.identify-feature-result span.active {
     font-weight: bold;
-    color: #595959;
+    color: @dialog_fg@;
 }
 
 #IdentifyViewer span.identify-remove-result {
     margin-left: 0.5em;
-    color: #878787;
+    color: @input_border@;
     cursor: pointer;
     visibility: hidden;
     float: right;
@@ -58,7 +59,7 @@
 
 #IdentifyViewer li.expandable:before {
     content: "";
-    border-color: transparent #111;
+    border-color: transparent @dialog_fg@;
     border-width: 0.35em 0 0.35em 0.45em;
     border-style: solid;
     display: block;
@@ -70,16 +71,15 @@
 }
 
 #IdentifyViewer li.expandable.expanded:before {
-    border-color: #111 transparent;
+    border-color: @dialog_fg@ transparent;
     border-width: 0.45em 0.35em 0 0.35em;
     top: 0.4em;
 }
 
 #IdentifyViewer div.attribute-list-box {
     margin-top: 0.5em;
-    border: 1px solid #9c9b9c;
-    background-color: #f2f2f2;
-    border-radius: 0.25em;
+    border: 1px solid @control_border@;
+    background-color: white;
     font-size: small;
     padding: 0.25em;
     max-height: 10em;

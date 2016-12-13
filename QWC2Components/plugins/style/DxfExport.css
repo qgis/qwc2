@@ -8,7 +8,7 @@
 }
 
 #DxfExport span.input-frame {
-    border: 1px solid #a5a5a5;
+    border: 1px solid @input_border@;
     border-radius: 3px;
     padding: 0.25em;
     background-color: white;
