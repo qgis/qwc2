@@ -19,12 +19,16 @@ const QWCMapPlugin = React.createClass({
         scales: React.PropTypes.array,
         zoomControl: React.PropTypes.bool,
         mapType: React.PropTypes.string,
-        actions: React.PropTypes.object
+        actions: React.PropTypes.object,
+        tools: React.PropTypes.array,
+        toolsOptions: React.PropTypes.object
     },
     getDefaultProps() {
         return {
             zoomControl: true,
-            actions: {onMapViewChanges: changeMapView}
+            actions: {onMapViewChanges: changeMapView},
+            tools: ['measurement', 'draw', 'locate', 'overview', 'scalebar'],
+            toolsOptions: {measurement: {updateOnMouseMove: true}}
         };
     },
     render() {
@@ -46,7 +50,8 @@ const QWCMapPlugin = React.createClass({
                 zoomControl={this.props.zoomControl}
                 mapType={this.props.mapType}
                 options={options}
-                tools={['measurement', 'draw', 'locate', 'overview', 'scalebar']} />
+                tools={this.props.tools}
+                toolsOptions={this.props.toolsOptions} />
         );
     }
 });
