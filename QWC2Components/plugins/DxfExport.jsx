@@ -32,7 +32,10 @@ const DxfExport = React.createClass({
     renderBody() {
         let themeLayer = this.props.layers.find(layer => layer.id === this.props.themeLayerId);
         let filename = this.props.theme.name + ".dxf";
-        let action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(this.props.theme.url) + "&filename=" + encodeURIComponent(this.props.theme.name + ".dxf");
+        let action = this.props.theme.url;
+        if (ConfigUtils.getConfigProp("proxyUrl")) {
+            action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(action) + "&filename=" + encodeURIComponent(this.props.theme.name + ".dxf");
+        }
         return (
             <span role="body">
                 <form ref={form => this.form = form} action={action} method="POST" target="_blank">
