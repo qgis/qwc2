@@ -14,6 +14,7 @@ const assign = require('object-assign');
 const classnames = require('classnames');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {changeLayerProperties} = require('../../MapStore2/web/client/actions/layers')
+const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const {toggleMapTips} = require('../actions/layertree');
 const {SideBar} = require('../components/SideBar');
 const UrlParams = require("../utils/UrlParams");
@@ -146,11 +147,12 @@ const LayerTree = React.createClass({
                 <img className="layertree-item-legend-tooltip" style={style} src={this.state.legendTooltip.img} onTouchStart={this.hideLegendTooltip}></img>
             );
         }
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
             <div>
                 <SideBar id="LayerTree" extraClasses={this.props.mobile ? "" : "desktop"} width="20em" onHide={this.hideLegendTooltip}>
                     <span className="sidebar-title" role="title">
-                        <img src="assets/img/layers_white.svg"/>
+                        <img src={assetsPath + "/img/layers_white.svg"}/>
                         <Message msgId="appmenu.items.layers" />
                     </span>
                     <div role="body" className="layertree-container">

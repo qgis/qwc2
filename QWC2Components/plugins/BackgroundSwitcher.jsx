@@ -10,6 +10,7 @@ const React = require('react');
 const {connect} = require('react-redux');
 const classnames = require('classnames');
 const {Button, Glyphicon} = require('react-bootstrap');
+const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const {changeLayerProperties} = require('../actions/layers');
 const {setCurrentTask} = require('../actions/task');
 require('./style/BackgroundSwitcher.css');
@@ -40,6 +41,7 @@ const BackgroundSwitcher = React.createClass({
         );
     },
     renderLayerItem(layer) {
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let itemclasses = classnames({
             "background-layer-item": true,
             "background-layer-item-active": layer.visibility === true
@@ -50,7 +52,7 @@ const BackgroundSwitcher = React.createClass({
                     {layer.title}
                 </div>
                 <div className="background-layer-thumbnail">
-                    <img src={"./assets/img/mapthumbs/" + layer.name + ".jpg"} />
+                    <img src={assetsPath + "/img/mapthumbs/" + layer.name + ".jpg"} />
                 </div>
             </div>
         );

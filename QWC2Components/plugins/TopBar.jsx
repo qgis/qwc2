@@ -12,6 +12,7 @@ const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
 const Swipeable = require('react-swipeable');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
+const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const {AppMenu} = require("../components/AppMenu");
 const {FullscreenSwitcher} = require("../components/FullscreenSwitcher");
 const {Search} = require("../components/Search");
@@ -37,13 +38,14 @@ const TopBar = React.createClass({
     render() {
         let buttonContents;
         let logo;
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         if(this.props.mobile) {
             buttonContents = (
                 <span className="appmenu-button">
                     <Glyphicon className="appmenu-icon" glyph="menu-hamburger"/>
                 </span>
             );
-            logo = "assets/img/logo-mobile.svg";
+            logo = assetsPath + "/img/logo-mobile.svg";
         } else {
             buttonContents = (
                 <span className="appmenu-button">
@@ -51,7 +53,7 @@ const TopBar = React.createClass({
                     <Glyphicon className="appmenu-icon" glyph="menu-hamburger"/>
                 </span>
             );
-            logo = "assets/img/logo.svg";
+            logo = assetsPath + "/img/logo.svg";
         }
 
         let classes = classnames({

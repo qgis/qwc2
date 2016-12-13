@@ -129,10 +129,11 @@ const ThemeSwitcher = React.createClass({
             </ul>);
     },
     render() {
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
             <SideBar id="ThemeSwitcher" width="85%">
                 <span className="sidebar-title" role="title">
-                    <img src="assets/img/themes.svg"/>
+                    <img src={assetsPath + "/img/themes.svg"}/>
                     <Message msgId="appmenu.items.themes" />
                     <input type="text" value={this.props.filter} onChange={this.filterChanged} placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
                 </span>

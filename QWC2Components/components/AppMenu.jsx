@@ -10,6 +10,7 @@ const React = require('react');
 const {connect} = require('react-redux');
 const Swipeable = require('react-swipeable');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
+const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const {triggerAppMenuitem} = require('../actions/appmenu');
 require('./style/AppMenu.css');
 
@@ -62,6 +63,7 @@ const AppMenu = React.createClass({
         );
     },
     renderMenuItems(items, level) {
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         if(items) {
             return items.map(item => {
                 if(item.subitems) {
@@ -71,7 +73,7 @@ const AppMenu = React.createClass({
                             onMouseDown={(ev)=>{this.onSubmenuClicked(ev, item.key, level)}}
                             onClick={this.killEvent}
                         >
-                            <img src={item.icon} />
+                            <img src={assetsPath + "/" + item.icon} />
                             <Message msgId={"appmenu.items." + item.key} />
                             {item.title}
                             <ul>
@@ -84,7 +86,7 @@ const AppMenu = React.createClass({
                         <li key={item.key}
                             onMouseDown={(ev)=>{this.onMenuitemClicked(ev, item.key);}}
                             onClick={this.killEvent}>
-                            <img src={item.icon} />
+                            <img src={assetsPath + "/" + item.icon} />
                             <Message msgId={"appmenu.items." + item.key} />
                         </li>
                     );

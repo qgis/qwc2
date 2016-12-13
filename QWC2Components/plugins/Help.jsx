@@ -9,6 +9,7 @@
 const React = require('react');
 const {connect} = require('react-redux');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
+const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const {SideBar} = require('../components/SideBar');
 
 const Help = React.createClass({
@@ -21,10 +22,11 @@ const Help = React.createClass({
         }
     },
     render() {
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
             <SideBar id="Help" width="20em">
                 <span className="sidebar-title" role="title">
-                    <img src="assets/img/info_white.svg"/>
+                    <img src={assetsPath + "/img/info_white.svg"}/>
                     <Message msgId="appmenu.items.help" />
                 </span>
                 <div role="body">

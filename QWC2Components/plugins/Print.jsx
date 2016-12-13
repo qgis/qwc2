@@ -153,11 +153,12 @@ const Print = React.createClass({
             };
             printFrame = (<PrintFrame map={this.props.map} fixedFrame={frame} />);
         }
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
             <div>
                 <SideBar id="Print" onHide={this.onHide} width="16em">
                     <span className="sidebar-title" role="title">
-                        <img src="assets/img/print_white.svg"/>
+                        <img src={assetsPath + "/img/print_white.svg"}/>
                         <Message msgId="appmenu.items.print" />
                     </span>
                     {this.renderBody()}
