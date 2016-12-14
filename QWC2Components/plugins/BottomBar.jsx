@@ -9,6 +9,7 @@
 const React = require('react');
 const {connect} = require('react-redux');
 const {createSelector} = require('reselect');
+const pickBy = require('lodash.pickby');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const CRSSelector = require("../../MapStore2/web/client/components/mapcontrols/mouseposition/CRSSelector");
 const ScaleBox = require("../../MapStore2/web/client/components/mapcontrols/scale/ScaleBox");
@@ -30,7 +31,8 @@ const BottomBar = React.createClass({
         mapscale: React.PropTypes.number,
         activeThemeId: React.PropTypes.string,
         fullscreen: React.PropTypes.bool,
-        onScaleChange: React.PropTypes.func
+        onScaleChange: React.PropTypes.func,
+        additionalMouseCrs: React.PropTypes.array
     },
     getDefaultProps() {
         return {
@@ -76,12 +78,18 @@ const BottomBar = React.createClass({
                 </span>
             );
         }
+        let availableCRS = pickBy(CoordinatesUtils.getAvailableCRS(), (key, code) => {
+            return code === "EPSG:4326" ||
+                   code === this.props.mapcrs ||
+                   this.props.additionalMouseCrs.indexOf(code) !== -1;
+           }
+        );
 
         return (
             <div id="BottomBar">
                 <span className="mousepos_label"><Message msgId="bottombar.mousepos_label" />: </span>
                 <CoordinateDisplayer displaycrs={this.props.displaycrs} />
-                <CRSSelector useRawInput={true} enabled={true} crs={this.props.displaycrs} id="crssselector" onCRSChange={this.props.onCRSChange}/>
+                <CRSSelector useRawInput={true} enabled={true} crs={this.props.displaycrs} id="crssselector" onCRSChange={this.props.onCRSChange} availableCRS={availableCRS}/>
                 <span className="scale_label"><Message msgId="bottombar.scale_label" />: </span>
                 <ScaleBox useRawInput={true} id="scaleselector" scales={this.state.mapscales} currentZoomLvl={this.props.mapscale} onChange={this.props.onScaleChange} />
                 {bottomLinks}
@@ -98,7 +106,8 @@ const selector = createSelector([state => state, displayCrsSelector], (state, di
     mapcrs: state && state.map && state.map.present ? state.map.present.projection : "EPSG:3857",
     mapscale: state && state.map && state.map.present ? state.map.present.zoom : 0,
     activeThemeId: state.theme && state.theme.current ? state.theme.current.id : undefined,
-    fullscreen: state.display && state.display.fullscreen
+    fullscreen: state.display && state.display.fullscreen,
+    additionalMouseCrs: state.theme && state.theme.current ? state.theme.current.additionalMouseCrs : []
 }));
 
 module.exports = {
