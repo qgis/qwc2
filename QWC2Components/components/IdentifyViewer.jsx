@@ -85,7 +85,7 @@ const IdentifyViewer = React.createClass({
         let haveLayer = this.props.layers.find(layer => layer.id === 'identifyselection') !== undefined;
         if(!feature && haveLayer) {
             this.props.removeLayer('identifyselection');
-        } else if(feature && !haveLayer) {
+        } else if(feature && !haveLayer && feature.geometry) {
             let layer = {
                 id: 'identifyselection',
                 name: 'identifyselection',
