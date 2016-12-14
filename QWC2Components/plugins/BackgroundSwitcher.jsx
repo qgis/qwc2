@@ -52,7 +52,7 @@ const BackgroundSwitcher = React.createClass({
                     {layer.title}
                 </div>
                 <div className="background-layer-thumbnail">
-                    <img src={assetsPath + "/img/mapthumbs/" + layer.name + ".jpg"} />
+                    <img src={"data:image/jpg;base64," + layer.thumbnail} />
                 </div>
             </div>
         );

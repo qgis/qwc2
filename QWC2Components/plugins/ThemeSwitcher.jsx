@@ -184,8 +184,6 @@ const ThemeSwitcher = React.createClass({
                     group: 'background',
                     visibility: visibility
                 });
-                // remove thumbnail data from layer config
-                delete newBackgroundLayer.thumbnail;
                 backgroundLayers.push(newBackgroundLayer);
             } else {
                 console.warn("Could not find background layer " + themeBackgroundLayer.name);
