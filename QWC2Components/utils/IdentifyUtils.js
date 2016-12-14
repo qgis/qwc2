@@ -7,6 +7,7 @@
  */
 
 const parse = require('wellknown');
+const uuid = require('uuid');
 
 const IdentifyUtils = {
     parseXmlFeature(feature, result) {
@@ -53,6 +54,7 @@ const IdentifyUtils = {
                  .replace(/LineString(\w+)/i, "LineString $1")
                  .replace(/Polygon(\w+)/i, "Polygon $1");
         return {
+            "id": uuid.v1(),
             "geometry": parse(wkt),
             "type": "Feature",
             "properties": {}
