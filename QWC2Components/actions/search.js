@@ -78,7 +78,7 @@ function coordinatesSearch(text, displaycrs, dispatch) {
                 type: TEXT_SEARCH_RESULTS_LOADED,
                 results: [{
                     id: "coords",
-                    title: "search.coordinates",
+                    titlemsgid: "search.coordinates",
                     items: items
                 }],
                 append: true

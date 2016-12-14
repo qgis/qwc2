@@ -137,9 +137,10 @@ const Search = React.createClass({
         );
     },
     renderCategory(category) {
+        let title = category.titlemsgid ? (<Message msgId={category.titlemsgid} />) : category.title;
         return (
             <li key={category.id}>
-                <span className="search-results-category-title">{category.title}</span>
+                <span className="search-results-category-title">{title}</span>
                 <ul>{category.items.map(item => this.renderItem(item))}</ul>
             </li>
         )
