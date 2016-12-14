@@ -8,21 +8,19 @@
 
 const React = require('react');
 const {connect} = require('react-redux');
-const proj4js = require('proj4');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const CRSSelector = require("../../MapStore2/web/client/components/mapcontrols/mouseposition/CRSSelector");
 const ScaleBox = require("../../MapStore2/web/client/components/mapcontrols/scale/ScaleBox");
-const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
 const {getScales} = require('../../MapStore2/web/client/utils/MapUtils');
 const {changeMousePositionState, changeMousePositionCrs} = require('../../MapStore2/web/client/actions/mousePosition');
 const {changeZoomLevel} = require('../../MapStore2/web/client/actions/map');
+const {CoordinateDisplayer} = require('../components/CoordinateDisplayer');
 require('./style/BottomBar.css');
 
 const BottomBar = React.createClass({
     propTypes: {
         viewertitleUrl: React.PropTypes.string,
         termsUrl: React.PropTypes.string,
-        mousepos: React.PropTypes.object,
         displaycrs:  React.PropTypes.string,
         onCRSChange: React.PropTypes.func,
         mapcrs: React.PropTypes.string,
@@ -33,8 +31,6 @@ const BottomBar = React.createClass({
     },
     getDefaultProps() {
         return {
-            mousepos: {x: 0, y: 0, crs: "EPSG:4326"},
-            displaycrs: "EPSG:4326",
             mapscale: 0
         }
     },
@@ -50,8 +46,6 @@ const BottomBar = React.createClass({
         if(this.props.fullscreen) {
             return null;
         }
-        let {x, y} = CoordinatesUtils.reproject([this.props.mousepos.x, this.props.mousepos.y], this.props.mousepos.crs, this.props.displaycrs);
-        let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
 
         let viewertitleLink;
         if (this.props.viewertitleUrl) {
@@ -83,7 +77,7 @@ const BottomBar = React.createClass({
         return (
             <div id="BottomBar">
                 <span className="mousepos_label"><Message msgId="bottombar.mousepos_label" />: </span>
-                <input type="text" className="mouseposition" value={x.toFixed(digits) + " " + y.toFixed(digits)} readOnly="readOnly"/>
+                <CoordinateDisplayer displaycrs={this.props.displaycrs} />
                 <CRSSelector useRawInput={true} enabled={true} crs={this.props.displaycrs} id="crssselector" onCRSChange={this.props.onCRSChange}/>
                 <span className="scale_label"><Message msgId="bottombar.scale_label" />: </span>
                 <ScaleBox useRawInput={true} id="scaleselector" scales={this.state.mapscales} currentZoomLvl={this.props.mapscale} onChange={this.props.onScaleChange} />
@@ -96,18 +90,17 @@ const BottomBar = React.createClass({
     }
 });
 
-const selector = (state) => ({
-    mousepos: {
-        x: state && state.mousePosition && state.mousePosition.position ? state.mousePosition.position.x : 0,
-        y: state && state.mousePosition && state.mousePosition.position ? state.mousePosition.position.y : 0,
-        crs: state && state.mousePosition && state.mousePosition.position ? state.mousePosition.position.crs : "EPSG:4326"
-    },
-    displaycrs: state && state.mousePosition && state.mousePosition ? state.mousePosition.crs : "EPSG:4326",
-    mapcrs: state && state.map && state.map.present ? state.map.present.projection : undefined,
-    mapscale: state && state.map && state.map.present ? state.map.present.zoom : 0,
-    activeThemeId: state.theme && state.theme.current ? state.theme.current.id : undefined,
-    fullscreen: state.display && state.display.fullscreen
-});
+const selector = (state) => {
+    let mapcrs = state && state.map && state.map.present ? state.map.present.projection : undefined;
+    let mousecrs = state && state.mousePosition && state.mousePosition ? state.mousePosition.crs : undefined;
+    return {
+        displaycrs: mousecrs || mapcrs || "EPSG:4326",
+        mapcrs: mapcrs,
+        mapscale: state && state.map && state.map.present ? state.map.present.zoom : 0,
+        activeThemeId: state.theme && state.theme.current ? state.theme.current.id : undefined,
+        fullscreen: state.display && state.display.fullscreen
+    };
+};
 
 module.exports = {
     BottomBarPlugin: connect(selector, {
