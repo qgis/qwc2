@@ -1,5 +1,5 @@
 #LayerTree.desktop div.sidebar-body {
-    margin-bottom: 2em;
+    margin-bottom: 2.25em;
 }
 
 #LayerTree div.layertree-tree {
@@ -12,8 +12,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 2em;
-    padding: 0.25em 0.5em 0 0.5em;
+    height: 2.25em;
+    padding: 0.25em 0.5em 0.25em 0.5em;
     border-top: 1px solid @control_border@;
 }
 
