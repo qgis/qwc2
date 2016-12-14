@@ -1,4 +1,4 @@
-/** Hack for placing the OpenLayers scalebar above the bottombar */
+/** Move and re-style scalebar */
 div.ol-scale-line,
 div.leaflet-control-scale-line {
     z-index: 3;
@@ -24,7 +24,19 @@ div.leaflet-control-attribution {
     display: none;
 }
 
-/* Move overview button */
+/* Move and re-style rotation reset button */
+div.ol-rotate {
+    padding: 0;
+    top: 4em!important;
+    right: 0.5em!important;
+}
+
+div.ol-rotate button {
+    font-size: 1.25em!important;
+    background-color: @panel_fg@!important;
+}
+
+/* Move and re-style overview button */
 div.ol-overviewmap,
 div.leaflet-control-minimap {
     bottom: 0.25em!important;
@@ -43,9 +55,16 @@ div.leaflet-control-minimap a.leaflet-control-minimap-toggle-display {
     background-image: url("@assets_path@/img/toggle.svg")!important;
 }
 
+div.ol-overviewmap {
+    padding: 0;
+    margin: 2px;
+}
+
 div.ol-overviewmap button {
     font-size: 1.0em!important;
     background-color: @panel_fg@!important;
+    right: 0!important;
+    bottom: 0!important;
 }
 
 div.ol-overviewmap button:focus {
