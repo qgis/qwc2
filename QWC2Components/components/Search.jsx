@@ -10,6 +10,7 @@ const React = require('react');
 const {connect} = require('react-redux');
 const {Input, Glyphicon} = require('react-bootstrap');
 const Spinner = require('react-spinkit');
+const {createSelector} = require('reselect');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {resultsPurge, resetSearch, searchTextChanged, addMarker} = require("../../MapStore2/web/client/actions/search");
 const LocaleUtils = require('../../MapStore2/web/client/utils/LocaleUtils');
@@ -18,6 +19,7 @@ const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUt
 const {addLayer, removeLayer} = require('../../MapStore2/web/client/actions/layers');
 const {changeMapView} = require('../actions/map');
 const {startSearch,searchMore} = require("../actions/search");
+const displayCrsSelector = require('../selectors/displaycrs');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 require('./style/Search.css');
 
@@ -223,17 +225,13 @@ const Search = React.createClass({
     }
 });
 
-const selector = (state) => {
-    let mapcrs = state && state.map && state.map.present ? state.map.present.projection : undefined;
-    let mousecrs = state && state.mousePosition && state.mousePosition ? state.mousePosition.crs : undefined;
-    return {
-        searchText: state.search ? state.search.searchText : "",
-        results: state.search ? state.search.results : null,
-        mapConfig: state.map ? state.map.present : undefined,
-        displaycrs: mousecrs || mapcrs || "EPSG:4326",
-        theme: state.theme ? state.theme.current : null
-    }
-};
+const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
+    searchText: state.search ? state.search.searchText : "",
+    results: state.search ? state.search.results : null,
+    mapConfig: state.map ? state.map.present : undefined,
+    displaycrs: displaycrs,
+    theme: state.theme ? state.theme.current : null
+}));
 
 module.exports = {
     Search: connect(selector, {

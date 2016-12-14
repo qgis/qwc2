@@ -8,13 +8,16 @@
 
 const React = require('react');
 const {connect} = require('react-redux');
+const {createSelector} = require('reselect');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const CRSSelector = require("../../MapStore2/web/client/components/mapcontrols/mouseposition/CRSSelector");
 const ScaleBox = require("../../MapStore2/web/client/components/mapcontrols/scale/ScaleBox");
+const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
 const {getScales} = require('../../MapStore2/web/client/utils/MapUtils');
 const {changeMousePositionState, changeMousePositionCrs} = require('../../MapStore2/web/client/actions/mousePosition');
 const {changeZoomLevel} = require('../../MapStore2/web/client/actions/map');
 const {CoordinateDisplayer} = require('../components/CoordinateDisplayer');
+const displayCrsSelector = require('../selectors/displaycrs');
 require('./style/BottomBar.css');
 
 const BottomBar = React.createClass({
@@ -90,17 +93,13 @@ const BottomBar = React.createClass({
     }
 });
 
-const selector = (state) => {
-    let mapcrs = state && state.map && state.map.present ? state.map.present.projection : undefined;
-    let mousecrs = state && state.mousePosition && state.mousePosition ? state.mousePosition.crs : undefined;
-    return {
-        displaycrs: mousecrs || mapcrs || "EPSG:4326",
-        mapcrs: mapcrs,
-        mapscale: state && state.map && state.map.present ? state.map.present.zoom : 0,
-        activeThemeId: state.theme && state.theme.current ? state.theme.current.id : undefined,
-        fullscreen: state.display && state.display.fullscreen
-    };
-};
+const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
+    displaycrs: displaycrs,
+    mapcrs: state && state.map && state.map.present ? state.map.present.projection : "EPSG:3857",
+    mapscale: state && state.map && state.map.present ? state.map.present.zoom : 0,
+    activeThemeId: state.theme && state.theme.current ? state.theme.current.id : undefined,
+    fullscreen: state.display && state.display.fullscreen
+}));
 
 module.exports = {
     BottomBarPlugin: connect(selector, {

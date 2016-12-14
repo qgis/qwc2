@@ -9,6 +9,7 @@
 const React = require('react');
 const FormattedNumber = require('react-intl').FormattedNumber;
 const {connect} = require('react-redux');
+const {createSelector} = require('reselect');
 const assign = require('object-assign');
 const proj4js = require('proj4');
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
@@ -16,6 +17,7 @@ const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const measureUtils = require('../../MapStore2/web/client/utils/MeasureUtils');
 const {changeMeasurement, changeMeasurementState} = require('../../MapStore2/web/client/actions/measurement.js');
 const {setCurrentTask} = require('../actions/task');
+const displayCrsSelector = require('../selectors/displaycrs');
 const MessageBar = require('../components/MessageBar');
 require('./style/Measure.css');
 
@@ -116,7 +118,7 @@ const Measure = React.createClass({
     }
 });
 
-const selector = (state) => ({
+const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
     measureState: {
         geomType: state.measurement ? state.measurement.geomType : null,
         point: state.measurement ? state.measurement.point : null,
@@ -126,8 +128,8 @@ const selector = (state) => ({
         lenUnit: state.measurement && state.measurement.lenUnit ? state.measurement.lenUnit : 'm',
         areaUnit: state.measurement && state.measurement.areaUnit ? state.measurement.areaUnit : 'sqm'
     },
-    displaycrs: state && state.mousePosition && state.mousePosition ? state.mousePosition.crs : "EPSG:4326"
-});
+    displaycrs: displaycrs
+}));
 
 module.exports = {
     MeasurePlugin: connect(selector, {
