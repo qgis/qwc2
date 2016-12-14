@@ -223,13 +223,17 @@ const Search = React.createClass({
     }
 });
 
-const selector = (state) => ({
-    searchText: state.search ? state.search.searchText : "",
-    results: state.search ? state.search.results : null,
-    mapConfig: state.map ? state.map.present : undefined,
-    displaycrs: state.mousePosition ? state.mousePosition.crs : "EPSG:4326",
-    theme: state.theme ? state.theme.current : null
-});
+const selector = (state) => {
+    let mapcrs = state && state.map && state.map.present ? state.map.present.projection : undefined;
+    let mousecrs = state && state.mousePosition && state.mousePosition ? state.mousePosition.crs : undefined;
+    return {
+        searchText: state.search ? state.search.searchText : "",
+        results: state.search ? state.search.results : null,
+        mapConfig: state.map ? state.map.present : undefined,
+        displaycrs: mousecrs || mapcrs || "EPSG:4326",
+        theme: state.theme ? state.theme.current : null
+    }
+};
 
 module.exports = {
     Search: connect(selector, {
