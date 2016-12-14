@@ -52,6 +52,9 @@ const Print = React.createClass({
         }
         this.setState(newState);
     },
+    shouldComponentUpdate(newProps, nextState) {
+        return newProps.visible || this.props.visible;
+    },
     onHide() {
         this.props.changeRotation(this.state.initialRotation);
     },
