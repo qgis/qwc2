@@ -1,7 +1,7 @@
 #BackgroundSwitcher {
     position: absolute;
     right: 5em;
-    bottom: 2.5em;
+    bottom: 3.5em;
     z-index: 3;
     transform: scaleX(0);
     transform-origin: right;
