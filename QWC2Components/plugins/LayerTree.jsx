@@ -150,11 +150,10 @@ const LayerTree = React.createClass({
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
             <div>
-                <SideBar id="LayerTree" extraClasses={this.props.mobile ? "" : "desktop"} width="20em" onHide={this.hideLegendTooltip}>
-                    <span className="sidebar-title" role="title">
-                        <img src={assetsPath + "/img/layers_white.svg"}/>
-                        <Message msgId="appmenu.items.layers" />
-                    </span>
+                <SideBar id="LayerTree" width="20em"  title="appmenu.items.layers"
+                    icon={assetsPath + "/img/layers_white.svg"}
+                    extraClasses={this.props.mobile ? "" : "desktop"}
+                    onHide={this.hideLegendTooltip}>
                     <div role="body" className="layertree-container">
                         <div className="layertree-tree">{this.props.layers.map(this.renderLayerTree)}</div>
                         {maptipCheckbox}

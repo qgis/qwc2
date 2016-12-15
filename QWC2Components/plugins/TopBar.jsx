@@ -65,8 +65,8 @@ const TopBar = React.createClass({
                 <div id="TopBar" className={classes}>
                     <img className="logo" src={logo} />
                     <Search searchProviders={this.props.searchProviders} minScale={this.props.search.minScale} />
-                    <FullscreenSwitcher />
                     <AppMenu menuItems={this.props.menuItems} buttonContents={buttonContents} />
+                    <FullscreenSwitcher />
                 </div>
             </Swipeable>
          );

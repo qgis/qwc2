@@ -51,11 +51,8 @@ const Share = React.createClass({
     render() {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
-            <SideBar id="Share" onShow={this.onShow} width="20em">
-                <span className="sidebar-title" role="title">
-                    <img src={assetsPath + "/img/share_white.svg"}/>
-                    <Message msgId="appmenu.items.share" />
-                </span>
+            <SideBar id="Share" onShow={this.onShow} width="20em"
+                title="appmenu.items.share" icon={assetsPath + "/img/share_white.svg"}>
                 {this.renderBody()}
             </SideBar>
         );

@@ -8,12 +8,29 @@
     background-color: @panel_bg@;
     box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
     z-index: 6;
+    display: flex;
+    align-items: center;
 }
 
 #TopBar img.logo {
     width: auto;
     height: 3.5em;
-    margin-right: 1em;
+    flex: 0 0 auto;
+}
+
+#TopBar #Search {
+    margin-left: 1em;
+    flex: 1 1 auto;
+}
+
+#TopBar #AppMenu {
+    height: 3.5em;
+    flex: 0 0 auto;
+}
+
+#TopBar #FullScreenSwitcher {
+    height: 3.5em;
+    flex: 0 0 auto;
 }
 
 #TopBar.fullscreen {
@@ -21,31 +38,9 @@
     box-shadow: none;
 }
 
-#TopBar.fullscreen img.logo {
-    visibility: hidden;
-    width: 0;
-}
-
+#TopBar.fullscreen img.logo,
 #TopBar.fullscreen #AppMenu .appmenu-label {
     display: none;
-}
-
-#TopBar #Search {
-    max-width: calc(100% - 32em);
-}
-
-#TopBar.mobile #Search {
-    max-width: calc(100% - 9em);
-}
-
-#TopBar #AppMenu {
-    float: right;
-    height: 3.5em;
-}
-
-#TopBar.mobile #AppMenu {
-    width: 3.5em;
-    text-align: right,
 }
 
 #TopBar.mobile #AppMenu ul.appmenu-menu,
@@ -83,9 +78,4 @@
 #TopBar #AppMenu div.appmenu-button-container:hover .appmenu-icon,
 #TopBar #AppMenu.appmenu-visible .appmenu-icon {
     background-color: white;
-}
-
-#TopBar #FullScreenSwitcher {
-    float: right;
-    height: 3.5em;
 }

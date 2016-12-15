@@ -1,12 +1,12 @@
-#ThemeSwitcher span.sidebar-title > input {
+#ThemeSwitcher div.sidebar-titlebar > input.themeswitcher-filter {
     flex: 100;
-    font-weight: normal;
-    padding: 0 0.5em;
-    margin: 0 0 0 1em;
     max-width: 15em;
     min-width: 0;
-    line-height: 1.5em;
+    font-weight: normal;
+    padding: 0.25em;
+    margin: 0 0.5em;
     color: @titlebar_bg@;
+    line-height: normal;
 }
 
 #ThemeSwitcher ul {

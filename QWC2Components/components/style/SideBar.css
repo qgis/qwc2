@@ -13,17 +13,25 @@ div.sidebar {
 div.sidebar div.sidebar-titlebar {
     color: @titlebar_fg@;
     background-color: @titlebar_bg@;
-    padding: 0.25em;
     height: 2.5em;
     line-height: 2em;
-    flex: 0;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
 }
 
-div.sidebar div.sidebar-titlebar span.glyphicon {
-    float: right;
-    cursor: pointer;
-    padding: 0.15em;
-    font-size: large;
+div.sidebar img.sidebar-titlebar-icon {
+    flex: 0 0 auto;
+    margin: 0 0.25em;
+}
+
+div.sidebar span.sidebar-titlebar-title {
+    font-weight: bold;
+    flex: 0 0 auto;
+}
+
+div.sidebar span.sidebar-titlebar-spacer {
+    flex: 1 1 auto;
 }
 
 div.sidebar div.sidebar-titlebar span.sidebar-title {
@@ -33,20 +41,15 @@ div.sidebar div.sidebar-titlebar span.sidebar-title {
     align-items: center;
 }
 
-div.sidebar div.sidebar-titlebar span.sidebar-title > img {
-    flex: 0;
-    width: 2em;
-    height: 2em;
-    padding-right: 0.5em;
-}
-
-div.sidebar div.sidebar-titlebar span.sidebar-title > span {
-    flex: 0;
-    white-space: nowrap;
+div.sidebar span.sidebar-titlebar-closeicon {
+    flex: 0 0 auto;
+    margin: 0 0.25em;
+    cursor: pointer;
+    font-size: large;
 }
 
 div.sidebar div.sidebar-body {
     overflow-y: auto;
-    max-height: calc(100vh - 8.25em);
-    flex: 1;
+    max-height: calc(100vh - 8.25em); /* viewport - topbar - bottombar - sidebar_titlebar*/
+    flex: 1 1 auto;
 }
