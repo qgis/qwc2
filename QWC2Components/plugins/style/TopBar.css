@@ -19,7 +19,7 @@
 }
 
 #TopBar #Search {
-    margin-left: 1em;
+    margin: 0 1em;
     flex: 1 1 auto;
 }
 
@@ -62,7 +62,6 @@
     padding-left: 5em;
 }
 
-#TopBar #AppMenu div.appmenu-button-container:hover .appmenu-label,
 #TopBar #AppMenu.appmenu-visible .appmenu-label {
     color: white;
 }
@@ -75,7 +74,7 @@
     transition: background-color 0.25s;
 }
 
-#TopBar #AppMenu div.appmenu-button-container:hover .appmenu-icon,
+
 #TopBar #AppMenu.appmenu-visible .appmenu-icon {
     background-color: white;
 }

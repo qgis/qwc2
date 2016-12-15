@@ -6,9 +6,8 @@
     overflow: hidden;
 }
 
-#AppMenu div.appmenu-button-container:hover,
 #AppMenu.appmenu-visible {
-    background-color: rgba(128, 128, 128, 0.75);
+    background-color: @appmenu_active_bg2@;
     overflow: visible;
 }
 
