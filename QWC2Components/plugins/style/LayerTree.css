@@ -3,8 +3,7 @@
 }
 
 #LayerTree div.layertree-tree {
-    padding-left: 0.5em;
-    position: relative;
+    margin-right: 0.25em;
 }
 
 #LayerTree div.laytree-maptip-option {
@@ -21,16 +20,14 @@
     cursor: pointer;
 }
 
-#LayerTree div.layertree-group {
+#LayerTree div.layertree-item-container {
     margin-left: 0.5em;
 }
 
 #LayerTree div.layertree-item {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0.25em 0.5em 0.25em 0;
     line-height: 2em;
+    display: flex;
+    align-items: center;
 }
 
 #LayerTree span.layertree-item-checkbox {
@@ -42,25 +39,7 @@
     margin-right: 0.5em;
     vertical-align: middle;
     cursor: pointer;
-}
-
-#LayerTree img.layertree-item-legend-thumbnail {
-    height: 1.5em;
-    width: auto;
-    max-width: 2em;
-    margin-right: 0.5em;
-    border: 1px solid @control_border@;
-}
-
-img.layertree-item-legend-tooltip {
-    position: absolute;
-    z-index: 6;
-    box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
-    border-radius: 0.5em;
-    border: 1px solid @control_border@;
-    margin-left: 0.25em;
-    padding: 0.25em;
-    background-color: white;
+    flex: 0 0 auto;
 }
 
 #LayerTree span.layertree-item-checkbox-unchecked {
@@ -75,47 +54,75 @@ img.layertree-item-legend-tooltip {
     background-image: url('@assets_path@/img/tristate.svg');
 }
 
+#LayerTree img.layertree-item-legend-thumbnail {
+    height: 1.5em;
+    width: auto;
+    max-width: 2em;
+    margin-right: 0.5em;
+    border: 1px solid @control_border@;
+    flex: 0 0 auto;
+}
+
+#LayerTree img.layertree-item-legend-tooltip {
+    position: absolute;
+    z-index: 6;
+    box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
+    border-radius: 0.5em;
+    border: 1px solid @control_border@;
+    margin-left: 0.25em;
+    padding: 0.25em;
+    background-color: white;
+}
+
+#LayerTree span.layertree-item-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 0 1 auto;
+}
+
 #LayerTree span.layertree-item-queryable {
     margin-left: 0.25em;
     color: #bbbbbb;
     font-size: xx-small;
     vertical-align: top;
+    flex: 0 0 auto;
 }
 
-#LayerTree span.layertree-item-edit {
-    position: absolute;
-    right: 0;
+#LayerTree span.layertree-item-spacer {
+    flex: 1 1 auto;
 }
 
-#LayerTree span.layertree-item-edit > span.glyphicon {
-    cursor: pointer;
-    height: 2em;
+#LayerTree span.layertree-item-cog {
     line-height: 2em;
-    padding: 0 0.5em;
+    padding: 0 0.25em;
+    cursor: pointer;
     color: @input_border@;
+    flex: 0 0 auto;
+    margin-left: 0.25em;
 }
 
-#LayerTree span.layertree-item-edit-active > span.glyphicon {
-    display: inline-block;
+#LayerTree span.layertree-item-cog-active {
     background-color: @input_border@;
     color: white;
 }
 
-#LayerTree div.layertree-item-edit-menu {
-    position: absolute;
-    right: 0;
-    background-color: @dialog_bg@;
-    box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
+#LayerTree div.layertree-item-edit-frame {
+    border: 1px solid @input_border@;
     color: @titlebar_bg@;
-    font-size: small;
     font-weight: bold;
-    border: 1px solid @control_border@;
-    visibility: hidden;
-    padding: 0.5em;
-    margin: 0;
-    z-index: 2;
+    padding: 0.25em;
+    font-size: small;
+    display: flex;
+    align-items: center;
+    margin-left: 2em;
+    background-color: white;
 }
 
-#LayerTree span.layertree-item-edit-active > div.layertree-item-edit-menu {
-    visibility: visible;
+#LayerTree div.layertree-item-edit-frame > * {
+    flex: 1 1 auto;
+}
+
+#LayerTree div.layertree-item-edit-frame input[type="range"] {
+    padding: 0 0.25em;
 }

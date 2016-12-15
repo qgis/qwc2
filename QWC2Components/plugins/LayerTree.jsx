@@ -83,10 +83,12 @@ const LayerTree = React.createClass({
             });
         }
         return (
-            <div key={group.name} className="layertree-item"><span className={checkclasses} onClick={() => this.groupToggled(layer, path, visibility)}></span> <span title={group.title}>{group.title}</span>
-                <div className="layertree-group">
-                    {sublayersContent}
+            <div className="layertree-item-container" key={group.name}>
+                <div className="layertree-item">
+                    <span className={checkclasses} onClick={() => this.groupToggled(layer, path, visibility)}></span>
+                    <span className="layertree-item-title" title={group.title}>{group.title}</span>
                 </div>
+                {sublayersContent}
             </div>
         )
     },
@@ -97,25 +99,31 @@ const LayerTree = React.createClass({
             "layertree-item-checkbox-unchecked": !sublayer.visibility,
             "layertree-item-checkbox-checked": sublayer.visibility,
         });
-        let editclasses = classnames({
-            "layertree-item-edit": true,
-            "layertree-item-edit-active": this.state.activemenu === pathstr
+        let cogclasses = classnames({
+            "layertree-item-cog": true,
+            "layertree-item-cog-active": this.state.activemenu === pathstr
         })
+        let editframe = null;
+        if(this.state.activemenu === pathstr) {
+            editframe = (
+                <div className="layertree-item-edit-frame">
+                    <span><Message msgId="layertree.transparency" /></span><input type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.sublayerTransparencyChanged(layer, path, ev.target.value)} />
+                </div>
+            );
+        }
         return (
-            <div className="layertree-item" key={sublayer.name}>
-                <span className={checkclasses} onClick={() => this.sublayerToggled(layer, path)}></span>
-                <span className="layertree-item-legend">
-                    <img className="layertree-item-legend-thumbnail" src={this.getLegendGraphicURL(layer, sublayer)} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />
-                </span>
-                <span className="layertree-item-title" title={sublayer.title}>{sublayer.title}</span>
-                {sublayer.queryable ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
-                <span className={editclasses}>
-                    <Glyphicon glyph="cog" onClick={() => this.sublayerMenuToggled(pathstr)}/>
-                    <div className="layertree-item-edit-menu">
-                        <span><Message msgId="layertree.transparency" /></span>
-                        <input type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.sublayerTransparencyChanged(layer, path, ev.target.value)} />
-                    </div>
-                </span>
+            <div className="layertree-item-container" key={sublayer.name}>
+                <div className="layertree-item">
+                    <span className={checkclasses} onClick={() => this.sublayerToggled(layer, path)}></span>
+                    <span className="layertree-item-legend">
+                        <img className="layertree-item-legend-thumbnail" src={this.getLegendGraphicURL(layer, sublayer)} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />
+                    </span>
+                    <span className="layertree-item-title" title={sublayer.title}>{sublayer.title}</span>
+                    {sublayer.queryable ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
+                    <span className="layertree-item-spacer"></span>
+                    <span className={cogclasses}><Glyphicon glyph="cog" onClick={() => this.sublayerMenuToggled(pathstr)}/></span>
+                </div>
+                {editframe}
             </div>
         )
     },
