@@ -78,10 +78,11 @@ const BottomBar = React.createClass({
                 </span>
             );
         }
+        let additionalMouseCrs = this.props.additionalMouseCrs || [];
         let availableCRS = pickBy(CoordinatesUtils.getAvailableCRS(), (key, code) => {
             return code === "EPSG:4326" ||
                    code === this.props.mapcrs ||
-                   this.props.additionalMouseCrs.indexOf(code) !== -1;
+                   additionalMouseCrs.indexOf(code) !== -1;
            }
         );
 
