@@ -108,6 +108,7 @@ const ThemeSwitcher = React.createClass({
         return false;
     },
     renderThemeGroup(group) {
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let filter = new RegExp(this.props.filter.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
         let subdirs = (group && group.subdirs ? group.subdirs : []);
         if(this.props.filter !== "") {
@@ -121,7 +122,7 @@ const ThemeSwitcher = React.createClass({
             {(group && group.items ? group.items : []).map(item => {
                 return item.title.match(filter) || item.keywords.match(filter) ? (
                     <li key={item.id} className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"} onClick={(ev)=>{this.themeClicked(item);}}>
-                        {item.title}<br /><img src={"data:image/png;base64," + item.thumbnail} /><br />
+                        {item.title}<br /><img src={assetsPath + "/" + item.thumbnail} /><br />
                     <div className="theme-item-keywords" title={item.keywords}>{item.keywords}</div>
                     </li>) : null;
             })}
