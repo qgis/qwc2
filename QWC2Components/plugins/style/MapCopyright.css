@@ -7,10 +7,10 @@
     font-size: x-small;
 }
 
-#MapCopyright a {
+#MapCopyright span {
     padding: 0 0.5em;
 }
 
-#MapCopyright a:not(:first-child) {
+#MapCopyright span:not(:first-child) {
     border-left: 1px solid @panel_fg@;
 }

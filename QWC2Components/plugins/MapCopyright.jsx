@@ -68,7 +68,11 @@ const MapCopyright = React.createClass({
     },
     render() {
         let copyrights = this.state.currentCopyrights.map((attribution, index) => {
-            return (<a key={"attribution" + index} href={attribution.url} target="_blank">{attribution.label}</a>);
+            if(attribution.url) {
+                return (<span><a key={"attribution" + index} href={attribution.url} target="_blank">{attribution.label}</a></span>);
+            } else {
+                return (<span key={"attribution" + index}>{attribution.label}</span>);
+            }
         })
         if(!copyrights || copyrights.length === 0) {
             return null;
