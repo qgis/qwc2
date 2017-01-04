@@ -43,19 +43,26 @@ const MapCopyright = React.createClass({
         if(layer.sublayers) {
             layer.sublayers.map(layer => this.collectCopyrigths(layer, srcmapbbox, transformedbboxes, copyrights));
         }
-        if(!layer.crs || !layer.extent || !layer.attribution) {
+        if(!layer.attribution || !layer.visibility) {
             return;
         }
-        if(!transformedbboxes[layer.crs]) {
-            let {minx, miny, maxx, maxy} = srcmapbbox.bounds;
-            transformedbboxes[layer.crs] = CoordinatesUtils.reprojectBbox([minx, miny, maxx, maxy], srcmapbbox.crs, layer.crs);
-        }
-        let mapbbox = transformedbboxes[layer.crs];
-        let laybbox = layer.extent;
-        if( mapbbox[0] < laybbox[2] && mapbbox[2] > laybbox[0] &&
-            mapbbox[1] < laybbox[3] && mapbbox[3] > laybbox[1])
-        {
-            // Extents overlap
+        if(layer.group !== "background") {
+            if(!layer.crs || !layer.extent) {
+                return;
+            }
+            if(!transformedbboxes[layer.crs]) {
+                let {minx, miny, maxx, maxy} = srcmapbbox.bounds;
+                transformedbboxes[layer.crs] = CoordinatesUtils.reprojectBbox([minx, miny, maxx, maxy], srcmapbbox.crs, layer.crs);
+            }
+            let mapbbox = transformedbboxes[layer.crs];
+            let laybbox = layer.extent;
+            if( mapbbox[0] < laybbox[2] && mapbbox[2] > laybbox[0] &&
+                mapbbox[1] < laybbox[3] && mapbbox[3] > laybbox[1])
+            {
+                // Extents overlap
+                copyrights.push({label: layer.attribution, url: layer.attributionUrl});
+            }
+        } else {
             copyrights.push({label: layer.attribution, url: layer.attributionUrl});
         }
     },
