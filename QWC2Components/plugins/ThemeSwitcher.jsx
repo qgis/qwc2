@@ -167,7 +167,8 @@ const ThemeSwitcher = React.createClass({
             params: params,
             queryLayers: queryLayers,
             singleTile: singleTile,
-            ratio: singleTile ? 1 : undefined
+            ratio: singleTile ? 1 : undefined,
+            format: theme.format
         }
     },
     createBackgroundLayersForTheme(theme, visibleBackgroundLayer=undefined) {
