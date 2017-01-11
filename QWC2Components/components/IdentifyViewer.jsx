@@ -22,7 +22,8 @@ const IdentifyViewer = React.createClass({
         layers: React.PropTypes.array,
         addLayer: React.PropTypes.func,
         removeLayer: React.PropTypes.func,
-        changeLayerProperties: React.PropTypes.func
+        changeLayerProperties: React.PropTypes.func,
+        mapcrs: React.PropTypes.string
     },
     getDefaultProps() {
         return {
@@ -94,7 +95,8 @@ const IdentifyViewer = React.createClass({
                 features: [IdentifyUtils.wktToGeoJSON(feature.geometry)],
                 featuresCrs: feature.bbox.srs,
                 visibility: true,
-                queryable: false
+                queryable: false,
+                crs: this.props.mapcrs
             };
             this.props.addLayer(layer, true);
         } else if(feature && haveLayer) {
@@ -211,7 +213,8 @@ const IdentifyViewer = React.createClass({
 
 const selector = (state) => ({
     theme: state.theme ? state.theme.current : null,
-    layers: state.layers && state.layers.flat || []
+    layers: state.layers && state.layers.flat || [],
+    mapcrs: state && state.map && state.map.present ? state.map.present.projection : undefined
 });
 module.exports = {
     IdentifyViewer: connect(selector, {

@@ -219,7 +219,8 @@ const Search = React.createClass({
             features: [IdentifyUtils.wktToGeoJSON(geometry)],
             featuresCrs: crs,
             visibility: true,
-            queryable: false
+            queryable: false,
+            crs: this.props.mapConfig.projection
         };
         this.props.addLayer(layer, true);
     }
