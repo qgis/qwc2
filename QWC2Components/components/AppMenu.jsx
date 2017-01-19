@@ -11,7 +11,7 @@ const {connect} = require('react-redux');
 const Swipeable = require('react-swipeable');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
-const {triggerAppMenuitem} = require('../actions/appmenu');
+const {triggerTool} = require('../actions/maptools');
 require('./style/AppMenu.css');
 
 
@@ -100,6 +100,6 @@ const AppMenu = React.createClass({
 
 module.exports = {
     AppMenu: connect(() => { return {}; }, {
-        menuitemClicked: triggerAppMenuitem
+        menuitemClicked: triggerTool
     })(AppMenu)
 };

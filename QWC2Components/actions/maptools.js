@@ -10,8 +10,8 @@ const {changeMeasurement} = require('../../MapStore2/web/client/actions/measurem
 const {changeDrawingStatus} = require('../../MapStore2/web/client/actions/draw');
 const {setCurrentTask} = require('./task');
 
-function triggerAppMenuitem(key) {
     if(key === 'measure') {
+function triggerTool(key) {
         return (dispatch => {
             dispatch(setCurrentTask('Measure'));
             dispatch(changeMeasurement({geomType: 'Point'}));
@@ -38,5 +38,5 @@ function triggerAppMenuitem(key) {
 }
 
 module.exports = {
-    triggerAppMenuitem
+    triggerTool
 }
