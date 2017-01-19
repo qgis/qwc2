@@ -59,7 +59,7 @@ const DxfExport = React.createClass({
         }
         return (
             <div id="DxfExport">
-                <MessageBar name="dxfexport" onClose={this.close}>
+                <MessageBar name="DxfExport" onClose={this.close}>
                     {this.renderBody()}
                 </MessageBar>
                 <PrintFrame map={this.props.map} bboxSelected={this.bboxSelected} />
@@ -80,7 +80,7 @@ const DxfExport = React.createClass({
 
 const selector = (state) => ({
     theme: state.theme ? state.theme.current : null,
-    visible: state.task ? state.task.current === 'dxfexport' : false,
+    visible: state.task ? state.task.current === 'DxfExport' : false,
     map: state.map ? state.map.present : null,
     themeLayerId: state.theme ? state.theme.currentlayer : "",
     layers: state.layers ? state.layers.flat : []

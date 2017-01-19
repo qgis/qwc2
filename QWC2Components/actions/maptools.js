@@ -10,29 +10,19 @@ const {changeMeasurement} = require('../../MapStore2/web/client/actions/measurem
 const {changeDrawingStatus} = require('../../MapStore2/web/client/actions/draw');
 const {setCurrentTask} = require('./task');
 
-    if(key === 'measure') {
 function triggerTool(key) {
+    if(key === 'Measure') {
         return (dispatch => {
             dispatch(setCurrentTask('Measure'));
             dispatch(changeMeasurement({geomType: 'Point'}));
         });
-    } else if(key === 'draw') {
+    } else if(key === 'Draw') {
         return (dispatch => {
             dispatch(setCurrentTask('Draw'));
             dispatch(changeDrawingStatus('create'));
         });
-    } else if(key === 'themes') {
-        return setCurrentTask('ThemeSwitcher');
-    } else if(key === 'layers') {
-        return setCurrentTask('LayerTree');
-    } else if(key === 'share') {
-        return setCurrentTask('Share');
-    } else if(key === 'print') {
-        return setCurrentTask('Print');
-    } else if(key === 'dxfexport') {
-        return setCurrentTask('dxfexport');
-    } else if(key === 'help') {
-        return setCurrentTask('Help');
+    } else {
+        return setCurrentTask(key);
     }
     return (dispatch) => {};
 }
