@@ -1,0 +1,17 @@
+#Toolbar {
+    margin: 0.25em;
+}
+
+#Toolbar > img {
+    width: 2.5em;
+    height: 2.5em;
+    margin-right: 0.25em;
+    padding: 0.25em;
+    border: 1px solid transparent;
+}
+
+#Toolbar > img:hover,
+#Toolbar > img.toolbar-item-active {
+    border: 1px solid #ccc;
+    background-color: #eee;
+}

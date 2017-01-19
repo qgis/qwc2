@@ -18,9 +18,10 @@
     flex: 0 0 auto;
 }
 
-#TopBar #Search {
+#TopBar div.center-span {
     margin: 0 1em;
     flex: 1 1 auto;
+    display: inline-block;
 }
 
 #TopBar #AppMenu {

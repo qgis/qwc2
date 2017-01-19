@@ -11,10 +11,12 @@
 
 #Search input.search-bar {
     border-radius: 0;
+    height: 2.5em;
 }
 
 #Search span.input-group-addon {
     border-radius: 0;
+    height: 2.5em;
 }
 
 #Search div.spinner {

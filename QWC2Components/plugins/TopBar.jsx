@@ -16,6 +16,7 @@ const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const {AppMenu} = require("../components/AppMenu");
 const {FullscreenSwitcher} = require("../components/FullscreenSwitcher");
 const {Search} = require("../components/Search");
+const {Toolbar} = require("../components/Toolbar");
 const {resultsPurge, resetSearch, searchTextChanged} = require("../../MapStore2/web/client/actions/search");
 const {qwc2TextSearch} = require("../actions/search");
 const {toggleFullscreen} = require('../actions/display');
@@ -25,6 +26,7 @@ const TopBar = React.createClass({
     propTypes: {
         mobile: React.PropTypes.bool,
         menuItems: React.PropTypes.array,
+        toolbarItems: React.PropTypes.array,
         fullscreen: React.PropTypes.bool,
         toggleFullscreen: React.PropTypes.func,
         searchProviders: React.PropTypes.object,
@@ -32,7 +34,9 @@ const TopBar = React.createClass({
     },
     getDefaultProps() {
         return {
-            search: {}
+            search: {},
+            menuItems: [],
+            toolbarItems: []
         };
     },
     render() {
@@ -64,7 +68,10 @@ const TopBar = React.createClass({
             <Swipeable onSwipedUp={this.triggerFullscreen}>
                 <div id="TopBar" className={classes}>
                     <img className="logo" src={logo} />
-                    <Search searchProviders={this.props.searchProviders} minScale={this.props.search.minScale} />
+                    <div className="center-span">
+                        <Search searchProviders={this.props.searchProviders} minScale={this.props.search.minScale} />
+                        <Toolbar toolbarItems={this.props.toolbarItems} />
+                    </div>
                     <AppMenu menuItems={this.props.menuItems} buttonContents={buttonContents} />
                     <FullscreenSwitcher />
                 </div>
