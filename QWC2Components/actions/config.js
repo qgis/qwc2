@@ -27,8 +27,10 @@ function restoreMapConfig(dispatch, params) {
         }
     };
 
-    // Set initial extent parameter
+    // Set initial extent, pos and scale parameter
     UrlParams.updateParams({ie: params.e});
+    UrlParams.updateParams({ic: params.c});
+    UrlParams.updateParams({is: params.s});
 
     dispatch(configureMap(mapConfig, false));
 

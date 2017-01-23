@@ -63,16 +63,38 @@ const ThemeSwitcher = React.createClass({
             let layer = this.createLayerForTheme(theme, params.l ? params.l.split(",") : undefined);
             const scales = theme.scales || this.state.themes.defaultScales;
             // extent to which to zoom to
-            let extent = {
-                bounds: (params.ie || "").split(";").map(x => parseFloat(x)),
-                crs: "EPSG:4326"
-            };
-            if(params.t === undefined || extent.bounds.length !== 4) {
-                extent.bounds = theme.extent;
-                extent.crs = theme.crs;
+            let extent = null;
+            let centerZoom = null;
+            if(params.t) {
+                if(params.ic && params.is) {
+                    let closestVal = Math.abs(params.is - scales[0]);
+                    let closestIdx = 0;
+                    for(let i = 1; i < scales.length; ++i) {
+                        let currVal = Math.abs(params.is - scales[i]);
+                        if(currVal < closestVal) {
+                            closestVal = currVal;
+                            closestIdx = i;
+                        }
+                    }
+                    let coords = params.ic.split(";").map(x => parseFloat(x));
+                    if(coords.length === 2) {
+                        centerZoom = {
+                            center: {x: coords[0], y: coords[1]},
+                            zoom: closestIdx,
+                            crs: "EPSG:4326"
+                        };
+                    }
+                } else if(params.ie) {
+                    extent = {bounds: params.ie.split(";").map(x => parseFloat(x)), crs: "EPSG:4326"}
+                }
+            }
+            if(!centerZoom && (!extent || extent.bounds.length !== 4)) {
+                extent = {bounds: theme.extent, crs: theme.crs};
             }
             UrlParams.updateParams({ie: undefined});
-            this.props.changeTheme(theme, layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, extent);
+            UrlParams.updateParams({ic: undefined});
+            UrlParams.updateParams({is: undefined});
+            this.props.changeTheme(theme, layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, extent, centerZoom);
         }
     },
     getThemeById(dir, id) {

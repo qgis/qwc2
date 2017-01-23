@@ -8,12 +8,12 @@
 
 const UrlParams = require("../utils/UrlParams");
 const {addLayer,removeLayer} = require("../../MapStore2/web/client/actions/layers");
-const {changeMapScales, zoomToExtent} = require("../../MapStore2/web/client/actions/map");
+const {changeMapScales, zoomToExtent, zoomToPoint} = require("../../MapStore2/web/client/actions/map");
 
 const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
 const SET_THEME_SWITCHER_FILTER = 'SET_THEME_FILTER';
 
-function setCurrentTheme(theme, layer, backgroundLayers, prevlayerid, prevBackgroundLayerIds, scales, zoomExtent) {
+function setCurrentTheme(theme, layer, backgroundLayers, prevlayerid, prevBackgroundLayerIds, scales, zoomExtent, centerZoom) {
     UrlParams.updateParams({t: theme.id, l: undefined, bl: undefined});
     return (dispatch) => {
         // remove previous layers
@@ -39,7 +39,11 @@ function setCurrentTheme(theme, layer, backgroundLayers, prevlayerid, prevBackgr
         });
         p.then(() => {
             // zoom to extent only after new scales have been set
-            dispatch(zoomToExtent(zoomExtent.bounds, zoomExtent.crs));
+            if(centerZoom) {
+                dispatch(zoomToPoint(centerZoom.center, centerZoom.zoom, centerZoom.crs));
+            } else {
+                dispatch(zoomToExtent(zoomExtent.bounds, zoomExtent.crs));
+            }
         });
 
         dispatch({
