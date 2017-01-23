@@ -35,9 +35,9 @@ function restoreMapConfig(dispatch, params) {
 
     dispatch(configureMap(mapConfig, false));
 
-    // Set search text based on url s param
-    if (params.s) {
-        dispatch(searchTextChanged(params.s));
+    // Set search text based on url st param
+    if (params.st) {
+        dispatch(searchTextChanged(params.st));
     }
 }
 

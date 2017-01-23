@@ -11,7 +11,7 @@ const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUt
 const UrlParams = require("../utils/UrlParams");
 
 function startSearch(text, searchOptions, searchProviders, activeProviders) {
-    UrlParams.updateParams({s: text});
+    UrlParams.updateParams({st: text});
     return (dispatch) => {
         dispatch(resultsPurge());
         coordinatesSearch(text, searchOptions.displaycrs || "EPSG:4326", dispatch);
