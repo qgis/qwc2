@@ -27,7 +27,8 @@ const Measure = React.createClass({
         measureState: React.PropTypes.object,
         displaycrs: React.PropTypes.string,
         changeMeasurement: React.PropTypes.func,
-        changeMeasurementState: React.PropTypes.func
+        changeMeasurementState: React.PropTypes.func,
+        showMeasureModeSwitcher: React.PropTypes.bool
     },
     getDefaultProps() {
         return {
@@ -39,7 +40,8 @@ const Measure = React.createClass({
                 bearing: 0,
                 lenUnit: 'm',
                 areaUnit: 'sqm'
-            }
+            },
+            showMeasureModeSwitcher: true
         }
     },
     onClose() {
@@ -101,16 +103,22 @@ const Measure = React.createClass({
                 </div>
             );
         }
+        let modeSwitcher = null;
+        if(this.props.showMeasureModeSwitcher) {
+            modeSwitcher = (
+                <div className="buttonbar">
+                    <span onClick={()=>{this.setMeasureMode("Point");}} className={this.props.measureState.geomType === "Point" ? "active" : ""}><Message msgId="measureComponent.pointLabel" /></span>
+                    <span onClick={()=>{this.setMeasureMode("LineString");}} className={this.props.measureState.geomType === "LineString" ? "active" : ""}><Message msgId="measureComponent.lengthLabel" /></span>
+                    <span onClick={()=>{this.setMeasureMode("Polygon");}} className={this.props.measureState.geomType === "Polygon" ? "active" : ""}><Message msgId="measureComponent.areaLabel" /></span>
+                    <span onClick={()=>{this.setMeasureMode("Bearing");}} className={this.props.measureState.geomType === "Bearing" ? "active" : ""}><Message msgId="measureComponent.bearingLabel" /></span>
+                </div>
+            );
+        }
 
         return (
             <MessageBar name="Measure" onClose={this.onClose}>
                 <span role="body">
-                    <div className="buttonbar">
-                        <span onClick={()=>{this.setMeasureMode("Point");}} className={this.props.measureState.geomType === "Point" ? "active" : ""}><Message msgId="measureComponent.pointLabel" /></span>
-                        <span onClick={()=>{this.setMeasureMode("LineString");}} className={this.props.measureState.geomType === "LineString" ? "active" : ""}><Message msgId="measureComponent.lengthLabel" /></span>
-                        <span onClick={()=>{this.setMeasureMode("Polygon");}} className={this.props.measureState.geomType === "Polygon" ? "active" : ""}><Message msgId="measureComponent.areaLabel" /></span>
-                        <span onClick={()=>{this.setMeasureMode("Bearing");}} className={this.props.measureState.geomType === "Bearing" ? "active" : ""}><Message msgId="measureComponent.bearingLabel" /></span>
-                    </div>
+                    {modeSwitcher}
                     {resultBody}
                 </span>
             </MessageBar>

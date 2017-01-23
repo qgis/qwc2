@@ -25,6 +25,7 @@ div.resultbody {
     overflow: hidden;
     text-align: center;
     background-color: white;
+    min-width: 15em;
 }
 
 div.resultbody > select {
