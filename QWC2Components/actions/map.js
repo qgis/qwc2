@@ -15,18 +15,23 @@ const MapUtils = require("../../MapStore2/web/client/utils/MapUtils");
 function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
     return (dispatch) => {
         let positionFormat = ConfigUtils.getConfigProp("urlPositionFormat");
-        let bounds = CoordinatesUtils.reprojectBbox(bbox.bounds, bbox.crs, "EPSG:4326");
+        let positionCrs = ConfigUtils.getConfigProp("urlPositionCrs") || projection;
+        let bounds = CoordinatesUtils.reprojectBbox(bbox.bounds, bbox.crs, positionCrs);
+        let roundfactor = CoordinatesUtils.getUnits(positionCrs) === 'degrees' ? 100000. : 1;
         if(positionFormat === "centerAndZoom") {
-            let x = Math.round(0.5 * (bounds[0] + bounds[2]) * 100000.) / 100000.;
-            let y = Math.round(0.5 * (bounds[1] + bounds[3]) * 100000.) / 100000.;
+            let x = Math.round(0.5 * (bounds[0] + bounds[2]) * roundfactor) / roundfactor;
+            let y = Math.round(0.5 * (bounds[1] + bounds[3]) * roundfactor) / roundfactor;
             let scale = MapUtils.getScales(projection)[zoom];
             UrlParams.updateParams({c: x + ";" + y, s: scale});
         } else {
-            let xmin = Math.round(bounds[0] * 100000.) / 100000.;
-            let ymin = Math.round(bounds[1] * 100000.) / 100000.;
-            let xmax = Math.round(bounds[2] * 100000.) / 100000.;
-            let ymax = Math.round(bounds[3] * 100000.) / 100000.;
+            let xmin = Math.round(bounds[0] * roundfactor) / roundfactor;
+            let ymin = Math.round(bounds[1] * roundfactor) / roundfactor;
+            let xmax = Math.round(bounds[2] * roundfactor) / roundfactor;
+            let ymax = Math.round(bounds[3] * roundfactor) / roundfactor;
             UrlParams.updateParams({e: xmin + ";" + ymin + ";" + xmax + ";" + ymax});
+        }
+        if(positionCrs && positionCrs !== projection) {
+            UrlParams.updateParams({crs: positionCrs});
         }
         dispatch(require('../../MapStore2/web/client/actions/map').changeMapView(center, zoom, bbox, size, mapStateSource, projection));
     };

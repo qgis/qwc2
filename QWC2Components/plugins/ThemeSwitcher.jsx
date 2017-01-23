@@ -26,6 +26,7 @@ const ThemeSwitcher = React.createClass({
         activeTheme: React.PropTypes.object,
         activeThemeLayer: React.PropTypes.string,
         haveMap: React.PropTypes.bool,
+        mapProjection: React.PropTypes.string,
         layers: React.PropTypes.array,
         changeTheme: React.PropTypes.func,
         changeFilter: React.PropTypes.func,
@@ -81,11 +82,13 @@ const ThemeSwitcher = React.createClass({
                         centerZoom = {
                             center: {x: coords[0], y: coords[1]},
                             zoom: closestIdx,
-                            crs: "EPSG:4326"
+                            crs: params.icrs || this.props.mapProjection
                         };
                     }
                 } else if(params.ie) {
-                    extent = {bounds: params.ie.split(";").map(x => parseFloat(x)), crs: "EPSG:4326"}
+                    extent = {
+                        bounds: params.ie.split(";").map(x => parseFloat(x)),
+                        crs: prams.icrs || this.props.mapProjection}
                 }
             }
             if(!centerZoom && (!extent || extent.bounds.length !== 4)) {
@@ -94,6 +97,7 @@ const ThemeSwitcher = React.createClass({
             UrlParams.updateParams({ie: undefined});
             UrlParams.updateParams({ic: undefined});
             UrlParams.updateParams({is: undefined});
+            UrlParams.updateParams({icrs: undefined});
             this.props.changeTheme(theme, layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, extent, centerZoom);
         }
     },
@@ -240,6 +244,7 @@ const selector = (state) => ({
     activeThemeLayer: state.theme ? state.theme.currentlayer : null,
     filter: state.theme ? state.theme.switcherfilter : "",
     haveMap: state.map ? true : false,
+    mapProjection: state.map && state.map.present ? state.map.present.projection : "EPSG:3857",
     layers: state.layers && state.layers.flat ? state.layers.flat : []
 });
 
