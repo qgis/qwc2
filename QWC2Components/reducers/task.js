@@ -14,7 +14,7 @@ function task(state = {}, action)
 {
     switch (action.type) {
         case SET_CURRENT_TASK:
-            return assign({}, state, {current: action.current});
+            return assign({}, state, {current: action.current, mode: action.mode});
         default:
             return state;
     }

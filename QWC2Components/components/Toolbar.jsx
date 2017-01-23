@@ -19,7 +19,8 @@ const Toolbar = React.createClass({
         toolbarItems: React.PropTypes.array,
         toolbaritemClicked: React.PropTypes.func,
         setCurrentTask: React.PropTypes.func,
-        currentTask: React.PropTypes.string
+        currentTask: React.PropTypes.string,
+        currentTaskMode: React.PropTypes.string
     },
     getDefaultProps() {
         return {
@@ -27,11 +28,11 @@ const Toolbar = React.createClass({
     },
     renderToolbarItem(item) {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
-        let active = this.props.currentTask == item.key;
-        return (<img key={item.key}
+        let active = this.props.currentTask == item.key && this.props.currentTaskMode == item.mode;
+        return (<img key={item.key + item.mode}
             className={active ? "toolbar-item-active" : ""}
             src={assetsPath + "/" + item.icon}
-            onClick={active ? () => this.props.setCurrentTask(null) : () => this.props.toolbaritemClicked(item.key)} />);
+            onClick={active ? () => this.props.setCurrentTask(null) : () => this.props.toolbaritemClicked(item.key, item.mode)} />);
     },
     render() {
         return (
@@ -45,6 +46,7 @@ const Toolbar = React.createClass({
 module.exports = {
     Toolbar: connect((state) => ({
         currentTask: state.task ? state.task.current : "",
+        currentTaskMode: state.task ? state.task.mode : "",
     }), {
         toolbaritemClicked: triggerTool,
         setCurrentTask: setCurrentTask,
