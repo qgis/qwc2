@@ -16,7 +16,6 @@ const {resultsPurge, resetSearch, searchTextChanged, addMarker} = require("../..
 const LocaleUtils = require('../../MapStore2/web/client/utils/LocaleUtils');
 const mapUtils = require('../../MapStore2/web/client/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
-const ConfigUtils = require('../../MapStore2/web/client/utils/ConfigUtils');
 const {addLayer, removeLayer} = require('../../MapStore2/web/client/actions/layers');
 const {changeMapView} = require('../actions/map');
 const {startSearch,searchMore} = require("../actions/search");
@@ -32,7 +31,7 @@ const Search = React.createClass({
         displaycrs: React.PropTypes.string,
         onSearch: React.PropTypes.func,
         searchMore: React.PropTypes.func,
-        onPurgeResults: React.PropTypes.func,
+        purgeResults: React.PropTypes.func,
         onSearchReset: React.PropTypes.func,
         onSearchTextChange: React.PropTypes.func,
         panToResult: React.PropTypes.func,
@@ -40,13 +39,16 @@ const Search = React.createClass({
         searchProviders: React.PropTypes.object,
         addLayer: React.PropTypes.func,
         removeLayer: React.PropTypes.func,
-        theme: React.PropTypes.object
+        theme: React.PropTypes.object,
+        showFilterCombo: React.PropTypes.bool,
+        searchOptions: React.PropTypes.object
     },
     getDefaultProps() {
         return {
             searchText: "",
             results: null,
-            mapConfig: undefined
+            mapConfig: undefined,
+            showFilterCombo: false
         }
     },
     getInitialState() {
@@ -69,10 +71,10 @@ const Search = React.createClass({
     },
     search() {
         if(this.props.searchText) {
-            this.props.onPurgeResults();
+            this.props.purgeResults();
             this.props.onSearch(
                 this.props.searchText, {displaycrs: this.props.displaycrs},
-                this.props.searchProviders, this.props.theme.searchProviders);
+                this.activeProviers());
         } else {
             this.resetSearch();
         }
@@ -100,6 +102,13 @@ const Search = React.createClass({
             ev.target.blur();
         }
     },
+    activeProviers() {
+        let keys = this.providerSelectionCombo ? [this.providerSelectionCombo.value] : this.props.theme.searchProviders;
+        return keys.reduce((result, key) => {
+            result[key] = this.props.searchProviders[key];
+            return result;
+        }, {});
+    },
     render() {
         let placeholder = LocaleUtils.getMessageById(this.context.messages, "search.placeholder");
         if(!this.props.searchText) {
@@ -108,6 +117,19 @@ const Search = React.createClass({
             var addonAfter = (<Spinner spinnerName="circle" noFadeIn/>);
         } else {
             var addonAfter = (<Glyphicon glyph="remove" onClick={this.resetSearch}/>);
+        }
+        let providerSelection = null;
+        if(this.props.searchOptions.showProviderSelection) {
+            providerSelection = (
+                <select className="provider-selection" onChange={this.props.purgeResults}
+                    ref={el => { this.providerSelectionCombo = el; }}>
+                    {Object.keys(this.props.searchProviders).map(key => {
+                        if(this.props.theme && this.props.theme.searchProviders.includes(key)) {
+                            return (<option key={key} value={key}>{this.props.searchProviders[key].label}</option>);
+                        }
+                    })}
+                </select>
+            );
         }
 
         return (
@@ -123,6 +145,7 @@ const Search = React.createClass({
                     onFocus={this.onFocus}
                     onKeyDown={this.onKeyDown}
                     onChange={this.onChange} />
+                {providerSelection}
                 {this.renderSearchResults()}
             </div>
         )
@@ -163,7 +186,7 @@ const Search = React.createClass({
         );
     },
     moreClicked(item) {
-        this.props.searchMore(item, this.props.searchText, this.props.searchProviders, this.props.theme.searchProviders)
+        this.props.searchMore(item, this.props.searchText, this.activeProviers())
     },
     itemClicked(item) {
         this.props.removeLayer("searchselection");
@@ -175,7 +198,7 @@ const Search = React.createClass({
             let maxZoom = 0;
             const scales = mapUtils.getScales(this.props.mapConfig.projection);
             for (let i in scales) {
-                if (scales[i] < ConfigUtils.getConfigProp("minSearchZoomScale")) {
+                if (scales[i] < this.props.searchOptions.minScale) {
                     break;
                 } else {
                     maxZoom = i;
@@ -235,7 +258,7 @@ module.exports = (searchProviders) => connect(createSelector([state => state, di
 })), {
     onSearch: startSearch,
     searchMore: searchMore,
-    onPurgeResults: resultsPurge,
+    purgeResults: resultsPurge,
     onSearchReset: resetSearch,
     onSearchTextChange: searchTextChanged,
     panToResult: changeMapView,

@@ -1,12 +1,26 @@
 #Search {
-    display: inline-block;
+    display: inline-flex;
     position: relative;
+    align-items: center;
     vertical-align: middle;
 }
 
 #Search div.form-group {
     margin: 0;
     max-width: 50ch;
+    display: inline-block;
+    flex: 1 1 auto;
+}
+
+#Search select.provider-selection {
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-left: 0;
+    background-color: #eee;
+    vertical-align: bottom;
+    height: 2.5em;
+    flex: 0 0 auto;
 }
 
 #Search input.search-bar {
@@ -26,6 +40,7 @@
 }
 
 #Search ul.search-results {
+    top: calc(2.5em + 2px);
     z-index: 8;
     position: absolute;
     background-color: rgba(255,255, 255, 0.85);

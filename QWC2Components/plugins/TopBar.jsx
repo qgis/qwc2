@@ -26,12 +26,12 @@ const TopBar = React.createClass({
         fullscreen: React.PropTypes.bool,
         toggleFullscreen: React.PropTypes.func,
         searchProviders: React.PropTypes.object,
-        search: React.PropTypes.object,
-        logoFormat: React.PropTypes.string
+        logoFormat: React.PropTypes.string,
+        searchOptions: React.PropTypes.object
     },
     getDefaultProps() {
         return {
-            search: {},
+            searchOptions: {},
             menuItems: [],
             toolbarItems: [],
             logoFormat: "svg"
@@ -67,7 +67,7 @@ const TopBar = React.createClass({
                 <div id="TopBar" className={classes}>
                     <img className="logo" src={logo} />
                     <div className="center-span">
-                        <this.props.components.Search />
+                        <this.props.components.Search searchOptions={this.props.searchOptions}/>
                         <this.props.components.Toolbar toolbarItems={this.props.toolbarItems} />
                     </div>
                     <this.props.components.AppMenu menuItems={this.props.menuItems} buttonContents={buttonContents} />
