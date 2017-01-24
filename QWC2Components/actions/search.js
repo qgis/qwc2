@@ -14,7 +14,6 @@ function startSearch(text, searchOptions, searchProviders, activeProviders) {
     UrlParams.updateParams({st: text});
     return (dispatch) => {
         dispatch(resultsPurge());
-        coordinatesSearch(text, searchOptions.displaycrs || "EPSG:4326", dispatch);
         if(searchProviders) {
             Object.keys(searchProviders).map(provider => {
                 if(activeProviders.indexOf(provider) >= 0) {
@@ -31,59 +30,6 @@ function searchMore(moreItem, text, searchProviders) {
             searchProviders[moreItem.provider].getMoreResults(moreItem, text, dispatch);
         }
     };
-}
-
-function coordinatesSearch(text, displaycrs, dispatch) {
-    let matches = text.match(/^\s*(\d+\.?\d*),?\s*(\d+\.?\d*)\s*$/);
-    if(matches && matches.length >= 3) {
-        let x = parseFloat(matches[1]);
-        let y = parseFloat(matches[2]);
-        let items = [];
-        if(displaycrs !== "EPSG:4326") {
-            let coord = CoordinatesUtils.reproject([x, y], displaycrs, "EPSG:4326");
-            items.push({
-                id: "coord0",
-                text: x + ", " + y + " (" + displaycrs + ")",
-                x: coord.x,
-                y: coord.y,
-                crs: "EPSG:4326",
-                bbox: [x, y, x, y]
-            });
-        }
-        if(x >= -180 && x <= 180 && y >= -90 && y <= 90) {
-            let title = Math.abs(x) + (x >= 0 ? "°E" : "°W") + ", "
-                      + Math.abs(y) + (y >= 0 ? "°N" : "°S");
-            items.push({
-                id: "coord" + items.length,
-                text: title,
-                x: x,
-                y: y,
-                crs: "EPSG:4326",
-                bbox: [x, y, x, y]
-            });
-        }
-        if(x >= -90 && x <= 90 && y >= -180 && y <= 180 && x != y) {
-            let title = Math.abs(y) + (y >= 0 ? "°E" : "°W") + ", "
-                      + Math.abs(x) + (x >= 0 ? "°N" : "°S");
-            items.push({
-                id: "coord" + items.length,
-                text: title,
-                x: y,
-                y: x,
-                crs: "EPSG:4326",
-                bbox: [y, x, y, x]
-            });
-        }
-        dispatch({
-                type: TEXT_SEARCH_RESULTS_LOADED,
-                results: [{
-                    id: "coords",
-                    titlemsgid: "search.coordinates",
-                    items: items
-                }],
-                append: true
-        })
-    }
 }
 
 module.exports = {startSearch, searchMore};
