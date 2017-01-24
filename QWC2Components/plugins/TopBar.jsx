@@ -13,10 +13,6 @@ const {Glyphicon} = require('react-bootstrap');
 const Swipeable = require('react-swipeable');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
-const {AppMenu} = require("../components/AppMenu");
-const {FullscreenSwitcher} = require("../components/FullscreenSwitcher");
-const {Search} = require("../components/Search");
-const {Toolbar} = require("../components/Toolbar");
 const {resultsPurge, resetSearch, searchTextChanged} = require("../../MapStore2/web/client/actions/search");
 const {qwc2TextSearch} = require("../actions/search");
 const {toggleFullscreen} = require('../actions/display');
@@ -69,11 +65,11 @@ const TopBar = React.createClass({
                 <div id="TopBar" className={classes}>
                     <img className="logo" src={logo} />
                     <div className="center-span">
-                        <Search searchProviders={this.props.searchProviders} minScale={this.props.search.minScale} />
-                        <Toolbar toolbarItems={this.props.toolbarItems} />
+                        <this.props.components.Search />
+                        <this.props.components.Toolbar toolbarItems={this.props.toolbarItems} />
                     </div>
-                    <AppMenu menuItems={this.props.menuItems} buttonContents={buttonContents} />
-                    <FullscreenSwitcher />
+                    <this.props.components.AppMenu menuItems={this.props.menuItems} buttonContents={buttonContents} />
+                    <this.props.components.FullscreenSwitcher />
                 </div>
             </Swipeable>
          );
@@ -83,11 +79,11 @@ const TopBar = React.createClass({
      }
 });
 
-module.exports = (searchProviders) => { return {
+module.exports = (components) => { return {
     TopBarPlugin: connect((state) => ({
         mobile: state.browser ? state.browser.mobile : false,
         fullscreen: state.display && state.display.fullscreen,
-        searchProviders: searchProviders
+        components: components
     }), {
         toggleFullscreen: toggleFullscreen
     })(TopBar),

@@ -16,6 +16,7 @@ const {resultsPurge, resetSearch, searchTextChanged, addMarker} = require("../..
 const LocaleUtils = require('../../MapStore2/web/client/utils/LocaleUtils');
 const mapUtils = require('../../MapStore2/web/client/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
+const ConfigUtils = require('../../MapStore2/web/client/utils/ConfigUtils');
 const {addLayer, removeLayer} = require('../../MapStore2/web/client/actions/layers');
 const {changeMapView} = require('../actions/map');
 const {startSearch,searchMore} = require("../actions/search");
@@ -29,7 +30,6 @@ const Search = React.createClass({
         results: React.PropTypes.array,
         mapConfig: React.PropTypes.object,
         displaycrs: React.PropTypes.string,
-        minScale: React.PropTypes.number,
         onSearch: React.PropTypes.func,
         searchMore: React.PropTypes.func,
         onPurgeResults: React.PropTypes.func,
@@ -46,8 +46,7 @@ const Search = React.createClass({
         return {
             searchText: "",
             results: null,
-            mapConfig: undefined,
-            minScale: 1000
+            mapConfig: undefined
         }
     },
     getInitialState() {
@@ -176,7 +175,7 @@ const Search = React.createClass({
             let maxZoom = 0;
             const scales = mapUtils.getScales(this.props.mapConfig.projection);
             for (let i in scales) {
-                if (scales[i] < this.props.minScale) {
+                if (scales[i] < ConfigUtils.getConfigProp("minSearchZoomScale")) {
                     break;
                 } else {
                     maxZoom = i;
@@ -226,24 +225,21 @@ const Search = React.createClass({
     }
 });
 
-const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
+module.exports = (searchProviders) => connect(createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
     searchText: state.search ? state.search.searchText : "",
     results: state.search ? state.search.results : null,
     mapConfig: state.map ? state.map.present : undefined,
     displaycrs: displaycrs,
-    theme: state.theme ? state.theme.current : null
-}));
-
-module.exports = {
-    Search: connect(selector, {
-        onSearch: startSearch,
-        searchMore: searchMore,
-        onPurgeResults: resultsPurge,
-        onSearchReset: resetSearch,
-        onSearchTextChange: searchTextChanged,
-        panToResult: changeMapView,
-        addMarker: addMarker,
-        addLayer: addLayer,
-        removeLayer: removeLayer
-    })(Search)
-};
+    theme: state.theme ? state.theme.current : null,
+    searchProviders: searchProviders
+})), {
+    onSearch: startSearch,
+    searchMore: searchMore,
+    onPurgeResults: resultsPurge,
+    onSearchReset: resetSearch,
+    onSearchTextChange: searchTextChanged,
+    panToResult: changeMapView,
+    addMarker: addMarker,
+    addLayer: addLayer,
+    removeLayer: removeLayer
+})(Search);

@@ -43,12 +43,10 @@ const Toolbar = React.createClass({
     }
 });
 
-module.exports = {
-    Toolbar: connect((state) => ({
-        currentTask: state.task ? state.task.current : "",
-        currentTaskMode: state.task ? state.task.mode : "",
-    }), {
-        toolbaritemClicked: triggerTool,
-        setCurrentTask: setCurrentTask,
-    })(Toolbar)
-};
+module.exports = connect((state) => ({
+    currentTask: state.task ? state.task.current : "",
+    currentTaskMode: state.task ? state.task.mode : "",
+}), {
+    toolbaritemClicked: triggerTool,
+    setCurrentTask: setCurrentTask,
+})(Toolbar);

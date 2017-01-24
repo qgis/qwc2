@@ -76,8 +76,6 @@ const selector = (state) => ({
     fullscreen: state.display && state.display.fullscreen
 });
 
-module.exports = {
-    FullscreenSwitcher: connect(selector, {
-        fullscreenToggled: toggleFullscreen
-    })(FullscreenSwitcher)
-};
+module.exports = connect(selector, {
+    fullscreenToggled: toggleFullscreen
+})(FullscreenSwitcher);

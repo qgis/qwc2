@@ -98,8 +98,6 @@ const AppMenu = React.createClass({
     }
 });
 
-module.exports = {
-    AppMenu: connect(() => { return {}; }, {
-        menuitemClicked: triggerTool
-    })(AppMenu)
-};
+module.exports = connect(() => { return {}; }, {
+    menuitemClicked: triggerTool
+})(AppMenu);
