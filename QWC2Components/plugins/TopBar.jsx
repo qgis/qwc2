@@ -26,13 +26,15 @@ const TopBar = React.createClass({
         fullscreen: React.PropTypes.bool,
         toggleFullscreen: React.PropTypes.func,
         searchProviders: React.PropTypes.object,
-        search: React.PropTypes.object
+        search: React.PropTypes.object,
+        logoFormat: React.PropTypes.string
     },
     getDefaultProps() {
         return {
             search: {},
             menuItems: [],
-            toolbarItems: []
+            toolbarItems: [],
+            logoFormat: "svg"
         };
     },
     render() {
@@ -45,7 +47,7 @@ const TopBar = React.createClass({
                     <Glyphicon className="appmenu-icon" glyph="menu-hamburger"/>
                 </span>
             );
-            logo = assetsPath + "/img/logo-mobile.svg";
+            logo = assetsPath + "/img/logo-mobile." + this.props.logoFormat;
         } else {
             buttonContents = (
                 <span className="appmenu-button">
@@ -53,7 +55,7 @@ const TopBar = React.createClass({
                     <Glyphicon className="appmenu-icon" glyph="menu-hamburger"/>
                 </span>
             );
-            logo = assetsPath + "/img/logo.svg";
+            logo = assetsPath + "/img/logo."  + this.props.logoFormat;
         }
 
         let classes = classnames({
