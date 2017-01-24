@@ -88,7 +88,7 @@ const ThemeSwitcher = React.createClass({
                 } else if(params.ie) {
                     extent = {
                         bounds: params.ie.split(";").map(x => parseFloat(x)),
-                        crs: prams.icrs || this.props.mapProjection}
+                        crs: params.icrs || this.props.mapProjection}
                 }
             }
             if(!centerZoom && (!extent || extent.bounds.length !== 4)) {
