@@ -30,7 +30,9 @@
 #Search span.searchbar-addon {
     flex: 0 0 auto;
     height: 2.5em;
-    padding: 0.25em 0.75em;
+    width: 2.5em;
+    text-align: center;
+    padding: 0.25em 0.25em;
     line-height: 2em;
     color: @item_fg@;
     background-color: #eee;
@@ -40,9 +42,8 @@
 }
 
 #Search div.spinner {
-    width: 15px;
-    height: 15px;
-    margin-right: 0;
+    width: 2em;
+    height: 2em;
 }
 
 #Search select.provider-selection {

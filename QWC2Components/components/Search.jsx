@@ -99,7 +99,7 @@ const Search = React.createClass({
         }
     },
     onFocus() {
-        if(this.props.searchText && !this.props.results) {
+        if(!this.state.showfields && this.props.searchText && !this.props.results) {
             this.search();
         }
         this.setState({focused: true});
@@ -205,7 +205,12 @@ const Search = React.createClass({
         let filters = Object.keys(this.formfields).map(key => {
             return  key + "=" + this.formfields[key].value;
         });
-        this.props.onSearchTextChange(filters.join(" AND "));
+        let searchText = filters.join(" AND ");
+        if(searchText !== this.props.searchText || !this.props.results) {
+            this.props.purgeResults();
+            this.props.onSearchTextChange(searchText);
+            this.props.onSearch(searchText, {displaycrs: this.props.displaycrs}, this.activeProviers());
+        }
         this.input.focus();
         this.setState({showfields: false});
     },
