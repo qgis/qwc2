@@ -26,3 +26,8 @@
 #BackgroundSwitcherBtn {
     bottom: 5em;
 }
+
+#LocateBtn.btn-success {
+    background-color: @button_fg@;
+    color: @button_bg@;
+}
