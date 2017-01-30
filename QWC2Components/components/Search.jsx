@@ -8,7 +8,7 @@
 
 const React = require('react');
 const {connect} = require('react-redux');
-const {Input, Glyphicon} = require('react-bootstrap');
+const {Glyphicon} = require('react-bootstrap');
 const Spinner = require('react-spinkit');
 const {createSelector} = require('reselect');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
@@ -134,19 +134,25 @@ const Search = React.createClass({
 
         return (
             <div id="Search">
-                <Input
-                    className="search-bar"
-                    placeholder={placeholder}
-                    type="text"
-                    ref="input"
-                    value={this.props.searchText}
-                    addonAfter={addonAfter}
-                    onBlur={() => this.setState({focused: false})}
-                    onFocus={this.onFocus}
-                    onKeyDown={this.onKeyDown}
-                    onChange={this.onChange} />
+                <div className="searchbar-wrapper">
+                    <div className="searchbar-container">
+                        <input
+                            className="searchbar"
+                            placeholder={placeholder}
+                            type="text"
+                            ref={el => this.input = el}
+                            value={this.props.searchText}
+                            onBlur={() => this.setState({focused: false})}
+                            onFocus={this.onFocus}
+                            onKeyDown={this.onKeyDown}
+                            onChange={this.onChange} />
+                        <span className="searchbar-addon">
+                            {addonAfter}
+                        </span>
+                    </div>
+                    {this.renderSearchResults()}
+                </div>
                 {providerSelection}
-                {this.renderSearchResults()}
             </div>
         )
     },
