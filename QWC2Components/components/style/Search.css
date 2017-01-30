@@ -45,6 +45,51 @@
     margin-right: 0;
 }
 
+#Search select.provider-selection {
+    border-top: 1px solid @item_border@;
+    border-right: 1px solid @item_border@;
+    border-bottom: 1px solid @item_border@;
+    border-left: 0;
+    background-color: #eee;
+    vertical-align: bottom;
+    height: 2.5em;
+    flex: 0 0 auto;
+}
+
+#Search div.search-form {
+    top: 0;
+    width: 100%;
+    position: absolute;
+    z-index: 8;
+    background-color: #eee;
+    border: 1px solid #ccc;
+}
+
+#Search div.search-form > table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#Search div.search-form > table td {
+    padding: 0.125em 0.25em;
+}
+
+#Search div.search-form > table input {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+}
+
+#Search div.search-form div.search-form-buttons {
+    text-align: right;
+    padding: 0.5em 0.25em;
+}
+
+#Search div.search-form div.search-form-buttons > button {
+    padding: 0.25em;
+    margin-left: 0.25em;
+}
+
 #Search ul.search-results {
     top: 100%;
     z-index: 8;

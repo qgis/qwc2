@@ -21,6 +21,7 @@ const {changeMapView} = require('../actions/map');
 const {startSearch,searchMore} = require("../actions/search");
 const displayCrsSelector = require('../selectors/displaycrs');
 const IdentifyUtils = require('../utils/IdentifyUtils');
+const UrlParams = require("../utils/UrlParams");
 require('./style/Search.css');
 
 const Search = React.createClass({
@@ -52,7 +53,7 @@ const Search = React.createClass({
         }
     },
     getInitialState() {
-        return {currentResult: null}
+        return {currentResult: null, showfields: false}
     },
     contextTypes: {
         messages: React.PropTypes.object
@@ -62,6 +63,7 @@ const Search = React.createClass({
     },
     componentWillReceiveProps(newProps) {
         if(this.props.theme && newProps.theme !== this.props.theme) {
+            UrlParams.updateParams({sp: undefined});
             this.resetSearch();
         }
     },
@@ -80,7 +82,8 @@ const Search = React.createClass({
         }
     },
     resetSearch() {
-        this.setState({currentResult: null, focused: false});
+        this.setState({currentResult: null, focused: false, showfields: false});
+        UrlParams.updateParams({st: undefined});
         this.props.onSearchReset();
         this.props.removeLayer("searchselection");
     },
@@ -88,6 +91,12 @@ const Search = React.createClass({
         this.props.onSearchTextChange(ev.target.value);
         clearTimeout(this.searchTimer);
         this.searchTimer = setTimeout(this.search, 500);
+    },
+    checkShowFields(ev) {
+        if(this.providerSelectionCombo && this.props.searchProviders[this.providerSelectionCombo.value].fields) {
+            this.setState({showfields: true, focused: false});
+            ev.preventDefault();
+        }
     },
     onFocus() {
         if(this.props.searchText && !this.props.results) {
@@ -101,6 +110,10 @@ const Search = React.createClass({
         } else if(ev.keyCode === 27) {
             ev.target.blur();
         }
+    },
+    providerChanged(ev) {
+        this.resetSearch();
+        UrlParams.updateParams({sp: ev.target.value});
     },
     activeProviers() {
         let keys = this.providerSelectionCombo ? [this.providerSelectionCombo.value] : this.props.theme.searchProviders;
@@ -121,7 +134,7 @@ const Search = React.createClass({
         let providerSelection = null;
         if(this.props.searchOptions.showProviderSelection) {
             providerSelection = (
-                <select className="provider-selection" onChange={this.props.purgeResults}
+                <select className="provider-selection" onChange={this.providerChanged} value={UrlParams.getParam("sp")}
                     ref={el => { this.providerSelectionCombo = el; }}>
                     {Object.keys(this.props.searchProviders).map(key => {
                         if(this.props.theme && this.props.theme.searchProviders.includes(key)) {
@@ -131,7 +144,36 @@ const Search = React.createClass({
                 </select>
             );
         }
-
+        let searchform = null;
+        this.formfields = {};
+        if(this.state.showfields) {
+            let fields = this.props.searchProviders[this.providerSelectionCombo.value].fields;
+            let values = {};
+            this.props.searchText.split(/\s*AND\s*/).map(pair => {
+                let parts = pair.split(/\s*=\s*/);
+                if(parts.length === 2) {
+                    values[parts[0]] = parts[1];
+                }
+            });
+            searchform = (
+                <div className="search-form">
+                    <table>
+                        <tbody>
+                            {fields.map(field => (
+                                <tr key={field.id}>
+                                    <td>{field.label}</td>
+                                    <td><input ref={el => this.formfields[field.id] = el} type="text" defaultValue={values[field.id] || ""} /></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <div className="search-form-buttons">
+                        <button onClick={this.submitFormSearch}><Glyphicon glyph="search"/> Search</button>
+                        <button onClick={() => this.setState({showfields: false}) }><Glyphicon glyph="remove"/> Cancel</button>
+                    </div>
+                </div>
+            );
+        }
         return (
             <div id="Search">
                 <div className="searchbar-wrapper">
@@ -143,6 +185,7 @@ const Search = React.createClass({
                             ref={el => this.input = el}
                             value={this.props.searchText}
                             onBlur={() => this.setState({focused: false})}
+                            onMouseDown={this.checkShowFields}
                             onFocus={this.onFocus}
                             onKeyDown={this.onKeyDown}
                             onChange={this.onChange} />
@@ -150,11 +193,21 @@ const Search = React.createClass({
                             {addonAfter}
                         </span>
                     </div>
+                    {searchform}
                     {this.renderSearchResults()}
                 </div>
                 {providerSelection}
             </div>
         )
+    },
+    submitFormSearch() {
+        let comp = this.props.searchProviders[this.providerSelectionCombo.value].comparator;
+        let filters = Object.keys(this.formfields).map(key => {
+            return  key + "=" + this.formfields[key].value;
+        });
+        this.props.onSearchTextChange(filters.join(" AND "));
+        this.input.focus();
+        this.setState({showfields: false});
     },
     renderSearchResults() {
         if(!this.props.results || this.props.results.length === 0 || !this.state.focused) {
