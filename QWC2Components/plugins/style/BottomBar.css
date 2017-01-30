@@ -13,7 +13,7 @@
 }
 
 #BottomBar select {
-    border: 1px solid @input_border@;
+    border: 1px solid @item_border@;
     background-color: white;
     height: 2em;
 }
@@ -30,7 +30,7 @@
     width: 20ch;
     text-align: center;
     border-style: solid;
-    border-color: @input_border@;
+    border-color: @item_border@;
     border-width: 1px 0px 1px 1px;
     background-color: rgba(255, 255, 255, 0.75);
     height: 2em;

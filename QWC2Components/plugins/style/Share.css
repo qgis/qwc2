@@ -15,12 +15,12 @@
     background-color: white;
     border-radius: 0;
     border-style: solid;
-    border-color: @input_border@;
+    border-color: @item_border@;
     border-width: 1px 1px 1px 0;
 }
 
 #Share div.input-link input {
-    border: 1px solid @input_border@;
+    border: 1px solid @item_border@;
     background-color: white;
     border-radius: 0;
 }

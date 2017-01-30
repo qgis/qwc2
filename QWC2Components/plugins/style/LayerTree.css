@@ -13,7 +13,7 @@
     bottom: 0;
     height: 2.25em;
     padding: 0.25em 0.5em 0.25em 0.5em;
-    border-top: 1px solid @control_border@;
+    border-top: 1px solid @item_border@;
 }
 
 #LayerTree div.laytree-maptip-option > span {
@@ -59,7 +59,7 @@
     width: auto;
     max-width: 2em;
     margin-right: 0.5em;
-    border: 1px solid @control_border@;
+    border: 1px solid @item_border@;
     flex: 0 0 auto;
 }
 
@@ -68,7 +68,7 @@ img.layertree-item-legend-tooltip {
     z-index: 6;
     box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
     border-radius: 0.5em;
-    border: 1px solid @control_border@;
+    border: 1px solid @item_border@;
     margin-left: 0.25em;
     padding: 0.25em;
     background-color: white;
@@ -97,18 +97,18 @@ img.layertree-item-legend-tooltip {
     line-height: 2em;
     padding: 0 0.25em;
     cursor: pointer;
-    color: @input_border@;
+    color: @item_border@;
     flex: 0 0 auto;
     margin-left: 0.25em;
 }
 
 #LayerTree span.layertree-item-cog-active {
-    background-color: @input_border@;
+    background-color: @item_border@;
     color: white;
 }
 
 #LayerTree div.layertree-item-edit-frame {
-    border: 1px solid @input_border@;
+    border: 1px solid @item_border@;
     color: @titlebar_bg@;
     font-weight: bold;
     padding: 0.25em;
