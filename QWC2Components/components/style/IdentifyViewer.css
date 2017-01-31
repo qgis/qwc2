@@ -108,3 +108,8 @@
     white-space: nowrap;
     vertical-align: middle;
 }
+
+#IdentifyViewer div.identify-buttonbox {
+    margin-top: 0.5em;
+    text-align: right;
+}

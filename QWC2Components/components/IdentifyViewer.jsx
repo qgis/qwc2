@@ -212,6 +212,10 @@ const IdentifyViewer = React.createClass({
                     <ul>{contents}</ul>
                 </div>
                 {this.renderFeatureAttributes()}
+                <div className="identify-buttonbox">
+                    <button onClick={this.exportResults}>Export</button>
+                </div>
+                <a ref={el => this.exportAnchor=el} style={{display: 'none'}}></a>
             </div>
         );
     },
@@ -231,6 +235,20 @@ const IdentifyViewer = React.createClass({
             currentFeature: this.state.currentLayer === layer ? null : this.state.currentFeature,
             currentLayer: this.state.currentLayer === layer ? null : this.state.currentLayer
         });
+    },
+    exportResults(results) {
+        if(this.exportAnchor) {
+            let filteredResults = {};
+            Object.keys(this.state.resultTree).map(key => {
+                if(this.state.resultTree[key].length > 0) {
+                    filteredResults[key] = this.state.resultTree[key];
+                }
+            });
+            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(filteredResults, null, ' '));
+            this.exportAnchor.setAttribute("href", dataStr);
+            this.exportAnchor.setAttribute("download", "features.json");
+            this.exportAnchor.click();
+        }
     }
 });
 
