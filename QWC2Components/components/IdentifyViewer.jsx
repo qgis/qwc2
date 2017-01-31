@@ -31,7 +31,13 @@ const IdentifyViewer = React.createClass({
         };
     },
     getInitialState: function() {
-        return {expanded: {}, resultTree: {}, currentFeature: null, displayFieldMap: null};
+        return {
+            expanded: {},
+            resultTree: {},
+            currentFeature: null,
+            currentLayer: null,
+            displayFieldMap: null
+        };
     },
     populateDisplayFieldMap(displayFieldMap, item) {
         if(item.sublayers) {
@@ -59,6 +65,7 @@ const IdentifyViewer = React.createClass({
             result[layer].map(feature => {
                 stats.count += 1;
                 stats.lastFeature = feature;
+                stats.lastLayer = layer;
             })
         })
     },
@@ -74,7 +81,11 @@ const IdentifyViewer = React.createClass({
             let result = {};
             let stats = {count: 0, lastFeature: null};
             (nextProps.responses || []).map(response => this.parseResponse(response, result, stats));
-            this.setState({expanded: {}, resultTree: result, currentFeature: stats.count === 1 ? stats.lastFeature : null});
+            this.setState({
+                expanded: {},
+                resultTree: result,
+                currentFeature: stats.count === 1 ? stats.lastFeature : null,
+                currentLayer: stats.count === 1 ? stats.lastLayer : null});
         }
     },
     componentWillUpdate(nextProps, nextState) {
@@ -121,8 +132,8 @@ const IdentifyViewer = React.createClass({
         diff[path] = newstate;
         this.setState(assign({}, this.state, {expanded: assign({}, this.state.expanded, diff)}));
     },
-    setCurrentFeature(feature) {
-        this.setState(assign({}, this.state, {currentFeature: feature}));
+    setCurrentFeature(layer, feature) {
+        this.setState(assign({}, this.state, {currentFeature: feature, currentLayer: layer}));
     },
     renderFeatureAttributes() {
         let feature = this.state.currentFeature;
@@ -164,7 +175,7 @@ const IdentifyViewer = React.createClass({
                 onMouseOver={() => this.setVisibleFeatureGeometry(feature)}
                 onMouseOut={() => this.setVisibleFeatureGeometry(this.state.currentFeature)}
             >
-                <span className={this.state.currentFeature === feature ? "active clickable" : "clickable"} onClick={()=> this.setCurrentFeature(feature)}><b>{displayName}</b></span>
+                <span className={this.state.currentFeature === feature ? "active clickable" : "clickable"} onClick={()=> this.setCurrentFeature(layer, feature)}><b>{displayName}</b></span>
                 <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResult(layer, feature)} />
             </li>
         );
@@ -176,7 +187,10 @@ const IdentifyViewer = React.createClass({
         }
         return (
             <li key={layer} className={this.getExpandedClass(layer, true)}>
-                <span onClick={()=> this.toggleExpanded(layer, true)}><b>{layer}</b></span>
+                <div className="identify-layer-result">
+                    <span onClick={()=> this.toggleExpanded(layer, true)}><b>{layer}</b></span>
+                    <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResultLayer(layer)} />
+                </div>
                 <ul>
                     {features.map(feature => this.renderFeature(layer, feature))}
                 </ul>
@@ -207,6 +221,15 @@ const IdentifyViewer = React.createClass({
         this.setState({
             resultTree: newResultTree,
             currentFeature: this.state.currentFeature === feature ? null : this.state.currentFeature
+        });
+    },
+    removeResultLayer(layer) {
+        let newResultTree = assign({}, this.state.resultTree);
+        delete newResultTree[layer];
+        this.setState({
+            resultTree: newResultTree,
+            currentFeature: this.state.currentLayer === layer ? null : this.state.currentFeature,
+            currentLayer: this.state.currentLayer === layer ? null : this.state.currentLayer
         });
     }
 });
