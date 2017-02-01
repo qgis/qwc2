@@ -160,7 +160,7 @@ const Print = React.createClass({
         return (
             <div>
                 <SideBar id="Print" onHide={this.onHide} width="16em"
-                    title="appmenu.items.print"
+                    title="appmenu.items.Print"
                     icon={assetsPath + "/img/print_white.svg"}>
                     {this.renderBody()}
                 </SideBar>

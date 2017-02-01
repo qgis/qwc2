@@ -158,7 +158,7 @@ const LayerTree = React.createClass({
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
             <div>
-                <SideBar id="LayerTree" width="20em"  title="appmenu.items.layers"
+                <SideBar id="LayerTree" width="20em"  title="appmenu.items.LayerTree"
                     icon={assetsPath + "/img/layers_white.svg"}
                     extraClasses={this.props.mobile ? "" : "desktop"}
                     onHide={this.hideLegendTooltip}>

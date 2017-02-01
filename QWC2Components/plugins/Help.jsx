@@ -24,7 +24,7 @@ const Help = React.createClass({
     render() {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
-            <SideBar id="Help" width="20em" title="appmenu.items.help"
+            <SideBar id="Help" width="20em" title="appmenu.items.Help"
                 icon={assetsPath + "/img/info_white.svg"}>
                 <div role="body">
                     {this.props.renderBody()}
