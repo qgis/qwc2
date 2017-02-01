@@ -250,6 +250,7 @@ const Search = React.createClass({
         );
     },
     moreClicked(item) {
+        this.props.purgeResults();
         this.props.searchMore(item, this.props.searchText, this.activeProviers())
     },
     itemClicked(item) {
