@@ -14,7 +14,6 @@ const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
 const SET_THEME_SWITCHER_FILTER = 'SET_THEME_FILTER';
 
 function setCurrentTheme(theme, layer, backgroundLayers, prevlayerid, prevBackgroundLayerIds, scales, zoomExtent, centerZoom) {
-    UrlParams.updateParams({t: theme.id, l: undefined, bl: undefined});
     return (dispatch) => {
         // remove previous layers
         for (let backgroundLayerId of prevBackgroundLayerIds) {
@@ -25,13 +24,19 @@ function setCurrentTheme(theme, layer, backgroundLayers, prevlayerid, prevBackgr
         }
 
         // add theme layers
+        let activebglayer = undefined;
         for (let backgroundLayer of backgroundLayers) {
             if (backgroundLayer.visibility) {
-                UrlParams.updateParams({bl: backgroundLayer.name});
+                activebglayer = backgroundLayer.name;
             }
             dispatch(addLayer(backgroundLayer));
         }
         dispatch(addLayer(layer));
+
+        // Update url
+        let alllayers = layer.sublayers.map(sublayer => sublayer.name).reverse().join(",");
+        let activelayers = layer.params.LAYERS !== alllayers ? layer.params.LAYERS : undefined;
+        UrlParams.updateParams({t: theme.id, l: activelayers, bl: activebglayer});
 
         // update map scales
         const p = new Promise((resolve) => {
