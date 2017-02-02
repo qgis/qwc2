@@ -136,7 +136,7 @@ const Print = React.createClass({
                         <input readOnly="true" name="REQUEST" type={formvisibility} value="GetPrint" />
                         <input readOnly="true" name="FORMAT" type={formvisibility} value="pdf" />
                         <input readOnly="true" name="TRANSPARENT" type={formvisibility} value="true" />
-                        <input readOnly="true" name="SRS" type={formvisibility} value="EPSG:3857" />
+                        <input readOnly="true" name="SRS" type={formvisibility} value={this.props.map.projection} />
                         <input readOnly="true" name="LAYERS" type={formvisibility} value={printLayers} />
                         <input readOnly="true" name="OPACITIES" type={formvisibility} value={printOpacities} />
                     </div>
@@ -192,7 +192,7 @@ const Print = React.createClass({
         if(!this.props.map || !this.state.layout || !this.state.scale) {
             return "";
         }
-        let center = CoordinatesUtils.reproject(this.props.map.center, this.props.map.center.crs, "EPSG:3857");
+        let center = CoordinatesUtils.reproject(this.props.map.center, this.props.map.center.crs, this.props.map.projection);
         let width = this.state.scale * this.state.layout.map.width / 1000.;
         let height = this.state.scale * this.state.layout.map.height / 1000.;
         let x1 = Math.round(center.x - 0.5 * width);
