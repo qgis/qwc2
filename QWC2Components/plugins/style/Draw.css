@@ -1,8 +1,37 @@
 .draw-options {
-  text-align: left;
-  margin-top: 10px;
+  margin-left: 10px;
+  display: inline;
 }
 
 .draw-options button {
   margin-right: 5px;
+}
+
+.draw-style {
+  text-align: left;
+  margin-top: 10px;
+  padding-left: 15px;
+}
+
+.draw-style .style-row {
+  margin-top: 10px;
+}
+
+.draw-style .style-rule {
+  position: relative;
+  margin-right: 10px;
+}
+
+.draw-style .style-rule .color-picker {
+  position: absolute;
+  top: 35px;
+  left: 100px;
+}
+
+.draw-style label {
+  width: 100px;
+}
+
+.draw-style input {
+  width: 100px;
 }
