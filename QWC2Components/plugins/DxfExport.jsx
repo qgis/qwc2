@@ -91,6 +91,6 @@ module.exports = {
         setCurrentTask: setCurrentTask
     })(DxfExport),
     reducers: {
-        controls: require('../../MapStore2/web/client/reducers/controls')
+        task: require('../reducers/task')
     }
 }
