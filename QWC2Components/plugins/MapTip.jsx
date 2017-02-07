@@ -94,8 +94,8 @@ const MapTip = React.createClass({
                         name: 'maptipselection',
                         title: 'Maptip selecton',
                         type: "vector",
-                        features: [IdentifyUtils.wktToGeoJSON(feature.geometry)],
-                        featuresCrs: feature.bbox.srs,
+                        features: [feature.geometry],
+                        featuresCrs: feature.crs || this.props.map.projection,
                         visibility: true,
                         queryable: false
                     };

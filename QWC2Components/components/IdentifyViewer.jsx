@@ -103,8 +103,8 @@ const IdentifyViewer = React.createClass({
                 name: 'identifyselection',
                 title: 'Selection',
                 type: "vector",
-                features: [IdentifyUtils.wktToGeoJSON(feature.geometry)],
-                featuresCrs: feature.bbox.srs,
+                features: [feature],
+                featuresCrs: feature.crs || this.props.mapcrs,
                 visibility: true,
                 queryable: false,
                 crs: this.props.mapcrs
@@ -113,8 +113,8 @@ const IdentifyViewer = React.createClass({
         } else if(feature && haveLayer) {
             let newlayerprops = {
                 visibility: true,
-                features: [IdentifyUtils.wktToGeoJSON(feature.geometry)],
-                featuresCrs: feature.bbox.srs
+                features: [feature],
+                featuresCrs: feature.crs || this.props.mapcrs,
             };
             this.props.changeLayerProperties('identifyselection', newlayerprops);
         }
@@ -133,25 +133,29 @@ const IdentifyViewer = React.createClass({
         this.setState(assign({}, this.state, {expanded: assign({}, this.state.expanded, diff)}));
     },
     setCurrentFeature(layer, feature) {
-        this.setState(assign({}, this.state, {currentFeature: feature, currentLayer: layer}));
+        if(this.state.currentFeature === feature) {
+            this.setState(assign({}, this.state, {currentFeature: null, currentLayer: null}));
+        } else {
+            this.setState(assign({}, this.state, {currentFeature: feature, currentLayer: layer}));
+        }
     },
     renderFeatureAttributes() {
         let feature = this.state.currentFeature;
         if(!feature) {
             return null;
         }
-        let attributes = Object.keys(feature.attributes);
-        if(attributes.length === 0) {
+        let properties = Object.keys(feature.properties);
+        if(properties.length === 0) {
             return null;
         }
         return (
             <div className="attribute-list-box">
                 <table className="attribute-list"><tbody>
-                    {attributes.map(attrib => {
+                    {properties.map(attrib => {
                         return (
                             <tr key={attrib}>
                                 <td className="identify-attr-title"><i>{attrib}</i></td>
-                                <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: feature.attributes[attrib]}}></td>
+                                <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: feature.properties[attrib]}}></td>
                             </tr>
                         );
                     })}
@@ -167,7 +171,7 @@ const IdentifyViewer = React.createClass({
         } catch(e) {
         }
         if(!displayName || displayName[0] === "<") {
-            displayName = feature.attributes.name || feature.attributes.Name || feature.attributes.NAME || feature.id;
+            displayName = feature.properties.name || feature.properties.Name || feature.properties.NAME || feature.id;
         }
         return (
             <li key={feature.id}

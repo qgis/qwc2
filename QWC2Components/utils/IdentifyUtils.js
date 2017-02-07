@@ -12,6 +12,7 @@ const uuid = require('uuid');
 const IdentifyUtils = {
     parseXmlFeature(feature, result) {
         let featureResult = {};
+        featureResult["type"] = "Feature";
         featureResult["id"] = feature.attributes.id.value;
         let bboxes = feature.getElementsByTagName("BoundingBox");
         if(bboxes.length > 0) {
@@ -23,15 +24,20 @@ const IdentifyUtils = {
                 maxy: parseFloat(bbox.attributes.maxy.value),
                 srs: bbox.attributes.SRS.value
             };
+            featureResult["crs"] = bbox.attributes.SRS.value;
         }
-        featureResult["attributes"] = {};
+        featureResult["properties"] = {};
         let attributes = feature.getElementsByTagName("Attribute");
         for(let i = 0; i < attributes.length; ++i) {
             let attribute = attributes[i];
             if(attribute.attributes.name.value === "geometry") {
-                featureResult["geometry"] = attribute.attributes.value.value;
+                let wkt = attribute.attributes.value.value;
+                wkt = wkt.replace(/Point(\w+)/i, "Point $1")
+                         .replace(/LineString(\w+)/i, "LineString $1")
+                         .replace(/Polygon(\w+)/i, "Polygon $1");
+                featureResult["geometry"] = parse(wkt);
             } else {
-                featureResult.attributes[attribute.attributes.name.value] = attribute.attributes.value.value;
+                featureResult.properties[attribute.attributes.name.value] = attribute.attributes.value.value;
             }
         }
         return featureResult;
