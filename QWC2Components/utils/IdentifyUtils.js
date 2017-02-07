@@ -8,6 +8,7 @@
 
 const parse = require('wellknown');
 const uuid = require('uuid');
+const assign = require('object-assign');
 
 const IdentifyUtils = {
     parseXmlFeature(feature, result) {
@@ -53,6 +54,18 @@ const IdentifyUtils = {
         let layers = [].slice.call(doc.firstChild.getElementsByTagName("Layer"));
         let result = {};
         layers.map(layer => this.parseXmlLayer(layer, result));
+        return result;
+    },
+    parseGeoJSONResponse(response) {
+        result = {};
+        (response.features || []).map(feature => {
+            // HACK Deduce layer name from feature id
+            let layer = feature.id.substr(0, feature.id.lastIndexOf("."));
+            if(result[layer] == undefined) {
+                result[layer] = [];
+            }
+            result[layer].push(assign(feature, {crs: "EPSG:4326"})); // GeoJSON always wgs84
+        });
         return result;
     },
     wktToGeoJSON(wkt) {

@@ -47,7 +47,12 @@ const IdentifyViewer = React.createClass({
         }
     },
     parseResponse(response, result, stats) {
-        let newResult = IdentifyUtils.parseXmlResponse(response.response);
+        var newResult;
+        if(response.queryParams.outputformat === "GeoJSON") {
+            newResult = IdentifyUtils.parseGeoJSONResponse(response.response);
+        } else {
+            newResult = IdentifyUtils.parseXmlResponse(response.response);
+        }
         // Merge with previous
         Object.keys(newResult).map(layer => {
             if(layer in result) {
