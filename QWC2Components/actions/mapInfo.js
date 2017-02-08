@@ -9,8 +9,7 @@
 const assign = require('object-assign');
 const axios = require('axios');
 const uuid = require('uuid');
-const overlaps = require('turf-overlaps');
-const inside = require('turf-inside');
+const jsts = require('jsts');
 const mapInfoGetFeatureInfo = require('../../MapStore2/web/client/actions/mapInfo').getFeatureInfo;
 const {newMapInfoRequest, errorFeatureInfo, loadFeatureInfo} = require('../../MapStore2/web/client/actions/mapInfo');
 
@@ -32,19 +31,15 @@ function getFeature(wfsBasePath, requestParams, lMetaData, wgs84FilterPoly = nul
         dispatch(newMapInfoRequest(reqId, param));
         axios.get(wfsBasePath, {params: param}).then((response) => {
             if(wgs84FilterPoly) {
-                let filterFeature = {
-                    "type": "Feature",
-                    "geometry": {
-                        "type": "Polygon",
-                        "coordinates": [wgs84FilterPoly]
-                    }
-                };
+                let geomFactory = new jsts.geom.GeometryFactory();
+                let jsonReader = new jsts.io.GeoJSONReader(geomFactory);
+                let filterGeom = jsonReader.read({
+                    "type": "Polygon",
+                    "coordinates": [wgs84FilterPoly]
+                });
                 response.data.features = response.data.features.filter(feature => {
-                    if(feature.geometry.type === "Point") {
-                        return inside(feature, filterFeature);
-                    } else {
-                        return overlaps(filterFeature, feature);
-                    }
+                    let geom = jsonReader.read(feature.geometry);
+                    return filterGeom.contains(geom);
                 });
             }
             dispatch(loadFeatureInfo(reqId, response.data, requestParams, lMetaData));
