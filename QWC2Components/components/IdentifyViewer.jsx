@@ -49,9 +49,9 @@ const IdentifyViewer = React.createClass({
     parseResponse(response, result, stats) {
         var newResult;
         if(response.queryParams.outputformat === "GeoJSON") {
-            newResult = IdentifyUtils.parseGeoJSONResponse(response.response);
+            newResult = IdentifyUtils.parseGeoJSONResponse(response.response, this.props.mapcrs);
         } else {
-            newResult = IdentifyUtils.parseXmlResponse(response.response);
+            newResult = IdentifyUtils.parseXmlResponse(response.response, this.props.mapcrs);
         }
         // Merge with previous
         Object.keys(newResult).map(layer => {
@@ -91,35 +91,42 @@ const IdentifyViewer = React.createClass({
                 resultTree: result,
                 currentFeature: stats.count === 1 ? stats.lastFeature : null,
                 currentLayer: stats.count === 1 ? stats.lastLayer : null});
+            this.setHighlightedFeatures(null, result);
         }
     },
     componentWillUpdate(nextProps, nextState) {
         if(nextState.currentFeature !== this.state.currentFeature) {
-            this.setVisibleFeatureGeometry(nextState.currentFeature);
+            this.setHighlightedFeatures(nextState.currentFeature, this.state.resultTree);
         }
     },
-    setVisibleFeatureGeometry(feature) {
+    setHighlightedFeatures(feature, resultTree) {
+        let features = [];
+        if(feature) {
+            features = [feature];
+        } else {
+            Object.keys(resultTree).map(key => {features = features.concat(resultTree[key])});
+        }
         let haveLayer = this.props.layers.find(layer => layer.id === 'identifyselection') !== undefined;
-        if(!feature && haveLayer) {
+        if(features.length === 0 && haveLayer) {
             this.props.removeLayer('identifyselection');
-        } else if(feature && !haveLayer && feature.geometry) {
+        } else if(features.length > 0 && !haveLayer) {
             let layer = {
                 id: 'identifyselection',
                 name: 'identifyselection',
                 title: 'Selection',
                 type: "vector",
-                features: [feature],
-                featuresCrs: feature.crs || this.props.mapcrs,
+                features: features,
+                featuresCrs: this.props.mapcrs,
                 visibility: true,
                 queryable: false,
                 crs: this.props.mapcrs
             };
             this.props.addLayer(layer, true);
-        } else if(feature && haveLayer) {
+        } else if(features.length > 0 && haveLayer) {
             let newlayerprops = {
                 visibility: true,
-                features: [feature],
-                featuresCrs: feature.crs || this.props.mapcrs,
+                features: features,
+                featuresCrs: this.props.mapcrs,
             };
             this.props.changeLayerProperties('identifyselection', newlayerprops);
         }
@@ -181,8 +188,8 @@ const IdentifyViewer = React.createClass({
         return (
             <li key={feature.id}
                 className="identify-feature-result"
-                onMouseOver={() => this.setVisibleFeatureGeometry(feature)}
-                onMouseOut={() => this.setVisibleFeatureGeometry(this.state.currentFeature)}
+                onMouseOver={() => this.setHighlightedFeatures(feature, this.state.resultTree)}
+                onMouseOut={() => this.setHighlightedFeatures(this.state.currentFeature, this.state.resultTree)}
             >
                 <span className={this.state.currentFeature === feature ? "active clickable" : "clickable"} onClick={()=> this.setCurrentFeature(layer, feature)}>{displayName}</span>
                 <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResult(layer, feature)} />

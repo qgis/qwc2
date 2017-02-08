@@ -83,8 +83,7 @@ const MapTip = React.createClass({
         });
         const reqId = uuid.v1();
         axios.get(url, {params: params}).then(response => {
-            let stats = {count: 0, lastFeature: null};
-            let result = IdentifyUtils.parseXmlResponse(response.data, stats);
+            let result = IdentifyUtils.parseXmlResponse(response.data, this.props.map.projection);
             let layers = Object.keys(result);
             for(let i = 0; i < layers.length; ++i) {
                 let feature = result[layers[i]].find(feature => feature.attributes.maptip);
@@ -95,7 +94,7 @@ const MapTip = React.createClass({
                         title: 'Maptip selecton',
                         type: "vector",
                         features: [feature.geometry],
-                        featuresCrs: feature.crs || this.props.map.projection,
+                        featuresCrs: this.props.map.projection,
                         visibility: true,
                         queryable: false
                     };
