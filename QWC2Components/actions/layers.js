@@ -11,18 +11,19 @@ const UrlParams = require("../utils/UrlParams");
 
 function changeLayerProperties(layer, properties) {
     return (dispatch, getState) => {
-      if(properties.visibility) {
-        try {
-          // Find name for layerid
-          var layerObj = getState().layers.flat.find((obj) => {return obj.id === layer});
-          if(layerObj && layerObj.group === 'background') {
-            UrlParams.updateParams({bl: layerObj.name});
-          }
-        } catch(e) {}
-      }
-      dispatch(require('../../MapStore2/web/client/actions/layers').changeLayerProperties(layer, properties));
+        if(properties.visibility) {
+            try {
+                // Find name for layerid
+                var layerObj = getState().layers.flat.find((obj) => {return obj.id === layer});
+                if(layerObj && layerObj.group === 'background') {
+                    UrlParams.updateParams({bl: layerObj.name});
+                } else {
+                    UrlParams.updateParams({bl: undefined});
+                }
+            } catch(e) {}
+        }
+        dispatch(require('../../MapStore2/web/client/actions/layers').changeLayerProperties(layer, properties));
     }
-
 }
 
 module.exports = {changeLayerProperties};

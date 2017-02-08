@@ -11,6 +11,7 @@ const {connect} = require('react-redux');
 const classnames = require('classnames');
 const {Button, Glyphicon} = require('react-bootstrap');
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
+const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {changeLayerProperties} = require('../actions/layers');
 const {setCurrentTask} = require('../actions/task');
 require('./style/BackgroundSwitcher.css');
@@ -35,24 +36,25 @@ const BackgroundSwitcher = React.createClass({
                     <Glyphicon glyph="book"/>
                 </Button>
                 <div id="BackgroundSwitcher" className={activeClass}>
-                    {this.props.layers.map(layer => this.renderLayerItem(layer))}
+                    {this.renderLayerItem(null, this.props.layers.filter(layer => layer.visibility === true).length === 0)}
+                    {this.props.layers.map(layer => this.renderLayerItem(layer, layer.visibility === true))}
                 </div>
             </div>
         );
     },
-    renderLayerItem(layer) {
+    renderLayerItem(layer, visible) {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let itemclasses = classnames({
             "background-layer-item": true,
-            "background-layer-item-active": layer.visibility === true
+            "background-layer-item-active": visible
         });
         return (
-            <div key={layer.name} className={itemclasses} onClick={() => this.backgroudLayerClicked(layer)}>
+            <div key={layer ? layer.name : "empty"} className={itemclasses} onClick={() => this.backgroudLayerClicked(layer)}>
                 <div className="background-layer-title">
-                    {layer.title}
+                    {layer ? layer.title : (<Message msgId={"bgswitcher.nobg"} />)}
                 </div>
                 <div className="background-layer-thumbnail">
-                    <img src={assetsPath + "/" + layer.thumbnail} />
+                    <img src={layer ? assetsPath + "/" + layer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="} />
                 </div>
             </div>
         );
@@ -61,7 +63,14 @@ const BackgroundSwitcher = React.createClass({
         this.props.setCurrentTask(this.props.visible ? null : 'BackgroundSwitcher');
     },
     backgroudLayerClicked(layer) {
-        this.props.changeLayerProperties(layer.id, {visibility: true});
+        if(layer) {
+            this.props.changeLayerProperties(layer.id, {visibility: true});
+        } else {
+            let visible = this.props.layers.find(layer => layer.visibility);
+            if(visible) {
+                this.props.changeLayerProperties(visible.id, {visibility: false});
+            }
+        }
         this.props.setCurrentTask(null);
     }
 });
