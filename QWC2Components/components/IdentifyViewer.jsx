@@ -91,12 +91,11 @@ const IdentifyViewer = React.createClass({
                 resultTree: result,
                 currentFeature: stats.count === 1 ? stats.lastFeature : null,
                 currentLayer: stats.count === 1 ? stats.lastLayer : null});
-            this.setHighlightedFeatures(null, result);
         }
     },
     componentWillUpdate(nextProps, nextState) {
-        if(nextState.currentFeature !== this.state.currentFeature) {
-            this.setHighlightedFeatures(nextState.currentFeature, this.state.resultTree);
+        if(nextState.currentFeature !== this.state.currentFeature || nextState.resultTree !== this.state.resultTree) {
+            this.setHighlightedFeatures(nextState.currentFeature, nextState.resultTree);
         }
     },
     setHighlightedFeatures(feature, resultTree) {
