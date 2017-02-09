@@ -104,7 +104,9 @@ const IdentifyViewer = React.createClass({
         if(feature) {
             features = [feature];
         } else {
-            Object.keys(resultTree).map(key => {features = features.concat(resultTree[key])});
+            Object.keys(resultTree).map(key => {
+                features = features.concat(resultTree[key].map(feature => assign({}, feature, {id: key + "." + feature.id})))}
+            );
         }
         let haveLayer = this.props.layers.find(layer => layer.id === 'identifyselection') !== undefined;
         if(features.length === 0 && haveLayer) {
