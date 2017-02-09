@@ -70,7 +70,7 @@ const IdentifyUtils = {
             }
 
             let geometry = this.reprojectFeatureGeometry(feature.geometry, "EPSG:4326", geometrycrs); // GeoJSON always wgs84
-            result[layer].push(assign(feature, {geometry: geometry}));
+            result[layer].push(assign(feature, {geometry: geometry, id: feature.id.substr(feature.id.lastIndexOf(".") + 1)}));
         });
         return result;
     },
