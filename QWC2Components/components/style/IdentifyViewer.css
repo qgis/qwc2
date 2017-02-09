@@ -23,23 +23,24 @@
     color: @dialog_fg@;
 }
 
-#IdentifyViewer span.identify-remove-result {
-    margin-left: 0.5em;
+#IdentifyViewer span.identify-remove-result,
+#IdentifyViewer span.identify-export-result {
+    margin: 0 0.25em;
     color: @item_border@;
     cursor: pointer;
     visibility: hidden;
     float: right;
-    margin-right: 1em;
     font-size: large;
 }
 
 #IdentifyViewer li.identify-feature-result:hover span.identify-remove-result,
-#IdentifyViewer div.identify-layer-result:hover span.identify-remove-result {
-    visibility: visible;
-}
-
+#IdentifyViewer div.identify-layer-result:hover span.identify-remove-result,
 #IdentifyViewer li.identify-feature-result span.active+span.identify-remove-result,
-#IdentifyViewer div.identify-layer-result:hover span.identify-remove-result {
+#IdentifyViewer div.identify-layer-result:hover span.identify-remove-result,
+#IdentifyViewer li.identify-feature-result:hover span.identify-export-result,
+#IdentifyViewer div.identify-layer-result:hover span.identify-export-result,
+#IdentifyViewer li.identify-feature-result span.active+span.identify-export-result,
+#IdentifyViewer div.identify-layer-result:hover span.identify-export-result {
     visibility: visible;
 }
 

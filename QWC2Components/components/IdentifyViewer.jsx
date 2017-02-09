@@ -193,6 +193,7 @@ const IdentifyViewer = React.createClass({
             >
                 <span className={this.state.currentFeature === feature ? "active clickable" : "clickable"} onClick={()=> this.setCurrentFeature(layer, feature)}>{displayName}</span>
                 <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResult(layer, feature)} />
+                <Glyphicon className="identify-export-result" glyph="export" onClick={() => this.exportResult(layer, feature)} />
             </li>
         );
     },
@@ -206,6 +207,7 @@ const IdentifyViewer = React.createClass({
                 <div className="identify-layer-result">
                     <span onClick={()=> this.toggleExpanded(layer, true)}><b>{layer}</b></span>
                     <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResultLayer(layer)} />
+                    <Glyphicon className="identify-export-result" glyph="export" onClick={() => this.exportResultLayer(layer)} />
                 </div>
                 <ul>
                     {features.map(feature => this.renderFeature(layer, feature))}
@@ -243,6 +245,14 @@ const IdentifyViewer = React.createClass({
             currentFeature: this.state.currentFeature === feature ? null : this.state.currentFeature
         });
     },
+    exportResult(layer, feature) {
+        if(this.exportAnchor) {
+            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(feature, null, ' '));
+            this.exportAnchor.setAttribute("href", dataStr);
+            this.exportAnchor.setAttribute("download", layer + "." + feature.id + ".json");
+            this.exportAnchor.click();
+        }
+    },
     removeResultLayer(layer) {
         let newResultTree = assign({}, this.state.resultTree);
         delete newResultTree[layer];
@@ -251,6 +261,14 @@ const IdentifyViewer = React.createClass({
             currentFeature: this.state.currentLayer === layer ? null : this.state.currentFeature,
             currentLayer: this.state.currentLayer === layer ? null : this.state.currentLayer
         });
+    },
+    exportResultLayer(layer) {
+        if(this.exportAnchor) {
+            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.state.resultTree[layer], null, ' '));
+            this.exportAnchor.setAttribute("href", dataStr);
+            this.exportAnchor.setAttribute("download", layer + ".json");
+            this.exportAnchor.click();
+        }
     },
     exportResults(results) {
         if(this.exportAnchor) {
