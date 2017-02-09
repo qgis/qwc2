@@ -41,7 +41,7 @@ div.ol-overviewmap,
 div.leaflet-control-minimap {
     bottom: 0.25em!important;
     right: 0.25em!important;
-    z-index: 8;
+    z-index: 7;
 }
 
 div.leaflet-control-minimap {
