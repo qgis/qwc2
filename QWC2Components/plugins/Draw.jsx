@@ -38,7 +38,9 @@ const Draw = React.createClass({
         strokeColor: '#ffcc33',
         strokeWidth: 2,
         fillColor: '#FFFFFF',
-        fillTransparency: 0.2
+        fillTransparency: 0.2,
+        text: '',
+        fontSize: 14
       }
     }
   },
@@ -137,12 +139,6 @@ const Draw = React.createClass({
             <div className="draw-style">
               <div className="style-row">
                 <span className="style-rule">
-                  <label>Stroke width</label>
-                  <input type="text" value={this.props.currentStyle.strokeWidth}
-                    onChange={(evt) => this.updateStyleRule('strokeWidth', evt.target.value)} />
-                </span>
-
-                <span className="style-rule">
                   <label>Stroke color</label>
                   <input type="text" value={this.props.currentStyle.strokeColor}
                     onChange={(evt) => this.updateStyleRule('strokeColor', evt.target.value)}
@@ -150,6 +146,12 @@ const Draw = React.createClass({
                   <span className={this.state && this.state.displayStrokeColorPicker ? "color-picker" : "collapse" }>
                     <SketchPicker color={this.props.currentStyle.StrokeColor} onChangeComplete={(color) => this.updateStyleRule('strokeColor', color.hex)} />
                   </span>
+                </span>
+
+                <span className="style-rule">
+                  <label>Stroke width</label>
+                  <input type="text" value={this.props.currentStyle.strokeWidth}
+                    onChange={(evt) => this.updateStyleRule('strokeWidth', evt.target.value)} />
                 </span>
               </div>
               <div className="style-row">
@@ -165,9 +167,22 @@ const Draw = React.createClass({
                 </span>
 
                 <span className="style-rule">
-                  <label>Transparency</label>
+                  <label>Fill opacity</label>
                   <input type="text" value={this.props.currentStyle.fillTransparency}
                     onChange={(evt) => this.updateStyleRule('fillTransparency', evt.target.value)} />
+                </span>
+              </div>
+              <div className="style-row">
+                <span className="style-rule">
+                  <label>Text</label>
+                  <input type="text" value={this.props.currentStyle.text}
+                      onChange={(evt) => this.updateStyleRule('text', evt.target.value)} />
+                </span>
+
+                <span className="style-rule">
+                  <label>Font size</label>
+                  <input type="text" value={this.props.currentStyle.fontSize}
+                    onChange={(evt) => this.updateStyleRule('fontSize', evt.target.value)} />
                 </span>
               </div>
             </div>
