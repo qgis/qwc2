@@ -26,6 +26,7 @@
   position: absolute;
   top: 35px;
   left: 100px;
+  z-index: 999;
 }
 
 .draw-style label {
