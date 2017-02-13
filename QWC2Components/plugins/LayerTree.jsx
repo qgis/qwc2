@@ -65,12 +65,11 @@ const LayerTree = React.createClass({
     renderLayerGroup(layer, group, path) {
         let visibility = group.visibility === undefined ? true : group.visibility;
         let subtreevisibility = this.getGroupVisibility(group);
-        let checkclasses = classnames({
-            "layertree-item-checkbox": true,
-            "layertree-item-checkbox-unchecked": visibility === false,
-            "layertree-item-checkbox-checked": visibility === true && subtreevisibility === 1,
-            "layertree-item-checkbox-tristate": visibility === true && subtreevisibility < 1,
-        });
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
+        let checkboxstate = visibility === true ? subtreevisibility === 1 ? 'checked' : 'tristate' : 'unchecked';
+        let checkboxstyle = {
+            backgroundImage: 'url(' + assetsPath + '/img/' + checkboxstate + '.svg)'
+        };
         let sublayersContent = null;
         if(visibility > 0 && group.sublayers) {
             sublayersContent = group.sublayers.map((sublayer, idx) => {
@@ -85,7 +84,7 @@ const LayerTree = React.createClass({
         return (
             <div className="layertree-item-container" key={group.name}>
                 <div className="layertree-item">
-                    <span className={checkclasses} onClick={() => this.groupToggled(layer, path, visibility)}></span>
+                    <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.groupToggled(layer, path, visibility)}></span>
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
                 </div>
                 {sublayersContent}
