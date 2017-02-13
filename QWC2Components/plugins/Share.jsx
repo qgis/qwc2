@@ -30,8 +30,8 @@ const Share = React.createClass({
     onShow() {
         let serverUrl = ConfigUtils.getConfigProp("qwc2serverUrl");
         if(serverUrl) {
-            axios.get(ConfigUtils.getConfigProp("qwc2serverUrl") + "/createpermalink?url=" + encodeURIComponent(window.location.href))
             this.setState({location: null});
+            axios.get(ConfigUtils.getConfigProp("qwc2serverUrl") + "/createpermalink?url=" + encodeURIComponent(window.location.href))
             .then(response => this.setState({location: response.data.permalink}));
         } else {
             this.setState({location: window.location.href});
