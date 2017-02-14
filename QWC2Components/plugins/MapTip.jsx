@@ -93,7 +93,7 @@ const MapTip = React.createClass({
                         name: 'maptipselection',
                         title: 'Maptip selecton',
                         type: "vector",
-                        features: [feature.geometry],
+                        features: [feature],
                         featuresCrs: this.props.map.projection,
                         visibility: true,
                         queryable: false,
