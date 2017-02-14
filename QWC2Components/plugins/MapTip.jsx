@@ -86,7 +86,7 @@ const MapTip = React.createClass({
             let result = IdentifyUtils.parseXmlResponse(response.data, this.props.map.projection);
             let layers = Object.keys(result);
             for(let i = 0; i < layers.length; ++i) {
-                let feature = result[layers[i]].find(feature => feature.attributes.maptip);
+                let feature = result[layers[i]].find(feature => feature.properties.maptip);
                 if(feature) {
                     let layer = {
                         id: 'maptipselection',
@@ -101,7 +101,7 @@ const MapTip = React.createClass({
                     };
                     this.props.removeLayer('maptipselection');
                     this.props.addLayer(layer, true);
-                    this.setState({maptip: feature.attributes.maptip});
+                    this.setState({maptip: feature.properties.maptip});
                     break;
                 }
             }
