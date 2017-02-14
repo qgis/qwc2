@@ -8,7 +8,21 @@
 const React = require('react');
 const {connect} = require('react-redux');
 const {changeLocateState} = require('../../MapStore2/web/client/actions/locate');
+const LocateBtn = require('../../MapStore2/web/client/components/mapcontrols/locate/LocateBtn');
 require('./style/Buttons.css');
+
+const LocateButton = React.createClass({
+    propTypes: {
+        locate : React.PropTypes.string,
+        position: React.PropTypes.number
+    },
+    getDefaultProps() {
+        return { position: 2 }
+    },
+    render() {
+        return (<LocateBtn id="LocateBtn" style={{bottom: (5 + 4 * this.props.position) + 'em'}} />);
+    }
+});
 
 const locateSelector = (state) => ({
     locate: state.locate && state.locate.state || 'DISABLED',
@@ -18,6 +32,6 @@ const locateSelector = (state) => ({
 module.exports = {
     LocateButtonPlugin: connect(locateSelector, {
         onClick: changeLocateState
-    })(require('../../MapStore2/web/client/components/mapcontrols/locate/LocateBtn')),
+    })(LocateButton),
     reducers: {locate: require('../../MapStore2/web/client/reducers/locate')}
 };

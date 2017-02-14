@@ -18,6 +18,7 @@ require('./style/BackgroundSwitcher.css');
 
 const BackgroundSwitcher = React.createClass({
     propTypes: {
+        position: React.PropTypes.number,
         visible: React.PropTypes.bool,
         layers: React.PropTypes.array,
         toggleBackgroundswitcher: React.PropTypes.func,
@@ -25,14 +26,16 @@ const BackgroundSwitcher = React.createClass({
     },
     getDefaultProps() {
         return {
-            visible: false
+            visible: false,
+            position: 0
         };
     },
     render() {
         let activeClass = this.props.visible ? 'active' : '';
         return (
             <div>
-                <Button id="BackgroundSwitcherBtn" className={activeClass} onClick={this.buttonClicked}>
+                <Button id="BackgroundSwitcherBtn" className={activeClass}
+                    onClick={this.buttonClicked} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
                     <Glyphicon glyph="book"/>
                 </Button>
                 <div id="BackgroundSwitcher" className={activeClass}>

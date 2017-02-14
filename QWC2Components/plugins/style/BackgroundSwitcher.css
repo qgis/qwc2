@@ -45,12 +45,3 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-
-#BackgroundSwitcherBtn {
-    transition: background-color 0.5s, color 0.5s;
-}
-
-#BackgroundSwitcherBtn.active {
-    background-color: @button_active_bg@;
-    color: @button_active_fg@;
-}
