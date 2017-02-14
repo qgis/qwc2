@@ -11,14 +11,13 @@ const UrlParams = require("../utils/UrlParams");
 
 function changeLayerProperties(layer, properties) {
     return (dispatch, getState) => {
+        UrlParams.updateParams({bl: null});
         if(properties.visibility) {
             try {
                 // Find name for layerid
                 var layerObj = getState().layers.flat.find((obj) => {return obj.id === layer});
                 if(layerObj && layerObj.group === 'background') {
                     UrlParams.updateParams({bl: layerObj.name});
-                } else {
-                    UrlParams.updateParams({bl: undefined});
                 }
             } catch(e) {}
         }
