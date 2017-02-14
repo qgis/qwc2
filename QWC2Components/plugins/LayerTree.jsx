@@ -63,6 +63,9 @@ const LayerTree = React.createClass({
         return visible / group.sublayers.length;
     },
     renderLayerGroup(layer, group, path) {
+        if(layer.layertreehidden) {
+            return null;
+        }
         let visibility = group.visibility === undefined ? true : group.visibility;
         let subtreevisibility = this.getGroupVisibility(group);
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");

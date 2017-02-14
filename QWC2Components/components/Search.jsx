@@ -307,7 +307,8 @@ const Search = React.createClass({
             featuresCrs: crs,
             visibility: true,
             queryable: false,
-            crs: this.props.mapConfig.projection
+            crs: this.props.mapConfig.projection,
+            layertreehidden: true
         };
         this.props.addLayer(layer, true);
     }

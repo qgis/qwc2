@@ -120,7 +120,8 @@ const IdentifyViewer = React.createClass({
                 featuresCrs: this.props.mapcrs,
                 visibility: true,
                 queryable: false,
-                crs: this.props.mapcrs
+                crs: this.props.mapcrs,
+                layertreehidden: true
             };
             this.props.addLayer(layer, true);
         } else if(features.length > 0 && haveLayer) {

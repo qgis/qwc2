@@ -96,7 +96,8 @@ const MapTip = React.createClass({
                         features: [feature.geometry],
                         featuresCrs: this.props.map.projection,
                         visibility: true,
-                        queryable: false
+                        queryable: false,
+                        layertreehidden: true
                     };
                     this.props.removeLayer('maptipselection');
                     this.props.addLayer(layer, true);
