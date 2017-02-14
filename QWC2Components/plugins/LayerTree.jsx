@@ -93,11 +93,11 @@ const LayerTree = React.createClass({
     },
     renderSubLayer(layer, sublayer, path) {
         let pathstr = layer.id + "/" + path.join("/");
-        let checkclasses = classnames({
-            "layertree-item-checkbox": true,
-            "layertree-item-checkbox-unchecked": !sublayer.visibility,
-            "layertree-item-checkbox-checked": sublayer.visibility,
-        });
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
+        let checkboxstate = sublayer.visibility === true ? 'checked' : 'unchecked';
+        let checkboxstyle = {
+            backgroundImage: 'url(' + assetsPath + '/img/' + checkboxstate + '.svg)'
+        };
         let cogclasses = classnames({
             "layertree-item-cog": true,
             "layertree-item-cog-active": this.state.activemenu === pathstr
@@ -113,7 +113,7 @@ const LayerTree = React.createClass({
         return (
             <div className="layertree-item-container" key={sublayer.name}>
                 <div className="layertree-item">
-                    <span className={checkclasses} onClick={() => this.sublayerToggled(layer, path)}></span>
+                    <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.sublayerToggled(layer, path)}></span>
                     <span className="layertree-item-legend">
                         <img className="layertree-item-legend-thumbnail" src={this.getLegendGraphicURL(layer, sublayer)} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />
                     </span>
