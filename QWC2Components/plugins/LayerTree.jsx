@@ -130,16 +130,16 @@ const LayerTree = React.createClass({
         return layer.group === 'background' ? null: this.renderLayerGroup(layer, layer, []);
     },
     render() {
-        let maptipcheckclasses = classnames({
-            "layertree-item-checkbox": true,
-            "layertree-item-checkbox-unchecked": !this.props.mapTipsEnabled,
-            "layertree-item-checkbox-checked": this.props.mapTipsEnabled,
-        });
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
+        let checkboxstate = this.props.mapTipsEnabled === true ? 'checked' : 'unchecked';
+        let checkboxstyle = {
+            backgroundImage: 'url(' + assetsPath + '/img/' + checkboxstate + '.svg)'
+        };
         let maptipCheckbox = null;
         if(!this.props.mobile) {
             maptipCheckbox = (
                 <div className="laytree-maptip-option">
-                    <span className={maptipcheckclasses} onClick={this.toggleMapTips}></span>
+                    <span className="layertree-item-checkbox" style={checkboxstyle} onClick={this.toggleMapTips}></span>
                     <span onClick={this.toggleMapTips}><Message msgId="layertree.maptip" /></span>
                 </div>
             );
@@ -154,7 +154,6 @@ const LayerTree = React.createClass({
                 <img className="layertree-item-legend-tooltip" style={style} src={this.state.legendTooltip.img} onTouchStart={this.hideLegendTooltip}></img>
             );
         }
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
             <div>
                 <SideBar id="LayerTree" width="20em"  title="appmenu.items.LayerTree"
