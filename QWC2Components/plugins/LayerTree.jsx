@@ -220,14 +220,14 @@ const LayerTree = React.createClass({
             // Toggle group
             let {newlayer, newsublayer} = this.cloneLayerTree(layer, grouppath);
             newsublayer.visibility = !oldvisibility;
-            assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers));
+            assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder));
             this.props.changeLayerProperties(layer.id, newlayer);
         }
     },
     sublayerToggled(layer, sublayerpath) {
         let {newlayer, newsublayer} = this.cloneLayerTree(layer, sublayerpath);
         newsublayer.visibility = !newsublayer.visibility;
-        let {params, queryLayers} = LayerUtils.buildLayerParams(newlayer.sublayers);
+        let {params, queryLayers} = LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder);
         assign(newlayer, {params: params, queryLayers: queryLayers});
         UrlParams.updateParams({l: params.LAYERS});
         this.props.changeLayerProperties(layer.id, newlayer);
@@ -235,7 +235,7 @@ const LayerTree = React.createClass({
     sublayerTransparencyChanged(layer, sublayerpath, value) {
         let {newlayer, newsublayer} = this.cloneLayerTree(layer, sublayerpath);
         newsublayer.opacity = Math.max(1, 255 - value);
-        assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers));
+        assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder));
         this.props.changeLayerProperties(layer.id, newlayer);
     },
     sublayerMenuToggled(sublayerpath) {

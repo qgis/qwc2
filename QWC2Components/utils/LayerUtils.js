@@ -21,17 +21,24 @@ const assign = require('object-assign');
          });
          return newsublayers;
      },
-     buildLayerParams: function(sublayers) {
+     buildLayerParams: function(sublayers, drawingOrder) {
         let layerNames = [];
         let opacities = [];
         let queryable = [];
         (sublayers || []).map(sublayer => {
             LayerUtils.parseSublayer(sublayer, layerNames, opacities, queryable);
         });
+        layerNames.reverse();
+        opacities.reverse();
+        if(drawingOrder && drawingOrder.length > 0) {
+            let indices = drawingOrder.map(layer => layerNames.indexOf(layer)).filter(idx => idx >= 0);
+            layerNames = indices.map(idx => layerNames[idx]);
+            opacities = indices.map(idx => opacities[idx]);
+        }
         return {
             params: {
-                LAYERS: layerNames.reverse().join(","),
-                OPACITIES: opacities.reverse().join(",")
+                LAYERS: layerNames.join(","),
+                OPACITIES: opacities.join(",")
             },
             queryLayers: queryable
         };

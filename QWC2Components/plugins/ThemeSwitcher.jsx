@@ -172,7 +172,7 @@ const ThemeSwitcher = React.createClass({
         if(visiblelayers !== undefined) {
             sublayers = LayerUtils.restoreVisibleLayers(sublayers, visiblelayers);
         }
-        let {params, queryLayers} = LayerUtils.buildLayerParams(sublayers);
+        let {params, queryLayers} = LayerUtils.buildLayerParams(sublayers, theme.drawingOrder);
         // untiled WMS by default
         let singleTile = true;
         if (theme.tiled !== undefined) {
@@ -195,7 +195,8 @@ const ThemeSwitcher = React.createClass({
             queryLayers: queryLayers,
             singleTile: singleTile,
             ratio: singleTile ? 1 : undefined,
-            format: theme.format
+            format: theme.format,
+            drawingOrder: theme.drawingOrder
         }
     },
     createBackgroundLayersForTheme(theme, visibleBackgroundLayer=undefined) {
