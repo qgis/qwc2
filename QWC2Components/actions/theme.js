@@ -7,6 +7,7 @@
  */
 
 const UrlParams = require("../utils/UrlParams");
+const LayerUtils = require("../utils/LayerUtils");
 const {addLayer,removeLayer} = require("../../MapStore2/web/client/actions/layers");
 const {changeMapScales, zoomToExtent, zoomToPoint} = require("../../MapStore2/web/client/actions/map");
 
@@ -34,9 +35,7 @@ function setCurrentTheme(theme, layer, backgroundLayers, prevlayerid, prevBackgr
         dispatch(addLayer(layer));
 
         // Update url
-        let alllayers = layer.sublayers.map(sublayer => sublayer.name).reverse().join(",");
-        let activelayers = layer.params.LAYERS !== alllayers ? layer.params.LAYERS : undefined;
-        UrlParams.updateParams({t: theme.id, l: activelayers, bl: activebglayer});
+        UrlParams.updateParams({t: theme.id, l: LayerUtils.constructUrlParam(layer), bl: activebglayer});
 
         // update map scales
         const p = new Promise((resolve) => {

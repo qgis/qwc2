@@ -170,7 +170,20 @@ const ThemeSwitcher = React.createClass({
     createLayerForTheme(theme, visiblelayers=undefined) {
         let sublayers = theme.sublayers;
         if(visiblelayers !== undefined) {
-            sublayers = LayerUtils.restoreVisibleLayers(sublayers, visiblelayers);
+            let layers = [];
+            let opacities = [];
+            let entryMatch = /([^\[]+)\[(\d+)]/;
+            visiblelayers.map(entry => {
+                let match = entryMatch.exec(entry);
+                if(match) {
+                    layers.push(match[1]);
+                    opacities.push(Math.round(255 - parseFloat(match[2]) / 100 * 255));
+                } else {
+                    layers.push(entry);
+                    opacities.push(255);
+                }
+            });
+            sublayers = LayerUtils.restoreVisibleLayers(sublayers, layers, opacities);
         }
         let {params, queryLayers} = LayerUtils.buildLayerParams(sublayers, theme.drawingOrder);
         // untiled WMS by default

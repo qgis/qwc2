@@ -9,14 +9,18 @@
 const assign = require('object-assign');
 
  const LayerUtils = {
-     restoreVisibleLayers: function(sublayers, visiblelayers) {
+     restoreVisibleLayers: function(sublayers, initiallayers, initialopacities) {
          let newsublayers = sublayers.splice(0);
          newsublayers.map((sublayer, idx) => {
              if(sublayer.sublayers) {
                   // Is group
-                  newsublayers[idx] = assign({}, sublayer, {sublayers: LayerUtils.restoreVisibleLayers(sublayer.sublayers, visiblelayers)});
+                  newsublayers[idx] = assign({}, sublayer, {sublayers: LayerUtils.restoreVisibleLayers(sublayer.sublayers, initiallayers, initialopacities)});
              } else {
-                 newsublayers[idx] = assign({}, sublayer, {visibility: visiblelayers.includes(sublayer.name)});
+                 let idx = initiallayers.indexOf(sublayer.name);
+                 newsublayers[idx] = assign({}, sublayer, {
+                     visibility: idx >= 0,
+                     opacity: idx >= 0 ? initialopacities[idx] : sublayer.opacity
+                 });
              }
          });
          return newsublayers;
@@ -59,6 +63,17 @@ const assign = require('object-assign');
                 }
             }
         }
+    },
+    constructUrlParam(layer) {
+        let layers = layer.params.LAYERS.split(",");
+        let opacities = layer.params.OPACITIES.split(",").map(entry => parseFloat(entry));
+        return layers.map((entry, idx) => {
+            if(opacities[idx] < 255){
+                return entry + "[" + (100 - Math.round(opacities[idx] / 255. * 100)) + "]";
+            } else {
+                return entry;
+            }
+        }).join(",");
     }
  };
 
