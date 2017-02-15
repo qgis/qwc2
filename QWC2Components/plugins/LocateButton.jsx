@@ -14,13 +14,14 @@ require('./style/Buttons.css');
 const LocateButton = React.createClass({
     propTypes: {
         locate : React.PropTypes.string,
-        position: React.PropTypes.number
+        position: React.PropTypes.number,
+        onClick: React.PropTypes.func
     },
     getDefaultProps() {
         return { position: 2 }
     },
     render() {
-        return (<LocateBtn id="LocateBtn" style={{bottom: (5 + 4 * this.props.position) + 'em'}} />);
+        return (<LocateBtn onClick={this.props.onClick} locate={this.props.locate} id="LocateBtn" style={{bottom: (5 + 4 * this.props.position) + 'em'}} />);
     }
 });
 
