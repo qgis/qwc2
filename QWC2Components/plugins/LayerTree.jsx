@@ -28,11 +28,13 @@ const LayerTree = React.createClass({
         mobile: React.PropTypes.bool,
         mapTipsEnabled: React.PropTypes.bool,
         changeLayerProperties: React.PropTypes.func,
-        toggleMapTips: React.PropTypes.func
+        toggleMapTips: React.PropTypes.func,
+        showLegendIcons: React.PropTypes.bool
     },
     getDefaultProps() {
         return {
-            layers: []
+            layers: [],
+            showLegendIcons: true
         };
     },
     getInitialState: function() {
@@ -118,14 +120,20 @@ const LayerTree = React.createClass({
                 </div>
             );
         }
+        let legendicon = null;
+        if(this.props.showLegendIcons) {
+            legendicon = (
+                <span className="layertree-item-legend">
+                    <img className="layertree-item-legend-thumbnail" src={this.getLegendGraphicURL(layer, sublayer)} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />
+                </span>
+            );
+        }
         return (
             <div className="layertree-item-container" key={sublayer.name}>
                 <div className="layertree-item">
                     <span className="layertree-item-expander"></span>
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.sublayerToggled(layer, path)}></span>
-                    <span className="layertree-item-legend">
-                        <img className="layertree-item-legend-thumbnail" src={this.getLegendGraphicURL(layer, sublayer)} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />
-                    </span>
+                    {legendicon}
                     <span className="layertree-item-title" title={sublayer.title}>{sublayer.title}</span>
                     {sublayer.queryable ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
                     <span className="layertree-item-spacer"></span>
