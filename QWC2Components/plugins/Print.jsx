@@ -45,7 +45,20 @@ const Print = React.createClass({
             newState["layout"] = layout;
         }
         if(newProps.visible && !this.state.scale && newProps.map) {
-            newState["scale"] = Math.round(MapUtils.getScales(newProps.map.projection)[newProps.map.zoom] / 2);
+            let scale = Math.round(MapUtils.getScales(newProps.map.projection)[newProps.map.zoom] / 2);
+            if(newProps.theme.printScales && newProps.theme.printScales.length > 0) {
+                let closestVal = Math.abs(scale - newProps.theme.printScales[0]);
+                let closestIdx = 0;
+                for(let i = 1; i < newProps.theme.printScales.length; ++i) {
+                    let currVal = Math.abs(scale - newProps.theme.printScales[i]);
+                    if(currVal < closestVal) {
+                        closestVal = currVal;
+                        closestIdx = i;
+                    }
+                }
+                scale = newProps.theme.printScales[closestIdx];
+            }
+            newState["scale"] = scale;
             newState["initialRotation"] = newProps.map.bbox.rotation;
         } else if(!newProps.visible && this.state.scale) {
             newState["scale"] = null;
@@ -86,6 +99,13 @@ const Print = React.createClass({
             action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(action) + "&filename=" + encodeURIComponent(this.props.theme.name + ".pdf");
         }
         let rotation = this.props.map.bbox ? this.props.map.bbox.rotation : 0;
+        let scaleChooser = (<input name={mapName + ":scale"} type="number" value={this.state.scale} onChange={this.changeScale} min="1"/>);
+        if(this.props.theme.printScales && this.props.theme.printScales.length > 0) {
+            scaleChooser = (
+                <select name={mapName + ":scale"} value={this.state.scale} onChange={this.changeScale}>
+                    {this.props.theme.printScales.map(scale => (<option key={scale} value={scale}>{scale}</option>))}
+                </select>);
+        }
         return (
             <div role="body" className="print-body">
                 <form action={action} method="POST" target="_blank">
@@ -107,7 +127,7 @@ const Print = React.createClass({
                             <td>
                                 <span className="input-frame">
                                     <span>1&nbsp;:&nbsp;</span>
-                                    <input name={mapName + ":scale"} type="number" value={this.state.scale} onChange={this.changeScale} min="1"/>
+                                    {scaleChooser}
                                 </span>
                             </td>
                         </tr>
