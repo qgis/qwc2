@@ -183,6 +183,7 @@ const ThemeSwitcher = React.createClass({
             type: "wms",
             url: theme.url,
             visibility: true,
+            expanded: theme.expanded,
             name: theme.name,
             title: theme.title,
             boundingBox: {

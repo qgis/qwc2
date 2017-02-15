@@ -73,8 +73,12 @@ const LayerTree = React.createClass({
         let checkboxstyle = {
             backgroundImage: 'url(' + assetsPath + '/img/' + checkboxstate + '.svg)'
         };
+        let expanderstate = group.expanded ? 'minus' : 'plus';
+        let expanderstyle = {
+            backgroundImage: 'url(' + assetsPath + '/img/' + expanderstate + '.svg)'
+        };
         let sublayersContent = null;
-        if(visibility > 0 && group.sublayers) {
+        if(group.sublayers && group.expanded) {
             sublayersContent = group.sublayers.map((sublayer, idx) => {
                 let subpath = [...path, idx];
                 if(sublayer.sublayers) {
@@ -87,6 +91,7 @@ const LayerTree = React.createClass({
         return (
             <div className="layertree-item-container" key={group.name}>
                 <div className="layertree-item">
+                    <span className="layertree-item-expander" style={expanderstyle} onClick={() => this.groupExpandendToggled(layer, path, group.expanded)}></span>
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.groupToggled(layer, path, visibility)}></span>
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
                 </div>
@@ -116,6 +121,7 @@ const LayerTree = React.createClass({
         return (
             <div className="layertree-item-container" key={sublayer.name}>
                 <div className="layertree-item">
+                    <span className="layertree-item-expander"></span>
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.sublayerToggled(layer, path)}></span>
                     <span className="layertree-item-legend">
                         <img className="layertree-item-legend-thumbnail" src={this.getLegendGraphicURL(layer, sublayer)} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />
@@ -184,6 +190,18 @@ const LayerTree = React.createClass({
             cur = cur.sublayers[idx];
         }
         return {newlayer, newsublayer: cur};
+    },
+    groupExpandendToggled(layer, grouppath, oldexpanded) {
+        if(grouppath.length === 0) {
+            // Toggle entire layer
+            let newlayer = assign({}, layer, {expanded: !oldexpanded});
+            this.props.changeLayerProperties(layer.id, newlayer);
+        } else {
+            // Toggle group
+            let {newlayer, newsublayer} = this.cloneLayerTree(layer, grouppath);
+            newsublayer.expanded = !oldexpanded;
+            this.props.changeLayerProperties(layer.id, newlayer);
+        }
     },
     groupToggled(layer, grouppath, oldvisibility) {
         if(grouppath.length === 0) {

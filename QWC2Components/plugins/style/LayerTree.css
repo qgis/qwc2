@@ -30,6 +30,18 @@
     align-items: center;
 }
 
+#LayerTree span.layertree-item-expander {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-right: 0.25em;
+    vertical-align: middle;
+    cursor: pointer;
+    flex: 0 0 auto;
+}
+
 #LayerTree span.layertree-item-checkbox {
     display: inline-block;
     width: 1.5em;
