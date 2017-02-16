@@ -95,7 +95,8 @@ img.layertree-item-legend-tooltip {
 
 #LayerTree span.layertree-item-cog {
     line-height: 2em;
-    padding: 0 0.25em;
+    text-align: center;
+    width: 2em;
     cursor: pointer;
     color: @item_border@;
     flex: 0 0 auto;
@@ -119,10 +120,22 @@ img.layertree-item-legend-tooltip {
     background-color: white;
 }
 
-#LayerTree div.layertree-item-edit-frame > * {
-    flex: 1 1 auto;
+#LayerTree span.layertree-item-transparency-label {
+    flex: 0 0 auto;
 }
 
-#LayerTree div.layertree-item-edit-frame input[type="range"] {
+#LayerTree input.layertree-item-transparency-slider {
+    flex: 1 1 auto;
     padding: 0 0.25em;
+    min-width: 0;
+    max-width: none;
+    width: auto;
+    margin: 0 0.25em;
+}
+
+#LayerTree span.layertree-item-metadata {
+    color: blue;
+    flex: 0 0 1.5em;
+    text-align: center;
+    cursor: pointer;
 }

@@ -16,6 +16,7 @@ const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {changeLayerProperties} = require('../../MapStore2/web/client/actions/layers')
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const {toggleMapTips} = require('../actions/layertree');
+const LayerInfoWindow = require('../components/LayerInfoWindow');
 const {SideBar} = require('../components/SideBar');
 const UrlParams = require("../utils/UrlParams");
 const LayerUtils = require('../utils/LayerUtils');
@@ -40,14 +41,9 @@ const LayerTree = React.createClass({
     getInitialState: function() {
         return {
             activemenu: null,
-            legendTooltip: undefined
+            legendTooltip: null,
+            activeinfo: null
         };
-    },
-    getLegendGraphicURL(layer, sublayer) {
-        if(layer.type !== "wms") {
-            return "";
-        }
-        return layer.url + "?SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=1.3.0&FORMAT=image/png&LAYER=" + sublayer.name;
     },
     getGroupVisibility(group) {
         if(!group.sublayers || group.sublayers.length === 0) {
@@ -116,7 +112,9 @@ const LayerTree = React.createClass({
         if(this.state.activemenu === pathstr) {
             editframe = (
                 <div className="layertree-item-edit-frame">
-                    <span><Message msgId="layertree.transparency" /></span><input type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.sublayerTransparencyChanged(layer, path, ev.target.value)} />
+                    <span className="layertree-item-transparency-label"><Message msgId="layertree.transparency" /></span>
+                    <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.sublayerTransparencyChanged(layer, path, ev.target.value)} />
+                    <Glyphicon className="layertree-item-metadata" glyph="info-sign" onClick={() => this.setState({activeinfo: {layer, sublayer}})}/>
                 </div>
             );
         }
@@ -124,7 +122,7 @@ const LayerTree = React.createClass({
         if(this.props.showLegendIcons) {
             legendicon = (
                 <span className="layertree-item-legend">
-                    <img className="layertree-item-legend-thumbnail" src={this.getLegendGraphicURL(layer, sublayer)} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />
+                    <img className="layertree-item-legend-thumbnail" src={LayerUtils.getLegendGraphicURL(layer, sublayer)} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />
                 </span>
             );
         }
@@ -171,6 +169,13 @@ const LayerTree = React.createClass({
                 <img className="layertree-item-legend-tooltip" style={style} src={this.state.legendTooltip.img} onTouchStart={this.hideLegendTooltip}></img>
             );
         }
+        let infoWindow = null;
+        if(this.state.activeinfo) {
+            infoWindow = (
+                <LayerInfoWindow onClose={() => this.setState({activeinfo: null})}
+                    layer={this.state.activeinfo.layer} sublayer={this.state.activeinfo.sublayer} />
+            );
+        }
         return (
             <div>
                 <SideBar id="LayerTree" width="20em"  title="appmenu.items.LayerTree"
@@ -183,6 +188,7 @@ const LayerTree = React.createClass({
                     </div>
                 </SideBar>
                 {legendTooltip}
+                {infoWindow}
             </div>
         );
     },
