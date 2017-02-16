@@ -16,10 +16,10 @@ const assign = require('object-assign');
                   // Is group
                   newsublayers[idx] = assign({}, sublayer, {sublayers: LayerUtils.restoreVisibleLayers(sublayer.sublayers, initiallayers, initialopacities)});
              } else {
-                 let idx = initiallayers.indexOf(sublayer.name);
+                 let idx2 = initiallayers.indexOf(sublayer.name);
                  newsublayers[idx] = assign({}, sublayer, {
-                     visibility: idx >= 0,
-                     opacity: idx >= 0 ? initialopacities[idx] : sublayer.opacity
+                     visibility: idx2 >= 0,
+                     opacity: idx2 >= 0 ? initialopacities[idx2] : sublayer.opacity
                  });
              }
          });
