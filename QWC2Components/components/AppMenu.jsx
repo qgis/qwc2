@@ -40,9 +40,9 @@ const AppMenu = React.createClass({
         var a = this.state.submenusVisible[level] === key ? [] : [key];
         this.setState({ submenusVisible: this.state.submenusVisible.slice(0, level).concat(a) });
     },
-    onMenuitemClicked(ev, key) {
+    onMenuitemClicked(ev, key, mode) {
         this.refs.appmenu.blur();
-        this.props.menuitemClicked(key);
+        this.props.menuitemClicked(key, mode);
     },
     killEvent(ev) {
         ev.preventDefault();
@@ -83,11 +83,11 @@ const AppMenu = React.createClass({
                     );
                 } else {
                     return (
-                        <li key={item.key}
-                            onMouseDown={(ev)=>{this.onMenuitemClicked(ev, item.key);}}
+                        <li key={item.key + (item.mode || "")}
+                            onMouseDown={(ev)=>{this.onMenuitemClicked(ev, item.key, item.mode);}}
                             onClick={this.killEvent}>
                             <img src={assetsPath + "/" + item.icon} />
-                            <Message msgId={"appmenu.items." + item.key} />
+                            <Message msgId={"appmenu.items." + item.key + (item.mode || "")} />
                         </li>
                     );
                 }
