@@ -11,6 +11,7 @@ const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
 const Spinner = require('react-spinkit');
 const {createSelector} = require('reselect');
+const classnames = require('classnames');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {resultsPurge, resetSearch, searchTextChanged, addMarker} = require("../../MapStore2/web/client/actions/search");
 const LocaleUtils = require('../../MapStore2/web/client/utils/LocaleUtils');
@@ -53,7 +54,7 @@ const Search = React.createClass({
         }
     },
     getInitialState() {
-        return {currentResult: null, showfields: false}
+        return {currentResult: null, showfields: false, showproviderselection: false}
     },
     contextTypes: {
         messages: React.PropTypes.object
@@ -62,8 +63,24 @@ const Search = React.createClass({
         this.searchTimer = 0;
     },
     componentWillReceiveProps(newProps) {
-        if(this.props.theme && newProps.theme !== this.props.theme) {
-            UrlParams.updateParams({sp: undefined});
+        if(newProps.theme && newProps.theme !== this.props.theme) {
+            let found = false;
+            if(newProps.searchOptions.showProviderSelection && newProps.searchProviders) {
+                if(UrlParams.getParam("sp") && newProps.theme.searchProviders.includes("sp")) {
+                    found = true;
+                } else {
+                    for(let key of Object.keys(newProps.searchProviders)) {
+                        if(newProps.theme.searchProviders.includes(key)) {
+                            UrlParams.updateParams({sp: key});
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if(!found) {
+                UrlParams.updateParams({sp: undefined});
+            }
             this.resetSearch();
         }
     },
@@ -93,7 +110,7 @@ const Search = React.createClass({
         this.searchTimer = setTimeout(this.search, 500);
     },
     checkShowFields(ev) {
-        if(this.providerSelectionCombo && this.props.searchProviders[this.providerSelectionCombo.value].fields) {
+        if(this.props.searchProviders[UrlParams.getParam("sp")].fields) {
             this.setState({showfields: true, focused: false});
             ev.preventDefault();
         }
@@ -116,7 +133,7 @@ const Search = React.createClass({
         UrlParams.updateParams({sp: ev.target.value});
     },
     activeProviers() {
-        let keys = this.providerSelectionCombo ? [this.providerSelectionCombo.value] : this.props.theme.searchProviders;
+        let keys = UrlParams.getParam("sp") ? [UrlParams.getParam("sp")] : this.props.theme.searchProviders;
         return keys.reduce((result, key) => {
             result[key] = this.props.searchProviders[key];
             return result;
@@ -133,21 +150,35 @@ const Search = React.createClass({
         }
         let providerSelection = null;
         if(this.props.searchOptions.showProviderSelection) {
+            let providerSelectionMenu = null;
+            if(this.state.showproviderselection) {
+                providerSelectionMenu = (
+                    <ul className="searchbar-provider-selection">
+                        {Object.keys(this.props.searchProviders).map(key => {
+                            if(this.props.theme && this.props.theme.searchProviders.includes(key)) {
+                                return (<li key={key} onClick={() => UrlParams.updateParams({sp: key})}>{this.props.searchProviders[key].label}</li>);
+                            }
+                        })}
+                    </ul>
+                );
+            }
+            let addonClasses = classnames({
+                'searchbar-addon': true,
+                'searchbar-addon-active': this.state.showproviderselection
+            });
             providerSelection = (
-                <select className="provider-selection" onChange={this.providerChanged} value={UrlParams.getParam("sp")}
-                    ref={el => { this.providerSelectionCombo = el; }}>
-                    {Object.keys(this.props.searchProviders).map(key => {
-                        if(this.props.theme && this.props.theme.searchProviders.includes(key)) {
-                            return (<option key={key} value={key}>{this.props.searchProviders[key].label}</option>);
-                        }
-                    })}
-                </select>
+                <span className={addonClasses} onClick={() => this.setState({showproviderselection: !this.state.showproviderselection})}><Glyphicon glyph="chevron-down" />
+                    {providerSelectionMenu}
+                </span>
             );
+            if(UrlParams.getParam("sp")) {
+                placeholder += ": " + this.props.searchProviders[UrlParams.getParam("sp")].label;
+            }
         }
         let searchform = null;
         this.formfields = {};
         if(this.state.showfields) {
-            let fields = this.props.searchProviders[this.providerSelectionCombo.value].fields;
+            let fields = this.props.searchProviders[UrlParams.getParam("sp")].fields;
             let values = {};
             this.props.searchText.split(/\s*AND\s*/).map(pair => {
                 let parts = pair.split(/\s*=\s*/);
@@ -201,7 +232,7 @@ const Search = React.createClass({
         )
     },
     submitFormSearch() {
-        let comp = this.props.searchProviders[this.providerSelectionCombo.value].comparator;
+        let comp = this.props.searchProviders[UrlParams.getParam("sp")].comparator;
         let filters = Object.keys(this.formfields).map(key => {
             return  key + "=" + this.formfields[key].value;
         });
