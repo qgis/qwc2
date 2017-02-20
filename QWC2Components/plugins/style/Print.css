@@ -26,6 +26,10 @@
     padding: 0.25em;
 }
 
+#Print table.options-table input {
+    outline: none;
+}
+
 #Print table.options-table span.input-frame {
     border: 1px solid @item_border@;
     padding: 0.25em;

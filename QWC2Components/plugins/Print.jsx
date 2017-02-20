@@ -106,6 +106,7 @@ const Print = React.createClass({
                     {this.props.theme.printScales.map(scale => (<option key={scale} value={scale}>{scale}</option>))}
                 </select>);
         }
+        let labels = this.state.layout && this.state.layout.labels ? this.state.layout.labels : [];
         return (
             <div role="body" className="print-body">
                 <form action={action} method="POST" target="_blank">
@@ -148,6 +149,16 @@ const Print = React.createClass({
                                 </span>
                             </td>
                         </tr>
+                        {(labels || []).map(label => {
+                            return (<tr key={"label." + label}>
+                                <td>{label}</td>
+                                <td>
+                                    <span className="input-frame">
+                                        <input name={label.toUpperCase()} type="text"/>
+                                    </span>
+                                </td>
+                            </tr>)
+                        })}
                     </tbody></table>
                     <div>
                         <input readOnly="true" name={mapName + ":extent"} type={formvisibility} value={extent} />
