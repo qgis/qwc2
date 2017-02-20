@@ -59,10 +59,16 @@ const ThemeSwitcher = React.createClass({
     populateThemesList(object) {
         this.setState({themes: object.themes});
         var params = UrlParams.getParams();
-        let theme = this.getThemeById(this.state.themes, params.t || this.state.themes.defaultTheme);
+        let theme = this.getThemeById(object.themes, params.t);
+        if(!theme) {
+            theme = this.getThemeById(object.themes, object.themes.defaultTheme);
+            // Invalid params.t => clear it
+            params.t = undefined;
+        }
+        UrlParams.updateParams({t: undefined, l: undefined});
         if(theme) {
             let layer = this.createLayerForTheme(theme, params.l ? params.l.split(",") : undefined);
-            const scales = theme.scales || this.state.themes.defaultScales;
+            const scales = theme.scales || object.themes.defaultScales;
             // extent to which to zoom to
             let extent = null;
             let centerZoom = null;
@@ -94,12 +100,12 @@ const ThemeSwitcher = React.createClass({
             if(!centerZoom && (!extent || extent.bounds.length !== 4)) {
                 extent = {bounds: theme.extent, crs: theme.crs};
             }
-            UrlParams.updateParams({ie: undefined});
-            UrlParams.updateParams({ic: undefined});
-            UrlParams.updateParams({is: undefined});
-            UrlParams.updateParams({icrs: undefined});
             this.props.changeTheme(theme, layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, extent, centerZoom);
         }
+        UrlParams.updateParams({ie: undefined});
+        UrlParams.updateParams({ic: undefined});
+        UrlParams.updateParams({is: undefined});
+        UrlParams.updateParams({icrs: undefined});
     },
     getThemeById(dir, id) {
         for(let i = 0, n = dir.items.length; i < n; ++i) {
