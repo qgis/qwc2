@@ -16,6 +16,7 @@ const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const {changeRotation} = require('../../MapStore2/web/client/actions/map');
 const {SideBar} = require('../components/SideBar');
 const PrintFrame = require('../components/PrintFrame');
+const IdentifyUtils = require('../utils/IdentifyUtils');
 require('./style/Print.css');
 
 const Print = React.createClass({
@@ -25,7 +26,8 @@ const Print = React.createClass({
         map: React.PropTypes.object,
         themeLayerId: React.PropTypes.string,
         layers: React.PropTypes.array,
-        changeRotation: React.PropTypes.func
+        changeRotation: React.PropTypes.func,
+        search: React.PropTypes.object
     },
     getDefaultProps() {
         return {
@@ -107,6 +109,17 @@ const Print = React.createClass({
                 </select>);
         }
         let labels = this.state.layout && this.state.layout.labels ? this.state.layout.labels : [];
+        let highlightGeom = null;
+        let highlightStyle = null;
+        let highlightLabel = null;
+        if(this.props.search && this.props.search.highlightedFeature) {
+            let mapPos = CoordinatesUtils.reproject({x: this.props.search.markerPosition.lng, y: this.props.search.markerPosition.lat}, "EPSG:4326", this.props.map.projection);
+            highlightGeom = IdentifyUtils.geoJSONToWkt(this.props.search.highlightedFeature);
+            highlightStyle = IdentifyUtils.createGeometrySld(this.props.search.highlightedFeature.geometry.type, '#FFFF00');
+            if(!this.props.theme.printLabelForSearchResult) {
+                highlightLabel = this.props.search.markerLabel;
+            }
+        }
         return (
             <div role="body" className="print-body">
                 <form action={action} method="POST" target="_blank">
@@ -151,10 +164,15 @@ const Print = React.createClass({
                         </tr>
                         {(labels || []).map(label => {
                             return (<tr key={"label." + label}>
-                                <td>{label}</td>
+                                <td>{label}:</td>
                                 <td>
                                     <span className="input-frame">
-                                        <input name={label.toUpperCase()} type="text"/>
+                                    {
+                                        this.props.theme.printLabelForSearchResult === label && this.props.search ?
+                                            (<input name={label.toUpperCase()} type="text" defaultValue={this.props.search.markerLabel}/>)
+                                        :
+                                            (<input name={label.toUpperCase()} type="text"/>)
+                                    }
                                     </span>
                                 </td>
                             </tr>)
@@ -170,6 +188,12 @@ const Print = React.createClass({
                         <input readOnly="true" name="SRS" type={formvisibility} value={this.props.map.projection} />
                         <input readOnly="true" name="LAYERS" type={formvisibility} value={printLayers} />
                         <input readOnly="true" name="OPACITIES" type={formvisibility} value={printOpacities} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_GEOM"} type={formvisibility} value={highlightGeom} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_SYMBOL"} type={formvisibility} value={highlightStyle} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELSTRING"} type={formvisibility} value={highlightLabel} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELCOLOR"} type={formvisibility} value="black" />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERCOLOR"} type={formvisibility} value="white" />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERSIZE"} type={formvisibility} value="1" />
                     </div>
                     <div className="button-bar">
                         <button type="submit"><Message msgId="print.submit" /></button>
@@ -239,7 +263,8 @@ const selector = (state) => ({
     theme: state.theme ? state.theme.current : null,
     map: state.map ? state.map.present : null,
     themeLayerId: state.theme ? state.theme.currentlayer : "",
-    layers: state.layers ? state.layers.flat : []
+    layers: state.layers ? state.layers.flat : [],
+    search: state.search
 });
 
 module.exports = {

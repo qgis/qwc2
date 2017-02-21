@@ -13,7 +13,7 @@ const Spinner = require('react-spinkit');
 const {createSelector} = require('reselect');
 const classnames = require('classnames');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const {resultsPurge, resetSearch, searchTextChanged, addMarker} = require("../../MapStore2/web/client/actions/search");
+const {resultsPurge, resetSearch, searchTextChanged, addMarker, setHighlightedFeature} = require("../../MapStore2/web/client/actions/search");
 const LocaleUtils = require('../../MapStore2/web/client/utils/LocaleUtils');
 const mapUtils = require('../../MapStore2/web/client/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
@@ -43,7 +43,8 @@ const Search = React.createClass({
         removeLayer: React.PropTypes.func,
         theme: React.PropTypes.object,
         showFilterCombo: React.PropTypes.bool,
-        searchOptions: React.PropTypes.object
+        searchOptions: React.PropTypes.object,
+        setHighlightGeometry: React.PropTypes.func
     },
     getDefaultProps() {
         return {
@@ -327,15 +328,19 @@ const Search = React.createClass({
     },
     showFeatureGeometry(item, geometry, crs) {
         if(item !== this.state.currentResult) {
+            this.props.setHighlightGeometry(null);
             return;
         }
+        let feature = IdentifyUtils.wktToGeoJSON(geometry);
+        feature.geometry = IdentifyUtils.reprojectFeatureGeometry(feature.geometry, crs, this.props.mapConfig.projection);
+        this.props.setHighlightedFeature(feature);
         let layer = {
             id: "searchselection",
             name: "Search selection",
             title: "Selection",
             type: "vector",
-            features: [IdentifyUtils.wktToGeoJSON(geometry)],
-            featuresCrs: crs,
+            features: [feature],
+            featuresCrs: this.props.mapConfig.projection,
             visibility: true,
             queryable: false,
             crs: this.props.mapConfig.projection,
@@ -361,5 +366,6 @@ module.exports = (searchProviders) => connect(createSelector([state => state, di
     panToResult: changeMapView,
     addMarker: addMarker,
     addLayer: addLayer,
-    removeLayer: removeLayer
+    removeLayer: removeLayer,
+    setHighlightedFeature: setHighlightedFeature
 })(Search);

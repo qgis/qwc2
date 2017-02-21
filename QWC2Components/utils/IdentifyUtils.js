@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const parse = require('wellknown');
+const {parse, stringify} = require('wellknown');
 const uuid = require('uuid');
 const assign = require('object-assign');
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
@@ -85,7 +85,13 @@ const IdentifyUtils = {
             "properties": {}
         };
     },
+    geoJSONToWkt(feature) {
+        return stringify(feature.geometry);
+    },
     reprojectFeatureGeometry(geometry, srccrs, dstcrs) {
+        if(srccrs == dstcrs) {
+            return geometry;
+        }
         if(geometry.type === "Point") {
             let wgscoo = CoordinatesUtils.reproject(geometry.coordinates, srccrs, dstcrs);
             return {
@@ -113,6 +119,54 @@ const IdentifyUtils = {
         } else {
             return geometry;
         }
+    },
+    createGeometrySld(geometrytype, color) {
+        let rule = null;
+        let bordersize = 2;
+        let pointsize = 10;
+        if(geometrytype == "Point") {
+            rule = '<se:PointSymbolizer>' +
+                   '<se:Graphic>' +
+                   '<se:Mark>' +
+                   '<se:WellKnownName>circle</se:WellKnownName>' +
+                   '<se:Stroke>' +
+                   '<se:SvgParameter name="stroke">' + color + '</se:SvgParameter>' +
+                   '</se:Stroke>' +
+                   '</se:Mark>' +
+                   '<se:Size>' + pointsize + '</se:Size>' +
+                   '</se:Graphic>' +
+                   '</se:PointSymbolizer>';
+        } else if(geometrytype == "LineString") {
+            rule = '<se:LineSymbolizer>' +
+                   '<se:Stroke>' +
+                   '<se:SvgParameter name="stroke">' + color + '</se:SvgParameter>' +
+                   '<se:SvgParameter name="stroke-width">' + color + '</se:SvgParameter>' +
+                   '<se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>' +
+                   '<se:SvgParameter name="stroke-linecap">square</se:SvgParameter>' +
+                   '</se:Stroke>' +
+                   '</se:LineSymbolizer>';
+        } else if(geometrytype == "Polygon") {
+            rule = '<se:PolygonSymbolizer>' +
+                   '<se:Stroke>' +
+                   '<se:SvgParameter name="stroke">' + color + '</se:SvgParameter>' +
+                   '<se:SvgParameter name="stroke-width">' + color + '</se:SvgParameter>' +
+                   '<se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>' +
+                   '</se:Stroke>' +
+                   '</se:PolygonSymbolizer>';
+        }
+        if(rule) {
+            return '<?xml version="1.0" encoding="UTF-8"?>' +
+                   '<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:se="http://www.opengis.net/se">' +
+                   '<UserStyle>' +
+                   '<se:FeatureTypeStyle>' +
+                   '<se:Rule>' +
+                   rule +
+                   '</se:Rule>' +
+                   '</se:FeatureTypeStyle>' +
+                   '</UserStyle>' +
+                   '</StyledLayerDescriptor>';
+        }
+        return null;
     }
 }
 
