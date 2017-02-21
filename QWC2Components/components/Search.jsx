@@ -82,7 +82,10 @@ const Search = React.createClass({
             if(!found) {
                 UrlParams.updateParams({sp: undefined});
             }
-            this.resetSearch();
+            // Only reset search if the theme was changed (as opposed to the initial theme loaded)
+            if(this.props.theme) {
+                this.resetSearch();
+            }
         }
     },
     killEvent(ev) {
