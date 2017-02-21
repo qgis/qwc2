@@ -29,16 +29,21 @@
     font-weight: bold;
     font-size: small;
     border: 1px solid #a6a6a6;
-    padding: 0.25em;
     margin: 1em;
     text-align: center;
     display: inline-block;
     width: 15em;
 }
+#ThemeSwitcher div.theme-item-title {
+    padding: 0.125em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
 #ThemeSwitcher li.theme-item > img {
-    height: 5em;
-    width: auto;
+    width: calc(15em - 2px);
+    height: auto;
 }
 
 #ThemeSwitcher li.theme-item:hover {

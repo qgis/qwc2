@@ -153,9 +153,13 @@ const ThemeSwitcher = React.createClass({
         return (<ul role="body">
             {(group && group.items ? group.items : []).map(item => {
                 return item.title.match(filter) || item.keywords.match(filter) ? (
-                    <li key={item.id} className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"} onClick={(ev)=>{this.themeClicked(item);}}>
-                        {item.title}<br /><img src={assetsPath + "/" + item.thumbnail} /><br />
-                    <div className="theme-item-keywords" title={item.keywords}>{item.keywords}</div>
+                    <li key={item.id}
+                        className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
+                        onClick={(ev)=>{this.themeClicked(item);}}
+                        title={item.keywords}
+                    >
+                        <div className="theme-item-title" title={item.title}>{item.title}</div>
+                        <img src={assetsPath + "/" + item.thumbnail} /><br />
                     </li>) : null;
             })}
             {subtree}
