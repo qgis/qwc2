@@ -3,6 +3,7 @@
     height: 100%;
     cursor: pointer;
     width: 1em;
+    margin-left: -1em;
 }
 
 #FullScreenSwitcher > span {

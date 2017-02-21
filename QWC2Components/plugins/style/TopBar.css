@@ -55,12 +55,14 @@
 
 #TopBar #AppMenu .appmenu-button {
     line-height: 3.5em;
+    margin-right: 1em;
+    width: 19em;
+    display: inline-block;
 }
 
 #TopBar #AppMenu .appmenu-label {
     font-weight: bold;
     transition: color 0.25s;
-    padding-left: 5em;
 }
 
 #TopBar #AppMenu.appmenu-visible .appmenu-label {
