@@ -110,7 +110,7 @@ const Search = React.createClass({
         this.searchTimer = setTimeout(this.search, 500);
     },
     checkShowFields(ev) {
-        if(this.props.searchProviders[UrlParams.getParam("sp")].fields) {
+        if(UrlParams.getParam("sp") && this.props.searchProviders[UrlParams.getParam("sp")].fields) {
             this.setState({showfields: true, focused: false});
             ev.preventDefault();
         }
