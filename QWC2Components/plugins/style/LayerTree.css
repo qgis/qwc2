@@ -1,3 +1,14 @@
+#LayerTree span.layertree-print-legend {
+    margin-left: 1em;
+    cursor: pointer;
+    border: 1px solid transparent;
+    padding: 0.25em;
+}
+
+#LayerTree span.layertree-print-legend:hover {
+    border: 1px solid white;
+}
+
 #LayerTree.desktop div.sidebar-body {
     margin-bottom: 2.25em;
 }

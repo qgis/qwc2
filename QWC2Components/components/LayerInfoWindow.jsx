@@ -33,7 +33,7 @@ const LayerInfoWindow = React.createClass({
         return null;
     },
     render() {
-        let legend = LayerUtils.getLegendGraphicURL(this.props.layer, this.props.sublayer);
+        let legend = LayerUtils.getLegendGraphicURL(this.props.layer, this.props.sublayer.name);
         if(legend) {
             legend = (<img className="layer-info-window-legend" src={legend} />);
         }

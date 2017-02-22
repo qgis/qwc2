@@ -122,7 +122,7 @@ const LayerTree = React.createClass({
         if(this.props.showLegendIcons) {
             legendicon = (
                 <span className="layertree-item-legend">
-                    <img className="layertree-item-legend-thumbnail" src={LayerUtils.getLegendGraphicURL(layer, sublayer)} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />
+                    <img className="layertree-item-legend-thumbnail" src={LayerUtils.getLegendGraphicURL(layer, sublayer.name)} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />
                 </span>
             );
         }
@@ -176,12 +176,14 @@ const LayerTree = React.createClass({
                     layer={this.state.activeinfo.layer} sublayer={this.state.activeinfo.sublayer} />
             );
         }
+        extraTitlebarContent = (<Glyphicon title="print-legend" className="layertree-print-legend" glyph="print" onClick={this.printLegend}/>)
         return (
             <div>
                 <SideBar id="LayerTree" width="20em"  title="appmenu.items.LayerTree"
                     icon={assetsPath + "/img/layers_white.svg"}
                     extraClasses={this.props.mobile ? "" : "desktop"}
-                    onHide={this.hideLegendTooltip}>
+                    onHide={this.hideLegendTooltip}
+                    extraTitlebarContent={extraTitlebarContent}>
                     <div role="body" className="layertree-container">
                         <div className="layertree-tree">{this.props.layers.map(this.renderLayerTree)}</div>
                         {maptipCheckbox}
@@ -262,6 +264,23 @@ const LayerTree = React.createClass({
     },
     toggleMapTips() {
         this.props.toggleMapTips(!this.props.mapTipsEnabled)
+    },
+    printLegend() {
+        let body = this.props.layers.map(layer => {
+            if(layer.group === 'background' || layer.type !== 'wms') {
+                return "";
+            }
+            return '<p><img src="' + LayerUtils.getLegendGraphicURL(layer, layer.params.LAYERS).replace("&", "&amp;") + '" /></p>'
+        }).join("");
+
+        let win = window.open("", "Legend", "toolbar=no, location=no, directories=no, status=no, menubar=no");
+        win.document.open();
+        win.document.write('<!DOCTYPE html><html>' +
+                           '<body onload="window.focus(); window.print(); window.close();">' +
+                           body +
+                           '</body></html>');
+       win.document.close();
+       win.focus();
     }
 });
 
