@@ -85,6 +85,15 @@ const Search = React.createClass({
             // Only reset search if the theme was changed (as opposed to the initial theme loaded)
             if(this.props.theme) {
                 this.resetSearch();
+            } else if(this.props.searchText) {
+                this.props.onSearch(
+                    this.props.searchText, {displaycrs: this.props.displaycrs},
+                    this.activeProviers(newProps));
+            }
+        } else if(newProps.results && newProps.results !== this.props.results) {
+            console.log(newProps.results);
+            if(newProps.results.length === 1 && newProps.results[0].items.length == 1) {
+                this.showResult(newProps.results[0].items[0], false);
             }
         }
     },
@@ -97,7 +106,7 @@ const Search = React.createClass({
             this.props.purgeResults();
             this.props.onSearch(
                 this.props.searchText, {displaycrs: this.props.displaycrs},
-                this.activeProviers());
+                this.activeProviers(this.props));
         } else {
             this.resetSearch();
         }
@@ -136,10 +145,10 @@ const Search = React.createClass({
         this.resetSearch();
         UrlParams.updateParams({sp: ev.target.value});
     },
-    activeProviers() {
-        let keys = UrlParams.getParam("sp") ? [UrlParams.getParam("sp")] : this.props.theme.searchProviders;
+    activeProviers(props) {
+        let keys = UrlParams.getParam("sp") ? [UrlParams.getParam("sp")] : props.theme.searchProviders;
         return keys.reduce((result, key) => {
-            result[key] = this.props.searchProviders[key];
+            result[key] = props.searchProviders[key];
             return result;
         }, {});
     },
@@ -244,7 +253,7 @@ const Search = React.createClass({
         if(searchText !== this.props.searchText || !this.props.results) {
             this.props.purgeResults();
             this.props.onSearchTextChange(searchText);
-            this.props.onSearch(searchText, {displaycrs: this.props.displaycrs}, this.activeProviers());
+            this.props.onSearch(searchText, {displaycrs: this.props.displaycrs}, this.activeProviers(this.props));
         }
         this.input.focus();
         this.setState({showfields: false});
@@ -280,20 +289,20 @@ const Search = React.createClass({
         }
         return (
             <li key={item.id} title={item.text}
-                onMouseDown={() => this.itemClicked(item)}
+                onMouseDown={() => this.showResult(item)}
                 dangerouslySetInnerHTML={{__html: item.text}}></li>
         );
     },
     moreClicked(item) {
         this.props.purgeResults();
-        this.props.searchMore(item, this.props.searchText, this.activeProviers())
+        this.props.searchMore(item, this.props.searchText, this.activeProviers(this.props))
     },
-    itemClicked(item) {
+    showResult(item, zoom=true) {
         this.props.removeLayer("searchselection");
         let wgscenterlatlon = CoordinatesUtils.reproject(item, item.crs, "EPSG:4326");
         let wgsextent = CoordinatesUtils.reprojectBbox(item.bbox, item.crs, "EPSG:4326");
         this.props.addMarker({lat: wgscenterlatlon.y, lng: wgscenterlatlon.x}, item.text);
-        if(this.props.mapConfig !== undefined) {
+        if(zoom && this.props.mapConfig !== undefined) {
             // find max zoom level greater than min scale
             let maxZoom = 0;
             const scales = mapUtils.getScales(this.props.mapConfig.projection);
