@@ -46,7 +46,7 @@ const DxfExport = React.createClass({
                 <input type="hidden" name="REQUEST" value="GetMap" readOnly="true" />
                 <input type="hidden" name="FORMAT" value="application/dxf" readOnly="true" />
                 <input type="hidden" name="LAYERS" value={themeLayer.params.LAYERS} readOnly="true" />
-                <input type="hidden" name="CRS" value="EPSG:3857" readOnly="true" />
+                <input type="hidden" name="CRS" value={this.props.map.projection} readOnly="true" />
                 <input type="hidden" name="FILENAME" value={this.props.theme.name + ".dxf"} readOnly="true" />
                 <input ref={input => this.extentInput = input} type="hidden" name="BBOX" value="" readOnly="true" />
                 </form>
