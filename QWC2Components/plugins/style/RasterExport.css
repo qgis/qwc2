@@ -1,0 +1,8 @@
+#RasterExport div.help-text {
+    font-style: italic;
+    padding-bottom: 0.5em;
+}
+
+#RasterExport div.export-settings {
+    font-size: small;
+}
