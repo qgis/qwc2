@@ -44,20 +44,20 @@
     display: none;
 }
 
-#TopBar.mobile #AppMenu ul.appmenu-menu,
-#TopBar.fullscreen #AppMenu ul.appmenu-menu
- {
-    position: absolute;
-    right: 0;
-    width: 100%;
-    max-width: 30em;
-}
-
 #TopBar #AppMenu .appmenu-button {
     line-height: 3.5em;
     margin-right: 1em;
     width: 19em;
     display: inline-block;
+}
+
+#TopBar.mobile #AppMenu .appmenu-button,
+#TopBar.fullscreen #AppMenu .appmenu-button {
+    width: auto;
+}
+
+#TopBar.mobile #AppMenu .appmenu-button {
+    margin-right: 0;
 }
 
 #TopBar #AppMenu .appmenu-label {
