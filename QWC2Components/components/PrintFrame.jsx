@@ -65,7 +65,8 @@ const PrintFrame = React.createClass({
             left: this.state.x + 'px',
             top: this.state.y + 'px',
             width: this.state.width + 'px',
-            height: this.state.height + 'px'
+            height: this.state.height + 'px',
+            lineHeight: this.state.height + 'px',
         };
         if(this.props.fixedFrame) {
             return (
@@ -80,7 +81,9 @@ const PrintFrame = React.createClass({
                     onTouchStart={(ev) => this.startSelection(ev.changedTouches[0])}
                     onTouchMove={(ev) => this.updateSelection(ev.changedTouches[0])}
                     onTouchEnd={(ev) => this.endSelection(ev.changedTouches[0])}>
-                    <div id="PrintFrame" style={boxStyle}></div>
+                    <div id="PrintFrame" style={boxStyle}>
+                        <span className="size-box">{this.state.width + " x " + this.state.height}</span>
+                    </div>
                 </div>
             );
         }

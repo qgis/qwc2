@@ -3,6 +3,15 @@
     box-shadow: rgba(0, 0, 0, 0.5) 0 0 0 30000px;
     z-index: 2;
     pointer-events: none;
+    text-align: center;
+    font-size: small;
+    overflow: hidden;
+}
+
+#PrintFrame span.size-box {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 0.25em;
+    white-space: nowrap;
 }
 
 #PrintFrameEventLayer {
