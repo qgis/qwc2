@@ -250,7 +250,7 @@ const Search = React.createClass({
         let searchText = filters.join(" AND ");
         if(searchText !== this.props.searchText || !this.props.results) {
             this.props.changeSearch(searchText, this.props.searchProvider);
-            this.props.onSearch(searchText, {displaycrs: this.props.displaycrs}, this.activeProviers(this.props));
+            this.props.startSearch(searchText, {displaycrs: this.props.displaycrs}, this.activeProviers(this.props));
         }
         this.input.focus();
         this.setState({showfields: false});
