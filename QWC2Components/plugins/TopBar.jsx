@@ -91,6 +91,6 @@ module.exports = (components) => { return {
     })(TopBar),
     reducers: {
         display: require("../reducers/display"),
-        search: require('../../MapStore2/web/client/reducers/search'),
+        search: require('../reducers/search'),
     }
 }};

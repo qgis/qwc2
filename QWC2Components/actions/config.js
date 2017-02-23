@@ -7,7 +7,7 @@
  */
 
 const {configureMap} = require('../../MapStore2/web/client/actions/config');
-const {searchTextChanged} = require('../../MapStore2/web/client/actions/search');
+const {changeSearch} = require('./search');
 const ConfigUtils = require('../../MapStore2/web/client/utils/ConfigUtils');
 const MapUtils = require('../../MapStore2/web/client/utils/MapUtils');
 const UrlParams = require("../utils/UrlParams");
@@ -36,8 +36,8 @@ function restoreMapConfig(dispatch, params) {
     dispatch(configureMap(mapConfig, false));
 
     // Set search text based on url st param
-    if (params.st) {
-        dispatch(searchTextChanged(params.st));
+    if (params.st || params.sp) {
+        dispatch(changeSearch(params.st, params.sp));
     }
 }
 

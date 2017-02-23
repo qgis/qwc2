@@ -13,13 +13,12 @@ const Spinner = require('react-spinkit');
 const {createSelector} = require('reselect');
 const classnames = require('classnames');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const {resultsPurge, resetSearch, searchTextChanged, addMarker, setHighlightedFeature} = require("../../MapStore2/web/client/actions/search");
 const LocaleUtils = require('../../MapStore2/web/client/utils/LocaleUtils');
 const mapUtils = require('../../MapStore2/web/client/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
 const {addLayer, removeLayer} = require('../../MapStore2/web/client/actions/layers');
 const {changeMapView} = require('../actions/map');
-const {startSearch,searchMore} = require("../actions/search");
+const {changeSearch, startSearch, searchMore, addMarker, setHighlightedFeature} = require("../actions/search");
 const displayCrsSelector = require('../selectors/displaycrs');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 const UrlParams = require("../utils/UrlParams");
@@ -28,31 +27,26 @@ require('./style/Search.css');
 const Search = React.createClass({
     propTypes: {
         searchText: React.PropTypes.string,
+        searchProvider: React.PropTypes.string, // The active provider key
+        pendingProviders: React.PropTypes.array, // Providers for which results are pending
+        searchProviders: React.PropTypes.object, // All available search providers
         results: React.PropTypes.array,
+        highlightedFeature: React.PropTypes.object,
+        theme: React.PropTypes.object,
         mapConfig: React.PropTypes.object,
         displaycrs: React.PropTypes.string,
-        onSearch: React.PropTypes.func,
+        changeSearch: React.PropTypes.func,
+        startSearch: React.PropTypes.func,
         searchMore: React.PropTypes.func,
-        purgeResults: React.PropTypes.func,
-        onSearchReset: React.PropTypes.func,
-        onSearchTextChange: React.PropTypes.func,
-        panToResult: React.PropTypes.func,
         addMarker: React.PropTypes.func,
-        searchProviders: React.PropTypes.object,
+        setHighlightedFeature: React.PropTypes.func,
+        panToResult: React.PropTypes.func,
         addLayer: React.PropTypes.func,
         removeLayer: React.PropTypes.func,
-        theme: React.PropTypes.object,
-        showFilterCombo: React.PropTypes.bool,
-        searchOptions: React.PropTypes.object,
-        setHighlightGeometry: React.PropTypes.func
+        searchOptions: React.PropTypes.object
     },
     getDefaultProps() {
-        return {
-            searchText: "",
-            results: null,
-            mapConfig: undefined,
-            showFilterCombo: false
-        }
+        return {};
     },
     getInitialState() {
         return {currentResult: null, showfields: false, showproviderselection: false}
@@ -64,36 +58,49 @@ const Search = React.createClass({
         this.searchTimer = 0;
     },
     componentWillReceiveProps(newProps) {
+        // If the theme changed, reset search and select provider
         if(newProps.theme && newProps.theme !== this.props.theme) {
-            let found = false;
-            if(newProps.searchOptions.showProviderSelection && newProps.searchProviders) {
-                if(UrlParams.getParam("sp") && newProps.theme.searchProviders.includes("sp")) {
-                    found = true;
-                } else {
-                    for(let key of Object.keys(newProps.searchProviders)) {
-                        if(newProps.theme.searchProviders.includes(key)) {
-                            UrlParams.updateParams({sp: key});
-                            found = true;
-                            break;
-                        }
-                    }
-                }
+            // Only reset search text if the theme was changed (as opposed to the initial theme loaded)
+            let newSearchText = this.props.theme ? "" : newProps.searchText;
+
+            // Ensure search provider references a valid provider
+            let newSearchProvider = newProps.searchProvider;
+            if(!newProps.searchOptions.showProviderSelection || !newProps.theme.searchProviders || newProps.theme.searchProviders.length === 0) {
+                newSearchProvider = null;
+            } else if(!newProps.theme.searchProviders.includes(newProps.searchProvider)) {
+                newSearchProvider = newProps.theme.searchProviders[0];
             }
-            if(!found) {
-                UrlParams.updateParams({sp: undefined});
+
+            newProps.changeSearch(newSearchText, newSearchProvider);
+
+            // If initial theme loaded and a search text is defined, fire off the search
+            if(!this.props.theme) {
+                this.search(newProps);
             }
-            // Only reset search if the theme was changed (as opposed to the initial theme loaded)
-            if(this.props.theme) {
-                this.resetSearch();
-            } else if(this.props.searchText) {
-                this.props.onSearch(
-                    this.props.searchText, {displaycrs: this.props.displaycrs},
-                    this.activeProviers(newProps));
-            }
-        } else if(newProps.results && newProps.results !== this.props.results) {
-            console.log(newProps.results);
+        }
+        // If results changed and a unique result is returned, select it automatically
+        else if(newProps.results && newProps.results !== this.props.results) {
             if(newProps.results.length === 1 && newProps.results[0].items.length == 1) {
                 this.showResult(newProps.results[0].items[0], false);
+            }
+        }
+        // Handle changes in highlighted feature
+        if(newProps.highlightedFeature !== this.props.highlightedFeature) {
+            this.props.removeLayer("searchselection");
+            if(newProps.highlightedFeature) {
+                let layer = {
+                    id: "searchselection",
+                    name: "Search selection",
+                    title: "Selection",
+                    type: "vector",
+                    features: [newProps.highlightedFeature],
+                    featuresCrs: this.props.mapConfig.projection,
+                    visibility: true,
+                    queryable: false,
+                    crs: this.props.mapConfig.projection,
+                    layertreehidden: true
+                };
+                this.props.addLayer(layer, true);
             }
         }
     },
@@ -101,52 +108,41 @@ const Search = React.createClass({
         ev.preventDefault();
         ev.stopPropagation();
     },
-    search() {
-        if(this.props.searchText) {
-            this.props.purgeResults();
-            this.props.onSearch(
-                this.props.searchText, {displaycrs: this.props.displaycrs},
-                this.activeProviers(this.props));
-        } else {
-            this.resetSearch();
+    search(props) {
+        if(props.searchText) {
+            props.startSearch(props.searchText, {displaycrs: props.displaycrs}, this.activeProviers(props));
         }
     },
     resetSearch() {
         this.setState({currentResult: null, focused: false, showfields: false});
-        UrlParams.updateParams({st: undefined});
-        this.props.onSearchReset();
-        this.props.removeLayer("searchselection");
+        this.props.changeSearch("", this.props.searchProvider);
     },
     onChange(ev) {
-        this.props.onSearchTextChange(ev.target.value);
+        this.props.changeSearch(ev.target.value, this.props.searchProvider);
         clearTimeout(this.searchTimer);
-        this.searchTimer = setTimeout(this.search, 500);
+        this.searchTimer = setTimeout(() => this.search(this.props), 500);
     },
     checkShowFields(ev) {
-        if(UrlParams.getParam("sp") && this.props.searchProviders[UrlParams.getParam("sp")].fields) {
+        if(this.props.searchProvider && this.props.searchProviders[this.props.searchProvider].fields) {
             this.setState({showfields: true, focused: false});
             ev.preventDefault();
         }
     },
     onFocus() {
         if(!this.state.showfields && this.props.searchText && !this.props.results) {
-            this.search();
+            this.search(this.props);
         }
         this.setState({focused: true});
     },
     onKeyDown(ev) {
         if(ev.keyCode === 13) {
-            this.search();
+            this.search(this.props);
         } else if(ev.keyCode === 27) {
             ev.target.blur();
         }
     },
-    providerChanged(ev) {
-        this.resetSearch();
-        UrlParams.updateParams({sp: ev.target.value});
-    },
     activeProviers(props) {
-        let keys = UrlParams.getParam("sp") ? [UrlParams.getParam("sp")] : props.theme.searchProviders;
+        let keys = this.props.searchProvider ? [this.props.searchProvider] : props.theme.searchProviders;
         return keys.reduce((result, key) => {
             result[key] = props.searchProviders[key];
             return result;
@@ -156,7 +152,7 @@ const Search = React.createClass({
         let placeholder = LocaleUtils.getMessageById(this.context.messages, "search.placeholder");
         if(!this.props.searchText) {
             var addonAfter = (<Glyphicon glyph="search"/>);
-        } else if(this.props.searchText && !this.props.results && this.state.focused) {
+        } else if(this.props.searchText && this.state.focused && this.props.pendingProviders && this.props.pendingProviders.length > 0) {
             var addonAfter = (<Spinner spinnerName="circle" noFadeIn/>);
         } else {
             var addonAfter = (<Glyphicon glyph="remove" onClick={this.resetSearch}/>);
@@ -169,7 +165,9 @@ const Search = React.createClass({
                     <ul className="searchbar-provider-selection">
                         {Object.keys(this.props.searchProviders).map(key => {
                             if(this.props.theme && this.props.theme.searchProviders.includes(key)) {
-                                return (<li key={key} onClick={() => UrlParams.updateParams({sp: key})}>{this.props.searchProviders[key].label}</li>);
+                                return (
+                                    <li key={key} onClick={() => this.props.changeSearch(this.props.searchText, key)}>{this.props.searchProviders[key].label}</li>
+                                );
                             }
                         })}
                     </ul>
@@ -184,8 +182,8 @@ const Search = React.createClass({
                     {providerSelectionMenu}
                 </span>
             );
-            if(UrlParams.getParam("sp")) {
-                placeholder += ": " + this.props.searchProviders[UrlParams.getParam("sp")].label;
+            if(this.props.searchProvider) {
+                placeholder += ": " + this.props.searchProviders[this.props.searchProvider].label;
             }
         }
         let searchform = null;
@@ -251,8 +249,7 @@ const Search = React.createClass({
         });
         let searchText = filters.join(" AND ");
         if(searchText !== this.props.searchText || !this.props.results) {
-            this.props.purgeResults();
-            this.props.onSearchTextChange(searchText);
+            this.props.changeSearch(searchText, this.props.searchProvider);
             this.props.onSearch(searchText, {displaycrs: this.props.displaycrs}, this.activeProviers(this.props));
         }
         this.input.focus();
@@ -282,7 +279,7 @@ const Search = React.createClass({
             return (
                 <li key={item.id}
                     onMouseDown={this.killEvent}
-                    onClick={() => this.moreClicked(item)}>
+                    onClick={() => this.props.searchMore(item, this.props.searchText, this.activeProviers(this.props))}>
                     <i><Message msgId="search.more" /></i>
                 </li>
             );
@@ -293,12 +290,8 @@ const Search = React.createClass({
                 dangerouslySetInnerHTML={{__html: item.text}}></li>
         );
     },
-    moreClicked(item) {
-        this.props.purgeResults();
-        this.props.searchMore(item, this.props.searchText, this.activeProviers(this.props))
-    },
     showResult(item, zoom=true) {
-        this.props.removeLayer("searchselection");
+        this.props.setHighlightedFeature(null);
         let wgscenterlatlon = CoordinatesUtils.reproject(item, item.crs, "EPSG:4326");
         let wgsextent = CoordinatesUtils.reprojectBbox(item.bbox, item.crs, "EPSG:4326");
         this.props.addMarker({lat: wgscenterlatlon.y, lng: wgscenterlatlon.x}, item.text);
@@ -339,45 +332,31 @@ const Search = React.createClass({
         this.setState({currentResult: item});
     },
     showFeatureGeometry(item, geometry, crs) {
-        if(item !== this.state.currentResult) {
-            this.props.setHighlightGeometry(null);
-            return;
+        if(item === this.state.currentResult) {
+            let feature = IdentifyUtils.wktToGeoJSON(geometry);
+            feature.geometry = IdentifyUtils.reprojectFeatureGeometry(feature.geometry, crs, this.props.mapConfig.projection);
+            this.props.setHighlightedFeature(feature);
         }
-        let feature = IdentifyUtils.wktToGeoJSON(geometry);
-        feature.geometry = IdentifyUtils.reprojectFeatureGeometry(feature.geometry, crs, this.props.mapConfig.projection);
-        this.props.setHighlightedFeature(feature);
-        let layer = {
-            id: "searchselection",
-            name: "Search selection",
-            title: "Selection",
-            type: "vector",
-            features: [feature],
-            featuresCrs: this.props.mapConfig.projection,
-            visibility: true,
-            queryable: false,
-            crs: this.props.mapConfig.projection,
-            layertreehidden: true
-        };
-        this.props.addLayer(layer, true);
     }
 });
 
 module.exports = (searchProviders) => connect(createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
-    searchText: state.search ? state.search.searchText : "",
+    searchText: state.search ? state.search.text : "",
+    searchProvider: state.search ?  state.search.provider : null,
+    pendingProviders: state.search ? state.search.pendingProviders : null,
     results: state.search ? state.search.results : null,
+    highlightedFeature: state.search ? state.search.highlightedFeature : null,
     mapConfig: state.map ? state.map.present : undefined,
     displaycrs: displaycrs,
     theme: state.theme ? state.theme.current : null,
     searchProviders: searchProviders
 })), {
-    onSearch: startSearch,
+    changeSearch: changeSearch,
+    startSearch: startSearch,
     searchMore: searchMore,
-    purgeResults: resultsPurge,
-    onSearchReset: resetSearch,
-    onSearchTextChange: searchTextChanged,
-    panToResult: changeMapView,
     addMarker: addMarker,
+    setHighlightedFeature: setHighlightedFeature,
+    panToResult: changeMapView,
     addLayer: addLayer,
-    removeLayer: removeLayer,
-    setHighlightedFeature: setHighlightedFeature
+    removeLayer: removeLayer
 })(Search);
