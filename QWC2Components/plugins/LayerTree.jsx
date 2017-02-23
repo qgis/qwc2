@@ -15,6 +15,7 @@ const classnames = require('classnames');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {changeLayerProperties} = require('../../MapStore2/web/client/actions/layers')
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
+const LocaleUtils = require("../../MapStore2/web/client/utils/LocaleUtils");
 const {toggleMapTips} = require('../actions/layertree');
 const LayerInfoWindow = require('../components/LayerInfoWindow');
 const {SideBar} = require('../components/SideBar');
@@ -44,6 +45,9 @@ const LayerTree = React.createClass({
             legendTooltip: null,
             activeinfo: null
         };
+    },
+    contextTypes: {
+        messages: React.PropTypes.object
     },
     getGroupVisibility(group) {
         if(!group.sublayers || group.sublayers.length === 0) {
@@ -176,7 +180,8 @@ const LayerTree = React.createClass({
                     layer={this.state.activeinfo.layer} sublayer={this.state.activeinfo.sublayer} />
             );
         }
-        extraTitlebarContent = (<Glyphicon title="print-legend" className="layertree-print-legend" glyph="print" onClick={this.printLegend}/>)
+        let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
+        extraTitlebarContent = (<Glyphicon title={printLegendTooltip} className="layertree-print-legend" glyph="print" onClick={this.printLegend}/>)
         return (
             <div>
                 <SideBar id="LayerTree" width="20em"  title="appmenu.items.LayerTree"
