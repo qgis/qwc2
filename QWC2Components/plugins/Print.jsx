@@ -149,7 +149,7 @@ const Print = React.createClass({
                             <td><Message msgId="print.resolution" /></td>
                             <td>
                                 <span className="input-frame">
-                                    <input name="DPI" type="number" value={this.state.dpi} onChange={this.changeResolution} min="50" max="1200"/>
+                                    <input name="DPI" type="number" value={this.state.dpi || ""} onChange={this.changeResolution} min="50" max="1200"/>
                                     <span> dpi</span>
                                 </span>
                             </td>
