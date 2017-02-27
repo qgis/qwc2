@@ -101,7 +101,7 @@ const Print = React.createClass({
             action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(action) + "&filename=" + encodeURIComponent(this.props.theme.name + ".pdf");
         }
         let rotation = this.props.map.bbox ? this.props.map.bbox.rotation : 0;
-        let scaleChooser = (<input name={mapName + ":scale"} type="number" value={this.state.scale} onChange={this.changeScale} min="1"/>);
+        let scaleChooser = (<input name={mapName + ":scale"} type="number" value={this.state.scale || ""} onChange={this.changeScale} min="1"/>);
         if(this.props.theme.printScales && this.props.theme.printScales.length > 0) {
             scaleChooser = (
                 <select name={mapName + ":scale"} value={this.state.scale} onChange={this.changeScale}>
@@ -179,18 +179,18 @@ const Print = React.createClass({
                         })}
                     </tbody></table>
                     <div>
-                        <input readOnly="true" name={mapName + ":extent"} type={formvisibility} value={extent} />
+                        <input readOnly="true" name={mapName + ":extent"} type={formvisibility} value={extent || ""} />
                         <input readOnly="true" name="SERVICE" type={formvisibility} value="WMS" />
                         <input readOnly="true" name="VERSION" type={formvisibility} value="1.3" />
                         <input readOnly="true" name="REQUEST" type={formvisibility} value="GetPrint" />
                         <input readOnly="true" name="FORMAT" type={formvisibility} value="pdf" />
                         <input readOnly="true" name="TRANSPARENT" type={formvisibility} value="true" />
                         <input readOnly="true" name="SRS" type={formvisibility} value={this.props.map.projection} />
-                        <input readOnly="true" name="LAYERS" type={formvisibility} value={printLayers} />
-                        <input readOnly="true" name="OPACITIES" type={formvisibility} value={printOpacities} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_GEOM"} type={formvisibility} value={highlightGeom} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_SYMBOL"} type={formvisibility} value={highlightStyle} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELSTRING"} type={formvisibility} value={highlightLabel} />
+                        <input readOnly="true" name="LAYERS" type={formvisibility} value={printLayers || ""} />
+                        <input readOnly="true" name="OPACITIES" type={formvisibility} value={printOpacities || ""} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_GEOM"} type={formvisibility} value={highlightGeom || ""} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_SYMBOL"} type={formvisibility} value={highlightStyle || ""} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELSTRING"} type={formvisibility} value={highlightLabel || ""} />
                         <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELCOLOR"} type={formvisibility} value="black" />
                         <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERCOLOR"} type={formvisibility} value="white" />
                         <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERSIZE"} type={formvisibility} value="1" />
