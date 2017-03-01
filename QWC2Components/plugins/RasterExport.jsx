@@ -30,27 +30,33 @@ const RasterExport = React.createClass({
         }
     },
     getInitialState() {
-        return {extension: "png"}
+        return {selectedFormat: null}
     },
     formatChanged(ev) {
-        this.setState({extension: ev.target.value.split("/").pop()})
+        this.setState({selectedFormat: ev.target.value})
     },
     renderBody() {
         let themeLayer = this.props.layers.find(layer => layer.id === this.props.themeLayerId);
-        let filename = this.props.theme.name + "." + this.state.extension;
         let action = this.props.theme.url;
+        let availableFormats = this.props.theme.availableFormats;
+        let defaultFormat = availableFormats.includes('image/geotiff') ? 'image/geotiff' : availableFormats[0];
+        let selectedFormat = this.state.selectedFormat || defaultFormat;
+        let filename = this.props.theme.name + "." + selectedFormat.split(";")[0].split("/").pop();
         if (ConfigUtils.getConfigProp("proxyUrl")) {
-            action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(action) + "&filename=" + encodeURIComponent(this.props.theme.name + "." + this.state.extension);
+            action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(action) + "&filename=" + encodeURIComponent(filename);
         }
         return (
             <span role="body">
-                <form ref={form => this.form = form} action={action} method="POST" target="_blank">
+                <form ref={form => this.form = form} action={action} method="POST" target="_blank" >
                 <div className="help-text"><Message msgId="rasterexport.selectinfo" /></div>
                 <div className="export-settings">
                     <Message msgId="rasterexport.format" />&nbsp;
-                    <select name="FORMAT" defaultValue="image/png" onChange={this.formatChanged}>
-                        <option value="image/png">PNG</option>
-                        <option value="image/jpeg">JPEG</option>
+                    <select name="FORMAT" defaultValue={defaultFormat} onChange={this.formatChanged}>
+                        {
+                            availableFormats.map(format => (
+                                <option key={format} value={format}>{format}</option>
+                            ))
+                        }
                     </select>
                 </div>
                 <input type="hidden" name="SERVICE" value="WMS" readOnly="true" />
@@ -63,7 +69,7 @@ const RasterExport = React.createClass({
                 <input type="hidden" name="TILED" value="false" readOnly="true" />
                 <input type="hidden" name="STYLES" value="" readOnly="true" />
                 <input type="hidden" name="CRS" value={this.props.map.projection} readOnly="true" />
-                <input type="hidden" name="FILENAME" value={this.props.theme.name + "." + this.state.extension} readOnly="true" />
+                <input type="hidden" name="FILENAME" value={filename} readOnly="true" />
                 <input ref={input => this.extentInput = input} type="hidden" name="BBOX" value="" readOnly="true" />
                 <input ref={input => this.widthInput = input} type="hidden" name="WIDTH" value="" readOnly="true" />
                 <input ref={input => this.heightInput = input} type="hidden" name="HEIGHT" value="" readOnly="true" />
