@@ -25,13 +25,14 @@ const QWCMapPlugin = React.createClass({
     },
     getDefaultProps() {
         return {
-            zoomControl: true,
+            zoomControl: false,
             actions: {onMapViewChanges: changeMapView},
             tools: ['measurement', 'draw', 'locate', 'overview', 'scalebar', 'selection'],
             toolsOptions: {
                 measurement: {updateOnMouseMove: true},
                 overview: { layers: [] }
-            }
+            },
+            mapType: "openlayers"
         };
     },
     render() {
