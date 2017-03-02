@@ -26,7 +26,6 @@ const ThemeSwitcher = React.createClass({
         activeTheme: React.PropTypes.object,
         activeThemeLayer: React.PropTypes.string,
         haveMap: React.PropTypes.bool,
-        mapProjection: React.PropTypes.string,
         layers: React.PropTypes.array,
         changeTheme: React.PropTypes.func,
         changeFilter: React.PropTypes.func,
@@ -88,13 +87,14 @@ const ThemeSwitcher = React.createClass({
                         centerZoom = {
                             center: {x: coords[0], y: coords[1]},
                             zoom: closestIdx,
-                            crs: params.icrs || this.props.mapProjection
+                            crs: params.icrs || theme.mapCrs
                         };
                     }
                 } else if(params.ie) {
                     extent = {
                         bounds: params.ie.split(";").map(x => parseFloat(x)),
-                        crs: params.icrs || this.props.mapProjection}
+                        crs: params.icrs || theme.mapCrs
+                    };
                 }
             }
             if(!centerZoom && (!extent || extent.bounds.length !== 4)) {
@@ -269,7 +269,6 @@ const selector = (state) => ({
     activeThemeLayer: state.theme ? state.theme.currentlayer : null,
     filter: state.theme ? state.theme.switcherfilter : "",
     haveMap: state.map ? true : false,
-    mapProjection: state.map && state.map.present ? state.map.present.projection : "EPSG:3857",
     layers: state.layers && state.layers.flat ? state.layers.flat : []
 });
 

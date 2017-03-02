@@ -9,7 +9,7 @@
 const UrlParams = require("../utils/UrlParams");
 const LayerUtils = require("../utils/LayerUtils");
 const {addLayer,removeLayer} = require("../../MapStore2/web/client/actions/layers");
-const {changeMapScales, zoomToExtent, zoomToPoint} = require("../../MapStore2/web/client/actions/map");
+const {changeMapScales, zoomToExtent, zoomToPoint, changeMapCrs} = require("../../MapStore2/web/client/actions/map");
 
 const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
 const SET_THEME_SWITCHER_FILTER = 'SET_THEME_FILTER';
@@ -37,17 +37,23 @@ function setCurrentTheme(theme, layer, backgroundLayers, prevlayerid, prevBackgr
         // Update url
         UrlParams.updateParams({t: theme.id, l: LayerUtils.constructUrlParam(layer), bl: activebglayer});
 
-        // update map scales
-        const p = new Promise((resolve) => {
-            resolve(dispatch(changeMapScales(scales)));
+        // update map crs
+        const p1 = new Promise((resolve) => {
+            resolve(dispatch(changeMapCrs(theme.mapCrs)));
         });
-        p.then(() => {
-            // zoom to extent only after new scales have been set
-            if(centerZoom) {
-                dispatch(zoomToPoint(centerZoom.center, centerZoom.zoom, centerZoom.crs));
-            } else {
-                dispatch(zoomToExtent(zoomExtent.bounds, zoomExtent.crs));
-            }
+        p1.then(() => {
+            // then update map scales
+            const p2 = new Promise((resolve) => {
+                resolve(dispatch(changeMapScales(scales)));
+            });
+            p2.then(() => {
+                // then update zoom to extent
+                if(centerZoom) {
+                    dispatch(zoomToPoint(centerZoom.center, centerZoom.zoom, centerZoom.crs));
+                } else {
+                    dispatch(zoomToExtent(zoomExtent.bounds, zoomExtent.crs));
+                }
+            });
         });
 
         dispatch({

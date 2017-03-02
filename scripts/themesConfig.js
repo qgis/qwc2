@@ -301,6 +301,7 @@ function getTheme(configItem, resultItem) {
             resultItem.backgroundLayers = configItem.backgroundLayers;
             resultItem.searchProviders = configItem.searchProviders;
             resultItem.additionalMouseCrs = configItem.additionalMouseCrs;
+            resultItem.mapCrs = configItem.mapCrs || 'EPSG:3857';
             if (printTemplates.length > 0) {
                 resultItem.print = printTemplates;
             }
@@ -377,6 +378,7 @@ function getGroupThemes(configGroup, resultGroup) {
             }
           ],
           "searchProviders": ["<search provider>"],   // optional search providers
+          "mapCrs: "EPSG:3857",                       // optional, the map projection, defaults to EPSG:3857
           "additionalMouseCrs": ["<epsg code>"]       // optional list of additional CRS for mouse position (map projection and WGS84 are listed by default). Make sure proj defs are loaded in js/appConfig.js.
           "printLabelForSearchResult": "<labelid>"    // optional, a labelid in the print composition where to insert the label of the selected search result
           "watermark": {                              // optional, configuration of watermark to place on raster-export images

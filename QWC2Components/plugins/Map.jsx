@@ -32,7 +32,8 @@ const QWCMapPlugin = React.createClass({
                 measurement: {updateOnMouseMove: true},
                 overview: { layers: [] }
             },
-            mapType: "openlayers"
+            mapType: "openlayers",
+            projection: "EPSG:3857"
         };
     },
     render() {

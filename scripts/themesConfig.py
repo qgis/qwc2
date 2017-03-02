@@ -271,7 +271,12 @@ def getTheme(configItem, resultItem):
         resultItem["expanded"] = True
         resultItem["backgroundLayers"] = configItem["backgroundLayers"]
         resultItem["searchProviders"] = configItem["searchProviders"]
-        resultItem["additionalMouseCrs"] = configItem["additionalMouseCrs"]
+        if "additionalMouseCrs" in configItem:
+            resultItem["additionalMouseCrs"] = configItem["additionalMouseCrs"]
+        if "mapCrs" in configItem:
+            resultItem["mapCrs"] = configItem["mapCrs"]
+        else:
+            resultItem["mapCrs"] = "EPSG:3857"
         if printTemplates:
             resultItem["print"] = printTemplates
         resultItem["drawingOrder"] = drawingOrder;
@@ -351,6 +356,7 @@ def getGroupThemes(configGroup, resultGroup):
             }
           ],
           "searchProviders": ["<search provider>"],   // optional search providers
+          "mapCrs: "EPSG:3857",                       // optional, the map projection, defaults to EPSG:3857
           "additionalMouseCrs": ["<epsg code>"]       // optional list of additional CRS for mouse position (map projection and WGS84 are listed by default). Make sure proj defs are loaded in js/appConfig.js.
           "printLabelForSearchResult": "<labelid>"    // optional, a labelid in the print composition where to insert the label of the selected search result
           "watermark": {                              // optional, configuration of watermark to place on raster-export images
