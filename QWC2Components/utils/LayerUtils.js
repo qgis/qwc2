@@ -10,7 +10,7 @@ const assign = require('object-assign');
 
  const LayerUtils = {
      restoreVisibleLayers: function(sublayers, initiallayers, initialopacities) {
-         let newsublayers = sublayers.splice(0);
+         let newsublayers = sublayers.slice(0);
          newsublayers.map((sublayer, idx) => {
              if(sublayer.sublayers) {
                   // Is group
