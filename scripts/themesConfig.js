@@ -355,68 +355,66 @@ function getGroupThemes(configGroup, resultGroup) {
 }
 
 /* load themesConfig.json:
-  {
-    "themes": {
-      "items": [
-        {
-          "url": "<http://localhost/wms/theme>",
-          "title": "<Custom theme title>",            // optional, use WMS title if not set
-          "thumbnail": "<filename>",                  // optional image file in assets/img/mapthumbs, if not set uses WMS GetMap to generate the thumbnail and stores it in assets/img/mapthumbs
-          "attribution": "<Attribution>",             // optional theme attribution
-          "attributionUrl": "<attribution URL>",      // optional theme attribution URL
-          "default": true,                            // optional, set this as the initial theme
-          "scales": [25000, 10000, 5000, 2500],       // optional custom map scales
-          "printScales":  [25000, 10000, 5000, 2500], // optional confined set of print scales. Freely choosable if not defined.
-          "extent": [xmin, ymin, xmax, ymax],         // optional custom extent which overrides extent from WMS capabilities
-          "tiled": true,                              // optional, use tiled WMS (default is false)
-          "format": "image/png",                      // optional, the image format to use in the WMS request, defaults to image/png
-          "backgroundLayers": [                       // optional background layers
-            {
-              "name": "<background layer name>",      // background layer name from list below
-              "printLayer": "<WMS layer name>",       // optional equivalent WMS layer name for printing
-              "visibility": true                      // optional initial visibility on topic selection
-            }
-          ],
-          "searchProviders": ["<search provider>"],   // optional search providers
-          "mapCrs: "EPSG:3857",                       // optional, the map projection, defaults to EPSG:3857
-          "additionalMouseCrs": ["<epsg code>"]       // optional list of additional CRS for mouse position (map projection and WGS84 are listed by default). Make sure proj defs are loaded in js/appConfig.js.
-          "printLabelForSearchResult": "<labelid>"    // optional, a labelid in the print composition where to insert the label of the selected search result
-          "watermark": {                              // optional, configuration of watermark to place on raster-export images
-            "text": "<watermark text>",
-            "texpadding": "1",                        // optional, padding between text and frame, in points
-            "fontsize": "14",                         // optional, font size
-            "fontfamily": "sans",                     // optional, font family
-            "fontcolor": "#0000FF",                   // optional, font color
-            "backgroundcolor": "#FFFFFF",             // optional, background color of the frame
-            "framecolor": "#000000",                  // optional, color of the frame border
-            "framewidth": 1                           // optional, width of the frame border, in pixels
+{
+  "themes": {
+    "items": [
+      {
+        "url": "<http://localhost/wms/theme>",
+        "title": "<Custom theme title>",            // optional, use WMS title if not set
+        "thumbnail": "<filename>",                  // optional image file in assets/img/mapthumbs, if not set uses WMS GetMap to generate the thumbnail and stores it in assets/img/mapthumbs
+        "attribution": "<Attribution>",             // optional theme attribution
+        "attributionUrl": "<attribution URL>",      // optional theme attribution URL
+        "default": true,                            // optional, set this as the initial theme
+        "scales": [25000, 10000, 5000, 2500],       // optional custom map scales, defaults to defaultScales (see below)
+        "tiled": true,                              // optional, use tiled WMS (default is false)
+        "format": "image/png",                      // optional, the image format to use in the WMS request, defaults to image/png
+        "backgroundLayers": [                       // optional background layers
+          {
+            "name": "<background layer name>",      // background layer name from list below
+            "printLayer": "<WMS layer name>",       // optional equivalent WMS layer name for printing
+            "visibility": true                      // optional initial visibility on topic selection
           }
+        ],
+        "searchProviders": ["<search provider>"],   // optional search providers
+        "mapCrs: "EPSG:3857",                       // optional, the map projection, defaults to EPSG:3857
+        "additionalMouseCrs": ["<epsg code>"]       // optional list of additional CRS for mouse position (map projection and WGS84 are listed by default). Make sure proj defs are loaded in js/appConfig.js.
+        "printLabelForSearchResult": "<labelid>"    // optional, a labelid in the print composition where to insert the label of the selected search result
+        "watermark": {                              // optional, configuration of watermark to place on raster-export images
+          "text": "<watermark text>",
+          "texpadding": "1",                        // optional, padding between text and frame, in points
+          "fontsize": "14",                         // optional, font size
+          "fontfamily": "sans",                     // optional, font family
+          "fontcolor": "#0000FF",                   // optional, font color
+          "backgroundcolor": "#FFFFFF",             // optional, background color of the frame
+          "framecolor": "#000000",                  // optional, color of the frame border
+          "framewidth": 1                           // optional, width of the frame border, in pixels
         }
-      ],
-      "groups": [                                     // optional, nested groups
-        {
-          "title": "<Group title>",
-          "items": [
-            {
-              "url": "<http://localhost/wms/group_theme>"
-            }
-          ]
-          "groups": [
-            // subgroups
-          ]
-        }
-      ],
-      "backgroundLayers": [                           // optional list of background layers for themes
-        {
-          "name": "<background layer name>",          // referenced by themes
-          "title": "<Background layer title>",
-          "thumbnail": "<filename>",                  // optional image file in assets/img/mapthumbs, use default.jpg if not set
-          ...                                         // layer params (excluding "group" and "visibility")
-        }
-      ]
-    },
-    "defaultScales": [50000, 25000, 10000, 5000]      // optional default map scales
-  }
+      }
+    ],
+    "groups": [                                     // optional, nested groups
+      {
+        "title": "<Group title>",
+        "items": [
+          {
+            "url": "<http://localhost/wms/group_theme>"
+          }
+        ]
+        "groups": [
+          // subgroups
+        ]
+      }
+    ],
+    "backgroundLayers": [                           // optional list of background layers for themes
+      {
+        "name": "<background layer name>",          // referenced by themes
+        "title": "<Background layer title>",
+        "thumbnail": "<filename>",                  // optional image file in assets/img/mapthumbs, use default.jpg if not set
+        ...                                         // layer params (excluding "group" and "visibility")
+      }
+    ]
+  },
+  "defaultScales": [50000, 25000, 10000, 5000]      // required, default map scales
+}
 */
 console.log("Reading themesConfig.json");
 var config = require(process.cwd() + '/themesConfig.json');

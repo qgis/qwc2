@@ -29,6 +29,7 @@ const BottomBar = React.createClass({
         onCRSChange: React.PropTypes.func,
         mapcrs: React.PropTypes.string,
         mapscale: React.PropTypes.number,
+        mapscales: React.PropTypes.array,
         activeThemeId: React.PropTypes.string,
         fullscreen: React.PropTypes.bool,
         onScaleChange: React.PropTypes.func,
@@ -37,14 +38,6 @@ const BottomBar = React.createClass({
     getDefaultProps() {
         return {
             mapscale: 0
-        }
-    },
-    getInitialState: function() {
-        return {mapscales: undefined};
-    },
-    componentWillReceiveProps(nextProps) {
-        if ((this.props.mapcrs != nextProps.mapcrs) || (this.props.activeThemeId != nextProps.activeThemeId) || (this.state.mapscales === undefined && nextProps.mapcrs !== undefined)) {
-            this.setState({mapscales: getScales(nextProps.mapcrs)});
         }
     },
     render() {
@@ -92,7 +85,7 @@ const BottomBar = React.createClass({
                 <CoordinateDisplayer displaycrs={this.props.displaycrs} />
                 <CRSSelector useRawInput={true} enabled={true} crs={this.props.displaycrs} id="crssselector" onCRSChange={this.props.onCRSChange} availableCRS={availableCRS}/>
                 <span className="scale_label"><Message msgId="bottombar.scale_label" />: </span>
-                <ScaleBox useRawInput={true} id="scaleselector" scales={this.state.mapscales} currentZoomLvl={this.props.mapscale} onChange={this.props.onScaleChange} />
+                <ScaleBox useRawInput={true} id="scaleselector" scales={this.props.mapscales} currentZoomLvl={this.props.mapscale} onChange={this.props.onScaleChange} />
                 {bottomLinks}
             </div>
         );
@@ -102,14 +95,18 @@ const BottomBar = React.createClass({
     }
 });
 
-const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
-    displaycrs: displaycrs,
-    mapcrs: state && state.map && state.map.present ? state.map.present.projection : "EPSG:3857",
-    mapscale: state && state.map && state.map.present ? state.map.present.zoom : 0,
-    activeThemeId: state.theme && state.theme.current ? state.theme.current.id : undefined,
-    fullscreen: state.display && state.display.fullscreen,
-    additionalMouseCrs: state.theme && state.theme.current ? state.theme.current.additionalMouseCrs : []
-}));
+const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => {
+    let map = state && state.map && state.map.present ? state.map.present : null;
+    return {
+        displaycrs: displaycrs,
+        mapcrs: map ? map.projection : "EPSG:3857",
+        mapscale: map ? map.zoom : 0,
+        mapscales: map  && map.mapOptions && map.mapOptions.view ? map.mapOptions.view.scales : [],
+        activeThemeId: state.theme && state.theme.current ? state.theme.current.id : undefined,
+        fullscreen: state.display && state.display.fullscreen,
+        additionalMouseCrs: state.theme && state.theme.current ? state.theme.current.additionalMouseCrs : []
+    };
+});
 
 module.exports = {
     BottomBarPlugin: connect(selector, {
