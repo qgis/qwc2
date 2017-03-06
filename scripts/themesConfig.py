@@ -271,6 +271,8 @@ def getTheme(configItem, resultItem):
             resultItem["scales"] = configItem["scales"]
         if "printScales" in configItem:
             resultItem["printScales"] = configItem["printScales"]
+        if "printGrid" in configItem:
+            resultItem["printGrid"] = configItem["printGrid"]
         # NOTE: skip root WMS layer
         resultItem["sublayers"] = layerTree[0]["sublayers"]
         resultItem["expanded"] = True
@@ -348,7 +350,14 @@ def getGroupThemes(configGroup, resultGroup):
         "attribution": "<Attribution>",             // optional theme attribution
         "attributionUrl": "<attribution URL>",      // optional theme attribution URL
         "default": true,                            // optional, set this as the initial theme
-        "scales": [25000, 10000, 5000, 2500],       // optional custom map scales, defaults to defaultScales (see below)
+        "scales": [25000, 10000, 5000, 2500],       // optional, custom map scales, defaults to defaultScales (see below)
+        "printScales": [25000, 10000, 5000, 2500],  // optional, confined list of available print scales, defaults to defaultPrintScales (see below)
+        "printGrid": [                              // optional, list of grid intervals to use for various scales when printing
+            {"s": 10000, x: 1000, y: 1000},         //   Keep this list sorted in descending order by scale (s)
+            {"s": 1000, x: 100, y: 100},            //   In this example, {x: 100, y: 100} will be used for 1000 <= scale < 10000
+            ...                                     //   If not specified, defaultPrintGrid will be usd (see below)
+        ],
+        "extent": [xmin, ymin, xmax, ymax],         // optional custom extent which overrides extent from WMS capabilities
         "tiled": true,                              // optional, use tiled WMS (default is false)
         "format": "image/png",                      // optional, the image format to use in the WMS request, defaults to image/png
         "backgroundLayers": [                       // optional background layers
@@ -397,6 +406,8 @@ def getGroupThemes(configGroup, resultGroup):
     ]
   },
   "defaultScales": [50000, 25000, 10000, 5000]      // required, default map scales
+  "defaultPrintScales": [50000, 25000, 10000, 5000] // optional, confined list of available print scales. If not specified, scale is freely choosable.
+  "defaultPrintGrid": [<as printGrid above>]        // optional, list of grid intervals to use for various scales when printing, no grid is primted if omitted
 }
 """
 
@@ -416,6 +427,8 @@ result = {
         "items": [],
         "defaultTheme": None,
         "defaultScales": config["defaultScales"],
+        "defaultPrintScales": config["defaultPrintScales"],
+        "defaultPrintGrid": config["defaultPrintGrid"] if "defaultPrintGrid" in config else None,
         "backgroundLayers": config["themes"]["backgroundLayers"]
     }
 }

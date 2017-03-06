@@ -102,7 +102,9 @@ const ThemeSwitcher = React.createClass({
             if(!centerZoom && (!bbox || bbox.bounds.length !== 4)) {
                 bbox = theme.initialBbox;
             }
-            this.props.changeTheme(theme, layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, bbox, centerZoom);
+            const printScales = theme.printScales || object.themes.defaultPrintScales || undefined;
+            const printGrid = theme.printGrid || object.themes.defaultPrintGrid || undefined;
+            this.props.changeTheme(assign({}, theme, {printScales, printGrid}), layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, bbox, centerZoom);
         }
         UrlParams.updateParams({ie: undefined});
         UrlParams.updateParams({ic: undefined});
@@ -260,6 +262,8 @@ const ThemeSwitcher = React.createClass({
     },
     themeClicked(theme) {
         const scales = theme.scales || this.state.themes.defaultScales;
+        const printScales = theme.printScales || this.state.themes.defaultPrintScales || undefined;
+        const printGrid = theme.printGrid || this.state.themes.defaultPrintGrid || undefined;
         let zoomBBox = theme.initialBbox;
         if(ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch") === true) {
             // If crs and scales match and bounding boxes intersect, keep current extent
@@ -276,7 +280,7 @@ const ThemeSwitcher = React.createClass({
                 activeBackgroudLayer = activeBackgrounds[0].name;
             }
         }
-        this.props.changeTheme(theme, this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme, activeBackgroudLayer), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, zoomBBox);
+        this.props.changeTheme(assign({}, theme, {printScales, printGrid}), this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme, activeBackgroudLayer), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, zoomBBox);
         this.props.setCurrentTask(null);
     },
     bboxOverlap(bbox1, bbox2) {

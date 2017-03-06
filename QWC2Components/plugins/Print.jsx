@@ -102,13 +102,26 @@ const Print = React.createClass({
         }
         let rotation = this.props.map.bbox ? this.props.map.bbox.rotation : 0;
         let scaleChooser = (<input name={mapName + ":scale"} type="number" value={this.state.scale || ""} onChange={this.changeScale} min="1"/>);
+
         if(this.props.theme.printScales && this.props.theme.printScales.length > 0) {
             scaleChooser = (
                 <select name={mapName + ":scale"} value={this.state.scale} onChange={this.changeScale}>
                     {this.props.theme.printScales.map(scale => (<option key={scale} value={scale}>{scale}</option>))}
                 </select>);
         }
+
+        let gridIntervalX = null;
+        let gridIntervalY = null;
+        let printGrid = this.props.theme.printGrid;
+        if(printGrid && printGrid.length > 0 && this.state.scale) {
+            let cur = 0;
+            for(; cur < printGrid.length && this.state.scale < printGrid[cur].s; ++cur);
+            gridIntervalX = (<input readOnly="true" name={mapName + ":GRID_INTERVAL_X"} type={formvisibility} value={printGrid[cur].x} />);
+            gridIntervalY = (<input readOnly="true" name={mapName + ":GRID_INTERVAL_Y"} type={formvisibility} value={printGrid[cur].y} />);
+        }
+
         let labels = this.state.layout && this.state.layout.labels ? this.state.layout.labels : [];
+
         let highlightGeom = null;
         let highlightStyle = null;
         let highlightLabel = null;
@@ -194,6 +207,8 @@ const Print = React.createClass({
                         <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELCOLOR"} type={formvisibility} value="black" />
                         <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERCOLOR"} type={formvisibility} value="white" />
                         <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERSIZE"} type={formvisibility} value="1" />
+                        {gridIntervalX}
+                        {gridIntervalY}
                     </div>
                     <div className="button-bar">
                         <button type="submit"><Message msgId="print.submit" /></button>
