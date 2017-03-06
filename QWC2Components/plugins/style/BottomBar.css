@@ -45,7 +45,7 @@
     margin-left: 1em;
 }
 
-#BottomBar #scaleselector {
+#BottomBar select.bottombar-scale-selector {
     display: inline-block;
 }
 

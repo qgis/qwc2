@@ -12,7 +12,6 @@ const {createSelector} = require('reselect');
 const pickBy = require('lodash.pickby');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const CRSSelector = require("../../MapStore2/web/client/components/mapcontrols/mouseposition/CRSSelector");
-const ScaleBox = require("../../MapStore2/web/client/components/mapcontrols/scale/ScaleBox");
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
 const {getScales} = require('../../MapStore2/web/client/utils/MapUtils');
 const {changeMousePositionState, changeMousePositionCrs} = require('../../MapStore2/web/client/actions/mousePosition');
@@ -85,10 +84,17 @@ const BottomBar = React.createClass({
                 <CoordinateDisplayer displaycrs={this.props.displaycrs} />
                 <CRSSelector useRawInput={true} enabled={true} crs={this.props.displaycrs} id="crssselector" onCRSChange={this.props.onCRSChange} availableCRS={availableCRS}/>
                 <span className="scale_label"><Message msgId="bottombar.scale_label" />: </span>
-                <ScaleBox useRawInput={true} id="scaleselector" scales={this.props.mapscales} currentZoomLvl={this.props.mapscale} onChange={this.props.onScaleChange} />
+                <select className="bottombar-scale-selector" onChange={this.onScaleComboChange} value={this.props.mapscale}>
+                    {this.props.mapscales.map((item, index) =>
+                        (<option value={index} key={index}>{"1 : " + item}</option>)
+                    )}
+                </select>
                 {bottomLinks}
             </div>
         );
+    },
+    onScaleComboChange(ev) {
+        this.props.onScaleChange(parseInt(ev.target.value, 10));
     },
     componentWillMount() {
         changeMousePositionState(true);
