@@ -14,6 +14,8 @@ const {addLayer, removeLayer, changeLayerProperties} = require('../../MapStore2/
 const IdentifyUtils = require('../utils/IdentifyUtils');
 require('./style/IdentifyViewer.css');
 
+let urlRegEx = /((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+
 const IdentifyViewer = React.createClass({
     propTypes: {
         theme: React.PropTypes.object,
@@ -169,7 +171,7 @@ const IdentifyViewer = React.createClass({
                         return (
                             <tr key={attrib}>
                                 <td className="identify-attr-title"><i>{attrib}</i></td>
-                                <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: feature.properties[attrib]}}></td>
+                                <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: this.addLinkAnchors(feature.properties[attrib])}}></td>
                             </tr>
                         );
                     })}
@@ -285,6 +287,37 @@ const IdentifyViewer = React.createClass({
             this.exportAnchor.setAttribute("download", "features.json");
             this.exportAnchor.click();
         }
+    },
+    htmlEncode(text) {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    },
+    addLinkAnchors(text) {
+        if(text.indexOf("</a>") !== -1) {
+            return text; // Text already contains anchors
+        }
+        let value = text;
+        while(match = urlRegEx.exec(value)) {
+            let url = match[0];
+            let protoUrl = url;
+            if(match[1] === undefined) {
+                if(match[0].indexOf('@') !== -1) {
+                    protoUrl = "mailto:" + url;
+                } else {
+                    protoUrl = "http://" + url;
+                }
+            }
+            let anchor = "<a href=\"" + this.htmlEncode(protoUrl) + "\">" + this.htmlEncode(url) + "</a>";
+            value = value.substring(0, match.index) + anchor + value.substring(match.index + url.length);
+            urlRegEx.lastIndex = match.index + anchor.length;
+        }
+        // Reset
+        urlRegEx.lastIndex = 0;
+        return value;
     }
 });
 
