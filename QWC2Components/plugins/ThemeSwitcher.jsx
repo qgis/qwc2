@@ -13,6 +13,7 @@ const axios = require('axios');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2/web/client/utils/LocaleUtils");
+const CoordinatesUtils = require("../../MapStore2/web/client/utils/CoordinatesUtils");
 const {setCurrentTheme,setThemeSwitcherFilter} = require("../actions/theme");
 const {setCurrentTask} = require("../actions/task");
 const {SideBar} = require('../components/SideBar');
@@ -30,7 +31,8 @@ const ThemeSwitcher = React.createClass({
         changeTheme: React.PropTypes.func,
         changeFilter: React.PropTypes.func,
         addLayer: React.PropTypes.func,
-        setCurrentTask: React.PropTypes.func
+        setCurrentTask: React.PropTypes.func,
+        mapConfig: React.PropTypes.object
     },
     contextTypes: {
         messages: React.PropTypes.object
@@ -69,7 +71,7 @@ const ThemeSwitcher = React.createClass({
             let layer = this.createLayerForTheme(theme, params.l ? params.l.split(",") : undefined);
             const scales = theme.scales || object.themes.defaultScales;
             // extent to which to zoom to
-            let extent = null;
+            let bbox = null;
             let centerZoom = null;
             if(params.t) {
                 if(params.ic && params.is) {
@@ -91,16 +93,16 @@ const ThemeSwitcher = React.createClass({
                         };
                     }
                 } else if(params.ie) {
-                    extent = {
+                    bbox = {
                         bounds: params.ie.split(";").map(x => parseFloat(x)),
                         crs: params.icrs || theme.mapCrs
                     };
                 }
             }
-            if(!centerZoom && (!extent || extent.bounds.length !== 4)) {
-                extent = {bounds: theme.extent, crs: theme.crs};
+            if(!centerZoom && (!bbox || bbox.bounds.length !== 4)) {
+                bbox = theme.initialBbox;
             }
-            this.props.changeTheme(theme, layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, extent, centerZoom);
+            this.props.changeTheme(theme, layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, bbox, centerZoom);
         }
         UrlParams.updateParams({ie: undefined});
         UrlParams.updateParams({ic: undefined});
@@ -209,10 +211,7 @@ const ThemeSwitcher = React.createClass({
             expanded: theme.expanded,
             name: theme.name,
             title: theme.title,
-            boundingBox: {
-                extent: theme.extent,
-                crs: theme.crs
-            },
+            boundingBox: theme.bbox,
             sublayers : sublayers,
             params: params,
             queryLayers: queryLayers,
@@ -224,23 +223,32 @@ const ThemeSwitcher = React.createClass({
     },
     createBackgroundLayersForTheme(theme, visibleBackgroundLayer=undefined) {
         let backgroundLayers = [];
+        let visibleIdx = -1;
+        let defaultVisibleIdx = -1;
         for (let themeBackgroundLayer of (theme.backgroundLayers || [])) {
             // lookup background layer
             const backgroundLayer = this.state.themes.backgroundLayers.find((layer) => layer.name === themeBackgroundLayer.name);
             if (backgroundLayer !== undefined) {
-                let visibility = themeBackgroundLayer.visibility || false;
-                if (visibleBackgroundLayer !== undefined) {
-                    visibility = (backgroundLayer.name === visibleBackgroundLayer);
+                if(themeBackgroundLayer.visibility === true) {
+                    defaultVisibleIdx = backgroundLayers.length;
+                }
+                if (backgroundLayer.name === visibleBackgroundLayer) {
+                    visibleIdx = backgroundLayers.length;
                 }
                 let newBackgroundLayer = assign({}, backgroundLayer, {
                     group: 'background',
-                    visibility: visibility
+                    visibility: false
                 });
                 backgroundLayers.push(newBackgroundLayer);
             } else {
                 console.warn("Could not find background layer " + themeBackgroundLayer.name);
             }
-        };
+        }
+        if(visibleIdx >= 0) {
+            backgroundLayers[visibleIdx].visibility = true;
+        } else if(defaultVisibleIdx >= 0) {
+            backgroundLayers[defaultVisibleIdx].visibility = true;
+        }
         return backgroundLayers;
     },
     currentBackgroundLayerIds() {
@@ -252,12 +260,32 @@ const ThemeSwitcher = React.createClass({
     },
     themeClicked(theme) {
         const scales = theme.scales || this.state.themes.defaultScales;
-        const zoomExtent = {
-            bounds: theme.extent,
-            crs: theme.crs
-        };
-        this.props.changeTheme(theme, this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, zoomExtent);
+        let zoomBBox = theme.initialBbox;
+        if(ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch") === true) {
+            // If crs and scales match and bounding boxes intersect, keep current extent
+            if(this.props.mapConfig.projection === theme.mapCrs &&
+               this.bboxOverlap(theme.bbox, this.props.mapConfig.bbox))
+            {
+                zoomBBox = this.props.mapConfig.bbox;
+            }
+        }
+        let activeBackgroudLayer = null;
+        if(ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch") === true) {
+            let activeBackgrounds = this.props.layers.filter(layer => layer.group === 'background' && layer.visibility === true);
+            if(activeBackgrounds.length === 1) {
+                activeBackgroudLayer = activeBackgrounds[0].name;
+            }
+        }
+        this.props.changeTheme(theme, this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme, activeBackgroudLayer), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, zoomBBox);
         this.props.setCurrentTask(null);
+    },
+    bboxOverlap(bbox1, bbox2) {
+        let b1 = bbox1.bounds;
+        let b2 = [bbox2.bounds.minx, bbox2.bounds.miny, bbox2.bounds.maxx, bbox2.bounds.maxy];
+        if(bbox1.crs !== bbox2.crs) {
+            b1 = CoordinatesUtils.reprojectBbox(b1, bbox1.crs, bbox2.crs);
+        }
+        return b1[0] < b2[2] && b1[2] > b2[0] && b1[1] < b2[3] && b1[3] > b2[1];
     },
     filterChanged(ev) {
         this.props.changeFilter(ev.target.value);
@@ -269,7 +297,8 @@ const selector = (state) => ({
     activeThemeLayer: state.theme ? state.theme.currentlayer : null,
     filter: state.theme ? state.theme.switcherfilter : "",
     haveMap: state.map ? true : false,
-    layers: state.layers && state.layers.flat ? state.layers.flat : []
+    layers: state.layers && state.layers.flat ? state.layers.flat : [],
+    mapConfig: state.map ? state.map.present : undefined
 });
 
 

@@ -142,13 +142,15 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers) {
             layerEntry.maxScale = parseInt(layer.MaxScaleDenominator, 10);
         }
         // use geographic bounding box, as default CRS may have inverted axis order with WMS 1.3.0
-        layerEntry.crs = "EPSG:4326";
-        layerEntry.extent = [
-            parseFloat(layer.EX_GeographicBoundingBox.westBoundLongitude),
-            parseFloat(layer.EX_GeographicBoundingBox.southBoundLatitude),
-            parseFloat(layer.EX_GeographicBoundingBox.eastBoundLongitude),
-            parseFloat(layer.EX_GeographicBoundingBox.northBoundLatitude)
-        ];
+        layerEntry.bbox = {
+            "crs": "EPSG:4326",
+            "bounds": [
+                parseFloat(layer.EX_GeographicBoundingBox.westBoundLongitude),
+                parseFloat(layer.EX_GeographicBoundingBox.southBoundLatitude),
+                parseFloat(layer.EX_GeographicBoundingBox.eastBoundLongitude),
+                parseFloat(layer.EX_GeographicBoundingBox.northBoundLatitude)
+            ]
+        };
     } else {
         // group
         layerEntry.sublayers = [];
@@ -282,17 +284,20 @@ function getTheme(configItem, resultItem) {
             resultItem.availableFormats = capabilities.Capability.Request.GetMap.Format;
             resultItem.tiled = configItem.tiled;
             // use geographic bounding box for theme, as default CRS may have inverted axis order with WMS 1.3.0
-            resultItem.crs = "EPSG:4326";
-            if(configItem.extent) {
-                resultItem.extent = configItem.extent;
-            } else {
-                resultItem.extent = [
-                    parseFloat(topLayer.EX_GeographicBoundingBox.westBoundLongitude),
-                    parseFloat(topLayer.EX_GeographicBoundingBox.southBoundLatitude),
-                    parseFloat(topLayer.EX_GeographicBoundingBox.eastBoundLongitude),
-                    parseFloat(topLayer.EX_GeographicBoundingBox.northBoundLatitude)
-                ];
-            }
+            let bounds = [
+                parseFloat(topLayer.EX_GeographicBoundingBox.westBoundLongitude),
+                parseFloat(topLayer.EX_GeographicBoundingBox.southBoundLatitude),
+                parseFloat(topLayer.EX_GeographicBoundingBox.eastBoundLongitude),
+                parseFloat(topLayer.EX_GeographicBoundingBox.northBoundLatitude)
+            ];
+            resultItem.bbox = {
+                "crs": "EPSG:4326",
+                "bounds": bounds
+            };
+            resultItem.initialBbox = {
+                "crs": "EPSG:4326",
+                "bounds": configItem.extent || bounds
+            };
             resultItem.scales = configItem.scales;
             resultItem.printScales = configItem.printScales;
             // NOTE: skip root WMS layer

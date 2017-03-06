@@ -152,14 +152,16 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers):
             layerEntry["maxScale"] = int(float(maxScale))
 
         # use geographic bounding box, as default CRS may have inverted axis order with WMS 1.3.0
-        layerEntry["crs"] = "EPSG:4326"
         geoBBox = getChildElement(layer, "EX_GeographicBoundingBox")
-        layerEntry["extent"] = [
-            float(getChildElementValue(geoBBox, "westBoundLongitude")),
-            float(getChildElementValue(geoBBox, "southBoundLatitude")),
-            float(getChildElementValue(geoBBox, "eastBoundLongitude")),
-            float(getChildElementValue(geoBBox, "northBoundLatitude"))
-        ]
+        layerEntry["bbox"] = {
+            "crs": "EPSG:4326",
+            "bounds": [
+                float(getChildElementValue(geoBBox, "westBoundLongitude")),
+                float(getChildElementValue(geoBBox, "southBoundLatitude")),
+                float(getChildElementValue(geoBBox, "eastBoundLongitude")),
+                float(getChildElementValue(geoBBox, "northBoundLatitude"))
+            ]
+        }
     else:
         # group
         layerEntry["sublayers"] = []
@@ -251,17 +253,20 @@ def getTheme(configItem, resultItem):
         if "tiled" in configItem:
             resultItem["tiled"] = configItem["tiled"]
         # use geographic bounding box for theme, as default CRS may have inverted axis order with WMS 1.3.0
-        resultItem["crs"] = "EPSG:4326"
-        print(getChildElementValue(topLayer, "Name"))
-        if "extent" in configItem:
-            resultItem["extent"] = configItem["extent"]
-        else:
-            resultItem["extent"] = [
-                float(getChildElementValue(topLayer, "EX_GeographicBoundingBox/westBoundLongitude")),
-                float(getChildElementValue(topLayer, "EX_GeographicBoundingBox/southBoundLatitude")),
-                float(getChildElementValue(topLayer, "EX_GeographicBoundingBox/eastBoundLongitude")),
-                float(getChildElementValue(topLayer, "EX_GeographicBoundingBox/northBoundLatitude"))
-            ]
+        bounds = [
+            float(getChildElementValue(topLayer, "EX_GeographicBoundingBox/westBoundLongitude")),
+            float(getChildElementValue(topLayer, "EX_GeographicBoundingBox/southBoundLatitude")),
+            float(getChildElementValue(topLayer, "EX_GeographicBoundingBox/eastBoundLongitude")),
+            float(getChildElementValue(topLayer, "EX_GeographicBoundingBox/northBoundLatitude"))
+        ]
+        resultItem["bbox"] = {
+            "crs": "EPSG:4326",
+            "bounds": bounds
+        }
+        resultItem["initialBbox"] = {
+            "crs": "EPSG:4326",
+            "bounds": configItem["extent"] if "extent" in configItem else bounds
+        }
         if "scales" in configItem:
             resultItem["scales"] = configItem["scales"]
         if "printScales" in configItem:

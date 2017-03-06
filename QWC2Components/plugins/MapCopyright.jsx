@@ -47,15 +47,15 @@ const MapCopyright = React.createClass({
             return;
         }
         if(layer.group !== "background") {
-            if(!layer.crs || !layer.extent) {
+            if(!layer.boundingBox) {
                 return;
             }
-            if(!transformedbboxes[layer.crs]) {
+            if(!transformedbboxes[layer.boundingBox.crs]) {
                 let {minx, miny, maxx, maxy} = srcmapbbox.bounds;
-                transformedbboxes[layer.crs] = CoordinatesUtils.reprojectBbox([minx, miny, maxx, maxy], srcmapbbox.crs, layer.crs);
+                transformedbboxes[layer.boundingBox.crs] = CoordinatesUtils.reprojectBbox([minx, miny, maxx, maxy], srcmapbbox.crs, layer.boundingBox.crs);
             }
-            let mapbbox = transformedbboxes[layer.crs];
-            let laybbox = layer.extent;
+            let mapbbox = transformedbboxes[layer.boundingBox.crs];
+            let laybbox = layer.boundingBox.bounds;
             if( mapbbox[0] < laybbox[2] && mapbbox[2] > laybbox[0] &&
                 mapbbox[1] < laybbox[3] && mapbbox[3] > laybbox[1])
             {
