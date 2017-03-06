@@ -207,7 +207,7 @@ const IdentifyViewer = React.createClass({
         return (
             <li key={layer} className={this.getExpandedClass(layer, true)}>
                 <div className="identify-layer-result">
-                    <span onClick={()=> this.toggleExpanded(layer, true)}><b>{layer}</b></span>
+                    <span className="clickable" onClick={()=> this.toggleExpanded(layer, true)}><b>{layer}</b></span>
                     <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResultLayer(layer)} />
                     <Glyphicon className="identify-export-result" glyph="export" onClick={() => this.exportResultLayer(layer)} />
                 </div>

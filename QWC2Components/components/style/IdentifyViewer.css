@@ -1,11 +1,14 @@
 #IdentifyViewer {
     padding: 0.5em;
     background-color: @dialog_bg@;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 #IdentifyViewer div.identify-results-container {
-    max-height: 15em;
     overflow-y: auto;
+    flex: 0 1 auto;
 }
 
 #IdentifyViewer ul {
@@ -14,6 +17,7 @@
     font-size: small;
 }
 
+#IdentifyViewer div.identify-layer-result span.clickable,
 #IdentifyViewer li.identify-feature-result span.clickable {
     cursor: pointer;
 }
@@ -85,8 +89,8 @@
     background-color: white;
     font-size: small;
     padding: 0.25em;
-    max-height: 10em;
     overflow-y: auto;
+    flex: 1 1 auto;
 }
 
 #IdentifyViewer table.attribute-list {
@@ -113,4 +117,5 @@
 #IdentifyViewer div.identify-buttonbox {
     margin-top: 0.5em;
     text-align: right;
+    flex: 0 0 auto;
 }

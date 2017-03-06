@@ -10,13 +10,7 @@ const assign = require('object-assign');
 const axios = require('axios');
 const uuid = require('uuid');
 const jsts = require('jsts');
-const mapInfoGetFeatureInfo = require('../../MapStore2/web/client/actions/mapInfo').getFeatureInfo;
 const {newMapInfoRequest, errorFeatureInfo, loadFeatureInfo} = require('../../MapStore2/web/client/actions/mapInfo');
-
-function getFeatureInfo(wmsBasePath, requestParams, lMetaData, layerOptions = {}) {
-    // NOTE: ignore options from layer to prevent unnecessary params in GetFeatureInfo request
-    return mapInfoGetFeatureInfo(wmsBasePath, requestParams, lMetaData, {});
-}
 
 function getFeature(wfsBasePath, requestParams, lMetaData, wgs84FilterPoly = null) {
     const defaultParams = {
