@@ -11,7 +11,6 @@ const {connect} = require('react-redux');
 const {createSelector} = require('reselect');
 const pickBy = require('lodash.pickby');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const CRSSelector = require("../../MapStore2/web/client/components/mapcontrols/mouseposition/CRSSelector");
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
 const {getScales} = require('../../MapStore2/web/client/utils/MapUtils');
 const {changeMousePositionState, changeMousePositionCrs} = require('../../MapStore2/web/client/actions/mousePosition');
@@ -82,7 +81,11 @@ const BottomBar = React.createClass({
             <div id="BottomBar">
                 <span className="mousepos_label"><Message msgId="bottombar.mousepos_label" />: </span>
                 <CoordinateDisplayer displaycrs={this.props.displaycrs} />
-                <CRSSelector useRawInput={true} enabled={true} crs={this.props.displaycrs} id="crssselector" onCRSChange={this.props.onCRSChange} availableCRS={availableCRS}/>
+                <select className="bottombar-crs-selector" onChange={ev => this.props.onCRSChange(ev.target.value)} value={this.props.displaycrs}>
+                    {Object.keys(availableCRS).map(crs =>
+                        (<option value={crs} key={crs}>{availableCRS[crs].label}</option>)
+                )}
+                </select>
                 <span className="scale_label"><Message msgId="bottombar.scale_label" />: </span>
                 <select className="bottombar-scale-selector" onChange={this.onScaleComboChange} value={this.props.mapscale}>
                     {this.props.mapscales.map((item, index) =>
