@@ -389,7 +389,7 @@ function getGroupThemes(configGroup, resultGroup) {
         "backgroundLayers": [                       // optional background layers
           {
             "name": "<background layer name>",      // background layer name from list below
-            "printLayer": "<WMS layer name>",       // optional equivalent WMS layer name for printing
+            "printLayer": "<qgis layer name>",      // optional, name of a qgis layer to use as equivalent background layer when printing
             "visibility": true                      // optional initial visibility on topic selection
           }
         ],
