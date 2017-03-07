@@ -84,7 +84,7 @@ function toArray(obj) {
 }
 
 // recursively get layer tree
-function getLayerTree(layer, resultLayers, visibleLayers, printLayers) {
+function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel) {
     if (printLayers.indexOf(layer.Name) !== -1) {
         // skip print layers
         return;
@@ -154,9 +154,9 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers) {
     } else {
         // group
         layerEntry.sublayers = [];
-        layerEntry.expanded = true;
+        layerEntry.expanded = collapseBelowLevel >= 0 && level >= collapseBelowLevel ? false : true;
         for (var subLayer of toArray(layer.Layer)) {
-            getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers);
+            getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level, collapseBelowLevel);
         }
         if (layerEntry.sublayers.length === 0) {
             // skip empty groups
@@ -236,9 +236,10 @@ function getTheme(configItem, resultItem) {
             }
 
             // layer tree and visible layers
+            collapseLayerGroupsBelowLevel = configItem.collapseLayerGroupsBelowLevel || -1
             var layerTree = [];
             var visibleLayers = [];
-            getLayerTree(topLayer, layerTree, visibleLayers, printLayers);
+            getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel);
             visibleLayers.reverse();
 
             // print templates
@@ -403,7 +404,8 @@ function getGroupThemes(configGroup, resultGroup) {
           "backgroundcolor": "#FFFFFF",             // optional, background color of the frame
           "framecolor": "#000000",                  // optional, color of the frame border
           "framewidth": 1                           // optional, width of the frame border, in pixels
-        }
+      },
+      "collapseLayerGroupsBelowLevel": <level>      // optional, layer tree level below which to initially collapse groups. If unspecified, groups are not initially collapsed.
       }
     ],
     "groups": [                                     // optional, nested groups

@@ -87,7 +87,7 @@ def getChildElementValue(parent, path):
 
 
 # recursively get layer tree
-def getLayerTree(layer, resultLayers, visibleLayers, printLayers):
+def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel):
     name = getChildElementValue(layer, "Name")
     title = getChildElementValue(layer, "Title")
     layers = getDirectChildElements(layer, "Layer")
@@ -165,9 +165,9 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers):
     else:
         # group
         layerEntry["sublayers"] = []
-        layerEntry["expanded"] = True
+        layerEntry["expanded"] = False if collapseBelowLevel >= 0 and level >= collapseBelowLevel else True
         for sublayer in layers:
-            getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers)
+            getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers, level + 1, collapseBelowLevel)
 
         if not layerEntry["sublayers"]:
             # skip empty groups
@@ -206,9 +206,13 @@ def getTheme(configItem, resultItem):
             printLayers = [entry["printLayer"] for entry in configItem["backgroundLayers"] if "printLayer" in entry]
 
         # layer tree and visible layers
+        collapseLayerGroupsBelowLevel = -1
+        if "collapseLayerGroupsBelowLevel" in configItem:
+            collapseLayerGroupsBelowLevel = configItem["collapseLayerGroupsBelowLevel"]
+
         layerTree = []
         visibleLayers = []
-        getLayerTree(topLayer, layerTree, visibleLayers, printLayers)
+        getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel)
         visibleLayers.reverse()
 
         # print templates
@@ -383,7 +387,8 @@ def getGroupThemes(configGroup, resultGroup):
           "backgroundcolor": "#FFFFFF",             // optional, background color of the frame
           "framecolor": "#000000",                  // optional, color of the frame border
           "framewidth": 1                           // optional, width of the frame border, in pixels
-        }
+        },
+        "collapseLayerGroupsBelowLevel": <level>    // optional, layer tree level below which to initially collapse groups. If unspecified, groups are not initially collapsed.
       }
     ],
     "groups": [                                     // optional, nested groups
