@@ -1,93 +1,100 @@
 {
-    "locale": "en-US",
-    "messages": {
-        "appmenu": {
-            "items": {
-                "Draw": "Draw",
-                "DxfExport": "DXF Export",
-                "Help": "Help",
-                "IdentifyRegion": "Identify Region",
-                "LayerTree": "Layers & Legend",
-                "Measure": "Measure",
-                "Print": "Print",
-                "RasterExport": "Raster Export",
-                "Share": "Share Link",
-                "ThemeSwitcher": "Theme",
-                "Tools": "Map Tools"
-            },
-            "menulabel": "Map & Tools"
-        },
-        "bgswitcher": {
-            "nobg": "No background"
-        },
-        "bottombar": {
-            "mousepos_label": "Coordinates",
-            "scale_label": "Scale",
-            "terms_label": "Terms of use",
-            "viewertitle_label": ""
-        },
-        "dxfexport": {
-            "selectinfo": "Drag a rectangle around the region to export...",
-            "symbologyscale": "Symbology scale:"
-        },
-        "identify": {
-            "querying": "Querying..."
-        },
-        "identifyTitle": "Feature Info",
-        "identifyregion": {
-            "info": "Draw a polygon around the features to identify..."
-        },
-        "layerinfo": {
-            "abstract": "Abstract",
-            "attribution": "Attribution",
-            "dataUrl": "Data URL",
-            "keywords": "Keywords",
-            "legend": "Legend",
-            "metadataUrl": "Metadata URL",
-            "title": "Layer Info"
-        },
-        "layertree": {
-            "maptip": "Show layer map tips",
-            "printlegend": "Print legend",
-            "transparency": "Transparency"
-        },
-        "map": {
-            "loading": "Loading..."
-        },
-        "measureComponent": {
-            "areaLabel": "Area",
-            "bearingLabel": "Bearing",
-            "lengthLabel": "Length",
-            "pointLabel": "Position"
-        },
-        "noFeatureInfo": "There is no information available for the point you clicked",
-        "print": {
-            "layout": "Layout:",
-            "nolayouts": "The selected theme does not support printing",
-            "notheme": "No theme selected",
-            "resolution": "Resolution:",
-            "rotation": "Rotation:",
-            "scale": "Scale:",
-            "submit": "Print"
-        },
-        "rasterexport": {
-            "format": "Format:",
-            "selectinfo": "Drag a rectangle around the region to export..."
-        },
-        "search": {
-            "coordinates": "Coordinates",
-            "more": "More...",
-            "placeholder": "Search for locations and coordinates..."
-        },
-        "share": {
-            "QRCodeLinkTitle": "qr code",
-            "directLinkTitle": "Via a direct link",
-            "generatingpermalink": "Generating permalink...",
-            "msgToCopyUrl": "Click to copy",
-            "socialIntro": "In your favourite social network"
-        },
-        "themeswitcher": {
-            "filter": "Filter..."
-        }
+  "locale": "en-US",
+  "messages": {
+    "appmenu": {
+      "items": {
+        "Draw": "Draw",
+        "DxfExport": "DXF Export",
+        "Help": "Help",
+        "LayerTree": "Layers & Legend",
+        "Measure": "Measure",
+        "Print": "Print",
+        "RasterExport": "Raster Export",
+        "Share": "Share Link",
+        "ThemeSwitcher": "Theme",
+        "Tools": "Map Tools",
+        "IdentifyRegion": "Identify Region"
+      },
+      "menulabel": "Map & Tools"
+    },
+    "bgswitcher": {
+      "nobg": "No background"
+    },
+    "bottombar": {
+      "mousepos_label": "Coordinates",
+      "scale_label": "Scale",
+      "terms_label": "Terms of use",
+      "viewertitle_label": ""
+    },
+    "dxfexport": {
+      "selectinfo": "Drag a rectangle around the region to export...",
+      "symbologyscale": "Symbology scale:"
+    },
+    "identifyTitle": "Feature Info",
+    "identify": {
+      "querying": "Querying..."
+    },
+    "identifyregion": {
+      "info": "Draw a polygon around the features to identify..."
+    },
+    "layerinfo": {
+      "title": "Layer Info",
+      "abstract": "Abstract",
+      "attribution": "Attribution",
+      "keywords": "Keywords",
+      "dataUrl": "Data URL",
+      "metadataUrl": "Metadata URL",
+      "legend": "Legend"
+    },
+    "layertree": {
+      "maptip": "Show layer map tips",
+      "transparency": "Transparency",
+      "printlegend": "Print legend"
+    },
+    "locate": {
+      "tooltip": "Locate me",
+      "metersUnit": "meters",
+      "feetUnit": "feet",
+      "popup": "You are within {distance} {unit} from this point",
+      "outsideMapBoundsMsg": "You seem located outside the boundaries of the map"
+    },
+    "map": {
+      "loading": "Loading..."
+    },
+    "measureComponent": {
+      "areaLabel": "Area",
+      "bearingLabel": "Bearing",
+      "lengthLabel": "Length",
+      "pointLabel": "Position"
+    },
+    "noFeatureInfo": "There is no information available for the point you clicked",
+    "print": {
+      "layout": "Layout:",
+      "nolayouts": "The selected theme does not support printing",
+      "notheme": "No theme selected",
+      "resolution": "Resolution:",
+      "rotation": "Rotation:",
+      "scale": "Scale:",
+      "submit": "Print"
+    },
+    "rasterexport": {
+      "format": "Format:",
+      "selectinfo": "Drag a rectangle around the region to export..."
+    },
+    "search": {
+      "coordinates": "Coordinates",
+      "placeholder": "Search for locations and coordinates...",
+      "more": "More..."
+    },
+    "share": {
+      "directLinkTitle": "Via a direct link",
+      "generatingpermalink": "Generating permalink...",
+      "msgToCopyUrl": "Click to copy",
+      "QRCodeLinkTitle": "qr code",
+      "socialIntro": "In your favourite social network"
+    },
+    "themeswitcher": {
+      "filter": "Filter..."
     }
+  }
 }

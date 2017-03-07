@@ -1,93 +1,100 @@
 {
-    "locale": "it-IT",
-    "messages": {
-        "appmenu": {
-            "items": {
-                "Draw": "",
-                "DxfExport": "",
-                "Help": "",
-                "IdentifyRegion": "",
-                "LayerTree": "",
-                "Measure": "",
-                "Print": "",
-                "RasterExport": "",
-                "Share": "",
-                "ThemeSwitcher": "",
-                "Tools": ""
-            },
-            "menulabel": ""
-        },
-        "bgswitcher": {
-            "nobg": ""
-        },
-        "bottombar": {
-            "mousepos_label": "",
-            "scale_label": "",
-            "terms_label": "",
-            "viewertitle_label": ""
-        },
-        "dxfexport": {
-            "selectinfo": "",
-            "symbologyscale": ""
-        },
-        "identify": {
-            "querying": ""
-        },
-        "identifyTitle": "Informazioni Sulle Feature",
-        "identifyregion": {
-            "info": ""
-        },
-        "layerinfo": {
-            "abstract": "",
-            "attribution": "",
-            "dataUrl": "",
-            "keywords": "",
-            "legend": "",
-            "metadataUrl": "",
-            "title": ""
-        },
-        "layertree": {
-            "maptip": "",
-            "printlegend": "",
-            "transparency": ""
-        },
-        "map": {
-            "loading": "In caricamento..."
-        },
-        "measureComponent": {
-            "areaLabel": "Area",
-            "bearingLabel": "Direzione",
-            "lengthLabel": "Lunghezza",
-            "pointLabel": ""
-        },
-        "noFeatureInfo": "Non ci sono informazioni disponibili per il punto selezionato",
-        "print": {
-            "layout": "Layout",
-            "nolayouts": "",
-            "notheme": "",
-            "resolution": "Risoluzione:",
-            "rotation": "",
-            "scale": "",
-            "submit": "Stampa"
-        },
-        "rasterexport": {
-            "format": "",
-            "selectinfo": ""
-        },
-        "search": {
-            "coordinates": "",
-            "more": "",
-            "placeholder": "Cerca un indirizzo o inserisci coordinate..."
-        },
-        "share": {
-            "QRCodeLinkTitle": "Usando il QR Code",
-            "directLinkTitle": "Con un Link diretto",
-            "generatingpermalink": "",
-            "msgToCopyUrl": "Clicca per copiare",
-            "socialIntro": "Sul tuo social preferito"
-        },
-        "themeswitcher": {
-            "filter": ""
-        }
+  "locale": "it-IT",
+  "messages": {
+    "appmenu": {
+      "items": {
+        "Draw": "",
+        "DxfExport": "",
+        "Help": "",
+        "LayerTree": "",
+        "Measure": "",
+        "Print": "",
+        "RasterExport": "",
+        "Share": "",
+        "ThemeSwitcher": "",
+        "Tools": "",
+        "IdentifyRegion": ""
+      },
+      "menulabel": ""
+    },
+    "bgswitcher": {
+      "nobg": ""
+    },
+    "bottombar": {
+      "mousepos_label": "",
+      "scale_label": "",
+      "terms_label": "",
+      "viewertitle_label": ""
+    },
+    "dxfexport": {
+      "selectinfo": "",
+      "symbologyscale": ""
+    },
+    "identifyTitle": "Informazioni Sulle Feature",
+    "identify": {
+      "querying": ""
+    },
+    "identifyregion": {
+      "info": ""
+    },
+    "layerinfo": {
+      "title": "",
+      "abstract": "",
+      "attribution": "",
+      "keywords": "",
+      "dataUrl": "",
+      "metadataUrl": "",
+      "legend": ""
+    },
+    "layertree": {
+      "maptip": "",
+      "transparency": "",
+      "printlegend": ""
+    },
+    "locate": {
+      "tooltip": "",
+      "metersUnit": "",
+      "feetUnit": "",
+      "popup": "",
+      "outsideMapBoundsMsg": ""
+    },
+    "map": {
+      "loading": "In caricamento..."
+    },
+    "measureComponent": {
+      "areaLabel": "Area",
+      "bearingLabel": "Direzione",
+      "lengthLabel": "Lunghezza",
+      "pointLabel": ""
+    },
+    "noFeatureInfo": "Non ci sono informazioni disponibili per il punto selezionato",
+    "print": {
+      "layout": "Layout",
+      "nolayouts": "",
+      "notheme": "",
+      "resolution": "Risoluzione:",
+      "rotation": "",
+      "scale": "",
+      "submit": "Stampa"
+    },
+    "rasterexport": {
+      "format": "",
+      "selectinfo": ""
+    },
+    "search": {
+      "coordinates": "",
+      "placeholder": "Cerca un indirizzo o inserisci coordinate...",
+      "more": ""
+    },
+    "share": {
+      "directLinkTitle": "Con un Link diretto",
+      "generatingpermalink": "",
+      "msgToCopyUrl": "Clicca per copiare",
+      "QRCodeLinkTitle": "Usando il QR Code",
+      "socialIntro": "Sul tuo social preferito"
+    },
+    "themeswitcher": {
+      "filter": ""
     }
+  }
 }

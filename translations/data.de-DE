@@ -1,93 +1,100 @@
 {
-    "locale": "de-DE",
-    "messages": {
-        "appmenu": {
-            "items": {
-                "Draw": "Zeichnen",
-                "DxfExport": "DXF-Export",
-                "Help": "Hilfe",
-                "IdentifyRegion": "Region abfragen",
-                "LayerTree": "Ebenen und Legende",
-                "Measure": "Messen",
-                "Print": "Drucken",
-                "RasterExport": "Raster-Export",
-                "Share": "Teilen",
-                "ThemeSwitcher": "Themen",
-                "Tools": "Werkzeuge"
-            },
-            "menulabel": "Karte & Werkzeuge"
-        },
-        "bgswitcher": {
-            "nobg": "Kein Hintergrund"
-        },
-        "bottombar": {
-            "mousepos_label": "Koordinaten",
-            "scale_label": "Massstab",
-            "terms_label": "Nutzungsbedingungen",
-            "viewertitle_label": ""
-        },
-        "dxfexport": {
-            "selectinfo": "Rechteck aufziehen um die zu exportierende Region",
-            "symbologyscale": "Darstellungsmassstab"
-        },
-        "identify": {
-            "querying": "Abfragen"
-        },
-        "identifyTitle": "Objektinformationen",
-        "identifyregion": {
-            "info": "Polygon um die zu identifizierende Objekte zeichnen"
-        },
-        "layerinfo": {
-            "abstract": "Zusammenfassung",
-            "attribution": "Attribution",
-            "dataUrl": "Daten-URL",
-            "keywords": "Schl\u00fcsselw\u00f6rter",
-            "legend": "Legende",
-            "metadataUrl": "Metadaten-URL",
-            "title": "Ebeneninformationen"
-        },
-        "layertree": {
-            "maptip": "Kartentips anzeigen",
-            "printlegend": "Legende drucken",
-            "transparency": "Transparenz"
-        },
-        "map": {
-            "loading": "Karte wird geladen"
-        },
-        "measureComponent": {
-            "areaLabel": "Fl\u00e4che",
-            "bearingLabel": "Richtung",
-            "lengthLabel": "L\u00e4nge",
-            "pointLabel": "Position"
-        },
-        "noFeatureInfo": "Am ausgew\u00e4hlten Punkt sind keine Informationen verf\u00fcgbar",
-        "print": {
-            "layout": "Format",
-            "nolayouts": "Das gew\u00e4hlte Thema stellt keine Druck-Vorlagen zur Verf\u00fcgung.",
-            "notheme": "Kein Thema selektiert",
-            "resolution": "Aufl\u00f6sung",
-            "rotation": "Rotation",
-            "scale": "Massstab",
-            "submit": "PDF erzeugen"
-        },
-        "rasterexport": {
-            "format": "Format:",
-            "selectinfo": "Rechteck aufziehen um die zu exportierende Region"
-        },
-        "search": {
-            "coordinates": "Koordinaten",
-            "more": "Mehr...",
-            "placeholder": "Suche nach Objekten/Namen und Koordinaten"
-        },
-        "share": {
-            "QRCodeLinkTitle": "QR Code (Smartphone)",
-            "directLinkTitle": "\u00dcber einen direkten Link",
-            "generatingpermalink": "Permalink wird erzeugt",
-            "msgToCopyUrl": "Kopieren in Zwischenablage",
-            "socialIntro": "In den sozialen Medien"
-        },
-        "themeswitcher": {
-            "filter": "Filter"
-        }
+  "locale": "de-DE",
+  "messages": {
+    "appmenu": {
+      "items": {
+        "Draw": "Zeichnen",
+        "DxfExport": "DXF-Export",
+        "Help": "Hilfe",
+        "LayerTree": "Ebenen und Legende",
+        "Measure": "Messen",
+        "Print": "Drucken",
+        "RasterExport": "Raster-Export",
+        "Share": "Teilen",
+        "ThemeSwitcher": "Themen",
+        "Tools": "Werkzeuge",
+        "IdentifyRegion": "Region abfragen"
+      },
+      "menulabel": "Karte & Werkzeuge"
+    },
+    "bgswitcher": {
+      "nobg": "Kein Hintergrund"
+    },
+    "bottombar": {
+      "mousepos_label": "Koordinaten",
+      "scale_label": "Massstab",
+      "terms_label": "Nutzungsbedingungen",
+      "viewertitle_label": ""
+    },
+    "dxfexport": {
+      "selectinfo": "Rechteck aufziehen um die zu exportierende Region",
+      "symbologyscale": "Darstellungsmassstab"
+    },
+    "identifyTitle": "Objektinformationen",
+    "identify": {
+      "querying": "Abfragen"
+    },
+    "identifyregion": {
+      "info": "Polygon um die zu identifizierende Objekte zeichnen"
+    },
+    "layerinfo": {
+      "title": "Ebeneninformationen",
+      "abstract": "Zusammenfassung",
+      "attribution": "Attribution",
+      "keywords": "Schlüsselwörter",
+      "dataUrl": "Daten-URL",
+      "metadataUrl": "Metadaten-URL",
+      "legend": "Legende"
+    },
+    "layertree": {
+      "maptip": "Kartentips anzeigen",
+      "transparency": "Transparenz",
+      "printlegend": "Legende drucken"
+    },
+    "locate": {
+      "tooltip": "",
+      "metersUnit": "",
+      "feetUnit": "",
+      "popup": "",
+      "outsideMapBoundsMsg": ""
+    },
+    "map": {
+      "loading": "Karte wird geladen"
+    },
+    "measureComponent": {
+      "areaLabel": "Fläche",
+      "bearingLabel": "Richtung",
+      "lengthLabel": "Länge",
+      "pointLabel": "Position"
+    },
+    "noFeatureInfo": "Am ausgewählten Punkt sind keine Informationen verfügbar",
+    "print": {
+      "layout": "Format",
+      "nolayouts": "Das gewählte Thema stellt keine Druck-Vorlagen zur Verfügung.",
+      "notheme": "Kein Thema selektiert",
+      "resolution": "Auflösung",
+      "rotation": "Rotation",
+      "scale": "Massstab",
+      "submit": "PDF erzeugen"
+    },
+    "rasterexport": {
+      "format": "Format:",
+      "selectinfo": "Rechteck aufziehen um die zu exportierende Region"
+    },
+    "search": {
+      "coordinates": "Koordinaten",
+      "placeholder": "Suche nach Objekten/Namen und Koordinaten",
+      "more": "Mehr..."
+    },
+    "share": {
+      "directLinkTitle": "Über einen direkten Link",
+      "generatingpermalink": "Permalink wird erzeugt",
+      "msgToCopyUrl": "Kopieren in Zwischenablage",
+      "QRCodeLinkTitle": "QR Code (Smartphone)",
+      "socialIntro": "In den sozialen Medien"
+    },
+    "themeswitcher": {
+      "filter": "Filter"
     }
+  }
 }

@@ -1,93 +1,100 @@
 {
-    "locale": "fr-FR",
-    "messages": {
-        "appmenu": {
-            "items": {
-                "Draw": "",
-                "DxfExport": "",
-                "Help": "",
-                "IdentifyRegion": "",
-                "LayerTree": "",
-                "Measure": "",
-                "Print": "",
-                "RasterExport": "",
-                "Share": "",
-                "ThemeSwitcher": "",
-                "Tools": ""
-            },
-            "menulabel": ""
-        },
-        "bgswitcher": {
-            "nobg": ""
-        },
-        "bottombar": {
-            "mousepos_label": "",
-            "scale_label": "",
-            "terms_label": "",
-            "viewertitle_label": ""
-        },
-        "dxfexport": {
-            "selectinfo": "",
-            "symbologyscale": ""
-        },
-        "identify": {
-            "querying": ""
-        },
-        "identifyTitle": "Informations de l'objet",
-        "identifyregion": {
-            "info": ""
-        },
-        "layerinfo": {
-            "abstract": "",
-            "attribution": "",
-            "dataUrl": "",
-            "keywords": "",
-            "legend": "",
-            "metadataUrl": "",
-            "title": ""
-        },
-        "layertree": {
-            "maptip": "",
-            "printlegend": "",
-            "transparency": ""
-        },
-        "map": {
-            "loading": "Chargement..."
-        },
-        "measureComponent": {
-            "areaLabel": "Surface",
-            "bearingLabel": "Direction",
-            "lengthLabel": "Longueur",
-            "pointLabel": ""
-        },
-        "noFeatureInfo": "Aucune information n'est disponible pour le point cliqu\u00e9",
-        "print": {
-            "layout": "Mise en page",
-            "nolayouts": "",
-            "notheme": "",
-            "resolution": "R\u00e9solution:",
-            "rotation": "",
-            "scale": "",
-            "submit": "Imprimer"
-        },
-        "rasterexport": {
-            "format": "",
-            "selectinfo": ""
-        },
-        "search": {
-            "coordinates": "",
-            "more": "",
-            "placeholder": "Recherche par toponyme ou coordonn\u00e9es..."
-        },
-        "share": {
-            "QRCodeLinkTitle": "qr code",
-            "directLinkTitle": "Via un lien direct",
-            "generatingpermalink": "",
-            "msgToCopyUrl": "Cliquer pour copier",
-            "socialIntro": "via votre r\u00e9seau social favori"
-        },
-        "themeswitcher": {
-            "filter": ""
-        }
+  "locale": "fr-FR",
+  "messages": {
+    "appmenu": {
+      "items": {
+        "Draw": "",
+        "DxfExport": "",
+        "Help": "",
+        "LayerTree": "",
+        "Measure": "",
+        "Print": "",
+        "RasterExport": "",
+        "Share": "",
+        "ThemeSwitcher": "",
+        "Tools": "",
+        "IdentifyRegion": ""
+      },
+      "menulabel": ""
+    },
+    "bgswitcher": {
+      "nobg": ""
+    },
+    "bottombar": {
+      "mousepos_label": "",
+      "scale_label": "",
+      "terms_label": "",
+      "viewertitle_label": ""
+    },
+    "dxfexport": {
+      "selectinfo": "",
+      "symbologyscale": ""
+    },
+    "identifyTitle": "Informations de l'objet",
+    "identify": {
+      "querying": ""
+    },
+    "identifyregion": {
+      "info": ""
+    },
+    "layerinfo": {
+      "title": "",
+      "abstract": "",
+      "attribution": "",
+      "keywords": "",
+      "dataUrl": "",
+      "metadataUrl": "",
+      "legend": ""
+    },
+    "layertree": {
+      "maptip": "",
+      "transparency": "",
+      "printlegend": ""
+    },
+    "locate": {
+      "tooltip": "",
+      "metersUnit": "",
+      "feetUnit": "",
+      "popup": "",
+      "outsideMapBoundsMsg": ""
+    },
+    "map": {
+      "loading": "Chargement..."
+    },
+    "measureComponent": {
+      "areaLabel": "Surface",
+      "bearingLabel": "Direction",
+      "lengthLabel": "Longueur",
+      "pointLabel": ""
+    },
+    "noFeatureInfo": "Aucune information n'est disponible pour le point cliqué",
+    "print": {
+      "layout": "Mise en page",
+      "nolayouts": "",
+      "notheme": "",
+      "resolution": "Résolution:",
+      "rotation": "",
+      "scale": "",
+      "submit": "Imprimer"
+    },
+    "rasterexport": {
+      "format": "",
+      "selectinfo": ""
+    },
+    "search": {
+      "coordinates": "",
+      "placeholder": "Recherche par toponyme ou coordonnées...",
+      "more": ""
+    },
+    "share": {
+      "directLinkTitle": "Via un lien direct",
+      "generatingpermalink": "",
+      "msgToCopyUrl": "Cliquer pour copier",
+      "QRCodeLinkTitle": "qr code",
+      "socialIntro": "via votre réseau social favori"
+    },
+    "themeswitcher": {
+      "filter": ""
     }
+  }
 }
