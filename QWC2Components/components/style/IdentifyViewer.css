@@ -8,7 +8,7 @@
 
 #IdentifyViewer div.identify-results-container {
     overflow-y: auto;
-    flex: 0 1 auto;
+    flex: 1 1 50%;
 }
 
 #IdentifyViewer ul {
@@ -90,7 +90,7 @@
     font-size: small;
     padding: 0.25em;
     overflow-y: auto;
-    flex: 1 1 auto;
+    flex: 1 1 50%;
 }
 
 #IdentifyViewer table.attribute-list {

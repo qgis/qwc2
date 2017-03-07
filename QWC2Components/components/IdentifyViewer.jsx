@@ -231,9 +231,12 @@ const IdentifyViewer = React.createClass({
                 return (<div id="IdentifyViewer"><Message msgId="noFeatureInfo" /></div>);
             }
         }
+        let resultsContainerStyle = {
+            maxHeight: this.state.currentFeature ? '7em' : 'initial'
+        };
         return (
             <div id="IdentifyViewer">
-                <div className="identify-results-container">
+                <div className="identify-results-container" style={resultsContainerStyle}>
                     <ul>{contents}</ul>
                 </div>
                 {this.renderFeatureAttributes()}
