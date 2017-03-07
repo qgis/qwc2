@@ -168,6 +168,9 @@ const IdentifyViewer = React.createClass({
             <div className="attribute-list-box">
                 <table className="attribute-list"><tbody>
                     {properties.map(attrib => {
+                        if(this.props.theme.skipEmptyFeatureAttributes && (!feature.properties[attrib] || feature.properties[attrib] === "NULL")) {
+                            return null;
+                        }
                         return (
                             <tr key={attrib}>
                                 <td className="identify-attr-title"><i>{attrib}</i></td>

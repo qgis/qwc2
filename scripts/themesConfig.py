@@ -299,6 +299,9 @@ def getTheme(configItem, resultItem):
         if "watermark" in configItem:
             resultItem["watermark"] = configItem["watermark"];
 
+        if "skipEmptyFeatureAttributes" in configItem:
+            resultItem["skipEmptyFeatureAttributes"] = configItem["skipEmptyFeatureAttributes"]
+
         # set default theme
         if "default" in configItem or not result["themes"]["defaultTheme"]:
             result["themes"]["defaultTheme"] = resultItem["name"]
@@ -389,6 +392,7 @@ def getGroupThemes(configGroup, resultGroup):
           "framewidth": 1                           // optional, width of the frame border, in pixels
         },
         "collapseLayerGroupsBelowLevel": <level>    // optional, layer tree level below which to initially collapse groups. If unspecified, groups are not initially collapsed.
+        "skipEmptyFeatureAttributes": true          // optional, whether to skip empty feature attributes in the identify results. Default is false.
       }
     ],
     "groups": [                                     // optional, nested groups

@@ -321,6 +321,8 @@ function getTheme(configItem, resultItem) {
                 resultItem.watermark = configItem.watermark;
             }
 
+            resultItem.skipEmptyFeatureAttributes = configItem.skipEmptyFeatureAttributes
+
             // set default theme
             if (configItem.default || !result.themes.defaultTheme) {
                 result.themes.defaultTheme = resultItem.name;
@@ -404,8 +406,9 @@ function getGroupThemes(configGroup, resultGroup) {
           "backgroundcolor": "#FFFFFF",             // optional, background color of the frame
           "framecolor": "#000000",                  // optional, color of the frame border
           "framewidth": 1                           // optional, width of the frame border, in pixels
-      },
-      "collapseLayerGroupsBelowLevel": <level>      // optional, layer tree level below which to initially collapse groups. If unspecified, groups are not initially collapsed.
+        },
+        "collapseLayerGroupsBelowLevel": <level>    // optional, layer tree level below which to initially collapse groups. If unspecified, groups are not initially collapsed.
+        "skipEmptyFeatureAttributes": true          // optional, whether to skip empty feature attributes in the identify results. Default is false.
       }
     ],
     "groups": [                                     // optional, nested groups
