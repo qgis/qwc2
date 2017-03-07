@@ -105,8 +105,15 @@ const Print = React.createClass({
 
         if(this.props.theme.printScales && this.props.theme.printScales.length > 0) {
             scaleChooser = (
-                <select name={mapName + ":scale"} value={this.state.scale} onChange={this.changeScale}>
+                <select name={mapName + ":scale"} value={this.state.scale || ""} onChange={this.changeScale}>
                     {this.props.theme.printScales.map(scale => (<option key={scale} value={scale}>{scale}</option>))}
+                </select>);
+        }
+        let resolutionChooser = (<input name="DPI" type="number" value={this.state.dpi || ""} onChange={this.changeResolution} min="50" max="1200"/>);
+        if(this.props.theme.printResolutions && this.props.theme.printResolutions.length > 0) {
+            resolutionChooser = (
+                <select name={"DPI"} value={this.state.dpi || ""} onChange={this.changeResolution}>
+                    {this.props.theme.printResolutions.map(res => (<option key={res} value={res}>{res}</option>))}
                 </select>);
         }
 
@@ -162,8 +169,8 @@ const Print = React.createClass({
                             <td><Message msgId="print.resolution" /></td>
                             <td>
                                 <span className="input-frame">
-                                    <input name="DPI" type="number" value={this.state.dpi || ""} onChange={this.changeResolution} min="50" max="1200"/>
-                                    <span> dpi</span>
+                                    {resolutionChooser}
+                                    <span>&nbsp;dpi</span>
                                 </span>
                             </td>
                         </tr>

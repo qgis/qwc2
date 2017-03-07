@@ -103,8 +103,9 @@ const ThemeSwitcher = React.createClass({
                 bbox = theme.initialBbox;
             }
             const printScales = theme.printScales || object.themes.defaultPrintScales || undefined;
+            const printResolutions = theme.printResolutions || object.themes.defaultPrintResolutions || undefined;
             const printGrid = theme.printGrid || object.themes.defaultPrintGrid || undefined;
-            this.props.changeTheme(assign({}, theme, {printScales, printGrid}), layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, bbox, centerZoom);
+            this.props.changeTheme(assign({}, theme, {printScales, printResolutions, printGrid}), layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, bbox, centerZoom);
         }
         UrlParams.updateParams({ie: undefined});
         UrlParams.updateParams({ic: undefined});
@@ -263,6 +264,7 @@ const ThemeSwitcher = React.createClass({
     themeClicked(theme) {
         const scales = theme.scales || this.state.themes.defaultScales;
         const printScales = theme.printScales || this.state.themes.defaultPrintScales || undefined;
+        const printResolutions = theme.printResolutions || this.state.themes.defaultPrintResolutions || undefined;
         const printGrid = theme.printGrid || this.state.themes.defaultPrintGrid || undefined;
         let zoomBBox = theme.initialBbox;
         if(ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch") === true) {
@@ -280,7 +282,7 @@ const ThemeSwitcher = React.createClass({
                 activeBackgroudLayer = activeBackgrounds[0].name;
             }
         }
-        this.props.changeTheme(assign({}, theme, {printScales, printGrid}), this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme, activeBackgroudLayer), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, zoomBBox);
+        this.props.changeTheme(assign({}, theme, {printScales, printGrid, printResolutions}), this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme, activeBackgroudLayer), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, zoomBBox);
         this.props.setCurrentTask(null);
     },
     bboxOverlap(bbox1, bbox2) {
