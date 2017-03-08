@@ -32,7 +32,7 @@
     },
     "identifyTitle": "Objektinformationen",
     "identify": {
-      "querying": "Abfragen"
+      "querying": "Objekte werden abgefragt..."
     },
     "identifyregion": {
       "info": "Polygon um die zu identifizierende Objekte zeichnen"
