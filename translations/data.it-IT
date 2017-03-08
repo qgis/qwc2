@@ -90,6 +90,7 @@
       "directLinkTitle": "Con un Link diretto",
       "generatingpermalink": "",
       "msgToCopyUrl": "Clicca per copiare",
+      "msgCopiedUrl": "",
       "QRCodeLinkTitle": "Usando il QR Code",
       "socialIntro": "Sul tuo social preferito"
     },
