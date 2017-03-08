@@ -20,6 +20,7 @@ from xml.dom.minidom import parseString
 import json
 import traceback
 
+usedThemeIds = []
 
 # load thumbnail from file or GetMap
 def getThumbnail(configItem, resultItem, layers, crs, extent):
@@ -190,6 +191,12 @@ def getTheme(configItem, resultItem):
 
         topLayer = getChildElement(getChildElement(capabilities, "Capability"), "Layer")
         themeId = getChildElementValue(topLayer, "Name")
+        if themeId in usedThemeIds:
+            i = 0
+            while "%s%d" % (themeId, i) in usedThemeIds:
+                i += 1
+            themeId = "%s%d" % (themeId, i)
+        usedThemeIds.append(themeId)
 
         # use name from config or fallback to WMS title
         wmsTitle = configItem.get("title") or getChildElementValue(capabilities, "Service/Title") or getChildElementValue(topLayer, "Title")
@@ -246,7 +253,7 @@ def getTheme(configItem, resultItem):
 
         # update theme config
         resultItem["id"] = themeId
-        resultItem["name"] = getChildElementValue(topLayer, "Name")
+        resultItem["name"] = themeId
         resultItem["title"] = wmsTitle
         resultItem["attribution"] = configItem["attribution"]
         resultItem["attributionUrl"] = configItem["attributionUrl"]

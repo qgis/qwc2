@@ -13,6 +13,8 @@ const axios = require('axios');
 const xml2js = require('xml2js');
 const fs = require('fs');
 
+let usedThemeIds = [];
+
 // load thumbnail from file or GetMap
 function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
     if (configItem.thumbnail !== undefined) {
@@ -198,7 +200,13 @@ function getTheme(configItem, resultItem) {
 
             const topLayer = capabilities.Capability.Layer;
 
-            const themeId = topLayer.Name;
+            let themeId = topLayer.Name;
+            if(usedThemeIds.includes(themeId)) {
+                let i = 0;
+                for(; usedThemeIds.includes(themeId + i); ++i);
+                themeId = themeId + i;
+            }
+            usedThemeIds.push(themeId);
 
             // use name from config or fallback to WMS title
             const wmsTitle = configItem.title || capabilities.Service.Title || topLayer.Title;
@@ -276,7 +284,7 @@ function getTheme(configItem, resultItem) {
 
             // update theme config
             resultItem.id = themeId;
-            resultItem.name = topLayer.Name;
+            resultItem.name = themeId;
             resultItem.title = wmsTitle;
             resultItem.attribution = configItem.attribution;
             resultItem.attributionUrl = configItem.attributionUrl;
