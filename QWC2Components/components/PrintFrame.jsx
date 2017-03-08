@@ -89,8 +89,8 @@ const PrintFrame = React.createClass({
         }
     },
     startSelection(ev) {
-        let x = ev.clientX;
-        let y = ev.clientY;
+        let x = Math.round(ev.clientX);
+        let y = Math.round(ev.clientY);
         this.setState({
             x: x,
             y: y,
@@ -101,10 +101,10 @@ const PrintFrame = React.createClass({
     },
     updateSelection(ev) {
         if(this.state.moving) {
-            let x = ev.clientX;
-            let y = ev.clientY;
-            let width = Math.max(0, x - this.state.x);
-            let height = Math.max(0, y - this.state.y);
+            let x = Math.round(ev.clientX);
+            let y = Math.round(ev.clientY);
+            let width = Math.round(Math.max(0, x - this.state.x));
+            let height = Math.round(Math.max(0, y - this.state.y));
             this.setState({
                 width: width,
                 height: height
