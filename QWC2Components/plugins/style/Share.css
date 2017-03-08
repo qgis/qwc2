@@ -1,35 +1,9 @@
 #Share div.social-links,
-#Share div.input-link,
+#Share div.share-link,
 #Share div.qr-code {
     padding: 0.5em 1em;
 }
 
 #Share div.SocialMediaShareButton {
     cursor: pointer;
-}
-
-#Share div.input-link span.input-group-addon {
-    font-size: inherit;
-    padding: 0;
-    width: 3em;
-    background-color: white;
-    border-radius: 0;
-    border-style: solid;
-    border-color: @item_border@;
-    border-width: 1px 1px 1px 0;
-}
-
-#Share div.input-link input {
-    border: 1px solid @item_border@;
-    background-color: white;
-    border-radius: 0;
-}
-
-#Share div.input-link button.buttonCopy {
-    padding: 0;
-    margin: 0;
-    font-size: inherit;
-    background-color: white;
-    border: none;
-    color: black;
 }

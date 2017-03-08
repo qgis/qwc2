@@ -10,10 +10,9 @@ const React = require('react')
 const axios = require('axios');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const ShareSocials = require('../../MapStore2/web/client/components/share/ShareSocials');
-const ShareLink = require('../../MapStore2/web/client/components/share/ShareLink');
-const ShareEmbed = require('../../MapStore2/web/client/components/share/ShareEmbed');
 const ShareQRCode = require('../../MapStore2/web/client/components/share/ShareQRCode');
 const ConfigUtils = require('../../MapStore2/web/client/utils/ConfigUtils');
+const ShareLink = require('../components/ShareLink');
 const {SideBar} = require('../components/SideBar');
 require('./style/Share.css');
 

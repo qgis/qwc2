@@ -1,0 +1,25 @@
+div.share-link-frame {
+    display: flex;
+}
+
+div.share-link-frame > input {
+    flex: 1 1 auto;
+    border: 1px solid @item_border@;
+    background-color: white;
+    border-radius: 0;
+}
+
+span.share-link-button {
+    flex: 0 0 auto;
+    height: 2.5em;
+    width: 2.5em;
+    text-align: center;
+    padding: 0.25em 0.25em;
+    line-height: 2em;
+    color: @item_fg@;
+    background-color: #eee;
+    border-top: 1px solid @item_border@;
+    border-right: 1px solid @item_border@;
+    border-bottom: 1px solid @item_border@;
+    cursor: pointer;
+}
