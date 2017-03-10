@@ -3,53 +3,53 @@
   "messages": {
     "appmenu": {
       "items": {
-        "Draw": "",
-        "DxfExport": "",
-        "Help": "",
-        "LayerTree": "",
-        "Measure": "",
-        "Print": "",
-        "RasterExport": "",
-        "Share": "",
-        "ThemeSwitcher": "",
-        "Tools": "",
-        "IdentifyRegion": ""
+        "Draw": "Dessiner",
+        "DxfExport": "Export DXF",
+        "Help": "Aide",
+        "LayerTree": "Arborescence",
+        "Measure": "Mesure",
+        "Print": "Imprimer",
+        "RasterExport": "Export Raster",
+        "Share": "Partager",
+        "ThemeSwitcher": "Thèmes",
+        "Tools": "Outils",
+        "IdentifyRegion": "Interroger la région"
       },
-      "menulabel": ""
+      "menulabel": "Carte et outils"
     },
     "bgswitcher": {
-      "nobg": ""
+      "nobg": "Pas de fond"
     },
     "bottombar": {
-      "mousepos_label": "",
-      "scale_label": "",
-      "terms_label": "",
+      "mousepos_label": "Coordonnées",
+      "scale_label": "Echelle",
+      "terms_label": "Conditions d'utilisation",
       "viewertitle_label": ""
     },
     "dxfexport": {
       "selectinfo": "",
-      "symbologyscale": ""
+      "symbologyscale": "Echelle d'export"
     },
     "identifyTitle": "Informations de l'objet",
     "identify": {
-      "querying": ""
+      "querying": "Indentification en cours..."
     },
     "identifyregion": {
-      "info": ""
+      "info": "Dessiner un polygone pour identifier les objets"
     },
     "layerinfo": {
-      "title": "",
-      "abstract": "",
-      "attribution": "",
-      "keywords": "",
-      "dataUrl": "",
-      "metadataUrl": "",
-      "legend": ""
+      "title": "Informations dur la couche",
+      "abstract": "Récapitulation",
+      "attribution": "Attribution",
+      "keywords": "Mots-clés",
+      "dataUrl": "URL des données",
+      "metadataUrl": "URL des métadonnées",
+      "legend": "Légende"
     },
     "layertree": {
-      "maptip": "",
-      "transparency": "",
-      "printlegend": ""
+      "maptip": "Afficher les maptips",
+      "transparency": "Transparence",
+      "printlegend": "Afficher la légende"
     },
     "locate": {
       "tooltip": "",
@@ -59,43 +59,43 @@
       "outsideMapBoundsMsg": ""
     },
     "map": {
-      "loading": "Chargement..."
+      "loading": "Chargement de la carte..."
     },
     "measureComponent": {
       "areaLabel": "Surface",
       "bearingLabel": "Direction",
       "lengthLabel": "Longueur",
-      "pointLabel": ""
+      "pointLabel": "Position"
     },
-    "noFeatureInfo": "Aucune information n'est disponible pour le point cliqué",
+    "noFeatureInfo": "Aucune information n'est disponible pour le point cliqué.",
     "print": {
       "layout": "Mise en page",
-      "nolayouts": "",
-      "notheme": "",
+      "nolayouts": "Il n'y a pas de mise en page disponible pour le thème choisi.",
+      "notheme": "Pas de thème sélectionné",
       "resolution": "Résolution:",
-      "rotation": "",
-      "scale": "",
-      "submit": "Imprimer"
+      "rotation": "Rotation",
+      "scale": "Echelle",
+      "submit": "Créer le PDF"
     },
     "rasterexport": {
-      "format": "",
-      "selectinfo": ""
+      "format": "Format:",
+      "selectinfo": "Dessiner un rectangle pour définir la zone à exporter"
     },
     "search": {
-      "coordinates": "",
+      "coordinates": "Coordonnées",
       "placeholder": "Recherche par toponyme ou coordonnées...",
       "more": ""
     },
     "share": {
       "directLinkTitle": "Via un lien direct",
-      "generatingpermalink": "",
+      "generatingpermalink": "Un lien permanent est généré...",
       "msgToCopyUrl": "Cliquer pour copier",
-      "msgCopiedUrl": "",
-      "QRCodeLinkTitle": "qr code",
-      "socialIntro": "via votre réseau social favori"
+      "msgCopiedUrl": "URL copiée",
+      "QRCodeLinkTitle": "QR code",
+      "socialIntro": "Via votre réseau social favori"
     },
     "themeswitcher": {
-      "filter": ""
+      "filter": "Filtre"
     }
   }
 }
