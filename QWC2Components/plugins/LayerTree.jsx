@@ -64,7 +64,7 @@ const LayerTree = React.createClass({
         });
         return visible / group.sublayers.length;
     },
-    renderLayerGroup(layer, group, path) {
+    renderLayerGroup(layer, group, path, enabled) {
         if(layer.layertreehidden) {
             return null;
         }
@@ -79,20 +79,24 @@ const LayerTree = React.createClass({
         let expanderstyle = {
             backgroundImage: 'url(' + assetsPath + '/img/' + expanderstate + '.svg)'
         };
+        let itemclasses = classnames({
+            "layertree-item": true,
+            "layertree-item-disabled": !(enabled && visibility)
+        });
         let sublayersContent = null;
         if(group.sublayers && group.expanded) {
             sublayersContent = group.sublayers.map((sublayer, idx) => {
                 let subpath = [...path, idx];
                 if(sublayer.sublayers) {
-                    return this.renderLayerGroup(layer, sublayer, subpath)
+                    return this.renderLayerGroup(layer, sublayer, subpath, enabled && visibility)
                 } else {
-                    return this.renderSubLayer(layer, sublayer, subpath);
+                    return this.renderSubLayer(layer, sublayer, subpath, enabled && visibility);
                 }
             });
         }
         return (
             <div className="layertree-item-container" key={group.name}>
-                <div className="layertree-item">
+                <div className={itemclasses}>
                     <span className="layertree-item-expander" style={expanderstyle} onClick={() => this.groupExpandendToggled(layer, path, group.expanded)}></span>
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.groupToggled(layer, path, visibility)}></span>
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
@@ -101,7 +105,7 @@ const LayerTree = React.createClass({
             </div>
         )
     },
-    renderSubLayer(layer, sublayer, path) {
+    renderSubLayer(layer, sublayer, path, enabled) {
         let pathstr = layer.id + "/" + path.join("/");
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let checkboxstate = sublayer.visibility === true ? 'checked' : 'unchecked';
@@ -112,6 +116,10 @@ const LayerTree = React.createClass({
             "layertree-item-cog": true,
             "layertree-item-cog-active": this.state.activemenu === pathstr
         })
+        let itemclasses = classnames({
+            "layertree-item": true,
+            "layertree-item-disabled": !(enabled && sublayer.visibility)
+        });
         let editframe = null;
         if(this.state.activemenu === pathstr) {
             editframe = (
@@ -132,7 +140,7 @@ const LayerTree = React.createClass({
         }
         return (
             <div className="layertree-item-container" key={sublayer.name}>
-                <div className="layertree-item">
+                <div className={itemclasses}>
                     <span className="layertree-item-expander"></span>
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.sublayerToggled(layer, path)}></span>
                     {legendicon}
@@ -146,7 +154,7 @@ const LayerTree = React.createClass({
         )
     },
     renderLayerTree(layer) {
-        return layer.group === 'background' ? null: this.renderLayerGroup(layer, layer, []);
+        return layer.group === 'background' ? null: this.renderLayerGroup(layer, layer, [], true);
     },
     render() {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
