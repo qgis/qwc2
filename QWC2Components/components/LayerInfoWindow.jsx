@@ -38,7 +38,7 @@ const LayerInfoWindow = React.createClass({
             legend = (<img className="layer-info-window-legend" src={legend} />);
         }
         return (
-            <ResizeableWindow title="layerinfo.title" glyphicon="info-sign" onClose={this.props.onClose}>
+            <ResizeableWindow title="layerinfo.title" glyphicon="info-sign" onClose={this.props.onClose} initialWidth={400} initialHeight={480}>
                 <div role="body" className="layer-info-window-body">
                     <h4 className="layer-info-window-title">{this.props.sublayer.title}</h4>
                     <div className="layer-info-window-frame">

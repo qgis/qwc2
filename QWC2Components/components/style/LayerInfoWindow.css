@@ -22,6 +22,7 @@ table.layer-info-window-table {
 
 table.layer-info-window-table td {
     padding: 0.5em;
+    vertical-align: top;
 }
 
 table.layer-info-window-table td:first-child {
