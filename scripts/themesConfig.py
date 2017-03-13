@@ -154,15 +154,16 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
 
         # use geographic bounding box, as default CRS may have inverted axis order with WMS 1.3.0
         geoBBox = getChildElement(layer, "EX_GeographicBoundingBox")
-        layerEntry["bbox"] = {
-            "crs": "EPSG:4326",
-            "bounds": [
-                float(getChildElementValue(geoBBox, "westBoundLongitude")),
-                float(getChildElementValue(geoBBox, "southBoundLatitude")),
-                float(getChildElementValue(geoBBox, "eastBoundLongitude")),
-                float(getChildElementValue(geoBBox, "northBoundLatitude"))
-            ]
-        }
+        if geoBBox:
+            layerEntry["bbox"] = {
+                "crs": "EPSG:4326",
+                "bounds": [
+                    float(getChildElementValue(geoBBox, "westBoundLongitude")),
+                    float(getChildElementValue(geoBBox, "southBoundLatitude")),
+                    float(getChildElementValue(geoBBox, "eastBoundLongitude")),
+                    float(getChildElementValue(geoBBox, "northBoundLatitude"))
+                ]
+            }
     else:
         # group
         layerEntry["sublayers"] = []
@@ -203,10 +204,12 @@ def getTheme(configItem, resultItem):
 
         # keywords
         keywords = []
-        for keyword in getChildElement(capabilities, "Service/KeywordList").getElementsByTagName("Keyword"):
-            value = getElementValue(keyword)
-            if value != "infoMapAccessService":
-                keywords.append(value)
+        keywordList = getChildElement(capabilities, "Service/KeywordList")
+        if keywordList:
+            for keyword in keywordList.getElementsByTagName("Keyword"):
+                value = getElementValue(keyword)
+                if value != "infoMapAccessService":
+                    keywords.append(value)
 
         # collect WMS layers for printing
         if configItem["backgroundLayers"]:

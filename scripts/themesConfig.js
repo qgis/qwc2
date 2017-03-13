@@ -144,15 +144,17 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
             layerEntry.maxScale = parseInt(layer.MaxScaleDenominator, 10);
         }
         // use geographic bounding box, as default CRS may have inverted axis order with WMS 1.3.0
-        layerEntry.bbox = {
-            "crs": "EPSG:4326",
-            "bounds": [
-                parseFloat(layer.EX_GeographicBoundingBox.westBoundLongitude),
-                parseFloat(layer.EX_GeographicBoundingBox.southBoundLatitude),
-                parseFloat(layer.EX_GeographicBoundingBox.eastBoundLongitude),
-                parseFloat(layer.EX_GeographicBoundingBox.northBoundLatitude)
-            ]
-        };
+        if(layer.EX_GeographicBoundingBox) {
+            layerEntry.bbox = {
+                "crs": "EPSG:4326",
+                "bounds": [
+                    parseFloat(layer.EX_GeographicBoundingBox.westBoundLongitude),
+                    parseFloat(layer.EX_GeographicBoundingBox.southBoundLatitude),
+                    parseFloat(layer.EX_GeographicBoundingBox.eastBoundLongitude),
+                    parseFloat(layer.EX_GeographicBoundingBox.northBoundLatitude)
+                ]
+            };
+        }
     } else {
         // group
         layerEntry.sublayers = [];
@@ -213,12 +215,14 @@ function getTheme(configItem, resultItem) {
 
             // keywords
             var keywords = [];
-            toArray(capabilities.Service.KeywordList.Keyword).map((entry) => {
-                var value = (typeof entry === 'object') ? entry._ : entry;
-                if (value !== "infoMapAccessService") {
-                    keywords.push(value);
-                }
-            });
+            if(capabilities.Service.KeywordList) {
+              toArray(capabilities.Service.KeywordList.Keyword).map((entry) => {
+                  var value = (typeof entry === 'object') ? entry._ : entry;
+                  if (value !== "infoMapAccessService") {
+                      keywords.push(value);
+                  }
+              });
+            }
 
             // use first CRS for thumbnail request
             const crs = toArray(topLayer.CRS).filter(item => item != 'CRS:84')[0];
