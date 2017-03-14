@@ -7,11 +7,17 @@ if [ "$1" == "build" ]; then
     exit 0
 fi
 if [ "$1" == "prod" ]; then
+    if [ -f config.prod.json ]; then
+      config="config.prod.json"
+    else
+      config="config.json"
+    fi
     npm run build && \
     npm run themesconfig && \
     rm -rf prod && \
     mkdir -p ./prod/translations \
-    && cp -a ./dist ./index.html ./assets ./themes.json ./config.json ./prod \
+    && cp -a ./dist ./index.html ./assets ./themes.json ./prod \
+    && cp -a  $config ./prod/config.json \
     && cp -a ./translations/data.* ./prod/translations
     exit 0
 fi
