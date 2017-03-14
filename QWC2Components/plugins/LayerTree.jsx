@@ -81,7 +81,7 @@ const LayerTree = React.createClass({
         };
         let itemclasses = classnames({
             "layertree-item": true,
-            "layertree-item-disabled": !(enabled && visibility)
+            "layertree-item-disabled": !enabled
         });
         let sublayersContent = null;
         if(group.sublayers && group.expanded) {
@@ -118,7 +118,7 @@ const LayerTree = React.createClass({
         })
         let itemclasses = classnames({
             "layertree-item": true,
-            "layertree-item-disabled": !(enabled && sublayer.visibility)
+            "layertree-item-disabled": !enabled
         });
         let editframe = null;
         if(this.state.activemenu === pathstr) {
