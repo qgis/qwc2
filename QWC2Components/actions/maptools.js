@@ -21,6 +21,8 @@ function triggerTool(key, mode=null) {
             dispatch(setCurrentTask('Draw', mode));
             dispatch(changeDrawingStatus('create'));
         });
+    } else if(key == 'LayerTree') {
+        return setCurrentTask('LayerTree', null, true);
     } else {
         return setCurrentTask(key, mode);
     }

@@ -11,11 +11,11 @@ const {changeMeasurement} = require('../../MapStore2/web/client/actions/measurem
 const {changeDrawingStatus} = require('../../MapStore2/web/client/actions/draw');
 const {changeMapInfoState} = require('../../MapStore2/web/client/actions/mapInfo');
 
-function setCurrentTask(task, mode=null) {
+function setCurrentTask(task, mode=null, allowIdentify=false) {
     return (dispatch) => {
         dispatch(changeMeasurement({geomType: null}));
         dispatch(changeDrawingStatus(null));
-        dispatch(changeMapInfoState(task === null));
+        dispatch(changeMapInfoState(task === null || allowIdentify));
         dispatch({
             type: SET_CURRENT_TASK,
             current: task,
