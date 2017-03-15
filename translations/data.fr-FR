@@ -6,16 +6,16 @@
         "Draw": "Dessiner",
         "DxfExport": "Export DXF",
         "Help": "Aide",
-        "LayerTree": "Arborescence",
-        "Measure": "Mesure",
+        "LayerTree": "Couches",
+        "Measure": "Mesurer",
         "Print": "Imprimer",
-        "RasterExport": "Export Raster",
+        "RasterExport": "Export image",
         "Share": "Partager",
-        "ThemeSwitcher": "Thèmes",
+        "ThemeSwitcher": "Cartes",
         "Tools": "Outils",
         "IdentifyRegion": "Interroger la région"
       },
-      "menulabel": "Carte et outils"
+      "menulabel": "Cartes et outils"
     },
     "bgswitcher": {
       "nobg": "Pas de fond"
@@ -24,15 +24,15 @@
       "mousepos_label": "Coordonnées",
       "scale_label": "Echelle",
       "terms_label": "Conditions d'utilisation",
-      "viewertitle_label": ""
+      "viewertitle_label": "Page d'accueil"
     },
     "dxfexport": {
-      "selectinfo": "",
-      "symbologyscale": "Echelle d'export"
+      "selectinfo": "Paramétrage de l'export DXF",
+      "symbologyscale": "Echelle"
     },
     "identifyTitle": "Informations de l'objet",
     "identify": {
-      "querying": "Indentification en cours..."
+      "querying": "Identification en cours..."
     },
     "identifyregion": {
       "info": "Dessiner un polygone pour identifier les objets"
@@ -69,10 +69,10 @@
     },
     "noFeatureInfo": "Aucune information n'est disponible pour le point cliqué.",
     "print": {
-      "layout": "Mise en page",
+      "layout": "Format",
       "nolayouts": "Il n'y a pas de mise en page disponible pour le thème choisi.",
       "notheme": "Pas de thème sélectionné",
-      "resolution": "Résolution:",
+      "resolution": "Résolution",
       "rotation": "Rotation",
       "scale": "Echelle",
       "submit": "Créer le PDF"
