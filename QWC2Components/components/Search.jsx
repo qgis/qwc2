@@ -294,7 +294,8 @@ const Search = React.createClass({
         this.props.setHighlightedFeature(null);
         let wgscenterlatlon = CoordinatesUtils.reproject(item, item.crs, "EPSG:4326");
         let wgsextent = CoordinatesUtils.reprojectBbox(item.bbox, item.crs, "EPSG:4326");
-        this.props.addMarker({lat: wgscenterlatlon.y, lng: wgscenterlatlon.x}, item.text);
+        let text = item.label !== undefined ? item.label : item.text;
+        this.props.addMarker({lat: wgscenterlatlon.y, lng: wgscenterlatlon.x}, text);
         if(zoom && this.props.mapConfig !== undefined) {
             // find max zoom level greater than min scale
             let maxZoom = 0;
