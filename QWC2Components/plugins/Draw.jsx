@@ -10,6 +10,7 @@ const React = require('react');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
 const MessageBar = require('../components/MessageBar');
+const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {changeDrawingStatus, endDrawing, setCurrentStyle} = require('../../MapStore2/web/client/actions/draw');
 const {setCurrentTask} = require('../actions/task');
 const { SketchPicker } = require('react-color');
@@ -124,15 +125,29 @@ const Draw = React.createClass({
         <MessageBar name="Draw" onClose={this.onClose}>
           <div role="body">
             <div className="buttonbar">
-              <span onClick={()=>this.setDrawMethod('Point')} className={this.statusForDrawMethod('Point')}>Point</span>
-              <span onClick={()=>this.setDrawMethod('LineString')} className={this.statusForDrawMethod('LineString')}>Line</span>
-              <span onClick={()=>this.setDrawMethod('Polygon')} className={this.statusForDrawMethod('Polygon')}>Polygon</span>
+              <span onClick={()=>this.setDrawMethod('Point')} className={this.statusForDrawMethod('Point')}>
+                <Message msgId="draw.point" />
+              </span>
+              <span onClick={()=>this.setDrawMethod('LineString')} className={this.statusForDrawMethod('LineString')}>
+                <Message msgId="draw.line" />
+              </span>
+              <span onClick={()=>this.setDrawMethod('Polygon')} className={this.statusForDrawMethod('Polygon')}>
+                <Message msgId="draw.polygon" />
+              </span>
               <span onClick={()=>this.setDrawMethod('BBOX')} className={this.statusForDrawMethod('BBOX')}>BBOX</span>
-              <span onClick={()=>this.setDrawMethod('Circle')} className={this.statusForDrawMethod('Circle')}>Circle</span>
+              <span onClick={()=>this.setDrawMethod('Circle')} className={this.statusForDrawMethod('Circle')}>
+                <Message msgId="draw.circle" />
+              </span>
 
               <div className="draw-options">
-                <button className="btn btn-danger" onClick={this.deleteSelectedFeatures} disabled={this.hasSelectedFeatures() ? '' : 'disabled'}>Delete</button>
-                <button className="btn btn-default" onClick={this.deleteAllFeatures} disabled={this.props.features.length ? '' : 'disabled'}>Clear all</button>
+                <button className="btn btn-danger" onClick={this.deleteSelectedFeatures}
+                  disabled={this.hasSelectedFeatures() ? '' : 'disabled'}>
+                    <Message msgId="draw.delete" />
+                </button>
+                <button className="btn btn-default" onClick={this.deleteAllFeatures}
+                  disabled={this.props.features.length ? '' : 'disabled'}>
+                  <Message msgId="draw.clearAll" />
+                </button>
               </div>
             </div>
 
