@@ -181,10 +181,11 @@ const Draw = React.createClass({
                   </span>
                 </span>
 
-                <span className="style-rule">
+                <span className="style-rule fill-opacity">
                   <label>Fill opacity</label>
-                  <input type="text" value={this.props.currentStyle.fillTransparency}
+                  <input type="range" min="0" max="1" step="0.1" value={this.props.currentStyle.fillTransparency}
                     onChange={(evt) => this.updateStyleRule('fillTransparency', evt.target.value)} />
+                  <span>{this.props.currentStyle.fillTransparency*100}%</span>
                 </span>
               </div>
               <div className="style-row">
