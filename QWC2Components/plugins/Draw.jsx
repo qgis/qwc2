@@ -13,7 +13,7 @@ const MessageBar = require('../components/MessageBar');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {changeDrawingStatus, endDrawing, setCurrentStyle} = require('../../MapStore2/web/client/actions/draw');
 const {setCurrentTask} = require('../actions/task');
-const { SketchPicker } = require('react-color');
+const { TwitterPicker } = require('react-color');
 
 require('./style/Draw.css');
 
@@ -155,11 +155,11 @@ const Draw = React.createClass({
               <div className="style-row">
                 <span className="style-rule">
                   <label>Stroke color</label>
-                  <input type="text" value={this.props.currentStyle.strokeColor}
+                  <input type="text" style={{backgroundColor: this.props.currentStyle.strokeColor}}
                     onChange={(evt) => this.updateStyleRule('strokeColor', evt.target.value)}
                     onFocus={() => this.setState({ displayStrokeColorPicker: true })} />
                   <span className={this.state && this.state.displayStrokeColorPicker ? "color-picker" : "collapse" }>
-                    <SketchPicker color={this.props.currentStyle.StrokeColor} onChangeComplete={(color) => this.updateStyleRule('strokeColor', color.hex)} />
+                    <TwitterPicker color={this.props.currentStyle.StrokeColor} onChangeComplete={(color) => this.updateStyleRule('strokeColor', color.hex)} />
                   </span>
                 </span>
 
@@ -172,12 +172,12 @@ const Draw = React.createClass({
               <div className="style-row">
                 <span className="style-rule">
                   <label>Fill color</label>
-                  <input type="text" value={this.props.currentStyle.fillColor}
+                  <input type="text"  style={{backgroundColor: this.props.currentStyle.fillColor}}
                       onChange={(evt) => this.updateStyleRule('fillColor', evt.target.value)}
                       onFocus={() => this.setState({ displayFillColorPicker: true })} />
 
                   <span className={this.state && this.state.displayFillColorPicker ? "color-picker" : "collapse" }>
-                    <SketchPicker color={this.props.currentStyle.fillColor} onChangeComplete={(color) => this.updateStyleRule('fillColor', color.hex)} />
+                    <TwitterPicker color={this.props.currentStyle.fillColor} onChangeComplete={(color) => this.updateStyleRule('fillColor', color.hex)} />
                   </span>
                 </span>
 
