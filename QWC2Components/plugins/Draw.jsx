@@ -62,8 +62,8 @@ const Draw = React.createClass({
 
   onClose() {
     this.props.setCurrentTask(null);
-    this.props.changeDrawingStatus('clean', null, this.props.drawOwner, []);
-    this.props.changeDrawingStatus(null, null, null, []);
+    this.props.changeDrawingStatus('clean', null, this.props.drawOwner, this.props.features);
+    this.props.changeDrawingStatus(null, null, null, this.props.features);
   },
 
   setDrawMethod(method) {
