@@ -30,11 +30,13 @@ const Identify = React.createClass({
         sendRequest: React.PropTypes.func,
         showMarker: React.PropTypes.func,
         hideMarker: React.PropTypes.func,
+        enableExport: React.PropTypes.bool
     },
     getDefaultProps() {
         return {
             format: "text/xml",
-            maxItems: 10
+            maxItems: 10,
+            enableExport: true
         };
     },
     queryFilter(l) {
@@ -83,7 +85,8 @@ const Identify = React.createClass({
                 <IdentifyViewer role="body"
                     map={this.props.map}
                     missingResponses={missingResponses}
-                    responses={this.props.responses} />
+                    responses={this.props.responses}
+                    enableExport={this.props.enableExport} />
             </ResizeableWindow>
         );
     },

@@ -25,11 +25,13 @@ const IdentifyViewer = React.createClass({
         addLayer: React.PropTypes.func,
         removeLayer: React.PropTypes.func,
         changeLayerProperties: React.PropTypes.func,
-        mapcrs: React.PropTypes.string
+        mapcrs: React.PropTypes.string,
+        enableExport: React.PropTypes.bool
     },
     getDefaultProps() {
         return {
-            layers: []
+            layers: [],
+            enableExport: true
         };
     },
     getInitialState: function() {
@@ -200,7 +202,7 @@ const IdentifyViewer = React.createClass({
             >
                 <span className={this.state.currentFeature === feature ? "active clickable" : "clickable"} onClick={()=> this.setCurrentFeature(layer, feature)}>{displayName}</span>
                 <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResult(layer, feature)} />
-                <Glyphicon className="identify-export-result" glyph="export" onClick={() => this.exportResult(layer, feature)} />
+                {this.props.enableExport ? (<Glyphicon className="identify-export-result" glyph="export" onClick={() => this.exportResult(layer, feature)} />) : null}
             </li>
         );
     },
@@ -214,7 +216,7 @@ const IdentifyViewer = React.createClass({
                 <div className="identify-layer-result">
                     <span className="clickable" onClick={()=> this.toggleExpanded(layer, true)}><b>{layer}</b></span>
                     <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResultLayer(layer)} />
-                    <Glyphicon className="identify-export-result" glyph="export" onClick={() => this.exportResultLayer(layer)} />
+                    {this.props.enableExport ? (<Glyphicon className="identify-export-result" glyph="export" onClick={() => this.exportResultLayer(layer)} />) : null}
                 </div>
                 <ul>
                     {features.map(feature => this.renderFeature(layer, feature))}
@@ -240,9 +242,9 @@ const IdentifyViewer = React.createClass({
                     <ul>{contents}</ul>
                 </div>
                 {this.renderFeatureAttributes()}
-                <div className="identify-buttonbox">
+                {this.props.enableExport ? (<div className="identify-buttonbox">
                     <button onClick={this.exportResults}>Export</button>
-                </div>
+                </div>) : null}
                 <a ref={el => this.exportAnchor=el} style={{display: 'none'}}></a>
             </div>
         );
