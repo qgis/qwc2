@@ -94,8 +94,12 @@ const RasterExport = React.createClass({
         );
     },
     bboxSelected(bbox, pixelsize) {
-        bbox = CoordinatesUtils.reprojectBbox(bbox, bbox.crs, "EPSG:3857");
-        let extent = bbox[0] + "," + bbox[1] + "," + bbox[2] + "," + bbox[3];
+        let extent = "";
+        if(this.props.map.projection == "EPSG:4326") {
+            extent = bbox.miny + "," + bbox.minx + "," + bbox.maxy + "," + bbox.maxx;
+        } else {
+            extent = bbox.minx + "," + bbox.miny + "," + bbox.maxx + "," + bbox.maxy;
+        }
         this.extentInput.value = extent;
         this.widthInput.value = pixelsize[0];
         this.heightInput.value = pixelsize[1];

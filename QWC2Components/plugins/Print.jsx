@@ -270,12 +270,13 @@ const Print = React.createClass({
             return "";
         }
         let center = CoordinatesUtils.reproject(this.props.map.center, this.props.map.center.crs, this.props.map.projection);
-        let width = this.state.scale * this.state.layout.map.width / 1000.;
-        let height = this.state.scale * this.state.layout.map.height / 1000.;
-        let x1 = Math.round(center.x - 0.5 * width);
-        let x2 = Math.round(center.x + 0.5 * width);
-        let y1 = Math.round(center.y - 0.5 * height);
-        let y2 = Math.round(center.y + 0.5 * height);
+        let widthm = this.state.scale * this.state.layout.map.width / 1000.;
+        let heightm = this.state.scale * this.state.layout.map.height / 1000.;
+        let {width, height} = MapUtils.transformExtent(this.props.map.projection, center, widthm, heightm);
+        let x1 = center.x - 0.5 * width;
+        let x2 = center.x + 0.5 * width;
+        let y1 = center.y - 0.5 * height;
+        let y2 = center.y + 0.5 * height;
         return x1 + "," + y1 + "," + x2 + "," + y2;
     }
 });
