@@ -1,0 +1,109 @@
+{
+  "locale": "sv-SE",
+  "messages": {
+    "appmenu": {
+      "items": {
+        "Draw": "Rita",
+        "DxfExport": "DXF Export",
+        "Help": "Hjälp",
+        "LayerTree": "Lager & teckenförklaring",
+        "Measure": "Mät",
+        "Print": "Skriv ut",
+        "RasterExport": "Raster Export",
+        "Share": "Dela länk",
+        "ThemeSwitcher": "Tema",
+        "Tools": "Kartverktyg",
+        "IdentifyRegion": ""
+      },
+      "menulabel": "Karta & Verktyg"
+    },
+    "bgswitcher": {
+      "nobg": "Ingen backgrund"
+    },
+    "bottombar": {
+      "mousepos_label": "Koordinater",
+      "scale_label": "Skala",
+      "terms_label": "Villkor",
+      "viewertitle_label": "QWC2 Demo"
+    },
+    "dxfexport": {
+      "selectinfo": "Rita en rektangel runt området som ska exporteras...",
+      "symbologyscale": "Symbolskala:"
+    },
+    "identifyTitle": "Information",
+    "identify": {
+      "querying": "Frågar..."
+    },
+    "identifyregion": {
+      "info": ""
+    },
+    "layerinfo": {
+      "title": "",
+      "abstract": "",
+      "attribution": "",
+      "keywords": "",
+      "dataUrl": "",
+      "metadataUrl": "",
+      "legend": ""
+    },
+    "layertree": {
+      "maptip": "Visa karttips för lager",
+      "transparency": "Transparens",
+      "printlegend": ""
+    },
+    "locate": {
+      "tooltip": "",
+      "metersUnit": "",
+      "feetUnit": "",
+      "popup": "",
+      "outsideMapBoundsMsg": ""
+    },
+    "map": {
+      "loading": "Laddar..."
+    },
+    "measureComponent": {
+      "areaLabel": "Area",
+      "bearingLabel": "Bäring",
+      "lengthLabel": "Längd",
+      "pointLabel": "Position"
+    },
+    "noFeatureInfo": "Det finns ingen information där du klickade",
+    "print": {
+      "layout": "Layout:",
+      "nolayouts": "Valt tema stöder inte utskrift",
+      "notheme": "Inget tema valt",
+      "resolution": "Upplösning:",
+      "rotation": "Rotation:",
+      "scale": "Skala:",
+      "submit": "Skriv ut"
+    },
+    "rasterexport": {
+      "format": "",
+      "selectinfo": ""
+    },
+    "search": {
+      "coordinates": "Koordinater",
+      "placeholder": "Sök efter platser och koordinater...",
+      "more": ""
+    },
+    "share": {
+      "directLinkTitle": "Via en direktlänk",
+      "generatingpermalink": "Genererar permalink...",
+      "msgToCopyUrl": "Klicka för att kopiera",
+      "msgCopiedUrl": "",
+      "QRCodeLinkTitle": "qr kod",
+      "socialIntro": "I ditt favoritnätverk"
+    },
+    "themeswitcher": {
+      "filter": "Filtrera..."
+    },
+    "draw": {
+      "delete": "Ta bort",
+      "clearAll": "Ta bort alla",
+      "point": "Punkt",
+      "line": "Linje",
+      "polygon": "Polygon",
+      "circle": "Cirkel"
+    }
+  }
+}
