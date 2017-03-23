@@ -88,7 +88,7 @@ def getChildElementValue(parent, path):
 
 
 # recursively get layer tree
-def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel):
+def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap):
     name = getChildElementValue(layer, "Name")
     title = getChildElementValue(layer, "Title")
     layers = getDirectChildElements(layer, "Layer")
@@ -169,13 +169,14 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
         layerEntry["sublayers"] = []
         layerEntry["expanded"] = False if collapseBelowLevel >= 0 and level >= collapseBelowLevel else True
         for sublayer in layers:
-            getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers, level + 1, collapseBelowLevel)
+            getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap)
 
         if not layerEntry["sublayers"]:
             # skip empty groups
             return
 
     resultLayers.append(layerEntry)
+    titleNameMap[title] = name
 
 
 # parse GetCapabilities for theme
@@ -222,7 +223,8 @@ def getTheme(configItem, resultItem):
 
         layerTree = []
         visibleLayers = []
-        getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel)
+        titleNameMap = {}
+        getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap)
         visibleLayers.reverse()
 
         # print templates
@@ -248,6 +250,7 @@ def getTheme(configItem, resultItem):
 
         # drawing order
         drawingOrder = getChildElementValue(capabilities, "Capability/LayerDrawingOrder").split(",")
+        drawingOrder = map(lambda title: titleNameMap[title], drawingOrder)
 
         # getmap formats
         availableFormats = []

@@ -86,7 +86,7 @@ function toArray(obj) {
 }
 
 // recursively get layer tree
-function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel) {
+function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap) {
     if (printLayers.indexOf(layer.Name) !== -1) {
         // skip print layers
         return;
@@ -160,7 +160,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         layerEntry.sublayers = [];
         layerEntry.expanded = collapseBelowLevel >= 0 && level >= collapseBelowLevel ? false : true;
         for (var subLayer of toArray(layer.Layer)) {
-            getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level, collapseBelowLevel);
+            getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap);
         }
         if (layerEntry.sublayers.length === 0) {
             // skip empty groups
@@ -168,6 +168,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         }
     }
     resultLayers.push(layerEntry);
+    titleNameMap[layer.Title] = layer.Name;
 }
 
 // parse GetCapabilities for theme
@@ -251,7 +252,8 @@ function getTheme(configItem, resultItem) {
             collapseLayerGroupsBelowLevel = configItem.collapseLayerGroupsBelowLevel || -1
             var layerTree = [];
             var visibleLayers = [];
-            getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel);
+            var titleNameMap = {};
+            getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap);
             visibleLayers.reverse();
 
             // print templates
@@ -284,7 +286,7 @@ function getTheme(configItem, resultItem) {
             }
 
             // drawing order
-            let drawingOrder = capabilities.Capability.LayerDrawingOrder.split(",");
+            let drawingOrder = capabilities.Capability.LayerDrawingOrder.split(",").map(title => titleNameMap[title]);
 
             // update theme config
             resultItem.id = themeId;
