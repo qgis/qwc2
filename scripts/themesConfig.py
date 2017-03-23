@@ -250,7 +250,7 @@ def getTheme(configItem, resultItem):
 
         # drawing order
         drawingOrder = getChildElementValue(capabilities, "Capability/LayerDrawingOrder").split(",")
-        drawingOrder = map(lambda title: titleNameMap[title], drawingOrder)
+        drawingOrder = map(lambda title: titleNameMap[title] if title in titleNameMap else title, drawingOrder)
 
         # getmap formats
         availableFormats = []

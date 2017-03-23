@@ -286,7 +286,7 @@ function getTheme(configItem, resultItem) {
             }
 
             // drawing order
-            let drawingOrder = capabilities.Capability.LayerDrawingOrder.split(",").map(title => titleNameMap[title]);
+            let drawingOrder = capabilities.Capability.LayerDrawingOrder.split(",").map(title => title in titleNameMap ? titleNameMap[title] : title);
 
             // update theme config
             resultItem.id = themeId;
