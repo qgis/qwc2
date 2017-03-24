@@ -47,9 +47,24 @@ const Draw = React.createClass({
   },
 
   componentWillReceiveProps(newProps) {
+    //draw dialog is closed and is activated because user clicks on previously drawn feature
+    if (this.props.drawStatus == null && newProps.drawStatus === 'select') {
+      this.props.setCurrentTask('Draw');
+      this.setState({ drawDialogOpen: true });
+    }
+
+    //recreate draw dialog with previously drawn features
+    if (newProps.drawStatus === 'create') {
+      this.setState({ drawDialogOpen: true });
+
+      if(this.props.features.length > newProps.features.length) {
+        this.props.changeDrawingStatus('replace', null, newProps.drawOwner, this.props.features);
+      }
+    }
+
     newProps.features.forEach(f => {
       //set current style from selected feature
-      if (f.selected && Object.keys(f.style).length > 0) {
+      if (f.selected && Object.keys(f.style).length > 0 && newProps.drawStatus != null) {
         this.props.setCurrentStyle(f.style);
       }
 
@@ -62,8 +77,16 @@ const Draw = React.createClass({
 
   onClose() {
     this.props.setCurrentTask(null);
-    this.props.changeDrawingStatus('clean', null, this.props.drawOwner, this.props.features);
-    this.props.changeDrawingStatus(null, null, null, this.props.features);
+
+    let unselectedFeatures = []
+    this.props.features.forEach(function(f) {
+      f.selected = false;
+      unselectedFeatures.push(f);
+    });
+
+    this.props.changeDrawingStatus(null, null, this.props.drawOwner, unselectedFeatures);
+
+    this.setState({ drawDialogOpen: false });
   },
 
   setDrawMethod(method) {
@@ -116,7 +139,7 @@ const Draw = React.createClass({
   },
 
   render() {
-    if(!this.props.drawStatus) {
+    if(!this.state || (this.state && !this.state.drawDialogOpen)) {
       return null;
     }
 
