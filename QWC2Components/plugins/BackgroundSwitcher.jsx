@@ -57,7 +57,7 @@ const BackgroundSwitcher = React.createClass({
                     {layer ? layer.title : (<Message msgId={"bgswitcher.nobg"} />)}
                 </div>
                 <div className="background-layer-thumbnail">
-                    <img src={layer ? assetsPath + "/" + layer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="} />
+                    <img src={layer ? assetsPath + "/" + layer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="} />
                 </div>
             </div>
         );
