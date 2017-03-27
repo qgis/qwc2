@@ -259,10 +259,7 @@ const IdentifyViewer = React.createClass({
     },
     exportResult(layer, feature) {
         if(this.exportAnchor) {
-            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(feature, null, ' '));
-            this.exportAnchor.setAttribute("href", dataStr);
-            this.exportAnchor.setAttribute("download", layer + "." + feature.id + ".json");
-            this.exportAnchor.click();
+            this.export(feature);
         }
     },
     removeResultLayer(layer) {
@@ -276,10 +273,7 @@ const IdentifyViewer = React.createClass({
     },
     exportResultLayer(layer) {
         if(this.exportAnchor) {
-            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.state.resultTree[layer], null, ' '));
-            this.exportAnchor.setAttribute("href", dataStr);
-            this.exportAnchor.setAttribute("download", layer + ".json");
-            this.exportAnchor.click();
+            this.export(this.state.resultTree[layer]);
         }
     },
     exportResults(results) {
@@ -290,7 +284,16 @@ const IdentifyViewer = React.createClass({
                     filteredResults[key] = this.state.resultTree[key];
                 }
             });
-            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(filteredResults, null, ' '));
+            this.export(filteredResults);
+        }
+    },
+    export(json) {
+        let data = JSON.stringify(json, null, ' ');
+        if(window.navigator.msSaveOrOpenBlob) {
+            let blobObject = new Blob([data]);
+            window.navigator.msSaveOrOpenBlob(blobObject, "features.json");
+        } else {
+            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(data);
             this.exportAnchor.setAttribute("href", dataStr);
             this.exportAnchor.setAttribute("download", "features.json");
             this.exportAnchor.click();
