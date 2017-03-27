@@ -32,6 +32,10 @@ const LayerInfoWindow = React.createClass({
         }
         return null;
     },
+    killEvent(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+    },
     render() {
         let legend = LayerUtils.getLegendGraphicURL(this.props.layer, this.props.sublayer.name);
         if(legend) {
@@ -41,7 +45,7 @@ const LayerInfoWindow = React.createClass({
             <ResizeableWindow title="layerinfo.title" glyphicon="info-sign" onClose={this.props.onClose} initialWidth={400} initialHeight={480}>
                 <div role="body" className="layer-info-window-body">
                     <h4 className="layer-info-window-title">{this.props.sublayer.title}</h4>
-                    <div className="layer-info-window-frame">
+                    <div className="layer-info-window-frame" onMouseDown={this.killEvent} onMouseUp={this.killEvent} onClick={this.killEvent}>
                         <table className="layer-info-window-table">
                             <tbody>
                             {this.renderRow("layerinfo.abstract", this.props.sublayer.abstract)}
