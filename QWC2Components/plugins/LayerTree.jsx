@@ -32,13 +32,15 @@ const LayerTree = React.createClass({
         changeLayerProperties: React.PropTypes.func,
         toggleMapTips: React.PropTypes.func,
         showLegendIcons: React.PropTypes.bool,
-        showRootEntry: React.PropTypes.bool
+        showRootEntry: React.PropTypes.bool,
+        showQueryableIcon: React.PropTypes.bool
     },
     getDefaultProps() {
         return {
             layers: [],
             showLegendIcons: true,
-            showRootEntry: true
+            showRootEntry: true,
+            showQueryableIcon: true
         };
     },
     getInitialState: function() {
@@ -147,7 +149,7 @@ const LayerTree = React.createClass({
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.sublayerToggled(layer, path)}></span>
                     {legendicon}
                     <span className="layertree-item-title" title={sublayer.title}>{sublayer.title}</span>
-                    {sublayer.queryable ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
+                    {sublayer.queryable && this.props.showQueryableIcon ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
                     <span className="layertree-item-spacer"></span>
                     <span className={cogclasses}><Glyphicon glyph="cog" onClick={() => this.sublayerMenuToggled(pathstr)}/></span>
                 </div>
