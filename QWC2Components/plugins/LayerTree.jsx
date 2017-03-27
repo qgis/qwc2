@@ -33,14 +33,16 @@ const LayerTree = React.createClass({
         toggleMapTips: React.PropTypes.func,
         showLegendIcons: React.PropTypes.bool,
         showRootEntry: React.PropTypes.bool,
-        showQueryableIcon: React.PropTypes.bool
+        showQueryableIcon: React.PropTypes.bool,
+        allowMapTips: React.PropTypes.bool
     },
     getDefaultProps() {
         return {
             layers: [],
             showLegendIcons: true,
             showRootEntry: true,
-            showQueryableIcon: true
+            showQueryableIcon: true,
+            allowMapTips: true
         };
     },
     getInitialState: function() {
@@ -180,7 +182,7 @@ const LayerTree = React.createClass({
             backgroundImage: 'url(' + assetsPath + '/img/' + checkboxstate + '.svg)'
         };
         let maptipCheckbox = null;
-        if(!this.props.mobile) {
+        if(!this.props.mobile && this.props.allowMapTips) {
             maptipCheckbox = (
                 <div className="laytree-maptip-option">
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={this.toggleMapTips}></span>
@@ -211,7 +213,7 @@ const LayerTree = React.createClass({
             <div>
                 <SideBar id="LayerTree" width="20em"  title="appmenu.items.LayerTree"
                     icon={assetsPath + "/img/layers_white.svg"}
-                    extraClasses={this.props.mobile ? "" : "desktop"}
+                    extraClasses={this.props.mobile || !this.props.allowMapTips ? "" : "showmaptips"}
                     onHide={this.hideLegendTooltip}
                     extraTitlebarContent={extraTitlebarContent}>
                     <div role="body" className="layertree-container">
