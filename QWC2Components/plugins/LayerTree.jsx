@@ -31,12 +31,14 @@ const LayerTree = React.createClass({
         mapTipsEnabled: React.PropTypes.bool,
         changeLayerProperties: React.PropTypes.func,
         toggleMapTips: React.PropTypes.func,
-        showLegendIcons: React.PropTypes.bool
+        showLegendIcons: React.PropTypes.bool,
+        showRootEntry: React.PropTypes.bool
     },
     getDefaultProps() {
         return {
             layers: [],
-            showLegendIcons: true
+            showLegendIcons: true,
+            showRootEntry: true
         };
     },
     getInitialState: function() {
@@ -154,7 +156,20 @@ const LayerTree = React.createClass({
         )
     },
     renderLayerTree(layer) {
-        return layer.group === 'background' ? null: this.renderLayerGroup(layer, layer, [], true);
+        if(layer.group === 'background') {
+            return null;
+        } else if(this.props.showRootEntry) {
+            return this.renderLayerGroup(layer, layer, [], true);
+        } else {
+            return layer.sublayers.map((sublayer, idx) => {
+                let subpath = [idx];
+                if(sublayer.sublayers) {
+                    return this.renderLayerGroup(layer, sublayer, subpath, true)
+                } else {
+                    return this.renderSubLayer(layer, sublayer, subpath, true);
+                }
+            });
+        }
     },
     render() {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
