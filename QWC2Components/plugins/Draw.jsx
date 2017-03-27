@@ -10,9 +10,10 @@ const React = require('react');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
 const MessageBar = require('../components/MessageBar');
+const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {changeDrawingStatus, endDrawing, setCurrentStyle} = require('../../MapStore2/web/client/actions/draw');
 const {setCurrentTask} = require('../actions/task');
-const { SketchPicker } = require('react-color');
+const { TwitterPicker } = require('react-color');
 
 require('./style/Draw.css');
 
@@ -46,9 +47,24 @@ const Draw = React.createClass({
   },
 
   componentWillReceiveProps(newProps) {
+    //draw dialog is closed and is activated because user clicks on previously drawn feature
+    if (this.props.drawStatus == null && newProps.drawStatus === 'select') {
+      this.props.setCurrentTask('Draw');
+      this.setState({ drawDialogOpen: true });
+    }
+
+    //recreate draw dialog with previously drawn features
+    if (newProps.drawStatus === 'create') {
+      this.setState({ drawDialogOpen: true });
+
+      if(this.props.features.length > newProps.features.length) {
+        this.props.changeDrawingStatus('replace', null, newProps.drawOwner, this.props.features);
+      }
+    }
+
     newProps.features.forEach(f => {
       //set current style from selected feature
-      if (f.selected && Object.keys(f.style).length > 0) {
+      if (f.selected && Object.keys(f.style).length > 0 && newProps.drawStatus != null) {
         this.props.setCurrentStyle(f.style);
       }
 
@@ -61,8 +77,16 @@ const Draw = React.createClass({
 
   onClose() {
     this.props.setCurrentTask(null);
-    this.props.changeDrawingStatus('clean', null, this.props.drawOwner, []);
-    this.props.changeDrawingStatus(null, null, null, []);
+
+    let unselectedFeatures = []
+    this.props.features.forEach(function(f) {
+      f.selected = false;
+      unselectedFeatures.push(f);
+    });
+
+    this.props.changeDrawingStatus(null, null, this.props.drawOwner, unselectedFeatures);
+
+    this.setState({ drawDialogOpen: false });
   },
 
   setDrawMethod(method) {
@@ -115,7 +139,7 @@ const Draw = React.createClass({
   },
 
   render() {
-    if(!this.props.drawStatus) {
+    if(!this.state || (this.state && !this.state.drawDialogOpen)) {
       return null;
     }
 
@@ -124,15 +148,29 @@ const Draw = React.createClass({
         <MessageBar name="Draw" onClose={this.onClose}>
           <div role="body">
             <div className="buttonbar">
-              <span onClick={()=>this.setDrawMethod('Point')} className={this.statusForDrawMethod('Point')}>Point</span>
-              <span onClick={()=>this.setDrawMethod('LineString')} className={this.statusForDrawMethod('LineString')}>Line</span>
-              <span onClick={()=>this.setDrawMethod('Polygon')} className={this.statusForDrawMethod('Polygon')}>Polygon</span>
+              <span onClick={()=>this.setDrawMethod('Point')} className={this.statusForDrawMethod('Point')}>
+                <Message msgId="draw.point" />
+              </span>
+              <span onClick={()=>this.setDrawMethod('LineString')} className={this.statusForDrawMethod('LineString')}>
+                <Message msgId="draw.line" />
+              </span>
+              <span onClick={()=>this.setDrawMethod('Polygon')} className={this.statusForDrawMethod('Polygon')}>
+                <Message msgId="draw.polygon" />
+              </span>
               <span onClick={()=>this.setDrawMethod('BBOX')} className={this.statusForDrawMethod('BBOX')}>BBOX</span>
-              <span onClick={()=>this.setDrawMethod('Circle')} className={this.statusForDrawMethod('Circle')}>Circle</span>
+              <span onClick={()=>this.setDrawMethod('Circle')} className={this.statusForDrawMethod('Circle')}>
+                <Message msgId="draw.circle" />
+              </span>
 
               <div className="draw-options">
-                <button className="btn btn-danger" onClick={this.deleteSelectedFeatures} disabled={this.hasSelectedFeatures() ? '' : 'disabled'}>Delete</button>
-                <button className="btn btn-default" onClick={this.deleteAllFeatures} disabled={this.props.features.length ? '' : 'disabled'}>Clear all</button>
+                <button className="btn btn-danger" onClick={this.deleteSelectedFeatures}
+                  disabled={this.hasSelectedFeatures() ? '' : 'disabled'}>
+                    <Message msgId="draw.delete" />
+                </button>
+                <button className="btn btn-default" onClick={this.deleteAllFeatures}
+                  disabled={this.props.features.length ? '' : 'disabled'}>
+                  <Message msgId="draw.clearAll" />
+                </button>
               </div>
             </div>
 
@@ -140,11 +178,11 @@ const Draw = React.createClass({
               <div className="style-row">
                 <span className="style-rule">
                   <label>Stroke color</label>
-                  <input type="text" value={this.props.currentStyle.strokeColor}
+                  <input type="text" style={{backgroundColor: this.props.currentStyle.strokeColor}}
                     onChange={(evt) => this.updateStyleRule('strokeColor', evt.target.value)}
                     onFocus={() => this.setState({ displayStrokeColorPicker: true })} />
                   <span className={this.state && this.state.displayStrokeColorPicker ? "color-picker" : "collapse" }>
-                    <SketchPicker color={this.props.currentStyle.StrokeColor} onChangeComplete={(color) => this.updateStyleRule('strokeColor', color.hex)} />
+                    <TwitterPicker color={this.props.currentStyle.StrokeColor} onChangeComplete={(color) => this.updateStyleRule('strokeColor', color.hex)} />
                   </span>
                 </span>
 
@@ -157,19 +195,20 @@ const Draw = React.createClass({
               <div className="style-row">
                 <span className="style-rule">
                   <label>Fill color</label>
-                  <input type="text" value={this.props.currentStyle.fillColor}
+                  <input type="text"  style={{backgroundColor: this.props.currentStyle.fillColor}}
                       onChange={(evt) => this.updateStyleRule('fillColor', evt.target.value)}
                       onFocus={() => this.setState({ displayFillColorPicker: true })} />
 
                   <span className={this.state && this.state.displayFillColorPicker ? "color-picker" : "collapse" }>
-                    <SketchPicker color={this.props.currentStyle.fillColor} onChangeComplete={(color) => this.updateStyleRule('fillColor', color.hex)} />
+                    <TwitterPicker color={this.props.currentStyle.fillColor} onChangeComplete={(color) => this.updateStyleRule('fillColor', color.hex)} />
                   </span>
                 </span>
 
-                <span className="style-rule">
+                <span className="style-rule fill-opacity">
                   <label>Fill opacity</label>
-                  <input type="text" value={this.props.currentStyle.fillTransparency}
+                  <input type="range" min="0" max="1" step="0.1" value={this.props.currentStyle.fillTransparency}
                     onChange={(evt) => this.updateStyleRule('fillTransparency', evt.target.value)} />
+                  <span>{this.props.currentStyle.fillTransparency*100}%</span>
                 </span>
               </div>
               <div className="style-row">

@@ -22,6 +22,15 @@
   margin-right: 10px;
 }
 
+.draw-style .style-rule.fill-opacity span {
+  position: absolute;
+  right: -40px;
+}
+
+.draw-style .style-rule.fill-opacity input[type='range'] {
+  width: 100px !important;
+}
+
 .draw-style .style-rule .color-picker {
   position: absolute;
   top: 35px;

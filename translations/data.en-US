@@ -96,6 +96,14 @@
     },
     "themeswitcher": {
       "filter": "Filter..."
+    },
+    "draw": {
+      "delete": "Delete",
+      "clearAll": "Clear all",
+      "point": "Point",
+      "line": "Line",
+      "polygon": "Polygon",
+      "circle": "Circle"
     }
   }
 }
