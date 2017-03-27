@@ -302,17 +302,35 @@ const LayerTree = React.createClass({
             if(layer.group === 'background' || layer.type !== 'wms') {
                 return "";
             }
-            return '<p><img src="' + LayerUtils.getLegendGraphicURL(layer, layer.params.LAYERS).replace("&", "&amp;") + '" /></p>'
+            return '<p id="legendcontainerbody"><img src="' + LayerUtils.getLegendGraphicURL(layer, layer.params.LAYERS).replace("&", "&amp;") + '" /></p>'
         }).join("");
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
 
-        let win = window.open("", "Legend", "toolbar=no, location=no, directories=no, status=no, menubar=no");
-        win.document.open();
-        win.document.write('<!DOCTYPE html><html>' +
-                           '<body onload="window.focus(); window.print(); window.close();">' +
-                           body +
-                           '</body></html>');
-       win.document.close();
-       win.focus();
+        // Ugliest code you have ever seen (it's 2017 and there still is now way to reliably know when a popup has really finished loading...)
+        let win = window.open(assetsPath + "/templates/legendprint.html", "Legend", "toolbar=no, location=no, directories=no, status=no, menubar=no");
+        let elapsed = 0;
+        let readyStateCheckInterval = setInterval(() => {
+            if (win.document.readyState === 'complete') {
+                // Chrome appears to fire readyState = 'complete' too early, give it an additional 100ms to complete
+                if(!win.document.getElementById("legendcontainer") && elapsed < 100) {
+                    elapsed += 10;
+                } else {
+                    clearInterval(readyStateCheckInterval);
+                    if(win.document.getElementById("legendcontainer")) {
+                        win.document.getElementById("legendcontainer").innerHTML = body;
+                        let printInterval = setInterval(() => {
+                            clearInterval(printInterval);
+                            win.focus();
+                            win.print();
+                            win.close();
+                        }, 100);
+                    } else {
+                        win.document.body.innerHTML = "Broken template. An element with id=legendcontainer must exist.";
+                    }
+                }
+            }
+        }, 10);
+        win.focus();
     }
 });
 
