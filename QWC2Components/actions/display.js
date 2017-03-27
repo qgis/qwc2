@@ -11,6 +11,8 @@ const TOGGLE_FULLSCREEN = 'TOGGLE_FULLSCREEN';
 function requestFullscreen() {
     if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();
+    } else if(document.documentElement.msRequestFullscreen) {
+        document.documentElement.msRequestFullscreen();
     } else if (document.documentElement.mozRequestFullScreen) {
         document.documentElement.mozRequestFullScreen();
     } else if (document.documentElement.webkitRequestFullScreen) {

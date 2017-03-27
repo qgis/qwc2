@@ -46,14 +46,12 @@ const FullscreenSwitcher = React.createClass({
         }
     },
     checkFullscreenState() {
-        var isFullScreen = false;
-        if(document.fullscreen !== undefined) {
-            isFullScreen = document.fullscreen;
-        } else if(document.webkitIsFullScreen !== undefined) {
-            isFullScreen = document.webkitIsFullScreen;
-        } else if(document.mozFullScreen !== undefined) {
-            isFullScreen = document.mozFullScreen;
-        }
+        var isFullScreen = (
+            document.fullscreenElement ||
+            document.webkitFullscreenElement ||
+            document.mozFullScreenElement ||
+            document.msFullscreenElement
+        ) != undefined;
         if(isFullScreen != this.props.fullscreen) {
             this.props.fullscreenToggled(!this.props.fullscreen);
         }
