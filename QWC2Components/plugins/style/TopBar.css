@@ -74,10 +74,5 @@
     padding: 0.25em;
     margin: 0 1em;
     border: 2px solid @panel_fg@;
-    transition: background-color 0.25s;
-}
-
-
-#TopBar #AppMenu.appmenu-visible .appmenu-icon {
     background-color: white;
 }
