@@ -34,7 +34,8 @@ const LayerTree = React.createClass({
         showLegendIcons: React.PropTypes.bool,
         showRootEntry: React.PropTypes.bool,
         showQueryableIcon: React.PropTypes.bool,
-        allowMapTips: React.PropTypes.bool
+        allowMapTips: React.PropTypes.bool,
+        groupTogglesSublayers: React.PropTypes.bool
     },
     getDefaultProps() {
         return {
@@ -42,7 +43,8 @@ const LayerTree = React.createClass({
             showLegendIcons: true,
             showRootEntry: true,
             showQueryableIcon: true,
-            allowMapTips: true
+            allowMapTips: true,
+            groupTogglesSublayers: false
         };
     },
     getInitialState: function() {
@@ -74,10 +76,17 @@ const LayerTree = React.createClass({
         if(layer.layertreehidden) {
             return null;
         }
-        let visibility = group.visibility === undefined ? true : group.visibility;
         let subtreevisibility = this.getGroupVisibility(group);
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
-        let checkboxstate = visibility === true ? subtreevisibility === 1 ? 'checked' : 'tristate' : 'unchecked';
+        let visibility;
+        let checkboxstate;
+        if(this.props.groupTogglesSublayers) {
+             visibility = subtreevisibility > 0;
+            checkboxstate = subtreevisibility === 1 ? 'checked' : subtreevisibility === 0 ? 'unchecked' : 'tristate';
+        } else {
+            visibility = group.visibility === undefined ? true : group.visibility;
+            checkboxstate = visibility === true ? subtreevisibility === 1 ? 'checked' : 'tristate' : 'unchecked';
+        }
         let checkboxstyle = {
             backgroundImage: 'url(' + assetsPath + '/img/' + checkboxstate + '.svg)'
         };
@@ -85,10 +94,10 @@ const LayerTree = React.createClass({
         let expanderstyle = {
             backgroundImage: 'url(' + assetsPath + '/img/' + expanderstate + '.svg)'
         };
-        let itemclasses = classnames({
-            "layertree-item": true,
-            "layertree-item-disabled": !enabled
-        });
+        let itemclasses = {"layertree-item": true};
+        if(!this.props.groupTogglesSublayers) {
+            itemclasses["layertree-item-disabled"] = !enabled;
+        }
         let sublayersContent = null;
         if(group.sublayers && group.expanded) {
             sublayersContent = group.sublayers.map((sublayer, idx) => {
@@ -102,7 +111,7 @@ const LayerTree = React.createClass({
         }
         return (
             <div className="layertree-item-container" key={group.name}>
-                <div className={itemclasses}>
+                <div className={classnames(itemclasses)}>
                     <span className="layertree-item-expander" style={expanderstyle} onClick={() => this.groupExpandendToggled(layer, path, group.expanded)}></span>
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.groupToggled(layer, path, visibility)}></span>
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
@@ -122,10 +131,10 @@ const LayerTree = React.createClass({
             "layertree-item-cog": true,
             "layertree-item-cog-active": this.state.activemenu === pathstr
         })
-        let itemclasses = classnames({
-            "layertree-item": true,
-            "layertree-item-disabled": !enabled
-        });
+        let itemclasses = {"layertree-item": true};
+        if(!this.props.groupTogglesSublayers) {
+            itemclasses["layertree-item-disabled"] = !enabled;
+        }
         let editframe = null;
         if(this.state.activemenu === pathstr) {
             editframe = (
@@ -146,7 +155,7 @@ const LayerTree = React.createClass({
         }
         return (
             <div className="layertree-item-container" key={sublayer.name}>
-                <div className={itemclasses}>
+                <div className={classnames(itemclasses)}>
                     <span className="layertree-item-expander"></span>
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.sublayerToggled(layer, path)}></span>
                     {legendicon}
@@ -239,6 +248,15 @@ const LayerTree = React.createClass({
         }
         return {newlayer, newsublayer: cur};
     },
+    cloneSublayers(layer, options) {
+        if(layer.sublayers) {
+            layer.sublayers = layer.sublayers.map(sublayer => {
+                let newsublayer = assign({}, sublayer, options);
+                this.cloneSublayers(newsublayer, options);
+                return newsublayer;
+            });
+        }
+    },
     groupExpandendToggled(layer, grouppath, oldexpanded) {
         if(grouppath.length === 0) {
             // Toggle entire layer
@@ -257,11 +275,20 @@ const LayerTree = React.createClass({
             let newlayer = assign({}, layer, {visibility: !oldvisibility});
             this.props.changeLayerProperties(layer.id, newlayer);
         } else {
-            // Toggle group
-            let {newlayer, newsublayer} = this.cloneLayerTree(layer, grouppath);
-            newsublayer.visibility = !oldvisibility;
-            assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder));
-            this.props.changeLayerProperties(layer.id, newlayer);
+            if(this.props.groupTogglesSublayers) {
+                // Toggle group and all sublayers
+                let {newlayer, newsublayer} = this.cloneLayerTree(layer, grouppath);
+                newsublayer.visibility = !oldvisibility;
+                this.cloneSublayers(newsublayer, {visibility: !oldvisibility});
+                assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder));
+                this.props.changeLayerProperties(layer.id, newlayer);
+            } else {
+                // Toggle just the group
+                let {newlayer, newsublayer} = this.cloneLayerTree(layer, grouppath);
+                newsublayer.visibility = !oldvisibility;
+                assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder));
+                this.props.changeLayerProperties(layer.id, newlayer);
+            }
         }
     },
     sublayerToggled(layer, sublayerpath) {
