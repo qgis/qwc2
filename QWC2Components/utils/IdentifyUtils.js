@@ -122,8 +122,8 @@ const IdentifyUtils = {
     },
     createGeometrySld(geometrytype, color) {
         let rule = null;
-        let bordersize = 2;
-        let pointsize = 10;
+        let bordersize = 20;
+        let pointsize = 6;
         if(geometrytype == "Point") {
             rule = '<se:PointSymbolizer>' +
                    '<se:Graphic>' +
@@ -131,7 +131,12 @@ const IdentifyUtils = {
                    '<se:WellKnownName>circle</se:WellKnownName>' +
                    '<se:Stroke>' +
                    '<se:SvgParameter name="stroke">' + color + '</se:SvgParameter>' +
+                   '<se:SvgParameter name="stroke-width">' + bordersize + '</se:SvgParameter>' +
                    '</se:Stroke>' +
+                   '<se:Fill>' +
+                   '<se:SvgParameter name="fill">#ffffff</se:SvgParameter>' +
+                   '<se:SvgParameter name="fill-opacity">0.00</se:SvgParameter>' +
+                   '</se:Fill>' +
                    '</se:Mark>' +
                    '<se:Size>' + pointsize + '</se:Size>' +
                    '</se:Graphic>' +
@@ -140,7 +145,7 @@ const IdentifyUtils = {
             rule = '<se:LineSymbolizer>' +
                    '<se:Stroke>' +
                    '<se:SvgParameter name="stroke">' + color + '</se:SvgParameter>' +
-                   '<se:SvgParameter name="stroke-width">' + color + '</se:SvgParameter>' +
+                   '<se:SvgParameter name="stroke-width">' + bordersize + '</se:SvgParameter>' +
                    '<se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>' +
                    '<se:SvgParameter name="stroke-linecap">square</se:SvgParameter>' +
                    '</se:Stroke>' +
@@ -149,7 +154,7 @@ const IdentifyUtils = {
             rule = '<se:PolygonSymbolizer>' +
                    '<se:Stroke>' +
                    '<se:SvgParameter name="stroke">' + color + '</se:SvgParameter>' +
-                   '<se:SvgParameter name="stroke-width">' + color + '</se:SvgParameter>' +
+                   '<se:SvgParameter name="stroke-width">' + bordersize + '</se:SvgParameter>' +
                    '<se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>' +
                    '</se:Stroke>' +
                    '</se:PolygonSymbolizer>';
