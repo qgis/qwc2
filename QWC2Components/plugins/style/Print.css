@@ -45,6 +45,14 @@
     width: 0;
 }
 
+#Print table.options-table textarea {
+    border: 1px solid @item_border@;
+    padding: 0.25em;
+    background-color: white;
+    width: 100%;
+    resize: vertical;
+}
+
 #Print div.button-bar {
     margin: 1em;
     text-align: center;

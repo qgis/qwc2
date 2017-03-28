@@ -186,14 +186,12 @@ const Print = React.createClass({
                             return (<tr key={"label." + label}>
                                 <td>{label}:</td>
                                 <td>
-                                    <span className="input-frame">
                                     {
                                         this.props.theme.printLabelForSearchResult === label && this.props.search ?
-                                            (<input name={label.toUpperCase()} type="text" defaultValue={this.props.search.markerLabel}/>)
+                                            (<textarea rows="1" name={label.toUpperCase()} defaultValue={this.props.search.markerLabel}/>)
                                         :
-                                            (<input name={label.toUpperCase()} type="text"/>)
+                                            (<textarea rows="1" name={label.toUpperCase()}/>)
                                     }
-                                    </span>
                                 </td>
                             </tr>)
                         })}
