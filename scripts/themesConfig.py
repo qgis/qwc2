@@ -380,6 +380,7 @@ def getGroupThemes(configGroup, resultGroup):
             {"s": 1000, x: 100, y: 100},            //   In this example, {x: 100, y: 100} will be used for 1000 <= scale < 10000
             ...                                     //   If not specified, defaultPrintGrid will be usd (see below)
         ],
+        "printLabelForSearchResult": "<labelid>"    // optional, a labelid in the print composition where to insert the label of the selected search result
         "extent": [xmin, ymin, xmax, ymax],         // optional custom extent which overrides extent from WMS capabilities
         "tiled": true,                              // optional, use tiled WMS (default is false)
         "format": "image/png",                      // optional, the image format to use in the WMS request, defaults to image/png
@@ -393,7 +394,6 @@ def getGroupThemes(configGroup, resultGroup):
         "searchProviders": ["<search provider>"],   // optional search providers
         "mapCrs: "EPSG:3857",                       // optional, the map projection, defaults to EPSG:3857
         "additionalMouseCrs": ["<epsg code>"]       // optional list of additional CRS for mouse position (map projection and WGS84 are listed by default). Make sure proj defs are loaded in js/appConfig.js.
-        "printLabelForSearchResult": "<labelid>"    // optional, a labelid in the print composition where to insert the label of the selected search result
         "watermark": {                              // optional, configuration of watermark to place on raster-export images
           "text": "<watermark text>",
           "texpadding": "1",                        // optional, padding between text and frame, in points
