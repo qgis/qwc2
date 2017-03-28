@@ -132,10 +132,14 @@ const Print = React.createClass({
         let highlightGeom = null;
         let highlightStyle = null;
         let highlightLabel = null;
-        if(this.props.search && this.props.search.highlightedFeature) {
-            let mapPos = CoordinatesUtils.reproject({x: this.props.search.markerPosition.lng, y: this.props.search.markerPosition.lat}, "EPSG:4326", this.props.map.projection);
-            highlightGeom = IdentifyUtils.geoJSONToWkt(this.props.search.highlightedFeature);
-            highlightStyle = IdentifyUtils.createGeometrySld(this.props.search.highlightedFeature.geometry.type, '#FFFF00');
+        if(this.props.search && this.props.search.markerLabel) {
+            let feature = this.props.search.highlightedFeature;
+            if(!feature) {
+                let mapPos = CoordinatesUtils.reproject({x: this.props.search.markerPosition.lng, y: this.props.search.markerPosition.lat}, "EPSG:4326", this.props.map.projection);
+                feature = {'geometry': {'type': 'Point', 'coordinates': [mapPos.x, mapPos.y]}};
+            }
+            highlightGeom = IdentifyUtils.geoJSONToWkt(feature);
+            highlightStyle = IdentifyUtils.createGeometrySld(feature.geometry.type, '#FFFF00');
             if(!this.props.theme.printLabelForSearchResult) {
                 highlightLabel = this.props.search.markerLabel;
             }
