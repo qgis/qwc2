@@ -16,7 +16,8 @@ const LayerInfoWindow = React.createClass({
     propTypes: {
         layer: React.PropTypes.object,
         sublayer: React.PropTypes.object,
-        onClose: React.PropTypes.func
+        onClose: React.PropTypes.func,
+        windowSize: React.PropTypes.object
     },
     renderLink(text, url) {
         return url ? (<a href={url}>{text}</a>) : text ? text : null;
@@ -38,7 +39,7 @@ const LayerInfoWindow = React.createClass({
             legend = (<img className="layer-info-window-legend" src={legend} />);
         }
         return (
-            <ResizeableWindow title="layerinfo.title" glyphicon="info-sign" onClose={this.props.onClose} initialWidth={400} initialHeight={480}>
+            <ResizeableWindow title="layerinfo.title" glyphicon="info-sign" onClose={this.props.onClose} initialWidth={this.props.windowSize.width} initialHeight={this.props.windowSize.height}>
                 <div role="body" className="layer-info-window-body">
                     <h4 className="layer-info-window-title">{this.props.sublayer.title}</h4>
                     <div className="layer-info-window-frame">

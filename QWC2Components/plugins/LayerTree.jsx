@@ -35,7 +35,8 @@ const LayerTree = React.createClass({
         showRootEntry: React.PropTypes.bool,
         showQueryableIcon: React.PropTypes.bool,
         allowMapTips: React.PropTypes.bool,
-        groupTogglesSublayers: React.PropTypes.bool
+        groupTogglesSublayers: React.PropTypes.bool,
+        layerInfoWindowSize: React.PropTypes.object
     },
     getDefaultProps() {
         return {
@@ -44,7 +45,8 @@ const LayerTree = React.createClass({
             showRootEntry: true,
             showQueryableIcon: true,
             allowMapTips: true,
-            groupTogglesSublayers: false
+            groupTogglesSublayers: false,
+            layerInfoWindowSize: {width: 400, height: 480}
         };
     },
     getInitialState: function() {
@@ -210,7 +212,7 @@ const LayerTree = React.createClass({
         if(this.state.activeinfo) {
             infoWindow = (
                 <LayerInfoWindow onClose={() => this.setState({activeinfo: null})}
-                    layer={this.state.activeinfo.layer} sublayer={this.state.activeinfo.sublayer} />
+                    layer={this.state.activeinfo.layer} sublayer={this.state.activeinfo.sublayer} windowSize={this.props.layerInfoWindowSize}/>
             );
         }
         let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
