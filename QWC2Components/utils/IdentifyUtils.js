@@ -122,7 +122,7 @@ const IdentifyUtils = {
     },
     createGeometrySld(geometrytype, color) {
         let rule = null;
-        let bordersize = 20;
+        let bordersize = 2;
         let pointsize = 6;
         if(geometrytype == "Point") {
             rule = '<se:PointSymbolizer>' +
