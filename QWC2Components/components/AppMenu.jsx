@@ -11,6 +11,7 @@ const {connect} = require('react-redux');
 const Swipeable = require('react-swipeable');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
+const {setCurrentTask} = require("../actions/task");
 const {triggerTool} = require('../actions/maptools');
 require('./style/AppMenu.css');
 
@@ -19,17 +20,23 @@ const AppMenu = React.createClass({
     propTypes: {
         buttonContents: React.PropTypes.object,
         menuItems: React.PropTypes.array,
-        menuitemClicked: React.PropTypes.func
+        menuitemClicked: React.PropTypes.func,
+        appMenuClearsTask: React.PropTypes.bool,
+        setCurrentTask: React.PropTypes.func
     },
     getDefaultProps() {
         return {
-            buttonContents: null
+            buttonContents: null,
+            appMenuClearsTask: false
         };
     },
     getInitialState() {
         return { menuVisible: false, submenusVisible: [] };
     },
     onMenuClicked() {
+        if(!this.state.menuVisible && this.props.appMenuClearsTask) {
+            this.props.setCurrentTask(null);
+        }
         this.setState({ menuVisible: !this.state.menuVisible, submenusVisible: [] });
     },
     hideMenu() {
@@ -99,5 +106,6 @@ const AppMenu = React.createClass({
 });
 
 module.exports = connect(() => { return {}; }, {
-    menuitemClicked: triggerTool
+    menuitemClicked: triggerTool,
+    setCurrentTask: setCurrentTask
 })(AppMenu);

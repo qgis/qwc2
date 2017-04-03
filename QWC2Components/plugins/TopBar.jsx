@@ -27,14 +27,16 @@ const TopBar = React.createClass({
         toggleFullscreen: React.PropTypes.func,
         searchProviders: React.PropTypes.object,
         logoFormat: React.PropTypes.string,
-        searchOptions: React.PropTypes.object
+        searchOptions: React.PropTypes.object,
+        appMenuClearsTask: React.PropTypes.bool
     },
     getDefaultProps() {
         return {
             searchOptions: {},
             menuItems: [],
             toolbarItems: [],
-            logoFormat: "svg"
+            logoFormat: "svg",
+            clearTaskOnShow: false
         };
     },
     render() {
@@ -70,7 +72,7 @@ const TopBar = React.createClass({
                         <this.props.components.Search searchOptions={this.props.searchOptions}/>
                         <this.props.components.Toolbar toolbarItems={this.props.toolbarItems} />
                     </div>
-                    <this.props.components.AppMenu menuItems={this.props.menuItems} buttonContents={buttonContents} />
+                    <this.props.components.AppMenu menuItems={this.props.menuItems} buttonContents={buttonContents} appMenuClearsTask={this.props.appMenuClearsTask} />
                     <this.props.components.FullscreenSwitcher />
                 </div>
             </Swipeable>
