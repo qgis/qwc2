@@ -73,9 +73,6 @@ const LayerTree = React.createClass({
         return visible / group.sublayers.length;
     },
     renderLayerGroup(layer, group, path, enabled) {
-        if(layer.layertreehidden) {
-            return null;
-        }
         let subtreevisibility = this.getGroupVisibility(group);
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let visibility;
@@ -169,7 +166,7 @@ const LayerTree = React.createClass({
         )
     },
     renderLayerTree(layer) {
-        if(layer.group === 'background') {
+        if(layer.group === 'background' || layer.layertreehidden) {
             return null;
         } else if(this.props.showRootEntry) {
             return this.renderLayerGroup(layer, layer, [], true);
