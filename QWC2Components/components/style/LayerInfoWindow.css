@@ -2,7 +2,6 @@ div.layer-info-window-body {
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 0.25em;
 }
 
 h4.layer-info-window-title {
@@ -15,7 +14,6 @@ div.layer-info-window-frame {
     font-size: small;
     flex: 1 1 auto;
     overflow: auto;
-    cursor: default;
 }
 
 table.layer-info-window-table {

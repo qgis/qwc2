@@ -1,5 +1,4 @@
 #IdentifyViewer {
-    padding: 0.5em;
     background-color: @dialog_bg@;
     height: 100%;
     display: flex;

@@ -45,6 +45,10 @@ const ResizeableWindow = React.createClass({
     renderRole(role) {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
     },
+    killEvent(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+    },
     render() {
         let initial = {
             x: this.props.initialX || Math.round(0.5 * (window.innerWidth - this.props.initialWidth)),
@@ -71,7 +75,7 @@ const ResizeableWindow = React.createClass({
                     </span>
                     <Glyphicon className="resizeable-window-titlebar-close" onClick={this.onClose} glyph="remove"/>
                 </div>
-                <div className="resizeable-window-body">
+                <div className="resizeable-window-body" onMouseDown={this.killEvent} onMouseUp={this.killEvent} onClick={this.killEvent}>
                     {this.renderRole("body")}
                 </div>
             </ReactRnd>
