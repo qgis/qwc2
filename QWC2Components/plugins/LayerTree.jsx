@@ -281,12 +281,14 @@ const LayerTree = React.createClass({
                 newsublayer.visibility = !oldvisibility;
                 this.cloneSublayers(newsublayer, {visibility: !oldvisibility});
                 assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder));
+                UrlParams.updateParams({l: LayerUtils.constructUrlParam(newlayer)});
                 this.props.changeLayerProperties(layer.id, newlayer);
             } else {
                 // Toggle just the group
                 let {newlayer, newsublayer} = this.cloneLayerTree(layer, grouppath);
                 newsublayer.visibility = !oldvisibility;
                 assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder));
+                UrlParams.updateParams({l: LayerUtils.constructUrlParam(newlayer)});
                 this.props.changeLayerProperties(layer.id, newlayer);
             }
         }
