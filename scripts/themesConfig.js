@@ -328,8 +328,11 @@ function getTheme(configItem, resultItem) {
                 resultItem.print = printTemplates;
             }
             resultItem.drawingOrder = drawingOrder;
-            if(configItem.printLabelForSearchResult && resultItem.print) {
+            if(configItem.printLabelForSearchResult) {
                 resultItem.printLabelForSearchResult = configItem.printLabelForSearchResult;
+            }
+            if(configItem.printLabelConfig) {
+                resultItem.printLabelConfig = configItem.printLabelConfig;
             }
             if(configItem.watermark) {
                 resultItem.watermark = configItem.watermark;

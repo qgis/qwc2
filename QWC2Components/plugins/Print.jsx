@@ -187,14 +187,15 @@ const Print = React.createClass({
                             </td>
                         </tr>
                         {(labels || []).map(label => {
+                            let opts = assign({rows: 1, name: label.toUpperCase()}, this.props.theme.printLabelConfig ? this.props.theme.printLabelConfig[label] : {});
                             return (<tr key={"label." + label}>
                                 <td>{label}:</td>
                                 <td>
                                     {
                                         this.props.theme.printLabelForSearchResult === label && this.props.search ?
-                                            (<textarea rows="1" name={label.toUpperCase()} defaultValue={this.props.search.markerLabel}/>)
+                                            (<textarea {...opts} defaultValue={this.props.search.markerLabel}/>)
                                         :
-                                            (<textarea rows="1" name={label.toUpperCase()}/>)
+                                            (<textarea {...opts}/>)
                                     }
                                 </td>
                             </tr>)

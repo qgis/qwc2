@@ -306,8 +306,10 @@ def getTheme(configItem, resultItem):
         if printTemplates:
             resultItem["print"] = printTemplates
         resultItem["drawingOrder"] = drawingOrder;
-        if "printLabelForSearchResult" in configItem and "print" in resultItem:
+        if "printLabelForSearchResult" in configItem:
             resultItem["printLabelForSearchResult"] = configItem["printLabelForSearchResult"]
+        if "printLabelConfig" in configItem:
+            resultItem["printLabelConfig"] = configItem["printLabelConfig"]
 
         if "watermark" in configItem:
             resultItem["watermark"] = configItem["watermark"];
