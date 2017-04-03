@@ -36,6 +36,15 @@ const RasterExport = React.createClass({
         this.setState({selectedFormat: ev.target.value})
     },
     renderBody() {
+        const formatMap = {
+            "image/jpeg" : "JPEG",
+            "image/png": "PNG 24bit",
+            "image/png; mode=16bit": "PNG 16bit",
+            "image/png; mode=8bit" : "PNG 8bit",
+            "image/png; mode=1bit" : "PNG 1bit",
+            "image/geotiff" : "GeoTIFF"
+        };
+
         let themeLayer = this.props.layers.find(layer => layer.id === this.props.themeLayerId);
         let action = this.props.theme.url;
         let availableFormats = this.props.theme.availableFormats;
@@ -52,11 +61,13 @@ const RasterExport = React.createClass({
                 <div className="export-settings">
                     <Message msgId="rasterexport.format" />&nbsp;
                     <select name="FORMAT" defaultValue={defaultFormat} onChange={this.formatChanged}>
-                        {
-                            availableFormats.map(format => (
-                                <option key={format} value={format}>{format}</option>
-                            ))
-                        }
+                        {availableFormats.map(format => {
+                            if(format.startsWith('image/')) {
+                                return (<option key={format} value={format}>{formatMap[format] || format}</option>);
+                            } else {
+                                return null;
+                            }
+                        })}
                     </select>
                 </div>
                 <input type="hidden" name="SERVICE" value="WMS" readOnly="true" />
