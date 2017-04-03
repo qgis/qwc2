@@ -401,6 +401,13 @@ function getGroupThemes(configGroup, resultGroup) {
             ...                                     //   If not specified, defaultPrintGrid will be usd (see below)
         ],
         "printLabelForSearchResult": "<labelid>"    // optional, a labelid in the print composition where to insert the label of the selected search result
+        "printLabelConfig": {                       // optional, configuration of input textareas for print composition labels.
+            "labelId": {
+                "rows": 4,
+                "maxLength: "40"
+              },
+              ...
+        }
         "extent": [xmin, ymin, xmax, ymax],         // optional custom extent which overrides extent from WMS capabilities
         "tiled": true,                              // optional, use tiled WMS (default is false)
         "format": "image/png",                      // optional, the image format to use in the WMS request, defaults to image/png
