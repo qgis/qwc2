@@ -38,7 +38,8 @@
     align-items: center;
 }
 
-#Print table.options-table span.input-frame input {
+#Print table.options-table span.input-frame input,
+#Print table.options-table span.input-frame select {
     border: 0;
     flex: 1;
     min-width: 0;
