@@ -188,7 +188,7 @@ const IdentifyViewer = React.createClass({
         let displayName = "";
         try {
             let displayFieldName = this.state.displayFieldMap[layer];
-            displayName = feature.attributes[displayFieldName];
+            displayName = feature.properties[displayFieldName];
         } catch(e) {
         }
         if(!displayName || displayName[0] === "<") {
