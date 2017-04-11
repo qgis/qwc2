@@ -26,6 +26,21 @@
       "terms_label": "Conditions d'utilisation",
       "viewertitle_label": "Page d'accueil"
     },
+    "draw": {
+      "delete": "",
+      "clearAll": "",
+      "point": "",
+      "line": "",
+      "polygon": "",
+      "bbox": "",
+      "circle": "",
+      "strokecolor": "",
+      "fillcolor": "",
+      "text": "",
+      "strokewidth": "",
+      "fillopacity": "",
+      "fontsize": ""
+    },
     "dxfexport": {
       "selectinfo": "Paramétrage de l'export DXF",
       "symbologyscale": "Echelle"

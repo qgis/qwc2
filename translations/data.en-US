@@ -26,6 +26,21 @@
       "terms_label": "Terms of use",
       "viewertitle_label": ""
     },
+    "draw": {
+      "delete": "Delete",
+      "clearAll": "Clear all",
+      "point": "Point",
+      "line": "Line",
+      "polygon": "Polygon",
+      "bbox": "Box",
+      "circle": "Circle",
+      "strokecolor": "Stroke color",
+      "fillcolor": "Fill color",
+      "text": "Text",
+      "strokewidth": "Stroke width",
+      "fillopacity": "Fill opacity",
+      "fontsize": "Font size"
+    },
     "dxfexport": {
       "selectinfo": "Drag a rectangle around the region to export...",
       "symbologyscale": "Symbology scale:"
@@ -96,14 +111,6 @@
     },
     "themeswitcher": {
       "filter": "Filter..."
-    },
-    "draw": {
-      "delete": "Delete",
-      "clearAll": "Clear all",
-      "point": "Point",
-      "line": "Line",
-      "polygon": "Polygon",
-      "circle": "Circle"
     }
   }
 }

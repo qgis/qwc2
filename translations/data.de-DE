@@ -26,6 +26,21 @@
       "terms_label": "Nutzungsbedingungen",
       "viewertitle_label": ""
     },
+    "draw": {
+      "delete": "",
+      "clearAll": "",
+      "point": "",
+      "line": "",
+      "polygon": "",
+      "bbox": "",
+      "circle": "",
+      "strokecolor": "",
+      "fillcolor": "",
+      "text": "",
+      "strokewidth": "",
+      "fillopacity": "",
+      "fontsize": ""
+    },
     "dxfexport": {
       "selectinfo": "Rechteck aufziehen um die zu exportierende Region",
       "symbologyscale": "Darstellungsmassstab"
