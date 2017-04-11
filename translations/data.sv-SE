@@ -18,13 +18,28 @@
       "menulabel": "Karta & Verktyg"
     },
     "bgswitcher": {
-      "nobg": "Ingen backgrund"
+      "nobg": "Ingen bakgrund"
     },
     "bottombar": {
       "mousepos_label": "Koordinater",
       "scale_label": "Skala",
       "terms_label": "Villkor",
       "viewertitle_label": "QWC2 Demo"
+    },
+    "draw": {
+      "delete": "Ta bort",
+      "clearAll": "Ta bort alla",
+      "point": "Punkt",
+      "line": "Linje",
+      "polygon": "Polygon",
+      "bbox": "Rektangel",
+      "circle": "Cirkel",
+      "strokecolor": "Linjefärg",
+      "fillcolor": "Fyllfärg",
+      "text": "Text",
+      "strokewidth": "Linjebredd",
+      "fillopacity": "Transparens",
+      "fontsize": "Textstorlek"
     },
     "dxfexport": {
       "selectinfo": "Rita en rektangel runt området som ska exporteras...",
@@ -38,13 +53,13 @@
       "info": ""
     },
     "layerinfo": {
-      "title": "",
-      "abstract": "",
-      "attribution": "",
-      "keywords": "",
-      "dataUrl": "",
-      "metadataUrl": "",
-      "legend": ""
+      "title": "Information om lager",
+      "abstract": "Sammanfattning",
+      "attribution": "Källa",
+      "keywords": "Nyckelord",
+      "dataUrl": "Datalänk",
+      "metadataUrl": "Metadatalänk",
+      "legend": "Teckenförklaring"
     },
     "layertree": {
       "maptip": "Visa karttips för lager",
@@ -52,11 +67,11 @@
       "printlegend": ""
     },
     "locate": {
-      "tooltip": "",
-      "metersUnit": "",
-      "feetUnit": "",
-      "popup": "",
-      "outsideMapBoundsMsg": ""
+      "tooltip": "Lokalisera mig",
+      "metersUnit": "meter",
+      "feetUnit": "fot",
+      "popup": "Du är inom {distance} {unit} från denna punkt",
+      "outsideMapBoundsMsg": "Du verkar befinna dig utanför kartans gränser"
     },
     "map": {
       "loading": "Laddar..."
@@ -84,7 +99,7 @@
     "search": {
       "coordinates": "Koordinater",
       "placeholder": "Sök efter platser och koordinater...",
-      "more": ""
+      "more": "Mer"
     },
     "share": {
       "directLinkTitle": "Via en direktlänk",
@@ -96,14 +111,6 @@
     },
     "themeswitcher": {
       "filter": "Filtrera..."
-    },
-    "draw": {
-      "delete": "Ta bort",
-      "clearAll": "Ta bort alla",
-      "point": "Punkt",
-      "line": "Linje",
-      "polygon": "Polygon",
-      "circle": "Cirkel"
     }
   }
 }

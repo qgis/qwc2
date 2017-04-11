@@ -157,7 +157,9 @@ const Draw = React.createClass({
               <span onClick={()=>this.setDrawMethod('Polygon')} className={this.statusForDrawMethod('Polygon')}>
                 <Message msgId="draw.polygon" />
               </span>
-              <span onClick={()=>this.setDrawMethod('BBOX')} className={this.statusForDrawMethod('BBOX')}>BBOX</span>
+              <span onClick={()=>this.setDrawMethod('BBOX')} className={this.statusForDrawMethod('BBOX')}>
+                <Message msgId="draw.bbox" />
+              </span>
               <span onClick={()=>this.setDrawMethod('Circle')} className={this.statusForDrawMethod('Circle')}>
                 <Message msgId="draw.circle" />
               </span>
@@ -177,35 +179,35 @@ const Draw = React.createClass({
             <div className="draw-style">
               <div className="style-row">
                 <span className="style-rule">
-                  <label>Stroke color</label>
+                  <label><Message msgId="draw.strokecolor" /></label>
                   <input type="text" style={{backgroundColor: this.props.currentStyle.strokeColor}}
                     onChange={(evt) => this.updateStyleRule('strokeColor', evt.target.value)}
-                    onFocus={() => this.setState({ displayStrokeColorPicker: true })} />
+                    onClick={() => this.state.displayStrokeColorPicker ? this.setState({ displayStrokeColorPicker: false }):this.setState({ displayStrokeColorPicker: true })}/>
+                    
                   <span className={this.state && this.state.displayStrokeColorPicker ? "color-picker" : "collapse" }>
                     <TwitterPicker color={this.props.currentStyle.StrokeColor} onChangeComplete={(color) => this.updateStyleRule('strokeColor', color.hex)} />
                   </span>
                 </span>
 
                 <span className="style-rule">
-                  <label>Stroke width</label>
+                  <label><Message msgId="draw.strokewidth" /></label>
                   <input type="text" value={this.props.currentStyle.strokeWidth}
                     onChange={(evt) => this.updateStyleRule('strokeWidth', evt.target.value)} />
                 </span>
               </div>
               <div className="style-row">
                 <span className="style-rule">
-                  <label>Fill color</label>
+                  <label><Message msgId="draw.fillcolor" /></label>
                   <input type="text"  style={{backgroundColor: this.props.currentStyle.fillColor}}
                       onChange={(evt) => this.updateStyleRule('fillColor', evt.target.value)}
-                      onFocus={() => this.setState({ displayFillColorPicker: true })} />
-
+                      onClick={() => this.state.displayFillColorPicker ? this.setState({ displayFillColorPicker: false }):this.setState({ displayFillColorPicker: true })}/>
                   <span className={this.state && this.state.displayFillColorPicker ? "color-picker" : "collapse" }>
                     <TwitterPicker color={this.props.currentStyle.fillColor} onChangeComplete={(color) => this.updateStyleRule('fillColor', color.hex)} />
                   </span>
                 </span>
 
                 <span className="style-rule fill-opacity">
-                  <label>Fill opacity</label>
+                  <label><Message msgId="draw.fillopacity" /></label>
                   <input type="range" min="0" max="1" step="0.1" value={this.props.currentStyle.fillTransparency}
                     onChange={(evt) => this.updateStyleRule('fillTransparency', evt.target.value)} />
                   <span>{this.props.currentStyle.fillTransparency*100}%</span>
@@ -213,13 +215,13 @@ const Draw = React.createClass({
               </div>
               <div className="style-row">
                 <span className="style-rule">
-                  <label>Text</label>
+                  <label><Message msgId="draw.text" /></label>
                   <input type="text" value={this.props.currentStyle.text}
                       onChange={(evt) => this.updateStyleRule('text', evt.target.value)} />
                 </span>
 
                 <span className="style-rule">
-                  <label>Font size</label>
+                  <label><Message msgId="draw.fontsize" /></label>
                   <input type="text" value={this.props.currentStyle.fontSize}
                     onChange={(evt) => this.updateStyleRule('fontSize', evt.target.value)} />
                 </span>
