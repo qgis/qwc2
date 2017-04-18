@@ -9,6 +9,7 @@ const React = require('react');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
 const {Glyphicon} = require('react-bootstrap');
+const FileSaver = require('file-saver');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {addLayer, removeLayer, changeLayerProperties} = require('../../MapStore2/web/client/actions/layers');
 const IdentifyUtils = require('../utils/IdentifyUtils');
@@ -245,7 +246,6 @@ const IdentifyViewer = React.createClass({
                 {this.props.enableExport ? (<div className="identify-buttonbox">
                     <button onClick={this.exportResults}>Export</button>
                 </div>) : null}
-                <a ref={el => this.exportAnchor=el} style={{display: 'none'}}></a>
             </div>
         );
     },
@@ -258,9 +258,7 @@ const IdentifyViewer = React.createClass({
         });
     },
     exportResult(layer, feature) {
-        if(this.exportAnchor) {
-            this.export(feature);
-        }
+        this.export(feature);
     },
     removeResultLayer(layer) {
         let newResultTree = assign({}, this.state.resultTree);
@@ -272,32 +270,20 @@ const IdentifyViewer = React.createClass({
         });
     },
     exportResultLayer(layer) {
-        if(this.exportAnchor) {
-            this.export(this.state.resultTree[layer]);
-        }
+        this.export(this.state.resultTree[layer]);
     },
     exportResults(results) {
-        if(this.exportAnchor) {
-            let filteredResults = {};
-            Object.keys(this.state.resultTree).map(key => {
-                if(this.state.resultTree[key].length > 0) {
-                    filteredResults[key] = this.state.resultTree[key];
-                }
-            });
-            this.export(filteredResults);
-        }
+        let filteredResults = {};
+        Object.keys(this.state.resultTree).map(key => {
+            if(this.state.resultTree[key].length > 0) {
+                filteredResults[key] = this.state.resultTree[key];
+            }
+        });
+        this.export(filteredResults);
     },
     export(json) {
         let data = JSON.stringify(json, null, ' ');
-        if(window.navigator.msSaveOrOpenBlob) {
-            let blobObject = new Blob([data]);
-            window.navigator.msSaveOrOpenBlob(blobObject, "features.json");
-        } else {
-            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(data);
-            this.exportAnchor.setAttribute("href", dataStr);
-            this.exportAnchor.setAttribute("download", "features.json");
-            this.exportAnchor.click();
-        }
+        FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "features.json");
     },
     htmlEncode(text) {
         return text
