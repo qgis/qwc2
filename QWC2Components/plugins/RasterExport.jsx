@@ -54,6 +54,16 @@ const RasterExport = React.createClass({
         if (ConfigUtils.getConfigProp("proxyUrl")) {
             action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(action) + "&filename=" + encodeURIComponent(filename);
         }
+        let exportLayers = themeLayer ? themeLayer.params.LAYERS : "";
+        let exportOpacities = themeLayer ? themeLayer.params.OPACITIES : "";
+        let backgroundLayer = this.props.layers.find(layer => layer.group === 'background' && layer.visibility === true);
+        let themeBackgroundLayer = backgroundLayer ? this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayer.name) : null;
+        let exportBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
+        if(exportBackgroundLayer) {
+            exportLayers = exportBackgroundLayer + "," + exportLayers;
+            exportOpacities = "255," + exportOpacities;
+        }
+
         return (
             <span role="body">
                 <form ref={form => this.form = form} action={action} method="POST" target="_blank" >
@@ -74,8 +84,8 @@ const RasterExport = React.createClass({
                 <input type="hidden" name="VERSION" value="1.3.0" readOnly="true" />
                 <input type="hidden" name="REQUEST" value="GetMap" readOnly="true" />
                 <input type="hidden" name="FORMAT" value="image/png" readOnly="true" />
-                <input type="hidden" name="LAYERS" value={themeLayer.params.LAYERS} readOnly="true" />
-                <input type="hidden" name="OPACITIES" value={themeLayer.params.OPACITIES} readOnly="true" />
+                <input type="hidden" name="LAYERS" value={exportLayers} readOnly="true" />
+                <input type="hidden" name="OPACITIES" value={exportOpacities} readOnly="true" />
                 <input type="hidden" name="TRANSPARENT" value="true" readOnly="true" />
                 <input type="hidden" name="TILED" value="false" readOnly="true" />
                 <input type="hidden" name="STYLES" value="" readOnly="true" />
