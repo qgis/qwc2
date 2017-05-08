@@ -270,9 +270,19 @@ const LayerTree = React.createClass({
     },
     groupToggled(layer, grouppath, oldvisibility) {
         if(grouppath.length === 0) {
-            // Toggle entire layer
-            let newlayer = assign({}, layer, {visibility: !oldvisibility});
-            this.props.changeLayerProperties(layer.id, newlayer);
+            if(this.props.groupTogglesSublayers) {
+                // Toggle group and all sublayers
+                let newlayer = assign({}, layer, {visibility: !oldvisibility});
+                this.cloneSublayers(newlayer, {visibility: !oldvisibility});
+                assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder));
+                UrlParams.updateParams({l: LayerUtils.constructUrlParam(newlayer)});
+                this.props.changeLayerProperties(layer.id, newlayer);
+            } else {
+                // Toggle entire layer
+                let newlayer = assign({}, layer, {visibility: !oldvisibility});
+                UrlParams.updateParams({l: LayerUtils.constructUrlParam(newlayer)});
+                this.props.changeLayerProperties(layer.id, newlayer);
+            }
         } else {
             if(this.props.groupTogglesSublayers) {
                 // Toggle group and all sublayers
