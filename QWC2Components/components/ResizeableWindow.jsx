@@ -75,7 +75,7 @@ const ResizeableWindow = React.createClass({
                     </span>
                     <Glyphicon className="resizeable-window-titlebar-close" onClick={this.onClose} glyph="remove"/>
                 </div>
-                <div className="resizeable-window-body" onMouseDown={this.killEvent} onMouseUp={this.killEvent} onClick={this.killEvent} onTouchStart={this.killEvent}>
+                <div className="resizeable-window-body" onMouseDown={this.killEvent} onMouseUp={this.killEvent} onTouchStart={this.killEvent}>
                     {this.renderRole("body")}
                 </div>
             </ReactRnd>
