@@ -1,0 +1,116 @@
+{
+  "locale": "ro-RO",
+  "messages": {
+    "appmenu": {
+      "items": {
+        "Draw": "Desenează",
+        "DxfExport": "Export DXF",
+        "Help": "Ajutor",
+        "LayerTree": "Straturi & Legendă",
+        "Measure": "Măsoară",
+        "Print": "Tipărire",
+        "RasterExport": "Export Raster",
+        "Share": "Trimite Link",
+        "ThemeSwitcher": "Hărți tematice",
+        "Tools": "Unelte hartă",
+        "IdentifyRegion": "Interogare regiune"
+      },
+      "menulabel": "Hărți & Unelte"
+    },
+    "bgswitcher": {
+      "nobg": "Fără fundal"
+    },
+    "bottombar": {
+      "mousepos_label": "Coordonate",
+      "scale_label": "Scară",
+      "terms_label": "Termeni de utilizare",
+      "viewertitle_label": ""
+    },
+    "draw": {
+      "delete": "Șterge",
+      "clearAll": "Șterge tot",
+      "point": "Punct",
+      "line": "Linie",
+      "polygon": "Poligon",
+      "bbox": "Dreptunghi",
+      "circle": "Cerc",
+      "strokecolor": "Culoare contur",
+      "fillcolor": "Culoare interior",
+      "text": "Text",
+      "strokewidth": "Lățime contur",
+      "fillopacity": "Opacitate interior",
+      "fontsize": "Mărime font"
+    },
+    "dxfexport": {
+      "selectinfo": "Încadrați într-un dreptunghi zona de exportat..",
+      "symbologyscale": "Scara simboluri:"
+    },
+    "identifyTitle": "Info Entități",
+    "identify": {
+      "querying": "Interogare..."
+    },
+    "identifyregion": {
+      "info": "Încadrați într-un poligon entitățile de identificat..."
+    },
+    "layerinfo": {
+      "title": "Info Strat",
+      "abstract": "Abstract",
+      "attribution": "Atribuire",
+      "keywords": "Cuvinte cheie",
+      "dataUrl": "URL date",
+      "metadataUrl": "URL metadate",
+      "legend": "Legendă"
+    },
+    "layertree": {
+      "maptip": "Arată indicii hartă",
+      "transparency": "Transparență",
+      "printlegend": "Tipărește legenda"
+    },
+    "locate": {
+      "tooltip": "Localizează-mă",
+      "metersUnit": "metri",
+      "feetUnit": "picioare",
+      "popup": "Ești la {distance} {unit} de acest punct",
+      "outsideMapBoundsMsg": "Ești localizat în afara limitelor hărții"
+    },
+    "map": {
+      "loading": "Se încarcă..."
+    },
+    "measureComponent": {
+      "areaLabel": "Arie",
+      "bearingLabel": "Direcție",
+      "lengthLabel": "Lungime",
+      "pointLabel": "Poziție"
+    },
+    "noFeatureInfo": "Nu există informații în punctul cerut",
+    "print": {
+      "layout": "Șablon:",
+      "nolayouts": "Harta selectată nu suportă tipărirea",
+      "notheme": "Tematică neselectată",
+      "resolution": "Rezoluție:",
+      "rotation": "Rotație:",
+      "scale": "Scară:",
+      "submit": "Tipărește"
+    },
+    "rasterexport": {
+      "format": "Format:",
+      "selectinfo": "Încadrați într-un dreptunghi zona de exportat.."
+    },
+    "search": {
+      "coordinates": "Coordonate",
+      "placeholder": "Caută locații și coordonate...",
+      "more": "Mai multe..."
+    },
+    "share": {
+      "directLinkTitle": "Via link direct",
+      "generatingpermalink": "Generare permalink...",
+      "msgToCopyUrl": "Click pt. copiere",
+      "msgCopiedUrl": "Copiat",
+      "QRCodeLinkTitle": "cod QR",
+      "socialIntro": "În rețeaua socială favorită"
+    },
+    "themeswitcher": {
+      "filter": "Filtrare..."
+    }
+  }
+}
