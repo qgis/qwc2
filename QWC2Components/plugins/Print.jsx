@@ -122,7 +122,7 @@ const Print = React.createClass({
         let printGrid = this.props.theme.printGrid;
         if(printGrid && printGrid.length > 0 && this.state.scale) {
             let cur = 0;
-            for(; cur < printGrid.length && this.state.scale < printGrid[cur].s; ++cur);
+            for(; cur < printGrid.length-1 && this.state.scale < printGrid[cur].s; ++cur);
             gridIntervalX = (<input readOnly="true" name={mapName + ":GRID_INTERVAL_X"} type={formvisibility} value={printGrid[cur].x} />);
             gridIntervalY = (<input readOnly="true" name={mapName + ":GRID_INTERVAL_Y"} type={formvisibility} value={printGrid[cur].y} />);
         }
