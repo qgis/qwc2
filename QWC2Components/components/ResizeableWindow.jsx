@@ -7,7 +7,7 @@
  */
 
 const React = require('react');
-const ReactRnd = require('react-rnd');
+const Rnd = require('react-rnd').default
 const {Glyphicon} = require('react-bootstrap');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 require('./style/ResizeableWindow.css');
@@ -63,7 +63,7 @@ const ResizeableWindow = React.createClass({
             icon = (<img src={this.props.icon} />);
         }
         return (
-            <ReactRnd className="resizeable-window" initial={initial}
+            <Rnd className="resizeable-window" default={initial}
                 minWidth={this.props.minWidth} minHeight={this.props.minHeight}
                 maxWidth={this.props.maxWidth || window.innerWidth} maxHeight={this.props.maxHeight || window.innerHeight}>
                 <div className="resizeable-window-titlebar">
@@ -78,7 +78,7 @@ const ResizeableWindow = React.createClass({
                 <div className="resizeable-window-body" onMouseDown={this.killEvent} onMouseUp={this.killEvent} onTouchStart={this.killEvent}>
                     {this.renderRole("body")}
                 </div>
-            </ReactRnd>
+            </Rnd>
         );
     },
     onClose(ev) {
