@@ -32,18 +32,21 @@ const BackgroundSwitcher = React.createClass({
     },
     render() {
         let activeClass = this.props.visible ? 'active' : '';
-        return (
-            <div>
-                <Button id="BackgroundSwitcherBtn" className={activeClass}
-                    onClick={this.buttonClicked} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
-                    <Glyphicon glyph="book"/>
-                </Button>
-                <div id="BackgroundSwitcher" className={activeClass}>
-                    {this.renderLayerItem(null, this.props.layers.filter(layer => layer.visibility === true).length === 0)}
-                    {this.props.layers.map(layer => this.renderLayerItem(layer, layer.visibility === true))}
+        if(this.props.layers.length>0){
+             return (
+                <div>
+                    <Button id="BackgroundSwitcherBtn" className={activeClass}
+                        onClick={this.buttonClicked} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
+                        <Glyphicon glyph="book"/>
+                    </Button>
+                    <div id="BackgroundSwitcher" className={activeClass}>
+                        {this.renderLayerItem(null, this.props.layers.filter(layer => layer.visibility === true).length === 0)}
+                        {this.props.layers.map(layer => this.renderLayerItem(layer, layer.visibility === true))}
+                    </div>
                 </div>
-            </div>
-        );
+            );
+        }
+        return null;
     },
     renderLayerItem(layer, visible) {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
