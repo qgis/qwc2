@@ -342,7 +342,7 @@ function getTheme(configItem, resultItem) {
 
             // set default theme
             if (configItem.default || !result.themes.defaultTheme) {
-                result.themes.defaultTheme = resultItem.name;
+                result.themes.defaultTheme = resultItem.id;
             }
 
             // get thumbnail asynchronously
