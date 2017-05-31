@@ -319,7 +319,7 @@ def getTheme(configItem, resultItem):
 
         # set default theme
         if "default" in configItem or not result["themes"]["defaultTheme"]:
-            result["themes"]["defaultTheme"] = resultItem["name"]
+            result["themes"]["defaultTheme"] = resultItem["id"]
 
         # use first CRS for thumbnail request which is not CRS:84
         for item in topLayer.getElementsByTagName("CRS"):
