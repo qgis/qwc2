@@ -290,6 +290,9 @@ const LayerTree = React.createClass({
                 newsublayer.visibility = !oldvisibility;
                 this.cloneSublayers(newsublayer, {visibility: !oldvisibility});
                 assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder));
+                if(newsublayer.visibility){
+                    newlayer = this.parentsVisible(newlayer, grouppath);
+                }
                 UrlParams.updateParams({l: LayerUtils.constructUrlParam(newlayer)});
                 this.props.changeLayerProperties(layer.id, newlayer);
             } else {
@@ -307,8 +310,22 @@ const LayerTree = React.createClass({
         newsublayer.visibility = !newsublayer.visibility;
         let {params, queryLayers} = LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder);
         assign(newlayer, {params: params, queryLayers: queryLayers});
+        if(newsublayer.visibility){
+            newlayer = this.parentsVisible(newlayer, sublayerpath);
+        }
         UrlParams.updateParams({l: LayerUtils.constructUrlParam(newlayer)});
         this.props.changeLayerProperties(layer.id, newlayer);
+
+    },
+    parentsVisible(layer, sublayerpath) {
+        for(let i = 1; i < sublayerpath.length; ++i) {
+            let {newlayer, newsublayer} = this.cloneLayerTree(layer, sublayerpath.slice(0,i));
+            newsublayer.visibility = true;
+            assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder));
+            layer = newlayer
+        }
+        layer = assign({}, layer, {visibility: true});
+        return layer
     },
     sublayerTransparencyChanged(layer, sublayerpath, value) {
         let {newlayer, newsublayer} = this.cloneLayerTree(layer, sublayerpath);
@@ -344,7 +361,7 @@ const LayerTree = React.createClass({
         }).join("");
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
 
-        // Ugliest code you have ever seen (it's 2017 and there still is now way to reliably know when a popup has really finished loading...)
+        // Ugliest code you have ever seen (it's 2017 and there still is no way to reliably know when a popup has really finished loading...)
         let win = window.open(assetsPath + "/templates/legendprint.html", "Legend", "toolbar=no, location=no, directories=no, status=no, menubar=no");
         let elapsed = 0;
         let readyStateCheckInterval = setInterval(() => {
