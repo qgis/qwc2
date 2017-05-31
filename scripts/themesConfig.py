@@ -259,7 +259,7 @@ def getTheme(configItem, resultItem):
 
         # update theme config
         resultItem["id"] = themeId
-        resultItem["name"] = themeId
+        resultItem["name"] = getChildElementValue(topLayer, "Name")
         resultItem["title"] = wmsTitle
         resultItem["attribution"] = configItem["attribution"]
         resultItem["attributionUrl"] = configItem["attributionUrl"]
