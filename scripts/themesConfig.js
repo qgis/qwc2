@@ -182,7 +182,7 @@ function getTheme(configItem, resultItem) {
     parsedUrl.query.REQUEST = "GetProjectSettings";
     const getCapabilitiesUrl = urlUtil.format(parsedUrl);
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         axios.get(getCapabilitiesUrl).then((response) => {
             // parse capabilities
             var capabilities;
@@ -352,7 +352,7 @@ function getTheme(configItem, resultItem) {
             resultItem.error = "Could not read GetProjectSettings";
             resultItem.title = "Error";
             // finish task
-            resolve(false);
+            reject(resultItem.error);
         });
     });
 }
@@ -497,10 +497,12 @@ Promise.all(tasks).then(() => {
     fs.writeFile(process.cwd() + '/themes.json', JSON.stringify(result, null, 2), (error) => {
         if (error) {
             console.error("ERROR:", error);
+            process.exit(1);
         } else {
             console.log("\nCreated themes.json\n\n");
         }
     });
 }).catch((error) => {
     console.error("ERROR:", error);
+    process.exit(1);
 });
