@@ -23,11 +23,17 @@ div.resultbody {
     padding: 0.25em;
     white-space: nowrap;
     overflow: hidden;
-    text-align: center;
     background-color: white;
     min-width: 15em;
+    display: flex;
+    align-items: center;
+}
+
+div.resultbody > span {
+    flex: 1 1 auto;
+    text-align: center;
 }
 
 div.resultbody > select {
-    float: right;
+    flex: 0 0 auto;
 }

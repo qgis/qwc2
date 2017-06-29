@@ -71,7 +71,7 @@ const Measure = React.createClass({
                 let {x, y} = CoordinatesUtils.reproject([this.props.measureState.point.x, this.props.measureState.point.y], this.props.measureState.point.srs, this.props.displaycrs);
                 text = x.toFixed(digits) + " " + y.toFixed(digits);
             }
-            var resultBody = (<div className="resultbody">{text}</div>);
+            var resultBody = (<div className="resultbody"><span>{text}</span></div>);
         } else if(this.props.measureState.geomType === "LineString") {
             var resultBody = (
                 <div className="resultbody">
@@ -99,7 +99,7 @@ const Measure = React.createClass({
         } else if(this.props.measureState.geomType === "Bearing") {
             var resultBody = (
                 <div className="resultbody">
-                    {measureUtils.getFormattedBearingValue(this.props.measureState.bearing)}
+                    <span>{measureUtils.getFormattedBearingValue(this.props.measureState.bearing)}</span>
                 </div>
             );
         }
