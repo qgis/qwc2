@@ -30,13 +30,17 @@ const Identify = React.createClass({
         sendRequest: React.PropTypes.func,
         showMarker: React.PropTypes.func,
         hideMarker: React.PropTypes.func,
-        enableExport: React.PropTypes.bool
+        enableExport: React.PropTypes.bool,
+        initialWidth: React.PropTypes.number,
+        initialHeight: React.PropTypes.number
     },
     getDefaultProps() {
         return {
             format: "text/xml",
             maxItems: 10,
-            enableExport: true
+            enableExport: true,
+            initialWidth: 320,
+            initialHeight: 400
         };
     },
     queryFilter(l) {
@@ -81,7 +85,7 @@ const Identify = React.createClass({
         }
         let missingResponses = this.props.requests.length - this.props.responses.length;
         return (
-            <ResizeableWindow title="identifyTitle" glyphicon="info-sign" onClose={this.onClose} initialWidth={320} initialHeight={400}>
+            <ResizeableWindow title="identifyTitle" glyphicon="info-sign" onClose={this.onClose} initialWidth={this.props.initialWidth} initialHeight={this.props.initialHeight}>
                 <IdentifyViewer role="body"
                     map={this.props.map}
                     missingResponses={missingResponses}
