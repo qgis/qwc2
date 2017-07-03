@@ -71,7 +71,14 @@
       "metersUnit": "meters",
       "feetUnit": "feet",
       "popup": "You are within {distance} {unit} from this point",
-      "outsideMapBoundsMsg": "You seem located outside the boundaries of the map"
+      "outsideMapBoundsMsg": "You seem located outside the boundaries of the map",
+      "statustooltip": {
+        "DISABLED": "Disabled",
+        "LOCATING": "Locating...",
+        "ENABLED": "Enabled",
+        "FOLLOWING": "Following",
+        "PERMISSION_DENIED": "Permission denied"
+      }
     },
     "map": {
       "loading": "Loading..."

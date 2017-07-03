@@ -7,6 +7,7 @@
  */
 const React = require('react');
 const {connect} = require('react-redux');
+const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {changeLocateState} = require('../../MapStore2/web/client/actions/locate');
 const LocateBtn = require('../../MapStore2/web/client/components/mapcontrols/locate/LocateBtn');
 require('./style/Buttons.css');
@@ -21,7 +22,15 @@ const LocateButton = React.createClass({
         return { position: 2 }
     },
     render() {
-        return (<LocateBtn onClick={this.props.onClick} locate={this.props.locate} id="LocateBtn" style={{bottom: (5 + 4 * this.props.position) + 'em'}} />);
+        let tooltip = (<Message msgId={"locate.statustooltip." + this.props.locate} />);
+        return (
+            <LocateBtn
+                onClick={this.props.onClick}
+                locate={this.props.locate}
+                id="LocateBtn"
+                tooltip={tooltip}
+                style={{bottom: (5 + 4 * this.props.position) + 'em'}} />
+        );
     }
 });
 

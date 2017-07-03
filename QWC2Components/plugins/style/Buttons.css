@@ -21,7 +21,12 @@
     color: @button_active_fg@;
 }
 
-#LocateBtn.btn-success {
+#LocateBtn.btn-info {
     background-color: @button_fg@;
+    color: @button_bg@;
+}
+
+#LocateBtn.btn-success {
+    background-color: yellow;
     color: @button_bg@;
 }
