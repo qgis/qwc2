@@ -50,8 +50,7 @@ const QWCMapPlugin = React.createClass({
             }
         };
         return (
-            <MapPlugin
-                projection={this.props.projection}
+            <MapPlugin               
                 actions={this.props.actions}
                 zoomControl={this.props.zoomControl}
                 mapType={this.props.mapType}
