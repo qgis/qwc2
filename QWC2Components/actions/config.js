@@ -14,7 +14,8 @@ const UrlParams = require("../utils/UrlParams");
 const assign = require('object-assign');
 const axios = require('axios');
 
-function restoreMapConfig(dispatch, params) {
+function restoreMapConfig(dispatch, params, mapDefaultConfig) {
+
     let mapConfig = {
         map: {
             center: {
@@ -26,6 +27,13 @@ function restoreMapConfig(dispatch, params) {
             layers: []
         }
     };
+
+    if(mapDefaultConfig && mapDefaultConfig.center){
+     mapConfig.map.center.x = mapDefaultConfig.center.x,
+     mapConfig.map.center.y = mapDefaultConfig.center.y,
+     mapConfig.map.center.crs = mapDefaultConfig.center.crs
+    }
+    
 
     // Set initial extent, pos and scale parameter
     UrlParams.updateParams({ie: params.e, e: undefined});
@@ -45,7 +53,7 @@ function loadMapConfig() {
     return (dispatch) => {
 
         var params = UrlParams.getParams();
-
+        var mapDefaultConfig = ConfigUtils.getMapDefaultConfiguration();
         if(params.k) {
             axios.get(ConfigUtils.getConfigProp("qwc2serverUrl") + "/resolvepermalink?key=" + params.k)
             .then(response => {
@@ -53,10 +61,10 @@ function loadMapConfig() {
                     assign(params, response.data.query);
                     UrlParams.updateParams(params);
                 }
-                restoreMapConfig(dispatch, params);
+                restoreMapConfig(dispatch, params, mapDefaultConfig);
             });
         } else {
-            restoreMapConfig(dispatch, params);
+            restoreMapConfig(dispatch, params, mapDefaultConfig);
         }
     };
 }
