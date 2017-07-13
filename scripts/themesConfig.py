@@ -19,6 +19,7 @@ except:
 from xml.dom.minidom import parseString
 import json
 import traceback
+from socket import getfqdn
 
 usedThemeIds = []
 
@@ -350,6 +351,7 @@ def getTheme(configItem, resultItem):
 def getGroupThemes(configGroup, resultGroup):
     for item in configGroup["items"]:
         itemEntry = {}
+        item["url"] = urljoin(configGroup["baseUrl"], item["url"])
         getTheme(item, itemEntry)
         resultGroup["items"].append(itemEntry)
 
@@ -446,14 +448,28 @@ def getGroupThemes(configGroup, resultGroup):
 }
 """
 
-
+print("Reading config.json")
+try:
+  with open("config.json") as fh:
+      config = json.load(fh)
+except:
+  print("Failed to read config.json. Please run this script from a directory containing config.json.");
+  sys.exit(1)
+   
 print("Reading themesConfig.json")
 try:
   with open("themesConfig.json") as fh:
-      config = json.load(fh)
+      themesConfig = json.load(fh)
 except:
   print("Failed to read themesConfig.json. Please run this script from a directory containing themesConfig.json.");
   sys.exit(1)
+
+if "proxyUrl" in config:
+    themesConfig["baseUrl"] = config["proxyUrl"]
+elif "qwc2serverUrl" in config:
+    themesConfig["baseUrl"] = config["qwc2serverUrl"]
+else:
+    themesConfig["baseUrl"] = socket.getfqdn()
 
 result = {
     "themes": {
@@ -461,14 +477,15 @@ result = {
         "subdirs": [],
         "items": [],
         "defaultTheme": None,
-        "defaultScales": config["defaultScales"],
-        "defaultPrintScales": config["defaultPrintScales"] if "defaultPrintScales" in config else None,
-        "defaultPrintResolutions": config["defaultPrintResolutions"] if "defaultPrintResolutions" in config else None,
-        "defaultPrintGrid": config["defaultPrintGrid"] if "defaultPrintGrid" in config else None,
-        "backgroundLayers": config["themes"]["backgroundLayers"]
+        "defaultScales": themesConfig["defaultScales"],
+        "defaultPrintScales": themesConfig["defaultPrintScales"] if "defaultPrintScales" in themesConfig else None,
+        "defaultPrintResolutions": themesConfig["defaultPrintResolutions"] if "defaultPrintResolutions" in themesConfig else None,
+        "defaultPrintGrid": themesConfig["defaultPrintGrid"] if "defaultPrintGrid" in themesConfig else None,
+        "backgroundLayers": themesConfig["themes"]["backgroundLayers"],
+        "baseUrl": themesConfig["baseUrl"]
     }
 }
-getGroupThemes(config["themes"], result["themes"])
+getGroupThemes(themesConfig["themes"], result["themes"])
 
 if "backgroundLayers" in result["themes"]:
     # get thumbnails for background layers
