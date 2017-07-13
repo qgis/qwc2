@@ -12,6 +12,7 @@ const urlUtil = require('url');
 const axios = require('axios');
 const xml2js = require('xml2js');
 const fs = require('fs');
+const fqdn = require('node-fqdn');
 
 let usedThemeIds = [];
 
@@ -364,6 +365,7 @@ var tasks = [];
 function getGroupThemes(configGroup, resultGroup) {
     for (var item of configGroup.items) {
         var itemEntry = {};
+        item.url = urlUtil.resolve(String(configGroup.baseUrl), item.url);
         tasks.push(getTheme(item, itemEntry));
         resultGroup.items.push(itemEntry);
     }
@@ -463,8 +465,20 @@ function getGroupThemes(configGroup, resultGroup) {
   "defaultPrintGrid": [<as printGrid above>]        // optional, list of grid intervals to use for various scales when printing, no grid is primted if omitted
 }
 */
+
+console.log("Reading config.json");
+var config = require(process.cwd() + '/config.json');
+
 console.log("Reading themesConfig.json");
-var config = require(process.cwd() + '/themesConfig.json');
+var themesConfig = require(process.cwd() + '/themesConfig.json');
+
+if (config.proxyUrl !== undefined) {
+    themesConfig.themes.baseUrl = config.proxyUrl;
+} else if (config.qwc2serverUrl !== undefined) {
+    themesConfig.themes.baseUrl = config.qwc2serverUrl;
+} else {
+    themesConfig.themes.baseUrl = fqdn();
+}
 
 var result = {
     themes: {
@@ -472,14 +486,14 @@ var result = {
         subdirs: [],
         items: [],
         defaultTheme: undefined,
-        defaultScales: config.defaultScales,
-        defaultPrintScales: config.defaultPrintScales,
-        defaultPrintResolutions: config.defaultPrintResolutions,
-        defaultPrintGrid: config.defaultPrintGrid,
-        backgroundLayers: config.themes.backgroundLayers
+        defaultScales: themesConfig.defaultScales,
+        defaultPrintScales: themesConfig.defaultPrintScales,
+        defaultPrintResolutions: themesConfig.defaultPrintResolutions,
+        defaultPrintGrid: themesConfig.defaultPrintGrid,
+        backgroundLayers: themesConfig.themes.backgroundLayers
     }
 };
-getGroupThemes(config.themes, result.themes);
+getGroupThemes(themesConfig.themes, result.themes);
 
 if (result.themes.backgroundLayers !== undefined) {
     // get thumbnails for background layers
