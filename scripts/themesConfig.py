@@ -269,6 +269,10 @@ def getTheme(configItem, resultItem):
         resultItem["availableFormats"] = availableFormats
         if "tiled" in configItem:
             resultItem["tiled"] = configItem["tiled"]
+        if "version" in configItem:
+            resultItem["version"] = configItem["version"]
+        else: 
+            resultItem["version"] = configItem["defaultWMSVersion"]
         # use geographic bounding box for theme, as default CRS may have inverted axis order with WMS 1.3.0
         bounds = [
             float(getChildElementValue(topLayer, "EX_GeographicBoundingBox/westBoundLongitude")),
@@ -465,7 +469,9 @@ result = {
         "defaultPrintScales": config["defaultPrintScales"] if "defaultPrintScales" in config else None,
         "defaultPrintResolutions": config["defaultPrintResolutions"] if "defaultPrintResolutions" in config else None,
         "defaultPrintGrid": config["defaultPrintGrid"] if "defaultPrintGrid" in config else None,
-        "backgroundLayers": config["themes"]["backgroundLayers"]
+        "backgroundLayers": config["themes"]["backgroundLayers"],
+        "defaultWMSVersion": config["defaultWMSVersion"]
+        
     }
 }
 getGroupThemes(config["themes"], result["themes"])

@@ -12,8 +12,7 @@ const urlUtil = require('url');
 const axios = require('axios');
 const xml2js = require('xml2js');
 const fs = require('fs');
-const proj4 = require ('proj4');
-proj4.defs("EPSG:3008", "+proj=tmerc +lat_0=0 +lon_0=13.5 +k=1 +x_0=150000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+
 let usedThemeIds = [];
 
 // load thumbnail from file or GetMap
@@ -34,7 +33,6 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
     var parsedUrl = urlUtil.parse(configItem.url, true);
     parsedUrl.search = '';
     parsedUrl.query.SERVICE = "WMS";
-    parsedUrl.query.VERSION = configItem.version?configItem.version:"1.3.0";
     parsedUrl.query.VERSION = "1.3.0";
     parsedUrl.query.REQUEST = "GetMap";
     parsedUrl.query.FORMAT = "image/png";
@@ -88,7 +86,7 @@ function toArray(obj) {
 }
 
 // recursively get layer tree
-function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, configItem) {
+function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap) {
     if (printLayers.indexOf(layer.Name) !== -1) {
         // skip print layers
         return;
@@ -147,22 +145,8 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         }
         // use geographic bounding box, as default CRS may have inverted axis order with WMS 1.3.0
         if(layer.EX_GeographicBoundingBox) {
-
-        if(configItem && configItem.crs){
-        if(configItem.crs !== "EPSG:4326"){
-
-         var westSouthDesiredCoordinate=proj4("EPSG:4326",configItem.crs,[layer.EX_GeographicBoundingBox.westBoundLongitude,layer.EX_GeographicBoundingBox.southBoundLatitude]),
-            eastNorthDesiredCoordinate=proj4("EPSG:4326",configItem.crs,[layer.EX_GeographicBoundingBox.eastBoundLongitude,layer.EX_GeographicBoundingBox.northBoundLatitude]);
-            layer.EX_GeographicBoundingBox.westBoundLongitude = westSouthDesiredCoordinate[0],
-            layer.EX_GeographicBoundingBox.southBoundLatitude = westSouthDesiredCoordinate[1],
-            layer.EX_GeographicBoundingBox.eastBoundLongitude = eastNorthDesiredCoordinate[0],
-            layer.EX_GeographicBoundingBox.northBoundLatitude = eastNorthDesiredCoordinate[1];
-            }
-          } 
-
-
             layerEntry.bbox = {
-                "crs": configItem.crs?configItem.crs:"EPSG:4326",
+                "crs": "EPSG:4326",
                 "bounds": [
                     parseFloat(layer.EX_GeographicBoundingBox.westBoundLongitude),
                     parseFloat(layer.EX_GeographicBoundingBox.southBoundLatitude),
@@ -176,7 +160,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         layerEntry.sublayers = [];
         layerEntry.expanded = collapseBelowLevel >= 0 && level >= collapseBelowLevel ? false : true;
         for (var subLayer of toArray(layer.Layer)) {
-            getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, configItem);
+            getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap);
         }
         if (layerEntry.sublayers.length === 0) {
             // skip empty groups
@@ -269,7 +253,7 @@ function getTheme(configItem, resultItem) {
             var layerTree = [];
             var visibleLayers = [];
             var titleNameMap = {};
-            getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, configItem);
+            getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap);
             visibleLayers.reverse();
 
             // print templates
@@ -314,17 +298,7 @@ function getTheme(configItem, resultItem) {
             resultItem.format = configItem.format;
             resultItem.availableFormats = capabilities.Capability.Request.GetMap.Format;
             resultItem.tiled = configItem.tiled;
-            resultItem.crs = configItem.crs?configItem.crs:"EPSG:4326";
-            resultItem.version=configItem.version?configItem.version:"1.3.0";           
-            if(resultItem.crs !== "EPSG:4326"){
-            var westSouthDesiredCoordinateTheme=proj4("EPSG:4326",resultItem.crs,[topLayer.EX_GeographicBoundingBox.westBoundLongitude,topLayer.EX_GeographicBoundingBox.southBoundLatitude]),
-                eastNorthDesiredCoordinateTheme=proj4("EPSG:4326",resultItem.crs,[topLayer.EX_GeographicBoundingBox.eastBoundLongitude,topLayer.EX_GeographicBoundingBox.northBoundLatitude]);            
-            topLayer.EX_GeographicBoundingBox.westBoundLongitude = westSouthDesiredCoordinateTheme[0],
-            topLayer.EX_GeographicBoundingBox.southBoundLatitude = westSouthDesiredCoordinateTheme[1],
-            topLayer.EX_GeographicBoundingBox.eastBoundLongitude = eastNorthDesiredCoordinateTheme[0],
-            topLayer.EX_GeographicBoundingBox.northBoundLatitude = eastNorthDesiredCoordinateTheme[1];
-            }
-
+            resultItem.version=configItem.version?configItem.version:resultItem.defaultWMSVersion;
             // use geographic bounding box for theme, as default CRS may have inverted axis order with WMS 1.3.0
             let bounds = [
                 parseFloat(topLayer.EX_GeographicBoundingBox.westBoundLongitude),
@@ -333,11 +307,11 @@ function getTheme(configItem, resultItem) {
                 parseFloat(topLayer.EX_GeographicBoundingBox.northBoundLatitude)
             ];
             resultItem.bbox = {
-                "crs": configItem.crs?configItem.crs:"EPSG:4326",
+                "crs": "EPSG:4326",
                 "bounds": bounds
             };
             resultItem.initialBbox = {
-                "crs": configItem.crs?configItem.crs:"EPSG:4326",
+                "crs": "EPSG:4326",
                 "bounds": configItem.extent || bounds
             };
             resultItem.scales = configItem.scales;
@@ -503,7 +477,8 @@ var result = {
         defaultPrintScales: config.defaultPrintScales,
         defaultPrintResolutions: config.defaultPrintResolutions,
         defaultPrintGrid: config.defaultPrintGrid,
-        backgroundLayers: config.themes.backgroundLayers
+        backgroundLayers: config.themes.backgroundLayers,
+        defaultWMSVersion: config.defaultWMSVersion
     }
 };
 getGroupThemes(config.themes, result.themes);

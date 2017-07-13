@@ -222,7 +222,7 @@ const ThemeSwitcher = React.createClass({
             ratio: singleTile ? 1 : undefined,
             format: theme.format,
             drawingOrder: theme.drawingOrder,
-            version:theme.version?theme.version:"1.3.0"
+            version:theme.version?theme.version:theme.defaultWMSVersion
         }
     },
     createBackgroundLayersForTheme(theme, visibleBackgroundLayer=undefined) {
