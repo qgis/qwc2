@@ -13,6 +13,7 @@ const axios = require('axios');
 const xml2js = require('xml2js');
 const fs = require('fs');
 const fqdn = require('node-fqdn');
+const hostFqdn = "http://" + String(fqdn());
 
 let usedThemeIds = [];
 
@@ -31,7 +32,7 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
     console.error("Using WMS GetMap to generate thumbnail for " + configItem.url);
 
     // WMS GetMap request
-    var parsedUrl = urlUtil.parse(configItem.url, true);
+    var parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
     parsedUrl.search = '';
     parsedUrl.query.SERVICE = "WMS";
     parsedUrl.query.VERSION = "1.3.0";
@@ -176,7 +177,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
 function getTheme(configItem, resultItem) {
     resultItem.url = configItem.url;
 
-    var parsedUrl = urlUtil.parse(configItem.url, true);
+    var parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
     parsedUrl.search = '';
     parsedUrl.query.SERVICE = "WMS";
     parsedUrl.query.VERSION = "1.3.0";
@@ -365,7 +366,6 @@ var tasks = [];
 function getGroupThemes(configGroup, resultGroup) {
     for (var item of configGroup.items) {
         var itemEntry = {};
-        item.url = urlUtil.resolve(String(configGroup.baseUrl), item.url);
         tasks.push(getTheme(item, itemEntry));
         resultGroup.items.push(itemEntry);
     }
@@ -466,19 +466,8 @@ function getGroupThemes(configGroup, resultGroup) {
 }
 */
 
-console.log("Reading config.json");
-var config = require(process.cwd() + '/config.json');
-
 console.log("Reading themesConfig.json");
-var themesConfig = require(process.cwd() + '/themesConfig.json');
-
-if (config.proxyUrl !== undefined) {
-    themesConfig.themes.baseUrl = config.proxyUrl;
-} else if (config.qwc2serverUrl !== undefined) {
-    themesConfig.themes.baseUrl = config.qwc2serverUrl;
-} else {
-    themesConfig.themes.baseUrl = fqdn();
-}
+var config = require(process.cwd() + '/themesConfig.json');
 
 var result = {
     themes: {
@@ -486,14 +475,14 @@ var result = {
         subdirs: [],
         items: [],
         defaultTheme: undefined,
-        defaultScales: themesConfig.defaultScales,
-        defaultPrintScales: themesConfig.defaultPrintScales,
-        defaultPrintResolutions: themesConfig.defaultPrintResolutions,
-        defaultPrintGrid: themesConfig.defaultPrintGrid,
-        backgroundLayers: themesConfig.themes.backgroundLayers
+        defaultScales: config.defaultScales,
+        defaultPrintScales: config.defaultPrintScales,
+        defaultPrintResolutions: config.defaultPrintResolutions,
+        defaultPrintGrid: config.defaultPrintGrid,
+        backgroundLayers: config.themes.backgroundLayers
     }
 };
-getGroupThemes(themesConfig.themes, result.themes);
+getGroupThemes(config.themes, result.themes);
 
 if (result.themes.backgroundLayers !== undefined) {
     // get thumbnails for background layers
