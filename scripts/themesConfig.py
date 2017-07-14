@@ -352,7 +352,6 @@ def getTheme(configItem, resultItem):
 def getGroupThemes(configGroup, resultGroup):
     for item in configGroup["items"]:
         itemEntry = {}
-        item["url"] = urljoin(configGroup["baseUrl"], item["url"])
         getTheme(item, itemEntry)
         resultGroup["items"].append(itemEntry)
 
