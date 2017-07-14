@@ -21,6 +21,7 @@ import json
 import traceback
 from socket import getfqdn
 
+hostFqdn = "http://" + socket.getfqdn()
 usedThemeIds = []
 
 # load thumbnail from file or GetMap
@@ -33,7 +34,7 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
     print("Using WMS GetMap to generate thumbnail for " + configItem["url"])
 
     # WMS GetMap request
-    url = configItem["url"] + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&STYLES=&WIDTH=200&HEIGHT=100&CRS=" + crs
+    url = urljoin(hostFqdn, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&STYLES=&WIDTH=200&HEIGHT=100&CRS=" + crs
     bboxw = extent[2] - extent[0]
     bboxh = extent[3] - extent[1]
     bboxcx = 0.5 * (extent[0] + extent[2])
@@ -184,7 +185,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
 def getTheme(configItem, resultItem):
     resultItem["url"] = configItem["url"]
 
-    url = configItem["url"] + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
+    url = urljoin(hostFqdn, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
 
     try:
         reply = urlopen(url).read()
@@ -448,28 +449,13 @@ def getGroupThemes(configGroup, resultGroup):
 }
 """
 
-print("Reading config.json")
-try:
-  with open("config.json") as fh:
-      config = json.load(fh)
-except:
-  print("Failed to read config.json. Please run this script from a directory containing config.json.");
-  sys.exit(1)
-   
 print("Reading themesConfig.json")
 try:
   with open("themesConfig.json") as fh:
-      themesConfig = json.load(fh)
+      config = json.load(fh)
 except:
   print("Failed to read themesConfig.json. Please run this script from a directory containing themesConfig.json.");
   sys.exit(1)
-
-if "proxyUrl" in config:
-    themesConfig["baseUrl"] = config["proxyUrl"]
-elif "qwc2serverUrl" in config:
-    themesConfig["baseUrl"] = config["qwc2serverUrl"]
-else:
-    themesConfig["baseUrl"] = socket.getfqdn()
 
 result = {
     "themes": {
@@ -477,15 +463,14 @@ result = {
         "subdirs": [],
         "items": [],
         "defaultTheme": None,
-        "defaultScales": themesConfig["defaultScales"],
-        "defaultPrintScales": themesConfig["defaultPrintScales"] if "defaultPrintScales" in themesConfig else None,
-        "defaultPrintResolutions": themesConfig["defaultPrintResolutions"] if "defaultPrintResolutions" in themesConfig else None,
-        "defaultPrintGrid": themesConfig["defaultPrintGrid"] if "defaultPrintGrid" in themesConfig else None,
-        "backgroundLayers": themesConfig["themes"]["backgroundLayers"],
-        "baseUrl": themesConfig["baseUrl"]
+        "defaultScales": config["defaultScales"],
+        "defaultPrintScales": config["defaultPrintScales"] if "defaultPrintScales" in config else None,
+        "defaultPrintResolutions": config["defaultPrintResolutions"] if "defaultPrintResolutions" in config else None,
+        "defaultPrintGrid": config["defaultPrintGrid"] if "defaultPrintGrid" in config else None,
+        "backgroundLayers": config["themes"]["backgroundLayers"]
     }
 }
-getGroupThemes(themesConfig["themes"], result["themes"])
+getGroupThemes(config["themes"], result["themes"])
 
 if "backgroundLayers" in result["themes"]:
     # get thumbnails for background layers
