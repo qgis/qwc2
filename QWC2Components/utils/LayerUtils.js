@@ -79,7 +79,8 @@ const assign = require('object-assign');
         if(layer.type !== "wms") {
             return "";
         }
-        return layer.url + "?SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=1.3.0&FORMAT=image/png&LAYER=" + sublayer;
+        layer.version=layer.version?layer.version:"1.3.0";
+        return layer.url + "?SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION="+layer.version+"&FORMAT=image/png&LAYER=" + sublayer;
     }
  };
 
