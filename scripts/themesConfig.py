@@ -19,7 +19,9 @@ except:
 from xml.dom.minidom import parseString
 import json
 import traceback
+from socket import getfqdn
 
+hostFqdn = "http://" + socket.getfqdn()
 usedThemeIds = []
 
 # load thumbnail from file or GetMap
@@ -32,7 +34,7 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
     print("Using WMS GetMap to generate thumbnail for " + configItem["url"])
 
     # WMS GetMap request
-    url = configItem["url"] + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&STYLES=&WIDTH=200&HEIGHT=100&CRS=" + crs
+    url = urljoin(hostFqdn, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&STYLES=&WIDTH=200&HEIGHT=100&CRS=" + crs
     bboxw = extent[2] - extent[0]
     bboxh = extent[3] - extent[1]
     bboxcx = 0.5 * (extent[0] + extent[2])
@@ -183,7 +185,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
 def getTheme(configItem, resultItem):
     resultItem["url"] = configItem["url"]
 
-    url = configItem["url"] + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
+    url = urljoin(hostFqdn, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
 
     try:
         reply = urlopen(url).read()
@@ -449,7 +451,6 @@ def getGroupThemes(configGroup, resultGroup):
   "defaultPrintGrid": [<as printGrid above>]        // optional, list of grid intervals to use for various scales when printing, no grid is primted if omitted
 }
 """
-
 
 print("Reading themesConfig.json")
 try:
