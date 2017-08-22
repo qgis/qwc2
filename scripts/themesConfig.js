@@ -12,6 +12,8 @@ const urlUtil = require('url');
 const axios = require('axios');
 const xml2js = require('xml2js');
 const fs = require('fs');
+const fqdn = require('node-fqdn');
+const hostFqdn = "http://" + String(fqdn());
 
 let usedThemeIds = [];
 
@@ -30,7 +32,7 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
     console.error("Using WMS GetMap to generate thumbnail for " + configItem.url);
 
     // WMS GetMap request
-    var parsedUrl = urlUtil.parse(configItem.url, true);
+    var parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
     parsedUrl.search = '';
     parsedUrl.query.SERVICE = "WMS";
     parsedUrl.query.VERSION = "1.3.0";
@@ -175,14 +177,14 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
 function getTheme(configItem, resultItem) {
     resultItem.url = configItem.url;
 
-    var parsedUrl = urlUtil.parse(configItem.url, true);
+    var parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
     parsedUrl.search = '';
     parsedUrl.query.SERVICE = "WMS";
     parsedUrl.query.VERSION = "1.3.0";
     parsedUrl.query.REQUEST = "GetProjectSettings";
     const getCapabilitiesUrl = urlUtil.format(parsedUrl);
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         axios.get(getCapabilitiesUrl).then((response) => {
             // parse capabilities
             var capabilities;
@@ -352,7 +354,7 @@ function getTheme(configItem, resultItem) {
             resultItem.error = "Could not read GetProjectSettings";
             resultItem.title = "Error";
             // finish task
-            resolve(false);
+            reject(resultItem.error);
         });
     });
 }
@@ -463,6 +465,7 @@ function getGroupThemes(configGroup, resultGroup) {
   "defaultPrintGrid": [<as printGrid above>]        // optional, list of grid intervals to use for various scales when printing, no grid is primted if omitted
 }
 */
+
 console.log("Reading themesConfig.json");
 var config = require(process.cwd() + '/themesConfig.json');
 
@@ -497,10 +500,12 @@ Promise.all(tasks).then(() => {
     fs.writeFile(process.cwd() + '/themes.json', JSON.stringify(result, null, 2), (error) => {
         if (error) {
             console.error("ERROR:", error);
+            process.exit(1);
         } else {
             console.log("\nCreated themes.json\n\n");
         }
     });
 }).catch((error) => {
     console.error("ERROR:", error);
+    process.exit(1);
 });
