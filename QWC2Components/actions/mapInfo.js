@@ -44,6 +44,5 @@ function getFeature(wfsBasePath, requestParams, lMetaData, wgs84FilterPoly = nul
 }
 
 module.exports = {
-    getFeatureInfo,
-    getFeature,
+    getFeature
 };
