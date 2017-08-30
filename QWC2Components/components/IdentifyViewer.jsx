@@ -41,7 +41,8 @@ const IdentifyViewer = React.createClass({
             resultTree: {},
             currentFeature: null,
             currentLayer: null,
-            displayFieldMap: null
+            displayFieldMap: null,
+            attributeBox: false
         };
     },
     populateDisplayFieldMap(displayFieldMap, item) {
@@ -161,12 +162,15 @@ const IdentifyViewer = React.createClass({
     renderFeatureAttributes() {
         let feature = this.state.currentFeature;
         if(!feature) {
+            this.state.attributeBox = false;
             return null;
         }
         let properties = Object.keys(feature.properties);
         if(properties.length === 0) {
+            this.state.attributeBox = false;
             return null;
         }
+        this.state.attributeBox = true;
         return (
             <div className="attribute-list-box">
                 <table className="attribute-list"><tbody>
@@ -235,7 +239,7 @@ const IdentifyViewer = React.createClass({
             }
         }
         let resultsContainerStyle = {
-            maxHeight: this.state.currentFeature ? '7em' : 'initial'
+            maxHeight: this.state.attributeBox ? '7em' : 'initial'
         };
         return (
             <div id="IdentifyViewer">
@@ -254,6 +258,7 @@ const IdentifyViewer = React.createClass({
         newResultTree[layer] = this.state.resultTree[layer].filter(item => item !== feature);
         this.setState({
             resultTree: newResultTree,
+            attributeBox: this.state.currentFeature === feature ? false : true,
             currentFeature: this.state.currentFeature === feature ? null : this.state.currentFeature
         });
     },
@@ -265,6 +270,7 @@ const IdentifyViewer = React.createClass({
         delete newResultTree[layer];
         this.setState({
             resultTree: newResultTree,
+            attributeBox: this.state.currentFeature === feature ? false : true,
             currentFeature: this.state.currentLayer === layer ? null : this.state.currentFeature,
             currentLayer: this.state.currentLayer === layer ? null : this.state.currentLayer
         });
