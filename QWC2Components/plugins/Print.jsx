@@ -259,7 +259,7 @@ const Print = React.createClass({
         this.setState({dpi: ev.target.value});
     },
     changeRotation(ev) {
-        let angle = parseFloat(ev.target.value);
+        let angle = parseFloat(ev.target.value) || 0;
         while(angle < 0) {
             angle += 360;
         }
