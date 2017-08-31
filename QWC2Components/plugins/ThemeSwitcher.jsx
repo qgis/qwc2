@@ -20,6 +20,7 @@ const {SideBar} = require('../components/SideBar');
 const UrlParams = require("../utils/UrlParams");
 const LayerUtils = require('../utils/LayerUtils');
 require('./style/ThemeSwitcher.css');
+const removeDiacritics = require('diacritics').remove;
 
 const ThemeSwitcher = React.createClass({
     propTypes: {
@@ -129,8 +130,8 @@ const ThemeSwitcher = React.createClass({
     groupMatchesFilter(group, filter) {
         if(group && group.items) {
             for(let i = 0, n = group.items.length; i < n; ++i) {
-                if(group.items[i].title.match(filter) ||
-                   group.items[i].keywords.match(filter)) {
+                if(removeDiacritics(group.items[i].title).match(filter) ||
+                   removeDiacritics(group.items[i].keywords).match(filter)) {
                     return true;
                 }
             }
@@ -146,7 +147,7 @@ const ThemeSwitcher = React.createClass({
     },
     renderThemeGroup(group) {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
-        let filter = new RegExp(this.props.filter.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
+        let filter = new RegExp(removeDiacritics(this.props.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
         let subdirs = (group && group.subdirs ? group.subdirs : []);
         if(this.props.filter !== "") {
             subdirs = subdirs.filter(subdir => this.groupMatchesFilter(subdir, filter));
@@ -157,7 +158,7 @@ const ThemeSwitcher = React.createClass({
         let activeThemeId = this.props.activeTheme ? this.props.activeTheme.id : null;
         return (<ul role="body">
             {(group && group.items ? group.items : []).map(item => {
-                return item.title.match(filter) || item.keywords.match(filter) ? (
+                return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords).match(filter) ? (
                     <li key={item.id}
                         className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
                         onClick={(ev)=>{this.themeClicked(item);}}
