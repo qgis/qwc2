@@ -7,11 +7,7 @@ Exit /B 0
 )
 IF "%1"=="prod" (
 if exist prod rd /s /q prod
-if exist config.prod.json (
-    set config=config.prod.json
-) else (
-    set config=config.json
-)
+
 npm run build && ^
 npm run themesconfig && ^
 mkdir prod\translations && ^
@@ -19,8 +15,12 @@ xcopy dist\* prod\dist /s /i && ^
 copy index.html prod && ^
 xcopy assets\* prod\assets /s /i && ^
 copy themes.json prod && ^
-copy %config% prod\config.json && ^
 copy translations\data.* prod\translations
+if exist config.prod.json (
+	copy config.prod.json prod\config.json
+) else (
+    copy config.json prod\config.json
+)
 Exit /B 0
 )
 IF "%1"=="analyze" (
