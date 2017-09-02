@@ -314,7 +314,7 @@ const IdentifyViewer = React.createClass({
                     protoUrl = "http://" + url;
                 }
             }
-            let anchor = "<a href=\"" + this.htmlEncode(protoUrl) + "\">" + this.htmlEncode(url) + "</a>";
+            let anchor = "<a href=\"" + this.htmlEncode(protoUrl) + "\" target=\"_blank\">" + this.htmlEncode(url) + "</a>";
             value = value.substring(0, match.index) + anchor + value.substring(match.index + url.length);
             urlRegEx.lastIndex = match.index + anchor.length;
         }
