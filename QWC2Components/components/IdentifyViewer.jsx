@@ -178,12 +178,20 @@ const IdentifyViewer = React.createClass({
                         if(this.props.theme.skipEmptyFeatureAttributes && (!feature.properties[attrib] || feature.properties[attrib] === "NULL")) {
                             return null;
                         }
-                        return (
-                            <tr key={attrib}>
-                                <td className="identify-attr-title"><i>{attrib}</i></td>
-                                <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: this.addLinkAnchors(feature.properties[attrib])}}></td>
-                            </tr>
-                        );
+                        if(properties.length === 1 && feature.properties["maptip"]) {
+                            return (
+                                <tr key={attrib}>
+                                    <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: this.addLinkAnchors(feature.properties[attrib])}}></td>
+                                </tr>
+                            );
+                        } else {
+                            return (
+                                <tr key={attrib}>
+                                    <td className="identify-attr-title"><i>{attrib}</i></td>
+                                    <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: this.addLinkAnchors(feature.properties[attrib])}}></td>
+                                </tr>
+                            );
+                        }
                     })}
                 </tbody></table>
             </div>
