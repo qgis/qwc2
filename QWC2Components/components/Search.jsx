@@ -295,7 +295,6 @@ const Search = React.createClass({
         let wgscenterlatlon = CoordinatesUtils.reproject(item, item.crs, "EPSG:4326");
         let wgsextent = CoordinatesUtils.reprojectBbox(item.bbox, item.crs, "EPSG:4326");
         let text = item.label !== undefined ? item.label : item.text;
-        this.props.addMarker({lat: wgscenterlatlon.y, lng: wgscenterlatlon.x}, text);
         if(zoom && this.props.mapConfig !== undefined) {
             // find max zoom level greater than min scale
             let maxZoom = 0;
@@ -328,16 +327,51 @@ const Search = React.createClass({
                 this.props.mapConfig.projection);
         }
         if(item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
-            this.props.searchProviders[item.provider].getResultGeometry(item, this.showFeatureGeometry);
+            this.props.searchProviders[item.provider].getResultGeometry(item, (item, geometry, crs) => { this.showFeatureGeometry(item, geometry, crs, text)});
+        }
+        else{
+            this.props.addMarker({lat: wgscenterlatlon.y, lng: wgscenterlatlon.x}, text);
         }
         this.setState({currentResult: item});
     },
-    showFeatureGeometry(item, geometry, crs) {
+    showFeatureGeometry(item, geometry, crs, text) {
         if(item === this.state.currentResult) {
             let feature = IdentifyUtils.wktToGeoJSON(geometry);
             feature.geometry = IdentifyUtils.reprojectFeatureGeometry(feature.geometry, crs, this.props.mapConfig.projection);
+            let geojson  = new ol.format.GeoJSON().readFeature(feature);
+            let center = this.getFeatureCenter(geojson.getGeometry());
+            let wgscenterlatlon = CoordinatesUtils.reproject(center, item.crs, "EPSG:4326");
+            this.props.addMarker({lat: wgscenterlatlon.y, lng: wgscenterlatlon.x}, text);
             this.props.setHighlightedFeature(feature);
         }
+    },
+    getFeatureCenter(geometry) {
+        let type = geometry.getType();
+        let center;
+        switch (type) {
+            case "Polygon":
+                center = geometry.getInteriorPoint().getCoordinates();
+                break;
+            case "MultiPolygon":
+                center = geometry.getInteriorPoints().getClosestPoint(ol.extent.getCenter(geometry.getExtent()));
+                break;
+            case "Point":
+                center = geometry.getCoordinates();
+                break;
+            case "MultiPoint":
+                center = geometry.getClosestPoint(ol.extent.getCenter(geometry.getExtent()));
+                break;
+            case "LineString":
+                center = geometry.getCoordinateAt(0.5);
+                break;
+            case "MultiLineString":
+                center = geometry.getClosestPoint(ol.extent.getCenter(geometry.getExtent()));
+                break;
+            case "Circle":
+                center = geometry.getCenter();
+                break;
+        }
+        return center;
     }
 });
 
