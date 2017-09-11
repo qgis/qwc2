@@ -327,23 +327,22 @@ const Search = React.createClass({
                 this.props.mapConfig.projection);
         }
         if(item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
-            this.props.searchProviders[item.provider].getResultGeometry(item, this.showFeatureGeometry);
-        }
-        this.setState({currentResult: item});
-    },
-    showFeatureGeometry(item, geometry, crs) {
-        if(item === this.state.currentResult) {
-            let feature = IdentifyUtils.wktToGeoJSON(geometry);
-            feature.geometry = IdentifyUtils.reprojectFeatureGeometry(feature.geometry, crs, this.props.mapConfig.projection);
-            let geojson  = new ol.format.GeoJSON().readFeature(feature)
-            let center = this.getFeatureCenter(geojson.getGeometry())
-            let wgscenterlatlon = CoordinatesUtils.reproject(center, item.crs, "EPSG:4326");
-            let text = item.label !== undefined ? item.label : item.text;
-            this.props.addMarker({lat: wgscenterlatlon.y, lng: wgscenterlatlon.x}, text);
-            this.props.setHighlightedFeature(feature);
+            this.props.searchProviders[item.provider].getResultGeometry(item, (item, geometry, crs) => { this.showFeatureGeometry(item, geometry, crs, text)});
         }
         else{
             this.props.addMarker({lat: wgscenterlatlon.y, lng: wgscenterlatlon.x}, text);
+        }
+        this.setState({currentResult: item});
+    },
+    showFeatureGeometry(item, geometry, crs, text) {
+        if(item === this.state.currentResult) {
+            let feature = IdentifyUtils.wktToGeoJSON(geometry);
+            feature.geometry = IdentifyUtils.reprojectFeatureGeometry(feature.geometry, crs, this.props.mapConfig.projection);
+            let geojson  = new ol.format.GeoJSON().readFeature(feature);
+            let center = this.getFeatureCenter(geojson.getGeometry());
+            let wgscenterlatlon = CoordinatesUtils.reproject(center, item.crs, "EPSG:4326");
+            this.props.addMarker({lat: wgscenterlatlon.y, lng: wgscenterlatlon.x}, text);
+            this.props.setHighlightedFeature(feature);
         }
     },
     getFeatureCenter(geometry) {
