@@ -101,14 +101,12 @@ const IdentifyViewer = React.createClass({
     },
     componentWillUpdate(nextProps, nextState) {
         if(nextState.currentFeature !== this.state.currentFeature || nextState.resultTree !== this.state.resultTree) {
-            this.setHighlightedFeatures(nextState.currentFeature, nextState.resultTree);
+            this.setHighlightedFeatures(this.state.currentFeature === null ? null : [this.state.currentFeature], this.state.resultTree)
         }
     },
-    setHighlightedFeatures(feature, resultTree) {
-        let features = [];
-        if(feature) {
-            features = [feature];
-        } else {
+    setHighlightedFeatures(features, resultTree) {
+        if(!features) {
+            features=[];
             Object.keys(resultTree).map(key => {
                 features = features.concat(resultTree[key].map(feature => assign({}, feature, {id: key + "." + feature.id})))}
             );
@@ -210,8 +208,8 @@ const IdentifyViewer = React.createClass({
         return (
             <li key={feature.id}
                 className="identify-feature-result"
-                onMouseOver={() => this.setHighlightedFeatures(feature, this.state.resultTree)}
-                onMouseOut={() => this.setHighlightedFeatures(this.state.currentFeature, this.state.resultTree)}
+                onMouseOver={() => this.setHighlightedFeatures([feature], this.state.resultTree)}
+                onMouseOut={() => this.setHighlightedFeatures(this.state.currentFeature === null ? null : [this.state.currentFeature], this.state.resultTree)}
             >
                 <span className={this.state.currentFeature === feature ? "active clickable" : "clickable"} onClick={()=> this.setCurrentFeature(layer, feature)}>{displayName}</span>
                 <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResult(layer, feature)} />
@@ -226,7 +224,10 @@ const IdentifyViewer = React.createClass({
         }
         return (
             <li key={layer} className={this.getExpandedClass(layer, true)}>
-                <div className="identify-layer-result">
+                <div className="identify-layer-result"
+                onMouseOver={() => this.setHighlightedFeatures(features, this.state.resultTree)}
+                onMouseOut={() => this.setHighlightedFeatures(this.state.currentFeature === null ? null : [this.state.currentFeature], this.state.resultTree)}
+                >
                     <span className="clickable" onClick={()=> this.toggleExpanded(layer, true)}><b>{layer}</b></span>
                     <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResultLayer(layer)} />
                     {this.props.enableExport ? (<Glyphicon className="identify-export-result" glyph="export" onClick={() => this.exportResultLayer(layer)} />) : null}
