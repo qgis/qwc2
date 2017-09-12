@@ -148,7 +148,12 @@ const IdentifyViewer = React.createClass({
         let newstate = this.state.expanded[path] !== undefined ? !this.state.expanded[path] : !deflt;
         let diff = {};
         diff[path] = newstate;
-        this.setState(assign({}, this.state, {expanded: assign({}, this.state.expanded, diff)}));
+        if (this.state.currentLayer == path && !newstate){
+            this.setState(assign({}, this.state, {expanded: assign({}, this.state.expanded, diff), currentFeature: null, currentLayer: null}));
+        }
+        else{
+            this.setState(assign({}, this.state, {expanded: assign({}, this.state.expanded, diff)}));
+        }
     },
     setCurrentFeature(layer, feature) {
         if(this.state.currentFeature === feature) {
