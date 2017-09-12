@@ -107,7 +107,11 @@ const IdentifyViewer = React.createClass({
     setHighlightedFeatures(feature, resultTree) {
         let features = [];
         if(feature) {
-            features = [feature];
+            if(feature instanceof Array){
+                features = feature;
+            } else{
+                features = [feature];
+            }
         } else {
             Object.keys(resultTree).map(key => {
                 features = features.concat(resultTree[key].map(feature => assign({}, feature, {id: key + "." + feature.id})))}
@@ -226,7 +230,10 @@ const IdentifyViewer = React.createClass({
         }
         return (
             <li key={layer} className={this.getExpandedClass(layer, true)}>
-                <div className="identify-layer-result">
+                <div className="identify-layer-result"
+                onMouseOver={() => this.setHighlightedFeatures(features, this.state.resultTree)}
+                onMouseOut={() => this.setHighlightedFeatures(this.state.currentFeature, this.state.resultTree)}
+                >
                     <span className="clickable" onClick={()=> this.toggleExpanded(layer, true)}><b>{layer}</b></span>
                     <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResultLayer(layer)} />
                     {this.props.enableExport ? (<Glyphicon className="identify-export-result" glyph="export" onClick={() => this.exportResultLayer(layer)} />) : null}
