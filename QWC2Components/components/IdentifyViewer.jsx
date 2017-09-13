@@ -101,7 +101,7 @@ const IdentifyViewer = React.createClass({
     },
     componentWillUpdate(nextProps, nextState) {
         if(nextState.currentFeature !== this.state.currentFeature || nextState.resultTree !== this.state.resultTree) {
-            this.setHighlightedFeatures(this.state.currentFeature === null ? null : [this.state.currentFeature], this.state.resultTree)
+            this.setHighlightedFeatures(nextState.currentFeature === null ? null : [nextState.currentFeature], nextState.resultTree)
         }
     },
     setHighlightedFeatures(features, resultTree) {
