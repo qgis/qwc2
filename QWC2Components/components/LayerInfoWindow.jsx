@@ -20,7 +20,7 @@ const LayerInfoWindow = React.createClass({
         windowSize: React.PropTypes.object
     },
     renderLink(text, url) {
-        return url ? (<a href={url}>{text}</a>) : text ? text : null;
+        return url ? (<a href={url} target="_blank">{text}</a>) : text ? text : null;
     },
     renderRow(title, content) {
         if(content) {

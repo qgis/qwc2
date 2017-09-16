@@ -46,7 +46,7 @@ const BottomBar = React.createClass({
         let viewertitleLink;
         if (this.props.viewertitleUrl) {
             viewertitleLink = (
-                <a href={this.props.viewertitleUrl}>
+                <a href={this.props.viewertitleUrl} target="_blank">
                     <Message className="viewertitle_label" msgId="bottombar.viewertitle_label" />
                 </a>
             )
@@ -54,7 +54,7 @@ const BottomBar = React.createClass({
         let termsLink;
         if (this.props.termsUrl) {
             termsLink = (
-                <a href={this.props.termsUrl}>
+                <a href={this.props.termsUrl} target="_blank">
                     <Message className="terms_label" msgId="bottombar.terms_label" />
                 </a>
             );
