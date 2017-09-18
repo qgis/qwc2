@@ -18,9 +18,15 @@ require('./style/Share.css');
 
 const Share = React.createClass({
     propTypes: {
+        showSocials: React.PropTypes.bool,
+        showLink: React.PropTypes.bool,
+        showQRCode: React.PropTypes.bool
     },
     getDefaultProps() {
         return {
+            showSocials: true,
+            showLink: true,
+            showQRCode: true
         }
     },
     getInitialState() {
@@ -38,11 +44,14 @@ const Share = React.createClass({
     },
     renderBody() {
         if(this.state.location) {
+            const shareSocials = this.props.showSocials ? <ShareSocials shareUrl={this.state.location} shareTitle="QWC2" getCount={this.props.getCount}/> : null;
+            const shareLink = this.props.showLink ? <ShareLink shareUrl={this.state.location}/> : null;
+            const shareQRCode = this.props.showQRCode ? <ShareQRCode shareUrl={this.state.location}/> : null;
             return (
                 <div role="body" className="scrollable">
-                    <ShareSocials shareUrl={this.state.location} shareTitle="QWC2" getCount={this.props.getCount}/>
-                    <ShareLink shareUrl={this.state.location}/>
-                    <ShareQRCode shareUrl={this.state.location}/>
+                    {shareSocials}
+                    {shareLink}
+                    {shareQRCode}
                 </div>
             );
         } else {
