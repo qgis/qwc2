@@ -9,17 +9,14 @@
 const React = require('react');
 const {connect} = require('react-redux');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const {setCurrentTask} = require('../actions/task');
 const {getFeature} = require('../actions/mapInfo');
 const {changeSelectionState} = require('../../MapStore2/web/client/actions/selection');
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
-const MessageBar = require('../components/MessageBar');
+const {TaskBar} = require('../components/TaskBar');
 
 const IdentifyRegion = React.createClass({
     propTypes: {
-        visible: React.PropTypes.bool,
         selection: React.PropTypes.object,
-        setCurrentTask: React.PropTypes.func,
         changeSelectionState: React.PropTypes.func,
         mapcrs: React.PropTypes.string,
         theme: React.PropTypes.object,
@@ -27,8 +24,7 @@ const IdentifyRegion = React.createClass({
         postRequest: React.PropTypes.func
     },
     getDefaultProps() {
-        return {
-        }
+        return {};
     },
     componentWillReceiveProps(newProps) {
         if(newProps.visible && newProps.visible !== this.props.visible) {
@@ -40,19 +36,13 @@ const IdentifyRegion = React.createClass({
         }
     },
     render() {
-        if(!this.props.visible) {
-            return null;
-        }
         return (
-            <MessageBar id="IdentifyRegion" name="IdentifyRegion" onClose={this.close}>
+            <TaskBar task="IdentifyRegion">
                 <span role="body">
                     <Message msgId="identifyregion.info" />
                 </span>
             </MessageBar>
         );
-    },
-    close() {
-        this.props.setCurrentTask(null);
     },
     getFeatures(poly) {
         if(
@@ -93,22 +83,19 @@ const selector = (state) => {
     let themelayerid = state.theme ? state.theme.currentlayer : null;
     let themelayers = layers.filter(layer => layer.id == themelayerid);
     return {
-        visible: state.task ? state.task.current === 'IdentifyRegion' : false,
         selection: state.selection,
         mapcrs: state.map && state.map.present ? state.map.present.projection : "EPSG:3857",
         theme: state.theme ? state.theme.current : null,
         themelayer: themelayers.length > 0 ? themelayers[0] : null
-    }
+    };
 };
 
 module.exports = {
     IdentifyRegionPlugin: connect(selector, {
-        setCurrentTask: setCurrentTask,
         changeSelectionState: changeSelectionState,
         getFeature: getFeature
     })(IdentifyRegion),
     reducers: {
-        task: require('../reducers/task'),
         selection: require('../../MapStore2/web/client/reducers/selection'),
         mapInfo: require('../../MapStore2/web/client/reducers/mapInfo')
     }

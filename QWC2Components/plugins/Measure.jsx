@@ -16,14 +16,12 @@ const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUt
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const measureUtils = require('../../MapStore2/web/client/utils/MeasureUtils');
 const {changeMeasurement, changeMeasurementState} = require('../../MapStore2/web/client/actions/measurement.js');
-const {setCurrentTask} = require('../actions/task');
 const displayCrsSelector = require('../selectors/displaycrs');
-const MessageBar = require('../components/MessageBar');
+const {TaskBar} = require('../components/TaskBar');
 require('./style/Measure.css');
 
 const Measure = React.createClass({
     propTypes: {
-        setCurrentTask: React.PropTypes.func,
         measureState: React.PropTypes.object,
         displaycrs: React.PropTypes.string,
         changeMeasurement: React.PropTypes.func,
@@ -45,7 +43,6 @@ const Measure = React.createClass({
         }
     },
     onClose() {
-        this.props.setCurrentTask(null);
         this.props.changeMeasurement(assign({}, this.props.measureState, {geomType: null}));
     },
     setMeasureMode(geomType) {
@@ -59,10 +56,21 @@ const Measure = React.createClass({
     changeAreaUnit(ev) {
         this.props.changeMeasurementState(assign({}, this.props.measureState, {areaUnit: ev.target.value}));
     },
-    render() {
-        if(!this.props.measureState.geomType) {
+    renderModeSwitcher() {
+        if(!this.props.showMeasureModeSwitcher) {
             return null;
         }
+        return (
+            <div className="buttonbar">
+                <span onClick={()=>{this.setMeasureMode("Point");}} className={this.props.measureState.geomType === "Point" ? "active" : ""}><Message msgId="measureComponent.pointLabel" /></span>
+                <span onClick={()=>{this.setMeasureMode("LineString");}} className={this.props.measureState.geomType === "LineString" ? "active" : ""}><Message msgId="measureComponent.lengthLabel" /></span>
+                <span onClick={()=>{this.setMeasureMode("Polygon");}} className={this.props.measureState.geomType === "Polygon" ? "active" : ""}><Message msgId="measureComponent.areaLabel" /></span>
+                <span onClick={()=>{this.setMeasureMode("Bearing");}} className={this.props.measureState.geomType === "Bearing" ? "active" : ""}><Message msgId="measureComponent.bearingLabel" /></span>
+            </div>
+        );
+    },
+    renderBody() {
+        let resultBody = null;
         let decimalFormat = {style: "decimal", minimumIntegerDigits: 1, maximumFractionDigits: 2, minimumFractionDigits: 2};
         if(this.props.measureState.geomType === "Point") {
             let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
@@ -71,9 +79,9 @@ const Measure = React.createClass({
                 let {x, y} = CoordinatesUtils.reproject([this.props.measureState.point.x, this.props.measureState.point.y], this.props.measureState.point.srs, this.props.displaycrs);
                 text = x.toFixed(digits) + " " + y.toFixed(digits);
             }
-            var resultBody = (<div className="resultbody"><span>{text}</span></div>);
+            resultBody = (<div className="resultbody"><span>{text}</span></div>);
         } else if(this.props.measureState.geomType === "LineString") {
-            var resultBody = (
+            resultBody = (
                 <div className="resultbody">
                     <FormattedNumber {...decimalFormat} value={measureUtils.getFormattedLength(this.props.measureState.lenUnit, this.props.measureState.len)} />
                     <select onChange={this.changeLengthUnit} value={this.props.measureState.lenUnit}>
@@ -85,7 +93,7 @@ const Measure = React.createClass({
                 </div>
             );
         } else if(this.props.measureState.geomType === "Polygon") {
-            var resultBody = (
+            resultBody = (
                 <div className="resultbody">
                     <FormattedNumber {...decimalFormat} value={measureUtils.getFormattedArea(this.props.measureState.areaUnit, this.props.measureState.area)} />
                     <select onChange={this.changeAreaUnit} value={this.props.measureState.areaUnit}>
@@ -97,31 +105,22 @@ const Measure = React.createClass({
                 </div>
             );
         } else if(this.props.measureState.geomType === "Bearing") {
-            var resultBody = (
+            resultBody = (
                 <div className="resultbody">
                     <span>{measureUtils.getFormattedBearingValue(this.props.measureState.bearing)}</span>
                 </div>
             );
         }
-        let modeSwitcher = null;
-        if(this.props.showMeasureModeSwitcher) {
-            modeSwitcher = (
-                <div className="buttonbar">
-                    <span onClick={()=>{this.setMeasureMode("Point");}} className={this.props.measureState.geomType === "Point" ? "active" : ""}><Message msgId="measureComponent.pointLabel" /></span>
-                    <span onClick={()=>{this.setMeasureMode("LineString");}} className={this.props.measureState.geomType === "LineString" ? "active" : ""}><Message msgId="measureComponent.lengthLabel" /></span>
-                    <span onClick={()=>{this.setMeasureMode("Polygon");}} className={this.props.measureState.geomType === "Polygon" ? "active" : ""}><Message msgId="measureComponent.areaLabel" /></span>
-                    <span onClick={()=>{this.setMeasureMode("Bearing");}} className={this.props.measureState.geomType === "Bearing" ? "active" : ""}><Message msgId="measureComponent.bearingLabel" /></span>
-                </div>
-            );
-        }
-
+        return resultBody;
+    },
+    render() {
         return (
-            <MessageBar name="Measure" onClose={this.onClose}>
+            <TaskBar task="Measure" onClose={this.onClose}>
                 <span role="body">
-                    {modeSwitcher}
-                    {resultBody}
+                    {this.renderModeSwitcher()}
+                    {this.renderBody()}
                 </span>
-            </MessageBar>
+            </TaskBar>
         );
     }
 });
@@ -141,7 +140,6 @@ const selector = createSelector([state => state, displayCrsSelector], (state, di
 
 module.exports = {
     MeasurePlugin: connect(selector, {
-        setCurrentTask: setCurrentTask,
         changeMeasurement: changeMeasurement,
         changeMeasurementState: changeMeasurementState
     })(Measure),

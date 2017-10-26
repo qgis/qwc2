@@ -1,0 +1,61 @@
+#TaskBar {
+    position: absolute;
+    top: 3.5em;
+    left: 0;
+    right: 0;
+    text-align: center;
+    pointer-events: none;
+    z-index: 3;
+}
+
+#TaskBar div.taskbar {
+    display: inline-block;
+    position: relative;
+    max-width: 80%;
+    pointer-events:all;
+    padding: 0 2.5em 0 0.5em;
+    background-color: @messagebar_bg@;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.75);
+}
+
+#TaskBar span.body {
+    padding: 0.5em;
+    display: inline-block;
+}
+
+#TaskBar span.closewrapper {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    float: none;
+    padding: 0.5em 0.5em 0 0;
+}
+
+#TaskBar span.close {
+    float: none;
+}
+
+#TaskBar div.buttonbar {
+    display: flex;
+}
+
+#TaskBar div.buttonbar > span {
+    flex: 1 1 auto;
+    display: inline-block;
+    border-top: 1px solid @item_border@;
+    border-bottom: 1px solid @item_border@;
+    border-right: 1px solid @item_border@;
+    padding: 0.25em 0.5em;
+    cursor: pointer;
+    color: @item_fg@;
+}
+
+#TaskBar div.buttonbar > span:first-child {
+    border-left: 1px solid @item_border@;
+}
+
+#TaskBar div.buttonbar > span.active {
+    background-color: @item_active@;
+    color: white;
+}

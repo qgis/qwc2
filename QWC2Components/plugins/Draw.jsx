@@ -9,11 +9,11 @@
 const React = require('react');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
-const MessageBar = require('../components/MessageBar');
+const {TaskBar} = require('../components/TaskBar');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const {changeDrawingStatus, endDrawing, setCurrentStyle} = require('../../MapStore2/web/client/actions/draw');
 const {setCurrentTask} = require('../actions/task');
-const { TwitterPicker } = require('react-color');
+const {TwitterPicker} = require('react-color');
 
 require('./style/Draw.css');
 
@@ -26,7 +26,6 @@ const Draw = React.createClass({
     currentStyle: React.PropTypes.object,
     changeDrawingStatus: React.PropTypes.func,
     endDrawing: React.PropTypes.func,
-    setCurrentTask: React.PropTypes.func,
     setCurrentStyle: React.PropTypes.func
   },
   getDefaultProps() {
@@ -76,8 +75,6 @@ const Draw = React.createClass({
   },
 
   onClose() {
-    this.props.setCurrentTask(null);
-
     let unselectedFeatures = []
     this.props.features.forEach(function(f) {
       f.selected = false;
@@ -144,8 +141,7 @@ const Draw = React.createClass({
     }
 
     return (
-      <div>
-        <MessageBar name="Draw" onClose={this.onClose}>
+        <TaskBar task="Draw" onClose={this.onClose}>
           <div role="body">
             <div className="buttonbar">
               <span onClick={()=>this.setDrawMethod('Point')} className={this.statusForDrawMethod('Point')}>
@@ -228,8 +224,7 @@ const Draw = React.createClass({
               </div>
             </div>
           </div>
-        </MessageBar>
-      </div>
+        </TaskBar>
     );
   }
 });

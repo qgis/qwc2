@@ -12,13 +12,12 @@ const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
 const {setCurrentTask} = require('../actions/task');
-const MessageBar = require('../components/MessageBar');
+const {TaskBar} = require('../components/TaskBar');
 const PrintFrame = require('../components/PrintFrame');
 require('./style/RasterExport.css');
 
 const RasterExport = React.createClass({
     propTypes: {
-        visible: React.PropTypes.bool,
         theme: React.PropTypes.object,
         map: React.PropTypes.object,
         themeLayerId: React.PropTypes.string,
@@ -26,16 +25,18 @@ const RasterExport = React.createClass({
         setCurrentTask: React.PropTypes.func
     },
     getDefaultProps() {
-        return {
-        }
+        return {};
     },
     getInitialState() {
-        return {selectedFormat: null}
+        return {selectedFormat: null};
     },
     formatChanged(ev) {
         this.setState({selectedFormat: ev.target.value})
     },
     renderBody() {
+        if(!this.props.theme) {
+            return null;
+        }
         const formatMap = {
             "image/jpeg" : "JPEG",
             "image/png": "PNG 24bit",
@@ -102,16 +103,11 @@ const RasterExport = React.createClass({
         );
     },
     render() {
-        if(!this.props.visible) {
-            return null;
-        }
         return (
-            <div id="RasterExport">
-                <MessageBar name="RasterExport" onClose={this.close}>
-                    {this.renderBody()}
-                </MessageBar>
-                <PrintFrame map={this.props.map} bboxSelected={this.bboxSelected} />
-            </div>
+            <TaskBar task="RasterExport">
+                {this.renderBody()}
+                <PrintFrame role="extra" map={this.props.map} bboxSelected={this.bboxSelected} />
+            </TaskBar>
         );
     },
     bboxSelected(bbox, pixelsize) {
@@ -125,16 +121,12 @@ const RasterExport = React.createClass({
         this.widthInput.value = pixelsize[0];
         this.heightInput.value = pixelsize[1];
         this.form.submit();
-        this.close();
-    },
-    close() {
         this.props.setCurrentTask(null);
     }
 });
 
 const selector = (state) => ({
     theme: state.theme ? state.theme.current : null,
-    visible: state.task ? state.task.current === 'RasterExport' : false,
     map: state.map ? state.map.present : null,
     themeLayerId: state.theme ? state.theme.currentlayer : "",
     layers: state.layers ? state.layers.flat : []
@@ -143,8 +135,5 @@ const selector = (state) => ({
 module.exports = {
     RasterExportPlugin: connect(selector, {
         setCurrentTask: setCurrentTask
-    })(RasterExport),
-    reducers: {
-        task: require('../reducers/task')
-    }
+    })(RasterExport)
 }

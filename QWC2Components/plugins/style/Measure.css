@@ -1,22 +1,3 @@
-div.buttonbar > span {
-    display: inline-block;
-    border-top: 1px solid @item_border@;
-    border-bottom: 1px solid @item_border@;
-    border-right: 1px solid @item_border@;
-    padding: 0.25em 0.5em;
-    cursor: pointer;
-    color: @item_fg@;
-}
-
-div.buttonbar > span:first-child {
-    border-left: 1px solid @item_border@;
-}
-
-div.buttonbar > span.active {
-    background-color: @item_active@;
-    color: white;
-}
-
 div.resultbody {
     margin-top: 0.25em;
     border: 1px solid @item_border@;
