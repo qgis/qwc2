@@ -1,0 +1,63 @@
+#TaskBar.Redlining div.redlining-controlsbar {
+    display: flex;
+}
+
+#TaskBar.Redlining div.redlining-controlsbar > span {
+    display: inline-flex;
+    flex: 1 0 auto;
+    align-items: center;
+}
+
+#TaskBar.Redlining span.redlining-colorpicker {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin: 5px 10px 0px 5px;
+}
+
+#TaskBar.Redlining span.redlining-colorpicker > span.redlining-colorpicker-icon {
+    cursor: pointer;
+    display: inline-block;
+    width: 2em;
+    height: 2em;
+    border-radius: 5px;
+}
+
+#TaskBar.Redlining span.redlining-colorpicker > div.twitter-picker {
+    position: absolute;
+    top: 5px;
+    left: -5px;
+}
+
+#TaskBar.Redlining span.redlining-colorpicker-collapsed > div.twitter-picker {
+    display: none;
+}
+
+#TaskBar.Redlining span.react-numeric-input {
+  margin-left: 5px;
+}
+
+#TaskBar.Redlining span.react-numeric-input > input {
+  border-radius: 0;
+  height: 2em;
+  width: 7em;
+}
+
+#TaskBar.Redlining span.redlining-trash {
+    margin-left: 5px;
+    cursor: pointer;
+    border: 1px solid @item_border@;
+}
+
+#TaskBar.Redlining span.redlining-trash:active {
+    background-color: @item_active@;
+}
+
+#TaskBar.Redlining input.redlining-label {
+  width: 7em;
+  height: 2em;
+  margin-left: 5px;
+  padding: 0.25em;
+  border: 1px solid #ccc;
+}

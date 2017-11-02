@@ -7,6 +7,7 @@
  */
 
 const {changeMeasurement} = require('../../MapStore2/web/client/actions/measurement');
+const {changeRedliningState} = require('./redlining');
 const {changeDrawingStatus} = require('../../MapStore2/web/client/actions/draw');
 const {setCurrentTask} = require('./task');
 
@@ -15,6 +16,11 @@ function triggerTool(key, mode=null) {
         return (dispatch => {
             dispatch(setCurrentTask('Measure', mode));
             dispatch(changeMeasurement({geomType: mode || 'Point'}));
+        });
+    } else if(key === 'Redlining') {
+        return (dispatch => {
+            dispatch(setCurrentTask('Redlining', mode));
+            dispatch(changeRedliningState({geomType: mode || 'Point'}));
         });
     } else if(key === 'Draw') {
         return (dispatch => {

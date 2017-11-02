@@ -110,7 +110,8 @@
       "socialIntro": "În rețeaua socială favorită"
     },
     "themeswitcher": {
-      "filter": "Filtrare..."
-    }
+      "filter": ""
+    },
+    "redlining": {}
   }
 }

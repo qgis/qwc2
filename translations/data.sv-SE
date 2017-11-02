@@ -111,6 +111,15 @@
     },
     "themeswitcher": {
       "filter": "Filtrera..."
+    },
+    "redlining": {
+      "point": "",
+      "line": "",
+      "polygon": "",
+      "pick": "",
+      "outline": "",
+      "fill": "",
+      "label": ""
     }
   }
 }

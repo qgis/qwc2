@@ -8,12 +8,13 @@
 
 const SET_CURRENT_TASK = 'SET_CURRENT_TASK';
 const {changeMeasurement} = require('../../MapStore2/web/client/actions/measurement');
-const {changeDrawingStatus} = require('../../MapStore2/web/client/actions/draw');
+const {changeRedliningState} = require('./redlining');
 const {changeMapInfoState} = require('../../MapStore2/web/client/actions/mapInfo');
 
 function setCurrentTask(task, mode=null, allowIdentify=false) {
     return (dispatch) => {
         dispatch(changeMeasurement({geomType: null}));
+        dispatch(changeRedliningState({geomType: null}));
         dispatch(changeMapInfoState(task === null || allowIdentify));
         dispatch({
             type: SET_CURRENT_TASK,

@@ -13,7 +13,8 @@
         "Share": "Partager",
         "ThemeSwitcher": "Cartes",
         "Tools": "Outils",
-        "IdentifyRegion": "Interroger la région"
+        "IdentifyRegion": "Interroger la région",
+        "Redlining": "Redlining"
       },
       "menulabel": "Cartes et outils"
     },
@@ -111,6 +112,15 @@
     },
     "themeswitcher": {
       "filter": "Filtre"
+    },
+    "redlining": {
+      "point": "Point",
+      "line": "Ligne",
+      "polygon": "Polygone",
+      "pick": "Choisir",
+      "outline": "Contour",
+      "fill": "Remplissage",
+      "label": "Texte"
     }
   }
 }

@@ -111,6 +111,15 @@
     },
     "themeswitcher": {
       "filter": ""
+    },
+    "redlining": {
+      "point": "Punto",
+      "line": "Linea",
+      "polygon": "Poligono",
+      "pick": "Seleziona",
+      "outline": "Contorno",
+      "fill": "Riempimento",
+      "label": "Ettichetta"
     }
   }
 }

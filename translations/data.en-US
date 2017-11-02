@@ -13,7 +13,8 @@
         "Share": "Share Link",
         "ThemeSwitcher": "Theme",
         "Tools": "Map Tools",
-        "IdentifyRegion": "Identify Region"
+        "IdentifyRegion": "Identify Region",
+        "Redlining": "Redlining"
       },
       "menulabel": "Map & Tools"
     },
@@ -118,6 +119,15 @@
     },
     "themeswitcher": {
       "filter": "Filter..."
+    },
+    "redlining": {
+      "point": "Point",
+      "line": "Line",
+      "polygon": "Polygon",
+      "pick": "Pick",
+      "outline": "Outline",
+      "fill": "Fill",
+      "label": "Label"
     }
   }
 }
