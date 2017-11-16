@@ -10,6 +10,7 @@ const React = require('react');
 const {connect} = require('react-redux');
 const Message = require('../../MapStore2/web/client/components/I18N/Message');
 const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
+const LocaleUtils = require("../../MapStore2/web/client/utils/LocaleUtils");
 require('./style/Toolbar.css');
 const {triggerTool} = require('../actions/maptools');
 const {setCurrentTask} = require('../actions/task')
@@ -26,13 +27,22 @@ const Toolbar = React.createClass({
         return {
         }
     },
+    contextTypes: {
+        messages: React.PropTypes.object
+    },
     renderToolbarItem(item) {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let active = this.props.currentTask == item.key && this.props.currentTaskMode == item.mode;
-        return (<img key={item.key + item.mode}
-            className={active ? "toolbar-item-active" : ""}
-            src={assetsPath + "/" + item.icon}
-            onClick={active ? () => this.props.setCurrentTask(null) : () => this.props.toolbaritemClicked(item.key, item.mode)} />);
+        let title = LocaleUtils.getMessageById(this.context.messages, "appmenu.items." + item.key) || null;
+        return (
+            <img 
+                key={item.key + item.mode}
+                className={active ? "toolbar-item-active" : ""}
+                src={assetsPath + "/" + item.icon}
+                onClick={active ? () => this.props.setCurrentTask(null) : () => this.props.toolbaritemClicked(item.key, item.mode)}
+                title={title}
+            />
+        );
     },
     render() {
         return (
