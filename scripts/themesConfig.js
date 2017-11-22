@@ -312,9 +312,13 @@ function getTheme(configItem, resultItem) {
                 "crs": "EPSG:4326",
                 "bounds": bounds
             };
-            resultItem.initialBbox = {
-                "crs": "EPSG:4326",
-                "bounds": configItem.extent || bounds
+            if(configItem.extent) {
+                resultItem.initialBbox = {
+                    "crs": configItem.mapCrs || 'EPSG:3857',
+                    "bounds": configItem.extent
+                };
+            } else {
+                resultItem.initialBbox = resultItem.bbox;
             };
             resultItem.scales = configItem.scales;
             resultItem.printScales = configItem.printScales;
@@ -411,7 +415,7 @@ function getGroupThemes(configGroup, resultGroup) {
               },
               ...
         }
-        "extent": [xmin, ymin, xmax, ymax],         // optional custom extent which overrides extent from WMS capabilities
+        "extent": [xmin, ymin, xmax, ymax],         // optional custom extent in mapCrs (see below) which overrides extent from WMS capabilities
         "tiled": true,                              // optional, use tiled WMS (default is false)
         "format": "image/png",                      // optional, the image format to use in the WMS request, defaults to image/png
         "backgroundLayers": [                       // optional background layers
