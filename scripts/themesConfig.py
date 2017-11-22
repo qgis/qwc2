@@ -13,13 +13,14 @@ try:
 except:
     from urllib2 import urlopen
 try:
-    from urllib.parse import quote
+    from urllib.parse import quote, urljoin
 except:
     from urllib import quote
+    from urlparse import urljoin
 from xml.dom.minidom import parseString
 import json
 import traceback
-from socket import getfqdn
+import socket
 
 hostFqdn = "http://" + socket.getfqdn()
 usedThemeIds = []
