@@ -49,7 +49,7 @@ const RedliningSupport = React.createClass({
     componentWillReceiveProps(newProps) {
         if(newProps.redlining == this.props.redlining) {
             // pass
-        } else if(!newProps.redlining) {
+        } else if(!newProps.redlining || !newProps.redlining.action) {
             this.reset();
         } else if(newProps.redlining.action === 'Pick' && this.props.redlining.action !== 'Pick') {
             this.addPickInteraction(newProps);
