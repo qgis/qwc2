@@ -146,6 +146,9 @@ const RedliningSupport = React.createClass({
         let selectInteraction = new ol.interaction.Select();
         let modifyInteraction = new ol.interaction.Modify({features: selectInteraction.getFeatures()});
         selectInteraction.on('select', function(evt) {
+            if(evt.selected.length === 1 && evt.selected[0] == this.currentFeature) {
+                return;
+            }
             if(this.currentFeature) {
                 this.currentFeature.setStyle(this.currentStyle);
                 this.currentFeature = null;
