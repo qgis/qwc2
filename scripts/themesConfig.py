@@ -455,9 +455,10 @@ def getGroupThemes(configGroup, resultGroup):
 }
 """
 
-print("Reading themesConfig.json")
+themesConfig = os.getenv("QWC2_THEMES_CONFIG", "themesConfig.json");
+print("Reading " + themesConfig)
 try:
-  with open("themesConfig.json") as fh:
+  with open(themesConfig) as fh:
       config = json.load(fh)
 except:
   print("Failed to read themesConfig.json. Please run this script from a directory containing themesConfig.json.");

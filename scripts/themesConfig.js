@@ -467,8 +467,9 @@ function getGroupThemes(configGroup, resultGroup) {
 }
 */
 
-console.log("Reading themesConfig.json");
-var config = require(process.cwd() + '/themesConfig.json');
+var themesConfig = process.env["QWC2_THEMES_CONFIG"] || "themesConfig.json";
+console.log("Reading " + themesConfig);
+var config = require(process.cwd() + '/' + themesConfig);
 
 var result = {
     themes: {
