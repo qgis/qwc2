@@ -20,7 +20,7 @@ function triggerTool(key, mode=null) {
     } else if(key === 'Redlining') {
         return (dispatch => {
             dispatch(setCurrentTask('Redlining', mode));
-            dispatch(changeRedliningState({geomType: mode || 'Point'}));
+            dispatch(changeRedliningState({action: 'Pick'}));
         });
     } else if(key === 'Draw') {
         return (dispatch => {
