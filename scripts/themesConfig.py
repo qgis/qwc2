@@ -216,7 +216,8 @@ def getTheme(configItem, resultItem):
                     keywords.append(value)
 
         # collect WMS layers for printing
-        if configItem["backgroundLayers"]:
+        printLayers = []
+        if "backgroundLayers" in configItem:
             printLayers = [entry["printLayer"] for entry in configItem["backgroundLayers"] if "printLayer" in entry]
 
         # layer tree and visible layers
@@ -274,7 +275,7 @@ def getTheme(configItem, resultItem):
             resultItem["tiled"] = configItem["tiled"]
         if "version" in configItem:
             resultItem["version"] = configItem["version"]
-        else:
+        elif "defaultWMSVersion" in configItem:
             resultItem["version"] = configItem["defaultWMSVersion"]
         # use geographic bounding box for theme, as default CRS may have inverted axis order with WMS 1.3.0
         bounds = [
@@ -302,7 +303,8 @@ def getTheme(configItem, resultItem):
         # NOTE: skip root WMS layer
         resultItem["sublayers"] = layerTree[0]["sublayers"]
         resultItem["expanded"] = True
-        resultItem["backgroundLayers"] = configItem["backgroundLayers"]
+        if "backgroundLayers" in configItem:
+          resultItem["backgroundLayers"] = configItem["backgroundLayers"]
         resultItem["searchProviders"] = configItem["searchProviders"]
         if "additionalMouseCrs" in configItem:
             resultItem["additionalMouseCrs"] = configItem["additionalMouseCrs"]
@@ -472,7 +474,7 @@ result = {
         "defaultPrintResolutions": config["defaultPrintResolutions"] if "defaultPrintResolutions" in config else None,
         "defaultPrintGrid": config["defaultPrintGrid"] if "defaultPrintGrid" in config else None,
         "backgroundLayers": config["themes"]["backgroundLayers"],
-        "defaultWMSVersion": config["defaultWMSVersion"]
+        "defaultWMSVersion": config["defaultWMSVersion"] if "defaultWMSVersion" in config else None
         }
 }
 getGroupThemes(config["themes"], result["themes"])
