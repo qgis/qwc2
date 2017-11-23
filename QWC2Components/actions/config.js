@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {configureMap} = require('../../MapStore2/web/client/actions/config');
+const {configureMap} = require('../../MapStore2Components/actions/config');
 const {changeSearch} = require('./search');
-const ConfigUtils = require('../../MapStore2/web/client/utils/ConfigUtils');
-const MapUtils = require('../../MapStore2/web/client/utils/MapUtils');
+const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
+const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const UrlParams = require("../utils/UrlParams");
 const assign = require('object-assign');
 const axios = require('axios');

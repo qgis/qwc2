@@ -7,29 +7,28 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
 const {setCurrentTask} = require("../actions/task");
 require('./style/TaskBar.css');
 
-const TaskBar = React.createClass({
-    propTypes: {
-        task: React.PropTypes.string.isRequired,
-        currentTask: React.PropTypes.string,
-        onClose: React.PropTypes.func
-    },
-    getDefaultProps() {
-        return {
-            onClose: () => {}
-        }
-    },
-    onClose() {
+class TaskBar extends React.Component {
+    static propTypes = {
+        task: PropTypes.string.isRequired,
+        currentTask: PropTypes.string,
+        onClose: PropTypes.func
+    }
+    static defaultProps = {
+        onClose: () => {}
+    }
+    onClose = () => {
         this.props.onClose();
         this.props.setCurrentTask(null);
-    },
-    renderRole(role) {
+    }
+    renderRole = (role) => {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
-    },
+    }
     render() {
         if(this.props.currentTask !== this.props.task) {
             return null;
@@ -50,7 +49,7 @@ const TaskBar = React.createClass({
             </div>
         );
     }
-});
+};
 
 const selector = (state) => ({
     currentTask: state.task ? state.task.current : null

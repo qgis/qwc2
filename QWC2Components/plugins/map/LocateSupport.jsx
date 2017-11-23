@@ -7,7 +7,7 @@
 */
 
 const {connect} = require('react-redux');
-const {changeLocateState, onLocateError} = require('../../../MapStore2/web/client/actions/locate');
+const {changeLocateState, onLocateError} = require('../../../MapStore2Components/actions/locate');
 
 module.exports = connect((state) => ({
     status: state.locate && state.locate.state,
@@ -15,4 +15,4 @@ module.exports = connect((state) => ({
 }), {
     changeLocateState,
     onLocateError
-})(require('../../../MapStore2/web/client/components/map/openlayers/Locate'));
+})(require('../../../MapStore2Components/components/map/openlayers/Locate'));

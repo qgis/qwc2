@@ -7,20 +7,19 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const {SideBar} = require('../components/SideBar');
 
-const Help = React.createClass({
-    propTypes: {
-        renderBody: React.PropTypes.func
-    },
-    getDefaultProps() {
-        return {
-            renderBody: () => { return null; }
-        }
-    },
+class Help extends React.Component {
+    static propTypes = {
+        renderBody: PropTypes.func
+    }
+    static defaultProps = {
+        renderBody: () => { return null; }
+    }
     render() {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
@@ -32,7 +31,7 @@ const Help = React.createClass({
             </SideBar>
         );
     }
-});
+};
 
 module.exports = (renderHelp) => { return {
     HelpPlugin: connect((state) => ({

@@ -7,27 +7,25 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
-const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
+const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const {setCurrentTask} = require('../actions/task');
 const {TaskBar} = require('../components/TaskBar');
 const PrintFrame = require('../components/PrintFrame');
 require('./style/DxfExport.css');
 
-const DxfExport = React.createClass({
-    propTypes: {
-        theme: React.PropTypes.object,
-        map: React.PropTypes.object,
-        themeLayerId: React.PropTypes.string,
-        layers: React.PropTypes.array,
-        setCurrentTask: React.PropTypes.func
-    },
-    getDefaultProps() {
-        return {};
-    },
-    renderBody() {
+class DxfExport extends React.Component {
+    static propTypes = {
+        theme: PropTypes.object,
+        map: PropTypes.object,
+        themeLayerId: PropTypes.string,
+        layers: PropTypes.array,
+        setCurrentTask: PropTypes.func
+    }
+    renderBody = () => {
         if(!this.props.theme) {
             return null;
         }
@@ -53,7 +51,7 @@ const DxfExport = React.createClass({
                 </form>
             </span>
         );
-    },
+    }
     render() {
         return (
             <TaskBar task="DxfExport">
@@ -61,15 +59,15 @@ const DxfExport = React.createClass({
                 <PrintFrame role="extra" map={this.props.map} bboxSelected={this.bboxSelected} />
             </TaskBar>
         );
-    },
-    bboxSelected(bbox) {
+    }
+    bboxSelected = (bbox) => {
         bbox = CoordinatesUtils.reprojectBbox(bbox, bbox.crs, "EPSG:3857");
         let extent = bbox[0] + "," + bbox[1] + "," + bbox[2] + "," + bbox[3];
         this.extentInput.value = extent;
         this.form.submit();
         this.props.setCurrentTask(null);
     }
-});
+};
 
 const selector = (state) => ({
     theme: state.theme ? state.theme.current : null,

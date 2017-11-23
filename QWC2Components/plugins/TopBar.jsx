@@ -7,38 +7,36 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const classnames = require('classnames');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
 const Swipeable = require('react-swipeable');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
-const {resultsPurge, resetSearch, searchTextChanged} = require("../../MapStore2/web/client/actions/search");
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const {qwc2TextSearch} = require("../actions/search");
 const {toggleFullscreen} = require('../actions/display');
 require('./style/TopBar.css');
 
-const TopBar = React.createClass({
-    propTypes: {
-        mobile: React.PropTypes.bool,
-        menuItems: React.PropTypes.array,
-        toolbarItems: React.PropTypes.array,
-        fullscreen: React.PropTypes.bool,
-        toggleFullscreen: React.PropTypes.func,
-        searchProviders: React.PropTypes.object,
-        logoFormat: React.PropTypes.string,
-        searchOptions: React.PropTypes.object,
-        appMenuClearsTask: React.PropTypes.bool
-    },
-    getDefaultProps() {
-        return {
-            searchOptions: {},
-            menuItems: [],
-            toolbarItems: [],
-            logoFormat: "svg",
-            clearTaskOnShow: false
-        };
-    },
+class TopBar extends React.Component {
+    static propTypes = {
+        mobile: PropTypes.bool,
+        menuItems: PropTypes.array,
+        toolbarItems: PropTypes.array,
+        fullscreen: PropTypes.bool,
+        toggleFullscreen: PropTypes.func,
+        searchProviders: PropTypes.object,
+        logoFormat: PropTypes.string,
+        searchOptions: PropTypes.object,
+        appMenuClearsTask: PropTypes.bool
+    }
+    static defaultProps = {
+        searchOptions: {},
+        menuItems: [],
+        toolbarItems: [],
+        logoFormat: "svg",
+        clearTaskOnShow: false
+    }
     render() {
         let buttonContents;
         let logo;
@@ -77,11 +75,11 @@ const TopBar = React.createClass({
                 </div>
             </Swipeable>
          );
-     },
-     triggerFullscreen() {
+     }
+     triggerFullscreen = () => {
          this.props.toggleFullscreen(true);
      }
-});
+};
 
 module.exports = (components) => { return {
     TopBarPlugin: connect((state) => ({

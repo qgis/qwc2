@@ -7,36 +7,35 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const MapUtils = require('../../MapStore2/web/client/utils/MapUtils');
-const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
-const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
-const {changeRotation} = require('../../MapStore2/web/client/actions/map');
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const MapUtils = require('../../MapStore2Components/utils/MapUtils');
+const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
+const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
+const {changeRotation} = require('../../MapStore2Components/actions/map');
 const {SideBar} = require('../components/SideBar');
 const PrintFrame = require('../components/PrintFrame');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 require('./style/Print.css');
 
-const Print = React.createClass({
-    propTypes: {
-        visible: React.PropTypes.bool,
-        theme: React.PropTypes.object,
-        map: React.PropTypes.object,
-        themeLayerId: React.PropTypes.string,
-        layers: React.PropTypes.array,
-        changeRotation: React.PropTypes.func,
-        search: React.PropTypes.object
-    },
-    getDefaultProps() {
-        return {
-            visible: false
-        }
-    },
-    getInitialState() {
-        return {layout: null, scale: null, dpi: 300, initialRotation: 0};
-    },
+class Print extends React.Component {
+    static propTypes = {
+        visible: PropTypes.bool,
+        theme: PropTypes.object,
+        map: PropTypes.object,
+        themeLayerId: PropTypes.string,
+        layers: PropTypes.array,
+        changeRotation: PropTypes.func,
+        search: PropTypes.object
+    }
+    static defaultProps = {
+        visible: false
+    }
+    state = {
+        layout: null, scale: null, dpi: 300, initialRotation: 0
+    }
     componentWillReceiveProps(newProps) {
         let newState = assign({}, this.state);
         if(newProps.theme !== this.props.theme || !this.state.layout) {
@@ -66,14 +65,14 @@ const Print = React.createClass({
             newState["scale"] = null;
         }
         this.setState(newState);
-    },
+    }
     shouldComponentUpdate(newProps, nextState) {
         return newProps.visible || this.props.visible;
-    },
-    onHide() {
+    }
+    onHide = () => {
         this.props.changeRotation(this.state.initialRotation);
-    },
-    renderBody() {
+    }
+    renderBody = () => {
         if(!this.props.theme) {
             return (<div role="body" className="print-body"><Message msgId="print.notheme" /></div>);
         } else if(!this.props.theme.print || this.props.theme.print.length === 0) {
@@ -226,7 +225,7 @@ const Print = React.createClass({
                 </form>
             </div>
         );
-    },
+    }
     render() {
         let printFrame = null;
         if(this.props.visible && this.state.layout) {
@@ -247,18 +246,18 @@ const Print = React.createClass({
                 {printFrame}
             </div>
         );
-    },
-    changeLayout(ev) {
+    }
+    changeLayout = (ev) => {
         let layout = this.props.theme.print.find(item => item.name == ev.target.value);
         this.setState({layout: layout});
-    },
-    changeScale(ev) {
+    }
+    changeScale = (ev) => {
         this.setState({scale: ev.target.value});
-    },
-    changeResolution(ev) {
+    }
+    changeResolution = (ev) => {
         this.setState({dpi: ev.target.value});
-    },
-    changeRotation(ev) {
+    }
+    changeRotation = (ev) => {
         let angle = parseFloat(ev.target.value) || 0;
         while(angle < 0) {
             angle += 360;
@@ -267,8 +266,8 @@ const Print = React.createClass({
             angle -= 360;
         }
         this.props.changeRotation(angle / 180. * Math.PI);
-    },
-    computeCurrentExtent() {
+    }
+    computeCurrentExtent = () => {
         if(!this.props.map || !this.state.layout || !this.state.scale) {
             return "";
         }
@@ -282,7 +281,7 @@ const Print = React.createClass({
         let y2 = center.y + 0.5 * height;
         return x1 + "," + y1 + "," + x2 + "," + y2;
     }
-});
+};
 
 const selector = (state) => ({
     visible: state.task ? state.task.current === 'Print': false,

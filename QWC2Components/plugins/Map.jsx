@@ -7,33 +7,32 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {createSelector} = require('reselect');
 
-const {mapSelector} = require('../../MapStore2/web/client/selectors/map');
-const {layerSelectorWithMarkers} = require('../../MapStore2/web/client/selectors/layers');
+const {mapSelector} = require('../../MapStore2Components/selectors/map');
+const {layerSelectorWithMarkers} = require('../../MapStore2Components/selectors/layers');
 const MapComponents = require('./map/MapComponents');
 
 require('./style/Map.css');
 
 
-const MapPlugin = React.createClass({
-    propTypes: {
-        map: React.PropTypes.object,
-        layers: React.PropTypes.array,
-        projection: React.PropTypes.string,
-        maxExtent: React.PropTypes.array,
-        tools: React.PropTypes.object,
-        toolsOptions: React.PropTypes.object
-    },
-    getDefaultProps() {
-        return {
-            projection: "EPSG:3857",
-            tools: {},
-            toolsOptions: {}
-        };
-    },
-    renderLayerContent(layer) {
+class MapPlugin extends React.Component {
+    static propTypes = {
+        map: PropTypes.object,
+        layers: PropTypes.array,
+        projection: PropTypes.string,
+        maxExtent: PropTypes.array,
+        tools: PropTypes.object,
+        toolsOptions: PropTypes.object
+    }
+    static defaultProps = {
+        projection: "EPSG:3857",
+        tools: {},
+        toolsOptions: {}
+    }
+    renderLayerContent = (layer) => {
         const projection = this.props.map.projection || 'EPSG:3857';
         if (layer.features && layer.type === "vector") {
             return layer.features.map( (feature) => {
@@ -51,8 +50,8 @@ const MapPlugin = React.createClass({
             });
         }
         return null;
-    },
-    renderLayers() {
+    }
+    renderLayers = () => {
         const projection = this.props.map.projection || 'EPSG:3857';
         return this.props.layers.map((layer, index) => {
             return (
@@ -61,14 +60,14 @@ const MapPlugin = React.createClass({
                 </MapComponents.Layer>
             );
         });
-    },
-    renderSupportTools() {
+    }
+    renderSupportTools = () => {
         return Object.keys(this.props.tools).map((tool) => {
             const Tool = this.props.tools[tool];
             const options = this.props.toolsOptions[tool] || {};
             return <Tool key={tool} {...options}/>;
         });
-    },
+    }
     render() {
         if (this.props.map) {
             let mapOptions = {
@@ -92,7 +91,7 @@ const MapPlugin = React.createClass({
         }
         return null;
     }
-});
+};
 
 module.exports = (tools) => { return {
     MapPlugin: connect(createSelector([mapSelector, layerSelectorWithMarkers], (map, layers) => ({

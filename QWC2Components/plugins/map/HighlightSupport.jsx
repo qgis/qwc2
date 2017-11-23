@@ -7,10 +7,10 @@
 */
 
 const {connect} = require('react-redux');
-const {updateHighlighted} = require('../../../MapStore2/web/client/actions/highlight');
+const {updateHighlighted} = require('../../../MapStore2Components/actions/highlight');
 
 module.exports = connect((state) => (
     state.highlight || {}
 ), {
     updateHighlighted
-})(require('../../../MapStore2/web/client/components/map/openlayers/HighlightFeatureSupport'));
+})(require('../../../MapStore2Components/components/map/openlayers/HighlightFeatureSupport'));

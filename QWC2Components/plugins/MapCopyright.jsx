@@ -7,26 +7,25 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
+const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 require('./style/MapCopyright.css');
 
 
-const MapCopyright = React.createClass({
-    propTypes: {
-        activeTheme: React.PropTypes.object,
-        layers: React.PropTypes.array,
-        map: React.PropTypes.object
-    },
-    getDefaultProps() {
-        return {
-            layers: [],
-            map: null
-        };
-    },
-    getInitialState() {
-        return {currentCopyrights: []};
-    },
+class MapCopyright extends React.Component {
+    static propTypes = {
+        activeTheme: PropTypes.object,
+        layers: PropTypes.array,
+        map: PropTypes.object
+    }
+    static defaultProps = {
+        layers: [],
+        map: null
+    }
+    state = {
+        currentCopyrights: []
+    }
     componentWillReceiveProps(newProps) {
         if(newProps.map && newProps.map.bbox && newProps.layers) {
             let transformedbboxes = {};
@@ -38,8 +37,8 @@ const MapCopyright = React.createClass({
             newProps.layers.map(layer => this.collectCopyrigths(layer, newProps.map.bbox, transformedbboxes, copyrights));
             this.setState({currentCopyrights: copyrights});
         }
-    },
-    collectCopyrigths(layer, srcmapbbox, transformedbboxes, copyrights) {
+    }
+    collectCopyrigths = (layer, srcmapbbox, transformedbboxes, copyrights) => {
         if(layer.sublayers) {
             layer.sublayers.map(layer => this.collectCopyrigths(layer, srcmapbbox, transformedbboxes, copyrights));
         }
@@ -65,7 +64,7 @@ const MapCopyright = React.createClass({
         } else {
             copyrights.push({label: layer.attribution, url: layer.attributionUrl});
         }
-    },
+    }
     render() {
         let copyrights = this.state.currentCopyrights.map((attribution, index) => {
             if(attribution.url) {
@@ -83,7 +82,7 @@ const MapCopyright = React.createClass({
             </div>
         )
     }
-});
+};
 
 const selector = (state) => ({
     activeTheme: state.theme ? state.theme.current : null,

@@ -21,7 +21,7 @@ function changeLayerProperties(layer, properties) {
                 }
             } catch(e) {}
         }
-        dispatch(require('../../MapStore2/web/client/actions/layers').changeLayerProperties(layer, properties));
+        dispatch(require('../../MapStore2Components/actions/layers').changeLayerProperties(layer, properties));
     }
 }
 

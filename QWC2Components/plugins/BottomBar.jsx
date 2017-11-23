@@ -7,37 +7,41 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {createSelector} = require('reselect');
 const pickBy = require('lodash.pickby');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
-const {getScales} = require('../../MapStore2/web/client/utils/MapUtils');
-const {changeMousePositionState, changeMousePositionCrs} = require('../../MapStore2/web/client/actions/mousePosition');
-const {changeZoomLevel} = require('../../MapStore2/web/client/actions/map');
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
+const {getScales} = require('../../MapStore2Components/utils/MapUtils');
+const {changeMousePositionState, changeMousePositionCrs} = require('../../MapStore2Components/actions/mousePosition');
+const {changeZoomLevel} = require('../../MapStore2Components/actions/map');
 const {CoordinateDisplayer} = require('../components/CoordinateDisplayer');
 const displayCrsSelector = require('../selectors/displaycrs');
 require('./style/BottomBar.css');
 
-const BottomBar = React.createClass({
-    propTypes: {
-        viewertitleUrl: React.PropTypes.string,
-        termsUrl: React.PropTypes.string,
-        displaycrs:  React.PropTypes.string,
-        onCRSChange: React.PropTypes.func,
-        mapcrs: React.PropTypes.string,
-        mapscale: React.PropTypes.number,
-        mapscales: React.PropTypes.array,
-        activeThemeId: React.PropTypes.string,
-        fullscreen: React.PropTypes.bool,
-        onScaleChange: React.PropTypes.func,
-        additionalMouseCrs: React.PropTypes.array
-    },
-    getDefaultProps() {
-        return {
-            mapscale: 0
-        }
-    },
+class BottomBar extends React.Component {
+    static propTypes = {
+        viewertitleUrl: PropTypes.string,
+        termsUrl: PropTypes.string,
+        displaycrs:  PropTypes.string,
+        onCRSChange: PropTypes.func,
+        mapcrs: PropTypes.string,
+        mapscale: PropTypes.number,
+        mapscales: PropTypes.array,
+        activeThemeId: PropTypes.string,
+        fullscreen: PropTypes.bool,
+        onScaleChange: PropTypes.func,
+        additionalMouseCrs: PropTypes.array
+    }
+    static defaultProps = {
+        mapscale: 0
+    }
+    constructor(props) {
+        super(props);
+
+        changeMousePositionState(true);
+    }
     render() {
         if(this.props.fullscreen) {
             return null;
@@ -95,14 +99,11 @@ const BottomBar = React.createClass({
                 {bottomLinks}
             </div>
         );
-    },
-    onScaleComboChange(ev) {
-        this.props.onScaleChange(parseInt(ev.target.value, 10));
-    },
-    componentWillMount() {
-        changeMousePositionState(true);
     }
-});
+    onScaleComboChange = (ev) => {
+        this.props.onScaleChange(parseInt(ev.target.value, 10));
+    }
+};
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => {
     let map = state && state.map && state.map.present ? state.map.present : null;
@@ -123,6 +124,6 @@ module.exports = {
         onScaleChange: changeZoomLevel
     })(BottomBar),
     reducers: {
-        mousePosition: require('../../MapStore2/web/client/reducers/mousePosition')
+        mousePosition: require('../../MapStore2Components/reducers/mousePosition')
     }
 };

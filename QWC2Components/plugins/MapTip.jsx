@@ -7,29 +7,30 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
 const axios = require('axios');
 const uuid = require('uuid');
-const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
-const MapInfoUtils = require("../../MapStore2/web/client/utils/MapInfoUtils");
+const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
+const MapInfoUtils = require("../../MapStore2Components/utils/MapInfoUtils");
 const IdentifyUtils = require('../utils/IdentifyUtils');
-const {addLayer, removeLayer} = require('../../MapStore2/web/client/actions/layers');
+const {addLayer, removeLayer} = require('../../MapStore2Components/actions/layers');
 require('./style/MapTip.css');
 
-const MapTip = React.createClass({
-    propTypes: {
-        mapTipsEnabled: React.PropTypes.bool,
-        layerid: React.PropTypes.string,
-        layers: React.PropTypes.array,
-        mousepos: React.PropTypes.object,
-        map: React.PropTypes.object,
-        addLayer: React.PropTypes.func,
-        removeLayer: React.PropTypes.func,
-    },
-    getInitialState(){
-        return {maptip: null, layer: null};
-    },
+class MapTip extends React.Component {
+    static propTypes = {
+        mapTipsEnabled: PropTypes.bool,
+        layerid: PropTypes.string,
+        layers: PropTypes.array,
+        mousepos: PropTypes.object,
+        map: PropTypes.object,
+        addLayer: PropTypes.func,
+        removeLayer: PropTypes.func,
+    }
+    state = {
+        maptip: null, layer: null
+    }
     componentWillReceiveProps(newProps) {
         if(this.timeoutId) {
             clearTimeout(this.timeoutId);
@@ -55,8 +56,8 @@ const MapTip = React.createClass({
             this.props.removeLayer('maptipselection');
         }
         this.setState({layer: layer, maptip: maptip});
-    },
-    queryMapTip() {
+    }
+    queryMapTip = () => {
         this.timeoutId = null;
         let props = {
             map: this.props.map,
@@ -106,7 +107,7 @@ const MapTip = React.createClass({
                 }
             }
         });
-    },
+    }
     render() {
         if(this.state.maptip && this.props.mousepos) {
             let position = {
@@ -123,7 +124,7 @@ const MapTip = React.createClass({
         }
         return null;
     }
-});
+};
 
 
 const selector = (state) => ({
@@ -140,6 +141,6 @@ module.exports = {
         removeLayer: removeLayer,
     })(MapTip),
     reducers: {
-        mousePosition: require('../../MapStore2/web/client/reducers/mousePosition')
+        mousePosition: require('../../MapStore2Components/reducers/mousePosition')
     }
 }

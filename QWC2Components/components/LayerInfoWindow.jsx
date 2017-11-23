@@ -7,22 +7,23 @@
  */
 
 const React = require('react');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
+const PropTypes = require('prop-types');
+const Message = require('../../MapStore2Components/components/I18N/Message');
 const ResizeableWindow = require("../components/ResizeableWindow");
 const LayerUtils = require('../utils/LayerUtils');
 require('./style/LayerInfoWindow.css');
 
-const LayerInfoWindow = React.createClass({
-    propTypes: {
-        layer: React.PropTypes.object,
-        sublayer: React.PropTypes.object,
-        onClose: React.PropTypes.func,
-        windowSize: React.PropTypes.object
-    },
+class LayerInfoWindow extends React.Component {
+    static propTypes = {
+        layer: PropTypes.object,
+        sublayer: PropTypes.object,
+        onClose: PropTypes.func,
+        windowSize: PropTypes.object
+    }
     renderLink(text, url) {
         return url ? (<a href={url} target="_blank">{text}</a>) : text ? text : null;
-    },
-    renderRow(title, content) {
+    }
+    renderRow = (title, content) => {
         if(content) {
             return (
                 <tr>
@@ -32,7 +33,7 @@ const LayerInfoWindow = React.createClass({
             );
         }
         return null;
-    },
+    }
     render() {
         let legend = LayerUtils.getLegendGraphicURL(this.props.layer, this.props.sublayer.name);
         if(legend) {
@@ -58,6 +59,6 @@ const LayerInfoWindow = React.createClass({
             </ResizeableWindow>
         );
     }
-});
+};
 
 module.exports = LayerInfoWindow;

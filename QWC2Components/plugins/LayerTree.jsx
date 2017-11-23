@@ -7,15 +7,16 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
 const Swipeable = require('react-swipeable');
 const assign = require('object-assign');
 const classnames = require('classnames');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const {changeLayerProperties} = require('../../MapStore2/web/client/actions/layers')
-const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
-const LocaleUtils = require("../../MapStore2/web/client/utils/LocaleUtils");
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const {changeLayerProperties} = require('../../MapStore2Components/actions/layers')
+const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
+const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 const {toggleMapTips} = require('../actions/layertree');
 const LayerInfoWindow = require('../components/LayerInfoWindow');
 const {SideBar} = require('../components/SideBar');
@@ -24,42 +25,38 @@ const LayerUtils = require('../utils/LayerUtils');
 require('./style/LayerTree.css');
 
 
-const LayerTree = React.createClass({
-    propTypes: {
-        layers: React.PropTypes.array,
-        mobile: React.PropTypes.bool,
-        mapTipsEnabled: React.PropTypes.bool,
-        changeLayerProperties: React.PropTypes.func,
-        toggleMapTips: React.PropTypes.func,
-        showLegendIcons: React.PropTypes.bool,
-        showRootEntry: React.PropTypes.bool,
-        showQueryableIcon: React.PropTypes.bool,
-        allowMapTips: React.PropTypes.bool,
-        groupTogglesSublayers: React.PropTypes.bool,
-        layerInfoWindowSize: React.PropTypes.object
-    },
-    getDefaultProps() {
-        return {
-            layers: [],
-            showLegendIcons: true,
-            showRootEntry: true,
-            showQueryableIcon: true,
-            allowMapTips: true,
-            groupTogglesSublayers: false,
-            layerInfoWindowSize: {width: 400, height: 480}
-        };
-    },
-    getInitialState: function() {
-        return {
-            activemenu: null,
-            legendTooltip: null,
-            activeinfo: null
-        };
-    },
-    contextTypes: {
-        messages: React.PropTypes.object
-    },
-    getGroupVisibility(group) {
+class LayerTree extends React.Component {
+    static propTypes = {
+        layers: PropTypes.array,
+        mobile: PropTypes.bool,
+        mapTipsEnabled: PropTypes.bool,
+        changeLayerProperties: PropTypes.func,
+        toggleMapTips: PropTypes.func,
+        showLegendIcons: PropTypes.bool,
+        showRootEntry: PropTypes.bool,
+        showQueryableIcon: PropTypes.bool,
+        allowMapTips: PropTypes.bool,
+        groupTogglesSublayers: PropTypes.bool,
+        layerInfoWindowSize: PropTypes.object
+    }
+    static defaultProps = {
+        layers: [],
+        showLegendIcons: true,
+        showRootEntry: true,
+        showQueryableIcon: true,
+        allowMapTips: true,
+        groupTogglesSublayers: false,
+        layerInfoWindowSize: {width: 400, height: 480}
+    }
+    state = {
+        activemenu: null,
+        legendTooltip: null,
+        activeinfo: null
+    }
+    static contextTypes = {
+        messages: PropTypes.object
+    }
+    getGroupVisibility = (group) => {
         if(!group.sublayers || group.sublayers.length === 0) {
             return 1;
         }
@@ -73,8 +70,8 @@ const LayerTree = React.createClass({
             }
         });
         return visible / group.sublayers.length;
-    },
-    renderLayerGroup(layer, group, path, enabled) {
+    }
+    renderLayerGroup = (layer, group, path, enabled) => {
         let subtreevisibility = this.getGroupVisibility(group);
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let visibility;
@@ -118,8 +115,8 @@ const LayerTree = React.createClass({
                 {sublayersContent}
             </div>
         )
-    },
-    renderSubLayer(layer, sublayer, path, enabled) {
+    }
+    renderSubLayer = (layer, sublayer, path, enabled) => {
         let pathstr = layer.id + "/" + path.join("/");
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let checkboxstate = sublayer.visibility === true ? 'checked' : 'unchecked';
@@ -166,8 +163,8 @@ const LayerTree = React.createClass({
                 {editframe}
             </div>
         )
-    },
-    renderLayerTree(layer) {
+    }
+    renderLayerTree = (layer) => {
         if(layer.group === 'background' || layer.layertreehidden) {
             return null;
         } else if(this.props.showRootEntry) {
@@ -182,7 +179,7 @@ const LayerTree = React.createClass({
                 }
             });
         }
-    },
+    }
     render() {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let checkboxstate = this.props.mapTipsEnabled === true ? 'checked' : 'unchecked';
@@ -233,8 +230,8 @@ const LayerTree = React.createClass({
                 {infoWindow}
             </div>
         );
-    },
-    cloneLayerTree(layer, sublayerpath) {
+    }
+    cloneLayerTree = (layer, sublayerpath) => {
         let newlayer = assign({}, layer);
         let cur = newlayer;
         for(let i = 0; i < sublayerpath.length; ++i) {
@@ -246,8 +243,8 @@ const LayerTree = React.createClass({
             cur = cur.sublayers[idx];
         }
         return {newlayer, newsublayer: cur};
-    },
-    cloneSublayers(layer, options) {
+    }
+    cloneSublayers = (layer, options) => {
         if(layer.sublayers) {
             layer.sublayers = layer.sublayers.map(sublayer => {
                 let newsublayer = assign({}, sublayer, options);
@@ -255,8 +252,8 @@ const LayerTree = React.createClass({
                 return newsublayer;
             });
         }
-    },
-    groupExpandendToggled(layer, grouppath, oldexpanded) {
+    }
+    groupExpandendToggled = (layer, grouppath, oldexpanded) => {
         if(grouppath.length === 0) {
             // Toggle entire layer
             let newlayer = assign({}, layer, {expanded: !oldexpanded});
@@ -267,8 +264,8 @@ const LayerTree = React.createClass({
             newsublayer.expanded = !oldexpanded;
             this.props.changeLayerProperties(layer.id, newlayer);
         }
-    },
-    groupToggled(layer, grouppath, oldvisibility) {
+    }
+    groupToggled = (layer, grouppath, oldvisibility) => {
         if(grouppath.length === 0) {
             if(this.props.groupTogglesSublayers) {
                 // Toggle group and all sublayers
@@ -304,8 +301,8 @@ const LayerTree = React.createClass({
                 this.props.changeLayerProperties(layer.id, newlayer);
             }
         }
-    },
-    sublayerToggled(layer, sublayerpath) {
+    }
+    sublayerToggled = (layer, sublayerpath) => {
         let {newlayer, newsublayer} = this.cloneLayerTree(layer, sublayerpath);
         newsublayer.visibility = !newsublayer.visibility;
         let {params, queryLayers} = LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder);
@@ -316,8 +313,8 @@ const LayerTree = React.createClass({
         UrlParams.updateParams({l: LayerUtils.constructUrlParam(newlayer)});
         this.props.changeLayerProperties(layer.id, newlayer);
 
-    },
-    parentsVisible(layer, sublayerpath) {
+    }
+    parentsVisible = (layer, sublayerpath) => {
         for(let i = 1; i < sublayerpath.length; ++i) {
             let {newlayer, newsublayer} = this.cloneLayerTree(layer, sublayerpath.slice(0,i));
             newsublayer.visibility = true;
@@ -326,18 +323,18 @@ const LayerTree = React.createClass({
         }
         layer = assign({}, layer, {visibility: true});
         return layer
-    },
-    sublayerTransparencyChanged(layer, sublayerpath, value) {
+    }
+    sublayerTransparencyChanged = (layer, sublayerpath, value) => {
         let {newlayer, newsublayer} = this.cloneLayerTree(layer, sublayerpath);
         newsublayer.opacity = Math.max(1, 255 - value);
         assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder));
         UrlParams.updateParams({l: LayerUtils.constructUrlParam(newlayer)});
         this.props.changeLayerProperties(layer.id, newlayer);
-    },
-    sublayerMenuToggled(sublayerpath) {
+    }
+    sublayerMenuToggled = (sublayerpath) => {
         this.setState({activemenu: this.state.activemenu === sublayerpath ? null : sublayerpath});
-    },
-    showLegendTooltip(ev) {
+    }
+    showLegendTooltip = (ev) => {
         this.setState({
             legendTooltip: {
                 x: ev.target.getBoundingClientRect().right,
@@ -345,14 +342,14 @@ const LayerTree = React.createClass({
                 img: ev.target.src
             }
         });
-    },
-    hideLegendTooltip(ev) {
+    }
+    hideLegendTooltip = (ev) => {
         this.setState({legendTooltip: undefined});
-    },
-    toggleMapTips() {
+    }
+    toggleMapTips = () => {
         this.props.toggleMapTips(!this.props.mapTipsEnabled)
-    },
-    printLegend() {
+    }
+    printLegend = () => {
         let body = this.props.layers.map(layer => {
             if(layer.group === 'background' || layer.type !== 'wms') {
                 return "";
@@ -387,7 +384,7 @@ const LayerTree = React.createClass({
         }, 10);
         win.focus();
     }
-});
+};
 
 const selector = (state) => ({
     mobile: state.browser ? state.browser.mobile : false,
@@ -401,7 +398,7 @@ module.exports = {
         toggleMapTips: toggleMapTips
     })(LayerTree),
     reducers: {
-        layers: require('../../MapStore2/web/client/reducers/layers'),
+        layers: require('../../MapStore2Components/reducers/layers'),
         layertree: require('../reducers/layertree')
     }
 };

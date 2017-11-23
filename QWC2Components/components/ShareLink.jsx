@@ -7,18 +7,19 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const CopyToClipboard = require('react-copy-to-clipboard');
 const {Glyphicon, Tooltip, OverlayTrigger} = require('react-bootstrap');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
+const Message = require('../../MapStore2Components/components/I18N/Message');
 require('./style/ShareLink.css');
 
-const ShareLink = React.createClass({
-    propTypes: {
-        shareUrl: React.PropTypes.string
-    },
-    getInitialState() {
-        return {copied: false};
-    },
+class ShareLink extends React.Component {
+    static propTypes = {
+        shareUrl: PropTypes.string
+    }
+    state = {
+        copied: false
+    }
     render() {
         const tooltip = (
             <Tooltip placement="bottom" className="in" id="tooltip-bottom">
@@ -41,6 +42,6 @@ const ShareLink = React.createClass({
             </div>
         );
     }
-});
+};
 
 module.exports = ShareLink;

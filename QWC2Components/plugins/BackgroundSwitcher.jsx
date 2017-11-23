@@ -7,29 +7,28 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const classnames = require('classnames');
 const {Button, Glyphicon} = require('react-bootstrap');
-const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
+const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
+const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeLayerProperties} = require('../actions/layers');
 const {setCurrentTask} = require('../actions/task');
 require('./style/BackgroundSwitcher.css');
 
-const BackgroundSwitcher = React.createClass({
-    propTypes: {
-        position: React.PropTypes.number,
-        visible: React.PropTypes.bool,
-        layers: React.PropTypes.array,
-        toggleBackgroundswitcher: React.PropTypes.func,
-        changeLayerProperties: React.PropTypes.func
-    },
-    getDefaultProps() {
-        return {
-            visible: false,
-            position: 0
-        };
-    },
+class BackgroundSwitcher extends React.Component {
+    static propTypes = {
+        position: PropTypes.number,
+        visible: PropTypes.bool,
+        layers: PropTypes.array,
+        toggleBackgroundswitcher: PropTypes.func,
+        changeLayerProperties: PropTypes.func
+    }
+    static defaultProps = {
+        visible: false,
+        position: 0
+    }
     render() {
         let activeClass = this.props.visible ? 'active' : '';
         if(this.props.layers.length>0){
@@ -47,8 +46,8 @@ const BackgroundSwitcher = React.createClass({
             );
         }
         return null;
-    },
-    renderLayerItem(layer, visible) {
+    }
+    renderLayerItem = (layer, visible) => {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let itemclasses = classnames({
             "background-layer-item": true,
@@ -64,11 +63,11 @@ const BackgroundSwitcher = React.createClass({
                 </div>
             </div>
         );
-    },
-    buttonClicked() {
+    }
+    buttonClicked = () => {
         this.props.setCurrentTask(this.props.visible ? null : 'BackgroundSwitcher');
-    },
-    backgroudLayerClicked(layer) {
+    }
+    backgroudLayerClicked = (layer) => {
         if(layer) {
             this.props.changeLayerProperties(layer.id, {visibility: true});
         } else {
@@ -79,7 +78,7 @@ const BackgroundSwitcher = React.createClass({
         }
         this.props.setCurrentTask(null);
     }
-});
+};
 
 const selector = (state) => ({
     visible: state.task ? state.task.current === 'BackgroundSwitcher' : false,

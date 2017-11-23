@@ -6,4 +6,4 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-module.exports = require('../../../MapStore2/web/client/components/map/openlayers/Overview');
+module.exports = require('../../../MapStore2Components/components/map/openlayers/Overview');

@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
+const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const UrlParams = require("../utils/UrlParams");
 const uuid = require('uuid');
 

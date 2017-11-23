@@ -7,10 +7,10 @@
 */
 
 const {connect} = require('react-redux');
-const {changeSelectionState} = require('../../../MapStore2/web/client/actions/selection');
+const {changeSelectionState} = require('../../../MapStore2Components/actions/selection');
 
 module.exports = connect((state) => ({
     selection: state.selection || {}
 }), {
     changeSelectionState
-})(require('../../../MapStore2/web/client/components/map/openlayers/SelectionSupport'));
+})(require('../../../MapStore2Components/components/map/openlayers/SelectionSupport'));

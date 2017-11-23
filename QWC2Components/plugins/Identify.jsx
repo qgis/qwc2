@@ -7,46 +7,45 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const MapInfoUtils = require('../../MapStore2/web/client/utils/MapInfoUtils');
-const Spinner = require('../../MapStore2/web/client/components/misc/spinners/BasicSpinner/BasicSpinner');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const {getFeatureInfo, purgeMapInfoResults, showMapinfoMarker, hideMapinfoMarker} = require('../../MapStore2/web/client/actions/mapInfo');
+const MapInfoUtils = require('../../MapStore2Components/utils/MapInfoUtils');
+const Spinner = require('../../MapStore2Components/components/misc/spinners/BasicSpinner/BasicSpinner');
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const {getFeatureInfo, purgeMapInfoResults, showMapinfoMarker, hideMapinfoMarker} = require('../../MapStore2Components/actions/mapInfo');
 const ResizeableWindow = require("../components/ResizeableWindow");
 const {IdentifyViewer} = require('../components/IdentifyViewer');
 
-const Identify = React.createClass({
-    propTypes: {
-        enabled: React.PropTypes.bool,
-        format: React.PropTypes.string,
-        maxItems: React.PropTypes.number,
-        point: React.PropTypes.object,
-        map: React.PropTypes.object,
-        layers: React.PropTypes.array,
-        requests: React.PropTypes.array,
-        responses: React.PropTypes.array,
-        purgeResults: React.PropTypes.func,
-        buildRequest: React.PropTypes.func,
-        sendRequest: React.PropTypes.func,
-        showMarker: React.PropTypes.func,
-        hideMarker: React.PropTypes.func,
-        enableExport: React.PropTypes.bool,
-        initialWidth: React.PropTypes.number,
-        initialHeight: React.PropTypes.number
-    },
-    getDefaultProps() {
-        return {
-            format: "text/xml",
-            maxItems: 10,
-            enableExport: true,
-            initialWidth: 320,
-            initialHeight: 400
-        };
-    },
-    queryFilter(l) {
+class Identify extends React.Component {
+    static propTypes = {
+        enabled: PropTypes.bool,
+        format: PropTypes.string,
+        maxItems: PropTypes.number,
+        point: PropTypes.object,
+        map: PropTypes.object,
+        layers: PropTypes.array,
+        requests: PropTypes.array,
+        responses: PropTypes.array,
+        purgeResults: PropTypes.func,
+        buildRequest: PropTypes.func,
+        sendRequest: PropTypes.func,
+        showMarker: PropTypes.func,
+        hideMarker: PropTypes.func,
+        enableExport: PropTypes.bool,
+        initialWidth: PropTypes.number,
+        initialHeight: PropTypes.number
+    }
+    static defaultProps = {
+        format: "text/xml",
+        maxItems: 10,
+        enableExport: true,
+        initialWidth: 320,
+        initialHeight: 400
+    }
+    queryFilter = (l) => {
         // All non-background WMS layers with a non-empty queryLayers list
         return l.type === 'wms' && l.group !== "background" && (l.queryLayers || []).length > 0
-    },
+    }
     componentWillReceiveProps(newProps) {
         if (this.needsRefresh(newProps)) {
             if(newProps.point.modifiers.ctrl !== true) {
@@ -65,12 +64,24 @@ const Identify = React.createClass({
             this.props.hideMarker();
             this.props.purgeResults();
         }
-    },
-    onClose() {
+    }
+    needsRefresh = (props) => {
+        if (props.enabled && props.point && props.point.pixel) {
+            if (!this.props.point.pixel || this.props.point.pixel.x !== props.point.pixel.x ||
+                    this.props.point.pixel.y !== props.point.pixel.y ) {
+                return true;
+            }
+            if (!this.props.point.pixel || props.point.pixel && this.props.format !== props.format) {
+                return true;
+            }
+        }
+        return false;
+    }
+    onClose = () => {
         this.props.hideMarker();
         this.props.purgeResults();
-    },
-    renderHeader(missing) {
+    }
+    renderHeader = (missing) => {
         return (
             <span role="header">
                 { (missing !== 0 ) ? <Spinner value={missing} sSize="sp-small" /> : null }
@@ -78,7 +89,7 @@ const Identify = React.createClass({
                 <button onClick={this.onModalHiding} className="close">{this.props.closeGlyph ? <Glyphicon glyph={this.props.closeGlyph}/> : <span>×</span>}</button>
             </span>
         );
-    },
+    }
     render() {
         if (!this.props.enabled || this.props.requests.length === 0) {
             return null;
@@ -93,20 +104,8 @@ const Identify = React.createClass({
                     enableExport={this.props.enableExport} />
             </ResizeableWindow>
         );
-    },
-    needsRefresh(props) {
-        if (props.enabled && props.point && props.point.pixel) {
-            if (!this.props.point.pixel || this.props.point.pixel.x !== props.point.pixel.x ||
-                    this.props.point.pixel.y !== props.point.pixel.y ) {
-                return true;
-            }
-            if (!this.props.point.pixel || props.point.pixel && this.props.format !== props.format) {
-                return true;
-            }
-        }
-        return false;
     }
-});
+};
 
 const selector = (state) => ({
     enabled: state.mapInfo && state.mapInfo.enabled,
@@ -127,6 +126,6 @@ const IdentifyPlugin = connect(selector, {
 module.exports = {
     IdentifyPlugin: IdentifyPlugin,
     reducers: {
-        mapInfo: require('../../MapStore2/web/client/reducers/mapInfo')
+        mapInfo: require('../../MapStore2Components/reducers/mapInfo')
     }
 };

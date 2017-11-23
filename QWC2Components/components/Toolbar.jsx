@@ -7,35 +7,32 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
-const LocaleUtils = require("../../MapStore2/web/client/utils/LocaleUtils");
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
+const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 require('./style/Toolbar.css');
 const {triggerTool} = require('../actions/maptools');
 const {setCurrentTask} = require('../actions/task')
 
-const Toolbar = React.createClass({
-    propTypes: {
-        toolbarItems: React.PropTypes.array,
-        toolbaritemClicked: React.PropTypes.func,
-        setCurrentTask: React.PropTypes.func,
-        currentTask: React.PropTypes.string,
-        currentTaskMode: React.PropTypes.string
-    },
-    getDefaultProps() {
-        return {
-        }
-    },
-    contextTypes: {
-        messages: React.PropTypes.object
-    },
-    renderToolbarItem(item) {
+class Toolbar extends React.Component {
+    static propTypes = {
+        toolbarItems: PropTypes.array,
+        toolbaritemClicked: PropTypes.func,
+        setCurrentTask: PropTypes.func,
+        currentTask: PropTypes.string,
+        currentTaskMode: PropTypes.string
+    }
+    static contextTypes = {
+        messages: PropTypes.object
+    }
+    renderToolbarItem = (item) => {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let active = this.props.currentTask == item.key && this.props.currentTaskMode == item.mode;
         let title = LocaleUtils.getMessageById(this.context.messages, "appmenu.items." + item.key) || null;
         return (
-            <img 
+            <img
                 key={item.key + item.mode}
                 className={active ? "toolbar-item-active" : ""}
                 src={assetsPath + "/" + item.icon}
@@ -43,7 +40,7 @@ const Toolbar = React.createClass({
                 title={title}
             />
         );
-    },
+    }
     render() {
         return (
             <span id="Toolbar">
@@ -51,7 +48,7 @@ const Toolbar = React.createClass({
             </span>
         );
     }
-});
+};
 
 module.exports = connect((state) => ({
     currentTask: state.task ? state.task.current : "",

@@ -9,7 +9,7 @@
 const {parse, stringify} = require('wellknown');
 const uuid = require('uuid');
 const assign = require('object-assign');
-const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
+const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 
 const IdentifyUtils = {
     parseXmlFeature(feature, result, geometrycrs) {

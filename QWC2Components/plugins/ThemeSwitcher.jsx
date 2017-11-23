@@ -7,13 +7,14 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const assign = require('object-assign');
 const {connect} = require('react-redux');
 const axios = require('axios');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
-const LocaleUtils = require("../../MapStore2/web/client/utils/LocaleUtils");
-const CoordinatesUtils = require("../../MapStore2/web/client/utils/CoordinatesUtils");
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
+const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
+const CoordinatesUtils = require("../../MapStore2Components/utils/CoordinatesUtils");
 const {setCurrentTheme,setThemeSwitcherFilter} = require("../actions/theme");
 const {setCurrentTask} = require("../actions/task");
 const {SideBar} = require('../components/SideBar');
@@ -22,32 +23,31 @@ const LayerUtils = require('../utils/LayerUtils');
 require('./style/ThemeSwitcher.css');
 const removeDiacritics = require('diacritics').remove;
 
-const ThemeSwitcher = React.createClass({
-    propTypes: {
-        filter: React.PropTypes.string,
-        activeTheme: React.PropTypes.object,
-        activeThemeLayer: React.PropTypes.string,
-        haveMap: React.PropTypes.bool,
-        layers: React.PropTypes.array,
-        changeTheme: React.PropTypes.func,
-        changeFilter: React.PropTypes.func,
-        addLayer: React.PropTypes.func,
-        setCurrentTask: React.PropTypes.func,
-        mapConfig: React.PropTypes.object
-    },
-    contextTypes: {
-        messages: React.PropTypes.object
-    },
-    getDefaultProps() {
-        return {
-            filter: "",
-            activeTheme: null,
-            activeThemeLayer: null,
-            map: null};
-    },
-    getInitialState: function() {
-        return {themes: null };
-    },
+class ThemeSwitcher extends React.Component {
+    static propTypes = {
+        filter: PropTypes.string,
+        activeTheme: PropTypes.object,
+        activeThemeLayer: PropTypes.string,
+        haveMap: PropTypes.bool,
+        layers: PropTypes.array,
+        changeTheme: PropTypes.func,
+        changeFilter: PropTypes.func,
+        addLayer: PropTypes.func,
+        setCurrentTask: PropTypes.func,
+        mapConfig: PropTypes.object
+    }
+    static contextTypes = {
+        messages: PropTypes.object
+    }
+    static defaultProps = {
+        filter: "",
+        activeTheme: null,
+        activeThemeLayer: null,
+        map: null
+    }
+    state = {
+        themes: null
+    }
     componentWillReceiveProps(nextProps) {
         if(!this.props.haveMap && nextProps.haveMap || this.props.haveMap && !this.state.themes) {
             // As soon as map is set, fetch themes and restore initial theme
@@ -57,8 +57,8 @@ const ThemeSwitcher = React.createClass({
                 .then(response => this.populateThemesList(response.data));
             });
         }
-    },
-    populateThemesList(object) {
+    }
+    populateThemesList = (object) => {
         this.setState({themes: object.themes});
         var params = UrlParams.getParams();
         let theme = this.getThemeById(object.themes, params.t);
@@ -112,8 +112,8 @@ const ThemeSwitcher = React.createClass({
         UrlParams.updateParams({ic: undefined});
         UrlParams.updateParams({is: undefined});
         UrlParams.updateParams({icrs: undefined});
-    },
-    getThemeById(dir, id) {
+    }
+    getThemeById = (dir, id) => {
         for(let i = 0, n = dir.items.length; i < n; ++i) {
             if(dir.items[i].id === id) {
                 return dir.items[i];
@@ -126,8 +126,8 @@ const ThemeSwitcher = React.createClass({
             }
         }
         return null;
-    },
-    groupMatchesFilter(group, filter) {
+    }
+    groupMatchesFilter = (group, filter) => {
         if(group && group.items) {
             for(let i = 0, n = group.items.length; i < n; ++i) {
                 if(removeDiacritics(group.items[i].title).match(filter) ||
@@ -144,8 +144,8 @@ const ThemeSwitcher = React.createClass({
             }
         }
         return false;
-    },
-    renderThemeGroup(group) {
+    }
+    renderThemeGroup = (group) => {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let filter = new RegExp(removeDiacritics(this.props.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
         let subdirs = (group && group.subdirs ? group.subdirs : []);
@@ -170,7 +170,7 @@ const ThemeSwitcher = React.createClass({
             })}
             {subtree}
             </ul>);
-    },
+    }
     render() {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let extraTitlebarContent = (
@@ -182,8 +182,8 @@ const ThemeSwitcher = React.createClass({
                 {this.renderThemeGroup(this.state.themes)}
             </SideBar>
         );
-    },
-    createLayerForTheme(theme, visiblelayers=undefined) {
+    }
+    createLayerForTheme = (theme, visiblelayers=undefined) => {
         let sublayers = theme.sublayers;
         if(visiblelayers !== undefined) {
             let layers = [];
@@ -225,8 +225,8 @@ const ThemeSwitcher = React.createClass({
             drawingOrder: theme.drawingOrder,
             version: theme.version ? theme.version : this.state.themes.defaultWMSVersion ? this.state.themes.defaultWMSVersion : "1.3.0"
         }
-    },
-    createBackgroundLayersForTheme(theme, visibleBackgroundLayer=undefined) {
+    }
+    createBackgroundLayersForTheme = (theme, visibleBackgroundLayer=undefined) => {
         let backgroundLayers = [];
         let visibleIdx = -1;
         let defaultVisibleIdx = -1;
@@ -255,15 +255,15 @@ const ThemeSwitcher = React.createClass({
             backgroundLayers[defaultVisibleIdx].visibility = true;
         }
         return backgroundLayers;
-    },
-    currentBackgroundLayerIds() {
+    }
+    currentBackgroundLayerIds = () => {
         return this.props.layers.filter((layer) => {
             return layer.group === 'background';
         }).map((layer) => {
             return layer.id;
         });
-    },
-    themeClicked(theme) {
+    }
+    themeClicked = (theme) => {
         const scales = theme.scales || this.state.themes.defaultScales;
         const printScales = theme.printScales || this.state.themes.defaultPrintScales || undefined;
         const printResolutions = theme.printResolutions || this.state.themes.defaultPrintResolutions || undefined;
@@ -286,19 +286,19 @@ const ThemeSwitcher = React.createClass({
         }
         this.props.changeTheme(assign({}, theme, {printScales, printGrid, printResolutions}), this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme, activeBackgroudLayer), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, zoomBBox);
         this.props.setCurrentTask(null);
-    },
-    bboxOverlap(bbox1, bbox2) {
+    }
+    bboxOverlap = (bbox1, bbox2) => {
         let b1 = bbox1.bounds;
         let b2 = [bbox2.bounds.minx, bbox2.bounds.miny, bbox2.bounds.maxx, bbox2.bounds.maxy];
         if(bbox1.crs !== bbox2.crs) {
             b1 = CoordinatesUtils.reprojectBbox(b1, bbox1.crs, bbox2.crs);
         }
         return b1[0] < b2[2] && b1[2] > b2[0] && b1[1] < b2[3] && b1[3] > b2[1];
-    },
-    filterChanged(ev) {
+    }
+    filterChanged = (ev) => {
         this.props.changeFilter(ev.target.value);
     }
-});
+};
 
 const selector = (state) => ({
     activeTheme: state.theme ? state.theme.current : null,
@@ -319,6 +319,6 @@ module.exports = {
     reducers: {
         theme: require('../reducers/theme'),
         task: require('../reducers/task'),
-        layers: require('../../MapStore2/web/client/reducers/layers'),
+        layers: require('../../MapStore2Components/reducers/layers'),
     }
 };

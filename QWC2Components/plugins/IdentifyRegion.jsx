@@ -7,25 +7,23 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
+const Message = require('../../MapStore2Components/components/I18N/Message');
 const {getFeature} = require('../actions/mapInfo');
-const {changeSelectionState} = require('../../MapStore2/web/client/actions/selection');
-const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
+const {changeSelectionState} = require('../../MapStore2Components/actions/selection');
+const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const {TaskBar} = require('../components/TaskBar');
 
-const IdentifyRegion = React.createClass({
-    propTypes: {
-        selection: React.PropTypes.object,
-        changeSelectionState: React.PropTypes.func,
-        mapcrs: React.PropTypes.string,
-        theme: React.PropTypes.object,
-        themelayer: React.PropTypes.object,
-        postRequest: React.PropTypes.func
-    },
-    getDefaultProps() {
-        return {};
-    },
+class IdentifyRegion extends React.Component {
+    static propTypes = {
+        selection: PropTypes.object,
+        changeSelectionState: PropTypes.func,
+        mapcrs: PropTypes.string,
+        theme: PropTypes.object,
+        themelayer: PropTypes.object,
+        postRequest: PropTypes.func
+    }
     componentWillReceiveProps(newProps) {
         if(newProps.visible && newProps.visible !== this.props.visible) {
             this.props.changeSelectionState({geomType: 'Polygon'});
@@ -34,7 +32,7 @@ const IdentifyRegion = React.createClass({
         } else if(newProps.visible && newProps.selection.polygon && newProps.selection !== this.props.selection) {
             this.getFeatures(newProps.selection.polygon);
         }
-    },
+    }
     render() {
         return (
             <TaskBar task="IdentifyRegion">
@@ -43,8 +41,8 @@ const IdentifyRegion = React.createClass({
                 </span>
             </MessageBar>
         );
-    },
-    getFeatures(poly) {
+    }
+    getFeatures = (poly) => {
         if(
             poly.length < 1 || !this.props.theme ||
             !this.props.themelayer || this.props.themelayer.queryLayers.length === 0
@@ -76,7 +74,7 @@ const IdentifyRegion = React.createClass({
         this.props.setCurrentTask(null);
         this.props.getFeature(this.props.theme.url, requestParams, lMetaData, wgs84poly);
     }
-});
+};
 
 const selector = (state) => {
     let layers = state.layers && state.layers.flat ? state.layers.flat : [];
@@ -96,7 +94,7 @@ module.exports = {
         getFeature: getFeature
     })(IdentifyRegion),
     reducers: {
-        selection: require('../../MapStore2/web/client/reducers/selection'),
-        mapInfo: require('../../MapStore2/web/client/reducers/mapInfo')
+        selection: require('../../MapStore2Components/reducers/selection'),
+        mapInfo: require('../../MapStore2Components/reducers/mapInfo')
     }
 }

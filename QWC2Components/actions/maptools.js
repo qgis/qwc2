@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {changeMeasurement} = require('../../MapStore2/web/client/actions/measurement');
+const {changeMeasurement} = require('../../MapStore2Components/actions/measurement');
 const {changeRedliningState} = require('./redlining');
-const {changeDrawingStatus} = require('../../MapStore2/web/client/actions/draw');
+const {changeDrawingStatus} = require('../../MapStore2Components/actions/draw');
 const {setCurrentTask} = require('./task');
 
 function triggerTool(key, mode=null) {

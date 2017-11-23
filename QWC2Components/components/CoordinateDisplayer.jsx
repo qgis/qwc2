@@ -7,15 +7,16 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const proj4js = require('proj4');
-const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
+const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 
-const CoordinateDisplayer = React.createClass({
-    propTypes: {
-        mousepos: React.PropTypes.object,
-        diplaycrs: React.PropTypes.string
-    },
+class CoordinateDisplayer extends React.Component {
+    static propTypes = {
+        mousepos: PropTypes.object,
+        diplaycrs: PropTypes.string
+    }
     render() {
         let {x, y} = CoordinatesUtils.reproject([this.props.mousepos.x, this.props.mousepos.y], this.props.mousepos.crs, this.props.displaycrs);
         let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
@@ -25,7 +26,7 @@ const CoordinateDisplayer = React.createClass({
                 readOnly="readOnly"/>
         )
     }
-});
+};
 
 const selector = (state) => {
     let mousepos = state && state.mousePosition && state.mousePosition.position ? state.mousePosition.position : {};

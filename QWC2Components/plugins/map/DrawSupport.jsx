@@ -7,7 +7,7 @@
 */
 
 const {connect} = require('react-redux');
-const {changeDrawingStatus, endDrawing, setCurrentStyle} = require('../../../MapStore2/web/client/actions/draw');
+const {changeDrawingStatus, endDrawing, setCurrentStyle} = require('../../../MapStore2Components/actions/draw');
 
 module.exports = connect((state) => (
     state.draw || {}
@@ -15,4 +15,4 @@ module.exports = connect((state) => (
     onChangeDrawingStatus: changeDrawingStatus,
     onEndDrawing: endDrawing,
     setCurrentStyle: setCurrentStyle
-})(require('../../../MapStore2/web/client/components/map/openlayers/DrawSupport'));
+})(require('../../../MapStore2Components/components/map/openlayers/DrawSupport'));

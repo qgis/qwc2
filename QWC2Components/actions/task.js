@@ -7,9 +7,9 @@
  */
 
 const SET_CURRENT_TASK = 'SET_CURRENT_TASK';
-const {changeMeasurement} = require('../../MapStore2/web/client/actions/measurement');
+const {changeMeasurement} = require('../../MapStore2Components/actions/measurement');
 const {changeRedliningState} = require('./redlining');
-const {changeMapInfoState} = require('../../MapStore2/web/client/actions/mapInfo');
+const {changeMapInfoState} = require('../../MapStore2Components/actions/mapInfo');
 
 function setCurrentTask(task, mode=null, allowIdentify=false) {
     return (dispatch) => {

@@ -7,33 +7,31 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
-const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
+const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const {setCurrentTask} = require('../actions/task');
 const {TaskBar} = require('../components/TaskBar');
 const PrintFrame = require('../components/PrintFrame');
 require('./style/RasterExport.css');
 
-const RasterExport = React.createClass({
-    propTypes: {
-        theme: React.PropTypes.object,
-        map: React.PropTypes.object,
-        themeLayerId: React.PropTypes.string,
-        layers: React.PropTypes.array,
-        setCurrentTask: React.PropTypes.func
-    },
-    getDefaultProps() {
-        return {};
-    },
-    getInitialState() {
-        return {selectedFormat: null};
-    },
-    formatChanged(ev) {
+class RasterExport extends React.Component {
+    static propTypes = {
+        theme: PropTypes.object,
+        map: PropTypes.object,
+        themeLayerId: PropTypes.string,
+        layers: PropTypes.array,
+        setCurrentTask: PropTypes.func
+    }
+    state = {
+        selectedFormat: null
+    }
+    formatChanged = (ev) => {
         this.setState({selectedFormat: ev.target.value})
-    },
-    renderBody() {
+    }
+    renderBody = () => {
         if(!this.props.theme) {
             return null;
         }
@@ -101,7 +99,7 @@ const RasterExport = React.createClass({
                 </form>
             </span>
         );
-    },
+    }
     render() {
         return (
             <TaskBar task="RasterExport">
@@ -109,8 +107,8 @@ const RasterExport = React.createClass({
                 <PrintFrame role="extra" map={this.props.map} bboxSelected={this.bboxSelected} />
             </TaskBar>
         );
-    },
-    bboxSelected(bbox, pixelsize) {
+    }
+    bboxSelected = (bbox, pixelsize) => {
         let extent = "";
         if(this.props.map.projection == "EPSG:4326") {
             extent = bbox.miny + "," + bbox.minx + "," + bbox.maxy + "," + bbox.maxx;
@@ -123,7 +121,7 @@ const RasterExport = React.createClass({
         this.form.submit();
         this.props.setCurrentTask(null);
     }
-});
+};
 
 const selector = (state) => ({
     theme: state.theme ? state.theme.current : null,

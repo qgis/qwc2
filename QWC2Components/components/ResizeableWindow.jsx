@@ -7,47 +7,50 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const Rnd = require('react-rnd').default
 const {Glyphicon} = require('react-bootstrap');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
+const Message = require('../../MapStore2Components/components/I18N/Message');
 require('./style/ResizeableWindow.css');
 
-const ResizeableWindow = React.createClass({
-    propTypes: {
-    title: React.PropTypes.string,
-    icon: React.PropTypes.string,
-    glyphicon: React.PropTypes.string,
-    onClose: React.PropTypes.func,
-        initialX: React.PropTypes.number,
-        initialY: React.PropTypes.number,
-        initialWidth: React.PropTypes.number,
-        initialHeight: React.PropTypes.number,
-        minWidth: React.PropTypes.number,
-        minHeight: React.PropTypes.number,
-        maxWidth: React.PropTypes.number,
-        maxHeight: React.PropTypes.number,
-    },
-    getDefaultProps() {
-        return {
-            icon: null,
-            glyphicon: null,
-            initialX: null,
-            initialY: null,
-            initialWidth: 240,
-            initialHeight: 320,
-            minWidth: 50,
-            minHeight: 50,
-            maxWidth: null,
-            maxHeight: null,
-            onClose: () => {}
-        }
-    },
-    renderRole(role) {
+class ResizeableWindow extends React.Component {
+    static propTypes = {
+        title: PropTypes.string,
+        icon: PropTypes.string,
+        glyphicon: PropTypes.string,
+        onClose: PropTypes.func,
+            initialX: PropTypes.number,
+            initialY: PropTypes.number,
+            initialWidth: PropTypes.number,
+            initialHeight: PropTypes.number,
+            minWidth: PropTypes.number,
+            minHeight: PropTypes.number,
+            maxWidth: PropTypes.number,
+            maxHeight: PropTypes.number,
+    }
+    static defaultProps = {
+        icon: null,
+        glyphicon: null,
+        initialX: null,
+        initialY: null,
+        initialWidth: 240,
+        initialHeight: 320,
+        minWidth: 50,
+        minHeight: 50,
+        maxWidth: null,
+        maxHeight: null,
+        onClose: () => {}
+    }
+    renderRole = (role) => {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
-    },
-    stopEvent(ev) {
+    }
+    stopEvent = (ev) => {
         ev.stopPropagation();
-    },
+    }
+    onClose = (ev) => {
+        this.props.onClose();
+        ev.stopPropagation();
+    }
     render() {
         let initial = {
             x: this.props.initialX || Math.round(0.5 * (window.innerWidth - this.props.initialWidth)),
@@ -79,11 +82,7 @@ const ResizeableWindow = React.createClass({
                 </div>
             </Rnd>
         );
-    },
-    onClose(ev) {
-        this.props.onClose();
-        ev.stopPropagation();
     }
-});
+};
 
 module.exports = ResizeableWindow;

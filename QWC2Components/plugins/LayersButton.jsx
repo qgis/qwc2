@@ -7,24 +7,23 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const classnames = require('classnames');
 const {Button, Glyphicon} = require('react-bootstrap');
 const {setCurrentTask} = require('../actions/task');
 require('./style/BackgroundSwitcher.css');
 
-const LayersButton = React.createClass({
-    propTypes: {
-        position: React.PropTypes.number,
-        visible: React.PropTypes.bool,
-        setCurrentTask: React.PropTypes.func
-    },
-    getDefaultProps() {
-        return {
-            visible: false,
-            position: 1
-        };
-    },
+class LayersButton extends React.Component {
+    static propTypes = {
+        position: PropTypes.number,
+        visible: PropTypes.bool,
+        setCurrentTask: PropTypes.func
+    }
+    static defaultProps = {
+        visible: false,
+        position: 1
+    }
     render() {
         let activeClass = this.props.visible ? 'active' : '';
         return (
@@ -35,11 +34,11 @@ const LayersButton = React.createClass({
                 </Button>
             </div>
         );
-    },
-    buttonClicked() {
+    }
+    buttonClicked = () => {
         this.props.setCurrentTask(this.props.visible ? null : 'LayerTree');
-    },
-});
+    }
+};
 
 const selector = (state) => ({
     visible: state.task ? state.task.current === 'LayerTree' : false

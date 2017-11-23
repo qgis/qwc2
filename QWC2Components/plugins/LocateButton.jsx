@@ -6,21 +6,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const {changeLocateState} = require('../../MapStore2/web/client/actions/locate');
-const LocateBtn = require('../../MapStore2/web/client/components/mapcontrols/locate/LocateBtn');
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const {changeLocateState} = require('../../MapStore2Components/actions/locate');
+const LocateBtn = require('../../MapStore2Components/components/buttons/LocateBtn');
 require('./style/Buttons.css');
 
-const LocateButton = React.createClass({
-    propTypes: {
-        locate : React.PropTypes.string,
-        position: React.PropTypes.number,
-        onClick: React.PropTypes.func
-    },
-    getDefaultProps() {
-        return { position: 2 }
-    },
+class LocateButton extends React.Component {
+    static propTypes = {
+        locate : PropTypes.string,
+        position: PropTypes.number,
+        onClick: PropTypes.func
+    }
+    static defaultProps = {
+        position: 2
+    }
     render() {
         let tooltip = (<Message msgId={"locate.statustooltip." + this.props.locate} />);
         return (
@@ -32,7 +33,7 @@ const LocateButton = React.createClass({
                 style={{bottom: (5 + 4 * this.props.position) + 'em'}} />
         );
     }
-});
+};
 
 const locateSelector = (state) => ({
     locate: state.locate && state.locate.state || 'DISABLED',
@@ -43,5 +44,5 @@ module.exports = {
     LocateButtonPlugin: connect(locateSelector, {
         onClick: changeLocateState
     })(LocateButton),
-    reducers: {locate: require('../../MapStore2/web/client/reducers/locate')}
+    reducers: {locate: require('../../MapStore2Components/reducers/locate')}
 };

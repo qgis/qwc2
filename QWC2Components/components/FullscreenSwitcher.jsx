@@ -7,24 +7,23 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {toggleFullscreen} = require('../actions/display');
 require('./style/FullscreenSwitcher.css');
 
-const FullscreenSwitcher = React.createClass({
-    propTypes: {
-        mobile: React.PropTypes.bool,
-        fullscreen: React.PropTypes.bool,
-        fullscreenToggled: React.PropTypes.func
-    },
-    getDefaultProps() {
-        return {
-            fullscreen: false
-        };
-    },
-    toggleFullscreen() {
+class FullscreenSwitcher extends React.Component {
+    static propTypes = {
+        mobile: PropTypes.bool,
+        fullscreen: PropTypes.bool,
+        fullscreenToggled: PropTypes.func
+    }
+    static defaultProps = {
+        fullscreen: false
+    }
+    toggleFullscreen = () => {
         this.props.fullscreenToggled(!this.props.fullscreen);
-    },
+    }
     componentDidMount() {
         if(document.onfullscreenchange !== undefined) {
             document.onfullscreenchange = this.checkFullscreenState;
@@ -44,8 +43,8 @@ const FullscreenSwitcher = React.createClass({
         } else if(document.onmsfullscreenerror !== undefined) {
             document.onmsfullscreenerror = this.checkFullscreenState;
         }
-    },
-    checkFullscreenState() {
+    }
+    checkFullscreenState = () => {
         var isFullScreen = (
             document.fullscreenElement ||
             document.webkitFullscreenElement ||
@@ -55,7 +54,7 @@ const FullscreenSwitcher = React.createClass({
         if(isFullScreen != this.props.fullscreen) {
             this.props.fullscreenToggled(!this.props.fullscreen);
         }
-    },
+    }
     render() {
         // Render nothing on mobile, but keep the component for the onfullscreenchange logic
         if(this.props.mobile) {
@@ -67,7 +66,7 @@ const FullscreenSwitcher = React.createClass({
             </span>
         );
     }
-});
+};
 
 const selector = (state) => ({
     mobile: state.browser ? state.browser.mobile : false,

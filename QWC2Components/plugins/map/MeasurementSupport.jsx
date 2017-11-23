@@ -7,11 +7,11 @@
 */
 
 const {connect} = require('react-redux');
-const {changeMeasurementState} = require('../../../MapStore2/web/client/actions/measurement');
+const {changeMeasurementState} = require('../../../MapStore2Components/actions/measurement');
 
 module.exports = connect((state) => ({
     measurement: state.measurement || {},
     updateOnMouseMove: true
 }), {
     changeMeasurementState
-})(require('../../../MapStore2/web/client/components/map/openlayers/MeasurementSupport'));
+})(require('../../../MapStore2Components/components/map/openlayers/MeasurementSupport'));

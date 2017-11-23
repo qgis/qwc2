@@ -8,9 +8,9 @@
 
 
 const UrlParams = require("../utils/UrlParams");
-const CoordinatesUtils = require("../../MapStore2/web/client/utils/CoordinatesUtils");
-const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
-const MapUtils = require("../../MapStore2/web/client/utils/MapUtils");
+const CoordinatesUtils = require("../../MapStore2Components/utils/CoordinatesUtils");
+const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
+const MapUtils = require("../../MapStore2Components/utils/MapUtils");
 
 function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
     return (dispatch) => {
@@ -33,7 +33,7 @@ function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
         if(positionCrs && positionCrs !== projection) {
             UrlParams.updateParams({crs: positionCrs});
         }
-        dispatch(require('../../MapStore2/web/client/actions/map').changeMapView(center, zoom, bbox, size, mapStateSource, projection));
+        dispatch(require('../../MapStore2Components/actions/map').changeMapView(center, zoom, bbox, size, mapStateSource, projection));
     };
 }
 

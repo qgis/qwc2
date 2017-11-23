@@ -7,56 +7,55 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const FormattedNumber = require('react-intl').FormattedNumber;
 const {connect} = require('react-redux');
 const {createSelector} = require('reselect');
 const assign = require('object-assign');
 const proj4js = require('proj4');
-const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const measureUtils = require('../../MapStore2/web/client/utils/MeasureUtils');
-const {changeMeasurement, changeMeasurementState} = require('../../MapStore2/web/client/actions/measurement.js');
+const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const measureUtils = require('../../MapStore2Components/utils/MeasureUtils');
+const {changeMeasurement, changeMeasurementState} = require('../../MapStore2Components/actions/measurement.js');
 const displayCrsSelector = require('../selectors/displaycrs');
 const {TaskBar} = require('../components/TaskBar');
 require('./style/Measure.css');
 
-const Measure = React.createClass({
-    propTypes: {
-        measureState: React.PropTypes.object,
-        displaycrs: React.PropTypes.string,
-        changeMeasurement: React.PropTypes.func,
-        changeMeasurementState: React.PropTypes.func,
-        showMeasureModeSwitcher: React.PropTypes.bool
-    },
-    getDefaultProps() {
-        return {
-            measureState: {
-                geomType: "Point",
-                point: null,
-                len: 0,
-                area: 0,
-                bearing: 0,
-                lenUnit: 'm',
-                areaUnit: 'sqm'
-            },
-            showMeasureModeSwitcher: true
-        }
-    },
-    onClose() {
+class Measure extends React.Component {
+    static propTypes = {
+        measureState: PropTypes.object,
+        displaycrs: PropTypes.string,
+        changeMeasurement: PropTypes.func,
+        changeMeasurementState: PropTypes.func,
+        showMeasureModeSwitcher: PropTypes.bool
+    }
+    static defaultProps = {
+        measureState: {
+            geomType: "Point",
+            point: null,
+            len: 0,
+            area: 0,
+            bearing: 0,
+            lenUnit: 'm',
+            areaUnit: 'sqm'
+        },
+        showMeasureModeSwitcher: true
+    }
+    onClose = () => {
         this.props.changeMeasurement(assign({}, this.props.measureState, {geomType: null}));
-    },
-    setMeasureMode(geomType) {
+    }
+    setMeasureMode = (geomType) => {
         if(geomType !== this.props.measureState.geomType) {
             this.props.changeMeasurement(assign({}, this.props.measureState, {geomType: geomType}));
         }
-    },
-    changeLengthUnit(ev) {
+    }
+    changeLengthUnit = (ev) => {
         this.props.changeMeasurementState(assign({}, this.props.measureState, {lenUnit: ev.target.value}));
-    },
-    changeAreaUnit(ev) {
+    }
+    changeAreaUnit = (ev) => {
         this.props.changeMeasurementState(assign({}, this.props.measureState, {areaUnit: ev.target.value}));
-    },
-    renderModeSwitcher() {
+    }
+    renderModeSwitcher = () => {
         if(!this.props.showMeasureModeSwitcher) {
             return null;
         }
@@ -68,8 +67,8 @@ const Measure = React.createClass({
                 <span onClick={()=>{this.setMeasureMode("Bearing");}} className={this.props.measureState.geomType === "Bearing" ? "active" : ""}><Message msgId="measureComponent.bearingLabel" /></span>
             </div>
         );
-    },
-    renderBody() {
+    }
+    renderBody = () => {
         let resultBody = null;
         let decimalFormat = {style: "decimal", minimumIntegerDigits: 1, maximumFractionDigits: 2, minimumFractionDigits: 2};
         if(this.props.measureState.geomType === "Point") {
@@ -112,7 +111,7 @@ const Measure = React.createClass({
             );
         }
         return resultBody;
-    },
+    }
     render() {
         return (
             <TaskBar task="Measure" onClose={this.onClose}>
@@ -123,7 +122,7 @@ const Measure = React.createClass({
             </TaskBar>
         );
     }
-});
+};
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
     measureState: {
@@ -144,6 +143,6 @@ module.exports = {
         changeMeasurementState: changeMeasurementState
     })(Measure),
     reducers: {
-        measurement: require('../../MapStore2/web/client/reducers/measurement')
+        measurement: require('../../MapStore2Components/reducers/measurement')
     }
 }

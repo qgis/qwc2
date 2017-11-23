@@ -7,69 +7,55 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const Swipeable = require('react-swipeable');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const ConfigUtils = require("../../MapStore2/web/client/utils/ConfigUtils");
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const {setCurrentTask} = require("../actions/task");
 const {triggerTool} = require('../actions/maptools');
 require('./style/AppMenu.css');
 
 
-const AppMenu = React.createClass({
-    propTypes: {
-        buttonContents: React.PropTypes.object,
-        menuItems: React.PropTypes.array,
-        menuitemClicked: React.PropTypes.func,
-        appMenuClearsTask: React.PropTypes.bool,
-        setCurrentTask: React.PropTypes.func
-    },
-    getDefaultProps() {
-        return {
-            buttonContents: null,
-            appMenuClearsTask: false
-        };
-    },
-    getInitialState() {
-        return { menuVisible: false, submenusVisible: [] };
-    },
-    onMenuClicked() {
+class AppMenu extends React.Component {
+    static propTypes = {
+        buttonContents: PropTypes.object,
+        menuItems: PropTypes.array,
+        menuitemClicked: PropTypes.func,
+        appMenuClearsTask: PropTypes.bool,
+        setCurrentTask: PropTypes.func
+    }
+    static defaultProps = {
+        buttonContents: null,
+        appMenuClearsTask: false
+    }
+    state = {
+        menuVisible: false,
+        submenusVisible: []
+    }
+    onMenuClicked = () => {
         if(!this.state.menuVisible && this.props.appMenuClearsTask) {
             this.props.setCurrentTask(null);
         }
         this.setState({ menuVisible: !this.state.menuVisible, submenusVisible: [] });
-    },
-    hideMenu() {
+    }
+    hideMenu = () => {
         this.setState({ menuVisible: false, submenusVisible: [] });
-    },
-    onSubmenuClicked(ev, key, level) {
+    }
+    onSubmenuClicked = (ev, key, level) => {
         this.killEvent(ev);
         var a = this.state.submenusVisible[level] === key ? [] : [key];
         this.setState({ submenusVisible: this.state.submenusVisible.slice(0, level).concat(a) });
-    },
-    onMenuitemClicked(ev, key, mode) {
+    }
+    onMenuitemClicked = (ev, key, mode) => {
         this.refs.appmenu.blur();
         this.props.menuitemClicked(key, mode);
-    },
-    killEvent(ev) {
+    }
+    killEvent = (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
-    },
-    render() {
-        return(
-            <div tabIndex="1" id="AppMenu" className={this.state.menuVisible ? "appmenu-visible" : ""} onMouseDown={this.onMenuClicked} onClick={this.killEvent} onBlur={()=> {this.hideMenu();}} ref="appmenu">
-                <div className="appmenu-button-container">
-                    {this.props.buttonContents}
-                </div>
-                <Swipeable onSwipedUp={this.hideMenu}>
-                    <ul className="appmenu-menu">
-                        {this.renderMenuItems(this.props.menuItems, 0)}
-                    </ul>
-                </Swipeable>
-            </div>
-        );
-    },
-    renderMenuItems(items, level) {
+    }
+    renderMenuItems = (items, level) => {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         if(items) {
             return items.map(item => {
@@ -103,7 +89,21 @@ const AppMenu = React.createClass({
             return null;
         }
     }
-});
+    render() {
+        return(
+            <div tabIndex="1" id="AppMenu" className={this.state.menuVisible ? "appmenu-visible" : ""} onMouseDown={this.onMenuClicked} onClick={this.killEvent} onBlur={()=> {this.hideMenu();}} ref="appmenu">
+                <div className="appmenu-button-container">
+                    {this.props.buttonContents}
+                </div>
+                <Swipeable onSwipedUp={this.hideMenu}>
+                    <ul className="appmenu-menu">
+                        {this.renderMenuItems(this.props.menuItems, 0)}
+                    </ul>
+                </Swipeable>
+            </div>
+        );
+    }
+};
 
 module.exports = connect(() => { return {}; }, {
     menuitemClicked: triggerTool,

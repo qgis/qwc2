@@ -7,16 +7,17 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
 const Spinner = require('react-spinkit');
 const {createSelector} = require('reselect');
 const classnames = require('classnames');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const LocaleUtils = require('../../MapStore2/web/client/utils/LocaleUtils');
-const mapUtils = require('../../MapStore2/web/client/utils/MapUtils');
-const CoordinatesUtils = require('../../MapStore2/web/client/utils/CoordinatesUtils');
-const {addLayer, removeLayer} = require('../../MapStore2/web/client/actions/layers');
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
+const mapUtils = require('../../MapStore2Components/utils/MapUtils');
+const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
+const {addLayer, removeLayer} = require('../../MapStore2Components/actions/layers');
 const {changeMapView} = require('../actions/map');
 const {changeSearch, startSearch, searchMore, addMarker, setHighlightedFeature} = require("../actions/search");
 const displayCrsSelector = require('../selectors/displaycrs');
@@ -24,39 +25,36 @@ const IdentifyUtils = require('../utils/IdentifyUtils');
 const UrlParams = require("../utils/UrlParams");
 require('./style/Search.css');
 
-const Search = React.createClass({
-    propTypes: {
-        searchText: React.PropTypes.string,
-        searchProvider: React.PropTypes.string, // The active provider key
-        pendingProviders: React.PropTypes.array, // Providers for which results are pending
-        searchProviders: React.PropTypes.object, // All available search providers
-        results: React.PropTypes.array,
-        highlightedFeature: React.PropTypes.object,
-        theme: React.PropTypes.object,
-        mapConfig: React.PropTypes.object,
-        displaycrs: React.PropTypes.string,
-        changeSearch: React.PropTypes.func,
-        startSearch: React.PropTypes.func,
-        searchMore: React.PropTypes.func,
-        addMarker: React.PropTypes.func,
-        setHighlightedFeature: React.PropTypes.func,
-        panToResult: React.PropTypes.func,
-        addLayer: React.PropTypes.func,
-        removeLayer: React.PropTypes.func,
-        searchOptions: React.PropTypes.object
-    },
-    getDefaultProps() {
-        return {};
-    },
-    getInitialState() {
-        return {currentResult: null, showfields: false, showproviderselection: false}
-    },
-    contextTypes: {
-        messages: React.PropTypes.object
-    },
+class Search extends React.Component {
+    static propTypes = {
+        searchText: PropTypes.string,
+        searchProvider: PropTypes.string, // The active provider key
+        pendingProviders: PropTypes.array, // Providers for which results are pending
+        searchProviders: PropTypes.object, // All available search providers
+        results: PropTypes.array,
+        highlightedFeature: PropTypes.object,
+        theme: PropTypes.object,
+        mapConfig: PropTypes.object,
+        displaycrs: PropTypes.string,
+        changeSearch: PropTypes.func,
+        startSearch: PropTypes.func,
+        searchMore: PropTypes.func,
+        addMarker: PropTypes.func,
+        setHighlightedFeature: PropTypes.func,
+        panToResult: PropTypes.func,
+        addLayer: PropTypes.func,
+        removeLayer: PropTypes.func,
+        searchOptions: PropTypes.object
+    }
+    static contextTypes = {
+        messages: PropTypes.object
+    }
+    state = {
+        currentResult: null, showfields: false, showproviderselection: false
+    }
     componentDidMount() {
         this.searchTimer = 0;
-    },
+    }
     componentWillReceiveProps(newProps) {
         // If the theme changed, reset search and select provider
         if(newProps.theme && newProps.theme !== this.props.theme) {
@@ -103,51 +101,51 @@ const Search = React.createClass({
                 this.props.addLayer(layer, true);
             }
         }
-    },
-    killEvent(ev) {
+    }
+    killEvent = (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
-    },
-    search(props) {
+    }
+    search = (props)  => {
         if(props.searchText) {
             props.startSearch(props.searchText, {displaycrs: props.displaycrs}, this.activeProviers(props));
         }
-    },
-    resetSearch() {
+    }
+    resetSearch = () => {
         this.setState({currentResult: null, focused: false, showfields: false});
         this.props.changeSearch("", this.props.searchProvider);
-    },
-    onChange(ev) {
+    }
+    onChange = (ev) => {
         this.props.changeSearch(ev.target.value, this.props.searchProvider);
         clearTimeout(this.searchTimer);
         this.searchTimer = setTimeout(() => this.search(this.props), 500);
-    },
-    checkShowFields(ev) {
+    }
+    checkShowFields = (ev) => {
         if(this.props.searchProvider && this.props.searchProviders[this.props.searchProvider].fields) {
             this.setState({showfields: true, focused: false});
             ev.preventDefault();
         }
-    },
-    onFocus() {
+    }
+    onFocus = () => {
         if(!this.state.showfields && this.props.searchText && !this.props.results) {
             this.search(this.props);
         }
         this.setState({focused: true});
-    },
-    onKeyDown(ev) {
+    }
+    onKeyDown = (ev) => {
         if(ev.keyCode === 13) {
             this.search(this.props);
         } else if(ev.keyCode === 27) {
             ev.target.blur();
         }
-    },
-    activeProviers(props) {
+    }
+    activeProviers = (props) => {
         let keys = this.props.searchProvider ? [this.props.searchProvider] : props.theme.searchProviders;
         return keys.reduce((result, key) => {
             result[key] = props.searchProviders[key];
             return result;
         }, {});
-    },
+    }
     render() {
         let placeholder = LocaleUtils.getMessageById(this.context.messages, "search.placeholder");
         if(!this.props.searchText) {
@@ -241,8 +239,8 @@ const Search = React.createClass({
                 {providerSelection}
             </div>
         )
-    },
-    submitFormSearch() {
+    }
+    submitFormSearch = () => {
         let comp = this.props.searchProviders[UrlParams.getParam("sp")].comparator;
         let filters = Object.keys(this.formfields).map(key => {
             return  key + "=" + this.formfields[key].value;
@@ -254,8 +252,8 @@ const Search = React.createClass({
         }
         this.input.focus();
         this.setState({showfields: false});
-    },
-    renderSearchResults() {
+    }
+    renderSearchResults = () => {
         if(!this.props.results || this.props.results.length === 0 || !this.state.focused) {
             return null;
         }
@@ -264,8 +262,8 @@ const Search = React.createClass({
                 {this.props.results.map(category => this.renderCategory(category))}
             </ul>
         );
-    },
-    renderCategory(category) {
+    }
+    renderCategory = (category) => {
         let title = category.titlemsgid ? (<Message msgId={category.titlemsgid} />) : category.title;
         return (
             <li key={category.id}>
@@ -273,8 +271,8 @@ const Search = React.createClass({
                 <ul>{category.items.map(item => this.renderItem(item))}</ul>
             </li>
         )
-    },
-    renderItem(item) {
+    }
+    renderItem = (item) => {
         if(item.more) {
             return (
                 <li key={item.id}
@@ -289,8 +287,8 @@ const Search = React.createClass({
                 onMouseDown={() => this.showResult(item)}
                 dangerouslySetInnerHTML={{__html: item.text}}></li>
         );
-    },
-    showResult(item, zoom=true) {
+    }
+    showResult = (item, zoom=true) => {
         this.props.setHighlightedFeature(null);
         let wgscenterlatlon = CoordinatesUtils.reproject(item, item.crs, "EPSG:4326");
         let wgsextent = CoordinatesUtils.reprojectBbox(item.bbox, item.crs, "EPSG:4326");
@@ -333,8 +331,8 @@ const Search = React.createClass({
             this.props.addMarker({lat: wgscenterlatlon.y, lng: wgscenterlatlon.x}, text);
         }
         this.setState({currentResult: item});
-    },
-    showFeatureGeometry(item, geometry, crs, text) {
+    }
+    showFeatureGeometry = (item, geometry, crs, text) => {
         if(item === this.state.currentResult) {
             let feature = IdentifyUtils.wktToGeoJSON(geometry);
             feature.geometry = IdentifyUtils.reprojectFeatureGeometry(feature.geometry, crs, this.props.mapConfig.projection);
@@ -344,8 +342,8 @@ const Search = React.createClass({
             this.props.addMarker({lat: wgscenterlatlon.y, lng: wgscenterlatlon.x}, text);
             this.props.setHighlightedFeature(feature);
         }
-    },
-    getFeatureCenter(geometry) {
+    }
+    getFeatureCenter = (geometry) => {
         let type = geometry.getType();
         let center;
         switch (type) {
@@ -373,7 +371,7 @@ const Search = React.createClass({
         }
         return center;
     }
-});
+};
 
 module.exports = (searchProviders) => connect(createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
     searchText: state.search ? state.search.text : "",

@@ -10,7 +10,7 @@ const assign = require('object-assign');
 const axios = require('axios');
 const uuid = require('uuid');
 const jsts = require('jsts');
-const {newMapInfoRequest, errorFeatureInfo, loadFeatureInfo} = require('../../MapStore2/web/client/actions/mapInfo');
+const {newMapInfoRequest, errorFeatureInfo, loadFeatureInfo} = require('../../MapStore2Components/actions/mapInfo');
 
 function getFeature(wfsBasePath, requestParams, lMetaData, wgs84FilterPoly = null) {
     const defaultParams = {

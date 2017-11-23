@@ -7,23 +7,24 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
 var ol = require('openlayers');
 const {changeRedliningState} = require('../../actions/redlining');
 
-const RedliningSupport = React.createClass({
-    propTypes: {
-        map: React.PropTypes.object,
-        redlining: React.PropTypes.object,
-        changeRedliningState: React.PropTypes.func
-    },
-    getDefaultProps() {
-        return {
-            redlining: {}
-        };
-    },
-    componentWillMount() {
+class RedliningSupport extends React.Component {
+    static propTypes = {
+        map: PropTypes.object,
+        redlining: PropTypes.object,
+        changeRedliningState: PropTypes.func
+    }
+    static defaultProps = {
+        redlining: {}
+    }
+    constructor(props) {
+        super(props);
+
         this.redliningLayer = null;
         this.interactions = [];
         this.currentFeature = null;
@@ -45,7 +46,7 @@ const RedliningSupport = React.createClass({
                 }
             }
         });
-    },
+    }
     componentWillReceiveProps(newProps) {
         if(newProps.redlining == this.props.redlining) {
             // pass
@@ -60,19 +61,19 @@ const RedliningSupport = React.createClass({
         } else {
             this.updateFeatureStyle(newProps);
         }
-    },
+    }
     render() {
         return null;
-    },
-    createLayer: function() {
+    }
+    createLayer = () => {
       this.source = new ol.source.Vector();
       this.redliningLayer = new ol.layer.Vector({
           source: this.source,
           zIndex: 1000000
       });
       this.props.map.addLayer(this.redliningLayer);
-    },
-    createStyle: function(props) {
+    }
+    createStyle = (props) => {
         return new ol.style.Style({
             fill: new ol.style.Fill({
                 color: props.redlining.fillColor
@@ -93,14 +94,14 @@ const RedliningSupport = React.createClass({
               stroke: new ol.style.Stroke({color: 'white', width: 2})
             })
         });
-    },
-    updateFeatureStyle: function(newProps) {
+    }
+    updateFeatureStyle = (newProps) => {
         this.currentStyle = this.createStyle(newProps);
         if(this.currentFeature) {
             this.currentFeature.setStyle([this.currentStyle, this.selectedStyle]);
         }
-    },
-    deleteCurrent: function(oldProps) {
+    }
+    deleteCurrent = (oldProps) => {
         if(this.currentFeature) {
             try {
                 this.source.removeFeature(this.currentFeature);
@@ -109,8 +110,8 @@ const RedliningSupport = React.createClass({
             this.currentFeature = null;
         }
         this.props.changeRedliningState(assign({}, oldProps.redlining));
-    },
-    addDrawInteraction: function(newProps) {
+    }
+    addDrawInteraction = (newProps) => {
         this.reset();
         if(!this.redliningLayer) {
           this.createLayer();
@@ -137,8 +138,8 @@ const RedliningSupport = React.createClass({
         }, this);
         this.props.map.addInteraction(drawInteraction);
         this.interactions = [drawInteraction];
-    },
-    addPickInteraction: function() {
+    }
+    addPickInteraction = () => {
         this.reset();
         if(!this.redliningLayer) {
             return;
@@ -168,8 +169,8 @@ const RedliningSupport = React.createClass({
         this.props.map.addInteraction(selectInteraction);
         this.props.map.addInteraction(modifyInteraction);
         this.interactions = [selectInteraction, modifyInteraction];
-    },
-    reset: function() {
+    }
+    reset = () => {
         while(this.interactions.length > 0) {
             this.props.map.removeInteraction(this.interactions.shift());
         }
@@ -178,7 +179,7 @@ const RedliningSupport = React.createClass({
             this.currentFeature = null;
         }
     }
-});
+};
 
 module.exports = connect((state) => ({
     redlining: state.redlining || {}

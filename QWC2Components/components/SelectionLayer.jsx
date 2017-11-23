@@ -7,26 +7,22 @@
  */
 
 const React = require('react');
-const {addLayer, removeLayer, changeLayerProperties} = require('../../MapStore2/web/client/actions/layers');
+const PropTypes = require('prop-types');
+const {addLayer, removeLayer, changeLayerProperties} = require('../../MapStore2Components/actions/layers');
 
-const SelectionLayer = React.createClass({
-    propTypes: {
-        layerid: React.PropTypes.string.isRequired,
-        title: React.PropTypes.string,
-        featuresCrs: React.PropTypes.string
-        features: React.PropTypes.array,
-        addLayer: React.PropTypes.func,
-        removeLayer: React.PropTypes.func
-    },
-    getDefaultProps() {
-        return {
-            title: "Selection",
-            featuresCrs: "EPSG:3857"
-        }
+class SelectionLayer extends React.Component {
+    static propTypes = {
+        layerid: PropTypes.string.isRequired,
+        title: PropTypes.string,
+        featuresCrs: PropTypes.string
+        features: PropTypes.array,
+        addLayer: PropTypes.func,
+        removeLayer: PropTypes.func
     }
-    componentWillMount() {
-        componentWillMount(this.props);
-    },
+    static defaultProps = {
+        title: "Selection",
+        featuresCrs: "EPSG:3857"
+    }
     componentWillReceiveProps(newProps) {
         if(newProps.features !== this.props.features) {
             if(!newProps.features && this.props.features) {
@@ -50,11 +46,11 @@ const SelectionLayer = React.createClass({
                 newProps.changeLayerProperties(newProps.layerid, newlayerprops);
             }
         }
-    },
+    }
     render() {
         return null;
     }
-});
+};
 
 module.exports = {
     SelectionLayer: connect((state) => {}, {

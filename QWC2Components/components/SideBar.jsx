@@ -7,35 +7,34 @@
  */
 
 const React = require('react');
+const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const Swipeable = require('react-swipeable');
 const {Glyphicon} = require('react-bootstrap');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
+const Message = require('../../MapStore2Components/components/I18N/Message');
 const {setCurrentTask} = require("../actions/task");
 require('./style/SideBar.css');
 
-const SideBar = React.createClass({
-    propTypes: {
-        id: React.PropTypes.string.isRequired,
-        extraClasses: React.PropTypes.string,
-        currentTask: React.PropTypes.string,
-        onShow: React.PropTypes.func,
-        onHide: React.PropTypes.func,
-        width: React.PropTypes.string,
-        setCurrentTask: React.PropTypes.func,
-        title: React.PropTypes.string,
-        icon: React.PropTypes.string,
-        extraTitlebarContent: React.PropTypes.object
-    },
-    getDefaultProps() {
-        return {
-            extraClasses: '',
-            currentTask: null,
-            onShow: () => {},
-            onHide: () => {},
-            width: '15em',
-        }
-    },
+class SideBar extends React.Component {
+    static propTypes = {
+        id: PropTypes.string.isRequired,
+        extraClasses: PropTypes.string,
+        currentTask: PropTypes.string,
+        onShow: PropTypes.func,
+        onHide: PropTypes.func,
+        width: PropTypes.string,
+        setCurrentTask: PropTypes.func,
+        title: PropTypes.string,
+        icon: PropTypes.string,
+        extraTitlebarContent: PropTypes.object
+    }
+    static defaultProps = {
+        extraClasses: '',
+        currentTask: null,
+        onShow: () => {},
+        onHide: () => {},
+        width: '15em',
+    }
     componentWillReceiveProps(newProps) {
         let newVisible = newProps.currentTask === newProps.id;
         let oldVisible = this.props.currentTask === this.props.id;
@@ -44,15 +43,15 @@ const SideBar = React.createClass({
         } else if(!newVisible && oldVisible) {
             newProps.onHide();
         }
-    },
-    closeClicked() {
+    }
+    closeClicked = () => {
         if(this.props.currentTask === this.props.id) {
             this.props.setCurrentTask(null);
         }
-    },
-    renderRole(role) {
+    }
+    renderRole = (role) => {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
-    },
+    }
     render() {
         let visible = this.props.currentTask === this.props.id;
         let style = {
@@ -77,7 +76,7 @@ const SideBar = React.createClass({
             </Swipeable>
         );
     }
-});
+};
 
 const selector = (state) => ({
     currentTask: state.task ? state.task.current : null

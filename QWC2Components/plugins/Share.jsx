@@ -6,33 +6,32 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react')
+const React = require('react');
+const PropTypes = require('prop-types');
 const axios = require('axios');
-const Message = require('../../MapStore2/web/client/components/I18N/Message');
-const ShareSocials = require('../../MapStore2/web/client/components/share/ShareSocials');
-const ShareQRCode = require('../../MapStore2/web/client/components/share/ShareQRCode');
-const ConfigUtils = require('../../MapStore2/web/client/utils/ConfigUtils');
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const ShareSocials = require('../../MapStore2Components/components/share/ShareSocials');
+const ShareQRCode = require('../../MapStore2Components/components/share/ShareQRCode');
+const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const ShareLink = require('../components/ShareLink');
 const {SideBar} = require('../components/SideBar');
 require('./style/Share.css');
 
-const Share = React.createClass({
-    propTypes: {
-        showSocials: React.PropTypes.bool,
-        showLink: React.PropTypes.bool,
-        showQRCode: React.PropTypes.bool
-    },
-    getDefaultProps() {
-        return {
-            showSocials: true,
-            showLink: true,
-            showQRCode: true
-        }
-    },
-    getInitialState() {
-        return {location: null};
-    },
-    onShow() {
+class Share extends React.Component {
+    static propTypes = {
+        showSocials: PropTypes.bool,
+        showLink: PropTypes.bool,
+        showQRCode: PropTypes.bool
+    }
+    static defaultProps = {
+        showSocials: true,
+        showLink: true,
+        showQRCode: true
+    }
+    state = {
+        location: null
+    }
+    onShow = () => {
         let serverUrl = ConfigUtils.getConfigProp("qwc2serverUrl");
         if(serverUrl) {
             this.setState({location: null});
@@ -41,8 +40,8 @@ const Share = React.createClass({
         } else {
             this.setState({location: window.location.href});
         }
-    },
-    renderBody() {
+    }
+    renderBody = () => {
         if(this.state.location) {
             const shareSocials = this.props.showSocials ? <ShareSocials shareUrl={this.state.location} shareTitle="QWC2" getCount={this.props.getCount}/> : null;
             const shareLink = this.props.showLink ? <ShareLink shareUrl={this.state.location}/> : null;
@@ -60,7 +59,7 @@ const Share = React.createClass({
                     <Message msgId="share.generatingpermalink" />
                 </div>);
         }
-    },
+    }
     render() {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
@@ -70,7 +69,7 @@ const Share = React.createClass({
             </SideBar>
         );
     }
-});
+};
 
 module.exports = {
     SharePlugin: Share,

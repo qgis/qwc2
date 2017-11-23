@@ -8,8 +8,8 @@
 
 const UrlParams = require("../utils/UrlParams");
 const LayerUtils = require("../utils/LayerUtils");
-const {addLayer,removeLayer} = require("../../MapStore2/web/client/actions/layers");
-const {changeMapScales, zoomToExtent, zoomToPoint, changeMapCrs} = require("../../MapStore2/web/client/actions/map");
+const {addLayer,removeLayer} = require("../../MapStore2Components/actions/layers");
+const {changeMapScales, zoomToExtent, zoomToPoint, changeMapCrs} = require("../../MapStore2Components/actions/map");
 
 const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
 const SET_THEME_SWITCHER_FILTER = 'SET_THEME_FILTER';

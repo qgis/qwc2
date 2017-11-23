@@ -10,10 +10,10 @@ const React = require('react');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
 
-const {clickOnMap} = require('../../../MapStore2/web/client/actions/map');
+const {clickOnMap} = require('../../../MapStore2Components/actions/map');
 const {changeMapView} = require('../../actions/map');
-const {layerLoading, layerLoad, layerError, invalidLayer} = require('../../../MapStore2/web/client/actions/layers');
-const {changeMousePosition} = require('../../../MapStore2/web/client/actions/mousePosition');
+const {layerLoading, layerLoad, layerError, invalidLayer} = require('../../../MapStore2Components/actions/layers');
+const {changeMousePosition} = require('../../../MapStore2Components/actions/mousePosition');
 
 
 // Map
@@ -31,13 +31,13 @@ const Map = connect((state) => ({
     return assign({}, ownProps, stateProps, assign({}, dispatchProps, {
         onMouseMove: stateProps.mousePosition.enabled ? dispatchProps.onMouseMove : () => {}
     }));
-})(require('../../../MapStore2/web/client/components/map/openlayers/Map'));
+})(require('../../../MapStore2Components/components/map/openlayers/Map'));
 
 // Map layer plugins
-require('../../../MapStore2/web/client/components/map/openlayers/plugins/index');
+require('../../../MapStore2Components/components/map/openlayers/plugins/index');
 
 module.exports = {
     Map: Map,
-    Layer: require('../../../MapStore2/web/client/components/map/openlayers/Layer'),
-    Feature: require('../../../MapStore2/web/client/components/map/openlayers/Feature')
+    Layer: require('../../../MapStore2Components/components/map/openlayers/Layer'),
+    Feature: require('../../../MapStore2Components/components/map/openlayers/Feature')
 };
