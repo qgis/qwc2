@@ -63,7 +63,7 @@ const ResizeableWindow = React.createClass({
             icon = (<img src={this.props.icon} />);
         }
         return (
-            <Rnd className="resizeable-window" default={initial}
+            <Rnd className="resizeable-window" bounds="parent" default={initial}
                 minWidth={this.props.minWidth} minHeight={this.props.minHeight}
                 maxWidth={this.props.maxWidth || window.innerWidth} maxHeight={this.props.maxHeight || window.innerHeight}>
                 <div className="resizeable-window-titlebar">
