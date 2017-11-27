@@ -31,8 +31,6 @@ let localConfigFile = 'localConfig.json';
 
 let defaultConfig = {
     proxyUrl: "",
-    geoStoreUrl: "/mapstore/rest/geostore/",
-    printUrl: "/mapstore/print/info.json",
     translationsPath: "translations",
     bingApiKey: null,
     mapquestApiKey: null
@@ -94,42 +92,6 @@ var ConfigUtils = {
             groups: groups,
             plugins: plugins
         };
-    },
-    getUserConfiguration: function(defaultName, extension, geoStoreBase) {
-        return ConfigUtils.getConfigurationOptions(urlQuery, defaultName, extension, geoStoreBase);
-    },
-    getConfigurationOptions: function(query, defaultName, extension, geoStoreBase) {
-        const mapId = query.mapId;
-        let configUrl;
-        if (mapId) {
-            configUrl = ( geoStoreBase || defaultConfig.geoStoreUrl ) + "data/" + mapId;
-        } else {
-            configUrl = (query.config || defaultName || 'config') + '.' + (extension || 'json');
-        }
-        return {
-            configUrl: configUrl,
-            legacy: !!mapId
-        };
-    },
-
-    convertFromLegacy: function(config) {
-        var mapConfig = config.map;
-        var sources = config.gsSources || config.sources;
-        var layers = mapConfig.layers;
-        var latLng = ConfigUtils.getCenter(mapConfig.center, mapConfig.projection);
-        var zoom = mapConfig.zoom;
-        var maxExtent = mapConfig.maxExtent || mapConfig.extent;
-
-        // setup layers and sources with defaults
-        this.setupSources(sources, config.defaultSourceType);
-        this.setupLayers(layers, sources, ["gxp_osmsource", "gxp_wmssource", "gxp_googlesource", "gxp_bingsource", "gxp_mapquestsource"]);
-        return ConfigUtils.normalizeConfig({
-            center: latLng,
-            zoom: zoom,
-            maxExtent: maxExtent, // TODO convert maxExtent
-            layers: layers,
-            projection: mapConfig.projection || 'EPSG:3857'
-        });
     },
 
     /**
@@ -216,14 +178,6 @@ var ConfigUtils = {
         if (candidateVisible) {
             candidateVisible.visibility = true;
         }
-    },
-    /**
-     * Utility to merge different configs
-     */
-    mergeConfigs: function(baseConfig, mapConfig) {
-        baseConfig.map = mapConfig.map;
-        baseConfig.gsSources = mapConfig.gsSources || mapConfig.sources;
-        return baseConfig;
     },
     getProxyUrl: function(config = {}) {
         return config.proxyUrl ? config.proxyUrl : defaultConfig.proxyUrl;
