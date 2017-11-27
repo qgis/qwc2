@@ -151,7 +151,7 @@ class Search extends React.Component {
         if(!this.props.searchText) {
             var addonAfter = (<Glyphicon glyph="search"/>);
         } else if(this.props.searchText && this.state.focused && this.props.pendingProviders && this.props.pendingProviders.length > 0) {
-            var addonAfter = (<Spinner spinnerName="circle" noFadeIn/>);
+            var addonAfter = (<Spinner name="circle" fadeIn="none" />);
         } else {
             var addonAfter = (<Glyphicon glyph="remove" onClick={this.resetSearch}/>);
         }
