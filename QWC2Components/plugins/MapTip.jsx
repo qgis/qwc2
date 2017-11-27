@@ -132,7 +132,7 @@ const selector = (state) => ({
     layerid: state.theme ? state.theme.currentlayer : null,
     layers: state.layers && state.layers.flat ? state.layers.flat : null,
     mousepos: state.mousePosition ? state.mousePosition.position : undefined,
-    map: state.map ? state.map.present : null
+    map: state.map ? state.map : null
 });
 
 module.exports = {

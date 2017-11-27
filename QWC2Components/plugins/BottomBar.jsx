@@ -106,7 +106,7 @@ class BottomBar extends React.Component {
 };
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => {
-    let map = state && state.map && state.map.present ? state.map.present : null;
+    let map = state && state.map && state.map ? state.map : null;
     return {
         displaycrs: displaycrs,
         mapcrs: map ? map.projection : "EPSG:3857",

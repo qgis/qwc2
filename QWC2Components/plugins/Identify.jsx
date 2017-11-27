@@ -111,7 +111,7 @@ const selector = (state) => ({
     enabled: state.mapInfo && state.mapInfo.enabled,
     responses: state.mapInfo && state.mapInfo.responses || [],
     requests: state.mapInfo && state.mapInfo.requests || [],
-    map: state.map ? state.map.present : null,
+    map: state.map ? state.map : null,
     point: state.mapInfo && state.mapInfo.clickPoint || {},
     layers: state.layers && state.layers.flat || []
 });

@@ -9,8 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const {createSelector} = require('reselect');
-const {mapSelector} = require('../../MapStore2Components/selectors/map');
+const objectPath = require('object-path');
 const {changeZoomLevel} = require('../../MapStore2Components/actions/map');
 const ZoomButton = require('../../MapStore2Components/components/buttons/ZoomButton');
 require('./style/Buttons.css');
@@ -51,19 +50,19 @@ class ZoomOutButton extends React.Component {
     }
 };
 
-const zoomInSelector = createSelector([mapSelector], (map) => (
+const zoomInSelector = (state) => (
     {
-        currentZoom: map && map.zoom,
-        maxZoom: map && map.mapOptions && map.mapOptions.view && map.mapOptions.view.resolutions ? map.mapOptions.view.resolutions.length - 1 : 0
+        currentZoom: objectPath.get(state, "map.zoom", 0),
+        maxZoom: objectPath.get(state, "map.mapOptions.view.resolutions", [0]).length - 1
     }
-));
+);
 
-const zoomOutSelector = createSelector([mapSelector], (map) => (
+const zoomOutSelector = (state) => (
     {
-        currentZoom: map && map.zoom,
-        maxZoom: map && map.mapOptions && map.mapOptions.view && map.mapOptions.view.resolutions ? map.mapOptions.view.resolutions.length - 1 : 0
+        currentZoom: objectPath.get(state, "map.zoom", 0),
+        maxZoom: objectPath.get(state, "map.mapOptions.view.resolutions", [0]).length - 1
     }
-));
+);
 
 module.exports = {
     ZoomInPlugin: connect(zoomInSelector, {

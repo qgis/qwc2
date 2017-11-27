@@ -379,7 +379,7 @@ module.exports = (searchProviders) => connect(createSelector([state => state, di
     pendingProviders: state.search ? state.search.pendingProviders : null,
     results: state.search ? state.search.results : null,
     highlightedFeature: state.search ? state.search.highlightedFeature : null,
-    mapConfig: state.map ? state.map.present : undefined,
+    mapConfig: state.map ? state.map : undefined,
     displaycrs: displaycrs,
     theme: state.theme ? state.theme.current : null,
     searchProviders: searchProviders

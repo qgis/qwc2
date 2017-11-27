@@ -68,7 +68,7 @@ class DxfExport extends React.Component {
 
 const selector = (state) => ({
     theme: state.theme ? state.theme.current : null,
-    map: state.map ? state.map.present : null,
+    map: state.map ? state.map : null,
     themeLayerId: state.theme ? state.theme.currentlayer : "",
     layers: state.layers ? state.layers.flat : []
 });

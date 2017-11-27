@@ -82,7 +82,7 @@ const selector = (state) => {
     let themelayers = layers.filter(layer => layer.id == themelayerid);
     return {
         selection: state.selection,
-        mapcrs: state.map && state.map.present ? state.map.present.projection : "EPSG:3857",
+        mapcrs: state.map && state.map ? state.map.projection : "EPSG:3857",
         theme: state.theme ? state.theme.current : null,
         themelayer: themelayers.length > 0 ? themelayers[0] : null
     };

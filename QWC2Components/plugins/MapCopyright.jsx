@@ -87,7 +87,7 @@ class MapCopyright extends React.Component {
 const selector = (state) => ({
     activeTheme: state.theme ? state.theme.current : null,
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
-    map: state.map ? state.map.present : null
+    map: state.map ? state.map : null
 });
 
 module.exports = {

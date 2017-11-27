@@ -7,9 +7,7 @@
  */
 const assign = require('object-assign');
 
-const {mapConfigHistory, createHistory} = require('../utils/MapHistoryUtils');
-
-const map = mapConfigHistory(require('../reducers/map'));
+const map = require('../reducers/map');
 
 const mapConfig = require('../reducers/config');
 
@@ -34,7 +32,7 @@ module.exports = (initialState = {defaultState: {}, mobile: {}}, appReducers = {
     const mobileOverride = initialState.mobile;
 
     const rootReducer = (state, action) => {
-        let mapState = createHistory(mapConfig(state, action));
+        let mapState = mapConfig(state, action);
         let newState = {
             ...allReducers(state, action),
             map: mapState && mapState.map ? map(mapState.map, action) : null

@@ -338,7 +338,7 @@ class IdentifyViewer extends React.Component {
 const selector = (state) => ({
     theme: state.theme ? state.theme.current : null,
     layers: state.layers && state.layers.flat || [],
-    mapcrs: state && state.map && state.map.present ? state.map.present.projection : undefined
+    mapcrs: state && state.map && state.map ? state.map.projection : undefined
 });
 
 module.exports = {

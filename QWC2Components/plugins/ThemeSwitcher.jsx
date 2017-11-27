@@ -305,7 +305,7 @@ const selector = (state) => ({
     filter: state.theme ? state.theme.switcherfilter : "",
     haveMap: state.map ? true : false,
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
-    mapConfig: state.map ? state.map.present : undefined
+    mapConfig: state.map ? state.map : undefined
 });
 
 
