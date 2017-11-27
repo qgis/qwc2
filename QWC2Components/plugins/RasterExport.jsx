@@ -11,7 +11,7 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
-const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
+const ProxyUtils = require("../../MapStore2Components/utils/ProxyUtils");
 const {setCurrentTask} = require('../actions/task');
 const {TaskBar} = require('../components/TaskBar');
 const PrintFrame = require('../components/PrintFrame');
@@ -45,14 +45,11 @@ class RasterExport extends React.Component {
         };
 
         let themeLayer = this.props.layers.find(layer => layer.id === this.props.themeLayerId);
-        let action = this.props.theme.url;
         let availableFormats = this.props.theme.availableFormats;
         let defaultFormat = availableFormats.includes('image/geotiff') ? 'image/geotiff' : availableFormats[0];
         let selectedFormat = this.state.selectedFormat || defaultFormat;
         let filename = this.props.theme.name + "." + selectedFormat.split(";")[0].split("/").pop();
-        if (ConfigUtils.getConfigProp("proxyUrl")) {
-            action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(action) + "&filename=" + encodeURIComponent(filename);
-        }
+        let action = ProxyUtils.addProxyIfNeeded(this.props.theme.url, "&filename=" + encodeURIComponent(filename));
         let exportLayers = themeLayer ? themeLayer.params.LAYERS : "";
         let exportOpacities = themeLayer ? themeLayer.params.OPACITIES : "";
         let backgroundLayer = this.props.layers.find(layer => layer.group === 'background' && layer.visibility === true);

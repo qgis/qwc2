@@ -10,7 +10,7 @@ const ConfigUtils = require('./ConfigUtils');
 const {isObject} = require('lodash');
 
 var ProxyUtils = {
-    needProxy: function(uri, config = {}) {
+    addProxyIfNeeded: function(uri, extraQueryParams = "") {
         var needed = false;
         var sameOrigin = !(uri.indexOf("http") === 0);
         var urlParts = !sameOrigin && uri.match(/([^:]*:)\/\/([^:]*:?[^@]*@)?([^:\/\?]*):?([^\/\?]*)/);
@@ -26,7 +26,7 @@ var ProxyUtils = {
             }
         }
         if (!sameOrigin) {
-            let proxyUrl = ConfigUtils.getProxyUrl(config);
+            let proxyUrl = ConfigUtils.getProxyUrl();
             if (proxyUrl) {
                 let useCORS = [];
                 if (isObject(proxyUrl)) {
@@ -37,16 +37,14 @@ var ProxyUtils = {
                 if (!isCORS) {
                     needed = true;
                 }
+                if(needed) {
+                    return proxyUrl + encodeURIComponent(uri) + extraQueryParams;
+                }
+            } else {
+                console.warning("Proxy required for cross-origin request, but no proxy is configured.");
             }
         }
-        return needed;
-    },
-    getProxyUrl: function(config = {}) {
-        let proxyUrl = ConfigUtils.getProxyUrl(config);
-        if (proxyUrl && isObject(proxyUrl)) {
-            proxyUrl = proxyUrl.url;
-        }
-        return proxyUrl;
+        return uri;
     }
 };
 module.exports = ProxyUtils;

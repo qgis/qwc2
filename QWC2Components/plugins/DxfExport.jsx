@@ -11,7 +11,7 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
-const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
+const ProxyUtils = require("../../MapStore2Components/utils/ProxyUtils");
 const {setCurrentTask} = require('../actions/task');
 const {TaskBar} = require('../components/TaskBar');
 const PrintFrame = require('../components/PrintFrame');
@@ -31,10 +31,7 @@ class DxfExport extends React.Component {
         }
         let themeLayer = this.props.layers.find(layer => layer.id === this.props.themeLayerId);
         let filename = this.props.theme.name + ".dxf";
-        let action = this.props.theme.url;
-        if (ConfigUtils.getConfigProp("proxyUrl")) {
-            action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(action) + "&filename=" + encodeURIComponent(this.props.theme.name + ".dxf");
-        }
+        let action = ProxyUtils.addProxyIfNeeded(this.props.theme.url, "&filename=" + encodeURIComponent(this.props.theme.name + ".dxf"));
         return (
             <span role="body">
                 <form ref={form => this.form = form} action={action} method="POST" target="_blank">

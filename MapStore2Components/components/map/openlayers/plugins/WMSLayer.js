@@ -33,14 +33,8 @@ function getWMSURLs( urls ) {
     return urls.map((url) => url.split("\?")[0]);
 }
 
-// Works with geosolutions proxy
 function proxyTileLoadFunction(imageTile, src) {
-    var newSrc = src;
-    if (ProxyUtils.needProxy(src)) {
-        let proxyUrl = ProxyUtils.getProxyUrl();
-        newSrc = proxyUrl + encodeURIComponent(src);
-    }
-    imageTile.getImage().src = newSrc;
+    imageTile.getImage().src = ProxyUtils.addProxyIfNeeded(src);
 }
 
 Layers.registerType('wms', {

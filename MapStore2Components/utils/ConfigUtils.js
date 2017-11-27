@@ -30,7 +30,7 @@ const isMobile = require('ismobilejs');
 let localConfigFile = 'localConfig.json';
 
 let defaultConfig = {
-    proxyUrl: "/mapstore/proxy/?url=",
+    proxyUrl: "",
     geoStoreUrl: "/mapstore/rest/geostore/",
     printUrl: "/mapstore/print/info.json",
     translationsPath: "translations",
@@ -225,7 +225,7 @@ var ConfigUtils = {
         baseConfig.gsSources = mapConfig.gsSources || mapConfig.sources;
         return baseConfig;
     },
-    getProxyUrl: function(config) {
+    getProxyUrl: function(config = {}) {
         return config.proxyUrl ? config.proxyUrl : defaultConfig.proxyUrl;
     },
     /**
