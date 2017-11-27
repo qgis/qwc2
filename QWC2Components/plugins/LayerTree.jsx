@@ -14,7 +14,7 @@ const Swipeable = require('react-swipeable');
 const assign = require('object-assign');
 const classnames = require('classnames');
 const Message = require('../../MapStore2Components/components/I18N/Message');
-const {changeLayerProperties} = require('../../MapStore2Components/actions/layers')
+const {changeLayerProperties} = require('../actions/layers')
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 const {toggleMapTips} = require('../actions/layertree');
@@ -398,7 +398,7 @@ module.exports = {
         toggleMapTips: toggleMapTips
     })(LayerTree),
     reducers: {
-        layers: require('../../MapStore2Components/reducers/layers'),
+        layers: require('../reducers/layers'),
         layertree: require('../reducers/layertree')
     }
 };

@@ -32,7 +32,6 @@ class ThemeSwitcher extends React.Component {
         layers: PropTypes.array,
         changeTheme: PropTypes.func,
         changeFilter: PropTypes.func,
-        addLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         mapConfig: PropTypes.object
     }
@@ -319,6 +318,6 @@ module.exports = {
     reducers: {
         theme: require('../reducers/theme'),
         task: require('../reducers/task'),
-        layers: require('../../MapStore2Components/reducers/layers'),
+        layers: require('../reducers/layers'),
     }
 };

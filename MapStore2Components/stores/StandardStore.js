@@ -11,13 +11,11 @@ const {mapConfigHistory, createHistory} = require('../utils/MapHistoryUtils');
 
 const map = mapConfigHistory(require('../reducers/map'));
 
-const layers = require('../reducers/layers');
 const mapConfig = require('../reducers/config');
 
 const DebugUtils = require('../utils/DebugUtils');
 const {combineReducers} = require('../utils/PluginsUtils');
 
-const LayersUtils = require('../utils/LayersUtils');
 const {CHANGE_BROWSER_PROPERTIES} = require('../actions/browser');
 const {persistStore, autoRehydrate} = require('redux-persist');
 
@@ -36,11 +34,10 @@ module.exports = (initialState = {defaultState: {}, mobile: {}}, appReducers = {
     const mobileOverride = initialState.mobile;
 
     const rootReducer = (state, action) => {
-        let mapState = createHistory(LayersUtils.splitMapAndLayers(mapConfig(state, action)));
+        let mapState = createHistory(mapConfig(state, action));
         let newState = {
             ...allReducers(state, action),
-            map: mapState && mapState.map ? map(mapState.map, action) : null,
-            layers: mapState ? layers(mapState.layers, action) : null
+            map: mapState && mapState.map ? map(mapState.map, action) : null
         };
         if (action && action.type === CHANGE_BROWSER_PROPERTIES && newState.browser.mobile) {
             newState = assign(newState, mobileOverride);

@@ -7,22 +7,83 @@
  */
 
 
-const UrlParams = require("../utils/UrlParams");
+const LAYER_LOADING = 'LAYER_LOADING';
+const LAYER_LOAD = 'LAYER_LOAD';
+const LAYER_ERROR = 'LAYER_ERROR';
+const INVALID_LAYER = 'INVALID_LAYER';
+const ADD_LAYER = 'ADD_LAYER';
+const REMOVE_LAYER = 'REMOVE_LAYER';
+const CHANGE_LAYER_PROPERTIES = 'CHANGE_LAYER_PROPERTIES';
 
-function changeLayerProperties(layer, properties) {
-    return (dispatch, getState) => {
-        UrlParams.updateParams({bl: null});
-        if(properties.visibility) {
-            try {
-                // Find name for layerid
-                var layerObj = getState().layers.flat.find((obj) => {return obj.id === layer});
-                if(layerObj && layerObj.group === 'background') {
-                    UrlParams.updateParams({bl: layerObj.name});
-                }
-            } catch(e) {}
-        }
-        dispatch(require('../../MapStore2Components/actions/layers').changeLayerProperties(layer, properties));
-    }
+
+function addLayer(layer, foreground = false) {
+    return {
+        type: ADD_LAYER,
+        layer,
+        foreground
+    };
 }
 
-module.exports = {changeLayerProperties};
+function removeLayer(layerId) {
+    return {
+        type: REMOVE_LAYER,
+        layerId: layerId
+    };
+}
+
+function changeLayerProperties(layer, properties) {
+    return {
+        type: CHANGE_LAYER_PROPERTIES,
+        newProperties: properties,
+        layer: layer
+
+    };
+}
+
+function layerLoading(layerId) {
+    return {
+        type: LAYER_LOADING,
+        layerId: layerId
+    };
+}
+
+function layerLoad(layerId, error) {
+    return {
+        type: LAYER_LOAD,
+        layerId,
+        error
+    };
+}
+
+function layerError(layerId) {
+    return {
+        type: LAYER_ERROR,
+        layerId: layerId
+    };
+}
+
+function invalidLayer(layerType, options) {
+    return {
+        type: INVALID_LAYER,
+        layerType,
+        options
+    };
+}
+
+
+module.exports = {
+    layerLoading,
+    layerLoad,
+    layerError,
+    invalidLayer,
+    addLayer,
+    removeLayer,
+    changeLayerProperties,
+    LAYER_LOADING,
+    LAYER_LOAD,
+    LAYER_ERROR,
+    INVALID_LAYER,
+    ADD_LAYER,
+    REMOVE_LAYER,
+    CHANGE_LAYER_PROPERTIES
+};

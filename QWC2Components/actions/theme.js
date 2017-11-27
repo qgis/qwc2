@@ -8,7 +8,7 @@
 
 const UrlParams = require("../utils/UrlParams");
 const LayerUtils = require("../utils/LayerUtils");
-const {addLayer,removeLayer} = require("../../MapStore2Components/actions/layers");
+const {addLayer,removeLayer} = require("./layers");
 const {changeMapScales, zoomToExtent, zoomToPoint, changeMapCrs} = require("../../MapStore2Components/actions/map");
 
 const SET_CURRENT_THEME = 'SET_CURRENT_THEME';

@@ -12,7 +12,7 @@ const assign = require('object-assign');
 
 const {clickOnMap} = require('../../../MapStore2Components/actions/map');
 const {changeMapView} = require('../../actions/map');
-const {layerLoading, layerLoad, layerError, invalidLayer} = require('../../../MapStore2Components/actions/layers');
+const {layerLoading, layerLoad, layerError, invalidLayer} = require('../../actions/layers');
 const {changeMousePosition} = require('../../../MapStore2Components/actions/mousePosition');
 
 

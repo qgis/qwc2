@@ -12,7 +12,7 @@ const assign = require('object-assign');
 const {Glyphicon} = require('react-bootstrap');
 const FileSaver = require('file-saver');
 const Message = require('../../MapStore2Components/components/I18N/Message');
-const {addLayer, removeLayer, changeLayerProperties} = require('../../MapStore2Components/actions/layers');
+const {addLayer, removeLayer, changeLayerProperties} = require('../actions/layers');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 require('./style/IdentifyViewer.css');
 

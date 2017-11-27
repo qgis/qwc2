@@ -15,7 +15,7 @@ const uuid = require('uuid');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const MapInfoUtils = require("../../MapStore2Components/utils/MapInfoUtils");
 const IdentifyUtils = require('../utils/IdentifyUtils');
-const {addLayer, removeLayer} = require('../../MapStore2Components/actions/layers');
+const {addLayer, removeLayer} = require('../actions/layers');
 require('./style/MapTip.css');
 
 class MapTip extends React.Component {
