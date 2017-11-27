@@ -71,5 +71,7 @@ module.exports = {
     ZoomOutPlugin: connect(zoomOutSelector, {
         onZoom: changeZoomLevel
     })(ZoomOutButton),
-    reducers: { zoomIn: require("../../MapStore2Components/reducers/map")}
+    reducers: {
+        map: require("../../MapStore2Components/reducers/map")
+    }
 };
