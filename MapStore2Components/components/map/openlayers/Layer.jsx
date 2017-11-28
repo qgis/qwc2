@@ -35,6 +35,7 @@ class OpenlayersLayer extends React.Component {
         layer: null
     }
     componentDidMount() {
+        console.log(this.props.type);
         this.valid = true;
         this.tilestoload = 0;
         this.createLayer(this.props.type, this.props.options, this.props.position);
@@ -65,12 +66,14 @@ class OpenlayersLayer extends React.Component {
     render() {
         if (this.props.children) {
             const layer = this.state.layer;
-            const children = layer ? React.Children.map(this.props.children, child => {
-                return child ? React.cloneElement(child, {container: layer, styleName: this.props.options && this.props.options.styleName}) : null;
-            }) : null;
+            if(!layer) {
+                return null;
+            }
             return (
                 <noscript>
-                    {children}
+                    {React.Children.map(this.props.children, child => {
+                        return child ? React.cloneElement(child, {container: layer}) : null;
+                    })}
                 </noscript>
             );
         }

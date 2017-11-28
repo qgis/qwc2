@@ -14,41 +14,28 @@ const {isEqual} = require('lodash');
 class Feature extends React.Component {
     static propTypes = {
         type: PropTypes.string,
-        properties: PropTypes.object,
-        container: PropTypes.object, // TODO it must be a ol.layer.vector (maybe pass the source is more correct here?)
         geometry: PropTypes.object, // TODO check for geojson format for geometry
-        msId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        featuresCrs: PropTypes.string,
-        layerCrs: PropTypes.string
+        container: PropTypes.object, // TODO it must be a ol.layer.vector (maybe pass the source is more correct here?)
+        featureId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        crs: PropTypes.string,
+        layerCrs: PropTypes.string,
+        style: PropTypes.object
     }
     static defaultProps = {
-        featuresCrs: "EPSG:4326"
+        crs: "EPSG:4326",
+        style: null
     }
     componentDidMount() {
-        const format = new ol.format.GeoJSON();
-        const geometry = this.props.geometry && this.props.geometry.coordinates;
-
-        if (this.props.container && geometry) {
-            this._feature = format.readFeatures({type: this.props.type, properties: this.props.properties, geometry: this.props.geometry, id: this.props.msId});
-            this._feature.forEach((f) => f.getGeometry().transform(this.props.featuresCrs, this.props.layerCrs));
-            this.props.container.getSource().addFeatures(this._feature);
-        }
+        this.addToContainer(this.props);
     }
     componentWillReceiveProps(newProps) {
-        if (!isEqual(newProps.properties, this.props.properties) || !isEqual(newProps.geometry, this.props.geometry)) {
+        if (!isEqual(newProps.geometry, this.props.geometry)) {
             this.removeFromContainer();
-            const format = new ol.format.GeoJSON();
-            const geometry = newProps.geometry && newProps.geometry.coordinates;
-
-            if (newProps.container && geometry) {
-                this._feature = format.readFeatures({type: newProps.type, properties: newProps.properties, geometry: newProps.geometry, id: this.props.msId});
-                this._feature.forEach((f) => f.getGeometry().transform(newProps.featuresCrs, this.props.layerCrs));
-                newProps.container.getSource().addFeatures(this._feature);
-            }
+            this.addToContainer(newProps);
         }
-    }
-    shouldComponentUpdate(nextProps) {
-        return !isEqual(nextProps.properties, this.props.properties) || !isEqual(nextProps.geometry, this.props.geometry);
+        if(newProps.style != this.props.style) {
+            this.features.forEach((f) => f.setStyle(newProps.style));
+        }
     }
     componentWillUnmount() {
         this.removeFromContainer();
@@ -56,22 +43,24 @@ class Feature extends React.Component {
     render() {
         return null;
     }
-    removeFromContainer = () => {
-        if (this._feature) {
-            if (Array.isArray(this._feature)) {
-                const layersSource = this.props.container.getSource();
-                this._feature.map((feature) => {
-                    let fetureId = feature.getId();
-                    if (fetureId === undefined) {
-                        layersSource.removeFeature(feature);
-                    }else {
-                        layersSource.removeFeature(layersSource.getFeatureById(fetureId));
-                    }
-                });
-            } else {
-                this.props.container.getSource().removeFeature(this._feature);
-            }
+    addToContainer(props) {
+        const format = new ol.format.GeoJSON();
+        const geometry = props.geometry && props.geometry.coordinates;
+
+        if (geometry) {
+            this.features = format.readFeatures({type: props.type, properties: props.properties, geometry: props.geometry, id: props.featureId});
+            this.features.forEach((f) => {
+                f.getGeometry().transform(props.crs, props.layerCrs);
+                f.setStyle(this.props.style);
+            });
+            props.container.getSource().addFeatures(this.features);
         }
+    }
+    removeFromContainer = () => {
+        const layersSource = this.props.container.getSource();
+        (this.features || []).map((feature) => {
+            layersSource.removeFeature(feature);
+        });
     }
 };
 

@@ -14,6 +14,8 @@ const {isArray} = require('lodash');
 const assign = require('object-assign');
 const CoordinatesUtils = require('./CoordinatesUtils');
 const MapUtils = require('./MapUtils');
+const markerIcon = require('./img/marker-icon.png');
+const markerShadow = require('./img/marker-shadow.png');
 
 const MapInfoUtils = {
 
@@ -65,12 +67,37 @@ const MapInfoUtils = {
         ];
     },
     getMarkerLayer(name, clickedMapPoint, markerLabel, styleName, otherParams) {
+        const markerStyle = [
+            new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [14, 41],
+                    anchorXUnits: 'pixels',
+                    anchorYUnits: 'pixels',
+                    src: markerShadow
+                })
+            }),
+            new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 1],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    opacity: 1.,
+                    src: markerIcon
+                }),
+                text: new ol.style.Text({
+                    text: markerLabel,
+                    scale: 1.25,
+                    offsetY: 8,
+                    fill: new ol.style.Fill({color: '#000000'}),
+                    stroke: new ol.style.Stroke({color: '#FFFFFF', width: 2})
+                })
+            })
+        ];
         return {
             type: 'vector',
             visibility: true,
             name: name || "GetFeatureInfo",
-            styleName: styleName || "marker",
-            label: markerLabel,
+            style: markerStyle,
             features: MapInfoUtils.clickedPointToGeoJson(clickedMapPoint),
             ...otherParams
         };

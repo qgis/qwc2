@@ -6,151 +6,36 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var markerIcon = require('../img/marker-icon.png');
-var markerShadow = require('../img/marker-shadow.png');
 var ol = require('openlayers');
 
-const assign = require('object-assign');
+const defaultStrokeColor = [0, 0, 255, 1];
+const defaultFillColor = [0, 0, 255, 0.33];
+const defaultStrokeWidth = 2;
+const defaultCircleRadius = 10;
 
-const image = new ol.style.Circle({
-  radius: 5,
-  fill: null,
-  stroke: new ol.style.Stroke({color: 'red', width: 1})
-});
-
-const defaultStyles = {
-  'Point': () => [new ol.style.Style({
-      image: image
-  })],
-  'LineString': () => [new ol.style.Style({
-    stroke: new ol.style.Stroke({
-      color: 'green',
-      width: 1
-    })
-  })],
-  'MultiLineString': () => [new ol.style.Style({
-    stroke: new ol.style.Stroke({
-      color: 'green',
-      width: 1
-    })
-  })],
-  'MultiPoint': () => [new ol.style.Style({
-    image: image
-  })],
-  'MultiPolygon': () => [new ol.style.Style({
-    stroke: new ol.style.Stroke({
-        color: 'blue',
-        lineDash: [4],
-        width: 3
-    }),
+const defaultStyle = new ol.style.Style({
     fill: new ol.style.Fill({
-      color: 'rgba(0, 0, 255, 0.1)'
-    })
-  })],
-  'Polygon': () => [new ol.style.Style({
-    stroke: new ol.style.Stroke({
-      color: 'blue',
-      lineDash: [4],
-      width: 3
+        color: defaultFillColor
     }),
-    fill: new ol.style.Fill({
-      color: 'rgba(0, 0, 255, 0.1)'
-    })
-  })],
-  'GeometryCollection': () => [new ol.style.Style({
     stroke: new ol.style.Stroke({
-      color: 'magenta',
-      width: 2
-    }),
-    fill: new ol.style.Fill({
-      color: 'magenta'
+        color: defaultStrokeColor,
+        width: defaultStrokeWidth,
+        lineDash: [4]
     }),
     image: new ol.style.Circle({
-      radius: 10,
-      fill: null,
-      stroke: new ol.style.Stroke({
-        color: 'magenta'
-      })
+        radius: defaultCircleRadius,
+        fill: new ol.style.Fill({ color: defaultFillColor }),
+        stroke: new ol.style.Stroke({color: defaultStrokeColor, width: defaultStrokeWidth})
     })
-  })],
-  'Circle': () => [new ol.style.Style({
-    stroke: new ol.style.Stroke({
-      color: 'red',
-      width: 2
-    }),
-    fill: new ol.style.Fill({
-      color: 'rgba(255,0,0,0.2)'
-    })
-  })],
-  'marker': (options) => [new ol.style.Style({
-      image: new ol.style.Icon({
-        anchor: [14, 41],
-        anchorXUnits: 'pixels',
-        anchorYUnits: 'pixels',
-        src: markerShadow
-      })
-    }),
-    new ol.style.Style({
-      image: new ol.style.Icon({
-        anchor: [0.5, 1],
-        anchorXUnits: 'fraction',
-        anchorYUnits: 'fraction',
-        src: markerIcon
-    }),
-    text: new ol.style.Text({
-        text: options.label,
-        scale: 1.25,
-        offsetY: 8,
-        fill: new ol.style.Fill({color: '#000000'}),
-        stroke: new ol.style.Stroke({color: '#FFFFFF', width: 2})
-    })
-    })]
-};
-
-var styleFunction = function(feature, options) {
-    return defaultStyles[options.styleName || feature.getGeometry().getType()](options);
-};
+});
 
 let VectorLayer = {
     create: (options) => {
-        const source = new ol.source.Vector();
-
-        let style = options.nativeStyle;
-        if (!style && options.style) {
-            style = {
-                stroke: new ol.style.Stroke( options.style.stroke ? options.style.stroke : {
-                    color: 'blue',
-                    width: 1
-                }),
-                fill: new ol.style.Fill(options.style.fill ? options.style.fill : {
-                    color: 'blue'
-                })
-            };
-
-            if (options.style.type === "Point") {
-                style = {
-                    image: new ol.style.Circle(assign({}, style, {radius: options.style.radius || 5}))
-                };
-            }
-
-            if (options.style.iconUrl) {
-                style = {
-                    image: new ol.style.Icon(({
-                      anchor: [0.5, 1],
-                      anchorXUnits: 'fraction',
-                      anchorYUnits: 'fraction',
-                      src: options.style.iconUrl
-                    }))
-                };
-            }
-
-            style = new ol.style.Style(style);
-        }
         return new ol.layer.Vector({
             msId: options.id,
-            source: source,
+            source: new ol.source.Vector(),
             zIndex: options.zIndex,
-            style: (!options.overrideOLStyle) ? (feature) => styleFunction(feature, options) : style
+            style: options.style || defaultStyle
         });
     },
     update: (layer, newOptions, oldOptions) => {
@@ -161,8 +46,10 @@ let VectorLayer = {
                 f.getGeometry().transform(oldCrs, newCrs);
             });
         }
-        if(!newOptions.overrideOLStyle) {
-            layer.setStyle((feature) => styleFunction(feature, newOptions));
+        const oldStyle = oldOptions.style || defaultStyle;
+        const newStyle = newOptions.style || defaultStyle;
+        if(newStyle != oldStyle) {
+            layer.setStyle(newStyle);
         }
     },
     render: () => {

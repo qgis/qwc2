@@ -40,11 +40,10 @@ class MapPlugin extends React.Component {
                         key={feature.id}
                         type={feature.type}
                         geometry={feature.geometry}
-                        msId={feature.id}
-                        featuresCrs={layer.featuresCrs || 'EPSG:4326'}
+                        featureId={feature.id}
+                        crs={layer.featuresCrs || 'EPSG:4326'}
                         layerCrs={layerCrs}
-                        // FEATURE STYLE OVERWRITE LAYER STYLE
-                        style={ feature.style || layer.style || null }/>
+                        style={feature.style || null}/>
                 );
             });
         }
