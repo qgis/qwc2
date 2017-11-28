@@ -5,29 +5,27 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-var React = require('react');
+const React = require('react');
 const PropTypes = require('prop-types');
-var Layers = require('../../../utils/openlayers/Layers');
-var CoordinatesUtils = require('../../../utils/CoordinatesUtils');
-var assign = require('object-assign');
+const assign = require('object-assign');
 const _ = require('lodash');
+const CoordinatesUtils = require('../../../utils/CoordinatesUtils');
+const LayerRegistry = require('./plugins/index');
 
 class OpenlayersLayer extends React.Component {
     static propTypes = {
         map: PropTypes.object,
         mapId: PropTypes.string,
-        srs: PropTypes.string,
         type: PropTypes.string,
+        srs: PropTypes.string,
+        position: PropTypes.number,
         options: PropTypes.object,
         onLayerLoading: PropTypes.func,
         onLayerError: PropTypes.func,
         onLayerLoad: PropTypes.func,
-        position: PropTypes.number,
-        observables: PropTypes.array,
         onInvalid: PropTypes.func
     }
     static defaultProps = {
-        observables: [],
         onLayerLoading: () => {},
         onLayerLoad: () => {},
         onLayerError: () => {},
@@ -77,7 +75,11 @@ class OpenlayersLayer extends React.Component {
             );
         }
 
-        return Layers.renderLayer(this.props.type, this.props.options, this.props.map, this.props.mapId, this.state.layer);
+        let layerCreator = LayerRegistry[this.props.type];
+        if (layerCreator && layerCreator.render) {
+            return layerCreator.render(this.props.options, this.props.map, this.props.mapId, this.state.layer);
+        }
+        return null;
     }
     setLayerVisibility = (visibility) => {
         var oldVisibility = this.props.options && this.props.options.visibility !== false;
@@ -99,9 +101,10 @@ class OpenlayersLayer extends React.Component {
         });
     }
     createLayer = (type, options, position) => {
-        if (type) {
+        let layerCreator = LayerRegistry[type];
+        if (layerCreator) {
             const layerOptions = this.generateOpts(options, position, CoordinatesUtils.normalizeSRS(this.props.srs));
-            let layer = Layers.createLayer(type, layerOptions, this.props.map, this.props.mapId);
+            let layer = layerCreator.create(layerOptions, this.props.map, this.props.mapId);
             if (layer && !layer.detached) {
                 this.addLayer(layer, options);
             }
@@ -117,13 +120,15 @@ class OpenlayersLayer extends React.Component {
                 return;
             }
         }
-        Layers.updateLayer(
-            this.props.type,
+        let layerCreator = LayerRegistry[this.props.type];
+        if (layerCreator && layerCreator.update) {
+            layerCreator.update(
             this.state.layer,
             this.generateOpts(newProps.options, newProps.position, newProps.srs),
             this.generateOpts(oldProps.options, oldProps.position, oldProps.srs),
             this.props.map,
             this.props.mapId);
+        }
     }
     addLayer = (layer, options) => {
         if (this.isValid(layer)) {
@@ -143,10 +148,8 @@ class OpenlayersLayer extends React.Component {
                 layer.getSource().on('tileloadstart', () => {
                     if (this.tilestoload === 0) {
                         this.props.onLayerLoading(options.id);
-                        this.tilestoload++;
-                    } else {
-                        this.tilestoload++;
                     }
+                    this.tilestoload++;
                 });
                 layer.getSource().on('tileloadend', () => {
                     this.tilestoload--;
@@ -165,12 +168,9 @@ class OpenlayersLayer extends React.Component {
         }
     }
     isValid = (layer) => {
-        const valid = Layers.isValid(this.props.type, layer);
-        if (this.valid && !valid) {
-            this.props.onInvalid(this.props.type, this.props.options);
-        }
-        this.valid = valid;
-        return valid;
+        var layerCreator = LayerRegistry[this.props.type];
+        this.valid = layerCreator && layerCreator.isValid ? layerCreator.isValid(layer) : true;
+        return this.valid;
     }
 };
 

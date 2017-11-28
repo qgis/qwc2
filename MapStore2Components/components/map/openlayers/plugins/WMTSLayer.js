@@ -6,9 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var Layers = require('../../../../utils/openlayers/Layers');
 var ol = require('openlayers');
-var objectAssign = require('object-assign');
+var assign = require('object-assign');
 const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
 const {isArray} = require('lodash');
 const SecurityUtils = require('../../../../utils/SecurityUtils');
@@ -16,7 +15,7 @@ const mapUtils = require('../../../../utils/MapUtils');
 
 function wmtsToOpenlayersOptions(options) {
     // NOTE: can we use opacity to manage visibility?
-    return objectAssign({}, options.baseParams, {
+    return assign({}, options.baseParams, {
         LAYERS: options.name,
         STYLES: options.style || "",
         FORMAT: options.format || 'image/png',
@@ -32,7 +31,7 @@ function getWMSURLs( urls ) {
     return urls.map((url) => url.split("\?")[0]);
 }
 
-Layers.registerType('wmts', {
+let WMTSLayer = {
     create: (options) => {
         const urls = getWMSURLs(isArray(options.url) ? options.url : [options.url]);
         const queryParameters = wmtsToOpenlayersOptions(options) || {};
@@ -47,7 +46,7 @@ Layers.registerType('wmts', {
         return new ol.layer.Tile({
             opacity: options.opacity !== undefined ? options.opacity : 1,
             visible: options.visibility !== false,
-            source: new ol.source.WMTS(objectAssign({
+            source: new ol.source.WMTS(assign({
               urls: urls,
               layer: options.name,
               matrixSet: options.tileMatrixSet,
@@ -63,4 +62,6 @@ Layers.registerType('wmts', {
             }))
         });
     }
-});
+};
+
+module.exports = WMTSLayer;

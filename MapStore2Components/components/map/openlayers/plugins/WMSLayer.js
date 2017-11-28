@@ -6,9 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var Layers = require('../../../../utils/openlayers/Layers');
 var ol = require('openlayers');
-var objectAssign = require('object-assign');
+var assign = require('object-assign');
 const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
 const ProxyUtils = require('../../../../utils/ProxyUtils');
 const {isArray} = require('lodash');
@@ -17,7 +16,7 @@ const SecurityUtils = require('../../../../utils/SecurityUtils');
 
 function wmsToOpenlayersOptions(options) {
     // NOTE: can we use opacity to manage visibility?
-    return objectAssign({}, options.baseParams, {
+    return assign({}, options.baseParams, {
         LAYERS: options.name,
         STYLES: options.style || "",
         FORMAT: options.format || 'image/png',
@@ -37,7 +36,7 @@ function proxyTileLoadFunction(imageTile, src) {
     imageTile.getImage().src = ProxyUtils.addProxyIfNeeded(src);
 }
 
-Layers.registerType('wms', {
+let WMSLayer = {
     create: (options) => {
         const urls = getWMSURLs(isArray(options.url) ? options.url : [options.url]);
         const queryParameters = wmsToOpenlayersOptions(options) || {};
@@ -59,7 +58,7 @@ Layers.registerType('wms', {
             opacity: options.opacity !== undefined ? options.opacity : 1,
             visible: options.visibility !== false,
             zIndex: options.zIndex,
-            source: new ol.source.TileWMS(objectAssign({
+            source: new ol.source.TileWMS(assign({
               urls: urls,
               params: queryParameters,
               serverType: 'qgis',
@@ -93,8 +92,10 @@ Layers.registerType('wms', {
             }, false);
 
             if (changed) {
-                layer.getSource().updateParams(objectAssign(newParams, newOptions.params));
+                layer.getSource().updateParams(assign(newParams, newOptions.params));
             }
         }
     }
-});
+};
+
+module.exports = WMSLayer;

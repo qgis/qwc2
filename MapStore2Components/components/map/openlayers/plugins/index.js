@@ -6,15 +6,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-module.exports = {
-    BingLayer: require('./BingLayer'),
-    GoogleLayer: require('./GoogleLayer'),
-    GraticuleLayer: require('./GraticuleLayer'),
-    MapQuest: require('./MapQuest'),
-    OSMLayer: require('./OSMLayer'),
-    OverlayLayer: require('./OverlayLayer'),
-    TileProviderLayer: require('./TileProviderLayer'),
-    VectorLayer: require('./VectorLayer'),
-    WMSLayer: require('./WMSLayer'),
-    WMTSLayer: require('./WMTSLayer')
+
+const LayerRegistry = {
+    'bing': require('./BingLayer'),
+    'google': require('./GoogleLayer'),
+    'graticule': require('./GraticuleLayer'),
+    'mapquest': require('./MapQuest'),
+    'osm': require('./OSMLayer'),
+    'overlay': require('./OverlayLayer'),
+    'tileprovider': require('./TileProviderLayer'),
+    'vector': require('./VectorLayer'),
+    'wms': require('./WMSLayer'),
+    'wmts': require('./WMTSLayer')
 };
+
+module.exports = LayerRegistry;

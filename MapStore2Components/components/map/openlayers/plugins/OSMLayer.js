@@ -6,10 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var Layers = require('../../../../utils/openlayers/Layers');
 var ol = require('openlayers');
 
-Layers.registerType('osm', {
+let OSMLayer = {
     create: (options) => {
         return new ol.layer.Tile({
             opacity: options.opacity !== undefined ? options.opacity : 1,
@@ -18,4 +17,6 @@ Layers.registerType('osm', {
             source: new ol.source.OSM()
         });
     }
-});
+};
+
+module.exports = OSMLayer;

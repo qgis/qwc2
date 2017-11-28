@@ -33,9 +33,6 @@ const Map = connect((state) => ({
     }));
 })(require('../../../MapStore2Components/components/map/openlayers/Map'));
 
-// Map layer plugins
-require('../../../MapStore2Components/components/map/openlayers/plugins/index');
-
 module.exports = {
     Map: Map,
     Layer: require('../../../MapStore2Components/components/map/openlayers/Layer'),

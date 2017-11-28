@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var Layers = require('../../../../utils/openlayers/Layers');
 var markerIcon = require('../img/marker-icon.png');
 var markerShadow = require('../img/marker-shadow.png');
 var ol = require('openlayers');
@@ -82,7 +81,7 @@ const defaultStyles = {
     fill: new ol.style.Fill({
       color: 'rgba(255,0,0,0.2)'
     })
-})],
+  })],
   'marker': (options) => [new ol.style.Style({
       image: new ol.style.Icon({
         anchor: [14, 41],
@@ -112,7 +111,7 @@ var styleFunction = function(feature, options) {
     return defaultStyles[options.styleName || feature.getGeometry().getType()](options);
 };
 
-Layers.registerType('vector', {
+let VectorLayer = {
     create: (options) => {
         const source = new ol.source.Vector();
 
@@ -169,4 +168,6 @@ Layers.registerType('vector', {
     render: () => {
         return null;
     }
-});
+};
+
+module.exports = VectorLayer;

@@ -6,9 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var Layers = require('../../../../utils/openlayers/Layers');
 var ol = require('openlayers');
-var React = require('react');
 
 var layersMap;
 var rendererItem;
@@ -18,7 +16,7 @@ var startEvent = isTouchSupported ? 'touchstart' : 'mousedown';
 var moveEvent = isTouchSupported ? 'touchmove' : 'mousemove';
 var endEvent = isTouchSupported ? 'touchend' : 'mouseup';
 
-Layers.registerType('google', {
+let GoogleLayer = {
     create: (options, map, mapId) => {
         let google = window.google;
         if (!layersMap) {
@@ -198,4 +196,6 @@ Layers.registerType('google', {
         }
     }
 
-});
+};
+
+module.exports = GoogleLayer;

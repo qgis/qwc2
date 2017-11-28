@@ -6,11 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var Layers = require('../../../../utils/openlayers/Layers');
 var ol = require('openlayers');
 
-
-Layers.registerType('graticule', {
+let GraticuleLayer = {
     create: (options, map) => {
         let graticule = new ol.Graticule({
           strokeStyle: options.style || new ol.style.Stroke({
@@ -28,4 +26,6 @@ Layers.registerType('graticule', {
             }
         };
     }
-});
+};
+
+module.exports = GraticuleLayer;

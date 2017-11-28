@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var Layers = require('../../../../utils/openlayers/Layers');
-var ol = require('openlayers');
-var assign = require('object-assign');
-var defaultIcon = require('../img/marker-icon.png');
+const ol = require('openlayers');
+const assign = require('object-assign');
+const defaultIcon = require('../img/marker-icon.png');
+const VectorLayer = require('./VectorLayer');
 
 var icon = new ol.style.Style({
   image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
@@ -27,9 +27,11 @@ const defaultStyles = {
   })]};
 
 
-Layers.registerType('marker', {
+let MarkerLayer = {
     create: (options, map, mapId) => {
-        return Layers.createLayer('vector', assign(options, {style: () => { return defaultStyles.Point; }}), map, mapId);
+        return VectorLayer.create(assign(options, {style: () => { return defaultStyles.Point; }}), map, mapId);
 
     }
-});
+};
+
+module.exports = MarkerLayer;

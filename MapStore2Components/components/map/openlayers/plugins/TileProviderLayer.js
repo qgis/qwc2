@@ -6,14 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 var assign = require('object-assign');
-var Layers = require('../../../../utils/openlayers/Layers');
 var ol = require('openlayers');
 var TileProvider = require('../../../../utils/TileConfigProvider');
 var CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
 
-
 function template(str, data) {
-
     return str.replace(/(?!(\{?[zyx]?\}))\{*([\w_]+)*\}/g, function() {
             let st = arguments[0];
             let key = arguments[1] ? arguments[1] : arguments[2];
@@ -28,6 +25,7 @@ function template(str, data) {
             return value;
         });
 }
+
 function getUrls(opt) {
     let urls = [];
     let url = opt.url;
@@ -42,11 +40,13 @@ function getUrls(opt) {
     }
     return urls;
 }
+
 /*eslint-disable */
 function lBoundsToOlExtent(bounds, destPrj){
     var [ [ miny, minx], [ maxy, maxx ] ] = bounds;
     return CoordinatesUtils.reprojectBbox([minx, miny, maxx, maxy], 'EPSG:4326', CoordinatesUtils.normalizeSRS(destPrj));
 }
+
 /*eslint-enable */
 function tileXYZToOpenlayersOptions(options) {
     let urls = (options.url.match(/(\{s\})/)) ? getUrls(options) : [template(options.url, options)];
@@ -66,10 +66,12 @@ function tileXYZToOpenlayersOptions(options) {
     return olOpt;
 }
 
-Layers.registerType('tileprovider', {
+let TileProviderLayer = {
     create: (options) => {
         let [url, opt] = TileProvider.getLayerConfig(options.provider, options);
         opt.url = url;
         return new ol.layer.Tile(tileXYZToOpenlayersOptions(opt));
     }
-});
+};
+
+module.exports = TileProviderLayer;

@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var Layers = require('../../../../utils/openlayers/Layers');
 var ol = require('openlayers');
 var eventListener = require('eventlistener');
 
@@ -39,7 +38,7 @@ const cloneOriginalOverlay = (original, options) => {
     return cloned;
 };
 
-Layers.registerType('overlay', {
+let OverlayLayer = {
     create: (options, map) => {
         const original = document.getElementById(options.id);
         const cloned = cloneOriginalOverlay(original, options);
@@ -63,4 +62,6 @@ Layers.registerType('overlay', {
             }
         };
     }
-});
+};
+
+module.exports = OverlayLayer;

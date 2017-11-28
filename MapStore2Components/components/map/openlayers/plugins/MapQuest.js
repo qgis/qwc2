@@ -6,9 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var Layers = require('../../../../utils/openlayers/Layers');
-
-Layers.registerType('mapquest', {
+let MapQuestLayer = {
     create: (options) => {
         // MapQuest is not supported on OpenLayers
         options.onError();
@@ -18,4 +16,6 @@ Layers.registerType('mapquest', {
         // MapQuest is not supported on OpenLayers
         return false;
     }
-});
+};
+
+module.exports = MapQuestLayer;

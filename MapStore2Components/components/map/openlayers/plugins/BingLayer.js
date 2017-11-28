@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var Layers = require('../../../../utils/openlayers/Layers');
 var ol = require('openlayers');
 
 const checkLoaded = (layer, options) => {
@@ -20,7 +19,7 @@ const checkLoaded = (layer, options) => {
     }
 };
 
-Layers.registerType('bing', {
+let BingLayer = {
     create: (options) => {
         var key = options.apiKey;
         var maxNativeZoom = options.maxNativeZoom || 19;
@@ -44,4 +43,6 @@ Layers.registerType('bing', {
         }
         return true;
     }
-});
+};
+
+module.exports = BingLayer;
