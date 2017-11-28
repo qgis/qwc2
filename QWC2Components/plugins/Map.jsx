@@ -32,8 +32,7 @@ class MapPlugin extends React.Component {
         tools: {},
         toolsOptions: {}
     }
-    renderLayerContent = (layer) => {
-        const projection = this.props.map.projection || 'EPSG:3857';
+    renderLayerContent = (layer, layerCrs) => {
         if (layer.features && layer.type === "vector") {
             return layer.features.map( (feature) => {
                 return (
@@ -43,7 +42,7 @@ class MapPlugin extends React.Component {
                         geometry={feature.geometry}
                         msId={feature.id}
                         featuresCrs={layer.featuresCrs || 'EPSG:4326'}
-                        layerCrs={layer.crs || projection}
+                        layerCrs={layerCrs}
                         // FEATURE STYLE OVERWRITE LAYER STYLE
                         style={ feature.style || layer.style || null }/>
                 );
@@ -56,7 +55,7 @@ class MapPlugin extends React.Component {
         return this.props.layers.map((layer, index) => {
             return (
                 <MapComponents.Layer type={layer.type} srs={projection} position={index} key={layer.id || layer.name} options={layer}>
-                    {this.renderLayerContent(layer)}
+                    {this.renderLayerContent(layer, projection)}
                 </MapComponents.Layer>
             );
         });

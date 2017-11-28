@@ -95,7 +95,6 @@ class Search extends React.Component {
                     featuresCrs: this.props.mapConfig.projection,
                     visibility: true,
                     queryable: false,
-                    crs: this.props.mapConfig.projection,
                     layertreehidden: true
                 };
                 this.props.addLayer(layer, true);

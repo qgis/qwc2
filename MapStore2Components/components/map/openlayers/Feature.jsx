@@ -22,8 +22,7 @@ class Feature extends React.Component {
         layerCrs: PropTypes.string
     }
     static defaultProps = {
-        featuresCrs: "EPSG:4326",
-        layerCrs: "EPSG:3857"
+        featuresCrs: "EPSG:4326"
     }
     componentDidMount() {
         const format = new ol.format.GeoJSON();

@@ -27,7 +27,6 @@ class IdentifyViewer extends React.Component {
         addLayer: PropTypes.func,
         removeLayer: PropTypes.func,
         changeLayerProperties: PropTypes.func,
-        mapcrs: PropTypes.string,
         enableExport: PropTypes.bool
     }
     static defaultProps = {
@@ -124,7 +123,6 @@ class IdentifyViewer extends React.Component {
                 featuresCrs: this.props.mapcrs,
                 visibility: true,
                 queryable: false,
-                crs: this.props.mapcrs,
                 layertreehidden: true
             };
             this.props.addLayer(layer, true);
