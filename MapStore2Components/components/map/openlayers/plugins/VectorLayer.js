@@ -6,36 +6,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var ol = require('openlayers');
-
-const defaultStrokeColor = [0, 0, 255, 1];
-const defaultFillColor = [0, 0, 255, 0.33];
-const defaultStrokeWidth = 2;
-const defaultCircleRadius = 10;
-
-const defaultStyle = new ol.style.Style({
-    fill: new ol.style.Fill({
-        color: defaultFillColor
-    }),
-    stroke: new ol.style.Stroke({
-        color: defaultStrokeColor,
-        width: defaultStrokeWidth,
-        lineDash: [4]
-    }),
-    image: new ol.style.Circle({
-        radius: defaultCircleRadius,
-        fill: new ol.style.Fill({ color: defaultFillColor }),
-        stroke: new ol.style.Stroke({color: defaultStrokeColor, width: defaultStrokeWidth})
-    })
-});
+const ol = require('openlayers');
+const {isEqual} = require('lodash');
+const FeatureStyles = require('../FeatureStyles');
 
 let VectorLayer = {
     create: (options) => {
+        let styleName = options.styleName || 'default';
         return new ol.layer.Vector({
             msId: options.id,
             source: new ol.source.Vector(),
             zIndex: options.zIndex,
-            style: options.style || defaultStyle
+            style: (feature) => FeatureStyles[styleName](feature, options.styleOptions || {})
         });
     },
     update: (layer, newOptions, oldOptions) => {
@@ -46,10 +28,10 @@ let VectorLayer = {
                 f.getGeometry().transform(oldCrs, newCrs);
             });
         }
-        const oldStyle = oldOptions.style || defaultStyle;
-        const newStyle = newOptions.style || defaultStyle;
-        if(newStyle != oldStyle) {
-            layer.setStyle(newStyle);
+        const oldStyleName = oldOptions.styleName || 'default';
+        const newStyleName = newOptions.styleName || 'default';
+        if(oldStyleName != newStyleName || !isEqual(oldOptions.styleOptions, newOptions.styleOptions)) {
+            layer.setStyle(feature => FeatureStyles[newStyleName](newOptions.styleOptions || {}));
         }
     },
     render: () => {

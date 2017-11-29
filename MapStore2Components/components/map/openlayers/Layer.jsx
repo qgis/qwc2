@@ -35,7 +35,6 @@ class OpenlayersLayer extends React.Component {
         layer: null
     }
     componentDidMount() {
-        console.log(this.props.type);
         this.valid = true;
         this.tilestoload = 0;
         this.createLayer(this.props.type, this.props.options, this.props.position);

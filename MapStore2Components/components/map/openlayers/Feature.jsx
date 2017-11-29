@@ -9,21 +9,26 @@
 var React = require('react');
 const PropTypes = require('prop-types');
 var ol = require('openlayers');
+const FeatureStyles = require('./FeatureStyles');
 const {isEqual} = require('lodash');
 
 class Feature extends React.Component {
     static propTypes = {
         type: PropTypes.string,
         geometry: PropTypes.object, // TODO check for geojson format for geometry
+        properties: PropTypes.object,
         container: PropTypes.object, // TODO it must be a ol.layer.vector (maybe pass the source is more correct here?)
         featureId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         crs: PropTypes.string,
         layerCrs: PropTypes.string,
-        style: PropTypes.object
+        styleName: PropTypes.object,
+        styleOptions: PropTypes.object
     }
     static defaultProps = {
+        properties: {},
         crs: "EPSG:4326",
-        style: null
+        styleName: null,
+        styleOptions: {}
     }
     componentDidMount() {
         this.addToContainer(this.props);
@@ -32,9 +37,11 @@ class Feature extends React.Component {
         if (!isEqual(newProps.geometry, this.props.geometry)) {
             this.removeFromContainer();
             this.addToContainer(newProps);
-        }
-        if(newProps.style != this.props.style) {
-            this.features.forEach((f) => f.setStyle(newProps.style));
+        } else if(
+            newProps.styleName != this.props.styleName ||
+            isEqual(newProps.styleOptions, this.props.styleOptions)
+        ) {
+            this.updateStyle(newProps);
         }
     }
     componentWillUnmount() {
@@ -43,7 +50,7 @@ class Feature extends React.Component {
     render() {
         return null;
     }
-    addToContainer(props) {
+    addToContainer = (props) => {
         const format = new ol.format.GeoJSON();
         const geometry = props.geometry && props.geometry.coordinates;
 
@@ -51,9 +58,17 @@ class Feature extends React.Component {
             this.features = format.readFeatures({type: props.type, properties: props.properties, geometry: props.geometry, id: props.featureId});
             this.features.forEach((f) => {
                 f.getGeometry().transform(props.crs, props.layerCrs);
-                f.setStyle(this.props.style);
             });
+            this.updateStyle(props);
             props.container.getSource().addFeatures(this.features);
+        }
+    }
+    updateStyle = (props) => {
+        if(props.styleName) {
+            let style = FeatureStyles[props.styleName];
+            this.features.forEach((f) => f.setStyle(style(f, props.styleOptions || {})));
+        } else {
+            this.features.forEach((f) => f.setStyle(null));
         }
     }
     removeFromContainer = () => {

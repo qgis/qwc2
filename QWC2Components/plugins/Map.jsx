@@ -40,6 +40,7 @@ class MapPlugin extends React.Component {
                         key={feature.id}
                         type={feature.type}
                         geometry={feature.geometry}
+                        properties={feature.properties}
                         featureId={feature.id}
                         crs={layer.featuresCrs || 'EPSG:4326'}
                         layerCrs={layerCrs}
