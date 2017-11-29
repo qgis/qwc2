@@ -14,7 +14,7 @@ const {changeMapInfoState} = require('../../MapStore2Components/actions/mapInfo'
 function setCurrentTask(task, mode=null, allowIdentify=false) {
     return (dispatch) => {
         dispatch(changeMeasurement({geomType: null}));
-        dispatch(changeRedliningState({geomType: null}));
+        dispatch(changeRedliningState({action: null, geomType: null}));
         dispatch(changeMapInfoState(task === null || allowIdentify));
         dispatch({
             type: SET_CURRENT_TASK,

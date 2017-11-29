@@ -44,7 +44,8 @@ class MapPlugin extends React.Component {
                         featureId={feature.id}
                         crs={layer.featuresCrs || 'EPSG:4326'}
                         layerCrs={layerCrs}
-                        style={feature.style || null}/>
+                        styleName={feature.styleName || null}
+                        styleOptions={feature.styleOptions || {}}/>
                 );
             });
         }

@@ -10,14 +10,23 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
+const uuid = require('uuid');
 var ol = require('openlayers');
+const FeatureStyles = require('../../../MapStore2Components/components/map/openlayers/FeatureStyles');
 const {changeRedliningState} = require('../../actions/redlining');
+const {addLayer,removeLayer,addLayerFeature,removeLayerFeature} = require('../../actions/layers');
 
 class RedliningSupport extends React.Component {
     static propTypes = {
         map: PropTypes.object,
         redlining: PropTypes.object,
-        changeRedliningState: PropTypes.func
+        changeRedliningState: PropTypes.func,
+        layers: PropTypes.array,
+        mapCrs: PropTypes.string,
+        addLayer: PropTypes.func,
+        removeLayer: PropTypes.func,
+        addLayerFeature: PropTypes.func,
+        removeLayerFeature: PropTypes.func
     }
     static defaultProps = {
         redlining: {}
@@ -25,7 +34,6 @@ class RedliningSupport extends React.Component {
     constructor(props) {
         super(props);
 
-        this.redliningLayer = null;
         this.interactions = [];
         this.currentFeature = null;
         this.selectedStyle = new ol.style.Style({
@@ -55,110 +63,76 @@ class RedliningSupport extends React.Component {
         } else if(newProps.redlining.action === 'Pick' && this.props.redlining.action !== 'Pick') {
             this.addPickInteraction(newProps);
         } else if(newProps.redlining.action === 'Delete') {
-            this.deleteCurrent(this.props);
+            this.deleteCurrentFeature(this.props);
         } else if(newProps.redlining.action === 'Draw' && newProps.redlining.geomType !== this.props.redlining.geomType ) {
             this.addDrawInteraction(newProps);
         } else {
-            this.updateFeatureStyle(newProps);
+            this.updateFeatureStyle(newProps.redlining);
         }
     }
     render() {
         return null;
     }
-    createLayer = () => {
-      this.source = new ol.source.Vector();
-      this.redliningLayer = new ol.layer.Vector({
-          source: this.source,
-          zIndex: 1000000
-      });
-      this.props.map.addLayer(this.redliningLayer);
+    styleOptions = (redlining) => {
+        return {
+            strokeColor: redlining.borderColor,
+            strokeWidth: redlining.size,
+            fillColor: redlining.fillColor,
+            circleRadius: 5 + redlining.size,
+            strokeDash: []
+        };
     }
-    createStyle = (props) => {
-        return new ol.style.Style({
-            fill: new ol.style.Fill({
-                color: props.redlining.fillColor
-            }),
-            stroke: new ol.style.Stroke({
-                color: props.redlining.borderColor,
-                width: props.redlining.size
-            }),
-            image: new ol.style.Circle({
-                radius: 5 + props.redlining.size,
-                fill: new ol.style.Fill({ color: props.redlining.fillColor }),
-                stroke: new ol.style.Stroke({color: props.redlining.borderColor, width: props.redlining.size})
-            }),
-            text: new ol.style.Text({
-              font: '12pt sans',
-              text: props.redlining.text,
-              fill: new ol.style.Fill({color: 'black'}),
-              stroke: new ol.style.Stroke({color: 'white', width: 2})
-            })
-        });
-    }
-    updateFeatureStyle = (newProps) => {
-        this.currentStyle = this.createStyle(newProps);
+    updateFeatureStyle = (redlining) => {
         if(this.currentFeature) {
-            this.currentFeature.setStyle([this.currentStyle, this.selectedStyle]);
+            this.currentFeature.set('label', redlining.text);
+            let style = FeatureStyles['default'](this.currentFeature, this.styleOptions(redlining));
+            this.currentFeature.setStyle([style, this.selectedStyle]);
         }
-    }
-    deleteCurrent = (oldProps) => {
-        if(this.currentFeature) {
-            try {
-                this.source.removeFeature(this.currentFeature);
-            } catch(err) {
-            }
-            this.currentFeature = null;
-        }
-        this.props.changeRedliningState(assign({}, oldProps.redlining));
     }
     addDrawInteraction = (newProps) => {
         this.reset();
-        if(!this.redliningLayer) {
-          this.createLayer();
-        }
-
-        // create an interaction to draw with
-        this.currentStyle = this.createStyle(newProps);
         let drawInteraction = new ol.interaction.Draw({
-            source: this.source,
             type: newProps.redlining.geomType,
             style: new ol.style.Style()
         });
         drawInteraction.on('drawstart', function(evt) {
-            if(this.currentFeature) {
-                this.currentFeature.setStyle(this.currentStyle);
-                this.currentFeature = null;
-            }
             this.currentFeature = evt.feature;
-            this.currentFeature.setStyle([this.currentStyle, this.selectedStyle]);
+            this.currentFeature.setId(uuid.v4());
+            this.updateFeatureStyle(this.props.redlining);
         }, this);
         drawInteraction.on('drawend', function(evt) {
-            this.currentFeature.setStyle(this.currentStyle);
-            this.currentFeature = null;
+            this.commitCurrentFeature();
         }, this);
         this.props.map.addInteraction(drawInteraction);
         this.interactions = [drawInteraction];
     }
     addPickInteraction = () => {
         this.reset();
-        if(!this.redliningLayer) {
+        // Look for redlining layer
+        let redliningLayer = null;
+        this.props.map.getLayers().forEach(olLayer => {
+            if(olLayer.get('msId') === 'redlining') {
+                redliningLayer = olLayer;
+            }
+        });
+        if(!redliningLayer) {
             return;
         }
-        let selectInteraction = new ol.interaction.Select();
+
+        let selectInteraction = new ol.interaction.Select({layers: [redliningLayer]});
         let modifyInteraction = new ol.interaction.Modify({features: selectInteraction.getFeatures()});
         selectInteraction.on('select', function(evt) {
             if(evt.selected.length === 1 && evt.selected[0] == this.currentFeature) {
                 return;
             }
             if(this.currentFeature) {
-                this.currentFeature.setStyle(this.currentStyle);
-                this.currentFeature = null;
+                this.commitCurrentFeature();
             }
             if(evt.selected.length === 1) {
                 this.currentFeature = evt.selected[0];
                 this.props.changeRedliningState(assign({}, this.props.redlining, {
                     action: 'Pick',
-                    geomType: this.currentFeature.getGeometry().getType(),
+                    geomType: null,
                     borderColor: this.currentFeature.getStyle().getStroke().getColor(),
                     fillColor: this.currentFeature.getStyle().getFill().getColor(),
                     size: this.currentFeature.getStyle().getStroke().getWidth(),
@@ -170,19 +144,73 @@ class RedliningSupport extends React.Component {
         this.props.map.addInteraction(modifyInteraction);
         this.interactions = [selectInteraction, modifyInteraction];
     }
+    commitCurrentFeature = () => {
+        if(!this.currentFeature) {
+            return;
+        }
+        let format = new ol.format.GeoJSON();
+        let feature = format.writeFeatureObject(this.currentFeature);
+        assign(feature, {styleName: 'default', styleOptions: this.styleOptions(this.props.redlining)});
+        if(this.props.layers.find(layer => layer.id === 'redlining')) {
+            this.props.addLayerFeature('redlining', feature);
+        } else {
+            let layer = {
+                id: "redlining",
+                name: "redlining",
+                title: "Redlining",
+                type: "vector",
+                features: [feature],
+                featuresCrs: this.props.mapCrs,
+                visibility: true,
+                queryable: false,
+                zIndex: 1000000
+            };
+            this.props.addLayer(layer, true);
+        }
+        this.resetSelectedFeature();
+    }
+    deleteCurrentFeature = (oldProps) => {
+        if(!this.currentFeature) {
+            return;
+        }
+        let layer = this.props.layers.find(layer => layer.id === 'redlining');
+        let feature = layer ? layer.features.find(f => f.id == this.currentFeature.getId()) : null;
+        if(!feature) {
+            console.warning("Attempt to remove non-existing feature " + this.currentFeature.getId());
+            return;
+        }
+        if(layer.features.length === 1) {
+            this.props.removeLayer('redlining');
+        } else {
+            this.props.removeLayerFeature('redlining', this.currentFeature.getId());
+        }
+        this.currentFeature = null;
+        this.props.changeRedliningState(assign({}, oldProps.redlining));
+    }
     reset = () => {
         while(this.interactions.length > 0) {
             this.props.map.removeInteraction(this.interactions.shift());
         }
+        this.resetSelectedFeature();
+    }
+    resetSelectedFeature = () => {
         if(this.currentFeature) {
-            this.currentFeature.setStyle(this.currentStyle);
+            // Reset selection style
+            let style = FeatureStyles['default'](this.currentFeature, this.styleOptions(this.props.redlining));
+            this.currentFeature.setStyle(style);
             this.currentFeature = null;
         }
     }
 };
 
 module.exports = connect((state) => ({
-    redlining: state.redlining || {}
+    redlining: state.redlining || {},
+    layers: state.layers && state.layers.flat || [],
+    mapCrs: state && state.map && state.map ? state.map.projection : undefined
 }), {
-    changeRedliningState: changeRedliningState
+    changeRedliningState: changeRedliningState,
+    addLayer: addLayer,
+    removeLayer: removeLayer,
+    addLayerFeature: addLayerFeature,
+    removeLayerFeature: removeLayerFeature
 })(RedliningSupport);

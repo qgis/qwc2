@@ -21,11 +21,11 @@ class Feature extends React.Component {
         featureId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         crs: PropTypes.string,
         layerCrs: PropTypes.string,
-        styleName: PropTypes.object,
+        styleName: PropTypes.string,
         styleOptions: PropTypes.object
     }
     static defaultProps = {
-        properties: {},
+        properties: null,
         crs: "EPSG:4326",
         styleName: null,
         styleOptions: {}
@@ -39,7 +39,7 @@ class Feature extends React.Component {
             this.addToContainer(newProps);
         } else if(
             newProps.styleName != this.props.styleName ||
-            isEqual(newProps.styleOptions, this.props.styleOptions)
+            !isEqual(newProps.styleOptions, this.props.styleOptions)
         ) {
             this.updateStyle(newProps);
         }

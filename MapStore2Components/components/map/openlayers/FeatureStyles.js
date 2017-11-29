@@ -17,6 +17,8 @@ const FeatureStyles = {
         let strokeDash = options.strokeDash || [4];
         let fillColor = options.fillColor || [0, 0, 255, 0.33];
         let circleRadius = options.circleRadius || 10;
+        let textFill = options.textFill || 'black';
+        let textStroke = options.textStroke || 'white';
         return new ol.style.Style({
             fill: new ol.style.Fill({
                 color: fillColor
@@ -30,6 +32,12 @@ const FeatureStyles = {
                 radius: circleRadius,
                 fill: new ol.style.Fill({ color: fillColor }),
                 stroke: new ol.style.Stroke({color: strokeColor, width: strokeWidth})
+            }),
+            text: new ol.style.Text({
+              font: '12pt sans',
+              text: feature.getProperties()["label"] || "",
+              fill: new ol.style.Fill({color: textFill}),
+              stroke: new ol.style.Stroke({color: textStroke, width: 2})
             })
         });
     },

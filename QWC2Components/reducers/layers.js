@@ -15,6 +15,8 @@ const {
     INVALID_LAYER,
     ADD_LAYER,
     REMOVE_LAYER,
+    ADD_LAYER_FEATURE,
+    REMOVE_LAYER_FEATURE,
     CHANGE_LAYER_PROPERTIES
 } = require('../actions/layers');
 
@@ -69,6 +71,27 @@ function layers(state = [], action) {
         }
         case REMOVE_LAYER: {
             let newLayers = (state.flat || []).filter(lyr => lyr.id !== action.layerId);
+            return {flat: newLayers};
+        }
+        case ADD_LAYER_FEATURE: {
+            let newLayers = (state.flat || []).map(layer => {
+                if(layer.id === action.layerId) {
+                    let newFeatures = [
+                        ...layer.features.filter(f => f.id !== action.feature.id),
+                        action.feature];
+                    return assign({}, layer, {features: newFeatures});
+                }
+                return layer;
+            });
+            return {flat: newLayers};
+        }
+        case REMOVE_LAYER_FEATURE: {
+            let newLayers = (state.flat || []).map(layer => {
+                if(layer.id === action.layerId) {
+                    return assign({}, layer, {features: layer.features.filter(feature => feature.id != action.featureId)});
+                }
+                return layer;
+            });
             return {flat: newLayers};
         }
         default:

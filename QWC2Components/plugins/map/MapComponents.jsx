@@ -16,7 +16,6 @@ const {layerLoading, layerLoad, layerError, invalidLayer} = require('../../actio
 const {changeMousePosition} = require('../../../MapStore2Components/actions/mousePosition');
 
 
-// Map
 const Map = connect((state) => ({
     mousePosition: state.mousePosition || {enabled: false}
 }), {

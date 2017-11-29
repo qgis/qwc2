@@ -13,6 +13,8 @@ const LAYER_ERROR = 'LAYER_ERROR';
 const INVALID_LAYER = 'INVALID_LAYER';
 const ADD_LAYER = 'ADD_LAYER';
 const REMOVE_LAYER = 'REMOVE_LAYER';
+const ADD_LAYER_FEATURE = 'ADD_LAYER_FEATURE';
+const REMOVE_LAYER_FEATURE = 'REMOVE_LAYER_FEATURE';
 const CHANGE_LAYER_PROPERTIES = 'CHANGE_LAYER_PROPERTIES';
 
 
@@ -28,6 +30,22 @@ function removeLayer(layerId) {
     return {
         type: REMOVE_LAYER,
         layerId: layerId
+    };
+}
+
+function addLayerFeature(layerId, feature) {
+    return {
+        type: ADD_LAYER_FEATURE,
+        layerId,
+        feature
+    };
+}
+
+function removeLayerFeature(layerId, featureId) {
+    return {
+        type: REMOVE_LAYER_FEATURE,
+        layerId,
+        featureId
     };
 }
 
@@ -78,6 +96,8 @@ module.exports = {
     invalidLayer,
     addLayer,
     removeLayer,
+    addLayerFeature,
+    removeLayerFeature,
     changeLayerProperties,
     LAYER_LOADING,
     LAYER_LOAD,
@@ -85,5 +105,7 @@ module.exports = {
     INVALID_LAYER,
     ADD_LAYER,
     REMOVE_LAYER,
+    ADD_LAYER_FEATURE,
+    REMOVE_LAYER_FEATURE,
     CHANGE_LAYER_PROPERTIES
 };
