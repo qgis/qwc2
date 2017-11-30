@@ -71,6 +71,22 @@ class LayerTree extends React.Component {
         });
         return visible / group.sublayers.length;
     }
+    renderSingleLayer = (layer) => {
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
+        let checkboxstate = layer.visibility ? 'checked' : 'unchecked';
+        let checkboxstyle = {
+            backgroundImage: 'url(' + assetsPath + '/img/' + checkboxstate + '.svg)'
+        };
+        return (
+            <div className="layertree-item-container" key={layer.name}>
+                <div className="layertree-item">
+                    <span className="layertree-item-expander"></span>
+                    <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.layerToggled(layer)}></span>
+                    <span className="layertree-item-title" title={layer.title}>{layer.title}</span>
+                </div>
+            </div>
+        );
+    }
     renderLayerGroup = (layer, group, path, enabled) => {
         let subtreevisibility = this.getGroupVisibility(group);
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
@@ -114,7 +130,7 @@ class LayerTree extends React.Component {
                 </div>
                 {sublayersContent}
             </div>
-        )
+        );
     }
     renderSubLayer = (layer, sublayer, path, enabled) => {
         let pathstr = layer.id + "/" + path.join("/");
@@ -167,6 +183,8 @@ class LayerTree extends React.Component {
     renderLayerTree = (layer) => {
         if(layer.group === 'background' || layer.layertreehidden) {
             return null;
+        } else if(!layer.sublayers) {
+            return this.renderSingleLayer(layer);
         } else if(this.props.showRootEntry) {
             return this.renderLayerGroup(layer, layer, [], true);
         } else {
@@ -222,7 +240,7 @@ class LayerTree extends React.Component {
                     onHide={this.hideLegendTooltip}
                     extraTitlebarContent={extraTitlebarContent}>
                     <div role="body" className="layertree-container">
-                        <div className="layertree-tree">{this.props.layers.map(this.renderLayerTree)}</div>
+                        <div className="layertree-tree">{this.props.layers.slice(0).reverse().map(this.renderLayerTree)}</div>
                         {maptipCheckbox}
                     </div>
                 </SideBar>
@@ -264,6 +282,10 @@ class LayerTree extends React.Component {
             newsublayer.expanded = !oldexpanded;
             this.props.changeLayerProperties(layer.id, newlayer);
         }
+    }
+    layerToggled = (layer) => {
+        let newlayer = assign({}, layer, {visibility: !layer.visibility});
+        this.props.changeLayerProperties(layer.id, newlayer);
     }
     groupToggled = (layer, grouppath, oldvisibility) => {
         if(grouppath.length === 0) {
