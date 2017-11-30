@@ -170,21 +170,20 @@ class RedliningSupport extends React.Component {
         this.resetSelectedFeature();
     }
     deleteCurrentFeature = (oldProps) => {
-        if(!this.currentFeature) {
-            return;
+        if(this.currentFeature) {
+            let layer = this.props.layers.find(layer => layer.id === 'redlining');
+            let feature = layer ? layer.features.find(f => f.id == this.currentFeature.getId()) : null;
+            if(!feature) {
+                console.warning("Attempt to remove non-existing feature " + this.currentFeature.getId());
+                return;
+            }
+            if(layer.features.length === 1) {
+                this.props.removeLayer('redlining');
+            } else {
+                this.props.removeLayerFeature('redlining', this.currentFeature.getId());
+            }
+            this.currentFeature = null;
         }
-        let layer = this.props.layers.find(layer => layer.id === 'redlining');
-        let feature = layer ? layer.features.find(f => f.id == this.currentFeature.getId()) : null;
-        if(!feature) {
-            console.warning("Attempt to remove non-existing feature " + this.currentFeature.getId());
-            return;
-        }
-        if(layer.features.length === 1) {
-            this.props.removeLayer('redlining');
-        } else {
-            this.props.removeLayerFeature('redlining', this.currentFeature.getId());
-        }
-        this.currentFeature = null;
         this.props.changeRedliningState(assign({}, oldProps.redlining));
     }
     reset = () => {
