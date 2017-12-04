@@ -78,7 +78,7 @@ class LayerTree extends React.Component {
             backgroundImage: 'url(' + assetsPath + '/img/' + checkboxstate + '.svg)'
         };
         return (
-            <div className="layertree-item-container" key={layer.name}>
+            <div className="layertree-item-container" key={layer.id}>
                 <div className="layertree-item">
                     <span className="layertree-item-expander"></span>
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.layerToggled(layer)}></span>

@@ -12,7 +12,7 @@ const assign = require('object-assign');
 const {Glyphicon} = require('react-bootstrap');
 const FileSaver = require('file-saver');
 const Message = require('../../MapStore2Components/components/I18N/Message');
-const {addLayer, removeLayer, changeLayerProperties} = require('../actions/layers');
+const {addLayerFeatures, removeLayer} = require('../actions/layers');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 require('./style/IdentifyViewer.css');
 
@@ -24,9 +24,8 @@ class IdentifyViewer extends React.Component {
         missingResponses: PropTypes.number,
         responses: PropTypes.array,
         layers: PropTypes.array,
-        addLayer: PropTypes.func,
+        addLayerFeatures: PropTypes.func,
         removeLayer: PropTypes.func,
-        changeLayerProperties: PropTypes.func,
         enableExport: PropTypes.bool
     }
     static defaultProps = {
@@ -66,7 +65,7 @@ class IdentifyViewer extends React.Component {
         }
     }
     componentWillUnmount() {
-        this.props.removeLayer('identifyselection');
+        this.props.removeLayer("identifyslection");
     }
     populateDisplayFieldMap = (displayFieldMap, item) => {
         if(item.sublayers) {
@@ -105,35 +104,18 @@ class IdentifyViewer extends React.Component {
     }
     setHighlightedFeatures = (features, resultTree) => {
         if(!features) {
-            features=[];
-            Object.keys(resultTree).map(key => {
-                features = features.concat(resultTree[key].map(feature => assign({}, feature, {id: key + "." + feature.id})))}
-            );
+            features = Object.keys(resultTree).reduce((result, key) => {
+                return result.concat(resultTree[key].map(feature => assign({}, feature, {id: key + "." + feature.id})));
+            }, []);
         }
-        let haveLayer = this.props.layers.find(layer => layer.id === 'identifyselection') !== undefined;
-        if(features.length === 0 && haveLayer) {
-            this.props.removeLayer('identifyselection');
-        } else if(features.length > 0 && !haveLayer) {
-            let layer = {
-                id: 'identifyselection',
-                name: 'identifyselection',
-                title: 'Selection',
-                type: "vector",
-                features: features,
-                featuresCrs: this.props.mapcrs,
-                visibility: true,
-                queryable: false,
-                layertreehidden: true
-            };
-            this.props.addLayer(layer, true);
-        } else if(features.length > 0 && haveLayer) {
-            let newlayerprops = {
-                visibility: true,
-                features: features,
-                featuresCrs: this.props.mapcrs,
-            };
-            this.props.changeLayerProperties('identifyselection', newlayerprops);
-        }
+        const layer = {
+            id: "identifyslection",
+            visibility: true,
+            queryable: false,
+            zIndex: 1000,
+            layertreehidden: true
+        };
+        this.props.addLayerFeatures(layer, features, true);
     }
     getExpandedClass = (path, deflt) => {
         let expanded = this.state.expanded[path] !== undefined ? this.state.expanded[path] : deflt;
@@ -341,8 +323,7 @@ const selector = (state) => ({
 
 module.exports = {
     IdentifyViewer: connect(selector, {
-        addLayer: addLayer,
+        addLayerFeatures: addLayerFeatures,
         removeLayer: removeLayer,
-        changeLayerProperties: changeLayerProperties
     })(IdentifyViewer)
 };

@@ -13,8 +13,6 @@ const uuid = require('uuid');
 const SEARCH_CHANGE = 'SEARCH_CHANGE';
 const SEARCH_SET_REQUEST = 'SEARCH_SET_REQUEST';
 const SEARCH_ADD_RESULTS = 'SEARCH_ADD_RESULTS';
-const SEARCH_ADD_MARKER = 'SEARCH_ADD_MARKER';
-const SEARCH_SET_HIGHLIGHTED_FEATURE = 'SEARCH_SET_HIGHLIGHTED_FEATURE';
 
 function changeSearch(text, provider) {
     UrlParams.updateParams({st: text, sp: provider || undefined});
@@ -61,31 +59,12 @@ function addSearchResults(results, append) {
     };
 }
 
-function addMarker(itemPosition, itemText) {
-    return {
-        type: SEARCH_ADD_MARKER,
-        markerPosition: itemPosition,
-        markerLabel: itemText
-    };
-}
-
-function setHighlightedFeature(feature) {
-    return {
-        type: SEARCH_SET_HIGHLIGHTED_FEATURE,
-        highlightedFeature: feature
-    };
-}
-
 module.exports = {
     SEARCH_CHANGE,
     SEARCH_SET_REQUEST,
     SEARCH_ADD_RESULTS,
-    SEARCH_ADD_MARKER,
-    SEARCH_SET_HIGHLIGHTED_FEATURE,
     changeSearch,
     startSearch,
     searchMore,
-    addSearchResults,
-    addMarker,
-    setHighlightedFeature
+    addSearchResults
 };

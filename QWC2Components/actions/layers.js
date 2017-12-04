@@ -15,6 +15,8 @@ const ADD_LAYER = 'ADD_LAYER';
 const REMOVE_LAYER = 'REMOVE_LAYER';
 const ADD_LAYER_FEATURE = 'ADD_LAYER_FEATURE';
 const REMOVE_LAYER_FEATURE = 'REMOVE_LAYER_FEATURE';
+const ADD_LAYER_FEATURES = 'ADD_LAYER_FEATURES';
+const REMOVE_LAYER_FEATURES = 'REMOVE_LAYER_FEATURES';
 const CHANGE_LAYER_PROPERTIES = 'CHANGE_LAYER_PROPERTIES';
 
 
@@ -49,11 +51,28 @@ function removeLayerFeature(layerId, featureId) {
     };
 }
 
-function changeLayerProperties(layer, properties) {
+function addLayerFeatures(layer, features, clear=false) {
+    return {
+        type: ADD_LAYER_FEATURES,
+        layer,
+        features,
+        clear
+    }
+}
+
+function removeLayerFeatures(layerId, featureIds) {
+    return {
+        type: REMOVE_LAYER_FEATURES,
+        layerId,
+        featureIds
+    }
+}
+
+function changeLayerProperties(layerId, properties) {
     return {
         type: CHANGE_LAYER_PROPERTIES,
         newProperties: properties,
-        layer: layer
+        layerId: layerId
 
     };
 }
@@ -88,6 +107,30 @@ function invalidLayer(layerType, options) {
     };
 }
 
+function addMarker(id, point, label='', crs='EPSG:4326') {
+    let layer = {
+        id: "markers",
+        visibility: true,
+        queryable: false,
+        zIndex: 100000000,
+        layertreehidden: true
+    }
+    let feature = {
+        id: id,
+        geometry: {
+            type: 'Point',
+            coordinates: point
+        },
+        properties: { label: label },
+        crs: crs,
+        styleName: 'marker'
+    };
+    return addLayerFeatures(layer, [feature]);
+}
+
+function removeMarker(id) {
+    return removeLayerFeatures("markers", [id]);
+}
 
 module.exports = {
     layerLoading,
@@ -98,7 +141,11 @@ module.exports = {
     removeLayer,
     addLayerFeature,
     removeLayerFeature,
+    addLayerFeatures,
+    removeLayerFeatures,
     changeLayerProperties,
+    addMarker,
+    removeMarker,
     LAYER_LOADING,
     LAYER_LOAD,
     LAYER_ERROR,
@@ -107,5 +154,7 @@ module.exports = {
     REMOVE_LAYER,
     ADD_LAYER_FEATURE,
     REMOVE_LAYER_FEATURE,
+    ADD_LAYER_FEATURES,
+    REMOVE_LAYER_FEATURES,
     CHANGE_LAYER_PROPERTIES
 };

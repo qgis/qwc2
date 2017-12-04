@@ -14,19 +14,15 @@ const uuid = require('uuid');
 var ol = require('openlayers');
 const FeatureStyles = require('../../../MapStore2Components/components/map/openlayers/FeatureStyles');
 const {changeRedliningState} = require('../../actions/redlining');
-const {addLayer,removeLayer,addLayerFeature,removeLayerFeature} = require('../../actions/layers');
+const {addLayerFeatures,removeLayerFeatures} = require('../../actions/layers');
 
 class RedliningSupport extends React.Component {
     static propTypes = {
         map: PropTypes.object,
         redlining: PropTypes.object,
         changeRedliningState: PropTypes.func,
-        layers: PropTypes.array,
-        mapCrs: PropTypes.string,
-        addLayer: PropTypes.func,
-        removeLayer: PropTypes.func,
-        addLayerFeature: PropTypes.func,
-        removeLayerFeature: PropTypes.func
+        addLayerFeatures: PropTypes.func,
+        removeLayerFeatures: PropTypes.func
     }
     static defaultProps = {
         redlining: {}
@@ -151,37 +147,19 @@ class RedliningSupport extends React.Component {
         let format = new ol.format.GeoJSON();
         let feature = format.writeFeatureObject(this.currentFeature);
         assign(feature, {styleName: 'default', styleOptions: this.styleOptions(this.props.redlining)});
-        if(this.props.layers.find(layer => layer.id === 'redlining')) {
-            this.props.addLayerFeature('redlining', feature);
-        } else {
-            let layer = {
-                id: "redlining",
-                name: "redlining",
-                title: "Redlining",
-                type: "vector",
-                features: [feature],
-                featuresCrs: this.props.mapCrs,
-                visibility: true,
-                queryable: false,
-                zIndex: 1000000
-            };
-            this.props.addLayer(layer, true);
-        }
+        let layer = {
+            id: "redlining",
+            title: "Redlining",
+            visibility: true,
+            queryable: false,
+            zIndex: 1000000
+        };
+        this.props.addLayerFeatures(layer, [feature]);
         this.resetSelectedFeature();
     }
     deleteCurrentFeature = (oldProps) => {
         if(this.currentFeature) {
-            let layer = this.props.layers.find(layer => layer.id === 'redlining');
-            let feature = layer ? layer.features.find(f => f.id == this.currentFeature.getId()) : null;
-            if(!feature) {
-                console.warning("Attempt to remove non-existing feature " + this.currentFeature.getId());
-                return;
-            }
-            if(layer.features.length === 1) {
-                this.props.removeLayer('redlining');
-            } else {
-                this.props.removeLayerFeature('redlining', this.currentFeature.getId());
-            }
+            this.props.removeLayerFeatures("redlining", this.currentFeature.getId());
             this.currentFeature = null;
         }
         this.props.changeRedliningState(assign({}, oldProps.redlining));
@@ -203,13 +181,9 @@ class RedliningSupport extends React.Component {
 };
 
 module.exports = connect((state) => ({
-    redlining: state.redlining || {},
-    layers: state.layers && state.layers.flat || [],
-    mapCrs: state && state.map && state.map ? state.map.projection : undefined
+    redlining: state.redlining || {}
 }), {
     changeRedliningState: changeRedliningState,
-    addLayer: addLayer,
-    removeLayer: removeLayer,
-    addLayerFeature: addLayerFeature,
-    removeLayerFeature: removeLayerFeature
+    addLayerFeatures: addLayerFeatures,
+    removeLayerFeatures: removeLayerFeatures
 })(RedliningSupport);

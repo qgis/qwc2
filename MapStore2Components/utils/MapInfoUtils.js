@@ -49,27 +49,6 @@ const MapInfoUtils = {
     getDefaultInfoFormatValue() {
         return INFO_FORMATS[MapInfoUtils.AVAILABLE_FORMAT[0]];
     },
-    getMarkerLayer(name, clickedPoint, markerLabel, styleName, otherParams) {
-        let fea
-        return {
-            type: 'vector',
-            visibility: true,
-            name: name || "GetFeatureInfo",
-            styleName: "marker",
-            features: [{
-                id: "get-feature-info-point",
-                type: "Feature",
-                geometry: {
-                    type: 'Point',
-                    coordinates: [parseFloat(clickedPoint.lng), parseFloat(clickedPoint.lat)]
-                },
-                properties: {
-                    label: markerLabel
-                }
-            }],
-            ...otherParams
-        };
-    },
     /**
      * Returns a bounds object.
      * @param {number} minX Minimum X.

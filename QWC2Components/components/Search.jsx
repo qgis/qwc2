@@ -17,9 +17,9 @@ const Message = require('../../MapStore2Components/components/I18N/Message');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const mapUtils = require('../../MapStore2Components/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
-const {addLayer, removeLayer} = require('../actions/layers');
+const {addMarker, removeMarker, addLayerFeatures, removeLayer} = require('../actions/layers');
 const {changeMapView} = require('../actions/map');
-const {changeSearch, startSearch, searchMore, addMarker, setHighlightedFeature} = require("../actions/search");
+const {changeSearch, startSearch, searchMore} = require("../actions/search");
 const displayCrsSelector = require('../selectors/displaycrs');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 const UrlParams = require("../utils/UrlParams");
@@ -32,17 +32,16 @@ class Search extends React.Component {
         pendingProviders: PropTypes.array, // Providers for which results are pending
         searchProviders: PropTypes.object, // All available search providers
         results: PropTypes.array,
-        highlightedFeature: PropTypes.object,
         theme: PropTypes.object,
         mapConfig: PropTypes.object,
         displaycrs: PropTypes.string,
         changeSearch: PropTypes.func,
         startSearch: PropTypes.func,
         searchMore: PropTypes.func,
-        addMarker: PropTypes.func,
-        setHighlightedFeature: PropTypes.func,
         panToResult: PropTypes.func,
-        addLayer: PropTypes.func,
+        addMarker: PropTypes.func,
+        removeMarker: PropTypes.func,
+        addLayerFeatures: PropTypes.func,
         removeLayer: PropTypes.func,
         searchOptions: PropTypes.object
     }
@@ -82,24 +81,6 @@ class Search extends React.Component {
                 this.showResult(newProps.results[0].items[0], false);
             }
         }
-        // Handle changes in highlighted feature
-        if(newProps.highlightedFeature !== this.props.highlightedFeature) {
-            this.props.removeLayer("searchselection");
-            if(newProps.highlightedFeature) {
-                let layer = {
-                    id: "searchselection",
-                    name: "Search selection",
-                    title: "Selection",
-                    type: "vector",
-                    features: [newProps.highlightedFeature],
-                    featuresCrs: this.props.mapConfig.projection,
-                    visibility: true,
-                    queryable: false,
-                    layertreehidden: true
-                };
-                this.props.addLayer(layer, true);
-            }
-        }
     }
     killEvent = (ev) => {
         ev.preventDefault();
@@ -113,6 +94,7 @@ class Search extends React.Component {
     resetSearch = () => {
         this.setState({currentResult: null, focused: false, showfields: false});
         this.props.changeSearch("", this.props.searchProvider);
+        this.props.removeMarker('searchmarker');
     }
     onChange = (ev) => {
         this.props.changeSearch(ev.target.value, this.props.searchProvider);
@@ -327,7 +309,7 @@ class Search extends React.Component {
             this.props.searchProviders[item.provider].getResultGeometry(item, (item, geometry, crs) => { this.showFeatureGeometry(item, geometry, crs, text)});
         }
         else{
-            this.props.addMarker({lat: wgscenterlatlon.y, lng: wgscenterlatlon.x}, text);
+            this.props.addMarker('searchmarker', [item.x, item.y], text, item.crs);
         }
         this.setState({currentResult: item});
     }
@@ -337,9 +319,15 @@ class Search extends React.Component {
             feature.geometry = IdentifyUtils.reprojectFeatureGeometry(feature.geometry, crs, this.props.mapConfig.projection);
             let geojson  = new ol.format.GeoJSON().readFeature(feature);
             let center = this.getFeatureCenter(geojson.getGeometry());
-            let wgscenterlatlon = CoordinatesUtils.reproject(center, item.crs, "EPSG:4326");
-            this.props.addMarker({lat: wgscenterlatlon.y, lng: wgscenterlatlon.x}, text);
-            this.props.setHighlightedFeature(feature);
+            this.props.addMarker('searchmarker', center, text, this.props.mapConfig.projection);
+            let layer = {
+                id: "searchselection",
+                visibility: true,
+                queryable: false,
+                zIndex: 1000,
+                layertreehidden: true
+            };
+            this.props.addLayerFeatures(layer, [feature], true);
         }
     }
     getFeatureCenter = (geometry) => {
@@ -377,7 +365,6 @@ module.exports = (searchProviders) => connect(createSelector([state => state, di
     searchProvider: state.search ?  state.search.provider : null,
     pendingProviders: state.search ? state.search.pendingProviders : null,
     results: state.search ? state.search.results : null,
-    highlightedFeature: state.search ? state.search.highlightedFeature : null,
     mapConfig: state.map ? state.map : undefined,
     displaycrs: displaycrs,
     theme: state.theme ? state.theme.current : null,
@@ -386,9 +373,9 @@ module.exports = (searchProviders) => connect(createSelector([state => state, di
     changeSearch: changeSearch,
     startSearch: startSearch,
     searchMore: searchMore,
-    addMarker: addMarker,
-    setHighlightedFeature: setHighlightedFeature,
     panToResult: changeMapView,
-    addLayer: addLayer,
+    addMarker: addMarker,
+    removeMarker: removeMarker,
+    addLayerFeatures: addLayerFeatures,
     removeLayer: removeLayer
 })(Search);

@@ -9,10 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const {createSelector} = require('reselect');
 
-const {mapSelector} = require('../../MapStore2Components/selectors/map');
-const {layerSelectorWithMarkers} = require('../../MapStore2Components/selectors/layers');
 const MapComponents = require('./map/MapComponents');
 
 require('./style/Map.css');
@@ -38,11 +35,11 @@ class MapPlugin extends React.Component {
                 return (
                     <MapComponents.Feature
                         key={feature.id}
-                        type={feature.type}
+                        type={feature.type || "Feature"}
                         geometry={feature.geometry}
                         properties={feature.properties}
                         featureId={feature.id}
-                        crs={layer.featuresCrs || 'EPSG:4326'}
+                        crs={feature.crs || layerCrs}
                         layerCrs={layerCrs}
                         styleName={feature.styleName || null}
                         styleOptions={feature.styleOptions || {}}/>
@@ -94,9 +91,9 @@ class MapPlugin extends React.Component {
 };
 
 module.exports = (tools) => { return {
-    MapPlugin: connect(createSelector([mapSelector, layerSelectorWithMarkers], (map, layers) => ({
-        map,
-        layers,
+    MapPlugin: connect((state) => ({
+        map: state.map,
+        layers: state.layers && state.layers.flat || [],
         tools
-    })))(MapPlugin)
+    }))(MapPlugin)
 }};

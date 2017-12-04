@@ -8,6 +8,7 @@
 
 const assign = require('object-assign');
 const UrlParams = require("../utils/UrlParams");
+const {isEmpty} = require('lodash');
 const {
     LAYER_LOADING,
     LAYER_LOAD,
@@ -17,7 +18,9 @@ const {
     REMOVE_LAYER,
     ADD_LAYER_FEATURE,
     REMOVE_LAYER_FEATURE,
-    CHANGE_LAYER_PROPERTIES
+    CHANGE_LAYER_PROPERTIES,
+    ADD_LAYER_FEATURES,
+    REMOVE_LAYER_FEATURES
 } = require('../actions/layers');
 
 
@@ -48,13 +51,13 @@ function layers(state = [], action) {
             return assign({}, state, {flat: newLayers});
         }
         case CHANGE_LAYER_PROPERTIES: {
-            let layer = state.flat.find((layer) => {return layer.id === action.layer});
+            let layer = state.flat.find((layer) => {return layer.id === action.layerId});
             let isBackground = layer ? layer.group === 'background' : false;
             if(isBackground) {
                 UrlParams.updateParams({bl: layer.name});
             }
             const newLayers = (state.flat || []).map((layer) => {
-                if (layer.id === action.layer) {
+                if (layer.id === action.layerId) {
                     return assign({}, layer, action.newProperties);
                 } else if (layer.group === 'background' && isBackground) {
                     return assign({}, layer, {visibility: false});
@@ -92,6 +95,36 @@ function layers(state = [], action) {
                 }
                 return layer;
             });
+            return {flat: newLayers};
+        }
+        case ADD_LAYER_FEATURES: {
+            let newLayers = (state.flat || []).concat();
+            let idx = newLayers.findIndex(layer => layer.id === action.layer.id);
+            if(idx == -1) {
+                let newLayer = assign({}, action.layer, {type: 'vector', features: action.features});
+                newLayers.push(newLayer);
+            } else if(action.clear) {
+                newLayers[idx] = assign({}, action.layer, {type: 'vector', features: action.features});
+            } else {
+                let newFeatures = [
+                    ...newLayers[idx].features.filter(f => action.features.find(g => g.id === f.id) === undefined),
+                    ...action.features];
+                newLayers[idx] = assign({}, newLayers[idx], {features: newFeatures});
+            }
+            return {flat: newLayers};
+        }
+        case REMOVE_LAYER_FEATURES: {
+            let newLayers = (state.flat || []).reduce((result, layer) => {
+                if(layer.id === action.layerId) {
+                    let newFeatures = layer.features.filter(f => action.featureIds.includes(f.id) === false);
+                    if(!isEmpty(newFeatures)) {
+                        result.push(assign({}, layer, {features: newFeatures}));
+                    }
+                } else {
+                    result.push(layer);
+                }
+                return result;
+            }, []);
             return {flat: newLayers};
         }
         default:

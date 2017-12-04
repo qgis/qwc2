@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var {SEARCH_CHANGE, SEARCH_SET_REQUEST, SEARCH_ADD_RESULTS, SEARCH_ADD_MARKER, SEARCH_SET_HIGHLIGHTED_FEATURE} = require('../actions/search');
+var {SEARCH_CHANGE, SEARCH_SET_REQUEST, SEARCH_ADD_RESULTS} = require('../actions/search');
 
 const assign = require('object-assign');
 
@@ -27,10 +27,6 @@ function search(state = null, action) {
             let pendingProviders = state.pendingProviders.slice(0);
             pendingProviders.splice(pendingProviders.indexOf(action.results.provider), 1);
             return assign({}, state, { results: results, pendingProviders: pendingProviders });
-        case SEARCH_ADD_MARKER:
-            return assign({}, state, { markerPosition: action.markerPosition, markerLabel: action.markerLabel });
-        case SEARCH_SET_HIGHLIGHTED_FEATURE:
-            return assign({}, state, {highlightedFeature: action.highlightedFeature});
         default:
             return state;
     }
