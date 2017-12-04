@@ -38,8 +38,7 @@ var CoordinatesUtils = {
     normalizePoint: function(point) {
         return {
             x: point.x || 0.0,
-            y: point.y || 0.0,
-            srs: point.srs || 'EPSG:4326'
+            y: point.y || 0.0
         };
     },
     /**
@@ -51,33 +50,16 @@ var CoordinatesUtils = {
      *
      * @return {array} [minx, miny, maxx, maxy]
      */
-    reprojectBbox: function(bbox, source, dest, normalize = true) {
-        let points;
+    reprojectBbox: function(bbox, source, dest) {
         if (isArray(bbox)) {
-            points = {
-                sw: [bbox[0], bbox[1]],
-                ne: [bbox[2], bbox[3]]
-            };
+            let sw = CoordinatesUtils.reproject([bbox[0], bbox[1]], source, dest);
+            let ne = CoordinatesUtils.reproject([bbox[2], bbox[3]], source, dest);
+            return [sw.x, sw.y, ne.x, ne.y];
         } else {
-            points = {
-                sw: [bbox.minx, bbox.miny],
-                ne: [bbox.maxx, bbox.maxy]
-            };
+            let sw = CoordinatesUtils.reproject([bbox.minx, bbox.miny], source, dest);
+            let ne = CoordinatesUtils.reproject([bbox.maxx, bbox.maxy], source, dest);
+            return [sw.x, sw.y, ne.x, ne.y];
         }
-        let projPoints = [];
-        for (let p in points) {
-            if (points.hasOwnProperty(p)) {
-                const projected = CoordinatesUtils.reproject(points[p], source, dest, normalize);
-                if (projected) {
-                    let {x, y} = projected;
-                    projPoints.push(x);
-                    projPoints.push(y);
-                } else {
-                    return null;
-                }
-            }
-        }
-        return projPoints;
     },
     getCompatibleSRS(srs, allowedSRS) {
         if (srs === 'EPSG:900913' && !allowedSRS['EPSG:900913'] && allowedSRS['EPSG:3857']) {

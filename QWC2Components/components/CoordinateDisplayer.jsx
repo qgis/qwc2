@@ -18,20 +18,21 @@ class CoordinateDisplayer extends React.Component {
         diplaycrs: PropTypes.string
     }
     render() {
-        let {x, y} = CoordinatesUtils.reproject([this.props.mousepos.x, this.props.mousepos.y], this.props.mousepos.crs, this.props.displaycrs);
-        let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
+        let value = "";
+        if(this.props.mousepos) {
+            let {x, y} = CoordinatesUtils.reproject([this.props.mousepos.lng, this.props.mousepos.lat], "EPSG:4326", this.props.displaycrs);
+            let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
+            value = x.toFixed(digits) + " " + y.toFixed(digits);
+        }
         return (
-            <input type="text" className="coordinatedisplayer"
-                value={x.toFixed(digits) + " " + y.toFixed(digits)}
-                readOnly="readOnly"/>
+            <input type="text" className="coordinatedisplayer" value={value} readOnly="readOnly"/>
         )
     }
 };
 
 const selector = (state) => {
-    let mousepos = state && state.mousePosition && state.mousePosition.position ? state.mousePosition.position : {};
     return  {
-        mousepos: {x: mousepos.x || 0, y: mousepos.y || 0, crs: mousepos.crs || "EPSG:4326"},
+        mousepos: state.mousePosition && state.mousePosition.position ? state.mousePosition.position.latlng : undefined,
     };
 };
 module.exports = {

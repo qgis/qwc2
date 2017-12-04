@@ -11,7 +11,6 @@ const PropTypes = require('prop-types');
 var assign = require('object-assign');
 
 var CoordinatesUtils = require('../../../utils/CoordinatesUtils');
-var ConfigUtils = require('../../../utils/ConfigUtils');
 var mapUtils = require('../../../utils/MapUtils');
 
 const {isEqual} = require('lodash');
@@ -20,9 +19,12 @@ class OpenlayersMap extends React.Component {
     static propTypes = {
         id: PropTypes.string,
         style: PropTypes.object,
-        center: ConfigUtils.PropTypes.center,
+        center: PropTypes.shape({
+            x: PropTypes.number.isRequired,
+            y: PropTypes.number.isRequired
+        }),
         zoom: PropTypes.number.isRequired,
-        mapStateSource: ConfigUtils.PropTypes.mapStateSource,
+        mapStateSource: PropTypes.string,
         projection: PropTypes.string,
         onMapViewChanges: PropTypes.func,
         onClick: PropTypes.func,
@@ -34,8 +36,6 @@ class OpenlayersMap extends React.Component {
         onLayerLoad: PropTypes.func,
         onLayerError: PropTypes.func,
         resize: PropTypes.number,
-        measurement: PropTypes.object,
-        changeMeasurementState: PropTypes.func,
         registerHooks: PropTypes.bool,
         interactive: PropTypes.bool,
         onInvalidLayer: PropTypes.func
@@ -44,7 +44,7 @@ class OpenlayersMap extends React.Component {
         id: 'map',
         onMapViewChanges: () => {},
         onInvalidLayer: () => {},
-        onClick: null,
+        onClick: () => {},
         onMouseMove: () => {},
         mapOptions: {},
         projection: 'EPSG:3857',
@@ -56,8 +56,6 @@ class OpenlayersMap extends React.Component {
         interactive: true
     }
     componentDidMount() {
-        var center = CoordinatesUtils.reproject([this.props.center.x, this.props.center.y], 'EPSG:4326', this.props.projection);
-
         let interactionsOptions = assign(this.props.interactive ? {} : {
             doubleClickZoom: false,
             dragPan: false,
@@ -94,50 +92,35 @@ class OpenlayersMap extends React.Component {
           controls: controls,
           interactions: interactions,
           target: this.props.id,
-          view: this.createView(center, Math.round(this.props.zoom), this.props.projection, this.props.mapOptions && this.props.mapOptions.view)
+          view: this.createView(this.props.center, Math.round(this.props.zoom), this.props.projection, this.props.mapOptions && this.props.mapOptions.view)
         });
         map.on('moveend', this.updateMapInfoState);
         map.on('singleclick', (event) => {
-            if (this.props.onClick) {
-                let pos = event.coordinate.slice();
-                let coords = ol.proj.toLonLat(pos, this.props.projection);
-                let tLng = (( coords[0] / 360) % 1) * 360;
-                if (tLng < -180) {
-                    tLng = tLng + 360;
-                } else if (tLng > 180) {
-                    tLng = tLng - 360;
+            let latlng = ol.proj.toLonLat(event.coordinate, this.props.projection);
+            this.props.onClick({
+                latlng: {
+                    lng: latlng[0],
+                    lat: latlng[1]
+                },
+                pixel: {
+                    x: event.pixel[0],
+                    y: event.pixel[1]
+                },
+                modifiers: {
+                    alt: event.originalEvent.altKey,
+                    ctrl: event.originalEvent.ctrlKey,
+                    shift: event.originalEvent.shiftKey
                 }
-                this.props.onClick({
-                    pixel: {
-                        x: event.pixel[0],
-                        y: event.pixel[1]
-                    },
-                    latlng: {
-                        lat: coords[1],
-                        lng: tLng
-                    },
-                    modifiers: {
-                        alt: event.originalEvent.altKey,
-                        ctrl: event.originalEvent.ctrlKey,
-                        shift: event.originalEvent.shiftKey
-                    }
-                });
-            }
+            });
         });
         map.on('pointermove', (event) => {
-            if (!event.dragging && event.coordinate) {
-                let pos = event.coordinate.slice();
-                let coords = ol.proj.toLonLat(pos, this.props.projection);
-                let tLng = (( coords[0] / 360) % 1) * 360;
-                if (tLng < -180) {
-                    tLng = tLng + 360;
-                } else if (tLng > 180) {
-                    tLng = tLng - 360;
-                }
+            if (!event.dragging) {
+                let latlng = ol.proj.toLonLat(event.coordinate, this.props.projection);
                 this.props.onMouseMove({
-                    y: coords[1],
-                    x: tLng,
-                    crs: "EPSG:4326",
+                    latlng: {
+                        lng: latlng[0],
+                        lat: latlng[1]
+                    },
                     pixel: {
                         x: event.pixel[0],
                         y: event.pixel[1]
@@ -158,22 +141,19 @@ class OpenlayersMap extends React.Component {
     }
     updateMapInfoState = () => {
         let view = this.map.getView();
-        let c = this.normalizeCenter(view.getCenter());
+        let c = view.getCenter() || [0, 0];
         let bbox = view.calculateExtent(this.map.getSize());
         let size = {
             width: this.map.getSize()[0],
             height: this.map.getSize()[1]
         };
-        this.props.onMapViewChanges({x: c[0] || 0.0, y: c[1] || 0.0, crs: 'EPSG:4326'}, view.getZoom(), {
-            bounds: {
-                minx: bbox[0],
-                miny: bbox[1],
-                maxx: bbox[2],
-                maxy: bbox[3]
-            },
-            crs: view.getProjection().getCode(),
-            rotation: view.getRotation()
-        }, size, this.props.id, this.props.projection);
+        this.props.onMapViewChanges(
+            {x: c[0], y: c[1]},
+            view.getZoom(),
+            {
+                bounds: {minx: bbox[0], miny: bbox[1], maxx: bbox[2], maxy: bbox[3]},
+                rotation: view.getRotation()
+            }, size, this.props.id, this.props.projection);
     }
     componentWillReceiveProps(newProps) {
         if (newProps.mousePointer !== this.props.mousePointer) {
@@ -188,22 +168,18 @@ class OpenlayersMap extends React.Component {
             }
         }
 
-        if (this.map && this.props.id !== newProps.mapStateSource) {
+        if (this.props.id !== newProps.mapStateSource) {
             this._updateMapPositionFromNewProps(newProps);
         }
 
-        if (this.map && newProps.resize !== this.props.resize) {
+        if (newProps.resize !== this.props.resize) {
             setTimeout(() => {
                 this.map.updateSize();
             }, 0);
         }
 
-        if (this.map && ((this.props.projection !== newProps.projection) || this.haveResolutionsChanged(newProps))) {
-            const center = CoordinatesUtils.reproject([
-                this.props.center.x,
-                this.props.center.y
-            ], 'EPSG:4326', newProps.projection);
-            this.map.setView(this.createView(center, newProps.zoom, newProps.projection, newProps.mapOptions && newProps.mapOptions.view));
+        if ((this.props.projection !== newProps.projection) || this.haveResolutionsChanged(newProps)) {
+            this.map.setView(this.createView(newProps.center, newProps.zoom, newProps.projection, newProps.mapOptions && newProps.mapOptions.view));
             // We have to force ol to drop tile and reload
             this.map.getLayers().forEach((l) => {
                 let source = l.getSource();
@@ -216,12 +192,6 @@ class OpenlayersMap extends React.Component {
     }
     componentWillUnmount() {
         this.map.setTarget(null);
-    }
-    getResolutions = () => {
-        if (this.props.mapOptions && this.props.mapOptions.view && this.props.mapOptions.view.resolutions) {
-            return this.props.mapOptions.view.resolutions;
-        }
-        return [];
     }
     render() {
         const map = this.map;
@@ -261,23 +231,18 @@ class OpenlayersMap extends React.Component {
     }
     _updateMapPositionFromNewProps = (newProps) => {
         var view = this.map.getView();
-        const currentCenter = this.props.center;
-        const centerIsUpdated = newProps.center.y === currentCenter.y &&
-                               newProps.center.x === currentCenter.x;
+        const centerChanged = newProps.center.x != this.props.center.x ||
+                              newProps.center.y != this.props.center.y;
 
-        if (!centerIsUpdated) {
-            let center = ol.proj.transform([newProps.center.x, newProps.center.y], 'EPSG:4326', newProps.projection);
-            view.setCenter(center);
+        if (centerChanged) {
+            view.setCenter([newProps.center.x, newProps.center.y]);
         }
         if (Math.round(newProps.zoom) !== this.props.zoom) {
             view.setZoom(Math.round(newProps.zoom));
         }
-        if(newProps.bbox && newProps.bbox.rotation !== undefined && newProps.bbox.rotation !== this.props.bbox.rotation) {
+        if(newProps.bbox.rotation !== this.props.bbox.rotation) {
             view.setRotation(newProps.bbox.rotation);
         }
-    }
-    normalizeCenter = (center) => {
-        return ol.proj.transform(center, this.props.projection, 'EPSG:4326');
     }
     setMousePointer = (pointer) => {
         if (this.map) {
@@ -287,24 +252,20 @@ class OpenlayersMap extends React.Component {
     }
     registerHooks = () => {
         mapUtils.registerHook(mapUtils.RESOLUTIONS_HOOK, () => {
-            return this.getResolutions();
+            if (this.props.mapOptions && this.props.mapOptions.view && this.props.mapOptions.view.resolutions) {
+                return this.props.mapOptions.view.resolutions;
+            }
+            return [];
         });
         mapUtils.registerHook(mapUtils.RESOLUTION_HOOK, () => {
             return this.map.getView().getResolution();
         });
         mapUtils.registerHook(mapUtils.COMPUTE_BBOX_HOOK, (center, zoom) => {
-            var olCenter = CoordinatesUtils.reproject([center.x, center.y], 'EPSG:4326', this.props.projection);
-            let view = this.createView(olCenter, zoom, this.props.projection, this.props.mapOptions && this.props.mapOptions.view);
+            let view = this.createView(center, zoom, this.props.projection, this.props.mapOptions && this.props.mapOptions.view);
             let size = this.map.getSize();
             let bbox = view.calculateExtent(size);
             return {
-                bounds: {
-                    minx: bbox[0],
-                    miny: bbox[1],
-                    maxx: bbox[2],
-                    maxy: bbox[3]
-                },
-                crs: this.props.projection,
+                bounds: {minx: bbox[0], miny: bbox[1], maxx: bbox[2], maxy: bbox[3]},
                 rotation: this.map.getView().getRotation()
             };
         });

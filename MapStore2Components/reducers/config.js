@@ -15,8 +15,9 @@ function mapConfig(state = null, action) {
     let map;
     switch (action.type) {
         case MAP_CONFIG_LOADED:
-            let mapState = ConfigUtils.normalizeConfig(action.config.map);
-            return assign({}, mapState);
+            // Initial dummy map state
+            let mapConfig = {projection: "EPSG:4326", center: {x: 0, y: 0}, zoom: 0};
+            return assign({}, {map: mapConfig});
         case MAP_CONFIG_LOAD_ERROR:
             return {
                 loadingError: action.error

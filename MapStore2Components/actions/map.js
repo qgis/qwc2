@@ -66,10 +66,10 @@ function changeZoomLevel(zoomLvl, mapStateSource) {
     };
 }
 
-function panTo(center) {
+function panTo(pos, crs) {
     return {
         type: PAN_TO,
-        center
+        pos
     };
 }
 

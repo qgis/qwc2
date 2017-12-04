@@ -30,7 +30,11 @@ function mapConfig(state = {}, action) {
                 mapStateSource: action.mapStateSource
             });
         case CHANGE_MAP_CRS:
+            let newBounds = CoordinatesUtils.reprojectBbox(state.bbox.bounds, state.projection, action.crs);
+
             return assign({}, state, {
+                center: CoordinatesUtils.reproject(state.center, state.projection, action.crs),
+                bbox: assign({}, state.bbox, {bounds: {minx: newBounds[0], miny: newBounds[1], maxx: newBounds[2], maxy: newBounds[3]}}),
                 projection: action.crs
             });
         case CHANGE_MAP_SCALES:
@@ -65,45 +69,27 @@ function mapConfig(state = {}, action) {
             return state;
         case ZOOM_TO_EXTENT: {
             let zoom = 0;
-            let bounds = CoordinatesUtils.reprojectBbox(action.extent, action.crs, state.bbox && state.bbox.crs || "EPSG:4326");
-            let wgs84BBounds = CoordinatesUtils.reprojectBbox(action.extent, action.crs, "EPSG:4326");
-            if (bounds && wgs84BBounds) {
-                // center by the max. extent defined in the map's config
-                let center = MapUtils.getCenterForExtent(wgs84BBounds, "EPSG:4326");
-                // workaround to get zoom 0 for -180 -90... - TODO do it better
-                let full = action.crs === "EPSG:4326" && action.extent && action.extent[0] <= -180 && action.extent[1] <= -90 && action.extent[2] >= 180 && action.extent[3] >= 90;
-                if ( full ) {
-                    zoom = 2;
-                } else {
-                    let mapBBounds = CoordinatesUtils.reprojectBbox(action.extent, action.crs, state.projection || "EPSG:4326");
-                    // NOTE: STATE should contain size !!!
-                    zoom = MapUtils.getZoomForExtent(mapBBounds, state.size, 0, 21, null);
-                }
-                let newbounds = {minx: bounds[0], miny: bounds[1], maxx: bounds[2], maxy: bounds[3]};
-                let newbbox = assign({}, state.bbox, {bounds: newbounds});
-                return assign({}, state, {
-                    center,
-                    zoom,
-                    mapStateSource: action.mapStateSource,
-                    bbox: newbbox
-                });
-            }
-            return state;
+            let newBounds = CoordinatesUtils.reprojectBbox(action.extent, action.crs || state.projection, state.projection);
+            let newCenter = {x: 0.5 * (newBounds[0] + newBounds[2]), y: 0.5 * (newBounds[1] + newBounds[3])};
+            let newZoom = MapUtils.getZoomForExtent(newBounds, state.size, 0, 21, null);
+            let newBBox = assign({}, state.bbox, {bounds: newBounds});
+            return assign({}, state, {
+                center: newCenter,
+                zoom: newZoom,
+                bbox: newBBox,
+                mapStateSource: action.mapStateSource
+            });
         }
         case ZOOM_TO_POINT: {
             return assign({}, state, {
-                center: CoordinatesUtils.reproject(action.pos, action.crs, 'EPSG:4326'),
+                center: CoordinatesUtils.reproject(action.pos, action.crs || state.projection, state.projection),
                 zoom: action.zoom,
                 mapStateSource: null
             });
         }
         case PAN_TO: {
-            const center = CoordinatesUtils.reproject(
-                action.center,
-                action.center.crs,
-                'EPSG:4326');
             return assign({}, state, {
-                center
+                center: CoordinatesUtils.reproject(action.pos, action.crs || state.projection, state.projection),
             });
         }
         case CHANGE_MAP_STYLE: {

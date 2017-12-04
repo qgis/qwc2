@@ -41,7 +41,7 @@ class PrintFrame extends React.Component {
             let newState = {x: 0, y: 0, width: 0, height: 0, moving: false};
             let cosa = Math.cos(-newProps.map.bbox.rotation);
             let sina = Math.sin(-newProps.map.bbox.rotation);
-            let center = CoordinatesUtils.reproject(newProps.map.center, newProps.map.center.crs, newProps.map.projection);
+            let center = newProps.map.center;
             let {width, height} = MapUtils.transformExtent(newProps.map.projection, center, newProps.fixedFrame.width, newProps.fixedFrame.height);
             let mapp1 = [center.x - .5 * width * cosa - .5 * height * sina,
                          center.y + .5 * width * sina - .5 * height * cosa];

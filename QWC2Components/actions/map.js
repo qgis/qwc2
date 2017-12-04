@@ -16,7 +16,7 @@ function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
     return (dispatch) => {
         let positionFormat = ConfigUtils.getConfigProp("urlPositionFormat");
         let positionCrs = ConfigUtils.getConfigProp("urlPositionCrs") || projection;
-        let bounds = CoordinatesUtils.reprojectBbox(bbox.bounds, bbox.crs, positionCrs);
+        let bounds = CoordinatesUtils.reprojectBbox(bbox.bounds, projection, positionCrs);
         let roundfactor = CoordinatesUtils.getUnits(positionCrs) === 'degrees' ? 100000. : 1;
         if(positionFormat === "centerAndZoom") {
             let x = Math.round(0.5 * (bounds[0] + bounds[2]) * roundfactor) / roundfactor;
@@ -30,7 +30,7 @@ function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
             let ymax = Math.round(bounds[3] * roundfactor) / roundfactor;
             UrlParams.updateParams({e: xmin + ";" + ymin + ";" + xmax + ";" + ymax});
         }
-        if(positionCrs && positionCrs !== projection) {
+        if(positionCrs !== projection) {
             UrlParams.updateParams({crs: positionCrs});
         }
         dispatch(require('../../MapStore2Components/actions/map').changeMapView(center, zoom, bbox, size, mapStateSource, projection));

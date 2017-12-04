@@ -271,7 +271,7 @@ class ThemeSwitcher extends React.Component {
         if(ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch") === true) {
             // If crs and scales match and bounding boxes intersect, keep current extent
             if(this.props.mapConfig.projection === theme.mapCrs &&
-               this.bboxOverlap(theme.bbox, this.props.mapConfig.bbox))
+               this.bboxOverlap(theme.bbox, this.props.mapConfig.bbox, theme.bbox.crs, this.props.mapConfig.projection))
             {
                 zoomBBox = this.props.mapConfig.bbox;
             }
@@ -286,11 +286,11 @@ class ThemeSwitcher extends React.Component {
         this.props.changeTheme(assign({}, theme, {printScales, printGrid, printResolutions}), this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme, activeBackgroudLayer), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, zoomBBox);
         this.props.setCurrentTask(null);
     }
-    bboxOverlap = (bbox1, bbox2) => {
+    bboxOverlap = (bbox1, bbox2, crs1, crs2) => {
         let b1 = bbox1.bounds;
         let b2 = [bbox2.bounds.minx, bbox2.bounds.miny, bbox2.bounds.maxx, bbox2.bounds.maxy];
-        if(bbox1.crs !== bbox2.crs) {
-            b1 = CoordinatesUtils.reprojectBbox(b1, bbox1.crs, bbox2.crs);
+        if(crs1 !== crs2) {
+            b1 = CoordinatesUtils.reprojectBbox(b1, crs1, crs2);
         }
         return b1[0] < b2[2] && b1[2] > b2[0] && b1[1] < b2[3] && b1[3] > b2[1];
     }

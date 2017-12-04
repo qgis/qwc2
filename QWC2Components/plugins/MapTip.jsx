@@ -62,10 +62,7 @@ class MapTip extends React.Component {
         let props = {
             map: this.props.map,
             point: {
-                latlng: {
-                    lat: this.props.mousepos.y,
-                    lng: this.props.mousepos.x
-                }
+                latlng: this.props.mousepos.latlng
             },
             maxItems: 1
         };

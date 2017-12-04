@@ -18,7 +18,7 @@ const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const mapUtils = require('../../MapStore2Components/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const {addMarker, removeMarker, addLayerFeatures, removeLayer} = require('../actions/layers');
-const {changeMapView} = require('../actions/map');
+const {zoomToPoint} = require('../../MapStore2Components/actions/map');
 const {changeSearch, startSearch, searchMore} = require("../actions/search");
 const displayCrsSelector = require('../selectors/displaycrs');
 const IdentifyUtils = require('../utils/IdentifyUtils');
@@ -270,9 +270,7 @@ class Search extends React.Component {
         );
     }
     showResult = (item, zoom=true) => {
-        this.props.setHighlightedFeature(null);
-        let wgscenterlatlon = CoordinatesUtils.reproject(item, item.crs, "EPSG:4326");
-        let wgsextent = CoordinatesUtils.reprojectBbox(item.bbox, item.crs, "EPSG:4326");
+        this.props.removeLayer("searchselection");
         let text = item.label !== undefined ? item.label : item.text;
         if(zoom && this.props.mapConfig !== undefined) {
             // find max zoom level greater than min scale
@@ -288,22 +286,7 @@ class Search extends React.Component {
 
             // zoom to result using max zoom level
             const newZoom = mapUtils.getZoomForExtent(CoordinatesUtils.reprojectBbox(item.bbox, item.crs, this.props.mapConfig.projection), this.props.mapConfig.size, 0, maxZoom, null);
-            this.props.panToResult(
-                {x: wgscenterlatlon.x, y: wgscenterlatlon.y, crs: "EPSG:4326"},
-                newZoom,
-                {
-                    bounds: {
-                        minx: wgsextent[0],
-                        miny: wgsextent[1],
-                        maxx: wgsextent[2],
-                        maxy: wgsextent[3]
-                    },
-                    crs: item.crs,
-                    rotation: 0
-                },
-                this.props.mapConfig.size,
-                null,
-                this.props.mapConfig.projection);
+            this.props.panToResult({x: item.x, y: item.y}, newZoom, item.crs);
         }
         if(item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
             this.props.searchProviders[item.provider].getResultGeometry(item, (item, geometry, crs) => { this.showFeatureGeometry(item, geometry, crs, text)});
@@ -373,7 +356,7 @@ module.exports = (searchProviders) => connect(createSelector([state => state, di
     changeSearch: changeSearch,
     startSearch: startSearch,
     searchMore: searchMore,
-    panToResult: changeMapView,
+    panToResult: zoomToPoint,
     addMarker: addMarker,
     removeMarker: removeMarker,
     addLayerFeatures: addLayerFeatures,

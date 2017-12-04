@@ -218,28 +218,6 @@ function getCurrentResolution(currentZoom, minZoom, maxZoom, dpi) {
 }
 
 /**
- * Calculates the center for for the given extent.
- *
- * @param  {Array} extent [minx, miny, maxx, maxy]
- * @param  {String} projection projection of the extent
- * @return {object} center object
- */
-function getCenterForExtent(extent, projection) {
-
-    var wExtent = extent[2] - extent[0];
-    var hExtent = extent[3] - extent[1];
-
-    var w = (wExtent) / 2;
-    var h = (hExtent) / 2;
-
-    return {
-        x: extent[0] + w,
-        y: extent[1] + h,
-        crs: projection
-    };
-}
-
-/**
  * Calculates the bounding box for the given center and zoom.
  *
  * @param  {object} center object
@@ -259,12 +237,6 @@ const isNearlyEqual = function(a, b) {
     }
     return ( a.toFixed(12) - (b.toFixed(12))) === 0;
 };
-
-function mapUpdated(oldMap, newMap) {
-    const centersEqual = isNearlyEqual(newMap.center.x, oldMap.center.x) &&
-                          isNearlyEqual(newMap.center.y, oldMap.center.y);
-    return !centersEqual || (newMap.zoom !== oldMap.zoom);
-}
 
 /* Transform width and height specified in meters to the units of the specified projection */
 function transformExtent(projection, center, width, height) {
@@ -301,11 +273,9 @@ module.exports = {
     getResolutionsForScales,
     getZoomForExtent,
     defaultGetZoomForExtent,
-    getCenterForExtent,
     getResolutions,
     getScales,
     getBbox,
-    mapUpdated,
     getCurrentResolution,
     transformExtent
 };

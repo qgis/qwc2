@@ -271,7 +271,7 @@ class Print extends React.Component {
         if(!this.props.map || !this.state.layout || !this.state.scale) {
             return "";
         }
-        let center = CoordinatesUtils.reproject(this.props.map.center, this.props.map.center.crs, this.props.map.projection);
+        let center = this.props.map.center;
         let widthm = this.state.scale * this.state.layout.map.width / 1000.;
         let heightm = this.state.scale * this.state.layout.map.height / 1000.;
         let {width, height} = MapUtils.transformExtent(this.props.map.projection, center, widthm, heightm);

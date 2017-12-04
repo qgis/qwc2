@@ -5,26 +5,9 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-var Proj4js = require('proj4');
-var React = require('react');
-const PropTypes = require('prop-types');
-
-var url = require('url');
 
 var axios = require('axios');
-
-const {isArray} = require('lodash');
 const assign = require('object-assign');
-
-const epsg4326 = Proj4js ? new Proj4js.Proj('EPSG:4326') : null;
-const centerPropType = PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-    crs: PropTypes.string
-});
-
-const urlQuery = url.parse(window.location.href, true).query;
-
 const isMobile = require('ismobilejs');
 
 let localConfigFile = 'localConfig.json';
@@ -37,17 +20,6 @@ let defaultConfig = {
 };
 
 var ConfigUtils = {
-    defaultSourceType: "gxp_wmssource",
-    backgroundGroup: "background",
-
-    PropTypes: {
-        center: centerPropType,
-        config: PropTypes.shape({
-            center: centerPropType,
-            zoom: PropTypes.number.isRequired
-        }),
-        mapStateSource: PropTypes.string
-    },
     getDefaults: function() {
         return defaultConfig;
     },
@@ -61,123 +33,6 @@ var ConfigUtils = {
             }
             return defaultConfig;
         });
-    },
-
-    getCenter: function(center, projection) {
-        var retval;
-        if ((center.x || center.x === 0) && (center.y || center.y === 0) && center.crs) {
-            if (center.crs !== "EPSG:4326") {
-                let xy = Proj4js.toPoint([center.x, center.y]);
-                const epsgMap = new Proj4js.Proj(center.crs);
-                Proj4js.transform(epsgMap, epsg4326, xy);
-                retval = {y: xy.y, x: xy.x, crs: "EPSG:4326"};
-            } else {
-                retval = center;
-            }
-            return retval;
-        }
-        let xy = Proj4js.toPoint(center);
-        if (projection) {
-            const epsgMap = new Proj4js.Proj(projection);
-            Proj4js.transform(epsgMap, epsg4326, xy);
-        }
-        return {y: xy.y, x: xy.x, crs: "EPSG:4326"};
-    },
-    normalizeConfig: function(config) {
-        const {layers, groups, plugins, ...other} = config;
-        other.center = ConfigUtils.getCenter(other.center);
-        return {
-            map: other,
-            layers: layers.map(ConfigUtils.setApiKeys, config).map(ConfigUtils.setLayerId).map(ConfigUtils.setUrlPlaceholders),
-            groups: groups,
-            plugins: plugins
-        };
-    },
-
-    /**
-     * set default wms source
-     */
-    setupSources: function(sources, defaultSourceType) {
-        var defType = defaultSourceType;
-        var source;
-        if (!defaultSourceType) {
-            defType = this.defaultSourceType;
-        }
-        for (source in sources) {
-            if (sources.hasOwnProperty(source)) {
-                if (!sources[source].ptype) {
-                    sources[source].ptype = defType;
-                }
-            }
-        }
-    },
-    normalizeSourceUrl: function(sourceUrl) {
-        if (sourceUrl && sourceUrl.indexOf('?') !== -1) {
-            return sourceUrl.split('?')[0];
-        }
-        return sourceUrl;
-    },
-    /**
-     * Copy important source options to layer options.
-     */
-    copySourceOptions: function(layer, source) {
-        layer.baseParams = source.baseParams;
-        if (source.url) {
-            let sourceParts = url.parse(source.url, true);
-            for (let k in sourceParts.query) {
-                if (k.toUpperCase() === "REQUEST" ) {
-                    delete sourceParts.query[k];
-                }
-            }
-            layer.baseParams = assign({}, layer.baseParams, sourceParts.query);
-        }
-        layer.url = ConfigUtils.normalizeSourceUrl(source.url);
-    },
-
-    /**
-     * Setup the layer visibility for the background group.
-     * if background layers are not visible, sets the last one
-     */
-    setupLayers: function(layers, sources, supportedSourceTypes) {
-        // setup background visibility
-        var candidateVisible;
-        var i; var layer; var source;
-        for (i = 0; i < layers.length; i++) {
-            layer = layers[i];
-            source = sources[layer.source];
-            ConfigUtils.copySourceOptions(layer, source);
-            let type = source.ptype;
-            if (type) {
-                layer.type = type.replace(/^gxp_(.*)source$/i, "$1");
-            } else {
-                layer.type = 'unknown';
-            }
-            if (layer) {
-                if (supportedSourceTypes.indexOf(source.ptype) >= 0) {
-                    if (layer.group === this.backgroundGroup) {
-                        // force to false if undefined
-                        layer.visibility = layer.visibility || false;
-                        if (candidateVisible && candidateVisible.visibility) {
-                            /* if more than one layer is visible in the background group
-                               shows only the last one hiding the previous.
-                            */
-                            if (layer.visibility) {
-                                candidateVisible.visibility = false;
-                                candidateVisible = layer;
-                            }
-                        } else {
-                            candidateVisible = layer;
-                        }
-                    }
-                } else {
-                    layer.visibility = false;
-                }
-            }
-        }
-        // set the candidate visible
-        if (candidateVisible) {
-            candidateVisible.visibility = true;
-        }
     },
     getProxyUrl: function(config = {}) {
         return config.proxyUrl ? config.proxyUrl : defaultConfig.proxyUrl;
@@ -248,40 +103,6 @@ var ConfigUtils = {
 
         retina: retina
         };
-    },
-    setApiKeys: function(layer) {
-        if (layer.type === 'bing') {
-            layer.apiKey = this.bingApiKey || defaultConfig.bingApiKey;
-        }
-        if (layer.type === 'mapquest') {
-            layer.apiKey = this.mapquestApiKey || defaultConfig.mapquestApiKey;
-        }
-        return layer;
-    },
-    setUrlPlaceholders: function(layer) {
-        if (layer.url) {
-            if (isArray(layer.url)) {
-                layer.url = layer.url.map((currentUrl) => {
-                    return ConfigUtils.replacePlaceholders(currentUrl);
-                });
-            } else {
-                layer.url = ConfigUtils.replacePlaceholders(layer.url);
-            }
-        }
-        return layer;
-    },
-    replacePlaceholders: function(inputUrl) {
-        let currentUrl = inputUrl;
-        (currentUrl.match(/\{.*?\}/g) || []).forEach((placeholder) => {
-            currentUrl = currentUrl.replace(placeholder, defaultConfig[placeholder.substring(1, placeholder.length - 1)] || '');
-        });
-        return currentUrl;
-    },
-    setLayerId: function(layer, i) {
-        if (!layer.id) {
-            layer.id = layer.name + "__" + i;
-        }
-        return layer;
     },
     getConfigProp: function(prop) {
         return defaultConfig[prop];
