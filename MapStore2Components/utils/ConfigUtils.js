@@ -16,7 +16,17 @@ let defaultConfig = {
     proxyUrl: "",
     translationsPath: "translations",
     bingApiKey: null,
-    mapquestApiKey: null
+    mapquestApiKey: null,
+    defaultFeatureStyle: {
+        strokeColor: [0, 0, 255, 1],
+        strokeWidth: 2,
+        strokeDash: [4],
+        fillColor: [0, 0, 255, 0.33],
+        circleRadius: 10,
+        circleBorder: 2,
+        textFill: 'black',
+        textStroke: 'white'
+    }
 };
 
 var ConfigUtils = {
