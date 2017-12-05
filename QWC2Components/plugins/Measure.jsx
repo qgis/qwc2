@@ -125,15 +125,7 @@ class Measure extends React.Component {
 };
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
-    measureState: {
-        geomType: state.measurement ? state.measurement.geomType : null,
-        point: state.measurement ? state.measurement.point : null,
-        len: state.measurement ? state.measurement.len : 0,
-        area: state.measurement ? state.measurement.area : 0,
-        bearing: state.measurement ? state.measurement.bearing : 0,
-        lenUnit: state.measurement && state.measurement.lenUnit ? state.measurement.lenUnit : 'm',
-        areaUnit: state.measurement && state.measurement.areaUnit ? state.measurement.areaUnit : 'sqm'
-    },
+    measureState: state.measurement,
     displaycrs: displaycrs
 }));
 

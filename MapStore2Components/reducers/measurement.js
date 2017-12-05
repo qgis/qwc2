@@ -16,7 +16,14 @@ const assign = require('object-assign');
 function measurement(state = {
     lineMeasureEnabled: false,
     areaMeasureEnabled: false,
-    bearingMeasureEnabled: false
+    bearingMeasureEnabled: false,
+    geomType: null,
+    point: null,
+    len: 0,
+    area: 0,
+    bearing: 0,
+    lenUnit: 'm',
+    areaUnit: 'sqm'
 }, action) {
     switch (action.type) {
         case CHANGE_MEASUREMENT_TOOL:

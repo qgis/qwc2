@@ -8,7 +8,7 @@
 
 const displayCrsSelector = (state) => {
     let mapcrs = state && state.map && state.map ? state.map.projection : undefined;
-    let mousecrs = state && state.mousePosition && state.mousePosition ? state.mousePosition.crs : undefined;
+    let mousecrs = state && state.mousePosition ? state.mousePosition.crs : undefined;
     return mousecrs || mapcrs || "EPSG:4326";
 };
 

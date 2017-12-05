@@ -13,7 +13,12 @@ const {
 const assign = require('object-assign');
 
 function redlining(state = {
-    geomType: null
+    action: null,
+    geomType: null,
+    borderColor: "#FF0000",
+    size: 2,
+    fillColor: "#FFFFFF",
+    text: ""
 }, action) {
     switch (action.type) {
         case CHANGE_REDLINING_STATE:

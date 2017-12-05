@@ -22,7 +22,7 @@ const {
 } = require('../actions/layers');
 
 
-function layers(state = [], action) {
+function layers(state = {}, action) {
     switch (action.type) {
         case LAYER_LOADING: {
             const newLayers = (state.flat || []).map((layer) => {

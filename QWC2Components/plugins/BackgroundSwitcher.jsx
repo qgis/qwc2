@@ -21,7 +21,7 @@ class BackgroundSwitcher extends React.Component {
     static propTypes = {
         position: PropTypes.number,
         visible: PropTypes.bool,
-        layers: PropTypes.array,
+        layers: PropTypes.object,
         toggleBackgroundswitcher: PropTypes.func,
         changeLayerProperties: PropTypes.func
     }
@@ -31,7 +31,8 @@ class BackgroundSwitcher extends React.Component {
     }
     render() {
         let activeClass = this.props.visible ? 'active' : '';
-        if(this.props.layers.length>0){
+        let backgroundLayers = (this.props.layers.flat || []).filter(layer => layer.group === "background");
+        if(backgroundLayers.length > 0){
              return (
                 <div>
                     <Button id="BackgroundSwitcherBtn" className={activeClass}
@@ -39,8 +40,8 @@ class BackgroundSwitcher extends React.Component {
                         <Glyphicon glyph="book"/>
                     </Button>
                     <div id="BackgroundSwitcher" className={activeClass}>
-                        {this.renderLayerItem(null, this.props.layers.filter(layer => layer.visibility === true).length === 0)}
-                        {this.props.layers.map(layer => this.renderLayerItem(layer, layer.visibility === true))}
+                        {this.renderLayerItem(null, backgroundLayers.filter(layer => layer.visibility === true).length === 0)}
+                        {backgroundLayers.map(layer => this.renderLayerItem(layer, layer.visibility === true))}
                     </div>
                 </div>
             );
@@ -71,7 +72,7 @@ class BackgroundSwitcher extends React.Component {
         if(layer) {
             this.props.changeLayerProperties(layer.id, {visibility: true});
         } else {
-            let visible = this.props.layers.find(layer => layer.visibility);
+            let visible = this.props.layers.find(layer => layer.group === "background" && layer.visibility);
             if(visible) {
                 this.props.changeLayerProperties(visible.id, {visibility: false});
             }
@@ -82,7 +83,7 @@ class BackgroundSwitcher extends React.Component {
 
 const selector = (state) => ({
     visible: state.task ? state.task.current === 'BackgroundSwitcher' : false,
-    layers: state.layers && state.layers.flat && state.layers.flat.filter((layer) => layer.group === "background") || []
+    layers: state.layers || {}
 });
 
 module.exports = {

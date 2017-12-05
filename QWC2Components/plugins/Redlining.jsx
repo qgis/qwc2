@@ -40,7 +40,7 @@ class Redlining extends React.Component {
         this.setState({openColorPicker: null});
     }
     updateRedliningState = (diff) => {
-        let newState = assign({}, this.props.redlining, diff);
+        let newState = assign({}, this.props.redlining, diff)
         this.props.changeRedliningState(newState);
     }
     togglePicker = (picker) => {
@@ -123,14 +123,7 @@ class Redlining extends React.Component {
 };
 
 const selector = (state) => ({
-    redlining: {
-        action: objectPath.get(state, "redlining.action", null),
-        geomType: objectPath.get(state, "redlining.geomType", null),
-        borderColor: objectPath.get(state, "redlining.borderColor", "#FF0000"),
-        size: objectPath.get(state, "redlining.size", 2),
-        fillColor: objectPath.get(state, "redlining.fillColor", "#FFFFFF"),
-        text: objectPath.get(state, "redlining.text", "")
-    }
+    redlining: state.redlining
 });
 
 module.exports = {
