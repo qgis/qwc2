@@ -17,7 +17,7 @@ const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const {changeRotation} = require('../../MapStore2Components/actions/map');
 const {SideBar} = require('../components/SideBar');
 const PrintFrame = require('../components/PrintFrame');
-const IdentifyUtils = require('../utils/IdentifyUtils');
+const VectorLayerUtils = require('../utils/VectorLayerUtils');
 require('./style/Print.css');
 
 class Print extends React.Component {
@@ -27,8 +27,7 @@ class Print extends React.Component {
         map: PropTypes.object,
         themeLayerId: PropTypes.string,
         layers: PropTypes.array,
-        changeRotation: PropTypes.func,
-        search: PropTypes.object
+        changeRotation: PropTypes.func
     }
     static defaultProps = {
         visible: false
@@ -93,12 +92,14 @@ class Print extends React.Component {
             printOpacities = "255," + printOpacities;
         }
 
-        let extent = this.computeCurrentExtent();
         let formvisibility = 'hidden';
         let action = this.props.theme.url;
         if (ConfigUtils.getConfigProp("proxyUrl")) {
             action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(action) + "&filename=" + encodeURIComponent(this.props.theme.name + ".pdf");
         }
+        let printDpi = parseInt(this.state.dpi);
+        let mapCrs = this.props.map.projection;
+        let extent = this.computeCurrentExtent();
         let rotation = this.props.map.bbox ? this.props.map.bbox.rotation : 0;
         let scaleChooser = (<input name={mapName + ":scale"} type="number" value={this.state.scale || ""} onChange={this.changeScale} min="1"/>);
 
@@ -128,21 +129,28 @@ class Print extends React.Component {
 
         let labels = this.state.layout && this.state.layout.labels ? this.state.layout.labels : [];
 
-        let highlightGeom = null;
-        let highlightStyle = null;
-        let highlightLabel = null;
-        if(this.props.search && this.props.search.markerLabel) {
-            let feature = this.props.search.highlightedFeature;
-            if(!feature) {
-                let mapPos = CoordinatesUtils.reproject({x: this.props.search.markerPosition.lng, y: this.props.search.markerPosition.lat}, "EPSG:4326", this.props.map.projection);
-                feature = {'geometry': {'type': 'Point', 'coordinates': [mapPos.x, mapPos.y]}};
+        // Local vector layer features
+        let highlightGeoms = [];
+        let highlightStyles = [];
+        let highlightLabels = [];
+        let highlightLabelColors = [];
+        let highlightBufferColors = [];
+        let highlighBufferSizes = [];
+        for(let layer of this.props.layers) {
+            if(layer.type != 'vector' || (layer.features || []).length == 0) {
+                continue;
             }
-            highlightGeom = IdentifyUtils.geoJSONToWkt(feature);
-            highlightStyle = IdentifyUtils.createGeometrySld(feature.geometry.type, '#FFFF00');
-            if(!this.props.theme.printLabelForSearchResult) {
-                highlightLabel = this.props.search.markerLabel;
+            for(let feature of layer.features) {
+                let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || mapCrs, mapCrs);
+                highlightGeoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
+                highlightStyles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, printDpi));
+                highlightLabels.push(feature.properties.label || "");
+                highlightLabelColors.push('white');
+                highlightBufferColors.push('black');
+                highlighBufferSizes.push(1);
             }
         }
+
         return (
             <div role="body" className="print-body">
                 <form action={action} method="POST" target="_blank">
@@ -207,15 +215,15 @@ class Print extends React.Component {
                         <input readOnly="true" name="REQUEST" type={formvisibility} value="GetPrint" />
                         <input readOnly="true" name="FORMAT" type={formvisibility} value="pdf" />
                         <input readOnly="true" name="TRANSPARENT" type={formvisibility} value="true" />
-                        <input readOnly="true" name="SRS" type={formvisibility} value={this.props.map.projection} />
+                        <input readOnly="true" name="SRS" type={formvisibility} value={mapCrs} />
                         <input readOnly="true" name="LAYERS" type={formvisibility} value={printLayers || ""} />
                         <input readOnly="true" name="OPACITIES" type={formvisibility} value={printOpacities || ""} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_GEOM"} type={formvisibility} value={highlightGeom || ""} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_SYMBOL"} type={formvisibility} value={highlightStyle || ""} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELSTRING"} type={formvisibility} value={highlightLabel || ""} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELCOLOR"} type={formvisibility} value="black" />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERCOLOR"} type={formvisibility} value="white" />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERSIZE"} type={formvisibility} value="1" />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_GEOM"} type={formvisibility} value={highlightGeoms.join(";")} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_SYMBOL"} type={formvisibility} value={highlightStyles.join(";")} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELSTRING"} type={formvisibility} value={highlightLabels.join(";")} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELCOLOR"} type={formvisibility} value={highlightLabelColors.join(";")} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERCOLOR"} type={formvisibility} value={highlightBufferColors.join(";")} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERSIZE"} type={formvisibility} value={highlighBufferSizes.join(";")} />
                         {gridIntervalX}
                         {gridIntervalY}
                     </div>

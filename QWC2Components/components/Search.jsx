@@ -21,7 +21,7 @@ const {addMarker, removeMarker, addLayerFeatures, removeLayer} = require('../act
 const {zoomToPoint} = require('../../MapStore2Components/actions/map');
 const {changeSearch, startSearch, searchMore} = require("../actions/search");
 const displayCrsSelector = require('../selectors/displaycrs');
-const IdentifyUtils = require('../utils/IdentifyUtils');
+const VectorLayerUtils = require('../utils/VectorLayerUtils');
 const UrlParams = require("../utils/UrlParams");
 require('./style/Search.css');
 
@@ -298,8 +298,8 @@ class Search extends React.Component {
     }
     showFeatureGeometry = (item, geometry, crs, text) => {
         if(item === this.state.currentResult) {
-            let feature = IdentifyUtils.wktToGeoJSON(geometry);
-            feature.geometry = IdentifyUtils.reprojectFeatureGeometry(feature.geometry, crs, this.props.mapConfig.projection);
+            let feature = VectorLayerUtils.wktToGeoJSON(geometry);
+            feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, crs, this.props.mapConfig.projection);
             let geojson  = new ol.format.GeoJSON().readFeature(feature);
             let center = this.getFeatureCenter(geojson.getGeometry());
             this.props.addMarker('searchmarker', center, text, this.props.mapConfig.projection);

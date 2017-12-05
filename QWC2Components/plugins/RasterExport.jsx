@@ -15,6 +15,7 @@ const ProxyUtils = require("../../MapStore2Components/utils/ProxyUtils");
 const {setCurrentTask} = require('../actions/task');
 const {TaskBar} = require('../components/TaskBar');
 const PrintFrame = require('../components/PrintFrame');
+const VectorLayerUtils = require('../utils/VectorLayerUtils');
 require('./style/RasterExport.css');
 
 class RasterExport extends React.Component {
@@ -23,10 +24,12 @@ class RasterExport extends React.Component {
         map: PropTypes.object,
         themeLayerId: PropTypes.string,
         layers: PropTypes.array,
-        setCurrentTask: PropTypes.func
+        setCurrentTask: PropTypes.func,
+        visible: PropTypes.bool
     }
     state = {
-        selectedFormat: null
+        selectedFormat: null,
+        visible: false
     }
     formatChanged = (ev) => {
         this.setState({selectedFormat: ev.target.value})
@@ -58,6 +61,29 @@ class RasterExport extends React.Component {
         if(exportBackgroundLayer) {
             exportLayers = exportBackgroundLayer + "," + exportLayers;
             exportOpacities = "255," + exportOpacities;
+        }
+
+        // Local vector layer features
+        let mapCrs = this.props.map.projection;
+        let highlightGeoms = [];
+        let highlightStyles = [];
+        let highlightLabels = [];
+        let highlightLabelColors = [];
+        let highlightBufferColors = [];
+        let highlighBufferSizes = [];
+        for(let layer of this.props.layers) {
+            if(layer.type != 'vector' || (layer.features || []).length == 0) {
+                continue;
+            }
+            for(let feature of layer.features) {
+                let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || mapCrs, mapCrs);
+                highlightGeoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
+                highlightStyles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions));
+                highlightLabels.push(feature.properties.label || "");
+                highlightLabelColors.push('white');
+                highlightBufferColors.push('black');
+                highlighBufferSizes.push(1);
+            }
         }
 
         return (
@@ -93,11 +119,20 @@ class RasterExport extends React.Component {
                 {Object.keys(this.props.theme.watermark || {}).map(key => {
                     return (<input key={key} type="hidden" name={"WATERMARK_" + key.toUpperCase()} value={this.props.theme.watermark[key]} readOnly="true" />)
                 })}
+                <input readOnly="true" name={"HIGHLIGHT_GEOM"} type="hidden" value={highlightGeoms.join(";")} />
+                <input readOnly="true" name={"HIGHLIGHT_SYMBOL"} type="hidden" value={highlightStyles.join(";")} />
+                <input readOnly="true" name={"HIGHLIGHT_LABELSTRING"} type="hidden" value={highlightLabels.join(";")} />
+                <input readOnly="true" name={"HIGHLIGHT_LABELCOLOR"} type="hidden" value={highlightLabelColors.join(";")} />
+                <input readOnly="true" name={"HIGHLIGHT_LABELBUFFERCOLOR"} type="hidden" value={highlightBufferColors.join(";")} />
+                <input readOnly="true" name={"HIGHLIGHT_LABELBUFFERSIZE"} type="hidden" value={highlighBufferSizes.join(";")} />
                 </form>
             </span>
         );
     }
     render() {
+        if(!this.props.visible) {
+            return null;
+        }
         return (
             <TaskBar task="RasterExport">
                 {this.renderBody()}
@@ -121,6 +156,7 @@ class RasterExport extends React.Component {
 };
 
 const selector = (state) => ({
+    visible: state.task ? state.task.current === 'RasterExport': false,
     theme: state.theme ? state.theme.current : null,
     map: state.map ? state.map : null,
     themeLayerId: state.theme ? state.theme.currentlayer : "",

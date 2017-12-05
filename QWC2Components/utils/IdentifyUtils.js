@@ -6,10 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {parse, stringify} = require('wellknown');
-const uuid = require('uuid');
+const {parse} = require('wellknown');
 const assign = require('object-assign');
-const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
+const VectorLayerUtils = require('./VectorLayerUtils');
 
 const IdentifyUtils = {
     parseXmlFeature(feature, result, geometrycrs) {
@@ -39,7 +38,7 @@ const IdentifyUtils = {
                          .replace(/Polygon(\w+)/i, "Polygon $1");
                 featureResult["geometry"] = parse(wkt);
                 if(featureResult.bbox && featureResult.bbox.srs != geometrycrs) {
-                    featureResult.geometry = this.reprojectFeatureGeometry(featureResult.geometry, featureResult.bbox.srs, geometrycrs);
+                    featureResult.geometry = VectorLayerUtils.reprojectFeatureGeometry(featureResult.geometry, featureResult.bbox.srs, geometrycrs);
                 }
             } else {
                 featureResult.properties[attribute.attributes.name.value] = attribute.attributes.value.value;
@@ -69,109 +68,10 @@ const IdentifyUtils = {
                 result[layer] = [];
             }
 
-            let geometry = this.reprojectFeatureGeometry(feature.geometry, "EPSG:4326", geometrycrs); // GeoJSON always wgs84
+            let geometry = VectorLayerUtils.reprojectFeatureGeometry(feature.geometry, "EPSG:4326", geometrycrs); // GeoJSON always wgs84
             result[layer].push(assign(feature, {geometry: geometry, id: feature.id.substr(feature.id.lastIndexOf(".") + 1)}));
         });
         return result;
-    },
-    wktToGeoJSON(wkt) {
-        wkt = wkt.replace(/Point(\w+)/i, "Point $1")
-                 .replace(/LineString(\w+)/i, "LineString $1")
-                 .replace(/Polygon(\w+)/i, "Polygon $1");
-        return {
-            "id": uuid.v1(),
-            "geometry": parse(wkt),
-            "type": "Feature",
-            "properties": {}
-        };
-    },
-    geoJSONToWkt(feature) {
-        return stringify(feature.geometry);
-    },
-    reprojectFeatureGeometry(geometry, srccrs, dstcrs) {
-        if(srccrs == dstcrs) {
-            return geometry;
-        }
-        if(geometry.type === "Point") {
-            let wgscoo = CoordinatesUtils.reproject(geometry.coordinates, srccrs, dstcrs);
-            return {
-                "type": "Point",
-                "coordinates": [wgscoo.x, wgscoo.y]
-            };
-        } else if(geometry.type === "LineString") {
-            return {
-                "type": "LineString",
-                "coordinates": geometry.coordinates.map(tuple => {
-                    let wgscoo = CoordinatesUtils.reproject(tuple, srccrs, dstcrs);
-                    return [wgscoo.x, wgscoo.y];
-                })
-            };
-        } else if(geometry.type === "Polygon") {
-            return {
-                "type": "Polygon",
-                "coordinates": geometry.coordinates.map(ring => {
-                    return ring.map(tuple => {
-                        let wgscoo = CoordinatesUtils.reproject(tuple, srccrs, dstcrs);
-                        return [wgscoo.x, wgscoo.y];
-                    });
-                })
-            };
-        } else {
-            return geometry;
-        }
-    },
-    createGeometrySld(geometrytype, color) {
-        let rule = null;
-        let bordersize = 2;
-        let pointsize = 6;
-        if(geometrytype == "Point") {
-            rule = '<se:PointSymbolizer>' +
-                   '<se:Graphic>' +
-                   '<se:Mark>' +
-                   '<se:WellKnownName>circle</se:WellKnownName>' +
-                   '<se:Stroke>' +
-                   '<se:SvgParameter name="stroke">' + color + '</se:SvgParameter>' +
-                   '<se:SvgParameter name="stroke-width">' + bordersize + '</se:SvgParameter>' +
-                   '</se:Stroke>' +
-                   '<se:Fill>' +
-                   '<se:SvgParameter name="fill">#ffffff</se:SvgParameter>' +
-                   '<se:SvgParameter name="fill-opacity">0.00</se:SvgParameter>' +
-                   '</se:Fill>' +
-                   '</se:Mark>' +
-                   '<se:Size>' + pointsize + '</se:Size>' +
-                   '</se:Graphic>' +
-                   '</se:PointSymbolizer>';
-        } else if(geometrytype == "LineString") {
-            rule = '<se:LineSymbolizer>' +
-                   '<se:Stroke>' +
-                   '<se:SvgParameter name="stroke">' + color + '</se:SvgParameter>' +
-                   '<se:SvgParameter name="stroke-width">' + bordersize + '</se:SvgParameter>' +
-                   '<se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>' +
-                   '<se:SvgParameter name="stroke-linecap">square</se:SvgParameter>' +
-                   '</se:Stroke>' +
-                   '</se:LineSymbolizer>';
-        } else if(geometrytype == "Polygon") {
-            rule = '<se:PolygonSymbolizer>' +
-                   '<se:Stroke>' +
-                   '<se:SvgParameter name="stroke">' + color + '</se:SvgParameter>' +
-                   '<se:SvgParameter name="stroke-width">' + bordersize + '</se:SvgParameter>' +
-                   '<se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>' +
-                   '</se:Stroke>' +
-                   '</se:PolygonSymbolizer>';
-        }
-        if(rule) {
-            return '<?xml version="1.0" encoding="UTF-8"?>' +
-                   '<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:se="http://www.opengis.net/se">' +
-                   '<UserStyle>' +
-                   '<se:FeatureTypeStyle>' +
-                   '<se:Rule>' +
-                   rule +
-                   '</se:Rule>' +
-                   '</se:FeatureTypeStyle>' +
-                   '</UserStyle>' +
-                   '</StyledLayerDescriptor>';
-        }
-        return null;
     }
 }
 
