@@ -34,22 +34,6 @@ function removeLayer(layerId) {
     };
 }
 
-function addLayerFeature(layerId, feature) {
-    return {
-        type: ADD_LAYER_FEATURE,
-        layerId,
-        feature
-    };
-}
-
-function removeLayerFeature(layerId, featureId) {
-    return {
-        type: REMOVE_LAYER_FEATURE,
-        layerId,
-        featureId
-    };
-}
-
 function addLayerFeatures(layer, features, clear=false) {
     return {
         type: ADD_LAYER_FEATURES,
@@ -138,8 +122,6 @@ module.exports = {
     invalidLayer,
     addLayer,
     removeLayer,
-    addLayerFeature,
-    removeLayerFeature,
     addLayerFeatures,
     removeLayerFeatures,
     changeLayerProperties,
@@ -151,8 +133,6 @@ module.exports = {
     INVALID_LAYER,
     ADD_LAYER,
     REMOVE_LAYER,
-    ADD_LAYER_FEATURE,
-    REMOVE_LAYER_FEATURE,
     ADD_LAYER_FEATURES,
     REMOVE_LAYER_FEATURES,
     CHANGE_LAYER_PROPERTIES
