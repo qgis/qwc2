@@ -6,49 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const FeatureInfoUtils = require("./FeatureInfoUtils");
-const INFO_FORMATS = FeatureInfoUtils.INFO_FORMATS;
-const INFO_FORMATS_BY_MIME_TYPE = FeatureInfoUtils.INFO_FORMATS_BY_MIME_TYPE;
-
 const {isArray} = require('lodash');
 const assign = require('object-assign');
 const CoordinatesUtils = require('./CoordinatesUtils');
 const MapUtils = require('./MapUtils');
 
 const MapInfoUtils = {
-
-    /**
-     * @return a filtered version of INFO_FORMATS object.
-     * the returned object contains only keys that AVAILABLE_FORMAT contains.
-     */
-    getAvailableInfoFormat() {
-        return Object.keys(INFO_FORMATS).filter((k) => {
-            return MapInfoUtils.AVAILABLE_FORMAT.indexOf(k) !== -1;
-        }).reduce((prev, k) => {
-            prev[k] = INFO_FORMATS[k];
-            return prev;
-        }, {});
-    },
-    /**
-     * @return like getAvailableInfoFormat but return an array filled with the keys
-     */
-    getAvailableInfoFormatLabels() {
-        return Object.keys(MapInfoUtils.getAvailableInfoFormat());
-    },
-    /**
-     * @return like getAvailableInfoFormat but return an array filled with the values
-     */
-    getAvailableInfoFormatValues() {
-        return Object.keys(MapInfoUtils.getAvailableInfoFormat()).map( label => {
-            return INFO_FORMATS[label];
-        });
-    },
-    /**
-     * @return {string} the default info format value
-     */
-    getDefaultInfoFormatValue() {
-        return INFO_FORMATS[MapInfoUtils.AVAILABLE_FORMAT[0]];
-    },
     /**
      * Returns a bounds object.
      * @param {number} minX Minimum X.
@@ -165,33 +128,6 @@ const MapInfoUtils = {
             return MapInfoUtils.buildIdentifyVectorRequest(layer, props);
         }
         return {};
-    },
-    getValidator(format) {
-        const defaultValidator = {
-            getValidResponses: (responses) => responses,
-            getNoValidResponses: () => []
-        };
-        return {
-            getValidResponses: (responses) => {
-                return responses.reduce((previous, current) => {
-                    const valid = (FeatureInfoUtils.Validator[current.format || INFO_FORMATS_BY_MIME_TYPE[format]] || defaultValidator).getValidResponses([current]);
-                    return [...previous, ...valid];
-                }, []);
-            },
-            getNoValidResponses: (responses) => {
-                return responses.reduce((previous, current) => {
-                    const valid = (FeatureInfoUtils.Validator[current.format || INFO_FORMATS_BY_MIME_TYPE[format]] || defaultValidator).getNoValidResponses([current]);
-                    return [...previous, ...valid];
-                }, []);
-            }
-        };
-    },
-    defaultQueryableFilter(l) {
-        return l.visibility &&
-            (l.type === 'wms' || l.type === 'vector') &&
-            (l.queryable === undefined || l.queryable) &&
-            l.group !== "background"
-        ;
     }
 };
 
