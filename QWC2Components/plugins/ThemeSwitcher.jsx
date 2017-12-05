@@ -33,7 +33,8 @@ class ThemeSwitcher extends React.Component {
         changeTheme: PropTypes.func,
         changeFilter: PropTypes.func,
         setCurrentTask: PropTypes.func,
-        mapConfig: PropTypes.object
+        mapConfig: PropTypes.object,
+        width: PropTypes.number
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -42,7 +43,8 @@ class ThemeSwitcher extends React.Component {
         filter: "",
         activeTheme: null,
         activeThemeLayer: null,
-        map: null
+        map: null,
+        width: "auto"
     }
     state = {
         themes: null
@@ -176,7 +178,7 @@ class ThemeSwitcher extends React.Component {
             <input className="themeswitcher-filter" type="text" value={this.props.filter} onChange={this.filterChanged} placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
         );
         return (
-            <SideBar id="ThemeSwitcher" width="85%" title="appmenu.items.ThemeSwitcher"
+            <SideBar id="ThemeSwitcher" width={this.props.width} title="appmenu.items.ThemeSwitcher"
                 icon={assetsPath + "/img/themes.svg"} extraTitlebarContent={extraTitlebarContent}>
                 {this.renderThemeGroup(this.state.themes)}
             </SideBar>

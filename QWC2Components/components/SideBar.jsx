@@ -56,7 +56,8 @@ class SideBar extends React.Component {
         let visible = this.props.currentTask === this.props.id;
         let style = {
             width: this.props.width,
-            right: visible ? 0 : 'calc(-' + this.props.width + ' - 8px)',
+            right: 0,
+            transform: visible ? '' : 'translateX(calc(100% + 8px))',
             zIndex: visible ? 5 : 4
         }
         return (
