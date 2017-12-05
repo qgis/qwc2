@@ -10,7 +10,7 @@ var axios = require('axios');
 const assign = require('object-assign');
 const isMobile = require('ismobilejs');
 
-let localConfigFile = 'localConfig.json';
+let localConfigFile = 'config.json';
 
 let defaultConfig = {
     proxyUrl: "",
