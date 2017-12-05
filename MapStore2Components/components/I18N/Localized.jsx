@@ -7,6 +7,7 @@
  */
 const React = require('react');
 const PropTypes = require('prop-types');
+const {connect} = require('react-redux');
 
 const {IntlProvider} = require('react-intl');
 
@@ -58,4 +59,8 @@ class Localized extends React.Component {
     }
  };
 
-module.exports = Localized;
+ module.exports = connect((state) => ({
+     locale: state.locale.current,
+     messages: state.locale.messages,
+     loadingError: state.locale.localeError
+ }), {})(Localized);

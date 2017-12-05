@@ -20,9 +20,8 @@ const {persistStore, autoRehydrate} = require('redux-persist');
 
 const SecurityUtils = require('../utils/SecurityUtils');
 
-module.exports = (initialState = {defaultState: {}, mobile: {}}, appReducers = {}, plugins, storeOpts) => {
+module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeOpts) => {
     const allReducers = combineReducers({
-        ...appReducers,
         localConfig: require('../reducers/localConfig'),
         locale: require('../reducers/locale'),
         browser: require('../reducers/browser'),

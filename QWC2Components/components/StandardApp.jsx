@@ -9,13 +9,25 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {Provider} = require('react-redux');
 
-const {changeBrowserProperties} = require('../../actions/browser');
-const {loadLocale} = require('../../actions/locale');
-const {localConfigLoaded} = require('../../actions/localConfig');
+// Needed for IE11 to avoid 'Promise not defined' error in axios
+require("babel-polyfill");
+// Avoid Intl is not defined (Intl needed by react-intl further on)
+if (!global.Intl) {
+   require('intl')
+}
 
-const ConfigUtils = require('../../utils/ConfigUtils');
-const LocaleUtils = require('../../utils/LocaleUtils');
-const PluginsUtils = require('../../utils/PluginsUtils');
+const Localized = require('../../MapStore2Components/components/I18N/Localized');
+const PluginsContainer = require('../../MapStore2Components/components/plugins/PluginsContainer');
+const StandardStore = require('../../MapStore2Components/stores/StandardStore')
+
+const {changeBrowserProperties} = require('../../MapStore2Components/actions/browser');
+const {loadLocale} = require('../../MapStore2Components/actions/locale');
+const {localConfigLoaded} = require('../../MapStore2Components/actions/localConfig');
+const {loadMapConfig} = require('../actions/config');
+
+const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
+const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
+const PluginsUtils = require('../../MapStore2Components/utils/PluginsUtils');
 
 const assign = require('object-assign');
 const url = require('url');
@@ -24,17 +36,10 @@ const urlQuery = url.parse(window.location.href, true).query;
 
 class StandardApp extends React.Component {
     static propTypes = {
-        appStore: PropTypes.func,
-        pluginsDef: PropTypes.object,
-        storeOpts: PropTypes.object,
-        initialActions: PropTypes.array,
-        appComponent: PropTypes.func
+        appConfig: PropTypes.object
     }
     static defaultProps = {
-        pluginsDef: {plugins: {}, requires: {}},
-        initialActions: [],
-        appStore: () => ({dispatch: () => {}}),
-        appComponent: () => <span/>
+        appConfig: {}
     }
     constructor(props) {
         super(props);
@@ -51,21 +56,16 @@ class StandardApp extends React.Component {
                 this.init();
             }
         };
-        const opts = assign({}, this.props.storeOpts, {
-            onPersist: onInit
-        });
-        this.store = this.props.appStore(this.props.pluginsDef.plugins, opts);
-        if (!opts.persist) {
-            onInit();
-        }
+        this.store = StandardStore(this.props.appConfig.initialState || {}, this.props.appConfig.pluginsDef.plugins, {onPersist: onInit});
+        onInit();
     }
     render() {
-        const {plugins, requires} = this.props.pluginsDef;
-        const {pluginsDef, appStore, initialActions, appComponent, ...other} = this.props;
-        const App = this.props.appComponent;
+        let plugins = assign(PluginsUtils.getPlugins(this.props.appConfig.pluginsDef.plugins));
         return (
             <Provider store={this.store}>
-                <App {...other} plugins={assign(PluginsUtils.getPlugins(plugins), {requires})}/>
+                <Localized>
+                    <PluginsContainer plugins={plugins} />
+                </Localized>
             </Provider>
         );
     }
@@ -78,9 +78,7 @@ class StandardApp extends React.Component {
             this.store.dispatch(localConfigLoaded(config));
             const locale = LocaleUtils.getUserLocale();
             this.store.dispatch(loadLocale(null, locale));
-            this.props.initialActions.forEach((action) => {
-                this.store.dispatch(action());
-            });
+            this.store.dispatch(loadMapConfig());
         });
     }
 }
