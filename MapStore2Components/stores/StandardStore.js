@@ -6,13 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 const assign = require('object-assign');
+const {combineReducers} = require('redux');
 
 const map = require('../reducers/map');
 
 const mapConfig = require('../reducers/config');
 
 const DebugUtils = require('../utils/DebugUtils');
-const {combineReducers} = require('../utils/PluginsUtils');
+const PluginsUtils = require('../utils/PluginsUtils');
 
 const {CHANGE_BROWSER_PROPERTIES} = require('../actions/browser');
 const {persistStore, autoRehydrate} = require('redux-persist');
@@ -20,13 +21,14 @@ const {persistStore, autoRehydrate} = require('redux-persist');
 const SecurityUtils = require('../utils/SecurityUtils');
 
 module.exports = (initialState = {defaultState: {}, mobile: {}}, appReducers = {}, plugins, storeOpts) => {
-    const allReducers = combineReducers(plugins, {
+    const allReducers = combineReducers({
         ...appReducers,
         localConfig: require('../reducers/localConfig'),
         locale: require('../reducers/locale'),
         browser: require('../reducers/browser'),
         map: () => {return null; },
-        layers: () => {return null; }
+        layers: () => {return null; },
+        ...PluginsUtils.getPluginReducers(plugins)
     });
     const defaultState = initialState.defaultState;
     const mobileOverride = initialState.mobile;
