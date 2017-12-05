@@ -34,7 +34,7 @@ class ThemeSwitcher extends React.Component {
         changeFilter: PropTypes.func,
         setCurrentTask: PropTypes.func,
         mapConfig: PropTypes.object,
-        width: PropTypes.number
+        width: PropTypes.string
     }
     static contextTypes = {
         messages: PropTypes.object
