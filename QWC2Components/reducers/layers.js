@@ -106,9 +106,16 @@ function layers(state = [], action) {
             } else if(action.clear) {
                 newLayers[idx] = assign({}, action.layer, {type: 'vector', features: action.features});
             } else {
-                let newFeatures = [
-                    ...newLayers[idx].features.filter(f => action.features.find(g => g.id === f.id) === undefined),
-                    ...action.features];
+                let addFeatures = action.features.concat();
+                let newFeatures = newLayers[idx].features.map( f => {
+                    let fidx = addFeatures.findIndex(g => g.id === f.id);
+                    if(fidx === -1) {
+                        return f;
+                    } else {
+                        return addFeatures.splice(fidx, 1)[0];
+                    }
+                })
+                newFeatures = newFeatures.concat(addFeatures);
                 newLayers[idx] = assign({}, newLayers[idx], {features: newFeatures});
             }
             return {flat: newLayers};
