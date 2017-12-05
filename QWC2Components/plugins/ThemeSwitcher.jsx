@@ -222,7 +222,8 @@ class ThemeSwitcher extends React.Component {
             ratio: singleTile ? 1 : undefined,
             format: theme.format,
             drawingOrder: theme.drawingOrder,
-            version: theme.version ? theme.version : this.state.themes.defaultWMSVersion ? this.state.themes.defaultWMSVersion : "1.3.0"
+            version: theme.version ? theme.version : this.state.themes.defaultWMSVersion ? this.state.themes.defaultWMSVersion : "1.3.0",
+            priority: 1
         }
     }
     createBackgroundLayersForTheme = (theme, visibleBackgroundLayer=undefined) => {

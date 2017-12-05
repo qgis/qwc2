@@ -307,7 +307,7 @@ class Search extends React.Component {
                 id: "searchselection",
                 visibility: true,
                 queryable: false,
-                zIndex: 1000,
+                priority: 3,
                 layertreehidden: true
             };
             this.props.addLayerFeatures(layer, [feature], true);

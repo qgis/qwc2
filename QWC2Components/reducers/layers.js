@@ -66,8 +66,10 @@ function layers(state = [], action) {
         }
         case ADD_LAYER: {
             let newLayers = (state.flat || []).concat();
-            let newLayer = assign({}, action.layer, {id: action.layer.id || (action.layer.name + "__" + newLayers.length)});
-            newLayers.push(newLayer);
+            let newLayer = assign({}, action.layer, {id: action.layer.id || (action.layer.name + "__" + newLayers.length), priority: action.layer.priority || 0});
+            let inspos = 0;
+            for(; inspos < newLayers.length && newLayer.priority >= newLayers[inspos].priority; ++inspos);
+            newLayers.splice(inspos, 0, newLayer)
             return {flat: newLayers};
         }
         case REMOVE_LAYER: {
@@ -78,8 +80,10 @@ function layers(state = [], action) {
             let newLayers = (state.flat || []).concat();
             let idx = newLayers.findIndex(layer => layer.id === action.layer.id);
             if(idx == -1) {
-                let newLayer = assign({}, action.layer, {type: 'vector', features: action.features});
-                newLayers.push(newLayer);
+                let inspos = 0;
+                let newLayer = assign({}, action.layer, {type: 'vector', features: action.features, priority: action.layer.priority || 0});
+                for(; inspos < newLayers.length && newLayer.priority >= newLayers[inspos].priority; ++inspos);
+                newLayers.splice(inspos, 0, newLayer);
             } else if(action.clear) {
                 newLayers[idx] = assign({}, action.layer, {type: 'vector', features: action.features});
             } else {

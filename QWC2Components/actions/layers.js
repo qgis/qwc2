@@ -95,8 +95,8 @@ function addMarker(id, point, label='', crs='EPSG:4326') {
         id: "markers",
         visibility: true,
         queryable: false,
-        zIndex: 100000000,
-        layertreehidden: true
+        layertreehidden: true,
+        priority: 4
     }
     let feature = {
         id: id,

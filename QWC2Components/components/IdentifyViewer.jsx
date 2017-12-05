@@ -112,7 +112,7 @@ class IdentifyViewer extends React.Component {
             id: "identifyslection",
             visibility: true,
             queryable: false,
-            zIndex: 1000,
+            priority: 3,
             layertreehidden: true
         };
         this.props.addLayerFeatures(layer, features, true);
