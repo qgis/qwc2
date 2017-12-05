@@ -50,7 +50,7 @@ for(let lang of langs) {
   }
   // Write updated common translations file
   try {
-    fs.writeFileSync(process.cwd() + '/qwc2/translations/data.' + lang, JSON.stringify(data, null, 2));
+    fs.writeFileSync(process.cwd() + '/qwc2/translations/data.' + lang, JSON.stringify(data, null, 2) + "\n");
     console.error('Wrote qwc2/translations/data.' + lang);
   } catch(e) {
     console.error('Failed to write common translation data.' + lang + ': ' + e);
@@ -63,7 +63,7 @@ for(let lang of langs) {
   }
   // Write output
   try {
-    fs.writeFileSync(process.cwd() + '/translations/data.' + lang, JSON.stringify(data, null, 2));
+    fs.writeFileSync(process.cwd() + '/translations/data.' + lang, JSON.stringify(data, null, 2) + "\n");
     console.error('Wrote translations/data.' + lang);
   } catch(e) {
     console.error('Failed to write application translation data.' + lang + ': ' + e);
