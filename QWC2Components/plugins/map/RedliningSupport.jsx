@@ -31,6 +31,7 @@ class RedliningSupport extends React.Component {
         super(props);
 
         this.interactions = [];
+        this.picking = false;
         this.currentFeature = null;
         this.selectedStyle = new ol.style.Style({
                 image: new ol.style.RegularShape({
@@ -139,6 +140,7 @@ class RedliningSupport extends React.Component {
         this.props.map.addInteraction(selectInteraction);
         this.props.map.addInteraction(modifyInteraction);
         this.interactions = [selectInteraction, modifyInteraction];
+        this.picking = true;
     }
     commitCurrentFeature = () => {
         if(!this.currentFeature) {
@@ -168,7 +170,12 @@ class RedliningSupport extends React.Component {
         while(this.interactions.length > 0) {
             this.props.map.removeInteraction(this.interactions.shift());
         }
-        this.resetSelectedFeature();
+        if(this.picking) {
+            this.commitCurrentFeature();
+        } else {
+            this.resetSelectedFeature();
+        }
+        this.picking = false;
     }
     resetSelectedFeature = () => {
         if(this.currentFeature) {
