@@ -95,6 +95,7 @@ class Search extends React.Component {
         this.setState({currentResult: null, focused: false, showfields: false});
         this.props.changeSearch("", this.props.searchProvider);
         this.props.removeMarker('searchmarker');
+        this.props.removeLayer('searchselection');
     }
     onChange = (ev) => {
         this.props.changeSearch(ev.target.value, this.props.searchProvider);
