@@ -1,7 +1,3 @@
-div.resizeable-window-container {
-    height: 100%;
-}
-
 div.resizeable-window {
     background-color: @dialog_bg@;
     color: @dialog_fg@;

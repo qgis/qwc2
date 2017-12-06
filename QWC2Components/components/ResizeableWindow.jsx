@@ -65,24 +65,22 @@ class ResizeableWindow extends React.Component {
             icon = (<img src={this.props.icon} />);
         }
         return (
-            <div className="resizeable-window-container">
-                <Rnd className="resizeable-window" bounds="parent" default={initial}
-                    minWidth={this.props.minWidth} minHeight={this.props.minHeight}
-                    maxWidth={this.props.maxWidth || window.innerWidth} maxHeight={this.props.maxHeight || window.innerHeight}>
-                    <div className="resizeable-window-titlebar">
-                        <span className="resizeable-window-titlebar-icon">
-                            {icon}
-                        </span>
-                        <span className="resizeable-window-titlebar-title">
-                            <Message msgId={this.props.title} />
-                        </span>
-                        <Glyphicon className="resizeable-window-titlebar-close" onClick={this.onClose} glyph="remove"/>
-                    </div>
-                    <div className="resizeable-window-body" onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
-                        {this.renderRole("body")}
-                    </div>
-                </Rnd>
-            </div>
+            <Rnd className="resizeable-window" bounds="parent" default={initial}
+                minWidth={this.props.minWidth} minHeight={this.props.minHeight}
+                maxWidth={this.props.maxWidth || window.innerWidth} maxHeight={this.props.maxHeight || window.innerHeight}>
+                <div className="resizeable-window-titlebar">
+                    <span className="resizeable-window-titlebar-icon">
+                        {icon}
+                    </span>
+                    <span className="resizeable-window-titlebar-title">
+                        <Message msgId={this.props.title} />
+                    </span>
+                    <Glyphicon className="resizeable-window-titlebar-close" onClick={this.onClose} glyph="remove"/>
+                </div>
+                <div className="resizeable-window-body" onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
+                    {this.renderRole("body")}
+                </div>
+            </Rnd>
         );
     }
 };
