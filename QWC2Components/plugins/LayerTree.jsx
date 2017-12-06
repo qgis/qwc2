@@ -231,7 +231,7 @@ class LayerTree extends React.Component {
             );
         }
         let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
-        extraTitlebarContent = (<Glyphicon title={printLegendTooltip} className="layertree-print-legend" glyph="print" onClick={this.printLegend}/>)
+        let extraTitlebarContent = (<Glyphicon title={printLegendTooltip} className="layertree-print-legend" glyph="print" onClick={this.printLegend}/>)
         return (
             <div>
                 <SideBar id="LayerTree" width="20em"  title="appmenu.items.LayerTree"
