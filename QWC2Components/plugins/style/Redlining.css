@@ -1,11 +1,13 @@
 #TaskBar.Redlining div.redlining-controlsbar {
-    display: flex;
+    display: inline-flex;
+    flex-wrap: wrap;
 }
 
 #TaskBar.Redlining div.redlining-controlsbar > span {
     display: inline-flex;
     flex: 1 0 auto;
     align-items: center;
+    justify-content: center;
 }
 
 #TaskBar.Redlining span.redlining-colorpicker {
@@ -41,7 +43,7 @@
 #TaskBar.Redlining span.react-numeric-input > input {
   border-radius: 0;
   height: 2em;
-  width: 7em;
+  width: 6em;
 }
 
 #TaskBar.Redlining span.redlining-trash {

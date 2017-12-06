@@ -26,6 +26,7 @@ require('./style/Redlining.css');
 class Redlining extends React.Component {
     static propTypes = {
         redlining: PropTypes.object,
+        mobile: PropTypes.bool,
         setCurrentTask: PropTypes.func,
         changeRedliningState: PropTypes.func
     }
@@ -70,16 +71,16 @@ class Redlining extends React.Component {
             <div>
                 <div className="buttonbar">
                     <span onClick={() => this.updateRedliningState({action: "Pick", geomType: null})} className={this.props.redlining.action === "Pick" ? "active" : ""}>
-                        <img src={assetsPath + "/img/pick.svg"} /><Message msgId="redlining.pick" />
+                        <img src={assetsPath + "/img/pick.svg"} />{this.props.mobile ? null : <Message msgId="redlining.pick" />}
                     </span>
                     <span onClick={() => this.updateRedliningState({action: "Draw", geomType: "Point"})} className={this.props.redlining.action === "Draw" && this.props.redlining.geomType === "Point" ? "active" : ""}>
-                        <img src={assetsPath + "/img/point.svg"} /><Message msgId="redlining.point" />
+                        <img src={assetsPath + "/img/point.svg"} />{this.props.mobile ? null : <Message msgId="redlining.point" />}
                     </span>
                     <span onClick={() => this.updateRedliningState({action: "Draw", geomType: "LineString"})} className={this.props.redlining.action === "Draw" && this.props.redlining.geomType === "LineString" ? "active" : ""}>
-                        <img src={assetsPath + "/img/line.svg"} /><Message msgId="redlining.line" />
+                        <img src={assetsPath + "/img/line.svg"} />{this.props.mobile ? null : <Message msgId="redlining.line" />}
                     </span>
                     <span onClick={() => this.updateRedliningState({action: "Draw", geomType: "Polygon"})} className={this.props.redlining.action === "Draw" && this.props.redlining.geomType === "Polygon" ? "active" : ""}>
-                        <img src={assetsPath + "/img/polygon.svg"} /><Message msgId="redlining.polygon" />
+                        <img src={assetsPath + "/img/polygon.svg"} />{this.props.mobile ? null : <Message msgId="redlining.polygon" />}
                     </span>
                     <span className="redlining-trash" onClick={() => this.updateRedliningState({action: "Delete", geomType: null})}>
                         <img src={assetsPath + "/img/trash.svg"} />
@@ -123,7 +124,8 @@ class Redlining extends React.Component {
 };
 
 const selector = (state) => ({
-    redlining: state.redlining
+    redlining: state.redlining,
+    mobile: state.browser ? state.browser.mobile : false,
 });
 
 module.exports = {
