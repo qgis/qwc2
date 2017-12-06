@@ -8,7 +8,7 @@
 
 const assign = require('object-assign');
 const uuid = require('uuid');
-const {isArray} = require('lodash');
+const {isArray,isEmpty} = require('lodash');
 const {parse,stringify} = require('wellknown');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
@@ -39,7 +39,7 @@ const VectorLayerUtils = {
                      '<se:SvgParameter name="stroke-opacity">' + opacity(opts.strokeColor) + '</se:SvgParameter>' +
                      '<se:SvgParameter name="stroke-width">' + (opts.strokeWidth * dpiScale) + '</se:SvgParameter>' +
                      '<se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>' +
-                     '<CssParameter name="stroke-dasharray">' + (opts.strokeDash || []).join(' ') + '</CssParameter>' +
+                     (!isEmpty(opts.strokeDash) ? '<CssParameter name="stroke-dasharray">' + opts.strokeDash.join(' ') + '</CssParameter>' : '') +
                      '</se:Stroke>';
         let fill = '<se:Fill>' +
                    '<se:SvgParameter name="fill">' + ensureHex(opts.fillColor) + '</se:SvgParameter>' +
