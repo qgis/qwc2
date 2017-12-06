@@ -57,7 +57,7 @@ class SideBar extends React.Component {
         let style = {
             width: this.props.width,
             right: 0,
-            transform: visible ? '' : 'translateX(calc(100% + 8px))',
+            transform: visible ? '' : 'translateX(100%) translateX(8px)',
             zIndex: visible ? 5 : 4
         }
         return (
