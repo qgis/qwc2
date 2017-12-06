@@ -11,6 +11,8 @@ const {connect} = require('react-redux');
 const url = require('url');
 const urlQuery = url.parse(window.location.href, true).query;
 
+require('./style/PluginsContainer.css');
+
 class PluginsContainer extends React.Component {
     static propTypes = {
         mode: PropTypes.string,
@@ -36,7 +38,7 @@ class PluginsContainer extends React.Component {
     render() {
         if (this.props.pluginsConfig) {
             return (
-                <div id="plugins-container">
+                <div id="PluginsContainer">
                     {
                      this.renderPlugins(this.props.pluginsConfig[this.props.mode])
                     }

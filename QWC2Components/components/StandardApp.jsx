@@ -17,8 +17,8 @@ if (!global.Intl) {
 }
 
 const Localized = require('../../MapStore2Components/components/I18N/Localized');
-const PluginsContainer = require('../../MapStore2Components/components/plugins/PluginsContainer');
 const StandardStore = require('../../MapStore2Components/stores/StandardStore')
+const PluginsContainer = require('./PluginsContainer');
 
 const {changeBrowserProperties} = require('../../MapStore2Components/actions/browser');
 const {loadLocale} = require('../../MapStore2Components/actions/locale');
