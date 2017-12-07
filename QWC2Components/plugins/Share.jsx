@@ -47,7 +47,7 @@ class Share extends React.Component {
             const shareLink = this.props.showLink ? <ShareLink shareUrl={this.state.location}/> : null;
             const shareQRCode = this.props.showQRCode ? <ShareQRCode shareUrl={this.state.location}/> : null;
             return (
-                <div role="body" className="scrollable">
+                <div role="body">
                     {shareSocials}
                     {shareLink}
                     {shareQRCode}
