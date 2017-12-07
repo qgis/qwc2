@@ -12,7 +12,6 @@ const {TwitterPicker} = require('react-color');
 const {connect} = require('react-redux');
 const NumericInput = require('react-numeric-input');
 const assign = require('object-assign');
-const objectPath = require('object-path');
 const classnames = require('classnames');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const Message = require('../../MapStore2Components/components/I18N/Message');
