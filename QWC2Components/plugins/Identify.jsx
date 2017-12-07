@@ -72,7 +72,7 @@ class Identify extends React.Component {
                     this.props.point.pixel.y !== props.point.pixel.y ) {
                 return true;
             }
-            if (!this.props.point.pixel || props.point.pixel && this.props.format !== props.format) {
+            if (this.props.format !== props.format) {
                 return true;
             }
         }
