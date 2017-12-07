@@ -6,14 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var {CHANGE_MAP_VIEW, CHANGE_MOUSE_POINTER,
+const {CHANGE_MAP_VIEW, CHANGE_MOUSE_POINTER,
     CHANGE_ZOOM_LVL, CHANGE_MAP_CRS, CHANGE_MAP_SCALES, ZOOM_TO_EXTENT, ZOOM_TO_POINT,
-    PAN_TO, CHANGE_MAP_STYLE, CHANGE_ROTATION} = require('../actions/map');
+    PAN_TO, CHANGE_MAP_STYLE, CHANGE_ROTATION, CLICK_ON_MAP} = require('../actions/map');
 
-
-var assign = require('object-assign');
-var MapUtils = require('../utils/MapUtils');
-var CoordinatesUtils = require('../utils/CoordinatesUtils');
+const assign = require('object-assign');
+const MapUtils = require('../utils/MapUtils');
+const CoordinatesUtils = require('../utils/CoordinatesUtils');
 
 function mapConfig(state = {}, action) {
     switch (action.type) {
@@ -98,6 +97,11 @@ function mapConfig(state = {}, action) {
         case CHANGE_ROTATION: {
             let newBbox = assign({}, state.bbox, {rotation: action.rotation});
             return assign({}, state, {bbox: newBbox, mapStateSource: action.mapStateSource});
+        }
+        case CLICK_ON_MAP: {
+            return assign({}, state, {
+                clickPoint: action.point
+            });
         }
         default:
             return state;

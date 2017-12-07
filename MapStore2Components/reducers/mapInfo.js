@@ -6,8 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {CLICK_ON_MAP} = require('../actions/map');
-
 const {
     ERROR_FEATURE_INFO,
     EXCEPTIONS_FEATURE_INFO,
@@ -63,11 +61,6 @@ function mapInfo(state = {}, action) {
         }
         case ERROR_FEATURE_INFO: {
             return receiveResponse(state, action, 'error');
-        }
-        case CLICK_ON_MAP: {
-            return assign({}, state, {
-                clickPoint: action.point
-            });
         }
         case CHANGE_MAPINFO_FORMAT: {
             return assign({}, state, {

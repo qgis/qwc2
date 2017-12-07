@@ -113,7 +113,7 @@ const selector = (state) => ({
     responses: state.mapInfo && state.mapInfo.responses || [],
     requests: state.mapInfo && state.mapInfo.requests || [],
     map: state.map ? state.map : null,
-    point: state.mapInfo && state.mapInfo.clickPoint || {},
+    point: state.map && state.map.clickPoint || {},
     layers: state.layers && state.layers.flat || []
 });
 
