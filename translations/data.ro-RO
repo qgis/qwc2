@@ -72,7 +72,14 @@
       "metersUnit": "metri",
       "feetUnit": "picioare",
       "popup": "Ești la {distance} {unit} de acest punct",
-      "outsideMapBoundsMsg": "Ești localizat în afara limitelor hărții"
+      "outsideMapBoundsMsg": "Ești localizat în afara limitelor hărții",
+      "statustooltip": {
+        "DISABLED": "Dezactivat",
+        "LOCATING": "Localizează...",
+        "ENABLED": "Activat",
+        "FOLLOWING": "Urmărește",
+        "PERMISSION_DENIED": "Acces refuzat"
+      }
     },
     "map": {
       "loading": "Se încarcă..."
