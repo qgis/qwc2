@@ -14,11 +14,11 @@ const NumericInput = require('react-numeric-input');
 const assign = require('object-assign');
 const objectPath = require('object-path');
 const classnames = require('classnames');
-const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeRedliningState} = require('../actions/redlining');
 const {TaskBar} = require('../components/TaskBar');
+const ButtonBar = require('../components/widgets/ButtonBar');
 
 
 require('./style/Redlining.css');
@@ -52,7 +52,6 @@ class Redlining extends React.Component {
         this.updateRedliningState(diff);
     }
     renderBody = () => {
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let borderClasses = classnames({
             "redlining-colorpicker": true,
             "redlining-colorpicker-collapsed": this.state.openColorPicker !== "border"
@@ -67,25 +66,16 @@ class Redlining extends React.Component {
         } else if(this.props.redlining.geomType === "Polygon") {
             sizeLabel = "Border";
         }
+        let buttons = [
+            {key: "Pick", label: "redlining.pick", icon: "pick.svg", data: {action: "Pick", geomType: null}},
+            {key: "Point", label: "redlining.point", icon: "point.svg", data: {action: "Draw", geomType: "Point"}},
+            {key: "LineString", label: "redlining.line", icon: "line.svg", data: {action: "Draw", geomType: "LineString"}},
+            {key: "Polygon", label: "redlining.polygon", icon: "polygon.svg", data: {action: "Draw", geomType: "Polygon"}}
+        ];
+        let activeButton = this.props.redlining.action === "Pick" ? "Pick" : this.props.redlining.geomType;
         return (
             <div>
-                <div className="buttonbar">
-                    <span onClick={() => this.updateRedliningState({action: "Pick", geomType: null})} className={this.props.redlining.action === "Pick" ? "active" : ""}>
-                        <img src={assetsPath + "/img/pick.svg"} />{this.props.mobile ? null : <Message msgId="redlining.pick" />}
-                    </span>
-                    <span onClick={() => this.updateRedliningState({action: "Draw", geomType: "Point"})} className={this.props.redlining.action === "Draw" && this.props.redlining.geomType === "Point" ? "active" : ""}>
-                        <img src={assetsPath + "/img/point.svg"} />{this.props.mobile ? null : <Message msgId="redlining.point" />}
-                    </span>
-                    <span onClick={() => this.updateRedliningState({action: "Draw", geomType: "LineString"})} className={this.props.redlining.action === "Draw" && this.props.redlining.geomType === "LineString" ? "active" : ""}>
-                        <img src={assetsPath + "/img/line.svg"} />{this.props.mobile ? null : <Message msgId="redlining.line" />}
-                    </span>
-                    <span onClick={() => this.updateRedliningState({action: "Draw", geomType: "Polygon"})} className={this.props.redlining.action === "Draw" && this.props.redlining.geomType === "Polygon" ? "active" : ""}>
-                        <img src={assetsPath + "/img/polygon.svg"} />{this.props.mobile ? null : <Message msgId="redlining.polygon" />}
-                    </span>
-                    <span className="redlining-trash" onClick={() => this.updateRedliningState({action: "Delete", geomType: null})}>
-                        <img src={assetsPath + "/img/trash.svg"} />
-                    </span>
-                </div>
+                <ButtonBar buttons={buttons} active={activeButton} onClick={(key, data) => this.updateRedliningState(data)} />
                 <div className="redlining-controlsbar">
                     <span>
                         <span><Message msgId="redlining.outline" />:</span>

@@ -35,27 +35,3 @@
 #TaskBar span.close {
     float: none;
 }
-
-#TaskBar div.buttonbar {
-    display: flex;
-}
-
-#TaskBar div.buttonbar > span {
-    flex: 1 1 auto;
-    display: inline-block;
-    border-top: 1px solid @item_border@;
-    border-bottom: 1px solid @item_border@;
-    border-right: 1px solid @item_border@;
-    padding: 0.25em 0.5em;
-    cursor: pointer;
-    color: @item_fg@;
-}
-
-#TaskBar div.buttonbar > span:first-child {
-    border-left: 1px solid @item_border@;
-}
-
-#TaskBar div.buttonbar > span.active {
-    background-color: @item_active@;
-    color: white;
-}

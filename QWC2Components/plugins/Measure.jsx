@@ -19,6 +19,7 @@ const measureUtils = require('../../MapStore2Components/utils/MeasureUtils');
 const {changeMeasurement, changeMeasurementState} = require('../../MapStore2Components/actions/measurement.js');
 const displayCrsSelector = require('../selectors/displaycrs');
 const {TaskBar} = require('../components/TaskBar');
+const ButtonBar = require('../components/widgets/ButtonBar');
 require('./style/Measure.css');
 
 class Measure extends React.Component {
@@ -59,13 +60,14 @@ class Measure extends React.Component {
         if(!this.props.showMeasureModeSwitcher) {
             return null;
         }
+        let buttons = [
+            {key: "Point", label: "measureComponent.pointLabel"},
+            {key: "LineString", label: "measureComponent.lengthLabel"},
+            {key: "Polygon", label: "measureComponent.areaLabel"},
+            {key: "Bearing", label: "measureComponent.bearingLabel"}
+        ];
         return (
-            <div className="buttonbar">
-                <span onClick={()=>{this.setMeasureMode("Point");}} className={this.props.measureState.geomType === "Point" ? "active" : ""}><Message msgId="measureComponent.pointLabel" /></span>
-                <span onClick={()=>{this.setMeasureMode("LineString");}} className={this.props.measureState.geomType === "LineString" ? "active" : ""}><Message msgId="measureComponent.lengthLabel" /></span>
-                <span onClick={()=>{this.setMeasureMode("Polygon");}} className={this.props.measureState.geomType === "Polygon" ? "active" : ""}><Message msgId="measureComponent.areaLabel" /></span>
-                <span onClick={()=>{this.setMeasureMode("Bearing");}} className={this.props.measureState.geomType === "Bearing" ? "active" : ""}><Message msgId="measureComponent.bearingLabel" /></span>
-            </div>
+            <ButtonBar buttons={buttons} active={this.props.measureState.geomType} onClick={this.setMeasureMode} />
         );
     }
     renderBody = () => {
