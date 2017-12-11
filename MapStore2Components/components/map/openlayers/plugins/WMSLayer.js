@@ -71,9 +71,9 @@ let WMSLayer = {
     },
     update: (layer, newOptions, oldOptions) => {
         if (oldOptions && layer && layer.getSource() && layer.getSource().updateParams) {
-            let changed = false;
+            let changed = (oldOptions.rev || 0) !== (newOptions.rev || 0);
             if (oldOptions.params && newOptions.params) {
-                changed = Object.keys(oldOptions.params).reduce((found, param) => {
+                changed |= Object.keys(oldOptions.params).reduce((found, param) => {
                     if (newOptions.params[param] !== oldOptions.params[param]) {
                         return true;
                     }
@@ -84,15 +84,15 @@ let WMSLayer = {
             }
             let oldParams = wmsToOpenlayersOptions(oldOptions);
             let newParams = wmsToOpenlayersOptions(newOptions);
-            changed = changed || ["LAYERS", "STYLES", "FORMAT", "TRANSPARENT", "TILED", "VERSION" ].reduce((found, param) => {
+            changed |= ["LAYERS", "STYLES", "FORMAT", "TRANSPARENT", "TILED", "VERSION" ].reduce((found, param) => {
                 if (oldParams[param] !== newParams[param]) {
                     return true;
                 }
                 return found;
             }, false);
-
             if (changed) {
                 layer.getSource().updateParams(assign(newParams, newOptions.params));
+                layer.getSource().changed();
             }
         }
     }

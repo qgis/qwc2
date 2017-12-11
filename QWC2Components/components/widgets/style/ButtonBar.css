@@ -5,14 +5,19 @@ div.ButtonBar {
 
 div.ButtonBar > span {
     flex: 1 1 auto;
-    display: inline-block;
+    display: inline-flex;
     border-top: 1px solid @item_border@;
     border-bottom: 1px solid @item_border@;
     border-right: 1px solid @item_border@;
     padding: 0.25em 0.5em;
     cursor: pointer;
     color: @item_fg@;
-    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+div.ButtonBar > span > * {
+    flex: 0 0 auto;
 }
 
 div.ButtonBar > span > img,
@@ -21,11 +26,31 @@ div.ButtonBar > span > span.glyphicon
     margin: 0 0.25em;
 }
 
+div.ButtonBar > span > span.glyphicon
+{
+    line-height: 24px;
+    font-size: large;
+}
+
 div.ButtonBar > span:first-child {
     border-left: 1px solid @item_border@;
 }
 
-div.ButtonBar > span.active {
+div.ButtonBar > span.pressed {
     background-color: @item_active@;
     color: white;
+}
+
+div.ButtonBar > span:active > * {
+    position: relative!important;
+    left: 1px;
+    top: 1px;
+}
+
+div.ButtonBar > span:hover {
+    background-color: @item_inactive_hover@;
+}
+
+div.ButtonBar > span.pressed:hover {
+    background-color: @item_active_hover@;
 }

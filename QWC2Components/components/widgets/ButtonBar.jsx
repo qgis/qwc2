@@ -34,7 +34,7 @@ class ButtonBar extends React.Component {
         return (
             <div className="ButtonBar">
                 {this.props.buttons.map(button => {
-                    let classes = (this.props.active === button.key ? 'active' : '');
+                    let classes = (this.props.active === button.key ? 'pressed' : '');
                     classes += button.extraClasses ? ' ' + button.extraClasses : '';
                     return (
                         <span key={button.key} className={classes} onClick={(ev) => this.props.onClick(button.key, button.data)}>

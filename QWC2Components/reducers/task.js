@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {SET_CURRENT_TASK} = require('../actions/task');
+const {SET_CURRENT_TASK, SET_CURRENT_TASK_BLOCKED} = require('../actions/task');
 const assign = require('object-assign');
 
 
@@ -14,7 +14,12 @@ function task(state = {}, action)
 {
     switch (action.type) {
         case SET_CURRENT_TASK:
+            if(state.blocked) {
+                return state;
+            }
             return assign({}, state, {current: action.current, mode: action.mode});
+        case SET_CURRENT_TASK_BLOCKED:
+            return assign({}, state, {blocked: action.blocked});
         default:
             return state;
     }

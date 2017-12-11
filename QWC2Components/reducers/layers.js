@@ -18,7 +18,8 @@ const {
     REMOVE_LAYER,
     CHANGE_LAYER_PROPERTIES,
     ADD_LAYER_FEATURES,
-    REMOVE_LAYER_FEATURES
+    REMOVE_LAYER_FEATURES,
+    REFRESH_LAYER
 } = require('../actions/layers');
 
 
@@ -113,6 +114,15 @@ function layers(state = {}, action) {
                 }
                 return result;
             }, []);
+            return {flat: newLayers};
+        }
+        case REFRESH_LAYER: {
+            let newLayers = (state.flat || []).map((layer) => {
+                if(layer.id === action.layerId) {
+                    return assign({}, layer, {rev: (layer.rev || 0) + 1});
+                }
+                return layer;
+            });
             return {flat: newLayers};
         }
         default:

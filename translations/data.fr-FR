@@ -14,12 +14,10 @@
         "ThemeSwitcher": "Cartes",
         "Tools": "Outils",
         "IdentifyRegion": "Interroger la région",
-        "Redlining": "Redlining"
+        "Redlining": "Redlining",
+        "Editing": "Editer"
       },
       "menulabel": "Cartes et outils"
-    },
-    "bgswitcher": {
-      "nobg": "Pas de fond"
     },
     "bottombar": {
       "mousepos_label": "Coordonnées",
@@ -28,54 +26,47 @@
       "viewertitle_label": "Page d'accueil"
     },
     "draw": {
-      "delete": "",
-      "clearAll": "",
-      "point": "",
-      "line": "",
-      "polygon": "",
       "bbox": "",
       "circle": "",
-      "strokecolor": "",
+      "clearAll": "",
+      "delete": "",
       "fillcolor": "",
-      "text": "",
-      "strokewidth": "",
       "fillopacity": "",
-      "fontsize": ""
+      "fontsize": "",
+      "line": "",
+      "point": "",
+      "polygon": "",
+      "strokecolor": "",
+      "strokewidth": "",
+      "text": ""
     },
     "dxfexport": {
       "selectinfo": "Paramétrage de l'export DXF",
       "symbologyscale": "Echelle"
     },
-    "identifyTitle": "Informations de l'objet",
+    "editing": {
+      "canceldelete": "",
+      "commit": "",
+      "delete": "",
+      "discard": "",
+      "draw": "",
+      "fields": "",
+      "layer": "",
+      "noeditablelayers": "",
+      "pick": "",
+      "reallydelete": ""
+    },
     "identify": {
       "querying": "Identification en cours..."
     },
     "identifyregion": {
       "info": "Dessiner un polygone pour identifier les objets"
     },
-    "layerinfo": {
-      "title": "Informations dur la couche",
-      "abstract": "Récapitulation",
-      "attribution": "Attribution",
-      "keywords": "Mots-clés",
-      "dataUrl": "URL des données",
-      "metadataUrl": "URL des métadonnées",
-      "legend": "Légende"
-    },
+    "identifyTitle": "Informations de l'objet",
     "layertree": {
       "maptip": "Afficher les maptips",
-      "transparency": "Transparence",
-      "printlegend": "Afficher la légende"
-    },
-    "locate": {
-      "tooltip": "",
-      "metersUnit": "",
-      "feetUnit": "",
-      "popup": "",
-      "outsideMapBoundsMsg": ""
-    },
-    "map": {
-      "loading": "Chargement de la carte..."
+      "printlegend": "Afficher la légende",
+      "transparency": "Transparence"
     },
     "measureComponent": {
       "areaLabel": "Surface",
@@ -97,30 +88,46 @@
       "format": "Format:",
       "selectinfo": "Dessiner un rectangle pour définir la zone à exporter"
     },
+    "redlining": {
+      "fill": "Remplissage",
+      "label": "Texte",
+      "line": "Ligne",
+      "outline": "Contour",
+      "pick": "Choisir",
+      "point": "Point",
+      "polygon": "Polygone"
+    },
     "search": {
-      "coordinates": "Coordonnées",
+      "more": "",
       "placeholder": "Recherche par toponyme ou coordonnées...",
-      "more": ""
+      "coordinates": "Coordonnées"
     },
     "share": {
       "directLinkTitle": "Via un lien direct",
       "generatingpermalink": "Un lien permanent est généré...",
-      "msgToCopyUrl": "Cliquer pour copier",
-      "msgCopiedUrl": "URL copiée",
       "QRCodeLinkTitle": "QR code",
-      "socialIntro": "Via votre réseau social favori"
+      "socialIntro": "Via votre réseau social favori",
+      "msgToCopyUrl": "Cliquer pour copier",
+      "msgCopiedUrl": "URL copiée"
     },
     "themeswitcher": {
       "filter": "Filtre"
     },
-    "redlining": {
-      "point": "Point",
-      "line": "Ligne",
-      "polygon": "Polygone",
-      "pick": "Choisir",
-      "outline": "Contour",
-      "fill": "Remplissage",
-      "label": "Texte"
+    "bgswitcher": {
+      "nobg": "Pas de fond"
+    },
+    "layerinfo": {
+      "title": "Informations dur la couche",
+      "abstract": "Récapitulation",
+      "attribution": "Attribution",
+      "keywords": "Mots-clés",
+      "dataUrl": "URL des données",
+      "metadataUrl": "URL des métadonnées",
+      "legend": "Légende"
+    },
+    "locate": {},
+    "map": {
+      "loading": "Chargement de la carte..."
     }
   }
 }

@@ -13,7 +13,9 @@
         "Share": "Dela länk",
         "ThemeSwitcher": "Tema",
         "Tools": "Kartverktyg",
-        "IdentifyRegion": ""
+        "IdentifyRegion": "",
+        "Redlining": "",
+        "Editing": ""
       },
       "menulabel": "Karta & Verktyg"
     },

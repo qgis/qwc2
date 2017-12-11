@@ -12,6 +12,8 @@ const urlUtil = require('url');
 const axios = require('axios');
 const xml2js = require('xml2js');
 const fs = require('fs');
+const path = require('path');
+const {isEmpty} = require('lodash');
 const fqdn = require('node-fqdn');
 const hostFqdn = "http://" + String(fqdn());
 
@@ -78,6 +80,16 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
     });
 }
 
+function getEditConfig(editConfig) {
+    if(isEmpty(editConfig)) {
+        return null;
+    } else if(path.isAbsolute(editConfig) && fs.existsSync(editConfig)) {
+        return JSON.parse(fs.readFileSync(path, "utf8"));
+    } else if(fs.existsSync(process.cwd() + '/' + editConfig)) {
+        return JSON.parse(fs.readFileSync(process.cwd() + '/' + editConfig, "utf8"));
+    }
+    return null;
+}
 // convert non-array object to array containing the object
 // used to restore arrays lost by 'explicitArray: false' xml2js option
 function toArray(obj) {
@@ -346,6 +358,7 @@ function getTheme(configItem, resultItem) {
             }
 
             resultItem.skipEmptyFeatureAttributes = configItem.skipEmptyFeatureAttributes
+            resultItem.editConfig = getEditConfig(configItem.editConfig);
 
             // set default theme
             if (configItem.default || !result.themes.defaultTheme) {

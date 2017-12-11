@@ -8,6 +8,7 @@
 
 const {changeMeasurement} = require('../../MapStore2Components/actions/measurement');
 const {changeRedliningState} = require('./redlining');
+const {changeEditingState} = require('./editing');
 const {changeDrawingStatus} = require('../../MapStore2Components/actions/draw');
 const {setCurrentTask} = require('./task');
 
@@ -21,6 +22,11 @@ function triggerTool(key, mode=null) {
         return (dispatch => {
             dispatch(setCurrentTask('Redlining', mode));
             dispatch(changeRedliningState({action: 'Pick'}));
+        });
+    } else if(key === 'Editing') {
+        return (dispatch => {
+            dispatch(setCurrentTask('Editing'));
+            dispatch(changeEditingState({action: 'Pick'}));
         });
     } else if(key === 'Draw') {
         return (dispatch => {

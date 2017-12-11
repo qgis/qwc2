@@ -7,14 +7,21 @@
  */
 
 const SET_CURRENT_TASK = 'SET_CURRENT_TASK';
+const SET_CURRENT_TASK_BLOCKED = 'SET_CURRENT_TASK_BLOCKED';
 const {changeMeasurement} = require('../../MapStore2Components/actions/measurement');
 const {changeRedliningState} = require('./redlining');
+const {changeEditingState} = require('./editing');
 const {changeMapInfoState} = require('../../MapStore2Components/actions/mapInfo');
 
 function setCurrentTask(task, mode=null, allowIdentify=false) {
-    return (dispatch) => {
+    return (dispatch, getState) => {
+        // Don't do anything if current task is blocked
+        if(getState().task && getState().task.blocked === true) {
+            return;
+        }
         dispatch(changeMeasurement({geomType: null}));
         dispatch(changeRedliningState({action: null, geomType: null}));
+        dispatch(changeEditingState({action: null, geomType: null, feature: null}));
         dispatch(changeMapInfoState(task === null || allowIdentify));
         dispatch({
             type: SET_CURRENT_TASK,
@@ -24,7 +31,16 @@ function setCurrentTask(task, mode=null, allowIdentify=false) {
     }
 }
 
+function setCurrentTaskBlocked(blocked) {
+    return {
+        type: SET_CURRENT_TASK_BLOCKED,
+        blocked
+    }
+}
+
 module.exports = {
     SET_CURRENT_TASK,
-    setCurrentTask
+    SET_CURRENT_TASK_BLOCKED,
+    setCurrentTask,
+    setCurrentTaskBlocked
 }

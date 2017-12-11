@@ -13,12 +13,11 @@
         "Share": "",
         "ThemeSwitcher": "",
         "Tools": "",
-        "IdentifyRegion": ""
+        "IdentifyRegion": "",
+        "Redlining": "",
+        "Editing": ""
       },
       "menulabel": ""
-    },
-    "bgswitcher": {
-      "nobg": ""
     },
     "bottombar": {
       "mousepos_label": "",
@@ -27,54 +26,47 @@
       "viewertitle_label": ""
     },
     "draw": {
-      "delete": "",
-      "clearAll": "",
-      "point": "",
-      "line": "",
-      "polygon": "",
       "bbox": "",
       "circle": "",
-      "strokecolor": "",
+      "clearAll": "",
+      "delete": "",
       "fillcolor": "",
-      "text": "",
-      "strokewidth": "",
       "fillopacity": "",
-      "fontsize": ""
+      "fontsize": "",
+      "line": "",
+      "point": "",
+      "polygon": "",
+      "strokecolor": "",
+      "strokewidth": "",
+      "text": ""
     },
     "dxfexport": {
       "selectinfo": "",
       "symbologyscale": ""
     },
-    "identifyTitle": "Informazioni Sulle Feature",
+    "editing": {
+      "canceldelete": "",
+      "commit": "",
+      "delete": "",
+      "discard": "",
+      "draw": "",
+      "fields": "",
+      "layer": "",
+      "noeditablelayers": "",
+      "pick": "",
+      "reallydelete": ""
+    },
     "identify": {
       "querying": ""
     },
     "identifyregion": {
       "info": ""
     },
-    "layerinfo": {
-      "title": "",
-      "abstract": "",
-      "attribution": "",
-      "keywords": "",
-      "dataUrl": "",
-      "metadataUrl": "",
-      "legend": ""
-    },
+    "identifyTitle": "Informazioni Sulle Feature",
     "layertree": {
       "maptip": "",
-      "transparency": "",
-      "printlegend": ""
-    },
-    "locate": {
-      "tooltip": "",
-      "metersUnit": "",
-      "feetUnit": "",
-      "popup": "",
-      "outsideMapBoundsMsg": ""
-    },
-    "map": {
-      "loading": "In caricamento..."
+      "printlegend": "",
+      "transparency": ""
     },
     "measureComponent": {
       "areaLabel": "Area",
@@ -96,30 +88,34 @@
       "format": "",
       "selectinfo": ""
     },
+    "redlining": {
+      "fill": "Riempimento",
+      "label": "Ettichetta",
+      "line": "Linea",
+      "outline": "Contorno",
+      "pick": "Seleziona",
+      "point": "Punto",
+      "polygon": "Poligono"
+    },
     "search": {
-      "coordinates": "",
-      "placeholder": "Cerca un indirizzo o inserisci coordinate...",
-      "more": ""
+      "more": "",
+      "placeholder": "Cerca un indirizzo o inserisci coordinate..."
     },
     "share": {
       "directLinkTitle": "Con un Link diretto",
       "generatingpermalink": "",
-      "msgToCopyUrl": "Clicca per copiare",
-      "msgCopiedUrl": "",
       "QRCodeLinkTitle": "Usando il QR Code",
-      "socialIntro": "Sul tuo social preferito"
+      "socialIntro": "Sul tuo social preferito",
+      "msgToCopyUrl": "Clicca per copiare"
     },
     "themeswitcher": {
       "filter": ""
     },
-    "redlining": {
-      "point": "Punto",
-      "line": "Linea",
-      "polygon": "Poligono",
-      "pick": "Seleziona",
-      "outline": "Contorno",
-      "fill": "Riempimento",
-      "label": "Ettichetta"
+    "bgswitcher": {},
+    "layerinfo": {},
+    "locate": {},
+    "map": {
+      "loading": "In caricamento..."
     }
   }
 }

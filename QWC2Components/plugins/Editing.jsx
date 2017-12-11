@@ -1,0 +1,252 @@
+/**
+ * Copyright 2017, Sourcepole AG.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+const React = require('react');
+const PropTypes = require('prop-types');
+const {connect} = require('react-redux');
+const {isEmpty,isEqual} = require('lodash');
+const assign = require('object-assign');
+const {clickOnMap} = require("../../MapStore2Components/actions/map");
+const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
+const Message = require('../../MapStore2Components/components/I18N/Message');
+const {changeEditingState} = require('../actions/editing');
+const {setCurrentTaskBlocked} = require('../actions/task');
+const {refreshLayer} = require('../actions/layers')
+const {SideBar} = require('../components/SideBar');
+const ButtonBar = require('../components/widgets/ButtonBar');
+require('./style/Editing.css');
+
+class Editing extends React.Component {
+    static propTypes = {
+        enabled: PropTypes.bool,
+        theme: PropTypes.object,
+        themeLayerId: PropTypes.string,
+        map: PropTypes.object,
+        iface: PropTypes.object,
+        editing: PropTypes.object,
+        clickOnMap: PropTypes.func,
+        changeEditingState: PropTypes.func,
+        setCurrentTaskBlocked: PropTypes.func,
+        refreshLayer: PropTypes.func
+    }
+    state = {
+        selectedLayer: null,
+        selectedFeature: null,
+        busy: false,
+        deleteClicked: false
+    }
+    componentWillReceiveProps(newProps) {
+        if(newProps.theme) {
+            let layerIds = Object.keys(newProps.theme.editConfig || {});
+            if(!isEmpty(layerIds)) {
+                if(!layerIds.includes(this.state.selectedLayer)) {
+                    this.setState({selectedLayer: layerIds[0]})
+                }
+            } else {
+                this.setState({selectedLayer: null})
+            }
+        }
+        // If clickPoint changed and in pick mode with a selected layer, trigger a pick
+        if(newProps.enabled && this.props.enabled && newProps.editing.action === 'Pick' && this.state.selectedLayer) {
+            const newPoint = newProps.map.clickPoint || {};
+            const oldPoint = this.props.map.clickPoint || {};
+            if(!isEqual(newPoint.latlng, oldPoint.latLng)) {
+                let point = {x: newPoint.latlng.lng, y: newPoint.latlng.lat};
+                this.props.iface.getFeature(this.state.selectedLayer, point, "EPSG:4326", (feature) => {
+                    this.props.changeEditingState(assign({}, this.props.editing, {feature: feature, changed: false}));
+                });
+            }
+        }
+        this.props.setCurrentTaskBlocked(newProps.editing.changed === true);
+        if(!newProps.editing.feature || newProps.editing.changed) {
+            this.setState({deleteClicked: false});
+        }
+        // Always clear clicked pos if enabled
+        if(newProps.map.clickPoint && newProps.enabled) {
+            this.props.clickOnMap(null);
+        }
+    }
+    renderField = (field) => {
+        let attrs = field.constraints || {};
+        let disabled = this.props.editing.feature ? "" : "disabled";
+        let value = "";
+        if(this.props.editing.feature && this.props.editing.feature.properties) {
+            value = this.props.editing.feature.properties[field.id] || "";
+        }
+        let input = (
+            <input type={field.type} {...attrs} disabled={disabled}
+                onChange={(ev) => this.updateField(field.id, ev.target.value)}
+                value={value}/>
+        );
+        return (
+            <tr key={field.id}>
+                <td>{field.name}:</td>
+                <td><span className="input-frame">{input}</span></td>
+            </tr>
+        );
+    }
+    renderBody = () => {
+        if(!this.props.theme || isEmpty(this.props.theme.editConfig)) {
+            return (
+                <div role="body" style={{padding: "1em"}}>
+                    <Message msgId="editing.noeditablelayers" />
+                </div>
+            );
+        }
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
+        const editConfig = this.props.theme.editConfig;
+        const curConfig = editConfig[this.state.selectedLayer] || {};
+        let buttonBar = null;
+        if(!this.props.editing.changed) {
+            const buttons = [
+                {key: 'Pick', icon: 'pick.svg', label: "editing.pick", data: {action: 'Pick', geomType: null}},
+                {key: 'Draw', icon: 'editdraw.svg', label: "editing.draw", data: {action: 'Draw', geomType: curConfig.geomType, feature: null}}
+            ];
+            buttonBar = (<ButtonBar buttons={buttons} active={this.props.editing.action} onClick={(action, data) => this.props.changeEditingState({...data})} />);
+        } else {
+            const buttons = [
+                {key: 'Commit', glyph: 'ok', label: "editing.commit", extraClasses: "edit-commit"},
+                {key: 'Discard', glyph: 'remove', label: "editing.discard", extraClasses: "edit-discard"}
+            ];
+            buttonBar = (<ButtonBar buttons={buttons} onClick={this.onEditingFinished}/>);
+        }
+        let fieldsTable = null;
+        if(this.props.editing.feature) {
+            fieldsTable = (
+                <div>
+                    <div className="separator"></div>
+                    <table className="fields-table">
+                        <tbody>
+                            {(curConfig.fields || []).map(field => this.renderField(field))}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        }
+        let deleteButtonBar = null;
+        if(this.props.editing.action === 'Pick' && this.props.editing.feature && !this.props.editing.changed) {
+            if(!this.state.deleteClicked) {
+                const buttons = [
+                    {key: 'Delete', glyph: 'trash', label: "editing.delete"}
+                ];
+                deleteButtonBar = (<ButtonBar buttons={buttons} onClick={this.deleteClicked} />);
+            } else {
+                const buttons = [
+                    {key: 'Yes', glyph: 'ok', label: "editing.reallydelete", extraClasses: "edit-commit"},
+                    {key: 'No', glyph: 'remove', label: "editing.canceldelete", extraClasses: "edit-discard"}
+                ];
+                deleteButtonBar = (<ButtonBar buttons={buttons} onClick={this.deleteFeature} />);
+            }
+        }
+        let busyDiv = null;
+        if(this.state.busy) {
+            busyDiv = (<div className="editing-busy"></div>);
+        }
+        return (
+            <div role="body" className="editing-body">
+                <div>
+                    <span className="input-frame">
+                        <select className="editing-layer-select" value={this.state.selectedLayer || ""} onChange={this.changeSelectedLayer} disabled={this.props.editing.changed === true}>
+                            {Object.keys(editConfig).map(layerId => {
+                                return (
+                                    <option key={layerId} value={layerId}>{editConfig[layerId].layerName}</option>
+                                );
+                            })}
+                        </select>
+                    </span>
+                </div>
+                {buttonBar}
+                {fieldsTable}
+                {deleteButtonBar}
+                {busyDiv}
+            </div>
+
+        );
+    }
+    render() {
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
+        return (
+            <SideBar id="Editing" width="20em"
+                title="appmenu.items.Editing" icon={assetsPath + "/img/editing.svg"}>
+                {this.renderBody()}
+            </SideBar>
+        );
+    }
+    changeSelectedLayer = (ev) => {
+        this.setState({selectedLayer: ev.target.value});
+    }
+    updateField = (key, value) => {
+        let newProperties = assign({}, this.props.editing.feature.properties, {[key]: value});
+        let newFeature = assign({}, this.props.editing.feature, {properties: newProperties});
+        this.props.changeEditingState(assign({}, this.props.editing, {feature: newFeature, changed: true}));
+    }
+    onEditingFinished = (action) => {
+        if(action === "Commit") {
+            this.setState({busy: true});
+            if(this.props.editing.action === "Draw") {
+                this.props.iface.addFeature(this.state.selectedLayer, this.props.editing.feature, this.commitFinished);
+            } else if(this.props.editing.action === "Pick") {
+                this.props.iface.editFeature(this.state.selectedLayer, this.props.editing.feature, this.commitFinished);
+            }
+        } else {
+            this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
+        }
+    }
+    deleteClicked = () => {
+        this.setState({deleteClicked: true});
+        this.props.setCurrentTaskBlocked(true);
+    }
+    deleteFeature = (action) => {
+        if(action == 'Yes') {
+            this.setState({busy: true});
+            this.props.iface.deleteFeature(this.state.selectedLayer, this.props.editing.feature, this.deleteFinished);
+        } else {
+            this.setState({deleteClicked: false});
+            this.props.setCurrentTaskBlocked(false);
+        }
+    }
+    commitFinished = (success) => {
+        this.setState({busy: false});
+        if(success) {
+            this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
+            this.props.refreshLayer(this.props.themeLayerId);
+        } else {
+            alert('Commit failed');
+        }
+    }
+    deleteFinished = (success) => {
+        this.setState({busy: false});
+        if(success) {
+            this.setState({deleteClicked: false});
+            this.props.setCurrentTaskBlocked(false);
+            this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
+            this.props.refreshLayer(this.props.themeLayerId);
+        } else {
+            alert('Delete failed');
+        }
+    }
+};
+
+module.exports = (iface) => {return {
+    EditingPlugin: connect(state => ({
+        enabled: state.task ? state.task.current === 'Editing': false,
+        theme: state.theme ? state.theme.current : null,
+        themeLayerId: state.theme ? state.theme.currentlayer : '',
+        map: state.map || {},
+        iface: iface,
+        editing: state.editing || {},
+    }), {
+        clickOnMap: clickOnMap,
+        changeEditingState: changeEditingState,
+        setCurrentTaskBlocked: setCurrentTaskBlocked,
+        refreshLayer: refreshLayer
+    })(Editing),
+    reducers: {
+        editing: require('../reducers/editing')
+    }
+}};

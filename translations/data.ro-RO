@@ -14,12 +14,10 @@
         "ThemeSwitcher": "Hărți tematice",
         "Tools": "Unelte hartă",
         "IdentifyRegion": "Interogare regiune",
-        "Redlining": "Evidențiere"
+        "Redlining": "Evidențiere",
+        "Editing": ""
       },
       "menulabel": "Hărți & Unelte"
-    },
-    "bgswitcher": {
-      "nobg": "Fără fundal"
     },
     "bottombar": {
       "mousepos_label": "Coordonate",
@@ -28,61 +26,47 @@
       "viewertitle_label": "Harta GIS"
     },
     "draw": {
-      "delete": "Șterge",
-      "clearAll": "Șterge tot",
-      "point": "Punct",
-      "line": "Linie",
-      "polygon": "Poligon",
       "bbox": "Dreptunghi",
       "circle": "Cerc",
-      "strokecolor": "Culoare contur",
+      "clearAll": "Șterge tot",
+      "delete": "Șterge",
       "fillcolor": "Culoare interior",
-      "text": "Text",
-      "strokewidth": "Lățime contur",
       "fillopacity": "Opacitate interior",
-      "fontsize": "Mărime font"
+      "fontsize": "Mărime font",
+      "line": "Linie",
+      "point": "Punct",
+      "polygon": "Poligon",
+      "strokecolor": "Culoare contur",
+      "strokewidth": "Lățime contur",
+      "text": "Text"
     },
     "dxfexport": {
       "selectinfo": "Încadrați într-un dreptunghi zona de exportat..",
       "symbologyscale": "Scara simboluri:"
     },
-    "identifyTitle": "Info Entități",
+    "editing": {
+      "canceldelete": "",
+      "commit": "",
+      "delete": "",
+      "discard": "",
+      "draw": "",
+      "fields": "",
+      "layer": "",
+      "noeditablelayers": "",
+      "pick": "",
+      "reallydelete": ""
+    },
     "identify": {
       "querying": "Interogare..."
     },
     "identifyregion": {
       "info": "Încadrați într-un poligon entitățile de identificat..."
     },
-    "layerinfo": {
-      "title": "Info Strat",
-      "abstract": "Abstract",
-      "attribution": "Atribuire",
-      "keywords": "Cuvinte cheie",
-      "dataUrl": "URL date",
-      "metadataUrl": "URL metadate",
-      "legend": "Legendă"
-    },
+    "identifyTitle": "Info Entități",
     "layertree": {
       "maptip": "Arată indicii hartă",
-      "transparency": "Transparență",
-      "printlegend": "Tipărește legenda"
-    },
-    "locate": {
-      "tooltip": "Localizează-mă",
-      "metersUnit": "metri",
-      "feetUnit": "picioare",
-      "popup": "Ești la {distance} {unit} de acest punct",
-      "outsideMapBoundsMsg": "Ești localizat în afara limitelor hărții",
-      "statustooltip": {
-        "DISABLED": "Dezactivat",
-        "LOCATING": "Localizează...",
-        "ENABLED": "Activat",
-        "FOLLOWING": "Urmărește",
-        "PERMISSION_DENIED": "Acces refuzat"
-      }
-    },
-    "map": {
-      "loading": "Se încarcă..."
+      "printlegend": "Tipărește legenda",
+      "transparency": "Transparență"
     },
     "measureComponent": {
       "areaLabel": "Arie",
@@ -104,30 +88,59 @@
       "format": "Format:",
       "selectinfo": "Încadrați într-un dreptunghi zona de exportat.."
     },
+    "redlining": {
+      "fill": "Umplere",
+      "label": "Text",
+      "line": "Linie",
+      "outline": "Contur",
+      "pick": "Alege",
+      "point": "Punct",
+      "polygon": "Poligon"
+    },
     "search": {
-      "coordinates": "Coordonate",
+      "more": "Mai multe...",
       "placeholder": "Caută locații și coordonate...",
-      "more": "Mai multe..."
+      "coordinates": "Coordonate"
     },
     "share": {
       "directLinkTitle": "Via link direct",
       "generatingpermalink": "Generare permalink...",
-      "msgToCopyUrl": "Click pt. copiere",
-      "msgCopiedUrl": "Copiat",
       "QRCodeLinkTitle": "cod QR",
-      "socialIntro": "În rețeaua socială favorită"
+      "socialIntro": "În rețeaua socială favorită",
+      "msgToCopyUrl": "Click pt. copiere",
+      "msgCopiedUrl": "Copiat"
     },
     "themeswitcher": {
       "filter": "Filtrare"
     },
-    "redlining": {
-      "point": "Punct",
-      "line": "Linie",
-      "polygon": "Poligon",
-      "pick": "Alege",
-      "outline": "Contur",
-      "fill": "Umplere",
-      "label": "Text"
+    "bgswitcher": {
+      "nobg": "Fără fundal"
+    },
+    "layerinfo": {
+      "title": "Info Strat",
+      "abstract": "Abstract",
+      "attribution": "Atribuire",
+      "keywords": "Cuvinte cheie",
+      "dataUrl": "URL date",
+      "metadataUrl": "URL metadate",
+      "legend": "Legendă"
+    },
+    "locate": {
+      "tooltip": "Localizează-mă",
+      "metersUnit": "metri",
+      "feetUnit": "picioare",
+      "popup": "Ești la {distance} {unit} de acest punct",
+      "outsideMapBoundsMsg": "Ești localizat în afara limitelor hărții",
+      "statustooltip": {
+        "DISABLED": "Dezactivat",
+        "LOCATING": "Localizează...",
+        "ENABLED": "Activat",
+        "FOLLOWING": "Urmărește",
+        "PERMISSION_DENIED": "Acces refuzat"
+      }
+    },
+    "map": {
+      "loading": "Se încarcă..."
     }
   }
 }

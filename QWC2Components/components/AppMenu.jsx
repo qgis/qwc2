@@ -23,6 +23,7 @@ class AppMenu extends React.Component {
         menuItems: PropTypes.array,
         menuitemClicked: PropTypes.func,
         appMenuClearsTask: PropTypes.bool,
+        currentTaskBlocked: PropTypes.bool,
         setCurrentTask: PropTypes.func
     }
     static defaultProps = {
@@ -91,7 +92,7 @@ class AppMenu extends React.Component {
     }
     render() {
         return(
-            <div tabIndex="1" id="AppMenu" className={this.state.menuVisible ? "appmenu-visible" : ""} onMouseDown={this.onMenuClicked} onClick={this.killEvent} onBlur={()=> {this.hideMenu();}} ref="appmenu">
+            <div tabIndex="1" id="AppMenu" className={this.props.currentTaskBlocked ? "appmenu-blocked" : this.state.menuVisible ? "appmenu-visible" : ""} onMouseDown={this.onMenuClicked} onClick={this.killEvent} onBlur={()=> {this.hideMenu();}} ref="appmenu">
                 <div className="appmenu-button-container">
                     {this.props.buttonContents}
                 </div>
@@ -105,7 +106,9 @@ class AppMenu extends React.Component {
     }
 };
 
-module.exports = connect(() => { return {}; }, {
+module.exports = connect((state) => ({
+    currentTaskBlocked: state.task && state.task.blocked || false
+}), {
     menuitemClicked: triggerTool,
     setCurrentTask: setCurrentTask
 })(AppMenu);

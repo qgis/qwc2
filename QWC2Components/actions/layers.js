@@ -17,6 +17,7 @@ const REMOVE_LAYER_FEATURE = 'REMOVE_LAYER_FEATURE';
 const ADD_LAYER_FEATURES = 'ADD_LAYER_FEATURES';
 const REMOVE_LAYER_FEATURES = 'REMOVE_LAYER_FEATURES';
 const CHANGE_LAYER_PROPERTIES = 'CHANGE_LAYER_PROPERTIES';
+const REFRESH_LAYER = 'REFRESH_LAYER';
 
 
 function addLayer(layer, foreground = false) {
@@ -115,6 +116,13 @@ function removeMarker(id) {
     return removeLayerFeatures("markers", [id]);
 }
 
+function refreshLayer(id) {
+    return {
+        type: REFRESH_LAYER,
+        layerId: id
+    }
+}
+
 module.exports = {
     layerLoading,
     layerLoad,
@@ -127,6 +135,7 @@ module.exports = {
     changeLayerProperties,
     addMarker,
     removeMarker,
+    refreshLayer,
     LAYER_LOADING,
     LAYER_LOAD,
     LAYER_ERROR,
@@ -135,5 +144,6 @@ module.exports = {
     REMOVE_LAYER,
     ADD_LAYER_FEATURES,
     REMOVE_LAYER_FEATURES,
-    CHANGE_LAYER_PROPERTIES
+    CHANGE_LAYER_PROPERTIES,
+    REFRESH_LAYER
 };

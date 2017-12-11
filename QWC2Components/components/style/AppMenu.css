@@ -11,6 +11,10 @@
     overflow: visible;
 }
 
+#AppMenu.appmenu-blocked {
+    cursor: not-allowed;
+}
+
 #AppMenu ul.appmenu-menu {
     transform-origin: top;
     transform: scaleY(0);

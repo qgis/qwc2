@@ -14,12 +14,10 @@
         "ThemeSwitcher": "Theme",
         "Tools": "Map Tools",
         "IdentifyRegion": "Identify Region",
-        "Redlining": "Redlining"
+        "Redlining": "Redlining",
+        "Editing": "Editing"
       },
       "menulabel": "Map & Tools"
-    },
-    "bgswitcher": {
-      "nobg": "No background"
     },
     "bottombar": {
       "mousepos_label": "Coordinates",
@@ -28,61 +26,47 @@
       "viewertitle_label": ""
     },
     "draw": {
-      "delete": "Delete",
-      "clearAll": "Clear all",
-      "point": "Point",
-      "line": "Line",
-      "polygon": "Polygon",
       "bbox": "Box",
       "circle": "Circle",
-      "strokecolor": "Stroke color",
+      "clearAll": "Clear all",
+      "delete": "Delete",
       "fillcolor": "Fill color",
-      "text": "Text",
-      "strokewidth": "Stroke width",
       "fillopacity": "Fill opacity",
-      "fontsize": "Font size"
+      "fontsize": "Font size",
+      "line": "Line",
+      "point": "Point",
+      "polygon": "Polygon",
+      "strokecolor": "Stroke color",
+      "strokewidth": "Stroke width",
+      "text": "Text"
     },
     "dxfexport": {
       "selectinfo": "Drag a rectangle around the region to export...",
       "symbologyscale": "Symbology scale:"
     },
-    "identifyTitle": "Feature Info",
+    "editing": {
+      "canceldelete": "Don't delete",
+      "commit": "Commit",
+      "delete": "Delete",
+      "discard": "Discard",
+      "draw": "Draw",
+      "fields": "Fields",
+      "layer": "Layer",
+      "noeditablelayers": "No editable layers are configured for this theme.",
+      "pick": "Pick",
+      "reallydelete": "Delete"
+    },
     "identify": {
       "querying": "Querying..."
     },
     "identifyregion": {
       "info": "Draw a polygon around the features to identify..."
     },
-    "layerinfo": {
-      "title": "Layer Info",
-      "abstract": "Abstract",
-      "attribution": "Attribution",
-      "keywords": "Keywords",
-      "dataUrl": "Data URL",
-      "metadataUrl": "Metadata URL",
-      "legend": "Legend"
-    },
+    "identifyTitle": "Feature Info",
     "layertree": {
       "maptip": "Show layer map tips",
-      "transparency": "Transparency",
-      "printlegend": "Print legend"
-    },
-    "locate": {
-      "tooltip": "Locate me",
-      "metersUnit": "meters",
-      "feetUnit": "feet",
-      "popup": "You are within {distance} {unit} from this point",
-      "outsideMapBoundsMsg": "You seem located outside the boundaries of the map",
-      "statustooltip": {
-        "DISABLED": "Disabled",
-        "LOCATING": "Locating...",
-        "ENABLED": "Enabled",
-        "FOLLOWING": "Following",
-        "PERMISSION_DENIED": "Permission denied"
-      }
-    },
-    "map": {
-      "loading": "Loading..."
+      "printlegend": "Print legend",
+      "transparency": "Transparency"
     },
     "measureComponent": {
       "areaLabel": "Area",
@@ -104,30 +88,59 @@
       "format": "Format:",
       "selectinfo": "Drag a rectangle around the region to export..."
     },
+    "redlining": {
+      "fill": "Fill",
+      "label": "Label",
+      "line": "Line",
+      "outline": "Outline",
+      "pick": "Pick",
+      "point": "Point",
+      "polygon": "Polygon"
+    },
     "search": {
-      "coordinates": "Coordinates",
+      "more": "More...",
       "placeholder": "Search for locations and coordinates...",
-      "more": "More..."
+      "coordinates": "Coordinates"
     },
     "share": {
       "directLinkTitle": "Via a direct link",
       "generatingpermalink": "Generating permalink...",
-      "msgToCopyUrl": "Click to copy",
-      "msgCopiedUrl": "Copied",
       "QRCodeLinkTitle": "qr code",
-      "socialIntro": "In your favourite social network"
+      "socialIntro": "In your favourite social network",
+      "msgToCopyUrl": "Click to copy",
+      "msgCopiedUrl": "Copied"
     },
     "themeswitcher": {
       "filter": "Filter..."
     },
-    "redlining": {
-      "point": "Point",
-      "line": "Line",
-      "polygon": "Polygon",
-      "pick": "Pick",
-      "outline": "Outline",
-      "fill": "Fill",
-      "label": "Label"
+    "bgswitcher": {
+      "nobg": "No background"
+    },
+    "layerinfo": {
+      "title": "Layer Info",
+      "abstract": "Abstract",
+      "attribution": "Attribution",
+      "keywords": "Keywords",
+      "dataUrl": "Data URL",
+      "metadataUrl": "Metadata URL",
+      "legend": "Legend"
+    },
+    "locate": {
+      "tooltip": "Locate me",
+      "metersUnit": "meters",
+      "feetUnit": "feet",
+      "popup": "You are within {distance} {unit} from this point",
+      "outsideMapBoundsMsg": "You seem located outside the boundaries of the map",
+      "statustooltip": {
+        "DISABLED": "Disabled",
+        "LOCATING": "Locating...",
+        "ENABLED": "Enabled",
+        "FOLLOWING": "Following",
+        "PERMISSION_DENIED": "Permission denied"
+      }
+    },
+    "map": {
+      "loading": "Loading..."
     }
   }
 }

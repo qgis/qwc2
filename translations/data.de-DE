@@ -14,12 +14,10 @@
         "ThemeSwitcher": "Themen",
         "Tools": "Werkzeuge",
         "IdentifyRegion": "Region abfragen",
-        "Redlining": "Redlining"
+        "Redlining": "Redlining",
+        "Editing": "Editieren"
       },
       "menulabel": "Karte & Werkzeuge"
-    },
-    "bgswitcher": {
-      "nobg": "Kein Hintergrund"
     },
     "bottombar": {
       "mousepos_label": "Koordinaten",
@@ -28,54 +26,47 @@
       "viewertitle_label": ""
     },
     "draw": {
-      "delete": "",
-      "clearAll": "",
-      "point": "",
-      "line": "",
-      "polygon": "",
       "bbox": "",
       "circle": "",
-      "strokecolor": "",
+      "clearAll": "",
+      "delete": "",
       "fillcolor": "",
-      "text": "",
-      "strokewidth": "",
       "fillopacity": "",
-      "fontsize": ""
+      "fontsize": "",
+      "line": "",
+      "point": "",
+      "polygon": "",
+      "strokecolor": "",
+      "strokewidth": "",
+      "text": ""
     },
     "dxfexport": {
       "selectinfo": "Rechteck aufziehen um die zu exportierende Region",
       "symbologyscale": "Darstellungsmassstab"
     },
-    "identifyTitle": "Objektinformationen",
+    "editing": {
+      "canceldelete": "",
+      "commit": "",
+      "delete": "",
+      "discard": "",
+      "draw": "",
+      "fields": "",
+      "layer": "",
+      "noeditablelayers": "",
+      "pick": "",
+      "reallydelete": ""
+    },
     "identify": {
       "querying": "Objekte werden abgefragt..."
     },
     "identifyregion": {
       "info": "Polygon um die zu identifizierende Objekte zeichnen"
     },
-    "layerinfo": {
-      "title": "Ebeneninformationen",
-      "abstract": "Zusammenfassung",
-      "attribution": "Attribution",
-      "keywords": "Schlüsselwörter",
-      "dataUrl": "Daten-URL",
-      "metadataUrl": "Metadaten-URL",
-      "legend": "Legende"
-    },
+    "identifyTitle": "Objektinformationen",
     "layertree": {
       "maptip": "Kartentipps anzeigen",
-      "transparency": "Transparenz",
-      "printlegend": "Legende drucken"
-    },
-    "locate": {
-      "tooltip": "",
-      "metersUnit": "",
-      "feetUnit": "",
-      "popup": "",
-      "outsideMapBoundsMsg": ""
-    },
-    "map": {
-      "loading": "Karte wird geladen"
+      "printlegend": "Legende drucken",
+      "transparency": "Transparenz"
     },
     "measureComponent": {
       "areaLabel": "Fläche",
@@ -97,30 +88,46 @@
       "format": "Format:",
       "selectinfo": "Rechteck aufziehen um die zu exportierende Region"
     },
+    "redlining": {
+      "fill": "Füllung",
+      "label": "Beschriftung",
+      "line": "Linie",
+      "outline": "Rand",
+      "pick": "Auswählen",
+      "point": "Punkt",
+      "polygon": "Polygon"
+    },
     "search": {
-      "coordinates": "Koordinaten",
+      "more": "Mehr...",
       "placeholder": "Suche nach Objekten/Namen und Koordinaten",
-      "more": "Mehr..."
+      "coordinates": "Koordinaten"
     },
     "share": {
       "directLinkTitle": "Über einen direkten Link",
       "generatingpermalink": "Permalink wird erzeugt",
-      "msgToCopyUrl": "Kopieren in Zwischenablage",
-      "msgCopiedUrl": "Kopiert",
       "QRCodeLinkTitle": "QR Code (Smartphone)",
-      "socialIntro": "In den sozialen Medien"
+      "socialIntro": "In den sozialen Medien",
+      "msgToCopyUrl": "Kopieren in Zwischenablage",
+      "msgCopiedUrl": "Kopiert"
     },
     "themeswitcher": {
       "filter": "Filter"
     },
-    "redlining": {
-      "point": "Punkt",
-      "line": "Linie",
-      "polygon": "Polygon",
-      "pick": "Auswählen",
-      "outline": "Rand",
-      "fill": "Füllung",
-      "label": "Beschriftung"
+    "bgswitcher": {
+      "nobg": "Kein Hintergrund"
+    },
+    "layerinfo": {
+      "title": "Ebeneninformationen",
+      "abstract": "Zusammenfassung",
+      "attribution": "Attribution",
+      "keywords": "Schlüsselwörter",
+      "dataUrl": "Daten-URL",
+      "metadataUrl": "Metadaten-URL",
+      "legend": "Legende"
+    },
+    "locate": {},
+    "map": {
+      "loading": "Karte wird geladen"
     }
   }
 }
