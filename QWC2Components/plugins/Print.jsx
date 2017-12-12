@@ -10,6 +10,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
+const {isEmpty} = require('lodash');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
@@ -109,12 +110,19 @@ class Print extends React.Component {
                     {this.props.theme.printScales.map(scale => (<option key={scale} value={scale}>{scale}</option>))}
                 </select>);
         }
-        let resolutionChooser = (<input name="DPI" type="number" value={this.state.dpi || ""} onChange={this.changeResolution} min="50" max="1200"/>);
-        if(this.props.theme.printResolutions && this.props.theme.printResolutions.length > 0) {
-            resolutionChooser = (
-                <select name={"DPI"} value={this.state.dpi || ""} onChange={this.changeResolution}>
-                    {this.props.theme.printResolutions.map(res => (<option key={res} value={res}>{res}</option>))}
-                </select>);
+        let resolutionChooser = null;
+        let resolutionInput = null;
+        if(!isEmpty(this.props.theme.printResolutions)) {
+            if(this.props.theme.printResolutions.length > 1) {
+                resolutionChooser = (
+                    <select name={"DPI"} value={this.state.dpi || ""} onChange={this.changeResolution}>
+                        {this.props.theme.printResolutions.map(res => (<option key={res} value={res}>{res}</option>))}
+                    </select>);
+            } else {
+                resolutionInput = (<input name="DPI" readOnly="true" type={formvisibility} value={this.props.theme.printResolutions[0]}/>);
+            }
+        } else {
+            resolutionChooser = (<input name="DPI" type="number" value={this.state.dpi || ""} onChange={this.changeResolution} min="50" max="1200"/>)
         }
 
         let gridIntervalX = null;
@@ -176,15 +184,17 @@ class Print extends React.Component {
                                 </span>
                             </td>
                         </tr>
-                        <tr>
-                            <td><Message msgId="print.resolution" /></td>
-                            <td>
-                                <span className="input-frame">
-                                    {resolutionChooser}
-                                    <span>&nbsp;dpi</span>
-                                </span>
-                            </td>
-                        </tr>
+                        {resolutionChooser ? (
+                            <tr>
+                                <td><Message msgId="print.resolution" /></td>
+                                <td>
+                                    <span className="input-frame">
+                                        {resolutionChooser}
+                                        <span>&nbsp;dpi</span>
+                                    </span>
+                                </td>
+                            </tr>
+                        ) : null}
                         <tr>
                             <td><Message msgId="print.rotation" /></td>
                             <td>
@@ -226,6 +236,7 @@ class Print extends React.Component {
                         <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERSIZE"} type={formvisibility} value={highlighBufferSizes.join(";")} />
                         {gridIntervalX}
                         {gridIntervalY}
+                        {resolutionInput}
                     </div>
                     <div className="button-bar">
                         <button type="submit"><Message msgId="print.submit" /></button>
