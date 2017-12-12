@@ -95,7 +95,8 @@ class MapTip extends React.Component {
                         featuresCrs: this.props.map.projection,
                         visibility: true,
                         queryable: false,
-                        layertreehidden: true
+                        layertreehidden: true,
+                        priority: 3
                     };
                     this.props.removeLayer('maptipselection');
                     this.props.addLayer(layer, true);
