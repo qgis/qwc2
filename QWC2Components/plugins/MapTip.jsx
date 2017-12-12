@@ -92,7 +92,7 @@ class MapTip extends React.Component {
                         title: 'Maptip selecton',
                         type: "vector",
                         features: [feature],
-                        featuresCrs: this.props.map.projection,
+                        featuresCrs: feature.crs,
                         visibility: true,
                         queryable: false,
                         layertreehidden: true,
