@@ -18,14 +18,15 @@ const IdentifyUtils = {
         let bboxes = feature.getElementsByTagName("BoundingBox");
         if(bboxes.length > 0) {
             let bbox = bboxes[0];
+            let crs = bbox.attributes.CRS ? bbox.attributes.CRS.value : bbox.attributes.SRS.value;
             featureResult["bbox"] = {
                 minx: parseFloat(bbox.attributes.minx.value),
                 miny: parseFloat(bbox.attributes.miny.value),
                 maxx: parseFloat(bbox.attributes.maxx.value),
                 maxy: parseFloat(bbox.attributes.maxy.value),
-                srs: bbox.attributes.SRS.value
+                crs: crs
             };
-            featureResult["crs"] = bbox.attributes.SRS.value;
+            featureResult["crs"] = crs;
         }
         featureResult["properties"] = {};
         let attributes = feature.getElementsByTagName("Attribute");
@@ -37,8 +38,8 @@ const IdentifyUtils = {
                          .replace(/LineString(\w+)/i, "LineString $1")
                          .replace(/Polygon(\w+)/i, "Polygon $1");
                 featureResult["geometry"] = parse(wkt);
-                if(featureResult.bbox && featureResult.bbox.srs != geometrycrs) {
-                    featureResult.geometry = VectorLayerUtils.reprojectFeatureGeometry(featureResult.geometry, featureResult.bbox.srs, geometrycrs);
+                if(featureResult.bbox && featureResult.bbox.crs != geometrycrs) {
+                    featureResult.geometry = VectorLayerUtils.reprojectFeatureGeometry(featureResult.geometry, featureResult.bbox.crs, geometrycrs);
                 }
             } else {
                 featureResult.properties[attribute.attributes.name.value] = attribute.attributes.value.value;
