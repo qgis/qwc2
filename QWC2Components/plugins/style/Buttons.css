@@ -1,4 +1,4 @@
-#ZoomInBtn, #ZoomOutBtn, #BackgroundSwitcherBtn, #LocateBtn, #LayersBtn {
+#ZoomInBtn, #ZoomOutBtn, #BackgroundSwitcherBtn, #LocateBtn, #LayersBtn, #HomeButton {
     z-index: 1;
     position: absolute !important;
     right: 1.5em;
