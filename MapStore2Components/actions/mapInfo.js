@@ -90,7 +90,7 @@ function getVectorInfo(layer, request, metadata) {
 function getFeatureInfo(wmsBasePath, requestParams, lMetaData, options = {}) {
     const defaultParams = assign({
         service: 'WMS',
-        version: '1.1.1',
+        version: '1.3.0',
         request: 'GetFeatureInfo',
         srs: 'EPSG:4326',
         info_format: 'application/json',

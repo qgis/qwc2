@@ -56,7 +56,7 @@ class Identify extends React.Component {
             queryableLayers.forEach((layer) => {
                 const {url, request, metadata} = MapInfoUtils.buildIdentifyRequest(layer, newProps);
                 if (url) {
-                    this.props.sendRequest(url, request, metadata, {});
+                    this.props.sendRequest(url, request, metadata, {version: layer.params.VERSION || "1.3.0"});
                 }
             });
             let latlng = newProps.point.latlng;

@@ -275,8 +275,8 @@ def getTheme(configItem, resultItem):
             resultItem["tiled"] = configItem["tiled"]
         if "version" in configItem:
             resultItem["version"] = configItem["version"]
-        elif "defaultWMSVersion" in configItem:
-            resultItem["version"] = configItem["defaultWMSVersion"]
+        elif "defaultWMSVersion" in config:
+            resultItem["version"] = config["defaultWMSVersion"]
         # use geographic bounding box for theme, as default CRS may have inverted axis order with WMS 1.3.0
         bounds = [
             float(getChildElementValue(topLayer, "EX_GeographicBoundingBox/westBoundLongitude")),

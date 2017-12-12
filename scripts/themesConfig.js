@@ -312,7 +312,7 @@ function getTheme(configItem, resultItem) {
             resultItem.format = configItem.format;
             resultItem.availableFormats = capabilities.Capability.Request.GetMap.Format;
             resultItem.tiled = configItem.tiled;
-            resultItem.version = configItem.version ? configItem.version : resultItem.defaultWMSVersion;
+            resultItem.version = configItem.version ? configItem.version : config.defaultWMSVersion;
             // use geographic bounding box for theme, as default CRS may have inverted axis order with WMS 1.3.0
             let bounds = [
                 parseFloat(topLayer.EX_GeographicBoundingBox.westBoundLongitude),

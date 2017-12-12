@@ -202,7 +202,8 @@ class ThemeSwitcher extends React.Component {
             });
             sublayers = LayerUtils.restoreVisibleLayers(sublayers, layers, opacities);
         }
-        let {params, queryLayers} = LayerUtils.buildLayerParams(sublayers, theme.drawingOrder);
+        let version = theme.version ? theme.version : this.state.themes.defaultWMSVersion ? this.state.themes.defaultWMSVersion : "1.3.0";
+        let {params, queryLayers} = LayerUtils.buildLayerParams(sublayers, theme.drawingOrder, version);
         // untiled WMS by default
         let singleTile = true;
         if (theme.tiled !== undefined) {
@@ -224,7 +225,6 @@ class ThemeSwitcher extends React.Component {
             ratio: singleTile ? 1 : undefined,
             format: theme.format,
             drawingOrder: theme.drawingOrder,
-            version: theme.version ? theme.version : this.state.themes.defaultWMSVersion ? this.state.themes.defaultWMSVersion : "1.3.0",
             priority: 1
         }
     }

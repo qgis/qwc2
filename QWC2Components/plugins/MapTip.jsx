@@ -70,7 +70,7 @@ class MapTip extends React.Component {
 
         const baseParams = {
             service: 'WMS',
-            version: '1.1.1',
+            version: this.state.layer.params.VERSION || '1.3.0',
             request: 'GetFeatureInfo'
         };
         const params = assign({}, baseParams, request, {

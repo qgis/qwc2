@@ -25,7 +25,7 @@ const assign = require('object-assign');
          });
          return newsublayers;
      },
-     buildLayerParams: function(sublayers, drawingOrder) {
+     buildLayerParams: function(sublayers, drawingOrder, version) {
         let layerNames = [];
         let opacities = [];
         let queryable = [];
@@ -42,7 +42,8 @@ const assign = require('object-assign');
         return {
             params: {
                 LAYERS: layerNames.join(","),
-                OPACITIES: opacities.join(",")
+                OPACITIES: opacities.join(","),
+                VERSION: version
             },
             queryLayers: queryable
         };
@@ -79,7 +80,8 @@ const assign = require('object-assign');
         if(layer.type !== "wms") {
             return "";
         }
-        return layer.url + "?SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION="+layer.version+"&FORMAT=image/png&LAYER=" + sublayer;
+        let version = layer.params.VERSION || "1.3.0";
+        return layer.url + "?SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + version + "&FORMAT=image/png&LAYER=" + sublayer;
     }
  };
 

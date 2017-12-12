@@ -103,7 +103,7 @@ class RasterExport extends React.Component {
                     </select>
                 </div>
                 <input type="hidden" name="SERVICE" value="WMS" readOnly="true" />
-                <input type="hidden" name="VERSION" value="1.3.0" readOnly="true" />
+                <input type="hidden" name="VERSION" value={themeLayer.params.VERSION || "1.3.0"} readOnly="true" />
                 <input type="hidden" name="REQUEST" value="GetMap" readOnly="true" />
                 <input type="hidden" name="FORMAT" value="image/png" readOnly="true" />
                 <input type="hidden" name="LAYERS" value={exportLayers} readOnly="true" />
