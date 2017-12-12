@@ -27,7 +27,6 @@ class ThemeSwitcher extends React.Component {
     static propTypes = {
         filter: PropTypes.string,
         activeTheme: PropTypes.object,
-        activeThemeLayer: PropTypes.string,
         haveMap: PropTypes.bool,
         layers: PropTypes.array,
         changeTheme: PropTypes.func,
@@ -42,7 +41,6 @@ class ThemeSwitcher extends React.Component {
     static defaultProps = {
         filter: "",
         activeTheme: null,
-        activeThemeLayer: null,
         map: null,
         width: "auto"
     }
@@ -107,7 +105,7 @@ class ThemeSwitcher extends React.Component {
             const printScales = theme.printScales || object.themes.defaultPrintScales || undefined;
             const printResolutions = theme.printResolutions || object.themes.defaultPrintResolutions || undefined;
             const printGrid = theme.printGrid || object.themes.defaultPrintGrid || undefined;
-            this.props.changeTheme(assign({}, theme, {printScales, printResolutions, printGrid}), layer, this.createBackgroundLayersForTheme(theme, params.bl), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, bbox, centerZoom);
+            this.props.changeTheme(assign({}, theme, {printScales, printResolutions, printGrid, scales}), layer, this.createBackgroundLayersForTheme(theme, params.bl), bbox, centerZoom);
         }
         UrlParams.updateParams({ie: undefined});
         UrlParams.updateParams({ic: undefined});
@@ -258,13 +256,6 @@ class ThemeSwitcher extends React.Component {
         }
         return backgroundLayers;
     }
-    currentBackgroundLayerIds = () => {
-        return this.props.layers.filter((layer) => {
-            return layer.group === 'background';
-        }).map((layer) => {
-            return layer.id;
-        });
-    }
     themeClicked = (theme) => {
         const scales = theme.scales || this.state.themes.defaultScales;
         const printScales = theme.printScales || this.state.themes.defaultPrintScales || undefined;
@@ -286,7 +277,7 @@ class ThemeSwitcher extends React.Component {
                 activeBackgroudLayer = activeBackgrounds[0].name;
             }
         }
-        this.props.changeTheme(assign({}, theme, {printScales, printGrid, printResolutions}), this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme, activeBackgroudLayer), this.props.activeThemeLayer, this.currentBackgroundLayerIds(), scales, zoomBBox);
+        this.props.changeTheme(assign({}, theme, {printScales, printGrid, printResolutions, scales}), this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme, activeBackgroudLayer), zoomBBox);
         this.props.setCurrentTask(null);
     }
     bboxOverlap = (bbox1, bbox2, crs1, crs2) => {
@@ -304,7 +295,6 @@ class ThemeSwitcher extends React.Component {
 
 const selector = (state) => ({
     activeTheme: state.theme ? state.theme.current : null,
-    activeThemeLayer: state.theme ? state.theme.currentlayer : null,
     filter: state.theme ? state.theme.switcherfilter : "",
     haveMap: state.map ? true : false,
     layers: state.layers && state.layers.flat ? state.layers.flat : [],

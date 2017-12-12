@@ -19,7 +19,8 @@ const {
     CHANGE_LAYER_PROPERTIES,
     ADD_LAYER_FEATURES,
     REMOVE_LAYER_FEATURES,
-    REFRESH_LAYER
+    REFRESH_LAYER,
+    REMOVE_ALL_LAYERS
 } = require('../actions/layers');
 
 
@@ -124,6 +125,9 @@ function layers(state = {}, action) {
                 return layer;
             });
             return {flat: newLayers};
+        }
+        case REMOVE_ALL_LAYERS: {
+            return {flat: []};
         }
         default:
             return state;
