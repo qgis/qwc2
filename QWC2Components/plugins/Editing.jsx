@@ -98,22 +98,32 @@ class Editing extends React.Component {
                 </div>
             );
         }
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         const editConfig = this.props.theme.editConfig;
-        const curConfig = editConfig[this.state.selectedLayer] || {};
-        let buttonBar = null;
-        if(!this.props.editing.changed) {
-            const buttons = [
-                {key: 'Pick', icon: 'pick.svg', label: "editing.pick", data: {action: 'Pick', geomType: null}},
-                {key: 'Draw', icon: 'editdraw.svg', label: "editing.draw", data: {action: 'Draw', geomType: curConfig.geomType, feature: null}}
-            ];
-            buttonBar = (<ButtonBar buttons={buttons} active={this.props.editing.action} onClick={(action, data) => this.props.changeEditingState({...data})} />);
-        } else {
-            const buttons = [
+        const curConfig = editConfig[this.state.selectedLayer] || null;
+        if(!curConfig || !curConfig.geomType) {
+            return (
+                <div role="body" style={{padding: "1em"}}>
+                    <Message msgId="editing.noeditablelayers" />
+                </div>
+            );
+        }
+
+        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
+        let geomType = curConfig.geomType.startsWith("Multi") ? curConfig.geomType.substring(5) : curConfig.geomType;
+        let actionBar = null;
+        const actionButtons = [
+            {key: 'Pick', icon: 'pick.svg', label: "editing.pick", data: {action: 'Pick', geomType: null}},
+            {key: 'Draw', icon: 'editdraw.svg', label: "editing.draw", data: {action: 'Draw', geomType: geomType, feature: null}}
+        ];
+        actionBar = (<ButtonBar buttons={actionButtons} active={this.props.editing.action} disabled={this.props.editing.changed} onClick={(action, data) => this.props.changeEditingState({...data})} />);
+
+        let commitBar = null;
+        if(this.props.editing.changed) {
+            const commitButtons = [
                 {key: 'Commit', glyph: 'ok', label: "editing.commit", extraClasses: "edit-commit"},
                 {key: 'Discard', glyph: 'remove', label: "editing.discard", extraClasses: "edit-discard"}
             ];
-            buttonBar = (<ButtonBar buttons={buttons} onClick={this.onEditingFinished}/>);
+            commitBar = (<ButtonBar buttons={commitButtons} onClick={this.onEditingFinished}/>);
         }
         let fieldsTable = null;
         if(this.props.editing.feature) {
@@ -128,19 +138,19 @@ class Editing extends React.Component {
                 </div>
             );
         }
-        let deleteButtonBar = null;
+        let deleteBar = null;
         if(this.props.editing.action === 'Pick' && this.props.editing.feature && !this.props.editing.changed) {
             if(!this.state.deleteClicked) {
-                const buttons = [
+                const deleteButtons = [
                     {key: 'Delete', glyph: 'trash', label: "editing.delete"}
                 ];
-                deleteButtonBar = (<ButtonBar buttons={buttons} onClick={this.deleteClicked} />);
+                deleteBar = (<ButtonBar buttons={deleteButtons} onClick={this.deleteClicked} />);
             } else {
-                const buttons = [
+                const deleteButtons = [
                     {key: 'Yes', glyph: 'ok', label: "editing.reallydelete", extraClasses: "edit-commit"},
                     {key: 'No', glyph: 'remove', label: "editing.canceldelete", extraClasses: "edit-discard"}
                 ];
-                deleteButtonBar = (<ButtonBar buttons={buttons} onClick={this.deleteFeature} />);
+                deleteBar = (<ButtonBar buttons={deleteButtons} onClick={this.deleteFeature} />);
             }
         }
         let busyDiv = null;
@@ -160,9 +170,10 @@ class Editing extends React.Component {
                         </select>
                     </span>
                 </div>
-                {buttonBar}
+                {actionBar}
                 {fieldsTable}
-                {deleteButtonBar}
+                {deleteBar}
+                {commitBar}
                 {busyDiv}
             </div>
 

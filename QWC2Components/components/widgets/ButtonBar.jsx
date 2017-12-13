@@ -23,11 +23,15 @@ class ButtonBar extends React.Component {
             icon: PropTypes.string,
             data: PropTypes.object,
             glyph: PropTypes.string,
-            extraClasses: PropTypes.string
+            extraClasses: PropTypes.string,
         })),
         active: PropTypes.string,
         onClick: PropTypes.func,
         mobile: PropTypes.bool,
+        disabled: PropTypes.bool
+    }
+    static defaultProps = {
+        disabled: false
     }
     render() {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
@@ -40,10 +44,11 @@ class ButtonBar extends React.Component {
                         <span key={button.key} className={classes} onClick={(ev) => this.props.onClick(button.key, button.data)}>
                             {button.icon ? (<img src={assetsPath + '/img/' + button.icon} />) : null}
                             {button.glyph ? (<Glyphicon glyph={button.glyph} />) : null}
-                            {this.props.mobile && button.icon ? null : (<Message msgId={button.label} />)}
+                            {button.label  && !this.props.mobile ? (<Message msgId={button.label} />) : null}
                         </span>
                     );
                 })}
+                {this.props.disabled ? (<div className="buttonbar-disabled"></div>) : null}
             </div>
         )
     }

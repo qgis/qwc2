@@ -1,6 +1,18 @@
 div.ButtonBar {
+    position: relative;
     display: flex;
     margin: 0.25em 0;
+}
+
+div.buttonbar-disabled {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(127, 127, 127, 0.25);
+    cursor: not-allowed;
+    zIndex: 2;
 }
 
 div.ButtonBar > span {
