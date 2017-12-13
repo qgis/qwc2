@@ -95,7 +95,8 @@
       "outline": "Contour",
       "pick": "Choisir",
       "point": "Point",
-      "polygon": "Polygone"
+      "polygon": "Polygone",
+      "text": ""
     },
     "search": {
       "more": "",

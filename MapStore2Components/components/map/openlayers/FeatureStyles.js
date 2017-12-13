@@ -66,6 +66,16 @@ const FeatureStyles = {
                 })
             })
         ];
+    },
+    text: (feature, options) => {
+        return new ol.style.Style({
+            text: new ol.style.Text({
+                text: feature.getProperties()["label"] || "",
+                scale: options.strokeWidth,
+                fill: new ol.style.Fill({color: options.fillColor}),
+                stroke: new ol.style.Stroke({color: options.strokeColor, width: 2})
+            })
+        });
     }
 };
 

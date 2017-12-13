@@ -65,26 +65,7 @@ class RasterExport extends React.Component {
 
         // Local vector layer features
         let mapCrs = this.props.map.projection;
-        let highlightGeoms = [];
-        let highlightStyles = [];
-        let highlightLabels = [];
-        let highlightLabelColors = [];
-        let highlightBufferColors = [];
-        let highlighBufferSizes = [];
-        for(let layer of this.props.layers) {
-            if(layer.type != 'vector' || (layer.features || []).length == 0) {
-                continue;
-            }
-            for(let feature of layer.features) {
-                let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || mapCrs, mapCrs);
-                highlightGeoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
-                highlightStyles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions));
-                highlightLabels.push(feature.properties.label || "");
-                highlightLabelColors.push('white');
-                highlightBufferColors.push('black');
-                highlighBufferSizes.push(1);
-            }
-        }
+        let highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs);
 
         return (
             <span role="body">
@@ -119,12 +100,13 @@ class RasterExport extends React.Component {
                 {Object.keys(this.props.theme.watermark || {}).map(key => {
                     return (<input key={key} type="hidden" name={"WATERMARK_" + key.toUpperCase()} value={this.props.theme.watermark[key]} readOnly="true" />)
                 })}
-                <input readOnly="true" name={"HIGHLIGHT_GEOM"} type="hidden" value={highlightGeoms.join(";")} />
-                <input readOnly="true" name={"HIGHLIGHT_SYMBOL"} type="hidden" value={highlightStyles.join(";")} />
-                <input readOnly="true" name={"HIGHLIGHT_LABELSTRING"} type="hidden" value={highlightLabels.join(";")} />
-                <input readOnly="true" name={"HIGHLIGHT_LABELCOLOR"} type="hidden" value={highlightLabelColors.join(";")} />
-                <input readOnly="true" name={"HIGHLIGHT_LABELBUFFERCOLOR"} type="hidden" value={highlightBufferColors.join(";")} />
-                <input readOnly="true" name={"HIGHLIGHT_LABELBUFFERSIZE"} type="hidden" value={highlighBufferSizes.join(";")} />
+                <input readOnly="true" name={"HIGHLIGHT_GEOM"} type="hidden" value={highlightParams.geoms.join(";")} />
+                <input readOnly="true" name={"HIGHLIGHT_SYMBOL"} type="hidden" value={highlightParams.styles.join(";")} />
+                <input readOnly="true" name={"HIGHLIGHT_LABELSTRING"} type="hidden" value={highlightParams.labels.join(";")} />
+                <input readOnly="true" name={"HIGHLIGHT_LABELCOLOR"} type="hidden" value={highlightParams.labelFillColors.join(";")} />
+                <input readOnly="true" name={"HIGHLIGHT_LABELBUFFERCOLOR"} type="hidden" value={highlightParams.labelOultineColors.join(";")} />
+                <input readOnly="true" name={"HIGHLIGHT_LABELBUFFERSIZE"} type="hidden" value={highlightParams.labelOutlineSizes.join(";")} />
+                <input readOnly="true" name={"HIGHLIGHT_LABELSIZE"} type="hidden" value={highlightParams.labelSizes.join(";")} />
                 </form>
             </span>
         );

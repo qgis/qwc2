@@ -15,10 +15,52 @@ const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 
 const VectorLayerUtils = {
 
+    createPrintHighlighParams(layers, printCrs, dpi = 96) {
+        let params = {
+            geoms: [],
+            styles: [],
+            labels: [],
+            labelFillColors: [],
+            labelOultineColors: [],
+            labelOutlineSizes: [],
+            labelSizes: []
+        }
+        const ensureHex = (rgb) => (!isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
+
+        for(let layer of layers) {
+            if(layer.type != 'vector' || (layer.features || []).length == 0) {
+                continue;
+            }
+            for(let feature of layer.features) {
+                let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
+                params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
+                params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, dpi));
+                params.labels.push(feature.properties.label || "");
+                if(feature.styleName === "text") {
+                    params.labelFillColors.push(ensureHex(feature.styleOptions.fillColor));
+                    params.labelOultineColors.push(ensureHex(feature.styleOptions.strokeColor));
+                    params.labelOutlineSizes.push(1);
+                    params.labelSizes.push(10 * feature.styleOptions.strokeWidth);
+                } else {
+                    params.labelFillColors.push('white');
+                    params.labelOultineColors.push('black');
+                    params.labelOutlineSizes.push(1);
+                    params.labelSizes.push(10);
+                }
+            }
+        }
+        return params;
+    },
     createSld(geometrytype, styleName, styleOptions, dpi = 96.) {
         let opts = {};
         // Special cases
-        if(styleName == 'marker') {
+        if(styleName == 'text') {
+            // Make geometry transparent
+            opts = {
+                strokeColor: [0, 0, 0, 0.],
+                fillColor: [0, 0, 0, 0.]
+            };
+        } else if(styleName == 'marker') {
             opts = {
                 strokeColor: [255, 255, 0, 1.],
                 circleBorder: 4,

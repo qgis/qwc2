@@ -95,7 +95,8 @@
       "outline": "Rand",
       "pick": "Auswählen",
       "point": "Punkt",
-      "polygon": "Polygon"
+      "polygon": "Polygon",
+      "text": ""
     },
     "search": {
       "more": "Mehr...",

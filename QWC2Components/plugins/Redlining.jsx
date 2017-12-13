@@ -70,6 +70,7 @@ class Redlining extends React.Component {
             {key: "Point", label: "redlining.point", icon: "point.svg", data: {action: "Draw", geomType: "Point"}},
             {key: "LineString", label: "redlining.line", icon: "line.svg", data: {action: "Draw", geomType: "LineString"}},
             {key: "Polygon", label: "redlining.polygon", icon: "polygon.svg", data: {action: "Draw", geomType: "Polygon"}},
+            {key: "Text", label: "redlining.text", icon: "text.svg", data: {action: "Draw", geomType: "Text"}},
             {key: "Delete", icon: "trash.svg", data: {action: "Delete", geomType: null}}
         ];
         let activeButton = this.props.redlining.action === "Pick" ? "Pick" : this.props.redlining.geomType;

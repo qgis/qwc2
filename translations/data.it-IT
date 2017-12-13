@@ -95,7 +95,8 @@
       "outline": "Contorno",
       "pick": "Seleziona",
       "point": "Punto",
-      "polygon": "Poligono"
+      "polygon": "Poligono",
+      "text": ""
     },
     "search": {
       "more": "",

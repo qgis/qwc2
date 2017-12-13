@@ -95,7 +95,8 @@
       "outline": "Outline",
       "pick": "Pick",
       "point": "Point",
-      "polygon": "Polygon"
+      "polygon": "Polygon",
+      "text": "Text"
     },
     "search": {
       "more": "More...",

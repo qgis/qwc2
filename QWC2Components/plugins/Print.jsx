@@ -137,27 +137,7 @@ class Print extends React.Component {
 
         let labels = this.state.layout && this.state.layout.labels ? this.state.layout.labels : [];
 
-        // Local vector layer features
-        let highlightGeoms = [];
-        let highlightStyles = [];
-        let highlightLabels = [];
-        let highlightLabelColors = [];
-        let highlightBufferColors = [];
-        let highlighBufferSizes = [];
-        for(let layer of this.props.layers) {
-            if(layer.type != 'vector' || (layer.features || []).length == 0) {
-                continue;
-            }
-            for(let feature of layer.features) {
-                let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || mapCrs, mapCrs);
-                highlightGeoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
-                highlightStyles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, printDpi));
-                highlightLabels.push(feature.properties.label || "");
-                highlightLabelColors.push('white');
-                highlightBufferColors.push('black');
-                highlighBufferSizes.push(1);
-            }
-        }
+        let highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, printDpi);
 
         return (
             <div role="body" className="print-body">
@@ -228,12 +208,13 @@ class Print extends React.Component {
                         <input readOnly="true" name="SRS" type={formvisibility} value={mapCrs} />
                         <input readOnly="true" name="LAYERS" type={formvisibility} value={printLayers || ""} />
                         <input readOnly="true" name="OPACITIES" type={formvisibility} value={printOpacities || ""} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_GEOM"} type={formvisibility} value={highlightGeoms.join(";")} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_SYMBOL"} type={formvisibility} value={highlightStyles.join(";")} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELSTRING"} type={formvisibility} value={highlightLabels.join(";")} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELCOLOR"} type={formvisibility} value={highlightLabelColors.join(";")} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERCOLOR"} type={formvisibility} value={highlightBufferColors.join(";")} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERSIZE"} type={formvisibility} value={highlighBufferSizes.join(";")} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_GEOM"} type={formvisibility} value={highlightParams.geoms.join(";")} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_SYMBOL"} type={formvisibility} value={highlightParams.styles.join(";")} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELSTRING"} type={formvisibility} value={highlightParams.labels.join(";")} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELCOLOR"} type={formvisibility} value={highlightParams.labelFillColors.join(";")} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERCOLOR"} type={formvisibility} value={highlightParams.labelOultineColors.join(";")} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERSIZE"} type={formvisibility} value={highlightParams.labelOutlineSizes.join(";")} />
+                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELSIZE"} type={formvisibility} value={highlightParams.labelSizes.join(";")} />
                         {gridIntervalX}
                         {gridIntervalY}
                         {resolutionInput}
