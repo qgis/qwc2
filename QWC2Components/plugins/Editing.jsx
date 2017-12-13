@@ -13,6 +13,7 @@ const {isEmpty,isEqual} = require('lodash');
 const assign = require('object-assign');
 const {clickOnMap} = require("../../MapStore2Components/actions/map");
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
+const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeEditingState} = require('../actions/editing');
 const {setCurrentTaskBlocked} = require('../actions/task');
@@ -57,7 +58,8 @@ class Editing extends React.Component {
             const oldPoint = this.props.map.clickPoint || {};
             if(!isEqual(newPoint.latlng, oldPoint.latLng)) {
                 let point = {x: newPoint.latlng.lng, y: newPoint.latlng.lat};
-                this.props.iface.getFeature(this.state.selectedLayer, point, "EPSG:4326", (feature) => {
+                point = CoordinatesUtils.reproject(point, "EPSG:4326", this.props.map.projection);
+                this.props.iface.getFeature(this.state.selectedLayer, point, this.props.map.projection, (feature) => {
                     this.props.changeEditingState(assign({}, this.props.editing, {feature: feature, changed: false}));
                 });
             }
@@ -197,12 +199,26 @@ class Editing extends React.Component {
         this.props.changeEditingState(assign({}, this.props.editing, {feature: newFeature, changed: true}));
     }
     onEditingFinished = (action) => {
-        if(action === "Commit") {
+        const editConfig = this.props.theme.editConfig || [];
+        const curConfig = editConfig[this.state.selectedLayer];
+        if(action === "Commit" && curConfig) {
             this.setState({busy: true});
+
+            let feature = this.props.editing.feature;
+            // Convert geometry to multitype if necessary
+            if(curConfig.geomType.startsWith("Multi") && !feature.geometry.type.startsWith("Multi")) {
+                feature = assign({}, feature, {geometry: {
+                    type: "Multi" + feature.geometry.type,
+                    coordinates: [feature.geometry.coordinates]
+                }});
+            }
+            // Ensure properties is not null
+            feature = assign({}, feature, {properties: feature.properties || {}});
+
             if(this.props.editing.action === "Draw") {
-                this.props.iface.addFeature(this.state.selectedLayer, this.props.editing.feature, this.commitFinished);
+                this.props.iface.addFeature(this.state.selectedLayer, feature, this.props.map.projection, this.commitFinished);
             } else if(this.props.editing.action === "Pick") {
-                this.props.iface.editFeature(this.state.selectedLayer, this.props.editing.feature, this.commitFinished);
+                this.props.iface.editFeature(this.state.selectedLayer, feature, this.props.map.projection, this.commitFinished);
             }
         } else {
             this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
@@ -215,7 +231,7 @@ class Editing extends React.Component {
     deleteFeature = (action) => {
         if(action == 'Yes') {
             this.setState({busy: true});
-            this.props.iface.deleteFeature(this.state.selectedLayer, this.props.editing.feature, this.deleteFinished);
+            this.props.iface.deleteFeature(this.state.selectedLayer, this.props.editing.feature.id, this.deleteFinished);
         } else {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
