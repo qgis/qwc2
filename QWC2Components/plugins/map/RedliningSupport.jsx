@@ -109,26 +109,49 @@ class RedliningSupport extends React.Component {
             style: new ol.style.Style()
         });
         drawInteraction.on('drawstart', function(evt) {
+            this.leaveTemporaryPickMode();
             this.currentFeature = evt.feature;
             this.currentFeature.setId(uuid.v4());
             this.currentFeature.set('isText', isText);
             this.updateFeatureStyle(this.props.redlining);
         }, this);
         drawInteraction.on('drawend', function(evt) {
+            let feature = this.currentFeature;
             this.commitCurrentFeature(true);
+            this.enterTemporaryPickMode(feature);
         }, this);
         this.props.map.addInteraction(drawInteraction);
         this.interactions = [drawInteraction];
     }
+    enterTemporaryPickMode = (feature) => {
+        let redliningLayer = this.searchRedliningLayer();
+        if(!redliningLayer) {
+            return;
+        }
+        this.currentFeature = redliningLayer.getSource().getFeatureById(feature.getId());
+        if(!this.currentFeature) {
+            return;
+        }
+        this.updateFeatureStyle(this.props.redlining);
+
+        let modifyInteraction = new ol.interaction.Modify({features: new ol.Collection([this.currentFeature])});
+        this.props.map.addInteraction(modifyInteraction);
+        this.interactions.push(modifyInteraction);
+        this.picking = true;
+    }
+    leaveTemporaryPickMode = () => {
+        if(this.currentFeature) {
+            this.commitCurrentFeature();
+        }
+        if(this.picking) {
+            // Remote modify interactions
+            this.props.map.removeInteraction(this.interactions.pop());
+            this.picking = false;
+        }
+    }
     addPickInteraction = () => {
         this.reset();
-        // Look for redlining layer
-        let redliningLayer = null;
-        this.props.map.getLayers().forEach(olLayer => {
-            if(olLayer.get('msId') === 'redlining') {
-                redliningLayer = olLayer;
-            }
-        });
+        let redliningLayer = this.searchRedliningLayer();
         if(!redliningLayer) {
             return;
         }
@@ -174,9 +197,7 @@ class RedliningSupport extends React.Component {
         }
         let isText = this.currentFeature.get("isText") === true;
         if(isText && !this.currentFeature.get("label")) {
-            console.log("Not committing empty feature");
             if(!newFeature) {
-                console.log("Removing feature");
                 this.props.removeLayerFeatures("redlining", [this.currentFeature.getId()])
             }
             this.resetSelectedFeature();
@@ -221,6 +242,15 @@ class RedliningSupport extends React.Component {
             this.currentFeature.setStyle(style);
             this.currentFeature = null;
         }
+    }
+    searchRedliningLayer = () => {
+        let redliningLayer = null;
+        this.props.map.getLayers().forEach(olLayer => {
+            if(olLayer.get('msId') === 'redlining') {
+                redliningLayer = olLayer;
+            }
+        });
+        return redliningLayer;
     }
 };
 
