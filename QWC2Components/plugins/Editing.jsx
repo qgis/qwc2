@@ -20,6 +20,7 @@ const {setCurrentTaskBlocked} = require('../actions/task');
 const {refreshLayer} = require('../actions/layers')
 const {SideBar} = require('../components/SideBar');
 const ButtonBar = require('../components/widgets/ButtonBar');
+const ToggleSwitch = require('../components/widgets/ToggleSwitch');
 require('./style/Editing.css');
 
 class Editing extends React.Component {
@@ -74,21 +75,41 @@ class Editing extends React.Component {
         }
     }
     renderField = (field) => {
-        let attrs = field.constraints || {};
+        let constraints = field.constraints || {};
         let disabled = this.props.editing.feature ? "" : "disabled";
         let value = "";
         if(this.props.editing.feature && this.props.editing.feature.properties) {
             value = this.props.editing.feature.properties[field.id] || "";
         }
-        let input = (
-            <input type={field.type} {...attrs} disabled={disabled}
-                onChange={(ev) => this.updateField(field.id, ev.target.value)}
-                value={value}/>
-        );
+        let input = null;
+        if(field.type == "boolean" || field.type == "bool") {
+            input = (
+                <ToggleSwitch active={value} onChange={active => this.updateField(field.id, active)} />
+            );
+        }
+        else if(constraints.values) {
+            input = (
+                <span className="input-frame">
+                    <select value={value} onChange={ev => this.updateField(field.id, ev.target.value)}>
+                        {constraints.values.map((item,index) => { return (
+                            <option key={field.id + index} value={item}>{item}</option>
+                        );})}
+                    </select>
+                </span>
+            );
+        } else {
+            input = (
+                <span className="input-frame">
+                    <input type={field.type} {...constraints} disabled={disabled}
+                        onChange={(ev) => this.updateField(field.id, ev.target.value)}
+                        value={value}/>
+                </span>
+            );
+        }
         return (
             <tr key={field.id}>
                 <td>{field.name}:</td>
-                <td><span className="input-frame">{input}</span></td>
+                <td>{input}</td>
             </tr>
         );
     }

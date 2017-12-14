@@ -1,0 +1,46 @@
+div.ToggleSwitch {
+    display: flex;
+    width: 100%;
+    height: 2em;
+    overflow: hidden;
+    border: 1px solid @item_border@;
+}
+
+div.ToggleSwitch.toggle-switch-active {
+    background-color: rgb(127, 255, 127);
+}
+
+div.ToggleSwitch.toggle-switch-inactive {
+    background-color: rgb(255, 127, 127);
+}
+
+div.ToggleSwitch > span.toggle-switch-slider {
+    flex: 0 0 50%;
+    background-color: white;
+    border: 1px solid @item_border@;
+    border-radius: 2px;
+    margin: 1px;
+    text-align: center;
+    line-height: 2em;
+    color: lightgray;
+}
+
+div.ToggleSwitch > span.toggle-switch-slider > span.glyphicon {
+    transform: rotate(90deg);
+}
+
+div.ToggleSwitch > span.toggle-switch-yes,
+div.ToggleSwitch > span.toggle-switch-no {
+    color: white;
+    text-align: center;
+    line-height: 2em;
+    flex: 1 1 auto;
+}
+
+div.ToggleSwitch.toggle-switch-active > span.toggle-switch-no {
+    display: none;
+}
+
+div.ToggleSwitch.toggle-switch-inactive > span.toggle-switch-yes {
+    display: none;
+}
