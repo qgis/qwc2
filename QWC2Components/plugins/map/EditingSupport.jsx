@@ -101,12 +101,23 @@ class EditingSupport extends React.Component {
             this.currentFeature.setId(uuid.v4());
         }, this);
         drawInteraction.on('drawend', function(evt) {
+            let feature = this.currentFeature;
             this.commitCurrentFeature();
+
             setTimeout(() => {
-                // In timeout to avoid the double click performed to finalize the feature triggering the DoubleClickZoom interaction
+                this.currentFeature = feature;
+                let modifyInteraction = new ol.interaction.Modify({
+                    features: new ol.Collection([this.currentFeature]),
+                    style: this.interactionStyle
+                });
+                this.props.map.addInteraction(modifyInteraction);
+                this.interaction = modifyInteraction;
+                modifyInteraction.on('modifyend', function(evt) {
+                    this.commitCurrentFeature();
+                }, this)
+
                 this.props.map.removeInteraction(drawInteraction);
-                this.interaction = null;
-            },100);
+            }, 100);
         }, this);
         this.props.map.addInteraction(drawInteraction);
         this.interaction = drawInteraction;
