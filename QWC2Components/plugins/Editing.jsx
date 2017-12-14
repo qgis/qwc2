@@ -143,21 +143,24 @@ class Editing extends React.Component {
         let commitBar = null;
         if(this.props.editing.changed) {
             const commitButtons = [
-                {key: 'Commit', glyph: 'ok', label: "editing.commit", extraClasses: "edit-commit"},
+                {key: 'Commit', glyph: 'ok', label: "editing.commit", extraClasses: "edit-commit", type: "submit"},
                 {key: 'Discard', glyph: 'remove', label: "editing.discard", extraClasses: "edit-discard"}
             ];
-            commitBar = (<ButtonBar buttons={commitButtons} onClick={this.onEditingFinished}/>);
+            commitBar = (<ButtonBar buttons={commitButtons} onClick={this.onDiscard}/>); /* submit is handled via onSubmit in the form */
         }
         let fieldsTable = null;
         if(this.props.editing.feature) {
             fieldsTable = (
                 <div>
                     <div className="separator"></div>
-                    <table className="fields-table">
-                        <tbody>
-                            {(curConfig.fields || []).map(field => this.renderField(field))}
-                        </tbody>
-                    </table>
+                    <form action="" onSubmit={this.onSubmit}>
+                        <table className="fields-table">
+                            <tbody>
+                                {(curConfig.fields || []).map(field => this.renderField(field))}
+                            </tbody>
+                        </table>
+                        {commitBar}
+                    </form>
                 </div>
             );
         }
@@ -196,7 +199,6 @@ class Editing extends React.Component {
                 {actionBar}
                 {fieldsTable}
                 {deleteBar}
-                {commitBar}
                 {busyDiv}
             </div>
 
@@ -219,10 +221,16 @@ class Editing extends React.Component {
         let newFeature = assign({}, this.props.editing.feature, {properties: newProperties});
         this.props.changeEditingState(assign({}, this.props.editing, {feature: newFeature, changed: true}));
     }
-    onEditingFinished = (action) => {
+    onDiscard = (action) => {
+        if(action === "Discard") {
+            this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
+        }
+    }
+    onSubmit = (ev) => {
+        ev.preventDefault();
         const editConfig = this.props.theme.editConfig || [];
         const curConfig = editConfig[this.state.selectedLayer];
-        if(action === "Commit" && curConfig) {
+        if(curConfig) {
             this.setState({busy: true});
 
             let feature = this.props.editing.feature;
@@ -241,8 +249,6 @@ class Editing extends React.Component {
             } else if(this.props.editing.action === "Pick") {
                 this.props.iface.editFeature(this.state.selectedLayer, feature, this.props.map.projection, this.commitFinished);
             }
-        } else {
-            this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
         }
     }
     deleteClicked = () => {

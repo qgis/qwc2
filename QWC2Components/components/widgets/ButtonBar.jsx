@@ -24,6 +24,7 @@ class ButtonBar extends React.Component {
             data: PropTypes.object,
             glyph: PropTypes.string,
             extraClasses: PropTypes.string,
+            type: PropTypes.string,
         })),
         active: PropTypes.string,
         onClick: PropTypes.func,
@@ -41,11 +42,11 @@ class ButtonBar extends React.Component {
                     let classes = (this.props.active === button.key ? 'pressed' : '');
                     classes += button.extraClasses ? ' ' + button.extraClasses : '';
                     return (
-                        <span key={button.key} className={classes} onClick={(ev) => this.props.onClick(button.key, button.data)}>
+                        <button type={button.type || "button"} key={button.key} className={classes} onClick={button.type !== "submit" ? (ev) => this.props.onClick(button.key, button.data) : null}>
                             {button.icon ? (<img src={assetsPath + '/img/' + button.icon} />) : null}
                             {button.glyph ? (<Glyphicon glyph={button.glyph} />) : null}
                             {button.label  && !this.props.mobile ? (<Message msgId={button.label} />) : null}
-                        </span>
+                        </button>
                     );
                 })}
                 {this.props.disabled ? (<div className="buttonbar-disabled"></div>) : null}
