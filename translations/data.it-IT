@@ -90,6 +90,7 @@
       "selectinfo": ""
     },
     "redlining": {
+      "border": "",
       "fill": "Riempimento",
       "label": "Ettichetta",
       "line": "Linea",
@@ -97,7 +98,9 @@
       "pick": "Seleziona",
       "point": "Punto",
       "polygon": "Poligono",
-      "text": ""
+      "size": "",
+      "text": "",
+      "width": ""
     },
     "search": {
       "more": "",

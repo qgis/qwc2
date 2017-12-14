@@ -90,6 +90,7 @@
       "selectinfo": "Drag a rectangle around the region to export..."
     },
     "redlining": {
+      "border": "Border",
       "fill": "Fill",
       "label": "Label",
       "line": "Line",
@@ -97,7 +98,9 @@
       "pick": "Pick",
       "point": "Point",
       "polygon": "Polygon",
-      "text": "Text"
+      "size": "Size",
+      "text": "Text",
+      "width": "Width"
     },
     "search": {
       "more": "More...",

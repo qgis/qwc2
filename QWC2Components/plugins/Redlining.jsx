@@ -35,6 +35,10 @@ class Redlining extends React.Component {
     state = {
         openColorPicker: null
     }
+    constructor(props) {
+        super(props);
+        this.labelInput = null;
+    }
     onClose = () => {
         this.props.changeRedliningState(assign({}, this.props.redlining, {action: null, geomType: null}));
         this.setState({openColorPicker: null});
@@ -59,11 +63,15 @@ class Redlining extends React.Component {
             "redlining-colorpicker": true,
             "redlining-colorpicker-collapsed": this.state.openColorPicker !== "fill"
         });
-        let sizeLabel = "Size";
+        let sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.size");
         if(this.props.redlining.geomType === "LineString") {
-            sizeLabel = "Width";
+            sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.width");
         } else if(this.props.redlining.geomType === "Polygon") {
-            sizeLabel = "Border";
+            sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.border");
+        }
+        let labelPlaceholder = LocaleUtils.getMessageById(this.context.messages, "redlining.label");
+        if(this.props.redlining.geomType === "Text") {
+            labelPlaceholder = LocaleUtils.getMessageById(this.context.messages, "redlining.text");
         }
         let buttons = [
             {key: "Pick", label: "redlining.pick", icon: "pick.svg", data: {action: "Pick", geomType: null}},
@@ -76,7 +84,7 @@ class Redlining extends React.Component {
         let activeButton = this.props.redlining.action === "Pick" ? "Pick" : this.props.redlining.geomType;
         return (
             <div>
-                <ButtonBar buttons={buttons} active={activeButton} onClick={(key, data) => this.updateRedliningState(data)} />
+                <ButtonBar buttons={buttons} active={activeButton} onClick={(key, data) => this.actionChanged(data)} />
                 <div className="redlining-controlsbar">
                     <span>
                         <span><Message msgId="redlining.outline" />:</span>
@@ -97,7 +105,7 @@ class Redlining extends React.Component {
                         <NumericInput mobile min={0} max={99} value={this.props.redlining.size} onChange={(nr) => this.updateRedliningState({size: nr})}/>
                     </span>
                     <span>
-                        <input className="redlining-label" type="text" placeholder={LocaleUtils.getMessageById(this.context.messages, "redlining.label")} value={this.props.redlining.text} onChange={(ev) => this.updateRedliningState({text: ev.target.value})}/>
+                        <input ref={el => this.labelInput = el} className="redlining-label" type="text" placeholder={labelPlaceholder} value={this.props.redlining.text} onChange={(ev) => this.updateRedliningState({text: ev.target.value})}/>
                     </span>
                 </div>
             </div>
@@ -111,6 +119,12 @@ class Redlining extends React.Component {
                 </span>
             </TaskBar>
         );
+    }
+    actionChanged = (data) => {
+        if(data.action === "Draw" && data.geomType === "Text" && this.labelInput) {
+            this.labelInput.focus();
+        }
+        this.updateRedliningState(data);
     }
 };
 
