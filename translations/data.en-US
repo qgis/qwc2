@@ -77,6 +77,7 @@
     "noFeatureInfo": "There is no information available for the point you clicked",
     "print": {
       "layout": "Layout:",
+      "grid": "Grid:",
       "nolayouts": "The selected theme does not support printing",
       "notheme": "No theme selected",
       "resolution": "Resolution:",

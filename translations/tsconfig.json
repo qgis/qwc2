@@ -55,6 +55,7 @@
     "measureComponent.pointLabel",
     "noFeatureInfo",
     "print.layout",
+    "print.grid",
     "print.nolayouts",
     "print.notheme",
     "print.resolution",

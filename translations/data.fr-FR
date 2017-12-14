@@ -77,6 +77,7 @@
     "noFeatureInfo": "Aucune information n'est disponible pour le point cliqué.",
     "print": {
       "layout": "Format",
+      "grid": "",
       "nolayouts": "Il n'y a pas de mise en page disponible pour le thème choisi.",
       "notheme": "Pas de thème sélectionné",
       "resolution": "Résolution",

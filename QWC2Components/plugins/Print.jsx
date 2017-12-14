@@ -16,6 +16,7 @@ const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const {changeRotation} = require('../../MapStore2Components/actions/map');
+const ToggleSwitch = require('../components/widgets/ToggleSwitch');
 const {SideBar} = require('../components/SideBar');
 const PrintFrame = require('../components/PrintFrame');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
@@ -34,7 +35,7 @@ class Print extends React.Component {
         visible: false
     }
     state = {
-        layout: null, scale: null, dpi: 300, initialRotation: 0
+        layout: null, scale: null, dpi: 300, initialRotation: 0, grid: false
     }
     componentWillReceiveProps(newProps) {
         let newState = assign({}, this.state);
@@ -128,7 +129,7 @@ class Print extends React.Component {
         let gridIntervalX = null;
         let gridIntervalY = null;
         let printGrid = this.props.theme.printGrid;
-        if(printGrid && printGrid.length > 0 && this.state.scale) {
+        if(printGrid && printGrid.length > 0 && this.state.scale && this.state.grid) {
             let cur = 0;
             for(; cur < printGrid.length-1 && this.state.scale < printGrid[cur].s; ++cur);
             gridIntervalX = (<input readOnly="true" name={mapName + ":GRID_INTERVAL_X"} type={formvisibility} value={printGrid[cur].x} />);
@@ -183,6 +184,14 @@ class Print extends React.Component {
                                 </span>
                             </td>
                         </tr>
+                        {printGrid ? (
+                            <tr>
+                                <td><Message msgId="print.grid" /></td>
+                                <td>
+                                    <ToggleSwitch onChange={(newstate) => this.setState({grid: newstate})} active={this.state.grid} />
+                                </td>
+                            </tr>
+                        ) : null}
                         {(labels || []).map(label => {
                             let opts = assign({rows: 1, name: label.toUpperCase()}, this.props.theme.printLabelConfig ? this.props.theme.printLabelConfig[label] : {});
                             return (<tr key={"label." + label}>
