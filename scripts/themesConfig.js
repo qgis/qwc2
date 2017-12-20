@@ -157,6 +157,9 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
             layerEntry.minScale = parseInt(layer.MinScaleDenominator, 10);
             layerEntry.maxScale = parseInt(layer.MaxScaleDenominator, 10);
         }
+        if(layer.Style && layer.Style.LegendURL) {
+            layerEntry.legendUrl = layer.Style.LegendURL.OnlineResource.$["xlink:href"];
+        }
         // use geographic bounding box, as default CRS may have inverted axis order with WMS 1.3.0
         if(layer.EX_GeographicBoundingBox) {
             layerEntry.bbox = {

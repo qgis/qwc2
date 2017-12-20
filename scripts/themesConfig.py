@@ -156,7 +156,11 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
         if minScale and maxScale:
             layerEntry["minScale"] = int(float(minScale))
             layerEntry["maxScale"] = int(float(maxScale))
-
+        try:
+            onlineResource = getChildElement(layer, "Style/LegendURL/OnlineResource")
+            layerEntry["legendUrl"] = onlineResource.getAttribute("xlink:href")
+        except:
+            pass
         # use geographic bounding box, as default CRS may have inverted axis order with WMS 1.3.0
         geoBBox = getChildElement(layer, "EX_GeographicBoundingBox")
         if geoBBox:

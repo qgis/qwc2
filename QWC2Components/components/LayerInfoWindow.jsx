@@ -10,7 +10,6 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const ResizeableWindow = require("../components/ResizeableWindow");
-const LayerUtils = require('../utils/LayerUtils');
 require('./style/LayerInfoWindow.css');
 
 class LayerInfoWindow extends React.Component {
@@ -35,9 +34,9 @@ class LayerInfoWindow extends React.Component {
         return null;
     }
     render() {
-        let legend = LayerUtils.getLegendGraphicURL(this.props.layer, this.props.sublayer.name);
-        if(legend) {
-            legend = (<img className="layer-info-window-legend" src={legend} />);
+        let legend = null;
+        if(this.props.layer.legendUrl) {
+            legend = (<img className="layer-info-window-legend" src={this.props.layer.legendUrl} />);
         }
         return (
             <ResizeableWindow title="layerinfo.title" glyphicon="info-sign" onClose={this.props.onClose} initialWidth={this.props.windowSize.width} initialHeight={this.props.windowSize.height}>

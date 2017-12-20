@@ -76,10 +76,7 @@ const assign = require('object-assign');
             }
         }).join(",");
     },
-    getLegendGraphicURL(layer, sublayer) {
-        if(layer.type !== "wms") {
-            return "";
-        }
+    getWMSLegendGraphicURL(layer, sublayer) {
         let version = layer.params.VERSION || "1.3.0";
         return layer.url + "?SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + version + "&FORMAT=image/png&LAYER=" + sublayer;
     }

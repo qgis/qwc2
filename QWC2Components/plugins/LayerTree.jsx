@@ -158,10 +158,10 @@ class LayerTree extends React.Component {
             );
         }
         let legendicon = null;
-        if(this.props.showLegendIcons) {
+        if(this.props.showLegendIcons && sublayer.legendUrl) {
             legendicon = (
                 <span className="layertree-item-legend">
-                    <img className="layertree-item-legend-thumbnail" src={LayerUtils.getLegendGraphicURL(layer, sublayer.name)} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />
+                    <img className="layertree-item-legend-thumbnail" src={sublayer.legendUrl} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />
                 </span>
             );
         }
@@ -372,12 +372,17 @@ class LayerTree extends React.Component {
         this.props.toggleMapTips(!this.props.mapTipsEnabled)
     }
     printLegend = () => {
-        let body = this.props.layers.map(layer => {
-            if(layer.group === 'background' || layer.type !== 'wms') {
+        let body = '<p id="legendcontainerbody">';
+        body += this.props.layers.map(layer => {
+            if(layer.legendUrl) {
+                return '<div><img src="' + layer.legendUrl + '" /></div>';
+            } else if(layer.params && layer.params.LAYERS) { // WMS with sublayers
+                return '<div><img src="' + LayerUtils.getWMSLegendGraphicURL(layer, layer.params.LAYERS).replace("&", "&amp;") + '" /></div>'
+            } else {
                 return "";
             }
-            return '<p id="legendcontainerbody"><img src="' + LayerUtils.getLegendGraphicURL(layer, layer.params.LAYERS).replace("&", "&amp;") + '" /></p>'
         }).join("");
+        body += "</p>";
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
 
         // Ugliest code you have ever seen (it's 2017 and there still is no way to reliably know when a popup has really finished loading...)
