@@ -77,9 +77,9 @@
     "noFeatureInfo": "Nu există informații în punctul cerut",
     "print": {
       "layout": "Șablon:",
-      "grid": "",
-      "nolayouts": "Harta selectată nu suportă tipărirea",
-      "notheme": "Tematică neselectată",
+      "grid": "Grid",
+      "nolayouts": "Această temă nu are șabloane de print",
+      "notheme": "Nu avem selectată tema",
       "resolution": "Rezoluție:",
       "rotation": "Rotație:",
       "scale": "Scară:",
