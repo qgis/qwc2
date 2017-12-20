@@ -56,6 +56,9 @@
       "pick": "",
       "reallydelete": ""
     },
+    "fileselector": {
+      "placeholder": ""
+    },
     "identify": {
       "querying": "Identification en cours..."
     },
@@ -63,7 +66,15 @@
       "info": "Dessiner un polygone pour identifier les objets"
     },
     "identifyTitle": "Informations de l'objet",
+    "importlayer": {
+      "addlayer": "",
+      "connect": "",
+      "nofeatures": "",
+      "queryservice": "",
+      "urlplaceholder": ""
+    },
     "layertree": {
+      "importlayer": "",
       "maptip": "Afficher les maptips",
       "printlegend": "Afficher la légende",
       "transparency": "Transparence"

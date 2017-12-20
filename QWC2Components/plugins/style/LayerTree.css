@@ -9,20 +9,30 @@
     border: 1px solid white;
 }
 
-#LayerTree.showmaptips div.sidebar-body {
-    margin-bottom: 2.25em;
+#LayerTree div.layertree-container {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 8.25em); /* viewport - topbar - bottombar - sidebar_titlebar*/
 }
 
 #LayerTree div.layertree-tree {
+    min-height: 5em;
+    flex: 0 1 auto;
+    overflow-y: auto;
     margin-right: 0.25em;
 }
 
 #LayerTree div.laytree-maptip-option {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    flex: 0 0 auto;
     height: 2.25em;
+    padding: 0.25em 0.5em 0.25em 0.5em;
+    border-top: 1px solid @item_border@;
+}
+
+
+#LayerTree div.layertree-import {
+    flex: 0 0 auto;
+    cursor: pointer;
     padding: 0.25em 0.5em 0.25em 0.5em;
     border-top: 1px solid @item_border@;
 }

@@ -1,0 +1,74 @@
+#ImportLayer {
+    padding: 0.5em;
+}
+
+#ImportLayer div.importlayer-input-fields {
+    display: flex;
+}
+
+
+#ImportLayer div.importlayer-input-fields > select {
+    flex: 0 0 auto;
+    height: 2em;
+    background-color: @item_border@;
+    color: white;
+    outline: none;
+}
+
+#ImportLayer div.importlayer-input-fields > input {
+    padding: 0.25em;
+}
+
+#ImportLayer div.importlayer-input-fields > input,
+#ImportLayer div.importlayer-input-fields > div {
+    flex: 1 1 auto;
+    height: 2em;
+}
+
+#ImportLayer button.importlayer-addbutton {
+    border: 1px solid @item_border@;
+    color: @item_fg@;
+    background-color: #dddddd;
+    width: 100%;
+    margin: 0.5em 0;
+    height: 2em;
+    padding: 0.25em;
+}
+
+#ImportLayer button.importlayer-addbutton > div.spinner {
+    width: 1.5em;
+    height: 1.5em;
+    margin-right: 0.25em;
+    display: inline-block;
+}
+
+#ImportLayer div.importlayer-list {
+    padding: 0.25em;
+    border: 1px solid @item_border@;
+    background-color: white;
+    max-height: 10em;
+    overflow-y: auto;
+}
+
+#ImportLayer div.importlayer-list-entry {
+    border-top: 1px solid @item_border@;
+    display: flex;
+}
+
+#ImportLayer div.importlayer-list-entry > span {
+    flex: 1 1 auto;
+    font-size: small;
+    padding: 0.25em;
+    cursor: pointer;
+    display: inline-block;
+}
+
+#ImportLayer div.importlayer-list-entry > span:hover {
+    color: @item_active@;
+}
+
+#ImportLayer div.importlayer-list-entry > img {
+    flex: 0 0 auto;
+    margin-right: 0.25em;
+    cursor: pointer;
+}

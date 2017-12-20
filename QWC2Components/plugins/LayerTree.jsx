@@ -19,6 +19,7 @@ const {changeLayerProperties, removeLayer} = require('../actions/layers')
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 const {toggleMapTips} = require('../actions/layertree');
+const ImportLayer = require('../components/ImportLayer');
 const LayerInfoWindow = require('../components/LayerInfoWindow');
 const {SideBar} = require('../components/SideBar');
 const LayerUtils = require('../utils/LayerUtils');
@@ -52,7 +53,9 @@ class LayerTree extends React.Component {
     state = {
         activemenu: null,
         legendTooltip: null,
-        activeinfo: null
+        activeinfo: null,
+        sidebarwidth: "20em",
+        importvisible: false
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -220,14 +223,15 @@ class LayerTree extends React.Component {
         let extraTitlebarContent = (<Glyphicon title={printLegendTooltip} className="layertree-print-legend" glyph="print" onClick={this.printLegend}/>)
         return (
             <div>
-                <SideBar id="LayerTree" width="20em"  title="appmenu.items.LayerTree"
+                <SideBar id="LayerTree" width={this.state.sidebarwidth}  title="appmenu.items.LayerTree"
                     icon={assetsPath + "/img/layers_white.svg"}
-                    extraClasses={this.props.mobile || !this.props.allowMapTips ? "" : "showmaptips"}
                     onHide={this.hideLegendTooltip}
                     extraTitlebarContent={extraTitlebarContent}>
                     <div role="body" className="layertree-container">
                         <div className="layertree-tree">{this.props.layers.slice(0).reverse().map(this.renderLayerTree)}</div>
                         {maptipCheckbox}
+                        <div className="layertree-import" onClick={this.toggleImportLayers}><img src={assetsPath + '/img/' + (this.state.importvisible ? 'collapse.svg' : 'expand.svg')} /> <Message msgId="layertree.importlayer" /></div>
+                        {this.state.importvisible ? (<ImportLayer />) : null}
                     </div>
                 </SideBar>
                 {legendTooltip}

@@ -1,0 +1,37 @@
+div.FileSelector {
+    display: inline-flex;
+    position: relative;
+    cursor: pointer;
+    overflow-x: hidden;
+}
+
+div.FileSelector:active > input[type=text] {
+    border: 1px solid @item_active@;
+}
+
+div.FileSelector:active > span {
+    background-color: @item_active@;
+}
+
+div.FileSelector > input[type=text] {
+    flex: 1 1 auto;
+    height: 2em;
+    border: 1px solid @item_border@;
+    padding-left: 0.25em;
+    color: @item_fg@;
+    cursor: pointer;
+}
+
+div.FileSelector > span {
+    display: inline-block;
+    width: 2em;
+    flex: 0 0 2em;
+    color: white;
+    background-color: @item_border@;
+    line-height: 2em;
+    text-align: center;
+}
+
+div.FileSelector > input[type=file] {
+    display: none;
+}

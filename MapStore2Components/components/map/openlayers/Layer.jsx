@@ -129,6 +129,17 @@ class OpenlayersLayer extends React.Component {
     addLayer = (layer, options) => {
         if (this.isValid(layer)) {
             this.props.map.addLayer(layer);
+            if(options.zoomToExtent) {
+                let map = this.props.map;
+                let source = layer.getSource();
+                source.once('change',function(e){
+                    if(source.getState() === 'ready') {
+                        if(source.getFeatures().length>0) {
+                            map.getView().fit(source.getExtent(), map.getSize());
+                        }
+                    }
+                });
+            }
             if (options.singleTile) {
                 layer.getSource().on('imageloadstart', () => {
                     this.props.onLayerLoading(options.id);

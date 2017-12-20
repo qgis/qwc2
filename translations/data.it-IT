@@ -56,6 +56,9 @@
       "pick": "",
       "reallydelete": ""
     },
+    "fileselector": {
+      "placeholder": ""
+    },
     "identify": {
       "querying": ""
     },
@@ -63,7 +66,15 @@
       "info": ""
     },
     "identifyTitle": "Informazioni Sulle Feature",
+    "importlayer": {
+      "addlayer": "",
+      "connect": "",
+      "nofeatures": "",
+      "queryservice": "",
+      "urlplaceholder": ""
+    },
     "layertree": {
+      "importlayer": "",
       "maptip": "",
       "printlegend": "",
       "transparency": ""

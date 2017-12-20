@@ -8,6 +8,7 @@
 
 const assign = require('object-assign');
 const uuid = require('uuid');
+const ol = require('openlayers');
 const {isArray,isEmpty} = require('lodash');
 const {parse,stringify} = require('wellknown');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
@@ -173,6 +174,34 @@ const VectorLayerUtils = {
             "type": "Feature",
             "properties": {}
         };
+    },
+    kmlToGeoJSON(kml) {
+        let kmlFormat = new ol.format.KML();
+        let geojsonFormat = new ol.format.GeoJSON();
+        let features = [];
+        let fid = 0;
+        for(let olFeature of kmlFormat.readFeatures(kml)) {
+            let style = olFeature.getStyleFunction().call(olFeature);
+            style = style[0] || style;
+
+            let styleOptions = {
+                strokeColor: style.getStroke().getColor(),
+                strokeWidth: style.getStroke().getWidth(),
+                strokeDash: style.getStroke().getLineDash() || [],
+                fillColor: style.getFill().getColor(),
+                textFill: style.getText().getFill().getColor(),
+                textStroke: style.getText().getStroke().getColor()
+            };
+            let feature = geojsonFormat.writeFeatureObject(olFeature);
+            feature = assign(feature, {
+                styleName: 'default',
+                styleOptions: styleOptions,
+                id: fid++,
+                crs: "EPSG:4326"
+            });
+            features.push(feature);
+        }
+        return features;
     }
 };
 
