@@ -43,16 +43,15 @@ class Identify extends React.Component {
         initialWidth: 320,
         initialHeight: 400
     }
-    queryFilter = (l) => {
-        // All non-background WMS layers with a non-empty queryLayers list
-        return l.type === 'wms' && l.group !== "background" && (l.queryLayers || []).length > 0
-    }
     componentWillReceiveProps(newProps) {
         if (this.needsRefresh(newProps)) {
             if(newProps.point.modifiers.ctrl !== true) {
                 this.props.purgeResults();
             }
-            const queryableLayers = newProps.layers.filter(this.queryFilter);
+            const queryableLayers = newProps.layers.filter((l) => {
+                // All non-background WMS layers with a non-empty queryLayers list
+                return l.type === 'wms' && l.group !== "background" && (l.queryLayers || []).length > 0
+            });
             queryableLayers.forEach((layer) => {
                 const {url, request, metadata} = MapInfoUtils.buildIdentifyRequest(layer, newProps);
                 if (url) {
