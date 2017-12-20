@@ -63,6 +63,9 @@ function layers(state = {}, action) {
                     if(newLayer.type === "wms") {
                         assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
                     }
+                    if(newLayer.isThemeLayer) {
+                        UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayer)});
+                    }
                     return newLayer;
                 } else if (layer.group === 'background' && isBackground) {
                     return assign({}, layer, {visibility: false});
@@ -76,6 +79,9 @@ function layers(state = {}, action) {
             let newLayer = assign({}, action.layer, {id: action.layer.id || (action.layer.name + "__" + newLayers.length), priority: action.layer.priority || 0});
             if(newLayer.type === "wms") {
                 assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
+            }
+            if(newLayer.isThemeLayer) {
+                UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayer)});
             }
             let inspos = 0;
             for(; inspos < newLayers.length && newLayer.priority >= newLayers[inspos].priority; ++inspos);

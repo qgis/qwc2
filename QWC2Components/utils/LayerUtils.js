@@ -70,7 +70,7 @@ const LayerUtils = {
             queryLayers: queryable
         };
     },
-    constructUrlParam(layer) {
+    buildWMSLayerUrlParam(layer) {
         let layers = layer.params.LAYERS.split(",");
         let opacities = layer.params.OPACITIES.split(",").map(entry => parseFloat(entry));
         return layers.map((entry, idx) => {

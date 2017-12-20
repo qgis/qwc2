@@ -221,6 +221,7 @@ class ThemeSwitcher extends React.Component {
             format: theme.format,
             drawingOrder: theme.drawingOrder,
             priority: 1,
+            isThemeLayer: true,
             attribution: theme.attribution
         }
     }

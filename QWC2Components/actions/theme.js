@@ -6,8 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const UrlParams = require("../utils/UrlParams");
-const LayerUtils = require("../utils/LayerUtils");
 const {addLayer,removeAllLayers} = require("./layers");
 const {changeMapScales, zoomToExtent, zoomToPoint, changeMapCrs} = require("../../MapStore2Components/actions/map");
 
@@ -27,9 +25,6 @@ function setCurrentTheme(theme, layer, backgroundLayers, zoomExtent, centerZoom)
             dispatch(addLayer(backgroundLayer));
         }
         dispatch(addLayer(layer));
-
-        // Update url
-        UrlParams.updateParams({t: theme.id, l: LayerUtils.constructUrlParam(layer), bl: activebglayer});
 
         // update map crs
         const p1 = new Promise((resolve) => {

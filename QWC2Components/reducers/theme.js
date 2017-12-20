@@ -6,14 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {
-    SET_CURRENT_THEME,
-    SET_THEME_SWITCHER_FILTER} = require('../actions/theme');
 const assign = require('object-assign');
+const UrlParams = require("../utils/UrlParams");
+const {SET_CURRENT_THEME, SET_THEME_SWITCHER_FILTER} = require('../actions/theme');
 
 function themeSwitcher(state = {switcherfilter: "", current: null}, action) {
     switch (action.type) {
         case SET_CURRENT_THEME:
+        UrlParams.updateParams({t: action.theme.id});
             return assign({}, state, {
                 current: action.theme,
                 currentlayer: action.layer
