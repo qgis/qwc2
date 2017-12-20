@@ -118,9 +118,11 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             layerEntry["displayField"] = layer.getAttribute("displayField")
 
         try:
-            layerEntry["attribution"] = getChildElementValue(layer, "Attribution/Title")
             onlineResource = getChildElement(layer, "Attribution/OnlineResource")
-            layerEntry["attributionUrl"] = onlineResource.getAttribute("xlink:href")
+            layerEntry["attribution"] = {
+                "Title": getChildElementValue(layer, "Attribution/Title"),
+                "OnlineResource": onlineResource.getAttribute("xlink:href")
+            }
         except:
             pass
         try:
@@ -265,8 +267,10 @@ def getTheme(configItem, resultItem):
         resultItem["id"] = themeId
         resultItem["name"] = getChildElementValue(topLayer, "Name")
         resultItem["title"] = wmsTitle
-        resultItem["attribution"] = configItem["attribution"]
-        resultItem["attributionUrl"] = configItem["attributionUrl"]
+        resultItem["attribution"] = {
+            "Title": configItem["attribution"],
+            "OnlineResource": configItem["attributionUrl"]
+        }
         resultItem["keywords"] = ", ".join(keywords)
         if "format" in configItem:
             resultItem["format"] = configItem["format"]
@@ -467,6 +471,14 @@ except:
   print("Failed to read themesConfig.json. Please run this script from a directory containing themesConfig.json.");
   sys.exit(1)
 
+def reformatAttribution(entry):
+    entry["attribution"] = {
+        "Title": entry["attribution"] if "attribution" in entry else None,
+        "OnlineResource": entry["attributionUrl"] if "attributionUrl" in entry else None
+    }
+    entry.pop("attributionUrl", None)
+    return entry
+
 result = {
     "themes": {
         "title": "root",
@@ -477,7 +489,7 @@ result = {
         "defaultPrintScales": config["defaultPrintScales"] if "defaultPrintScales" in config else None,
         "defaultPrintResolutions": config["defaultPrintResolutions"] if "defaultPrintResolutions" in config else None,
         "defaultPrintGrid": config["defaultPrintGrid"] if "defaultPrintGrid" in config else None,
-        "backgroundLayers": config["themes"]["backgroundLayers"],
+        "backgroundLayers": list(map(reformatAttribution, config["themes"]["backgroundLayers"])),
         "defaultWMSVersion": config["defaultWMSVersion"] if "defaultWMSVersion" in config else None
         }
 }

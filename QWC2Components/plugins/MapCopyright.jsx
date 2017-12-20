@@ -9,13 +9,13 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
+const {isEmpty} = require('lodash');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 require('./style/MapCopyright.css');
 
 
 class MapCopyright extends React.Component {
     static propTypes = {
-        activeTheme: PropTypes.object,
         layers: PropTypes.array,
         map: PropTypes.object
     }
@@ -31,18 +31,15 @@ class MapCopyright extends React.Component {
             let transformedbboxes = {};
             transformedbboxes[newProps.map.bbox.crs] = newProps.map.bbox.bounds;
             let copyrights = [];
-            if (newProps.activeTheme && newProps.activeTheme.attribution) {
-                copyrights.push({label: newProps.activeTheme.attribution, url: newProps.activeTheme.attributionUrl});
-            }
-            newProps.layers.map(layer => this.collectCopyrigths(layer, newProps.map.bbox, transformedbboxes, copyrights));
+            newProps.layers.map(layer => this.collectCopyrigths(layer, newProps.map, transformedbboxes, copyrights));
             this.setState({currentCopyrights: copyrights});
         }
     }
-    collectCopyrigths = (layer, srcmapbbox, transformedbboxes, copyrights) => {
+    collectCopyrigths = (layer, map, transformedbboxes, copyrights) => {
         if(layer.sublayers) {
-            layer.sublayers.map(layer => this.collectCopyrigths(layer, srcmapbbox, transformedbboxes, copyrights));
+            layer.sublayers.map(layer => this.collectCopyrigths(layer, map, transformedbboxes, copyrights));
         }
-        if(!layer.attribution || !layer.visibility) {
+        if(!layer.attribution || !layer.attribution.Title || !layer.visibility) {
             return;
         }
         if(layer.group !== "background") {
@@ -50,8 +47,8 @@ class MapCopyright extends React.Component {
                 return;
             }
             if(!transformedbboxes[layer.boundingBox.crs]) {
-                let {minx, miny, maxx, maxy} = srcmapbbox.bounds;
-                transformedbboxes[layer.boundingBox.crs] = CoordinatesUtils.reprojectBbox([minx, miny, maxx, maxy], srcmapbbox.crs, layer.boundingBox.crs);
+                let {minx, miny, maxx, maxy} = map.bbox.bounds;
+                transformedbboxes[layer.boundingBox.crs] = CoordinatesUtils.reprojectBbox([minx, miny, maxx, maxy], map.projection, layer.boundingBox.crs);
             }
             let mapbbox = transformedbboxes[layer.boundingBox.crs];
             let laybbox = layer.boundingBox.bounds;
@@ -59,10 +56,10 @@ class MapCopyright extends React.Component {
                 mapbbox[1] < laybbox[3] && mapbbox[3] > laybbox[1])
             {
                 // Extents overlap
-                copyrights.push({label: layer.attribution, url: layer.attributionUrl});
+                copyrights.push({label: layer.attribution.Title, url: layer.attribution.OnlineResource});
             }
         } else {
-            copyrights.push({label: layer.attribution, url: layer.attributionUrl});
+            copyrights.push({label: layer.attribution.Title, url: layer.attribution.OnlineResource});
         }
     }
     render() {
@@ -73,7 +70,7 @@ class MapCopyright extends React.Component {
                 return (<span key={"attribution" + index}>{attribution.label}</span>);
             }
         })
-        if(!copyrights || copyrights.length === 0) {
+        if(isEmpty(copyrights)) {
             return null;
         }
         return (
@@ -85,7 +82,6 @@ class MapCopyright extends React.Component {
 };
 
 const selector = (state) => ({
-    activeTheme: state.theme ? state.theme.current : null,
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
     map: state.map ? state.map : null
 });

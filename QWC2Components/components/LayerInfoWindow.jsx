@@ -47,7 +47,7 @@ class LayerInfoWindow extends React.Component {
                         <table className="layer-info-window-table">
                             <tbody>
                             {this.renderRow("layerinfo.abstract", this.props.sublayer.abstract)}
-                            {this.renderRow("layerinfo.attribution", this.renderLink(this.props.sublayer.attribution, this.props.sublayer.attributionUrl))}
+                            {this.renderRow("layerinfo.attribution", this.renderLink(this.props.sublayer.attribution.Title, this.props.sublayer.attribution.OnlineResource))}
                             {this.renderRow("layerinfo.keywords", this.props.sublayer.keywords)}
                             {this.renderRow("layerinfo.dataUrl", this.renderLink(this.props.sublayer.dataUrl, this.props.sublayer.dataUrl))}
                             {this.renderRow("layerinfo.metadataUrl", this.renderLink(this.props.sublayer.metadataUrl, this.props.sublayer.metadataUrl))}

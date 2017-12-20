@@ -126,11 +126,11 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         if (layerEntry.queryable) {
             layerEntry.displayField = layer.$.displayField;
         }
-        if (layer.Attribution !== undefined) {
-            layerEntry.attribution = layer.Attribution.Title;
-            if (layer.Attribution.OnlineResource !== undefined) {
-                layerEntry.attributionUrl = layer.Attribution.OnlineResource.$['xlink:href'];
-            }
+        if (layer.Attribution) {
+            layerEntry.attribution = {
+                "Title": layer.Attribution.Title,
+                "OnlineResource": layer.Attribution.OnlineResource.$["xlink:href"]
+            };
         }
         if (layer.Abstract) {
             layerEntry.abstract = layer.Abstract;
@@ -306,8 +306,10 @@ function getTheme(configItem, resultItem) {
             resultItem.id = themeId;
             resultItem.name = topLayer.Name;
             resultItem.title = wmsTitle;
-            resultItem.attribution = configItem.attribution;
-            resultItem.attributionUrl = configItem.attributionUrl;
+            resultItem.attribution = {
+                Title: configItem.attribution,
+                OnlineResource: configItem.attributionUrl
+            };
             resultItem.keywords = keywords.join(', ');
             resultItem.format = configItem.format;
             resultItem.availableFormats = capabilities.Capability.Request.GetMap.Format;
@@ -498,7 +500,14 @@ var result = {
         defaultPrintScales: config.defaultPrintScales,
         defaultPrintResolutions: config.defaultPrintResolutions,
         defaultPrintGrid: config.defaultPrintGrid,
-        backgroundLayers: config.themes.backgroundLayers,
+        backgroundLayers: config.themes.backgroundLayers.map(bglayer => {
+                bglayer.attribution = {
+                    Title: bglayer.attribution,
+                    OnlineResource: bglayer.attributionUrl
+                };
+                delete bglayer.attributionUrl;
+                return bglayer;
+            }),
         defaultWMSVersion: config.defaultWMSVersion
     }
 };
