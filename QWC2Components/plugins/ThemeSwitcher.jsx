@@ -42,7 +42,7 @@ class ThemeSwitcher extends React.Component {
         filter: "",
         activeTheme: null,
         map: null,
-        width: "auto"
+        width: "50%"
     }
     state = {
         themes: null
@@ -176,7 +176,7 @@ class ThemeSwitcher extends React.Component {
             <input className="themeswitcher-filter" type="text" value={this.props.filter} onChange={this.filterChanged} placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
         );
         return (
-            <SideBar id="ThemeSwitcher" width={this.props.width} title="appmenu.items.ThemeSwitcher"
+            <SideBar id="ThemeSwitcher" minWidth="16em" width={this.props.width} title="appmenu.items.ThemeSwitcher"
                 icon={assetsPath + "/img/themes.svg"} extraTitlebarContent={extraTitlebarContent}>
                 {this.renderThemeGroup(this.state.themes)}
             </SideBar>

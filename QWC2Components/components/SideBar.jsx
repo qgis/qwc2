@@ -34,6 +34,7 @@ class SideBar extends React.Component {
         onShow: () => {},
         onHide: () => {},
         width: '15em',
+        minWidth: '15em'
     }
     componentWillReceiveProps(newProps) {
         let newVisible = newProps.currentTask === newProps.id;
@@ -56,6 +57,7 @@ class SideBar extends React.Component {
         let visible = this.props.currentTask === this.props.id;
         let style = {
             width: this.props.width,
+            minWidth: this.props.minWidth,
             right: 0,
             transform: visible ? '' : 'translateX(100%) translateX(8px)',
             zIndex: visible ? 5 : 4
