@@ -8,6 +8,7 @@
 
 const assign = require('object-assign');
 const UrlParams = require("../utils/UrlParams");
+const LayerUtils = require("../utils/LayerUtils");
 const {isEmpty} = require('lodash');
 const {
     LAYER_LOADING,
@@ -58,7 +59,11 @@ function layers(state = {}, action) {
             }
             const newLayers = (state.flat || []).map((layer) => {
                 if (layer.id === action.layerId) {
-                    return assign({}, layer, action.newProperties);
+                    let newLayer = assign({}, layer, action.newProperties);
+                    if(newLayer.type === "wms") {
+                        assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
+                    }
+                    return newLayer;
                 } else if (layer.group === 'background' && isBackground) {
                     return assign({}, layer, {visibility: false});
                 }
@@ -69,6 +74,9 @@ function layers(state = {}, action) {
         case ADD_LAYER: {
             let newLayers = (state.flat || []).concat();
             let newLayer = assign({}, action.layer, {id: action.layer.id || (action.layer.name + "__" + newLayers.length), priority: action.layer.priority || 0});
+            if(newLayer.type === "wms") {
+                assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
+            }
             let inspos = 0;
             for(; inspos < newLayers.length && newLayer.priority >= newLayers[inspos].priority; ++inspos);
             newLayers.splice(inspos, 0, newLayer)

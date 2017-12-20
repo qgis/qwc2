@@ -201,7 +201,6 @@ class ThemeSwitcher extends React.Component {
             sublayers = LayerUtils.restoreVisibleLayers(sublayers, layers, opacities);
         }
         let version = theme.version ? theme.version : this.state.themes.defaultWMSVersion ? this.state.themes.defaultWMSVersion : "1.3.0";
-        let {params, queryLayers} = LayerUtils.buildLayerParams(sublayers, theme.drawingOrder, version);
         // untiled WMS by default
         let singleTile = true;
         if (theme.tiled !== undefined) {
@@ -217,8 +216,6 @@ class ThemeSwitcher extends React.Component {
             title: theme.title,
             boundingBox: theme.bbox,
             sublayers : sublayers,
-            params: params,
-            queryLayers: queryLayers,
             singleTile: singleTile,
             ratio: singleTile ? 1 : undefined,
             format: theme.format,

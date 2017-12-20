@@ -1,60 +1,38 @@
 /**
- * Copyright 2016, Sourcepole AG.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree.
- */
+* Copyright 2016, Sourcepole AG.
+* All rights reserved.
+*
+* This source code is licensed under the BSD-style license found in the
+* LICENSE file in the root directory of this source tree.
+*/
 
 const assign = require('object-assign');
+const {isEmpty} = require('lodash');
 
- const LayerUtils = {
-     restoreVisibleLayers: function(sublayers, initiallayers, initialopacities) {
-         let newsublayers = sublayers.slice(0);
-         newsublayers.map((sublayer, idx) => {
-             if(sublayer.sublayers) {
-                  // Is group
-                  newsublayers[idx] = assign({}, sublayer, {sublayers: LayerUtils.restoreVisibleLayers(sublayer.sublayers, initiallayers, initialopacities)});
-             } else {
-                 let idx2 = initiallayers.indexOf(sublayer.name);
-                 newsublayers[idx] = assign({}, sublayer, {
-                     visibility: idx2 >= 0,
-                     opacity: idx2 >= 0 ? initialopacities[idx2] : sublayer.opacity
-                 });
-             }
-         });
-         return newsublayers;
-     },
-     buildLayerParams: function(sublayers, drawingOrder, version) {
-        let layerNames = [];
-        let opacities = [];
-        let queryable = [];
-        (sublayers || []).map(sublayer => {
-            LayerUtils.parseSublayer(sublayer, layerNames, opacities, queryable);
+const LayerUtils = {
+    restoreVisibleLayers: function(sublayers, initiallayers, initialopacities) {
+        let newsublayers = sublayers.slice(0);
+        newsublayers.map((sublayer, idx) => {
+            if(sublayer.sublayers) {
+                // Is group
+                newsublayers[idx] = assign({}, sublayer, {sublayers: LayerUtils.restoreVisibleLayers(sublayer.sublayers, initiallayers, initialopacities)});
+            } else {
+                let idx2 = initiallayers.indexOf(sublayer.name);
+                newsublayers[idx] = assign({}, sublayer, {
+                    visibility: idx2 >= 0,
+                    opacity: idx2 >= 0 ? initialopacities[idx2] : sublayer.opacity
+                });
+            }
         });
-        layerNames.reverse();
-        opacities.reverse();
-        if(drawingOrder && drawingOrder.length > 0) {
-            let indices = drawingOrder.map(layer => layerNames.indexOf(layer)).filter(idx => idx >= 0);
-            layerNames = indices.map(idx => layerNames[idx]);
-            opacities = indices.map(idx => opacities[idx]);
-        }
-        return {
-            params: {
-                LAYERS: layerNames.join(","),
-                OPACITIES: opacities.join(","),
-                VERSION: version
-            },
-            queryLayers: queryable
-        };
+        return newsublayers;
     },
-    parseSublayer: function(sublayer, layerNames, opacities, queryable) {
+    collectWMSSublayerParams: function(sublayer, layerNames, opacities, queryable) {
         let visibility = sublayer.visibility === undefined ? true : sublayer.visibility;
         if(visibility) {
             if(sublayer.sublayers) {
                 // Is group
                 sublayer.sublayers.map(sublayer => {
-                    LayerUtils.parseSublayer(sublayer, layerNames, opacities, queryable)
+                    LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, queryable)
                 });
             } else {
                 layerNames.push(sublayer.name);
@@ -64,6 +42,33 @@ const assign = require('object-assign');
                 }
             }
         }
+    },
+    buildWMSLayerParams: function(layer) {
+        if(isEmpty(layer.sublayers)) {
+            return {
+                params: {LAYERS: layer.name}
+            };
+        }
+        let layerNames = [];
+        let opacities = [];
+        let queryable = [];
+        layer.sublayers.map(sublayer => {
+            LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, queryable);
+        });
+        layerNames.reverse();
+        opacities.reverse();
+        if(layer.drawingOrder && layer.drawingOrder.length > 0) {
+            let indices = layer.drawingOrder.map(layer => layerNames.indexOf(layer)).filter(idx => idx >= 0);
+            layerNames = indices.map(idx => layerNames[idx]);
+            opacities = indices.map(idx => opacities[idx]);
+        }
+        return {
+            params: {
+                LAYERS: layerNames.join(","),
+                OPACITIES: opacities.join(",")
+            },
+            queryLayers: queryable
+        };
     },
     constructUrlParam(layer) {
         let layers = layer.params.LAYERS.split(",");
@@ -80,6 +85,6 @@ const assign = require('object-assign');
         let version = layer.params.VERSION || "1.3.0";
         return layer.url + "?SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + version + "&FORMAT=image/png&LAYER=" + sublayer;
     }
- };
+};
 
- module.exports = LayerUtils;
+module.exports = LayerUtils;

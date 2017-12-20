@@ -293,7 +293,6 @@ class LayerTree extends React.Component {
                 // Toggle group and all sublayers
                 let newlayer = assign({}, layer, {visibility: !oldvisibility});
                 this.cloneSublayers(newlayer, {visibility: !oldvisibility});
-                assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder, layer.params.VERSION));
                 UrlParams.updateParams({l: LayerUtils.constructUrlParam(newlayer)});
                 this.props.changeLayerProperties(layer.id, newlayer);
             } else {
@@ -308,7 +307,6 @@ class LayerTree extends React.Component {
                 let {newlayer, newsublayer} = this.cloneLayerTree(layer, grouppath);
                 newsublayer.visibility = !oldvisibility;
                 this.cloneSublayers(newsublayer, {visibility: !oldvisibility});
-                assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder, layer.params.VERSION));
                 if(newsublayer.visibility){
                     newlayer = this.parentsVisible(newlayer, grouppath);
                 }
@@ -318,7 +316,6 @@ class LayerTree extends React.Component {
                 // Toggle just the group
                 let {newlayer, newsublayer} = this.cloneLayerTree(layer, grouppath);
                 newsublayer.visibility = !oldvisibility;
-                assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder, layer.params.VERSION));
                 UrlParams.updateParams({l: LayerUtils.constructUrlParam(newlayer)});
                 this.props.changeLayerProperties(layer.id, newlayer);
             }
@@ -327,8 +324,6 @@ class LayerTree extends React.Component {
     sublayerToggled = (layer, sublayerpath) => {
         let {newlayer, newsublayer} = this.cloneLayerTree(layer, sublayerpath);
         newsublayer.visibility = !newsublayer.visibility;
-        let {params, queryLayers} = LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder, layer.params.VERSION);
-        assign(newlayer, {params: params, queryLayers: queryLayers});
         if(newsublayer.visibility){
             newlayer = this.parentsVisible(newlayer, sublayerpath);
         }
@@ -340,7 +335,6 @@ class LayerTree extends React.Component {
         for(let i = 1; i < sublayerpath.length; ++i) {
             let {newlayer, newsublayer} = this.cloneLayerTree(layer, sublayerpath.slice(0,i));
             newsublayer.visibility = true;
-            assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder, layer.params.VERSION));
             layer = newlayer
         }
         layer = assign({}, layer, {visibility: true});
@@ -349,7 +343,6 @@ class LayerTree extends React.Component {
     sublayerTransparencyChanged = (layer, sublayerpath, value) => {
         let {newlayer, newsublayer} = this.cloneLayerTree(layer, sublayerpath);
         newsublayer.opacity = Math.max(1, 255 - value);
-        assign(newlayer, LayerUtils.buildLayerParams(newlayer.sublayers, newlayer.drawingOrder, layer.params.VERSION));
         UrlParams.updateParams({l: LayerUtils.constructUrlParam(newlayer)});
         this.props.changeLayerProperties(layer.id, newlayer);
     }
