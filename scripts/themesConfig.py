@@ -260,7 +260,7 @@ def getTheme(configItem, resultItem):
 
         # drawing order
         drawingOrder = getChildElementValue(capabilities, "Capability/LayerDrawingOrder").split(",")
-        drawingOrder = map(lambda title: titleNameMap[title] if title in titleNameMap else title, drawingOrder)
+        drawingOrder = list(map(lambda title: titleNameMap[title] if title in titleNameMap else title, drawingOrder))
 
         # getmap formats
         availableFormats = []
@@ -315,7 +315,7 @@ def getTheme(configItem, resultItem):
         resultItem["sublayers"] = layerTree[0]["sublayers"]
         resultItem["expanded"] = True
         if "backgroundLayers" in configItem:
-          resultItem["backgroundLayers"] = configItem["backgroundLayers"]
+            resultItem["backgroundLayers"] = configItem["backgroundLayers"]
         resultItem["searchProviders"] = configItem["searchProviders"]
         if "additionalMouseCrs" in configItem:
             resultItem["additionalMouseCrs"] = configItem["additionalMouseCrs"]
