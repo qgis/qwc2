@@ -70,7 +70,7 @@ function layers(state = {}, action) {
                 } else if (layer.group === 'background' && isBackground) {
                     return assign({}, layer, {visibility: false});
                 }
-                return assign({}, layer);
+                return layer;
             });
             return assign({}, state, {flat: newLayers});
         }
