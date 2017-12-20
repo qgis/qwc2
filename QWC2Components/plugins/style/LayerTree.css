@@ -108,6 +108,18 @@ img.layertree-item-legend-tooltip {
     flex: 1 1 auto;
 }
 
+#LayerTree span.layertree-item-remove {
+    line-height: 2em;
+    cursor: pointer;
+    margin-left: 0.25em;
+    color: @item_border@;
+    flex: 0 0 auto;
+}
+
+#LayerTree span.layertree-item-remove:hover {
+    color: red;
+}
+
 #LayerTree span.layertree-item-cog {
     line-height: 2em;
     text-align: center;

@@ -13,8 +13,9 @@ const {Glyphicon} = require('react-bootstrap');
 const Swipeable = require('react-swipeable');
 const assign = require('object-assign');
 const classnames = require('classnames');
+const {isEmpty} = require('lodash');
 const Message = require('../../MapStore2Components/components/I18N/Message');
-const {changeLayerProperties} = require('../actions/layers')
+const {changeLayerProperties, removeLayer} = require('../actions/layers')
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 const {toggleMapTips} = require('../actions/layertree');
@@ -30,6 +31,7 @@ class LayerTree extends React.Component {
         mobile: PropTypes.bool,
         mapTipsEnabled: PropTypes.bool,
         changeLayerProperties: PropTypes.func,
+        removeLayer: PropTypes.func,
         toggleMapTips: PropTypes.func,
         showLegendIcons: PropTypes.bool,
         showRootEntry: PropTypes.bool,
@@ -70,22 +72,6 @@ class LayerTree extends React.Component {
         });
         return visible / group.sublayers.length;
     }
-    renderSingleLayer = (layer) => {
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
-        let checkboxstate = layer.visibility ? 'checked' : 'unchecked';
-        let checkboxstyle = {
-            backgroundImage: 'url(' + assetsPath + '/img/' + checkboxstate + '.svg)'
-        };
-        return (
-            <div className="layertree-item-container" key={layer.id}>
-                <div className="layertree-item">
-                    <span className="layertree-item-expander"></span>
-                    <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.layerToggled(layer)}></span>
-                    <span className="layertree-item-title" title={layer.title}>{layer.title}</span>
-                </div>
-            </div>
-        );
-    }
     renderLayerGroup = (layer, group, path, enabled) => {
         let subtreevisibility = this.getGroupVisibility(group);
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
@@ -116,7 +102,7 @@ class LayerTree extends React.Component {
                 if(sublayer.sublayers) {
                     return this.renderLayerGroup(layer, sublayer, subpath, enabled && visibility)
                 } else {
-                    return this.renderSubLayer(layer, sublayer, subpath, enabled && visibility);
+                    return this.renderLayer(layer, sublayer, subpath, enabled && visibility);
                 }
             });
         }
@@ -131,7 +117,7 @@ class LayerTree extends React.Component {
             </div>
         );
     }
-    renderSubLayer = (layer, sublayer, path, enabled) => {
+    renderLayer = (layer, sublayer, path, enabled=true) => {
         let pathstr = layer.id + "/" + path.join("/");
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let checkboxstate = sublayer.visibility === true ? 'checked' : 'unchecked';
@@ -151,7 +137,7 @@ class LayerTree extends React.Component {
             editframe = (
                 <div className="layertree-item-edit-frame">
                     <span className="layertree-item-transparency-label"><Message msgId="layertree.transparency" /></span>
-                    <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.sublayerTransparencyChanged(layer, path, ev.target.value)} />
+                    <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} />
                     <Glyphicon className="layertree-item-metadata" glyph="info-sign" onClick={() => this.setState({activeinfo: {layer, sublayer}})}/>
                 </div>
             );
@@ -165,25 +151,26 @@ class LayerTree extends React.Component {
             );
         }
         return (
-            <div className="layertree-item-container" key={sublayer.name}>
+            <div className="layertree-item-container" key={sublayer.name || sublayer.id}>
                 <div className={classnames(itemclasses)}>
                     <span className="layertree-item-expander"></span>
-                    <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.sublayerToggled(layer, path)}></span>
+                    <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.layerToggled(layer, path)}></span>
                     {legendicon}
                     <span className="layertree-item-title" title={sublayer.title}>{sublayer.title}</span>
                     {sublayer.queryable && this.props.showQueryableIcon ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
                     <span className="layertree-item-spacer"></span>
-                    <span className={cogclasses}><Glyphicon glyph="cog" onClick={() => this.sublayerMenuToggled(pathstr)}/></span>
+                    {layer.isThemeLayer ? null : (<Glyphicon className="layertree-item-remove" glyph="trash" onClick={() => this.props.removeLayer(layer.id)}/>)}
+                    <Glyphicon className={cogclasses} glyph="cog" onClick={() => this.layerMenuToggled(pathstr)}/>
                 </div>
                 {editframe}
             </div>
-        )
+        );
     }
     renderLayerTree = (layer) => {
         if(layer.group === 'background' || layer.layertreehidden) {
             return null;
         } else if(!layer.sublayers) {
-            return this.renderSingleLayer(layer);
+            return this.renderLayer(layer, layer, []);
         } else if(this.props.showRootEntry) {
             return this.renderLayerGroup(layer, layer, [], true);
         } else {
@@ -192,7 +179,7 @@ class LayerTree extends React.Component {
                 if(sublayer.sublayers) {
                     return this.renderLayerGroup(layer, sublayer, subpath, true)
                 } else {
-                    return this.renderSubLayer(layer, sublayer, subpath, true);
+                    return this.renderLayer(layer, sublayer, subpath, true);
                 }
             });
         }
@@ -248,7 +235,11 @@ class LayerTree extends React.Component {
             </div>
         );
     }
-    cloneLayerTree = (layer, sublayerpath) => {
+    toggleImportLayers = () => {
+        let visible = !this.state.importvisible;
+        this.setState({importvisible: visible, sidebarwidth: visible ? '40em' : '20em'});
+    }
+    cloneLayer = (layer, sublayerpath) => {
         let newlayer = assign({}, layer);
         let cur = newlayer;
         for(let i = 0; i < sublayerpath.length; ++i) {
@@ -261,12 +252,16 @@ class LayerTree extends React.Component {
         }
         return {newlayer, newsublayer: cur};
     }
-    cloneSublayers = (layer, options) => {
+    propagateOptions = (layer, options, path=[]) => {
         if(layer.sublayers) {
-            layer.sublayers = layer.sublayers.map(sublayer => {
-                let newsublayer = assign({}, sublayer, options);
-                this.cloneSublayers(newsublayer, options);
-                return newsublayer;
+            layer.sublayers = layer.sublayers.map((sublayer, idx) => {
+                if(isEmpty(path) || path[0] == idx) {
+                    let newsublayer = assign({}, sublayer, options);
+                    this.propagateOptions(newsublayer, options, path.slice(1));
+                    return newsublayer;
+                } else {
+                    return sublayer;
+                }
             });
         }
     }
@@ -277,21 +272,17 @@ class LayerTree extends React.Component {
             this.props.changeLayerProperties(layer.id, newlayer);
         } else {
             // Toggle group
-            let {newlayer, newsublayer} = this.cloneLayerTree(layer, grouppath);
+            let {newlayer, newsublayer} = this.cloneLayer(layer, grouppath);
             newsublayer.expanded = !oldexpanded;
             this.props.changeLayerProperties(layer.id, newlayer);
         }
-    }
-    layerToggled = (layer) => {
-        let newlayer = assign({}, layer, {visibility: !layer.visibility});
-        this.props.changeLayerProperties(layer.id, newlayer);
     }
     groupToggled = (layer, grouppath, oldvisibility) => {
         if(grouppath.length === 0) {
             if(this.props.groupTogglesSublayers) {
                 // Toggle group and all sublayers
                 let newlayer = assign({}, layer, {visibility: !oldvisibility});
-                this.cloneSublayers(newlayer, {visibility: !oldvisibility});
+                this.propagateOptions(newlayer, {visibility: !oldvisibility});
                 this.props.changeLayerProperties(layer.id, newlayer);
             } else {
                 // Toggle entire layer
@@ -301,45 +292,35 @@ class LayerTree extends React.Component {
         } else {
             if(this.props.groupTogglesSublayers) {
                 // Toggle group and all sublayers
-                let {newlayer, newsublayer} = this.cloneLayerTree(layer, grouppath);
+                let {newlayer, newsublayer} = this.cloneLayer(layer, grouppath);
                 newsublayer.visibility = !oldvisibility;
-                this.cloneSublayers(newsublayer, {visibility: !oldvisibility});
+                this.propagateOptions(newsublayer, {visibility: !oldvisibility});
                 if(newsublayer.visibility){
-                    newlayer = this.parentsVisible(newlayer, grouppath);
+                    this.propagateOptions(newlayer, {visibility: true}, grouppath);
                 }
                 this.props.changeLayerProperties(layer.id, newlayer);
             } else {
                 // Toggle just the group
-                let {newlayer, newsublayer} = this.cloneLayerTree(layer, grouppath);
+                let {newlayer, newsublayer} = this.cloneLayer(layer, grouppath);
                 newsublayer.visibility = !oldvisibility;
                 this.props.changeLayerProperties(layer.id, newlayer);
             }
         }
     }
-    sublayerToggled = (layer, sublayerpath) => {
-        let {newlayer, newsublayer} = this.cloneLayerTree(layer, sublayerpath);
+    layerToggled = (layer, sublayerpath) => {
+        let {newlayer, newsublayer} = this.cloneLayer(layer, sublayerpath);
         newsublayer.visibility = !newsublayer.visibility;
         if(newsublayer.visibility){
-            newlayer = this.parentsVisible(newlayer, sublayerpath);
+            this.propagateOptions(newlayer, {visibility: true}, sublayerpath);
         }
         this.props.changeLayerProperties(layer.id, newlayer);
-
     }
-    parentsVisible = (layer, sublayerpath) => {
-        for(let i = 1; i < sublayerpath.length; ++i) {
-            let {newlayer, newsublayer} = this.cloneLayerTree(layer, sublayerpath.slice(0,i));
-            newsublayer.visibility = true;
-            layer = newlayer
-        }
-        layer = assign({}, layer, {visibility: true});
-        return layer
-    }
-    sublayerTransparencyChanged = (layer, sublayerpath, value) => {
-        let {newlayer, newsublayer} = this.cloneLayerTree(layer, sublayerpath);
+    layerTransparencyChanged = (layer, sublayerpath, value) => {
+        let {newlayer, newsublayer} = this.cloneLayer(layer, sublayerpath);
         newsublayer.opacity = Math.max(1, 255 - value);
         this.props.changeLayerProperties(layer.id, newlayer);
     }
-    sublayerMenuToggled = (sublayerpath) => {
+    layerMenuToggled = (sublayerpath) => {
         this.setState({activemenu: this.state.activemenu === sublayerpath ? null : sublayerpath});
     }
     showLegendTooltip = (ev) => {
@@ -408,6 +389,7 @@ const selector = (state) => ({
 module.exports = {
     LayerTreePlugin: connect(selector, {
         changeLayerProperties: changeLayerProperties,
+        removeLayer: removeLayer,
         toggleMapTips: toggleMapTips
     })(LayerTree),
     reducers: {
