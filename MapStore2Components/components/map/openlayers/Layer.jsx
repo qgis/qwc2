@@ -43,8 +43,8 @@ class OpenlayersLayer extends React.Component {
         const newVisibility = newProps.options && newProps.options.visibility !== false;
         this.setLayerVisibility(newVisibility);
 
-        const newOpacity = (newProps.options && newProps.options.opacity !== undefined) ? newProps.options.opacity : 1.0;
-        this.setLayerOpacity(newOpacity);
+        const newOpacity = (newProps.options && newProps.options.opacity !== undefined) ? newProps.options.opacity : 255.;
+        this.state.layer.setOpacity(newOpacity / 255.);
 
         if (newProps.position !== this.props.position && this.state.layer.setZIndex) {
             this.state.layer.setZIndex(newProps.position);
@@ -87,12 +87,6 @@ class OpenlayersLayer extends React.Component {
         var oldVisibility = this.props.options && this.props.options.visibility !== false;
         if (visibility !== oldVisibility && this.state.layer && this.isValid(this.state.layer)) {
             this.state.layer.setVisible(visibility);
-        }
-    }
-    setLayerOpacity = (opacity) => {
-        var oldOpacity = (this.props.options && this.props.options.opacity !== undefined) ? this.props.options.opacity : 1.0;
-        if (opacity !== oldOpacity && this.state.layer) {
-            this.state.layer.setOpacity(opacity);
         }
     }
     generateOpts = (options, position, srs) => {

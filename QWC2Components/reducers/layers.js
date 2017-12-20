@@ -76,7 +76,7 @@ function layers(state = {}, action) {
         }
         case ADD_LAYER: {
             let newLayers = (state.flat || []).concat();
-            let newLayer = assign({}, action.layer, {id: action.layer.id || (action.layer.name + "__" + newLayers.length), priority: action.layer.priority || 0});
+            let newLayer = assign({}, action.layer, {id: action.layer.id || (action.layer.name + "__" + newLayers.length), priority: action.layer.priority || 0, opacity: action.layer.opacity || 255});
             if(newLayer.type === "wms") {
                 assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
             }
@@ -97,7 +97,7 @@ function layers(state = {}, action) {
             let idx = newLayers.findIndex(layer => layer.id === action.layer.id);
             if(idx == -1) {
                 let inspos = 0;
-                let newLayer = assign({}, action.layer, {type: 'vector', features: action.features, priority: action.layer.priority || 0});
+                let newLayer = assign({}, action.layer, {type: 'vector', features: action.features, priority: action.layer.priority || 0, opacity: action.layer.opacity || 255});
                 for(; inspos < newLayers.length && newLayer.priority >= newLayers[inspos].priority; ++inspos);
                 newLayers.splice(inspos, 0, newLayer);
             } else if(action.clear) {
