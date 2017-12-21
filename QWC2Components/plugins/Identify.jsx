@@ -9,10 +9,10 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const MapInfoUtils = require('../../MapStore2Components/utils/MapInfoUtils');
+const IdentifyUtils = require('../utils/IdentifyUtils');
 const Spinner = require('../../MapStore2Components/components/misc/spinners/BasicSpinner/BasicSpinner');
 const Message = require('../../MapStore2Components/components/I18N/Message');
-const {getFeatureInfo, purgeMapInfoResults} = require('../../MapStore2Components/actions/mapInfo');
+const {sendIdentifyRequest, purgeIdentifyResults} = require('../actions/identify');
 const {addMarker, removeMarker} = require('../actions/layers');
 const ResizeableWindow = require("../components/ResizeableWindow");
 const {IdentifyViewer} = require('../components/IdentifyViewer');
@@ -20,25 +20,21 @@ const {IdentifyViewer} = require('../components/IdentifyViewer');
 class Identify extends React.Component {
     static propTypes = {
         enabled: PropTypes.bool,
-        format: PropTypes.string,
-        maxItems: PropTypes.number,
         point: PropTypes.object,
         map: PropTypes.object,
         layers: PropTypes.array,
         requests: PropTypes.array,
         responses: PropTypes.array,
         purgeResults: PropTypes.func,
-        buildRequest: PropTypes.func,
         sendRequest: PropTypes.func,
         addMarker: PropTypes.func,
         removeMarker: PropTypes.func,
         enableExport: PropTypes.bool,
         initialWidth: PropTypes.number,
-        initialHeight: PropTypes.number
+        initialHeight: PropTypes.number,
+        params: PropTypes.object
     }
     static defaultProps = {
-        format: "text/xml",
-        maxItems: 10,
         enableExport: true,
         initialWidth: 320,
         initialHeight: 400
@@ -53,13 +49,10 @@ class Identify extends React.Component {
                 return l.type === 'wms' && l.group !== "background" && (l.queryLayers || []).length > 0
             });
             queryableLayers.forEach((layer) => {
-                const {url, request, metadata} = MapInfoUtils.buildIdentifyRequest(layer, newProps);
-                if (url) {
-                    this.props.sendRequest(url, request, metadata, {version: layer.params.VERSION || "1.3.0"});
-                }
+                this.props.sendRequest(IdentifyUtils.buildRequest(layer, newProps.point.latlng, newProps.map, newProps.params));
             });
             let latlng = newProps.point.latlng;
-            this.props.addMarker('mapinfo', [latlng.lng, latlng.lat]);
+            this.props.addMarker('identify', [latlng.lng, latlng.lat]);
         }
         if (!newProps.enabled && this.props.enabled) {
             this.onClose();
@@ -71,14 +64,11 @@ class Identify extends React.Component {
                     this.props.point.pixel.y !== props.point.pixel.y ) {
                 return true;
             }
-            if (this.props.format !== props.format) {
-                return true;
-            }
         }
         return false;
     }
     onClose = () => {
-        this.props.removeMarker('mapinfo');
+        this.props.removeMarker('identify');
         this.props.purgeResults();
     }
     renderHeader = (missing) => {
@@ -108,17 +98,17 @@ class Identify extends React.Component {
 };
 
 const selector = (state) => ({
-    enabled: state.mapInfo && state.mapInfo.enabled,
-    responses: state.mapInfo && state.mapInfo.responses || [],
-    requests: state.mapInfo && state.mapInfo.requests || [],
+    enabled: state.identify && state.identify.enabled,
+    responses: state.identify && state.identify.responses || [],
+    requests: state.identify && state.identify.requests || [],
     map: state.map ? state.map : null,
     point: state.map && state.map.clickPoint || {},
     layers: state.layers && state.layers.flat || []
 });
 
 const IdentifyPlugin = connect(selector, {
-    sendRequest: getFeatureInfo,
-    purgeResults: purgeMapInfoResults,
+    sendRequest: sendIdentifyRequest,
+    purgeResults: purgeIdentifyResults,
     addMarker: addMarker,
     removeMarker: removeMarker
 })(Identify);
@@ -126,6 +116,6 @@ const IdentifyPlugin = connect(selector, {
 module.exports = {
     IdentifyPlugin: IdentifyPlugin,
     reducers: {
-        mapInfo: require('../../MapStore2Components/reducers/mapInfo')
+        identify: require('../reducers/identify')
     }
 };

@@ -8,9 +8,57 @@
 
 const {parse} = require('wellknown');
 const assign = require('object-assign');
+const proj4js = require('proj4');
+const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
+const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const VectorLayerUtils = require('./VectorLayerUtils');
 
 const IdentifyUtils = {
+    buildRequest(layer, latlng, map, options) {
+        const size = [101, 101];
+        const resolution = MapUtils.getCurrentResolution(map.zoom, 0, 21, 96);
+        const center = CoordinatesUtils.reproject({x: latlng.lng, y: latlng.lat}, 'EPSG:4326', map.projection);
+        const dx = 0.5 * resolution * size[0];
+        const dy = 0.5 * resolution * size[1];
+        const bbox = [center.x - dx, center.y - dy, center.x + dx, center.y + dy];
+        let digits = proj4js.defs(map.projection).units === 'degrees'? 4 : 0;
+
+        let queryLayers = layer.queryLayers.join(",");
+        let format = 'text/plain';
+        if(layer.infoFormats.includes('text/xml')) {
+            format = 'text/xml';
+        } else if(layer.infoFormats.includes('application/json')) {
+            format = 'application/json';
+        }
+        return {
+            url: layer.url.replace(/[?].*$/g, ''),
+            params: {
+                service: 'WMS',
+                version: layer.version,
+                request: 'GetFeatureInfo',
+                id: layer.id,
+                layers: queryLayers,
+                query_layers: queryLayers,
+                styles: layer.style,
+                x: Math.round(size[0] * 0.5),
+                y: Math.round(size[1] * 0.5),
+                height: size[0],
+                width: size[1],
+                srs: CoordinatesUtils.normalizeSRS(map.projection),
+                crs: CoordinatesUtils.normalizeSRS(map.projection),
+                bbox: bbox.join(","),
+                info_format: format,
+                with_geometry: true,
+                with_maptip: true,
+                feature_count: 10,
+                ...options
+            },
+            metadata: {
+                layer: layer.title,
+                posstr: center.x.toFixed(digits) + ", " + center.y.toFixed(digits)
+            }
+        };
+    },
     parseXmlFeature(feature, result, geometrycrs) {
         let featureResult = {};
         featureResult["type"] = "Feature";

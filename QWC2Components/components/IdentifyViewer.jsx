@@ -10,6 +10,7 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
 const {Glyphicon} = require('react-bootstrap');
+const {isEmpty} = require('lodash');
 const FileSaver = require('file-saver');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {addLayerFeatures, removeLayer} = require('../actions/layers');
@@ -35,10 +36,9 @@ class IdentifyViewer extends React.Component {
     state = {
         expanded: {},
         resultTree: {},
-        currentFeature: null,
+        currentResult: null,
         currentLayer: null,
-        displayFieldMap: null,
-        attributeBox: false
+        displayFieldMap: null
     }
     componentWillReceiveProps(nextProps) {
         if(nextProps.theme && !this.state.displayFieldMap) {
@@ -48,20 +48,20 @@ class IdentifyViewer extends React.Component {
             }
             this.setState({displayFieldMap: displayFieldMap});
         }
-        if(nextProps.responses !== this.props.responses) {
+        if(nextProps.missingResponses == 0 && nextProps.responses !== this.props.responses) {
             let result = {};
-            let stats = {count: 0, lastFeature: null};
+            let stats = {count: 0, lastResult: null};
             (nextProps.responses || []).map(response => this.parseResponse(response, result, stats));
             this.setState({
                 expanded: {},
                 resultTree: result,
-                currentFeature: stats.count === 1 ? stats.lastFeature : null,
+                currentResult: stats.count === 1 ? stats.lastResult : null,
                 currentLayer: stats.count === 1 ? stats.lastLayer : null});
         }
     }
     componentWillUpdate(nextProps, nextState) {
-        if(nextState.currentFeature !== this.state.currentFeature || nextState.resultTree !== this.state.resultTree) {
-            this.setHighlightedFeatures(nextState.currentFeature === null ? null : [nextState.currentFeature], nextState.resultTree)
+        if(nextState.currentResult !== this.state.currentResult || nextState.resultTree !== this.state.resultTree) {
+            this.setHighlightedResults(nextState.currentResult === null ? null : [nextState.currentResult], nextState.resultTree)
         }
     }
     componentWillUnmount() {
@@ -71,51 +71,58 @@ class IdentifyViewer extends React.Component {
         if(item.sublayers) {
             item.sublayers.map(child => this.populateDisplayFieldMap(displayFieldMap, child));
         } else if(item.displayField){
-            displayFieldMap[item.title] = item.displayField;
+            displayFieldMap[item.name] = item.displayField;
         }
     }
-    parseResponse = (response, result, stats) => {
-        var newResult;
-        if(response.queryParams.outputformat === "GeoJSON") {
-            newResult = IdentifyUtils.parseGeoJSONResponse(response.response, this.props.mapcrs);
-        } else {
-            newResult = IdentifyUtils.parseXmlResponse(response.response, this.props.mapcrs);
+    parseResponse = (response, results, stats) => {
+        var newResults = {};
+        if(response.request.params.info_format === "application/json" || response.request.params.outputformat == "GeoJSON") {
+            newResults = IdentifyUtils.parseGeoJSONResponse(response.data, this.props.mapcrs);
+        } else if(response.request.params.info_format === "text/xml") {
+            newResults = IdentifyUtils.parseXmlResponse(response.data, this.props.mapcrs);
+        } else if(response.request.params.info_format === "text/plain") {
+            newResults[response.request.metadata.layer] = [{type: "text", text: response.data, id: response.request.metadata.posstr}];
         }
         // Merge with previous
-        Object.keys(newResult).map(layer => {
-            if(layer in result) {
-                newResult[layer].map(feature => {
-                    if(!result[layer].find(f => f.id === feature.id)) {
-                        result[layer].push(feature);
+        Object.keys(newResults).map(layer => {
+            if(layer in results) {
+                newResults[layer].map(result => {
+                    if(!results[layer].find(r => r.id === result.id)) {
+                        results[layer].push(result);
                     }
                 })
             } else {
-                result[layer] = newResult[layer];
+                results[layer] = newResults[layer];
             }
         });
         // Stats
-        Object.keys(result).map(layer => {
-            result[layer].map(feature => {
-                stats.count += 1;
-                stats.lastFeature = feature;
+        Object.keys(results).map(layer => {
+            let layerResults = results[layer];
+            let numLayerResults = layerResults.length;
+            if(numLayerResults > 0) {
+                stats.count += numLayerResults;
+                stats.lastResult = layerResults[numLayerResults - 1];
                 stats.lastLayer = layer;
-            })
-        })
+            }
+        });
     }
-    setHighlightedFeatures = (features, resultTree) => {
-        if(!features) {
-            features = Object.keys(resultTree).reduce((result, key) => {
-                return result.concat(resultTree[key].map(feature => assign({}, feature, {id: key + "." + feature.id})));
+    setHighlightedResults = (results, resultTree) => {
+        if(!results) {
+            results = Object.keys(resultTree).reduce((res, layer) => {
+                return res.concat(resultTree[layer].map(result => assign({}, result, {id: layer + "." + result.id})));
             }, []);
         }
-        const layer = {
-            id: "identifyslection",
-            visibility: true,
-            queryable: false,
-            priority: 3,
-            layertreehidden: true
-        };
-        this.props.addLayerFeatures(layer, features, true);
+        results = results.filter(result => result.type.toLowerCase() === "feature");
+        if(!isEmpty(results)) {
+            const layer = {
+                id: "identifyslection",
+                visibility: true,
+                queryable: false,
+                priority: 3,
+                layertreehidden: true
+            };
+            this.props.addLayerFeatures(layer, results, true);
+        }
     }
     getExpandedClass = (path, deflt) => {
         let expanded = this.state.expanded[path] !== undefined ? this.state.expanded[path] : deflt;
@@ -126,38 +133,36 @@ class IdentifyViewer extends React.Component {
         let diff = {};
         diff[path] = newstate;
         if (this.state.currentLayer == path && !newstate){
-            this.setState(assign({}, this.state, {expanded: assign({}, this.state.expanded, diff), currentFeature: null, currentLayer: null}));
+            this.setState(assign({}, this.state, {expanded: assign({}, this.state.expanded, diff), currentResult: null, currentLayer: null}));
         }
         else{
             this.setState(assign({}, this.state, {expanded: assign({}, this.state.expanded, diff)}));
         }
     }
-    setCurrentFeature = (layer, feature) => {
-        if(this.state.currentFeature === feature) {
-            this.setState(assign({}, this.state, {currentFeature: null, currentLayer: null}));
+    setCurrentResult = (layer, result) => {
+        if(this.state.currentResult === result) {
+            this.setState(assign({}, this.state, {currentResult: null, currentLayer: null}));
         } else {
-            this.setState(assign({}, this.state, {currentFeature: feature, currentLayer: layer}));
+            this.setState(assign({}, this.state, {currentResult: result, currentLayer: layer}));
         }
     }
-    removeResult = (layer, feature) => {
+    removeResult = (layer, result) => {
         let newResultTree = assign({}, this.state.resultTree);
-        newResultTree[layer] = this.state.resultTree[layer].filter(item => item !== feature);
+        newResultTree[layer] = this.state.resultTree[layer].filter(item => item !== result);
         this.setState({
             resultTree: newResultTree,
-            attributeBox: this.state.currentFeature === feature ? false : true,
-            currentFeature: this.state.currentFeature === feature ? null : this.state.currentFeature
+            currentResult: this.state.currentResult === result ? null : this.state.currentResult
         });
     }
-    exportResult = (layer, feature) => {
-        this.export(feature);
+    exportResult = (layer, result) => {
+        this.export(result);
     }
     removeResultLayer = (layer) => {
         let newResultTree = assign({}, this.state.resultTree);
         delete newResultTree[layer];
         this.setState({
             resultTree: newResultTree,
-            attributeBox: this.state.currentFeature === feature ? false : true,
-            currentFeature: this.state.currentLayer === layer ? null : this.state.currentFeature,
+            currentResult: this.state.currentLayer === layer ? null : this.state.currentResult,
             currentLayer: this.state.currentLayer === layer ? null : this.state.currentLayer
         });
     }
@@ -167,7 +172,7 @@ class IdentifyViewer extends React.Component {
     exportResults = (results) => {
         let filteredResults = {};
         Object.keys(this.state.resultTree).map(key => {
-            if(this.state.resultTree[key].length > 0) {
+            if(!isEmpty(this.state.resultTree[key])) {
                 filteredResults[key] = this.state.resultTree[key];
             }
         });
@@ -175,7 +180,7 @@ class IdentifyViewer extends React.Component {
     }
     export = (json) => {
         let data = JSON.stringify(json, null, ' ');
-        FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "features.json");
+        FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "results.json");
     }
     htmlEncode = (text) => {
         return text
@@ -208,36 +213,40 @@ class IdentifyViewer extends React.Component {
         urlRegEx.lastIndex = 0;
         return value;
     }
-    renderFeatureAttributes = () => {
-        let feature = this.state.currentFeature;
-        if(!feature) {
-            this.state.attributeBox = false;
+    renderResultAttributes = () => {
+        let result = this.state.currentResult;
+        if(!result) {
             return null;
         }
-        let properties = Object.keys(feature.properties);
+        if(result.type === "text") {
+            return (
+                <pre className="text-result-box">
+                    {result.text}
+                </pre>
+            );
+        }
+        let properties = Object.keys(result.properties);
         if(properties.length === 0) {
-            this.state.attributeBox = false;
             return null;
         }
-        this.state.attributeBox = true;
         return (
             <div className="attribute-list-box">
                 <table className="attribute-list"><tbody>
                     {properties.map(attrib => {
-                        if(this.props.theme.skipEmptyFeatureAttributes && (!feature.properties[attrib] || feature.properties[attrib] === "NULL")) {
+                        if(this.props.theme.skipEmptyFeatureAttributes && (!result.properties[attrib] || result.properties[attrib] === "NULL")) {
                             return null;
                         }
-                        if(properties.length === 1 && feature.properties["maptip"]) {
+                        if(properties.length === 1 && result.properties["maptip"]) {
                             return (
                                 <tr key={attrib}>
-                                    <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: this.addLinkAnchors(feature.properties[attrib])}}></td>
+                                    <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: this.addLinkAnchors(result.properties[attrib])}}></td>
                                 </tr>
                             );
                         } else {
                             return (
                                 <tr key={attrib}>
                                     <td className="identify-attr-title"><i>{attrib}</i></td>
-                                    <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: this.addLinkAnchors(feature.properties[attrib])}}></td>
+                                    <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: this.addLinkAnchors(result.properties[attrib])}}></td>
                                 </tr>
                             );
                         }
@@ -246,45 +255,48 @@ class IdentifyViewer extends React.Component {
             </div>
         );
     }
-    renderFeature = (layer, feature) => {
+    renderResult = (layer, result) => {
         let displayName = "";
         try {
             let displayFieldName = this.state.displayFieldMap[layer];
-            displayName = feature.properties[displayFieldName];
+            displayName = result.properties[displayFieldName];
         } catch(e) {
         }
-        if(!displayName || displayName[0] === "<") {
-            displayName = feature.properties.name || feature.properties.Name || feature.properties.NAME || feature.id;
+        if((!displayName || displayName[0] === "<") && result.properties) {
+            displayName = result.properties.name || result.properties.Name || result.properties.NAME || "";
+        }
+        if(!displayName) {
+            displayName = result.id;
         }
         return (
-            <li key={feature.id}
+            <li key={result.id}
                 className="identify-feature-result"
-                onMouseOver={() => this.setHighlightedFeatures([feature], this.state.resultTree)}
-                onMouseOut={() => this.setHighlightedFeatures(this.state.currentFeature === null ? null : [this.state.currentFeature], this.state.resultTree)}
+                onMouseOver={() => this.setHighlightedResults([result], this.state.resultTree)}
+                onMouseOut={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
             >
-                <span className={this.state.currentFeature === feature ? "active clickable" : "clickable"} onClick={()=> this.setCurrentFeature(layer, feature)}>{displayName}</span>
-                <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResult(layer, feature)} />
-                {this.props.enableExport ? (<Glyphicon className="identify-export-result" glyph="export" onClick={() => this.exportResult(layer, feature)} />) : null}
+                <span className={this.state.currentResult === result ? "active clickable" : "clickable"} onClick={()=> this.setCurrentResult(layer, result)}>{displayName}</span>
+                <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResult(layer, result)} />
+                {this.props.enableExport ? (<Glyphicon className="identify-export-result" glyph="export" onClick={() => this.exportResult(layer, result)} />) : null}
             </li>
         );
     }
     renderLayer = (layer) => {
-        let features = this.state.resultTree[layer];
-        if(features.length === 0) {
+        let results = this.state.resultTree[layer];
+        if(results.length === 0) {
             return null;
         }
         return (
             <li key={layer} className={this.getExpandedClass(layer, true)}>
                 <div className="identify-layer-result"
-                onMouseOver={() => this.setHighlightedFeatures(features, this.state.resultTree)}
-                onMouseOut={() => this.setHighlightedFeatures(this.state.currentFeature === null ? null : [this.state.currentFeature], this.state.resultTree)}
+                onMouseOver={() => this.setHighlightedResults(results, this.state.resultTree)}
+                onMouseOut={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
                 >
                     <span className="clickable" onClick={()=> this.toggleExpanded(layer, true)}><b>{layer}</b></span>
                     <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResultLayer(layer)} />
                     {this.props.enableExport ? (<Glyphicon className="identify-export-result" glyph="export" onClick={() => this.exportResultLayer(layer)} />) : null}
                 </div>
                 <ul>
-                    {features.map(feature => this.renderFeature(layer, feature))}
+                    {results.map(result => this.renderResult(layer, result))}
                 </ul>
             </li>
         );
@@ -298,15 +310,16 @@ class IdentifyViewer extends React.Component {
                 return (<div id="IdentifyViewer"><Message msgId="noFeatureInfo" /></div>);
             }
         }
+        let attributes = this.renderResultAttributes();
         let resultsContainerStyle = {
-            maxHeight: this.state.attributeBox ? '7em' : 'initial'
+            maxHeight: attributes ? '7em' : 'initial'
         };
         return (
             <div id="IdentifyViewer">
                 <div className="identify-results-container" style={resultsContainerStyle}>
                     <ul>{contents}</ul>
                 </div>
-                {this.renderFeatureAttributes()}
+                {attributes}
                 {this.props.enableExport ? (<div className="identify-buttonbox">
                     <button onClick={this.exportResults}>Export</button>
                 </div>) : null}

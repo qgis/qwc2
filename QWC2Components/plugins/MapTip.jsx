@@ -13,7 +13,6 @@ const assign = require('object-assign');
 const axios = require('axios');
 const uuid = require('uuid');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
-const MapInfoUtils = require("../../MapStore2Components/utils/MapInfoUtils");
 const IdentifyUtils = require('../utils/IdentifyUtils');
 const {addLayer, removeLayer} = require('../actions/layers');
 require('./style/MapTip.css');
@@ -59,27 +58,15 @@ class MapTip extends React.Component {
     }
     queryMapTip = () => {
         this.timeoutId = null;
-        let props = {
-            map: this.props.map,
-            point: {
-                latlng: this.props.mousepos.latlng
-            },
-            maxItems: 1
-        };
-        let {url, request, metadata} = MapInfoUtils.buildIdentifyWMSRequest(this.state.layer, props);
-
-        const baseParams = {
-            service: 'WMS',
-            version: this.state.layer.params.VERSION || '1.3.0',
-            request: 'GetFeatureInfo'
-        };
-        const params = assign({}, baseParams, request, {
+        let options = {
             info_format: 'text/xml',
+            feature_count: 1,
             FI_POINT_TOLERANCE: 16,
             FI_LINE_TOLERANCE: 8,
             FI_POLYGON_TOLERANCE: 4
-        });
-        const reqId = uuid.v1();
+        };
+        let {url, params} = IdentifyUtils.buildRequest(this.state.layer, this.props.mousepos.latlng, this.props.map, options);
+
         axios.get(url, {params: params}).then(response => {
             let result = IdentifyUtils.parseXmlResponse(response.data, this.props.map.projection);
             let layers = Object.keys(result);

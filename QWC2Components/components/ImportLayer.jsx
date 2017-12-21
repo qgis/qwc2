@@ -194,6 +194,7 @@ class ImportLayer extends React.Component {
                 id: entry.name + Date.now().toString(),
                 type: entry.type,
                 url: entry.service,
+                version: entry.version,
                 visibility: true,
                 name: entry.name,
                 abstract: entry.abstract,

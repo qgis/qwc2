@@ -92,6 +92,16 @@
     flex: 1 1 50%;
 }
 
+#IdentifyViewer pre.text-result-box {
+    margin-top: 0.5em;
+    border: 1px solid @item_border@;
+    background-color: white;
+    font-size: small;
+    padding: 0.25em;
+    overflow: auto;
+    flex: 1 1 50%;
+}
+
 #IdentifyViewer table.attribute-list {
     width: 100%;
 }
