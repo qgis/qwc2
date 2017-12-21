@@ -49,8 +49,6 @@ class ImportLayer extends React.Component {
     renderServiceLayerListEntry(entry, path, level = 0) {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let hasSublayers = !isEmpty(entry.sublayers);
-        // onMouseOver={ev => this.showServiceLayerPreview(entry)}
-        // onMouseOut={ev => this.hideServiceLayerPreview(entry)}
         return (
             <div key={entry.name} style={{paddingLeft: level + 'em'}}>
                 <div className="importlayer-list-entry">
