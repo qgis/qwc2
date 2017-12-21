@@ -51,8 +51,11 @@
 }
 
 #ImportLayer div.importlayer-list-entry {
-    border-top: 1px solid @item_border@;
     display: flex;
+}
+
+#ImportLayer div.importlayer-list-entry:not(:first-child) {
+    border-top: 1px solid @item_border@;
 }
 
 #ImportLayer div.importlayer-list-entry > span {
