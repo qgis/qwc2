@@ -71,7 +71,7 @@
       "connect": "Connect",
       "nofeatures": "No features could be imported.",
       "queryservice": "Query service..",
-      "urlplaceholder": "Enter URL to WMS..."
+      "urlplaceholder": "Enter URL to WMS, KML..."
     },
     "layertree": {
       "importlayer": "Import layer",

@@ -16,6 +16,7 @@ const assign = require('object-assign');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
+const ProxyUtils = require('../../MapStore2Components/utils/ProxyUtils');
 const {addLayer,addLayerFeatures} = require('../actions/layers');
 const FileSelector = require('./widgets/FileSelector');
 const ServiceLayerUtils = require('../utils/ServiceLayerUtils');
@@ -126,6 +127,22 @@ class ImportLayer extends React.Component {
             version: '1.3.0'
         };
         this.setState({pendingRequests: 1, serviceLayers: null});
+        // Attempt to load as KML
+        if(this.state.url.toLowerCase().endsWith(".kml")) {
+            axios.get(ProxyUtils.addProxyIfNeeded(this.state.url)).then(response => {
+                let basename = this.state.url.split('/').pop()
+                this.setState({pendingRequests: 0, serviceLayers: [{
+                    type: "kml",
+                    name: basename,
+                    title: basename,
+                    data: response.data
+                }]});
+            }).catch(err => {
+                this.setState({pendingRequests: 0});
+            });
+            return;
+        }
+        // Attempt to load as WMS
         axios.get(this.state.url, {params: wmsParams}).then(response => {
             let result = ServiceLayerUtils.getWMSLayers(response.data);
             this.setState({pendingRequests: 0, serviceLayers: result});
@@ -140,18 +157,18 @@ class ImportLayer extends React.Component {
         let file = this.state.file;
         let reader = new FileReader();
         reader.onload = (ev) => {
-            this.addKMLLayer(file, ev.target.result);
+            this.addKMLLayer(file.name, ev.target.result);
             this.setState({file: null});
         }
         reader.readAsText(this.state.file);
     }
-    addKMLLayer = (file, data) => {
+    addKMLLayer = (filename, data) => {
         let features = VectorLayerUtils.kmlToGeoJSON(data);
         if(!isEmpty(features)) {
             this.props.addLayerFeatures({
-                id: file.name + Date.now(),
-                name: file.name,
-                title: file.name.replace(/\.[^/.]+$/, ""),
+                id: filename + Date.now(),
+                name: filename,
+                title: filename.replace(/\.[^/.]+$/, ""),
                 visibility: true,
                 queryable: false,
                 priority: 2,
@@ -162,25 +179,24 @@ class ImportLayer extends React.Component {
         }
     }
     addServiceLayer = (entry) => {
-        this.props.addLayer({
-            id: entry.name + Date.now().toString(),
-            type: entry.type,
-            url: entry.service,
-            visibility: true,
-            name: entry.name,
-            abstract: entry.abstract,
-            attribution: entry.attribution,
-            legendUrl: entry.legendUrl,
-            title: entry.title,
-            boundingBox: entry.bbox,
-            params: {
-                LAYERS: entry.name,
-                OPACITIES: 255,
-                VERSION: entry.version
-            },
-            queryable: entry.queryable,
-            priority: 2
-        });
+        if(entry.type === "wms") {
+            this.props.addLayer({
+                id: entry.name + Date.now().toString(),
+                type: entry.type,
+                url: entry.service,
+                visibility: true,
+                name: entry.name,
+                abstract: entry.abstract,
+                attribution: entry.attribution,
+                legendUrl: entry.legendUrl,
+                title: entry.title,
+                boundingBox: entry.bbox,
+                queryable: entry.queryable,
+                priority: 2
+            });
+        } else if(entry.type === "kml") {
+            this.addKMLLayer(entry.name, entry.data);
+        }
     }
 };
 
