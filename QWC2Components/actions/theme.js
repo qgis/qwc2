@@ -10,7 +10,6 @@ const {addLayer,removeAllLayers} = require("./layers");
 const {changeMapScales, zoomToExtent, zoomToPoint, changeMapCrs} = require("../../MapStore2Components/actions/map");
 
 const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
-const SET_THEME_SWITCHER_FILTER = 'SET_THEME_FILTER';
 
 function setCurrentTheme(theme, layer, backgroundLayers, zoomExtent, centerZoom) {
     return (dispatch) => {
@@ -53,16 +52,7 @@ function setCurrentTheme(theme, layer, backgroundLayers, zoomExtent, centerZoom)
     };
 }
 
-function setThemeSwitcherFilter(filter) {
-    return {
-        type: SET_THEME_SWITCHER_FILTER,
-        filter: filter
-    };
-}
-
 module.exports = {
     SET_CURRENT_THEME,
-    SET_THEME_SWITCHER_FILTER,
-    setCurrentTheme,
-    setThemeSwitcherFilter
+    setCurrentTheme
 };

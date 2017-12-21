@@ -15,7 +15,7 @@ const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 const CoordinatesUtils = require("../../MapStore2Components/utils/CoordinatesUtils");
-const {setCurrentTheme,setThemeSwitcherFilter} = require("../actions/theme");
+const {setCurrentTheme} = require("../actions/theme");
 const {setCurrentTask} = require("../actions/task");
 const {SideBar} = require('../components/SideBar');
 const UrlParams = require("../utils/UrlParams");
@@ -25,12 +25,10 @@ const removeDiacritics = require('diacritics').remove;
 
 class ThemeSwitcher extends React.Component {
     static propTypes = {
-        filter: PropTypes.string,
         activeTheme: PropTypes.object,
         haveMap: PropTypes.bool,
         layers: PropTypes.array,
         changeTheme: PropTypes.func,
-        changeFilter: PropTypes.func,
         setCurrentTask: PropTypes.func,
         mapConfig: PropTypes.object,
         width: PropTypes.string
@@ -39,13 +37,13 @@ class ThemeSwitcher extends React.Component {
         messages: PropTypes.object
     }
     static defaultProps = {
-        filter: "",
         activeTheme: null,
         map: null,
         width: "50%"
     }
     state = {
-        themes: null
+        themes: null,
+        filter: ""
     }
     componentWillReceiveProps(nextProps) {
         if(!this.props.haveMap && nextProps.haveMap || this.props.haveMap && !this.state.themes) {
@@ -146,9 +144,9 @@ class ThemeSwitcher extends React.Component {
     }
     renderThemeGroup = (group) => {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
-        let filter = new RegExp(removeDiacritics(this.props.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
+        let filter = new RegExp(removeDiacritics(this.state.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
         let subdirs = (group && group.subdirs ? group.subdirs : []);
-        if(this.props.filter !== "") {
+        if(filter !== "") {
             subdirs = subdirs.filter(subdir => this.groupMatchesFilter(subdir, filter));
         }
         let subtree = subdirs.map(subdir =>
@@ -173,7 +171,7 @@ class ThemeSwitcher extends React.Component {
     render() {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let extraTitlebarContent = (
-            <input className="themeswitcher-filter" type="text" value={this.props.filter} onChange={this.filterChanged} placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
+            <input className="themeswitcher-filter" type="text" value={this.state.filter} onChange={ev => this.setState({filter: ev.target.value})} placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
         );
         return (
             <SideBar id="ThemeSwitcher" minWidth="16em" width={this.props.width} title="appmenu.items.ThemeSwitcher"
@@ -287,14 +285,10 @@ class ThemeSwitcher extends React.Component {
         }
         return b1[0] < b2[2] && b1[2] > b2[0] && b1[1] < b2[3] && b1[3] > b2[1];
     }
-    filterChanged = (ev) => {
-        this.props.changeFilter(ev.target.value);
-    }
 };
 
 const selector = (state) => ({
     activeTheme: state.theme ? state.theme.current : null,
-    filter: state.theme ? state.theme.switcherfilter : "",
     haveMap: state.map ? true : false,
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
     mapConfig: state.map ? state.map : undefined
@@ -304,7 +298,6 @@ const selector = (state) => ({
 module.exports = {
     ThemeSwitcherPlugin: connect(selector, {
         changeTheme: setCurrentTheme,
-        changeFilter: setThemeSwitcherFilter,
         setCurrentTask: setCurrentTask
     })(ThemeSwitcher),
     reducers: {

@@ -8,7 +8,7 @@
 
 const assign = require('object-assign');
 const UrlParams = require("../utils/UrlParams");
-const {SET_CURRENT_THEME, SET_THEME_SWITCHER_FILTER} = require('../actions/theme');
+const {SET_CURRENT_THEME} = require('../actions/theme');
 
 function themeSwitcher(state = {switcherfilter: "", current: null}, action) {
     switch (action.type) {
@@ -17,10 +17,6 @@ function themeSwitcher(state = {switcherfilter: "", current: null}, action) {
             return assign({}, state, {
                 current: action.theme,
                 currentlayer: action.layer
-            });
-        case SET_THEME_SWITCHER_FILTER:
-            return assign({}, state, {
-                switcherfilter: action.filter
             });
         default:
             return state;
