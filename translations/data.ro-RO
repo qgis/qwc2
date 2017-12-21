@@ -68,6 +68,7 @@
     "identifyTitle": "Info Entități",
     "importlayer": {
       "addlayer": "",
+      "filter": "",
       "connect": "",
       "nofeatures": "",
       "queryservice": "",

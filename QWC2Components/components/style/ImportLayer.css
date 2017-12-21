@@ -50,12 +50,17 @@
     overflow-y: auto;
 }
 
-#ImportLayer div.importlayer-list-entry {
-    display: flex;
+#ImportLayer input.importlayer-list-filter {
+    border-width: 1px 1px 0 1px;
+    border-style: solid;
+    border-color: @item_border@;
+    width: 100%;
+    padding: 0.25em;
 }
 
-#ImportLayer div.importlayer-list-entry:not(:first-child) {
-    border-top: 1px solid @item_border@;
+#ImportLayer div.importlayer-list-entry {
+    display: flex;
+    border-bottom: 1px solid @item_border@;
 }
 
 #ImportLayer div.importlayer-list-entry > span {

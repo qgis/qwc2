@@ -48,6 +48,7 @@
     "identifyregion.info",
     "identifyTitle",
     "importlayer.addlayer",
+    "importlayer.filter",
     "importlayer.connect",
     "importlayer.nofeatures",
     "importlayer.queryservice",

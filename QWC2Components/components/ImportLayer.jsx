@@ -13,6 +13,7 @@ const Spinner = require('react-spinkit');
 const {isEmpty} = require('lodash');
 const axios = require('axios');
 const assign = require('object-assign');
+const removeDiacritics = require('diacritics').remove;
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
@@ -36,7 +37,8 @@ class ImportLayer extends React.Component {
         file: null,
         url: '',
         pendingRequests: 0,
-        serviceLayers: null
+        serviceLayers: null,
+        filter: ""
     }
     renderInputField() {
         let placeholder = LocaleUtils.getMessageById(this.context.messages, "importlayer.urlplaceholder");
@@ -51,9 +53,13 @@ class ImportLayer extends React.Component {
             );
         }
     }
-    renderServiceLayerListEntry(entry, path, level = 0) {
+    renderServiceLayerListEntry(entry, filter, path, level = 0) {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let hasSublayers = !isEmpty(entry.sublayers);
+        let sublayers = hasSublayers ? entry.sublayers.map((sublayer,idx) => this.renderServiceLayerListEntry(sublayer, filter, [...path, idx], level + 1)) : [];
+        if(sublayers.filter(item => item).length == 0 && filter && !removeDiacritics(entry.title).match(filter)) {
+            return null;
+        }
         return (
             <div key={entry.name} style={{paddingLeft: level + 'em'}}>
                 <div className="importlayer-list-entry">
@@ -61,9 +67,7 @@ class ImportLayer extends React.Component {
                     <span onClick={ev => this.addServiceLayer(entry)}>{entry.title}</span>
                 </div>
                 <div style={{display: entry.expanded ? 'block' : 'none'}}>
-                {hasSublayers ?
-                    entry.sublayers.map((sublayer,idx) => this.renderServiceLayerListEntry(sublayer, [...path, idx], level + 1))
-                : null}
+                {sublayers}
                 </div>
             </div>
         );
@@ -86,16 +90,19 @@ class ImportLayer extends React.Component {
         }
         let layerList = null;
         if(!isEmpty(this.state.serviceLayers)) {
-            layerList = (
-                <div className="importlayer-list">
-                    {this.state.serviceLayers.map((entry, idx) => this.renderServiceLayerListEntry(entry, [idx]))}
-                </div>
-            );
+            let filterplaceholder = LocaleUtils.getMessageById(this.context.messages, "importlayer.filter");
+            let filter = new RegExp(removeDiacritics(this.state.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
+            layerList = [
+                (<input key="importlayer-list-filter" className="importlayer-list-filter" type="text" value={this.state.filter} placeholder={filterplaceholder} onChange={ev => this.setState({filter: ev.target.value})}/>),
+                (<div key="importlayer-list" className="importlayer-list">
+                    {this.state.serviceLayers.map((entry, idx) => this.renderServiceLayerListEntry(entry, filter, [idx]))}
+                </div>)
+            ];
         }
         return (
             <div id="ImportLayer">
                 <div className="importlayer-input-fields">
-                    <select disabled={this.state.pendingRequests > 0} value={this.state.type} onChange={ev => this.setState({type: ev.target.value, file: null, url: null, serviceLayers: null})}>
+                    <select disabled={this.state.pendingRequests > 0} value={this.state.type} onChange={ev => this.setState({type: ev.target.value, file: null, url: null, serviceLayers: null, filter: ""})}>
                         <option value="URL">URL</option>
                         <option value="Local">Local file</option>
                     </select>
@@ -129,7 +136,7 @@ class ImportLayer extends React.Component {
             request: 'GetCapabilities',
             version: '1.3.0'
         };
-        this.setState({pendingRequests: 1, serviceLayers: null});
+        this.setState({pendingRequests: 1, serviceLayers: null, filter: ""});
         // Attempt to load as KML
         if(this.state.url.toLowerCase().endsWith(".kml")) {
             axios.get(ProxyUtils.addProxyIfNeeded(this.state.url)).then(response => {

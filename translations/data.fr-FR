@@ -68,6 +68,7 @@
     "identifyTitle": "Informations de l'objet",
     "importlayer": {
       "addlayer": "",
+      "filter": "",
       "connect": "",
       "nofeatures": "",
       "queryservice": "",

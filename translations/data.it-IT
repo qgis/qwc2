@@ -68,6 +68,7 @@
     "identifyTitle": "Informazioni Sulle Feature",
     "importlayer": {
       "addlayer": "",
+      "filter": "",
       "connect": "",
       "nofeatures": "",
       "queryservice": "",

@@ -68,6 +68,7 @@
     "identifyTitle": "Feature Info",
     "importlayer": {
       "addlayer": "Add layer",
+      "filter": "Filter...",
       "connect": "Connect",
       "nofeatures": "No features could be imported.",
       "queryservice": "Query service..",
