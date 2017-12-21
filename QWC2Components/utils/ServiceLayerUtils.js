@@ -19,6 +19,12 @@ const ServiceLayerUtils = {
     getWMSLayers(capabilitiesXml) {
         let wmsFormat = new ol.format.WMSCapabilities();
         let capabilities = wmsFormat.read(capabilitiesXml);
+        let infoFormats = null;
+        try {
+            infoFormats = capabilities.Capability.Request.GetFeatureInfo.Format;
+        } catch(e) {
+            infoFormats = ['text/plain'];
+        }
         let topLayer = null;
         try {
             topLayer = capabilities.Capability.Layer;
@@ -28,13 +34,13 @@ const ServiceLayerUtils = {
         let serviceUrl = capabilities.Service.OnlineResource;
         let version = capabilities.version;
         if(!topLayer.Layer) {
-            return [this.getWMSLayerParams(topLayer, topLayer.CRS, serviceUrl, version)];
+            return [this.getWMSLayerParams(topLayer, topLayer.CRS, serviceUrl, version, infoFormats)];
         } else {
-            let entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, serviceUrl, version));
+            let entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, serviceUrl, version, infoFormats));
             return entries.sort((a, b) => strcmp(a.title, b.title));
         }
     },
-    getWMSLayerParams(layer, parentCrs, serviceUrl, version) {
+    getWMSLayerParams(layer, parentCrs, serviceUrl, version, infoFormats) {
         let supportedCrs = layer.CRS;
         if(isEmpty(supportedCrs)) {
             supportedCrs = [...parentCrs];
@@ -63,6 +69,7 @@ const ServiceLayerUtils = {
             legendUrl: legendUrl,
             service: serviceUrl,
             version: version,
+            infoFormats: infoFormats,
             queryable: layer.queryable,
             sublayers: sublayers.sort((a, b) => strcmp(a.title, b.title)),
             expanded: false,

@@ -202,6 +202,7 @@ class ImportLayer extends React.Component {
                 title: entry.title,
                 boundingBox: entry.bbox,
                 queryable: entry.queryable,
+                infoFormats: entry.infoFormats,
                 priority: 2
             });
         } else if(entry.type === "kml") {

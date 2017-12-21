@@ -220,7 +220,8 @@ class ThemeSwitcher extends React.Component {
             drawingOrder: theme.drawingOrder,
             priority: 1,
             isThemeLayer: true,
-            attribution: theme.attribution
+            attribution: theme.attribution,
+            infoFormats: theme.infoFormats
         }
     }
     createBackgroundLayersForTheme = (theme, visibleBackgroundLayer=undefined) => {
