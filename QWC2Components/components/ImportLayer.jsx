@@ -43,7 +43,12 @@ class ImportLayer extends React.Component {
         if(this.state.type === "Local") {
             return (<FileSelector file={this.state.file} accept=".kml" onFileSelected={this.onFileSelected} />);
         } else {
-            return (<input readOnly={this.state.pendingRequests > 0} type="text" placeholder={placeholder} value={this.state.url} onChange={ev => this.setState({url: ev.target.value})}/>);
+            return (
+                <input readOnly={this.state.pendingRequests > 0} type="text"
+                    placeholder={placeholder} value={this.state.url}
+                    onChange={ev => this.setState({url: ev.target.value})}
+                    onKeyPress={ev => { if(!ev.target.readOnly && ev.key === 'Enter') { this.scanService(); }}}/>
+            );
         }
     }
     renderServiceLayerListEntry(entry, path, level = 0) {
