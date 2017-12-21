@@ -101,6 +101,7 @@ const MapInfoUtils = {
                 height: heightBBox,
                 width: widthBBox,
                 srs: CoordinatesUtils.normalizeSRS(props.map.projection),
+                crs: CoordinatesUtils.normalizeSRS(props.map.projection),
                 bbox: bounds.minx + "," +
                       bounds.miny + "," +
                       bounds.maxx + "," +
