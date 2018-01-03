@@ -39,7 +39,8 @@ class LayerTree extends React.Component {
         showQueryableIcon: PropTypes.bool,
         allowMapTips: PropTypes.bool,
         groupTogglesSublayers: PropTypes.bool,
-        layerInfoWindowSize: PropTypes.object
+        layerInfoWindowSize: PropTypes.object,
+        flattenGroups: PropTypes.bool
     }
     static defaultProps = {
         layers: [],
@@ -48,7 +49,8 @@ class LayerTree extends React.Component {
         showQueryableIcon: true,
         allowMapTips: true,
         groupTogglesSublayers: false,
-        layerInfoWindowSize: {width: 400, height: 480}
+        layerInfoWindowSize: {width: 400, height: 480},
+        flattenGroups: false
     }
     state = {
         activemenu: null,
@@ -75,13 +77,26 @@ class LayerTree extends React.Component {
         });
         return visible / group.sublayers.length;
     }
+    renderSubLayers = (layer, group, path, enabled) => {
+        return (group.sublayers || []).map((sublayer, idx) => {
+            let subpath = [...path, idx];
+            if(sublayer.sublayers) {
+                return this.renderLayerGroup(layer, sublayer, subpath, enabled)
+            } else {
+                return this.renderLayer(layer, sublayer, subpath, enabled);
+            }
+        });
+    }
     renderLayerGroup = (layer, group, path, enabled) => {
+        if(this.props.flattenGroups) {
+            return this.renderSubLayers(layer, group, path, enabled);
+        }
         let subtreevisibility = this.getGroupVisibility(group);
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
-        let visibility;
+        let visibility = true;
         let checkboxstate;
         if(this.props.groupTogglesSublayers) {
-             visibility = subtreevisibility > 0;
+            visibility = subtreevisibility > 0;
             checkboxstate = subtreevisibility === 1 ? 'checked' : subtreevisibility === 0 ? 'unchecked' : 'tristate';
         } else {
             visibility = group.visibility === undefined ? true : group.visibility;
@@ -99,15 +114,8 @@ class LayerTree extends React.Component {
             itemclasses["layertree-item-disabled"] = !enabled;
         }
         let sublayersContent = null;
-        if(group.sublayers && group.expanded) {
-            sublayersContent = group.sublayers.map((sublayer, idx) => {
-                let subpath = [...path, idx];
-                if(sublayer.sublayers) {
-                    return this.renderLayerGroup(layer, sublayer, subpath, enabled && visibility)
-                } else {
-                    return this.renderLayer(layer, sublayer, subpath, enabled && visibility);
-                }
-            });
+        if(group.expanded) {
+            sublayersContent = this.renderSubLayers(layer, group, path, enabled && visibility);
         }
         return (
             <div className="layertree-item-container" key={group.name}>
@@ -153,13 +161,21 @@ class LayerTree extends React.Component {
                 </span>
             );
         }
+        let title = "";
+        if(this.props.flattenGroups && layer.sublayers) {
+            title = layer.title + ":";
+            for(let i = 0, cur=layer.sublayers[path[0]]; i < path.length - 1; ++i, cur = layer.sublayers[path[i]]) {
+                title += cur.title + ":";
+            }
+        }
+        title += sublayer.title;
         return (
             <div className="layertree-item-container" key={sublayer.name || sublayer.id}>
                 <div className={classnames(itemclasses)}>
                     <span className="layertree-item-expander"></span>
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.layerToggled(layer, path)}></span>
                     {legendicon}
-                    <span className="layertree-item-title" title={sublayer.title}>{sublayer.title}</span>
+                    <span className="layertree-item-title" title={title}>{title}</span>
                     {sublayer.queryable && this.props.showQueryableIcon ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
                     <span className="layertree-item-spacer"></span>
                     {layer.isThemeLayer ? null : (<Glyphicon className="layertree-item-remove" glyph="trash" onClick={() => this.props.removeLayer(layer.id)}/>)}
