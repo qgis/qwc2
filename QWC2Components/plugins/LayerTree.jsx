@@ -152,12 +152,16 @@ class LayerTree extends React.Component {
                     (<Glyphicon key="layertree-item-move-up" className="layertree-item-move" glyph="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
                 ];
             }
+            let infoButton = null;
+            if(layer.type === "wms") {
+                infoButton = (<Glyphicon className="layertree-item-metadata" glyph="info-sign" onClick={() => this.setState({activeinfo: {layer, sublayer}})}/>);
+            }
             editframe = (
                 <div className="layertree-item-edit-frame">
                     <span className="layertree-item-transparency-label"><Message msgId="layertree.transparency" /></span>
                     <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} />
                     {reorderButtons}
-                    <Glyphicon className="layertree-item-metadata" glyph="info-sign" onClick={() => this.setState({activeinfo: {layer, sublayer}})}/>
+                    {infoButton}
                 </div>
             );
         }
