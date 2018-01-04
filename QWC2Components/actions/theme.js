@@ -6,14 +6,27 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {addLayer,removeAllLayers} = require("./layers");
+const {addLayer,removeLayer,removeAllLayers} = require("./layers");
+const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const {changeMapScales, zoomToExtent, zoomToPoint, changeMapCrs} = require("../../MapStore2Components/actions/map");
 
 const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
 
 function setCurrentTheme(theme, layer, backgroundLayers, zoomExtent, centerZoom) {
-    return (dispatch) => {
-        dispatch(removeAllLayers());
+    return (dispatch, getState) => {
+        if(ConfigUtils.getConfigProp("preserveNonThemeLayersOnThemeSwitch") === true) {
+            let removeLayers = [];
+            for(let layer of getState().layers.flat || []) {
+                if(layer.group === "background" || layer.isThemeLayer) {
+                    removeLayers.push(layer.id);
+                }
+            }
+            for(let layerId of removeLayers) {
+                dispatch(removeLayer(layerId));
+            }
+        } else {
+            dispatch(removeAllLayers());
+        }
 
         // add theme layers
         let activebglayer = undefined;
