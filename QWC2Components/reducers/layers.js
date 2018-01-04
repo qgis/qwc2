@@ -10,6 +10,8 @@ const assign = require('object-assign');
 const UrlParams = require("../utils/UrlParams");
 const LayerUtils = require("../utils/LayerUtils");
 const {isEmpty} = require('lodash');
+const uuid = require('uuid');
+
 const {
     LAYER_LOADING,
     LAYER_LOAD,
@@ -17,6 +19,7 @@ const {
     INVALID_LAYER,
     ADD_LAYER,
     REMOVE_LAYER,
+    REORDER_LAYER,
     CHANGE_LAYER_PROPERTIES,
     ADD_LAYER_FEATURES,
     REMOVE_LAYER_FEATURES,
@@ -63,29 +66,27 @@ function layers(state = {}, action) {
                     if(newLayer.type === "wms") {
                         assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
                     }
-                    if(newLayer.isThemeLayer) {
-                        UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayer)});
-                    }
                     return newLayer;
                 } else if (layer.group === 'background' && isBackground) {
                     return assign({}, layer, {visibility: false});
                 }
                 return layer;
             });
+            UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
             return assign({}, state, {flat: newLayers});
         }
         case ADD_LAYER: {
             let newLayers = (state.flat || []).concat();
-            let newLayer = assign({}, action.layer, {id: action.layer.id || (action.layer.name + "__" + newLayers.length), priority: action.layer.priority || 0, opacity: action.layer.opacity || 255});
+            let newLayer = assign({}, action.layer, {refid: uuid.v4(), uuid: uuid.v4(), id: action.layer.id || (action.layer.name + "__" + newLayers.length), priority: action.layer.priority || 0, opacity: action.layer.opacity || 255});
+            let group = newLayer;
+            LayerUtils.addSublayerIDs(newLayer);
             if(newLayer.type === "wms") {
                 assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
             }
-            if(newLayer.isThemeLayer) {
-                UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayer)});
-            }
             let inspos = 0;
-            for(; inspos < newLayers.length && newLayer.priority >= newLayers[inspos].priority; ++inspos);
-            newLayers.splice(inspos, 0, newLayer)
+            for(; inspos < newLayers.length && newLayer.priority < newLayers[inspos].priority; ++inspos);
+            newLayers.splice(inspos, 0, newLayer);
+            UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
             return {flat: newLayers};
         }
         case REMOVE_LAYER: {
@@ -97,8 +98,8 @@ function layers(state = {}, action) {
             let idx = newLayers.findIndex(layer => layer.id === action.layer.id);
             if(idx == -1) {
                 let inspos = 0;
-                let newLayer = assign({}, action.layer, {type: 'vector', features: action.features, priority: action.layer.priority || 0, opacity: action.layer.opacity || 255});
-                for(; inspos < newLayers.length && newLayer.priority >= newLayers[inspos].priority; ++inspos);
+                let newLayer = assign({}, action.layer, {uuid: uuid.v4(), type: 'vector', features: action.features, priority: action.layer.priority || 0, opacity: action.layer.opacity || 255});
+                for(; inspos < newLayers.length && newLayer.priority < newLayers[inspos].priority; ++inspos);
                 newLayers.splice(inspos, 0, newLayer);
             } else if(action.clear) {
                 newLayers[idx] = assign({}, action.layer, {type: 'vector', features: action.features});
@@ -142,6 +143,16 @@ function layers(state = {}, action) {
         }
         case REMOVE_ALL_LAYERS: {
             return {flat: []};
+        }
+        case REORDER_LAYER: {
+            let newLayers = LayerUtils.reorderLayer(state.flat, action.layer, action.sublayerpath, action.direction);
+            for(let newLayer of newLayers) {
+                if(newLayer.type === "wms") {
+                    assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
+                }
+            }
+            UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
+            return {flat: newLayers};
         }
         default:
             return state;

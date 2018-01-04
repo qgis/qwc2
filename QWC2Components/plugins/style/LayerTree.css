@@ -176,3 +176,9 @@ img.layertree-item-legend-tooltip {
     text-align: center;
     cursor: pointer;
 }
+
+#LayerTree span.layertree-item-move {
+    flex: 0 0 1.5em;
+    text-align: center;
+    cursor: pointer;
+}

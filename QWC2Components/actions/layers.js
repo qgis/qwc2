@@ -12,6 +12,7 @@ const LAYER_ERROR = 'LAYER_ERROR';
 const INVALID_LAYER = 'INVALID_LAYER';
 const ADD_LAYER = 'ADD_LAYER';
 const REMOVE_LAYER = 'REMOVE_LAYER';
+const REORDER_LAYER = 'REORDER_LAYER';
 const ADD_LAYER_FEATURE = 'ADD_LAYER_FEATURE';
 const REMOVE_LAYER_FEATURE = 'REMOVE_LAYER_FEATURE';
 const ADD_LAYER_FEATURES = 'ADD_LAYER_FEATURES';
@@ -33,6 +34,15 @@ function removeLayer(layerId) {
     return {
         type: REMOVE_LAYER,
         layerId: layerId
+    };
+}
+
+function reorderLayer(layer, sublayerpath, direction) {
+    return {
+        type: REORDER_LAYER,
+        layer,
+        sublayerpath,
+        direction
     };
 }
 
@@ -137,6 +147,7 @@ module.exports = {
     invalidLayer,
     addLayer,
     removeLayer,
+    reorderLayer,
     addLayerFeatures,
     removeLayerFeatures,
     changeLayerProperties,
@@ -150,6 +161,7 @@ module.exports = {
     INVALID_LAYER,
     ADD_LAYER,
     REMOVE_LAYER,
+    REORDER_LAYER,
     ADD_LAYER_FEATURES,
     REMOVE_LAYER_FEATURES,
     CHANGE_LAYER_PROPERTIES,

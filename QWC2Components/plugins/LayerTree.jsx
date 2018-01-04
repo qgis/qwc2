@@ -15,7 +15,7 @@ const assign = require('object-assign');
 const classnames = require('classnames');
 const {isEmpty} = require('lodash');
 const Message = require('../../MapStore2Components/components/I18N/Message');
-const {changeLayerProperties, removeLayer} = require('../actions/layers')
+const {changeLayerProperties, removeLayer, reorderLayer} = require('../actions/layers')
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 const {toggleMapTips} = require('../actions/layertree');
@@ -33,6 +33,7 @@ class LayerTree extends React.Component {
         mapTipsEnabled: PropTypes.bool,
         changeLayerProperties: PropTypes.func,
         removeLayer: PropTypes.func,
+        reorderLayer: PropTypes.func,
         toggleMapTips: PropTypes.func,
         showLegendIcons: PropTypes.bool,
         showRootEntry: PropTypes.bool,
@@ -118,7 +119,7 @@ class LayerTree extends React.Component {
             sublayersContent = this.renderSubLayers(layer, group, path, enabled && visibility);
         }
         return (
-            <div className="layertree-item-container" key={group.name}>
+            <div className="layertree-item-container" key={group.uuid}>
                 <div className={classnames(itemclasses)}>
                     <span className="layertree-item-expander" style={expanderstyle} onClick={() => this.groupExpandendToggled(layer, path, group.expanded)}></span>
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.groupToggled(layer, path, visibility)}></span>
@@ -129,7 +130,6 @@ class LayerTree extends React.Component {
         );
     }
     renderLayer = (layer, sublayer, path, enabled=true) => {
-        let pathstr = layer.id + "/" + path.join("/");
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let checkboxstate = sublayer.visibility === true ? 'checked' : 'unchecked';
         let checkboxstyle = {
@@ -137,18 +137,26 @@ class LayerTree extends React.Component {
         };
         let cogclasses = classnames({
             "layertree-item-cog": true,
-            "layertree-item-cog-active": this.state.activemenu === pathstr
+            "layertree-item-cog-active": this.state.activemenu === sublayer.uuid
         })
         let itemclasses = {"layertree-item": true};
         if(!this.props.groupTogglesSublayers) {
             itemclasses["layertree-item-disabled"] = !enabled;
         }
         let editframe = null;
-        if(this.state.activemenu === pathstr) {
+        if(this.state.activemenu === sublayer.uuid) {
+            let reorderButtons = null;
+            if(ConfigUtils.getConfigProp("allowReorderingLayers") === true) {
+                reorderButtons = [
+                    (<Glyphicon key="layertree-item-move-down" className="layertree-item-move" glyph="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
+                    (<Glyphicon key="layertree-item-move-up" className="layertree-item-move" glyph="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
+                ];
+            }
             editframe = (
                 <div className="layertree-item-edit-frame">
                     <span className="layertree-item-transparency-label"><Message msgId="layertree.transparency" /></span>
                     <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} />
+                    {reorderButtons}
                     <Glyphicon className="layertree-item-metadata" glyph="info-sign" onClick={() => this.setState({activeinfo: {layer, sublayer}})}/>
                 </div>
             );
@@ -170,7 +178,7 @@ class LayerTree extends React.Component {
         }
         title += sublayer.title;
         return (
-            <div className="layertree-item-container" key={sublayer.name || sublayer.id}>
+            <div className="layertree-item-container" key={sublayer.uuid}>
                 <div className={classnames(itemclasses)}>
                     <span className="layertree-item-expander"></span>
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.layerToggled(layer, path)}></span>
@@ -179,7 +187,7 @@ class LayerTree extends React.Component {
                     {sublayer.queryable && this.props.showQueryableIcon ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
                     <span className="layertree-item-spacer"></span>
                     {layer.isThemeLayer ? null : (<Glyphicon className="layertree-item-remove" glyph="trash" onClick={() => this.props.removeLayer(layer.id)}/>)}
-                    <Glyphicon className={cogclasses} glyph="cog" onClick={() => this.layerMenuToggled(pathstr)}/>
+                    <Glyphicon className={cogclasses} glyph="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>
                 </div>
                 {editframe}
             </div>
@@ -244,7 +252,7 @@ class LayerTree extends React.Component {
                     onHide={this.hideLegendTooltip}
                     extraTitlebarContent={extraTitlebarContent}>
                     <div role="body" className="layertree-container">
-                        <div className="layertree-tree">{this.props.layers.slice(0).reverse().map(this.renderLayerTree)}</div>
+                        <div className="layertree-tree">{this.props.layers.map(this.renderLayerTree)}</div>
                         {maptipCheckbox}
                         <div className="layertree-import" onClick={this.toggleImportLayers}><img src={assetsPath + '/img/' + (this.state.importvisible ? 'collapse.svg' : 'expand.svg')} /> <Message msgId="layertree.importlayer" /></div>
                         {this.state.importvisible ? (<ImportLayer />) : null}
@@ -340,8 +348,8 @@ class LayerTree extends React.Component {
         newsublayer.opacity = Math.max(1, 255 - value);
         this.props.changeLayerProperties(layer.id, newlayer);
     }
-    layerMenuToggled = (sublayerpath) => {
-        this.setState({activemenu: this.state.activemenu === sublayerpath ? null : sublayerpath});
+    layerMenuToggled = (sublayeruuid) => {
+        this.setState({activemenu: this.state.activemenu === sublayeruuid ? null : sublayeruuid});
     }
     showLegendTooltip = (ev) => {
         this.setState({
@@ -410,6 +418,7 @@ module.exports = {
     LayerTreePlugin: connect(selector, {
         changeLayerProperties: changeLayerProperties,
         removeLayer: removeLayer,
+        reorderLayer: reorderLayer,
         toggleMapTips: toggleMapTips
     })(LayerTree),
     reducers: {

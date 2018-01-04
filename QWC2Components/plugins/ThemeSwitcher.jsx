@@ -196,7 +196,11 @@ class ThemeSwitcher extends React.Component {
                     opacities.push(255);
                 }
             });
-            sublayers = LayerUtils.restoreVisibleLayers(sublayers, layers, opacities);
+            if(ConfigUtils.getConfigProp("allowReorderingLayers") != true) {
+                sublayers = LayerUtils.restoreVisibleLayers(sublayers, layers, opacities);
+            } else {
+                sublayers = LayerUtils.restoreReorderedVisibleLayers(sublayers, layers, opacities);
+            }
         }
         let version = theme.version ? theme.version : this.state.themes.defaultWMSVersion ? this.state.themes.defaultWMSVersion : "1.3.0";
         // untiled WMS by default
@@ -204,7 +208,7 @@ class ThemeSwitcher extends React.Component {
         if (theme.tiled !== undefined) {
             singleTile = !theme.tiled;
         }
-        return {
+        let layer = {
             id: theme.name + Date.now().toString(),
             type: "wms",
             url: theme.url,
@@ -217,12 +221,17 @@ class ThemeSwitcher extends React.Component {
             singleTile: singleTile,
             ratio: singleTile ? 1 : undefined,
             format: theme.format,
-            drawingOrder: theme.drawingOrder,
             priority: 1,
             isThemeLayer: true,
             attribution: theme.attribution,
-            infoFormats: theme.infoFormats
+            infoFormats: theme.infoFormats,
+            uuid: theme.uuid
+        };
+        // Drawing order only makes sense if layer reordering is disabled
+        if(ConfigUtils.getConfigProp("allowReorderingLayers") != true) {
+            assign(layer, {drawingOrder: theme.drawingOrder});
         }
+        return layer;
     }
     createBackgroundLayersForTheme = (theme, visibleBackgroundLayer=undefined) => {
         let backgroundLayers = [];
