@@ -6,23 +6,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {CHANGE_MAP_VIEW, CHANGE_MOUSE_POINTER,
-    CHANGE_ZOOM_LVL, CHANGE_MAP_CRS, CHANGE_MAP_SCALES, ZOOM_TO_EXTENT, ZOOM_TO_POINT,
-    PAN_TO, CHANGE_MAP_STYLE, CHANGE_ROTATION, CLICK_ON_MAP} = require('../actions/map');
+const {
+    CHANGE_MAP_VIEW, CHANGE_ZOOM_LVL, CHANGE_MAP_CRS, CHANGE_MAP_SCALES,
+    ZOOM_TO_EXTENT, ZOOM_TO_POINT, PAN_TO,  CHANGE_ROTATION, CLICK_ON_MAP
+} = require('../actions/map');
 
 const assign = require('object-assign');
-const MapUtils = require('../utils/MapUtils');
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
+const MapUtils = require('../../MapStore2Components/utils/MapUtils');
+const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 
 function mapConfig(state = {}, action) {
     switch (action.type) {
         case CHANGE_MAP_VIEW:
             const {type, ...params} = action;
             return assign({}, state, params);
-        case CHANGE_MOUSE_POINTER:
-            return assign({}, state, {
-                mousePointer: action.pointer
-            });
         case CHANGE_ZOOM_LVL:
             return assign({}, state, {
                 zoom: action.zoom,
@@ -90,9 +87,6 @@ function mapConfig(state = {}, action) {
             return assign({}, state, {
                 center: CoordinatesUtils.reproject(action.pos, action.crs || state.projection, state.projection),
             });
-        }
-        case CHANGE_MAP_STYLE: {
-            return assign({}, state, {mapStateSource: action.mapStateSource, style: action.style, resize: state.resize ? state.resize + 1 : 1});
         }
         case CHANGE_ROTATION: {
             let newBbox = assign({}, state.bbox, {rotation: action.rotation});

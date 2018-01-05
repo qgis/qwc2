@@ -10,21 +10,21 @@ const {combineReducers} = require('redux');
 
 const map = require('../reducers/map');
 
-const mapConfig = require('../reducers/config');
+const mapConfig = require('../../MapStore2Components/reducers/config');
 
-const DebugUtils = require('../utils/DebugUtils');
-const PluginsUtils = require('../utils/PluginsUtils');
+const DebugUtils = require('../../MapStore2Components/utils/DebugUtils');
+const PluginsUtils = require('../../MapStore2Components/utils/PluginsUtils');
 
-const {CHANGE_BROWSER_PROPERTIES} = require('../actions/browser');
+const {CHANGE_BROWSER_PROPERTIES} = require('../../MapStore2Components/actions/browser');
 const {persistStore, autoRehydrate} = require('redux-persist');
 
-const SecurityUtils = require('../utils/SecurityUtils');
+const SecurityUtils = require('../../MapStore2Components/utils/SecurityUtils');
 
 module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeOpts) => {
     const allReducers = combineReducers({
-        localConfig: require('../reducers/localConfig'),
-        locale: require('../reducers/locale'),
-        browser: require('../reducers/browser'),
+        localConfig: require('../../MapStore2Components/reducers/localConfig'),
+        locale: require('../../MapStore2Components/reducers/locale'),
+        browser: require('../../MapStore2Components/reducers/browser'),
         map: () => {return null; },
         layers: () => {return null; },
         ...PluginsUtils.getPluginReducers(plugins)

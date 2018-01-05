@@ -10,7 +10,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const objectPath = require('object-path');
-const {changeZoomLevel} = require('../../MapStore2Components/actions/map');
+const {changeZoomLevel} = require('../actions/map');
 const ZoomButton = require('../../MapStore2Components/components/buttons/ZoomButton');
 require('./style/Buttons.css');
 
@@ -72,6 +72,6 @@ module.exports = {
         onZoom: changeZoomLevel
     })(ZoomOutButton),
     reducers: {
-        map: require("../../MapStore2Components/reducers/map")
+        map: require("../reducers/map")
     }
 };

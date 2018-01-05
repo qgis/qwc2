@@ -15,7 +15,7 @@ const Message = require('../../MapStore2Components/components/I18N/Message');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const {getScales} = require('../../MapStore2Components/utils/MapUtils');
 const {changeMousePositionState, changeMousePositionCrs} = require('../../MapStore2Components/actions/mousePosition');
-const {changeZoomLevel} = require('../../MapStore2Components/actions/map');
+const {changeZoomLevel} = require('../actions/map');
 const {CoordinateDisplayer} = require('../components/CoordinateDisplayer');
 const displayCrsSelector = require('../selectors/displaycrs');
 require('./style/BottomBar.css');

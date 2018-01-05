@@ -1,4 +1,5 @@
 /**
+ * Copyright 2015, GeoSolutions Sas.
  * Copyright 2016, Sourcepole AG.
  * All rights reserved.
  *
@@ -11,6 +12,16 @@ const UrlParams = require("../utils/UrlParams");
 const CoordinatesUtils = require("../../MapStore2Components/utils/CoordinatesUtils");
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const MapUtils = require("../../MapStore2Components/utils/MapUtils");
+
+const CHANGE_MAP_VIEW = 'CHANGE_MAP_VIEW';
+const CLICK_ON_MAP = 'CLICK_ON_MAP';
+const CHANGE_ZOOM_LVL = 'CHANGE_ZOOM_LVL';
+const PAN_TO = 'PAN_TO';
+const ZOOM_TO_EXTENT = 'ZOOM_TO_EXTENT';
+const ZOOM_TO_POINT = 'ZOOM_TO_POINT';
+const CHANGE_MAP_CRS = 'CHANGE_MAP_CRS';
+const CHANGE_MAP_SCALES = 'CHANGE_MAP_SCALES';
+const CHANGE_ROTATION = 'CHANGE_ROTATION';
 
 function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
     return (dispatch) => {
@@ -33,8 +44,95 @@ function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
         if(positionCrs !== projection) {
             UrlParams.updateParams({crs: positionCrs});
         }
-        dispatch(require('../../MapStore2Components/actions/map').changeMapView(center, zoom, bbox, size, mapStateSource, projection));
+        dispatch({
+            type: CHANGE_MAP_VIEW,
+            center,
+            zoom,
+            bbox,
+            size,
+            mapStateSource,
+            projection
+        });
+    };
+}
+function changeMapCrs(crs) {
+    return {
+        type: CHANGE_MAP_CRS,
+        crs: crs
     };
 }
 
-module.exports = {changeMapView};
+function changeMapScales(scales) {
+    return {
+        type: CHANGE_MAP_SCALES,
+        scales: scales
+    };
+}
+
+function clickOnMap(point) {
+    return {
+        type: CLICK_ON_MAP,
+        point: point
+    };
+}
+
+function changeZoomLevel(zoomLvl, mapStateSource) {
+    return {
+        type: CHANGE_ZOOM_LVL,
+        zoom: zoomLvl,
+        mapStateSource: mapStateSource
+    };
+}
+
+function panTo(pos, crs) {
+    return {
+        type: PAN_TO,
+        pos
+    };
+}
+
+function zoomToExtent(extent, crs) {
+    return {
+        type: ZOOM_TO_EXTENT,
+        extent,
+        crs
+    };
+}
+
+function zoomToPoint(pos, zoom, crs) {
+    return {
+        type: ZOOM_TO_POINT,
+        pos,
+        zoom,
+        crs
+    }
+}
+
+function changeRotation(rotation, mapStateSource) {
+    return {
+        type: CHANGE_ROTATION,
+        rotation,
+        mapStateSource
+    };
+}
+
+module.exports = {
+    CHANGE_MAP_VIEW,
+    CLICK_ON_MAP,
+    CHANGE_ZOOM_LVL,
+    PAN_TO,
+    ZOOM_TO_EXTENT,
+    ZOOM_TO_POINT,
+    CHANGE_MAP_CRS,
+    CHANGE_MAP_SCALES,
+    CHANGE_ROTATION,
+    changeMapView,
+    clickOnMap,
+    changeZoomLevel,
+    changeMapCrs,
+    changeMapScales,
+    zoomToExtent,
+    zoomToPoint,
+    panTo,
+    changeRotation
+};

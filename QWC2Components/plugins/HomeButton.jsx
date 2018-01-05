@@ -10,7 +10,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {Button, Glyphicon} = require('react-bootstrap');
-const {zoomToExtent} = require('../../MapStore2Components/actions/map');
+const {zoomToExtent} = require('../actions/map');
 require('./style/Buttons.css');
 
 class HomeButton extends React.Component {
@@ -44,6 +44,6 @@ module.exports = {
         zoomToExtent: zoomToExtent
     })(HomeButton),
     reducers: {
-        map: require("../../MapStore2Components/reducers/map")
+        map: require("../reducers/map")
     }
 };
