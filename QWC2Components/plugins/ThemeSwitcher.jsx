@@ -53,10 +53,15 @@ class ThemeSwitcher extends React.Component {
                 axios.get("themes.json")
                 .then(response => this.populateThemesList(response.data));
             });
+        } else if(nextProps.haveMap && this.state.themes && this.state.themes.defaultTheme && !nextProps.activeTheme) {
+            // Automatically restore default theme if no theme is set (see TopBar.jsx@clearTheme)
+            let theme = this.getThemeById(this.state.themes, this.state.themes.defaultTheme);
+            if(theme) {
+                this.setTheme(theme, false);
+            }
         }
     }
     populateThemesList = (object) => {
-        this.setState({themes: object.themes});
         var params = UrlParams.getParams();
         let theme = this.getThemeById(object.themes, params.t);
         if(!theme) {
@@ -103,12 +108,13 @@ class ThemeSwitcher extends React.Component {
             const printScales = theme.printScales || object.themes.defaultPrintScales || undefined;
             const printResolutions = theme.printResolutions || object.themes.defaultPrintResolutions || undefined;
             const printGrid = theme.printGrid || object.themes.defaultPrintGrid || undefined;
-            this.props.changeTheme(assign({}, theme, {printScales, printResolutions, printGrid, scales}), layer, this.createBackgroundLayersForTheme(theme, params.bl), bbox, centerZoom);
+            this.props.changeTheme(assign({}, theme, {printScales, printResolutions, printGrid, scales}), layer, this.createBackgroundLayersForTheme(theme, object.themes, params.bl), bbox, centerZoom);
         }
         UrlParams.updateParams({ie: undefined});
         UrlParams.updateParams({ic: undefined});
         UrlParams.updateParams({is: undefined});
         UrlParams.updateParams({icrs: undefined});
+        this.setState({themes: object.themes});
     }
     getThemeById = (dir, id) => {
         for(let i = 0, n = dir.items.length; i < n; ++i) {
@@ -158,7 +164,7 @@ class ThemeSwitcher extends React.Component {
                 return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords).match(filter) ? (
                     <li key={item.id}
                         className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
-                        onClick={(ev)=>{this.themeClicked(item);}}
+                        onClick={(ev)=>{this.setTheme(item);}}
                         title={item.keywords}
                     >
                         <div className="theme-item-title" title={item.title}>{item.title}</div>
@@ -233,13 +239,13 @@ class ThemeSwitcher extends React.Component {
         }
         return layer;
     }
-    createBackgroundLayersForTheme = (theme, visibleBackgroundLayer=undefined) => {
+    createBackgroundLayersForTheme = (theme, themes, visibleBackgroundLayer=undefined) => {
         let backgroundLayers = [];
         let visibleIdx = -1;
         let defaultVisibleIdx = -1;
         for (let themeBackgroundLayer of (theme.backgroundLayers || [])) {
             // lookup background layer
-            const backgroundLayer = this.state.themes.backgroundLayers.find((layer) => layer.name === themeBackgroundLayer.name);
+            const backgroundLayer = themes.backgroundLayers.find((layer) => layer.name === themeBackgroundLayer.name);
             if (backgroundLayer !== undefined) {
                 if(themeBackgroundLayer.visibility === true) {
                     defaultVisibleIdx = backgroundLayers.length;
@@ -263,13 +269,13 @@ class ThemeSwitcher extends React.Component {
         }
         return backgroundLayers;
     }
-    themeClicked = (theme) => {
+    setTheme = (theme, allowpreserve = true) => {
         const scales = theme.scales || this.state.themes.defaultScales;
         const printScales = theme.printScales || this.state.themes.defaultPrintScales || undefined;
         const printResolutions = theme.printResolutions || this.state.themes.defaultPrintResolutions || undefined;
         const printGrid = theme.printGrid || this.state.themes.defaultPrintGrid || undefined;
         let zoomBBox = theme.initialBbox;
-        if(ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch") === true) {
+        if(allowpreserve && ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch") === true) {
             // If crs and scales match and bounding boxes intersect, keep current extent
             if(this.props.mapConfig.projection === theme.mapCrs &&
                this.bboxOverlap(theme.bbox, this.props.mapConfig.bbox, theme.bbox.crs, this.props.mapConfig.projection))
@@ -278,13 +284,13 @@ class ThemeSwitcher extends React.Component {
             }
         }
         let activeBackgroudLayer = null;
-        if(ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch") === true) {
+        if(allowpreserve && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch") === true) {
             let activeBackgrounds = this.props.layers.filter(layer => layer.group === 'background' && layer.visibility === true);
             if(activeBackgrounds.length === 1) {
                 activeBackgroudLayer = activeBackgrounds[0].name;
             }
         }
-        this.props.changeTheme(assign({}, theme, {printScales, printGrid, printResolutions, scales}), this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme, activeBackgroudLayer), zoomBBox);
+        this.props.changeTheme(assign({}, theme, {printScales, printGrid, printResolutions, scales}), this.createLayerForTheme(theme), this.createBackgroundLayersForTheme(theme, this.state.themes, activeBackgroudLayer), zoomBBox);
         this.props.setCurrentTask(null);
     }
     bboxOverlap = (bbox1, bbox2, crs1, crs2) => {

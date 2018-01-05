@@ -11,6 +11,17 @@ const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const {changeMapScales, zoomToExtent, zoomToPoint, changeMapCrs} = require("../../MapStore2Components/actions/map");
 
 const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
+const CLEAR_CURRENT_THEME = 'CLEAR_CURRENT_THEME';
+
+
+function clearCurrentTheme() {
+    return (dispatch, getState) => {
+        dispatch(removeAllLayers());
+        dispatch({
+            type: CLEAR_CURRENT_THEME
+        });
+    };
+}
 
 function setCurrentTheme(theme, layer, backgroundLayers, zoomExtent, centerZoom) {
     return (dispatch, getState) => {
@@ -67,5 +78,7 @@ function setCurrentTheme(theme, layer, backgroundLayers, zoomExtent, centerZoom)
 
 module.exports = {
     SET_CURRENT_THEME,
-    setCurrentTheme
+    CLEAR_CURRENT_THEME,
+    setCurrentTheme,
+    clearCurrentTheme
 };

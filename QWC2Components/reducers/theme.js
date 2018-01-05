@@ -8,10 +8,16 @@
 
 const assign = require('object-assign');
 const UrlParams = require("../utils/UrlParams");
-const {SET_CURRENT_THEME} = require('../actions/theme');
+const {SET_CURRENT_THEME, CLEAR_CURRENT_THEME} = require('../actions/theme');
 
 function themeSwitcher(state = {switcherfilter: "", current: null}, action) {
     switch (action.type) {
+        case CLEAR_CURRENT_THEME:
+            UrlParams.updateParams({t: undefined});
+            return assign({}, state, {
+                current: null,
+                currentlayer: null
+            });
         case SET_CURRENT_THEME:
         UrlParams.updateParams({t: action.theme.id});
             return assign({}, state, {

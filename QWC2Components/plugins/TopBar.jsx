@@ -16,6 +16,8 @@ const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const {qwc2TextSearch} = require("../actions/search");
 const {toggleFullscreen} = require('../actions/display');
+const {setCurrentTask} = require("../actions/task");
+const {clearCurrentTheme} = require('../actions/theme');
 require('./style/TopBar.css');
 
 class TopBar extends React.Component {
@@ -28,14 +30,18 @@ class TopBar extends React.Component {
         searchProviders: PropTypes.object,
         logoFormat: PropTypes.string,
         searchOptions: PropTypes.object,
-        appMenuClearsTask: PropTypes.bool
+        appMenuClearsTask: PropTypes.bool,
+        logoClickResetsTheme: PropTypes.bool,
+        clearCurrentTheme: PropTypes.func,
+        setCurrentTask: PropTypes.func
     }
     static defaultProps = {
         searchOptions: {},
         menuItems: [],
         toolbarItems: [],
         logoFormat: "svg",
-        clearTaskOnShow: false
+        clearTaskOnShow: false,
+        logoClickResetsTheme: false
     }
     render() {
         let buttonContents;
@@ -62,10 +68,14 @@ class TopBar extends React.Component {
             "mobile": this.props.mobile,
             "fullscreen": this.props.fullscreen
         });
+        let imgStyle = null;
+        if(this.props.logoClickResetsTheme) {
+            imgStyle = {cursor: 'pointer'};
+        }
         return (
             <Swipeable onSwipedUp={this.triggerFullscreen}>
                 <div id="TopBar" className={classes}>
-                    <img className="logo" src={logo} />
+                    <img className="logo" src={logo} onClick={this.clearTheme} style={imgStyle} />
                     <div className="center-span">
                         <this.props.components.Search searchOptions={this.props.searchOptions}/>
                         <this.props.components.Toolbar toolbarItems={this.props.toolbarItems} />
@@ -75,6 +85,12 @@ class TopBar extends React.Component {
                 </div>
             </Swipeable>
          );
+     }
+     clearTheme = () => {
+         if(this.props.logoClickResetsTheme) {
+             this.props.setCurrentTask(null);
+             this.props.clearCurrentTheme();
+         }
      }
      triggerFullscreen = () => {
          this.props.toggleFullscreen(true);
@@ -87,7 +103,9 @@ module.exports = (components) => { return {
         fullscreen: state.display && state.display.fullscreen,
         components: components
     }), {
-        toggleFullscreen: toggleFullscreen
+        toggleFullscreen: toggleFullscreen,
+        clearCurrentTheme: clearCurrentTheme,
+        setCurrentTask: setCurrentTask
     })(TopBar),
     reducers: {
         display: require("../reducers/display"),
