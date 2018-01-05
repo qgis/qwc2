@@ -22,7 +22,7 @@
     margin-right: 0.25em;
 }
 
-#LayerTree div.laytree-maptip-option {
+#LayerTree div.layertree-option {
     flex: 0 0 auto;
     height: 2.25em;
     padding: 0.25em 0.5em 0.25em 0.5em;
@@ -30,15 +30,15 @@
 }
 
 
+#LayerTree div.layertree-option > span {
+    cursor: pointer;
+}
+
 #LayerTree div.layertree-import {
     flex: 0 0 auto;
     cursor: pointer;
     padding: 0.25em 0.5em 0.25em 0.5em;
     border-top: 1px solid @item_border@;
-}
-
-#LayerTree div.laytree-maptip-option > span {
-    cursor: pointer;
 }
 
 #LayerTree div.layertree-item-container {

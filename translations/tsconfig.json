@@ -53,6 +53,7 @@
     "importlayer.nofeatures",
     "importlayer.queryservice",
     "importlayer.urlplaceholder",
+    "layertree.compare",
     "layertree.importlayer",
     "layertree.maptip",
     "layertree.printlegend",

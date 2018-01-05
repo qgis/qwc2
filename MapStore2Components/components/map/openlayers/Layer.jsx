@@ -23,13 +23,15 @@ class OpenlayersLayer extends React.Component {
         onLayerLoading: PropTypes.func,
         onLayerError: PropTypes.func,
         onLayerLoad: PropTypes.func,
-        onInvalid: PropTypes.func
+        onInvalid: PropTypes.func,
+        swipe: PropTypes.number
     }
     static defaultProps = {
         onLayerLoading: () => {},
         onLayerLoad: () => {},
         onLayerError: () => {},
-        onInvalid: () => {}
+        onInvalid: () => {},
+        swipe: null
     }
     state = {
         layer: null
@@ -51,6 +53,9 @@ class OpenlayersLayer extends React.Component {
         }
         if (this.props.options) {
             this.updateLayer(newProps, this.props);
+        }
+        if(newProps.swipe != this.props.swipe) {
+            newProps.map.render();
         }
     }
     componentWillUnmount() {
@@ -129,6 +134,21 @@ class OpenlayersLayer extends React.Component {
     addLayer = (layer, options) => {
         if (this.isValid(layer)) {
             this.props.map.addLayer(layer);
+            layer.on('precompose', (event) => {
+                let ctx = event.context;
+                ctx.save();
+                ctx.beginPath();
+                if(this.props.swipe) {
+                    let width = ctx.canvas.width * (this.props.swipe / 100.);
+                    ctx.rect(width, 0, ctx.canvas.width - width, ctx.canvas.height);
+                    ctx.clip();
+                }
+            });
+
+            layer.on('postcompose', (event) => {
+                event.context.restore();
+            });
+
             if(options.zoomToExtent) {
                 let map = this.props.map;
                 let source = layer.getSource();

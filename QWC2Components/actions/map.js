@@ -22,6 +22,7 @@ const ZOOM_TO_POINT = 'ZOOM_TO_POINT';
 const CHANGE_MAP_CRS = 'CHANGE_MAP_CRS';
 const CHANGE_MAP_SCALES = 'CHANGE_MAP_SCALES';
 const CHANGE_ROTATION = 'CHANGE_ROTATION';
+const SET_SWIPE = 'SET_SWIPE';
 
 function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
     return (dispatch) => {
@@ -116,6 +117,13 @@ function changeRotation(rotation, mapStateSource) {
     };
 }
 
+function setSwipe(swipe) {
+    return {
+        type: SET_SWIPE,
+        swipe
+    };
+}
+
 module.exports = {
     CHANGE_MAP_VIEW,
     CLICK_ON_MAP,
@@ -126,6 +134,7 @@ module.exports = {
     CHANGE_MAP_CRS,
     CHANGE_MAP_SCALES,
     CHANGE_ROTATION,
+    SET_SWIPE,
     changeMapView,
     clickOnMap,
     changeZoomLevel,
@@ -134,5 +143,6 @@ module.exports = {
     zoomToExtent,
     zoomToPoint,
     panTo,
-    changeRotation
+    changeRotation,
+    setSwipe
 };

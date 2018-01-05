@@ -8,7 +8,8 @@
 
 const {
     CHANGE_MAP_VIEW, CHANGE_ZOOM_LVL, CHANGE_MAP_CRS, CHANGE_MAP_SCALES,
-    ZOOM_TO_EXTENT, ZOOM_TO_POINT, PAN_TO,  CHANGE_ROTATION, CLICK_ON_MAP
+    ZOOM_TO_EXTENT, ZOOM_TO_POINT, PAN_TO,  CHANGE_ROTATION, CLICK_ON_MAP,
+    SET_SWIPE
 } = require('../actions/map');
 
 const assign = require('object-assign');
@@ -96,6 +97,9 @@ function mapConfig(state = {}, action) {
             return assign({}, state, {
                 clickPoint: action.point
             });
+        }
+        case SET_SWIPE: {
+            return assign({}, state, {swipe: action.swipe});
         }
         default:
             return state;

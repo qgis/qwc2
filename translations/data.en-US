@@ -75,6 +75,7 @@
       "urlplaceholder": "Enter URL to WMS, KML..."
     },
     "layertree": {
+      "compare": "Compare top layer",
       "importlayer": "Import layer",
       "maptip": "Show layer map tips",
       "printlegend": "Print legend",

@@ -75,6 +75,7 @@
       "urlplaceholder": ""
     },
     "layertree": {
+      "compare": "",
       "importlayer": "",
       "maptip": "Arată indicii hartă",
       "printlegend": "Tipărește legenda",

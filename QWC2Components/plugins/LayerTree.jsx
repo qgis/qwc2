@@ -16,6 +16,7 @@ const classnames = require('classnames');
 const {isEmpty} = require('lodash');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeLayerProperties, removeLayer, reorderLayer} = require('../actions/layers')
+const {setSwipe} = require('../actions/map');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 const {toggleMapTips} = require('../actions/layertree');
@@ -29,6 +30,7 @@ require('./style/LayerTree.css');
 class LayerTree extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
+        map: PropTypes.object,
         mobile: PropTypes.bool,
         mapTipsEnabled: PropTypes.bool,
         changeLayerProperties: PropTypes.func,
@@ -41,7 +43,8 @@ class LayerTree extends React.Component {
         allowMapTips: PropTypes.bool,
         groupTogglesSublayers: PropTypes.bool,
         layerInfoWindowSize: PropTypes.object,
-        flattenGroups: PropTypes.bool
+        flattenGroups: PropTypes.bool,
+        setSwipe: PropTypes.func
     }
     static defaultProps = {
         layers: [],
@@ -217,19 +220,23 @@ class LayerTree extends React.Component {
     }
     render() {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
-        let checkboxstate = this.props.mapTipsEnabled === true ? 'checked' : 'unchecked';
-        let checkboxstyle = {
-            backgroundImage: 'url(' + assetsPath + '/img/' + checkboxstate + '.svg)'
+        let maptipcheckboxstate = this.props.mapTipsEnabled === true ? 'checked' : 'unchecked';
+        let maptipcheckboxstyle = {
+            backgroundImage: 'url(' + assetsPath + '/img/' + maptipcheckboxstate + '.svg)'
         };
         let maptipCheckbox = null;
         if(!this.props.mobile && this.props.allowMapTips) {
             maptipCheckbox = (
-                <div className="laytree-maptip-option">
-                    <span className="layertree-item-checkbox" style={checkboxstyle} onClick={this.toggleMapTips}></span>
+                <div className="layertree-option">
+                    <span className="layertree-item-checkbox" style={maptipcheckboxstyle} onClick={this.toggleMapTips}></span>
                     <span onClick={this.toggleMapTips}><Message msgId="layertree.maptip" /></span>
                 </div>
             );
         }
+        let swipecheckboxstate = this.props.map.swipe || this.props.map.swipe === 0 ? 'checked' : 'unchecked';
+        let swipecheckboxstyle = {
+            backgroundImage: 'url(' + assetsPath + '/img/' + swipecheckboxstate + '.svg)'
+        };
         let legendTooltip = null;
         if(this.state.legendTooltip) {
             let style = {
@@ -258,6 +265,10 @@ class LayerTree extends React.Component {
                     <div role="body" className="layertree-container">
                         <div className="layertree-tree">{this.props.layers.map(this.renderLayerTree)}</div>
                         {maptipCheckbox}
+                        <div className="layertree-option">
+                            <span className="layertree-item-checkbox" style={swipecheckboxstyle} onClick={this.toggleSwipe}></span>
+                            <span onClick={this.toggleSwipe}><Message msgId="layertree.compare" /></span>
+                        </div>
                         <div className="layertree-import" onClick={this.toggleImportLayers}><img src={assetsPath + '/img/' + (this.state.importvisible ? 'collapse.svg' : 'expand.svg')} /> <Message msgId="layertree.importlayer" /></div>
                         {this.state.importvisible ? (<ImportLayer />) : null}
                     </div>
@@ -370,6 +381,9 @@ class LayerTree extends React.Component {
     toggleMapTips = () => {
         this.props.toggleMapTips(!this.props.mapTipsEnabled)
     }
+    toggleSwipe = () => {
+        this.props.setSwipe(this.props.map.swipe || this.props.map.swipe === 0 ? undefined : 50);
+    }
     printLegend = () => {
         let body = '<p id="legendcontainerbody">';
         body += this.props.layers.map(layer => {
@@ -413,6 +427,7 @@ class LayerTree extends React.Component {
 };
 
 const selector = (state) => ({
+    map: state.map,
     mobile: state.browser ? state.browser.mobile : false,
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
     mapTipsEnabled: state.layertree && state.layertree.maptips
@@ -423,7 +438,8 @@ module.exports = {
         changeLayerProperties: changeLayerProperties,
         removeLayer: removeLayer,
         reorderLayer: reorderLayer,
-        toggleMapTips: toggleMapTips
+        toggleMapTips: toggleMapTips,
+        setSwipe: setSwipe
     })(LayerTree),
     reducers: {
         layers: require('../reducers/layers'),

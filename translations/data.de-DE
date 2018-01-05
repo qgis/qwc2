@@ -75,6 +75,7 @@
       "urlplaceholder": ""
     },
     "layertree": {
+      "compare": "",
       "importlayer": "",
       "maptip": "Kartentipps anzeigen",
       "printlegend": "Legende drucken",
