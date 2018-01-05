@@ -99,6 +99,7 @@
     },
     "rasterexport": {
       "format": "Format:",
+      "resolution": "",
       "selectinfo": "Rechteck aufziehen um die zu exportierende Region"
     },
     "redlining": {

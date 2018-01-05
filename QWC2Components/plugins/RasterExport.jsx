@@ -25,14 +25,19 @@ class RasterExport extends React.Component {
         themeLayerId: PropTypes.string,
         layers: PropTypes.array,
         setCurrentTask: PropTypes.func,
-        visible: PropTypes.bool
+        visible: PropTypes.bool,
+        dpis: PropTypes.array
     }
     state = {
         selectedFormat: null,
-        visible: false
+        visible: false,
+        dpi: null
     }
     formatChanged = (ev) => {
         this.setState({selectedFormat: ev.target.value})
+    }
+    dpiChanged = (ev) => {
+        this.setState({dpi: ev.target.value});
     }
     renderBody = () => {
         if(!this.props.theme) {
@@ -62,26 +67,42 @@ class RasterExport extends React.Component {
             exportLayers = exportBackgroundLayer + "," + exportLayers;
             exportOpacities = "255," + exportOpacities;
         }
+        let dpiSelector = null;
+        if(this.props.dpis) {
+            dpiSelector = (
+                <span>
+                    <Message msgId="rasterexport.resolution" />&nbsp;
+                    <select name="DPI" defaultValue={this.state.dpi || this.props.dpis[0]} onChange={this.dpiChanged}>
+                        {this.props.dpis.map(dpi => {
+                            return (<option key={dpi+"dpi"} value={dpi}>{dpi+" dpi"}</option>);
+                        })}
+                    </select>
+                </span>
+            );
+        }
 
         // Local vector layer features
         let mapCrs = this.props.map.projection;
-        let highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs);
+        let highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, parseInt(this.state.dpi));
 
         return (
             <span role="body">
                 <form ref={form => this.form = form} action={action} method="POST" target="_blank" >
                 <div className="help-text"><Message msgId="rasterexport.selectinfo" /></div>
-                <div className="export-settings">
-                    <Message msgId="rasterexport.format" />&nbsp;
-                    <select name="FORMAT" defaultValue={defaultFormat} onChange={this.formatChanged}>
-                        {availableFormats.map(format => {
-                            if(format.startsWith('image/')) {
-                                return (<option key={format} value={format}>{formatMap[format] || format}</option>);
-                            } else {
-                                return null;
-                            }
-                        })}
-                    </select>
+                <div className="raster-export-settings">
+                    <span>
+                        <Message msgId="rasterexport.format" />&nbsp;
+                        <select name="FORMAT" defaultValue={defaultFormat} onChange={this.formatChanged}>
+                            {availableFormats.map(format => {
+                                if(format.startsWith('image/')) {
+                                    return (<option key={format} value={format}>{formatMap[format] || format}</option>);
+                                } else {
+                                    return null;
+                                }
+                            })}
+                        </select>
+                    </span>
+                    {dpiSelector}
                 </div>
                 <input type="hidden" name="SERVICE" value="WMS" readOnly="true" />
                 <input type="hidden" name="VERSION" value={themeLayer.params.VERSION || "1.3.0"} readOnly="true" />
@@ -130,8 +151,8 @@ class RasterExport extends React.Component {
             extent = bbox.minx + "," + bbox.miny + "," + bbox.maxx + "," + bbox.maxy;
         }
         this.extentInput.value = extent;
-        this.widthInput.value = pixelsize[0];
-        this.heightInput.value = pixelsize[1];
+        this.widthInput.value = Math.round(pixelsize[0] * parseInt(this.state.dpi || 96) / 96.);
+        this.heightInput.value = Math.round(pixelsize[1] * parseInt(this.state.dpi || 96) / 96.);
         this.form.submit();
         this.props.setCurrentTask(null);
     }

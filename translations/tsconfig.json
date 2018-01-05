@@ -71,6 +71,7 @@
     "print.scale",
     "print.submit",
     "rasterexport.format",
+    "rasterexport.resolution",
     "rasterexport.selectinfo",
     "redlining.border",
     "redlining.fill",

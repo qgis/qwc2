@@ -99,6 +99,7 @@
     },
     "rasterexport": {
       "format": "",
+      "resolution": "",
       "selectinfo": ""
     },
     "redlining": {

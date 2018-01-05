@@ -99,6 +99,7 @@
     },
     "rasterexport": {
       "format": "Format:",
+      "resolution": "",
       "selectinfo": "Încadrați într-un dreptunghi zona de exportat.."
     },
     "redlining": {

@@ -3,6 +3,10 @@
     padding-bottom: 0.5em;
 }
 
-#TaskBar.RasterExport div.export-settings {
+#TaskBar.RasterExport div.raster-export-settings {
     font-size: small;
+}
+
+#TaskBar.RasterExport div.raster-export-settings > span {
+    margin: 0.5em;
 }
