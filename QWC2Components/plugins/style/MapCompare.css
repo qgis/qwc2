@@ -1,0 +1,28 @@
+#MapCompare {
+    position: fixed;
+    background-color: @button_bg@;
+    width: 0.25em;
+    height: 100%;
+    margin-left: -0.125em;
+    top: 0;
+    cursor: ew-resize;
+}
+
+#MapCompare span.map-compare-handle {
+    position: absolute;
+    display: block;
+    top: calc(50% - 2em);
+    height: 2em;
+    width: 2em;
+    line-height: 2em;
+    left: -0.875em;
+    background-color: @button_bg@;
+    display: flex;
+    align-items: center;
+    border-radius: 1em;
+}
+
+#MapCompare span.map-compare-handle-icon {
+    flex: 0 0 1em;
+    color: white;
+}
