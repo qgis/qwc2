@@ -7,7 +7,13 @@
  */
 
 const ol = require('openlayers');
-const {isEmpty} = require('lodash');
+const assign = require('object-assign');
+const deepmerge = require('deepmerge').default;
+const {isEmpty,isArray} = require('lodash');
+const fastXmlParser = require('fast-xml-parser');
+
+const owsNS = "http://www.opengis.net/ows";
+const xlinkNS="http://www.w3.org/1999/xlink";
 
 function strcmp(a, b) {
     let al = a.toLowerCase();
@@ -15,7 +21,18 @@ function strcmp(a, b) {
     return al < bl ? -1 : al > bl ? 1 : 0;
 }
 
+function array(obj) {
+    return isArray(obj) ? obj : [obj];
+}
+
 const ServiceLayerUtils = {
+    getDCPTypes(dcpTypes) {
+        let result = {};
+        for(let dcpType of dcpTypes) {
+            result = deepmerge(result, dcpType);
+        }
+        return result;
+    },
     getWMSLayers(capabilitiesXml) {
         let wmsFormat = new ol.format.WMSCapabilities();
         let capabilities = wmsFormat.read(capabilitiesXml);
@@ -29,7 +46,7 @@ const ServiceLayerUtils = {
         let serviceUrl = null;
         try {
             topLayer = capabilities.Capability.Layer;
-            serviceUrl = capabilities.Capability.Request.GetMap.DCPType[0].HTTP.Get.OnlineResource;
+            serviceUrl = ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetMap.DCPType)["HTTP"]["Get"]["OnlineResource"];
         } catch (e) {
             return [];
         }
@@ -76,6 +93,106 @@ const ServiceLayerUtils = {
             expanded: false,
             bbox: bbox
         };
+    },
+    getWFSLayers(capabilitiesXml) {
+        let options = {
+            attrPrefix: "",
+            ignoreNonTextNodeAttr: false,
+            ignoreTextNodeAttr: false,
+            textNodeConversion: true,
+            textAttrConversion: true,
+            ignoreNameSpace: true
+        };
+        var capabilities = fastXmlParser.convertToJson(fastXmlParser.getTraversalObj(capabilitiesXml, options));
+        if(!capabilities || !capabilities.WFS_Capabilities || !capabilities.WFS_Capabilities.version) {
+            return [];
+        } else if(capabilities.WFS_Capabilities.version < "2.0.0") {
+            return ServiceLayerUtils.getWFS1Layers(capabilities.WFS_Capabilities);
+        } else {
+            return ServiceLayerUtils.getWFS2Layers(capabilities.WFS_Capabilities);
+        }
+    },
+    getWFS1Layers(capabilities) {
+        let serviceUrl = null;
+        let version = capabilities.version;
+        let formats = null;
+        try {
+            serviceUrl = ServiceLayerUtils.getDCPTypes(array(capabilities.Capability.Request.GetFeature.DCPType))["HTTP"]["Get"]["onlineResource"];
+            formats = Object.keys(capabilities.Capability.Request.GetFeature.ResultFormat);
+        } catch(e) {
+            return [];
+        }
+
+        let layers = [];
+        for(let featureType of array(capabilities.FeatureTypeList.FeatureType)) {
+            let name, bbox;
+            try {
+                name = featureType.Name;
+                let llbbox = featureType.LatLongBoundingBox;
+                bbox = {
+                    crs: featureType.SRS,
+                    bounds: [llbbox.minx, llbbox.miny, llbbox.maxx, llbbox.maxy]
+                }
+            } catch(e) {
+                continue; // Name and bbox are required
+            }
+            let title = featureType.Title || name;
+            let abstract = featureType.Abstract || "";
+
+            layers.push({
+                type: "wfs",
+                name: name,
+                title: title,
+                abstract: abstract,
+                bbox: bbox,
+                service: serviceUrl,
+                version: version,
+                formats: formats,
+            });
+        }
+        return layers;
+    },
+    getWFS2Layers(capabilities) {
+        let serviceUrl = null;
+        let version = capabilities.version;
+        let formats = null;
+        try {
+            let getFeatureOp = array(capabilities.OperationsMetadata.Operation).find(el => el.name === "GetFeature");
+            serviceUrl = ServiceLayerUtils.getDCPTypes(array(getFeatureOp.DCP)).HTTP.Get.href;
+            formats = array(getFeatureOp.Parameter).find(el => el.name === "outputFormat").AllowedValues.Value;
+        } catch(e) {
+            return [];
+        }
+
+        let layers = [];
+        for(let featureType of array(capabilities.FeatureTypeList.FeatureType)) {
+            let name, bbox;
+            try {
+                name = featureType.Name;
+                let lc = featureType.WGS84BoundingBox.LowerCorner.split(/\s+/);
+                let uc = featureType.WGS84BoundingBox.UpperCorner.split(/\s+/);
+                bbox = {
+                    crs: "EPSG:4326",
+                    bounds: [lc[0], lc[1], uc[0], uc[1]]
+                }
+            } catch(e) {
+                continue; // Name and bbox are required
+            }
+            let title = featureType.Title || name;
+            let abstract = featureType.Abstract || "";
+
+            layers.push({
+                type: "wfs",
+                name: name,
+                title: title,
+                abstract: abstract,
+                bbox: bbox,
+                service: serviceUrl,
+                version: version,
+                formats: formats,
+            });
+        }
+        return layers;
     }
 };
 

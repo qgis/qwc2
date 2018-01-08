@@ -80,3 +80,13 @@
     margin-right: 0.25em;
     cursor: pointer;
 }
+
+#ImportLayer span.importlayer-list-entry-service {
+    display: inline-block;
+    text-align: center;
+    color: white;
+    background: @item_border@;
+    margin-right: 0.5em;
+    border-radius: 0.25em;
+    width: 6ch;
+}

@@ -48,7 +48,7 @@ class ImportLayer extends React.Component {
             return (
                 <input readOnly={this.state.pendingRequests > 0} type="text"
                     placeholder={placeholder} value={this.state.url}
-                    onChange={ev => this.setState({url: ev.target.value})}
+                    onChange={ev => this.setState({url: ev.target.value.trim()})}
                     onKeyPress={ev => { if(!ev.target.readOnly && ev.key === 'Enter') { this.scanService(); }}}/>
             );
         }
@@ -61,10 +61,13 @@ class ImportLayer extends React.Component {
             return null;
         }
         return (
-            <div key={entry.name} style={{paddingLeft: level + 'em'}}>
+            <div key={entry.type + ":" + entry.name} style={{paddingLeft: level + 'em'}}>
                 <div className="importlayer-list-entry">
                     {hasSublayers ? (<img onClick={ev => this.toggleLayerListEntry(path)} src={assetsPath + '/img/' + (entry.expanded ? 'minus.svg' : 'plus.svg')} />) : null}
-                    <span onClick={ev => this.addServiceLayer(entry)}>{entry.title}</span>
+                    <span onClick={ev => this.addServiceLayer(entry)}>
+                        <span className="importlayer-list-entry-service">{entry.type}</span>
+                        {entry.title}
+                    </span>
                 </div>
                 <div style={{display: entry.expanded ? 'block' : 'none'}}>
                 {sublayers}
@@ -89,7 +92,7 @@ class ImportLayer extends React.Component {
             );
         }
         let layerList = null;
-        if(!isEmpty(this.state.serviceLayers)) {
+        if(this.state.serviceLayers != null) {
             let filterplaceholder = LocaleUtils.getMessageById(this.context.messages, "importlayer.filter");
             let filter = new RegExp(removeDiacritics(this.state.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
             layerList = [
@@ -131,33 +134,56 @@ class ImportLayer extends React.Component {
         if(!this.state.url) {
             return;
         }
-        let wmsParams = {
-            service: 'WMS',
-            request: 'GetCapabilities',
-            version: '1.3.0'
-        };
-        this.setState({pendingRequests: 1, serviceLayers: null, filter: ""});
+        let url = this.state.url;
+        if(!url.match(/^[^:]+:\/\/.*$/)) {
+            url = "http://" + url;
+        }
+        this.setState({pendingRequests: 0, serviceLayers: null, filter: ""});
         // Attempt to load as KML
-        if(this.state.url.toLowerCase().endsWith(".kml")) {
-            axios.get(ProxyUtils.addProxyIfNeeded(this.state.url)).then(response => {
-                let basename = this.state.url.split('/').pop()
-                this.setState({pendingRequests: 0, serviceLayers: [{
+        if(url.toLowerCase().endsWith(".kml")) {
+            this.setState({pendingRequests: this.state.pendingRequests + 1});
+            axios.get(ProxyUtils.addProxyIfNeeded(url)).then(response => {
+                let basename = url.split('/').pop()
+                this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: [{
                     type: "kml",
                     name: basename,
                     title: basename,
                     data: response.data
                 }]});
             }).catch(err => {
-                this.setState({pendingRequests: 0});
+                this.setState({pendingRequests: this.state.pendingRequests - 1});
             });
             return;
         }
         // Attempt to load as WMS
-        axios.get(this.state.url, {params: wmsParams}).then(response => {
+        let wmsParams = "?service=WMS&request=GetCapabilities";
+        this.setState({pendingRequests: this.state.pendingRequests + 1});
+        axios.get(ProxyUtils.addProxyIfNeeded(url.split("?")[0] + wmsParams)).then(response => {
             let result = ServiceLayerUtils.getWMSLayers(response.data);
-            this.setState({pendingRequests: 0, serviceLayers: result});
+            this.setState({
+                pendingRequests: this.state.pendingRequests - 1,
+                serviceLayers: (this.state.serviceLayers || []).concat(result)
+            });
         }).catch(err => {
-            this.setState({pendingRequests: 0});
+            this.setState({
+                pendingRequests: this.state.pendingRequests - 1,
+                serviceLayers: (this.state.serviceLayers || [])
+            });
+        });
+        // Attempt to load as WFS
+        let wfsParams = "?service=WFS&request=GetCapabilities"
+        this.setState({pendingRequests: this.state.pendingRequests + 1});
+        axios.get(ProxyUtils.addProxyIfNeeded(url.split("?")[0] + wfsParams)).then(response => {
+            let result = ServiceLayerUtils.getWFSLayers(response.data);
+            this.setState({
+                pendingRequests: this.state.pendingRequests - 1,
+                serviceLayers: (this.state.serviceLayers || []).concat(result)
+            });
+        }).catch(err => {
+            this.setState({
+                pendingRequests: this.state.pendingRequests - 1,
+                serviceLayers: (this.state.serviceLayers || [])
+            });
         });
     }
     importFileLayer = () => {
@@ -204,6 +230,20 @@ class ImportLayer extends React.Component {
                 boundingBox: entry.bbox,
                 queryable: entry.queryable,
                 infoFormats: entry.infoFormats,
+                priority: 2
+            });
+        } else if(entry.type === "wfs") {
+            this.props.addLayer({
+                id: entry.name + Date.now().toString(),
+                type: entry.type,
+                url: entry.service,
+                version: entry.version,
+                visibility: true,
+                name: entry.name,
+                abstract: entry.abstract,
+                title: entry.title,
+                boundingBox: entry.bbox,
+                formats: entry.formats,
                 priority: 2
             });
         } else if(entry.type === "kml") {

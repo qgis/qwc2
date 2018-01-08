@@ -17,7 +17,8 @@ const LayerRegistry = {
     'tileprovider': require('./TileProviderLayer'),
     'vector': require('./VectorLayer'),
     'wms': require('./WMSLayer'),
-    'wmts': require('./WMTSLayer')
+    'wmts': require('./WMTSLayer'),
+    'wfs': require('./WFSLayer')
 };
 
 module.exports = LayerRegistry;

@@ -72,7 +72,7 @@
       "connect": "Connect",
       "nofeatures": "No features could be imported.",
       "queryservice": "Query service..",
-      "urlplaceholder": "Enter URL to WMS, KML..."
+      "urlplaceholder": "Enter URL to WMS, WFS, KML..."
     },
     "layertree": {
       "compare": "Compare top layer",
