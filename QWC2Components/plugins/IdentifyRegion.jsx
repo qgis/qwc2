@@ -91,7 +91,6 @@ module.exports = {
         sendRequest: sendIdentifyRegionRequest
     })(IdentifyRegion),
     reducers: {
-        selection: require('../../MapStore2Components/reducers/selection'),
-        mapInfo: require('../../MapStore2Components/reducers/mapInfo')
+        selection: require('../../MapStore2Components/reducers/selection')
     }
 }
