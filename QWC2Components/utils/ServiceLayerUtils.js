@@ -26,12 +26,13 @@ const ServiceLayerUtils = {
             infoFormats = ['text/plain'];
         }
         let topLayer = null;
+        let serviceUrl = null;
         try {
             topLayer = capabilities.Capability.Layer;
+            serviceUrl = capabilities.Capability.Request.GetMap.DCPType[0].HTTP.Get.OnlineResource;
         } catch (e) {
             return [];
         }
-        let serviceUrl = capabilities.Service.OnlineResource;
         let version = capabilities.version;
         if(!topLayer.Layer) {
             return [this.getWMSLayerParams(topLayer, topLayer.CRS, serviceUrl, version, infoFormats)];
