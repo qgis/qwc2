@@ -19,11 +19,11 @@ let WMSLayer = {
             "json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
             "application/json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
 
-            "gml3": (proj) => new ol.format.GML3({defaultDataProjection: proj}),
-            "gml32": (proj) => new ol.format.GML3({defaultDataProjection: proj}),
+            "gml3": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
+            "gml32": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
             "application/gml+xml; version=3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
 
-            "gml2": (proj) => new ol.format.GML2({defaultDataProjection: proj}),
+            "gml2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), defaultDataProjection: proj}),
 
             "text/xml; subtype=gml/3.1.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
             "text/xml; subtype=gml/3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
