@@ -145,12 +145,7 @@ function layers(state = {}, action) {
             return {flat: []};
         }
         case REORDER_LAYER: {
-            let newLayers = LayerUtils.reorderLayer(state.flat, action.layer, action.sublayerpath, action.direction);
-            for(let newLayer of newLayers) {
-                if(newLayer.type === "wms") {
-                    assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
-                }
-            }
+            let newLayers = LayerUtils.reorderLayer(state.flat, action.layer, action.sublayerpath, action.direction, action.swipeActive);
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
             return {flat: newLayers};
         }

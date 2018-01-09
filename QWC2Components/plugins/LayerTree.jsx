@@ -151,8 +151,8 @@ class LayerTree extends React.Component {
             let reorderButtons = null;
             if(ConfigUtils.getConfigProp("allowReorderingLayers") === true) {
                 reorderButtons = [
-                    (<Glyphicon key="layertree-item-move-down" className="layertree-item-move" glyph="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
-                    (<Glyphicon key="layertree-item-move-up" className="layertree-item-move" glyph="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
+                    (<Glyphicon key="layertree-item-move-down" className="layertree-item-move" glyph="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1, this.props.map.swipe !== undefined)} />),
+                    (<Glyphicon key="layertree-item-move-up" className="layertree-item-move" glyph="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1, this.props.map.swipe !== undefined)} />)
                 ];
             }
             let infoButton = null;
@@ -382,7 +382,9 @@ class LayerTree extends React.Component {
         this.props.toggleMapTips(!this.props.mapTipsEnabled)
     }
     toggleSwipe = () => {
-        this.props.setSwipe(this.props.map.swipe || this.props.map.swipe === 0 ? undefined : 50);
+        let newSwipe = this.props.map.swipe || this.props.map.swipe === 0 ? undefined : 50;
+        this.props.reorderLayer(null, null, null, newSwipe !== undefined)
+        this.props.setSwipe(newSwipe);
     }
     printLegend = () => {
         let body = '<p id="legendcontainerbody">';

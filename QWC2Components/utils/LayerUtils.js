@@ -129,27 +129,37 @@ const LayerUtils = {
         let version = layer.params.VERSION || "1.3.0";
         return layer.url + "?SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + version + "&FORMAT=image/png&LAYER=" + sublayer;
     },
-    reorderLayer(layers, movelayer, sublayerpath, delta) {
+    reorderLayer(layers, movelayer, sublayerpath, delta, swipeActive) {
         // Extract foreground layers
         let fglayers = layers.filter(layer => layer.group !== 'background');
         // Explode layers (one entry for every single sublayer)
         let exploded = LayerUtils.explodeLayers(fglayers);
         // Find entry to move
-        let idx = exploded.findIndex(entry => {
-            return entry.layer === movelayer && isEqual(entry.path, sublayerpath);
-        });
-        if(idx === -1) {
-            return layers;
+        if(movelayer) {
+            let idx = exploded.findIndex(entry => {
+                return entry.layer === movelayer && isEqual(entry.path, sublayerpath);
+            });
+            if(idx === -1) {
+                return layers;
+            }
+            // Reorder layer
+            let destidx = idx + delta;
+            if(destidx < 0 || destidx >= exploded.length) {
+                return layers;
+            }
+            let entry = exploded.splice(idx, 1)[0];
+            exploded.splice(destidx, 0, entry);
         }
-        // Reorder layer
-        let destidx = idx + delta;
-        if(destidx < 0 || destidx >= exploded.length) {
-            return layers;
+        // Re-assemble layers (if swipe is active, keep first sublayer separate)
+        let newlayers = swipeActive ? [
+            ...LayerUtils.implodeLayers(exploded.slice(0, 1)),
+            ...LayerUtils.implodeLayers(exploded.slice(1))
+        ] : LayerUtils.implodeLayers(exploded);
+        for(let layer of newlayers) {
+            if(layer.type === "wms") {
+                assign(layer, LayerUtils.buildWMSLayerParams(layer));
+            }
         }
-        let entry = exploded.splice(idx, 1)[0];
-        exploded.splice(destidx, 0, entry);
-        // Re-assemble layers
-        let newlayers = LayerUtils.implodeLayers(exploded);
         // Re-add background layers
         return [
             ...newlayers,

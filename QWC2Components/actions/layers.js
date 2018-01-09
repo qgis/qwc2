@@ -37,12 +37,13 @@ function removeLayer(layerId) {
     };
 }
 
-function reorderLayer(layer, sublayerpath, direction) {
+function reorderLayer(layer, sublayerpath, direction, swipeActive) {
     return {
         type: REORDER_LAYER,
         layer,
         sublayerpath,
-        direction
+        direction,
+        swipeActive
     };
 }
 
