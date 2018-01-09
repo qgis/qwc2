@@ -35,11 +35,9 @@ let WMSLayer = {
 
         let olformat = null;
         let format = null;
-        console.log(options.formats);
         for(let key of Object.keys(formatMap)) {
             let fmt = options.formats.find(entry => entry.toLowerCase() === key);
             if(fmt) {
-                console.log("Using " + fmt);
                 olformat = formatMap[key](options.srs);
                 format = fmt;
                 break;
@@ -62,15 +60,10 @@ let WMSLayer = {
                     '&srsname=' + encodeURIComponent(options.srs) +
                     '&bbox=' + extent.join(',')
                 );
-                console.log(url);
                 return url;
             },
             strategy: ol.loadingstrategy.bbox
         });
-        vectorSource.on('addfeature', (ev) => {
-            console.log("Add feature");
-            console.log(ev);
-         });
 
         return new ol.layer.Vector({
             source: vectorSource,
