@@ -10,13 +10,16 @@
 #ImportLayer div.importlayer-input-fields > select {
     flex: 0 0 auto;
     height: 2em;
+    border: 1px solid @item_border@;
     background-color: @item_border@;
     color: white;
     outline: none;
 }
 
 #ImportLayer div.importlayer-input-fields > input {
+    border: 1px solid @item_border@;
     padding: 0.25em;
+    margin: 0;
 }
 
 #ImportLayer div.importlayer-input-fields > input,

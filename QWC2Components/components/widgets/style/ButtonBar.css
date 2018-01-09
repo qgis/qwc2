@@ -28,6 +28,7 @@ div.ButtonBar > button {
     color: @item_fg@;
     align-items: center;
     justify-content: center;
+    background-color: #dddddd;
 }
 
 div.ButtonBar > button > * {
