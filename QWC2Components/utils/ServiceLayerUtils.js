@@ -11,6 +11,7 @@ const assign = require('object-assign');
 const deepmerge = require('deepmerge').default;
 const {isEmpty,isArray} = require('lodash');
 const fastXmlParser = require('fast-xml-parser');
+const randomColor = require('randomcolor');
 
 const owsNS = "http://www.opengis.net/ows";
 const xlinkNS="http://www.w3.org/1999/xlink";
@@ -148,6 +149,7 @@ const ServiceLayerUtils = {
                 service: serviceUrl,
                 version: version,
                 formats: formats,
+                color: randomColor()
             });
         }
         return layers;
@@ -190,6 +192,7 @@ const ServiceLayerUtils = {
                 service: serviceUrl,
                 version: version,
                 formats: formats,
+                color: randomColor()
             });
         }
         return layers;

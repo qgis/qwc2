@@ -169,12 +169,12 @@ class LayerTree extends React.Component {
             );
         }
         let legendicon = null;
-        if(this.props.showLegendIcons && sublayer.legendUrl) {
-            legendicon = (
-                <span className="layertree-item-legend">
-                    <img className="layertree-item-legend-thumbnail" src={sublayer.legendUrl} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />
-                </span>
-            );
+        if(this.props.showLegendIcons) {
+            if(sublayer.legendUrl) {
+                legendicon = (<img className="layertree-item-legend-thumbnail" src={sublayer.legendUrl} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />);
+            } else if(sublayer.color) {
+                legendicon = (<span className="layertree-item-legend-coloricon" style={{backgroundColor: sublayer.color}} />);
+            }
         }
         let title = "";
         if(this.props.flattenGroups && layer.sublayers) {
@@ -393,6 +393,8 @@ class LayerTree extends React.Component {
                 return '<div><img src="' + layer.legendUrl + '" /></div>';
             } else if(layer.params && layer.params.LAYERS) { // WMS with sublayers
                 return '<div><img src="' + LayerUtils.getWMSLegendGraphicURL(layer, layer.params.LAYERS).replace("&", "&amp;") + '" /></div>'
+            } else if(layer.color) {
+                return '<div><span style="display: inline-block; width: 1em; height: 1em; box-shadow: inset 0 0 0 1000px ' + layer.color + '; margin: 0.25em; border: 1px solid black;">&nbsp;</span>' + (layer.title || layer.name) + '</div>';
             } else {
                 return "";
             }

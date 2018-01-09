@@ -244,6 +244,7 @@ class ImportLayer extends React.Component {
                 title: entry.title,
                 boundingBox: entry.bbox,
                 formats: entry.formats,
+                color: entry.color,
                 priority: 2
             });
         } else if(entry.type === "kml") {

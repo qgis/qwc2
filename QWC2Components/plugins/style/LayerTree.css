@@ -84,6 +84,15 @@
     flex: 0 0 auto;
 }
 
+#LayerTree span.layertree-item-legend-coloricon {
+    display: inline-block;
+    height: 1.5em;
+    width: 1.5em;
+    margin-right: 0.5em;
+    border: 1px solid @item_border@;
+    flex: 0 0 auto;
+}
+
 img.layertree-item-legend-tooltip {
     position: absolute;
     z-index: 6;
