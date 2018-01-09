@@ -9,7 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const proj4js = require('proj4');
+const proj4js = require('proj4').default;
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 
 class CoordinateDisplayer extends React.Component {

@@ -8,7 +8,7 @@
 
 const {parse} = require('wellknown');
 const assign = require('object-assign');
-const proj4js = require('proj4');
+const proj4js = require('proj4').default;
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const VectorLayerUtils = require('./VectorLayerUtils');
