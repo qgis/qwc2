@@ -102,7 +102,7 @@ function layers(state = {}, action) {
                 for(; inspos < newLayers.length && newLayer.priority < newLayers[inspos].priority; ++inspos);
                 newLayers.splice(inspos, 0, newLayer);
             } else if(action.clear) {
-                newLayers[idx] = assign({}, action.layer, {type: 'vector', features: action.features});
+                newLayers[idx] = assign({}, action.layer, {uuid: uuid.v4(), type: 'vector', features: action.features});
             } else {
                 let addFeatures = action.features.concat();
                 let newFeatures = newLayers[idx].features.map( f => {
