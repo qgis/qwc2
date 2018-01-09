@@ -35,8 +35,8 @@ class LayerInfoWindow extends React.Component {
     }
     render() {
         let legend = null;
-        if(this.props.layer.legendUrl) {
-            legend = (<img className="layer-info-window-legend" src={this.props.layer.legendUrl} />);
+        if(this.props.sublayer.legendUrl) {
+            legend = (<img className="layer-info-window-legend" src={this.props.sublayer.legendUrl} />);
         }
         return (
             <ResizeableWindow title="layerinfo.title" glyphicon="info-sign" onClose={this.props.onClose} initialWidth={this.props.windowSize.width} initialHeight={this.props.windowSize.height}>
