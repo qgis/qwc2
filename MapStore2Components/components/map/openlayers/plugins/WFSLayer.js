@@ -65,6 +65,7 @@ let WMSLayer = {
 
         return new ol.layer.Vector({
             source: vectorSource,
+            zIndex: options.zIndex,
             style: (feature) => FeatureStyles.default(feature, {
                 fillColor: options.color,
                 strokeColor: "#000",
