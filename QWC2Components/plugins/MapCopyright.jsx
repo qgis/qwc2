@@ -47,8 +47,7 @@ class MapCopyright extends React.Component {
                 return;
             }
             if(!transformedbboxes[layer.boundingBox.crs]) {
-                let {minx, miny, maxx, maxy} = map.bbox.bounds;
-                transformedbboxes[layer.boundingBox.crs] = CoordinatesUtils.reprojectBbox([minx, miny, maxx, maxy], map.projection, layer.boundingBox.crs);
+                transformedbboxes[layer.boundingBox.crs] = CoordinatesUtils.reprojectBbox(map.bbox.bounds, map.projection, layer.boundingBox.crs);
             }
             let mapbbox = transformedbboxes[layer.boundingBox.crs];
             let laybbox = layer.boundingBox.bounds;
