@@ -15,18 +15,19 @@ const FeatureStyles = require('../FeatureStyles');
 let WMSLayer = {
     create: (options) => {
         const formatMap = {
-            "gml2": (proj) => new ol.format.GML2({defaultDataProjection: proj}),
-            "text/xml; subtype=gml/2.1.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), defaultDataProjection: proj}),
-
-            "gml3": (proj) => new ol.format.GML3({defaultDataProjection: proj}),
-            "gml32": (proj) => new ol.format.GML3({defaultDataProjection: proj}),
-            "text/xml; subtype=gml/3.1.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
-            "application/gml+xml; version=3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
-            "text/xml; subtype=gml/3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
-
             "geojson": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
             "json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
             "application/json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
+
+            "gml3": (proj) => new ol.format.GML3({defaultDataProjection: proj}),
+            "gml32": (proj) => new ol.format.GML3({defaultDataProjection: proj}),
+            "application/gml+xml; version=3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
+
+            "gml2": (proj) => new ol.format.GML2({defaultDataProjection: proj}),
+
+            "text/xml; subtype=gml/3.1.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
+            "text/xml; subtype=gml/3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
+            "text/xml; subtype=gml/2.1.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), defaultDataProjection: proj}),
 
             "kml": (proj) => new ol.format.KML({defaultDataProjection: proj}),
             "application/vnd.google-earth.kml+xml": (proj) => new ol.format.KML({defaultDataProjection: proj})
@@ -34,13 +35,21 @@ let WMSLayer = {
 
         let olformat = null;
         let format = null;
-        for(let fmt of options.formats) {
-            if(formatMap[fmt.toLowerCase()]) {
-                olformat = formatMap[fmt.toLowerCase()](options.srs);
+        console.log(options.formats);
+        for(let key of Object.keys(formatMap)) {
+            let fmt = options.formats.find(entry => entry.toLowerCase() === key);
+            if(fmt) {
+                console.log("Using " + fmt);
+                olformat = formatMap[key](options.srs);
                 format = fmt;
                 break;
             }
         }
+        if(!format) {
+            console.warn("No supported WFS format found");
+            return null;
+        }
+
         let typeName = options.version < "2.0.0" ? "typeName" : "typeNames";
 
         let vectorSource = new ol.source.Vector({
