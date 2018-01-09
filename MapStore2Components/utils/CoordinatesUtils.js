@@ -27,7 +27,12 @@ var CoordinatesUtils = {
         const destProj = Proj4js.defs(dest) ? new Proj4js.Proj(dest) : null;
         if (sourceProj && destProj) {
             let p = isArray(point) ? Proj4js.toPoint(point) : Proj4js.toPoint([point.x, point.y]);
-            const transformed = assign({}, Proj4js.transform(sourceProj, destProj, p), {srs: dest});
+            let transformed = null;
+            try {
+                transformed = assign({}, Proj4js.transform(sourceProj, destProj, p), {srs: dest});
+            } catch(e) {
+                transformed = {x: 0, y: 0};
+            }
             if (normalize) {
                 return CoordinatesUtils.normalizePoint(transformed);
             }

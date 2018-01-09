@@ -26,10 +26,10 @@ class DxfExport extends React.Component {
         setCurrentTask: PropTypes.func
     }
     renderBody = () => {
-        if(!this.props.theme) {
+        let themeLayer = this.props.layers.find(layer => layer.id === this.props.themeLayerId);
+        if(!themeLayer) {
             return null;
         }
-        let themeLayer = this.props.layers.find(layer => layer.id === this.props.themeLayerId);
         let filename = this.props.theme.name + ".dxf";
         let action = ProxyUtils.addProxyIfNeeded(this.props.theme.url, "&filename=" + encodeURIComponent(this.props.theme.name + ".dxf"));
         return (
@@ -69,7 +69,7 @@ class DxfExport extends React.Component {
 const selector = (state) => ({
     theme: state.theme ? state.theme.current : null,
     map: state.map ? state.map : null,
-    themeLayerId: state.theme ? state.theme.currentlayer : "",
+    themeLayerId: state.theme ? state.theme.currentlayer : null,
     layers: state.layers ? state.layers.flat : []
 });
 
