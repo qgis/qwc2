@@ -26,38 +26,38 @@
       "viewertitle_label": "Page d'accueil"
     },
     "draw": {
-      "bbox": "",
-      "circle": "",
-      "clearAll": "",
-      "delete": "",
-      "fillcolor": "",
-      "fillopacity": "",
-      "fontsize": "",
-      "line": "",
-      "point": "",
-      "polygon": "",
-      "strokecolor": "",
-      "strokewidth": "",
-      "text": ""
+      "bbox": "Rectangle",
+      "circle": "Cercle",
+      "clearAll": "Tout effacer",
+      "delete": "Supprimer",
+      "fillcolor": "Remplissage",
+      "fillopacity": "Opacité",
+      "fontsize": "Taile de police",
+      "line": "Ligne",
+      "point": "Point",
+      "polygon": "Polygone",
+      "strokecolor": "Couleur du trait",
+      "strokewidth": "Epaisseur du trait",
+      "text": "Texte"
     },
     "dxfexport": {
       "selectinfo": "Paramétrage de l'export DXF",
       "symbologyscale": "Echelle"
     },
     "editing": {
-      "canceldelete": "",
-      "commit": "",
-      "delete": "",
-      "discard": "",
-      "draw": "",
-      "fields": "",
-      "layer": "",
-      "noeditablelayers": "",
-      "pick": "",
-      "reallydelete": ""
+      "canceldelete": "Annuler la suppression",
+      "commit": "Appliquer",
+      "delete": "Supprimer",
+      "discard": "Rejeter",
+      "draw": "Dessiner",
+      "fields": "Champs",
+      "layer": "Calque",
+      "noeditablelayers": "Il n'y a pas de calque éditable pour ce thème",
+      "pick": "Choisir",
+      "reallydelete": "Supprimer"
     },
     "fileselector": {
-      "placeholder": ""
+      "placeholder": "Choisir un fichier..."
     },
     "identify": {
       "querying": "Identification en cours..."
@@ -67,16 +67,16 @@
     },
     "identifyTitle": "Informations de l'objet",
     "importlayer": {
-      "addlayer": "",
-      "filter": "",
-      "connect": "",
-      "nofeatures": "",
-      "queryservice": "",
-      "urlplaceholder": ""
+      "addlayer": "Ajouter un calque",
+      "filter": "Filtrer",
+      "connect": "Connecter",
+      "nofeatures": "Aucune entité ne peut être importée.",
+      "queryservice": "Interrogation du service...",
+      "urlplaceholder": "Entrer l'URL d'un WMS, WFS, KML..."
     },
     "layertree": {
-      "compare": "",
-      "importlayer": "",
+      "compare": "Comparer",
+      "importlayer": "Importer un calque",
       "maptip": "Afficher les maptips",
       "printlegend": "Afficher la légende",
       "transparency": "Transparence"
@@ -90,7 +90,7 @@
     "noFeatureInfo": "Aucune information n'est disponible pour le point cliqué.",
     "print": {
       "layout": "Format",
-      "grid": "",
+      "grid": "Grille",
       "nolayouts": "Il n'y a pas de mise en page disponible pour le thème choisi.",
       "notheme": "Pas de thème sélectionné",
       "resolution": "Résolution",
@@ -100,11 +100,11 @@
     },
     "rasterexport": {
       "format": "Format:",
-      "resolution": "",
+      "resolution": "Résolution",
       "selectinfo": "Dessiner un rectangle pour définir la zone à exporter"
     },
     "redlining": {
-      "border": "",
+      "border": "Bordure",
       "fill": "Remplissage",
       "label": "Texte",
       "line": "Ligne",
@@ -112,12 +112,12 @@
       "pick": "Choisir",
       "point": "Point",
       "polygon": "Polygone",
-      "size": "",
-      "text": "",
-      "width": ""
+      "size": "Taille",
+      "text": "Texte",
+      "width": "Largeur"
     },
     "search": {
-      "more": "",
+      "more": "Plus...",
       "placeholder": "Recherche par toponyme ou coordonnées...",
       "coordinates": "Coordonnées"
     },
