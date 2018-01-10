@@ -9,6 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
+const assign = require('object-assign');
 const {Glyphicon} = require('react-bootstrap');
 const Spinner = require('react-spinkit');
 const {createSelector} = require('reselect');
@@ -76,7 +77,7 @@ class Search extends React.Component {
 
             // If initial theme loaded and a search text is defined, fire off the search
             if(!this.props.theme) {
-                this.search(newProps);
+                this.search(assign({}, newProps, {activeProviders}));
             }
         }
         // If results changed and a unique result is returned, select it automatically
@@ -126,7 +127,7 @@ class Search extends React.Component {
         }
     }
     activeProviders = (props) => {
-        let keys = this.props.theme ? isEmpty(this.props.activeProviders) ? props.theme.searchProviders : props.activeProviders : [];
+        let keys = props.theme ? isEmpty(props.activeProviders) ? props.theme.searchProviders : props.activeProviders : [];
         return keys.reduce((result, key) => {
             result[key] = props.searchProviders[key];
             return result;
