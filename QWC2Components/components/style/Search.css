@@ -64,6 +64,14 @@
     padding: 0.125em 0.5em;
 }
 
+#Search li.searchbar-provider-selection-all {
+    border-bottom: 1px solid @item_border@;
+}
+
+#Search li.searchbar-provider-selection-active {
+    background-color: white;
+}
+
 #Search ul.searchbar-provider-selection li:hover {
     background-color: @appmenu_active_bg1@;
 

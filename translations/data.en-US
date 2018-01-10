@@ -118,7 +118,8 @@
     },
     "search": {
       "more": "More...",
-      "placeholder": "Search for locations and coordinates...",
+      "search": "Search",
+      "all": "All",
       "coordinates": "Coordinates"
     },
     "share": {

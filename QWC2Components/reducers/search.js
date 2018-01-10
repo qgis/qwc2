@@ -13,7 +13,7 @@ const assign = require('object-assign');
 function search(state = null, action) {
     switch (action.type) {
         case SEARCH_CHANGE:
-            return {text: action.text, provider: action.provider};
+            return {text: action.text, providers: action.providers};
         case SEARCH_SET_REQUEST:
             return assign({}, state, {requestId: action.id, pendingProviders: action.providers});
         case SEARCH_ADD_RESULTS:

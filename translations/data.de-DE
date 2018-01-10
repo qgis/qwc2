@@ -118,6 +118,8 @@
     },
     "search": {
       "more": "Mehr...",
+      "search": "",
+      "all": "",
       "placeholder": "Suche nach Objekten/Namen und Koordinaten",
       "coordinates": "Koordinaten"
     },

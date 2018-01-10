@@ -13,6 +13,7 @@ const {Glyphicon} = require('react-bootstrap');
 const Spinner = require('react-spinkit');
 const {createSelector} = require('reselect');
 const classnames = require('classnames');
+const {isEmpty} = require('lodash');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const mapUtils = require('../../MapStore2Components/utils/MapUtils');
@@ -28,7 +29,7 @@ require('./style/Search.css');
 class Search extends React.Component {
     static propTypes = {
         searchText: PropTypes.string,
-        searchProvider: PropTypes.string, // The active provider key
+        activeProviders: PropTypes.array, // The active provider keys
         pendingProviders: PropTypes.array, // Providers for which results are pending
         searchProviders: PropTypes.object, // All available search providers
         results: PropTypes.array,
@@ -49,7 +50,7 @@ class Search extends React.Component {
         messages: PropTypes.object
     }
     state = {
-        currentResult: null, showfields: false, showproviderselection: false
+        currentResult: null, showfields: false, providerSelectionVisible: false
     }
     componentDidMount() {
         this.searchTimer = 0;
@@ -58,17 +59,20 @@ class Search extends React.Component {
         // If the theme changed, reset search and select provider
         if(newProps.theme && newProps.theme !== this.props.theme) {
             // Only reset search text if the theme was changed (as opposed to the initial theme loaded)
-            let newSearchText = this.props.theme ? "" : newProps.searchText;
+            let searchText = this.props.theme ? "" : newProps.searchText;
 
-            // Ensure search provider references a valid provider
-            let newSearchProvider = newProps.searchProvider;
-            if(!newProps.searchOptions.showProviderSelection || !newProps.theme.searchProviders || newProps.theme.searchProviders.length === 0) {
-                newSearchProvider = null;
-            } else if(!newProps.theme.searchProviders.includes(newProps.searchProvider)) {
-                newSearchProvider = newProps.theme.searchProviders[0];
+            // Ensure search providers references valid providers
+            let activeProviders = newProps.activeProviders;
+            if(!newProps.searchOptions.showProviderSelection || isEmpty(newProps.theme.searchProviders)) {
+                activeProviders = null;
+            } else {
+                (activeProviders || []).filter(entry => newProps.theme.searchProviders.includes(entry));
+                if(isEmpty(activeProviders)) {
+                    activeProviders = newProps.searchOptions.providerSelectionAllowAll ? null : [newProps.theme.searchProviders[0]];
+                }
             }
 
-            newProps.changeSearch(newSearchText, newSearchProvider);
+            newProps.changeSearch(searchText, activeProviders);
 
             // If initial theme loaded and a search text is defined, fire off the search
             if(!this.props.theme) {
@@ -88,22 +92,22 @@ class Search extends React.Component {
     }
     search = (props)  => {
         if(props.searchText) {
-            props.startSearch(props.searchText, {displaycrs: props.displaycrs}, this.activeProviers(props));
+            props.startSearch(props.searchText, {displaycrs: props.displaycrs}, this.activeProviders(props));
         }
     }
     resetSearch = () => {
         this.setState({currentResult: null, focused: false, showfields: false});
-        this.props.changeSearch("", this.props.searchProvider);
+        this.props.changeSearch("", this.props.activeProviders);
         this.props.removeMarker('searchmarker');
         this.props.removeLayer('searchselection');
     }
     onChange = (ev) => {
-        this.props.changeSearch(ev.target.value, this.props.searchProvider);
+        this.props.changeSearch(ev.target.value, this.props.activeProviders);
         clearTimeout(this.searchTimer);
         this.searchTimer = setTimeout(() => this.search(this.props), 500);
     }
     checkShowFields = (ev) => {
-        if(this.props.searchProvider && this.props.searchProviders[this.props.searchProvider].fields) {
+        if((this.props.activeProviders || []).length === 1 && this.props.searchProviders[this.props.activeProviders[0]].fields) {
             this.setState({showfields: true, focused: false});
             ev.preventDefault();
         }
@@ -121,15 +125,19 @@ class Search extends React.Component {
             ev.target.blur();
         }
     }
-    activeProviers = (props) => {
-        let keys = this.props.searchProvider ? [this.props.searchProvider] : props.theme.searchProviders;
+    activeProviders = (props) => {
+        let keys = this.props.theme ? isEmpty(this.props.activeProviders) ? props.theme.searchProviders : props.activeProviders : [];
         return keys.reduce((result, key) => {
             result[key] = props.searchProviders[key];
             return result;
         }, {});
     }
     render() {
-        let placeholder = LocaleUtils.getMessageById(this.context.messages, "search.placeholder");
+        let placeholder = LocaleUtils.getMessageById(this.context.messages, "search.search");
+        let providers = this.activeProviders(this.props);
+        if(!isEmpty(providers)) {
+            placeholder +=  ": " + Object.keys(providers).map(key => providers[key].label).join(", ");
+        }
         if(!this.props.searchText) {
             var addonAfter = (<Glyphicon glyph="search"/>);
         } else if(this.props.searchText && this.state.focused && this.props.pendingProviders && this.props.pendingProviders.length > 0) {
@@ -138,33 +146,42 @@ class Search extends React.Component {
             var addonAfter = (<Glyphicon glyph="remove" onClick={this.resetSearch}/>);
         }
         let providerSelection = null;
-        if(this.props.searchOptions.showProviderSelection) {
+        if(this.props.searchOptions.showProviderSelection && this.props.theme) {
             let providerSelectionMenu = null;
-            if(this.state.showproviderselection) {
+            if(this.state.providerSelectionVisible) {
+                let allEntry = null;
+                if(this.props.searchOptions.providerSelectionAllowAll) {
+                    let itemClass = classnames({
+                        'searchbar-provider-selection-all': true,
+                        'searchbar-provider-selection-active': isEmpty(this.props.activeProviders)
+                    });
+                    allEntry = (
+                        <li className={itemClass} key="all" onClick={() => this.props.changeSearch(this.props.searchText, null)}><Message msgId="search.all" /></li>
+                    );
+                }
                 providerSelectionMenu = (
                     <ul className="searchbar-provider-selection">
-                        {Object.keys(this.props.searchProviders).map(key => {
-                            if(this.props.theme && this.props.theme.searchProviders.includes(key)) {
-                                return (
-                                    <li key={key} onClick={() => this.props.changeSearch(this.props.searchText, key)}>{this.props.searchProviders[key].label}</li>
-                                );
-                            }
+                        {allEntry}
+                        {this.props.theme.searchProviders.map(key => {
+                            let itemClass = classnames({
+                                'searchbar-provider-selection-active': (this.props.activeProviders || []).length === 1 && this.props.activeProviders[0] === key
+                            });
+                            return (
+                                <li className={itemClass} key={key} onClick={() => this.props.changeSearch(this.props.searchText, [key])}>{this.props.searchProviders[key].label}</li>
+                            );
                         })}
                     </ul>
                 );
             }
             let addonClasses = classnames({
                 'searchbar-addon': true,
-                'searchbar-addon-active': this.state.showproviderselection
+                'searchbar-addon-active': this.state.providerSelectionVisible
             });
             providerSelection = (
-                <span className={addonClasses} onClick={() => this.setState({showproviderselection: !this.state.showproviderselection})}><Glyphicon glyph="chevron-down" />
+                <span className={addonClasses} onClick={() => this.setState({providerSelectionVisible: !this.state.providerSelectionVisible})}><Glyphicon glyph="chevron-down" />
                     {providerSelectionMenu}
                 </span>
             );
-            if(this.props.searchProvider) {
-                placeholder += ": " + this.props.searchProviders[this.props.searchProvider].label;
-            }
         }
         let searchform = null;
         this.formfields = {};
@@ -229,8 +246,8 @@ class Search extends React.Component {
         });
         let searchText = filters.join(" AND ");
         if(searchText !== this.props.searchText || !this.props.results) {
-            this.props.changeSearch(searchText, this.props.searchProvider);
-            this.props.startSearch(searchText, {displaycrs: this.props.displaycrs}, this.activeProviers(this.props));
+            this.props.changeSearch(searchText, this.props.activeProviders);
+            this.props.startSearch(searchText, {displaycrs: this.props.displaycrs}, this.activeProviders(this.props));
         }
         this.input.focus();
         this.setState({showfields: false});
@@ -259,7 +276,7 @@ class Search extends React.Component {
             return (
                 <li key={item.id}
                     onMouseDown={this.killEvent}
-                    onClick={() => this.props.searchMore(item, this.props.searchText, this.activeProviers(this.props))}>
+                    onClick={() => this.props.searchMore(item, this.props.searchText, this.activeProviders(this.props))}>
                     <i><Message msgId="search.more" /></i>
                 </li>
             );
@@ -346,7 +363,7 @@ class Search extends React.Component {
 
 module.exports = (searchProviders) => connect(createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
     searchText: state.search ? state.search.text : "",
-    searchProvider: state.search ?  state.search.provider : null,
+    activeProviders: state.search ?  state.search.providers : null,
     pendingProviders: state.search ? state.search.pendingProviders : null,
     results: state.search ? state.search.results : null,
     mapConfig: state.map ? state.map : undefined,

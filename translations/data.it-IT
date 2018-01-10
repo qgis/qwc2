@@ -118,6 +118,8 @@
     },
     "search": {
       "more": "",
+      "search": "",
+      "all": "",
       "placeholder": "Cerca un indirizzo o inserisci coordinate..."
     },
     "share": {

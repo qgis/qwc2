@@ -118,6 +118,8 @@
     },
     "search": {
       "more": "Plus...",
+      "search": "",
+      "all": "",
       "placeholder": "Recherche par toponyme ou coordonnées...",
       "coordinates": "Coordonnées"
     },

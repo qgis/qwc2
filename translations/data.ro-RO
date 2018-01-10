@@ -118,6 +118,8 @@
     },
     "search": {
       "more": "Mai multe...",
+      "search": "",
+      "all": "",
       "placeholder": "Caută locații și coordonate...",
       "coordinates": "Coordonate"
     },
