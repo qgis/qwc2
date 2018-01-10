@@ -6,10 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const displayCrsSelector = (state) => {
-    let mapcrs = state && state.map && state.map ? state.map.projection : undefined;
-    let mousecrs = state && state.mousePosition ? state.mousePosition.crs : undefined;
+const {createSelector} = require('reselect');
+
+const displayCrsSelector = createSelector([
+    state => state.map && state.map.projection || undefined,
+    state => state.mousePosition && state.mousePosition.crs || undefined
+], (mapcrs, mousecrs) => {
     return mousecrs || mapcrs || "EPSG:4326";
-};
+});
 
 module.exports = displayCrsSelector;
