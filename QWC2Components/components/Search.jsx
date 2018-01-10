@@ -362,22 +362,42 @@ class Search extends React.Component {
     }
 };
 
-module.exports = (searchProviders) => connect(createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
-    searchText: state.search ? state.search.text : "",
-    activeProviders: state.search ?  state.search.providers : null,
-    pendingProviders: state.search ? state.search.pendingProviders : null,
-    results: state.search ? state.search.results : null,
-    mapConfig: state.map ? state.map : undefined,
-    displaycrs: displaycrs,
-    theme: state.theme ? state.theme.current : null,
-    searchProviders: searchProviders
-})), {
-    changeSearch: changeSearch,
-    startSearch: startSearch,
-    searchMore: searchMore,
-    panToResult: zoomToPoint,
-    addMarker: addMarker,
-    removeMarker: removeMarker,
-    addLayerFeatures: addLayerFeatures,
-    removeLayer: removeLayer
-})(Search);
+
+module.exports = (searchProviders, providerFactory=(key) => { return null; }) => {
+
+    const collectProviders = createSelector(
+        [state => state.theme && state.theme.current || null], theme => {
+            let availableProviders = {};
+            let themeProviders = theme && theme.searchProviders || [];
+            for(let key of themeProviders) {
+                let provider = searchProviders[key] || providerFactory(key);
+                if(provider) {
+                    availableProviders[key] = provider;
+                }
+            }
+            return availableProviders;
+        }
+    );
+
+    return connect(
+        createSelector([state => state, displayCrsSelector, collectProviders], (state, displaycrs, searchProviders) => ({
+            searchText: state.search ? state.search.text : "",
+            activeProviders: state.search ?  state.search.providers : null,
+            pendingProviders: state.search ? state.search.pendingProviders : null,
+            results: state.search ? state.search.results : null,
+            mapConfig: state.map ? state.map : undefined,
+            displaycrs: displaycrs,
+            theme: state.theme ? state.theme.current : null,
+            searchProviders: searchProviders,
+        })
+    ), {
+        changeSearch: changeSearch,
+        startSearch: startSearch,
+        searchMore: searchMore,
+        panToResult: zoomToPoint,
+        addMarker: addMarker,
+        removeMarker: removeMarker,
+        addLayerFeatures: addLayerFeatures,
+        removeLayer: removeLayer
+    })(Search);
+}
