@@ -92,7 +92,8 @@ const LayerUtils = {
         return {
             params: {
                 LAYERS: layerNames.join(","),
-                OPACITIES: opacities.join(",")
+                OPACITIES: opacities.join(","),
+                VERSION: layer.version
             },
             queryLayers: queryable
         };
