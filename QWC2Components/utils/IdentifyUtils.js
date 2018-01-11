@@ -34,7 +34,7 @@ const IdentifyUtils = {
             url: layer.url.replace(/[?].*$/g, ''),
             params: {
                 service: 'WMS',
-                version: layer.version,
+                version: layer.version || "1.3.0",
                 request: 'GetFeatureInfo',
                 id: layer.id,
                 layers: queryLayers,
