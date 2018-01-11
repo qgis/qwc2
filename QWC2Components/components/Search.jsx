@@ -57,6 +57,11 @@ class Search extends React.Component {
         this.searchTimer = 0;
     }
     componentWillReceiveProps(newProps) {
+        // If search text changed, clear result
+        if(newProps.searchText !== this.props.searchText) {
+            this.props.removeMarker('searchmarker');
+            this.props.removeLayer('searchselection');
+        }
         // If the theme changed, reset search and select provider
         if(newProps.theme && newProps.theme !== this.props.theme) {
             // Only reset search text if the theme was changed (as opposed to the initial theme loaded)
@@ -99,8 +104,6 @@ class Search extends React.Component {
     resetSearch = () => {
         this.setState({currentResult: null, focused: false, showfields: false});
         this.props.changeSearch("", this.props.activeProviders);
-        this.props.removeMarker('searchmarker');
-        this.props.removeLayer('searchselection');
     }
     onChange = (ev) => {
         this.props.changeSearch(ev.target.value, this.props.activeProviders);
@@ -159,7 +162,7 @@ class Search extends React.Component {
                         'searchbar-provider-selection-active': isEmpty(this.props.activeProviders)
                     });
                     allEntry = (
-                        <li className={itemClass} key="all" onClick={() => this.props.changeSearch(this.props.searchText, null)}><Message msgId="search.all" /></li>
+                        <li className={itemClass} key="all" onClick={() => this.props.changeSearch("", null)}><Message msgId="search.all" /></li>
                     );
                 }
                 providerSelectionMenu = (
@@ -170,7 +173,7 @@ class Search extends React.Component {
                                 'searchbar-provider-selection-active': (this.props.activeProviders || []).length === 1 && this.props.activeProviders[0] === key
                             });
                             return (
-                                <li className={itemClass} key={key} onClick={() => this.props.changeSearch(this.props.searchText, [key])}>{this.props.searchProviders[key].label}</li>
+                                <li className={itemClass} key={key} onClick={() => this.props.changeSearch("", [key])}>{this.props.searchProviders[key].label}</li>
                             );
                         })}
                     </ul>
