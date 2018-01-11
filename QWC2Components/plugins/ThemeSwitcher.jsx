@@ -217,6 +217,7 @@ class ThemeSwitcher extends React.Component {
         let layer = {
             id: theme.name + Date.now().toString(),
             type: "wms",
+            version: theme.version,
             url: theme.url,
             visibility: true,
             expanded: theme.expanded,
