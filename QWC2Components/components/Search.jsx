@@ -64,12 +64,12 @@ class Search extends React.Component {
 
             // Ensure search providers references valid providers
             let activeProviders = newProps.activeProviders;
-            if(!newProps.searchOptions.showProviderSelection || isEmpty(newProps.theme.searchProviders)) {
+            if(!newProps.searchOptions.showProviderSelection || isEmpty(newProps.searchProviders)) {
                 activeProviders = null;
             } else {
-                (activeProviders || []).filter(entry => newProps.theme.searchProviders.includes(entry));
+                activeProviders = (activeProviders || []).filter(key => newProps.searchProviders[key] !== undefined);
                 if(isEmpty(activeProviders)) {
-                    activeProviders = newProps.searchOptions.providerSelectionAllowAll ? null : [newProps.theme.searchProviders[0]];
+                    activeProviders = newProps.searchOptions.providerSelectionAllowAll ? null : [newProps.searchProviders[0].key];
                 }
             }
 
@@ -127,9 +127,11 @@ class Search extends React.Component {
         }
     }
     activeProviders = (props) => {
-        let keys = props.theme ? isEmpty(props.activeProviders) ? props.theme.searchProviders : props.activeProviders : [];
+        let keys = isEmpty(props.activeProviders) ? Object.keys(props.searchProviders) : props.activeProviders;
         return keys.reduce((result, key) => {
-            result[key] = props.searchProviders[key];
+            if(props.searchProviders[key]) {
+                result[key] = props.searchProviders[key];
+            }
             return result;
         }, {});
     }
@@ -147,7 +149,7 @@ class Search extends React.Component {
             var addonAfter = (<Glyphicon glyph="remove" onClick={this.resetSearch}/>);
         }
         let providerSelection = null;
-        if(this.props.searchOptions.showProviderSelection && this.props.theme) {
+        if(this.props.searchOptions.showProviderSelection) {
             let providerSelectionMenu = null;
             if(this.state.providerSelectionVisible) {
                 let allEntry = null;
@@ -163,7 +165,7 @@ class Search extends React.Component {
                 providerSelectionMenu = (
                     <ul className="searchbar-provider-selection">
                         {allEntry}
-                        {this.props.theme.searchProviders.map(key => {
+                        {Object.keys(this.props.searchProviders).map(key => {
                             let itemClass = classnames({
                                 'searchbar-provider-selection-active': (this.props.activeProviders || []).length === 1 && this.props.activeProviders[0] === key
                             });
