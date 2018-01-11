@@ -374,10 +374,10 @@ module.exports = (searchProviders, providerFactory=(key) => { return null; }) =>
         [state => state.theme && state.theme.current || null], theme => {
             let availableProviders = {};
             let themeProviders = theme && theme.searchProviders || [];
-            for(let key of themeProviders) {
-                let provider = searchProviders[key] || providerFactory(key);
+            for(let entry of themeProviders) {
+                let provider = searchProviders[entry] || providerFactory(entry);
                 if(provider) {
-                    availableProviders[key] = provider;
+                    availableProviders[entry.key || entry] = provider;
                 }
             }
             return availableProviders;
