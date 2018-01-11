@@ -126,7 +126,7 @@ const LayerUtils = {
         }).join(",");
     },
     getWMSLegendGraphicURL(layer, sublayer) {
-        let version = layer.params.VERSION || "1.3.0";
+        let version = layer.version || "1.3.0";
         return layer.url + "?SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + version + "&FORMAT=image/png&LAYER=" + sublayer;
     },
     reorderLayer(layers, movelayer, sublayerpath, delta, swipeActive) {

@@ -210,7 +210,7 @@ class Print extends React.Component {
                     <div>
                         <input readOnly="true" name={mapName + ":extent"} type={formvisibility} value={extent || ""} />
                         <input readOnly="true" name="SERVICE" type={formvisibility} value="WMS" />
-                        <input readOnly="true" name="VERSION" type={formvisibility} value={themeLayer.params.VERSION || "1.3.0"} />
+                        <input readOnly="true" name="VERSION" type={formvisibility} value={themeLayer.version || "1.3.0"} />
                         <input readOnly="true" name="REQUEST" type={formvisibility} value="GetPrint" />
                         <input readOnly="true" name="FORMAT" type={formvisibility} value="pdf" />
                         <input readOnly="true" name="TRANSPARENT" type={formvisibility} value="true" />
