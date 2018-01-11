@@ -38,26 +38,10 @@ class StandardApp extends React.Component {
     static propTypes = {
         appConfig: PropTypes.object
     }
-    static defaultProps = {
-        appConfig: {}
-    }
     constructor(props) {
         super(props);
-
-        const onInit = () => {
-            if (!global.Intl ) {
-                require.ensure(['intl', 'intl/locale-data/jsonp/en.js', 'intl/locale-data/jsonp/it.js'], (require) => {
-                    global.Intl = require('intl');
-                    require('intl/locale-data/jsonp/en.js');
-                    require('intl/locale-data/jsonp/it.js');
-                    this.init();
-                });
-            } else {
-                this.init();
-            }
-        };
-        this.store = StandardStore(this.props.appConfig.initialState || {}, this.props.appConfig.pluginsDef.plugins, {onPersist: onInit});
-        onInit();
+        this.store = StandardStore(this.props.appConfig.initialState || {}, this.props.appConfig.pluginsDef.plugins, {onPersist: this.init});
+        this.init();
     }
     render() {
         let plugins = assign(PluginsUtils.getPlugins(this.props.appConfig.pluginsDef.plugins));
@@ -70,6 +54,7 @@ class StandardApp extends React.Component {
         );
     }
     init = () => {
+        LocaleUtils.setSupportedLocales(this.props.appConfig.supportedLocales);
         this.store.dispatch(changeBrowserProperties(ConfigUtils.getBrowserProperties()));
         if (urlQuery.localConfig) {
             ConfigUtils.setLocalConfigurationFile(urlQuery.localConfig + '.json');
