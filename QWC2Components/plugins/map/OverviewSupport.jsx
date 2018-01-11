@@ -22,6 +22,8 @@ const PropTypes = require('prop-types');
 var ol = require('openlayers');
 var assign = require('object-assign');
 
+require('./style/OverviewSupport.css');
+
 class Overview extends React.Component {
     static propTypes = {
         id: PropTypes.string,
