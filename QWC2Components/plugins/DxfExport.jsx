@@ -38,7 +38,7 @@ class DxfExport extends React.Component {
                 <div className="help-text"><Message msgId="dxfexport.selectinfo" /></div>
                 <div className="export-settings"><Message msgId="dxfexport.symbologyscale" /> <span className="input-frame"><span>1&nbsp;:&nbsp;</span><input type="number" name="SCALE" defaultValue="500" /></span></div>
                 <input type="hidden" name="SERVICE" value="WMS" readOnly="true" />
-                <input type="hidden" name="VERSION" value="1.3" readOnly="true" />
+                <input type="hidden" name="VERSION" value={themeLayer.version || "1.3.0"} readOnly="true" />
                 <input type="hidden" name="REQUEST" value="GetMap" readOnly="true" />
                 <input type="hidden" name="FORMAT" value="application/dxf" readOnly="true" />
                 <input type="hidden" name="LAYERS" value={themeLayer.params.LAYERS} readOnly="true" />
