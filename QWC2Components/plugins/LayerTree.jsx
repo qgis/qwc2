@@ -176,14 +176,7 @@ class LayerTree extends React.Component {
                 legendicon = (<span className="layertree-item-legend-coloricon" style={{backgroundColor: sublayer.color}} />);
             }
         }
-        let title = "";
-        if(this.props.flattenGroups && layer.sublayers) {
-            title = layer.title + ":";
-            for(let i = 0, cur=layer.sublayers[path[0]]; i < path.length - 1; ++i, cur = layer.sublayers[path[i]]) {
-                title += cur.title + ":";
-            }
-        }
-        title += sublayer.title;
+        let title = sublayer.title;
         return (
             <div className="layertree-item-container" key={sublayer.uuid}>
                 <div className={classnames(itemclasses)}>
