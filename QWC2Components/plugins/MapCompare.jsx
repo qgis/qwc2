@@ -30,7 +30,7 @@ class MapComparePlugin extends React.Component {
         }
         let style = {left: this.props.swipe + "%"};
         return (
-            <div ref={el => this.el = el} style={style} id="MapCompare" onMouseDown={this.dragStart}>
+            <div ref={el => this.el = el} style={style} id="MapCompare" onMouseDown={this.mouseDragStart} onTouchStart={this.touchDragStart} onTouchMove={this.touchDrag}>
                 <span className="map-compare-handle">
                     <Glyphicon className="map-compare-handle-icon" glyph="triangle-left" />
                     <Glyphicon className="map-compare-handle-icon" glyph="triangle-right" />
@@ -38,28 +38,39 @@ class MapComparePlugin extends React.Component {
             </div>
         );
     }
-    dragStart = (ev) => {
+    mouseDragStart = (ev) => {
         if(this.el) {
             let rect = this.el.getBoundingClientRect();
             this.clickOffset = ev.clientX - rect.left;
-            document.addEventListener("mousemove", this.drag);
-            document.addEventListener("mouseup", this.dragEnd);
+            document.addEventListener("mousemove", this.mouseDrag);
+            document.addEventListener("mouseup", this.mouseDragEnd);
         }
         ev.preventDefault();
         ev.stopPropagation();
     }
-    drag = (ev) => {
+    mouseDrag = (ev) => {
         let perc = (ev.clientX - this.clickOffset) / document.body.clientWidth * 100;
         perc = Math.min(100, Math.max(0, perc));
         this.props.setSwipe(perc);
         ev.preventDefault();
         ev.stopPropagation();
     }
-    dragEnd = (ev) => {
-        document.removeEventListener("mouseup", this.dragEnd);
-        document.removeEventListener("mousemove", this.drag);
+    mouseDragEnd = (ev) => {
+        document.removeEventListener("mousemove", this.mouseDrag);
+        document.removeEventListener("mouseup", this.mouseDragEnd);
         ev.preventDefault();
         ev.stopPropagation();
+    }
+    touchDragStart = (ev) => {
+        if(this.el) {
+            let rect = this.el.getBoundingClientRect();
+            this.clickOffset = ev.touches[0].clientX - rect.left;
+        }
+    }
+    touchDrag = (ev) => {
+        let perc = (ev.touches[0].clientX - this.clickOffset) / document.body.clientWidth * 100;
+        perc = Math.min(100, Math.max(0, perc));
+        this.props.setSwipe(perc);
     }
 };
 

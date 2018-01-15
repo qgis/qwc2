@@ -11,18 +11,19 @@
 #MapCompare span.map-compare-handle {
     position: absolute;
     display: block;
-    top: calc(50% - 2em);
-    height: 2em;
-    width: 2em;
-    line-height: 2em;
-    left: -0.875em;
+    top: calc(50% - 3em);
+    height: 3em;
+    width: 3em;
+    line-height: 3em;
+    left: -1.375em;
     background-color: @button_bg@;
     display: flex;
     align-items: center;
-    border-radius: 1em;
+    border-radius: 1.5em;
 }
 
 #MapCompare span.map-compare-handle-icon {
-    flex: 0 0 1em;
+    flex: 0 0 1.5em;
     color: white;
+    text-align: center;
 }
