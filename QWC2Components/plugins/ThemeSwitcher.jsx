@@ -231,6 +231,7 @@ class ThemeSwitcher extends React.Component {
             priority: 1,
             isThemeLayer: true,
             attribution: theme.attribution,
+            legendUrl: theme.legendUrl,
             infoFormats: theme.infoFormats,
             uuid: theme.uuid
         };

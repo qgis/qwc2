@@ -21,6 +21,7 @@ from xml.dom.minidom import parseString
 import json
 import traceback
 import socket
+import re
 
 hostFqdn = "http://" + socket.getfqdn()
 usedThemeIds = []
@@ -91,7 +92,7 @@ def getChildElementValue(parent, path):
 
 
 # recursively get layer tree
-def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap):
+def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, themeLegend):
     name = getChildElementValue(layer, "Name")
     title = getChildElementValue(layer, "Title")
     layers = getDirectChildElements(layer, "Layer")
@@ -159,6 +160,9 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
         try:
             onlineResource = getChildElement(layer, "Style/LegendURL/OnlineResource")
             layerEntry["legendUrl"] = onlineResource.getAttribute("xlink:href")
+            layerEntry["legendUrl"] += themeLegend["extraParams"]
+            themeLegend["sublayers"].append(name)
+            themeLegend["url"] = layerEntry["legendUrl"]
         except:
             pass
         # use geographic bounding box, as default CRS may have inverted axis order with WMS 1.3.0
@@ -178,7 +182,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
         layerEntry["sublayers"] = []
         layerEntry["expanded"] = False if collapseBelowLevel >= 0 and level >= collapseBelowLevel else True
         for sublayer in layers:
-            getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap)
+            getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap, themeLegend)
 
         if not layerEntry["sublayers"]:
             # skip empty groups
@@ -234,7 +238,12 @@ def getTheme(configItem, resultItem):
         layerTree = []
         visibleLayers = []
         titleNameMap = {}
-        getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap)
+        themeLegend = {
+            "sublayers": [],
+            "url": "",
+            "extraParams": configItem["extraLegendParameters"] if "extraLegendParameters" in configItem else ""
+        }
+        getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, themeLegend)
         visibleLayers.reverse()
 
         # print templates
@@ -326,7 +335,9 @@ def getTheme(configItem, resultItem):
             resultItem["mapCrs"] = "EPSG:3857"
         if printTemplates:
             resultItem["print"] = printTemplates
-        resultItem["drawingOrder"] = drawingOrder;
+        resultItem["drawingOrder"] = drawingOrder
+        if themeLegend["url"]:
+            resultItem["legendUrl"] = re.sub(r"([&\?])LAYER=[^&]*", r"\1LAYER=" + ",".join(themeLegend["sublayers"]), themeLegend["url"], flags=re.IGNORECASE)
         if "printLabelForSearchResult" in configItem:
             resultItem["printLabelForSearchResult"] = configItem["printLabelForSearchResult"]
         if "printLabelConfig" in configItem:
@@ -434,8 +445,9 @@ def getGroupThemes(configGroup, resultGroup):
           "framecolor": "#000000",                  // optional, color of the frame border
           "framewidth": 1                           // optional, width of the frame border, in pixels
         },
-        "collapseLayerGroupsBelowLevel": <level>    // optional, layer tree level below which to initially collapse groups. If unspecified, groups are not initially collapsed.
-        "skipEmptyFeatureAttributes": true          // optional, whether to skip empty feature attributes in the identify results. Default is false.
+        "collapseLayerGroupsBelowLevel": <level>,   // optional, layer tree level below which to initially collapse groups. If unspecified, groups are not initially collapsed.
+        "skipEmptyFeatureAttributes": true,         // optional, whether to skip empty feature attributes in the identify results. Default is false.
+        "extraLegendParameters": "&KEY=VALUE,..."   // optional, additional query parameters to append to the getLegendGraphics request
       }
     ],
     "groups": [                                     // optional, nested groups

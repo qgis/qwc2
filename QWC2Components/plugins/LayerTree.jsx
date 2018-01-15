@@ -395,8 +395,6 @@ class LayerTree extends React.Component {
         body += this.props.layers.map(layer => {
             if(layer.legendUrl) {
                 return '<div><img src="' + layer.legendUrl + '" /></div>';
-            } else if(layer.params && layer.params.LAYERS) { // WMS with sublayers
-                return '<div><img src="' + LayerUtils.getWMSLegendGraphicURL(layer, layer.params.LAYERS).replace("&", "&amp;") + '" /></div>'
             } else if(layer.color) {
                 return '<div><span style="display: inline-block; width: 1em; height: 1em; box-shadow: inset 0 0 0 1000px ' + layer.color + '; margin: 0.25em; border: 1px solid black;">&nbsp;</span>' + (layer.title || layer.name) + '</div>';
             } else {

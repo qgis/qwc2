@@ -100,7 +100,7 @@ function toArray(obj) {
 }
 
 // recursively get layer tree
-function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap) {
+function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, themeLegend) {
     if (printLayers.indexOf(layer.Name) !== -1) {
         // skip print layers
         return;
@@ -159,6 +159,9 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         }
         if(layer.Style && layer.Style.LegendURL) {
             layerEntry.legendUrl = layer.Style.LegendURL.OnlineResource.$["xlink:href"];
+            layerEntry.legendUrl += themeLegend.extraParams;
+            themeLegend.sublayers.push(layer.Name);
+            themeLegend.url = layerEntry.legendUrl;
         }
         // use geographic bounding box, as default CRS may have inverted axis order with WMS 1.3.0
         if(layer.EX_GeographicBoundingBox) {
@@ -177,7 +180,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         layerEntry.sublayers = [];
         layerEntry.expanded = collapseBelowLevel >= 0 && level >= collapseBelowLevel ? false : true;
         for (var subLayer of toArray(layer.Layer)) {
-            getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap);
+            getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, themeLegend);
         }
         if (layerEntry.sublayers.length === 0) {
             // skip empty groups
@@ -270,7 +273,12 @@ function getTheme(configItem, resultItem) {
             var layerTree = [];
             var visibleLayers = [];
             var titleNameMap = {};
-            getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap);
+            let themeLegend = {
+                sublayers: [],
+                url: "",
+                extraParams: configItem.extraLegendParameters || ""
+            };
+            getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, themeLegend);
             visibleLayers.reverse();
 
             // print templates
@@ -353,6 +361,9 @@ function getTheme(configItem, resultItem) {
                 resultItem.print = printTemplates;
             }
             resultItem.drawingOrder = drawingOrder;
+            if(themeLegend.url) {
+                resultItem.legendUrl = themeLegend.url.replace(/([&\?])LAYER=[^&]*/i, "$1LAYER=" + themeLegend.sublayers.join(","));
+            }
             if(configItem.printLabelForSearchResult) {
                 resultItem.printLabelForSearchResult = configItem.printLabelForSearchResult;
             }
@@ -457,8 +468,9 @@ function getGroupThemes(configGroup, resultGroup) {
           "framecolor": "#000000",                  // optional, color of the frame border
           "framewidth": 1                           // optional, width of the frame border, in pixels
         },
-        "collapseLayerGroupsBelowLevel": <level>    // optional, layer tree level below which to initially collapse groups. If unspecified, groups are not initially collapsed.
-        "skipEmptyFeatureAttributes": true          // optional, whether to skip empty feature attributes in the identify results. Default is false.
+        "collapseLayerGroupsBelowLevel": <level>,   // optional, layer tree level below which to initially collapse groups. If unspecified, groups are not initially collapsed.
+        "skipEmptyFeatureAttributes": true,         // optional, whether to skip empty feature attributes in the identify results. Default is false.
+        "extraLegendParameters": "&KEY=VALUE,..."   // optional, additional query parameters to append to the getLegendGraphics request
       }
     ],
     "groups": [                                     // optional, nested groups
