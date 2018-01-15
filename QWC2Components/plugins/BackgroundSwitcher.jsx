@@ -31,7 +31,7 @@ class BackgroundSwitcher extends React.Component {
     }
     render() {
         let activeClass = this.props.visible ? 'active' : '';
-        let backgroundLayers = this.props.layers.filter(layer => layer.group === "background");
+        let backgroundLayers = this.props.layers.filter(layer => layer.group === "background").slice(0).reverse();
         if(backgroundLayers.length > 0){
              return (
                 <div>
