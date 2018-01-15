@@ -17,10 +17,9 @@ const {isEmpty} = require('lodash');
 const Sortable = require('react-sortablejs');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeLayerProperties, removeLayer, reorderLayer} = require('../actions/layers')
-const {setSwipe} = require('../actions/map');
+const {setSwipe, toggleMapTips} = require('../actions/map');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
-const {toggleMapTips} = require('../actions/layertree');
 const ImportLayer = require('../components/ImportLayer');
 const LayerInfoWindow = require('../components/LayerInfoWindow');
 const {SideBar} = require('../components/SideBar');
@@ -439,7 +438,7 @@ const selector = (state) => ({
     map: state.map,
     mobile: state.browser ? state.browser.mobile : false,
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
-    mapTipsEnabled: state.layertree && state.layertree.maptips
+    mapTipsEnabled: state.map && state.map.maptips
 });
 
 module.exports = {
@@ -451,7 +450,6 @@ module.exports = {
         setSwipe: setSwipe
     })(LayerTree),
     reducers: {
-        layers: require('../reducers/layers'),
-        layertree: require('../reducers/layertree')
+        layers: require('../reducers/layers')
     }
 };

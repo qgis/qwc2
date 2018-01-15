@@ -23,6 +23,7 @@ const CHANGE_MAP_CRS = 'CHANGE_MAP_CRS';
 const CHANGE_MAP_SCALES = 'CHANGE_MAP_SCALES';
 const CHANGE_ROTATION = 'CHANGE_ROTATION';
 const SET_SWIPE = 'SET_SWIPE';
+const TOGGLE_MAPTIPS = 'TOGGLE_MAPTIPS';
 
 function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
     return (dispatch) => {
@@ -124,6 +125,13 @@ function setSwipe(swipe) {
     };
 }
 
+function toggleMapTips(active) {
+    return {
+        type: TOGGLE_MAPTIPS,
+        active: active
+    }
+}
+
 module.exports = {
     CHANGE_MAP_VIEW,
     CLICK_ON_MAP,
@@ -135,6 +143,7 @@ module.exports = {
     CHANGE_MAP_SCALES,
     CHANGE_ROTATION,
     SET_SWIPE,
+    TOGGLE_MAPTIPS,
     changeMapView,
     clickOnMap,
     changeZoomLevel,
@@ -144,5 +153,6 @@ module.exports = {
     zoomToPoint,
     panTo,
     changeRotation,
-    setSwipe
+    setSwipe,
+    toggleMapTips
 };
