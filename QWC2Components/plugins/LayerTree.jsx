@@ -14,6 +14,7 @@ const Swipeable = require('react-swipeable');
 const assign = require('object-assign');
 const classnames = require('classnames');
 const {isEmpty} = require('lodash');
+const Sortable = require('react-sortablejs');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeLayerProperties, removeLayer, reorderLayer} = require('../actions/layers')
 const {setSwipe} = require('../actions/map');
@@ -178,7 +179,7 @@ class LayerTree extends React.Component {
         }
         let title = sublayer.title;
         return (
-            <div className="layertree-item-container" key={sublayer.uuid}>
+            <div className="layertree-item-container" key={sublayer.uuid} data-id={JSON.stringify({layer: layer.uuid, path: path})}>
                 <div className={classnames(itemclasses)}>
                     <span className="layertree-item-expander"></span>
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.layerToggled(layer, path)}></span>
@@ -256,7 +257,11 @@ class LayerTree extends React.Component {
                     onHide={this.hideLegendTooltip}
                     extraTitlebarContent={extraTitlebarContent}>
                     <div role="body" className="layertree-container">
-                        <div className="layertree-tree">{this.props.layers.map(this.renderLayerTree)}</div>
+                        <div className="layertree-tree">
+                            <Sortable options={{disabled: this.props.flattenGroups !== true}} onChange={this.onSortChange}>
+                                {this.props.layers.map(this.renderLayerTree)}
+                            </Sortable>
+                        </div>
                         {maptipCheckbox}
                         <div className="layertree-option">
                             <span className="layertree-item-checkbox" style={swipecheckboxstyle} onClick={this.toggleSwipe}></span>
@@ -270,6 +275,13 @@ class LayerTree extends React.Component {
                 {infoWindow}
             </div>
         );
+    }
+    onSortChange = (order, sortable, ev) => {
+        let moved = JSON.parse(order[ev.newIndex]);
+        let layer = this.props.layers.find(layer => layer.uuid === moved.layer);
+        if(layer) {
+            this.props.reorderLayer(layer, moved.path, ev.newIndex - ev.oldIndex, this.props.map.swipe !== undefined);
+        }
     }
     toggleImportLayers = () => {
         let visible = !this.state.importvisible;
