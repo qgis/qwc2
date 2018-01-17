@@ -86,13 +86,13 @@ const ServiceLayerUtils = {
             abstract: layer.Abstract,
             attribution: layer.Attribution,
             legendUrl: legendUrl,
-            service: serviceUrl,
+            url: serviceUrl,
             version: version,
             infoFormats: infoFormats,
             queryable: layer.queryable,
             sublayers: sublayers.sort((a, b) => strcmp(a.title, b.title)),
             expanded: false,
-            bbox: bbox
+            boundingBox: bbox
         };
     },
     getWFSLayers(capabilitiesXml) {
@@ -145,8 +145,8 @@ const ServiceLayerUtils = {
                 name: name,
                 title: title,
                 abstract: abstract,
-                bbox: bbox,
-                service: serviceUrl,
+                boundingBox: bbox,
+                url: serviceUrl,
                 version: version,
                 formats: formats,
                 color: randomColor()

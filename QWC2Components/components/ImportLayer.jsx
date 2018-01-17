@@ -205,8 +205,6 @@ class ImportLayer extends React.Component {
                 id: filename + Date.now(),
                 name: filename,
                 title: filename.replace(/\.[^/.]+$/, ""),
-                visibility: true,
-                queryable: false,
                 role: LayerRole.USERLAYER,
                 zoomToExtent: true
             }, features, true);
@@ -215,38 +213,11 @@ class ImportLayer extends React.Component {
         }
     }
     addServiceLayer = (entry) => {
-        if(entry.type === "wms") {
-            this.props.addLayer({
+        if(entry.type === "wms" || entry.type === "wfs") {
+            this.props.addLayer(assign({
                 id: entry.name + Date.now().toString(),
-                type: entry.type,
-                url: entry.service,
-                version: entry.version,
-                visibility: true,
-                name: entry.name,
-                abstract: entry.abstract,
-                attribution: entry.attribution,
-                legendUrl: entry.legendUrl,
-                title: entry.title,
-                boundingBox: entry.bbox,
-                queryable: entry.queryable,
-                infoFormats: entry.infoFormats,
                 role: LayerRole.USERLAYER
-            });
-        } else if(entry.type === "wfs") {
-            this.props.addLayer({
-                id: entry.name + Date.now().toString(),
-                type: entry.type,
-                url: entry.service,
-                version: entry.version,
-                visibility: true,
-                name: entry.name,
-                abstract: entry.abstract,
-                title: entry.title,
-                boundingBox: entry.bbox,
-                formats: entry.formats,
-                color: entry.color,
-                role: LayerRole.USERLAYER
-            });
+            }, entry));
         } else if(entry.type === "kml") {
             this.addKMLLayer(entry.name, entry.data);
         }
