@@ -25,7 +25,7 @@ class MapComparePlugin extends React.Component {
         setSwipe: PropTypes.func
     }
     render() {
-        if(!this.props.swipe) {
+        if(!this.props.swipe && this.props.swipe !== 0) {
             return null;
         }
         let style = {left: this.props.swipe + "%"};
@@ -77,7 +77,7 @@ class MapComparePlugin extends React.Component {
 
 module.exports = {
     MapComparePlugin: connect((state) => ({
-        swipe: state.map && state.map.swipe || null
+        swipe: state.map.swipe
     }), {
         setSwipe: setSwipe
     })(MapComparePlugin)
