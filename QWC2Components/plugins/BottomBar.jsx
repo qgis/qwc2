@@ -13,7 +13,6 @@ const {createSelector} = require('reselect');
 const pickBy = require('lodash.pickby');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
-const {getScales} = require('../../MapStore2Components/utils/MapUtils');
 const {changeMousePositionState, changeMousePositionCrs} = require('../../MapStore2Components/actions/mousePosition');
 const {changeZoomLevel} = require('../actions/map');
 const {CoordinateDisplayer} = require('../components/CoordinateDisplayer');
@@ -109,9 +108,9 @@ const selector = createSelector([state => state, displayCrsSelector], (state, di
     let map = state && state.map && state.map ? state.map : null;
     return {
         displaycrs: displaycrs,
-        mapcrs: map ? map.projection : "EPSG:3857",
-        mapscale: map ? map.zoom : 0,
-        mapscales: map  && map.mapOptions && map.mapOptions.view ? map.mapOptions.view.scales : [],
+        mapcrs: map.projection || "EPSG:3857",
+        mapscale: map.zoom || 0,
+        mapscales: map.scales || [],
         activeThemeId: state.theme && state.theme.current ? state.theme.current.id : undefined,
         fullscreen: state.display && state.display.fullscreen,
         additionalMouseCrs: state.theme && state.theme.current ? state.theme.current.additionalMouseCrs : []

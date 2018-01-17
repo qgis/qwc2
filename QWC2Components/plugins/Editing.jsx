@@ -59,7 +59,7 @@ class Editing extends React.Component {
             const oldPoint = this.props.map.clickPoint || {};
             if(!isEqual(newPoint.latlng, oldPoint.latLng)) {
                 let point = {x: newPoint.latlng.lng, y: newPoint.latlng.lat};
-                let scale = this.props.map.mapOptions.view.scales[this.props.map.zoom];
+                let scale = this.props.map.scales[this.props.map.zoom];
                 point = CoordinatesUtils.reproject(point, "EPSG:4326", this.props.map.projection);
                 this.props.iface.getFeature(this.state.selectedLayer, point, this.props.map.projection, scale, 96, (feature) => {
                     this.props.changeEditingState(assign({}, this.props.editing, {feature: feature, changed: false}));

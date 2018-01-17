@@ -92,7 +92,7 @@ class OpenlayersMap extends React.Component {
           controls: controls,
           interactions: interactions,
           target: this.props.id,
-          view: this.createView(this.props.center, Math.round(this.props.zoom), this.props.projection, this.props.mapOptions && this.props.mapOptions.view)
+          view: this.createView(this.props.center, Math.round(this.props.zoom), this.props.projection, this.props.resolutions)
         });
         map.on('moveend', this.updateMapInfoState);
         map.on('singleclick', (event) => {
@@ -151,7 +151,7 @@ class OpenlayersMap extends React.Component {
             {x: c[0], y: c[1]},
             view.getZoom(),
             {
-                bounds: {minx: bbox[0], miny: bbox[1], maxx: bbox[2], maxy: bbox[3]},
+                bounds: bbox,
                 rotation: view.getRotation()
             }, size, this.props.id, this.props.projection);
     }
@@ -178,8 +178,8 @@ class OpenlayersMap extends React.Component {
             }, 0);
         }
 
-        if ((this.props.projection !== newProps.projection) || this.haveResolutionsChanged(newProps)) {
-            this.map.setView(this.createView(newProps.center, newProps.zoom, newProps.projection, newProps.mapOptions && newProps.mapOptions.view));
+        if ((this.props.projection !== newProps.projection) || (this.props.resolutions !== newProps.resolutions)) {
+            this.map.setView(this.createView(newProps.center, newProps.zoom, newProps.projection, newProps.resolutions));
             // We have to force ol to drop tile and reload
             this.map.getLayers().forEach((l) => {
                 let source = l.getSource();
@@ -213,17 +213,13 @@ class OpenlayersMap extends React.Component {
             </div>
         );
     }
-    haveResolutionsChanged = (newProps) => {
-        const resolutions = this.props.mapOptions && this.props.mapOptions.view ? this.props.mapOptions.view.resolutions : undefined;
-        const newResolutions = newProps.mapOptions && newProps.mapOptions.view ? newProps.mapOptions.view.resolutions : undefined;
-        return !isEqual(resolutions, newResolutions);
-    }
-    createView = (center, zoom, projection, options) => {
-        const viewOptions = assign({}, {
+    createView = (center, zoom, projection, resolutions) => {
+        const viewOptions = {
             projection: projection,
             center: [center.x, center.y],
-            zoom: zoom
-        }, options || {});
+            zoom: zoom,
+            resolutions: resolutions
+        };
         if(this.props.maxExtent) {
             ol.proj.get(projection).setExtent(this.props.maxExtent);
         }
@@ -251,24 +247,6 @@ class OpenlayersMap extends React.Component {
         }
     }
     registerHooks = () => {
-        mapUtils.registerHook(mapUtils.RESOLUTIONS_HOOK, () => {
-            if (this.props.mapOptions && this.props.mapOptions.view && this.props.mapOptions.view.resolutions) {
-                return this.props.mapOptions.view.resolutions;
-            }
-            return [];
-        });
-        mapUtils.registerHook(mapUtils.RESOLUTION_HOOK, () => {
-            return this.map.getView().getResolution();
-        });
-        mapUtils.registerHook(mapUtils.COMPUTE_BBOX_HOOK, (center, zoom) => {
-            let view = this.createView(center, zoom, this.props.projection, this.props.mapOptions && this.props.mapOptions.view);
-            let size = this.map.getSize();
-            let bbox = view.calculateExtent(size);
-            return {
-                bounds: {minx: bbox[0], miny: bbox[1], maxx: bbox[2], maxy: bbox[3]},
-                rotation: this.map.getView().getRotation()
-            };
-        });
         mapUtils.registerHook(mapUtils.GET_PIXEL_FROM_COORDINATES_HOOK, (pos) => {
             return this.map.getPixelFromCoordinate(pos);
         });

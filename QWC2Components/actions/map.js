@@ -8,13 +8,12 @@
  */
 
 const CHANGE_MAP_VIEW = 'CHANGE_MAP_VIEW';
+const CONFIGURE_MAP = 'CONFIGURE_MAP';
 const CLICK_ON_MAP = 'CLICK_ON_MAP';
 const CHANGE_ZOOM_LVL = 'CHANGE_ZOOM_LVL';
 const PAN_TO = 'PAN_TO';
 const ZOOM_TO_EXTENT = 'ZOOM_TO_EXTENT';
 const ZOOM_TO_POINT = 'ZOOM_TO_POINT';
-const CHANGE_MAP_CRS = 'CHANGE_MAP_CRS';
-const CHANGE_MAP_SCALES = 'CHANGE_MAP_SCALES';
 const CHANGE_ROTATION = 'CHANGE_ROTATION';
 const SET_SWIPE = 'SET_SWIPE';
 const TOGGLE_MAPTIPS = 'TOGGLE_MAPTIPS';
@@ -31,17 +30,20 @@ function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
     };
 }
 
-function changeMapCrs(crs) {
+/**
+ * @param crs {string} The map projection
+ * @param scales {Array} List of map scales
+ * @param view {Object} The map view, as follows:
+ *               {center: {x: ... y: ...}, zoom: ..., crs: ...}
+ *             or
+ *               {bounds: [xmin, ymin, xmax, ymax], crs: ...}
+ */
+function configureMap(crs, scales, view) {
     return {
-        type: CHANGE_MAP_CRS,
-        crs: crs
-    };
-}
-
-function changeMapScales(scales) {
-    return {
-        type: CHANGE_MAP_SCALES,
-        scales: scales
+        type: CONFIGURE_MAP,
+        crs,
+        scales,
+        view
     };
 }
 
@@ -84,11 +86,10 @@ function zoomToPoint(pos, zoom, crs) {
     }
 }
 
-function changeRotation(rotation, mapStateSource) {
+function changeRotation(rotation) {
     return {
         type: CHANGE_ROTATION,
-        rotation,
-        mapStateSource
+        rotation
     };
 }
 
@@ -108,21 +109,19 @@ function toggleMapTips(active) {
 
 module.exports = {
     CHANGE_MAP_VIEW,
+    CONFIGURE_MAP,
     CLICK_ON_MAP,
     CHANGE_ZOOM_LVL,
     PAN_TO,
     ZOOM_TO_EXTENT,
     ZOOM_TO_POINT,
-    CHANGE_MAP_CRS,
-    CHANGE_MAP_SCALES,
     CHANGE_ROTATION,
     SET_SWIPE,
     TOGGLE_MAPTIPS,
     changeMapView,
+    configureMap,
     clickOnMap,
     changeZoomLevel,
-    changeMapCrs,
-    changeMapScales,
     zoomToExtent,
     zoomToPoint,
     panTo,

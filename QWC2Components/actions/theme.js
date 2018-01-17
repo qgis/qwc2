@@ -49,24 +49,12 @@ function setCurrentTheme(theme, layer, backgroundLayers, zoomExtent, centerZoom)
         }
         dispatch(addLayer(layer));
 
-        // update map crs
-        const p1 = new Promise((resolve) => {
-            resolve(dispatch(changeMapCrs(theme.mapCrs)));
-        });
-        p1.then(() => {
-            // then update map scales
-            const p2 = new Promise((resolve) => {
-                resolve(dispatch(changeMapScales(theme.scales)));
-            });
-            p2.then(() => {
-                // then update zoom to extent
-                if(centerZoom) {
-                    dispatch(zoomToPoint(centerZoom.center, centerZoom.zoom, centerZoom.crs));
-                } else {
-                    dispatch(zoomToExtent(zoomExtent.bounds, zoomExtent.crs));
-                }
-            });
-        });
+        // Reconfigure map
+        let initialView = {bounds: zoomExtent.bounds, crs: zoomExtent.crs};
+        if(centerZoom) {
+            initialView = {center: centerZoom.center, crs: centerZoom.crs};
+        }
+        dispatch(configureMap(theme.mapCrs, theme.scales || MapUtils.getGoogleMercatorScales(0, 21), initialView || theme.initialBbox));
 
         dispatch({
             type: SET_CURRENT_THEME,

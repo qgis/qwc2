@@ -36,7 +36,7 @@ class Search extends React.Component {
         searchProviders: PropTypes.object, // All available search providers
         results: PropTypes.array,
         theme: PropTypes.object,
-        mapConfig: PropTypes.object,
+        map: PropTypes.object,
         displaycrs: PropTypes.string,
         changeSearch: PropTypes.func,
         startSearch: PropTypes.func,
@@ -297,10 +297,10 @@ class Search extends React.Component {
     showResult = (item, zoom=true) => {
         this.props.removeLayer("searchselection");
         let text = item.label !== undefined ? item.label : item.text;
-        if(zoom && this.props.mapConfig !== undefined) {
+        if(zoom) {
             // find max zoom level greater than min scale
             let maxZoom = 0;
-            const scales = mapUtils.getScales(this.props.mapConfig.projection);
+            const scales = this.props.map.scales;
             for (let i in scales) {
                 if (scales[i] < this.props.searchOptions.minScale) {
                     break;
@@ -310,7 +310,7 @@ class Search extends React.Component {
             }
 
             // zoom to result using max zoom level
-            const newZoom = mapUtils.getZoomForExtent(CoordinatesUtils.reprojectBbox(item.bbox, item.crs, this.props.mapConfig.projection), this.props.mapConfig.size, 0, maxZoom, null);
+            const newZoom = mapUtils.getZoomForExtent(CoordinatesUtils.reprojectBbox(item.bbox, item.crs, this.props.map.projection), this.props.map.resolutions, this.props.map.size, 0, maxZoom);
             this.props.panToResult({x: item.x, y: item.y}, newZoom, item.crs);
         }
         if(item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
@@ -324,10 +324,10 @@ class Search extends React.Component {
     showFeatureGeometry = (item, geometry, crs, text) => {
         if(item === this.state.currentResult) {
             let feature = VectorLayerUtils.wktToGeoJSON(geometry);
-            feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, crs, this.props.mapConfig.projection);
+            feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, crs, this.props.map.projection);
             let geojson  = new ol.format.GeoJSON().readFeature(feature);
             let center = this.getFeatureCenter(geojson.getGeometry());
-            this.props.addMarker('searchmarker', center, text, this.props.mapConfig.projection);
+            this.props.addMarker('searchmarker', center, text, this.props.map.projection);
             let layer = {
                 id: "searchselection",
                 visibility: true,
@@ -391,7 +391,7 @@ module.exports = (searchProviders, providerFactory=(key) => { return null; }) =>
             activeProviders: state.search ?  state.search.providers : null,
             pendingProviders: state.search ? state.search.pendingProviders : null,
             results: state.search ? state.search.results : null,
-            mapConfig: state.map ? state.map : undefined,
+            map: state.map,
             displaycrs: displaycrs,
             theme: state.theme ? state.theme.current : null,
             searchProviders: searchProviders,

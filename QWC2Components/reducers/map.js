@@ -7,9 +7,8 @@
  */
 
 const {
-    CHANGE_MAP_VIEW, CHANGE_ZOOM_LVL, CHANGE_MAP_CRS, CHANGE_MAP_SCALES,
-    ZOOM_TO_EXTENT, ZOOM_TO_POINT, PAN_TO,  CHANGE_ROTATION, CLICK_ON_MAP,
-    SET_SWIPE, TOGGLE_MAPTIPS
+    CHANGE_MAP_VIEW, CONFIGURE_MAP, CHANGE_ZOOM_LVL, ZOOM_TO_EXTENT,
+    ZOOM_TO_POINT, PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, SET_SWIPE, TOGGLE_MAPTIPS
 } = require('../actions/map');
 
 const assign = require('object-assign');
@@ -18,7 +17,21 @@ const UrlParams = require("../utils/UrlParams");
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 
-function mapConfig(state = {}, action) {
+const defaultState = {
+    bbox: {bounds: [0, 0, 0, 0], rotation: 0},
+    center: {x: 0, y: 0},
+    projection: "EPSG:4326",
+    zoom: 0,
+    scales: [0],
+    resolutions: [0]
+};
+
+function map(state = defaultState, action) {
+    // Always reset mapStateSource, CHANGE_MAP_VIEW will set it if necessary
+    if(state.mapStateSource) {
+        state = assign({}, state, {mapStateSource: null});
+    }
+
     switch (action.type) {
         case CHANGE_MAP_VIEW: {
             const {type, ...params} = action;
@@ -31,7 +44,7 @@ function mapConfig(state = {}, action) {
             if(positionFormat === "centerAndZoom") {
                 let x = Math.round(0.5 * (bounds[0] + bounds[2]) * roundfactor) / roundfactor;
                 let y = Math.round(0.5 * (bounds[1] + bounds[3]) * roundfactor) / roundfactor;
-                let scale = newState.mapOptions.view.scales[newState.zoom];
+                let scale = newState.scales[newState.zoom];
                 UrlParams.updateParams({c: x + ";" + y, s: scale});
             } else {
                 let xmin = Math.round(bounds[0] * roundfactor) / roundfactor;
@@ -46,94 +59,66 @@ function mapConfig(state = {}, action) {
 
             return newState;
         }
-        case CHANGE_ZOOM_LVL:
-            return assign({}, state, {
-                zoom: action.zoom,
-                mapStateSource: action.mapStateSource
-            });
-        case CHANGE_MAP_CRS:
-            let newBounds = CoordinatesUtils.reprojectBbox(state.bbox.bounds, state.projection, action.crs);
-
-            return assign({}, state, {
-                center: CoordinatesUtils.reproject(state.center, state.projection, action.crs),
-                bbox: assign({}, state.bbox, {bounds: {minx: newBounds[0], miny: newBounds[1], maxx: newBounds[2], maxy: newBounds[3]}}),
-                projection: action.crs
-            });
-        case CHANGE_MAP_SCALES:
-            if (action.scales) {
-                const dpi = state.mapOptions && state.mapOptions.view && state.mapOptions.view.DPI || null;
-                const resolutions = MapUtils.getResolutionsForScales(action.scales, state.projection || "EPSG:4326", dpi);
-                // add or update mapOptions.view.resolutions
-                let mapOptions = assign({}, state.mapOptions);
-                mapOptions.view = assign({}, mapOptions.view, {
-                    resolutions: resolutions,
-                    scales: action.scales
-                });
-                return assign({}, state, {
-                    mapOptions: mapOptions
-                });
-            } else if (state.mapOptions && state.mapOptions.view && state.mapOptions.view && state.mapOptions.view.resolutions) {
-                // deeper clone
-                let newState = assign({}, state);
-                newState.mapOptions = assign({}, newState.mapOptions);
-                newState.mapOptions.view = assign({}, newState.mapOptions.view);
-                // remove resolutions
-                delete newState.mapOptions.view.resolutions;
-                // cleanup state
-                if (Object.keys(newState.mapOptions.view).length === 0) {
-                    delete newState.mapOptions.view;
-                }
-                if (Object.keys(newState.mapOptions).length === 0) {
-                    delete newState.mapOptions;
-                }
-                return newState;
+        case CONFIGURE_MAP: {
+            let resolutions = MapUtils.getResolutionsForScales(action.scales, action.crs, state.dpi || null);
+            let bounds, center, zoom;
+            if(action.view.center) {
+                center: CoordinatesUtils.reproject(action.view.center, action.view.crs || action.crs, action.crs);
+                zoom: action.view.zoom;
+            } else {
+                bounds = CoordinatesUtils.reprojectBbox(action.view.bounds, action.view.crs || state.projection, action.crs);
+                center = {x: 0.5 * (bounds[0] + bounds[2]), y: 0.5 * (bounds[1] + bounds[3])};
+                zoom = MapUtils.getZoomForExtent(bounds, resolutions, state.size, 0, action.scales.length - 1);
+                bounds = {minx: bounds[0], miny: bounds[1], maxx: bounds[2], maxy: bounds[3]};
             }
-            return state;
-        case ZOOM_TO_EXTENT: {
-            let zoom = 0;
-            let newBounds = CoordinatesUtils.reprojectBbox(action.extent, action.crs || state.projection, state.projection);
-            let newCenter = {x: 0.5 * (newBounds[0] + newBounds[2]), y: 0.5 * (newBounds[1] + newBounds[3])};
-            let newZoom = MapUtils.getZoomForExtent(newBounds, state.size, 0, 21, null);
-            let newBBox = assign({}, state.bbox, {bounds: newBounds});
             return assign({}, state, {
-                center: newCenter,
-                zoom: newZoom,
-                bbox: newBBox,
-                mapStateSource: action.mapStateSource
+                bbox: assign({}, state.bbox, {bounds: bounds}),
+                center: center,
+                zoom: zoom,
+                projection: action.crs,
+                scales: action.scales,
+                resolutions: resolutions
+            });
+        }
+        case CHANGE_ZOOM_LVL: {
+            return assign({}, state, {zoom: action.zoom});
+        }
+        case ZOOM_TO_EXTENT: {
+            let bounds = CoordinatesUtils.reprojectBbox(action.extent, action.crs || state.projection, state.projection);
+            return assign({}, state, {
+                center: {x: 0.5 * (bounds[0] + bounds[2]), y: 0.5 * (bounds[1] + bounds[3])},
+                zoom: MapUtils.getZoomForExtent(bounds, state.resolutions, state.size, 0, state.scales.length - 1),
+                bbox: assign({}, state.bbox, {bounds: bounds})
             });
         }
         case ZOOM_TO_POINT: {
             return assign({}, state, {
                 center: CoordinatesUtils.reproject(action.pos, action.crs || state.projection, state.projection),
-                zoom: action.zoom,
-                mapStateSource: null
+                zoom: action.zoom
             });
         }
         case PAN_TO: {
             return assign({}, state, {
-                center: CoordinatesUtils.reproject(action.pos, action.crs || state.projection, state.projection),
+                center: CoordinatesUtils.reproject(action.pos, action.crs || state.projection, state.projection)
             });
         }
         case CHANGE_ROTATION: {
-            let newBbox = assign({}, state.bbox, {rotation: action.rotation});
-            return assign({}, state, {bbox: newBbox, mapStateSource: action.mapStateSource});
+            return assign({}, state, {
+                bbox: assign({}, state.bbox, {rotation: action.rotation})
+            });
         }
         case CLICK_ON_MAP: {
-            return assign({}, state, {
-                clickPoint: action.point
-            });
+            return assign({}, state, {clickPoint: action.point});
         }
         case SET_SWIPE: {
             return assign({}, state, {swipe: action.swipe});
         }
         case TOGGLE_MAPTIPS: {
-            return assign({}, state, {
-                maptips: action.active
-            });
+            return assign({}, state, {maptips: action.active});
         }
         default:
             return state;
     }
 }
 
-module.exports = mapConfig;
+module.exports = map;

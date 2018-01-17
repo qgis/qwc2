@@ -50,25 +50,18 @@ class ZoomOutButton extends React.Component {
     }
 };
 
-const zoomInSelector = (state) => (
-    {
-        currentZoom: objectPath.get(state, "map.zoom", 0),
-        maxZoom: objectPath.get(state, "map.mapOptions.view.resolutions", [0]).length - 1
-    }
-);
-
-const zoomOutSelector = (state) => (
-    {
-        currentZoom: objectPath.get(state, "map.zoom", 0),
-        maxZoom: objectPath.get(state, "map.mapOptions.view.resolutions", [0]).length - 1
-    }
-);
 
 module.exports = {
-    ZoomInPlugin: connect(zoomInSelector, {
+    ZoomInPlugin: connect((state) => ({
+        currentZoom: state.map.zoom,
+        maxZoom: state.map.resolutions.length - 1
+    }),{
         onZoom: changeZoomLevel
     })(ZoomInButton),
-    ZoomOutPlugin: connect(zoomOutSelector, {
+    ZoomOutPlugin: connect((state) => ({
+        currentZoom: state.map.zoom,
+        maxZoom: state.map.resolutions.length - 1
+    }),{
         onZoom: changeZoomLevel
     })(ZoomOutButton),
     reducers: {

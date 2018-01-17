@@ -47,7 +47,7 @@ class Print extends React.Component {
             newState["layout"] = layout;
         }
         if(newProps.visible && !this.state.scale && newProps.map) {
-            let scale = Math.round(MapUtils.getScales(newProps.map.projection)[newProps.map.zoom] / 2);
+            let scale = Math.round(newProps.map.scales[newProps.map.zoom] / 2);
             if(newProps.theme.printScales && newProps.theme.printScales.length > 0) {
                 let closestVal = Math.abs(scale - newProps.theme.printScales[0]);
                 let closestIdx = 0;

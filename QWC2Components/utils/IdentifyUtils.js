@@ -16,7 +16,7 @@ const VectorLayerUtils = require('./VectorLayerUtils');
 const IdentifyUtils = {
     buildRequest(layer, latlng, map, options) {
         const size = [101, 101];
-        const resolution = MapUtils.getCurrentResolution(map.zoom, 0, 21, 96);
+        const resolution = map.resolutions[map.zoom];
         const center = CoordinatesUtils.reproject({x: latlng.lng, y: latlng.lat}, 'EPSG:4326', map.projection);
         const dx = 0.5 * resolution * size[0];
         const dy = 0.5 * resolution * size[1];
