@@ -57,14 +57,14 @@ function layers(state = {flat: []}, action) {
         case CHANGE_LAYER_PROPERTIES: {
             let layer = state.flat.find((layer) => {return layer.id === action.layerId});
             let isBackground = layer ? layer.group === 'background' : false;
-            if(isBackground) {
-                UrlParams.updateParams({bl: layer.name});
-            }
             const newLayers = (state.flat || []).map((layer) => {
                 if (layer.id === action.layerId) {
                     let newLayer = assign({}, layer, action.newProperties);
                     if(newLayer.type === "wms") {
                         assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
+                    }
+                    if(newLayer.group === 'background' && newLayer.visibility) {
+                        UrlParams.updateParams({bl: layer.name});
                     }
                     return newLayer;
                 } else if (layer.group === 'background' && isBackground) {
@@ -87,6 +87,9 @@ function layers(state = {flat: []}, action) {
             for(; inspos < newLayers.length && newLayer.priority < newLayers[inspos].priority; ++inspos);
             newLayers.splice(inspos, 0, newLayer);
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
+            if(newLayer.group === 'background' && newLayer.visibility) {
+                UrlParams.updateParams({bl: newLayer.name});
+            }
             return {flat: newLayers};
         }
         case REMOVE_LAYER: {
