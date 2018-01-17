@@ -14,7 +14,7 @@ const axios = require('axios');
 const uuid = require('uuid');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const IdentifyUtils = require('../utils/IdentifyUtils');
-const {addLayer, removeLayer} = require('../actions/layers');
+const {addLayerFeatures, removeLayer} = require('../actions/layers');
 require('./style/MapTip.css');
 
 class MapTip extends React.Component {
@@ -73,20 +73,14 @@ class MapTip extends React.Component {
             for(let i = 0; i < layers.length; ++i) {
                 let feature = result[layers[i]].find(feature => feature.properties.maptip);
                 if(feature) {
-                    let layer = {
-                        id: 'maptipselection',
-                        name: 'maptipselection',
-                        title: 'Maptip selecton',
-                        type: "vector",
-                        features: [feature],
-                        featuresCrs: feature.crs,
+                    const layer = {
+                        id: "maptipselection",
                         visibility: true,
                         queryable: false,
-                        layertreehidden: true,
-                        priority: 3
+                        priority: 3,
+                        layertreehidden: true
                     };
-                    this.props.removeLayer('maptipselection');
-                    this.props.addLayer(layer, true);
+                    this.props.addLayerFeatures(layer, [feature], true);
                     this.setState({maptip: feature.properties.maptip});
                     break;
                 }
@@ -122,7 +116,7 @@ const selector = (state) => ({
 
 module.exports = {
     MapTipPlugin: connect(selector, {
-        addLayer: addLayer,
+        addLayerFeatures: addLayerFeatures,
         removeLayer: removeLayer,
     })(MapTip),
     reducers: {
