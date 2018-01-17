@@ -14,7 +14,7 @@ const axios = require('axios');
 const uuid = require('uuid');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const IdentifyUtils = require('../utils/IdentifyUtils');
-const {addLayerFeatures, removeLayer} = require('../actions/layers');
+const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
 require('./style/MapTip.css');
 
 class MapTip extends React.Component {
@@ -75,8 +75,7 @@ class MapTip extends React.Component {
                 if(feature) {
                     const layer = {
                         id: "maptipselection",
-                        priority: 3,
-                        layertreehidden: true
+                        role: LayerRole.SELECTION
                     };
                     this.props.addLayerFeatures(layer, [feature], true);
                     this.setState({maptip: feature.properties.maptip});

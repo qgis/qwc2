@@ -20,7 +20,7 @@ const Message = require('../../MapStore2Components/components/I18N/Message');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const mapUtils = require('../../MapStore2Components/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
-const {addMarker, removeMarker, addLayerFeatures, removeLayer} = require('../actions/layers');
+const {LayerRole, addMarker, removeMarker, addLayerFeatures, removeLayer} = require('../actions/layers');
 const {zoomToPoint} = require('../actions/map');
 const {changeSearch, startSearch, searchMore} = require("../actions/search");
 const displayCrsSelector = require('../selectors/displaycrs');
@@ -330,8 +330,7 @@ class Search extends React.Component {
             this.props.addMarker('searchmarker', center, text, this.props.map.projection);
             let layer = {
                 id: "searchselection",
-                priority: 3,
-                layertreehidden: true
+                role: LayerRole.SELECTION
             };
             this.props.addLayerFeatures(layer, [feature], true);
         }

@@ -13,7 +13,7 @@ const {Glyphicon} = require('react-bootstrap');
 const {isEmpty} = require('lodash');
 const FileSaver = require('file-saver');
 const Message = require('../../MapStore2Components/components/I18N/Message');
-const {addLayerFeatures, removeLayer} = require('../actions/layers');
+const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 require('./style/IdentifyViewer.css');
 
@@ -116,8 +116,7 @@ class IdentifyViewer extends React.Component {
         if(!isEmpty(results)) {
             const layer = {
                 id: "identifyslection",
-                priority: 3,
-                layertreehidden: true
+                role: LayerRole.SELECTION
             };
             this.props.addLayerFeatures(layer, results, true);
         }

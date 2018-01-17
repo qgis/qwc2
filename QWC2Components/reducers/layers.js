@@ -13,6 +13,7 @@ const {isEmpty} = require('lodash');
 const uuid = require('uuid');
 
 const {
+    LayerRole,
     LAYER_LOADING,
     LAYER_LOAD,
     LAYER_ERROR,
@@ -81,18 +82,19 @@ function layers(state = {flat: []}, action) {
                 refid: uuid.v4(),
                 uuid: uuid.v4(),
                 id: action.layer.id || (action.layer.name + "__" + newLayers.length),
-                priority: action.layer.priority || 0,
+                role: action.layer.role || LayerRole.USERLAYER,
                 queryable: action.layer.queryable || false,
                 visibility: action.layer.visibility || true,
                 opacity: action.layer.opacity || 255
             });
+            newLayer = assign(newLayer, {layertreehidden: newLayer.layertreehidden || newLayer.role > LayerRole.USERLAYER});
             let group = newLayer;
             LayerUtils.addSublayerIDs(newLayer);
             if(newLayer.type === "wms") {
                 assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
             }
             let inspos = 0;
-            for(; inspos < newLayers.length && newLayer.priority < newLayers[inspos].priority; ++inspos);
+            for(; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);
             newLayers.splice(inspos, 0, newLayer);
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
             if(newLayer.group === 'background' && newLayer.visibility) {
@@ -113,14 +115,15 @@ function layers(state = {flat: []}, action) {
                     refid: uuid.v4(),
                     uuid: uuid.v4(),
                     features: action.features,
-                    priority: action.layer.priority || 0,
+                    role: action.layer.role || LayerRole.USERLAYER,
                     queryable: action.layer.queryable || false,
                     visibility: action.layer.visibility || true,
                     opacity: action.layer.opacity || 255
                 });
+                newLayer = assign(newLayer, {layertreehidden: newLayer.layertreehidden || newLayer.role > LayerRole.USERLAYER});
                 if(idx === -1) {
                     let inspos = 0;
-                    for(; inspos < newLayers.length && newLayer.priority < newLayers[inspos].priority; ++inspos);
+                    for(; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);
                     newLayers.splice(inspos, 0, newLayer);
                 } else if(action.clear) {
                     newLayers[idx] = newLayer;

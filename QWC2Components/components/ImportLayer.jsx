@@ -18,7 +18,7 @@ const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const ProxyUtils = require('../../MapStore2Components/utils/ProxyUtils');
-const {addLayer,addLayerFeatures} = require('../actions/layers');
+const {LayerRole,addLayer,addLayerFeatures} = require('../actions/layers');
 const FileSelector = require('./widgets/FileSelector');
 const ServiceLayerUtils = require('../utils/ServiceLayerUtils');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
@@ -207,7 +207,7 @@ class ImportLayer extends React.Component {
                 title: filename.replace(/\.[^/.]+$/, ""),
                 visibility: true,
                 queryable: false,
-                priority: 2,
+                role: LayerRole.USERLAYER,
                 zoomToExtent: true
             }, features, true);
         } else {
@@ -230,7 +230,7 @@ class ImportLayer extends React.Component {
                 boundingBox: entry.bbox,
                 queryable: entry.queryable,
                 infoFormats: entry.infoFormats,
-                priority: 2
+                role: LayerRole.USERLAYER
             });
         } else if(entry.type === "wfs") {
             this.props.addLayer({
@@ -245,7 +245,7 @@ class ImportLayer extends React.Component {
                 boundingBox: entry.bbox,
                 formats: entry.formats,
                 color: entry.color,
-                priority: 2
+                role: LayerRole.USERLAYER
             });
         } else if(entry.type === "kml") {
             this.addKMLLayer(entry.name, entry.data);

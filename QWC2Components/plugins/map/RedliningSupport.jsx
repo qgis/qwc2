@@ -14,7 +14,7 @@ const uuid = require('uuid');
 var ol = require('openlayers');
 const FeatureStyles = require('../../../MapStore2Components/components/map/openlayers/FeatureStyles');
 const {changeRedliningState} = require('../../actions/redlining');
-const {addLayerFeatures,removeLayerFeatures} = require('../../actions/layers');
+const {LayerRole,addLayerFeatures,removeLayerFeatures} = require('../../actions/layers');
 
 class RedliningSupport extends React.Component {
     static propTypes = {
@@ -209,7 +209,7 @@ class RedliningSupport extends React.Component {
         let layer = {
             id: "redlining",
             title: "Redlining",
-            priority: 2
+            role: LayerRole.USERLAYER
         };
         this.props.addLayerFeatures(layer, [feature]);
         this.resetSelectedFeature();

@@ -22,11 +22,19 @@ const REFRESH_LAYER = 'REFRESH_LAYER';
 const REMOVE_ALL_LAYERS = 'REMOVE_ALL_LAYERS';
 
 
-function addLayer(layer, foreground = false) {
+const LayerRole = {
+    BACKGROUND: 1,
+    THEME: 2,
+    USERLAYER: 3,
+    SELECTION: 4,
+    MARKER: 5
+};
+
+
+function addLayer(layer) {
     return {
         type: ADD_LAYER,
-        layer,
-        foreground
+        layer
     };
 }
 
@@ -106,8 +114,7 @@ function invalidLayer(layerType, options) {
 function addMarker(id, point, label='', crs='EPSG:4326') {
     let layer = {
         id: "markers",
-        layertreehidden: true,
-        priority: 4
+        role: LayerRole.MARKER
     }
     let feature = {
         id: id,
@@ -140,6 +147,7 @@ function removeAllLayers() {
 }
 
 module.exports = {
+    LayerRole,
     layerLoading,
     layerLoad,
     layerError,
