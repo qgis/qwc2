@@ -31,13 +31,13 @@ class RasterExport extends React.Component {
     state = {
         selectedFormat: null,
         visible: false,
-        dpi: null
+        dpi: 96
     }
     formatChanged = (ev) => {
         this.setState({selectedFormat: ev.target.value})
     }
     dpiChanged = (ev) => {
-        this.setState({dpi: ev.target.value});
+        this.setState({dpi: parseInt(ev.target.value)});
     }
     renderBody = () => {
         if(!this.props.theme) {
@@ -72,7 +72,7 @@ class RasterExport extends React.Component {
             dpiSelector = (
                 <span>
                     <Message msgId="rasterexport.resolution" />&nbsp;
-                    <select name="DPI" defaultValue={this.state.dpi || this.props.dpis[0]} onChange={this.dpiChanged}>
+                    <select name="DPI" defaultValue={this.props.dpis[0]} onChange={this.dpiChanged}>
                         {this.props.dpis.map(dpi => {
                             return (<option key={dpi+"dpi"} value={dpi}>{dpi+" dpi"}</option>);
                         })}
@@ -83,7 +83,7 @@ class RasterExport extends React.Component {
 
         // Local vector layer features
         let mapCrs = this.props.map.projection;
-        let highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, parseInt(this.state.dpi));
+        let highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, this.state.dpi);
 
         return (
             <span role="body">
