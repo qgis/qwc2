@@ -7,13 +7,17 @@
  */
 
 const assign = require('object-assign');
-const UrlParams = require("../utils/UrlParams");
-const {SET_CURRENT_THEME, CLEAR_CURRENT_THEME} = require('../actions/theme');
+const {UrlParams} = require("../utils/PermaLinkUtils");
+const {THEMES_LOADED, SET_CURRENT_THEME, CLEAR_CURRENT_THEME} = require('../actions/theme');
 
-function themeSwitcher(state = {switcherfilter: "", current: null}, action) {
+function theme(state = {}, action) {
     switch (action.type) {
+        case THEMES_LOADED:
+            return assign({}, state, {
+                themes: action.themes
+            });
         case CLEAR_CURRENT_THEME:
-            UrlParams.updateParams({t: undefined});
+            UrlParams.updateParams({t: undefined, l: undefined});
             return assign({}, state, {
                 current: null,
                 currentlayer: null
@@ -29,4 +33,4 @@ function themeSwitcher(state = {switcherfilter: "", current: null}, action) {
     }
 }
 
-module.exports = themeSwitcher;
+module.exports = theme;

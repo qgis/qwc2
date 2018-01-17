@@ -14,10 +14,8 @@ const {Glyphicon} = require('react-bootstrap');
 const Swipeable = require('react-swipeable');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
-const {qwc2TextSearch} = require("../actions/search");
 const {toggleFullscreen} = require('../actions/display');
-const {setCurrentTask} = require("../actions/task");
-const {clearCurrentTheme} = require('../actions/theme');
+const {restoreDefaultTheme} = require('../actions/theme');
 require('./style/TopBar.css');
 
 class TopBar extends React.Component {
@@ -25,22 +23,20 @@ class TopBar extends React.Component {
         mobile: PropTypes.bool,
         menuItems: PropTypes.array,
         toolbarItems: PropTypes.array,
+        components: PropTypes.object,
         fullscreen: PropTypes.bool,
         toggleFullscreen: PropTypes.func,
-        searchProviders: PropTypes.object,
+        restoreDefaultTheme: PropTypes.func,
         logoFormat: PropTypes.string,
         searchOptions: PropTypes.object,
         appMenuClearsTask: PropTypes.bool,
-        logoClickResetsTheme: PropTypes.bool,
-        clearCurrentTheme: PropTypes.func,
-        setCurrentTask: PropTypes.func
+        logoClickResetsTheme: PropTypes.bool
     }
     static defaultProps = {
         searchOptions: {},
         menuItems: [],
         toolbarItems: [],
         logoFormat: "svg",
-        clearTaskOnShow: false,
         logoClickResetsTheme: false
     }
     render() {
@@ -88,8 +84,7 @@ class TopBar extends React.Component {
      }
      clearTheme = () => {
          if(this.props.logoClickResetsTheme) {
-             this.props.setCurrentTask(null);
-             this.props.clearCurrentTheme();
+             this.props.restoreDefaultTheme();
          }
      }
      triggerFullscreen = () => {
@@ -104,11 +99,10 @@ module.exports = (components) => { return {
         components: components
     }), {
         toggleFullscreen: toggleFullscreen,
-        clearCurrentTheme: clearCurrentTheme,
-        setCurrentTask: setCurrentTask
+        restoreDefaultTheme: restoreDefaultTheme
     })(TopBar),
     reducers: {
         display: require("../reducers/display"),
-        search: require('../reducers/search'),
+        search: require("../reducers/search")
     }
 }};

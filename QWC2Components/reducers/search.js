@@ -9,7 +9,7 @@
 var {SEARCH_CHANGE, SEARCH_SET_REQUEST, SEARCH_ADD_RESULTS} = require('../actions/search');
 
 const assign = require('object-assign');
-const UrlParams = require("../utils/UrlParams");
+const {UrlParams} = require("../utils/PermaLinkUtils");
 
 function search(state = null, action) {
     switch (action.type) {

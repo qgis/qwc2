@@ -25,7 +25,7 @@ const {zoomToPoint} = require('../actions/map');
 const {changeSearch, startSearch, searchMore} = require("../actions/search");
 const displayCrsSelector = require('../selectors/displaycrs');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
-const UrlParams = require("../utils/UrlParams");
+const {UrlParams} = require("../utils/PermaLinkUtils");
 require('./style/Search.css');
 
 class Search extends React.Component {

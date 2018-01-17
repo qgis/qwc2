@@ -10,8 +10,6 @@ const {combineReducers} = require('redux');
 
 const map = require('../reducers/map');
 
-const mapConfig = require('../../MapStore2Components/reducers/config');
-
 const DebugUtils = require('../../MapStore2Components/utils/DebugUtils');
 const PluginsUtils = require('../../MapStore2Components/utils/PluginsUtils');
 
@@ -33,10 +31,8 @@ module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeO
     const mobileOverride = initialState.mobile;
 
     const rootReducer = (state, action) => {
-        let mapState = mapConfig(state, action);
         let newState = {
             ...allReducers(state, action),
-            map: mapState && mapState.map ? map(mapState.map, action) : null
         };
         if (action && action.type === CHANGE_BROWSER_PROPERTIES && newState.browser.mobile) {
             newState = assign(newState, mobileOverride);

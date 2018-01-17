@@ -8,13 +8,13 @@
 
 const React = require('react');
 const PropTypes = require('prop-types');
-const axios = require('axios');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const ShareSocials = require('../../MapStore2Components/components/share/ShareSocials');
 const ShareQRCode = require('../../MapStore2Components/components/share/ShareQRCode');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const ShareLink = require('../components/ShareLink');
 const {SideBar} = require('../components/SideBar');
+const {generatePermaLink} = require('../utils/PermaLinkUtils');
 require('./style/Share.css');
 
 class Share extends React.Component {
@@ -32,11 +32,9 @@ class Share extends React.Component {
         location: null
     }
     onShow = () => {
-        let serverUrl = ConfigUtils.getConfigProp("qwc2serverUrl");
-        if(serverUrl) {
+        if(ConfigUtils.getConfigProp("qwc2serverUrl")) {
             this.setState({location: null});
-            axios.get(ConfigUtils.getConfigProp("qwc2serverUrl") + "/createpermalink?url=" + encodeURIComponent(window.location.href))
-            .then(response => this.setState({location: response.data.permalink}));
+            generatePermaLink(permalink => this.setState({location: permalink}));
         } else {
             this.setState({location: window.location.href});
         }

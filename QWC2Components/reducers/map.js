@@ -13,7 +13,7 @@ const {
 
 const assign = require('object-assign');
 const MapUtils = require('../../MapStore2Components/utils/MapUtils');
-const UrlParams = require("../utils/UrlParams");
+const {UrlParams} = require("../utils/PermaLinkUtils");
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 

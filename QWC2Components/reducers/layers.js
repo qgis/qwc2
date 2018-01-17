@@ -7,7 +7,7 @@
  */
 
 const assign = require('object-assign');
-const UrlParams = require("../utils/UrlParams");
+const {UrlParams} = require("../utils/PermaLinkUtils");
 const LayerUtils = require("../utils/LayerUtils");
 const {isEmpty} = require('lodash');
 const uuid = require('uuid');
