@@ -338,6 +338,8 @@ def getTheme(configItem, resultItem):
         resultItem["drawingOrder"] = drawingOrder
         if themeLegend["url"]:
             resultItem["legendUrl"] = re.sub(r"([&\?])LAYER=[^&]*", r"\1LAYER=" + ",".join(themeLegend["sublayers"]), themeLegend["url"], flags=re.IGNORECASE)
+        resultItem["featureInfoUrl"] = getChildElement(capabilities, "Capability/Request/GetFeatureInfo/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href")
+        resultItem["printUrl"] = getChildElement(capabilities, "Capability/Request/GetPrint/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href")
         if "printLabelForSearchResult" in configItem:
             resultItem["printLabelForSearchResult"] = configItem["printLabelForSearchResult"]
         if "printLabelConfig" in configItem:

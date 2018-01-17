@@ -51,15 +51,21 @@ const ServiceLayerUtils = {
         } catch (e) {
             return [];
         }
+        let featureInfoUrl = null;
+        try {
+            featureInfoUrl = ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType)["HTTP"]["Get"]["OnlineResource"];
+        } catch (e) {
+            featureInfoUrl = serviceUrl;
+        }
         let version = capabilities.version;
         if(!topLayer.Layer) {
-            return [this.getWMSLayerParams(topLayer, topLayer.CRS, serviceUrl, version, infoFormats)];
+            return [this.getWMSLayerParams(topLayer, topLayer.CRS, serviceUrl, version, featureInfoUrl, infoFormats)];
         } else {
-            let entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, serviceUrl, version, infoFormats));
+            let entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, serviceUrl, version, featureInfoUrl, infoFormats));
             return entries.sort((a, b) => strcmp(a.title, b.title));
         }
     },
-    getWMSLayerParams(layer, parentCrs, serviceUrl, version, infoFormats) {
+    getWMSLayerParams(layer, parentCrs, serviceUrl, version, featureInfoUrl, infoFormats) {
         let supportedCrs = layer.CRS;
         if(isEmpty(supportedCrs)) {
             supportedCrs = [...parentCrs];
@@ -89,6 +95,7 @@ const ServiceLayerUtils = {
             url: serviceUrl,
             version: version,
             infoFormats: infoFormats,
+            featureInfoUrl: featureInfoUrl,
             queryable: layer.queryable,
             sublayers: sublayers.sort((a, b) => strcmp(a.title, b.title)),
             expanded: false,

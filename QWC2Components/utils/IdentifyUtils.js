@@ -33,7 +33,7 @@ const IdentifyUtils = {
             format = 'text/html';
         }
         return {
-            url: layer.url.replace(/[?].*$/g, ''),
+            url: layer.featureInfoUrl.replace(/[?].*$/g, ''),
             params: {
                 service: 'WMS',
                 version: layer.version || "1.3.0",

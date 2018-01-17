@@ -96,6 +96,8 @@ const ThemeUtils = {
             isThemeLayer: true,
             attribution: theme.attribution,
             legendUrl: theme.legendUrl,
+            printUrl: theme.printUrl,
+            featureInfoUrl: theme.featureInfoUrl,
             infoFormats: theme.infoFormats,
             uuid: theme.uuid
         };

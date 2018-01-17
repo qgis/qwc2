@@ -93,10 +93,7 @@ function getEditConfig(editConfig) {
 // convert non-array object to array containing the object
 // used to restore arrays lost by 'explicitArray: false' xml2js option
 function toArray(obj) {
-    if (!Array.isArray(obj)) {
-        return [obj];
-    }
-    return obj;
+    return Array.isArray(obj) ? obj : [obj];
 }
 
 // recursively get layer tree
@@ -364,6 +361,8 @@ function getTheme(configItem, resultItem) {
             if(themeLegend.url) {
                 resultItem.legendUrl = themeLegend.url.replace(/([&\?])LAYER=[^&]*/i, "$1LAYER=" + themeLegend.sublayers.join(","));
             }
+            resultItem.featureInfoUrl = capabilities.Capability.Request.GetFeatureInfo.DCPType.HTTP.Get.OnlineResource.$['xlink:href'];
+            resultItem.printUrl = capabilities.Capability.Request.GetPrint.DCPType.HTTP.Get.OnlineResource.$['xlink:href'];
             if(configItem.printLabelForSearchResult) {
                 resultItem.printLabelForSearchResult = configItem.printLabelForSearchResult;
             }

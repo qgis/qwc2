@@ -95,7 +95,7 @@ class Print extends React.Component {
         }
 
         let formvisibility = 'hidden';
-        let action = this.props.theme.url;
+        let action = this.props.printUrl;
         if (ConfigUtils.getConfigProp("proxyUrl")) {
             action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(action) + "&filename=" + encodeURIComponent(this.props.theme.name + ".pdf");
         }
