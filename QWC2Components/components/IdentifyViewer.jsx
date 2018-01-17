@@ -82,6 +82,8 @@ class IdentifyViewer extends React.Component {
             newResults = IdentifyUtils.parseXmlResponse(response.data, this.props.mapcrs);
         } else if(response.request.params.info_format === "text/plain") {
             newResults[response.request.metadata.layer] = [{type: "text", text: response.data, id: response.request.metadata.posstr}];
+        } else if(response.request.params.info_format === "text/html") {
+            newResults[response.request.metadata.layer] = [{type: "html", text: response.data, id: response.request.metadata.posstr}];
         }
         // Merge with previous
         Object.keys(newResults).map(layer => {
@@ -217,9 +219,13 @@ class IdentifyViewer extends React.Component {
         }
         if(result.type === "text") {
             return (
-                <pre className="text-result-box">
+                <pre className="identify-result-box">
                     {result.text}
                 </pre>
+            );
+        } else if(result.type === "html") {
+            return (
+                <iframe className="identify-result-box" src={"data:text/html," + encodeURIComponent(result.text)}></iframe>
             );
         }
         let properties = Object.keys(result.properties);
@@ -227,7 +233,7 @@ class IdentifyViewer extends React.Component {
             return null;
         }
         return (
-            <div className="attribute-list-box">
+            <div className="identify-result-box">
                 <table className="attribute-list"><tbody>
                     {properties.map(attrib => {
                         if(this.props.theme.skipEmptyFeatureAttributes && (!result.properties[attrib] || result.properties[attrib] === "NULL")) {

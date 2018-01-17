@@ -29,6 +29,8 @@ const IdentifyUtils = {
             format = 'text/xml';
         } else if(layer.infoFormats.includes('application/json')) {
             format = 'application/json';
+        } else if(layer.infoFormats.includes('text/html')) {
+            format = 'text/html';
         }
         return {
             url: layer.url.replace(/[?].*$/g, ''),
