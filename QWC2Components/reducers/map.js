@@ -14,13 +14,38 @@ const {
 
 const assign = require('object-assign');
 const MapUtils = require('../../MapStore2Components/utils/MapUtils');
+const UrlParams = require("../utils/UrlParams");
+const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 
 function mapConfig(state = {}, action) {
     switch (action.type) {
-        case CHANGE_MAP_VIEW:
+        case CHANGE_MAP_VIEW: {
             const {type, ...params} = action;
-            return assign({}, state, params);
+            let newState = assign({}, state, params);
+
+            let positionFormat = ConfigUtils.getConfigProp("urlPositionFormat");
+            let positionCrs = ConfigUtils.getConfigProp("urlPositionCrs") || newState.projection;
+            let bounds = CoordinatesUtils.reprojectBbox(newState.bbox.bounds, newState.projection, positionCrs);
+            let roundfactor = CoordinatesUtils.getUnits(positionCrs) === 'degrees' ? 100000. : 1;
+            if(positionFormat === "centerAndZoom") {
+                let x = Math.round(0.5 * (bounds[0] + bounds[2]) * roundfactor) / roundfactor;
+                let y = Math.round(0.5 * (bounds[1] + bounds[3]) * roundfactor) / roundfactor;
+                let scale = newState.mapOptions.view.scales[newState.zoom];
+                UrlParams.updateParams({c: x + ";" + y, s: scale});
+            } else {
+                let xmin = Math.round(bounds[0] * roundfactor) / roundfactor;
+                let ymin = Math.round(bounds[1] * roundfactor) / roundfactor;
+                let xmax = Math.round(bounds[2] * roundfactor) / roundfactor;
+                let ymax = Math.round(bounds[3] * roundfactor) / roundfactor;
+                UrlParams.updateParams({e: xmin + ";" + ymin + ";" + xmax + ";" + ymax});
+            }
+            if(positionCrs !== newState.projection) {
+                UrlParams.updateParams({crs: positionCrs});
+            }
+
+            return newState;
+        }
         case CHANGE_ZOOM_LVL:
             return assign({}, state, {
                 zoom: action.zoom,

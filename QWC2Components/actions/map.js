@@ -7,12 +7,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-
-const UrlParams = require("../utils/UrlParams");
-const CoordinatesUtils = require("../../MapStore2Components/utils/CoordinatesUtils");
-const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
-const MapUtils = require("../../MapStore2Components/utils/MapUtils");
-
 const CHANGE_MAP_VIEW = 'CHANGE_MAP_VIEW';
 const CLICK_ON_MAP = 'CLICK_ON_MAP';
 const CHANGE_ZOOM_LVL = 'CHANGE_ZOOM_LVL';
@@ -26,37 +20,17 @@ const SET_SWIPE = 'SET_SWIPE';
 const TOGGLE_MAPTIPS = 'TOGGLE_MAPTIPS';
 
 function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
-    return (dispatch) => {
-        let positionFormat = ConfigUtils.getConfigProp("urlPositionFormat");
-        let positionCrs = ConfigUtils.getConfigProp("urlPositionCrs") || projection;
-        let bounds = CoordinatesUtils.reprojectBbox(bbox.bounds, projection, positionCrs);
-        let roundfactor = CoordinatesUtils.getUnits(positionCrs) === 'degrees' ? 100000. : 1;
-        if(positionFormat === "centerAndZoom") {
-            let x = Math.round(0.5 * (bounds[0] + bounds[2]) * roundfactor) / roundfactor;
-            let y = Math.round(0.5 * (bounds[1] + bounds[3]) * roundfactor) / roundfactor;
-            let scale = MapUtils.getScales(projection)[zoom];
-            UrlParams.updateParams({c: x + ";" + y, s: scale});
-        } else {
-            let xmin = Math.round(bounds[0] * roundfactor) / roundfactor;
-            let ymin = Math.round(bounds[1] * roundfactor) / roundfactor;
-            let xmax = Math.round(bounds[2] * roundfactor) / roundfactor;
-            let ymax = Math.round(bounds[3] * roundfactor) / roundfactor;
-            UrlParams.updateParams({e: xmin + ";" + ymin + ";" + xmax + ";" + ymax});
-        }
-        if(positionCrs !== projection) {
-            UrlParams.updateParams({crs: positionCrs});
-        }
-        dispatch({
-            type: CHANGE_MAP_VIEW,
-            center,
-            zoom,
-            bbox,
-            size,
-            mapStateSource,
-            projection
-        });
+    return {
+        type: CHANGE_MAP_VIEW,
+        center,
+        zoom,
+        bbox,
+        size,
+        mapStateSource,
+        projection
     };
 }
+
 function changeMapCrs(crs) {
     return {
         type: CHANGE_MAP_CRS,
