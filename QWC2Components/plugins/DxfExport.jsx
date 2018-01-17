@@ -57,8 +57,8 @@ class DxfExport extends React.Component {
             </TaskBar>
         );
     }
-    bboxSelected = (bbox) => {
-        bbox = CoordinatesUtils.reprojectBbox(bbox, bbox.crs, "EPSG:3857");
+    bboxSelected = (bbox, crs) => {
+        bbox = CoordinatesUtils.reprojectBbox(bbox, crs, "EPSG:3857");
         let extent = bbox[0] + "," + bbox[1] + "," + bbox[2] + "," + bbox[3];
         this.extentInput.value = extent;
         this.form.submit();
