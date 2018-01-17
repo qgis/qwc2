@@ -330,8 +330,6 @@ class Search extends React.Component {
             this.props.addMarker('searchmarker', center, text, this.props.map.projection);
             let layer = {
                 id: "searchselection",
-                visibility: true,
-                queryable: false,
                 priority: 3,
                 layertreehidden: true
             };

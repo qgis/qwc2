@@ -209,8 +209,6 @@ class RedliningSupport extends React.Component {
         let layer = {
             id: "redlining",
             title: "Redlining",
-            visibility: true,
-            queryable: false,
             priority: 2
         };
         this.props.addLayerFeatures(layer, [feature]);

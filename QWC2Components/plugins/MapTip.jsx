@@ -75,8 +75,6 @@ class MapTip extends React.Component {
                 if(feature) {
                     const layer = {
                         id: "maptipselection",
-                        visibility: true,
-                        queryable: false,
                         priority: 3,
                         layertreehidden: true
                     };

@@ -106,8 +106,6 @@ function invalidLayer(layerType, options) {
 function addMarker(id, point, label='', crs='EPSG:4326') {
     let layer = {
         id: "markers",
-        visibility: true,
-        queryable: false,
         layertreehidden: true,
         priority: 4
     }

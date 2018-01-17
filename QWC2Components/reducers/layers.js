@@ -77,7 +77,15 @@ function layers(state = {flat: []}, action) {
         }
         case ADD_LAYER: {
             let newLayers = (state.flat || []).concat();
-            let newLayer = assign({}, action.layer, {refid: uuid.v4(), uuid: uuid.v4(), id: action.layer.id || (action.layer.name + "__" + newLayers.length), priority: action.layer.priority || 0, opacity: action.layer.opacity || 255});
+            let newLayer = assign({}, action.layer, {
+                refid: uuid.v4(),
+                uuid: uuid.v4(),
+                id: action.layer.id || (action.layer.name + "__" + newLayers.length),
+                priority: action.layer.priority || 0,
+                queryable: action.layer.queryable || false,
+                visibility: action.layer.visibility || true,
+                opacity: action.layer.opacity || 255
+            });
             let group = newLayer;
             LayerUtils.addSublayerIDs(newLayer);
             if(newLayer.type === "wms") {
@@ -99,13 +107,24 @@ function layers(state = {flat: []}, action) {
         case ADD_LAYER_FEATURES: {
             let newLayers = (state.flat || []).concat();
             let idx = newLayers.findIndex(layer => layer.id === action.layer.id);
-            if(idx == -1) {
-                let inspos = 0;
-                let newLayer = assign({}, action.layer, {uuid: uuid.v4(), type: 'vector', features: action.features, priority: action.layer.priority || 0, opacity: action.layer.opacity || 255});
-                for(; inspos < newLayers.length && newLayer.priority < newLayers[inspos].priority; ++inspos);
-                newLayers.splice(inspos, 0, newLayer);
-            } else if(action.clear) {
-                newLayers[idx] = assign({}, action.layer, {uuid: uuid.v4(), type: 'vector', features: action.features});
+            if(idx === -1 || action.clear) {
+                let newLayer = assign({}, action.layer, {
+                    type: 'vector',
+                    refid: uuid.v4(),
+                    uuid: uuid.v4(),
+                    features: action.features,
+                    priority: action.layer.priority || 0,
+                    queryable: action.layer.queryable || false,
+                    visibility: action.layer.visibility || true,
+                    opacity: action.layer.opacity || 255
+                });
+                if(idx === -1) {
+                    let inspos = 0;
+                    for(; inspos < newLayers.length && newLayer.priority < newLayers[inspos].priority; ++inspos);
+                    newLayers.splice(inspos, 0, newLayer);
+                } else if(action.clear) {
+                    newLayers[idx] = newLayer;
+                }
             } else {
                 let addFeatures = action.features.concat();
                 let newFeatures = newLayers[idx].features.map( f => {

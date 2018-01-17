@@ -116,8 +116,6 @@ class IdentifyViewer extends React.Component {
         if(!isEmpty(results)) {
             const layer = {
                 id: "identifyslection",
-                visibility: true,
-                queryable: false,
                 priority: 3,
                 layertreehidden: true
             };
