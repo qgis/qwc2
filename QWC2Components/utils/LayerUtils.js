@@ -99,6 +99,7 @@ const LayerUtils = {
     },
     addSublayerIDs(group) {
         if(group.sublayers) {
+            assign(group, {sublayers: group.sublayers.slice(0)});
             for(let i = 0; i < group.sublayers.length; ++i) {
                 group.sublayers[i] = assign({}, group.sublayers[i], {
                     refid: uuid.v4(), // refid is used by re-ordering to recognize equal groups
