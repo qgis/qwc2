@@ -66,7 +66,9 @@ class Editing extends React.Component {
                 });
             }
         }
-        this.props.setCurrentTaskBlocked(newProps.editing.changed === true);
+        if(this.props.editing.changed !== newProps.editing.changed) {
+            this.props.setCurrentTaskBlocked(newProps.editing.changed === true);
+        }
         if(!newProps.editing.feature || newProps.editing.changed) {
             this.setState({deleteClicked: false});
         }
