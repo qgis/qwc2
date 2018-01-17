@@ -56,15 +56,9 @@ var CoordinatesUtils = {
      * @return {array} [minx, miny, maxx, maxy]
      */
     reprojectBbox: function(bbox, source, dest) {
-        if (isArray(bbox)) {
-            let sw = CoordinatesUtils.reproject([bbox[0], bbox[1]], source, dest);
-            let ne = CoordinatesUtils.reproject([bbox[2], bbox[3]], source, dest);
-            return [sw.x, sw.y, ne.x, ne.y];
-        } else {
-            let sw = CoordinatesUtils.reproject([bbox.minx, bbox.miny], source, dest);
-            let ne = CoordinatesUtils.reproject([bbox.maxx, bbox.maxy], source, dest);
-            return [sw.x, sw.y, ne.x, ne.y];
-        }
+        let sw = CoordinatesUtils.reproject([bbox[0], bbox[1]], source, dest);
+        let ne = CoordinatesUtils.reproject([bbox[2], bbox[3]], source, dest);
+        return [sw.x, sw.y, ne.x, ne.y];
     },
     getCompatibleSRS(srs, allowedSRS) {
         if (srs === 'EPSG:900913' && !allowedSRS['EPSG:900913'] && allowedSRS['EPSG:3857']) {
@@ -118,20 +112,12 @@ var CoordinatesUtils = {
      * @return {array} [minx, miny, maxx, maxy]
      */
     extendExtent: function(extent1, extent2) {
-        let newExtent = extent1.slice();
-        if (extent2[0] < extent1[0]) {
-            newExtent[0] = extent2[0];
-        }
-        if (extent2[2] > extent1[2]) {
-            newExtent[2] = extent2[2];
-        }
-        if (extent2[1] < extent1[1]) {
-            newExtent[1] = extent2[1];
-        }
-        if (extent2[3] > extent1[3]) {
-            newExtent[3] = extent2[3];
-        }
-        return newExtent;
+        return [
+            Math.min(extent1[0], extent2[0]),
+            Math.min(extent1[1], extent2[1]),
+            Math.max(extent1[2], extent2[2]),
+            Math.max(extent1[3], extent2[3])
+        ];
     },
     getGeoJSONExtent: function(geoJSON) {
         let newExtent = [Infinity, Infinity, -Infinity, -Infinity];
