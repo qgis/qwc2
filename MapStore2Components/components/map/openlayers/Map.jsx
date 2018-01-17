@@ -278,6 +278,4 @@ class OpenlayersMap extends React.Component {
     }
 };
 
-// add overrides for css
-require('./mapstore-ol-overrides.css');
 module.exports = OpenlayersMap;
