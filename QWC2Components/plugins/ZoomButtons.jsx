@@ -9,7 +9,6 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const objectPath = require('object-path');
 const {changeZoomLevel} = require('../actions/map');
 const ZoomButton = require('../../MapStore2Components/components/buttons/ZoomButton');
 require('./style/Buttons.css');
