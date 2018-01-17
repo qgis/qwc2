@@ -7,7 +7,6 @@
  */
 
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
-const UrlParams = require("../utils/UrlParams");
 const uuid = require('uuid');
 
 const SEARCH_CHANGE = 'SEARCH_CHANGE';
@@ -15,7 +14,6 @@ const SEARCH_SET_REQUEST = 'SEARCH_SET_REQUEST';
 const SEARCH_ADD_RESULTS = 'SEARCH_ADD_RESULTS';
 
 function changeSearch(text, providers) {
-    UrlParams.updateParams({st: text, sp: providers ? providers.join(",") : undefined});
     return {
         type: SEARCH_CHANGE,
         text: text || "",

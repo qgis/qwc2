@@ -9,10 +9,12 @@
 var {SEARCH_CHANGE, SEARCH_SET_REQUEST, SEARCH_ADD_RESULTS} = require('../actions/search');
 
 const assign = require('object-assign');
+const UrlParams = require("../utils/UrlParams");
 
 function search(state = null, action) {
     switch (action.type) {
         case SEARCH_CHANGE:
+            UrlParams.updateParams({st: action.text, sp: action.providers ? action.providers.join(",") : undefined});
             return {text: action.text, providers: action.providers};
         case SEARCH_SET_REQUEST:
             return assign({}, state, {requestId: action.id, pendingProviders: action.providers});
