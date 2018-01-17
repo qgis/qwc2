@@ -105,7 +105,7 @@ class ImportLayer extends React.Component {
         return (
             <div id="ImportLayer">
                 <div className="importlayer-input-fields">
-                    <select disabled={this.state.pendingRequests > 0} value={this.state.type} onChange={ev => this.setState({type: ev.target.value, file: null, url: null, serviceLayers: null, filter: ""})}>
+                    <select disabled={this.state.pendingRequests > 0} value={this.state.type} onChange={ev => this.setState({type: ev.target.value, file: null, url: "", serviceLayers: null, filter: ""})}>
                         <option value="URL">URL</option>
                         <option value="Local">Local file</option>
                     </select>
