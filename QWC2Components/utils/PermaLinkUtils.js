@@ -9,7 +9,7 @@
 const url = require('url');
 const axios = require('axios');
 const assign = require('object-assign');
-const objectPath = require('object-path');
+const {LayerRole} = require('../actions/layers');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 
@@ -36,8 +36,12 @@ const UrlParams = {
    }
 };
 
-function generatePermaLink(callback) {
-    axios.get(ConfigUtils.getConfigProp("qwc2serverUrl").replace(/\/$/, '') + "/createpermalink?url=" + encodeURIComponent(window.location.href))
+function generatePermaLink(state, callback) {
+    // Subset of the state to send to permalink server
+    let permalinkState = {
+        layers: (state.layers && state.layers.flat || []).filter(layer => layer.role === LayerRole.USERLAYER)
+    };
+    axios.post(ConfigUtils.getConfigProp("qwc2serverUrl").replace(/\/$/, '') + "/createpermalink?url=" + encodeURIComponent(window.location.href), permalinkState)
         .then(response => callback(response.data.permalink))
         .catch(e => callback(window.location.href));
 }
@@ -47,11 +51,13 @@ function resolvePermaLink(initialParams, callback) {
     if(key) {
         axios.get(ConfigUtils.getConfigProp("qwc2serverUrl").replace(/\/$/, '') + "/resolvepermalink?key=" + key)
             .then(response => {
-                callback(response.data.query || {});
+                callback(response.data.query || {}, response.data.state || {});
             })
-            .catch(e => callback(initialParams));
+            .catch(e => {
+                callback(initialParams, {});
+            });
     } else {
-        callback(initialParams);
+        callback(initialParams, {});
     }
 }
 

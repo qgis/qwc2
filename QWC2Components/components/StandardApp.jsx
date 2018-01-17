@@ -26,6 +26,7 @@ const PluginsContainer = require('./PluginsContainer');
 const {changeBrowserProperties} = require('../../MapStore2Components/actions/browser');
 const {loadLocale} = require('../../MapStore2Components/actions/locale');
 const {localConfigLoaded} = require('../../MapStore2Components/actions/localConfig');
+const {addLayer} = require('../actions/layers');
 const {changeSearch} = require('../actions/search');
 const {themesLoaded,setCurrentTheme} = require('../actions/theme');
 
@@ -75,7 +76,7 @@ class StandardApp extends React.Component {
                 this.store.dispatch(themesLoaded(response.data.themes || {}));
 
                 // Resolve permalink and restore settings
-                resolvePermaLink(initialParams, (params) => {
+                resolvePermaLink(initialParams, (params, state) => {
                     let themes = this.store.getState().theme.themes;
                     let themeId = params.t || themes.defaultTheme;
                     let theme = ThemeUtils.getThemeById(themes, themeId);
@@ -123,6 +124,13 @@ class StandardApp extends React.Component {
                     // Dispatch actions
                     this.store.dispatch(changeSearch(searchText, searchProviders));
                     this.store.dispatch(setCurrentTheme(theme, themes, false, initialView, visibleLayers, visibleBgLayer));
+
+                    // Restore from permalink state
+                    if(state.layers) {
+                        for(let layer of state.layers.slice(0).reverse()) {
+                            this.store.dispatch(addLayer(layer));
+                        }
+                    }
                 });
             });
         });

@@ -7,6 +7,7 @@
  */
 
 const React = require('react');
+const {connect} = require('react-redux');
 const PropTypes = require('prop-types');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const ShareSocials = require('../../MapStore2Components/components/share/ShareSocials');
@@ -21,7 +22,8 @@ class Share extends React.Component {
     static propTypes = {
         showSocials: PropTypes.bool,
         showLink: PropTypes.bool,
-        showQRCode: PropTypes.bool
+        showQRCode: PropTypes.bool,
+        state: PropTypes.object
     }
     static defaultProps = {
         showSocials: true,
@@ -34,7 +36,7 @@ class Share extends React.Component {
     onShow = () => {
         if(ConfigUtils.getConfigProp("qwc2serverUrl")) {
             this.setState({location: null});
-            generatePermaLink(permalink => this.setState({location: permalink}));
+            generatePermaLink(this.props.state, (permalink => this.setState({location: permalink})));
         } else {
             this.setState({location: window.location.href});
         }
@@ -70,7 +72,7 @@ class Share extends React.Component {
 };
 
 module.exports = {
-    SharePlugin: Share,
+    SharePlugin: connect(state => ({state}))(Share),
     reducers: {
         task: require('../reducers/task')
     }
