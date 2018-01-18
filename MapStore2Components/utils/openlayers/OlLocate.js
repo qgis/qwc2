@@ -1,17 +1,17 @@
 /**
- * Copyright 2015, GeoSolutions Sas.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree.
- */
+* Copyright 2015, GeoSolutions Sas.
+* All rights reserved.
+*
+* This source code is licensed under the BSD-style license found in the
+* LICENSE file in the root directory of this source tree.
+*/
 
 const ol = require('openlayers');
 const popUp = require('./OlPopUp')();
 const assign = require('object-assign');
 
 
-var OlLocate = function(map, optOptions) {
+const OlLocate = function(map, optOptions) {
     ol.Object.call(this, {state: "DISABLED"});
     this.map = map;
     let defOptions = {
@@ -42,24 +42,26 @@ var OlLocate = function(map, optOptions) {
 
     this.options = assign({}, defOptions, optOptions || {} );
     this.geolocate = new ol.Geolocation({
-                        projection: this.map.getView().getProjection(),
-                        trackingOptions: this.options.locateOptions
-                    });
+        projection: this.map.getView().getProjection(),
+        trackingOptions: this.options.locateOptions
+    });
     this.geolocate.on('change:position', this._updatePosFt, this);
     this.popup = popUp;
     this.popup.hidden = true;
     this.popCnt = popUp.getElementsByClassName("ol-popup-cnt")[0];
     this.overlay = new ol.Overlay({
-                        element: this.popup,
-                        positioning: 'top-center',
-                        stopEvent: false
-                    });
+        element: this.popup,
+        positioning: 'top-center',
+        stopEvent: false
+    });
     this.layer = new ol.layer.Vector({
-                    source: new ol.source.Vector({useSpatialIndex: false})});
+        source: new ol.source.Vector({ useSpatialIndex: false })
+    });
     this.posFt = new ol.Feature({
-                    geometry: this.geolocate.getAccuracyGeometry(),
-                    name: 'position',
-                    id: '_locate-pos'});
+        geometry: this.geolocate.getAccuracyGeometry(),
+        name: 'position',
+        id: '_locate-pos'
+    });
     this.posFt.setStyle(this.options.locateStyle);
     this.layer.getSource().addFeature(this.posFt);
 };
@@ -127,9 +129,9 @@ OlLocate.prototype._updatePosFt = function() {
     }
     let p = this.geolocate.getPosition();
     this.p = p;
-    let point = new ol.geom.Point([parseFloat(p[0]), parseFloat(p[1])]);
+    let point = new ol.geom.Point(p);
     if (this.options.drawCircle) {
-        let accuracy = new ol.geom.Circle([parseFloat(p[0]), parseFloat(p[1])], this.geolocate.getAccuracy());
+        let accuracy = new ol.geom.Circle(point, this.geolocate.getAccuracy());
         this.posFt.setGeometry(new ol.geom.GeometryCollection([point, accuracy]));
     } else {
         this.posFt.setGeometry(new ol.geom.GeometryCollection([point]));
@@ -178,8 +180,7 @@ OlLocate.prototype.onLocationError = function(err) {
 };
 
 OlLocate.prototype.mapClick = function(evt) {
-    let feature = this.map.forEachFeatureAtPixel(evt.pixel,
-                    function(ft) {return ft; });
+    let feature = this.map.forEachFeatureAtPixel(evt.pixel, (ft) => ft);
     if (feature && feature.get('id') === '_locate-pos' && this.popup.hidden) {
         this._updatePopUpCnt();
     } else if (!this.popup.hidden ) {
@@ -189,18 +190,22 @@ OlLocate.prototype.mapClick = function(evt) {
 
 OlLocate.prototype._getDefaultStyles = function() {
     return new ol.style.Style({
-                image: new ol.style.Circle({
-                        radius: 6,
-                        fill: new ol.style.Fill({color: 'rgba(42,147,238,0.7)'}),
-                        stroke: new ol.style.Stroke({color: 'rgba(19,106,236,1)', width: 2})
-                }),
-                fill: new ol.style.Fill({color: 'rgba(19,106,236,0.15)'}),
-                stroke: new ol.style.Stroke({color: 'rgba(19,106,236,1)', width: 2})
-        });
+        image: new ol.style.Circle({
+            radius: 6,
+            fill: new ol.style.Fill({color: 'rgba(42,147,238,0.7)'}),
+            stroke: new ol.style.Stroke({color: 'rgba(19,106,236,1)', width: 2})
+        }),
+        fill: new ol.style.Fill({color: 'rgba(19,106,236,0.15)'}),
+        stroke: new ol.style.Stroke({color: 'rgba(19,106,236,1)', width: 2})
+    });
 };
 
 OlLocate.prototype.setStrings = function(newStrings) {
     this.options.strings = assign({}, this.options.strings, newStrings);
+};
+
+OlLocate.prototype.setProjection = function(projection) {
+    this.geolocate.setProjection(projection);
 };
 
 module.exports = OlLocate;

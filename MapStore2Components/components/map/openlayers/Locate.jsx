@@ -54,6 +54,9 @@ class Locate extends React.Component {
         if (newProps.messages !== this.props.messages) {
             this.locate.setStrings(newProps.messages);
         }
+        if(newProps.projection !== this.props.projection) {
+            this.locate.setProjection(newProps.projection);
+        }
     }
     configureLocate = (newStatus) => {
         let state = this.locate.get("state");
