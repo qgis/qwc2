@@ -13,13 +13,11 @@ const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 require('./style/Toolbar.css');
-const {triggerTool} = require('../actions/maptools');
 const {setCurrentTask} = require('../actions/task')
 
 class Toolbar extends React.Component {
     static propTypes = {
         toolbarItems: PropTypes.array,
-        toolbaritemClicked: PropTypes.func,
         setCurrentTask: PropTypes.func,
         currentTask: PropTypes.string,
         currentTaskMode: PropTypes.string
@@ -36,7 +34,7 @@ class Toolbar extends React.Component {
                 key={item.key + item.mode}
                 className={active ? "toolbar-item-active" : ""}
                 src={assetsPath + "/" + item.icon}
-                onClick={active ? () => this.props.setCurrentTask(null) : () => this.props.toolbaritemClicked(item.key, item.mode)}
+                onClick={active ? () => this.props.setCurrentTask(null) : () => this.props.setCurrentTask(item.key, item.mode)}
                 title={title}
             />
         );
@@ -54,6 +52,5 @@ module.exports = connect((state) => ({
     currentTask: state.task ? state.task.current : "",
     currentTaskMode: state.task ? state.task.mode : "",
 }), {
-    toolbaritemClicked: triggerTool,
     setCurrentTask: setCurrentTask,
 })(Toolbar);

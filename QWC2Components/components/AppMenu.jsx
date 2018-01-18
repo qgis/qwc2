@@ -13,7 +13,6 @@ const Swipeable = require('react-swipeable');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const {setCurrentTask} = require("../actions/task");
-const {triggerTool} = require('../actions/maptools');
 require('./style/AppMenu.css');
 
 
@@ -21,7 +20,6 @@ class AppMenu extends React.Component {
     static propTypes = {
         buttonContents: PropTypes.object,
         menuItems: PropTypes.array,
-        menuitemClicked: PropTypes.func,
         appMenuClearsTask: PropTypes.bool,
         currentTaskBlocked: PropTypes.bool,
         setCurrentTask: PropTypes.func
@@ -50,7 +48,7 @@ class AppMenu extends React.Component {
     }
     onMenuitemClicked = (ev, key, mode) => {
         this.refs.appmenu.blur();
-        this.props.menuitemClicked(key, mode);
+        this.props.setCurrentTask(key, mode);
     }
     killEvent = (ev) => {
         ev.preventDefault();
@@ -109,6 +107,5 @@ class AppMenu extends React.Component {
 module.exports = connect((state) => ({
     currentTaskBlocked: state.task && state.task.blocked || false
 }), {
-    menuitemClicked: triggerTool,
     setCurrentTask: setCurrentTask
 })(AppMenu);
