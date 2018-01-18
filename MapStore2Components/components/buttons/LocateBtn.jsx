@@ -9,7 +9,7 @@
 var React = require('react');
 const PropTypes = require('prop-types');
 var {Button, Glyphicon, OverlayTrigger, Tooltip} = require('react-bootstrap');
-const defaultIcon = require('../misc/spinners/InlineSpinner/img/spinner.gif');
+const defaultIcon = require('../misc/spinners/img/spinner.gif');
 
 let checkingGeoLocation = false;
 let geoLocationAllowed = false;
