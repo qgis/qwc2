@@ -25,9 +25,22 @@ class Locate extends React.Component {
         changeLocateState: () => {},
         onLocateError: () => {}
     }
+    static defaultOpt = {
+        follow: false,// follow with zoom and pan the user's location
+        remainActive: true,
+        metric: true,
+        stopFollowingOnDrag: false,
+        keepCurrentZoomLevel: true,
+        locateOptions: {
+            maximumAge: 2000,
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maxZoom: 18
+        }
+    }
     componentDidMount() {
         if (this.props.map) {
-            this.locate = new OlLocate(this.props.map, this.defaultOpt);
+            this.locate = new OlLocate(this.props.map, Locate.defaultOpt);
             this.locate.setStrings(this.props.messages);
             this.locate.options.onLocationError = this.onLocationError;
             this.locate.on("propertychange", (e) => {this.onStateChange(e.target.get(e.key)); });
@@ -63,19 +76,6 @@ class Locate extends React.Component {
     }
     render() {
         return null;
-    }
-    static defaultOpt: {
-        follow: false,// follow with zoom and pan the user's location
-        remainActive: true,
-        metric: true,
-        stopFollowingOnDrag: false,
-        keepCurrentZoomLevel: true,
-        locateOptions: {
-            maximumAge: 2000,
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maxZoom: 18
-        }
     }
 };
 
