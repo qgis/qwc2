@@ -6,17 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var {
-    CHANGE_MEASUREMENT_TOOL,
-    CHANGE_MEASUREMENT_STATE
-} = require('../actions/measurement');
-
 const assign = require('object-assign');
+const {CHANGE_MEASUREMENT_STATE} = require('../actions/measurement');
 
 function measurement(state = {
-    lineMeasureEnabled: false,
-    areaMeasureEnabled: false,
-    bearingMeasureEnabled: false,
     geomType: null,
     point: null,
     len: 0,
@@ -26,28 +19,9 @@ function measurement(state = {
     areaUnit: 'sqm'
 }, action) {
     switch (action.type) {
-        case CHANGE_MEASUREMENT_TOOL:
-            return assign({}, state, {
-                pointMeasureEnabled: ((action.geomType !== state.geomType) && (action.geomType === 'Point')),
-                lineMeasureEnabled: ((action.geomType !== state.geomType) && (action.geomType === 'LineString')),
-                areaMeasureEnabled: ((action.geomType !== state.geomType) && (action.geomType === 'Polygon')),
-                bearingMeasureEnabled: ((action.geomType !== state.geomType) && (action.geomType === 'Bearing')),
-                geomType: (action.geomType === state.geomType) ? null : action.geomType
-            });
         case CHANGE_MEASUREMENT_STATE:
-            return assign({}, state, {
-                pointMeasureEnabled: action.pointMeasureEnabled,
-                lineMeasureEnabled: action.lineMeasureEnabled,
-                areaMeasureEnabled: action.areaMeasureEnabled,
-                bearingMeasureEnabled: action.bearingMeasureEnabled,
-                geomType: action.geomType,
-                point: action.point,
-                len: action.len,
-                area: action.area,
-                bearing: action.bearing,
-                lenUnit: action.lenUnit,
-                areaUnit: action.areaUnit
-            });
+            let {type, ...props} = action;
+            return assign({}, state, props);
         default:
             return state;
     }

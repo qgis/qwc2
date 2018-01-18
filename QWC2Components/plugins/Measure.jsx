@@ -16,7 +16,7 @@ const proj4js = require('proj4').default;
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const measureUtils = require('../../MapStore2Components/utils/MeasureUtils');
-const {changeMeasurement, changeMeasurementState} = require('../../MapStore2Components/actions/measurement.js');
+const {changeMeasurementState} = require('../../MapStore2Components/actions/measurement.js');
 const displayCrsSelector = require('../selectors/displaycrs');
 const {TaskBar} = require('../components/TaskBar');
 const ButtonBar = require('../components/widgets/ButtonBar');
@@ -26,7 +26,6 @@ class Measure extends React.Component {
     static propTypes = {
         measureState: PropTypes.object,
         displaycrs: PropTypes.string,
-        changeMeasurement: PropTypes.func,
         changeMeasurementState: PropTypes.func,
         showMeasureModeSwitcher: PropTypes.bool
     }
@@ -43,11 +42,11 @@ class Measure extends React.Component {
         showMeasureModeSwitcher: true
     }
     onClose = () => {
-        this.props.changeMeasurement(assign({}, this.props.measureState, {geomType: null}));
+        this.props.changeMeasurementState(assign({}, this.props.measureState, {geomType: null}));
     }
     setMeasureMode = (geomType) => {
         if(geomType !== this.props.measureState.geomType) {
-            this.props.changeMeasurement(assign({}, this.props.measureState, {geomType: geomType}));
+            this.props.changeMeasurementState(assign({}, this.props.measureState, {geomType: geomType}));
         }
     }
     changeLengthUnit = (ev) => {
@@ -133,7 +132,6 @@ const selector = createSelector([state => state, displayCrsSelector], (state, di
 
 module.exports = {
     MeasurePlugin: connect(selector, {
-        changeMeasurement: changeMeasurement,
         changeMeasurementState: changeMeasurementState
     })(Measure),
     reducers: {
