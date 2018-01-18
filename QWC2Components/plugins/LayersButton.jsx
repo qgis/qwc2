@@ -10,7 +10,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const classnames = require('classnames');
-const {Button, Glyphicon} = require('react-bootstrap');
+const {Glyphicon} = require('react-bootstrap');
 const {setCurrentTask} = require('../actions/task');
 require('./style/BackgroundSwitcher.css');
 
@@ -25,13 +25,16 @@ class LayersButton extends React.Component {
         position: 1
     }
     render() {
-        let activeClass = this.props.visible ? 'active' : '';
+        let classes = classnames({
+            "Button": true,
+            "button-active": this.props.visible
+        });
         return (
             <div>
-                <Button id="LayersBtn" className={activeClass} onClick={this.buttonClicked}
+                <button className={classes} onClick={this.buttonClicked}
                     onClick={this.buttonClicked} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
                     <Glyphicon glyph="list-alt"/>
-                </Button>
+                </button>
             </div>
         );
     }

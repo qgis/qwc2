@@ -10,7 +10,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const classnames = require('classnames');
-const {Button, Glyphicon} = require('react-bootstrap');
+const {Glyphicon} = require('react-bootstrap');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeLayerProperties} = require('../actions/layers');
@@ -30,16 +30,19 @@ class BackgroundSwitcher extends React.Component {
         position: 0
     }
     render() {
-        let activeClass = this.props.visible ? 'active' : '';
+        let classes = classnames({
+            "Button": true,
+            "button-active": this.props.visible
+        });
         let backgroundLayers = this.props.layers.filter(layer => layer.group === "background").slice(0).reverse();
         if(backgroundLayers.length > 0){
              return (
                 <div>
-                    <Button id="BackgroundSwitcherBtn" className={activeClass}
+                    <button className={classes}
                         onClick={this.buttonClicked} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
                         <Glyphicon glyph="book"/>
-                    </Button>
-                    <div id="BackgroundSwitcher" className={activeClass}>
+                    </button>
+                    <div id="BackgroundSwitcher" className={this.props.visible ? 'bgswitcher-active' : ''}>
                         {this.renderLayerItem(null, backgroundLayers.filter(layer => layer.visibility === true).length === 0)}
                         {backgroundLayers.map(layer => this.renderLayerItem(layer, layer.visibility === true))}
                     </div>

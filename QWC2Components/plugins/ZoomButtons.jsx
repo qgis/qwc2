@@ -9,60 +9,48 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
+const {Glyphicon} = require('react-bootstrap');
 const {changeZoomLevel} = require('../actions/map');
-const ZoomButton = require('../../MapStore2Components/components/buttons/ZoomButton');
 require('./style/Buttons.css');
 
-class ZoomInButton extends React.Component {
+class ZoomButton extends React.Component {
     static propTypes = {
         currentZoom : PropTypes.number,
         position: PropTypes.number,
-        onZoom: PropTypes.func,
-        maxZoom: PropTypes.number
-    }
-    static defaultProps = {
-        position: 4
+        changeZoomLevel: PropTypes.func,
+        maxZoom: PropTypes.number,
+        direction: PropTypes.number
     }
     render() {
+        let position = this.props.position >= 0 ? this.props.position : (this.props.direction > 0 ? 4 : 3);
+        let disabled = (this.props.currentZoom + this.props.direction > this.props.maxZoom) || (this.props.currentZoom + this.props.direction < 0);
         return (
-            <ZoomButton onZoom={this.props.onZoom} step={1} currentZoom={this.props.currentZoom} maxZoom={this.props.maxZoom}
-                id="ZoomInBtn" glyphicon="plus" style={{bottom: (5 + 4 * this.props.position) + 'em'}} />
+            <button className="Button"
+                onClick={ev => this.props.changeZoomLevel(this.props.currentZoom + this.props.direction)}
+                style={{bottom: (5 + 4 * position) + 'em'}}
+                disabled={disabled}
+            >
+                <Glyphicon glyph={this.props.direction > 0 ? "plus" : "minus"}/>
+            </button>
         );
     }
 };
-
-class ZoomOutButton extends React.Component {
-    static propTypes = {
-        currentZoom : PropTypes.number,
-        position: PropTypes.number,
-        onZoom: PropTypes.func,
-        maxZoom: PropTypes.number
-    }
-    static defaultProps = {
-        position: 3
-    }
-    render() {
-        return (
-            <ZoomButton onZoom={this.props.onZoom} step={-1} currentZoom={this.props.currentZoom} maxZoom={this.props.maxZoom}
-                id="ZoomOutBtn" glyphicon="minus" style={{bottom: (5 + 4 * this.props.position) + 'em'}} />
-        );
-    }
-};
-
 
 module.exports = {
     ZoomInPlugin: connect((state) => ({
         currentZoom: state.map.zoom,
-        maxZoom: state.map.resolutions.length - 1
+        maxZoom: state.map.resolutions.length - 1,
+        direction: +1
     }),{
-        onZoom: changeZoomLevel
-    })(ZoomInButton),
+        changeZoomLevel: changeZoomLevel
+    })(ZoomButton),
     ZoomOutPlugin: connect((state) => ({
         currentZoom: state.map.zoom,
-        maxZoom: state.map.resolutions.length - 1
+        maxZoom: state.map.resolutions.length - 1,
+        direction: -1
     }),{
-        onZoom: changeZoomLevel
-    })(ZoomOutButton),
+        changeZoomLevel: changeZoomLevel
+    })(ZoomButton),
     reducers: {
         map: require("../reducers/map")
     }

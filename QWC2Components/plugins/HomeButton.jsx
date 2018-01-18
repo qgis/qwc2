@@ -9,7 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const {Button, Glyphicon} = require('react-bootstrap');
+const {Glyphicon} = require('react-bootstrap');
 const {zoomToExtent} = require('../actions/map');
 require('./style/Buttons.css');
 
@@ -24,9 +24,9 @@ class HomeButton extends React.Component {
     }
     render() {
         return (
-            <Button id="HomeButton" onClick={this.resetExtent} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
+            <button className="Button" onClick={this.resetExtent} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
                 <Glyphicon glyph="home"/>
-            </Button>
+            </button>
         );
     }
     resetExtent = () => {

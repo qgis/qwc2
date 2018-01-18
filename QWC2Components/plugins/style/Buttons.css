@@ -1,4 +1,4 @@
-#ZoomInBtn, #ZoomOutBtn, #BackgroundSwitcherBtn, #LocateBtn, #LayersBtn, #HomeButton {
+button.Button {
     z-index: 1;
     position: absolute !important;
     right: 1.5em;
@@ -9,24 +9,24 @@
     color: @button_fg@;
     border: none;
     box-shadow: 0px 5px 10px rgba(136, 136, 136, 0.5);
-}
-
-#BackgroundSwitcherBtn, #LayersBtn {
     transition: background-color 0.5s, color 0.5s;
 }
 
-#BackgroundSwitcherBtn.active,
-#LayersBtn.active {
+button.Button:disabled {
+    opacity: 0.7;
+}
+
+button.Button.button-active {
     background-color: @button_active_bg@;
     color: @button_active_fg@;
 }
 
-#LocateBtn.btn-info {
+button.Button.locate-button-ENABLED {
     background-color: @button_fg@;
     color: @button_bg@;
 }
 
-#LocateBtn.btn-success {
+button.Button.locate-button-FOLLOWING {
     background-color: yellow;
     color: @button_bg@;
 }
