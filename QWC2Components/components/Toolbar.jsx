@@ -49,7 +49,7 @@ class Toolbar extends React.Component {
 };
 
 module.exports = connect((state) => ({
-    currentTask: state.task ? state.task.current : "",
+    currentTask: state.task ? state.task.id : "",
     currentTaskMode: state.task ? state.task.mode : "",
 }), {
     setCurrentTask: setCurrentTask,

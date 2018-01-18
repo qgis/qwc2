@@ -82,7 +82,7 @@ class BackgroundSwitcher extends React.Component {
 };
 
 const selector = (state) => ({
-    visible: state.task ? state.task.current === 'BackgroundSwitcher' : false,
+    visible: state.task ? state.task.id === 'BackgroundSwitcher' : false,
     layers: state.layers.flat || []
 });
 

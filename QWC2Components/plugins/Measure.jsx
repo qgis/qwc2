@@ -41,7 +41,10 @@ class Measure extends React.Component {
         },
         showMeasureModeSwitcher: true
     }
-    onClose = () => {
+    onShow = (mode) => {
+        this.props.changeMeasurementState({geomType: mode || 'Point'});
+    }
+    onHide = () => {
         this.props.changeMeasurementState(assign({}, this.props.measureState, {geomType: null}));
     }
     setMeasureMode = (geomType) => {
@@ -115,7 +118,7 @@ class Measure extends React.Component {
     }
     render() {
         return (
-            <TaskBar task="Measure" onClose={this.onClose}>
+            <TaskBar task="Measure" onShow={this.onShow} onHide={this.onHide}>
                 <span role="body">
                     {this.renderModeSwitcher()}
                     {this.renderBody()}

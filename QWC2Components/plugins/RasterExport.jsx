@@ -159,7 +159,7 @@ class RasterExport extends React.Component {
 };
 
 const selector = (state) => ({
-    visible: state.task ? state.task.current === 'RasterExport': false,
+    visible: state.task ? state.task.id === 'RasterExport': false,
     theme: state.theme ? state.theme.current : null,
     map: state.map ? state.map : null,
     themeLayerId: state.theme ? state.theme.currentlayer : "",

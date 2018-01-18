@@ -42,6 +42,12 @@ class Editing extends React.Component {
         busy: false,
         deleteClicked: false
     }
+    onShow = (mode) => {
+        this.props.changeEditingState({action: mode || 'Pick', geomType: null, feature: null})
+    }
+    onHide = () => {
+        this.props.changeEditingState({action: null, geomType: null, feature: null})
+    }
     componentWillReceiveProps(newProps) {
         if(newProps.theme) {
             let layerIds = Object.keys(newProps.theme.editConfig || {});
@@ -210,7 +216,7 @@ class Editing extends React.Component {
     render() {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
-            <SideBar id="Editing" width="20em"
+            <SideBar id="Editing" width="20em" onShow={this.onShow} onHide={this.onHide}
                 title="appmenu.items.Editing" icon={assetsPath + "/img/editing.svg"}>
                 {this.renderBody()}
             </SideBar>
@@ -291,7 +297,7 @@ class Editing extends React.Component {
 
 module.exports = (iface) => {return {
     EditingPlugin: connect(state => ({
-        enabled: state.task ? state.task.current === 'Editing': false,
+        enabled: state.task ? state.task.id === 'Editing': false,
         theme: state.theme ? state.theme.current : null,
         themeLayerId: state.theme ? state.theme.currentlayer : '',
         map: state.map || {},

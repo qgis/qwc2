@@ -39,8 +39,11 @@ class Redlining extends React.Component {
         super(props);
         this.labelInput = null;
     }
-    onClose = () => {
-        this.props.changeRedliningState(assign({}, this.props.redlining, {action: null, geomType: null}));
+    onShow = (mode) => {
+        this.props.changeRedliningState({action: mode || 'Pick', geomType: null});
+    }
+    onHide = () => {
+        this.props.changeRedliningState({action: null, geomType: null});
         this.setState({openColorPicker: null});
     }
     updateRedliningState = (diff) => {
@@ -113,7 +116,7 @@ class Redlining extends React.Component {
     }
     render() {
         return (
-            <TaskBar task="Redlining" onClose={this.onClose}>
+            <TaskBar task="Redlining" onShow={this.onShow} onHide={this.onHide}>
                 <span role="body">
                     {this.renderBody()}
                 </span>

@@ -16,21 +16,33 @@ require('./style/TaskBar.css');
 class TaskBar extends React.Component {
     static propTypes = {
         task: PropTypes.string.isRequired,
-        currentTask: PropTypes.string,
-        onClose: PropTypes.func
+        currentTask: PropTypes.object,
+        onShow: PropTypes.func,
+        onHide: PropTypes.func
     }
     static defaultProps = {
-        onClose: () => {}
+        onShow: (mode) => {},
+        onHide: () => {}
     }
-    onClose = () => {
-        this.props.onClose();
-        this.props.setCurrentTask(null);
+    componentWillReceiveProps(newProps) {
+        let newVisible = newProps.currentTask && newProps.currentTask.id === newProps.task;
+        let oldVisible = this.props.currentTask && this.props.currentTask.id === newProps.task;
+        if(newVisible && (!oldVisible || newProps.currentTask.mode !== this.props.currentTask.mode)) {
+            newProps.onShow(newProps.currentTask.mode);
+        } else if(!newVisible && oldVisible) {
+            newProps.onHide();
+        }
+    }
+    closeClicked = () => {
+        if(this.props.currentTask.id === this.props.task) {
+            this.props.setCurrentTask(null);
+        }
     }
     renderRole = (role) => {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
     }
     render() {
-        if(this.props.currentTask !== this.props.task) {
+        if(this.props.currentTask.id !== this.props.task) {
             return null;
         }
         return (
@@ -41,7 +53,7 @@ class TaskBar extends React.Component {
                             {this.renderRole("body")}
                         </span>
                         <span className="closewrapper">
-                            <Glyphicon className="close" onClick={this.onClose} glyph="remove"/>
+                            <Glyphicon className="close" onClick={this.closeClicked} glyph="remove"/>
                         </span>
                     </div>
                 </div>
@@ -52,7 +64,7 @@ class TaskBar extends React.Component {
 };
 
 const selector = (state) => ({
-    currentTask: state.task ? state.task.current : null
+    currentTask: state.task
 });
 
 module.exports = {

@@ -41,7 +41,7 @@ class LayersButton extends React.Component {
 };
 
 const selector = (state) => ({
-    visible: state.task ? state.task.current === 'LayerTree' : false
+    visible: state.task ? state.task.id === 'LayerTree' : false
 });
 
 module.exports = {

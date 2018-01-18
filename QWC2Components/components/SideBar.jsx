@@ -19,7 +19,7 @@ class SideBar extends React.Component {
     static propTypes = {
         id: PropTypes.string.isRequired,
         extraClasses: PropTypes.string,
-        currentTask: PropTypes.string,
+        currentTask: PropTypes.object,
         onShow: PropTypes.func,
         onHide: PropTypes.func,
         width: PropTypes.string,
@@ -30,23 +30,22 @@ class SideBar extends React.Component {
     }
     static defaultProps = {
         extraClasses: '',
-        currentTask: null,
-        onShow: () => {},
+        onShow: (mode) => {},
         onHide: () => {},
         width: '15em',
         minWidth: '15em'
     }
     componentWillReceiveProps(newProps) {
-        let newVisible = newProps.currentTask === newProps.id;
-        let oldVisible = this.props.currentTask === this.props.id;
-        if(newVisible && !oldVisible) {
-            newProps.onShow();
+        let newVisible = newProps.currentTask && newProps.currentTask.id === newProps.id;
+        let oldVisible = this.props.currentTask && this.props.currentTask.id === this.props.id;
+        if(newVisible && (!oldVisible || newProps.currentTask.mode !== this.props.currentTask.mode)) {
+            newProps.onShow(newProps.currentTask.mode);
         } else if(!newVisible && oldVisible) {
             newProps.onHide();
         }
     }
     closeClicked = () => {
-        if(this.props.currentTask === this.props.id) {
+        if(this.props.currentTask.id === this.props.id) {
             this.props.setCurrentTask(null);
         }
     }
@@ -54,7 +53,7 @@ class SideBar extends React.Component {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
     }
     render() {
-        let visible = this.props.currentTask === this.props.id;
+        let visible = this.props.currentTask.id === this.props.id;
         let style = {
             width: this.props.width,
             minWidth: this.props.minWidth,
@@ -82,7 +81,7 @@ class SideBar extends React.Component {
 };
 
 const selector = (state) => ({
-    currentTask: state.task ? state.task.current : null
+    currentTask: state.task
 });
 
 module.exports = {

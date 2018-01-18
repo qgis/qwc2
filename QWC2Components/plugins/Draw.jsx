@@ -70,7 +70,7 @@ class Draw extends React.Component {
             }
         });
     }
-    onClose = () => {
+    onHide = () => {
         let unselectedFeatures = []
         this.props.features.forEach(function(f) {
             f.selected = false;
@@ -129,7 +129,7 @@ class Draw extends React.Component {
         }
 
         return (
-            <TaskBar task="Draw" onClose={this.onClose}>
+            <TaskBar task="Draw" onHide={this.onHide}>
             <div role="body">
                 <div className="buttonbar">
                 <span onClick={()=>this.setDrawMethod('Point')} className={this.statusForDrawMethod('Point')}>

@@ -293,7 +293,7 @@ class Print extends React.Component {
 };
 
 const selector = (state) => ({
-    visible: state.task ? state.task.current === 'Print': false,
+    visible: state.task ? state.task.id === 'Print': false,
     theme: state.theme ? state.theme.current : null,
     map: state.map ? state.map : null,
     themeLayerId: state.theme ? state.theme.currentlayer : "",
