@@ -49,7 +49,7 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
             let b1 = theme.bbox.bounds;
             let b2 = getState().map.bbox.bounds;
             if(getState().map.projection === theme.mapCrs &&
-               (b1[0] < b2[2] && b1[2] > b2[0] && b1[1] < b2[3] && b1[3] > b2[1])) // b1 and b2 overlap
+               (b2[0] >= b1[0] && b2[1] >= b1[1] && b2[2] <= b1[2] && b2[3] <= b1[3])) // theme bbox (b1) includes current bbox (b2)
             {
                 initialView = {bounds: getState().map.bbox.bounds, crs: getState().map.projection};
             }
