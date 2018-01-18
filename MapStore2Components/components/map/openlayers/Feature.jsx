@@ -10,7 +10,7 @@ var React = require('react');
 const PropTypes = require('prop-types');
 var ol = require('openlayers');
 const FeatureStyles = require('./FeatureStyles');
-const {isEqual} = require('lodash');
+const isEqual = require('lodash.isequal');
 
 class Feature extends React.Component {
     static propTypes = {

@@ -9,7 +9,7 @@
 const assign = require('object-assign');
 const uuid = require('uuid');
 const ol = require('openlayers');
-const {isArray,isEmpty} = require('lodash');
+const isEmpty = require('lodash.isempty');
 const {parse,stringify} = require('wellknown');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
@@ -26,7 +26,7 @@ const VectorLayerUtils = {
             labelOutlineSizes: [],
             labelSizes: []
         }
-        const ensureHex = (rgb) => (!isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
+        const ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
 
         for(let layer of layers) {
             if(layer.type != 'vector' || (layer.features || []).length == 0) {
@@ -74,8 +74,8 @@ const VectorLayerUtils = {
         }
         let dpiScale = dpi / 96.;
 
-        const ensureHex = (rgb) => (!isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
-        const opacity = (rgb) => (!isArray(rgb) ? 1. : (rgb[3] === undefined ? 1. : rgb[3]));
+        const ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
+        const opacity = (rgb) => (!Array.isArray(rgb) ? 1. : (rgb[3] === undefined ? 1. : rgb[3]));
 
         let stroke = '<se:Stroke>' +
                      '<se:SvgParameter name="stroke">' + ensureHex(opts.strokeColor) + '</se:SvgParameter>' +

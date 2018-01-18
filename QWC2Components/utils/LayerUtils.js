@@ -7,7 +7,8 @@
 */
 
 const assign = require('object-assign');
-const {isEmpty,isEqual} = require('lodash');
+const isEmpty = require('lodash.isempty');
+const isEqual = require('lodash.isequal');
 const uuid = require('uuid');
 
 const LayerUtils = {

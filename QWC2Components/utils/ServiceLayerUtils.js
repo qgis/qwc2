@@ -9,7 +9,7 @@
 const ol = require('openlayers');
 const assign = require('object-assign');
 const deepmerge = require('deepmerge').default;
-const {isEmpty,isArray} = require('lodash');
+const isEmpty = require('lodash.isempty');
 const fastXmlParser = require('fast-xml-parser');
 const randomColor = require('randomcolor');
 
@@ -23,7 +23,7 @@ function strcmp(a, b) {
 }
 
 function array(obj) {
-    return isArray(obj) ? obj : [obj];
+    return Array.isArray(obj) ? obj : [obj];
 }
 
 const ServiceLayerUtils = {

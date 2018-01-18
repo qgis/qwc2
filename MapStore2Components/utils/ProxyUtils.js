@@ -7,7 +7,6 @@
  */
 
 const ConfigUtils = require('./ConfigUtils');
-const {isObject} = require('lodash');
 
 var ProxyUtils = {
     addProxyIfNeeded: function(uri, extraQueryParams = "") {
@@ -29,7 +28,7 @@ var ProxyUtils = {
             let proxyUrl = ConfigUtils.getProxyUrl();
             if (proxyUrl) {
                 let useCORS = [];
-                if (isObject(proxyUrl)) {
+                if (proxyUrl instanceof Object) {
                     useCORS = proxyUrl.useCORS || [];
                     proxyUrl = proxyUrl.url;
                 }

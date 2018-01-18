@@ -13,7 +13,7 @@ const axios = require('axios');
 const xml2js = require('xml2js');
 const fs = require('fs');
 const path = require('path');
-const {isEmpty} = require('lodash');
+const isEmpty = require('lodash.isempty');
 const fqdn = require('node-fqdn');
 const hostFqdn = "http://" + String(fqdn());
 

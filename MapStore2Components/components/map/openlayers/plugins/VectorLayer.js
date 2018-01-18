@@ -7,7 +7,7 @@
  */
 
 const ol = require('openlayers');
-const {isEqual} = require('lodash');
+const isEqual = require('lodash.isequal');
 const FeatureStyles = require('../FeatureStyles');
 
 let VectorLayer = {

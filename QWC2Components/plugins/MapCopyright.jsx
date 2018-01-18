@@ -9,7 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const {isEmpty} = require('lodash');
+const isEmpty = require('lodash.isempty');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 require('./style/MapCopyright.css');
 

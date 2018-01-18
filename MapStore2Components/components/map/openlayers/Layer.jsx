@@ -8,7 +8,9 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const assign = require('object-assign');
-const _ = require('lodash');
+const isEmpty = require('lodash.isempty');
+const isEqual = require('lodash.isequal');
+const omit = require('lodash.omit');
 const CoordinatesUtils = require('../../../utils/CoordinatesUtils');
 const LayerRegistry = require('./plugins/index');
 
@@ -117,7 +119,7 @@ class OpenlayersLayer extends React.Component {
         if (newProps.position === oldProps.position && newProps.srs === oldProps.srs) {
             // check if options are the same, except loading
             if (newProps.options === oldProps.options) return;
-            if (_.isEqual( _.omit(newProps.options, ["loading"]), _.omit(oldProps.options, ["loading"]) ) ) {
+            if (isEqual(omit(newProps.options, ["loading"]), omit(oldProps.options, ["loading"]) ) ) {
                 return;
             }
         }

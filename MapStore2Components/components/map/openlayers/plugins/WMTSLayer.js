@@ -9,7 +9,6 @@
 var ol = require('openlayers');
 var assign = require('object-assign');
 const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
-const {isArray} = require('lodash');
 const SecurityUtils = require('../../../../utils/SecurityUtils');
 
 function wmtsToOpenlayersOptions(options) {
@@ -32,7 +31,7 @@ function getWMSURLs( urls ) {
 
 let WMTSLayer = {
     create: (options) => {
-        const urls = getWMSURLs(isArray(options.url) ? options.url : [options.url]);
+        const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]);
         const queryParameters = wmtsToOpenlayersOptions(options) || {};
         var projection = ol.proj.get(options.projection);
         urls.forEach(url => SecurityUtils.addAuthenticationParameter(url, queryParameters));

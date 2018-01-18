@@ -13,7 +13,7 @@ var assign = require('object-assign');
 var CoordinatesUtils = require('../../../utils/CoordinatesUtils');
 var mapUtils = require('../../../utils/MapUtils');
 
-const {isEqual} = require('lodash');
+const isEmpty = require('lodash.isempty');
 
 class OpenlayersMap extends React.Component {
     static propTypes = {

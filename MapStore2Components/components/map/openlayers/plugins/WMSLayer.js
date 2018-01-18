@@ -10,7 +10,6 @@ var ol = require('openlayers');
 var assign = require('object-assign');
 const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
 const ProxyUtils = require('../../../../utils/ProxyUtils');
-const {isArray} = require('lodash');
 const SecurityUtils = require('../../../../utils/SecurityUtils');
 
 
@@ -38,7 +37,7 @@ function proxyTileLoadFunction(imageTile, src) {
 
 let WMSLayer = {
     create: (options) => {
-        const urls = getWMSURLs(isArray(options.url) ? options.url : [options.url]);
+        const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]);
         const queryParameters = wmsToOpenlayersOptions(options) || {};
         urls.forEach(url => SecurityUtils.addAuthenticationParameter(url, queryParameters));
         if (options.singleTile) {

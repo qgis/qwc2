@@ -7,7 +7,7 @@
  */
 
 const assign = require('object-assign');
-const {omit} = require('lodash');
+const omit = require('lodash.omit');
 const {combineReducers} = require('redux');
 
 
