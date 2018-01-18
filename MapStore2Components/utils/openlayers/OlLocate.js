@@ -6,39 +6,39 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var ol = require('openlayers');
-var popUp = require('./OlPopUp')();
-var assign = require('object-assign');
+const ol = require('openlayers');
+const popUp = require('./OlPopUp')();
+const assign = require('object-assign');
 
 
 var OlLocate = function(map, optOptions) {
     ol.Object.call(this, {state: "DISABLED"});
     this.map = map;
     let defOptions = {
-            drawCircle: true,// draw accuracy circle
-            follow: true,// follow with zoom and pan the user's location
-            stopFollowingOnDrag: false, // if follow is true, stop following when map is dragged (deprecated)
-            // if true locate control remains active on click even if the user's location is in view.
-            // clicking control will just pan to location not implemented
-            remainActive: true,
-            locateStyle: this._getDefaultStyles(),
-            metric: true,
-            onLocationError: this.onLocationError,
-            // keep the current map zoom level when displaying the user's location. (if 'false', use maxZoom)
-            keepCurrentZoomLevel: false,
-            showPopup: true, // display a popup when the user click on the inner marker
-            strings: {
-                metersUnit: "meters",
-                feetUnit: "feet",
-                popup: "You are within {distance} {unit} from this point"
-            },
-            locateOptions: {
-                maximumAge: 2000,
-                enableHighAccuracy: false,
-                timeout: 10000,
-                maxZoom: 18
-            }
-        };
+        drawCircle: true,// draw accuracy circle
+        follow: true,// follow with zoom and pan the user's location
+        stopFollowingOnDrag: false, // if follow is true, stop following when map is dragged (deprecated)
+        // if true locate control remains active on click even if the user's location is in view.
+        // clicking control will just pan to location not implemented
+        remainActive: true,
+        locateStyle: this._getDefaultStyles(),
+        metric: true,
+        onLocationError: this.onLocationError,
+        // keep the current map zoom level when displaying the user's location. (if 'false', use maxZoom)
+        keepCurrentZoomLevel: false,
+        showPopup: true, // display a popup when the user click on the inner marker
+        strings: {
+            metersUnit: "meters",
+            feetUnit: "feet",
+            popup: "You are within {distance} {unit} from this point"
+        },
+        locateOptions: {
+            maximumAge: 2000,
+            enableHighAccuracy: false,
+            timeout: 10000,
+            maxZoom: 18
+        }
+    };
 
     this.options = assign({}, defOptions, optOptions || {} );
     this.geolocate = new ol.Geolocation({
@@ -81,19 +81,11 @@ OlLocate.prototype.start = function() {
     }
     if (!this.p) {
         this.set("state", "LOCATING");
-    }else {
+    } else {
         this._updatePosFt();
     }
 };
-OlLocate.prototype.startFollow = function() {
-    this.follow = true;
-    if (this.options.stopFollowingOnDrag) {
-        this.map.on('pointerdrag', this.stopFollow, this);
-    }
-    if (this.p) {
-        this._updatePosFt();
-    }
-};
+
 OlLocate.prototype.stop = function() {
     this.geolocate.un('error', this.options.onLocationError, this);
     this.geolocate.setTracking(false);
@@ -110,6 +102,16 @@ OlLocate.prototype.stop = function() {
     this.set("state", "DISABLED");
 };
 
+
+OlLocate.prototype.startFollow = function() {
+    this.follow = true;
+    if (this.options.stopFollowingOnDrag) {
+        this.map.on('pointerdrag', this.stopFollow, this);
+    }
+    if (this.p) {
+        this._updatePosFt();
+    }
+};
 
 OlLocate.prototype.stopFollow = function() {
     this.follow = false;
@@ -152,6 +154,7 @@ OlLocate.prototype.updateView = function(point) {
         }
     }
 };
+
 OlLocate.prototype._updatePopUpCnt = function() {
     let distance;
     let unit;
