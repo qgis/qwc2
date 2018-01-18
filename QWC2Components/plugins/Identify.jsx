@@ -10,7 +10,6 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const IdentifyUtils = require('../utils/IdentifyUtils');
-const Spinner = require('../../MapStore2Components/components/misc/spinners/BasicSpinner/BasicSpinner');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {sendIdentifyRequest, purgeIdentifyResults} = require('../actions/identify');
 const {addMarker, removeMarker} = require('../actions/layers');
@@ -70,15 +69,6 @@ class Identify extends React.Component {
     onClose = () => {
         this.props.removeMarker('identify');
         this.props.purgeResults();
-    }
-    renderHeader = (missing) => {
-        return (
-            <span role="header">
-                { (missing !== 0 ) ? <Spinner value={missing} sSize="sp-small" /> : null }
-                {this.props.headerGlyph ? <Glyphicon glyph={this.props.headerGlyph} /> : null}&nbsp;<Message msgId="identifyTitle" />
-                <button onClick={this.onModalHiding} className="close">{this.props.closeGlyph ? <Glyphicon glyph={this.props.closeGlyph}/> : <span>×</span>}</button>
-            </span>
-        );
     }
     render() {
         if (!this.props.enabled || this.props.requests.length === 0) {
