@@ -19,6 +19,10 @@ div.resizeable-window-titlebar {
     line-height: 2em;
     display: flex;
     align-items: center;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 span.resizeable-window-titlebar-icon {
