@@ -11,7 +11,7 @@ const {CHANGE_MEASUREMENT_STATE} = require('../actions/measurement');
 
 function measurement(state = {
     geomType: null,
-    point: null,
+    coordinates: null,
     len: 0,
     area: 0,
     bearing: 0,
@@ -20,8 +20,7 @@ function measurement(state = {
 }, action) {
     switch (action.type) {
         case CHANGE_MEASUREMENT_STATE:
-            let {type, ...props} = action;
-            return assign({}, state, props);
+            return assign({}, state, action.data);
         default:
             return state;
     }

@@ -12,6 +12,7 @@ const FormattedNumber = require('react-intl').FormattedNumber;
 const {connect} = require('react-redux');
 const {createSelector} = require('reselect');
 const assign = require('object-assign');
+const isEmpty = require('lodash.isempty');
 const proj4js = require('proj4').default;
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const Message = require('../../MapStore2Components/components/I18N/Message');
@@ -25,31 +26,23 @@ require('./style/Measure.css');
 class Measure extends React.Component {
     static propTypes = {
         measureState: PropTypes.object,
+        mapcrs: PropTypes.string,
         displaycrs: PropTypes.string,
         changeMeasurementState: PropTypes.func,
         showMeasureModeSwitcher: PropTypes.bool
     }
     static defaultProps = {
-        measureState: {
-            geomType: "Point",
-            point: null,
-            len: 0,
-            area: 0,
-            bearing: 0,
-            lenUnit: 'm',
-            areaUnit: 'sqm'
-        },
         showMeasureModeSwitcher: true
     }
     onShow = (mode) => {
         this.props.changeMeasurementState({geomType: mode || 'Point'});
     }
     onHide = () => {
-        this.props.changeMeasurementState(assign({}, this.props.measureState, {geomType: null}));
+        this.props.changeMeasurementState(assign({}, this.props.measureState, {geomType: null, coordinates: null}));
     }
     setMeasureMode = (geomType) => {
         if(geomType !== this.props.measureState.geomType) {
-            this.props.changeMeasurementState(assign({}, this.props.measureState, {geomType: geomType}));
+            this.props.changeMeasurementState(assign({}, this.props.measureState, {geomType: geomType, coordinates: null}));
         }
     }
     changeLengthUnit = (ev) => {
@@ -78,8 +71,8 @@ class Measure extends React.Component {
         if(this.props.measureState.geomType === "Point") {
             let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
             let text = "0 0";
-            if(this.props.measureState.point) {
-                let {x, y} = CoordinatesUtils.reproject([this.props.measureState.point.x, this.props.measureState.point.y], this.props.measureState.point.srs, this.props.displaycrs);
+            if(!isEmpty(this.props.measureState.coordinates)) {
+                let {x, y} = CoordinatesUtils.reproject(this.props.measureState.coordinates, this.props.mapcrs, this.props.displaycrs);
                 text = x.toFixed(digits) + " " + y.toFixed(digits);
             }
             resultBody = (<div className="resultbody"><span>{text}</span></div>);
@@ -130,6 +123,7 @@ class Measure extends React.Component {
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
     measureState: state.measurement,
+    mapcrs: state.map.projection,
     displaycrs: displaycrs
 }));
 

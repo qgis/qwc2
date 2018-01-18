@@ -11,7 +11,7 @@ const CHANGE_MEASUREMENT_STATE = 'CHANGE_MEASUREMENT_STATE';
 function changeMeasurementState(measureState) {
     return {
         type: CHANGE_MEASUREMENT_STATE,
-        ...measureState
+        data: measureState
     };
 }
 
