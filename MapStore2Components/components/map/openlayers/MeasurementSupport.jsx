@@ -71,12 +71,16 @@ class MeasurementSupport extends React.Component {
             })
         });
 
-        this.props.map.on('pointermove', this.updateMeasurementResults);
-        this.props.map.on('click', this.updateMeasurementResults);
-
         this.drawInteraction.on('drawstart', (ev) => {
             this.measureLayer.getSource().clear();
             this.sketchFeature = ev.feature;
+            this.props.map.on('pointermove', this.updateMeasurementResults);
+            this.props.map.on('click', this.updateMeasurementResults);
+        });
+        this.drawInteraction.on('drawend', (ev) => {
+            this.props.map.un('pointermove', this.updateMeasurementResults);
+            this.props.map.un('click', this.updateMeasurementResults);
+            this.updateMeasurementResults(ev, false);
         });
 
         this.props.map.addInteraction(this.drawInteraction);
@@ -87,11 +91,9 @@ class MeasurementSupport extends React.Component {
             this.drawInteraction = null;
             this.props.map.removeLayer(this.measureLayer);
             this.sketchFeature = null;
-            this.props.map.un('pointermove', this.updateMeasurementResults);
-            this.props.map.un('click', this.updateMeasurementResults);
         }
     }
-    updateMeasurementResults = () => {
+    updateMeasurementResults = (ev, drawing=true) => {
         if(!this.sketchFeature) {
             return;
         }
@@ -106,25 +108,21 @@ class MeasurementSupport extends React.Component {
             }
         }
 
-        let newMeasureState = {
+        this.props.changeMeasurementState({
+            drawing: drawing,
             coordinates: coo,
             len: this.props.measurement.geomType === 'LineString' ?
                 this.calculateGeodesicDistance(coo) : 0,
             area: this.props.measurement.geomType === 'Polygon' ?
                 this.calculateGeodesicArea(this.sketchFeature.getGeometry().getLinearRing(0).getCoordinates()) : 0,
             bearing: this.props.measurement.geomType === 'Bearing' ? bearing : 0,
-        };
-
-        this.props.changeMeasurementState(newMeasureState);
+        });
     }
     reprojectedCoordinates = (coordinates) => {
         return coordinates.map((coordinate) => {
             let reprojectedCoordinate = CoordinatesUtils.reproject(coordinate, this.props.projection, 'EPSG:4326');
             return [reprojectedCoordinate.x, reprojectedCoordinate.y];
         });
-    }
-    getPointCoordinate = (coordinate) => {
-        return {x: coordinate[0], y: coordinate[1], srs: this.props.projection};
     }
     calculateGeodesicDistance = (coordinates) => {
         let reprojectedCoordinates = this.reprojectedCoordinates(coordinates);
