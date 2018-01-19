@@ -41,7 +41,7 @@ function generatePermaLink(state, callback) {
     let permalinkState = {
         layers: (state.layers && state.layers.flat || []).filter(layer => layer.role === LayerRole.USERLAYER)
     };
-    axios.post(ConfigUtils.getConfigProp("qwc2serverUrl").replace(/\/$/, '') + "/createpermalink?url=" + encodeURIComponent(window.location.href), permalinkState)
+    axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/createpermalink?url=" + encodeURIComponent(window.location.href), permalinkState)
         .then(response => callback(response.data.permalink))
         .catch(e => callback(window.location.href));
 }
@@ -49,7 +49,7 @@ function generatePermaLink(state, callback) {
 function resolvePermaLink(initialParams, callback) {
     let key = UrlParams.getParam('k');
     if(key) {
-        axios.get(ConfigUtils.getConfigProp("qwc2serverUrl").replace(/\/$/, '') + "/resolvepermalink?key=" + key)
+        axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/resolvepermalink?key=" + key)
             .then(response => {
                 callback(response.data.query || {}, response.data.state || {});
             })
