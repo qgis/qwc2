@@ -38,11 +38,11 @@ class Measure extends React.Component {
         this.props.changeMeasurementState({geomType: mode || 'Point'});
     }
     onHide = () => {
-        this.props.changeMeasurementState(assign({}, this.props.measureState, {geomType: null, coordinates: null}));
+        this.props.changeMeasurementState({geomType: null});
     }
     setMeasureMode = (geomType) => {
         if(geomType !== this.props.measureState.geomType) {
-            this.props.changeMeasurementState(assign({}, this.props.measureState, {geomType: geomType, coordinates: null}));
+            this.props.changeMeasurementState({geomType: geomType});
         }
     }
     changeLengthUnit = (ev) => {

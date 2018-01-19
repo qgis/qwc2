@@ -20,7 +20,7 @@ function measurement(state = {
 }, action) {
     switch (action.type) {
         case CHANGE_MEASUREMENT_STATE:
-            return assign({}, state, action.data);
+            return assign({}, {lenUnit: state.lenUnit, areaUnit: state.areaUnit}, action.data);
         default:
             return state;
     }
