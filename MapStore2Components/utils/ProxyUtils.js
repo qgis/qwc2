@@ -37,7 +37,7 @@ var ProxyUtils = {
                     needed = true;
                 }
                 if(needed) {
-                    return proxyUrl + encodeURIComponent(uri) + extraQueryParams;
+                    return proxyUrl + "?url=" + encodeURIComponent(uri) + extraQueryParams;
                 }
             } else {
                 console.warn("Proxy required for cross-origin request, but no proxy is configured.");
