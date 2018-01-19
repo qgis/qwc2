@@ -107,15 +107,22 @@ class MeasurementSupport extends React.Component {
                 this.drawInteraction.finishDrawing();
             }
         }
+        let length = null;
+        if(this.props.measurement.geomType === 'LineString') {
+            length = this.calculateGeodesicDistances(coo);
+        }
+        let area = 0;
+        if(this.props.measurement.geomType === 'Polygon') {
+            area = this.calculateGeodesicArea(this.sketchFeature.getGeometry().getLinearRing(0).getCoordinates());
+        }
 
         this.props.changeMeasurementState({
+            geomType: this.props.measurement.geomType,
             drawing: drawing,
             coordinates: coo,
-            len: this.props.measurement.geomType === 'LineString' ?
-                this.calculateGeodesicDistance(coo) : 0,
-            area: this.props.measurement.geomType === 'Polygon' ?
-                this.calculateGeodesicArea(this.sketchFeature.getGeometry().getLinearRing(0).getCoordinates()) : 0,
-            bearing: this.props.measurement.geomType === 'Bearing' ? bearing : 0,
+            length: length,
+            area: area,
+            bearing: bearing,
         });
     }
     reprojectedCoordinates = (coordinates) => {
@@ -124,13 +131,13 @@ class MeasurementSupport extends React.Component {
             return [reprojectedCoordinate.x, reprojectedCoordinate.y];
         });
     }
-    calculateGeodesicDistance = (coordinates) => {
+    calculateGeodesicDistances = (coordinates) => {
         let reprojectedCoordinates = this.reprojectedCoordinates(coordinates);
-        let length = 0;
+        let lengths = [];
         for (let i = 0; i < reprojectedCoordinates.length - 1; ++i) {
-            length += wgs84Sphere.haversineDistance(reprojectedCoordinates[i], reprojectedCoordinates[i + 1]);
+            lengths.push(wgs84Sphere.haversineDistance(reprojectedCoordinates[i], reprojectedCoordinates[i + 1]));
         }
-        return length;
+        return lengths;
     }
     calculateGeodesicArea = (coordinates) => {
         let reprojectedCoordinates = this.reprojectedCoordinates(coordinates);

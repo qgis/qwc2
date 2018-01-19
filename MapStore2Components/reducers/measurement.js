@@ -12,7 +12,7 @@ const {CHANGE_MEASUREMENT_STATE} = require('../actions/measurement');
 function measurement(state = {
     geomType: null,
     coordinates: null,
-    len: 0,
+    length: null,
     area: 0,
     bearing: 0,
     lenUnit: 'm',

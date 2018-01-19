@@ -77,9 +77,10 @@ class Measure extends React.Component {
             }
             resultBody = (<div className="resultbody"><span>{text}</span></div>);
         } else if(this.props.measureState.geomType === "LineString") {
+            let length = (this.props.measureState.length || []).reduce((tot, num) => tot + num, 0);
             resultBody = (
                 <div className="resultbody">
-                    <FormattedNumber {...decimalFormat} value={measureUtils.getFormattedLength(this.props.measureState.lenUnit, this.props.measureState.len)} />
+                    <FormattedNumber {...decimalFormat} value={measureUtils.getFormattedLength(this.props.measureState.lenUnit, length)} />
                     <select onChange={this.changeLengthUnit} value={this.props.measureState.lenUnit}>
                         <option value="m">m</option>
                         <option value="ft">ft</option>
