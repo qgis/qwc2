@@ -1,0 +1,46 @@
+#HeightProfile {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 2.25em;
+    width: 100%;
+    height: calc(100px + 0.5em);
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
+    padding-top: 0.5em;
+    z-index: 2;
+}
+
+#HeightProfile g.ct-grids line.ct-grid {
+    stroke: lightgray;
+    stroke-width: 1px;
+}
+
+#HeightProfile g.ct-series-a path.ct-line {
+    stroke: red;
+    stroke-width: 2px;
+    fill: none;
+}
+
+#HeightProfile g.ct-series-a path.ct-area {
+    fill: rgba(255,0,0,0.5);
+}
+
+#HeightProfile g.ct-labels span.ct-label {
+    color: gray;
+    font-size: 1rem;
+    display: flex;
+}
+
+
+#HeightProfile g.ct-labels span.ct-vertical {
+    position: relative;
+    top: 0.5rem;
+    flex-direction: column;
+    justify-content: flex-end;
+    text-align: right;
+}
+
+#HeightProfile g.ct-labels span.ct-horizontal {
+    justify-content: center;
+}
