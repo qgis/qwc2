@@ -11,8 +11,12 @@ const axios = require('axios');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const isEmpty = require('lodash.isempty');
-const ChartistGraph = require('react-chartist').default;
+const Chartist = require('chartist');
+const ChartistComponent = require('react-chartist').default;
+const ChartistAxisTitle = require('chartist-plugin-axistitle');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
+const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
+const {addMarker, removeMarker} = require('../actions/layers');
 
 require('./style/HeightProfile.css');
 
@@ -20,13 +24,20 @@ class HeightProfile extends React.Component {
     static propTypes = {
         measurement: PropTypes.object,
         projection: PropTypes.string,
-        samples: PropTypes.number
+        samples: PropTypes.number,
+        addMarker: PropTypes.func,
+        removeMarker: PropTypes.func
     }
     static defaultProps = {
         samples: 500
     }
+    static contextTypes = {
+        messages: PropTypes.object
+    }
     constructor(props) {
         super(props);
+        this.tooltip = null;
+        this.marker = null;
     }
     state = {
         width: window.innerWidth,
@@ -64,30 +75,106 @@ class HeightProfile extends React.Component {
         if(isEmpty(this.state.data)) {
             return null;
         }
+        let distanceStr = LocaleUtils.getMessageById(this.context.messages, "heightprofile.distance");
+        let heightStr = LocaleUtils.getMessageById(this.context.messages, "heightprofile.height");
+        let aslStr = LocaleUtils.getMessageById(this.context.messages, "heightprofile.asl");
         let totLength = (this.props.measurement.length || []).reduce((tot, num) => tot + num, 0);
+
+        // Compute tick positions (so that there are approx 10 ticks on the x-axis)
+        let base = Math.pow(10, Math.floor(Math.log10(totLength/10))); // 10E<num_digits_totLength - 1>
+        let inc = Math.round((totLength / 10.) / base) * base;
+        let ticks = [];
+        for(let i = 0; i < totLength; i += inc) {
+            ticks.push(i);
+        }
 
         let data = {
             labels: new Array(this.props.samples).fill(0), // Just a dummy array of the right length, value is computed in labelInterpolationFnc
-            series:  [this.state.data]
+            series:  [this.state.data.map((entry, index) => ({
+                x: index * totLength / this.props.samples,
+                y: entry
+            }))]
         };
+        let minHeight = Math.min(...this.state.data);
+        let maxHeight = Math.max(...this.state.data);
         let options = {
             width: this.state.width,
             height: 100,
-            low: 0,
-            chartPadding: 0,
+            chartPadding: {left: 5, bottom: 1, top: 0},
             showArea: true,
             axisX: {
-                // Only draw approx 10 labels
-                labelInterpolationFnc: (value, index) => {
-                    return index % (this.props.samples / 10) == 0 ? Math.round((totLength * index) / this.props.samples) : null;
+                type: Chartist.FixedScaleAxis,
+                ticks: ticks
+            },
+            axisY: {
+                low: minHeight - (maxHeight - minHeight) / 10
+            },
+            plugins: [
+                ChartistAxisTitle({
+                    axisX: {
+                       axisTitle: distanceStr + " [m]",
+                       axisClass: 'ct-axis-title',
+                       offset: {x: 0, y: 25},
+                       textAnchor: 'middle'
+                   },
+                   axisY: {
+                       axisTitle: heightStr + " [m " + aslStr + "]",
+                       axisClass: 'ct-axis-title',
+                       offset: {x: -10, y: 10},
+                       flipTitle: true
+                   }
+               })
+            ]
+        };
+        let listeners = {
+            draw: ev => {
+                if(ev.type === "area") {
+                    ev.element._node.addEventListener("mousemove", ev2 => {
+                        let rect = ev.element._node.getBoundingClientRect();
+                        let idx = Math.min(this.props.samples - 1, Math.round((ev2.clientX - rect.x) / rect.width * this.props.samples));
+                        this.updateMapMarker(idx / this.props.samples * totLength);
+                        if(this.tooltip) {
+                            let sample = data.series[0][idx];
+                            this.marker.style.visibility = this.tooltip.style.visibility = 'visible';
+                            this.marker.style.left = this.tooltip.style.left = ev2.clientX + 'px';
+                            this.tooltip.innerHTML = "<b>" + distanceStr + ":</b> " + Math.round(sample.x) + " m<br />" +
+                                                     "<b>" + heightStr + ":</b> " + Math.round(sample.y) + " m " + aslStr;
+                        }
+                    });
+                    ev.element._node.addEventListener("mouseout", ev2 => {
+                        this.props.removeMarker('heightprofile');
+                        if(this.tooltip) {
+                            this.marker.style.visibility = this.tooltip.style.visibility = 'hidden';
+                        }
+                    });
                 }
             }
-        };
+        }
         return (
             <div id="HeightProfile">
-                <ChartistGraph type="Line" data={data} options={options} />
+                <ChartistComponent type="Line" data={data} options={options} listener={listeners} />
+                <span ref={el => this.tooltip = el} className="height-profile-tooltip"></span>
+                <span ref={el => this.marker = el} className="height-profile-marker"></span>
             </div>
         )
+    }
+    updateMapMarker = (x) => {
+        let segmentLengths = this.props.measurement.length;
+        let coo = this.props.measurement.coordinates;
+        if(isEmpty(segmentLengths) || isEmpty(coo)) {
+            return;
+        }
+        let i = 0;
+        let runl = 0;
+        while(i < segmentLengths.length - 1 && x > runl + segmentLengths[i]) {
+            runl += segmentLengths[i++];
+        }
+        let lambda = (x - runl) / segmentLengths[i];
+        let p = [
+            coo[i][0] + lambda * (coo[i+1][0] - coo[i][0]),
+            coo[i][1] + lambda * (coo[i+1][1] - coo[i][1])
+        ];
+        this.props.addMarker('heightprofile', p, '', this.props.projection, 1000001); // 1000001: one higher than the zIndex in MeasurementSupport...
     }
 };
 
@@ -96,6 +183,7 @@ module.exports = {
         measurement: state.measurement,
         projection: state.map.projection
     }), {
-
+        addMarker: addMarker,
+        removeMarker: removeMarker
     })(HeightProfile)
 };

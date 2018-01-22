@@ -34,13 +34,42 @@
 
 
 #HeightProfile g.ct-labels span.ct-vertical {
-    position: relative;
-    top: 0.5rem;
-    flex-direction: column;
     justify-content: flex-end;
-    text-align: right;
+    align-items: center;
+    transform: translate(0, 50%);
 }
 
 #HeightProfile g.ct-labels span.ct-horizontal {
     justify-content: center;
+    transform: translate(-50%,0);
+}
+
+#HeightProfile text.ct-axis-title {
+    fill: gray;
+    font-size: 1.15rem;
+}
+
+#HeightProfile span.height-profile-tooltip {
+    visibility: hidden;
+    position: absolute;
+    bottom: 100px;
+    display: inline-block;
+    background-color: rgba(0, 0, 0, 0.75);
+    border-radius: 0.5em;
+    padding: 0.5em;
+    color: white;
+    font-size: 1.1rem;
+    transform: translate(-50%, 0%);
+    white-space: nowrap;
+}
+
+#HeightProfile span.height-profile-marker {
+    visibility: hidden;
+    position: absolute;
+    bottom: calc(30px);
+    height: 70px;
+    display: inline-block;
+    width: 1px;
+    background-color: rgba(0, 0, 0, 0.5);
+    pointer-events: none;
 }

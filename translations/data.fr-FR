@@ -59,6 +59,11 @@
     "fileselector": {
       "placeholder": "Choisir un fichier..."
     },
+    "heightprofile": {
+      "asl": "",
+      "distance": "",
+      "height": ""
+    },
     "identify": {
       "querying": "Identification en cours..."
     },
