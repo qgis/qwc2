@@ -25,6 +25,7 @@ class HeightProfile extends React.Component {
         measurement: PropTypes.object,
         projection: PropTypes.string,
         samples: PropTypes.number,
+        mobile: PropTypes.bool,
         addMarker: PropTypes.func,
         removeMarker: PropTypes.func
     }
@@ -80,9 +81,9 @@ class HeightProfile extends React.Component {
         let aslStr = LocaleUtils.getMessageById(this.context.messages, "heightprofile.asl");
         let totLength = (this.props.measurement.length || []).reduce((tot, num) => tot + num, 0);
 
-        // Compute tick positions (so that there are approx 10 ticks on the x-axis)
+        // Compute tick positions (so that there are approx 10 ticks on desktop and 5 ticks on mobile on the x-axis)
         let base = Math.pow(10, Math.floor(Math.log10(totLength/10))); // 10E<num_digits_totLength - 1>
-        let inc = Math.round((totLength / 10.) / base) * base;
+        let inc = Math.round((totLength / (this.props.mobile ? 5. : 10.)) / base) * base;
         let ticks = [];
         for(let i = 0; i < totLength; i += inc) {
             ticks.push(i);
@@ -181,7 +182,8 @@ class HeightProfile extends React.Component {
 module.exports = {
     HeightProfilePlugin: connect((state) => ({
         measurement: state.measurement,
-        projection: state.map.projection
+        projection: state.map.projection,
+        mobile: state.browser ? state.browser.mobile : false
     }), {
         addMarker: addMarker,
         removeMarker: removeMarker
