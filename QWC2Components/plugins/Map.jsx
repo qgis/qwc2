@@ -53,7 +53,7 @@ class MapPlugin extends React.Component {
         const topLayer = (this.props.layers || [])[0];
         return this.props.layers.slice(0).reverse().map((layer, index) => {
             return (
-                <MapComponents.Layer swipe={layer === topLayer ? this.props.map.swipe : null} type={layer.type} srs={projection} position={index} key={layer.uuid} options={layer}>
+                <MapComponents.Layer swipe={layer === topLayer ? this.props.map.swipe : null} type={layer.type} srs={projection} zIndex={layer.zIndex || index} key={layer.uuid} options={layer}>
                     {this.renderLayerContent(layer, projection)}
                 </MapComponents.Layer>
             );

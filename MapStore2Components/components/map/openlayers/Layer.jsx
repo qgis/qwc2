@@ -20,7 +20,7 @@ class OpenlayersLayer extends React.Component {
         mapId: PropTypes.string,
         type: PropTypes.string,
         srs: PropTypes.string,
-        position: PropTypes.number,
+        zIndex: PropTypes.number,
         options: PropTypes.object,
         onLayerLoading: PropTypes.func,
         onLayerError: PropTypes.func,
@@ -41,7 +41,7 @@ class OpenlayersLayer extends React.Component {
     componentDidMount() {
         this.valid = true;
         this.tilestoload = 0;
-        this.createLayer(this.props.type, this.props.options, this.props.position);
+        this.createLayer(this.props.type, this.props.options, this.props.zIndex);
     }
     componentWillReceiveProps(newProps) {
         const newVisibility = newProps.options && newProps.options.visibility !== false;
@@ -50,8 +50,8 @@ class OpenlayersLayer extends React.Component {
         const newOpacity = (newProps.options && newProps.options.opacity !== undefined) ? newProps.options.opacity : 255.;
         this.state.layer.setOpacity(newOpacity / 255.);
 
-        if (newProps.position !== this.props.position && this.state.layer.setZIndex) {
-            this.state.layer.setZIndex(newProps.position);
+        if (newProps.zIndex !== this.props.zIndex && this.state.layer.setZIndex) {
+            this.state.layer.setZIndex(newProps.zIndex);
         }
         if (this.props.options) {
             this.updateLayer(newProps, this.props);
@@ -96,17 +96,16 @@ class OpenlayersLayer extends React.Component {
             this.state.layer.setVisible(visibility);
         }
     }
-    generateOpts = (options, position, srs) => {
-        return assign({}, options, position ? {zIndex: position, srs} : null, {
-            onError: () => {
+    generateOpts = (options, zIndex, srs) => {
+        return assign({}, options, {zIndex: zIndex, srs, onError: () => {
                 this.props.onInvalid(this.props.type, options);
             }
         });
     }
-    createLayer = (type, options, position) => {
+    createLayer = (type, options, zIndex) => {
         let layerCreator = LayerRegistry[type];
         if (layerCreator) {
-            const layerOptions = this.generateOpts(options, position, CoordinatesUtils.normalizeSRS(this.props.srs));
+            const layerOptions = this.generateOpts(options, zIndex, CoordinatesUtils.normalizeSRS(this.props.srs));
             let layer = layerCreator.create(layerOptions, this.props.map, this.props.mapId);
             if (layer && !layer.detached) {
                 this.addLayer(layer, options);
@@ -116,7 +115,7 @@ class OpenlayersLayer extends React.Component {
     }
     updateLayer = (newProps, oldProps) => {
         // optimization to avoid to update the layer if not necessary
-        if (newProps.position === oldProps.position && newProps.srs === oldProps.srs) {
+        if (newProps.zIndex === oldProps.zIndex && newProps.srs === oldProps.srs) {
             // check if options are the same, except loading
             if (newProps.options === oldProps.options) return;
             if (isEqual(omit(newProps.options, ["loading"]), omit(oldProps.options, ["loading"]) ) ) {
@@ -127,8 +126,8 @@ class OpenlayersLayer extends React.Component {
         if (layerCreator && layerCreator.update) {
             layerCreator.update(
             this.state.layer,
-            this.generateOpts(newProps.options, newProps.position, newProps.srs),
-            this.generateOpts(oldProps.options, oldProps.position, oldProps.srs),
+            this.generateOpts(newProps.options, newProps.zIndex, newProps.srs),
+            this.generateOpts(oldProps.options, oldProps.zIndex, oldProps.srs),
             this.props.map,
             this.props.mapId);
         }
