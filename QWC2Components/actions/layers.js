@@ -111,10 +111,11 @@ function invalidLayer(layerType, options) {
     };
 }
 
-function addMarker(id, point, label='', crs='EPSG:4326') {
+function addMarker(id, point, label='', crs='EPSG:4326', zIndex=null) {
     let layer = {
         id: "markers",
-        role: LayerRole.MARKER
+        role: LayerRole.MARKER,
+        zIndex: zIndex
     }
     let feature = {
         id: id,
