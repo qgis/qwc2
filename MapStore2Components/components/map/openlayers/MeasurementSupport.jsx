@@ -19,6 +19,31 @@ class MeasurementSupport extends React.Component {
         measurement: PropTypes.object,
         changeMeasurementState: PropTypes.func,
     }
+    constructor(props) {
+        super(props);
+        this.style = [
+            new ol.style.Style({
+                fill: new ol.style.Fill({ color: 'rgba(255, 0, 0, 0.25)' }),
+                stroke: new ol.style.Stroke({ color: 'red', width: 4 })
+            }),
+            new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 5,
+                    fill: new ol.style.Fill({color: 'white'}),
+                    stroke: new ol.style.Stroke({ color: 'red', width: 2 }),
+                }),
+                geometry: function(feature) {
+                    if(feature.getGeometry().getType() === "Point") {
+                        return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
+                    } else if(feature.getGeometry().getType() === "LineString") {
+                        return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
+                    } else {
+                        return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
+                    }
+                }
+            })
+        ]
+    }
     componentWillReceiveProps(newProps) {
         if (newProps.measurement.geomType && newProps.measurement.geomType !== this.props.measurement.geomType ) {
             this.addDrawInteraction(newProps);
@@ -36,14 +61,7 @@ class MeasurementSupport extends React.Component {
         this.measureLayer = new ol.layer.Vector({
             source: new ol.source.Vector(),
             zIndex: 1000000,
-            style: new ol.style.Style({
-                fill: new ol.style.Fill({ color: 'rgba(255, 255, 255, 0.5)' }),
-                stroke: new ol.style.Stroke({ color: '#ffcc33', width: 2 }),
-                image: new ol.style.Circle({
-                    radius: 7,
-                    fill: new ol.style.Fill({ color: '#ffcc33' })
-                })
-            })
+            style: this.style
         });
         this.props.map.addLayer(this.measureLayer);
 
@@ -56,24 +74,13 @@ class MeasurementSupport extends React.Component {
         this.drawInteraction = new ol.interaction.Draw({
             source: this.measureLayer.getSource(),
             type: geometryType,
-            style: new ol.style.Style({
-                fill: new ol.style.Fill({ color: 'rgba(255, 255, 255, 0.5)' }),
-                stroke: new ol.style.Stroke({
-                    color: 'rgba(0, 0, 0, 0.5)',
-                    lineDash: [10, 10],
-                    width: 2
-                }),
-                image: new ol.style.Circle({
-                    radius: 5,
-                    stroke: new ol.style.Stroke({ color: 'rgba(0, 0, 0, 0.7)' }),
-                    fill: new ol.style.Fill({ color: 'rgba(255, 255, 255, 0.2)' })
-                })
-            })
+            style: []
         });
 
         this.drawInteraction.on('drawstart', (ev) => {
             this.measureLayer.getSource().clear();
             this.sketchFeature = ev.feature;
+            this.sketchFeature.setStyle(this.style);
             this.props.map.on('pointermove', this.updateMeasurementResults);
             this.props.map.on('click', this.updateMeasurementResults);
         });
