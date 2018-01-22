@@ -45,7 +45,7 @@ class ButtonBar extends React.Component {
                         <button type={button.type || "button"} key={button.key} className={classes} onClick={button.type !== "submit" ? (ev) => this.props.onClick(button.key, button.data) : null}>
                             {button.icon ? (<img src={assetsPath + '/img/' + button.icon} />) : null}
                             {button.glyph ? (<Glyphicon glyph={button.glyph} />) : null}
-                            {button.label  && !this.props.mobile ? (<Message msgId={button.label} />) : null}
+                            {button.label && (!this.props.mobile || !button.icon) ? (<Message msgId={button.label} />) : null}
                         </button>
                     );
                 })}
