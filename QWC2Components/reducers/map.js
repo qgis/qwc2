@@ -65,6 +65,7 @@ function map(state = defaultState, action) {
             if(action.view.center) {
                 center = CoordinatesUtils.reproject(action.view.center, action.view.crs || action.crs, action.crs);
                 zoom = action.view.zoom;
+                bounds = MapUtils.getExtentForCenterAndZoom(center, zoom, resolutions, state.size);
             } else {
                 bounds = CoordinatesUtils.reprojectBbox(action.view.bounds, action.view.crs || state.projection, action.crs);
                 center = [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])];

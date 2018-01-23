@@ -106,6 +106,24 @@ function getZoomForExtent(extent, resolutions, mapSize, minZoom, maxZoom) {
 }
 
 /**
+ * Calculates the extent for the provided center and zoom level
+ * @param center {Array} [x, y]
+ * @param zoom {number} The zoom level
+ * @param resolutions {Array} The list of map resolutions
+ * @param mapSize {Object} The current size of the map
+ */
+function getExtentForCenterAndZoom(center, zoom, resolutions, mapSize) {
+    let width = resolutions[zoom] * mapSize.width;
+    let height = resolutions[zoom] * mapSize.height;
+    return [
+        center[0] - 0.5 * width,
+        center[1] - 0.5 * height,
+        center[0] + 0.5 * width,
+        center[1] + 0.5 * height
+    ]
+}
+
+/**
  * Transform width and height specified in meters to the units of the specified projection
  *
  * @param projection {string} projection.
@@ -138,5 +156,6 @@ module.exports = {
     getGoogleMercatorScales,
     getResolutionsForScales,
     getZoomForExtent,
+    getExtentForCenterAndZoom,
     transformExtent
 };
