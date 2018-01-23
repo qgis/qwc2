@@ -29,7 +29,7 @@ class MapCopyright extends React.Component {
     componentWillReceiveProps(newProps) {
         if(newProps.map && newProps.map.bbox && newProps.layers) {
             let transformedbboxes = {};
-            transformedbboxes[newProps.map.bbox.crs] = newProps.map.bbox.bounds;
+            transformedbboxes[newProps.map.projection] = newProps.map.bbox.bounds;
             let copyrights = [];
             newProps.layers.map(layer => this.collectCopyrigths(layer, newProps.map, transformedbboxes, copyrights));
             this.setState({currentCopyrights: copyrights});
