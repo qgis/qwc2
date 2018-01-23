@@ -70,13 +70,12 @@ const IdentifyUtils = {
         if(bboxes.length > 0) {
             let bbox = bboxes[0];
             let crs = bbox.attributes.CRS ? bbox.attributes.CRS.value : bbox.attributes.SRS.value;
-            featureResult["bbox"] = {
-                minx: parseFloat(bbox.attributes.minx.value),
-                miny: parseFloat(bbox.attributes.miny.value),
-                maxx: parseFloat(bbox.attributes.maxx.value),
-                maxy: parseFloat(bbox.attributes.maxy.value),
-                crs: crs
-            };
+            featureResult["bbox"] = [
+                parseFloat(bbox.attributes.minx.value),
+                parseFloat(bbox.attributes.miny.value),
+                parseFloat(bbox.attributes.maxx.value),
+                parseFloat(bbox.attributes.maxy.value),
+            ];
             featureResult["crs"] = crs;
         }
         featureResult["properties"] = {};
@@ -89,8 +88,8 @@ const IdentifyUtils = {
                          .replace(/LineString(\w+)/i, "LineString $1")
                          .replace(/Polygon(\w+)/i, "Polygon $1");
                 featureResult["geometry"] = parse(wkt);
-                if(featureResult.bbox && featureResult.bbox.crs != geometrycrs) {
-                    featureResult.geometry = VectorLayerUtils.reprojectFeatureGeometry(featureResult.geometry, featureResult.bbox.crs, geometrycrs);
+                if(featureResult.bbox && featureResult.crs != geometrycrs) {
+                    featureResult.geometry = VectorLayerUtils.reprojectGeometry(featureResult.geometry, featureResult.crs, geometrycrs);
                 }
             } else {
                 featureResult.properties[attribute.attributes.name.value] = attribute.attributes.value.value;
@@ -120,7 +119,7 @@ const IdentifyUtils = {
                 result[layer] = [];
             }
 
-            let geometry = VectorLayerUtils.reprojectFeatureGeometry(feature.geometry, "EPSG:4326", geometrycrs); // GeoJSON always wgs84
+            let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, "EPSG:4326", geometrycrs); // GeoJSON always wgs84
             result[layer].push(assign(feature, {geometry: geometry, id: feature.id.substr(feature.id.lastIndexOf(".") + 1)}));
         });
         return result;
