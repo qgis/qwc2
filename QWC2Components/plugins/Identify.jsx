@@ -48,10 +48,9 @@ class Identify extends React.Component {
                 return l.type === 'wms' && l.group !== "background" && (l.queryLayers || []).length > 0
             });
             queryableLayers.forEach((layer) => {
-                this.props.sendRequest(IdentifyUtils.buildRequest(layer, newProps.point.latlng, newProps.map, newProps.params));
+                this.props.sendRequest(IdentifyUtils.buildRequest(layer, newProps.point.coordinate, newProps.map, newProps.params));
             });
-            let latlng = newProps.point.latlng;
-            this.props.addMarker('identify', [latlng.lng, latlng.lat]);
+            this.props.addMarker('identify', newProps.point.coordinate, '', newProps.map.projection);
         }
         if (!newProps.enabled && this.props.enabled) {
             this.onClose();
@@ -59,8 +58,8 @@ class Identify extends React.Component {
     }
     needsRefresh = (props) => {
         if (props.enabled && props.point && props.point.pixel) {
-            if (!this.props.point.pixel || this.props.point.pixel.x !== props.point.pixel.x ||
-                    this.props.point.pixel.y !== props.point.pixel.y ) {
+            if (!this.props.point.pixel || this.props.point.pixel[0] !== props.point.pixel[0] ||
+                    this.props.point.pixel[1] !== props.point.pixel[1] ) {
                 return true;
             }
         }

@@ -21,29 +21,23 @@ var CoordinatesUtils = {
         const proj = new Proj4js.Proj(projection);
         return proj.units || 'degrees';
     },
-    reproject: function(point, source, dest, normalize = true) {
+    reproject: function(point, source, dest) {
+        if(source === dest) {
+            return [...point];
+        }
         const sourceProj = Proj4js.defs(source) ? new Proj4js.Proj(source) : null;
         const destProj = Proj4js.defs(dest) ? new Proj4js.Proj(dest) : null;
         if (sourceProj && destProj) {
             let p = Array.isArray(point) ? Proj4js.toPoint(point) : Proj4js.toPoint([point.x, point.y]);
             let transformed = null;
             try {
-                transformed = assign({}, Proj4js.transform(sourceProj, destProj, p), {srs: dest});
+                transformed = Proj4js.transform(sourceProj, destProj, p);
             } catch(e) {
                 transformed = {x: 0, y: 0};
             }
-            if (normalize) {
-                return CoordinatesUtils.normalizePoint(transformed);
-            }
-            return transformed;
+            return [transformed.x, transformed.y];
         }
         return null;
-    },
-    normalizePoint: function(point) {
-        return {
-            x: point.x || 0.0,
-            y: point.y || 0.0
-        };
     },
     /**
      * Reprojects a bounding box.
@@ -57,7 +51,7 @@ var CoordinatesUtils = {
     reprojectBbox: function(bbox, source, dest) {
         let sw = CoordinatesUtils.reproject([bbox[0], bbox[1]], source, dest);
         let ne = CoordinatesUtils.reproject([bbox[2], bbox[3]], source, dest);
-        return [sw.x, sw.y, ne.x, ne.y];
+        return [...sw, ...ne];
     },
     getCompatibleSRS(srs, allowedSRS) {
         if (srs === 'EPSG:900913' && !allowedSRS['EPSG:900913'] && allowedSRS['EPSG:3857']) {
@@ -90,10 +84,10 @@ var CoordinatesUtils = {
     calculateAzimuth: function(p1, p2, pj) {
         var p1proj = CoordinatesUtils.reproject(p1, pj, 'EPSG:4326');
         var p2proj = CoordinatesUtils.reproject(p2, pj, 'EPSG:4326');
-        var lon1 = p1proj.x * Math.PI / 180.0;
-        var lat1 = p1proj.y * Math.PI / 180.0;
-        var lon2 = p2proj.x * Math.PI / 180.0;
-        var lat2 = p2proj.y * Math.PI / 180.0;
+        var lon1 = p1proj[0] * Math.PI / 180.0;
+        var lat1 = p1proj[1] * Math.PI / 180.0;
+        var lon2 = p2proj[0] * Math.PI / 180.0;
+        var lat2 = p2proj[1] * Math.PI / 180.0;
         var dLon = lon2 - lon1;
         var y = Math.sin(dLon) * Math.cos(lat2);
         var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
@@ -142,8 +136,8 @@ var CoordinatesUtils = {
         let points = [[]];
         for (let i = 0; i < sides; i++) {
             rotatedAngle = angle + (i * 2 * Math.PI / sides);
-            x = center.x + (radius * Math.cos(rotatedAngle));
-            y = center.y + (radius * Math.sin(rotatedAngle));
+            x = center[0] + (radius * Math.cos(rotatedAngle));
+            y = center[1] + (radius * Math.sin(rotatedAngle));
             points[0].push([x, y]);
         }
 

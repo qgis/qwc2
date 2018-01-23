@@ -284,10 +284,10 @@ class Print extends React.Component {
         let widthm = this.state.scale * this.state.layout.map.width / 1000.;
         let heightm = this.state.scale * this.state.layout.map.height / 1000.;
         let {width, height} = MapUtils.transformExtent(this.props.map.projection, center, widthm, heightm);
-        let x1 = center.x - 0.5 * width;
-        let x2 = center.x + 0.5 * width;
-        let y1 = center.y - 0.5 * height;
-        let y2 = center.y + 0.5 * height;
+        let x1 = center[0]- 0.5 * width;
+        let x2 = center[0] + 0.5 * width;
+        let y1 = center[1] - 0.5 * height;
+        let y2 = center[1] + 0.5 * height;
         return x1 + "," + y1 + "," + x2 + "," + y2;
     }
 };

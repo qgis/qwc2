@@ -19,10 +19,7 @@ class OpenlayersMap extends React.Component {
     static propTypes = {
         id: PropTypes.string,
         style: PropTypes.object,
-        center: PropTypes.shape({
-            x: PropTypes.number.isRequired,
-            y: PropTypes.number.isRequired
-        }),
+        center: PropTypes.array,
         zoom: PropTypes.number.isRequired,
         mapStateSource: PropTypes.string,
         projection: PropTypes.string,
@@ -96,35 +93,22 @@ class OpenlayersMap extends React.Component {
         });
         map.on('moveend', this.updateMapInfoState);
         map.on('singleclick', (event) => {
-            let latlng = ol.proj.toLonLat(event.coordinate, this.props.projection);
             this.props.onClick({
-                latlng: {
-                    lng: latlng[0],
-                    lat: latlng[1]
-                },
-                pixel: {
-                    x: event.pixel[0],
-                    y: event.pixel[1]
-                },
+                coordinate: event.coordinate,
+                pixel: event.pixel,
                 modifiers: {
                     alt: event.originalEvent.altKey,
                     ctrl: event.originalEvent.ctrlKey,
                     shift: event.originalEvent.shiftKey
-                }
+                },
+                button: 0
             });
         });
         map.on('pointermove', (event) => {
             if (!event.dragging) {
-                let latlng = ol.proj.toLonLat(event.coordinate, this.props.projection);
                 this.props.onMouseMove({
-                    latlng: {
-                        lng: latlng[0],
-                        lat: latlng[1]
-                    },
-                    pixel: {
-                        x: event.pixel[0],
-                        y: event.pixel[1]
-                    }
+                    coordinate: event.coordinate,
+                    pixel: event.pixel
                 });
             }
         });
@@ -148,7 +132,7 @@ class OpenlayersMap extends React.Component {
             height: this.map.getSize()[1]
         };
         this.props.onMapViewChanges(
-            {x: c[0], y: c[1]},
+            c,
             view.getZoom(),
             {
                 bounds: bbox,
@@ -216,7 +200,7 @@ class OpenlayersMap extends React.Component {
     createView = (center, zoom, projection, resolutions) => {
         const viewOptions = {
             projection: projection,
-            center: [center.x, center.y],
+            center: center,
             zoom: zoom,
             resolutions: resolutions
         };
@@ -227,11 +211,11 @@ class OpenlayersMap extends React.Component {
     }
     _updateMapPositionFromNewProps = (newProps) => {
         var view = this.map.getView();
-        const centerChanged = newProps.center.x != this.props.center.x ||
-                              newProps.center.y != this.props.center.y;
+        const centerChanged = newProps.center[0] != this.props.center[0] ||
+                              newProps.center[1] != this.props.center[1];
 
         if (centerChanged) {
-            view.setCenter([newProps.center.x, newProps.center.y]);
+            view.setCenter(newProps.center);
         }
         if (Math.round(newProps.zoom) !== this.props.zoom) {
             view.setZoom(Math.round(newProps.zoom));

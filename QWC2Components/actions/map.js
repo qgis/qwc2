@@ -34,7 +34,7 @@ function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
  * @param crs {string} The map projection
  * @param scales {Array} List of map scales
  * @param view {Object} The map view, as follows:
- *               {center: {x: ... y: ...}, zoom: ..., crs: ...}
+ *               {center: [x, y], zoom: ..., crs: ...}
  *             or
  *               {bounds: [xmin, ymin, xmax, ymax], crs: ...}
  */

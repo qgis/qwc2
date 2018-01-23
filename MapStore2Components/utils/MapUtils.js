@@ -121,8 +121,8 @@ function transformExtent(projection, center, width, height) {
         return {width: width / METERS_PER_UNIT['us-ft'], height: height / METERS_PER_UNIT['us-ft']};
     } else if(units == 'degrees') {
         return {
-            width: width / (111132.92 - 559.82 * Math.cos(2* center.y) + 1.175*Math.cos(4*center.y)),
-            height: height / (111412.84 * Math.cos(center.y) - 93.5 * Math.cos(3*center.y))
+            width: width / (111132.92 - 559.82 * Math.cos(2* center[1]) + 1.175*Math.cos(4*center[1])),
+            height: height / (111412.84 * Math.cos(center[1]) - 93.5 * Math.cos(3*center[1]))
         }
     }
     return {width, height};

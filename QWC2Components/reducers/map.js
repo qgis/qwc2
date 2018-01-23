@@ -19,7 +19,7 @@ const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUti
 
 const defaultState = {
     bbox: {bounds: [0, 0, 0, 0], rotation: 0},
-    center: {x: 0, y: 0},
+    center: [0, 0],
     projection: "EPSG:4326",
     zoom: 0,
     scales: [0],
@@ -63,11 +63,11 @@ function map(state = defaultState, action) {
             let resolutions = MapUtils.getResolutionsForScales(action.scales, action.crs, state.dpi || null);
             let bounds, center, zoom;
             if(action.view.center) {
-                center: CoordinatesUtils.reproject(action.view.center, action.view.crs || action.crs, action.crs);
-                zoom: action.view.zoom;
+                center = CoordinatesUtils.reproject(action.view.center, action.view.crs || action.crs, action.crs);
+                zoom = action.view.zoom;
             } else {
                 bounds = CoordinatesUtils.reprojectBbox(action.view.bounds, action.view.crs || state.projection, action.crs);
-                center = {x: 0.5 * (bounds[0] + bounds[2]), y: 0.5 * (bounds[1] + bounds[3])};
+                center = [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])];
                 zoom = MapUtils.getZoomForExtent(bounds, resolutions, state.size, 0, action.scales.length - 1);
                 bounds = {minx: bounds[0], miny: bounds[1], maxx: bounds[2], maxy: bounds[3]};
             }
@@ -86,7 +86,7 @@ function map(state = defaultState, action) {
         case ZOOM_TO_EXTENT: {
             let bounds = CoordinatesUtils.reprojectBbox(action.extent, action.crs || state.projection, state.projection);
             return assign({}, state, {
-                center: {x: 0.5 * (bounds[0] + bounds[2]), y: 0.5 * (bounds[1] + bounds[3])},
+                center: [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])],
                 zoom: MapUtils.getZoomForExtent(bounds, state.resolutions, state.size, 0, state.scales.length - 1),
                 bbox: assign({}, state.bbox, {bounds: bounds})
             });

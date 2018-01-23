@@ -65,7 +65,7 @@ class MapTip extends React.Component {
             FI_LINE_TOLERANCE: 8,
             FI_POLYGON_TOLERANCE: 4
         };
-        let {url, params} = IdentifyUtils.buildRequest(this.state.layer, this.props.mousepos.latlng, this.props.map, options);
+        let {url, params} = IdentifyUtils.buildRequest(this.state.layer, this.props.mousepos.coordinate, this.props.map, options);
 
         axios.get(url, {params: params}).then(response => {
             let result = IdentifyUtils.parseXmlResponse(response.data, this.props.map.projection);
@@ -87,8 +87,8 @@ class MapTip extends React.Component {
     render() {
         if(this.state.maptip && this.props.mousepos) {
             let position = {
-                left: this.props.mousepos.pixel.x,
-                top: this.props.mousepos.pixel.y
+                left: this.props.mousepos.pixel[0],
+                top: this.props.mousepos.pixel[1]
             };
             return (
                 <div

@@ -14,13 +14,12 @@ const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const VectorLayerUtils = require('./VectorLayerUtils');
 
 const IdentifyUtils = {
-    buildRequest(layer, latlng, map, options) {
+    buildRequest(layer, center, map, options) {
         const size = [101, 101];
         const resolution = map.resolutions[map.zoom];
-        const center = CoordinatesUtils.reproject({x: latlng.lng, y: latlng.lat}, 'EPSG:4326', map.projection);
         const dx = 0.5 * resolution * size[0];
         const dy = 0.5 * resolution * size[1];
-        const bbox = [center.x - dx, center.y - dy, center.x + dx, center.y + dy];
+        const bbox = [center[0] - dx, center[1] - dy, center[0] + dx, center[1] + dy];
         let digits = proj4js.defs(map.projection).units === 'degrees'? 4 : 0;
 
         let queryLayers = layer.queryLayers.join(",");
@@ -59,7 +58,7 @@ const IdentifyUtils = {
             },
             metadata: {
                 layer: layer.title,
-                posstr: center.x.toFixed(digits) + ", " + center.y.toFixed(digits)
+                posstr: center[0].toFixed(digits) + ", " + center[1].toFixed(digits)
             }
         };
     },

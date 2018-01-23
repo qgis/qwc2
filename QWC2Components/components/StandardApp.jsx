@@ -101,7 +101,7 @@ class StandardApp extends React.Component {
                         }
                         if(coords.length === 2) {
                             initialView = {
-                                center: {x: coords[0], y: coords[1]},
+                                center: coords,
                                 zoom: closestIdx,
                                 crs: params.crs || theme.mapCrs};
                         }

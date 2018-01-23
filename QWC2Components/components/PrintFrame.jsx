@@ -43,10 +43,10 @@ class PrintFrame extends React.Component {
             let sina = Math.sin(-newProps.map.bbox.rotation);
             let center = newProps.map.center;
             let {width, height} = MapUtils.transformExtent(newProps.map.projection, center, newProps.fixedFrame.width, newProps.fixedFrame.height);
-            let mapp1 = [center.x - .5 * width * cosa - .5 * height * sina,
-                         center.y + .5 * width * sina - .5 * height * cosa];
-            let mapp2 = [center.x + .5 * width * cosa + .5 * height * sina,
-                         center.y - .5 * width * sina + .5 * height * cosa];
+            let mapp1 = [center[0] - .5 * width * cosa - .5 * height * sina,
+                         center[1] + .5 * width * sina - .5 * height * cosa];
+            let mapp2 = [center[0] + .5 * width * cosa + .5 * height * sina,
+                         center[1] - .5 * width * sina + .5 * height * cosa];
             let pixp1 = getPixelFromCoordinate(mapp1);
             let pixp2 = getPixelFromCoordinate(mapp2);
             newState = {

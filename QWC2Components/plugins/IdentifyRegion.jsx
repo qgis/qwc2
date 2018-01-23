@@ -65,8 +65,7 @@ class IdentifyRegion extends React.Component {
             srsName: this.props.mapcrs
         };
         let wgs84poly = poly.map(coo => {
-            let wgscoo = CoordinatesUtils.reproject(coo, this.props.mapcrs, "EPSG:4326");
-            return [wgscoo.x, wgscoo.y];
+            return CoordinatesUtils.reproject(coo, this.props.mapcrs, "EPSG:4326");
         });
         this.props.setCurrentTask(null);
         this.props.sendRequest(this.props.theme.url, requestParams, wgs84poly);

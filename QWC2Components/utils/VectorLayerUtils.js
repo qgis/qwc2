@@ -137,14 +137,13 @@ const VectorLayerUtils = {
             let wgscoo = CoordinatesUtils.reproject(geometry.coordinates, srccrs, dstcrs);
             return {
                 "type": "Point",
-                "coordinates": [wgscoo.x, wgscoo.y]
+                "coordinates": wgscoo
             };
         } else if(geometry.type === "LineString") {
             return {
                 "type": "LineString",
                 "coordinates": geometry.coordinates.map(tuple => {
-                    let wgscoo = CoordinatesUtils.reproject(tuple, srccrs, dstcrs);
-                    return [wgscoo.x, wgscoo.y];
+                    return CoordinatesUtils.reproject(tuple, srccrs, dstcrs);
                 })
             };
         } else if(geometry.type === "Polygon") {
@@ -152,8 +151,7 @@ const VectorLayerUtils = {
                 "type": "Polygon",
                 "coordinates": geometry.coordinates.map(ring => {
                     return ring.map(tuple => {
-                        let wgscoo = CoordinatesUtils.reproject(tuple, srccrs, dstcrs);
-                        return [wgscoo.x, wgscoo.y];
+                        return CoordinatesUtils.reproject(tuple, srccrs, dstcrs);
                     });
                 })
             };

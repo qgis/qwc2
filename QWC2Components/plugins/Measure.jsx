@@ -72,8 +72,8 @@ class Measure extends React.Component {
             let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
             let text = "0 0";
             if(!isEmpty(this.props.measureState.coordinates)) {
-                let {x, y} = CoordinatesUtils.reproject(this.props.measureState.coordinates, this.props.mapcrs, this.props.displaycrs);
-                text = x.toFixed(digits) + " " + y.toFixed(digits);
+                let coo = CoordinatesUtils.reproject(this.props.measureState.coordinates, this.props.mapcrs, this.props.displaycrs);
+                text = coo[0].toFixed(digits) + " " + coo[1].toFixed(digits);
             }
             resultBody = (<div className="resultbody"><span>{text}</span></div>);
         } else if(this.props.measureState.geomType === "LineString") {

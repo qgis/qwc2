@@ -311,7 +311,7 @@ class Search extends React.Component {
 
             // zoom to result using max zoom level
             const newZoom = mapUtils.getZoomForExtent(CoordinatesUtils.reprojectBbox(item.bbox, item.crs, this.props.map.projection), this.props.map.resolutions, this.props.map.size, 0, maxZoom);
-            this.props.panToResult({x: item.x, y: item.y}, newZoom, item.crs);
+            this.props.panToResult([item.x, item.y], newZoom, item.crs);
         }
         if(item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
             this.props.searchProviders[item.provider].getResultGeometry(item, (item, geometry, crs) => { this.showFeatureGeometry(item, geometry, crs, text)});

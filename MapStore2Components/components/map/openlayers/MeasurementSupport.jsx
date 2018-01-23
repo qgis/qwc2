@@ -134,8 +134,7 @@ class MeasurementSupport extends React.Component {
     }
     reprojectedCoordinates = (coordinates) => {
         return coordinates.map((coordinate) => {
-            let reprojectedCoordinate = CoordinatesUtils.reproject(coordinate, this.props.projection, 'EPSG:4326');
-            return [reprojectedCoordinate.x, reprojectedCoordinate.y];
+            return CoordinatesUtils.reproject(coordinate, this.props.projection, 'EPSG:4326');
         });
     }
     calculateGeodesicDistances = (coordinates) => {

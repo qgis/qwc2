@@ -14,15 +14,16 @@ const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUti
 
 class CoordinateDisplayer extends React.Component {
     static propTypes = {
-        mousepos: PropTypes.object,
-        diplaycrs: PropTypes.string
+        diplaycrs: PropTypes.string,
+        mapcrs: PropTypes.string,
+        mousepos: PropTypes.object
     }
     render() {
         let value = "";
         if(this.props.mousepos) {
-            let {x, y} = CoordinatesUtils.reproject([this.props.mousepos.lng, this.props.mousepos.lat], "EPSG:4326", this.props.displaycrs);
+            let coo = CoordinatesUtils.reproject(this.props.mousepos.coordinate, this.props.mapcrs, this.props.displaycrs);
             let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
-            value = x.toFixed(digits) + " " + y.toFixed(digits);
+            value = coo[0].toFixed(digits) + " " + coo[1].toFixed(digits);
         }
         return (
             <input type="text" className="coordinatedisplayer" value={value} readOnly="readOnly"/>
@@ -30,11 +31,11 @@ class CoordinateDisplayer extends React.Component {
     }
 };
 
-const selector = (state) => {
-    return  {
-        mousepos: state.mousePosition && state.mousePosition.position ? state.mousePosition.position.latlng : undefined,
-    };
-};
+const selector = state => ({
+    mapcrs: state.map.projection,
+    mousepos: state.mousePosition && state.mousePosition.position && state.mousePosition.position || undefined,
+});
+
 module.exports = {
     CoordinateDisplayer: connect(selector)(CoordinateDisplayer)
 };
