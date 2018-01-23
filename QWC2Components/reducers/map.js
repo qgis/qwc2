@@ -70,7 +70,6 @@ function map(state = defaultState, action) {
                 bounds = CoordinatesUtils.reprojectBbox(action.view.bounds, action.view.crs || state.projection, action.crs);
                 center = [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])];
                 zoom = MapUtils.getZoomForExtent(bounds, resolutions, state.size, 0, action.scales.length - 1);
-                bounds = {minx: bounds[0], miny: bounds[1], maxx: bounds[2], maxy: bounds[3]};
             }
             return assign({}, state, {
                 bbox: assign({}, state.bbox, {bounds: bounds}),
