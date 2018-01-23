@@ -44,6 +44,8 @@ const IdentifyUtils = {
                 styles: layer.style,
                 x: Math.round(size[0] * 0.5),
                 y: Math.round(size[1] * 0.5),
+                i: Math.round(size[0] * 0.5),
+                j: Math.round(size[1] * 0.5),
                 height: size[0],
                 width: size[1],
                 srs: CoordinatesUtils.normalizeSRS(map.projection),
