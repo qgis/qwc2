@@ -35,8 +35,9 @@ class LayerInfoWindow extends React.Component {
     }
     render() {
         let legend = null;
-        if(this.props.sublayer.legendUrl) {
-            legend = (<img className="layer-info-window-legend" src={this.props.sublayer.legendUrl} />);
+        if(this.props.layer.legendUrl) {
+            let request = this.props.layer.legendUrl + "&SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + (this.props.layer.version || "1.3.0") + "&FORMAT=image/png&LAYER=" + this.props.sublayer.name + "&STYLE=default";
+            legend = (<img className="layer-info-window-legend" src={request} />);
         }
         return (
             <ResizeableWindow title="layerinfo.title" glyphicon="info-sign" onClose={this.props.onClose} initialWidth={this.props.windowSize.width} initialHeight={this.props.windowSize.height}>

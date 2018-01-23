@@ -69,13 +69,13 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
 
 
 def getDirectChildElements(parent, tagname):
-    return [node for node in parent.childNodes if node.nodeName == tagname]
+    return [node for node in parent.childNodes if node.nodeName.split(':')[-1] == tagname]
 
 
 def getChildElement(parent, path):
     for part in path.split("/"):
         for node in parent.childNodes:
-            if node.nodeName == part:
+            if node.nodeName.split(':')[-1] == part:
                 parent = node
                 break
         else:
@@ -92,7 +92,7 @@ def getChildElementValue(parent, path):
 
 
 # recursively get layer tree
-def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, themeLegend):
+def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap):
     name = getChildElementValue(layer, "Name")
     title = getChildElementValue(layer, "Title")
     layers = getDirectChildElements(layer, "Layer")
@@ -157,14 +157,6 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
         if minScale and maxScale:
             layerEntry["minScale"] = int(float(minScale))
             layerEntry["maxScale"] = int(float(maxScale))
-        try:
-            onlineResource = getChildElement(layer, "Style/LegendURL/OnlineResource")
-            layerEntry["legendUrl"] = onlineResource.getAttribute("xlink:href")
-            layerEntry["legendUrl"] += themeLegend["extraParams"]
-            themeLegend["sublayers"].append(name)
-            themeLegend["url"] = layerEntry["legendUrl"]
-        except:
-            pass
         # use geographic bounding box, as default CRS may have inverted axis order with WMS 1.3.0
         geoBBox = getChildElement(layer, "EX_GeographicBoundingBox")
         if geoBBox:
@@ -182,7 +174,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
         layerEntry["sublayers"] = []
         layerEntry["expanded"] = False if collapseBelowLevel >= 0 and level >= collapseBelowLevel else True
         for sublayer in layers:
-            getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap, themeLegend)
+            getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap)
 
         if not layerEntry["sublayers"]:
             # skip empty groups
@@ -238,12 +230,7 @@ def getTheme(configItem, resultItem):
         layerTree = []
         visibleLayers = []
         titleNameMap = {}
-        themeLegend = {
-            "sublayers": [],
-            "url": "",
-            "extraParams": configItem["extraLegendParameters"] if "extraLegendParameters" in configItem else ""
-        }
-        getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, themeLegend)
+        getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap)
         visibleLayers.reverse()
 
         # print templates
@@ -336,8 +323,8 @@ def getTheme(configItem, resultItem):
         if printTemplates:
             resultItem["print"] = printTemplates
         resultItem["drawingOrder"] = drawingOrder
-        if themeLegend["url"]:
-            resultItem["legendUrl"] = re.sub(r"([&\?])LAYER=[^&]*", r"\1LAYER=" + ",".join(themeLegend["sublayers"]), themeLegend["url"], flags=re.IGNORECASE)
+        extraLegenParams = configItem["extraLegendParameters"] if "extraLegendParameters" in configItem else ""
+        resultItem["legendUrl"] = getChildElement(capabilities, "Capability/Request/GetLegendGraphic/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href") + extraLegenParams
         resultItem["featureInfoUrl"] = getChildElement(capabilities, "Capability/Request/GetFeatureInfo/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href")
         resultItem["printUrl"] = getChildElement(capabilities, "Capability/Request/GetPrint/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href")
         if "printLabelForSearchResult" in configItem:

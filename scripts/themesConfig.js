@@ -97,7 +97,7 @@ function toArray(obj) {
 }
 
 // recursively get layer tree
-function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, themeLegend) {
+function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap) {
     if (printLayers.indexOf(layer.Name) !== -1) {
         // skip print layers
         return;
@@ -154,12 +154,6 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
             layerEntry.minScale = parseInt(layer.MinScaleDenominator, 10);
             layerEntry.maxScale = parseInt(layer.MaxScaleDenominator, 10);
         }
-        if(layer.Style && layer.Style.LegendURL) {
-            layerEntry.legendUrl = layer.Style.LegendURL.OnlineResource.$["xlink:href"];
-            layerEntry.legendUrl += themeLegend.extraParams;
-            themeLegend.sublayers.push(layer.Name);
-            themeLegend.url = layerEntry.legendUrl;
-        }
         // use geographic bounding box, as default CRS may have inverted axis order with WMS 1.3.0
         if(layer.EX_GeographicBoundingBox) {
             layerEntry.bbox = {
@@ -177,7 +171,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         layerEntry.sublayers = [];
         layerEntry.expanded = collapseBelowLevel >= 0 && level >= collapseBelowLevel ? false : true;
         for (var subLayer of toArray(layer.Layer)) {
-            getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, themeLegend);
+            getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap);
         }
         if (layerEntry.sublayers.length === 0) {
             // skip empty groups
@@ -270,12 +264,7 @@ function getTheme(configItem, resultItem) {
             var layerTree = [];
             var visibleLayers = [];
             var titleNameMap = {};
-            let themeLegend = {
-                sublayers: [],
-                url: "",
-                extraParams: configItem.extraLegendParameters || ""
-            };
-            getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, themeLegend);
+            getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap);
             visibleLayers.reverse();
 
             // print templates
@@ -358,9 +347,7 @@ function getTheme(configItem, resultItem) {
                 resultItem.print = printTemplates;
             }
             resultItem.drawingOrder = drawingOrder;
-            if(themeLegend.url) {
-                resultItem.legendUrl = themeLegend.url.replace(/([&\?])LAYER=[^&]*/i, "$1LAYER=" + themeLegend.sublayers.join(","));
-            }
+            resultItem.legendUrl = capabilities.Capability.Request.GetLegendGraphic.DCPType.HTTP.Get.OnlineResource.$['xlink:href'] + configItem.extraLegendParameters;
             resultItem.featureInfoUrl = capabilities.Capability.Request.GetFeatureInfo.DCPType.HTTP.Get.OnlineResource.$['xlink:href'];
             resultItem.printUrl = capabilities.Capability.Request.GetPrint.DCPType.HTTP.Get.OnlineResource.$['xlink:href'];
             if(configItem.printLabelForSearchResult) {
