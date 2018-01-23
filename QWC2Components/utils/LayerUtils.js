@@ -56,7 +56,7 @@ const LayerUtils = {
     collectWMSSublayerParams: function(sublayer, layerNames, opacities, queryable) {
         let visibility = sublayer.visibility === undefined ? true : sublayer.visibility;
         if(visibility) {
-            if(sublayer.sublayers) {
+            if(!isEmpty(sublayer.sublayers)) {
                 // Is group
                 sublayer.sublayers.map(sublayer => {
                     LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, queryable)
@@ -99,7 +99,7 @@ const LayerUtils = {
         };
     },
     addSublayerIDs(group) {
-        if(group.sublayers) {
+        if(!isEmpty(group.sublayers)) {
             assign(group, {sublayers: group.sublayers.slice(0)});
             for(let i = 0; i < group.sublayers.length; ++i) {
                 group.sublayers[i] = assign({}, group.sublayers[i], {
@@ -168,7 +168,7 @@ const LayerUtils = {
         // Return array with one entry for every single sublayer)
         let exploded = [];
         for(let layer of layers) {
-            if(layer.sublayers) {
+            if(!isEmpty(layer.sublayers)) {
                 this.explodeSublayers(layer, layer, exploded);
             } else {
                 exploded.push({layer: layer, path: [], sublayer: layer});
@@ -192,7 +192,7 @@ const LayerUtils = {
         for(let entry of exploded) {
             let layer = assign({}, entry.layer);
             // Assign a new uuid to the layer if it is a group
-            if(layer.sublayers) {
+            if(!isEmpty(layer.sublayers)) {
                 assign(layer, {uuid: uuid.v4()});
             }
             // Populate the layer with the single sublayer

@@ -67,7 +67,7 @@ class LayerTree extends React.Component {
         messages: PropTypes.object
     }
     getGroupVisibility = (group) => {
-        if(!group.sublayers || group.sublayers.length === 0) {
+        if(isEmpty(group.sublayers)) {
             return 1;
         }
         let visible = 0;
@@ -196,7 +196,7 @@ class LayerTree extends React.Component {
     renderLayerTree = (layer) => {
         if(layer.group === 'background' || layer.layertreehidden) {
             return null;
-        } else if(!layer.sublayers) {
+        } else if(isEmpty(layer.sublayers)) {
             return this.renderLayer(layer, layer, []);
         } else if(this.props.showRootEntry) {
             return this.renderLayerGroup(layer, layer, [], true);
