@@ -81,8 +81,8 @@ class StandardApp extends React.Component {
                     let themeId = params.t || themes.defaultTheme;
                     let theme = ThemeUtils.getThemeById(themes, themeId);
                     if(!theme) {
-                        console.warn("No theme could be restored");
-                        return;
+                        theme = ThemeUtils.getThemeById(themes, themes.defaultTheme);
+                        params = {};
                     }
                     let visibleLayers = params.l ? params.l.split(",") : null;
                     let visibleBgLayer = params.bl || null;
