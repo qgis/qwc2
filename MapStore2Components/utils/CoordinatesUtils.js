@@ -17,6 +17,9 @@ var CoordinatesUtils = {
     setCrsLabels(labels) {
         assign(crsLabels, labels)
     },
+    getCrsLabels() {
+        return crsLabels;
+    },
     getUnits: function(projection) {
         const proj = new Proj4js.Proj(projection);
         return proj.units || 'degrees';
