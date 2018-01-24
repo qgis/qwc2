@@ -13,9 +13,8 @@ span.share-link-button {
     flex: 0 0 auto;
     height: 2.5em;
     width: 2.5em;
+    line-height: 2.5em;
     text-align: center;
-    padding: 0.25em 0.25em;
-    line-height: 2em;
     color: @item_fg@;
     background-color: #eee;
     border-top: 1px solid @item_border@;

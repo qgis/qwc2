@@ -25,6 +25,10 @@
       "terms_label": "Conditions d'utilisation",
       "viewertitle_label": "Page d'accueil"
     },
+    "copybtn": {
+      "click_to_copy": "Cliquer pour copier",
+      "copied": "Copiée"
+    },
     "draw": {
       "bbox": "Rectangle",
       "circle": "Cercle",
@@ -86,6 +90,9 @@
       "printlegend": "Afficher la légende",
       "transparency": "Transparence"
     },
+    "mapinfotooltip": {
+      "elevation": ""
+    },
     "measureComponent": {
       "areaLabel": "Surface",
       "bearingLabel": "Direction",
@@ -132,9 +139,7 @@
       "directLinkTitle": "Via un lien direct",
       "generatingpermalink": "Un lien permanent est généré...",
       "QRCodeLinkTitle": "QR code",
-      "socialIntro": "Via votre réseau social favori",
-      "msgToCopyUrl": "Cliquer pour copier",
-      "msgCopiedUrl": "URL copiée"
+      "socialIntro": "Via votre réseau social favori"
     },
     "themeswitcher": {
       "filter": "Filtre"

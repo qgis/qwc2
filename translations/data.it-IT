@@ -25,6 +25,10 @@
       "terms_label": "",
       "viewertitle_label": ""
     },
+    "copybtn": {
+      "click_to_copy": "Clicca per copiare",
+      "copied": "Copiato"
+    },
     "draw": {
       "bbox": "",
       "circle": "",
@@ -86,6 +90,9 @@
       "printlegend": "",
       "transparency": ""
     },
+    "mapinfotooltip": {
+      "elevation": ""
+    },
     "measureComponent": {
       "areaLabel": "Area",
       "bearingLabel": "Direzione",
@@ -131,8 +138,7 @@
       "directLinkTitle": "Con un Link diretto",
       "generatingpermalink": "",
       "QRCodeLinkTitle": "Usando il QR Code",
-      "socialIntro": "Sul tuo social preferito",
-      "msgToCopyUrl": "Clicca per copiare"
+      "socialIntro": "Sul tuo social preferito"
     },
     "themeswitcher": {
       "filter": ""

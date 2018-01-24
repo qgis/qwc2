@@ -103,11 +103,13 @@
       "placeholder": "Sök efter platser och koordinater...",
       "more": "Mer"
     },
+    "copybtn": {
+      "click_to_copy": "Klicka för att kopiera",
+      "copied": ""
+    },
     "share": {
       "directLinkTitle": "Via en direktlänk",
       "generatingpermalink": "Genererar permalink...",
-      "msgToCopyUrl": "Klicka för att kopiera",
-      "msgCopiedUrl": "",
       "QRCodeLinkTitle": "qr kod",
       "socialIntro": "I ditt favoritnätverk"
     },

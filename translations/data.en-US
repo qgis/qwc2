@@ -25,6 +25,10 @@
       "terms_label": "Terms of use",
       "viewertitle_label": ""
     },
+    "copybtn": {
+      "click_to_copy": "Click to copy",
+      "copied": "Copied"
+    },
     "draw": {
       "bbox": "Box",
       "circle": "Circle",
@@ -86,6 +90,9 @@
       "printlegend": "Print legend",
       "transparency": "Transparency"
     },
+    "mapinfotooltip": {
+      "elevation": ""
+    },
     "measureComponent": {
       "areaLabel": "Area",
       "bearingLabel": "Bearing",
@@ -131,9 +138,7 @@
       "directLinkTitle": "Via a direct link",
       "generatingpermalink": "Generating permalink...",
       "QRCodeLinkTitle": "qr code",
-      "socialIntro": "In your favourite social network",
-      "msgToCopyUrl": "Click to copy",
-      "msgCopiedUrl": "Copied"
+      "socialIntro": "In your favourite social network"
     },
     "themeswitcher": {
       "filter": "Filter..."
