@@ -84,7 +84,7 @@ function layers(state = {flat: []}, action) {
                 id: action.layer.id || (action.layer.name + "__" + newLayers.length),
                 role: action.layer.role || LayerRole.USERLAYER,
                 queryable: action.layer.queryable || false,
-                visibility: action.layer.visibility || true,
+                visibility: action.layer.visibility !== undefined ? action.layer.visibility : true,
                 opacity: action.layer.opacity || 255
             });
             newLayer = assign(newLayer, {layertreehidden: newLayer.layertreehidden || newLayer.role > LayerRole.USERLAYER});
