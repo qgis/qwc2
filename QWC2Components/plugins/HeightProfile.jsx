@@ -63,9 +63,9 @@ class HeightProfile extends React.Component {
         }
     }
     queryElevations(coordinates, distances, projection) {
-        let serviceUrl = ConfigUtils.getConfigProp("elevationServiceUrl");
+        let serviceUrl = ConfigUtils.getConfigProp("elevationServiceUrl").replace(/\/$/, '');
         if(serviceUrl) {
-            axios.post(serviceUrl, {coordinates, distances, projection, samples: this.props.samples}).then(response => {
+            axios.post(serviceUrl + '/getheightprofile', {coordinates, distances, projection, samples: this.props.samples}).then(response => {
                 this.setState({data: response.data.elevations});
             }).catch(e => {
                 console.log("Query failed: " + e);
