@@ -18,7 +18,6 @@ const isEmpty = require('lodash.isempty');
 class OpenlayersMap extends React.Component {
     static propTypes = {
         id: PropTypes.string,
-        style: PropTypes.object,
         center: PropTypes.array,
         zoom: PropTypes.number.isRequired,
         mapStateSource: PropTypes.string,
@@ -32,7 +31,6 @@ class OpenlayersMap extends React.Component {
         onLayerLoading: PropTypes.func,
         onLayerLoad: PropTypes.func,
         onLayerError: PropTypes.func,
-        resize: PropTypes.number,
         registerHooks: PropTypes.bool,
         interactive: PropTypes.bool,
         onInvalidLayer: PropTypes.func
@@ -48,7 +46,6 @@ class OpenlayersMap extends React.Component {
         onLayerLoading: () => {},
         onLayerLoad: () => {},
         onLayerError: () => {},
-        resize: 0,
         registerHooks: true,
         interactive: true
     }
@@ -158,12 +155,6 @@ class OpenlayersMap extends React.Component {
             this._updateMapPositionFromNewProps(newProps);
         }
 
-        if (newProps.resize !== this.props.resize) {
-            setTimeout(() => {
-                this.map.updateSize();
-            }, 0);
-        }
-
         if ((this.props.projection !== newProps.projection) || (this.props.resolutions !== newProps.resolutions)) {
             this.map.setView(this.createView(newProps.center, newProps.zoom, newProps.projection, newProps.resolutions));
             // We have to force ol to drop tile and reload
@@ -194,7 +185,7 @@ class OpenlayersMap extends React.Component {
         }) : null;
 
         return (
-            <div id={this.props.id} style={this.props.style}>
+            <div id={this.props.id}>
                 {children}
             </div>
         );

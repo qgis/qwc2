@@ -19,13 +19,10 @@ class MapPlugin extends React.Component {
     static propTypes = {
         map: PropTypes.object,
         layers: PropTypes.array,
-        projection: PropTypes.string,
-        maxExtent: PropTypes.array,
         tools: PropTypes.object,
         toolsOptions: PropTypes.object
     }
     static defaultProps = {
-        projection: "EPSG:3857",
         tools: {},
         toolsOptions: {}
     }
@@ -78,8 +75,6 @@ class MapPlugin extends React.Component {
             return (
                 <MapComponents.Map id="map"
                     mapOptions={mapOptions}
-                    projection={this.props.projection}
-                    maxExtent={this.props.maxExtent}
                     {...this.props.map}
                     zoomControl={false}>
                     {this.renderLayers()}
