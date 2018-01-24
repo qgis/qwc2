@@ -69,7 +69,7 @@ class EditingSupport extends React.Component {
         } else if(newProps.editing.action === 'Pick' && newProps.editing.feature) {
             this.addEditInteraction(newProps);
         } else if(newProps.editing.action === 'Draw' && newProps.editing.geomType) {
-            if(!newProps.editing.feature) {
+            if(!newProps.editing.feature || this.props.editing.geomType !== newProps.editing.geomType) {
                 this.addDrawInteraction(newProps);
             }
         } else {
