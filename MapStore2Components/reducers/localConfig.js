@@ -10,8 +10,8 @@ const {LOCAL_CONFIG_LOADED} = require('../actions/localConfig');
 
 const assign = require('object-assign');
 const ConfigUtils = require('../utils/ConfigUtils');
-const initialState = ConfigUtils.getDefaults();
-function controls(state = initialState, action) {
+
+function localConfig(state = ConfigUtils.getDefaults(), action) {
     switch (action.type) {
         case LOCAL_CONFIG_LOADED:
             return assign({}, state, action.config);
@@ -20,4 +20,4 @@ function controls(state = initialState, action) {
     }
 }
 
-module.exports = controls;
+module.exports = localConfig;
