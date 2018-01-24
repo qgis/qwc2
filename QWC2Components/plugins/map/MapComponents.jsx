@@ -12,7 +12,7 @@ const assign = require('object-assign');
 
 const {changeMapView, clickOnMap} = require('../../actions/map');
 const {layerLoading, layerLoad, layerError, invalidLayer} = require('../../actions/layers');
-const {changeMousePosition} = require('../../../MapStore2Components/actions/mousePosition');
+const {changeMousePositionState} = require('../../actions/mousePosition');
 
 
 const Map = connect((state) => ({
@@ -20,7 +20,7 @@ const Map = connect((state) => ({
 }), {
     onMapViewChanges: changeMapView,
     onClick: clickOnMap,
-    onMouseMove: changeMousePosition,
+    onMouseMove: changeMousePositionState,
     onLayerLoading: layerLoading,
     onLayerLoad: layerLoad,
     onLayerError: layerError,

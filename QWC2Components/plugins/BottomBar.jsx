@@ -13,7 +13,7 @@ const {createSelector} = require('reselect');
 const pickBy = require('lodash.pickby');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
-const {changeMousePositionState, changeMousePositionCrs} = require('../../MapStore2Components/actions/mousePosition');
+const {changeMousePositionState} = require('../actions/mousePosition');
 const {changeZoomLevel} = require('../actions/map');
 const {CoordinateDisplayer} = require('../components/CoordinateDisplayer');
 const displayCrsSelector = require('../selectors/displaycrs');
@@ -24,22 +24,25 @@ class BottomBar extends React.Component {
         viewertitleUrl: PropTypes.string,
         termsUrl: PropTypes.string,
         displaycrs:  PropTypes.string,
-        onCRSChange: PropTypes.func,
         mapcrs: PropTypes.string,
         mapscale: PropTypes.number,
         mapscales: PropTypes.array,
         activeThemeId: PropTypes.string,
         fullscreen: PropTypes.bool,
-        onScaleChange: PropTypes.func,
-        additionalMouseCrs: PropTypes.array
+        additionalMouseCrs: PropTypes.array,
+        changeMousePositionState: PropTypes.func,
+        changeZoomLevel: PropTypes.func
     }
     static defaultProps = {
         mapscale: 0
     }
-    constructor(props) {
-        super(props);
-
-        changeMousePositionState(true);
+    componentDidMount() {
+        this.props.changeMousePositionState({crs: this.props.mapcrs, enabled: true});
+    }
+    componentWillReceiveProps(newProps) {
+        if(newProps.mapcrs !== this.props.mapcrs) {
+            newProps.changeMousePositionState({crs: newProps.mapcrs, position: null});
+        }
     }
     render() {
         if(this.props.fullscreen) {
@@ -84,13 +87,13 @@ class BottomBar extends React.Component {
             <div id="BottomBar">
                 <span className="mousepos_label"><Message msgId="bottombar.mousepos_label" />: </span>
                 <CoordinateDisplayer displaycrs={this.props.displaycrs} />
-                <select className="bottombar-crs-selector" onChange={ev => this.props.onCRSChange(ev.target.value)} value={this.props.displaycrs}>
+                <select className="bottombar-crs-selector" onChange={ev => this.props.changeMousePositionState({crs: ev.target.value})} value={this.props.displaycrs}>
                     {Object.keys(availableCRS).map(crs =>
                         (<option value={crs} key={crs}>{availableCRS[crs].label}</option>)
                 )}
                 </select>
                 <span className="scale_label"><Message msgId="bottombar.scale_label" />: </span>
-                <select className="bottombar-scale-selector" onChange={this.onScaleComboChange} value={this.props.mapscale}>
+                <select className="bottombar-scale-selector" onChange={ev => this.props.changeZoomLevel(parseInt(ev.target.value, 10))} value={this.props.mapscale}>
                     {this.props.mapscales.map((item, index) =>
                         (<option value={index} key={index}>{"1 : " + item}</option>)
                     )}
@@ -98,9 +101,6 @@ class BottomBar extends React.Component {
                 {bottomLinks}
             </div>
         );
-    }
-    onScaleComboChange = (ev) => {
-        this.props.onScaleChange(parseInt(ev.target.value, 10));
     }
 };
 
@@ -119,10 +119,10 @@ const selector = createSelector([state => state, displayCrsSelector], (state, di
 
 module.exports = {
     BottomBarPlugin: connect(selector, {
-        onCRSChange: changeMousePositionCrs,
-        onScaleChange: changeZoomLevel
+        changeMousePositionState: changeMousePositionState,
+        changeZoomLevel: changeZoomLevel
     })(BottomBar),
     reducers: {
-        mousePosition: require('../../MapStore2Components/reducers/mousePosition')
+        mousePosition: require('../reducers/mousePosition')
     }
 };

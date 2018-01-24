@@ -107,8 +107,10 @@ class OpenlayersMap extends React.Component {
         map.on('pointermove', (event) => {
             if (!event.dragging) {
                 this.props.onMouseMove({
-                    coordinate: event.coordinate,
-                    pixel: event.pixel
+                    position: {
+                        coordinate: event.coordinate,
+                        pixel: event.pixel
+                    }
                 });
             }
         });

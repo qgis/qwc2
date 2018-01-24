@@ -14,9 +14,9 @@ const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUti
 
 class CoordinateDisplayer extends React.Component {
     static propTypes = {
-        diplaycrs: PropTypes.string,
+        displaycrs: PropTypes.string,
         mapcrs: PropTypes.string,
-        mousepos: PropTypes.object
+        coordinate: PropTypes.object
     }
     render() {
         let value = "";
