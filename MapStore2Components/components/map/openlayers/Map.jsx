@@ -102,6 +102,23 @@ class OpenlayersMap extends React.Component {
                 button: 0
             });
         });
+        map.getViewport().addEventListener('mousedown', (event) => {
+            this.props.onClick(null);
+        });
+        map.getViewport().addEventListener('contextmenu', (event)  => {
+            event.preventDefault();
+            this.props.onClick({
+                coordinate: this.map.getCoordinateFromPixel([event.x, event.y]),
+                pixel: [event.x, event.y],
+                modifiers: {
+                    alt: event.altKey,
+                    ctrl: event.ctrlKey,
+                    shift: event.shiftKey
+                },
+                button: 2
+            });
+            return false;
+        });
         if(this.props.trackMousePos) {
             map.on('pointermove', (event) => {
                 if (!event.dragging) {

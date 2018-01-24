@@ -57,7 +57,7 @@ class Identify extends React.Component {
         }
     }
     needsRefresh = (props) => {
-        if (props.enabled && props.point && props.point.pixel) {
+        if (props.enabled && props.point && props.point.button === 0 && props.point.pixel) {
             if (!this.props.point.pixel || this.props.point.pixel[0] !== props.point.pixel[0] ||
                     this.props.point.pixel[1] !== props.point.pixel[1] ) {
                 return true;
