@@ -44,7 +44,8 @@ class Editing extends React.Component {
         deleteClicked: false
     }
     onShow = (mode) => {
-        this.props.changeEditingState({action: mode || 'Pick', geomType: null, feature: null})
+        let editLayers = Object.keys(this.props.theme.editConfig || {});
+        this.changeSelectedLayer(editLayers[0], "Pick");
     }
     onHide = () => {
         this.props.changeEditingState({action: null, geomType: null, feature: null})
@@ -64,8 +65,8 @@ class Editing extends React.Component {
         if(newProps.enabled && this.props.enabled && newProps.editing.action === 'Pick' && this.state.selectedLayer) {
             const newPoint = newProps.map.clickPoint || {};
             const oldPoint = this.props.map.clickPoint || {};
-            if(!isEqual(newPoint.coordinate, oldPoint.coordinate)) {
-                let point = {x: newPoint.coordinate[0], y: newPoint.coordinte[1]};
+            if(newPoint.coordinate && !isEqual(newPoint.coordinate, oldPoint.coordinate)) {
+                let point = {x: newPoint.coordinate[0], y: newPoint.coordinate[1]};
                 let scale = this.props.map.scales[this.props.map.zoom];
                 this.props.iface.getFeature(this.state.selectedLayer, point, this.props.map.projection, scale, 96, (feature) => {
                     this.props.changeEditingState(assign({}, this.props.editing, {feature: feature, changed: false}));
@@ -131,8 +132,8 @@ class Editing extends React.Component {
             );
         }
         const editConfig = this.props.theme.editConfig;
-        const curConfig = editConfig[this.state.selectedLayer] || null;
-        if(!curConfig || !curConfig.geomType) {
+        const curConfig = editConfig[this.state.selectedLayer];
+        if(!curConfig) {
             return (
                 <div role="body" style={{padding: "1em"}}>
                     <Message msgId="editing.noeditablelayers" />
@@ -141,11 +142,10 @@ class Editing extends React.Component {
         }
 
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
-        let geomType = curConfig.geomType.startsWith("Multi") ? curConfig.geomType.substring(5) : curConfig.geomType;
         let actionBar = null;
         const actionButtons = [
-            {key: 'Pick', icon: 'pick.svg', label: "editing.pick", data: {action: 'Pick', geomType: null}},
-            {key: 'Draw', icon: 'editdraw.svg', label: "editing.draw", data: {action: 'Draw', geomType: geomType, feature: null}}
+            {key: 'Pick', icon: 'pick.svg', label: "editing.pick", data: {action: 'Pick'}},
+            {key: 'Draw', icon: 'editdraw.svg', label: "editing.draw", data: {action: 'Draw', feature: null}}
         ];
         actionBar = (<ButtonBar buttons={actionButtons} active={this.props.editing.action} disabled={this.props.editing.changed} onClick={(action, data) => this.props.changeEditingState({...data})} />);
 
@@ -196,7 +196,7 @@ class Editing extends React.Component {
             <div role="body" className="editing-body">
                 <div>
                     <span className="input-frame">
-                        <select className="editing-layer-select" value={this.state.selectedLayer || ""} onChange={this.changeSelectedLayer} disabled={this.props.editing.changed === true}>
+                        <select className="editing-layer-select" value={this.state.selectedLayer || ""} onChange={ev => this.changeSelectedLayer(ev.target.value)} disabled={this.props.editing.changed === true}>
                             {Object.keys(editConfig).map(layerId => {
                                 return (
                                     <option key={layerId} value={layerId}>{editConfig[layerId].layerName}</option>
@@ -222,9 +222,14 @@ class Editing extends React.Component {
             </SideBar>
         );
     }
-    changeSelectedLayer = (ev) => {
-        this.setState({selectedLayer: ev.target.value});
-        this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
+    changeSelectedLayer = (selectedLayer, action=null) => {
+        this.setState({selectedLayer: selectedLayer});
+        const curConfig = this.props.theme.editConfig[selectedLayer];
+        let geomType = null;
+        if(curConfig) {
+            geomType = curConfig.geomType.startsWith("Multi") ? curConfig.geomType.substring(5) : curConfig.geomType;
+        }
+        this.props.changeEditingState(assign({}, this.props.editing, {action: action || this.props.editing.action, feature: null, geomType: geomType}));
     }
     updateField = (key, value) => {
         let newProperties = assign({}, this.props.editing.feature.properties, {[key]: value});
@@ -238,27 +243,23 @@ class Editing extends React.Component {
     }
     onSubmit = (ev) => {
         ev.preventDefault();
-        const editConfig = this.props.theme.editConfig || [];
-        const curConfig = editConfig[this.state.selectedLayer];
-        if(curConfig) {
-            this.setState({busy: true});
+        this.setState({busy: true});
 
-            let feature = this.props.editing.feature;
-            // Convert geometry to multitype if necessary
-            if(curConfig.geomType.startsWith("Multi") && !feature.geometry.type.startsWith("Multi")) {
-                feature = assign({}, feature, {geometry: {
-                    type: "Multi" + feature.geometry.type,
-                    coordinates: [feature.geometry.coordinates]
-                }});
-            }
-            // Ensure properties is not null
-            feature = assign({}, feature, {properties: feature.properties || {}});
+        let feature = this.props.editing.feature;
+        // Convert geometry to multitype if necessary
+        if(this.props.editing.geomType.startsWith("Multi") && !feature.geometry.type.startsWith("Multi")) {
+            feature = assign({}, feature, {geometry: {
+                type: "Multi" + feature.geometry.type,
+                coordinates: [feature.geometry.coordinates]
+            }});
+        }
+        // Ensure properties is not null
+        feature = assign({}, feature, {properties: feature.properties || {}});
 
-            if(this.props.editing.action === "Draw") {
-                this.props.iface.addFeature(this.state.selectedLayer, feature, this.props.map.projection, this.commitFinished);
-            } else if(this.props.editing.action === "Pick") {
-                this.props.iface.editFeature(this.state.selectedLayer, feature, this.props.map.projection, this.commitFinished);
-            }
+        if(this.props.editing.action === "Draw") {
+            this.props.iface.addFeature(this.state.selectedLayer, feature, this.props.map.projection, this.commitFinished);
+        } else if(this.props.editing.action === "Pick") {
+            this.props.iface.editFeature(this.state.selectedLayer, feature, this.props.map.projection, this.commitFinished);
         }
     }
     deleteClicked = () => {
