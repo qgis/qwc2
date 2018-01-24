@@ -27,6 +27,7 @@ class OpenlayersMap extends React.Component {
         mapOptions: PropTypes.object,
         zoomControl: PropTypes.bool,
         mousePointer: PropTypes.string,
+        trackMousePos: PropTypes.bool,
         onMouseMove: PropTypes.func,
         onLayerLoading: PropTypes.func,
         onLayerLoad: PropTypes.func,
@@ -101,16 +102,18 @@ class OpenlayersMap extends React.Component {
                 button: 0
             });
         });
-        map.on('pointermove', (event) => {
-            if (!event.dragging) {
-                this.props.onMouseMove({
-                    position: {
-                        coordinate: event.coordinate,
-                        pixel: event.pixel
-                    }
-                });
-            }
-        });
+        if(this.props.trackMousePos) {
+            map.on('pointermove', (event) => {
+                if (!event.dragging) {
+                    this.props.onMouseMove({
+                        position: {
+                            coordinate: event.coordinate,
+                            pixel: event.pixel
+                        }
+                    });
+                }
+            });
+        }
 
         this.map = map;
         this.updateMapInfoState();

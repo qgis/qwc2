@@ -16,7 +16,7 @@ const {changeMousePositionState} = require('../../actions/mousePosition');
 
 
 const Map = connect((state) => ({
-    mousePosition: state.mousePosition || {enabled: false}
+    trackMousePos: state.mousePosition.enabled || false
 }), {
     onMapViewChanges: changeMapView,
     onClick: clickOnMap,
@@ -25,10 +25,6 @@ const Map = connect((state) => ({
     onLayerLoad: layerLoad,
     onLayerError: layerError,
     onInvalidLayer: invalidLayer
-}, (stateProps, dispatchProps, ownProps) => {
-    return assign({}, ownProps, stateProps, assign({}, dispatchProps, {
-        onMouseMove: stateProps.mousePosition.enabled ? dispatchProps.onMouseMove : () => {}
-    }));
 })(require('../../../MapStore2Components/components/map/openlayers/Map'));
 
 module.exports = {
