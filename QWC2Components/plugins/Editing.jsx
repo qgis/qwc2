@@ -224,6 +224,7 @@ class Editing extends React.Component {
     }
     changeSelectedLayer = (ev) => {
         this.setState({selectedLayer: ev.target.value});
+        this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
     }
     updateField = (key, value) => {
         let newProperties = assign({}, this.props.editing.feature.properties, {[key]: value});
