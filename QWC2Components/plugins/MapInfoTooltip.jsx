@@ -29,7 +29,7 @@ class MapInfoTooltip extends React.Component {
         displaycrs: PropTypes.string
     }
     state = {
-        coordinate: null, elevation: null
+        coordinate: null, elevation: null, extraInfo: null
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -42,18 +42,24 @@ class MapInfoTooltip extends React.Component {
             let oldPoint = this.props.map.clickPoint;
             if(!oldPoint || oldPoint.pixel[0] !== newPoint.pixel[0] || oldPoint.pixel[1] !== newPoint.pixel[1]) {
                 this.setState({coordinate: newPoint.coordinate, elevation: null});
-                let serviceUrl = ConfigUtils.getConfigProp("elevationServiceUrl").replace(/\/$/, '');
-                if(serviceUrl) {
-                    let params = {pos: newPoint.coordinate.join(","), crs: newProps.map.projection};
-                    axios.get(serviceUrl + '/getelevation', {params}).then(response => {
+                let serviceParams = {pos: newPoint.coordinate.join(","), crs: newProps.map.projection};
+                let elevationService = ConfigUtils.getConfigProp("elevationServiceUrl").replace(/\/$/, '');
+                if(elevationService) {
+                    axios.get(elevationService + '/getelevation', {params: serviceParams}).then(response => {
                         this.setState({elevation: Math.round(response.data.elevation)});
+                    }).catch(e => {});
+                }
+                let mapInfoService = ConfigUtils.getConfigProp("mapInfoService");
+                if(mapInfoService) {
+                    axios.get(mapInfoService, {params: serviceParams}).then(response => {
+                        this.setState({extraInfo: response.data.results});
                     }).catch(e => {});
                 }
             }
         }
     }
     clear = () => {
-        this.setState({coordinate: null, height: null});
+        this.setState({coordinate: null, height: null, extraInfo: null});
     }
     render() {
         if(!this.state.coordinate) {
@@ -83,6 +89,10 @@ class MapInfoTooltip extends React.Component {
                 LocaleUtils.getMessageById(this.context.messages, "mapinfotooltip.elevation"),
                 this.state.elevation + " m"
             ]);
+        }
+
+        if(this.state.extraInfo) {
+            info.push(...this.state.extraInfo);
         }
 
         let pixel = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK)(this.state.coordinate);
