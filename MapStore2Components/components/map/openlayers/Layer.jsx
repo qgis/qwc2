@@ -44,6 +44,9 @@ class OpenlayersLayer extends React.Component {
         this.createLayer(this.props.type, this.props.options, this.props.zIndex);
     }
     componentWillReceiveProps(newProps) {
+        if(!this.state.layer) {
+            return;
+        }
         const newVisibility = newProps.options && newProps.options.visibility !== false;
         this.setLayerVisibility(newVisibility);
 
