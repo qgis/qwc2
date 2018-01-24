@@ -347,7 +347,7 @@ function getTheme(configItem, resultItem) {
                 resultItem.print = printTemplates;
             }
             resultItem.drawingOrder = drawingOrder;
-            resultItem.legendUrl = capabilities.Capability.Request.GetLegendGraphic.DCPType.HTTP.Get.OnlineResource.$['xlink:href'] + configItem.extraLegendParameters;
+            resultItem.legendUrl = capabilities.Capability.Request.GetLegendGraphic.DCPType.HTTP.Get.OnlineResource.$['xlink:href'] + (configItem.extraLegendParameters ? configItem.extraLegendParameters : '');
             resultItem.featureInfoUrl = capabilities.Capability.Request.GetFeatureInfo.DCPType.HTTP.Get.OnlineResource.$['xlink:href'];
             resultItem.printUrl = capabilities.Capability.Request.GetPrint.DCPType.HTTP.Get.OnlineResource.$['xlink:href'];
             if(configItem.printLabelForSearchResult) {
