@@ -90,12 +90,18 @@ class OpenlayersMap extends React.Component {
           view: this.createView(this.props.center, Math.round(this.props.zoom), this.props.projection, this.props.resolutions)
         });
         map.on('moveend', this.updateMapInfoState);
-        map.on('movestart', () => this.props.onClick(null));
-        map.getViewport().addEventListener('mousedown', (event) => {
+        map.on('movestart', () => {
+            this.moved = true;
             this.props.onClick(null);
         });
-        map.getViewport().addEventListener('mouseup', (event) => {
-            // This won't get triggered after a drag
+        map.getViewport().addEventListener('mousedown', (event) => {
+            this.props.onClick(null);
+            this.moved = false;
+        });
+        map.getViewport().addEventListener('click', (event) => {
+            if(this.moved) {
+                return;
+            }
             this.props.onClick({
                 coordinate: this.map.getCoordinateFromPixel([event.x, event.y]),
                 pixel: [event.x, event.y],
