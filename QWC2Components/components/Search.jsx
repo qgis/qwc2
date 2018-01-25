@@ -87,7 +87,7 @@ class Search extends React.Component {
             }
         }
         // If results changed and a unique result is returned, select it automatically
-        else if(newProps.results && newProps.results !== this.props.results) {
+        else if(newProps.results && newProps.results !== this.props.results && isEmpty(newProps.pendingProviders)) {
             if(newProps.results.length === 1 && newProps.results[0].items.length == 1) {
                 this.showResult(newProps.results[0].items[0], false);
             }
