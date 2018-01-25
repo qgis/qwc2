@@ -11,6 +11,7 @@ const {UrlParams} = require("../utils/PermaLinkUtils");
 const LayerUtils = require("../utils/LayerUtils");
 const isEmpty = require('lodash.isempty');
 const uuid = require('uuid');
+const deepmerge = require('deepmerge').default;
 
 const {
     LayerRole,
@@ -24,6 +25,7 @@ const {
     CHANGE_LAYER_PROPERTIES,
     ADD_LAYER_FEATURES,
     REMOVE_LAYER_FEATURES,
+    ADD_THEME_SUBLAYER,
     REFRESH_LAYER,
     REMOVE_ALL_LAYERS
 } = require('../actions/layers');
@@ -156,6 +158,18 @@ function layers(state = {flat: []}, action) {
                 return result;
             }, []);
             return {flat: newLayers};
+        }
+        case ADD_THEME_SUBLAYER: {
+            let themeLayerIdx = state.flat.findIndex(layer => layer.isThemeLayer);
+            if(themeLayerIdx >= 0) {
+                let newLayers = state.flat.slice(0);
+                newLayers[themeLayerIdx] = deepmerge(action.layer, state.flat[themeLayerIdx]);
+                LayerUtils.addSublayerIDs(newLayers[themeLayerIdx]);
+                assign(newLayers[themeLayerIdx], LayerUtils.buildWMSLayerParams(newLayers[themeLayerIdx]));
+                UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
+                return {flat: newLayers};
+            }
+            return state;
         }
         case REFRESH_LAYER: {
             let newLayers = (state.flat || []).map((layer) => {
