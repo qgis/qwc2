@@ -13,6 +13,11 @@ const SEARCH_CHANGE = 'SEARCH_CHANGE';
 const SEARCH_SET_REQUEST = 'SEARCH_SET_REQUEST';
 const SEARCH_ADD_RESULTS = 'SEARCH_ADD_RESULTS';
 
+const SearchResultType = {
+    PLACE: 0,
+    THEMELAYER: 1
+};
+
 function changeSearch(text, providers) {
     return {
         type: SEARCH_CHANGE,
@@ -58,6 +63,7 @@ function addSearchResults(results, append) {
 }
 
 module.exports = {
+    SearchResultType,
     SEARCH_CHANGE,
     SEARCH_SET_REQUEST,
     SEARCH_ADD_RESULTS,

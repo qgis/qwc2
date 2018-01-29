@@ -20,9 +20,9 @@ const Message = require('../../MapStore2Components/components/I18N/Message');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const mapUtils = require('../../MapStore2Components/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
-const {LayerRole, addMarker, removeMarker, addLayerFeatures, removeLayer} = require('../actions/layers');
+const {LayerRole, addMarker, removeMarker, addLayerFeatures, removeLayer, addThemeSublayer} = require('../actions/layers');
 const {zoomToPoint} = require('../actions/map');
-const {changeSearch, startSearch, searchMore} = require("../actions/search");
+const {changeSearch, startSearch, searchMore, SearchResultType} = require("../actions/search");
 const displayCrsSelector = require('../selectors/displaycrs');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
 const {UrlParams} = require("../utils/PermaLinkUtils");
@@ -46,6 +46,7 @@ class Search extends React.Component {
         removeMarker: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         removeLayer: PropTypes.func,
+        addThemeSublayer: PropTypes.func,
         searchOptions: PropTypes.object
     }
     static contextTypes = {
@@ -296,31 +297,35 @@ class Search extends React.Component {
         );
     }
     showResult = (item, zoom=true) => {
-        this.props.removeLayer("searchselection");
-        let text = item.label !== undefined ? item.label : item.text;
-        if(zoom) {
-            // find max zoom level greater than min scale
-            let maxZoom = 0;
-            const scales = this.props.map.scales;
-            for (let i in scales) {
-                if (scales[i] < this.props.searchOptions.minScale) {
-                    break;
-                } else {
-                    maxZoom = i;
+        if((item.type || SearchResultType.PLACE) === SearchResultType.PLACE) {
+            this.props.removeLayer("searchselection");
+            let text = item.label !== undefined ? item.label : item.text;
+            if(zoom) {
+                // find max zoom level greater than min scale
+                let maxZoom = 0;
+                const scales = this.props.map.scales;
+                for (let i in scales) {
+                    if (scales[i] < this.props.searchOptions.minScale) {
+                        break;
+                    } else {
+                        maxZoom = i;
+                    }
                 }
-            }
 
-            // zoom to result using max zoom level
-            const newZoom = mapUtils.getZoomForExtent(CoordinatesUtils.reprojectBbox(item.bbox, item.crs, this.props.map.projection), this.props.map.resolutions, this.props.map.size, 0, maxZoom);
-            this.props.panToResult([item.x, item.y], newZoom, item.crs);
+                // zoom to result using max zoom level
+                const newZoom = mapUtils.getZoomForExtent(CoordinatesUtils.reprojectBbox(item.bbox, item.crs, this.props.map.projection), this.props.map.resolutions, this.props.map.size, 0, maxZoom);
+                this.props.panToResult([item.x, item.y], newZoom, item.crs);
+            }
+            if(item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
+                this.props.searchProviders[item.provider].getResultGeometry(item, (item, geometry, crs) => { this.showFeatureGeometry(item, geometry, crs, text)});
+            }
+            else{
+                this.props.addMarker('searchmarker', [item.x, item.y], text, item.crs);
+            }
+            this.setState({currentResult: item});
+        } else if(item.type === SearchResultType.THEMELAYER) {
+            this.props.addThemeSublayer(item.layer);
         }
-        if(item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
-            this.props.searchProviders[item.provider].getResultGeometry(item, (item, geometry, crs) => { this.showFeatureGeometry(item, geometry, crs, text)});
-        }
-        else{
-            this.props.addMarker('searchmarker', [item.x, item.y], text, item.crs);
-        }
-        this.setState({currentResult: item});
     }
     showFeatureGeometry = (item, geometry, crs, text) => {
         if(item === this.state.currentResult) {
@@ -402,6 +407,7 @@ module.exports = (searchProviders, providerFactory=(key) => { return null; }) =>
         addMarker: addMarker,
         removeMarker: removeMarker,
         addLayerFeatures: addLayerFeatures,
-        removeLayer: removeLayer
+        removeLayer: removeLayer,
+        addThemeSublayer: addThemeSublayer
     })(Search);
 }
