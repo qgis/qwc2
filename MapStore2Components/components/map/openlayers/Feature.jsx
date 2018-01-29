@@ -57,7 +57,11 @@ class Feature extends React.Component {
         if (geometry) {
             this.features = format.readFeatures({type: props.type, properties: props.properties, geometry: props.geometry, id: props.featureId});
             this.features.forEach((f) => {
-                f.getGeometry().transform(props.crs, props.layerCrs);
+                try {
+                    f.getGeometry().transform(props.crs, props.layerCrs);
+                } catch(e) {
+                    console.warn("Failed to transform geometry coordinates");
+                }
             });
             this.updateStyle(props);
             props.container.getSource().addFeatures(this.features);
