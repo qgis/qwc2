@@ -190,23 +190,23 @@ class IdentifyViewer extends React.Component {
             .replace(/'/g, "&#039;");
     }
     addLinkAnchors = (text) => {
-        if(text.indexOf("</a>") !== -1) {
-            return text; // Text already contains anchors
-        }
         let value = text;
         while(match = urlRegEx.exec(value)) {
-            let url = match[0];
-            let protoUrl = url;
-            if(match[1] === undefined) {
-                if(match[0].indexOf('@') !== -1) {
-                    protoUrl = "mailto:" + url;
-                } else {
-                    protoUrl = "http://" + url;
+            // If URL is part of a HTML attribute, don't add anchor
+            if(value.substring(match.index - 2, match.index).match(/^=['"]$/) === null) {
+                let url = match[0];
+                let protoUrl = url;
+                if(match[1] === undefined) {
+                    if(match[0].indexOf('@') !== -1) {
+                        protoUrl = "mailto:" + url;
+                    } else {
+                        protoUrl = "http://" + url;
+                    }
                 }
+                let anchor = "<a href=\"" + this.htmlEncode(protoUrl) + "\" target=\"_blank\">" + this.htmlEncode(url) + "</a>";
+                value = value.substring(0, match.index) + anchor + value.substring(match.index + url.length);
+                urlRegEx.lastIndex = match.index + anchor.length;
             }
-            let anchor = "<a href=\"" + this.htmlEncode(protoUrl) + "\" target=\"_blank\">" + this.htmlEncode(url) + "</a>";
-            value = value.substring(0, match.index) + anchor + value.substring(match.index + url.length);
-            urlRegEx.lastIndex = match.index + anchor.length;
         }
         // Reset
         urlRegEx.lastIndex = 0;
