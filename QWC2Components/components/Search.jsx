@@ -290,7 +290,8 @@ class Search extends React.Component {
         }
         return (
             <li key={item.id} title={item.text}
-                onMouseDown={() => this.showResult(item)}
+                onMouseDown={this.killEvent}
+                onClick={() => {this.showResult(item); this.input.blur(); }}
                 dangerouslySetInnerHTML={{__html: item.text}}></li>
         );
     }
