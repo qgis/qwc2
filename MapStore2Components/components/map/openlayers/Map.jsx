@@ -129,6 +129,7 @@ class OpenlayersMap extends React.Component {
         });
         if(this.props.trackMousePos) {
             map.on('pointermove', (event) => {
+                this.moved = true;
                 if (!event.dragging) {
                     this.props.onMouseMove({
                         position: {
