@@ -55,7 +55,7 @@ const ThemeUtils = {
         }
         return bgLayers;
     },
-    createThemeLayer: function(theme, themes, visibleLayers=null) {
+    createThemeLayer: function(theme, visibleLayers=null) {
         let sublayers = theme.sublayers;
         if(visibleLayers) {
             let layers = [];
@@ -71,7 +71,7 @@ const ThemeUtils = {
                     opacities.push(255);
                 }
             });
-            if(ConfigUtils.getConfigProp("allowReorderingLayers") != true) {
+            if(ConfigUtils.getConfigProp("allowReorderingLayers") !== true) {
                 sublayers = LayerUtils.restoreVisibleLayers(sublayers, layers, opacities);
             } else {
                 sublayers = LayerUtils.restoreReorderedVisibleLayers(sublayers, layers, opacities);
@@ -82,7 +82,7 @@ const ThemeUtils = {
             id: theme.name + Date.now().toString(),
             type: "wms",
             url: theme.url,
-            version: theme.version || themes.defaultWMSVersion || "1.3.0",
+            version: theme.version,
             visibility: true,
             expanded: theme.expanded,
             name: theme.name,
