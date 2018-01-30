@@ -199,6 +199,7 @@ class OpenlayersMap extends React.Component {
             return child ? React.cloneElement(child, {
                 map: map,
                 mapId: this.props.id,
+                projection: this.props.projection,
                 setLayerLoading: this.props.setLayerLoading,
             }) : null;
         }) : null;
