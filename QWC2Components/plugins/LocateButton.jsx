@@ -34,7 +34,7 @@ class LocateButton extends React.Component {
         navigator.geolocation.getCurrentPosition(() => {
             // OK!
         }, (err) => {
-            if (error.code === 1) {
+            if (err.code === 1) {
                 props.changeLocateState("PERMISSION_DENIED");
             }
         });
