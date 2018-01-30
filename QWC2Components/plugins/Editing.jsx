@@ -223,7 +223,7 @@ class Editing extends React.Component {
     }
     changeSelectedLayer = (selectedLayer, action=null) => {
         this.setState({selectedLayer: selectedLayer});
-        const curConfig = this.props.theme.editConfig[selectedLayer];
+        const curConfig = this.props.theme.editConfig ? this.props.theme.editConfig[selectedLayer] : null;
         let geomType = null;
         if(curConfig) {
             geomType = curConfig.geomType.startsWith("Multi") ? curConfig.geomType.substring(5) : curConfig.geomType;
