@@ -119,8 +119,8 @@ class OpenlayersLayer extends React.Component {
         if (layerCreator && layerCreator.update) {
             layerCreator.update(
             this.state.layer,
-            this.generateOpts(newProps.options, newProps.zIndex, newProps.srs),
-            this.generateOpts(oldProps.options, oldProps.zIndex, oldProps.srs),
+            this.generateOpts(newProps.options, newProps.zIndex, CoordinatesUtils.normalizeSRS(newProps.srs)),
+            this.generateOpts(oldProps.options, oldProps.zIndex, CoordinatesUtils.normalizeSRS(oldProps.srs)),
             this.props.map,
             this.props.mapId);
         }
