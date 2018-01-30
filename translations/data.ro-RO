@@ -90,6 +90,9 @@
       "printlegend": "Tipărește legenda",
       "transparency": "Transparență"
     },
+    "map": {
+      "loading": "Se încarcă..."
+    },
     "mapinfotooltip": {
       "elevation": ""
     },
@@ -169,9 +172,6 @@
         "FOLLOWING": "Urmărește",
         "PERMISSION_DENIED": "Acces refuzat"
       }
-    },
-    "map": {
-      "loading": "Se încarcă..."
     }
   }
 }

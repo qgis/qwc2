@@ -72,3 +72,24 @@ div.ol-overviewmap button:focus {
 div.ol-overviewmap div.ol-overviewmap-map {
     z-index: 7;
 }
+
+span.map-loading-indicator {
+    opacity: 0;
+    transition: opacity 0.5s;
+    color: @panel_fg@;
+    background-color: @panel_bg@;
+    box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
+    position: absolute;
+    bottom: 2.7em;
+    left: 0.25em;
+    padding: 0.25em;
+    border-radius: 0.25em;
+    font-size: small;
+}
+
+span.map-loading-indicator > div.spinner {
+    width: 1em;
+    height: 1em;
+    margin-right: 0.25em;
+    display: inline-block;
+}

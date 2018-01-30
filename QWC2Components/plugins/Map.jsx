@@ -8,7 +8,9 @@
 
 const React = require('react');
 const PropTypes = require('prop-types');
+const Spinner = require('react-spinkit');
 const {connect} = require('react-redux');
+const Message = require('../../MapStore2Components/components/I18N/Message');
 
 const MapComponents = require('./map/MapComponents');
 
@@ -20,11 +22,17 @@ class MapPlugin extends React.Component {
         map: PropTypes.object,
         layers: PropTypes.array,
         tools: PropTypes.object,
-        toolsOptions: PropTypes.object
+        toolsOptions: PropTypes.object,
+        showLoading: PropTypes.bool
     }
     static defaultProps = {
         tools: {},
-        toolsOptions: {}
+        toolsOptions: {},
+        showLoading: true
+    }
+    constructor(props) {
+        super(props);
+        this.loadingEl = null;
     }
     renderLayerContent = (layer, layerCrs) => {
         if (layer.features && layer.type === "vector") {
@@ -72,15 +80,28 @@ class MapPlugin extends React.Component {
                     }
                 }
             };
-            return (
-                <MapComponents.Map id="map"
+            let loadingIndicator = null;
+            if(this.props.showLoading && this.props.layers.find(layer => layer.loading === true) != undefined){
+                loadingIndicator = (
+                <span ref={el => this.loadingEl = el} className="map-loading-indicator" key="map-loading">
+                    <Spinner className="spinner" name="circle" fadeIn="none" />
+                    <Message msgId="map.loading" />
+                </span>);
+                setTimeout(() => {
+                    if(this.loadingEl) {
+                        this.loadingEl.style.opacity = 1;
+                    }
+                }, 1000);
+            }
+            return [(
+                <MapComponents.Map id="map" key="map"
                     mapOptions={mapOptions}
                     {...this.props.map}
                     zoomControl={false}>
                     {this.renderLayers()}
                     {this.renderSupportTools()}
                 </MapComponents.Map>
-            );
+            ), loadingIndicator];
         }
         return null;
     }

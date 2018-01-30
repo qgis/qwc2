@@ -90,6 +90,9 @@
       "printlegend": "Print legend",
       "transparency": "Transparency"
     },
+    "map": {
+      "loading": "Loading..."
+    },
     "mapinfotooltip": {
       "elevation": "Elevation"
     },
@@ -168,9 +171,6 @@
         "FOLLOWING": "Following",
         "PERMISSION_DENIED": "Permission denied"
       }
-    },
-    "map": {
-      "loading": "Loading..."
     }
   }
 }

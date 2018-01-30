@@ -63,6 +63,7 @@
     "layertree.maptip",
     "layertree.printlegend",
     "layertree.transparency",
+    "map.loading",
     "mapinfotooltip.elevation",
     "measureComponent.areaLabel",
     "measureComponent.bearingLabel",

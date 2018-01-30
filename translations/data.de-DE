@@ -90,6 +90,9 @@
       "printlegend": "Legende drucken",
       "transparency": "Transparenz"
     },
+    "map": {
+      "loading": "Karte wird geladen"
+    },
     "mapinfotooltip": {
       "elevation": ""
     },
@@ -156,9 +159,6 @@
       "metadataUrl": "Metadaten-URL",
       "legend": "Legende"
     },
-    "locate": {},
-    "map": {
-      "loading": "Karte wird geladen"
-    }
+    "locate": {}
   }
 }

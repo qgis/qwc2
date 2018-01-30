@@ -90,6 +90,9 @@
       "printlegend": "",
       "transparency": ""
     },
+    "map": {
+      "loading": "In caricamento..."
+    },
     "mapinfotooltip": {
       "elevation": ""
     },
@@ -145,9 +148,6 @@
     },
     "bgswitcher": {},
     "layerinfo": {},
-    "locate": {},
-    "map": {
-      "loading": "In caricamento..."
-    }
+    "locate": {}
   }
 }
