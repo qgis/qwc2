@@ -6,10 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const LAYER_LOADING = 'LAYER_LOADING';
-const LAYER_LOAD = 'LAYER_LOAD';
-const LAYER_ERROR = 'LAYER_ERROR';
-const INVALID_LAYER = 'INVALID_LAYER';
+const SET_LAYER_LOADING = 'SET_LAYER_LOADING';
 const ADD_LAYER = 'ADD_LAYER';
 const REMOVE_LAYER = 'REMOVE_LAYER';
 const REORDER_LAYER = 'REORDER_LAYER';
@@ -89,33 +86,11 @@ function changeLayerProperties(layerId, properties) {
     };
 }
 
-function layerLoading(layerId) {
+function setLayerLoading(layerId, loading) {
     return {
-        type: LAYER_LOADING,
-        layerId: layerId
-    };
-}
-
-function layerLoad(layerId, error) {
-    return {
-        type: LAYER_LOAD,
-        layerId,
-        error
-    };
-}
-
-function layerError(layerId) {
-    return {
-        type: LAYER_ERROR,
-        layerId: layerId
-    };
-}
-
-function invalidLayer(layerType, options) {
-    return {
-        type: INVALID_LAYER,
-        layerType,
-        options
+        type: SET_LAYER_LOADING,
+        layerId: layerId,
+        loading
     };
 }
 
@@ -157,10 +132,7 @@ function removeAllLayers() {
 
 module.exports = {
     LayerRole,
-    layerLoading,
-    layerLoad,
-    layerError,
-    invalidLayer,
+    setLayerLoading,
     addLayer,
     removeLayer,
     reorderLayer,
@@ -172,10 +144,7 @@ module.exports = {
     removeMarker,
     refreshLayer,
     removeAllLayers,
-    LAYER_LOADING,
-    LAYER_LOAD,
-    LAYER_ERROR,
-    INVALID_LAYER,
+    SET_LAYER_LOADING,
     ADD_LAYER,
     REMOVE_LAYER,
     REORDER_LAYER,

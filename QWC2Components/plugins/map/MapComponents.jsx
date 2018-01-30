@@ -11,7 +11,7 @@ const {connect} = require('react-redux');
 const assign = require('object-assign');
 
 const {changeMapView, clickOnMap} = require('../../actions/map');
-const {layerLoading, layerLoad, layerError, invalidLayer} = require('../../actions/layers');
+const {setLayerLoading} = require('../../actions/layers');
 const {changeMousePositionState} = require('../../actions/mousePosition');
 
 
@@ -21,10 +21,7 @@ const Map = connect((state) => ({
     onMapViewChanges: changeMapView,
     onClick: clickOnMap,
     onMouseMove: changeMousePositionState,
-    onLayerLoading: layerLoading,
-    onLayerLoad: layerLoad,
-    onLayerError: layerError,
-    onInvalidLayer: invalidLayer
+    setLayerLoading: setLayerLoading
 })(require('../../../MapStore2Components/components/map/openlayers/Map'));
 
 module.exports = {

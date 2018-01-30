@@ -29,24 +29,18 @@ class OpenlayersMap extends React.Component {
         mousePointer: PropTypes.string,
         trackMousePos: PropTypes.bool,
         onMouseMove: PropTypes.func,
-        onLayerLoading: PropTypes.func,
-        onLayerLoad: PropTypes.func,
-        onLayerError: PropTypes.func,
+        setLayerLoading: PropTypes.func,
         registerHooks: PropTypes.bool,
-        interactive: PropTypes.bool,
-        onInvalidLayer: PropTypes.func
+        interactive: PropTypes.bool
     }
     static defaultProps = {
         id: 'map',
         onMapViewChanges: () => {},
-        onInvalidLayer: () => {},
         onClick: () => {},
         onMouseMove: () => {},
+        setLayerLoading: () => {},
         mapOptions: {},
         projection: 'EPSG:3857',
-        onLayerLoading: () => {},
-        onLayerLoad: () => {},
-        onLayerError: () => {},
         registerHooks: true,
         interactive: true
     }
@@ -205,11 +199,7 @@ class OpenlayersMap extends React.Component {
             return child ? React.cloneElement(child, {
                 map: map,
                 mapId: this.props.id,
-                onLayerLoading: this.props.onLayerLoading,
-                onLayerError: this.props.onLayerError,
-                onLayerLoad: this.props.onLayerLoad,
-                projection: this.props.projection,
-                onInvalid: this.props.onInvalidLayer
+                setLayerLoading: this.props.setLayerLoading,
             }) : null;
         }) : null;
 

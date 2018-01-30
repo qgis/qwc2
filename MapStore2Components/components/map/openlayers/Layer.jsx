@@ -22,17 +22,10 @@ class OpenlayersLayer extends React.Component {
         srs: PropTypes.string,
         zIndex: PropTypes.number,
         options: PropTypes.object,
-        onLayerLoading: PropTypes.func,
-        onLayerError: PropTypes.func,
-        onLayerLoad: PropTypes.func,
-        onInvalid: PropTypes.func,
+        setLayerLoading: PropTypes.func,
         swipe: PropTypes.number
     }
     static defaultProps = {
-        onLayerLoading: () => {},
-        onLayerLoad: () => {},
-        onLayerError: () => {},
-        onInvalid: () => {},
         swipe: null
     }
     state = {
@@ -100,10 +93,7 @@ class OpenlayersLayer extends React.Component {
         }
     }
     generateOpts = (options, zIndex, srs) => {
-        return assign({}, options, {zIndex: zIndex, srs, onError: () => {
-                this.props.onInvalid(this.props.type, options);
-            }
-        });
+        return assign({}, options, {zIndex: zIndex, srs});
     }
     createLayer = (type, options, zIndex) => {
         let layerCreator = LayerRegistry[type];
@@ -166,33 +156,32 @@ class OpenlayersLayer extends React.Component {
             }
             if (options.singleTile) {
                 layer.getSource().on('imageloadstart', () => {
-                    this.props.onLayerLoading(options.id);
+                    this.props.setLayerLoading(options.id, true);
                 });
                 layer.getSource().on('imageloadend', () => {
-                    this.props.onLayerLoad(options.id);
+                    this.props.setLayerLoading(options.id, false);
                 });
                 layer.getSource().on('imageloaderror', (event) => {
-                    this.props.onLayerLoad(options.id, {error: event});
+                    this.props.setLayerLoading(options.id, false);
                 });
             }
             else {
                 layer.getSource().on('tileloadstart', () => {
                     if (this.tilestoload === 0) {
-                        this.props.onLayerLoading(options.id);
+                        this.props.setLayerLoading(options.id, true);
                     }
                     this.tilestoload++;
                 });
                 layer.getSource().on('tileloadend', () => {
                     this.tilestoload--;
                     if (this.tilestoload === 0) {
-                        this.props.onLayerLoad(options.id);
+                        this.props.setLayerLoading(options.id, false);
                     }
                 });
                 layer.getSource().on('tileloaderror', (event) => {
                     this.tilestoload--;
-                    this.props.onLayerError(options.id);
                     if (this.tilestoload === 0) {
-                        this.props.onLayerLoad(options.id, {error: event});
+                        this.props.setLayerLoading(options.id, false);
                     }
                 });
             }

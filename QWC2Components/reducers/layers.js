@@ -15,10 +15,7 @@ const deepmerge = require('deepmerge').default;
 
 const {
     LayerRole,
-    LAYER_LOADING,
-    LAYER_LOAD,
-    LAYER_ERROR,
-    INVALID_LAYER,
+    SET_LAYER_LOADING,
     ADD_LAYER,
     REMOVE_LAYER,
     REORDER_LAYER,
@@ -33,27 +30,9 @@ const {
 
 function layers(state = {flat: []}, action) {
     switch (action.type) {
-        case LAYER_LOADING: {
+        case SET_LAYER_LOADING: {
             const newLayers = (state.flat || []).map((layer) => {
-                return layer.id === action.layerId ? assign({}, layer, {loading: true, loadingError: false}) : layer;
-            });
-            return assign({}, state, {flat: newLayers});
-        }
-        case LAYER_LOAD: {
-            const newLayers = (state.flat || []).map((layer) => {
-                return layer.id === action.layerId ? assign({}, layer, {loading: false, loadingError: action.error}) : layer;
-            });
-            return assign({}, state, {flat: newLayers});
-        }
-        case LAYER_ERROR: {
-            const newLayers = (state.flat || []).map((layer) => {
-                return layer.id === action.layerId ? assign({}, layer, {loading: false, loadingError: true}) : layer;
-            });
-            return assign({}, state, {flat: newLayers});
-        }
-        case INVALID_LAYER: {
-            const newLayers = (state.flat||[]).map((layer) => {
-                return layer.id === action.options.id ? assign({}, layer, {invalid: true}) : layer;
+                return layer.id === action.layerId ? assign({}, layer, {loading: action.loading}) : layer;
             });
             return assign({}, state, {flat: newLayers});
         }
