@@ -59,6 +59,7 @@ for(let lang of langs) {
   // Merge application translations
   try {
     data = merge(data, cleanMessages(readJSON('/translations/data.' + lang)));
+    data = merge(cleanMessages(data), readJSON('/translations/data.' + lang));
   } catch(e) {
   }
   // Write output
