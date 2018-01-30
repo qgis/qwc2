@@ -138,10 +138,11 @@ class ImportLayer extends React.Component {
         if(!url.match(/^[^:]+:\/\/.*$/)) {
             url = "http://" + url;
         }
-        this.setState({pendingRequests: 0, serviceLayers: null, filter: ""});
+        let pendingRequests = 0;
+        this.setState({pendingRequests: pendingRequests, serviceLayers: null, filter: ""});
         // Attempt to load as KML
         if(url.toLowerCase().endsWith(".kml")) {
-            this.setState({pendingRequests: this.state.pendingRequests + 1});
+            this.setState({pendingRequests: ++pendingRequests});
             axios.get(ProxyUtils.addProxyIfNeeded(url)).then(response => {
                 let basename = url.split('/').pop()
                 this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: [{
@@ -157,7 +158,7 @@ class ImportLayer extends React.Component {
         }
         // Attempt to load as WMS
         let wmsParams = "?service=WMS&request=GetCapabilities";
-        this.setState({pendingRequests: this.state.pendingRequests + 1});
+        this.setState({pendingRequests: ++pendingRequests});
         axios.get(ProxyUtils.addProxyIfNeeded(url.split("?")[0] + wmsParams)).then(response => {
             let result = ServiceLayerUtils.getWMSLayers(response.data);
             this.setState({
@@ -172,7 +173,7 @@ class ImportLayer extends React.Component {
         });
         // Attempt to load as WFS
         let wfsParams = "?service=WFS&request=GetCapabilities"
-        this.setState({pendingRequests: this.state.pendingRequests + 1});
+        this.setState({pendingRequests: ++pendingRequests});
         axios.get(ProxyUtils.addProxyIfNeeded(url.split("?")[0] + wfsParams)).then(response => {
             let result = ServiceLayerUtils.getWFSLayers(response.data);
             this.setState({
