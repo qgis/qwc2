@@ -91,7 +91,7 @@
       "transparency": "Transparency"
     },
     "mapinfotooltip": {
-      "elevation": ""
+      "elevation": "Elevation"
     },
     "measureComponent": {
       "areaLabel": "Area",
