@@ -36,6 +36,13 @@
     margin: 0.5em 0;
     height: 2em;
     padding: 0.25em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#ImportLayer button.importlayer-addbutton > span {
+    flex: 0 0 auto;
 }
 
 #ImportLayer button.importlayer-addbutton > div.spinner {
@@ -43,6 +50,7 @@
     height: 1.5em;
     margin-right: 0.25em;
     display: inline-block;
+    flex: 0 0 auto;
 }
 
 #ImportLayer div.importlayer-list {
