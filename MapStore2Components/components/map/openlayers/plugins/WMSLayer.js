@@ -90,7 +90,7 @@ let WMSLayer = {
                 return found;
             }, false);
             if (changed) {
-                layer.getSource().updateParams(assign(newParams, newOptions.params));
+                layer.getSource().updateParams(assign(newParams, newOptions.params, {t: new Date().getMilliseconds()}));
                 layer.getSource().changed();
             }
         }
