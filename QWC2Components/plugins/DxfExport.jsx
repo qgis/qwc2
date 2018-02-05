@@ -58,8 +58,10 @@ class DxfExport extends React.Component {
         );
     }
     bboxSelected = (bbox, crs) => {
-        bbox = CoordinatesUtils.reprojectBbox(bbox, crs, "EPSG:3857");
-        let extent = bbox[0] + "," + bbox[1] + "," + bbox[2] + "," + bbox[3];
+        const version = this.props.theme.version || "1.3.0";
+        let extent = (CoordinatesUtils.getAxisOrder(crs).substr(0, 2) == 'ne' && version == '1.3.0') ?
+            bbox[1] + "," + bbox[0] + "," + bbox[3] + "," + bbox[2]:
+            bbox.join(',');
         this.extentInput.value = extent;
         this.form.submit();
         this.props.setCurrentTask(null);

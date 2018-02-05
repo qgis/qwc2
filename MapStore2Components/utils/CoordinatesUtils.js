@@ -7,6 +7,7 @@
  */
 var Proj4js = require('proj4').default;
 var assign = require('object-assign');
+var ol = require('openlayers');
 
 let crsLabels = {
     "EPSG:4326": "WGS 84",
@@ -23,6 +24,10 @@ var CoordinatesUtils = {
     getUnits: function(projection) {
         const proj = new Proj4js.Proj(projection);
         return proj.units || 'degrees';
+    },
+    getAxisOrder: function(projection) {
+        const axis = ol.proj.get(projection).getAxisOrientation()
+        return axis || 'enu'
     },
     reproject: function(point, source, dest) {
         if(source === dest) {

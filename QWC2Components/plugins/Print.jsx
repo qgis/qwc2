@@ -101,7 +101,11 @@ class Print extends React.Component {
         }
         let printDpi = parseInt(this.state.dpi);
         let mapCrs = this.props.map.projection;
+        let version = themeLayer.version || "1.3.0";
         let extent = this.computeCurrentExtent();
+        extent = (CoordinatesUtils.getAxisOrder(mapCrs).substr(0, 2) == 'ne' && version == '1.3.0') ?
+            extent[1] + "," + extent[0] + "," + extent[3] + "," + extent[2]:
+            extent.join(',');
         let rotation = this.props.map.bbox ? this.props.map.bbox.rotation : 0;
         let scaleChooser = (<input name={mapName + ":scale"} type="number" value={this.state.scale || ""} onChange={this.changeScale} min="1"/>);
 
@@ -210,7 +214,7 @@ class Print extends React.Component {
                     <div>
                         <input readOnly="true" name={mapName + ":extent"} type={formvisibility} value={extent || ""} />
                         <input readOnly="true" name="SERVICE" type={formvisibility} value="WMS" />
-                        <input readOnly="true" name="VERSION" type={formvisibility} value={themeLayer.version || "1.3.0"} />
+                        <input readOnly="true" name="VERSION" type={formvisibility} value={version || "1.3.0"} />
                         <input readOnly="true" name="REQUEST" type={formvisibility} value="GetPrint" />
                         <input readOnly="true" name="FORMAT" type={formvisibility} value="pdf" />
                         <input readOnly="true" name="TRANSPARENT" type={formvisibility} value="true" />
@@ -288,7 +292,7 @@ class Print extends React.Component {
         let x2 = center[0] + 0.5 * width;
         let y1 = center[1] - 0.5 * height;
         let y2 = center[1] + 0.5 * height;
-        return x1 + "," + y1 + "," + x2 + "," + y2;
+        return [x1,y1,x2,y2];
     }
 };
 

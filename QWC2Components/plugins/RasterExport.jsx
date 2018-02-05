@@ -144,12 +144,10 @@ class RasterExport extends React.Component {
         );
     }
     bboxSelected = (bbox, crs, pixelsize) => {
-        let extent = "";
-        if(this.props.map.projection == "EPSG:4326") {
-            extent = bbox[1] + "," + bbox[0] + "," + bbox[3] + "," + bbox[2];
-        } else {
-            extent = bbox.join(",");
-        }
+        const version = this.props.theme.version || "1.3.0";
+        let extent = (CoordinatesUtils.getAxisOrder(crs).substr(0, 2) == 'ne' && version == '1.3.0') ?
+            bbox[1] + "," + bbox[0] + "," + bbox[3] + "," + bbox[2]:
+            bbox.join(',');
         this.extentInput.value = extent;
         this.widthInput.value = Math.round(pixelsize[0] * parseInt(this.state.dpi || 96) / 96.);
         this.heightInput.value = Math.round(pixelsize[1] * parseInt(this.state.dpi || 96) / 96.);
