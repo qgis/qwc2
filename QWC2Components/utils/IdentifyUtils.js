@@ -19,7 +19,10 @@ const IdentifyUtils = {
         const resolution = map.resolutions[map.zoom];
         const dx = 0.5 * resolution * size[0];
         const dy = 0.5 * resolution * size[1];
-        const bbox = [center[0] - dx, center[1] - dy, center[0] + dx, center[1] + dy];
+        const version = layer.version || "1.3.0";
+        let bbox = [center[0] - dx, center[1] - dy, center[0] + dx, center[1] + dy];
+        if (CoordinatesUtils.getAxisOrder(map.projection).substr(0, 2) == 'ne' && version == '1.3.0')
+            bbox = [center[1] - dx, center[0] - dy, center[1] + dx, center[0] + dy];
         let digits = proj4js.defs(map.projection).units === 'degrees'? 4 : 0;
 
         let queryLayers = layer.queryLayers.join(",");
@@ -35,7 +38,7 @@ const IdentifyUtils = {
             url: layer.featureInfoUrl.replace(/[?].*$/g, ''),
             params: {
                 service: 'WMS',
-                version: layer.version || "1.3.0",
+                version: version,
                 request: 'GetFeatureInfo',
                 id: layer.id,
                 layers: queryLayers,
