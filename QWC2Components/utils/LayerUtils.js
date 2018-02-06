@@ -113,14 +113,14 @@ const LayerUtils = {
     buildWMSLayerUrlParam(layers) {
         let layernames = [];
         let opacities = [];
-        for(let layer of layers.slice(0).reverse()) {
+        for(let layer of layers) {
             if(layer.isThemeLayer) {
                 layernames.push(...layer.params.LAYERS.split(","));
-                opacities.push(...layer.params.OPACITIES.split(",").map(entry => parseFloat(entry)));
+                opacities.push(...(layer.params.OPACITIES || "").split(",").map(entry => parseFloat(entry)));
             }
         }
         return layernames.map((layername, idx) => {
-            if(opacities[idx] < 255){
+            if(idx < opacities.length && opacities[idx] < 255){
                 return layername + "[" + (100 - Math.round(opacities[idx] / 255. * 100)) + "]";
             } else {
                 return layername;
