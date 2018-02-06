@@ -65,12 +65,12 @@ class StandardApp extends React.Component {
 
         // Load locale
         LocaleUtils.setSupportedLocales(this.props.appConfig.supportedLocales);
-        this.store.dispatch(loadLocale(null, LocaleUtils.getUserLocale()));
 
         // Load config.json
         ConfigUtils.loadConfiguration().then((config) => {
             this.store.dispatch(localConfigLoaded(config));
-
+	    // Dispatch user locale
+            this.store.dispatch(loadLocale(null, LocaleUtils.getUserLocale()));
             // Load themes.json
             axios.get("themes.json").then(response => {
                 this.store.dispatch(themesLoaded(response.data.themes || {}));
