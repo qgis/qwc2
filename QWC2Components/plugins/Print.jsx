@@ -282,7 +282,7 @@ class Print extends React.Component {
     }
     computeCurrentExtent = () => {
         if(!this.props.map || !this.state.layout || !this.state.scale) {
-            return "";
+            return [0, 0, 0, 0];
         }
         let center = this.props.map.center;
         let widthm = this.state.scale * this.state.layout.map.width / 1000.;
@@ -292,7 +292,7 @@ class Print extends React.Component {
         let x2 = center[0] + 0.5 * width;
         let y1 = center[1] - 0.5 * height;
         let y2 = center[1] + 0.5 * height;
-        return [x1,y1,x2,y2];
+        return [x1, y1, x2, y2];
     }
 };
 
