@@ -97,8 +97,8 @@ class OpenlayersMap extends React.Component {
                 return;
             }
             this.props.onClick({
-                coordinate: this.map.getCoordinateFromPixel([event.x, event.y]),
-                pixel: [event.x, event.y],
+                coordinate: this.map.getCoordinateFromPixel([event.clientX, event.clientY]),
+                pixel: [event.clientX, event.clientY],
                 modifiers: {
                     alt: event.altKey,
                     ctrl: event.ctrlKey,
@@ -110,8 +110,8 @@ class OpenlayersMap extends React.Component {
         map.getViewport().addEventListener('contextmenu', (event)  => {
             event.preventDefault();
             this.props.onClick({
-                coordinate: this.map.getCoordinateFromPixel([event.x, event.y]),
-                pixel: [event.x, event.y],
+                coordinate: this.map.getCoordinateFromPixel([event.clientX, event.clientY]),
+                pixel: [event.clientX, event.clientY],
                 modifiers: {
                     alt: event.altKey,
                     ctrl: event.ctrlKey,
