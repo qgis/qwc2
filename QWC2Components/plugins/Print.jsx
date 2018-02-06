@@ -101,7 +101,7 @@ class Print extends React.Component {
         }
         let printDpi = parseInt(this.state.dpi);
         let mapCrs = this.props.map.projection;
-        let version = themeLayer.version || "1.3.0";
+        let version = themeLayer && themeLayer.version || "1.3.0";
         let extent = this.computeCurrentExtent();
         extent = (CoordinatesUtils.getAxisOrder(mapCrs).substr(0, 2) == 'ne' && version == '1.3.0') ?
             extent[1] + "," + extent[0] + "," + extent[3] + "," + extent[2]:
