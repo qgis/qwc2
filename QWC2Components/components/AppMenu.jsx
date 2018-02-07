@@ -32,27 +32,33 @@ class AppMenu extends React.Component {
         menuVisible: false,
         submenusVisible: []
     }
-    onMenuClicked = () => {
+    constructor(props) {
+        super(props);
+        this.menuEl = null;
+    }
+    toggleMenu = () => {
         if(!this.state.menuVisible && this.props.appMenuClearsTask) {
             this.props.setCurrentTask(null);
         }
+        if(!this.state.menuVisible) {
+            document.addEventListener('click', this.checkCloseMenu);
+        } else {
+            document.removeEventListener('click', this.checkCloseMenu);
+        }
         this.setState({ menuVisible: !this.state.menuVisible, submenusVisible: [] });
     }
-    hideMenu = () => {
-        this.setState({ menuVisible: false, submenusVisible: [] });
+    checkCloseMenu = (ev) => {
+        if(this.menuEl && !this.menuEl.contains(ev.target)) {
+            this.toggleMenu();
+        }
     }
-    onSubmenuClicked = (ev, key, level) => {
-        this.killEvent(ev);
-        var a = this.state.submenusVisible[level] === key ? [] : [key];
+    onSubmenuClicked = (key, level) => {
+        let a = this.state.submenusVisible[level] === key ? [] : [key];
         this.setState({ submenusVisible: this.state.submenusVisible.slice(0, level).concat(a) });
     }
-    onMenuitemClicked = (ev, key, mode) => {
-        this.refs.appmenu.blur();
+    onMenuitemClicked = (key, mode) => {
+        this.toggleMenu();
         this.props.setCurrentTask(key, mode);
-    }
-    killEvent = (ev) => {
-        ev.preventDefault();
-        ev.stopPropagation();
     }
     renderMenuItems = (items, level) => {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
@@ -62,8 +68,7 @@ class AppMenu extends React.Component {
                     return (
                         <li key={item.key}
                             className={this.state.submenusVisible[level] === item.key ? "expanded" : ""}
-                            onMouseDown={(ev)=>{this.onSubmenuClicked(ev, item.key, level)}}
-                            onClick={this.killEvent}
+                            onMouseDown={ev => this.onSubmenuClicked(item.key, level)}
                         >
                             <img src={assetsPath + "/" + item.icon} />
                             <Message msgId={"appmenu.items." + item.key} />
@@ -75,9 +80,7 @@ class AppMenu extends React.Component {
                     );
                 } else {
                     return (
-                        <li key={item.key + (item.mode || "")}
-                            onMouseDown={(ev)=>{this.onMenuitemClicked(ev, item.key, item.mode);}}
-                            onClick={this.killEvent}>
+                        <li key={item.key + (item.mode || "")} onMouseDown={ev => this.onMenuitemClicked(item.key, item.mode)} >
                             <img src={assetsPath + "/" + item.icon} />
                             <Message msgId={"appmenu.items." + item.key + (item.mode || "")} />
                         </li>
@@ -90,11 +93,11 @@ class AppMenu extends React.Component {
     }
     render() {
         return(
-            <div tabIndex="1" id="AppMenu" className={this.props.currentTaskBlocked ? "appmenu-blocked" : this.state.menuVisible ? "appmenu-visible" : ""} onMouseDown={this.onMenuClicked} onClick={this.killEvent} onBlur={()=> {this.hideMenu();}} ref="appmenu">
-                <div className="appmenu-button-container">
+            <div id="AppMenu" className={this.props.currentTaskBlocked ? "appmenu-blocked" : this.state.menuVisible ? "appmenu-visible" : ""} ref={el => this.menuEl = el}>
+                <div className="appmenu-button-container" onMouseDown={this.toggleMenu}>
                     {this.props.buttonContents}
                 </div>
-                <Swipeable onSwipedUp={this.hideMenu}>
+                <Swipeable onSwipedUp={this.toggleMenu}>
                     <ul className="appmenu-menu">
                         {this.renderMenuItems(this.props.menuItems, 0)}
                     </ul>
