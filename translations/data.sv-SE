@@ -84,7 +84,6 @@
       "lengthLabel": "Längd",
       "pointLabel": "Position"
     },
-    "noFeatureInfo": "Det finns ingen information där du klickade",
     "print": {
       "layout": "Layout:",
       "nolayouts": "Valt tema stöder inte utskrift",

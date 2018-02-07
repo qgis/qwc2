@@ -69,12 +69,15 @@
       "height": "Înălțimea"
     },
     "identify": {
-      "querying": "Interogare..."
+      "querying": "Interogare...",
+      "noresults": "Nu există informații în punctul cerut",
+      "export": "",
+      "featureReport": "",
+      "title": "Info Entități"
     },
     "identifyregion": {
       "info": "Încadrați într-un poligon entitățile de identificat..."
     },
-    "identifyTitle": "Info Entități",
     "importlayer": {
       "addlayer": "Adaugă strat",
       "filter": "Filtrare",
@@ -102,7 +105,6 @@
       "lengthLabel": "Lungime",
       "pointLabel": "Poziție"
     },
-    "noFeatureInfo": "Nu există informații în punctul cerut",
     "print": {
       "layout": "Șablon:",
       "grid": "Grid",

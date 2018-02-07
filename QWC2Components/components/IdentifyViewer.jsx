@@ -307,7 +307,7 @@ class IdentifyViewer extends React.Component {
             if(this.props.missingResponses > 0) {
                 return (<div id="IdentifyViewer"><Message msgId="identify.querying" /></div>);
             } else {
-                return (<div id="IdentifyViewer"><Message msgId="noFeatureInfo" /></div>);
+                return (<div id="IdentifyViewer"><Message msgId="identify.noresults" /></div>);
             }
         }
         let attributes = this.renderResultAttributes();

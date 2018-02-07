@@ -75,7 +75,7 @@ class Identify extends React.Component {
         }
         let missingResponses = this.props.requests.length - this.props.responses.length;
         return (
-            <ResizeableWindow title="identifyTitle" glyphicon="info-sign" onClose={this.onClose} initialWidth={this.props.initialWidth} initialHeight={this.props.initialHeight}>
+            <ResizeableWindow title="identify.title" glyphicon="info-sign" onClose={this.onClose} initialWidth={this.props.initialWidth} initialHeight={this.props.initialHeight}>
                 <IdentifyViewer role="body"
                     map={this.props.map}
                     missingResponses={missingResponses}
