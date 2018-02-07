@@ -12,6 +12,7 @@ require('./style/ColorButton.css');
 
 const defaultColors = [
     // [r, g, b, a]
+    [255, 255, 255, 1],
     [255, 105,   0, 1],
     [252, 185,   0, 1],
     [123, 220, 181, 1],
@@ -26,18 +27,16 @@ const defaultColors = [
 
 class ColorButton extends React.Component {
     static propTypes = {
-        defaultColor: PropTypes.array,
+        color: PropTypes.array,
         onColorChanged: PropTypes.func
     }
     static defaultProps = {
-        defaultColor: [255, 255, 255, 1],
+        color: [255, 255, 255, 1],
         onColorChanged: (color) => {}
     }
     constructor(props) {
         super(props);
         this.state = {
-            colors: [props.defaultColor, ...defaultColors],
-            curColor: 0,
             pickerVisible: false,
             hexStr: null
         };
@@ -47,15 +46,15 @@ class ColorButton extends React.Component {
         let pickerStyle = {
             visibility: this.state.pickerVisible ? 'visible' : 'hidden'
         };
-        let curColor = this.state.colors[this.state.curColor];
+        let curColor = this.props.color;
         return (
             <span className="ColorButton">
                 <span className="colorbutton-icon" onClick={this.togglePicker}>
                     <span style={{backgroundColor: this.cssColor(curColor)}}></span>
                 </span>
                 <div ref={el => this.pickerEl = el} className="colorbutton-picker" style={pickerStyle}>
-                    {this.state.colors.map((color, idx) => (
-                        <span onClick={() => this.selectColor(idx)} className={"colorbutton-icon" + (idx == this.state.curColor ? " colorbutton-icon-selected" : "")} key={"color" + idx}>
+                    {defaultColors.map((color, idx) => (
+                        <span onClick={() => this.selectColor(idx)} onContextMenu={ev => this.replaceDefaultColor(ev, idx)} className="colorbutton-icon" key={"color" + idx}>
                             <span style={{backgroundColor: this.cssColor(color)}}></span>
                         </span>
                     ))}
@@ -94,24 +93,26 @@ class ColorButton extends React.Component {
         }
     }
     selectColor = (idx) => {
-        this.setState({hexStr: null, curColor: idx});
-        this.props.onColorChanged(this.state.colors[idx]);
+        this.setState({hexStr: null});
+        this.props.onColorChanged([...defaultColors[idx]]);
+    }
+    replaceDefaultColor = (ev, idx) => {
+        defaultColors[idx] = [...this.props.color];
+        this.forceUpdate();
+        ev.preventDefault();
     }
     changeColor = (hexStr) => {
         let match = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexStr);
         if(match) {
-            let curColor = this.state.colors[this.state.curColor];
-            let newColor = [parseInt(match[1], 16), parseInt(match[2], 16), parseInt(match[3], 16), curColor[3]];
-            this.setState({hexStr: null, colors: [...this.state.colors.slice(0, this.state.curColor), newColor, ...this.state.colors.slice(this.state.curColor + 1)]});
+            let newColor = [parseInt(match[1], 16), parseInt(match[2], 16), parseInt(match[3], 16), this.props.color[3]];
+            this.setState({hexStr: null});
             this.props.onColorChanged(newColor);
         } else {
             this.setState({hexStr: hexStr});
         }
     }
     changeColorAlpha = (alpha) => {
-        let curColor = this.state.colors[this.state.curColor];
-        let newColor = [...curColor.slice(0, 3), parseFloat(alpha)];
-        this.setState({colors: [...this.state.colors.slice(0, this.state.curColor), newColor, ...this.state.colors.slice(this.state.curColor + 1)]});
+        let newColor = [...this.props.color.slice(0, 3), parseFloat(alpha)];
         this.props.onColorChanged(newColor);
     }
 };

@@ -75,11 +75,11 @@ class Redlining extends React.Component {
                 <div className="redlining-controlsbar">
                     <span>
                         <span><Message msgId="redlining.outline" />:</span>
-                        <ColorButton defaultColor={this.props.redlining.borderColor} onColorChanged={(color) => this.colorPicked({borderColor: color})} />
+                        <ColorButton color={this.props.redlining.borderColor} onColorChanged={(color) => this.colorPicked({borderColor: color})} />
                     </span>
                     <span>
                         <span><Message msgId="redlining.fill" />:</span>
-                        <ColorButton defaultColor={this.props.redlining.fillColor} onColorChanged={(color) => this.colorPicked({fillColor: color})} />
+                        <ColorButton color={this.props.redlining.fillColor} onColorChanged={(color) => this.colorPicked({fillColor: color})} />
                     </span>
                     <span>
                         <span>{sizeLabel}:</span>
