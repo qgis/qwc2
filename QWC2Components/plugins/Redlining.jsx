@@ -8,7 +8,6 @@
 
 const React = require('react');
 const PropTypes = require('prop-types');
-const {TwitterPicker} = require('react-color');
 const {connect} = require('react-redux');
 const NumericInput = require('react-numeric-input');
 const assign = require('object-assign');
@@ -18,6 +17,7 @@ const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeRedliningState} = require('../actions/redlining');
 const {TaskBar} = require('../components/TaskBar');
 const ButtonBar = require('../components/widgets/ButtonBar');
+const ColorButton = require('../components/widgets/ColorButton');
 
 
 require('./style/Redlining.css');
@@ -32,9 +32,6 @@ class Redlining extends React.Component {
     static contextTypes = {
         messages: PropTypes.object
     }
-    state = {
-        openColorPicker: null
-    }
     constructor(props) {
         super(props);
         this.labelInput = null;
@@ -44,28 +41,15 @@ class Redlining extends React.Component {
     }
     onHide = () => {
         this.props.changeRedliningState({action: null, geomType: null});
-        this.setState({openColorPicker: null});
     }
     updateRedliningState = (diff) => {
         let newState = assign({}, this.props.redlining, diff)
         this.props.changeRedliningState(newState);
     }
-    togglePicker = (picker) => {
-        this.setState({openColorPicker: this.state.openColorPicker === picker ? null : picker});
-    }
     colorPicked = (diff) => {
-        this.togglePicker(null);
         this.updateRedliningState(diff);
     }
     renderBody = () => {
-        let borderClasses = classnames({
-            "redlining-colorpicker": true,
-            "redlining-colorpicker-collapsed": this.state.openColorPicker !== "border"
-        });
-        let fillClasses = classnames({
-            "redlining-colorpicker": true,
-            "redlining-colorpicker-collapsed": this.state.openColorPicker !== "fill"
-        });
         let sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.size");
         if(this.props.redlining.geomType === "LineString") {
             sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.width");
@@ -91,17 +75,11 @@ class Redlining extends React.Component {
                 <div className="redlining-controlsbar">
                     <span>
                         <span><Message msgId="redlining.outline" />:</span>
-                        <span className={borderClasses}>
-                            <span className="redlining-colorpicker-icon" style={{backgroundColor: this.props.redlining.borderColor}} onClick={() => this.togglePicker('border')}></span>
-                            <TwitterPicker color={this.props.redlining.borderColor} onChangeComplete={(color) => this.colorPicked({borderColor: color.hex})} />
-                        </span>
+                        <ColorButton defaultColor={this.props.redlining.borderColor} onColorChanged={(color) => this.colorPicked({borderColor: color})} />
                     </span>
                     <span>
                         <span><Message msgId="redlining.fill" />:</span>
-                        <span className={fillClasses}>
-                            <span className="redlining-colorpicker-icon" style={{backgroundColor: this.props.redlining.fillColor}} onClick={() => this.togglePicker('fill')}></span>
-                            <TwitterPicker color={this.props.redlining.fillColor} onChangeComplete={(color) => this.colorPicked({fillColor: color.hex})} />
-                        </span>
+                        <ColorButton defaultColor={this.props.redlining.fillColor} onColorChanged={(color) => this.colorPicked({fillColor: color})} />
                     </span>
                     <span>
                         <span>{sizeLabel}:</span>

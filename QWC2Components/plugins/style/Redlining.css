@@ -10,34 +10,11 @@
     justify-content: center;
 }
 
-#TaskBar.Redlining span.redlining-colorpicker {
-    position: relative;
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    margin: 5px 10px 0px 5px;
+#TaskBar.Redlining span.ColorButton {
+    margin: 0 0.5em 0 0.25em;
 }
-
-#TaskBar.Redlining span.redlining-colorpicker > span.redlining-colorpicker-icon {
-    cursor: pointer;
-    display: inline-block;
-    width: 2em;
-    height: 2em;
-    border-radius: 5px;
-}
-
-#TaskBar.Redlining span.redlining-colorpicker > div.twitter-picker {
-    position: absolute;
-    top: 5px;
-    left: -5px;
-}
-
-#TaskBar.Redlining span.redlining-colorpicker-collapsed > div.twitter-picker {
-    display: none;
-}
-
 #TaskBar.Redlining span.react-numeric-input {
-  margin-left: 5px;
+  margin-left: 0.5em;
 }
 
 #TaskBar.Redlining span.react-numeric-input > input {
@@ -46,20 +23,10 @@
   width: 6em;
 }
 
-#TaskBar.Redlining span.redlining-trash {
-    margin-left: 5px;
-    cursor: pointer;
-    border: 1px solid @item_border@;
-}
-
-#TaskBar.Redlining span.redlining-trash:active {
-    background-color: @item_active@;
-}
-
 #TaskBar.Redlining input.redlining-label {
   width: 7em;
   height: 2em;
-  margin-left: 5px;
+  margin-left: 0.5em;
   padding: 0.25em;
   border: 1px solid #ccc;
 }
