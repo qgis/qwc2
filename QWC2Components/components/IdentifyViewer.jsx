@@ -24,13 +24,11 @@ class IdentifyViewer extends React.Component {
         theme: PropTypes.object,
         missingResponses: PropTypes.number,
         responses: PropTypes.array,
-        layers: PropTypes.array,
         addLayerFeatures: PropTypes.func,
         removeLayer: PropTypes.func,
         enableExport: PropTypes.bool
     }
     static defaultProps = {
-        layers: [],
         enableExport: true
     }
     state = {
@@ -332,7 +330,6 @@ class IdentifyViewer extends React.Component {
 
 const selector = (state) => ({
     theme: state.theme ? state.theme.current : null,
-    layers: state.layers && state.layers.flat || [],
     mapcrs: state && state.map && state.map ? state.map.projection : undefined
 });
 
