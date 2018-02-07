@@ -38,14 +38,13 @@ class IdentifyViewer extends React.Component {
         resultTree: {},
         currentResult: null,
         currentLayer: null,
-        displayFieldMap: null
+        displayFieldMap: {}
+
     }
     componentWillReceiveProps(nextProps) {
-        if(nextProps.theme && !this.state.displayFieldMap) {
+        if(nextProps.theme && nextProps.theme != this.props.theme) {
             let displayFieldMap = {};
-            if(nextProps.theme) {
-                this.populateDisplayFieldMap(displayFieldMap, nextProps.theme);
-            }
+            this.populateDisplayFieldMap(displayFieldMap, nextProps.theme);
             this.setState({displayFieldMap: displayFieldMap});
         }
         if(nextProps.missingResponses == 0 && nextProps.responses !== this.props.responses) {
