@@ -274,16 +274,16 @@ class Editing extends React.Component {
             this.props.setCurrentTaskBlocked(false);
         }
     }
-    commitFinished = (success) => {
+    commitFinished = (success, errorMsg) => {
         this.setState({busy: false});
         if(success) {
             this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
             this.props.refreshLayer(this.props.themeLayerId);
         } else {
-            alert('Commit failed');
+            alert(errorMsg);
         }
     }
-    deleteFinished = (success) => {
+    deleteFinished = (success, errorMsg) => {
         this.setState({busy: false});
         if(success) {
             this.setState({deleteClicked: false});
@@ -291,7 +291,7 @@ class Editing extends React.Component {
             this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
             this.props.refreshLayer(this.props.themeLayerId);
         } else {
-            alert('Delete failed');
+            alert(errorMsg);
         }
     }
 };
