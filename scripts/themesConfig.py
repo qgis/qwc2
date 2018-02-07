@@ -314,6 +314,7 @@ def getTheme(configItem, resultItem):
         if "backgroundLayers" in configItem:
             resultItem["backgroundLayers"] = configItem["backgroundLayers"]
         resultItem["searchProviders"] = configItem["searchProviders"]
+        resultItem["featureReport"] = configItem["featureReport"] if "featureReport" in configItem else None
         if "additionalMouseCrs" in configItem:
             resultItem["additionalMouseCrs"] = configItem["additionalMouseCrs"]
         if "mapCrs" in configItem:
@@ -422,6 +423,7 @@ def getGroupThemes(configGroup, resultGroup):
           }
         ],
         "searchProviders": ["<search provider>"],   // optional search providers
+        "featureReport": <true|false|[<layernames>],// optional, whether the feature report service can be queried for (a subset of the) the theme layers
         "mapCrs: "EPSG:3857",                       // optional, the map projection, defaults to EPSG:3857
         "additionalMouseCrs": ["<epsg code>"]       // optional list of additional CRS for mouse position (map projection and WGS84 are listed by default). Make sure proj defs are loaded in js/appConfig.js.
         "watermark": {                              // optional, configuration of watermark to place on raster-export images

@@ -12,7 +12,9 @@ const assign = require('object-assign');
 const {Glyphicon} = require('react-bootstrap');
 const isEmpty = require('lodash.isempty');
 const FileSaver = require('file-saver');
+const axios = require('axios');
 const Message = require('../../MapStore2Components/components/I18N/Message');
+const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 require('./style/IdentifyViewer.css');
@@ -311,6 +313,7 @@ class IdentifyViewer extends React.Component {
             }
         }
         let attributes = this.renderResultAttributes();
+        let featureReport = this.state.currentResult && this.state.currentResult.id && ConfigUtils.getConfigProp("featureReportService") && this.featureReportEnabled(this.state.currentLayer);
         let resultsContainerStyle = {
             maxHeight: attributes ? '7em' : 'initial'
         };
@@ -321,10 +324,38 @@ class IdentifyViewer extends React.Component {
                 </div>
                 {attributes}
                 {this.props.enableExport ? (<div className="identify-buttonbox">
-                    <button onClick={this.exportResults}>Export</button>
+                    {featureReport ? (<button onClick={this.getFeatureReport} ><Message msgId="identify.featureReport" /></button>) : null}
+                    <button onClick={this.exportResults}><Message msgId="identify.export" /></button>
                 </div>) : null}
             </div>
         );
+    }
+    featureReportEnabled = (layer) => {
+        if(Array.isArray(this.props.theme.featureReport)) {
+            return this.props.theme.featureReport.includes(layer);
+        } else {
+            return this.props.theme.featureReport === true;
+        }
+    }
+    getFeatureReport = () => {
+        let valid = this.state.currentResult && this.state.currentResult.id && ConfigUtils.getConfigProp("featureReportService") && this.featureReportEnabled(this.state.currentLayer);
+        if(!valid) {
+            return;
+        }
+        let serviceUrl = ConfigUtils.getConfigProp("featureReportService");
+        let params = {
+            layer: this.state.currentLayer,
+            feature: this.state.currentResult.id
+        };
+        axios.get(serviceUrl, {params: params}).then(response => {
+            let contentType = response.headers["content-type"];
+            let contentDisposition = response.headers["content-disposition"];
+            let match = /filename=([^;\s])/.exec(contentDisposition);
+            let filename = match ? match[1].replace(/['"]/g, "") : "report";
+            FileSaver.saveAs(new Blob([response.data], {type: contentType}), filename);
+        }).catch(e => {
+            alert('getFeatureReport failed');
+        });
     }
 };
 

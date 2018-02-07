@@ -341,6 +341,7 @@ function getTheme(configItem, resultItem) {
             resultItem.expanded = true;
             resultItem.backgroundLayers = configItem.backgroundLayers;
             resultItem.searchProviders = configItem.searchProviders;
+            resultItem.featureReport = configItem.featureReport;
             resultItem.additionalMouseCrs = configItem.additionalMouseCrs;
             resultItem.mapCrs = configItem.mapCrs || 'EPSG:3857';
             if (printTemplates.length > 0) {
@@ -442,6 +443,7 @@ function getGroupThemes(configGroup, resultGroup) {
           }
         ],
         "searchProviders": ["<search provider>"],   // optional search providers
+        "featureReport": <true|false|[<layernames>],// optional, whether the feature report service can be queried for (a subset of the) the theme layers
         "mapCrs: "EPSG:3857",                       // optional, the map projection, defaults to EPSG:3857
         "additionalMouseCrs": ["<epsg code>"]       // optional list of additional CRS for mouse position (map projection and WGS84 are listed by default). Make sure proj defs are loaded in js/appConfig.js.
         "watermark": {                              // optional, configuration of watermark to place on raster-export images

@@ -72,6 +72,7 @@
       "querying": "Objekte werden abgefragt...",
       "noresults": "",
       "export": "",
+      "featureReport": "Objektblatt",
       "title": "Objektinformationen"
     },
     "identifyregion": {
@@ -148,6 +149,7 @@
     "themeswitcher": {
       "filter": "Filter"
     },
+    "identifyTitle": "Objektinformationen",
     "bgswitcher": {
       "nobg": "Kein Hintergrund"
     },

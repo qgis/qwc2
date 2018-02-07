@@ -52,6 +52,7 @@
     "identify.querying",
     "identify.noresults",
     "identify.export",
+    "identify.featureReport",
     "identify.title",
     "identifyregion.info",
     "importlayer.addlayer",
