@@ -142,7 +142,20 @@ function layers(state = {flat: []}, action) {
             let themeLayerIdx = state.flat.findIndex(layer => layer.isThemeLayer);
             if(themeLayerIdx >= 0) {
                 let newLayers = state.flat.slice(0);
-                newLayers[themeLayerIdx] = deepmerge(action.layer, state.flat[themeLayerIdx]);
+                let options = {arrayMerge: (src, dest) => {
+                    let result = [...dest];
+                    for(let srcentry of src) {
+                        if(srcentry.name && dest.find(entry => entry.name === srcentry.name)) {
+                            // Do nothing
+                        } else if(dest.includes(srcentry)) {
+                            // Do nothing
+                        } else {
+                            result.unshift(srcentry);
+                        }
+                    }
+                    return result;
+                }};
+                newLayers[themeLayerIdx] = deepmerge(action.layer, state.flat[themeLayerIdx], options);
                 LayerUtils.addSublayerIDs(newLayers[themeLayerIdx]);
                 assign(newLayers[themeLayerIdx], LayerUtils.buildWMSLayerParams(newLayers[themeLayerIdx]));
                 UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
