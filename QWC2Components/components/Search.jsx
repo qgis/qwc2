@@ -87,10 +87,13 @@ class Search extends React.Component {
                 this.search(assign({}, newProps, {activeProviders}));
             }
         }
-        // If results changed and a unique result is returned, select it automatically
+        // If results changed and a unique result is returned, select it automatically if it is a Place result
         else if(newProps.results && newProps.results !== this.props.results && isEmpty(newProps.pendingProviders)) {
             if(newProps.results.length === 1 && newProps.results[0].items.length == 1) {
-                this.showResult(newProps.results[0].items[0], false);
+                let item = newProps.results[0].items[0];
+                if((item.type || SearchResultType.PLACE) === SearchResultType.PLACE) {
+                    this.showResult(item, false);
+                }
             }
         }
     }
