@@ -98,6 +98,10 @@ const IdentifyUtils = {
                 featureResult.properties[attribute.attributes.name.value] = attribute.attributes.value.value;
             }
         }
+        let htmlContent = feature.getElementsByTagName("HtmlContent");
+        if(htmlContent.length > 0) {
+            featureResult.properties["htmlContent"] = htmlContent[0].textContent;
+        }
         return featureResult;
     },
     parseXmlLayer(layer, result, geometrycrs) {
