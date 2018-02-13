@@ -37,10 +37,11 @@ function addLayer(layer) {
     };
 }
 
-function removeLayer(layerId) {
+function removeLayer(layerId, sublayerpath=[]) {
     return {
         type: REMOVE_LAYER,
-        layerId: layerId
+        layerId: layerId,
+        sublayerpath: sublayerpath
     };
 }
 

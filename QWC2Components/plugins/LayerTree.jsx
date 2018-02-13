@@ -121,12 +121,18 @@ class LayerTree extends React.Component {
         if(group.expanded) {
             sublayersContent = this.renderSubLayers(layer, group, path, enabled && visibility);
         }
+        let cogclasses = classnames({
+            "layertree-item-cog": true,
+            "layertree-item-cog-active": this.state.activemenu === group.uuid
+        })
         return (
             <div className="layertree-item-container" key={group.uuid}>
                 <div className={classnames(itemclasses)}>
                     <span className="layertree-item-expander" style={expanderstyle} onClick={() => this.groupExpandendToggled(layer, path, group.expanded)}></span>
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.groupToggled(layer, path, visibility)}></span>
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
+                    <span className="layertree-item-spacer"></span>
+                    <Glyphicon className="layertree-item-remove" glyph="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>
                 </div>
                 {sublayersContent}
             </div>
@@ -187,7 +193,7 @@ class LayerTree extends React.Component {
                     <span className="layertree-item-title" title={title}>{title}</span>
                     {sublayer.queryable && this.props.showQueryableIcon ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
                     <span className="layertree-item-spacer"></span>
-                    {layer.isThemeLayer ? null : (<Glyphicon className="layertree-item-remove" glyph="trash" onClick={() => this.props.removeLayer(layer.id)}/>)}
+                    <Glyphicon className="layertree-item-remove" glyph="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>
                     <Glyphicon className={cogclasses} glyph="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>
                 </div>
                 {editframe}

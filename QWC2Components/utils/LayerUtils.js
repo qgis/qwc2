@@ -127,6 +127,40 @@ const LayerUtils = {
             }
         }).join(",");
     },
+    removeLayer(layers, layer, sublayerpath, swipeActive) {
+        // Extract foreground layers
+        let fglayers = layers.filter(layer => layer.group !== 'background');
+        // Explode layers (one entry for every single sublayer)
+        let exploded = LayerUtils.explodeLayers(fglayers);
+        const pathEqualOrBelow = (parent, child) => {
+            if(child.length < parent.length) {
+                return false;
+            }
+            if(parent.length === 0) {
+                return true;
+            }
+            for(let i = 0, n = parent.length; i < n; ++i) {
+                if(parent[i] != child[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        // Remove matching entries
+        exploded = exploded.filter(entry => entry.layer !== layer || !pathEqualOrBelow(sublayerpath, entry.path));
+        // Re-assemble layers (if swipe is active, keep first sublayer separate)
+        let newlayers = LayerUtils.implodeLayers(exploded, swipeActive);
+        for(let layer of newlayers) {
+            if(layer.type === "wms") {
+                assign(layer, LayerUtils.buildWMSLayerParams(layer));
+            }
+        }
+        // Re-add background layers
+        return [
+            ...newlayers,
+            ...layers.filter(layer => layer.group === "background")
+        ];
+    },
     reorderLayer(layers, movelayer, sublayerpath, delta, swipeActive) {
         // Extract foreground layers
         let fglayers = layers.filter(layer => layer.group !== 'background');
