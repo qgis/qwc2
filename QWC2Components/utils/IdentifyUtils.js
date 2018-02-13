@@ -65,10 +65,10 @@ const IdentifyUtils = {
             }
         };
     },
-    parseXmlFeature(feature, result, geometrycrs) {
+    parseXmlFeature(feature, geometrycrs, id) {
         let featureResult = {};
         featureResult["type"] = "Feature";
-        featureResult["id"] = feature.attributes.id.value;
+        featureResult["id"] = id;
         let bboxes = feature.getElementsByTagName("BoundingBox");
         if(bboxes.length > 0) {
             let bbox = bboxes[0];
@@ -104,17 +104,22 @@ const IdentifyUtils = {
         }
         return featureResult;
     },
-    parseXmlLayer(layer, result, geometrycrs) {
-        let layerResult = {};
-        let features = [].slice.call(layer.getElementsByTagName("Feature"));
-        result[layer.attributes.name.value] = features.map(feature => this.parseXmlFeature(feature, layerResult, geometrycrs));
-    },
     parseXmlResponse(response, geometrycrs) {
         let parser = new DOMParser();
-        let doc = parser.parseFromString(response, "text/xml");
+        let doc = parser.parseFromString(response.data, "text/xml");
         let layers = [].slice.call(doc.firstChild.getElementsByTagName("Layer"));
         let result = {};
-        layers.map(layer => this.parseXmlLayer(layer, result, geometrycrs));
+        for(let layer of layers) {
+            let features = [].slice.call(layer.getElementsByTagName("Feature"));
+            if(features.length > 0) {
+                result[layer.attributes.name.value] = features.map(feature => this.parseXmlFeature(feature, geometrycrs, feature.attributes.id.value));
+            } else {
+                let attributes = [].slice.call(layer.getElementsByTagName("Attribute"));
+                if(attributes.length > 0) {
+                    result[layer.attributes.name.value] = [this.parseXmlFeature(layer, geometrycrs, response.request.metadata.posstr)];
+                }
+            }
+        }
         return result;
     },
     parseGeoJSONResponse(response, geometrycrs) {

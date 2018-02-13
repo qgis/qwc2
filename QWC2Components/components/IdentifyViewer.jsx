@@ -74,11 +74,11 @@ class IdentifyViewer extends React.Component {
         }
     }
     parseResponse = (response, results, stats) => {
-        var newResults = {};
+        let newResults = {};
         if(response.request.params.info_format === "application/json" || response.request.params.outputformat == "GeoJSON") {
             newResults = IdentifyUtils.parseGeoJSONResponse(response.data, this.props.mapcrs);
         } else if(response.request.params.info_format === "text/xml") {
-            newResults = IdentifyUtils.parseXmlResponse(response.data, this.props.mapcrs);
+            newResults = IdentifyUtils.parseXmlResponse(response, this.props.mapcrs);
         } else if(response.request.params.info_format === "text/plain") {
             newResults[response.request.metadata.layer] = [{type: "text", text: response.data, id: response.request.metadata.posstr}];
         } else if(response.request.params.info_format === "text/html") {
