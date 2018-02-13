@@ -124,7 +124,8 @@ class LayerTree extends React.Component {
         let cogclasses = classnames({
             "layertree-item-cog": true,
             "layertree-item-cog-active": this.state.activemenu === group.uuid
-        })
+        });
+        let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true || !layer.isThemeLayer;
         return (
             <div className="layertree-item-container" key={group.uuid}>
                 <div className={classnames(itemclasses)}>
@@ -132,7 +133,7 @@ class LayerTree extends React.Component {
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.groupToggled(layer, path, visibility)}></span>
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
                     <span className="layertree-item-spacer"></span>
-                    <Glyphicon className="layertree-item-remove" glyph="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>
+                    {allowRemove ? (<Glyphicon className="layertree-item-remove" glyph="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
                 {sublayersContent}
             </div>
@@ -184,6 +185,7 @@ class LayerTree extends React.Component {
             }
         }
         let title = sublayer.title;
+        let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true || !layer.isThemeLayer;
         return (
             <div className="layertree-item-container" key={sublayer.uuid} data-id={JSON.stringify({layer: layer.uuid, path: path})}>
                 <div className={classnames(itemclasses)}>
@@ -193,7 +195,7 @@ class LayerTree extends React.Component {
                     <span className="layertree-item-title" title={title}>{title}</span>
                     {sublayer.queryable && this.props.showQueryableIcon ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
                     <span className="layertree-item-spacer"></span>
-                    <Glyphicon className="layertree-item-remove" glyph="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>
+                    {allowRemove ? (<Glyphicon className="layertree-item-remove" glyph="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                     <Glyphicon className={cogclasses} glyph="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>
                 </div>
                 {editframe}
