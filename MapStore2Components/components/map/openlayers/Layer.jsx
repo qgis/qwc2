@@ -134,7 +134,7 @@ class OpenlayersLayer extends React.Component {
                 ctx.beginPath();
                 if(this.props.swipe) {
                     let width = ctx.canvas.width * (this.props.swipe / 100.);
-                    ctx.rect(width, 0, ctx.canvas.width - width, ctx.canvas.height);
+                    ctx.rect(0, 0, width, ctx.canvas.height);
                     ctx.clip();
                 }
             });
