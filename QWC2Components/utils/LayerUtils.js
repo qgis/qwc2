@@ -71,7 +71,7 @@ const LayerUtils = {
         }
     },
     buildWMSLayerParams: function(layer) {
-        if(isEmpty(layer.sublayers)) {
+        if(!Array.isArray(layer.sublayers)) {
             return {
                 params: {LAYERS: layer.name},
                 queryLayers: [layer.name]

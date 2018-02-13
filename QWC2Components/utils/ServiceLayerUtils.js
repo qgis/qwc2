@@ -97,9 +97,10 @@ const ServiceLayerUtils = {
             infoFormats: infoFormats,
             featureInfoUrl: featureInfoUrl,
             queryable: layer.queryable,
-            sublayers: sublayers.sort((a, b) => strcmp(a.title, b.title)),
+            sublayers: isEmpty(sublayers) ? null : sublayers.sort((a, b) => strcmp(a.title, b.title)),
             expanded: false,
-            boundingBox: bbox
+            boundingBox: bbox,
+            visibility: true
         };
     },
     getWFSLayers(capabilitiesXml) {
