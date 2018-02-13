@@ -205,7 +205,7 @@ class LayerTree extends React.Component {
     renderLayerTree = (layer) => {
         if(layer.group === 'background' || layer.layertreehidden) {
             return null;
-        } else if(isEmpty(layer.sublayers)) {
+        } else if(!Array.isArray(layer.sublayers)) {
             return this.renderLayer(layer, layer, []);
         } else if(this.props.showRootEntry) {
             return this.renderLayerGroup(layer, layer, [], true);
