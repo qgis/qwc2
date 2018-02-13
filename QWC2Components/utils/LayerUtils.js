@@ -149,10 +149,7 @@ const LayerUtils = {
             exploded.splice(destidx, 0, entry);
         }
         // Re-assemble layers (if swipe is active, keep first sublayer separate)
-        let newlayers = swipeActive ? [
-            ...LayerUtils.implodeLayers(exploded.slice(0, 1)),
-            ...LayerUtils.implodeLayers(exploded.slice(1))
-        ] : LayerUtils.implodeLayers(exploded);
+        let newlayers = LayerUtils.implodeLayers(exploded, swipeActive);
         for(let layer of newlayers) {
             if(layer.type === "wms") {
                 assign(layer, LayerUtils.buildWMSLayerParams(layer));
@@ -186,7 +183,7 @@ const LayerUtils = {
             }
         }
     },
-    implodeLayers(exploded) {
+    implodeLayers(exploded, swipeActive=false) {
         // Merge all possible items of an exploded layer array
         let newlayers = [];
         for(let entry of exploded) {
@@ -202,7 +199,7 @@ const LayerUtils = {
                 cursublayer = cursublayer.sublayers[0];
             }
             // Merge with previous if possible
-            if(newlayers.length > 0 && newlayers[newlayers.length - 1].refid === layer.refid) {
+            if(newlayers.length > (swipeActive ? 1 : 0) && newlayers[newlayers.length - 1].refid === layer.refid) {
                 let target = newlayers[newlayers.length - 1];
                 let group = layer;
                 let targetgroup = target;
