@@ -264,6 +264,11 @@ const LayerUtils = {
             }
         }
         return newlayers;
+    },
+    getSublayerNames(layer) {
+        return (layer.sublayers || []).reduce((list, sublayer) => {
+            return list.concat([sublayer.name, ...this.getSublayerNames(sublayer)]);
+        }, []);
     }
 };
 

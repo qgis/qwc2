@@ -22,6 +22,7 @@ const {clickOnMap} = require("../actions/map");
 const {SideBar} = require('../components/SideBar');
 const ButtonBar = require('../components/widgets/ButtonBar');
 const ToggleSwitch = require('../components/widgets/ToggleSwitch');
+const LayerUtils = require("../utils/LayerUtils");
 require('./style/Editing.css');
 
 class Editing extends React.Component {
@@ -29,6 +30,7 @@ class Editing extends React.Component {
         enabled: PropTypes.bool,
         theme: PropTypes.object,
         themeLayerId: PropTypes.string,
+        layers: PropTypes.array,
         map: PropTypes.object,
         iface: PropTypes.object,
         editing: PropTypes.object,
@@ -51,8 +53,10 @@ class Editing extends React.Component {
         this.props.changeEditingState({action: null, geomType: null, feature: null})
     }
     componentWillReceiveProps(newProps) {
+        let themeLayer = newProps.layers.find(layer => layer.id === newProps.themeLayerId);
+        let themeSublayers = themeLayer ? LayerUtils.getSublayerNames(themeLayer) : [];
         if(newProps.theme) {
-            let layerIds = Object.keys(newProps.theme.editConfig || {});
+            let layerIds = Object.keys(newProps.theme.editConfig || {}).filter(layerId => themeSublayers.includes(layerId));
             if(!isEmpty(layerIds)) {
                 if(!layerIds.includes(this.state.selectedLayer)) {
                     this.setState({selectedLayer: layerIds[0]})
@@ -191,12 +195,14 @@ class Editing extends React.Component {
         if(this.state.busy) {
             busyDiv = (<div className="editing-busy"></div>);
         }
+        let themeLayer = this.props.layers.find(layer => layer.id === this.props.themeLayerId);
+        let themeSublayers = themeLayer ? LayerUtils.getSublayerNames(themeLayer) : [];
         return (
             <div role="body" className="editing-body">
                 <div>
                     <span className="input-frame">
                         <select className="editing-layer-select" value={this.state.selectedLayer || ""} onChange={ev => this.changeSelectedLayer(ev.target.value)} disabled={this.props.editing.changed === true}>
-                            {Object.keys(editConfig).map(layerId => {
+                            {Object.keys(editConfig).filter(layerId => themeSublayers.includes(layerId)).map(layerId => {
                                 return (
                                     <option key={layerId} value={layerId}>{editConfig[layerId].layerName}</option>
                                 );
@@ -301,6 +307,7 @@ module.exports = (iface) => {return {
         enabled: state.task ? state.task.id === 'Editing': false,
         theme: state.theme ? state.theme.current : null,
         themeLayerId: state.theme ? state.theme.currentlayer : '',
+        layers: state.layers ? state.layers.flat : [],
         map: state.map || {},
         iface: iface,
         editing: state.editing || {},
