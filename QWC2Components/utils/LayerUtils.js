@@ -186,11 +186,15 @@ const LayerUtils = {
     implodeLayers(exploded, swipeActive=false) {
         // Merge all possible items of an exploded layer array
         let newlayers = [];
+        let usedUuidIds = new Set();
         for(let entry of exploded) {
             let layer = assign({}, entry.layer);
             // Assign a new uuid to the layer if it is a group
             if(!isEmpty(layer.sublayers)) {
-                assign(layer, {uuid: uuid.v4()});
+                if(usedUuidIds.has(layer.uuid)) {
+                    assign(layer, {uuid: uuid.v4()});
+                }
+                usedUuidIds.add(layer.uuid);
             }
             // Populate the layer with the single sublayer
             let cursublayer = layer;
@@ -208,7 +212,10 @@ const LayerUtils = {
                         // Assign new uuids to groups to avoid react moaning about same keys, but not to leaf nodes
                         let g = group.sublayers[0];
                         while(g.sublayers) {
-                            assign(g, {uuid: uuid.v4()});
+                            if(usedUuidIds.has(g.uuid)) {
+                                assign(g, {uuid: uuid.v4()});
+                            }
+                            usedUuidIds.add(g.uuid);
                             g = g.sublayers[0];
                         }
 
