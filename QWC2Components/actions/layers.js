@@ -18,6 +18,7 @@ const REMOVE_LAYER_FEATURES = 'REMOVE_LAYER_FEATURES';
 const CHANGE_LAYER_PROPERTIES = 'CHANGE_LAYER_PROPERTIES';
 const REFRESH_LAYER = 'REFRESH_LAYER';
 const REMOVE_ALL_LAYERS = 'REMOVE_ALL_LAYERS';
+const SET_SWIPE = 'SET_SWIPE';
 
 
 const LayerRole = {
@@ -43,13 +44,12 @@ function removeLayer(layerId) {
     };
 }
 
-function reorderLayer(layer, sublayerpath, direction, swipeActive) {
+function reorderLayer(layer, sublayerpath, direction) {
     return {
         type: REORDER_LAYER,
         layer,
         sublayerpath,
-        direction,
-        swipeActive
+        direction
     };
 }
 
@@ -130,6 +130,13 @@ function removeAllLayers() {
     };
 }
 
+function setSwipe(swipe) {
+    return {
+        type: SET_SWIPE,
+        swipe
+    };
+}
+
 module.exports = {
     LayerRole,
     setLayerLoading,
@@ -144,6 +151,7 @@ module.exports = {
     removeMarker,
     refreshLayer,
     removeAllLayers,
+    setSwipe,
     SET_LAYER_LOADING,
     ADD_LAYER,
     REMOVE_LAYER,
@@ -153,5 +161,6 @@ module.exports = {
     ADD_THEME_SUBLAYER,
     CHANGE_LAYER_PROPERTIES,
     REFRESH_LAYER,
-    REMOVE_ALL_LAYERS
+    REMOVE_ALL_LAYERS,
+    SET_SWIPE
 };

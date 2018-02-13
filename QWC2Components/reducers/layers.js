@@ -24,11 +24,12 @@ const {
     REMOVE_LAYER_FEATURES,
     ADD_THEME_SUBLAYER,
     REFRESH_LAYER,
-    REMOVE_ALL_LAYERS
+    REMOVE_ALL_LAYERS,
+    SET_SWIPE
 } = require('../actions/layers');
 
 
-function layers(state = {flat: []}, action) {
+function layers(state = {flat: [], swipe: undefined}, action) {
     switch (action.type) {
         case SET_LAYER_LOADING: {
             const newLayers = (state.flat || []).map((layer) => {
@@ -81,11 +82,10 @@ function layers(state = {flat: []}, action) {
             if(newLayer.group === 'background' && newLayer.visibility) {
                 UrlParams.updateParams({bl: newLayer.name});
             }
-            return {flat: newLayers};
+            return assign({}, state, {flat: newLayers});
         }
         case REMOVE_LAYER: {
-            let newLayers = (state.flat || []).filter(lyr => lyr.id !== action.layerId);
-            return {flat: newLayers};
+            return assign({}, state, {flat: newLayers});
         }
         case ADD_LAYER_FEATURES: {
             let newLayers = (state.flat || []).concat();
@@ -122,7 +122,7 @@ function layers(state = {flat: []}, action) {
                 newFeatures = newFeatures.concat(addFeatures);
                 newLayers[idx] = assign({}, newLayers[idx], {features: newFeatures});
             }
-            return {flat: newLayers};
+            return assign({}, state, {flat: newLayers});
         }
         case REMOVE_LAYER_FEATURES: {
             let newLayers = (state.flat || []).reduce((result, layer) => {
@@ -136,7 +136,7 @@ function layers(state = {flat: []}, action) {
                 }
                 return result;
             }, []);
-            return {flat: newLayers};
+            return assign({}, state, {flat: newLayers});
         }
         case ADD_THEME_SUBLAYER: {
             let themeLayerIdx = state.flat.findIndex(layer => layer.isThemeLayer);
@@ -159,7 +159,7 @@ function layers(state = {flat: []}, action) {
                 LayerUtils.addSublayerIDs(newLayers[themeLayerIdx]);
                 assign(newLayers[themeLayerIdx], LayerUtils.buildWMSLayerParams(newLayers[themeLayerIdx]));
                 UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-                return {flat: newLayers};
+                return assign({}, state, {flat: newLayers});
             }
             return state;
         }
@@ -170,15 +170,19 @@ function layers(state = {flat: []}, action) {
                 }
                 return layer;
             });
-            return {flat: newLayers};
+            return assign({}, state, {flat: newLayers});
         }
         case REMOVE_ALL_LAYERS: {
-            return {flat: []};
+            return assign({}, state, {flat: []});
         }
         case REORDER_LAYER: {
-            let newLayers = LayerUtils.reorderLayer(state.flat, action.layer, action.sublayerpath, action.direction, action.swipeActive);
+            let newLayers = LayerUtils.reorderLayer(state.flat, action.layer, action.sublayerpath, action.direction, state.swipe);
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-            return {flat: newLayers};
+            return assign({}, state, {flat: newLayers});
+        }
+        case SET_SWIPE: {
+            let newLayers = LayerUtils.reorderLayer(state.flat, null, null, null, action.swipe || action.swipe === 0);
+            return assign({}, state, {flat: newLayers, swipe: action.swipe});
         }
         default:
             return state;

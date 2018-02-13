@@ -17,7 +17,7 @@ const isEmpty = require('lodash.isempty');
 const Sortable = require('react-sortablejs');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeLayerProperties, removeLayer, reorderLayer} = require('../actions/layers')
-const {setSwipe, toggleMapTips} = require('../actions/map');
+const {setSwipe, toggleMapTips} = require('../actions/layers');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 const ImportLayer = require('../components/ImportLayer');
@@ -30,7 +30,7 @@ require('./style/LayerTree.css');
 class LayerTree extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
-        map: PropTypes.object,
+        swipe: PropTypes.number,
         mobile: PropTypes.bool,
         mapTipsEnabled: PropTypes.bool,
         changeLayerProperties: PropTypes.func,
@@ -151,8 +151,8 @@ class LayerTree extends React.Component {
             let reorderButtons = null;
             if(ConfigUtils.getConfigProp("allowReorderingLayers") === true) {
                 reorderButtons = [
-                    (<Glyphicon key="layertree-item-move-down" className="layertree-item-move" glyph="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1, this.props.map.swipe !== undefined)} />),
-                    (<Glyphicon key="layertree-item-move-up" className="layertree-item-move" glyph="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1, this.props.map.swipe !== undefined)} />)
+                    (<Glyphicon key="layertree-item-move-down" className="layertree-item-move" glyph="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
+                    (<Glyphicon key="layertree-item-move-up" className="layertree-item-move" glyph="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
                 ];
             }
             let infoButton = null;
@@ -227,7 +227,7 @@ class LayerTree extends React.Component {
                 </div>
             );
         }
-        let swipecheckboxstate = this.props.map.swipe || this.props.map.swipe === 0 ? 'checked' : 'unchecked';
+        let swipecheckboxstate = this.props.swipe || this.props.swipe === 0 ? 'checked' : 'unchecked';
         let swipecheckboxstyle = {
             backgroundImage: 'url(' + assetsPath + '/img/' + swipecheckboxstate + '.svg)'
         };
@@ -280,7 +280,7 @@ class LayerTree extends React.Component {
         let moved = JSON.parse(order[ev.newIndex]);
         let layer = this.props.layers.find(layer => layer.uuid === moved.layer);
         if(layer) {
-            this.props.reorderLayer(layer, moved.path, ev.newIndex - ev.oldIndex, this.props.map.swipe !== undefined);
+            this.props.reorderLayer(layer, moved.path, ev.newIndex - ev.oldIndex);
         }
     }
     toggleImportLayers = () => {
@@ -387,9 +387,7 @@ class LayerTree extends React.Component {
         this.props.toggleMapTips(!this.props.mapTipsEnabled)
     }
     toggleSwipe = () => {
-        let newSwipe = this.props.map.swipe || this.props.map.swipe === 0 ? undefined : 50;
-        this.props.reorderLayer(null, null, null, newSwipe !== undefined)
-        this.props.setSwipe(newSwipe);
+        this.props.setSwipe(this.props.swipe || this.props.swipe === 0 ? undefined : 50);
     }
     printLegend = () => {
         let body = '<p id="legendcontainerbody">';
@@ -435,9 +433,9 @@ class LayerTree extends React.Component {
 };
 
 const selector = (state) => ({
-    map: state.map,
     mobile: state.browser ? state.browser.mobile : false,
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
+    swipe: state.layers && state.layers.swipe || undefined,
     mapTipsEnabled: state.map && state.map.maptips
 });
 

@@ -15,7 +15,6 @@ const PAN_TO = 'PAN_TO';
 const ZOOM_TO_EXTENT = 'ZOOM_TO_EXTENT';
 const ZOOM_TO_POINT = 'ZOOM_TO_POINT';
 const CHANGE_ROTATION = 'CHANGE_ROTATION';
-const SET_SWIPE = 'SET_SWIPE';
 const TOGGLE_MAPTIPS = 'TOGGLE_MAPTIPS';
 
 function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
@@ -93,13 +92,6 @@ function changeRotation(rotation) {
     };
 }
 
-function setSwipe(swipe) {
-    return {
-        type: SET_SWIPE,
-        swipe
-    };
-}
-
 function toggleMapTips(active) {
     return {
         type: TOGGLE_MAPTIPS,
@@ -116,7 +108,6 @@ module.exports = {
     ZOOM_TO_EXTENT,
     ZOOM_TO_POINT,
     CHANGE_ROTATION,
-    SET_SWIPE,
     TOGGLE_MAPTIPS,
     changeMapView,
     configureMap,
@@ -126,6 +117,5 @@ module.exports = {
     zoomToPoint,
     panTo,
     changeRotation,
-    setSwipe,
     toggleMapTips
 };

@@ -21,6 +21,7 @@ class MapPlugin extends React.Component {
     static propTypes = {
         map: PropTypes.object,
         layers: PropTypes.array,
+        swipe: PropTypes.number,
         tools: PropTypes.object,
         toolsOptions: PropTypes.object,
         showLoading: PropTypes.bool
@@ -58,7 +59,7 @@ class MapPlugin extends React.Component {
         const topLayer = (this.props.layers || [])[0];
         return this.props.layers.slice(0).reverse().map((layer, index) => {
             return (
-                <MapComponents.Layer swipe={layer === topLayer ? this.props.map.swipe : null} type={layer.type} srs={projection} zIndex={layer.zIndex || index} key={layer.uuid} options={layer}>
+                <MapComponents.Layer swipe={layer === topLayer ? this.props.swipe : null} type={layer.type} srs={projection} zIndex={layer.zIndex || index} key={layer.uuid} options={layer}>
                     {this.renderLayerContent(layer, projection)}
                 </MapComponents.Layer>
             );
@@ -111,6 +112,7 @@ module.exports = (tools) => { return {
     MapPlugin: connect((state) => ({
         map: state.map,
         layers: state.layers && state.layers.flat || [],
+        swipe: state.layers && state.layers.swipe || undefined,
         tools
     }))(MapPlugin)
 }};

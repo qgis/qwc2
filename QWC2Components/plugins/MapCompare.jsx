@@ -10,7 +10,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
-const {setSwipe} = require('../actions/map');
+const {setSwipe} = require('../actions/layers');
 
 require('./style/MapCompare.css');
 
@@ -77,7 +77,7 @@ class MapComparePlugin extends React.Component {
 
 module.exports = {
     MapComparePlugin: connect((state) => ({
-        swipe: state.map.swipe
+        swipe: state.layers.swipe
     }), {
         setSwipe: setSwipe
     })(MapComparePlugin)
