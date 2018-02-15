@@ -64,7 +64,7 @@ const VectorLayerUtils = {
         } else if(styleName == 'marker') {
             opts = {
                 strokeColor: [255, 255, 0, 1.],
-                circleBorder: 4,
+                strokeWidth: 4,
                 fillColor: [0, 0, 0, 0.],
                 circleRadius: 6
             };
@@ -98,7 +98,7 @@ const VectorLayerUtils = {
                    '<se:Stroke>' +
                    '<se:SvgParameter name="stroke">' + ensureHex(opts.strokeColor) + '</se:SvgParameter>' +
                    '<se:SvgParameter name="stroke-opacity">' + opacity(opts.strokeColor) + '</se:SvgParameter>' +
-                   '<se:SvgParameter name="stroke-width">' + (opts.circleBorder * dpiScale) + '</se:SvgParameter>' +
+                   '<se:SvgParameter name="stroke-width">' + (opts.strokeWidth * dpiScale) + '</se:SvgParameter>' +
                    '</se:Stroke>' +
                    fill +
                    '</se:Mark>' +

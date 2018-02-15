@@ -22,7 +22,6 @@ let defaultConfig = {
         strokeDash: [4],
         fillColor: [0, 0, 255, 0.33],
         circleRadius: 10,
-        circleBorder: 2,
         textFill: 'black',
         textStroke: 'white'
     }

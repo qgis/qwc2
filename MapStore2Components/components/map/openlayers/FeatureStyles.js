@@ -33,7 +33,7 @@ const FeatureStyles = {
               font: '12pt sans',
               text: feature.getProperties()["label"] || "",
               fill: new ol.style.Fill({color: opts.textFill}),
-              stroke: new ol.style.Stroke({color: opts.textStroke, width: opts.circleBorder}),
+              stroke: new ol.style.Stroke({color: opts.textStroke, width: opts.strokeWidth}),
               textAlign: feature.getGeometry().getType() === "Point" ? 'left' : 'center',
               offsetX: feature.getGeometry().getType() === "Point" ? (5 + opts.circleRadius) : 0
             })
