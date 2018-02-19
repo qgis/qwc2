@@ -233,7 +233,7 @@ class Print extends React.Component {
                         {resolutionInput}
                     </div>
                     <div className="button-bar">
-                        <button type="submit"><Message msgId="print.submit" /></button>
+                        <button type="submit" disabled={!printLayers}><Message msgId="print.submit" /></button>
                     </div>
                 </form>
             </div>
