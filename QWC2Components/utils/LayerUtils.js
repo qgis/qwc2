@@ -155,6 +155,15 @@ const LayerUtils = {
                 assign(layer, LayerUtils.buildWMSLayerParams(layer));
             }
         }
+        // Ensure theme layer is never removed
+        if(!newlayers.find(layer => layer.isThemeLayer)) {
+            let oldThemeLayer = layers.find(layer => layer.isThemeLayer);
+            if(oldThemeLayer) {
+                let newThemeLayer = assign({}, oldThemeLayer, {sublayers: []});
+                assign(newThemeLayer, LayerUtils.buildWMSLayerParams(newThemeLayer));
+                newlayers.push(newThemeLayer);
+            }
+        }
         // Re-add background layers
         return [
             ...newlayers,
