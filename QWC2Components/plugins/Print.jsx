@@ -90,8 +90,8 @@ class Print extends React.Component {
         let themeBackgroundLayer = backgroundLayer ? this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayer.name) : null;
         let printBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
         if(printBackgroundLayer) {
-            printLayers = printBackgroundLayer + "," + printLayers;
-            printOpacities = "255," + printOpacities;
+            printLayers = printBackgroundLayer + (printLayers ? "," + printLayers : "");
+            printOpacities = "255" + (printOpacities ? "," + printOpacities : "");
         }
 
         let formvisibility = 'hidden';
