@@ -328,10 +328,10 @@ class IdentifyViewer extends React.Component {
                     <ul>{contents}</ul>
                 </div>
                 {attributes}
-                {this.props.enableExport ? (<div className="identify-buttonbox">
+                <div className="identify-buttonbox">
                     {featureReport ? (<button onClick={this.getFeatureReport} ><Message msgId="identify.featureReport" /></button>) : null}
-                    <button onClick={this.exportResults}><Message msgId="identify.export" /></button>
-                </div>) : null}
+                    {this.props.enableExport ? (<button onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
+                </div>
             </div>
         );
     }
