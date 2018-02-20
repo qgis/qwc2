@@ -46,8 +46,7 @@ class Editing extends React.Component {
         deleteClicked: false
     }
     onShow = (mode) => {
-        let editLayers = Object.keys(this.props.theme.editConfig || {});
-        this.changeSelectedLayer(editLayers[0], "Pick");
+        this.changeSelectedLayer(this.state.selectedLayer, "Pick");
     }
     onHide = () => {
         this.props.changeEditingState({action: null, geomType: null, feature: null})
@@ -55,14 +54,15 @@ class Editing extends React.Component {
     componentWillReceiveProps(newProps) {
         let themeLayer = newProps.layers.find(layer => layer.id === newProps.themeLayerId);
         let themeSublayers = themeLayer ? LayerUtils.getSublayerNames(themeLayer) : [];
-        if(newProps.theme) {
-            let layerIds = Object.keys(newProps.theme.editConfig || {}).filter(layerId => themeSublayers.includes(layerId));
+        // Update selected layer on layers change
+        if(newProps.layers !== this.props.layers) {
+            let layerIds = Object.keys(newProps.theme && newProps.theme.editConfig || {}).filter(layerId => themeSublayers.includes(layerId));
             if(!isEmpty(layerIds)) {
                 if(!layerIds.includes(this.state.selectedLayer)) {
-                    this.setState({selectedLayer: layerIds[0]})
+                    this.changeSelectedLayer(layerIds[0]);
                 }
             } else {
-                this.setState({selectedLayer: null})
+                this.changeSelectedLayer(null);
             }
         }
         // If clickPoint changed and in pick mode with a selected layer, trigger a pick
@@ -229,7 +229,7 @@ class Editing extends React.Component {
     }
     changeSelectedLayer = (selectedLayer, action=null) => {
         this.setState({selectedLayer: selectedLayer});
-        const curConfig = this.props.theme.editConfig ? this.props.theme.editConfig[selectedLayer] : null;
+        const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
         let geomType = null;
         if(curConfig) {
             geomType = curConfig.geomType.startsWith("Multi") ? curConfig.geomType.substring(5) : curConfig.geomType;
