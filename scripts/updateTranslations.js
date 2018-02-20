@@ -10,11 +10,16 @@ const fs = require('fs');
 const merge = require('deepmerge');
 
 const readJSON = (path) => JSON.parse(fs.readFileSync(process.cwd() + path, "utf8"));
-const cleanMessages = (data) => {
+const cleanMessages = (data, ref) => {
   for (let property of Object.keys(data)) {
+    let omit = ref && !(property in ref);
     if (typeof data[property] == "object") {
-      cleanMessages(data[property]);
-    } else if(data[property] === "") {
+      if(omit) {
+          delete data[property];
+      } else {
+        cleanMessages(data[property], ref ? ref[property] : undefined);
+      }
+    } else if(data[property] === "" || omit) {
       delete data[property];
     }
   }
@@ -41,13 +46,10 @@ for(let string of strings) {
 }
 
 for(let lang of langs) {
-  let data = merge(skel, {"locale": lang});
+  let langskel = merge(skel, {"locale": lang});
 
   // Merge common translations
-  try {
-    data = merge(data, cleanMessages(readJSON('/qwc2/translations/data.' + lang)));
-  } catch(e) {
-  }
+  let data = merge(langskel, cleanMessages(readJSON('/qwc2/translations/data.' + lang), langskel));
   // Write updated common translations file
   try {
     fs.writeFileSync(process.cwd() + '/qwc2/translations/data.' + lang, JSON.stringify(data, null, 2) + "\n");
@@ -57,11 +59,7 @@ for(let lang of langs) {
   }
 
   // Merge application translations
-  try {
-    data = merge(data, cleanMessages(readJSON('/translations/data.' + lang)));
-    data = merge(cleanMessages(data), readJSON('/translations/data.' + lang));
-  } catch(e) {
-  }
+  data = merge(data, cleanMessages(readJSON('/translations/data.' + lang)));
   // Write output
   try {
     fs.writeFileSync(process.cwd() + '/translations/data.' + lang, JSON.stringify(data, null, 2) + "\n");

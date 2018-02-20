@@ -3,7 +3,6 @@
   "messages": {
     "appmenu": {
       "items": {
-        "Draw": "Zeichnen",
         "DxfExport": "DXF-Export",
         "Help": "Hilfe",
         "LayerTree": "Ebenen und Legende",
@@ -19,6 +18,9 @@
       },
       "menulabel": "Karte & Werkzeuge"
     },
+    "bgswitcher": {
+      "nobg": "Kein Hintergrund"
+    },
     "bottombar": {
       "mousepos_label": "Koordinaten",
       "scale_label": "Massstab",
@@ -29,49 +31,34 @@
       "click_to_copy": "Kopieren in Zwischenablage",
       "copied": "Kopiert"
     },
-    "draw": {
-      "bbox": "",
-      "circle": "",
-      "clearAll": "",
-      "delete": "",
-      "fillcolor": "",
-      "fillopacity": "",
-      "fontsize": "",
-      "line": "",
-      "point": "",
-      "polygon": "",
-      "strokecolor": "",
-      "strokewidth": "",
-      "text": ""
-    },
     "dxfexport": {
       "selectinfo": "Rechteck aufziehen um die zu exportierende Region",
       "symbologyscale": "Darstellungsmassstab"
     },
     "editing": {
-      "canceldelete": "",
-      "commit": "",
-      "delete": "",
-      "discard": "",
-      "draw": "",
-      "fields": "",
-      "layer": "",
-      "noeditablelayers": "",
-      "pick": "",
-      "reallydelete": ""
+      "canceldelete": "Abbrechen",
+      "commit": "Speichern",
+      "delete": "Löschen",
+      "discard": "Abbrechen",
+      "draw": "Zeichnen",
+      "fields": "Felder",
+      "layer": "Ebene",
+      "noeditablelayers": "Keine editierbare Ebenen.",
+      "pick": "Auswählen",
+      "reallydelete": "Löschen"
     },
     "fileselector": {
-      "placeholder": ""
+      "placeholder": "Datei auswählen"
     },
     "heightprofile": {
-      "asl": "",
-      "distance": "",
-      "height": ""
+      "asl": "ü.M.",
+      "distance": "Distanz",
+      "height": "Höhe"
     },
     "identify": {
       "querying": "Objekte werden abgefragt...",
-      "noresults": "",
-      "export": "",
+      "noresults": "Keine Resultate an der ausgewählten Position",
+      "export": "Exportieren",
       "featureReport": "Objektblatt",
       "title": "Objektinformationen"
     },
@@ -79,78 +66,11 @@
       "info": "Polygon um die zu identifizierende Objekte zeichnen"
     },
     "importlayer": {
-      "addlayer": "",
-      "filter": "",
-      "connect": "",
-      "nofeatures": "",
-      "queryservice": "",
-      "urlplaceholder": ""
-    },
-    "layertree": {
-      "compare": "",
-      "importlayer": "",
-      "maptip": "Kartentipps anzeigen",
-      "printlegend": "Legende drucken",
-      "transparency": "Transparenz"
-    },
-    "map": {
-      "loading": "Karte wird geladen"
-    },
-    "mapinfotooltip": {
-      "elevation": ""
-    },
-    "measureComponent": {
-      "areaLabel": "Fläche",
-      "bearingLabel": "Richtung",
-      "lengthLabel": "Länge",
-      "pointLabel": "Position"
-    },
-    "print": {
-      "layout": "Format",
-      "grid": "",
-      "nolayouts": "Das gewählte Thema stellt keine Druck-Vorlagen zur Verfügung.",
-      "notheme": "Kein Thema selektiert",
-      "resolution": "Auflösung",
-      "rotation": "Rotation",
-      "scale": "Massstab",
-      "submit": "PDF erzeugen"
-    },
-    "rasterexport": {
-      "format": "Format:",
-      "resolution": "",
-      "selectinfo": "Rechteck aufziehen um die zu exportierende Region"
-    },
-    "redlining": {
-      "border": "",
-      "fill": "Füllung",
-      "label": "Beschriftung",
-      "line": "Linie",
-      "outline": "Rand",
-      "pick": "Auswählen",
-      "point": "Punkt",
-      "polygon": "Polygon",
-      "size": "",
-      "text": "",
-      "width": ""
-    },
-    "search": {
-      "more": "Mehr...",
-      "search": "",
-      "all": "",
-      "placeholder": "Suche nach Objekten/Namen und Koordinaten",
-      "coordinates": "Koordinaten"
-    },
-    "share": {
-      "directLinkTitle": "Über einen direkten Link",
-      "generatingpermalink": "Permalink wird erzeugt",
-      "QRCodeLinkTitle": "QR Code (Smartphone)",
-      "socialIntro": "In den sozialen Medien"
-    },
-    "themeswitcher": {
-      "filter": "Filter"
-    },
-    "bgswitcher": {
-      "nobg": "Kein Hintergrund"
+      "addlayer": "Ebene hinzufügen",
+      "filter": "Filter...",
+      "connect": "Verbinden",
+      "nofeatures": "Keine Objekte konnten importiert werden",
+      "urlplaceholder": "WMS, WFS oder KML URL eingeben..."
     },
     "layerinfo": {
       "title": "Ebeneninformationen",
@@ -161,6 +81,78 @@
       "metadataUrl": "Metadaten-URL",
       "legend": "Legende"
     },
-    "locate": {}
+    "layertree": {
+      "compare": "Oberste Ebene vergleichen",
+      "importlayer": "Ebene importieren",
+      "maptip": "Kartentipps anzeigen",
+      "printlegend": "Legende drucken",
+      "transparency": "Transparenz"
+    },
+    "locate": {
+      "metersUnit": "Meter",
+      "feetUnit": "Fuss",
+      "popup": "Im Umkreis von {distance} {unit} von diesem Punkt",
+      "statustooltip": {
+        "DISABLED": "Deaktiviert",
+        "LOCATING": "Position wird bestimmt...",
+        "ENABLED": "Aktiviert",
+        "FOLLOWING": "Mit GPS bewegen",
+        "PERMISSION_DENIED": "Zugriff verweigert"
+      }
+    },
+    "map": {
+      "loading": "Karte wird geladen..."
+    },
+    "mapinfotooltip": {
+      "elevation": "Höhe"
+    },
+    "measureComponent": {
+      "areaLabel": "Fläche",
+      "bearingLabel": "Richtung",
+      "lengthLabel": "Länge",
+      "pointLabel": "Position"
+    },
+    "print": {
+      "layout": "Format",
+      "grid": "Gitter",
+      "nolayouts": "Das gewählte Thema stellt keine Druck-Vorlagen zur Verfügung.",
+      "notheme": "Kein Thema selektiert",
+      "resolution": "Auflösung",
+      "rotation": "Rotation",
+      "scale": "Massstab",
+      "submit": "PDF erzeugen"
+    },
+    "rasterexport": {
+      "format": "Format:",
+      "resolution": "Auflösung",
+      "selectinfo": "Rechteck aufziehen um die zu exportierende Region"
+    },
+    "redlining": {
+      "border": "Rand",
+      "fill": "Füllung",
+      "label": "Beschriftung",
+      "line": "Linie",
+      "outline": "Rand",
+      "pick": "Auswählen",
+      "point": "Punkt",
+      "polygon": "Polygon",
+      "size": "Grösse",
+      "text": "Text",
+      "width": "Breite"
+    },
+    "search": {
+      "more": "Mehr...",
+      "search": "Suchen",
+      "all": "Alle"
+    },
+    "share": {
+      "directLinkTitle": "Über einen direkten Link",
+      "generatingpermalink": "Permalink wird erzeugt",
+      "QRCodeLinkTitle": "QR Code (Smartphone)",
+      "socialIntro": "In den sozialen Medien"
+    },
+    "themeswitcher": {
+      "filter": "Filter"
+    }
   }
 }

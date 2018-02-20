@@ -3,7 +3,6 @@
   "messages": {
     "appmenu": {
       "items": {
-        "Draw": "Dessiner",
         "DxfExport": "Export DXF",
         "Help": "Aide",
         "LayerTree": "Couches",
@@ -19,6 +18,9 @@
       },
       "menulabel": "Cartes et outils"
     },
+    "bgswitcher": {
+      "nobg": "Pas de fond"
+    },
     "bottombar": {
       "mousepos_label": "Coordonnées",
       "scale_label": "Echelle",
@@ -28,21 +30,6 @@
     "copybtn": {
       "click_to_copy": "Cliquer pour copier",
       "copied": "Copiée"
-    },
-    "draw": {
-      "bbox": "Rectangle",
-      "circle": "Cercle",
-      "clearAll": "Tout effacer",
-      "delete": "Supprimer",
-      "fillcolor": "Remplissage",
-      "fillopacity": "Opacité",
-      "fontsize": "Taile de police",
-      "line": "Ligne",
-      "point": "Point",
-      "polygon": "Polygone",
-      "strokecolor": "Couleur du trait",
-      "strokewidth": "Epaisseur du trait",
-      "text": "Texte"
     },
     "dxfexport": {
       "selectinfo": "Paramétrage de l'export DXF",
@@ -83,8 +70,16 @@
       "filter": "Filtrer",
       "connect": "Connecter",
       "nofeatures": "Aucune entité ne peut être importée.",
-      "queryservice": "Interrogation du service...",
       "urlplaceholder": "Entrer l'URL d'un WMS, WFS, KML..."
+    },
+    "layerinfo": {
+      "title": "Informations dur la couche",
+      "abstract": "Récapitulation",
+      "attribution": "Attribution",
+      "keywords": "Mots-clés",
+      "dataUrl": "URL des données",
+      "metadataUrl": "URL des métadonnées",
+      "legend": "Légende"
     },
     "layertree": {
       "compare": "Comparer",
@@ -92,6 +87,18 @@
       "maptip": "Afficher les maptips",
       "printlegend": "Afficher la légende",
       "transparency": "Transparence"
+    },
+    "locate": {
+      "metersUnit": "",
+      "feetUnit": "",
+      "popup": "",
+      "statustooltip": {
+        "DISABLED": "",
+        "LOCATING": "",
+        "ENABLED": "",
+        "FOLLOWING": "",
+        "PERMISSION_DENIED": ""
+      }
     },
     "map": {
       "loading": "Chargement de la carte..."
@@ -136,9 +143,7 @@
     "search": {
       "more": "Plus...",
       "search": "",
-      "all": "",
-      "placeholder": "Recherche par toponyme ou coordonnées...",
-      "coordinates": "Coordonnées"
+      "all": ""
     },
     "share": {
       "directLinkTitle": "Via un lien direct",
@@ -148,19 +153,6 @@
     },
     "themeswitcher": {
       "filter": "Filtre"
-    },
-    "bgswitcher": {
-      "nobg": "Pas de fond"
-    },
-    "layerinfo": {
-      "title": "Informations dur la couche",
-      "abstract": "Récapitulation",
-      "attribution": "Attribution",
-      "keywords": "Mots-clés",
-      "dataUrl": "URL des données",
-      "metadataUrl": "URL des métadonnées",
-      "legend": "Légende"
-    },
-    "locate": {}
+    }
   }
 }

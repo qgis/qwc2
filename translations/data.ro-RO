@@ -3,7 +3,6 @@
   "messages": {
     "appmenu": {
       "items": {
-        "Draw": "Desenează",
         "DxfExport": "Export DXF",
         "Help": "Ajutor",
         "LayerTree": "Straturi & Legendă",
@@ -19,6 +18,9 @@
       },
       "menulabel": "Hărți & Unelte"
     },
+    "bgswitcher": {
+      "nobg": "Fără fundal"
+    },
     "bottombar": {
       "mousepos_label": "Coordonate",
       "scale_label": "Scară",
@@ -28,21 +30,6 @@
     "copybtn": {
       "click_to_copy": "Click pt. copiere",
       "copied": "Copiat"
-    },
-    "draw": {
-      "bbox": "Dreptunghi",
-      "circle": "Cerc",
-      "clearAll": "Șterge tot",
-      "delete": "Șterge",
-      "fillcolor": "Culoare interior",
-      "fillopacity": "Opacitate interior",
-      "fontsize": "Mărime font",
-      "line": "Linie",
-      "point": "Punct",
-      "polygon": "Poligon",
-      "strokecolor": "Culoare contur",
-      "strokewidth": "Lățime contur",
-      "text": "Text"
     },
     "dxfexport": {
       "selectinfo": "Încadrați într-un dreptunghi zona de exportat..",
@@ -83,8 +70,16 @@
       "filter": "Filtrare",
       "connect": "Conectare",
       "nofeatures": "Nu s-a putut importa nicio entitate",
-      "queryservice": "Serviciu interogare",
       "urlplaceholder": "Introdu URL către WMS, WFS, KML..."
+    },
+    "layerinfo": {
+      "title": "Info Strat",
+      "abstract": "Abstract",
+      "attribution": "Atribuire",
+      "keywords": "Cuvinte cheie",
+      "dataUrl": "URL date",
+      "metadataUrl": "URL metadate",
+      "legend": "Legendă"
     },
     "layertree": {
       "compare": "Compară stratul de sus",
@@ -92,6 +87,18 @@
       "maptip": "Arată indicii hartă",
       "printlegend": "Tipărește legenda",
       "transparency": "Transparență"
+    },
+    "locate": {
+      "metersUnit": "metri",
+      "feetUnit": "picioare",
+      "popup": "Ești la {distance} {unit} de acest punct",
+      "statustooltip": {
+        "DISABLED": "Dezactivat",
+        "LOCATING": "Localizează...",
+        "ENABLED": "Activat",
+        "FOLLOWING": "Urmărește",
+        "PERMISSION_DENIED": "Acces refuzat"
+      }
     },
     "map": {
       "loading": "Se încarcă..."
@@ -136,9 +143,7 @@
     "search": {
       "more": "Mai multe...",
       "search": "Caută",
-      "all": "Toate",
-      "placeholder": "Caută locații și coordonate...",
-      "coordinates": "Coordonate"
+      "all": "Toate"
     },
     "share": {
       "directLinkTitle": "Via link direct",
@@ -148,32 +153,6 @@
     },
     "themeswitcher": {
       "filter": "Filtrare"
-    },
-    "bgswitcher": {
-      "nobg": "Fără fundal"
-    },
-    "layerinfo": {
-      "title": "Info Strat",
-      "abstract": "Abstract",
-      "attribution": "Atribuire",
-      "keywords": "Cuvinte cheie",
-      "dataUrl": "URL date",
-      "metadataUrl": "URL metadate",
-      "legend": "Legendă"
-    },
-    "locate": {
-      "tooltip": "Localizează-mă",
-      "metersUnit": "metri",
-      "feetUnit": "picioare",
-      "popup": "Ești la {distance} {unit} de acest punct",
-      "outsideMapBoundsMsg": "Ești localizat în afara limitelor hărții",
-      "statustooltip": {
-        "DISABLED": "Dezactivat",
-        "LOCATING": "Localizează...",
-        "ENABLED": "Activat",
-        "FOLLOWING": "Urmărește",
-        "PERMISSION_DENIED": "Acces refuzat"
-      }
     }
   }
 }

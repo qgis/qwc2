@@ -3,125 +3,132 @@
   "messages": {
     "appmenu": {
       "items": {
-        "Draw": "",
-        "DxfExport": "",
-        "Help": "",
-        "LayerTree": "",
-        "Measure": "",
-        "Print": "",
-        "RasterExport": "",
-        "Share": "",
-        "ThemeSwitcher": "",
-        "Tools": "",
-        "IdentifyRegion": "",
-        "Redlining": "",
-        "Editing": ""
+        "DxfExport": "Esporta a DXF",
+        "Help": "Aiuto",
+        "LayerTree": "Livelli",
+        "Measure": "Misura",
+        "Print": "Stampa",
+        "RasterExport": "Esporta a immagine",
+        "Share": "Condividi",
+        "ThemeSwitcher": "Temi",
+        "Tools": "Strumenti",
+        "IdentifyRegion": "Identifica regione",
+        "Redlining": "Redlining",
+        "Editing": "Edita"
       },
-      "menulabel": ""
+      "menulabel": "Mappa e strumenti"
+    },
+    "bgswitcher": {
+      "nobg": "Nessuno sfondo"
     },
     "bottombar": {
-      "mousepos_label": "",
-      "scale_label": "",
-      "terms_label": "",
+      "mousepos_label": "Coordinate",
+      "scale_label": "Scala",
+      "terms_label": "Condizioni",
       "viewertitle_label": ""
     },
     "copybtn": {
       "click_to_copy": "Clicca per copiare",
       "copied": "Copiato"
     },
-    "draw": {
-      "bbox": "",
-      "circle": "",
-      "clearAll": "",
-      "delete": "",
-      "fillcolor": "",
-      "fillopacity": "",
-      "fontsize": "",
-      "line": "",
-      "point": "",
-      "polygon": "",
-      "strokecolor": "",
-      "strokewidth": "",
-      "text": ""
-    },
     "dxfexport": {
-      "selectinfo": "",
-      "symbologyscale": ""
+      "selectinfo": "Seleziona l'area da esportare",
+      "symbologyscale": "Scala per la simbologia"
     },
     "editing": {
-      "canceldelete": "",
-      "commit": "",
-      "delete": "",
-      "discard": "",
-      "draw": "",
-      "fields": "",
-      "layer": "",
-      "noeditablelayers": "",
-      "pick": "",
-      "reallydelete": ""
+      "canceldelete": "Annulla",
+      "commit": "Salva",
+      "delete": "Elimina",
+      "discard": "Annulla",
+      "draw": "Disegna",
+      "fields": "Attributi",
+      "layer": "Livello",
+      "noeditablelayers": "Nessun livello editabile",
+      "pick": "Seleziona",
+      "reallydelete": "Elimina"
     },
     "fileselector": {
-      "placeholder": ""
+      "placeholder": "Seleziona file..."
     },
     "heightprofile": {
-      "asl": "",
-      "distance": "",
-      "height": ""
+      "asl": "s.l.m.",
+      "distance": "Distanza",
+      "height": "Altitudine"
     },
     "identify": {
-      "querying": "",
-      "noresults": "",
-      "export": "",
-      "featureReport": "",
-      "title": ""
+      "querying": "Caricando...",
+      "noresults": "Nessun risultato",
+      "export": "Esporta",
+      "featureReport": "Formulario oggetto",
+      "title": "Titolo"
     },
     "identifyregion": {
-      "info": ""
+      "info": "Disegna un poligono attorno all'area da identificare"
     },
     "importlayer": {
-      "addlayer": "",
-      "filter": "",
-      "connect": "",
-      "nofeatures": "",
-      "queryservice": "",
-      "urlplaceholder": ""
+      "addlayer": "Aggiungi livello",
+      "filter": "Filtro",
+      "connect": "Connetti",
+      "nofeatures": "Nessuno oggetto è stato importato",
+      "urlplaceholder": "Indirizzo WMS, WFS KML..."
+    },
+    "layerinfo": {
+      "title": "Informazioni livello",
+      "abstract": "Riassunto",
+      "attribution": "Attribuzione",
+      "keywords": "Parole chiavi",
+      "dataUrl": "URL dati",
+      "metadataUrl": "URL metadati",
+      "legend": "Legenda"
     },
     "layertree": {
-      "compare": "",
-      "importlayer": "",
-      "maptip": "",
-      "printlegend": "",
-      "transparency": ""
+      "compare": "Compara il primo livello",
+      "importlayer": "Importa livello",
+      "maptip": "Attiva maptip",
+      "printlegend": "Stampa legenda",
+      "transparency": "Trasparenza"
+    },
+    "locate": {
+      "metersUnit": "metri",
+      "feetUnit": "piedi",
+      "popup": "Sei entro {distance} {unit} da questa posizione",
+      "statustooltip": {
+        "DISABLED": "Disattivato",
+        "LOCATING": "Determinando la posizione",
+        "ENABLED": "Attivato",
+        "FOLLOWING": "Seguendo",
+        "PERMISSION_DENIED": "Permesso negato"
+      }
     },
     "map": {
       "loading": "In caricamento..."
     },
     "mapinfotooltip": {
-      "elevation": ""
+      "elevation": "Altitudine"
     },
     "measureComponent": {
       "areaLabel": "Area",
       "bearingLabel": "Direzione",
       "lengthLabel": "Lunghezza",
-      "pointLabel": ""
+      "pointLabel": "Posizione"
     },
     "print": {
       "layout": "Layout",
-      "grid": "",
-      "nolayouts": "",
-      "notheme": "",
+      "grid": "Griglia",
+      "nolayouts": "Nessun layout di stampa",
+      "notheme": "Nessun tema selezionato",
       "resolution": "Risoluzione:",
-      "rotation": "",
-      "scale": "",
+      "rotation": "Rotazione:",
+      "scale": "Scala:",
       "submit": "Stampa"
     },
     "rasterexport": {
-      "format": "",
-      "resolution": "",
-      "selectinfo": ""
+      "format": "Formato:",
+      "resolution": "Risoluzione:",
+      "selectinfo": "Seleziona l'area da esportare"
     },
     "redlining": {
-      "border": "",
+      "border": "Bordo",
       "fill": "Riempimento",
       "label": "Ettichetta",
       "line": "Linea",
@@ -129,27 +136,23 @@
       "pick": "Seleziona",
       "point": "Punto",
       "polygon": "Poligono",
-      "size": "",
-      "text": "",
-      "width": ""
+      "size": "Dimensione",
+      "text": "Testo",
+      "width": "Larghezza"
     },
     "search": {
-      "more": "",
-      "search": "",
-      "all": "",
-      "placeholder": "Cerca un indirizzo o inserisci coordinate..."
+      "more": "Più risultati",
+      "search": "Cerca",
+      "all": "Tutti"
     },
     "share": {
-      "directLinkTitle": "Con un Link diretto",
-      "generatingpermalink": "",
-      "QRCodeLinkTitle": "Usando il QR Code",
-      "socialIntro": "Sul tuo social preferito"
+      "directLinkTitle": "Link diretto",
+      "generatingpermalink": "Generando il permalink",
+      "QRCodeLinkTitle": "Codice QR",
+      "socialIntro": "Social network"
     },
     "themeswitcher": {
-      "filter": ""
-    },
-    "bgswitcher": {},
-    "layerinfo": {},
-    "locate": {}
+      "filter": "Filtra..."
+    }
   }
 }
