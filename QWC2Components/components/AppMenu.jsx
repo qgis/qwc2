@@ -60,6 +60,10 @@ class AppMenu extends React.Component {
         this.toggleMenu();
         this.props.setCurrentTask(key, mode);
     }
+    killEvent = (ev) => {
+         ev.preventDefault();
+         ev.stopPropagation();
+    }
     renderMenuItems = (items, level) => {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         if(items) {
@@ -69,6 +73,7 @@ class AppMenu extends React.Component {
                         <li key={item.key}
                             className={this.state.submenusVisible[level] === item.key ? "expanded" : ""}
                             onMouseDown={ev => this.onSubmenuClicked(item.key, level)}
+                            onClick={this.killEvent}
                         >
                             <img src={assetsPath + "/" + item.icon} />
                             <Message msgId={"appmenu.items." + item.key} />
@@ -80,7 +85,10 @@ class AppMenu extends React.Component {
                     );
                 } else {
                     return (
-                        <li key={item.key + (item.mode || "")} onMouseDown={ev => this.onMenuitemClicked(item.key, item.mode)} >
+                        <li key={item.key + (item.mode || "")}
+                            onMouseDown={ev => this.onMenuitemClicked(item.key, item.mode)}
+                            onClick={this.killEvent}
+                        >
                             <img src={assetsPath + "/" + item.icon} />
                             <Message msgId={"appmenu.items." + item.key + (item.mode || "")} />
                         </li>
@@ -94,7 +102,7 @@ class AppMenu extends React.Component {
     render() {
         return(
             <div id="AppMenu" className={this.props.currentTaskBlocked ? "appmenu-blocked" : this.state.menuVisible ? "appmenu-visible" : ""} ref={el => this.menuEl = el}>
-                <div className="appmenu-button-container" onMouseDown={this.toggleMenu}>
+                <div className="appmenu-button-container" onMouseDown={this.toggleMenu} onClick={this.killEvent}>
                     {this.props.buttonContents}
                 </div>
                 <Swipeable onSwipedUp={this.toggleMenu}>
