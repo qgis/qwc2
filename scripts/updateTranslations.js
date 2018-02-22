@@ -31,7 +31,7 @@ let applicationConfig = readJSON('/translations/tsconfig.json');
 
 let strings = merge(commonConfig.strings || [], applicationConfig.strings || []);
 
-let langs = applicationConfig.languages || [];
+let langs = applicationConfig.languages || commonConfig.languages || [];
 
 // Create skeleton
 let skel = {"locale": "", "messages": {}};

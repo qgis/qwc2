@@ -1,4 +1,12 @@
 {
+  "languages": [
+    "de-DE",
+    "en-US",
+    "fr-FR",
+    "it-IT",
+    "ro-RO",
+    "sv-SV"
+  ],
   "strings": [
     "appmenu.items.DxfExport",
     "appmenu.items.Help",
