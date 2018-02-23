@@ -169,7 +169,7 @@ class LayerTree extends React.Component {
             editframe = (
                 <div className="layertree-item-edit-frame">
                     <span className="layertree-item-transparency-label"><Message msgId="layertree.transparency" /></span>
-                    <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} />
+                    <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)}  />
                     {reorderButtons}
                     {infoButton}
                 </div>
@@ -265,7 +265,7 @@ class LayerTree extends React.Component {
                     onHide={this.hideLegendTooltip}
                     extraTitlebarContent={extraTitlebarContent}>
                     <div role="body" className="layertree-container">
-                        <div className="layertree-tree">
+                        <div className="layertree-tree" onTouchMove={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}>
                             <Sortable options={{disabled: this.props.flattenGroups !== true}} onChange={this.onSortChange}>
                                 {this.props.layers.map(this.renderLayerTree)}
                             </Sortable>

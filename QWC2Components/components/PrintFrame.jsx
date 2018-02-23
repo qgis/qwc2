@@ -115,7 +115,7 @@ class PrintFrame extends React.Component {
                     onMouseMove={this.updateSelection}
                     onMouseUp={this.endSelection}
                     onTouchStart={(ev) => this.startSelection(ev.changedTouches[0])}
-                    onTouchMove={(ev) => this.updateSelection(ev.changedTouches[0])}
+                    onTouchMove={(ev) => {this.updateSelection(ev.changedTouches[0]); ev.preventDefault();}}
                     onTouchEnd={(ev) => this.endSelection(ev.changedTouches[0])}>
                     <div id="PrintFrame" style={boxStyle}>
                         <span className="size-box">{this.state.width + " x " + this.state.height}</span>
