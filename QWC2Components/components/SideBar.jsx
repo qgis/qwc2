@@ -62,7 +62,7 @@ class SideBar extends React.Component {
             zIndex: visible ? 5 : 4
         }
         return (
-            <Swipeable onSwipedRight={this.closeClicked}>
+            <Swipeable onSwipedRight={this.closeClicked} delta={30}>
                 <div id={this.props.id} className={"sidebar" + " " + this.props.extraClasses} style={style}>
                     <div className="sidebar-titlebar">
                         <img className="sidebar-titlebar-icon" src={this.props.icon}/>
