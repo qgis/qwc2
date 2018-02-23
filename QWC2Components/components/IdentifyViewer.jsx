@@ -336,11 +336,7 @@ class IdentifyViewer extends React.Component {
         );
     }
     featureReportEnabled = (layer) => {
-        if(Array.isArray(this.props.theme.featureReport)) {
-            return this.props.theme.featureReport.includes(layer);
-        } else {
-            return this.props.theme.featureReport === true;
-        }
+        return Object.keys(this.props.theme.featureReport || {}).includes(layer);
     }
     getFeatureReport = () => {
         let valid = this.state.currentResult && this.state.currentResult.id && ConfigUtils.getConfigProp("featureReportService") && this.featureReportEnabled(this.state.currentLayer);
@@ -349,7 +345,7 @@ class IdentifyViewer extends React.Component {
         }
         let serviceUrl = ConfigUtils.getConfigProp("featureReportService");
         let params = {
-            layer: this.state.currentLayer,
+            template: this.props.theme.featureReport[this.state.currentLayer],
             feature: this.state.currentResult.id
         };
         axios.get(serviceUrl, {params: params}).then(response => {
