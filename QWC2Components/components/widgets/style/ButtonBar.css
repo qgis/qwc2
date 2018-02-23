@@ -23,7 +23,7 @@ div.ButtonBar > button {
     border-bottom: 1px solid @item_border@;
     border-right: 1px solid @item_border@;
     border-left: 0;
-    padding: 0.25em 0.5em;
+    padding: 0.25em 0.25em;
     cursor: pointer;
     color: @item_fg@;
     align-items: center;
