@@ -10,7 +10,6 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
-const Swipeable = require('react-swipeable');
 const assign = require('object-assign');
 const classnames = require('classnames');
 const isEmpty = require('lodash.isempty');
