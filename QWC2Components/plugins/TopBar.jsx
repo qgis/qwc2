@@ -69,7 +69,7 @@ class TopBar extends React.Component {
             imgStyle = {cursor: 'pointer'};
         }
         return (
-            <Swipeable onSwipedUp={this.triggerFullscreen}>
+            <Swipeable onSwipedUp={this.triggerFullscreen} preventDefaultTouchmoveEvent={true}>
                 <div id="TopBar" className={classes}>
                     <img className="logo" src={logo} onClick={this.clearTheme} style={imgStyle} />
                     <div className="center-span">
