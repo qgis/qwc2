@@ -3,7 +3,6 @@
   "messages": {
     "appmenu": {
       "items": {
-        "Draw": "Rita",
         "DxfExport": "DXF Export",
         "Help": "Hjälp",
         "LayerTree": "Lager & teckenförklaring",
@@ -28,31 +27,50 @@
       "terms_label": "Villkor",
       "viewertitle_label": "QWC2 Demo"
     },
-    "draw": {
-      "delete": "Ta bort",
-      "clearAll": "Ta bort alla",
-      "point": "Punkt",
-      "line": "Linje",
-      "polygon": "Polygon",
-      "bbox": "Rektangel",
-      "circle": "Cirkel",
-      "strokecolor": "Linjefärg",
-      "fillcolor": "Fyllfärg",
-      "text": "Text",
-      "strokewidth": "Linjebredd",
-      "fillopacity": "Transparens",
-      "fontsize": "Textstorlek"
+    "copybtn": {
+      "click_to_copy": "Klicka för att kopiera",
+      "copied": ""
     },
     "dxfexport": {
       "selectinfo": "Rita en rektangel runt området som ska exporteras...",
       "symbologyscale": "Symbolskala:"
     },
-    "identifyTitle": "Information",
+    "editing": {
+      "canceldelete": "",
+      "commit": "",
+      "delete": "",
+      "discard": "",
+      "draw": "",
+      "fields": "",
+      "layer": "",
+      "noeditablelayers": "",
+      "pick": "",
+      "reallydelete": ""
+    },
+    "fileselector": {
+      "placeholder": ""
+    },
+    "heightprofile": {
+      "asl": "",
+      "distance": "",
+      "height": ""
+    },
     "identify": {
-      "querying": "Frågar..."
+      "querying": "Frågar...",
+      "noresults": "",
+      "export": "",
+      "featureReport": "",
+      "title": ""
     },
     "identifyregion": {
       "info": ""
+    },
+    "importlayer": {
+      "addlayer": "",
+      "filter": "",
+      "connect": "",
+      "nofeatures": "",
+      "urlplaceholder": ""
     },
     "layerinfo": {
       "title": "Information om lager",
@@ -64,19 +82,29 @@
       "legend": "Teckenförklaring"
     },
     "layertree": {
+      "compare": "",
+      "importlayer": "",
       "maptip": "Visa karttips för lager",
-      "transparency": "Transparens",
-      "printlegend": ""
+      "printlegend": "",
+      "transparency": "Transparens"
     },
     "locate": {
-      "tooltip": "Lokalisera mig",
       "metersUnit": "meter",
       "feetUnit": "fot",
       "popup": "Du är inom {distance} {unit} från denna punkt",
-      "outsideMapBoundsMsg": "Du verkar befinna dig utanför kartans gränser"
+      "statustooltip": {
+        "DISABLED": "",
+        "LOCATING": "",
+        "ENABLED": "",
+        "FOLLOWING": "",
+        "PERMISSION_DENIED": ""
+      }
     },
     "map": {
       "loading": "Laddar..."
+    },
+    "mapinfotooltip": {
+      "elevation": ""
     },
     "measureComponent": {
       "areaLabel": "Area",
@@ -86,6 +114,7 @@
     },
     "print": {
       "layout": "Layout:",
+      "grid": "",
       "nolayouts": "Valt tema stöder inte utskrift",
       "notheme": "Inget tema valt",
       "resolution": "Upplösning:",
@@ -95,16 +124,26 @@
     },
     "rasterexport": {
       "format": "",
+      "resolution": "",
       "selectinfo": ""
     },
-    "search": {
-      "coordinates": "Koordinater",
-      "placeholder": "Sök efter platser och koordinater...",
-      "more": "Mer"
+    "redlining": {
+      "border": "",
+      "fill": "",
+      "label": "",
+      "line": "",
+      "outline": "",
+      "pick": "",
+      "point": "",
+      "polygon": "",
+      "size": "",
+      "text": "",
+      "width": ""
     },
-    "copybtn": {
-      "click_to_copy": "Klicka för att kopiera",
-      "copied": ""
+    "search": {
+      "more": "Mer",
+      "search": "",
+      "all": ""
     },
     "share": {
       "directLinkTitle": "Via en direktlänk",
@@ -114,15 +153,6 @@
     },
     "themeswitcher": {
       "filter": "Filtrera..."
-    },
-    "redlining": {
-      "point": "",
-      "line": "",
-      "polygon": "",
-      "pick": "",
-      "outline": "",
-      "fill": "",
-      "label": ""
     }
   }
 }
