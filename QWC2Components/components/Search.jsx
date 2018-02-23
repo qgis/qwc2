@@ -375,7 +375,7 @@ class Search extends React.Component {
 };
 
 
-module.exports = (searchProviders, providerFactory=(key) => { return null; }) => {
+module.exports = (searchProviders, providerFactory=(entry) => { return null; }) => {
 
     const collectProviders = createSelector(
         [state => state.theme && state.theme.current || null], theme => {
