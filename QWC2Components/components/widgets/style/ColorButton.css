@@ -41,6 +41,7 @@ div.colorbutton-picker {
     display: flex;
     flex-wrap: wrap;
     width: 13.5em;
+    z-index: 1;
 }
 
 div.colorbutton-picker:before {
