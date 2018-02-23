@@ -49,9 +49,9 @@ class TaskBar extends React.Component {
             <div>
                 <div id="TaskBar" className={this.props.task}>
                     <div className="taskbar">
-                        <span className="body">
+                        <div className="body">
                             {this.renderRole("body")}
-                        </span>
+                        </div>
                         <span className="closewrapper">
                             <Glyphicon className="close" onClick={this.closeClicked} glyph="remove"/>
                         </span>
