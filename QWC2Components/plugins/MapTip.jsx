@@ -68,7 +68,7 @@ class MapTip extends React.Component {
         let {url, params} = IdentifyUtils.buildRequest(this.state.layer, this.props.mousepos.coordinate, this.props.map, options);
 
         axios.get(url, {params: params}).then(response => {
-            let result = IdentifyUtils.parseXmlResponse(response.data, this.props.map.projection);
+            let result = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
             let layers = Object.keys(result);
             for(let i = 0; i < layers.length; ++i) {
                 let feature = result[layers[i]].find(feature => feature.properties.maptip);
