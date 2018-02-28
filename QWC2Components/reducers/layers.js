@@ -89,7 +89,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             if(!layer) {
                 return state;
             }
-            if(layer.group === "background") {
+            if(layer.group === "background" || isEmpty(action.sublayerpath)) {
                 return assign({}, state, {flat: state.flat.filter(layer => layer.id !== action.layerId)});
             } else {
                 let newLayers = LayerUtils.removeLayer(state.flat, layer, action.sublayerpath, state.swipe);
