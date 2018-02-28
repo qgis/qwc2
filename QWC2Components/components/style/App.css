@@ -1,0 +1,34 @@
+* {
+    cursor: inherit;
+}
+
+html, body {
+    overflow: hidden;
+    cursor: default;
+    color: @item_fg@;
+}
+
+input[type=text], input[type=password], textarea {
+    cursor:text;
+}
+
+input, select, button {
+    border-radius: 0;
+}
+
+a {
+    cursor:pointer;
+}
+
+html, body, #container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/** Some bootstrap.min.css overrides **/
+.glyphicon {
+    position: initial!important;
+}

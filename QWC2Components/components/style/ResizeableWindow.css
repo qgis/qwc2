@@ -6,8 +6,7 @@ div.resizeable-window-container {
 }
 div.resizeable-window {
     pointer-events: auto;
-    background-color: @dialog_bg@;
-    color: @dialog_fg@;
+    background-color: @container_bg@;
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.75);
     z-index: 9;
 }

@@ -56,7 +56,10 @@ div.ol-overviewmap {
 
 div.ol-overviewmap button {
     font-size: 1.0em!important;
-    background-color: @panel_fg@!important;
+    background-color: @panel_bg@!important;
+    color: @panel_fg@!important;
+    border: 1px solid @panel_fg@!important;
+    margin: 0!important;
 }
 
 .ol-overviewmap:not(.ol-collapsed) button {

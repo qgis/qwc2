@@ -13,14 +13,26 @@
 #TaskBar.Redlining span.ColorButton {
     margin: 0 0.5em 0 0.25em;
 }
+
 #TaskBar.Redlining span.react-numeric-input {
   margin-left: 0.5em;
 }
 
 #TaskBar.Redlining span.react-numeric-input > input {
-  border-radius: 0;
+  border-radius: 0!important;
   height: 2em;
   width: 6em;
+  border: 1px solid @item_border@!important;
+}
+
+#TaskBar.Redlining span.react-numeric-input > b {
+    border: 1px solid @item_border@!important;
+    background: @button_bg@!important;
+    color: @item_fg@!important;
+}
+
+#TaskBar.Redlining span.react-numeric-input > b:hover {
+    background: @button_hover_bg@!important;
 }
 
 #TaskBar.Redlining input.redlining-label {
@@ -28,5 +40,5 @@
   height: 2em;
   margin-left: 0.5em;
   padding: 0.25em;
-  border: 1px solid #ccc;
+  border: 1px solid @item_border@;
 }

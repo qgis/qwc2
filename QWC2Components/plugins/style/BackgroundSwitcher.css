@@ -13,8 +13,7 @@
 }
 
 #BackgroundSwitcher div.background-layer-item {
-    background-color: @item_bg@;
-    color: @item_fg@;
+    background-color: white;
     cursor: pointer;
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
     display: inline-block;

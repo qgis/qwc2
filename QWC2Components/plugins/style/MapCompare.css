@@ -1,6 +1,6 @@
 #MapCompare {
     position: fixed;
-    background-color: @button_bg@;
+    background-color: @map_button_bg@;
     width: 0.25em;
     height: 100%;
     margin-left: -0.125em;
@@ -16,7 +16,7 @@
     width: 3em;
     line-height: 3em;
     left: -1.375em;
-    background-color: @button_bg@;
+    background-color: @map_button_bg@;
     display: flex;
     align-items: center;
     border-radius: 1.5em;

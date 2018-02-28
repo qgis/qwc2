@@ -13,6 +13,6 @@
 
 #Toolbar > img:hover,
 #Toolbar > img.toolbar-item-active {
-    border: 1px solid #ccc;
-    background-color: #eee;
+    border: 1px solid @item_border@;
+    background-color: @button_hover_bg@;
 }

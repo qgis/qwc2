@@ -25,20 +25,13 @@ div.ButtonBar > button {
     border-left: 0;
     padding: 0.25em 0.25em;
     cursor: pointer;
-    color: @item_fg@;
     align-items: center;
     justify-content: center;
-    background-color: #dddddd;
+    background-color: @button_bg@;
 }
 
 div.ButtonBar > button > * {
     flex: 0 0 auto;
-}
-
-div.ButtonBar > button > img,
-div.ButtonBar > button > span.glyphicon
-{
-    margin: 0 0.25em;
 }
 
 div.ButtonBar > button:focus {
@@ -67,7 +60,7 @@ div.ButtonBar > button:active > * {
 }
 
 div.ButtonBar > button:hover {
-    background-color: @item_inactive_hover@;
+    background-color: @button_hover_bg@;
 }
 
 div.ButtonBar > button.pressed:hover {

@@ -18,10 +18,9 @@ div.FileSelector > input[type=text] {
     height: 2em;
     border: 1px solid @item_border@;
     padding-left: 0.25em;
-    color: @item_fg@;
     cursor: pointer;
 }
-
+/**/
 div.FileSelector > span {
     display: inline-block;
     width: 2em;

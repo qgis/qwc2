@@ -36,6 +36,8 @@ const PluginsUtils = require('../../MapStore2Components/utils/PluginsUtils');
 const {UrlParams, resolvePermaLink} = require('../utils/PermaLinkUtils');
 const ThemeUtils = require('../utils/ThemeUtils');
 
+require('./style/App.css');
+
 
 class AppInitComponent extends React.Component {
     static propTypes = {

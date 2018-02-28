@@ -15,10 +15,13 @@ span.share-link-button {
     width: 2.5em;
     line-height: 2.5em;
     text-align: center;
-    color: @item_fg@;
-    background-color: #eee;
+    background-color: @button_bg@;
     border-top: 1px solid @item_border@;
     border-right: 1px solid @item_border@;
     border-bottom: 1px solid @item_border@;
     cursor: pointer;
+}
+
+span.share-link-button:hover {
+    background-color: @button_hover_bg@;
 }

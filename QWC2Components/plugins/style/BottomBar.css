@@ -14,7 +14,7 @@
 
 #BottomBar select {
     border: 1px solid @item_border@;
-    background-color: white;
+    background-color: @panel_bg@;
     height: 2em;
 }
 
@@ -32,7 +32,7 @@
     border-style: solid;
     border-color: @item_border@;
     border-width: 1px 0px 1px 1px;
-    background-color: rgba(255, 255, 255, 0.75);
+    background-color: @panel_bg@;
     height: 2em;
     line-height: normal;
 }

@@ -15,7 +15,7 @@
 }
 
 #MapInfoTooltip div.mapinfotooltip-titlebar {
-    background-color: #eee;
+    background-color: @button_bg@;
     font-weight: bold;
     padding: 0.25em 0.5em;
     border-radius: 0.5em 0.5em 0 0;
@@ -61,7 +61,7 @@
     height: 0;
     border-left: 1em solid transparent;
     border-right: 1em solid transparent;
-    border-bottom: 1em solid #eee;
+    border-bottom: 1em solid @button_bg@;
 }
 
 #MapInfoTooltip div.mapinfotooltip-body td {

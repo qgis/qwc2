@@ -5,6 +5,7 @@
     align-items: center;
     vertical-align: middle;
     max-width: 70ch;
+    color: @base_fg@;
 }
 
 #Search div.searchbar-wrapper {
@@ -24,7 +25,6 @@
     height: 2.5em;
     padding: 0.25em 0.75em;
     border: 1px solid @item_border@;
-    color: @item_fg@;
     width: 0;
     min-width: 10ch;
 }
@@ -36,11 +36,10 @@
     text-align: center;
     padding: 0.25em 0.25em;
     line-height: 2em;
-    color: @item_fg@;
-    background-color: #eee;
-    border-top: 1px solid @item_border@;
-    border-right: 1px solid @item_border@;
-    border-bottom: 1px solid @item_border@;
+    background-color: @button_bg@;
+    border-top: 1px solid @item_border@;;
+    border-right: 1px solid @item_border@;;
+    border-bottom: 1px solid @item_border@;;
     position: relative;
 }
 
@@ -52,7 +51,7 @@
     position: absolute;
     top: 100%;
     right: -1px;
-    background-color: #eee;
+    background-color: @button_bg@;
     border: 1px solid @item_border@;
     list-style-type: none;
     margin: 0;
@@ -87,7 +86,7 @@
     border-right: 1px solid @item_border@;
     border-bottom: 1px solid @item_border@;
     border-left: 0;
-    background-color: #eee;
+    background-color: @button_bg@;
     vertical-align: bottom;
     height: 2.5em;
     flex: 0 0 auto;
@@ -98,8 +97,8 @@
     width: 100%;
     position: absolute;
     z-index: 8;
-    background-color: #eee;
-    border: 1px solid #ccc;
+    background-color: @button_bg@;
+    border: 1px solid @item_border@;
 }
 
 #Search div.search-form > table {
@@ -155,12 +154,11 @@
 }
 
 #Search ul.search-results ul li:hover {
-    background-color: #cccccc;
+    background-color: @button_hover_bg@;
 }
 
 #Search ul.search-results .search-results-category-title {
-    background-color: @dialog_bg@;
-    color: @dialog_fg@;
+    background-color: @container_bg@;
     font-weight: bold;
     display: block;
     padding: 0.5em;
