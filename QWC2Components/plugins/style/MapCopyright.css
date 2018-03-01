@@ -12,5 +12,5 @@
 }
 
 #MapCopyright span:not(:first-child) {
-    border-left: 1px solid @item_fg@;
+    border-left: 1px solid @base_fg@;
 }

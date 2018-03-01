@@ -64,7 +64,7 @@
 
 #IdentifyViewer li.expandable:before {
     content: "";
-    border-color: transparent @item_fg@;
+    border-color: transparent @base_fg@;
     border-width: 0.35em 0 0.35em 0.45em;
     border-style: solid;
     display: block;
@@ -76,7 +76,7 @@
 }
 
 #IdentifyViewer li.expandable.expanded:before {
-    border-color: @item_fg@ transparent;
+    border-color: @base_fg@ transparent;
     border-width: 0.45em 0.35em 0 0.35em;
     top: 0.4em;
 }

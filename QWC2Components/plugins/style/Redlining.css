@@ -28,7 +28,7 @@
 #TaskBar.Redlining span.react-numeric-input > b {
     border: 1px solid @item_border@!important;
     background: @button_bg@!important;
-    color: @item_fg@!important;
+    color: @base_fg@!important;
 }
 
 #TaskBar.Redlining span.react-numeric-input > b:hover {
