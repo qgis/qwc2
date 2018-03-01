@@ -166,7 +166,7 @@ class LayerTree extends React.Component {
                 infoButton = (<Glyphicon className="layertree-item-metadata" glyph="info-sign" onClick={() => this.setState({activeinfo: {layer, sublayer}})}/>);
             }
             editframe = (
-                <div className="layertree-item-edit-frame">
+                <div className="layertree-item-edit-frame" draggable="true" onDragStart={ev => {ev.preventDefault(); ev.stopPropagation(); }}>
                     <span className="layertree-item-transparency-label"><Message msgId="layertree.transparency" /></span>
                     <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)}  />
                     {reorderButtons}
