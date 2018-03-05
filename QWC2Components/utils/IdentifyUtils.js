@@ -65,6 +65,47 @@ const IdentifyUtils = {
             }
         };
     },
+    buildFilterRequest(layer, filterGeom, map, options) {
+        const size = [101, 101];
+        const resolution = map.resolutions[map.zoom];
+        const version = layer.version || "1.3.0";
+
+        let queryLayers = layer.queryLayers.join(",");
+        let format = 'text/plain';
+        if(layer.infoFormats.includes('text/xml')) {
+            format = 'text/xml';
+        } else if(layer.infoFormats.includes('application/json')) {
+            format = 'application/json';
+        } else if(layer.infoFormats.includes('text/html')) {
+            format = 'text/html';
+        }
+        return {
+            url: layer.featureInfoUrl.replace(/[?].*$/g, ''),
+            params: {
+                service: 'WMS',
+                version: version,
+                request: 'GetFeatureInfo',
+                FILTER_GEOM: filterGeom,
+                height: size[0],
+                width: size[1],
+                id: layer.id,
+                layers: queryLayers,
+                query_layers: queryLayers,
+                styles: layer.style,
+                srs: CoordinatesUtils.normalizeSRS(map.projection),
+                crs: CoordinatesUtils.normalizeSRS(map.projection),
+                info_format: format,
+                with_geometry: true,
+                with_maptip: true,
+                feature_count: 100,
+                ...options
+            },
+            metadata: {
+                layer: layer.title,
+                posstr: "Region"
+            }
+        };
+    },
     parseXmlFeature(feature, geometrycrs, id) {
         let featureResult = {};
         featureResult["type"] = "Feature";
