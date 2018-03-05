@@ -168,6 +168,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         }
     } else {
         // group
+        layerEntry.mutuallyExclusive = (layer.$ || {}).mutuallyExclusive === '1';
         layerEntry.sublayers = [];
         layerEntry.expanded = collapseBelowLevel >= 0 && level >= collapseBelowLevel ? false : true;
         for (var subLayer of toArray(layer.Layer)) {

@@ -171,6 +171,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             }
     else:
         # group
+        layerEntry["mutuallyExclusive"] = layer.getAttribute("mutuallyExclusive") == "1"
         layerEntry["sublayers"] = []
         layerEntry["expanded"] = False if collapseBelowLevel >= 0 and level >= collapseBelowLevel else True
         for sublayer in layers:

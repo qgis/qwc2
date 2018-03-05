@@ -247,10 +247,13 @@ const LayerUtils = {
             }
             // Merge with previous if possible
             if(newlayers.length > (swipeActive ? 1 : 0) && newlayers[newlayers.length - 1].refid === layer.refid) {
-                let target = newlayers[newlayers.length - 1];
+                let targetgroup = newlayers[newlayers.length - 1];
                 let group = layer;
-                let targetgroup = target;
                 while(group.sublayers) {
+                    if(usedUuidIds.has(group.uuid)) {
+                        assign(group, {uuid: uuid.v4()});
+                    }
+                    usedUuidIds.add(group.uuid);
                     if(!targetgroup.sublayers || targetgroup.sublayers[targetgroup.sublayers.length -1].refid != group.sublayers[0].refid) {
                         // Assign new uuids to groups to avoid react moaning about same keys, but not to leaf nodes
                         let g = group.sublayers[0];
@@ -261,7 +264,14 @@ const LayerUtils = {
                             usedUuidIds.add(g.uuid);
                             g = g.sublayers[0];
                         }
-
+                        // If target group is mutually exclusive, ensure only one layer is visible
+                        if(targetgroup.mutuallyExclusive) {
+                            let noneVisible = !targetgroup.visibility || targetgroup.sublayers.findIndex(sublayer => sublayer.visibility === true) === -1;
+                            group.sublayers[0].visibility = group.sublayers[0].visibility && noneVisible;
+                            if(group.sublayers[0].visibility) {
+                                targetgroup.visibility = true;
+                            }
+                        }
                         targetgroup.sublayers.push(group.sublayers[0]);
                         break;
                     }
