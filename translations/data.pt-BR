@@ -1,0 +1,158 @@
+{
+  "locale": "pt-BR",
+  "messages": {
+    "appmenu": {
+      "items": {
+        "DxfExport": "Exportar DXF",
+        "Help": "Ajuda",
+        "LayerTree": "Camadas & Legenda",
+        "Measure": "Medições",
+        "Print": "Imprimir",
+        "RasterExport": "Exportar Raster",
+        "Share": "Compartilhar",
+        "ThemeSwitcher": "Temas",
+        "Tools": "Ferramentas de mapa",
+        "IdentifyRegion": "Identificar Região",
+        "Redlining": "Desenhar",
+        "Editing": "Editando"
+      },
+      "menulabel": "Mapa & Ferramentas"
+    },
+    "bgswitcher": {
+      "nobg": "Sem plano de fundo"
+    },
+    "bottombar": {
+      "mousepos_label": "Coordenadas",
+      "scale_label": "Escala",
+      "terms_label": "Termos de uso",
+      "viewertitle_label": ""
+    },
+    "copybtn": {
+      "click_to_copy": "Clique para copiar",
+      "copied": "Copiado"
+    },
+    "dxfexport": {
+      "selectinfo": "Desenhe um retângulo sobre uma região para exportar...",
+      "symbologyscale": "Escala da simbologia:"
+    },
+    "editing": {
+      "canceldelete": "Não deletar",
+      "commit": "Enviar",
+      "delete": "Deletar",
+      "discard": "Descartar",
+      "draw": "Desenhar",
+      "fields": "Campos",
+      "layer": "Camada",
+      "noeditablelayers": "Camadas não editáveis.",
+      "pick": "Pegar",
+      "reallydelete": "Deletar"
+    },
+    "fileselector": {
+      "placeholder": "Selecione arquivo..."
+    },
+    "heightprofile": {
+      "asl": "a.n.m.",
+      "distance": "Distância",
+      "height": "Altura"
+    },
+    "identify": {
+      "querying": "Consultando...",
+      "noresults": "Nenhuma informação disponível para o ponto selecionado",
+      "export": "Exportar",
+      "featureReport": "Reportar",
+      "title": "Informações da Funcionalidade"
+    },
+    "identifyregion": {
+      "info": "Desenhe um polígono em torno dos elementos para identificar..."
+    },
+    "importlayer": {
+      "addlayer": "Adicionar camada",
+      "filter": "Filtrar...",
+      "connect": "Conectar",
+      "nofeatures": "Nenhum elemento pôde ser importado.",
+      "urlplaceholder": "Informe URL para WMS, WFS, KML..."
+    },
+    "layerinfo": {
+      "title": "Infomações da camada",
+      "abstract": "Resumo",
+      "attribution": "Atribuição",
+      "keywords": "Palavras-chave",
+      "dataUrl": "Data URL",
+      "metadataUrl": "Metadados URL",
+      "legend": "Legenda"
+    },
+    "layertree": {
+      "compare": "Comparar camada superior",
+      "importlayer": "Importar camada",
+      "maptip": "Mostrar dicas de mapas de camadas",
+      "printlegend": "Imprimir legenda",
+      "transparency": "Transparência"
+    },
+    "locate": {
+      "metersUnit": "metros",
+      "feetUnit": "pés",
+      "popup": "Você está a {distance} {unit} desse ponto",
+      "statustooltip": {
+        "DISABLED": "Desativado",
+        "LOCATING": "Localizando...",
+        "ENABLED": "Ativado",
+        "FOLLOWING": "Seguindo",
+        "PERMISSION_DENIED": "Acesso negado"
+      }
+    },
+    "map": {
+      "loading": "Carregando..."
+    },
+    "mapinfotooltip": {
+      "elevation": "Elevação"
+    },
+    "measureComponent": {
+      "areaLabel": "Área",
+      "bearingLabel": "Direção",
+      "lengthLabel": "Tamanho",
+      "pointLabel": "Ponto"
+    },
+    "print": {
+      "layout": "Formato:",
+      "grid": "Grade/escala:",
+      "nolayouts": "O tema selecionado não suporta impressão",
+      "notheme": "Nenhum tema selecionado",
+      "resolution": "Resolução:",
+      "rotation": "Rotação:",
+      "scale": "Escala:",
+      "submit": "Imprimir"
+    },
+    "rasterexport": {
+      "format": "Formato:",
+      "resolution": "Resolução:",
+      "selectinfo": "Desenhe um retângulo sobre uma região para exportar..."
+    },
+    "redlining": {
+      "border": "Borda",
+      "fill": "Preenchimento",
+      "label": "Rótulo",
+      "line": "Linha",
+      "outline": "Contorno",
+      "pick": "Ponteiro",
+      "point": "Ponto",
+      "polygon": "Polígono",
+      "size": "Tamanho",
+      "text": "Texto",
+      "width": "Largura"
+    },
+    "search": {
+      "more": "Mais...",
+      "search": "Buscar",
+      "all": "Tudo"
+    },
+    "share": {
+      "directLinkTitle": "Link direto",
+      "generatingpermalink": "Gerando link permanente...",
+      "QRCodeLinkTitle": "qr code",
+      "socialIntro": "Na sua rede social favorita"
+    },
+    "themeswitcher": {
+      "filter": "Filtro..."
+    }
+  }
+}
