@@ -17,7 +17,7 @@ function search(state = null, action) {
             UrlParams.updateParams({st: action.text, sp: action.providers ? action.providers.join(",") : undefined});
             return {text: action.text, providers: action.providers};
         case SEARCH_SET_REQUEST:
-            return assign({}, state, {requestId: action.id, pendingProviders: action.providers});
+            return assign({}, state, {requestId: action.id, pendingProviders: action.providers, startup: action.startup});
         case SEARCH_ADD_RESULTS:
             if(state.requestId !== action.results.reqId || !(state.pendingProviders || []).includes(action.results.provider)) {
                 return state;

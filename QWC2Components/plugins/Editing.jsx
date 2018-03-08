@@ -61,7 +61,7 @@ class Editing extends React.Component {
                 if(!layerIds.includes(this.state.selectedLayer)) {
                     this.changeSelectedLayer(layerIds[0]);
                 }
-            } else {
+            } else if(this.state.selectedLayer) {
                 this.changeSelectedLayer(null);
             }
         }

@@ -34,6 +34,7 @@ class Search extends React.Component {
         activeProviders: PropTypes.array, // The active provider keys
         pendingProviders: PropTypes.array, // Providers for which results are pending
         searchProviders: PropTypes.object, // All available search providers
+        startupSearch: PropTypes.bool,
         results: PropTypes.array,
         theme: PropTypes.object,
         map: PropTypes.object,
@@ -84,7 +85,7 @@ class Search extends React.Component {
 
             // If initial theme loaded and a search text is defined, fire off the search
             if(!this.props.theme) {
-                this.search(assign({}, newProps, {activeProviders}));
+                this.search(assign({}, newProps, {activeProviders}), true);
             }
         }
         // If results changed and a unique result is returned, select it automatically if it is a Place result
@@ -92,7 +93,7 @@ class Search extends React.Component {
             if(newProps.results.length === 1 && newProps.results[0].items.length == 1) {
                 let item = newProps.results[0].items[0];
                 if((item.type || SearchResultType.PLACE) === SearchResultType.PLACE) {
-                    this.showResult(item, false);
+                    this.showResult(item, newProps.startupSearch);
                 }
             }
         }
@@ -101,9 +102,9 @@ class Search extends React.Component {
         ev.preventDefault();
         ev.stopPropagation();
     }
-    search = (props)  => {
+    search = (props, startup=false)  => {
         if(props.searchText) {
-            props.startSearch(props.searchText, {displaycrs: props.displaycrs}, this.activeProviders(props));
+            props.startSearch(props.searchText, {displaycrs: props.displaycrs}, this.activeProviders(props), startup);
         }
     }
     resetSearch = () => {
@@ -396,6 +397,7 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
             searchText: state.search ? state.search.text : "",
             activeProviders: state.search ?  state.search.providers : null,
             pendingProviders: state.search ? state.search.pendingProviders : null,
+            startupSearch: state.search && state.search.startup || false,
             results: state.search ? state.search.results : null,
             map: state.map,
             displaycrs: displaycrs,

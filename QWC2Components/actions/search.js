@@ -26,13 +26,14 @@ function changeSearch(text, providers) {
     };
 }
 
-function startSearch(text, options, providers) {
+function startSearch(text, options, providers, startup=false) {
     return (dispatch) => {
         let reqId = uuid.v1();
         dispatch({
             type: SEARCH_SET_REQUEST,
             id: reqId,
-            providers: Object.keys(providers)
+            providers: Object.keys(providers),
+            startup: startup
         });
         Object.keys(providers).map(provider => {
             providers[provider].onSearch(text, reqId, options, dispatch);
