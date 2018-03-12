@@ -197,7 +197,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             for(let layer of action.layers.slice(0).reverse()) {
                 if(layer.role === LayerRole.THEME) {
                     // Merge top-level fields of current theme layer
-                    layer = assign(layer, themeLayer, {sublayers: layer.sublayers, uuid: uuid.v4()});
+                    layer = assign({}, themeLayer, {sublayers: layer.sublayers, uuid: uuid.v4()});
                 }
                 newLayers.unshift(layer);
                 if(layer.type === "wms") {
