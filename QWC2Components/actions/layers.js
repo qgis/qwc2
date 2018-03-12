@@ -18,6 +18,7 @@ const REMOVE_LAYER_FEATURES = 'REMOVE_LAYER_FEATURES';
 const CHANGE_LAYER_PROPERTIES = 'CHANGE_LAYER_PROPERTIES';
 const REFRESH_LAYER = 'REFRESH_LAYER';
 const REMOVE_ALL_LAYERS = 'REMOVE_ALL_LAYERS';
+const RESTORE_LAYER_STATE = 'RESTORE_LAYER_STATE';
 const SET_SWIPE = 'SET_SWIPE';
 
 
@@ -131,6 +132,13 @@ function removeAllLayers() {
     };
 }
 
+function restoreLayerState(layers) {
+    return {
+        type: RESTORE_LAYER_STATE,
+        layers: layers
+    }
+}
+
 function setSwipe(swipe) {
     return {
         type: SET_SWIPE,
@@ -152,6 +160,7 @@ module.exports = {
     removeMarker,
     refreshLayer,
     removeAllLayers,
+    restoreLayerState,
     setSwipe,
     SET_LAYER_LOADING,
     ADD_LAYER,
@@ -163,5 +172,6 @@ module.exports = {
     CHANGE_LAYER_PROPERTIES,
     REFRESH_LAYER,
     REMOVE_ALL_LAYERS,
+    RESTORE_LAYER_STATE,
     SET_SWIPE
 };

@@ -26,7 +26,7 @@ const PluginsContainer = require('./PluginsContainer');
 const {changeBrowserProperties} = require('../../MapStore2Components/actions/browser');
 const {loadLocale} = require('../../MapStore2Components/actions/locale');
 const {localConfigLoaded} = require('../../MapStore2Components/actions/localConfig');
-const {addLayer} = require('../actions/layers');
+const {restoreLayerState} = require('../actions/layers');
 const {changeSearch} = require('../actions/search');
 const {themesLoaded,setCurrentTheme} = require('../actions/theme');
 
@@ -119,13 +119,11 @@ class AppInitComponent extends React.Component {
 
                 // Dispatch actions
                 this.props.changeSearch(searchText, searchProviders);
-                this.props.setCurrentTheme(theme, themes, false, initialView, visibleLayers, visibleBgLayer);
+                this.props.setCurrentTheme(theme, themes, false, initialView, visibleLayers, visibleBgLayer, state.themesublayers);
 
                 // Restore from permalink state
                 if(state.layers) {
-                    for(let layer of state.layers.slice(0).reverse()) {
-                        this.props.addLayer(layer);
-                    }
+                    this.props.restoreLayerState(state.layers);
                 }
             });
         });
@@ -141,7 +139,7 @@ let AppInit = connect(state => ({
     themesLoaded: themesLoaded,
     changeSearch: changeSearch,
     setCurrentTheme: setCurrentTheme,
-    addLayer: addLayer
+    restoreLayerState: restoreLayerState
 })(AppInitComponent);
 
 

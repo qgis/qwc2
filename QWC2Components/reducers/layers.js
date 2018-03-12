@@ -25,6 +25,7 @@ const {
     ADD_THEME_SUBLAYER,
     REFRESH_LAYER,
     REMOVE_ALL_LAYERS,
+    RESTORE_LAYER_STATE,
     SET_SWIPE
 } = require('../actions/layers');
 
@@ -187,6 +188,22 @@ function layers(state = {flat: [], swipe: undefined}, action) {
         }
         case REORDER_LAYER: {
             let newLayers = LayerUtils.reorderLayer(state.flat, action.layer, action.sublayerpath, action.direction, state.swipe);
+            UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
+            return assign({}, state, {flat: newLayers});
+        }
+        case RESTORE_LAYER_STATE: {
+            let themeLayer = (state.flat || []).find(layer => layer.role === LayerRole.THEME);
+            let newLayers = (state.flat || []).filter(layer => (layer.role !== LayerRole.USERLAYER && layer.role !== LayerRole.THEME));
+            for(let layer of action.layers.slice(0).reverse()) {
+                if(layer.role === LayerRole.THEME) {
+                    // Merge top-level fields of current theme layer
+                    layer = assign(layer, themeLayer, {sublayers: layer.sublayers, uuid: uuid.v4()});
+                }
+                newLayers.unshift(layer);
+                if(layer.type === "wms") {
+                    assign(layer, LayerUtils.buildWMSLayerParams(layer));
+                }
+            }
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
             return assign({}, state, {flat: newLayers});
         }

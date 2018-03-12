@@ -39,7 +39,7 @@ const UrlParams = {
 function generatePermaLink(state, callback) {
     // Subset of the state to send to permalink server
     let permalinkState = {
-        layers: (state.layers && state.layers.flat || []).filter(layer => layer.role === LayerRole.USERLAYER)
+        layers: (state.layers && state.layers.flat || []).filter(layer => (layer.role === LayerRole.USERLAYER || layer.role === LayerRole.THEME))
     };
     axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/createpermalink?url=" + encodeURIComponent(window.location.href), permalinkState)
         .then(response => callback(response.data.permalink))
