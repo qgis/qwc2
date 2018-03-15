@@ -30,14 +30,13 @@ class TopBar extends React.Component {
         logoFormat: PropTypes.string,
         searchOptions: PropTypes.object,
         appMenuClearsTask: PropTypes.bool,
-        logoClickResetsTheme: PropTypes.bool
+        logoUrl: PropTypes.string
     }
     static defaultProps = {
         searchOptions: {},
         menuItems: [],
         toolbarItems: [],
-        logoFormat: "svg",
-        logoClickResetsTheme: false
+        logoFormat: "svg"
     }
     render() {
         let buttonContents;
@@ -64,14 +63,14 @@ class TopBar extends React.Component {
             "mobile": this.props.mobile,
             "fullscreen": this.props.fullscreen
         });
-        let imgStyle = null;
-        if(this.props.logoClickResetsTheme) {
-            imgStyle = {cursor: 'pointer'};
+        let logoEl = (<img className="logo" src={logo} />);
+        if (this.props.logoUrl) {
+            logoEl = (<a target="_blank" href={this.props.logoUrl}>{logoEl}</a>);
         }
         return (
             <Swipeable onSwipedUp={this.triggerFullscreen} preventDefaultTouchmoveEvent={true}>
                 <div id="TopBar" className={classes}>
-                    <img className="logo" src={logo} onClick={this.clearTheme} style={imgStyle} />
+                    {logoEl}
                     <div className="center-span">
                         <this.props.components.Search searchOptions={this.props.searchOptions}/>
                         <this.props.components.Toolbar toolbarItems={this.props.toolbarItems} />
@@ -81,11 +80,6 @@ class TopBar extends React.Component {
                 </div>
             </Swipeable>
          );
-     }
-     clearTheme = () => {
-         if(this.props.logoClickResetsTheme) {
-             this.props.restoreDefaultTheme();
-         }
      }
      triggerFullscreen = () => {
          this.props.toggleFullscreen(true);
