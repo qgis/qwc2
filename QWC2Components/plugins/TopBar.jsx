@@ -30,6 +30,7 @@ class TopBar extends React.Component {
         logoFormat: PropTypes.string,
         searchOptions: PropTypes.object,
         appMenuClearsTask: PropTypes.bool,
+        logoSrc: PropTypes.string,
         logoUrl: PropTypes.string
     }
     static defaultProps = {
@@ -63,7 +64,7 @@ class TopBar extends React.Component {
             "mobile": this.props.mobile,
             "fullscreen": this.props.fullscreen
         });
-        let logoEl = (<img className="logo" src={logo} />);
+        let logoEl = (<img className="logo" src={this.props.logoSrc || logo} />);
         if (this.props.logoUrl) {
             logoEl = (<a target="_blank" href={this.props.logoUrl}>{logoEl}</a>);
         }
