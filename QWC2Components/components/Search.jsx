@@ -66,7 +66,7 @@ class Search extends React.Component {
             this.props.removeLayer('searchselection');
         }
         // If the theme changed, reset search and select provider
-        if(newProps.theme && newProps.theme !== this.props.theme) {
+        if(newProps.theme && (newProps.theme !== this.props.theme || newProps.searchProviders !== this.props.searchProviders)) {
             // Only reset search text if the theme was changed (as opposed to the initial theme loaded)
             let searchText = this.props.theme ? "" : newProps.searchText;
 
@@ -379,12 +379,16 @@ class Search extends React.Component {
 module.exports = (searchProviders, providerFactory=(entry) => { return null; }) => {
 
     const collectProviders = createSelector(
-        [state => state.theme && state.theme.current || null], theme => {
+        [state => state.theme && state.theme.current || null, state => state.layers && state.layers.flat || null], (theme, layers) => {
             let availableProviders = {};
+            let themeLayerNames = layers.map(layer => layer.isThemeLayer ? layer.params.LAYERS : "").join(",").split(",").filter(entry => entry);
             let themeProviders = theme && theme.searchProviders || [];
             for(let entry of themeProviders) {
                 let provider = searchProviders[entry] || providerFactory(entry);
                 if(provider) {
+                    if(provider.requiresLayer && !themeLayerNames.includes(provider.requiresLayer)) {
+                        continue;
+                    }
                     availableProviders[entry.key || entry] = provider;
                 }
             }
