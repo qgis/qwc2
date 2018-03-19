@@ -288,6 +288,21 @@ const LayerUtils = {
         return (layer.sublayers || []).reduce((list, sublayer) => {
             return list.concat([sublayer.name, ...this.getSublayerNames(sublayer)]);
         }, []);
+    },
+    mergeSubLayers(baselayer, addlayer) {
+        let newlayer = assign({}, baselayer);
+        if(addlayer.sublayers) {
+            assign(newlayer, {sublayers: (newlayer.sublayers || []).slice(0)});
+            for(let addsublayer of addlayer.sublayers) {
+                let idx = newlayer.sublayers.findIndex(sublayer => sublayer.name === addsublayer.name);
+                if(idx === -1) {
+                    newlayer.sublayers.push(addsublayer);
+                } else {
+                    newlayer.sublayers[idx] = LayerUtils.mergeSubLayers(newlayer.sublayers[idx], addsublayer);
+                }
+            }
+        }
+        return newlayer;
     }
 };
 
