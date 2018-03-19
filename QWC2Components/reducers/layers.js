@@ -176,7 +176,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
         }
         case REFRESH_LAYER: {
             let newLayers = (state.flat || []).map((layer) => {
-                if(layer.id === action.layerId) {
+                if(action.filter(layer)) {
                     return assign({}, layer, {rev: (layer.rev || 0) + 1});
                 }
                 return layer;

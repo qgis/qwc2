@@ -19,14 +19,12 @@ function theme(state = {}, action) {
         case CLEAR_CURRENT_THEME:
             UrlParams.updateParams({t: undefined, l: undefined});
             return assign({}, state, {
-                current: null,
-                currentlayer: null
+                current: null
             });
         case SET_CURRENT_THEME:
         UrlParams.updateParams({t: action.theme.id});
             return assign({}, state, {
-                current: action.theme,
-                currentlayer: action.layer
+                current: action.theme
             });
         default:
             return state;

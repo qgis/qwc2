@@ -27,7 +27,6 @@ class Print extends React.Component {
         visible: PropTypes.bool,
         theme: PropTypes.object,
         map: PropTypes.object,
-        themeLayerId: PropTypes.string,
         layers: PropTypes.array,
         changeRotation: PropTypes.func
     }
@@ -74,7 +73,8 @@ class Print extends React.Component {
         this.props.changeRotation(this.state.initialRotation);
     }
     renderBody = () => {
-        if(!this.props.theme) {
+        let themeLayers = this.props.layers.filter(layer => layer.isThemeLayer);
+        if(!this.props.theme || !themeLayers) {
             return (<div role="body" className="print-body"><Message msgId="print.notheme" /></div>);
         } else if(!this.props.theme.print || this.props.theme.print.length === 0) {
             return (<div role="body" className="print-body"><Message msgId="print.nolayouts" /></div>);
@@ -82,9 +82,8 @@ class Print extends React.Component {
         let currentLayoutname = this.state.layout ? this.state.layout.name : "";
         let mapName = this.state.layout ? this.state.layout.map.name : "";
 
-        let themeLayer = this.props.layers.find(layer => layer.id === this.props.themeLayerId);
-        let printLayers = themeLayer ? themeLayer.params.LAYERS : "";
-        let printOpacities = themeLayer ? themeLayer.params.OPACITIES : "";
+        let printLayers = themeLayers.map(layer => layer.params.LAYERS).reverse().join(",");
+        let printOpacities = themeLayers.map(layer => layer.params.OPACITIES).reverse().join(",");
 
         let backgroundLayer = this.props.layers.find(layer => layer.group === 'background' && layer.visibility === true);
         let themeBackgroundLayer = backgroundLayer ? this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayer.name) : null;
@@ -101,7 +100,7 @@ class Print extends React.Component {
         }
         let printDpi = parseInt(this.state.dpi);
         let mapCrs = this.props.map.projection;
-        let version = themeLayer && themeLayer.version || "1.3.0";
+        let version = themeLayers[0].version || "1.3.0";
         let extent = this.computeCurrentExtent();
         extent = (CoordinatesUtils.getAxisOrder(mapCrs).substr(0, 2) == 'ne' && version == '1.3.0') ?
             extent[1] + "," + extent[0] + "," + extent[3] + "," + extent[2]:
@@ -300,7 +299,6 @@ const selector = (state) => ({
     visible: state.task ? state.task.id === 'Print': false,
     theme: state.theme ? state.theme.current : null,
     map: state.map ? state.map : null,
-    themeLayerId: state.theme ? state.theme.currentlayer : "",
     layers: state.layers ? state.layers.flat : [],
     search: state.search
 });

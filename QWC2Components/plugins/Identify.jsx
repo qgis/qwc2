@@ -48,7 +48,7 @@ class Identify extends React.Component {
                 return l.type === 'wms' && l.group !== "background" && (l.queryLayers || []).length > 0
             });
             queryableLayers.forEach((layer) => {
-                this.props.sendRequest(IdentifyUtils.buildRequest(layer, newProps.point.coordinate, newProps.map, newProps.params));
+                this.props.sendRequest(IdentifyUtils.buildRequest(layer, layer.queryLayers.join(","), newProps.point.coordinate, newProps.map, newProps.params));
             });
             this.props.addMarker('identify', newProps.point.coordinate, '', newProps.map.projection);
         }

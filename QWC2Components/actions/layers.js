@@ -119,10 +119,10 @@ function removeMarker(id) {
     return removeLayerFeatures("markers", [id]);
 }
 
-function refreshLayer(id) {
+function refreshLayer(filter) {
     return {
         type: REFRESH_LAYER,
-        layerId: id
+        filter: filter
     };
 }
 

@@ -24,7 +24,7 @@ class IdentifyRegion extends React.Component {
         changeSelectionState: PropTypes.func,
         map: PropTypes.object,
         theme: PropTypes.object,
-        themelayer: PropTypes.object,
+        layers: PropTypes.array,
         setCurrentTask: PropTypes.func,
         sendRequest: PropTypes.func,
         sendWFSRequest: PropTypes.func,
@@ -54,15 +54,14 @@ class IdentifyRegion extends React.Component {
         );
     }
     getFeatures = (poly) => {
-        if(
-            poly.length < 1 || !this.props.theme ||
-            !this.props.themelayer || this.props.themelayer.queryLayers.length === 0
-        ) {
+        let queryLayers = this.props.layers.reduce((accum, layer) => {
+            return layer.isThemeLayer ? accum.concat(layer.queryLayers) : accum;
+        }, []).join(",");
+        if(poly.length < 1 || !queryLayers) {
             return;
         }
         this.props.setCurrentTask(null);
         if(this.props.useWfs) {
-            let querylayers = this.props.themelayer.queryLayers.join(",");
             let bbox = [poly[0][0], poly[0][1], poly[0][0], poly[0][1]];
             for(let i = 1; i < poly.length; ++i) {
                 bbox[0] = Math.min(bbox[0], poly[i][0]);
@@ -74,7 +73,7 @@ class IdentifyRegion extends React.Component {
             let requestParams = {
                 bbox: bboxstr,
                 outputformat: "GeoJSON",
-                typename: querylayers,
+                typename: queryLayers,
                 srsName: this.props.map.projection
             };
             let wgs84poly = poly.map(coo => {
@@ -82,6 +81,7 @@ class IdentifyRegion extends React.Component {
             });
             this.props.sendWFSRequest(this.props.theme.url, requestParams, wgs84poly);
         } else {
+            let layer = this.props.layers.find(layer => layer.isThemeLayer);
             let center = [0, 0];
             for(let i = 0; i < poly.length; ++i) {
                 center[0] += poly[i][0];
@@ -94,22 +94,17 @@ class IdentifyRegion extends React.Component {
                 "coordinates": [poly]
             };
             let filter = stringify(geometry);
-            this.props.sendRequest(IdentifyUtils.buildFilterRequest(this.props.themelayer, filter, this.props.map, {}));
+            this.props.sendRequest(IdentifyUtils.buildFilterRequest(layer, queryLayers, filter, this.props.map, {}));
         }
     }
 };
 
-const selector = (state) => {
-    let layers = state.layers && state.layers.flat ? state.layers.flat : [];
-    let themelayerid = state.theme ? state.theme.currentlayer : null;
-    let themelayers = layers.filter(layer => layer.id == themelayerid);
-    return {
-        selection: state.selection,
-        map: state.map,
-        theme: state.theme ? state.theme.current : null,
-        themelayer: themelayers.length > 0 ? themelayers[0] : null
-    };
-};
+const selector = (state) => ({
+    selection: state.selection,
+    map: state.map,
+    theme: state.theme ? state.theme.current : null,
+    layers: state.layers && state.layers.flat || []
+});
 
 module.exports = {
     IdentifyRegionPlugin: connect(selector, {

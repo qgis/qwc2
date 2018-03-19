@@ -21,15 +21,15 @@ class DxfExport extends React.Component {
     static propTypes = {
         theme: PropTypes.object,
         map: PropTypes.object,
-        themeLayerId: PropTypes.string,
         layers: PropTypes.array,
         setCurrentTask: PropTypes.func
     }
     renderBody = () => {
-        let themeLayer = this.props.layers.find(layer => layer.id === this.props.themeLayerId);
-        if(!themeLayer) {
+        let themeLayers = this.props.layers.filter(layer => layer.isThemeLayer);
+        if(!this.props.theme || !themeLayers) {
             return null;
         }
+        let themeSubLayers = themeLayers.map(layer => layer.params.LAYERS).reverse().join(",");
         let filename = this.props.theme.name + ".dxf";
         let action = ProxyUtils.addProxyIfNeeded(this.props.theme.url, "&filename=" + encodeURIComponent(this.props.theme.name + ".dxf"));
         return (
@@ -38,10 +38,10 @@ class DxfExport extends React.Component {
                 <div className="help-text"><Message msgId="dxfexport.selectinfo" /></div>
                 <div className="export-settings"><Message msgId="dxfexport.symbologyscale" /> <span className="input-frame"><span>1&nbsp;:&nbsp;</span><input type="number" name="SCALE" defaultValue="500" /></span></div>
                 <input type="hidden" name="SERVICE" value="WMS" readOnly="true" />
-                <input type="hidden" name="VERSION" value={themeLayer.version || "1.3.0"} readOnly="true" />
+                <input type="hidden" name="VERSION" value={themeLayers[0].version || "1.3.0"} readOnly="true" />
                 <input type="hidden" name="REQUEST" value="GetMap" readOnly="true" />
                 <input type="hidden" name="FORMAT" value="application/dxf" readOnly="true" />
-                <input type="hidden" name="LAYERS" value={themeLayer.params.LAYERS} readOnly="true" />
+                <input type="hidden" name="LAYERS" value={themeSubLayers} readOnly="true" />
                 <input type="hidden" name="CRS" value={this.props.map.projection} readOnly="true" />
                 <input type="hidden" name="FILENAME" value={this.props.theme.name + ".dxf"} readOnly="true" />
                 <input ref={input => this.extentInput = input} type="hidden" name="BBOX" value="" readOnly="true" />
@@ -71,7 +71,6 @@ class DxfExport extends React.Component {
 const selector = (state) => ({
     theme: state.theme ? state.theme.current : null,
     map: state.map ? state.map : null,
-    themeLayerId: state.theme ? state.theme.currentlayer : null,
     layers: state.layers ? state.layers.flat : []
 });
 

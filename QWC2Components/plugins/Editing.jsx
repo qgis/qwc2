@@ -29,7 +29,6 @@ class Editing extends React.Component {
     static propTypes = {
         enabled: PropTypes.bool,
         theme: PropTypes.object,
-        themeLayerId: PropTypes.string,
         layers: PropTypes.array,
         map: PropTypes.object,
         iface: PropTypes.object,
@@ -52,8 +51,9 @@ class Editing extends React.Component {
         this.props.changeEditingState({action: null, geomType: null, feature: null})
     }
     componentWillReceiveProps(newProps) {
-        let themeLayer = newProps.layers.find(layer => layer.id === newProps.themeLayerId);
-        let themeSublayers = themeLayer ? LayerUtils.getSublayerNames(themeLayer) : [];
+        let themeSublayers = newProps.layers.reduce((accum, layer) => {
+            return layer.isThemeLayer ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
+        }, []);
         // Update selected layer on layers change
         if(newProps.layers !== this.props.layers) {
             let layerIds = Object.keys(newProps.theme && newProps.theme.editConfig || {}).filter(layerId => themeSublayers.includes(layerId));
@@ -195,8 +195,9 @@ class Editing extends React.Component {
         if(this.state.busy) {
             busyDiv = (<div className="editing-busy"></div>);
         }
-        let themeLayer = this.props.layers.find(layer => layer.id === this.props.themeLayerId);
-        let themeSublayers = themeLayer ? LayerUtils.getSublayerNames(themeLayer) : [];
+        let themeSublayers = this.props.layers.reduce((accum, layer) => {
+            return layer.isThemeLayer ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
+        }, []);
         return (
             <div role="body" className="editing-body">
                 <div>
@@ -284,7 +285,7 @@ class Editing extends React.Component {
         this.setState({busy: false});
         if(success) {
             this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
-            this.props.refreshLayer(this.props.themeLayerId);
+            this.props.refreshLayer(layer => layer.isThemeLayer);
         } else {
             alert(errorMsg);
         }
@@ -295,7 +296,7 @@ class Editing extends React.Component {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
             this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
-            this.props.refreshLayer(this.props.themeLayerId);
+            this.props.refreshLayer(layer => layer.isThemeLayer);
         } else {
             alert(errorMsg);
         }
@@ -306,7 +307,6 @@ module.exports = (iface) => {return {
     EditingPlugin: connect(state => ({
         enabled: state.task ? state.task.id === 'Editing': false,
         theme: state.theme ? state.theme.current : null,
-        themeLayerId: state.theme ? state.theme.currentlayer : '',
         layers: state.layers ? state.layers.flat : [],
         map: state.map || {},
         iface: iface,

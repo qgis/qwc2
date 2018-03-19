@@ -14,7 +14,7 @@ const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const VectorLayerUtils = require('./VectorLayerUtils');
 
 const IdentifyUtils = {
-    buildRequest(layer, center, map, options) {
+    buildRequest(layer, queryLayers, center, map, options) {
         const size = [101, 101];
         const resolution = map.resolutions[map.zoom];
         const dx = 0.5 * resolution * size[0];
@@ -25,7 +25,6 @@ const IdentifyUtils = {
             bbox = [center[1] - dx, center[0] - dy, center[1] + dx, center[0] + dy];
         let digits = proj4js.defs(map.projection).units === 'degrees'? 4 : 0;
 
-        let queryLayers = layer.queryLayers.join(",");
         let format = 'text/plain';
         if(layer.infoFormats.includes('text/xml')) {
             format = 'text/xml';
@@ -65,12 +64,11 @@ const IdentifyUtils = {
             }
         };
     },
-    buildFilterRequest(layer, filterGeom, map, options) {
+    buildFilterRequest(layer, queryLayers, filterGeom, map, options) {
         const size = [101, 101];
         const resolution = map.resolutions[map.zoom];
         const version = layer.version || "1.3.0";
 
-        let queryLayers = layer.queryLayers.join(",");
         let format = 'text/plain';
         if(layer.infoFormats.includes('text/xml')) {
             format = 'text/xml';

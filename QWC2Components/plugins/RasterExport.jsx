@@ -22,7 +22,6 @@ class RasterExport extends React.Component {
     static propTypes = {
         theme: PropTypes.object,
         map: PropTypes.object,
-        themeLayerId: PropTypes.string,
         layers: PropTypes.array,
         setCurrentTask: PropTypes.func,
         visible: PropTypes.bool,
@@ -40,7 +39,8 @@ class RasterExport extends React.Component {
         this.setState({dpi: parseInt(ev.target.value)});
     }
     renderBody = () => {
-        if(!this.props.theme) {
+        let themeLayers = this.props.layers.filter(layer => layer.isThemeLayer);
+        if(!this.props.theme || !themeLayers) {
             return null;
         }
         const formatMap = {
@@ -52,14 +52,13 @@ class RasterExport extends React.Component {
             "image/geotiff" : "GeoTIFF"
         };
 
-        let themeLayer = this.props.layers.find(layer => layer.id === this.props.themeLayerId);
         let availableFormats = this.props.theme.availableFormats;
         let defaultFormat = availableFormats.includes('image/geotiff') ? 'image/geotiff' : availableFormats[0];
         let selectedFormat = this.state.selectedFormat || defaultFormat;
         let filename = this.props.theme.name + "." + selectedFormat.split(";")[0].split("/").pop();
         let action = ProxyUtils.addProxyIfNeeded(this.props.theme.url, "&filename=" + encodeURIComponent(filename));
-        let exportLayers = themeLayer ? themeLayer.params.LAYERS : "";
-        let exportOpacities = themeLayer ? themeLayer.params.OPACITIES : "";
+        let exportLayers = themeLayers.map(layer => layer.params.LAYERS).reverse().join(",");
+        let exportOpacities = themeLayers.map(layer => layer.params.OPACITIES).reverse().join(",");
         let backgroundLayer = this.props.layers.find(layer => layer.group === 'background' && layer.visibility === true);
         let themeBackgroundLayer = backgroundLayer ? this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayer.name) : null;
         let exportBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
@@ -105,7 +104,7 @@ class RasterExport extends React.Component {
                     {dpiSelector}
                 </div>
                 <input type="hidden" name="SERVICE" value="WMS" readOnly="true" />
-                <input type="hidden" name="VERSION" value={themeLayer.version || "1.3.0"} readOnly="true" />
+                <input type="hidden" name="VERSION" value={themeLayers[0].version || "1.3.0"} readOnly="true" />
                 <input type="hidden" name="REQUEST" value="GetMap" readOnly="true" />
                 <input type="hidden" name="FORMAT" value="image/png" readOnly="true" />
                 <input type="hidden" name="LAYERS" value={exportLayers} readOnly="true" />
@@ -160,7 +159,6 @@ const selector = (state) => ({
     visible: state.task ? state.task.id === 'RasterExport': false,
     theme: state.theme ? state.theme.current : null,
     map: state.map ? state.map : null,
-    themeLayerId: state.theme ? state.theme.currentlayer : "",
     layers: state.layers ? state.layers.flat : []
 });
 

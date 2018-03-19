@@ -20,7 +20,6 @@ require('./style/MapTip.css');
 class MapTip extends React.Component {
     static propTypes = {
         mapTipsEnabled: PropTypes.bool,
-        layerid: PropTypes.string,
         layers: PropTypes.array,
         mousepos: PropTypes.object,
         map: PropTypes.object,
@@ -28,23 +27,15 @@ class MapTip extends React.Component {
         removeLayer: PropTypes.func,
     }
     state = {
-        maptip: null, layer: null
+        maptip: null
     }
     componentWillReceiveProps(newProps) {
         if(this.timeoutId) {
             clearTimeout(this.timeoutId);
             this.timeoutId = undefined;
         }
-        let layer = this.state.layer;
         let maptip = this.state.maptip;
-        if(this.props.layerid !== newProps.layerid || (!layer && newProps.layerid)) {
-            if(newProps.layers && newProps.layerid) {
-                layer = newProps.layers.find(item => item.id === newProps.layerid)
-            } else {
-                layer = null;
-            }
-        }
-        if(this.props.mousepos !== newProps.mousepos && layer && newProps.mapTipsEnabled) {
+        if(this.props.mousepos !== newProps.mousepos && newProps.mapTipsEnabled) {
             this.timeoutId = setTimeout(this.queryMapTip, 500);
             if(maptip) {
                 this.props.removeLayer('maptipselection');
@@ -54,7 +45,7 @@ class MapTip extends React.Component {
             maptip = null;
             this.props.removeLayer('maptipselection');
         }
-        this.setState({layer: layer, maptip: maptip});
+        this.setState({maptip: maptip});
     }
     queryMapTip = () => {
         this.timeoutId = null;
@@ -65,10 +56,17 @@ class MapTip extends React.Component {
             FI_LINE_TOLERANCE: 8,
             FI_POLYGON_TOLERANCE: 4
         };
-        let {url, params} = IdentifyUtils.buildRequest(this.state.layer, this.props.mousepos.coordinate, this.props.map, options);
+        let layer = this.props.layers.find(layer => layer.isThemeLayer);
+        let queryLayers = this.props.layers.reduce((accum, layer) => {
+            return layer.isThemeLayer ? accum.concat(layer.queryLayers) : accum;
+        }, []).join(",");
+        if(!layer || !queryLayers) {
+            return;
+        }
+        let request = IdentifyUtils.buildRequest(layer, queryLayers, this.props.mousepos.coordinate, this.props.map, options);
 
-        axios.get(url, {params: params}).then(response => {
-            let result = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
+        axios.get(request.url, {params: request.params}).then(response => {
+            let result = IdentifyUtils.parseXmlResponse({data: response.data, request}, this.props.map.projection);
             let layers = Object.keys(result);
             for(let i = 0; i < layers.length; ++i) {
                 let feature = result[layers[i]].find(feature => feature.properties.maptip);
@@ -105,7 +103,6 @@ class MapTip extends React.Component {
 
 const selector = (state) => ({
     mapTipsEnabled: state.map && state.map.maptips,
-    layerid: state.theme ? state.theme.currentlayer : null,
     layers: state.layers && state.layers.flat ? state.layers.flat : null,
     mousepos: state.mousePosition ? state.mousePosition.position : undefined,
     map: state.map ? state.map : null
