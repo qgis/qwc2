@@ -15,6 +15,7 @@ const Spinner = require('react-spinkit');
 const {createSelector} = require('reselect');
 const classnames = require('classnames');
 const isEmpty = require('lodash.isempty');
+const isEqual = require('lodash.isequal');
 const ol = require('openlayers');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
@@ -66,7 +67,7 @@ class Search extends React.Component {
             this.props.removeLayer('searchselection');
         }
         // If the theme changed, reset search and select provider
-        if(newProps.theme && (newProps.theme !== this.props.theme || newProps.searchProviders !== this.props.searchProviders)) {
+        if(newProps.theme && (newProps.theme !== this.props.theme || !isEqual(Object.keys(newProps.searchProviders), Object.keys(this.props.searchProviders)))) {
             // Only reset search text if the theme was changed (as opposed to the initial theme loaded)
             let searchText = this.props.theme ? "" : newProps.searchText;
 
