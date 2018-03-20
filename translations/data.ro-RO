@@ -58,8 +58,8 @@
     "identify": {
       "querying": "Interogare...",
       "noresults": "Nu există informații în punctul cerut",
-      "export": "",
-      "featureReport": "",
+      "export": "Export",
+      "featureReport": "Raport entitate",
       "title": "Info Entități"
     },
     "identifyregion": {
