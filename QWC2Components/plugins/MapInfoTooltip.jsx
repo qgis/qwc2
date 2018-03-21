@@ -94,7 +94,7 @@ class MapInfoTooltip extends React.Component {
         if(this.state.extraInfo) {
             info.push(...this.state.extraInfo);
         }
-
+        let title = LocaleUtils.getMessageById(this.context.messages, "mapinfotooltip.title");
         let pixel = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK)(this.state.coordinate);
         let style = {
             left: pixel[0] + "px",
@@ -105,7 +105,7 @@ class MapInfoTooltip extends React.Component {
             <div id="MapInfoTooltip" style={style}>
                 <div className="mapinfotooltip-window">
                     <div className="mapinfotooltip-titlebar">
-                        <span className="mapinfotooltip-title">Position</span>
+                        <span className="mapinfotooltip-title">{title}</span>
                         <CopyButton text={text} buttonClass="mapinfotooltip-button" />
                         <span className="mapinfotooltip-button" onClick={this.clear}>
                             <Glyphicon glyph="remove"/>

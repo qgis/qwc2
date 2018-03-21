@@ -104,7 +104,8 @@
       "loading": "Karte wird geladen..."
     },
     "mapinfotooltip": {
-      "elevation": "Höhe"
+      "elevation": "Höhe",
+      "title": "Position"
     },
     "measureComponent": {
       "areaLabel": "Fläche",
