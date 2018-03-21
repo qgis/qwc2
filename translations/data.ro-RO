@@ -104,7 +104,8 @@
       "loading": "Se încarcă..."
     },
     "mapinfotooltip": {
-      "elevation": "Altitudine"
+      "elevation": "Altitudine",
+      "title": "Poziție"
     },
     "measureComponent": {
       "areaLabel": "Arie",

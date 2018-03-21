@@ -104,7 +104,8 @@
       "loading": "Loading..."
     },
     "mapinfotooltip": {
-      "elevation": "Elevation"
+      "elevation": "Elevation",
+      "title": "Position"
     },
     "measureComponent": {
       "areaLabel": "Area",

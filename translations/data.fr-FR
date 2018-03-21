@@ -104,7 +104,8 @@
       "loading": "Chargement de la carte..."
     },
     "mapinfotooltip": {
-      "elevation": ""
+      "elevation": "",
+      "title": "Position"
     },
     "measureComponent": {
       "areaLabel": "Surface",
