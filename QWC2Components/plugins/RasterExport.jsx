@@ -106,7 +106,6 @@ class RasterExport extends React.Component {
                 <input type="hidden" name="SERVICE" value="WMS" readOnly="true" />
                 <input type="hidden" name="VERSION" value={themeLayers[0].version || "1.3.0"} readOnly="true" />
                 <input type="hidden" name="REQUEST" value="GetMap" readOnly="true" />
-                <input type="hidden" name="FORMAT" value="image/png" readOnly="true" />
                 <input type="hidden" name="LAYERS" value={exportLayers} readOnly="true" />
                 <input type="hidden" name="OPACITIES" value={exportOpacities} readOnly="true" />
                 <input type="hidden" name="TRANSPARENT" value="true" readOnly="true" />
