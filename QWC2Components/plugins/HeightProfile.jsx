@@ -136,10 +136,11 @@ class HeightProfile extends React.Component {
                         this.updateMapMarker(idx / this.props.samples * totLength);
                         if(this.tooltip) {
                             let sample = data.series[0][idx];
+                            let heighProfilePrecision = ConfigUtils.getConfigProp("heighProfilePrecision") || 0;
                             this.marker.style.visibility = this.tooltip.style.visibility = 'visible';
                             this.marker.style.left = this.tooltip.style.left = ev2.clientX + 'px';
-                            this.tooltip.innerHTML = "<b>" + distanceStr + ":</b> " + Math.round(sample.x) + " m<br />" +
-                                                     "<b>" + heightStr + ":</b> " + Math.round(sample.y) + " m " + aslStr;
+                            this.tooltip.innerHTML = "<b>" + distanceStr + ":</b> " + Math.round(sample.x * Math.pow(10, heighProfilePrecision))/Math.pow(10, heighProfilePrecision) + " m<br />" +
+                                                     "<b>" + heightStr + ":</b> " + Math.round(sample.y * Math.pow(10, heighProfilePrecision))/Math.pow(10, heighProfilePrecision) + " m " + aslStr;
                         }
                     });
                     ev.element._node.addEventListener("mouseout", ev2 => {
