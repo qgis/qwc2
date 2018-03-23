@@ -27,10 +27,12 @@ class HeightProfile extends React.Component {
         samples: PropTypes.number,
         mobile: PropTypes.bool,
         addMarker: PropTypes.func,
-        removeMarker: PropTypes.func
+        removeMarker: PropTypes.func,
+        heighProfilePrecision: PropTypes.number
     }
     static defaultProps = {
-        samples: 500
+        samples: 500,
+        heighProfilePrecision: 0
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -136,11 +138,13 @@ class HeightProfile extends React.Component {
                         this.updateMapMarker(idx / this.props.samples * totLength);
                         if(this.tooltip) {
                             let sample = data.series[0][idx];
-                            let heighProfilePrecision = ConfigUtils.getConfigProp("heighProfilePrecision") || 0;
+                            let heighProfilePrecision = this.props.heighProfilePrecision;
+                            let distance = Math.round(sample.x * Math.pow(10, heighProfilePrecision))/Math.pow(10, heighProfilePrecision);
+                            let height = Math.round(sample.y * Math.pow(10, heighProfilePrecision))/Math.pow(10, heighProfilePrecision);
                             this.marker.style.visibility = this.tooltip.style.visibility = 'visible';
                             this.marker.style.left = this.tooltip.style.left = ev2.clientX + 'px';
-                            this.tooltip.innerHTML = "<b>" + distanceStr + ":</b> " + Math.round(sample.x * Math.pow(10, heighProfilePrecision))/Math.pow(10, heighProfilePrecision) + " m<br />" +
-                                                     "<b>" + heightStr + ":</b> " + Math.round(sample.y * Math.pow(10, heighProfilePrecision))/Math.pow(10, heighProfilePrecision) + " m " + aslStr;
+                            this.tooltip.innerHTML = "<b>" + distanceStr + ":</b> " + distance + " m<br />" +
+                                                     "<b>" + heightStr + ":</b> " + height + " m " + aslStr;
                         }
                     });
                     ev.element._node.addEventListener("mouseout", ev2 => {
