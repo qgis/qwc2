@@ -26,7 +26,11 @@ class MapInfoTooltip extends React.Component {
     static propTypes = {
         enabled: PropTypes.bool,
         map: PropTypes.object,
-        displaycrs: PropTypes.string
+        displaycrs: PropTypes.string,
+        elevationPrecision: PropTypes.number
+    }
+    static defaultProps = {
+        elevationPrecision: 0
     }
     state = {
         coordinate: null, elevation: null, extraInfo: null
@@ -35,6 +39,7 @@ class MapInfoTooltip extends React.Component {
         messages: PropTypes.object
     }
     componentWillReceiveProps(newProps) {
+        console.log(this.props.elevationPrecision)
         let newPoint = newProps.map.clickPoint;
         if(!newProps.enabled || !newPoint || newPoint.button !== 2) {
             this.clear()
@@ -44,9 +49,10 @@ class MapInfoTooltip extends React.Component {
                 this.setState({coordinate: newPoint.coordinate, elevation: null});
                 let serviceParams = {pos: newPoint.coordinate.join(","), crs: newProps.map.projection};
                 let elevationService = ConfigUtils.getConfigProp("elevationServiceUrl").replace(/\/$/, '');
+                let elevationPrecision = this.props.elevationPrecision;
                 if(elevationService) {
                     axios.get(elevationService + '/getelevation', {params: serviceParams}).then(response => {
-                        this.setState({elevation: Math.round(response.data.elevation)});
+                        this.setState({elevation: Math.round(response.data.elevation * Math.pow(10, elevationPrecision))/Math.pow(10, elevationPrecision)});
                     }).catch(e => {});
                 }
                 let mapInfoService = ConfigUtils.getConfigProp("mapInfoService");
