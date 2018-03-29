@@ -188,7 +188,7 @@ class LayerTree extends React.Component {
         return (
             <div className="layertree-item-container" key={sublayer.uuid} data-id={JSON.stringify({layer: layer.uuid, path: path})}>
                 <div className={classnames(itemclasses)}>
-                    <span className="layertree-item-expander"></span>
+                    {this.props.flattenGroups ? null : (<span className="layertree-item-expander"></span>)}
                     <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.layerToggled(layer, path, sublayer.visibility, inMutuallyExclusiveGroup)}></span>
                     {legendicon}
                     <span className="layertree-item-title" title={title}>{title}</span>
