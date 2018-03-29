@@ -243,8 +243,8 @@ class LayerTree extends React.Component {
             let style = {
                 left: this.state.legendTooltip.x,
                 top: this.state.legendTooltip.y,
-                maxWidth: (window.innerWidth - this.state.legendTooltip.x - 5),
-                maxHeight: (window.innerHeight - this.state.legendTooltip.y - 5)
+                maxWidth: (window.innerWidth - this.state.legendTooltip.x - 2),
+                maxHeight: (window.innerHeight - this.state.legendTooltip.y - 2)
             };
             legendTooltip = (
                 <img className="layertree-item-legend-tooltip" style={style} src={this.state.legendTooltip.img} onTouchStart={this.hideLegendTooltip}></img>
