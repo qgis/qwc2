@@ -95,10 +95,21 @@
     width: 100%;
 }
 
-#IdentifyViewer td.identify-attr-title {
-    overflow: hidden;
+#IdentifyViewer table.attribute-list tr:nth-child(even) {
+    background-color: #F0F0F0;
+}
+
+#IdentifyViewer td.wrap {
+    word-wrap: break-word;
+}
+
+#IdentifyViewer td.ellipsis {
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+#IdentifyViewer td.identify-attr-title {
+    overflow: hidden;
     vertical-align: middle;
     width: 10ch;
     padding-right: 0.25em;
@@ -107,8 +118,6 @@
 #IdentifyViewer td.identify-attr-value {
     max-width: 0;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     vertical-align: middle;
 }
 

@@ -28,7 +28,8 @@ class IdentifyViewer extends React.Component {
         responses: PropTypes.array,
         addLayerFeatures: PropTypes.func,
         removeLayer: PropTypes.func,
-        enableExport: PropTypes.bool
+        enableExport: PropTypes.bool,
+        longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap'])
     }
     static defaultProps = {
         enableExport: true
@@ -38,7 +39,8 @@ class IdentifyViewer extends React.Component {
         resultTree: {},
         currentResult: null,
         currentLayer: null,
-        displayFieldMap: {}
+        displayFieldMap: {},
+        longAttributesDisplay: 'ellipsis'
 
     }
     componentWillReceiveProps(nextProps) {
@@ -252,8 +254,8 @@ class IdentifyViewer extends React.Component {
                         } else {
                             return (
                                 <tr key={attrib}>
-                                    <td className="identify-attr-title"><i>{attrib}</i></td>
-                                    <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: this.addLinkAnchors(result.properties[attrib])}}></td>
+                                    <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i>{attrib}</i></td>
+                                    <td className={"identify-attr-value " + this.props.longAttributesDisplay} dangerouslySetInnerHTML={{__html: this.addLinkAnchors(result.properties[attrib])}}></td>
                                 </tr>
                             );
                         }

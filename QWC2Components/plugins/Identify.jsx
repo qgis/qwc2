@@ -29,12 +29,14 @@ class Identify extends React.Component {
         addMarker: PropTypes.func,
         removeMarker: PropTypes.func,
         enableExport: PropTypes.bool,
+        longAttributesDisplay: PropTypes.string,
         initialWidth: PropTypes.number,
         initialHeight: PropTypes.number,
         params: PropTypes.object
     }
     static defaultProps = {
         enableExport: true,
+        longAttributesDisplay: 'ellipsis',
         initialWidth: 320,
         initialHeight: 400
     }
@@ -80,7 +82,8 @@ class Identify extends React.Component {
                     map={this.props.map}
                     missingResponses={missingResponses}
                     responses={this.props.responses}
-                    enableExport={this.props.enableExport} />
+                    enableExport={this.props.enableExport}
+                    longAttributesDisplay={this.props.longAttributesDisplay} />
             </ResizeableWindow>
         );
     }
