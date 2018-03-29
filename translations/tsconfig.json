@@ -78,6 +78,7 @@
     "locate.statustooltip.PERMISSION_DENIED",
     "map.loading",
     "mapinfotooltip.elevation",
+    "mapinfotooltip.title",
     "measureComponent.areaLabel",
     "measureComponent.bearingLabel",
     "measureComponent.lengthLabel",
