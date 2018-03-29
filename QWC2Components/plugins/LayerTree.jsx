@@ -43,7 +43,8 @@ class LayerTree extends React.Component {
         groupTogglesSublayers: PropTypes.bool,
         layerInfoWindowSize: PropTypes.object,
         flattenGroups: PropTypes.bool,
-        setSwipe: PropTypes.func
+        setSwipe: PropTypes.func,
+        legendThumbnail: PropTypes.string
     }
     static defaultProps = {
         layers: [],
@@ -178,7 +179,8 @@ class LayerTree extends React.Component {
         if(this.props.showLegendIcons) {
             if(layer.legendUrl) {
                 let request = layer.legendUrl + (layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + "SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + (layer.version || "1.3.0") + "&FORMAT=image/png&LAYER=" + sublayer.name + "&STYLE=default";
-                legendicon = (<img className="layertree-item-legend-thumbnail" src={request} onMouseOver={this.showLegendTooltip} onMouseOut={this.hideLegendTooltip} onTouchStart={this.showLegendTooltip} />);
+                let src = this.props.legendThumbnail ? ConfigUtils.getConfigProp("assetsPath") + '/img/' + this.props.legendThumbnail : request;
+                legendicon = (<img className="layertree-item-legend-thumbnail" src={src} onMouseOver={ev => this.showLegendTooltip(ev, request)} onMouseOut={this.hideLegendTooltip} onTouchStart={ev => this.showLegendTooltip(ev, request)} />);
             } else if(layer.color) {
                 legendicon = (<span className="layertree-item-legend-coloricon" style={{backgroundColor: sublayer.color}} />);
             }
@@ -413,12 +415,12 @@ class LayerTree extends React.Component {
     layerMenuToggled = (sublayeruuid) => {
         this.setState({activemenu: this.state.activemenu === sublayeruuid ? null : sublayeruuid});
     }
-    showLegendTooltip = (ev) => {
+    showLegendTooltip = (ev, request) => {
         this.setState({
             legendTooltip: {
                 x: ev.target.getBoundingClientRect().right,
                 y: ev.target.getBoundingClientRect().top,
-                img: ev.target.src
+                img: request
             }
         });
     }
