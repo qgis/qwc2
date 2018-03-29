@@ -39,7 +39,6 @@ class MapInfoTooltip extends React.Component {
         messages: PropTypes.object
     }
     componentWillReceiveProps(newProps) {
-        console.log(this.props.elevationPrecision)
         let newPoint = newProps.map.clickPoint;
         if(!newProps.enabled || !newPoint || newPoint.button !== 2) {
             this.clear()
