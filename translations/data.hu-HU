@@ -1,0 +1,159 @@
+{
+  "locale": "hu-HU",
+  "messages": {
+    "appmenu": {
+      "items": {
+        "DxfExport": "DXF Exportálás",
+        "Help": "Segítség",
+        "LayerTree": "Fóliák és jelmagyarázat",
+        "Measure": "Mérés",
+        "Print": "Nyomtatás",
+        "RasterExport": "Kép exportálása",
+        "Share": "Megosztható link",
+        "ThemeSwitcher": "Térkép",
+        "Tools": "Térkép eszközök",
+        "IdentifyRegion": "Adatok lekérdezése",
+        "Redlining": "Redlining",
+        "Editing": "Szerkesztés"
+      },
+      "menulabel": "Eszközök"
+    },
+    "bgswitcher": {
+      "nobg": "Nincs háttér"
+    },
+    "bottombar": {
+      "mousepos_label": "Koordináták",
+      "scale_label": "Mérték",
+      "terms_label": "Használati feltételek",
+      "viewertitle_label": "T4Terv TRT"
+    },
+    "copybtn": {
+      "click_to_copy": "Kattints a másoláshoz",
+      "copied": "Kimásolva"
+    },
+    "dxfexport": {
+      "selectinfo": "Rajzolj egy négyszöget az exportálni kívánt terület köré...",
+      "symbologyscale": "Jel mérték:"
+    },
+    "editing": {
+      "canceldelete": "Don't delete",
+      "commit": "Commit",
+      "delete": "Delete",
+      "discard": "Discard",
+      "draw": "Draw",
+      "fields": "Fields",
+      "layer": "Layer",
+      "noeditablelayers": "No editable layers.",
+      "pick": "Pick",
+      "reallydelete": "Delete"
+    },
+    "fileselector": {
+      "placeholder": "Fájl választása..."
+    },
+    "heightprofile": {
+      "asl": "a.s.l.",
+      "distance": "Távolsák",
+      "height": "Magasság"
+    },
+    "identify": {
+      "querying": "Lekérdezés...",
+      "noresults": "Nincs információ a kiválasztott pontról",
+      "export": "Exportálás",
+      "featureReport": "Lekérdezés eredménye",
+      "title": "Lekérdezés információ"
+    },
+    "identifyregion": {
+      "info": "Rajzolj egy poligont a lekérdezni kívánt terület köré..."
+    },
+    "importlayer": {
+      "addlayer": "Fólia hozzáadása",
+      "filter": "Szűrés...",
+      "connect": "Kapcsolódás",
+      "nofeatures": "No features could be imported.",
+      "urlplaceholder": "Enter URL to WMS, WFS, KML..."
+    },
+    "layerinfo": {
+      "title": "Fólia információ",
+      "abstract": "Kivonat",
+      "attribution": "Attribution",
+      "keywords": "Keywords",
+      "dataUrl": "Data URL",
+      "metadataUrl": "Metadata URL",
+      "legend": "Legend"
+    },
+    "layertree": {
+      "compare": "Összehasonlítás a felső fóliával",
+      "importlayer": "Fólia importálása",
+      "maptip": "Show layer map tips",
+      "printlegend": "Print legend",
+      "transparency": "Átlátszóság"
+    },
+    "locate": {
+      "metersUnit": "méter",
+      "feetUnit": "feet",
+      "popup": "You are within {distance} {unit} from this point",
+      "statustooltip": {
+        "DISABLED": "Disabled",
+        "LOCATING": "Locating...",
+        "ENABLED": "Enabled",
+        "FOLLOWING": "Following",
+        "PERMISSION_DENIED": "Permission denied"
+      }
+    },
+    "map": {
+      "loading": "Betöltés..."
+    },
+    "mapinfotooltip": {
+      "elevation": "Magasság",
+      "title": "Pozíció"
+    },
+    "measureComponent": {
+      "areaLabel": "Terület",
+      "bearingLabel": "Szög",
+      "lengthLabel": "Hossz",
+      "pointLabel": "Pozíció"
+    },
+    "print": {
+      "layout": "Layout:",
+      "grid": "Grid:",
+      "nolayouts": "The selected theme does not support printing",
+      "notheme": "No theme selected",
+      "resolution": "Resolution:",
+      "rotation": "Rotation:",
+      "scale": "Scale:",
+      "submit": "Print"
+    },
+    "rasterexport": {
+      "format": "Formátum:",
+      "resolution": "Felbontás:",
+      "selectinfo": "Rajzolj egy négyszöget az exportálni kívánt terület köré..."
+    },
+    "redlining": {
+      "border": "Border",
+      "fill": "Fill",
+      "label": "Label",
+      "line": "Line",
+      "outline": "Outline",
+      "pick": "Pick",
+      "point": "Point",
+      "polygon": "Polygon",
+      "size": "Size",
+      "text": "Text",
+      "width": "Width"
+    },
+    "search": {
+      "more": "Több...",
+      "search": "Keresés",
+      "all": "Minden"
+    },
+    "share": {
+      "directLinkTitle": "Via a direct link",
+      "generatingpermalink": "Generating permalink...",
+      "QRCodeLinkTitle": "qr code",
+      "socialIntro": "In your favourite social network"
+    },
+    "themeswitcher": {
+      "filter": "Szűrés..."
+    }
+  }
+}
