@@ -83,7 +83,7 @@ class Redlining extends React.Component {
                     </span>
                     <span>
                         <span>{sizeLabel}:</span>
-                        <NumericInput mobile min={0} max={99} value={this.props.redlining.size} onChange={(nr) => this.updateRedliningState({size: nr})}/>
+                        <NumericInput mobile min={1} max={99} value={this.props.redlining.size} onChange={(nr) => this.updateRedliningState({size: nr})}/>
                     </span>
                     <span>
                         <input ref={el => this.labelInput = el} className="redlining-label" type="text" placeholder={labelPlaceholder} value={this.props.redlining.text} onChange={(ev) => this.updateRedliningState({text: ev.target.value})}/>
