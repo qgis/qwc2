@@ -43,6 +43,11 @@ class IdentifyViewer extends React.Component {
         longAttributesDisplay: 'ellipsis'
 
     }
+    constructor(props) {
+        super(props);
+        this.currentResultElRef = null;
+        this.scrollIntoView = false;
+    }
     componentWillReceiveProps(nextProps) {
         if(nextProps.theme && nextProps.theme != this.props.theme) {
             let displayFieldMap = {};
@@ -63,6 +68,15 @@ class IdentifyViewer extends React.Component {
     componentWillUpdate(nextProps, nextState) {
         if(nextState.currentResult !== this.state.currentResult || nextState.resultTree !== this.state.resultTree) {
             this.setHighlightedResults(nextState.currentResult === null ? null : [nextState.currentResult], nextState.resultTree)
+        }
+    }
+    componentDidUpdate(prevProps, prevState) {
+        // Scroll to selected result
+        if(this.state.currentResult && this.state.currentResult !== prevState.currentResult &&
+        this.currentResultElRef && this.scrollIntoView) {
+            this.currentResultElRef.scrollIntoView();
+            this.scrollIntoView = false;
+            this.currentResultElRef = null;
         }
     }
     componentWillUnmount() {
@@ -144,6 +158,7 @@ class IdentifyViewer extends React.Component {
             this.setState(assign({}, this.state, {currentResult: null, currentLayer: null}));
         } else {
             this.setState(assign({}, this.state, {currentResult: result, currentLayer: layer}));
+            this.scrollIntoView = true;
         }
     }
     removeResult = (layer, result) => {
@@ -277,13 +292,14 @@ class IdentifyViewer extends React.Component {
         if(!displayName) {
             displayName = result.id;
         }
+        let ref = this.state.currentResult === result && this.scrollIntoView ? el => this.currentResultElRef = el : null;
         return (
             <li key={result.id}
                 className="identify-feature-result"
                 onMouseOver={() => this.setHighlightedResults([result], this.state.resultTree)}
                 onMouseOut={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
             >
-                <span className={this.state.currentResult === result ? "active clickable" : "clickable"} onClick={()=> this.setCurrentResult(layer, result)}>{displayName}</span>
+                <span className={this.state.currentResult === result ? "active clickable" : "clickable"} onClick={()=> this.setCurrentResult(layer, result)} ref={ref}>{displayName}</span>
                 <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResult(layer, result)} />
                 {this.props.enableExport ? (<Glyphicon className="identify-export-result" glyph="export" onClick={() => this.exportResult(layer, result)} />) : null}
             </li>
