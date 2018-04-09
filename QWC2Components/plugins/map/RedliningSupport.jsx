@@ -35,6 +35,7 @@ class RedliningSupport extends React.Component {
         this.currentFeature = null;
         this.selectedTextStyle = (feature, opts) => new ol.style.Style({
             text: new ol.style.Text({
+                font: '12pt sans',
                 text: feature.getProperties()["label"] || "",
                 scale: opts.strokeWidth,
                 fill: new ol.style.Fill({color: opts.fillColor}),
