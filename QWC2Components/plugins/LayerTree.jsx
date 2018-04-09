@@ -269,7 +269,7 @@ class LayerTree extends React.Component {
                     extraTitlebarContent={extraTitlebarContent}>
                     <div role="body" className="layertree-container">
                         <div className="layertree-tree" onTouchMove={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}>
-                            <Sortable options={{disabled: this.props.flattenGroups !== true}} onChange={this.onSortChange}>
+                            <Sortable options={{disabled: this.props.flattenGroups !== true, ghostClass: 'drop-ghost'}} onChange={this.onSortChange}>
                                 {this.props.layers.map(this.renderLayerTree)}
                             </Sortable>
                         </div>

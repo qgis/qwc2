@@ -22,6 +22,11 @@
     margin-right: 0.25em;
 }
 
+#LayerTree div.layertree-tree .drop-ghost {
+    outline: 1px solid #ccc;
+    background-color: white;
+}
+
 #LayerTree div.layertree-option {
     flex: 0 0 auto;
     height: 2.25em;
