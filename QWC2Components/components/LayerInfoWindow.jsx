@@ -8,6 +8,7 @@
 
 const React = require('react');
 const PropTypes = require('prop-types');
+const {connect} = require('react-redux');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const ResizeableWindow = require("../components/ResizeableWindow");
 require('./style/LayerInfoWindow.css');
@@ -17,7 +18,8 @@ class LayerInfoWindow extends React.Component {
         layer: PropTypes.object,
         sublayer: PropTypes.object,
         onClose: PropTypes.func,
-        windowSize: PropTypes.object
+        windowSize: PropTypes.object,
+        map: PropTypes.object
     }
     renderLink(text, url) {
         return url ? (<a href={url} target="_blank">{text}</a>) : text ? text : null;
@@ -36,7 +38,16 @@ class LayerInfoWindow extends React.Component {
     render() {
         let legend = null;
         if(this.props.layer.legendUrl) {
-            let request = this.props.layer.legendUrl + (this.props.layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + "SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + (this.props.layer.version || "1.3.0") + "&FORMAT=image/png&LAYER=" + this.props.sublayer.name + "&STYLE=default";
+            let requestParams = "SERVICE=WMS" +
+                                "&REQUEST=GetLegendGraphic" +
+                                "&VERSION=" + (this.props.layer.version || "1.3.0") +
+                                "&FORMAT=image/png" +
+                                "&LAYER=" + this.props.sublayer.name +
+                                "&STYLE=default" +
+                                "&BBOX=" + this.props.map.bbox.bounds.join(",") +
+                                "&CRS=" + this.props.map.projection +
+                                "&SCALE=" + this.props.map.scales[this.props.map.zoom];
+            let request = this.props.layer.legendUrl + (this.props.layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + requestParams;
             legend = (<img className="layer-info-window-legend" src={request} />);
         }
         return (
@@ -61,4 +72,8 @@ class LayerInfoWindow extends React.Component {
     }
 };
 
-module.exports = LayerInfoWindow;
+const selector = state => ({
+    map: state.map
+});
+
+module.exports = connect(selector)(LayerInfoWindow);
