@@ -81,14 +81,23 @@
     top: 0.4em;
 }
 
-#IdentifyViewer .identify-result-box {
+#IdentifyViewer .identify-result-title {
     margin-top: 0.5em;
+    background-color: @item_border@;
+    padding: 0.25em;
+    font-weight: bold;
+    flex: 0 0 auto;
+    font-size: small;
+}
+
+#IdentifyViewer .identify-result-box {
     border: 1px solid @item_border@;
+    border-radius: 0;
     background-color: white;
     font-size: small;
-    padding: 0.25em;
     overflow: auto;
-    flex: 1 1 50%;
+    flex: 1 1 45%;
+    padding: 0.25em;
 }
 
 #IdentifyViewer table.attribute-list {

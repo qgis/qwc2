@@ -205,6 +205,21 @@ class IdentifyViewer extends React.Component {
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
     }
+    resultDisplayName = (result) => {
+        let displayName = "";
+        try {
+            let displayFieldName = this.state.displayFieldMap[layer];
+            displayName = result.properties[displayFieldName];
+        } catch(e) {
+        }
+        if((!displayName || displayName[0] === "<") && result.properties) {
+            displayName = result.properties.name || result.properties.Name || result.properties.NAME || "";
+        }
+        if(!displayName) {
+            displayName = result.id;
+        }
+        return displayName;
+    }
     addLinkAnchors = (text) => {
         let value = text;
         while(match = urlRegEx.exec(value)) {
@@ -233,65 +248,59 @@ class IdentifyViewer extends React.Component {
         if(!result) {
             return null;
         }
+        let resultbox = null;
         if(result.type === "text") {
-            return (
-                <pre className="identify-result-box">
+            resultbox = (
+                <pre key="identify-result-box" className="identify-result-box">
                     {result.text}
                 </pre>
             );
         } else if(result.type === "html") {
-            return (
-                <iframe className="identify-result-box" src={"data:text/html," + encodeURIComponent(result.text)}></iframe>
+            resultbox = (
+                <iframe key="identify-result-box" className="identify-result-box" src={"data:text/html," + encodeURIComponent(result.text)}></iframe>
+            );
+        } else if(result.properties.htmlContent) {
+            resultbox = (
+                <iframe key="identify-result-box" className="identify-result-box" src={"data:text/html," + encodeURIComponent(result.properties.htmlContent)}></iframe>
+            );
+        } else {
+            let properties = Object.keys(result.properties);
+            if(properties.length === 0) {
+                return null;
+            }
+            resultbox = (
+                <div key="identify-result-box" className="identify-result-box">
+                    <table className="attribute-list"><tbody>
+                        {properties.map(attrib => {
+                            if(this.props.theme.skipEmptyFeatureAttributes && (!result.properties[attrib] || result.properties[attrib] === "NULL")) {
+                                return null;
+                            }
+                            if(properties.length === 1 && result.properties["maptip"]) {
+                                return (
+                                    <tr key={attrib}>
+                                        <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: this.addLinkAnchors(result.properties[attrib])}}></td>
+                                    </tr>
+                                );
+                            } else {
+                                return (
+                                    <tr key={attrib}>
+                                        <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i>{attrib}</i></td>
+                                        <td className={"identify-attr-value " + this.props.longAttributesDisplay} dangerouslySetInnerHTML={{__html: this.addLinkAnchors(result.properties[attrib])}}></td>
+                                    </tr>
+                                );
+                            }
+                        })}
+                    </tbody></table>
+                </div>
             );
         }
-        if(result.properties.htmlContent) {
-            return (
-                <iframe className="identify-result-box" src={"data:text/html," + encodeURIComponent(result.properties.htmlContent)}></iframe>
-            );
-        }
-        let properties = Object.keys(result.properties);
-        if(properties.length === 0) {
-            return null;
-        }
-        return (
-            <div className="identify-result-box">
-                <table className="attribute-list"><tbody>
-                    {properties.map(attrib => {
-                        if(this.props.theme.skipEmptyFeatureAttributes && (!result.properties[attrib] || result.properties[attrib] === "NULL")) {
-                            return null;
-                        }
-                        if(properties.length === 1 && result.properties["maptip"]) {
-                            return (
-                                <tr key={attrib}>
-                                    <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: this.addLinkAnchors(result.properties[attrib])}}></td>
-                                </tr>
-                            );
-                        } else {
-                            return (
-                                <tr key={attrib}>
-                                    <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i>{attrib}</i></td>
-                                    <td className={"identify-attr-value " + this.props.longAttributesDisplay} dangerouslySetInnerHTML={{__html: this.addLinkAnchors(result.properties[attrib])}}></td>
-                                </tr>
-                            );
-                        }
-                    })}
-                </tbody></table>
-            </div>
-        );
+        return [
+            (<div key="identify-result-title" className="identify-result-title">{this.state.currentLayer + ": " + this.resultDisplayName(this.state.currentResult)}</div>),
+            resultbox
+        ];
     }
     renderResult = (layer, result) => {
-        let displayName = "";
-        try {
-            let displayFieldName = this.state.displayFieldMap[layer];
-            displayName = result.properties[displayFieldName];
-        } catch(e) {
-        }
-        if((!displayName || displayName[0] === "<") && result.properties) {
-            displayName = result.properties.name || result.properties.Name || result.properties.NAME || "";
-        }
-        if(!displayName) {
-            displayName = result.id;
-        }
+        let displayName = this.resultDisplayName(result);
         let ref = this.state.currentResult === result && this.scrollIntoView ? el => this.currentResultElRef = el : null;
         return (
             <li key={result.id}
