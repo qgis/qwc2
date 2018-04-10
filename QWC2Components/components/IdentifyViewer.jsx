@@ -24,6 +24,7 @@ let urlRegEx = /((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}
 class IdentifyViewer extends React.Component {
     static propTypes = {
         theme: PropTypes.object,
+        mapcrs: PropTypes.string,
         missingResponses: PropTypes.number,
         responses: PropTypes.array,
         addLayerFeatures: PropTypes.func,
@@ -99,6 +100,11 @@ class IdentifyViewer extends React.Component {
             newResults[response.request.metadata.layer] = [{type: "text", text: response.data, id: response.request.metadata.posstr}];
         } else if(response.request.params.info_format === "text/html") {
             newResults[response.request.metadata.layer] = [{type: "html", text: response.data, id: response.request.metadata.posstr}];
+        }
+        for(let key of Object.keys(newResults)) {
+            for(let item of newResults[key]) {
+                item["clickPos"] = response.request.metadata.pos;
+            }
         }
         // Merge with previous
         Object.keys(newResults).map(layer => {
@@ -373,7 +379,10 @@ class IdentifyViewer extends React.Component {
         let serviceUrl = ConfigUtils.getConfigProp("featureReportService");
         let params = {
             template: this.props.theme.featureReport[this.state.currentLayer],
-            feature: this.state.currentResult.id
+            feature: this.state.currentResult.id,
+            x: this.state.currentResult.clickPos[0],
+            y: this.state.currentResult.clickPos[1],
+            crs: this.props.mapcrs
         };
         axios.get(serviceUrl, {params: params}).then(response => {
             let contentType = response.headers["content-type"];

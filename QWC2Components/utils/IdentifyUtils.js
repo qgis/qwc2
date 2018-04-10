@@ -60,7 +60,8 @@ const IdentifyUtils = {
             },
             metadata: {
                 layer: layer.title,
-                posstr: center[0].toFixed(digits) + ", " + center[1].toFixed(digits)
+                posstr: center[0].toFixed(digits) + ", " + center[1].toFixed(digits),
+                pos: center
             }
         };
     },
