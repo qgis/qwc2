@@ -437,8 +437,10 @@ class LayerTree extends React.Component {
         let body = '<p id="legendcontainerbody">';
         body += this.props.layers.map(layer => {
             if(layer.legendUrl) {
-                let request = layer.legendUrl + (layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + "SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + (layer.version || "1.3.0") + "&FORMAT=image/png&LAYER=" + layer.params.LAYERS + "&STYLE=default";
-                return '<div><img src="' + request + '" /></div>';
+                return layer.params.LAYERS.split(",").map(sublayer => {
+                    let request = layer.legendUrl + (layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + "SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + (layer.version || "1.3.0") + "&FORMAT=image/png&LAYER=" + sublayer + "&STYLE=default";
+                    return '<div><img src="' + request + '" /></div>';
+                }).join("\n");
             } else if(layer.color) {
                 return '<div><span style="display: inline-block; width: 1em; height: 1em; box-shadow: inset 0 0 0 1000px ' + layer.color + '; margin: 0.25em; border: 1px solid black;">&nbsp;</span>' + (layer.title || layer.name) + '</div>';
             } else {
