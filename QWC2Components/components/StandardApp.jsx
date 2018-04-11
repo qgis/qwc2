@@ -149,7 +149,7 @@ class StandardApp extends React.Component {
     }
     constructor(props) {
         super(props);
-        this.store = StandardStore(this.props.appConfig.initialState || {}, this.props.appConfig.pluginsDef.plugins, {onPersist: this.init});
+        this.store = StandardStore(this.props.appConfig.initialState || {}, this.props.appConfig.pluginsDef.plugins, {onPersist: this.init}, this.props.appConfig.actionLogger);
         this.init();
         // Save initial params before they get overwritten
         this.initialParams = UrlParams.getParams();

@@ -18,7 +18,7 @@ const {persistStore, autoRehydrate} = require('redux-persist');
 
 const SecurityUtils = require('../../MapStore2Components/utils/SecurityUtils');
 
-module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeOpts) => {
+module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeOpts, actionLogger) => {
     const allReducers = combineReducers({
         localConfig: require('../../MapStore2Components/reducers/localConfig'),
         locale: require('../../MapStore2Components/reducers/locale'),
@@ -31,6 +31,9 @@ module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeO
     const mobileOverride = initialState.mobile;
 
     const rootReducer = (state, action) => {
+        if(actionLogger) {
+            actionLogger(action);
+        }
         let newState = {
             ...allReducers(state, action),
         };
