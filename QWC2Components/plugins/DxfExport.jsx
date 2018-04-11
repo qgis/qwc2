@@ -43,7 +43,7 @@ class DxfExport extends React.Component {
                 <input type="hidden" name="FORMAT" value="application/dxf" readOnly="true" />
                 <input type="hidden" name="LAYERS" value={themeSubLayers} readOnly="true" />
                 <input type="hidden" name="CRS" value={this.props.map.projection} readOnly="true" />
-                <input type="hidden" name="FILENAME" value={this.props.theme.name + ".dxf"} readOnly="true" />
+                <input type="hidden" name="FILE_NAME" value={this.props.theme.name + ".dxf"} readOnly="true" />
                 <input ref={input => this.extentInput = input} type="hidden" name="BBOX" value="" readOnly="true" />
                 </form>
             </span>
