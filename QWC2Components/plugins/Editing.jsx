@@ -104,9 +104,18 @@ class Editing extends React.Component {
             input = (
                 <span className="input-frame">
                     <select value={value} onChange={ev => this.updateField(field.id, ev.target.value)}>
-                        {constraints.values.map((item,index) => { return (
-                            <option key={field.id + index} value={item}>{item}</option>
-                        );})}
+                        {constraints.values.map((item,index) => {
+                            let value = "", label = "";
+                            if(typeof(item) === 'string') {
+                                value = label = item;
+                            } else {
+                                value = item.value;
+                                label = item.label;
+                            }
+                            return (
+                                <option key={field.id + index} value={value}>{label}</option>
+                            );
+                        })}
                     </select>
                 </span>
             );
