@@ -45,7 +45,8 @@
       "layer": "Strat",
       "noeditablelayers": "Tema nu conține straturi ce se pot modifica",
       "pick": "Alege",
-      "reallydelete": "Șterge"
+      "reallydelete": "Șterge",
+      "select": ""
     },
     "fileselector": {
       "placeholder": "Selectează fișierul"

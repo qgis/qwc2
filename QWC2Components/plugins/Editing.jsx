@@ -14,6 +14,7 @@ const isEqual = require('lodash.isequal');
 const assign = require('object-assign');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
+const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeEditingState} = require('../actions/editing');
 const {setCurrentTaskBlocked} = require('../actions/task');
@@ -37,6 +38,9 @@ class Editing extends React.Component {
         changeEditingState: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
         refreshLayer: PropTypes.func
+    }
+    static contextTypes = {
+        messages: PropTypes.object
     }
     state = {
         selectedLayer: null,
@@ -104,6 +108,7 @@ class Editing extends React.Component {
             input = (
                 <span className="input-frame">
                     <select value={value} onChange={ev => this.updateField(field.id, ev.target.value)}>
+                        <option value="" disabled>{LocaleUtils.getMessageById(this.context.messages, "editing.select")}</option>
                         {constraints.values.map((item,index) => {
                             let value = "", label = "";
                             if(typeof(item) === 'string') {

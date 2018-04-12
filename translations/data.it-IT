@@ -45,7 +45,8 @@
       "layer": "Livello",
       "noeditablelayers": "Nessun livello editabile",
       "pick": "Seleziona",
-      "reallydelete": "Elimina"
+      "reallydelete": "Elimina",
+      "select": ""
     },
     "fileselector": {
       "placeholder": "Seleziona file..."

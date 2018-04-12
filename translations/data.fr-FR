@@ -45,7 +45,8 @@
       "layer": "Calque",
       "noeditablelayers": "Il n'y a pas de calque éditable pour ce thème",
       "pick": "Choisir",
-      "reallydelete": "Supprimer"
+      "reallydelete": "Supprimer",
+      "select": ""
     },
     "fileselector": {
       "placeholder": "Choisir un fichier..."

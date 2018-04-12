@@ -45,7 +45,8 @@
       "layer": "Camada",
       "noeditablelayers": "Camadas não editáveis.",
       "pick": "Pegar",
-      "reallydelete": "Deletar"
+      "reallydelete": "Deletar",
+      "select": ""
     },
     "fileselector": {
       "placeholder": "Selecione arquivo..."
