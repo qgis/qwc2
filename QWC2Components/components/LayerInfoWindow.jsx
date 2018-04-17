@@ -46,7 +46,9 @@ class LayerInfoWindow extends React.Component {
                                 "&STYLE=default" +
                                 "&BBOX=" + this.props.map.bbox.bounds.join(",") +
                                 "&CRS=" + this.props.map.projection +
-                                "&SCALE=" + this.props.map.scales[this.props.map.zoom];
+                                "&SCALE=" + this.props.map.scales[this.props.map.zoom] +
+                                "&WIDTH=" + this.props.map.size.width +
+                                "&HEIGHT=" + this.props.map.size.height;
             let request = this.props.layer.legendUrl + (this.props.layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + requestParams;
             legend = (<img className="layer-info-window-legend" src={request} />);
         }
