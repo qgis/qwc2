@@ -94,11 +94,11 @@
       "feetUnit": "feet",
       "popup": "You are within {distance} {unit} from this point",
       "statustooltip": {
-        "DISABLED": "Disabled",
-        "LOCATING": "Locating...",
-        "ENABLED": "Enabled",
-        "FOLLOWING": "Following",
-        "PERMISSION_DENIED": "Permission denied"
+        "DISABLED": "Position: disabled",
+        "LOCATING": "Position: locating...",
+        "ENABLED": "Position: enabled",
+        "FOLLOWING": "Position: following",
+        "PERMISSION_DENIED": "Position: permission denied"
       }
     },
     "map": {
@@ -152,6 +152,12 @@
       "generatingpermalink": "Generating permalink...",
       "QRCodeLinkTitle": "qr code",
       "socialIntro": "In your favourite social network"
+    },
+    "tooltip": {
+      "home": "Show entire map",
+      "zoomin": "Zoom in",
+      "zoomout": "Zoom out",
+      "background": "Switch background"
     },
     "themeswitcher": {
       "filter": "Filter..."

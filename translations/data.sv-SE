@@ -153,6 +153,12 @@
       "QRCodeLinkTitle": "qr kod",
       "socialIntro": "I ditt favoritnätverk"
     },
+    "tooltip": {
+      "home": "",
+      "zoomin": "",
+      "zoomout": "",
+      "background": ""
+    },
     "themeswitcher": {
       "filter": "Filtrera..."
     }

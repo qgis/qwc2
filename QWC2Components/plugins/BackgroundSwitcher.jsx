@@ -12,6 +12,7 @@ const {connect} = require('react-redux');
 const classnames = require('classnames');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const Message = require('../../MapStore2Components/components/I18N/Message');
+const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const {changeLayerProperties} = require('../actions/layers');
 const {setCurrentTask} = require('../actions/task');
 require('./style/BackgroundSwitcher.css');
@@ -28,7 +29,11 @@ class BackgroundSwitcher extends React.Component {
         visible: false,
         position: 0
     }
+    static contextTypes = {
+        messages: PropTypes.object
+    }
     render() {
+        let tooltip = LocaleUtils.getMessageById(this.context.messages, "tooltip.background");
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let classes = classnames({
             "Button": true,
@@ -38,7 +43,7 @@ class BackgroundSwitcher extends React.Component {
         if(backgroundLayers.length > 0){
              return (
                 <div>
-                    <button className={classes}
+                    <button className={classes} title={tooltip}
                         onClick={this.buttonClicked} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
                         <img src={assetsPath + '/img/bglayer.svg'} />
                     </button>

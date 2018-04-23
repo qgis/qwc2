@@ -153,6 +153,12 @@
       "QRCodeLinkTitle": "QR code",
       "socialIntro": "Via votre réseau social favori"
     },
+    "tooltip": {
+      "home": "",
+      "zoomin": "",
+      "zoomout": "",
+      "background": ""
+    },
     "themeswitcher": {
       "filter": "Filtre"
     }

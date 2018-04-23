@@ -10,6 +10,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
+const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const {zoomToExtent} = require('../actions/map');
 require('./style/Buttons.css');
 
@@ -22,9 +23,13 @@ class HomeButton extends React.Component {
     static defaultProps = {
         position: 5
     }
+    static contextTypes = {
+        messages: PropTypes.object
+    }
     render() {
+        let tooltip = LocaleUtils.getMessageById(this.context.messages, "tooltip.home");
         return (
-            <button className="Button" onClick={this.resetExtent} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
+            <button className="Button" onClick={this.resetExtent} style={{bottom: (5 + 4 * this.props.position) + 'em'}} title={tooltip}>
                 <Glyphicon glyph="home"/>
             </button>
         );

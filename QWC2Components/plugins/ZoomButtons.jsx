@@ -10,6 +10,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {Glyphicon} = require('react-bootstrap');
+const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const {changeZoomLevel} = require('../actions/map');
 require('./style/Buttons.css');
 
@@ -21,14 +22,19 @@ class ZoomButton extends React.Component {
         maxZoom: PropTypes.number,
         direction: PropTypes.number
     }
+    static contextTypes = {
+        messages: PropTypes.object
+    }
     render() {
         let position = this.props.position >= 0 ? this.props.position : (this.props.direction > 0 ? 4 : 3);
         let disabled = (this.props.currentZoom + this.props.direction > this.props.maxZoom) || (this.props.currentZoom + this.props.direction < 0);
+        let tooltip = LocaleUtils.getMessageById(this.context.messages, this.props.direction > 0 ? "tooltip.zoomin" : "tooltip.zoomout");
         return (
             <button className="Button"
                 onClick={ev => this.props.changeZoomLevel(this.props.currentZoom + this.props.direction)}
                 style={{bottom: (5 + 4 * position) + 'em'}}
                 disabled={disabled}
+                title={tooltip}
             >
                 <Glyphicon glyph={this.props.direction > 0 ? "plus" : "minus"}/>
             </button>

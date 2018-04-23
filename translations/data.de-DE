@@ -94,11 +94,11 @@
       "feetUnit": "Fuss",
       "popup": "Im Umkreis von {distance} {unit} von diesem Punkt",
       "statustooltip": {
-        "DISABLED": "Deaktiviert",
-        "LOCATING": "Position wird bestimmt...",
-        "ENABLED": "Aktiviert",
-        "FOLLOWING": "Mit GPS bewegen",
-        "PERMISSION_DENIED": "Zugriff verweigert"
+        "DISABLED": "Position: deaktiviert",
+        "LOCATING": "Position: wird bestimmt...",
+        "ENABLED": "Position: aktiviert",
+        "FOLLOWING": "Position: mit GPS bewegen",
+        "PERMISSION_DENIED": "Position: zugriff verweigert"
       }
     },
     "map": {
@@ -152,6 +152,12 @@
       "generatingpermalink": "Permalink wird erzeugt",
       "QRCodeLinkTitle": "QR Code (Smartphone)",
       "socialIntro": "In den sozialen Medien"
+    },
+    "tooltip": {
+      "home": "Ganze Karte anzeigen",
+      "zoomin": "Hineinzoomen",
+      "zoomout": "Hinauszoomen",
+      "background": "Hintergrundkarte wechseln"
     },
     "themeswitcher": {
       "filter": "Filter"

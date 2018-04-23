@@ -153,6 +153,12 @@
       "QRCodeLinkTitle": "cod QR",
       "socialIntro": "În rețeaua socială favorită"
     },
+    "tooltip": {
+      "home": "",
+      "zoomin": "",
+      "zoomout": "",
+      "background": ""
+    },
     "themeswitcher": {
       "filter": "Filtrare"
     }

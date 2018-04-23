@@ -113,6 +113,10 @@
     "share.generatingpermalink",
     "share.QRCodeLinkTitle",
     "share.socialIntro",
+    "tooltip.home",
+    "tooltip.zoomin",
+    "tooltip.zoomout",
+    "tooltip.background",
     "themeswitcher.filter"
   ]
 }

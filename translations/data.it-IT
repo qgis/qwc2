@@ -46,7 +46,7 @@
       "noeditablelayers": "Nessun livello editabile",
       "pick": "Seleziona",
       "reallydelete": "Elimina",
-      "select": ""
+      "select": "Seleziona..."
     },
     "fileselector": {
       "placeholder": "Seleziona file..."
@@ -94,11 +94,11 @@
       "feetUnit": "piedi",
       "popup": "Sei entro {distance} {unit} da questa posizione",
       "statustooltip": {
-        "DISABLED": "Disattivato",
-        "LOCATING": "Determinando la posizione",
-        "ENABLED": "Attivato",
-        "FOLLOWING": "Seguendo",
-        "PERMISSION_DENIED": "Permesso negato"
+        "DISABLED": "Posizione: disattivato",
+        "LOCATING": "Posizione: rilevando",
+        "ENABLED": "Posizione: attivato",
+        "FOLLOWING": "Posizione: seguendo",
+        "PERMISSION_DENIED": "Posizione: permesso negato"
       }
     },
     "map": {
@@ -152,6 +152,12 @@
       "generatingpermalink": "Generando il permalink",
       "QRCodeLinkTitle": "Codice QR",
       "socialIntro": "Social network"
+    },
+    "tooltip": {
+      "home": "Mostra mappa intera",
+      "zoomin": "Ingrandisci",
+      "zoomout": "Rimpicciolisci",
+      "background": "Cambia sfondo"
     },
     "themeswitcher": {
       "filter": "Filtra..."
