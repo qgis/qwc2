@@ -97,7 +97,7 @@ function toArray(obj) {
 }
 
 // recursively get layer tree
-function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap) {
+function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, featureReports) {
     if (printLayers.indexOf(layer.Name) !== -1) {
         // skip print layers
         return;
@@ -166,13 +166,16 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
                 ]
             };
         }
+        if(featureReports[layer.Name]) {
+            layerEntry.featureReport = featureReports[layer.Name];
+        }
     } else {
         // group
         layerEntry.mutuallyExclusive = (layer.$ || {}).mutuallyExclusive === '1';
         layerEntry.sublayers = [];
         layerEntry.expanded = collapseBelowLevel >= 0 && level >= collapseBelowLevel ? false : true;
         for (var subLayer of toArray(layer.Layer)) {
-            getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap);
+            getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, featureReports);
         }
         if (layerEntry.sublayers.length === 0) {
             // skip empty groups
@@ -265,7 +268,7 @@ function getTheme(configItem, resultItem) {
             var layerTree = [];
             var visibleLayers = [];
             var titleNameMap = {};
-            getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap);
+            getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, configItem.featureReport || {});
             visibleLayers.reverse();
 
             // print templates
@@ -342,7 +345,6 @@ function getTheme(configItem, resultItem) {
             resultItem.expanded = true;
             resultItem.backgroundLayers = configItem.backgroundLayers;
             resultItem.searchProviders = configItem.searchProviders;
-            resultItem.featureReport = configItem.featureReport;
             resultItem.additionalMouseCrs = configItem.additionalMouseCrs;
             resultItem.mapCrs = configItem.mapCrs || 'EPSG:3857';
             if (printTemplates.length > 0) {

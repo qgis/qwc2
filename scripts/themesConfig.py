@@ -92,7 +92,7 @@ def getChildElementValue(parent, path):
 
 
 # recursively get layer tree
-def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap):
+def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, featureReports):
     name = getChildElementValue(layer, "Name")
     title = getChildElementValue(layer, "Title")
     layers = getDirectChildElements(layer, "Layer")
@@ -169,13 +169,15 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
                     float(getChildElementValue(geoBBox, "northBoundLatitude"))
                 ]
             }
+        if name in featureReports:
+            layerEntry["featureReport"] = featureReports[name]
     else:
         # group
         layerEntry["mutuallyExclusive"] = layer.getAttribute("mutuallyExclusive") == "1"
         layerEntry["sublayers"] = []
         layerEntry["expanded"] = False if collapseBelowLevel >= 0 and level >= collapseBelowLevel else True
         for sublayer in layers:
-            getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap)
+            getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap, featureReports)
 
         if not layerEntry["sublayers"]:
             # skip empty groups
@@ -231,7 +233,8 @@ def getTheme(configItem, resultItem):
         layerTree = []
         visibleLayers = []
         titleNameMap = {}
-        getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap)
+        featureReports = configItem["featureReport"] if "featureReport" in configItem else {}
+        getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, featureReports)
         visibleLayers.reverse()
 
         # print templates
@@ -315,7 +318,6 @@ def getTheme(configItem, resultItem):
         if "backgroundLayers" in configItem:
             resultItem["backgroundLayers"] = configItem["backgroundLayers"]
         resultItem["searchProviders"] = configItem["searchProviders"]
-        resultItem["featureReport"] = configItem["featureReport"] if "featureReport" in configItem else None
         if "additionalMouseCrs" in configItem:
             resultItem["additionalMouseCrs"] = configItem["additionalMouseCrs"]
         if "mapCrs" in configItem:
