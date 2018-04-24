@@ -24,6 +24,7 @@ let urlRegEx = /((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}
 class IdentifyViewer extends React.Component {
     static propTypes = {
         theme: PropTypes.object,
+        layers: PropTypes.array,
         mapcrs: PropTypes.string,
         missingResponses: PropTypes.number,
         responses: PropTypes.array,
@@ -351,7 +352,10 @@ class IdentifyViewer extends React.Component {
             }
         }
         let attributes = this.renderResultAttributes();
-        let featureReport = this.state.currentResult && this.state.currentResult.id && ConfigUtils.getConfigProp("featureReportService") && this.featureReportEnabled(this.state.currentLayer);
+        let featureReportTemplate = null;
+        if(this.state.currentResult && this.state.currentResult.id && ConfigUtils.getConfigProp("featureReportService")) {
+            featureReportTemplate = this.findFeatureReportTemplate(this.state.currentLayer);
+        }
         let resultsContainerStyle = {
             maxHeight: attributes ? '7em' : 'initial'
         };
@@ -362,23 +366,35 @@ class IdentifyViewer extends React.Component {
                 </div>
                 {attributes}
                 <div className="identify-buttonbox">
-                    {featureReport ? (<button onClick={this.getFeatureReport} ><Message msgId="identify.featureReport" /></button>) : null}
+                    {featureReportTemplate ? (<button onClick={ev => this.getFeatureReport(featureReportTemplate)} ><Message msgId="identify.featureReport" /></button>) : null}
                     {this.props.enableExport ? (<button onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
                 </div>
             </div>
         );
     }
-    featureReportEnabled = (layer) => {
-        return Object.keys(this.props.theme.featureReport || {}).includes(layer);
-    }
-    getFeatureReport = () => {
-        let valid = this.state.currentResult && this.state.currentResult.id && ConfigUtils.getConfigProp("featureReportService") && this.featureReportEnabled(this.state.currentLayer);
-        if(!valid) {
-            return;
+    collectFeatureReportTemplates = (entry) => {
+        let reports = {};
+        if(entry.sublayers) {
+            for(let sublayer of entry.sublayers) {
+                reports = assign({}, reports, this.collectFeatureReportTemplates(sublayer));
+            }
+        } else if(entry.featureReport) {
+            reports[entry.name] = entry.featureReport;
         }
+        return reports;
+    }
+    findFeatureReportTemplate = (layer) => {
+        let themeLayer = this.props.layers.find(layer => layer.isThemeLayer);
+        if(!themeLayer) {
+            return null;
+        }
+        let reports = this.collectFeatureReportTemplates(themeLayer);
+        return reports[layer] || null;
+    }
+    getFeatureReport = (template) => {
         let serviceUrl = ConfigUtils.getConfigProp("featureReportService");
         let params = {
-            template: this.props.theme.featureReport[this.state.currentLayer],
+            template: template,
             feature: this.state.currentResult.id,
             x: this.state.currentResult.clickPos[0],
             y: this.state.currentResult.clickPos[1],
@@ -398,6 +414,7 @@ class IdentifyViewer extends React.Component {
 
 const selector = (state) => ({
     theme: state.theme ? state.theme.current : null,
+    layers: state.layers && state.layers.flat || [],
     mapcrs: state && state.map && state.map ? state.map.projection : undefined
 });
 
