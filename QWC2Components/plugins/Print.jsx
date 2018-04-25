@@ -34,10 +34,10 @@ class Print extends React.Component {
         visible: false
     }
     state = {
-        layout: null, scale: null, dpi: 300, initialRotation: 0, grid: false
+        layout: null, scale: null, dpi: 300, initialRotation: 0, grid: false, rotationNull: false
     }
     componentWillReceiveProps(newProps) {
-        let newState = assign({}, this.state);
+        let newState = {};
         if(newProps.theme !== this.props.theme || !this.state.layout) {
             let layout = null;
             if(newProps.theme && newProps.theme.print && newProps.theme.print.length > 0) {
@@ -105,7 +105,7 @@ class Print extends React.Component {
         extent = (CoordinatesUtils.getAxisOrder(mapCrs).substr(0, 2) == 'ne' && version == '1.3.0') ?
             extent[1] + "," + extent[0] + "," + extent[3] + "," + extent[2]:
             extent.join(',');
-        let rotation = this.props.map.bbox ? this.props.map.bbox.rotation : 0;
+        let rotation = this.state.rotationNull ? "" : this.props.map.bbox ? Math.round(this.props.map.bbox.rotation / Math.PI * 180.) : 0;
         let scaleChooser = (<input name={mapName + ":scale"} type="number" value={this.state.scale || ""} onChange={this.changeScale} min="1"/>);
 
         if(this.props.theme.printScales && this.props.theme.printScales.length > 0) {
@@ -183,7 +183,7 @@ class Print extends React.Component {
                             <td><Message msgId="print.rotation" /></td>
                             <td>
                                 <span className="input-frame">
-                                    <input name={mapName + ":rotation"} type="number" value={Math.round(rotation / Math.PI * 180.)} onChange={this.changeRotation}/>
+                                    <input name={mapName + ":rotation"} type="number" value={rotation} onChange={this.changeRotation}/>
                                 </span>
                             </td>
                         </tr>
@@ -270,14 +270,19 @@ class Print extends React.Component {
         this.setState({dpi: ev.target.value});
     }
     changeRotation = (ev) => {
-        let angle = parseFloat(ev.target.value) || 0;
-        while(angle < 0) {
-            angle += 360;
+        if(!ev.target.value) {
+            this.setState({rotationNull: true});
+        } else {
+            this.setState({rotationNull: false});
+            let angle = parseFloat(ev.target.value) || 0;
+            while(angle < 0) {
+                angle += 360;
+            }
+            while(angle >= 360) {
+                angle -= 360;
+            }
+            this.props.changeRotation(angle / 180. * Math.PI);
         }
-        while(angle >= 360) {
-            angle -= 360;
-        }
-        this.props.changeRotation(angle / 180. * Math.PI);
     }
     computeCurrentExtent = () => {
         if(!this.props.map || !this.state.layout || !this.state.scale) {
