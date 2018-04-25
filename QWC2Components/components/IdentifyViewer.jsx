@@ -19,7 +19,7 @@ const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 require('./style/IdentifyViewer.css');
 
-let urlRegEx = /((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+let urlRegEx = /(?<=(\s|^))((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
 
 class IdentifyViewer extends React.Component {
     static propTypes = {
