@@ -119,15 +119,15 @@
 
 #IdentifyViewer td.identify-attr-title {
     overflow: hidden;
-    vertical-align: middle;
+    vertical-align: top;
     width: 10ch;
-    padding-right: 0.25em;
+    padding-right: 1em;
 }
 
 #IdentifyViewer td.identify-attr-value {
     max-width: 0;
     overflow: hidden;
-    vertical-align: middle;
+    vertical-align: top;
 }
 
 #IdentifyViewer div.identify-buttonbox {
