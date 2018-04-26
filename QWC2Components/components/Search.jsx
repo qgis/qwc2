@@ -24,6 +24,7 @@ const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUti
 const {LayerRole, addMarker, removeMarker, addLayerFeatures, removeLayer, addThemeSublayer} = require('../actions/layers');
 const {zoomToPoint} = require('../actions/map');
 const {changeSearch, startSearch, searchMore, SearchResultType} = require("../actions/search");
+const {setCurrentTask} = require('../actions/task');
 const displayCrsSelector = require('../selectors/displaycrs');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
 const {UrlParams} = require("../utils/PermaLinkUtils");
@@ -49,6 +50,7 @@ class Search extends React.Component {
         addLayerFeatures: PropTypes.func,
         removeLayer: PropTypes.func,
         addThemeSublayer: PropTypes.func,
+        setCurrentTask: PropTypes.func,
         searchOptions: PropTypes.object
     }
     static contextTypes = {
@@ -330,6 +332,8 @@ class Search extends React.Component {
             this.setState({currentResult: item});
         } else if(item.type === SearchResultType.THEMELAYER) {
             this.props.addThemeSublayer(item.layer);
+            // Show layer tree to notify user that something has happened
+            this.props.setCurrentTask('LayerTree');
         }
     }
     showFeatureGeometry = (item, geometry, crs, text) => {
@@ -418,6 +422,7 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
         removeMarker: removeMarker,
         addLayerFeatures: addLayerFeatures,
         removeLayer: removeLayer,
-        addThemeSublayer: addThemeSublayer
+        addThemeSublayer: addThemeSublayer,
+        setCurrentTask: setCurrentTask
     })(Search);
 }
