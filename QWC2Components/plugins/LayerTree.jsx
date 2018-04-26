@@ -41,6 +41,7 @@ class LayerTree extends React.Component {
         showQueryableIcon: PropTypes.bool,
         allowMapTips: PropTypes.bool,
         groupTogglesSublayers: PropTypes.bool,
+        grayUnchecked: PropTypes.bool,
         layerInfoWindowSize: PropTypes.object,
         flattenGroups: PropTypes.bool,
         setSwipe: PropTypes.func,
@@ -53,6 +54,7 @@ class LayerTree extends React.Component {
         showQueryableIcon: true,
         allowMapTips: true,
         groupTogglesSublayers: false,
+        grayUnchecked: true,
         layerInfoWindowSize: {width: 400, height: 480},
         flattenGroups: false
     }
@@ -113,10 +115,10 @@ class LayerTree extends React.Component {
         let expanderstyle = {
             backgroundImage: 'url(' + assetsPath + '/img/' + expanderstate + '.svg)'
         };
-        let itemclasses = {"layertree-item": true};
-        if(!this.props.groupTogglesSublayers) {
-            itemclasses["layertree-item-disabled"] = !enabled;
-        }
+        let itemclasses = {
+            "layertree-item": true,
+            "layertree-item-disabled": (!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !visibility)
+        };
         let sublayersContent = null;
         if(group.expanded) {
             sublayersContent = this.renderSubLayers(layer, group, path, enabled && visibility, group.mutuallyExclusive === true);
@@ -149,10 +151,10 @@ class LayerTree extends React.Component {
             "layertree-item-cog": true,
             "layertree-item-cog-active": this.state.activemenu === sublayer.uuid
         })
-        let itemclasses = {"layertree-item": true};
-        if(!this.props.groupTogglesSublayers) {
-            itemclasses["layertree-item-disabled"] = !enabled;
-        }
+        let itemclasses = {
+            "layertree-item": true,
+            "layertree-item-disabled": (!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !sublayer.visibility)
+        };
         let editframe = null;
         if(this.state.activemenu === sublayer.uuid) {
             let reorderButtons = null;
