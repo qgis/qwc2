@@ -19,7 +19,7 @@ const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 require('./style/IdentifyViewer.css');
 
-let urlRegEx = /((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+let urlRegEx = /(\s|^)((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
 
 class IdentifyViewer extends React.Component {
     static propTypes = {
@@ -232,18 +232,19 @@ class IdentifyViewer extends React.Component {
         while(match = urlRegEx.exec(value)) {
             // If URL is part of a HTML attribute, don't add anchor
             if(value.substring(match.index - 2, match.index).match(/^=['"]$/) === null) {
-                let url = match[0];
+                let url = match[0].substr(match[1].length);
                 let protoUrl = url;
-                if(match[1] === undefined) {
+                if(match[2] === undefined) {
                     if(match[0].indexOf('@') !== -1) {
                         protoUrl = "mailto:" + url;
                     } else {
                         protoUrl = "http://" + url;
                     }
                 }
+                let pos = match.index + match[1].length;
                 let anchor = "<a href=\"" + this.htmlEncode(protoUrl) + "\" target=\"_blank\">" + this.htmlEncode(url) + "</a>";
-                value = value.substring(0, match.index) + anchor + value.substring(match.index + url.length);
-                urlRegEx.lastIndex = match.index + anchor.length;
+                value = value.substring(0, pos) + anchor + value.substring(pos + url.length);
+                urlRegEx.lastIndex = pos + anchor.length;
             }
         }
         // Reset
