@@ -9,6 +9,7 @@
 var ol = require('openlayers');
 var assign = require('object-assign');
 const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
+const ConfigUtils = require('../../../../utils/ConfigUtils');
 const ProxyUtils = require('../../../../utils/ProxyUtils');
 const SecurityUtils = require('../../../../utils/SecurityUtils');
 
@@ -23,7 +24,8 @@ function wmsToOpenlayersOptions(options) {
         SRS: CoordinatesUtils.normalizeSRS(options.srs || 'EPSG:3857', options.allowedSRS),
         CRS: CoordinatesUtils.normalizeSRS(options.srs || 'EPSG:3857', options.allowedSRS),
         TILED: options.tiled || false,
-        VERSION: options.version || "1.3.0"
+        VERSION: options.version || "1.3.0",
+        DPI: options.dpi || ConfigUtils.getConfigProp("wmsDpi") || 90
     }, options.params || {});
 }
 
