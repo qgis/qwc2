@@ -380,7 +380,7 @@ class IdentifyViewer extends React.Component {
                 reports = assign({}, reports, this.collectFeatureReportTemplates(sublayer));
             }
         } else if(entry.featureReport) {
-            reports[entry.name] = entry.featureReport;
+            reports[entry.title] = entry.featureReport;
         }
         return reports;
     }
