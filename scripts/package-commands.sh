@@ -15,7 +15,7 @@ if [ "$1" == "prod" ]; then
     fi
     npm run build
     npm run themesconfig
-    rm -rf prod
+    rm -rf prod/*
     mkdir -p ./prod/translations
     cp -a ./dist ./index.html ./assets ./themes.json ./prod
     cp -a  $config ./prod/config.json
