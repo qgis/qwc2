@@ -33,7 +33,8 @@ module.exports = {
     GML3: require('ol/format/gml3').default,
     KML: require('ol/format/kml').default,
     WFS: require('ol/format/wfs').default,
-    WMSCapabilities: require('ol/format/wmscapabilities').default
+    WMSCapabilities: require('ol/format/wmscapabilities').default,
+    WKT: require('ol/format/wkt').default
   },
   Geolocation: require('ol/geolocation').default,
   geom: {

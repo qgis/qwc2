@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {parse} = require('wellknown');
 const assign = require('object-assign');
 const proj4js = require('proj4').default;
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
@@ -127,13 +126,7 @@ const IdentifyUtils = {
             let attribute = attributes[i];
             if(attribute.attributes.name.value === "geometry") {
                 let wkt = attribute.attributes.value.value;
-                wkt = wkt.replace(/Point(\w+)/i, "Point $1")
-                         .replace(/LineString(\w+)/i, "LineString $1")
-                         .replace(/Polygon(\w+)/i, "Polygon $1");
-                featureResult["geometry"] = parse(wkt);
-                if(featureResult.bbox && featureResult.crs != geometrycrs) {
-                    featureResult.geometry = VectorLayerUtils.reprojectGeometry(featureResult.geometry, featureResult.crs, geometrycrs);
-                }
+                featureResult["geometry"] = VectorLayerUtils.wktToGeoJSON(wkt, geometrycrs, featureResult.crs).geometry;
             } else {
                 featureResult.properties[attribute.attributes.name.value] = attribute.attributes.value.value;
             }

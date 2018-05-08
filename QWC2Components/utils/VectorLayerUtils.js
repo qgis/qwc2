@@ -10,7 +10,7 @@ const assign = require('object-assign');
 const uuid = require('uuid');
 const ol = require('openlayers');
 const isEmpty = require('lodash.isempty');
-const {parse,stringify} = require('wellknown');
+const {stringify} = require('wellknown');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 
@@ -162,16 +162,17 @@ const VectorLayerUtils = {
     geoJSONToWkt(geometry) {
         return stringify(geometry);
     },
-    wktToGeoJSON(wkt) {
+    wktToGeoJSON(wkt, srccrs, dstcrs) {
         wkt = wkt.replace(/Point(\w+)/i, "Point $1")
                  .replace(/LineString(\w+)/i, "LineString $1")
                  .replace(/Polygon(\w+)/i, "Polygon $1");
-        return {
-            "id": uuid.v1(),
-            "geometry": parse(wkt),
-            "type": "Feature",
-            "properties": {}
-        };
+        let feature = new ol.format.WKT().readFeature(wkt, {
+            dataProjection: srccrs,
+            featureProjection: dstcrs
+        });
+        let featureObj = new ol.format.GeoJSON().writeFeatureObject(feature);
+        featureObj.id = uuid.v1();
+        return featureObj;
     },
     kmlToGeoJSON(kml) {
         let kmlFormat = new ol.format.KML();
