@@ -26,27 +26,35 @@ const cleanMessages = (data, ref) => {
   return data;
 };
 
+const createSkel = (strings) => {
+    let skel = {"locale": "", "messages": {}};
+    for(let string of strings) {
+    let path = string.split(".");
+    let cur = skel.messages;
+    for(let i = 0; i < path.length - 1; ++i) {
+        cur[path[i]] = cur[path[i]] || {};
+        cur = cur[path[i]];
+    }
+    cur[path[path.length - 1]] = "";
+    }
+    return skel;
+}
+
 let commonConfig = readJSON('/qwc2/translations/tsconfig.json');
 let applicationConfig = readJSON('/translations/tsconfig.json');
 
-let strings = merge(commonConfig.strings || [], applicationConfig.strings || []);
+let commonStrings = commonConfig.strings || [];
+let applicationStrings = merge(commonStrings, applicationConfig.strings || []);
 
 let langs = applicationConfig.languages || commonConfig.languages || [];
 
-// Create skeleton
-let skel = {"locale": "", "messages": {}};
-for(let string of strings) {
-  let path = string.split(".");
-  let cur = skel.messages;
-  for(let i = 0; i < path.length - 1; ++i) {
-    cur[path[i]] = cur[path[i]] || {};
-    cur = cur[path[i]];
-  }
-  cur[path[path.length - 1]] = "";
-}
+// Create skeletons
+let commonSkel = createSkel(commonStrings);
+let applicationSkel = createSkel(applicationStrings);
+
 
 for(let lang of langs) {
-  let langskel = merge(skel, {"locale": lang});
+  let langskel = merge(commonSkel, {"locale": lang});
 
   // Merge common translations
   let data = merge(langskel, cleanMessages(readJSON('/qwc2/translations/data.' + lang), langskel));
@@ -59,6 +67,7 @@ for(let lang of langs) {
   }
 
   // Merge application translations
+  data = merge(data, applicationSkel);
   data = merge(data, cleanMessages(readJSON('/translations/data.' + lang)));
   // Write output
   try {
