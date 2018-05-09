@@ -296,7 +296,7 @@ const LayerUtils = {
             for(let addsublayer of addlayer.sublayers) {
                 let idx = newlayer.sublayers.findIndex(sublayer => sublayer.name === addsublayer.name);
                 if(idx === -1) {
-                    newlayer.sublayers.push(addsublayer);
+                    newlayer.sublayers.unshift(addsublayer);
                 } else {
                     newlayer.sublayers[idx] = LayerUtils.mergeSubLayers(newlayer.sublayers[idx], addsublayer);
                 }
