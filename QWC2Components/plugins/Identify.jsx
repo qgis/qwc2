@@ -30,6 +30,7 @@ class Identify extends React.Component {
         removeMarker: PropTypes.func,
         enableExport: PropTypes.bool,
         longAttributesDisplay: PropTypes.string,
+        displayResultTree: PropTypes.bool,
         initialWidth: PropTypes.number,
         initialHeight: PropTypes.number,
         params: PropTypes.object
@@ -37,6 +38,7 @@ class Identify extends React.Component {
     static defaultProps = {
         enableExport: true,
         longAttributesDisplay: 'ellipsis',
+        displayResultTree: true,
         initialWidth: 320,
         initialHeight: 400
     }

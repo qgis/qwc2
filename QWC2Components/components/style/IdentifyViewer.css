@@ -81,8 +81,17 @@
     top: 0.4em;
 }
 
+#IdentifyViewer .identify-result-frame-normal {
+    margin-top: 0.25em;
+    border: 1px solid @item_border@;
+}
+
+#IdentifyViewer .identify-result-frame-highlighted {
+    margin-top: 0.25em;
+    border: 1px solid @item_active@;
+}
+
 #IdentifyViewer .identify-result-title {
-    margin-top: 0.5em;
     background-color: @item_border@;
     padding: 0.25em;
     font-weight: bold;
@@ -91,7 +100,6 @@
 }
 
 #IdentifyViewer .identify-result-box {
-    border: 1px solid @item_border@;
     border-radius: 0;
     background-color: white;
     font-size: small;
@@ -134,4 +142,9 @@
     margin-top: 0.5em;
     text-align: right;
     flex: 0 0 auto;
+}
+
+#IdentifyViewer div.identify-result-feature-report-frame {
+    padding: 0.25em 0.5em;
+    font-size: small;
 }

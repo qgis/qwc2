@@ -31,18 +31,20 @@ class IdentifyViewer extends React.Component {
         addLayerFeatures: PropTypes.func,
         removeLayer: PropTypes.func,
         enableExport: PropTypes.bool,
-        longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap'])
+        longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
+        displayResultTree: PropTypes.bool
     }
     static defaultProps = {
-        enableExport: true
+        enableExport: true,
+        longAttributesDisplay: 'ellipsis',
+        displayResultTree: true
     }
     state = {
         expanded: {},
         resultTree: {},
         currentResult: null,
         currentLayer: null,
-        displayFieldMap: {},
-        longAttributesDisplay: 'ellipsis'
+        displayFieldMap: {}
 
     }
     constructor(props) {
@@ -251,33 +253,36 @@ class IdentifyViewer extends React.Component {
         urlRegEx.lastIndex = 0;
         return value;
     }
-    renderResultAttributes = () => {
-        let result = this.state.currentResult;
+    renderResultAttributes = (layer, result, scrollable, highlighted=false) => {
         if(!result) {
             return null;
         }
         let resultbox = null;
         if(result.type === "text") {
             resultbox = (
-                <pre key="identify-result-box" className="identify-result-box">
+                <pre className="identify-result-box">
                     {result.text}
                 </pre>
             );
         } else if(result.type === "html") {
             resultbox = (
-                <iframe key="identify-result-box" className="identify-result-box" src={"data:text/html," + encodeURIComponent(result.text)}></iframe>
+                <iframe className="identify-result-box" src={"data:text/html," + encodeURIComponent(result.text)}></iframe>
             );
         } else if(result.properties.htmlContent) {
             resultbox = (
-                <iframe key="identify-result-box" className="identify-result-box" src={"data:text/html," + encodeURIComponent(result.properties.htmlContent)}></iframe>
+                <iframe className="identify-result-box" src={"data:text/html," + encodeURIComponent(result.properties.htmlContent)}></iframe>
             );
         } else {
             let properties = Object.keys(result.properties);
             if(properties.length === 0) {
                 return null;
             }
+            let style = {};
+            if(scrollable) {
+                style['overflow'] = 'auto';
+            }
             resultbox = (
-                <div key="identify-result-box" className="identify-result-box">
+                <div className="identify-result-box" style={style}>
                     <table className="attribute-list"><tbody>
                         {properties.map(attrib => {
                             if(this.props.theme.skipEmptyFeatureAttributes && (!result.properties[attrib] || result.properties[attrib] === "NULL")) {
@@ -302,10 +307,19 @@ class IdentifyViewer extends React.Component {
                 </div>
             );
         }
-        return [
-            (<div key="identify-result-title" className="identify-result-title">{this.state.currentLayer + ": " + this.resultDisplayName(this.state.currentResult)}</div>),
-            resultbox
-        ];
+        let featureReportTemplate = null;
+        if(ConfigUtils.getConfigProp("featureReportService")) {
+            featureReportTemplate = this.findFeatureReportTemplate(layer);
+        }
+        return (
+            <div className={highlighted ? 'identify-result-frame-highlighted' : 'identify-result-frame-normal'}>
+                <div className="identify-result-title">{layer + ": " + this.resultDisplayName(result)}</div>
+                {resultbox}
+                {featureReportTemplate ? (<div className="identify-result-feature-report-frame">
+                    <a href="#" onClick={ev => this.getFeatureReport(featureReportTemplate, result)} ><Message msgId="identify.featureReport" /></a>
+                </div>) : null}
+            </div>
+        );
     }
     renderResult = (layer, result) => {
         let displayName = this.resultDisplayName(result);
@@ -344,34 +358,54 @@ class IdentifyViewer extends React.Component {
         );
     }
     render() {
-        let contents = Object.keys(this.state.resultTree).map(layer => this.renderLayer(layer));
-        if(contents.every(item => item === null)) {
+        let tree = false;
+        if(isEmpty(this.state.resultTree)) {
             if(this.props.missingResponses > 0) {
                 return (<div id="IdentifyViewer"><Message msgId="identify.querying" /></div>);
             } else {
                 return (<div id="IdentifyViewer"><Message msgId="identify.noresults" /></div>);
             }
         }
-        let attributes = this.renderResultAttributes();
-        let featureReportTemplate = null;
-        if(this.state.currentResult && this.state.currentResult.id && ConfigUtils.getConfigProp("featureReportService")) {
-            featureReportTemplate = this.findFeatureReportTemplate(this.state.currentLayer);
+        if(tree) {
+            let contents = Object.keys(this.state.resultTree).map(layer => this.renderLayer(layer));
+            let attributes = this.renderResultAttributes(this.state.currentLayer, this.state.currentResult, true);
+            let resultsContainerStyle = {
+                maxHeight: attributes ? '7em' : 'initial'
+            };
+            return (
+                <div id="IdentifyViewer">
+                    <div className="identify-results-container" style={resultsContainerStyle}>
+                        <ul>{contents}</ul>
+                    </div>
+                    {attributes}
+                    <div className="identify-buttonbox">
+                        {this.props.enableExport ? (<button onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
+                    </div>
+                </div>
+            );
+        } else {
+            return (
+                <div id="IdentifyViewer">
+                    <div style={{overflow: 'auto'}}>
+                        {Object.keys(this.state.resultTree).map(layer => {
+                            let layerResults = this.state.resultTree[layer];
+                            return layerResults.map(result => {
+                                return (
+                                    <div key={result.id}
+                                        onMouseOver={() => this.setState({currentResult: result, currentLayer: layer})}
+                                        onMouseOut={() => this.setState({currentResult: null, currentLayer: null})}
+                                    >{this.renderResultAttributes(layer, result, false, this.state.currentResult == result)}</div>
+                                );
+                            });
+                        })}
+                    </div>
+                    <div className="identify-buttonbox">
+                        {this.props.enableExport ? (<button onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
+                    </div>
+                </div>
+            );
         }
-        let resultsContainerStyle = {
-            maxHeight: attributes ? '7em' : 'initial'
-        };
-        return (
-            <div id="IdentifyViewer">
-                <div className="identify-results-container" style={resultsContainerStyle}>
-                    <ul>{contents}</ul>
-                </div>
-                {attributes}
-                <div className="identify-buttonbox">
-                    {featureReportTemplate ? (<button onClick={ev => this.getFeatureReport(featureReportTemplate)} ><Message msgId="identify.featureReport" /></button>) : null}
-                    {this.props.enableExport ? (<button onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
-                </div>
-            </div>
-        );
+
     }
     collectFeatureReportTemplates = (entry) => {
         let reports = {};
@@ -392,13 +426,13 @@ class IdentifyViewer extends React.Component {
         let reports = this.collectFeatureReportTemplates(themeLayer);
         return reports[layer] || null;
     }
-    getFeatureReport = (template) => {
+    getFeatureReport = (template, result) => {
         let serviceUrl = ConfigUtils.getConfigProp("featureReportService");
         let params = {
             template: template,
-            feature: this.state.currentResult.id,
-            x: this.state.currentResult.clickPos[0],
-            y: this.state.currentResult.clickPos[1],
+            feature: result.id,
+            x: result.clickPos[0],
+            y: result.clickPos[1],
             crs: this.props.mapcrs
         };
         axios.get(serviceUrl, {params: params}).then(response => {
