@@ -305,6 +305,11 @@ class Search extends React.Component {
     }
     showResult = (item, zoom=true) => {
         if(zoom) {
+            let bbox = item.bbox || [];
+            let crs = item.crs;
+            let x = item.x;
+            let y = item.y;
+
             // find max zoom level greater than min scale
             let maxZoom = 0;
             const scales = this.props.map.scales;
@@ -316,23 +321,33 @@ class Search extends React.Component {
                 }
             }
 
-            if(SearchResultType.THEMELAYER) {
-                item.bbox = CoordinatesUtils.reprojectBbox(item.layer.sublayers[0].bbox.bounds, item.layer.sublayers[0].bbox.crs, this.props.map.projection);
-                for (let i = 1; i < item.layer.sublayers.length; i++) {
-                    const bbox = CoordinatesUtils.reprojectBbox(item.layer.sublayers[i].bbox.bounds, item.layer.sublayers[i].bbox.crs, this.props.map.projection);
-                    item.bbox[0] = bbox[0] < item.bbox[0] ? bbox[0] : item.bbox[0];
-                    item.bbox[1] = bbox[1] < item.bbox[1] ? bbox[1] : item.bbox[1];
-                    item.bbox[2] = bbox[2] > item.bbox[2] ? bbox[2] : item.bbox[2];
-                    item.bbox[3] = bbox[3] > item.bbox[3] ? bbox[3] : item.bbox[3];
+            if(SearchResultType.THEMELAYER && item.layer) {
+                const maxbbox = (layer, bounds) => {
+                    if(layer.sublayers) {
+                        for(sublayer in layer.sublayers) {
+                            maxbbox(layer.sublayers[sublayer], bounds);
+                        }
+                    } else {
+                        const newbounds = CoordinatesUtils.reprojectBbox(layer.bbox.bounds, layer.bbox.crs, this.props.map.projection);
+                        if(bounds.length) {
+                            bounds[0] = Math.min(newbounds[0], bounds[0]);
+                            bounds[1] = Math.min(newbounds[1], bounds[1]);
+                            bounds[2] = Math.max(newbounds[2], bounds[2]);
+                            bounds[3] = Math.max(newbounds[3], bounds[3]);
+                        } else {
+                            bounds.push(...newbounds);
+                        }
+                    }
                 }
-                item.crs = this.props.map.projection;
-                item.x = 0.5 * (item.bbox[0] + item.bbox[2]);
-                item.y = 0.5 * (item.bbox[3] + item.bbox[1]);
+                maxbbox(item.layer, bbox);
+                crs = this.props.map.projection;
+                x = 0.5 * (bbox[0] + bbox[2]);
+                y = 0.5 * (bbox[3] + bbox[1]);
             }
 
             // zoom to result using max zoom level
-            const newZoom = mapUtils.getZoomForExtent(CoordinatesUtils.reprojectBbox(item.bbox, item.crs, this.props.map.projection), this.props.map.resolutions, this.props.map.size, 0, maxZoom);
-            this.props.panToResult([item.x, item.y], newZoom, item.crs);
+            const newZoom = mapUtils.getZoomForExtent(CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection), this.props.map.resolutions, this.props.map.size, 0, maxZoom);
+            this.props.panToResult([x, y], newZoom, crs);
         }
         if((item.type || SearchResultType.PLACE) === SearchResultType.PLACE) {
             this.props.removeLayer("searchselection");
