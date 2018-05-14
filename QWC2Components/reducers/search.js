@@ -26,6 +26,9 @@ function search(state = null, action) {
             if (action.append === true && state && state.results) {
                 results = [...state.results, ...action.results.data];
             }
+            results.sort((a, b) => {
+                return (b.priority || 0) - (a.priority || 0);
+            });
             let pendingProviders = state.pendingProviders.slice(0);
             pendingProviders.splice(pendingProviders.indexOf(action.results.provider), 1);
             return assign({}, state, { results: results, pendingProviders: pendingProviders });
