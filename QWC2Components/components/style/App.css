@@ -5,7 +5,7 @@
 html, body {
     overflow: hidden;
     cursor: default;
-    color: @item_fg@;
+    color: @base_fg@;
 }
 
 input[type=text], input[type=password], textarea {
