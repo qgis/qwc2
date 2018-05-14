@@ -28,11 +28,13 @@ class HeightProfile extends React.Component {
         mobile: PropTypes.bool,
         addMarker: PropTypes.func,
         removeMarker: PropTypes.func,
-        heighProfilePrecision: PropTypes.number
+        heighProfilePrecision: PropTypes.number,
+        height: PropTypes.number
     }
     static defaultProps = {
         samples: 500,
-        heighProfilePrecision: 0
+        heighProfilePrecision: 0,
+        height: 100
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -102,7 +104,7 @@ class HeightProfile extends React.Component {
         let maxHeight = Math.max(...this.state.data);
         let options = {
             width: this.state.width,
-            height: 100,
+            height: this.props.height,
             chartPadding: {left: 5, bottom: 1, top: 0},
             showArea: true,
             axisX: {
@@ -143,6 +145,9 @@ class HeightProfile extends React.Component {
                             let height = Math.round(sample.y * Math.pow(10, heighProfilePrecision))/Math.pow(10, heighProfilePrecision);
                             this.marker.style.visibility = this.tooltip.style.visibility = 'visible';
                             this.marker.style.left = this.tooltip.style.left = ev2.clientX + 'px';
+                            this.marker.style.bottom = '30px';
+                            this.marker.style.height = (this.props.height - 30) + 'px';
+                            this.tooltip.style.bottom = this.props.height + 'px';
                             this.tooltip.innerHTML = "<b>" + distanceStr + ":</b> " + distance + " m<br />" +
                                                      "<b>" + heightStr + ":</b> " + height + " m " + aslStr;
                         }
@@ -156,8 +161,9 @@ class HeightProfile extends React.Component {
                 }
             }
         }
+        let height = 'calc(' + height + 'px + 0.5em)';
         return (
-            <div id="HeightProfile">
+            <div id="HeightProfile" style={{height: height}}>
                 <ChartistComponent type="Line" data={data} options={options} listener={listeners} />
                 <span ref={el => this.tooltip = el} className="height-profile-tooltip"></span>
                 <span ref={el => this.marker = el} className="height-profile-marker"></span>

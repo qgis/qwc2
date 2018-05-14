@@ -4,7 +4,6 @@
     right: 0;
     bottom: 2.25em;
     width: 100%;
-    height: calc(100px + 0.5em);
     background-color: rgba(255, 255, 255, 0.95);
     box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
     padding-top: 0.5em;
@@ -52,7 +51,6 @@
 #HeightProfile span.height-profile-tooltip {
     visibility: hidden;
     position: absolute;
-    bottom: 100px;
     display: inline-block;
     background-color: rgba(0, 0, 0, 0.75);
     border-radius: 0.5em;
@@ -66,8 +64,6 @@
 #HeightProfile span.height-profile-marker {
     visibility: hidden;
     position: absolute;
-    bottom: calc(30px);
-    height: 70px;
     display: inline-block;
     width: 1px;
     background-color: rgba(0, 0, 0, 0.5);
