@@ -21,6 +21,7 @@ button.Button.button-active {
     color: @map_button_active_fg@;
 }
 
+button.Button.locate-button-LOCATING,
 button.Button.locate-button-ENABLED {
     background-color: @map_button_fg@;
     color: @map_button_bg@;
@@ -29,4 +30,9 @@ button.Button.locate-button-ENABLED {
 button.Button.locate-button-FOLLOWING {
     background-color: yellow;
     color: @map_button_bg@;
+}
+
+button.Button.locate-button-LOCATING > div.spinner {
+    width: 1.5em;
+    height: 1.5em;
 }

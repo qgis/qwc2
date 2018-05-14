@@ -77,6 +77,8 @@ div.ol-overviewmap div.ol-overviewmap-map {
 }
 
 span.map-loading-indicator {
+    display: flex;
+    align-items: center;
     opacity: 0;
     transition: opacity 0.5s;
     color: @panel_fg@;
@@ -91,8 +93,7 @@ span.map-loading-indicator {
 }
 
 span.map-loading-indicator > div.spinner {
-    width: 1em;
-    height: 1em;
+    width: 1.5em;
+    height: 1.5em;
     margin-right: 0.25em;
-    display: inline-block;
 }

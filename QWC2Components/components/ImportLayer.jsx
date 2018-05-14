@@ -9,11 +9,11 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const Spinner = require('react-spinkit');
 const isEmpty = require('lodash.isempty');
 const axios = require('axios');
 const assign = require('object-assign');
 const removeDiacritics = require('diacritics').remove;
+const Spinner = require('./Spinner');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
@@ -80,7 +80,7 @@ class ImportLayer extends React.Component {
         if(this.state.type === "URL") {
             button = (
                 <button disabled={!this.state.url || this.state.pendingRequests > 0} className="importlayer-addbutton" type="button" onClick={this.scanService}>
-                    {this.state.pendingRequests > 0 ? (<Spinner className="spinner" name="circle" fadeIn="none" />) : null}
+                    {this.state.pendingRequests > 0 ? (<Spinner />) : null}
                     <Message msgId="importlayer.connect" />
                 </button>
             );

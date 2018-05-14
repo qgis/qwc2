@@ -9,10 +9,10 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const Spinner = require('react-spinkit');
 const {Glyphicon} = require('react-bootstrap');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const {changeLocateState} = require('../../MapStore2Components/actions/locate');
+const Spinner = require('../components/Spinner');
 require('./style/Buttons.css');
 
 
@@ -52,7 +52,7 @@ class LocateButton extends React.Component {
         let tooltip = LocaleUtils.getMessageById(this.context.messages, "locate.statustooltip." + this.props.locateState);
         let contents = null;
         if(this.props.locateState === "LOCATING") {
-            contents = (<Spinner style={{display: 'inline-block', width: '1.5em', height: '1.5em'}} name="circle" fadeIn="none" />);
+            contents = (<Spinner />);
         } else {
             contents = (<Glyphicon glyph="screenshot"/>);
         }

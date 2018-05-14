@@ -1,0 +1,32 @@
+.spinner {
+  display: inline-block;
+  position: relative;
+}
+
+.spinner > div {
+  -webkit-animation: spinner_anim 1.2s linear infinite;
+  -moz-animation: spinner_anim 1.2s linear infinite;
+  animation: spinner_anim 1.2s linear infinite;
+  border-radius: 5px;
+  background-color: black;
+  position: absolute;
+  width: 20%;
+  height: 7.8%;
+  top: 46.1%;
+  left: 40%;
+}
+
+@keyframes spinner_anim {
+ 0% { opacity: 1; }
+ 100% { opacity: 0.15; }
+}
+
+@-moz-keyframes spinner_anim {
+ 0% { opacity: 1; }
+ 100% { opacity: 0.15; }
+}
+
+@-webkit-keyframes spinner_anim {
+ 0% { opacity: 1; }
+ 100% { opacity: 0.15; }
+}

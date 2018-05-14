@@ -8,9 +8,9 @@
 
 const React = require('react');
 const PropTypes = require('prop-types');
-const Spinner = require('react-spinkit');
 const {connect} = require('react-redux');
 const Message = require('../../MapStore2Components/components/I18N/Message');
+const Spinner = require('../components/Spinner');
 
 const MapComponents = require('./map/MapComponents');
 
@@ -85,7 +85,7 @@ class MapPlugin extends React.Component {
             if(this.props.showLoading && this.props.layers.find(layer => layer.loading === true) != undefined){
                 loadingIndicator = (
                 <span ref={el => this.loadingEl = el} className="map-loading-indicator" key="map-loading">
-                    <Spinner className="spinner" name="circle" fadeIn="none" />
+                    <Spinner className="spinner" />
                     <Message msgId="map.loading" />
                 </span>);
                 setTimeout(() => {

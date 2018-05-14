@@ -11,12 +11,12 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
 const {Glyphicon} = require('react-bootstrap');
-const Spinner = require('react-spinkit');
 const {createSelector} = require('reselect');
 const classnames = require('classnames');
 const isEmpty = require('lodash.isempty');
 const isEqual = require('lodash.isequal');
 const ol = require('openlayers');
+const Spinner = require('./Spinner');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const mapUtils = require('../../MapStore2Components/utils/MapUtils');
@@ -156,7 +156,7 @@ class Search extends React.Component {
         if(!this.props.searchText) {
             var addonAfter = (<Glyphicon glyph="search"/>);
         } else if(this.props.searchText && this.state.focused && this.props.pendingProviders && this.props.pendingProviders.length > 0) {
-            var addonAfter = (<Spinner name="circle" fadeIn="none" />);
+            var addonAfter = (<Spinner/>);
         } else {
             var addonAfter = (<Glyphicon glyph="remove" onClick={this.resetSearch}/>);
         }
