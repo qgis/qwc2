@@ -154,10 +154,10 @@
       "socialIntro": "În rețeaua socială favorită"
     },
     "tooltip": {
-      "home": "",
-      "zoomin": "",
-      "zoomout": "",
-      "background": ""
+      "home": "Arată toată harta",
+      "zoomin": "Mărire",
+      "zoomout": "Micșorare",
+      "background": "Straturi suport"
     },
     "themeswitcher": {
       "filter": "Filtrare"
