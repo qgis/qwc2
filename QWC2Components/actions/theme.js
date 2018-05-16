@@ -8,6 +8,7 @@
 
 const assign = require('object-assign');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
+const CoordinatesUtils = require("../../MapStore2Components/utils/CoordinatesUtils");
 const MapUtils = require("../../MapStore2Components/utils/MapUtils");
 const ThemeUtils = require("../utils/ThemeUtils");
 const {addLayer, removeLayer, removeAllLayers} = require("./layers");
@@ -46,7 +47,7 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
         // Preserve extent if desired and possible
         if(preserve && !initialView && ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch") === true) {
             // If crs and scales match and bounding boxes intersect, keep current extent
-            let b1 = theme.bbox.bounds;
+            let b1 = CoordinatesUtils.reprojectBbox(theme.bbox.bounds, theme.bbox.crs, getState().map.projection);
             let b2 = getState().map.bbox.bounds;
             if(getState().map.projection === theme.mapCrs &&
                (b2[0] >= b1[0] && b2[1] >= b1[1] && b2[2] <= b1[2] && b2[3] <= b1[3])) // theme bbox (b1) includes current bbox (b2)
