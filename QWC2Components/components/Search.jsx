@@ -305,7 +305,7 @@ class Search extends React.Component {
     }
     showResult = (item, zoom=true) => {
         if(zoom) {
-            let bbox = item.bbox.slice(0) || [];
+            let bbox = item.bbox ? item.bbox.slice(0) : [];
             let crs = item.crs;
             let x = item.x;
             let y = item.y;
