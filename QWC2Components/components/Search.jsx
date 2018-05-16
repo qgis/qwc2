@@ -321,7 +321,7 @@ class Search extends React.Component {
                 }
             }
 
-            if(SearchResultType.THEMELAYER && item.layer) {
+            if(item.type === SearchResultType.THEMELAYER && item.layer) {
                 const maxbbox = (layer, bounds) => {
                     if(layer.sublayers) {
                         for(sublayer in layer.sublayers) {
