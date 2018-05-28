@@ -77,7 +77,6 @@ const ThemeUtils = {
                 sublayers = LayerUtils.restoreReorderedVisibleLayers(sublayers, layers, opacities);
             }
         }
-        let singleTile = !theme.tiled;
         let layer = {
             id: theme.name + Date.now().toString(),
             type: "wms",
@@ -89,8 +88,7 @@ const ThemeUtils = {
             title: theme.title,
             boundingBox: theme.bbox,
             sublayers : sublayers,
-            singleTile: singleTile,
-            ratio: singleTile ? 1 : undefined,
+            ratio: !theme.tiled ? 1 : undefined,
             format: theme.format,
             role: LayerRole.THEME,
             isThemeLayer: true,

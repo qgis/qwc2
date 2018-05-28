@@ -154,7 +154,7 @@ class OpenlayersLayer extends React.Component {
                     }
                 });
             }
-            if (options.singleTile) {
+            if (!options.tiled) {
                 layer.getSource().on('imageloadstart', () => {
                     this.props.setLayerLoading(options.id, true);
                 });
