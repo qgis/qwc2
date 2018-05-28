@@ -6,33 +6,29 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var React = require('react');
+const React = require('react');
 const PropTypes = require('prop-types');
-var ol = require('openlayers');
+const assign = require('object-assign');
+const ol = require('openlayers');
 
 class ScaleBar extends React.Component {
     static propTypes = {
         map: PropTypes.object,
-        className: PropTypes.string,
-        minWidth: PropTypes.number,
-        units: PropTypes.oneOf(['degrees', 'imperial', 'nautical', 'metric', 'us'])
+        // See https://openlayers.org/en/latest/apidoc/ol.control.ScaleLine.html
+        options: PropTypes.object
     }
     static defaultProps = {
         map: null,
-        className: 'ol-scale-line',
+        options: {}
+    }
+    static defaultOpt = {
         minWidth: 64,
         units: 'metric'
     }
     componentDidMount() {
-        this.scalebar = new ol.control.ScaleLine(this.props);
+        this.scalebar = new ol.control.ScaleLine(assign({}, ScaleBar.defaultOpt, this.props.options));
         if (this.props.map) {
             this.props.map.addControl(this.scalebar);
-            let scaleDom = document.getElementsByClassName('ol-scale-line').item(0);
-            if (scaleDom) {
-                scaleDom.style.backgroundColor = 'rgba(7, 138, 163, 1)';
-                scaleDom.style.color = 'white';
-                scaleDom.style.borderColor = 'black';
-            }
         }
     }
     render() {

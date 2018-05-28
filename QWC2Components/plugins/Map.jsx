@@ -69,7 +69,7 @@ class MapPlugin extends React.Component {
         return Object.keys(this.props.tools).map((tool) => {
             const Tool = this.props.tools[tool];
             const options = this.props.toolsOptions[tool] || {};
-            return <Tool key={tool} {...options}/>;
+            return <Tool key={tool} options={options}/>;
         });
     }
     render() {

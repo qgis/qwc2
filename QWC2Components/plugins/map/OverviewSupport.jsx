@@ -17,10 +17,10 @@
  */
 
 
-var React = require('react');
+const React = require('react');
 const PropTypes = require('prop-types');
-var ol = require('openlayers');
-var assign = require('object-assign');
+const ol = require('openlayers');
+const assign = require('object-assign');
 
 require('./style/OverviewSupport.css');
 
@@ -28,21 +28,12 @@ class Overview extends React.Component {
     static propTypes = {
         id: PropTypes.string,
         map: PropTypes.object,
-        overviewOpt: PropTypes.object
+        // See https://openlayers.org/en/latest/apidoc/ol.control.OverviewMap.html
+        options: PropTypes.object
     }
     static defaultProps = {
       id: 'overview',
-      overviewOpt: {}
-    }
-    componentDidMount() {
-        let opt = assign({}, this.defaultOpt, this.props.overviewOpt);
-        this.overview = new ol.control.OverviewMap(opt);
-        if (this.props.map) {
-            this.overview.setMap(this.props.map);
-        }
-    }
-    render() {
-        return null;
+      options: {}
     }
     static defaultOpt: {
         className: 'ol-overviewmap ol-custom-overviewmap',
@@ -50,6 +41,16 @@ class Overview extends React.Component {
         label: '\u00BB',
         collapsed: true,
         collapsible: true
+    }
+    componentDidMount() {
+        let opt = assign({}, Overview.defaultOpt, this.props.options);
+        this.overview = new ol.control.OverviewMap(opt);
+        if (this.props.map) {
+            this.overview.setMap(this.props.map);
+        }
+    }
+    render() {
+        return null;
     }
 };
 
