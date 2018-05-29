@@ -330,12 +330,12 @@ class LayerTree extends React.Component {
         if(grouppath.length === 0) {
             // Toggle entire layer
             let newlayer = assign({}, layer, {expanded: !oldexpanded});
-            this.props.changeLayerProperties(layer.id, newlayer);
+            this.props.changeLayerProperties(layer.uuid, newlayer);
         } else {
             // Toggle group
             let {newlayer, newsublayer} = this.cloneLayer(layer, grouppath);
             newsublayer.expanded = !oldexpanded;
-            this.props.changeLayerProperties(layer.id, newlayer);
+            this.props.changeLayerProperties(layer.uuid, newlayer);
         }
     }
     groupToggled = (layer, grouppath, oldvisibility, inMutuallyExclusiveGroup) => {
@@ -346,11 +346,11 @@ class LayerTree extends React.Component {
                 // Toggle group and all sublayers
                 let newlayer = assign({}, layer, {visibility: !oldvisibility});
                 this.propagateOptions(newlayer, {visibility: !oldvisibility});
-                this.props.changeLayerProperties(layer.id, newlayer);
+                this.props.changeLayerProperties(layer.uuid, newlayer);
             } else {
                 // Toggle entire layer
                 let newlayer = assign({}, layer, {visibility: !oldvisibility});
-                this.props.changeLayerProperties(layer.id, newlayer);
+                this.props.changeLayerProperties(layer.uuid, newlayer);
             }
         } else {
             let {newlayer, newsublayer} = this.cloneLayer(layer, grouppath);
@@ -371,7 +371,7 @@ class LayerTree extends React.Component {
                 newlayer.visibility = true;
                 this.propagateOptions(newlayer, {visibility: true}, grouppath);
             }
-            this.props.changeLayerProperties(layer.id, newlayer);
+            this.props.changeLayerProperties(layer.uuid, newlayer);
         }
     }
     layerToggled = (layer, sublayerpath, oldvisibility, inMutuallyExclusiveGroup) => {
@@ -384,7 +384,7 @@ class LayerTree extends React.Component {
                 newlayer.visibility = true;
                 this.propagateOptions(newlayer, {visibility: true}, sublayerpath);
             }
-            this.props.changeLayerProperties(layer.id, newlayer);
+            this.props.changeLayerProperties(layer.uuid, newlayer);
         }
     }
     toggleMutuallyExclusive = (layer, path, oldvisibility) => {
@@ -406,13 +406,13 @@ class LayerTree extends React.Component {
                 newlayer.visibility = true;
                 this.propagateOptions(newlayer, {visibility: true}, path);
             }
-            this.props.changeLayerProperties(layer.id, newlayer);
+            this.props.changeLayerProperties(layer.uuid, newlayer);
         }
     }
     layerTransparencyChanged = (layer, sublayerpath, value) => {
         let {newlayer, newsublayer} = this.cloneLayer(layer, sublayerpath);
         newsublayer.opacity = Math.max(1, 255 - value);
-        this.props.changeLayerProperties(layer.id, newlayer);
+        this.props.changeLayerProperties(layer.uuid, newlayer);
     }
     layerMenuToggled = (sublayeruuid) => {
         this.setState({activemenu: this.state.activemenu === sublayeruuid ? null : sublayeruuid});

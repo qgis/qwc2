@@ -79,11 +79,11 @@ function addThemeSublayer(layer) {
     }
 }
 
-function changeLayerProperties(layerId, properties) {
+function changeLayerProperties(layerUuid, properties) {
     return {
         type: CHANGE_LAYER_PROPERTIES,
         newProperties: properties,
-        layerId: layerId
+        layerUuid: layerUuid
 
     };
 }

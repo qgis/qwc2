@@ -38,10 +38,10 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             return assign({}, state, {flat: newLayers});
         }
         case CHANGE_LAYER_PROPERTIES: {
-            let layer = state.flat.find((layer) => {return layer.id === action.layerId});
+            let layer = state.flat.find((layer) => {return layer.uuid === action.layerUuid});
             let isBackground = layer ? layer.group === 'background' : false;
             const newLayers = (state.flat || []).map((layer) => {
-                if (layer.id === action.layerId) {
+                if (layer.uuid === action.layerUuid) {
                     let newLayer = assign({}, layer, action.newProperties);
                     if(newLayer.type === "wms") {
                         assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
