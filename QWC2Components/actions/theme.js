@@ -11,7 +11,7 @@ const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const CoordinatesUtils = require("../../MapStore2Components/utils/CoordinatesUtils");
 const MapUtils = require("../../MapStore2Components/utils/MapUtils");
 const ThemeUtils = require("../utils/ThemeUtils");
-const {addLayer, removeLayer, removeAllLayers} = require("./layers");
+const {addLayer, removeLayer, removeAllLayers, setSwipe} = require("./layers");
 const {configureMap} = require("./map");
 
 const THEMES_LOADED = 'THEMES_LOADED';
@@ -43,6 +43,7 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
         } else {
             dispatch(removeAllLayers());
         }
+        dispatch(setSwipe(undefined));
 
         // Preserve extent if desired and possible
         if(preserve && !initialView && ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch") === true) {

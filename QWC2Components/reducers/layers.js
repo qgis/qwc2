@@ -170,7 +170,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             return assign({}, state, {flat: newLayers});
         }
         case REMOVE_ALL_LAYERS: {
-            return assign({}, state, {flat: []});
+            return assign({}, state, {flat: [], swipe: undefined});
         }
         case REORDER_LAYER: {
             let newLayers = LayerUtils.reorderLayer(state.flat, action.layer, action.sublayerpath, action.direction, state.swipe);
