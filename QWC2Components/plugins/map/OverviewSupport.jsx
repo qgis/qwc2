@@ -45,9 +45,9 @@ class Overview extends React.Component {
     componentDidMount() {
         let opt = assign({}, Overview.defaultOpt, this.props.options);
         this.overview = new ol.control.OverviewMap(opt);
-        if (this.props.map) {
-            this.overview.setMap(this.props.map);
-        }
+    }
+    componentWillReceiveProps(newProps) {
+        this.overview.setMap(newProps.map);
     }
     render() {
         return null;
