@@ -33,7 +33,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
     switch (action.type) {
         case SET_LAYER_LOADING: {
             const newLayers = (state.flat || []).map((layer) => {
-                return layer.id === action.layerId ? assign({}, layer, {loading: action.loading}) : layer;
+                return layer.uuid === action.layerUuid ? assign({}, layer, {loading: action.loading}) : layer;
             });
             return assign({}, state, {flat: newLayers});
         }

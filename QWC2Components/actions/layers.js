@@ -88,10 +88,10 @@ function changeLayerProperties(layerId, properties) {
     };
 }
 
-function setLayerLoading(layerId, loading) {
+function setLayerLoading(layerUuid, loading) {
     return {
         type: SET_LAYER_LOADING,
-        layerId: layerId,
+        layerUuid: layerUuid,
         loading
     };
 }

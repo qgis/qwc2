@@ -156,32 +156,32 @@ class OpenlayersLayer extends React.Component {
             }
             if (!options.tiled) {
                 layer.getSource().on('imageloadstart', () => {
-                    this.props.setLayerLoading(options.id, true);
+                    this.props.setLayerLoading(options.uuid, true);
                 });
                 layer.getSource().on('imageloadend', () => {
-                    this.props.setLayerLoading(options.id, false);
+                    this.props.setLayerLoading(options.uuid, false);
                 });
                 layer.getSource().on('imageloaderror', (event) => {
-                    this.props.setLayerLoading(options.id, false);
+                    this.props.setLayerLoading(options.uuid, false);
                 });
             }
             else {
                 layer.getSource().on('tileloadstart', () => {
                     if (this.tilestoload === 0) {
-                        this.props.setLayerLoading(options.id, true);
+                        this.props.setLayerLoading(options.uuid, true);
                     }
                     this.tilestoload++;
                 });
                 layer.getSource().on('tileloadend', () => {
                     this.tilestoload--;
                     if (this.tilestoload === 0) {
-                        this.props.setLayerLoading(options.id, false);
+                        this.props.setLayerLoading(options.uuid, false);
                     }
                 });
                 layer.getSource().on('tileloaderror', (event) => {
                     this.tilestoload--;
                     if (this.tilestoload === 0) {
-                        this.props.setLayerLoading(options.id, false);
+                        this.props.setLayerLoading(options.uuid, false);
                     }
                 });
             }
