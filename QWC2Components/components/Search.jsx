@@ -304,25 +304,54 @@ class Search extends React.Component {
         );
     }
     showResult = (item, zoom=true) => {
+        if(zoom) {
+            let bbox = item.bbox ? item.bbox.slice(0) : [];
+            let crs = item.crs;
+            let x = item.x;
+            let y = item.y;
+
+            // find max zoom level greater than min scale
+            let maxZoom = 0;
+            const scales = this.props.map.scales;
+            for (let i in scales) {
+                if (scales[i] < this.props.searchOptions.minScale) {
+                    break;
+                } else {
+                    maxZoom = i;
+                }
+            }
+
+            if(item.type === SearchResultType.THEMELAYER && item.layer) {
+                const maxbbox = (layer, bounds) => {
+                    if(layer.sublayers) {
+                        for(sublayer in layer.sublayers) {
+                            maxbbox(layer.sublayers[sublayer], bounds);
+                        }
+                    } else {
+                        const newbounds = CoordinatesUtils.reprojectBbox(layer.bbox.bounds, layer.bbox.crs, this.props.map.projection);
+                        if(bounds.length) {
+                            bounds[0] = Math.min(newbounds[0], bounds[0]);
+                            bounds[1] = Math.min(newbounds[1], bounds[1]);
+                            bounds[2] = Math.max(newbounds[2], bounds[2]);
+                            bounds[3] = Math.max(newbounds[3], bounds[3]);
+                        } else {
+                            bounds.push(...newbounds);
+                        }
+                    }
+                }
+                maxbbox(item.layer, bbox);
+                crs = this.props.map.projection;
+                x = 0.5 * (bbox[0] + bbox[2]);
+                y = 0.5 * (bbox[3] + bbox[1]);
+            }
+
+            // zoom to result using max zoom level
+            const newZoom = mapUtils.getZoomForExtent(CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection), this.props.map.resolutions, this.props.map.size, 0, maxZoom);
+            this.props.panToResult([x, y], newZoom, crs);
+        }
         if((item.type || SearchResultType.PLACE) === SearchResultType.PLACE) {
             this.props.removeLayer("searchselection");
             let text = item.label !== undefined ? item.label : item.text;
-            if(zoom) {
-                // find max zoom level greater than min scale
-                let maxZoom = 0;
-                const scales = this.props.map.scales;
-                for (let i in scales) {
-                    if (scales[i] < this.props.searchOptions.minScale) {
-                        break;
-                    } else {
-                        maxZoom = i;
-                    }
-                }
-
-                // zoom to result using max zoom level
-                const newZoom = mapUtils.getZoomForExtent(CoordinatesUtils.reprojectBbox(item.bbox, item.crs, this.props.map.projection), this.props.map.resolutions, this.props.map.size, 0, maxZoom);
-                this.props.panToResult([item.x, item.y], newZoom, item.crs);
-            }
             if(item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
                 this.props.searchProviders[item.provider].getResultGeometry(item, (item, geometry, crs) => { this.showFeatureGeometry(item, geometry, crs, text)});
             }
