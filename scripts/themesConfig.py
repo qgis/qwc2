@@ -313,7 +313,7 @@ def getTheme(configItem, resultItem):
         if "printGrid" in configItem:
             resultItem["printGrid"] = configItem["printGrid"]
         # NOTE: skip root WMS layer
-        resultItem["sublayers"] = layerTree[0]["sublayers"]
+        resultItem["sublayers"] = layerTree[0]["sublayers"] if len(layerTree) > 0 else []
         resultItem["expanded"] = True
         if "backgroundLayers" in configItem:
             resultItem["backgroundLayers"] = configItem["backgroundLayers"]
