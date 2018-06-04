@@ -88,6 +88,7 @@ const ThemeUtils = {
             title: theme.title,
             boundingBox: theme.bbox,
             sublayers : sublayers,
+            tiled: theme.tiled,
             ratio: !theme.tiled ? 1 : undefined,
             format: theme.format,
             role: LayerRole.THEME,
