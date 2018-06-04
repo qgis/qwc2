@@ -42,7 +42,7 @@ function generatePermaLink(state, callback) {
         layers: (state.layers && state.layers.flat || []).filter(layer => (layer.role === LayerRole.USERLAYER || layer.role === LayerRole.THEME))
     };
     axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/createpermalink?url=" + encodeURIComponent(window.location.href), permalinkState)
-        .then(response => callback(response.data.permalink))
+        .then(response => callback(response.data.permalink || window.location.href))
         .catch(e => callback(window.location.href));
 }
 
