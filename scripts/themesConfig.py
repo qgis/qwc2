@@ -83,7 +83,7 @@ def getEditConfig(editConfig):
         if os.path.exists(filename):
             with open(filename) as fh:
                 config = json.load(fh)
-        return config
+            return config
     return None
 
 def getDirectChildElements(parent, tagname):
