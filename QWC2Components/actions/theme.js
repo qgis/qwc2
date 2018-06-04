@@ -44,6 +44,9 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
             dispatch(removeAllLayers());
         }
         dispatch(setSwipe(undefined));
+        if(!theme) {
+            return;
+        }
 
         // Preserve extent if desired and possible
         if(preserve && !initialView && ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch") === true) {
