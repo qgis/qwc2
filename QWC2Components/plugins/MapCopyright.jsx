@@ -66,7 +66,7 @@ class MapCopyright extends React.Component {
             if(attribution.url) {
                 return (<span key={"attribution" + index}><a href={attribution.url} target="_blank">{attribution.label}</a></span>);
             } else {
-                return (<span key={"attribution" + index}>{attribution.label}</span>);
+                return (<span key={"attribution" + index} dangerouslySetInnerHTML={{__html: attribution.label}} />);
             }
         })
         if(isEmpty(copyrights)) {
