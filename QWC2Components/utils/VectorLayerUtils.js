@@ -165,7 +165,8 @@ const VectorLayerUtils = {
     wktToGeoJSON(wkt, srccrs, dstcrs) {
         wkt = wkt.replace(/Point(\w+)/i, "Point $1")
                  .replace(/LineString(\w+)/i, "LineString $1")
-                 .replace(/Polygon(\w+)/i, "Polygon $1");
+                 .replace(/Polygon(\w+)/i, "Polygon $1")
+                 .replace(/MultiSurface(\w*)/i, "GeometryCollection $1");
         let feature = new ol.format.WKT().readFeature(wkt, {
             dataProjection: srccrs,
             featureProjection: dstcrs
