@@ -46,7 +46,7 @@
       "noeditablelayers": "No editable layers.",
       "pick": "Pick",
       "reallydelete": "Delete",
-      "select": ""
+      "select": "Select"
     },
     "fileselector": {
       "placeholder": "Select file..."

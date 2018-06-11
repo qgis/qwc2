@@ -46,7 +46,7 @@
       "noeditablelayers": "Keine editierbare Ebenen.",
       "pick": "Auswählen",
       "reallydelete": "Löschen",
-      "select": ""
+      "select": "Auswählen"
     },
     "fileselector": {
       "placeholder": "Datei auswählen"
