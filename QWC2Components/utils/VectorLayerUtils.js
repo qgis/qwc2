@@ -36,7 +36,7 @@ const VectorLayerUtils = {
                 let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
                 params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
                 params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, dpi));
-                params.labels.push(feature.properties.label || "");
+                params.labels.push(feature.properties && feature.properties.label || "");
                 if(feature.styleName === "text") {
                     params.labelFillColors.push(ensureHex(feature.styleOptions.fillColor));
                     params.labelOultineColors.push(ensureHex(feature.styleOptions.strokeColor));
