@@ -77,10 +77,12 @@ class Redlining extends React.Component {
                         <span><Message msgId="redlining.outline" />:</span>
                         <ColorButton color={this.props.redlining.borderColor} onColorChanged={(color) => this.colorPicked({borderColor: color})} />
                     </span>
-                    <span>
-                        <span><Message msgId="redlining.fill" />:</span>
-                        <ColorButton color={this.props.redlining.fillColor} onColorChanged={(color) => this.colorPicked({fillColor: color})} />
-                    </span>
+                    {this.props.redlining.geomType === 'LineString' ? null : (
+                        <span>
+                            <span><Message msgId="redlining.fill" />:</span>
+                            <ColorButton color={this.props.redlining.fillColor} onColorChanged={(color) => this.colorPicked({fillColor: color})} />
+                        </span>
+                    )}
                     <span>
                         <span>{sizeLabel}:</span>
                         <NumericInput mobile min={1} max={99} value={this.props.redlining.size} onChange={(nr) => this.updateRedliningState({size: nr})}/>
