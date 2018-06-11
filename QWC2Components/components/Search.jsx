@@ -304,6 +304,9 @@ class Search extends React.Component {
         );
     }
     showResult = (item, zoom=true) => {
+        if(item.type === SearchResultType.THEMELAYER && !this.props.searchOptions.zoomToLayers) {
+            zoom = false;
+        }
         if(zoom) {
             let bbox = item.bbox ? item.bbox.slice(0) : [];
             let crs = item.crs;
