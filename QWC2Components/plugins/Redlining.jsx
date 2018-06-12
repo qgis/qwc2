@@ -32,6 +32,9 @@ class Redlining extends React.Component {
     static contextTypes = {
         messages: PropTypes.object
     }
+    state = {
+        selectText: false
+    }
     constructor(props) {
         super(props);
         this.labelInput = null;
@@ -88,7 +91,7 @@ class Redlining extends React.Component {
                         <NumericInput mobile min={1} max={99} value={this.props.redlining.size} onChange={(nr) => this.updateRedliningState({size: nr})}/>
                     </span>
                     <span>
-                        <input ref={el => this.labelInput = el} className="redlining-label" type="text" placeholder={labelPlaceholder} value={this.props.redlining.text} onChange={(ev) => this.updateRedliningState({text: ev.target.value})}/>
+                        <input ref={el => this.setLabelRef(el)} className="redlining-label" type="text" placeholder={labelPlaceholder} value={this.props.redlining.text} onChange={(ev) => this.updateRedliningState({text: ev.target.value})}/>
                     </span>
                 </div>
             </div>
@@ -103,9 +106,18 @@ class Redlining extends React.Component {
             </TaskBar>
         );
     }
+    setLabelRef = (el) => {
+        this.labelInput = el;
+        if(el && this.state.selectText) {
+            el.select();
+            this.setState({selectText: false});
+        }
+    }
     actionChanged = (data) => {
         if(data.action === "Draw" && data.geomType === "Text" && this.labelInput) {
+            data = assign({}, data, {text: LocaleUtils.getMessageById(this.context.messages, "redlining.text")});
             this.labelInput.focus();
+            this.setState({selectText: true});
         }
         this.updateRedliningState(data);
     }
