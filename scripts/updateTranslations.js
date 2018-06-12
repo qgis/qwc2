@@ -29,13 +29,13 @@ const cleanMessages = (data, ref) => {
 const createSkel = (strings) => {
     let skel = {"locale": "", "messages": {}};
     for(let string of strings) {
-    let path = string.split(".");
-    let cur = skel.messages;
-    for(let i = 0; i < path.length - 1; ++i) {
-        cur[path[i]] = cur[path[i]] || {};
-        cur = cur[path[i]];
-    }
-    cur[path[path.length - 1]] = "";
+        let path = string.split(".");
+        let cur = skel.messages;
+        for(let i = 0; i < path.length - 1; ++i) {
+            cur[path[i]] = cur[path[i]] || {};
+            cur = cur[path[i]];
+        }
+        cur[path[path.length - 1]] = "";
     }
     return skel;
 }
@@ -67,11 +67,13 @@ for(let lang of langs) {
   }
 
   // Merge application translations
-  data = merge(data, applicationSkel);
-  data = merge(data, cleanMessages(readJSON('/translations/data.' + lang)));
+  let appdata = cleanMessages(merge(applicationSkel, cleanMessages(readJSON('/translations/data.' + lang))));
+  appdata = merge(cleanMessages(data), appdata);
+  // Merge app skel again so that empty strings stay visible
+  appdata = merge(applicationSkel, appdata);
   // Write output
   try {
-    fs.writeFileSync(process.cwd() + '/translations/data.' + lang, JSON.stringify(data, null, 2) + "\n");
+    fs.writeFileSync(process.cwd() + '/translations/data.' + lang, JSON.stringify(appdata, null, 2) + "\n");
     console.error('Wrote translations/data.' + lang);
   } catch(e) {
     console.error('Failed to write application translation data.' + lang + ': ' + e);
