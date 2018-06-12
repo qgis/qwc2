@@ -117,6 +117,8 @@
     "print": {
       "layout": "Șablon:",
       "grid": "Grid",
+      "maximize": "",
+      "minimize": "",
       "nolayouts": "Această temă nu are șabloane de print",
       "notheme": "Nu avem selectată tema",
       "resolution": "Rezoluție:",

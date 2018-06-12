@@ -117,6 +117,8 @@
     "print": {
       "layout": "Layout",
       "grid": "Griglia",
+      "maximize": "Massimizza",
+      "minimize": "Minimizza",
       "nolayouts": "Nessun layout di stampa",
       "notheme": "Nessun tema selezionato",
       "resolution": "Risoluzione:",
