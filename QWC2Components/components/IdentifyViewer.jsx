@@ -273,36 +273,40 @@ class IdentifyViewer extends React.Component {
                 <iframe className="identify-result-box" src={"data:text/html," + encodeURIComponent(result.properties.htmlContent)}></iframe>
             );
         } else {
-            let properties = Object.keys(result.properties);
-            if(properties.length === 0) {
-                return null;
-            }
+            let properties = Object.keys(result.properties) || [];
             let style = {};
             if(scrollable) {
                 style['overflow'] = 'auto';
             }
+            let rows = null;
+            if(properties.length === 1 && result.properties["maptip"]) {
+                rows = (
+                    <tr>
+                        <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: this.addLinkAnchors(result.properties[properties[0]])}}></td>
+                    </tr>
+                );
+            } else {
+                rows = properties.map(attrib => {
+                    if(this.props.theme.skipEmptyFeatureAttributes && (!result.properties[attrib] || result.properties[attrib] === "NULL")) {
+                        return null;
+                    }
+                    return (
+                        <tr key={attrib}>
+                            <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i>{attrib}</i></td>
+                            <td className={"identify-attr-value " + this.props.longAttributesDisplay} dangerouslySetInnerHTML={{__html: this.addLinkAnchors(result.properties[attrib])}}></td>
+                        </tr>
+                    );
+                });
+            }
+            if(isEmpty(rows)) {
+                rows = (
+                    <tr><td className="identify-attr-value"><i><Message msgId="identify.noattributes" /></i></td></tr>
+                );
+            }
             resultbox = (
                 <div className="identify-result-box" style={style}>
                     <table className="attribute-list"><tbody>
-                        {properties.map(attrib => {
-                            if(this.props.theme.skipEmptyFeatureAttributes && (!result.properties[attrib] || result.properties[attrib] === "NULL")) {
-                                return null;
-                            }
-                            if(properties.length === 1 && result.properties["maptip"]) {
-                                return (
-                                    <tr key={attrib}>
-                                        <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: this.addLinkAnchors(result.properties[attrib])}}></td>
-                                    </tr>
-                                );
-                            } else {
-                                return (
-                                    <tr key={attrib}>
-                                        <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i>{attrib}</i></td>
-                                        <td className={"identify-attr-value " + this.props.longAttributesDisplay} dangerouslySetInnerHTML={{__html: this.addLinkAnchors(result.properties[attrib])}}></td>
-                                    </tr>
-                                );
-                            }
-                        })}
+                        {rows}
                     </tbody></table>
                 </div>
             );
