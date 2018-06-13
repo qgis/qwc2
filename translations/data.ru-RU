@@ -1,0 +1,166 @@
+{
+  "locale": "en-US",
+  "messages": {
+    "appmenu": {
+      "items": {
+        "DxfExport": "Экспорт в DXF",
+        "Help": "Помощь",
+        "LayerTree": "Слои и легенда",
+        "Measure": "Измерения",
+        "Print": "Печать",
+        "RasterExport": "Экспорт в растровый Формат бумаги",
+        "Share": "Поделиться ссылкой",
+        "ThemeSwitcher": "Тема",
+        "Tools": "Средства картографии",
+        "IdentifyRegion": "Определить регион",
+        "Redlining": "Обводка",
+        "Editing": "Правка"
+      },
+      "menulabel": "Карта и инструменты"
+    },
+    "bgswitcher": {
+      "nobg": "Фон отсутствует"
+    },
+    "bottombar": {
+      "mousepos_label": "Координаты",
+      "scale_label": "Масштаб",
+      "terms_label": "Условия использования",
+      "viewertitle_label": "Домашняя страница"
+    },
+    "copybtn": {
+      "click_to_copy": "Копировать",
+      "copied": "Скопировано"
+    },
+    "dxfexport": {
+      "selectinfo": "Для экспорта обведите регион многоугольником...",
+      "symbologyscale": "Масштаб символики:"
+    },
+    "editing": {
+      "canceldelete": "Не удалять",
+      "commit": "Подтвердить изменения",
+      "delete": "Удалить",
+      "discard": "Отменить изменения",
+      "draw": "Нарисовать",
+      "fields": "Поля",
+      "layer": "Слой",
+      "noeditablelayers": "Отсутствуют доступные для редактирования слои.",
+      "pick": "Выбрать",
+      "reallydelete": "Удалить",
+      "select": "Выберите..."
+    },
+    "fileselector": {
+      "placeholder": "Выберите файл..."
+    },
+    "heightprofile": {
+      "asl": "над у.м.",
+      "distance": "Дистанция",
+      "height": "Высота"
+    },
+    "identify": {
+      "querying": "Выполняется запрос...",
+      "noresults": "Для выбранной точки нет доступной информации",
+      "export": "Экспорт",
+      "featureReport": "Отчёт об объекте",
+      "title": "Информация об объекте"
+    },
+    "identifyregion": {
+      "info": "Для получения информации обведите регион многоугольником..."
+    },
+    "importlayer": {
+      "addlayer": "Добавить слой",
+      "filter": "Фильтровать...",
+      "connect": "Подключиться",
+      "nofeatures": "Нет объектов, доступных для импорта",
+      "urlplaceholder": "Введите URL для WMS, WFS, KML..."
+    },
+    "layerinfo": {
+      "title": "Информация о слое",
+      "abstract": "Abstract",
+      "attribution": "Автор",
+      "keywords": "Ключевые слова",
+      "dataUrl": "URL данных",
+      "metadataUrl": "URL метаданных",
+      "legend": "Легенда"
+    },
+    "layertree": {
+      "compare": "Сравнить верхний слой",
+      "importlayer": "Импортировать слой",
+      "maptip": "Показывать подписи",
+      "printlegend": "Распечатать легенду",
+      "transparency": "Прозрачность"
+    },
+    "locate": {
+      "metersUnit": "метров",
+      "feetUnit": "футов",
+      "popup": "Вы на расстоянии {distance} {unit} от этой точки",
+      "statustooltip": {
+        "DISABLED": "Геолокация: отключена",
+        "LOCATING": "Геолокация: определение местоположения...",
+        "ENABLED": "Геолокация: включена",
+        "FOLLOWING": "Геолокация: следование",
+        "PERMISSION_DENIED": "Геолокация: доступ воспрещен"
+      }
+    },
+    "map": {
+      "loading": "Загрузка..."
+    },
+    "mapinfotooltip": {
+      "elevation": "Высота над уровнем моря",
+      "title": "Поизиция"
+    },
+    "measureComponent": {
+      "areaLabel": "Площадь",
+      "bearingLabel": "Пеленг",
+      "lengthLabel": "Длина",
+      "pointLabel": "Позиция"
+    },
+    "print": {
+      "layout": "Формат бумаги:",
+      "grid": "Сетка:",
+      "nolayouts": "Выбранная тема не поддерживает печать",
+      "notheme": "Тема не выбрана",
+      "resolution": "Разрешение:",
+      "rotation": "Поворот:",
+      "scale": "Масштаб:",
+      "submit": "Печать"
+    },
+    "rasterexport": {
+      "format": "Формат бумаги:",
+      "resolution": "Разрешение:",
+      "selectinfo": "Для экспорта обведите регион многоугольником..."
+    },
+    "redlining": {
+      "border": "Граница",
+      "fill": "Заливка",
+      "label": "Надпись",
+      "line": "Линия",
+      "outline": "Контур",
+      "pick": "Выбрать",
+      "point": "Точка",
+      "polygon": "Полигон",
+      "size": "Размер",
+      "text": "Текст",
+      "width": "Ширина"
+    },
+    "search": {
+      "more": "Больше...",
+      "search": "Поиск",
+      "all": "Всё"
+    },
+    "share": {
+      "directLinkTitle": "По прямой ссылке",
+      "generatingpermalink": "Создание постоянной ссылки...",
+      "QRCodeLinkTitle": "QR-код",
+      "socialIntro": "В Вашей любимой соцсети"
+    },
+    "tooltip": {
+      "home": "Показать всю карту",
+      "zoomin": "Увеличить",
+      "zoomout": "Уменьшить",
+      "background": "Сменить фон"
+    },
+    "themeswitcher": {
+      "filter": "Фильтр..."
+    }
+  }
+}
