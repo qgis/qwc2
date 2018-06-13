@@ -362,7 +362,7 @@ class IdentifyViewer extends React.Component {
         );
     }
     render() {
-        let tree = false;
+        let tree = this.props.displayResultTree;
         if(isEmpty(this.state.resultTree)) {
             if(this.props.missingResponses > 0) {
                 return (<div id="IdentifyViewer"><Message msgId="identify.querying" /></div>);

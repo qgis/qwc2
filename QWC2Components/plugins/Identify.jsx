@@ -85,7 +85,8 @@ class Identify extends React.Component {
                     missingResponses={missingResponses}
                     responses={this.props.responses}
                     enableExport={this.props.enableExport}
-                    longAttributesDisplay={this.props.longAttributesDisplay} />
+                    longAttributesDisplay={this.props.longAttributesDisplay}
+                    displayResultTree={this.props.displayResultTree} />
             </ResizeableWindow>
         );
     }
