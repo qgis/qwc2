@@ -9,6 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
+const isEmpty = require('lodash.isempty');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const ProxyUtils = require("../../MapStore2Components/utils/ProxyUtils");
@@ -26,7 +27,7 @@ class DxfExport extends React.Component {
     }
     renderBody = () => {
         let themeLayers = this.props.layers.filter(layer => layer.isThemeLayer);
-        if(!this.props.theme || !themeLayers) {
+        if(!this.props.theme || isEmpty(themeLayers)) {
             return null;
         }
         let themeSubLayers = themeLayers.map(layer => layer.params.LAYERS).reverse().join(",");

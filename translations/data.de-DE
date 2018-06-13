@@ -46,7 +46,7 @@
       "noeditablelayers": "Keine editierbare Ebenen.",
       "pick": "Auswählen",
       "reallydelete": "Löschen",
-      "select": ""
+      "select": "Auswählen"
     },
     "fileselector": {
       "placeholder": "Datei auswählen"
@@ -117,6 +117,8 @@
     "print": {
       "layout": "Format",
       "grid": "Gitter",
+      "maximize": "Maximieren",
+      "minimize": "Minimieren",
       "nolayouts": "Das gewählte Thema stellt keine Druck-Vorlagen zur Verfügung.",
       "notheme": "Kein Thema selektiert",
       "resolution": "Auflösung",

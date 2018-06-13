@@ -9,12 +9,14 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
+const {Glyphicon} = require('react-bootstrap');
 const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
+const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 const {changeRotation} = require('../actions/map');
 const ToggleSwitch = require('../components/widgets/ToggleSwitch');
 const {SideBar} = require('../components/SideBar');
@@ -34,7 +36,13 @@ class Print extends React.Component {
         visible: false
     }
     state = {
-        layout: null, scale: null, dpi: 300, initialRotation: 0, grid: false, rotationNull: false
+        layout: null,
+        scale: null,
+        dpi: 300,
+        initialRotation: 0,
+        grid: false,
+        rotationNull: false,
+        minimized: false
     }
     componentWillReceiveProps(newProps) {
         let newState = {};
@@ -71,6 +79,7 @@ class Print extends React.Component {
     }
     onHide = () => {
         this.props.changeRotation(this.state.initialRotation);
+        this.setState({minimized: false});
     }
     renderBody = () => {
         let themeLayers = this.props.layers.filter(layer => layer.isThemeLayer);
@@ -248,12 +257,15 @@ class Print extends React.Component {
             printFrame = (<PrintFrame map={this.props.map} fixedFrame={frame} />);
         }
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
+        let minMaxTooltip = LocaleUtils.getMessageById(this.context.messages, this.state.minimized ? "print.maximize" : "print.minimize");
+        let extraTitlebarContent = (<Glyphicon title={minMaxTooltip} className="print-minimize-maximize" glyph={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={ev => this.setState({minimized: !this.state.minimized})}/>)
         return (
             <div>
                 <SideBar id="Print" onHide={this.onHide} width="20em"
                     title="appmenu.items.Print"
+                    extraTitlebarContent={extraTitlebarContent}
                     icon={assetsPath + "/img/print_white.svg"}>
-                    {this.renderBody()}
+                    {!this.state.minimized ? this.renderBody() : null}
                 </SideBar>
                 {printFrame}
             </div>

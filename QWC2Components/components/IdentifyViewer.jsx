@@ -435,7 +435,7 @@ class IdentifyViewer extends React.Component {
             y: result.clickPos[1],
             crs: this.props.mapcrs
         };
-        axios.get(serviceUrl, {params: params}).then(response => {
+        axios.get(serviceUrl, {params: params, responseType: "arraybuffer"}).then(response => {
             let contentType = response.headers["content-type"];
             let contentDisposition = response.headers["content-disposition"];
             let match = /filename=([^;\s])/.exec(contentDisposition);

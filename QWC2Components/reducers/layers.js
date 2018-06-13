@@ -33,15 +33,15 @@ function layers(state = {flat: [], swipe: undefined}, action) {
     switch (action.type) {
         case SET_LAYER_LOADING: {
             const newLayers = (state.flat || []).map((layer) => {
-                return layer.id === action.layerId ? assign({}, layer, {loading: action.loading}) : layer;
+                return layer.uuid === action.layerUuid ? assign({}, layer, {loading: action.loading}) : layer;
             });
             return assign({}, state, {flat: newLayers});
         }
         case CHANGE_LAYER_PROPERTIES: {
-            let layer = state.flat.find((layer) => {return layer.id === action.layerId});
+            let layer = state.flat.find((layer) => {return layer.uuid === action.layerUuid});
             let isBackground = layer ? layer.group === 'background' : false;
             const newLayers = (state.flat || []).map((layer) => {
-                if (layer.id === action.layerId) {
+                if (layer.uuid === action.layerUuid) {
                     let newLayer = assign({}, layer, action.newProperties);
                     if(newLayer.type === "wms") {
                         assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
@@ -170,7 +170,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             return assign({}, state, {flat: newLayers});
         }
         case REMOVE_ALL_LAYERS: {
-            return assign({}, state, {flat: []});
+            return assign({}, state, {flat: [], swipe: undefined});
         }
         case REORDER_LAYER: {
             let newLayers = LayerUtils.reorderLayer(state.flat, action.layer, action.sublayerpath, action.direction, state.swipe);

@@ -7,9 +7,10 @@
  *
  */
 
-var React = require('react');
+const React = require('react');
 const PropTypes = require('prop-types');
-var OlLocate = require('../../../utils/openlayers/OlLocate');
+const assign = require('object-assign');
+const OlLocate = require('../../../utils/openlayers/OlLocate');
 
 class Locate extends React.Component {
     static propTypes = {
@@ -17,13 +18,16 @@ class Locate extends React.Component {
         status: PropTypes.string,
         messages: PropTypes.object,
         changeLocateState: PropTypes.func,
-        onLocateError: PropTypes.func
+        onLocateError: PropTypes.func,
+        // See ../../../utils/openlayers/OlLocate
+        options: PropTypes.object
     }
     static defaultProps = {
         id: 'overview',
         status: "DISABLED",
         changeLocateState: () => {},
-        onLocateError: () => {}
+        onLocateError: () => {},
+        options: {}
     }
     static defaultOpt = {
         follow: false,// follow with zoom and pan the user's location
@@ -40,7 +44,7 @@ class Locate extends React.Component {
     }
     componentDidMount() {
         if (this.props.map) {
-            this.locate = new OlLocate(this.props.map, Locate.defaultOpt);
+            this.locate = new OlLocate(this.props.map, assign({}, Locate.defaultOpt, this.props.options));
             this.locate.setStrings(this.props.messages);
             this.locate.options.onLocationError = this.onLocationError;
             this.locate.on("propertychange", (e) => {this.onStateChange(e.target.get(e.key)); });

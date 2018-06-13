@@ -341,7 +341,7 @@ function getTheme(configItem, resultItem) {
             resultItem.printResolutions = configItem.printResolutions;
             resultItem.printGrid = configItem.printGrid;
             // NOTE: skip root WMS layer
-            resultItem.sublayers = layerTree[0].sublayers;
+            resultItem.sublayers = isEmpty(layerTree) ? [] : layerTree[0].sublayers;
             resultItem.expanded = true;
             resultItem.backgroundLayers = configItem.backgroundLayers;
             resultItem.searchProviders = configItem.searchProviders;

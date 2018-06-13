@@ -117,6 +117,8 @@
     "print": {
       "layout": "Formato:",
       "grid": "Grade/escala:",
+      "maximize": "",
+      "minimize": "",
       "nolayouts": "O tema selecionado não suporta impressão",
       "notheme": "Nenhum tema selecionado",
       "resolution": "Resolução:",

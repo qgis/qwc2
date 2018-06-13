@@ -42,7 +42,7 @@ let WMSLayer = {
         const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]);
         const queryParameters = wmsToOpenlayersOptions(options) || {};
         urls.forEach(url => SecurityUtils.addAuthenticationParameter(url, queryParameters));
-        if (options.singleTile) {
+        if (!options.tiled) {
             return new ol.layer.Image({
                 opacity: options.opacity !== undefined ? options.opacity : 1,
                 visible: options.visibility !== false,

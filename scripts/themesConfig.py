@@ -24,6 +24,7 @@ import socket
 import re
 
 hostFqdn = "http://" + socket.getfqdn()
+themesConfig = os.getenv("QWC2_THEMES_CONFIG", "themesConfig.json");
 usedThemeIds = []
 
 # load thumbnail from file or GetMap
@@ -67,6 +68,23 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
         resultItem["error"] = "Could not get thumbnail"
         traceback.print_exc()
 
+def getEditConfig(editConfig):
+    if not editConfig:
+        return None
+    elif os.path.isabs(editConfig) and os.path.exists(editConfig):
+        with open(editConfig) as fh:
+            config = json.load(fh)
+        return config
+    else:
+        dirname = os.path.dirname(themesConfig)
+        if not dirname:
+            dirname = "."
+        filename = os.path.join(dirname, editConfig)
+        if os.path.exists(filename):
+            with open(filename) as fh:
+                config = json.load(fh)
+            return config
+    return None
 
 def getDirectChildElements(parent, tagname):
     return [node for node in parent.childNodes if node.nodeName.split(':')[-1] == tagname]
@@ -313,7 +331,7 @@ def getTheme(configItem, resultItem):
         if "printGrid" in configItem:
             resultItem["printGrid"] = configItem["printGrid"]
         # NOTE: skip root WMS layer
-        resultItem["sublayers"] = layerTree[0]["sublayers"]
+        resultItem["sublayers"] = layerTree[0]["sublayers"] if len(layerTree) > 0 else []
         resultItem["expanded"] = True
         if "backgroundLayers" in configItem:
             resultItem["backgroundLayers"] = configItem["backgroundLayers"]
@@ -341,6 +359,8 @@ def getTheme(configItem, resultItem):
 
         if "skipEmptyFeatureAttributes" in configItem:
             resultItem["skipEmptyFeatureAttributes"] = configItem["skipEmptyFeatureAttributes"]
+
+        resultItem["editConfig"] = getEditConfig(configItem["editConfig"] if "editConfig" in configItem else None);
 
         # set default theme
         if "default" in configItem or not result["themes"]["defaultTheme"]:
@@ -389,7 +409,6 @@ def getGroupThemes(configGroup, resultGroup):
             resultGroup["subdirs"].append(groupEntry)
 
 # load themesConfig.json
-themesConfig = os.getenv("QWC2_THEMES_CONFIG", "themesConfig.json");
 print("Reading " + themesConfig)
 try:
   with open(themesConfig) as fh:

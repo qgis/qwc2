@@ -7,6 +7,17 @@
     width: 10em;
 }
 
+#Print .print-minimize-maximize {
+    margin-left: 1em;
+    cursor: pointer;
+    border: 1px solid transparent;
+    padding: 0.25em;
+}
+
+#LayerTree span.print-minimize-maximize:hover {
+    border: 1px solid white;
+}
+
 #Print table.options-table {
     width: 100%;
 }

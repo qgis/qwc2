@@ -78,11 +78,11 @@ class BackgroundSwitcher extends React.Component {
     }
     backgroudLayerClicked = (layer) => {
         if(layer) {
-            this.props.changeLayerProperties(layer.id, {visibility: true});
+            this.props.changeLayerProperties(layer.uuid, {visibility: true});
         } else {
             let visible = this.props.layers.find(layer => layer.group === "background" && layer.visibility);
             if(visible) {
-                this.props.changeLayerProperties(visible.id, {visibility: false});
+                this.props.changeLayerProperties(visible.uuid, {visibility: false});
             }
         }
         this.props.setCurrentTask(null);

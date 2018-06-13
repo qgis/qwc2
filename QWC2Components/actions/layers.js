@@ -79,19 +79,19 @@ function addThemeSublayer(layer) {
     }
 }
 
-function changeLayerProperties(layerId, properties) {
+function changeLayerProperties(layerUuid, properties) {
     return {
         type: CHANGE_LAYER_PROPERTIES,
         newProperties: properties,
-        layerId: layerId
+        layerUuid: layerUuid
 
     };
 }
 
-function setLayerLoading(layerId, loading) {
+function setLayerLoading(layerUuid, loading) {
     return {
         type: SET_LAYER_LOADING,
-        layerId: layerId,
+        layerUuid: layerUuid,
         loading
     };
 }

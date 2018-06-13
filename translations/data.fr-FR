@@ -46,7 +46,7 @@
       "noeditablelayers": "Il n'y a pas de calque éditable pour ce thème",
       "pick": "Choisir",
       "reallydelete": "Supprimer",
-      "select": ""
+      "select": "Choisir"
     },
     "fileselector": {
       "placeholder": "Choisir un fichier..."
@@ -117,6 +117,8 @@
     "print": {
       "layout": "Format",
       "grid": "Grille",
+      "maximize": "",
+      "minimize": "",
       "nolayouts": "Il n'y a pas de mise en page disponible pour le thème choisi.",
       "notheme": "Pas de thème sélectionné",
       "resolution": "Résolution",

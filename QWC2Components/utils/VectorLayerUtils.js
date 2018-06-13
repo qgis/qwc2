@@ -36,7 +36,7 @@ const VectorLayerUtils = {
                 let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
                 params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
                 params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, dpi));
-                params.labels.push(feature.properties.label || "");
+                params.labels.push(feature.properties && feature.properties.label || "");
                 if(feature.styleName === "text") {
                     params.labelFillColors.push(ensureHex(feature.styleOptions.fillColor));
                     params.labelOultineColors.push(ensureHex(feature.styleOptions.strokeColor));
@@ -165,7 +165,8 @@ const VectorLayerUtils = {
     wktToGeoJSON(wkt, srccrs, dstcrs) {
         wkt = wkt.replace(/Point(\w+)/i, "Point $1")
                  .replace(/LineString(\w+)/i, "LineString $1")
-                 .replace(/Polygon(\w+)/i, "Polygon $1");
+                 .replace(/Polygon(\w+)/i, "Polygon $1")
+                 .replace(/MultiSurface(\w*)/i, "GeometryCollection $1");
         let feature = new ol.format.WKT().readFeature(wkt, {
             dataProjection: srccrs,
             featureProjection: dstcrs

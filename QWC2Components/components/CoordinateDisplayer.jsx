@@ -22,8 +22,10 @@ class CoordinateDisplayer extends React.Component {
         let value = "";
         if(this.props.mousepos) {
             let coo = CoordinatesUtils.reproject(this.props.mousepos.coordinate, this.props.mapcrs, this.props.displaycrs);
-            let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
-            value = coo[0].toFixed(digits) + " " + coo[1].toFixed(digits);
+            if(!isNaN(coo[0]) && !isNaN(coo[1])) {
+                let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
+                value = coo[0].toFixed(digits) + " " + coo[1].toFixed(digits);
+            }
         }
         return (
             <input type="text" className="coordinatedisplayer" value={value} readOnly="readOnly"/>

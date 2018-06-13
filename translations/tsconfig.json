@@ -87,6 +87,8 @@
     "measureComponent.pointLabel",
     "print.layout",
     "print.grid",
+    "print.maximize",
+    "print.minimize",
     "print.nolayouts",
     "print.notheme",
     "print.resolution",
