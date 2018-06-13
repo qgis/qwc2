@@ -11,17 +11,9 @@ const ConfigUtils = require('./ConfigUtils');
 const {addLocaleData} = require('react-intl');
 
 let supportedLocales = {
-     "it": {
-         code: "it-IT",
-         description: "Italiano"
-     },
      "en": {
         code: "en-US",
         description: "English"
-     },
-     "fr": {
-       code: "fr-FR",
-       description: "Français"
      }
 };
 
