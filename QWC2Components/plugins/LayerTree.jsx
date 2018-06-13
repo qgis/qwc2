@@ -180,7 +180,7 @@ class LayerTree extends React.Component {
         let legendicon = null;
         if(this.props.showLegendIcons) {
             if(layer.legendUrl) {
-                let request = layer.legendUrl + (layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + "SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + (layer.version || "1.3.0") + "&FORMAT=image/png&LAYER=" + sublayer.name + "&STYLE=default";
+                let request = layer.legendUrl + (layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + "SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + (layer.version || "1.3.0") + "&FORMAT=image/png&LAYER=" + sublayer.name;
                 let src = this.props.legendThumbnail ? ConfigUtils.getConfigProp("assetsPath") + '/img/' + this.props.legendThumbnail : request;
                 legendicon = (<img className="layertree-item-legend-thumbnail" src={src} onMouseOver={ev => this.showLegendTooltip(ev, request)} onMouseOut={this.hideLegendTooltip} onTouchStart={ev => this.showLegendTooltip(ev, request)} />);
             } else if(layer.color) {
@@ -450,7 +450,7 @@ class LayerTree extends React.Component {
         body += this.props.layers.map(layer => {
             if(layer.legendUrl) {
                 return layer.params.LAYERS.split(",").map(sublayer => {
-                    let request = layer.legendUrl + (layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + "SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + (layer.version || "1.3.0") + "&FORMAT=image/png&LAYER=" + sublayer + "&STYLE=default";
+                    let request = layer.legendUrl + (layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + "SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + (layer.version || "1.3.0") + "&FORMAT=image/png&LAYER=" + sublayer;
                     return '<div><img src="' + request + '" /></div>';
                 }).join("\n");
             } else if(layer.color) {

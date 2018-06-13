@@ -43,7 +43,6 @@ class LayerInfoWindow extends React.Component {
                                 "&VERSION=" + (this.props.layer.version || "1.3.0") +
                                 "&FORMAT=image/png" +
                                 "&LAYER=" + this.props.sublayer.name +
-                                "&STYLE=default" +
                                 "&BBOX=" + this.props.map.bbox.bounds.join(",") +
                                 "&CRS=" + this.props.map.projection +
                                 "&SCALE=" + this.props.map.scales[this.props.map.zoom] +
