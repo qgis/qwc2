@@ -61,6 +61,7 @@
       "noresults": "Nenhuma informação disponível para o ponto selecionado",
       "export": "Exportar",
       "featureReport": "Reportar",
+      "noattributes": "",
       "title": "Informações da Funcionalidade"
     },
     "identifyregion": {

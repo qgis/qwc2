@@ -61,6 +61,7 @@
       "noresults": "Nu există informații în punctul cerut",
       "export": "Export",
       "featureReport": "Raport entitate",
+      "noattributes": "",
       "title": "Info Entități"
     },
     "identifyregion": {

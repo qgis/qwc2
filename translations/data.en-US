@@ -61,6 +61,7 @@
       "noresults": "No information available for the selected point",
       "export": "Export",
       "featureReport": "Feature report",
+      "noattributes": "No attributes",
       "title": "Feature Info"
     },
     "identifyregion": {

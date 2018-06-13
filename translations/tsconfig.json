@@ -50,6 +50,7 @@
     "identify.noresults",
     "identify.export",
     "identify.featureReport",
+    "identify.noattributes",
     "identify.title",
     "identifyregion.info",
     "importlayer.addlayer",
