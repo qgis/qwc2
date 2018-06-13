@@ -22,6 +22,10 @@ let supportedLocales = {
      "fr": {
        code: "fr-FR",
        description: "Français"
+     },
+     "ru": {
+       code: "ru-RU",
+       description: "Русский"
      }
 };
 
