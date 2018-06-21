@@ -278,7 +278,7 @@ class LayerTree extends React.Component {
                             <Icon className="layertree-item-checkbox" icon={swipecheckboxstate} onClick={this.toggleSwipe} />
                             <span onClick={this.toggleSwipe}><Message msgId="layertree.compare" /></span>
                         </div>
-                        <div className="layertree-import" onClick={this.toggleImportLayers}><Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> <Message msgId="layertree.importlayer" /></div>
+                        <div className="layertree-option" onClick={this.toggleImportLayers}><Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> <Message msgId="layertree.importlayer" /></div>
                         {this.state.importvisible ? (<ImportLayer />) : null}
                     </div>
                 </SideBar>

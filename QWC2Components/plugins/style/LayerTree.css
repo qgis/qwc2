@@ -40,13 +40,6 @@
     cursor: pointer;
 }
 
-#LayerTree div.layertree-import {
-    flex: 0 0 auto;
-    cursor: pointer;
-    padding: 0.25em 0.5em 0.25em 0.5em;
-    border-top: 1px solid @item_border@;
-}
-
 #LayerTree div.layertree-item-container {
     margin-left: 0.5em;
 }
