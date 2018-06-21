@@ -8,7 +8,6 @@
 
 const React = require('react');
 const PropTypes = require('prop-types');
-const FormattedNumber = require('react-intl').FormattedNumber;
 const {connect} = require('react-redux');
 const {createSelector} = require('reselect');
 const assign = require('object-assign');
@@ -81,7 +80,7 @@ class Measure extends React.Component {
             let length = (this.props.measureState.length || []).reduce((tot, num) => tot + num, 0);
             resultBody = (
                 <div className="resultbody">
-                    <FormattedNumber {...decimalFormat} value={measureUtils.getFormattedLength(this.props.measureState.lenUnit, length)} />
+                    <span>{LocaleUtils.toLocaleFixed(measureUtils.getFormattedLength(this.props.measureState.lenUnit, length), 2)}</span>
                     <select onChange={this.changeLengthUnit} value={this.props.measureState.lenUnit}>
                         <option value="m">m</option>
                         <option value="ft">ft</option>
@@ -93,7 +92,7 @@ class Measure extends React.Component {
         } else if(this.props.measureState.geomType === "Polygon") {
             resultBody = (
                 <div className="resultbody">
-                    <FormattedNumber {...decimalFormat} value={measureUtils.getFormattedArea(this.props.measureState.areaUnit, this.props.measureState.area)} />
+                    <span>{LocaleUtils.toLocaleFixed(measureUtils.getFormattedArea(this.props.measureState.areaUnit, this.props.measureState.area), 2)}</span>
                     <select onChange={this.changeAreaUnit} value={this.props.measureState.areaUnit}>
                         <option value="sqm">m&#178;</option>
                         <option value="sqft">ft&#178;</option>
