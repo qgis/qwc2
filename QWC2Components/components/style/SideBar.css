@@ -21,7 +21,7 @@ div.sidebar div.sidebar-titlebar {
     align-items: center;
 }
 
-div.sidebar img.sidebar-titlebar-icon {
+div.sidebar span.sidebar-titlebar-icon {
     flex: 0 0 auto;
     margin: 0 0.25em;
 }

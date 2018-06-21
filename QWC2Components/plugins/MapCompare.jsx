@@ -9,8 +9,8 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const {Glyphicon} = require('react-bootstrap');
 const {setSwipe} = require('../actions/layers');
+const Icon = require('../components/Icon');
 
 require('./style/MapCompare.css');
 
@@ -32,8 +32,8 @@ class MapComparePlugin extends React.Component {
         return (
             <div ref={el => this.el = el} style={style} id="MapCompare" onMouseDown={this.mouseDragStart} onTouchStart={this.touchDragStart} onTouchMove={this.touchDrag}>
                 <span className="map-compare-handle">
-                    <Glyphicon className="map-compare-handle-icon" glyph="triangle-left" />
-                    <Glyphicon className="map-compare-handle-icon" glyph="triangle-right" />
+                    <Icon className="map-compare-handle-icon" icon="triangle-left" />
+                    <Icon className="map-compare-handle-icon" icon="triangle-right" />
                 </span>
             </div>
         );

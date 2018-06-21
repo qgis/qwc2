@@ -12,7 +12,6 @@ const {connect} = require('react-redux');
 const isEmpty = require('lodash.isempty');
 const isEqual = require('lodash.isequal');
 const assign = require('object-assign');
-const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 const Message = require('../../MapStore2Components/components/I18N/Message');
@@ -158,19 +157,18 @@ class Editing extends React.Component {
             );
         }
 
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let actionBar = null;
         const actionButtons = [
-            {key: 'Pick', icon: 'pick.svg', label: "editing.pick", data: {action: 'Pick'}},
-            {key: 'Draw', icon: 'editdraw.svg', label: "editing.draw", data: {action: 'Draw', feature: null}}
+            {key: 'Pick', icon: 'pick', label: "editing.pick", data: {action: 'Pick'}},
+            {key: 'Draw', icon: 'editdraw', label: "editing.draw", data: {action: 'Draw', feature: null}}
         ];
         actionBar = (<ButtonBar buttons={actionButtons} active={this.props.editing.action} disabled={this.props.editing.changed} onClick={(action, data) => this.props.changeEditingState({...data})} />);
 
         let commitBar = null;
         if(this.props.editing.changed) {
             const commitButtons = [
-                {key: 'Commit', glyph: 'ok', label: "editing.commit", extraClasses: "edit-commit", type: "submit"},
-                {key: 'Discard', glyph: 'remove', label: "editing.discard", extraClasses: "edit-discard"}
+                {key: 'Commit', icon: 'ok', label: "editing.commit", extraClasses: "edit-commit", type: "submit"},
+                {key: 'Discard', icon: 'remove', label: "editing.discard", extraClasses: "edit-discard"}
             ];
             commitBar = (<ButtonBar buttons={commitButtons} onClick={this.onDiscard}/>); /* submit is handled via onSubmit in the form */
         }
@@ -194,13 +192,13 @@ class Editing extends React.Component {
         if(this.props.editing.action === 'Pick' && this.props.editing.feature && !this.props.editing.changed) {
             if(!this.state.deleteClicked) {
                 const deleteButtons = [
-                    {key: 'Delete', glyph: 'trash', label: "editing.delete"}
+                    {key: 'Delete', icon: 'trash', label: "editing.delete"}
                 ];
                 deleteBar = (<ButtonBar buttons={deleteButtons} onClick={this.deleteClicked} />);
             } else {
                 const deleteButtons = [
-                    {key: 'Yes', glyph: 'ok', label: "editing.reallydelete", extraClasses: "edit-commit"},
-                    {key: 'No', glyph: 'remove', label: "editing.canceldelete", extraClasses: "edit-discard"}
+                    {key: 'Yes', icon: 'ok', label: "editing.reallydelete", extraClasses: "edit-commit"},
+                    {key: 'No', icon: 'remove', label: "editing.canceldelete", extraClasses: "edit-discard"}
                 ];
                 deleteBar = (<ButtonBar buttons={deleteButtons} onClick={this.deleteFeature} />);
             }
@@ -234,10 +232,9 @@ class Editing extends React.Component {
         );
     }
     render() {
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
             <SideBar id="Editing" width="20em" onShow={this.onShow} onHide={this.onHide}
-                title="appmenu.items.Editing" icon={assetsPath + "/img/editing.svg"}>
+                title="appmenu.items.Editing" icon="editing">
                 {this.renderBody()}
             </SideBar>
         );

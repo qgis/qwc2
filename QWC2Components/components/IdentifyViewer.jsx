@@ -9,7 +9,6 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
-const {Glyphicon} = require('react-bootstrap');
 const isEmpty = require('lodash.isempty');
 const FileSaver = require('file-saver');
 const axios = require('axios');
@@ -17,6 +16,7 @@ const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
 const IdentifyUtils = require('../utils/IdentifyUtils');
+const Icon = require('./Icon');
 require('./style/IdentifyViewer.css');
 
 let urlRegEx = /(\s|^)((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
@@ -335,8 +335,8 @@ class IdentifyViewer extends React.Component {
                 onMouseOut={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
             >
                 <span className={this.state.currentResult === result ? "active clickable" : "clickable"} onClick={()=> this.setCurrentResult(layer, result)} ref={ref}>{displayName}</span>
-                <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResult(layer, result)} />
-                {this.props.enableExport ? (<Glyphicon className="identify-export-result" glyph="export" onClick={() => this.exportResult(layer, result)} />) : null}
+                <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResult(layer, result)} />
+                {this.props.enableExport ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResult(layer, result)} />) : null}
             </li>
         );
     }
@@ -352,8 +352,8 @@ class IdentifyViewer extends React.Component {
                 onMouseOut={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
                 >
                     <span className="clickable" onClick={()=> this.toggleExpanded(layer, true)}><b>{layer}</b></span>
-                    <Glyphicon className="identify-remove-result" glyph="minus-sign" onClick={() => this.removeResultLayer(layer)} />
-                    {this.props.enableExport ? (<Glyphicon className="identify-export-result" glyph="export" onClick={() => this.exportResultLayer(layer)} />) : null}
+                    <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResultLayer(layer)} />
+                    {this.props.enableExport ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResultLayer(layer)} />) : null}
                 </div>
                 <ul>
                     {results.map(result => this.renderResult(layer, result))}

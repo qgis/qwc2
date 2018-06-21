@@ -10,8 +10,8 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const classnames = require('classnames');
-const {Glyphicon} = require('react-bootstrap');
 const {setCurrentTask} = require('../actions/task');
+const Icon = require('../components/Icon');
 require('./style/BackgroundSwitcher.css');
 
 class LayersButton extends React.Component {
@@ -33,7 +33,7 @@ class LayersButton extends React.Component {
             <div>
                 <button className={classes} onClick={this.buttonClicked}
                     onClick={this.buttonClicked} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
-                    <Glyphicon glyph="list-alt"/>
+                    <Icon icon="list-alt"/>
                 </button>
             </div>
         );

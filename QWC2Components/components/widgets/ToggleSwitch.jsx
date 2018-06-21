@@ -8,8 +8,8 @@
 
 const React = require('react');
 const PropTypes = require('prop-types');
-const {Glyphicon} = require('react-bootstrap');
 const classnames = require('classnames');
+const Icon = require('../Icon');
 require('./style/ToggleSwitch.css');
 
 class ToggleSwitch extends React.Component {
@@ -25,9 +25,9 @@ class ToggleSwitch extends React.Component {
         });
         return (
             <div className={classNames} onClick={() => this.props.onChange(!this.props.active)}>
-                <span className="toggle-switch-yes"><Glyphicon glyph="ok" /></span>
-                <span className="toggle-switch-slider"><Glyphicon glyph="menu-hamburger" /></span>
-                <span className="toggle-switch-no"><Glyphicon glyph="remove" /></span>
+                <span className="toggle-switch-yes"><Icon icon="ok" /></span>
+                <span className="toggle-switch-slider"><Icon icon="menu-hamburger" /></span>
+                <span className="toggle-switch-no"><Icon icon="remove" /></span>
             </div>
         );
     }

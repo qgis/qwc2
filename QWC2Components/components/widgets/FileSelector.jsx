@@ -8,7 +8,7 @@
 
 const React = require('react');
 const PropTypes = require('prop-types');
-const {Glyphicon} = require('react-bootstrap');
+const Icon = require('../Icon');
 const LocaleUtils = require('../../../MapStore2Components/utils/LocaleUtils');
 require('./style/FileSelector.css');
 
@@ -40,7 +40,7 @@ class FileSelector extends React.Component {
             <div className="FileSelector" onClick={this.triggerFileOpen}>
                 <input type="text" readOnly="true" placeholder={placeholder} value={value}/>
                 <span>
-                    <Glyphicon glyph="folder-open" />
+                    <Icon icon="folder-open" />
                 </span>
                 <input type="file" onChange={this.fileChanged} accept={this.props.accept} ref={el => this.fileinput = el}/>
             </div>

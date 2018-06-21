@@ -10,7 +10,6 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const Message = require('../../MapStore2Components/components/I18N/Message');
-const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const {SideBar} = require('../components/SideBar');
 
 class Help extends React.Component {
@@ -21,10 +20,9 @@ class Help extends React.Component {
         renderBody: () => { return null; }
     }
     render() {
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
             <SideBar id="Help" width="20em" title="appmenu.items.Help"
-                icon={assetsPath + "/img/info_white.svg"}>
+                icon="info">
                 <div role="body">
                     {this.props.renderBody()}
                 </div>

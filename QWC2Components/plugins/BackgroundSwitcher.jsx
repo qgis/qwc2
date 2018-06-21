@@ -15,6 +15,7 @@ const Message = require('../../MapStore2Components/components/I18N/Message');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const {changeLayerProperties} = require('../actions/layers');
 const {setCurrentTask} = require('../actions/task');
+const Icon = require('../components/Icon');
 require('./style/BackgroundSwitcher.css');
 
 class BackgroundSwitcher extends React.Component {
@@ -34,7 +35,6 @@ class BackgroundSwitcher extends React.Component {
     }
     render() {
         let tooltip = LocaleUtils.getMessageById(this.context.messages, "tooltip.background");
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let classes = classnames({
             "Button": true,
             "button-active": this.props.visible
@@ -45,7 +45,7 @@ class BackgroundSwitcher extends React.Component {
                 <div>
                     <button className={classes} title={tooltip}
                         onClick={this.buttonClicked} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
-                        <img src={assetsPath + '/img/bglayer.svg'} />
+                        <Icon icon="bglayer" />
                     </button>
                     <div id="BackgroundSwitcher" className={this.props.visible ? 'bgswitcher-active' : ''}>
                         {this.renderLayerItem(null, backgroundLayers.filter(layer => layer.visibility === true).length === 0)}

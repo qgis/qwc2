@@ -9,7 +9,6 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const {Glyphicon} = require('react-bootstrap');
 const assign = require('object-assign');
 const classnames = require('classnames');
 const isEmpty = require('lodash.isempty');
@@ -19,6 +18,7 @@ const {changeLayerProperties, removeLayer, reorderLayer, setSwipe} = require('..
 const {toggleMapTips} = require('../actions/map');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
+const Icon = require('../components/Icon');
 const ImportLayer = require('../components/ImportLayer');
 const LayerInfoWindow = require('../components/LayerInfoWindow');
 const {SideBar} = require('../components/SideBar');
@@ -44,8 +44,7 @@ class LayerTree extends React.Component {
         grayUnchecked: PropTypes.bool,
         layerInfoWindowSize: PropTypes.object,
         flattenGroups: PropTypes.bool,
-        setSwipe: PropTypes.func,
-        legendThumbnail: PropTypes.string
+        setSwipe: PropTypes.func
     }
     static defaultProps = {
         layers: [],
@@ -98,7 +97,6 @@ class LayerTree extends React.Component {
             return this.renderSubLayers(layer, group, path, enabled, false);
         }
         let subtreevisibility = this.getGroupVisibility(group);
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let visibility = true;
         let checkboxstate;
         if(this.props.groupTogglesSublayers) {
@@ -108,13 +106,10 @@ class LayerTree extends React.Component {
             visibility = group.visibility === undefined ? true : group.visibility;
             checkboxstate = visibility === true ? subtreevisibility === 1 ? 'checked' : 'tristate' : 'unchecked';
         }
-        let checkboxstyle = {
-            backgroundImage: 'url(' + assetsPath + '/img/' + (inMutuallyExclusiveGroup ? 'radio_' : '') + checkboxstate + '.svg)'
-        };
-        let expanderstate = group.expanded ? 'minus' : 'plus';
-        let expanderstyle = {
-            backgroundImage: 'url(' + assetsPath + '/img/' + expanderstate + '.svg)'
-        };
+        if(inMutuallyExclusiveGroup) {
+            checkboxstate = 'radio_' + checkboxstate;
+        }
+        let expanderstate = group.expanded ? 'tree_minus' : 'tree_plus';
         let itemclasses = {
             "layertree-item": true,
             "layertree-item-disabled": (!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !visibility)
@@ -131,22 +126,21 @@ class LayerTree extends React.Component {
         return (
             <div className="layertree-item-container" key={group.uuid}>
                 <div className={classnames(itemclasses)}>
-                    <span className="layertree-item-expander" style={expanderstyle} onClick={() => this.groupExpandendToggled(layer, path, group.expanded)}></span>
-                    <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.groupToggled(layer, path, visibility, inMutuallyExclusiveGroup)}></span>
+                    <Icon className="layertree-item-expander" icon={expanderstate} onClick={() => this.groupExpandendToggled(layer, path, group.expanded)} />
+                    <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.groupToggled(layer, path, visibility, inMutuallyExclusiveGroup)} />
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
                     <span className="layertree-item-spacer"></span>
-                    {allowRemove ? (<Glyphicon className="layertree-item-remove" glyph="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
+                    {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
                 {sublayersContent}
             </div>
         );
     }
     renderLayer = (layer, sublayer, path, enabled=true, inMutuallyExclusiveGroup=false) => {
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let checkboxstate = sublayer.visibility === true ? 'checked' : 'unchecked';
-        let checkboxstyle = {
-            backgroundImage: 'url(' + assetsPath + '/img/' + (inMutuallyExclusiveGroup ? 'radio_' : '') + checkboxstate + '.svg)'
-        };
+        if(inMutuallyExclusiveGroup) {
+            checkboxstate = 'radio_' + checkboxstate;
+        }
         let cogclasses = classnames({
             "layertree-item-cog": true,
             "layertree-item-cog-active": this.state.activemenu === sublayer.uuid
@@ -160,13 +154,13 @@ class LayerTree extends React.Component {
             let reorderButtons = null;
             if(ConfigUtils.getConfigProp("allowReorderingLayers") === true) {
                 reorderButtons = [
-                    (<Glyphicon key="layertree-item-move-down" className="layertree-item-move" glyph="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
-                    (<Glyphicon key="layertree-item-move-up" className="layertree-item-move" glyph="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
+                    (<Icon key="layertree-item-move-down" className="layertree-item-move" icon="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
+                    (<Icon key="layertree-item-move-up" className="layertree-item-move" icon="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
                 ];
             }
             let infoButton = null;
             if(layer.type === "wms") {
-                infoButton = (<Glyphicon className="layertree-item-metadata" glyph="info-sign" onClick={() => this.setState({activeinfo: {layer, sublayer}})}/>);
+                infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.setState({activeinfo: {layer, sublayer}})}/>);
             }
             editframe = (
                 <div className="layertree-item-edit-frame" draggable="true" ref={el => this.regEventListeners(el)}>
@@ -181,8 +175,7 @@ class LayerTree extends React.Component {
         if(this.props.showLegendIcons) {
             if(layer.legendUrl) {
                 let request = layer.legendUrl + (layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + "SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + (layer.version || "1.3.0") + "&FORMAT=image/png&LAYER=" + sublayer.name;
-                let src = this.props.legendThumbnail ? ConfigUtils.getConfigProp("assetsPath") + '/img/' + this.props.legendThumbnail : request;
-                legendicon = (<img className="layertree-item-legend-thumbnail" src={src} onMouseOver={ev => this.showLegendTooltip(ev, request)} onMouseOut={this.hideLegendTooltip} onTouchStart={ev => this.showLegendTooltip(ev, request)} />);
+                legendicon = (<img className="layertree-item-legend-thumbnail" src={request} onMouseOver={ev => this.showLegendTooltip(ev, request)} onMouseOut={this.hideLegendTooltip} onTouchStart={ev => this.showLegendTooltip(ev, request)} />);
             } else if(layer.color) {
                 legendicon = (<span className="layertree-item-legend-coloricon" style={{backgroundColor: sublayer.color}} />);
             }
@@ -193,13 +186,13 @@ class LayerTree extends React.Component {
             <div className="layertree-item-container" key={sublayer.uuid} data-id={JSON.stringify({layer: layer.uuid, path: path})}>
                 <div className={classnames(itemclasses)}>
                     {this.props.flattenGroups ? null : (<span className="layertree-item-expander"></span>)}
-                    <span className="layertree-item-checkbox" style={checkboxstyle} onClick={() => this.layerToggled(layer, path, sublayer.visibility, inMutuallyExclusiveGroup)}></span>
+                    <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.layerToggled(layer, path, sublayer.visibility, inMutuallyExclusiveGroup)} />
                     {legendicon}
                     <span className="layertree-item-title" title={title}>{title}</span>
-                    {sublayer.queryable && this.props.showQueryableIcon ? (<Glyphicon className="layertree-item-queryable" glyph="info-sign" />) : null}
+                    {sublayer.queryable && this.props.showQueryableIcon ? (<Icon className="layertree-item-queryable" icon="info-sign" />) : null}
                     <span className="layertree-item-spacer"></span>
-                    {allowRemove ? (<Glyphicon className="layertree-item-remove" glyph="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
-                    <Glyphicon className={cogclasses} glyph="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>
+                    {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
+                    <Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>
                 </div>
                 {editframe}
             </div>
@@ -234,24 +227,17 @@ class LayerTree extends React.Component {
         }
     }
     render() {
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let maptipcheckboxstate = this.props.mapTipsEnabled === true ? 'checked' : 'unchecked';
-        let maptipcheckboxstyle = {
-            backgroundImage: 'url(' + assetsPath + '/img/' + maptipcheckboxstate + '.svg)'
-        };
         let maptipCheckbox = null;
         if(!this.props.mobile && this.props.allowMapTips) {
             maptipCheckbox = (
                 <div className="layertree-option">
-                    <span className="layertree-item-checkbox" style={maptipcheckboxstyle} onClick={this.toggleMapTips}></span>
+                    <Icon className="layertree-item-checkbox" icon={maptipcheckboxstate} onClick={this.toggleMapTips} />
                     <span onClick={this.toggleMapTips}><Message msgId="layertree.maptip" /></span>
                 </div>
             );
         }
         let swipecheckboxstate = this.props.swipe || this.props.swipe === 0 ? 'checked' : 'unchecked';
-        let swipecheckboxstyle = {
-            backgroundImage: 'url(' + assetsPath + '/img/' + swipecheckboxstate + '.svg)'
-        };
         let legendTooltip = null;
         if(this.state.legendTooltip) {
             let style = {
@@ -272,11 +258,11 @@ class LayerTree extends React.Component {
             );
         }
         let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
-        let extraTitlebarContent = (<Glyphicon title={printLegendTooltip} className="layertree-print-legend" glyph="print" onClick={this.printLegend}/>)
+        let extraTitlebarContent = (<Icon title={printLegendTooltip} className="layertree-print-legend" icon="print" onClick={this.printLegend}/>)
         return (
             <div>
                 <SideBar id="LayerTree" width={this.state.sidebarwidth}  title="appmenu.items.LayerTree"
-                    icon={assetsPath + "/img/layers_white.svg"}
+                    icon="layers"
                     onHide={this.hideLegendTooltip}
                     extraTitlebarContent={extraTitlebarContent}>
                     <div role="body" className="layertree-container">
@@ -287,10 +273,10 @@ class LayerTree extends React.Component {
                         </div>
                         {maptipCheckbox}
                         <div className="layertree-option">
-                            <span className="layertree-item-checkbox" style={swipecheckboxstyle} onClick={this.toggleSwipe}></span>
+                            <Icon className="layertree-item-checkbox" icon={swipecheckboxstate} onClick={this.toggleSwipe} />
                             <span onClick={this.toggleSwipe}><Message msgId="layertree.compare" /></span>
                         </div>
-                        <div className="layertree-import" onClick={this.toggleImportLayers}><img src={assetsPath + '/img/' + (this.state.importvisible ? 'collapse.svg' : 'expand.svg')} /> <Message msgId="layertree.importlayer" /></div>
+                        <div className="layertree-import" onClick={this.toggleImportLayers}><Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> <Message msgId="layertree.importlayer" /></div>
                         {this.state.importvisible ? (<ImportLayer />) : null}
                     </div>
                 </SideBar>

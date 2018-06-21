@@ -9,9 +9,9 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const {Glyphicon} = require('react-bootstrap');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const {changeLocateState} = require('../../MapStore2Components/actions/locate');
+const Icon = require('../components/Icon');
 const Spinner = require('../components/Spinner');
 require('./style/Buttons.css');
 
@@ -54,7 +54,7 @@ class LocateButton extends React.Component {
         if(this.props.locateState === "LOCATING") {
             contents = (<Spinner />);
         } else {
-            contents = (<Glyphicon glyph="screenshot"/>);
+            contents = (<Icon icon="screenshot"/>);
         }
         return (
             <button className={"Button locate-button-" + this.props.locateState}

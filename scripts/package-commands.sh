@@ -3,6 +3,7 @@ set -e
 
 if [ "$1" == "build" ]; then
     npm run clean
+    npm run iconfont
     mkdir -p ./dist
     NODE_ENV='production' webpack
     exit 0

@@ -1,23 +1,41 @@
 * {
     cursor: inherit;
+    box-sizing: border-box;
+}
+
+:after, :before {
+    box-sizing: border-box;
 }
 
 html, body {
     overflow: hidden;
     cursor: default;
     color: @base_fg@;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
 }
 
 input[type=text], input[type=password], textarea {
     cursor:text;
 }
 
-input, select, button {
+input, select, button, textarea {
     border-radius: 0;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
 }
 
 a {
     cursor:pointer;
+    color: #337ab7;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 html, body, #container {
@@ -28,7 +46,6 @@ html, body, #container {
     height: 100%;
 }
 
-/** Some bootstrap.min.css overrides **/
-.glyphicon {
-    position: initial!important;
+ul {
+    margin: 0;
 }

@@ -82,13 +82,12 @@ class ThemeSwitcher extends React.Component {
             </ul>);
     }
     render() {
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let extraTitlebarContent = (
             <input className="themeswitcher-filter" type="text" value={this.state.filter} onChange={ev => this.setState({filter: ev.target.value})} placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
         );
         return (
             <SideBar id="ThemeSwitcher" minWidth="16em" width={this.props.width} title="appmenu.items.ThemeSwitcher"
-                icon={assetsPath + "/img/themes.svg"} extraTitlebarContent={extraTitlebarContent}>
+                icon="themes" extraTitlebarContent={extraTitlebarContent}>
                 {this.renderThemeGroup(this.props.themes)}
             </SideBar>
         );

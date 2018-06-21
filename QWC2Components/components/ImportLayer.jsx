@@ -15,13 +15,13 @@ const assign = require('object-assign');
 const removeDiacritics = require('diacritics').remove;
 const Spinner = require('./Spinner');
 const Message = require('../../MapStore2Components/components/I18N/Message');
-const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const ProxyUtils = require('../../MapStore2Components/utils/ProxyUtils');
 const {LayerRole,addLayer,addLayerFeatures} = require('../actions/layers');
 const FileSelector = require('./widgets/FileSelector');
 const ServiceLayerUtils = require('../utils/ServiceLayerUtils');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
+const Icon = require('./Icon');
 require('./style/ImportLayer.css');
 
 class ImportLayer extends React.Component {
@@ -54,7 +54,6 @@ class ImportLayer extends React.Component {
         }
     }
     renderServiceLayerListEntry(entry, filter, path, level = 0) {
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let hasSublayers = !isEmpty(entry.sublayers);
         let sublayers = hasSublayers ? entry.sublayers.map((sublayer,idx) => this.renderServiceLayerListEntry(sublayer, filter, [...path, idx], level + 1)) : [];
         if(sublayers.filter(item => item).length == 0 && filter && !removeDiacritics(entry.title).match(filter)) {
@@ -63,7 +62,7 @@ class ImportLayer extends React.Component {
         return (
             <div key={entry.type + ":" + entry.name} style={{paddingLeft: level + 'em'}}>
                 <div className="importlayer-list-entry">
-                    {hasSublayers ? (<img onClick={ev => this.toggleLayerListEntry(path)} src={assetsPath + '/img/' + (entry.expanded ? 'minus.svg' : 'plus.svg')} />) : null}
+                    {hasSublayers ? (<Icon onClick={ev => this.toggleLayerListEntry(path)} icon={entry.expanded ? 'minus' : 'plus'} />) : null}
                     <span onClick={ev => this.addServiceLayer(entry)}>
                         <span className="importlayer-list-entry-service">{entry.type}</span>
                         {entry.title}

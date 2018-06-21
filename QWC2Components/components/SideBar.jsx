@@ -10,9 +10,9 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const Swipeable = require('react-swipeable');
-const {Glyphicon} = require('react-bootstrap');
 const Message = require('../../MapStore2Components/components/I18N/Message');
-const {setCurrentTask} = require("../actions/task");
+const {setCurrentTask} = require('../actions/task');
+const Icon = require('./Icon')
 require('./style/SideBar.css');
 
 class SideBar extends React.Component {
@@ -65,11 +65,11 @@ class SideBar extends React.Component {
             <Swipeable onSwipedRight={this.closeClicked} delta={30}>
                 <div id={this.props.id} className={"sidebar" + " " + this.props.extraClasses} style={style}>
                     <div className="sidebar-titlebar">
-                        <img className="sidebar-titlebar-icon" src={this.props.icon}/>
+                        <Icon className="sidebar-titlebar-icon" icon={this.props.icon} size="large"/>
                         <span className="sidebar-titlebar-title"><Message msgId={this.props.title} /></span>
                         {this.props.extraTitlebarContent}
                         <span className="sidebar-titlebar-spacer" />
-                        <Glyphicon className="sidebar-titlebar-closeicon" onClick={this.closeClicked} glyph="chevron-right"/>
+                        <Icon className="sidebar-titlebar-closeicon" onClick={this.closeClicked} icon="chevron-right"/>
                     </div>
                     <div className="sidebar-body">
                         {this.renderRole("body")}

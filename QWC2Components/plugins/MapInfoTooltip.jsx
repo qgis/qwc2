@@ -11,7 +11,6 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {createSelector} = require('reselect');
 const CopyToClipboard = require('react-copy-to-clipboard');
-const {Glyphicon} = require('react-bootstrap');
 const proj4js = require('proj4').default;
 const axios = require('axios');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
@@ -19,6 +18,7 @@ const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUti
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const CopyButton = require('../components/widgets/CopyButton');
+const Icon = require('../components/Icon');
 const displayCrsSelector = require('../selectors/displaycrs');
 require('./style/MapInfoTooltip.css');
 
@@ -113,7 +113,7 @@ class MapInfoTooltip extends React.Component {
                         <span className="mapinfotooltip-title">{title}</span>
                         <CopyButton text={text} buttonClass="mapinfotooltip-button" />
                         <span className="mapinfotooltip-button" onClick={this.clear}>
-                            <Glyphicon glyph="remove"/>
+                            <Icon icon="remove"/>
                         </span>
                     </div>
                     <div className="mapinfotooltip-body">

@@ -64,12 +64,12 @@ class Redlining extends React.Component {
             labelPlaceholder = LocaleUtils.getMessageById(this.context.messages, "redlining.text");
         }
         let buttons = [
-            {key: "Pick", label: "redlining.pick", icon: "pick.svg", data: {action: "Pick", geomType: null, text: ""}},
-            {key: "Point", label: "redlining.point", icon: "point.svg", data: {action: "Draw", geomType: "Point", text: ""}},
-            {key: "LineString", label: "redlining.line", icon: "line.svg", data: {action: "Draw", geomType: "LineString", text: ""}},
-            {key: "Polygon", label: "redlining.polygon", icon: "polygon.svg", data: {action: "Draw", geomType: "Polygon", text: ""}},
-            {key: "Text", label: "redlining.text", icon: "text.svg", data: {action: "Draw", geomType: "Text", text: ""}},
-            {key: "Delete", icon: "trash.svg", data: {action: "Delete", geomType: null}}
+            {key: "Pick", label: "redlining.pick", icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
+            {key: "Point", label: "redlining.point", icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
+            {key: "LineString", label: "redlining.line", icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
+            {key: "Polygon", label: "redlining.polygon", icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
+            {key: "Text", label: "redlining.text", icon: "text", data: {action: "Draw", geomType: "Text", text: ""}},
+            {key: "Delete", icon: "trash", data: {action: "Delete", geomType: null}}
         ];
         let activeButton = this.props.redlining.action === "Pick" ? "Pick" : this.props.redlining.geomType;
         return (

@@ -9,7 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const CopyToClipboard = require('react-copy-to-clipboard');
-const {Glyphicon} = require('react-bootstrap');
+const Icon = require('../Icon');
 const Message = require('../../../MapStore2Components/components/I18N/Message');
 require('./style/CopyButton.css');
 
@@ -38,7 +38,7 @@ class CopyButton extends React.Component {
         return (
             <CopyToClipboard text={this.props.text} onCopy={ () => this.setState({copied: true}) } >
                 <span className={"CopyButton " + this.props.buttonClass} onMouseLeave={() => {this.setState({copied: false}); }} >
-                    <Glyphicon glyph="copy"/>
+                    <Icon icon="copy"/>
                     <span className="copybutton-tooltip" style={tooltipStyle}>
                         <Message msgId={this.state.copied ? "copybtn.copied" : "copybtn.click_to_copy"}/>
                     </span>

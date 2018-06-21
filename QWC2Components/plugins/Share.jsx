@@ -61,10 +61,9 @@ class Share extends React.Component {
         }
     }
     render() {
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
             <SideBar id="Share" onShow={this.onShow} width="20em"
-                title="appmenu.items.Share" icon={assetsPath + "/img/share_white.svg"}>
+                title="appmenu.items.Share" icon="share">
                 {this.renderBody()}
             </SideBar>
         );

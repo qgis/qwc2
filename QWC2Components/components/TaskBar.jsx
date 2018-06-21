@@ -9,8 +9,8 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const {Glyphicon} = require('react-bootstrap');
 const {setCurrentTask} = require("../actions/task");
+const Icon = require('./Icon');
 require('./style/TaskBar.css');
 
 class TaskBar extends React.Component {
@@ -53,7 +53,7 @@ class TaskBar extends React.Component {
                             {this.renderRole("body")}
                         </div>
                         <span className="closewrapper">
-                            <Glyphicon className="close" onClick={this.closeClicked} glyph="remove"/>
+                            <Icon className="close" onClick={this.closeClicked} icon="remove"/>
                         </span>
                     </div>
                 </div>

@@ -11,8 +11,8 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const Swipeable = require('react-swipeable');
 const Message = require('../../MapStore2Components/components/I18N/Message');
-const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
-const {setCurrentTask} = require("../actions/task");
+const {setCurrentTask} = require('../actions/task');
+const Icon = require('./Icon');
 require('./style/AppMenu.css');
 
 
@@ -61,7 +61,6 @@ class AppMenu extends React.Component {
         this.props.setCurrentTask(key, mode);
     }
     renderMenuItems = (items, level) => {
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         if(items) {
             return items.map(item => {
                 if(item.subitems) {
@@ -70,7 +69,7 @@ class AppMenu extends React.Component {
                             className={this.state.submenusVisible[level] === item.key ? "expanded" : ""}
                             onMouseDown={ev => this.onSubmenuClicked(item.key, level)}
                         >
-                            <img src={assetsPath + "/" + item.icon} />
+                            <Icon icon={item.icon} size="xlarge"/>
                             <Message msgId={"appmenu.items." + item.key} />
                             {item.title}
                             <ul>
@@ -81,7 +80,7 @@ class AppMenu extends React.Component {
                 } else {
                     return (
                         <li key={item.key + (item.mode || "")} onMouseDown={ev => this.onMenuitemClicked(item.key, item.mode)} >
-                            <img src={assetsPath + "/" + item.icon} />
+                            <Icon icon={item.icon} size="xlarge"/>
                             <Message msgId={"appmenu.items." + item.key + (item.mode || "")} />
                         </li>
                     );

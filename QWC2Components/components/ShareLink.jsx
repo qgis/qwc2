@@ -9,7 +9,6 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const CopyToClipboard = require('react-copy-to-clipboard');
-const {Glyphicon, Tooltip, OverlayTrigger} = require('react-bootstrap');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const CopyButton = require('./widgets/CopyButton');
 require('./style/ShareLink.css');

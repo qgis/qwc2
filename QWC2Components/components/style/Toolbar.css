@@ -3,7 +3,7 @@
     flex: 0 0 auto;
 }
 
-#Toolbar > img {
+#Toolbar > span.icon {
     width: 2.5em;
     height: 2.5em;
     margin-right: 0.25em;
@@ -11,8 +11,8 @@
     border: 1px solid transparent;
 }
 
-#Toolbar > img:hover,
-#Toolbar > img.toolbar-item-active {
+#Toolbar > span.icon:hover,
+#Toolbar > span.toolbar-item-active {
     border: 1px solid @item_border@;
     background-color: @button_hover_bg@;
 }

@@ -9,7 +9,6 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const {Glyphicon} = require('react-bootstrap');
 const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const Message = require('../../MapStore2Components/components/I18N/Message');
@@ -19,6 +18,7 @@ const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 const {changeRotation} = require('../actions/map');
 const ToggleSwitch = require('../components/widgets/ToggleSwitch');
+const Icon = require('../components/Icon');
 const {SideBar} = require('../components/SideBar');
 const PrintFrame = require('../components/PrintFrame');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
@@ -256,15 +256,14 @@ class Print extends React.Component {
             };
             printFrame = (<PrintFrame map={this.props.map} fixedFrame={frame} />);
         }
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let minMaxTooltip = LocaleUtils.getMessageById(this.context.messages, this.state.minimized ? "print.maximize" : "print.minimize");
-        let extraTitlebarContent = (<Glyphicon title={minMaxTooltip} className="print-minimize-maximize" glyph={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={ev => this.setState({minimized: !this.state.minimized})}/>)
+        let extraTitlebarContent = (<Icon title={minMaxTooltip} className="print-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={ev => this.setState({minimized: !this.state.minimized})}/>)
         return (
             <div>
                 <SideBar id="Print" onHide={this.onHide} width="20em"
                     title="appmenu.items.Print"
                     extraTitlebarContent={extraTitlebarContent}
-                    icon={assetsPath + "/img/print_white.svg"}>
+                    icon={"print"}>
                     {!this.state.minimized ? this.renderBody() : null}
                 </SideBar>
                 {printFrame}

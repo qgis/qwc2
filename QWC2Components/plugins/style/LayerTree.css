@@ -30,6 +30,7 @@
 #LayerTree div.layertree-option {
     flex: 0 0 auto;
     height: 2.25em;
+    line-height: 1.75em;
     padding: 0.25em 0.5em 0.25em 0.5em;
     border-top: 1px solid @item_border@;
 }
@@ -57,25 +58,13 @@
 }
 
 #LayerTree span.layertree-item-expander {
-    display: inline-block;
-    width: 1em;
-    height: 1em;
-    background-repeat: no-repeat;
-    background-size: contain;
     margin-right: 0.25em;
-    vertical-align: middle;
     cursor: pointer;
     flex: 0 0 auto;
 }
 
 #LayerTree span.layertree-item-checkbox {
-    display: inline-block;
-    width: 1.5em;
-    height: 1.5em;
-    background-repeat: no-repeat;
-    background-size: contain;
     margin-right: 0.5em;
-    vertical-align: middle;
     cursor: pointer;
     flex: 0 0 auto;
 }
@@ -133,7 +122,7 @@ img.layertree-item-legend-tooltip {
 }
 
 #LayerTree span.layertree-item-remove {
-    line-height: 2em;
+    line-height: 1.75em;
     cursor: pointer;
     margin-left: 0.25em;
     color: @item_border@;
@@ -145,7 +134,7 @@ img.layertree-item-legend-tooltip {
 }
 
 #LayerTree span.layertree-item-cog {
-    line-height: 2em;
+    line-height: 1.75em;
     text-align: center;
     width: 2em;
     cursor: pointer;

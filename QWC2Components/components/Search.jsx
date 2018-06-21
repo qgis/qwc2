@@ -10,7 +10,6 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
-const {Glyphicon} = require('react-bootstrap');
 const {createSelector} = require('reselect');
 const classnames = require('classnames');
 const isEmpty = require('lodash.isempty');
@@ -28,6 +27,7 @@ const {setCurrentTask} = require('../actions/task');
 const displayCrsSelector = require('../selectors/displaycrs');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
 const {UrlParams} = require("../utils/PermaLinkUtils");
+const Icon = require('./Icon');
 require('./style/Search.css');
 
 class Search extends React.Component {
@@ -154,11 +154,11 @@ class Search extends React.Component {
             placeholder +=  ": " + Object.keys(providers).map(key => providers[key].label).join(", ");
         }
         if(!this.props.searchText) {
-            var addonAfter = (<Glyphicon glyph="search"/>);
+            var addonAfter = (<Icon icon="search"/>);
         } else if(this.props.searchText && this.state.focused && this.props.pendingProviders && this.props.pendingProviders.length > 0) {
             var addonAfter = (<Spinner/>);
         } else {
-            var addonAfter = (<Glyphicon glyph="remove" onClick={this.resetSearch}/>);
+            var addonAfter = (<Icon icon="remove" onClick={this.resetSearch}/>);
         }
         let providerSelection = null;
         if(this.props.searchOptions.showProviderSelection) {
@@ -193,7 +193,7 @@ class Search extends React.Component {
                 'searchbar-addon-active': this.state.providerSelectionVisible
             });
             providerSelection = (
-                <span className={addonClasses} onClick={() => this.setState({providerSelectionVisible: !this.state.providerSelectionVisible})}><Glyphicon glyph="chevron-down" />
+                <span className={addonClasses} onClick={() => this.setState({providerSelectionVisible: !this.state.providerSelectionVisible})}><Icon icon="chevron-down" />
                     {providerSelectionMenu}
                 </span>
             );
@@ -222,8 +222,8 @@ class Search extends React.Component {
                         </tbody>
                     </table>
                     <div className="search-form-buttons">
-                        <button onClick={this.submitFormSearch}><Glyphicon glyph="search"/> Search</button>
-                        <button onClick={() => this.setState({showfields: false}) }><Glyphicon glyph="remove"/> Cancel</button>
+                        <button onClick={this.submitFormSearch}><Icon icon="search"/> Search</button>
+                        <button onClick={() => this.setState({showfields: false}) }><Icon icon="remove"/> Cancel</button>
                     </div>
                 </div>
             );

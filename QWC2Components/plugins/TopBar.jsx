@@ -10,7 +10,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
 const {connect} = require('react-redux');
-const {Glyphicon} = require('react-bootstrap');
+const Icon = require('../components/Icon');
 const Swipeable = require('react-swipeable');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
@@ -46,7 +46,7 @@ class TopBar extends React.Component {
         if(this.props.mobile) {
             buttonContents = (
                 <span className="appmenu-button">
-                    <Glyphicon className="appmenu-icon" glyph="menu-hamburger"/>
+                    <Icon className="appmenu-icon" icon="menu-hamburger"/>
                 </span>
             );
             logo = assetsPath + "/img/logo-mobile." + this.props.logoFormat;
@@ -54,7 +54,7 @@ class TopBar extends React.Component {
             buttonContents = (
                 <span className="appmenu-button">
                     <span className="appmenu-label"><Message msgId="appmenu.menulabel" /></span>
-                    <Glyphicon className="appmenu-icon" glyph="menu-hamburger"/>
+                    <Icon className="appmenu-icon" icon="menu-hamburger"/>
                 </span>
             );
             logo = assetsPath + "/img/logo."  + this.props.logoFormat;

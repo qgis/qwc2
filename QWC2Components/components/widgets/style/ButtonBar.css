@@ -28,6 +28,7 @@ div.ButtonBar > button {
     align-items: center;
     justify-content: center;
     background-color: @button_bg@;
+    height: 2em;
 }
 
 div.ButtonBar > button > * {
@@ -38,10 +39,9 @@ div.ButtonBar > button:focus {
     outline: 0;
 }
 
-div.ButtonBar > button > span.glyphicon
+div.ButtonBar > button > span.icon
 {
-    line-height: 24px;
-    font-size: large;
+    margin-right: 0.25em;
 }
 
 div.ButtonBar > button:first-child {

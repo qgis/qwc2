@@ -9,9 +9,8 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const {Glyphicon} = require('react-bootstrap');
+const Icon = require('../Icon');
 const Message = require('../../../MapStore2Components/components/I18N/Message');
-const ConfigUtils = require('../../../MapStore2Components/utils/ConfigUtils');
 require('./style/ButtonBar.css');
 
 
@@ -22,7 +21,6 @@ class ButtonBar extends React.Component {
             label: PropTypes.string,
             icon: PropTypes.string,
             data: PropTypes.object,
-            glyph: PropTypes.string,
             extraClasses: PropTypes.string,
             type: PropTypes.string,
         })),
@@ -35,7 +33,6 @@ class ButtonBar extends React.Component {
         disabled: false
     }
     render() {
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         return (
             <div className="ButtonBar">
                 {this.props.buttons.map(button => {
@@ -43,8 +40,7 @@ class ButtonBar extends React.Component {
                     classes += button.extraClasses ? ' ' + button.extraClasses : '';
                     return (
                         <button type={button.type || "button"} key={button.key} className={classes} onClick={button.type !== "submit" ? (ev) => this.props.onClick(button.key, button.data) : null}>
-                            {button.icon ? (<img src={assetsPath + '/img/' + button.icon} />) : null}
-                            {button.glyph ? (<Glyphicon glyph={button.glyph} />) : null}
+                            {button.icon ? (<Icon icon={button.icon} />) : null}
                             {button.label && (!this.props.mobile || !button.icon) ? (<Message msgId={button.label} />) : null}
                         </button>
                     );

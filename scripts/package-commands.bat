@@ -1,6 +1,7 @@
 @echo off
 IF "%1"=="build" (
 npm run clean && ^
+npm run iconfont && ^
 mkdir dist && ^
 cmd /C "set NODE_ENV='production' && webpack"
 Exit /B 0

@@ -9,9 +9,9 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const {Glyphicon} = require('react-bootstrap');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const {changeZoomLevel} = require('../actions/map');
+const Icon = require('../components/Icon');
 require('./style/Buttons.css');
 
 class ZoomButton extends React.Component {
@@ -36,7 +36,7 @@ class ZoomButton extends React.Component {
                 disabled={disabled}
                 title={tooltip}
             >
-                <Glyphicon glyph={this.props.direction > 0 ? "plus" : "minus"}/>
+                <Icon icon={this.props.direction > 0 ? "plus" : "minus"}/>
             </button>
         );
     }

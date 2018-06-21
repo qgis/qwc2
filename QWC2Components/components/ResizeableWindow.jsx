@@ -9,8 +9,8 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const Rnd = require('react-rnd').default
-const {Glyphicon} = require('react-bootstrap');
 const Message = require('../../MapStore2Components/components/I18N/Message');
+const Icon = require('./Icon');
 require('./style/ResizeableWindow.css');
 
 class ResizeableWindow extends React.Component {
@@ -60,7 +60,7 @@ class ResizeableWindow extends React.Component {
         };
         let icon = null;
         if(this.props.glyphicon) {
-            icon = (<Glyphicon glyph={this.props.glyphicon} />);
+            icon = (<Icon icon={this.props.glyphicon} />);
         } else if(this.props.icon) {
             icon = (<img src={this.props.icon} />);
         }
@@ -76,7 +76,7 @@ class ResizeableWindow extends React.Component {
                         <span className="resizeable-window-titlebar-title">
                             <Message msgId={this.props.title} />
                         </span>
-                        <Glyphicon className="resizeable-window-titlebar-close" onClick={this.onClose} glyph="remove"/>
+                        <Icon className="resizeable-window-titlebar-close" onClick={this.onClose} icon="remove"/>
                     </div>
                     <div className="resizeable-window-body" onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
                         {this.renderRole("body")}
