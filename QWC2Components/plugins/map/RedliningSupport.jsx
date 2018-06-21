@@ -82,7 +82,7 @@ class RedliningSupport extends React.Component {
     styleOptions = (redlining) => {
         return {
             strokeColor: redlining.borderColor,
-            strokeWidth: redlining.size,
+            strokeWidth: 1 + 0.5 * redlining.size,
             fillColor: redlining.fillColor,
             circleRadius: 5 + redlining.size,
             strokeDash: []
