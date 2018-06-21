@@ -75,7 +75,7 @@ for(let lang of langs) {
 
   // Merge application translations
   let appdata = cleanMessages(merge(applicationSkel, cleanMessages(readJSON('/translations/data.' + lang))));
-  appdata = merge(cleanMessages(data), appdata);
+  appdata = merge(appdata, cleanMessages(data));
   // Merge app skel again so that empty strings stay visible
   appdata = merge(applicationSkel, appdata);
   // Write output
