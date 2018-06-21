@@ -75,6 +75,7 @@
 
 #ImportLayer div.importlayer-list-entry {
     display: flex;
+    align-items: center;
     border-bottom: 1px solid @item_border@;
 }
 
@@ -84,6 +85,11 @@
     padding: 0.25em;
     cursor: pointer;
     display: inline-block;
+}
+
+#ImportLayer div.importlayer-list-entry > span.icon {
+    flex: 0 0 auto;
+    top: 0;
 }
 
 #ImportLayer div.importlayer-list-entry > span:hover {

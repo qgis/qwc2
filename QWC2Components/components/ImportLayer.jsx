@@ -62,7 +62,7 @@ class ImportLayer extends React.Component {
         return (
             <div key={entry.type + ":" + entry.name} style={{paddingLeft: level + 'em'}}>
                 <div className="importlayer-list-entry">
-                    {hasSublayers ? (<Icon onClick={ev => this.toggleLayerListEntry(path)} icon={entry.expanded ? 'minus' : 'plus'} />) : null}
+                    {hasSublayers ? (<Icon onClick={ev => this.toggleLayerListEntry(path)} icon={entry.expanded ? 'tree_minus' : 'tree_plus'} />) : null}
                     <span onClick={ev => this.addServiceLayer(entry)}>
                         <span className="importlayer-list-entry-service">{entry.type}</span>
                         {entry.title}
