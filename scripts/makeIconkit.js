@@ -12,7 +12,7 @@ webfontsGenerator({
       classPrefix: 'icon-',
       baseSelector: '.icon'
   },
-  types: ['woff2'],
+  types: ['woff'],
   fontHeight: 1000
 
 }, function(error) {
