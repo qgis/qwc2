@@ -280,7 +280,7 @@ class Search extends React.Component {
     renderCategory = (category) => {
         let title = category.titlemsgid ? (<Message msgId={category.titlemsgid} />) : category.title;
         return (
-            <li key={category.id}>
+            <li key={category.id} onMouseDown={this.killEvent}>
                 <span className="search-results-category-title">{title}</span>
                 <ul>{category.items.map(item => this.renderItem(item))}</ul>
             </li>
