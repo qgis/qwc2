@@ -53,7 +53,7 @@ let applicationConfig = readJSON('/translations/tsconfig.json');
 let commonStrings = commonConfig.strings || [];
 let applicationStrings = merge(commonStrings, applicationConfig.strings || []);
 
-let langs = applicationConfig.languages || commonConfig.languages || [];
+let langs = commonConfig.languages || [];
 
 // Create skeletons
 let commonSkel = createSkel(commonStrings);
@@ -74,6 +74,10 @@ for(let lang of langs) {
   }
 
   // Merge application translations
+  if(!(applicationConfig.languages || []).includes(lang)) {
+      continue;
+  }
+
   let appdata = cleanMessages(merge(applicationSkel, cleanMessages(readJSON('/translations/data.' + lang))));
   appdata = merge(appdata, cleanMessages(data));
   // Merge app skel again so that empty strings stay visible
