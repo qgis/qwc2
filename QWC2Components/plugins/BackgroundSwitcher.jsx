@@ -14,21 +14,21 @@ const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const {changeLayerProperties} = require('../actions/layers');
-const {setCurrentTask} = require('../actions/task');
 const Icon = require('../components/Icon');
 require('./style/BackgroundSwitcher.css');
 
 class BackgroundSwitcher extends React.Component {
     static propTypes = {
         position: PropTypes.number,
-        visible: PropTypes.bool,
         layers: PropTypes.array,
         toggleBackgroundswitcher: PropTypes.func,
         changeLayerProperties: PropTypes.func
     }
     static defaultProps = {
-        visible: false,
         position: 0
+    }
+    state = {
+        visible: false
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -37,7 +37,7 @@ class BackgroundSwitcher extends React.Component {
         let tooltip = LocaleUtils.getMessageById(this.context.messages, "tooltip.background");
         let classes = classnames({
             "Button": true,
-            "button-active": this.props.visible
+            "button-active": this.state.visible
         });
         let backgroundLayers = this.props.layers.filter(layer => layer.group === "background").slice(0).reverse();
         if(backgroundLayers.length > 0){
@@ -47,7 +47,7 @@ class BackgroundSwitcher extends React.Component {
                         onClick={this.buttonClicked} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
                         <Icon icon="bglayer" />
                     </button>
-                    <div id="BackgroundSwitcher" className={this.props.visible ? 'bgswitcher-active' : ''}>
+                    <div id="BackgroundSwitcher" className={this.state.visible ? 'bgswitcher-active' : ''}>
                         {this.renderLayerItem(null, backgroundLayers.filter(layer => layer.visibility === true).length === 0)}
                         {backgroundLayers.map(layer => this.renderLayerItem(layer, layer.visibility === true))}
                     </div>
@@ -63,7 +63,7 @@ class BackgroundSwitcher extends React.Component {
             "background-layer-item-active": visible
         });
         return (
-            <div key={layer ? layer.name : "empty"} className={itemclasses} onClick={() => this.backgroudLayerClicked(layer)}>
+            <div key={layer ? layer.name : "empty"} className={itemclasses} onClick={() => this.backgroundLayerClicked(layer)}>
                 <div className="background-layer-title">
                     {layer ? layer.title : (<Message msgId={"bgswitcher.nobg"} />)}
                 </div>
@@ -74,9 +74,9 @@ class BackgroundSwitcher extends React.Component {
         );
     }
     buttonClicked = () => {
-        this.props.setCurrentTask(this.props.visible ? null : 'BackgroundSwitcher');
+        this.setState({visible: !this.state.visible});
     }
-    backgroudLayerClicked = (layer) => {
+    backgroundLayerClicked = (layer) => {
         if(layer) {
             this.props.changeLayerProperties(layer.uuid, {visibility: true});
         } else {
@@ -85,18 +85,16 @@ class BackgroundSwitcher extends React.Component {
                 this.props.changeLayerProperties(visible.uuid, {visibility: false});
             }
         }
-        this.props.setCurrentTask(null);
+        this.setState({visible: false});
     }
 };
 
 const selector = (state) => ({
-    visible: state.task ? state.task.id === 'BackgroundSwitcher' : false,
     layers: state.layers.flat || []
 });
 
 module.exports = {
     BackgroundSwitcherPlugin: connect(selector, {
-      setCurrentTask: setCurrentTask,
       changeLayerProperties: changeLayerProperties
     })(BackgroundSwitcher),
     reducers: {
