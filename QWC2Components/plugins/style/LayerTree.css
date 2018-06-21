@@ -97,8 +97,10 @@ img.layertree-item-legend-tooltip {
     flex: 0 1 auto;
 }
 
-#LayerTree div.layertree-item-disabled span.layertree-item-title {
+#LayerTree div.layertree-item-noresults {
     color: gray;
+    font-size: small;
+    font-style: italic;;
 }
 
 #LayerTree span.layertree-item-queryable {

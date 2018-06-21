@@ -94,10 +94,17 @@ class ImportLayer extends React.Component {
         if(this.state.serviceLayers != null) {
             let filterplaceholder = LocaleUtils.getMessageById(this.context.messages, "importlayer.filter");
             let filter = new RegExp(removeDiacritics(this.state.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
+            let emptyEntry = null;
+            if(isEmpty(this.state.serviceLayers) && this.state.pendingRequests == 0) {
+                emptyEntry = (
+                        <div className="layertree-item-noresults"><Message msgId="importlayer.noresults" /></div>
+                );
+            }
             layerList = [
                 (<input key="importlayer-list-filter" className="importlayer-list-filter" type="text" value={this.state.filter} placeholder={filterplaceholder} onChange={ev => this.setState({filter: ev.target.value})}/>),
                 (<div key="importlayer-list" className="importlayer-list">
                     {this.state.serviceLayers.map((entry, idx) => this.renderServiceLayerListEntry(entry, filter, [idx]))}
+                    {emptyEntry}
                 </div>)
             ];
         }

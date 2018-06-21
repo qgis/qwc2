@@ -58,6 +58,7 @@
     "importlayer.filter",
     "importlayer.connect",
     "importlayer.nofeatures",
+    "importlayer.noresults",
     "importlayer.urlplaceholder",
     "layerinfo.title",
     "layerinfo.abstract",
