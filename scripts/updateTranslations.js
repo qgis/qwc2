@@ -9,7 +9,14 @@
 const fs = require('fs');
 const merge = require('deepmerge');
 
-const readJSON = (path) => JSON.parse(fs.readFileSync(process.cwd() + path, "utf8"));
+const readJSON = (path) => {
+    try {
+        return JSON.parse(fs.readFileSync(process.cwd() + path, "utf8"));
+    } catch(e) {
+        return {}
+    }
+}
+
 const cleanMessages = (data, ref) => {
   for (let property of Object.keys(data)) {
     let omit = ref && !(property in ref);
