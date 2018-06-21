@@ -173,7 +173,6 @@ img.layertree-item-legend-tooltip {
 }
 
 #LayerTree span.layertree-item-metadata {
-    color: blue;
     flex: 0 0 1.5em;
     text-align: center;
     cursor: pointer;
