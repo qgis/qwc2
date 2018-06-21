@@ -107,7 +107,7 @@
     },
     "mapinfotooltip": {
       "elevation": "Высота над уровнем моря",
-      "title": "Поизиция"
+      "title": "Позиция"
     },
     "measureComponent": {
       "areaLabel": "Площадь",
