@@ -1,7 +1,7 @@
 #PrintFrame {
     position: absolute;
     box-shadow: rgba(0, 0, 0, 0.5) 0 0 0 30000px;
-    z-index: 2;
+    z-index: 1;
     pointer-events: none;
     text-align: center;
     font-size: small;
