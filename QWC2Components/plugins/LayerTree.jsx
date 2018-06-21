@@ -44,7 +44,8 @@ class LayerTree extends React.Component {
         grayUnchecked: PropTypes.bool,
         layerInfoWindowSize: PropTypes.object,
         flattenGroups: PropTypes.bool,
-        setSwipe: PropTypes.func
+        setSwipe: PropTypes.func,
+        width: PropTypes.string
     }
     static defaultProps = {
         layers: [],
@@ -55,13 +56,14 @@ class LayerTree extends React.Component {
         groupTogglesSublayers: false,
         grayUnchecked: true,
         layerInfoWindowSize: {width: 400, height: 480},
-        flattenGroups: false
+        flattenGroups: false,
+        width: "20em"
     }
     state = {
         activemenu: null,
         legendTooltip: null,
         activeinfo: null,
-        sidebarwidth: "20em",
+        sidebarwidth: null,
         importvisible: false
     }
     static contextTypes = {
@@ -261,7 +263,7 @@ class LayerTree extends React.Component {
         let extraTitlebarContent = (<Icon title={printLegendTooltip} className="layertree-print-legend" icon="print" onClick={this.printLegend}/>)
         return (
             <div>
-                <SideBar id="LayerTree" width={this.state.sidebarwidth}  title="appmenu.items.LayerTree"
+                <SideBar id="LayerTree" width={this.state.sidebarwidth || this.props.width}  title="appmenu.items.LayerTree"
                     icon="layers"
                     onHide={this.hideLegendTooltip}
                     extraTitlebarContent={extraTitlebarContent}>
@@ -294,7 +296,7 @@ class LayerTree extends React.Component {
     }
     toggleImportLayers = () => {
         let visible = !this.state.importvisible;
-        this.setState({importvisible: visible, sidebarwidth: visible ? '40em' : '20em'});
+        this.setState({importvisible: visible, sidebarwidth: visible ? '40em' : null});
     }
     cloneLayer = (layer, sublayerpath) => {
         let newlayer = assign({}, layer);
