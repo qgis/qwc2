@@ -17,7 +17,7 @@ class ResizeableWindow extends React.Component {
     static propTypes = {
         title: PropTypes.string,
         icon: PropTypes.string,
-        glyphicon: PropTypes.string,
+        icon: PropTypes.string,
         onClose: PropTypes.func,
             initialX: PropTypes.number,
             initialY: PropTypes.number,
@@ -30,7 +30,7 @@ class ResizeableWindow extends React.Component {
     }
     static defaultProps = {
         icon: null,
-        glyphicon: null,
+        icon: null,
         initialX: null,
         initialY: null,
         initialWidth: 240,
@@ -59,8 +59,8 @@ class ResizeableWindow extends React.Component {
             height: 0.8 * this.props.initialHeight
         };
         let icon = null;
-        if(this.props.glyphicon) {
-            icon = (<Icon icon={this.props.glyphicon} />);
+        if(this.props.icon) {
+            icon = (<Icon icon={this.props.icon} />);
         } else if(this.props.icon) {
             icon = (<img src={this.props.icon} />);
         }
