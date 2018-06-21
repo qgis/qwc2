@@ -11,6 +11,7 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const proj4js = require('proj4').default;
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
+const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 
 class CoordinateDisplayer extends React.Component {
     static propTypes = {
@@ -24,7 +25,7 @@ class CoordinateDisplayer extends React.Component {
             let coo = CoordinatesUtils.reproject(this.props.mousepos.coordinate, this.props.mapcrs, this.props.displaycrs);
             if(!isNaN(coo[0]) && !isNaN(coo[1])) {
                 let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
-                value = coo[0].toFixed(digits) + " " + coo[1].toFixed(digits);
+                value = LocaleUtils.toLocaleFixed(coo[0], digits) + " " + LocaleUtils.toLocaleFixed(coo[1], digits);
             }
         }
         return (

@@ -15,6 +15,7 @@ const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const proj4js = require('proj4').default;
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
+const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const measureUtils = require('../../MapStore2Components/utils/MeasureUtils');
 const {changeMeasurementState} = require('../../MapStore2Components/actions/measurement.js');
@@ -73,7 +74,7 @@ class Measure extends React.Component {
             let text = "0 0";
             if(!isEmpty(this.props.measureState.coordinates)) {
                 let coo = CoordinatesUtils.reproject(this.props.measureState.coordinates, this.props.mapcrs, this.props.displaycrs);
-                text = coo[0].toFixed(digits) + " " + coo[1].toFixed(digits);
+                text = LocaleUtils.toLocaleFixed(coo[0], digits) + " " + LocaleUtils.toLocaleFixed(coo[1], digits);
             }
             resultBody = (<div className="resultbody"><span>{text}</span></div>);
         } else if(this.props.measureState.geomType === "LineString") {

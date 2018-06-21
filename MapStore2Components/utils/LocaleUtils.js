@@ -68,6 +68,9 @@ const LocaleUtils = {
             message = message ? message[part] : null;
         });
         return message;
+    },
+    toLocaleFixed(number, digits) {
+        return number.toLocaleString(LocaleUtils.getUserLocale(), { minimumFractionDigits: digits, maximumFractionDigits: digits });
     }
 };
 

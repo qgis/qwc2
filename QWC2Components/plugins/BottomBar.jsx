@@ -13,6 +13,7 @@ const {createSelector} = require('reselect');
 const pickBy = require('lodash.pickby');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
+const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const {changeMousePositionState} = require('../actions/mousePosition');
 const {changeZoomLevel} = require('../actions/map');
 const {CoordinateDisplayer} = require('../components/CoordinateDisplayer');
@@ -95,7 +96,7 @@ class BottomBar extends React.Component {
                 <span className="scale_label"><Message msgId="bottombar.scale_label" />: </span>
                 <select className="bottombar-scale-selector" onChange={ev => this.props.changeZoomLevel(parseInt(ev.target.value, 10))} value={this.props.mapscale}>
                     {this.props.mapscales.map((item, index) =>
-                        (<option value={index} key={index}>{"1 : " + item}</option>)
+                        (<option value={index} key={index}>{"1 : " + LocaleUtils.toLocaleFixed(item, 0)}</option>)
                     )}
                 </select>
                 {bottomLinks}
