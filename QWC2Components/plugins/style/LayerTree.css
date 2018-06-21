@@ -52,7 +52,6 @@
 }
 
 #LayerTree div.layertree-item {
-    line-height: 2em;
     display: flex;
     align-items: center;
 }
