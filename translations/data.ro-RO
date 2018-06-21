@@ -72,6 +72,7 @@
       "filter": "Filtrare",
       "connect": "Conectare",
       "nofeatures": "Nu s-a putut importa nicio entitate",
+      "noresults": "",
       "urlplaceholder": "Introdu URL către WMS, WFS, KML..."
     },
     "layerinfo": {

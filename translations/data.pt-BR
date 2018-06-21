@@ -72,6 +72,7 @@
       "filter": "Filtrar...",
       "connect": "Conectar",
       "nofeatures": "Nenhum elemento pôde ser importado.",
+      "noresults": "",
       "urlplaceholder": "Informe URL para WMS, WFS, KML..."
     },
     "layerinfo": {

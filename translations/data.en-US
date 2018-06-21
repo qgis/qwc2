@@ -72,6 +72,7 @@
       "filter": "Filter...",
       "connect": "Connect",
       "nofeatures": "No features could be imported.",
+      "noresults": "No results",
       "urlplaceholder": "Enter URL to WMS, WFS, KML..."
     },
     "layerinfo": {

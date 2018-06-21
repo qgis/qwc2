@@ -72,6 +72,7 @@
       "filter": "Фильтровать...",
       "connect": "Подключиться",
       "nofeatures": "Нет объектов, доступных для импорта",
+      "noresults": "",
       "urlplaceholder": "Введите URL для WMS, WFS, KML..."
     },
     "layerinfo": {

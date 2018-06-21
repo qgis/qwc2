@@ -72,6 +72,7 @@
       "filter": "Filtro",
       "connect": "Connetti",
       "nofeatures": "Nessuno oggetto è stato importato",
+      "noresults": "Nessun risultato",
       "urlplaceholder": "Indirizzo WMS, WFS KML..."
     },
     "layerinfo": {
