@@ -87,7 +87,7 @@
     display: inline-block;
 }
 
-#ImportLayer div.importlayer-list-entry > span.icon {
+#ImportLayer div.importlayer-list-entry > .icon {
     flex: 0 0 auto;
     top: 0;
 }

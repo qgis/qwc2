@@ -51,7 +51,7 @@
     color: @appmenu_active_fg1@;
 }
 
-#AppMenu ul.appmenu-menu li span.icon {
+#AppMenu ul.appmenu-menu li .icon {
     width: 2em;
     height: 2em;
     margin: 0.5em 1em 0.5em 1em;

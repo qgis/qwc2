@@ -25,7 +25,7 @@ div.ToggleSwitch > span.toggle-switch-slider {
     color: lightgray;
 }
 
-div.ToggleSwitch > span.toggle-switch-slider > span.icon {
+div.ToggleSwitch > span.toggle-switch-slider > .icon {
     transform: rotate(90deg);
     top: -4px;
 }

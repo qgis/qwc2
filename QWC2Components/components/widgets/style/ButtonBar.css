@@ -39,7 +39,7 @@ div.ButtonBar > button:focus {
     outline: 0;
 }
 
-div.ButtonBar > button > span.icon
+div.ButtonBar > button > .icon
 {
     margin-right: 0.25em;
 }
