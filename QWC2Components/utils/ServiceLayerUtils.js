@@ -112,16 +112,16 @@ const ServiceLayerUtils = {
             textAttrConversion: true,
             ignoreNameSpace: true
         };
-        var capabilities = fastXmlParser.convertToJson(fastXmlParser.getTraversalObj(capabilitiesXml, options));
+        let capabilities = fastXmlParser.convertToJson(fastXmlParser.getTraversalObj(capabilitiesXml, options));
         if(!capabilities || !capabilities.WFS_Capabilities || !capabilities.WFS_Capabilities.version) {
             return [];
-        } else if(capabilities.WFS_Capabilities.version < "2.0.0") {
-            return ServiceLayerUtils.getWFS1Layers(capabilities.WFS_Capabilities);
+        } else if(capabilities.WFS_Capabilities.version < "1.1.0") {
+            return ServiceLayerUtils.getWFS10Layers(capabilities.WFS_Capabilities);
         } else {
-            return ServiceLayerUtils.getWFS2Layers(capabilities.WFS_Capabilities);
+            return ServiceLayerUtils.getWFS11_20Layers(capabilities.WFS_Capabilities);
         }
     },
-    getWFS1Layers(capabilities) {
+    getWFS10Layers(capabilities) {
         let serviceUrl = null;
         let version = capabilities.version;
         let formats = null;
@@ -162,14 +162,15 @@ const ServiceLayerUtils = {
         }
         return layers;
     },
-    getWFS2Layers(capabilities) {
+    getWFS11_20Layers(capabilities) {
         let serviceUrl = null;
         let version = capabilities.version;
         let formats = null;
         try {
             let getFeatureOp = array(capabilities.OperationsMetadata.Operation).find(el => el.name === "GetFeature");
             serviceUrl = ServiceLayerUtils.getDCPTypes(array(getFeatureOp.DCP)).HTTP.Get.href;
-            formats = array(getFeatureOp.Parameter).find(el => el.name === "outputFormat").AllowedValues.Value;
+            let outputFormat = array(getFeatureOp.Parameter).find(el => el.name === "outputFormat");
+            formats = outputFormat.AllowedValues ? outputFormat.AllowedValues.Value : outputFormat.Value;
         } catch(e) {
             return [];
         }
