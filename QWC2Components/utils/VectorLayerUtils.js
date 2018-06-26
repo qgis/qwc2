@@ -188,7 +188,7 @@ const VectorLayerUtils = {
                 strokeColor: style.getStroke().getColor(),
                 strokeWidth: style.getStroke().getWidth(),
                 strokeDash: style.getStroke().getLineDash() || [],
-                fillColor: style.getFill().getColor(),
+                fillColor: style.getFill() ? style.getFill().getColor() : '#FFFFFF',
                 textFill: style.getText().getFill().getColor(),
                 textStroke: style.getText().getStroke().getColor()
             };
