@@ -9,16 +9,13 @@
 var ol = require('openlayers');
 var assign = require('object-assign');
 const ProxyUtils = require('../../../../utils/ProxyUtils');
+const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
 const FeatureStyles = require('../FeatureStyles');
 
 
 let WMSLayer = {
     create: (options) => {
         const formatMap = {
-            "geojson": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
-            "json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
-            "application/json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
-
             "gml3": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
             "gml32": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
             "application/gml+xml; version=3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
@@ -30,7 +27,11 @@ let WMSLayer = {
             "text/xml; subtype=gml/2.1.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), defaultDataProjection: proj}),
 
             "kml": (proj) => new ol.format.KML({defaultDataProjection: proj}),
-            "application/vnd.google-earth.kml+xml": (proj) => new ol.format.KML({defaultDataProjection: proj})
+            "application/vnd.google-earth.kml+xml": (proj) => new ol.format.KML({defaultDataProjection: proj}),
+
+            "geojson": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
+            "json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
+            "application/json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj})
         };
 
         let olformat = null;
