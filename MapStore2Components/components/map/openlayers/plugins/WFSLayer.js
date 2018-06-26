@@ -54,12 +54,18 @@ let WMSLayer = {
         let vectorSource = new ol.source.Vector({
             format: olformat,
             url: function(extent) {
+                let wgs84extent = CoordinatesUtils.reprojectBbox(extent, options.srs, 'EPSG:4326');
+                if(options.version >= "1.1.0") {
+                    // http://augusttown.blogspot.com/2010/08/mysterious-bbox-parameter-in-web.html
+                    // Invert WGS axis orentation
+                    wgs84extent = [wgs84extent[1], wgs84extent[0], wgs84extent[3], wgs84extent[2]];
+                }
                 let url = ProxyUtils.addProxyIfNeeded(
-                    options.url + 'service=WFS&version=' + options.version +
+                    options.url + (options.url.endsWith('?') ? '' : '?') + 'service=WFS&version=' + options.version +
                     '&request=GetFeature&' + typeName + '=' + options.name +
                     '&outputFormat=' + encodeURIComponent(format) +
-                    '&srsname=' + encodeURIComponent(options.srs) +
-                    '&bbox=' + extent.join(',')
+                    '&srsName=' + options.srs +
+                    '&bbox=' + wgs84extent.join(',')
                 );
                 return url;
             },
