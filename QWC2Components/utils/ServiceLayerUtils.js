@@ -198,7 +198,7 @@ const ServiceLayerUtils = {
                 title: title,
                 abstract: abstract,
                 bbox: bbox,
-                service: serviceUrl,
+                url: serviceUrl,
                 version: version,
                 formats: formats,
                 color: randomColor()
