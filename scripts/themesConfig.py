@@ -140,7 +140,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             onlineResource = getChildElement(layer, "Attribution/OnlineResource")
             layerEntry["attribution"] = {
                 "Title": getChildElementValue(layer, "Attribution/Title"),
-                "OnlineResource": onlineResource.getAttribute("xlink:href")
+                "OnlineResource": onlineResource.getAttribute("xlink:href") if onlineResource else ""
             }
         except:
             pass
