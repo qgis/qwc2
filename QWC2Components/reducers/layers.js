@@ -46,8 +46,8 @@ function layers(state = {flat: [], swipe: undefined}, action) {
                     if(newLayer.type === "wms") {
                         assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
                     }
-                    if(newLayer.group === 'background' && newLayer.visibility) {
-                        UrlParams.updateParams({bl: layer.name});
+                    if(newLayer.group === 'background') {
+                        UrlParams.updateParams({bl: newLayer.visibility ? layer.name : ''});
                     }
                     return newLayer;
                 } else if (layer.group === 'background' && isBackground) {

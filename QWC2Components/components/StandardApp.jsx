@@ -81,7 +81,7 @@ class AppInitComponent extends React.Component {
                     params = {};
                 }
                 let visibleLayers = params.l ? params.l.split(",") : null;
-                let visibleBgLayer = params.bl || null;
+                let visibleBgLayer = params.bl || params.bl === '' ? params.bl : null;
                 let initialView = null;
                 if(params.c && params.s !== undefined) {
                     let coords = params.c.split(";").map(x => parseFloat(x));

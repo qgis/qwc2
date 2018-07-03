@@ -61,7 +61,7 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
         }
 
         // Preserve background layer if desired and possible
-        if(preserve && !visibleBgLayer && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch") === true) {
+        if(preserve && !visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch") === true) {
             visibleBgLayer = getState().layers.flat.find(layer => layer.group === 'background' && layer.visibility === true);
         }
 
