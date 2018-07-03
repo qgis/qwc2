@@ -90,11 +90,12 @@ const LayerUtils = {
             layerNames = indices.map(idx => layerNames[idx]);
             opacities = indices.map(idx => opacities[idx]);
         }
+        let newParams = assign({}, layer.params, {
+            LAYERS: layerNames.join(","),
+            OPACITIES: opacities.join(",")
+        });
         return {
-            params: {
-                LAYERS: layerNames.join(","),
-                OPACITIES: opacities.join(",")
-            },
+            params: newParams,
             queryLayers: queryable
         };
     },
