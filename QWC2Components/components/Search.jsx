@@ -148,12 +148,15 @@ class Search extends React.Component {
         }, {});
     }
     render() {
-        let placeholder = LocaleUtils.getMessageById(this.context.messages, "search.search");
-        if(this.props.searchOptions.showProvidersInPlaceholder) {
+        let placeholder = "";
+        if(this.props.searchOptions.showProvidersInPlaceholder || !isEmpty(this.props.activeProviders)) {
+             placeholder = LocaleUtils.getMessageById(this.context.messages, "search.search");
             let providers = this.activeProviders(this.props);
             if(!isEmpty(providers)) {
                 placeholder +=  ": " + Object.keys(providers).map(key => providers[key].label).join(", ");
             }
+        } else {
+            placeholder = LocaleUtils.getMessageById(this.context.messages, "search.searchall");
         }
         if(!this.props.searchText) {
             var addonAfter = (<Icon icon="search"/>);

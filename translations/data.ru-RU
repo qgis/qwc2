@@ -149,6 +149,7 @@
     "search": {
       "more": "Больше...",
       "search": "Поиск",
+      "searchall": "",
       "all": "Всё"
     },
     "share": {
