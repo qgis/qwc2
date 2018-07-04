@@ -9,9 +9,10 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
+const isEmpty = require('lodash.isempty');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 const Message = require('../../MapStore2Components/components/I18N/Message');
-const {sendIdentifyRequest, purgeIdentifyResults} = require('../actions/identify');
+const {sendIdentifyRequest, purgeIdentifyResults, identifyEmpty} = require('../actions/identify');
 const {addMarker, removeMarker} = require('../actions/layers');
 const ResizeableWindow = require("../components/ResizeableWindow");
 const {IdentifyViewer} = require('../components/IdentifyViewer');
@@ -26,6 +27,7 @@ class Identify extends React.Component {
         responses: PropTypes.array,
         purgeResults: PropTypes.func,
         sendRequest: PropTypes.func,
+        identifyEmpty: PropTypes.func,
         addMarker: PropTypes.func,
         removeMarker: PropTypes.func,
         enableExport: PropTypes.bool,
@@ -54,6 +56,9 @@ class Identify extends React.Component {
             queryableLayers.forEach((layer) => {
                 this.props.sendRequest(IdentifyUtils.buildRequest(layer, layer.queryLayers.join(","), newProps.point.coordinate, newProps.map, newProps.params));
             });
+            if(isEmpty(queryableLayers)) {
+                this.props.identifyEmpty();
+            }
             this.props.addMarker('identify', newProps.point.coordinate, '', newProps.map.projection);
         }
         if (!newProps.enabled && this.props.enabled) {
@@ -104,6 +109,7 @@ const selector = (state) => ({
 const IdentifyPlugin = connect(selector, {
     sendRequest: sendIdentifyRequest,
     purgeResults: purgeIdentifyResults,
+    identifyEmpty: identifyEmpty,
     addMarker: addMarker,
     removeMarker: removeMarker
 })(Identify);

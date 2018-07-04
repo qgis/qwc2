@@ -9,11 +9,19 @@
 const axios = require('axios');
 const uuid = require('uuid');
 
+const IDENTIFY_EMPTY = 'IDENTIFY_EMPTY';
 const IDENTIFY_RESPONSE = 'IDENTIFY_RESPONSE';
 const IDENTIFY_REQUEST = 'IDENTIFY_REQUEST';
 const SET_IDENTIFY_ENABLED = 'SET_IDENTIFY_ENABLED';
 const PURGE_IDENTIFY_RESULTS = 'PURGE_IDENTIFY_RESULTS';
 
+
+function identifyEmpty() {
+    return {
+        type: IDENTIFY_EMPTY,
+        reqId: uuid.v1()
+    };
+}
 
 function identifyResponse(reqId, request, data, error=null) {
     return {
@@ -91,10 +99,12 @@ function purgeIdentifyResults() {
 
 
 module.exports = {
+    IDENTIFY_EMPTY,
     IDENTIFY_RESPONSE,
     IDENTIFY_REQUEST,
     SET_IDENTIFY_ENABLED,
     PURGE_IDENTIFY_RESULTS,
+    identifyEmpty,
     sendIdentifyRequest,
     setIdentifyEnabled,
     purgeIdentifyResults

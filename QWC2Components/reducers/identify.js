@@ -7,6 +7,7 @@
  */
 
 const {
+    IDENTIFY_EMPTY,
     IDENTIFY_RESPONSE,
     IDENTIFY_REQUEST,
     SET_IDENTIFY_ENABLED,
@@ -38,6 +39,12 @@ function identify(state = {enabled: true}, action) {
             const responses = state.responses || [];
             return assign({}, state, {
                 responses: [...responses, {reqId, request, data, error}]
+            });
+        }
+        case IDENTIFY_EMPTY: {
+            return assign({}, state, {
+                requests: [{reqId: action.reqId, request: null}],
+                responses: [{reqId: action.reqId, request: null, data: null}]
             });
         }
         default:
