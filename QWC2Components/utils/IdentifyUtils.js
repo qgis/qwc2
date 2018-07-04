@@ -104,10 +104,11 @@ const IdentifyUtils = {
             }
         };
     },
-    parseXmlFeature(feature, geometrycrs, id) {
+    parseXmlFeature(feature, geometrycrs, id, featurereport) {
         let featureResult = {};
         featureResult["type"] = "Feature";
         featureResult["id"] = id;
+        featureResult["featurereport"] = featurereport;
         let bboxes = feature.getElementsByTagName("BoundingBox");
         if(bboxes.length > 0) {
             let bbox = bboxes[0];
@@ -143,13 +144,14 @@ const IdentifyUtils = {
         let layers = [].slice.call(doc.firstChild.getElementsByTagName("Layer"));
         let result = {};
         for(let layer of layers) {
+            let featurereport = layer.attributes.featurereport ? layer.attributes.featurereport.value : null;
             let features = [].slice.call(layer.getElementsByTagName("Feature"));
             if(features.length > 0) {
-                result[layer.attributes.name.value] = features.map(feature => this.parseXmlFeature(feature, geometrycrs, feature.attributes.id.value));
+                result[layer.attributes.name.value] = features.map(feature => this.parseXmlFeature(feature, geometrycrs, feature.attributes.id.value, featurereport));
             } else {
                 let attributes = [].slice.call(layer.getElementsByTagName("Attribute"));
                 if(attributes.length > 0) {
-                    result[layer.attributes.name.value] = [this.parseXmlFeature(layer, geometrycrs, response.request.metadata.posstr)];
+                    result[layer.attributes.name.value] = [this.parseXmlFeature(layer, geometrycrs, response.request.metadata.posstr, featurereport)];
                 }
             }
         }

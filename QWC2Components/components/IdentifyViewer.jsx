@@ -313,7 +313,7 @@ class IdentifyViewer extends React.Component {
         }
         let featureReportTemplate = null;
         if(ConfigUtils.getConfigProp("featureReportService")) {
-            featureReportTemplate = this.findFeatureReportTemplate(layer);
+            featureReportTemplate = result.featurereport || this.findFeatureReportTemplate(layer);
         }
         return (
             <div className={highlighted ? 'identify-result-frame-highlighted' : 'identify-result-frame-normal'}>
