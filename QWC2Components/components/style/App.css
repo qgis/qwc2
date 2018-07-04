@@ -50,6 +50,10 @@ ul {
     margin: 0;
 }
 
+table {
+    border-collapse: collapse;
+}
+
 h1, h2, h3, h4 {
     font-weight: 500;
     margin: 0.5em 0;
