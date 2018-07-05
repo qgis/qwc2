@@ -272,6 +272,7 @@ class LayerTree extends React.Component {
                             onTouchStart={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
                             onTouchMove={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
                             onTouchEnd={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
+                            onContextMenuCapture={ev => {ev.stopPropagation(); ev.preventDefault(); return false; }}>
                             <Sortable options={{disabled: this.props.flattenGroups !== true, ghostClass: 'drop-ghost'}} onChange={this.onSortChange}>
                                 {this.props.layers.map(this.renderLayerTree)}
                             </Sortable>
