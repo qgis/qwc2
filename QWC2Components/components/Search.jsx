@@ -234,7 +234,7 @@ class Search extends React.Component {
             );
         }
         return (
-            <div id="Search">
+            <div id="Search" onTouchStart={ev => ev.stopPropagation()} onTouchMove={ev => ev.stopPropagation()}  onTouchEnd={ev => ev.stopPropagation()}>
                 <div className="searchbar-wrapper">
                     <div className="searchbar-container">
                         <input

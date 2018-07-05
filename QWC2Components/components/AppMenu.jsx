@@ -92,7 +92,10 @@ class AppMenu extends React.Component {
     }
     render() {
         return(
-            <div id="AppMenu" className={this.props.currentTaskBlocked ? "appmenu-blocked" : this.state.menuVisible ? "appmenu-visible" : ""} ref={el => this.menuEl = el} onClick={ev => {}}>
+            <div id="AppMenu" className={this.props.currentTaskBlocked ? "appmenu-blocked" : this.state.menuVisible ? "appmenu-visible" : ""}
+                ref={el => this.menuEl = el} onClick={ev => {}}
+                onTouchStart={ev => ev.stopPropagation()} onTouchMove={ev => ev.stopPropagation()}  onTouchEnd={ev => ev.stopPropagation()}
+                >
                 <div className="appmenu-button-container" onMouseDown={this.toggleMenu}>
                     {this.props.buttonContents}
                 </div>
