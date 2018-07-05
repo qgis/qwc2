@@ -268,7 +268,10 @@ class LayerTree extends React.Component {
                     onHide={this.hideLegendTooltip}
                     extraTitlebarContent={extraTitlebarContent}>
                     <div role="body" className="layertree-container">
-                        <div className="layertree-tree" onTouchMove={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}>
+                        <div className="layertree-tree"
+                            onTouchStart={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
+                            onTouchMove={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
+                            onTouchEnd={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
                             <Sortable options={{disabled: this.props.flattenGroups !== true, ghostClass: 'drop-ghost'}} onChange={this.onSortChange}>
                                 {this.props.layers.map(this.renderLayerTree)}
                             </Sortable>
