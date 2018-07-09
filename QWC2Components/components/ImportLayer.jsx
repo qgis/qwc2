@@ -53,14 +53,14 @@ class ImportLayer extends React.Component {
             );
         }
     }
-    renderServiceLayerListEntry(entry, filter, path, level = 0) {
+    renderServiceLayerListEntry(entry, filter, path, level = 0, idx) {
         let hasSublayers = !isEmpty(entry.sublayers);
-        let sublayers = hasSublayers ? entry.sublayers.map((sublayer,idx) => this.renderServiceLayerListEntry(sublayer, filter, [...path, idx], level + 1)) : [];
+        let sublayers = hasSublayers ? entry.sublayers.map((sublayer,idx) => this.renderServiceLayerListEntry(sublayer, filter, [...path, idx], level + 1, idx)) : [];
         if(sublayers.filter(item => item).length == 0 && filter && !removeDiacritics(entry.title).match(filter)) {
             return null;
         }
         return (
-            <div key={entry.type + ":" + entry.name} style={{paddingLeft: level + 'em'}}>
+            <div key={entry.type + ":" + entry.name + ":" + idx} style={{paddingLeft: level + 'em'}}>
                 <div className="importlayer-list-entry">
                     {hasSublayers ? (<Icon onClick={ev => this.toggleLayerListEntry(path)} icon={entry.expanded ? 'tree_minus' : 'tree_plus'} />) : null}
                     <span onClick={ev => this.addServiceLayer(entry)}>
@@ -103,7 +103,7 @@ class ImportLayer extends React.Component {
             layerList = [
                 (<input key="importlayer-list-filter" className="importlayer-list-filter" type="text" value={this.state.filter} placeholder={filterplaceholder} onChange={ev => this.setState({filter: ev.target.value})}/>),
                 (<div key="importlayer-list" className="importlayer-list">
-                    {this.state.serviceLayers.map((entry, idx) => this.renderServiceLayerListEntry(entry, filter, [idx]))}
+                    {this.state.serviceLayers.map((entry, idx) => this.renderServiceLayerListEntry(entry, filter, [idx], 0, idx))}
                     {emptyEntry}
                 </div>)
             ];
