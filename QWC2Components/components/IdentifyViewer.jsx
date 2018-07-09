@@ -442,7 +442,7 @@ class IdentifyViewer extends React.Component {
         axios.get(serviceUrl, {params: params, responseType: "arraybuffer"}).then(response => {
             let contentType = response.headers["content-type"];
             let contentDisposition = response.headers["content-disposition"];
-            let match = /filename=([^;\s])/.exec(contentDisposition);
+            let match = /filename=([^;\s]+)/.exec(contentDisposition);
             let filename = match ? match[1].replace(/['"]/g, "") : "report";
             FileSaver.saveAs(new Blob([response.data], {type: contentType}), filename);
         }).catch(e => {
