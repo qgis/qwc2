@@ -158,7 +158,10 @@ class StandardApp extends React.Component {
         let plugins = assign(PluginsUtils.getPlugins(this.props.appConfig.pluginsDef.plugins));
         return (
             <Provider store={this.store}>
-                <div>
+                <div
+                    onTouchMove={ev => ev.preventDefault()}
+                    ref={el => el.addEventListener('touchmove', ev => ev.preventDefault(), { passive: false })}
+                >
                     <AppInit initialParams={this.initialParams} />
                     <Localized>
                         <PluginsContainer plugins={plugins} />
