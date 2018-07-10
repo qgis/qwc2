@@ -39,8 +39,6 @@
     margin: 0;
     font-size: small;
     font-weight: bold;
-    display: flex;
-    align-items: center;
 }
 
 #AppMenu ul.appmenu-menu li:not(:last-child) {
@@ -54,6 +52,7 @@
 }
 
 #AppMenu ul.appmenu-menu li .icon {
+    vertical-align: middle;
     width: 2em;
     margin: 0.5em 1em 0.5em 1em;
 }
