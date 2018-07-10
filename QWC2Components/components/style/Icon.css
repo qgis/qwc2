@@ -1,8 +1,5 @@
 .icon {
-    vertical-align: middle;
     display: inline-block;
-    position: relative;
-    top: -1px;
 }
 
 span.iconlarge:before {

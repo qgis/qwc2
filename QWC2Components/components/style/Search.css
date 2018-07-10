@@ -34,8 +34,7 @@
     height: 2.5em;
     width: 2.5em;
     text-align: center;
-    padding: 0.25em 0.25em;
-    line-height: 2em;
+    line-height: 2.5em;
     background-color: @button_bg@;
     border-top: 1px solid @item_border@;;
     border-right: 1px solid @item_border@;;
