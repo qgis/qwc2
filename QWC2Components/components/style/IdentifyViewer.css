@@ -91,6 +91,7 @@
 #IdentifyViewer .identify-result-frame-normal {
     margin-top: 0.25em;
     border: 1px solid @item_border@;
+    overflow-y: auto;
 }
 
 #IdentifyViewer .identify-result-frame-highlighted {
