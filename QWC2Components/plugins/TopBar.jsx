@@ -69,7 +69,10 @@ class TopBar extends React.Component {
             logoEl = (<a target="_blank" href={this.props.logoUrl}>{logoEl}</a>);
         }
         return (
-            <Swipeable onSwipedUp={this.triggerFullscreen} preventDefaultTouchmoveEvent={true}>
+            <Swipeable
+                onSwipedUp={() => this.props.toggleFullscreen(true)}
+                onSwipedDown={() => this.props.toggleFullscreen(false)}
+                preventDefaultTouchmoveEvent={true}>
                 <div id="TopBar" className={classes}>
                     {logoEl}
                     <div className="center-span">
