@@ -360,6 +360,7 @@ class Search extends React.Component {
         if((item.type || SearchResultType.PLACE) === SearchResultType.PLACE) {
             this.props.removeLayer("searchselection");
             let text = item.label !== undefined ? item.label : item.text;
+            text = text.replace(/<[^>]*>/g, '')
             if(item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
                 this.props.searchProviders[item.provider].getResultGeometry(item, (item, geometry, crs) => { this.showFeatureGeometry(item, geometry, crs, text)});
             }
