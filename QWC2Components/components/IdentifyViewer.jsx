@@ -253,7 +253,7 @@ class IdentifyViewer extends React.Component {
         urlRegEx.lastIndex = 0;
         return value;
     }
-    renderResultAttributes = (layer, result, scrollable, highlighted=false) => {
+    renderResultAttributes = (layer, result, resultClass) => {
         if(!result) {
             return null;
         }
@@ -274,10 +274,6 @@ class IdentifyViewer extends React.Component {
             );
         } else {
             let properties = Object.keys(result.properties) || [];
-            let style = {};
-            if(scrollable) {
-                style['overflow'] = 'auto';
-            }
             let rows = null;
             if(properties.length === 1 && result.properties["maptip"]) {
                 rows = (
@@ -304,7 +300,7 @@ class IdentifyViewer extends React.Component {
                 );
             }
             resultbox = (
-                <div className="identify-result-box" style={style}>
+                <div className="identify-result-box">
                     <table className="attribute-list"><tbody>
                         {rows}
                     </tbody></table>
@@ -316,7 +312,7 @@ class IdentifyViewer extends React.Component {
             featureReportTemplate = result.featurereport || this.findFeatureReportTemplate(layer);
         }
         return (
-            <div className={highlighted ? 'identify-result-frame-highlighted' : 'identify-result-frame-normal'}>
+            <div className={resultClass}>
                 <div className="identify-result-title">{layer + ": " + this.resultDisplayName(result)}</div>
                 {resultbox}
                 {featureReportTemplate ? (<div className="identify-result-feature-report-frame">
@@ -372,7 +368,7 @@ class IdentifyViewer extends React.Component {
         }
         if(tree) {
             let contents = Object.keys(this.state.resultTree).map(layer => this.renderLayer(layer));
-            let attributes = this.renderResultAttributes(this.state.currentLayer, this.state.currentResult, true);
+            let attributes = this.renderResultAttributes(this.state.currentLayer, this.state.currentResult, 'identify-result-frame');
             let resultsContainerStyle = {
                 maxHeight: attributes ? '7em' : 'initial'
             };
@@ -394,11 +390,12 @@ class IdentifyViewer extends React.Component {
                         {Object.keys(this.state.resultTree).map(layer => {
                             let layerResults = this.state.resultTree[layer];
                             return layerResults.map(result => {
+                                let resultClass = this.state.currentResult == result ? 'identify-result-frame-highlighted' : 'identify-result-frame-normal';
                                 return (
                                     <div key={result.id}
                                         onMouseOver={() => this.setState({currentResult: result, currentLayer: layer})}
                                         onMouseOut={() => this.setState({currentResult: null, currentLayer: null})}
-                                    >{this.renderResultAttributes(layer, result, false, this.state.currentResult == result)}</div>
+                                    >{this.renderResultAttributes(layer, result, resultClass)}</div>
                                 );
                             });
                         })}
