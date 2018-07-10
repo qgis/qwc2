@@ -183,7 +183,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         }
     }
     resultLayers.push(layerEntry);
-    titleNameMap[layer.Title] = layer.Name;
+    titleNameMap[layer.TreeName] = layer.Name;
 }
 
 // parse GetCapabilities for theme
@@ -301,7 +301,7 @@ function getTheme(configItem, resultItem) {
             }
 
             // drawing order
-            let drawingOrder = capabilities.Capability.LayerDrawingOrder.split(",").map(title => title in titleNameMap ? titleNameMap[title] : title);
+            let drawingOrder = (capabilities.Capability.LayerDrawingOrder || "").split(",").map(title => title in titleNameMap ? titleNameMap[title] : title);
 
             // update theme config
             resultItem.id = themeId;

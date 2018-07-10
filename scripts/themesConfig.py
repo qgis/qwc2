@@ -114,6 +114,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
     name = getChildElementValue(layer, "Name")
     title = getChildElementValue(layer, "Title")
     layers = getDirectChildElements(layer, "Layer")
+    treeName = getChildElementValue(layer, "TreeName")
 
     if name in printLayers:
         # skip print layers
@@ -202,7 +203,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             return
 
     resultLayers.append(layerEntry)
-    titleNameMap[title] = name
+    titleNameMap[treeName] = name
 
 
 # parse GetCapabilities for theme
