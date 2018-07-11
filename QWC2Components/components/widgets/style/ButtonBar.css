@@ -23,12 +23,13 @@ div.ButtonBar > button {
     border-bottom: 1px solid @item_border@;
     border-right: 1px solid @item_border@;
     border-left: 0;
-    padding: 0.25em 0.25em;
+    padding: 0.25em;
     cursor: pointer;
     align-items: center;
     justify-content: center;
     background-color: @button_bg@;
     height: 2em;
+    margin: 0;
 }
 
 div.ButtonBar > button > * {
