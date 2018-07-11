@@ -20,6 +20,8 @@
     flex: 0 1 auto;
     overflow-y: auto;
     margin-right: 0.25em;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 #LayerTree div.layertree-tree .drop-ghost {
