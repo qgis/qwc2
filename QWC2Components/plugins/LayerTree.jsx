@@ -165,7 +165,7 @@ class LayerTree extends React.Component {
                 infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.setState({activeinfo: {layer, sublayer}})}/>);
             }
             editframe = (
-                <div className="layertree-item-edit-frame" draggable="true" ref={el => this.regEventListeners(el)}>
+                <div className="layertree-item-edit-frame">
                     <span className="layertree-item-transparency-label"><Message msgId="layertree.transparency" /></span>
                     <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onTouchEnd={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} />
                     {reorderButtons}
@@ -199,16 +199,6 @@ class LayerTree extends React.Component {
                 {editframe}
             </div>
         );
-    }
-    regEventListeners = (el) => {
-        if(!el) {
-            return;
-        }
-        let killEvent = (ev) => { ev.stopPropagation(); }
-        el.addEventListener('touchstart', killEvent, {passive: false});
-        el.addEventListener('dragstart', ev => {ev.preventDefault(); ev.stopPropagation();}, {passive: false});
-        el.addEventListener('pointerdown', killEvent, {passive: false});
-        el.addEventListener('mousedown', killEvent, {passive: false});
     }
     renderLayerTree = (layer) => {
         if(layer.group === 'background' || layer.layertreehidden) {
