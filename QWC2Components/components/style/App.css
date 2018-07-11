@@ -17,19 +17,18 @@ html, body {
     padding: 0;
 }
 
-input[type=text], input[type=password], textarea {
-    cursor:text;
-}
-
 input, select, button, textarea {
     border-radius: 0;
     color: inherit;
     font-family: inherit;
     font-size: inherit;
+    margin: 0;
 }
 
 textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]) {
     -webkit-appearance: none;
+    cursor:text;
+    padding: 0.25em;
 }
 
 a {

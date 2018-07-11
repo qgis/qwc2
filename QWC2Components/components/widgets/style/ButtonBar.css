@@ -29,7 +29,6 @@ div.ButtonBar > button {
     justify-content: center;
     background-color: @button_bg@;
     height: 2em;
-    margin: 0;
 }
 
 div.ButtonBar > button > * {
