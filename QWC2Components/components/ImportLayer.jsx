@@ -142,7 +142,7 @@ class ImportLayer extends React.Component {
         }
         let url = this.state.url;
         if(!url.match(/^[^:]+:\/\/.*$/)) {
-            url = "http://" + url;
+            url = location.protocol + "//" + url;
         }
         let pendingRequests = 0;
         this.setState({pendingRequests: pendingRequests, serviceLayers: null, filter: ""});
