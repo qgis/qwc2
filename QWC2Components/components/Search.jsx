@@ -61,6 +61,7 @@ class Search extends React.Component {
     }
     componentDidMount() {
         this.searchTimer = 0;
+        this.preventBlur = false;
     }
     componentWillReceiveProps(newProps) {
         // If search text changed, clear result
@@ -130,6 +131,13 @@ class Search extends React.Component {
             this.search(this.props);
         }
         this.setState({focused: true});
+    }
+    onBlur = (ev) => {
+        if(this.preventBlur && this.input) {
+            this.input.focus();
+        } else {
+            this.setState({focused: false});
+        }
     }
     onKeyDown = (ev) => {
         if(ev.keyCode === 13) {
@@ -243,9 +251,9 @@ class Search extends React.Component {
                             type="text"
                             ref={el => this.input = el}
                             value={this.props.searchText}
-                            onBlur={() => this.setState({focused: false})}
                             onMouseDown={this.checkShowFields}
                             onFocus={this.onFocus}
+                            onBlur={this.onBlur}
                             onKeyDown={this.onKeyDown}
                             onChange={this.onChange} />
                         <span className="searchbar-addon">
@@ -277,10 +285,14 @@ class Search extends React.Component {
             return null;
         }
         return (
-            <ul className="search-results">
+            <ul className="search-results" onMouseDown={this.setPreventBlur}>
                 {this.props.results.map(category => this.renderCategory(category))}
             </ul>
         );
+    }
+    setPreventBlur = (ev) => {
+        this.preventBlur = true;
+        setTimeout(() => {this.preventBlur = false; return false;}, 100);
     }
     renderCategory = (category) => {
         let title = category.titlemsgid ? (<Message msgId={category.titlemsgid} />) : category.title;
