@@ -63,7 +63,7 @@ class SideBar extends React.Component {
         }
         return (
             <Swipeable onSwipedRight={this.closeClicked} delta={30}>
-                <div id={this.props.id} className={"sidebar" + " " + this.props.extraClasses} style={style}>
+                <div id={this.props.id} className={"sidebar" + " " + this.props.extraClasses} style={style} ref={el => this.setVisibility(el, visible)}>
                     <div className="sidebar-titlebar">
                         <Icon className="sidebar-titlebar-icon" icon={this.props.icon} size="large"/>
                         <span className="sidebar-titlebar-title"><Message msgId={this.props.title} /></span>
@@ -77,6 +77,21 @@ class SideBar extends React.Component {
                 </div>
             </Swipeable>
         );
+    }
+    setVisibility = (el, visible) => {
+        if(!el) {
+            return;
+        }
+        if(visible) {
+            el.style.visibility = 'visible';
+        } else {
+            // Hide the element after the transition period (see SideBar.css),
+            // to avoid iOS focusing input fields in hidden sidebars
+            setTimeout(() => {
+                el.style.visibility = 'hidden';
+                return false;
+            }, 300);
+        }
     }
 };
 
