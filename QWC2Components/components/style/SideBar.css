@@ -52,6 +52,7 @@ div.sidebar span.sidebar-titlebar-closeicon {
 
 div.sidebar div.sidebar-body {
     overflow-y: auto;
+    overflow-x: hidden;
     max-height: calc(100vh - 8.25em); /* viewport - topbar - bottombar - sidebar_titlebar*/
     flex: 1 1 auto;
 }
