@@ -53,7 +53,7 @@ class TaskBar extends React.Component {
                             {this.renderRole("body")}
                         </div>
                         <span className="closewrapper">
-                            <Icon className="close" onClick={this.closeClicked} icon="remove"/>
+                            <Icon className="close" onClick={this.closeClicked} icon="remove" size="large"/>
                         </span>
                     </div>
                 </div>
