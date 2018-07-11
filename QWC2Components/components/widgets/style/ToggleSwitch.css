@@ -4,6 +4,7 @@ div.ToggleSwitch {
     height: 2em;
     overflow: hidden;
     border: 1px solid @item_border@;
+    align-items: center;
 }
 
 div.ToggleSwitch.toggle-switch-active {
@@ -19,15 +20,14 @@ div.ToggleSwitch > span.toggle-switch-slider {
     background-color: white;
     border: 1px solid @item_border@;
     border-radius: 2px;
-    margin: 1px;
     text-align: center;
-    line-height: 2em;
+    line-height: 1.6em;
+    margin: 0 0.1em;
     color: lightgray;
 }
 
 div.ToggleSwitch > span.toggle-switch-slider > .icon {
     transform: rotate(90deg);
-    top: -4px;
 }
 
 div.ToggleSwitch > span.toggle-switch-yes,
