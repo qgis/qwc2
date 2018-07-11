@@ -384,8 +384,9 @@ class IdentifyViewer extends React.Component {
                 </div>
             );
         } else {
+            // "el.style.background='inherit'": HACK to trigger an additional repaint, since Safari/Chrome on iOS render the element cut off the first time
             return (
-                <div id="IdentifyViewer">
+                <div id="IdentifyViewer" ref={el => { if(el) el.style.background='inherit'; } }>
                     <div className="identify-flat-results-list">
                         {Object.keys(this.state.resultTree).map(layer => {
                             let layerResults = this.state.resultTree[layer];
