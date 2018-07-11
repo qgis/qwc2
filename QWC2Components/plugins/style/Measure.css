@@ -1,7 +1,6 @@
 div.resultbody {
     margin-top: 0.25em;
     border: 1px solid @item_border@;
-    padding: 0.25em;
     white-space: nowrap;
     overflow: hidden;
     background-color: white;
@@ -13,6 +12,7 @@ div.resultbody {
 div.resultbody > span {
     flex: 1 1 auto;
     text-align: center;
+    padding: 0.25em;
 }
 
 div.resultbody > select {
