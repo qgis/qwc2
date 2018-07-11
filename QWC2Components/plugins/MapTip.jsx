@@ -27,27 +27,32 @@ class MapTip extends React.Component {
         removeLayer: PropTypes.func,
     }
     state = {
-        maptip: null
+        maptip: null,
+        pos: null
     }
     componentWillReceiveProps(newProps) {
         if(this.timeoutId) {
             clearTimeout(this.timeoutId);
             this.timeoutId = undefined;
         }
-        let maptip = this.state.maptip;
-        if(this.props.mousepos !== newProps.mousepos && newProps.mapTipsEnabled) {
-            this.timeoutId = setTimeout(this.queryMapTip, 500);
-            if(maptip) {
-                this.props.removeLayer('maptipselection');
-            }
-            maptip = null;
-        } else if(!newProps.mapTipsEnabled && maptip) {
-            maptip = null;
+        if(newProps.mapTipsEnabled &&  newProps.mousepos && (
+            !this.state.pos ||
+            Math.abs(newProps.mousepos.pixel[0] - this.state.pos[0]) > 5 ||
+            Math.abs(newProps.mousepos.pixel[1] - this.state.pos[1]) > 5
+        )) {
+            this.timeoutId = setTimeout(() => this.queryMapTip(newProps.mousepos.pixel[0], newProps.mousepos.pixel[1]), 500);
+            this.clearMaptip();
+        } else if(!newProps.mapTipsEnabled) {
+            this.clearMaptip();
+        }
+    }
+    clearMaptip = () => {
+        if(this.state.maptip) {
             this.props.removeLayer('maptipselection');
         }
-        this.setState({maptip: maptip});
+        this.setState({maptip: null, pos: null});
     }
-    queryMapTip = () => {
+    queryMapTip = (x, y) => {
         this.timeoutId = null;
         let options = {
             info_format: 'text/xml',
@@ -76,17 +81,17 @@ class MapTip extends React.Component {
                         role: LayerRole.SELECTION
                     };
                     this.props.addLayerFeatures(layer, [feature], true);
-                    this.setState({maptip: feature.properties.maptip});
+                    this.setState({maptip: feature.properties.maptip, pos: [x, y]});
                     break;
                 }
             }
         });
     }
     render() {
-        if(this.state.maptip && this.props.mousepos) {
+        if(this.state.maptip && this.state.pos) {
             let position = {
-                left: this.props.mousepos.pixel[0],
-                top: this.props.mousepos.pixel[1]
+                left: this.state.pos[0],
+                top: this.state.pos[1]
             };
             return (
                 <div
