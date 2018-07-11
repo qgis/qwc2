@@ -153,12 +153,13 @@ class StandardApp extends React.Component {
         this.init();
         // Save initial params before they get overwritten
         this.initialParams = UrlParams.getParams();
+        this.touchY = null;
     }
     render() {
         let plugins = assign(PluginsUtils.getPlugins(this.props.appConfig.pluginsDef.plugins));
         return (
             <Provider store={this.store}>
-                <div>
+                <div ref={this.setupTouchEvents}>
                     <AppInit initialParams={this.initialParams} />
                     <Localized>
                         <PluginsContainer plugins={plugins} />
@@ -166,6 +167,39 @@ class StandardApp extends React.Component {
                 </div>
             </Provider>
         );
+    }
+    setupTouchEvents = (el) => {
+        el.addEventListener('touchstart', ev => {
+            this.touchY = ev.targetTouches[0].clientY;
+        }, { passive: false })
+        el.addEventListener('touchmove', this.preventOverscroll, { passive: false })
+    }
+    preventOverscroll = (ev) => {
+        let scrollEvent = false;
+        let element = ev.target;
+        let direction = ev.targetTouches[0].clientY - this.touchY;
+        this.touchY = ev.targetTouches[0].clientY;
+        while(!scrollEvent && element) {
+            let scrollable = element.scrollHeight > element.clientHeight;
+            // Workaround for resizeable-window having scrollHeight > clientHeight even though it has no scrollbar
+            if(element.classList.contains('resizeable-window')) {
+                scrollable = false;
+            }
+            // User scrolls down and element is not at end of scroll
+            if (scrollable && (element.scrollTop + element.clientHeight < element.scrollHeight) && direction < 0) {
+                scrollEvent = true;
+            }
+            // User scrolls up and element is not at start of scroll
+            else if (scrollable && element.scrollTop > 0 && direction > 0) {
+                scrollEvent = true;
+            }
+            else {
+                element = element.parentElement;
+            }
+        }
+        if(!scrollEvent) {
+            ev.preventDefault();
+        }
     }
     init = () => {
         // Detect browser properties
