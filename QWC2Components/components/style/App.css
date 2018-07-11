@@ -28,6 +28,10 @@ input, select, button, textarea {
     font-size: inherit;
 }
 
+textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]) {
+    -webkit-appearance: none;
+}
+
 a {
     cursor:pointer;
     color: #337ab7;
