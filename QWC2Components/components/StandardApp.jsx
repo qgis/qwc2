@@ -185,8 +185,12 @@ class StandardApp extends React.Component {
             if(element.classList.contains('resizeable-window')) {
                 scrollable = false;
             }
+            // If it is a range element, treat it as a scroll event
+            if(element.type === "range") {
+                scrollEvent = true;
+            }
             // User scrolls down and element is not at end of scroll
-            if (scrollable && (element.scrollTop + element.clientHeight < element.scrollHeight) && direction < 0) {
+            else if (scrollable && (element.scrollTop + element.clientHeight < element.scrollHeight) && direction < 0) {
                 scrollEvent = true;
             }
             // User scrolls up and element is not at start of scroll
