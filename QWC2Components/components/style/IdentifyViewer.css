@@ -81,6 +81,11 @@
     top: 0.4em;
 }
 
+#IdentifyViewer div.identify-flat-results-list {
+    overflow: auto;
+    flex: 1 1 auto;
+}
+
 #IdentifyViewer .identify-result-frame {
     flex: 1 1 50%;
     display: flex;

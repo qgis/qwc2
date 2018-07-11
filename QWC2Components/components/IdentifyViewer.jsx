@@ -386,7 +386,7 @@ class IdentifyViewer extends React.Component {
         } else {
             return (
                 <div id="IdentifyViewer">
-                    <div style={{overflow: 'auto'}}>
+                    <div className="identify-flat-results-list">
                         {Object.keys(this.state.resultTree).map(layer => {
                             let layerResults = this.state.resultTree[layer];
                             return layerResults.map(result => {
