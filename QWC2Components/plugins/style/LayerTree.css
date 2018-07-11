@@ -9,7 +9,15 @@
     border: 1px solid white;
 }
 
+/* https://github.com/philipwalton/flexbugs/issues/216 */
+#LayerTree div.layertree-container-wrapper {
+    display: flex;
+    flex-direction: row;
+}
+
 #LayerTree div.layertree-container {
+    flex: 0 0 100%;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
     max-height: calc(100vh - 8.25em); /* viewport - topbar - bottombar - sidebar_titlebar*/

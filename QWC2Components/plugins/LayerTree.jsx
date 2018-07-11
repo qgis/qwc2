@@ -257,23 +257,25 @@ class LayerTree extends React.Component {
                     icon="layers"
                     onHide={this.hideLegendTooltip}
                     extraTitlebarContent={extraTitlebarContent}>
-                    <div role="body" className="layertree-container">
-                        <div className="layertree-tree"
-                            onTouchStart={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
-                            onTouchMove={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
-                            onTouchEnd={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
-                            onContextMenuCapture={ev => {ev.stopPropagation(); ev.preventDefault(); return false; }}>
-                            <Sortable options={{disabled: this.props.flattenGroups !== true, ghostClass: 'drop-ghost', delay: 200}} onChange={this.onSortChange}>
-                                {this.props.layers.map(this.renderLayerTree)}
-                            </Sortable>
+                    <div role="body" className="layertree-container-wrapper">
+                        <div className="layertree-container">
+                            <div className="layertree-tree"
+                                onTouchStart={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
+                                onTouchMove={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
+                                onTouchEnd={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
+                                onContextMenuCapture={ev => {ev.stopPropagation(); ev.preventDefault(); return false; }}>
+                                <Sortable options={{disabled: this.props.flattenGroups !== true, ghostClass: 'drop-ghost', delay: 200}} onChange={this.onSortChange}>
+                                    {this.props.layers.map(this.renderLayerTree)}
+                                </Sortable>
+                            </div>
+                            {maptipCheckbox}
+                            <div className="layertree-option">
+                                <Icon className="layertree-item-checkbox" icon={swipecheckboxstate} onClick={this.toggleSwipe} />
+                                <span onClick={this.toggleSwipe}><Message msgId="layertree.compare" /></span>
+                            </div>
+                            <div className="layertree-option" onClick={this.toggleImportLayers}><Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> <Message msgId="layertree.importlayer" /></div>
+                            {this.state.importvisible ? (<ImportLayer />) : null}
                         </div>
-                        {maptipCheckbox}
-                        <div className="layertree-option">
-                            <Icon className="layertree-item-checkbox" icon={swipecheckboxstate} onClick={this.toggleSwipe} />
-                            <span onClick={this.toggleSwipe}><Message msgId="layertree.compare" /></span>
-                        </div>
-                        <div className="layertree-option" onClick={this.toggleImportLayers}><Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> <Message msgId="layertree.importlayer" /></div>
-                        {this.state.importvisible ? (<ImportLayer />) : null}
                     </div>
                 </SideBar>
                 {legendTooltip}
