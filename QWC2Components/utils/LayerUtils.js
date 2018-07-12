@@ -63,7 +63,7 @@ const LayerUtils = {
                 });
             } else {
                 layerNames.push(sublayer.name);
-                opacities.push(sublayer.opacity || 255);
+                opacities.push(Number.isInteger(sublayer.opacity) ? sublayer.opacity : 255);
                 if(sublayer.queryable) {
                     queryable.push(sublayer.name)
                 }
