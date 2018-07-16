@@ -124,6 +124,10 @@ class Editing extends React.Component {
                 </span>
             );
         } else {
+            if(field.type == "date") {
+                // Truncate time portion of ISO date string
+                value = value.substr(0, 10);
+            }
             input = (
                 <span className="input-frame">
                     <input type={field.type} {...constraints} disabled={disabled}
