@@ -53,9 +53,11 @@ class IdentifyViewer extends React.Component {
         this.scrollIntoView = false;
     }
     componentWillReceiveProps(nextProps) {
-        if(nextProps.theme && nextProps.theme != this.props.theme) {
+        if(nextProps.layers !== this.props.layers) {
             let displayFieldMap = {};
-            this.populateDisplayFieldMap(displayFieldMap, nextProps.theme);
+            for(let layer of nextProps.layers) {
+                this.populateDisplayFieldMap(displayFieldMap, layer);
+            }
             this.setState({displayFieldMap: displayFieldMap});
         }
         if(nextProps.missingResponses == 0 && nextProps.responses !== this.props.responses) {
@@ -214,14 +216,18 @@ class IdentifyViewer extends React.Component {
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
     }
-    resultDisplayName = (result) => {
+    resultDisplayName = (layer, result) => {
         let displayName = "";
         try {
             let displayFieldName = this.state.displayFieldMap[layer];
             displayName = result.properties[displayFieldName];
         } catch(e) {
         }
-        if((!displayName || displayName[0] === "<") && result.properties) {
+        // Clear displayName if it contains HTML
+        if(displayName && displayName[0] === "<") {
+            displayName = "";
+        }
+        if(!displayName && result.properties) {
             displayName = result.properties.name || result.properties.Name || result.properties.NAME || "";
         }
         if(!displayName) {
@@ -313,7 +319,7 @@ class IdentifyViewer extends React.Component {
         }
         return (
             <div className={resultClass}>
-                <div className="identify-result-title">{layer + ": " + this.resultDisplayName(result)}</div>
+                <div className="identify-result-title">{layer + ": " + this.resultDisplayName(layer, result)}</div>
                 {resultbox}
                 {featureReportTemplate ? (<div className="identify-result-feature-report-frame">
                     <a href="#" onClick={ev => this.getFeatureReport(featureReportTemplate, result)} ><Message msgId="identify.featureReport" /></a>
@@ -322,7 +328,7 @@ class IdentifyViewer extends React.Component {
         );
     }
     renderResult = (layer, result) => {
-        let displayName = this.resultDisplayName(result);
+        let displayName = this.resultDisplayName(layer, result);
         let ref = this.state.currentResult === result && this.scrollIntoView ? el => this.currentResultElRef = el : null;
         return (
             <li key={result.id}
