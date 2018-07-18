@@ -7,6 +7,7 @@
  */
 const assign = require('object-assign');
 const {combineReducers} = require('redux');
+const merge = require('deepmerge').default;
 
 const map = require('../reducers/map');
 
@@ -27,7 +28,10 @@ module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeO
         layers: () => {return null; },
         ...PluginsUtils.getPluginReducers(plugins)
     });
-    const defaultState = initialState.defaultState;
+
+    const defaultState =  merge({
+        ...allReducers({}, {type: null}),
+    }, initialState.defaultState);
     const mobileOverride = initialState.mobile;
 
     const rootReducer = (state, action) => {
