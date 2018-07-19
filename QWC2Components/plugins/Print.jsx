@@ -227,8 +227,8 @@ class Print extends React.Component {
                         <input readOnly="true" name="FORMAT" type={formvisibility} value="pdf" />
                         <input readOnly="true" name="TRANSPARENT" type={formvisibility} value="true" />
                         <input readOnly="true" name="SRS" type={formvisibility} value={mapCrs} />
-                        <input readOnly="true" name="LAYERS" type={formvisibility} value={printLayers || ""} />
                         <input readOnly="true" name="OPACITIES" type={formvisibility} value={printOpacities || ""} />
+                        <input readOnly="true" name={mapName + ":LAYERS"} type={formvisibility} value={printLayers || ""} />
                         <input readOnly="true" name={mapName + ":HIGHLIGHT_GEOM"} type={formvisibility} value={highlightParams.geoms.join(";")} />
                         <input readOnly="true" name={mapName + ":HIGHLIGHT_SYMBOL"} type={formvisibility} value={highlightParams.styles.join(";")} />
                         <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELSTRING"} type={formvisibility} value={highlightParams.labels.join(";")} />
