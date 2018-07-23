@@ -327,8 +327,8 @@ class Search extends React.Component {
         if(zoom) {
             let bbox = item.bbox ? item.bbox.slice(0) : [];
             let crs = item.crs;
-            let x = item.bbox ? 0.5 * (item.bbox[0] + item.bbox[2]) : item.x;
-            let y = item.bbox ? 0.5 * (item.bbox[1] + item.bbox[3]) : item.y;
+            let x = !isEmpty(item.bbox) ? 0.5 * (item.bbox[0] + item.bbox[2]) : item.x;
+            let y = !isEmpty(item.bbox) ? 0.5 * (item.bbox[1] + item.bbox[3]) : item.y;
 
             // find max zoom level greater than min scale
             let maxZoom = 0;
