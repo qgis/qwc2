@@ -59,7 +59,7 @@ let WMSLayer = {
                     extent = CoordinatesUtils.reprojectBbox(extent, options.srs, 'EPSG:4326');
                     // http://augusttown.blogspot.com/2010/08/mysterious-bbox-parameter-in-web.html
                     // Invert WGS axis orentation
-                    requestExtent = [wgs84extent[1], wgs84extent[0], wgs84extent[3], wgs84extent[2]];
+                    requestExtent = [extent[1], extent[0], extent[3], extent[2]];
                 } else {
                     requestExtent = extent;
                 }
