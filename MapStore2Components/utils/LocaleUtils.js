@@ -70,7 +70,11 @@ const LocaleUtils = {
         return message;
     },
     toLocaleFixed(number, digits) {
-        return number.toLocaleString(LocaleUtils.getUserLocale(), { minimumFractionDigits: digits, maximumFractionDigits: digits });
+        if(ConfigUtils.getConfigProp("localeAwareNumbers")) {
+            return number.toLocaleString(LocaleUtils.getUserLocale(), { minimumFractionDigits: digits, maximumFractionDigits: digits });
+        } else {
+            return number.toFixed(digits);
+        }
     }
 };
 
