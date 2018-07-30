@@ -18,6 +18,7 @@ if (!global.Intl) {
 
 const axios = require('axios');
 const assign = require('object-assign');
+const Proj4js = require('proj4').default;
 
 const Localized = require('../../MapStore2Components/components/I18N/Localized');
 const StandardStore = require('../stores/StandardStore')
@@ -31,6 +32,7 @@ const {changeSearch} = require('../actions/search');
 const {themesLoaded,setCurrentTheme} = require('../actions/theme');
 
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
+const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const PluginsUtils = require('../../MapStore2Components/utils/PluginsUtils');
 const {UrlParams, resolvePermaLink} = require('../utils/PermaLinkUtils');
@@ -217,6 +219,13 @@ class StandardApp extends React.Component {
             this.store.dispatch(localConfigLoaded(config));
             // Dispatch user locale
             this.store.dispatch(loadLocale(null, LocaleUtils.getUserLocale()));
+            // Add projections from config
+            for(let proj of config.projections || []) {
+                if(Proj4js.defs(proj.code) === undefined) {
+                    Proj4js.defs(proj.code, proj.proj);
+                }
+                CoordinatesUtils.setCrsLabels({[proj.code]: proj.label});
+            }
         });
     }
 }
