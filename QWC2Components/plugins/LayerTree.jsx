@@ -40,6 +40,8 @@ class LayerTree extends React.Component {
         showRootEntry: PropTypes.bool,
         showQueryableIcon: PropTypes.bool,
         allowMapTips: PropTypes.bool,
+        allowCompare: PropTypes.bool,
+        allowImport: PropTypes.bool,
         groupTogglesSublayers: PropTypes.bool,
         grayUnchecked: PropTypes.bool,
         layerInfoWindowSize: PropTypes.object,
@@ -53,6 +55,8 @@ class LayerTree extends React.Component {
         showRootEntry: true,
         showQueryableIcon: true,
         allowMapTips: true,
+        allowCompare: true,
+        allowImport: true,
         groupTogglesSublayers: false,
         grayUnchecked: true,
         layerInfoWindowSize: {width: 400, height: 480},
@@ -229,7 +233,24 @@ class LayerTree extends React.Component {
                 </div>
             );
         }
-        let swipecheckboxstate = this.props.swipe || this.props.swipe === 0 ? 'checked' : 'unchecked';
+        let compareCheckbox = null;
+        if(this.props.allowCompare) {
+            let swipecheckboxstate = this.props.swipe || this.props.swipe === 0 ? 'checked' : 'unchecked';
+            compareCheckbox = (
+                <div className="layertree-option">
+                    <Icon className="layertree-item-checkbox" icon={swipecheckboxstate} onClick={this.toggleSwipe} />
+                    <span onClick={this.toggleSwipe}><Message msgId="layertree.compare" /></span>
+                </div>
+            );
+        }
+        let layerImportExpander = null;
+        if(this.props.allowImport) {
+            layerImportExpander = (
+                <div className="layertree-option" onClick={this.toggleImportLayers}>
+                    <Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> <Message msgId="layertree.importlayer" />
+                </div>
+            );
+        }
         let legendTooltip = null;
         if(this.state.legendTooltip) {
             let style = {
@@ -269,11 +290,8 @@ class LayerTree extends React.Component {
                                 </Sortable>
                             </div>
                             {maptipCheckbox}
-                            <div className="layertree-option">
-                                <Icon className="layertree-item-checkbox" icon={swipecheckboxstate} onClick={this.toggleSwipe} />
-                                <span onClick={this.toggleSwipe}><Message msgId="layertree.compare" /></span>
-                            </div>
-                            <div className="layertree-option" onClick={this.toggleImportLayers}><Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> <Message msgId="layertree.importlayer" /></div>
+                            {compareCheckbox}
+                            {layerImportExpander}
                             {this.state.importvisible ? (<ImportLayer />) : null}
                         </div>
                     </div>
