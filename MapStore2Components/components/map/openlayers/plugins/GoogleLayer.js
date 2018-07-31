@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const React = require('react');
 var ol = require('openlayers');
 
 var layersMap;
@@ -15,6 +16,9 @@ var isTouchSupported = 'ontouchstart' in window;
 var startEvent = isTouchSupported ? 'touchstart' : 'mousedown';
 var moveEvent = isTouchSupported ? 'touchmove' : 'mousemove';
 var endEvent = isTouchSupported ? 'touchend' : 'mouseup';
+
+// NOTE: For the GoogleLayer to work, you MUST use EPSG:3857 as map projection and the google mercator scales:
+// [591658711,295829355,147914678,73957339,36978669,18489335,9244667,4622334,2311167,1155583,577792,288896,144448,72224,36112,18056,9028,4514,2257,1128,564,282,141,71,35,18,9,4,2]
 
 let GoogleLayer = {
     create: (options, map, mapId) => {
@@ -161,7 +165,17 @@ let GoogleLayer = {
         if (!rendererItem) {
             rendererItem = options.name;
         }
-        let gmapsStyle = {zIndex: 0};
+        let wrapperStyle = {
+            zIndex: -1,
+            position: 'fixed',
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0
+        };
+        let gmapsStyle = {
+            height: '100%'
+        };
         if (options.visibility === true) {
             let div = document.getElementById(mapId + "gmaps");
             if (div) {
@@ -182,7 +196,11 @@ let GoogleLayer = {
             if (div) {
                 div.style.visibility = options.visibility ? 'visible' : 'hidden';
             }
-            return <div id={mapId + "gmaps"} className="fill" style={gmapsStyle}></div>;
+            return (
+                <div style={wrapperStyle}>
+                <div id={mapId + "gmaps"} className="fill" style={gmapsStyle}></div>
+                </div>
+            );
         }
         return null;
     },
