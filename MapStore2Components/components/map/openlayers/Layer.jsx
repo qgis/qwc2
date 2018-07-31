@@ -37,6 +37,9 @@ class OpenlayersLayer extends React.Component {
         this.createLayer(this.props.type, this.props.options, this.props.zIndex);
     }
     componentWillReceiveProps(newProps) {
+        if (this.props.options) {
+            this.updateLayer(newProps, this.props);
+        }
         if(!this.state.layer) {
             return;
         }
@@ -48,9 +51,6 @@ class OpenlayersLayer extends React.Component {
 
         if (newProps.zIndex !== this.props.zIndex && this.state.layer.setZIndex) {
             this.state.layer.setZIndex(newProps.zIndex);
-        }
-        if (this.props.options) {
-            this.updateLayer(newProps, this.props);
         }
         if(newProps.swipe != this.props.swipe) {
             newProps.map.render();
