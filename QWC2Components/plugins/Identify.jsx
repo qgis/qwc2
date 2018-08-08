@@ -35,7 +35,8 @@ class Identify extends React.Component {
         displayResultTree: PropTypes.bool,
         initialWidth: PropTypes.number,
         initialHeight: PropTypes.number,
-        params: PropTypes.object
+        params: PropTypes.object,
+        attributeCalculator: PropTypes.func
     }
     static defaultProps = {
         enableExport: true,
@@ -91,7 +92,8 @@ class Identify extends React.Component {
                     responses={this.props.responses}
                     enableExport={this.props.enableExport}
                     longAttributesDisplay={this.props.longAttributesDisplay}
-                    displayResultTree={this.props.displayResultTree} />
+                    displayResultTree={this.props.displayResultTree}
+                    attributeCalculator={this.props.attributeCalculator} />
             </ResizeableWindow>
         );
     }

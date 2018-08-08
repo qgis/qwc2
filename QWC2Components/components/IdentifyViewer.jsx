@@ -32,12 +32,14 @@ class IdentifyViewer extends React.Component {
         removeLayer: PropTypes.func,
         enableExport: PropTypes.bool,
         longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
-        displayResultTree: PropTypes.bool
+        displayResultTree: PropTypes.bool,
+        attributeCalculator: PropTypes.func
     }
     static defaultProps = {
         enableExport: true,
         longAttributesDisplay: 'ellipsis',
-        displayResultTree: true
+        displayResultTree: true,
+        attributeCalculator: (layer, feature) => { return []; }
     }
     state = {
         expanded: {},
@@ -280,7 +282,7 @@ class IdentifyViewer extends React.Component {
             );
         } else {
             let properties = Object.keys(result.properties) || [];
-            let rows = null;
+            let rows = [];
             if(properties.length === 1 && result.properties["maptip"]) {
                 rows = (
                     <tr>
@@ -299,6 +301,9 @@ class IdentifyViewer extends React.Component {
                         </tr>
                     );
                 });
+            }
+            if(this.props.attributeCalculator) {
+                rows = rows.concat(this.props.attributeCalculator(layer, result));
             }
             if(isEmpty(rows)) {
                 rows = (

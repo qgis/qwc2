@@ -131,6 +131,19 @@
     background-color: #F0F0F0;
 }
 
+#IdentifyViewer table.attribute-list td {
+    overflow: hidden;
+    vertical-align: top;
+}
+
+#IdentifyViewer table.attribute-list td:first-child {
+    padding-left: 0.25em;
+}
+
+#IdentifyViewer table.attribute-list td:last-child {
+    padding-right: 0.25em;
+}
+
 #IdentifyViewer table.attribute-list td.wrap {
     word-wrap: break-word;
 }
@@ -141,17 +154,12 @@
 }
 
 #IdentifyViewer td.identify-attr-title {
-    overflow: hidden;
-    vertical-align: top;
     width: 10ch;
     padding-right: 1em;
-    padding-left: 0.25em;
 }
 
 #IdentifyViewer td.identify-attr-value {
     max-width: 0;
-    overflow: hidden;
-    vertical-align: top;
 }
 
 #IdentifyViewer div.identify-buttonbox {
