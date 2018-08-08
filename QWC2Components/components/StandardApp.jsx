@@ -164,7 +164,7 @@ class StandardApp extends React.Component {
                 <div ref={this.setupTouchEvents}>
                     <AppInit initialParams={this.initialParams} />
                     <Localized>
-                        <PluginsContainer plugins={plugins} />
+                        <PluginsContainer plugins={plugins} pluginsAppConfig={this.props.appConfig.pluginsDef.cfg || {}} />
                     </Localized>
                 </div>
             </Provider>

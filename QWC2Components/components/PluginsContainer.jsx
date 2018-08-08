@@ -17,12 +17,14 @@ class PluginsContainer extends React.Component {
     static propTypes = {
         mode: PropTypes.string,
         plugins: PropTypes.object,
-        pluginsConfig: PropTypes.object
+        pluginsConfig: PropTypes.object,
+        pluginsAppConfig: PropTypes.object
     }
     static defaultProps = {
         mode: 'desktop',
         plugins: {},
-        pluginsConfig: {}
+        pluginsConfig: {},
+        pluginsAppConfig: {}
     }
     renderPlugins = (pluginsConfig) => {
         return pluginsConfig.map(pluginConf => {
@@ -32,7 +34,8 @@ class PluginsContainer extends React.Component {
                 return null;
             }
             let cfg = pluginConf.cfg || {};
-            return (<Plugin key={pluginConf.name} {...cfg} />);
+            let appCfg = this.props.pluginsAppConfig[pluginConf.name + "Plugin"] || {};
+            return (<Plugin key={pluginConf.name} {...cfg} {...appCfg} />);
         });
     }
     render() {
