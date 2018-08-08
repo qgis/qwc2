@@ -18,7 +18,7 @@ const ol = require('openlayers');
 const Spinner = require('./Spinner');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
-const mapUtils = require('../../MapStore2Components/utils/MapUtils');
+const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const {LayerRole, addMarker, removeMarker, addLayerFeatures, removeLayer, addThemeSublayer} = require('../actions/layers');
 const {zoomToPoint} = require('../actions/map');
@@ -366,7 +366,7 @@ class Search extends React.Component {
             }
 
             // zoom to result using max zoom level
-            const newZoom = mapUtils.getZoomForExtent(CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection), this.props.map.resolutions, this.props.map.size, 0, maxZoom);
+            const newZoom = MapUtils.getZoomForExtent(CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection), this.props.map.resolutions, this.props.map.size, 0, maxZoom);
             this.props.panToResult([x, y], newZoom, crs);
         }
         if((item.type || SearchResultType.PLACE) === SearchResultType.PLACE) {
