@@ -64,9 +64,9 @@ const VectorLayerUtils = {
             };
         } else if(styleName == 'marker') {
             opts = {
-                strokeColor: [255, 255, 0, 1.],
+                strokeColor: [0, 0, 255, 1.],
                 strokeWidth: 4,
-                fillColor: [0, 0, 0, 0.],
+                fillColor: [255, 255, 255, 1.],
                 circleRadius: 6
             };
         } else {
