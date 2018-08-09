@@ -26,6 +26,7 @@ const VectorLayerUtils = {
             labelOutlineSizes: [],
             labelSizes: []
         }
+        const defaultFeatureStyle = ConfigUtils.getConfigProp("defaultFeatureStyle");
         const ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
 
         for(let layer of layers.slice(0).reverse()) {
@@ -43,8 +44,8 @@ const VectorLayerUtils = {
                     params.labelOutlineSizes.push(1);
                     params.labelSizes.push(10 * feature.styleOptions.strokeWidth);
                 } else {
-                    params.labelFillColors.push('white');
-                    params.labelOultineColors.push('black');
+                    params.labelFillColors.push(defaultFeatureStyle.textFill);
+                    params.labelOultineColors.push(defaultFeatureStyle.textStroke);
                     params.labelOutlineSizes.push(1);
                     params.labelSizes.push(10);
                 }
