@@ -28,7 +28,7 @@ const VectorLayerUtils = {
         }
         const ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
 
-        for(let layer of layers) {
+        for(let layer of layers.slice(0).reverse()) {
             if(layer.type != 'vector' || (layer.features || []).length == 0) {
                 continue;
             }
