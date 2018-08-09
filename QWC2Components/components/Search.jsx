@@ -391,7 +391,7 @@ class Search extends React.Component {
             let feature = VectorLayerUtils.wktToGeoJSON(geometry, crs, this.props.map.projection);
             let geojson  = new ol.format.GeoJSON().readFeature(feature);
             let center = this.getFeatureCenter(geojson.getGeometry());
-            this.props.addMarker('searchmarker', center, text, this.props.map.projection);
+            this.props.addMarker('searchmarker', [center[0], center[1]], text, this.props.map.projection);
             let layer = {
                 id: "searchselection",
                 role: LayerRole.SELECTION
