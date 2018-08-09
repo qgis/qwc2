@@ -119,7 +119,7 @@ class HeightProfile extends React.Component {
                     axisX: {
                        axisTitle: distanceStr + " [m]",
                        axisClass: 'ct-axis-title',
-                       offset: {x: 0, y: 25},
+                       offset: {x: 0, y: 30},
                        textAnchor: 'middle'
                    },
                    axisY: {
@@ -136,7 +136,7 @@ class HeightProfile extends React.Component {
                 if(ev.type === "area") {
                     ev.element._node.addEventListener("mousemove", ev2 => {
                         let rect = ev.element._node.getBoundingClientRect();
-                        let idx = Math.min(this.props.samples - 1, Math.round((ev2.clientX - rect.x) / rect.width * this.props.samples));
+                        let idx = Math.min(this.props.samples - 1, Math.round((ev2.clientX - rect.left) / rect.width * this.props.samples));
                         this.updateMapMarker(idx / this.props.samples * totLength);
                         if(this.tooltip) {
                             let sample = data.series[0][idx];
