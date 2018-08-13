@@ -45,6 +45,7 @@ class OpenlayersMap extends React.Component {
         interactive: true
     }
     componentDidMount() {
+        this.moved = false;
         let interactionsOptions = assign(this.props.interactive ? {} : {
             doubleClickZoom: false,
             dragPan: false,
@@ -89,6 +90,9 @@ class OpenlayersMap extends React.Component {
             this.props.onClick(null);
         });
         map.getViewport().addEventListener('mousedown', (event) => {
+            this.moved = false;
+        });
+        map.getViewport().addEventListener('mouseup', (event) => {
             this.moved = false;
         });
         map.getViewport().addEventListener('click', (event) => {
