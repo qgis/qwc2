@@ -92,9 +92,6 @@ class OpenlayersMap extends React.Component {
         map.getViewport().addEventListener('mousedown', (event) => {
             this.moved = false;
         });
-        map.getViewport().addEventListener('mouseup', (event) => {
-            this.moved = false;
-        });
         map.getViewport().addEventListener('click', (event) => {
             if(this.moved) {
                 return;
