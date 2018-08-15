@@ -108,7 +108,11 @@ class EditingSupport extends React.Component {
                 this.currentFeature = feature;
                 let modifyInteraction = new ol.interaction.Modify({
                     features: new ol.Collection([this.currentFeature]),
-                    style: this.interactionStyle
+                    style: this.interactionStyle,
+                    deleteCondition: function(event) {
+                        // delete vertices on SHIFT + click
+                        return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
+                    }
                 });
                 this.props.map.addInteraction(modifyInteraction);
                 this.interaction = modifyInteraction;
@@ -131,7 +135,11 @@ class EditingSupport extends React.Component {
 
         let modifyInteraction = new ol.interaction.Modify({
             features: new ol.Collection([this.currentFeature]),
-            style: this.interactionStyle
+            style: this.interactionStyle,
+            deleteCondition: function(event) {
+                // delete vertices on SHIFT + click
+                return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
+            }
         });
         modifyInteraction.on('modifyend', function(evt) {
             this.commitCurrentFeature();
