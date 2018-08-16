@@ -246,11 +246,7 @@ class Editing extends React.Component {
     changeSelectedLayer = (selectedLayer, action=null) => {
         this.setState({selectedLayer: selectedLayer});
         const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
-        let geomType = null;
-        if(curConfig) {
-            geomType = curConfig.geomType.startsWith("Multi") ? curConfig.geomType.substring(5) : curConfig.geomType;
-        }
-        this.props.changeEditingState(assign({}, this.props.editing, {action: action || this.props.editing.action, feature: null, geomType: geomType}));
+        this.props.changeEditingState(assign({}, this.props.editing, {action: action || this.props.editing.action, feature: null, geomType: curConfig.geomType}));
     }
     updateField = (key, value) => {
         let newProperties = assign({}, this.props.editing.feature.properties, {[key]: value});
@@ -267,13 +263,6 @@ class Editing extends React.Component {
         this.setState({busy: true});
 
         let feature = this.props.editing.feature;
-        // Convert geometry to multitype if necessary
-        if(this.props.editing.geomType.startsWith("Multi") && !feature.geometry.type.startsWith("Multi")) {
-            feature = assign({}, feature, {geometry: {
-                type: "Multi" + feature.geometry.type,
-                coordinates: [feature.geometry.coordinates]
-            }});
-        }
         // Ensure properties is not null
         feature = assign({}, feature, {properties: feature.properties || {}});
 
