@@ -94,6 +94,7 @@ class OpenlayersMap extends React.Component {
         });
         map.getViewport().addEventListener('click', (event) => {
             if(this.moved) {
+                this.moved = false;
                 return;
             }
             this.props.onClick({
