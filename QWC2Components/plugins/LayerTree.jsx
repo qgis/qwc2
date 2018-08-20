@@ -45,6 +45,7 @@ class LayerTree extends React.Component {
         groupTogglesSublayers: PropTypes.bool,
         grayUnchecked: PropTypes.bool,
         layerInfoWindowSize: PropTypes.object,
+        bboxDependentLegend: PropTypes.bool,
         flattenGroups: PropTypes.bool,
         setSwipe: PropTypes.func,
         width: PropTypes.string
@@ -60,6 +61,7 @@ class LayerTree extends React.Component {
         groupTogglesSublayers: false,
         grayUnchecked: true,
         layerInfoWindowSize: {width: 400, height: 480},
+        bboxDependentLegend: false,
         flattenGroups: false,
         width: "20em"
     }
@@ -267,7 +269,9 @@ class LayerTree extends React.Component {
         if(this.state.activeinfo) {
             infoWindow = (
                 <LayerInfoWindow onClose={() => this.setState({activeinfo: null})}
-                    layer={this.state.activeinfo.layer} sublayer={this.state.activeinfo.sublayer} windowSize={this.props.layerInfoWindowSize}/>
+                    layer={this.state.activeinfo.layer} sublayer={this.state.activeinfo.sublayer}
+                    windowSize={this.props.layerInfoWindowSize}
+                    bboxDependentLegend={this.props.bboxDependentLegend} />
             );
         }
         let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");

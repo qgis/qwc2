@@ -19,7 +19,8 @@ class LayerInfoWindow extends React.Component {
         sublayer: PropTypes.object,
         onClose: PropTypes.func,
         windowSize: PropTypes.object,
-        map: PropTypes.object
+        map: PropTypes.object,
+        bboxDependentLegend: PropTypes.bool
     }
     renderLink(text, url) {
         return url ? (<a href={url} target="_blank">{text}</a>) : text ? text : null;
@@ -43,11 +44,13 @@ class LayerInfoWindow extends React.Component {
                                 "&VERSION=" + (this.props.layer.version || "1.3.0") +
                                 "&FORMAT=image/png" +
                                 "&LAYER=" + this.props.sublayer.name +
-                                "&BBOX=" + this.props.map.bbox.bounds.join(",") +
                                 "&CRS=" + this.props.map.projection +
                                 "&SCALE=" + this.props.map.scales[this.props.map.zoom] +
                                 "&WIDTH=" + this.props.map.size.width +
                                 "&HEIGHT=" + this.props.map.size.height;
+            if(this.props.bboxDependentLegend) {
+                requestParams += "&BBOX=" + this.props.map.bbox.bounds.join(",");
+            }
             let request = this.props.layer.legendUrl + (this.props.layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + requestParams;
             legend = (<img className="layer-info-window-legend" src={request} />);
         }
