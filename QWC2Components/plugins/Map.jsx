@@ -24,12 +24,14 @@ class MapPlugin extends React.Component {
         swipe: PropTypes.number,
         tools: PropTypes.object,
         toolsOptions: PropTypes.object,
-        showLoading: PropTypes.bool
+        showLoading: PropTypes.bool,
+        mapOptions: PropTypes.object
     }
     static defaultProps = {
         tools: {},
         toolsOptions: {},
-        showLoading: true
+        showLoading: true,
+        mapOptions: {}
     }
     constructor(props) {
         super(props);
@@ -74,13 +76,6 @@ class MapPlugin extends React.Component {
     }
     render() {
         if (this.props.map) {
-            let mapOptions = {
-                controls: {
-                    attributionOptions: {
-                        collapsible: false
-                    }
-                }
-            };
             let loadingIndicator = null;
             if(this.props.showLoading && this.props.layers.find(layer => layer.loading === true) != undefined){
                 loadingIndicator = (
@@ -96,7 +91,7 @@ class MapPlugin extends React.Component {
             }
             return [(
                 <MapComponents.Map id="map" key="map"
-                    mapOptions={mapOptions}
+                    mapOptions={this.props.mapOptions}
                     {...this.props.map}
                     zoomControl={false}>
                     {this.renderLayers()}

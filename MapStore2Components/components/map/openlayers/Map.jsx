@@ -48,29 +48,23 @@ class OpenlayersMap extends React.Component {
         this.moved = false;
         let interactionsOptions = assign(this.props.interactive ? {} : {
             doubleClickZoom: false,
-            dragPan: false,
-            altShiftDragRotate: false,
-            keyboard: false,
-            mouseWheelZoom: false,
-            shiftDragZoom: false,
-            pinchRotate: false,
-            pinchZoom: false
+            altShiftDragRotate: true,
+            shiftDragZoom: true,
+            pinchRotate: true,
+            pinchZoom: true
         }, this.props.mapOptions.interactions);
 
-        let interactions = ol.interaction.defaults(assign({
-            dragPan: false,
-            mouseWheelZoom: false
-        }, interactionsOptions, {}));
-        if (interactionsOptions === undefined || interactionsOptions.dragPan === undefined || interactionsOptions.dragPan) {
-            interactions.extend([
-                new ol.interaction.DragPan({kinetic: false})
-            ]);
-        }
-        if (interactionsOptions === undefined || interactionsOptions.mouseWheelZoom === undefined || interactionsOptions.mouseWheelZoom) {
-            interactions.extend([
-                new ol.interaction.MouseWheelZoom({duration: 0})
-            ]);
-        }
+        let interactions = ol.interaction.defaults(assign(
+            interactionsOptions, {
+                dragPan: false, // don't create default interaction, but create it below with custom params
+                mouseWheelZoom: false // don't create default interaction, but create it below with custom params
+        }));
+        interactions.extend([
+            new ol.interaction.DragPan({kinetic: null})
+        ]);
+        interactions.extend([
+            new ol.interaction.MouseWheelZoom({duration: this.props.mapOptions.zoomDuration || 0})
+        ]);
         let controls = ol.control.defaults(assign({
             zoom: this.props.zoomControl,
             attributionOptions: ({
