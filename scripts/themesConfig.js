@@ -151,8 +151,8 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
             layerEntry.keywords = keywords.join(",");
         }
         if (layer.MinScaleDenominator !== undefined) {
-            layerEntry.minScale = parseInt(layer.MinScaleDenominator, 10);
-            layerEntry.maxScale = parseInt(layer.MaxScaleDenominator, 10);
+            layerEntry.minScale = Math.round(parseFloat(layer.MinScaleDenominator));
+            layerEntry.maxScale = Math.round(parseFloat(layer.MaxScaleDenominator));
         }
         // use geographic bounding box, as default CRS may have inverted axis order with WMS 1.3.0
         if(layer.EX_GeographicBoundingBox) {
