@@ -78,6 +78,14 @@ class OpenlayersMap extends React.Component {
           target: this.props.id,
           view: this.createView(this.props.center, Math.round(this.props.zoom), this.props.projection, this.props.resolutions)
         });
+        if(this.props.mapOptions.antialiasing === false) {
+            map.on('precompose', function(evt) {
+                evt.context.imageSmoothingEnabled = false;
+                evt.context.webkitImageSmoothingEnabled = false;
+                evt.context.mozImageSmoothingEnabled = false;
+                evt.context.msImageSmoothingEnabled = false;
+            });
+        }
         map.on('moveend', this.updateMapInfoState);
         map.on('movestart', () => {
             this.moved = true;
