@@ -34,6 +34,13 @@ function restoreDefaultTheme() {
 
 function setCurrentTheme(theme, themes, preserve=true, initialView=null, visibleSublayers = null, visibleBgLayer=null) {
     return (dispatch, getState) => {
+
+        // Get current background layer if it needs to be preserved
+        if(preserve && visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch") === true) {
+            let curBgLayer = getState().layers.flat.find(layer => layer.group === 'background' && layer.visibility === true);
+            visibleBgLayer = curBgLayer ? curBgLayer.name : null;
+        }
+
         // Remove old layers
         if(preserve && ConfigUtils.getConfigProp("preserveNonThemeLayersOnThemeSwitch") === true) {
             let removeLayers = getState().layers.flat.filter(layer => layer.group === "background" || layer.isThemeLayer).map(layer => layer.id);
@@ -58,11 +65,6 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
             {
                 initialView = {bounds: getState().map.bbox.bounds, crs: getState().map.projection};
             }
-        }
-
-        // Preserve background layer if desired and possible
-        if(preserve && !visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch") === true) {
-            visibleBgLayer = getState().layers.flat.find(layer => layer.group === 'background' && layer.visibility === true);
         }
 
         // Inherit defaults if necessary
