@@ -30,23 +30,34 @@ class MapTip extends React.Component {
         maptip: null,
         pos: null
     }
-    componentWillReceiveProps(newProps) {
-        if(this.timeoutId) {
-            clearTimeout(this.timeoutId);
-            this.timeoutId = undefined;
+    componentDidMount() {
+        this.curPos = null;
+        // Hide / abort map tip query if mouse leaves canvas
+        let mapEl = document.getElementById("map");
+        if(mapEl) {
+            mapEl.addEventListener("mouseout", (ev) => {
+                if(!ev.relatedTarget || ev.relatedTarget.id != "MapTip") {
+                    this.clearMaptip();
+                }
+            }, false);
         }
-        if(newProps.mapTipsEnabled &&  newProps.mousepos && (
-            !this.state.pos ||
-            Math.abs(newProps.mousepos.pixel[0] - this.state.pos[0]) > 5 ||
-            Math.abs(newProps.mousepos.pixel[1] - this.state.pos[1]) > 5
+    }
+    componentWillReceiveProps(newProps) {
+        if(newProps.mapTipsEnabled && newProps.mousepos && (
+            !this.curPos ||
+            Math.abs(newProps.mousepos.pixel[0] - this.curPos[0]) > 5 ||
+            Math.abs(newProps.mousepos.pixel[1] - this.curPos[1]) > 5
         )) {
-            this.timeoutId = setTimeout(() => this.queryMapTip(newProps.mousepos.pixel[0], newProps.mousepos.pixel[1]), 500);
             this.clearMaptip();
-        } else if(!newProps.mapTipsEnabled) {
+            this.curPos = newProps.mousepos.pixel;
+            this.timeoutId = setTimeout(() => this.queryMapTip(this.curPos[0], this.curPos[1]), 500);
+        } else if(!newProps.mapTipsEnabled && this.props.mapTipsEnabled) {
             this.clearMaptip();
         }
     }
     clearMaptip = () => {
+        clearTimeout(this.timeoutId);
+        this.timeoutId = null;
         if(this.state.maptip) {
             this.props.removeLayer('maptipselection');
         }
@@ -71,6 +82,7 @@ class MapTip extends React.Component {
         let request = IdentifyUtils.buildRequest(layer, queryLayers, this.props.mousepos.coordinate, this.props.map, options);
 
         axios.get(request.url, {params: request.params}).then(response => {
+            let mapTip = null;
             let result = IdentifyUtils.parseXmlResponse({data: response.data, request}, this.props.map.projection);
             for(let layerName of request.params.layers.split(",")) {
                 if(result[layerName]) {
@@ -81,11 +93,12 @@ class MapTip extends React.Component {
                             role: LayerRole.SELECTION
                         };
                         this.props.addLayerFeatures(layer, [feature], true);
-                        this.setState({maptip: feature.properties.maptip, pos: [x, y]});
+                        mapTip = feature.properties.maptip;
                         break;
                     }
                 }
             }
+            this.setState({maptip: mapTip, pos: [x, y]});
         });
     }
     render() {
