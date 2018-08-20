@@ -27,10 +27,12 @@ class MapInfoTooltip extends React.Component {
         enabled: PropTypes.bool,
         map: PropTypes.object,
         displaycrs: PropTypes.string,
-        elevationPrecision: PropTypes.number
+        elevationPrecision: PropTypes.number,
+        includeWGS84: PropTypes.bool
     }
     static defaultProps = {
-        elevationPrecision: 0
+        elevationPrecision: 0,
+        includeWGS84: true
     }
     state = {
         coordinate: null, elevation: null, extraInfo: null
@@ -77,7 +79,7 @@ class MapInfoTooltip extends React.Component {
         if(!projections.includes(this.props.map.projection)) {
             projections.push(this.props.map.projection);
         }
-        if(!projections.includes("EPSG:4326")) {
+        if(this.props.includeWGS84 && !projections.includes("EPSG:4326")) {
             projections.push("EPSG:4326");
         }
         projections.map(crs => {
