@@ -51,7 +51,7 @@ class EditingSupport extends React.Component {
                     radius: 5,
                     angle: Math.PI / 4
                 }),
-                geometry: function(feature) {
+                geometry: (feature) => {
                     if(feature.getGeometry().getType() === "Point") {
                         return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
                     } else if(feature.getGeometry().getType() === "LineString") {
@@ -96,11 +96,11 @@ class EditingSupport extends React.Component {
             source: this.layer.getSource(),
             style: this.interactionStyle
         });
-        drawInteraction.on('drawstart', function(evt) {
+        drawInteraction.on('drawstart', (evt) => {
             this.currentFeature = evt.feature;
             this.currentFeature.setId(uuid.v4());
         }, this);
-        drawInteraction.on('drawend', function(evt) {
+        drawInteraction.on('drawend', (evt) => {
             let feature = this.currentFeature;
             this.commitCurrentFeature();
 
@@ -109,14 +109,14 @@ class EditingSupport extends React.Component {
                 let modifyInteraction = new ol.interaction.Modify({
                     features: new ol.Collection([this.currentFeature]),
                     style: this.interactionStyle,
-                    deleteCondition: function(event) {
+                    deleteCondition: (event) => {
                         // delete vertices on SHIFT + click
                         return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
                     }
                 });
                 this.props.map.addInteraction(modifyInteraction);
                 this.interaction = modifyInteraction;
-                modifyInteraction.on('modifyend', function(evt) {
+                modifyInteraction.on('modifyend', (evt) => {
                     this.commitCurrentFeature();
                 }, this)
 
@@ -136,12 +136,12 @@ class EditingSupport extends React.Component {
         let modifyInteraction = new ol.interaction.Modify({
             features: new ol.Collection([this.currentFeature]),
             style: this.interactionStyle,
-            deleteCondition: function(event) {
+            deleteCondition: (event) => {
                 // delete vertices on SHIFT + click
                 return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
             }
         });
-        modifyInteraction.on('modifyend', function(evt) {
+        modifyInteraction.on('modifyend', (evt) => {
             this.commitCurrentFeature();
         }, this);
         this.props.map.addInteraction(modifyInteraction);

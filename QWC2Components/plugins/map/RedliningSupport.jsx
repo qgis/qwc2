@@ -50,7 +50,7 @@ class RedliningSupport extends React.Component {
                 radius: 5,
                 angle: Math.PI / 4
             }),
-            geometry: function(f) {
+            geometry: (f) => {
                 if(f.getGeometry().getType() === "Point") {
                     return new ol.geom.MultiPoint([f.getGeometry().getCoordinates()]);
                 } else if(f.getGeometry().getType() === "LineString") {
@@ -109,14 +109,14 @@ class RedliningSupport extends React.Component {
             type: isText ? "Point" : newProps.redlining.geomType,
             style: new ol.style.Style()
         });
-        drawInteraction.on('drawstart', function(evt) {
+        drawInteraction.on('drawstart', (evt) => {
             this.leaveTemporaryPickMode();
             this.currentFeature = evt.feature;
             this.currentFeature.setId(uuid.v4());
             this.currentFeature.set('isText', isText);
             this.updateFeatureStyle(this.props.redlining);
         }, this);
-        drawInteraction.on('drawend', function(evt) {
+        drawInteraction.on('drawend', (evt) => {
             let feature = this.currentFeature;
             this.commitCurrentFeature(true);
             this.enterTemporaryPickMode(feature);
@@ -159,7 +159,7 @@ class RedliningSupport extends React.Component {
 
         let selectInteraction = new ol.interaction.Select({layers: [redliningLayer]});
         let modifyInteraction = new ol.interaction.Modify({features: selectInteraction.getFeatures()});
-        selectInteraction.on('select', function(evt) {
+        selectInteraction.on('select', (evt) => {
             if(evt.selected.length === 1 && evt.selected[0] == this.currentFeature) {
                 return;
             }

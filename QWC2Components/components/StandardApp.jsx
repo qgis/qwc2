@@ -19,6 +19,7 @@ if (!global.Intl) {
 const axios = require('axios');
 const assign = require('object-assign');
 const Proj4js = require('proj4').default;
+const olProj4 = require('ol/proj/proj4');
 
 const Localized = require('../../MapStore2Components/components/I18N/Localized');
 const StandardStore = require('../stores/StandardStore')
@@ -226,6 +227,8 @@ class StandardApp extends React.Component {
                 }
                 CoordinatesUtils.setCrsLabels({[proj.code]: proj.label});
             }
+
+            olProj4.register(Proj4js);
         });
     }
 }

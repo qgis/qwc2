@@ -10,7 +10,6 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const ol = require('openlayers');
 const CoordinatesUtils = require('../../../utils/CoordinatesUtils');
-const wgs84Sphere = new ol.Sphere(6378137);
 
 class MeasurementSupport extends React.Component {
     static propTypes = {
@@ -141,13 +140,13 @@ class MeasurementSupport extends React.Component {
         let reprojectedCoordinates = this.reprojectedCoordinates(coordinates);
         let lengths = [];
         for (let i = 0; i < reprojectedCoordinates.length - 1; ++i) {
-            lengths.push(wgs84Sphere.haversineDistance(reprojectedCoordinates[i], reprojectedCoordinates[i + 1]));
+            lengths.push(ol.sphere.getDistance(reprojectedCoordinates[i], reprojectedCoordinates[i + 1]));
         }
         return lengths;
     }
     calculateGeodesicArea = (coordinates) => {
         let reprojectedCoordinates = this.reprojectedCoordinates(coordinates);
-        return Math.abs(wgs84Sphere.geodesicArea(reprojectedCoordinates));
+        return Math.abs(ol.sphere.getArea(new ol.geom.Polygon([reprojectedCoordinates]), {projection: 'EPSG:4326'}));
     }
 };
 

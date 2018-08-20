@@ -8,84 +8,80 @@
 
 require('ol/ol.css');
 
-const olProj = require('ol/proj').default;
-const Proj4js = require('proj4').default;
-olProj.setProj4(Proj4js);
-
 module.exports = {
-  inherits: require('ol').default.inherits,
-  Attribution: require('ol/attribution').default,
-  Collection: require('ol/collection').default,
+  inherits: require('ol').inherits,
+  Attribution: require('ol/control/Attribution').default,
+  Collection: require('ol/Collection').default,
   control: {
-    defaults: require('ol/control').default.defaults,
-    OverviewMap: require('ol/control/overviewmap').default,
-    ScaleLine: require('ol/control/scaleline').default,
-    Zoom: require('ol/control/zoom').default
+    defaults: require('ol/control').defaults,
+    OverviewMap: require('ol/control/OverviewMap').default,
+    ScaleLine: require('ol/control/ScaleLine').default,
+    Zoom: require('ol/control/Zoom').default
   },
   events: {
-    condition: require('ol/events/condition').default
+    condition: require('ol/events/condition')
   },
   extent: require('ol/extent').default,
-  Feature: require('ol/feature').default,
+  Feature: require('ol/Feature').default,
   format: {
-    GeoJSON: require('ol/format/geojson').default,
-    GML2: require('ol/format/gml2').default,
-    GML3: require('ol/format/gml3').default,
-    KML: require('ol/format/kml').default,
-    WFS: require('ol/format/wfs').default,
-    WMSCapabilities: require('ol/format/wmscapabilities').default,
-    WKT: require('ol/format/wkt').default
+    GeoJSON: require('ol/format/GeoJSON').default,
+    GML2: require('ol/format/GML2').default,
+    GML3: require('ol/format/GML3').default,
+    KML: require('ol/format/KML').default,
+    WFS: require('ol/format/WFS').default,
+    WMSCapabilities: require('ol/format/WMSCapabilities').default,
+    WKT: require('ol/format/WKT').default
   },
-  Geolocation: require('ol/geolocation').default,
+  Geolocation: require('ol/Geolocation').default,
   geom: {
-    Circle: require('ol/geom/circle').default,
-    GeometryCollection: require('ol/geom/geometrycollection').default,
-    MultiPoint: require('ol/geom/multipoint').default,
-    Point: require('ol/geom/point').default,
-    Polygon: require('ol/geom/polygon').default
+    Circle: require('ol/geom/Circle').default,
+    GeometryCollection: require('ol/geom/GeometryCollection').default,
+    MultiPoint: require('ol/geom/MultiPoint').default,
+    Point: require('ol/geom/Point').default,
+    Polygon: require('ol/geom/Polygon').default
   },
-  Graticule: require('ol/graticule').default,
+  Graticule: require('ol/Graticule').default,
   interaction: {
-    defaults: require('ol/interaction').default.defaults,
-    DoubleClickZoom: require('ol/interaction/doubleclickzoom').default,
-    DragPan: require('ol/interaction/dragpan').default,
-    Draw: require('ol/interaction/draw').default,
-    Modify: require('ol/interaction/modify').default,
-    MouseWheelZoom: require('ol/interaction/mousewheelzoom').default,
-    Select: require('ol/interaction/select').default,
-    Translate: require('ol/interaction/translate').default
+    defaults: require('ol/interaction').defaults,
+    DoubleClickZoom: require('ol/interaction/DoubleClickZoom').default,
+    DragPan: require('ol/interaction/DragPan').default,
+    Draw: require('ol/interaction/Draw').default,
+    Modify: require('ol/interaction/Modify').default,
+    MouseWheelZoom: require('ol/interaction/MouseWheelZoom').default,
+    Select: require('ol/interaction/Select').default,
+    Translate: require('ol/interaction/Translate').default
   },
   layer: {
-    Image: require('ol/layer/image').default,
-    Tile: require('ol/layer/tile').default,
-    Vector: require('ol/layer/vector').default
+    Image: require('ol/layer/Image').default,
+    Tile: require('ol/layer/Tile').default,
+    Vector: require('ol/layer/Vector').default
   },
   loadingstrategy: require('ol/loadingstrategy').default,
-  Map: require('ol/map').default,
-  Object: require('ol/object').default,
-  Overlay: require('ol/overlay').default,
-  proj: require('ol/proj').default,
+  Map: require('ol/Map').default,
+  Object: require('ol/Object').default,
+  Overlay: require('ol/Overlay').default,
+  proj: require('ol/proj'),
   source: {
-    BingMaps: require('ol/source/bingmaps').default,
-    ImageWMS: require('ol/source/imagewms').default,
-    OSM: require('ol/source/osm').default,
-    TileWMS: require('ol/source/tilewms').default,
-    Vector: require('ol/source/vector').default,
-    WMTS: require('ol/source/wmts').default,
-    XYZ: require('ol/source/xyz').default
+    BingMaps: require('ol/source/BingMaps').default,
+    ImageWMS: require('ol/source/ImageWMS').default,
+    OSM: require('ol/source/OSM').default,
+    TileWMS: require('ol/source/TileWMS').default,
+    Vector: require('ol/source/Vector').default,
+    WMTS: require('ol/source/WMTS').default,
+    XYZ: require('ol/source/XYZ').default
   },
-  Sphere: require('ol/sphere').default,
+  sphere: require('ol/sphere'),
   style: {
-    Circle: require('ol/style/circle').default,
-    Fill: require('ol/style/fill').default,
-    Icon: require('ol/style/icon').default,
-    RegularShape: require('ol/style/regularshape').default,
-    Stroke: require('ol/style/stroke').default,
-    Style: require('ol/style/style').default,
-    Text: require('ol/style/text').default
+    Circle: require('ol/style/Circle').default,
+    Fill: require('ol/style/Fill').default,
+    Icon: require('ol/style/Icon').default,
+    RegularShape: require('ol/style/RegularShape').default,
+    Stroke: require('ol/style/Stroke').default,
+    Style: require('ol/style/Style').default,
+    Text: require('ol/style/Text').default
   },
   tilegrid: {
-    WMTS: require('ol/tilegrid/wmts').default
+    WMTS: require('ol/tilegrid/WMTS').default
   },
-  View: require('ol/view').default
+  View: require('ol/View').default
 };
