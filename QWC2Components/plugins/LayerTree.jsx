@@ -13,6 +13,7 @@ const assign = require('object-assign');
 const classnames = require('classnames');
 const isEmpty = require('lodash.isempty');
 const Sortable = require('react-sortablejs');
+const imagesLoaded = require('imagesloaded');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeLayerProperties, removeLayer, reorderLayer, setSwipe} = require('../actions/layers')
 const {toggleMapTips} = require('../actions/map');
@@ -468,31 +469,20 @@ class LayerTree extends React.Component {
         body += "</p>";
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
 
-        // Ugliest code you have ever seen (it's 2017 and there still is no way to reliably know when a popup has really finished loading...)
         let win = window.open(assetsPath + "/templates/legendprint.html", "Legend", "toolbar=no, location=no, directories=no, status=no, menubar=no");
-        let elapsed = 0;
-        let readyStateCheckInterval = setInterval(() => {
-            if (win.document.readyState === 'complete') {
-                // Chrome appears to fire readyState = 'complete' too early, give it an additional 100ms to complete
-                if(!win.document.getElementById("legendcontainer") && elapsed < 100) {
-                    elapsed += 10;
-                } else {
-                    clearInterval(readyStateCheckInterval);
-                    if(win.document.getElementById("legendcontainer")) {
-                        win.document.getElementById("legendcontainer").innerHTML = body;
-                        let printInterval = setInterval(() => {
-                            clearInterval(printInterval);
-                            win.focus();
-                            win.print();
-                            win.close();
-                        }, 100);
-                    } else {
-                        win.document.body.innerHTML = "Broken template. An element with id=legendcontainer must exist.";
-                    }
-                }
+        win.addEventListener('load', ev => {
+            let container = win.document.getElementById("legendcontainer");
+            if(container) {
+                container.innerHTML = body;
+                imagesLoaded(container, (ev) => {
+                    win.focus();
+                    win.print();
+                    win.close();
+                });
+            } else {
+                win.document.body.innerHTML = "Broken template. An element with id=legendcontainer must exist.";
             }
-        }, 10);
-        win.focus();
+        }, false);
     }
 };
 
