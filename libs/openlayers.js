@@ -21,7 +21,7 @@ module.exports = {
   events: {
     condition: require('ol/events/condition')
   },
-  extent: require('ol/extent').default,
+  extent: require('ol/extent'),
   Feature: require('ol/Feature').default,
   format: {
     GeoJSON: require('ol/format/GeoJSON').default,
