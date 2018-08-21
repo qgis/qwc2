@@ -227,63 +227,73 @@ const LayerUtils = {
             }
         }
     },
+    implodeLayer(exploded) {
+        let layer = assign({}, exploded.layer);
+
+        // Populate the layer with the single sublayer
+        let group = layer;
+        for(let idx of exploded.path) {
+            // Assign a new uuids to groups
+            assign(group, {uuid: uuid.v4()});
+            group.sublayers = [assign({}, group.sublayers[idx])];
+            group = group.sublayers[0];
+        }
+        return layer;
+    },
     implodeLayers(exploded, swipeActive=false) {
-        // Merge all possible items of an exploded layer array
         let newlayers = [];
-        let usedUuidIds = new Set();
+
+        // If swipe is active, keep first layer separate
+        let swipeLayer = null;
+        if(swipeActive && exploded.length > 0) {
+            swipeLayer = LayerUtils.implodeLayer(exploded.shift());
+        }
+
+        // Merge all possible items of an exploded layer array
         for(let entry of exploded) {
-            let layer = assign({}, entry.layer);
-            // Assign a new uuid to the layer if it is a group
-            if(!isEmpty(layer.sublayers)) {
-                if(usedUuidIds.has(layer.uuid)) {
-                    assign(layer, {uuid: uuid.v4()});
+            let layer = LayerUtils.implodeLayer(entry);
+
+            // Attempt to merge with previous if possible
+            let target = newlayers.length > 0 ? newlayers[newlayers.length - 1] : null;
+            let source = layer;
+            if(target && target.sublayers && target.refid === layer.refid) {
+                let innertarget = target.sublayers[target.sublayers.length - 1];
+                let innersource = source.sublayers[0]; // Exploded entries have only one entry per sublayer level
+                while(innertarget.sublayers && innertarget.refid === innersource.refid) {
+                    target = innertarget;
+                    source = innersource;
+                    innertarget = target.sublayers[target.sublayers.length - 1];
+                    innersource = source.sublayers[0]; // Exploded entries have only one entry per sublayer level
                 }
-                usedUuidIds.add(layer.uuid);
-            }
-            // Populate the layer with the single sublayer
-            let cursublayer = layer;
-            for(let idx of entry.path) {
-                cursublayer.sublayers = [assign({}, cursublayer.sublayers[idx])];
-                cursublayer = cursublayer.sublayers[0];
-            }
-            // Merge with previous if possible
-            if(newlayers.length > (swipeActive ? 1 : 0) && newlayers[newlayers.length - 1].refid === layer.refid) {
-                let targetgroup = newlayers[newlayers.length - 1];
-                let group = layer;
-                while(group.sublayers) {
-                    if(usedUuidIds.has(group.uuid)) {
-                        assign(group, {uuid: uuid.v4()});
-                    }
-                    usedUuidIds.add(group.uuid);
-                    if(!targetgroup.sublayers || targetgroup.sublayers[targetgroup.sublayers.length -1].refid != group.sublayers[0].refid) {
-                        // Assign new uuids to groups to avoid react moaning about same keys, but not to leaf nodes
-                        let g = group.sublayers[0];
-                        while(g.sublayers) {
-                            if(usedUuidIds.has(g.uuid)) {
-                                assign(g, {uuid: uuid.v4()});
-                            }
-                            usedUuidIds.add(g.uuid);
-                            g = g.sublayers[0];
-                        }
-                        // If target group is mutually exclusive, ensure only one layer is visible
-                        if(targetgroup.mutuallyExclusive) {
-                            let noneVisible = !targetgroup.visibility || targetgroup.sublayers.findIndex(sublayer => sublayer.visibility === true) === -1;
-                            group.sublayers[0].visibility = group.sublayers[0].visibility && noneVisible;
-                            if(group.sublayers[0].visibility) {
-                                targetgroup.visibility = true;
-                            }
-                        }
-                        targetgroup.sublayers.push(group.sublayers[0]);
-                        break;
-                    }
-                    group = group.sublayers[0];
-                    targetgroup = targetgroup.sublayers[targetgroup.sublayers.length -1];
-                }
+                target.sublayers.push(source.sublayers[0]);
             } else {
                 newlayers.push(layer);
             }
         }
+        // Ensure mutually exclusive groups have exactly one visible layer
+        for(let layer of newlayers) {
+            LayerUtils.ensureMutuallyExclusive(layer);
+        }
+        if(swipeLayer) {
+            newlayers.unshift(swipeLayer);
+        }
         return newlayers;
+    },
+    ensureMutuallyExclusive(group) {
+        if(group.sublayers) {
+            let visibleChild = null;
+            for(let child of group.sublayers) {
+                if(!visibleChild && child.visibility) {
+                    visibleChild = child;
+                } else if(group.mutuallyExclusive && visibleChild) {
+                    child.visibility = false;
+                }
+                LayerUtils.ensureMutuallyExclusive(child);
+            }
+            if(group.mutuallyExclusive && !visibleChild) {
+                group.sublayers[0].visibility = true;
+            }
+        }
     },
     getSublayerNames(layer) {
         return (layer.sublayers || []).reduce((list, sublayer) => {
