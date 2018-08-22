@@ -14,6 +14,7 @@ const isEqual = require('lodash.isequal');
 const assign = require('object-assign');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
+const MapUtils = require("../../MapStore2Components/utils/MapUtils");
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeEditingState} = require('../actions/editing');
 const {setCurrentTaskBlocked} = require('../actions/task');
@@ -73,7 +74,7 @@ class Editing extends React.Component {
             const newPoint = newProps.map.clickPoint || {};
             const oldPoint = this.props.map.clickPoint || {};
             if(newPoint.coordinate && !isEqual(newPoint.coordinate, oldPoint.coordinate)) {
-                let scale = this.props.map.scales[this.props.map.zoom];
+                let scale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
                 this.props.iface.getFeature(this.state.selectedLayer, newPoint.coordinate, this.props.map.projection, scale, 96, (feature) => {
                     this.props.changeEditingState(assign({}, this.props.editing, {feature: feature, changed: false}));
                 });

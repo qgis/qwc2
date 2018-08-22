@@ -35,6 +35,7 @@ const {themesLoaded,setCurrentTheme} = require('../actions/theme');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
+const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const PluginsUtils = require('../../MapStore2Components/utils/PluginsUtils');
 const LayerUtils = require('../utils/LayerUtils');
 const {UrlParams, resolvePermaLink} = require('../utils/PermaLinkUtils');
@@ -90,19 +91,11 @@ class AppInitComponent extends React.Component {
                 if(params.c && params.s !== undefined) {
                     let coords = params.c.split(";").map(x => parseFloat(x));
                     let scales = theme.scales || themes.defaultScales;
-                    let closestVal = Math.abs(params.s - scales[0]);
-                    let closestIdx = 0;
-                    for(let i = 1; i < scales.length; ++i) {
-                        let currVal = Math.abs(params.s - scales[i]);
-                        if(currVal < closestVal) {
-                            closestVal = currVal;
-                            closestIdx = i;
-                        }
-                    }
+                    let zoom = MapUtils.computeZoom(scales, params.s);
                     if(coords.length === 2) {
                         initialView = {
                             center: coords,
-                            zoom: closestIdx,
+                            zoom: zoom,
                             crs: params.crs || theme.mapCrs};
                     }
                 } else if(params.e) {

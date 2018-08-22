@@ -15,7 +15,7 @@ const VectorLayerUtils = require('./VectorLayerUtils');
 const IdentifyUtils = {
     buildRequest(layer, queryLayers, center, map, options) {
         const size = [101, 101];
-        const resolution = map.resolutions[map.zoom];
+        const resolution = MapUtils.computeForZoom(map.resolutions, map.zoom);
         const dx = 0.5 * resolution * size[0];
         const dy = 0.5 * resolution * size[1];
         const version = layer.version || "1.3.0";
@@ -66,7 +66,7 @@ const IdentifyUtils = {
     },
     buildFilterRequest(layer, queryLayers, filterGeom, map, options) {
         const size = [101, 101];
-        const resolution = map.resolutions[map.zoom];
+        const resolution = MapUtils.computeForZoom(map.resolutions, map.zoom);
         const version = layer.version || "1.3.0";
 
         let format = 'text/plain';

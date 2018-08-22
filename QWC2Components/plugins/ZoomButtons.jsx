@@ -27,7 +27,12 @@ class ZoomButton extends React.Component {
     }
     render() {
         let position = this.props.position >= 0 ? this.props.position : (this.props.direction > 0 ? 4 : 3);
-        let disabled = (this.props.currentZoom + this.props.direction > this.props.maxZoom) || (this.props.currentZoom + this.props.direction < 0);
+        let disabled = false;
+        if(this.props.direction > 0) {
+            disabled = this.props.currentZoom >= this.props.maxZoom;
+        } else if(this.props.direction < 0) {
+            disabled = this.props.currentZoom <= 0;
+        }
         let tooltip = LocaleUtils.getMessageById(this.context.messages, this.props.direction > 0 ? "tooltip.zoomin" : "tooltip.zoomout");
         return (
             <button className="Button"

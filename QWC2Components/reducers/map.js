@@ -44,7 +44,7 @@ function map(state = defaultState, action) {
             if(positionFormat === "centerAndZoom") {
                 let x = Math.round(0.5 * (bounds[0] + bounds[2]) * roundfactor) / roundfactor;
                 let y = Math.round(0.5 * (bounds[1] + bounds[3]) * roundfactor) / roundfactor;
-                let scale = newState.scales[newState.zoom];
+                let scale = MapUtils.computeForZoom(newState.scales, newState.zoom);
                 UrlParams.updateParams({c: x + ";" + y, s: scale});
             } else {
                 let xmin = Math.round(bounds[0] * roundfactor) / roundfactor;

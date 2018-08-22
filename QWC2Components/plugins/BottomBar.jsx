@@ -13,6 +13,7 @@ const {createSelector} = require('reselect');
 const pickBy = require('lodash.pickby');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
+const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const {changeMousePositionState} = require('../actions/mousePosition');
 const {changeZoomLevel} = require('../actions/map');
@@ -25,25 +26,23 @@ class BottomBar extends React.Component {
         viewertitleUrl: PropTypes.string,
         termsUrl: PropTypes.string,
         displaycrs:  PropTypes.string,
-        mapcrs: PropTypes.string,
-        mapscale: PropTypes.number,
-        mapscales: PropTypes.array,
-        activeThemeId: PropTypes.string,
+        map: PropTypes.object,
         fullscreen: PropTypes.bool,
         additionalMouseCrs: PropTypes.array,
         changeMousePositionState: PropTypes.func,
         changeZoomLevel: PropTypes.func
     }
-    static defaultProps = {
-        mapscale: 0
+    state = {
+        scale: 0
     }
     componentDidMount() {
-        this.props.changeMousePositionState({crs: this.props.mapcrs, enabled: true});
+        this.props.changeMousePositionState({crs: this.props.map.projection, enabled: true});
     }
     componentWillReceiveProps(newProps) {
-        if(newProps.mapcrs !== this.props.mapcrs) {
-            newProps.changeMousePositionState({crs: newProps.mapcrs, position: null});
+        if(newProps.map.projection !== this.props.map.projection) {
+            newProps.changeMousePositionState({crs: newProps.map.projection, position: null});
         }
+        this.setState({scale: MapUtils.computeForZoom(newProps.map.scales, newProps.map.zoom)});
     }
     render() {
         if(this.props.fullscreen) {
@@ -69,7 +68,7 @@ class BottomBar extends React.Component {
         let bottomLinks;
         if (viewertitleLink || termsLink) {
             bottomLinks = (
-                <span className="bottomlinks">
+                <span className="bottombar-links">
                     {viewertitleLink}
                     {viewertitleLink && termsLink ? " | " : null}
                     {termsLink}
@@ -79,29 +78,50 @@ class BottomBar extends React.Component {
         let additionalMouseCrs = this.props.additionalMouseCrs || [];
         let availableCRS = pickBy(CoordinatesUtils.getAvailableCRS(), (key, code) => {
             return code === "EPSG:4326" ||
-                   code === this.props.mapcrs ||
+                   code === this.props.map.projection ||
                    additionalMouseCrs.indexOf(code) !== -1;
            }
         );
 
         return (
             <div id="BottomBar">
-                <span className="mousepos_label"><Message msgId="bottombar.mousepos_label" />: </span>
-                <CoordinateDisplayer displaycrs={this.props.displaycrs} />
-                <select className="bottombar-crs-selector" onChange={ev => this.props.changeMousePositionState({crs: ev.target.value})} value={this.props.displaycrs}>
-                    {Object.keys(availableCRS).map(crs =>
-                        (<option value={crs} key={crs}>{availableCRS[crs].label}</option>)
-                )}
-                </select>
-                <span className="scale_label"><Message msgId="bottombar.scale_label" />: </span>
-                <select className="bottombar-scale-selector" onChange={ev => this.props.changeZoomLevel(parseInt(ev.target.value, 10))} value={this.props.mapscale}>
-                    {this.props.mapscales.map((item, index) =>
-                        (<option value={index} key={index}>{"1 : " + LocaleUtils.toLocaleFixed(item, 0)}</option>)
-                    )}
-                </select>
+                <span>
+                    <span><Message msgId="bottombar.mousepos_label" />:&nbsp;</span>
+                    <CoordinateDisplayer className={"bottombar-mousepos"} displaycrs={this.props.displaycrs} />
+                    <select className="bottombar-crs-selector" onChange={ev => this.props.changeMousePositionState({crs: ev.target.value})} value={this.props.displaycrs}>
+                        {Object.keys(availableCRS).map(crs =>
+                            (<option value={crs} key={crs}>{availableCRS[crs].label}</option>)
+                        )}
+                    </select>
+                </span>
+                <span>
+                    <span><Message msgId="bottombar.scale_label" />:&nbsp;</span>
+                    <span className="bottombar-scale-combo">
+                        <span> 1 : </span>
+                        <select onChange={ev => this.props.changeZoomLevel(parseInt(ev.target.value, 10))} value={Math.round(this.props.map.zoom)}>
+                            {this.props.map.scales.map((item, index) =>
+                                (<option value={index} key={index}>{LocaleUtils.toLocaleFixed(item, 0)}</option>)
+                            )}
+                        </select>
+                        <input type="text" value={this.state.scale}
+                            onChange={ev => this.setState({scale: ev.target.value})}
+                            onKeyUp={ev => { if(ev.keyCode === 13) this.setScale(ev.target.value)} }
+                            onBlur={ev => this.setScale(ev.target.value)}/>
+                    </span>
+                </span>
+                <span className="bottombar-spacer"></span>
                 {bottomLinks}
             </div>
         );
+    }
+    setScale = (value) => {
+        let scale = parseInt(value);
+        if(!isNaN(scale)) {
+            let zoom = MapUtils.computeZoom(this.props.map.scales, scale);
+            this.props.changeZoomLevel(zoom);
+        } else {
+            this.props.changeZoomLevel(this.props.map.zoom);
+        }
     }
 };
 
@@ -109,10 +129,7 @@ const selector = createSelector([state => state, displayCrsSelector], (state, di
     let map = state && state.map && state.map ? state.map : null;
     return {
         displaycrs: displaycrs,
-        mapcrs: map.projection || "EPSG:3857",
-        mapscale: map.zoom || 0,
-        mapscales: map.scales || [],
-        activeThemeId: state.theme && state.theme.current ? state.theme.current.id : undefined,
+        map: map,
         fullscreen: state.display && state.display.fullscreen,
         additionalMouseCrs: state.theme && state.theme.current ? state.theme.current.additionalMouseCrs : []
     };

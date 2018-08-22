@@ -10,6 +10,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const Message = require('../../MapStore2Components/components/I18N/Message');
+const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const ResizeableWindow = require("../components/ResizeableWindow");
 require('./style/LayerInfoWindow.css');
 
@@ -45,7 +46,7 @@ class LayerInfoWindow extends React.Component {
                                 "&FORMAT=image/png" +
                                 "&LAYER=" + this.props.sublayer.name +
                                 "&CRS=" + this.props.map.projection +
-                                "&SCALE=" + this.props.map.scales[this.props.map.zoom] +
+                                "&SCALE=" + MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom) +
                                 "&WIDTH=" + this.props.map.size.width +
                                 "&HEIGHT=" + this.props.map.size.height;
             if(this.props.bboxDependentLegend) {

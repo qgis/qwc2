@@ -331,15 +331,7 @@ class Search extends React.Component {
             let y = !isEmpty(item.bbox) ? 0.5 * (item.bbox[1] + item.bbox[3]) : item.y;
 
             // find max zoom level greater than min scale
-            let maxZoom = 0;
-            const scales = this.props.map.scales;
-            for (let i in scales) {
-                if (scales[i] < this.props.searchOptions.minScale) {
-                    break;
-                } else {
-                    maxZoom = i;
-                }
-            }
+            let maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.searchOptions.minScale);
 
             if(item.type === SearchResultType.THEMELAYER && item.layer) {
                 const maxbbox = (layer, bounds) => {
@@ -366,7 +358,8 @@ class Search extends React.Component {
             }
 
             // zoom to result using max zoom level
-            const newZoom = MapUtils.getZoomForExtent(CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection), this.props.map.resolutions, this.props.map.size, 0, maxZoom);
+            let mapbbox = CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection)
+            const newZoom = MapUtils.getZoomForExtent(mapbbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom);
             this.props.panToResult([x, y], newZoom, crs);
         }
         if((item.type || SearchResultType.PLACE) === SearchResultType.PLACE) {

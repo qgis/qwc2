@@ -76,7 +76,7 @@ class OpenlayersMap extends React.Component {
           controls: controls,
           interactions: interactions,
           target: this.props.id,
-          view: this.createView(this.props.center, Math.round(this.props.zoom), this.props.projection, this.props.resolutions)
+          view: this.createView(this.props.center, this.props.zoom, this.props.projection, this.props.resolutions)
         });
         if(this.props.mapOptions.antialiasing === false) {
             map.on('precompose', function(evt) {
@@ -151,18 +151,15 @@ class OpenlayersMap extends React.Component {
     updateMapInfoState = () => {
         let view = this.map.getView();
         let c = view.getCenter() || [0, 0];
-        let bbox = view.calculateExtent(this.map.getSize());
+        let bbox = {
+            bounds: view.calculateExtent(this.map.getSize()),
+            rotation: view.getRotation()
+        }
         let size = {
             width: this.map.getSize()[0],
             height: this.map.getSize()[1]
         };
-        this.props.onMapViewChanges(
-            c,
-            view.getZoom(),
-            {
-                bounds: bbox,
-                rotation: view.getRotation()
-            }, size, this.props.id, this.props.projection);
+        this.props.onMapViewChanges(c, view.getZoom() || 0, bbox, size, this.props.id, this.props.projection);
     }
     componentWillReceiveProps(newProps) {
         if (newProps.mousePointer !== this.props.mousePointer) {
@@ -233,8 +230,8 @@ class OpenlayersMap extends React.Component {
         if (centerChanged) {
             view.setCenter(newProps.center);
         }
-        if (Math.round(newProps.zoom) !== this.props.zoom) {
-            view.setZoom(Math.round(newProps.zoom));
+        if (newProps.zoom !== this.props.zoom) {
+            view.setZoom(newProps.zoom);
         }
         if(newProps.bbox.rotation !== this.props.bbox.rotation) {
             view.setRotation(newProps.bbox.rotation);

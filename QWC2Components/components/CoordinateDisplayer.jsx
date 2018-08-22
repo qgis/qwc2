@@ -17,7 +17,8 @@ class CoordinateDisplayer extends React.Component {
     static propTypes = {
         displaycrs: PropTypes.string,
         mapcrs: PropTypes.string,
-        coordinate: PropTypes.object
+        coordinate: PropTypes.object,
+        className: PropTypes.string
     }
     render() {
         let value = "";
@@ -29,7 +30,7 @@ class CoordinateDisplayer extends React.Component {
             }
         }
         return (
-            <input type="text" className="coordinatedisplayer" value={value} readOnly="readOnly"/>
+            <input type="text" className={this.props.className} value={value} readOnly="readOnly"/>
         )
     }
 };

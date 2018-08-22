@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const ConfigUtils = require('./ConfigUtils');
 const CoordinatesUtils = require('./CoordinatesUtils');
 
 const DEFAULT_SCREEN_DPI = 96;
@@ -98,11 +99,15 @@ function getZoomForExtent(extent, resolutions, mapSize, minZoom, maxZoom) {
     const yResolution = Math.abs(hExtent / mapSize.height);
     const extentResolution = Math.max(xResolution, yResolution);
 
-    const {zoom, ...other} = resolutions.reduce((previous, resolution, index) => {
-        const diff = Math.abs(resolution - extentResolution);
-        return diff > previous.diff ? previous : {diff: diff, zoom: index};
-    }, {diff: Number.POSITIVE_INFINITY, zoom: 0});
-    return Math.max(0, Math.min(zoom, maxZoom));
+    if(ConfigUtils.getConfigProp("allowFractionalZoom") === true) {
+        return this.computeZoom(resolutions, extentResolution);
+    } else {
+        const {zoom, ...other} = resolutions.reduce((previous, resolution, index) => {
+            const diff = Math.abs(resolution - extentResolution);
+            return diff > previous.diff ? previous : {diff: diff, zoom: index};
+        }, {diff: Number.POSITIVE_INFINITY, zoom: 0});
+        return Math.max(0, Math.min(zoom, maxZoom));
+    }
 }
 
 /**
@@ -113,8 +118,11 @@ function getZoomForExtent(extent, resolutions, mapSize, minZoom, maxZoom) {
  * @param mapSize {Object} The current size of the map
  */
 function getExtentForCenterAndZoom(center, zoom, resolutions, mapSize) {
-    let width = resolutions[zoom] * mapSize.width;
-    let height = resolutions[zoom] * mapSize.height;
+    if(ConfigUtils.getConfigProp("allowFractionalZoom") !== true) {
+        zoom = Math.round(zoom);
+    }
+    let width = this.computeForZoom(resolutions, zoom) * mapSize.width;
+    let height = this.computeForZoom(resolutions, zoom) * mapSize.height;
     return [
         center[0] - 0.5 * width,
         center[1] - 0.5 * height,
@@ -146,6 +154,56 @@ function transformExtent(projection, center, width, height) {
     return {width, height};
 }
 
+/**
+ * Compute the scale or resolution matching a (possibly fractional) zoom level.
+ *
+ * @param list {Array} List of scales or resolutions.
+ * @param zoomLevel (number) Zoom level (integer or fractional).
+ * @return Scale of resolution matching zoomLevel
+ */
+function computeForZoom(list, zoomLevel) {
+    if(ConfigUtils.getConfigProp("allowFractionalZoom") !== true) {
+        return list[Math.min(list.length - 1, Math.round(zoomLevel))];
+    }
+    let upper = Math.ceil(zoomLevel);
+    let lower = Math.floor(zoomLevel);
+    if(upper >= list.length) {
+        return list[list.length - 1];
+    }
+    let frac = zoomLevel - lower;
+    return Math.round(list[lower] * (1 - frac) + list[upper] * frac);
+}
+
+/**
+ * Compute the (possibly fractional) zoom level matching the specified scale or resolution.
+ *
+ * @param list {Array} List of scales or resolutions.
+ * @param value (number) Scale or resolution.
+ * @return Zoom level matching the specified scale or resolution.
+ */
+function computeZoom(list, value) {
+    if(ConfigUtils.getConfigProp("allowFractionalZoom") === true) {
+        let index = 0;
+        for(let i = 1; i < list.length - 1; ++i) {
+            if(value <= list[i]) {
+                index = i;
+            }
+        }
+        return index + (value - list[index]) / (list[index + 1] - list[index]);
+    } else {
+        let closestVal = Math.abs(value - list[0]);
+        let closestIdx = 0;
+        for(let i = 1; i < list.length; ++i) {
+            let currVal = Math.abs(value - list[i]);
+            if(currVal < closestVal) {
+                closestVal = currVal;
+                closestIdx = i;
+            }
+        }
+        return closestIdx;
+    }
+}
+
 module.exports = {
     GET_PIXEL_FROM_COORDINATES_HOOK,
     GET_COORDINATES_FROM_PIXEL_HOOK,
@@ -157,5 +215,7 @@ module.exports = {
     getResolutionsForScales,
     getZoomForExtent,
     getExtentForCenterAndZoom,
-    transformExtent
+    transformExtent,
+    computeForZoom,
+    computeZoom
 };

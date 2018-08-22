@@ -9,24 +9,24 @@
     background-color: @panel_bg@;
     box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
     font-size: 75%;
-    line-height: 3em;
+    display: flex;
+    align-items: center;
+    padding-left: 200px;
 }
 
-#BottomBar select {
+#BottomBar > span {
+    margin: 0.5em;
+    display: flex;
+    align-items: center;
+}
+
+#BottomBar select.bottombar-crs-selector {
     border: 1px solid @item_border@;
     background-color: @panel_bg@;
     height: 2em;
 }
 
-#BottomBar select.bottombar-crs-selector {
-    border-radius: 0!important;
-}
-
-#BottomBar .mousepos_label {
-    margin-left: 200px;
-}
-
-#BottomBar input.coordinatedisplayer {
+#BottomBar input.bottombar-mousepos {
     width: 20ch;
     text-align: center;
     border-style: solid;
@@ -37,20 +37,40 @@
     line-height: normal;
 }
 
-#BottomBar span.mouseposition > span {
-    line-height: 2em;
-}
 
-#BottomBar .scale_label {
-    margin-left: 1em;
-}
-
-#BottomBar select.bottombar-scale-selector {
+#BottomBar span.bottombar-scale-combo {
+    position: relative;
     display: inline-block;
+    border: 1px solid @item_border@;
+    background-color: @panel_bg@;
+    height: 2em;
+    padding-left: 0.25em;
+    display: flex;
+    align-items: center;
 }
 
-#BottomBar span.bottomlinks {
-    float: right;
-    margin-right: 0.5em;
-    line-height: 3em;
+#BottomBar span.bottombar-scale-combo > select {
+    border: 0;
+    background-color: @panel_bg@;
+    width: 7em;
+    height: calc(2em - 2px);
+    outline: none;
+}
+
+#BottomBar span.bottombar-scale-combo > input {
+    position: absolute;
+    right: 2em;
+    width: 5em;
+    height: calc(2em - 2px);
+    top: 0;
+    border: 0;
+
+}
+
+#BottomBar span.bottombar-spacer {
+    flex: 1 1 auto;
+}
+
+#BottomBar span.bottombar-links {
+    margin-right: 3em;
 }
