@@ -36,6 +36,7 @@ const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const PluginsUtils = require('../../MapStore2Components/utils/PluginsUtils');
+const LayerUtils = require('../utils/LayerUtils');
 const {UrlParams, resolvePermaLink} = require('../utils/PermaLinkUtils');
 const ThemeUtils = require('../utils/ThemeUtils');
 
@@ -44,12 +45,12 @@ require('./style/App.css');
 
 class AppInitComponent extends React.Component {
     static propTypes = {
+        appConfig: PropTypes.object,
         initialParams: PropTypes.object,
         mapSize: PropTypes.object,
         themesLoaded: PropTypes.func,
         changeSearch: PropTypes.func,
-        setCurrentTheme: PropTypes.func,
-        addLayer: PropTypes.func
+        setCurrentTheme: PropTypes.func
     }
     constructor(props) {
         super(props);
@@ -118,18 +119,39 @@ class AppInitComponent extends React.Component {
                 let searchProviders = params.sp ? params.sp.split(",") : null;
 
                 // Clear all params
-                UrlParams.updateParams({k: undefined, t: undefined, l: undefined, bl: undefined, c: undefined, s: undefined, e: undefined, crs: undefined, st: undefined, sp: undefined});
+                UrlParams.updateParams({k: undefined, t: undefined, l: undefined, bl: '', c: undefined, s: undefined, e: undefined, crs: undefined, st: undefined, sp: undefined});
 
-                // Dispatch actions
-                this.props.changeSearch(searchText, searchProviders);
-                this.props.setCurrentTheme(theme, themes, false, initialView, visibleLayers, visibleBgLayer, state.themesublayers);
-
-                // Restore from permalink state
-                if(state.layers) {
-                    this.props.restoreLayerState(state.layers);
+                // Restore map (invoking appConfig.layerRestorer to handle missing layers if necessary)
+                if(visibleLayers && this.props.appConfig.themeLayerRestorer) {
+                    let layerNames = [];
+                    LayerUtils.collectWMSSublayerParams(theme, layerNames, [], []);
+                    let nameOpacityPattern = /([^\[]+)\[(\d+)]/;
+                    let visibleLayerNames = visibleLayers.map(entry => {
+                        let match = nameOpacityPattern.exec(entry);
+                        return match ? match[1] : entry;
+                    });
+                    let missingLayers = visibleLayerNames.filter(entry => !layerNames.includes(entry));
+                    this.props.appConfig.themeLayerRestorer(missingLayers, theme, (newThemeSublayers) => {
+                        let newTheme = LayerUtils.mergeSubLayers(theme, {sublayers: newThemeSublayers});
+                        this.restoreMap(newTheme, themes, initialView, visibleLayers, visibleBgLayer, state, searchText, searchProviders);
+                    });
+                } else {
+                    this.restoreMap(theme, themes, initialView, visibleLayers, visibleBgLayer, state, searchText, searchProviders);
                 }
             });
         });
+    }
+    restoreMap = (theme, themes, initialView, visibleLayers, visibleBgLayer, state, searchText, searchProviders) => {
+        // Restore theme and layers
+        this.props.setCurrentTheme(theme, themes, false, initialView, visibleLayers, visibleBgLayer, state.themesublayers);
+
+        // Restore layers from permalink state
+        if(state.layers) {
+            this.props.restoreLayerState(state.layers);
+        }
+
+        // Restore search
+        this.props.changeSearch(searchText, searchProviders);
     }
     render() {
         return null;
@@ -163,7 +185,7 @@ class StandardApp extends React.Component {
         return (
             <Provider store={this.store}>
                 <div ref={this.setupTouchEvents}>
-                    <AppInit initialParams={this.initialParams} />
+                    <AppInit initialParams={this.initialParams} appConfig={this.props.appConfig}/>
                     <Localized>
                         <PluginsContainer plugins={plugins} pluginsAppConfig={this.props.appConfig.pluginsDef.cfg || {}} />
                     </Localized>
