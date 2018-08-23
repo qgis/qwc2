@@ -173,14 +173,14 @@ class RedliningSupport extends React.Component {
                     newRedliningState = {
                         borderColor: this.currentFeature.getStyle().getText().getStroke().getColor(),
                         fillColor: this.currentFeature.getStyle().getText().getFill().getColor(),
-                        size: this.currentFeature.getStyle().getText().getScale(),
+                        size: 2 * (this.currentFeature.getStyle().getText().getScale() - 1),
                         text: this.currentFeature.getStyle().getText().getText()
                     };
                 } else {
                     newRedliningState = {
                         borderColor: this.currentFeature.getStyle().getStroke().getColor(),
                         fillColor: this.currentFeature.getStyle().getFill().getColor(),
-                        size: this.currentFeature.getStyle().getStroke().getWidth(),
+                        size: 2 * (this.currentFeature.getStyle().getStroke().getWidth() - 1),
                         text: this.currentFeature.getStyle().getText().getText()
                     };
                 }
