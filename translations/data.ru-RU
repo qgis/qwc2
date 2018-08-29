@@ -14,7 +14,9 @@
         "Tools": "Средства картографии",
         "IdentifyRegion": "Определить регион",
         "Redlining": "Обводка",
-        "Editing": "Правка"
+        "Editing": "Правка",
+        "Login": "",
+        "Logout": ""
       },
       "menulabel": "Карта и инструменты"
     },

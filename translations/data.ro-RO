@@ -14,7 +14,9 @@
         "Tools": "Unelte hartă",
         "IdentifyRegion": "Interogare regiune",
         "Redlining": "Evidențiere",
-        "Editing": "Editare"
+        "Editing": "Editare",
+        "Login": "",
+        "Logout": ""
       },
       "menulabel": "Hărți & Unelte"
     },

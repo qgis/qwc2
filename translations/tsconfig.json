@@ -23,6 +23,8 @@
     "appmenu.items.IdentifyRegion",
     "appmenu.items.Redlining",
     "appmenu.items.Editing",
+    "appmenu.items.Login",
+    "appmenu.items.Logout",
     "appmenu.menulabel",
     "bgswitcher.nobg",
     "bottombar.mousepos_label",
