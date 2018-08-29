@@ -18,6 +18,7 @@ if (!global.Intl) {
 
 const axios = require('axios');
 const assign = require('object-assign');
+const isEmpty = require('lodash.isempty');
 const Proj4js = require('proj4').default;
 const olProj4 = require('ol/proj/proj4');
 
@@ -124,10 +125,12 @@ class AppInitComponent extends React.Component {
                         return match ? match[1] : entry;
                     });
                     let missingLayers = visibleLayerNames.filter(entry => !layerNames.includes(entry));
-                    this.props.appConfig.themeLayerRestorer(missingLayers, theme, (newThemeSublayers) => {
-                        let newTheme = LayerUtils.mergeSubLayers(theme, {sublayers: newThemeSublayers});
-                        this.restoreMap(newTheme, themes, initialView, visibleLayers, visibleBgLayer, state, searchText, searchProviders);
-                    });
+                    if(!isEmpty(missingLayers)) {
+                        this.props.appConfig.themeLayerRestorer(missingLayers, theme, (newThemeSublayers) => {
+                            let newTheme = LayerUtils.mergeSubLayers(theme, {sublayers: newThemeSublayers});
+                            this.restoreMap(newTheme, themes, initialView, visibleLayers, visibleBgLayer, state, searchText, searchProviders);
+                        });
+                    }
                 } else {
                     this.restoreMap(theme, themes, initialView, visibleLayers, visibleBgLayer, state, searchText, searchProviders);
                 }
