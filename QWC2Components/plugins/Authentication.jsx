@@ -18,9 +18,9 @@ class Authentication extends React.Component {
     componentWillReceiveProps(newProps) {
         if(newProps.task !== this.props.task) {
             if(newProps.task === "Login") {
-                window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "auth/login?url=" + encodeURIComponent(window.location.href);
+                window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "login?url=" + encodeURIComponent(window.location.href);
             } else if(newProps.task === "Logout") {
-                window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "auth/logout?url=" + encodeURIComponent(window.location.href);
+                window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "logout?url=" + encodeURIComponent(window.location.href);
             }
         }
     }
