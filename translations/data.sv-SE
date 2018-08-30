@@ -14,7 +14,9 @@
         "Tools": "Kartverktyg",
         "IdentifyRegion": "",
         "Redlining": "",
-        "Editing": ""
+        "Editing": "",
+        "Login": "",
+        "Logout": ""
       },
       "menulabel": "Karta & Verktyg"
     },
@@ -72,6 +74,7 @@
       "filter": "",
       "connect": "",
       "nofeatures": "",
+      "noresults": "",
       "urlplaceholder": ""
     },
     "layerinfo": {
@@ -148,6 +151,7 @@
     "search": {
       "more": "Mer",
       "search": "",
+      "searchall": "",
       "all": ""
     },
     "share": {
