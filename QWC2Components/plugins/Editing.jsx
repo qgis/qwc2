@@ -247,7 +247,7 @@ class Editing extends React.Component {
     changeSelectedLayer = (selectedLayer, action=null) => {
         this.setState({selectedLayer: selectedLayer});
         const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
-        this.props.changeEditingState(assign({}, this.props.editing, {action: action || this.props.editing.action, feature: null, geomType: curConfig.geomType}));
+        this.props.changeEditingState(assign({}, this.props.editing, {action: action || this.props.editing.action, feature: null, geomType: curConfig ? curConfig.geomType : null}));
     }
     updateField = (key, value) => {
         let newProperties = assign({}, this.props.editing.feature.properties, {[key]: value});
