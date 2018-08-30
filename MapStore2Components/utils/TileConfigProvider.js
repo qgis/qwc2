@@ -3,7 +3,7 @@ var CONFIGPROVIDER = require('./ConfigProvider');
 var CoordinatesUtils = require('./ConfigUtils');
 
 let TileConfigProvider = {
-    getLayerConfig: function(layer, options) {
+    getLayerConfig: (layer, options) => {
     var providers = CONFIGPROVIDER;
     var parts = layer.split('.');
     var providerName = parts[0];
@@ -61,7 +61,7 @@ let TileConfigProvider = {
             return attr;
         }
         return attr.replace(/\{attribution.(\w*)\}/,
-                    function(match, attributionName) {
+                    (match, attributionName) => {
                         return attributionReplacer(providers[attributionName].options.attribution);
                     }
                 );

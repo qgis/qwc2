@@ -31,7 +31,7 @@ class MeasurementSupport extends React.Component {
                     fill: new ol.style.Fill({color: 'white'}),
                     stroke: new ol.style.Stroke({ color: 'red', width: 2 }),
                 }),
-                geometry: function(feature) {
+                geometry: (feature) => {
                     if(feature.getGeometry().getType() === "Point") {
                         return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
                     } else if(feature.getGeometry().getType() === "LineString") {

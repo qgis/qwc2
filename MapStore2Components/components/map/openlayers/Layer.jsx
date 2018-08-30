@@ -146,9 +146,9 @@ class OpenlayersLayer extends React.Component {
             if(options.zoomToExtent) {
                 let map = this.props.map;
                 let source = layer.getSource();
-                source.once('change',function(e){
+                source.once('change',(e) => {
                     if(source.getState() === 'ready') {
-                        if(source.getFeatures().length>0) {
+                        if(source.getFeatures().length > 0) {
                             map.getView().fit(source.getExtent(), map.getSize());
                         }
                     }

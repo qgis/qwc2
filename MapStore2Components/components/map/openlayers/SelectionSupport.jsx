@@ -86,14 +86,14 @@ class SelectionSupport extends React.Component {
             })
         });
 
-        draw.on('drawstart', function(evt) {
+        draw.on('drawstart', (evt) => {
             // preserv the sketch feature of the draw controller
             // to update length/area on drawing a new vertex
             this.sketchFeature = evt.feature;
             // clear previous sketches
             source.clear();
         }, this);
-        draw.on('drawend', function(evt) {
+        draw.on('drawend', (evt) => {
             this.updateSelectionState();
         }, this);
 
