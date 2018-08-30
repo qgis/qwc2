@@ -130,6 +130,8 @@ class AppInitComponent extends React.Component {
                             let newTheme = LayerUtils.mergeSubLayers(theme, {sublayers: newThemeSublayers});
                             this.restoreMap(newTheme, themes, initialView, visibleLayers, visibleBgLayer, state, searchText, searchProviders);
                         });
+                    } else {
+                        this.restoreMap(theme, themes, initialView, visibleLayers, visibleBgLayer, state, searchText, searchProviders);
                     }
                 } else {
                     this.restoreMap(theme, themes, initialView, visibleLayers, visibleBgLayer, state, searchText, searchProviders);
