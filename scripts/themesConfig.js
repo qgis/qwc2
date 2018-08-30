@@ -15,9 +15,8 @@ const fs = require('fs');
 const path = require('path');
 const isEmpty = require('lodash.isempty');
 const fqdn = require('node-fqdn');
+const uuid = require('uuid');
 const hostFqdn = "http://" + String(fqdn());
-
-let usedThemeIds = [];
 
 // load thumbnail from file or GetMap
 function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
@@ -218,14 +217,6 @@ function getTheme(configItem, resultItem) {
 
             const topLayer = capabilities.Capability.Layer;
 
-            let themeId = topLayer.Name;
-            if(usedThemeIds.includes(themeId)) {
-                let i = 0;
-                for(; usedThemeIds.includes(themeId + i); ++i);
-                themeId = themeId + i;
-            }
-            usedThemeIds.push(themeId);
-
             // use name from config or fallback to WMS title
             const wmsTitle = configItem.title || capabilities.Service.Title || topLayer.Title;
 
@@ -304,7 +295,7 @@ function getTheme(configItem, resultItem) {
             let drawingOrder = (capabilities.Capability.LayerDrawingOrder || "").split(",").map(title => title in titleNameMap ? titleNameMap[title] : title);
 
             // update theme config
-            resultItem.id = themeId;
+            resultItem.id = uuid.v1();
             resultItem.name = topLayer.Name;
             resultItem.title = wmsTitle;
             resultItem.attribution = {
