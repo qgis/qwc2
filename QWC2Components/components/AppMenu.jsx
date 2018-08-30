@@ -22,7 +22,8 @@ class AppMenu extends React.Component {
         menuItems: PropTypes.array,
         appMenuClearsTask: PropTypes.bool,
         currentTaskBlocked: PropTypes.bool,
-        setCurrentTask: PropTypes.func
+        setCurrentTask: PropTypes.func,
+        currentTheme: PropTypes.object
     }
     static defaultProps = {
         buttonContents: null,
@@ -63,6 +64,9 @@ class AppMenu extends React.Component {
     renderMenuItems = (items, level) => {
         if(items) {
             return items.map(item => {
+                if(item.themeWhitelist && !item.themeWhitelist.includes(this.props.currentTheme.title)) {
+                    return null;
+                }
                 if(item.subitems) {
                     return (
                         <li key={item.key}
@@ -110,7 +114,8 @@ class AppMenu extends React.Component {
 };
 
 module.exports = connect((state) => ({
-    currentTaskBlocked: state.task && state.task.blocked || false
+    currentTaskBlocked: state.task && state.task.blocked || false,
+    currentTheme: state.theme.current || {}
 }), {
     setCurrentTask: setCurrentTask
 })(AppMenu);

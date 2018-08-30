@@ -20,12 +20,16 @@ class Toolbar extends React.Component {
         toolbarItems: PropTypes.array,
         setCurrentTask: PropTypes.func,
         currentTask: PropTypes.string,
-        currentTaskMode: PropTypes.string
+        currentTaskMode: PropTypes.string,
+        currentTheme: PropTypes.object
     }
     static contextTypes = {
         messages: PropTypes.object
     }
     renderToolbarItem = (item) => {
+        if(item.themeWhitelist && !item.themeWhitelist.includes(this.props.currentTheme.title)) {
+            return null;
+        }
         let active = this.props.currentTask == item.key && this.props.currentTaskMode == item.mode;
         let title = LocaleUtils.getMessageById(this.context.messages, "appmenu.items." + item.key) || null;
         return (
@@ -51,6 +55,7 @@ class Toolbar extends React.Component {
 module.exports = connect((state) => ({
     currentTask: state.task ? state.task.id : "",
     currentTaskMode: state.task ? state.task.mode : "",
+    currentTheme: state.theme.current || {}
 }), {
     setCurrentTask: setCurrentTask,
 })(Toolbar);
