@@ -24,6 +24,7 @@ const ImportLayer = require('../components/ImportLayer');
 const LayerInfoWindow = require('../components/LayerInfoWindow');
 const {SideBar} = require('../components/SideBar');
 const LayerUtils = require('../utils/LayerUtils');
+const ThemeUtils = require('../utils/ThemeUtils');
 require('./style/LayerTree.css');
 
 
@@ -32,6 +33,7 @@ class LayerTree extends React.Component {
         layers: PropTypes.array,
         swipe: PropTypes.number,
         mobile: PropTypes.bool,
+        theme: PropTypes.object,
         mapTipsEnabled: PropTypes.bool,
         changeLayerProperties: PropTypes.func,
         removeLayer: PropTypes.func,
@@ -161,7 +163,7 @@ class LayerTree extends React.Component {
         let editframe = null;
         if(this.state.activemenu === sublayer.uuid) {
             let reorderButtons = null;
-            if(ConfigUtils.getConfigProp("allowReorderingLayers") === true) {
+            if(ThemeUtils.layerReorderingAllowed(this.props.theme) === true) {
                 reorderButtons = [
                     (<Icon key="layertree-item-move-down" className="layertree-item-move" icon="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
                     (<Icon key="layertree-item-move-up" className="layertree-item-move" icon="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
@@ -490,6 +492,7 @@ const selector = (state) => ({
     mobile: state.browser ? state.browser.mobile : false,
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
     swipe: state.layers && state.layers.swipe || undefined,
+    theme: state.theme.current || {},
     mapTipsEnabled: state.map && state.map.maptips
 });
 

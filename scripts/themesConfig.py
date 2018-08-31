@@ -355,6 +355,9 @@ def getTheme(config, configItem, result, resultItem):
         if "skipEmptyFeatureAttributes" in configItem:
             resultItem["skipEmptyFeatureAttributes"] = configItem["skipEmptyFeatureAttributes"]
 
+        if "allowReorderingLayers" in configItem:
+            resultItem["allowReorderingLayers"] = configItem["allowReorderingLayers"]
+
         resultItem["editConfig"] = getEditConfig(configItem["editConfig"] if "editConfig" in configItem else None)
 
         # set default theme

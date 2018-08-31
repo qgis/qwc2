@@ -71,7 +71,7 @@ const ThemeUtils = {
                     opacities.push(255);
                 }
             });
-            if(ConfigUtils.getConfigProp("allowReorderingLayers") !== true) {
+            if(ThemeUtils.layerReorderingAllowed(theme) !== true) {
                 sublayers = LayerUtils.restoreVisibleLayers(sublayers, layers, opacities);
             } else {
                 sublayers = LayerUtils.restoreReorderedVisibleLayers(sublayers, layers, opacities);
@@ -101,10 +101,17 @@ const ThemeUtils = {
             uuid: theme.uuid
         };
         // Drawing order only makes sense if layer reordering is disabled
-        if(ConfigUtils.getConfigProp("allowReorderingLayers") != true) {
+        if(ThemeUtils.layerReorderingAllowed(theme) !== true) {
             assign(layer, {drawingOrder: theme.drawingOrder});
         }
         return layer;
+    },
+    layerReorderingAllowed(theme) {
+        let allowReorderingLayers = ConfigUtils.getConfigProp("allowReorderingLayers");
+        if(theme.allowReorderingLayers === true || theme.allowReorderingLayers === false) {
+            allowReorderingLayers = theme.allowReorderingLayers;
+        }
+        return allowReorderingLayers;
     }
 };
 
