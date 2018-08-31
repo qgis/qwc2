@@ -11,7 +11,7 @@ var TileProvider = require('../../../../utils/TileConfigProvider');
 var CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
 
 function template(str, data) {
-    return str.replace(/(?!(\{?[zyx]?\}))\{*([\w_]+)*\}/g, () => {
+    return str.replace(/(?!(\{?[zyx]?\}))\{*([\w_]+)*\}/g, function() {
             let st = arguments[0];
             let key = arguments[1] ? arguments[1] : arguments[2];
             let value = data[key];
