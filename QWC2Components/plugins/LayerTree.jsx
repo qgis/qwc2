@@ -278,6 +278,7 @@ class LayerTree extends React.Component {
             );
         }
         let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
+        let sortable = ThemeUtils.layerReorderingAllowed(this.props.theme) === true;
         let extraTitlebarContent = (<Icon title={printLegendTooltip} className="layertree-print-legend" icon="print" onClick={this.printLegend}/>)
         return (
             <div>
@@ -292,7 +293,7 @@ class LayerTree extends React.Component {
                                 onTouchMove={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
                                 onTouchEnd={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
                                 onContextMenuCapture={ev => {ev.stopPropagation(); ev.preventDefault(); return false; }}>
-                                <Sortable options={{disabled: this.props.flattenGroups !== true, ghostClass: 'drop-ghost', delay: 200}} onChange={this.onSortChange}>
+                                <Sortable options={{disabled: sortable === false || this.props.flattenGroups !== true, ghostClass: 'drop-ghost', delay: 200}} onChange={this.onSortChange}>
                                     {this.props.layers.map(this.renderLayerTree)}
                                 </Sortable>
                             </div>
