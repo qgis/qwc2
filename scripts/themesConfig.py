@@ -7,7 +7,6 @@
 # LICENSE file in the root directory of this source tree.
 
 import os
-import sys
 try:
     from urllib.request import urlopen
 except:
@@ -22,22 +21,23 @@ import json
 import traceback
 import socket
 import re
+import uuid
 
-hostFqdn = "http://" + socket.getfqdn()
-themesConfig = os.getenv("QWC2_THEMES_CONFIG", "themesConfig.json");
-usedThemeIds = []
+baseUrl = "http://" + socket.getfqdn()
+qwc2_path = "."
+themesConfig = os.environ.get("QWC2_THEMES_CONFIG", "themesConfig.json")
 
 # load thumbnail from file or GetMap
 def getThumbnail(configItem, resultItem, layers, crs, extent):
     if "thumbnail" in configItem:
-        if os.path.exists("./assets/img/mapthumbs/" + configItem["thumbnail"]):
+        if os.path.exists(qwc2_path + "/assets/img/mapthumbs/" + configItem["thumbnail"]):
             resultItem["thumbnail"] = "img/mapthumbs/" + configItem["thumbnail"]
             return
 
     print("Using WMS GetMap to generate thumbnail for " + configItem["url"])
 
     # WMS GetMap request
-    url = urljoin(hostFqdn, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&STYLES=&WIDTH=200&HEIGHT=100&CRS=" + crs
+    url = urljoin(baseUrl, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&STYLES=&WIDTH=200&HEIGHT=100&CRS=" + crs
     bboxw = extent[2] - extent[0]
     bboxh = extent[3] - extent[1]
     bboxcx = 0.5 * (extent[0] + extent[2])
@@ -60,19 +60,21 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
         request = urlopen(url)
         reply = request.read()
         basename = configItem["url"].rsplit("/")[-1] + ".png"
-        with open("./assets/img/mapthumbs/" + basename, "wb") as fh:
+        os.makedirs(qwc2_path + "/assets/img/genmapthumbs/")
+        thumbnail = qwc2_path + "/assets/img/genmapthumbs/" + basename
+        with open(thumbnail, "wb") as fh:
             fh.write(reply)
-        resultItem["thumbnail"] = "img/mapthumbs/" + basename
+        resultItem["thumbnail"] = "img/genmapthumbs/" + basename
     except Exception as e:
-        print("ERROR for WMS " + configItem["url"] + ":\n" + str(e))
-        resultItem["error"] = "Could not get thumbnail"
+        print("ERROR generating thumbnail for WMS " + configItem["url"] + ":\n" + str(e))
+        resultItem["thumbnail"] = "img/mapthumbs/default.jpg"
         traceback.print_exc()
 
 def getEditConfig(editConfig):
     if not editConfig:
         return None
     elif os.path.isabs(editConfig) and os.path.exists(editConfig):
-        with open(editConfig) as fh:
+        with open(editConfig, encoding='utf-8') as fh:
             config = json.load(fh)
         return config
     else:
@@ -81,7 +83,7 @@ def getEditConfig(editConfig):
             dirname = "."
         filename = os.path.join(dirname, editConfig)
         if os.path.exists(filename):
-            with open(filename) as fh:
+            with open(filename, encoding='utf-8') as fh:
                 config = json.load(fh)
             return config
     return None
@@ -207,10 +209,8 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
 
 
 # parse GetCapabilities for theme
-def getTheme(configItem, resultItem):
-    resultItem["url"] = configItem["url"]
-
-    url = urljoin(hostFqdn, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
+def getTheme(config, configItem, result, resultItem):
+    url = urljoin(baseUrl, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
 
     try:
         reply = urlopen(url).read()
@@ -219,13 +219,6 @@ def getTheme(configItem, resultItem):
         print("Parsing WMS GetProjectSettings of " + configItem["url"])
 
         topLayer = getChildElement(getChildElement(capabilities, "Capability"), "Layer")
-        themeId = getChildElementValue(topLayer, "Name")
-        if themeId in usedThemeIds:
-            i = 0
-            while "%s%d" % (themeId, i) in usedThemeIds:
-                i += 1
-            themeId = "%s%d" % (themeId, i)
-        usedThemeIds.append(themeId)
 
         # use name from config or fallback to WMS title
         wmsTitle = configItem.get("title") or getChildElementValue(capabilities, "Service/Title") or getChildElementValue(topLayer, "Title")
@@ -287,7 +280,8 @@ def getTheme(configItem, resultItem):
           availableFormats.append(getElementValue(format))
 
         # update theme config
-        resultItem["id"] = themeId
+        resultItem["url"] = configItem["url"]
+        resultItem["id"] = str(uuid.uuid1())
         resultItem["name"] = getChildElementValue(topLayer, "Name")
         resultItem["title"] = wmsTitle
         resultItem["attribution"] = {
@@ -356,12 +350,12 @@ def getTheme(configItem, resultItem):
             resultItem["printLabelConfig"] = configItem["printLabelConfig"]
 
         if "watermark" in configItem:
-            resultItem["watermark"] = configItem["watermark"];
+            resultItem["watermark"] = configItem["watermark"]
 
         if "skipEmptyFeatureAttributes" in configItem:
             resultItem["skipEmptyFeatureAttributes"] = configItem["skipEmptyFeatureAttributes"]
 
-        resultItem["editConfig"] = getEditConfig(configItem["editConfig"] if "editConfig" in configItem else None);
+        resultItem["editConfig"] = getEditConfig(configItem["editConfig"] if "editConfig" in configItem else None)
 
         # set default theme
         if "default" in configItem or not result["themes"]["defaultTheme"]:
@@ -393,11 +387,12 @@ def getTheme(configItem, resultItem):
 
 
 # recursively get themes for groups
-def getGroupThemes(configGroup, resultGroup):
+def getGroupThemes(config, configGroup, result, resultGroup):
     for item in configGroup["items"]:
         itemEntry = {}
-        getTheme(item, itemEntry)
-        resultGroup["items"].append(itemEntry)
+        getTheme(config, item, result, itemEntry)
+        if itemEntry:
+            resultGroup["items"].append(itemEntry)
 
     if "groups" in configGroup:
         for group in configGroup["groups"]:
@@ -406,17 +401,9 @@ def getGroupThemes(configGroup, resultGroup):
                 "items": [],
                 "subdirs": []
             }
-            getGroupThemes(group, groupEntry)
+            getGroupThemes(config, group, result, groupEntry)
             resultGroup["subdirs"].append(groupEntry)
 
-# load themesConfig.json
-print("Reading " + themesConfig)
-try:
-  with open(themesConfig) as fh:
-      config = json.load(fh)
-except:
-  print("Failed to read themesConfig.json. Please run this script from a directory containing themesConfig.json.");
-  sys.exit(1)
 
 def reformatAttribution(entry):
     entry["attribution"] = {
@@ -426,30 +413,45 @@ def reformatAttribution(entry):
     entry.pop("attributionUrl", None)
     return entry
 
-result = {
-    "themes": {
-        "title": "root",
-        "subdirs": [],
-        "items": [],
-        "defaultTheme": None,
-        "defaultScales": config["defaultScales"],
-        "defaultPrintScales": config["defaultPrintScales"] if "defaultPrintScales" in config else None,
-        "defaultPrintResolutions": config["defaultPrintResolutions"] if "defaultPrintResolutions" in config else None,
-        "defaultPrintGrid": config["defaultPrintGrid"] if "defaultPrintGrid" in config else None,
-        "backgroundLayers": list(map(reformatAttribution, config["themes"]["backgroundLayers"])),
-        "defaultWMSVersion": config["defaultWMSVersion"] if "defaultWMSVersion" in config else None
-        }
-}
-getGroupThemes(config["themes"], result["themes"])
 
-if "backgroundLayers" in result["themes"]:
-    # get thumbnails for background layers
-    for backgroundLayer in result["themes"]["backgroundLayers"]:
-        imgPath = "img/mapthumbs/" + backgroundLayer.get("thumbnail", "default.jpg")
-        if not os.path.isfile("./assets/" + imgPath):
-            imgPath = "img/mapthumbs/default.jpg"
-        backgroundLayer["thumbnail"] = imgPath
+def genThemes(themesConfig):
+    # load themesConfig.json
+    try:
+        with open(themesConfig, encoding='utf-8') as fh:
+            config = json.load(fh)
+    except:
+        return {"error": "Failed to read themesConfig.json"}
 
-# write config file
-with open("./themes.json", "w") as fh:
-    json.dump(result, fh, indent=2, separators=(',', ': '), sort_keys=True)
+    result = {
+        "themes": {
+            "title": "root",
+            "subdirs": [],
+            "items": [],
+            "defaultTheme": None,
+            "defaultScales": config["defaultScales"],
+            "defaultPrintScales": config["defaultPrintScales"] if "defaultPrintScales" in config else None,
+            "defaultPrintResolutions": config["defaultPrintResolutions"] if "defaultPrintResolutions" in config else None,
+            "defaultPrintGrid": config["defaultPrintGrid"] if "defaultPrintGrid" in config else None,
+            "backgroundLayers": list(map(reformatAttribution, config["themes"]["backgroundLayers"])),
+            "defaultWMSVersion": config["defaultWMSVersion"] if "defaultWMSVersion" in config else None
+            }
+    }
+    getGroupThemes(config, config["themes"], result, result["themes"])
+
+    if "backgroundLayers" in result["themes"]:
+        # get thumbnails for background layers
+        for backgroundLayer in result["themes"]["backgroundLayers"]:
+            imgPath = "img/mapthumbs/" + backgroundLayer.get("thumbnail", "default.jpg")
+            if not os.path.isfile(qwc2_path + "/assets/" + imgPath):
+                imgPath = "img/mapthumbs/default.jpg"
+            backgroundLayer["thumbnail"] = imgPath
+
+    return result
+
+
+if __name__ == '__main__':
+    print("Reading " + themesConfig)
+    themes = genThemes(themesConfig)
+    # write config file
+    with open("./themes.json", "w") as fh:
+        json.dump(themes, fh, indent=2, separators=(',', ': '), sort_keys=True)

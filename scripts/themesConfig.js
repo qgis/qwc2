@@ -16,7 +16,9 @@ const path = require('path');
 const isEmpty = require('lodash.isempty');
 const fqdn = require('node-fqdn');
 const uuid = require('uuid');
+
 const hostFqdn = "http://" + String(fqdn());
+const themesConfig = process.env["QWC2_THEMES_CONFIG"] || "themesConfig.json";
 
 // load thumbnail from file or GetMap
 function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
@@ -33,7 +35,7 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
     console.error("Using WMS GetMap to generate thumbnail for " + configItem.url);
 
     // WMS GetMap request
-    var parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
+    let parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
     parsedUrl.search = '';
     parsedUrl.query.SERVICE = "WMS";
     parsedUrl.query.VERSION = "1.3.0";
@@ -67,13 +69,14 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
 
     axios.get(getMapUrl, {responseType: "arraybuffer"}).then((response) => {
         let basename = configItem.url.replace(/.*\//, "") + ".png";
-        fs.writeFileSync("./assets/img/mapthumbs/" + basename, response.data);
-        resultItem.thumbnail = "img/mapthumbs/" + basename;
+        fs.mkdirSync("./assets/img/genmapthumbs/")
+        fs.writeFileSync("./assets/img/genmapthumbs/" + basename, response.data);
+        resultItem.thumbnail = "img/genmapthumbs/" + basename;
         // finish task
         resolve(true);
     }).catch((error) => {
-        console.error("ERROR for WMS " + configItem.url + ":\n", error);
-        resultItem.error = "Could not get thumbnail";
+        console.error("ERROR generating thumbnail for WMS " + configItem.url + ":\n", error);
+        resultItem.thumbnail = "img/mapthumbs/default.jpg";
         // finish task
         resolve(false);
     });
@@ -102,7 +105,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         return;
     }
 
-    var layerEntry = {
+    let layerEntry = {
         name: layer.Name,
         title: layer.Title
     };
@@ -143,7 +146,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
             layerEntry.opacity = 255;
         }
         if(layer.KeywordList) {
-            var keywords = [];
+            let keywords = [];
             toArray(layer.KeywordList.Keyword).map((entry) => {
                 keywords.push((typeof entry === 'object') ? entry._ : entry);
             });
@@ -173,7 +176,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         layerEntry.mutuallyExclusive = (layer.$ || {}).mutuallyExclusive === '1';
         layerEntry.sublayers = [];
         layerEntry.expanded = collapseBelowLevel >= 0 && level >= collapseBelowLevel ? false : true;
-        for (var subLayer of toArray(layer.Layer)) {
+        for (let subLayer of toArray(layer.Layer)) {
             getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, featureReports);
         }
         if (layerEntry.sublayers.length === 0) {
@@ -186,10 +189,8 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
 }
 
 // parse GetCapabilities for theme
-function getTheme(configItem, resultItem) {
-    resultItem.url = configItem.url;
-
-    var parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
+function getTheme(config, configItem, result, resultItem) {
+    let parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
     parsedUrl.search = '';
     parsedUrl.query.SERVICE = "WMS";
     parsedUrl.query.VERSION = "1.3.0";
@@ -199,7 +200,7 @@ function getTheme(configItem, resultItem) {
     return new Promise((resolve, reject) => {
         axios.get(getCapabilitiesUrl).then((response) => {
             // parse capabilities
-            var capabilities;
+            let capabilities;
             xml2js.parseString(response.data, {
                 tagNameProcessors: [xml2js.processors.stripPrefix],
                 explicitArray: false
@@ -221,10 +222,10 @@ function getTheme(configItem, resultItem) {
             const wmsTitle = configItem.title || capabilities.Service.Title || topLayer.Title;
 
             // keywords
-            var keywords = [];
+            let keywords = [];
             if(capabilities.Service.KeywordList) {
               toArray(capabilities.Service.KeywordList.Keyword).map((entry) => {
-                  var value = (typeof entry === 'object') ? entry._ : entry;
+                  let value = (typeof entry === 'object') ? entry._ : entry;
                   if (value !== "infoMapAccessService") {
                       keywords.push(value);
                   }
@@ -233,8 +234,8 @@ function getTheme(configItem, resultItem) {
 
             // use first CRS for thumbnail request
             const crs = toArray(topLayer.CRS).filter(item => item != 'CRS:84')[0];
-            var extent = [];
-            for (var bbox of toArray(topLayer.BoundingBox)) {
+            let extent = [];
+            for (let bbox of toArray(topLayer.BoundingBox)) {
                 if (bbox.$.CRS === crs) {
                     extent = [
                         parseFloat(bbox.$.minx),
@@ -247,7 +248,7 @@ function getTheme(configItem, resultItem) {
             }
 
             // collect WMS layers for printing
-            var printLayers = [];
+            let printLayers = [];
             if (configItem.backgroundLayers !== undefined) {
                 printLayers = configItem.backgroundLayers.map((entry) => {
                     return entry.printLayer;
@@ -256,26 +257,26 @@ function getTheme(configItem, resultItem) {
 
             // layer tree and visible layers
             collapseLayerGroupsBelowLevel = configItem.collapseLayerGroupsBelowLevel || -1
-            var layerTree = [];
-            var visibleLayers = [];
-            var titleNameMap = {};
+            let layerTree = [];
+            let visibleLayers = [];
+            let titleNameMap = {};
             getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, configItem.featureReport || {});
             visibleLayers.reverse();
 
             // print templates
-            var printTemplates = [];
+            let printTemplates = [];
             if (capabilities.Capability.ComposerTemplates !== undefined) {
                 let templates = capabilities.Capability.ComposerTemplates.ComposerTemplate;
                 if(!templates.length) {
                     templates = [templates];
                 }
-                for (var composerTemplate of templates) {
-                    var printTemplate = {
+                for (let composerTemplate of templates) {
+                    let printTemplate = {
                         name: composerTemplate.$.name
                     };
                     if (composerTemplate.ComposerMap !== undefined) {
                         // use first map from GetProjectSettings
-                        var composerMap = toArray(composerTemplate.ComposerMap)[0];
+                        let composerMap = toArray(composerTemplate.ComposerMap)[0];
                         printTemplate.map = {
                             name: composerMap.$.name,
                             width: parseFloat(composerMap.$.width),
@@ -295,6 +296,7 @@ function getTheme(configItem, resultItem) {
             let drawingOrder = (capabilities.Capability.LayerDrawingOrder || "").split(",").map(title => title in titleNameMap ? titleNameMap[title] : title);
 
             // update theme config
+            resultItem.url = configItem.url;
             resultItem.id = uuid.v1();
             resultItem.name = topLayer.Name;
             resultItem.title = wmsTitle;
@@ -355,7 +357,7 @@ function getTheme(configItem, resultItem) {
                 resultItem.watermark = configItem.watermark;
             }
 
-            resultItem.skipEmptyFeatureAttributes = configItem.skipEmptyFeatureAttributes
+            resultItem.skipEmptyFeatureAttributes = configItem.skipEmptyFeatureAttributes;
             resultItem.editConfig = getEditConfig(configItem.editConfig);
 
             // set default theme
@@ -376,71 +378,76 @@ function getTheme(configItem, resultItem) {
 }
 
 // asynchronous tasks
-var tasks = [];
+let tasks = [];
 
 // recursively get themes for groups
-function getGroupThemes(configGroup, resultGroup) {
-    for (var item of configGroup.items) {
-        var itemEntry = {};
-        tasks.push(getTheme(item, itemEntry));
+function getGroupThemes(config, configGroup, result, resultGroup) {
+    for (let item of configGroup.items) {
+        let itemEntry = {};
+        tasks.push(getTheme(config, item, result, itemEntry));
         resultGroup.items.push(itemEntry);
     }
 
     if (configGroup.groups !== undefined) {
-        for (var group of configGroup.groups) {
-            var groupEntry = {
+        for (let group of configGroup.groups) {
+            let groupEntry = {
                 title: group.title,
                 items: [],
                 subdirs: []
             };
-            getGroupThemes(group, groupEntry);
+            getGroupThemes(config, group, result, groupEntry);
             resultGroup.subdirs.push(groupEntry);
         }
     }
 }
 
-// load themesConfig.json
-var themesConfig = process.env["QWC2_THEMES_CONFIG"] || "themesConfig.json";
-console.log("Reading " + themesConfig);
-var config = require(process.cwd() + '/' + themesConfig);
+function genThemes(themesConfig) {
+    // load themesConfig.json
+    let config = require(process.cwd() + '/' + themesConfig);
 
-var result = {
-    themes: {
-        title: "root",
-        subdirs: [],
-        items: [],
-        defaultTheme: undefined,
-        defaultScales: config.defaultScales,
-        defaultPrintScales: config.defaultPrintScales,
-        defaultPrintResolutions: config.defaultPrintResolutions,
-        defaultPrintGrid: config.defaultPrintGrid,
-        backgroundLayers: config.themes.backgroundLayers.map(bglayer => {
-                bglayer.attribution = {
-                    Title: bglayer.attribution,
-                    OnlineResource: bglayer.attributionUrl
-                };
-                delete bglayer.attributionUrl;
-                return bglayer;
-            }),
-        defaultWMSVersion: config.defaultWMSVersion
-    }
-};
-getGroupThemes(config.themes, result.themes);
-
-if (result.themes.backgroundLayers !== undefined) {
-    // get thumbnails for background layers
-    result.themes.backgroundLayers.map((backgroundLayer) => {
-        let imgPath = "img/mapthumbs/" + backgroundLayer.thumbnail;
-        if (!fs.existsSync("./assets/" + imgPath)) {
-            imgPath = "img/mapthumbs/default.jpg";
+    let result = {
+        themes: {
+            title: "root",
+            subdirs: [],
+            items: [],
+            defaultTheme: undefined,
+            defaultScales: config.defaultScales,
+            defaultPrintScales: config.defaultPrintScales,
+            defaultPrintResolutions: config.defaultPrintResolutions,
+            defaultPrintGrid: config.defaultPrintGrid,
+            backgroundLayers: config.themes.backgroundLayers.map(bglayer => {
+                    bglayer.attribution = {
+                        Title: bglayer.attribution,
+                        OnlineResource: bglayer.attributionUrl
+                    };
+                    delete bglayer.attributionUrl;
+                    return bglayer;
+                }),
+            defaultWMSVersion: config.defaultWMSVersion
         }
-        backgroundLayer.thumbnail = imgPath;
-    });
+    };
+    getGroupThemes(config, config.themes, result, result.themes);
+
+    if (result.themes.backgroundLayers !== undefined) {
+        // get thumbnails for background layers
+        result.themes.backgroundLayers.map((backgroundLayer) => {
+            let imgPath = "img/mapthumbs/" + backgroundLayer.thumbnail;
+            if (!fs.existsSync("./assets/" + imgPath)) {
+                imgPath = "img/mapthumbs/default.jpg";
+            }
+            backgroundLayer.thumbnail = imgPath;
+        });
+    }
+
+    return result;
 }
 
+console.log("Reading " + themesConfig);
+
+themes = genThemes(themesConfig);
 Promise.all(tasks).then(() => {
     // write config file
-    fs.writeFile(process.cwd() + '/themes.json', JSON.stringify(result, null, 2), (error) => {
+    fs.writeFile(process.cwd() + '/themes.json', JSON.stringify(themes, null, 2), (error) => {
         if (error) {
             console.error("ERROR:", error);
             process.exit(1);
