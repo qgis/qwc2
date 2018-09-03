@@ -8,6 +8,7 @@
 
 const React = require('react');
 const PropTypes = require('prop-types');
+const classnames = require('classnames');
 const Rnd = require('react-rnd').default
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const Icon = require('./Icon');
@@ -19,14 +20,15 @@ class ResizeableWindow extends React.Component {
         icon: PropTypes.string,
         icon: PropTypes.string,
         onClose: PropTypes.func,
-            initialX: PropTypes.number,
-            initialY: PropTypes.number,
-            initialWidth: PropTypes.number,
-            initialHeight: PropTypes.number,
-            minWidth: PropTypes.number,
-            minHeight: PropTypes.number,
-            maxWidth: PropTypes.number,
-            maxHeight: PropTypes.number,
+        scrollable: PropTypes.bool,
+        initialX: PropTypes.number,
+        initialY: PropTypes.number,
+        initialWidth: PropTypes.number,
+        initialHeight: PropTypes.number,
+        minWidth: PropTypes.number,
+        minHeight: PropTypes.number,
+        maxWidth: PropTypes.number,
+        maxHeight: PropTypes.number,
     }
     static defaultProps = {
         icon: null,
@@ -39,7 +41,8 @@ class ResizeableWindow extends React.Component {
         minHeight: 50,
         maxWidth: null,
         maxHeight: null,
-        onClose: () => {}
+        onClose: () => {},
+        scrollable: false
     }
     renderRole = (role) => {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
@@ -64,6 +67,10 @@ class ResizeableWindow extends React.Component {
         } else if(this.props.icon) {
             icon = (<img src={this.props.icon} />);
         }
+        let bodyclasses = classnames({
+            "resizeable-window-body": true,
+            "resizeable-window-body-scrollable": this.props.scrollable
+        });
         return (
             <div className="resizeable-window-container">
                 <Rnd className="resizeable-window" bounds="parent" default={initial}
@@ -78,7 +85,7 @@ class ResizeableWindow extends React.Component {
                         </span>
                         <Icon className="resizeable-window-titlebar-close" onClick={this.onClose} icon="remove"/>
                     </div>
-                    <div className="resizeable-window-body" onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
+                    <div className={bodyclasses} onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
                         {this.renderRole("body")}
                     </div>
                 </Rnd>
