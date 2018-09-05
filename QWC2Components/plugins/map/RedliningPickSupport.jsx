@@ -10,6 +10,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
+const isEmpty = require('lodash.isempty');
 const ol = require('openlayers');
 const {changeRedliningPickState} = require('../../actions/redliningPick');
 
@@ -49,7 +50,13 @@ class RedliningPickSupport extends React.Component {
         } else if(!newProps.redliningPick.active && this.props.redliningPick.active) {
             this.reset();
         } else if(newProps.redliningPick.active && !this.props.redliningPick.active) {
-            this.addPickInteraction(newProps);
+            this.addPickInteraction();
+        } else if(
+            newProps.redliningPick.active == this.props.redliningPick.active &&
+            isEmpty(newProps.redliningPick.selectedFeatures) && !isEmpty(this.props.redliningPick.selectedFeatures))
+        {
+            // Re-initialize
+            this.addPickInteraction();
         }
     }
     render() {
@@ -91,18 +98,8 @@ class RedliningPickSupport extends React.Component {
         while(this.interactions.length > 0) {
             this.props.map.removeInteraction(this.interactions.shift());
         }
+        this.deselectAllFeatures();
         this.props.changeRedliningPickState({selectedFeatures: []});
-
-        let redliningLayer = this.searchRedliningLayer();
-        if(redliningLayer) {
-            for(let id of this.props.redliningPick.selectedFeatures || []) {
-                let feature = redliningLayer.getSource().getFeatureById(id);
-                if(feature) {
-                    this.deselectFeature(feature);
-                }
-            }
-        }
-
     }
     selectFeature = (feature) => {
         let style = feature.getStyle();
@@ -119,6 +116,17 @@ class RedliningPickSupport extends React.Component {
             style = style.filter(entry => entry !== this.selectedStyle);
         }
         feature.setStyle(style);
+    }
+    deselectAllFeatures = () => {
+        let redliningLayer = this.searchRedliningLayer();
+        if(redliningLayer) {
+            for(let id of this.props.redliningPick.selectedFeatures || []) {
+                let feature = redliningLayer.getSource().getFeatureById(id);
+                if(feature) {
+                    this.deselectFeature(feature);
+                }
+            }
+        }
     }
     searchRedliningLayer = () => {
         let redliningLayer = null;
