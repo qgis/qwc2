@@ -60,7 +60,10 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
         request = urlopen(url)
         reply = request.read()
         basename = configItem["url"].rsplit("/")[-1] + ".png"
-        os.makedirs(qwc2_path + "/assets/img/genmapthumbs/")
+        try:
+            os.makedirs(qwc2_path + "/assets/img/genmapthumbs/")
+        except Exception as e:
+            if not isinstance(e, FileExistsError): raise e
         thumbnail = qwc2_path + "/assets/img/genmapthumbs/" + basename
         with open(thumbnail, "wb") as fh:
             fh.write(reply)

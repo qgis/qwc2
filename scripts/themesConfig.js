@@ -69,7 +69,11 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
 
     axios.get(getMapUrl, {responseType: "arraybuffer"}).then((response) => {
         let basename = configItem.url.replace(/.*\//, "") + ".png";
-        fs.mkdirSync("./assets/img/genmapthumbs/")
+        try {
+            fs.mkdirSync("./assets/img/genmapthumbs/");
+        } catch(err) {
+            if(err.code !== 'EEXIST') throw err;
+        }
         fs.writeFileSync("./assets/img/genmapthumbs/" + basename, response.data);
         resultItem.thumbnail = "img/genmapthumbs/" + basename;
         // finish task
