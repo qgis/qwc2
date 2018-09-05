@@ -8,14 +8,7 @@
     flex: 1 0 auto;
     align-items: center;
     justify-content: center;
-}
-
-#TaskBar.Redlining span.ColorButton {
-    margin: 0 0.5em 0 0.25em;
-}
-
-#TaskBar.Redlining span.react-numeric-input {
-  margin-left: 0.5em;
+    margin: 0 0.25em;
 }
 
 #TaskBar.Redlining span.react-numeric-input > input {
@@ -38,7 +31,6 @@
 #TaskBar.Redlining input.redlining-label {
   width: 7em;
   height: 2em;
-  margin-left: 0.5em;
   padding: 0.25em;
   border: 1px solid @item_border@;
 }

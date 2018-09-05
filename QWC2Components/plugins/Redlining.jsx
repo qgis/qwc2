@@ -77,17 +77,17 @@ class Redlining extends React.Component {
                 <ButtonBar buttons={buttons} active={activeButton} onClick={(key, data) => this.actionChanged(data)} />
                 <div className="redlining-controlsbar">
                     <span>
-                        <span><Message msgId="redlining.outline" />:</span>
+                        <span><Message msgId="redlining.outline" />:&nbsp;</span>
                         <ColorButton color={this.props.redlining.borderColor} onColorChanged={(color) => this.colorPicked({borderColor: color})} />
                     </span>
                     {this.props.redlining.geomType === 'LineString' ? null : (
                         <span>
-                            <span><Message msgId="redlining.fill" />:</span>
+                            <span><Message msgId="redlining.fill" />:&nbsp;</span>
                             <ColorButton color={this.props.redlining.fillColor} onColorChanged={(color) => this.colorPicked({fillColor: color})} />
                         </span>
                     )}
                     <span>
-                        <span>{sizeLabel}:</span>
+                        <span>{sizeLabel}:&nbsp;</span>
                         <NumericInput mobile min={1} max={99} value={this.props.redlining.size} onChange={(nr) => this.updateRedliningState({size: nr})}/>
                     </span>
                     <span>
