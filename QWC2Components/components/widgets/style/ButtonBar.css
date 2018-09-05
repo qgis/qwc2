@@ -17,52 +17,9 @@ div.buttonbar-disabled {
 
 div.ButtonBar > button {
     flex: 1 1 auto;
-    display: inline-flex;
-    border-style: solid;
-    border-top: 1px solid @item_border@;
-    border-bottom: 1px solid @item_border@;
-    border-right: 1px solid @item_border@;
-    border-left: 0;
-    padding: 0.25em;
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-    background-color: @button_bg@;
-    height: 2em;
-}
-
-div.ButtonBar > button > * {
-    flex: 0 0 auto;
-}
-
-div.ButtonBar > button:focus {
-    outline: 0;
-}
-
-div.ButtonBar > button > .icon
-{
-    margin-right: 0.25em;
+    border-left-width: 0;
 }
 
 div.ButtonBar > button:first-child {
-    border-left: 1px solid @item_border@;
-}
-
-div.ButtonBar > button.pressed {
-    background-color: @item_active@;
-    color: white;
-}
-
-div.ButtonBar > button:active > * {
-    position: relative!important;
-    left: 1px;
-    top: 1px;
-}
-
-div.ButtonBar > button:hover {
-    background-color: @button_hover_bg@;
-}
-
-div.ButtonBar > button.pressed:hover {
-    background-color: @item_active_hover@;
+    border-left-width: 1px;
 }

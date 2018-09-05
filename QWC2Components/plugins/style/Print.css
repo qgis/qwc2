@@ -67,6 +67,10 @@
 }
 
 #Print div.button-bar {
-    margin: 1em;
+    margin: 1em 0.25em 0.25em 0.25em;
     text-align: center;
+}
+
+#Print div.button-bar > button {
+    width: 100%;
 }

@@ -68,3 +68,51 @@ h3 { font-size: 140%; }
 h4 { font-size: 130%; }
 h5 { font-size: 120%; }
 h6 { font-size: 110%; }
+
+
+button.button {
+    display: inline-flex;
+    border: 1px solid @item_border@;
+    padding: 0.25em;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    background-color: @button_bg@;
+    height: 2em;
+}
+
+button.button:disabled {
+    color: @item_border@;
+    cursor: default;
+}
+
+button.button > * {
+    flex: 0 0 auto;
+}
+
+button.button:focus {
+    outline: 0;
+}
+
+button.button > .icon
+{
+    margin-right: 0.25em;
+}
+button.button.pressed:not(:disabled) {
+    background-color: @item_active@;
+    color: white;
+}
+
+button.button:not(:disabled):active > * {
+    position: relative!important;
+    left: 1px;
+    top: 1px;
+}
+
+button.button:not(:disabled):hover {
+    background-color: @button_hover_bg@;
+}
+
+button.button.pressed:not(:disabled):hover {
+    background-color: @item_active_hover@;
+}

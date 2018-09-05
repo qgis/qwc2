@@ -29,7 +29,7 @@ class HomeButton extends React.Component {
     render() {
         let tooltip = LocaleUtils.getMessageById(this.context.messages, "tooltip.home");
         return (
-            <button className="Button" onClick={this.resetExtent} style={{bottom: (5 + 4 * this.props.position) + 'em'}} title={tooltip}>
+            <button className="map-button" onClick={this.resetExtent} style={{bottom: (5 + 4 * this.props.position) + 'em'}} title={tooltip}>
                 <Icon icon="home"/>
             </button>
         );

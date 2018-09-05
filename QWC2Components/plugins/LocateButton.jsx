@@ -9,6 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
+const classnames = require('classnames');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const {changeLocateState} = require('../../MapStore2Components/actions/locate');
 const Icon = require('../components/Icon');
@@ -56,8 +57,12 @@ class LocateButton extends React.Component {
         } else {
             contents = (<Icon icon="screenshot"/>);
         }
+        let classes = classnames({
+            "map-button": true,
+            ["locate-button-" + this.props.locateState]: true
+        });
         return (
-            <button className={"Button locate-button-" + this.props.locateState}
+            <button className={classes}
                 onClick={this.onClick} title={tooltip}
                 disabled={this.props.locateState === "PERMISSION_DENIED"}
                 style={{bottom: (5 + 4 * this.props.position) + 'em'}}

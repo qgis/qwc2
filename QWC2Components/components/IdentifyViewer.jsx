@@ -390,7 +390,7 @@ class IdentifyViewer extends React.Component {
                     </div>
                     {attributes}
                     <div className="identify-buttonbox">
-                        {this.props.enableExport ? (<button onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
+                        {this.props.enableExport ? (<button className="button" onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
                     </div>
                 </div>
             );
@@ -413,7 +413,7 @@ class IdentifyViewer extends React.Component {
                         })}
                     </div>
                     <div className="identify-buttonbox">
-                        {this.props.enableExport ? (<button onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
+                        {this.props.enableExport ? (<button className="button" onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
                     </div>
                 </div>
             );

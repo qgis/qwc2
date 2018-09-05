@@ -9,6 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
+const classnames = require('classnames');
 const Icon = require('../Icon');
 const Message = require('../../../MapStore2Components/components/I18N/Message');
 require('./style/ButtonBar.css');
@@ -36,7 +37,10 @@ class ButtonBar extends React.Component {
         return (
             <div className="ButtonBar">
                 {this.props.buttons.map(button => {
-                    let classes = (this.props.active === button.key ? 'pressed' : '');
+                    let classes = classnames({
+                        "button": true,
+                        "pressed": this.props.active === button.key
+                    });
                     classes += button.extraClasses ? ' ' + button.extraClasses : '';
                     return (
                         <button type={button.type || "button"} key={button.key} className={classes} onClick={button.type !== "submit" ? (ev) => this.props.onClick(button.key, button.data) : null}>

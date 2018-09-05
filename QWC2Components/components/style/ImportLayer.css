@@ -29,23 +29,8 @@
 }
 
 #ImportLayer button.importlayer-addbutton {
-    border: 1px solid @item_border@;
-    background-color: @button_bg@;
     width: 100%;
     margin: 0.5em 0;
-    height: 2em;
-    padding: 0.25em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#ImportLayer button.importlayer-addbutton:hover {
-    background-color: @button_hover_bg@;
-}
-
-#ImportLayer button.importlayer-addbutton > span {
-    flex: 0 0 auto;
 }
 
 #ImportLayer button.importlayer-addbutton > div.spinner {

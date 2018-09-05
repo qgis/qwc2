@@ -36,8 +36,8 @@ class BackgroundSwitcher extends React.Component {
     render() {
         let tooltip = LocaleUtils.getMessageById(this.context.messages, "tooltip.background");
         let classes = classnames({
-            "Button": true,
-            "button-active": this.state.visible
+            "map-button": true,
+            "map-button-active": this.state.visible
         });
         let backgroundLayers = this.props.layers.filter(layer => layer.group === "background").slice(0).reverse();
         if(backgroundLayers.length > 0){

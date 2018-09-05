@@ -1,4 +1,7 @@
-button.Button {
+button.map-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     z-index: 2;
     position: absolute !important;
     right: 1.5em;
@@ -10,29 +13,30 @@ button.Button {
     border: none;
     box-shadow: 0px 5px 10px rgba(136, 136, 136, 0.5);
     transition: background-color 0.5s, color 0.5s;
+    cursor: pointer;
 }
 
-button.Button:disabled {
+button.map-button:disabled {
     opacity: 0.7;
 }
 
-button.Button.button-active {
+button.map-button-active {
     background-color: @map_button_active_bg@;
     color: @map_button_active_fg@;
 }
 
-button.Button.locate-button-LOCATING,
-button.Button.locate-button-ENABLED {
+button.map-button.locate-button-LOCATING,
+button.map-button.locate-button-ENABLED {
     background-color: @map_button_fg@;
     color: @map_button_bg@;
 }
 
-button.Button.locate-button-FOLLOWING {
+button.map-button.locate-button-FOLLOWING {
     background-color: yellow;
     color: @map_button_bg@;
 }
 
-button.Button.locate-button-LOCATING > div.spinner {
+button.map-button.locate-button-LOCATING > div.spinner {
     width: 1.5em;
     height: 1.5em;
 }

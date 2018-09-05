@@ -235,8 +235,8 @@ class Search extends React.Component {
                         </tbody>
                     </table>
                     <div className="search-form-buttons">
-                        <button onClick={this.submitFormSearch}><Icon icon="search"/> Search</button>
-                        <button onClick={() => this.setState({showfields: false}) }><Icon icon="remove"/> Cancel</button>
+                        <button className="button" onClick={this.submitFormSearch}><Icon icon="search"/> Search</button>
+                        <button className="button" onClick={() => this.setState({showfields: false}) }><Icon icon="remove"/> Cancel</button>
                     </div>
                 </div>
             );

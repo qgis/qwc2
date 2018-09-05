@@ -78,14 +78,14 @@ class ImportLayer extends React.Component {
         let button = null;
         if(this.state.type === "URL") {
             button = (
-                <button disabled={!this.state.url || this.state.pendingRequests > 0} className="importlayer-addbutton" type="button" onClick={this.scanService}>
+                <button disabled={!this.state.url || this.state.pendingRequests > 0} className="button importlayer-addbutton" onClick={this.scanService}>
                     {this.state.pendingRequests > 0 ? (<Spinner />) : null}
                     <Message msgId="importlayer.connect" />
                 </button>
             );
         } else {
             button = (
-                <button disabled={this.state.file === null} className="importlayer-addbutton" type="button" onClick={this.importFileLayer}>
+                <button disabled={this.state.file === null} className="button importlayer-addbutton" type="button" onClick={this.importFileLayer}>
                     <Message msgId="importlayer.addlayer" />
                 </button>
             );
