@@ -29,6 +29,10 @@ class ResizeableWindow extends React.Component {
         minHeight: PropTypes.number,
         maxWidth: PropTypes.number,
         maxHeight: PropTypes.number,
+        extraControls: PropTypes.arrayOf(PropTypes.shape({
+            icon: PropTypes.string.isRequired,
+            callback: PropTypes.func.isRequired
+        }))
     }
     static defaultProps = {
         icon: null,
@@ -42,7 +46,8 @@ class ResizeableWindow extends React.Component {
         maxWidth: null,
         maxHeight: null,
         onClose: () => {},
-        scrollable: false
+        scrollable: false,
+        extraControls: null
     }
     renderRole = (role) => {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
@@ -83,7 +88,10 @@ class ResizeableWindow extends React.Component {
                         <span className="resizeable-window-titlebar-title">
                             <Message msgId={this.props.title} />
                         </span>
-                        <Icon className="resizeable-window-titlebar-close" onClick={this.onClose} icon="remove"/>
+                        {(this.props.extraControls || []).map(entry => (
+                            <Icon key={entry.icon} className="resizeable-window-titlebar-control" onClick={entry.callback} icon={entry.icon}/>
+                        ))}
+                        <Icon className="resizeable-window-titlebar-control" onClick={this.onClose} icon="remove"/>
                     </div>
                     <div className={bodyclasses} onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
                         {this.renderRole("body")}
