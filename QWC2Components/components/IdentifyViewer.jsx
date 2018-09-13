@@ -17,6 +17,7 @@ const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 const Icon = require('./Icon');
+const Spinner = require('./Spinner');
 require('./style/IdentifyViewer.css');
 
 let urlRegEx = /(\s|^)((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
@@ -46,8 +47,8 @@ class IdentifyViewer extends React.Component {
         resultTree: {},
         currentResult: null,
         currentLayer: null,
-        displayFieldMap: {}
-
+        displayFieldMap: {},
+        pendingReports: []
     }
     constructor(props) {
         super(props);
@@ -328,6 +329,7 @@ class IdentifyViewer extends React.Component {
                 {resultbox}
                 {featureReportTemplate ? (<div className="identify-result-feature-report-frame">
                     <a href="#" onClick={ev => this.getFeatureReport(featureReportTemplate, result)} ><Message msgId="identify.featureReport" /></a>
+                    {this.state.pendingReports.includes(result.id) ? (<Spinner />) : null}
                 </div>) : null}
             </div>
         );
@@ -449,7 +451,9 @@ class IdentifyViewer extends React.Component {
             y: result.clickPos[1],
             crs: this.props.mapcrs
         };
+        this.setState({pendingReports: [...this.state.pendingReports, result.id]});
         axios.get(serviceUrl, {params: params, responseType: "arraybuffer"}).then(response => {
+            this.setState({pendingReports: this.state.pendingReports.filter(entry => entry !== result.id)});
             let contentType = response.headers["content-type"];
             let contentDisposition = response.headers["content-disposition"];
             let match = /filename=([^;\s]+)/.exec(contentDisposition);

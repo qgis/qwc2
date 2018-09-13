@@ -171,4 +171,12 @@
 #IdentifyViewer div.identify-result-feature-report-frame {
     padding: 0.25em 0.5em;
     font-size: small;
+    display: flex;
+    align-items: center;
+}
+
+#IdentifyViewer div.identify-result-feature-report-frame > div.spinner {
+    width: 1em;
+    height: 1em;
+    margin-left: 0.5em;
 }
