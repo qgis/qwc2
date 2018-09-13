@@ -31,6 +31,49 @@ textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]) {
     padding: 0.25em;
 }
 
+/** Range slider **/
+input[type=range]:focus {
+    outline: none;
+}
+
+/* Webkit */
+input[type=range]{
+    -webkit-appearance: none;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    background: #ddd;
+    height: 4px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: 1px solid @map_button_bg@;
+    border-radius: 50%;
+    height: 12px;
+    width: 12px;
+    background: @map_button_fg@;
+    margin-top: -3.5px;
+}
+
+/* IE */
+input[type=range]::-ms-track {
+    border: 5px solid white;
+    /*remove default tick marks*/
+    color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+    background: #777;
+}
+input[type=range]::-ms-fill-upper {
+    background: #ccc;
+}
+input[type=range]::-ms-thumb {
+    border: 1px solid @map_button_bg@;
+    border-radius: 50%;
+    background: @map_button_fg@;
+}
+
 a {
     cursor:pointer;
     color: #337ab7;
