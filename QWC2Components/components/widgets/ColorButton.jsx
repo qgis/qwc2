@@ -79,17 +79,18 @@ class ColorButton extends React.Component {
     hexColor(color) {
         return (0x1000000 + (color[2] | (color[1] << 8) | (color[0] << 16))).toString(16).slice(1).toUpperCase();
     }
-    togglePicker = () => {
+    togglePicker = (ev) => {
         if(!this.state.pickerVisible) {
             document.addEventListener('click', this.checkClosePicker);
         } else {
             document.removeEventListener('click', this.checkClosePicker);
         }
+        ev.stopPropagation();
         this.setState({hexStr: null, pickerVisible: !this.state.pickerVisible});
     }
     checkClosePicker = (ev) => {
         if(this.pickerEl && !this.pickerEl.contains(ev.target)) {
-            this.togglePicker();
+            this.togglePicker(ev);
         }
     }
     selectColor = (idx) => {
