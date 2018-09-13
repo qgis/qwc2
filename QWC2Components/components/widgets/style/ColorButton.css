@@ -112,5 +112,6 @@ span.colorbutton-picker-alpha > span {
 span.colorbutton-picker-alpha input[type=range] {
     display: inline-block;
     width: 4.5em;
+    padding: 0;
     outline: 0;
 }
