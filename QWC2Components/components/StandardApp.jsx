@@ -140,6 +140,9 @@ class AppInitComponent extends React.Component {
         });
     }
     restoreMap = (theme, themes, initialView, visibleLayers, visibleBgLayer, state, searchText, searchProviders) => {
+        // Restore search
+        this.props.changeSearch(searchText, searchProviders);
+
         // Restore theme and layers
         this.props.setCurrentTheme(theme, themes, false, initialView, visibleLayers, visibleBgLayer, state.themesublayers);
 
@@ -147,9 +150,6 @@ class AppInitComponent extends React.Component {
         if(state.layers) {
             this.props.restoreLayerState(state.layers);
         }
-
-        // Restore search
-        this.props.changeSearch(searchText, searchProviders);
     }
     render() {
         return null;
