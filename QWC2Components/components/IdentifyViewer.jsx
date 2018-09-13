@@ -339,6 +339,7 @@ class IdentifyViewer extends React.Component {
             <li key={result.id}
                 className="identify-feature-result"
                 onMouseOver={() => this.setHighlightedResults([result], this.state.resultTree)}
+                onClick={() => this.setHighlightedResults([result], this.state.resultTree)}
                 onMouseOut={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
             >
                 <span className={this.state.currentResult === result ? "active clickable" : "clickable"} onClick={()=> this.setCurrentResult(layer, result)} ref={ref}>{displayName}</span>
