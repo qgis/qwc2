@@ -13,7 +13,6 @@ const assign = require('object-assign');
 const classnames = require('classnames');
 const isEmpty = require('lodash.isempty');
 const Sortable = require('react-sortablejs');
-const imagesLoaded = require('imagesloaded');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeLayerProperties, removeLayer, reorderLayer, setSwipe} = require('../actions/layers')
 const {toggleMapTips} = require('../actions/map');
@@ -77,6 +76,15 @@ class LayerTree extends React.Component {
     }
     static contextTypes = {
         messages: PropTypes.object
+    }
+    constructor(props) {
+        super(props);
+        this.legendPrintWindow = null;
+        window.addEventListener('beforeunload', (ev) => {
+            if(this.legendPrintWindow && !this.legendPrintWindow.closed) {
+                this.legendPrintWindow.close();
+            }
+        });
     }
     getGroupVisibility = (group) => {
         if(isEmpty(group.sublayers)) {
@@ -456,7 +464,16 @@ class LayerTree extends React.Component {
         this.props.setSwipe(this.props.swipe || this.props.swipe === 0 ? undefined : 50);
     }
     printLegend = () => {
+        if(this.legendPrintWindow && !this.legendPrintWindow.closed) {
+            this.legendPrintWindow.focus();
+            return;
+        }
         let body = '<p id="legendcontainerbody">';
+        let printLabel = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
+        body += '<div id="print">' +
+                '<style type="text/css">@media print{ #print { display: none; }}</style>' +
+                '<button onClick="(function(){window.print();})()">' + printLabel + '</button>' +
+                '</div>';
         body += this.props.layers.map(layer => {
             if(layer.legendUrl) {
                 return layer.params.LAYERS.split(",").map(sublayer => {
@@ -473,19 +490,26 @@ class LayerTree extends React.Component {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
 
         let win = window.open(assetsPath + "/templates/legendprint.html", "Legend", "toolbar=no, location=no, directories=no, status=no, menubar=no");
-        win.addEventListener('load', ev => {
+        let loadCallback = () => {
             let container = win.document.getElementById("legendcontainer");
             if(container) {
                 container.innerHTML = body;
-                imagesLoaded(container, (ev) => {
-                    win.focus();
-                    win.print();
-                    win.close();
-                });
             } else {
                 win.document.body.innerHTML = "Broken template. An element with id=legendcontainer must exist.";
             }
-        }, false);
+        };
+        if(window.navigator.userAgent.indexOf('Trident/') > 0) {
+            // IE...
+            let interval = setInterval(() => {
+                if (win.document.readyState === 'complete') {
+                    loadCallback();
+                    clearInterval(interval);
+                }
+            });
+        } else {
+            win.addEventListener('load', loadCallback, false);
+        }
+        this.legendPrintWindow = win;
     }
 };
 
