@@ -30,7 +30,7 @@ const FeatureStyles = {
                 stroke: new ol.style.Stroke({color: opts.strokeColor, width: opts.strokeWidth})
             }),
             text: new ol.style.Text({
-              font: '10pt sans-serif',
+              font: '11pt sans-serif',
               text: feature.getProperties()["label"] || "",
               fill: new ol.style.Fill({color: opts.textFill}),
               stroke: new ol.style.Stroke({color: opts.textStroke, width: 3}),
@@ -58,11 +58,11 @@ const FeatureStyles = {
                     src: markerIcon
                 }),
                 text: new ol.style.Text({
-                    font: '10pt sans-serif',
+                    font: '11pt sans-serif',
                     text: feature.getProperties()["label"] || "",
                     offsetY: 8,
                     fill: new ol.style.Fill({color: '#000000'}),
-                    stroke: new ol.style.Stroke({color: '#FFFFFF', width: 2})
+                    stroke: new ol.style.Stroke({color: '#FFFFFF', width: 3})
                 })
             })
         ];
