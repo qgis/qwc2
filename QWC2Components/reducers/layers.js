@@ -92,13 +92,14 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             if(!layer) {
                 return state;
             }
+            let newLayers = state.flat;
             if(layer.group === "background" || isEmpty(action.sublayerpath)) {
-                return assign({}, state, {flat: state.flat.filter(layer => layer.id !== action.layerId)});
+                newLayers = state.flat.filter(layer => layer.id !== action.layerId);
             } else {
-                let newLayers = LayerUtils.removeLayer(state.flat, layer, action.sublayerpath, state.swipe);
-                UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-                return assign({}, state, {flat: newLayers});
+                newLayers = LayerUtils.removeLayer(state.flat, layer, action.sublayerpath, state.swipe);
             }
+            UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
+            return assign({}, state, {flat: newLayers});
         }
         case ADD_LAYER_FEATURES: {
             let newLayers = (state.flat || []).concat();
