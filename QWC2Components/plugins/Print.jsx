@@ -165,7 +165,8 @@ class Print extends React.Component {
 
         let labels = this.state.layout && this.state.layout.labels ? this.state.layout.labels : [];
 
-        let highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, printDpi);
+        const scaleFactor = 1.9; // Experimentally determined...
+        let highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, printDpi, scaleFactor);
 
         return (
             <div role="body" className="print-body">
