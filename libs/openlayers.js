@@ -56,7 +56,7 @@ module.exports = {
     Tile: require('ol/layer/Tile').default,
     Vector: require('ol/layer/Vector').default
   },
-  loadingstrategy: require('ol/loadingstrategy').default,
+  loadingstrategy: require('ol/loadingstrategy'),
   Map: require('ol/Map').default,
   Object: require('ol/Object').default,
   Overlay: require('ol/Overlay').default,
