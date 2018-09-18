@@ -16,7 +16,7 @@ const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 
 const VectorLayerUtils = {
 
-    createPrintHighlighParams(layers, printCrs, dpi = 96) {
+    createPrintHighlighParams(layers, printCrs, dpi = 96, scaleFactor = 1.0) {
         let params = {
             geoms: [],
             styles: [],
@@ -35,7 +35,7 @@ const VectorLayerUtils = {
             }
             for(let feature of layer.features) {
                 let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
-                params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, layer.opacity, dpi));
+                params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, layer.opacity, dpi, scaleFactor));
                 params.labels.push(feature.properties && feature.properties.label || "");
                 if(feature.styleName === "text") {
                     // Make point a tiny square, so that QGIS server centers the text inside the polygon when labelling
@@ -54,20 +54,20 @@ const VectorLayerUtils = {
                     params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
                     params.labelFillColors.push(ensureHex(feature.styleOptions.fillColor));
                     params.labelOultineColors.push(ensureHex(feature.styleOptions.strokeColor));
-                    params.labelOutlineSizes.push(1);
-                    params.labelSizes.push(10 * feature.styleOptions.strokeWidth);
+                    params.labelOutlineSizes.push(scaleFactor);
+                    params.labelSizes.push(10 * feature.styleOptions.strokeWidth * scaleFactor);
                 } else {
                     params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
                     params.labelFillColors.push(defaultFeatureStyle.textFill);
                     params.labelOultineColors.push(defaultFeatureStyle.textStroke);
-                    params.labelOutlineSizes.push(1);
-                    params.labelSizes.push(10);
+                    params.labelOutlineSizes.push(scaleFactor);
+                    params.labelSizes.push(10 * scaleFactor);
                 }
             }
         }
         return params;
     },
-    createSld(geometrytype, styleName, styleOptions, layerOpacity, dpi = 96.) {
+    createSld(geometrytype, styleName, styleOptions, layerOpacity, dpi = 96., scaleFactor = 1.0) {
         let opts = {};
         // Special cases
         if(styleName == 'text') {
@@ -87,7 +87,7 @@ const VectorLayerUtils = {
             // Default style
             opts = assign({}, ConfigUtils.getConfigProp("defaultFeatureStyle"), styleOptions);
         }
-        let dpiScale = dpi / 96.;
+        let dpiScale = dpi / 96. * scaleFactor;
 
         const ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
         const opacity = (rgb) => ((!Array.isArray(rgb) ? 1. : (rgb[3] === undefined ? 1. : rgb[3])) * layerOpacity / 255.);
@@ -117,7 +117,7 @@ const VectorLayerUtils = {
                    '</se:Stroke>' +
                    fill +
                    '</se:Mark>' +
-                   '<se:Size>' + (2. * opts.circleRadius * dpiScale) + '</se:Size>' +
+                   '<se:Size>' + (2 * opts.circleRadius * dpiScale) + '</se:Size>' +
                    '</se:Graphic>' +
                    '</se:PointSymbolizer>';
         } else if(geometrytype == "LineString") {
