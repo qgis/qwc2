@@ -49,7 +49,7 @@ class Print extends React.Component {
         if(newProps.theme !== this.props.theme || !this.state.layout) {
             let layout = null;
             if(newProps.theme && newProps.theme.print && newProps.theme.print.length > 0) {
-                layout = newProps.theme.print[0];
+                layout = newProps.theme.print.find(layout => layout.default) || newProps.theme.print[0];
             }
             newState["layout"] = layout;
         }
