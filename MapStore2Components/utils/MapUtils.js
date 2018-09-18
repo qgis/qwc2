@@ -165,6 +165,7 @@ function computeForZoom(list, zoomLevel) {
     if(ConfigUtils.getConfigProp("allowFractionalZoom") !== true) {
         return list[Math.min(list.length - 1, Math.round(zoomLevel))];
     }
+    zoomLevel = Math.max(zoomLevel, 0);
     let upper = Math.ceil(zoomLevel);
     let lower = Math.floor(zoomLevel);
     if(upper >= list.length) {
