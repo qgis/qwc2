@@ -35,7 +35,7 @@ const VectorLayerUtils = {
             }
             for(let feature of layer.features) {
                 let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
-                params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, dpi));
+                params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, layer.opacity, dpi));
                 params.labels.push(feature.properties && feature.properties.label || "");
                 if(feature.styleName === "text") {
                     // Make point a tiny square, so that QGIS server centers the text inside the polygon when labelling
@@ -67,7 +67,7 @@ const VectorLayerUtils = {
         }
         return params;
     },
-    createSld(geometrytype, styleName, styleOptions, dpi = 96.) {
+    createSld(geometrytype, styleName, styleOptions, layerOpacity, dpi = 96.) {
         let opts = {};
         // Special cases
         if(styleName == 'text') {
@@ -90,7 +90,7 @@ const VectorLayerUtils = {
         let dpiScale = dpi / 96.;
 
         const ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
-        const opacity = (rgb) => (!Array.isArray(rgb) ? 1. : (rgb[3] === undefined ? 1. : rgb[3]));
+        const opacity = (rgb) => ((!Array.isArray(rgb) ? 1. : (rgb[3] === undefined ? 1. : rgb[3])) * layerOpacity / 255.);
 
         let stroke = '<se:Stroke>' +
                      '<se:SvgParameter name="stroke">' + ensureHex(opts.strokeColor) + '</se:SvgParameter>' +
