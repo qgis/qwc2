@@ -22,6 +22,7 @@ const Icon = require('../components/Icon');
 const ImportLayer = require('../components/ImportLayer');
 const LayerInfoWindow = require('../components/LayerInfoWindow');
 const {SideBar} = require('../components/SideBar');
+const Spinner = require('../components/Spinner');
 const LayerUtils = require('../utils/LayerUtils');
 const ThemeUtils = require('../utils/ThemeUtils');
 require('./style/LayerTree.css');
@@ -199,19 +200,26 @@ class LayerTree extends React.Component {
                 legendicon = (<span className="layertree-item-legend-coloricon" style={{backgroundColor: sublayer.color}} />);
             }
         }
+        let checkbox = null;
+        if(layer.type === "placeholder") {
+            checkbox = (<Spinner />);
+        } else {
+            checkbox = (<Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.layerToggled(layer, path, sublayer.visibility, inMutuallyExclusiveGroup)} />);
+        }
         let title = sublayer.title;
         let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true || !layer.isThemeLayer;
+        let allowOptions = layer.type !== "placeholder";
         return (
             <div className="layertree-item-container" key={sublayer.uuid} data-id={JSON.stringify({layer: layer.uuid, path: path})}>
                 <div className={classnames(itemclasses)}>
                     {this.props.flattenGroups ? null : (<span className="layertree-item-expander"></span>)}
-                    <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.layerToggled(layer, path, sublayer.visibility, inMutuallyExclusiveGroup)} />
+                    {checkbox}
                     {legendicon}
                     <span className="layertree-item-title" title={title}>{title}</span>
                     {sublayer.queryable && this.props.showQueryableIcon ? (<Icon className="layertree-item-queryable" icon="info-sign" />) : null}
                     <span className="layertree-item-spacer"></span>
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
-                    <Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>
+                    {allowOptions ? (<Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>) : null}
                 </div>
                 {editframe}
             </div>

@@ -68,6 +68,14 @@
     flex: 0 0 auto;
 }
 
+#LayerTree div.layertree-item > div.spinner {
+    width: 1em;
+    height: 1em;
+    line-height: 1.75em;
+    flex: 0 0 auto;
+    margin-right: 0.5em;
+}
+
 #LayerTree span.layertree-item-checkbox {
     margin-right: 0.5em;
     cursor: pointer;

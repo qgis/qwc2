@@ -13,7 +13,7 @@ const CoordinatesUtils = require("../../MapStore2Components/utils/CoordinatesUti
 const MapUtils = require("../../MapStore2Components/utils/MapUtils");
 const ThemeUtils = require("../utils/ThemeUtils");
 const LayerUtils = require("../utils/LayerUtils");
-const {addLayer, removeLayer, removeAllLayers, setSwipe} = require("./layers");
+const {LayerRole, addLayer, removeLayer, removeAllLayers, setSwipe} = require("./layers");
 const {configureMap} = require("./map");
 
 const THEMES_LOADED = 'THEMES_LOADED';
@@ -106,7 +106,8 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
             if(i >= exploded.length || exploded[i].sublayer.name !== visibleLayer.name) {
                 let placeholder = LayerUtils.explodeLayers([{
                     type: "placeholder",
-                    layertreehidden: true,
+                    title: visibleLayer.name,
+                    role: LayerRole.USERLAYER,
                     loading: true,
                     source: visibleLayer.type + ':' + visibleLayer.url + '#' + visibleLayer.name,
                     refid: uuid.v4(),
