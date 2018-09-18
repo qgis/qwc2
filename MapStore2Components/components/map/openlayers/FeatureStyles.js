@@ -35,6 +35,7 @@ const FeatureStyles = {
               fill: new ol.style.Fill({color: opts.textFill}),
               stroke: new ol.style.Stroke({color: opts.textStroke, width: 3}),
               textAlign: feature.getGeometry().getType() === "Point" ? 'left' : 'center',
+              textBaseline: feature.getGeometry().getType() === "Point" ? 'bottom' : 'middle',
               offsetX: feature.getGeometry().getType() === "Point" ? (5 + opts.circleRadius) : 0
             })
         });
