@@ -19,6 +19,7 @@ const CHANGE_LAYER_PROPERTIES = 'CHANGE_LAYER_PROPERTIES';
 const REFRESH_LAYER = 'REFRESH_LAYER';
 const REMOVE_ALL_LAYERS = 'REMOVE_ALL_LAYERS';
 const RESTORE_LAYER_STATE = 'RESTORE_LAYER_STATE';
+const REPLACE_PLACEHOLDER_LAYER = 'REPLACE_PLACEHOLDER_LAYER';
 const SET_SWIPE = 'SET_SWIPE';
 
 
@@ -31,10 +32,11 @@ const LayerRole = {
 };
 
 
-function addLayer(layer) {
+function addLayer(layer, front=false) {
     return {
         type: ADD_LAYER,
-        layer
+        layer,
+        front
     };
 }
 
@@ -139,6 +141,14 @@ function restoreLayerState(layers) {
     }
 }
 
+function replacePlaceholderLayer(source, layer) {
+    return {
+        type: REPLACE_PLACEHOLDER_LAYER,
+        source,
+        layer
+    }
+}
+
 function setSwipe(swipe) {
     return {
         type: SET_SWIPE,
@@ -161,6 +171,7 @@ module.exports = {
     refreshLayer,
     removeAllLayers,
     restoreLayerState,
+    replacePlaceholderLayer,
     setSwipe,
     SET_LAYER_LOADING,
     ADD_LAYER,
@@ -173,5 +184,6 @@ module.exports = {
     REFRESH_LAYER,
     REMOVE_ALL_LAYERS,
     RESTORE_LAYER_STATE,
+    REPLACE_PLACEHOLDER_LAYER,
     SET_SWIPE
 };

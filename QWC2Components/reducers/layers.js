@@ -25,6 +25,7 @@ const {
     REFRESH_LAYER,
     REMOVE_ALL_LAYERS,
     RESTORE_LAYER_STATE,
+    REPLACE_PLACEHOLDER_LAYER,
     SET_SWIPE
 } = require('../actions/layers');
 
@@ -76,7 +77,9 @@ function layers(state = {flat: [], swipe: undefined}, action) {
                 assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
             }
             let inspos = 0;
-            for(; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);
+            if(!action.front) {
+                for(; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);
+            }
             newLayers.splice(inspos, 0, newLayer);
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
             if(newLayer.group === 'background' && newLayer.visibility) {
@@ -189,6 +192,17 @@ function layers(state = {flat: [], swipe: undefined}, action) {
                 if(layer.type === "wms") {
                     assign(layer, LayerUtils.buildWMSLayerParams(layer));
                 }
+            }
+            UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
+            return assign({}, state, {flat: newLayers});
+        }
+        case REPLACE_PLACEHOLDER_LAYER: {
+            let newLayers = state.flat || [];
+            if(action.layer) {
+                newLayers = newLayers.map(layer => layer.type === 'placeholder' && layer.source === action.source ? assign({}, action.layer, {refid: uuid.v4(), uuid: uuid.v4()}) : layer);
+            } else {
+                console.log("Removing placeholer for " + action.source);
+                newLayers = newLayers.filter(layer => !(layer.type === 'placeholder' && layer.source === action.source));
             }
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
             return assign({}, state, {flat: newLayers});

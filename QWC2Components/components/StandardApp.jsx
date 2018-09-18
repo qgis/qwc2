@@ -29,7 +29,7 @@ const PluginsContainer = require('./PluginsContainer');
 const {changeBrowserProperties} = require('../../MapStore2Components/actions/browser');
 const {loadLocale} = require('../../MapStore2Components/actions/locale');
 const {localConfigLoaded} = require('../../MapStore2Components/actions/localConfig');
-const {restoreLayerState} = require('../actions/layers');
+const {restoreLayerState, replacePlaceholderLayer} = require('../actions/layers');
 const {changeSearch} = require('../actions/search');
 const {themesLoaded,setCurrentTheme} = require('../actions/theme');
 
@@ -38,6 +38,7 @@ const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUti
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const PluginsUtils = require('../../MapStore2Components/utils/PluginsUtils');
+const ServiceLayerUtils = require('../utils/ServiceLayerUtils');
 const LayerUtils = require('../utils/LayerUtils');
 const {UrlParams, resolvePermaLink} = require('../utils/PermaLinkUtils');
 const ThemeUtils = require('../utils/ThemeUtils');
@@ -52,7 +53,9 @@ class AppInitComponent extends React.Component {
         mapSize: PropTypes.object,
         themesLoaded: PropTypes.func,
         changeSearch: PropTypes.func,
-        setCurrentTheme: PropTypes.func
+        setCurrentTheme: PropTypes.func,
+        restoreLayerState: PropTypes.func,
+        replacePlaceholderLayer: PropTypes.func
     }
     constructor(props) {
         super(props);
@@ -86,7 +89,7 @@ class AppInitComponent extends React.Component {
                     theme = ThemeUtils.getThemeById(themes, themes.defaultTheme);
                     params = {};
                 }
-                let visibleLayers = params.l ? params.l.split(",") : null;
+                let visibleLayers = params.l ? params.l.split(",").filter(entry => entry) : null;
                 let visibleBgLayer = params.bl || params.bl === '' ? params.bl : null;
                 let initialView = null;
                 if(params.c && params.s !== undefined) {
@@ -114,16 +117,13 @@ class AppInitComponent extends React.Component {
 
                 // Clear all params
                 UrlParams.updateParams({k: undefined, t: undefined, l: undefined, bl: '', c: undefined, s: undefined, e: undefined, crs: undefined, st: undefined, sp: undefined});
-
                 // Restore map (invoking appConfig.layerRestorer to handle missing layers if necessary)
                 if(visibleLayers && this.props.appConfig.themeLayerRestorer) {
                     let layerNames = [];
                     LayerUtils.collectWMSSublayerParams(theme, layerNames, [], []);
-                    let nameOpacityPattern = /([^\[]+)\[(\d+)]/;
-                    let visibleLayerNames = visibleLayers.map(entry => {
-                        let match = nameOpacityPattern.exec(entry);
-                        return match ? match[1] : entry;
-                    });
+                    let visibleLayerNames = visibleLayers.map(entry => LayerUtils.splitLayerUrlParam(entry))
+                                 .filter(entry => entry.type === 'theme')
+                                 .map(entry => entry.name);
                     let missingLayers = visibleLayerNames.filter(entry => !layerNames.includes(entry));
                     if(!isEmpty(missingLayers)) {
                         this.props.appConfig.themeLayerRestorer(missingLayers, theme, (newThemeSublayers) => {
@@ -144,12 +144,39 @@ class AppInitComponent extends React.Component {
         this.props.changeSearch(searchText, searchProviders);
 
         // Restore theme and layers
-        this.props.setCurrentTheme(theme, themes, false, initialView, visibleLayers, visibleBgLayer, state.themesublayers);
+        try {
+            this.props.setCurrentTheme(theme, themes, false, initialView, visibleLayers, visibleBgLayer, state.themesublayers);
+        } catch(e) {
+            console.log(e.stack);
+        }
 
         // Restore layers from permalink state
         if(state.layers) {
             this.props.restoreLayerState(state.layers);
         }
+
+        // Gather external layers to restore
+        let externalLayers = {};
+        for(let i = 0, n = (visibleLayers || []).length; i < n; ++i) {
+            let layer = LayerUtils.splitLayerUrlParam(visibleLayers[i]);
+            if(layer.type !== 'theme') {
+                let key = layer.type + ":" + layer.url;
+                (externalLayers[key] = externalLayers[key] || []).push({
+                    name: layer.name,
+                    opacity: layer.opacity
+                });
+            }
+        }
+        for(let key of Object.keys(externalLayers)) {
+            let service = key.slice(0, 3);
+            let serviceUrl = key.slice(4);
+            ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], this.restoreExternalLayer);
+        }
+
+
+    }
+    restoreExternalLayer = (source, layer) => {
+        this.props.replacePlaceholderLayer(source, layer)
     }
     render() {
         return null;
@@ -157,12 +184,14 @@ class AppInitComponent extends React.Component {
 }
 
 let AppInit = connect(state => ({
-    mapSize: state.map.size
+    mapSize: state.map.size,
+    layers: state.layers.flat
 }), {
     themesLoaded: themesLoaded,
     changeSearch: changeSearch,
     setCurrentTheme: setCurrentTheme,
-    restoreLayerState: restoreLayerState
+    restoreLayerState: restoreLayerState,
+    replacePlaceholderLayer: replacePlaceholderLayer
 })(AppInitComponent);
 
 

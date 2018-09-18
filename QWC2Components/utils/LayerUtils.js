@@ -10,6 +10,7 @@ const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const isEqual = require('lodash.isequal');
 const uuid = require('uuid');
+const {LayerRole} = require('../actions/layers');
 
 const LayerUtils = {
     restoreVisibleLayers: function(sublayers, initiallayers, initialopacities) {
@@ -118,6 +119,9 @@ const LayerUtils = {
             if(layer.isThemeLayer) {
                 layernames.push(...layer.params.LAYERS.split(","));
                 opacities.push(...(layer.params.OPACITIES || "").split(",").map(entry => parseFloat(entry)));
+            } else if(layer.role === LayerRole.USERLAYER && (layer.type === "wms" || layer.type === "wfs")) {
+                layernames.push(layer.type + ':' + layer.url + "#" + layer.name);
+                opacities.push(layer.opacity);
             }
         }
         return layernames.map((layername, idx) => {
@@ -127,6 +131,25 @@ const LayerUtils = {
                 return layername;
             }
         }).join(",");
+    },
+    splitLayerUrlParam(entry) {
+        const nameOpacityPattern = /([^\[]+)\[(\d+)]/;
+        let type = 'theme';
+        let url = null;
+        let name = entry;
+        let opacity = 255;
+        let match = nameOpacityPattern.exec(entry);
+        if(match) {
+            name = match[1];
+            opacity = Math.round(255 - parseFloat(match[2]) / 100 * 255);
+        }
+        if(name.search(/^w(m|f)s:/) != -1) {
+            let pos = name.lastIndexOf('#');
+            type = name.slice(0, 3);
+            url = name.slice(4, pos);
+            name = name.slice(pos + 1);
+        }
+        return {type, url, name, opacity};
     },
     removeLayer(layers, layer, sublayerpath, swipeActive) {
         // Extract foreground layers

@@ -7,10 +7,12 @@
  */
 
 const assign = require('object-assign');
+const uuid = require('uuid');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const CoordinatesUtils = require("../../MapStore2Components/utils/CoordinatesUtils");
 const MapUtils = require("../../MapStore2Components/utils/MapUtils");
 const ThemeUtils = require("../utils/ThemeUtils");
+const LayerUtils = require("../utils/LayerUtils");
 const {addLayer, removeLayer, removeAllLayers, setSwipe} = require("./layers");
 const {configureMap} = require("./map");
 
@@ -32,7 +34,7 @@ function restoreDefaultTheme() {
     };
 }
 
-function setCurrentTheme(theme, themes, preserve=true, initialView=null, visibleSublayers = null, visibleBgLayer=null) {
+function setCurrentTheme(theme, themes, preserve=true, initialView=null, visibleLayers=null, visibleBgLayer=null) {
     return (dispatch, getState) => {
 
         // Get current background layer if it needs to be preserved
@@ -84,9 +86,39 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
             dispatch(addLayer(bgLayer));
         }
 
-        // Add theme layer
-        let themeLayer = ThemeUtils.createThemeLayer(theme, visibleSublayers);
-        dispatch(addLayer(themeLayer));
+        // Configure theme layer with visible sublayers
+        let themeLayer = ThemeUtils.createThemeLayer(theme, visibleLayers);
+
+        // Restore external visible layers
+        let exploded = LayerUtils.explodeLayers([themeLayer]);
+
+        // - Filter list of visible layers to only incldue theme layers which exist as well as external layers
+        visibleLayers = (visibleLayers || []).slice(0).reverse();
+        visibleLayers.filter(entry => {
+            let isThemeSublayer = exploded.find(themeSublayer => themeSublayer.sublayer.name === entry);
+            let isExternalLayer = LayerUtils.splitLayerUrlParam(entry).type !== 'theme';
+            return (isThemeSublayer || isExternalLayer);
+        })
+        // - Iterate over visible layers, and create placeholders for external layers
+        // (placeholders will be replaced as soon as capabilities of external layers are available, see StandardApp.jsx)
+        for(let i = 0; i < visibleLayers.length; ++i) {
+            let visibleLayer = LayerUtils.splitLayerUrlParam(visibleLayers[i]);
+            if(i >= exploded.length || exploded[i].sublayer.name !== visibleLayer.name) {
+                let placeholder = LayerUtils.explodeLayers([{
+                    type: "placeholder",
+                    layertreehidden: true,
+                    source: visibleLayer.type + ':' + visibleLayer.url + '#' + visibleLayer.name,
+                    refid: uuid.v4(),
+                    uuid: uuid.v4()
+                }]);
+                exploded.splice(i, 0, placeholder[0]);
+            }
+        }
+        // - Add layers
+        let layers = LayerUtils.implodeLayers(exploded);
+        for(let layer of layers) {
+            dispatch(addLayer(layer, true));
+        }
 
         dispatch({
             type: SET_CURRENT_THEME,
