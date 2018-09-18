@@ -107,6 +107,7 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
                 let placeholder = LayerUtils.explodeLayers([{
                     type: "placeholder",
                     layertreehidden: true,
+                    loading: true,
                     source: visibleLayer.type + ':' + visibleLayer.url + '#' + visibleLayer.name,
                     refid: uuid.v4(),
                     uuid: uuid.v4()
