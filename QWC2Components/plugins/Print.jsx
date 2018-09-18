@@ -16,6 +16,7 @@ const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
+const {LayerRole} = require('../actions/layers');
 const {changeRotation} = require('../actions/map');
 const ToggleSwitch = require('../components/widgets/ToggleSwitch');
 const Icon = require('../components/Icon');
@@ -30,10 +31,12 @@ class Print extends React.Component {
         theme: PropTypes.object,
         map: PropTypes.object,
         layers: PropTypes.array,
+        printExternalLayers: PropTypes.bool, // Caution: requires explicit server-side support!
         changeRotation: PropTypes.func
     }
     static defaultProps = {
-        visible: false
+        visible: false,
+        printExternalLayers: false
     }
     state = {
         layout: null,
@@ -82,17 +85,29 @@ class Print extends React.Component {
         this.setState({minimized: false});
     }
     renderBody = () => {
-        let themeLayers = this.props.layers.filter(layer => layer.isThemeLayer);
-        if(!this.props.theme || !themeLayers) {
-            return (<div role="body" className="print-body"><Message msgId="print.notheme" /></div>);
-        } else if(!this.props.theme.print || this.props.theme.print.length === 0) {
+        if(!this.state.layout) {
             return (<div role="body" className="print-body"><Message msgId="print.nolayouts" /></div>);
         }
+        let themeLayers = this.props.layers.filter(layer => layer.isThemeLayer);
+        if(!this.props.theme || (!this.props.printExternalLayers && !themeLayers)) {
+            return (<div role="body" className="print-body"><Message msgId="print.notheme" /></div>);
+        }
+        let printLayers = [];
+        let printOpacities = [];
+        for(let layer of this.props.layers) {
+            if(layer.isThemeLayer) {
+                printLayers.push(layer.params.LAYERS);
+                printOpacities.push(layer.params.OPACITIES);
+            } else if(this.props.printExternalLayers && layer.role === LayerRole.USERLAYER && (layer.type === "wms" || layer.type === "wfs")) {
+                printLayers.push(layer.type + ':' + layer.url + "#" + layer.name);
+                printOpacities.push(layer.opacity);
+            }
+        }
+        printLayers = printLayers.reverse().join(",");
+        printOpacities = printOpacities.reverse().join(",");
+
         let currentLayoutname = this.state.layout ? this.state.layout.name : "";
         let mapName = this.state.layout ? this.state.layout.map.name : "";
-
-        let printLayers = themeLayers.map(layer => layer.params.LAYERS).reverse().join(",");
-        let printOpacities = themeLayers.map(layer => layer.params.OPACITIES).reverse().join(",");
 
         let backgroundLayer = this.props.layers.find(layer => layer.group === 'background' && layer.visibility === true);
         let themeBackgroundLayer = backgroundLayer ? this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayer.name) : null;
@@ -109,7 +124,7 @@ class Print extends React.Component {
         }
         let printDpi = parseInt(this.state.dpi);
         let mapCrs = this.props.map.projection;
-        let version = themeLayers[0].version || "1.3.0";
+        let version = this.props.theme.version || "1.3.0";
         let extent = this.computeCurrentExtent();
         extent = (CoordinatesUtils.getAxisOrder(mapCrs).substr(0, 2) == 'ne' && version == '1.3.0') ?
             extent[1] + "," + extent[0] + "," + extent[3] + "," + extent[2]:
