@@ -98,7 +98,7 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
             let isThemeSublayer = exploded.find(themeSublayer => themeSublayer.sublayer.name === entry);
             let isExternalLayer = LayerUtils.splitLayerUrlParam(entry).type !== 'theme';
             return (isThemeSublayer || isExternalLayer);
-        })
+        });
         // - Iterate over visible layers, and create placeholders for external layers
         // (placeholders will be replaced as soon as capabilities of external layers are available, see StandardApp.jsx)
         for(let i = 0; i < visibleLayers.length; ++i) {
