@@ -87,10 +87,6 @@ class OpenlayersMap extends React.Component {
             });
         }
         map.on('moveend', this.updateMapInfoState);
-        map.on('movestart', () => {
-            this.moved = true;
-            this.props.onClick(null);
-        });
         map.getViewport().addEventListener('mousedown', (event) => {
             this.moved = false;
         });
@@ -124,19 +120,19 @@ class OpenlayersMap extends React.Component {
             });
             return false;
         });
-        if(this.props.trackMousePos) {
-            map.on('pointermove', (event) => {
+        map.on('pointermove', (event) => {
+            if(event.dragging) {
                 this.moved = true;
-                if (!event.dragging) {
-                    this.props.onMouseMove({
-                        position: {
-                            coordinate: event.coordinate,
-                            pixel: event.pixel
-                        }
-                    });
-                }
-            });
-        }
+                this.props.onClick(null);
+            } else if(this.props.trackMousePos) {
+                this.props.onMouseMove({
+                    position: {
+                        coordinate: event.coordinate,
+                        pixel: event.pixel
+                    }
+                });
+            }
+        });
 
         this.map = map;
         this.updateMapInfoState();
