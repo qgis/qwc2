@@ -56,7 +56,9 @@ const ThemeUtils = {
         return bgLayers;
     },
     createThemeLayer: function(theme, visibleLayers=null) {
-        let sublayers = theme.sublayers;
+        let dummy = {sublayers: theme.sublayers};
+        LayerUtils.addSublayerIDs(dummy);
+        let sublayers = dummy.sublayers;
         if(visibleLayers) {
             let layers = [];
             let opacities = [];

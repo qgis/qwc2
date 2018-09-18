@@ -30,10 +30,7 @@ const LayerUtils = {
         return newsublayers;
     },
     restoreReorderedVisibleLayers: function(sublayers, initiallayers, initialopacities) {
-        // Ids are required for re-grouping
-        let dummylayer = {sublayers: sublayers};
-        LayerUtils.addSublayerIDs(dummylayer);
-        let exploded = LayerUtils.explodeLayers([dummylayer]);
+        let exploded = LayerUtils.explodeLayers([{sublayers: sublayers}]);
         // Reorder according to order in initiallayers
         let reordered = 0;
         for(let i = 0; i < initiallayers.length; ++i) {
