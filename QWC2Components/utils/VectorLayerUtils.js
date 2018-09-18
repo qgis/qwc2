@@ -35,15 +35,29 @@ const VectorLayerUtils = {
             }
             for(let feature of layer.features) {
                 let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
-                params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
                 params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, dpi));
                 params.labels.push(feature.properties && feature.properties.label || "");
                 if(feature.styleName === "text") {
+                    // Make point a tiny square, so that QGIS server centers the text inside the polygon when labelling
+                    let x = geometry.coordinates[0];
+                    let y = geometry.coordinates[1];
+                    geometry = {
+                        type: "Polygon",
+                        coordinates: [[
+                            [x - 0.00001, y - 0.00001],
+                            [x + 0.00001, y - 0.00001],
+                            [x + 0.00001, y + 0.00001],
+                            [x - 0.00001, y + 0.00001],
+                            [x - 0.00001, y - 0.00001]
+                        ]]
+                    };
+                    params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
                     params.labelFillColors.push(ensureHex(feature.styleOptions.fillColor));
                     params.labelOultineColors.push(ensureHex(feature.styleOptions.strokeColor));
                     params.labelOutlineSizes.push(1);
                     params.labelSizes.push(10 * feature.styleOptions.strokeWidth);
                 } else {
+                    params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
                     params.labelFillColors.push(defaultFeatureStyle.textFill);
                     params.labelOultineColors.push(defaultFeatureStyle.textStroke);
                     params.labelOutlineSizes.push(1);
