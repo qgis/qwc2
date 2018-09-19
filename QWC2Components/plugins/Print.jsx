@@ -94,17 +94,21 @@ class Print extends React.Component {
         }
         let printLayers = [];
         let printOpacities = [];
+        let printColors = [];
         for(let layer of this.props.layers) {
             if(layer.isThemeLayer) {
                 printLayers.push(layer.params.LAYERS);
                 printOpacities.push(layer.params.OPACITIES);
+                printColors.push(layer.params.LAYERS.split(",").map(entry => "").join(","));
             } else if(this.props.printExternalLayers && layer.role === LayerRole.USERLAYER && (layer.type === "wms" || layer.type === "wfs")) {
                 printLayers.push(layer.type + ':' + layer.url + "#" + layer.name);
                 printOpacities.push(layer.opacity);
+                printColors.push(layer.color ? layer.color : "");
             }
         }
         printLayers = printLayers.reverse().join(",");
         printOpacities = printOpacities.reverse().join(",");
+        printColors = printColors.reverse().join(",");
 
         let currentLayoutname = this.state.layout ? this.state.layout.name : "";
         let mapName = this.state.layout ? this.state.layout.map.name : "";
@@ -246,6 +250,7 @@ class Print extends React.Component {
                         <input readOnly="true" name="OPACITIES" type={formvisibility} value={printOpacities || ""} />
                         {/* This following one is needed for opacities to work!*/}
                         <input readOnly="true" name="LAYERS" type={formvisibility} value={printLayers || ""} />
+                        <input readOnly="true" name="COLORS" type={formvisibility} value={printColors || ""} />
                         <input readOnly="true" name={mapName + ":LAYERS"} type={formvisibility} value={printLayers || ""} />
                         <input readOnly="true" name={mapName + ":HIGHLIGHT_GEOM"} type={formvisibility} value={highlightParams.geoms.join(";")} />
                         <input readOnly="true" name={mapName + ":HIGHLIGHT_SYMBOL"} type={formvisibility} value={highlightParams.styles.join(";")} />
