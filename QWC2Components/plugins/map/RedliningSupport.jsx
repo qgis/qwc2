@@ -187,6 +187,8 @@ class RedliningSupport extends React.Component {
                     };
                 }
                 this.props.changeRedliningState(assign({}, this.props.redlining, newRedliningState));
+            } else {
+                this.props.changeRedliningState(assign({}, this.props.redlining, {geomType: null}));
             }
         }, this);
         this.props.map.addInteraction(selectInteraction);
