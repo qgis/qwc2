@@ -460,6 +460,7 @@ class IdentifyViewer extends React.Component {
             let filename = match ? match[1].replace(/['"]/g, "") : "report";
             FileSaver.saveAs(new Blob([response.data], {type: contentType}), filename);
         }).catch(e => {
+            this.setState({pendingReports: this.state.pendingReports.filter(entry => entry !== result.id)});
             alert('getFeatureReport failed');
         });
     }
