@@ -43,6 +43,11 @@ class Redlining extends React.Component {
         super(props);
         this.labelInput = null;
     }
+    componentWillReceiveProps(newProps) {
+        if(newProps.redlining.geomType !== this.props.redlining.geomType && newProps.redlining.geomType === 'Text') {
+            this.setState({selectText: true});
+        }
+    }
     onShow = (mode) => {
         this.props.changeRedliningState({action: mode || 'Pick', geomType: null});
     }
@@ -123,7 +128,6 @@ class Redlining extends React.Component {
     actionChanged = (data) => {
         if(data.action === "Draw" && data.geomType === "Text") {
             data = assign({}, data, {text: LocaleUtils.getMessageById(this.context.messages, "redlining.text")});
-            this.setState({selectText: true});
         }
         this.updateRedliningState(data);
     }
