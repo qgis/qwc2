@@ -157,7 +157,7 @@ class RedliningSupport extends React.Component {
             return;
         }
 
-        let selectInteraction = new ol.interaction.Select({layers: [redliningLayer]});
+        let selectInteraction = new ol.interaction.Select({layers: [redliningLayer], hitTolerance: 5});
         let modifyInteraction = new ol.interaction.Modify({features: selectInteraction.getFeatures()});
         selectInteraction.on('select', (evt) => {
             if(evt.selected.length === 1 && evt.selected[0] == this.currentFeature) {
