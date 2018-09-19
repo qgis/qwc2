@@ -54,6 +54,8 @@ class LayerInfoWindow extends React.Component {
             }
             let request = this.props.layer.legendUrl + (this.props.layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + requestParams;
             legend = (<img className="layer-info-window-legend" src={request} />);
+        } else if(this.props.layer.color) {
+            legend = (<span className="layer-info-window-coloricon" style={{backgroundColor: this.props.layer.color}} />);
         }
         return (
             <ResizeableWindow title="layerinfo.title" icon="info-sign" onClose={this.props.onClose} initialWidth={this.props.windowSize.width} initialHeight={this.props.windowSize.height}>

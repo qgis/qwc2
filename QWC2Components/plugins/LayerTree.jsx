@@ -179,7 +179,7 @@ class LayerTree extends React.Component {
                 ];
             }
             let infoButton = null;
-            if(layer.type === "wms") {
+            if(layer.type === "wms" || layer.type === "wfs") {
                 infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.setState({activeinfo: {layer, sublayer}})}/>);
             }
             editframe = (
@@ -197,7 +197,7 @@ class LayerTree extends React.Component {
                 let request = layer.legendUrl + (layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + "SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + (layer.version || "1.3.0") + "&FORMAT=image/png&LAYER=" + sublayer.name;
                 legendicon = (<img className="layertree-item-legend-thumbnail" src={request} onMouseOver={ev => this.showLegendTooltip(ev, request)} onMouseOut={this.hideLegendTooltip} onTouchStart={ev => this.showLegendTooltip(ev, request)} />);
             } else if(layer.color) {
-                legendicon = (<span className="layertree-item-legend-coloricon" style={{backgroundColor: sublayer.color}} />);
+                legendicon = (<span className="layertree-item-legend-coloricon" style={{backgroundColor: layer.color}} />);
             }
         }
         let checkbox = null;
