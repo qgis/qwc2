@@ -11,7 +11,6 @@ const {connect} = require('react-redux');
 const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const FileSaver = require('file-saver');
-const axios = require('axios');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
