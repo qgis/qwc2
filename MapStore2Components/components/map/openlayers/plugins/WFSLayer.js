@@ -80,7 +80,7 @@ let WMSLayer = {
             zIndex: options.zIndex,
             style: (feature) => FeatureStyles.default(feature, {
                 fillColor: options.color,
-                strokeColor: "#000",
+                strokeColor: feature.getGeometry().getType().endsWith("LineString") ? options.color : "#000",
                 strokeWidth: 1,
                 strokeDash: []
             })
