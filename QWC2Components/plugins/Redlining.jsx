@@ -27,10 +27,14 @@ class Redlining extends React.Component {
         redlining: PropTypes.object,
         mobile: PropTypes.bool,
         setCurrentTask: PropTypes.func,
-        changeRedliningState: PropTypes.func
+        changeRedliningState: PropTypes.func,
+        allowGeometryLabels: PropTypes.bool
     }
     static contextTypes = {
         messages: PropTypes.object
+    }
+    static defaultProps = {
+        allowGeometryLabels: true
     }
     state = {
         selectText: false
@@ -90,9 +94,11 @@ class Redlining extends React.Component {
                         <span>{sizeLabel}:&nbsp;</span>
                         <NumericInput mobile min={1} max={99} value={this.props.redlining.size} onChange={(nr) => this.updateRedliningState({size: nr})}/>
                     </span>
-                    <span>
-                        <input ref={el => this.setLabelRef(el)} className="redlining-label" type="text" placeholder={labelPlaceholder} value={this.props.redlining.text} onChange={(ev) => this.updateRedliningState({text: ev.target.value})}/>
-                    </span>
+                    {(this.props.redlining.geomType === 'Text' || this.props.allowGeometryLabels) ? (
+                        <span>
+                            <input ref={el => this.setLabelRef(el)} className="redlining-label" type="text" placeholder={labelPlaceholder} value={this.props.redlining.text} onChange={(ev) => this.updateRedliningState({text: ev.target.value})}/>
+                        </span>
+                    ) : null}
                 </div>
             </div>
         );
@@ -109,14 +115,14 @@ class Redlining extends React.Component {
     setLabelRef = (el) => {
         this.labelInput = el;
         if(el && this.state.selectText) {
+            el.focus();
             el.select();
             this.setState({selectText: false});
         }
     }
     actionChanged = (data) => {
-        if(data.action === "Draw" && data.geomType === "Text" && this.labelInput) {
+        if(data.action === "Draw" && data.geomType === "Text") {
             data = assign({}, data, {text: LocaleUtils.getMessageById(this.context.messages, "redlining.text")});
-            this.labelInput.focus();
             this.setState({selectText: true});
         }
         this.updateRedliningState(data);

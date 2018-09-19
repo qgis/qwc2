@@ -171,6 +171,7 @@ class RedliningSupport extends React.Component {
                 let newRedliningState = null;
                 if(this.currentFeature.get("isText") === true) {
                     newRedliningState = {
+                        geomType: 'Text',
                         borderColor: this.currentFeature.getStyle().getText().getStroke().getColor(),
                         fillColor: this.currentFeature.getStyle().getText().getFill().getColor(),
                         size: 2 * (this.currentFeature.getStyle().getText().getScale() - 1),
@@ -178,6 +179,7 @@ class RedliningSupport extends React.Component {
                     };
                 } else {
                     newRedliningState = {
+                        geomType: this.currentFeature.getGeometry().getType(),
                         borderColor: this.currentFeature.getStyle().getStroke().getColor(),
                         fillColor: this.currentFeature.getStyle().getFill().getColor(),
                         size: 2 * (this.currentFeature.getStyle().getStroke().getWidth() - 1),
