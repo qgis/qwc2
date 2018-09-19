@@ -89,6 +89,7 @@ class OpenlayersMap extends React.Component {
         map.on('moveend', this.updateMapInfoState);
         map.getViewport().addEventListener('mousedown', (event) => {
             this.moved = false;
+            this.props.onClick(null);
         });
         map.getViewport().addEventListener('click', (event) => {
             if(this.moved) {
@@ -123,7 +124,6 @@ class OpenlayersMap extends React.Component {
         map.on('pointermove', (event) => {
             if(event.dragging) {
                 this.moved = true;
-                this.props.onClick(null);
             } else if(this.props.trackMousePos) {
                 this.props.onMouseMove({
                     position: {
