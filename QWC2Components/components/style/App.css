@@ -75,6 +75,10 @@ input[type=range]::-ms-thumb {
     background: @map_button_fg@;
 }
 
+input[type=range]::-ms-tooltip {
+    display: none;
+}
+
 a {
     cursor:pointer;
     color: #337ab7;
