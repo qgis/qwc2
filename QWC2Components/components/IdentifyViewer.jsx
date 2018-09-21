@@ -63,7 +63,7 @@ class IdentifyViewer extends React.Component {
         if(nextProps.missingResponses == 0 && nextProps.responses !== this.props.responses) {
             let result = {};
             let stats = {count: 0, lastResult: null};
-            (nextProps.responses || []).map(response => this.parseResponse(response, result, stats));
+            (nextProps.responses || []).map(response => response.data ? this.parseResponse(response, result, stats) : null);
             this.setState({
                 expanded: {},
                 resultTree: result,
