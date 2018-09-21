@@ -36,7 +36,7 @@ class BottomBar extends React.Component {
         scale: 0
     }
     componentDidMount() {
-        this.props.changeMousePositionState({crs: this.props.map.projection, enabled: true});
+        this.props.changeMousePositionState({crs: this.props.map.projection});
     }
     componentWillReceiveProps(newProps) {
         if(newProps.map.projection !== this.props.map.projection) {
