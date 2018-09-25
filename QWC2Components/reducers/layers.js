@@ -125,7 +125,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
                 }
             } else {
                 let addFeatures = action.features.concat();
-                let newFeatures = newLayers[idx].features.map( f => {
+                let newFeatures = (newLayers[idx].features || []).map( f => {
                     let fidx = addFeatures.findIndex(g => g.id === f.id);
                     if(fidx === -1) {
                         return f;
