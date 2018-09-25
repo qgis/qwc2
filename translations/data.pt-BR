@@ -136,9 +136,11 @@
       "selectinfo": "Desenhe um retângulo sobre uma região para exportar..."
     },
     "redlining": {
+      "add": "",
       "border": "Borda",
       "fill": "Preenchimento",
       "label": "Rótulo",
+      "layer": "",
       "line": "Linha",
       "outline": "Contorno",
       "pick": "Ponteiro",

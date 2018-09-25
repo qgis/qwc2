@@ -136,9 +136,11 @@
       "selectinfo": "Drag a rectangle around the region to export..."
     },
     "redlining": {
+      "add": "Add",
       "border": "Border",
       "fill": "Fill",
       "label": "Label",
+      "layer": "Layer",
       "line": "Line",
       "outline": "Outline",
       "pick": "Pick",

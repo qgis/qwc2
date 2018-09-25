@@ -11,7 +11,7 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
 const uuid = require('uuid');
-var ol = require('openlayers');
+const ol = require('openlayers');
 const FeatureStyles = require('../../../MapStore2Components/components/map/openlayers/FeatureStyles');
 const {changeRedliningState} = require('../../actions/redlining');
 const {LayerRole,addLayerFeatures,removeLayerFeatures} = require('../../actions/layers');
@@ -62,15 +62,16 @@ class RedliningSupport extends React.Component {
         });
     }
     componentWillReceiveProps(newProps) {
+        let layerChanged = newProps.redlining.layer !== this.props.redlining.layer;
         if(newProps.redlining == this.props.redlining) {
             // pass
         } else if(!newProps.redlining || !newProps.redlining.action) {
             this.reset();
-        } else if(newProps.redlining.action === 'Pick' && this.props.redlining.action !== 'Pick') {
+        } else if(newProps.redlining.action === 'Pick' && (this.props.redlining.action !== 'Pick' || layerChanged)) {
             this.addPickInteraction(newProps);
         } else if(newProps.redlining.action === 'Delete') {
             this.deleteCurrentFeature(this.props);
-        } else if(newProps.redlining.action === 'Draw' && newProps.redlining.geomType !== this.props.redlining.geomType ) {
+        } else if(newProps.redlining.action === 'Draw' && (this.props.redlining.action !== 'Draw' || newProps.redlining.geomType !== this.props.redlining.geomType || layerChanged)) {
             this.addDrawInteraction(newProps);
         } else {
             this.updateFeatureStyle(newProps.redlining);
@@ -119,13 +120,13 @@ class RedliningSupport extends React.Component {
         drawInteraction.on('drawend', (evt) => {
             let feature = this.currentFeature;
             this.commitCurrentFeature(true);
-            this.enterTemporaryPickMode(feature);
+            this.enterTemporaryPickMode(feature, newProps.redlining.layer);
         }, this);
         this.props.map.addInteraction(drawInteraction);
         this.interactions = [drawInteraction];
     }
-    enterTemporaryPickMode = (feature) => {
-        let redliningLayer = this.searchRedliningLayer();
+    enterTemporaryPickMode = (feature, layerId) => {
+        let redliningLayer = this.searchRedliningLayer(layerId);
         if(!redliningLayer) {
             return;
         }
@@ -150,9 +151,9 @@ class RedliningSupport extends React.Component {
             this.picking = false;
         }
     }
-    addPickInteraction = () => {
+    addPickInteraction = (newProps) => {
         this.reset();
-        let redliningLayer = this.searchRedliningLayer();
+        let redliningLayer = this.searchRedliningLayer(newProps.redlining.layer);
         if(!redliningLayer) {
             return;
         }
@@ -203,7 +204,7 @@ class RedliningSupport extends React.Component {
         let isText = this.currentFeature.get("isText") === true;
         if(isText && !this.currentFeature.get("label")) {
             if(!newFeature) {
-                this.props.removeLayerFeatures("redlining", [this.currentFeature.getId()])
+                this.props.removeLayerFeatures(this.props.redlining.layer, [this.currentFeature.getId()])
             }
             this.resetSelectedFeature();
             return;
@@ -212,8 +213,8 @@ class RedliningSupport extends React.Component {
         let feature = format.writeFeatureObject(this.currentFeature);
         assign(feature, {styleName: isText ? "text" : "default", styleOptions: this.styleOptions(this.props.redlining)});
         let layer = {
-            id: "redlining",
-            title: "Redlining",
+            id: this.props.redlining.layer,
+            title: this.props.redlining.layerTitle,
             role: LayerRole.USERLAYER
         };
         this.props.addLayerFeatures(layer, [feature]);
@@ -221,7 +222,7 @@ class RedliningSupport extends React.Component {
     }
     deleteCurrentFeature = (oldProps) => {
         if(this.currentFeature) {
-            this.props.removeLayerFeatures("redlining", [this.currentFeature.getId()]);
+            this.props.removeLayerFeatures(this.props.redlining.layer, [this.currentFeature.getId()]);
             this.currentFeature = null;
         }
         this.props.changeRedliningState(assign({}, oldProps.redlining));
@@ -246,10 +247,10 @@ class RedliningSupport extends React.Component {
             this.currentFeature = null;
         }
     }
-    searchRedliningLayer = () => {
+    searchRedliningLayer = (layerId) => {
         let redliningLayer = null;
         this.props.map.getLayers().forEach(olLayer => {
-            if(olLayer.get('msId') === 'redlining') {
+            if(olLayer.get('msId') === layerId) {
                 redliningLayer = olLayer;
             }
         });

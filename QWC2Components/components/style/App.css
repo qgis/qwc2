@@ -164,3 +164,9 @@ button.button:not(:disabled):hover {
 button.button.pressed:not(:disabled):hover {
     background-color: @item_active_hover@;
 }
+
+select.combo {
+    border: 1px solid @item_border@;
+    background-color: white;
+    height: 2em;
+}

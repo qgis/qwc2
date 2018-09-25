@@ -12,9 +12,12 @@ const {connect} = require('react-redux');
 const NumericInput = require('react-numeric-input');
 const assign = require('object-assign');
 const classnames = require('classnames');
+const uuid = require('uuid');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeRedliningState} = require('../actions/redlining');
+const {LayerRole,addLayer} = require('../actions/layers');
+const Icon = require('../components/Icon');
 const {TaskBar} = require('../components/TaskBar');
 const ButtonBar = require('../components/widgets/ButtonBar');
 const ColorButton = require('../components/widgets/ColorButton');
@@ -24,10 +27,12 @@ require('./style/Redlining.css');
 
 class Redlining extends React.Component {
     static propTypes = {
+        layers: PropTypes.array,
         redlining: PropTypes.object,
         mobile: PropTypes.bool,
         setCurrentTask: PropTypes.func,
         changeRedliningState: PropTypes.func,
+        addLayer: PropTypes.func,
         allowGeometryLabels: PropTypes.bool
     }
     static contextTypes = {
@@ -46,6 +51,9 @@ class Redlining extends React.Component {
     componentWillReceiveProps(newProps) {
         if(newProps.redlining.geomType !== this.props.redlining.geomType && newProps.redlining.geomType === 'Text') {
             this.setState({selectText: true});
+        }
+        if(!newProps.layers.find(layer => layer.id === newProps.redlining.layer) && newProps.redlining.layer !== 'redlining') {
+            this.props.changeRedliningState({layer: 'redlining', layerTitle: 'Redlining'});
         }
     }
     onShow = (mode) => {
@@ -80,9 +88,21 @@ class Redlining extends React.Component {
             {key: "Text", label: "redlining.text", icon: "text", data: {action: "Draw", geomType: "Text", text: ""}},
             {key: "Delete", icon: "trash", data: {action: "Delete", geomType: null}}
         ];
+        let vectorLayers = this.props.layers.filter(layer => layer.type === "vector");
+        // Ensure list always contains "Redlining" layer
+        if(!vectorLayers.find(layer => layer.id === 'redlining')) {
+            vectorLayers = [{id: 'redlining', title: 'Redlining'}, ...vectorLayers];
+        }
         let activeButton = this.props.redlining.action === "Pick" ? "Pick" : this.props.redlining.geomType;
         return (
             <div>
+                <div>
+                    <span><Message msgId="redlining.layer" />: </span>
+                    <select className="combo" value={this.props.redlining.layer} onChange={(ev) => this.changeRedliningLayer(ev.target.value, vectorLayers)}>
+                        {vectorLayers.map(layer => (<option key={layer.id} value={layer.id}>{layer.title}</option>))}
+                    </select>
+                    <button className="button" onClick={this.addLayer} style={{borderLeftWidth: 0}}><Icon icon="plus" /> <Message msgId="redlining.add" /></button>
+                </div>
                 <ButtonBar buttons={buttons} active={activeButton} onClick={(key, data) => this.actionChanged(data)} />
                 <div className="redlining-controlsbar">
                     <span>
@@ -131,9 +151,26 @@ class Redlining extends React.Component {
         }
         this.updateRedliningState(data);
     }
+    changeRedliningLayer = (id, vectorLayers) => {
+        this.updateRedliningState({layer: id, layerTitle: vectorLayers.find(layer => layer.id === id).title});
+    }
+    addLayer = () => {
+        let name = prompt("Enter layer name");
+        if(name) {
+            let layer = {
+                id: uuid.v4(),
+                title: name,
+                role: LayerRole.USERLAYER,
+                type: 'vector'
+            };
+            this.props.addLayer(layer);
+            this.updateRedliningState({layer: layer.id, layerTitle: layer.title});
+        }
+    }
 };
 
 const selector = (state) => ({
+    layers: state.layers.flat,
     redlining: state.redlining,
     mobile: state.browser ? state.browser.mobile : false,
 });
@@ -141,6 +178,7 @@ const selector = (state) => ({
 module.exports = {
     RedliningPlugin: connect(selector, {
         changeRedliningState: changeRedliningState,
+        addLayer: addLayer
     })(Redlining),
     reducers: {
         redlining: require('../reducers/redlining')

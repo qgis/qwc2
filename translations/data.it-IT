@@ -136,9 +136,11 @@
       "selectinfo": "Seleziona l'area da esportare"
     },
     "redlining": {
+      "add": "Aggiungi",
       "border": "Bordo",
       "fill": "Riempimento",
       "label": "Ettichetta",
+      "layer": "Layer",
       "line": "Linea",
       "outline": "Contorno",
       "pick": "Seleziona",

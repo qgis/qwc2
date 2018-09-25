@@ -136,9 +136,11 @@
       "selectinfo": "Dessiner un rectangle pour définir la zone à exporter"
     },
     "redlining": {
+      "add": "",
       "border": "Bordure",
       "fill": "Remplissage",
       "label": "Texte",
+      "layer": "",
       "line": "Ligne",
       "outline": "Contour",
       "pick": "Choisir",

@@ -136,9 +136,11 @@
       "selectinfo": "Rechteck aufziehen um die zu exportierende Region"
     },
     "redlining": {
+      "add": "Hinzufügen",
       "border": "Rand",
       "fill": "Füllung",
       "label": "Beschriftung",
+      "layer": "Ebene",
       "line": "Linie",
       "outline": "Rand",
       "pick": "Auswählen",

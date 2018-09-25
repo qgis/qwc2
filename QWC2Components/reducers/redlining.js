@@ -18,7 +18,9 @@ function redlining(state = {
     borderColor: [255, 0, 0, 1],
     size: 2,
     fillColor:  [255, 255, 255, 1],
-    text: ""
+    text: "",
+    layer: 'redlining',
+    layerTitle: 'Redlining'
 }, action) {
     switch (action.type) {
         case CHANGE_REDLINING_STATE:

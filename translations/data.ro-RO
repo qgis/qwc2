@@ -136,9 +136,11 @@
       "selectinfo": "Încadrați într-un dreptunghi zona de exportat.."
     },
     "redlining": {
+      "add": "",
       "border": "Margine",
       "fill": "Umplere",
       "label": "Text",
+      "layer": "",
       "line": "Linie",
       "outline": "Contur",
       "pick": "Alege",
