@@ -111,11 +111,11 @@ class RedliningPickSupport extends React.Component {
         feature.setStyle(style);
     }
     deselectFeature = (feature) => {
-        let style = [...feature.getStyle()];
+        let style = feature.getStyle();
         if(Array.isArray(style)) {
-            style = style.filter(entry => entry !== this.selectedStyle);
+            style = feature.getStyle().filter(entry => entry !== this.selectedStyle)
+            feature.setStyle(style.length > 1 ? style : style[0]);
         }
-        feature.setStyle(style);
     }
     deselectAllFeatures = () => {
         let redliningLayer = this.searchRedliningLayer();
