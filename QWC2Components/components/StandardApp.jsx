@@ -93,7 +93,7 @@ class AppInitComponent extends React.Component {
                 let visibleBgLayer = params.bl || params.bl === '' ? params.bl : null;
                 let initialView = null;
                 if(params.c && params.s !== undefined) {
-                    let coords = params.c.split(";").map(x => parseFloat(x));
+                    let coords = params.c.split(/[;,]/g).map(x => parseFloat(x));
                     let scales = theme.scales || themes.defaultScales;
                     let zoom = MapUtils.computeZoom(scales, params.s);
                     if(coords.length === 2) {
@@ -103,7 +103,7 @@ class AppInitComponent extends React.Component {
                             crs: params.crs || theme.mapCrs};
                     }
                 } else if(params.e) {
-                    let bounds = params.e.split(";").map(x => parseFloat(x));
+                    let bounds = params.e.split(/[;,]/g).map(x => parseFloat(x));
                     if(bounds.length === 4) {
                         initialView = {
                             bounds: bounds,
