@@ -45,13 +45,13 @@ function map(state = defaultState, action) {
                 let x = Math.round(0.5 * (bounds[0] + bounds[2]) * roundfactor) / roundfactor;
                 let y = Math.round(0.5 * (bounds[1] + bounds[3]) * roundfactor) / roundfactor;
                 let scale = MapUtils.computeForZoom(newState.scales, newState.zoom);
-                UrlParams.updateParams({c: x + ";" + y, s: scale});
+                UrlParams.updateParams({c: x + "," + y, s: scale});
             } else {
                 let xmin = Math.round(bounds[0] * roundfactor) / roundfactor;
                 let ymin = Math.round(bounds[1] * roundfactor) / roundfactor;
                 let xmax = Math.round(bounds[2] * roundfactor) / roundfactor;
                 let ymax = Math.round(bounds[3] * roundfactor) / roundfactor;
-                UrlParams.updateParams({e: xmin + ";" + ymin + ";" + xmax + ";" + ymax});
+                UrlParams.updateParams({e: xmin + "," + ymin + "," + xmax + "," + ymax});
             }
             if(positionCrs !== newState.projection) {
                 UrlParams.updateParams({crs: positionCrs});
