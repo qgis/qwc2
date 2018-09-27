@@ -209,7 +209,10 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             return assign({}, state, {flat: newLayers});
         }
         case SET_SWIPE: {
-            let newLayers = LayerUtils.reorderLayer(state.flat, null, null, null, action.swipe || action.swipe === 0);
+            let newLayers = state.flat;
+            if( (state.swipe === undefined) !== (action.swipe === undefined) ) {
+                newLayers = LayerUtils.reorderLayer(state.flat, null, null, null, action.swipe || action.swipe === 0);
+            }
             return assign({}, state, {flat: newLayers, swipe: action.swipe});
         }
         default:
