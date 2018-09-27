@@ -45,7 +45,7 @@ class RasterExport extends React.Component {
         }
         const formatMap = {
             "image/jpeg" : "JPEG",
-            "image/png": "PNG 24bit",
+            "image/png": "PNG",
             "image/png; mode=16bit": "PNG 16bit",
             "image/png; mode=8bit" : "PNG 8bit",
             "image/png; mode=1bit" : "PNG 1bit",
