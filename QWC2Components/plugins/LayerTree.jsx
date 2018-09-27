@@ -349,12 +349,12 @@ class LayerTree extends React.Component {
         }
         return {newlayer, newsublayer: cur};
     }
-    propagateOptions = (layer, options, path=[]) => {
+    propagateOptions = (layer, options, path=null) => {
         if(layer.sublayers) {
             layer.sublayers = layer.sublayers.map((sublayer, idx) => {
-                if(isEmpty(path) || path[0] == idx) {
+                if(path === null || (!isEmpty(path) && path[0] == idx)) {
                     let newsublayer = assign({}, sublayer, options);
-                    this.propagateOptions(newsublayer, options, path.slice(1));
+                    this.propagateOptions(newsublayer, options, path ? path.slice(1) : null);
                     return newsublayer;
                 } else {
                     return sublayer;
