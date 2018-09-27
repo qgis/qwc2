@@ -35,7 +35,7 @@ class ButtonBar extends React.Component {
     }
     render() {
         return (
-            <div className="ButtonBar">
+            <div className={"ButtonBar" + (this.props.disabled ? " buttonbar-disabled" : "")}>
                 {this.props.buttons.map(button => {
                     let classes = classnames({
                         "button": true,
@@ -49,7 +49,6 @@ class ButtonBar extends React.Component {
                         </button>
                     );
                 })}
-                {this.props.disabled ? (<div className="buttonbar-disabled"></div>) : null}
             </div>
         )
     }
