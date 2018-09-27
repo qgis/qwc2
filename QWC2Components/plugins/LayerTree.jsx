@@ -63,7 +63,7 @@ class LayerTree extends React.Component {
         allowImport: true,
         groupTogglesSublayers: false,
         grayUnchecked: true,
-        layerInfoWindowSize: {width: 400, height: 480},
+        layerInfoWindowSize: {width: 320, height: 480},
         bboxDependentLegend: false,
         flattenGroups: false,
         width: "20em"

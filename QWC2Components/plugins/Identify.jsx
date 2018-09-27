@@ -42,8 +42,8 @@ class Identify extends React.Component {
         enableExport: true,
         longAttributesDisplay: 'ellipsis',
         displayResultTree: true,
-        initialWidth: 320,
-        initialHeight: 400
+        initialWidth: 240,
+        initialHeight: 320
     }
     componentWillReceiveProps(newProps) {
         if (this.needsRefresh(newProps)) {
