@@ -32,7 +32,8 @@ class ResizeableWindow extends React.Component {
         extraControls: PropTypes.arrayOf(PropTypes.shape({
             icon: PropTypes.string.isRequired,
             callback: PropTypes.func.isRequired
-        }))
+        })),
+        padding: PropTypes.string
     }
     static defaultProps = {
         icon: null,
@@ -47,7 +48,8 @@ class ResizeableWindow extends React.Component {
         maxHeight: null,
         onClose: () => {},
         scrollable: false,
-        extraControls: null
+        extraControls: null,
+        padding: "0.25em"
     }
     renderRole = (role) => {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
@@ -76,6 +78,9 @@ class ResizeableWindow extends React.Component {
             "resizeable-window-body": true,
             "resizeable-window-body-scrollable": this.props.scrollable
         });
+        let bodystyle = {
+            padding: this.props.padding
+        };
         return (
             <div className="resizeable-window-container">
                 <Rnd className="resizeable-window" bounds="parent" default={initial}
@@ -93,7 +98,7 @@ class ResizeableWindow extends React.Component {
                         ))}
                         <Icon className="resizeable-window-titlebar-control" onClick={this.onClose} icon="remove"/>
                     </div>
-                    <div className={bodyclasses} onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
+                    <div style={bodystyle} className={bodyclasses} onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
                         {this.renderRole("body")}
                     </div>
                 </Rnd>

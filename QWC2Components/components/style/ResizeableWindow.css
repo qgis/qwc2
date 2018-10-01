@@ -45,7 +45,6 @@ span.resizeable-window-titlebar-control {
 }
 
 div.resizeable-window-body {
-    padding: 0.25em;
     margin: 0 0.25em;
     overflow: hidden;
     height: calc(100% - 2.75em);
