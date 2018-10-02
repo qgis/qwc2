@@ -136,7 +136,13 @@ class RedliningSupport extends React.Component {
         }
         this.updateFeatureStyle(this.props.redlining);
 
-        let modifyInteraction = new ol.interaction.Modify({features: new ol.Collection([this.currentFeature])});
+        let modifyInteraction = new ol.interaction.Modify({
+            features: new ol.Collection([this.currentFeature]),
+            deleteCondition: (event) => {
+                // delete vertices on SHIFT + click
+                return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
+            }
+        });
         this.props.map.addInteraction(modifyInteraction);
         this.interactions.push(modifyInteraction);
         this.picking = true;
@@ -159,7 +165,13 @@ class RedliningSupport extends React.Component {
         }
 
         let selectInteraction = new ol.interaction.Select({layers: [redliningLayer], hitTolerance: 5});
-        let modifyInteraction = new ol.interaction.Modify({features: selectInteraction.getFeatures()});
+        let modifyInteraction = new ol.interaction.Modify({
+            features: selectInteraction.getFeatures(),
+            deleteCondition: (event) => {
+                // delete vertices on SHIFT + click
+                return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
+            }
+        });
         selectInteraction.on('select', (evt) => {
             if(evt.selected.length === 1 && evt.selected[0] == this.currentFeature) {
                 return;
