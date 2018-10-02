@@ -45,7 +45,7 @@ let WMSLayer = {
         if (!options.tiled) {
             return new ol.layer.Image({
                 opacity: options.opacity !== undefined ? options.opacity : 1,
-                visible: options.visibility !== false,
+                visible: !!queryParameters["LAYERS"] && options.visibility !== false,
                 zIndex: options.zIndex,
                 source: new ol.source.ImageWMS({
                     url: urls[0],
@@ -94,6 +94,7 @@ let WMSLayer = {
             if (changed) {
                 layer.getSource().updateParams(assign(newParams, newOptions.params, {t: new Date().getMilliseconds()}));
                 layer.getSource().changed();
+                layer.setVisible(newOptions.visibility && !!newParams["LAYERS"]);
             }
         }
     }
