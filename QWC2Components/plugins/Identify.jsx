@@ -52,7 +52,7 @@ class Identify extends React.Component {
             }
             const queryableLayers = newProps.layers.filter((l) => {
                 // All non-background WMS layers with a non-empty queryLayers list
-                return l.type === 'wms' && l.group !== "background" && (l.queryLayers || []).length > 0
+                return l.visibility && l.type === 'wms' && l.group !== "background" && (l.queryLayers || []).length > 0
             });
             queryableLayers.forEach((layer) => {
                 this.props.sendRequest(IdentifyUtils.buildRequest(layer, layer.queryLayers.join(","), newProps.point.coordinate, newProps.map, newProps.params));
