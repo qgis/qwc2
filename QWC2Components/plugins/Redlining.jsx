@@ -13,6 +13,7 @@ const NumericInput = require('react-numeric-input');
 const assign = require('object-assign');
 const classnames = require('classnames');
 const uuid = require('uuid');
+const Mousetrap = require('mousetrap');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeRedliningState} = require('../actions/redlining');
@@ -58,9 +59,11 @@ class Redlining extends React.Component {
     }
     onShow = (mode) => {
         this.props.changeRedliningState({action: mode || 'Pick', geomType: null});
+        Mousetrap.bind('del', this.triggerDelete);
     }
     onHide = () => {
         this.props.changeRedliningState({action: null, geomType: null});
+        Mousetrap.unbind('del', this.triggerDelete);
     }
     updateRedliningState = (diff) => {
         let newState = assign({}, this.props.redlining, diff)
@@ -144,6 +147,9 @@ class Redlining extends React.Component {
             el.select();
             this.setState({selectText: false});
         }
+    }
+    triggerDelete = () => {
+        this.updateRedliningState({action: "Delete", geomType: null});
     }
     actionChanged = (data) => {
         if(data.action === "Draw" && data.geomType === "Text") {
