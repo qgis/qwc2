@@ -255,7 +255,7 @@ class LayerTree extends React.Component {
             );
         }
         let compareCheckbox = null;
-        if(this.props.allowCompare) {
+        if(this.props.allowCompare && ThemeUtils.layerReorderingAllowed(this.props.theme)) {
             let swipecheckboxstate = this.props.swipe || this.props.swipe === 0 ? 'checked' : 'unchecked';
             compareCheckbox = (
                 <div className="layertree-option">
