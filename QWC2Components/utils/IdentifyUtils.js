@@ -127,7 +127,10 @@ const IdentifyUtils = {
             let attribute = attributes[i];
             if(attribute.attributes.name.value === "geometry") {
                 let wkt = attribute.attributes.value.value;
-                featureResult["geometry"] = VectorLayerUtils.wktToGeoJSON(wkt, geometrycrs, featureResult.crs).geometry;
+                let feature = VectorLayerUtils.wktToGeoJSON(wkt, geometrycrs, featureResult.crs);
+                if(feature) {
+                    featureResult["geometry"] = feature.geometry;
+                }
             } else {
                 featureResult.properties[attribute.attributes.name.value] = attribute.attributes.value.value;
             }

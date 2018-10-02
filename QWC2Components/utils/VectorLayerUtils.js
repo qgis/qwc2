@@ -182,13 +182,18 @@ const VectorLayerUtils = {
                  .replace(/LineString(\w+)/i, "LineString $1")
                  .replace(/Polygon(\w+)/i, "Polygon $1")
                  .replace(/MultiSurface(\w*)/i, "GeometryCollection $1");
-        let feature = new ol.format.WKT().readFeature(wkt, {
-            dataProjection: srccrs,
-            featureProjection: dstcrs
-        });
-        let featureObj = new ol.format.GeoJSON().writeFeatureObject(feature);
-        featureObj.id = uuid.v1();
-        return featureObj;
+        try {
+            let feature = new ol.format.WKT().readFeature(wkt, {
+                dataProjection: srccrs,
+                featureProjection: dstcrs
+            });
+            let featureObj = new ol.format.GeoJSON().writeFeatureObject(feature);
+            featureObj.id = uuid.v1();
+            return featureObj;
+        } catch(e) {
+            console.warn("Failed to parse geometry: " + wkt);
+            return null;
+        }
     },
     kmlToGeoJSON(kml) {
         let kmlFormat = new ol.format.KML();
