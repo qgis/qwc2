@@ -14,12 +14,14 @@ const axios = require('axios');
 const uuid = require('uuid');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const IdentifyUtils = require('../utils/IdentifyUtils');
+const ThemeUtils = require('../utils/ThemeUtils');
 const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
 require('./style/MapTip.css');
 
 class MapTip extends React.Component {
     static propTypes = {
         mapTipsEnabled: PropTypes.bool,
+        theme: PropTypes.object,
         layers: PropTypes.array,
         mousepos: PropTypes.object,
         map: PropTypes.object,
@@ -79,6 +81,10 @@ class MapTip extends React.Component {
         if(!layer || !queryLayers) {
             return;
         }
+        if(!ThemeUtils.layerReorderingAllowed(this.props.theme) && layer.drawingOrder) {
+            queryLayers = layer.drawingOrder.filter(entry => layer.queryLayers.includes(entry)).join(",");
+        }
+
         let request = IdentifyUtils.buildRequest(layer, queryLayers, this.props.mousepos.coordinate, this.props.map, options);
 
         axios.get(request.url, {params: request.params}).then(response => {
@@ -122,6 +128,7 @@ class MapTip extends React.Component {
 
 const selector = (state) => ({
     mapTipsEnabled: state.map && state.map.maptips,
+    theme: state.theme && state.theme.current || {},
     layers: state.layers && state.layers.flat ? state.layers.flat : null,
     mousepos: state.mousePosition ? state.mousePosition.position : undefined,
     map: state.map ? state.map : null
