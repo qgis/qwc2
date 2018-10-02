@@ -196,7 +196,7 @@ const VectorLayerUtils = {
         let features = [];
         let fid = 0;
         for(let olFeature of kmlFormat.readFeatures(kml)) {
-            let style = olFeature.getStyleFunction().call(olFeature);
+            let style = olFeature.getStyleFunction()(olFeature);
             style = style[0] || style;
 
             let styleOptions = {
