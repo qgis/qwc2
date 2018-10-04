@@ -210,7 +210,6 @@ function layers(state = {flat: [], swipe: undefined}, action) {
                     }
                 });
             } else {
-                console.log("Removing placeholer for " + action.source);
                 newLayers = newLayers.filter(layer => !(layer.type === 'placeholder' && layer.source === action.source));
             }
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
