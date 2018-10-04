@@ -200,7 +200,15 @@ function layers(state = {flat: [], swipe: undefined}, action) {
         case REPLACE_PLACEHOLDER_LAYER: {
             let newLayers = state.flat || [];
             if(action.layer) {
-                newLayers = newLayers.map(layer => layer.type === 'placeholder' && layer.source === action.source ? assign({}, action.layer, {refid: uuid.v4(), uuid: uuid.v4()}) : layer);
+                newLayers = newLayers.map(layer => {
+                    if(layer.type === 'placeholder' && layer.source === action.source) {
+                        let newLayer = assign({}, action.layer, {refid: uuid.v4(), uuid: uuid.v4()});
+                        LayerUtils.addSublayerIDs(newLayer);
+                        return newLayer;
+                    } else {
+                        return layer;
+                    }
+                });
             } else {
                 console.log("Removing placeholer for " + action.source);
                 newLayers = newLayers.filter(layer => !(layer.type === 'placeholder' && layer.source === action.source));
