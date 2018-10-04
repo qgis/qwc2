@@ -92,7 +92,7 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
         // Restore external visible layers
         let exploded = LayerUtils.explodeLayers([themeLayer]);
 
-        // - Filter list of visible layers to only incldue theme layers which exist as well as external layers
+        // - Filter list of visible layers to only include theme layers which exist as well as external layers
         visibleLayers = (visibleLayers || []).slice(0).reverse();
         visibleLayers.filter(entry => {
             let isThemeSublayer = exploded.find(themeSublayer => themeSublayer.sublayer.name === entry);
@@ -101,20 +101,27 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
         });
         // - Iterate over visible layers, and create placeholders for external layers
         // (placeholders will be replaced as soon as capabilities of external layers are available, see StandardApp.jsx)
+        let idx = 0;
         for(let i = 0; i < visibleLayers.length; ++i) {
             let visibleLayer = LayerUtils.splitLayerUrlParam(visibleLayers[i]);
-            if(i >= exploded.length || exploded[i].sublayer.name !== visibleLayer.name) {
-                let placeholder = LayerUtils.explodeLayers([{
-                    type: "placeholder",
-                    title: visibleLayer.name,
-                    role: LayerRole.USERLAYER,
-                    loading: true,
-                    source: visibleLayer.type + ':' + visibleLayer.url + '#' + visibleLayer.name,
-                    refid: uuid.v4(),
-                    uuid: uuid.v4()
-                }]);
-                exploded.splice(i, 0, placeholder[0]);
+            if(idx >= exploded.length || exploded[idx].sublayer.name !== visibleLayer.name) {
+                if(visibleLayer.type === 'theme') {
+                    continue;
+                    // Missing theme layer, ignore
+                } else {
+                    let placeholder = LayerUtils.explodeLayers([{
+                        type: "placeholder",
+                        title: visibleLayer.name,
+                        role: LayerRole.USERLAYER,
+                        loading: true,
+                        source: visibleLayer.type + ':' + visibleLayer.url + '#' + visibleLayer.name,
+                        refid: uuid.v4(),
+                        uuid: uuid.v4()
+                    }]);
+                    exploded.splice(idx, 0, placeholder[0]);
+                }
             }
+            ++idx;
         }
         // - Add layers
         let layers = LayerUtils.implodeLayers(exploded);
