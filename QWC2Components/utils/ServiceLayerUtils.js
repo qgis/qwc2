@@ -103,7 +103,8 @@ const ServiceLayerUtils = {
             sublayers: isEmpty(sublayers) ? null : sublayers.sort((a, b) => strcmp(a.title, b.title)),
             expanded: false,
             boundingBox: bbox,
-            visibility: true
+            visibility: true,
+            opacity: 255
         };
     },
     getWFSLayers(capabilitiesXml) {
