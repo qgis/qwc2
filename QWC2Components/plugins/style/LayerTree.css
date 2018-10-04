@@ -138,8 +138,9 @@ img.layertree-item-legend-tooltip {
 
 #LayerTree span.layertree-item-remove {
     line-height: 1.75em;
+    text-align: center;
+    width: 1.75em;
     cursor: pointer;
-    margin-left: 0.25em;
     color: @item_border@;
     flex: 0 0 auto;
 }
@@ -151,7 +152,7 @@ img.layertree-item-legend-tooltip {
 #LayerTree span.layertree-item-cog {
     line-height: 1.75em;
     text-align: center;
-    width: 2em;
+    width: 1.75em;
     cursor: pointer;
     color: @item_border@;
     flex: 0 0 auto;
@@ -168,19 +169,21 @@ img.layertree-item-legend-tooltip {
     color: @titlebar_bg@;
     font-weight: bold;
     padding: 0.25em;
-    font-size: small;
     display: flex;
     align-items: center;
     margin-left: 2em;
+    margin-right: 1.75em;
     background-color: white;
 }
 
 #LayerTree span.layertree-item-transparency-label {
     flex: 0 0 auto;
+    font-size: small;
 }
 
 #LayerTree input.layertree-item-transparency-slider {
     flex: 1 1 auto;
+    font-size: small;
     padding: 0 0.25em;
     min-width: 0;
     max-width: none;
@@ -190,12 +193,14 @@ img.layertree-item-legend-tooltip {
 
 #LayerTree span.layertree-item-metadata {
     flex: 0 0 1.5em;
+    font-size: small;
     text-align: center;
     cursor: pointer;
 }
 
 #LayerTree span.layertree-item-move {
     flex: 0 0 1.5em;
+    font-size: small;
     text-align: center;
     cursor: pointer;
 }

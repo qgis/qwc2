@@ -218,8 +218,8 @@ class LayerTree extends React.Component {
                     <span className="layertree-item-title" title={title}>{title}</span>
                     {sublayer.queryable && this.props.showQueryableIcon ? (<Icon className="layertree-item-queryable" icon="info-sign" />) : null}
                     <span className="layertree-item-spacer"></span>
-                    {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                     {allowOptions ? (<Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>) : null}
+                    {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
                 {editframe}
             </div>
