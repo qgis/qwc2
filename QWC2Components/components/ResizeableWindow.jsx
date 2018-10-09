@@ -63,8 +63,8 @@ class ResizeableWindow extends React.Component {
     }
     render() {
         let initial = {
-            x: this.props.initialX >= 0 ? this.props.initialX : Math.max(0, Math.round(0.5 * (window.innerWidth - this.props.initialWidth))),
-            y: this.props.initialY >= 0 ? this.props.initialY : Math.max(0, Math.round(0.5 * (window.innerHeight - this.props.initialHeight))),
+            x: this.props.initialX !== null ? this.props.initialX : Math.max(0, Math.round(0.5 * (window.innerWidth - this.props.initialWidth))),
+            y: this.props.initialY !== null ? this.props.initialY : Math.max(0, Math.round(0.5 * (window.innerHeight - this.props.initialHeight))),
             width: this.props.initialWidth,
             height: this.props.initialHeight
         };
