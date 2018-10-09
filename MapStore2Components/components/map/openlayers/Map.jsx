@@ -45,7 +45,6 @@ class OpenlayersMap extends React.Component {
         interactive: true
     }
     componentDidMount() {
-        this.moved = false;
         let interactionsOptions = assign(this.props.interactive ? {} : {
             doubleClickZoom: false,
             altShiftDragRotate: true,
@@ -87,18 +86,11 @@ class OpenlayersMap extends React.Component {
             });
         }
         map.on('moveend', this.updateMapInfoState);
-        map.getViewport().addEventListener('mousedown', (event) => {
-            this.moved = false;
-            this.props.onClick(null);
-        });
-        map.getViewport().addEventListener('click', (event) => {
-            if(this.moved) {
-                this.moved = false;
-                return;
-            }
+        map.on('click', (event) => {
+            console.log('click');
             this.props.onClick({
-                coordinate: this.map.getEventCoordinate(event),
-                pixel: this.map.getEventPixel(event),
+                coordinate: this.map.getEventCoordinate(event.originalEvent),
+                pixel: this.map.getEventPixel(event.originalEvent),
                 modifiers: {
                     alt: event.altKey,
                     ctrl: event.ctrlKey,
@@ -122,9 +114,7 @@ class OpenlayersMap extends React.Component {
             return false;
         });
         map.on('pointermove', (event) => {
-            if(event.dragging) {
-                this.moved = true;
-            } else if(this.props.trackMousePos) {
+            if(this.props.trackMousePos) {
                 this.props.onMouseMove({
                     position: {
                         coordinate: event.coordinate,
