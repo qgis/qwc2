@@ -27,7 +27,6 @@ require('./style/Print.css');
 
 class Print extends React.Component {
     static propTypes = {
-        visible: PropTypes.bool,
         theme: PropTypes.object,
         map: PropTypes.object,
         layers: PropTypes.array,
@@ -35,7 +34,6 @@ class Print extends React.Component {
         changeRotation: PropTypes.func
     }
     static defaultProps = {
-        visible: false,
         printExternalLayers: false
     }
     state = {
@@ -48,41 +46,33 @@ class Print extends React.Component {
         minimized: false
     }
     componentWillReceiveProps(newProps) {
-        let newState = {};
         if(newProps.theme !== this.props.theme || !this.state.layout) {
             let layout = null;
             if(newProps.theme && newProps.theme.print && newProps.theme.print.length > 0) {
                 layout = newProps.theme.print.find(layout => layout.default) || newProps.theme.print[0];
             }
-            newState["layout"] = layout;
+            this.setState({layout: layout});
         }
-        if(newProps.visible && !this.state.scale && newProps.map) {
-            let scale = Math.round(MapUtils.computeForZoom(newProps.map.scales, newProps.map.zoom) / 2);
-            if(newProps.theme.printScales && newProps.theme.printScales.length > 0) {
-                let closestVal = Math.abs(scale - newProps.theme.printScales[0]);
-                let closestIdx = 0;
-                for(let i = 1; i < newProps.theme.printScales.length; ++i) {
-                    let currVal = Math.abs(scale - newProps.theme.printScales[i]);
-                    if(currVal < closestVal) {
-                        closestVal = currVal;
-                        closestIdx = i;
-                    }
-                }
-                scale = newProps.theme.printScales[closestIdx];
-            }
-            newState["scale"] = scale;
-            newState["initialRotation"] = newProps.map.bbox.rotation;
-        } else if(!newProps.visible && this.state.scale) {
-            newState["scale"] = null;
-        }
-        this.setState(newState);
     }
-    shouldComponentUpdate(newProps, nextState) {
-        return newProps.visible || this.props.visible;
+    onShow = () => {
+        let scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom) / 2);
+        if(this.props.theme.printScales && this.props.theme.printScales.length > 0) {
+            let closestVal = Math.abs(scale - this.props.theme.printScales[0]);
+            let closestIdx = 0;
+            for(let i = 1; i < this.props.theme.printScales.length; ++i) {
+                let currVal = Math.abs(scale - this.props.theme.printScales[i]);
+                if(currVal < closestVal) {
+                    closestVal = currVal;
+                    closestIdx = i;
+                }
+            }
+            scale = this.props.theme.printScales[closestIdx];
+        }
+        this.setState({scale: scale, initialRotation: this.props.map.bbox.rotation});
     }
     onHide = () => {
         this.props.changeRotation(this.state.initialRotation);
-        this.setState({minimized: false});
+        this.setState({minimized: false, scale: null});
     }
     renderBody = () => {
         if(!this.state.layout) {
@@ -173,7 +163,7 @@ class Print extends React.Component {
         let highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, printDpi, scaleFactor);
 
         return (
-            <div role="body" className="print-body">
+            <div className="print-body">
                 <form action={action} method="POST" target="_blank">
                     <table className="options-table"><tbody>
                         <tr>
@@ -270,27 +260,29 @@ class Print extends React.Component {
             </div>
         );
     }
-    render() {
+    renderPrintFrame = () => {
         let printFrame = null;
-        if(this.props.visible && this.state.layout) {
+        if(this.state.layout) {
             let frame = {
                 width: this.state.scale * this.state.layout.map.width / 1000.,
                 height: this.state.scale * this.state.layout.map.height / 1000.,
             };
             printFrame = (<PrintFrame map={this.props.map} fixedFrame={frame} />);
         }
+        return printFrame;
+    }
+    render() {
         let minMaxTooltip = LocaleUtils.getMessageById(this.context.messages, this.state.minimized ? "print.maximize" : "print.minimize");
         let extraTitlebarContent = (<Icon title={minMaxTooltip} className="print-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={ev => this.setState({minimized: !this.state.minimized})}/>)
         return (
-            <div>
-                <SideBar id="Print" onHide={this.onHide} width="20em"
-                    title="appmenu.items.Print"
-                    extraTitlebarContent={extraTitlebarContent}
-                    icon={"print"}>
-                    {!this.state.minimized ? this.renderBody() : null}
-                </SideBar>
-                {printFrame}
-            </div>
+            <SideBar id="Print" onShow={this.onShow} onHide={this.onHide}
+                width="20em" title="appmenu.items.Print" icon={"print"}
+                extraTitlebarContent={extraTitlebarContent}>
+                {() => ({
+                    body: this.state.minimized ? null : this.renderBody(),
+                    extra: this.renderPrintFrame()
+                })}
+            </SideBar>
         );
     }
     changeLayout = (ev) => {
@@ -335,7 +327,6 @@ class Print extends React.Component {
 };
 
 const selector = (state) => ({
-    visible: state.task ? state.task.id === 'Print': false,
     theme: state.theme ? state.theme.current : null,
     map: state.map ? state.map : null,
     layers: state.layers ? state.layers.flat : [],

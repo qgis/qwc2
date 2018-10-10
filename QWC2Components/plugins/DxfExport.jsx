@@ -34,7 +34,7 @@ class DxfExport extends React.Component {
         let filename = this.props.theme.name + ".dxf";
         let action = ProxyUtils.addProxyIfNeeded(this.props.theme.url, "&filename=" + encodeURIComponent(this.props.theme.name + ".dxf"));
         return (
-            <span role="body">
+            <span>
                 <form ref={form => this.form = form} action={action} method="POST" target="_blank">
                 <div className="help-text"><Message msgId="dxfexport.selectinfo" /></div>
                 <div className="export-settings"><Message msgId="dxfexport.symbologyscale" /> <span className="input-frame"><span>1&nbsp;:&nbsp;</span><input type="number" name="SCALE" defaultValue="500" /></span></div>
@@ -53,8 +53,10 @@ class DxfExport extends React.Component {
     render() {
         return (
             <TaskBar task="DxfExport">
-                {this.renderBody()}
-                <PrintFrame role="extra" map={this.props.map} bboxSelected={this.bboxSelected} />
+                {() => ({
+                    body: this.renderBody(),
+                    extra: (<PrintFrame map={this.props.map} bboxSelected={this.bboxSelected} />)
+                })}
             </TaskBar>
         );
     }

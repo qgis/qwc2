@@ -45,19 +45,20 @@ class TaskBar extends React.Component {
         if(this.props.currentTask.id !== this.props.task) {
             return null;
         }
+        let contents = (typeof this.props.children === "function") ? this.props.children() : null;
         return (
             <div>
                 <div id="TaskBar" className={this.props.task}>
                     <div className="taskbar">
                         <div className="body">
-                            {this.renderRole("body")}
+                            {contents ? contents.body || null : this.renderRole("body")}
                         </div>
                         <span className="closewrapper">
                             <Icon className="close" onClick={this.closeClicked} icon="remove" size="large"/>
                         </span>
                     </div>
                 </div>
-                {this.renderRole("extra")}
+                {contents ? contents.extra || null : this.renderRole("extra")}
             </div>
         );
     }

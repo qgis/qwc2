@@ -216,7 +216,7 @@ class Editing extends React.Component {
             return layer.isThemeLayer ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
         }, []);
         return (
-            <div role="body" className="editing-body">
+            <div className="editing-body">
                 <div>
                     <span className="input-frame">
                         <select className="editing-layer-select" value={this.state.selectedLayer || ""} onChange={ev => this.changeSelectedLayer(ev.target.value)} disabled={this.props.editing.changed === true}>
@@ -240,7 +240,9 @@ class Editing extends React.Component {
         return (
             <SideBar id="Editing" width="20em" onShow={this.onShow} onHide={this.onHide}
                 title="appmenu.items.Editing" icon="editing">
-                {this.renderBody()}
+                {() => ({
+                    body: this.renderBody()
+                })}
             </SideBar>
         );
     }

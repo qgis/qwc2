@@ -243,7 +243,7 @@ class LayerTree extends React.Component {
             });
         }
     }
-    render() {
+    renderBody = () => {
         let maptipcheckboxstate = this.props.mapTipsEnabled === true ? 'checked' : 'unchecked';
         let maptipCheckbox = null;
         if(!this.props.mobile && this.props.allowMapTips) {
@@ -272,6 +272,28 @@ class LayerTree extends React.Component {
                 </div>
             );
         }
+        let sortable = ThemeUtils.layerReorderingAllowed(this.props.theme) === true;
+        return (
+            <div role="body" className="layertree-container-wrapper">
+                <div className="layertree-container">
+                    <div className="layertree-tree"
+                        onTouchStart={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
+                        onTouchMove={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
+                        onTouchEnd={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
+                        onContextMenuCapture={ev => {ev.stopPropagation(); ev.preventDefault(); return false; }}>
+                        <Sortable options={{disabled: sortable === false || this.props.flattenGroups !== true, ghostClass: 'drop-ghost', delay: 200}} onChange={this.onSortChange}>
+                            {this.props.layers.map(this.renderLayerTree)}
+                        </Sortable>
+                    </div>
+                    {maptipCheckbox}
+                    {compareCheckbox}
+                    {layerImportExpander}
+                    {this.state.importvisible ? (<ImportLayer />) : null}
+                </div>
+            </div>
+        );
+    }
+    render() {
         let legendTooltip = null;
         if(this.state.legendTooltip) {
             let style = {
@@ -294,31 +316,15 @@ class LayerTree extends React.Component {
             );
         }
         let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
-        let sortable = ThemeUtils.layerReorderingAllowed(this.props.theme) === true;
         let extraTitlebarContent = (<Icon title={printLegendTooltip} className="layertree-print-legend" icon="print" onClick={this.printLegend}/>)
         return (
             <div>
-                <SideBar id="LayerTree" width={this.state.sidebarwidth || this.props.width}  title="appmenu.items.LayerTree"
-                    icon="layers"
-                    onHide={this.hideLegendTooltip}
-                    extraTitlebarContent={extraTitlebarContent}>
-                    <div role="body" className="layertree-container-wrapper">
-                        <div className="layertree-container">
-                            <div className="layertree-tree"
-                                onTouchStart={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
-                                onTouchMove={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
-                                onTouchEnd={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
-                                onContextMenuCapture={ev => {ev.stopPropagation(); ev.preventDefault(); return false; }}>
-                                <Sortable options={{disabled: sortable === false || this.props.flattenGroups !== true, ghostClass: 'drop-ghost', delay: 200}} onChange={this.onSortChange}>
-                                    {this.props.layers.map(this.renderLayerTree)}
-                                </Sortable>
-                            </div>
-                            {maptipCheckbox}
-                            {compareCheckbox}
-                            {layerImportExpander}
-                            {this.state.importvisible ? (<ImportLayer />) : null}
-                        </div>
-                    </div>
+                <SideBar id="LayerTree" width={this.state.sidebarwidth || this.props.width}
+                    title="appmenu.items.LayerTree" icon="layers"
+                    onHide={this.hideLegendTooltip} extraTitlebarContent={extraTitlebarContent}>
+                    {() => ({
+                        body: this.renderBody()
+                    })}
                 </SideBar>
                 {legendTooltip}
                 {infoWindow}

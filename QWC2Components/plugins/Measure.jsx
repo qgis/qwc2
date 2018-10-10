@@ -65,7 +65,7 @@ class Measure extends React.Component {
             <ButtonBar buttons={buttons} active={this.props.measureState.geomType} onClick={this.setMeasureMode} />
         );
     }
-    renderBody = () => {
+    renderResult = () => {
         let resultBody = null;
         let decimalFormat = {style: "decimal", minimumIntegerDigits: 1, maximumFractionDigits: 2, minimumFractionDigits: 2};
         if(this.props.measureState.geomType === "Point") {
@@ -110,13 +110,20 @@ class Measure extends React.Component {
         }
         return resultBody;
     }
+    renderBody = () => {
+        return (
+            <span>
+                {this.renderModeSwitcher()}
+                {this.renderResult()}
+            </span>
+        );
+    }
     render() {
         return (
             <TaskBar task="Measure" onShow={this.onShow} onHide={this.onHide}>
-                <span role="body">
-                    {this.renderModeSwitcher()}
-                    {this.renderBody()}
-                </span>
+                {() => ({
+                    body: this.renderBody()
+                })}
             </TaskBar>
         );
     }

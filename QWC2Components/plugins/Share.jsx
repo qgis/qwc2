@@ -47,7 +47,7 @@ class Share extends React.Component {
             const shareLink = this.props.showLink ? <ShareLink shareUrl={this.state.location}/> : null;
             const shareQRCode = this.props.showQRCode ? <ShareQRCode shareUrl={this.state.location}/> : null;
             return (
-                <div role="body">
+                <div>
                     {shareSocials}
                     {shareLink}
                     {shareQRCode}
@@ -55,7 +55,7 @@ class Share extends React.Component {
             );
         } else {
             return (
-                <div style={{padding: "1em"}} role="body">
+                <div style={{padding: "1em"}}>
                     <Message msgId="share.generatingpermalink" />
                 </div>);
         }
@@ -64,7 +64,9 @@ class Share extends React.Component {
         return (
             <SideBar id="Share" onShow={this.onShow} width="20em"
                 title="appmenu.items.Share" icon="share">
-                {this.renderBody()}
+                {() => ({
+                    body: this.renderBody()
+                })}
             </SideBar>
         );
     }

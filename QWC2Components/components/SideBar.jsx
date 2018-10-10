@@ -35,13 +35,19 @@ class SideBar extends React.Component {
         width: '15em',
         minWidth: '15em'
     }
+    state = {
+        render: false
+    }
     componentWillReceiveProps(newProps) {
         let newVisible = newProps.currentTask && newProps.currentTask.id === newProps.id;
         let oldVisible = this.props.currentTask && this.props.currentTask.id === this.props.id;
         if(newVisible && (!oldVisible || newProps.currentTask.mode !== this.props.currentTask.mode)) {
+            this.setState({render: true});
             newProps.onShow(newProps.currentTask.mode);
         } else if(!newVisible && oldVisible) {
             newProps.onHide();
+            // Hide the element after the transition period (see SideBar.css)
+            setTimeout(() => {this.setState({render: false})}, 300);
         }
     }
     closeClicked = () => {
@@ -61,37 +67,26 @@ class SideBar extends React.Component {
             transform: visible ? '' : 'translateX(100%) translateX(8px)',
             zIndex: visible ? 5 : 4
         }
+        let contents = (typeof this.props.children === "function") ? this.props.children() : null;
         return (
-            <Swipeable onSwipedRight={this.closeClicked} delta={30}>
-                <div id={this.props.id} className={"sidebar" + " " + this.props.extraClasses} style={style} ref={el => this.setVisibility(el, visible)}>
-                    <div className="sidebar-titlebar">
-                        <Icon className="sidebar-titlebar-icon" icon={this.props.icon} size="large"/>
-                        <span className="sidebar-titlebar-title"><Message msgId={this.props.title} /></span>
-                        {this.props.extraTitlebarContent}
-                        <span className="sidebar-titlebar-spacer" />
-                        <Icon className="sidebar-titlebar-closeicon" onClick={this.closeClicked} icon="chevron-right"/>
+            <div>
+                <Swipeable onSwipedRight={this.closeClicked} delta={30}>
+                    <div id={this.props.id} className={"sidebar" + " " + this.props.extraClasses} style={style}>
+                        <div className="sidebar-titlebar">
+                            <Icon className="sidebar-titlebar-icon" icon={this.props.icon} size="large"/>
+                            <span className="sidebar-titlebar-title"><Message msgId={this.props.title} /></span>
+                            {this.props.extraTitlebarContent}
+                            <span className="sidebar-titlebar-spacer" />
+                            <Icon className="sidebar-titlebar-closeicon" onClick={this.closeClicked} icon="chevron-right"/>
+                        </div>
+                        <div className="sidebar-body">
+                            {this.state.render ? (contents ? contents.body || null : this.renderRole("body")) : null}
+                        </div>
                     </div>
-                    <div className="sidebar-body">
-                        {this.renderRole("body")}
-                    </div>
-                </div>
-            </Swipeable>
+                </Swipeable>
+                {this.state.render ? (contents ? contents.extra || null : this.renderRole("extra")) : null}
+            </div>
         );
-    }
-    setVisibility = (el, visible) => {
-        if(!el) {
-            return;
-        }
-        if(visible) {
-            el.style.visibility = 'visible';
-        } else {
-            // Hide the element after the transition period (see SideBar.css),
-            // to avoid iOS focusing input fields in hidden sidebars
-            setTimeout(() => {
-                el.style.visibility = 'hidden';
-                return false;
-            }, 300);
-        }
     }
 };
 

@@ -66,7 +66,7 @@ class ThemeSwitcher extends React.Component {
             (<li key={subdir.title} className="theme-group"><span>{subdir.title}</span><ul>{this.renderThemeGroup(subdir)}</ul></li>)
         );
         let activeThemeId = this.props.activeTheme ? this.props.activeTheme.id : null;
-        return (<ul role="body">
+        return (<ul>
             {(group && group.items ? group.items : []).map(item => {
                 return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords).match(filter) ? (
                     <li key={item.id}
@@ -88,7 +88,9 @@ class ThemeSwitcher extends React.Component {
         return (
             <SideBar id="ThemeSwitcher" minWidth="16em" width={this.props.width} title="appmenu.items.ThemeSwitcher"
                 icon="themes" extraTitlebarContent={extraTitlebarContent}>
-                {this.renderThemeGroup(this.props.themes)}
+                {() => ({
+                    body: this.renderThemeGroup(this.props.themes)
+                })}
             </SideBar>
         );
     }

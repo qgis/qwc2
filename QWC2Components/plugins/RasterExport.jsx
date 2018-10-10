@@ -24,12 +24,10 @@ class RasterExport extends React.Component {
         map: PropTypes.object,
         layers: PropTypes.array,
         setCurrentTask: PropTypes.func,
-        visible: PropTypes.bool,
         dpis: PropTypes.array
     }
     state = {
         selectedFormat: null,
-        visible: false,
         dpi: 96
     }
     formatChanged = (ev) => {
@@ -85,7 +83,7 @@ class RasterExport extends React.Component {
         let highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, this.state.dpi);
 
         return (
-            <span role="body">
+            <span>
                 <form ref={form => this.form = form} action={action} method="POST" target="_blank" >
                 <div className="help-text"><Message msgId="rasterexport.selectinfo" /></div>
                 <div className="raster-export-settings">
@@ -131,13 +129,12 @@ class RasterExport extends React.Component {
         );
     }
     render() {
-        if(!this.props.visible) {
-            return null;
-        }
         return (
             <TaskBar task="RasterExport">
-                {this.renderBody()}
-                <PrintFrame role="extra" map={this.props.map} bboxSelected={this.bboxSelected} />
+                {() => ({
+                    body: this.renderBody(),
+                    extra: (<PrintFrame map={this.props.map} bboxSelected={this.bboxSelected} />)
+                })}
             </TaskBar>
         );
     }
@@ -155,7 +152,6 @@ class RasterExport extends React.Component {
 };
 
 const selector = (state) => ({
-    visible: state.task ? state.task.id === 'RasterExport': false,
     theme: state.theme ? state.theme.current : null,
     map: state.map ? state.map : null,
     layers: state.layers ? state.layers.flat : []

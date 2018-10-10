@@ -134,9 +134,9 @@ class Redlining extends React.Component {
     render() {
         return (
             <TaskBar task="Redlining" onShow={this.onShow} onHide={this.onHide}>
-                <span role="body">
-                    {this.renderBody()}
-                </span>
+                {() => ({
+                    body: this.renderBody()
+                })}
             </TaskBar>
         );
     }

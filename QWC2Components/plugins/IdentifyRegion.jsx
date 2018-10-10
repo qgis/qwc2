@@ -44,12 +44,19 @@ class IdentifyRegion extends React.Component {
     onHide = () => {
         this.props.changeSelectionState({geomType: undefined});
     }
+    renderBody = () => {
+        return (
+            <span role="body">
+                <Message msgId="identifyregion.info" />
+            </span>
+        );
+    }
     render() {
         return (
             <TaskBar task="IdentifyRegion" onShow={this.onShow} onHide={this.onHide}>
-                <span role="body">
-                    <Message msgId="identifyregion.info" />
-                </span>
+                {() => ({
+                    body: this.renderBody()
+                })}
             </TaskBar>
         );
     }
