@@ -91,7 +91,7 @@ class Redlining extends React.Component {
             {key: "Text", label: "redlining.text", icon: "text", data: {action: "Draw", geomType: "Text", text: ""}},
             {key: "Delete", icon: "trash", data: {action: "Delete", geomType: null}}
         ];
-        let vectorLayers = this.props.layers.filter(layer => layer.type === "vector");
+        let vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER);
         // Ensure list always contains "Redlining" layer
         if(!vectorLayers.find(layer => layer.id === 'redlining')) {
             vectorLayers = [{id: 'redlining', title: 'Redlining'}, ...vectorLayers];
