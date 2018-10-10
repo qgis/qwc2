@@ -78,7 +78,7 @@ class SideBar extends React.Component {
                         <div className="sidebar-titlebar">
                             <Icon className="sidebar-titlebar-icon" icon={this.props.icon} size="large"/>
                             <span className="sidebar-titlebar-title"><Message msgId={this.props.title} /></span>
-                            {this.props.extraTitlebarContent}
+                            {this.state.render ? this.props.extraTitlebarContent : null}
                             <span className="sidebar-titlebar-spacer" />
                             <Icon className="sidebar-titlebar-closeicon" onClick={this.closeClicked} icon="chevron-right"/>
                         </div>
