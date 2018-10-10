@@ -48,23 +48,24 @@ class RedliningPickSupport extends React.Component {
         if(newProps.redliningPick === this.props.redliningPick) {
             // pass
         } else if(!newProps.redliningPick.active && this.props.redliningPick.active) {
-            this.reset();
+            this.reset(newProps.redliningPick.layer);
         } else if(newProps.redliningPick.active && !this.props.redliningPick.active) {
-            this.addPickInteraction();
+            this.addPickInteraction(newProps.redliningPick.layer);
         } else if(
             newProps.redliningPick.active == this.props.redliningPick.active &&
             isEmpty(newProps.redliningPick.selectedFeatures) && !isEmpty(this.props.redliningPick.selectedFeatures))
         {
             // Re-initialize
-            this.addPickInteraction();
+            this.reset(this.props.redliningPick.layer);
+            this.addPickInteraction(newProps.redliningPick.layer);
         }
     }
     render() {
         return null;
     }
-    addPickInteraction = () => {
-        this.reset();
-        let redliningLayer = this.searchRedliningLayer();
+    addPickInteraction = (layerId) => {
+        this.reset(layerId);
+        let redliningLayer = this.searchRedliningLayer(layerId);
         if(!redliningLayer) {
             return;
         }
@@ -94,11 +95,11 @@ class RedliningPickSupport extends React.Component {
         this.props.map.addInteraction(selectInteraction);
         this.interactions = [selectInteraction];
     }
-    reset = () => {
+    reset = (layerId) => {
         while(this.interactions.length > 0) {
             this.props.map.removeInteraction(this.interactions.shift());
         }
-        this.deselectAllFeatures();
+        this.deselectAllFeatures(layerId);
         this.props.changeRedliningPickState({selectedFeatures: []});
     }
     selectFeature = (feature) => {
@@ -117,8 +118,8 @@ class RedliningPickSupport extends React.Component {
             feature.setStyle(style.length > 1 ? style : style[0]);
         }
     }
-    deselectAllFeatures = () => {
-        let redliningLayer = this.searchRedliningLayer();
+    deselectAllFeatures = (layerId) => {
+        let redliningLayer = this.searchRedliningLayer(layerId);
         if(redliningLayer) {
             for(let id of this.props.redliningPick.selectedFeatures || []) {
                 let feature = redliningLayer.getSource().getFeatureById(id);
@@ -128,10 +129,10 @@ class RedliningPickSupport extends React.Component {
             }
         }
     }
-    searchRedliningLayer = () => {
+    searchRedliningLayer = (layerId) => {
         let redliningLayer = null;
         this.props.map.getLayers().forEach(olLayer => {
-            if(olLayer.get('msId') === 'redlining') {
+            if(olLayer.get('msId') === layerId) {
                 redliningLayer = olLayer;
             }
         });

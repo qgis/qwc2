@@ -14,7 +14,8 @@ const assign = require('object-assign');
 
 function redliningPick(state = {
     active: false,
-    selectedFeatures: []
+    selectedFeatures: [],
+    layer: 'redlining'
 }, action) {
     switch (action.type) {
         case CHANGE_REDLINING_PICK_STATE:
