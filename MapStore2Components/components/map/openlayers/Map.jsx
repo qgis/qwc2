@@ -87,7 +87,6 @@ class OpenlayersMap extends React.Component {
         }
         map.on('moveend', this.updateMapInfoState);
         map.on('click', (event) => {
-            console.log('click');
             this.props.onClick({
                 coordinate: this.map.getEventCoordinate(event.originalEvent),
                 pixel: this.map.getEventPixel(event.originalEvent),
