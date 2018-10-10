@@ -67,7 +67,10 @@ class SideBar extends React.Component {
             transform: visible ? '' : 'translateX(100%) translateX(8px)',
             zIndex: visible ? 5 : 4
         }
-        let contents = (typeof this.props.children === "function") ? this.props.children() : null;
+        let contents = null;
+        if(this.state.render && typeof this.props.children === "function") {
+            contents = this.props.children();
+        }
         return (
             <div>
                 <Swipeable onSwipedRight={this.closeClicked} delta={30}>
