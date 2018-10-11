@@ -116,6 +116,7 @@ img.layertree-item-legend-tooltip {
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 0 1 auto;
+    line-height: 1.75em;
 }
 
 #LayerTree div.layertree-item-noresults {
