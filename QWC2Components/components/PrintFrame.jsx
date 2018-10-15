@@ -9,6 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const assign = require('object-assign');
+const isEqual = require('lodash.isequal');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 require('./style/PrintFrame.css');
@@ -33,7 +34,9 @@ class PrintFrame extends React.Component {
         this.recomputeBox(this.props, {});
     }
     componentWillReceiveProps(newProps) {
-        this.recomputeBox(newProps, this.props);
+        if(newProps.map !== this.props.map || !isEqual(newProps.fixedFrame, this.props.fixedFrame)) {
+            this.recomputeBox(newProps, this.props);
+        }
     }
     recomputeBox = (newProps, oldProps) => {
         if(newProps.fixedFrame) {
