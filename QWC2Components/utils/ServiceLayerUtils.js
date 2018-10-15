@@ -100,7 +100,7 @@ const ServiceLayerUtils = {
             infoFormats: infoFormats,
             featureInfoUrl: featureInfoUrl,
             queryable: layer.queryable,
-            sublayers: isEmpty(sublayers) ? null : sublayers.sort((a, b) => strcmp(a.title, b.title)),
+            sublayers: isEmpty(sublayers) ? null : sublayers,
             expanded: false,
             boundingBox: bbox,
             visibility: true,
