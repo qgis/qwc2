@@ -254,9 +254,12 @@ function getTheme(config, configItem, result, resultItem) {
             // collect WMS layers for printing
             let printLayers = [];
             if (configItem.backgroundLayers !== undefined) {
-                printLayers = configItem.backgroundLayers.map((entry) => {
-                    return entry.printLayer;
-                });
+                printLayers = configItem.backgroundLayers.reduce((printLayers, entry) => {
+                    if(entry.printLayer) {
+                        printLayers.push(entry.printLayer);
+                    }
+                    return printLayers;
+                }, []);
             }
 
             // layer tree and visible layers
@@ -305,8 +308,8 @@ function getTheme(config, configItem, result, resultItem) {
             resultItem.name = topLayer.Name;
             resultItem.title = wmsTitle;
             resultItem.attribution = {
-                Title: configItem.attribution,
-                OnlineResource: configItem.attributionUrl
+                Title: configItem.attribution || "",
+                OnlineResource: configItem.attributionUrl || ""
             };
             resultItem.keywords = keywords.join(', ');
             resultItem.format = configItem.format;

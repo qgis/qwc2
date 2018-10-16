@@ -288,8 +288,8 @@ def getTheme(config, configItem, result, resultItem):
         resultItem["name"] = getChildElementValue(topLayer, "Name")
         resultItem["title"] = wmsTitle
         resultItem["attribution"] = {
-            "Title": configItem["attribution"],
-            "OnlineResource": configItem["attributionUrl"]
+            "Title": configItem["attribution"] if "attribution" in configItem else "",
+            "OnlineResource": configItem["attributionUrl"] if "attributionUrl" in configItem else ""
         }
         resultItem["keywords"] = ", ".join(keywords)
         if "format" in configItem:
