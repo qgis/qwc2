@@ -478,10 +478,6 @@ class LayerTree extends React.Component {
         this.props.setSwipe(this.props.swipe || this.props.swipe === 0 ? undefined : 50);
     }
     printLegend = () => {
-        if(this.legendPrintWindow && !this.legendPrintWindow.closed) {
-            this.legendPrintWindow.focus();
-            return;
-        }
         let body = '<p id="legendcontainerbody">';
         let printLabel = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
         body += '<div id="print">' +
@@ -501,29 +497,34 @@ class LayerTree extends React.Component {
             }
         }).join("");
         body += "</p>";
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
-
-        let win = window.open(assetsPath + "/templates/legendprint.html", "Legend", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes");
-        let loadCallback = () => {
-            let container = win.document.getElementById("legendcontainer");
+        let setLegendPrintContent = () => {
+            let container = this.legendPrintWindow.document.getElementById("legendcontainer");
             if(container) {
                 container.innerHTML = body;
             } else {
-                win.document.body.innerHTML = "Broken template. An element with id=legendcontainer must exist.";
+                this.legendPrintWindow.document.body.innerHTML = "Broken template. An element with id=legendcontainer must exist.";
             }
         };
-        if(window.navigator.userAgent.indexOf('Trident/') > 0) {
-            // IE...
-            let interval = setInterval(() => {
-                if (win.document.readyState === 'complete') {
-                    loadCallback();
-                    clearInterval(interval);
-                }
-            });
+
+        if(this.legendPrintWindow && !this.legendPrintWindow.closed) {
+            let container = this.legendPrintWindow.document.getElementById("legendcontainer");
+            setLegendPrintContent();
+            this.legendPrintWindow.focus();
         } else {
-            win.addEventListener('load', loadCallback, false);
+            let assetsPath = ConfigUtils.getConfigProp("assetsPath");
+            this.legendPrintWindow = window.open(assetsPath + "/templates/legendprint.html", "Legend", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes");
+            if(window.navigator.userAgent.indexOf('Trident/') > 0) {
+                // IE...
+                let interval = setInterval(() => {
+                    if (this.legendPrintWindow.document.readyState === 'complete') {
+                        setLegendPrintContent();
+                        clearInterval(interval);
+                    }
+                });
+            } else {
+                this.legendPrintWindow.addEventListener('load', setLegendPrintContent, false);
+            }
         }
-        this.legendPrintWindow = win;
     }
 };
 
