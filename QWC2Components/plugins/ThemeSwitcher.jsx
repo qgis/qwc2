@@ -83,7 +83,10 @@ class ThemeSwitcher extends React.Component {
     }
     render() {
         let extraTitlebarContent = (
-            <input className="themeswitcher-filter" type="text" value={this.state.filter} onChange={ev => this.setState({filter: ev.target.value})} placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
+            <input className="themeswitcher-filter" type="text"
+                value={this.state.filter} ref={this.focusFilterField}
+                onChange={ev => this.setState({filter: ev.target.value})}
+                placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
         );
         return (
             <SideBar id="ThemeSwitcher" minWidth="16em" width={this.props.width} title="appmenu.items.ThemeSwitcher"
@@ -97,6 +100,12 @@ class ThemeSwitcher extends React.Component {
     setTheme = (theme) => {
         this.props.setCurrentTask(null);
         this.props.changeTheme(theme, this.props.themes);
+    }
+    focusFilterField = (el) => {
+        if(el) {
+            // Need to wait until slide in transition is over
+            setTimeout(() => el.focus(), 300);
+        }
     }
 };
 
