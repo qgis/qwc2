@@ -485,11 +485,13 @@ class LayerTree extends React.Component {
                 '<button onClick="(function(){window.print();})()">' + printLabel + '</button>' +
                 '</div>';
         body += this.props.layers.map(layer => {
-            if(layer.legendUrl) {
-                return layer.params.LAYERS.split(",").map(sublayer => {
+            if(!layer.visibility) {
+                return "";
+            } else if(layer.legendUrl) {
+                return layer.params.LAYERS ? layer.params.LAYERS.split(",").reverse().map(sublayer => {
                     let request = layer.legendUrl + (layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + "SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + (layer.version || "1.3.0") + "&FORMAT=image/png&LAYER=" + sublayer;
                     return '<div><img src="' + request + '" /></div>';
-                }).join("\n");
+                }).join("\n") : "";
             } else if(layer.color) {
                 return '<div><span style="display: inline-block; width: 1em; height: 1em; box-shadow: inset 0 0 0 1000px ' + layer.color + '; margin: 0.25em; border: 1px solid black;">&nbsp;</span>' + (layer.title || layer.name) + '</div>';
             } else {
