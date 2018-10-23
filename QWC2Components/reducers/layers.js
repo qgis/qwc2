@@ -204,6 +204,9 @@ function layers(state = {flat: [], swipe: undefined}, action) {
                     if(layer.type === 'placeholder' && layer.source === action.source) {
                         let newLayer = assign({}, action.layer, {refid: uuid.v4(), uuid: uuid.v4()});
                         LayerUtils.addSublayerIDs(newLayer);
+                        if(newLayer.type === "wms") {
+                            assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
+                        }
                         return newLayer;
                     } else {
                         return layer;
