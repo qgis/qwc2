@@ -60,8 +60,10 @@ class Search extends React.Component {
         currentResult: null, showfields: false, providerSelectionVisible: false
     }
     componentDidMount() {
+        this.input = null;
         this.searchTimer = 0;
         this.preventBlur = false;
+        this.blurred = false;
     }
     componentWillReceiveProps(newProps) {
         // If search text changed, clear result
@@ -92,13 +94,17 @@ class Search extends React.Component {
                 this.search(assign({}, newProps, {activeProviders}), true);
             }
         }
-        // If results changed and a unique result is returned, select it automatically if it is a Place result
         else if(newProps.results && newProps.results !== this.props.results && isEmpty(newProps.pendingProviders)) {
+            // If results changed and a unique result is returned, select it automatically if it is a Place result
             if(newProps.results.length === 1 && newProps.results[0].items.length == 1) {
                 let item = newProps.results[0].items[0];
                 if((item.type || SearchResultType.PLACE) === SearchResultType.PLACE) {
                     this.showResult(item, newProps.startupSearch);
                 }
+            }
+            // If multiple results are available and search field is not focused, focus it (unless explicitly blurred before)
+            else if(this.input && !this.blurred) {
+                this.input.focus();
             }
         }
     }
@@ -131,6 +137,7 @@ class Search extends React.Component {
             this.search(this.props);
         }
         this.setState({focused: true});
+        this.blurred = false;
     }
     onBlur = (ev) => {
         if(this.preventBlur && this.input) {
@@ -138,6 +145,7 @@ class Search extends React.Component {
         } else {
             this.setState({focused: false});
         }
+        this.blurred = true;
     }
     onKeyDown = (ev) => {
         if(ev.keyCode === 13) {
