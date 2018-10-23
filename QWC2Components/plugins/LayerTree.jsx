@@ -503,7 +503,7 @@ class LayerTree extends React.Component {
         body += "</p>";
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
 
-        let win = window.open(assetsPath + "/templates/legendprint.html", "Legend", "toolbar=no, location=no, directories=no, status=no, menubar=no");
+        let win = window.open(assetsPath + "/templates/legendprint.html", "Legend", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes");
         let loadCallback = () => {
             let container = win.document.getElementById("legendcontainer");
             if(container) {
