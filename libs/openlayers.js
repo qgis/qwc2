@@ -81,6 +81,7 @@ module.exports = {
     Text: require('ol/style/Text').default
   },
   tilegrid: {
+    TileGrid: require('ol/tilegrid/TileGrid').default,
     WMTS: require('ol/tilegrid/WMTS').default
   },
   View: require('ol/View').default

@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var ol = require('openlayers');
-var assign = require('object-assign');
+const ol = require('openlayers');
+const assign = require('object-assign');
 const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
 const ConfigUtils = require('../../../../utils/ConfigUtils');
 const ProxyUtils = require('../../../../utils/ProxyUtils');
@@ -38,7 +38,7 @@ function proxyTileLoadFunction(imageTile, src) {
 }
 
 let WMSLayer = {
-    create: (options) => {
+    create: (options, map) => {
         const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]);
         const queryParameters = wmsToOpenlayersOptions(options) || {};
         urls.forEach(url => SecurityUtils.addAuthenticationParameter(url, queryParameters));
@@ -55,6 +55,13 @@ let WMSLayer = {
                 })
             });
         }
+        let extent = CoordinatesUtils.reprojectBbox(options.boundingBox.bounds, options.boundingBox.crs, options.srs);
+        let tileGrid = new ol.tilegrid.TileGrid({
+            extent: extent,
+            tileSize: options.tileSize || 256,
+            maxZoom: map.getView().getResolutions().length,
+            resolutions: map.getView().getResolutions()
+        });
         return new ol.layer.Tile({
             opacity: options.opacity !== undefined ? options.opacity : 1,
             visible: options.visibility !== false,
@@ -63,10 +70,7 @@ let WMSLayer = {
               urls: urls,
               params: queryParameters,
               serverType: 'qgis',
-              tileGrid: options.tileSize ? ol.tilegrid.createXYZ({
-                  extent: ol.proj.get(CoordinatesUtils.normalizeSRS(options.srs || 'EPSG:3857', options.allowedSRS)).getExtent(),
-                  tileSize: options.tileSize
-              }) : undefined
+              tileGrid: tileGrid,
             }, (options.forceProxy) ? {tileLoadFunction: proxyTileLoadFunction} : {}))
         });
     },
