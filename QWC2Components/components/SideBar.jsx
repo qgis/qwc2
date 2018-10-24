@@ -38,6 +38,10 @@ class SideBar extends React.Component {
     state = {
         render: false
     }
+    componentDidMount(props) {
+        let visible = this.props.currentTask && this.props.currentTask.id === this.props.id;
+        this.setState({render: visible});
+    }
     componentWillReceiveProps(newProps) {
         let newVisible = newProps.currentTask && newProps.currentTask.id === newProps.id;
         let oldVisible = this.props.currentTask && this.props.currentTask.id === this.props.id;
@@ -60,6 +64,7 @@ class SideBar extends React.Component {
     }
     render() {
         let visible = this.props.currentTask.id === this.props.id;
+        let render = visible || this.state.render;
         let style = {
             width: this.props.width,
             minWidth: this.props.minWidth,
@@ -68,7 +73,7 @@ class SideBar extends React.Component {
             zIndex: visible ? 5 : 4
         }
         let contents = null;
-        if(this.state.render && typeof this.props.children === "function") {
+        if(render && typeof this.props.children === "function") {
             contents = this.props.children();
         }
         return (
@@ -83,11 +88,11 @@ class SideBar extends React.Component {
                             <Icon className="sidebar-titlebar-closeicon" onClick={this.closeClicked} icon="chevron-right"/>
                         </div>
                         <div className="sidebar-body">
-                            {this.state.render ? (contents ? contents.body || null : this.renderRole("body")) : null}
+                            {render ? (contents ? contents.body || null : this.renderRole("body")) : null}
                         </div>
                     </div>
                 </Swipeable>
-                {this.state.render ? (contents ? contents.extra || null : this.renderRole("extra")) : null}
+                {render ? (contents ? contents.extra || null : this.renderRole("extra")) : null}
             </div>
         );
     }
