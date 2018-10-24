@@ -7,9 +7,11 @@
 */
 
 const assign = require("object-assign");
+const isEmpty = require('lodash.isempty');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const {LayerRole} = require("../actions/layers");
 const LayerUtils = require("./LayerUtils");
+const removeDiacritics = require('diacritics').remove;
 
 const ThemeUtils = {
     getThemeById: function(themes, id) {
@@ -54,7 +56,7 @@ const ThemeUtils = {
         }
         return bgLayers;
     },
-    createThemeLayer: function(theme, visibleLayers=null) {
+    createThemeLayer: function(theme, visibleLayers=null, role=LayerRole.THEME) {
         let dummy = {sublayers: theme.sublayers};
         LayerUtils.addSublayerIDs(dummy);
         let sublayers = dummy.sublayers;
@@ -92,7 +94,7 @@ const ThemeUtils = {
             tiled: theme.tiled,
             ratio: !theme.tiled ? 1 : undefined,
             format: theme.format,
-            role: LayerRole.THEME,
+            role: role,
             attribution: theme.attribution,
             legendUrl: theme.legendUrl,
             printUrl: theme.printUrl,
@@ -106,12 +108,35 @@ const ThemeUtils = {
         }
         return layer;
     },
-    layerReorderingAllowed(theme) {
+    layerReorderingAllowed: function(theme) {
         let allowReorderingLayers = ConfigUtils.getConfigProp("allowReorderingLayers");
         if(theme.allowReorderingLayers === true || theme.allowReorderingLayers === false) {
             allowReorderingLayers = theme.allowReorderingLayers;
         }
         return allowReorderingLayers;
+    },
+    searchThemes: function(themes, searchtext, resultType) {
+        let filter = new RegExp(removeDiacritics(searchtext).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
+        let matches = ThemeUtils.searchThemeGroup(themes, filter);
+        return isEmpty(matches) ? [] : [{
+            id: "themes",
+            titlemsgid: "search.themes",
+            items: matches.map(theme => ({
+                type: resultType,
+                id: theme.id,
+                text: theme.title,
+                layer: ThemeUtils.createThemeLayer(theme, null, LayerRole.USERLAYER),
+                thumbnail: ConfigUtils.getConfigProp("assetsPath") + "/" + theme.thumbnail
+            }))
+        }];
+    },
+    searchThemeGroup: function(themeGroup, filter) {
+        let matches = [];
+        matches.push(...(themeGroup.subdirs || []).map(subdir => ThemeUtils.searchThemeGroup(subdir, searchtext, filter)));
+        matches.push(...(themeGroup.items || []).filter(item => {
+            return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords).match(filter);
+        }));
+        return matches;
     }
 };
 

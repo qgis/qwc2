@@ -120,6 +120,7 @@
     "search.search",
     "search.searchall",
     "search.all",
+    "search.themes",
     "share.directLinkTitle",
     "share.generatingpermalink",
     "share.QRCodeLinkTitle",
@@ -128,6 +129,7 @@
     "tooltip.zoomin",
     "tooltip.zoomout",
     "tooltip.background",
-    "themeswitcher.filter"
+    "themeswitcher.filter",
+    "themeswitcher.addtotheme"
   ]
 }

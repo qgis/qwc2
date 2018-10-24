@@ -147,7 +147,23 @@
 
 #Search ul.search-results ul li {
     padding: 0.25em 0.25em 0.25em 1em;
+    display: flex;
+    align-items: center;
     cursor: pointer;
+}
+
+#Search ul.search-results ul li > img {
+    flex: 0 0 6em;
+    width: 6em;
+    height: auto;
+    border: 1px solid @item_border@;
+    background-color: white;
+    border-radius: 0.5em;
+    margin-right: 1em;
+}
+
+#Search ul.search-results ul li > span {
+    flex: 1 1 auto;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;

@@ -154,7 +154,8 @@
       "more": "More...",
       "search": "Search",
       "searchall": "Search places or add maps...",
-      "all": "All"
+      "all": "All",
+      "themes": "Themes"
     },
     "share": {
       "directLinkTitle": "Via a direct link",
@@ -169,7 +170,8 @@
       "background": "Switch background"
     },
     "themeswitcher": {
-      "filter": "Filter..."
+      "filter": "Filter...",
+      "addtotheme": "Add to current theme"
     }
   }
 }

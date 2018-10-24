@@ -154,7 +154,8 @@
       "more": "Mai multe...",
       "search": "Caută",
       "searchall": "",
-      "all": "Toate"
+      "all": "Toate",
+      "themes": ""
     },
     "share": {
       "directLinkTitle": "Via link direct",
@@ -169,7 +170,8 @@
       "background": "Straturi suport"
     },
     "themeswitcher": {
-      "filter": "Filtrare"
+      "filter": "Filtrare",
+      "addtotheme": ""
     }
   }
 }

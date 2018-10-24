@@ -154,7 +154,8 @@
       "more": "Больше...",
       "search": "Поиск",
       "searchall": "",
-      "all": "Всё"
+      "all": "Всё",
+      "themes": ""
     },
     "share": {
       "directLinkTitle": "По прямой ссылке",
@@ -169,7 +170,8 @@
       "background": "Сменить фон"
     },
     "themeswitcher": {
-      "filter": "Фильтр..."
+      "filter": "Фильтр...",
+      "addtotheme": ""
     }
   }
 }

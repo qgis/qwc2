@@ -154,7 +154,8 @@
       "more": "Mehr...",
       "search": "Suchen",
       "searchall": "Ort suchen oder Karte hinzufügen...",
-      "all": "Alle"
+      "all": "Alle",
+      "themes": "Themen"
     },
     "share": {
       "directLinkTitle": "Über einen direkten Link",
@@ -169,7 +170,8 @@
       "background": "Hintergrundkarte wechseln"
     },
     "themeswitcher": {
-      "filter": "Filter"
+      "filter": "Filter",
+      "addtotheme": "Dem aktuellen Thema hinzufügen"
     }
   }
 }

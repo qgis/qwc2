@@ -154,7 +154,8 @@
       "more": "Mais...",
       "search": "Buscar",
       "searchall": "",
-      "all": "Tudo"
+      "all": "Tudo",
+      "themes": ""
     },
     "share": {
       "directLinkTitle": "Link direto",
@@ -169,7 +170,8 @@
       "background": ""
     },
     "themeswitcher": {
-      "filter": "Filtro..."
+      "filter": "Filtro...",
+      "addtotheme": ""
     }
   }
 }

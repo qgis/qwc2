@@ -154,7 +154,8 @@
       "more": "Mer",
       "search": "",
       "searchall": "",
-      "all": ""
+      "all": "",
+      "themes": ""
     },
     "share": {
       "directLinkTitle": "Via en direktlänk",
@@ -169,7 +170,8 @@
       "background": ""
     },
     "themeswitcher": {
-      "filter": "Filtrera..."
+      "filter": "Filtrera...",
+      "addtotheme": ""
     }
   }
 }

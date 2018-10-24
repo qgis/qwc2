@@ -9,14 +9,17 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
+const removeDiacritics = require('diacritics').remove;
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
+const {LayerRole, addLayer} = require("../actions/layers");
 const {setCurrentTheme} = require("../actions/theme");
 const {setCurrentTask} = require("../actions/task");
+const Icon = require('../components/Icon');
 const {SideBar} = require('../components/SideBar');
+const ThemeUtils = require('../utils/ThemeUtils');
 require('./style/ThemeSwitcher.css');
-const removeDiacritics = require('diacritics').remove;
 
 class ThemeSwitcher extends React.Component {
     static propTypes = {
@@ -26,7 +29,8 @@ class ThemeSwitcher extends React.Component {
         changeTheme: PropTypes.func,
         setCurrentTask: PropTypes.func,
         mapConfig: PropTypes.object,
-        width: PropTypes.string
+        width: PropTypes.string,
+        addLayer: PropTypes.func
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -66,6 +70,7 @@ class ThemeSwitcher extends React.Component {
             (<li key={subdir.title} className="theme-group"><span>{subdir.title}</span><ul>{this.renderThemeGroup(subdir)}</ul></li>)
         );
         let activeThemeId = this.props.activeTheme ? this.props.activeTheme.id : null;
+        let addTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addtotheme");
         return (<ul>
             {(group && group.items ? group.items : []).map(item => {
                 return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords).match(filter) ? (
@@ -75,7 +80,8 @@ class ThemeSwitcher extends React.Component {
                         title={item.keywords}
                     >
                         <div className="theme-item-title" title={item.title}>{item.title}</div>
-                        <img src={assetsPath + "/" + item.thumbnail} /><br />
+                        <img src={assetsPath + "/" + item.thumbnail} />
+                        {ConfigUtils.getConfigProp("allowAddingOtherThemes") ===  true ? (<Icon icon="plus" title={addTitle} onClick={ev => this.addThemeLayers(ev, item)} />) : null}
                     </li>) : null;
             })}
             {subtree}
@@ -101,6 +107,10 @@ class ThemeSwitcher extends React.Component {
         this.props.setCurrentTask(null);
         this.props.changeTheme(theme, this.props.themes);
     }
+    addThemeLayers = (ev, theme) => {
+        ev.stopPropagation();
+        this.props.addLayer(ThemeUtils.createThemeLayer(theme, null, LayerRole.USERLAYER));
+    }
     focusFilterField = (el) => {
         if(el) {
             // Need to wait until slide in transition is over
@@ -120,7 +130,8 @@ const selector = (state) => ({
 module.exports = {
     ThemeSwitcherPlugin: connect(selector, {
         changeTheme: setCurrentTheme,
-        setCurrentTask: setCurrentTask
+        setCurrentTask: setCurrentTask,
+        addLayer: addLayer
     })(ThemeSwitcher),
     reducers: {
         theme: require('../reducers/theme'),

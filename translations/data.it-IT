@@ -154,7 +154,8 @@
       "more": "Più risultati",
       "search": "Cerca",
       "searchall": "Cerca località o aggiungi cartine...",
-      "all": "Tutti"
+      "all": "Tutti",
+      "themes": "Temi"
     },
     "share": {
       "directLinkTitle": "Link diretto",
@@ -169,7 +170,8 @@
       "background": "Cambia sfondo"
     },
     "themeswitcher": {
-      "filter": "Filtra..."
+      "filter": "Filtra...",
+      "addtotheme": "Aggiungere al tema corrente"
     }
   }
 }

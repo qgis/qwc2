@@ -31,6 +31,7 @@
     text-align: center;
     display: inline-block;
     width: 15em;
+    position: relative;
 }
 #ThemeSwitcher div.theme-item-title {
     padding: 0.125em;
@@ -42,6 +43,16 @@
 #ThemeSwitcher li.theme-item > img {
     width: calc(15em - 2px);
     height: auto;
+}
+
+#ThemeSwitcher li.theme-item > span.icon {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    cursor: pointer;
+    font-size: large;
+    padding: 0.25em;
+    background-color: rgba(255, 255, 255, 0.75);
 }
 
 #ThemeSwitcher li.theme-item:hover {

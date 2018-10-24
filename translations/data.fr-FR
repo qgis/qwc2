@@ -154,7 +154,8 @@
       "more": "Plus...",
       "search": "",
       "searchall": "",
-      "all": ""
+      "all": "",
+      "themes": "Cartes"
     },
     "share": {
       "directLinkTitle": "Via un lien direct",
@@ -169,7 +170,8 @@
       "background": ""
     },
     "themeswitcher": {
-      "filter": "Filtre"
+      "filter": "Filtre",
+      "addtotheme": ""
     }
   }
 }

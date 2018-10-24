@@ -20,7 +20,7 @@ const Message = require('../../MapStore2Components/components/I18N/Message');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
-const {LayerRole, addMarker, removeMarker, addLayerFeatures, removeLayer, addThemeSublayer} = require('../actions/layers');
+const {LayerRole, addMarker, removeMarker, addLayerFeatures, removeLayer, addLayer, addThemeSublayer} = require('../actions/layers');
 const {zoomToPoint} = require('../actions/map');
 const {changeSearch, startSearch, searchMore, SearchResultType} = require("../actions/search");
 const {setCurrentTask} = require('../actions/task');
@@ -49,6 +49,7 @@ class Search extends React.Component {
         removeMarker: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         removeLayer: PropTypes.func,
+        addLayer: PropTypes.func,
         addThemeSublayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         searchOptions: PropTypes.object
@@ -322,14 +323,16 @@ class Search extends React.Component {
             );
         }
         return (
-            <li key={item.id} title={item.text}
-                onMouseDown={this.killEvent}
+            <li key={item.id} title={item.text} onMouseDown={this.killEvent}
                 onClick={() => {this.showResult(item); this.input.blur(); }}
-                dangerouslySetInnerHTML={{__html: item.text}}></li>
+            >
+                {item.thumbnail ? (<img src={item.thumbnail} />) : null}
+                <span dangerouslySetInnerHTML={{__html: item.text}}></span>
+            </li>
         );
     }
     showResult = (item, zoom=true) => {
-        if(item.type === SearchResultType.THEMELAYER && !this.props.searchOptions.zoomToLayers) {
+        if(item.type !== SearchResultType.PLACE && !this.props.searchOptions.zoomToLayers) {
             zoom = false;
         }
         if(zoom) {
@@ -341,7 +344,7 @@ class Search extends React.Component {
             // find max zoom level greater than min scale
             let maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.searchOptions.minScale);
 
-            if(item.type === SearchResultType.THEMELAYER && item.layer) {
+            if(item.layer) {
                 const maxbbox = (layer, bounds) => {
                     if(layer.sublayers) {
                         for(sublayer in layer.sublayers) {
@@ -383,6 +386,10 @@ class Search extends React.Component {
             this.setState({currentResult: item});
         } else if(item.type === SearchResultType.THEMELAYER) {
             this.props.addThemeSublayer(item.layer);
+            // Show layer tree to notify user that something has happened
+            this.props.setCurrentTask('LayerTree');
+        } else if(item.type === SearchResultType.EXTERNALLAYER) {
+            this.props.addLayer(item.layer);
             // Show layer tree to notify user that something has happened
             this.props.setCurrentTask('LayerTree');
         }
@@ -476,6 +483,7 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
         removeMarker: removeMarker,
         addLayerFeatures: addLayerFeatures,
         removeLayer: removeLayer,
+        addLayer: addLayer,
         addThemeSublayer: addThemeSublayer,
         setCurrentTask: setCurrentTask
     })(Search);

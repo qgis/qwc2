@@ -6,7 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
+const ThemeUtils = require('../utils/ThemeUtils');
 const uuid = require('uuid');
 
 const SEARCH_CHANGE = 'SEARCH_CHANGE';
@@ -15,7 +17,8 @@ const SEARCH_ADD_RESULTS = 'SEARCH_ADD_RESULTS';
 
 const SearchResultType = {
     PLACE: 0,
-    THEMELAYER: 1
+    THEMELAYER: 1,
+    EXTERNALLAYER: 2
 };
 
 function changeSearch(text, providers) {
@@ -27,17 +30,29 @@ function changeSearch(text, providers) {
 }
 
 function startSearch(text, options, providers, startup=false) {
-    return (dispatch) => {
+    return (dispatch, getState) => {
+        let themeSearch = ConfigUtils.getConfigProp("allowAddingOtherThemes") === true;
         let reqId = uuid.v1();
+        let providerKeys = Object.keys(providers);
+        if(themeSearch) {
+            providerKeys.push("themes");
+        }
         dispatch({
             type: SEARCH_SET_REQUEST,
             id: reqId,
-            providers: Object.keys(providers),
+            providers: providerKeys,
             startup: startup
         });
         Object.keys(providers).map(provider => {
             providers[provider].onSearch(text, reqId, options, dispatch);
         });
+        if(themeSearch) {
+            dispatch(addSearchResults({
+                provider: "themes",
+                reqId: reqId,
+                data: ThemeUtils.searchThemes(getState().theme.themes, text, SearchResultType.EXTERNALLAYER)
+            }));
+        }
     }
 }
 
@@ -55,7 +70,7 @@ function searchMore(moreItem, text, providers) {
     };
 }
 
-function addSearchResults(results, append) {
+function addSearchResults(results, append=true) {
     return {
         type: SEARCH_ADD_RESULTS,
         results: results,
