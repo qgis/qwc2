@@ -68,7 +68,7 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
     const getMapUrl = urlUtil.format(parsedUrl);
 
     axios.get(getMapUrl, {responseType: "arraybuffer"}).then((response) => {
-        let basename = configItem.url.replace(/.*\//, "") + ".png";
+        let basename = configItem.url.replace(/.*\//, "").replace(/\?.*$/, "") + ".png";
         try {
             fs.mkdirSync("./assets/img/genmapthumbs/");
         } catch(err) {

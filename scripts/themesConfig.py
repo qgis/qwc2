@@ -59,7 +59,7 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
     try:
         request = urlopen(url)
         reply = request.read()
-        basename = configItem["url"].rsplit("/")[-1] + ".png"
+        basename = configItem["url"].rsplit("/")[-1].rstrip("?") + ".png"
         try:
             os.makedirs(qwc2_path + "/assets/img/genmapthumbs/")
         except Exception as e:
