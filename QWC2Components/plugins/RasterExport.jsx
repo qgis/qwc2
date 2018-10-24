@@ -12,6 +12,7 @@ const {connect} = require('react-redux');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const ProxyUtils = require("../../MapStore2Components/utils/ProxyUtils");
+const {LayerRole} = require('../actions/layers');
 const {setCurrentTask} = require('../actions/task');
 const {TaskBar} = require('../components/TaskBar');
 const PrintFrame = require('../components/PrintFrame');
@@ -37,7 +38,7 @@ class RasterExport extends React.Component {
         this.setState({dpi: parseInt(ev.target.value)});
     }
     renderBody = () => {
-        let themeLayers = this.props.layers.filter(layer => layer.isThemeLayer);
+        let themeLayers = this.props.layers.filter(layer => layer.role === LayerRole.THEME);
         if(!this.props.theme || !themeLayers) {
             return null;
         }
@@ -57,7 +58,7 @@ class RasterExport extends React.Component {
         let action = ProxyUtils.addProxyIfNeeded(this.props.theme.url, "&filename=" + encodeURIComponent(filename));
         let exportLayers = themeLayers.map(layer => layer.params.LAYERS).reverse().join(",");
         let exportOpacities = themeLayers.map(layer => layer.params.OPACITIES).reverse().join(",");
-        let backgroundLayer = this.props.layers.find(layer => layer.group === 'background' && layer.visibility === true);
+        let backgroundLayer = this.props.layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
         let themeBackgroundLayer = backgroundLayer ? this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayer.name) : null;
         let exportBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
         if(exportBackgroundLayer) {

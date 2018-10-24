@@ -74,9 +74,9 @@ class MapTip extends React.Component {
             FI_LINE_TOLERANCE: 8,
             FI_POLYGON_TOLERANCE: 4
         };
-        let layer = this.props.layers.find(layer => layer.isThemeLayer);
+        let layer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
         let queryLayers = this.props.layers.reduce((accum, layer) => {
-            return layer.isThemeLayer ? accum.concat(layer.queryLayers) : accum;
+            return layer.role === LayerRole.THEME ? accum.concat(layer.queryLayers) : accum;
         }, []).join(",");
         if(!layer || !queryLayers) {
             return;

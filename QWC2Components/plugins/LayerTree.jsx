@@ -14,7 +14,7 @@ const classnames = require('classnames');
 const isEmpty = require('lodash.isempty');
 const Sortable = require('react-sortablejs');
 const Message = require('../../MapStore2Components/components/I18N/Message');
-const {changeLayerProperties, removeLayer, reorderLayer, setSwipe} = require('../actions/layers')
+const {LayerRole, changeLayerProperties, removeLayer, reorderLayer, setSwipe} = require('../actions/layers')
 const {toggleMapTips} = require('../actions/map');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
@@ -142,7 +142,7 @@ class LayerTree extends React.Component {
             "layertree-item-cog": true,
             "layertree-item-cog-active": this.state.activemenu === group.uuid
         });
-        let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true || !layer.isThemeLayer;
+        let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true || layer.role !== LayerRole.THEME;
         return (
             <div className="layertree-item-container" key={group.uuid}>
                 <div className={classnames(itemclasses)}>
@@ -207,7 +207,7 @@ class LayerTree extends React.Component {
             checkbox = (<Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.layerToggled(layer, path, sublayer.visibility, inMutuallyExclusiveGroup)} />);
         }
         let title = sublayer.title;
-        let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true || !layer.isThemeLayer;
+        let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true || layer.role !== LayerRole.THEME;
         let allowOptions = layer.type !== "placeholder";
         return (
             <div className="layertree-item-container" key={sublayer.uuid} data-id={JSON.stringify({layer: layer.uuid, path: path})}>
@@ -226,7 +226,7 @@ class LayerTree extends React.Component {
         );
     }
     renderLayerTree = (layer) => {
-        if(layer.group === 'background' || layer.layertreehidden) {
+        if(layer.role === LayerRole.BACKGROUND || layer.layertreehidden) {
             return null;
         } else if(!Array.isArray(layer.sublayers)) {
             return this.renderLayer(layer, layer, []);

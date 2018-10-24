@@ -13,7 +13,7 @@ const classnames = require('classnames');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
-const {changeLayerProperties} = require('../actions/layers');
+const {LayerRole, changeLayerProperties} = require('../actions/layers');
 const Icon = require('../components/Icon');
 require('./style/BackgroundSwitcher.css');
 
@@ -39,7 +39,7 @@ class BackgroundSwitcher extends React.Component {
             "map-button": true,
             "map-button-active": this.state.visible
         });
-        let backgroundLayers = this.props.layers.filter(layer => layer.group === "background").slice(0).reverse();
+        let backgroundLayers = this.props.layers.filter(layer => layer.role === LayerRole.BACKGROUND).slice(0).reverse();
         if(backgroundLayers.length > 0){
              return (
                 <div>
@@ -80,7 +80,7 @@ class BackgroundSwitcher extends React.Component {
         if(layer) {
             this.props.changeLayerProperties(layer.uuid, {visibility: true});
         } else {
-            let visible = this.props.layers.find(layer => layer.group === "background" && layer.visibility);
+            let visible = this.props.layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility);
             if(visible) {
                 this.props.changeLayerProperties(visible.uuid, {visibility: false});
             }

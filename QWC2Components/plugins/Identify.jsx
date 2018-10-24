@@ -13,7 +13,7 @@ const isEmpty = require('lodash.isempty');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {sendIdentifyRequest, purgeIdentifyResults, identifyEmpty} = require('../actions/identify');
-const {addMarker, removeMarker} = require('../actions/layers');
+const {LayerRole, addMarker, removeMarker} = require('../actions/layers');
 const ResizeableWindow = require("../components/ResizeableWindow");
 const {IdentifyViewer} = require('../components/IdentifyViewer');
 
@@ -52,7 +52,7 @@ class Identify extends React.Component {
             }
             const queryableLayers = newProps.layers.filter((l) => {
                 // All non-background WMS layers with a non-empty queryLayers list
-                return l.visibility && l.type === 'wms' && l.group !== "background" && (l.queryLayers || []).length > 0
+                return l.visibility && l.type === 'wms' && l.role !== LayerRole.BACKGROUND && (l.queryLayers || []).length > 0
             });
             queryableLayers.forEach((layer) => {
                 this.props.sendRequest(IdentifyUtils.buildRequest(layer, layer.queryLayers.join(","), newProps.point.coordinate, newProps.map, newProps.params));

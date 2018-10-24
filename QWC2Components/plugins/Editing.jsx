@@ -18,7 +18,7 @@ const MapUtils = require("../../MapStore2Components/utils/MapUtils");
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {changeEditingState} = require('../actions/editing');
 const {setCurrentTaskBlocked} = require('../actions/task');
-const {refreshLayer} = require('../actions/layers');
+const {LayerRole, refreshLayer} = require('../actions/layers');
 const {clickOnMap} = require("../actions/map");
 const {SideBar} = require('../components/SideBar');
 const ButtonBar = require('../components/widgets/ButtonBar');
@@ -56,7 +56,7 @@ class Editing extends React.Component {
     }
     componentWillReceiveProps(newProps) {
         let themeSublayers = newProps.layers.reduce((accum, layer) => {
-            return layer.isThemeLayer ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
+            return layer.role === LayerRole.THEME ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
         }, []);
         // Update selected layer on layers change
         if(newProps.layers !== this.props.layers) {
@@ -213,7 +213,7 @@ class Editing extends React.Component {
             busyDiv = (<div className="editing-busy"></div>);
         }
         let themeSublayers = this.props.layers.reduce((accum, layer) => {
-            return layer.isThemeLayer ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
+            return layer.role === LayerRole.THEME ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
         }, []);
         return (
             <div className="editing-body">
@@ -292,7 +292,7 @@ class Editing extends React.Component {
         this.setState({busy: false});
         if(success) {
             this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
-            this.props.refreshLayer(layer => layer.isThemeLayer);
+            this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
         } else {
             alert(errorMsg);
         }
@@ -303,7 +303,7 @@ class Editing extends React.Component {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
             this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
-            this.props.refreshLayer(layer => layer.isThemeLayer);
+            this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
         } else {
             alert(errorMsg);
         }

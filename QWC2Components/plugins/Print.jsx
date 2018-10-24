@@ -78,7 +78,7 @@ class Print extends React.Component {
         if(!this.state.layout) {
             return (<div role="body" className="print-body"><Message msgId="print.nolayouts" /></div>);
         }
-        let themeLayers = this.props.layers.filter(layer => layer.isThemeLayer);
+        let themeLayers = this.props.layers.filter(layer => layer.role === LayerRole.THEME);
         if(!this.props.theme || (!this.props.printExternalLayers && !themeLayers)) {
             return (<div role="body" className="print-body"><Message msgId="print.notheme" /></div>);
         }
@@ -86,7 +86,7 @@ class Print extends React.Component {
         let printOpacities = [];
         let printColors = [];
         for(let layer of this.props.layers) {
-            if(layer.isThemeLayer) {
+            if(layer.role === LayerRole.THEME) {
                 printLayers.push(layer.params.LAYERS);
                 printOpacities.push(layer.params.OPACITIES);
                 printColors.push(layer.params.LAYERS.split(",").map(entry => "").join(","));
@@ -103,7 +103,7 @@ class Print extends React.Component {
         let currentLayoutname = this.state.layout ? this.state.layout.name : "";
         let mapName = this.state.layout ? this.state.layout.map.name : "";
 
-        let backgroundLayer = this.props.layers.find(layer => layer.group === 'background' && layer.visibility === true);
+        let backgroundLayer = this.props.layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
         let themeBackgroundLayer = backgroundLayer ? this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayer.name) : null;
         let printBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
         if(printBackgroundLayer) {

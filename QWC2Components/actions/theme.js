@@ -39,13 +39,13 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
 
         // Get current background layer if it needs to be preserved
         if(preserve && visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch") === true) {
-            let curBgLayer = getState().layers.flat.find(layer => layer.group === 'background' && layer.visibility === true);
+            let curBgLayer = getState().layers.flat.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
             visibleBgLayer = curBgLayer ? curBgLayer.name : null;
         }
 
         // Remove old layers
         if(preserve && ConfigUtils.getConfigProp("preserveNonThemeLayersOnThemeSwitch") === true) {
-            let removeLayers = getState().layers.flat.filter(layer => layer.group === "background" || layer.isThemeLayer).map(layer => layer.id);
+            let removeLayers = getState().layers.flat.filter(layer => layer.role > LayerRole.THEME).map(layer => layer.id);
             for(let layerId of removeLayers) {
                 dispatch(removeLayer(layerId));
             }

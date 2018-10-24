@@ -40,18 +40,18 @@ function layers(state = {flat: [], swipe: undefined}, action) {
         }
         case CHANGE_LAYER_PROPERTIES: {
             let layer = state.flat.find((layer) => {return layer.uuid === action.layerUuid});
-            let isBackground = layer ? layer.group === 'background' : false;
+            let isBackground = layer ? layer.role === LayerRole.BACKGROUND : false;
             const newLayers = (state.flat || []).map((layer) => {
                 if (layer.uuid === action.layerUuid) {
                     let newLayer = assign({}, layer, action.newProperties);
                     if(newLayer.type === "wms") {
                         assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
                     }
-                    if(newLayer.group === 'background') {
+                    if(newLayer.role === LayerRole.BACKGROUND) {
                         UrlParams.updateParams({bl: newLayer.visibility ? layer.name : ''});
                     }
                     return newLayer;
-                } else if (layer.group === 'background' && isBackground) {
+                } else if (layer.role === LayerRole.BACKGROUND && isBackground) {
                     return assign({}, layer, {visibility: false});
                 }
                 return layer;
@@ -82,7 +82,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             }
             newLayers.splice(inspos, 0, newLayer);
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-            if(newLayer.group === 'background' && newLayer.visibility) {
+            if(newLayer.role === LayerRole.BACKGROUND && newLayer.visibility) {
                 UrlParams.updateParams({bl: newLayer.name});
             }
             return assign({}, state, {flat: newLayers});
@@ -93,7 +93,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
                 return state;
             }
             let newLayers = state.flat;
-            if(layer.group === "background" || isEmpty(action.sublayerpath)) {
+            if(layer.role === LayerRole.BACKGROUND || isEmpty(action.sublayerpath)) {
                 newLayers = state.flat.filter(layer => layer.id !== action.layerId);
             } else {
                 newLayers = LayerUtils.removeLayer(state.flat, layer, action.sublayerpath, state.swipe);
@@ -153,7 +153,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             return assign({}, state, {flat: newLayers});
         }
         case ADD_THEME_SUBLAYER: {
-            let themeLayerIdx = state.flat.findIndex(layer => layer.isThemeLayer);
+            let themeLayerIdx = state.flat.findIndex(layer => layer.role === LayerRole.THEME);
             if(themeLayerIdx >= 0) {
                 let newLayers = state.flat.slice(0);
                 newLayers[themeLayerIdx] = LayerUtils.mergeSubLayers(state.flat[themeLayerIdx], action.layer);

@@ -41,7 +41,6 @@ const ThemeUtils = {
                 }
                 bgLayers.push(assign({}, bgLayer, {
                     role: LayerRole.BACKGROUND,
-                    group: 'background',
                     visibility: false
                 }));
             } else {
@@ -94,7 +93,6 @@ const ThemeUtils = {
             ratio: !theme.tiled ? 1 : undefined,
             format: theme.format,
             role: LayerRole.THEME,
-            isThemeLayer: true,
             attribution: theme.attribution,
             legendUrl: theme.legendUrl,
             printUrl: theme.printUrl,

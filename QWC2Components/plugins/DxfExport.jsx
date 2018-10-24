@@ -13,6 +13,7 @@ const isEmpty = require('lodash.isempty');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const ProxyUtils = require("../../MapStore2Components/utils/ProxyUtils");
+const {LayerRole} = require('../actions/layers');
 const {setCurrentTask} = require('../actions/task');
 const {TaskBar} = require('../components/TaskBar');
 const PrintFrame = require('../components/PrintFrame');
@@ -26,7 +27,7 @@ class DxfExport extends React.Component {
         setCurrentTask: PropTypes.func
     }
     renderBody = () => {
-        let themeLayers = this.props.layers.filter(layer => layer.isThemeLayer);
+        let themeLayers = this.props.layers.filter(layer => layer.role === LayerRole.THEME);
         if(!this.props.theme || isEmpty(themeLayers)) {
             return null;
         }

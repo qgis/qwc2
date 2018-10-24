@@ -113,7 +113,7 @@ const LayerUtils = {
         let layernames = [];
         let opacities = [];
         for(let layer of layers) {
-            if(layer.isThemeLayer) {
+            if(layer.role === LayerRole.THEME) {
                 layernames.push(...layer.params.LAYERS.split(","));
                 opacities.push(...(layer.params.OPACITIES || "").split(",").map(entry => parseFloat(entry)));
             } else if(layer.role === LayerRole.USERLAYER && (layer.type === "wms" || layer.type === "wfs")) {
@@ -150,7 +150,7 @@ const LayerUtils = {
     },
     removeLayer(layers, layer, sublayerpath, swipeActive) {
         // Extract foreground layers
-        let fglayers = layers.filter(layer => layer.group !== 'background');
+        let fglayers = layers.filter(layer => layer.role !== LayerRole.BACKGROUND);
         // Explode layers (one entry for every single sublayer)
         let exploded = LayerUtils.explodeLayers(fglayers);
         const pathEqualOrBelow = (parent, child) => {
@@ -177,8 +177,8 @@ const LayerUtils = {
             }
         }
         // Ensure theme layer is never removed
-        if(!newlayers.find(layer => layer.isThemeLayer)) {
-            let oldThemeLayer = layers.find(layer => layer.isThemeLayer);
+        if(!newlayers.find(layer => layer.role === LayerRole.THEME)) {
+            let oldThemeLayer = layers.find(layer => layer.role === LayerRole.THEME);
             if(oldThemeLayer) {
                 let newThemeLayer = assign({}, oldThemeLayer, {sublayers: []});
                 assign(newThemeLayer, LayerUtils.buildWMSLayerParams(newThemeLayer));
@@ -188,12 +188,12 @@ const LayerUtils = {
         // Re-add background layers
         return [
             ...newlayers,
-            ...layers.filter(layer => layer.group === "background")
+            ...layers.filter(layer => layer.role === LayerRole.BACKGROUND)
         ];
     },
     reorderLayer(layers, movelayer, sublayerpath, delta, swipeActive) {
         // Extract foreground layers
-        let fglayers = layers.filter(layer => layer.group !== 'background');
+        let fglayers = layers.filter(layer => layer.role !== LayerRole.BACKGROUND);
         // Explode layers (one entry for every single sublayer)
         let exploded = LayerUtils.explodeLayers(fglayers);
         // Find entry to move
@@ -222,7 +222,7 @@ const LayerUtils = {
         // Re-add background layers
         return [
             ...newlayers,
-            ...layers.filter(layer => layer.group === "background")
+            ...layers.filter(layer => layer.role === LayerRole.BACKGROUND)
         ];
     },
     explodeLayers(layers) {

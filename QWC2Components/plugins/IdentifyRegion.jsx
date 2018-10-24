@@ -11,6 +11,7 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {stringify} = require('wellknown');
 const Message = require('../../MapStore2Components/components/I18N/Message');
+const {LayerRole} = require('../actions/layers');
 const {sendIdentifyRegionRequest, sendIdentifyRequest} = require('../actions/identify');
 const {changeSelectionState} = require('../../MapStore2Components/actions/selection');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
@@ -62,7 +63,7 @@ class IdentifyRegion extends React.Component {
     }
     getFeatures = (poly) => {
         let queryLayers = this.props.layers.reduce((accum, layer) => {
-            return layer.isThemeLayer ? accum.concat(layer.queryLayers) : accum;
+            return layer.role === LayerRole.THEME ? accum.concat(layer.queryLayers) : accum;
         }, []).join(",");
         if(poly.length < 1 || !queryLayers) {
             return;
@@ -88,7 +89,7 @@ class IdentifyRegion extends React.Component {
             });
             this.props.sendWFSRequest(this.props.theme.url, requestParams, wgs84poly);
         } else {
-            let layer = this.props.layers.find(layer => layer.isThemeLayer);
+            let layer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
             let center = [0, 0];
             for(let i = 0; i < poly.length; ++i) {
                 center[0] += poly[i][0];

@@ -431,7 +431,7 @@ class IdentifyViewer extends React.Component {
         return reports;
     }
     findFeatureReportTemplate = (layer) => {
-        let themeLayer = this.props.layers.find(layer => layer.isThemeLayer);
+        let themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
         if(!themeLayer) {
             return null;
         }
