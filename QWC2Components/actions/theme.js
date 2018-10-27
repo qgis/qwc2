@@ -45,7 +45,7 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
 
         // Remove old layers
         if(preserve && ConfigUtils.getConfigProp("preserveNonThemeLayersOnThemeSwitch") === true) {
-            let removeLayers = getState().layers.flat.filter(layer => layer.role > LayerRole.THEME).map(layer => layer.id);
+            let removeLayers = getState().layers.flat.filter(layer => layer.role <= LayerRole.THEME).map(layer => layer.id);
             for(let layerId of removeLayers) {
                 dispatch(removeLayer(layerId));
             }
