@@ -332,7 +332,7 @@ class Search extends React.Component {
         );
     }
     showResult = (item, zoom=true) => {
-        if(item.type !== SearchResultType.PLACE && !this.props.searchOptions.zoomToLayers) {
+        if((item.type || SearchResultType.PLACE) !== SearchResultType.PLACE && !this.props.searchOptions.zoomToLayers) {
             zoom = false;
         }
         if(zoom) {
