@@ -110,6 +110,8 @@ class ThemeSwitcher extends React.Component {
     addThemeLayers = (ev, theme) => {
         ev.stopPropagation();
         this.props.addLayer(ThemeUtils.createThemeLayer(theme, null, LayerRole.USERLAYER));
+        // Show layer tree to notify user that something has happened
+        this.props.setCurrentTask('LayerTree');
     }
     focusFilterField = (el) => {
         if(el) {

@@ -121,11 +121,12 @@ const ThemeUtils = {
         return isEmpty(matches) ? [] : [{
             id: "themes",
             titlemsgid: "search.themes",
+            priority: -1,
             items: matches.map(theme => ({
                 type: resultType,
                 id: theme.id,
                 text: theme.title,
-                layer: ThemeUtils.createThemeLayer(theme, null, LayerRole.USERLAYER),
+                theme: theme,
                 thumbnail: ConfigUtils.getConfigProp("assetsPath") + "/" + theme.thumbnail
             }))
         }];

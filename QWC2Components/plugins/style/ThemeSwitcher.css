@@ -53,6 +53,11 @@
     font-size: large;
     padding: 0.25em;
     background-color: rgba(255, 255, 255, 0.75);
+    color: @base_fg@;
+}
+
+#ThemeSwitcher li.theme-item > span.icon:hover {
+    color: @item_active@;
 }
 
 #ThemeSwitcher li.theme-item:hover {

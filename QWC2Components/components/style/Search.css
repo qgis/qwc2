@@ -169,6 +169,18 @@
     overflow: hidden;
 }
 
+#Search ul.search-results ul li > span.icon {
+    flex: 0 0 auto;
+     border: 1px solid @item_border@;
+     background-color: white;
+     padding: 0.25em;
+     border-radius: 0.25em;
+}
+
+#Search ul.search-results ul li > span.icon:hover {
+    border-color: @item_active@;
+}
+
 #Search ul.search-results ul li:hover {
     background-color: @button_hover_bg@;
 }

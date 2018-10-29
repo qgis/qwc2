@@ -18,7 +18,7 @@ const SEARCH_ADD_RESULTS = 'SEARCH_ADD_RESULTS';
 const SearchResultType = {
     PLACE: 0,
     THEMELAYER: 1,
-    EXTERNALLAYER: 2
+    THEME: 2
 };
 
 function changeSearch(text, providers) {
@@ -50,7 +50,7 @@ function startSearch(text, options, providers, startup=false) {
             dispatch(addSearchResults({
                 provider: "themes",
                 reqId: reqId,
-                data: ThemeUtils.searchThemes(getState().theme.themes, text, SearchResultType.EXTERNALLAYER)
+                data: ThemeUtils.searchThemes(getState().theme.themes, text, SearchResultType.THEME)
             }));
         }
     }

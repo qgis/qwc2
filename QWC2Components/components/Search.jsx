@@ -15,6 +15,7 @@ const classnames = require('classnames');
 const isEmpty = require('lodash.isempty');
 const isEqual = require('lodash.isequal');
 const ol = require('openlayers');
+const Icon = require('./Icon');
 const Spinner = require('./Spinner');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
@@ -24,10 +25,11 @@ const {LayerRole, addMarker, removeMarker, addLayerFeatures, removeLayer, addLay
 const {zoomToPoint} = require('../actions/map');
 const {changeSearch, startSearch, searchMore, SearchResultType} = require("../actions/search");
 const {setCurrentTask} = require('../actions/task');
+const {setCurrentTheme} = require('../actions/theme');
 const displayCrsSelector = require('../selectors/displaycrs');
+const ThemeUtils = require('../utils/ThemeUtils');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
 const {UrlParams} = require("../utils/PermaLinkUtils");
-const Icon = require('./Icon');
 require('./style/Search.css');
 
 class Search extends React.Component {
@@ -39,6 +41,7 @@ class Search extends React.Component {
         startupSearch: PropTypes.bool,
         results: PropTypes.array,
         theme: PropTypes.object,
+        themes: PropTypes.object,
         map: PropTypes.object,
         displaycrs: PropTypes.string,
         changeSearch: PropTypes.func,
@@ -52,6 +55,7 @@ class Search extends React.Component {
         addLayer: PropTypes.func,
         addThemeSublayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
+        setCurrentTheme: PropTypes.func,
         searchOptions: PropTypes.object
     }
     static contextTypes = {
@@ -322,12 +326,14 @@ class Search extends React.Component {
                 </li>
             );
         }
+        let addTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addtotheme");
         return (
             <li key={item.id} title={item.text} onMouseDown={this.killEvent}
                 onClick={() => {this.showResult(item); this.input.blur(); }}
             >
                 {item.thumbnail ? (<img src={item.thumbnail} />) : null}
                 <span dangerouslySetInnerHTML={{__html: item.text}}></span>
+                {item.theme ? (<Icon onClick={(ev) => this.addThemeLayers(ev, item.theme)} icon="plus" title={addTitle}/>) : null}
             </li>
         );
     }
@@ -388,10 +394,8 @@ class Search extends React.Component {
             this.props.addThemeSublayer(item.layer);
             // Show layer tree to notify user that something has happened
             this.props.setCurrentTask('LayerTree');
-        } else if(item.type === SearchResultType.EXTERNALLAYER) {
-            this.props.addLayer(item.layer);
-            // Show layer tree to notify user that something has happened
-            this.props.setCurrentTask('LayerTree');
+        } else if(item.type === SearchResultType.THEME) {
+            this.props.setCurrentTheme(item.theme, this.props.themes);
         }
     }
     showFeatureGeometry = (item, geometry, crs, text) => {
@@ -439,6 +443,12 @@ class Search extends React.Component {
         }
         return center;
     }
+    addThemeLayers = (ev, theme) => {
+        ev.stopPropagation();
+        this.props.addLayer(ThemeUtils.createThemeLayer(theme, null, LayerRole.USERLAYER));
+        // Show layer tree to notify user that something has happened
+        this.props.setCurrentTask('LayerTree');
+    }
 };
 
 
@@ -472,6 +482,7 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
             map: state.map,
             displaycrs: displaycrs,
             theme: state.theme ? state.theme.current : null,
+            themes: state.theme ? state.theme.themes : {},
             searchProviders: searchProviders,
         })
     ), {
@@ -485,6 +496,7 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
         removeLayer: removeLayer,
         addLayer: addLayer,
         addThemeSublayer: addThemeSublayer,
-        setCurrentTask: setCurrentTask
+        setCurrentTask: setCurrentTask,
+        setCurrentTheme: setCurrentTheme
     })(Search);
 }
