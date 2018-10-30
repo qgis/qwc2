@@ -20,10 +20,11 @@ const Spinner = require('./Spinner');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const MapUtils = require('../../MapStore2Components/utils/MapUtils');
+const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const {LayerRole, addMarker, removeMarker, addLayerFeatures, removeLayer, addLayer, addThemeSublayer} = require('../actions/layers');
 const {zoomToPoint} = require('../actions/map');
-const {changeSearch, startSearch, searchMore, SearchResultType} = require("../actions/search");
+const {addSearchResults, changeSearch, startSearch, searchMore, SearchResultType} = require("../actions/search");
 const {setCurrentTask} = require('../actions/task');
 const {setCurrentTheme} = require('../actions/theme');
 const displayCrsSelector = require('../selectors/displaycrs');
@@ -455,10 +456,10 @@ class Search extends React.Component {
 module.exports = (searchProviders, providerFactory=(entry) => { return null; }) => {
 
     const collectProviders = createSelector(
-        [state => state.theme && state.theme.current || null, state => state.layers && state.layers.flat || null], (theme, layers) => {
+        [state => state.theme, state => state.layers && state.layers.flat || null], (theme, layers) => {
             let availableProviders = {};
             let themeLayerNames = layers.map(layer => layer.role === LayerRole.THEME ? layer.params.LAYERS : "").join(",").split(",").filter(entry => entry);
-            let themeProviders = theme && theme.searchProviders || [];
+            let themeProviders = theme && theme.current ? theme.current.searchProviders : [];
             for(let entry of themeProviders) {
                 let provider = searchProviders[entry] || providerFactory(entry);
                 if(provider) {
@@ -467,6 +468,18 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
                     }
                     availableProviders[entry.key || entry] = provider;
                 }
+            }
+            if(ConfigUtils.getConfigProp("searchThemes")) {
+                availableProviders["themes"] = {
+                    label: "Themes",
+                    onSearch: (text, reqId, options, dispatch) => {
+                        dispatch(addSearchResults({
+                            provider: "themes",
+                            reqId: reqId,
+                            data: ThemeUtils.searchThemes(theme.themes, text, SearchResultType.THEME)
+                        }));
+                    }
+                };
             }
             return availableProviders;
         }

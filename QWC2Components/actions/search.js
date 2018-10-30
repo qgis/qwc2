@@ -6,9 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
-const ThemeUtils = require('../utils/ThemeUtils');
 const uuid = require('uuid');
 
 const SEARCH_CHANGE = 'SEARCH_CHANGE';
@@ -31,12 +29,8 @@ function changeSearch(text, providers) {
 
 function startSearch(text, options, providers, startup=false) {
     return (dispatch, getState) => {
-        let themeSearch = ConfigUtils.getConfigProp("allowAddingOtherThemes") === true;
         let reqId = uuid.v1();
         let providerKeys = Object.keys(providers);
-        if(themeSearch) {
-            providerKeys.push("themes");
-        }
         dispatch({
             type: SEARCH_SET_REQUEST,
             id: reqId,
@@ -46,13 +40,6 @@ function startSearch(text, options, providers, startup=false) {
         Object.keys(providers).map(provider => {
             providers[provider].onSearch(text, reqId, options, dispatch);
         });
-        if(themeSearch) {
-            dispatch(addSearchResults({
-                provider: "themes",
-                reqId: reqId,
-                data: ThemeUtils.searchThemes(getState().theme.themes, text, SearchResultType.THEME)
-            }));
-        }
     }
 }
 
