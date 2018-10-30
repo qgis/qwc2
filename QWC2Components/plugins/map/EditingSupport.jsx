@@ -29,16 +29,7 @@ class EditingSupport extends React.Component {
         this.interaction = null;
         this.layer = null;
         this.currentFeature = null;
-        this.baseStyle = new ol.style.Style({
-            fill: new ol.style.Fill({ color: [255, 0, 0, 0.5] }),
-            stroke: new ol.style.Stroke({ color: 'red', width: 2}),
-            image: new ol.style.Circle({
-                radius: 8,
-                fill: new ol.style.Fill({ color: [255, 0, 0, 0.5] }),
-                stroke: new ol.style.Stroke({ color: 'red', width: 2})
-            }),
-        });
-        this.interactionStyle = [
+        this.editStyle = [
             new ol.style.Style({
                 fill: new ol.style.Fill({ color: [255, 0, 0, 0.5] }),
                 stroke: new ol.style.Stroke({ color: 'red', width: 2})
@@ -84,7 +75,7 @@ class EditingSupport extends React.Component {
         this.layer = new ol.layer.Vector({
             source: source,
             zIndex: 1000000,
-            style: this.baseStyle
+            style: this.editStyle
         });
         this.props.map.addLayer(this.layer);
     }
@@ -94,7 +85,7 @@ class EditingSupport extends React.Component {
         let drawInteraction = new ol.interaction.Draw({
             type: newProps.editing.geomType,
             source: this.layer.getSource(),
-            style: this.interactionStyle
+            style: this.editStyle
         });
         drawInteraction.on('drawstart', (evt) => {
             this.currentFeature = evt.feature;
@@ -108,7 +99,6 @@ class EditingSupport extends React.Component {
                 this.currentFeature = feature;
                 let modifyInteraction = new ol.interaction.Modify({
                     features: new ol.Collection([this.currentFeature]),
-                    style: this.interactionStyle,
                     deleteCondition: (event) => {
                         // delete vertices on SHIFT + click
                         return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
@@ -135,7 +125,6 @@ class EditingSupport extends React.Component {
 
         let modifyInteraction = new ol.interaction.Modify({
             features: new ol.Collection([this.currentFeature]),
-            style: this.interactionStyle,
             deleteCondition: (event) => {
                 // delete vertices on SHIFT + click
                 return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
