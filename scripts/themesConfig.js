@@ -14,10 +14,14 @@ const xml2js = require('xml2js');
 const fs = require('fs');
 const path = require('path');
 const isEmpty = require('lodash.isempty');
-const fqdn = require('node-fqdn');
+let fqdn = null;
+try {
+	fqdn = require('node-fqdn');
+} catch(e) {
+}
 const uuid = require('uuid');
 
-const hostFqdn = "http://" + String(fqdn());
+const hostFqdn = fqdn ? "http://" + String(fqdn()) : "";
 const themesConfig = process.env["QWC2_THEMES_CONFIG"] || "themesConfig.json";
 
 // load thumbnail from file or GetMap
