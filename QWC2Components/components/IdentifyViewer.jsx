@@ -93,6 +93,7 @@ class IdentifyViewer extends React.Component {
             item.sublayers.map(child => this.populateDisplayFieldMap(displayFieldMap, child));
         } else if(item.displayField){
             displayFieldMap[item.name] = item.displayField;
+            displayFieldMap[item.title] = item.displayField;
         }
     }
     parseResponse = (response, results, stats) => {
