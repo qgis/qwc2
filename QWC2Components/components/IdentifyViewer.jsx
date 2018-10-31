@@ -272,11 +272,11 @@ class IdentifyViewer extends React.Component {
             );
         } else if(result.type === "html") {
             resultbox = (
-                <iframe className="identify-result-box" src={"data:text/html," + encodeURIComponent(result.text)}></iframe>
+                <iframe className="identify-result-box" onLoad={ev => this.setIframeContent(ev.target, result.text)}></iframe>
             );
         } else if(result.properties.htmlContent) {
             resultbox = (
-                <iframe className="identify-result-box" src={"data:text/html," + encodeURIComponent(result.properties.htmlContent)}></iframe>
+                <iframe className="identify-result-box" onLoad={ev => this.setIframeContent(ev.target, result.properties.htmlContent)}></iframe>
             );
         } else {
             let properties = Object.keys(result.properties) || [];
@@ -329,6 +329,15 @@ class IdentifyViewer extends React.Component {
                 </div>) : null}
             </div>
         );
+    }
+    setIframeContent = (iframe, html) => {
+        if(iframe.getAttribute("identify-content-set")) {
+            return;
+        }
+        iframe.setAttribute("identify-content-set", true);
+        iframe.contentWindow.document.open();
+        iframe.contentWindow.document.write(html);
+        iframe.contentWindow.document.close();
     }
     renderResult = (layer, result) => {
         let displayName = this.resultDisplayName(layer, result);
