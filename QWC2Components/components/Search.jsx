@@ -328,13 +328,14 @@ class Search extends React.Component {
             );
         }
         let addTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addtotheme");
+        let addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes");
         return (
             <li key={item.id} title={item.text} onMouseDown={this.killEvent}
                 onClick={() => {this.showResult(item); this.input.blur(); }}
             >
                 {item.thumbnail ? (<img src={item.thumbnail} />) : null}
                 <span dangerouslySetInnerHTML={{__html: item.text}}></span>
-                {item.theme ? (<Icon onClick={(ev) => this.addThemeLayers(ev, item.theme)} icon="plus" title={addTitle}/>) : null}
+                {item.theme && addThemes ? (<Icon onClick={(ev) => this.addThemeLayers(ev, item.theme)} icon="plus" title={addTitle}/>) : null}
             </li>
         );
     }
