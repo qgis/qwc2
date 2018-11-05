@@ -28,6 +28,7 @@ class OpenlayersMap extends React.Component {
         zoomControl: PropTypes.bool,
         mousePointer: PropTypes.string,
         trackMousePos: PropTypes.bool,
+        identifyEnabled: PropTypes.bool,
         onMouseMove: PropTypes.func,
         setLayerLoading: PropTypes.func,
         registerHooks: PropTypes.bool,
@@ -87,7 +88,7 @@ class OpenlayersMap extends React.Component {
         }
         map.on('moveend', this.updateMapInfoState);
         map.on('click', (event) => {
-            if(this.map.getFeaturesAtPixel(event.pixel)) {
+            if(!this.props.identifyEnabled && this.map.getFeaturesAtPixel(event.pixel)) {
                 // Ignore
                 return;
             }
