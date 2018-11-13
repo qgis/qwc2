@@ -33,7 +33,8 @@ class ResizeableWindow extends React.Component {
             icon: PropTypes.string.isRequired,
             callback: PropTypes.func.isRequired
         })),
-        padding: PropTypes.string
+        padding: PropTypes.string,
+        zIndex: PropTypes.number
     }
     static defaultProps = {
         icon: null,
@@ -49,7 +50,8 @@ class ResizeableWindow extends React.Component {
         onClose: () => {},
         scrollable: false,
         extraControls: null,
-        padding: "0.25em"
+        padding: "0.25em",
+        zIndex: 6
     }
     renderRole = (role) => {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
@@ -85,7 +87,8 @@ class ResizeableWindow extends React.Component {
             <div className="resizeable-window-container">
                 <Rnd className="resizeable-window" bounds="parent" default={initial}
                     minWidth={this.props.minWidth} minHeight={this.props.minHeight}
-                    maxWidth={this.props.maxWidth || window.innerWidth} maxHeight={this.props.maxHeight || window.innerHeight}>
+                    maxWidth={this.props.maxWidth || window.innerWidth} maxHeight={this.props.maxHeight || window.innerHeight}
+                    style={{zIndex: this.props.zIndex}}>
                     <div className="resizeable-window-titlebar">
                         <span className="resizeable-window-titlebar-icon">
                             {icon}

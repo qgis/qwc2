@@ -11,6 +11,7 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const MapUtils = require('../../MapStore2Components/utils/MapUtils');
+const {setActiveLayerInfo} = require('../actions/layerinfo');
 const ResizeableWindow = require("../components/ResizeableWindow");
 const MiscUtils = require('../utils/MiscUtils');
 require('./style/LayerInfoWindow.css');
@@ -19,10 +20,11 @@ class LayerInfoWindow extends React.Component {
     static propTypes = {
         layer: PropTypes.object,
         sublayer: PropTypes.object,
-        onClose: PropTypes.func,
+        setActiveLayerInfo: PropTypes.func,
         windowSize: PropTypes.object,
         map: PropTypes.object,
-        bboxDependentLegend: PropTypes.bool
+        bboxDependentLegend: PropTypes.bool,
+        setActiveLayerInfo: PropTypes.func
     }
     renderLink(text, url) {
         return url ? (<a href={url} target="_blank">{text}</a>) : text ? text : null;
@@ -41,6 +43,9 @@ class LayerInfoWindow extends React.Component {
         return null;
     }
     render() {
+        if(!this.props.layer || !this.props.sublayer) {
+            return null;
+        }
         let legend = null;
         if(this.props.layer.legendUrl) {
             let requestParams = "SERVICE=WMS" +
@@ -61,7 +66,8 @@ class LayerInfoWindow extends React.Component {
             legend = (<span className="layer-info-window-coloricon" style={{backgroundColor: this.props.layer.color}} />);
         }
         return (
-            <ResizeableWindow title="layerinfo.title" icon="info-sign" onClose={this.props.onClose} initialWidth={this.props.windowSize.width} initialHeight={this.props.windowSize.height}>
+            <ResizeableWindow title="layerinfo.title" icon="info-sign" onClose={this.onClose} zIndex={7}
+                initialWidth={this.props.windowSize.width} initialHeight={this.props.windowSize.height}>
                 <div role="body" className="layer-info-window-body">
                     <h4 className="layer-info-window-title">{this.props.sublayer.title}</h4>
                     <div className="layer-info-window-frame">
@@ -80,10 +86,17 @@ class LayerInfoWindow extends React.Component {
             </ResizeableWindow>
         );
     }
+    onClose = () => {
+        this.props.setActiveLayerInfo(null, null);
+    }
 };
 
 const selector = state => ({
-    map: state.map
+    map: state.map,
+    layer: state.layerinfo.layer || null,
+    sublayer: state.layerinfo.sublayer || null
 });
 
-module.exports = connect(selector)(LayerInfoWindow);
+module.exports = connect(selector, {
+    setActiveLayerInfo: setActiveLayerInfo
+})(LayerInfoWindow);

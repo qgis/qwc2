@@ -14,7 +14,9 @@ const FileSaver = require('file-saver');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
+const {setActiveLayerInfo} = require('../actions/layerinfo');
 const IdentifyUtils = require('../utils/IdentifyUtils');
+const LayerUtils = require('../utils/LayerUtils');
 const MiscUtils = require('../utils/MiscUtils');
 const Icon = require('./Icon');
 require('./style/IdentifyViewer.css');
@@ -31,7 +33,8 @@ class IdentifyViewer extends React.Component {
         enableExport: PropTypes.bool,
         longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
         displayResultTree: PropTypes.bool,
-        attributeCalculator: PropTypes.func
+        attributeCalculator: PropTypes.func,
+        setActiveLayerInfo: PropTypes.func
     }
     static defaultProps = {
         enableExport: true,
@@ -290,7 +293,10 @@ class IdentifyViewer extends React.Component {
         }
         return (
             <div className={resultClass}>
-                <div className="identify-result-title">{layer + ": " + this.resultDisplayName(layer, result)}</div>
+                <div className="identify-result-title">
+                    <span>{layer + ": " + this.resultDisplayName(layer, result)}</span>
+                    <Icon icon="info-sign" onClick={() => this.showLayerInfo(layer)} />
+                </div>
                 {resultbox}
                 {featureReportTemplate ? (<div className="identify-result-feature-report-frame">
                     <a target="_blank" href={this.getFeatureReportUrl(featureReportTemplate, result)} ><Message msgId="identify.featureReport" /></a>
@@ -425,6 +431,23 @@ class IdentifyViewer extends React.Component {
         };
         return serviceUrl + "/" + template + "?" + Object.keys(params).map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&");
     }
+    showLayerInfo = (layertitle) => {
+        // Search matching layer...
+        let matchlayer = null;
+        let matchsublayer = null;
+        for(let layer of this.props.layers) {
+            if(layer.role === LayerRole.THEME) {
+                matchsublayer = LayerUtils.searchSubLayer(layer, layertitle);
+                if(matchsublayer) {
+                    matchlayer = layer;
+                    break;
+                }
+            }
+        }
+        if(matchlayer && matchsublayer) {
+            this.props.setActiveLayerInfo(matchlayer, matchsublayer)
+        }
+    }
 };
 
 const selector = (state) => ({
@@ -437,5 +460,6 @@ module.exports = {
     IdentifyViewer: connect(selector, {
         addLayerFeatures: addLayerFeatures,
         removeLayer: removeLayer,
+        setActiveLayerInfo: setActiveLayerInfo
     })(IdentifyViewer)
 };

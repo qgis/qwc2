@@ -109,6 +109,20 @@
     font-weight: bold;
     flex: 0 0 auto;
     font-size: small;
+    display: flex;
+}
+
+#IdentifyViewer .identify-result-title > span:first-child {
+    flex: 1 1 auto;
+}
+
+#IdentifyViewer .identify-result-title > span.icon {
+    cursor: pointer;
+    flex: 0 0 auto;
+}
+
+#IdentifyViewer .identify-result-title > span.icon:hover {
+    color: @item_active@;
 }
 
 #IdentifyViewer .identify-result-box {

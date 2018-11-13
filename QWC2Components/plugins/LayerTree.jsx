@@ -15,6 +15,7 @@ const isEmpty = require('lodash.isempty');
 const Sortable = require('react-sortablejs');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const {LayerRole, changeLayerProperties, removeLayer, reorderLayer, setSwipe} = require('../actions/layers')
+const {setActiveLayerInfo} = require('../actions/layerinfo');
 const {toggleMapTips} = require('../actions/map');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
@@ -51,6 +52,7 @@ class LayerTree extends React.Component {
         bboxDependentLegend: PropTypes.bool,
         flattenGroups: PropTypes.bool,
         setSwipe: PropTypes.func,
+        setActiveLayerInfo: PropTypes.func,
         width: PropTypes.string
     }
     static defaultProps = {
@@ -71,7 +73,6 @@ class LayerTree extends React.Component {
     state = {
         activemenu: null,
         legendTooltip: null,
-        activeinfo: null,
         sidebarwidth: null,
         importvisible: false
     }
@@ -181,7 +182,7 @@ class LayerTree extends React.Component {
             }
             let infoButton = null;
             if(layer.type === "wms" || layer.type === "wfs") {
-                infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.setState({activeinfo: {layer, sublayer}})}/>);
+                infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.props.setActiveLayerInfo(layer, sublayer)}/>);
             }
             editframe = (
                 <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
@@ -306,15 +307,6 @@ class LayerTree extends React.Component {
                 <img className="layertree-item-legend-tooltip" style={style} src={this.state.legendTooltip.img} onTouchStart={this.hideLegendTooltip}></img>
             );
         }
-        let infoWindow = null;
-        if(this.state.activeinfo) {
-            infoWindow = (
-                <LayerInfoWindow onClose={() => this.setState({activeinfo: null})}
-                    layer={this.state.activeinfo.layer} sublayer={this.state.activeinfo.sublayer}
-                    windowSize={this.props.layerInfoWindowSize}
-                    bboxDependentLegend={this.props.bboxDependentLegend} />
-            );
-        }
         let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
         let extraTitlebarContent = (<Icon title={printLegendTooltip} className="layertree-print-legend" icon="print" onClick={this.printLegend}/>)
         return (
@@ -327,7 +319,7 @@ class LayerTree extends React.Component {
                     })}
                 </SideBar>
                 {legendTooltip}
-                {infoWindow}
+                <LayerInfoWindow windowSize={this.props.layerInfoWindowSize} bboxDependentLegend={this.props.bboxDependentLegend} />
             </div>
         );
     }
@@ -544,9 +536,11 @@ module.exports = {
         removeLayer: removeLayer,
         reorderLayer: reorderLayer,
         toggleMapTips: toggleMapTips,
-        setSwipe: setSwipe
+        setSwipe: setSwipe,
+        setActiveLayerInfo: setActiveLayerInfo
     })(LayerTree),
     reducers: {
-        layers: require('../reducers/layers')
+        layers: require('../reducers/layers'),
+        layerinfo: require('../reducers/layerinfo'),
     }
 };

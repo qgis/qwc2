@@ -334,6 +334,21 @@ const LayerUtils = {
             }
         }
         return newlayer;
+    },
+    searchSubLayer(layer, layertitle) {
+        if(layer.sublayers) {
+            for(let sublayer of layer.sublayers) {
+                let subsublayer = LayerUtils.searchSubLayer(sublayer, layertitle);
+                if(subsublayer) {
+                    return subsublayer;
+                }
+            }
+        } else {
+            if(layer.title === layertitle || layer.name === layertitle) {
+                return layer;
+            }
+        }
+        return null;
     }
 };
 
