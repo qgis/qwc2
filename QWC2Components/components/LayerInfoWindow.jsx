@@ -12,6 +12,7 @@ const {connect} = require('react-redux');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const ResizeableWindow = require("../components/ResizeableWindow");
+const MiscUtils = require('../utils/MiscUtils');
 require('./style/LayerInfoWindow.css');
 
 class LayerInfoWindow extends React.Component {
@@ -26,12 +27,14 @@ class LayerInfoWindow extends React.Component {
     renderLink(text, url) {
         return url ? (<a href={url} target="_blank">{text}</a>) : text ? text : null;
     }
-    renderRow = (title, content) => {
+    renderRow = (title, content, html=false) => {
         if(content) {
             return (
                 <tr>
                     <td><Message msgId={title} />:</td>
-                    <td>{content}</td>
+                    {html ? (
+                        <td dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(content)}}></td>
+                    ) : (<td>{content}</td>)}
                 </tr>
             );
         }
@@ -64,7 +67,7 @@ class LayerInfoWindow extends React.Component {
                     <div className="layer-info-window-frame">
                         <table className="layer-info-window-table">
                             <tbody>
-                            {this.renderRow("layerinfo.abstract", this.props.sublayer.abstract)}
+                            {this.renderRow("layerinfo.abstract", this.props.sublayer.abstract, true)}
                             {this.props.sublayer.attribution ? this.renderRow("layerinfo.attribution", this.renderLink(this.props.sublayer.attribution.Title, this.props.sublayer.attribution.OnlineResource)) : null}
                             {this.renderRow("layerinfo.keywords", this.props.sublayer.keywords)}
                             {this.renderRow("layerinfo.dataUrl", this.renderLink(this.props.sublayer.dataUrl, this.props.sublayer.dataUrl))}

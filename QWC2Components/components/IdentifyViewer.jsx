@@ -15,10 +15,9 @@ const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
 const IdentifyUtils = require('../utils/IdentifyUtils');
+const MiscUtils = require('../utils/MiscUtils');
 const Icon = require('./Icon');
 require('./style/IdentifyViewer.css');
-
-let urlRegEx = /(\s|^)((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
 
 class IdentifyViewer extends React.Component {
     static propTypes = {
@@ -209,14 +208,6 @@ class IdentifyViewer extends React.Component {
         let data = JSON.stringify(json, null, ' ');
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "results.json");
     }
-    htmlEncode = (text) => {
-        return text
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
     resultDisplayName = (layer, result) => {
         let displayName = "";
         try {
@@ -235,30 +226,6 @@ class IdentifyViewer extends React.Component {
             displayName = result.id;
         }
         return displayName;
-    }
-    addLinkAnchors = (text) => {
-        let value = text;
-        while(match = urlRegEx.exec(value)) {
-            // If URL is part of a HTML attribute, don't add anchor
-            if(value.substring(match.index - 2, match.index).match(/^=['"]$/) === null) {
-                let url = match[0].substr(match[1].length);
-                let protoUrl = url;
-                if(match[2] === undefined) {
-                    if(match[0].indexOf('@') !== -1) {
-                        protoUrl = "mailto:" + url;
-                    } else {
-                        protoUrl = "http://" + url;
-                    }
-                }
-                let pos = match.index + match[1].length;
-                let anchor = "<a href=\"" + this.htmlEncode(protoUrl) + "\" target=\"_blank\">" + this.htmlEncode(url) + "</a>";
-                value = value.substring(0, pos) + anchor + value.substring(pos + url.length);
-                urlRegEx.lastIndex = pos + anchor.length;
-            }
-        }
-        // Reset
-        urlRegEx.lastIndex = 0;
-        return value;
     }
     renderResultAttributes = (layer, result, resultClass) => {
         if(!result) {
@@ -285,7 +252,7 @@ class IdentifyViewer extends React.Component {
             if(properties.length === 1 && result.properties["maptip"]) {
                 rows = (
                     <tr>
-                        <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: this.addLinkAnchors(result.properties[properties[0]])}}></td>
+                        <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(result.properties[properties[0]])}}></td>
                     </tr>
                 );
             } else {
@@ -296,7 +263,7 @@ class IdentifyViewer extends React.Component {
                     return (
                         <tr key={attrib}>
                             <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i>{attrib}</i></td>
-                            <td className={"identify-attr-value " + this.props.longAttributesDisplay} dangerouslySetInnerHTML={{__html: this.addLinkAnchors(result.properties[attrib])}}></td>
+                            <td className={"identify-attr-value " + this.props.longAttributesDisplay} dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(result.properties[attrib])}}></td>
                         </tr>
                     );
                 });
