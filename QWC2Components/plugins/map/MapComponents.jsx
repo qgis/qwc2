@@ -17,7 +17,7 @@ const {changeMousePositionState} = require('../../actions/mousePosition');
 
 const Map = connect((state) => ({
     trackMousePos: state.mousePosition.enabled || false,
-    identifyEnabled: state.identify.enabled || false
+    identifyEnabled: state.identify && state.identify.enabled ? true : false
 }), {
     onMapViewChanges: changeMapView,
     onClick: clickOnMap,
