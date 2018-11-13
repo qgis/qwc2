@@ -157,6 +157,7 @@ class LayerTree extends React.Component {
         );
     }
     renderLayer = (layer, sublayer, path, enabled=true, inMutuallyExclusiveGroup=false) => {
+        let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true || layer.role !== LayerRole.THEME;
         let checkboxstate = sublayer.visibility === true ? 'checked' : 'unchecked';
         if(inMutuallyExclusiveGroup) {
             checkboxstate = 'radio_' + checkboxstate;
@@ -183,7 +184,7 @@ class LayerTree extends React.Component {
                 infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.setState({activeinfo: {layer, sublayer}})}/>);
             }
             editframe = (
-                <div className="layertree-item-edit-frame">
+                <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
                     <span className="layertree-item-transparency-label"><Message msgId="layertree.transparency" /></span>
                     <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onTouchEnd={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} />
                     {reorderButtons}
@@ -207,7 +208,6 @@ class LayerTree extends React.Component {
             checkbox = (<Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.layerToggled(layer, path, sublayer.visibility, inMutuallyExclusiveGroup)} />);
         }
         let title = sublayer.title;
-        let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true || layer.role !== LayerRole.THEME;
         let allowOptions = layer.type !== "placeholder";
         return (
             <div className="layertree-item-container" key={sublayer.uuid} data-id={JSON.stringify({layer: layer.uuid, path: path})}>
