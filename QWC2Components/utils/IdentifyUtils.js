@@ -8,6 +8,7 @@
 
 const assign = require('object-assign');
 const proj4js = require('proj4').default;
+const isEmpty = require('lodash.isempty');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const VectorLayerUtils = require('./VectorLayerUtils');
@@ -104,11 +105,12 @@ const IdentifyUtils = {
             }
         };
     },
-    parseXmlFeature(feature, geometrycrs, id, featurereport) {
+    parseXmlFeature(feature, geometrycrs, id, featurereport, layername) {
         let featureResult = {};
         featureResult["type"] = "Feature";
         featureResult["id"] = id;
         featureResult["featurereport"] = featurereport;
+        featureResult["layername"] = layername;
         let bboxes = feature.getElementsByTagName("BoundingBox");
         if(bboxes.length > 0) {
             let bbox = bboxes[0];
@@ -122,6 +124,7 @@ const IdentifyUtils = {
             featureResult["crs"] = crs;
         }
         featureResult["properties"] = {};
+        attrmapping = {};
         let attributes = feature.getElementsByTagName("Attribute");
         for(let i = 0; i < attributes.length; ++i) {
             let attribute = attributes[i];
@@ -133,11 +136,17 @@ const IdentifyUtils = {
                 }
             } else {
                 featureResult.properties[attribute.attributes.name.value] = attribute.attributes.value.value;
+                if(attribute.attributes.attrname) {
+                    attrmapping[attribute.attributes.name.value] = attribute.attributes.attrname.value;
+                }
             }
         }
         let htmlContent = feature.getElementsByTagName("HtmlContent");
         if(htmlContent.length > 0) {
             featureResult.properties["htmlContent"] = htmlContent[0].textContent;
+        }
+        if(!isEmpty(attrmapping)) {
+            featureResult["attribnames"] = attrmapping;
         }
         return featureResult;
     },
@@ -148,13 +157,14 @@ const IdentifyUtils = {
         let result = {};
         for(let layer of layers) {
             let featurereport = layer.attributes.featurereport ? layer.attributes.featurereport.value : null;
+            let layername = layer.attributes.layername ? layer.attributes.layername.value : null;
             let features = [].slice.call(layer.getElementsByTagName("Feature"));
             if(features.length > 0) {
-                result[layer.attributes.name.value] = features.map(feature => this.parseXmlFeature(feature, geometrycrs, feature.attributes.id.value, featurereport));
+                result[layer.attributes.name.value] = features.map(feature => this.parseXmlFeature(feature, geometrycrs, feature.attributes.id.value, featurereport, layername));
             } else {
                 let attributes = [].slice.call(layer.getElementsByTagName("Attribute"));
                 if(attributes.length > 0) {
-                    result[layer.attributes.name.value] = [this.parseXmlFeature(layer, geometrycrs, response.request.metadata.posstr, featurereport)];
+                    result[layer.attributes.name.value] = [this.parseXmlFeature(layer, geometrycrs, response.request.metadata.posstr, featurereport, layername)];
                 }
             }
         }
