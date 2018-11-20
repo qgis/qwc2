@@ -50,7 +50,7 @@ function searchMore(moreItem, text, providers) {
             dispatch({
                 type: SEARCH_SET_REQUEST,
                 id: reqId,
-                providers: moreItem.provider
+                providers: [moreItem.provider]
             });
             providers[moreItem.provider].getMoreResults(moreItem, text, reqId, dispatch);
         }
