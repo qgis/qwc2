@@ -109,12 +109,28 @@ class MapTip extends React.Component {
     }
     render() {
         if(this.state.maptip && this.state.pos) {
+            // Render off-screen first to measure dimensions, then place as necessary
             let position = {
-                left: this.state.pos[0],
-                top: this.state.pos[1]
+                left: 10000 + "px",
+                top: 10000 + "px"
             };
+            let x = this.state.pos[0];
+            let y = this.state.pos[1];
             return (
                 <div
+                    ref={el => {
+                        if(el) {
+                            let bbox = el.getBoundingClientRect();
+                            if(x + bbox.width > window.innerWidth) {
+                                x -= bbox.width;
+                            }
+                            if(y + bbox.height > window.innerHeight) {
+                                y -= bbox.height;
+                            }
+                            el.style.left = x + "px";
+                            el.style.top = y + "px";
+                        }
+                    }}
                     id="MapTip"
                     style={position}
                     dangerouslySetInnerHTML={{__html: this.state.maptip}}>
