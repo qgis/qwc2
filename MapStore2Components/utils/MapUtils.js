@@ -172,7 +172,7 @@ function computeForZoom(list, zoomLevel) {
         return list[list.length - 1];
     }
     let frac = zoomLevel - lower;
-    return Math.round(list[lower] * (1 - frac) + list[upper] * frac);
+    return list[lower] * (1 - frac) + list[upper] * frac;
 }
 
 /**

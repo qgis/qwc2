@@ -54,7 +54,7 @@ class LayerInfoWindow extends React.Component {
                                 "&FORMAT=image/png" +
                                 "&LAYER=" + this.props.sublayer.name +
                                 "&CRS=" + this.props.map.projection +
-                                "&SCALE=" + MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom) +
+                                "&SCALE=" + Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom)) +
                                 "&WIDTH=" + this.props.map.size.width +
                                 "&HEIGHT=" + this.props.map.size.height;
             if(this.props.bboxDependentLegend) {

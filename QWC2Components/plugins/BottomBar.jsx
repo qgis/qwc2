@@ -42,7 +42,7 @@ class BottomBar extends React.Component {
         if(newProps.map.projection !== this.props.map.projection) {
             newProps.changeMousePositionState({crs: newProps.map.projection, position: null});
         }
-        this.setState({scale: MapUtils.computeForZoom(newProps.map.scales, newProps.map.zoom)});
+        this.setState({scale: Math.round(MapUtils.computeForZoom(newProps.map.scales, newProps.map.zoom))});
     }
     render() {
         if(this.props.fullscreen) {
