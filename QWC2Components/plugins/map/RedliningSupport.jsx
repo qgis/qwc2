@@ -108,6 +108,7 @@ class RedliningSupport extends React.Component {
         let isText = newProps.redlining.geomType === "Text";
         let drawInteraction = new ol.interaction.Draw({
             type: isText ? "Point" : newProps.redlining.geomType,
+            condition: (event) => {  return event.pointerEvent.buttons === 1 },
             style: new ol.style.Style()
         });
         drawInteraction.on('drawstart', (evt) => {
@@ -138,6 +139,7 @@ class RedliningSupport extends React.Component {
 
         let modifyInteraction = new ol.interaction.Modify({
             features: new ol.Collection([this.currentFeature]),
+            condition: (event) => {  return event.pointerEvent.buttons === 1 },
             deleteCondition: (event) => {
                 // delete vertices on SHIFT + click
                 return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
@@ -167,6 +169,7 @@ class RedliningSupport extends React.Component {
         let selectInteraction = new ol.interaction.Select({layers: [redliningLayer], hitTolerance: 5});
         let modifyInteraction = new ol.interaction.Modify({
             features: selectInteraction.getFeatures(),
+            condition: (event) => {  return event.pointerEvent.buttons === 1 },
             deleteCondition: (event) => {
                 // delete vertices on SHIFT + click
                 return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);

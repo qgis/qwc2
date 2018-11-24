@@ -64,6 +64,7 @@ class SelectionSupport extends React.Component {
         // create an interaction to draw with
         let draw = new ol.interaction.Draw({
             source: source,
+            condition: (event) => {  return event.pointerEvent.buttons === 1 },
             type: /** @type {ol.geom.GeometryType} */ newProps.selection.geomType,
             style: new ol.style.Style({
                 fill: new ol.style.Fill({
