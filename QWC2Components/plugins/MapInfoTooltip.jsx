@@ -24,7 +24,6 @@ require('./style/MapInfoTooltip.css');
 
 class MapInfoTooltip extends React.Component {
     static propTypes = {
-        enabled: PropTypes.bool,
         map: PropTypes.object,
         displaycrs: PropTypes.string,
         elevationPrecision: PropTypes.number,
@@ -42,7 +41,7 @@ class MapInfoTooltip extends React.Component {
     }
     componentWillReceiveProps(newProps) {
         let newPoint = newProps.map.clickPoint;
-        if(!newProps.enabled || !newPoint || newPoint.button !== 2) {
+        if(!newPoint || newPoint.button !== 2) {
             this.clear()
         } else {
             let oldPoint = this.props.map.clickPoint;
@@ -138,7 +137,6 @@ class MapInfoTooltip extends React.Component {
 };
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
-    enabled: state.identify && state.identify.enabled,
     map: state.map ? state.map : null,
     displaycrs: displaycrs
 }));
