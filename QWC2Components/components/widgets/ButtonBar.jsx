@@ -24,6 +24,7 @@ class ButtonBar extends React.Component {
             data: PropTypes.object,
             extraClasses: PropTypes.string,
             type: PropTypes.string,
+            disabled: PropTypes.bool
         })),
         active: PropTypes.string,
         onClick: PropTypes.func,
@@ -43,7 +44,7 @@ class ButtonBar extends React.Component {
                     });
                     classes += button.extraClasses ? ' ' + button.extraClasses : '';
                     return (
-                        <button type={button.type || "button"} key={button.key} className={classes} onClick={button.type !== "submit" ? (ev) => this.props.onClick(button.key, button.data) : null}>
+                        <button type={button.type || "button"} disabled={button.disabled} key={button.key} className={classes} onClick={button.type !== "submit" ? (ev) => this.props.onClick(button.key, button.data) : null}>
                             {button.icon ? (<Icon icon={button.icon} />) : null}
                             {button.label && (!this.props.mobile || !button.icon) ? (<Message msgId={button.label} />) : null}
                         </button>
