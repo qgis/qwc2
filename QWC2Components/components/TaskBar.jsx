@@ -9,7 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const {setCurrentTask} = require("../actions/task");
+const {setCurrentTask,setCurrentTaskBlocked} = require("../actions/task");
 const Icon = require('./Icon');
 require('./style/TaskBar.css');
 
@@ -18,11 +18,15 @@ class TaskBar extends React.Component {
         task: PropTypes.string.isRequired,
         currentTask: PropTypes.object,
         onShow: PropTypes.func,
-        onHide: PropTypes.func
+        onHide: PropTypes.func,
+        setCurrentTask: PropTypes.func,
+        setCurrentTaskBlocked: PropTypes.func,
+        unblockOnClose: PropTypes.bool
     }
     static defaultProps = {
         onShow: (mode) => {},
-        onHide: () => {}
+        onHide: () => {},
+        unblockOnClose: false
     }
     componentWillReceiveProps(newProps) {
         let newVisible = newProps.currentTask && newProps.currentTask.id === newProps.task;
@@ -35,6 +39,9 @@ class TaskBar extends React.Component {
     }
     closeClicked = () => {
         if(this.props.currentTask.id === this.props.task) {
+            if(this.props.unblockOnClose) {
+                this.props.setCurrentTaskBlocked(false);
+            }
             this.props.setCurrentTask(null);
         }
     }
@@ -71,6 +78,7 @@ const selector = (state) => ({
 module.exports = {
     TaskBar: connect(selector, {
         setCurrentTask: setCurrentTask,
+        setCurrentTaskBlocked: setCurrentTaskBlocked
     })(TaskBar),
     reducers: {
         task: require('../reducers/task')
