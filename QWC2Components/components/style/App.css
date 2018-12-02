@@ -122,7 +122,6 @@ button.button {
     display: inline-flex;
     border: 1px solid @item_border@;
     padding: 0.25em;
-    cursor: pointer;
     align-items: center;
     justify-content: center;
     background-color: @button_bg@;
