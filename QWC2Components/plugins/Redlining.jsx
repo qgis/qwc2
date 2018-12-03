@@ -120,7 +120,9 @@ class Redlining extends React.Component {
                     )}
                     <span>
                         <span>{sizeLabel}:&nbsp;</span>
-                        <NumericInput mobile min={1} max={99} value={this.props.redlining.size} onChange={(nr) => this.updateRedliningState({size: nr})}/>
+                        <NumericInput mobile strict
+                            min={1} max={99} precision={0} step={1}
+                            value={this.props.redlining.size} onChange={(nr) => this.updateRedliningState({size: nr})}/>
                     </span>
                     {(this.props.redlining.geomType === 'Text' || this.props.allowGeometryLabels) ? (
                         <span>
