@@ -12,6 +12,7 @@ const {connect} = require('react-redux');
 const isEmpty = require('lodash.isempty');
 const isEqual = require('lodash.isequal');
 const assign = require('object-assign');
+const NumericInput = require('react-numeric-input');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
 const MapUtils = require("../../MapStore2Components/utils/MapUtils");
@@ -123,6 +124,15 @@ class Editing extends React.Component {
                         })}
                     </select>
                 </span>
+            );
+        } else if(field.type == "number") {
+            let precision = constraints.step > 0 ? Math.ceil(-Math.log10(constraints.step)) : 6;
+            input = (
+                <NumericInput mobile strict
+                    min={constraints.min} max={constraints.max}
+                    step={constraints.step || 1} precision={precision}
+                    format={nr => String(Number(nr))}
+                    value={value} onChange={nr => this.updateField(field.id, nr)} />
             );
         } else {
             if(field.type == "date") {
