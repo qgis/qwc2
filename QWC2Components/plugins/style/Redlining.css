@@ -11,21 +11,8 @@
     margin: 0 0.25em;
 }
 
-#TaskBar.Redlining span.react-numeric-input > input {
-  border-radius: 0!important;
-  height: 2em;
-  width: 6em;
-  border: 1px solid @item_border@!important;
-}
-
-#TaskBar.Redlining span.react-numeric-input > b {
-    border: 1px solid @item_border@!important;
-    background: @button_bg@!important;
-    color: @base_fg@!important;
-}
-
-#TaskBar.Redlining span.react-numeric-input > b:hover {
-    background: @button_hover_bg@!important;
+#TaskBar.Redlining span.react-numeric-input {
+    width: 6em;
 }
 
 #TaskBar.Redlining input.redlining-label {
