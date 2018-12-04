@@ -35,12 +35,12 @@ module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeO
     const mobileOverride = initialState.mobile;
 
     const rootReducer = (state, action) => {
-        if(actionLogger) {
-            actionLogger(action);
-        }
         let newState = {
             ...allReducers(state, action),
         };
+        if(actionLogger) {
+            actionLogger(action, newState);
+        }
         if (action && action.type === CHANGE_BROWSER_PROPERTIES && newState.browser.mobile) {
             newState = merge(newState, mobileOverride);
         }
