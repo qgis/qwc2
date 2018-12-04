@@ -8,6 +8,7 @@
 #IdentifyViewer div.identify-results-container {
     overflow-y: auto;
     flex: 1 1 50%;
+    min-height: 0;
 }
 
 #IdentifyViewer ul {
@@ -88,6 +89,7 @@
 
 #IdentifyViewer .identify-result-frame {
     flex: 1 1 50%;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     border: 1px solid @item_border@;
