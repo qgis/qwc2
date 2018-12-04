@@ -246,9 +246,15 @@ class IdentifyViewer extends React.Component {
                 <iframe className="identify-result-box" onLoad={ev => this.setIframeContent(ev.target, result.text)}></iframe>
             );
         } else if(result.properties.htmlContent) {
-            resultbox = (
-                <iframe className="identify-result-box" onLoad={ev => this.setIframeContent(ev.target, result.properties.htmlContent)}></iframe>
-            );
+            if(result.properties.htmlContentInline) {
+                resultbox = (
+                    <div className="identify-result-box inline-html-content" dangerouslySetInnerHTML={{__html: result.properties.htmlContent}}></div>
+                );
+            } else {
+                resultbox = (
+                    <iframe className="identify-result-box" onLoad={ev => this.setIframeContent(ev.target, result.properties.htmlContent)}></iframe>
+                );
+            }
         } else {
             let properties = Object.keys(result.properties) || [];
             let rows = [];

@@ -137,6 +137,10 @@
     overflow: auto;
 }
 
+#IdentifyViewer div.inline-html-content {
+    padding: 0.25em;
+}
+
 #IdentifyViewer table.attribute-list {
     width: 100%;
 }

@@ -144,6 +144,7 @@ const IdentifyUtils = {
         let htmlContent = feature.getElementsByTagName("HtmlContent");
         if(htmlContent.length > 0) {
             featureResult.properties["htmlContent"] = htmlContent[0].textContent;
+            featureResult.properties["htmlContentInline"] = (htmlContent[0].getAttribute("inline") === "1" || htmlContent[0].getAttribute("inline") === "true");
         }
         if(!isEmpty(attrmapping)) {
             featureResult["attribnames"] = attrmapping;
