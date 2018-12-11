@@ -82,7 +82,7 @@ class IdentifyViewer extends React.Component {
         // Scroll to selected result
         if(this.state.currentResult && this.state.currentResult !== prevState.currentResult &&
         this.currentResultElRef && this.scrollIntoView) {
-            this.currentResultElRef.scrollIntoView();
+            this.currentResultElRef.parentNode.scrollTop = this.currentResultElRef.offsetTop - this.currentResultElRef.parentNode.offsetTop;
             this.scrollIntoView = false;
             this.currentResultElRef = null;
         }
