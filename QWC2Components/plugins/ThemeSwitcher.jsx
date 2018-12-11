@@ -116,7 +116,11 @@ class ThemeSwitcher extends React.Component {
     focusFilterField = (el) => {
         if(el) {
             // Need to wait until slide in transition is over
-            setTimeout(() => el.focus(), 300);
+            setTimeout(() => {
+                if (this.props.currentTask.id == "ThemeSwitcher") {
+                    el.focus();
+                } 
+            }, 500);
         }
     }
 };
@@ -125,7 +129,8 @@ const selector = (state) => ({
     themes: state.theme && state.theme.themes || {},
     activeTheme: state.theme ? state.theme.current : null,
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
-    mapConfig: state.map ? state.map : undefined
+    mapConfig: state.map ? state.map : undefined,
+    currentTask: state.task
 });
 
 
