@@ -259,7 +259,7 @@ class IdentifyViewer extends React.Component {
             let properties = Object.keys(result.properties) || [];
             let rows = [];
             if(properties.length === 1 && result.properties["maptip"]) {
-                rows = properties.map(attrib => 
+                rows = properties.map(attrib =>
                     <tr key={attrib}>
                         <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(result.properties[attrib])}}></td>
                     </tr>
