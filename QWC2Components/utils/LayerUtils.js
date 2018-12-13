@@ -335,16 +335,16 @@ const LayerUtils = {
         }
         return newlayer;
     },
-    searchSubLayer(layer, layertitle) {
+    searchSubLayer(layer, attr, value) {
         if(layer.sublayers) {
             for(let sublayer of layer.sublayers) {
-                let subsublayer = LayerUtils.searchSubLayer(sublayer, layertitle);
+                let subsublayer = LayerUtils.searchSubLayer(sublayer, attr, value);
                 if(subsublayer) {
                     return subsublayer;
                 }
             }
         } else {
-            if(layer.title === layertitle || layer.name === layertitle) {
+            if(layer[attr] === value) {
                 return layer;
             }
         }
