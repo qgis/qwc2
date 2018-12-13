@@ -224,7 +224,7 @@ class ImportLayer extends React.Component {
             this.props.addLayer(assign({
                 id: entry.name + Date.now().toString(),
                 role: LayerRole.USERLAYER
-            }, entry));
+            }, entry, {sublayers: null}));
         } else if(entry.type === "kml") {
             this.addKMLLayer(entry.name, entry.data);
         }
