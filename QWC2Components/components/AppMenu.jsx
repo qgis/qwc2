@@ -57,9 +57,9 @@ class AppMenu extends React.Component {
         let a = this.state.submenusVisible[level] === key ? [] : [key];
         this.setState({ submenusVisible: this.state.submenusVisible.slice(0, level).concat(a) });
     }
-    onMenuitemClicked = (key, mode) => {
+    onMenuitemClicked = (item) => {
         this.toggleMenu();
-        this.props.setCurrentTask(key, mode);
+        this.props.setCurrentTask(item.key, item.mode, item.identifyEnabled);
     }
     renderMenuItems = (items, level) => {
         if(items) {
@@ -83,7 +83,7 @@ class AppMenu extends React.Component {
                     );
                 } else {
                     return (
-                        <li key={item.key + (item.mode || "")} onMouseDown={ev => this.onMenuitemClicked(item.key, item.mode)} >
+                        <li key={item.key + (item.mode || "")} onMouseDown={ev => this.onMenuitemClicked(item)} >
                             <Icon icon={item.icon} size="xlarge"/>
                             <Message msgId={"appmenu.items." + item.key + (item.mode || "")} />
                         </li>

@@ -16,7 +16,7 @@ function setCurrentTask(task, mode=null, allowIdentify=false) {
         if(getState().task && getState().task.blocked === true) {
             return;
         }
-        dispatch(setIdentifyEnabled(task === null || task === 'LayerTree'));
+        dispatch(setIdentifyEnabled(task === null || task === 'LayerTree' || allowIdentify));
         dispatch({
             type: SET_CURRENT_TASK,
             id: task,

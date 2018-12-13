@@ -37,7 +37,7 @@ class Toolbar extends React.Component {
                 key={item.key + item.mode}
                 className={active ? "toolbar-item-active" : ""}
                 icon={item.icon}
-                onClick={active ? () => this.props.setCurrentTask(null) : () => this.props.setCurrentTask(item.key, item.mode)}
+                onClick={active ? () => this.props.setCurrentTask(null) : () => this.props.setCurrentTask(item.key, item.mode, item.identifyEnabled)}
                 title={title}
                 size="xlarge"
             />
