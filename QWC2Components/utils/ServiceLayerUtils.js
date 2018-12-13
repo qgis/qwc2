@@ -77,7 +77,7 @@ const ServiceLayerUtils = {
         }
         let sublayers = [];
         if(!isEmpty(layer.Layer)) {
-            sublayers = layer.Layer.map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, serviceUrl, version));
+            sublayers = layer.Layer.map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, serviceUrl, version, featureInfoUrl, infoFormats));
         }
         let bbox = {
             crs: layer.BoundingBox[0].crs,
