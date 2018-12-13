@@ -26,11 +26,12 @@ const IdentifyUtils = {
         let digits = proj4js.defs(map.projection).units === 'degrees'? 4 : 0;
 
         let format = 'text/plain';
-        if(layer.infoFormats.includes('text/xml')) {
+        let infoFormats = layer.infoFormats || [];
+        if(infoFormats.includes('text/xml')) {
             format = 'text/xml';
-        } else if(layer.infoFormats.includes('application/json')) {
+        } else if(infoFormats.includes('application/json')) {
             format = 'application/json';
-        } else if(layer.infoFormats.includes('text/html')) {
+        } else if(infoFormats.includes('text/html')) {
             format = 'text/html';
         }
         return {
