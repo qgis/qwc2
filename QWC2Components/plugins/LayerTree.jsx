@@ -34,6 +34,7 @@ class LayerTree extends React.Component {
         layers: PropTypes.array,
         swipe: PropTypes.number,
         mobile: PropTypes.bool,
+        ie: PropTypes.bool,
         theme: PropTypes.object,
         mapTipsEnabled: PropTypes.bool,
         changeLayerProperties: PropTypes.func,
@@ -282,7 +283,7 @@ class LayerTree extends React.Component {
                         onTouchMove={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
                         onTouchEnd={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
                         onContextMenuCapture={ev => {ev.stopPropagation(); ev.preventDefault(); return false; }}>
-                        <Sortable options={{disabled: sortable === false || this.props.flattenGroups !== true, ghostClass: 'drop-ghost', delay: 200}} onChange={this.onSortChange}>
+                        <Sortable options={{disabled: sortable === false || this.props.flattenGroups !== true, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.ie}} onChange={this.onSortChange}>
                             {this.props.layers.map(this.renderLayerTree)}
                         </Sortable>
                     </div>
@@ -524,6 +525,7 @@ class LayerTree extends React.Component {
 
 const selector = (state) => ({
     mobile: state.browser ? state.browser.mobile : false,
+    ie: state.browser ? state.browser.ie : false,
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
     swipe: state.layers && state.layers.swipe || undefined,
     theme: state.theme.current || {},
