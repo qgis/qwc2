@@ -301,7 +301,7 @@ class IdentifyViewer extends React.Component {
             <div className={resultClass}>
                 <div className="identify-result-title">
                     <span>{layer + ": " + this.resultDisplayName(layer, result)}</span>
-                    <Icon icon="info-sign" onClick={() => this.showLayerInfo(layer)} />
+                    <Icon icon="info-sign" onClick={() => this.showLayerInfo(layer, result)} />
                 </div>
                 {resultbox}
                 {featureReportTemplate ? (<div className="identify-result-feature-report-frame">
@@ -437,13 +437,19 @@ class IdentifyViewer extends React.Component {
         };
         return serviceUrl + "/" + template + "?" + Object.keys(params).map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&");
     }
-    showLayerInfo = (layertitle) => {
+    showLayerInfo = (layertitle, result) => {
+        let attr = 'title';
+        let value = layertitle;
+        if(result.layername || result.layerinfo) {
+            attr = 'name';
+            value = result.layerinfo ? result.layerinfo : result.layername;
+        }
         // Search matching layer...
         let matchlayer = null;
         let matchsublayer = null;
         for(let layer of this.props.layers) {
             if(layer.role === LayerRole.THEME) {
-                matchsublayer = LayerUtils.searchSubLayer(layer, layertitle);
+                matchsublayer = LayerUtils.searchSubLayer(layer, attr, value);
                 if(matchsublayer) {
                     matchlayer = layer;
                     break;

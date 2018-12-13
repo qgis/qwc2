@@ -106,12 +106,13 @@ const IdentifyUtils = {
             }
         };
     },
-    parseXmlFeature(feature, geometrycrs, id, featurereport, layername) {
+    parseXmlFeature(feature, geometrycrs, id, featurereport, layername, layerinfo) {
         let featureResult = {};
         featureResult["type"] = "Feature";
         featureResult["id"] = id;
         featureResult["featurereport"] = featurereport;
         featureResult["layername"] = layername;
+        featureResult["layerinfo"] = layerinfo;
         let bboxes = feature.getElementsByTagName("BoundingBox");
         if(bboxes.length > 0) {
             let bbox = bboxes[0];
@@ -160,13 +161,14 @@ const IdentifyUtils = {
         for(let layer of layers) {
             let featurereport = layer.attributes.featurereport ? layer.attributes.featurereport.value : null;
             let layername = layer.attributes.layername ? layer.attributes.layername.value : null;
+            let layerinfo = layer.attributes.layerinfo ? layer.attributes.layerinfo.value : null;
             let features = [].slice.call(layer.getElementsByTagName("Feature"));
             if(features.length > 0) {
-                result[layer.attributes.name.value] = features.map(feature => this.parseXmlFeature(feature, geometrycrs, feature.attributes.id.value, featurereport, layername));
+                result[layer.attributes.name.value] = features.map(feature => this.parseXmlFeature(feature, geometrycrs, feature.attributes.id.value, featurereport, layername, layerinfo));
             } else {
                 let attributes = [].slice.call(layer.getElementsByTagName("Attribute"));
                 if(attributes.length > 0) {
-                    result[layer.attributes.name.value] = [this.parseXmlFeature(layer, geometrycrs, response.request.metadata.posstr, featurereport, layername)];
+                    result[layer.attributes.name.value] = [this.parseXmlFeature(layer, geometrycrs, response.request.metadata.posstr, featurereport, layername, layerinfo)];
                 }
             }
         }
