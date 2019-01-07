@@ -34,6 +34,9 @@ const VectorLayerUtils = {
                 continue;
             }
             for(let feature of layer.features) {
+                if(!feature.geometry) {
+                    continue;
+                }
                 let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
                 params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, layer.opacity, dpi, scaleFactor));
                 params.labels.push(feature.properties && feature.properties.label || "");
