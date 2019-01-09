@@ -24,6 +24,22 @@ const uuid = require('uuid');
 const hostFqdn = fqdn ? "http://" + String(fqdn()) : "";
 const themesConfig = process.env["QWC2_THEMES_CONFIG"] || "themesConfig.json";
 
+let usedThemeIds = [];
+function uniqueThemeId(themeName) {
+    if(!themeName) {
+        return uuid.v1();
+    }
+    if(usedThemeIds.includes(themeName)) {
+        let i = 1;
+        for(; usedThemeIds.includes(themeName + i); ++i);
+        usedThemeIds.push(themeName + i);
+        return themeName + i;
+    } else {
+        usedThemeIds.push(themeName);
+        return themeName;
+    }
+}
+
 // load thumbnail from file or GetMap
 function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
     if (configItem.thumbnail !== undefined) {
@@ -308,7 +324,7 @@ function getTheme(config, configItem, result, resultItem) {
 
             // update theme config
             resultItem.url = configItem.url;
-            resultItem.id = uuid.v1();
+            resultItem.id = uniqueThemeId(topLayer.Name);
             resultItem.name = topLayer.Name;
             resultItem.title = wmsTitle;
             resultItem.attribution = {
