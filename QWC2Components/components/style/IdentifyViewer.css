@@ -174,12 +174,14 @@
 }
 
 #IdentifyViewer td.identify-attr-title {
-    width: 10ch;
+    min-width: 10ch;
+    width: 40%;
     padding-right: 1em;
 }
 
 #IdentifyViewer td.identify-attr-value {
     max-width: 0;
+    width: 60%;
 }
 
 #IdentifyViewer div.identify-buttonbox {
