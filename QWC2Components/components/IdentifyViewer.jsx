@@ -235,6 +235,7 @@ class IdentifyViewer extends React.Component {
             return null;
         }
         let resultbox = null;
+        let extraattribs = null;
         if(result.type === "text") {
             resultbox = (
                 <pre className="identify-result-box">
@@ -253,6 +254,15 @@ class IdentifyViewer extends React.Component {
             } else {
                 resultbox = (
                     <iframe className="identify-result-box" onLoad={ev => this.setIframeContent(ev.target, result.properties.htmlContent)}></iframe>
+                );
+            }
+            if(this.props.attributeCalculator) {
+                extraattribs = (
+                    <div className="identify-result-box">
+                        <table className="attribute-list"><tbody>
+                            {this.props.attributeCalculator(layer, result)}
+                        </tbody></table>
+                    </div>
                 );
             }
         } else {
@@ -304,6 +314,7 @@ class IdentifyViewer extends React.Component {
                     <Icon icon="info-sign" onClick={() => this.showLayerInfo(layer, result)} />
                 </div>
                 {resultbox}
+                {extraattribs}
                 {featureReportTemplate ? (<div className="identify-result-feature-report-frame">
                     <a target="_blank" href={this.getFeatureReportUrl(featureReportTemplate, result)} ><Message msgId="identify.featureReport" /></a>
                 </div>) : null}
