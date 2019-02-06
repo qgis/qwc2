@@ -449,24 +449,37 @@ class IdentifyViewer extends React.Component {
         return serviceUrl + "/" + template + "?" + Object.keys(params).map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&");
     }
     showLayerInfo = (layertitle, result) => {
-        let attr = 'title';
-        let value = layertitle;
-        if(result.layername || result.layerinfo) {
-            attr = 'name';
-            value = result.layerinfo ? result.layerinfo : result.layername;
-        }
-        // Search matching layer...
         let matchlayer = null;
         let matchsublayer = null;
-        for(let layer of this.props.layers) {
-            if(layer.role === LayerRole.THEME) {
-                matchsublayer = LayerUtils.searchSubLayer(layer, attr, value);
+        if(result.layername || result.layerinfo) {
+            // Search matching layer by technical name
+            for(let name of [result.layername, result.layerinfo]) {
+                for(let layer of this.props.layers) {
+                    if(layer.role === LayerRole.THEME) {
+                        matchsublayer = LayerUtils.searchSubLayer(layer, 'name', name);
+                        if(matchsublayer) {
+                            matchlayer = layer;
+                            break;
+                        }
+                    }
+                }
                 if(matchsublayer) {
-                    matchlayer = layer;
                     break;
                 }
             }
+        } else {
+            // Search matching layer by title
+            for(let layer of this.props.layers) {
+                if(layer.role === LayerRole.THEME) {
+                    matchsublayer = LayerUtils.searchSubLayer(layer, 'title', layertitle);
+                    if(matchsublayer) {
+                        matchlayer = layer;
+                        break;
+                    }
+                }
+            }
         }
+
         if(matchlayer && matchsublayer) {
             this.props.setActiveLayerInfo(matchlayer, matchsublayer)
         }
