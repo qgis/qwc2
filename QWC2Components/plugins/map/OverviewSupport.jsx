@@ -43,11 +43,22 @@ class Overview extends React.Component {
         collapsible: true
     }
     componentDidMount() {
-        let opt = assign({}, Overview.defaultOpt, this.props.options);
+        let opt = assign({
+            view: new ol.View({
+                projection: this.props.map.getView().getProjection()
+            })
+        }, Overview.defaultOpt, this.props.options);
         this.overview = new ol.control.OverviewMap(opt);
+        this.overview.setMap(this.props.map);
     }
     componentWillReceiveProps(newProps) {
-        this.overview.setMap(newProps.map);
+        let oldProj = this.overview.getOverviewMap().getView().getProjection();
+        let newProj = newProps.map.getView().getProjection();
+        if(oldProj !== newProj) {
+            this.overview.getOverviewMap().setView(
+                new ol.View({projection: newProj})
+            );
+        }
     }
     render() {
         return null;
