@@ -11,12 +11,13 @@ const PropTypes = require('prop-types');
 const classnames = require('classnames');
 const {connect} = require('react-redux');
 const Icon = require('../components/Icon');
-const Swipeable = require('react-swipeable');
+const {Swipeable} = require('react-swipeable');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const {toggleFullscreen} = require('../actions/display');
 const {restoreDefaultTheme} = require('../actions/theme');
 require('./style/TopBar.css');
+
 
 class TopBar extends React.Component {
     static propTypes = {

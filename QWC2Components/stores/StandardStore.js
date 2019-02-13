@@ -7,7 +7,7 @@
  */
 const assign = require('object-assign');
 const {combineReducers} = require('redux');
-const merge = require('deepmerge').default;
+const merge = require('deepmerge');
 
 const map = require('../reducers/map');
 

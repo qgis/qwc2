@@ -35,7 +35,7 @@ class Overview extends React.Component {
       id: 'overview',
       options: {}
     }
-    static defaultOpt: {
+    static defaultOpt = {
         className: 'ol-overviewmap ol-custom-overviewmap',
         collapseLabel: '\u00AB',
         label: '\u00BB',

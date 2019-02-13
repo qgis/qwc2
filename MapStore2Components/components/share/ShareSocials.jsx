@@ -8,35 +8,22 @@
 
 const React = require('react');
 const PropTypes = require('prop-types');
-
-const {
-  ShareButtons,
-  ShareCounts,
-  generateShareIcon
-} = require('react-share');
-
-// components of the socialnetworks grouped in a bigger container aka ShareSocials
-const {
-  FacebookShareButton,
-  GooglePlusShareButton,
-  LinkedinShareButton,
-  TwitterShareButton
-} = ShareButtons;
-
-// counter for counting the number of map-sharing on a given social network
-const {
-  FacebookShareCount,
-  GooglePlusShareCount,
-  LinkedinShareCount
-} = ShareCounts;
-
-// icons of the social network
-const FacebookIcon = generateShareIcon('facebook');
-const TwitterIcon = generateShareIcon('twitter');
-const GooglePlusIcon = generateShareIcon('google');
-const LinkedinIcon = generateShareIcon('linkedin');
 const Message = require('../../components/I18N/Message');
+const {
+    FacebookShareButton,
+    GooglePlusShareButton,
+    LinkedinShareButton,
+    TwitterShareButton,
+    FacebookShareCount,
+    GooglePlusShareCount,
+    LinkedinShareCount,
+    FacebookIcon,
+    TwitterIcon,
+    GooglePlusIcon,
+    LinkedinIcon
+} = require('react-share');
 require('./share.css');
+
 
 class ShareSocials extends React.Component {
     static propTypes = {
