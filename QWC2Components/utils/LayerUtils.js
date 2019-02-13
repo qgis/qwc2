@@ -10,6 +10,7 @@ const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const isEqual = require('lodash.isequal');
 const uuid = require('uuid');
+const url = require('url');
 const {LayerRole} = require('../actions/layers');
 
 const LayerUtils = {
@@ -92,6 +93,11 @@ const LayerUtils = {
             LAYERS: layerNames.join(","),
             OPACITIES: opacities.join(",")
         });
+        // Handle QGIS Server setups without rewrite rule
+        let query = url.parse(layer.url, true).query;
+        if(query.map) {
+            newParams['MAP'] = query.map;
+        }
         return {
             params: newParams,
             queryLayers: queryable
