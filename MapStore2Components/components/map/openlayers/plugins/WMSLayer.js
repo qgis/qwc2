@@ -42,7 +42,10 @@ let WMSLayer = {
         const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]);
         const queryParameters = wmsToOpenlayersOptions(options) || {};
         urls.forEach(url => SecurityUtils.addAuthenticationParameter(url, queryParameters));
-        if (!options.tiled) {
+        if(options.tiled && !options.boundingBox) {
+            console.warn("Tiled WMS requested without specifying bounding box, falling back to non-tiled.");
+        }
+        if (!options.tiled || !options.boundingBox) {
             return new ol.layer.Image({
                 opacity: options.opacity !== undefined ? options.opacity : 1,
                 visible: !!queryParameters["LAYERS"] && options.visibility !== false,
