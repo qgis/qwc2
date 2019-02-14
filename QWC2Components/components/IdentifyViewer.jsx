@@ -169,9 +169,9 @@ class IdentifyViewer extends React.Component {
     }
     setCurrentResult = (layer, result) => {
         if(this.state.currentResult === result) {
-            this.setState(assign({}, this.state, {currentResult: null, currentLayer: null}));
+            this.setState({currentResult: null, currentLayer: null});
         } else {
-            this.setState(assign({}, this.state, {currentResult: result, currentLayer: layer}));
+            this.setState({currentResult: result, currentLayer: layer});
             this.scrollIntoView = true;
         }
     }
