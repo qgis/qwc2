@@ -141,7 +141,7 @@ class Print extends React.Component {
                         {this.props.theme.printResolutions.map(res => (<option key={res} value={res}>{res}</option>))}
                     </select>);
             } else {
-                resolutionInput = (<input name="DPI" readOnly="true" type={formvisibility} value={this.props.theme.printResolutions[0]}/>);
+                resolutionInput = (<input name="DPI" readOnly={true} type={formvisibility} value={this.props.theme.printResolutions[0]}/>);
             }
         } else {
             resolutionChooser = (<input name="DPI" type="number" value={this.state.dpi || ""} onChange={this.changeResolution} min="50" max="1200"/>)
@@ -153,8 +153,8 @@ class Print extends React.Component {
         if(printGrid && printGrid.length > 0 && this.state.scale && this.state.grid) {
             let cur = 0;
             for(; cur < printGrid.length-1 && this.state.scale < printGrid[cur].s; ++cur);
-            gridIntervalX = (<input readOnly="true" name={mapName + ":GRID_INTERVAL_X"} type={formvisibility} value={printGrid[cur].x} />);
-            gridIntervalY = (<input readOnly="true" name={mapName + ":GRID_INTERVAL_Y"} type={formvisibility} value={printGrid[cur].y} />);
+            gridIntervalX = (<input readOnly={true} name={mapName + ":GRID_INTERVAL_X"} type={formvisibility} value={printGrid[cur].x} />);
+            gridIntervalY = (<input readOnly={true} name={mapName + ":GRID_INTERVAL_Y"} type={formvisibility} value={printGrid[cur].y} />);
         }
 
         let labels = this.state.layout && this.state.layout.labels ? this.state.layout.labels : [];
@@ -230,25 +230,25 @@ class Print extends React.Component {
                         })}
                     </tbody></table>
                     <div>
-                        <input readOnly="true" name={mapName + ":extent"} type={formvisibility} value={extent || ""} />
-                        <input readOnly="true" name="SERVICE" type={formvisibility} value="WMS" />
-                        <input readOnly="true" name="VERSION" type={formvisibility} value={version || "1.3.0"} />
-                        <input readOnly="true" name="REQUEST" type={formvisibility} value="GetPrint" />
-                        <input readOnly="true" name="FORMAT" type={formvisibility} value="pdf" />
-                        <input readOnly="true" name="TRANSPARENT" type={formvisibility} value="true" />
-                        <input readOnly="true" name="SRS" type={formvisibility} value={mapCrs} />
-                        <input readOnly="true" name="OPACITIES" type={formvisibility} value={printOpacities || ""} />
+                        <input readOnly={true} name={mapName + ":extent"} type={formvisibility} value={extent || ""} />
+                        <input readOnly={true} name="SERVICE" type={formvisibility} value="WMS" />
+                        <input readOnly={true} name="VERSION" type={formvisibility} value={version || "1.3.0"} />
+                        <input readOnly={true} name="REQUEST" type={formvisibility} value="GetPrint" />
+                        <input readOnly={true} name="FORMAT" type={formvisibility} value="pdf" />
+                        <input readOnly={true} name="TRANSPARENT" type={formvisibility} value="true" />
+                        <input readOnly={true} name="SRS" type={formvisibility} value={mapCrs} />
+                        <input readOnly={true} name="OPACITIES" type={formvisibility} value={printOpacities || ""} />
                         {/* This following one is needed for opacities to work!*/}
-                        <input readOnly="true" name="LAYERS" type={formvisibility} value={printLayers || ""} />
-                        <input readOnly="true" name="COLORS" type={formvisibility} value={printColors || ""} />
-                        <input readOnly="true" name={mapName + ":LAYERS"} type={formvisibility} value={printLayers || ""} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_GEOM"} type={formvisibility} value={highlightParams.geoms.join(";")} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_SYMBOL"} type={formvisibility} value={highlightParams.styles.join(";")} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELSTRING"} type={formvisibility} value={highlightParams.labels.join(";")} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELCOLOR"} type={formvisibility} value={highlightParams.labelFillColors.join(";")} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERCOLOR"} type={formvisibility} value={highlightParams.labelOultineColors.join(";")} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELBUFFERSIZE"} type={formvisibility} value={highlightParams.labelOutlineSizes.join(";")} />
-                        <input readOnly="true" name={mapName + ":HIGHLIGHT_LABELSIZE"} type={formvisibility} value={highlightParams.labelSizes.join(";")} />
+                        <input readOnly={true} name="LAYERS" type={formvisibility} value={printLayers || ""} />
+                        <input readOnly={true} name="COLORS" type={formvisibility} value={printColors || ""} />
+                        <input readOnly={true} name={mapName + ":LAYERS"} type={formvisibility} value={printLayers || ""} />
+                        <input readOnly={true} name={mapName + ":HIGHLIGHT_GEOM"} type={formvisibility} value={highlightParams.geoms.join(";")} />
+                        <input readOnly={true} name={mapName + ":HIGHLIGHT_SYMBOL"} type={formvisibility} value={highlightParams.styles.join(";")} />
+                        <input readOnly={true} name={mapName + ":HIGHLIGHT_LABELSTRING"} type={formvisibility} value={highlightParams.labels.join(";")} />
+                        <input readOnly={true} name={mapName + ":HIGHLIGHT_LABELCOLOR"} type={formvisibility} value={highlightParams.labelFillColors.join(";")} />
+                        <input readOnly={true} name={mapName + ":HIGHLIGHT_LABELBUFFERCOLOR"} type={formvisibility} value={highlightParams.labelOultineColors.join(";")} />
+                        <input readOnly={true} name={mapName + ":HIGHLIGHT_LABELBUFFERSIZE"} type={formvisibility} value={highlightParams.labelOutlineSizes.join(";")} />
+                        <input readOnly={true} name={mapName + ":HIGHLIGHT_LABELSIZE"} type={formvisibility} value={highlightParams.labelSizes.join(";")} />
                         {gridIntervalX}
                         {gridIntervalY}
                         {resolutionInput}

@@ -102,29 +102,29 @@ class RasterExport extends React.Component {
                     </span>
                     {dpiSelector}
                 </div>
-                <input type="hidden" name="SERVICE" value="WMS" readOnly="true" />
-                <input type="hidden" name="VERSION" value={themeLayers[0].version || "1.3.0"} readOnly="true" />
-                <input type="hidden" name="REQUEST" value="GetMap" readOnly="true" />
-                <input type="hidden" name="LAYERS" value={exportLayers} readOnly="true" />
-                <input type="hidden" name="OPACITIES" value={exportOpacities} readOnly="true" />
-                <input type="hidden" name="TRANSPARENT" value="true" readOnly="true" />
-                <input type="hidden" name="TILED" value="false" readOnly="true" />
-                <input type="hidden" name="STYLES" value="" readOnly="true" />
-                <input type="hidden" name="CRS" value={this.props.map.projection} readOnly="true" />
-                <input type="hidden" name="FILENAME" value={filename} readOnly="true" />
-                <input ref={input => this.extentInput = input} type="hidden" name="BBOX" value="" readOnly="true" />
-                <input ref={input => this.widthInput = input} type="hidden" name="WIDTH" value="" readOnly="true" />
-                <input ref={input => this.heightInput = input} type="hidden" name="HEIGHT" value="" readOnly="true" />
+                <input type="hidden" name="SERVICE" value="WMS" readOnly={true} />
+                <input type="hidden" name="VERSION" value={themeLayers[0].version || "1.3.0"} readOnly={true} />
+                <input type="hidden" name="REQUEST" value="GetMap" readOnly={true} />
+                <input type="hidden" name="LAYERS" value={exportLayers} readOnly={true} />
+                <input type="hidden" name="OPACITIES" value={exportOpacities} readOnly={true} />
+                <input type="hidden" name="TRANSPARENT" value="true" readOnly={true} />
+                <input type="hidden" name="TILED" value="false" readOnly={true} />
+                <input type="hidden" name="STYLES" value="" readOnly={true} />
+                <input type="hidden" name="CRS" value={this.props.map.projection} readOnly={true} />
+                <input type="hidden" name="FILENAME" value={filename} readOnly={true} />
+                <input ref={input => this.extentInput = input} type="hidden" name="BBOX" value="" readOnly={true} />
+                <input ref={input => this.widthInput = input} type="hidden" name="WIDTH" value="" readOnly={true} />
+                <input ref={input => this.heightInput = input} type="hidden" name="HEIGHT" value="" readOnly={true} />
                 {Object.keys(this.props.theme.watermark || {}).map(key => {
-                    return (<input key={key} type="hidden" name={"WATERMARK_" + key.toUpperCase()} value={this.props.theme.watermark[key]} readOnly="true" />)
+                    return (<input key={key} type="hidden" name={"WATERMARK_" + key.toUpperCase()} value={this.props.theme.watermark[key]} readOnly={true} />)
                 })}
-                <input readOnly="true" name={"HIGHLIGHT_GEOM"} type="hidden" value={highlightParams.geoms.join(";")} />
-                <input readOnly="true" name={"HIGHLIGHT_SYMBOL"} type="hidden" value={highlightParams.styles.join(";")} />
-                <input readOnly="true" name={"HIGHLIGHT_LABELSTRING"} type="hidden" value={highlightParams.labels.join(";")} />
-                <input readOnly="true" name={"HIGHLIGHT_LABELCOLOR"} type="hidden" value={highlightParams.labelFillColors.join(";")} />
-                <input readOnly="true" name={"HIGHLIGHT_LABELBUFFERCOLOR"} type="hidden" value={highlightParams.labelOultineColors.join(";")} />
-                <input readOnly="true" name={"HIGHLIGHT_LABELBUFFERSIZE"} type="hidden" value={highlightParams.labelOutlineSizes.join(";")} />
-                <input readOnly="true" name={"HIGHLIGHT_LABELSIZE"} type="hidden" value={highlightParams.labelSizes.join(";")} />
+                <input readOnly={true} name={"HIGHLIGHT_GEOM"} type="hidden" value={highlightParams.geoms.join(";")} />
+                <input readOnly={true} name={"HIGHLIGHT_SYMBOL"} type="hidden" value={highlightParams.styles.join(";")} />
+                <input readOnly={true} name={"HIGHLIGHT_LABELSTRING"} type="hidden" value={highlightParams.labels.join(";")} />
+                <input readOnly={true} name={"HIGHLIGHT_LABELCOLOR"} type="hidden" value={highlightParams.labelFillColors.join(";")} />
+                <input readOnly={true} name={"HIGHLIGHT_LABELBUFFERCOLOR"} type="hidden" value={highlightParams.labelOultineColors.join(";")} />
+                <input readOnly={true} name={"HIGHLIGHT_LABELBUFFERSIZE"} type="hidden" value={highlightParams.labelOutlineSizes.join(";")} />
+                <input readOnly={true} name={"HIGHLIGHT_LABELSIZE"} type="hidden" value={highlightParams.labelSizes.join(";")} />
                 </form>
             </span>
         );

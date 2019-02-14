@@ -38,7 +38,7 @@ class FileSelector extends React.Component {
         let placeholder = LocaleUtils.getMessageById(this.context.messages, "fileselector.placeholder");
         return (
             <div className="FileSelector" onClick={this.triggerFileOpen}>
-                <input type="text" readOnly="true" placeholder={placeholder} value={value}/>
+                <input type="text" readOnly={true} placeholder={placeholder} value={value}/>
                 <span>
                     <Icon icon="folder-open" />
                 </span>

@@ -39,14 +39,14 @@ class DxfExport extends React.Component {
                 <form ref={form => this.form = form} action={action} method="POST" target="_blank">
                 <div className="help-text"><Message msgId="dxfexport.selectinfo" /></div>
                 <div className="export-settings"><Message msgId="dxfexport.symbologyscale" /> <span className="input-frame"><span>1&nbsp;:&nbsp;</span><input type="number" name="SCALE" defaultValue="500" /></span></div>
-                <input type="hidden" name="SERVICE" value="WMS" readOnly="true" />
-                <input type="hidden" name="VERSION" value={themeLayers[0].version || "1.3.0"} readOnly="true" />
-                <input type="hidden" name="REQUEST" value="GetMap" readOnly="true" />
-                <input type="hidden" name="FORMAT" value="application/dxf" readOnly="true" />
-                <input type="hidden" name="LAYERS" value={themeSubLayers} readOnly="true" />
-                <input type="hidden" name="CRS" value={this.props.map.projection} readOnly="true" />
-                <input type="hidden" name="FILE_NAME" value={this.props.theme.name + ".dxf"} readOnly="true" />
-                <input ref={input => this.extentInput = input} type="hidden" name="BBOX" value="" readOnly="true" />
+                <input type="hidden" name="SERVICE" value="WMS" readOnly={true} />
+                <input type="hidden" name="VERSION" value={themeLayers[0].version || "1.3.0"} readOnly={true} />
+                <input type="hidden" name="REQUEST" value="GetMap" readOnly={true} />
+                <input type="hidden" name="FORMAT" value="application/dxf" readOnly={true} />
+                <input type="hidden" name="LAYERS" value={themeSubLayers} readOnly={true} />
+                <input type="hidden" name="CRS" value={this.props.map.projection} readOnly={true} />
+                <input type="hidden" name="FILE_NAME" value={this.props.theme.name + ".dxf"} readOnly={true} />
+                <input ref={input => this.extentInput = input} type="hidden" name="BBOX" value="" readOnly={true} />
                 </form>
             </span>
         );
