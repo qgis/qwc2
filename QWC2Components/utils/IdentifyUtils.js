@@ -55,7 +55,7 @@ const IdentifyUtils = {
                 bbox: bbox.join(","),
                 info_format: format,
                 with_geometry: true,
-                with_maptip: true,
+                with_maptip: false,
                 feature_count: 10,
                 ...options
             },
@@ -96,7 +96,7 @@ const IdentifyUtils = {
                 crs: CoordinatesUtils.normalizeSRS(map.projection),
                 info_format: format,
                 with_geometry: true,
-                with_maptip: true,
+                with_maptip: false,
                 feature_count: 100,
                 ...options
             },

@@ -72,7 +72,8 @@ class MapTip extends React.Component {
             feature_count: 1,
             FI_POINT_TOLERANCE: 16,
             FI_LINE_TOLERANCE: 8,
-            FI_POLYGON_TOLERANCE: 4
+            FI_POLYGON_TOLERANCE: 4,
+            with_maptip: true
         };
         let layer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
         let queryLayers = this.props.layers.reduce((accum, layer) => {
