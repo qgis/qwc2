@@ -96,9 +96,9 @@ class OpenlayersMap extends React.Component {
                 coordinate: this.map.getEventCoordinate(event.originalEvent),
                 pixel: this.map.getEventPixel(event.originalEvent),
                 modifiers: {
-                    alt: event.altKey,
-                    ctrl: event.ctrlKey,
-                    shift: event.shiftKey
+                    alt: event.originalEvent.altKey,
+                    ctrl: event.originalEvent.ctrlKey,
+                    shift: event.originalEvent.shiftKey
                 },
                 button: 0
             });
