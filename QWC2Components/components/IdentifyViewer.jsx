@@ -336,9 +336,9 @@ class IdentifyViewer extends React.Component {
         return (
             <li key={result.id}
                 className="identify-feature-result"
-                onMouseOver={() => this.setHighlightedResults([result], this.state.resultTree)}
+                onMouseEnter={() => this.setHighlightedResults([result], this.state.resultTree)}
                 onClick={() => this.setHighlightedResults([result], this.state.resultTree)}
-                onMouseOut={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
+                onMouseLeave={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
             >
                 <span className={this.state.currentResult === result ? "active clickable" : "clickable"} onClick={()=> this.setCurrentResult(layer, result)} ref={ref}>{displayName}</span>
                 <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResult(layer, result)} />
@@ -354,8 +354,8 @@ class IdentifyViewer extends React.Component {
         return (
             <li key={layer} className={this.getExpandedClass(layer, true)}>
                 <div className="identify-layer-result"
-                onMouseOver={() => this.setHighlightedResults(results, this.state.resultTree)}
-                onMouseOut={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
+                onMouseEnter={() => this.setHighlightedResults(results, this.state.resultTree)}
+                onMouseLeave={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
                 >
                     <span className="clickable" onClick={()=> this.toggleExpanded(layer, true)}><b>{layer}</b></span>
                     <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResultLayer(layer)} />
@@ -404,8 +404,8 @@ class IdentifyViewer extends React.Component {
                                 let resultClass = this.state.currentResult == result ? 'identify-result-frame-highlighted' : 'identify-result-frame-normal';
                                 return (
                                     <div key={result.id}
-                                        onMouseOver={() => this.setState({currentResult: result, currentLayer: layer})}
-                                        onMouseOut={() => this.setState({currentResult: null, currentLayer: null})}
+                                        onMouseEnter={() => this.setState({currentResult: result, currentLayer: layer})}
+                                        onMouseLeave={() => this.setState({currentResult: null, currentLayer: null})}
                                     >{this.renderResultAttributes(layer, result, resultClass)}</div>
                                 );
                             });
