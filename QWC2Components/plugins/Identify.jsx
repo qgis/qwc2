@@ -30,7 +30,7 @@ class Identify extends React.Component {
         identifyEmpty: PropTypes.func,
         addMarker: PropTypes.func,
         removeMarker: PropTypes.func,
-        enableExport: PropTypes.bool,
+        exportFormat: PropTypes.string,
         longAttributesDisplay: PropTypes.string,
         displayResultTree: PropTypes.bool,
         initialWidth: PropTypes.number,
@@ -39,7 +39,7 @@ class Identify extends React.Component {
         attributeCalculator: PropTypes.func
     }
     static defaultProps = {
-        enableExport: true,
+        exportFormat: "json",
         longAttributesDisplay: 'ellipsis',
         displayResultTree: true,
         initialWidth: 240,
@@ -92,7 +92,7 @@ class Identify extends React.Component {
                     map={this.props.map}
                     missingResponses={missingResponses}
                     responses={this.props.responses}
-                    enableExport={this.props.enableExport}
+                    exportFormat={this.props.exportFormat}
                     longAttributesDisplay={this.props.longAttributesDisplay}
                     displayResultTree={this.props.displayResultTree}
                     attributeCalculator={this.props.attributeCalculator} />

@@ -11,6 +11,7 @@ const {connect} = require('react-redux');
 const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const FileSaver = require('file-saver');
+const {stringify} = require('wellknown');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
 const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
@@ -30,14 +31,13 @@ class IdentifyViewer extends React.Component {
         responses: PropTypes.array,
         addLayerFeatures: PropTypes.func,
         removeLayer: PropTypes.func,
-        enableExport: PropTypes.bool,
+        exportFormat: PropTypes.string,
         longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
         displayResultTree: PropTypes.bool,
         attributeCalculator: PropTypes.func,
         setActiveLayerInfo: PropTypes.func
     }
     static defaultProps = {
-        enableExport: true,
         longAttributesDisplay: 'ellipsis',
         displayResultTree: true,
         attributeCalculator: (layer, feature) => { return []; }
@@ -208,8 +208,25 @@ class IdentifyViewer extends React.Component {
         this.export(filteredResults);
     }
     export = (json) => {
-        let data = JSON.stringify(json, null, ' ');
-        FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "results.json");
+        if(this.props.exportFormat.toLowerCase() === 'json') {
+            let data = JSON.stringify(json, null, ' ');
+            FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "results.json");
+        } else if(this.props.exportFormat.toLowerCase() === 'csv') {
+            let csv = "";
+            Object.entries(json).forEach(([layerName, features]) => {
+                csv += layerName + "\n";
+                features.forEach(feature => {
+                    Object.entries(feature.properties || {}).forEach(([attrib, value]) => {
+                        csv += '\t"' + attrib + '"\t"' + value.replace('"', '""') + '"\n';
+                    });
+                    if(feature.geometry) {
+                        csv += '\t"geometry"\t"' + stringify(feature.geometry) + '"\n';
+                    }
+                });
+                csv += "\n";
+            })
+            FileSaver.saveAs(new Blob([csv], {type: "text/plain;charset=utf-8"}), "results.csv");
+        }
     }
     resultDisplayName = (layer, result) => {
         let displayName = "";
@@ -342,7 +359,7 @@ class IdentifyViewer extends React.Component {
             >
                 <span className={this.state.currentResult === result ? "active clickable" : "clickable"} onClick={()=> this.setCurrentResult(layer, result)} ref={ref}>{displayName}</span>
                 <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResult(layer, result)} />
-                {this.props.enableExport ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResult(layer, result)} />) : null}
+                {this.props.exportFormat ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResult(layer, result)} />) : null}
             </li>
         );
     }
@@ -359,7 +376,7 @@ class IdentifyViewer extends React.Component {
                 >
                     <span className="clickable" onClick={()=> this.toggleExpanded(layer, true)}><b>{layer}</b></span>
                     <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResultLayer(layer)} />
-                    {this.props.enableExport ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResultLayer(layer)} />) : null}
+                    {this.props.exportFormat ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResultLayer(layer)} />) : null}
                 </div>
                 <ul>
                     {results.map(result => this.renderResult(layer, result))}
@@ -389,7 +406,7 @@ class IdentifyViewer extends React.Component {
                     </div>
                     {attributes}
                     <div className="identify-buttonbox">
-                        {this.props.enableExport ? (<button className="button" onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
+                        {this.props.exportFormat ? (<button className="button" onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
                     </div>
                 </div>
             );
@@ -412,7 +429,7 @@ class IdentifyViewer extends React.Component {
                         })}
                     </div>
                     <div className="identify-buttonbox">
-                        {this.props.enableExport ? (<button className="button" onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
+                        {this.props.exportFormat ? (<button className="button" onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
                     </div>
                 </div>
             );
