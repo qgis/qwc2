@@ -74,6 +74,7 @@
 
 #Search ul.searchbar-provider-selection li {
     padding: 0.5em;
+    white-space: nowrap;
 }
 
 #Search li.searchbar-provider-selection-all {
