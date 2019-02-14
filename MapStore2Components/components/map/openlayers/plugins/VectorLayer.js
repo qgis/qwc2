@@ -66,7 +66,10 @@ let VectorLayer = {
 
             // Remove removed features
             for(let id of removed) {
-                source.removeFeature(source.getFeatureById(id));
+                let feature = source.getFeatureById(id);
+                if(feature) {
+                    source.removeFeature(feature);
+                }
             }
 
             // Add / update features
@@ -78,7 +81,10 @@ let VectorLayer = {
                 }
                 if(oldFeaturesMap[feature.id] && oldFeaturesMap[feature.id] !== feature) {
                     // Changed, remove
-                    source.removeFeature(source.getFeatureById(feature.id));
+                    let oldFeature = source.getFeatureById(feature.id);
+                    if(oldFeature) {
+                        source.removeFeature(oldFeature);
+                    }
                 }
                 // Add new
                 let featureObject = format.readFeatures({...feature, type: "Feature"});
