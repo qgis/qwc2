@@ -145,6 +145,7 @@
 
 #IdentifyViewer table.attribute-list {
     width: 100%;
+    table-layout: fixed;
 }
 
 #IdentifyViewer table.attribute-list tr:nth-child(even) {
@@ -154,6 +155,7 @@
 #IdentifyViewer table.attribute-list td {
     overflow: hidden;
     vertical-align: top;
+    text-overflow: ellipsis;
 }
 
 #IdentifyViewer table.attribute-list td:first-child {
@@ -164,12 +166,7 @@
     padding-right: 0.25em;
 }
 
-#IdentifyViewer table.attribute-list td.wrap {
-    word-wrap: break-word;
-}
-
 #IdentifyViewer table.attribute-list td.ellipsis {
-    text-overflow: ellipsis;
     white-space: nowrap;
 }
 
