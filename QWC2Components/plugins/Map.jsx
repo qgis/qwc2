@@ -12,7 +12,7 @@ const {connect} = require('react-redux');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const Spinner = require('../components/Spinner');
 
-const MapComponents = require('./map/MapComponents');
+const {Map, Layer} = require('./map/MapComponents');
 
 require('./style/Map.css');
 
@@ -37,33 +37,12 @@ class MapPlugin extends React.Component {
         super(props);
         this.loadingEl = null;
     }
-    renderLayerContent = (layer, layerCrs) => {
-        if (layer.features && layer.type === "vector") {
-            return layer.features.map( (feature) => {
-                return (
-                    <MapComponents.Feature
-                        key={feature.id}
-                        type={feature.type || "Feature"}
-                        geometry={feature.geometry}
-                        properties={feature.properties}
-                        featureId={feature.id}
-                        crs={feature.crs || layerCrs}
-                        layerCrs={layerCrs}
-                        styleName={feature.styleName || null}
-                        styleOptions={feature.styleOptions || {}}/>
-                );
-            });
-        }
-        return null;
-    }
     renderLayers = () => {
         const projection = this.props.map.projection || 'EPSG:3857';
         const topLayer = (this.props.layers || [])[0];
         return this.props.layers.slice(0).reverse().map((layer, index) => {
             return (
-                <MapComponents.Layer swipe={layer === topLayer ? this.props.swipe : null} type={layer.type} srs={projection} zIndex={layer.zIndex || index} key={layer.uuid} options={layer}>
-                    {this.renderLayerContent(layer, projection)}
-                </MapComponents.Layer>
+                <Layer key={layer.uuid} swipe={layer === topLayer ? this.props.swipe : null} type={layer.type} srs={projection} zIndex={layer.zIndex || index} options={layer} />
             );
         });
     }
@@ -90,13 +69,13 @@ class MapPlugin extends React.Component {
                 }, 1000);
             }
             return [(
-                <MapComponents.Map id="map" key="map"
+                <Map id="map" key="map"
                     mapOptions={this.props.mapOptions}
                     {...this.props.map}
                     zoomControl={false}>
                     {this.renderLayers()}
                     {this.renderSupportTools()}
-                </MapComponents.Map>
+                </Map>
             ), loadingIndicator];
         }
         return null;

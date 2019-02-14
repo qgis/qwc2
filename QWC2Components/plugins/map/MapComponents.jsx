@@ -27,6 +27,5 @@ const Map = connect((state) => ({
 
 module.exports = {
     Map: Map,
-    Layer: require('../../../MapStore2Components/components/map/openlayers/Layer'),
-    Feature: require('../../../MapStore2Components/components/map/openlayers/Feature')
+    Layer: require('../../../MapStore2Components/components/map/openlayers/Layer')
 };
