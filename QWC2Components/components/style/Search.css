@@ -33,33 +33,47 @@
     flex: 0 0 auto;
     height: 2.5em;
     width: 2.5em;
-    text-align: center;
-    line-height: 2.5em;
     background-color: @button_bg@;
     border-top: 1px solid @item_border@;;
     border-right: 1px solid @item_border@;;
     border-bottom: 1px solid @item_border@;;
     position: relative;
+    align-items: center;
+    display: flex;
+    justify-content: center;
 }
 
 #Search span.searchbar-addon-active {
     background-color: white;
 }
 
+#Search span.searchbar-addon-filter-active {
+    color: @item_active@;
+    background-color: white;
+}
+
+#Search span.searchbar-addon-menu-icon {
+    position: absolute;
+    right: 0.125em;
+    bottom: 0.125em;
+    font-size: 70%;
+    color: @base_fg@;
+}
+
 #Search ul.searchbar-provider-selection {
     position: absolute;
     top: 100%;
     right: -1px;
-    background-color: @button_bg@;
+    background-color: @appmenu_bg1@;
     border: 1px solid @item_border@;
     list-style-type: none;
     margin: 0;
     padding: 0;
-    text-align: left;
+    color: @base_fg@;
 }
 
 #Search ul.searchbar-provider-selection li {
-    padding: 0.125em 0.5em;
+    padding: 0.5em;
 }
 
 #Search li.searchbar-provider-selection-all {

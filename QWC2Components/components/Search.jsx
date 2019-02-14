@@ -217,10 +217,13 @@ class Search extends React.Component {
             }
             let addonClasses = classnames({
                 'searchbar-addon': true,
-                'searchbar-addon-active': this.state.providerSelectionVisible
+                'searchbar-addon-active': this.state.providerSelectionVisible,
+                'searchbar-addon-filter-active': !isEmpty(this.props.activeProviders)
             });
             providerSelection = (
-                <span className={addonClasses} onClick={() => this.setState({providerSelectionVisible: !this.state.providerSelectionVisible})}><Icon icon="chevron-down" />
+                <span className={addonClasses} onClick={() => this.setState({providerSelectionVisible: !this.state.providerSelectionVisible})}>
+                    <Icon icon="filter" />
+                    <Icon icon="chevron-down" className="searchbar-addon-menu-icon" />
                     {providerSelectionMenu}
                 </span>
             );
