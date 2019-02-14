@@ -126,7 +126,7 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
         // - Add layers
         let layers = LayerUtils.implodeLayers(exploded);
         for(let layer of layers) {
-            dispatch(addLayer(layer, true));
+            dispatch(addLayer(layer));
         }
 
         dispatch({
