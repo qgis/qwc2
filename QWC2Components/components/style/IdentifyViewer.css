@@ -106,7 +106,7 @@
 }
 
 #IdentifyViewer .identify-result-title {
-    background-color: @item_border@;
+    background-color: #ddd;
     padding: 0.25em;
     font-weight: bold;
     flex: 0 0 auto;
