@@ -9,7 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
-const Rnd = require('react-rnd').default
+const {Rnd} = require('react-rnd');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const Icon = require('./Icon');
 require('./style/ResizeableWindow.css');
