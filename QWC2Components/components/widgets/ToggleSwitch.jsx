@@ -13,7 +13,7 @@ const Icon = require('../Icon');
 require('./style/ToggleSwitch.css');
 
 class ToggleSwitch extends React.Component {
-    static PropTypes = {
+    static propTypes = {
         active: PropTypes.bool.isRequired,
         onChange: PropTypes.func.isRequired
     }

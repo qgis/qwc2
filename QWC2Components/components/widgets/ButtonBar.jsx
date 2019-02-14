@@ -16,7 +16,7 @@ require('./style/ButtonBar.css');
 
 
 class ButtonBar extends React.Component {
-    static PropTypes = {
+    static propTypes = {
         buttons: PropTypes.arrayOf(PropTypes.shape({
             key: PropTypes.string,
             label: PropTypes.string,
