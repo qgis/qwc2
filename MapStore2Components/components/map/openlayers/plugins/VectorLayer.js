@@ -89,8 +89,8 @@ let VectorLayer = {
                 // Add new
                 let featureObject = format.readFeatures({...feature, type: "Feature"});
                 featureObject.forEach(f => {
-                    if(feature.crs && feature.crs !== options.srs) {
-                        f.getGeometry().transform(feature.crs, options.srs);
+                    if(feature.crs && feature.crs !== newOptions.srs) {
+                        f.getGeometry().transform(feature.crs, newOptions.srs);
                     }
                     if(feature.styleName) {
                         f.setStyle(FeatureStyles[feature.styleName](f, feature.styleOptions || {}));
