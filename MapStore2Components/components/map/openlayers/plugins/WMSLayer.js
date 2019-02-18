@@ -54,7 +54,8 @@ let WMSLayer = {
                     url: urls[0],
                     serverType: 'qgis',
                     params: queryParameters,
-                    ratio: options.ratio
+                    ratio: options.ratio,
+                    hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false
                 })
             });
         }
