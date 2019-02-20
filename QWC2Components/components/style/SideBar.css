@@ -4,6 +4,7 @@ div.sidebar {
     /* topbar: 3.5em */
     /* bottombar is high 3em at 75% font size, hence at 100% font size it is 0.75 * 3em = 2.25em */
     max-height: calc(100vh - 5.75em);
+    max-height: calc(var(--vh, 1vh) * 100 - 5.75em);
     background-color: @container_bg@;
     transition: transform 0.25s;
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.75);
@@ -54,5 +55,6 @@ div.sidebar div.sidebar-body {
     overflow-y: auto;
     overflow-x: hidden;
     max-height: calc(100vh - 8.25em); /* viewport - topbar - bottombar - sidebar_titlebar*/
+    max-height: calc(var(--vh, 1vh) * 100 - 8.25em); /* viewport - topbar - bottombar - sidebar_titlebar*/
     flex: 1 1 auto;
 }

@@ -24,6 +24,7 @@
     /* bottombar is high 3em at 75% font size, hence at 100% font size it is 0.75 * 3em = 2.25em */
     /* titlebar: 2.5em */
     max-height: calc(100vh - 8.25em); /* viewport - topbar - bottombar - sidebar_titlebar*/
+    max-height: calc(var(--vh, 1vh) * 100 - 8.25em); /* viewport - topbar - bottombar - sidebar_titlebar*/
 }
 
 #LayerTree div.layertree-tree {

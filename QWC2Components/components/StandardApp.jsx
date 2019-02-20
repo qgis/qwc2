@@ -207,6 +207,17 @@ class StandardApp extends React.Component {
         this.initialParams = UrlParams.getParams();
         this.touchY = null;
     }
+    componentDidMount() {
+        window.addEventListener('resize', this.computeVh);
+        this.computeVh();
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.computeVh);
+    }
+    computeVh = () => {
+        // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+        document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01 ) + 'px');
+    }
     render() {
         let plugins = assign(PluginsUtils.getPlugins(this.props.appConfig.pluginsDef.plugins));
         return (
