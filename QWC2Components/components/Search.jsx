@@ -338,7 +338,7 @@ class Search extends React.Component {
             >
                 {item.thumbnail ? (<img src={item.thumbnail} />) : null}
                 <span dangerouslySetInnerHTML={{__html: item.text}}></span>
-                {item.theme && addThemes ? (<Icon onClick={(ev) => this.addThemeLayers(ev, item.theme)} icon="plus" title={addTitle}/>) : null}
+                {item.theme && addThemes ? (<Icon onClick={(ev) => {this.addThemeLayers(ev, item.theme); this.input.blur();}} icon="plus" title={addTitle}/>) : null}
             </li>
         );
     }
