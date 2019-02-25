@@ -313,7 +313,7 @@ function getTheme(config, configItem, result, resultItem) {
                     if (composerTemplate.ComposerLabel !== undefined) {
                         printTemplate.labels = toArray(composerTemplate.ComposerLabel).map((entry) => {
                             return entry.$.name;
-                        });
+                        }).filter(label => !(configItem.printLabelBlacklist || []).includes(label));
                     }
                     printTemplates.push(printTemplate);
                 }
