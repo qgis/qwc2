@@ -11,7 +11,7 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {Swipeable} = require('react-swipeable');
 const Message = require('../../MapStore2Components/components/I18N/Message');
-const {setCurrentTask} = require('../actions/task');
+const {setCurrentTask, openExternalUrl} = require('../actions/task');
 const Icon = require('./Icon');
 require('./style/AppMenu.css');
 
@@ -23,6 +23,7 @@ class AppMenu extends React.Component {
         appMenuClearsTask: PropTypes.bool,
         currentTaskBlocked: PropTypes.bool,
         setCurrentTask: PropTypes.func,
+        openExternalUrl: PropTypes.func,
         currentTheme: PropTypes.object
     }
     static defaultProps = {
@@ -59,7 +60,11 @@ class AppMenu extends React.Component {
     }
     onMenuitemClicked = (item) => {
         this.toggleMenu();
-        this.props.setCurrentTask(item.key, item.mode, item.identifyEnabled);
+        if(item.url) {
+            this.props.openExternalUrl(item.url);
+        } else {
+            this.props.setCurrentTask(item.key, item.mode, item.identifyEnabled);
+        }
     }
     renderMenuItems = (items, level) => {
         if(items) {
@@ -117,5 +122,6 @@ module.exports = connect((state) => ({
     currentTaskBlocked: state.task && state.task.blocked || false,
     currentTheme: state.theme.current || {}
 }), {
-    setCurrentTask: setCurrentTask
+    setCurrentTask: setCurrentTask,
+    openExternalUrl: openExternalUrl
 })(AppMenu);

@@ -11,7 +11,7 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
-const {setCurrentTask} = require('../actions/task')
+const {setCurrentTask, openExternalUrl} = require('../actions/task')
 const Icon = require('./Icon');
 require('./style/Toolbar.css');
 
@@ -19,6 +19,7 @@ class Toolbar extends React.Component {
     static propTypes = {
         toolbarItems: PropTypes.array,
         setCurrentTask: PropTypes.func,
+        openExternalUrl: PropTypes.func,
         currentTask: PropTypes.string,
         currentTaskMode: PropTypes.string,
         currentTheme: PropTypes.object
@@ -37,11 +38,20 @@ class Toolbar extends React.Component {
                 key={item.key + item.mode}
                 className={active ? "toolbar-item-active" : ""}
                 icon={item.icon}
-                onClick={active ? () => this.props.setCurrentTask(null) : () => this.props.setCurrentTask(item.key, item.mode, item.identifyEnabled)}
+                onClick={() => this.itemClicked(item, active)}
                 title={title}
                 size="xlarge"
             />
         );
+    }
+    itemClicked = (item, active) => {
+        if(item.url) {
+            this.props.openExternalUrl(item.url);
+        } else if(active) {
+            this.props.setCurrentTask(null);
+        } else {
+            this.props.setCurrentTask(item.key, item.mode, item.identifyEnabled);
+        }
     }
     render() {
         return (
@@ -58,4 +68,5 @@ module.exports = connect((state) => ({
     currentTheme: state.theme.current || {}
 }), {
     setCurrentTask: setCurrentTask,
+    openExternalUrl: openExternalUrl
 })(Toolbar);
