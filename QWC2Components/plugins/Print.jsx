@@ -16,10 +16,12 @@ const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
 const ConfigUtils = require("../../MapStore2Components/utils/ConfigUtils");
 const LocaleUtils = require("../../MapStore2Components/utils/LocaleUtils");
+const Spinner = require("../components/Spinner");
 const {LayerRole} = require('../actions/layers');
 const {changeRotation} = require('../actions/map');
 const ToggleSwitch = require('../components/widgets/ToggleSwitch');
 const Icon = require('../components/Icon');
+const ResizeableWindow = require("../components/ResizeableWindow");
 const {SideBar} = require('../components/SideBar');
 const PrintFrame = require('../components/PrintFrame');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
@@ -43,7 +45,9 @@ class Print extends React.Component {
         initialRotation: 0,
         grid: false,
         rotationNull: false,
-        minimized: false
+        minimized: false,
+        printOutputVisible: false,
+        outputLoaded: false
     }
     componentWillReceiveProps(newProps) {
         if(newProps.theme !== this.props.theme || !this.state.layout) {
@@ -164,7 +168,7 @@ class Print extends React.Component {
 
         return (
             <div className="print-body">
-                <form action={action} method="POST" target="_blank">
+                <form action={action} method="POST" target="print-output-window">
                     <table className="options-table"><tbody>
                         <tr>
                             <td><Message msgId="print.layout" /></td>
@@ -254,7 +258,9 @@ class Print extends React.Component {
                         {resolutionInput}
                     </div>
                     <div className="button-bar">
-                        <button className="button" type="submit" disabled={!printLayers}><Message msgId="print.submit" /></button>
+                        <button className="button" type="submit" disabled={!printLayers} onClick={() => this.setState({printOutputVisible: true, outputLoaded: false})}>
+                            <Message msgId="print.submit" />
+                        </button>
                     </div>
                 </form>
             </div>
@@ -267,9 +273,26 @@ class Print extends React.Component {
                 width: this.state.scale * this.state.layout.map.width / 1000.,
                 height: this.state.scale * this.state.layout.map.height / 1000.,
             };
-            printFrame = (<PrintFrame map={this.props.map} fixedFrame={frame} />);
+            printFrame = (<PrintFrame key="PrintFrame" map={this.props.map} fixedFrame={frame} />);
         }
         return printFrame;
+    }
+    renderPrintOutputWindow = () => {
+        return (
+            <ResizeableWindow key="PrintOutputWindow" title="print.output" icon="print" zIndex={7}
+                initialWidth={0.5 * window.innerWidth} initialHeight={0.75 * window.innerHeight}
+                onClose={() => this.setState({printOutputVisible: false, outputLoaded: false})} visible={this.state.printOutputVisible}
+            >
+                <div role="body" className="print-output-window-body">
+                    {!this.state.outputLoaded ? (
+                        <span className="print-output-window-wait">
+                            <Spinner /> <Message msgId="print.wait" />
+                        </span>
+                    ) : null}
+                    <iframe name="print-output-window" onLoad={() => this.setState({outputLoaded: true})}/>
+                </div>
+            </ResizeableWindow>
+        )
     }
     render() {
         let minMaxTooltip = LocaleUtils.getMessageById(this.context.messages, this.state.minimized ? "print.maximize" : "print.minimize");
@@ -280,7 +303,10 @@ class Print extends React.Component {
                 extraTitlebarContent={extraTitlebarContent}>
                 {() => ({
                     body: this.state.minimized ? null : this.renderBody(),
-                    extra: this.renderPrintFrame()
+                    extra: [
+                        this.renderPrintFrame(),
+                        this.renderPrintOutputWindow()
+                    ]
                 })}
             </SideBar>
         );

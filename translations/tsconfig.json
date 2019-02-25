@@ -102,6 +102,8 @@
     "print.rotation",
     "print.scale",
     "print.submit",
+    "print.output",
+    "print.wait",
     "rasterexport.format",
     "rasterexport.resolution",
     "rasterexport.selectinfo",

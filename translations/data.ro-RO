@@ -128,7 +128,9 @@
       "resolution": "Rezoluție:",
       "rotation": "Rotație:",
       "scale": "Scară:",
-      "submit": "Tipărește"
+      "submit": "Tipărește",
+      "output": "",
+      "wait": ""
     },
     "rasterexport": {
       "format": "Format:",

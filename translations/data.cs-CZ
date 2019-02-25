@@ -128,7 +128,9 @@
       "resolution": "Rozlišení:",
       "rotation": "Rotace:",
       "scale": "Měřítko:",
-      "submit": "Tisk"
+      "submit": "Tisk",
+      "output": "",
+      "wait": ""
     },
     "rasterexport": {
       "format": "Formát:",

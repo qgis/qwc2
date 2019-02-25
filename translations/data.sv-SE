@@ -128,7 +128,9 @@
       "resolution": "Upplösning:",
       "rotation": "Rotation:",
       "scale": "Skala:",
-      "submit": "Skriv ut"
+      "submit": "Skriv ut",
+      "output": "",
+      "wait": ""
     },
     "rasterexport": {
       "format": "",

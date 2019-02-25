@@ -128,7 +128,9 @@
       "resolution": "Resolution:",
       "rotation": "Rotation:",
       "scale": "Scale:",
-      "submit": "Print"
+      "submit": "Print",
+      "output": "Print output",
+      "wait": "Please wait..."
     },
     "rasterexport": {
       "format": "Format:",

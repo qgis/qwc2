@@ -18,7 +18,6 @@ class ResizeableWindow extends React.Component {
     static propTypes = {
         title: PropTypes.string,
         icon: PropTypes.string,
-        icon: PropTypes.string,
         onClose: PropTypes.func,
         scrollable: PropTypes.bool,
         initialX: PropTypes.number,
@@ -34,7 +33,8 @@ class ResizeableWindow extends React.Component {
             callback: PropTypes.func.isRequired
         })),
         padding: PropTypes.string,
-        zIndex: PropTypes.number
+        zIndex: PropTypes.number,
+        visibile: PropTypes.bool
     }
     static defaultProps = {
         icon: null,
@@ -51,7 +51,17 @@ class ResizeableWindow extends React.Component {
         scrollable: false,
         extraControls: null,
         padding: "0.25em",
-        zIndex: 6
+        zIndex: 6,
+        visibile: true
+    }
+    constructor(props) {
+        super(props);
+        this.rnd = null;
+    }
+    componentWillReceiveProps(newProps) {
+        if(this.rnd && newProps.visible && newProps.visible !== this.props.visible) {
+            this.rnd.updatePosition(this.initialPosition());
+        }
     }
     renderRole = (role) => {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
@@ -63,10 +73,15 @@ class ResizeableWindow extends React.Component {
         this.props.onClose();
         ev.stopPropagation();
     }
+    initialPosition = () => {
+        return {
+            x: this.props.initialX !== null ? this.props.initialX : Math.max(0, Math.round(0.5 * (window.innerWidth - this.props.initialWidth))),
+            y: this.props.initialY !== null ? this.props.initialY : Math.max(0, Math.round(0.5 * (window.innerHeight - this.props.initialHeight)))
+        };
+    }
     render() {
         let initial = {
-            x: this.props.initialX !== null ? this.props.initialX : Math.max(0, Math.round(0.5 * (window.innerWidth - this.props.initialWidth))),
-            y: this.props.initialY !== null ? this.props.initialY : Math.max(0, Math.round(0.5 * (window.innerHeight - this.props.initialHeight))),
+            ...this.initialPosition(),
             width: this.props.initialWidth,
             height: this.props.initialHeight
         };
@@ -83,12 +98,14 @@ class ResizeableWindow extends React.Component {
         let bodystyle = {
             padding: this.props.padding
         };
+        let style = {display: this.props.visible ? 'initial' : 'none'};
+
         return (
-            <div className="resizeable-window-container">
+            <div className="resizeable-window-container" style={style}>
                 <Rnd className="resizeable-window" bounds="parent" default={initial}
                     minWidth={this.props.minWidth} minHeight={this.props.minHeight}
                     maxWidth={this.props.maxWidth || window.innerWidth} maxHeight={this.props.maxHeight || window.innerHeight}
-                    style={{zIndex: this.props.zIndex}}>
+                    style={{zIndex: this.props.zIndex}} ref={c => this.rnd = c}>
                     <div className="resizeable-window-titlebar">
                         <span className="resizeable-window-titlebar-icon">
                             {icon}
@@ -102,7 +119,7 @@ class ResizeableWindow extends React.Component {
                         <Icon className="resizeable-window-titlebar-control" onClick={this.onClose} icon="remove"/>
                     </div>
                     <div style={bodystyle} className={bodyclasses} onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
-                        {this.renderRole("body")}
+                        {this.props.visible ? this.renderRole("body") : null}
                     </div>
                 </Rnd>
             </div>

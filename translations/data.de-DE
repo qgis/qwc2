@@ -128,7 +128,9 @@
       "resolution": "Auflösung",
       "rotation": "Rotation",
       "scale": "Massstab",
-      "submit": "PDF erzeugen"
+      "submit": "PDF erzeugen",
+      "output": "Druckausgabe",
+      "wait": "Bitte warten..."
     },
     "rasterexport": {
       "format": "Format:",

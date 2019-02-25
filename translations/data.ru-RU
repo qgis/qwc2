@@ -128,7 +128,9 @@
       "resolution": "Разрешение:",
       "rotation": "Поворот:",
       "scale": "Масштаб:",
-      "submit": "Печать"
+      "submit": "Печать",
+      "output": "",
+      "wait": ""
     },
     "rasterexport": {
       "format": "Формат бумаги:",
