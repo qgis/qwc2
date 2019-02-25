@@ -69,7 +69,8 @@ class LayerTree extends React.Component {
         layerInfoWindowSize: {width: 320, height: 480},
         bboxDependentLegend: false,
         flattenGroups: false,
-        width: "20em"
+        width: "20em",
+        enableLegendPrint: true
     }
     state = {
         activemenu: null,
@@ -309,8 +310,12 @@ class LayerTree extends React.Component {
                 <img className="layertree-item-legend-tooltip" style={style} src={this.state.legendTooltip.img} onTouchStart={this.hideLegendTooltip} onLoad={this.legendTooltipLoaded}></img>
             );
         }
-        let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
-        let extraTitlebarContent = (<Icon title={printLegendTooltip} className="layertree-print-legend" icon="print" onClick={this.printLegend}/>)
+
+        let extraTitlebarContent = null;
+        if(this.props.enableLegendPrint) {
+            let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
+            extraTitlebarContent = (<Icon title={printLegendTooltip} className="layertree-print-legend" icon="print" onClick={this.printLegend}/>)
+        }
         return (
             <div>
                 <SideBar id="LayerTree" width={this.state.sidebarwidth || this.props.width}
