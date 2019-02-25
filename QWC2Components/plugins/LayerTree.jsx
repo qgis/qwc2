@@ -302,10 +302,11 @@ class LayerTree extends React.Component {
                 left: this.state.legendTooltip.x,
                 top: this.state.legendTooltip.y,
                 maxWidth: (window.innerWidth - this.state.legendTooltip.x - 2),
-                maxHeight: (window.innerHeight - this.state.legendTooltip.y - 2)
+                maxHeight: (window.innerHeight - this.state.legendTooltip.y - 2),
+                visibility: 'hidden'
             };
             legendTooltip = (
-                <img className="layertree-item-legend-tooltip" style={style} src={this.state.legendTooltip.img} onTouchStart={this.hideLegendTooltip}></img>
+                <img className="layertree-item-legend-tooltip" style={style} src={this.state.legendTooltip.img} onTouchStart={this.hideLegendTooltip} onLoad={this.legendTooltipLoaded}></img>
             );
         }
         let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
@@ -323,6 +324,11 @@ class LayerTree extends React.Component {
                 <LayerInfoWindow windowSize={this.props.layerInfoWindowSize} bboxDependentLegend={this.props.bboxDependentLegend} />
             </div>
         );
+    }
+    legendTooltipLoaded = (ev) => {
+        if(ev.target.naturalWidth > 1) {
+            ev.target.style.visibility = 'visible';
+        }
     }
     onSortChange = (order, sortable, ev) => {
         let moved = JSON.parse(order[ev.newIndex]);
