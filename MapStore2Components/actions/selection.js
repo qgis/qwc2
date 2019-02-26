@@ -13,7 +13,8 @@ function changeSelectionState(selectionState) {
         geomType: selectionState.geomType,
         point: selectionState.point,
         line: selectionState.line,
-        polygon: selectionState.polygon
+        polygon: selectionState.polygon,
+        style: selectionState.style || 'default'
     };
 }
 

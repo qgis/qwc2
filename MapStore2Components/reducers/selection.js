@@ -21,7 +21,8 @@ function selection(state = {
                 geomType: action.geomType,
                 point: action.point,
                 line: action.line,
-                polygon: action.polygon
+                polygon: action.polygon,
+                style: action.style
             });
         default:
             return state;

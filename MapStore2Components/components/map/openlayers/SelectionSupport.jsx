@@ -7,8 +7,22 @@
  */
 
 const React = require('react');
+const assign = require('object-assign');
 const PropTypes = require('prop-types');
-var ol = require('openlayers');
+const ol = require('openlayers');
+const FeatureStyles = require('./FeatureStyles');
+
+const selectionStyle = {
+    "strokeColor": [255, 200, 50, 1],
+    "strokeWidth": 2,
+    "strokeDash": [10, 10],
+    "fillColor": [255, 200, 50, 0.75],
+    "circleRadius": 7
+};
+
+const drawStyle = assign({}, selectionStyle, {
+    "circleRadius": 0
+});
 
 class SelectionSupport extends React.Component {
     static propTypes = {
@@ -42,21 +56,7 @@ class SelectionSupport extends React.Component {
         let vector = new ol.layer.Vector({
             source: source,
             zIndex: 1000000,
-            style: new ol.style.Style({
-                fill: new ol.style.Fill({
-                    color: 'rgba(255, 255, 255, 0.2)'
-                }),
-                stroke: new ol.style.Stroke({
-                    color: '#ffcc33',
-                  width: 2
-                }),
-                image: new ol.style.Circle({
-                    radius: 7,
-                    fill: new ol.style.Fill({
-                        color: '#ffcc33'
-                    })
-                })
-            })
+            style: feature => FeatureStyles[newProps.selection.style](feature, selectionStyle)
         });
 
         this.props.map.addLayer(vector);
@@ -64,27 +64,9 @@ class SelectionSupport extends React.Component {
         // create an interaction to draw with
         let draw = new ol.interaction.Draw({
             source: source,
-            condition: (event) => {  return event.pointerEvent.buttons === 1 },
-            type: /** @type {ol.geom.GeometryType} */ newProps.selection.geomType,
-            style: new ol.style.Style({
-                fill: new ol.style.Fill({
-                    color: 'rgba(255, 255, 255, 0.2)'
-                }),
-                stroke: new ol.style.Stroke({
-                    color: 'rgba(0, 0, 0, 0.5)',
-                    lineDash: [10, 10],
-                    width: 2
-                }),
-                image: new ol.style.Circle({
-                    radius: 5,
-                    stroke: new ol.style.Stroke({
-                        color: 'rgba(0, 0, 0, 0.7)'
-                    }),
-                    fill: new ol.style.Fill({
-                        color: 'rgba(255, 255, 255, 0.2)'
-                    })
-                })
-            })
+            condition: event => event.pointerEvent.buttons === 1,
+            type: newProps.selection.geomType,
+            style: feature => FeatureStyles['default'](feature, drawStyle)
         });
 
         draw.on('drawstart', (evt) => {

@@ -24,11 +24,11 @@ const FeatureStyles = {
                 width: opts.strokeWidth,
                 lineDash: opts.strokeDash
             }),
-            image: new ol.style.Circle({
+            image: opts.circleRadius > 0 ? new ol.style.Circle({
                 radius: opts.circleRadius,
                 fill: new ol.style.Fill({ color: opts.fillColor }),
                 stroke: new ol.style.Stroke({color: opts.strokeColor, width: opts.strokeWidth})
-            }),
+            }) : null,
             text: new ol.style.Text({
               font: '11pt sans-serif',
               text: feature.getProperties()["label"] || "",
