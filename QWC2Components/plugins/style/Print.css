@@ -26,6 +26,12 @@
     padding: 0.25em;
 }
 
+#Print table.options-table td:first-child {
+    max-width: 10em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 #Print table.options-table td:nth-child(2) {
     width: 99%;
 }
