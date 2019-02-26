@@ -34,7 +34,7 @@ class ResizeableWindow extends React.Component {
         })),
         padding: PropTypes.string,
         zIndex: PropTypes.number,
-        visibile: PropTypes.bool
+        visible: PropTypes.bool
     }
     static defaultProps = {
         icon: null,
@@ -52,7 +52,7 @@ class ResizeableWindow extends React.Component {
         extraControls: null,
         padding: "0.25em",
         zIndex: 6,
-        visibile: true
+        visible: true
     }
     constructor(props) {
         super(props);
