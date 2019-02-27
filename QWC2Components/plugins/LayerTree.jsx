@@ -90,6 +90,11 @@ class LayerTree extends React.Component {
             }
         });
     }
+    componentWillReceiveProps(newProps) {
+        if(newProps.theme.mapTips !== undefined) {
+            this.props.toggleMapTips(newProps.theme.mapTips);
+        }
+    }
     getGroupVisibility = (group) => {
         if(isEmpty(group.sublayers)) {
             return 1;
@@ -249,7 +254,14 @@ class LayerTree extends React.Component {
     renderBody = () => {
         let maptipcheckboxstate = this.props.mapTipsEnabled === true ? 'checked' : 'unchecked';
         let maptipCheckbox = null;
-        if(!this.props.mobile && this.props.allowMapTips) {
+        let maptipsEnabled = false;
+        if(this.props.theme.mapTips !== undefined) {
+            maptipsEnabled = this.props.theme.mapTips !== null;
+        } else {
+            maptipsEnabled = this.props.allowMapTips;
+        }
+
+        if(!this.props.mobile && maptipsEnabled) {
             maptipCheckbox = (
                 <div className="layertree-option">
                     <Icon className="layertree-item-checkbox" icon={maptipcheckboxstate} onClick={this.toggleMapTips} />

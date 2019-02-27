@@ -364,6 +364,9 @@ def getTheme(config, configItem, result, resultItem):
         if "allowReorderingLayers" in configItem:
             resultItem["allowReorderingLayers"] = configItem["allowReorderingLayers"]
 
+        if "mapTips" in configItem:
+            resultItem["mapTips"] = configItem["mapTips"]
+
         resultItem["editConfig"] = getEditConfig(configItem["editConfig"] if "editConfig" in configItem else None)
 
         # set default theme
