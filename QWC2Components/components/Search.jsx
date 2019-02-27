@@ -380,8 +380,14 @@ class Search extends React.Component {
             }
 
             // zoom to result using max zoom level
-            let mapbbox = CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection)
-            const newZoom = Math.max(0, MapUtils.getZoomForExtent(mapbbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom) - 1);
+            let newZoom;
+            if(!isEmpty(bbox)) {
+                let mapbbox = CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection)
+                newZoom = Math.max(0, MapUtils.getZoomForExtent(mapbbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom) - 1);
+            } else {
+                newZoom = MapUtils.computeZoom(this.props.map.scales, item.scale || 0);
+                newZoom = Math.max(0, Math.min(newZoom, maxZoom));
+            }
             this.props.panToResult([x, y], newZoom, crs);
         }
         if((item.type || SearchResultType.PLACE) === SearchResultType.PLACE) {
