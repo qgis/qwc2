@@ -355,6 +355,19 @@ const LayerUtils = {
             }
         }
         return null;
+    },
+    cloneLayer(layer, sublayerpath) {
+        let newlayer = assign({}, layer);
+        let cur = newlayer;
+        for(let i = 0; i < sublayerpath.length; ++i) {
+            let idx = sublayerpath[i];
+            cur.sublayers = [
+                ...cur.sublayers.slice(0, idx),
+                assign({}, cur.sublayers[idx]),
+                ...cur.sublayers.slice(idx + 1)];
+            cur = cur.sublayers[idx];
+        }
+        return {newlayer, newsublayer: cur};
     }
 };
 

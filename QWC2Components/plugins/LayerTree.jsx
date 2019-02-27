@@ -346,19 +346,6 @@ class LayerTree extends React.Component {
         let visible = !this.state.importvisible;
         this.setState({importvisible: visible, sidebarwidth: visible ? '40em' : null});
     }
-    cloneLayer = (layer, sublayerpath) => {
-        let newlayer = assign({}, layer);
-        let cur = newlayer;
-        for(let i = 0; i < sublayerpath.length; ++i) {
-            let idx = sublayerpath[i];
-            cur.sublayers = [
-                ...cur.sublayers.slice(0, idx),
-                assign({}, cur.sublayers[idx]),
-                ...cur.sublayers.slice(idx + 1)];
-            cur = cur.sublayers[idx];
-        }
-        return {newlayer, newsublayer: cur};
-    }
     propagateOptions = (layer, options, path=null) => {
         if(layer.sublayers) {
             layer.sublayers = layer.sublayers.map((sublayer, idx) => {
@@ -379,7 +366,7 @@ class LayerTree extends React.Component {
             this.props.changeLayerProperties(layer.uuid, newlayer);
         } else {
             // Toggle group
-            let {newlayer, newsublayer} = this.cloneLayer(layer, grouppath);
+            let {newlayer, newsublayer} = LayerUtils.cloneLayer(layer, grouppath);
             newsublayer.expanded = !oldexpanded;
             this.props.changeLayerProperties(layer.uuid, newlayer);
         }
@@ -399,7 +386,7 @@ class LayerTree extends React.Component {
                 this.props.changeLayerProperties(layer.uuid, newlayer);
             }
         } else {
-            let {newlayer, newsublayer} = this.cloneLayer(layer, grouppath);
+            let {newlayer, newsublayer} = LayerUtils.cloneLayer(layer, grouppath);
             newsublayer.visibility = !oldvisibility;
             if(this.props.groupTogglesSublayers) {
                 // Toggle group and all sublayers
@@ -424,7 +411,7 @@ class LayerTree extends React.Component {
         if(inMutuallyExclusiveGroup) {
             this.toggleMutuallyExclusive(layer, sublayerpath, oldvisibility);
         } else {
-            let {newlayer, newsublayer} = this.cloneLayer(layer, sublayerpath);
+            let {newlayer, newsublayer} = LayerUtils.cloneLayer(layer, sublayerpath);
             newsublayer.visibility = !newsublayer.visibility;
             if(newsublayer.visibility){
                 newlayer.visibility = true;
@@ -440,7 +427,7 @@ class LayerTree extends React.Component {
             return;
         } else {
             let parentPath = path.slice(0, path.length - 1);
-            let {newlayer, newsublayer} = this.cloneLayer(layer, parentPath);
+            let {newlayer, newsublayer} = LayerUtils.cloneLayer(layer, parentPath);
             let visibleIdx = path[path.length - 1];
             let newsublayers = [];
             for(let i = 0; i < newsublayer.sublayers.length; ++i) {
@@ -456,7 +443,7 @@ class LayerTree extends React.Component {
         }
     }
     layerTransparencyChanged = (layer, sublayerpath, value) => {
-        let {newlayer, newsublayer} = this.cloneLayer(layer, sublayerpath);
+        let {newlayer, newsublayer} = LayerUtils.cloneLayer(layer, sublayerpath);
         newsublayer.opacity = Math.max(1, 255 - value);
         this.props.changeLayerProperties(layer.uuid, newlayer);
     }
