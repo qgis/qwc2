@@ -24,6 +24,7 @@ module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeO
         localConfig: require('../../MapStore2Components/reducers/localConfig'),
         locale: require('../../MapStore2Components/reducers/locale'),
         browser: require('../../MapStore2Components/reducers/browser'),
+        identify: require('../../QWC2Components/reducers/identify'),
         map: () => {return null; },
         layers: () => {return null; },
         ...PluginsUtils.getPluginReducers(plugins)
