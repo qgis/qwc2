@@ -341,13 +341,16 @@ const LayerUtils = {
         }
         return newlayer;
     },
-    searchSubLayer(layer, attr, value) {
+    searchSubLayer(layer, attr, value, path=[]) {
         if(layer.sublayers) {
+            let idx = 0;
             for(let sublayer of layer.sublayers) {
-                let subsublayer = LayerUtils.searchSubLayer(sublayer, attr, value);
+                let subsublayer = LayerUtils.searchSubLayer(sublayer, attr, value, path);
                 if(subsublayer) {
+                    path.unshift(idx);
                     return subsublayer;
                 }
+                idx += 1;
             }
         } else {
             if(layer[attr] === value) {
