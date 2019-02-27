@@ -1,12 +1,12 @@
-#TaskBar.RasterExport div.help-text {
+.RasterExport div.help-text {
     font-style: italic;
     padding-bottom: 0.5em;
 }
 
-#TaskBar.RasterExport div.raster-export-settings {
+.RasterExport div.raster-export-settings {
     font-size: small;
 }
 
-#TaskBar.RasterExport div.raster-export-settings > span {
+.RasterExport div.raster-export-settings > span {
     margin: 0.5em;
 }

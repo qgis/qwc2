@@ -11,7 +11,7 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {setCurrentTask,setCurrentTaskBlocked} = require("../actions/task");
 const Icon = require('./Icon');
-require('./style/TaskBar.css');
+const {MessageBar} = require('./MessageBar');
 
 class TaskBar extends React.Component {
     static propTypes = {
@@ -52,21 +52,10 @@ class TaskBar extends React.Component {
         if(this.props.currentTask.id !== this.props.task) {
             return null;
         }
-        let contents = (typeof this.props.children === "function") ? this.props.children() : null;
         return (
-            <div>
-                <div id="TaskBar" className={this.props.task}>
-                    <div className="taskbar">
-                        <div className="body">
-                            {contents ? contents.body || null : this.renderRole("body")}
-                        </div>
-                        <span className="closewrapper">
-                            <Icon className="close" onClick={this.closeClicked} icon="remove" size="large"/>
-                        </span>
-                    </div>
-                </div>
-                {contents ? contents.extra || null : this.renderRole("extra")}
-            </div>
+            <MessageBar onHide={this.closeClicked} className={this.props.task}>
+                {this.props.children}
+            </MessageBar>
         );
     }
 };

@@ -1,13 +1,13 @@
-#TaskBar.DxfExport div.help-text {
+.DxfExport div.help-text {
     font-style: italic;
     padding-bottom: 0.5em;
 }
 
-#TaskBar.DxfExport div.export-settings {
+.DxfExport div.export-settings {
     font-size: small;
 }
 
-#TaskBar.DxfExport span.input-frame {
+.DxfExport span.input-frame {
     border: 1px solid @item_border@;
     padding: 0.25em;
     background-color: white;
@@ -15,7 +15,7 @@
     align-items: center;
 }
 
-#TaskBar.DxfExport span.input-frame input {
+.DxfExport span.input-frame input {
     border: 0;
     flex: 1;
     width: 8ch;
