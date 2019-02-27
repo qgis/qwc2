@@ -6,6 +6,7 @@
     vertical-align: middle;
     max-width: 70ch;
     color: @base_fg@;
+    z-index: 4;
 }
 
 #Search div.searchbar-wrapper {

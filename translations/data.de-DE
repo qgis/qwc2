@@ -157,7 +157,9 @@
       "search": "Suchen",
       "searchall": "Ort suchen oder Karte hinzufügen...",
       "all": "Alle",
-      "themes": "Themen"
+      "themes": "Themen",
+      "invisiblelayer": "Das Resultat liegt auf einer Ebene, die ausgeschaltet ist.",
+      "enablelayer": "Ebene einschalten"
     },
     "share": {
       "directLinkTitle": "Über einen direkten Link",

@@ -157,7 +157,9 @@
       "search": "Hledat",
       "searchall": "Najít místo nebo přidat mapu...",
       "all": "Vše",
-      "themes": "Témata"
+      "themes": "Témata",
+      "invisiblelayer": "",
+      "enablelayer": ""
     },
     "share": {
       "directLinkTitle": "Přes přímé spojení",

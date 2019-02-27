@@ -125,6 +125,8 @@
     "search.searchall",
     "search.all",
     "search.themes",
+    "search.invisiblelayer",
+    "search.enablelayer",
     "share.directLinkTitle",
     "share.generatingpermalink",
     "share.QRCodeLinkTitle",

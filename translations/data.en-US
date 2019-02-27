@@ -157,7 +157,9 @@
       "search": "Search",
       "searchall": "Search places or add maps...",
       "all": "All",
-      "themes": "Themes"
+      "themes": "Themes",
+      "invisiblelayer": "The result lies on a layer which is not visible.",
+      "enablelayer": "Enable layer"
     },
     "share": {
       "directLinkTitle": "Via a direct link",

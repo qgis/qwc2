@@ -157,7 +157,9 @@
       "search": "Cerca",
       "searchall": "Cerca località o aggiungi cartine...",
       "all": "Tutti",
-      "themes": "Temi"
+      "themes": "Temi",
+      "invisiblelayer": "Il risultato si trova su un layer che non è visibile.",
+      "enablelayer": "Attivare il layer"
     },
     "share": {
       "directLinkTitle": "Link diretto",

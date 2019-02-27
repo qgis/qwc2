@@ -157,7 +157,9 @@
       "search": "Caută",
       "searchall": "Caută în toate",
       "all": "Toate",
-      "themes": "Hărți tematice"
+      "themes": "Hărți tematice",
+      "invisiblelayer": "",
+      "enablelayer": ""
     },
     "share": {
       "directLinkTitle": "Via link direct",

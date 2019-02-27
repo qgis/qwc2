@@ -157,7 +157,9 @@
       "search": "",
       "searchall": "",
       "all": "",
-      "themes": ""
+      "themes": "",
+      "invisiblelayer": "",
+      "enablelayer": ""
     },
     "share": {
       "directLinkTitle": "Via en direktlänk",

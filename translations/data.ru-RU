@@ -157,7 +157,9 @@
       "search": "Поиск",
       "searchall": "",
       "all": "Всё",
-      "themes": ""
+      "themes": "",
+      "invisiblelayer": "",
+      "enablelayer": ""
     },
     "share": {
       "directLinkTitle": "По прямой ссылке",

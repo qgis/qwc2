@@ -157,7 +157,9 @@
       "search": "",
       "searchall": "",
       "all": "",
-      "themes": "Cartes"
+      "themes": "Cartes",
+      "invisiblelayer": "",
+      "enablelayer": ""
     },
     "share": {
       "directLinkTitle": "Via un lien direct",

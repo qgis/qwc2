@@ -17,12 +17,14 @@ const isEqual = require('lodash.isequal');
 const ol = require('openlayers');
 const Icon = require('./Icon');
 const Spinner = require('./Spinner');
+const {MessageBar} = require('./MessageBar');
 const Message = require('../../MapStore2Components/components/I18N/Message');
 const LocaleUtils = require('../../MapStore2Components/utils/LocaleUtils');
 const MapUtils = require('../../MapStore2Components/utils/MapUtils');
 const ConfigUtils = require('../../MapStore2Components/utils/ConfigUtils');
+const LayerUtils = require('../utils/LayerUtils');
 const CoordinatesUtils = require('../../MapStore2Components/utils/CoordinatesUtils');
-const {LayerRole, addMarker, removeMarker, addLayerFeatures, removeLayer, addLayer, addThemeSublayer} = require('../actions/layers');
+const {LayerRole, addMarker, removeMarker, addLayerFeatures, removeLayer, addLayer, addThemeSublayer, changeLayerProperties} = require('../actions/layers');
 const {zoomToPoint} = require('../actions/map');
 const {addSearchResults, changeSearch, startSearch, searchMore, SearchResultType} = require("../actions/search");
 const {setCurrentTask} = require('../actions/task');
@@ -57,7 +59,9 @@ class Search extends React.Component {
         addThemeSublayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
-        searchOptions: PropTypes.object
+        searchOptions: PropTypes.object,
+        layers: PropTypes.array,
+        changeLayerProperties: PropTypes.func
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -120,11 +124,12 @@ class Search extends React.Component {
     }
     search = (props, startup=false)  => {
         if(props.searchText) {
+            this.setState({invisibleLayerQuery: null});
             props.startSearch(props.searchText, {displaycrs: props.displaycrs}, this.activeProviders(props), startup);
         }
     }
     resetSearch = () => {
-        this.setState({currentResult: null, focused: false, showfields: false});
+        this.setState({currentResult: null, focused: false, showfields: false, invisibleLayerQuery: null});
         this.props.changeSearch("", this.props.activeProviders);
     }
     onChange = (ev) => {
@@ -258,31 +263,54 @@ class Search extends React.Component {
                 </div>
             );
         }
-        return (
-            <div id="Search" onTouchStart={ev => ev.stopPropagation()} onTouchMove={ev => ev.stopPropagation()}  onTouchEnd={ev => ev.stopPropagation()}>
-                <div className="searchbar-wrapper">
-                    <div className="searchbar-container">
-                        <input
-                            className="searchbar"
-                            placeholder={placeholder}
-                            type="text"
-                            ref={el => this.input = el}
-                            value={this.props.searchText}
-                            onMouseDown={this.checkShowFields}
-                            onFocus={this.onFocus}
-                            onBlur={this.onBlur}
-                            onKeyDown={this.onKeyDown}
-                            onChange={this.onChange} />
-                        <span className="searchbar-addon">
-                            {addonAfter}
-                        </span>
+        let invisibleLayerQuery = null;
+        if(this.state.invisibleLayerQuery) {
+            invisibleLayerQuery = (
+                <MessageBar key="invisibleLayerQuery"
+                    onHide={() => this.setState({invisibleLayerQuery: null})}
+                    hideOnTaskChange={true}
+                >
+                    <span role="body"><Message msgId="search.invisiblelayer" /> <button onClick={this.enableLayer}><Message msgId="search.enablelayer" /></button></span>
+                </MessageBar>
+            );
+        }
+        return [
+            (
+                <div id="Search" key="SearchBox" onTouchStart={ev => ev.stopPropagation()} onTouchMove={ev => ev.stopPropagation()}  onTouchEnd={ev => ev.stopPropagation()}>
+                    <div className="searchbar-wrapper">
+                        <div className="searchbar-container">
+                            <input
+                                className="searchbar"
+                                placeholder={placeholder}
+                                type="text"
+                                ref={el => this.input = el}
+                                value={this.props.searchText}
+                                onMouseDown={this.checkShowFields}
+                                onFocus={this.onFocus}
+                                onBlur={this.onBlur}
+                                onKeyDown={this.onKeyDown}
+                                onChange={this.onChange} />
+                            <span className="searchbar-addon">
+                                {addonAfter}
+                            </span>
+                        </div>
+                        {searchform}
+                        {this.renderSearchResults()}
                     </div>
-                    {searchform}
-                    {this.renderSearchResults()}
+                    {providerSelection}
                 </div>
-                {providerSelection}
-            </div>
-        )
+            ), invisibleLayerQuery
+        ];
+    }
+    enableLayer = () => {
+        if(this.state.invisibleLayerQuery) {
+            let layer = this.state.invisibleLayerQuery.layer;
+            let sublayerpath = this.state.invisibleLayerQuery.sublayerpath;
+            let {newlayer, newsublayer} = LayerUtils.cloneLayer(layer, sublayerpath);
+            assign(newsublayer, {visibility: true});
+            this.props.changeLayerProperties(layer.uuid, newlayer);
+            this.setState({invisibleLayerQuery: null});
+        }
     }
     submitFormSearch = () => {
         let comp = this.props.searchProviders[UrlParams.getParam("sp")].comparator;
@@ -343,7 +371,8 @@ class Search extends React.Component {
         );
     }
     showResult = (item, zoom=true) => {
-        if((item.type || SearchResultType.PLACE) !== SearchResultType.PLACE && !this.props.searchOptions.zoomToLayers) {
+        let resultType = item.type || SearchResultType.PLACE;
+        if(resultType !== SearchResultType.PLACE && !this.props.searchOptions.zoomToLayers) {
             zoom = false;
         }
         if(zoom) {
@@ -355,7 +384,7 @@ class Search extends React.Component {
             // find max zoom level greater than min scale
             let maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.searchOptions.minScale);
 
-            if(item.layer) {
+            if(resultType === SearchResultType.THEMELAYER && item.layer) {
                 const maxbbox = (layer, bounds) => {
                     if(layer.sublayers) {
                         for(sublayer in layer.sublayers) {
@@ -390,7 +419,7 @@ class Search extends React.Component {
             }
             this.props.panToResult([x, y], newZoom, crs);
         }
-        if((item.type || SearchResultType.PLACE) === SearchResultType.PLACE) {
+        if(resultType === SearchResultType.PLACE) {
             this.props.removeLayer("searchselection");
             let text = item.label !== undefined ? item.label : item.text;
             text = text.replace(/<[^>]*>/g, '')
@@ -401,13 +430,29 @@ class Search extends React.Component {
                 this.props.addMarker('searchmarker', [item.x, item.y], text, item.crs);
             }
             this.setState({currentResult: item});
-        } else if(item.type === SearchResultType.THEMELAYER) {
+        } else if(resultType === SearchResultType.THEMELAYER) {
             this.props.addThemeSublayer(item.layer);
             // Show layer tree to notify user that something has happened
             this.props.setCurrentTask('LayerTree');
-        } else if(item.type === SearchResultType.THEME) {
+        } else if(resultType === SearchResultType.THEME) {
             this.props.setCurrentTheme(item.theme, this.props.themes);
         }
+
+        // if item specifies a layer, query user to make it visible if not visible
+        let invisibleLayerQuery = null;
+        if(resultType === SearchResultType.PLACE && item.layer) {
+            let sublayerpath = null;
+            let sublayer = null;
+            let layer = this.props.layers.find(layer => {
+                sublayerpath = [];
+                sublayer = LayerUtils.searchSubLayer(layer, 'name', item.layer, sublayerpath);
+                return sublayer !== null;
+            });
+            if(sublayer && !sublayer.visibility) {
+                invisibleLayerQuery = {layer, sublayerpath};
+            }
+        }
+        this.setState({invisibleLayerQuery});
     }
     showFeatureGeometry = (item, geometry, crs, text) => {
         if(item === this.state.currentResult) {
@@ -506,6 +551,7 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
             displaycrs: displaycrs,
             theme: state.theme ? state.theme.current : null,
             themes: state.theme ? state.theme.themes : {},
+            layers: state.layers.flat || [],
             searchProviders: searchProviders,
         })
     ), {
@@ -519,6 +565,7 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
         removeLayer: removeLayer,
         addLayer: addLayer,
         addThemeSublayer: addThemeSublayer,
+        changeLayerProperties: changeLayerProperties,
         setCurrentTask: setCurrentTask,
         setCurrentTheme: setCurrentTheme
     })(Search);

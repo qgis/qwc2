@@ -157,7 +157,9 @@
       "search": "Buscar",
       "searchall": "Buscar lugares o agregar mapas...",
       "all": "Todo",
-      "themes": "Temas"
+      "themes": "Temas",
+      "invisiblelayer": "",
+      "enablelayer": ""
     },
     "share": {
       "directLinkTitle": "Vía un vínculo directo",
