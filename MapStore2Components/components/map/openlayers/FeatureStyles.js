@@ -52,11 +52,11 @@ const FeatureStyles = {
             }),
             new ol.style.Style({
                 image: new ol.style.Icon({
-                    anchor: [0.5, 1],
+                    anchor: options.iconAnchor || [0.5, 1],
                     anchorXUnits: 'fraction',
                     anchorYUnits: 'fraction',
                     opacity: 1.,
-                    src: markerIcon
+                    src: options.iconSrc || markerIcon
                 }),
                 text: new ol.style.Text({
                     font: '11pt sans-serif',
