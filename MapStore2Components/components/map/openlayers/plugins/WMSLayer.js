@@ -75,6 +75,7 @@ let WMSLayer = {
               params: queryParameters,
               serverType: 'qgis',
               tileGrid: tileGrid,
+              hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false
             }, (options.forceProxy) ? {tileLoadFunction: proxyTileLoadFunction} : {}))
         });
     },
