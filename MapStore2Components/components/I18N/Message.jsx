@@ -20,7 +20,14 @@ class Message extends React.Component {
         intl: PropTypes.object
     }
     render() {
-        return this.context.intl ? <FormattedMessage id={this.props.msgId} values={this.props.msgParams}/> : <span>{this.props.msgId || ""}</span>;
+        if(!this.context.intl) {
+            return (<span>{this.props.msgId || ""}</span>);
+        }
+        return (
+            <FormattedMessage id={this.props.msgId} values={this.props.msgParams}>
+                {typeof this.props.children === "function" ? this.props.children : null}
+            </FormattedMessage>
+        );
     }
 };
 
