@@ -37,14 +37,28 @@ input[type=range]{
     outline: none;
 }
 
-input[type=range]::-webkit-slider-runnable-track,
 input[type=range]::-moz-range-track {
     background: #ddd;
     height: 4px;
 }
 
-input[type=range]::-webkit-slider-thumb,
+input[type=range]::-webkit-slider-runnable-track {
+    background: #ddd;
+    height: 4px;
+}
+
 input[type=range]::-moz-range-thumb {
+    -webkit-appearance: none;
+    border: 1px solid @map_button_bg@;
+    border-radius: 50%;
+    height: 12px;
+    width: 12px;
+    box-sizing: border-box;
+    background: @map_button_fg@;
+    margin-top: -3.5px;
+}
+
+input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     border: 1px solid @map_button_bg@;
     border-radius: 50%;
