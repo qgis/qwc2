@@ -53,7 +53,7 @@ class MapInfoTooltip extends React.Component {
             if(!oldPoint || oldPoint.pixel[0] !== newPoint.pixel[0] || oldPoint.pixel[1] !== newPoint.pixel[1]) {
                 this.setState({coordinate: newPoint.coordinate, elevation: null});
                 let serviceParams = {pos: newPoint.coordinate.join(","), crs: newProps.map.projection};
-                let elevationService = ConfigUtils.getConfigProp("elevationServiceUrl").replace(/\/$/, '');
+                let elevationService = (ConfigUtils.getConfigProp("elevationServiceUrl") || "").replace(/\/$/, '');
                 let elevationPrecision = this.props.elevationPrecision;
                 if(elevationService) {
                     axios.get(elevationService + '/getelevation', {params: serviceParams}).then(response => {
