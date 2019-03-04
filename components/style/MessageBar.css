@@ -29,10 +29,5 @@
     right: 0;
     top: 0;
     bottom: 0;
-    float: none;
     padding: 0.125em 0.125em 0 0;
-}
-
-#MessageBar span.close {
-    float: none;
 }
