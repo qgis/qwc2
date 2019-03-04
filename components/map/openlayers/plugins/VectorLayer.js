@@ -11,7 +11,7 @@ const isEqual = require('lodash.isequal');
 const FeatureStyles = require('../FeatureStyles');
 
 let VectorLayer = {
-    create: (options) => {
+    create: (options, map) => {
         let source = new ol.source.Vector();
         const format = new ol.format.GeoJSON();
 
@@ -28,7 +28,7 @@ let VectorLayer = {
             return collection.concat(featureObject);
         }, []);
         source.addFeatures(features);
-        return new ol.layer.Vector({
+        let vectorLayer = new ol.layer.Vector({
             msId: options.id,
             source: source,
             zIndex: options.zIndex,
@@ -38,6 +38,18 @@ let VectorLayer = {
                 return FeatureStyles[styleName](feature, styleOptions);
             }
         });
+        map.on('click', event => {
+            let allFeatures = map.getFeaturesAtPixel(event.pixel);
+            let features = map.getFeaturesAtPixel(event.pixel, {layerFilter: (layer) => layer === vectorLayer});
+            if(features && features.length > 0 && allFeatures.length === features.length) {
+                let feature = features[0];
+                let event = document.createEvent('CustomEvent');
+                let featureObj = new ol.format.GeoJSON().writeFeatureObject(feature);
+                event.initCustomEvent('_qwc2_feature_clicked', false, false, featureObj);
+                window.dispatchEvent(event);
+            }
+        });
+        return vectorLayer;
     },
     update: (layer, newOptions, oldOptions) => {
         const oldCrs = oldOptions.srs || 'EPSG:3857';
