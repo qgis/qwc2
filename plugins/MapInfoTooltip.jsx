@@ -27,7 +27,8 @@ class MapInfoTooltip extends React.Component {
         map: PropTypes.object,
         displaycrs: PropTypes.string,
         elevationPrecision: PropTypes.number,
-        includeWGS84: PropTypes.bool
+        includeWGS84: PropTypes.bool,
+        enabled: PropTypes.bool
     }
     static defaultProps = {
         elevationPrecision: 0,
@@ -40,6 +41,10 @@ class MapInfoTooltip extends React.Component {
         messages: PropTypes.object
     }
     componentWillReceiveProps(newProps) {
+        if(!newProps.enabled) {
+            this.clear();
+            return;
+        }
         let newPoint = newProps.map.clickPoint;
         if(!newPoint || newPoint.button !== 2) {
             this.clear()
@@ -137,6 +142,7 @@ class MapInfoTooltip extends React.Component {
 };
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
+    enabled: state.identify.enabled,
     map: state.map ? state.map : null,
     displaycrs: displaycrs
 }));
