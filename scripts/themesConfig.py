@@ -224,7 +224,8 @@ def getTheme(config, configItem, result, resultItem):
         topLayer = getChildElement(getChildElement(capabilities, "Capability"), "Layer")
 
         # use name from config or fallback to WMS title
-        wmsTitle = configItem.get("title") or getChildElementValue(capabilities, "Service/Title") or getChildElementValue(topLayer, "Title")
+        wmsTitle = configItem.get("title") or getChildElementValue(capabilities, "Service/Title") or getChildElementValue(topLayer, "Title") or re.sub(r".*/", "", configItem["url"]).rstrip("?")
+
 
         # keywords
         keywords = []

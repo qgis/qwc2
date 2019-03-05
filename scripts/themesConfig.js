@@ -243,7 +243,7 @@ function getTheme(config, configItem, result, resultItem) {
             const topLayer = capabilities.Capability.Layer;
 
             // use name from config or fallback to WMS title
-            const wmsTitle = configItem.title || capabilities.Service.Title || topLayer.Title;
+            const wmsTitle = configItem.title || capabilities.Service.Title || topLayer.Title || configItem.url.replace(/.*\//,'').replace(/\?^/, '');
 
             // keywords
             let keywords = [];
