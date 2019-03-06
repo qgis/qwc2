@@ -217,7 +217,7 @@ class IdentifyViewer extends React.Component {
                 csv += layerName + "\n";
                 features.forEach(feature => {
                     Object.entries(feature.properties || {}).forEach(([attrib, value]) => {
-                        csv += '\t"' + attrib + '"\t"' + value.replace('"', '""') + '"\n';
+                        csv += '\t"' + attrib + '"\t"' + String(value).replace('"', '""') + '"\n';
                     });
                     if(feature.geometry) {
                         csv += '\t"geometry"\t"' + stringify(feature.geometry) + '"\n';
