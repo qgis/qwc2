@@ -140,6 +140,8 @@
     "redlining": {
       "add": "Přidat",
       "border": "Okraj",
+      "draw": "",
+      "edit": "",
       "fill": "Výplň",
       "label": "Popisek",
       "layer": "Vrstva",

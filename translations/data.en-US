@@ -140,6 +140,8 @@
     "redlining": {
       "add": "Add",
       "border": "Border",
+      "draw": "Draw",
+      "edit": "Edit",
       "fill": "Fill",
       "label": "Label",
       "layer": "Layer",

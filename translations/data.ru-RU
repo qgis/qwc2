@@ -140,6 +140,8 @@
     "redlining": {
       "add": "",
       "border": "Граница",
+      "draw": "",
+      "edit": "",
       "fill": "Заливка",
       "label": "Надпись",
       "layer": "",

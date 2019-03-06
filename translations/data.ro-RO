@@ -140,6 +140,8 @@
     "redlining": {
       "add": "Adaugă",
       "border": "Margine",
+      "draw": "",
+      "edit": "",
       "fill": "Umplere",
       "label": "Text",
       "layer": "Strat",

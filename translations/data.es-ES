@@ -140,6 +140,8 @@
     "redlining": {
       "add": "Agregar",
       "border": "Límite",
+      "draw": "",
+      "edit": "",
       "fill": "Relleno",
       "label": "Etiqueta",
       "layer": "Capa",

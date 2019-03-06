@@ -73,6 +73,22 @@ class Redlining extends React.Component {
         this.updateRedliningState(diff);
     }
     renderBody = () => {
+        let activeButton = this.props.redlining.action === "Pick" ? "Pick" : this.props.redlining.geomType;
+        let drawButtons = [
+            {key: "Point", icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
+            {key: "LineString", icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
+            {key: "Polygon", icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
+            {key: "Text", icon: "text", data: {action: "Draw", geomType: "Text", text: ""}},
+        ];
+        let editButtons = [
+            {key: "Pick", icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
+            {key: "Delete", icon: "trash", data: {action: "Delete", geomType: null}, disabled: this.props.redlining.geomType === null}
+        ];
+        let vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER);
+        // Ensure list always contains "Redlining" layer
+        if(!vectorLayers.find(layer => layer.id === 'redlining')) {
+            vectorLayers = [{id: 'redlining', title: 'Redlining'}, ...vectorLayers];
+        }
         let sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.size");
         if(this.props.redlining.geomType === "LineString") {
             sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.width");
@@ -83,30 +99,28 @@ class Redlining extends React.Component {
         if(this.props.redlining.geomType === "Text") {
             labelPlaceholder = LocaleUtils.getMessageById(this.context.messages, "redlining.text");
         }
-        let buttons = [
-            {key: "Pick", label: "redlining.pick", icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
-            {key: "Point", label: "redlining.point", icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
-            {key: "LineString", label: "redlining.line", icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
-            {key: "Polygon", label: "redlining.polygon", icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
-            {key: "Text", label: "redlining.text", icon: "text", data: {action: "Draw", geomType: "Text", text: ""}},
-            {key: "Delete", icon: "trash", data: {action: "Delete", geomType: null}}
-        ];
-        let vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER);
-        // Ensure list always contains "Redlining" layer
-        if(!vectorLayers.find(layer => layer.id === 'redlining')) {
-            vectorLayers = [{id: 'redlining', title: 'Redlining'}, ...vectorLayers];
-        }
-        let activeButton = this.props.redlining.action === "Pick" ? "Pick" : this.props.redlining.geomType;
+
         return (
             <div>
-                <div>
-                    <span><Message msgId="redlining.layer" />: </span>
-                    <select className="combo" value={this.props.redlining.layer} onChange={(ev) => this.changeRedliningLayer(ev.target.value, vectorLayers)}>
-                        {vectorLayers.map(layer => (<option key={layer.id} value={layer.id}>{layer.title}</option>))}
-                    </select>
-                    <button className="button" onClick={this.addLayer} style={{borderLeftWidth: 0}}><Icon icon="plus" /> <Message msgId="redlining.add" /></button>
+                <div className="redlining-buttongroups">
+                    <div className="redlining-group">
+                        <div><Message msgId="redlining.layer" /></div>
+                        <div className="redlining-layer-selector">
+                            <select className="combo" value={this.props.redlining.layer} onChange={(ev) => this.changeRedliningLayer(ev.target.value, vectorLayers)}>
+                                {vectorLayers.map(layer => (<option key={layer.id} value={layer.id}>{layer.title}</option>))}
+                            </select>
+                            <button className="button" onClick={this.addLayer} style={{borderLeftWidth: 0}}><Icon icon="plus" /></button>
+                        </div>
+                    </div>
+                    <div className="redlining-group">
+                        <div><Message msgId="redlining.draw" /></div>
+                        <ButtonBar buttons={drawButtons} active={activeButton} onClick={(key, data) => this.actionChanged(data)} />
+                    </div>
+                    <div className="redlining-group">
+                        <div><Message msgId="redlining.edit" /></div>
+                        <ButtonBar buttons={editButtons} active={activeButton} onClick={(key, data) => this.actionChanged(data)} />
+                    </div>
                 </div>
-                <ButtonBar buttons={buttons} active={activeButton} onClick={(key, data) => this.actionChanged(data)} />
                 <div className="redlining-controlsbar">
                     <span>
                         <span><Message msgId="redlining.outline" />:&nbsp;</span>

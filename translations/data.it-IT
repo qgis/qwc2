@@ -140,6 +140,8 @@
     "redlining": {
       "add": "Aggiungi",
       "border": "Bordo",
+      "draw": "Disegna",
+      "edit": "Modifica",
       "fill": "Riempimento",
       "label": "Ettichetta",
       "layer": "Layer",

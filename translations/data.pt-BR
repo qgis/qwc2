@@ -140,6 +140,8 @@
     "redlining": {
       "add": "",
       "border": "Borda",
+      "draw": "",
+      "edit": "",
       "fill": "Preenchimento",
       "label": "Rótulo",
       "layer": "",

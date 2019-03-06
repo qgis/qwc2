@@ -140,6 +140,8 @@
     "redlining": {
       "add": "Hinzufügen",
       "border": "Rand",
+      "draw": "Zeichnen",
+      "edit": "Bearbeiten",
       "fill": "Füllung",
       "label": "Beschriftung",
       "layer": "Ebene",
