@@ -91,7 +91,7 @@ class LayerTree extends React.Component {
         });
     }
     componentWillReceiveProps(newProps) {
-        if(newProps.theme.mapTips !== undefined) {
+        if(newProps.theme.mapTips !== undefined && newProps.theme.mapTips !== this.props.theme.mapTips) {
             this.props.toggleMapTips(newProps.theme.mapTips);
         }
     }
