@@ -146,10 +146,11 @@ function transformExtent(projection, center, width, height) {
     } else if(units == 'us-ft') {
         return {width: width / METERS_PER_UNIT['us-ft'], height: height / METERS_PER_UNIT['us-ft']};
     } else if(units == 'degrees') {
-        return {
-            width: width / (111132.92 - 559.82 * Math.cos(2* center[1]) + 1.175*Math.cos(4*center[1])),
-            height: height / (111412.84 * Math.cos(center[1]) - 93.5 * Math.cos(3*center[1]))
-        }
+        // https://en.wikipedia.org/wiki/Geographic_coordinate_system#Length_of_a_degree
+        let phi = center[1] / 180 * Math.PI;
+        let latPerM = 111132.92 - 559.82 * Math.cos(2 * phi) + 1.175 * Math.cos(4 * phi) - 0.0023 * Math.cos(6 * phi);
+        let lonPerM = 111412.84 * Math.cos(phi) - 93.5 * Math.cos(3 * phi) + 0.118 * Math.cos(5 * phi);
+        return {width: width / lonPerM, height: height / latPerM};
     }
     return {width, height};
 }
