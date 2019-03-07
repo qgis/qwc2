@@ -9,7 +9,6 @@
 const ol = require('openlayers');
 const assign = require('object-assign');
 const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
-const SecurityUtils = require('../../../../utils/SecurityUtils');
 
 function wmtsToOpenlayersOptions(options) {
     // NOTE: can we use opacity to manage visibility?
@@ -34,7 +33,6 @@ let WMTSLayer = {
         const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]);
         const queryParameters = wmtsToOpenlayersOptions(options) || {};
         var projection = ol.proj.get(options.projection);
-        urls.forEach(url => SecurityUtils.addAuthenticationParameter(url, queryParameters));
         let resolutions = options.resolutions;
         let matrixIds = new Array(options.resolutions.length);
         for (let z = 0; z < options.resolutions.length; ++z) {

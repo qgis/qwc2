@@ -9,15 +9,10 @@ const assign = require('object-assign');
 const {combineReducers} = require('redux');
 const merge = require('deepmerge');
 
-const map = require('../reducers/map');
-
 const DebugUtils = require('../utils/DebugUtils');
 const PluginsUtils = require('../utils/PluginsUtils');
 
 const {CHANGE_BROWSER_PROPERTIES} = require('../actions/browser');
-const {persistStore, autoRehydrate} = require('redux-persist');
-
-const SecurityUtils = require('../utils/SecurityUtils');
 
 module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeOpts, actionLogger) => {
     const allReducers = combineReducers({
@@ -25,8 +20,8 @@ module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeO
         locale: require('../reducers/locale'),
         browser: require('../reducers/browser'),
         identify: require('../reducers/identify'),
-        map: () => {return null; },
-        layers: () => {return null; },
+        map: require('../reducers/map'),
+        layers: require('../reducers/layers'),
         ...PluginsUtils.getPluginReducers(plugins)
     });
 
@@ -48,13 +43,5 @@ module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeO
 
         return newState;
     };
-    let store;
-    if (storeOpts && storeOpts.persist) {
-        store = DebugUtils.createDebugStore(rootReducer, defaultState, [], autoRehydrate());
-        persistStore(store, storeOpts.persist, storeOpts.onPersist);
-    } else {
-        store = DebugUtils.createDebugStore(rootReducer, defaultState);
-    }
-    SecurityUtils.setStore(store);
-    return store;
+    return DebugUtils.createDebugStore(rootReducer, defaultState);
 };

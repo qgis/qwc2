@@ -11,7 +11,6 @@ const assign = require('object-assign');
 const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
 const ConfigUtils = require('../../../../utils/ConfigUtils');
 const ProxyUtils = require('../../../../utils/ProxyUtils');
-const SecurityUtils = require('../../../../utils/SecurityUtils');
 
 
 function wmsToOpenlayersOptions(options) {
@@ -41,7 +40,6 @@ let WMSLayer = {
     create: (options, map) => {
         const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]);
         const queryParameters = wmsToOpenlayersOptions(options) || {};
-        urls.forEach(url => SecurityUtils.addAuthenticationParameter(url, queryParameters));
         if(options.tiled && !options.boundingBox) {
             console.warn("Tiled WMS requested without specifying bounding box, falling back to non-tiled.");
         }
