@@ -148,6 +148,7 @@ class RedliningSupport extends React.Component {
         this.props.map.addInteraction(modifyInteraction);
         this.interactions.push(modifyInteraction);
         this.picking = true;
+        this.props.changeRedliningState(assign({}, this.props.redlining, {featureSelected: true}));
     }
     leaveTemporaryPickMode = () => {
         if(this.currentFeature) {
@@ -157,6 +158,7 @@ class RedliningSupport extends React.Component {
             // Remote modify interactions
             this.props.map.removeInteraction(this.interactions.pop());
             this.picking = false;
+            this.props.changeRedliningState(assign({}, this.props.redlining, {featureSelected: false}));
         }
     }
     addPickInteraction = (newProps) => {
@@ -199,12 +201,13 @@ class RedliningSupport extends React.Component {
                         borderColor: this.currentFeature.getStyle().getStroke().getColor(),
                         fillColor: this.currentFeature.getStyle().getFill().getColor(),
                         size: 2 * (this.currentFeature.getStyle().getStroke().getWidth() - 1),
-                        text: this.currentFeature.getStyle().getText().getText()
+                        text: this.currentFeature.getStyle().getText().getText(),
+                        featureSelected: true
                     };
                 }
                 this.props.changeRedliningState(assign({}, this.props.redlining, newRedliningState));
             } else {
-                this.props.changeRedliningState(assign({}, this.props.redlining, {geomType: null}));
+                this.props.changeRedliningState(assign({}, this.props.redlining, {geomType: null, featureSelected: false}));
             }
         }, this);
         this.props.map.addInteraction(selectInteraction);
@@ -240,7 +243,7 @@ class RedliningSupport extends React.Component {
             this.props.removeLayerFeatures(this.props.redlining.layer, [this.currentFeature.getId()]);
             this.currentFeature = null;
         }
-        this.props.changeRedliningState(assign({}, oldProps.redlining));
+        this.props.changeRedliningState(assign({}, oldProps.redlining, {featureSelected: false}));
     }
     reset = () => {
         while(this.interactions.length > 0) {

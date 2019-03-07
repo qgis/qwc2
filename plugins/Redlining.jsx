@@ -62,7 +62,7 @@ class Redlining extends React.Component {
         Mousetrap.bind('del', this.triggerDelete);
     }
     onHide = () => {
-        this.props.changeRedliningState({action: null, geomType: null});
+        this.props.changeRedliningState({action: null, geomType: null, featureSelected: false});
         Mousetrap.unbind('del', this.triggerDelete);
     }
     updateRedliningState = (diff) => {
@@ -82,7 +82,7 @@ class Redlining extends React.Component {
         ];
         let editButtons = [
             {key: "Pick", icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
-            {key: "Delete", icon: "trash", data: {action: "Delete", geomType: null}, disabled: this.props.redlining.geomType === null}
+            {key: "Delete", icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.featureSelected}
         ];
         let vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER);
         // Ensure list always contains "Redlining" layer
@@ -171,7 +171,7 @@ class Redlining extends React.Component {
         if(data.action === "Draw" && data.geomType === "Text") {
             data = assign({}, data, {text: LocaleUtils.getMessageById(this.context.messages, "redlining.text")});
         }
-        this.updateRedliningState(data);
+        this.updateRedliningState({...data, featureSelected: false});
     }
     changeRedliningLayer = (id, vectorLayers) => {
         this.updateRedliningState({layer: id, layerTitle: vectorLayers.find(layer => layer.id === id).title});

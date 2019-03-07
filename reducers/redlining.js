@@ -20,7 +20,8 @@ function redlining(state = {
     fillColor:  [255, 255, 255, 1],
     text: "",
     layer: 'redlining',
-    layerTitle: 'Redlining'
+    layerTitle: 'Redlining',
+    featureSelected: false
 }, action) {
     switch (action.type) {
         case CHANGE_REDLINING_STATE:
