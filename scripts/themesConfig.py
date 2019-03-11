@@ -8,9 +8,9 @@
 
 import os
 try:
-    from urllib.request import urlopen
+    from urllib import request
 except:
-    from urllib2 import urlopen
+    import urllib2 as request
 try:
     from urllib.parse import quote, urljoin
 except:
@@ -43,6 +43,18 @@ def uniqueThemeId(themeName):
         return usedThemeIds[-1]
 
 
+def getUrlOpener(configItem):
+    auth = configItem.get('wmsBasicAuth')
+    if auth:
+        manager = request.HTTPPasswordMgrWithDefaultRealm()
+        manager.add_password(None, configItem["url"], auth['username'], auth['password'])
+        auth_handler = request.HTTPBasicAuthHandler(manager)
+        opener = request.build_opener(auth_handler).open
+    else:
+        opener = request.urlopen
+    return opener
+
+
 # load thumbnail from file or GetMap
 def getThumbnail(configItem, resultItem, layers, crs, extent):
     if "thumbnail" in configItem:
@@ -73,8 +85,8 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
     url += "&LAYERS=" + quote(",".join(layers).encode('utf-8'))
 
     try:
-        request = urlopen(url)
-        reply = request.read()
+        opener = getUrlOpener(configItem)
+        reply = opener(url).read()
         basename = configItem["url"].rsplit("/")[-1].rstrip("?") + ".png"
         try:
             os.makedirs(qwc2_path + "/assets/img/genmapthumbs/")
@@ -232,7 +244,8 @@ def getTheme(config, configItem, result, resultItem):
     url = urljoin(baseUrl, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
 
     try:
-        reply = urlopen(url).read()
+        opener = getUrlOpener(configItem)
+        reply = opener(url).read()
         capabilities = parseString(reply)
         capabilities = capabilities.getElementsByTagName("WMS_Capabilities")[0]
         print("Parsing WMS GetProjectSettings of " + configItem["url"])
