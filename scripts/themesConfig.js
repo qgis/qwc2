@@ -241,9 +241,10 @@ function getTheme(config, configItem, result, resultItem) {
             console.log("Parsing WMS GetProjectSettings of " + configItem.url);
 
             const topLayer = capabilities.Capability.Layer;
+            const wmsName = configItem.url.replace(/.*\//,'').replace(/\?^/, '');
 
             // use name from config or fallback to WMS title
-            const wmsTitle = configItem.title || capabilities.Service.Title || topLayer.Title || configItem.url.replace(/.*\//,'').replace(/\?^/, '');
+            const wmsTitle = configItem.title || capabilities.Service.Title || topLayer.Title || wmsName;
 
             // keywords
             let keywords = [];
@@ -324,7 +325,7 @@ function getTheme(config, configItem, result, resultItem) {
 
             // update theme config
             resultItem.url = configItem.url;
-            resultItem.id = uniqueThemeId(topLayer.Name);
+            resultItem.id = uniqueThemeId(wmsName);
             resultItem.name = topLayer.Name;
             resultItem.title = wmsTitle;
             resultItem.attribution = {

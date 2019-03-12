@@ -27,6 +27,22 @@ baseUrl = "http://" + socket.getfqdn()
 qwc2_path = "."
 themesConfig = os.environ.get("QWC2_THEMES_CONFIG", "themesConfig.json")
 
+usedThemeIds = []
+
+def uniqueThemeId(themeName):
+    if not themeName:
+        return str(uuid.uuid1())
+    if themeName in usedThemeIds:
+        i = 1
+        while ("%s%d") % (themeName, i) in usedThemeIds:
+            i += 1
+        usedThemeIds.append(("%s%d") % (themeName, i))
+        return usedThemeIds[-1]
+    else:
+        usedThemeIds.append(themeName)
+        return usedThemeIds[-1]
+
+
 # load thumbnail from file or GetMap
 def getThumbnail(configItem, resultItem, layers, crs, extent):
     if "thumbnail" in configItem:
@@ -222,9 +238,10 @@ def getTheme(config, configItem, result, resultItem):
         print("Parsing WMS GetProjectSettings of " + configItem["url"])
 
         topLayer = getChildElement(getChildElement(capabilities, "Capability"), "Layer")
+        wmsName = re.sub(r".*/", "", configItem["url"]).rstrip("?")
 
         # use name from config or fallback to WMS title
-        wmsTitle = configItem.get("title") or getChildElementValue(capabilities, "Service/Title") or getChildElementValue(topLayer, "Title") or re.sub(r".*/", "", configItem["url"]).rstrip("?")
+        wmsTitle = configItem.get("title") or getChildElementValue(capabilities, "Service/Title") or getChildElementValue(topLayer, "Title") or wmsName
 
 
         # keywords
@@ -288,7 +305,7 @@ def getTheme(config, configItem, result, resultItem):
 
         # update theme config
         resultItem["url"] = configItem["url"]
-        resultItem["id"] = str(uuid.uuid1())
+        resultItem["id"] = uniqueThemeId(wmsName)
         resultItem["name"] = getChildElementValue(topLayer, "Name")
         resultItem["title"] = wmsTitle
         resultItem["attribution"] = {
