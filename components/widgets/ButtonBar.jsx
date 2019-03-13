@@ -20,6 +20,7 @@ class ButtonBar extends React.Component {
         buttons: PropTypes.arrayOf(PropTypes.shape({
             key: PropTypes.string,
             label: PropTypes.string,
+            tooltip: PropTypes.string,
             icon: PropTypes.string,
             data: PropTypes.object,
             extraClasses: PropTypes.string,
@@ -44,10 +45,15 @@ class ButtonBar extends React.Component {
                     });
                     classes += button.extraClasses ? ' ' + button.extraClasses : '';
                     return (
-                        <button type={button.type || "button"} disabled={button.disabled} key={button.key} className={classes} onClick={button.type !== "submit" ? (ev) => this.props.onClick(button.key, button.data) : null}>
-                            {button.icon ? (<Icon icon={button.icon} />) : null}
-                            {button.label && (!this.props.mobile || !button.icon) ? (<Message msgId={button.label} />) : null}
-                        </button>
+                        <span className="buttonbar-button-container"  key={button.key}>
+                            <button type={button.type || "button"} disabled={button.disabled} className={classes} onClick={button.type !== "submit" ? (ev) => this.props.onClick(button.key, button.data) : null}>
+                                {button.icon ? (<Icon icon={button.icon} />) : null}
+                                {button.label && (!this.props.mobile || !button.icon) ? (<Message msgId={button.label} />) : null}
+                            </button>
+                            {button.tooltip ? (<span className="buttonbar-button-tooltip">
+                                <Message msgId={button.tooltip} />
+                            </span>) : null}
+                        </span>
                     );
                 })}
             </div>

@@ -13,16 +13,43 @@ div.ButtonBar.buttonbar-disabled:before {
     content: '';
 }
 
-div.ButtonBar.buttonbar-disabled > button {
+div.ButtonBar.buttonbar-disabled span.buttonbar-button-container > button {
     background-color: transparent;
     color: #ccc;
 }
 
-div.ButtonBar > button {
+div.ButtonBar span.buttonbar-button-container {
+    position: relative;
     flex: 1 1 auto;
+}
+
+div.ButtonBar span.buttonbar-button-container > button {
+    width: 100%;
     border-left-width: 0;
 }
 
-div.ButtonBar > button:first-child {
+div.ButtonBar span.buttonbar-button-container:first-child > button {
     border-left-width: 1px;
+}
+
+div.ButtonBar span.buttonbar-button-tooltip {
+    position: absolute;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.75);
+    border: 1px solid black;
+    color: white;
+    font-size: 75%;
+    font-weight: normal;
+    line-height: normal;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    top: 110%;
+    white-space: nowrap;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+div.ButtonBar span.buttonbar-button-container:hover span.buttonbar-button-tooltip {
+    display: initial;
 }
