@@ -50,7 +50,7 @@ class Toolbar extends React.Component {
         } else if(active) {
             this.props.setCurrentTask(null);
         } else {
-            this.props.setCurrentTask(item.key, item.mode, item.identifyEnabled);
+            this.props.setCurrentTask(item.task || item.key, item.mode, item.identifyEnabled);
         }
     }
     render() {
