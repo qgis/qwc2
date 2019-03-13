@@ -9,6 +9,7 @@
 const SET_CURRENT_TASK = 'SET_CURRENT_TASK';
 const SET_CURRENT_TASK_BLOCKED = 'SET_CURRENT_TASK_BLOCKED';
 const {setIdentifyEnabled} = require('./identify');
+const ConfigUtils = require('../utils/ConfigUtils');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const MapUtils = require('../utils/MapUtils');
 const {UrlParams} = require('../utils/PermaLinkUtils');
@@ -64,6 +65,8 @@ function openExternalUrl(url) {
         url = url.replace('$y$', y);
 
         url = url.replace('$crs$', proj);
+
+        url = url.replace('$user$', ConfigUtils.getConfigProp("username") || "");
 
         window.open(url);
     }
