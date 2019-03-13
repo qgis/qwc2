@@ -70,7 +70,7 @@ let VectorLayer = {
             const format = new ol.format.GeoJSON();
             let source = layer.getSource();
 
-            let oldFeaturesMap = oldOptions.features.reduce((res, f) => {
+            let oldFeaturesMap = (oldOptions.features || []).reduce((res, f) => {
                 res[f.id] = f; return res;
             }, {});
             let newIds = new Set(newOptions.features.map(f => f.id));
