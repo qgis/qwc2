@@ -140,6 +140,7 @@
     "redlining": {
       "add": "",
       "border": "Граница",
+      "delete": "",
       "draw": "",
       "edit": "",
       "fill": "Заливка",

@@ -140,6 +140,7 @@
     "redlining": {
       "add": "Adaugă",
       "border": "Margine",
+      "delete": "",
       "draw": "",
       "edit": "",
       "fill": "Umplere",

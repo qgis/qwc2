@@ -140,6 +140,7 @@
     "redlining": {
       "add": "Hinzufügen",
       "border": "Rand",
+      "delete": "Löschen",
       "draw": "Zeichnen",
       "edit": "Bearbeiten",
       "fill": "Füllung",

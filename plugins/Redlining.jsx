@@ -76,14 +76,14 @@ class Redlining extends React.Component {
     renderBody = () => {
         let activeButton = this.props.redlining.action === "Pick" ? "Pick" : this.props.redlining.geomType;
         let drawButtons = [
-            {key: "Point", icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
-            {key: "LineString", icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
-            {key: "Polygon", icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
-            {key: "Text", icon: "text", data: {action: "Draw", geomType: "Text", text: ""}},
+            {key: "Point", tooltip: "redlining.point", icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
+            {key: "LineString", tooltip: "redlining.line", icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
+            {key: "Polygon", tooltip: "redlining.polygon", icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
+            {key: "Text", tooltip: "redlining.text", icon: "text", data: {action: "Draw", geomType: "Text", text: ""}},
         ];
         let editButtons = [
-            {key: "Pick", icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
-            {key: "Delete", icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature}
+            {key: "Pick", tooltip: "redlining.pick", icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
+            {key: "Delete", tooltip: "redlining.delete", icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature}
         ];
         let vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER);
         // Ensure list always contains "Redlining" layer

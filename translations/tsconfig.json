@@ -109,6 +109,7 @@
     "rasterexport.selectinfo",
     "redlining.add",
     "redlining.border",
+    "redlining.delete",
     "redlining.draw",
     "redlining.edit",
     "redlining.fill",
