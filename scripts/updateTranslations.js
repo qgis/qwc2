@@ -8,6 +8,7 @@
 
 const fs = require('fs');
 const merge = require('deepmerge');
+const objectPath = require('object-path');
 
 const readJSON = (path) => {
     try {
@@ -78,10 +79,19 @@ for(let lang of langs) {
       continue;
   }
 
-  let appdata = cleanMessages(merge(applicationSkel, cleanMessages(readJSON('/translations/data.' + lang))));
-  appdata = merge(appdata, cleanMessages(data));
+  let origAppdata = cleanMessages(merge(applicationSkel, cleanMessages(readJSON('/translations/data.' + lang))), );
+  let appdata = merge(origAppdata, cleanMessages(data));
   // Merge app skel again so that empty strings stay visible
   appdata = merge(applicationSkel, appdata);
+  // Revert to original values for strings specified in overrides
+  if(applicationConfig.overrides) {
+    for(let path of applicationConfig.overrides) {
+      let value = objectPath.get(origAppdata.messages, path);
+      if(value) {
+        objectPath.set(appdata.messages, path, value);
+      }
+    }
+  }
   // Write output
   try {
     fs.writeFileSync(process.cwd() + '/translations/data.' + lang, JSON.stringify(appdata, null, 2) + "\n");
