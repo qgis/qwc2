@@ -19,19 +19,19 @@ const readJSON = (path) => {
 }
 
 const cleanMessages = (data, ref) => {
-  for (let property of Object.keys(data)) {
-    let omit = ref && !(property in ref);
-    if (typeof data[property] == "object") {
-      if(omit) {
-          delete data[property];
-      } else {
-        cleanMessages(data[property], ref ? ref[property] : undefined);
-      }
-    } else if(data[property] === "" || omit) {
-      delete data[property];
+    for (let property of Object.keys(data)) {
+        let omit = ref && !(property in ref);
+        if (typeof data[property] == "object") {
+            if(omit) {
+                delete data[property];
+            } else {
+                cleanMessages(data[property], ref ? ref[property] : undefined);
+            }
+        } else if(data[property] === "" || omit) {
+            delete data[property];
+        }
     }
-  }
-  return data;
+    return data;
 };
 
 const createSkel = (strings) => {
@@ -62,41 +62,41 @@ let applicationSkel = createSkel(applicationStrings);
 
 
 for(let lang of langs) {
-  let langskel = merge(commonSkel, {"locale": lang});
+    let langskel = merge(commonSkel, {"locale": lang});
 
-  // Merge common translations
-  let data = merge(langskel, cleanMessages(readJSON('/qwc2/translations/data.' + lang), langskel));
-  // Write updated common translations file
-  try {
-    fs.writeFileSync(process.cwd() + '/qwc2/translations/data.' + lang, JSON.stringify(data, null, 2) + "\n");
-    console.log('Wrote qwc2/translations/data.' + lang);
-  } catch(e) {
-    console.error('Failed to write common translation data.' + lang + ': ' + e);
-  }
-
-  // Merge application translations
-  if(!(applicationConfig.languages || []).includes(lang)) {
-      continue;
-  }
-
-  let origAppdata = cleanMessages(merge(applicationSkel, cleanMessages(readJSON('/translations/data.' + lang))), );
-  let appdata = merge(origAppdata, cleanMessages(data));
-  // Merge app skel again so that empty strings stay visible
-  appdata = merge(applicationSkel, appdata);
-  // Revert to original values for strings specified in overrides
-  if(applicationConfig.overrides) {
-    for(let path of applicationConfig.overrides) {
-      let value = objectPath.get(origAppdata.messages, path);
-      if(value) {
-        objectPath.set(appdata.messages, path, value);
-      }
+    // Merge common translations
+    let data = merge(langskel, cleanMessages(readJSON('/qwc2/translations/data.' + lang), langskel));
+    // Write updated common translations file
+    try {
+        fs.writeFileSync(process.cwd() + '/qwc2/translations/data.' + lang, JSON.stringify(data, null, 2) + "\n");
+        console.log('Wrote qwc2/translations/data.' + lang);
+    } catch(e) {
+        console.error('Failed to write common translation data.' + lang + ': ' + e);
     }
-  }
-  // Write output
-  try {
-    fs.writeFileSync(process.cwd() + '/translations/data.' + lang, JSON.stringify(appdata, null, 2) + "\n");
-    console.log('Wrote translations/data.' + lang);
-  } catch(e) {
-    console.error('Failed to write application translation data.' + lang + ': ' + e);
-  }
+
+    // Merge application translations
+    if(!(applicationConfig.languages || []).includes(lang)) {
+        continue;
+    }
+
+    let origAppdata = cleanMessages(merge(applicationSkel, cleanMessages(readJSON('/translations/data.' + lang))), );
+    let appdata = merge(origAppdata, cleanMessages(data));
+    // Merge app skel again so that empty strings stay visible
+    appdata = merge(applicationSkel, appdata);
+    // Revert to original values for strings specified in overrides
+    if(applicationConfig.overrides) {
+        for(let path of applicationConfig.overrides) {
+            let value = objectPath.get(origAppdata.messages, path);
+            if(value) {
+                objectPath.set(appdata.messages, path, value);
+            }
+        }
+    }
+    // Write output
+    try {
+        fs.writeFileSync(process.cwd() + '/translations/data.' + lang, JSON.stringify(appdata, null, 2) + "\n");
+        console.log('Wrote translations/data.' + lang);
+    } catch(e) {
+        console.error('Failed to write application translation data.' + lang + ': ' + e);
+    }
 }
