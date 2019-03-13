@@ -83,7 +83,7 @@ class Redlining extends React.Component {
         ];
         let editButtons = [
             {key: "Pick", icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
-            {key: "Delete", icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.featureSelected}
+            {key: "Delete", icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature}
         ];
         let vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER);
         // Ensure list always contains "Redlining" layer

@@ -23,7 +23,7 @@ function redlining(state = {
     },
     layer: 'redlining',
     layerTitle: 'Redlining',
-    featureSelected: false
+    selectedFeature: null
 }, action) {
     switch (action.type) {
         case CHANGE_REDLINING_STATE:
