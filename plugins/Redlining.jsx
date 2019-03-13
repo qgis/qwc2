@@ -69,8 +69,9 @@ class Redlining extends React.Component {
         let newState = assign({}, this.props.redlining, diff)
         this.props.changeRedliningState(newState);
     }
-    colorPicked = (diff) => {
-        this.updateRedliningState(diff);
+    updateRedliningStyle = (diff) => {
+        let newStyle = assign({}, this.props.redlining.style, diff);
+        this.updateRedliningState({style: newStyle});
     }
     renderBody = () => {
         let activeButton = this.props.redlining.action === "Pick" ? "Pick" : this.props.redlining.geomType;
@@ -88,16 +89,6 @@ class Redlining extends React.Component {
         // Ensure list always contains "Redlining" layer
         if(!vectorLayers.find(layer => layer.id === 'redlining')) {
             vectorLayers = [{id: 'redlining', title: 'Redlining'}, ...vectorLayers];
-        }
-        let sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.size");
-        if(this.props.redlining.geomType === "LineString") {
-            sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.width");
-        } else if(this.props.redlining.geomType === "Polygon") {
-            sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.border");
-        }
-        let labelPlaceholder = LocaleUtils.getMessageById(this.context.messages, "redlining.label");
-        if(this.props.redlining.geomType === "Text") {
-            labelPlaceholder = LocaleUtils.getMessageById(this.context.messages, "redlining.text");
         }
 
         return (
@@ -121,29 +112,45 @@ class Redlining extends React.Component {
                         <ButtonBar buttons={editButtons} active={activeButton} onClick={(key, data) => this.actionChanged(data)} />
                     </div>
                 </div>
-                <div className="redlining-controlsbar">
+                {this.renderStandardControls()}
+            </div>
+        );
+    }
+    renderStandardControls = () => {
+        let sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.size");
+        if(this.props.redlining.geomType === "LineString") {
+            sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.width");
+        } else if(this.props.redlining.geomType === "Polygon") {
+            sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.border");
+        }
+        let labelPlaceholder = LocaleUtils.getMessageById(this.context.messages, "redlining.label");
+        if(this.props.redlining.geomType === "Text") {
+            labelPlaceholder = LocaleUtils.getMessageById(this.context.messages, "redlining.text");
+        }
+
+        return (
+            <div className="redlining-controlsbar">
+                <span>
+                    <span><Message msgId="redlining.outline" />:&nbsp;</span>
+                    <ColorButton color={this.props.redlining.style.borderColor} onColorChanged={(color) => this.updateRedliningStyle({borderColor: color})} />
+                </span>
+                {this.props.redlining.geomType === 'LineString' ? null : (
                     <span>
-                        <span><Message msgId="redlining.outline" />:&nbsp;</span>
-                        <ColorButton color={this.props.redlining.borderColor} onColorChanged={(color) => this.colorPicked({borderColor: color})} />
+                        <span><Message msgId="redlining.fill" />:&nbsp;</span>
+                        <ColorButton color={this.props.redlining.style.fillColor} onColorChanged={(color) => this.updateRedliningStyle({fillColor: color})} />
                     </span>
-                    {this.props.redlining.geomType === 'LineString' ? null : (
-                        <span>
-                            <span><Message msgId="redlining.fill" />:&nbsp;</span>
-                            <ColorButton color={this.props.redlining.fillColor} onColorChanged={(color) => this.colorPicked({fillColor: color})} />
-                        </span>
-                    )}
+                )}
+                <span>
+                    <span>{sizeLabel}:&nbsp;</span>
+                    <NumericInput mobile strict
+                        min={1} max={99} precision={0} step={1}
+                        value={this.props.redlining.style.size} onChange={(nr) => this.updateRedliningStyle({size: nr})}/>
+                </span>
+                {(this.props.redlining.geomType === 'Text' || this.props.allowGeometryLabels) ? (
                     <span>
-                        <span>{sizeLabel}:&nbsp;</span>
-                        <NumericInput mobile strict
-                            min={1} max={99} precision={0} step={1}
-                            value={this.props.redlining.size} onChange={(nr) => this.updateRedliningState({size: nr})}/>
+                        <input ref={el => this.setLabelRef(el)} className="redlining-label" type="text" placeholder={labelPlaceholder} value={this.props.redlining.style.text} onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})}/>
                     </span>
-                    {(this.props.redlining.geomType === 'Text' || this.props.allowGeometryLabels) ? (
-                        <span>
-                            <input ref={el => this.setLabelRef(el)} className="redlining-label" type="text" placeholder={labelPlaceholder} value={this.props.redlining.text} onChange={(ev) => this.updateRedliningState({text: ev.target.value})}/>
-                        </span>
-                    ) : null}
-                </div>
+                ) : null}
             </div>
         );
     }

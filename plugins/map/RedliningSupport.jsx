@@ -73,28 +73,28 @@ class RedliningSupport extends React.Component {
             this.deleteCurrentFeature(this.props);
         } else if(newProps.redlining.action === 'Draw' && (this.props.redlining.action !== 'Draw' || newProps.redlining.geomType !== this.props.redlining.geomType || layerChanged)) {
             this.addDrawInteraction(newProps);
-        } else {
-            this.updateFeatureStyle(newProps.redlining);
+        } else if(newProps.redlining.style !== this.props.redlining.style) {
+            this.updateFeatureStyle(newProps.redlining.style);
         }
     }
     render() {
         return null;
     }
-    styleOptions = (redlining) => {
+    styleOptions = (style) => {
         return {
-            strokeColor: redlining.borderColor,
-            strokeWidth: 1 + 0.5 * redlining.size,
-            fillColor: redlining.fillColor,
-            circleRadius: 5 + redlining.size,
+            strokeColor: style.borderColor,
+            strokeWidth: 1 + 0.5 * style.size,
+            fillColor: style.fillColor,
+            circleRadius: 5 + style.size,
             strokeDash: []
         };
     }
-    updateFeatureStyle = (redlining) => {
+    updateFeatureStyle = (styleProps) => {
         if(this.currentFeature) {
             let isText = this.currentFeature.get("isText") === true;
             let styleName = isText ? "text" : "default";
-            this.currentFeature.set('label', redlining.text);
-            let opts = this.styleOptions(redlining);
+            this.currentFeature.set('label', styleProps.text);
+            let opts = this.styleOptions(styleProps);
             let style = FeatureStyles[styleName](this.currentFeature, opts);
             let styles = [];
             if(isText) {
@@ -116,7 +116,7 @@ class RedliningSupport extends React.Component {
             this.currentFeature = evt.feature;
             this.currentFeature.setId(uuid.v4());
             this.currentFeature.set('isText', isText);
-            this.updateFeatureStyle(this.props.redlining);
+            this.updateFeatureStyle(this.props.redlining.style);
         }, this);
         drawInteraction.on('drawend', (evt) => {
             let feature = this.currentFeature;
@@ -135,7 +135,7 @@ class RedliningSupport extends React.Component {
         if(!this.currentFeature) {
             return;
         }
-        this.updateFeatureStyle(this.props.redlining);
+        this.updateFeatureStyle(this.props.redlining.style);
 
         let modifyInteraction = new ol.interaction.Modify({
             features: new ol.Collection([this.currentFeature]),
@@ -190,22 +190,26 @@ class RedliningSupport extends React.Component {
                 if(this.currentFeature.get("isText") === true) {
                     newRedliningState = {
                         geomType: 'Text',
-                        borderColor: this.currentFeature.getStyle().getText().getStroke().getColor(),
-                        fillColor: this.currentFeature.getStyle().getText().getFill().getColor(),
-                        size: 2 * (this.currentFeature.getStyle().getText().getScale() - 1),
-                        text: this.currentFeature.getStyle().getText().getText()
+                        style: {
+                            borderColor: this.currentFeature.getStyle().getText().getStroke().getColor(),
+                            fillColor: this.currentFeature.getStyle().getText().getFill().getColor(),
+                            size: 2 * (this.currentFeature.getStyle().getText().getScale() - 1),
+                            text: this.currentFeature.getStyle().getText().getText()
+                        }
                     };
                 } else {
                     newRedliningState = {
                         geomType: this.currentFeature.getGeometry().getType(),
-                        borderColor: this.currentFeature.getStyle().getStroke().getColor(),
-                        fillColor: this.currentFeature.getStyle().getFill().getColor(),
-                        size: 2 * (this.currentFeature.getStyle().getStroke().getWidth() - 1),
-                        text: this.currentFeature.getStyle().getText().getText(),
-                        featureSelected: true
+                        style: {
+                            borderColor: this.currentFeature.getStyle().getStroke().getColor(),
+                            fillColor: this.currentFeature.getStyle().getFill().getColor(),
+                            size: 2 * (this.currentFeature.getStyle().getStroke().getWidth() - 1),
+                            text: this.currentFeature.getStyle().getText().getText()
+                        }
                     };
                 }
                 this.props.changeRedliningState(assign({}, this.props.redlining, newRedliningState));
+                this.updateFeatureStyle(newRedliningState.style);
             } else {
                 this.props.changeRedliningState(assign({}, this.props.redlining, {geomType: null, featureSelected: false}));
             }
@@ -229,7 +233,7 @@ class RedliningSupport extends React.Component {
         }
         let format = new ol.format.GeoJSON();
         let feature = format.writeFeatureObject(this.currentFeature);
-        assign(feature, {styleName: isText ? "text" : "default", styleOptions: this.styleOptions(this.props.redlining)});
+        assign(feature, {styleName: isText ? "text" : "default", styleOptions: this.styleOptions(this.props.redlining.style)});
         let layer = {
             id: this.props.redlining.layer,
             title: this.props.redlining.layerTitle,
@@ -260,7 +264,7 @@ class RedliningSupport extends React.Component {
         if(this.currentFeature) {
             // Reset selection style
             let isText = this.currentFeature.get("isText") === true;
-            let style = FeatureStyles[isText ? "text" : "default"](this.currentFeature, this.styleOptions(this.props.redlining));
+            let style = FeatureStyles[isText ? "text" : "default"](this.currentFeature, this.styleOptions(this.props.redlining.style));
             this.currentFeature.setStyle(style);
             this.currentFeature = null;
         }
