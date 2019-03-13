@@ -33,8 +33,13 @@
 }
 
 .Redlining div.redlining-controlsbar {
-    display: inline-flex;
+    display: flex;
     flex-wrap: wrap;
+}
+
+.Redlining div.redlining-message {
+    line-height: 2em;
+    font-style: italic;
 }
 
 .Redlining div.redlining-controlsbar > span {
@@ -46,7 +51,7 @@
 }
 
 .Redlining span.react-numeric-input {
-    width: 6em;
+    width: 7em;
 }
 
 .Redlining input.redlining-label {

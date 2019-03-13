@@ -140,6 +140,11 @@
     "redlining": {
       "add": "",
       "border": "Bordure",
+      "buffer": "",
+      "bufferdistance": "",
+      "bufferlayer": "",
+      "buffercompute": "",
+      "bufferselectfeature": "",
       "delete": "",
       "draw": "",
       "edit": "",

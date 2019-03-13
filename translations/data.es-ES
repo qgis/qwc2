@@ -140,6 +140,11 @@
     "redlining": {
       "add": "Agregar",
       "border": "Límite",
+      "buffer": "",
+      "bufferdistance": "",
+      "bufferlayer": "",
+      "buffercompute": "",
+      "bufferselectfeature": "",
       "delete": "",
       "draw": "",
       "edit": "",

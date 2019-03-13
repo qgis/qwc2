@@ -140,6 +140,11 @@
     "redlining": {
       "add": "Hinzufügen",
       "border": "Rand",
+      "buffer": "Puffern",
+      "bufferdistance": "Distanz",
+      "bufferlayer": "Zielebene",
+      "buffercompute": "Berechnen",
+      "bufferselectfeature": "Zu pufferndes Objekt auswählen...",
       "delete": "Löschen",
       "draw": "Zeichnen",
       "edit": "Bearbeiten",

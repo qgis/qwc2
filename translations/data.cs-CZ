@@ -140,6 +140,11 @@
     "redlining": {
       "add": "Přidat",
       "border": "Okraj",
+      "buffer": "",
+      "bufferdistance": "",
+      "bufferlayer": "",
+      "buffercompute": "",
+      "bufferselectfeature": "",
       "delete": "",
       "draw": "",
       "edit": "",
