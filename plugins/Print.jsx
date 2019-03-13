@@ -9,8 +9,10 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
+const axios = require('axios');
 const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
+const FileSaver = require('file-saver');
 const Message = require('../components/I18N/Message');
 const MapUtils = require('../utils/MapUtils');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
@@ -33,10 +35,12 @@ class Print extends React.Component {
         map: PropTypes.object,
         layers: PropTypes.array,
         printExternalLayers: PropTypes.bool, // Caution: requires explicit server-side support!
-        changeRotation: PropTypes.func
+        changeRotation: PropTypes.func,
+        inlinePrintOutput: PropTypes.bool
     }
     static defaultProps = {
-        printExternalLayers: false
+        printExternalLayers: false,
+        inlinePrintOutput: true
     }
     state = {
         layout: null,
@@ -47,7 +51,12 @@ class Print extends React.Component {
         rotationNull: false,
         minimized: false,
         printOutputVisible: false,
-        outputLoaded: false
+        outputLoaded: false,
+        printing: false
+    }
+    constructor(props) {
+        super(props);
+        this.printForm = null;
     }
     componentWillReceiveProps(newProps) {
         if(newProps.theme !== this.props.theme || !this.state.layout) {
@@ -128,10 +137,6 @@ class Print extends React.Component {
         }
 
         let formvisibility = 'hidden';
-        let action = this.props.theme.printUrl;
-        if (ConfigUtils.getConfigProp("proxyUrl")) {
-            action = ConfigUtils.getConfigProp("proxyUrl") + encodeURIComponent(action) + "&filename=" + encodeURIComponent(this.props.theme.name + ".pdf");
-        }
         let printDpi = parseInt(this.state.dpi);
         let mapCrs = this.props.map.projection;
         let version = this.props.theme.version || "1.3.0";
@@ -180,7 +185,9 @@ class Print extends React.Component {
 
         return (
             <div className="print-body">
-                <form action={action} method="POST" target="print-output-window">
+                <form action={this.props.theme.printUrl} method="POST"
+                    target="print-output-window" ref={el => this.printForm = el}
+                     onSubmit={this.print}>
                     <table className="options-table"><tbody>
                         <tr>
                             <td><Message msgId="print.layout" /></td>
@@ -270,8 +277,8 @@ class Print extends React.Component {
                         {resolutionInput}
                     </div>
                     <div className="button-bar">
-                        <button className="button" type="submit" disabled={!printLayers} onClick={() => this.setState({printOutputVisible: true, outputLoaded: false})}>
-                            <Message msgId="print.submit" />
+                        <button className="button" type="submit" disabled={!printLayers || this.state.printing}>
+                            {this.state.printing ? (<span className="print-wait"><Spinner /> <Message msgId="print.wait" /></span>) : (<Message msgId="print.submit" />)}
                         </button>
                     </div>
                 </form>
@@ -317,7 +324,7 @@ class Print extends React.Component {
                     body: this.state.minimized ? null : this.renderBody(),
                     extra: [
                         this.renderPrintFrame(),
-                        this.renderPrintOutputWindow()
+                        this.props.inlinePrintOutput ? this.renderPrintOutputWindow() : null
                     ]
                 })}
             </SideBar>
@@ -361,6 +368,31 @@ class Print extends React.Component {
         let y1 = center[1] - 0.5 * height;
         let y2 = center[1] + 0.5 * height;
         return [x1, y1, x2, y2];
+    }
+    print = (ev) => {
+        if(this.props.inlinePrintOutput) {
+            this.setState({printOutputVisible: true, outputLoaded: false});
+        } else {
+            ev.preventDefault();
+            this.setState({printing: true});
+            let formData = new FormData(this.printForm);
+            let data = Array.from(formData.entries()).map(pair =>
+                pair.map(entry => encodeURIComponent(entry).replace(/%20/g,'+')).join("=")
+            ).join("&");
+            let config = {
+                headers: {'Content-Type': 'application/x-www-form-urlencoded' },
+                responseType: "arraybuffer"
+            }
+            axios.post(this.props.theme.printUrl, data, config).then(response => {
+                this.setState({printing: false});
+                let contentType = response.headers["content-type"];
+                FileSaver.saveAs(new Blob([response.data], {type: contentType}), this.props.theme.name + '.pdf');
+            }).catch(e => {
+                this.setState({printing: false});
+                console.log(new TextDecoder().decode(e.response.data));
+                alert('Print failed');
+            });
+        }
     }
 };
 

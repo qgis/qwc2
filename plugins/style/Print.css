@@ -109,3 +109,15 @@ span.print-output-window-wait > div.spinner {
     height: 1.25em;
     margin-right: 0.5em;
 }
+
+#Print span.print-wait {
+    display: flex;
+    align-items: center;
+}
+
+#Print span.print-wait div.spinner {
+    width: 1.25em;
+    height: 1.25em;
+    margin-right: 0.5em;
+    flex: 0 0 auto;
+}
