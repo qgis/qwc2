@@ -9,6 +9,9 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {Provider, connect} = require('react-redux');
 
+// Needed for IE11 to avoid 'Promise not defined' error in axios
+require("babel-polyfill");
+
 // Avoid Intl is not defined (Intl needed by react-intl further on)
 if (!global.Intl) {
    require('intl')

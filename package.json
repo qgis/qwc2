@@ -7,6 +7,7 @@
     "repository": "git@github.com:qgis/qwc2.git",
     "dependencies": {
         "axios": "^0.18.0",
+        "babel-polyfill": "^6.26.0",
         "chartist": "^0.11.0",
         "chartist-plugin-axistitle": "^0.0.4",
         "classnames": "^2.2.6",
