@@ -40,6 +40,8 @@ var ConfigUtils = {
         return axios.get(configFile).then(response => {
             if (typeof response.data === 'object') {
                 defaultConfig = assign({}, defaultConfig, response.data);
+            } else {
+                console.warn("Broken configuration file " + configFile + "!")
             }
             return defaultConfig;
         });
