@@ -90,7 +90,7 @@ class AppMenu extends React.Component {
                     return (
                         <li key={item.key + (item.mode || "")} onMouseDown={ev => this.onMenuitemClicked(item)} >
                             <Icon icon={item.icon} size="xlarge"/>
-                            <Message msgId={"appmenu.items." + item.key + (item.mode || "")} />
+                            <Message msgId={"appmenu.items." + item.key} />
                         </li>
                     );
                 }
