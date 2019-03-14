@@ -18,16 +18,6 @@
     font-size: 85%;
 }
 
-.Redlining div.redlining-layer-selector {
-    display: flex;
-    align-items: center;
-}
-
-.Redlining div.redlining-layer-selector > select {
-    margin: 0.25em 0;
-    flex: 1 1 auto;
-}
-
 .Redlining div.redlining-group > div {
     white-space: nowrap;
 }

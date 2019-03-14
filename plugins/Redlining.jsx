@@ -245,7 +245,7 @@ class Redlining extends React.Component {
                 <div className="redlining-buttongroups">
                     <div className="redlining-group">
                         <div><Message msgId="redlining.layer" /></div>
-                        <RedliningLayerPicker
+                        <VectorLayerPicker
                             value={this.props.redlining.layer} layers={vectorLayers}
                             addLayer={this.props.addLayer} onChange={this.changeRedliningLayer} />
                     </div>
