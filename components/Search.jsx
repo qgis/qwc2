@@ -266,7 +266,7 @@ class Search extends React.Component {
         let invisibleLayerQuery = null;
         if(this.state.invisibleLayerQuery) {
             invisibleLayerQuery = (
-                <MessageBar key="invisibleLayerQuery"
+                <MessageBar key="invisibleLayerQuery" className="searchbar-invisible-layer-notification"
                     onHide={() => this.setState({invisibleLayerQuery: null})}
                     hideOnTaskChange={true}
                 >
