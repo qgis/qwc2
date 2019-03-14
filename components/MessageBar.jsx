@@ -35,8 +35,8 @@ class MessageBar extends React.Component {
         let contents = (typeof this.props.children === "function") ? this.props.children() : null;
         return (
             <div>
-                <div id="MessageBar" className={this.props.className}>
-                    <div className="messagebar">
+                <div id="MessageBar">
+                    <div className={"messagebar " + (this.props.className || "")}>
                         <div className="body">
                             {contents ? contents.body || null : this.renderRole("body")}
                         </div>
