@@ -10,7 +10,6 @@ const ol = require('openlayers');
 const assign = require('object-assign');
 const ConfigUtils = require('../../../utils/ConfigUtils');
 const markerIcon = require('./img/marker-icon.png');
-const markerShadow = require('./img/marker-shadow.png');
 
 const FeatureStyles = {
     default: (feature, options) => {
@@ -41,32 +40,22 @@ const FeatureStyles = {
         });
     },
     marker: (feature, options) => {
-        return [
-            new ol.style.Style({
-                image: new ol.style.Icon({
-                    anchor: [14, 41],
-                    anchorXUnits: 'pixels',
-                    anchorYUnits: 'pixels',
-                    src: markerShadow
-                })
+        return new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: options.iconAnchor || [0.5, 1],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                opacity: 1.,
+                src: options.iconSrc || markerIcon
             }),
-            new ol.style.Style({
-                image: new ol.style.Icon({
-                    anchor: options.iconAnchor || [0.5, 1],
-                    anchorXUnits: 'fraction',
-                    anchorYUnits: 'fraction',
-                    opacity: 1.,
-                    src: options.iconSrc || markerIcon
-                }),
-                text: new ol.style.Text({
-                    font: '11pt sans-serif',
-                    text: feature.getProperties()["label"] || "",
-                    offsetY: 8,
-                    fill: new ol.style.Fill({color: '#000000'}),
-                    stroke: new ol.style.Stroke({color: '#FFFFFF', width: 3})
-                })
+            text: new ol.style.Text({
+                font: '11pt sans-serif',
+                text: feature.getProperties()["label"] || "",
+                offsetY: 8,
+                fill: new ol.style.Fill({color: '#000000'}),
+                stroke: new ol.style.Stroke({color: '#FFFFFF', width: 3})
             })
-        ];
+        });
     },
     text: (feature, options) => {
         return new ol.style.Style({
