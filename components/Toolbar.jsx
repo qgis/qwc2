@@ -31,7 +31,7 @@ class Toolbar extends React.Component {
         if(item.themeWhitelist && !item.themeWhitelist.includes(this.props.currentTheme.title)) {
             return null;
         }
-        let active = this.props.currentTask == item.key && this.props.currentTaskMode == item.mode;
+        let active = this.props.currentTask == (item.task || item.key) && this.props.currentTaskMode == item.mode;
         let title = LocaleUtils.getMessageById(this.context.messages, "appmenu.items." + item.key) || null;
         return (
             <Icon
