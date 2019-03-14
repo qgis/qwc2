@@ -127,8 +127,13 @@ class AppInitComponent extends React.Component {
                                  .map(entry => entry.name);
                     let missingLayers = visibleLayerNames.filter(entry => !layerNames.includes(entry));
                     if(!isEmpty(missingLayers)) {
-                        this.props.appConfig.themeLayerRestorer(missingLayers, theme, (newThemeSublayers) => {
+                        this.props.appConfig.themeLayerRestorer(missingLayers, theme, (newThemeSublayers, newVisibleLayers) => {
                             let newTheme = LayerUtils.mergeSubLayers(theme, {sublayers: newThemeSublayers});
+                            if(newVisibleLayers) {
+                                visibleLayers = visibleLayers.reduce((res, layer) => {
+                                    return layer in newVisibleLayers ? [...res, ...newVisibleLayers[layer]] : [...res, layer];
+                                }, []);
+                            }
                             this.restoreMap(newTheme, themes, initialView, visibleLayers, visibleBgLayer, state, searchText, searchProviders);
                         });
                     } else {
