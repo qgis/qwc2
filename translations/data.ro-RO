@@ -141,6 +141,7 @@
       "add": "Adaugă",
       "border": "Margine",
       "buffer": "",
+      "bufferlayername": "",
       "bufferdistance": "",
       "bufferlayer": "",
       "buffercompute": "",

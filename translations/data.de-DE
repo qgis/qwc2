@@ -141,6 +141,7 @@
       "add": "Hinzufügen",
       "border": "Rand",
       "buffer": "Puffern",
+      "bufferlayername": "Objektpuffer",
       "bufferdistance": "Distanz",
       "bufferlayer": "Zielebene",
       "buffercompute": "Berechnen",

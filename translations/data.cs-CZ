@@ -141,6 +141,7 @@
       "add": "Přidat",
       "border": "Okraj",
       "buffer": "",
+      "bufferlayername": "",
       "bufferdistance": "",
       "bufferlayer": "",
       "buffercompute": "",

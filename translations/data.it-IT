@@ -141,6 +141,7 @@
       "add": "Aggiungi",
       "border": "Bordo",
       "buffer": "Buffer",
+      "bufferlayername": "Buffer",
       "bufferdistance": "Distanza",
       "bufferlayer": "Destinazione",
       "buffercompute": "Calcola",

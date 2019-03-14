@@ -110,6 +110,7 @@
     "redlining.add",
     "redlining.border",
     "redlining.buffer",
+    "redlining.bufferlayername",
     "redlining.bufferdistance",
     "redlining.bufferlayer",
     "redlining.buffercompute",

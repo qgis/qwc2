@@ -141,6 +141,7 @@
       "add": "Agregar",
       "border": "Límite",
       "buffer": "",
+      "bufferlayername": "",
       "bufferdistance": "",
       "bufferlayer": "",
       "buffercompute": "",

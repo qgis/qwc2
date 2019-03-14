@@ -78,7 +78,7 @@ class _RedliningBufferControls extends React.Component {
     componentWillMount() {
         this.setState({bufferLayer: {
             id: "buffer",
-            title: LocaleUtils.getMessageById(this.context.messages, "redlining.buffer"),
+            title: LocaleUtils.getMessageById(this.context.messages, "redlining.bufferlayername"),
             role: LayerRole.USERLAYER
         }});
     }
@@ -86,7 +86,7 @@ class _RedliningBufferControls extends React.Component {
         if(this.state.bufferLayer && !newProps.layers.find(layer => layer.id === this.state.bufferLayer.id)) {
             this.setState({bufferLayer: {
                 id: "buffer",
-                title: LocaleUtils.getMessageById(this.context.messages, "redlining.buffer"),
+                title: LocaleUtils.getMessageById(this.context.messages, "redlining.bufferlayername"),
                 role: LayerRole.USERLAYER
             }});
         }

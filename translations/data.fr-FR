@@ -141,6 +141,7 @@
       "add": "",
       "border": "Bordure",
       "buffer": "",
+      "bufferlayername": "",
       "bufferdistance": "",
       "bufferlayer": "",
       "buffercompute": "",

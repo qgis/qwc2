@@ -141,6 +141,7 @@
       "add": "",
       "border": "Граница",
       "buffer": "",
+      "bufferlayername": "",
       "bufferdistance": "",
       "bufferlayer": "",
       "buffercompute": "",
