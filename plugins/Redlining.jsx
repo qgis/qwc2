@@ -183,6 +183,7 @@ class Redlining extends React.Component {
     constructor(props) {
         super(props);
         this.labelInput = null;
+        window.addEventListener('keydown', this.keyPressed);
     }
     componentWillReceiveProps(newProps) {
         if(newProps.redlining.geomType !== this.props.redlining.geomType && newProps.redlining.geomType === 'Text') {
@@ -192,6 +193,16 @@ class Redlining extends React.Component {
             this.props.changeRedliningState({layer: 'redlining', layerTitle: 'Redlining'});
         }
     }
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.keyPressed);
+    }
+    keyPressed = (ev) => {
+        if(ev.keyCode === 27) {
+            if(this.props.redlining.action === 'Draw' && !this.props.redlining.selectedFeature) {
+                this.props.changeRedliningState({action: 'Delete'});
+            }
+        }
+    };
     onShow = (mode) => {
         this.props.changeRedliningState({action: mode || 'Pick', geomType: null});
         Mousetrap.bind('del', this.triggerDelete);
