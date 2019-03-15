@@ -17,6 +17,7 @@
         "eventlistener": "^0.0.1",
         "fast-xml-parser": "^3.12.13",
         "file-saver": "^2.0.0",
+        "form-data-entries": "^1.0.2",
         "intl": "^1.2.5",
         "ismobilejs": "^0.5.1",
         "jsts": "^2.0.3",

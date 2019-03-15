@@ -13,6 +13,7 @@ const axios = require('axios');
 const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const FileSaver = require('file-saver');
+const formDataEntries = require('form-data-entries').default;
 const Message = require('../components/I18N/Message');
 const MapUtils = require('../utils/MapUtils');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
@@ -40,7 +41,7 @@ class Print extends React.Component {
     }
     static defaultProps = {
         printExternalLayers: false,
-        inlinePrintOutput: true
+        inlinePrintOutput: false
     }
     state = {
         layout: null,
@@ -375,8 +376,8 @@ class Print extends React.Component {
         } else {
             ev.preventDefault();
             this.setState({printing: true});
-            let formData = new FormData(this.printForm);
-            let data = Array.from(formData.entries()).map(pair =>
+            let formData = formDataEntries(this.printForm);
+            let data = Array.from(formData).map(pair =>
                 pair.map(entry => encodeURIComponent(entry).replace(/%20/g,'+')).join("=")
             ).join("&");
             let config = {
@@ -389,7 +390,9 @@ class Print extends React.Component {
                 FileSaver.saveAs(new Blob([response.data], {type: contentType}), this.props.theme.name + '.pdf');
             }).catch(e => {
                 this.setState({printing: false});
-                console.log(new TextDecoder().decode(e.response.data));
+                if(e.response) {
+                    console.log(new TextDecoder().decode(e.response.data));
+                }
                 alert('Print failed');
             });
         }
