@@ -9,10 +9,9 @@ div#map {
 /** Move and re-style scalebar */
 div.ol-scale-line,
 div.leaflet-control-scale-line {
-    z-index: 3;
+    z-index: 7;
     bottom: 3px !important;
     left: 3px!important;
-    z-index: 7;
     background-color: transparent!important;
 }
 

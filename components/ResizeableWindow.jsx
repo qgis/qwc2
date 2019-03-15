@@ -51,7 +51,7 @@ class ResizeableWindow extends React.Component {
         scrollable: false,
         extraControls: null,
         padding: "0.25em",
-        zIndex: 6,
+        zIndex: 8,
         visible: true
     }
     constructor(props) {

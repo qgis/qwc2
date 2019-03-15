@@ -299,7 +299,7 @@ class Print extends React.Component {
     }
     renderPrintOutputWindow = () => {
         return (
-            <ResizeableWindow key="PrintOutputWindow" title="print.output" icon="print" zIndex={7}
+            <ResizeableWindow key="PrintOutputWindow" title="print.output" icon="print"
                 initialWidth={0.5 * window.innerWidth} initialHeight={0.75 * window.innerHeight}
                 onClose={() => this.setState({printOutputVisible: false, outputLoaded: false})} visible={this.state.printOutputVisible}
             >
