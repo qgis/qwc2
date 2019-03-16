@@ -12,12 +12,19 @@ const uuid = require('uuid');
 const SEARCH_CHANGE = 'SEARCH_CHANGE';
 const SEARCH_SET_REQUEST = 'SEARCH_SET_REQUEST';
 const SEARCH_ADD_RESULTS = 'SEARCH_ADD_RESULTS';
+const CLEAR_SEARCH = 'CLEAR_SEARCH';
 
 const SearchResultType = {
     PLACE: 0,
     THEMELAYER: 1,
     THEME: 2
 };
+
+function clearSearch() {
+    return {
+        type: CLEAR_SEARCH
+    };
+}
 
 function changeSearch(text, providers) {
     return {
@@ -67,9 +74,11 @@ function addSearchResults(results, append=true) {
 
 module.exports = {
     SearchResultType,
+    CLEAR_SEARCH,
     SEARCH_CHANGE,
     SEARCH_SET_REQUEST,
     SEARCH_ADD_RESULTS,
+    clearSearch,
     changeSearch,
     startSearch,
     searchMore,

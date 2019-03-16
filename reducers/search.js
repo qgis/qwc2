@@ -6,13 +6,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var {SEARCH_CHANGE, SEARCH_SET_REQUEST, SEARCH_ADD_RESULTS} = require('../actions/search');
+var {SEARCH_CHANGE, SEARCH_SET_REQUEST, SEARCH_ADD_RESULTS, CLEAR_SEARCH} = require('../actions/search');
 
 const assign = require('object-assign');
 const {UrlParams} = require("../utils/PermaLinkUtils");
 
-function search(state = null, action) {
+function search(state = {
+    text: ''
+}, action) {
     switch (action.type) {
+        case CLEAR_SEARCH:
+            return {...state, text: '', currentResult: null};
         case SEARCH_CHANGE:
             UrlParams.updateParams({st: action.text, sp: action.providers ? action.providers.join(",") : undefined});
             return {text: action.text, providers: action.providers};
