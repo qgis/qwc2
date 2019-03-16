@@ -13,6 +13,7 @@ const SEARCH_CHANGE = 'SEARCH_CHANGE';
 const SEARCH_SET_REQUEST = 'SEARCH_SET_REQUEST';
 const SEARCH_ADD_RESULTS = 'SEARCH_ADD_RESULTS';
 const CLEAR_SEARCH = 'CLEAR_SEARCH';
+const SEARCH_SET_CURRENT_RESULT = 'SEARCH_SET_CURRENT_RESULT';
 
 const SearchResultType = {
     PLACE: 0,
@@ -72,15 +73,24 @@ function addSearchResults(results, append=true) {
     };
 }
 
+function setCurrentSearchResult(result) {
+    return {
+        type: SEARCH_SET_CURRENT_RESULT,
+        result: result
+    };
+}
+
 module.exports = {
     SearchResultType,
     CLEAR_SEARCH,
     SEARCH_CHANGE,
     SEARCH_SET_REQUEST,
     SEARCH_ADD_RESULTS,
+    SEARCH_SET_CURRENT_RESULT,
     clearSearch,
     changeSearch,
     startSearch,
     searchMore,
-    addSearchResults
+    addSearchResults,
+    setCurrentSearchResult
 };

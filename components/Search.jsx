@@ -26,7 +26,7 @@ const LayerUtils = require('../utils/LayerUtils');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const {LayerRole, addMarker, removeMarker, addLayerFeatures, removeLayer, addLayer, addThemeSublayer, changeLayerProperties} = require('../actions/layers');
 const {zoomToPoint} = require('../actions/map');
-const {addSearchResults, changeSearch, startSearch, searchMore, SearchResultType} = require("../actions/search");
+const {addSearchResults, changeSearch, startSearch, searchMore, setCurrentSearchResult, SearchResultType} = require("../actions/search");
 const {setCurrentTask} = require('../actions/task');
 const {setCurrentTheme} = require('../actions/theme');
 const displayCrsSelector = require('../selectors/displaycrs');
@@ -43,6 +43,7 @@ class Search extends React.Component {
         searchProviders: PropTypes.object, // All available search providers
         startupSearch: PropTypes.bool,
         results: PropTypes.array,
+        currentResult: PropTypes.object,
         theme: PropTypes.object,
         themes: PropTypes.object,
         map: PropTypes.object,
@@ -67,7 +68,7 @@ class Search extends React.Component {
         messages: PropTypes.object
     }
     state = {
-        currentResult: null, showfields: false, providerSelectionVisible: false
+        focused: false, showfields: false, providerSelectionVisible: false
     }
     componentDidMount() {
         this.input = null;
@@ -129,7 +130,7 @@ class Search extends React.Component {
         }
     }
     resetSearch = () => {
-        this.setState({currentResult: null, focused: false, showfields: false, invisibleLayerQuery: null});
+        this.setState({focused: false, showfields: false, invisibleLayerQuery: null});
         this.props.changeSearch("", this.props.activeProviders);
     }
     onChange = (ev) => {
@@ -429,7 +430,7 @@ class Search extends React.Component {
             else{
                 this.props.addMarker('searchmarker', [item.x, item.y], text, item.crs);
             }
-            this.setState({currentResult: item});
+            this.props.setCurrentSearchResult(item);
         } else if(resultType === SearchResultType.THEMELAYER) {
             this.props.addThemeSublayer(item.layer);
             // Show layer tree to notify user that something has happened
@@ -542,15 +543,16 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
 
     return connect(
         createSelector([state => state, displayCrsSelector, collectProviders], (state, displaycrs, searchProviders) => ({
-            searchText: state.search ? state.search.text : "",
-            activeProviders: state.search ?  state.search.providers : null,
-            pendingProviders: state.search ? state.search.pendingProviders : null,
-            startupSearch: state.search && state.search.startup || false,
-            results: state.search ? state.search.results : null,
+            searchText: state.search.text,
+            activeProviders: state.search.providers,
+            pendingProviders: state.search.pendingProviders,
+            startupSearch: state.search.startup,
+            results: state.search.results,
+            currentResult: state.search.currentResult,
             map: state.map,
             displaycrs: displaycrs,
-            theme: state.theme ? state.theme.current : null,
-            themes: state.theme ? state.theme.themes : {},
+            theme: state.theme.current,
+            themes: state.theme.themes,
             layers: state.layers.flat || [],
             searchProviders: searchProviders,
         })
@@ -558,6 +560,7 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
         changeSearch: changeSearch,
         startSearch: startSearch,
         searchMore: searchMore,
+        setCurrentSearchResult: setCurrentSearchResult,
         panToResult: zoomToPoint,
         addMarker: addMarker,
         removeMarker: removeMarker,
