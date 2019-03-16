@@ -13,7 +13,9 @@ var {
 const assign = require('object-assign');
 
 function selection(state = {
-    geomType: null
+    geomType: null,
+    style: 'default',
+    reset: false
 }, action) {
     switch (action.type) {
         case CHANGE_SELECTION_STATE:
@@ -22,7 +24,8 @@ function selection(state = {
                 point: action.point,
                 line: action.line,
                 polygon: action.polygon,
-                style: action.style
+                style: action.style,
+                reset: action.reset
             });
         default:
             return state;

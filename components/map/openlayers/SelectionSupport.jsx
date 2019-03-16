@@ -42,6 +42,10 @@ class SelectionSupport extends React.Component {
         if (!newProps.selection.geomType) {
             this.removeDrawInteraction();
         }
+        if(newProps.selection.reset) {
+            this.removeDrawInteraction();
+            this.props.changeSelectionState({geomType: this.props.selection.geomType, style: this.props.selection.style});
+        }
     }
     render() {
         return null;
