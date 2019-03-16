@@ -12,17 +12,9 @@ const PropTypes = require('prop-types');
 const ol = require('openlayers');
 const FeatureStyles = require('./FeatureStyles');
 
-const selectionStyle = {
-    "strokeColor": [255, 200, 50, 1],
-    "strokeWidth": 2,
-    "strokeDash": [10, 10],
-    "fillColor": [255, 200, 50, 0.75],
-    "circleRadius": 7
-};
-
-const drawStyle = assign({}, selectionStyle, {
+const drawStyle = {
     "circleRadius": 0
-});
+};
 
 class SelectionSupport extends React.Component {
     static propTypes = {
@@ -60,7 +52,7 @@ class SelectionSupport extends React.Component {
         let vector = new ol.layer.Vector({
             source: source,
             zIndex: 1000000,
-            style: feature => FeatureStyles[newProps.selection.style](feature, selectionStyle)
+            style: feature => FeatureStyles[newProps.selection.style](feature)
         });
 
         this.props.map.addLayer(vector);
@@ -105,8 +97,7 @@ class SelectionSupport extends React.Component {
         }
         var sketchCoords = this.sketchFeature.getGeometry().getCoordinates();
 
-        let newSelectionState = {
-            geomType: this.props.selection.geomType,
+        let newSelectionState = {...this.props.selection,
             point: this.props.selection.geomType === 'Point' ?
                 [sketchCoords[0], sketchCoords[1]] : null,
             line: this.props.selection.geomType === 'LineString' ?
