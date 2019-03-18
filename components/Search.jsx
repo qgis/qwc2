@@ -24,7 +24,7 @@ const MapUtils = require('../utils/MapUtils');
 const ConfigUtils = require('../utils/ConfigUtils');
 const LayerUtils = require('../utils/LayerUtils');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const {LayerRole, addMarker, removeMarker, addLayerFeatures, removeLayer, addLayer, addThemeSublayer, changeLayerProperties} = require('../actions/layers');
+const {LayerRole, addLayerFeatures, removeLayer, addLayer, addThemeSublayer, changeLayerProperties} = require('../actions/layers');
 const {zoomToPoint} = require('../actions/map');
 const {addSearchResults, changeSearch, startSearch, searchMore, setCurrentSearchResult, SearchResultType} = require("../actions/search");
 const {setCurrentTask} = require('../actions/task');
@@ -52,8 +52,6 @@ class Search extends React.Component {
         startSearch: PropTypes.func,
         searchMore: PropTypes.func,
         panToResult: PropTypes.func,
-        addMarker: PropTypes.func,
-        removeMarker: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         removeLayer: PropTypes.func,
         addLayer: PropTypes.func,
@@ -79,7 +77,6 @@ class Search extends React.Component {
     componentWillReceiveProps(newProps) {
         // If search text changed, clear result
         if(newProps.searchText !== this.props.searchText) {
-            this.props.removeMarker('searchmarker');
             this.props.removeLayer('searchselection');
         }
         // If the theme changed, reset search and select provider
@@ -426,9 +423,13 @@ class Search extends React.Component {
             text = text.replace(/<[^>]*>/g, '')
             if(item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
                 this.props.searchProviders[item.provider].getResultGeometry(item, (item, geometry, crs) => { this.showFeatureGeometry(item, geometry, crs, text)});
-            }
-            else{
-                this.props.addMarker('searchmarker', [item.x, item.y], text, item.crs);
+            } else {
+                let layer = {
+                    id: "searchselection",
+                    role: LayerRole.SELECTION
+                };
+                let marker = this.createMarker([item.x, item.y], item.crs, text);
+                this.props.addLayerFeatures(layer, [marker], true);
             }
             this.props.setCurrentSearchResult(item);
         } else if(resultType === SearchResultType.THEMELAYER) {
@@ -456,23 +457,34 @@ class Search extends React.Component {
         this.setState({invisibleLayerQuery});
     }
     showFeatureGeometry = (item, geometry, crs, text) => {
-        if(item === this.state.currentResult) {
-            let feature = VectorLayerUtils.wktToGeoJSON(geometry, crs, this.props.map.projection);
-            if(feature) {
-                let geojson  = new ol.format.GeoJSON().readFeature(feature);
-                let center = this.getFeatureCenter(geojson.getGeometry());
-                this.props.addMarker('searchmarker', [center[0], center[1]], text, this.props.map.projection);
-                let layer = {
-                    id: "searchselection",
-                    role: LayerRole.SELECTION
-                };
-                this.props.addLayerFeatures(layer, [feature], true);
+        if(item === this.props.currentResult) {
+            let features = [];
+            let highlightFeature = VectorLayerUtils.wktToGeoJSON(geometry, crs, this.props.map.projection);
+            if(highlightFeature) {
+                let center = this.getFeatureCenter(highlightFeature);
+                features = [highlightFeature, this.createMarker(center, item.crs, text)];
             } else {
-                this.props.addMarker('searchmarker', [item.x, item.y], text, item.crs);
+                features = [this.createMarker([item.x, item.y], item.crs, text)];
             }
+            let layer = {
+                id: "searchselection",
+                role: LayerRole.SELECTION
+            };
+            this.props.addLayerFeatures(layer, features, true);
         }
     }
-    getFeatureCenter = (geometry) => {
+    createMarker = (center, crs, text) => {
+        return {
+            geometry: {type: 'Point', coordinates: center},
+            styleName: 'marker',
+            id: 'searchmarker',
+            crs: crs,
+            properties: { label: text }
+        };
+    }
+    getFeatureCenter = (feature) => {
+        let geojson = new ol.format.GeoJSON().readFeature(feature);
+        let geometry = geojson.getGeometry();
         let type = geometry.getType();
         let center;
         switch (type) {
@@ -562,8 +574,6 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
         searchMore: searchMore,
         setCurrentSearchResult: setCurrentSearchResult,
         panToResult: zoomToPoint,
-        addMarker: addMarker,
-        removeMarker: removeMarker,
         addLayerFeatures: addLayerFeatures,
         removeLayer: removeLayer,
         addLayer: addLayer,
