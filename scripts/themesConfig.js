@@ -87,7 +87,10 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
     parsedUrl.query.LAYERS = layers.join(',');
     const getMapUrl = urlUtil.format(parsedUrl);
 
-    axios.get(getMapUrl, {responseType: "arraybuffer"}).then((response) => {
+    axios.get(getMapUrl, {
+        responseType: "arraybuffer",
+        auth: configItem.wmsBasicAuth,
+    }).then((response) => {
         let basename = configItem.url.replace(/.*\//, "").replace(/\?.*$/, "") + ".png";
         try {
             fs.mkdirSync("./assets/img/genmapthumbs/");
@@ -222,7 +225,7 @@ function getTheme(config, configItem, result, resultItem) {
     const getCapabilitiesUrl = urlUtil.format(parsedUrl);
 
     return new Promise((resolve, reject) => {
-        axios.get(getCapabilitiesUrl).then((response) => {
+        axios.get(getCapabilitiesUrl, { auth: configItem.wmsBasicAuth, }).then((response) => {
             // parse capabilities
             let capabilities;
             xml2js.parseString(response.data, {
