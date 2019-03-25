@@ -1,0 +1,8 @@
+span.suggestion-input {
+    display: inline-block;
+}
+
+span.suggestion-input > input {
+    width: 100%;
+    height: 100%;
+}
