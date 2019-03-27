@@ -127,9 +127,15 @@ function toArray(obj) {
 
 // recursively get layer tree
 function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, featureReports) {
-    if (printLayers.indexOf(layer.Name) !== -1) {
-        // skip print layers
-        return;
+    // skip print layers
+    for(let printLayer of printLayers) {
+        if(Array.isArray(printLayer)) {
+            if(printLayer.find(entry => entry.name === layer.Name)) {
+                return;
+            }
+        } else if(printLayer === layer.Name) {
+            return;
+        }
     }
 
     let layerEntry = {

@@ -149,9 +149,14 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
     layers = getDirectChildElements(layer, "Layer")
     treeName = getChildElementValue(layer, "TreeName")
 
-    if name in printLayers:
-        # skip print layers
-        return
+    # skip print layers
+    for printLayer in printLayers:
+        if type(printLayer) is list:
+            for entry in printLayer:
+                if entry["name"] == name:
+                    return
+        elif printLayer == name:
+            return
 
     layerEntry = {"name": name, "title": title}
 
