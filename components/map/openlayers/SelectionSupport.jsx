@@ -36,7 +36,11 @@ class SelectionSupport extends React.Component {
         }
         if(newProps.selection.reset) {
             this.removeDrawInteraction();
-            this.props.changeSelectionState({geomType: this.props.selection.geomType, style: this.props.selection.style});
+            this.props.changeSelectionState({
+                geomType: this.props.selection.geomType,
+                style: this.props.selection.style,
+                styleOptions: this.props.selection.styleOptions
+            });
         }
     }
     render() {
@@ -52,7 +56,7 @@ class SelectionSupport extends React.Component {
         let vector = new ol.layer.Vector({
             source: source,
             zIndex: 1000000,
-            style: feature => FeatureStyles[newProps.selection.style](feature)
+            style: feature => FeatureStyles[newProps.selection.style](feature, newProps.selection.styleOptions)
         });
 
         this.props.map.addLayer(vector);

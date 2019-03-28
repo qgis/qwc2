@@ -14,7 +14,8 @@ function changeSelectionState(selectionState) {
         point: selectionState.point,
         line: selectionState.line,
         polygon: selectionState.polygon,
-        style: selectionState.style || 'default',
+        style: selectionState.style,
+        styleOptions: selectionState.styleOptions,
         reset: selectionState.reset
     };
 }
