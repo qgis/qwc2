@@ -90,7 +90,12 @@ class AppMenu extends React.Component {
                     return (
                         <li key={item.key + (item.mode || "")} onMouseDown={ev => this.onMenuitemClicked(item)} >
                             <Icon icon={item.icon} size="xlarge"/>
-                            <Message msgId={"appmenu.items." + item.key} />
+                            <span className="appmenu-leaf-label">
+                                <Message msgId={"appmenu.items." + item.key} />
+                                {item.comment ? (<div className="appmenu-leaf-comment">
+                                    <Message msgId={"appmenu.items." + item.key + (item.mode || "") + "_comment"} />
+                                </div>) : null}
+                            </span>
                         </li>
                     );
                 }
