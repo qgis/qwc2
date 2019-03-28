@@ -57,6 +57,7 @@ const IdentifyUtils = {
                 with_geometry: true,
                 with_maptip: false,
                 feature_count: 10,
+                map: layer.params.MAP,
                 ...options
             },
             metadata: {
@@ -98,6 +99,7 @@ const IdentifyUtils = {
                 with_geometry: true,
                 with_maptip: false,
                 feature_count: 100,
+                map: layer.params.MAP,
                 ...options
             },
             metadata: {
