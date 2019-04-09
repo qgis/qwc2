@@ -54,7 +54,9 @@ class LayerTree extends React.Component {
         flattenGroups: PropTypes.bool,
         setSwipe: PropTypes.func,
         setActiveLayerInfo: PropTypes.func,
-        width: PropTypes.string
+        width: PropTypes.string,
+        enableLegendPrint: PropTypes.bool,
+        infoInSettings: PropTypes.bool
     }
     static defaultProps = {
         layers: [],
@@ -70,7 +72,8 @@ class LayerTree extends React.Component {
         bboxDependentLegend: false,
         flattenGroups: false,
         width: "20em",
-        enableLegendPrint: true
+        enableLegendPrint: true,
+        infoInSettings: true
     }
     state = {
         activemenu: null,
@@ -179,6 +182,10 @@ class LayerTree extends React.Component {
             "layertree-item-disabled": (!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !sublayer.visibility)
         };
         let editframe = null;
+        let infoButton = null;
+        if(layer.type === "wms" || layer.type === "wfs") {
+            infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.props.setActiveLayerInfo(layer, sublayer)}/>);
+        }
         if(this.state.activemenu === sublayer.uuid) {
             let reorderButtons = null;
             if(ThemeUtils.layerReorderingAllowed(this.props.theme) === true) {
@@ -187,16 +194,12 @@ class LayerTree extends React.Component {
                     (<Icon key="layertree-item-move-up" className="layertree-item-move" icon="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
                 ];
             }
-            let infoButton = null;
-            if(layer.type === "wms" || layer.type === "wfs") {
-                infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.props.setActiveLayerInfo(layer, sublayer)}/>);
-            }
             editframe = (
                 <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
                     <span className="layertree-item-transparency-label"><Message msgId="layertree.transparency" /></span>
                     <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onTouchEnd={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} />
                     {reorderButtons}
-                    {infoButton}
+                    {this.props.infoInSettings ? infoButton : null}
                 </div>
             );
         }
@@ -226,6 +229,7 @@ class LayerTree extends React.Component {
                     <span className="layertree-item-title" title={title}>{title}</span>
                     {sublayer.queryable && this.props.showQueryableIcon ? (<Icon className="layertree-item-queryable" icon="info-sign" />) : null}
                     <span className="layertree-item-spacer"></span>
+                    {allowOptions && !this.props.infoInSettings ? infoButton : null}
                     {allowOptions ? (<Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>) : null}
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
@@ -326,7 +330,7 @@ class LayerTree extends React.Component {
         let extraTitlebarContent = null;
         if(this.props.enableLegendPrint) {
             let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
-            extraTitlebarContent = (<Icon title={printLegendTooltip} className="layertree-print-legend" icon="print" onClick={this.printLegend}/>)
+            extraTitlebarContent = (<Icon title={printLegendTooltip} className="layertree-print-legend" icon="print" onClick={this.printLegend}/>);
         }
         return (
             <div>
