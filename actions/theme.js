@@ -18,6 +18,7 @@ const {configureMap} = require("./map");
 
 const THEMES_LOADED = 'THEMES_LOADED';
 const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
+const SWITCHING_THEME = 'SWITCHING_THEME';
 
 
 function themesLoaded(themes) {
@@ -36,6 +37,10 @@ function restoreDefaultTheme() {
 
 function setCurrentTheme(theme, themes, preserve=true, initialView=null, visibleLayers=null, visibleBgLayer=null) {
     return (dispatch, getState) => {
+        dispatch({
+            type: SWITCHING_THEME,
+            switching: true
+        });
 
         // Get current background layer if it needs to be preserved
         if(preserve && visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch") === true) {
@@ -54,6 +59,10 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
         }
         dispatch(setSwipe(undefined));
         if(!theme) {
+            dispatch({
+                type: SWITCHING_THEME,
+                switching: false
+            });
             return;
         }
 
@@ -134,12 +143,17 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
             theme: theme,
             layer: themeLayer.id
         });
+        dispatch({
+            type: SWITCHING_THEME,
+            switching: false
+        });
     };
 }
 
 module.exports = {
     THEMES_LOADED,
     SET_CURRENT_THEME,
+    SWITCHING_THEME,
     themesLoaded,
     restoreDefaultTheme,
     setCurrentTheme,

@@ -8,10 +8,14 @@
 
 const assign = require('object-assign');
 const {UrlParams} = require("../utils/PermaLinkUtils");
-const {THEMES_LOADED, SET_CURRENT_THEME, CLEAR_CURRENT_THEME} = require('../actions/theme');
+const {THEMES_LOADED, SET_CURRENT_THEME, CLEAR_CURRENT_THEME, SWITCHING_THEME} = require('../actions/theme');
 
 function theme(state = {}, action) {
     switch (action.type) {
+        case SWITCHING_THEME:
+            return assign({}, state, {
+                switching: action.switching
+            });
         case THEMES_LOADED:
             return assign({}, state, {
                 themes: action.themes
