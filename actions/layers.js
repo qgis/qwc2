@@ -21,6 +21,7 @@ const REMOVE_ALL_LAYERS = 'REMOVE_ALL_LAYERS';
 const RESTORE_LAYER_STATE = 'RESTORE_LAYER_STATE';
 const REPLACE_PLACEHOLDER_LAYER = 'REPLACE_PLACEHOLDER_LAYER';
 const SET_SWIPE = 'SET_SWIPE';
+const SET_LAYERS = 'SET_LAYERS';
 
 
 const LayerRole = {
@@ -156,6 +157,13 @@ function setSwipe(swipe) {
     };
 }
 
+function setLayers(layers) {
+    return {
+        type: SET_LAYERS,
+        layers
+    };
+}
+
 module.exports = {
     LayerRole,
     setLayerLoading,
@@ -173,6 +181,7 @@ module.exports = {
     restoreLayerState,
     replacePlaceholderLayer,
     setSwipe,
+    setLayers,
     SET_LAYER_LOADING,
     ADD_LAYER,
     REMOVE_LAYER,
@@ -185,5 +194,6 @@ module.exports = {
     REMOVE_ALL_LAYERS,
     RESTORE_LAYER_STATE,
     REPLACE_PLACEHOLDER_LAYER,
-    SET_SWIPE
+    SET_SWIPE,
+    SET_LAYERS
 };

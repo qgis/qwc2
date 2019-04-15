@@ -26,7 +26,8 @@ const {
     REMOVE_ALL_LAYERS,
     RESTORE_LAYER_STATE,
     REPLACE_PLACEHOLDER_LAYER,
-    SET_SWIPE
+    SET_SWIPE,
+    SET_LAYERS
 } = require('../actions/layers');
 
 
@@ -224,6 +225,9 @@ function layers(state = {flat: [], swipe: undefined}, action) {
                 newLayers = LayerUtils.reorderLayer(state.flat, null, null, null, action.swipe || action.swipe === 0);
             }
             return assign({}, state, {flat: newLayers, swipe: action.swipe});
+        }
+        case SET_LAYERS: {
+            return assign({}, {flat: action.layers});
         }
         default:
             return state;
