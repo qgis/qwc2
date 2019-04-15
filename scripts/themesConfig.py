@@ -368,11 +368,11 @@ def getTheme(config, configItem, result, resultItem):
         if "printGrid" in configItem:
             resultItem["printGrid"] = configItem["printGrid"]
         # NOTE: skip root WMS layer
-        resultItem["sublayers"] = layerTree[0]["sublayers"] if len(layerTree) > 0 else []
+        resultItem["sublayers"] = layerTree[0]["sublayers"] if len(layerTree) > 0 and "sublayers" in layerTree[0] else []
         resultItem["expanded"] = True
         if "backgroundLayers" in configItem:
             resultItem["backgroundLayers"] = configItem["backgroundLayers"]
-        resultItem["searchProviders"] = configItem["searchProviders"]
+        resultItem["searchProviders"] = configItem["searchProviders"] if "searchProviders" in configItem else []
         if "additionalMouseCrs" in configItem:
             resultItem["additionalMouseCrs"] = configItem["additionalMouseCrs"]
         if "mapCrs" in configItem:
