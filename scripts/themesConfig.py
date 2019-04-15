@@ -403,6 +403,9 @@ def getTheme(config, configItem, result, resultItem):
         if "mapTips" in configItem:
             resultItem["mapTips"] = configItem["mapTips"]
 
+        if "userMap" in configItem:
+            resultItem["userMap"] = configItem["userMap"]
+
         resultItem["editConfig"] = getEditConfig(configItem["editConfig"] if "editConfig" in configItem else None)
 
         # set default theme

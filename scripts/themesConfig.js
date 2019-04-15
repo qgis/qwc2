@@ -397,6 +397,7 @@ function getTheme(config, configItem, result, resultItem) {
             resultItem.skipEmptyFeatureAttributes = configItem.skipEmptyFeatureAttributes;
             resultItem.allowReorderingLayers = configItem.allowReorderingLayers;
             resultItem.mapTips = configItem.mapTips;
+            resultItem.userMap = configItem.userMap;
             resultItem.editConfig = getEditConfig(configItem.editConfig);
 
             // set default theme

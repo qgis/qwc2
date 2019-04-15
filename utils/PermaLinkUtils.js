@@ -36,12 +36,17 @@ const UrlParams = {
    }
 };
 
-function generatePermaLink(state, callback) {
+function generatePermaLink(state, callback, user=false) {
+    if(!ConfigUtils.getConfigProp("permalinkServiceUrl")) {
+        callback(window.location.href);
+        return;
+    }
     // Subset of the state to send to permalink server
     let permalinkState = {
         layers: (state.layers && state.layers.flat || []).filter(layer => (layer.role === LayerRole.USERLAYER || layer.role === LayerRole.THEME))
     };
-    axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/createpermalink?url=" + encodeURIComponent(window.location.href), permalinkState)
+    let route = user ? "userpermalink" : "createpermalink";
+    axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/" + route + "?url=" + encodeURIComponent(window.location.href), permalinkState)
         .then(response => callback(response.data.permalink || window.location.href))
         .catch(e => callback(window.location.href));
 }

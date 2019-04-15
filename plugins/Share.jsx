@@ -34,12 +34,8 @@ class Share extends React.Component {
         location: null
     }
     onShow = () => {
-        if(ConfigUtils.getConfigProp("permalinkServiceUrl")) {
-            this.setState({location: null});
-            generatePermaLink(this.props.state, (permalink => this.setState({location: permalink})));
-        } else {
-            this.setState({location: window.location.href});
-        }
+        this.setState({location: null});
+        generatePermaLink(this.props.state, (permalink => this.setState({location: permalink})));
     }
     renderBody = () => {
         if(this.state.location) {
