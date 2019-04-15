@@ -261,7 +261,7 @@ class Print extends React.Component {
                         <input readOnly={true} name="FORMAT" type={formvisibility} value="pdf" />
                         <input readOnly={true} name="TRANSPARENT" type={formvisibility} value="true" />
                         <input readOnly={true} name="SRS" type={formvisibility} value={mapCrs} />
-                        <input readOnly={true} name="MAP" type={formvisibility} value={this.props.theme.params.MAP || ""} />
+                        {themeLayers[0].params.MAP ? (<input readOnly={true} name="MAP" type={formvisibility} value={themeLayers[0].params.MAP} />) : null}
                         <input readOnly={true} name="OPACITIES" type={formvisibility} value={printOpacities || ""} />
                         {/* This following one is needed for opacities to work!*/}
                         <input readOnly={true} name="LAYERS" type={formvisibility} value={printLayers || ""} />

@@ -70,9 +70,12 @@ const LayerUtils = {
         }
     },
     buildWMSLayerParams: function(layer) {
+        // Handle QGIS Server setups without rewrite rule
+        let query = url.parse(layer.url, true).query;
+
         if(!Array.isArray(layer.sublayers)) {
             return {
-                params: layer.params || {LAYERS: layer.name},
+                params: assign({}, layer.params || {LAYERS: layer.name}, {MAP: query.map}),
                 queryLayers: [layer.name]
             };
         }
@@ -91,13 +94,9 @@ const LayerUtils = {
         }
         let newParams = assign({}, layer.params, {
             LAYERS: layerNames.join(","),
-            OPACITIES: opacities.join(",")
+            OPACITIES: opacities.join(","),
+            MAP: query.map
         });
-        // Handle QGIS Server setups without rewrite rule
-        let query = url.parse(layer.url, true).query;
-        if(query.map) {
-            newParams['MAP'] = query.map;
-        }
         return {
             params: newParams,
             queryLayers: queryable
