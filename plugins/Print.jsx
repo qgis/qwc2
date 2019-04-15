@@ -100,7 +100,7 @@ class Print extends React.Component {
         let printOpacities = [];
         let printColors = [];
         for(let layer of this.props.layers) {
-            if(layer.role === LayerRole.THEME) {
+            if(layer.role === LayerRole.THEME && layer.params.LAYERS) {
                 printLayers.push(layer.params.LAYERS);
                 printOpacities.push(layer.params.OPACITIES);
                 printColors.push(layer.params.LAYERS.split(",").map(entry => "").join(","));
@@ -110,15 +110,13 @@ class Print extends React.Component {
                 printColors.push(layer.color ? layer.color : "");
             }
         }
-        printLayers = printLayers.reverse().join(",");
-        printOpacities = printOpacities.reverse().join(",");
-        printColors = printColors.reverse().join(",");
 
         let currentLayoutname = this.state.layout ? this.state.layout.name : "";
         let mapName = this.state.layout ? this.state.layout.map.name : "";
 
         let backgroundLayer = this.props.layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
-        let themeBackgroundLayer = backgroundLayer ? this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayer.name) : null;
+        let backgroundLayerName = backgroundLayer ? backgroundLayer.name : null;
+        let themeBackgroundLayer = this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayerName);
         let printBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
         if(printBackgroundLayer) {
             let printBgLayerName = printBackgroundLayer;
@@ -132,10 +130,14 @@ class Print extends React.Component {
                 }
             }
             if(printBgLayerName) {
-                printLayers = printBgLayerName + (printLayers ? "," + printLayers : "");
-                printOpacities = "255" + (printOpacities ? "," + printOpacities : "");
+                printLayers.push(printBgLayerName);
+                printOpacities.push("255");
+                printColors.push("");
             }
         }
+        printLayers = printLayers.reverse().join(",");
+        printOpacities = printOpacities.reverse().join(",");
+        printColors = printColors.reverse().join(",");
 
         let formvisibility = 'hidden';
         let printDpi = parseInt(this.state.dpi);
