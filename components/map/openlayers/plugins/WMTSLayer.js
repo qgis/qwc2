@@ -20,8 +20,8 @@ let WMTSLayer = {
         var projection = ol.proj.get(options.projection);
         let resolutions = options.resolutions;
         let matrixIds = new Array(options.resolutions.length);
-        for (let z = 0; z < options.resolutions.length; ++z) {
         // generate matrixIds arrays for this WMTS
+        for (let z = 0; z < options.resolutions.length; ++z) {
             matrixIds[z] = options.tileMatrixPrefix + z;
         }
         return new ol.layer.Tile({
