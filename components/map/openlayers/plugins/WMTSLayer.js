@@ -37,9 +37,10 @@ let WMTSLayer = {
                 matrixIds: matrixIds,
                 tileSize: options.tileSize || [256, 256]
               }),
-              style: '',
-              wrapX: true,
-              requestEncoding: "REST"
+              style: options.style != undefined ? options.style : '',
+              wrapX: options.wrapX != undefined ? options.wrapX : true,
+              requestEncoding: options.requestEncoding !== undefined ?
+                               options.requestEncoding : "REST"
             }))
         });
     }
