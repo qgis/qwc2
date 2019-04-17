@@ -33,6 +33,9 @@ const ThemeUtils = {
         let visibleIdx = -1;
         let defaultVisibleIdx = -1;
         for (let entry of (theme.backgroundLayers || [])) {
+            if(!entry.name) {
+                continue;
+            }
             const bgLayer = themes.backgroundLayers.find(bgLayer => bgLayer.name === entry.name);
             if (bgLayer) {
                 if(entry.visibility === true) {
