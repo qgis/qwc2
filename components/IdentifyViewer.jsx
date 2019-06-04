@@ -233,7 +233,7 @@ class IdentifyViewer extends React.Component {
     resultDisplayName = (layer, result) => {
         let displayName = "";
         try {
-            let displayFieldName = this.state.displayFieldMap[layer];
+            let displayFieldName = result.displayfield || this.state.displayFieldMap[layer];
             displayName = result.properties[displayFieldName];
         } catch(e) {
         }
