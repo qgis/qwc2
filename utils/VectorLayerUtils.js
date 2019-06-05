@@ -180,7 +180,7 @@ const VectorLayerUtils = {
     geoJSONToWkt(geometry) {
         return stringify(geometry);
     },
-    wktToGeoJSON(wkt, srccrs, dstcrs) {
+    wktToGeoJSON(wkt, srccrs, dstcrs, id=uuid.v1()) {
         wkt = wkt.replace(/Point(\w+)/i, "Point $1")
                  .replace(/LineString(\w+)/i, "LineString $1")
                  .replace(/Polygon(\w+)/i, "Polygon $1")
@@ -191,7 +191,7 @@ const VectorLayerUtils = {
                 featureProjection: dstcrs
             });
             let featureObj = new ol.format.GeoJSON().writeFeatureObject(feature);
-            featureObj.id = uuid.v1();
+            featureObj.id = id;
             return featureObj;
         } catch(e) {
             console.warn("Failed to parse geometry: " + wkt);
