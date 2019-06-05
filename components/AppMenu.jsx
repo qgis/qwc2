@@ -76,7 +76,7 @@ class AppMenu extends React.Component {
                     return (
                         <li key={item.key}
                             className={this.state.submenusVisible[level] === item.key ? "expanded" : ""}
-                            onMouseDown={ev => this.onSubmenuClicked(item.key, level)}
+                            onClick={ev => this.onSubmenuClicked(item.key, level)}
                         >
                             <Icon icon={item.icon} size="xlarge"/>
                             <Message msgId={"appmenu.items." + item.key} />
@@ -88,7 +88,7 @@ class AppMenu extends React.Component {
                     );
                 } else {
                     return (
-                        <li key={item.key + (item.mode || "")} onMouseDown={ev => this.onMenuitemClicked(item)} >
+                        <li key={item.key + (item.mode || "")} onClick={ev => this.onMenuitemClicked(item)} >
                             <Icon icon={item.icon} size="xlarge"/>
                             <span className="appmenu-leaf-label">
                                 <Message msgId={"appmenu.items." + item.key} />
