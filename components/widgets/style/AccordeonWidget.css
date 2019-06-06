@@ -1,0 +1,22 @@
+div.accordeon-section {
+    margin: 0.25em 0;
+}
+
+div.accordeon-section-header {
+    display: flex;
+    padding: 0.5em;
+    background-color: @titlebar_bg@;
+    color: @titlebar_fg@;
+    font-weight: bold;
+}
+
+div.accordeon-section-header > span:first-child {
+    flex: 1 1 auto;
+}
+
+div.accordeon-section-body {
+    padding: 0.25em;
+    border-color: @item_border@;
+    border-style: solid;
+    border-width: 0 1px 1px 1px;
+}
