@@ -37,11 +37,13 @@ class Print extends React.Component {
         layers: PropTypes.array,
         printExternalLayers: PropTypes.bool, // Caution: requires explicit server-side support!
         changeRotation: PropTypes.func,
-        inlinePrintOutput: PropTypes.bool
+        inlinePrintOutput: PropTypes.bool,
+        scaleFactor: PropTypes.number
     }
     static defaultProps = {
         printExternalLayers: false,
-        inlinePrintOutput: false
+        inlinePrintOutput: false,
+        scaleFactor: 1.9 // Experimentally determined...
     }
     state = {
         layout: null,
@@ -183,8 +185,7 @@ class Print extends React.Component {
 
         let labels = this.state.layout && this.state.layout.labels ? this.state.layout.labels : [];
 
-        const scaleFactor = 1.9; // Experimentally determined...
-        let highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, printDpi, scaleFactor);
+        let highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, printDpi, this.props.scaleFactor);
 
         return (
             <div className="print-body">
