@@ -46,6 +46,10 @@ const ServiceLayerUtils = {
         } catch(e) {
             infoFormats = ['text/plain'];
         }
+        // prefer text/html
+        if(infoFormats.includes('text/html')) {
+            infoFormats = ['text/html'];
+        }
         let topLayer = null;
         let serviceUrl = null;
         try {
