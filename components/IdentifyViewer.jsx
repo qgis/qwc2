@@ -263,7 +263,7 @@ class IdentifyViewer extends React.Component {
             );
         } else if(result.type === "html") {
             resultbox = (
-                <iframe className="identify-result-box" onLoad={ev => this.setIframeContent(ev.target, result.text)}></iframe>
+                <iframe className="identify-result-box" srcDoc={result.text} onLoad={ev => this.setIframeContent(ev.target, result.text)}></iframe>
             );
         } else if(result.properties.htmlContent) {
             if(result.properties.htmlContentInline) {
