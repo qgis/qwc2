@@ -104,7 +104,8 @@ const ServiceLayerUtils = {
             expanded: false,
             boundingBox: bbox,
             visibility: true,
-            opacity: 255
+            opacity: 255,
+            external: true
         };
     },
     getWFSLayers(capabilitiesXml) {

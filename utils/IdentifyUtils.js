@@ -27,7 +27,7 @@ const IdentifyUtils = {
 
         let format = 'text/plain';
         let infoFormats = layer.infoFormats || [];
-        if(infoFormats.includes('text/xml')) {
+        if(infoFormats.includes('text/xml') && (!layer.external || infoFormats.length === 1)) {
             format = 'text/xml';
         } else if(infoFormats.includes('application/json')) {
             format = 'application/json';
@@ -73,7 +73,7 @@ const IdentifyUtils = {
         const version = layer.version || "1.3.0";
 
         let format = 'text/plain';
-        if(layer.infoFormats.includes('text/xml')) {
+        if(layer.infoFormats.includes('text/xml') && (!layer.external || layer.infoFormats.length === 1)) {
             format = 'text/xml';
         } else if(layer.infoFormats.includes('application/json')) {
             format = 'application/json';
