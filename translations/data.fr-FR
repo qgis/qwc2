@@ -13,7 +13,7 @@
         "ThemeSwitcher": "Cartes",
         "Tools": "Outils",
         "IdentifyRegion": "Interroger la région",
-        "Redlining": "Redlining",
+        "Redlining": "Dessiner",
         "Editing": "Editer",
         "Login": "Connexion",
         "Logout": "Déconnexion"
@@ -54,17 +54,17 @@
       "placeholder": "Choisir un fichier..."
     },
     "heightprofile": {
-      "asl": "",
-      "distance": "",
-      "height": ""
+      "asl": "s/mer",
+      "distance": "Distance",
+      "height": "Altitude"
     },
     "identify": {
       "querying": "Identification en cours...",
-      "noresults": "",
-      "export": "",
-      "featureReport": "",
-      "noattributes": "",
-      "title": ""
+      "noresults": "Pas de résultats pour la position sélectionnée",
+      "export": "Exporter",
+      "featureReport": "Données de l'objet",
+      "noattributes": "Pas d'attribut",
+      "title": "Informations sur l'objet"
     },
     "identifyregion": {
       "info": "Dessiner un polygone pour identifier les objets"
