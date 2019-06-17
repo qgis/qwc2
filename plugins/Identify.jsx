@@ -82,7 +82,7 @@ class Identify extends React.Component {
         this.props.purgeResults();
     }
     render() {
-        if (!this.props.enabled || this.props.requests.length === 0) {
+        if (this.props.requests.length === 0) {
             return null;
         }
         let missingResponses = this.props.requests.length - this.props.responses.length;

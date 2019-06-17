@@ -68,7 +68,7 @@ class IdentifyRegion extends React.Component {
         if(poly.length < 1 || !queryLayers) {
             return;
         }
-        this.props.setCurrentTask(null);
+        this.props.changeSelectionState({reset: true});
         if(this.props.useWfs) {
             let bbox = [poly[0][0], poly[0][1], poly[0][0], poly[0][1]];
             for(let i = 1; i < poly.length; ++i) {
