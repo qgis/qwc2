@@ -13,10 +13,10 @@
         "ThemeSwitcher": "Cartes",
         "Tools": "Outils",
         "IdentifyRegion": "Interroger la région",
-        "Redlining": "Redlining",
+        "Redlining": "Dessiner",
         "Editing": "Editer",
-        "Login": "Login",
-        "Logout": "Logout"
+        "Login": "Connexion",
+        "Logout": "Déconnexion"
       },
       "menulabel": "Cartes et outils"
     },
@@ -54,17 +54,17 @@
       "placeholder": "Choisir un fichier..."
     },
     "heightprofile": {
-      "asl": "",
-      "distance": "",
-      "height": ""
+      "asl": "s/mer",
+      "distance": "Distance",
+      "height": "Altitude"
     },
     "identify": {
       "querying": "Identification en cours...",
-      "noresults": "",
-      "export": "",
-      "featureReport": "",
-      "noattributes": "",
-      "title": ""
+      "noresults": "Pas de résultats pour la position sélectionnée",
+      "export": "Exporter",
+      "featureReport": "Données de l'objet",
+      "noattributes": "Pas d'attribut",
+      "title": "Informations sur l'objet"
     },
     "identifyregion": {
       "info": "Dessiner un polygone pour identifier les objets"
@@ -74,7 +74,7 @@
       "filter": "Filtrer",
       "connect": "Connecter",
       "nofeatures": "Aucune entité ne peut être importée.",
-      "noresults": "",
+      "noresults": "Pas de résultat ou URL non valide",
       "urlplaceholder": "Entrer l'URL d'un WMS, WFS, KML..."
     },
     "layerinfo": {
@@ -94,22 +94,22 @@
       "transparency": "Transparence"
     },
     "locate": {
-      "metersUnit": "",
-      "feetUnit": "",
-      "popup": "",
+      "metersUnit": "mètre",
+      "feetUnit": "pied",
+      "popup": "Dans un préimètre de {distance} {unit} de ce point",
       "statustooltip": {
-        "DISABLED": "",
-        "LOCATING": "",
-        "ENABLED": "",
-        "FOLLOWING": "",
-        "PERMISSION_DENIED": ""
+        "DISABLED": "Position: désactivée",
+        "LOCATING": "Position: en cours...",
+        "ENABLED": "Position: activée",
+        "FOLLOWING": "Position: bouger avec le GPS",
+        "PERMISSION_DENIED": "Position: accès refusé"
       }
     },
     "map": {
       "loading": "Chargement de la carte..."
     },
     "mapinfotooltip": {
-      "elevation": "",
+      "elevation": "Altitude",
       "title": "Position"
     },
     "measureComponent": {
@@ -121,16 +121,16 @@
     "print": {
       "layout": "Format",
       "grid": "Grille",
-      "maximize": "",
-      "minimize": "",
+      "maximize": "Maximiser",
+      "minimize": "Minimiser",
       "nolayouts": "Il n'y a pas de mise en page disponible pour le thème choisi.",
       "notheme": "Pas de thème sélectionné",
       "resolution": "Résolution",
       "rotation": "Rotation",
       "scale": "Echelle",
       "submit": "Créer le PDF",
-      "output": "",
-      "wait": ""
+      "output": "Impression",
+      "wait": "Veuillez patienter..."
     },
     "rasterexport": {
       "format": "Format:",
@@ -138,20 +138,20 @@
       "selectinfo": "Dessiner un rectangle pour définir la zone à exporter"
     },
     "redlining": {
-      "add": "",
+      "add": "Ajouter",
       "border": "Bordure",
       "buffer": "",
       "bufferlayername": "",
-      "bufferdistance": "",
-      "bufferlayer": "",
-      "buffercompute": "",
+      "bufferdistance": "Distance",
+      "bufferlayer": "Calque cible",
+      "buffercompute": "Calculer",
       "bufferselectfeature": "",
-      "delete": "",
-      "draw": "",
-      "edit": "",
+      "delete": "Effacer",
+      "draw": "Dessiner",
+      "edit": "Editer",
       "fill": "Remplissage",
       "label": "Texte",
-      "layer": "",
+      "layer": "Couche",
       "line": "Ligne",
       "outline": "Contour",
       "pick": "Choisir",
@@ -163,12 +163,12 @@
     },
     "search": {
       "more": "Plus...",
-      "search": "",
-      "searchall": "",
-      "all": "",
+      "search": "Chercher",
+      "searchall": "Rechercher un lieu ou ajouter une carte...",
+      "all": "Tous",
       "themes": "Cartes",
-      "invisiblelayer": "",
-      "enablelayer": ""
+      "invisiblelayer": "Le résultat est sur un calque désactivé",
+      "enablelayer": "Activer le calque"
     },
     "share": {
       "directLinkTitle": "Via un lien direct",
@@ -177,14 +177,14 @@
       "socialIntro": "Via votre réseau social favori"
     },
     "tooltip": {
-      "home": "",
-      "zoomin": "",
-      "zoomout": "",
-      "background": ""
+      "home": "Afficher toute la carte",
+      "zoomin": "Zoomer",
+      "zoomout": "Dézoomer",
+      "background": "Changer de fond"
     },
     "themeswitcher": {
       "filter": "Filtre",
-      "addtotheme": ""
+      "addtotheme": "Ajouter au thème actuel"
     }
   }
 }
