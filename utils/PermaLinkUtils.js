@@ -25,7 +25,7 @@ const UrlParams = {
            }
        }
        delete urlObj.search;
-       history.pushState({id: urlObj.host}, '', url.format(urlObj));
+       history.replaceState({id: urlObj.host}, '', url.format(urlObj));
    },
    getParam: function(key) {
        var urlObj = url.parse(window.location.href, true);
