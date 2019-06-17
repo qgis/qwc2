@@ -15,8 +15,8 @@
         "IdentifyRegion": "Interroger la région",
         "Redlining": "Redlining",
         "Editing": "Editer",
-        "Login": "Login",
-        "Logout": "Logout"
+        "Login": "Connexion",
+        "Logout": "Déconnexion"
       },
       "menulabel": "Cartes et outils"
     },
