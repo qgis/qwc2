@@ -74,7 +74,7 @@
       "filter": "Filtrer",
       "connect": "Connecter",
       "nofeatures": "Aucune entité ne peut être importée.",
-      "noresults": "",
+      "noresults": "Pas de résultat ou URL non valide",
       "urlplaceholder": "Entrer l'URL d'un WMS, WFS, KML..."
     },
     "layerinfo": {
@@ -94,15 +94,15 @@
       "transparency": "Transparence"
     },
     "locate": {
-      "metersUnit": "",
-      "feetUnit": "",
-      "popup": "",
+      "metersUnit": "mètre",
+      "feetUnit": "pied",
+      "popup": "Dans un préimètre de {distance} {unit} de ce point",
       "statustooltip": {
-        "DISABLED": "",
-        "LOCATING": "",
-        "ENABLED": "",
-        "FOLLOWING": "",
-        "PERMISSION_DENIED": ""
+        "DISABLED": "Position: désactivée",
+        "LOCATING": "Position: en cours...",
+        "ENABLED": "Position: activée",
+        "FOLLOWING": "Position: bouger avec le GPS",
+        "PERMISSION_DENIED": "Position: accès refusé"
       }
     },
     "map": {
