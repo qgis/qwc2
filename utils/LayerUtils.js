@@ -358,6 +358,18 @@ const LayerUtils = {
         }
         return null;
     },
+    sublayerVisible(layer, sublayerpath) {
+        let visible = layer.visibility !== false;
+        let sublayer = layer;
+        for(let index of sublayerpath) {
+            sublayer = sublayer.sublayers[index];
+            visible &= sublayer.visibility !== false;
+            if(!visible) {
+                return false;
+            }
+        }
+        return true;
+    },
     cloneLayer(layer, sublayerpath) {
         let newlayer = assign({}, layer);
         let cur = newlayer;
