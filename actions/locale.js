@@ -41,6 +41,7 @@ function loadLocale(translationFolder, language) {
                 try {
                     JSON.parse(response.data);
                 } catch(e) {
+                    console.warn('Locale file broken  for (' + language + '): ' + e.message);
                     dispatch(localeError('Locale file broken  for (' + language + '): ' + e.message));
                 }
             } else {
