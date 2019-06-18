@@ -37,7 +37,7 @@ class AccordeonWidget extends React.Component {
                 </div>
                 {this.state.currentSections.includes(section.key) ? (
                     <div className="accordeon-section-body">
-                        <section.widget />
+                        <section.widget {...(section.params || {})}/>
                     </div>
                 ) : null}
             </div>
