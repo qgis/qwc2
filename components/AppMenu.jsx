@@ -88,7 +88,7 @@ class AppMenu extends React.Component {
                     );
                 } else {
                     return (
-                        <li key={item.key + (item.mode || "")} onClick={ev => this.onMenuitemClicked(item)} >
+                        <li className="appmenu-leaf" key={item.key + (item.mode || "")} onClick={ev => this.onMenuitemClicked(item)} >
                             <Icon icon={item.icon} size="xlarge"/>
                             <span className="appmenu-leaf-label">
                                 <Message msgId={"appmenu.items." + item.key} />
