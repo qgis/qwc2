@@ -30,7 +30,7 @@ const PluginsContainer = require('./PluginsContainer');
 const {changeBrowserProperties} = require('../actions/browser');
 const {loadLocale} = require('../actions/locale');
 const {localConfigLoaded} = require('../actions/localConfig');
-const {restoreLayerState, replacePlaceholderLayer} = require('../actions/layers');
+const {addLayer} = require('../actions/layers');
 const {changeSearch} = require('../actions/search');
 const {themesLoaded,setCurrentTheme} = require('../actions/theme');
 
@@ -39,7 +39,6 @@ const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const LocaleUtils = require('../utils/LocaleUtils');
 const MapUtils = require('../utils/MapUtils');
 const PluginsUtils = require('../utils/PluginsUtils');
-const ServiceLayerUtils = require('../utils/ServiceLayerUtils');
 const LayerUtils = require('../utils/LayerUtils');
 const {UrlParams, resolvePermaLink} = require('../utils/PermaLinkUtils');
 const ThemeUtils = require('../utils/ThemeUtils');
@@ -55,8 +54,7 @@ class AppInitComponent extends React.Component {
         themesLoaded: PropTypes.func,
         changeSearch: PropTypes.func,
         setCurrentTheme: PropTypes.func,
-        restoreLayerState: PropTypes.func,
-        replacePlaceholderLayer: PropTypes.func
+        addLayer: PropTypes.func
     }
     constructor(props) {
         super(props);
@@ -90,7 +88,7 @@ class AppInitComponent extends React.Component {
                     theme = ThemeUtils.getThemeById(themes, themes.defaultTheme);
                     params = {};
                 }
-                let visibleLayers = params.l ? params.l.split(",").filter(entry => entry) : null;
+                let layerParams = params.l ? params.l.split(",").filter(entry => entry) : null;
                 let visibleBgLayer = params.bl || params.bl === '' ? params.bl : null;
                 let initialView = null;
                 if(params.c && params.s !== undefined) {
@@ -118,71 +116,18 @@ class AppInitComponent extends React.Component {
 
                 // Clear all params
                 UrlParams.updateParams({k: undefined, t: undefined, l: undefined, bl: '', c: undefined, s: undefined, e: undefined, crs: undefined, st: undefined, sp: undefined});
-                // Restore map (invoking appConfig.layerRestorer to handle missing layers if necessary)
-                if(visibleLayers && this.props.appConfig.themeLayerRestorer) {
-                    let layerNames = [];
-                    LayerUtils.collectWMSSublayerParams(theme, layerNames, [], []);
-                    let visibleLayerNames = visibleLayers.map(entry => LayerUtils.splitLayerUrlParam(entry))
-                                 .filter(entry => entry.type === 'theme')
-                                 .map(entry => entry.name);
-                    let missingLayers = visibleLayerNames.filter(entry => !layerNames.includes(entry));
-                    if(!isEmpty(missingLayers)) {
-                        this.props.appConfig.themeLayerRestorer(missingLayers, theme, (newThemeSublayers, newVisibleLayers) => {
-                            let newTheme = LayerUtils.mergeSubLayers(theme, {sublayers: newThemeSublayers});
-                            if(newVisibleLayers) {
-                                visibleLayers = visibleLayers.reduce((res, layer) => {
-                                    return layer in newVisibleLayers ? [...res, ...newVisibleLayers[layer]] : [...res, layer];
-                                }, []);
-                            }
-                            this.restoreMap(newTheme, themes, initialView, visibleLayers, visibleBgLayer, state, searchText, searchProviders);
-                        });
-                    } else {
-                        this.restoreMap(theme, themes, initialView, visibleLayers, visibleBgLayer, state, searchText, searchProviders);
-                    }
-                } else {
-                    this.restoreMap(theme, themes, initialView, visibleLayers, visibleBgLayer, state, searchText, searchProviders);
+
+                // Restore search
+                this.props.changeSearch(searchText, searchProviders);
+
+                // Restore theme and layers
+                try {
+                    this.props.setCurrentTheme(theme, themes, false, initialView, layerParams, visibleBgLayer, state.layers, this.props.appConfig.themeLayerRestorer);
+                } catch(e) {
+                    console.log(e.stack);
                 }
             });
         });
-    }
-    restoreMap = (theme, themes, initialView, visibleLayers, visibleBgLayer, state, searchText, searchProviders) => {
-        // Restore search
-        this.props.changeSearch(searchText, searchProviders);
-
-        // Restore theme and layers
-        try {
-            this.props.setCurrentTheme(theme, themes, false, initialView, visibleLayers, visibleBgLayer, state.themesublayers);
-        } catch(e) {
-            console.log(e.stack);
-        }
-
-        // Restore layers from permalink state
-        if(state.layers) {
-            this.props.restoreLayerState(state.layers);
-        }
-
-        // Gather external layers to restore
-        let externalLayers = {};
-        for(let i = 0, n = (visibleLayers || []).length; i < n; ++i) {
-            let layer = LayerUtils.splitLayerUrlParam(visibleLayers[i]);
-            if(layer.type !== 'theme') {
-                let key = layer.type + ":" + layer.url;
-                (externalLayers[key] = externalLayers[key] || []).push({
-                    name: layer.name,
-                    opacity: layer.opacity
-                });
-            }
-        }
-        for(let key of Object.keys(externalLayers)) {
-            let service = key.slice(0, 3);
-            let serviceUrl = key.slice(4);
-            ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], this.restoreExternalLayer);
-        }
-
-
-    }
-    restoreExternalLayer = (source, layer) => {
-        this.props.replacePlaceholderLayer(source, layer)
     }
     render() {
         return null;
@@ -196,8 +141,7 @@ let AppInit = connect(state => ({
     themesLoaded: themesLoaded,
     changeSearch: changeSearch,
     setCurrentTheme: setCurrentTheme,
-    restoreLayerState: restoreLayerState,
-    replacePlaceholderLayer: replacePlaceholderLayer
+    addLayer: addLayer
 })(AppInitComponent);
 
 

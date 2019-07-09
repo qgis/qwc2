@@ -14,57 +14,88 @@ const url = require('url');
 const {LayerRole} = require('../actions/layers');
 
 const LayerUtils = {
-    restoreVisibleLayers: function(sublayers, initiallayers, initialopacities) {
-        let newsublayers = sublayers.slice(0);
-        newsublayers.map((sublayer, idx) => {
-            if(sublayer.sublayers) {
-                // Is group
-                newsublayers[idx] = assign({}, sublayer, {sublayers: LayerUtils.restoreVisibleLayers(sublayer.sublayers, initiallayers, initialopacities)});
+    restoreLayerParams: function(themeLayer, layerConfigs, permalinkLayers, externalLayers) {
+        let exploded = LayerUtils.explodeLayers([themeLayer]);
+        // Restore theme layer configuration
+        for(let entry of exploded) {
+            let layerConfig = layerConfigs.find(layer => layer.type === 'theme' && layer.name === entry.sublayer.name);
+            if(layerConfig) {
+                entry.sublayer.opacity = layerConfig.opacity;
+                entry.sublayer.visibility = layerConfig.visibility;
             } else {
-                let idx2 = initiallayers.indexOf(sublayer.name);
-                newsublayers[idx] = assign({}, sublayer, {
-                    visibility: idx2 >= 0,
-                    opacity: idx2 >= 0 ? initialopacities[idx2] : sublayer.opacity
-                });
+                entry.sublayer.visibility = false;
             }
+        }
+        // Create placeholders for external layers to be added in front
+        let external = [];
+        for(let layerConfig of layerConfigs) {
+            if(layerConfig.type !== 'theme') {
+                external = external.concat(LayerUtils.createExternalLayerPlaceholder(layerConfig, externalLayers));
+            }
+        }
+        exploded = [...external, ...exploded];
+        LayerUtils.insertPermalinkLayers(exploded, permalinkLayers);
+        return LayerUtils.implodeLayers(exploded);
+    },
+    restoreOrderedLayerParams: function(themeLayer, layerConfigs, permalinkLayers, externalLayers) {
+        let exploded = LayerUtils.explodeLayers([themeLayer]);
+        let reordered = [];
+        // Iterate over layer configs and reorder items accordingly, create external layer placeholders as neccessary
+        for(let layerConfig of layerConfigs) {
+            if(layerConfig.type === 'theme') {
+                let entry = exploded.find(entry => entry.sublayer.name === layerConfig.name);
+                if(entry) {
+                    entry.sublayer.opacity = layerConfig.opacity;
+                    entry.sublayer.visibility = layerConfig.visibility;
+                    reordered.push(entry);
+                }
+            } else {
+                reordered = reordered.concat(LayerUtils.createExternalLayerPlaceholder(layerConfig, externalLayers));
+            }
+        }
+        LayerUtils.insertPermalinkLayers(reordered, permalinkLayers);
+        return LayerUtils.implodeLayers(reordered);
+    },
+    createExternalLayerPlaceholder: function(layerConfig, externalLayers) {
+        let key = layerConfig.type + ":" + layerConfig.url;
+        (externalLayers[key] = externalLayers[key] || []).push({
+            name: layerConfig.name,
+            opacity: layerConfig.opacity,
+            visibility: layerConfig.visibility
         });
-        return newsublayers;
+        return LayerUtils.explodeLayers([{
+            type: "placeholder",
+            title: layerConfig.name,
+            role: LayerRole.USERLAYER,
+            loading: true,
+            source: layerConfig.type + ':' + layerConfig.url + '#' + layerConfig.name,
+            refid: uuid.v4(),
+            uuid: uuid.v4()
+        }]);
     },
-    restoreReorderedVisibleLayers: function(sublayers, initiallayers, initialopacities) {
-        let exploded = LayerUtils.explodeLayers([{sublayers: sublayers}]);
-        // Reorder according to order in initiallayers
-        let reordered = 0;
-        for(let i = 0; i < initiallayers.length; ++i) {
-            let idx = exploded.slice(reordered).findIndex(entry => entry.sublayer.name === initiallayers[i]);
-            if(idx != -1) {
-                idx += reordered;
-                let entry = exploded.splice(idx, 1)[0];
-                exploded.splice(0, 0, entry);
-                entry.sublayer.opacity = initialopacities[i];
-                entry.sublayer.visibility = true;
-                ++reordered;
-            }
+    insertPermalinkLayers: function(exploded, layers) {
+        for(let layer of layers || []) {
+            let insLayer = LayerUtils.explodeLayers([{...layer}])[0];
+            delete insLayer.layer.pos;
+            exploded.splice(layer.pos, 0, insLayer);
         }
-        // All non-reordered entries correspond to layers which were not in the initiallayers list: mark them hidden
-        for(let i = reordered; i < exploded.length; ++i) {
-            exploded[i].sublayer.visibility = false;
-        }
-        // Re-assemble layers
-        return LayerUtils.implodeLayers(exploded)[0].sublayers;
     },
-    collectWMSSublayerParams: function(sublayer, layerNames, opacities, queryable) {
+    collectWMSSublayerParams: function(sublayer, layerNames, opacities, queryable, visibilities) {
         let visibility = sublayer.visibility === undefined ? true : sublayer.visibility;
-        if(visibility) {
+        if(visibility || visibilities) {
             if(!isEmpty(sublayer.sublayers)) {
                 // Is group
                 sublayer.sublayers.map(sublayer => {
-                    LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, queryable)
+                    LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, queryable, visibilities)
                 });
             } else {
                 layerNames.push(sublayer.name);
                 opacities.push(Number.isInteger(sublayer.opacity) ? sublayer.opacity : 255);
                 if(sublayer.queryable) {
                     queryable.push(sublayer.name)
+                }
+                if(visibilities) {
+                    visibilities.push(visibility);
                 }
             }
         }
@@ -117,29 +148,39 @@ const LayerUtils = {
     buildWMSLayerUrlParam(layers) {
         let layernames = [];
         let opacities = [];
+        let visibilities = [];
+        let queryable = [];
         for(let layer of layers) {
             if(layer.role === LayerRole.THEME) {
-                layernames.push(...layer.params.LAYERS.split(","));
-                opacities.push(...(layer.params.OPACITIES || "").split(",").map(entry => parseFloat(entry)));
+                LayerUtils.collectWMSSublayerParams(layer, layernames, opacities, queryable, visibilities);
             } else if(layer.role === LayerRole.USERLAYER && (layer.type === "wms" || layer.type === "wfs")) {
                 layernames.push(layer.type + ':' + layer.url + "#" + layer.name);
                 opacities.push(layer.opacity);
+                visibilities.push(layer.visibility);
             }
         }
         return layernames.map((layername, idx) => {
-            if(idx < opacities.length && opacities[idx] < 255){
-                return layername + "[" + (100 - Math.round(opacities[idx] / 255. * 100)) + "]";
-            } else {
-                return layername;
+            let param = layername;
+            if(opacities[idx] < 255){
+                param += "[" + (100 - Math.round(opacities[idx] / 255. * 100)) + "]";
             }
+            if(!visibilities[idx]) {
+                param += '!';
+            }
+            return param;
         }).join(",");
     },
     splitLayerUrlParam(entry) {
         const nameOpacityPattern = /([^\[]+)\[(\d+)]/;
         let type = 'theme';
         let url = null;
-        let name = entry;
         let opacity = 255;
+        let visibility = true;
+        if(entry.endsWith('!')) {
+            visibility = false;
+            entry = entry.slice(0, -1);
+        }
+        let name = entry;
         let match = nameOpacityPattern.exec(entry);
         if(match) {
             name = match[1];
@@ -151,7 +192,7 @@ const LayerUtils = {
             url = name.slice(4, pos);
             name = name.slice(pos + 1);
         }
-        return {type, url, name, opacity};
+        return {type, url, name, opacity, visibility};
     },
     removeLayer(layers, layer, sublayerpath, swipeActive) {
         // Extract foreground layers

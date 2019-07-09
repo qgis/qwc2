@@ -59,30 +59,10 @@ const ThemeUtils = {
         }
         return bgLayers;
     },
-    createThemeLayer: function(theme, visibleLayers=null, role=LayerRole.THEME) {
+    createThemeLayer: function(theme, role=LayerRole.THEME) {
         let dummy = {sublayers: theme.sublayers};
         LayerUtils.addSublayerIDs(dummy);
         let sublayers = dummy.sublayers;
-        if(visibleLayers) {
-            let layers = [];
-            let opacities = [];
-            let entryMatch = /([^\[]+)\[(\d+)]/;
-            visibleLayers.map(entry => {
-                let match = entryMatch.exec(entry);
-                if(match) {
-                    layers.push(match[1]);
-                    opacities.push(Math.round(255 - parseFloat(match[2]) / 100 * 255));
-                } else {
-                    layers.push(entry);
-                    opacities.push(255);
-                }
-            });
-            if(ThemeUtils.layerReorderingAllowed(theme) !== true) {
-                sublayers = LayerUtils.restoreVisibleLayers(sublayers, layers, opacities);
-            } else {
-                sublayers = LayerUtils.restoreReorderedVisibleLayers(sublayers, layers, opacities);
-            }
-        }
         let layer = {
             id: theme.name + Date.now().toString(),
             type: "wms",

@@ -8,12 +8,14 @@
 
 const assign = require('object-assign');
 const uuid = require('uuid');
+const isEmpty = require('lodash.isempty');
 const ConfigUtils = require("../utils/ConfigUtils");
 const CoordinatesUtils = require("../utils/CoordinatesUtils");
 const MapUtils = require("../utils/MapUtils");
-const ThemeUtils = require("../utils/ThemeUtils");
 const LayerUtils = require("../utils/LayerUtils");
-const {LayerRole, addLayer, removeLayer, removeAllLayers, setSwipe} = require("./layers");
+const ServiceLayerUtils = require('../utils/ServiceLayerUtils');
+const ThemeUtils = require("../utils/ThemeUtils");
+const {LayerRole, addLayer, removeLayer, removeAllLayers, replacePlaceholderLayer, setSwipe} = require("./layers");
 const {configureMap} = require("./map");
 
 const THEMES_LOADED = 'THEMES_LOADED';
@@ -35,7 +37,7 @@ function restoreDefaultTheme() {
     };
 }
 
-function setCurrentTheme(theme, themes, preserve=true, initialView=null, visibleLayers=null, visibleBgLayer=null) {
+function setCurrentTheme(theme, themes, preserve=true, initialView=null, layerParams=null, visibleBgLayer=null, permalinkLayers=null, themeLayerRestorer=null) {
     return (dispatch, getState) => {
         dispatch({
             type: SWITCHING_THEME,
@@ -95,59 +97,79 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, visible
             dispatch(addLayer(bgLayer));
         }
 
-        // Configure theme layer with visible sublayers
-        let themeLayer = ThemeUtils.createThemeLayer(theme, visibleLayers);
+        let layerConfigs = layerParams ? layerParams.map(param => LayerUtils.splitLayerUrlParam(param)) : null;
 
-        // Restore external visible layers
-        let exploded = LayerUtils.explodeLayers([themeLayer]);
-
-        // - Filter list of visible layers to only include theme layers which exist as well as external layers
-        visibleLayers = (visibleLayers || []).slice(0).reverse();
-        visibleLayers.filter(entry => {
-            let isThemeSublayer = exploded.find(themeSublayer => themeSublayer.sublayer.name === entry);
-            let isExternalLayer = LayerUtils.splitLayerUrlParam(entry).type !== 'theme';
-            return (isThemeSublayer || isExternalLayer);
-        });
-        // - Iterate over visible layers, and create placeholders for external layers
-        // (placeholders will be replaced as soon as capabilities of external layers are available, see StandardApp.jsx)
-        let idx = 0;
-        for(let i = 0; i < visibleLayers.length; ++i) {
-            let visibleLayer = LayerUtils.splitLayerUrlParam(visibleLayers[i]);
-            if(idx >= exploded.length || exploded[idx].sublayer.name !== visibleLayer.name) {
-                if(visibleLayer.type === 'theme') {
-                    continue;
-                    // Missing theme layer, ignore
+        // Restore missing theme layers
+        let missingThemeLayers = null;
+        if(layerConfigs) {
+            let layerNames = [];
+            LayerUtils.collectWMSSublayerParams(theme, layerNames, [], []);
+            missingThemeLayers = layerConfigs.reduce((missing, layerConfig) => {
+                if(!layerNames.includes(layerConfig.name)) {
+                    return {...missing, [layerConfig.name]: layerConfig};
                 } else {
-                    let placeholder = LayerUtils.explodeLayers([{
-                        type: "placeholder",
-                        title: visibleLayer.name,
-                        role: LayerRole.USERLAYER,
-                        loading: true,
-                        source: visibleLayer.type + ':' + visibleLayer.url + '#' + visibleLayer.name,
-                        refid: uuid.v4(),
-                        uuid: uuid.v4()
-                    }]);
-                    exploded.splice(idx, 0, placeholder[0]);
+                    return missing;
                 }
-            }
-            ++idx;
+            }, {});
         }
-        // - Add layers
-        let layers = LayerUtils.implodeLayers(exploded);
-        for(let layer of layers) {
-            dispatch(addLayer(layer));
+        if(themeLayerRestorer && !isEmpty(missingThemeLayers)) {
+            themeLayerRestorer(Object.keys(missingThemeLayers), theme, (newLayers, newLayerNames) => {
+                let newTheme = LayerUtils.mergeSubLayers(theme, {sublayers: newLayers});
+                if(newLayerNames) {
+                    layerConfigs = layerConfigs.reduce((res, layerConfig) => {
+                        if(layerConfig.name in newLayerNames) {
+                            return [...res, ...newLayerNames[layerConfig.name].map(name => ({...layerConfig, name}))];
+                        } else {
+                            return [...res, layerConfig];
+                        }
+                    }, []);
+                }
+                finishThemeSetup(dispatch, newTheme, layerConfigs, permalinkLayers);
+            });
+        } else {
+            finishThemeSetup(dispatch, theme, layerConfigs, permalinkLayers);
         }
+    }
+}
 
-        dispatch({
-            type: SET_CURRENT_THEME,
-            theme: theme,
-            layer: themeLayer.id
+function finishThemeSetup(dispatch, theme, layerConfigs, permalinkLayers)
+{
+    // Create layer
+    let themeLayer = ThemeUtils.createThemeLayer(theme);
+    let layers = [themeLayer];
+
+    // Restore theme layer configuration, create placeholders for missing layers
+    let externalLayers = {};
+    if(layerConfigs) {
+        if(ThemeUtils.layerReorderingAllowed(theme) !== true) {
+            layers = LayerUtils.restoreLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
+        } else {
+            layers = LayerUtils.restoreOrderedLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
+        }
+    }
+
+    for(let layer of layers.reverse()) {
+        dispatch(addLayer(layer, 0));
+    }
+
+    // Restore external layers
+    for(let key of Object.keys(externalLayers)) {
+        let service = key.slice(0, 3);
+        let serviceUrl = key.slice(4);
+        ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], (source, layer) => {
+            dispatch(replacePlaceholderLayer(source, layer));
         });
-        dispatch({
-            type: SWITCHING_THEME,
-            switching: false
-        });
-    };
+    }
+
+    dispatch({
+        type: SET_CURRENT_THEME,
+        theme: theme,
+        layer: themeLayer.id
+    });
+    dispatch({
+        type: SWITCHING_THEME,
+        switching: false
+    });
 }
 
 module.exports = {

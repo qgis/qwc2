@@ -228,6 +228,7 @@ const ServiceLayerUtils = {
                 if(result) {
                     assign(result, {
                         opacity: layer.opacity,
+                        visibility: layer.visibility,
                         id: layer.name + Date.now().toString(),
                         role: LayerRole.USERLAYER
                     });
