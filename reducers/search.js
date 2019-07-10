@@ -18,7 +18,7 @@ function search(state = {
         case CLEAR_SEARCH:
             return {...state, text: '', currentResult: null};
         case SEARCH_CHANGE:
-            UrlParams.updateParams({st: action.text, sp: action.providers ? action.providers.join(",") : undefined});
+            UrlParams.updateParams({st: action.text || undefined, sp: action.providers ? action.providers.join(",") : undefined});
             return {text: action.text, providers: action.providers};
         case SEARCH_SET_REQUEST:
             return assign({}, state, {requestId: action.id, pendingProviders: action.providers, startup: action.startup, results: []});
