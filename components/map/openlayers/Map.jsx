@@ -23,6 +23,7 @@ class OpenlayersMap extends React.Component {
         projection: PropTypes.string,
         onMapViewChanges: PropTypes.func,
         onClick: PropTypes.func,
+        onFeatureClick: PropTypes.func,
         mapOptions: PropTypes.object,
         zoomControl: PropTypes.bool,
         mousePointer: PropTypes.string,
@@ -37,6 +38,7 @@ class OpenlayersMap extends React.Component {
         id: 'map',
         onMapViewChanges: () => {},
         onClick: () => {},
+        onFeatureClick: () => {},
         onMouseMove: () => {},
         setLayerLoading: () => {},
         mapOptions: {},
@@ -87,33 +89,71 @@ class OpenlayersMap extends React.Component {
         }
         map.on('moveend', this.updateMapInfoState);
         map.on('click', (event) => {
-            if(!this.props.identifyEnabled && this.map.getFeaturesAtPixel(event.pixel)) {
-                // Ignore
-                return;
-            }
-            this.props.onClick({
-                coordinate: this.map.getEventCoordinate(event.originalEvent),
-                pixel: this.map.getEventPixel(event.originalEvent),
-                modifiers: {
-                    alt: event.originalEvent.altKey,
-                    ctrl: event.originalEvent.ctrlKey,
-                    shift: event.originalEvent.shiftKey
-                },
-                button: 0
+            let features = [];
+            this.map.forEachFeatureAtPixel(event.pixel, (feature, layer) => {
+                features.push([feature, layer]);
             });
+            if(!this.props.identifyEnabled && !isEmpty(features)) {
+                let feature = features[0][0];
+                let layer = features[0][1];
+                this.props.onFeatureClick({
+                    coordinate: this.map.getEventCoordinate(event.originalEvent),
+                    pixel: this.map.getEventPixel(event.originalEvent),
+                    modifiers: {
+                        alt: event.originalEvent.altKey,
+                        ctrl: event.originalEvent.ctrlKey,
+                        shift: event.originalEvent.shiftKey
+                    },
+                    button: 0,
+                    layer: layer.get('id'),
+                    feature: feature.getId()
+                });
+            } else {
+                this.props.onClick({
+                    coordinate: this.map.getEventCoordinate(event.originalEvent),
+                    pixel: this.map.getEventPixel(event.originalEvent),
+                    modifiers: {
+                        alt: event.originalEvent.altKey,
+                        ctrl: event.originalEvent.ctrlKey,
+                        shift: event.originalEvent.shiftKey
+                    },
+                    button: 0
+                });
+            }
         });
         map.getViewport().addEventListener('contextmenu', (event)  => {
             event.preventDefault();
-            this.props.onClick({
-                coordinate: this.map.getEventCoordinate(event),
-                pixel: this.map.getEventPixel(event),
-                modifiers: {
-                    alt: event.altKey,
-                    ctrl: event.ctrlKey,
-                    shift: event.shiftKey
-                },
-                button: 2
+            let features = [];
+            this.map.forEachFeatureAtPixel(this.map.getEventPixel(event), (feature, layer) => {
+                features.push([feature, layer]);
             });
+            if(!this.props.identifyEnabled && !isEmpty(features)) {
+                let feature = features[0][0];
+                let layer = features[0][1];
+                this.props.onFeatureClick({
+                    coordinate: this.map.getEventCoordinate(event),
+                    pixel: this.map.getEventPixel(event),
+                    modifiers: {
+                        alt: event.altKey,
+                        ctrl: event.ctrlKey,
+                        shift: event.shiftKey
+                    },
+                    button: 2,
+                    layer: layer.get('id'),
+                    feature: feature.getId()
+                });
+            } else {
+                this.props.onClick({
+                    coordinate: this.map.getEventCoordinate(event),
+                    pixel: this.map.getEventPixel(event),
+                    modifiers: {
+                        alt: event.altKey,
+                        ctrl: event.ctrlKey,
+                        shift: event.shiftKey
+                    },
+                    button: 2
+                });
+            }
             return false;
         });
         map.on('pointermove', (event) => {

@@ -10,6 +10,7 @@
 const CHANGE_MAP_VIEW = 'CHANGE_MAP_VIEW';
 const CONFIGURE_MAP = 'CONFIGURE_MAP';
 const CLICK_ON_MAP = 'CLICK_ON_MAP';
+const CLICK_FEATURE_ON_MAP = 'CLICK_FEATURE_ON_MAP';
 const CHANGE_ZOOM_LVL = 'CHANGE_ZOOM_LVL';
 const PAN_TO = 'PAN_TO';
 const ZOOM_TO_EXTENT = 'ZOOM_TO_EXTENT';
@@ -49,6 +50,13 @@ function configureMap(crs, scales, view) {
 function clickOnMap(point) {
     return {
         type: CLICK_ON_MAP,
+        point: point
+    };
+}
+
+function clickFeatureOnMap(point) {
+    return {
+        type: CLICK_FEATURE_ON_MAP,
         point: point
     };
 }
@@ -103,6 +111,7 @@ module.exports = {
     CHANGE_MAP_VIEW,
     CONFIGURE_MAP,
     CLICK_ON_MAP,
+    CLICK_FEATURE_ON_MAP,
     CHANGE_ZOOM_LVL,
     PAN_TO,
     ZOOM_TO_EXTENT,
@@ -112,6 +121,7 @@ module.exports = {
     changeMapView,
     configureMap,
     clickOnMap,
+    clickFeatureOnMap,
     changeZoomLevel,
     zoomToExtent,
     zoomToPoint,

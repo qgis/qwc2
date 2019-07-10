@@ -7,8 +7,8 @@
  */
 
 const {
-    CHANGE_MAP_VIEW, CONFIGURE_MAP, CHANGE_ZOOM_LVL, ZOOM_TO_EXTENT,
-    ZOOM_TO_POINT, PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, TOGGLE_MAPTIPS
+    CHANGE_MAP_VIEW, CONFIGURE_MAP, CHANGE_ZOOM_LVL, ZOOM_TO_EXTENT, ZOOM_TO_POINT,
+    PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, CLICK_FEATURE_ON_MAP, TOGGLE_MAPTIPS
 } = require('../actions/map');
 
 const assign = require('object-assign');
@@ -109,6 +109,9 @@ function map(state = defaultState, action) {
         }
         case CLICK_ON_MAP: {
             return assign({}, state, {clickPoint: action.point});
+        }
+        case CLICK_FEATURE_ON_MAP: {
+            return assign({}, state, {clickFeature: action.point});
         }
         case TOGGLE_MAPTIPS: {
             return assign({}, state, {maptips: action.active});
