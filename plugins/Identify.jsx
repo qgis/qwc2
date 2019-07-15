@@ -14,7 +14,6 @@ const IdentifyUtils = require('../utils/IdentifyUtils');
 const Message = require('../components/I18N/Message');
 const {sendIdentifyRequest, purgeIdentifyResults, identifyEmpty} = require('../actions/identify');
 const {LayerRole, addMarker, removeMarker} = require('../actions/layers');
-const ResizeableWindow = require("../components/ResizeableWindow");
 const {IdentifyViewer} = require('../components/IdentifyViewer');
 
 class Identify extends React.Component {
@@ -87,16 +86,14 @@ class Identify extends React.Component {
         }
         let missingResponses = this.props.requests.length - this.props.responses.length;
         return (
-            <ResizeableWindow title="identify.title" icon="info-sign" onClose={this.onClose} initialX={0} initialY={0} initialWidth={this.props.initialWidth} initialHeight={this.props.initialHeight}>
-                <IdentifyViewer role="body"
-                    map={this.props.map}
-                    missingResponses={missingResponses}
-                    responses={this.props.responses}
-                    exportFormat={this.props.exportFormat}
-                    longAttributesDisplay={this.props.longAttributesDisplay}
-                    displayResultTree={this.props.displayResultTree}
-                    attributeCalculator={this.props.attributeCalculator} />
-            </ResizeableWindow>
+            <IdentifyViewer onClose={this.onClose}
+                map={this.props.map}
+                missingResponses={missingResponses}
+                responses={this.props.responses}
+                exportFormat={this.props.exportFormat}
+                longAttributesDisplay={this.props.longAttributesDisplay}
+                displayResultTree={this.props.displayResultTree}
+                attributeCalculator={this.props.attributeCalculator} />
         );
     }
 };

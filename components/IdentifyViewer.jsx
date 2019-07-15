@@ -12,7 +12,8 @@ const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const FileSaver = require('file-saver');
 const {stringify} = require('wellknown');
-const Message = require('../components/I18N/Message');
+const ResizeableWindow = require("./ResizeableWindow");
+const Message = require('./I18N/Message');
 const ConfigUtils = require('../utils/ConfigUtils');
 const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
 const {setActiveLayerInfo} = require('../actions/layerinfo');
@@ -35,7 +36,8 @@ class IdentifyViewer extends React.Component {
         longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
         displayResultTree: PropTypes.bool,
         attributeCalculator: PropTypes.func,
-        setActiveLayerInfo: PropTypes.func
+        setActiveLayerInfo: PropTypes.func,
+        onClose: PropTypes.func
     }
     static defaultProps = {
         longAttributesDisplay: 'ellipsis',
@@ -388,21 +390,21 @@ class IdentifyViewer extends React.Component {
     }
     render() {
         let tree = this.props.displayResultTree;
+        let body = null;
         if(isEmpty(this.state.resultTree)) {
             if(this.props.missingResponses > 0) {
-                return (<div id="IdentifyViewer"><Message msgId="identify.querying" /></div>);
+                body = (<div className="identify-body" role="body"><Message msgId="identify.querying" /></div>);
             } else {
-                return (<div id="IdentifyViewer"><Message msgId="identify.noresults" /></div>);
+                body = (<div className="identify-body" role="body"><Message msgId="identify.noresults" /></div>);
             }
-        }
-        if(tree) {
+        } else if(tree) {
             let contents = Object.keys(this.state.resultTree).map(layer => this.renderLayer(layer));
             let attributes = this.renderResultAttributes(this.state.currentLayer, this.state.currentResult, 'identify-result-frame');
             let resultsContainerStyle = {
                 maxHeight: attributes ? '7em' : 'initial'
             };
-            return (
-                <div id="IdentifyViewer">
+            body = (
+                <div className="identify-body" role="body">
                     <div className="identify-results-container" style={resultsContainerStyle}>
                         <ul>{contents}</ul>
                     </div>
@@ -414,8 +416,8 @@ class IdentifyViewer extends React.Component {
             );
         } else {
             // "el.style.background='inherit'": HACK to trigger an additional repaint, since Safari/Chrome on iOS render the element cut off the first time
-            return (
-                <div id="IdentifyViewer" ref={el => { if(el) el.style.background='inherit'; } }>
+            body = (
+                <div className="identify-body" role="body" ref={el => { if(el) el.style.background='inherit'; } }>
                     <div className="identify-flat-results-list">
                         {Object.keys(this.state.resultTree).map(layer => {
                             let layerResults = this.state.resultTree[layer];
@@ -436,6 +438,11 @@ class IdentifyViewer extends React.Component {
                 </div>
             );
         }
+        return (
+            <ResizeableWindow title="identify.title" icon="info-sign" onClose={this.props.onClose} initialX={0} initialY={0} initialWidth={this.props.initialWidth} initialHeight={this.props.initialHeight}>
+                {body}
+            </ResizeableWindow>
+        );
 
     }
     collectFeatureReportTemplates = (entry) => {

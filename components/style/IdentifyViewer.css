@@ -1,33 +1,33 @@
-#IdentifyViewer {
+div.identify-body {
     background-color: @container_bg@;
     height: 100%;
     display: flex;
     flex-direction: column;
 }
 
-#IdentifyViewer div.identify-results-container {
+div.identify-body div.identify-results-container {
     overflow-y: auto;
     flex: 1 1 50%;
     min-height: 0;
 }
 
-#IdentifyViewer ul {
+div.identify-body ul {
     list-style-type: none;
     padding: 0 0 0.25em 1em;
     font-size: small;
 }
 
-#IdentifyViewer div.identify-layer-result span.clickable,
-#IdentifyViewer li.identify-feature-result span.clickable {
+div.identify-body div.identify-layer-result span.clickable,
+div.identify-body li.identify-feature-result span.clickable {
     cursor: pointer;
 }
 
-#IdentifyViewer li.identify-feature-result span.active {
+div.identify-body li.identify-feature-result span.active {
     font-weight: bold;
 }
 
-#IdentifyViewer span.identify-remove-result,
-#IdentifyViewer span.identify-export-result {
+div.identify-body span.identify-remove-result,
+div.identify-body span.identify-export-result {
     margin: 0 0.25em;
     color: @item_border@;
     cursor: pointer;
@@ -36,34 +36,34 @@
     font-size: large;
 }
 
-#IdentifyViewer li.identify-feature-result:hover span.identify-remove-result,
-#IdentifyViewer div.identify-layer-result:hover span.identify-remove-result,
-#IdentifyViewer li.identify-feature-result span.active+span.identify-remove-result,
-#IdentifyViewer div.identify-layer-result:hover span.identify-remove-result,
-#IdentifyViewer li.identify-feature-result:hover span.identify-export-result,
-#IdentifyViewer div.identify-layer-result:hover span.identify-export-result,
-#IdentifyViewer li.identify-feature-result span.active+span.identify-export-result,
-#IdentifyViewer div.identify-layer-result:hover span.identify-export-result {
+div.identify-body li.identify-feature-result:hover span.identify-remove-result,
+div.identify-body div.identify-layer-result:hover span.identify-remove-result,
+div.identify-body li.identify-feature-result span.active+span.identify-remove-result,
+div.identify-body div.identify-layer-result:hover span.identify-remove-result,
+div.identify-body li.identify-feature-result:hover span.identify-export-result,
+div.identify-body div.identify-layer-result:hover span.identify-export-result,
+div.identify-body li.identify-feature-result span.active+span.identify-export-result,
+div.identify-body div.identify-layer-result:hover span.identify-export-result {
     visibility: visible;
 }
 
-#IdentifyViewer li.expandable {
+div.identify-body li.expandable {
     position: relative;
 }
 
-#IdentifyViewer li.expandable > span {
+div.identify-body li.expandable > span {
     cursor: pointer;
 }
 
-#IdentifyViewer li.expandable > ul {
+div.identify-body li.expandable > ul {
     display: none;
 }
 
-#IdentifyViewer li.expandable.expanded > ul {
+div.identify-body li.expandable.expanded > ul {
     display: block;
 }
 
-#IdentifyViewer li.expandable:before {
+div.identify-body li.expandable:before {
     content: "";
     border-color: transparent @base_fg@;
     border-width: 0.35em 0 0.35em 0.45em;
@@ -76,18 +76,18 @@
     position: absolute;
 }
 
-#IdentifyViewer li.expandable.expanded:before {
+div.identify-body li.expandable.expanded:before {
     border-color: @base_fg@ transparent;
     border-width: 0.45em 0.35em 0 0.35em;
     top: 0.4em;
 }
 
-#IdentifyViewer div.identify-flat-results-list {
+div.identify-body div.identify-flat-results-list {
     overflow: auto;
     flex: 1 1 auto;
 }
 
-#IdentifyViewer .identify-result-frame {
+div.identify-body .identify-result-frame {
     flex: 1 1 50%;
     min-height: 0;
     display: flex;
@@ -95,17 +95,17 @@
     border: 1px solid @item_border@;
 }
 
-#IdentifyViewer .identify-result-frame-normal {
+div.identify-body .identify-result-frame-normal {
     margin-top: 0.25em;
     border: 1px solid @item_border@;
 }
 
-#IdentifyViewer .identify-result-frame-highlighted {
+div.identify-body .identify-result-frame-highlighted {
     margin-top: 0.25em;
     border: 1px solid @item_active@;
 }
 
-#IdentifyViewer .identify-result-title {
+div.identify-body .identify-result-title {
     background-color: #ddd;
     padding: 0.25em;
     font-weight: bold;
@@ -114,20 +114,20 @@
     display: flex;
 }
 
-#IdentifyViewer .identify-result-title > span:first-child {
+div.identify-body .identify-result-title > span:first-child {
     flex: 1 1 auto;
 }
 
-#IdentifyViewer .identify-result-title > span.icon {
+div.identify-body .identify-result-title > span.icon {
     cursor: pointer;
     flex: 0 0 auto;
 }
 
-#IdentifyViewer .identify-result-title > span.icon:hover {
+div.identify-body .identify-result-title > span.icon:hover {
     color: @item_active@;
 }
 
-#IdentifyViewer .identify-result-box {
+div.identify-body .identify-result-box {
     border: 0;
     background-color: white;
     font-size: small;
@@ -139,62 +139,62 @@
     overflow: auto;
 }
 
-#IdentifyViewer div.inline-html-content {
+div.identify-body div.inline-html-content {
     padding: 0.25em;
 }
 
-#IdentifyViewer table.attribute-list {
+div.identify-body table.attribute-list {
     width: 100%;
     table-layout: fixed;
 }
 
-#IdentifyViewer table.attribute-list tr:nth-child(even) {
+div.identify-body table.attribute-list tr:nth-child(even) {
     background-color: #F0F0F0;
 }
 
-#IdentifyViewer table.attribute-list td {
+div.identify-body table.attribute-list td {
     overflow: hidden;
     vertical-align: top;
     text-overflow: ellipsis;
 }
 
-#IdentifyViewer table.attribute-list td:first-child {
+div.identify-body table.attribute-list td:first-child {
     padding-left: 0.25em;
 }
 
-#IdentifyViewer table.attribute-list td:last-child {
+div.identify-body table.attribute-list td:last-child {
     padding-right: 0.25em;
 }
 
-#IdentifyViewer table.attribute-list td.ellipsis {
+div.identify-body table.attribute-list td.ellipsis {
     white-space: nowrap;
 }
 
-#IdentifyViewer td.identify-attr-title {
+div.identify-body td.identify-attr-title {
     min-width: 10ch;
     width: 40%;
     padding-right: 1em;
 }
 
-#IdentifyViewer td.identify-attr-value {
+div.identify-body td.identify-attr-value {
     max-width: 0;
     width: 60%;
 }
 
-#IdentifyViewer div.identify-buttonbox {
+div.identify-body div.identify-buttonbox {
     margin-top: 0.5em;
     text-align: right;
     flex: 0 0 auto;
 }
 
-#IdentifyViewer div.identify-result-feature-report-frame {
+div.identify-body div.identify-result-feature-report-frame {
     padding: 0.25em 0.5em;
     font-size: small;
     display: flex;
     align-items: center;
 }
 
-#IdentifyViewer div.identify-result-feature-report-frame > div.spinner {
+div.identify-body div.identify-result-feature-report-frame > div.spinner {
     width: 1em;
     height: 1em;
     margin-left: 0.5em;
