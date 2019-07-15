@@ -190,7 +190,7 @@ const IdentifyUtils = {
             if(geometry) {
                 geometry = VectorLayerUtils.reprojectGeometry(geometry, "EPSG:4326", geometrycrs); // GeoJSON always wgs84
             }
-            result[layer].push(assign(feature, {geometry: geometry, id: feature.id.substr(feature.id.lastIndexOf(".") + 1)}));
+            result[layer].push(assign({}, feature, {geometry: geometry, id: feature.id.substr(feature.id.lastIndexOf(".") + 1)}));
         });
         return result;
     }
