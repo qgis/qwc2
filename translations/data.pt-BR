@@ -71,10 +71,12 @@
     },
     "importlayer": {
       "addlayer": "Adicionar camada",
-      "filter": "Filtrar...",
       "connect": "Conectar",
+      "filter": "Filtrar...",
+      "localfile": "",
       "nofeatures": "Nenhum elemento pôde ser importado.",
       "noresults": "",
+      "url": "",
       "urlplaceholder": "Informe URL para WMS, WFS, KML..."
     },
     "layerinfo": {

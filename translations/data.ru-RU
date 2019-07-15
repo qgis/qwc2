@@ -71,10 +71,12 @@
     },
     "importlayer": {
       "addlayer": "Добавить слой",
-      "filter": "Фильтровать...",
       "connect": "Подключиться",
+      "filter": "Фильтровать...",
+      "localfile": "",
       "nofeatures": "Нет объектов, доступных для импорта",
       "noresults": "",
+      "url": "",
       "urlplaceholder": "Введите URL для WMS, WFS, KML..."
     },
     "layerinfo": {

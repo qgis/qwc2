@@ -71,10 +71,12 @@
     },
     "importlayer": {
       "addlayer": "Ebene hinzufügen",
-      "filter": "Filter...",
       "connect": "Verbinden",
+      "filter": "Filter...",
+      "localfile": "Lokale Datei",
       "nofeatures": "Keine Objekte konnten importiert werden",
       "noresults": "Keine Resultate oder ungültige URL",
+      "url": "URL",
       "urlplaceholder": "WMS, WFS oder KML URL eingeben..."
     },
     "layerinfo": {

@@ -71,10 +71,12 @@
     },
     "importlayer": {
       "addlayer": "Přidat vrstvu",
-      "filter": "Filtr...",
       "connect": "Připojit",
+      "filter": "Filtr...",
+      "localfile": "",
       "nofeatures": "Žádné prvku nebyly importovány.",
       "noresults": "Bez výsledku nebo nevalidní URL",
+      "url": "",
       "urlplaceholder": "Vložit URL pro WMS, WFS, KML..."
     },
     "layerinfo": {

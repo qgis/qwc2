@@ -71,10 +71,12 @@
     },
     "importlayer": {
       "addlayer": "Adaugă strat",
-      "filter": "Filtrare",
       "connect": "Conectare",
+      "filter": "Filtrare",
+      "localfile": "",
       "nofeatures": "Nu s-a putut importa nicio entitate",
       "noresults": "Fără rezultat sau URL invalid",
+      "url": "",
       "urlplaceholder": "Introdu URL către WMS, WFS, KML..."
     },
     "layerinfo": {

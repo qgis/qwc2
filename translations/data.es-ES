@@ -71,10 +71,12 @@
     },
     "importlayer": {
       "addlayer": "Agregar capa",
-      "filter": "Filtrar...",
       "connect": "Conectar",
+      "filter": "Filtrar...",
+      "localfile": "",
       "nofeatures": "No se pudieron importar elementos.",
       "noresults": "Sin resultados o la dirección URL no es válida",
+      "url": "",
       "urlplaceholder": "Ingrese dirección URL o WMS, WFS, KML..."
     },
     "layerinfo": {

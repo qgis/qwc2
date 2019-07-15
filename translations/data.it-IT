@@ -71,10 +71,12 @@
     },
     "importlayer": {
       "addlayer": "Aggiungi livello",
-      "filter": "Filtro",
       "connect": "Connetti",
+      "filter": "Filtro",
+      "localfile": "File locale",
       "nofeatures": "Nessuno oggetto è stato importato",
       "noresults": "Nessun risultato o URL invalido",
+      "url": "URL",
       "urlplaceholder": "Indirizzo WMS, WFS KML..."
     },
     "layerinfo": {
