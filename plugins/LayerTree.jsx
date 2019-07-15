@@ -260,7 +260,7 @@ class LayerTree extends React.Component {
         let maptipCheckbox = null;
         let maptipsEnabled = false;
         if(this.props.theme.mapTips !== undefined) {
-            maptipsEnabled = this.props.theme.mapTips !== null;
+            maptipsEnabled = this.props.theme.mapTips !== null && this.props.allowMapTips;
         } else {
             maptipsEnabled = this.props.allowMapTips;
         }
