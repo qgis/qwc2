@@ -81,7 +81,7 @@ class ThemeSwitcher extends React.Component {
                     >
                         <div className="theme-item-title" title={item.title}>{item.title}</div>
                         <img src={assetsPath + "/" + item.thumbnail} />
-                        {ConfigUtils.getConfigProp("allowAddingOtherThemes") ===  true ? (<Icon icon="plus" title={addTitle} onClick={ev => this.addThemeLayers(ev, item)} />) : null}
+                        {ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.activeTheme) ===  true ? (<Icon icon="plus" title={addTitle} onClick={ev => this.addThemeLayers(ev, item)} />) : null}
                     </li>) : null;
             })}
             {subtree}

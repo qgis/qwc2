@@ -82,7 +82,7 @@ class MapTip extends React.Component {
         if(!layer || !queryLayers) {
             return;
         }
-        if(!ThemeUtils.layerReorderingAllowed(this.props.theme) && layer.drawingOrder) {
+        if(!ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) && layer.drawingOrder) {
             queryLayers = layer.drawingOrder.slice(0).reverse().filter(entry => layer.queryLayers.includes(entry)).join(",");
         }
 

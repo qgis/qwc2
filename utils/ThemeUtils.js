@@ -86,17 +86,10 @@ const ThemeUtils = {
             uuid: theme.uuid
         };
         // Drawing order only makes sense if layer reordering is disabled
-        if(ThemeUtils.layerReorderingAllowed(theme) !== true) {
+        if(ConfigUtils.getConfigProp("allowReorderingLayers") !== true) {
             assign(layer, {drawingOrder: theme.drawingOrder});
         }
         return layer;
-    },
-    layerReorderingAllowed: function(theme) {
-        let allowReorderingLayers = ConfigUtils.getConfigProp("allowReorderingLayers");
-        if(theme.allowReorderingLayers === true || theme.allowReorderingLayers === false) {
-            allowReorderingLayers = theme.allowReorderingLayers;
-        }
-        return allowReorderingLayers;
     },
     searchThemes: function(themes, searchtext, resultType) {
         let filter = new RegExp(removeDiacritics(searchtext).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");

@@ -116,7 +116,10 @@ var ConfigUtils = {
         retina: retina
         };
     },
-    getConfigProp: function(prop) {
+    getConfigProp: function(prop, theme) {
+        if(theme && theme.config && theme.config[prop] !== undefined) {
+            return theme.config[prop];
+        }
         return defaultConfig[prop];
     }
 };

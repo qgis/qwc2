@@ -395,7 +395,7 @@ function getTheme(config, configItem, result, resultItem) {
             }
 
             resultItem.skipEmptyFeatureAttributes = configItem.skipEmptyFeatureAttributes;
-            resultItem.allowReorderingLayers = configItem.allowReorderingLayers;
+            resultItem.config = configItem.config;
             resultItem.mapTips = configItem.mapTips;
             resultItem.userMap = configItem.userMap;
             resultItem.editConfig = getEditConfig(configItem.editConfig);

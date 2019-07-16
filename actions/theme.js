@@ -45,13 +45,13 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, layerPa
         });
 
         // Get current background layer if it needs to be preserved
-        if(preserve && visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch") === true) {
+        if(preserve && visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch", theme) === true) {
             let curBgLayer = getState().layers.flat.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
             visibleBgLayer = curBgLayer ? curBgLayer.name : null;
         }
 
         // Remove old layers
-        if(preserve && ConfigUtils.getConfigProp("preserveNonThemeLayersOnThemeSwitch") === true) {
+        if(preserve && ConfigUtils.getConfigProp("preserveNonThemeLayersOnThemeSwitch", theme) === true) {
             let removeLayers = getState().layers.flat.filter(layer => layer.role <= LayerRole.THEME).map(layer => layer.id);
             for(let layerId of removeLayers) {
                 dispatch(removeLayer(layerId));
@@ -69,7 +69,7 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, layerPa
         }
 
         // Preserve extent if desired and possible
-        if(preserve && !initialView && ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch") === true) {
+        if(preserve && !initialView && ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch", theme) === true) {
             // If crs and scales match and bounding boxes intersect, keep current extent
             let b1 = CoordinatesUtils.reprojectBbox(theme.bbox.bounds, theme.bbox.crs, getState().map.projection);
             let b2 = getState().map.bbox.bounds;
@@ -141,7 +141,7 @@ function finishThemeSetup(dispatch, theme, layerConfigs, permalinkLayers)
     // Restore theme layer configuration, create placeholders for missing layers
     let externalLayers = {};
     if(layerConfigs) {
-        if(ThemeUtils.layerReorderingAllowed(theme) !== true) {
+        if(ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {
             layers = LayerUtils.restoreLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
         } else {
             layers = LayerUtils.restoreOrderedLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);

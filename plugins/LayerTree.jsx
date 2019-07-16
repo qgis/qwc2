@@ -153,7 +153,7 @@ class LayerTree extends React.Component {
             "layertree-item-cog": true,
             "layertree-item-cog-active": this.state.activemenu === group.uuid
         });
-        let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true || layer.role !== LayerRole.THEME;
+        let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         return (
             <div className="layertree-item-container" key={group.uuid}>
                 <div className={classnames(itemclasses)}>
@@ -168,7 +168,7 @@ class LayerTree extends React.Component {
         );
     }
     renderLayer = (layer, sublayer, path, enabled=true, inMutuallyExclusiveGroup=false) => {
-        let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true || layer.role !== LayerRole.THEME;
+        let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         let checkboxstate = sublayer.visibility === true ? 'checked' : 'unchecked';
         if(inMutuallyExclusiveGroup) {
             checkboxstate = 'radio_' + checkboxstate;
@@ -188,7 +188,7 @@ class LayerTree extends React.Component {
         }
         if(this.state.activemenu === sublayer.uuid) {
             let reorderButtons = null;
-            if(ThemeUtils.layerReorderingAllowed(this.props.theme) === true) {
+            if(ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true) {
                 reorderButtons = [
                     (<Icon key="layertree-item-move-down" className="layertree-item-move" icon="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
                     (<Icon key="layertree-item-move-up" className="layertree-item-move" icon="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
@@ -274,7 +274,7 @@ class LayerTree extends React.Component {
             );
         }
         let compareCheckbox = null;
-        if(this.props.allowCompare && ThemeUtils.layerReorderingAllowed(this.props.theme)) {
+        if(this.props.allowCompare && ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme)) {
             let swipecheckboxstate = this.props.swipe || this.props.swipe === 0 ? 'checked' : 'unchecked';
             compareCheckbox = (
                 <div className="layertree-option">
@@ -291,7 +291,7 @@ class LayerTree extends React.Component {
                 </div>
             );
         }
-        let sortable = ThemeUtils.layerReorderingAllowed(this.props.theme) === true;
+        let sortable = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
         return (
             <div role="body" className="layertree-container-wrapper">
                 <div className="layertree-container">

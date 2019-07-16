@@ -357,7 +357,7 @@ class Search extends React.Component {
             );
         }
         let addTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addtotheme");
-        let addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes");
+        let addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
         return (
             <li key={item.id} title={item.text} onMouseDown={this.killEvent}
                 onClick={() => {this.showResult(item); this.input.blur(); }}
@@ -537,7 +537,7 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
                     availableProviders[entry.key || entry] = provider;
                 }
             }
-            if(ConfigUtils.getConfigProp("searchThemes")) {
+            if(ConfigUtils.getConfigProp("searchThemes", theme)) {
                 availableProviders["themes"] = {
                     label: "Themes",
                     onSearch: (text, reqId, options, dispatch) => {
