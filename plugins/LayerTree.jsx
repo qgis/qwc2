@@ -307,7 +307,7 @@ class LayerTree extends React.Component {
                     {maptipCheckbox}
                     {compareCheckbox}
                     {layerImportExpander}
-                    {this.state.importvisible ? (<ImportLayer />) : null}
+                    {this.state.importvisible ? (<ImportLayer theme={this.props.theme} />) : null}
                 </div>
             </div>
         );

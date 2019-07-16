@@ -19,6 +19,7 @@ const LocaleUtils = require('../utils/LocaleUtils');
 const ProxyUtils = require('../utils/ProxyUtils');
 const {LayerRole,addLayer,addLayerFeatures} = require('../actions/layers');
 const FileSelector = require('./widgets/FileSelector');
+const ConfigUtils = require('../utils/ConfigUtils');
 const ServiceLayerUtils = require('../utils/ServiceLayerUtils');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
 const Icon = require('./Icon');
@@ -26,6 +27,7 @@ require('./style/ImportLayer.css');
 
 class ImportLayer extends React.Component {
     static propTypes = {
+        theme: PropTypes.object,
         addLayer: PropTypes.func,
         addLayerFeatures: PropTypes.func
     }
@@ -42,15 +44,20 @@ class ImportLayer extends React.Component {
     }
     renderInputField() {
         let placeholder = LocaleUtils.getMessageById(this.context.messages, "importlayer.urlplaceholder");
+        let urlPresets = ConfigUtils.getConfigProp("importLayerUrlPresets", this.props.theme);
         if(this.state.type === "Local") {
             return (<FileSelector file={this.state.file} accept=".kml" onFileSelected={this.onFileSelected} />);
         } else {
-            return (
-                <input readOnly={this.state.pendingRequests > 0} type="text"
-                    placeholder={placeholder} value={this.state.url}
+            return [(
+                <input key="input" readOnly={this.state.pendingRequests > 0} type="text"
+                    placeholder={placeholder} value={this.state.url} list="import-layer-url-datalist"
                     onChange={ev => this.setState({url: ev.target.value.trim()})}
                     onKeyPress={ev => { if(!ev.target.readOnly && ev.key === 'Enter') { this.scanService(); }}}/>
-            );
+            ), (
+                <datalist key="datalist" id="import-layer-url-datalist">
+                    {(urlPresets || []).map((url,i) => (<option key={"u" + i} value={url}>{url}</option>))}
+                </datalist>
+            )];
         }
     }
     renderServiceLayerListEntry(entry, filter, path, level = 0, idx) {
