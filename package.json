@@ -25,6 +25,7 @@
         "lodash.isequal": "^4.5.0",
         "lodash.omit": "^4.5.0",
         "lodash.pickby": "^4.6.0",
+        "lodash.sortby": "^4.7.0",
         "mousetrap": "^1.6.2",
         "object-assign": "^4.1.1",
         "ol": "^5.3.0",

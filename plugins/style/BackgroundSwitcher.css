@@ -12,7 +12,8 @@
     transform: scaleX(1);
 }
 
-#BackgroundSwitcher div.background-layer-item {
+#BackgroundSwitcher div.background-switcher-item
+ {
     background-color: white;
     cursor: pointer;
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
@@ -20,14 +21,23 @@
     margin: 0.5em;
     width: 8em;
     border: 1px solid @item_border@;
+    position: relative;
 }
 
-#BackgroundSwitcher div.background-layer-item:hover {
+#BackgroundSwitcher div.background-switcher-item:hover {
     border: 1px solid @item_active@;
 }
 
-#BackgroundSwitcher div.background-layer-item-active {
+#BackgroundSwitcher div.background-switcher-item:hover div.background-group-menu {
+    display: initial;
+}
+
+
+#BackgroundSwitcher div.background-switcher-item-active {
     border: 1px solid @item_active@;
+}
+
+#BackgroundSwitcher div.background-switcher-item-active div.background-layer-title {
     color: @item_active@;
 }
 
@@ -40,11 +50,49 @@
     height: 100%;
 }
 
-#BackgroundSwitcher div.background-layer-title {
+#BackgroundSwitcher div.background-layer-title,
+#BackgroundSwitcher div.background-group-menu > div {
     font-weight: bold;
-    font-size: x-small;
+    font-size: 80%;
     text-align: center;
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: 1.5em;
+}
+
+#BackgroundSwitcher div.background-layer-title {
+    display: flex;
+    align-items: center;
+}
+
+#BackgroundSwitcher div.background-layer-title span:first-child {
+    flex: 1 1 auto;
+}
+
+#BackgroundSwitcher div.background-layer-title span.icon {
+    flex: 0 0 auto;
+}
+
+#BackgroundSwitcher div.background-group-menu {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 1px);
+    width: 100%;
+    background-color: white;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+    clip-path: inset(-8px -8px 0 -8px);
+}
+
+
+#BackgroundSwitcher div.background-group-menu > div {
+    padding: 0.25em 0;
+}
+
+#BackgroundSwitcher div.background-group-menu > div:hover {
+    background-color: @item_inactive_hover@;
+}
+
+#BackgroundSwitcher div.background-group-menu-item-active {
+    color: @item_active@;
 }
