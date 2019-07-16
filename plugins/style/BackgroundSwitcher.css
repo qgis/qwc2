@@ -50,7 +50,7 @@
     height: 100%;
 }
 
-#BackgroundSwitcher div.background-layer-title,
+#BackgroundSwitcher div.background-layer-title > span:first-child,
 #BackgroundSwitcher div.background-group-menu > div {
     font-weight: bold;
     font-size: 80%;
