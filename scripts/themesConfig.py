@@ -159,7 +159,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             return
 
     layerEntry = {"name": name, "title": title}
-
+    
     if not layers:
         if layer.getAttribute("geometryType") == "WKBNoGeometry":
             # skip layers without geometry
@@ -233,8 +233,9 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
         layerEntry["mutuallyExclusive"] = layer.getAttribute("mutuallyExclusive") == "1"
         layerEntry["sublayers"] = []
         layerEntry["expanded"] = False if collapseBelowLevel >= 0 and level >= collapseBelowLevel else True
+        level = level + 1
         for sublayer in layers:
-            getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap, featureReports)
+            getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, featureReports)
 
         if not layerEntry["sublayers"]:
             # skip empty groups

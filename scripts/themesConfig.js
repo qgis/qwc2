@@ -142,6 +142,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         name: layer.Name,
         title: layer.Title
     };
+
     if (layer.Layer === undefined) {
         if (!layer.$ || layer.$.geometryType == "WKBNoGeometry") {
             // skip layers without geometry
@@ -209,6 +210,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         layerEntry.mutuallyExclusive = (layer.$ || {}).mutuallyExclusive === '1';
         layerEntry.sublayers = [];
         layerEntry.expanded = collapseBelowLevel >= 0 && level >= collapseBelowLevel ? false : true;
+        level++;
         for (let subLayer of toArray(layer.Layer)) {
             getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, featureReports);
         }
