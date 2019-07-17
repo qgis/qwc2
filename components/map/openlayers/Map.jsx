@@ -105,7 +105,7 @@ class OpenlayersMap extends React.Component {
                         shift: event.originalEvent.shiftKey
                     },
                     button: 0,
-                    layer: layer.get('id'),
+                    layer: layer ? layer.get('id') : null,
                     feature: feature.getId()
                 });
             } else {
@@ -139,7 +139,7 @@ class OpenlayersMap extends React.Component {
                         shift: event.shiftKey
                     },
                     button: 2,
-                    layer: layer.get('id'),
+                    layer: layer ? layer.get('id') : null,
                     feature: feature.getId()
                 });
             } else {
