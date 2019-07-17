@@ -51,8 +51,12 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, layerPa
         }
 
         // Remove old layers
+        let insertPos = 0;
         if(preserve && ConfigUtils.getConfigProp("preserveNonThemeLayersOnThemeSwitch", theme) === true) {
-            let removeLayers = getState().layers.flat.filter(layer => layer.role <= LayerRole.THEME).map(layer => layer.id);
+            // Compute insertion position of new theme layers by counting how many non-theme layers remain
+            insertPos = getState().layers.flat.filter(layer => layer.role === LayerRole.USERLAYER).length;
+
+            let removeLayers = getState().layers.flat.filter(layer => layer.role !== LayerRole.USERLAYER).map(layer => layer.id);
             for(let layerId of removeLayers) {
                 dispatch(removeLayer(layerId));
             }
@@ -124,15 +128,15 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, layerPa
                         }
                     }, []);
                 }
-                finishThemeSetup(dispatch, newTheme, layerConfigs, permalinkLayers);
+                finishThemeSetup(dispatch, newTheme, layerConfigs, insertPos, permalinkLayers);
             });
         } else {
-            finishThemeSetup(dispatch, theme, layerConfigs, permalinkLayers);
+            finishThemeSetup(dispatch, theme, layerConfigs, insertPos, permalinkLayers);
         }
     }
 }
 
-function finishThemeSetup(dispatch, theme, layerConfigs, permalinkLayers)
+function finishThemeSetup(dispatch, theme, layerConfigs, insertPos, permalinkLayers)
 {
     // Create layer
     let themeLayer = ThemeUtils.createThemeLayer(theme);
@@ -148,8 +152,9 @@ function finishThemeSetup(dispatch, theme, layerConfigs, permalinkLayers)
         }
     }
 
+    console.log(insertPos);
     for(let layer of layers.reverse()) {
-        dispatch(addLayer(layer, 0));
+        dispatch(addLayer(layer, insertPos));
     }
 
     // Restore external layers
