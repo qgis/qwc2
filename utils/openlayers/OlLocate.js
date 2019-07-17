@@ -150,7 +150,7 @@ class OlLocate extends ol.Object {
         this.p = p;
         let point = new ol.geom.Point(p);
         if (this.options.drawCircle) {
-            let accuracy = new ol.geom.Circle(point, this.geolocate.getAccuracy());
+            let accuracy = new ol.geom.Circle(point.getCoordinates(), this.geolocate.getAccuracy());
             this.posFt.setGeometry(new ol.geom.GeometryCollection([point, accuracy]));
         } else {
             this.posFt.setGeometry(new ol.geom.GeometryCollection([point]));
