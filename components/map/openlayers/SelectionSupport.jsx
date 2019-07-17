@@ -84,6 +84,10 @@ class SelectionSupport extends React.Component {
         this.drawInteraction = draw;
         this.selectionLayer = vector;
         this.setDoubleClickZoomEnabled(false);
+
+        if(newProps.selection.cursor) {
+            this.props.map.getViewport().style.cursor = newProps.selection.cursor;
+        }
     }
     removeDrawInteraction = () => {
         if (this.drawInteraction !== null) {
@@ -94,6 +98,7 @@ class SelectionSupport extends React.Component {
             //Delay execution of activation of double click zoom function
             setTimeout(() => this.setDoubleClickZoomEnabled(true), 251);
         }
+        this.props.map.getViewport().style.cursor = '';
     }
     updateSelectionState = () => {
         if(!this.sketchFeature) {

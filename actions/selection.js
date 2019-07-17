@@ -16,6 +16,7 @@ function changeSelectionState(selectionState) {
         polygon: selectionState.polygon,
         style: selectionState.style,
         styleOptions: selectionState.styleOptions,
+        cursor: selectionState.cursor,
         reset: selectionState.reset
     };
 }

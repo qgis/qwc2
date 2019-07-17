@@ -27,6 +27,7 @@ function selection(state = {
                 polygon: action.polygon,
                 style: action.style || 'default',
                 styleOptions: action.styleOptions || {},
+                cursor: action.cursor || null,
                 reset: action.reset || false
             });
         default:
