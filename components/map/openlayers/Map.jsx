@@ -88,7 +88,7 @@ class OpenlayersMap extends React.Component {
             });
         }
         map.on('moveend', this.updateMapInfoState);
-        map.on('click', (event) => {
+        map.on('singleclick', (event) => {
             let features = [];
             this.map.forEachFeatureAtPixel(event.pixel, (feature, layer) => {
                 features.push([feature, layer]);
