@@ -152,7 +152,6 @@ function finishThemeSetup(dispatch, theme, layerConfigs, insertPos, permalinkLay
         }
     }
 
-    console.log(insertPos);
     for(let layer of layers.reverse()) {
         dispatch(addLayer(layer, insertPos));
     }
