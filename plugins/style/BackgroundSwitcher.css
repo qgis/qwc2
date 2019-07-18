@@ -29,7 +29,7 @@
 }
 
 #BackgroundSwitcher div.background-switcher-item:hover div.background-group-menu {
-    display: initial;
+    display: block;
 }
 
 
