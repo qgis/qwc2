@@ -30,6 +30,7 @@ let WMTSLayer = {
             source: new ol.source.WMTS(assign({
               urls: urls,
               layer: options.name,
+              projection: projection && projection.getExtent() ? projection : null,
               matrixSet: options.tileMatrixSet,
               tileGrid: new ol.tilegrid.WMTS({
                 origin: [options.originX, options.originY],
