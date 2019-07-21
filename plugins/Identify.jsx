@@ -93,7 +93,9 @@ class Identify extends React.Component {
                 exportFormat={this.props.exportFormat}
                 longAttributesDisplay={this.props.longAttributesDisplay}
                 displayResultTree={this.props.displayResultTree}
-                attributeCalculator={this.props.attributeCalculator} />
+                attributeCalculator={this.props.attributeCalculator}
+                initialWidth={this.props.initialWidth}
+                initialHeight={this.props.initialHeight} />
         );
     }
 };
