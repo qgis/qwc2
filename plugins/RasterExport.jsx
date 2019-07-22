@@ -90,7 +90,7 @@ class RasterExport extends React.Component {
                 <div className="raster-export-settings">
                     <span>
                         <Message msgId="rasterexport.format" />&nbsp;
-                        <select name="FORMAT" defaultValue={defaultFormat} onChange={this.formatChanged}>
+                        <select name="FORMAT" value={selectedFormat} onChange={this.formatChanged}>
                             {availableFormats.map(format => {
                                 if(format.startsWith('image/')) {
                                     return (<option key={format} value={format}>{formatMap[format] || format}</option>);
