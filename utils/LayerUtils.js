@@ -385,10 +385,10 @@ const LayerUtils = {
         if(layer.sublayers) {
             let idx = 0;
             for(let sublayer of layer.sublayers) {
-                let subsublayer = LayerUtils.searchSubLayer(sublayer, attr, value, path);
-                if(subsublayer) {
+                let match = sublayer[attr] === value ? sublayer : LayerUtils.searchSubLayer(sublayer, attr, value, path);
+                if(match) {
                     path.unshift(idx);
-                    return subsublayer;
+                    return match;
                 }
                 idx += 1;
             }
