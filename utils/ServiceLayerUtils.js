@@ -13,7 +13,8 @@ const deepmerge = require('deepmerge');
 const isEmpty = require('lodash.isempty');
 const fastXmlParser = require('fast-xml-parser');
 const randomColor = require('randomcolor');
-const ProxyUtils = require('../utils/ProxyUtils');
+const LayerUtils = require('./LayerUtils');
+const ProxyUtils = require('./ProxyUtils');
 const {LayerRole} = require('../actions/layers');
 
 const owsNS = "http://www.opengis.net/ows";
@@ -213,35 +214,36 @@ const ServiceLayerUtils = {
         }
         return layers;
     },
-    findLayers(type, serviceUrl, layers, callback) {
+    findLayers(type, serviceUrl, layerConfigs, callback) {
         // Scan the capabilities of the specified service for the specified layers
         let url = serviceUrl.replace(/\?$/, '') + "?service=" + type.toUpperCase() + "&request=GetCapabilities";
         axios.get(ProxyUtils.addProxyIfNeeded(url)).then(response => {
-            for(let layer of layers) {
+            for(let layerConfig of layerConfigs) {
                 let result = null;
                 if(type === "wms") {
-                    result = ServiceLayerUtils.getWMSLayers(response.data).find(entry => entry.name === layer.name);
+                    result = ServiceLayerUtils.getWMSLayers(response.data);
                 } else if(type === "wfs") {
-                    result = ServiceLayerUtils.getWFSLayers(response.data).find(entry => entry.name === layer.name);
+                    result = ServiceLayerUtils.getWFSLayers(response.data);
                 }
-                let source = type + ':' + serviceUrl + '#' + layer.name;
-                if(result) {
-                    assign(result, {
-                        opacity: layer.opacity,
-                        visibility: layer.visibility,
-                        id: layer.name + Date.now().toString(),
+                let layer = LayerUtils.searchSubLayer({sublayers: result}, "name", layerConfig.name);
+                let source = type + ':' + serviceUrl + '#' + layerConfig.name;
+                if(layer) {
+                    layer = assign({}, layer, {
+                        opacity: layerConfig.opacity,
+                        visibility: layerConfig.visibility,
+                        id: layerConfig.name + Date.now().toString(),
                         role: LayerRole.USERLAYER
                     });
-                    callback(source, result);
+                    callback(source, layer);
                 } else {
-                    console.warn("Could not find layer " + layer.name);
+                    console.warn("Could not find layer " + layerConfig.name);
                     callback(source, null);
                 }
             }
         }).catch(err => {
             console.warn("Failed to read " + serviceUrl);
-            for(let layer of layers) {
-                let source = type + ':' + serviceUrl + '#' + layer.name;
+            for(let layerConfig of layerConfigs) {
+                let source = type + ':' + serviceUrl + '#' + layerConfig.name;
                 callback(source, null);
             }
         });
