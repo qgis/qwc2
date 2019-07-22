@@ -232,7 +232,8 @@ const ServiceLayerUtils = {
                         opacity: layerConfig.opacity,
                         visibility: layerConfig.visibility,
                         id: layerConfig.name + Date.now().toString(),
-                        role: LayerRole.USERLAYER
+                        role: LayerRole.USERLAYER,
+                        sublayers: null
                     });
                     callback(source, layer);
                 } else {
