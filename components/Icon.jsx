@@ -31,7 +31,7 @@ class Icon extends React.Component {
             return (
                 <img
                     src={src} alt={this.props.title} title={this.props.title}
-                    className={"icon " + (this.props.size ? "icon" + this.props.size : "")}
+                    className={"icon " + (this.props.size ? "icon" + this.props.size : "") +" "+ this.props.className}
                     onClick={this.props.onClick}
                 />
             );
