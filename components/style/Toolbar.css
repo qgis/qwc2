@@ -12,7 +12,7 @@
 }
 
 #Toolbar > .icon:hover,
-#Toolbar > span.toolbar-item-active {
+#Toolbar > .toolbar-item-active {
     border: 1px solid @item_border@;
     background-color: @button_hover_bg@;
 }
