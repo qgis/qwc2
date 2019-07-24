@@ -93,6 +93,7 @@
       "importlayer": "Import strat",
       "maptip": "Arată indicii hartă",
       "printlegend": "Tipărește legenda",
+      "deletealllayers": "",
       "transparency": "Transparență"
     },
     "locate": {

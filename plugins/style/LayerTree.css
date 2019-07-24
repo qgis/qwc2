@@ -4,14 +4,16 @@
     background-color: white;
 }
 
-#LayerTree span.layertree-print-legend {
+#LayerTree span.layertree-print-legend,
+#LayerTree span.layertree-delete-legend {
     margin-left: 1em;
     cursor: pointer;
     border: 1px solid transparent;
     padding: 0.25em;
 }
 
-#LayerTree span.layertree-print-legend:hover {
+#LayerTree span.layertree-print-legend:hover,
+#LayerTree span.layertree-delete-legend:hover {
     border: 1px solid white;
 }
 

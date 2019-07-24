@@ -93,6 +93,7 @@
       "importlayer": "Импортировать слой",
       "maptip": "Показывать подписи",
       "printlegend": "Распечатать легенду",
+      "deletealllayers": "",
       "transparency": "Прозрачность"
     },
     "locate": {

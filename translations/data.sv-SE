@@ -93,6 +93,7 @@
       "importlayer": "",
       "maptip": "Visa karttips för lager",
       "printlegend": "",
+      "deletealllayers": "",
       "transparency": "Transparens"
     },
     "locate": {

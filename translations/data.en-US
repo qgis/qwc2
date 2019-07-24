@@ -93,6 +93,7 @@
       "importlayer": "Import layer",
       "maptip": "Show layer map tips",
       "printlegend": "Print legend",
+      "deletealllayers": "Remove all layers",
       "transparency": "Transparency"
     },
     "locate": {

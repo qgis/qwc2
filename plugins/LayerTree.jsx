@@ -327,11 +327,26 @@ class LayerTree extends React.Component {
             );
         }
 
-        let extraTitlebarContent = null;
+        let legendPrintIcon = null;
         if(this.props.enableLegendPrint) {
             let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
-            extraTitlebarContent = (<Icon title={printLegendTooltip} className="layertree-print-legend" icon="print" onClick={this.printLegend}/>);
+            legendPrintIcon = (<Icon title={printLegendTooltip} className="layertree-print-legend" icon="print" onClick={this.printLegend}/>);
         }
+        let deleteAllLayersIcon = null;
+        if(ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true) {
+            let deleteAllLayersTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.deletealllayers");
+            deleteAllLayersIcon = (<Icon title={deleteAllLayersTooltip} className="layertree-delete-legend" icon="trash" onClick={this.deleteAllLayers}/>);
+        }
+        let extraTitlebarContent = null;
+        if(legendPrintIcon || deleteAllLayersIcon) {
+            extraTitlebarContent = (
+                <span>
+                    {legendPrintIcon}
+                    {deleteAllLayersIcon}
+                </span>
+            );
+        }
+
         let visibilities = [];
         for(let layer of this.props.layers) {
             if(layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
@@ -543,6 +558,11 @@ class LayerTree extends React.Component {
             } else {
                 this.legendPrintWindow.addEventListener('load', setLegendPrintContent, false);
             }
+        }
+    }
+    deleteAllLayers = () => {
+        for(let layer of this.props.layers) {
+            this.props.removeLayer(layer.id);
         }
     }
     toggleLayerTreeVisibility = (visibile) => {

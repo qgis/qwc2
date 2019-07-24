@@ -78,6 +78,7 @@
     "layertree.importlayer",
     "layertree.maptip",
     "layertree.printlegend",
+    "layertree.deletealllayers",
     "layertree.transparency",
     "locate.metersUnit",
     "locate.feetUnit",
