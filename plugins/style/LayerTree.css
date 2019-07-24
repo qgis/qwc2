@@ -1,3 +1,9 @@
+#LayerTree span.layertree-tree-visibility {
+    margin: 0 0.5em;
+    color: @base_fg@;
+    background-color: white;
+}
+
 #LayerTree span.layertree-print-legend {
     margin-left: 1em;
     cursor: pointer;

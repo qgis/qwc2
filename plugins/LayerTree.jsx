@@ -100,7 +100,7 @@ class LayerTree extends React.Component {
     }
     getGroupVisibility = (group) => {
         if(isEmpty(group.sublayers)) {
-            return 1;
+            return group.visibility;
         }
         let visible = 0;
         group.sublayers.map(sublayer => {
@@ -332,10 +332,20 @@ class LayerTree extends React.Component {
             let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
             extraTitlebarContent = (<Icon title={printLegendTooltip} className="layertree-print-legend" icon="print" onClick={this.printLegend}/>);
         }
+        let visibilities = [];
+        for(let layer of this.props.layers) {
+            if(layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
+                visibilities.push(this.getGroupVisibility(layer));
+            }
+        }
+        let vis = visibilities.reduce((sum, x) => sum + x, 0) / visibilities.length;
+        let visibilityCheckbox = (<Icon className="layertree-tree-visibility" icon={vis === 0 ? "unchecked" : vis === 1 ? "checked" : "tristate"} onClick={() => this.toggleLayerTreeVisibility(vis === 0)}/>);
+
         return (
             <div>
                 <SideBar id="LayerTree" width={this.state.sidebarwidth || this.props.width}
                     title="appmenu.items.LayerTree" icon="layers"
+                    extraBeforeContent={visibilityCheckbox}
                     onHide={this.hideLegendTooltip} extraTitlebarContent={extraTitlebarContent}>
                     {() => ({
                         body: this.renderBody()
@@ -532,6 +542,15 @@ class LayerTree extends React.Component {
                 });
             } else {
                 this.legendPrintWindow.addEventListener('load', setLegendPrintContent, false);
+            }
+        }
+    }
+    toggleLayerTreeVisibility = (visibile) => {
+        for(let layer of this.props.layers) {
+            if(layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
+                let newlayer = assign({}, layer, {visibility: visibile});
+                this.propagateOptions(newlayer, {visibility: visibile});
+                this.props.changeLayerProperties(layer.uuid, newlayer);
             }
         }
     }

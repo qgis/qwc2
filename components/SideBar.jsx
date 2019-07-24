@@ -26,6 +26,7 @@ class SideBar extends React.Component {
         setCurrentTask: PropTypes.func,
         title: PropTypes.string,
         icon: PropTypes.string,
+        extraBeforeContent: PropTypes.object,
         extraTitlebarContent: PropTypes.object
     }
     static defaultProps = {
@@ -81,6 +82,7 @@ class SideBar extends React.Component {
                 <Swipeable onSwipedRight={this.closeClicked} delta={30}>
                     <div id={this.props.id} className={"sidebar" + " " + this.props.extraClasses} style={style}>
                         <div className="sidebar-titlebar">
+                            {this.state.render ? this.props.extraBeforeContent : null}
                             <Icon className="sidebar-titlebar-icon" icon={this.props.icon} size="large"/>
                             <span className="sidebar-titlebar-title"><Message msgId={this.props.title} /></span>
                             {this.state.render ? this.props.extraTitlebarContent : null}
