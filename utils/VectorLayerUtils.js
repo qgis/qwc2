@@ -39,7 +39,7 @@ const VectorLayerUtils = {
                 }
                 let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
                 params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, layer.opacity, dpi, scaleFactor));
-                params.labels.push(feature.properties && feature.properties.label || "");
+                params.labels.push(feature.properties && feature.properties.label || " ");
                 if(feature.styleName === "text") {
                     // Make point a tiny square, so that QGIS server centers the text inside the polygon when labelling
                     let x = geometry.coordinates[0];
