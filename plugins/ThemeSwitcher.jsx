@@ -30,13 +30,15 @@ class ThemeSwitcher extends React.Component {
         setCurrentTask: PropTypes.func,
         mapConfig: PropTypes.object,
         width: PropTypes.string,
-        addLayer: PropTypes.func
+        addLayer: PropTypes.func,
+        showLayerAfterChangeTheme: PropTypes.bool
     }
     static contextTypes = {
         messages: PropTypes.object
     }
     static defaultProps = {
-        width: "50%"
+        width: "50%",
+        showLayerAfterChangeTheme: false
     }
     state = {
         filter: ""
@@ -104,7 +106,12 @@ class ThemeSwitcher extends React.Component {
         );
     }
     setTheme = (theme) => {
-        this.props.setCurrentTask(null);
+        if(this.props.showLayerAfterChangeTheme) {
+            this.props.setCurrentTask('LayerTree');
+        }
+        else {
+            this.props.setCurrentTask(null);
+        }
         this.props.changeTheme(theme, this.props.themes);
     }
     addThemeLayers = (ev, theme) => {
