@@ -38,12 +38,16 @@ class Print extends React.Component {
         printExternalLayers: PropTypes.bool, // Caution: requires explicit server-side support!
         changeRotation: PropTypes.func,
         inlinePrintOutput: PropTypes.bool,
-        scaleFactor: PropTypes.number
+        scaleFactor: PropTypes.number,
+        defaultDpi: PropTypes.number,
+        defaultScaleFactor: PropTypes.number
     }
     static defaultProps = {
         printExternalLayers: false,
         inlinePrintOutput: false,
-        scaleFactor: 1.9 // Experimentally determined...
+        scaleFactor: 1.9, // Experimentally determined...
+        defaultDpi: 300,
+        defaultScaleFactor: 0.5
     }
     state = {
         layout: null,
@@ -71,7 +75,7 @@ class Print extends React.Component {
         }
     }
     onShow = () => {
-        let scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom) / 2);
+        let scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom) * this.props.defaultScaleFactor);
         if(this.props.theme.printScales && this.props.theme.printScales.length > 0) {
             let closestVal = Math.abs(scale - this.props.theme.printScales[0]);
             let closestIdx = 0;
@@ -84,7 +88,7 @@ class Print extends React.Component {
             }
             scale = this.props.theme.printScales[closestIdx];
         }
-        this.setState({scale: scale, initialRotation: this.props.map.bbox.rotation});
+        this.setState({scale: scale, initialRotation: this.props.map.bbox.rotation, dpi: this.props.defaultDpi});
     }
     onHide = () => {
         this.props.changeRotation(this.state.initialRotation);
