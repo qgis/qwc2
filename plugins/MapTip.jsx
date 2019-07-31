@@ -11,7 +11,6 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
 const axios = require('axios');
-const uuid = require('uuid');
 const ConfigUtils = require("../utils/ConfigUtils");
 const IdentifyUtils = require('../utils/IdentifyUtils');
 const ThemeUtils = require('../utils/ThemeUtils');

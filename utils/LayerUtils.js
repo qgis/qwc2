@@ -75,7 +75,7 @@ const LayerUtils = {
     },
     insertPermalinkLayers: function(exploded, layers) {
         for(let layer of layers || []) {
-            let insLayer = LayerUtils.explodeLayers([{...layer}])[0];
+            let insLayer = LayerUtils.explodeLayers([layer])[0];
             delete insLayer.layer.pos;
             exploded.splice(layer.pos, 0, insLayer);
         }

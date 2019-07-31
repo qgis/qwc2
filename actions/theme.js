@@ -7,7 +7,6 @@
  */
 
 const assign = require('object-assign');
-const uuid = require('uuid');
 const isEmpty = require('lodash.isempty');
 const ConfigUtils = require("../utils/ConfigUtils");
 const CoordinatesUtils = require("../utils/CoordinatesUtils");

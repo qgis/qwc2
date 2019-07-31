@@ -68,9 +68,9 @@ function layers(state = {flat: [], swipe: undefined}, action) {
                 role: action.layer.role || LayerRole.USERLAYER,
                 queryable: action.layer.queryable || false,
                 visibility: action.layer.visibility !== undefined ? action.layer.visibility : true,
-                opacity: action.layer.opacity || 255
+                opacity: action.layer.opacity || 255,
+                layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER
             });
-            newLayer = assign(newLayer, {layertreehidden: newLayer.layertreehidden || newLayer.role > LayerRole.USERLAYER});
             let group = newLayer;
             LayerUtils.addSublayerIDs(newLayer);
             if(newLayer.type === "wms") {
@@ -115,9 +115,9 @@ function layers(state = {flat: [], swipe: undefined}, action) {
                     role: action.layer.role || LayerRole.USERLAYER,
                     queryable: action.layer.queryable || false,
                     visibility: action.layer.visibility || true,
-                    opacity: action.layer.opacity || 255
+                    opacity: action.layer.opacity || 255,
+                    layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER
                 });
-                newLayer = assign(newLayer, {layertreehidden: newLayer.layertreehidden || newLayer.role > LayerRole.USERLAYER});
                 if(idx === -1) {
                     let inspos = 0;
                     for(; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);

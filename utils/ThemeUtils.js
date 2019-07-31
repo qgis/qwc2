@@ -86,8 +86,8 @@ const ThemeUtils = {
             uuid: theme.uuid
         };
         // Drawing order only makes sense if layer reordering is disabled
-        if(ConfigUtils.getConfigProp("allowReorderingLayers") !== true) {
-            assign(layer, {drawingOrder: theme.drawingOrder});
+        if(ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {
+            layer.drawingOrder = theme.drawingOrder;
         }
         return layer;
     },
