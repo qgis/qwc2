@@ -367,15 +367,19 @@ const LayerUtils = {
         }, []);
     },
     mergeSubLayers(baselayer, addlayer, swipeActive=false) {
+        addlayer = {...baselayer, sublayers: addlayer.sublayers};
+        LayerUtils.addUUIDs(addlayer);
         if(isEmpty(addlayer.sublayers)) {
             return {...baselayer};
         }
-        LayerUtils.addUUIDs(addlayer);
+        if(isEmpty(baselayer.sublayers)) {
+            return addlayer;
+        }
         let explodedBase = LayerUtils.explodeLayers([baselayer]);
         let existing = explodedBase.map(entry => entry.sublayer.name);
-        let explodedAdd = LayerUtils.explodeLayers([{...baselayer, sublayers: addlayer.sublayers}]);
+        let explodedAdd = LayerUtils.explodeLayers([addlayer]);
         explodedAdd = explodedAdd.filter(entry => !existing.includes(entry.sublayer.name));
-        return LayerUtils.implodeLayers(explodedBase.concat(explodedAdd), swipeActive)[0];
+        return LayerUtils.implodeLayers(explodedAdd.concat(explodedBase), swipeActive)[0];
     },
     searchSubLayer(layer, attr, value, path=[]) {
         if(layer.sublayers) {
