@@ -88,7 +88,7 @@ class AppInitComponent extends React.Component {
                     theme = ThemeUtils.getThemeById(themes, themes.defaultTheme);
                     params = {};
                 }
-                let layerParams = params.l ? params.l.split(",").filter(entry => entry) : null;
+                let layerParams = params.l !== undefined ? params.l.split(",").filter(entry => entry) : null;
                 let visibleBgLayer = params.bl || params.bl === '' ? params.bl : null;
                 let initialView = null;
                 if(params.c && params.s !== undefined) {
