@@ -156,8 +156,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             let themeLayerIdx = state.flat.findIndex(layer => layer.role === LayerRole.THEME);
             if(themeLayerIdx >= 0) {
                 let newLayers = state.flat.slice(0);
-                newLayers[themeLayerIdx] = LayerUtils.mergeSubLayers(state.flat[themeLayerIdx], action.layer);
-                LayerUtils.addUUIDs(newLayers[themeLayerIdx]);
+                newLayers[themeLayerIdx] = LayerUtils.mergeSubLayers(state.flat[themeLayerIdx], action.layer, state.swipe || state.swipe === 0);
                 assign(newLayers[themeLayerIdx], LayerUtils.buildWMSLayerParams(newLayers[themeLayerIdx]));
                 UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
                 return assign({}, state, {flat: newLayers});

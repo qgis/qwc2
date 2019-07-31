@@ -366,20 +366,16 @@ const LayerUtils = {
             return list.concat([sublayer.name, ...this.getSublayerNames(sublayer)]);
         }, []);
     },
-    mergeSubLayers(baselayer, addlayer) {
-        let newlayer = assign({}, baselayer);
-        if(addlayer.sublayers) {
-            assign(newlayer, {sublayers: (newlayer.sublayers || []).slice(0)});
-            for(let addsublayer of addlayer.sublayers) {
-                let idx = newlayer.sublayers.findIndex(sublayer => sublayer.name === addsublayer.name);
-                if(idx === -1) {
-                    newlayer.sublayers.unshift(addsublayer);
-                } else {
-                    newlayer.sublayers[idx] = LayerUtils.mergeSubLayers(newlayer.sublayers[idx], addsublayer);
-                }
-            }
+    mergeSubLayers(baselayer, addlayer, swipeActive=false) {
+        if(isEmpty(addlayer.sublayers)) {
+            return {...baselayer};
         }
-        return newlayer;
+        LayerUtils.addUUIDs(addlayer);
+        let explodedBase = LayerUtils.explodeLayers([baselayer]);
+        let existing = explodedBase.map(entry => entry.sublayer.name);
+        let explodedAdd = LayerUtils.explodeLayers([{...baselayer, sublayers: addlayer.sublayers}]);
+        explodedAdd = explodedAdd.filter(entry => !existing.includes(entry.sublayer.name));
+        return LayerUtils.implodeLayers(explodedBase.concat(explodedAdd), swipeActive)[0];
     },
     searchSubLayer(layer, attr, value, path=[]) {
         if(layer.sublayers) {
