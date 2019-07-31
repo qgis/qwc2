@@ -99,7 +99,7 @@ class LayerTree extends React.Component {
         }
     }
     getGroupVisibility = (group) => {
-        if(isEmpty(group.sublayers)) {
+        if(isEmpty(group.sublayers) || !group.visibility) {
             return group.visibility;
         }
         let visible = 0;
@@ -353,7 +353,7 @@ class LayerTree extends React.Component {
                 visibilities.push(this.getGroupVisibility(layer));
             }
         }
-        let vis = visibilities.reduce((sum, x) => sum + x, 0) / visibilities.length;
+        let vis = visibilities.reduce((sum, x) => sum + x, 0) / (visibilities.length || 1);
         let visibilityCheckbox = (<Icon className="layertree-tree-visibility" icon={vis === 0 ? "unchecked" : vis === 1 ? "checked" : "tristate"} onClick={() => this.toggleLayerTreeVisibility(vis === 0)}/>);
 
         return (
