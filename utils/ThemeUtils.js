@@ -10,7 +10,6 @@ const assign = require("object-assign");
 const isEmpty = require('lodash.isempty');
 const ConfigUtils = require("../utils/ConfigUtils");
 const {LayerRole} = require("../actions/layers");
-const LayerUtils = require("./LayerUtils");
 const removeDiacritics = require('diacritics').remove;
 
 const ThemeUtils = {
@@ -60,9 +59,6 @@ const ThemeUtils = {
         return bgLayers;
     },
     createThemeLayer: function(theme, role=LayerRole.THEME) {
-        let dummy = {sublayers: theme.sublayers};
-        LayerUtils.addSublayerIDs(dummy);
-        let sublayers = dummy.sublayers;
         let layer = {
             id: theme.name + Date.now().toString(),
             type: "wms",
@@ -73,7 +69,7 @@ const ThemeUtils = {
             name: theme.name,
             title: theme.title,
             boundingBox: theme.bbox,
-            sublayers : sublayers,
+            sublayers : theme.sublayers,
             tiled: theme.tiled,
             ratio: !theme.tiled ? 1 : undefined,
             format: theme.format,
@@ -82,8 +78,7 @@ const ThemeUtils = {
             legendUrl: theme.legendUrl,
             printUrl: theme.printUrl,
             featureInfoUrl: theme.featureInfoUrl,
-            infoFormats: theme.infoFormats,
-            uuid: theme.uuid
+            infoFormats: theme.infoFormats
         };
         // Drawing order only makes sense if layer reordering is disabled
         if(ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {

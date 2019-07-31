@@ -63,7 +63,6 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             let newLayers = (state.flat || []).concat();
             let newLayer = assign({}, action.layer, {
                 refid: uuid.v4(),
-                uuid: uuid.v4(),
                 id: action.layer.id || (action.layer.name + "__" + newLayers.length),
                 role: action.layer.role || LayerRole.USERLAYER,
                 queryable: action.layer.queryable || false,
@@ -71,8 +70,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
                 opacity: action.layer.opacity || 255,
                 layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER
             });
-            let group = newLayer;
-            LayerUtils.addSublayerIDs(newLayer);
+            LayerUtils.addUUIDs(newLayer);
             if(newLayer.type === "wms") {
                 assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
             }
@@ -159,7 +157,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             if(themeLayerIdx >= 0) {
                 let newLayers = state.flat.slice(0);
                 newLayers[themeLayerIdx] = LayerUtils.mergeSubLayers(state.flat[themeLayerIdx], action.layer);
-                LayerUtils.addSublayerIDs(newLayers[themeLayerIdx]);
+                LayerUtils.addUUIDs(newLayers[themeLayerIdx]);
                 assign(newLayers[themeLayerIdx], LayerUtils.buildWMSLayerParams(newLayers[themeLayerIdx]));
                 UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
                 return assign({}, state, {flat: newLayers});
@@ -188,8 +186,8 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             if(action.layer) {
                 newLayers = newLayers.map(layer => {
                     if(layer.type === 'placeholder' && layer.source === action.source) {
-                        let newLayer = assign({}, action.layer, {refid: uuid.v4(), uuid: uuid.v4()});
-                        LayerUtils.addSublayerIDs(newLayer);
+                        let newLayer = {...action.layer, refid: uuid.v4()};
+                        LayerUtils.addUUIDs(newLayer);
                         if(newLayer.type === "wms") {
                             assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
                         }

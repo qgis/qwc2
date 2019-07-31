@@ -133,15 +133,14 @@ const LayerUtils = {
             queryLayers: queryable
         };
     },
-    addSublayerIDs(group) {
+    addUUIDs(group, usedUUIDs=new Set()) {
+        group.uuid = !group.uuid || usedUUIDs.has(group.uuid) ? uuid.v4() : group.uuid;
+        usedUUIDs.add(group.uuid);
         if(!isEmpty(group.sublayers)) {
             assign(group, {sublayers: group.sublayers.slice(0)});
             for(let i = 0; i < group.sublayers.length; ++i) {
-                group.sublayers[i] = assign({}, group.sublayers[i], {
-                    refid: group.sublayers[i].refid || uuid.v4(), // refid is used by re-ordering to recognize equal groups
-                    uuid: group.sublayers[i].uuid || uuid.v4() // uuid is guaranteed unique
-                });
-                LayerUtils.addSublayerIDs(group.sublayers[i]);
+                group.sublayers[i] = {...group.sublayers[i]};
+                LayerUtils.addUUIDs(group.sublayers[i], usedUUIDs);
             }
         }
     },
@@ -214,7 +213,7 @@ const LayerUtils = {
             return true;
         }
         // Remove matching entries
-        exploded = exploded.filter(entry => entry.layer !== layer || !pathEqualOrBelow(sublayerpath, entry.path));
+        exploded = exploded.filter(entry => entry.layer.uuid !== layer.uuid || !pathEqualOrBelow(sublayerpath, entry.path));
         // Re-assemble layers (if swipe is active, keep first sublayer separate)
         let newlayers = LayerUtils.implodeLayers(exploded, swipeActive);
         for(let layer of newlayers) {
@@ -245,7 +244,7 @@ const LayerUtils = {
         // Find entry to move
         if(movelayer) {
             let idx = exploded.findIndex(entry => {
-                return entry.layer === movelayer && isEqual(entry.path, sublayerpath);
+                return entry.layer.uuid === movelayer.uuid && isEqual(entry.path, sublayerpath);
             });
             if(idx === -1) {
                 return layers;
@@ -278,7 +277,11 @@ const LayerUtils = {
             if(!isEmpty(layer.sublayers)) {
                 this.explodeSublayers(layer, layer, exploded);
             } else {
-                exploded.push({layer: layer, path: [], sublayer: layer});
+                let newLayer = {...layer};
+                if(newLayer.sublayers) {
+                    newLayer.sublayers = [...newLayer.sublayers];
+                }
+                exploded.push({layer: newLayer, path: [], sublayer: newLayer});
             }
         }
         return exploded;
@@ -289,35 +292,30 @@ const LayerUtils = {
             if(parent.sublayers[idx].sublayers) {
                 LayerUtils.explodeSublayers(layer, parent.sublayers[idx], exploded, path);
             } else {
-                exploded.push({layer: layer, path: path, sublayer: parent.sublayers[idx]})
+                // Reduced layer with one single sublayer per level, up to leaf
+                let redLayer = {...layer};
+                let group = redLayer;
+                for(let idx of path) {
+                    group.sublayers = [{...group.sublayers[idx]}];
+                    group = group.sublayers[0];
+                }
+                exploded.push({layer: redLayer, path: path, sublayer: group});
             }
         }
     },
-    implodeLayer(exploded) {
-        let layer = assign({}, exploded.layer);
-
-        // Populate the layer with the single sublayer
-        let group = layer;
-        for(let idx of exploded.path) {
-            // Assign a new uuids to groups
-            assign(group, {uuid: uuid.v4()});
-            group.sublayers = [assign({}, group.sublayers[idx])];
-            group = group.sublayers[0];
-        }
-        return layer;
-    },
     implodeLayers(exploded, swipeActive=false) {
         let newlayers = [];
+        let usedLayerUUids = new Set();
 
         // If swipe is active, keep first layer separate
         let swipeLayer = null;
         if(swipeActive && exploded.length > 0) {
-            swipeLayer = LayerUtils.implodeLayer(exploded.shift());
+            swipeLayer = exploded.shift().layer;
+            LayerUtils.addUUIDs(swipeLayer, usedLayerUUids);
         }
-
         // Merge all possible items of an exploded layer array
         for(let entry of exploded) {
-            let layer = LayerUtils.implodeLayer(entry);
+            let layer = entry.layer;
 
             // Attempt to merge with previous if possible
             let target = newlayers.length > 0 ? newlayers[newlayers.length - 1] : null;
@@ -325,15 +323,17 @@ const LayerUtils = {
             if(target && target.sublayers && target.refid === layer.refid) {
                 let innertarget = target.sublayers[target.sublayers.length - 1];
                 let innersource = source.sublayers[0]; // Exploded entries have only one entry per sublayer level
-                while(innertarget.sublayers && innertarget.refid === innersource.refid) {
+                while(innertarget && innertarget.sublayers && innertarget.name === innersource.name) {
                     target = innertarget;
                     source = innersource;
                     innertarget = target.sublayers[target.sublayers.length - 1];
                     innersource = source.sublayers[0]; // Exploded entries have only one entry per sublayer level
                 }
                 target.sublayers.push(source.sublayers[0]);
+                LayerUtils.addUUIDs(source.sublayers[0], usedLayerUUids);
             } else {
                 newlayers.push(layer);
+                LayerUtils.addUUIDs(layer, usedLayerUUids);
             }
         }
         // Ensure mutually exclusive groups have exactly one visible layer
