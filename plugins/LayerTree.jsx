@@ -562,7 +562,14 @@ class LayerTree extends React.Component {
     }
     deleteAllLayers = () => {
         for(let layer of this.props.layers) {
-            this.props.removeLayer(layer.id);
+            if(layer.role === LayerRole.THEME) {
+                let sublayers = layer.sublayers || [];
+                for(let i = sublayers.length - 1; i >= 0; --i) {
+                    this.props.removeLayer(layer.id, [i]);
+                }
+            } else {
+                this.props.removeLayer(layer.id);
+            }
         }
     }
     toggleLayerTreeVisibility = (visibile) => {
