@@ -48,55 +48,59 @@ const createSkel = (strings) => {
     return skel;
 }
 
-let commonConfig = readJSON('/qwc2/translations/tsconfig.json');
-let applicationConfig = readJSON('/translations/tsconfig.json');
+// Determine workspaces
+let workspaces = readJSON('/package.json').workspaces || [];
 
-let commonStrings = commonConfig.strings || [];
-let applicationStrings = merge(commonStrings, applicationConfig.strings || []);
+// Generate workspace translations
+for(let workspace of workspaces) {
+    console.log("Generating translations for " + workspace);
+    let config = readJSON('/' + workspace + '/translations/tsconfig.json');
+    let strings = config.strings || [];
+    let skel = createSkel(strings);
 
-let langs = commonConfig.languages || [];
+    for(let lang of config.languages || []) {
+        let langskel = merge(skel, {"locale": lang});
 
-// Create skeletons
-let commonSkel = createSkel(commonStrings);
-let applicationSkel = createSkel(applicationStrings);
-
-
-for(let lang of langs) {
-    let langskel = merge(commonSkel, {"locale": lang});
-
-    // Merge common translations
-    let data = merge(langskel, cleanMessages(readJSON('/qwc2/translations/data.' + lang), langskel));
-    // Write updated common translations file
-    try {
-        fs.writeFileSync(process.cwd() + '/qwc2/translations/data.' + lang, JSON.stringify(data, null, 2) + "\n");
-        console.log('Wrote qwc2/translations/data.' + lang);
-    } catch(e) {
-        console.error('Failed to write common translation data.' + lang + ': ' + e);
-    }
-
-    // Merge application translations
-    if(!(applicationConfig.languages || []).includes(lang)) {
-        continue;
-    }
-
-    let origAppdata = cleanMessages(merge(applicationSkel, cleanMessages(readJSON('/translations/data.' + lang))), );
-    let appdata = merge(origAppdata, cleanMessages(data));
-    // Merge app skel again so that empty strings stay visible
-    appdata = merge(applicationSkel, appdata);
-    // Revert to original values for strings specified in overrides
-    if(applicationConfig.overrides) {
-        for(let path of applicationConfig.overrides) {
-            let value = objectPath.get(origAppdata.messages, path);
-            if(value) {
-                objectPath.set(appdata.messages, path, value);
-            }
+        // Merge translations
+        let data = merge(langskel, cleanMessages(readJSON('/' + workspace + '/translations/data.' + lang), langskel));
+        // Write updated translations file
+        try {
+            fs.writeFileSync(process.cwd() + '/' + workspace + '/translations/data.' + lang, JSON.stringify(data, null, 2) + "\n");
+            console.log('Wrote ' + workspace + '/translations/data.' + lang);
+        } catch(e) {
+            console.error('Failed to write ' + workspace + '/translations/data.' + lang + ': ' + e);
         }
     }
+}
+
+// Generate application translations
+let config = readJSON('/translations/tsconfig.json');
+let strings = config.strings || [];
+let skel = createSkel(strings);
+for(let lang of config.languages || []) {
+    let langskel = merge(skel, {"locale": lang});
+
+    let origData = readJSON('/translations/data.' + lang);
+    let data = merge(langskel, cleanMessages(readJSON('/translations/data.' + lang), langskel));
+
+    // Merge translations from workspaces
+    for(let workspace of workspaces) {
+        data = merge(data, readJSON('/' + workspace + '/translations/data.' + lang));
+    }
+
+    // Revert to original values for strings specified in overrides
+    for(let path of config.overrides || []) {
+        let value = objectPath.get(origData.messages, path);
+        if(value) {
+            objectPath.set(data.messages, path, value);
+        }
+    }
+
     // Write output
     try {
-        fs.writeFileSync(process.cwd() + '/translations/data.' + lang, JSON.stringify(appdata, null, 2) + "\n");
+        fs.writeFileSync(process.cwd() + '/translations/data.' + lang, JSON.stringify(data, null, 2) + "\n");
         console.log('Wrote translations/data.' + lang);
     } catch(e) {
-        console.error('Failed to write application translation data.' + lang + ': ' + e);
+        console.error('Failed to write translations/data.' + lang + ': ' + e);
     }
 }
