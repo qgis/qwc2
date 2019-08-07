@@ -29,7 +29,7 @@ const PluginsContainer = require('./PluginsContainer');
 
 const {changeBrowserProperties} = require('../actions/browser');
 const {loadLocale} = require('../actions/locale');
-const {localConfigLoaded} = require('../actions/localConfig');
+const {localConfigLoaded, setStartupParameters} = require('../actions/localConfig');
 const {addLayer} = require('../actions/layers');
 const {changeSearch} = require('../actions/search');
 const {themesLoaded,setCurrentTheme} = require('../actions/theme');
@@ -155,6 +155,7 @@ class StandardApp extends React.Component {
         this.init();
         // Save initial params before they get overwritten
         this.initialParams = UrlParams.getParams();
+        this.store.dispatch(setStartupParameters(this.initialParams));
         this.touchY = null;
     }
     componentDidMount() {
