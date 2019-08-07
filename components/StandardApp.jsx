@@ -89,6 +89,9 @@ class AppInitComponent extends React.Component {
                     params = {};
                 }
                 let layerParams = params.l !== undefined ? params.l.split(",").filter(entry => entry) : null;
+                if(ConfigUtils.getConfigProp("urlReverseLayerOrder")) {
+                    layerParams.reverse();
+                }
                 let visibleBgLayer = params.bl || params.bl === '' ? params.bl : null;
                 let initialView = null;
                 if(params.c && params.s !== undefined) {

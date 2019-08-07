@@ -11,6 +11,7 @@ const isEmpty = require('lodash.isempty');
 const isEqual = require('lodash.isequal');
 const uuid = require('uuid');
 const url = require('url');
+const ConfigUtils = require('./ConfigUtils');
 const {LayerRole} = require('../actions/layers');
 
 const LayerUtils = {
@@ -158,7 +159,7 @@ const LayerUtils = {
                 visibilities.push(layer.visibility);
             }
         }
-        return layernames.map((layername, idx) => {
+        let result = layernames.map((layername, idx) => {
             let param = layername;
             if(opacities[idx] < 255){
                 param += "[" + (100 - Math.round(opacities[idx] / 255. * 100)) + "]";
@@ -167,7 +168,12 @@ const LayerUtils = {
                 param += '!';
             }
             return param;
-        }).join(",");
+        })
+        if(ConfigUtils.getConfigProp("urlReverseLayerOrder")) {
+            result.reverse();
+        }
+        return result.join(",");
+
     },
     splitLayerUrlParam(entry) {
         const nameOpacityPattern = /([^\[]+)\[(\d+)]/;
