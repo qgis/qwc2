@@ -93,8 +93,7 @@
       "importlayer": "Importar capa",
       "maptip": "Mostrar sugerencias de capas en el mapa",
       "printlegend": "Imprimir leyenda",
-      "deletealllayers": "",
-      "transparency": "Transparencia"
+      "deletealllayers": ""
     },
     "locate": {
       "metersUnit": "metros",

@@ -196,7 +196,7 @@ class LayerTree extends React.Component {
             }
             editframe = (
                 <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
-                    <span className="layertree-item-transparency-label"><Message msgId="layertree.transparency" /></span>
+                    <Icon icon="transparency" />
                     <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onTouchEnd={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} />
                     {reorderButtons}
                     {this.props.infoInSettings ? infoButton : null}

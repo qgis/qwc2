@@ -93,8 +93,7 @@
       "importlayer": "Ebene importieren",
       "maptip": "Kartentipps anzeigen",
       "printlegend": "Legende drucken",
-      "deletealllayers": "Alle Ebenen entfernen",
-      "transparency": "Transparenz"
+      "deletealllayers": "Alle Ebenen entfernen"
     },
     "locate": {
       "metersUnit": "Meter",

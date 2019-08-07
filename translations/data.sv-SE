@@ -93,8 +93,7 @@
       "importlayer": "",
       "maptip": "Visa karttips för lager",
       "printlegend": "",
-      "deletealllayers": "",
-      "transparency": "Transparens"
+      "deletealllayers": ""
     },
     "locate": {
       "metersUnit": "meter",

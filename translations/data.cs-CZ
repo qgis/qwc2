@@ -93,8 +93,7 @@
       "importlayer": "Importovat vrstvu",
       "maptip": "Zobrazovat bubliny nad mapou",
       "printlegend": "Tisk legendy",
-      "deletealllayers": "",
-      "transparency": "Průhlednost"
+      "deletealllayers": ""
     },
     "locate": {
       "metersUnit": "metry",

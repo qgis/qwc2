@@ -93,8 +93,7 @@
       "importlayer": "Importa livello",
       "maptip": "Attiva maptip",
       "printlegend": "Stampa legenda",
-      "deletealllayers": "Rimuovi tutti i livelli",
-      "transparency": "Trasparenza"
+      "deletealllayers": "Rimuovi tutti i livelli"
     },
     "locate": {
       "metersUnit": "metri",

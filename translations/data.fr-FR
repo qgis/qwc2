@@ -93,8 +93,7 @@
       "importlayer": "Importer un calque",
       "maptip": "Afficher les maptips",
       "printlegend": "Afficher la légende",
-      "deletealllayers": "",
-      "transparency": "Transparence"
+      "deletealllayers": ""
     },
     "locate": {
       "metersUnit": "mètre",
