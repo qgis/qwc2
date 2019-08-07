@@ -242,7 +242,7 @@ const LayerUtils = {
             ...layers.filter(layer => layer.role === LayerRole.BACKGROUND)
         ];
     },
-    reorderLayer(layers, movelayer, sublayerpath, delta, swipeActive) {
+    reorderLayer(layers, movelayer, sublayerpath, delta, swipeActive, preventSplittingGroups) {
         // Extract foreground layers
         let fglayers = layers.filter(layer => layer.role !== LayerRole.BACKGROUND);
         // Explode layers (one entry for every single sublayer)
@@ -262,7 +262,7 @@ const LayerUtils = {
             if((delta < 0 && indices[0] <= 0) || (delta > 0 && indices[indices.length - 1] >= exploded.length - 1)) {
                 return layers;
             }
-            if(ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering")) {
+            if(preventSplittingGroups) {
                 // Prevent moving an entry out of a containing group
                 let idx = delta < 0 ? indices[0] : indices[indices.length - 1];
                 if(!isEqual(exploded[idx + delta].path.slice(0, sublayerpath.length - 1), sublayerpath.slice(0, -1))) {

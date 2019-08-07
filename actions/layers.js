@@ -6,6 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const ConfigUtils = require("../utils/ConfigUtils");
+
 const SET_LAYER_LOADING = 'SET_LAYER_LOADING';
 const ADD_LAYER = 'ADD_LAYER';
 const REMOVE_LAYER = 'REMOVE_LAYER';
@@ -49,11 +51,14 @@ function removeLayer(layerId, sublayerpath=[]) {
 }
 
 function reorderLayer(layer, sublayerpath, direction) {
-    return {
-        type: REORDER_LAYER,
-        layer,
-        sublayerpath,
-        direction
+    return (dispatch, getState) => {
+        dispatch({
+            type: REORDER_LAYER,
+            layer,
+            sublayerpath,
+            direction,
+            preventSplittingGroups: ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", getState().theme.current)
+        });
     };
 }
 

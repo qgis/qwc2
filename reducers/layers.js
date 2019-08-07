@@ -177,7 +177,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             return assign({}, state, {flat: [], swipe: undefined});
         }
         case REORDER_LAYER: {
-            let newLayers = LayerUtils.reorderLayer(state.flat, action.layer, action.sublayerpath, action.direction, state.swipe);
+            let newLayers = LayerUtils.reorderLayer(state.flat, action.layer, action.sublayerpath, action.direction, state.swipe, action.preventSplittingGroups);
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
             return assign({}, state, {flat: newLayers});
         }

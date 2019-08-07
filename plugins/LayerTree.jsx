@@ -156,7 +156,7 @@ class LayerTree extends React.Component {
         let editframe = null;
         let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         let allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
-        let sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering") === true;
+        let sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true;
         if(this.state.activemenu === group.uuid && allowReordering) {
             editframe = (
                 <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
@@ -311,7 +311,7 @@ class LayerTree extends React.Component {
             );
         }
         let allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
-        let sortable = allowReordering && (ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering") === true || this.props.flattenGroups === true);
+        let sortable = allowReordering && (ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true || this.props.flattenGroups === true);
         return (
             <div role="body" className="layertree-container-wrapper">
                 <div className="layertree-container">
