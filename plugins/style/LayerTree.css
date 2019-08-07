@@ -72,7 +72,7 @@
 
 #LayerTree span.layertree-item-expander {
     margin-right: 0.25em;
-    flex: 0 0 auto;
+    flex: 0 0 1em;
 }
 
 #LayerTree div.layertree-item > div.spinner {
