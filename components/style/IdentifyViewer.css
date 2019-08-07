@@ -51,10 +51,6 @@ div.identify-body li.expandable {
     position: relative;
 }
 
-div.identify-body li.expandable > span {
-    cursor: pointer;
-}
-
 div.identify-body li.expandable > ul {
     display: none;
 }
@@ -119,7 +115,6 @@ div.identify-body .identify-result-title > span:first-child {
 }
 
 div.identify-body .identify-result-title > span.icon {
-    cursor: pointer;
     flex: 0 0 auto;
 }
 

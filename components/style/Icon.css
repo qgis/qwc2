@@ -6,10 +6,14 @@ img.icon {
     vertical-align: top;
 }
 
-span.iconlarge:before {
+span.icon_large:before {
     font-size: large;
 }
 
-span.iconxlarge:before {
+span.icon_xlarge:before {
     font-size: x-large;
+}
+
+.icon_clickable {
+    cursor: pointer;
 }

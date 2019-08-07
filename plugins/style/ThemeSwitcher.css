@@ -49,7 +49,6 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    cursor: pointer;
     font-size: large;
     padding: 0.25em;
     background-color: rgba(255, 255, 255, 0.75);

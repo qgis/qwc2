@@ -7,7 +7,6 @@
 #LayerTree span.layertree-print-legend,
 #LayerTree span.layertree-delete-legend {
     margin-left: 1em;
-    cursor: pointer;
     border: 1px solid transparent;
     padding: 0.25em;
 }
@@ -73,7 +72,6 @@
 
 #LayerTree span.layertree-item-expander {
     margin-right: 0.25em;
-    cursor: pointer;
     flex: 0 0 auto;
 }
 
@@ -87,7 +85,6 @@
 
 #LayerTree span.layertree-item-checkbox {
     margin-right: 0.5em;
-    cursor: pointer;
     flex: 0 0 auto;
 }
 
@@ -150,7 +147,6 @@ img.layertree-item-legend-tooltip {
     line-height: 1.75em;
     text-align: center;
     width: 1.75em;
-    cursor: pointer;
     color: @item_border@;
     flex: 0 0 auto;
 }
@@ -163,7 +159,6 @@ img.layertree-item-legend-tooltip {
     line-height: 1.75em;
     text-align: center;
     width: 1.75em;
-    cursor: pointer;
     color: @item_border@;
     flex: 0 0 auto;
     margin-left: 0.25em;
@@ -204,12 +199,10 @@ img.layertree-item-legend-tooltip {
     flex: 0 0 1.5em;
     font-size: small;
     text-align: center;
-    cursor: pointer;
 }
 
 #LayerTree span.layertree-item-move {
     flex: 0 0 1.5em;
     font-size: small;
     text-align: center;
-    cursor: pointer;
 }

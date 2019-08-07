@@ -47,7 +47,6 @@ div.sidebar div.sidebar-titlebar span.sidebar-title {
 div.sidebar span.sidebar-titlebar-closeicon {
     flex: 0 0 auto;
     margin: 0 0.25em;
-    cursor: pointer;
     font-size: large;
 }
 

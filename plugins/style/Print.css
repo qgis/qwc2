@@ -9,7 +9,6 @@
 
 #Print .print-minimize-maximize {
     margin-left: 1em;
-    cursor: pointer;
     border: 1px solid transparent;
     padding: 0.25em;
 }

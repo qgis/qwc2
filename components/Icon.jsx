@@ -8,6 +8,7 @@
 
 const React = require('react');
 const PropTypes = require('prop-types');
+const classnames = require('classnames');
 const ConfigUtils = require('../utils/ConfigUtils');
 require('./style/Icon.css');
 
@@ -21,26 +22,28 @@ class Icon extends React.Component {
     }
     static defaultProps = {
         className: "",
-        title: "",
-        onClick: (ev) => {},
+        title: ""
     }
     render() {
+        let classes = classnames({
+            "icon": true,
+            ["icon-" + this.props.icon]: true,
+            ["icon_" + this.props.size]: !!this.props.size,
+            [this.props.className]: !!this.props.className,
+            "icon_clickable": !!this.props.onClick
+        });
         if(this.props.icon.startsWith(":/")) {
             let assetsPath = ConfigUtils.getConfigProp("assetsPath");
             let src = assetsPath + this.props.icon.substr(1);
             return (
-                <img
-                    src={src} alt={this.props.title} title={this.props.title}
-                    className={"icon " + (this.props.size ? "icon" + this.props.size : "") +" "+ this.props.className}
-                    onClick={this.props.onClick}
+                <img src={src} alt={this.props.title} title={this.props.title}
+                    className={classes} onClick={this.props.onClick}
                 />
             );
         } else {
             return (
-                <span
-                    title={this.props.title}
-                    className={"icon " + (this.props.size ? "icon" + this.props.size : "") + " icon-" + this.props.icon + " " + this.props.className}
-                    onClick={this.props.onClick}
+                <span title={this.props.title}
+                    className={classes} onClick={this.props.onClick}
                 ></span>
             );
         }

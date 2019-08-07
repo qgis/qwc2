@@ -118,9 +118,7 @@ class MapInfoTooltip extends React.Component {
                     <div className="mapinfotooltip-titlebar">
                         <span className="mapinfotooltip-title">{title}</span>
                         <CopyButton text={text} buttonClass="mapinfotooltip-button" />
-                        <span className="mapinfotooltip-button" onClick={this.clear}>
-                            <Icon icon="remove"/>
-                        </span>
+                        <Icon icon="remove" className="mapinfotooltip-button" onClick={this.clear}/>
                     </div>
                     <div className="mapinfotooltip-body">
                         <table>
