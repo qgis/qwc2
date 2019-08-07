@@ -156,6 +156,7 @@ class LayerTree extends React.Component {
         let editframe = null;
         let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         let allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
+        let sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering") === true;
         if(this.state.activemenu === group.uuid && allowReordering) {
             editframe = (
                 <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
@@ -167,7 +168,7 @@ class LayerTree extends React.Component {
             );
         }
         return (
-            <div className="layertree-item-container" key={group.uuid}>
+            <div className="layertree-item-container" key={group.uuid} data-id={JSON.stringify({layer: group.uuid, path: path})}>
                 <div className={classnames(itemclasses)}>
                     <Icon className="layertree-item-expander" icon={expanderstate} onClick={() => this.groupExpandendToggled(layer, path, group.expanded)} />
                     <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.groupToggled(layer, path, visibility, inMutuallyExclusiveGroup)} />
@@ -177,7 +178,9 @@ class LayerTree extends React.Component {
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
                 {editframe}
-                {sublayersContent}
+                <Sortable options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.ie}} onChange={this.onSortChange}>
+                    {sublayersContent}
+                </Sortable>
             </div>
         );
     }
@@ -307,16 +310,17 @@ class LayerTree extends React.Component {
                 </div>
             );
         }
-        let sortable = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
+        let allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
+        let sortable = allowReordering && (ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering") === true || this.props.flattenGroups === true);
         return (
             <div role="body" className="layertree-container-wrapper">
                 <div className="layertree-container">
                     <div className="layertree-tree"
-                        onTouchStart={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
-                        onTouchMove={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
-                        onTouchEnd={ev => { if(this.props.flattenGroups) ev.stopPropagation(); }}
+                        onTouchStart={ev => { ev.stopPropagation(); }}
+                        onTouchMove={ev => { ev.stopPropagation(); }}
+                        onTouchEnd={ev => { ev.stopPropagation(); }}
                         onContextMenuCapture={ev => {ev.stopPropagation(); ev.preventDefault(); return false; }}>
-                        <Sortable options={{disabled: sortable === false || this.props.flattenGroups !== true, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.ie}} onChange={this.onSortChange}>
+                        <Sortable options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.ie}} onChange={this.onSortChange}>
                             {this.props.layers.map(this.renderLayerTree)}
                         </Sortable>
                     </div>
