@@ -153,7 +153,19 @@ class LayerTree extends React.Component {
             "layertree-item-cog": true,
             "layertree-item-cog-active": this.state.activemenu === group.uuid
         });
+        let editframe = null;
         let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
+        let allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
+        if(this.state.activemenu === group.uuid && allowReordering) {
+            editframe = (
+                <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
+                    <div className="layertree-item-edit-items">
+                        <Icon className="layertree-item-move" icon="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />
+                        <Icon className="layertree-item-move" icon="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />
+                    </div>
+                </div>
+            );
+        }
         return (
             <div className="layertree-item-container" key={group.uuid}>
                 <div className={classnames(itemclasses)}>
@@ -161,8 +173,10 @@ class LayerTree extends React.Component {
                     <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.groupToggled(layer, path, visibility, inMutuallyExclusiveGroup)} />
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
                     <span className="layertree-item-spacer"></span>
+                    {allowReordering ? (<Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(group.uuid)}/>) : null}
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
+                {editframe}
                 {sublayersContent}
             </div>
         );
@@ -196,10 +210,12 @@ class LayerTree extends React.Component {
             }
             editframe = (
                 <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
-                    <Icon icon="transparency" />
-                    <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onTouchEnd={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} />
-                    {reorderButtons}
-                    {this.props.infoInSettings ? infoButton : null}
+                    <div className="layertree-item-edit-items">
+                        <Icon icon="transparency" />
+                        <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onTouchEnd={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} />
+                        {reorderButtons}
+                        {this.props.infoInSettings ? infoButton : null}
+                    </div>
                 </div>
             );
         }

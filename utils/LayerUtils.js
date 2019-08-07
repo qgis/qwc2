@@ -199,27 +199,27 @@ const LayerUtils = {
         }
         return {type, url, name, opacity, visibility};
     },
+    pathEqualOrBelow(parent, child) {
+        if(child.length < parent.length) {
+            return false;
+        }
+        if(parent.length === 0) {
+            return true;
+        }
+        for(let i = 0, n = parent.length; i < n; ++i) {
+            if(parent[i] != child[i]) {
+                return false;
+            }
+        }
+        return true;
+    },
     removeLayer(layers, layer, sublayerpath, swipeActive) {
         // Extract foreground layers
         let fglayers = layers.filter(layer => layer.role !== LayerRole.BACKGROUND);
         // Explode layers (one entry for every single sublayer)
         let exploded = LayerUtils.explodeLayers(fglayers);
-        const pathEqualOrBelow = (parent, child) => {
-            if(child.length < parent.length) {
-                return false;
-            }
-            if(parent.length === 0) {
-                return true;
-            }
-            for(let i = 0, n = parent.length; i < n; ++i) {
-                if(parent[i] != child[i]) {
-                    return false;
-                }
-            }
-            return true;
-        }
         // Remove matching entries
-        exploded = exploded.filter(entry => entry.layer.uuid !== layer.uuid || !pathEqualOrBelow(sublayerpath, entry.path));
+        exploded = exploded.filter(entry => entry.layer.uuid !== layer.uuid || !LayerUtils.pathEqualOrBelow(sublayerpath, entry.path));
         // Re-assemble layers (if swipe is active, keep first sublayer separate)
         let newlayers = LayerUtils.implodeLayers(exploded, swipeActive);
         for(let layer of newlayers) {
@@ -249,19 +249,29 @@ const LayerUtils = {
         let exploded = LayerUtils.explodeLayers(fglayers);
         // Find entry to move
         if(movelayer) {
-            let idx = exploded.findIndex(entry => {
-                return entry.layer.uuid === movelayer.uuid && isEqual(entry.path, sublayerpath);
-            });
-            if(idx === -1) {
+            let indices = exploded.reduce((result, entry, index) => {
+                if(entry.layer.uuid === movelayer.uuid && LayerUtils.pathEqualOrBelow(sublayerpath, entry.path)) {
+                    return [...result, index];
+                }
+                return result;
+            }, []);
+            if(isEmpty(indices)) {
+                return layers;
+            }
+            indices.sort();
+            if((delta < 0 && indices[0] <= 0) || (delta > 0 && indices[indices.length - 1] >= exploded.length - 1)) {
                 return layers;
             }
             // Reorder layer
-            let destidx = idx + delta;
-            if(destidx < 0 || destidx >= exploded.length) {
-                return layers;
+            if(delta < 0) {
+                for(let idx of indices) {
+                    exploded.splice(idx - 1, 0, exploded.splice(idx, 1)[0]);
+                }
+            } else {
+                for(let idx of indices.reverse()) {
+                    exploded.splice(idx + 1, 0, exploded.splice(idx, 1)[0]);
+                }
             }
-            let entry = exploded.splice(idx, 1)[0];
-            exploded.splice(destidx, 0, entry);
         }
         // Re-assemble layers (if swipe is active, keep first sublayer separate)
         let newlayers = LayerUtils.implodeLayers(exploded, swipeActive);

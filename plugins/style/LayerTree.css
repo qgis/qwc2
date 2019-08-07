@@ -170,39 +170,34 @@ img.layertree-item-legend-tooltip {
 }
 
 #LayerTree div.layertree-item-edit-frame {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+#LayerTree div.layertree-item-edit-items {
+    flex: 0 0 auto;
+    max-width: calc(100% - 1em);
+    height: 1.75em;
     border: 1px solid @item_border@;
     color: @titlebar_bg@;
     font-weight: bold;
-    padding: 0.25em;
     display: flex;
     align-items: center;
-    margin-left: 2em;
     background-color: white;
-}
-
-#LayerTree span.layertree-item-transparency-label {
-    flex: 0 0 auto;
-    font-size: small;
 }
 
 #LayerTree input.layertree-item-transparency-slider {
     flex: 1 1 auto;
     font-size: small;
-    padding: 0 0.25em;
     min-width: 0;
     max-width: none;
     width: auto;
     margin: 0 0.25em;
 }
 
-#LayerTree span.layertree-item-metadata {
-    flex: 0 0 1.5em;
-    font-size: small;
-    text-align: center;
-}
-
-#LayerTree span.layertree-item-move {
-    flex: 0 0 1.5em;
-    font-size: small;
+#LayerTree div.layertree-item-edit-items span.icon {
+    flex: 0 0 auto;
+    width: 1.75em;
     text-align: center;
 }
