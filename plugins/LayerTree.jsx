@@ -184,7 +184,7 @@ class LayerTree extends React.Component {
             </div>
         );
     }
-    renderLayer = (layer, sublayer, path, enabled=true, inMutuallyExclusiveGroup=false) => {
+    renderLayer = (layer, sublayer, path, enabled=true, inMutuallyExclusiveGroup=false, skipExpanderPlaceholder=false) => {
         let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         let checkboxstate = sublayer.visibility === true ? 'checked' : 'unchecked';
         if(inMutuallyExclusiveGroup) {
@@ -242,7 +242,7 @@ class LayerTree extends React.Component {
         return (
             <div className="layertree-item-container" key={sublayer.uuid} data-id={JSON.stringify({layer: layer.uuid, path: path})}>
                 <div className={classnames(itemclasses)}>
-                    {this.props.flattenGroups ? null : (<span className="layertree-item-expander"></span>)}
+                    {(this.props.flattenGroups || skipExpanderPlaceholder) ? null : (<span className="layertree-item-expander"></span>)}
                     {checkbox}
                     {legendicon}
                     <span className="layertree-item-title" title={title}>{title}</span>
@@ -269,7 +269,7 @@ class LayerTree extends React.Component {
                 if(sublayer.sublayers) {
                     return this.renderLayerGroup(layer, sublayer, subpath, true)
                 } else {
-                    return this.renderLayer(layer, sublayer, subpath, true);
+                    return this.renderLayer(layer, sublayer, subpath, true, false, true);
                 }
             });
         }
