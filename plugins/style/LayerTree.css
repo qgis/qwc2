@@ -192,7 +192,7 @@ img.layertree-item-legend-tooltip {
     font-size: small;
     min-width: 0;
     max-width: none;
-    width: auto;
+    width: 1000em; /* exagerated value */
     margin: 0 0.25em;
 }
 
