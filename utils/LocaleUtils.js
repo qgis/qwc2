@@ -63,11 +63,11 @@ const LocaleUtils = {
         return supportedLocales;
     },
     getMessageById: function(messages, msgId) {
-        var message = messages;
+        let message = messages;
         msgId.split('.').forEach(part => {
             message = message ? message[part] : null;
         });
-        return message;
+        return message || msgId;
     },
     toLocaleFixed(number, digits) {
         if(ConfigUtils.getConfigProp("localeAwareNumbers")) {
