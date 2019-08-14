@@ -56,7 +56,8 @@ class LayerTree extends React.Component {
         setActiveLayerInfo: PropTypes.func,
         width: PropTypes.string,
         enableLegendPrint: PropTypes.bool,
-        infoInSettings: PropTypes.bool
+        infoInSettings: PropTypes.bool,
+        showToggleAllLayersCheckbox: PropTypes.bool
     }
     static defaultProps = {
         layers: [],
@@ -73,7 +74,8 @@ class LayerTree extends React.Component {
         flattenGroups: false,
         width: "20em",
         enableLegendPrint: true,
-        infoInSettings: true
+        infoInSettings: true,
+        showToggleAllLayersCheckbox: true
     }
     state = {
         activemenu: null,
@@ -374,7 +376,7 @@ class LayerTree extends React.Component {
             }
         }
         let vis = visibilities.reduce((sum, x) => sum + x, 0) / (visibilities.length || 1);
-        let visibilityCheckbox = (<Icon className="layertree-tree-visibility" icon={vis === 0 ? "unchecked" : vis === 1 ? "checked" : "tristate"} onClick={() => this.toggleLayerTreeVisibility(vis === 0)}/>);
+        let visibilityCheckbox = this.props.showToggleAllLayersCheckbox ? (<Icon className="layertree-tree-visibility" icon={vis === 0 ? "unchecked" : vis === 1 ? "checked" : "tristate"} onClick={() => this.toggleLayerTreeVisibility(vis === 0)}/>) : null;
 
         return (
             <div>
