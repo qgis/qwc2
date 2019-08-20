@@ -589,7 +589,7 @@ class LayerTree extends React.Component {
                 for(let i = sublayers.length - 1; i >= 0; --i) {
                     this.props.removeLayer(layer.id, [i]);
                 }
-            } else {
+            } else if(layer.role === LayerRole.USERLAYER) {
                 this.props.removeLayer(layer.id);
             }
         }
