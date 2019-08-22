@@ -154,22 +154,33 @@ const VectorLayerUtils = {
         if(geometry.type === "Point") {
             let wgscoo = CoordinatesUtils.reproject(geometry.coordinates, srccrs, dstcrs);
             return {
-                "type": "Point",
+                "type": geometry.type,
                 "coordinates": wgscoo
             };
-        } else if(geometry.type === "LineString") {
+        } else if(geometry.type === "LineString" || geometry.type === "MultiPoint") {
             return {
-                "type": "LineString",
+                "type": geometry.type,
                 "coordinates": geometry.coordinates.map(tuple => {
                     return CoordinatesUtils.reproject(tuple, srccrs, dstcrs);
                 })
             };
-        } else if(geometry.type === "Polygon") {
+        } else if(geometry.type === "Polygon" || geometry.type === "MultiLineString") {
             return {
-                "type": "Polygon",
+                "type": geometry.type,
                 "coordinates": geometry.coordinates.map(ring => {
                     return ring.map(tuple => {
                         return CoordinatesUtils.reproject(tuple, srccrs, dstcrs);
+                    });
+                })
+            };
+        } else if(geometry.type === "MultiPolygon") {
+            return {
+                "type": geometry.type,
+                "coordinates": geometry.coordinates.map(part => {
+                    return part.map(ring => {
+                        return ring.map(tuple => {
+                            return CoordinatesUtils.reproject(tuple, srccrs, dstcrs);
+                        });
                     });
                 })
             };
