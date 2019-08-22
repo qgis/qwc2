@@ -27,12 +27,14 @@ const {SideBar} = require('../components/SideBar');
 const Spinner = require('../components/Spinner');
 const LayerUtils = require('../utils/LayerUtils');
 const ThemeUtils = require('../utils/ThemeUtils');
+const VectorLayerUtils = require('../utils/VectorLayerUtils');
 require('./style/LayerTree.css');
 
 
 class LayerTree extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
+        mapCrs: PropTypes.string,
         swipe: PropTypes.number,
         mobile: PropTypes.bool,
         fallbackDrag: PropTypes.bool,
@@ -608,7 +610,7 @@ class LayerTree extends React.Component {
     exportRedliningLayer = (layer) => {
         let data = JSON.stringify({
             type: "FeatureCollection",
-	        features: layer.features
+	        features: layer.features.map(feature => ({...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.mapCrs, 'EPSG:4326')}))
         }, null, ' ');
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
     }
@@ -619,6 +621,7 @@ const selector = (state) => ({
     ie: state.browser ? state.browser.ie : false,
     fallbackDrag: state.browser.ie || (state.browser.platform === 'Win32' && state.browser.chrome),
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
+    mapCrs: state.map.projection,
     swipe: state.layers && state.layers.swipe || undefined,
     theme: state.theme.current || {},
     mapTipsEnabled: state.map && state.map.maptips
