@@ -77,7 +77,7 @@
       "nofeatures": "No features could be imported.",
       "noresults": "No results or invalid URL",
       "url": "URL",
-      "urlplaceholder": "Enter URL to WMS, WFS, KML..."
+      "urlplaceholder": "Enter URL to WMS, WFS, KML, GeoJSON..."
     },
     "layerinfo": {
       "title": "Layer Info",

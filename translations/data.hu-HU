@@ -70,7 +70,7 @@
       "filter": "Szűrés...",
       "connect": "Kapcsolódás",
       "nofeatures": "Nem sikerült az importálás.",
-      "urlplaceholder": "URL a WMS, WFS, KML adatokhoz..."
+      "urlplaceholder": "URL a WMS, WFS, KML, GeoJSON adatokhoz..."
     },
     "layerinfo": {
       "title": "Fólia információ",

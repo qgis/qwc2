@@ -154,13 +154,19 @@ class ImportLayer extends React.Component {
         }
         let pendingRequests = 0;
         this.setState({pendingRequests: pendingRequests, serviceLayers: null, filter: ""});
-        // Attempt to load as KML
-        if(url.toLowerCase().endsWith(".kml")) {
+        // Attempt to load as KML or GeoJSON
+        if(url.toLowerCase().endsWith(".kml") || url.toLowerCase().endsWith(".json") || url.toLowerCase().endsWith(".geojson")) {
             this.setState({pendingRequests: ++pendingRequests});
+            let type;
+            if(url.toLowerCase().endsWith(".kml")) {
+                type = "kml";
+            } else if(url.toLowerCase().endsWith(".json") || url.toLowerCase().endsWith(".geojson")) {
+                type = "json";
+            }
             axios.get(ProxyUtils.addProxyIfNeeded(url)).then(response => {
                 let basename = url.split('/').pop()
                 this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: [{
-                    type: "kml",
+                    type: type,
                     name: basename,
                     title: basename,
                     data: response.data
@@ -208,14 +214,25 @@ class ImportLayer extends React.Component {
         let file = this.state.file;
         let reader = new FileReader();
         reader.onload = (ev) => {
-            this.addKMLLayer(file.name, ev.target.result);
+            if(file.name.toLowerCase().endsWith(".kml")) {
+                this.addKMLLayer(file.name, ev.target.result);
+            } else if(file.name.toLowerCase().endsWith(".geojson") || file.name.toLowerCase().endsWith(".json")) {
+                let data = {};
+                try {
+                    data = JSON.parse(ev.target.result);
+                } catch(e) {}
+                this.addGeoJSONLayer(file.name, data);
+            }
             this.setState({file: null});
         }
         reader.readAsText(this.state.file);
     }
     addKMLLayer = (filename, data) => {
-        let features = VectorLayerUtils.kmlToGeoJSON(data);
-        if(!isEmpty(features)) {
+        this.addGeoJSONLayer(filename, {features: VectorLayerUtils.kmlToGeoJSON(data)});
+    }
+    addGeoJSONLayer = (filename, data) => {
+        if(!isEmpty(data.features)) {
+            let features = data.features.map(feature => ({...feature, crs: feature.crs || "EPSG:4326"}));
             this.props.addLayerFeatures({
                 id: filename + Date.now(),
                 name: filename,
@@ -235,6 +252,8 @@ class ImportLayer extends React.Component {
             }, entry, {sublayers: null}));
         } else if(entry.type === "kml") {
             this.addKMLLayer(entry.name, entry.data);
+        } else if(entry.type === "json") {
+            this.addGeoJSONLayer(entry.name, entry.data);
         }
     }
 };

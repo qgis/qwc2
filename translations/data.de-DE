@@ -77,7 +77,7 @@
       "nofeatures": "Keine Objekte konnten importiert werden",
       "noresults": "Keine Resultate oder ungültige URL",
       "url": "URL",
-      "urlplaceholder": "WMS, WFS oder KML URL eingeben..."
+      "urlplaceholder": "WMS, WFS, KML oder GeoJSON URL eingeben..."
     },
     "layerinfo": {
       "title": "Ebeneninformationen",

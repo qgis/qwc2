@@ -77,7 +77,7 @@
       "nofeatures": "No se pudieron importar elementos.",
       "noresults": "Sin resultados o la dirección URL no es válida",
       "url": "",
-      "urlplaceholder": "Ingrese dirección URL o WMS, WFS, KML..."
+      "urlplaceholder": "Ingrese dirección URL o WMS, WFS, KML, GeoJSON..."
     },
     "layerinfo": {
       "title": "Información de la capa",

@@ -77,7 +77,7 @@
       "nofeatures": "Nu s-a putut importa nicio entitate",
       "noresults": "Fără rezultat sau URL invalid",
       "url": "",
-      "urlplaceholder": "Introdu URL către WMS, WFS, KML..."
+      "urlplaceholder": "Introdu URL către WMS, WFS, KML, GeoJSON..."
     },
     "layerinfo": {
       "title": "Info Strat",

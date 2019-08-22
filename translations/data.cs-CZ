@@ -77,7 +77,7 @@
       "nofeatures": "Žádné prvku nebyly importovány.",
       "noresults": "Bez výsledku nebo nevalidní URL",
       "url": "",
-      "urlplaceholder": "Vložit URL pro WMS, WFS, KML..."
+      "urlplaceholder": "Vložit URL pro WMS, WFS, KML, GeoJSON..."
     },
     "layerinfo": {
       "title": "Informace o vrstvě",

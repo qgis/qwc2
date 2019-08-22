@@ -77,7 +77,7 @@
       "nofeatures": "Nessuno oggetto è stato importato",
       "noresults": "Nessun risultato o URL invalido",
       "url": "URL",
-      "urlplaceholder": "Indirizzo WMS, WFS KML..."
+      "urlplaceholder": "Indirizzo WMS, WFS KML, GeoJSON..."
     },
     "layerinfo": {
       "title": "Informazioni livello",
