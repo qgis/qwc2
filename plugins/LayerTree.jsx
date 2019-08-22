@@ -13,6 +13,7 @@ const assign = require('object-assign');
 const classnames = require('classnames');
 const isEmpty = require('lodash.isempty');
 const Sortable = require('react-sortablejs');
+const FileSaver = require('file-saver');
 const Message = require('../components/I18N/Message');
 const {LayerRole, changeLayerProperties, removeLayer, reorderLayer, setSwipe} = require('../actions/layers')
 const {setActiveLayerInfo} = require('../actions/layerinfo');
@@ -220,6 +221,7 @@ class LayerTree extends React.Component {
                         <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onTouchEnd={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} />
                         {reorderButtons}
                         {this.props.infoInSettings ? infoButton : null}
+                        {layer.type === 'vector' ? (<Icon icon="export" onClick={() => this.exportRedliningLayer(layer)} />) : null}
                     </div>
                 </div>
             );
@@ -602,6 +604,13 @@ class LayerTree extends React.Component {
                 this.props.changeLayerProperties(layer.uuid, newlayer);
             }
         }
+    }
+    exportRedliningLayer = (layer) => {
+        let data = JSON.stringify({
+            type: "FeatureCollection",
+	        features: layer.features
+        }, null, ' ');
+        FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
     }
 };
 
