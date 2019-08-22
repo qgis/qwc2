@@ -113,7 +113,9 @@ var ConfigUtils = {
         msPointer: msPointer,
         pointer: pointer,
 
-        retina: retina
+        retina: retina,
+
+        platform: navigator.platform
         };
     },
     getConfigProp: function(prop, theme) {
