@@ -21,14 +21,16 @@ function requestFullscreen() {
 }
 
 function endFullscreen() {
-    if(document.exitFullscreen) {
-        document.exitFullscreen();
-    } else if(document.msExitFullscreen) {
-        document.msExitFullscreen();
-    } else if(document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-    } else if(document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
+    if(window.fullScreen) {
+        if(document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if(document.msExitFullscreen) {
+            document.msExitFullscreen();
+        } else if(document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if(document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
     }
 }
 
