@@ -328,7 +328,7 @@ class Search extends React.Component {
             return null;
         }
         return (
-            <ul className="search-results" onMouseDown={this.setPreventBlur}>
+            <ul className="search-results" onMouseDown={this.setPreventBlur} ref={this.setupKillTouchEvents}>
                 {this.props.results.map(category => this.renderCategory(category))}
             </ul>
         );
@@ -336,6 +336,11 @@ class Search extends React.Component {
     setPreventBlur = (ev) => {
         this.preventBlur = true;
         setTimeout(() => {this.preventBlur = false; return false;}, 100);
+    }
+    setupKillTouchEvents = (el) => {
+        if(el) {
+            el.addEventListener('touchmove', ev => ev.stopPropagation(), { passive: false });
+        }
     }
     renderCategory = (category) => {
         let title = category.titlemsgid ? (<Message msgId={category.titlemsgid} />) : category.title;
