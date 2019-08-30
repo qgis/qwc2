@@ -105,7 +105,7 @@ class LayerTree extends React.Component {
     }
     getGroupVisibility = (group) => {
         if(isEmpty(group.sublayers) || group.visibility === false) {
-            return group.visibility;
+            return 0;
         }
         let visible = 0;
         group.sublayers.map(sublayer => {
