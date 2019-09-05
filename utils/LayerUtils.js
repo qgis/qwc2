@@ -107,7 +107,7 @@ const LayerUtils = {
 
         if(!Array.isArray(layer.sublayers)) {
             return {
-                params: assign({}, layer.params || {LAYERS: layer.name}, {MAP: query.map}),
+                params: assign({}, layer.params || {LAYERS: layer.name}, {MAP: query.map || query.MAP}),
                 queryLayers: [layer.name]
             };
         }
@@ -127,7 +127,7 @@ const LayerUtils = {
         let newParams = assign({}, layer.params, {
             LAYERS: layerNames.join(","),
             OPACITIES: opacities.join(","),
-            MAP: query.map
+            MAP: query.map || query.MAP
         });
         return {
             params: newParams,
