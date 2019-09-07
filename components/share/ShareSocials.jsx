@@ -11,12 +11,9 @@ const PropTypes = require('prop-types');
 const Message = require('../../components/I18N/Message');
 const {
     FacebookShareButton,
-    GooglePlusShareButton,
     LinkedinShareButton,
     TwitterShareButton,
     FacebookShareCount,
-    GooglePlusShareCount,
-    LinkedinShareCount,
     FacebookIcon,
     TwitterIcon,
     GooglePlusIcon,
@@ -79,23 +76,6 @@ class ShareSocials extends React.Component {
                     </div>
                 </div>
 
-
-                <div className="social-box google">
-                    <GooglePlusShareButton
-                    url={this.props.shareUrl}
-                    className="share-google-count">
-                    <GooglePlusIcon
-                        size={32}
-                        round />
-                    </GooglePlusShareButton>
-                    <GooglePlusShareCount
-                    url={this.props.shareUrl}
-                    {...countProps}
-                    className="share-google-count">
-                    {count => count}
-                    </GooglePlusShareCount>
-                </div>
-
                 <div className="social-box linkedin">
                     <LinkedinShareButton
                     url={this.props.shareUrl}
@@ -105,12 +85,9 @@ class ShareSocials extends React.Component {
                         size={32}
                         round />
                     </LinkedinShareButton>
-                    <LinkedinShareCount
-                    url={this.props.shareUrl}
-                    {...countProps}
-                    className="share-linkedin-count">
-                    {count => count}
-                    </LinkedinShareCount>
+                    <div className="linkedin-twitter-count">
+                    &nbsp;
+                    </div>
                 </div>
         </div>
         );
