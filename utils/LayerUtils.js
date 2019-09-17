@@ -200,18 +200,7 @@ const LayerUtils = {
         return {type, url, name, opacity, visibility};
     },
     pathEqualOrBelow(parent, child) {
-        if(child.length < parent.length) {
-            return false;
-        }
-        if(parent.length === 0) {
-            return true;
-        }
-        for(let i = 0, n = parent.length; i < n; ++i) {
-            if(parent[i] != child[i]) {
-                return false;
-            }
-        }
-        return true;
+        return isEqual(child.slice(0, parent.length), parent);
     },
     removeLayer(layers, layer, sublayerpath, swipeActive) {
         // Extract foreground layers
