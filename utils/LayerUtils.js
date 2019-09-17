@@ -247,7 +247,7 @@ const LayerUtils = {
             if(isEmpty(indices)) {
                 return layers;
             }
-            indices.sort();
+            indices.sort((a, b) => a - b);
             if((delta < 0 && indices[0] <= 0) || (delta > 0 && indices[indices.length - 1] >= exploded.length - 1)) {
                 return layers;
             }
