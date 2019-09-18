@@ -108,7 +108,7 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, layerPa
             let layerNames = [];
             LayerUtils.collectWMSSublayerParams(theme, layerNames, [], []);
             missingThemeLayers = layerConfigs.reduce((missing, layerConfig) => {
-                if(!layerNames.includes(layerConfig.name)) {
+                if(layerConfig.type === 'theme' && !layerNames.includes(layerConfig.name)) {
                     return {...missing, [layerConfig.name]: layerConfig};
                 } else {
                     return missing;
