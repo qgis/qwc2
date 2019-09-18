@@ -87,9 +87,7 @@ class ResizeableWindow extends React.Component {
         };
         let icon = null;
         if(this.props.icon) {
-            icon = (<Icon icon={this.props.icon} />);
-        } else if(this.props.icon) {
-            icon = (<img src={this.props.icon} />);
+            icon = (<Icon icon={this.props.icon} className="resizeable-window-titlebar-icon" />);
         }
         let bodyclasses = classnames({
             "resizeable-window-body": true,
@@ -107,9 +105,7 @@ class ResizeableWindow extends React.Component {
                     maxWidth={this.props.maxWidth || window.innerWidth} maxHeight={this.props.maxHeight || window.innerHeight}
                     style={{zIndex: this.props.zIndex}} ref={c => this.rnd = c}>
                     <div className="resizeable-window-titlebar">
-                        <span className="resizeable-window-titlebar-icon">
-                            {icon}
-                        </span>
+                        {icon}
                         <span className="resizeable-window-titlebar-title">
                             <Message msgId={this.props.title} />
                         </span>

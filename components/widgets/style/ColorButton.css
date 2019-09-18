@@ -70,13 +70,6 @@ div.colorbutton-picker-input {
     height: 2em;
 }
 
-div.colorbutton-picker-input > span.colorbutton-icon {
-    border-radius: 0.25em 0 0 0.25em;
-    line-height: 2em;
-    text-align: center;
-    text-shadow: 0 0 2px white;
-}
-
 div.colorbutton-picker-input > input[type=text] {
     display: inline-block;
     border-style: solid;
