@@ -13,13 +13,15 @@ span.share-link-button {
     flex: 0 0 auto;
     height: 2.5em;
     width: 2.5em;
-    line-height: 2.5em;
     text-align: center;
     background-color: @button_bg@;
     border-top: 1px solid @item_border@;
     border-right: 1px solid @item_border@;
     border-bottom: 1px solid @item_border@;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 span.share-link-button:hover {

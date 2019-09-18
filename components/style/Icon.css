@@ -2,6 +2,12 @@
     display: inline-block;
 }
 
+.icon:before {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 img.icon {
     vertical-align: top;
 }

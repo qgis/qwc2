@@ -27,6 +27,8 @@
 #TopBar #AppMenu {
     height: 3.5em;
     flex: 0 0 auto;
+    display: flex;
+    align-items: center;
 }
 
 #TopBar #FullScreenSwitcher {
@@ -45,7 +47,6 @@
 }
 
 #TopBar #AppMenu .appmenu-button {
-    line-height: 3.5em;
     margin-right: 1em;
     width: 19em;
     display: inline-block;

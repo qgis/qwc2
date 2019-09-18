@@ -27,11 +27,6 @@
     flex-wrap: wrap;
 }
 
-.Redlining div.redlining-message {
-    line-height: 2em;
-    font-style: italic;
-}
-
 .Redlining div.redlining-controlsbar > span {
     display: inline-flex;
     flex: 1 0 auto;

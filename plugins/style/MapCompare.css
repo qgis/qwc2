@@ -10,11 +10,9 @@
 
 #MapCompare span.map-compare-handle {
     position: absolute;
-    display: block;
     top: calc(50% - 3em);
     height: 3em;
     width: 3em;
-    line-height: 3em;
     left: -1.375em;
     background-color: @map_button_bg@;
     display: flex;

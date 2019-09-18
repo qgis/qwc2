@@ -1,6 +1,9 @@
 #LayerTree span.layertree-tree-visibility {
     margin: 0 0.5em;
     color: @base_fg@;
+}
+
+#LayerTree span.layertree-tree-visibility:before {
     background-color: white;
 }
 
@@ -51,11 +54,15 @@
 #LayerTree div.layertree-option {
     flex: 0 0 auto;
     height: 2.25em;
-    line-height: 1.75em;
     padding: 0.25em 0.5em 0.25em 0.5em;
     border-top: 1px solid @item_border@;
+    display: flex;
+    align-items: center;
 }
 
+#LayerTree div.layertree-option > span.icon {
+    margin-right: 0.5em;
+}
 
 #LayerTree div.layertree-option > span {
     cursor: pointer;
@@ -68,6 +75,7 @@
 #LayerTree div.layertree-item {
     display: flex;
     align-items: center;
+    height: 1.75em;
 }
 
 #LayerTree span.layertree-item-expander {
@@ -78,7 +86,6 @@
 #LayerTree div.layertree-item > div.spinner {
     width: 1em;
     height: 1em;
-    line-height: 1.75em;
     flex: 0 0 auto;
     margin-right: 0.5em;
 }
@@ -122,7 +129,6 @@ img.layertree-item-legend-tooltip {
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 0 1 auto;
-    line-height: 1.75em;
 }
 
 #LayerTree div.layertree-item-noresults {
@@ -144,7 +150,6 @@ img.layertree-item-legend-tooltip {
 }
 
 #LayerTree span.layertree-item-remove {
-    line-height: 1.75em;
     text-align: center;
     width: 1.75em;
     color: @item_border@;
@@ -156,12 +161,15 @@ img.layertree-item-legend-tooltip {
 }
 
 #LayerTree span.layertree-item-cog {
-    line-height: 1.75em;
     text-align: center;
     width: 1.75em;
     color: @item_border@;
     flex: 0 0 auto;
     margin-left: 0.25em;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #LayerTree span.layertree-item-cog-active {

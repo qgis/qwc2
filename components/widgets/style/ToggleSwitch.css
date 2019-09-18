@@ -21,9 +21,12 @@ div.ToggleSwitch > span.toggle-switch-slider {
     border: 1px solid @item_border@;
     border-radius: 2px;
     text-align: center;
-    line-height: 1.6em;
     margin: 0 0.1em;
     color: lightgray;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 div.ToggleSwitch > span.toggle-switch-slider > .icon {
@@ -34,7 +37,6 @@ div.ToggleSwitch > span.toggle-switch-yes,
 div.ToggleSwitch > span.toggle-switch-no {
     color: white;
     text-align: center;
-    line-height: 2em;
     flex: 1 1 auto;
 }
 

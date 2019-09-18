@@ -17,7 +17,6 @@ div.resizeable-window-titlebar {
     color: @titlebar_fg@;
     background-color: @titlebar_bg@;
     height: 2.5em;
-    line-height: 2em;
     display: flex;
     align-items: center;
     -moz-user-select: none;

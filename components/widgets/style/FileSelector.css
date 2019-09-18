@@ -20,15 +20,16 @@ div.FileSelector > input[type=text] {
     padding-left: 0.25em;
     cursor: pointer;
 }
-/**/
+
 div.FileSelector > span {
     display: inline-block;
     width: 2em;
     flex: 0 0 2em;
     color: white;
     background-color: @item_border@;
-    line-height: 2em;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 div.FileSelector > input[type=file] {

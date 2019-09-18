@@ -17,7 +17,6 @@ div.sidebar div.sidebar-titlebar {
     color: @titlebar_fg@;
     background-color: @titlebar_bg@;
     height: 2.5em;
-    line-height: 2em;
     flex: 0 0 auto;
     display: flex;
     align-items: center;

@@ -58,7 +58,7 @@
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    line-height: 1.5em;
+    padding: 0.25em 0;
 }
 
 #BackgroundSwitcher div.background-layer-title {

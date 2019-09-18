@@ -293,7 +293,7 @@ class LayerTree extends React.Component {
         if(!this.props.mobile && maptipsEnabled) {
             maptipCheckbox = (
                 <div className="layertree-option">
-                    <Icon className="layertree-item-checkbox" icon={maptipcheckboxstate} onClick={this.toggleMapTips} />
+                    <Icon icon={maptipcheckboxstate} onClick={this.toggleMapTips} />
                     <span onClick={this.toggleMapTips}><Message msgId="layertree.maptip" /></span>
                 </div>
             );
@@ -303,7 +303,7 @@ class LayerTree extends React.Component {
             let swipecheckboxstate = this.props.swipe || this.props.swipe === 0 ? 'checked' : 'unchecked';
             compareCheckbox = (
                 <div className="layertree-option">
-                    <Icon className="layertree-item-checkbox" icon={swipecheckboxstate} onClick={this.toggleSwipe} />
+                    <Icon icon={swipecheckboxstate} onClick={this.toggleSwipe} />
                     <span onClick={this.toggleSwipe}><Message msgId="layertree.compare" /></span>
                 </div>
             );
