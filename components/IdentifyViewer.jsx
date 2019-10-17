@@ -186,7 +186,9 @@ class IdentifyViewer extends React.Component {
         });
     }
     exportResult = (layer, result) => {
-        this.export(result);
+        let filteredResults = {};
+        filteredResults[layer]=[result]
+        this.export(filteredResults);
     }
     removeResultLayer = (layer) => {
         let newResultTree = assign({}, this.state.resultTree);
@@ -198,7 +200,9 @@ class IdentifyViewer extends React.Component {
         });
     }
     exportResultLayer = (layer) => {
-        this.export(this.state.resultTree[layer]);
+        let filteredResults = {};
+        filteredResults[layer]=this.state.resultTree[layer]
+        this.export(filteredResults);
     }
     exportResults = (results) => {
         let filteredResults = {};
