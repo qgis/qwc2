@@ -156,7 +156,7 @@ class IdentifyViewer extends React.Component {
     }
     getExpandedClass = (path, deflt) => {
         let expanded = this.state.expanded[path] !== undefined ? this.state.expanded[path] : deflt;
-        return expanded ? "expandable expanded" : "expandable";
+        return expanded ? "identify-layer-expandable identify-layer-expanded" : "identify-layer-expandable";
     }
     toggleExpanded = (path, deflt) => {
         let newstate = this.state.expanded[path] !== undefined ? !this.state.expanded[path] : !deflt;
@@ -355,15 +355,15 @@ class IdentifyViewer extends React.Component {
         let displayName = this.resultDisplayName(layer, result);
         let ref = this.state.currentResult === result && this.scrollIntoView ? el => this.currentResultElRef = el : null;
         return (
-            <li key={result.id}
-                className="identify-feature-result"
+            <div key={result.id}
+                className="identify-result-entry"
                 onMouseEnter={() => this.setHighlightedResults([result], this.state.resultTree)}
                 onMouseLeave={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
             >
                 <span className={this.state.currentResult === result ? "active clickable" : "clickable"} onClick={()=> this.setCurrentResult(layer, result)} ref={ref}>{displayName}</span>
                 <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResult(layer, result)} />
                 {this.props.exportFormat ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResult(layer, result)} />) : null}
-            </li>
+            </div>
         );
     }
     renderLayer = (layer) => {
@@ -372,8 +372,8 @@ class IdentifyViewer extends React.Component {
             return null;
         }
         return (
-            <li key={layer} className={this.getExpandedClass(layer, true)}>
-                <div className="identify-layer-result"
+            <div key={layer} className={this.getExpandedClass(layer, true)}>
+                <div className="identify-result-entry"
                 onMouseEnter={() => this.setHighlightedResults(results, this.state.resultTree)}
                 onMouseLeave={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
                 >
@@ -381,10 +381,10 @@ class IdentifyViewer extends React.Component {
                     <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResultLayer(layer)} />
                     {this.props.exportFormat ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResultLayer(layer)} />) : null}
                 </div>
-                <ul>
+                <div className="identify-layer-entries">
                     {results.map(result => this.renderResult(layer, result))}
-                </ul>
-            </li>
+                </div>
+            </div>
         );
     }
     render() {
@@ -400,12 +400,12 @@ class IdentifyViewer extends React.Component {
             let contents = Object.keys(this.state.resultTree).map(layer => this.renderLayer(layer));
             let attributes = this.renderResultAttributes(this.state.currentLayer, this.state.currentResult, 'identify-result-frame');
             let resultsContainerStyle = {
-                maxHeight: attributes ? '7em' : 'initial'
+                maxHeight: attributes ? '10em' : 'initial'
             };
             body = (
                 <div className="identify-body" role="body">
                     <div className="identify-results-container" style={resultsContainerStyle}>
-                        <ul>{contents}</ul>
+                        {contents}
                     </div>
                     {attributes}
                     <div className="identify-buttonbox">
