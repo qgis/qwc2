@@ -186,7 +186,7 @@ class IdentifyViewer extends React.Component {
         });
     }
     exportResult = (layer, result) => {
-        this.export(result);
+        this.export({[layer]: [result]});
     }
     removeResultLayer = (layer) => {
         let newResultTree = assign({}, this.state.resultTree);
@@ -198,9 +198,9 @@ class IdentifyViewer extends React.Component {
         });
     }
     exportResultLayer = (layer) => {
-        this.export(this.state.resultTree[layer]);
+        this.export({[layer]: this.state.resultTree[layer]});
     }
-    exportResults = (results) => {
+    exportResults = () => {
         let filteredResults = {};
         Object.keys(this.state.resultTree).map(key => {
             if(!isEmpty(this.state.resultTree[key])) {
