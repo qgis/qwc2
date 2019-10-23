@@ -41,7 +41,7 @@ function uniqueThemeId(themeName) {
 }
 
 // load thumbnail from file or GetMap
-function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
+function getThumbnail(configItem, resultItem, layers, crs, extent, resolve, proxy) {
     if (configItem.thumbnail !== undefined) {
         // check if thumbnail can be read
         if(fs.existsSync("./assets/img/mapthumbs/" + configItem.thumbnail)) {
@@ -88,6 +88,7 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve) {
     const getMapUrl = urlUtil.format(parsedUrl);
 
     axios.get(getMapUrl, {
+        proxy: proxy,
         responseType: "arraybuffer",
         auth: configItem.wmsBasicAuth,
     }).then((response) => {
@@ -222,7 +223,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
 }
 
 // parse GetCapabilities for theme
-function getTheme(config, configItem, result, resultItem) {
+function getTheme(config, configItem, result, resultItem, proxy) {
     let parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
     parsedUrl.search = '';
     parsedUrl.query.SERVICE = "WMS";
@@ -231,7 +232,7 @@ function getTheme(config, configItem, result, resultItem) {
     const getCapabilitiesUrl = urlUtil.format(parsedUrl);
 
     return new Promise((resolve, reject) => {
-        axios.get(getCapabilitiesUrl, { auth: configItem.wmsBasicAuth, }).then((response) => {
+        axios.get(getCapabilitiesUrl, { proxy: proxy, auth: configItem.wmsBasicAuth, }).then((response) => {
             // parse capabilities
             let capabilities;
             xml2js.parseString(response.data, {
@@ -406,7 +407,7 @@ function getTheme(config, configItem, result, resultItem) {
             }
 
             // get thumbnail asynchronously
-            getThumbnail(configItem, resultItem, visibleLayers, crs, extent, resolve);
+            getThumbnail(configItem, resultItem, visibleLayers, crs, extent, resolve, proxy);
         }).catch((error) => {
             console.error("ERROR reading WMS GetProjectSettings of " + configItem.url + ":\n", error);
             resultItem.error = "Could not read GetProjectSettings";
@@ -421,10 +422,10 @@ function getTheme(config, configItem, result, resultItem) {
 let tasks = [];
 
 // recursively get themes for groups
-function getGroupThemes(config, configGroup, result, resultGroup) {
+function getGroupThemes(config, configGroup, result, resultGroup, proxy) {
     for (let item of configGroup.items) {
         let itemEntry = {};
-        tasks.push(getTheme(config, item, result, itemEntry));
+        tasks.push(getTheme(config, item, result, itemEntry, proxy));
         resultGroup.items.push(itemEntry);
     }
 
@@ -435,7 +436,7 @@ function getGroupThemes(config, configGroup, result, resultGroup) {
                 items: [],
                 subdirs: []
             };
-            getGroupThemes(config, group, result, groupEntry);
+            getGroupThemes(config, group, result, groupEntry, proxy);
             resultGroup.subdirs.push(groupEntry);
         }
     }
@@ -466,7 +467,8 @@ function genThemes(themesConfig) {
             defaultWMSVersion: config.defaultWMSVersion
         }
     };
-    getGroupThemes(config, config.themes, result, result.themes);
+    let proxy = config.proxy || null;
+    getGroupThemes(config, config.themes, result, result.themes, proxy);
 
     if (result.themes.backgroundLayers !== undefined) {
         // get thumbnails for background layers
