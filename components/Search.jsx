@@ -73,6 +73,9 @@ class Search extends React.Component {
         this.searchTimer = 0;
         this.preventBlur = false;
         this.blurred = false;
+
+        let sp = UrlParams.getParam('sp');
+        this.props.changeSearch(UrlParams.getParam('st') || "", sp ? sp.split(",") : null);
     }
     componentWillReceiveProps(newProps) {
         // If search text changed, clear result

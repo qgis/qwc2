@@ -114,14 +114,8 @@ class AppInitComponent extends React.Component {
                     }
                 }
 
-                let searchText = params.st;
-                let searchProviders = params.sp ? params.sp.split(",") : null;
-
                 // Clear all params
                 UrlParams.updateParams({k: undefined, t: undefined, l: undefined, bl: '', c: undefined, s: undefined, e: undefined, crs: undefined, st: undefined, sp: undefined});
-
-                // Restore search
-                this.props.changeSearch(searchText, searchProviders);
 
                 // Restore theme and layers
                 try {
