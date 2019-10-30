@@ -91,7 +91,7 @@
     "layertree": {
       "compare": "Comparer",
       "importlayer": "Importer un calque",
-      "maptip": "Afficher les maptips",
+      "maptip": "Afficher les infobulles",
       "printlegend": "Afficher la légende",
       "deletealllayers": ""
     },
