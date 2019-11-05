@@ -91,7 +91,7 @@ for(let lang of config.languages || []) {
     // Revert to original values for strings specified in overrides
     for(let path of config.overrides || []) {
         let value = objectPath.get(origData.messages, path);
-        if(value) {
+        if(value !== undefined) {
             objectPath.set(data.messages, path, value);
         }
     }
