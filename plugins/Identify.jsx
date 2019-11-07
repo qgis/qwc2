@@ -35,14 +35,16 @@ class Identify extends React.Component {
         initialWidth: PropTypes.number,
         initialHeight: PropTypes.number,
         params: PropTypes.object,
-        attributeCalculator: PropTypes.func
+        attributeCalculator: PropTypes.func,
+        featureInfoReturnsLayerName: PropTypes.bool
     }
     static defaultProps = {
         exportFormat: "json",
         longAttributesDisplay: 'ellipsis',
         displayResultTree: true,
         initialWidth: 240,
-        initialHeight: 320
+        initialHeight: 320,
+        featureInfoReturnsLayerName: true
     }
     componentWillReceiveProps(newProps) {
         if (this.needsRefresh(newProps)) {
@@ -94,6 +96,7 @@ class Identify extends React.Component {
                 longAttributesDisplay={this.props.longAttributesDisplay}
                 displayResultTree={this.props.displayResultTree}
                 attributeCalculator={this.props.attributeCalculator}
+                featureInfoReturnsLayerName={this.props.featureInfoReturnsLayerName}
                 initialWidth={this.props.initialWidth}
                 initialHeight={this.props.initialHeight} />
         );
