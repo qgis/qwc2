@@ -37,12 +37,14 @@ class IdentifyViewer extends React.Component {
         displayResultTree: PropTypes.bool,
         attributeCalculator: PropTypes.func,
         setActiveLayerInfo: PropTypes.func,
-        onClose: PropTypes.func
+        onClose: PropTypes.func,
+        featureInfoReturnsLayerName: PropTypes.bool
     }
     static defaultProps = {
         longAttributesDisplay: 'ellipsis',
         displayResultTree: true,
-        attributeCalculator: (layer, feature) => { return []; }
+        attributeCalculator: (layer, feature) => { return []; },
+        featureInfoReturnsLayerName: true
     }
     state = {
         expanded: {},
@@ -331,7 +333,7 @@ class IdentifyViewer extends React.Component {
         return (
             <div className={resultClass}>
                 <div className="identify-result-title">
-                    <span>{layer + ": " + this.resultDisplayName(layer, result)}</span>
+                    <span>{this.layerTitle(layer, result) + ": " + this.resultDisplayName(layer, result)}</span>
                     <Icon icon="info-sign" onClick={() => this.showLayerInfo(layer, result)} />
                 </div>
                 {resultbox}
@@ -377,7 +379,7 @@ class IdentifyViewer extends React.Component {
                 onMouseEnter={() => this.setHighlightedResults(results, this.state.resultTree)}
                 onMouseLeave={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
                 >
-                    <span className="clickable" onClick={()=> this.toggleExpanded(layer, true)}><b>{layer}</b></span>
+                    <span className="clickable" onClick={()=> this.toggleExpanded(layer, true)}><b>{this.layerTitle(layer, {})}</b></span>
                     <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResultLayer(layer)} />
                     {this.props.exportFormat ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResultLayer(layer)} />) : null}
                 </div>
@@ -473,12 +475,28 @@ class IdentifyViewer extends React.Component {
         };
         return serviceUrl + "/" + template + "?" + Object.keys(params).map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&");
     }
-    showLayerInfo = (layertitle, result) => {
+    layerTitle = (featureInfoLayerId, result) => {
+        if(!this.props.featureInfoReturnsLayerName) {
+            return featureInfoLayerId;
+        }
+        let layername = result.layername || featureInfoLayerId;
+        // Search matching layer by technical name
+        for(let layer of this.props.layers) {
+            if(layer.role === LayerRole.THEME) {
+                matchsublayer = LayerUtils.searchSubLayer(layer, 'name', layername);
+                if(matchsublayer) {
+                    return layer.title;
+                }
+            }
+        }
+    }
+    showLayerInfo = (featureInfoLayerId, result) => {
         let matchlayer = null;
         let matchsublayer = null;
-        if(result.layername || result.layerinfo) {
+        let layername = result.layername || (this.props.featureInfoReturnsLayerName ? featureInfoLayerId : null);
+        if(layername || result.layerinfo) {
             // Search matching layer by technical name
-            for(let name of [result.layername, result.layerinfo]) {
+            for(let name of [layername, result.layerinfo]) {
                 for(let layer of this.props.layers) {
                     if(layer.role === LayerRole.THEME) {
                         matchsublayer = LayerUtils.searchSubLayer(layer, 'name', name);
@@ -496,7 +514,7 @@ class IdentifyViewer extends React.Component {
             // Search matching layer by title
             for(let layer of this.props.layers) {
                 if(layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
-                    matchsublayer = LayerUtils.searchSubLayer(layer, 'title', layertitle);
+                    matchsublayer = LayerUtils.searchSubLayer(layer, 'title', featureInfoLayerId);
                     if(matchsublayer) {
                         matchlayer = layer;
                         break;
