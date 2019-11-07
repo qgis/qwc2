@@ -485,7 +485,7 @@ class IdentifyViewer extends React.Component {
             if(layer.role === LayerRole.THEME) {
                 matchsublayer = LayerUtils.searchSubLayer(layer, 'name', layername);
                 if(matchsublayer) {
-                    return layer.title;
+                    return matchsublayer.title;
                 }
             }
         }
