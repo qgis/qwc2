@@ -223,8 +223,8 @@ const VectorLayerUtils = {
                 strokeWidth: style.getStroke().getWidth(),
                 strokeDash: style.getStroke().getLineDash() || [],
                 fillColor: style.getFill() ? style.getFill().getColor() : '#FFFFFF',
-                textFill: style.getText().getFill().getColor(),
-                textStroke: style.getText().getStroke().getColor()
+                textFill: style.getText() && style.getText().getFill() ? style.getText().getFill().getColor() : 'rgba(0, 0, 0 ,0)',
+                textStroke: style.getText() && style.getText().getStroke() ? style.getText().getStroke().getColor() : 'rgba(0, 0, 0, 0)'
             };
             let feature = geojsonFormat.writeFeatureObject(olFeature);
             feature = assign(feature, {
