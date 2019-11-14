@@ -31,6 +31,7 @@ class TopBar extends React.Component {
         logoFormat: PropTypes.string,
         searchOptions: PropTypes.object,
         appMenuClearsTask: PropTypes.bool,
+        appMenuVisibleOnStartup: PropTypes.bool,
         logoSrc: PropTypes.string,
         logoUrl: PropTypes.string
     }
@@ -80,7 +81,7 @@ class TopBar extends React.Component {
                         <this.props.components.Search searchOptions={this.props.searchOptions}/>
                         <this.props.components.Toolbar toolbarItems={this.props.toolbarItems} />
                     </div>
-                    <this.props.components.AppMenu menuItems={this.props.menuItems} buttonContents={buttonContents} appMenuClearsTask={this.props.appMenuClearsTask} />
+                    <this.props.components.AppMenu menuItems={this.props.menuItems} buttonContents={buttonContents} appMenuClearsTask={this.props.appMenuClearsTask} showOnStartup={this.props.appMenuVisibleOnStartup} />
                     <this.props.components.FullscreenSwitcher />
                 </div>
             </Swipeable>

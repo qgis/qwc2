@@ -24,11 +24,13 @@ class AppMenu extends React.Component {
         currentTaskBlocked: PropTypes.bool,
         setCurrentTask: PropTypes.func,
         openExternalUrl: PropTypes.func,
-        currentTheme: PropTypes.object
+        currentTheme: PropTypes.object,
+        showOnStartup: PropTypes.bool
     }
     static defaultProps = {
         buttonContents: null,
-        appMenuClearsTask: false
+        appMenuClearsTask: false,
+        showOnStartup: false
     }
     state = {
         menuVisible: false,
@@ -37,6 +39,11 @@ class AppMenu extends React.Component {
     constructor(props) {
         super(props);
         this.menuEl = null;
+    }
+    componentDidMount() {
+        if(this.props.showOnStartup) {
+            this.toggleMenu();
+        }
     }
     toggleMenu = () => {
         if(!this.state.menuVisible && this.props.appMenuClearsTask) {
