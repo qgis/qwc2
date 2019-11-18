@@ -8,11 +8,12 @@
 
 const axios = require('axios');
 const uuid = require('uuid');
+const ConfigUtils = require('../utils/ConfigUtils');
 
 const IDENTIFY_EMPTY = 'IDENTIFY_EMPTY';
 const IDENTIFY_RESPONSE = 'IDENTIFY_RESPONSE';
 const IDENTIFY_REQUEST = 'IDENTIFY_REQUEST';
-const SET_IDENTIFY_ENABLED = 'SET_IDENTIFY_ENABLED';
+const SET_IDENTIFY_TOOL = 'SET_IDENTIFY_TOOL';
 const PURGE_IDENTIFY_RESULTS = 'PURGE_IDENTIFY_RESULTS';
 
 
@@ -85,9 +86,13 @@ function sendIdentifyRegionRequest(serviceUrl, requestParams, wgs84FilterPoly = 
 }
 
 function setIdentifyEnabled(enabled) {
-    return {
-        type: SET_IDENTIFY_ENABLED,
-        enabled: enabled
+    return (dispatch, getState) => {
+        let identifyTool = ConfigUtils.getConfigProp("identifyTool", getState().theme.current);
+        identifyTool = identifyTool !== undefined ? identifyTool : "Identify";
+        dispatch({
+            type: SET_IDENTIFY_TOOL,
+            tool: enabled ? identifyTool : null
+        });
     };
 }
 
@@ -102,7 +107,7 @@ module.exports = {
     IDENTIFY_EMPTY,
     IDENTIFY_RESPONSE,
     IDENTIFY_REQUEST,
-    SET_IDENTIFY_ENABLED,
+    SET_IDENTIFY_TOOL,
     PURGE_IDENTIFY_RESULTS,
     identifyEmpty,
     sendIdentifyRequest,

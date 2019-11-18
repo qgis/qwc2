@@ -54,10 +54,10 @@ function clickOnMap(point) {
     };
 }
 
-function clickFeatureOnMap(point) {
+function clickFeatureOnMap(feature) {
     return {
         type: CLICK_FEATURE_ON_MAP,
-        point: point
+        feature: feature
     };
 }
 

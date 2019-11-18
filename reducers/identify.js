@@ -10,17 +10,17 @@ const {
     IDENTIFY_EMPTY,
     IDENTIFY_RESPONSE,
     IDENTIFY_REQUEST,
-    SET_IDENTIFY_ENABLED,
+    SET_IDENTIFY_TOOL,
     PURGE_IDENTIFY_RESULTS
 } = require('../actions/identify');
 
 const assign = require('object-assign');
 
-function identify(state = {enabled: true}, action) {
+function identify(state = {tool: null}, action) {
     switch (action.type) {
-        case SET_IDENTIFY_ENABLED:
+        case SET_IDENTIFY_TOOL:
             return assign({}, state, {
-                enabled: action.enabled
+                tool: action.tool
             });
         case PURGE_IDENTIFY_RESULTS:
             return assign({}, state, {

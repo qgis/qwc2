@@ -38,17 +38,6 @@ let VectorLayer = {
                 return FeatureStyles[styleName](feature, styleOptions);
             }
         });
-        map.on('click', event => {
-            let allFeatures = map.getFeaturesAtPixel(event.pixel);
-            let features = map.getFeaturesAtPixel(event.pixel, {layerFilter: (layer) => layer === vectorLayer});
-            if(features && features.length > 0 && allFeatures.length === features.length) {
-                let feature = features[0];
-                let event = document.createEvent('CustomEvent');
-                let featureObj = new ol.format.GeoJSON().writeFeatureObject(feature);
-                event.initCustomEvent('_qwc2_feature_clicked', false, false, featureObj);
-                window.dispatchEvent(event);
-            }
-        });
         return vectorLayer;
     },
     update: (layer, newOptions, oldOptions) => {

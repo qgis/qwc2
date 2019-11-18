@@ -8,6 +8,7 @@
 
 const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
+const {setIdentifyEnabled} = require("../actions/identify");
 const ConfigUtils = require("../utils/ConfigUtils");
 const CoordinatesUtils = require("../utils/CoordinatesUtils");
 const MapUtils = require("../utils/MapUtils");
@@ -169,6 +170,7 @@ function finishThemeSetup(dispatch, theme, layerConfigs, insertPos, permalinkLay
         theme: theme,
         layer: themeLayer.id
     });
+    dispatch(setIdentifyEnabled(true));
     dispatch({
         type: SWITCHING_THEME,
         switching: false

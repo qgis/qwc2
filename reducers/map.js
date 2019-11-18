@@ -111,7 +111,7 @@ function map(state = defaultState, action) {
             return assign({}, state, {clickPoint: action.point});
         }
         case CLICK_FEATURE_ON_MAP: {
-            return assign({}, state, {clickFeature: action.point});
+            return assign({}, state, {clickFeature: action.feature});
         }
         case TOGGLE_MAPTIPS: {
             return assign({}, state, {maptips: action.active});

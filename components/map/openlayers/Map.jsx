@@ -99,6 +99,8 @@ class OpenlayersMap extends React.Component {
                 this.props.onFeatureClick({
                     coordinate: this.map.getEventCoordinate(event.originalEvent),
                     pixel: this.map.getEventPixel(event.originalEvent),
+                    geomType: feature.getGeometry().getType(),
+                    geometry: feature.getGeometry().getCoordinates(),
                     modifiers: {
                         alt: event.originalEvent.altKey,
                         ctrl: event.originalEvent.ctrlKey,

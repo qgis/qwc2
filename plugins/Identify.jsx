@@ -12,14 +12,16 @@ const {connect} = require('react-redux');
 const isEmpty = require('lodash.isempty');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 const Message = require('../components/I18N/Message');
+const {TaskBar} = require('../components/TaskBar');
 const {sendIdentifyRequest, purgeIdentifyResults, identifyEmpty} = require('../actions/identify');
-const {LayerRole, addMarker, removeMarker} = require('../actions/layers');
+const {LayerRole, addMarker, removeMarker, removeLayer} = require('../actions/layers');
 const {IdentifyViewer} = require('../components/IdentifyViewer');
 
 class Identify extends React.Component {
     static propTypes = {
         enabled: PropTypes.bool,
         point: PropTypes.object,
+        clickFeature: PropTypes.object,
         map: PropTypes.object,
         layers: PropTypes.array,
         requests: PropTypes.array,
@@ -36,7 +38,8 @@ class Identify extends React.Component {
         initialHeight: PropTypes.number,
         params: PropTypes.object,
         attributeCalculator: PropTypes.func,
-        featureInfoReturnsLayerName: PropTypes.bool
+        featureInfoReturnsLayerName: PropTypes.bool,
+        removeLayer: PropTypes.func
     }
     static defaultProps = {
         exportFormat: "json",
@@ -47,48 +50,56 @@ class Identify extends React.Component {
         featureInfoReturnsLayerName: true
     }
     componentWillReceiveProps(newProps) {
-        if (this.needsRefresh(newProps)) {
-            if(newProps.point.modifiers.ctrl !== true) {
-                this.props.purgeResults();
-            }
+        let point = this.queryPoint(newProps);
+        if (point) {
+            // Remove any search selection layer to avoid confusion
+            this.props.removeLayer("searchselection");
+
             const queryableLayers = newProps.layers.filter((l) => {
                 // All non-background WMS layers with a non-empty queryLayers list
                 return l.visibility && l.type === 'wms' && l.role !== LayerRole.BACKGROUND && (l.queryLayers || []).length > 0
             });
             queryableLayers.forEach((layer) => {
-                this.props.sendRequest(IdentifyUtils.buildRequest(layer, layer.queryLayers.join(","), newProps.point.coordinate, newProps.map, newProps.params));
+                this.props.sendRequest(IdentifyUtils.buildRequest(layer, layer.queryLayers.join(","), point, newProps.map, newProps.params));
             });
             if(isEmpty(queryableLayers)) {
                 this.props.identifyEmpty();
             }
-            this.props.addMarker('identify', newProps.point.coordinate, '', newProps.map.projection);
+            this.props.addMarker('identify', point, '', newProps.map.projection);
         }
         if (!newProps.enabled && this.props.enabled) {
             this.onClose();
         }
     }
-    needsRefresh = (props) => {
-        if (props.enabled && props.point && props.point.button === 0 && props.point.pixel) {
-            if (!this.props.point.pixel ||
-                this.props.point.pixel[0] !== props.point.pixel[0] ||
-                this.props.point.pixel[1] !== props.point.pixel[1] )
+    queryPoint = (props) => {
+        if (props.enabled && props.clickFeature && props.clickFeature.feature === 'searchmarker' && props.clickFeature.geometry) {
+            if (this.props.clickFeature !== props.clickFeature)
             {
-                return true;
+                return props.clickFeature.geometry;
             }
         }
-        return false;
+
+        if (props.enabled && props.point && props.point.button === 0 && props.point.coordinate) {
+            if (!this.props.point.coordinate ||
+                this.props.point.coordinate[0] !== props.point.coordinate[0] ||
+                this.props.point.coordinate[1] !== props.point.coordinate[1] )
+            {
+                if(props.point.modifiers.ctrl !== true) {
+                    this.props.purgeResults();
+                }
+                return props.point.coordinate;
+            }
+        }
+        return null;
     }
     onClose = () => {
         this.props.removeMarker('identify');
         this.props.purgeResults();
     }
     render() {
-        if (this.props.requests.length === 0) {
-            return null;
-        }
         let missingResponses = this.props.requests.length - this.props.responses.length;
-        return (
-            <IdentifyViewer onClose={this.onClose}
+        return [this.props.requests.length === 0 ? null : (
+            <IdentifyViewer key="IdentifyViewer" onClose={this.onClose}
                 map={this.props.map}
                 missingResponses={missingResponses}
                 responses={this.props.responses}
@@ -96,19 +107,25 @@ class Identify extends React.Component {
                 longAttributesDisplay={this.props.longAttributesDisplay}
                 displayResultTree={this.props.displayResultTree}
                 attributeCalculator={this.props.attributeCalculator}
-                featureInfoReturnsLayerName={this.props.featureInfoReturnsLayerName}
                 initialWidth={this.props.initialWidth}
                 initialHeight={this.props.initialHeight} />
-        );
+        ), (
+            <TaskBar key="TaskBar" task="Identify" onHide={this.onClose}>
+                {() => ({
+                    body: (<Message msgId={"infotool.clickhelpPoint"} />)
+                })}
+            </TaskBar>
+        )];
     }
 };
 
 const selector = (state) => ({
-    enabled: state.identify && state.identify.enabled,
+    enabled: state.task.id === "Identify" || state.identify.tool === "Identify",
     responses: state.identify && state.identify.responses || [],
     requests: state.identify && state.identify.requests || [],
     map: state.map ? state.map : null,
     point: state.map && state.map.clickPoint || {},
+    clickFeature: state.map.clickFeature || {},
     layers: state.layers && state.layers.flat || []
 });
 
@@ -117,7 +134,8 @@ const IdentifyPlugin = connect(selector, {
     purgeResults: purgeIdentifyResults,
     identifyEmpty: identifyEmpty,
     addMarker: addMarker,
-    removeMarker: removeMarker
+    removeMarker: removeMarker,
+    removeLayer: removeLayer
 })(Identify);
 
 module.exports = {
