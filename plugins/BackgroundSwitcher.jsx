@@ -100,7 +100,8 @@ class BackgroundSwitcher extends React.Component {
     }
     renderGroupItem = (entry) => {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
-        let layer = entry.layers.find(layer => layer.visibility === true) || entry.layers[0];
+        let layer = layer = (entry.layers.find(layer => layer.visibility === true) || entry.layers.find(layer => layer.default === true)) || entry.layers[entry.layers.length-1];
+
         let itemclasses = classnames({
             "background-switcher-item": true,
             "background-switcher-item-active": layer.visibility
@@ -111,7 +112,7 @@ class BackgroundSwitcher extends React.Component {
                     <span>{layer.title}</span><Icon icon="chevron-down" />
                 </div>
                 <div className="background-layer-thumbnail">
-                    <img src={assetsPath + "/" + layer.thumbnail} />
+                    <img src={assetsPath + "/" + layer.thumbnail} onClick={() => this.backgroundLayerClicked(layer)} />
                 </div>
                 <div className="background-group-menu">
                     {entry.layers.map(l => (
