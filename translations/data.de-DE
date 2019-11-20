@@ -43,6 +43,7 @@
       "delete": "Löschen",
       "discard": "Abbrechen",
       "draw": "Zeichnen",
+      "feature": "Objekt",
       "fields": "Felder",
       "layer": "Ebene",
       "noeditablelayers": "Keine editierbare Ebenen.",

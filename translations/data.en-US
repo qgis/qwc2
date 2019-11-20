@@ -43,6 +43,7 @@
       "delete": "Delete",
       "discard": "Discard",
       "draw": "Draw",
+      "feature": "Feature",
       "fields": "Fields",
       "layer": "Layer",
       "noeditablelayers": "No editable layers.",

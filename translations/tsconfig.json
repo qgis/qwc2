@@ -43,6 +43,7 @@
     "editing.delete",
     "editing.discard",
     "editing.draw",
+    "editing.feature",
     "editing.fields",
     "editing.layer",
     "editing.noeditablelayers",

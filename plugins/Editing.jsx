@@ -45,7 +45,7 @@ class Editing extends React.Component {
     }
     state = {
         selectedLayer: null,
-        selectedFeature: null,
+        pickedFeatures: null,
         busy: false,
         deleteClicked: false
     }
@@ -76,8 +76,9 @@ class Editing extends React.Component {
             const oldPoint = this.props.map.clickPoint || {};
             if(newPoint.coordinate && !isEqual(newPoint.coordinate, oldPoint.coordinate)) {
                 let scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
-                this.props.iface.getFeature(this.state.selectedLayer, newPoint.coordinate, this.props.map.projection, scale, 96, (feature) => {
-                    this.props.changeEditingState(assign({}, this.props.editing, {feature: feature, changed: false}));
+                this.props.iface.getFeature(this.state.selectedLayer, newPoint.coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
+                    this.setState({pickedFeatures: featureCollection.features});
+                    this.props.changeEditingState(assign({}, this.props.editing, {feature: featureCollection.features[0], changed: false}));
                 });
             }
         }
@@ -86,6 +87,9 @@ class Editing extends React.Component {
         }
         if(!newProps.editing.feature || newProps.editing.changed) {
             this.setState({deleteClicked: false});
+        }
+        if(!newProps.editing.feature) {
+            this.setState({pickedFeatures: null});
         }
         // Always clear clicked pos if enabled
         if(newProps.map.clickPoint && newProps.enabled) {
@@ -187,6 +191,19 @@ class Editing extends React.Component {
             ];
             commitBar = (<ButtonBar buttons={commitButtons} onClick={this.onDiscard}/>); /* submit is handled via onSubmit in the form */
         }
+        let featureSelection = null;
+        if(this.state.pickedFeatures){
+            let featureText = LocaleUtils.getMessageById(this.context.messages, "editing.feature");
+            featureSelection = (
+                <div>
+                    <select className="editing-feature-select" value={(this.props.editing.feature || {}).id || ""} onChange={(ev) => this.setEditFeature(ev.target.value)}  disabled={this.props.editing.changed === true}>
+                        {this.state.pickedFeatures.map(feature => (
+                            <option key={feature.id} value={feature.id}>{editConfig.displayField ? feature.properties[editConfig.displayField] : featureText + " " + feature.id}</option>
+                        ))}
+                    </select>
+                </div>
+            );
+        }
         let fieldsTable = null;
         if(this.props.editing.feature) {
             fieldsTable = (
@@ -228,17 +245,16 @@ class Editing extends React.Component {
         return (
             <div className="editing-body">
                 <div>
-                    <span className="input-frame">
-                        <select className="editing-layer-select" value={this.state.selectedLayer || ""} onChange={ev => this.changeSelectedLayer(ev.target.value)} disabled={this.props.editing.changed === true}>
-                            {Object.keys(editConfig).filter(layerId => themeSublayers.includes(layerId)).map(layerId => {
-                                return (
-                                    <option key={layerId} value={layerId}>{editConfig[layerId].layerName}</option>
-                                );
-                            })}
-                        </select>
-                    </span>
+                    <select className="editing-layer-select" value={this.state.selectedLayer || ""} onChange={ev => this.changeSelectedLayer(ev.target.value)} disabled={this.props.editing.changed === true}>
+                        {Object.keys(editConfig).filter(layerId => themeSublayers.includes(layerId)).map(layerId => {
+                            return (
+                                <option key={layerId} value={layerId}>{editConfig[layerId].layerName}</option>
+                            );
+                        })}
+                    </select>
                 </div>
                 {actionBar}
+                {featureSelection}
                 {fieldsTable}
                 {deleteBar}
                 {busyDiv}
@@ -284,6 +300,10 @@ class Editing extends React.Component {
         } else if(this.props.editing.action === "Pick") {
             this.props.iface.editFeature(this.state.selectedLayer, feature, this.props.map.projection, this.commitFinished);
         }
+    }
+    setEditFeature = (featureId) => {
+        let feature = this.state.pickedFeatures.find(feature => feature.id == featureId);
+        this.props.changeEditingState(assign({}, this.props.editing, {feature: feature, changed: false}));
     }
     deleteClicked = () => {
         this.setState({deleteClicked: true});

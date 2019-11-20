@@ -43,6 +43,7 @@
       "delete": "Borrar",
       "discard": "Descartar",
       "draw": "Trazar",
+      "feature": "",
       "fields": "Campos",
       "layer": "Capa",
       "noeditablelayers": "Sin capas a modificar.",

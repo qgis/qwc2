@@ -43,6 +43,7 @@
       "delete": "Șterge",
       "discard": "Renunță",
       "draw": "Desenează",
+      "feature": "",
       "fields": "Câmpuri",
       "layer": "Strat",
       "noeditablelayers": "Tema nu conține straturi ce se pot modifica",

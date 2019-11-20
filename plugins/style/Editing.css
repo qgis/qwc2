@@ -14,7 +14,8 @@
     zIndex: 2;
 }
 
-#Editing select.editing-layer-select:disabled {
+#Editing select.editing-layer-select:disabled,
+#Editing select.editing-feature-select:disabled {
     cursor: not-allowed;
 }
 
@@ -45,6 +46,8 @@
     width: 99%;
 }
 
+#Editing select.editing-layer-select,
+#Editing select.editing-feature-select,
 #Editing span.input-frame select {
     width: 100%;
     border: 1px solid @item_border@;

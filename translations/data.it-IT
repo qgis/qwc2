@@ -43,6 +43,7 @@
       "delete": "Elimina",
       "discard": "Annulla",
       "draw": "Disegna",
+      "feature": "Oggetto",
       "fields": "Attributi",
       "layer": "Livello",
       "noeditablelayers": "Nessun livello editabile",
