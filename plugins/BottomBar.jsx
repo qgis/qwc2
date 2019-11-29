@@ -25,12 +25,18 @@ class BottomBar extends React.Component {
     static propTypes = {
         viewertitleUrl: PropTypes.string,
         termsUrl: PropTypes.string,
-        displaycrs:  PropTypes.string,
+        displaycrs: PropTypes.string,
         map: PropTypes.object,
         fullscreen: PropTypes.bool,
         additionalMouseCrs: PropTypes.array,
         changeMousePositionState: PropTypes.func,
-        changeZoomLevel: PropTypes.func
+        changeZoomLevel: PropTypes.func,
+        displayCoordinates: PropTypes.bool,
+        displayScales: PropTypes.bool
+    }
+    static defaultProps = {
+      displayCoordinates: true,
+      displayScales: true
     }
     state = {
         scale: 0
@@ -82,9 +88,9 @@ class BottomBar extends React.Component {
                    additionalMouseCrs.indexOf(code) !== -1;
            }
         );
-
-        return (
-            <div id="BottomBar">
+        let coordinates = null;
+        if (this.props.displayCoordinates) {
+            coordinates = (
                 <span>
                     <span><Message msgId="bottombar.mousepos_label" />:&nbsp;</span>
                     <CoordinateDisplayer className={"bottombar-mousepos"} displaycrs={this.props.displaycrs} />
@@ -94,6 +100,11 @@ class BottomBar extends React.Component {
                         )}
                     </select>
                 </span>
+            );
+        }
+        let scales = null;
+        if (this.props.displayScales) {
+            scales = (
                 <span>
                     <span><Message msgId="bottombar.scale_label" />:&nbsp;</span>
                     <span className="bottombar-scale-combo">
@@ -109,6 +120,13 @@ class BottomBar extends React.Component {
                             onBlur={ev => this.setScale(ev.target.value)}/>
                     </span>
                 </span>
+            )
+        }
+
+        return (
+            <div id="BottomBar">
+                {coordinates}
+                {scales}
                 <span className="bottombar-spacer"></span>
                 {bottomLinks}
             </div>
