@@ -26,16 +26,14 @@ class LayersButton extends React.Component {
     }
     render() {
         let classes = classnames({
-            "Button": true,
+            "map-button": true,
             "button-active": this.props.visible
         });
         return (
-            <div>
-                <button className={classes} onClick={this.buttonClicked}
-                    onClick={this.buttonClicked} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
-                    <Icon icon="list-alt"/>
-                </button>
-            </div>
+            <button className={classes} onClick={this.buttonClicked}
+                onClick={this.buttonClicked} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
+                <Icon icon="list-alt"/>
+            </button>
         );
     }
     buttonClicked = () => {
