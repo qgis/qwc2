@@ -40,14 +40,18 @@ class Print extends React.Component {
         inlinePrintOutput: PropTypes.bool,
         scaleFactor: PropTypes.number,
         defaultDpi: PropTypes.number,
-        defaultScaleFactor: PropTypes.number
+        defaultScaleFactor: PropTypes.number,
+        displayRotation: PropTypes.bool,
+        displayGrid: PropTypes.bool
     }
     static defaultProps = {
         printExternalLayers: false,
         inlinePrintOutput: false,
         scaleFactor: 1.9, // Experimentally determined...
         defaultDpi: 300,
-        defaultScaleFactor: 0.5
+        defaultScaleFactor: 0.5,
+        displayRotation: true,
+        displayGrid: true
     }
     state = {
         layout: null,
@@ -229,15 +233,17 @@ class Print extends React.Component {
                                 </td>
                             </tr>
                         ) : null}
-                        <tr>
-                            <td><Message msgId="print.rotation" /></td>
-                            <td>
-                                <span className="input-frame">
-                                    <input name={mapName + ":rotation"} type="number" value={rotation} onChange={this.changeRotation}/>
-                                </span>
-                            </td>
-                        </tr>
-                        {printGrid ? (
+                        {this.props.displayRotation == true ? (
+                            <tr>
+                                <td><Message msgId="print.rotation" /></td>
+                                <td>
+                                    <span className="input-frame">
+                                        <input name={mapName + ":rotation"} type="number" value={rotation} onChange={this.changeRotation}/>
+                                    </span>
+                                </td>
+                            </tr>
+                        ) : null}
+                        {printGrid && this.props.displayRotation == true ? (
                             <tr>
                                 <td><Message msgId="print.grid" /></td>
                                 <td>
