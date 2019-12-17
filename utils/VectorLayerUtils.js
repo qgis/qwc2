@@ -13,6 +13,7 @@ const isEmpty = require('lodash.isempty');
 const {stringify} = require('wellknown');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const ConfigUtils = require('../utils/ConfigUtils');
+const {getDefaultImageStyle} = require('ol/format/KML');
 
 const VectorLayerUtils = {
 
@@ -210,7 +211,7 @@ const VectorLayerUtils = {
         }
     },
     kmlToGeoJSON(kml) {
-        let kmlFormat = new ol.format.KML();
+        let kmlFormat = new ol.format.KML({defaultStyle: [new ol.style.Style()]});
         let geojsonFormat = new ol.format.GeoJSON();
         let features = [];
         let fid = 0;
@@ -226,13 +227,37 @@ const VectorLayerUtils = {
                 textFill: style.getText() && style.getText().getFill() ? style.getText().getFill().getColor() : 'rgba(0, 0, 0 ,0)',
                 textStroke: style.getText() && style.getText().getStroke() ? style.getText().getStroke().getColor() : 'rgba(0, 0, 0, 0)'
             };
+            if(style.getImage() && style.getImage() != getDefaultImageStyle() && style.getImage().getSrc()) {
+                // FIXME: Uses private members of ol.style.Icon, style.getImage().getAnchor() returns null because style.getImage.getSize() is null because the the image is not yet loaded
+                let anchor = style.getImage().anchor_ || [0.5, 0.5];
+                let anchorOrigin = (style.getImage().anchorOrigin_ || "").split("-");
+                if(anchorOrigin.includes("right")) {
+                    anchor[0] = 1. - anchor[0];
+                }
+                if(anchorOrigin.includes("bottom")) {
+                    anchor[1] = 1. - anchor[1];
+                }
+                styleOptions.iconSrc = style.getImage().getSrc();
+                styleOptions.iconAnchor = anchor;
+            }
             let feature = geojsonFormat.writeFeatureObject(olFeature);
             feature = assign(feature, {
-                styleName: 'default',
+                styleName: styleOptions.iconSrc ? 'marker' : 'default',
                 styleOptions: styleOptions,
                 id: fid++,
-                crs: "EPSG:4326"
+                crs: "EPSG:4326",
+                properties: {}
             });
+            let properties = olFeature.getProperties();
+            let excludedProperties = ['visibility', olFeature.getGeometryName()];
+            for(let key of Object.keys(properties)) {
+                if(!excludedProperties.includes(key)) {
+                    feature.properties[key] = properties[key];
+                }
+            }
+            if(properties.name && feature.styleName === 'marker') {
+                feature.properties.label = properties.name;
+            }
             features.push(feature);
         }
         return features;
