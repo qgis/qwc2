@@ -450,6 +450,30 @@ const LayerUtils = {
             cur = cur.sublayers[idx];
         }
         return {newlayer, newsublayer: cur};
+    },
+    collectGroupLayers(layer, parentGroups, groupLayers) {
+        if(!isEmpty(layer.sublayers)) {
+            for(let sublayer of layer.sublayers) {
+                LayerUtils.collectGroupLayers(sublayer, parentGroups.concat(layer.name), groupLayers);
+            }
+        } else {
+            for(let group of parentGroups) {
+                groupLayers[group] = (groupLayers[group] || []).concat(layer.name);
+            }
+        }
+    },
+    replaceLayerGroups(layerConfigs, layer) {
+        let groupLayers = {};
+        LayerUtils.collectGroupLayers(layer, [], groupLayers);
+        let newLayerConfigs = [];
+        for(let layerConfig of layerConfigs) {
+            if(layerConfig.name in groupLayers) {
+                newLayerConfigs.push(...groupLayers[layerConfig.name].map(name => ({...layerConfig, name})));
+            } else {
+                newLayerConfigs.push(layerConfig);
+            }
+        }
+        return newLayerConfigs;
     }
 };
 

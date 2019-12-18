@@ -106,6 +106,10 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, layerPa
 
         let layerConfigs = layerParams ? layerParams.map(param => LayerUtils.splitLayerUrlParam(param)) : null;
 
+        if(layerConfigs) {
+            layerConfigs = LayerUtils.replaceLayerGroups(layerConfigs, theme);
+        }
+
         // Restore missing theme layers
         let missingThemeLayers = null;
         if(layerConfigs) {
