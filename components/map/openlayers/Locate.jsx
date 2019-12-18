@@ -64,11 +64,14 @@ class Locate extends React.Component {
     }
     configureLocate = (newStatus) => {
         let state = this.locate.get("state");
-        if ( newStatus === "ENABLED" && state === "DISABLED") {
+        if (newStatus === "ENABLED" && state === "DISABLED") {
             this.locate.start();
-        }else if (newStatus === "FOLLOWING" && state === "ENABLED") {
+        } else if (newStatus === "FOLLOWING" && state === "ENABLED") {
             this.locate.startFollow();
-        }else if (newStatus === "DISABLED") {
+        } else if (newStatus === "FOLLOWING" && state === "DISABLED") {
+            this.locate.start();
+            this.locate.startFollow();
+        } else if (newStatus === "DISABLED") {
             this.locate.stop();
         }
     }
