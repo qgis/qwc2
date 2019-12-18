@@ -73,13 +73,16 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, layerPa
         }
 
         // Preserve extent if desired and possible
-        if(preserve && !initialView && ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch", theme) === true) {
-            // If crs and scales match and bounding boxes intersect, keep current extent
-            let b1 = CoordinatesUtils.reprojectBbox(theme.bbox.bounds, theme.bbox.crs, getState().map.projection);
-            let b2 = getState().map.bbox.bounds;
-            if(getState().map.projection === theme.mapCrs &&
-               (b2[0] >= b1[0] && b2[1] >= b1[1] && b2[2] <= b1[2] && b2[3] <= b1[3])) // theme bbox (b1) includes current bbox (b2)
-            {
+        if(preserve && !initialView && getState().map.projection === theme.mapCrs) {
+            if(ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch", theme) === true) {
+                // If theme bbox (b1) includes current bbox (b2), keep current extent
+                let b1 = CoordinatesUtils.reprojectBbox(theme.bbox.bounds, theme.bbox.crs, getState().map.projection);
+                let b2 = getState().map.bbox.bounds;
+                if(b2[0] >= b1[0] && b2[1] >= b1[1] && b2[2] <= b1[2] && b2[3] <= b1[3]) // theme bbox (b1) includes current bbox (b2)
+                {
+                    initialView = {bounds: getState().map.bbox.bounds, crs: getState().map.projection};
+                }
+            } else if(ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch", theme) === "force") {
                 initialView = {bounds: getState().map.bbox.bounds, crs: getState().map.projection};
             }
         }
