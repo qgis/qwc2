@@ -16,6 +16,9 @@ const LayerUtils = require('../utils/LayerUtils');
 
 const UrlParams = {
    updateParams: function(dict) {
+       if(ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
+           return;
+       }
        var urlObj = url.parse(window.location.href, true);
        urlObj.query = assign(urlObj.query, dict);
        var propNames = Object.getOwnPropertyNames(urlObj.query);
