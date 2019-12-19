@@ -12,11 +12,11 @@
         "Share": "Dela länk",
         "ThemeSwitcher": "Tema",
         "Tools": "Kartverktyg",
-        "IdentifyRegion": "",
-        "Redlining": "",
-        "Editing": "",
-        "Login": "",
-        "Logout": ""
+        "IdentifyRegion": "Identifiera med område",
+        "Redlining": "Rita",
+        "Editing": "Redigera",
+        "Login": "Logga in",
+        "Logout": "Logga ut"
       },
       "menulabel": "Karta & Verktyg"
     },
@@ -31,54 +31,54 @@
     },
     "copybtn": {
       "click_to_copy": "Klicka för att kopiera",
-      "copied": ""
+      "copied": "Kopierade"
     },
     "dxfexport": {
       "selectinfo": "Rita en rektangel runt området som ska exporteras...",
       "symbologyscale": "Symbolskala:"
     },
     "editing": {
-      "canceldelete": "",
-      "commit": "",
-      "delete": "",
-      "discard": "",
-      "draw": "",
-      "feature": "",
-      "fields": "",
-      "layer": "",
-      "noeditablelayers": "",
-      "pick": "",
-      "reallydelete": "",
-      "select": ""
+      "canceldelete": "Radera inte",
+      "commit": "Skicka",
+      "delete": "Radera",
+      "discard": "Förkasta",
+      "draw": "Rita",
+      "feature": "Objekt",
+      "fields": "Fält",
+      "layer": "Lager",
+      "noeditablelayers": "Inga redigerbara lager",
+      "pick": "Välj",
+      "reallydelete": "Verkligen radera",
+      "select": "Välj"
     },
     "fileselector": {
-      "placeholder": ""
+      "placeholder": "Välj fil..."
     },
     "heightprofile": {
-      "asl": "",
-      "distance": "",
-      "height": ""
+      "asl": "m.ö.h.",
+      "distance": "Avstånd",
+      "height": "Höjd"
     },
     "identify": {
       "querying": "Frågar...",
-      "noresults": "",
-      "export": "",
-      "featureReport": "",
-      "noattributes": "",
-      "title": ""
+      "noresults": "Ingen information för vald punkt",
+      "export": "Exportera",
+      "featureReport": "Objektrapport",
+      "noattributes": "Inga attribut",
+      "title": "Objektinformation"
     },
     "identifyregion": {
-      "info": ""
+      "info": "Rita en polygon runt objektn som ska identifieras"
     },
     "importlayer": {
-      "addlayer": "",
-      "connect": "",
-      "filter": "",
-      "localfile": "",
-      "nofeatures": "",
-      "noresults": "",
-      "url": "",
-      "urlplaceholder": ""
+      "addlayer": "Lägg till lager",
+      "connect": "Anslut",
+      "filter": "Filter...",
+      "localfile": "Lokal fil",
+      "nofeatures": "Inga objekt kunde importeras",
+      "noresults": "Inget svar eller ogiltig URL",
+      "url": "URL",
+      "urlplaceholder": "Skriv in URL till WMS, WFS, KML GeoJSON..."
     },
     "layerinfo": {
       "title": "Information om lager",
@@ -90,29 +90,29 @@
       "legend": "Teckenförklaring"
     },
     "layertree": {
-      "compare": "",
-      "importlayer": "",
+      "compare": "Jämför översta lagret",
+      "importlayer": "Importera lager",
       "maptip": "Visa karttips för lager",
-      "printlegend": "",
-      "deletealllayers": ""
+      "printlegend": "Skriv ut teckenförklaring",
+      "deletealllayers": "Ta bort alla lager"
     },
     "locate": {
       "metersUnit": "meter",
       "feetUnit": "fot",
       "popup": "Du är inom {distance} {unit} från denna punkt",
       "statustooltip": {
-        "DISABLED": "",
-        "LOCATING": "",
-        "ENABLED": "",
-        "FOLLOWING": "",
-        "PERMISSION_DENIED": ""
+        "DISABLED": "Position: avaktiverat",
+        "LOCATING": "Position: bestäms...",
+        "ENABLED": "Position: aktiverat",
+        "FOLLOWING": "Position: följer gps",
+        "PERMISSION_DENIED": "Position: tillåts inte"
       }
     },
     "map": {
       "loading": "Laddar..."
     },
     "mapinfotooltip": {
-      "elevation": "",
+      "elevation": "Höjd",
       "title": "Position"
     },
     "measureComponent": {
@@ -123,46 +123,46 @@
     },
     "print": {
       "layout": "Layout:",
-      "grid": "",
-      "maximize": "",
-      "minimize": "",
+      "grid": "Rutnät",
+      "maximize": "Maximera",
+      "minimize": "Minimera",
       "nolayouts": "Valt tema stöder inte utskrift",
       "notheme": "Inget tema valt",
       "resolution": "Upplösning:",
       "rotation": "Rotation:",
       "scale": "Skala:",
       "submit": "Skriv ut",
-      "output": "",
-      "wait": ""
+      "output": "Utskrift",
+      "wait": "Vänta..."
     },
     "rasterexport": {
-      "format": "",
-      "resolution": "",
-      "selectinfo": ""
+      "format": "Format:",
+      "resolution": "Upplösning:",
+      "selectinfo": "Dra en rektangel runt området som ska exporteras..."
     },
     "redlining": {
-      "add": "",
-      "border": "",
-      "buffer": "",
-      "bufferlayername": "",
-      "bufferdistance": "",
-      "bufferlayer": "",
-      "buffercompute": "",
-      "bufferselectfeature": "",
-      "delete": "",
-      "draw": "",
-      "edit": "",
-      "fill": "",
-      "label": "",
-      "layer": "",
-      "line": "",
-      "outline": "",
-      "pick": "",
-      "point": "",
-      "polygon": "",
-      "size": "",
-      "text": "",
-      "width": ""
+      "add": "Lägg till",
+      "border": "Kant",
+      "buffer": "Buffert",
+      "bufferlayername": "Buffert",
+      "bufferdistance": "Avstånd",
+      "bufferlayer": "Mållager",
+      "buffercompute": "Beräkna",
+      "bufferselectfeature": "Välj ett objekt att buffra",
+      "delete": "Radera",
+      "draw": "Rita",
+      "edit": "Redigera",
+      "fill": "Fyllning",
+      "label": "Etikett",
+      "layer": "Lager",
+      "line": "Linje",
+      "outline": "Kant",
+      "pick": "Välj",
+      "point": "Punkt",
+      "polygon": "Yta",
+      "size": "Storlek",
+      "text": "Text",
+      "width": "Bredd"
     },
     "search": {
       "more": "Mer",
@@ -180,14 +180,14 @@
       "socialIntro": "I ditt favoritnätverk"
     },
     "tooltip": {
-      "home": "",
-      "zoomin": "",
-      "zoomout": "",
-      "background": ""
+      "home": "Visa hela kartan",
+      "zoomin": "Zooma in",
+      "zoomout": "Zooma ut",
+      "background": "Byt bakgrund"
     },
     "themeswitcher": {
       "filter": "Filtrera...",
-      "addtotheme": ""
+      "addtotheme": "Lägg till aktuellt tema"
     }
   }
 }
