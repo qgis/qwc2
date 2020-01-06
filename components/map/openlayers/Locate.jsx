@@ -11,6 +11,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const assign = require('object-assign');
 const OlLocate = require('../../../utils/openlayers/OlLocate');
+const {UrlParams} = require('../../../utils/PermaLinkUtils');
 
 class Locate extends React.Component {
     static propTypes = {
@@ -30,6 +31,7 @@ class Locate extends React.Component {
         options: {}
     }
     static defaultOpt = {
+        startupMode: "DISABLED", // either "DISABLED", "ENABLED" or "FOLLOWING"
         follow: false,// follow with zoom and pan the user's location
         remainActive: true,
         metric: true,
@@ -44,11 +46,16 @@ class Locate extends React.Component {
     }
     componentDidMount() {
         if (this.props.map) {
-            this.locate = new OlLocate(this.props.map, assign({}, Locate.defaultOpt, this.props.options));
+            let options = assign({}, Locate.defaultOpt, this.props.options);
+            this.locate = new OlLocate(this.props.map, options);
             this.locate.setStrings(this.props.messages);
             this.locate.options.onLocationError = this.onLocationError;
             this.locate.on("propertychange", (e) => {this.onStateChange(e.target.get(e.key)); });
             this.configureLocate(this.props.status);
+            let startupMode = options.startupMode.toUpperCase();
+            if(startupMode !== "DISABLED" && UrlParams.getParam('st') === undefined) {
+                this.props.changeLocateState(startupMode);
+            }
         }
     }
     componentWillReceiveProps(newProps) {
