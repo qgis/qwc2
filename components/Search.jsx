@@ -60,7 +60,8 @@ class Search extends React.Component {
         setCurrentTheme: PropTypes.func,
         searchOptions: PropTypes.object,
         layers: PropTypes.array,
-        changeLayerProperties: PropTypes.func
+        changeLayerProperties: PropTypes.func,
+        startupParams: PropTypes.object
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -110,7 +111,7 @@ class Search extends React.Component {
             if(newProps.results.length === 1 && newProps.results[0].items.length == 1) {
                 let item = newProps.results[0].items[0];
                 if((item.type || SearchResultType.PLACE) === SearchResultType.PLACE) {
-                    this.showResult(item, newProps.startupSearch);
+                    this.showResult(item, newProps.startupSearch, newProps.startupSearch);
                 }
             }
             // If multiple results are available and search field is not focused, focus it (unless explicitly blurred before)
@@ -376,7 +377,7 @@ class Search extends React.Component {
             </li>
         );
     }
-    showResult = (item, zoom=true) => {
+    showResult = (item, zoom=true, startupSearch=false) => {
         let resultType = item.type || SearchResultType.PLACE;
         if(resultType !== SearchResultType.PLACE && !this.props.searchOptions.zoomToLayers) {
             zoom = false;
@@ -422,6 +423,11 @@ class Search extends React.Component {
             } else {
                 newZoom = MapUtils.computeZoom(this.props.map.scales, item.scale || 0);
                 newZoom = Math.max(0, Math.min(newZoom, maxZoom));
+            }
+            if(startupSearch) {
+                if(this.props.startupParams.s) {
+                    newZoom = MapUtils.computeZoom(this.props.map.scales, this.props.startupParams.s);
+                }
             }
             this.props.panToResult([x, y], newZoom, crs);
         }
@@ -575,6 +581,7 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
             themes: state.theme.themes,
             layers: state.layers.flat || [],
             searchProviders: searchProviders,
+            startupParams: state.localConfig.startupParams
         })
     ), {
         changeSearch: changeSearch,
