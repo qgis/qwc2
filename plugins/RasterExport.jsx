@@ -64,10 +64,11 @@ class RasterExport extends React.Component {
         if(exportBackgroundLayer) {
             let printBgLayerName = exportBackgroundLayer;
             if(Array.isArray(exportBackgroundLayer)) {
+                let scale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
                 printBgLayerName = null;
                 for(let i = 0; i < exportBackgroundLayer.length; ++i) {
                     printBgLayerName = exportBackgroundLayer[i].name;
-                    if(this.state.scale <= exportBackgroundLayer[i].maxScale) {
+                    if(scale <= exportBackgroundLayer[i].maxScale) {
                         break;
                     }
                 }
