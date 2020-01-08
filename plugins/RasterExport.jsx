@@ -62,8 +62,20 @@ class RasterExport extends React.Component {
         let themeBackgroundLayer = backgroundLayer ? this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayer.name) : null;
         let exportBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
         if(exportBackgroundLayer) {
-            exportLayers = exportBackgroundLayer + "," + exportLayers;
-            exportOpacities = "255," + exportOpacities;
+            let printBgLayerName = exportBackgroundLayer;
+            if(Array.isArray(exportBackgroundLayer)) {
+                printBgLayerName = null;
+                for(let i = 0; i < exportBackgroundLayer.length; ++i) {
+                    printBgLayerName = exportBackgroundLayer[i].name;
+                    if(this.state.scale <= exportBackgroundLayer[i].maxScale) {
+                        break;
+                    }
+                }
+            }
+            if(printBgLayerName) {
+                exportLayers = printBgLayerName + "," + exportLayers;
+                exportOpacities = "255," + exportOpacities;
+            }
         }
         let dpiSelector = null;
         if(this.props.dpis) {
