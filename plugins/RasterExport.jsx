@@ -16,6 +16,7 @@ const {LayerRole} = require('../actions/layers');
 const {setCurrentTask} = require('../actions/task');
 const {TaskBar} = require('../components/TaskBar');
 const PrintFrame = require('../components/PrintFrame');
+const MapUtils = require('../utils/MapUtils');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
 require('./style/RasterExport.css');
 
