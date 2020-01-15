@@ -83,7 +83,7 @@ class ResizeableWindow extends React.Component {
         let initial = {
             ...this.initialPosition(),
             width: this.props.initialWidth,
-            height: this.props.initialHeight
+            height: Math.min(this.props.initialHeight, window.innerHeight - 100)
         };
         let icon = null;
         if(this.props.icon) {
