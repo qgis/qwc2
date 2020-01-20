@@ -21,7 +21,8 @@ class Locate extends React.Component {
         changeLocateState: PropTypes.func,
         onLocateError: PropTypes.func,
         // See ../../../utils/openlayers/OlLocate
-        options: PropTypes.object
+        options: PropTypes.object,
+        startupParams: PropTypes.object
     }
     static defaultProps = {
         id: 'overview',
@@ -53,7 +54,8 @@ class Locate extends React.Component {
             this.locate.on("propertychange", (e) => {this.onStateChange(e.target.get(e.key)); });
             this.configureLocate(this.props.status);
             let startupMode = options.startupMode.toUpperCase();
-            if(startupMode !== "DISABLED" && UrlParams.getParam('st') === undefined) {
+            let highlightCenter = ["true", "1"].includes("" + (this.props.startupParams && this.props.startupParams.hc || "").toLowerCase());
+            if(startupMode !== "DISABLED" && !this.props.startupParams.st && !highlightCenter) {
                 this.props.changeLocateState(startupMode);
             }
         }

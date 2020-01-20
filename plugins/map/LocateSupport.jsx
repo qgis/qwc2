@@ -11,7 +11,8 @@ const {changeLocateState, onLocateError} = require('../../actions/locate');
 
 module.exports = connect((state) => ({
     status: state.locate && state.locate.state,
-    messages: state.locale && state.locale.messages ? state.locale.messages.locate : undefined
+    messages: state.locale && state.locale.messages ? state.locale.messages.locate : undefined,
+    startupParams: state.localConfig.startupParams
 }), {
     changeLocateState,
     onLocateError
