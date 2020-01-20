@@ -10,6 +10,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {addMarker, removeMarker} = require('../actions/layers');
+const {UrlParams} = require("../utils/PermaLinkUtils");
 
 class StartupMarker extends React.Component {
     static propTypes = {
@@ -29,8 +30,9 @@ class StartupMarker extends React.Component {
         this.markerSet = false;
     }
     componentWillReceiveProps(newProps) {
-        if(newProps.startupParams && newProps.theme && !this.props.theme && newProps.startupParams.c) {
-            console.log(newProps.startupParams)
+        let highlight = ["true", "1"].includes("" + (newProps.startupParams && newProps.startupParams.hc || "").toLowerCase());
+        if(highlight && newProps.theme && !this.props.theme && newProps.startupParams.c) {
+            UrlParams.updateParams({hc: undefined});
             let point = newProps.startupParams.c.split(/[;,]/g).map(x => parseFloat(x));
             this.props.addMarker('startupposmarker', point, '', newProps.startupParams.crs || newProps.map.projection);
             this.markerSet = true;
