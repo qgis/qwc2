@@ -140,11 +140,20 @@ class Editing extends React.Component {
                     format={nr => String(Number(nr))}
                     value={value} onChange={nr => this.updateField(field.id, nr)} />
             );
+        } else if(field.type == "date") {
+            // Truncate time portion of ISO date string
+            value = value.substr(0, 10);
+            input = (
+                <span className="input-frame">
+                    <input type={field.type} {...constraints} disabled={disabled}
+                        onChange={(ev) => {
+                            // set empty date field value to null instead of empty string
+                            this.updateField(field.id, ev.target.value == '' ? null : ev.target.value);
+                        }}
+                        value={value}/>
+                </span>
+            );
         } else {
-            if(field.type == "date") {
-                // Truncate time portion of ISO date string
-                value = value.substr(0, 10);
-            }
             input = (
                 <span className="input-frame">
                     <input type={field.type} {...constraints} disabled={disabled}
