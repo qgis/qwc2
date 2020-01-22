@@ -108,7 +108,8 @@ class Identify extends React.Component {
                 displayResultTree={this.props.displayResultTree}
                 attributeCalculator={this.props.attributeCalculator}
                 initialWidth={this.props.initialWidth}
-                initialHeight={this.props.initialHeight} />
+                initialHeight={this.props.initialHeight}
+                featureInfoReturnsLayerName={this.props.featureInfoReturnsLayerName} />
         ), (
             <TaskBar key="TaskBar" task="Identify" onHide={this.onClose}>
                 {() => ({
