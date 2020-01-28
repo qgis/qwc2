@@ -91,7 +91,8 @@ class ResizeableWindow extends React.Component {
         }
         let bodyclasses = classnames({
             "resizeable-window-body": true,
-            "resizeable-window-body-scrollable": this.props.scrollable
+            "resizeable-window-body-scrollable": this.props.scrollable,
+            "resizeable-window-body-nonscrollable": !this.props.scrollable
         });
         let bodystyle = {
             padding: this.props.padding
