@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const React = require('react');
 const ol = require('openlayers');
 
 var layersMap;

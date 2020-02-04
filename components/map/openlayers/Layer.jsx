@@ -100,9 +100,11 @@ class OpenlayersLayer extends React.Component {
         if (layerCreator) {
             const layerOptions = this.generateOpts(options, zIndex, CoordinatesUtils.normalizeSRS(this.props.srs));
             let layer = layerCreator.create(layerOptions, this.props.map, this.props.mapId);
-            layer.set('id', layerOptions.id);
-            if (layer && !layer.detached) {
-                this.addLayer(layer, options);
+            if (layer) {
+                layer.set('id', layerOptions.id);
+                if (!layer.detached) {
+                    this.addLayer(layer, options);
+                }
             }
             this.setState({layer: layer});
         }
