@@ -383,9 +383,18 @@ def getTheme(config, configItem, result, resultItem):
             resultItem["print"] = printTemplates
         resultItem["drawingOrder"] = drawingOrder
         extraLegenParams = configItem["extraLegendParameters"] if "extraLegendParameters" in configItem else ""
-        resultItem["legendUrl"] = getChildElement(capabilities, "Capability/Request/GetLegendGraphic/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href") + extraLegenParams
-        resultItem["featureInfoUrl"] = getChildElement(capabilities, "Capability/Request/GetFeatureInfo/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href")
-        resultItem["printUrl"] = getChildElement(capabilities, "Capability/Request/GetPrint/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href")
+        if "legendUrl" in configItem:
+            resultItem["legendUrl"] = configItem["legendUrl"]
+        else:
+            resultItem["legendUrl"] = getChildElement(capabilities, "Capability/Request/GetLegendGraphic/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href") + extraLegenParams
+        if "featureInfoUrl" in configItem:
+            resultItem["featureInfoUrl"] = configItem["featureInfoUrl"]
+        else:
+            resultItem["featureInfoUrl"] = getChildElement(capabilities, "Capability/Request/GetFeatureInfo/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href")
+        if "printUrl" in configItem:
+            resultItem["printUrl"] = configItem["printUrl"]
+        else:
+            resultItem["printUrl"] = getChildElement(capabilities, "Capability/Request/GetPrint/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href")
         if "printLabelForSearchResult" in configItem:
             resultItem["printLabelForSearchResult"] = configItem["printLabelForSearchResult"]
         if "printLabelConfig" in configItem:
