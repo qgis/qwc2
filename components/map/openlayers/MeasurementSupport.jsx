@@ -82,14 +82,20 @@ class MeasurementSupport extends React.Component {
         });
 
         this.drawInteraction.on('drawstart', (ev) => {
+            this.segmentMarkers = [];
             this.measureLayer.getSource().clear();
             this.sketchFeature = ev.feature;
             this.sketchFeature.setStyle(this.style);
             this.props.map.on('pointermove', this.updateMeasurementResults);
+            this.props.map.on('click', this.updateMeasurementResults);
         });
         this.drawInteraction.on('drawend', (ev) => {
             this.props.map.un('pointermove', this.updateMeasurementResults);
+            this.props.map.un('click', this.updateMeasurementResults);
             this.updateMeasurementResults(ev, false);
+            if(this.segmentMarkers.length > 0) {
+                this.measureLayer.getSource().removeFeature(this.segmentMarkers.pop());
+            }
         });
 
         this.props.map.addInteraction(this.drawInteraction);
@@ -121,8 +127,25 @@ class MeasurementSupport extends React.Component {
         if(this.props.measurement.geomType === 'LineString') {
             length = this.calculateGeodesicDistances(coo);
 
+            let vertexAdded = (coo.length > 0 && this.segmentMarkers.length < coo.length - 1);
+
+            // Adjust previous marker if any
+            if(vertexAdded && this.segmentMarkers.length > 0) {
+                let p1 = coo[coo.length - 3];
+                let p2 = coo[coo.length - 2];
+                let angle = -Math.atan2(p2[1] - p1[1], p2[0] - p1[0]);
+                if(Math.abs(angle) > 0.5 * Math.PI) {
+                    angle += Math.PI;
+                }
+                let text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedLength(this.props.measurement.lenUnit, length[coo.length - 3]), 2);
+                let marker = this.segmentMarkers[this.segmentMarkers.length - 1];
+                marker.getStyle().getText().setText(text);
+                marker.getStyle().getText().setRotation(angle);
+                marker.setGeometry(new ol.geom.Point([0.5 * (p1[0] + p2[0]), 0.5 * (p1[1] + p2[1])]));
+            }
+
             // Add segment markers as neccessary
-            if(coo.length > 0 && this.segmentMarkers.length != coo.length - 1) {
+            if(coo.length > 0 && this.segmentMarkers.length < coo.length - 1) {
                 let point = new ol.Feature({
                     geometry: new ol.geom.Point(coo[coo.length - 1])
                 });
@@ -139,7 +162,7 @@ class MeasurementSupport extends React.Component {
                 this.segmentMarkers.push(point);
             }
 
-            if(coo.length > 1) {
+            if(!vertexAdded && coo.length > 1) {
                 let p1 = coo[coo.length - 2];
                 let p2 = coo[coo.length - 1];
                 let angle = -Math.atan2(p2[1] - p1[1], p2[0] - p1[0]);
