@@ -82,6 +82,7 @@ class MeasurementSupport extends React.Component {
         });
 
         this.drawInteraction.on('drawstart', (ev) => {
+            this.leaveTemporaryPickMode();
             this.segmentMarkers = [];
             this.measureLayer.getSource().clear();
             this.sketchFeature = ev.feature;
@@ -96,6 +97,7 @@ class MeasurementSupport extends React.Component {
             if(this.segmentMarkers.length > 0) {
                 this.measureLayer.getSource().removeFeature(this.segmentMarkers.pop());
             }
+            this.enterTemporaryPickMode();
         });
 
         this.props.map.addInteraction(this.drawInteraction);
@@ -133,15 +135,7 @@ class MeasurementSupport extends React.Component {
             if(vertexAdded && this.segmentMarkers.length > 0) {
                 let p1 = coo[coo.length - 3];
                 let p2 = coo[coo.length - 2];
-                let angle = -Math.atan2(p2[1] - p1[1], p2[0] - p1[0]);
-                if(Math.abs(angle) > 0.5 * Math.PI) {
-                    angle += Math.PI;
-                }
-                let text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedLength(this.props.measurement.lenUnit, length[coo.length - 3]), 2);
-                let marker = this.segmentMarkers[this.segmentMarkers.length - 1];
-                marker.getStyle().getText().setText(text);
-                marker.getStyle().getText().setRotation(angle);
-                marker.setGeometry(new ol.geom.Point([0.5 * (p1[0] + p2[0]), 0.5 * (p1[1] + p2[1])]));
+                this.updateSegmentMarker(this.segmentMarkers[this.segmentMarkers.length - 1], p1, p2, length[coo.length - 3]);
             }
 
             // Add segment markers as neccessary
@@ -165,15 +159,70 @@ class MeasurementSupport extends React.Component {
             if(!vertexAdded && coo.length > 1) {
                 let p1 = coo[coo.length - 2];
                 let p2 = coo[coo.length - 1];
-                let angle = -Math.atan2(p2[1] - p1[1], p2[0] - p1[0]);
-                if(Math.abs(angle) > 0.5 * Math.PI) {
-                    angle += Math.PI;
-                }
-                let text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedLength(this.props.measurement.lenUnit, length[coo.length - 2]), 2);
-                let marker = this.segmentMarkers[this.segmentMarkers.length - 1];
-                marker.getStyle().getText().setText(text);
-                marker.getStyle().getText().setRotation(angle);
-                marker.setGeometry(new ol.geom.Point([0.5 * (p1[0] + p2[0]), 0.5 * (p1[1] + p2[1])]));
+                this.updateSegmentMarker(this.segmentMarkers[this.segmentMarkers.length - 1], p1, p2, length[coo.length - 2]);
+            }
+        }
+        let area = null;
+        if(this.props.measurement.geomType === 'Polygon') {
+            area = this.calculateGeodesicArea(this.sketchFeature.getGeometry().getLinearRing(0).getCoordinates());
+        }
+
+        this.props.changeMeasurementState({
+            geomType: this.props.measurement.geomType,
+            drawing: drawing,
+            coordinates: coo,
+            length: length,
+            area: area,
+            bearing: bearing,
+        });
+    }
+    updateSegmentMarker = (marker, p1, p2, length) => {
+        let angle = -Math.atan2(p2[1] - p1[1], p2[0] - p1[0]);
+        if(Math.abs(angle) > 0.5 * Math.PI) {
+            angle += Math.PI;
+        }
+        let text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedLength(this.props.measurement.lenUnit, length), 2);
+        marker.getStyle().getText().setText(text);
+        marker.getStyle().getText().setRotation(angle);
+        marker.setGeometry(new ol.geom.Point([0.5 * (p1[0] + p2[0]), 0.5 * (p1[1] + p2[1])]));
+    }
+    enterTemporaryPickMode = () => {
+        this.modifyInteraction = new ol.interaction.Modify({
+            features: new ol.Collection([this.sketchFeature]),
+            condition: (event) => {  return event.pointerEvent.buttons === 1 },
+            insertVertexCondition: (event) => { return false; },
+            deleteCondition: (event) => { return false; }
+        });
+        this.modifyInteraction.on('modifystart', ev => {
+            this.props.map.on('pointermove', this.measurementGeometryUpdated);
+            this.props.map.on('click', this.measurementGeometryUpdated);
+        });
+        this.modifyInteraction.on('modifyend', evt => {
+            this.props.map.un('pointermove', this.measurementGeometryUpdated);
+            this.props.map.un('click', this.measurementGeometryUpdated);
+            this.measurementGeometryUpdated(evt, false);
+        });
+        this.props.map.addInteraction(this.modifyInteraction);
+    }
+    leaveTemporaryPickMode = () => {
+        if(this.modifyInteraction) {
+            this.props.map.removeInteraction(this.modifyInteraction);
+            this.modifyInteraction = null;
+        }
+    }
+    measurementGeometryUpdated = (ev, drawing=true) => {
+        let coo = this.sketchFeature.getGeometry().getCoordinates();
+
+        let bearing = 0;
+        if (this.props.measurement.geomType === 'Bearing' && coo.length > 1) {
+            // calculate the azimuth as base for bearing information
+            bearing = CoordinatesUtils.calculateAzimuth(coo[0], coo[1], this.props.projection);
+        }
+        let length = null;
+        if(this.props.measurement.geomType === 'LineString') {
+            length = this.calculateGeodesicDistances(coo);
+            for(let i = 0; i < this.segmentMarkers.length; ++i) {
+                this.updateSegmentMarker(this.segmentMarkers[i], coo[i], coo[i + 1], length[i]);
             }
         }
         let area = null;
