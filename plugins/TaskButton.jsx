@@ -14,41 +14,45 @@ const {setCurrentTask} = require('../actions/task');
 const Icon = require('../components/Icon');
 require('./style/BackgroundSwitcher.css');
 
-class LayersButton extends React.Component {
+class TaskButton extends React.Component {
     static propTypes = {
+        task: PropTypes.string,
+        mode: PropTypes.string,
+        icon: PropTypes.string,
         position: PropTypes.number,
-        visible: PropTypes.bool,
-        setCurrentTask: PropTypes.func
+        currentTask: PropTypes.string,
+        setCurrentTask: PropTypes.func,
+        mapClickAction: PropTypes.string,
     }
     static defaultProps = {
-        visible: false,
+        mode: null,
         position: 1
     }
     render() {
         let classes = classnames({
             "map-button": true,
-            "button-active": this.props.visible
+            "button-active": this.props.currentTask === this.props.task
         });
         return (
             <button className={classes} onClick={this.buttonClicked}
                 onClick={this.buttonClicked} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
-                <Icon icon="list-alt"/>
+                <Icon icon={this.props.icon} />
             </button>
         );
     }
     buttonClicked = () => {
-        this.props.setCurrentTask(this.props.visible ? null : 'LayerTree');
+        this.props.setCurrentTask(this.props.currentTask === this.props.task ? null : this.props.task, this.props.mode, this.props.mapClickAction);
     }
 };
 
 const selector = (state) => ({
-    visible: state.task ? state.task.id === 'LayerTree' : false
+    currentTask: state.task && state.task.id || null
 });
 
 module.exports = {
-    LayersButtonPlugin: connect(selector, {
+    TaskButtonPlugin: connect(selector, {
       setCurrentTask: setCurrentTask,
-  })(LayersButton),
+  })(TaskButton),
     reducers: {
     }
 };
