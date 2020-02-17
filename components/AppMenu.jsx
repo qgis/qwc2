@@ -70,7 +70,7 @@ class AppMenu extends React.Component {
         if(item.url) {
             this.props.openExternalUrl(item.url);
         } else {
-            this.props.setCurrentTask(item.task || item.key, item.mode, item.identifyEnabled);
+            this.props.setCurrentTask(item.task || item.key, item.mode, item.mapClickAction || (item.identifyEnabled ? "identify" : null));
         }
     }
     renderMenuItems = (items, level) => {

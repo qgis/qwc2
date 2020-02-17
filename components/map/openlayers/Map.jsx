@@ -29,6 +29,7 @@ class OpenlayersMap extends React.Component {
         mousePointer: PropTypes.string,
         trackMousePos: PropTypes.bool,
         identifyEnabled: PropTypes.bool,
+        unsetTaskOnMapClick: PropTypes.bool,
         onMouseMove: PropTypes.func,
         setLayerLoading: PropTypes.func,
         registerHooks: PropTypes.bool,
@@ -89,6 +90,10 @@ class OpenlayersMap extends React.Component {
         }
         map.on('moveend', this.updateMapInfoState);
         map.on('singleclick', (event) => {
+            if(this.props.unsetTaskOnMapClick) {
+                this.props.setCurrentTask(null);
+                return;
+            }
             let features = [];
             this.map.forEachFeatureAtPixel(event.pixel, (feature, layer) => {
                 features.push([feature, layer]);

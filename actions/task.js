@@ -8,23 +8,25 @@
 
 const SET_CURRENT_TASK = 'SET_CURRENT_TASK';
 const SET_CURRENT_TASK_BLOCKED = 'SET_CURRENT_TASK_BLOCKED';
+const {setUnsetTaskOnClick} = require('./map');
 const {setIdentifyEnabled} = require('./identify');
 const ConfigUtils = require('../utils/ConfigUtils');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const MapUtils = require('../utils/MapUtils');
 const {UrlParams} = require('../utils/PermaLinkUtils');
 
-function setCurrentTask(task, mode=null, allowIdentify=false) {
+function setCurrentTask(task, mode=null, mapClickAction=null) {
     return (dispatch, getState) => {
         // Don't do anything if current task is blocked
         if(getState().task && getState().task.blocked === true) {
             return;
         }
-        dispatch(setIdentifyEnabled(task === null || task === 'LayerTree' || allowIdentify));
+        dispatch(setIdentifyEnabled(task === null || mapClickAction === 'identify'));
         dispatch({
             type: SET_CURRENT_TASK,
             id: task,
-            mode: mode
+            mode: mode,
+            unsetOnMapClick: mapClickAction === 'unset'
         });
     }
 }
