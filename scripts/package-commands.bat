@@ -3,7 +3,7 @@ IF "%1"=="build" (
 npm run clean && ^
 npm run iconfont && ^
 mkdir dist && ^
-cmd /C "set NODE_ENV='production' && webpack"
+cmd /C "set "NODE_ENV=production" && webpack"
 Exit /B 0
 )
 IF "%1"=="prod" (
@@ -25,7 +25,7 @@ if exist config.prod.json (
 Exit /B 0
 )
 IF "%1"=="analyze" (
-cmd /C "set NODE_ENV='production' && webpack --json | webpack-bundle-size-analyzer"
+cmd /C "set "NODE_ENV=production" && webpack --json | webpack-bundle-size-analyzer"
 Exit /B 0
 )
 IF "%1"=="release" (
