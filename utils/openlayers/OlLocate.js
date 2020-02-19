@@ -95,7 +95,7 @@ class OlLocate extends ol.Object {
             this.map.un('click', this.mapClick);
             this.map.un('touch', this.mapClick);
         }
-        if (this.options.stopFollowingOnDrag && !this.follow) {
+        if (this.options.stopFollowingOnDrag && this.follow) {
             this.map.un('pointerdrag', this.stopFollow, this);
         }
         this.set("state", "DISABLED");
