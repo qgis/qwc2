@@ -135,18 +135,18 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, layerPa
                         }
                     }, []);
                 }
-                finishThemeSetup(dispatch, newTheme, layerConfigs, insertPos, permalinkLayers);
+                finishThemeSetup(dispatch, newTheme, themes, layerConfigs, insertPos, permalinkLayers);
             });
         } else {
-            finishThemeSetup(dispatch, theme, layerConfigs, insertPos, permalinkLayers);
+            finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers);
         }
     }
 }
 
-function finishThemeSetup(dispatch, theme, layerConfigs, insertPos, permalinkLayers)
+function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers)
 {
     // Create layer
-    let themeLayer = ThemeUtils.createThemeLayer(theme);
+    let themeLayer = ThemeUtils.createThemeLayer(theme, themes);
     let layers = [themeLayer];
 
     // Restore theme layer configuration, create placeholders for missing layers

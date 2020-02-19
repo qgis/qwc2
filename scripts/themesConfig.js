@@ -374,6 +374,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             // NOTE: skip root WMS layer
             resultItem.sublayers = isEmpty(layerTree) ? [] : layerTree[0].sublayers;
             resultItem.expanded = true;
+            resultItem.externalLayers = configItem.externalLayers || [];
             resultItem.backgroundLayers = configItem.backgroundLayers;
             resultItem.searchProviders = configItem.searchProviders;
             resultItem.additionalMouseCrs = configItem.additionalMouseCrs;
@@ -468,6 +469,7 @@ function genThemes(themesConfig) {
             defaultPrintScales: config.defaultPrintScales,
             defaultPrintResolutions: config.defaultPrintResolutions,
             defaultPrintGrid: config.defaultPrintGrid,
+            externalLayers: config.themes.externalLayers,
             backgroundLayers: config.themes.backgroundLayers.map(bglayer => {
                     bglayer.attribution = {
                         Title: bglayer.attribution,
