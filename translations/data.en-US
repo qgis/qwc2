@@ -58,7 +58,7 @@
       "asl": "a.s.l.",
       "distance": "Distance",
       "height": "Height",
-      "loading": "Calculating height profile...",
+      "loading": "Calculating height profile..."
     },
     "identify": {
       "querying": "Querying...",
