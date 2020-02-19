@@ -12,6 +12,7 @@ const {connect} = require('react-redux');
 const assign = require('object-assign');
 const Message = require('../components/I18N/Message');
 const Spinner = require('../components/Spinner');
+const {LayerRole} = require('../actions/layers');
 
 const {Map, Layer} = require('./map/MapComponents');
 
@@ -43,7 +44,7 @@ class MapPlugin extends React.Component {
         const topLayer = (this.props.layers || [])[0];
         return this.props.layers.slice(0).reverse().map((layer, index) => {
             let layers = [];
-            if(layer.type === "wms") {
+            if(layer.type === "wms" && layer.role === LayerRole.THEME) {
                 let sublayers = layer.params.LAYERS.split(",");
                 let opacities = layer.params.OPACITIES.split(",");
                 for(let i = 0; i < sublayers.length; ++i) {
@@ -51,7 +52,7 @@ class MapPlugin extends React.Component {
                         layers.push(assign({}, layer.externalLayers[sublayers[i]], {
                             opacity: opacities[i]
                         }));
-                    } else if(layers.length > 0 && layers[layers.length - 1].url === layer.url) {
+                    } else if(layers.length > 0 && layers[layers.length - 1].refid === layer.refid) {
                         layers[layers.length - 1].params.LAYERS += "," + sublayers[i];
                         layers[layers.length - 1].params.OPACITIES += "," + opacities[i];
                     } else {

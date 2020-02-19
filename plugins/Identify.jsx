@@ -64,9 +64,9 @@ class Identify extends React.Component {
                 let layers = [];
                 let queryLayers = layer.queryLayers;
                 for(let i = 0; i < queryLayers.length; ++i) {
-                    if(layer.externalLayers[queryLayers[i]]) {
+                    if(layer.externalLayers && layer.externalLayers[queryLayers[i]]) {
                         layers.push(layer.externalLayers[queryLayers[i]]);
-                    } else if(layers.length > 0 && layers[layers.length - 1].url === layer.url) {
+                    } else if(layers.length > 0 && layers[layers.length - 1].refid === layer.refid) {
                         layers[layers.length - 1].queryLayers.push(queryLayers[i]);
                     } else {
                         layers.push(assign({}, layer, {queryLayers: [queryLayers[i]]}));
