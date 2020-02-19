@@ -9,6 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
+const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 const Message = require('../components/I18N/Message');
@@ -60,7 +61,18 @@ class Identify extends React.Component {
                 return l.visibility && l.type === 'wms' && l.role !== LayerRole.BACKGROUND && (l.queryLayers || []).length > 0
             });
             queryableLayers.forEach((layer) => {
-                this.props.sendRequest(IdentifyUtils.buildRequest(layer, layer.queryLayers.join(","), point, newProps.map, newProps.params));
+                let layers = [];
+                let queryLayers = layer.queryLayers;
+                for(let i = 0; i < queryLayers.length; ++i) {
+                    if(layer.externalLayers[queryLayers[i]]) {
+                        layers.push(layer.externalLayers[queryLayers[i]]);
+                    } else if(layers.length > 0 && layers[layers.length - 1].url === layer.url) {
+                        layers[layers.length - 1].queryLayers.push(queryLayers[i]);
+                    } else {
+                        layers.push(assign({}, layer, {queryLayers: [queryLayers[i]]}));
+                    }
+                }
+                layers.forEach(l => this.props.sendRequest(IdentifyUtils.buildRequest(l, l.queryLayers.join(","), point, newProps.map, newProps.params)));
             });
             if(isEmpty(queryableLayers)) {
                 this.props.identifyEmpty();

@@ -9,6 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
+const assign = require('object-assign');
 const Message = require('../components/I18N/Message');
 const Spinner = require('../components/Spinner');
 
@@ -41,9 +42,32 @@ class MapPlugin extends React.Component {
         const projection = this.props.map.projection || 'EPSG:3857';
         const topLayer = (this.props.layers || [])[0];
         return this.props.layers.slice(0).reverse().map((layer, index) => {
-            return (
-                <Layer key={layer.uuid} swipe={layer === topLayer ? this.props.swipe : null} type={layer.type} srs={projection} zIndex={layer.zIndex || index} options={layer} />
-            );
+            let layers = [];
+            if(layer.type === "wms") {
+                let sublayers = layer.params.LAYERS.split(",");
+                let opacities = layer.params.OPACITIES.split(",");
+                for(let i = 0; i < sublayers.length; ++i) {
+                    if(layer.externalLayers[sublayers[i]]) {
+                        layers.push(assign({}, layer.externalLayers[sublayers[i]], {
+                            opacity: opacities[i]
+                        }));
+                    } else if(layers.length > 0 && layers[layers.length - 1].url === layer.url) {
+                        layers[layers.length - 1].params.LAYERS += "," + sublayers[i];
+                        layers[layers.length - 1].params.OPACITIES += "," + opacities[i];
+                    } else {
+                        layers.push(assign({}, layer, {uuid: layer.uuid + "-" + i, params: {
+                            LAYERS: sublayers[i],
+                            OPACITIES: opacities[i],
+                            MAP: layer.params.MAP
+                        }}));
+                    }
+                }
+            } else {
+                layers.push(layer);
+            }
+            return layers.map((l, i) => (
+                <Layer key={l.uuid} swipe={layer === topLayer ? this.props.swipe : null} type={l.type} srs={projection} zIndex={l.zIndex || (index * this.props.layers.length + i)} options={l} />
+            ));
         });
     }
     renderSupportTools = () => {

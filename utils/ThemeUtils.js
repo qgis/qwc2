@@ -8,6 +8,8 @@
 
 const assign = require("object-assign");
 const isEmpty = require('lodash.isempty');
+const uuid = require('uuid');
+
 const ConfigUtils = require("../utils/ConfigUtils");
 const {LayerRole} = require("../actions/layers");
 const removeDiacritics = require('diacritics').remove;
@@ -58,7 +60,7 @@ const ThemeUtils = {
         }
         return bgLayers;
     },
-    createThemeLayer: function(theme, role=LayerRole.THEME) {
+    createThemeLayer: function(theme, themes, role=LayerRole.THEME) {
         let layer = {
             id: theme.name + Date.now().toString(),
             type: "wms",
@@ -78,7 +80,12 @@ const ThemeUtils = {
             legendUrl: theme.legendUrl,
             printUrl: theme.printUrl,
             featureInfoUrl: theme.featureInfoUrl,
-            infoFormats: theme.infoFormats
+            infoFormats: theme.infoFormats,
+            externalLayers: theme.externalLayers.reduce((res, cur) => {
+                res[cur.internalLayer] = assign({}, themes.externalLayers.find(entry => entry.name === cur.name));
+                res[cur.internalLayer].uuid = uuid.v4();
+                return res;
+             }, {})
         };
         // Drawing order only makes sense if layer reordering is disabled
         if(ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {
