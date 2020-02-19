@@ -70,3 +70,16 @@
     background-color: rgba(0, 0, 0, 0.5);
     pointer-events: none;
 }
+
+#HeightProfile div.height-profile-loading-indicator {
+    display: flex;
+    align-items: center;
+    padding-left: 0.5em;
+    padding-bottom: 0.5em;
+}
+
+#HeightProfile div.height-profile-loading-indicator > div.spinner {
+    width: 1.5em;
+    height: 1.5em;
+    margin-right: 0.25em;
+}

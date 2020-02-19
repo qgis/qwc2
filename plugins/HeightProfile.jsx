@@ -17,6 +17,8 @@ const ChartistAxisTitle = require('chartist-plugin-axistitle');
 const ConfigUtils = require('../utils/ConfigUtils');
 const LocaleUtils = require('../utils/LocaleUtils');
 const {addMarker, removeMarker} = require('../actions/layers');
+const Spinner = require('../components/Spinner');
+const Message = require('../components/I18N/Message');
 
 require('./style/HeightProfile.css');
 
@@ -46,7 +48,8 @@ class HeightProfile extends React.Component {
     }
     state = {
         width: window.innerWidth,
-        data: []
+        data: [],
+        isloading: false
     }
     componentDidMount() {
         window.addEventListener('resize', this.handleResize);
@@ -69,16 +72,30 @@ class HeightProfile extends React.Component {
     queryElevations(coordinates, distances, projection) {
         let serviceUrl = (ConfigUtils.getConfigProp("elevationServiceUrl") || "").replace(/\/$/, '');
         if(serviceUrl) {
+            this.setState({ isloading: true })
             axios.post(serviceUrl + '/getheightprofile', {coordinates, distances, projection, samples: this.props.samples}).then(response => {
+                this.setState({ isloading: false });
                 this.setState({data: response.data.elevations});
             }).catch(e => {
+                this.setState({ isloading: false });
                 console.log("Query failed: " + e);
             });
         }
     }
     render() {
         if(isEmpty(this.state.data)) {
-            return null;
+            if (this.state.isloading) {
+                return (
+                    <div id="HeightProfile">
+                        <div className="height-profile-loading-indicator">
+                            <Spinner className="spinner" />
+                            <Message msgId="heightprofile.loading" />
+                        </div>
+                    </div>
+                )
+            } else {
+                return null;
+            }
         }
         let distanceStr = LocaleUtils.getMessageById(this.context.messages, "heightprofile.distance");
         let heightStr = LocaleUtils.getMessageById(this.context.messages, "heightprofile.height");

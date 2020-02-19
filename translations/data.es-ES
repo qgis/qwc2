@@ -57,7 +57,8 @@
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Distancia",
-      "height": "Altura"
+      "height": "Altura",
+      "loading": "Cálculo del perfil de altura..."
     },
     "identify": {
       "querying": "Consultando...",

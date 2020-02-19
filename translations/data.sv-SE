@@ -57,7 +57,8 @@
     "heightprofile": {
       "asl": "m.ö.h.",
       "distance": "Avstånd",
-      "height": "Höjd"
+      "height": "Höjd",
+      "loading": "Beräknar höjdprofil..."
     },
     "identify": {
       "querying": "Frågar...",

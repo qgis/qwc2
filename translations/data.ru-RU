@@ -57,7 +57,8 @@
     "heightprofile": {
       "asl": "над у.м.",
       "distance": "Дистанция",
-      "height": "Высота"
+      "height": "Высота",
+      "loading": "Расчет высоты профиля..."
     },
     "identify": {
       "querying": "Выполняется запрос...",

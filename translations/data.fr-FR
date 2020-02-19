@@ -57,7 +57,8 @@
     "heightprofile": {
       "asl": "s/mer",
       "distance": "Distance",
-      "height": "Altitude"
+      "height": "Altitude",
+      "loading": "Calcul du profil de hauteur..."
     },
     "identify": {
       "querying": "Identification en cours...",

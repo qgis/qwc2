@@ -57,7 +57,8 @@
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Vzdálenost",
-      "height": "Výška"
+      "height": "Výška",
+      "loading": "Výpočet výškového profilu..."
     },
     "identify": {
       "querying": "Dotazování...",

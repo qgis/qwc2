@@ -54,6 +54,7 @@
     "heightprofile.asl",
     "heightprofile.distance",
     "heightprofile.height",
+    "heightprofile.loading",
     "identify.querying",
     "identify.noresults",
     "identify.export",
