@@ -489,6 +489,7 @@ class IdentifyViewer extends React.Component {
                 }
             }
         }
+        return layername;
     }
     showLayerInfo = (featureInfoLayerId, result) => {
         let matchlayer = null;
