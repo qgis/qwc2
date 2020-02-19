@@ -53,7 +53,8 @@
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Távolság",
-      "height": "Magasság"
+      "height": "Magasság",
+      "loading": "A magassági profil kiszámítása..."
     },
     "identify": {
       "querying": "Lekérdezés...",

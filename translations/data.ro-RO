@@ -57,7 +57,8 @@
     "heightprofile": {
       "asl": "dM",
       "distance": "Distanța",
-      "height": "Înălțimea"
+      "height": "Înălțimea",
+      "loading": "Calcularea profilului înălțimii..."
     },
     "identify": {
       "querying": "Interogare...",

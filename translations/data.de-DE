@@ -57,7 +57,8 @@
     "heightprofile": {
       "asl": "ü.M.",
       "distance": "Distanz",
-      "height": "Höhe"
+      "height": "Höhe",
+      "loading": "Höhenprofil wird berechnet..."
     },
     "identify": {
       "querying": "Objekte werden abgefragt...",
