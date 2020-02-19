@@ -82,8 +82,12 @@ const ThemeUtils = {
             featureInfoUrl: theme.featureInfoUrl,
             infoFormats: theme.infoFormats,
             externalLayers: theme.externalLayers.reduce((res, cur) => {
-                res[cur.internalLayer] = assign({}, themes.externalLayers.find(entry => entry.name === cur.name));
-                res[cur.internalLayer].uuid = uuid.v4();
+                res[cur.internalLayer] = assign({}, themes.externalLayers.find(entry => entry.name === cur.name), {
+                    uuid: uuid.v4(),
+                    type: "wms"
+                });
+                res[cur.internalLayer].featureInfoUrl = res[cur.internalLayer].featureInfoUrl || res[cur.internalLayer].url;
+                res[cur.internalLayer].queryLayers = res[cur.internalLayer].queryLayers || res[cur.internalLayer].params.LAYERS.split(",");
                 return res;
              }, {})
         };
