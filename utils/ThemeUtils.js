@@ -86,6 +86,7 @@ const ThemeUtils = {
                     uuid: uuid.v4(),
                     type: "wms"
                 });
+                res[cur.internalLayer].title = res[cur.internalLayer].title || res[cur.internalLayer].name;
                 res[cur.internalLayer].featureInfoUrl = res[cur.internalLayer].featureInfoUrl || res[cur.internalLayer].url;
                 res[cur.internalLayer].queryLayers = res[cur.internalLayer].queryLayers || res[cur.internalLayer].params.LAYERS.split(",");
                 return res;
