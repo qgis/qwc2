@@ -81,7 +81,7 @@ const ThemeUtils = {
             printUrl: theme.printUrl,
             featureInfoUrl: theme.featureInfoUrl,
             infoFormats: theme.infoFormats,
-            externalLayers: theme.externalLayers.reduce((res, cur) => {
+            externalLayers: (theme.externalLayers || []).reduce((res, cur) => {
                 res[cur.internalLayer] = assign({}, themes.externalLayers.find(entry => entry.name === cur.name), {
                     uuid: uuid.v4(),
                     type: "wms"
