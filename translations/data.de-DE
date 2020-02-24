@@ -174,6 +174,17 @@
       "invisiblelayer": "Das Resultat liegt auf einer Ebene, die ausgeschaltet ist.",
       "enablelayer": "Ebene einschalten"
     },
+    "searchbox": {
+      "coordinates": "Koordinaten",
+      "filter": "Suche verfeinern",
+      "layers": "Karten",
+      "more": "weitere Treffer",
+      "morelayers": "Weitere Treffer verfügbar",
+      "nodescription": "Keine Beschreibung verfügbar",
+      "placeholder": "Ort suchen oder Karte hinzufügen...",
+      "places": "Orte",
+      "recent": "Zuletzt gesucht"
+    },
     "share": {
       "directLinkTitle": "Über einen direkten Link",
       "generatingpermalink": "Permalink wird erzeugt",

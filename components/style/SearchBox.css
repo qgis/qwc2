@@ -1,0 +1,105 @@
+div.SearchBox {
+    flex: 1 1 auto;
+    position: relative;
+    height: 2em;
+    max-width: 70ch;
+    background-color: white;
+}
+
+div.SearchBox > div.searchbox-field {
+    width: 100%;
+    border: 1px solid @item_border@;
+    height: 2em;
+    display: flex;
+    align-items: center;
+}
+
+div.SearchBox > div.searchbox-field > span.icon {
+    flex: 0 0 2em;
+    text-align: center;
+}
+div.SearchBox > div.searchbox-field > input {
+    border: 0;
+    outline: 0;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+div.SearchBox > div.searchbox-results {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    width: 100%;
+    max-height: calc(100vh - 4em);
+    max-height: calc(var(--vh, 1vh) * 100 - 4em);
+    background-color: white;
+    border-left: 1px solid @item_border@;
+    border-right: 1px solid @item_border@;
+    border-bottom: 1px solid @item_border@;
+    box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+div.SearchBox div.searchbox-results-section-title {
+    background-color: @container_bg@;
+    font-weight: bold;
+    padding: 0.5em;
+    cursor: pointer;
+}
+
+div.SearchBox div.searchbox-results-section-title > span.icon {
+    margin-right: 0.5em;
+}
+
+div.searchbox-result {
+    padding: 0.125em 0.5em;
+    display: flex;
+    align-items: center;
+}
+
+div.searchbox-result:hover {
+    background-color: @button_hover_bg@;
+}
+
+div.searchbox-result-expandedinfo {
+    background-color: @button_hover_bg@;
+}
+
+div.searchbox-result > img {
+    flex: 0 0 1.75em;
+    height: 1.75em;
+}
+
+div.searchbox-result > span.icon {
+    flex: 0 0 1em;
+}
+
+span.searchbox-result-label {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0 0.25em;
+}
+
+div.searchbox-result-abstract {
+    padding: .5em;
+    border-bottom: 1px solid @button_hover_bg@;
+    max-height: 10em;
+    overflow-y: auto;
+    font-size: 95%;
+}
+
+div.searchbox-more-results {
+    color: grey;
+    font-style: italic;
+    padding: 0 0.5em;
+    height: 1.75em;
+    display: flex;
+    align-items: center;
+}
+
+div.searchbox-result-group {
+    margin-left: 1em;
+    border-left: 1px solid @button_hover_bg@;
+}
