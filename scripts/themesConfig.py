@@ -374,6 +374,8 @@ def getTheme(config, configItem, result, resultItem):
             resultItem["backgroundLayers"] = configItem["backgroundLayers"]
         if "externalLayers" in configItem:
             resultItem["externalLayers"] = configItem["externalLayers"]
+        if "pluginData" in configItem:
+            resultItem["pluginData"] = configItem["pluginData"]
         resultItem["searchProviders"] = configItem["searchProviders"] if "searchProviders" in configItem else []
         if "additionalMouseCrs" in configItem:
             resultItem["additionalMouseCrs"] = configItem["additionalMouseCrs"]
@@ -494,6 +496,7 @@ def genThemes(themesConfig):
             "defaultPrintScales": config["defaultPrintScales"] if "defaultPrintScales" in config else None,
             "defaultPrintResolutions": config["defaultPrintResolutions"] if "defaultPrintResolutions" in config else None,
             "defaultPrintGrid": config["defaultPrintGrid"] if "defaultPrintGrid" in config else None,
+            "pluginData": config["themes"]["pluginData"] if "pluginData" in config["themes"] else [],
             "externalLayers": config["themes"]["externalLayers"] if "externalLayers" in config["themes"] else [],
             "backgroundLayers": list(map(reformatAttribution, config["themes"]["backgroundLayers"])),
             "defaultWMSVersion": config["defaultWMSVersion"] if "defaultWMSVersion" in config else None

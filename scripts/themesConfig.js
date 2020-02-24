@@ -407,6 +407,9 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             if(configItem.watermark) {
                 resultItem.watermark = configItem.watermark;
             }
+            if(configItem.pluginData) {
+                resultItem.pluginData = configItem.pluginData;
+            }
 
             resultItem.skipEmptyFeatureAttributes = configItem.skipEmptyFeatureAttributes;
             resultItem.config = configItem.config;
@@ -470,6 +473,7 @@ function genThemes(themesConfig) {
             defaultPrintResolutions: config.defaultPrintResolutions,
             defaultPrintGrid: config.defaultPrintGrid,
             externalLayers: config.themes.externalLayers,
+            pluginData: config.themes.pluginData,
             backgroundLayers: config.themes.backgroundLayers.map(bglayer => {
                     bglayer.attribution = {
                         Title: bglayer.attribution,
