@@ -38,10 +38,14 @@ class Editing extends React.Component {
         clickOnMap: PropTypes.func,
         changeEditingState: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
-        refreshLayer: PropTypes.func
+        refreshLayer: PropTypes.func,
+        touchFriendly: PropTypes.bool
     }
     static contextTypes = {
         messages: PropTypes.object
+    }
+    static defaultProps = {
+        touchFriendly: true
     }
     state = {
         selectedLayer: null,
@@ -106,10 +110,20 @@ class Editing extends React.Component {
             value = this.props.editing.feature.properties[field.id] || "";
         }
         let input = null;
+        let title = field.name + ":";
         if(field.type == "boolean" || field.type == "bool") {
-            input = (
-                <ToggleSwitch active={value} onChange={active => this.updateField(field.id, active)} />
-            );
+            if(this.props.touchFriendly) {
+                input = (
+                    <ToggleSwitch active={value} onChange={active => this.updateField(field.id, active)} />
+                );
+            } else {
+                title = (
+                    <label>
+                        <input type="checkbox" checked={value} onChange={ev => this.updateField(field.id, ev.target.checked)} />
+                        {field.name}
+                    </label>
+                );
+            }
         }
         else if(constraints.values) {
             input = (
@@ -134,7 +148,7 @@ class Editing extends React.Component {
         } else if(field.type == "number") {
             let precision = constraints.step > 0 ? Math.ceil(-Math.log10(constraints.step)) : 6;
             input = (
-                <NumericInput mobile strict
+                <NumericInput mobile={this.props.touchFriendly} strict
                     min={constraints.min} max={constraints.max}
                     step={constraints.step || 1} precision={precision}
                     format={nr => String(Number(nr))}
@@ -164,8 +178,8 @@ class Editing extends React.Component {
         }
         return (
             <tr key={field.id}>
-                <td>{field.name}:</td>
-                <td>{input}</td>
+                <td colSpan={input ? 1 : 2}>{title}</td>
+                {input ? (<td>{input}</td>) : null}
             </tr>
         );
     }
