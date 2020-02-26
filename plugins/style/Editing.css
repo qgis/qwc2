@@ -70,6 +70,10 @@
     margin-right: 0.5em;
 }
 
+#Editing table.fields-table textarea {
+    width: 100%;
+}
+
 #Editing span.input-frame input:disabled {
     background-color: lightgray;
     cursor: not-allowed;

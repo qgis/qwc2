@@ -167,6 +167,10 @@ class Editing extends React.Component {
                         value={value}/>
                 </span>
             );
+        } else if(field.type == "text") {
+            input = (
+                <textarea value={value} onChange={(ev) => this.updateField(field.id, ev.target.value)}></textarea>
+            );
         } else {
             input = (
                 <span className="input-frame">
