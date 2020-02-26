@@ -103,7 +103,7 @@ class Print extends React.Component {
             return (<div role="body" className="print-body"><Message msgId="print.nolayouts" /></div>);
         }
         let themeLayers = this.props.layers.filter(layer => layer.role === LayerRole.THEME);
-        if(!this.props.theme || (!this.props.printExternalLayers && !themeLayers)) {
+        if(!this.props.theme || (!this.props.printExternalLayers && isEmpty(themeLayers))) {
             return (<div role="body" className="print-body"><Message msgId="print.notheme" /></div>);
         }
         let printLayers = [];
@@ -274,7 +274,7 @@ class Print extends React.Component {
                         <input readOnly={true} name="FORMAT" type={formvisibility} value="pdf" />
                         <input readOnly={true} name="TRANSPARENT" type={formvisibility} value="true" />
                         <input readOnly={true} name="SRS" type={formvisibility} value={mapCrs} />
-                        {themeLayers[0].params.MAP ? (<input readOnly={true} name="MAP" type={formvisibility} value={themeLayers[0].params.MAP} />) : null}
+                        {!isEmpty(themeLayers) && themeLayers[0].params.MAP ? (<input readOnly={true} name="MAP" type={formvisibility} value={themeLayers[0].params.MAP} />) : null}
                         <input readOnly={true} name="OPACITIES" type={formvisibility} value={printOpacities || ""} />
                         {/* This following one is needed for opacities to work!*/}
                         <input readOnly={true} name="LAYERS" type={formvisibility} value={printLayers || ""} />
