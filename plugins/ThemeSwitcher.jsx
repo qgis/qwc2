@@ -9,6 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
+const isEqual = require('lodash.isequal');
 const removeDiacritics = require('diacritics').remove;
 const Message = require('../components/I18N/Message');
 const ConfigUtils = require("../utils/ConfigUtils");
@@ -31,7 +32,8 @@ class ThemeSwitcher extends React.Component {
         mapConfig: PropTypes.object,
         width: PropTypes.string,
         addLayer: PropTypes.func,
-        showLayerAfterChangeTheme: PropTypes.bool
+        showLayerAfterChangeTheme: PropTypes.bool,
+        collapsibleGroups: PropTypes.bool
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -41,7 +43,8 @@ class ThemeSwitcher extends React.Component {
         showLayerAfterChangeTheme: false
     }
     state = {
-        filter: ""
+        filter: "",
+        expandedGroup: []
     }
     groupMatchesFilter = (group, filter) => {
         if(group && group.items) {
@@ -61,33 +64,44 @@ class ThemeSwitcher extends React.Component {
         }
         return false;
     }
-    renderThemeGroup = (group) => {
+    renderThemeGroup = (group, level=[]) => {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let filter = new RegExp(removeDiacritics(this.state.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
         let subdirs = (group && group.subdirs ? group.subdirs : []);
         if(filter !== "") {
             subdirs = subdirs.filter(subdir => this.groupMatchesFilter(subdir, filter));
         }
-        let subtree = subdirs.map(subdir =>
-            (<li key={subdir.title} className="theme-group"><span>{subdir.title}</span><ul>{this.renderThemeGroup(subdir)}</ul></li>)
-        );
+        let subtree = subdirs.map((subdir, idx) => {
+            let sublevel = [...level, idx];
+            let expanded = !this.props.collapsibleGroups || isEqual(sublevel, this.state.expandedGroup.slice(0, sublevel.length));
+            return (
+                <li key={subdir.title} className="theme-group-header">
+                    <span onClick={ev => this.setState({expandedGroup: expanded ? sublevel.slice(0, -1) : sublevel})}>
+                        {this.props.collapsibleGroups ? (<Icon icon={expanded ? "collapse" : "expand"} />) : null} {subdir.title}
+                    </span>
+                    {expanded ? this.renderThemeGroup(subdir, sublevel) : null}
+                </li>
+            );
+        });
         let activeThemeId = this.props.activeTheme ? this.props.activeTheme.id : null;
         let addTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addtotheme");
-        return (<ul>
-            {(group && group.items ? group.items : []).map(item => {
-                return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords).match(filter) ? (
-                    <li key={item.id}
-                        className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
-                        onClick={ev => this.setTheme(item)}
-                        title={item.keywords}
-                    >
-                        <div className="theme-item-title" title={item.title}>{item.title}</div>
-                        <img src={assetsPath + "/" + item.thumbnail} />
-                        {ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.activeTheme) ===  true ? (<Icon icon="plus" title={addTitle} onClick={ev => this.addThemeLayers(ev, item)} />) : null}
-                    </li>) : null;
-            })}
-            {subtree}
-            </ul>);
+        return (
+            <ul className="theme-group-body">
+                {(group && group.items ? group.items : []).map(item => {
+                    return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords).match(filter) ? (
+                        <li key={item.id}
+                            className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
+                            onClick={ev => this.setTheme(item)}
+                            title={item.keywords}
+                        >
+                            <div className="theme-item-title" title={item.title}>{item.title}</div>
+                            <img src={assetsPath + "/" + item.thumbnail} />
+                            {ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.activeTheme) ===  true ? (<Icon icon="plus" title={addTitle} onClick={ev => this.addThemeLayers(ev, item)} />) : null}
+                        </li>) : null;
+                })}
+                {subtree}
+            </ul>
+        );
     }
     render() {
         let extraTitlebarContent = (

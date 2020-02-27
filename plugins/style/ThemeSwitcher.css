@@ -13,12 +13,25 @@
     list-style-type: none;
 }
 
-#ThemeSwitcher li.theme-group > span {
+#ThemeSwitcher li.theme-group-header > span {
     font-weight: bold;
-    display: block;
+    display: flex;
+    align-items: center;
     border-bottom: 1px solid #a6a6a6;
-    padding-left: 0.5em;
-    margin: 0 0.5em;
+    padding: 0.25em;
+    margin: 0 0.5em 0.5em 0.5em;
+}
+
+#ThemeSwitcher li.theme-group-header > span > span.icon {
+    margin-right: 0.25em;
+}
+
+#ThemeSwitcher ul.theme-group-body {
+    padding: 0.25em;
+}
+
+#ThemeSwitcher li.theme-group-header ul.theme-group-body {
+    margin-left: 0.25em;
 }
 
 #ThemeSwitcher li.theme-item {
@@ -26,7 +39,7 @@
     font-weight: bold;
     font-size: small;
     border: 1px solid @item_border@;
-    margin: 1em;
+    margin: 0.5em;
     text-align: center;
     display: inline-block;
     width: 15em;
