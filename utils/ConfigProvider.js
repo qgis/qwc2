@@ -613,6 +613,20 @@ const CONFIGPROVIDER = {
                     }
                 }
             }
+        },
+        Google: {
+            url: '//{s}.google.com/vt/lyrs={variant}&x={x}&y={y}&z={z}',
+            options: {
+                attribution: 'Map data &copy; Google <a href="https://www.google.com/intl/en-US_US/help/terms_maps/">Terms of Use</a>',
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                variant: 'm'
+            },
+            variants: {
+                Roadmap: 'm',
+                Satellite: 's',
+                SatelliteHybrid: 'y',
+                TerrainHybrid: 'p'
+            }
         }
     };
 module.exports = CONFIGPROVIDER;
