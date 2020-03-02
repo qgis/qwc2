@@ -46,10 +46,27 @@
     position: relative;
 }
 #ThemeSwitcher div.theme-item-title {
+    display: flex;
+    align-items: center;
+}
+
+#ThemeSwitcher div.theme-item-title > span:first-child {
+    flex: 1 1 auto;
     padding: 0.125em;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+#ThemeSwitcher div.theme-item-title > span:last-child {
+    flex: 0 0 auto;
+    padding: 0.125em;
+    font-size: large;
+}
+
+#ThemeSwitcher li.theme-item-active div.theme-item-title > span:first-child
+{
+    color: @item_active@;
 }
 
 #ThemeSwitcher li.theme-item > img {
@@ -89,5 +106,22 @@
 
 #ThemeSwitcher li.theme-item-active {
     border: 1px solid @item_active@;
-    color: @item_active@;
+}
+
+#ThemeSwitcher div.theme-item-info-links {
+    position: absolute;
+    top: 1.5em;
+    max-width: calc(15em + 2px);
+    right: -1px;
+    background-color: rgba(255, 255, 255, 0.85);
+    border: 1px solid @item_active@;
+}
+
+#ThemeSwitcher div.theme-item-info-links > a {
+    display: block;
+    text-align: left;
+    padding: 0.25em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

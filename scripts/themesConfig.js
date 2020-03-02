@@ -410,6 +410,9 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             if(configItem.pluginData) {
                 resultItem.pluginData = configItem.pluginData;
             }
+            if(configItem.themeInfoLinks) {
+                resultItem.themeInfoLinks = configItem.themeInfoLinks;
+            }
 
             resultItem.skipEmptyFeatureAttributes = configItem.skipEmptyFeatureAttributes;
             resultItem.config = configItem.config;
@@ -474,6 +477,7 @@ function genThemes(themesConfig) {
             defaultPrintGrid: config.defaultPrintGrid,
             externalLayers: config.themes.externalLayers,
             pluginData: config.themes.pluginData,
+            themeInfoLinks: config.themes.themeInfoLinks,
             backgroundLayers: config.themes.backgroundLayers.map(bglayer => {
                     bglayer.attribution = {
                         Title: bglayer.attribution,

@@ -10,6 +10,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const isEqual = require('lodash.isequal');
+const isEmpty = require('lodash.isempty');
 const removeDiacritics = require('diacritics').remove;
 const Message = require('../components/I18N/Message');
 const ConfigUtils = require("../utils/ConfigUtils");
@@ -44,7 +45,8 @@ class ThemeSwitcher extends React.Component {
     }
     state = {
         filter: "",
-        expandedGroup: []
+        expandedGroup: [],
+        visibleThemeInfoMenu: null
     }
     groupMatchesFilter = (group, filter) => {
         if(group && group.items) {
@@ -88,13 +90,25 @@ class ThemeSwitcher extends React.Component {
         return (
             <ul className="theme-group-body">
                 {(group && group.items ? group.items : []).map(item => {
+                    let infoLinks = (item.themeInfoLinks || []).map(name => this.props.themes.themeInfoLinks.find(entry => entry.name === name)).filter(entry => entry);
+
                     return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords).match(filter) ? (
                         <li key={item.id}
                             className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
                             onClick={ev => this.setTheme(item)}
                             title={item.keywords}
                         >
-                            <div className="theme-item-title" title={item.title}>{item.title}</div>
+                            <div className="theme-item-title" title={item.title}>
+                                <span>{item.title}</span>
+                                {!isEmpty(infoLinks) ? (<Icon icon="info" onClick={ev => this.toggleThemeInfoMenu(ev, item.id)}/>) : null}
+                            </div>
+                            {this.state.visibleThemeInfoMenu === item.id ? (
+                                <div className="theme-item-info-links" onClick={ev => ev.stopPropagation()}>
+                                    {infoLinks.map(link => (
+                                        <a key={link.name} href={link.url} target={link.target}>{link.title}</a>
+                                    ))}
+                                </div>
+                            ) : null}
                             <img src={assetsPath + "/" + item.thumbnail} />
                             {ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.activeTheme) ===  true ? (<Icon icon="plus" title={addTitle} onClick={ev => this.addThemeLayers(ev, item)} />) : null}
                         </li>) : null;
@@ -127,6 +141,10 @@ class ThemeSwitcher extends React.Component {
             this.props.setCurrentTask(null);
         }
         this.props.changeTheme(theme, this.props.themes);
+    }
+    toggleThemeInfoMenu = (ev, themeId) => {
+        ev.stopPropagation();
+        this.setState({visibleThemeInfoMenu: this.state.visibleThemeInfoMenu === themeId ? null : themeId});
     }
     addThemeLayers = (ev, theme) => {
         ev.stopPropagation();
