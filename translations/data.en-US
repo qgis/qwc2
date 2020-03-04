@@ -66,7 +66,8 @@
       "export": "Export",
       "featureReport": "Feature report",
       "noattributes": "No attributes",
-      "title": "Feature Info"
+      "title": "Feature Info",
+      "link": "Link"
     },
     "identifyregion": {
       "info": "Draw a polygon around the features to identify..."

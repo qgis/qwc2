@@ -66,7 +66,8 @@
       "export": "Exportera",
       "featureReport": "Objektrapport",
       "noattributes": "Inga attribut",
-      "title": "Objektinformation"
+      "title": "Objektinformation",
+      "link": "Länk"
     },
     "identifyregion": {
       "info": "Rita en polygon runt objektn som ska identifieras"

@@ -66,7 +66,8 @@
       "export": "Esporta",
       "featureReport": "Formulario oggetto",
       "noattributes": "Nessun attributo",
-      "title": "Titolo"
+      "title": "Titolo",
+      "link": "Link"
     },
     "identifyregion": {
       "info": "Disegna un poligono attorno all'area da identificare"
@@ -175,15 +176,15 @@
       "enablelayer": "Attivare il layer"
     },
     "searchbox": {
-      "coordinates": "",
-      "filter": "",
-      "layers": "",
-      "more": "",
-      "morelayers": "",
-      "nodescription": "",
-      "placeholder": "",
-      "places": "",
-      "recent": ""
+      "coordinates": "Coordinate",
+      "filter": "Filtro",
+      "layers": "Layer",
+      "more": "più risultati",
+      "morelayers": "Più risultati disponibili",
+      "nodescription": "Nessuna descrizione disponibile",
+      "placeholder": "Cerca luoghi o aggiungi cartina...",
+      "places": "Luoghi",
+      "recent": "Ricerche recenti"
     },
     "share": {
       "directLinkTitle": "Link diretto",

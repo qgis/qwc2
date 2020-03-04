@@ -14,7 +14,9 @@
         "Tools": "Térkép eszközök",
         "IdentifyRegion": "Adatok lekérdezése",
         "Redlining": "Vázlat",
-        "Editing": "Szerkesztés"
+        "Editing": "Szerkesztés",
+        "Login": "",
+        "Logout": ""
       },
       "menulabel": "Eszközök"
     },
@@ -41,11 +43,13 @@
       "delete": "Törlés",
       "discard": "Elvetés",
       "draw": "Rajzolás",
+      "feature": "",
       "fields": "Mezők",
       "layer": "Fólia",
       "noeditablelayers": "Nincs szerkeszthető fólia.",
       "pick": "Kiválasztás",
-      "reallydelete": "Törlés"
+      "reallydelete": "Törlés",
+      "select": ""
     },
     "fileselector": {
       "placeholder": "Fájl választása..."
@@ -61,16 +65,21 @@
       "noresults": "Nincs információ a kiválasztott pontról",
       "export": "Exportálás",
       "featureReport": "Lekérdezés eredménye",
-      "title": "Lekérdezés információ"
+      "noattributes": "",
+      "title": "Lekérdezés információ",
+      "link": "Link"
     },
     "identifyregion": {
       "info": "Rajzolj egy poligont a lekérdezni kívánt terület köré..."
     },
     "importlayer": {
       "addlayer": "Fólia hozzáadása",
-      "filter": "Szűrés...",
       "connect": "Kapcsolódás",
+      "filter": "Szűrés...",
+      "localfile": "",
       "nofeatures": "Nem sikerült az importálás.",
+      "noresults": "",
+      "url": "",
       "urlplaceholder": "URL a WMS, WFS, KML, GeoJSON adatokhoz..."
     },
     "layerinfo": {
@@ -87,7 +96,7 @@
       "importlayer": "Fólia importálása",
       "maptip": "Show layer map tips",
       "printlegend": "Print legend",
-      "transparency": "Átlátszóság"
+      "deletealllayers": ""
     },
     "locate": {
       "metersUnit": "méter",
@@ -117,12 +126,16 @@
     "print": {
       "layout": "Elrendezés:",
       "grid": "Rács:",
+      "maximize": "",
+      "minimize": "",
       "nolayouts": "A kiválasztott térkép nem támogatja a nyomtatást",
       "notheme": "Nincs térkép kiválasztva",
       "resolution": "Felbontás:",
       "rotation": "Forgatás:",
       "scale": "Méretarány:",
-      "submit": "Nyomtatás"
+      "submit": "Nyomtatás",
+      "output": "",
+      "wait": ""
     },
     "rasterexport": {
       "format": "Formátum:",
@@ -130,9 +143,20 @@
       "selectinfo": "Rajzolj egy négyszöget az exportálni kívánt terület köré..."
     },
     "redlining": {
+      "add": "",
       "border": "Szegély",
+      "buffer": "",
+      "bufferlayername": "",
+      "bufferdistance": "",
+      "bufferlayer": "",
+      "buffercompute": "",
+      "bufferselectfeature": "",
+      "delete": "",
+      "draw": "",
+      "edit": "",
       "fill": "Kitöltés",
       "label": "Címke",
+      "layer": "",
       "line": "Vonaé",
       "outline": "Körvonal",
       "pick": "Kiválaszás",
@@ -145,7 +169,22 @@
     "search": {
       "more": "Több...",
       "search": "Keresés",
-      "all": "Minden"
+      "searchall": "",
+      "all": "Minden",
+      "themes": "",
+      "invisiblelayer": "",
+      "enablelayer": ""
+    },
+    "searchbox": {
+      "coordinates": "",
+      "filter": "",
+      "layers": "",
+      "more": "",
+      "morelayers": "",
+      "nodescription": "",
+      "placeholder": "",
+      "places": "",
+      "recent": ""
     },
     "share": {
       "directLinkTitle": "Közvetlen hivatkozással...",
@@ -153,8 +192,15 @@
       "QRCodeLinkTitle": "qr-kód",
       "socialIntro": "A kedvenc közösségi hálózatodon"
     },
+    "tooltip": {
+      "home": "",
+      "zoomin": "",
+      "zoomout": "",
+      "background": ""
+    },
     "themeswitcher": {
-      "filter": "Szűrés..."
+      "filter": "Szűrés...",
+      "addtotheme": ""
     }
   }
 }

@@ -66,7 +66,8 @@
       "export": "Exporter",
       "featureReport": "Données de l'objet",
       "noattributes": "Pas d'attribut",
-      "title": "Informations sur l'objet"
+      "title": "Informations sur l'objet",
+      "link": "Lien"
     },
     "identifyregion": {
       "info": "Dessiner un polygone pour identifier les objets"

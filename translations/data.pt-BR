@@ -66,7 +66,8 @@
       "export": "Exportar",
       "featureReport": "Reportar",
       "noattributes": "",
-      "title": "Informações da Funcionalidade"
+      "title": "Informações da Funcionalidade",
+      "link": "Link"
     },
     "identifyregion": {
       "info": "Desenhe um polígono em torno dos elementos para identificar..."
