@@ -259,6 +259,11 @@ class IdentifyViewer extends React.Component {
         }
         let resultbox = null;
         let extraattribs = null;
+        let featureReportTemplate = null;
+        if(ConfigUtils.getConfigProp("featureReportService")) {
+            featureReportTemplate = result.featurereport || this.findFeatureReportTemplate(layer);
+        }
+        let inlineExtaAttribs = false;
         if(result.type === "text") {
             resultbox = (
                 <pre className="identify-result-box">
@@ -272,23 +277,15 @@ class IdentifyViewer extends React.Component {
         } else if(result.properties.htmlContent) {
             if(result.properties.htmlContentInline) {
                 resultbox = (
-                    <div className="identify-result-box inline-html-content" dangerouslySetInnerHTML={{__html: result.properties.htmlContent}}></div>
+                    <div className="identify-result-box" dangerouslySetInnerHTML={{__html: result.properties.htmlContent}}></div>
                 );
             } else {
                 resultbox = (
                     <iframe className="identify-result-box" onLoad={ev => this.setIframeContent(ev.target, result.properties.htmlContent)}></iframe>
                 );
             }
-            if(this.props.attributeCalculator) {
-                extraattribs = (
-                    <div className="identify-result-box">
-                        <table className="attribute-list"><tbody>
-                            {this.props.attributeCalculator(layer, result)}
-                        </tbody></table>
-                    </div>
-                );
-            }
         } else {
+            inlineExtaAttribs = true;
             let properties = Object.keys(result.properties) || [];
             let rows = [];
             if(properties.length === 1 && result.properties["maptip"]) {
@@ -313,6 +310,14 @@ class IdentifyViewer extends React.Component {
             if(this.props.attributeCalculator) {
                 rows = rows.concat(this.props.attributeCalculator(layer, result));
             }
+            if(featureReportTemplate) {
+                rows = rows.concat(
+                    <tr>
+                        <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i><Message msgId="identify.featureReport" /></i></td>
+                        <td className={"identify-attr-value " + this.props.longAttributesDisplay}><a href={this.getFeatureReportUrl(featureReportTemplate, result)}><Message msgId="identify.link" /></a></td>
+                    </tr>
+                );
+            }
             if(isEmpty(rows)) {
                 rows = (
                     <tr><td className="identify-attr-value"><i><Message msgId="identify.noattributes" /></i></td></tr>
@@ -326,9 +331,20 @@ class IdentifyViewer extends React.Component {
                 </div>
             );
         }
-        let featureReportTemplate = null;
-        if(ConfigUtils.getConfigProp("featureReportService")) {
-            featureReportTemplate = result.featurereport || this.findFeatureReportTemplate(layer);
+        if(!inlineExtaAttribs && (this.props.attributeCalculator || featureReportTemplate)) {
+            extraattribs = (
+                <div className="identify-result-box">
+                    <table className="attribute-list"><tbody>
+                        {this.props.attributeCalculator ? this.props.attributeCalculator(layer, result) : null}
+                        {featureReportTemplate ? (
+                            <tr>
+                                <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i><Message msgId="identify.featureReport" /></i></td>
+                                <td className={"identify-attr-value " + this.props.longAttributesDisplay}><a href={this.getFeatureReportUrl(featureReportTemplate, result)}><Message msgId="identify.link" /></a></td>
+                            </tr>
+                        ) : null}
+                    </tbody></table>
+                </div>
+            );
         }
         return (
             <div className={resultClass}>
@@ -336,11 +352,10 @@ class IdentifyViewer extends React.Component {
                     <span>{this.layerTitle(layer, result) + ": " + this.resultDisplayName(layer, result)}</span>
                     <Icon icon="info-sign" onClick={() => this.showLayerInfo(layer, result)} />
                 </div>
-                {resultbox}
-                {extraattribs}
-                {featureReportTemplate ? (<div className="identify-result-feature-report-frame">
-                    <a target="_blank" href={this.getFeatureReportUrl(featureReportTemplate, result)} ><Message msgId="identify.featureReport" /></a>
-                </div>) : null}
+                <div className="identify-result-container">
+                    {resultbox}
+                    {extraattribs}
+                </div>
             </div>
         );
     }

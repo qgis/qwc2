@@ -122,6 +122,10 @@ div.identify-body .identify-result-title > span.icon:hover {
     color: @item_active@;
 }
 
+div.identify-result-container {
+    padding: 0.25em;
+}
+
 div.identify-body .identify-result-box {
     border: 0;
     background-color: white;
@@ -132,10 +136,6 @@ div.identify-body .identify-result-box {
     min-height: 0;
     margin: 0;
     overflow: auto;
-}
-
-div.identify-body div.inline-html-content {
-    padding: 0.25em;
 }
 
 div.identify-body table.attribute-list {
