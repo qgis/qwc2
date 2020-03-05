@@ -21,6 +21,14 @@ function setCurrentTask(task, mode=null, mapClickAction=null) {
         if(getState().task && getState().task.blocked === true) {
             return;
         }
+        // Attempt to read mapClickAction from plugin configuration block if not set
+        if(!mapClickAction) {
+            try {
+                let device = getState().browser && getState().browser.mobile ? 'mobile' : 'desktop';
+                mapClickAction = getState().localConfig.plugins[device].find(config => config.name === task).mapClickAction;
+            } catch(e) {
+            }
+        }
         dispatch(setIdentifyEnabled(task === null || mapClickAction === 'identify'));
         dispatch({
             type: SET_CURRENT_TASK,
