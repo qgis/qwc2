@@ -58,7 +58,7 @@
     white-space: nowrap;
 }
 
-#ThemeSwitcher div.theme-item-title > span:last-child {
+#ThemeSwitcher div.theme-item-title > span.icon {
     flex: 0 0 auto;
     padding: 0.125em;
     font-size: large;
