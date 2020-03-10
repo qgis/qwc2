@@ -18,6 +18,7 @@ const LocaleUtils = require("../utils/LocaleUtils");
 const {LayerRole, addLayer} = require("../actions/layers");
 const {setCurrentTheme} = require("../actions/theme");
 const {setCurrentTask} = require("../actions/task");
+const {setActiveLayerInfo} = require("../actions/layerinfo");
 const Icon = require('../components/Icon');
 const {SideBar} = require('../components/SideBar');
 const ThemeUtils = require('../utils/ThemeUtils');
@@ -34,6 +35,7 @@ class ThemeSwitcher extends React.Component {
         width: PropTypes.string,
         addLayer: PropTypes.func,
         showLayerAfterChangeTheme: PropTypes.bool,
+        setActiveLayerInfo: PropTypes.func,
         collapsibleGroups: PropTypes.bool
     }
     static contextTypes = {
@@ -133,6 +135,7 @@ class ThemeSwitcher extends React.Component {
         );
     }
     setTheme = (theme) => {
+        this.props.setActiveLayerInfo(null, null);
         if(this.props.showLayerAfterChangeTheme) {
             this.props.setCurrentTask('LayerTree');
         }
@@ -176,7 +179,8 @@ module.exports = {
     ThemeSwitcherPlugin: connect(selector, {
         changeTheme: setCurrentTheme,
         setCurrentTask: setCurrentTask,
-        addLayer: addLayer
+        addLayer: addLayer,
+        setActiveLayerInfo: setActiveLayerInfo
     })(ThemeSwitcher),
     reducers: {
         theme: require('../reducers/theme'),
