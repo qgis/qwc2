@@ -118,7 +118,7 @@ const ThemeUtils = {
         let matches = [];
         (themeGroup.subdirs || []).map(subdir => matches.push(...ThemeUtils.searchThemeGroup(subdir, filter)));
         matches.push(...(themeGroup.items || []).filter(item => {
-            return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords).match(filter);
+            return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords).match(filter) || removeDiacritics(item.abstract).match(filter);
         }));
         return matches;
     }

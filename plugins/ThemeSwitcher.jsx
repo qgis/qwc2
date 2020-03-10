@@ -91,8 +91,7 @@ class ThemeSwitcher extends React.Component {
             <ul className="theme-group-body">
                 {(group && group.items ? group.items : []).map(item => {
                     let infoLinks = (item.themeInfoLinks || []).map(name => this.props.themes.themeInfoLinks.find(entry => entry.name === name)).filter(entry => entry);
-
-                    return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords).match(filter) ? (
+                    return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords).match(filter) || removeDiacritics(item.abstract).match(filter) ? (
                         <li key={item.id}
                             className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
                             onClick={ev => this.setTheme(item)}

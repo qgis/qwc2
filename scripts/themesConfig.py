@@ -330,6 +330,7 @@ def getTheme(config, configItem, result, resultItem):
             "Title": configItem["attribution"] if "attribution" in configItem else "",
             "OnlineResource": configItem["attributionUrl"] if "attributionUrl" in configItem else ""
         }
+        resultItem["abstract"] = getChildElementValue(capabilities, "Service/Abstract")
         resultItem["keywords"] = ", ".join(keywords)
         if "format" in configItem:
             resultItem["format"] = configItem["format"]

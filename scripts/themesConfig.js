@@ -342,6 +342,8 @@ function getTheme(config, configItem, result, resultItem, proxy) {
                 Title: configItem.attribution || "",
                 OnlineResource: configItem.attributionUrl || ""
             };
+            // abstract
+            resultItem.abstract = capabilities.Service.Abstract || "";
             resultItem.keywords = keywords.join(', ');
             resultItem.format = configItem.format;
             resultItem.availableFormats = capabilities.Capability.Request.GetMap.Format;
