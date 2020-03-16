@@ -96,7 +96,8 @@
       "importlayer": "Fólia importálása",
       "maptip": "Show layer map tips",
       "printlegend": "Print legend",
-      "deletealllayers": ""
+      "deletealllayers": "",
+      "visiblefilter": ""
     },
     "locate": {
       "metersUnit": "méter",

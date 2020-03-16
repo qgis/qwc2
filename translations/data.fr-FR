@@ -96,7 +96,8 @@
       "importlayer": "Importer un calque",
       "maptip": "Afficher les infobulles",
       "printlegend": "Afficher la légende",
-      "deletealllayers": ""
+      "deletealllayers": "",
+      "visiblefilter": ""
     },
     "locate": {
       "metersUnit": "mètre",

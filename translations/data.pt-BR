@@ -96,7 +96,8 @@
       "importlayer": "Importar camada",
       "maptip": "Mostrar dicas de mapas de camadas",
       "printlegend": "Imprimir legenda",
-      "deletealllayers": ""
+      "deletealllayers": "",
+      "visiblefilter": ""
     },
     "locate": {
       "metersUnit": "metros",

@@ -84,6 +84,7 @@
     "layertree.maptip",
     "layertree.printlegend",
     "layertree.deletealllayers",
+    "layertree.visiblefilter",
     "locate.metersUnit",
     "locate.feetUnit",
     "locate.popup",

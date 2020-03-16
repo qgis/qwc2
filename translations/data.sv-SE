@@ -96,7 +96,8 @@
       "importlayer": "Importera lager",
       "maptip": "Visa karttips för lager",
       "printlegend": "Skriv ut teckenförklaring",
-      "deletealllayers": "Ta bort alla lager"
+      "deletealllayers": "Ta bort alla lager",
+      "visiblefilter": ""
     },
     "locate": {
       "metersUnit": "meter",

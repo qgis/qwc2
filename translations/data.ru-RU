@@ -96,7 +96,8 @@
       "importlayer": "Импортировать слой",
       "maptip": "Показывать подписи",
       "printlegend": "Распечатать легенду",
-      "deletealllayers": ""
+      "deletealllayers": "",
+      "visiblefilter": ""
     },
     "locate": {
       "metersUnit": "метров",

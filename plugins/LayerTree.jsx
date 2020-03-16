@@ -59,6 +59,7 @@ class LayerTree extends React.Component {
         setActiveLayerInfo: PropTypes.func,
         width: PropTypes.string,
         enableLegendPrint: PropTypes.bool,
+        enableVisibleFilter: PropTypes.bool,
         infoInSettings: PropTypes.bool,
         showToggleAllLayersCheckbox: PropTypes.bool
     }
@@ -77,6 +78,7 @@ class LayerTree extends React.Component {
         flattenGroups: false,
         width: "20em",
         enableLegendPrint: true,
+        enableVisibleFilter: true,
         infoInSettings: true,
         showToggleAllLayersCheckbox: true
     }
@@ -84,7 +86,8 @@ class LayerTree extends React.Component {
         activemenu: null,
         legendTooltip: null,
         sidebarwidth: null,
-        importvisible: false
+        importvisible: false,
+        filtervisiblelayers: false
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -133,6 +136,9 @@ class LayerTree extends React.Component {
             return this.renderSubLayers(layer, group, path, enabled, false);
         }
         let subtreevisibility = this.getGroupVisibility(group);
+        if(subtreevisibility === 0 && this.state.filtervisiblelayers) {
+            return null;
+        }
         let visibility = true;
         let checkboxstate;
         if(this.props.groupTogglesSublayers) {
@@ -160,7 +166,7 @@ class LayerTree extends React.Component {
         });
         let editframe = null;
         let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
-        let allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
+        let allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filtervisiblelayers;
         let sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true;
         if(this.state.activemenu === group.uuid && allowReordering) {
             editframe = (
@@ -190,6 +196,9 @@ class LayerTree extends React.Component {
         );
     }
     renderLayer = (layer, sublayer, path, enabled=true, inMutuallyExclusiveGroup=false, skipExpanderPlaceholder=false) => {
+        if(this.state.filtervisiblelayers && !sublayer.visibility) {
+            return null;
+        }
         let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         let checkboxstate = sublayer.visibility === true ? 'checked' : 'unchecked';
         if(inMutuallyExclusiveGroup) {
@@ -210,7 +219,7 @@ class LayerTree extends React.Component {
         }
         if(this.state.activemenu === sublayer.uuid) {
             let reorderButtons = null;
-            if(ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true) {
+            if(ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filtervisiblelayers) {
                 reorderButtons = [
                     (<Icon key="layertree-item-move-down" className="layertree-item-move" icon="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
                     (<Icon key="layertree-item-move-up" className="layertree-item-move" icon="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
@@ -298,8 +307,9 @@ class LayerTree extends React.Component {
                 </div>
             );
         }
+        let allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filtervisiblelayers;
         let compareCheckbox = null;
-        if(this.props.allowCompare && ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme)) {
+        if(this.props.allowCompare && allowReordering) {
             let swipecheckboxstate = this.props.swipe || this.props.swipe === 0 ? 'checked' : 'unchecked';
             compareCheckbox = (
                 <div className="layertree-option">
@@ -316,7 +326,6 @@ class LayerTree extends React.Component {
                 </div>
             );
         }
-        let allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
         let sortable = allowReordering && (ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true || this.props.flattenGroups === true);
         return (
             <div role="body" className="layertree-container-wrapper">
@@ -358,16 +367,26 @@ class LayerTree extends React.Component {
             let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
             legendPrintIcon = (<Icon title={printLegendTooltip} className="layertree-print-legend" icon="print" onClick={this.printLegend}/>);
         }
+        let visibleFilterIcon = null;
+        if(this.props.enableVisibleFilter) {
+            let visibleFilterTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.visiblefilter");
+            let classes = classnames({
+                "layertree-visible-filter": true,
+                "layertree-visible-filter-active": this.state.filtervisiblelayers
+            });
+            visibleFilterIcon = (<Icon title={visibleFilterTooltip} className={classes} icon="eye" onClick={ev => this.setState({filtervisiblelayers: !this.state.filtervisiblelayers})}/>);
+        }
         let deleteAllLayersIcon = null;
         if(ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true) {
             let deleteAllLayersTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.deletealllayers");
             deleteAllLayersIcon = (<Icon title={deleteAllLayersTooltip} className="layertree-delete-legend" icon="trash" onClick={this.deleteAllLayers}/>);
         }
         let extraTitlebarContent = null;
-        if(legendPrintIcon || deleteAllLayersIcon) {
+        if(legendPrintIcon || deleteAllLayersIcon || visibleFilterIcon) {
             extraTitlebarContent = (
                 <span>
                     {legendPrintIcon}
+                    {visibleFilterIcon}
                     {deleteAllLayersIcon}
                 </span>
             );

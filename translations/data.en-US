@@ -96,7 +96,8 @@
       "importlayer": "Import layer",
       "maptip": "Show layer map tips",
       "printlegend": "Print legend",
-      "deletealllayers": "Remove all layers"
+      "deletealllayers": "Remove all layers",
+      "visiblefilter": "Filter invisible layers"
     },
     "locate": {
       "metersUnit": "meters",

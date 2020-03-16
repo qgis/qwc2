@@ -8,6 +8,7 @@
 }
 
 #LayerTree span.layertree-print-legend,
+#LayerTree span.layertree-visible-filter,
 #LayerTree span.layertree-delete-legend {
     margin-left: 1em;
     border: 1px solid transparent;
@@ -15,8 +16,14 @@
 }
 
 #LayerTree span.layertree-print-legend:hover,
+#LayerTree span.layertree-visible-filter:hover,
 #LayerTree span.layertree-delete-legend:hover {
     border: 1px solid white;
+}
+
+#LayerTree span.layertree-visible-filter-active {
+    background-color: white;
+    color: @titlebar_bg@;
 }
 
 /* https://github.com/philipwalton/flexbugs/issues/216 */

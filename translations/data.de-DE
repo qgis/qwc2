@@ -96,7 +96,8 @@
       "importlayer": "Ebene importieren",
       "maptip": "Kartentipps anzeigen",
       "printlegend": "Legende drucken",
-      "deletealllayers": "Alle Ebenen entfernen"
+      "deletealllayers": "Alle Ebenen entfernen",
+      "visiblefilter": "Unsichtbare Ebenen filtern"
     },
     "locate": {
       "metersUnit": "Meter",
