@@ -11,6 +11,7 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
 const axios = require('axios');
+const isEmpty = require('lodash.isempty');
 const ConfigUtils = require("../utils/ConfigUtils");
 const IdentifyUtils = require('../utils/IdentifyUtils');
 const ThemeUtils = require('../utils/ThemeUtils');
@@ -28,7 +29,7 @@ class MapTip extends React.Component {
         removeLayer: PropTypes.func,
     }
     state = {
-        maptip: null,
+        maptips: [],
         pos: null
     }
     componentDidMount() {
@@ -59,10 +60,10 @@ class MapTip extends React.Component {
     clearMaptip = () => {
         clearTimeout(this.timeoutId);
         this.timeoutId = null;
-        if(this.state.maptip) {
+        if(!isEmpty(this.state.maptips)) {
             this.props.removeLayer('maptipselection');
         }
-        this.setState({maptip: null, pos: null});
+        this.setState({maptips: [], pos: null});
     }
     queryMapTip = (x, y) => {
         this.timeoutId = null;
@@ -88,7 +89,7 @@ class MapTip extends React.Component {
         let request = IdentifyUtils.buildRequest(layer, queryLayers, this.props.mousepos.coordinate, this.props.map, options);
 
         axios.get(request.url, {params: request.params}).then(response => {
-            let mapTip = null;
+            let mapTips = [];
             let result = IdentifyUtils.parseXmlResponse({data: response.data, request}, this.props.map.projection);
             for(let layerName of request.params.layers.split(",")) {
                 if(result[layerName]) {
@@ -99,16 +100,15 @@ class MapTip extends React.Component {
                             role: LayerRole.SELECTION
                         };
                         this.props.addLayerFeatures(layer, [feature], true);
-                        mapTip = feature.properties.maptip;
-                        break;
+                        mapTips.push(feature.properties.maptip);
                     }
                 }
             }
-            this.setState({maptip: mapTip, pos: [x, y]});
+            this.setState({maptips: mapTips, pos: [x, y]});
         });
     }
     render() {
-        if(this.state.maptip && this.state.pos) {
+        if(!isEmpty(this.state.maptips) && this.state.pos) {
             // Render off-screen first to measure dimensions, then place as necessary
             let position = {
                 left: 10000 + "px",
@@ -132,8 +132,10 @@ class MapTip extends React.Component {
                         }
                     }}
                     id="MapTip"
-                    style={position}
-                    dangerouslySetInnerHTML={{__html: this.state.maptip}}>
+                    style={position}>
+                    {this.state.maptips.map((maptip, idx) => (
+                        <div key={"tip" + idx} dangerouslySetInnerHTML={{__html: maptip}}></div>
+                    ))}
                 </div>
             )
         }
