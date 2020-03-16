@@ -47,7 +47,7 @@ function startSearch(text, options, providers, startup=false) {
             startup: startup
         });
         Object.keys(providers).map(provider => {
-            providers[provider].onSearch(text, reqId, options, dispatch);
+            providers[provider].onSearch(text, reqId, options, dispatch, getState());
         });
     }
 }
