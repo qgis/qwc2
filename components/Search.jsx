@@ -391,7 +391,7 @@ class Search extends React.Component {
             // find max zoom level greater than min scale
             let maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.searchOptions.minScale);
 
-            if(resultType === SearchResultType.THEMELAYER && item.layer) {
+            if(item.layer) {
                 const maxbbox = (layer, bounds) => {
                     if(layer.sublayers) {
                         for(sublayer in layer.sublayers) {
@@ -448,6 +448,10 @@ class Search extends React.Component {
             this.props.setCurrentSearchResult(item);
         } else if(resultType === SearchResultType.THEMELAYER) {
             this.props.addThemeSublayer(item.layer);
+            // Show layer tree to notify user that something has happened
+            this.props.setCurrentTask('LayerTree');
+        } else if(resultType === SearchResultType.EXTERNALLAYER) {
+            this.props.addLayer(item.layer);
             // Show layer tree to notify user that something has happened
             this.props.setCurrentTask('LayerTree');
         } else if(resultType === SearchResultType.THEME) {

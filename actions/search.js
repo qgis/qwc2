@@ -18,7 +18,8 @@ const SEARCH_SET_CURRENT_RESULT = 'SEARCH_SET_CURRENT_RESULT';
 const SearchResultType = {
     PLACE: 0,
     THEMELAYER: 1,
-    THEME: 2
+    THEME: 2,
+    EXTERNALLAYER: 3
 };
 
 function clearSearch() {
