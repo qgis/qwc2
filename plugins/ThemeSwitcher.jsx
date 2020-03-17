@@ -123,6 +123,7 @@ class ThemeSwitcher extends React.Component {
                                 </div>
                             ) : null}
                             <img src={assetsPath + "/" + item.thumbnail} />
+                            {ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.activeTheme) ===  true ? (<Icon icon="plus" title={addTitle} onClick={ev => this.addThemeLayers(ev, item)} />) : null}
                             {isEmpty(matches) ? null : (
                                 <div className="theme-item-filterinfo-overlay">
                                     {matches.map(match => (
@@ -130,7 +131,6 @@ class ThemeSwitcher extends React.Component {
                                     ))}
                                 </div>
                             )}
-                            {ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.activeTheme) ===  true ? (<Icon icon="plus" title={addTitle} onClick={ev => this.addThemeLayers(ev, item)} />) : null}
                         </li>) : null;
                 })}
                 {subtree}
@@ -158,14 +158,14 @@ class ThemeSwitcher extends React.Component {
         let cleanText = removeDiacritics(text);
         let cleanFilter = removeDiacritics(this.state.filter);
         let padding = Math.round((20 - cleanFilter.length)/2);
+        // Add unused right padding to left
+        padding += -Math.min(cleanText.length - (match.index + cleanFilter.length) - padding, 0);
         let leftStart = Math.max(match.index - padding, 0);
         let leftLen = Math.min(match.index, padding);
-        let rightStart = Math.min(match.index + cleanFilter.length)
-        let rightLen = Math.min(padding, cleanText.length - rightStart);
         return [
-            (leftStart > 0 ? "..." : "") + cleanText.substr(leftStart, leftLen),
+            (leftStart > 0 ? "\u2026" : "") + cleanText.substr(leftStart, leftLen),
             cleanText.substr(match.index, cleanFilter.length),
-            cleanText.substr(rightStart, rightLen) + (rightLen >= padding ? "..." : "")
+            cleanText.substr(match.index + cleanFilter.length)
         ];
     }
     setTheme = (theme) => {
