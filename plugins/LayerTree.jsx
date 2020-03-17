@@ -275,16 +275,16 @@ class LayerTree extends React.Component {
         if(layer.role === LayerRole.BACKGROUND || layer.layertreehidden) {
             return null;
         } else if(!Array.isArray(layer.sublayers)) {
-            return this.renderLayer(layer, layer, []);
+            return this.renderLayer(layer, layer, [], layer.visibility);
         } else if(this.props.showRootEntry) {
-            return this.renderLayerGroup(layer, layer, [], true);
+            return this.renderLayerGroup(layer, layer, [], layer.visibility);
         } else {
             return layer.sublayers.map((sublayer, idx) => {
                 let subpath = [idx];
                 if(sublayer.sublayers) {
-                    return this.renderLayerGroup(layer, sublayer, subpath, true)
+                    return this.renderLayerGroup(layer, sublayer, subpath, layer.visibility)
                 } else {
-                    return this.renderLayer(layer, sublayer, subpath, true, false, true);
+                    return this.renderLayer(layer, sublayer, subpath, layer.visibility, false, true);
                 }
             });
         }
