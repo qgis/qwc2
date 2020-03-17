@@ -201,7 +201,12 @@
     },
     "themeswitcher": {
       "filter": "Фильтр...",
-      "addtotheme": ""
+      "addtotheme": "",
+      "match": {
+        "title": "",
+        "keywords": "",
+        "abstract": ""
+      }
     }
   }
 }

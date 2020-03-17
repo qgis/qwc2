@@ -201,7 +201,12 @@
     },
     "themeswitcher": {
       "filter": "Filtr...",
-      "addtotheme": "Přidat k aktuálnímu tématu"
+      "addtotheme": "Přidat k aktuálnímu tématu",
+      "match": {
+        "title": "",
+        "keywords": "",
+        "abstract": ""
+      }
     }
   }
 }

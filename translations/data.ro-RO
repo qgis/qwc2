@@ -201,7 +201,12 @@
     },
     "themeswitcher": {
       "filter": "Filtrare",
-      "addtotheme": "Adaugă la temă"
+      "addtotheme": "Adaugă la temă",
+      "match": {
+        "title": "",
+        "keywords": "",
+        "abstract": ""
+      }
     }
   }
 }

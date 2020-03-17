@@ -68,9 +68,8 @@ class ThemeSwitcher extends React.Component {
         }
         return false;
     }
-    renderThemeGroup = (group, level=[]) => {
+    renderThemeGroup = (group, filter, level=[]) => {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
-        let filter = new RegExp(removeDiacritics(this.state.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
         let subdirs = (group && group.subdirs ? group.subdirs : []);
         if(filter !== "") {
             subdirs = subdirs.filter(subdir => this.groupMatchesFilter(subdir, filter));
@@ -83,7 +82,7 @@ class ThemeSwitcher extends React.Component {
                     <span onClick={ev => this.setState({expandedGroup: expanded ? sublevel.slice(0, -1) : sublevel})}>
                         {this.props.collapsibleGroups ? (<Icon icon={expanded ? "collapse" : "expand"} />) : null} {subdir.title}
                     </span>
-                    {expanded ? this.renderThemeGroup(subdir, sublevel) : null}
+                    {expanded ? this.renderThemeGroup(subdir, filter, sublevel) : null}
                 </li>
             );
         });
@@ -93,7 +92,20 @@ class ThemeSwitcher extends React.Component {
             <ul className="theme-group-body">
                 {(group && group.items ? group.items : []).map(item => {
                     let infoLinks = (item.themeInfoLinks || []).map(name => this.props.themes.themeInfoLinks.find(entry => entry.name === name)).filter(entry => entry);
-                    return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords).match(filter) || removeDiacritics(item.abstract).match(filter) ? (
+                    let matches = [];
+                    if(filter) {
+                        let match = null;
+                        if(match = removeDiacritics(item.title).match(filter)) {
+                            matches.push(["themeswitcher.match.title", this.extractSubstr(match, item.title), item.title]);
+                        }
+                        if(match = removeDiacritics(item.keywords).match(filter)) {
+                            matches.push(["themeswitcher.match.keywords", this.extractSubstr(match, item.keywords), item.keywords]);
+                        }
+                        if(match = removeDiacritics(item.abstract).match(filter)) {
+                            matches.push(["themeswitcher.match.abstract", this.extractSubstr(match, item.abstract), item.abstract]);
+                        }
+                    }
+                    return (!filter || !isEmpty(matches)) ? (
                         <li key={item.id}
                             className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
                             onClick={ev => this.setTheme(item)}
@@ -111,6 +123,13 @@ class ThemeSwitcher extends React.Component {
                                 </div>
                             ) : null}
                             <img src={assetsPath + "/" + item.thumbnail} />
+                            {isEmpty(matches) ? null : (
+                                <div className="theme-item-filterinfo-overlay">
+                                    {matches.map(match => (
+                                        <div key={match[0]} title={match[2]}><i><Message msgId={match[0]} />:</i><br />{match[1][0]}<b>{match[1][1]}</b>{match[1][2]}</div>
+                                    ))}
+                                </div>
+                            )}
                             {ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.activeTheme) ===  true ? (<Icon icon="plus" title={addTitle} onClick={ev => this.addThemeLayers(ev, item)} />) : null}
                         </li>) : null;
                 })}
@@ -125,14 +144,29 @@ class ThemeSwitcher extends React.Component {
                 onChange={ev => this.setState({filter: ev.target.value})}
                 placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
         );
+        let filter = this.state.filter ? new RegExp(removeDiacritics(this.state.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i") : null;
         return (
             <SideBar id="ThemeSwitcher" minWidth="16em" width={this.props.width} title="appmenu.items.ThemeSwitcher"
                 icon="themes" extraTitlebarContent={extraTitlebarContent}>
                 {() => ({
-                    body: this.renderThemeGroup(this.props.themes)
+                    body: this.renderThemeGroup(this.props.themes, filter)
                 })}
             </SideBar>
         );
+    }
+    extractSubstr = (match, text) => {
+        let cleanText = removeDiacritics(text);
+        let cleanFilter = removeDiacritics(this.state.filter);
+        let padding = Math.round((20 - cleanFilter.length)/2);
+        let leftStart = Math.max(match.index - padding, 0);
+        let leftLen = Math.min(match.index, padding);
+        let rightStart = Math.min(match.index + cleanFilter.length)
+        let rightLen = Math.min(padding, cleanText.length - rightStart);
+        return [
+            (leftStart > 0 ? "..." : "") + cleanText.substr(leftStart, leftLen),
+            cleanText.substr(match.index, cleanFilter.length),
+            cleanText.substr(rightStart, rightLen) + (rightLen >= padding ? "..." : "")
+        ];
     }
     setTheme = (theme) => {
         this.props.setActiveLayerInfo(null, null);

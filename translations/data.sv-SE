@@ -201,7 +201,12 @@
     },
     "themeswitcher": {
       "filter": "Filtrera...",
-      "addtotheme": "Lägg till aktuellt tema"
+      "addtotheme": "Lägg till aktuellt tema",
+      "match": {
+        "title": "",
+        "keywords": "",
+        "abstract": ""
+      }
     }
   }
 }

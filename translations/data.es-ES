@@ -201,7 +201,12 @@
     },
     "themeswitcher": {
       "filter": "Filtrar...",
-      "addtotheme": "Agregar al actual tema"
+      "addtotheme": "Agregar al actual tema",
+      "match": {
+        "title": "",
+        "keywords": "",
+        "abstract": ""
+      }
     }
   }
 }

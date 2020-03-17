@@ -162,6 +162,9 @@
     "tooltip.zoomout",
     "tooltip.background",
     "themeswitcher.filter",
-    "themeswitcher.addtotheme"
+    "themeswitcher.addtotheme",
+    "themeswitcher.match.title",
+    "themeswitcher.match.keywords",
+    "themeswitcher.match.abstract"
   ]
 }

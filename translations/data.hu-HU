@@ -201,7 +201,12 @@
     },
     "themeswitcher": {
       "filter": "Szűrés...",
-      "addtotheme": ""
+      "addtotheme": "",
+      "match": {
+        "title": "",
+        "keywords": "",
+        "abstract": ""
+      }
     }
   }
 }

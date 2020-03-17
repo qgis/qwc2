@@ -125,3 +125,20 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+#ThemeSwitcher div.theme-item-filterinfo-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    font-size: 90%;
+    background-color: rgba(255, 255, 255, 0.85);
+    color: black;
+    font-weight: normal;
+    text-align: left;
+    padding: 0.25em;
+}
+
+#ThemeSwitcher div.theme-item-filterinfo-overlay > div:not(:last-child) {
+    padding-bottom: 0.25em;
+}
