@@ -43,7 +43,7 @@
       "delete": "Șterge",
       "discard": "Renunță",
       "draw": "Desenează",
-      "feature": "",
+      "feature": "Entitate",
       "fields": "Câmpuri",
       "layer": "Strat",
       "noeditablelayers": "Tema nu conține straturi ce se pot modifica",
@@ -76,10 +76,10 @@
       "addlayer": "Adaugă strat",
       "connect": "Conectare",
       "filter": "Filtrare",
-      "localfile": "",
+      "localfile": "Fișierul local",
       "nofeatures": "Nu s-a putut importa nicio entitate",
       "noresults": "Fără rezultat sau URL invalid",
-      "url": "",
+      "url": "URL",
       "urlplaceholder": "Introdu URL către WMS, WFS, KML, GeoJSON..."
     },
     "layerinfo": {
@@ -96,8 +96,8 @@
       "importlayer": "Import strat",
       "maptip": "Arată indicii hartă",
       "printlegend": "Tipărește legenda",
-      "deletealllayers": "",
-      "visiblefilter": ""
+      "deletealllayers": "Elimină toate straturile",
+      "visiblefilter": "Filtrează straturile invizibile"
     },
     "locate": {
       "metersUnit": "metri",
@@ -135,8 +135,8 @@
       "rotation": "Rotație:",
       "scale": "Scară:",
       "submit": "Tipărește",
-      "output": "",
-      "wait": ""
+      "output": "Rezultat tipărire",
+      "wait": "Așteaptă te rog.."
     },
     "rasterexport": {
       "format": "Format:",
@@ -146,16 +146,16 @@
     "redlining": {
       "add": "Adaugă",
       "border": "Margine",
-      "buffer": "",
-      "bufferlayername": "",
-      "bufferdistance": "",
-      "bufferlayer": "",
-      "buffercompute": "",
-      "bufferselectfeature": "",
-      "delete": "",
-      "draw": "",
-      "edit": "",
-      "fill": "Umplere",
+      "buffer": "Zonă tampon",
+      "bufferlayername": "Zonă tampon",
+      "bufferdistance": "Distanța",
+      "bufferlayer": "Destinația",
+      "buffercompute": "Calcul",
+      "bufferselectfeature": "Selectați o entitate pentru zonarea tampon",
+      "delete": "Elimină",
+      "draw": "Desenează",
+      "edit": "Modifică",
+      "fill": "Interior",
       "label": "Text",
       "layer": "Strat",
       "line": "Linie",
@@ -173,19 +173,19 @@
       "searchall": "Caută în toate",
       "all": "Toate",
       "themes": "Hărți tematice",
-      "invisiblelayer": "",
-      "enablelayer": ""
+      "invisiblelayer": "Rezultatul este într-un strat invizibil",
+      "enablelayer": "Activare strat"
     },
     "searchbox": {
-      "coordinates": "",
-      "filter": "",
-      "layers": "",
-      "more": "",
-      "morelayers": "",
-      "nodescription": "",
-      "placeholder": "",
-      "places": "",
-      "recent": ""
+      "coordinates": "Coordonate",
+      "filter": "Filtrare căutare",
+      "layers": "Hărți",
+      "more": "mai multe rezultate",
+      "morelayers": "mai multe rezultate disponibile",
+      "nodescription": "Nicio descriere disponibilă",
+      "placeholder": "Caută locație sau adaugă hartă",
+      "places": "Locații",
+      "recent": "Căutări recente"
     },
     "share": {
       "directLinkTitle": "Via link direct",
