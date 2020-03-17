@@ -27,6 +27,7 @@ const {SideBar} = require('../components/SideBar');
 const Spinner = require('../components/Spinner');
 const LayerUtils = require('../utils/LayerUtils');
 const ThemeUtils = require('../utils/ThemeUtils');
+const MapUtils = require('../utils/MapUtils');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
 require('./style/LayerTree.css');
 
@@ -35,6 +36,7 @@ class LayerTree extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
         mapCrs: PropTypes.string,
+        mapScale: PropTypes.number,
         swipe: PropTypes.number,
         mobile: PropTypes.bool,
         fallbackDrag: PropTypes.bool,
@@ -207,10 +209,11 @@ class LayerTree extends React.Component {
         let cogclasses = classnames({
             "layertree-item-cog": true,
             "layertree-item-cog-active": this.state.activemenu === sublayer.uuid
-        })
+        });
         let itemclasses = {
             "layertree-item": true,
-            "layertree-item-disabled": (!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !sublayer.visibility)
+            "layertree-item-disabled": (!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !sublayer.visibility),
+            "layertree-item-outsidescalerange": (sublayer.minScale !== undefined && this.props.mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && this.props.mapScale > sublayer.maxScale)
         };
         let editframe = null;
         let infoButton = null;
@@ -643,6 +646,7 @@ const selector = (state) => ({
     fallbackDrag: state.browser.ie || (state.browser.platform === 'Win32' && state.browser.chrome),
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
     mapCrs: state.map.projection,
+    mapScale: MapUtils.computeForZoom(state.map.scales, state.map.zoom),
     swipe: state.layers && state.layers.swipe || undefined,
     theme: state.theme.current || {},
     mapTipsEnabled: state.map && state.map.maptips

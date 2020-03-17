@@ -85,8 +85,12 @@
     height: 1.75em;
 }
 
-#LayerTree div.layertree-item-disabled {
-    color: gray;
+#LayerTree div.layertree-item-disabled > span.layertree-item-title {
+    color: #999999;
+}
+
+#LayerTree div.layertree-item-outsidescalerange > span.layertree-item-title {
+    font-style: italic;
 }
 
 #LayerTree span.layertree-item-expander {
