@@ -71,7 +71,7 @@ class ThemeSwitcher extends React.Component {
     renderThemeGroup = (group, filter, level=[]) => {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let subdirs = (group && group.subdirs ? group.subdirs : []);
-        if(filter !== "") {
+        if(filter) {
             subdirs = subdirs.filter(subdir => this.groupMatchesFilter(subdir, filter));
         }
         let subtree = subdirs.map((subdir, idx) => {
