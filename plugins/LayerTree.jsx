@@ -621,7 +621,9 @@ class LayerTree extends React.Component {
         for(let layer of this.props.layers) {
             if(layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
                 let newlayer = assign({}, layer, {visibility: visibile});
-                this.propagateOptions(newlayer, {visibility: visibile});
+                if(this.props.groupTogglesSublayers) {
+                    this.propagateOptions(newlayer, {visibility: visibile});
+                }
                 this.props.changeLayerProperties(layer.uuid, newlayer);
             }
         }
