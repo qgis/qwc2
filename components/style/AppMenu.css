@@ -1,21 +1,23 @@
-#AppMenu {
+div.AppMenu {
     text-align: right;
     cursor: default;
     transition: background-color 0.25s;
     outline: none;
     overflow: hidden;
+    display: flex;
+    align-items: center;
 }
 
-#AppMenu.appmenu-visible {
+div.AppMenu.appmenu-visible {
     background-color: @appmenu_active_bg2@;
     overflow: visible;
 }
 
-#AppMenu.appmenu-blocked {
+div.AppMenu.appmenu-blocked {
     cursor: not-allowed;
 }
 
-#AppMenu ul.appmenu-menu {
+div.AppMenu ul.appmenu-menu {
     transform-origin: top;
     transform: scaleY(0);
     text-align: left;
@@ -30,11 +32,11 @@
     max-width: 100vw;
 }
 
-#AppMenu.appmenu-visible ul.appmenu-menu {
+div.AppMenu.appmenu-visible ul.appmenu-menu {
     transform: scaleY(1);
 }
 
-#AppMenu ul.appmenu-menu li {
+div.AppMenu ul.appmenu-menu li {
     color: @appmenu_fg1@;
     list-style-type: none;
     margin: 0;
@@ -42,56 +44,56 @@
     font-weight: bold;
 }
 
-#AppMenu ul.appmenu-menu li:not(:last-child) {
+div.AppMenu ul.appmenu-menu li:not(:last-child) {
     border-bottom: 1px solid @appmenu_fg1@;
 }
 
-#AppMenu ul.appmenu-menu>li:hover,
-#AppMenu ul.appmenu-menu>li.expanded {
+div.AppMenu ul.appmenu-menu>li:hover,
+div.AppMenu ul.appmenu-menu>li.expanded {
     background-color: @appmenu_active_bg1@;
     color: @appmenu_active_fg1@;
 }
 
-#AppMenu ul.appmenu-menu li .icon {
+div.AppMenu ul.appmenu-menu li .icon {
     vertical-align: middle;
     width: 2em;
     margin: 0.5em 1em 0.5em 1em;
 }
 
-#AppMenu ul.appmenu-menu li ul {
+div.AppMenu ul.appmenu-menu li ul {
     background-color: @appmenu_bg2@;
     padding: 0;
     display: none;
 }
 
-#AppMenu ul.appmenu-menu li ul li {
+div.AppMenu ul.appmenu-menu li ul li {
     color: @appmenu_fg2@;
 }
 
-#AppMenu ul.appmenu-menu li.expanded ul {
+div.AppMenu ul.appmenu-menu li.expanded ul {
     display: block;
 }
 
-#AppMenu ul.appmenu-menu ul li:hover,
-#AppMenu ul.appmenu-menu ul li.expanded {
+div.AppMenu ul.appmenu-menu ul li:hover,
+div.AppMenu ul.appmenu-menu ul li.expanded {
     background-color: @appmenu_active_bg2@;
     color: @appmenu_active_fg2@;
 }
 
-#AppMenu ul.appmenu-menu li.appmenu-leaf {
+div.AppMenu ul.appmenu-menu li.appmenu-leaf {
     display: flex;
     align-items: center;
 }
 
-#AppMenu ul.appmenu-menu li.appmenu-leaf > span.icon {
+div.AppMenu ul.appmenu-menu li.appmenu-leaf > span.icon {
     flex: 0 0 auto;
 }
 
-#AppMenu ul.appmenu-menu li.appmenu-leaf > span.appmenu-leaf-label {
+div.AppMenu ul.appmenu-menu li.appmenu-leaf > span.appmenu-leaf-label {
     flex: 1 1 auto;
 }
 
-#AppMenu ul.appmenu-menu li.appmenu-leaf div.appmenu-leaf-comment {
+div.AppMenu ul.appmenu-menu li.appmenu-leaf div.appmenu-leaf-comment {
     font-weight: normal;
     font-size: 90%;
 }

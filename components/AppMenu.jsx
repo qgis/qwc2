@@ -113,7 +113,7 @@ class AppMenu extends React.Component {
     }
     render() {
         return(
-            <div id="AppMenu" className={this.props.currentTaskBlocked ? "appmenu-blocked" : this.state.menuVisible ? "appmenu-visible" : ""}
+            <div className={"AppMenu " + (this.props.currentTaskBlocked ? "appmenu-blocked" : this.state.menuVisible ? "appmenu-visible" : "")}
                 ref={el => this.menuEl = el} onClick={ev => {}}
                 onTouchStart={ev => ev.stopPropagation()} onTouchMove={ev => ev.stopPropagation()}  onTouchEnd={ev => ev.stopPropagation()}
                 >
