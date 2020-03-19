@@ -181,7 +181,6 @@ class ThemeList extends React.Component {
 
 const selector = (state) => ({
     themes: state.theme && state.theme.themes || {},
-    activeTheme: state.theme ? state.theme.current : null,
     layers: state.layers && state.layers.flat ? state.layers.flat : [],
     mapConfig: state.map ? state.map : undefined
 });
