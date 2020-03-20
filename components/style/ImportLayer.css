@@ -16,13 +16,7 @@
     outline: none;
 }
 
-#ImportLayer div.importlayer-input-fields > input {
-    border: 1px solid @item_border@;
-    padding: 0.25em;
-    margin: 0;
-}
-
-#ImportLayer div.importlayer-input-fields > input,
+#ImportLayer div.importlayer-input-fields > div.EditableSelect,
 #ImportLayer div.importlayer-input-fields > div {
     flex: 1 1 auto;
     height: 2em;

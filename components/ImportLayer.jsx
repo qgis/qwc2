@@ -15,6 +15,7 @@ const assign = require('object-assign');
 const removeDiacritics = require('diacritics').remove;
 const Spinner = require('./Spinner');
 const Message = require('../components/I18N/Message');
+const EditableSelect = require('../components/widgets/EditableSelect');
 const LocaleUtils = require('../utils/LocaleUtils');
 const ProxyUtils = require('../utils/ProxyUtils');
 const {LayerRole,addLayer,addLayerFeatures} = require('../actions/layers');
@@ -49,16 +50,11 @@ class ImportLayer extends React.Component {
         if(this.state.type === "Local") {
             return (<FileSelector file={this.state.file} accept=".kml,.json,.geojson" onFileSelected={this.onFileSelected} />);
         } else {
-            return [(
-                <input key="input" readOnly={this.state.pendingRequests > 0} type="text"
-                    placeholder={placeholder} value={this.state.url} list="import-layer-url-datalist"
-                    onChange={ev => this.setState({url: ev.target.value.trim()})}
-                    onKeyPress={ev => { if(!ev.target.readOnly && ev.key === 'Enter') { this.scanService(); }}}/>
-            ), (
-                <datalist key="datalist" id="import-layer-url-datalist">
-                    {(urlPresets || []).map((url,i) => (<option key={"u" + i} value={url}>{url}</option>))}
-                </datalist>
-            )];
+            return (
+                <EditableSelect
+                    readOnly={this.state.pendingRequests > 0} placeholder={placeholder} options={urlPresets}
+                    onChange={value => this.setState({url: value})} onSubmit={this.scanService} />
+            );
         }
     }
     renderServiceLayerListEntry(entry, filter, path, level = 0, idx) {
@@ -88,7 +84,7 @@ class ImportLayer extends React.Component {
         let button = null;
         if(this.state.type === "URL") {
             button = (
-                <button disabled={!this.state.url || this.state.pendingRequests > 0} className="button importlayer-addbutton" onClick={this.scanService}>
+                <button disabled={!this.state.url || this.state.pendingRequests > 0} className="button importlayer-addbutton" onClick={() => this.scanService()}>
                     {this.state.pendingRequests > 0 ? (<Spinner />) : null}
                     <Message msgId="importlayer.connect" />
                 </button>
@@ -147,11 +143,11 @@ class ImportLayer extends React.Component {
     onFileSelected = (file) => {
         this.setState({file});
     }
-    scanService = () => {
-        if(!this.state.url) {
+    scanService = (url) => {
+        url = url || this.state.url;
+        if(!url) {
             return;
         }
-        let url = this.state.url;
         if(!url.match(/^[^:]+:\/\/.*$/)) {
             url = location.protocol + "//" + url;
         }
