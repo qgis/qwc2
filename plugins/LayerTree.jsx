@@ -78,7 +78,7 @@ class LayerTree extends React.Component {
         layerInfoWindowSize: {width: 320, height: 480},
         bboxDependentLegend: false,
         flattenGroups: false,
-        width: "20em",
+        width: "25em",
         enableLegendPrint: true,
         enableVisibleFilter: true,
         infoInSettings: true,

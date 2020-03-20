@@ -10,7 +10,7 @@
 #LayerTree span.layertree-print-legend,
 #LayerTree span.layertree-visible-filter,
 #LayerTree span.layertree-delete-legend {
-    margin-left: 1em;
+    margin-left: 0.5em;
     border: 1px solid transparent;
     padding: 0.25em;
 }
