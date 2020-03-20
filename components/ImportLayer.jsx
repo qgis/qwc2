@@ -191,13 +191,11 @@ class ImportLayer extends React.Component {
         }
         let pendingRequests = 0;
         this.setState({pendingRequests: pendingRequests, serviceLayers: null, filter: ""});
-        // Attempt to load as KML or GeoJSON
-        if(url.toLowerCase().endsWith(".kml") || url.toLowerCase().endsWith(".json") || url.toLowerCase().endsWith(".geojson")) {
+        // Attempt to load catalog
+        if(url.toLowerCase().endsWith(".json")) {
             this.setState({pendingRequests: ++pendingRequests});
             let type;
-            if(url.toLowerCase().endsWith(".kml")) {
-                type = "kml";
-            } else if(url.toLowerCase().endsWith(".json") || url.toLowerCase().endsWith(".geojson")) {
+            if(url.toLowerCase().endsWith(".json")) {
                 type = "json";
             }
             axios.get(ProxyUtils.addProxyIfNeeded(url)).then(response => {
@@ -207,15 +205,6 @@ class ImportLayer extends React.Component {
                         pendingRequests: this.state.pendingRequests - 1,
                         serviceLayers: response.data.catalog
                     });
-                } else {
-                    // Load as kml/geojson
-                    let basename = url.split('/').pop()
-                    this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: [{
-                        type: type,
-                        name: basename,
-                        title: basename,
-                        data: response.data
-                    }]});
                 }
             }).catch(err => {
                 this.setState({pendingRequests: this.state.pendingRequests - 1});
@@ -232,10 +221,7 @@ class ImportLayer extends React.Component {
                 serviceLayers: (this.state.serviceLayers || []).concat(result)
             });
         }).catch(err => {
-            this.setState({
-                pendingRequests: this.state.pendingRequests - 1,
-                serviceLayers: (this.state.serviceLayers || [])
-            });
+            this.setState({pendingRequests: this.state.pendingRequests - 1});
         });
         // Attempt to load as WFS
         let wfsParams = "?service=WFS&request=GetCapabilities"
@@ -247,10 +233,7 @@ class ImportLayer extends React.Component {
                 serviceLayers: (this.state.serviceLayers || []).concat(result)
             });
         }).catch(err => {
-            this.setState({
-                pendingRequests: this.state.pendingRequests - 1,
-                serviceLayers: (this.state.serviceLayers || [])
-            });
+            this.setState({pendingRequests: this.state.pendingRequests - 1});
         });
     }
     importFileLayer = () => {

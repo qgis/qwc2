@@ -80,7 +80,7 @@
       "nofeatures": "Nenhum elemento pôde ser importado.",
       "noresults": "",
       "url": "",
-      "urlplaceholder": "Informe URL para WMS, WFS, KML, GeoJSON..."
+      "urlplaceholder": "Informe URL para WMS, WFS..."
     },
     "layerinfo": {
       "title": "Infomações da camada",

@@ -80,7 +80,7 @@
       "nofeatures": "Nem sikerült az importálás.",
       "noresults": "",
       "url": "",
-      "urlplaceholder": "URL a WMS, WFS, KML, GeoJSON adatokhoz..."
+      "urlplaceholder": "URL a WMS, WFS adatokhoz..."
     },
     "layerinfo": {
       "title": "Fólia információ",

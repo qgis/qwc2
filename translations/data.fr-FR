@@ -80,7 +80,7 @@
       "nofeatures": "Aucune entité ne peut être importée.",
       "noresults": "Pas de résultat ou URL non valide",
       "url": "",
-      "urlplaceholder": "Entrer l'URL d'un WMS, WFS, KML, GeoJSON..."
+      "urlplaceholder": "Entrer l'URL d'un WMS, WFS..."
     },
     "layerinfo": {
       "title": "Informations dur la couche",

@@ -80,7 +80,7 @@
       "nofeatures": "Elementy nie mogły zostać zaimportowane",
       "noresults": "Brak wyników lub błędny adres URL",
       "url": "URL",
-      "urlplaceholder": "Podaj URL do WMS, WFS, KML, GeoJSON..."
+      "urlplaceholder": "Podaj URL do WMS, WFS..."
     },
     "layerinfo": {
       "title": "Informacja o warstwie",
