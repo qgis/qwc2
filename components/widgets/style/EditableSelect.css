@@ -1,0 +1,55 @@
+div.EditableSelect {
+    border: 1px solid @item_border@;
+    position: relative;
+}
+
+div.editable-select-inputcontainer {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+div.editable-select-inputcontainer > input {
+    flex: 1 1 auto;
+    border: 0;
+    padding: 0 0.25em;
+    height: 100%;
+}
+
+div.editable-select-inputcontainer > span.icon {
+    flex: 0 0 auto;
+    margin: 0 0.25em;
+}
+
+div.editable-select-dropdown {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    border: 1px solid @item_border@;
+    max-height: 8em;
+    overflow-y: auto;
+    background-color: white;
+}
+
+div.editable-select-dropdown > div {
+    padding: 0.25em;
+}
+
+div.editable-select-dropdown > div:hover {
+    background-color: @item_border@;
+    color: white;
+}
+
+div.editable-select-selopt {
+    position: absolute;
+    display: inline-block;
+    left: 0;
+    right: 1em;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    padding: 0 0.25em;
+}
