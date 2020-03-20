@@ -38,7 +38,7 @@ const ServiceLayerUtils = {
         }
         return result;
     },
-    getWMSLayers(capabilitiesXml) {
+    getWMSLayers(capabilitiesXml, asGroup=false) {
         let wmsFormat = new ol.format.WMSCapabilities();
         let capabilities = wmsFormat.read(capabilitiesXml);
         let infoFormats = null;
@@ -62,7 +62,7 @@ const ServiceLayerUtils = {
             featureInfoUrl = serviceUrl;
         }
         let version = capabilities.version;
-        if(!topLayer.Layer) {
+        if(!topLayer.Layer || asGroup) {
             return [this.getWMSLayerParams(topLayer, topLayer.CRS, serviceUrl, version, featureInfoUrl, infoFormats)];
         } else {
             let entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, serviceUrl, version, featureInfoUrl, infoFormats));

@@ -192,15 +192,44 @@ class ImportLayer extends React.Component {
         let pendingRequests = 0;
         this.setState({pendingRequests: pendingRequests, serviceLayers: null, filter: ""});
         // Attempt to load catalog
-        if(url.toLowerCase().endsWith(".json")) {
+        if(url.toLowerCase().endsWith(".json") || url.toLowerCase().endsWith(".xml")) {
             this.setState({pendingRequests: ++pendingRequests});
             let type;
             if(url.toLowerCase().endsWith(".json")) {
                 type = "json";
+            } else if(url.toLowerCase().endsWith(".xml")) {
+                type = "xml";
             }
             axios.get(ProxyUtils.addProxyIfNeeded(url)).then(response => {
-                // Load as catalog
-                if(response.data.catalog) {
+                if(type === "xml") {
+                    pendingRequests = this.state.pendingRequests - 1;
+                    this.setState({pendingRequests: pendingRequests});
+
+                    // Load from QGIS WMS/WFS connections
+                    let parser = new DOMParser();
+                    let doc = parser.parseFromString(response.data, "text/xml");
+                    for(let service of ["wms", "wfs"]) {
+                        let connections = doc.getElementsByTagName("qgs" + service.toUpperCase() + "Connections");
+                        if(!connections.length) {
+                            continue;
+                        }
+                        for(let conn of [].slice.call(connections[0].getElementsByTagName(service))) {
+                            let url = conn.attributes.url.value;
+                            url += (url.includes("?") ? "&" : "?") + "service=" + service.toUpperCase() + "&request=GetCapabilities";
+                            this.setState({pendingRequests: ++pendingRequests});
+                            axios.get(ProxyUtils.addProxyIfNeeded(url)).then(response => {
+                                let result = service === "wms" ? ServiceLayerUtils.getWMSLayers(response.data, true) : ServiceLayerUtils.getWFSLayers(response.data);
+                                this.setState({
+                                    pendingRequests: this.state.pendingRequests - 1,
+                                    serviceLayers: (this.state.serviceLayers || []).concat(result)
+                                });
+                            }).catch(err => {
+                                this.setState({pendingRequests: this.state.pendingRequests - 1});
+                            });
+                        }
+                    }
+                } else if(type === "json" && response.data.catalog) {
+                    // Load as JSON catalog
                     this.setState({
                         pendingRequests: this.state.pendingRequests - 1,
                         serviceLayers: response.data.catalog
