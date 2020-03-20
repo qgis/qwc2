@@ -20,6 +20,7 @@ const ProxyUtils = require('../utils/ProxyUtils');
 const {LayerRole,addLayer,addLayerFeatures} = require('../actions/layers');
 const FileSelector = require('./widgets/FileSelector');
 const ConfigUtils = require('../utils/ConfigUtils');
+const LayerUtils = require('../utils/LayerUtils');
 const ServiceLayerUtils = require('../utils/ServiceLayerUtils');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
 const Icon = require('./Icon');
@@ -66,12 +67,14 @@ class ImportLayer extends React.Component {
         if(sublayers.filter(item => item).length == 0 && filter && !removeDiacritics(entry.title).match(filter)) {
             return null;
         }
+        let type = entry.resource ? entry.resource.slice(0, 3) : entry.type;
+        let key = (entry.resource || (entry.type + ":" + entry.name)) + ":" + idx;
         return (
-            <div key={entry.type + ":" + entry.name + ":" + idx} style={{paddingLeft: level + 'em'}}>
+            <div key={key} style={{paddingLeft: level + 'em'}}>
                 <div className="importlayer-list-entry">
                     {hasSublayers ? (<Icon onClick={ev => this.toggleLayerListEntry(path)} icon={entry.expanded ? 'tree_minus' : 'tree_plus'} />) : null}
                     <span onClick={ev => this.addServiceLayer(entry)}>
-                        <span className="importlayer-list-entry-service">{entry.type}</span>
+                        <span className="importlayer-list-entry-service">{type}</span>
                         {entry.title}
                     </span>
                 </div>
@@ -164,13 +167,22 @@ class ImportLayer extends React.Component {
                 type = "json";
             }
             axios.get(ProxyUtils.addProxyIfNeeded(url)).then(response => {
-                let basename = url.split('/').pop()
-                this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: [{
-                    type: type,
-                    name: basename,
-                    title: basename,
-                    data: response.data
-                }]});
+                // Load as catalog
+                if(response.data.catalog) {
+                    this.setState({
+                        pendingRequests: this.state.pendingRequests - 1,
+                        serviceLayers: response.data.catalog
+                    });
+                } else {
+                    // Load as kml/geojson
+                    let basename = url.split('/').pop()
+                    this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: [{
+                        type: type,
+                        name: basename,
+                        title: basename,
+                        data: response.data
+                    }]});
+                }
             }).catch(err => {
                 this.setState({pendingRequests: this.state.pendingRequests - 1});
             });
@@ -245,7 +257,17 @@ class ImportLayer extends React.Component {
         }
     }
     addServiceLayer = (entry) => {
-        if(entry.type === "wms" || entry.type === "wfs") {
+        if(entry.resource) {
+            let params = LayerUtils.splitLayerUrlParam(entry.resource);
+            ServiceLayerUtils.findLayers(params.type, params.url, [params], (source, layer) => {
+                if(layer) {
+                    this.props.addLayer(assign({
+                        id: entry.name + Date.now().toString(),
+                        role: LayerRole.USERLAYER
+                    }, layer, {sublayers: null}));
+                }
+            });
+        } else if(entry.type === "wms" || entry.type === "wfs") {
             this.props.addLayer(assign({
                 id: entry.name + Date.now().toString(),
                 role: LayerRole.USERLAYER
