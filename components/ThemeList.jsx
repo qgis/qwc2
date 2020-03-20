@@ -36,7 +36,8 @@ class ThemeList extends React.Component {
         allowAddingOtherThemes: PropTypes.bool,
         showLayerAfterChangeTheme: PropTypes.bool,
         collapsibleGroups: PropTypes.bool,
-        filter: PropTypes.string
+        filter: PropTypes.string,
+        dontPreserveLayersOnSwitch: PropTypes.bool
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -165,7 +166,7 @@ class ThemeList extends React.Component {
         else {
             this.props.setCurrentTask(null);
         }
-        this.props.changeTheme(theme, this.props.themes);
+        this.props.changeTheme(theme, this.props.themes, !this.props.dontPreserveLayersOnSwitch);
     }
     toggleThemeInfoMenu = (ev, themeId) => {
         ev.stopPropagation();
