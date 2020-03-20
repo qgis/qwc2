@@ -117,7 +117,7 @@ class AppInitComponent extends React.Component {
                 }
 
                 // Clear all params
-                UrlParams.updateParams({k: undefined, t: undefined, l: undefined, bl: '', c: undefined, s: undefined, e: undefined, crs: undefined, st: undefined, sp: undefined});
+                UrlParams.clear();
 
                 // Restore theme and layers
                 try {

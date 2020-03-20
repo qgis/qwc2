@@ -37,6 +37,9 @@ const UrlParams = {
    },
    getParams: function() {
        return url.parse(window.location.href, true).query;
+   },
+   clear: function() {
+       this.updateParams({k: undefined, t: undefined, l: undefined, bl: undefined, c: undefined, s: undefined, e: undefined, crs: undefined, st: undefined, sp: undefined});
    }
 };
 
