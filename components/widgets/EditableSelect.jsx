@@ -39,7 +39,7 @@ class EditableSelect extends React.Component {
                         onChange={this.valueChanged}
                         onKeyPress={this.onKeyPress}
                         onClick={() => this.setState({focused: true})}
-                        onBlur={this.onBlur} />
+                        onBlur={() => this.setState({focused: false})} />
                     <Icon icon="clear" onClick={this.clear} />
                 </div>
                 {this.state.selectedOption !== null ? this.renderSelectedOption() : null}
@@ -77,10 +77,11 @@ class EditableSelect extends React.Component {
     }
     valueChanged = (ev) => {
         this.setState({textValue: ev.target.value, selectedOption: null});
+        this.props.onChange(ev.target.value.trim());
     }
     optionSelected = (option) => {
         this.setState({textValue: "", selectedOption: option, focused: false});
-        this.props.onChange(this.optionValue(option));
+        this.props.onChange(this.optionValue(option.value));
     }
     clear = () => {
         this.setState({textValue: "", selectedOption: null, focused: false});
@@ -88,14 +89,8 @@ class EditableSelect extends React.Component {
     }
     onKeyPress = (ev) => {
         if(!ev.target.readOnly && ev.key === 'Enter') {
-            let value = this.state.selectedOption ? this.optionValue(this.state.selectedOption) : this.state.textValue.trim();
-            this.props.onSubmit(value);
-            this.props.onChange(value);
+            this.props.onSubmit();
         }
-    }
-    onBlur = (ev) => {
-        this.setState({focused: false});
-        this.props.onChange(this.state.selectedOption ? this.optionValue(this.state.selectedOption) : this.state.textValue.trim());
     }
     killEvent = (ev) => {
         ev.stopPropagation();

@@ -84,7 +84,7 @@ class ImportLayer extends React.Component {
         let button = null;
         if(this.state.type === "URL") {
             button = (
-                <button disabled={!this.state.url || this.state.pendingRequests > 0} className="button importlayer-addbutton" onClick={() => this.scanService()}>
+                <button disabled={!this.state.url || this.state.pendingRequests > 0} className="button importlayer-addbutton" onClick={this.scanService}>
                     {this.state.pendingRequests > 0 ? (<Spinner />) : null}
                     <Message msgId="importlayer.connect" />
                 </button>
@@ -143,8 +143,8 @@ class ImportLayer extends React.Component {
     onFileSelected = (file) => {
         this.setState({file});
     }
-    scanService = (url) => {
-        url = url || this.state.url;
+    scanService = () => {
+        let url = this.state.url;
         if(!url) {
             return;
         }
