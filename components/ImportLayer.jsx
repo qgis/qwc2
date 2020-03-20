@@ -27,6 +27,88 @@ const VectorLayerUtils = require('../utils/VectorLayerUtils');
 const Icon = require('./Icon');
 require('./style/ImportLayer.css');
 
+
+class ImportLayerList extends React.PureComponent {
+    static propTypes = {
+        serviceLayers: PropTypes.array,
+        filter: PropTypes.string,
+        pendingRequests: PropTypes.bool
+    }
+    state = {
+        serviceLayers: []
+    }
+    componentWillReceiveProps(newProps) {
+        this.setState({serviceLayers: newProps.serviceLayers || []});
+    }
+    renderServiceLayerListEntry(entry, filter, path, level = 0, idx) {
+        let hasSublayers = !isEmpty(entry.sublayers);
+        let sublayers = hasSublayers ? entry.sublayers.map((sublayer,idx) => this.renderServiceLayerListEntry(sublayer, filter, [...path, idx], level + 1, idx)) : [];
+        if(sublayers.filter(item => item).length == 0 && filter && !removeDiacritics(entry.title).match(filter)) {
+            return null;
+        }
+        let type = entry.resource ? entry.resource.slice(0, 3) : entry.type;
+        let key = (entry.resource || (entry.type + ":" + entry.name)) + ":" + idx;
+        return (
+            <div key={key} style={{paddingLeft: level + 'em'}}>
+                <div className="importlayer-list-entry">
+                    {hasSublayers ? (<Icon onClick={ev => this.toggleLayerListEntry(path)} icon={entry.expanded ? 'tree_minus' : 'tree_plus'} />) : null}
+                    <span onClick={ev => this.addServiceLayer(entry)}>
+                        <span className="importlayer-list-entry-service">{type}</span>
+                        {entry.title}
+                    </span>
+                </div>
+                <div style={{display: entry.expanded ? 'block' : 'none'}}>
+                {sublayers}
+                </div>
+            </div>
+        );
+    }
+    toggleLayerListEntry = (path) => {
+        let newServiceLayers = [...this.state.serviceLayers];
+        newServiceLayers[path[0]] = assign({}, newServiceLayers[path[0]]);
+        let cur = newServiceLayers[path[0]];
+        for(let idx of path.slice(1)) {
+            cur.sublayers[idx] = assign({}, cur.sublayers[idx]);
+            cur = cur.sublayers[idx];
+        }
+        cur.expanded = !cur.expanded;
+        this.setState({serviceLayers: newServiceLayers});
+    }
+    render() {
+        let filter = new RegExp(removeDiacritics(this.props.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
+        let emptyEntry = null;
+        if(isEmpty(this.state.serviceLayers) && !this.props.pendingRequests) {
+            emptyEntry = (
+                    <div className="layertree-item-noresults"><Message msgId="importlayer.noresults" /></div>
+            );
+        }
+        return (
+            <div className="importlayer-list">
+                {this.state.serviceLayers.map((entry, idx) => this.renderServiceLayerListEntry(entry, filter, [idx], 0, idx))}
+                {emptyEntry}
+            </div>
+        );
+    }
+    addServiceLayer = (entry) => {
+        if(entry.resource) {
+            let params = LayerUtils.splitLayerUrlParam(entry.resource);
+            ServiceLayerUtils.findLayers(params.type, params.url, [params], (source, layer) => {
+                if(layer) {
+                    this.props.addLayer(assign({
+                        id: entry.name + Date.now().toString(),
+                        role: LayerRole.USERLAYER
+                    }, layer, {sublayers: null}));
+                }
+            });
+        } else if(entry.type === "wms" || entry.type === "wfs") {
+            this.props.addLayer(assign({
+                id: entry.name + Date.now().toString(),
+                role: LayerRole.USERLAYER
+            }, entry, {sublayers: null}));
+        }
+    }
+}
+
 class ImportLayer extends React.Component {
     static propTypes = {
         theme: PropTypes.object,
@@ -57,29 +139,6 @@ class ImportLayer extends React.Component {
             );
         }
     }
-    renderServiceLayerListEntry(entry, filter, path, level = 0, idx) {
-        let hasSublayers = !isEmpty(entry.sublayers);
-        let sublayers = hasSublayers ? entry.sublayers.map((sublayer,idx) => this.renderServiceLayerListEntry(sublayer, filter, [...path, idx], level + 1, idx)) : [];
-        if(sublayers.filter(item => item).length == 0 && filter && !removeDiacritics(entry.title).match(filter)) {
-            return null;
-        }
-        let type = entry.resource ? entry.resource.slice(0, 3) : entry.type;
-        let key = (entry.resource || (entry.type + ":" + entry.name)) + ":" + idx;
-        return (
-            <div key={key} style={{paddingLeft: level + 'em'}}>
-                <div className="importlayer-list-entry">
-                    {hasSublayers ? (<Icon onClick={ev => this.toggleLayerListEntry(path)} icon={entry.expanded ? 'tree_minus' : 'tree_plus'} />) : null}
-                    <span onClick={ev => this.addServiceLayer(entry)}>
-                        <span className="importlayer-list-entry-service">{type}</span>
-                        {entry.title}
-                    </span>
-                </div>
-                <div style={{display: entry.expanded ? 'block' : 'none'}}>
-                {sublayers}
-                </div>
-            </div>
-        );
-    }
     render() {
         let button = null;
         if(this.state.type === "URL") {
@@ -99,19 +158,9 @@ class ImportLayer extends React.Component {
         let layerList = null;
         if(this.state.serviceLayers != null) {
             let filterplaceholder = LocaleUtils.getMessageById(this.context.messages, "importlayer.filter");
-            let filter = new RegExp(removeDiacritics(this.state.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
-            let emptyEntry = null;
-            if(isEmpty(this.state.serviceLayers) && this.state.pendingRequests == 0) {
-                emptyEntry = (
-                        <div className="layertree-item-noresults"><Message msgId="importlayer.noresults" /></div>
-                );
-            }
             layerList = [
                 (<input key="importlayer-list-filter" className="importlayer-list-filter" type="text" value={this.state.filter} placeholder={filterplaceholder} onChange={ev => this.setState({filter: ev.target.value})}/>),
-                (<div key="importlayer-list" className="importlayer-list">
-                    {this.state.serviceLayers.map((entry, idx) => this.renderServiceLayerListEntry(entry, filter, [idx], 0, idx))}
-                    {emptyEntry}
-                </div>)
+                (<ImportLayerList key="importlayer-list" serviceLayers={this.state.serviceLayers} filter={this.state.filter}/>)
             ];
         }
         let disableLocal = ConfigUtils.getConfigProp("disableImportingLocalLayers", this.props.theme);
@@ -128,17 +177,6 @@ class ImportLayer extends React.Component {
                 {layerList}
             </div>
         );
-    }
-    toggleLayerListEntry = (path) => {
-        let newServiceLayers = [...this.state.serviceLayers];
-        newServiceLayers[path[0]] = assign({}, newServiceLayers[path[0]]);
-        let cur = newServiceLayers[path[0]];
-        for(let idx of path.slice(1)) {
-            cur.sublayers[idx] = assign({}, cur.sublayers[idx]);
-            cur = cur.sublayers[idx];
-        }
-        cur.expanded = !cur.expanded;
-        this.setState({serviceLayers: newServiceLayers});
     }
     onFileSelected = (file) => {
         this.setState({file});
@@ -250,28 +288,6 @@ class ImportLayer extends React.Component {
             }, features, true);
         } else {
             alert(LocaleUtils.getMessageById(this.context.messages, "importlayer.nofeatures"));
-        }
-    }
-    addServiceLayer = (entry) => {
-        if(entry.resource) {
-            let params = LayerUtils.splitLayerUrlParam(entry.resource);
-            ServiceLayerUtils.findLayers(params.type, params.url, [params], (source, layer) => {
-                if(layer) {
-                    this.props.addLayer(assign({
-                        id: entry.name + Date.now().toString(),
-                        role: LayerRole.USERLAYER
-                    }, layer, {sublayers: null}));
-                }
-            });
-        } else if(entry.type === "wms" || entry.type === "wfs") {
-            this.props.addLayer(assign({
-                id: entry.name + Date.now().toString(),
-                role: LayerRole.USERLAYER
-            }, entry, {sublayers: null}));
-        } else if(entry.type === "kml") {
-            this.addKMLLayer(entry.name, entry.data);
-        } else if(entry.type === "json") {
-            this.addGeoJSONLayer(entry.name, entry.data);
         }
     }
 };
