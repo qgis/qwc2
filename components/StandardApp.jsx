@@ -82,9 +82,11 @@ class AppInitComponent extends React.Component {
 
             // Resolve permalink and restore settings
             resolvePermaLink(this.props.initialParams, (params, state) => {
-                let themeId = params.t || themes.defaultTheme;
-                let theme = ThemeUtils.getThemeById(themes, themeId);
+                let theme = ThemeUtils.getThemeById(themes,  params.t);
                 if(!theme) {
+                    if(ConfigUtils.getConfigProp("dontLoadDefaultTheme")) {
+                        return;
+                    }
                     theme = ThemeUtils.getThemeById(themes, themes.defaultTheme);
                     params = {};
                 }
