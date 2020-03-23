@@ -9,6 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
+const removeDiacritics = require('diacritics').remove;
 const {SideBar} = require('../components/SideBar');
 const ThemeList = require('../components/ThemeList');
 const ConfigUtils = require("../utils/ConfigUtils");
