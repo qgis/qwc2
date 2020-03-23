@@ -32,7 +32,8 @@ class ImportLayerList extends React.PureComponent {
     static propTypes = {
         serviceLayers: PropTypes.array,
         filter: PropTypes.string,
-        pendingRequests: PropTypes.number
+        pendingRequests: PropTypes.number,
+        addLayer: PropTypes.func
     }
     state = {
         serviceLayers: []
@@ -164,7 +165,7 @@ class ImportLayer extends React.Component {
             let filterplaceholder = LocaleUtils.getMessageById(this.context.messages, "importlayer.filter");
             layerList = [
                 (<input key="importlayer-list-filter" className="importlayer-list-filter" type="text" value={this.state.filter} placeholder={filterplaceholder} onChange={ev => this.setState({filter: ev.target.value})}/>),
-                (<ImportLayerList key="importlayer-list" serviceLayers={this.state.serviceLayers} filter={this.state.filter} pendingRequests={this.state.pendingRequests} />)
+                (<ImportLayerList key="importlayer-list" serviceLayers={this.state.serviceLayers} filter={this.state.filter} pendingRequests={this.state.pendingRequests} addLayer={this.props.addLayer} />)
             ];
         }
         let disableLocal = ConfigUtils.getConfigProp("disableImportingLocalLayers", this.props.theme);
