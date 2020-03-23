@@ -79,6 +79,7 @@
       "localfile": "",
       "nofeatures": "Nenhum elemento pôde ser importado.",
       "noresults": "",
+      "loading": "",
       "url": "",
       "urlplaceholder": "Informe URL para WMS, WFS..."
     },

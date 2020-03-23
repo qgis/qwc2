@@ -79,6 +79,7 @@
       "localfile": "Lokale Datei",
       "nofeatures": "Keine Objekte konnten importiert werden",
       "noresults": "Keine Resultate oder ungültige URL",
+      "loading": "Laden...",
       "url": "URL",
       "urlplaceholder": "WMS, WFS, KML oder GeoJSON URL eingeben..."
     },

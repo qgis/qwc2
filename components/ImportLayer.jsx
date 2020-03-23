@@ -81,6 +81,10 @@ class ImportLayerList extends React.PureComponent {
             emptyEntry = (
                     <div className="layertree-item-noresults"><Message msgId="importlayer.noresults" /></div>
             );
+        } else if(isEmpty(this.state.serviceLayers)) {
+            emptyEntry = (
+                    <div className="layertree-item-noresults"><Message msgId="importlayer.loading" /></div>
+            );
         }
         return (
             <div className="importlayer-list">

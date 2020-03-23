@@ -79,6 +79,7 @@
       "localfile": "Fișierul local",
       "nofeatures": "Nu s-a putut importa nicio entitate",
       "noresults": "Fără rezultat sau URL invalid",
+      "loading": "",
       "url": "URL",
       "urlplaceholder": "Introdu URL către WMS, WFS..."
     },

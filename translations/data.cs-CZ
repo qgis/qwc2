@@ -79,6 +79,7 @@
       "localfile": "",
       "nofeatures": "Žádné prvku nebyly importovány.",
       "noresults": "Bez výsledku nebo nevalidní URL",
+      "loading": "",
       "url": "",
       "urlplaceholder": "Vložit URL pro WMS, WFS..."
     },

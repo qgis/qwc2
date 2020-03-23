@@ -79,6 +79,7 @@
       "localfile": "",
       "nofeatures": "Нет объектов, доступных для импорта",
       "noresults": "",
+      "loading": "",
       "url": "",
       "urlplaceholder": "Введите URL для WMS, WFS..."
     },

@@ -70,6 +70,7 @@
     "importlayer.localfile",
     "importlayer.nofeatures",
     "importlayer.noresults",
+    "importlayer.loading",
     "importlayer.url",
     "importlayer.urlplaceholder",
     "layerinfo.title",

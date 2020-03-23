@@ -79,6 +79,7 @@
       "localfile": "",
       "nofeatures": "No se pudieron importar elementos.",
       "noresults": "Sin resultados o la dirección URL no es válida",
+      "loading": "",
       "url": "",
       "urlplaceholder": "Ingrese dirección URL o WMS, WFS..."
     },

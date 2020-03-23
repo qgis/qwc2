@@ -79,6 +79,7 @@
       "localfile": "Lokal fil",
       "nofeatures": "Inga objekt kunde importeras",
       "noresults": "Inget svar eller ogiltig URL",
+      "loading": "",
       "url": "URL",
       "urlplaceholder": "Skriv in URL till WMS, WFS, KML GeoJSON..."
     },

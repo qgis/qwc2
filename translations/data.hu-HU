@@ -79,6 +79,7 @@
       "localfile": "",
       "nofeatures": "Nem sikerült az importálás.",
       "noresults": "",
+      "loading": "",
       "url": "",
       "urlplaceholder": "URL a WMS, WFS adatokhoz..."
     },
