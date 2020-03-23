@@ -10,6 +10,7 @@ const ConfigUtils = require("../utils/ConfigUtils");
 
 const SET_LAYER_LOADING = 'SET_LAYER_LOADING';
 const ADD_LAYER = 'ADD_LAYER';
+const ADD_LAYER_SEPARATOR = 'ADD_LAYER_SEPARATOR';
 const REMOVE_LAYER = 'REMOVE_LAYER';
 const REORDER_LAYER = 'REORDER_LAYER';
 const ADD_LAYER_FEATURE = 'ADD_LAYER_FEATURE';
@@ -39,6 +40,15 @@ function addLayer(layer, pos=null) {
         type: ADD_LAYER,
         layer,
         pos
+    };
+}
+
+function addLayerSeparator(title, afterLayerId, afterSublayerPath) {
+    return {
+        type: ADD_LAYER_SEPARATOR,
+        title: title,
+        afterLayerId: afterLayerId,
+        afterSublayerPath: afterSublayerPath
     };
 }
 
@@ -165,6 +175,7 @@ module.exports = {
     LayerRole,
     setLayerLoading,
     addLayer,
+    addLayerSeparator,
     removeLayer,
     reorderLayer,
     addLayerFeatures,
@@ -180,6 +191,7 @@ module.exports = {
     setLayers,
     SET_LAYER_LOADING,
     ADD_LAYER,
+    ADD_LAYER_SEPARATOR,
     REMOVE_LAYER,
     REORDER_LAYER,
     ADD_LAYER_FEATURES,

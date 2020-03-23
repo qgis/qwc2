@@ -98,7 +98,8 @@
       "maptip": "Pokaż wskazówki dla warstwy",
       "printlegend": "Drukuj legendę",
       "deletealllayers": "Usuń wszystkie warstwy",
-      "visiblefilter": ""
+      "visiblefilter": "",
+      "separator": ""
     },
     "locate": {
       "metersUnit": "metry",

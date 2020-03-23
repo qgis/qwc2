@@ -93,6 +93,22 @@
     font-style: italic;
 }
 
+#LayerTree div.layertree-item-separator {
+    font-weight: bold;
+    border-bottom: 1px solid @item_border@;
+}
+
+#LayerTree div.layertree-item-separator > input {
+    border: none;
+    background-color: transparent;
+    width: 100%;
+    font-weight: bold;
+}
+
+#LayerTree div.layertree-item-separator > input:focus {
+    background-color: white;
+}
+
 #LayerTree span.layertree-item-expander {
     margin-right: 0.25em;
     flex: 0 0 1em;
@@ -223,4 +239,34 @@ img.layertree-item-legend-tooltip {
     flex: 0 0 auto;
     width: 1.75em;
     text-align: center;
+}
+
+#LayerTree div.layertree-item-addsep {
+    border-top: 2px solid transparent;
+    border-bottom: 4px solid transparent;
+    margin-bottom: -6px;
+    position: relative;
+}
+
+#LayerTree div.layertree-item-addsep:hover {
+    border-top: 2px solid @item_border@;
+}
+
+#LayerTree div.layertree-item-addsep:hover::before {
+    position: absolute;
+    background-color: @item_border@;
+    display: inline-block;
+    left: 0;
+    top: 0;
+    width: 1.1em;
+    height: 1.1em;
+    content: '+';
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    font-size: 150%;
+}
+
+#LayerTree div.layertree-item-container:last-child div.layertree-item-addsep {
+    display: none;
 }

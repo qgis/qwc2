@@ -98,7 +98,8 @@
       "maptip": "Kartentipps anzeigen",
       "printlegend": "Legende drucken",
       "deletealllayers": "Alle Ebenen entfernen",
-      "visiblefilter": "Unsichtbare Ebenen filtern"
+      "visiblefilter": "Unsichtbare Ebenen filtern",
+      "separator": "Separator"
     },
     "locate": {
       "metersUnit": "Meter",

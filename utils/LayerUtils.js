@@ -30,7 +30,9 @@ const LayerUtils = {
         // Create placeholders for external layers to be added in front
         let external = [];
         for(let layerConfig of layerConfigs) {
-            if(layerConfig.type !== 'theme') {
+            if(layerConfig.type === 'separator') {
+                // No point restoring separators
+            } else if(layerConfig.type !== 'theme') {
                 external = external.concat(LayerUtils.createExternalLayerPlaceholder(layerConfig, externalLayers));
             }
         }
@@ -50,12 +52,24 @@ const LayerUtils = {
                     entry.sublayer.visibility = layerConfig.visibility;
                     reordered.push(entry);
                 }
+            } else if(layerConfig.type === 'separator') {
+                reordered = reordered.concat(LayerUtils.createSeparatorLayer(layerConfig.name));
             } else {
                 reordered = reordered.concat(LayerUtils.createExternalLayerPlaceholder(layerConfig, externalLayers));
             }
         }
         LayerUtils.insertPermalinkLayers(reordered, permalinkLayers);
         return LayerUtils.implodeLayers(reordered);
+    },
+    createSeparatorLayer: function(title) {
+        return LayerUtils.explodeLayers([{
+            type: "separator",
+            title: title,
+            role: LayerRole.USERLAYER,
+            refid: uuid.v4(),
+            uuid: uuid.v4(),
+            id: uuid.v4()
+        }]);
     },
     createExternalLayerPlaceholder: function(layerConfig, externalLayers) {
         let key = layerConfig.type + ":" + layerConfig.url;
@@ -157,6 +171,10 @@ const LayerUtils = {
                 layernames.push(layer.type + ':' + layer.url + "#" + layer.name);
                 opacities.push(layer.opacity);
                 visibilities.push(layer.visibility);
+            } else if(layer.role === LayerRole.USERLAYER && layer.type === "separator") {
+                layernames.push("sep:" + layer.title);
+                opacities.push(255);
+                visibilities.push(true);
             }
         }
         let result = layernames.map((layername, idx) => {
@@ -196,6 +214,9 @@ const LayerUtils = {
             type = name.slice(0, 3);
             url = name.slice(4, pos);
             name = name.slice(pos + 1);
+        } else if(name.startsWith('sep:')) {
+            type = 'separator';
+            name = name.slice(4);
         }
         return {type, url, name, opacity, visibility};
     },
@@ -223,6 +244,30 @@ const LayerUtils = {
                 let newThemeLayer = assign({}, oldThemeLayer, {sublayers: []});
                 assign(newThemeLayer, LayerUtils.buildWMSLayerParams(newThemeLayer));
                 newlayers.push(newThemeLayer);
+            }
+        }
+        // Re-add background layers
+        return [
+            ...newlayers,
+            ...layers.filter(layer => layer.role === LayerRole.BACKGROUND)
+        ];
+    },
+    insertSeparator(layers, title, afterlayerId, aftersublayerpath, swipeActive) {
+        // Extract foreground layers
+        let fglayers = layers.filter(layer => layer.role !== LayerRole.BACKGROUND);
+        // Explode layers (one entry for every single sublayer)
+        let exploded = LayerUtils.explodeLayers(fglayers);
+        // Remove matching entries
+        let pos = exploded.findIndex(entry => entry.layer.id === afterlayerId && isEqual(aftersublayerpath, entry.path));
+        if(pos !== -1) {
+            // Add separator
+            exploded.splice(pos + 1, 0, LayerUtils.createSeparatorLayer(title)[0]);
+        }
+        // Re-assemble layers (if swipe is active, keep first sublayer separate)
+        let newlayers = LayerUtils.implodeLayers(exploded, swipeActive);
+        for(let layer of newlayers) {
+            if(layer.type === "wms") {
+                assign(layer, LayerUtils.buildWMSLayerParams(layer));
             }
         }
         // Re-add background layers

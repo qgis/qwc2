@@ -98,7 +98,8 @@
       "maptip": "Arată indicii hartă",
       "printlegend": "Tipărește legenda",
       "deletealllayers": "Elimină toate straturile",
-      "visiblefilter": "Filtrează straturile invizibile"
+      "visiblefilter": "Filtrează straturile invizibile",
+      "separator": ""
     },
     "locate": {
       "metersUnit": "metri",

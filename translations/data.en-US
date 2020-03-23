@@ -98,7 +98,8 @@
       "maptip": "Show layer map tips",
       "printlegend": "Print legend",
       "deletealllayers": "Remove all layers",
-      "visiblefilter": "Filter invisible layers"
+      "visiblefilter": "Filter invisible layers",
+      "separator": "Separator"
     },
     "locate": {
       "metersUnit": "meters",

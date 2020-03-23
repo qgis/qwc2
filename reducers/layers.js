@@ -16,6 +16,7 @@ const {
     LayerRole,
     SET_LAYER_LOADING,
     ADD_LAYER,
+    ADD_LAYER_SEPARATOR,
     REMOVE_LAYER,
     REORDER_LAYER,
     CHANGE_LAYER_PROPERTIES,
@@ -85,6 +86,11 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             if(newLayer.role === LayerRole.BACKGROUND && newLayer.visibility) {
                 UrlParams.updateParams({bl: newLayer.name});
             }
+            return assign({}, state, {flat: newLayers});
+        }
+        case ADD_LAYER_SEPARATOR: {
+            let newLayers = LayerUtils.insertSeparator(state.flat, action.title, action.afterLayerId, action.afterSublayerPath, state.swipe);
+            UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
             return assign({}, state, {flat: newLayers});
         }
         case REMOVE_LAYER: {

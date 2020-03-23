@@ -98,7 +98,8 @@
       "maptip": "Показывать подписи",
       "printlegend": "Распечатать легенду",
       "deletealllayers": "",
-      "visiblefilter": ""
+      "visiblefilter": "",
+      "separator": ""
     },
     "locate": {
       "metersUnit": "метров",

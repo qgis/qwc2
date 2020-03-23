@@ -98,7 +98,8 @@
       "maptip": "Visa karttips för lager",
       "printlegend": "Skriv ut teckenförklaring",
       "deletealllayers": "Ta bort alla lager",
-      "visiblefilter": ""
+      "visiblefilter": "",
+      "separator": ""
     },
     "locate": {
       "metersUnit": "meter",

@@ -98,7 +98,8 @@
       "maptip": "Mostrar sugerencias de capas en el mapa",
       "printlegend": "Imprimir leyenda",
       "deletealllayers": "",
-      "visiblefilter": ""
+      "visiblefilter": "",
+      "separator": ""
     },
     "locate": {
       "metersUnit": "metros",

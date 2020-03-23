@@ -98,7 +98,8 @@
       "maptip": "Show layer map tips",
       "printlegend": "Print legend",
       "deletealllayers": "",
-      "visiblefilter": ""
+      "visiblefilter": "",
+      "separator": ""
     },
     "locate": {
       "metersUnit": "méter",

@@ -86,6 +86,7 @@
     "layertree.printlegend",
     "layertree.deletealllayers",
     "layertree.visiblefilter",
+    "layertree.separator",
     "locate.metersUnit",
     "locate.feetUnit",
     "locate.popup",

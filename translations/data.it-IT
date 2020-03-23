@@ -98,7 +98,8 @@
       "maptip": "Attiva maptip",
       "printlegend": "Stampa legenda",
       "deletealllayers": "Rimuovi tutti i livelli",
-      "visiblefilter": "Filtra livelli non visibili"
+      "visiblefilter": "Filtra livelli non visibili",
+      "separator": "Separatore"
     },
     "locate": {
       "metersUnit": "metri",

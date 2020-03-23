@@ -15,7 +15,7 @@ const isEmpty = require('lodash.isempty');
 const Sortable = require('react-sortablejs');
 const FileSaver = require('file-saver');
 const Message = require('../components/I18N/Message');
-const {LayerRole, changeLayerProperties, removeLayer, reorderLayer, setSwipe} = require('../actions/layers')
+const {LayerRole, changeLayerProperties, removeLayer, reorderLayer, setSwipe, addLayerSeparator} = require('../actions/layers')
 const {setActiveLayerInfo} = require('../actions/layerinfo');
 const {toggleMapTips} = require('../actions/map');
 const ConfigUtils = require("../utils/ConfigUtils");
@@ -63,7 +63,8 @@ class LayerTree extends React.Component {
         enableLegendPrint: PropTypes.bool,
         enableVisibleFilter: PropTypes.bool,
         infoInSettings: PropTypes.bool,
-        showToggleAllLayersCheckbox: PropTypes.bool
+        showToggleAllLayersCheckbox: PropTypes.bool,
+        addLayerSeparator: PropTypes.func
     }
     static defaultProps = {
         layers: [],
@@ -134,7 +135,8 @@ class LayerTree extends React.Component {
         });
     }
     renderLayerGroup = (layer, group, path, enabled, inMutuallyExclusiveGroup=false) => {
-        if(this.props.flattenGroups) {
+        let flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
+        if(flattenGroups) {
             return this.renderSubLayers(layer, group, path, enabled, false);
         }
         let subtreevisibility = this.getGroupVisibility(group);
@@ -202,6 +204,7 @@ class LayerTree extends React.Component {
             return null;
         }
         let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
+        let allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
         let checkboxstate = sublayer.visibility === true ? 'checked' : 'unchecked';
         if(inMutuallyExclusiveGroup) {
             checkboxstate = 'radio_' + checkboxstate;
@@ -212,7 +215,8 @@ class LayerTree extends React.Component {
         });
         let itemclasses = {
             "layertree-item": true,
-            "layertree-item-disabled": (!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !sublayer.visibility),
+            "layertree-item-disabled": layer.type !== "separator" && ((!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !sublayer.visibility)),
+            "layertree-item-separator": layer.type === "separator",
             "layertree-item-outsidescalerange": (sublayer.minScale !== undefined && this.props.mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && this.props.mapScale > sublayer.maxScale)
         };
         let editframe = null;
@@ -222,7 +226,7 @@ class LayerTree extends React.Component {
         }
         if(this.state.activemenu === sublayer.uuid) {
             let reorderButtons = null;
-            if(ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filtervisiblelayers) {
+            if(allowReordering && !this.state.filtervisiblelayers) {
                 reorderButtons = [
                     (<Icon key="layertree-item-move-down" className="layertree-item-move" icon="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
                     (<Icon key="layertree-item-move-up" className="layertree-item-move" icon="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
@@ -252,25 +256,36 @@ class LayerTree extends React.Component {
         let checkbox = null;
         if(layer.type === "placeholder") {
             checkbox = (<Spinner />);
+        } else if(layer.type === "separator") {
+            checkbox = null;
         } else {
             checkbox = (<Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.layerToggled(layer, path, sublayer.visibility, inMutuallyExclusiveGroup)} />);
         }
-        let title = sublayer.title;
-        let allowOptions = layer.type !== "placeholder";
+        let title = null;
+        if(layer.type === "separator") {
+            title = (<input value={sublayer.title} onChange={ev => this.props.changeLayerProperties(layer.uuid, {title: ev.target.value})}/>);
+        } else {
+            title = (<span className="layertree-item-title" title={sublayer.title}>{sublayer.title}</span>);
+        }
+        let allowOptions = layer.type !== "placeholder" && layer.type !== "separator";
+        let flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
+        let allowSeparators = flattenGroups && allowReordering;
+        let separatorTitle = LocaleUtils.getMessageById(this.context.messages, "layertree.separator");
         return (
             <div className="layertree-item-container" key={sublayer.uuid} data-id={JSON.stringify({layer: layer.uuid, path: path})}>
                 <div className={classnames(itemclasses)}>
-                    {(this.props.flattenGroups || skipExpanderPlaceholder) ? null : (<span className="layertree-item-expander"></span>)}
+                    {(flattenGroups || skipExpanderPlaceholder) ? null : (<span className="layertree-item-expander"></span>)}
                     {checkbox}
                     {legendicon}
-                    <span className="layertree-item-title" title={title}>{title}</span>
+                    {title}
                     {sublayer.queryable && this.props.showQueryableIcon ? (<Icon className="layertree-item-queryable" icon="info-sign" />) : null}
                     <span className="layertree-item-spacer"></span>
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}
                     {allowOptions ? (<Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>) : null}
-                    {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
+                    {allowSeparators ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
                 {editframe}
+                {flattenGroups ? (<div className="layertree-item-addsep" onClick={() => this.props.addLayerSeparator(separatorTitle, layer.id, path)}></div>) : null}
             </div>
         );
     }
@@ -329,7 +344,8 @@ class LayerTree extends React.Component {
                 </div>
             );
         }
-        let sortable = allowReordering && (ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true || this.props.flattenGroups === true);
+        let flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
+        let sortable = allowReordering && (ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true || flattenGroups === true);
         return (
             <div role="body" className="layertree-container-wrapper">
                 <div className="layertree-container">
@@ -654,6 +670,7 @@ const selector = (state) => ({
 
 module.exports = {
     LayerTreePlugin: connect(selector, {
+        addLayerSeparator: addLayerSeparator,
         changeLayerProperties: changeLayerProperties,
         removeLayer: removeLayer,
         reorderLayer: reorderLayer,
