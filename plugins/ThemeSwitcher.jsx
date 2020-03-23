@@ -61,7 +61,7 @@ class ThemeSwitcher extends React.Component {
         if(el) {
             // Need to wait until slide in transition is over
             setTimeout(() => {
-                if (this.props.currentTask.id == "ThemeSwitcher") {
+                if (this.props.currentTask && this.props.currentTask.id === "ThemeSwitcher") {
                     el.focus();
                 }
             }, 500);
