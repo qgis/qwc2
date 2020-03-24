@@ -146,33 +146,36 @@ class SearchBox extends React.Component {
         );
     }
     renderProviderResults = () => {
-        let results = Object.keys(this.props.searchProviders).map(provider => {
+        let results = Object.keys(this.props.searchProviders).reduce((result, provider) => {
             if(!this.state.searchResults[provider]){
-                return null;
+                return result;
             }
-            let results = this.state.searchResults[provider];
-            return results.results.map(group => {
+            return result.concat(this.state.searchResults[provider].results.map(group => {
                 let sectionId = provider + ":" + group.id;
-                return (
-                    <div key={sectionId}>
-                        <div className="searchbox-results-section-title" onMouseDown={this.killEvent} onClick={ev => this.toggleSection(sectionId)}>
-                            <Icon icon={!!this.state.collapsedSections[sectionId] ? "expand" : "collapse"} />
-                            {group.titlemsgid ? (<Message msgId={group.titlemsgid} />) : (<span>{group.title}</span>)}
-                        </div>
-                        {!this.state.collapsedSections[sectionId] ? (
-                            <div className="searchbox-results-section-body">
-                                {group.items.map((entry ,idx) => (
-                                    <div key={"c" + idx} className="searchbox-result" onMouseDown={this.killEvent} onClick={ev => {this.selectProviderResult(entry); this.blur(); }}>
-                                        <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: entry.text}}></span>
-                                    </div>
-                                ))}
+                return {
+                    priority: group.priority || 0,
+                    tree: (
+                        <div key={sectionId}>
+                            <div className="searchbox-results-section-title" onMouseDown={this.killEvent} onClick={ev => this.toggleSection(sectionId)}>
+                                <Icon icon={!!this.state.collapsedSections[sectionId] ? "expand" : "collapse"} />
+                                {group.titlemsgid ? (<Message msgId={group.titlemsgid} />) : (<span>{group.title}</span>)}
                             </div>
-                        ) : null}
-                    </div>
-                );
-            });
-        }).filter(entry => entry);
-        return isEmpty(results) ? null : results;
+                            {!this.state.collapsedSections[sectionId] ? (
+                                <div className="searchbox-results-section-body">
+                                    {group.items.map((entry ,idx) => (
+                                        <div key={"c" + idx} className="searchbox-result" onMouseDown={this.killEvent} onClick={ev => {this.selectProviderResult(entry); this.blur(); }}>
+                                            <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: entry.text}}></span>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : null}
+                        </div>
+                    )
+                };
+            }));
+        }, []);
+        results.sort((a, b) => (b.priority - a.priority));
+        return isEmpty(results) ? null : results.map(entry => entry.tree);
     }
     renderPlaces = (searchResults) => {
         let features = (searchResults.results || []).filter(result => result.feature);
