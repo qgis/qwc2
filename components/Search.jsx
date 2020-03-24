@@ -29,6 +29,7 @@ const {zoomToPoint} = require('../actions/map');
 const {addSearchResults, changeSearch, startSearch, searchMore, setCurrentSearchResult, SearchResultType} = require("../actions/search");
 const {setCurrentTask} = require('../actions/task');
 const {setCurrentTheme} = require('../actions/theme');
+const searchProvidersSelector = require('../selectors/searchproviders');
 const displayCrsSelector = require('../selectors/displaycrs');
 const ThemeUtils = require('../utils/ThemeUtils');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
@@ -540,39 +541,9 @@ class Search extends React.Component {
 
 
 module.exports = (searchProviders, providerFactory=(entry) => { return null; }) => {
-
-    const collectProviders = createSelector(
-        [state => state.theme, state => state.layers && state.layers.flat || null], (theme, layers) => {
-            let availableProviders = {};
-            let themeLayerNames = layers.map(layer => layer.role === LayerRole.THEME ? layer.params.LAYERS : "").join(",").split(",").filter(entry => entry);
-            let themeProviders = theme && theme.current ? theme.current.searchProviders : [];
-            for(let entry of themeProviders) {
-                let provider = searchProviders[entry] || providerFactory(entry);
-                if(provider) {
-                    if(provider.requiresLayer && !themeLayerNames.includes(provider.requiresLayer)) {
-                        continue;
-                    }
-                    availableProviders[entry.key || entry] = provider;
-                }
-            }
-            if(ConfigUtils.getConfigProp("searchThemes", theme)) {
-                availableProviders["themes"] = {
-                    label: "Themes",
-                    onSearch: (text, reqId, options, dispatch) => {
-                        dispatch(addSearchResults({
-                            provider: "themes",
-                            reqId: reqId,
-                            data: ThemeUtils.searchThemes(theme.themes, text, SearchResultType.THEME)
-                        }));
-                    }
-                };
-            }
-            return availableProviders;
-        }
-    );
-
+    const providersSelector = searchProvidersSelector(searchProviders, providerFactory);
     return connect(
-        createSelector([state => state, displayCrsSelector, collectProviders], (state, displaycrs, searchProviders) => ({
+        createSelector([state => state, displayCrsSelector, providersSelector], (state, displaycrs, searchProviders) => ({
             searchText: state.search.text,
             activeProviders: state.search.providers,
             pendingProviders: state.search.pendingProviders,
