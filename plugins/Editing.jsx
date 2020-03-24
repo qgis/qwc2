@@ -182,7 +182,7 @@ class Editing extends React.Component {
         }
         return (
             <tr key={field.id}>
-                <td colSpan={input ? 1 : 2}>{title}</td>
+                <td title={field.name} colSpan={input ? 1 : 2}>{title}</td>
                 {input ? (<td>{input}</td>) : null}
             </tr>
         );

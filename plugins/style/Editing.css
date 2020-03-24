@@ -42,6 +42,12 @@
     white-space: nowrap;
 }
 
+#Editing table.fields-table td:first-child {
+    max-width: 10em;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 #Editing table.fields-table td:nth-child(2) {
     width: 99%;
 }
