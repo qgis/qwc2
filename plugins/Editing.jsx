@@ -39,13 +39,15 @@ class Editing extends React.Component {
         changeEditingState: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
         refreshLayer: PropTypes.func,
-        touchFriendly: PropTypes.bool
+        touchFriendly: PropTypes.bool,
+        width: PropTypes.string
     }
     static contextTypes = {
         messages: PropTypes.object
     }
     static defaultProps = {
-        touchFriendly: true
+        touchFriendly: true,
+        width: "25em"
     }
     state = {
         selectedLayer: null,
@@ -293,7 +295,7 @@ class Editing extends React.Component {
     }
     render() {
         return (
-            <SideBar id="Editing" width="20em" onShow={this.onShow} onHide={this.onHide}
+            <SideBar id="Editing" width={this.props.width} onShow={this.onShow} onHide={this.onHide}
                 title="appmenu.items.Editing" icon="editing">
                 {() => ({
                     body: this.renderBody()
