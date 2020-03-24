@@ -56,6 +56,7 @@ div.searchbox-result {
     padding: 0.125em 0.5em;
     display: flex;
     align-items: center;
+    height: 1.75em;
 }
 
 div.searchbox-result:hover {
@@ -68,7 +69,7 @@ div.searchbox-result-expandedinfo {
 
 div.searchbox-result > img {
     flex: 0 0 1.75em;
-    height: 1.75em;
+    height: 1.5em;
 }
 
 div.searchbox-result > span.icon {

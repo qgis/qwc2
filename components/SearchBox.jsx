@@ -7,17 +7,20 @@
  */
 
 const React = require('react');
+const assign = require('object-assign');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const {createSelector} = require('reselect');
 const isEmpty = require('lodash.isempty');
 const axios = require('axios');
+const uuid = require('uuid');
 const {zoomToPoint,panTo} = require('../actions/map');
 const {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer} = require('../actions/layers');
 const {setCurrentTask} = require('../actions/task');
 const Icon = require('./Icon');
 const Message = require("./I18N/Message");
 const displayCrsSelector = require('../selectors/displaycrs');
+const searchProvidersSelector = require('../selectors/searchproviders');
 const ConfigUtils = require("../utils/ConfigUtils");
 const LayerUtils = require('../utils/LayerUtils');
 const LocaleUtils = require('../utils/LocaleUtils');
@@ -41,6 +44,7 @@ class SearchBox extends React.Component {
         setCurrentTask: PropTypes.func,
         zoomToPoint: PropTypes.func,
         panTo: PropTypes.func,
+        searchProviders: PropTypes.object,
         searchOptions: PropTypes.shape({
             minScale: PropTypes.number,
             resultLimit: PropTypes.number,
@@ -48,6 +52,8 @@ class SearchBox extends React.Component {
     }
     state = {
         searchText: "",
+        searchSession: null,
+        pendingSearches: [],
         recentSearches: [],
         searchResults: {},
         resultsVisible: false,
@@ -79,11 +85,11 @@ class SearchBox extends React.Component {
                 axios.get(DATA_URL + "/" + hp + "/?filter=" + hf)
                 .then(response => this.showFeatureGeometry(response.data, this.props.localConfig.startupParams.s));
             } else if(typeof(hc) === "string" && (hc.toLowerCase() === "true" || hc === "1")) {
-                this.selectCoordinateResult({
-                    display: newProps.map.center[0] + ", " + newProps.map.center[1] + " (EPSG:2056)",
+                this.selectProviderResult({
+                    label: "",
                     x: newProps.map.center[0],
                     y: newProps.map.center[1],
-                    crs: "EPSG:2056"
+                    crs: newProps.displaycrs
                 }, false);
             }
             UrlParams.updateParams({hp: undefined, hf: undefined, hc: undefined});
@@ -111,14 +117,14 @@ class SearchBox extends React.Component {
             </div>
         );
     }
-    renderFilters = () => {
-        if(isEmpty(this.state.searchResults.result_counts) || this.state.searchResults.result_counts.length < 2) {
+    renderFilters = (searchResults) => {
+        if(isEmpty(searchResults.result_counts) || searchResults.result_counts.length < 2) {
             return null;
         }
         const minResultsExanded = ConfigUtils.getConfigProp("minResultsExanded");
-        let initialCollapsed = this.state.searchResults.tot_result_count < minResultsExanded;
+        let initialCollapsed = searchResults.tot_result_count < minResultsExanded;
         let collapsed = (this.state.collapsedSections["filter"] === undefined) ? initialCollapsed : this.state.collapsedSections["filter"];
-        let values = this.state.searchResults.result_counts.map(entry => entry.filterword + ": " + this.state.searchResults.query_text);
+        let values = searchResults.result_counts.map(entry => entry.filterword + ": " + searchResults.query_text);
         values.sort((a, b) => a.localeCompare(b));
         return (
             <div key="filter">
@@ -139,34 +145,41 @@ class SearchBox extends React.Component {
             </div>
         );
     }
-    renderCoordinates = () => {
-        let coordinates = (this.state.searchResults.results || []).filter(result => result.coordinate);
-        if(isEmpty(coordinates)) {
-            return null;
-        }
-        return (
-            <div key="coordinates">
-                <div className="searchbox-results-section-title" onMouseDown={this.killEvent} onClick={ev => this.toggleSection("coordinates")}>
-                    <Icon icon={!!this.state.collapsedSections["coordinates"] ? "expand" : "collapse"} /><Message msgId="searchbox.coordinates" />
-                </div>
-                {!this.state.collapsedSections["coordinates"] ? (
-                    <div className="searchbox-results-section-body">
-                        {coordinates.map((entry ,idx) => (
-                            <div key={"c" + idx} className="searchbox-result" onMouseDown={this.killEvent} onClick={ev => {this.selectCoordinateResult(entry.coordinate); this.blur(); }}>
-                                <span className="searchbox-result-label">{entry.coordinate.display}</span>
+    renderProviderResults = () => {
+        let results = Object.keys(this.props.searchProviders).map(provider => {
+            if(!this.state.searchResults[provider]){
+                return null;
+            }
+            let results = this.state.searchResults[provider];
+            return results.results.map(group => {
+                let sectionId = provider + ":" + group.id;
+                return (
+                    <div key={sectionId}>
+                        <div className="searchbox-results-section-title" onMouseDown={this.killEvent} onClick={ev => this.toggleSection(sectionId)}>
+                            <Icon icon={!!this.state.collapsedSections[sectionId] ? "expand" : "collapse"} />
+                            {group.titlemsgid ? (<Message msgId={group.titlemsgid} />) : (<span>{group.title}</span>)}
+                        </div>
+                        {!this.state.collapsedSections[sectionId] ? (
+                            <div className="searchbox-results-section-body">
+                                {group.items.map((entry ,idx) => (
+                                    <div key={"c" + idx} className="searchbox-result" onMouseDown={this.killEvent} onClick={ev => {this.selectProviderResult(entry); this.blur(); }}>
+                                        <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: entry.text}}></span>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+                        ) : null}
                     </div>
-                ) : null}
-            </div>
-        );
+                );
+            });
+        }).filter(entry => entry);
+        return isEmpty(results) ? null : results;
     }
-    renderPlaces = () => {
-        let features = (this.state.searchResults.results || []).filter(result => result.feature);
+    renderPlaces = (searchResults) => {
+        let features = (searchResults.results || []).filter(result => result.feature);
         if(isEmpty(features)) {
             return null;
         }
-        let featureResultCount = (this.state.searchResults.result_counts || []).reduce((res, entry) => res + (entry.dataproduct_id !== 'dataproduct' ? (entry.count || 0) : 0), 0);
+        let featureResultCount = (searchResults.result_counts || []).reduce((res, entry) => res + (entry.dataproduct_id !== 'dataproduct' ? (entry.count || 0) : 0), 0);
         let additionalResults = featureResultCount - features.length;
         let iconPath = ConfigUtils.getConfigProp("assetsPath").replace(/\/$/g, "") + '/img/search/';
         return (
@@ -192,12 +205,12 @@ class SearchBox extends React.Component {
             </div>
         );
     }
-    renderLayers = () => {
-        let layers = (this.state.searchResults.results || []).filter(result => result.dataproduct);
+    renderLayers = (searchResults) => {
+        let layers = (searchResults.results || []).filter(result => result.dataproduct);
         if(isEmpty(layers)) {
             return null;
         }
-        let additionalLayerResults = !isEmpty((this.state.searchResults.result_counts || []).filter(entry => entry.dataproduct_id == 'dataproduct'));
+        let additionalLayerResults = !isEmpty((searchResults.result_counts || []).filter(entry => entry.dataproduct_id == 'dataproduct'));
         return (
             <div key="layers">
                 <div className="searchbox-results-section-title" onMouseDown={this.killEvent} onClick={ev => this.toggleSection("layers")}>
@@ -271,12 +284,13 @@ class SearchBox extends React.Component {
         if(!this.state.resultsVisible) {
             return false;
         }
+        let fulltextResults = this.state.searchResults["__fulltext"] || {};
         let children = [
             this.renderRecentResults(),
-            this.renderFilters(),
-            this.renderCoordinates(),
-            this.renderPlaces(),
-            this.renderLayers()
+            this.renderFilters(fulltextResults),
+            this.renderProviderResults(),
+            this.renderPlaces(fulltextResults),
+            this.renderLayers(fulltextResults)
         ].filter(element => element);
         if(isEmpty(children)) {
             return null;
@@ -374,6 +388,9 @@ class SearchBox extends React.Component {
             this.setState({searchResults: {}});
             return;
         }
+        let searchSession = uuid.v1();
+        this.setState({searchResults: {query_text: searchText}, searchSession: searchSession, pendingSearches: Object.keys(this.props.searchProviders).concat(["__fulltext"])})
+        // Fulltext search
         let params = {
             searchtext: searchText,
             filter: this.props.searchFilter,
@@ -381,65 +398,48 @@ class SearchBox extends React.Component {
         };
         axios.get(service, {params}).then(response => {
             let searchResults = {...response.data, query_text: searchText};
-            let nCoordinateResults = this.addCoordinateResults(searchText, searchResults.results);
             searchResults.tot_result_count = (searchResults.result_counts || []).reduce((res, entry) => res + (entry.count || 0), 0);
-            this.setState({searchResults: searchResults});
-            // If a single result is returned, select it immediately if it is a coordinate or feature result
-            if(textWasPasted && searchResults.results.length === 1 && searchResults.tot_result_count + nCoordinateResults === 1) {
-                if(searchResults.results[0].coordinate) {
-                    this.selectCoordinateResult(searchResults.results[0].coordinate);
-                    this.blur();
-                } else if(searchResults.results[0].feature) {
-                    this.selectFeatureResult(searchResults.results[0].feature);
-                    this.blur();
-                }
-            }
+            this.addSearchResults(searchSession, "__fulltext", searchResults);
         }).catch(e => {
             console.warn("Search failed: " + e);
             this.setState({searchResults: {}});
-        })
+        });
+        // Additional provider searches
+        let searchOptions = {displaycrs: this.props.displaycrs};
+        Object.entries(this.props.searchProviders).forEach(entry => {
+            let key = entry[0];
+            let provider = entry[1];
+            provider.onSearch(searchText, null, searchOptions, (response) => {
+                let data = response.results;
+                let count = data.data.reduce((tot, cur) => (tot + cur.items.length), 0);
+                this.addSearchResults(searchSession, key, {results: data.data, tot_result_count: count});
+            });
+        });
     }
-    addCoordinateResults = (text, results) => {
-        let nResults = 0;
-        let displaycrs = this.props.displaycrs || "EPSG:4326";
-        let matches = text.replace(',', ' ').replace(/[^\w.-\s]/g, '').match(/^\s*([+-]?\d+\.?\d*)[,\s]\s*([+-]?\d+\.?\d*)\s*$/);
-        if(matches && matches.length >= 3) {
-            let x = parseFloat(matches[1]);
-            let y = parseFloat(matches[2]);
-            if(displaycrs !== "EPSG:4326") {
-                let coord = CoordinatesUtils.reproject([x, y], displaycrs, "EPSG:4326");
-                results.push({"coordinate": {
-                    display: x + ", " + y + " (" + displaycrs + ")",
-                    x: coord[0],
-                    y: coord[1],
-                    crs: "EPSG:4326"
-                }});
-                ++nResults;
-            }
-            if(x >= -180 && x <= 180 && y >= -90 && y <= 90) {
-                let title = Math.abs(x) + (x >= 0 ? "°E" : "°W") + ", "
-                          + Math.abs(y) + (y >= 0 ? "°N" : "°S");
-                results.push({"coordinate": {
-                    display: title,
-                    x: x,
-                    y: y,
-                    crs: "EPSG:4326"
-                }});
-                ++nResults;
-            }
-            if(x >= -90 && x <= 90 && y >= -180 && y <= 180 && x != y) {
-                let title = Math.abs(y) + (y >= 0 ? "°E" : "°W") + ", "
-                          + Math.abs(x) + (x >= 0 ? "°N" : "°S");
-                results.push({"coordinate": {
-                    display: title,
-                    x: y,
-                    y: x,
-                    crs: "EPSG:4326"
-                }});
-                ++nResults;
+    addSearchResults = (searchSession, searchId, results) => {
+        if(searchSession !== this.state.searchSession) {
+            return;
+        }
+        let pendingSearches = this.state.pendingSearches.filter(entry => entry == searchId);
+        let searchResults = assign({}, this.state.searchResults, {[searchId]: results});
+        this.setState({
+            searchResults:searchResults ,
+            pendingSearches: pendingSearches
+        });
+        if(isEmpty(pendingSearches)) {
+            let uniqueResults = Object.entries(searchResults).filter((key, value) => {value.tot_result_count === 1});
+            // If a single result is returned, select it immediately if it is a feature or provider result
+            if(uniqueResults.length === 1) {
+                let uniqueResults = uniqueResults[0];
+                if(uniqueResults[0] === "__fulltext" && uniqueResults[1].feature) {
+                    this.selectFeatureResult(uniqueResults[1].feature);
+                    this.blur();
+                } else if(uniqueResults[0] !== "__fulltext" && uniqueResults[1][0].items[0].bbox) {
+                    this.selectProviderResult(uniqueResults[1][0].items[0]);
+                    this.blur();
+                }
             }
         }
-        return nResults;
     }
     updateRecentSearches = () => {
         if(!this.state.searchResults || !this.state.searchResults.query_text) {
@@ -455,7 +455,7 @@ class SearchBox extends React.Component {
             this.searchBox.blur();
         }
     }
-    selectCoordinateResult = (result, zoom=true) => {
+    selectProviderResult = (result, zoom=true) => {
         this.updateRecentSearches();
         if(zoom) {
             this.props.zoomToPoint([result.x, result.y], this.props.searchOptions.minScale, result.crs);
@@ -464,6 +464,7 @@ class SearchBox extends React.Component {
         }
         let feature = {
             geometry: {type: 'Point', coordinates: [result.x, result.y]},
+            properties: { label: result.label !== undefined ? result.label : result.text },
             styleName: 'marker',
             crs: result.crs
         }
@@ -472,8 +473,7 @@ class SearchBox extends React.Component {
             role: LayerRole.SELECTION
         };
         this.props.addLayerFeatures(layer, [feature], true);
-        let c = CoordinatesUtils.reproject([result.x, result.y], result.crs, "EPSG:2056");
-        UrlParams.updateParams({hp: undefined, hf: undefined, hc: c[0].toFixed(0) + "," + c[1].toFixed(0)});
+        UrlParams.updateParams({hp: undefined, hf: undefined, hc: "1"});
     }
     selectFeatureResult = (result) => {
         this.updateRecentSearches();
@@ -560,20 +560,24 @@ const searchFilterSelector = createSelector([state => state.theme, state => stat
     return [...new Set(searchFilter)].join(",");
 });
 
-module.exports = connect(
-    createSelector([state => state, searchFilterSelector, displayCrsSelector], (state, searchFilter, displaycrs) => ({
-        map: state.map,
-        layers: state.layers.flat,
-        theme: state.theme.current,
-        localConfig: state.localConfig,
-        searchFilter: searchFilter,
-        displaycrs: displaycrs
-    })
-), {
-    addThemeSublayer: addThemeSublayer,
-    addLayerFeatures: addLayerFeatures,
-    removeLayer: removeLayer,
-    setCurrentTask: setCurrentTask,
-    zoomToPoint: zoomToPoint,
-    panTo: panTo
-})(SearchBox);
+module.exports = (searchProviders, providerFactory=(entry) => { return null; }) => {
+    const providersSelector = searchProvidersSelector(searchProviders, providerFactory);
+    return connect(
+        createSelector([state => state, searchFilterSelector, displayCrsSelector], (state, searchFilter, displaycrs) => ({
+            map: state.map,
+            layers: state.layers.flat,
+            theme: state.theme.current,
+            localConfig: state.localConfig,
+            searchFilter: searchFilter,
+            displaycrs: displaycrs,
+            searchProviders: searchProviders
+        })
+    ), {
+        addThemeSublayer: addThemeSublayer,
+        addLayerFeatures: addLayerFeatures,
+        removeLayer: removeLayer,
+        setCurrentTask: setCurrentTask,
+        zoomToPoint: zoomToPoint,
+        panTo: panTo
+    })(SearchBox);
+}
