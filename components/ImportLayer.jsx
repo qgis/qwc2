@@ -194,7 +194,7 @@ class ImportLayer extends React.Component {
         if(!url) {
             return;
         }
-        if(!url.match(/^[^:]+:\/\/.*$/)) {
+        if(!url.match(/^[^:]+:\/\/.*$/) && !url.startsWith("/")) {
             url = location.protocol + "//" + url;
         }
         let pendingRequests = 0;
