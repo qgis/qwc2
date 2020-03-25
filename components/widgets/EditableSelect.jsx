@@ -57,12 +57,12 @@ class EditableSelect extends React.Component {
         return (
             <div className="editable-select-dropdown">
                 {this.props.options.map((option ,idx) => {
-                    let label = this.optionLabel(option.label);
+                    let label = this.optionLabel(option);
                     if(this.state.textValue && !label.toLowerCase().startsWith(this.state.textValue.toLowerCase())) {
                         return null;
                     }
                     return (
-                        <div key={"opt" + idx} onMouseDown={this.killEvent} onClick={() => this.optionSelected(option)}>{this.optionLabel(option.label)}</div>
+                        <div key={"opt" + idx} onMouseDown={this.killEvent} onClick={() => this.optionSelected(option)}>{this.optionLabel(option)}</div>
                     );
                 })}
             </div>
