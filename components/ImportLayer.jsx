@@ -38,6 +38,9 @@ class ImportLayerList extends React.PureComponent {
     state = {
         serviceLayers: []
     }
+    componentDidMount(props) {
+        this.setState({serviceLayers: this.props.serviceLayers || []});
+    }
     componentWillReceiveProps(newProps) {
         this.setState({serviceLayers: newProps.serviceLayers || []});
     }
