@@ -1,0 +1,118 @@
+/**
+ * Copyright 2020, Sourcepole AG.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+const React = require('react');
+const PropTypes = require('prop-types');
+const NumericInput = require('react-numeric-input');
+const ToggleSwitch = require('./widgets/ToggleSwitch');
+const LocaleUtils = require("../utils/LocaleUtils");
+require('./style/AutoEditForm.css');
+
+class AutoEditForm extends(React.Component) {
+    static propTypes = {
+        fields: PropTypes.array,
+        values: PropTypes.object,
+        touchFriendly: PropTypes.bool,
+        updateField: PropTypes.func
+    }
+    static contextTypes = {
+        messages: PropTypes.object
+    }
+    render() {
+        return (
+            <table className="AutoEditForm">
+                <tbody>
+                    {(this.props.fields || []).map(field => this.renderField(field))}
+                </tbody>
+            </table>
+        );
+    }
+    renderField = (field) => {
+        let constraints = field.constraints || {};
+        let value = (this.props.values || {})[field.id] || "";
+        let input = null;
+        let title = field.name + ":";
+        if(field.type == "boolean" || field.type == "bool") {
+            if(this.props.touchFriendly) {
+                input = (
+                    <ToggleSwitch active={value} onChange={active => this.props.updateField(field.id, active)} />
+                );
+            } else {
+                title = (
+                    <label>
+                        <input type="checkbox" checked={value} onChange={ev => this.props.updateField(field.id, ev.target.checked)} />
+                        {field.name}
+                    </label>
+                );
+            }
+        }
+        else if(constraints.values) {
+            input = (
+                <span className="input-frame">
+                    <select value={value} onChange={ev => this.props.updateField(field.id, ev.target.value)}>
+                        <option value="" disabled>{LocaleUtils.getMessageById(this.context.messages, "editing.select")}</option>
+                        {constraints.values.map((item,index) => {
+                            let value = "", label = "";
+                            if(typeof(item) === 'string') {
+                                value = label = item;
+                            } else {
+                                value = item.value;
+                                label = item.label;
+                            }
+                            return (
+                                <option key={field.id + index} value={value}>{label}</option>
+                            );
+                        })}
+                    </select>
+                </span>
+            );
+        } else if(field.type == "number") {
+            let precision = constraints.step > 0 ? Math.ceil(-Math.log10(constraints.step)) : 6;
+            input = (
+                <NumericInput mobile={this.props.touchFriendly} strict
+                    min={constraints.min} max={constraints.max}
+                    step={constraints.step || 1} precision={precision}
+                    format={nr => String(Number(nr))}
+                    value={value} onChange={nr => this.props.updateField(field.id, nr)} />
+            );
+        } else if(field.type == "date") {
+            // Truncate time portion of ISO date string
+            value = value.substr(0, 10);
+            input = (
+                <span className="input-frame">
+                    <input type={field.type} {...constraints}
+                        onChange={(ev) => {
+                            // set empty date field value to null instead of empty string
+                            this.updateField(field.id, ev.target.value == '' ? null : ev.target.value);
+                        }}
+                        value={value}/>
+                </span>
+            );
+        } else if(field.type == "text") {
+            input = (
+                <textarea value={value} onChange={(ev) => this.props.updateField(field.id, ev.target.value)}></textarea>
+            );
+        } else {
+            input = (
+                <span className="input-frame">
+                    <input type={field.type} {...constraints}
+                        onChange={(ev) => this.props.updateField(field.id, ev.target.value)}
+                        value={value}/>
+                </span>
+            );
+        }
+        return (
+            <tr key={field.id}>
+                <td title={field.name} colSpan={input ? 1 : 2}>{title}</td>
+                {input ? (<td>{input}</td>) : null}
+            </tr>
+        );
+    }
+}
+
+module.exports = AutoEditForm;

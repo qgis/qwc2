@@ -14,6 +14,14 @@
     zIndex: 2;
 }
 
+#Editing select.editing-layer-select,
+#Editing select.editing-feature-select {
+    width: 100%;
+    border: 1px solid @item_border@;
+    background-color: white;
+    padding: 0.25em;
+}
+
 #Editing select.editing-layer-select:disabled,
 #Editing select.editing-feature-select:disabled {
     cursor: not-allowed;
@@ -31,78 +39,4 @@
     height: 1px;
     margin: 0.5em 0;
     border-bottom: 1px solid @item_border@;
-}
-
-#Editing table.fields-table {
-    width: 100%;
-}
-
-#Editing table.fields-table td {
-    padding: 0.25em;
-    white-space: nowrap;
-}
-
-#Editing table.fields-table td:first-child {
-    max-width: 10em;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-#Editing table.fields-table td:nth-child(2) {
-    width: 99%;
-}
-
-#Editing select.editing-layer-select,
-#Editing select.editing-feature-select,
-#Editing span.input-frame select {
-    width: 100%;
-    border: 1px solid @item_border@;
-    background-color: white;
-    padding: 0.25em;
-}
-
-#Editing span.react-numeric-input {
-    width: 100%;
-    height: 2em;
-}
-
-#Editing table.fields-table label {
-    display: flex;
-    height: 2em;
-    align-items: center;
-}
-
-#Editing table.fields-table label > input {
-    margin-right: 0.5em;
-}
-
-#Editing table.fields-table textarea {
-    width: 100%;
-}
-
-#Editing span.input-frame input:disabled {
-    background-color: lightgray;
-    cursor: not-allowed;
-}
-
-#Editing span.input-frame input {
-    outline: none;
-    background: none;
-}
-
-#Editing span.input-frame {
-    border: 1px solid @item_border@;
-    padding: 0.25em;
-    background-color: white;
-    display: flex;
-    align-items: center;
-    height: 2em;
-}
-
-#Editing span.input-frame input,
-#Editing span.input-frame select {
-    border: 0;
-    flex: 1;
-    min-width: 0;
-    width: 0;
 }

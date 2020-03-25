@@ -12,7 +12,6 @@ const {connect} = require('react-redux');
 const isEmpty = require('lodash.isempty');
 const isEqual = require('lodash.isequal');
 const assign = require('object-assign');
-const NumericInput = require('react-numeric-input');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const LocaleUtils = require("../utils/LocaleUtils");
 const MapUtils = require("../utils/MapUtils");
@@ -21,9 +20,9 @@ const {changeEditingState} = require('../actions/editing');
 const {setCurrentTaskBlocked} = require('../actions/task');
 const {LayerRole, refreshLayer} = require('../actions/layers');
 const {clickOnMap} = require("../actions/map");
+const AutoEditForm = require('../components/AutoEditForm');
 const {SideBar} = require('../components/SideBar');
 const ButtonBar = require('../components/widgets/ButtonBar');
-const ToggleSwitch = require('../components/widgets/ToggleSwitch');
 const LayerUtils = require("../utils/LayerUtils");
 require('./style/Editing.css');
 
@@ -104,91 +103,7 @@ class Editing extends React.Component {
             this.props.clickOnMap(null);
         }
     }
-    renderField = (field) => {
-        let constraints = field.constraints || {};
-        let disabled = this.props.editing.feature ? "" : "disabled";
-        let value = "";
-        if(this.props.editing.feature && this.props.editing.feature.properties) {
-            value = this.props.editing.feature.properties[field.id] || "";
-        }
-        let input = null;
-        let title = field.name + ":";
-        if(field.type == "boolean" || field.type == "bool") {
-            if(this.props.touchFriendly) {
-                input = (
-                    <ToggleSwitch active={value} onChange={active => this.updateField(field.id, active)} />
-                );
-            } else {
-                title = (
-                    <label>
-                        <input type="checkbox" checked={value} onChange={ev => this.updateField(field.id, ev.target.checked)} />
-                        {field.name}
-                    </label>
-                );
-            }
-        }
-        else if(constraints.values) {
-            input = (
-                <span className="input-frame">
-                    <select value={value} onChange={ev => this.updateField(field.id, ev.target.value)}>
-                        <option value="" disabled>{LocaleUtils.getMessageById(this.context.messages, "editing.select")}</option>
-                        {constraints.values.map((item,index) => {
-                            let value = "", label = "";
-                            if(typeof(item) === 'string') {
-                                value = label = item;
-                            } else {
-                                value = item.value;
-                                label = item.label;
-                            }
-                            return (
-                                <option key={field.id + index} value={value}>{label}</option>
-                            );
-                        })}
-                    </select>
-                </span>
-            );
-        } else if(field.type == "number") {
-            let precision = constraints.step > 0 ? Math.ceil(-Math.log10(constraints.step)) : 6;
-            input = (
-                <NumericInput mobile={this.props.touchFriendly} strict
-                    min={constraints.min} max={constraints.max}
-                    step={constraints.step || 1} precision={precision}
-                    format={nr => String(Number(nr))}
-                    value={value} onChange={nr => this.updateField(field.id, nr)} />
-            );
-        } else if(field.type == "date") {
-            // Truncate time portion of ISO date string
-            value = value.substr(0, 10);
-            input = (
-                <span className="input-frame">
-                    <input type={field.type} {...constraints} disabled={disabled}
-                        onChange={(ev) => {
-                            // set empty date field value to null instead of empty string
-                            this.updateField(field.id, ev.target.value == '' ? null : ev.target.value);
-                        }}
-                        value={value}/>
-                </span>
-            );
-        } else if(field.type == "text") {
-            input = (
-                <textarea value={value} onChange={(ev) => this.updateField(field.id, ev.target.value)}></textarea>
-            );
-        } else {
-            input = (
-                <span className="input-frame">
-                    <input type={field.type} {...constraints} disabled={disabled}
-                        onChange={(ev) => this.updateField(field.id, ev.target.value)}
-                        value={value}/>
-                </span>
-            );
-        }
-        return (
-            <tr key={field.id}>
-                <td title={field.name} colSpan={input ? 1 : 2}>{title}</td>
-                {input ? (<td>{input}</td>) : null}
-            </tr>
-        );
-    }
+
     renderBody = () => {
         if(!this.props.theme || isEmpty(this.props.theme.editConfig)) {
             return (
@@ -241,11 +156,8 @@ class Editing extends React.Component {
                 <div>
                     <div className="separator"></div>
                     <form action="" onSubmit={this.onSubmit}>
-                        <table className="fields-table">
-                            <tbody>
-                                {(curConfig.fields || []).map(field => this.renderField(field))}
-                            </tbody>
-                        </table>
+                        <AutoEditForm fields={curConfig.fields} values={this.props.editing.feature.properties}
+                            touchFriendly={this.props.touchFriendly} updateField={this.updateField} />
                         {commitBar}
                     </form>
                 </div>
