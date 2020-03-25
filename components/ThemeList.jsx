@@ -75,7 +75,7 @@ class ThemeList extends React.Component {
         }
         let subtree = subdirs.map((subdir, idx) => {
             let sublevel = [...level, idx];
-            let expanded = !this.props.collapsibleGroups || filter || isEqual(sublevel, this.state.expandedGroup.slice(0, sublevel.length));
+            let expanded = !this.props.collapsibleGroups || filter || isEqual(sublevel, this.state.expandedGroup.slice(0, sublevel.length)) || (this.props.activeTheme && this.groupContainsActiveTheme(subdir));
             return (
                 <li key={subdir.title} className="theme-group-header">
                     <span onClick={ev => this.setState({expandedGroup: expanded ? sublevel.slice(0, -1) : sublevel})}>
@@ -135,6 +135,19 @@ class ThemeList extends React.Component {
                 {subtree}
             </ul>
         );
+    }
+    groupContainsActiveTheme = (group) => {
+        for(let item of (group.items || [])) {
+            if(item.id === this.props.activeTheme.id) {
+                return true;
+            }
+        }
+        for(let subdir of (group.subdirs || [])) {
+            if(this.groupContainsActiveTheme(subdir)) {
+                return true;
+            }
+        }
+        return false;
     }
     render() {
         let filter = this.props.filter ? new RegExp(removeDiacritics(this.props.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i") : null;
