@@ -61,9 +61,7 @@ class ImportLayerList extends React.PureComponent {
                         {entry.title}
                     </span>
                 </div>
-                <div style={{display: entry.expanded ? 'block' : 'none'}}>
-                {sublayers}
-                </div>
+                {entry.expanded ? sublayers : null}
             </div>
         );
     }
