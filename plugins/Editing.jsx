@@ -21,6 +21,7 @@ const {setCurrentTaskBlocked} = require('../actions/task');
 const {LayerRole, refreshLayer} = require('../actions/layers');
 const {clickOnMap} = require("../actions/map");
 const AutoEditForm = require('../components/AutoEditForm');
+const QtDesignerForm = require('../components/QtDesignerForm');
 const {SideBar} = require('../components/SideBar');
 const ButtonBar = require('../components/widgets/ButtonBar');
 const LayerUtils = require("../utils/LayerUtils");
@@ -153,8 +154,12 @@ class Editing extends React.Component {
             fieldsTable = (
                 <div className="editing-edit-frame">
                     <form action="" onSubmit={this.onSubmit}>
-                        <AutoEditForm fields={curConfig.fields} values={this.props.editing.feature.properties}
-                            touchFriendly={this.props.touchFriendly} updateField={this.updateField} />
+                        {curConfig.form ? (
+                            <QtDesignerForm values={this.props.editing.feature.properties} updateField={this.updateField} form={curConfig.form} />
+                        ) : (
+                            <AutoEditForm fields={curConfig.fields} values={this.props.editing.feature.properties}
+                                touchFriendly={this.props.touchFriendly} updateField={this.updateField} />
+                        )}
                         {commitBar}
                     </form>
                 </div>
