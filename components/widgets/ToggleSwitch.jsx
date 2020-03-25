@@ -15,7 +15,8 @@ require('./style/ToggleSwitch.css');
 class ToggleSwitch extends React.Component {
     static propTypes = {
         active: PropTypes.bool.isRequired,
-        onChange: PropTypes.func.isRequired
+        onChange: PropTypes.func.isRequired,
+        name: PropTypes.string
     }
     render() {
         let classNames = classnames({
@@ -28,6 +29,8 @@ class ToggleSwitch extends React.Component {
                 <span className="toggle-switch-yes"><Icon icon="ok" /></span>
                 <span className="toggle-switch-slider"><Icon icon="menu-hamburger" /></span>
                 <span className="toggle-switch-no"><Icon icon="remove" /></span>
+                {/* Ensure toggle switch appears in form.elements */}
+                <input type="checkbox" name={this.props.name} value={this.props.active} style={{visibility: 'none'}} />
             </div>
         );
     }

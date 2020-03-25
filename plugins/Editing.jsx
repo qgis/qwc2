@@ -235,14 +235,14 @@ class Editing extends React.Component {
         // Ensure properties is not null
         feature = assign({}, feature, {properties: feature.properties || {}});
 
-        // Set some default values for fields which are not set
-        const curConfig = this.props.theme.editConfig[this.state.selectedLayer] || {};
-        (curConfig.fields || []).forEach(field => {
-            if(feature.properties[field.id] === undefined) {
-                if(field.type === "boolean" || field.type === "bool") {
-                    feature.properties[field.id] = false;
-                } else if(field.type === "number") {
-                    feature.properties[field.id] = Math.max(0, ((field.constraints || {}).min || 0));
+        // Collect all values from form fields
+        let fieldnames = Array.from(ev.target.elements).map(element => element.name).filter(x => x);
+        fieldnames.forEach(name => {
+            let element = ev.target.elements.namedItem(name);
+            if(element) {
+                let value = element.type === "radio" || element.type === "checkbox" ? element.checked : element.value;
+                if(feature.properties[name] === undefined) {
+                    feature.properties[name] = value;
                 }
             }
         });

@@ -39,13 +39,14 @@ class AutoEditForm extends(React.Component) {
         let title = field.name + ":";
         if(field.type == "boolean" || field.type == "bool") {
             if(this.props.touchFriendly) {
+                let boolvalue = value == "1" || value == "on" || value == "true" || value === true;
                 input = (
-                    <ToggleSwitch active={value} onChange={active => this.props.updateField(field.id, active)} />
+                    <ToggleSwitch name={field.id} active={boolvalue} onChange={active => this.props.updateField(field.id, active)} />
                 );
             } else {
                 title = (
                     <label>
-                        <input type="checkbox" checked={value} onChange={ev => this.props.updateField(field.id, ev.target.checked)} />
+                        <input name={field.id} type="checkbox" checked={value} onChange={ev => this.props.updateField(field.id, ev.target.checked)} />
                         {field.name}
                     </label>
                 );
@@ -54,7 +55,7 @@ class AutoEditForm extends(React.Component) {
         else if(constraints.values) {
             input = (
                 <span className="input-frame">
-                    <select value={value} onChange={ev => this.props.updateField(field.id, ev.target.value)}>
+                    <select name={field.id} value={value} onChange={ev => this.props.updateField(field.id, ev.target.value)}>
                         <option value="" disabled>{LocaleUtils.getMessageById(this.context.messages, "editing.select")}</option>
                         {constraints.values.map((item,index) => {
                             let value = "", label = "";
@@ -74,7 +75,7 @@ class AutoEditForm extends(React.Component) {
         } else if(field.type == "number") {
             let precision = constraints.step > 0 ? Math.ceil(-Math.log10(constraints.step)) : 6;
             input = (
-                <NumericInput mobile={this.props.touchFriendly} strict
+                <NumericInput name={field.id} mobile={this.props.touchFriendly} strict
                     min={constraints.min} max={constraints.max}
                     step={constraints.step || 1} precision={precision}
                     format={nr => String(Number(nr))}
@@ -85,7 +86,7 @@ class AutoEditForm extends(React.Component) {
             value = value.substr(0, 10);
             input = (
                 <span className="input-frame">
-                    <input type={field.type} {...constraints}
+                    <input name={field.id} type={field.type} {...constraints}
                         onChange={(ev) => {
                             // set empty date field value to null instead of empty string
                             this.updateField(field.id, ev.target.value == '' ? null : ev.target.value);
@@ -95,12 +96,12 @@ class AutoEditForm extends(React.Component) {
             );
         } else if(field.type == "text") {
             input = (
-                <textarea value={value} onChange={(ev) => this.props.updateField(field.id, ev.target.value)}></textarea>
+                <textarea name={field.id} value={value} onChange={(ev) => this.props.updateField(field.id, ev.target.value)}></textarea>
             );
         } else {
             input = (
                 <span className="input-frame">
-                    <input type={field.type} {...constraints}
+                    <input name={field.id} type={field.type} {...constraints}
                         onChange={(ev) => this.props.updateField(field.id, ev.target.value)}
                         value={value}/>
                 </span>
