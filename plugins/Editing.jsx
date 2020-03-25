@@ -122,12 +122,10 @@ class Editing extends React.Component {
             );
         }
 
-        let actionBar = null;
         const actionButtons = [
             {key: 'Pick', icon: 'pick', label: "editing.pick", data: {action: 'Pick'}},
             {key: 'Draw', icon: 'editdraw', label: "editing.draw", data: {action: 'Draw', feature: null}}
         ];
-        actionBar = (<ButtonBar buttons={actionButtons} active={this.props.editing.action} disabled={this.props.editing.changed} onClick={(action, data) => this.props.changeEditingState({...data})} />);
 
         let commitBar = null;
         if(this.props.editing.changed) {
@@ -141,7 +139,7 @@ class Editing extends React.Component {
         if(this.state.pickedFeatures){
             let featureText = LocaleUtils.getMessageById(this.context.messages, "editing.feature");
             featureSelection = (
-                <div>
+                <div className="editing-feature-selection">
                     <select className="editing-feature-select" value={(this.props.editing.feature || {}).id || ""} onChange={(ev) => this.setEditFeature(ev.target.value)}  disabled={this.props.editing.changed === true}>
                         {this.state.pickedFeatures.map(feature => (
                             <option key={feature.id} value={feature.id}>{editConfig.displayField ? feature.properties[editConfig.displayField] : featureText + " " + feature.id}</option>
@@ -153,8 +151,7 @@ class Editing extends React.Component {
         let fieldsTable = null;
         if(this.props.editing.feature) {
             fieldsTable = (
-                <div>
-                    <div className="separator"></div>
+                <div className="editing-edit-frame">
                     <form action="" onSubmit={this.onSubmit}>
                         <AutoEditForm fields={curConfig.fields} values={this.props.editing.feature.properties}
                             touchFriendly={this.props.touchFriendly} updateField={this.updateField} />
@@ -187,7 +184,7 @@ class Editing extends React.Component {
         }, []);
         return (
             <div className="editing-body">
-                <div>
+                <div className="editing-layer-selection">
                     <select className="editing-layer-select" value={this.state.selectedLayer || ""} onChange={ev => this.changeSelectedLayer(ev.target.value)} disabled={this.props.editing.changed === true}>
                         {Object.keys(editConfig).filter(layerId => themeSublayers.includes(layerId)).map(layerId => {
                             return (
@@ -196,7 +193,7 @@ class Editing extends React.Component {
                         })}
                     </select>
                 </div>
-                {actionBar}
+                <ButtonBar buttons={actionButtons} active={this.props.editing.action} disabled={this.props.editing.changed} onClick={(action, data) => this.props.changeEditingState({...data})} />
                 {featureSelection}
                 {fieldsTable}
                 {deleteBar}
