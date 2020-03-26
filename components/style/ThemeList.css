@@ -64,10 +64,16 @@ div.ThemeList li.theme-item > img {
     height: auto;
 }
 
-div.ThemeList li.theme-item > span.icon {
+div.ThemeList div.theme-item-icons {
     position: absolute;
     bottom: 0;
     right: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+div.ThemeList div.theme-item-icons > span.icon {
+    flex: 0 0 auto;
     font-size: large;
     padding: 0.25em;
     background-color: rgba(255, 255, 255, 0.75);
@@ -75,7 +81,7 @@ div.ThemeList li.theme-item > span.icon {
     z-index: 2;
 }
 
-div.ThemeList li.theme-item > span.icon:hover {
+div.ThemeList div.theme-item-icons > span.icon:hover {
     color: @item_active@;
 }
 
@@ -130,9 +136,6 @@ div.ThemeList div.theme-item-filterinfo-overlay {
     padding: 0.25em;
     border-top: 1px solid @item_border@;
     z-index: 1;
-}
-
-div.ThemeList span.icon + div.theme-item-filterinfo-overlay {
     padding-right: 2em;
 }
 

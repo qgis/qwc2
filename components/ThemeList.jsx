@@ -87,6 +87,7 @@ class ThemeList extends React.Component {
         });
         let activeThemeId = this.props.activeTheme ? this.props.activeTheme.id : null;
         let addTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addtotheme");
+        let openTabTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.openintab");
         return (
             <ul className="theme-group-body">
                 {(group && group.items ? group.items : []).map(item => {
@@ -122,7 +123,10 @@ class ThemeList extends React.Component {
                                 </div>
                             ) : null}
                             <img src={assetsPath + "/" + item.thumbnail} />
-                            {this.props.allowAddingOtherThemes ? (<Icon icon="plus" title={addTitle} onClick={ev => this.addThemeLayers(ev, item)} />) : null}
+                            <div className="theme-item-icons">
+                                {this.props.allowAddingOtherThemes ? (<Icon icon="plus" title={addTitle} onClick={ev => this.addThemeLayers(ev, item)} />) : null}
+                                <Icon icon="open_link" title={openTabTitle} onClick={ev => this.openInTab(ev, item.id)} />
+                            </div>
                             {isEmpty(matches) ? null : (
                                 <div className="theme-item-filterinfo-overlay">
                                     {matches.map(match => (
@@ -190,6 +194,11 @@ class ThemeList extends React.Component {
         this.props.addLayer(ThemeUtils.createThemeLayer(theme, this.props.themes, LayerRole.USERLAYER));
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
+    }
+    openInTab = (ev, themeid) => {
+        ev.stopPropagation();
+        let url = location.href.replace(/\?.*/, '?t=' + themeid);
+        window.open(url, '_blank');
     }
 };
 

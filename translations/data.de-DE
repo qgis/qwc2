@@ -208,7 +208,8 @@
         "title": "Titel",
         "keywords": "Schlüsselwörter",
         "abstract": "Zusammenfassung"
-      }
+      },
+      "openintab": "In Tab öffnen"
     }
   }
 }

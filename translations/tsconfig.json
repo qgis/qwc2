@@ -167,6 +167,7 @@
     "themeswitcher.addtotheme",
     "themeswitcher.match.title",
     "themeswitcher.match.keywords",
-    "themeswitcher.match.abstract"
+    "themeswitcher.match.abstract",
+    "themeswitcher.openintab"
   ]
 }
