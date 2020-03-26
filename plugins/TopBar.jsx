@@ -15,6 +15,7 @@ const Icon = require('../components/Icon');
 const Message = require('../components/I18N/Message');
 const ConfigUtils = require("../utils/ConfigUtils");
 const {toggleFullscreen} = require('../actions/display');
+const {openExternalUrl} = require('../actions/task');
 const {restoreDefaultTheme} = require('../actions/theme');
 require('./style/TopBar.css');
 
@@ -28,6 +29,7 @@ class TopBar extends React.Component {
         fullscreen: PropTypes.bool,
         toggleFullscreen: PropTypes.func,
         restoreDefaultTheme: PropTypes.func,
+        openExternalUrl: PropTypes.func,
         logoFormat: PropTypes.string,
         searchOptions: PropTypes.object,
         appMenuClearsTask: PropTypes.bool,
@@ -81,7 +83,11 @@ class TopBar extends React.Component {
                         <this.props.components.Search searchOptions={this.props.searchOptions}/>
                         <this.props.components.Toolbar toolbarItems={this.props.toolbarItems} />
                     </div>
-                    <this.props.components.AppMenu menuItems={this.props.menuItems} buttonContents={buttonContents} appMenuClearsTask={this.props.appMenuClearsTask} showOnStartup={this.props.appMenuVisibleOnStartup} />
+                    <this.props.components.AppMenu
+                        menuItems={this.props.menuItems} buttonContents={buttonContents}
+                        openExternalUrl={this.props.openExternalUrl}
+                        appMenuClearsTask={this.props.appMenuClearsTask}
+                        showOnStartup={this.props.appMenuVisibleOnStartup} />
                     <this.props.components.FullscreenSwitcher />
                 </div>
             </Swipeable>
@@ -99,7 +105,8 @@ module.exports = (components) => { return {
         components: components
     }), {
         toggleFullscreen: toggleFullscreen,
-        restoreDefaultTheme: restoreDefaultTheme
+        restoreDefaultTheme: restoreDefaultTheme,
+        openExternalUrl: openExternalUrl
     })(TopBar),
     reducers: {
         display: require("../reducers/display"),
