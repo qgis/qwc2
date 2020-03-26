@@ -230,7 +230,7 @@ class ImportLayer extends React.Component {
                                     serviceLayers: (this.state.serviceLayers || []).concat(result)
                                 });
                             }).catch(err => {
-                                this.setState({pendingRequests: this.state.pendingRequests - 1});
+                                this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: this.state.serviceLayers || []});
                             });
                         }
                     }
@@ -242,7 +242,7 @@ class ImportLayer extends React.Component {
                     });
                 }
             }).catch(err => {
-                this.setState({pendingRequests: this.state.pendingRequests - 1});
+                this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: this.state.serviceLayers || []});
             });
             return;
         }
