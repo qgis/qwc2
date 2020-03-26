@@ -134,7 +134,7 @@ class ImportLayer extends React.Component {
     }
     renderInputField() {
         let placeholder = LocaleUtils.getMessageById(this.context.messages, "importlayer.urlplaceholder");
-        let urlPresets = ConfigUtils.getConfigProp("importLayerUrlPresets", this.props.theme);
+        let urlPresets = ConfigUtils.getConfigProp("importLayerUrlPresets", this.props.theme) || [];
         if(this.state.type === "Local") {
             return (<FileSelector file={this.state.file} accept=".kml,.json,.geojson" onFileSelected={this.onFileSelected} />);
         } else {
