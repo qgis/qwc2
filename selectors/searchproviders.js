@@ -7,6 +7,7 @@
  */
 
 const {createSelector} = require('reselect');
+const {addSearchResults, SearchResultType} = require("../actions/search");
 const {LayerRole} = require('../actions/layers');
 const ConfigUtils = require('../utils/ConfigUtils');
 const ThemeUtils = require('../utils/ThemeUtils');
