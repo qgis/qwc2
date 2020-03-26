@@ -566,14 +566,14 @@ const searchFilterSelector = createSelector([state => state.theme, state => stat
 module.exports = (searchProviders, providerFactory=(entry) => { return null; }) => {
     const providersSelector = searchProvidersSelector(searchProviders, providerFactory);
     return connect(
-        createSelector([state => state, searchFilterSelector, displayCrsSelector], (state, searchFilter, displaycrs) => ({
+        createSelector([state => state, searchFilterSelector, displayCrsSelector, providersSelector], (state, searchFilter, displaycrs, searchproviders) => ({
             map: state.map,
             layers: state.layers.flat,
             theme: state.theme.current,
             localConfig: state.localConfig,
             searchFilter: searchFilter,
             displaycrs: displaycrs,
-            searchProviders: searchProviders
+            searchProviders: searchproviders
         })
     ), {
         addThemeSublayer: addThemeSublayer,

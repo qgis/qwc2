@@ -37,7 +37,6 @@ const searchProvidersSelector = (searchProviders, providerFactory) => createSele
                 }
             };
         }
-        console.log(availableProviders);
         return availableProviders;
     }
 )
