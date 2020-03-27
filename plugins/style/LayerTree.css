@@ -266,7 +266,3 @@ img.layertree-item-legend-tooltip {
     text-align: center;
     font-size: 150%;
 }
-
-#LayerTree div.layertree-item-container:last-child div.layertree-item-addsep {
-    display: none;
-}

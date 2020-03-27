@@ -252,16 +252,16 @@ const LayerUtils = {
             ...layers.filter(layer => layer.role === LayerRole.BACKGROUND)
         ];
     },
-    insertSeparator(layers, title, afterlayerId, aftersublayerpath, swipeActive) {
+    insertSeparator(layers, title, beforelayerId, beforesublayerpath, swipeActive) {
         // Extract foreground layers
         let fglayers = layers.filter(layer => layer.role !== LayerRole.BACKGROUND);
         // Explode layers (one entry for every single sublayer)
         let exploded = LayerUtils.explodeLayers(fglayers);
         // Remove matching entries
-        let pos = exploded.findIndex(entry => entry.layer.id === afterlayerId && isEqual(aftersublayerpath, entry.path));
+        let pos = exploded.findIndex(entry => entry.layer.id === beforelayerId && isEqual(beforesublayerpath, entry.path));
         if(pos !== -1) {
             // Add separator
-            exploded.splice(pos + 1, 0, LayerUtils.createSeparatorLayer(title)[0]);
+            exploded.splice(pos, 0, LayerUtils.createSeparatorLayer(title)[0]);
         }
         // Re-assemble layers (if swipe is active, keep first sublayer separate)
         let newlayers = LayerUtils.implodeLayers(exploded, swipeActive);
