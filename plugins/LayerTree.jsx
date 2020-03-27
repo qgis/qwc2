@@ -414,7 +414,7 @@ class LayerTree extends React.Component {
         let visibilities = [];
         for(let layer of this.props.layers) {
             if(layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
-                visibilities.push(this.getGroupVisibility(layer));
+                visibilities.push(isEmpty(layer.sublayers) ? layer.visibility : this.getGroupVisibility(layer));
             }
         }
         let vis = visibilities.reduce((sum, x) => sum + x, 0) / (visibilities.length || 1);
