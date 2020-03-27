@@ -183,7 +183,9 @@ class Search extends React.Component {
              placeholder = LocaleUtils.getMessageById(this.context.messages, "search.search");
             let providers = this.activeProviders(this.props);
             if(!isEmpty(providers)) {
-                placeholder +=  ": " + Object.keys(providers).map(key => providers[key].label).join(", ");
+                placeholder +=  ": " + Object.values(providers).map(prov => {
+                    return prov.labelmsgid ? LocaleUtils.getMessageById(this.context.messages, prov.labelmsgid) : prov.label;
+                }).join(", ");
             }
         } else {
             placeholder = LocaleUtils.getMessageById(this.context.messages, "search.searchall");
@@ -212,12 +214,14 @@ class Search extends React.Component {
                 providerSelectionMenu = (
                     <ul className="searchbar-provider-selection">
                         {allEntry}
-                        {Object.keys(this.props.searchProviders).map(key => {
+                        {Object.entries(this.props.searchProviders).map(([key,prov]) => {
                             let itemClass = classnames({
                                 'searchbar-provider-selection-active': (this.props.activeProviders || []).length === 1 && this.props.activeProviders[0] === key
                             });
                             return (
-                                <li className={itemClass} key={key} onClick={() => this.props.changeSearch("", [key])}>{this.props.searchProviders[key].label}</li>
+                                <li className={itemClass} key={key} onClick={() => this.props.changeSearch("", [key])}>{
+                                        prov.labelmsgid ? LocaleUtils.getMessageById(this.context.messages, prov.labelmsgid) : prov.label
+                                    }</li>
                             );
                         })}
                     </ul>

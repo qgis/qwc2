@@ -28,7 +28,7 @@ const searchProvidersSelector = (searchProviders, providerFactory) => createSele
         }
         if(ConfigUtils.getConfigProp("searchThemes", theme)) {
             availableProviders["themes"] = {
-                label: "Themes",
+                labelmsgid: "search.themes",
                 onSearch: (text, reqId, options, dispatch) => {
                     dispatch(addSearchResults({
                         provider: "themes",
