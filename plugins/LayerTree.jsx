@@ -282,10 +282,10 @@ class LayerTree extends React.Component {
                     <span className="layertree-item-spacer"></span>
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}
                     {allowOptions ? (<Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>) : null}
-                    {allowSeparators ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
+                    {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
                 {editframe}
-                {flattenGroups ? (<div className="layertree-item-addsep" onClick={() => this.props.addLayerSeparator(separatorTitle, layer.id, path)}></div>) : null}
+                {allowSeparators ? (<div className="layertree-item-addsep" onClick={() => this.props.addLayerSeparator(separatorTitle, layer.id, path)}></div>) : null}
             </div>
         );
     }
