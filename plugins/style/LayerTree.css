@@ -251,18 +251,3 @@ img.layertree-item-legend-tooltip {
 #LayerTree div.layertree-item-addsep:hover {
     border-top: 2px solid @item_border@;
 }
-
-#LayerTree div.layertree-item-addsep:hover::before {
-    position: absolute;
-    background-color: @item_border@;
-    display: inline-block;
-    left: 0;
-    top: 0;
-    width: 1.1em;
-    height: 1.1em;
-    content: '+';
-    font-weight: bold;
-    color: white;
-    text-align: center;
-    font-size: 150%;
-}
