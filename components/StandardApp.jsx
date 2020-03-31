@@ -121,7 +121,7 @@ class AppInitComponent extends React.Component {
 
                 // Restore theme and layers
                 try {
-                    this.props.setCurrentTheme(theme, themes, false, initialView, layerParams, visibleBgLayer, state.layers, this.props.appConfig.themeLayerRestorer);
+                    this.props.setCurrentTheme(theme, themes, false, initialView, layerParams, visibleBgLayer, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer);
                 } catch(e) {
                     console.log(e.stack);
                 }

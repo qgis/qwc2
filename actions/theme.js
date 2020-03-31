@@ -37,7 +37,7 @@ function restoreDefaultTheme() {
     };
 }
 
-function setCurrentTheme(theme, themes, preserve=true, initialView=null, layerParams=null, visibleBgLayer=null, permalinkLayers=null, themeLayerRestorer=null) {
+function setCurrentTheme(theme, themes, preserve=true, initialView=null, layerParams=null, visibleBgLayer=null, permalinkLayers=null, themeLayerRestorer=null, externalLayerRestorer=null) {
     return (dispatch, getState) => {
         dispatch({
             type: SWITCHING_THEME,
@@ -135,15 +135,15 @@ function setCurrentTheme(theme, themes, preserve=true, initialView=null, layerPa
                         }
                     }, []);
                 }
-                finishThemeSetup(dispatch, newTheme, themes, layerConfigs, insertPos, permalinkLayers);
+                finishThemeSetup(dispatch, newTheme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer);
             });
         } else {
-            finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers);
+            finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer);
         }
     }
 }
 
-function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers)
+function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer)
 {
     // Create layer
     let themeLayer = ThemeUtils.createThemeLayer(theme, themes);
@@ -164,12 +164,18 @@ function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, perm
     }
 
     // Restore external layers
-    for(let key of Object.keys(externalLayers)) {
-        let service = key.slice(0, 3);
-        let serviceUrl = key.slice(4);
-        ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], (source, layer) => {
+    if(externalLayerRestorer) {
+        externalLayerRestorer(externalLayers, themes, (source, layer) => {
             dispatch(replacePlaceholderLayer(source, layer));
         });
+    } else {
+        for(let key of Object.keys(externalLayers)) {
+            let service = key.slice(0, 3);
+            let serviceUrl = key.slice(4);
+            ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], (source, layer) => {
+                dispatch(replacePlaceholderLayer(source, layer));
+            });
+        }
     }
 
     dispatch({
