@@ -106,7 +106,9 @@ const ServiceLayerUtils = {
             boundingBox: bbox,
             visibility: true,
             opacity: 255,
-            external: true
+            external: true,
+            minScale: layer.MinScaleDenominator,
+            maxScale: layer.MaxScaleDenominator
         };
     },
     getWFSLayers(capabilitiesXml) {
