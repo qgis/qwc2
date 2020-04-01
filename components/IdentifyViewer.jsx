@@ -12,11 +12,14 @@ const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const FileSaver = require('file-saver');
 const {stringify} = require('wellknown');
+const ReactHtmlParser = require('react-html-parser').default;
+const {convertNodeToElement} = require('react-html-parser');
 const ResizeableWindow = require("./ResizeableWindow");
 const Message = require('./I18N/Message');
 const ConfigUtils = require('../utils/ConfigUtils');
 const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
 const {setActiveLayerInfo} = require('../actions/layerinfo');
+const {showIframeDialog} = require('../actions/windows');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 const LayerUtils = require('../utils/LayerUtils');
 const MiscUtils = require('../utils/MiscUtils');
@@ -38,7 +41,8 @@ class IdentifyViewer extends React.Component {
         attributeCalculator: PropTypes.func,
         setActiveLayerInfo: PropTypes.func,
         onClose: PropTypes.func,
-        featureInfoReturnsLayerName: PropTypes.bool
+        featureInfoReturnsLayerName: PropTypes.bool,
+        showIframeDialog: PropTypes.func
     }
     static defaultProps = {
         longAttributesDisplay: 'ellipsis',
@@ -291,7 +295,7 @@ class IdentifyViewer extends React.Component {
             if(properties.length === 1 && result.properties["maptip"]) {
                 rows = properties.map(attrib =>
                     <tr key={attrib}>
-                        <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(result.properties[attrib])}}></td>
+                        <td className="identify-attr-value">{this.attribValue(result.properties[attrib])}</td>
                     </tr>
                 );
             } else {
@@ -302,7 +306,7 @@ class IdentifyViewer extends React.Component {
                     return (
                         <tr key={attrib}>
                             <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i>{attrib}</i></td>
-                            <td className={"identify-attr-value " + this.props.longAttributesDisplay} dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(result.properties[attrib])}}></td>
+                            <td className={"identify-attr-value " + this.props.longAttributesDisplay}>{this.attribValue(result.properties[attrib])}</td>
                         </tr>
                     );
                 });
@@ -543,6 +547,26 @@ class IdentifyViewer extends React.Component {
             this.props.setActiveLayerInfo(matchlayer, matchsublayer)
         }
     }
+    attribValue = (text) => {
+        text = MiscUtils.addLinkAnchors(text);
+        return ReactHtmlParser(text, {transform: (node, index) => {
+            if(node.name === "a") {
+                return (<a key={"a"+index} href={node.attribs.href} target={node.attribs.target||"_blank"} onClick={this.attributeLinkClicked}>{node.children.map((child,idx) => (
+                    <React.Fragment key={"f"+idx}>{convertNodeToElement(child, idx)}</React.Fragment>)
+                )}</a>);
+            }
+            return undefined;
+        }});
+    }
+    attributeLinkClicked = (ev) => {
+        if(ev.target.target.startsWith(":")) {
+            let target = ev.target.target.split(":");
+            if(target[1] === "iframedialog") {
+                this.props.showIframeDialog(target[2], ev.target.href);
+                ev.preventDefault();
+            }
+        }
+    }
 };
 
 const selector = (state) => ({
@@ -555,6 +579,7 @@ module.exports = {
     IdentifyViewer: connect(selector, {
         addLayerFeatures: addLayerFeatures,
         removeLayer: removeLayer,
-        setActiveLayerInfo: setActiveLayerInfo
+        setActiveLayerInfo: setActiveLayerInfo,
+        showIframeDialog: showIframeDialog
     })(IdentifyViewer)
 };

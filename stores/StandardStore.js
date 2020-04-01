@@ -22,6 +22,7 @@ module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeO
         identify: require('../reducers/identify'),
         map: require('../reducers/map'),
         layers: require('../reducers/layers'),
+        windows: require('../reducers/windows'),
         ...PluginsUtils.getPluginReducers(plugins)
     });
 

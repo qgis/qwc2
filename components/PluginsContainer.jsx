@@ -10,6 +10,7 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const url = require('url');
 const urlQuery = url.parse(window.location.href, true).query;
+const WindowManager = require('./WindowManager');
 
 require('./style/PluginsContainer.css');
 
@@ -45,6 +46,7 @@ class PluginsContainer extends React.Component {
                     {
                      this.renderPlugins(this.props.pluginsConfig[this.props.mode])
                     }
+                    <WindowManager />
                 </div>
             );
         }
