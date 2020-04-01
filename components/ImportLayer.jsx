@@ -98,19 +98,13 @@ class ImportLayerList extends React.PureComponent {
     addServiceLayer = (entry) => {
         if(entry.resource) {
             let params = LayerUtils.splitLayerUrlParam(entry.resource);
-            ServiceLayerUtils.findLayers(params.type, params.url, [params], (source, layer) => {
+            ServiceLayerUtils.findLayers(params.type, params.url, [params], (id, layer) => {
                 if(layer) {
-                    this.props.addLayer(assign({
-                        id: entry.name + Date.now().toString(),
-                        role: LayerRole.USERLAYER
-                    }, layer, {sublayers: null}));
+                    this.props.addLayer(layer);
                 }
             });
         } else if(entry.type === "wms" || entry.type === "wfs") {
-            this.props.addLayer(assign({
-                id: entry.name + Date.now().toString(),
-                role: LayerRole.USERLAYER
-            }, entry, {sublayers: null}));
+            this.props.addLayer(assign({}, entry, {sublayers: null}));
         }
     }
 }
@@ -298,10 +292,8 @@ class ImportLayer extends React.Component {
         if(!isEmpty(data.features)) {
             let features = data.features.map(feature => ({...feature, crs: feature.crs || "EPSG:4326"}));
             this.props.addLayerFeatures({
-                id: filename + Date.now(),
                 name: filename,
                 title: filename.replace(/\.[^/.]+$/, ""),
-                role: LayerRole.USERLAYER,
                 zoomToExtent: true
             }, features, true);
         } else {

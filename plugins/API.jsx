@@ -27,12 +27,9 @@ class API extends React.Component {
     }
     addExternalLayer = (resource) => {
         let params = LayerUtils.splitLayerUrlParam(resource);
-        ServiceLayerUtils.findLayers(params.type, params.url, [params], (source, layer) => {
+        ServiceLayerUtils.findLayers(params.type, params.url, [params], (id, layer) => {
             if(layer) {
-                this.props.addLayer(assign({
-                    id: layer.name + Date.now().toString(),
-                    role: LayerRole.USERLAYER
-                }, layer, {sublayers: null}));
+                this.props.addLayer(layer);
             }
         });
     }

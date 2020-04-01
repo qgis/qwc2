@@ -149,10 +149,10 @@ function removeAllLayers() {
     };
 }
 
-function replacePlaceholderLayer(source, layer) {
+function replacePlaceholderLayer(id, layer) {
     return {
         type: REPLACE_PLACEHOLDER_LAYER,
-        source,
+        id,
         layer
     }
 }

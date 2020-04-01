@@ -231,16 +231,16 @@ const ServiceLayerUtils = {
                 let source = type + ':' + serviceUrl + '#' + layerConfig.name;
                 if(layer) {
                     layer = assign({}, layer, {
+                        id: layerConfig.id,
                         opacity: layerConfig.opacity,
                         visibility: layerConfig.visibility,
-                        id: layerConfig.name + Date.now().toString(),
                         role: LayerRole.USERLAYER,
                         sublayers: null
                     });
-                    callback(source, layer);
+                    callback(layerConfig.id, layer);
                 } else {
                     console.warn("Could not find layer " + layerConfig.name);
-                    callback(source, null);
+                    callback(layerConfig.id, null);
                 }
             }
         }).catch(err => {

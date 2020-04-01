@@ -33,7 +33,7 @@ const LayerUtils = {
             if(layerConfig.type === 'separator') {
                 // No point restoring separators
             } else if(layerConfig.type !== 'theme') {
-                external = external.concat(LayerUtils.createExternalLayerPlaceholder(layerConfig, externalLayers));
+                external = external.concat(LayerUtils.createExternalLayerPlaceholder(layerConfig, externalLayers, layerConfig.id));
             }
         }
         exploded = [...external, ...exploded];
@@ -55,7 +55,7 @@ const LayerUtils = {
             } else if(layerConfig.type === 'separator') {
                 reordered = reordered.concat(LayerUtils.createSeparatorLayer(layerConfig.name));
             } else {
-                reordered = reordered.concat(LayerUtils.createExternalLayerPlaceholder(layerConfig, externalLayers));
+                reordered = reordered.concat(LayerUtils.createExternalLayerPlaceholder(layerConfig, externalLayers, layerConfig.id));
             }
         }
         LayerUtils.insertPermalinkLayers(reordered, permalinkLayers);
@@ -66,25 +66,24 @@ const LayerUtils = {
             type: "separator",
             title: title,
             role: LayerRole.USERLAYER,
-            refid: uuid.v4(),
             uuid: uuid.v4(),
             id: uuid.v4()
         }]);
     },
-    createExternalLayerPlaceholder: function(layerConfig, externalLayers) {
+    createExternalLayerPlaceholder: function(layerConfig, externalLayers, id) {
         let key = layerConfig.type + ":" + layerConfig.url;
         (externalLayers[key] = externalLayers[key] || []).push({
+            id: id,
             name: layerConfig.name,
             opacity: layerConfig.opacity,
             visibility: layerConfig.visibility
         });
         return LayerUtils.explodeLayers([{
+            id: id,
             type: "placeholder",
             title: layerConfig.name,
             role: LayerRole.USERLAYER,
             loading: true,
-            source: layerConfig.type + ':' + layerConfig.url + '#' + layerConfig.name,
-            refid: uuid.v4(),
             uuid: uuid.v4()
         }]);
     },
@@ -195,6 +194,7 @@ const LayerUtils = {
     },
     splitLayerUrlParam(entry) {
         const nameOpacityPattern = /([^\[]+)\[(\d+)]/;
+        let id = uuid.v4();
         let type = 'theme';
         let url = null;
         let opacity = 255;
@@ -218,7 +218,7 @@ const LayerUtils = {
             type = 'separator';
             name = name.slice(4);
         }
-        return {type, url, name, opacity, visibility};
+        return {id, type, url, name, opacity, visibility};
     },
     pathEqualOrBelow(parent, child) {
         return isEqual(child.slice(0, parent.length), parent);
@@ -392,7 +392,7 @@ const LayerUtils = {
             // Attempt to merge with previous if possible
             let target = newlayers.length > 0 ? newlayers[newlayers.length - 1] : null;
             let source = layer;
-            if(target && target.sublayers && target.refid === layer.refid) {
+            if(target && target.sublayers && target.id === layer.id) {
                 let innertarget = target.sublayers[target.sublayers.length - 1];
                 let innersource = source.sublayers[0]; // Exploded entries have only one entry per sublayer level
                 while(innertarget && innertarget.sublayers && innertarget.name === innersource.name) {

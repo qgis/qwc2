@@ -172,8 +172,8 @@ function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, perm
         for(let key of Object.keys(externalLayers)) {
             let service = key.slice(0, 3);
             let serviceUrl = key.slice(4);
-            ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], (source, layer) => {
-                dispatch(replacePlaceholderLayer(source, layer));
+            ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], (id, layer) => {
+                dispatch(replacePlaceholderLayer(id, layer));
             });
         }
     }

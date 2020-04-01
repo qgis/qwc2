@@ -36,9 +36,7 @@ class VectorLayerPicker extends React.Component {
         let name = prompt("Enter layer name");
         if(name) {
             let layer = {
-                id: uuid.v4(),
                 title: name,
-                role: LayerRole.USERLAYER,
                 type: 'vector'
             };
             this.props.addLayer(layer);

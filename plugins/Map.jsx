@@ -52,7 +52,7 @@ class MapPlugin extends React.Component {
                         layers.push(assign({}, layer.externalLayers[sublayers[i]], {
                             opacity: opacities[i]
                         }));
-                    } else if(layers.length > 0 && layers[layers.length - 1].refid === layer.refid) {
+                    } else if(layers.length > 0 && layers[layers.length - 1].id === layer.id) {
                         layers[layers.length - 1].params.LAYERS += "," + sublayers[i];
                         layers[layers.length - 1].params.OPACITIES += "," + opacities[i];
                     } else {

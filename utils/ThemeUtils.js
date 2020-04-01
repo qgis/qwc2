@@ -62,7 +62,6 @@ const ThemeUtils = {
     },
     createThemeLayer: function(theme, themes, role=LayerRole.THEME) {
         let layer = {
-            id: theme.name + Date.now().toString(),
             type: "wms",
             url: theme.url,
             version: theme.version,

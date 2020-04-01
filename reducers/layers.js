@@ -63,8 +63,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
         case ADD_LAYER: {
             let newLayers = (state.flat || []).concat();
             let newLayer = assign({}, action.layer, {
-                refid: uuid.v4(),
-                id: action.layer.id || (action.layer.name + "__" + newLayers.length),
+                id: action.layer.id || uuid.v4(),
                 role: action.layer.role || LayerRole.USERLAYER,
                 queryable: action.layer.queryable || false,
                 visibility: action.layer.visibility !== undefined ? action.layer.visibility : true,
@@ -113,7 +112,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             if(idx === -1 || action.clear) {
                 let newLayer = assign({}, action.layer, {
                     type: 'vector',
-                    refid: uuid.v4(),
+                    id: action.layer.id || uuid.v4(),
                     uuid: uuid.v4(),
                     features: action.features,
                     role: action.layer.role || LayerRole.USERLAYER,
@@ -191,8 +190,8 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             let newLayers = state.flat || [];
             if(action.layer) {
                 newLayers = newLayers.map(layer => {
-                    if(layer.type === 'placeholder' && layer.source === action.source) {
-                        let newLayer = {...action.layer, refid: uuid.v4()};
+                    if(layer.type === 'placeholder' && layer.id === action.id) {
+                        let newLayer = {...action.layer};
                         LayerUtils.addUUIDs(newLayer);
                         if(newLayer.type === "wms") {
                             assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
@@ -203,7 +202,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
                     }
                 });
             } else {
-                newLayers = newLayers.filter(layer => !(layer.type === 'placeholder' && layer.source === action.source));
+                newLayers = newLayers.filter(layer => !(layer.type === 'placeholder' && layer.id === action.id));
             }
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
             return assign({}, state, {flat: newLayers});
