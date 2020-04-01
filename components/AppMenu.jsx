@@ -24,12 +24,14 @@ class AppMenu extends React.Component {
         currentTaskBlocked: PropTypes.bool,
         setCurrentTask: PropTypes.func,
         currentTheme: PropTypes.object,
-        showOnStartup: PropTypes.bool
+        showOnStartup: PropTypes.bool,
+        onMenuToggled: PropTypes.func
     }
     static defaultProps = {
         buttonContents: null,
         appMenuClearsTask: false,
-        showOnStartup: false
+        showOnStartup: false,
+        onMenuToggled: () => {}
     }
     state = {
         menuVisible: false,
@@ -53,6 +55,7 @@ class AppMenu extends React.Component {
         } else {
             document.removeEventListener('click', this.checkCloseMenu);
         }
+        this.props.onMenuToggled(!this.state.menuVisible);
         this.setState({ menuVisible: !this.state.menuVisible, submenusVisible: [] });
     }
     checkCloseMenu = (ev) => {
