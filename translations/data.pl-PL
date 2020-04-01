@@ -99,7 +99,8 @@
       "printlegend": "Drukuj legendę",
       "deletealllayers": "Usuń wszystkie warstwy",
       "visiblefilter": "",
-      "separator": ""
+      "separator": "",
+      "separatortooltip": ""
     },
     "locate": {
       "metersUnit": "metry",

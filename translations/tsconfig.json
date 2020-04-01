@@ -87,6 +87,7 @@
     "layertree.deletealllayers",
     "layertree.visiblefilter",
     "layertree.separator",
+    "layertree.separatortooltip",
     "locate.metersUnit",
     "locate.feetUnit",
     "locate.popup",

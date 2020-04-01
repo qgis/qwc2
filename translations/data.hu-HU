@@ -99,7 +99,8 @@
       "printlegend": "Print legend",
       "deletealllayers": "",
       "visiblefilter": "",
-      "separator": ""
+      "separator": "",
+      "separatortooltip": ""
     },
     "locate": {
       "metersUnit": "méter",

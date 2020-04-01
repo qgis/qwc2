@@ -99,7 +99,8 @@
       "printlegend": "Print legend",
       "deletealllayers": "Remove all layers",
       "visiblefilter": "Filter invisible layers",
-      "separator": "Separator"
+      "separator": "Separator",
+      "separatortooltip": "Add separator"
     },
     "locate": {
       "metersUnit": "meters",

@@ -99,7 +99,8 @@
       "printlegend": "Imprimir leyenda",
       "deletealllayers": "",
       "visiblefilter": "",
-      "separator": ""
+      "separator": "",
+      "separatortooltip": ""
     },
     "locate": {
       "metersUnit": "metros",

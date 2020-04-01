@@ -99,7 +99,8 @@
       "printlegend": "Skriv ut teckenförklaring",
       "deletealllayers": "Ta bort alla lager",
       "visiblefilter": "",
-      "separator": ""
+      "separator": "",
+      "separatortooltip": ""
     },
     "locate": {
       "metersUnit": "meter",

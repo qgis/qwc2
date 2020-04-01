@@ -99,7 +99,8 @@
       "printlegend": "Tipărește legenda",
       "deletealllayers": "Elimină toate straturile",
       "visiblefilter": "Filtrează straturile invizibile",
-      "separator": ""
+      "separator": "",
+      "separatortooltip": ""
     },
     "locate": {
       "metersUnit": "metri",

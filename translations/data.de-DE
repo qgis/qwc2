@@ -99,7 +99,8 @@
       "printlegend": "Legende drucken",
       "deletealllayers": "Alle Ebenen entfernen",
       "visiblefilter": "Unsichtbare Ebenen filtern",
-      "separator": "Separator"
+      "separator": "Separator",
+      "separatortooltip": "Separator hinzufügen"
     },
     "locate": {
       "metersUnit": "Meter",

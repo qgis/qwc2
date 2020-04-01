@@ -99,7 +99,8 @@
       "printlegend": "Tisk legendy",
       "deletealllayers": "",
       "visiblefilter": "",
-      "separator": ""
+      "separator": "",
+      "separatortooltip": ""
     },
     "locate": {
       "metersUnit": "metry",

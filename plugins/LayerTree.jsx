@@ -271,9 +271,10 @@ class LayerTree extends React.Component {
         let flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
         let allowSeparators = flattenGroups && allowReordering;
         let separatorTitle = LocaleUtils.getMessageById(this.context.messages, "layertree.separator");
+        let separatorTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.separatortooltip");
         return (
             <div className="layertree-item-container" key={sublayer.uuid} data-id={JSON.stringify({layer: layer.uuid, path: path})}>
-                {allowSeparators ? (<div className="layertree-item-addsep" onClick={() => this.props.addLayerSeparator(separatorTitle, layer.id, path)}></div>) : null}
+                {allowSeparators ? (<div title={separatorTooltip} className="layertree-item-addsep" onClick={() => this.props.addLayerSeparator(separatorTitle, layer.id, path)}></div>) : null}
                 <div className={classnames(itemclasses)}>
                     {(flattenGroups || skipExpanderPlaceholder) ? null : (<span className="layertree-item-expander"></span>)}
                     {checkbox}
