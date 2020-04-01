@@ -46,7 +46,7 @@ class ThemeList extends React.Component {
         showLayerAfterChangeTheme: false
     }
     state = {
-        expandedGroup: [],
+        expandedGroups: [],
         visibleThemeInfoMenu: null
     }
     groupMatchesFilter = (group, filter) => {
@@ -67,21 +67,20 @@ class ThemeList extends React.Component {
         }
         return false;
     }
-    renderThemeGroup = (group, filter, level=[]) => {
+    renderThemeGroup = (group, filter) => {
         let assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let subdirs = (group && group.subdirs ? group.subdirs : []);
         if(filter) {
             subdirs = subdirs.filter(subdir => this.groupMatchesFilter(subdir, filter));
         }
         let subtree = subdirs.map((subdir, idx) => {
-            let sublevel = [...level, idx];
-            let expanded = !this.props.collapsibleGroups || filter || isEqual(sublevel, this.state.expandedGroup.slice(0, sublevel.length)) || (this.props.activeTheme && this.groupContainsActiveTheme(subdir));
+            let expanded = !this.props.collapsibleGroups || filter || this.state.expandedGroups.includes(subdir.id) || (this.props.activeTheme && this.groupContainsActiveTheme(subdir));
             return (
-                <li key={subdir.title} className="theme-group-header">
-                    <span onClick={ev => this.setState({expandedGroup: expanded ? sublevel.slice(0, -1) : sublevel})}>
+                <li key={subdir.id} className="theme-group-header">
+                    <span onClick={ev => this.setState({expandedGroups: expanded ? this.state.expandedGroups.filter(id => id !== subdir.id) : [...this.state.expandedGroups, subdir.id]})}>
                         {this.props.collapsibleGroups ? (<Icon icon={expanded ? "collapse" : "expand"} />) : null} {subdir.title}
                     </span>
-                    {expanded ? this.renderThemeGroup(subdir, filter, sublevel) : null}
+                    {expanded ? this.renderThemeGroup(subdir, filter) : null}
                 </li>
             );
         });

@@ -454,7 +454,7 @@ def getTheme(config, configItem, result, resultItem):
 
 
 # recursively get themes for groups
-def getGroupThemes(config, configGroup, result, resultGroup):
+def getGroupThemes(config, configGroup, result, resultGroup, groupCounter):
     for item in configGroup["items"]:
         itemEntry = {}
         getTheme(config, item, result, itemEntry)
@@ -463,12 +463,14 @@ def getGroupThemes(config, configGroup, result, resultGroup):
 
     if "groups" in configGroup:
         for group in configGroup["groups"]:
+            groupCounter += 1
             groupEntry = {
+                "id": "g%d" % groupCounter,
                 "title": group["title"],
                 "items": [],
                 "subdirs": []
             }
-            getGroupThemes(config, group, result, groupEntry)
+            getGroupThemes(config, group, result, groupEntry, groupCounter)
             resultGroup["subdirs"].append(groupEntry)
 
 
@@ -506,7 +508,8 @@ def genThemes(themesConfig):
             "defaultWMSVersion": config["defaultWMSVersion"] if "defaultWMSVersion" in config else None
             }
     }
-    getGroupThemes(config, config["themes"], result, result["themes"])
+    groupCounter = 0
+    getGroupThemes(config, config["themes"], result, result["themes"], groupCounter)
 
     if "backgroundLayers" in result["themes"]:
         # get thumbnails for background layers

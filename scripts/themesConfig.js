@@ -443,7 +443,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
 let tasks = [];
 
 // recursively get themes for groups
-function getGroupThemes(config, configGroup, result, resultGroup, proxy) {
+function getGroupThemes(config, configGroup, result, resultGroup, proxy, groupCounter) {
     for (let item of configGroup.items) {
         let itemEntry = {};
         tasks.push(getTheme(config, item, result, itemEntry, proxy));
@@ -453,11 +453,12 @@ function getGroupThemes(config, configGroup, result, resultGroup, proxy) {
     if (configGroup.groups !== undefined) {
         for (let group of configGroup.groups) {
             let groupEntry = {
+                id: 'g' + (++groupCounter),
                 title: group.title,
                 items: [],
                 subdirs: []
             };
-            getGroupThemes(config, group, result, groupEntry, proxy);
+            getGroupThemes(config, group, result, groupEntry, proxy, groupCounter);
             resultGroup.subdirs.push(groupEntry);
         }
     }
@@ -492,7 +493,8 @@ function genThemes(themesConfig) {
         }
     };
     let proxy = config.proxy || null;
-    getGroupThemes(config, config.themes, result, result.themes, proxy);
+    let groupCounter = 0;
+    getGroupThemes(config, config.themes, result, result.themes, proxy, groupCounter);
 
     if (result.themes.backgroundLayers !== undefined) {
         // get thumbnails for background layers
