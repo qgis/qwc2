@@ -316,7 +316,7 @@ class IdentifyViewer extends React.Component {
             }
             if(featureReportTemplate) {
                 rows = rows.concat(
-                    <tr>
+                    <tr key="__featurereport">
                         <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i><Message msgId="identify.featureReport" /></i></td>
                         <td className={"identify-attr-value " + this.props.longAttributesDisplay}><a href={this.getFeatureReportUrl(featureReportTemplate, result)}><Message msgId="identify.link" /></a></td>
                     </tr>
