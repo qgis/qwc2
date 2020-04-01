@@ -75,6 +75,9 @@ class ThemeList extends React.Component {
         }
         let subtree = subdirs.map((subdir, idx) => {
             let expanded = !this.props.collapsibleGroups || filter || this.state.expandedGroups.includes(subdir.id) || (this.props.activeTheme && this.groupContainsActiveTheme(subdir));
+            if(isEmpty(subdir.items)) {
+                return null;
+            }
             return (
                 <li key={subdir.id} className="theme-group-header">
                     <span onClick={ev => this.setState({expandedGroups: expanded ? this.state.expandedGroups.filter(id => id !== subdir.id) : [...this.state.expandedGroups, subdir.id]})}>
@@ -89,7 +92,7 @@ class ThemeList extends React.Component {
         let openTabTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.openintab");
         return (
             <ul className="theme-group-body">
-                {(group && group.items ? group.items : []).map(item => {
+                {(!isEmpty(group.items) ? group.items : []).map(item => {
                     let infoLinks = (item.themeInfoLinks || []).map(name => this.props.themes.themeInfoLinks.find(entry => entry.name === name)).filter(entry => entry);
                     let matches = [];
                     if(filter) {
