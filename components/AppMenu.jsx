@@ -120,9 +120,11 @@ class AppMenu extends React.Component {
                     {this.props.buttonContents}
                 </div>
                 <Swipeable onSwipedUp={this.toggleMenu} preventDefaultTouchmoveEvent={true}>
-                    <ul className="appmenu-menu">
-                        {this.renderMenuItems(this.props.menuItems, 0)}
-                    </ul>
+                    <div className="appmenu-menu-container">
+                        <ul className="appmenu-menu">
+                            {this.renderMenuItems(this.props.menuItems, 0)}
+                        </ul>
+                    </div>
                 </Swipeable>
             </div>
         );

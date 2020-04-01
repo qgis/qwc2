@@ -17,22 +17,27 @@ div.AppMenu.appmenu-blocked {
     cursor: not-allowed;
 }
 
-div.AppMenu ul.appmenu-menu {
-    transform-origin: top;
-    transform: scaleY(0);
-    text-align: left;
+div.AppMenu div.appmenu-menu-container {
     position: absolute;
     top: 100%;
     right: 0;
     box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
+    width: 20em;
+    max-width: 100vw;
+    transform-origin: top;
+    transform: scaleY(0);
+    overflow-y: auto;
+    max-height: calc(100vh - 5.75em);
+}
+
+div.AppMenu ul.appmenu-menu {
+    text-align: left;
     padding: 0;
     transition: transform 0.1s;
     background-color: @appmenu_bg1@;
-    width: 20em;
-    max-width: 100vw;
 }
 
-div.AppMenu.appmenu-visible ul.appmenu-menu {
+div.AppMenu.appmenu-visible div.appmenu-menu-container {
     transform: scaleY(1);
 }
 
