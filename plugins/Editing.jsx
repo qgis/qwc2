@@ -246,6 +246,8 @@ class Editing extends React.Component {
             let element = ev.target.elements.namedItem(name);
             if(element) {
                 let value = element.type === "radio" || element.type === "checkbox" ? element.checked : element.value;
+                // set empty date value to null instead of empty string
+                if (element.type === "date" && element.value === "") value = null;
                 if(feature.properties[name] === undefined) {
                     feature.properties[name] = value;
                 }
