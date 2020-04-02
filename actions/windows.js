@@ -9,6 +9,7 @@
 const SHOW_IFRAME_DIALOG = 'SHOW_IFRAME_DIALOG';
 const SHOW_NOTIFICATION = 'SHOW_NOTIFICATION';
 const CLOSE_WINDOW = 'CLOSE_WINDOW';
+const CLOSE_ALL_WINDOWS = 'CLOSE_ALL_WINDOWS';
 
 
 function showIframeDialog(name, url, print=false)
@@ -38,11 +39,20 @@ function closeWindow(name)
     };
 }
 
+function closeAllWindows()
+{
+    return {
+        type: CLOSE_ALL_WINDOWS
+    };
+}
+
 module.exports = {
     SHOW_IFRAME_DIALOG,
     SHOW_NOTIFICATION,
     CLOSE_WINDOW,
+    CLOSE_ALL_WINDOWS,
     showIframeDialog,
     showNotification,
-    closeWindow
+    closeWindow,
+    closeAllWindows
 }

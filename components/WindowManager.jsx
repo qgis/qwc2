@@ -11,18 +11,25 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const ResizeableWindow = require('./ResizeableWindow');
 const {MessageBar} = require('./MessageBar');
-const {closeWindow} = require('../actions/windows');
+const {closeWindow, closeAllWindows} = require('../actions/windows');
 
 require('./style/WindowManager.css');
 
 class WindowManager extends React.Component {
     static propTypes = {
         windows: PropTypes.object,
-        closeWindow: PropTypes.func
+        currentTheme: PropTypes.object,
+        closeWindow: PropTypes.func,
+        closeAllWindows: PropTypes.func
     }
     constructor(props) {
         super(props);
         this.iframes = {};
+    }
+    componentWillReceiveProps(newProps) {
+        if(newProps.currentTheme !== this.props.currentTheme) {
+            this.props.closeAllWindows();
+        }
     }
     render() {
         return Object.entries(this.props.windows).map(([key, data]) => {
@@ -68,9 +75,11 @@ class WindowManager extends React.Component {
 }
 
 const selector = (state) => ({
-    windows: state.windows
+    windows: state.windows,
+    currentTheme: state.theme.current
 });
 
 module.exports = connect(selector, {
-    closeWindow: closeWindow
+    closeWindow: closeWindow,
+    closeAllWindows: closeAllWindows
 })(WindowManager);

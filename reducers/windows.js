@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-let {SHOW_IFRAME_DIALOG, SHOW_NOTIFICATION, CLOSE_WINDOW} = require('../actions/windows');
+let {SHOW_IFRAME_DIALOG, SHOW_NOTIFICATION, CLOSE_WINDOW, CLOSE_ALL_WINDOWS} = require('../actions/windows');
 let assign = require('object-assign');
 
 function windows(state = {}, action) {
@@ -21,6 +21,9 @@ function windows(state = {}, action) {
             let newState = {...state};
             delete newState[action.name];
             return newState;
+        }
+        case CLOSE_ALL_WINDOWS: {
+            return {};
         }
         default:
             return state;
