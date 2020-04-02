@@ -29,6 +29,7 @@ const {zoomToPoint} = require('../actions/map');
 const {addSearchResults, changeSearch, startSearch, searchMore, setCurrentSearchResult, SearchResultType} = require("../actions/search");
 const {setCurrentTask} = require('../actions/task');
 const {setCurrentTheme} = require('../actions/theme');
+const {showNotification} = require('../actions/windows');
 const searchProvidersSelector = require('../selectors/searchproviders');
 const displayCrsSelector = require('../selectors/displaycrs');
 const ThemeUtils = require('../utils/ThemeUtils');
@@ -59,6 +60,7 @@ class Search extends React.Component {
         addThemeSublayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
+        showNotification: PropTypes.func,
         searchOptions: PropTypes.object,
         layers: PropTypes.array,
         changeLayerProperties: PropTypes.func,
@@ -456,6 +458,15 @@ class Search extends React.Component {
             // Show layer tree to notify user that something has happened
             this.props.setCurrentTask('LayerTree');
         } else if(resultType === SearchResultType.EXTERNALLAYER) {
+            // Check if layer is already in the LayerTree
+            let sublayers = LayerUtils.getSublayerNames(item.layer);
+            let existing = this.props.layers.find(l => {
+                return l.type === item.layer.type && l.url === item.layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)))
+            });
+            if(existing) {
+                let text = LocaleUtils.getMessageById(this.context.messages, "search.existinglayer") + ":" + item.layer.title;
+                this.props.showNotification("existinglayer", text);
+            }
             this.props.addLayer(item.layer);
             // Show layer tree to notify user that something has happened
             this.props.setCurrentTask('LayerTree');
@@ -574,6 +585,7 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
         addThemeSublayer: addThemeSublayer,
         changeLayerProperties: changeLayerProperties,
         setCurrentTask: setCurrentTask,
-        setCurrentTheme: setCurrentTheme
+        setCurrentTheme: setCurrentTheme,
+        showNotification: showNotification
     })(Search);
 }

@@ -177,7 +177,8 @@
       "all": "Wszystko",
       "themes": "Motywy",
       "invisiblelayer": "Wynik znajduje się na warstwie, która nie jest widoczna.",
-      "enablelayer": "Włącz warstwę"
+      "enablelayer": "Włącz warstwę",
+      "existinglayer": ""
     },
     "searchbox": {
       "coordinates": "",

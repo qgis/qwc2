@@ -177,7 +177,8 @@
       "all": "Tutti",
       "themes": "Temi",
       "invisiblelayer": "Il risultato si trova su un layer che non è visibile.",
-      "enablelayer": "Attivare il layer"
+      "enablelayer": "Attivare il layer",
+      "existinglayer": "Il layer esiste già nella cartina"
     },
     "searchbox": {
       "coordinates": "Coordinate",
@@ -206,9 +207,9 @@
       "filter": "Filtra...",
       "addtotheme": "Aggiungere al tema corrente",
       "match": {
-        "title": "",
-        "keywords": "",
-        "abstract": ""
+        "title": "Titolo",
+        "keywords": "Parole chiavi",
+        "abstract": "Riassunto"
       },
       "openintab": "Apri in nuova scheda"
     }

@@ -177,7 +177,8 @@
       "all": "Minden",
       "themes": "",
       "invisiblelayer": "",
-      "enablelayer": ""
+      "enablelayer": "",
+      "existinglayer": ""
     },
     "searchbox": {
       "coordinates": "",

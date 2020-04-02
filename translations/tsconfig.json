@@ -147,6 +147,7 @@
     "search.themes",
     "search.invisiblelayer",
     "search.enablelayer",
+    "search.existinglayer",
     "searchbox.coordinates",
     "searchbox.filter",
     "searchbox.layers",

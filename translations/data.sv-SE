@@ -177,7 +177,8 @@
       "all": "",
       "themes": "",
       "invisiblelayer": "",
-      "enablelayer": ""
+      "enablelayer": "",
+      "existinglayer": ""
     },
     "searchbox": {
       "coordinates": "",

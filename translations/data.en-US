@@ -177,7 +177,8 @@
       "all": "All",
       "themes": "Themes",
       "invisiblelayer": "The result lies on a layer which is not visible.",
-      "enablelayer": "Enable layer"
+      "enablelayer": "Enable layer",
+      "existinglayer": "The layer already exists in the map"
     },
     "searchbox": {
       "coordinates": "Coordinates",
