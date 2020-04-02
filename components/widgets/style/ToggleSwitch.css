@@ -47,3 +47,8 @@ div.ToggleSwitch.toggle-switch-active > span.toggle-switch-no {
 div.ToggleSwitch.toggle-switch-inactive > span.toggle-switch-yes {
     display: none;
 }
+
+
+div.ToggleSwitch > input {
+    display: none;
+}
