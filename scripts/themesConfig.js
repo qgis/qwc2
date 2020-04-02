@@ -338,6 +338,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             resultItem.id = uniqueThemeId(wmsName);
             resultItem.name = topLayer.Name;
             resultItem.title = wmsTitle;
+            resultItem.description = configItem.description || "";
             resultItem.attribution = {
                 Title: configItem.attribution || "",
                 OnlineResource: configItem.attributionUrl || ""

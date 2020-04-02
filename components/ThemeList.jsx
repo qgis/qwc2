@@ -124,6 +124,7 @@ class ThemeList extends React.Component {
                                     ))}
                                 </div>
                             ) : null}
+                            {item.description ? (<div className="theme-item-description">{item.description}</div>) : null}
                             <img src={assetsPath + "/" + item.thumbnail} />
                             <div className="theme-item-icons">
                                 {this.props.allowAddingOtherThemes ? (<Icon icon="plus" title={addTitle} onClick={ev => this.addThemeLayers(ev, item)} />) : null}
