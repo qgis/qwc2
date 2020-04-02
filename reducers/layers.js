@@ -74,13 +74,17 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             if(newLayer.type === "wms") {
                 assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
             }
-            let inspos = 0;
-            if(action.pos === null) {
-                for(; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);
+            if(action.beforename) {
+                newLayers = LayerUtils.insertLayer(newLayers, newLayer, "name", action.beforename);
             } else {
-                inspos = action.pos;
+                let inspos = 0;
+                if(action.pos === null) {
+                    for(; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);
+                } else {
+                    inspos = action.pos;
+                }
+                newLayers.splice(inspos, 0, newLayer);
             }
-            newLayers.splice(inspos, 0, newLayer);
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
             if(newLayer.role === LayerRole.BACKGROUND && newLayer.visibility) {
                 UrlParams.updateParams({bl: newLayer.name});

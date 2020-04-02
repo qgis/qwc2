@@ -35,11 +35,12 @@ const LayerRole = {
 };
 
 
-function addLayer(layer, pos=null) {
+function addLayer(layer, pos=null, beforename=null) {
     return {
         type: ADD_LAYER,
         layer,
-        pos
+        pos,
+        beforename
     };
 }
 

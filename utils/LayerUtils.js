@@ -417,6 +417,15 @@ const LayerUtils = {
         }
         return newlayers;
     },
+    insertLayer(layers, newlayer, beforeattr, beforeval) {
+        let exploded = LayerUtils.explodeLayers(layers);
+        let explodedAdd = LayerUtils.explodeLayers([newlayer]);
+        let index = exploded.findIndex(entry => entry.sublayer[beforeattr] === beforeval);
+        if(index !== -1) {
+            exploded.splice(index, 0, ...explodedAdd);
+        }
+        return LayerUtils.implodeLayers(exploded);
+    },
     ensureMutuallyExclusive(group) {
         if(group.sublayers) {
             let visibleChild = null;
