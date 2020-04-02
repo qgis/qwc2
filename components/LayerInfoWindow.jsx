@@ -23,8 +23,7 @@ class LayerInfoWindow extends React.Component {
         setActiveLayerInfo: PropTypes.func,
         windowSize: PropTypes.object,
         map: PropTypes.object,
-        bboxDependentLegend: PropTypes.bool,
-        setActiveLayerInfo: PropTypes.func
+        bboxDependentLegend: PropTypes.bool
     }
     renderLink(text, url) {
         return url ? (<a href={url} target="_blank">{text}</a>) : text ? text : null;
