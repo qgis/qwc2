@@ -7,6 +7,7 @@
  */
 
 const SHOW_IFRAME_DIALOG = 'SHOW_IFRAME_DIALOG';
+const SHOW_NOTIFICATION = 'SHOW_NOTIFICATION';
 const CLOSE_WINDOW = 'CLOSE_WINDOW';
 
 
@@ -16,6 +17,15 @@ function showIframeDialog(name, url)
         type: SHOW_IFRAME_DIALOG,
         name: name,
         url: url
+    };
+}
+
+function showNotification(name, text)
+{
+    return {
+        type: SHOW_NOTIFICATION,
+        name: name,
+        text: text
     };
 }
 
@@ -29,7 +39,9 @@ function closeWindow(name)
 
 module.exports = {
     SHOW_IFRAME_DIALOG,
+    SHOW_NOTIFICATION,
     CLOSE_WINDOW,
     showIframeDialog,
+    showNotification,
     closeWindow
 }
