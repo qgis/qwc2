@@ -11,12 +11,13 @@ const SHOW_NOTIFICATION = 'SHOW_NOTIFICATION';
 const CLOSE_WINDOW = 'CLOSE_WINDOW';
 
 
-function showIframeDialog(name, url)
+function showIframeDialog(name, url, print=false)
 {
     return {
         type: SHOW_IFRAME_DIALOG,
         name: name,
-        url: url
+        url: url,
+        print: print
     };
 }
 

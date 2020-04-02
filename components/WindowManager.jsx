@@ -20,6 +20,10 @@ class WindowManager extends React.Component {
         windows: PropTypes.object,
         closeWindow: PropTypes.func
     }
+    constructor(props) {
+        super(props);
+        this.iframes = {};
+    }
     render() {
         return Object.entries(this.props.windows).map(([key, data]) => {
             if(data.type === "iframedialog") {
@@ -32,18 +36,34 @@ class WindowManager extends React.Component {
         });
     }
     renderIframeDialog = (key, data) => {
+        let extraControls = [];
+        if(data.print) {
+            extraControls.push({icon: "print", callback: () => this.printIframe(key)});
+        }
         return (
-            <ResizeableWindow key={key} title={"windows." + key} icon={data.icon || ""} initialWidth={640} initialHeight={480} onClose={() => this.props.closeWindow(key)}>
-                <iframe className="windows-iframe-dialog-body" role="body" src={data.url} />
+            <ResizeableWindow key={key} title={"windows." + key} icon={data.icon || ""}
+                initialWidth={640} initialHeight={480}
+                onClose={() => this.closeWindow(key)}
+                extraControls={extraControls}>
+                <iframe onLoad={(ev) => this.iframes[key] = ev.target} className="windows-iframe-dialog-body" role="body" src={data.url} />
             </ResizeableWindow>
         );
     }
     renderNotification = (key, data) => {
         return (
-            <MessageBar key={key} onHide={() => this.props.closeWindow(key)} hideOnTaskChange={true}>
+            <MessageBar key={key} onHide={() => this.closeWindow(key)} hideOnTaskChange={true}>
                 <span role="body">{data.text}</span>
             </MessageBar>
         );
+    }
+    closeWindow = (key) => {
+        delete this.refs[key];
+        this.props.closeWindow(key);
+    }
+    printIframe = (key) => {
+        if(this.iframes[key]) {
+            this.iframes[key].contentWindow.print();
+        }
     }
 }
 

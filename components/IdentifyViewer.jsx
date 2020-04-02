@@ -562,7 +562,7 @@ class IdentifyViewer extends React.Component {
         if(ev.target.target.startsWith(":")) {
             let target = ev.target.target.split(":");
             if(target[1] === "iframedialog") {
-                this.props.showIframeDialog(target[2], ev.target.href);
+                this.props.showIframeDialog(target[2], ev.target.href, true);
                 ev.preventDefault();
             }
         }
