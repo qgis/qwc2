@@ -26,6 +26,7 @@ div.AppMenu div.appmenu-menu-container {
     max-width: 100vw;
     transform-origin: top;
     transform: scaleY(0);
+    transition: transform 0.1s;
     overflow-y: auto;
     max-height: calc(100vh - 5.75em);
 }
@@ -33,7 +34,6 @@ div.AppMenu div.appmenu-menu-container {
 div.AppMenu ul.appmenu-menu {
     text-align: left;
     padding: 0;
-    transition: transform 0.1s;
     background-color: @appmenu_bg1@;
 }
 
