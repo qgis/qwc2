@@ -206,7 +206,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             pass
 
         if layer.getAttribute("transparency"):
-            layerEntry["opacity"] = 255 - int(float(layer.getAttribute("transparency")) / 100 * 255)
+            layerEntry["opacity"] = 255 - int(float(layer.getAttribute("transparency")) * 255)
         else:
             layerEntry["opacity"] = 255
         minScale = getChildElementValue(layer, "MinScaleDenominator")

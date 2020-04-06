@@ -175,7 +175,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
             layerEntry.metadataUrl = layer.MetadataURL.OnlineResource.$['xlink:href'];
         }
         if(layer.$.transparency) {
-            layerEntry.opacity = 255 - Math.floor(parseFloat(layer.$.transparency) / 100 * 255)
+            layerEntry.opacity = 255 - Math.floor(parseFloat(layer.$.transparency) * 255)
         } else {
             layerEntry.opacity = 255;
         }
