@@ -491,7 +491,7 @@ class Search extends React.Component {
         this.setState({invisibleLayerQuery});
     }
     showFeatureGeometry = (item, geometry, crs, text) => {
-        if(item === this.props.currentResult) {
+        if(item === this.props.currentResult && !isEmpty(geometry)) {
             let features = [];
             let highlightFeature = VectorLayerUtils.wktToGeoJSON(geometry, crs, this.props.map.projection);
             if(highlightFeature) {
