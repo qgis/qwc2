@@ -25,7 +25,8 @@ class AppMenu extends React.Component {
         setCurrentTask: PropTypes.func,
         currentTheme: PropTypes.object,
         showOnStartup: PropTypes.bool,
-        onMenuToggled: PropTypes.func
+        onMenuToggled: PropTypes.func,
+        keepMenuOpen: PropTypes.bool
     }
     static defaultProps = {
         buttonContents: null,
@@ -59,7 +60,7 @@ class AppMenu extends React.Component {
         this.setState({ menuVisible: !this.state.menuVisible, submenusVisible: [] });
     }
     checkCloseMenu = (ev) => {
-        if(this.menuEl && !this.menuEl.contains(ev.target)) {
+        if(this.menuEl && !this.menuEl.contains(ev.target) && !this.props.keepMenuOpen) {
             this.toggleMenu();
         }
     }
@@ -68,7 +69,9 @@ class AppMenu extends React.Component {
         this.setState({ submenusVisible: this.state.submenusVisible.slice(0, level).concat(a) });
     }
     onMenuitemClicked = (item) => {
-        this.toggleMenu();
+        if(!this.props.keepMenuOpen) {
+            this.toggleMenu();
+        }
         if(item.url) {
             this.props.openExternalUrl(item.url, item.target, "appmenu.items." + item.key);
         } else {
