@@ -200,7 +200,7 @@ class ThemeList extends React.Component {
     }
     openInTab = (ev, themeid) => {
         ev.stopPropagation();
-        let url = location.href.replace(/\?.*/, '?t=' + themeid);
+        let url = location.href.split("?")[0] + '?t=' + themeid;
         window.open(url, '_blank');
     }
 };
