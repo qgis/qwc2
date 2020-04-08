@@ -241,7 +241,7 @@ class ImportLayer extends React.Component {
             return;
         }
         // Attempt to load as WMS
-        let wmsParams = "?service=WMS&request=GetCapabilities";
+        let wmsParams = "?service=WMS&request=GetCapabilities&version=1.3.0";
         this.setState({pendingRequests: ++pendingRequests});
         axios.get(ProxyUtils.addProxyIfNeeded(url.split("?")[0] + wmsParams)).then(response => {
             let result = ServiceLayerUtils.getWMSLayers(response.data);
