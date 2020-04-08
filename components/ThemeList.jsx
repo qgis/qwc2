@@ -124,8 +124,10 @@ class ThemeList extends React.Component {
                                     ))}
                                 </div>
                             ) : null}
-                            {item.description ? (<div className="theme-item-description" dangerouslySetInnerHTML={{__html: item.description}} />) : null}
-                            <img src={assetsPath + "/" + item.thumbnail} />
+                            <div className="theme-item-body">
+                                {item.description ? (<div className="theme-item-description" dangerouslySetInnerHTML={{__html: item.description}} />) : null}
+                                <img className="theme-item-thumbnail" src={assetsPath + "/" + item.thumbnail} />
+                            </div>
                             <div className="theme-item-icons">
                                 {this.props.allowAddingOtherThemes ? (<Icon icon="plus" title={addTitle} onClick={ev => this.addThemeLayers(ev, item)} />) : null}
                                 <Icon icon="open_link" title={openTabTitle} onClick={ev => this.openInTab(ev, item.id)} />
