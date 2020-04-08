@@ -12,7 +12,7 @@ let assign = require('object-assign');
 function windows(state = {}, action) {
     switch (action.type) {
         case SHOW_IFRAME_DIALOG: {
-            return assign({}, state, {[action.name]: {type: 'iframedialog', url: action.url, print: action.print}});
+            return assign({}, state, {[action.name]: {type: 'iframedialog', url: action.url, options: action.options || {}}});
         }
         case SHOW_NOTIFICATION: {
             return assign({}, state, {[action.name]: {type: 'notification', text: action.text}});

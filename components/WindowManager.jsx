@@ -44,12 +44,12 @@ class WindowManager extends React.Component {
     }
     renderIframeDialog = (key, data) => {
         let extraControls = [];
-        if(data.print) {
+        if(data.options.print) {
             extraControls.push({icon: "print", callback: () => this.printIframe(key)});
         }
         return (
             <ResizeableWindow key={key} title={"windows." + key} icon={data.icon || ""}
-                initialWidth={640} initialHeight={480}
+                initialWidth={data.options.w || 640} initialHeight={data.options.h || 480}
                 onClose={() => this.closeWindow(key)}
                 extraControls={extraControls}>
                 <iframe onLoad={(ev) => this.iframes[key] = ev.target} className="windows-iframe-dialog-body" role="body" src={data.url} />

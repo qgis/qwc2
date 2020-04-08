@@ -12,13 +12,13 @@ const CLOSE_WINDOW = 'CLOSE_WINDOW';
 const CLOSE_ALL_WINDOWS = 'CLOSE_ALL_WINDOWS';
 
 
-function showIframeDialog(name, url, print=false)
+function showIframeDialog(name, url, options)
 {
     return {
         type: SHOW_IFRAME_DIALOG,
         name: name,
         url: url,
-        print: print
+        options: options
     };
 }
 

@@ -561,8 +561,17 @@ class IdentifyViewer extends React.Component {
     attributeLinkClicked = (ev) => {
         if(ev.target.target.startsWith(":")) {
             let target = ev.target.target.split(":");
+            let options = target.slice(2).reduce((res, cur) => {
+                let parts = cur.split("=");
+                if(parts.length == 2) {
+                    let value = parseFloat(parts[1]);
+                    res[parts[0]] = isNaN(value) ? parts[1] : value;
+                }
+                return res;
+            }, {});
+            options["print"] = true;
             if(target[1] === "iframedialog") {
-                this.props.showIframeDialog(target[2], ev.target.href, true);
+                this.props.showIframeDialog(target[2], ev.target.href, options);
                 ev.preventDefault();
             }
         }
