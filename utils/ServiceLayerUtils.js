@@ -63,9 +63,9 @@ const ServiceLayerUtils = {
         }
         let version = capabilities.version;
         if(!topLayer.Layer || asGroup) {
-            return [this.getWMSLayerParams(topLayer, topLayer.CRS, serviceUrl, version, featureInfoUrl, infoFormats)];
+            return [this.getWMSLayerParams(topLayer, topLayer.CRS, serviceUrl, version, featureInfoUrl, infoFormats)].filter(entry => entry);
         } else {
-            let entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, serviceUrl, version, featureInfoUrl, infoFormats));
+            let entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, serviceUrl, version, featureInfoUrl, infoFormats)).filter(entry => entry);
             return entries.sort((a, b) => strcmp(a.title, b.title));
         }
     },
@@ -78,7 +78,10 @@ const ServiceLayerUtils = {
         }
         let sublayers = [];
         if(!isEmpty(layer.Layer)) {
-            sublayers = layer.Layer.map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, serviceUrl, version, featureInfoUrl, infoFormats));
+            sublayers = layer.Layer.map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, serviceUrl, version, featureInfoUrl, infoFormats)).filter(entry => entry);
+        }
+        if(isEmpty(layer.BoundingBox)) {
+            return null;
         }
         let bbox = {
             crs: layer.BoundingBox[0].crs,
