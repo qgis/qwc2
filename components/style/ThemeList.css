@@ -59,7 +59,7 @@ div.ThemeList li.theme-item-active div.theme-item-title > span:first-child
     color: @item_active@;
 }
 
-div.ThemeList li.theme-item > img {
+div.ThemeList img.theme-item-thumbnail {
     width: calc(15em - 2px);
     height: auto;
 }
