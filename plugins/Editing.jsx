@@ -12,6 +12,8 @@ const {connect} = require('react-redux');
 const isEmpty = require('lodash.isempty');
 const isEqual = require('lodash.isequal');
 const assign = require('object-assign');
+const axios = require('axios');
+const deepcopy = require('deepcopy');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const LocaleUtils = require("../utils/LocaleUtils");
 const MapUtils = require("../utils/MapUtils");
@@ -24,6 +26,7 @@ const AutoEditForm = require('../components/AutoEditForm');
 const QtDesignerForm = require('../components/QtDesignerForm');
 const {SideBar} = require('../components/SideBar');
 const ButtonBar = require('../components/widgets/ButtonBar');
+const ConfigUtils = require('../utils/ConfigUtils');
 const LayerUtils = require("../utils/LayerUtils");
 require('./style/Editing.css');
 
@@ -51,6 +54,7 @@ class Editing extends React.Component {
     }
     state = {
         selectedLayer: null,
+        relationTables: {},
         pickedFeatures: null,
         busy: false,
         deleteClicked: false
@@ -77,7 +81,7 @@ class Editing extends React.Component {
             }
         }
         // If clickPoint changed and in pick mode with a selected layer, trigger a pick
-        if(newProps.enabled && this.props.enabled && newProps.editing.action === 'Pick' && this.state.selectedLayer) {
+        if(newProps.enabled && this.props.enabled && newProps.editing.action === 'Pick' && this.state.selectedLayer && !newProps.editing.changed) {
             const newPoint = newProps.map.clickPoint || {};
             const oldPoint = this.props.map.clickPoint || {};
             if(newPoint.coordinate && !isEqual(newPoint.coordinate, oldPoint.coordinate)) {
@@ -87,6 +91,15 @@ class Editing extends React.Component {
                     this.setState({pickedFeatures: features});
                     let feature = features ? features[0] : null;
                     this.props.changeEditingState(assign({}, this.props.editing, {feature: feature, changed: false}));
+
+                    // Query relation values for picked feature
+                    if(feature) {
+                        let relTables = Object.entries(this.state.relationTables).map(([name,fk]) => name + ":" + fk).join(",");
+                        this.props.iface.getRelations(this.state.selectedLayer, feature.id, relTables, (response => {
+                            let newFeature = assign({}, this.props.editing.feature, {relationValues: response.relationvalues});
+                            this.props.changeEditingState(assign({}, this.props.editing, {feature: newFeature}));
+                        }));
+                    }
                 });
             }
         }
@@ -155,7 +168,9 @@ class Editing extends React.Component {
                 <div className="editing-edit-frame">
                     <form action="" onSubmit={this.onSubmit}>
                         {curConfig.form ? (
-                            <QtDesignerForm values={this.props.editing.feature.properties} updateField={this.updateField} form={curConfig.form} />
+                            <QtDesignerForm values={this.props.editing.feature.properties} updateField={this.updateField} form={curConfig.form}
+                                addRelationRecord={this.addRelationRecord} removeRelationRecord={this.removeRelationRecord}
+                                updateRelationField={this.updateRelationField} relationValues={this.props.editing.feature.relationValues} />
                         ) : (
                             <AutoEditForm fields={curConfig.fields} values={this.props.editing.feature.properties}
                                 touchFriendly={this.props.touchFriendly} updateField={this.updateField} />
@@ -218,13 +233,80 @@ class Editing extends React.Component {
         );
     }
     changeSelectedLayer = (selectedLayer, action=null) => {
-        this.setState({selectedLayer: selectedLayer});
         const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
         this.props.changeEditingState(assign({}, this.props.editing, {action: action || this.props.editing.action, feature: null, geomType: curConfig ? curConfig.geomType : null}));
+
+        // Gather relation tables for selected layer if config is a designer form
+        this.setState({selectedLayer: selectedLayer, relationTables: {}});
+        if(curConfig.form) {
+            let url = curConfig.form;
+            if(url && url.startsWith(":/")) {
+                let assetsPath = ConfigUtils.getConfigProp("assetsPath");
+                url = assetsPath + curConfig.form.substr(1);
+            }
+            axios.get(url).then(response => {
+                let relationTables = {};
+                let domParser = new DOMParser();
+                let doc = domParser.parseFromString(response.data, 'text/xml');
+                for(let widget of doc.getElementsByTagName("widget")) {
+                    let name = widget.attributes.name;
+                    if(name) {
+                        let parts = widget.attributes.name.value.split("__");
+                        if(parts.length === 3 && parts[0] === "nrel") {
+                            relationTables[parts[1]] = parts[2];
+                        }
+                    }
+                }
+                this.setState({relationTables: relationTables});
+            }).catch(e => {
+                console.log(e);
+            });
+        }
     }
     updateField = (key, value) => {
         let newProperties = assign({}, this.props.editing.feature.properties, {[key]: value});
         let newFeature = assign({}, this.props.editing.feature, {properties: newProperties});
+        this.props.changeEditingState(assign({}, this.props.editing, {feature: newFeature, changed: true}));
+    }
+    addRelationRecord = (table) => {
+        let newRelationValues = assign({}, this.props.editing.feature.relationValues || {});
+        if(!newRelationValues[table]) {
+            newRelationValues[table] = {
+                "fk": this.state.relationTables[table],
+                "records": []
+            };
+        }
+        newRelationValues[table].records = newRelationValues[table].records.concat([{
+            "__status__": "new"
+        }]);
+        let newFeature = assign({}, this.props.editing.feature, {relationValues: newRelationValues});
+        this.props.changeEditingState(assign({}, this.props.editing, {feature: newFeature, changed: true}));
+    }
+    removeRelationRecord = (table, idx) => {
+        let newRelationValues = assign({}, this.props.editing.feature.relationValues);
+        newRelationValues[table] = assign({}, newRelationValues[table]);
+        newRelationValues[table].records = newRelationValues[table].records.slice(0);
+        let fieldStatus = newRelationValues[table].records[idx]["__status__"] || "";
+        // If field was new, delete it directly, else mark it as deleted
+        if(fieldStatus === "new") {
+            newRelationValues[table].records.splice(idx, 1);
+        } else {
+            newRelationValues[table].records[idx] = assign({}, newRelationValues[table].records[idx], {
+                "__status__": fieldStatus.startsWith("deleted") ? fieldStatus.substr(8) : "deleted:" + fieldStatus
+            });
+        }
+        let newFeature = assign({}, this.props.editing.feature, {relationValues: newRelationValues});
+        this.props.changeEditingState(assign({}, this.props.editing, {feature: newFeature, changed: true}));
+    }
+    updateRelationField = (table, idx, key, value) => {
+        let newRelationValues = assign({}, this.props.editing.feature.relationValues);
+        newRelationValues[table] = assign({}, newRelationValues[table]);
+        newRelationValues[table].records = newRelationValues[table].records.slice(0);
+        newRelationValues[table].records[idx] = assign({}, newRelationValues[table].records[idx], {
+            [key]: value,
+            "__status__": newRelationValues[table].records[idx]["__status__"] === "new" ? "new" : "changed"
+        });
+        let newFeature = assign({}, this.props.editing.feature, {relationValues: newRelationValues});
         this.props.changeEditingState(assign({}, this.props.editing, {feature: newFeature, changed: true}));
     }
     onDiscard = (action) => {
@@ -240,6 +322,10 @@ class Editing extends React.Component {
         // Ensure properties is not null
         feature = assign({}, feature, {properties: feature.properties || {}});
 
+        // Keep relation values separate
+        let relationValues = deepcopy(feature.relationValues || {});
+        delete feature.relationValues;
+
         // Collect all values from form fields
         let fieldnames = Array.from(ev.target.elements).map(element => element.name).filter(x => x);
         fieldnames.forEach(name => {
@@ -250,16 +336,50 @@ class Editing extends React.Component {
                     // Set empty date value to null instead of empty string
                     value = null;
                 }
-                if(feature.properties[name] === undefined) {
-                    feature.properties[name] = value;
+                let parts = name.split("__");
+                if(parts.length === 3) {
+                    let table = parts[0];
+                    let field = parts[1];
+                    let index = parseInt(parts[2]);
+                    // relationValues for table must exist as rows are either pre-existing or were added
+                    if(relationValues[parts[0]].records[index][field] === undefined) {
+                        relationValues[parts[0]].records[index][field] = value;
+                    }
+                } else {
+                    if(feature.properties[name] === undefined) {
+                        feature.properties[name] = value;
+                    }
                 }
             }
         });
 
         if(this.props.editing.action === "Draw") {
-            this.props.iface.addFeature(this.state.selectedLayer, feature, this.props.map.projection, this.commitFinished);
+            this.props.iface.addFeature(this.state.selectedLayer, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues));
         } else if(this.props.editing.action === "Pick") {
-            this.props.iface.editFeature(this.state.selectedLayer, feature, this.props.map.projection, this.commitFinished);
+            this.props.iface.editFeature(this.state.selectedLayer, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues));
+        }
+    }
+    featureCommited = (success, result, relationValues) => {
+        if(!success) {
+            this.commitFinished(success, result);
+            return;
+        }
+        let newFeature = result;
+        // Commit relations
+        if(!isEmpty(relationValues)) {
+            this.props.iface.writeRelations(this.state.selectedLayer, newFeature.id, relationValues, (result) => {
+                if(result.success !== true) {
+                    // Relation values commit failed, switch to pick update relation values with response and switch to pick to
+                    // to avoid adding feature again on next attempt
+                    this.commitFinished(false, "Some relation records could not be committed");
+                    newFeature = assign({}, newFeature, {relationValues: result.relationvalues});
+                    this.props.changeEditingState(assign({}, this.props.editing, {action: "Pick", feature: newFeature, changed: true}));
+                } else {
+                    this.commitFinished(true);
+                }
+            });
+        } else {
+            this.commitFinished(success, result);
         }
     }
     setEditFeature = (featureId) => {

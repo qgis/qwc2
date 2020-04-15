@@ -10,6 +10,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const assign = require('object-assign');
 const ConfigUtils = require('../utils/ConfigUtils');
+const Icon = require("./Icon");
 const ResizeableWindow = require("./ResizeableWindow");
 const axios = require('axios');
 const xml2js = require('xml2js');
@@ -20,7 +21,14 @@ class QtDesignerForm extends React.Component {
     static propTypes = {
         form: PropTypes.string,
         values: PropTypes.object,
-        updateField: PropTypes.func
+        relationValues: PropTypes.object,
+        updateField: PropTypes.func,
+        addRelationRecord: PropTypes.func,
+        removeRelationRecord: PropTypes.func,
+        updateRelationField: PropTypes.func
+    }
+    static defaultProps = {
+        relationValues: {}
     }
     state = {
         formdata: null
@@ -45,63 +53,97 @@ class QtDesignerForm extends React.Component {
         let root = this.state.formdata;
         return (
             <div className="qt-designer-form">
-                {this.renderLayout(root.layout)}
+                {this.renderLayout(root.layout, this.props.values, this.props.updateField)}
             </div>
         );
     }
-    renderLayout = (layout) => {
+    renderLayout = (layout, values, updateField, nametransform = (name) => name) => {
         let containerClass = "";
         let itemStyle = item => ({});
+        let containerStyle = {};
         if(layout.class === "QGridLayout") {
             containerClass = "qt-designer-layout-grid";
-            itemStyle = (item => ({
+            containerStyle = {
+                gridTemplateColumns: this.computeLayoutColumns(layout.item).join(" ")
+            };
+            itemStyle = item => ({
                 gridArea: (1 + parseInt(item.row)) + "/" + (1 + parseInt(item.column)) + "/ span " + parseInt(item.rowspan || 1) + "/ span " + parseInt(item.colspan || 1)
-            }));
+            });
         } else if(layout.class === "QVBoxLayout") {
-            containerClass = "qt-designer-layout-vbox";
-            itemStyle = item => ({});
+            containerClass = "qt-designer-layout-grid";
+            itemStyle = (item, idx) => ({
+                gridArea: (1 + idx) + "/1/ span 1/ span 1"
+            });
         } else if(layout.class === "QHBoxLayout") {
-            containerClass = "qt-designer-layout-hbox";
-            itemStyle = item => ({});
+            containerClass = "qt-designer-layout-grid";
+            containerStyle = {
+                gridTemplateColumns: this.computeLayoutColumns(layout.item, true).join(" ")
+            };
+            itemStyle = (item, idx) => ({
+                gridArea: "1/" + (1 + idx) + "/ span 1/ span 1"
+            });
         } else {
             return null;
         }
         return (
-            <div className={containerClass}>
+            <div className={containerClass} style={containerStyle}>
                 {layout.item.map((item,idx) => {
                     return (
-                        <div key={"i" + idx} style={itemStyle(item)}>
-                            {item.widget ? this.renderWidget(item.widget) : item.layout ? this.renderLayout(item.layout) : null}
+                        <div key={"i" + idx} style={itemStyle(item, idx)}>
+                            {item.widget ? this.renderWidget(item.widget, values, updateField, nametransform) : item.layout ? this.renderLayout(item.layout, values, updateField, nametransform) : null}
                         </div>
                     );
                 })}
             </div>
         );
     }
-    renderWidget = (widget) => {
-        let value = (this.props.values || {})[widget.name] || "";
+    computeLayoutColumns = (items, useIndex=false) => {
+        let columns = [];
+        let fitWidgets = ["QLabel", "QCheckBox", "QRadioButton"];
+        let index = 0;
+        let hasAuto = false;
+        for(let item of items) {
+            let col = useIndex ? index : (parseInt(item.column) || 0);
+            let colSpan = useIndex ? 1 : (parseInt(item.colspan) || 1);
+            if(item.widget && !fitWidgets.includes(item.widget.class) && colSpan === 1) {
+                columns[col] = 'auto';
+                hasAuto = true;
+            } else {
+                columns[col] = columns[col] || null; // Placeholder replaced by fit-content below
+            }
+            ++index;
+        }
+        let fit = 'fit-content(' + Math.round(1. / columns.length * 100) + '%)';
+        for(let col = 0; col < columns.length; ++col) {
+            columns[col] = hasAuto ? (columns[col] || fit) : 'auto';
+        }
+        return columns;
+    }
+    renderWidget = (widget, values, updateField, nametransform = (name) => name) => {
+        let value = (values || {})[widget.name] || "";
         let prop = widget.property || {};
         let attr = widget.attribute || {};
+        let elname = nametransform(widget.name);
         if(widget.class === "QLabel") {
             return (<span>{widget.property.text}</span>);
         } else if(widget.class === "Line") {
             return (<div className="qt-designer-form-line"></div>);
         } else if(widget.class === "QTextEdit") {
-            return (<textarea name={widget.name} value={value} onChange={(ev) => this.props.updateField(widget.name, ev.target.value)}></textarea>);
+            return (<textarea name={elname} value={value} onChange={(ev) => updateField(widget.name, ev.target.value)}></textarea>);
         } else if(widget.class === "QLineEdit") {
             let placeholder = prop.placeholderText || "";
-            return (<input name={widget.name} placeholder={placeholder} type="text" value={value} onChange={(ev) => this.props.updateField(widget.name, ev.target.value)} />);
+            return (<input name={elname} placeholder={placeholder} type="text" value={value} onChange={(ev) => updateField(widget.name, ev.target.value)} />);
         } else if(widget.class === "QCheckBox" || widget.class === "QRadioButton") {
             let type = widget.class === "QCheckBox" ? "checkbox" : "radio";
             let inGroup = attr.buttonGroup;
             let checked = inGroup ? (this.props.values || {})[this.groupOrName(widget)] == widget.name : value;
             return (<label>
-                <input name={this.groupOrName(widget)} type={type} checked={checked} onChange={ev => this.props.updateField(this.groupOrName(widget), inGroup ? widget.name : ev.target.checked)} />
+                <input name={nametransform(this.groupOrName(widget))} type={type} checked={checked} onChange={ev => updateField(this.groupOrName(widget), inGroup ? widget.name : ev.target.checked)} />
                 {widget.property.text}
             </label>);
         } else if(widget.class === "QComboBox") {
             return (
-                <select name={widget.name} value={value} onChange={ev => this.props.updateField(widget.name, ev.target.value)}>
+                <select name={elname} value={value} onChange={ev => updateField(widget.name, ev.target.value)}>
                     {widget.item.map((item, idx) => (
                         <option key={item.property.string} value={item.property.string}>{item.property.string}</option>
                     ))}
@@ -113,16 +155,51 @@ class QtDesignerForm extends React.Component {
             let step = prop.singleStep || 1;
             let type = (widget.class === "QSlider" ? "range" : "number");
             return (
-                <input name={widget.name} type={type} min={min} max={max} step={step} value={value} onChange={(ev) => this.props.updateField(widget.name, ev.target.value)} />
+                <input name={elname} type={type} min={min} max={max} step={step} value={value} onChange={(ev) => updateField(widget.name, ev.target.value)} />
             );
         } else if(widget.class === "QDateEdit") {
             let min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1900-01-01";
             let max = prop.maximumDate ? this.dateConstraint(prop.maximumDate) : "9999-12-31";
             return (
-                <input name={widget.name} type="date" min={min} max={max} value={value} onChange={(ev) => this.props.updateField(widget.name, ev.target.value)} />
+                <input name={elname} type="date" min={min} max={max} value={value} onChange={(ev) => updateField(widget.name, ev.target.value)} />
             );
+        } else if(widget.class === "QWidget") {
+            if(widget.name.startsWith("nrel__")) {
+                return this.renderNRelation(widget);
+            } else {
+                return this.renderLayout(widget.layout, values, updateField, nametransform);
+            }
         }
         return null;
+    }
+    renderNRelation = (widget) => {
+        let parts = widget.name.split("__");
+        if(parts.length < 3) {
+            return null;
+        }
+        let tablename = parts[1];
+        return (
+            <div className="qt-designer-widget-relation">
+                {((this.props.relationValues[tablename] || []).records || []).map((record, idx) => {
+                    let updateField = (name, value) => this.props.updateRelationField(tablename, idx, name, value);
+                    let nametransform = (name) => (name + "__" + idx);
+                    let status = record["__status__"] || "";
+                    let statusIcon = !status ? null : status === "new" ? "new" : "edited";
+                    let statusText = "";
+                    if(record["error"]) {
+                        statusIcon = "warning";
+                        statusText = record["error"];
+                    }
+                    let extraClass = status.startsWith("deleted") ? "qt-designer-widget-relation-record-deleted" : "";
+                    return (<div key={tablename + idx} className={"qt-designer-widget-relation-record " + extraClass}>
+                        {statusIcon ? (<Icon title={statusText} icon={statusIcon} />) : (<span></span>)}
+                        {this.renderLayout(widget.layout, record, updateField, nametransform)}
+                        <Icon icon="trash" onClick={() => this.props.removeRelationRecord(tablename, idx)} />
+                    </div>);
+                })}
+                <div><button className="qt-designer-widget-relation-add" type="button" onClick={() => this.props.addRelationRecord(tablename)}>Add</button></div>
+            </div>
+        );
     }
     groupOrName = (widget) => {
         return widget.attribute && widget.attribute.buttonGroup ? widget.attribute.buttonGroup._ : widget.name;
