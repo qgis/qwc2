@@ -221,7 +221,12 @@ const ServiceLayerUtils = {
     },
     findLayers(type, serviceUrl, layerConfigs, callback) {
         // Scan the capabilities of the specified service for the specified layers
-        let url = serviceUrl.replace(/\?$/, '') + "?service=" + type.toUpperCase() + "&request=GetCapabilities";
+        let url = serviceUrl.replace(/\?$/, '');
+        if(url.includes('?')) {
+            url += "&service=" + type.toUpperCase() + "&request=GetCapabilities";
+        } else {
+            url += "?service=" + type.toUpperCase() + "&request=GetCapabilities";
+        }
         axios.get(ProxyUtils.addProxyIfNeeded(url)).then(response => {
             for(let layerConfig of layerConfigs) {
                 let result = null;
