@@ -81,6 +81,7 @@ span.searchbox-result-label {
     overflow: hidden;
     text-overflow: ellipsis;
     margin: 0 0.25em;
+    white-space: nowrap;
 }
 
 div.searchbox-result-abstract {

@@ -164,7 +164,7 @@ class SearchBox extends React.Component {
                                 <div className="searchbox-results-section-body">
                                     {group.items.map((entry ,idx) => (
                                         <div key={"c" + idx} className="searchbox-result" onMouseDown={this.killEvent} onClick={ev => {this.selectProviderResult(entry); this.blur(); }}>
-                                            <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: entry.text}}></span>
+                                            <span className="searchbox-result-label" title={entry.label || entry.text} dangerouslySetInnerHTML={{__html: entry.text}}></span>
                                         </div>
                                     ))}
                                 </div>
