@@ -90,6 +90,12 @@ class Identify extends React.Component {
                 return props.clickFeature.geometry;
             }
         }
+        if (props.enabled && props.clickFeature&& props.clickFeature.coordinate) {
+            if (!this.props.clickFeature || this.props.clickFeature.coordinate !== props.clickFeature.coordinate)
+            {
+                return props.clickFeature.coordinate;
+            }
+        }
 
         if (props.enabled && props.point && props.point.button === 0 && props.point.coordinate) {
             if (!this.props.point.coordinate ||
