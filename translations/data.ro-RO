@@ -159,6 +159,7 @@
       "draw": "Desenează",
       "edit": "Modifică",
       "fill": "Interior",
+      "freehand": "",
       "label": "Text",
       "layer": "Strat",
       "line": "Linie",

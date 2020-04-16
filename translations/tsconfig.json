@@ -130,6 +130,7 @@
     "redlining.draw",
     "redlining.edit",
     "redlining.fill",
+    "redlining.freehand",
     "redlining.label",
     "redlining.layer",
     "redlining.line",

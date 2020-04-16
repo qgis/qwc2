@@ -159,6 +159,7 @@
       "draw": "Dessiner",
       "edit": "Editer",
       "fill": "Remplissage",
+      "freehand": "Dessin à main levée",
       "label": "Texte",
       "layer": "Couche",
       "line": "Ligne",
