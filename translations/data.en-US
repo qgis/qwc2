@@ -159,6 +159,7 @@
       "draw": "Draw",
       "edit": "Edit",
       "fill": "Fill",
+      "freehand": "Freehand drawing",
       "label": "Label",
       "layer": "Layer",
       "line": "Line",
