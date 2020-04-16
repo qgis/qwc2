@@ -238,7 +238,7 @@ class Editing extends React.Component {
 
         // Gather relation tables for selected layer if config is a designer form
         this.setState({selectedLayer: selectedLayer, relationTables: {}});
-        if(curConfig.form) {
+        if(curConfig && curConfig.form) {
             let url = curConfig.form;
             if(url && url.startsWith(":/")) {
                 let assetsPath = ConfigUtils.getConfigProp("assetsPath");
