@@ -22,6 +22,17 @@ div.redlining-group > div {
     white-space: nowrap;
 }
 
+div.redlining-group > span {
+    display: flex;
+    justify-content: center;
+    margin: auto;
+}
+
+div.redlining-group > span > * {
+    flex: 1 0 auto;
+    margin-right: 0.25em;
+}
+
 div.redlining-controlsbar {
     display: flex;
     flex-wrap: wrap;

@@ -95,6 +95,12 @@ class Redlining extends React.Component {
             {key: "Polygon", tooltip: "redlining.polygon", icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
             {key: "Text", tooltip: "redlining.text", icon: "text", data: {action: "Draw", geomType: "Text", text: ""}},
         ];
+        let activeFreeHand = this.props.redlining.freehand ? "HandDrawing" : null;
+        let freehandButtons = [
+            {key: "HandDrawing", tooltip: "redlining.freehand", icon: "freehand",
+            data: {action: "Draw", geomType: this.props.redlining.geomType, text: "", freehand: !this.props.redlining.freehand},
+            disabled: (this.props.redlining.geomType !== "LineString" && this.props.redlining.geomType !== "Polygon")}
+        ];
         let editButtons = [
             {key: "Pick", tooltip: "redlining.pick", icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
             {key: "Delete", tooltip: "redlining.delete", icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature}
@@ -122,7 +128,12 @@ class Redlining extends React.Component {
                     </div>
                     <div className="redlining-group">
                         <div><Message msgId="redlining.draw" /></div>
-                        <ButtonBar buttons={drawButtons} active={activeButton} onClick={(key, data) => this.actionChanged(data)} />
+                        <span>
+                            <ButtonBar buttons={drawButtons} active={activeButton} onClick={(key, data) => this.actionChanged(data)} />
+                            {this.props.redlining.geomType === "LineString" || this.props.redlining.geomType === "Polygon" ?
+                                <ButtonBar buttons={freehandButtons} active={activeFreeHand} onClick={(key, data) => this.actionChanged(data)} /> : null
+                            }
+                        </span>
                     </div>
                     <div className="redlining-group">
                         <div><Message msgId="redlining.edit" /></div>

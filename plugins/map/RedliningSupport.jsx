@@ -73,6 +73,8 @@ class RedliningSupport extends React.Component {
             this.deleteCurrentFeature(this.props);
         } else if(newProps.redlining.action === 'Draw' && (this.props.redlining.action !== 'Draw' || newProps.redlining.geomType !== this.props.redlining.geomType || layerChanged)) {
             this.addDrawInteraction(newProps);
+        } else if(newProps.redlining.freehand !== this.props.redlining.freehand) {
+            this.addDrawInteraction(newProps);
         } else if(newProps.redlining.style !== this.props.redlining.style) {
             this.updateFeatureStyle(newProps.redlining.style);
         }
@@ -106,10 +108,12 @@ class RedliningSupport extends React.Component {
     addDrawInteraction = (newProps) => {
         this.reset();
         let isText = newProps.redlining.geomType === "Text";
+        let isFreeHand = newProps.redlining.freehand;
         let drawInteraction = new ol.interaction.Draw({
             type: isText ? "Point" : newProps.redlining.geomType,
             condition: (event) => {  return event.pointerEvent.buttons === 1 },
-            style: new ol.style.Style()
+            style: new ol.style.Style(),
+            freehand: isFreeHand
         });
         drawInteraction.on('drawstart', (evt) => {
             this.leaveTemporaryPickMode();
