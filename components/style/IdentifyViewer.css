@@ -9,6 +9,11 @@ div.identify-body div.identify-results-container {
     overflow-y: auto;
     flex: 1 1 50%;
     min-height: 0;
+    background-color: white;
+    border: 1px solid @item_border@;
+    padding: 0.25em;
+    margin-bottom: 0.25em;
+    font-size: small;
 }
 
 div.identify-layer-expandable {
@@ -83,7 +88,7 @@ div.identify-body div.identify-flat-results-list {
     flex: 1 1 auto;
 }
 
-div.identify-body .identify-result-frame {
+div.identify-body .identify-result-tree-frame {
     flex: 1 1 50%;
     min-height: 0;
     display: flex;
@@ -124,6 +129,10 @@ div.identify-body .identify-result-title > span.icon:hover {
 
 div.identify-result-container {
     padding: 0.25em;
+}
+
+div.identify-body .identify-result-tree-frame > div.identify-result-container {
+    overflow-y: auto;
 }
 
 div.identify-body .identify-result-box {

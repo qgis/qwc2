@@ -419,7 +419,7 @@ class IdentifyViewer extends React.Component {
             }
         } else if(tree) {
             let contents = Object.keys(this.state.resultTree).map(layer => this.renderLayer(layer));
-            let attributes = this.renderResultAttributes(this.state.currentLayer, this.state.currentResult, 'identify-result-frame');
+            let attributes = this.renderResultAttributes(this.state.currentLayer, this.state.currentResult, 'identify-result-tree-frame');
             let resultsContainerStyle = {
                 maxHeight: attributes ? '10em' : 'initial'
             };
