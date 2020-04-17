@@ -220,23 +220,34 @@ class IdentifyViewer extends React.Component {
             let data = JSON.stringify(json, null, ' ');
             FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "results.json");
         } else if(this.props.exportFormat.toLowerCase() === 'csv') {
-            let csv = "";
+            let first = false;
             Object.entries(json).forEach(([layerName, features]) => {
-                csv += layerName + "\n";
-                features.forEach(feature => {
-                    Object.entries(feature.properties || {}).forEach(([attrib, value]) => {
+                let csv = "";
+                if (!first) {
+                    Object.entries(features[0].properties || {}).forEach(([attrib]) => {
                         if(attrib !== "htmlContent") {
-                            csv += '\t"' + attrib + '"\t"' + String(value).replace('"', '""') + '"\n';
+                            csv += attrib  + '"\t"' ;
                         }
                     });
-                    if(feature.geometry) {
-                        csv += '\t"geometry"\t"' + stringify(feature.geometry) + '"\n';
+                    if(features[0].geometry) {
+                        csv += '"geometry"\t"';
                     }
+                    first = true;
+                    csv += '"\n"';
+                }
+                features.forEach(feature => {
+                    Object.entries(feature.properties || {}).forEach(([attrib, value]) => {
+                        csv += String(value).replace('"', '""') + '"\t"';
+                    });
+                    if(feature.geometry) {
+                        csv += stringify(feature.geometry) + '"\t"';
+                    }
+                    csv += '"\n"';
                 });
-                csv += "\n";
+                first = false;
+                FileSaver.saveAs(new Blob([csv], {type: "text/csv;charset=UTF-8"}), layerName + ".csv");
             })
-            FileSaver.saveAs(new Blob([csv], {type: "text/plain;charset=utf-8"}), "results.csv");
-        }
+        } 
     }
     resultDisplayName = (layer, result) => {
         let displayName = "";
