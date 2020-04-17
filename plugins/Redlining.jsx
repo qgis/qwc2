@@ -130,7 +130,7 @@ class Redlining extends React.Component {
                         <div><Message msgId="redlining.draw" /></div>
                         <span>
                             <ButtonBar buttons={drawButtons} active={activeButton} onClick={(key, data) => this.actionChanged(data)} />
-                            {this.props.redlining.geomType === "LineString" || this.props.redlining.geomType === "Polygon" ?
+                            {this.props.redlining.action === "Draw" && (this.props.redlining.geomType === "LineString" || this.props.redlining.geomType === "Polygon") ?
                                 <ButtonBar buttons={freehandButtons} active={activeFreeHand} onClick={(key, data) => this.actionChanged(data)} /> : null
                             }
                         </span>
