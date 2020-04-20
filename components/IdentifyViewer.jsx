@@ -548,6 +548,7 @@ class IdentifyViewer extends React.Component {
         }
     }
     attribValue = (text) => {
+        text = "" + text; // Ensure text is a string
         text = MiscUtils.addLinkAnchors(text);
         return ReactHtmlParser(text, {transform: (node, index) => {
             if(node.name === "a") {
