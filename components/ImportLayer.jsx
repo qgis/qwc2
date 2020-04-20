@@ -290,7 +290,20 @@ class ImportLayer extends React.Component {
     }
     addGeoJSONLayer = (filename, data) => {
         if(!isEmpty(data.features)) {
-            let features = data.features.map(feature => ({...feature, crs: feature.crs || "EPSG:4326"}));
+            let defaultCrs = "EPSG:4326";
+            if(data.crs && data.crs.properties && data.crs.properties.name) {
+                // Extract CRS from FeatureCollection crs
+                defaultCrs = data.crs.properties.name.replace(/urn:ogc:def:crs:EPSG::(\d+)/, "EPSG:$1");
+            }
+            let features = data.features.map(feature => {
+                let crs = defaultCrs;
+                if(feature.crs && feature.crs.properties && feature.crs.properties.name) {
+                    crs = feature.crs.properties.name.replace(/urn:ogc:def:crs:EPSG::(\d+)/, "EPSG:$1");
+                } else if(typeof feature.crs === "string") {
+                    crs = feature.crs;
+                }
+                return {...feature, crs: crs};
+            });
             this.props.addLayerFeatures({
                 name: filename,
                 title: filename.replace(/\.[^/.]+$/, ""),
