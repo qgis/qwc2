@@ -62,8 +62,10 @@ function layers(state = {flat: [], swipe: undefined}, action) {
         }
         case ADD_LAYER: {
             let newLayers = (state.flat || []).concat();
+            let layerId = action.layer.id || uuid.v4();
             let newLayer = assign({}, action.layer, {
-                id: action.layer.id || uuid.v4(),
+                id: layerId,
+                name: action.layer.name || layerId,
                 role: action.layer.role || LayerRole.USERLAYER,
                 queryable: action.layer.queryable || false,
                 visibility: action.layer.visibility !== undefined ? action.layer.visibility : true,
@@ -113,10 +115,11 @@ function layers(state = {flat: [], swipe: undefined}, action) {
         case ADD_LAYER_FEATURES: {
             let newLayers = (state.flat || []).concat();
             let idx = newLayers.findIndex(layer => layer.id === action.layer.id);
+            let layerId = action.layer.id || uuid.v4();
             if(idx === -1 || action.clear) {
                 let newLayer = assign({}, action.layer, {
                     type: 'vector',
-                    id: action.layer.id || uuid.v4(),
+                    name: action.layer.name || layerId,
                     uuid: uuid.v4(),
                     features: action.features,
                     role: action.layer.role || LayerRole.USERLAYER,
