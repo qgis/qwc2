@@ -79,7 +79,7 @@
       "localfile": "File locale",
       "nofeatures": "Nessuno oggetto è stato importato",
       "noresults": "Nessun risultato o URL invalido",
-      "loading": "",
+      "loading": "Caricamento...",
       "url": "URL",
       "urlplaceholder": "Indirizzo WMS, WFS KML, GeoJSON..."
     },
@@ -159,7 +159,7 @@
       "draw": "Disegna",
       "edit": "Modifica",
       "fill": "Riempimento",
-      "freehand": "",
+      "freehand": "Mano libera",
       "label": "Ettichetta",
       "layer": "Layer",
       "line": "Linea",
