@@ -300,7 +300,7 @@ class IdentifyViewer extends React.Component {
                 );
             } else {
                 rows = properties.map(attrib => {
-                    if(this.props.theme.skipEmptyFeatureAttributes && (!result.properties[attrib] || result.properties[attrib] === "NULL")) {
+                    if(this.props.theme.skipEmptyFeatureAttributes && (result.properties[attrib] === "" || result.properties[attrib] === null || result.properties[attrib] === "NULL")) {
                         return null;
                     }
                     return (
