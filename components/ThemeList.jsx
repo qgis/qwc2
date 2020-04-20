@@ -93,7 +93,7 @@ class ThemeList extends React.Component {
         return (
             <ul className="theme-group-body">
                 {(!isEmpty(group.items) ? group.items : []).map(item => {
-                    let infoLinks = (item.themeInfoLinks || []).map(name => this.props.themes.themeInfoLinks.find(entry => entry.name === name)).filter(entry => entry);
+                    let infoLinks = (item.themeInfoLinks && item.themeInfoLinks.entries || []).map(name => this.props.themes.themeInfoLinks.find(entry => entry.name === name)).filter(entry => entry);
                     let matches = [];
                     if(filter) {
                         let match = null;
@@ -115,15 +115,20 @@ class ThemeList extends React.Component {
                         >
                             <div className="theme-item-title" title={item.title}>
                                 <span>{item.title}</span>
-                                {!isEmpty(infoLinks) ? (<Icon icon="info" onClick={ev => this.toggleThemeInfoMenu(ev, item.id)}/>) : null}
+
                             </div>
-                            {this.state.visibleThemeInfoMenu === item.id ? (
-                                <div className="theme-item-info-links" onClick={ev => ev.stopPropagation()}>
-                                    {infoLinks.map(link => (
-                                        <a key={link.name} href={link.url} target={link.target}>{link.title}</a>
-                                    ))}
-                                </div>
-                            ) : null}
+                            {!isEmpty(infoLinks) ? (<div className={"theme-item-info-menu " + (this.state.visibleThemeInfoMenu ? "theme-item-info-menu-active" : "")} onClick={ev => this.toggleThemeInfoMenu(ev, item.id)}>
+                                <Icon icon="info" />
+                                {item.themeInfoLinks.title ? (<span>{item.themeInfoLinks.title}</span>) : (<Message msgId={item.themeInfoLinks.titleMsgId} />)}
+                                <Icon icon="triangle-down" />
+                                {this.state.visibleThemeInfoMenu === item.id ? (
+                                    <div className="theme-item-info-links" onClick={ev => ev.stopPropagation()}>
+                                        {infoLinks.map(link => (
+                                            <a key={link.name} href={link.url} target={link.target}>{link.title}</a>
+                                        ))}
+                                    </div>
+                                ) : null}
+                            </div>) : null}
                             <div className="theme-item-body">
                                 {item.description ? (<div className="theme-item-description" dangerouslySetInnerHTML={{__html: item.description}} />) : null}
                                 <img className="theme-item-thumbnail" src={assetsPath + "/" + item.thumbnail} />

@@ -105,10 +105,34 @@ div.ThemeList li.theme-item-active {
     border: 1px solid @item_active@;
 }
 
+div.ThemeList div.theme-item-info-menu {
+    text-align: left;
+    display: flex;
+    align-items: center;
+    position: relative;
+    color: @item_active@;
+    padding: 0.25em;
+}
+
+div.ThemeList div.theme-item-info-menu-active {
+    background-color: @item_active@;
+    color: white;
+}
+
+div.ThemeList div.theme-item-info-menu > span.icon-info {
+    margin-right: 0.25em;
+}
+
+div.ThemeList div.theme-item-info-menu > span.icon-triangle-down {
+    margin-left: 0.25em;
+    font-size: 80%;
+}
+
 div.ThemeList div.theme-item-info-links {
     position: absolute;
-    top: 1.5em;
+    top: 100%;
     max-width: calc(15em + 2px);
+    left: -1px;
     right: -1px;
     background-color: rgba(255, 255, 255, 0.85);
     border: 1px solid @item_active@;
