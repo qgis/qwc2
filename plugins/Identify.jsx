@@ -11,10 +11,11 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
+const uuid = require('uuid');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 const Message = require('../components/I18N/Message');
 const {TaskBar} = require('../components/TaskBar');
-const {sendIdentifyRequest, purgeIdentifyResults, identifyEmpty} = require('../actions/identify');
+const {sendIdentifyRequest, setIdentifyFeatureResult, purgeIdentifyResults, identifyEmpty} = require('../actions/identify');
 const {LayerRole, addMarker, removeMarker, removeLayer} = require('../actions/layers');
 const {IdentifyViewer} = require('../components/IdentifyViewer');
 
@@ -52,29 +53,44 @@ class Identify extends React.Component {
     }
     componentWillReceiveProps(newProps) {
         let point = this.queryPoint(newProps);
-        if (point) {
+        let clickFeature = this.queryFeature(newProps);
+        if (point || clickFeature) {
             // Remove any search selection layer to avoid confusion
             this.props.removeLayer("searchselection");
+            this.props.purgeResults();
 
-            const queryableLayers = newProps.layers.filter((l) => {
-                // All non-background WMS layers with a non-empty queryLayers list
-                return l.visibility && l.type === 'wms' && l.role !== LayerRole.BACKGROUND && (l.queryLayers || []).length > 0
-            });
-            queryableLayers.forEach((layer) => {
-                let layers = [];
-                let queryLayers = layer.queryLayers;
-                for(let i = 0; i < queryLayers.length; ++i) {
-                    if(layer.externalLayers && layer.externalLayers[queryLayers[i]]) {
-                        layers.push(layer.externalLayers[queryLayers[i]]);
-                    } else if(layers.length > 0 && layers[layers.length - 1].id === layer.id) {
-                        layers[layers.length - 1].queryLayers.push(queryLayers[i]);
-                    } else {
-                        layers.push(assign({}, layer, {queryLayers: [queryLayers[i]]}));
+            let queryableLayers = [];
+            if(point) {
+                queryableLayers = newProps.layers.filter((l) => {
+                    // All non-background WMS layers with a non-empty queryLayers list
+                    return l.visibility && l.type === 'wms' && l.role !== LayerRole.BACKGROUND && (l.queryLayers || []).length > 0
+                });
+                queryableLayers.forEach((layer) => {
+                    let layers = [];
+                    let queryLayers = layer.queryLayers;
+                    for(let i = 0; i < queryLayers.length; ++i) {
+                        if(layer.externalLayers && layer.externalLayers[queryLayers[i]]) {
+                            layers.push(layer.externalLayers[queryLayers[i]]);
+                        } else if(layers.length > 0 && layers[layers.length - 1].id === layer.id) {
+                            layers[layers.length - 1].queryLayers.push(queryLayers[i]);
+                        } else {
+                            layers.push(assign({}, layer, {queryLayers: [queryLayers[i]]}));
+                        }
+                    }
+                    layers.forEach(l => this.props.sendRequest(IdentifyUtils.buildRequest(l, l.queryLayers.join(","), point, newProps.map, newProps.params)));
+                });
+            }
+            let queryFeature = null;
+            if(clickFeature) {
+                let layer = newProps.layers.find(layer => layer.id === clickFeature.layer);
+                if(layer && layer.role === LayerRole.USERLAYER && layer.type === "vector" && !isEmpty(layer.features)) {
+                    queryFeature = layer.features.find(feature =>  feature.id === clickFeature.feature);
+                    if(queryFeature && !isEmpty(queryFeature.properties)) {
+                        this.props.setIdentifyFeatureResult(clickFeature.coordinate, layer.name, queryFeature);
                     }
                 }
-                layers.forEach(l => this.props.sendRequest(IdentifyUtils.buildRequest(l, l.queryLayers.join(","), point, newProps.map, newProps.params)));
-            });
-            if(isEmpty(queryableLayers)) {
+            }
+            if(isEmpty(queryableLayers) && !queryFeature) {
                 this.props.identifyEmpty();
             }
             this.props.addMarker('identify', point, '', newProps.map.projection);
@@ -109,6 +125,11 @@ class Identify extends React.Component {
             }
         }
         return null;
+    }
+    queryFeature = (props) => {
+        if (props.enabled && props.clickFeature && this.props.clickFeature !== props.clickFeature && props.clickFeature.geometry) {
+            return props.clickFeature;
+        }
     }
     onClose = () => {
         this.props.removeMarker('identify');
@@ -150,6 +171,7 @@ const selector = (state) => ({
 
 const IdentifyPlugin = connect(selector, {
     sendRequest: sendIdentifyRequest,
+    setIdentifyFeatureResult: setIdentifyFeatureResult,
     purgeResults: purgeIdentifyResults,
     identifyEmpty: identifyEmpty,
     addMarker: addMarker,

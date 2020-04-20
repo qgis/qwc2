@@ -15,6 +15,7 @@ const IDENTIFY_RESPONSE = 'IDENTIFY_RESPONSE';
 const IDENTIFY_REQUEST = 'IDENTIFY_REQUEST';
 const SET_IDENTIFY_TOOL = 'SET_IDENTIFY_TOOL';
 const PURGE_IDENTIFY_RESULTS = 'PURGE_IDENTIFY_RESULTS';
+const SET_IDENTIFY_FEATURE_RESULT = 'SET_IDENTIFY_FEATURE_RESULT';
 
 
 function identifyEmpty() {
@@ -30,6 +31,7 @@ function identifyResponse(reqId, request, data, error=null) {
         reqId: reqId,
         request: request,
         data: data,
+        responseType: request.params.info_format || request.params.outputformat,
         error: error
     };
 }
@@ -80,8 +82,18 @@ function sendIdentifyRegionRequest(serviceUrl, requestParams, wgs84FilterPoly = 
             }
             dispatch(identifyResponse(reqId, {url: serviceUrl, params}, response.data));
         }).catch((e) => {
-            dispatch(identifyResponse(reqId, null, e));
+            dispatch(identifyResponse(reqId, null, null, e));
         });
+    };
+}
+
+function setIdentifyFeatureResult(pos, layername, feature) {
+    return {
+        type: SET_IDENTIFY_FEATURE_RESULT,
+        reqId: uuid.v1(),
+        pos: pos,
+        layername: layername,
+        feature: feature
     };
 }
 
@@ -107,10 +119,12 @@ module.exports = {
     IDENTIFY_EMPTY,
     IDENTIFY_RESPONSE,
     IDENTIFY_REQUEST,
+    SET_IDENTIFY_FEATURE_RESULT,
     SET_IDENTIFY_TOOL,
     PURGE_IDENTIFY_RESULTS,
     identifyEmpty,
     sendIdentifyRequest,
     setIdentifyEnabled,
-    purgeIdentifyResults
+    purgeIdentifyResults,
+    setIdentifyFeatureResult
 };

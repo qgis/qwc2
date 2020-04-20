@@ -108,13 +108,13 @@ class IdentifyViewer extends React.Component {
     }
     parseResponse = (response, results, stats) => {
         let newResults = {};
-        if(response.request.params.info_format === "application/json" || response.request.params.outputformat == "GeoJSON") {
+        if(response.responseType === "application/json" || response.responseType == "GeoJSON") {
             newResults = IdentifyUtils.parseGeoJSONResponse(response.data, this.props.mapcrs);
-        } else if(response.request.params.info_format === "text/xml") {
+        } else if(response.responseType === "text/xml") {
             newResults = IdentifyUtils.parseXmlResponse(response, this.props.mapcrs);
-        } else if(response.request.params.info_format === "text/plain") {
+        } else if(response.responseType === "text/plain") {
             newResults[response.request.metadata.layer] = [{type: "text", text: response.data, id: response.request.metadata.posstr}];
-        } else if(response.request.params.info_format === "text/html") {
+        } else if(response.responseType === "text/html") {
             newResults[response.request.metadata.layer] = [{type: "html", text: response.data, id: response.request.metadata.posstr}];
         }
         for(let key of Object.keys(newResults)) {
@@ -501,7 +501,7 @@ class IdentifyViewer extends React.Component {
         let layername = result.layername || featureInfoLayerId;
         // Search matching layer by technical name
         for(let layer of this.props.layers) {
-            if(layer.role === LayerRole.THEME) {
+            if(layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
                 matchsublayer = LayerUtils.searchSubLayer(layer, 'name', layername);
                 if(matchsublayer) {
                     return matchsublayer.title;
@@ -518,7 +518,7 @@ class IdentifyViewer extends React.Component {
             // Search matching layer by technical name
             for(let name of [layername, result.layerinfo]) {
                 for(let layer of this.props.layers) {
-                    if(layer.role === LayerRole.THEME) {
+                    if(layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
                         matchsublayer = LayerUtils.searchSubLayer(layer, 'name', name);
                         if(matchsublayer) {
                             matchlayer = layer;
