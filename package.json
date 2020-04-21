@@ -22,6 +22,7 @@
         "intl": "1.2.5",
         "ismobilejs": "0.5.2",
         "jsts": "2.0.6",
+        "jszip": "3.2.0",
         "lodash.isempty": "4.4.0",
         "lodash.isequal": "4.5.0",
         "lodash.omit": "4.5.0",

@@ -24,6 +24,7 @@ const IdentifyUtils = require('../utils/IdentifyUtils');
 const LayerUtils = require('../utils/LayerUtils');
 const MiscUtils = require('../utils/MiscUtils');
 const Icon = require('./Icon');
+const JSZip = require('jszip');
 require('./style/IdentifyViewer.css');
 
 class IdentifyViewer extends React.Component {
@@ -221,16 +222,20 @@ class IdentifyViewer extends React.Component {
             FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "results.json");
         } else if(this.props.exportFormat.toLowerCase() === 'csv') {
             let first = false;
+            let file = 0 ;
+            let blobs = [];
+            let filenames = [];
             Object.entries(json).forEach(([layerName, features]) => {
                 let csv = "";
+                file += 1;
                 if (!first) {
                     Object.entries(features[0].properties || {}).forEach(([attrib]) => {
                         if(attrib !== "htmlContent") {
-                            csv += attrib  + '"\t"' ;
+                            csv += attrib  + '\t' ;
                         }
                     });
                     if(features[0].geometry) {
-                        csv += '"geometry"\t"';
+                        csv += 'geometry\t"';
                     }
                     first = true;
                     csv += '"\n"';
@@ -245,8 +250,21 @@ class IdentifyViewer extends React.Component {
                     csv += '"\n"';
                 });
                 first = false;
-                FileSaver.saveAs(new Blob([csv], {type: "text/csv;charset=UTF-8"}), layerName + ".csv");
+                let blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
+                blobs.push(blob);
+                filenames.push(layerName);
             })
+            if (file > 1) {
+                let zip = new JSZip();
+                for (var i = 0; i < blobs.length; i++) {
+                    zip.file(filenames[i] + ".csv", blobs[i]);
+                }
+                zip.generateAsync({type:"blob"}).then(function (blob){
+                    saveAs(blob, "results.zip");
+                });
+            } else {
+                FileSaver.saveAs(blobs[0], filenames[0] + ".csv");
+            }
         } 
     }
     resultDisplayName = (layer, result) => {
