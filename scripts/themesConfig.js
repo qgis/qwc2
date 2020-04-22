@@ -209,7 +209,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         // group
         layerEntry.mutuallyExclusive = (layer.$ || {}).mutuallyExclusive === '1';
         layerEntry.sublayers = [];
-        layerEntry.expanded = collapseBelowLevel >= 0 && level >= collapseBelowLevel ? false : true;
+        layerEntry.expanded = (layer.$ || {}).expanded === '0' ? false : collapseBelowLevel >= 0 && level >= collapseBelowLevel ? false : true;
         for (let subLayer of toArray(layer.Layer)) {
             getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap, featureReports);
         }

@@ -232,7 +232,10 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
         # group
         layerEntry["mutuallyExclusive"] = layer.getAttribute("mutuallyExclusive") == "1"
         layerEntry["sublayers"] = []
-        layerEntry["expanded"] = False if collapseBelowLevel >= 0 and level >= collapseBelowLevel else True
+        if layer.getAttribute("expanded") == "0":
+            layerEntry["expanded"] = False
+        else:
+            layerEntry["expanded"] = False if collapseBelowLevel >= 0 and level >= collapseBelowLevel else True
         for sublayer in layers:
             getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap, featureReports)
 
