@@ -27,6 +27,10 @@ class MapTip extends React.Component {
         map: PropTypes.object,
         addLayer: PropTypes.func,
         removeLayer: PropTypes.func,
+        layerFeatureCount: PropTypes.number
+    }
+    static defaultProps = {
+        layerFeatureCount: 5
     }
     state = {
         maptips: [],
@@ -69,7 +73,7 @@ class MapTip extends React.Component {
         this.timeoutId = null;
         let options = {
             info_format: 'text/xml',
-            feature_count: 1,
+            feature_count: this.props.layerFeatureCount,
             FI_POINT_TOLERANCE: 16,
             FI_LINE_TOLERANCE: 8,
             FI_POLYGON_TOLERANCE: 4,
@@ -92,9 +96,8 @@ class MapTip extends React.Component {
             let mapTips = [];
             let result = IdentifyUtils.parseXmlResponse({data: response.data, request}, this.props.map.projection);
             for(let layerName of request.params.layers.split(",")) {
-                if(result[layerName]) {
-                    let feature = result[layerName].find(feature => feature.properties.maptip);
-                    if(feature) {
+                for(let feature of result[layerName] || []) {
+                    if(feature.properties.maptip) {
                         const layer = {
                             id: "maptipselection",
                             role: LayerRole.SELECTION
