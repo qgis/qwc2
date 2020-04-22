@@ -161,7 +161,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
     layerEntry = {"name": name, "title": title}
 
     if not layers:
-        if layer.getAttribute("geometryType") == "WKBNoGeometry":
+        if layer.getAttribute("geometryType") == "WKBNoGeometry" or layer.getAttribute("geometryType") == "NoGeometry":
             # skip layers without geometry
             return
 

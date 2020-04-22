@@ -144,7 +144,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         title: layer.Title
     };
     if (layer.Layer === undefined) {
-        if (!layer.$ || layer.$.geometryType == "WKBNoGeometry") {
+        if (!layer.$ || layer.$.geometryType == "WKBNoGeometry" || layer.$.geometryType == "NoGeometry") {
             // skip layers without geometry
             return;
         }
