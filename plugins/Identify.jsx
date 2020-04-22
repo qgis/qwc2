@@ -13,6 +13,8 @@ const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const uuid = require('uuid');
 const IdentifyUtils = require('../utils/IdentifyUtils');
+const MapUtils = require('../utils/MapUtils');
+const LayerUtils = require('../utils/LayerUtils');
 const Message = require('../components/I18N/Message');
 const {TaskBar} = require('../components/TaskBar');
 const {sendIdentifyRequest, setIdentifyFeatureResult, purgeIdentifyResults, identifyEmpty} = require('../actions/identify');
@@ -65,12 +67,15 @@ class Identify extends React.Component {
                     // All non-background WMS layers with a non-empty queryLayers list
                     return l.visibility && l.type === 'wms' && l.role !== LayerRole.BACKGROUND && (l.queryLayers || []).length > 0
                 });
+                const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
                 queryableLayers.forEach((layer) => {
                     let layers = [];
                     let queryLayers = layer.queryLayers;
                     for(let i = 0; i < queryLayers.length; ++i) {
                         if(layer.externalLayers && layer.externalLayers[queryLayers[i]]) {
-                            if(!isEmpty(layer.externalLayers[queryLayers[i]].queryLayers)) {
+                            let sublayer = LayerUtils.searchSubLayer(layer, "name", queryLayers[i]);
+                            let sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
+                            if(!isEmpty(layer.externalLayers[queryLayers[i]].queryLayers) && !sublayerInvisible) {
                                 layers.push(layer.externalLayers[queryLayers[i]]);
                             }
                         } else if(layers.length > 0 && layers[layers.length - 1].id === layer.id) {
