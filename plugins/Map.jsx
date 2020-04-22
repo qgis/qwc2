@@ -13,8 +13,9 @@ const assign = require('object-assign');
 const Message = require('../components/I18N/Message');
 const Spinner = require('../components/Spinner');
 const {LayerRole} = require('../actions/layers');
-
 const {Map, Layer} = require('./map/MapComponents');
+const MapUtils = require('../utils/MapUtils');
+const LayerUtils = require('../utils/LayerUtils');
 
 require('./style/Map.css');
 
@@ -41,6 +42,7 @@ class MapPlugin extends React.Component {
     }
     renderLayers = () => {
         const projection = this.props.map.projection || 'EPSG:3857';
+        const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
         const topLayer = (this.props.layers || [])[0];
         return this.props.layers.slice(0).reverse().map((layer, index) => {
             let layers = [];
@@ -49,9 +51,13 @@ class MapPlugin extends React.Component {
                 let opacities = layer.params.OPACITIES.split(",");
                 for(let i = 0; i < sublayers.length; ++i) {
                     if(layer.externalLayers[sublayers[i]]) {
-                        layers.push(assign({}, layer.externalLayers[sublayers[i]], {
-                            opacity: opacities[i]
-                        }));
+                        let sublayer = LayerUtils.searchSubLayer(layer, "name", sublayers[i]);
+                        let sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
+                        if(!sublayerInvisible) {
+                            layers.push(assign({}, layer.externalLayers[sublayers[i]], {
+                                opacity: opacities[i]
+                            }));
+                        }
                     } else if(layers.length > 0 && layers[layers.length - 1].id === layer.id) {
                         layers[layers.length - 1].params.LAYERS += "," + sublayers[i];
                         layers[layers.length - 1].params.OPACITIES += "," + opacities[i];
