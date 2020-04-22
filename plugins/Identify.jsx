@@ -70,7 +70,9 @@ class Identify extends React.Component {
                     let queryLayers = layer.queryLayers;
                     for(let i = 0; i < queryLayers.length; ++i) {
                         if(layer.externalLayers && layer.externalLayers[queryLayers[i]]) {
-                            layers.push(layer.externalLayers[queryLayers[i]]);
+                            if(!isEmpty(layer.externalLayers[queryLayers[i]].queryLayers)) {
+                                layers.push(layer.externalLayers[queryLayers[i]]);
+                            }
                         } else if(layers.length > 0 && layers[layers.length - 1].id === layer.id) {
                             layers[layers.length - 1].queryLayers.push(queryLayers[i]);
                         } else {
