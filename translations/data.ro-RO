@@ -90,7 +90,9 @@
       "keywords": "Cuvinte cheie",
       "dataUrl": "URL date",
       "metadataUrl": "URL metadate",
-      "legend": "Legendă"
+      "legend": "Legendă",
+      "maxscale": "",
+      "minscale": ""
     },
     "layertree": {
       "compare": "Compară stratul de sus",

@@ -80,6 +80,8 @@
     "layerinfo.dataUrl",
     "layerinfo.metadataUrl",
     "layerinfo.legend",
+    "layerinfo.maxscale",
+    "layerinfo.minscale",
     "layertree.compare",
     "layertree.importlayer",
     "layertree.maptip",

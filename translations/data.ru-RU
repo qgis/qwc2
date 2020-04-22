@@ -90,7 +90,9 @@
       "keywords": "Ключевые слова",
       "dataUrl": "URL данных",
       "metadataUrl": "URL метаданных",
-      "legend": "Легенда"
+      "legend": "Легенда",
+      "maxscale": "",
+      "minscale": ""
     },
     "layertree": {
       "compare": "Сравнить верхний слой",

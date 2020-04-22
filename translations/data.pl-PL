@@ -90,7 +90,9 @@
       "keywords": "Słowa kluczowe",
       "dataUrl": "URL danych",
       "metadataUrl": "URL metadanych",
-      "legend": "Legenda"
+      "legend": "Legenda",
+      "maxscale": "",
+      "minscale": ""
     },
     "layertree": {
       "compare": "Porównaj najwyższą warstwę",

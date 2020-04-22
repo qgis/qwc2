@@ -77,6 +77,8 @@ class LayerInfoWindow extends React.Component {
                             {this.renderRow("layerinfo.keywords", this.props.sublayer.keywords)}
                             {this.renderRow("layerinfo.dataUrl", this.renderLink(this.props.sublayer.dataUrl, this.props.sublayer.dataUrl))}
                             {this.renderRow("layerinfo.metadataUrl", this.renderLink(this.props.sublayer.metadataUrl, this.props.sublayer.metadataUrl))}
+                            {this.props.sublayer.minScale !== undefined ? this.renderRow("layerinfo.minscale", this.renderScale(this.props.sublayer.minScale)) : null}
+                            {this.props.sublayer.maxScale !== undefined ? this.renderRow("layerinfo.maxscale", this.renderScale(this.props.sublayer.maxScale)) : null}
                             {this.renderRow("layerinfo.legend", legend)}
                             </tbody>
                         </table>
@@ -84,6 +86,15 @@ class LayerInfoWindow extends React.Component {
                 </div>
             </ResizeableWindow>
         );
+    }
+    renderScale = (scale) => {
+        if(scale === 0) {
+            return "0";
+        } else if(scale >= 1) {
+            return "1:" + Math.round(scale);
+        } else {
+            return Math.round(1./scale) + ":1";
+        }
     }
     onClose = () => {
         this.props.setActiveLayerInfo(null, null);

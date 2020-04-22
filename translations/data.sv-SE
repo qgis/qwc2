@@ -90,7 +90,9 @@
       "keywords": "Nyckelord",
       "dataUrl": "Datalänk",
       "metadataUrl": "Metadatalänk",
-      "legend": "Teckenförklaring"
+      "legend": "Teckenförklaring",
+      "maxscale": "",
+      "minscale": ""
     },
     "layertree": {
       "compare": "Jämför översta lagret",

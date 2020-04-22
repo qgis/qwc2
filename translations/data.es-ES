@@ -90,7 +90,9 @@
       "keywords": "Palabras claves",
       "dataUrl": "Dirección URL de datos",
       "metadataUrl": "Dirección URL de metadatos",
-      "legend": "Leyenda"
+      "legend": "Leyenda",
+      "maxscale": "",
+      "minscale": ""
     },
     "layertree": {
       "compare": "Comparar con la capa superior",

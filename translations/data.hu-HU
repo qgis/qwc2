@@ -90,7 +90,9 @@
       "keywords": "Címszavak",
       "dataUrl": "Adat URL",
       "metadataUrl": "Metaadat URL",
-      "legend": "Jelmagyarázat"
+      "legend": "Jelmagyarázat",
+      "maxscale": "",
+      "minscale": ""
     },
     "layertree": {
       "compare": "Összehasonlítás a felső fóliával",

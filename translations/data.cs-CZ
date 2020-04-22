@@ -90,7 +90,9 @@
       "keywords": "Klíčová slova",
       "dataUrl": "Data URL",
       "metadataUrl": "Metadata URL",
-      "legend": "Legenda"
+      "legend": "Legenda",
+      "maxscale": "",
+      "minscale": ""
     },
     "layertree": {
       "compare": "Porovnat vrchní vrstvy",
