@@ -226,33 +226,37 @@ class IdentifyViewer extends React.Component {
             let data = JSON.stringify(json, null, ' ');
             FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "results.json");
         } else if(this.props.exportFormat.toLowerCase() === 'csv') {
-            let first = false;
+            let first = true;
             let file = 0 ;
             let blobs = [];
             let filenames = [];
             Object.entries(json).forEach(([layerName, features]) => {
                 let csv = "";
                 file += 1;
-                if (!first) {
+                if (first) {
                     Object.entries(features[0].properties || {}).forEach(([attrib]) => {
                         if(attrib !== "htmlContent") {
-                            csv += attrib  + '\t' ;
+                            csv += attrib  + ';' ;
                         }
                     });
                     if(features[0].geometry) {
-                        csv += 'geometry\t"';
+                        csv += 'geometry';
+                    } else if(csv !== ""){
+                        csv = csv.slice(0, -1); // Remove trailling semi column ;
                     }
-                    first = true;
-                    csv += '"\n"';
+                    first = false;
+                    csv += '\n';
                 }
                 features.forEach(feature => {
                     Object.entries(feature.properties || {}).forEach(([attrib, value]) => {
-                        csv += String(value).replace('"', '""') + '"\t"';
+                        csv += String(value).replace('"', '""') + ';';
                     });
                     if(feature.geometry) {
-                        csv += stringify(feature.geometry) + '"\t"';
+                        csv += stringify(feature.geometry) + ';';
+                    } else if(csv !== ""){
+                        csv = csv.slice(0, -1); // Remove trailling semi column ;
                     }
-                    csv += '"\n"';
+                    csv += '\n';
                 });
                 first = false;
                 let blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
