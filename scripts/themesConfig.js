@@ -176,6 +176,8 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         }
         if(layer.$.transparency) {
             layerEntry.opacity = 255 - Math.floor(parseFloat(layer.$.transparency) * 255)
+        } else if(layer.$.opacity) {
+            layerEntry.opacity = Math.round(parseFloat(layer.$.opacity) * 255)
         } else {
             layerEntry.opacity = 255;
         }
