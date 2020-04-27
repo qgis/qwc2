@@ -13,7 +13,7 @@ const isEmpty = require('lodash.isempty');
 const isEqual = require('lodash.isequal');
 const assign = require('object-assign');
 const axios = require('axios');
-const deepcopy = require('deepcopy');
+const clone = require('clone');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const LocaleUtils = require("../utils/LocaleUtils");
 const MapUtils = require("../utils/MapUtils");
@@ -323,7 +323,7 @@ class Editing extends React.Component {
         feature = assign({}, feature, {properties: feature.properties || {}});
 
         // Keep relation values separate
-        let relationValues = deepcopy(feature.relationValues || {});
+        let relationValues = clone(feature.relationValues || {});
         delete feature.relationValues;
 
         // Collect all values from form fields
