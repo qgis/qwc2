@@ -14,6 +14,7 @@ const {createSelector} = require('reselect');
 const isEmpty = require('lodash.isempty');
 const axios = require('axios');
 const uuid = require('uuid');
+const {logAction} = require('../actions/logging');
 const {zoomToPoint,panTo} = require('../actions/map');
 const {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer} = require('../actions/layers');
 const {setCurrentTask} = require('../actions/task');
@@ -44,6 +45,7 @@ class SearchBox extends React.Component {
         setCurrentTask: PropTypes.func,
         zoomToPoint: PropTypes.func,
         panTo: PropTypes.func,
+        logAction: PropTypes.func,
         searchProviders: PropTypes.object,
         searchOptions: PropTypes.shape({
             minScale: PropTypes.number,
@@ -477,6 +479,8 @@ class SearchBox extends React.Component {
         };
         this.props.addLayerFeatures(layer, [feature], true);
         UrlParams.updateParams({hp: undefined, hf: undefined, hc: "1"});
+        this.props.logAction("SEARCH_TEXT", {"searchText": this.state.searchText});
+        this.props.logAction("SEARCH_RESULT_SELECTED", {"place": result.text});
     }
     selectFeatureResult = (result) => {
         this.updateRecentSearches();
@@ -491,6 +495,9 @@ class SearchBox extends React.Component {
         axios.get(DATA_URL + "/" + result.dataproduct_id + "/?filter=" + filter)
         .then(response => this.showFeatureGeometry(response.data));
         UrlParams.updateParams({hp: result.dataproduct_id, hf: filter, hc: undefined});
+
+        this.props.logAction("SEARCH_TEXT", {"searchText": this.state.searchText});
+        this.props.logAction("SEARCH_RESULT_SELECTED", {"feature": result.dataproduct_id});
     }
     showFeatureGeometry = (data, scale=undefined) => {
         // Zoom to bbox
@@ -529,6 +536,8 @@ class SearchBox extends React.Component {
             if(info) {
                 this.setState({activeLayerInfo: response.data});
             } else {
+                this.props.logAction("SEARCH_TEXT", {"searchText": this.state.searchText});
+                this.props.logAction("SEARCH_RESULT_SELECTED", {"layer": result.dataproduct_id});
                 this.addLayer(result, response.data);
             }
         });
@@ -581,6 +590,7 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
         removeLayer: removeLayer,
         setCurrentTask: setCurrentTask,
         zoomToPoint: zoomToPoint,
-        panTo: panTo
+        panTo: panTo,
+        logAction: logAction
     })(SearchBox);
 }
