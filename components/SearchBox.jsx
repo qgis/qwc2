@@ -497,7 +497,7 @@ class SearchBox extends React.Component {
         UrlParams.updateParams({hp: result.dataproduct_id, hf: filter, hc: undefined});
 
         this.props.logAction("SEARCH_TEXT", {"searchText": this.state.searchText});
-        this.props.logAction("SEARCH_RESULT_SELECTED", {"feature": result.dataproduct_id});
+        this.props.logAction("SEARCH_RESULT_SELECTED", {"feature": result.display});
     }
     showFeatureGeometry = (data, scale=undefined) => {
         // Zoom to bbox
