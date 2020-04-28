@@ -15,7 +15,7 @@ const isEmpty = require('lodash.isempty');
 const Sortable = require('react-sortablejs');
 const FileSaver = require('file-saver');
 const Message = require('../components/I18N/Message');
-const {LayerRole, changeLayerProperties, removeLayer, reorderLayer, setSwipe, addLayerSeparator} = require('../actions/layers')
+const {LayerRole, changeLayerProperty, removeLayer, reorderLayer, setSwipe, addLayerSeparator} = require('../actions/layers')
 const {setActiveLayerInfo} = require('../actions/layerinfo');
 const {toggleMapTips} = require('../actions/map');
 const ConfigUtils = require("../utils/ConfigUtils");
@@ -42,7 +42,7 @@ class LayerTree extends React.Component {
         fallbackDrag: PropTypes.bool,
         theme: PropTypes.object,
         mapTipsEnabled: PropTypes.bool,
-        changeLayerProperties: PropTypes.func,
+        changeLayerProperty: PropTypes.func,
         removeLayer: PropTypes.func,
         reorderLayer: PropTypes.func,
         toggleMapTips: PropTypes.func,
@@ -185,8 +185,8 @@ class LayerTree extends React.Component {
         return (
             <div className="layertree-item-container" key={group.uuid} data-id={JSON.stringify({layer: layer.uuid, path: path})}>
                 <div className={classnames(itemclasses)}>
-                    <Icon className="layertree-item-expander" icon={expanderstate} onClick={() => this.groupExpandendToggled(layer, path, group.expanded)} />
-                    <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.groupToggled(layer, path, visibility, inMutuallyExclusiveGroup)} />
+                    <Icon className="layertree-item-expander" icon={expanderstate} onClick={() => this.groupExpandedToggled(layer, path, group.expanded)} />
+                    <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.itemVisibilityToggled(layer, path, visibility, inMutuallyExclusiveGroup)} />
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
                     <span className="layertree-item-spacer"></span>
                     {allowReordering ? (<Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(group.uuid)}/>) : null}
@@ -259,11 +259,11 @@ class LayerTree extends React.Component {
         } else if(layer.type === "separator") {
             checkbox = null;
         } else {
-            checkbox = (<Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.layerToggled(layer, path, sublayer.visibility, inMutuallyExclusiveGroup)} />);
+            checkbox = (<Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.itemVisibilityToggled(layer, path, sublayer.visibility, inMutuallyExclusiveGroup)} />);
         }
         let title = null;
         if(layer.type === "separator") {
-            title = (<input value={sublayer.title} onChange={ev => this.props.changeLayerProperties(layer.uuid, {title: ev.target.value})}/>);
+            title = (<input value={sublayer.title} onChange={ev => this.props.changeLayerProperty(layer.uuid, "title", ev.target.value)}/>);
         } else {
             title = (<span className="layertree-item-title" title={sublayer.title}>{sublayer.title}</span>);
         }
@@ -465,93 +465,21 @@ class LayerTree extends React.Component {
             });
         }
     }
-    groupExpandendToggled = (layer, grouppath, oldexpanded) => {
-        if(grouppath.length === 0) {
-            // Toggle entire layer
-            let newlayer = assign({}, layer, {expanded: !oldexpanded});
-            this.props.changeLayerProperties(layer.uuid, newlayer);
-        } else {
-            // Toggle group
-            let {newlayer, newsublayer} = LayerUtils.cloneLayer(layer, grouppath);
-            newsublayer.expanded = !oldexpanded;
-            this.props.changeLayerProperties(layer.uuid, newlayer);
-        }
+    groupExpandedToggled = (layer, grouppath, oldexpanded) => {
+        this.props.changeLayerProperty(layer.uuid, "expanded", !oldexpanded, grouppath);
     }
-    groupToggled = (layer, grouppath, oldvisibility, inMutuallyExclusiveGroup) => {
-        if(inMutuallyExclusiveGroup) {
-            this.toggleMutuallyExclusive(layer, grouppath, oldvisibility);
-        } else if(grouppath.length === 0) {
-            if(this.props.groupTogglesSublayers) {
-                // Toggle group and all sublayers
-                let newlayer = assign({}, layer, {visibility: !oldvisibility});
-                this.propagateOptions(newlayer, {visibility: !oldvisibility});
-                this.props.changeLayerProperties(layer.uuid, newlayer);
-            } else {
-                // Toggle entire layer
-                let newlayer = assign({}, layer, {visibility: !oldvisibility});
-                this.props.changeLayerProperties(layer.uuid, newlayer);
-            }
+    itemVisibilityToggled = (layer, grouppath, oldvisibility, inMutuallyExclusiveGroup) => {
+        let recurseDirection = null;
+        // If item becomes visible, also make parents visible
+        if(this.props.groupTogglesSublayers) {
+            recurseDirection = !oldvisibility ? "both" : "children";
         } else {
-            let {newlayer, newsublayer} = LayerUtils.cloneLayer(layer, grouppath);
-            newsublayer.visibility = !oldvisibility;
-            if(this.props.groupTogglesSublayers) {
-                // Toggle group and all sublayers
-                 if(!newsublayer.mutuallyExclusive) {
-                     this.propagateOptions(newsublayer, {visibility: !oldvisibility});
-                 } else {
-                     this.propagateOptions(newsublayer, {visibility: false});
-                     if(newsublayer.visibility && newsublayer.sublayers.length > 0) {
-                         newsublayer.sublayers[0] = assign({}, newsublayer.sublayers[0], {visibility: true});
-                     }
-                 }
-            }
-            // If item becomes visible, ensure all parents are visible
-            if(newsublayer.visibility){
-                newlayer.visibility = true;
-                this.propagateOptions(newlayer, {visibility: true}, grouppath);
-            }
-            this.props.changeLayerProperties(layer.uuid, newlayer);
+            recurseDirection = !oldvisibility ? "parents" : null;
         }
-    }
-    layerToggled = (layer, sublayerpath, oldvisibility, inMutuallyExclusiveGroup) => {
-        if(inMutuallyExclusiveGroup) {
-            this.toggleMutuallyExclusive(layer, sublayerpath, oldvisibility);
-        } else {
-            let {newlayer, newsublayer} = LayerUtils.cloneLayer(layer, sublayerpath);
-            newsublayer.visibility = !newsublayer.visibility;
-            if(newsublayer.visibility){
-                newlayer.visibility = true;
-                this.propagateOptions(newlayer, {visibility: true}, sublayerpath);
-            }
-            this.props.changeLayerProperties(layer.uuid, newlayer);
-        }
-    }
-    toggleMutuallyExclusive = (layer, path, oldvisibility) => {
-        if(oldvisibility || path.length < 1) {
-            // Don't allow de-selectig selected item in mutually exclusive group
-            // (You need to click on another item to change the visible item)
-            return;
-        } else {
-            let parentPath = path.slice(0, path.length - 1);
-            let {newlayer, newsublayer} = LayerUtils.cloneLayer(layer, parentPath);
-            let visibleIdx = path[path.length - 1];
-            let newsublayers = [];
-            for(let i = 0; i < newsublayer.sublayers.length; ++i) {
-                newsublayers.push(assign({}, newsublayer.sublayers[i], {visibility: i === visibleIdx}));
-            }
-            newsublayer.sublayers = newsublayers;
-            // If item becomes visible, ensure all parents are visible
-            if(!oldvisibility){
-                newlayer.visibility = true;
-                this.propagateOptions(newlayer, {visibility: true}, path);
-            }
-            this.props.changeLayerProperties(layer.uuid, newlayer);
-        }
+        this.props.changeLayerProperty(layer.uuid, "visibility", !oldvisibility, grouppath, recurseDirection);
     }
     layerTransparencyChanged = (layer, sublayerpath, value) => {
-        let {newlayer, newsublayer} = LayerUtils.cloneLayer(layer, sublayerpath);
-        newsublayer.opacity = Math.max(1, 255 - value);
-        this.props.changeLayerProperties(layer.uuid, newlayer);
+        this.props.changeLayerProperty(layer.uuid, "opacity", Math.max(1, 255 - value), sublayerpath);
     }
     layerMenuToggled = (sublayeruuid) => {
         this.setState({activemenu: this.state.activemenu === sublayeruuid ? null : sublayeruuid});
@@ -640,11 +568,7 @@ class LayerTree extends React.Component {
     toggleLayerTreeVisibility = (visibile) => {
         for(let layer of this.props.layers) {
             if(layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
-                let newlayer = assign({}, layer, {visibility: visibile});
-                if(this.props.groupTogglesSublayers) {
-                    this.propagateOptions(newlayer, {visibility: visibile});
-                }
-                this.props.changeLayerProperties(layer.uuid, newlayer);
+                this.props.changeLayerProperty(layer.uuid, "visibility", visibile, [], this.props.groupTogglesSublayers ? "children" : null);
             }
         }
     }
@@ -672,7 +596,7 @@ const selector = (state) => ({
 module.exports = {
     LayerTreePlugin: connect(selector, {
         addLayerSeparator: addLayerSeparator,
-        changeLayerProperties: changeLayerProperties,
+        changeLayerProperty: changeLayerProperty,
         removeLayer: removeLayer,
         reorderLayer: reorderLayer,
         toggleMapTips: toggleMapTips,

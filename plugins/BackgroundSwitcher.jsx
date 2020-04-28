@@ -15,7 +15,7 @@ const sortBy = require('lodash.sortby');
 const ConfigUtils = require("../utils/ConfigUtils");
 const Message = require('../components/I18N/Message');
 const LocaleUtils = require('../utils/LocaleUtils');
-const {LayerRole, changeLayerProperties} = require('../actions/layers');
+const {LayerRole, changeLayerProperty} = require('../actions/layers');
 const Icon = require('../components/Icon');
 require('./style/BackgroundSwitcher.css');
 
@@ -24,7 +24,7 @@ class BackgroundSwitcher extends React.Component {
         position: PropTypes.number,
         layers: PropTypes.array,
         toggleBackgroundswitcher: PropTypes.func,
-        changeLayerProperties: PropTypes.func
+        changeLayerProperty: PropTypes.func
     }
     static defaultProps = {
         position: 0
@@ -136,11 +136,11 @@ class BackgroundSwitcher extends React.Component {
     }
     backgroundLayerClicked = (layer) => {
         if(layer) {
-            this.props.changeLayerProperties(layer.uuid, {visibility: true});
+            this.props.changeLayerProperty(layer.uuid, "visibility", true);
         } else {
             let visible = this.props.layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility);
             if(visible) {
-                this.props.changeLayerProperties(visible.uuid, {visibility: false});
+                this.props.changeLayerProperty(visible.uuid, "visibility", false);
             }
         }
         this.setState({visible: false});
@@ -153,7 +153,7 @@ const selector = (state) => ({
 
 module.exports = {
     BackgroundSwitcherPlugin: connect(selector, {
-      changeLayerProperties: changeLayerProperties
+      changeLayerProperty: changeLayerProperty
     })(BackgroundSwitcher),
     reducers: {
     }

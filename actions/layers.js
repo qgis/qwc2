@@ -18,7 +18,7 @@ const REMOVE_LAYER_FEATURE = 'REMOVE_LAYER_FEATURE';
 const ADD_LAYER_FEATURES = 'ADD_LAYER_FEATURES';
 const ADD_THEME_SUBLAYER = 'ADD_THEME_SUBLAYER';
 const REMOVE_LAYER_FEATURES = 'REMOVE_LAYER_FEATURES';
-const CHANGE_LAYER_PROPERTIES = 'CHANGE_LAYER_PROPERTIES';
+const CHANGE_LAYER_PROPERTY = 'CHANGE_LAYER_PROPERTY';
 const REFRESH_LAYER = 'REFRESH_LAYER';
 const REMOVE_ALL_LAYERS = 'REMOVE_ALL_LAYERS';
 const REPLACE_PLACEHOLDER_LAYER = 'REPLACE_PLACEHOLDER_LAYER';
@@ -97,12 +97,15 @@ function addThemeSublayer(layer) {
     }
 }
 
-function changeLayerProperties(layerUuid, properties) {
+// recurseDirection: null (don't recurse), 'parents', 'children', 'both'
+function changeLayerProperty(layerUuid, property, newvalue, sublayerpath=[], recurseDirection=null) {
     return {
-        type: CHANGE_LAYER_PROPERTIES,
-        newProperties: properties,
-        layerUuid: layerUuid
-
+        type: CHANGE_LAYER_PROPERTY,
+        layerUuid,
+        property,
+        newvalue,
+        sublayerpath,
+        recurseDirection
     };
 }
 
@@ -182,7 +185,7 @@ module.exports = {
     addLayerFeatures,
     removeLayerFeatures,
     addThemeSublayer,
-    changeLayerProperties,
+    changeLayerProperty,
     addMarker,
     removeMarker,
     refreshLayer,
@@ -198,7 +201,7 @@ module.exports = {
     ADD_LAYER_FEATURES,
     REMOVE_LAYER_FEATURES,
     ADD_THEME_SUBLAYER,
-    CHANGE_LAYER_PROPERTIES,
+    CHANGE_LAYER_PROPERTY,
     REFRESH_LAYER,
     REMOVE_ALL_LAYERS,
     REPLACE_PLACEHOLDER_LAYER,

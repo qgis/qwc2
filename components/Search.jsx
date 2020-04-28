@@ -24,7 +24,7 @@ const MapUtils = require('../utils/MapUtils');
 const ConfigUtils = require('../utils/ConfigUtils');
 const LayerUtils = require('../utils/LayerUtils');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const {LayerRole, addLayerFeatures, removeLayer, addLayer, addThemeSublayer, changeLayerProperties} = require('../actions/layers');
+const {LayerRole, addLayerFeatures, removeLayer, addLayer, addThemeSublayer, changeLayerProperty} = require('../actions/layers');
 const {zoomToPoint} = require('../actions/map');
 const {addSearchResults, changeSearch, startSearch, searchMore, setCurrentSearchResult, SearchResultType} = require("../actions/search");
 const {setCurrentTask} = require('../actions/task');
@@ -63,7 +63,7 @@ class Search extends React.Component {
         showNotification: PropTypes.func,
         searchOptions: PropTypes.object,
         layers: PropTypes.array,
-        changeLayerProperties: PropTypes.func,
+        changeLayerProperty: PropTypes.func,
         startupParams: PropTypes.object
     }
     static contextTypes = {
@@ -313,11 +313,7 @@ class Search extends React.Component {
     }
     enableLayer = () => {
         if(this.state.invisibleLayerQuery) {
-            let layer = this.state.invisibleLayerQuery.layer;
-            let sublayerpath = this.state.invisibleLayerQuery.sublayerpath;
-            let {newlayer, newsublayer} = LayerUtils.cloneLayer(layer, sublayerpath);
-            assign(newsublayer, {visibility: true});
-            this.props.changeLayerProperties(layer.uuid, newlayer);
+            this.props.changeLayerProperty(layer.uuid, "visibility", true, this.state.invisibleLayerQuery.sublayerpath);
             this.setState({invisibleLayerQuery: null});
         }
     }
@@ -583,7 +579,7 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
         removeLayer: removeLayer,
         addLayer: addLayer,
         addThemeSublayer: addThemeSublayer,
-        changeLayerProperties: changeLayerProperties,
+        changeLayerProperty: changeLayerProperty,
         setCurrentTask: setCurrentTask,
         setCurrentTheme: setCurrentTheme,
         showNotification: showNotification

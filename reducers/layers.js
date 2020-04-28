@@ -19,7 +19,7 @@ const {
     ADD_LAYER_SEPARATOR,
     REMOVE_LAYER,
     REORDER_LAYER,
-    CHANGE_LAYER_PROPERTIES,
+    CHANGE_LAYER_PROPERTY,
     ADD_LAYER_FEATURES,
     REMOVE_LAYER_FEATURES,
     ADD_THEME_SUBLAYER,
@@ -31,6 +31,22 @@ const {
 } = require('../actions/layers');
 
 
+function propagateLayerProperty(newlayer, property, value, path=null) {
+    assign(newlayer, {[property]: value});
+    // Don't propagate visibility for mutually exclusive groups
+    if(newlayer.sublayers && !(property === "visibility" && newlayer.mutuallyExclusive)) {
+        newlayer.sublayers = newlayer.sublayers.map((sublayer, idx) => {
+            if(path === null || (!isEmpty(path) && path[0] === idx)) {
+                let newsublayer = assign({}, sublayer);
+                propagateLayerProperty(newsublayer, property, value, path ? path.slice(1) : null);
+                return newsublayer;
+            } else {
+                return sublayer;
+            }
+        });
+    }
+}
+
 function layers(state = {flat: [], swipe: undefined}, action) {
     switch (action.type) {
         case SET_LAYER_LOADING: {
@@ -39,20 +55,52 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             });
             return assign({}, state, {flat: newLayers});
         }
-        case CHANGE_LAYER_PROPERTIES: {
-            let layer = state.flat.find((layer) => {return layer.uuid === action.layerUuid});
-            let isBackground = layer ? layer.role === LayerRole.BACKGROUND : false;
+        case CHANGE_LAYER_PROPERTY: {
+            let targetLayer = state.flat.find((layer) => {return layer.uuid === action.layerUuid});
+            if(!targetLayer) {
+                return state;
+            }
+            let backgroundVisibilityChanged = targetLayer.role === LayerRole.BACKGROUND && action.property === "visibility";
+
+            let parent = targetLayer;
+            let parentPath = action.sublayerpath.slice(0, action.sublayerpath.length - 1);
+            parentPath.forEach(idx => { parent = parent.sublayers[idx]; });
+            let mutexVisibilityChanged = parent.mutuallyExclusive && action.property === "visibility";
+            if(mutexVisibilityChanged && action.newvalue === false) {
+                // Don't allow explicitly hiding item in mutex group - need to toggle other item
+                return state;
+            }
+
             const newLayers = (state.flat || []).map((layer) => {
                 if (layer.uuid === action.layerUuid) {
-                    let newLayer = assign({}, layer, action.newProperties);
-                    if(newLayer.type === "wms") {
-                        assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
+
+                    let {newlayer, newsublayer} = LayerUtils.cloneLayer(layer, action.sublayerpath || []);
+                    newsublayer[action.property] = action.newvalue;
+                    let recurseDirection = action.recurseDirection;
+
+                    // Handle mutually exclusive groups
+                    if(mutexVisibilityChanged) {
+                        let newParent = newlayer;
+                        parentPath.forEach(index => { newParent = newParent.sublayers[index]; });
+                        let targetIdx = action.sublayerpath[action.sublayerpath.length - 1];
+                        newParent.sublayers = newParent.sublayers.map((layer, idx) => assign({}, layer, {visibility: idx === targetIdx}));
                     }
-                    if(newLayer.role === LayerRole.BACKGROUND) {
-                        UrlParams.updateParams({bl: newLayer.visibility ? layer.name : ''});
+
+                    if(["children", "both"].includes(recurseDirection)) { // recurse to children (except visibility to children in mutex case)
+                        propagateLayerProperty(newsublayer, action.property, action.newvalue);
                     }
-                    return newLayer;
-                } else if (layer.role === LayerRole.BACKGROUND && isBackground) {
+                    if(["parents", "both"].includes(recurseDirection)) { // recurse to parents
+                        propagateLayerProperty(newlayer, action.property, action.newvalue, action.sublayerpath);
+                    }
+
+                    if(newlayer.type === "wms") {
+                        assign(newlayer, LayerUtils.buildWMSLayerParams(newlayer));
+                    }
+                    if(newlayer.role === LayerRole.BACKGROUND) {
+                        UrlParams.updateParams({bl: newlayer.visibility ? newlayer.name : ''});
+                    }
+                    return newlayer;
+                } else if (layer.role === LayerRole.BACKGROUND && backgroundVisibilityChanged) {
                     return assign({}, layer, {visibility: false});
                 }
                 return layer;
