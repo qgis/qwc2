@@ -102,7 +102,8 @@
       "deletealllayers": "Usuń wszystkie warstwy",
       "visiblefilter": "",
       "separator": "",
-      "separatortooltip": ""
+      "separatortooltip": "",
+      "zoomtolayer": ""
     },
     "locate": {
       "metersUnit": "metry",

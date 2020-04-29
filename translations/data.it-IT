@@ -102,7 +102,8 @@
       "deletealllayers": "Rimuovi tutti i livelli",
       "visiblefilter": "Filtra livelli non visibili",
       "separator": "Separatore",
-      "separatortooltip": "Aggiungi separatore"
+      "separatortooltip": "Aggiungi separatore",
+      "zoomtolayer": ""
     },
     "locate": {
       "metersUnit": "metri",
