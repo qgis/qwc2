@@ -64,7 +64,8 @@ class LayerTree extends React.Component {
         enableVisibleFilter: PropTypes.bool,
         infoInSettings: PropTypes.bool,
         showToggleAllLayersCheckbox: PropTypes.bool,
-        addLayerSeparator: PropTypes.func
+        addLayerSeparator: PropTypes.func,
+        zoomToExtent: PropTypes.func
     }
     static defaultProps = {
         layers: [],
@@ -609,7 +610,8 @@ module.exports = {
         reorderLayer: reorderLayer,
         toggleMapTips: toggleMapTips,
         setSwipe: setSwipe,
-        setActiveLayerInfo: setActiveLayerInfo
+        setActiveLayerInfo: setActiveLayerInfo,
+        zoomToExtent: zoomToExtent
     })(LayerTree),
     reducers: {
         layers: require('../reducers/layers'),
