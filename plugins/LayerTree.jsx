@@ -17,7 +17,7 @@ const FileSaver = require('file-saver');
 const Message = require('../components/I18N/Message');
 const {LayerRole, changeLayerProperty, removeLayer, reorderLayer, setSwipe, addLayerSeparator} = require('../actions/layers')
 const {setActiveLayerInfo} = require('../actions/layerinfo');
-const {toggleMapTips} = require('../actions/map');
+const {toggleMapTips, zoomToExtent} = require('../actions/map');
 const ConfigUtils = require("../utils/ConfigUtils");
 const LocaleUtils = require("../utils/LocaleUtils");
 const Icon = require('../components/Icon');
@@ -232,9 +232,17 @@ class LayerTree extends React.Component {
                     (<Icon key="layertree-item-move-up" className="layertree-item-move" icon="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
                 ];
             }
+            let zoomToLayerButton = null;
+            if(sublayer.bbox && sublayer.bbox.bounds && sublayer.bbox.crs) {
+                let zoomToLayerTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.zoomtolayer");
+                zoomToLayerButton = (
+                    <Icon icon="zoom" title={zoomToLayerTooltip} onClick={() => this.props.zoomToExtent(sublayer.bbox.bounds, sublayer.bbox.crs)} />
+                )
+            }
             editframe = (
                 <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
                     <div className="layertree-item-edit-items">
+                        {zoomToLayerButton}
                         <Icon icon="transparency" />
                         <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onTouchEnd={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} />
                         {reorderButtons}
