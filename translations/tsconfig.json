@@ -90,6 +90,7 @@
     "layertree.visiblefilter",
     "layertree.separator",
     "layertree.separatortooltip",
+    "layertree.zoomtolayer",
     "locate.metersUnit",
     "locate.feetUnit",
     "locate.popup",
