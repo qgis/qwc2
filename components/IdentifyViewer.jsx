@@ -20,6 +20,7 @@ const ConfigUtils = require('../utils/ConfigUtils');
 const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
 const {setActiveLayerInfo} = require('../actions/layerinfo');
 const {showIframeDialog} = require('../actions/windows');
+const {zoomToExtent} = require('../actions/map');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 const LayerUtils = require('../utils/LayerUtils');
 const MiscUtils = require('../utils/MiscUtils');
@@ -42,7 +43,8 @@ class IdentifyViewer extends React.Component {
         setActiveLayerInfo: PropTypes.func,
         onClose: PropTypes.func,
         featureInfoReturnsLayerName: PropTypes.bool,
-        showIframeDialog: PropTypes.func
+        showIframeDialog: PropTypes.func,
+        zoomToExtent: PropTypes.func
     }
     static defaultProps = {
         longAttributesDisplay: 'ellipsis',
@@ -350,10 +352,15 @@ class IdentifyViewer extends React.Component {
                 </div>
             );
         }
+        let zoomToFeatureButton = null;
+        if(result.bbox && result.crs) {
+            zoomToFeatureButton = (<Icon icon="zoom" onClick={() => this.props.zoomToExtent(result.bbox, result.crs)} />);
+        }
         return (
             <div className={resultClass}>
                 <div className="identify-result-title">
                     <span>{this.layerTitle(layer, result) + ": " + this.resultDisplayName(layer, result)}</span>
+                    {zoomToFeatureButton}
                     <Icon icon="info-sign" onClick={() => this.showLayerInfo(layer, result)} />
                 </div>
                 <div className="identify-result-container">
@@ -590,6 +597,7 @@ module.exports = {
         addLayerFeatures: addLayerFeatures,
         removeLayer: removeLayer,
         setActiveLayerInfo: setActiveLayerInfo,
-        showIframeDialog: showIframeDialog
+        showIframeDialog: showIframeDialog,
+        zoomToExtent: zoomToExtent
     })(IdentifyViewer)
 };

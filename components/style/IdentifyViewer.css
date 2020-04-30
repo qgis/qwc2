@@ -121,6 +121,7 @@ div.identify-body .identify-result-title > span:first-child {
 
 div.identify-body .identify-result-title > span.icon {
     flex: 0 0 auto;
+    padding-left: 0.25em;
 }
 
 div.identify-body .identify-result-title > span.icon:hover {
