@@ -144,7 +144,7 @@ class QtDesignerForm extends React.Component {
         } else if(widget.class === "QComboBox") {
             return (
                 <select name={elname} value={value} onChange={ev => updateField(widget.name, ev.target.value)}>
-                    {widget.item.map((item, idx) => (
+                    {this.ensureArray(widget.item).map((item, idx) => (
                         <option key={item.property.string} value={item.property.string}>{item.property.string}</option>
                     ))}
                 </select>
@@ -171,6 +171,9 @@ class QtDesignerForm extends React.Component {
             }
         }
         return null;
+    }
+    ensureArray = (el) => {
+        return el === undefined ? [] : Array.isArray(el) ? el : [el];
     }
     renderNRelation = (widget) => {
         let parts = widget.name.split("__");
