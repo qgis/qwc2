@@ -44,7 +44,10 @@ class IdentifyViewer extends React.Component {
         onClose: PropTypes.func,
         featureInfoReturnsLayerName: PropTypes.bool,
         showIframeDialog: PropTypes.func,
-        zoomToExtent: PropTypes.func
+        zoomToExtent: PropTypes.func,
+        initialWidth: PropTypes.number,
+        initialHeight: PropTypes.number,
+        initiallyDocked: PropTypes.bool
     }
     static defaultProps = {
         longAttributesDisplay: 'ellipsis',
@@ -466,7 +469,7 @@ class IdentifyViewer extends React.Component {
             );
         }
         return (
-            <ResizeableWindow title="identify.title" icon="info-sign" onClose={this.props.onClose} initialX={0} initialY={0} initialWidth={this.props.initialWidth} initialHeight={this.props.initialHeight}>
+            <ResizeableWindow title="identify.title" icon="info-sign" onClose={this.props.onClose} initialX={0} initialY={0} initiallyDocked={this.props.initiallyDocked} initialWidth={this.props.initialWidth} initialHeight={this.props.initialHeight}>
                 {body}
             </ResizeableWindow>
         );

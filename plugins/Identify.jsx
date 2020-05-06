@@ -40,6 +40,7 @@ class Identify extends React.Component {
         displayResultTree: PropTypes.bool,
         initialWidth: PropTypes.number,
         initialHeight: PropTypes.number,
+        initiallyDocked: PropTypes.bool,
         params: PropTypes.object,
         attributeCalculator: PropTypes.func,
         featureInfoReturnsLayerName: PropTypes.bool,
@@ -155,6 +156,7 @@ class Identify extends React.Component {
                 attributeCalculator={this.props.attributeCalculator}
                 initialWidth={this.props.initialWidth}
                 initialHeight={this.props.initialHeight}
+                initiallyDocked={this.props.initiallyDocked}
                 featureInfoReturnsLayerName={this.props.featureInfoReturnsLayerName} />
         ), (
             <TaskBar key="TaskBar" task="Identify" onHide={this.onClose}>
