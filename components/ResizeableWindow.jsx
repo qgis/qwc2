@@ -32,9 +32,10 @@ class ResizeableWindow extends React.Component {
             icon: PropTypes.string.isRequired,
             callback: PropTypes.func.isRequired
         })),
-        padding: PropTypes.string,
         zIndex: PropTypes.number,
-        visible: PropTypes.bool
+        visible: PropTypes.bool,
+        initiallyDocked: PropTypes.bool,
+        dockable: PropTypes.bool
     }
     static defaultProps = {
         icon: null,
@@ -50,13 +51,19 @@ class ResizeableWindow extends React.Component {
         onClose: () => {},
         scrollable: false,
         extraControls: null,
-        padding: "0.25em",
         zIndex: 8,
-        visible: true
+        visible: true,
+        dockable: true
+    }
+    state = {
+        dock: false
     }
     constructor(props) {
         super(props);
         this.rnd = null;
+    }
+    componentDidMount() {
+        this.setState({dock: this.props.initiallyDocked || false});
     }
     componentWillReceiveProps(newProps) {
         if(this.rnd && newProps.visible && newProps.visible !== this.props.visible) {
@@ -94,33 +101,62 @@ class ResizeableWindow extends React.Component {
             "resizeable-window-body-scrollable": this.props.scrollable,
             "resizeable-window-body-nonscrollable": !this.props.scrollable
         });
-        let bodystyle = {
-            padding: this.props.padding
-        };
         let style = {display: this.props.visible ? 'initial' : 'none'};
 
-        return (
-            <div className="resizeable-window-container" style={style}>
-                <Rnd className="resizeable-window" bounds="parent" default={initial}
-                    minWidth={this.props.minWidth} minHeight={this.props.minHeight}
-                    maxWidth={this.props.maxWidth || window.innerWidth} maxHeight={this.props.maxHeight || window.innerHeight}
-                    style={{zIndex: this.props.zIndex}} ref={c => this.rnd = c}>
-                    <div className="resizeable-window-titlebar">
-                        {icon}
-                        <span className="resizeable-window-titlebar-title">
-                            <Message msgId={this.props.title} />
-                        </span>
-                        {(this.props.extraControls || []).map(entry => (
-                            <Icon key={entry.icon} className="resizeable-window-titlebar-control" onClick={entry.callback} icon={entry.icon}/>
-                        ))}
-                        <Icon className="resizeable-window-titlebar-control" onClick={this.onClose} icon="remove"/>
-                    </div>
-                    <div style={bodystyle} className={bodyclasses} onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
-                        {this.props.visible ? this.renderRole("body") : null}
-                    </div>
-                </Rnd>
-            </div>
-        );
+        let content = [
+            (<div className="resizeable-window-titlebar" key="titlebar">
+                {icon}
+                <span className="resizeable-window-titlebar-title">
+                    <Message msgId={this.props.title} />
+                </span>
+                {(this.props.extraControls || []).map(entry => (
+                    <Icon key={entry.icon} className="resizeable-window-titlebar-control" onClick={entry.callback} icon={entry.icon}/>
+                ))}
+                {this.props.dockable ? (<Icon className="resizeable-window-titlebar-control" onClick={() => this.setState({dock: !this.state.dock})} icon={this.state.dock ? "undock" : "dock"} titlemsgid={this.state.dock ? "window.undock" : "window.dock"} />) : null}
+                <Icon className="resizeable-window-titlebar-control" onClick={this.onClose} icon="remove" titlemsgid="window.close"/>
+            </div>),
+            (<div className={bodyclasses} onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent} key="body">
+                {this.renderRole("body")}
+            </div>)
+        ];
+
+        if(this.state.dock) {
+            return (
+                <div className="dock-window" style={{zIndex: this.props.zIndex, width: this.props.initialWidth + 'px'}} onMouseDown={this.startDockResize} ref={c => this.dock = c}>
+                    {content}
+                </div>
+            );
+        } else {
+            return (
+                <div className="resizeable-window-container" style={style}>
+                    <Rnd className="resizeable-window" bounds="parent" default={initial}
+                        minWidth={this.props.minWidth} minHeight={this.props.minHeight}
+                        maxWidth={this.props.maxWidth || window.innerWidth} maxHeight={this.props.maxHeight || window.innerHeight}
+                        style={{zIndex: this.props.zIndex}} ref={c => this.rnd = c}>
+                        {content}
+                    </Rnd>
+                </div>
+            );
+        }
+    }
+    startDockResize = (ev) => {
+        if(ev.target == this.dock) {
+            this.dockResizeStartWidth = ev.target.offsetWidth;
+            this.dockResizeStartMouse = ev.clientX;
+            document.addEventListener("mousemove", this.resizeDock);
+            document.addEventListener("mouseup", this.endDockResize);
+        }
+    }
+    endDockResize = (ev) => {
+        document.removeEventListener("mousemove", this.resizeDock);
+        document.removeEventListener("mouseup", this.endDockResize);
+        this.dockResizeStartWidth = undefined;
+        this.dockResizeStartMouse = undefined;
+    }
+    resizeDock = (ev) => {
+        if(this.dock) {
+            this.dock.style.width = (this.dockResizeStartWidth + ev.clientX - this.dockResizeStartMouse) + 'px';
+        }
     }
 };
 

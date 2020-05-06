@@ -216,6 +216,11 @@
         "abstract": "Abstract"
       },
       "openintab": "Open in Tab"
+    },
+    "window": {
+      "close": "Close",
+      "dock": "Dock",
+      "undock": "Undock"
     }
   }
 }

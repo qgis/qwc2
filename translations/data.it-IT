@@ -216,6 +216,11 @@
         "abstract": "Riassunto"
       },
       "openintab": "Apri in nuova scheda"
+    },
+    "window": {
+      "close": "Chiudi",
+      "dock": "Aggangia",
+      "undock": "Sgancia"
     }
   }
 }

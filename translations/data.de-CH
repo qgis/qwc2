@@ -216,6 +216,11 @@
         "abstract": "Zusammenfassung"
       },
       "openintab": "In Tab öffnen"
+    },
+    "window": {
+      "close": "Schliessen",
+      "dock": "Andocken",
+      "undock": "Abdocken"
     }
   }
 }
