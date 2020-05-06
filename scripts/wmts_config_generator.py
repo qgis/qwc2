@@ -7,18 +7,20 @@
 # Example: wmts_config_generator.py https://www.wmts.nrw.de/geobasis/wmts_nw_dop/1.0.0/WMTSCapabilities.xml nw_dop EPSG:25832
 
 import json
+import re
 import sys
 import urllib.request
 from xml.dom.minidom import parseString
 
 if len(sys.argv) < 4:
-    print("Usage: %s WMTS_Capabilities_URL LayerName Projection [format]" % sys.argv[0], file=sys.stderr)
+    print("Usage: %s WMTS_Capabilities_URL LayerName Projection [format=png] [style=default]" % sys.argv[0], file=sys.stderr)
     sys.exit(1)
 
 url = sys.argv[1]
 layername = sys.argv[2]
 projection = sys.argv[3]
 fmt = sys.argv[4] if len(sys.argv) > 4 else "png"
+style = sys.argv[5] if len(sys.argv) > 5 else "default"
 
 try:
     response = urllib.request.urlopen(sys.argv[1])
@@ -84,7 +86,8 @@ if not matrixconfig:
     print("Error: failed to find file matrix for projection %s" % projection, file=sys.stderr)
 
 # Generate config
-resurl = layer.getElementsByTagName("ResourceURL")[0].getAttribute("template") + "." + fmt
+resurl = re.sub("\.\w+$", '', layer.getElementsByTagName("ResourceURL")[0].getAttribute("template")) + "." + fmt
+resurl = resurl.replace("{Style}", style)
 config = {
     "type": "wmts",
     "url": resurl,
