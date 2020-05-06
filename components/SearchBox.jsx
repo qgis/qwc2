@@ -463,7 +463,7 @@ class SearchBox extends React.Component {
     selectProviderResult = (result, zoom=true) => {
         this.updateRecentSearches();
         if(zoom) {
-            this.props.zoomToPoint([result.x, result.y], this.props.searchOptions.minScale, result.crs);
+            this.props.zoomToPoint([result.x, result.y], this.props.theme.minSearchScale || this.props.searchOptions.minScale, result.crs);
         } else {
             this.props.panTo([result.x, result.y], result.crs);
         }
