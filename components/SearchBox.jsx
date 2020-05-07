@@ -506,7 +506,7 @@ class SearchBox extends React.Component {
         if(scale) {
             zoom = MapUtils.computeZoom(this.props.map.scales, scale);
         } else {
-            maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.searchOptions.minScale);
+            maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScale || this.props.searchOptions.minScale);
             zoom = Math.max(0, MapUtils.getZoomForExtent(bbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom) - 1);
         }
         let x = 0.5 * (bbox[0] + bbox[2]);
