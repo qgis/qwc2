@@ -422,7 +422,7 @@ class Search extends React.Component {
             let newZoom;
             if(!isEmpty(bbox) && bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
                 let mapbbox = CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection)
-                newZoom = Math.max(0, MapUtils.getZoomForExtent(mapbbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom) - 1);
+                newZoom = Math.max(0, MapUtils.getZoomForExtent(mapbbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom + 1) - 1);
             } else {
                 newZoom = MapUtils.computeZoom(this.props.map.scales, item.scale || 0);
                 newZoom = Math.max(0, Math.min(newZoom, maxZoom));
