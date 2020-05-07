@@ -278,7 +278,7 @@ class LayerTree extends React.Component {
         }
         let allowOptions = layer.type !== "placeholder" && layer.type !== "separator";
         let flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
-        let allowSeparators = flattenGroups && allowReordering;
+        let allowSeparators = flattenGroups && allowReordering && ConfigUtils.getConfigProp("allowLayerTreeSeparators", this.props.theme);
         let separatorTitle = LocaleUtils.getMessageById(this.context.messages, "layertree.separator");
         let separatorTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.separatortooltip");
         return (
