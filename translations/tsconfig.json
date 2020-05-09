@@ -12,7 +12,8 @@
     "ro-RO",
     "ru-RU",
     "sv-SE",
-    "cs-CZ"
+    "cs-CZ",
+    "no-NO"
   ],
   "strings": [
     "appmenu.items.DxfExport",
