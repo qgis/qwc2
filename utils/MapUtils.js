@@ -100,13 +100,13 @@ function getZoomForExtent(extent, resolutions, mapSize, minZoom, maxZoom) {
     const extentResolution = Math.max(xResolution, yResolution);
 
     if(ConfigUtils.getConfigProp("allowFractionalZoom") === true) {
-        return this.computeZoom(resolutions, extentResolution);
+        return Math.max(minZoom, Math.min(this.computeZoom(resolutions, extentResolution), maxZoom))
     } else {
         const {zoom, ...other} = resolutions.reduce((previous, resolution, index) => {
             const diff = Math.abs(resolution - extentResolution);
             return diff > previous.diff ? previous : {diff: diff, zoom: index};
         }, {diff: Number.POSITIVE_INFINITY, zoom: 0});
-        return Math.max(0, Math.min(zoom, maxZoom));
+        return Math.max(minZoom, Math.min(zoom, maxZoom));
     }
 }
 
