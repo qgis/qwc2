@@ -342,8 +342,8 @@ class Editing extends React.Component {
                     let field = parts[1];
                     let index = parseInt(parts[2]);
                     // relationValues for table must exist as rows are either pre-existing or were added
-                    if(relationValues[parts[0]].records[index][field] === undefined) {
-                        relationValues[parts[0]].records[index][field] = value;
+                    if(relationValues[parts[0]].records[index][table + "__" + field] === undefined) {
+                        relationValues[parts[0]].records[index][table + "__" + field] = value;
                     }
                 } else {
                     if(feature.properties[name] === undefined) {
