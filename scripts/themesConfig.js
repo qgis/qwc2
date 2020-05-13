@@ -415,8 +415,10 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             if(configItem.pluginData) {
                 resultItem.pluginData = configItem.pluginData;
             }
-            if(configItem.minSearchScale) {
-                resultItem.minSearchScale = configItem.minSearchScale;
+            if(configItem.minSearchScaleDenom) {
+                resultItem.minSearchScaleDenom = configItem.minSearchScaleDenom;
+            } else if(configItem.minSearchScale) { // Legacy name
+                resultItem.minSearchScaleDenom = configItem.minSearchScale;
             }
             if(configItem.themeInfoLinks) {
                 resultItem.themeInfoLinks = configItem.themeInfoLinks;

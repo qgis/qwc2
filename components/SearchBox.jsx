@@ -48,7 +48,7 @@ class SearchBox extends React.Component {
         logAction: PropTypes.func,
         searchProviders: PropTypes.object,
         searchOptions: PropTypes.shape({
-            minScale: PropTypes.number,
+            minScaleDenom: PropTypes.number,
             resultLimit: PropTypes.number,
         })
     }
@@ -463,7 +463,7 @@ class SearchBox extends React.Component {
     selectProviderResult = (result, zoom=true) => {
         this.updateRecentSearches();
         if(zoom) {
-            this.props.zoomToPoint([result.x, result.y], this.props.theme.minSearchScale || this.props.searchOptions.minScale, result.crs);
+            this.props.zoomToPoint([result.x, result.y], this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom, result.crs);
         } else {
             this.props.panTo([result.x, result.y], result.crs);
         }
@@ -506,7 +506,7 @@ class SearchBox extends React.Component {
         if(scale) {
             zoom = MapUtils.computeZoom(this.props.map.scales, scale);
         } else {
-            maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScale || this.props.searchOptions.minScale);
+            maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom);
             zoom = Math.max(0, MapUtils.getZoomForExtent(bbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom + 1) - 1);
         }
         let x = 0.5 * (bbox[0] + bbox[2]);

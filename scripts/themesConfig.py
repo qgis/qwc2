@@ -383,8 +383,10 @@ def getTheme(config, configItem, result, resultItem):
             resultItem["externalLayers"] = configItem["externalLayers"]
         if "pluginData" in configItem:
             resultItem["pluginData"] = configItem["pluginData"]
-        if "minSearchScale" in configItem:
-            resultItem["minSearchScale"] = configItem["minSearchScale"]
+        if "minSearchScaleDenom" in configItem:
+            resultItem["minSearchScaleDenom"] = configItem["minSearchScaleDenom"]
+        elif "minSearchScale" in configItem: # Legacy name
+            resultItem["minSearchScaleDenom"] = configItem["minSearchScale"]
         if "themeInfoLinks" in configItem:
             resultItem["themeInfoLinks"] = configItem["themeInfoLinks"]
         resultItem["searchProviders"] = configItem["searchProviders"] if "searchProviders" in configItem else []

@@ -9,6 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
+const assign = require('object-assign');
 const {connect} = require('react-redux');
 const {Swipeable} = require('react-swipeable');
 const Icon = require('../components/Icon');
@@ -72,6 +73,10 @@ class TopBar extends React.Component {
         if (this.props.logoUrl) {
             logoEl = (<a target="_blank" href={this.props.logoUrl}>{logoEl}</a>);
         }
+        // Convert legacy minScale option to minScaleDenom
+        let searchOptions = assign({}, this.props.searchOptions);
+        searchOptions.minScaleDenom = searchOptions.minScaleDenom || searchOptions.minScale;
+        delete searchOptions.minScale;
         return (
             <Swipeable
                 onSwipedUp={() => this.props.toggleFullscreen(true)}
@@ -80,7 +85,7 @@ class TopBar extends React.Component {
                 <div id="TopBar" className={classes}>
                     {logoEl}
                     <div className="center-span">
-                        <this.props.components.Search searchOptions={this.props.searchOptions}/>
+                        <this.props.components.Search searchOptions={searchOptions}/>
                         <this.props.components.Toolbar toolbarItems={this.props.toolbarItems} />
                     </div>
                     <this.props.components.AppMenu
