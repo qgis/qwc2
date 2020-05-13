@@ -48,6 +48,10 @@
     align-items: center;
 }
 
+#BottomBar span.bottombar-scale-combo > span {
+    white-space: nowrap;
+}
+
 #BottomBar span.bottombar-scale-combo > select {
     border: 0;
     background-color: @panel_bg@;
