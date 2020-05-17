@@ -25,13 +25,16 @@ class QtDesignerForm extends React.Component {
         updateField: PropTypes.func,
         addRelationRecord: PropTypes.func,
         removeRelationRecord: PropTypes.func,
-        updateRelationField: PropTypes.func
+        updateRelationField: PropTypes.func,
+        iface: PropTypes.object
     }
     static defaultProps = {
         relationValues: {}
     }
     state = {
-        formdata: null
+        formdata: null,
+        keyvalues: {},
+        attributerelations: {}
     }
     componentDidMount() {
         let url = this.props.form;
@@ -142,13 +145,23 @@ class QtDesignerForm extends React.Component {
                 {widget.property.text}
             </label>);
         } else if(widget.class === "QComboBox") {
-            return (
-                <select name={elname} value={value} onChange={ev => updateField(widget.name, ev.target.value)}>
-                    {this.ensureArray(widget.item).map((item, idx) => (
-                        <option key={item.property.string} value={item.property.string}>{item.property.string}</option>
-                    ))}
-                </select>
-            );
+            if(this.state.keyvalues[elname]) {
+                return (
+                    <select name={elname} value={value} onChange={ev => updateField(widget.name, ev.target.value)}>
+                        {this.state.keyvalues[elname].map((item, idx) => (
+                            <option key={item.key} value={item.key}>{item.value}</option>
+                        ))}
+                    </select>
+                );
+            } else {
+                return (
+                    <select name={elname} value={value} onChange={ev => updateField(widget.name, ev.target.value)}>
+                        {this.ensureArray(widget.item).map((item, idx) => (
+                            <option key={item.property.string} value={item.property.string}>{item.property.string}</option>
+                        ))}
+                    </select>
+                );
+            }
         } else if(widget.class === "QSpinBox" || widget.class === "QDoubleSpinBox" || widget.class === "QSlider") {
             let min = prop.minimum || 0;
             let max = prop.maximum || 100;
@@ -220,11 +233,16 @@ class QtDesignerForm extends React.Component {
             json = result;
         });
         let root = json.ui.widget;
-        this.reformatWidget(root);
+        let keyvals = {};
+        this.reformatWidget(root, keyvals);
+        this.props.iface.getKeyValues(Object.values(keyvals).map(entry => entry.table + ":" + entry.key + ":" + entry.value).join(","), (result) => {
+            let keyvalues = Object.entries(keyvals).reduce((res, [key, val]) => assign(res, {[key]: result.keyvalues[val.table]}), {});
+            this.setState({keyvalues});
+        });
         // console.log(root);
         this.setState({formdata: root});
     }
-    reformatWidget = (widget) => {
+    reformatWidget = (widget, keyvals) => {
         if(widget.property) {
             widget.property = Array.isArray(widget.property) ? widget.property : [widget.property];
             widget.property = widget.property.reduce((res, prop) => {
@@ -237,17 +255,26 @@ class QtDesignerForm extends React.Component {
                 return assign(res, {[prop.name]: prop[Object.keys(prop).find(key => key !== "name")]});
             }, {});
         }
+
+        let parts = widget.name.split("__");
+        if((parts.length === 5 || parts.length === 6) && parts[0] === "kvrel") {
+            let count = parts.length;
+            // kvrel__attrname__datatable__keyfield__valuefield
+            // kvrel__reltablename__attrname__datatable__keyfield__valuefield
+            keyvals[parts.slice(1, count - 3).join("__")] = {table: parts[count - 3], key: parts[count - 2], value: parts[count - 1]};
+            widget.name = parts.slice(1, count - 3).join("__");
+        }
         if(widget.layout) {
-            this.reformatLayout(widget.layout);
+            this.reformatLayout(widget.layout, keyvals);
         }
     }
-    reformatLayout = (layout) => {
+    reformatLayout = (layout, keyvals) => {
         layout.item = Array.isArray(layout.item) ? layout.item : [layout.item];
         layout.item.forEach(item => {
             if(item.widget) {
-                this.reformatWidget(item.widget);
+                this.reformatWidget(item.widget, keyvals);
             } else if(item.layout) {
-                this.reformatLayout(item.layout);
+                this.reformatLayout(item.layout, keyvals);
             }
         });
     }

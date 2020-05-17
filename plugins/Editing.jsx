@@ -170,7 +170,8 @@ class Editing extends React.Component {
                         {curConfig.form ? (
                             <QtDesignerForm values={this.props.editing.feature.properties} updateField={this.updateField} form={curConfig.form}
                                 addRelationRecord={this.addRelationRecord} removeRelationRecord={this.removeRelationRecord}
-                                updateRelationField={this.updateRelationField} relationValues={this.props.editing.feature.relationValues} />
+                                updateRelationField={this.updateRelationField} relationValues={this.props.editing.feature.relationValues}
+                                iface={this.props.iface} />
                         ) : (
                             <AutoEditForm fields={curConfig.fields} values={this.props.editing.feature.properties}
                                 touchFriendly={this.props.touchFriendly} updateField={this.updateField} />
