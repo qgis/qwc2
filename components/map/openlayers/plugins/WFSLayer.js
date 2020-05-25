@@ -8,7 +8,6 @@
 
 const ol = require('openlayers');
 const assign = require('object-assign');
-const ProxyUtils = require('../../../../utils/ProxyUtils');
 const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
 const FeatureStyles = require('../FeatureStyles');
 
@@ -63,13 +62,11 @@ let WMSLayer = {
                 } else {
                     requestExtent = extent;
                 }
-                let url = ProxyUtils.addProxyIfNeeded(
-                    options.url + (options.url.endsWith('?') ? '' : '?') + 'service=WFS&version=' + options.version +
+                let url = options.url + (options.url.endsWith('?') ? '' : '?') + 'service=WFS&version=' + options.version +
                     '&request=GetFeature&' + typeName + '=' + options.name +
                     '&outputFormat=' + encodeURIComponent(format) +
                     '&srsName=' + options.srs +
-                    '&bbox=' + requestExtent.join(',')
-                );
+                    '&bbox=' + requestExtent.join(',');
                 return url;
             },
             strategy: ol.loadingstrategy.bbox

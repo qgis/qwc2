@@ -17,7 +17,6 @@ const Spinner = require('./Spinner');
 const Message = require('../components/I18N/Message');
 const EditableSelect = require('../components/widgets/EditableSelect');
 const LocaleUtils = require('../utils/LocaleUtils');
-const ProxyUtils = require('../utils/ProxyUtils');
 const {LayerRole,addLayer,addLayerFeatures} = require('../actions/layers');
 const FileSelector = require('./widgets/FileSelector');
 const ConfigUtils = require('../utils/ConfigUtils');
@@ -200,7 +199,7 @@ class ImportLayer extends React.Component {
             } else if(url.toLowerCase().endsWith(".xml")) {
                 type = "xml";
             }
-            axios.get(ProxyUtils.addProxyIfNeeded(url)).then(response => {
+            axios.get(url).then(response => {
                 if(type === "xml") {
                     pendingRequests = this.state.pendingRequests - 1;
                     this.setState({pendingRequests: pendingRequests});
@@ -217,7 +216,7 @@ class ImportLayer extends React.Component {
                             let url = conn.attributes.url.value;
                             url += (url.includes("?") ? "&" : "?") + "service=" + service.toUpperCase() + "&request=GetCapabilities";
                             this.setState({pendingRequests: ++pendingRequests});
-                            axios.get(ProxyUtils.addProxyIfNeeded(url)).then(response => {
+                            axios.get(url).then(response => {
                                 let result = service === "wms" ? ServiceLayerUtils.getWMSLayers(response.data, true) : ServiceLayerUtils.getWFSLayers(response.data);
                                 this.setState({
                                     pendingRequests: this.state.pendingRequests - 1,
@@ -243,7 +242,7 @@ class ImportLayer extends React.Component {
         // Attempt to load as WMS
         let wmsParams = "?service=WMS&request=GetCapabilities&version=1.3.0";
         this.setState({pendingRequests: ++pendingRequests});
-        axios.get(ProxyUtils.addProxyIfNeeded(url.split("?")[0] + wmsParams)).then(response => {
+        axios.get(url.split("?")[0] + wmsParams).then(response => {
             let result = ServiceLayerUtils.getWMSLayers(response.data);
             this.setState({
                 pendingRequests: this.state.pendingRequests - 1,
@@ -255,7 +254,7 @@ class ImportLayer extends React.Component {
         // Attempt to load as WFS
         let wfsParams = "?service=WFS&request=GetCapabilities"
         this.setState({pendingRequests: ++pendingRequests});
-        axios.get(ProxyUtils.addProxyIfNeeded(url.split("?")[0] + wfsParams)).then(response => {
+        axios.get(url.split("?")[0] + wfsParams).then(response => {
             let result = ServiceLayerUtils.getWFSLayers(response.data);
             this.setState({
                 pendingRequests: this.state.pendingRequests - 1,

@@ -12,7 +12,6 @@ const {connect} = require('react-redux');
 const isEmpty = require('lodash.isempty');
 const Message = require('../components/I18N/Message');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const ProxyUtils = require("../utils/ProxyUtils");
 const {LayerRole} = require('../actions/layers');
 const {setCurrentTask} = require('../actions/task');
 const {TaskBar} = require('../components/TaskBar');
@@ -33,7 +32,7 @@ class DxfExport extends React.Component {
         }
         let themeSubLayers = themeLayers.map(layer => layer.params.LAYERS).reverse().join(",");
         let filename = this.props.theme.name + ".dxf";
-        let action = ProxyUtils.addProxyIfNeeded(this.props.theme.url, "&filename=" + encodeURIComponent(this.props.theme.name + ".dxf"));
+        let action = this.props.theme.url;
         return (
             <span>
                 <form ref={form => this.form = form} action={action} method="POST" target="_blank">

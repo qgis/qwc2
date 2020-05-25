@@ -12,7 +12,6 @@ const url = require('url');
 const isMobile = require('ismobilejs');
 
 let defaultConfig = {
-    proxyServiceUrl: "",
     translationsPath: "translations",
     bingApiKey: null,
     mapquestApiKey: null,
@@ -45,9 +44,6 @@ var ConfigUtils = {
             }
             return defaultConfig;
         });
-    },
-    getProxyUrl: function(config = {}) {
-        return config.proxyServiceUrl ? config.proxyServiceUrl : defaultConfig.proxyServiceUrl;
     },
     /**
     * Utility to detect browser properties.

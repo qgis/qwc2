@@ -11,7 +11,6 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const Message = require('../components/I18N/Message');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const ProxyUtils = require("../utils/ProxyUtils");
 const {LayerRole} = require('../actions/layers');
 const {setCurrentTask} = require('../actions/task');
 const {TaskBar} = require('../components/TaskBar');
@@ -56,7 +55,7 @@ class RasterExport extends React.Component {
         let defaultFormat = availableFormats.includes('image/geotiff') ? 'image/geotiff' : availableFormats[0];
         let selectedFormat = this.state.selectedFormat || defaultFormat;
         let filename = this.props.theme.name + "." + selectedFormat.split(";")[0].split("/").pop();
-        let action = ProxyUtils.addProxyIfNeeded(this.props.theme.url, "&filename=" + encodeURIComponent(filename));
+        let action = this.props.theme.url;
         let exportLayers = themeLayers.map(layer => layer.params.LAYERS).reverse().join(",");
         let exportOpacities = themeLayers.map(layer => layer.params.OPACITIES).reverse().join(",");
         let backgroundLayer = this.props.layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);

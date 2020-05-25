@@ -10,7 +10,6 @@ const ol = require('openlayers');
 const assign = require('object-assign');
 const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
 const ConfigUtils = require('../../../../utils/ConfigUtils');
-const ProxyUtils = require('../../../../utils/ProxyUtils');
 
 
 function wmsToOpenlayersOptions(options) {
@@ -30,10 +29,6 @@ function wmsToOpenlayersOptions(options) {
 
 function getWMSURLs( urls ) {
     return urls.map((url) => url.split("\?")[0]);
-}
-
-function proxyTileLoadFunction(imageTile, src) {
-    imageTile.getImage().src = ProxyUtils.addProxyIfNeeded(src);
 }
 
 let WMSLayer = {
@@ -68,13 +63,13 @@ let WMSLayer = {
             opacity: options.opacity !== undefined ? options.opacity : 1,
             visible: options.visibility !== false,
             zIndex: options.zIndex,
-            source: new ol.source.TileWMS(assign({
+            source: new ol.source.TileWMS({
               urls: urls,
               params: queryParameters,
               serverType: 'qgis',
               tileGrid: tileGrid,
               hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false
-            }, (options.forceProxy) ? {tileLoadFunction: proxyTileLoadFunction} : {}))
+          })
         });
     },
     update: (layer, newOptions, oldOptions) => {

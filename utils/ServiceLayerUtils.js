@@ -14,7 +14,6 @@ const isEmpty = require('lodash.isempty');
 const fastXmlParser = require('fast-xml-parser');
 const randomColor = require('randomcolor');
 const LayerUtils = require('./LayerUtils');
-const ProxyUtils = require('./ProxyUtils');
 const {LayerRole} = require('../actions/layers');
 
 const owsNS = "http://www.opengis.net/ows";
@@ -227,7 +226,7 @@ const ServiceLayerUtils = {
         } else {
             url += "?service=" + type.toUpperCase() + "&request=GetCapabilities";
         }
-        axios.get(ProxyUtils.addProxyIfNeeded(url)).then(response => {
+        axios.get(url).then(response => {
             for(let layerConfig of layerConfigs) {
                 let result = null;
                 if(type === "wms") {
