@@ -41,12 +41,12 @@ class AutoEditForm extends(React.Component) {
             if(this.props.touchFriendly) {
                 let boolvalue = value == "1" || value == "on" || value == "true" || value === true;
                 input = (
-                    <ToggleSwitch name={field.id} active={boolvalue} onChange={active => this.props.updateField(field.id, active)} />
+                    <ToggleSwitch name={field.id} {...constraints} active={boolvalue} onChange={active => this.props.updateField(field.id, active)} />
                 );
             } else {
                 title = (
                     <label>
-                        <input name={field.id} type="checkbox" checked={value} onChange={ev => this.props.updateField(field.id, ev.target.checked)} />
+                        <input name={field.id} {...constraints} type="checkbox" checked={value} onChange={ev => this.props.updateField(field.id, ev.target.checked)} />
                         {field.name}
                     </label>
                 );
@@ -55,7 +55,7 @@ class AutoEditForm extends(React.Component) {
         else if(constraints.values) {
             input = (
                 <span className="input-frame">
-                    <select name={field.id} value={value} onChange={ev => this.props.updateField(field.id, ev.target.value)}>
+                    <select name={field.id} value={value} onChange={ev => this.props.updateField(field.id, ev.target.value)} required={constraints.required} disabled={constraints.readOnly}>
                         <option value="" disabled>{LocaleUtils.getMessageById(this.context.messages, "editing.select")}</option>
                         {constraints.values.map((item,index) => {
                             let value = "", label = "";
@@ -76,8 +76,8 @@ class AutoEditForm extends(React.Component) {
             let precision = constraints.step > 0 ? Math.ceil(-Math.log10(constraints.step)) : 6;
             input = (
                 <NumericInput name={field.id} mobile={this.props.touchFriendly} strict
-                    min={constraints.min} max={constraints.max}
-                    step={constraints.step || 1} precision={precision}
+                    min={constraints.min} max={constraints.max} readOnly={constraints.readOnly}
+                    step={constraints.step || 1} precision={precision} required={constraints.required}
                     format={nr => String(Number(nr))}
                     value={value} onChange={nr => this.props.updateField(field.id, nr)} />
             );
@@ -96,7 +96,7 @@ class AutoEditForm extends(React.Component) {
             );
         } else if(field.type == "text") {
             input = (
-                <textarea name={field.id} value={value} onChange={(ev) => this.props.updateField(field.id, ev.target.value)}></textarea>
+                <textarea name={field.id} value={value} {...constraints} onChange={(ev) => this.props.updateField(field.id, ev.target.value)}></textarea>
             );
         } else {
             input = (
