@@ -172,6 +172,7 @@
     "tooltip.background",
     "themeswitcher.filter",
     "themeswitcher.addtotheme",
+    "themeswitcher.addlayerstotheme",
     "themeswitcher.match.title",
     "themeswitcher.match.keywords",
     "themeswitcher.match.abstract",
