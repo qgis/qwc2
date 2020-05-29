@@ -25,12 +25,12 @@ class ToggleSwitch extends React.Component {
             "toggle-switch-inactive": !this.props.active
         });
         return (
-            <div className={classNames} onClick={() => this.props.onChange(!this.props.active)}>
+            <div className={classNames} onClick={() => {if (!this.props.readOnly) this.props.onChange(!this.props.active)}}>
                 <span className="toggle-switch-yes"><Icon icon="ok" /></span>
                 <span className="toggle-switch-slider"><Icon icon="menu-hamburger" /></span>
                 <span className="toggle-switch-no"><Icon icon="remove" /></span>
                 {/* Ensure toggle switch appears in form.elements */}
-                <input type="checkbox" name={this.props.name} value={this.props.active} style={{visibility: 'none'}} />
+                <input type="checkbox" name={this.props.name} value={this.props.active} checked={this.props.active}  onChange={()=>{}} readOnly={this.props.readOnly} required={this.props.required} style={{visibility: 'none'}} />
             </div>
         );
     }

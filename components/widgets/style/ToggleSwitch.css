@@ -50,5 +50,6 @@ div.ToggleSwitch.toggle-switch-inactive > span.toggle-switch-yes {
 
 
 div.ToggleSwitch > input {
-    display: none;
+    opacity: 0;
+    width: 1px;
 }
