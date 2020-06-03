@@ -86,15 +86,6 @@ class Editing extends React.Component {
         }
     }
 
-    getLayer(layers) {
-
-        for (let i in layers) {
-            if (layers[i].role == 2) {
-                return layers[i]
-            }
-        }
-        return {}
-    }
 
     componentWillReceiveProps(newProps) {
         let themeSublayers = newProps.layers.reduce((accum, layer) => {
@@ -267,10 +258,10 @@ class Editing extends React.Component {
 
     checkVisibility = (selectedLayer, visibility) => {
         if (selectedLayer != null){
-            let layer = this.getLayer(this.props.layers)
-            let path = this.findParents(layer, selectedLayer)
+            let layer = this.props.layers.filter(layer => (layer.role === LayerRole.THEME && LayerUtils.searchSubLayer(layer, 'name', selectedLayer)))[0];
+            let path = this.findParents(layer, selectedLayer);
             let {newsublayer} = LayerUtils.cloneLayer(layer, path);
-            let oldvisibility = newsublayer.visibility
+            let oldvisibility = newsublayer.visibility;
             this.setState({selectedLayerVisibility: oldvisibility});
             let recurseDirection =  !oldvisibility? "both" : "children";
             if (oldvisibility != visibility && visibility != null){
