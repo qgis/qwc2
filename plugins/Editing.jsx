@@ -20,7 +20,7 @@ const MapUtils = require("../utils/MapUtils");
 const Message = require('../components/I18N/Message');
 const {changeEditingState} = require('../actions/editing');
 const {setCurrentTaskBlocked} = require('../actions/task');
-const {LayerRole, refreshLayer} = require('../actions/layers');
+const {LayerRole, refreshLayer, changeLayerProperty} = require('../actions/layers');
 const {clickOnMap} = require("../actions/map");
 const AutoEditForm = require('../components/AutoEditForm');
 const QtDesignerForm = require('../components/QtDesignerForm');
@@ -42,6 +42,7 @@ class Editing extends React.Component {
         changeEditingState: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
         refreshLayer: PropTypes.func,
+        changeLayerProperty: PropTypes.func,
         touchFriendly: PropTypes.bool,
         width: PropTypes.string
     }
@@ -54,6 +55,7 @@ class Editing extends React.Component {
     }
     state = {
         selectedLayer: null,
+        selectedLayerVisibility: null,
         relationTables: {},
         pickedFeatures: null,
         busy: false,
@@ -64,7 +66,9 @@ class Editing extends React.Component {
     }
     onHide = () => {
         this.props.changeEditingState({action: null, geomType: null, feature: null})
+        this.setLayerVisibility(this.state.selectedLayer, this.state.selectedLayerVisibility)
     }
+
     componentWillReceiveProps(newProps) {
         let themeSublayers = newProps.layers.reduce((accum, layer) => {
             return layer.role === LayerRole.THEME ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
@@ -233,12 +237,36 @@ class Editing extends React.Component {
             </SideBar>
         );
     }
+
+    setLayerVisibility = (selectedLayer, visibility) => {
+        if (selectedLayer != null){
+            let path = [];
+            let sublayer = null;
+            let layer = this.props.layers.find(layer => (layer.role === LayerRole.THEME && (sublayer = LayerUtils.searchSubLayer(layer, 'name', selectedLayer, path))));
+            if(layer && sublayer) {
+                let oldvisibility = sublayer.visibility;
+                if (oldvisibility != visibility && visibility != null){
+                    let recurseDirection =  !oldvisibility? "both" : "children";
+                    this.props.changeLayerProperty(layer.uuid, "visibility", visibility, path, recurseDirection);
+                }
+                return oldvisibility;
+            }
+        }
+        return null;
+    }
+
     changeSelectedLayer = (selectedLayer, action=null) => {
         const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
         this.props.changeEditingState(assign({}, this.props.editing, {action: action || this.props.editing.action, feature: null, geomType: curConfig ? curConfig.geomType : null}));
 
+        let prevLayerVisibility = null;
+        if (this.state.selectedLayer != null){
+            this.setLayerVisibility(this.state.selectedLayer, this.state.selectedLayerVisibility)
+            prevLayerVisibility = this.setLayerVisibility(selectedLayer, true)
+        }
+
         // Gather relation tables for selected layer if config is a designer form
-        this.setState({selectedLayer: selectedLayer, relationTables: {}});
+        this.setState({selectedLayer: selectedLayer, selectedLayerVisibility: prevLayerVisibility, relationTables: {}});
         if(curConfig && curConfig.form) {
             let url = curConfig.form;
             if(url && url.startsWith(":/")) {
@@ -434,7 +462,8 @@ module.exports = (iface) => {return {
         clickOnMap: clickOnMap,
         changeEditingState: changeEditingState,
         setCurrentTaskBlocked: setCurrentTaskBlocked,
-        refreshLayer: refreshLayer
+        refreshLayer: refreshLayer,
+        changeLayerProperty:changeLayerProperty
     })(Editing),
     reducers: {
         editing: require('../reducers/editing')
