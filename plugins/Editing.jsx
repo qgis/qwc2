@@ -20,7 +20,7 @@ const MapUtils = require("../utils/MapUtils");
 const Message = require('../components/I18N/Message');
 const {changeEditingState} = require('../actions/editing');
 const {setCurrentTaskBlocked} = require('../actions/task');
-const {LayerRole, refreshLayer} = require('../actions/layers');
+const {LayerRole, refreshLayer, changeLayerProperty} = require('../actions/layers');
 const {clickOnMap} = require("../actions/map");
 const AutoEditForm = require('../components/AutoEditForm');
 const QtDesignerForm = require('../components/QtDesignerForm');
@@ -42,6 +42,7 @@ class Editing extends React.Component {
         changeEditingState: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
         refreshLayer: PropTypes.func,
+        changeLayerProperty: PropTypes.func,
         touchFriendly: PropTypes.bool,
         width: PropTypes.string
     }
@@ -54,6 +55,7 @@ class Editing extends React.Component {
     }
     state = {
         selectedLayer: null,
+        selectedLayerVisibility: null,
         relationTables: {},
         pickedFeatures: null,
         busy: false,
@@ -64,7 +66,36 @@ class Editing extends React.Component {
     }
     onHide = () => {
         this.props.changeEditingState({action: null, geomType: null, feature: null})
+        this.checkVisibility(this.state.selectedLayer, this.state.selectedLayerVisibility)
+        this.setState({selectedLayerVisibility: null});
     }
+
+    findParents(layer, title) {
+        if (layer) {
+            if (layer.title === title) {
+                return []
+            }
+            if (Array.isArray(layer.sublayers)) {
+                for (let i = 0; i < layer.sublayers.length; i++) {
+                    const childResult = this.findParents(layer.sublayers[i], title)
+                    if (Array.isArray(childResult)) {
+                        return [i].concat(childResult);
+                    }
+                }
+            }
+        }
+    }
+
+    getLayer(layers) {
+
+        for (let i in layers) {
+            if (layers[i].role == 2) {
+                return layers[i]
+            }
+        }
+        return {}
+    }
+
     componentWillReceiveProps(newProps) {
         let themeSublayers = newProps.layers.reduce((accum, layer) => {
             return layer.role === LayerRole.THEME ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
@@ -233,9 +264,29 @@ class Editing extends React.Component {
             </SideBar>
         );
     }
+
+    checkVisibility = (selectedLayer, visibility) => {
+        if (selectedLayer != null){
+            let layer = this.getLayer(this.props.layers)
+            let path = this.findParents(layer, selectedLayer)
+            let {newsublayer} = LayerUtils.cloneLayer(layer, path);
+            let oldvisibility = newsublayer.visibility
+            this.setState({selectedLayerVisibility: oldvisibility});
+            let recurseDirection =  !oldvisibility? "both" : "children";
+            if (oldvisibility != visibility && visibility != null){
+                this.props.changeLayerProperty(layer.uuid, "visibility", visibility, path, recurseDirection);
+            }
+        }
+    }
+
     changeSelectedLayer = (selectedLayer, action=null) => {
         const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
         this.props.changeEditingState(assign({}, this.props.editing, {action: action || this.props.editing.action, feature: null, geomType: curConfig ? curConfig.geomType : null}));
+
+        if (this.state.selectedLayer != null){
+            this.checkVisibility(this.state.selectedLayer, this.state.selectedLayerVisibility)
+            this.checkVisibility(selectedLayer, true)
+        }
 
         // Gather relation tables for selected layer if config is a designer form
         this.setState({selectedLayer: selectedLayer, relationTables: {}});
@@ -434,7 +485,8 @@ module.exports = (iface) => {return {
         clickOnMap: clickOnMap,
         changeEditingState: changeEditingState,
         setCurrentTaskBlocked: setCurrentTaskBlocked,
-        refreshLayer: refreshLayer
+        refreshLayer: refreshLayer,
+        changeLayerProperty:changeLayerProperty
     })(Editing),
     reducers: {
         editing: require('../reducers/editing')
