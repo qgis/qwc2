@@ -64,6 +64,7 @@
       "querying": "Querying...",
       "noresults": "No information available for the selected point",
       "export": "Export",
+      "exportformat": "Export format :",
       "featureReport": "Feature report",
       "noattributes": "No attributes",
       "title": "Feature Info",
