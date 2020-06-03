@@ -59,6 +59,7 @@
     "identify.querying",
     "identify.noresults",
     "identify.export",
+    "identify.exportformat",
     "identify.featureReport",
     "identify.noattributes",
     "identify.title",

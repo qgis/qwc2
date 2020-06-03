@@ -217,10 +217,27 @@ class IdentifyViewer extends React.Component {
         this.export(filteredResults);
     }
     export = (json) => {
-        if(this.props.exportFormat.toLowerCase() === 'json') {
+        if(this.state.format.toLowerCase() === 'json') {
             let data = JSON.stringify(json, null, ' ');
             FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "results.json");
-        } else if(this.props.exportFormat.toLowerCase() === 'csv') {
+        } else if(this.state.format.toLowerCase() === 'csv') {
+            let csv = "";
+            Object.entries(json).forEach(([layerName, features]) => {
+                csv += layerName + "\n";
+                features.forEach(feature => {
+                    Object.entries(feature.properties || {}).forEach(([attrib, value]) => {
+                        if(attrib !== "htmlContent") {
+                            csv += '\t"' + attrib + '"\t"' + String(value).replace('"', '""') + '"\n';
+                        }
+                    });
+                    if(feature.geometry) {
+                        csv += '\t"geometry"\t"' + stringify(feature.geometry) + '"\n';
+                    }
+                });
+                csv += "\n";
+            })
+            FileSaver.saveAs(new Blob([csv], {type: "text/plain;charset=utf-8"}), "results.csv");
+        } else if(this.state.format.toLowerCase() === 'csv + zip') {
             let first = true;
             let file = 0 ;
             let blobs = [];
@@ -253,7 +270,7 @@ class IdentifyViewer extends React.Component {
                     }
                     csv += '\n';
                 });
-                first = false;
+                first = true;
                 let blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
                 blobs.push(blob);
                 filenames.push(layerName);
@@ -269,7 +286,7 @@ class IdentifyViewer extends React.Component {
             } else {
                 FileSaver.saveAs(blobs[0], filenames[0] + ".csv");
             }
-        } 
+        }
     }
     resultDisplayName = (layer, result) => {
         let displayName = "";
@@ -463,6 +480,17 @@ class IdentifyViewer extends React.Component {
                     </div>
                     {attributes}
                     <div className="identify-buttonbox">
+                        {
+                            this.props.exportFormat ?
+                            (<div>
+                                <Message msgId="identify.exportformat" />
+                                <select value={this.state.format} onChange={ev => this.setState({format: ev.target.value})}>
+                                    <option value="json">json</option>
+                                    <option value="csv">csv</option>
+                                    <option value="csv + zip">csv + zip</option>
+                                </select>
+                            </div>) : null
+                        }
                         {this.props.exportFormat ? (<button className="button" onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
                     </div>
                 </div>
@@ -486,6 +514,17 @@ class IdentifyViewer extends React.Component {
                         })}
                     </div>
                     <div className="identify-buttonbox">
+                        {
+                            this.props.exportFormat ?
+                            (<div>
+                                <Message msgId="identify.exportformat" />
+                                <select value={this.state.format} onChange={ev => this.setState({format: ev.target.value})}>
+                                    <option value="json">json</option>
+                                    <option value="csv">csv</option>
+                                    <option value="csv + zip">csv + zip</option>
+                                </select>
+                            </div>) : null
+                        }
                         {this.props.exportFormat ? (<button className="button" onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
                     </div>
                 </div>
