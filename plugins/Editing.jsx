@@ -70,23 +70,6 @@ class Editing extends React.Component {
         this.setState({selectedLayerVisibility: null});
     }
 
-    findParents(layer, title) {
-        if (layer) {
-            if (layer.title === title) {
-                return []
-            }
-            if (Array.isArray(layer.sublayers)) {
-                for (let i = 0; i < layer.sublayers.length; i++) {
-                    const childResult = this.findParents(layer.sublayers[i], title)
-                    if (Array.isArray(childResult)) {
-                        return [i].concat(childResult);
-                    }
-                }
-            }
-        }
-    }
-
-
     componentWillReceiveProps(newProps) {
         let themeSublayers = newProps.layers.reduce((accum, layer) => {
             return layer.role === LayerRole.THEME ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
@@ -258,8 +241,8 @@ class Editing extends React.Component {
 
     checkVisibility = (selectedLayer, visibility) => {
         if (selectedLayer != null){
-            let layer = this.props.layers.filter(layer => (layer.role === LayerRole.THEME && LayerUtils.searchSubLayer(layer, 'name', selectedLayer)))[0];
-            let path = this.findParents(layer, selectedLayer);
+            let path = [];
+            let layer = this.props.layers.filter(layer => (layer.role === LayerRole.THEME && LayerUtils.searchSubLayer(layer, 'name', selectedLayer, path)))[0];
             let {newsublayer} = LayerUtils.cloneLayer(layer, path);
             let oldvisibility = newsublayer.visibility;
             this.setState({selectedLayerVisibility: oldvisibility});
