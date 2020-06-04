@@ -66,8 +66,7 @@ class Editing extends React.Component {
     }
     onHide = () => {
         this.props.changeEditingState({action: null, geomType: null, feature: null})
-        this.checkVisibility(this.state.selectedLayer, this.state.selectedLayerVisibility)
-        this.setState({selectedLayerVisibility: null});
+        this.setLayerVisibility(this.state.selectedLayer, this.state.selectedLayerVisibility)
     }
 
     componentWillReceiveProps(newProps) {
@@ -239,31 +238,35 @@ class Editing extends React.Component {
         );
     }
 
-    checkVisibility = (selectedLayer, visibility) => {
+    setLayerVisibility = (selectedLayer, visibility) => {
         if (selectedLayer != null){
             let path = [];
-            let layer = this.props.layers.filter(layer => (layer.role === LayerRole.THEME && LayerUtils.searchSubLayer(layer, 'name', selectedLayer, path)))[0];
-            let {newsublayer} = LayerUtils.cloneLayer(layer, path);
-            let oldvisibility = newsublayer.visibility;
-            this.setState({selectedLayerVisibility: oldvisibility});
-            let recurseDirection =  !oldvisibility? "both" : "children";
-            if (oldvisibility != visibility && visibility != null){
-                this.props.changeLayerProperty(layer.uuid, "visibility", visibility, path, recurseDirection);
+            let sublayer = null;
+            let layer = this.props.layers.find(layer => (layer.role === LayerRole.THEME && (sublayer = LayerUtils.searchSubLayer(layer, 'name', selectedLayer, path))));
+            if(layer && sublayer) {
+                let oldvisibility = sublayer.visibility;
+                if (oldvisibility != visibility && visibility != null){
+                    let recurseDirection =  !oldvisibility? "both" : "children";
+                    this.props.changeLayerProperty(layer.uuid, "visibility", visibility, path, recurseDirection);
+                }
+                return oldvisibility;
             }
         }
+        return null;
     }
 
     changeSelectedLayer = (selectedLayer, action=null) => {
         const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
         this.props.changeEditingState(assign({}, this.props.editing, {action: action || this.props.editing.action, feature: null, geomType: curConfig ? curConfig.geomType : null}));
 
+        let prevLayerVisibility = null;
         if (this.state.selectedLayer != null){
-            this.checkVisibility(this.state.selectedLayer, this.state.selectedLayerVisibility)
-            this.checkVisibility(selectedLayer, true)
+            this.setLayerVisibility(this.state.selectedLayer, this.state.selectedLayerVisibility)
+            prevLayerVisibility = this.setLayerVisibility(selectedLayer, true)
         }
 
         // Gather relation tables for selected layer if config is a designer form
-        this.setState({selectedLayer: selectedLayer, relationTables: {}});
+        this.setState({selectedLayer: selectedLayer, selectedLayerVisibility: prevLayerVisibility, relationTables: {}});
         if(curConfig && curConfig.form) {
             let url = curConfig.form;
             if(url && url.startsWith(":/")) {
