@@ -207,9 +207,15 @@
       "zoomout": "Hinauszoomen",
       "background": "Hintergrundkarte wechseln"
     },
+    "themelayerslist": {
+      "addlayer": "",
+      "addlayerstotheme": "",
+      "addselectedlayers": ""
+    },
     "themeswitcher": {
       "filter": "Filter",
       "addtotheme": "Dem aktuellen Thema hinzufügen",
+      "addlayerstotheme": "",
       "match": {
         "title": "Titel",
         "keywords": "Schlüsselwörter",

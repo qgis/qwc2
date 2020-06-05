@@ -207,9 +207,15 @@
       "zoomout": "Zooma ut",
       "background": "Byt bakgrund"
     },
+    "themelayerslist": {
+      "addlayer": "",
+      "addlayerstotheme": "",
+      "addselectedlayers": ""
+    },
     "themeswitcher": {
       "filter": "Filtrera...",
       "addtotheme": "Lägg till aktuellt tema",
+      "addlayerstotheme": "",
       "match": {
         "title": "",
         "keywords": "",

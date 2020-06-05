@@ -207,9 +207,15 @@
       "zoomout": "Micșorare",
       "background": "Straturi suport"
     },
+    "themelayerslist": {
+      "addlayer": "",
+      "addlayerstotheme": "",
+      "addselectedlayers": ""
+    },
     "themeswitcher": {
       "filter": "Filtrare",
       "addtotheme": "Adaugă la temă",
+      "addlayerstotheme": "",
       "match": {
         "title": "Titlu",
         "keywords": "Cuvinte cheie",

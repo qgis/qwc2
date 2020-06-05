@@ -207,9 +207,15 @@
       "zoomout": "Dézoomer",
       "background": "Changer de fond"
     },
+    "themelayerslist": {
+      "addlayer": "Ajouter la couche",
+      "addlayerstotheme": "Ajouter des couches à la carte",
+      "addselectedlayers": "Ajouter les couches sélectionnées"
+    },
     "themeswitcher": {
       "filter": "Filtre",
       "addtotheme": "Ajouter au thème actuel",
+      "addlayerstotheme": "Ajouter des couches à la carte",
       "match": {
         "title": "",
         "keywords": "",

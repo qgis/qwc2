@@ -207,9 +207,15 @@
       "zoomout": "Уменьшить",
       "background": "Сменить фон"
     },
+    "themelayerslist": {
+      "addlayer": "",
+      "addlayerstotheme": "",
+      "addselectedlayers": ""
+    },
     "themeswitcher": {
       "filter": "Фильтр...",
       "addtotheme": "",
+      "addlayerstotheme": "",
       "match": {
         "title": "",
         "keywords": "",

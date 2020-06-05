@@ -207,9 +207,15 @@
       "zoomout": "Zoom ut",
       "background": "Bytt bakgrunn"
     },
+    "themelayerslist": {
+      "addlayer": "",
+      "addlayerstotheme": "",
+      "addselectedlayers": ""
+    },
     "themeswitcher": {
       "filter": "Filtrer...",
       "addtotheme": "Legg til nåværende tema",
+      "addlayerstotheme": "",
       "match": {
         "title": "Tittel",
         "keywords": "Nøkkelord",

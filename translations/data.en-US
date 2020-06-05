@@ -207,9 +207,15 @@
       "zoomout": "Zoom out",
       "background": "Switch background"
     },
+    "themelayerslist": {
+      "addlayer": "Add layer",
+      "addlayerstotheme": "Add layers to current map",
+      "addselectedlayers": "Add selected layer(s)"
+    },
     "themeswitcher": {
       "filter": "Filter...",
       "addtotheme": "Add to current theme",
+      "addlayerstotheme": "Add layers to current map",
       "match": {
         "title": "Title",
         "keywords": "Keywords",

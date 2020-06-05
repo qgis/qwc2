@@ -207,9 +207,15 @@
       "zoomout": "Oddálit",
       "background": "Přepnout podkladovou mapu"
     },
+    "themelayerslist": {
+      "addlayer": "",
+      "addlayerstotheme": "",
+      "addselectedlayers": ""
+    },
     "themeswitcher": {
       "filter": "Filtr...",
       "addtotheme": "Přidat k aktuálnímu tématu",
+      "addlayerstotheme": "",
       "match": {
         "title": "",
         "keywords": "",
