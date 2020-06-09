@@ -123,7 +123,7 @@ function getEditConfig(editConfig) {
 // convert non-array object to array containing the object
 // used to restore arrays lost by 'explicitArray: false' xml2js option
 function toArray(obj) {
-    return Array.isArray(obj) ? obj : [obj];
+    return obj !== undefined ? Array.isArray(obj) ? obj : [obj] : [];
 }
 
 // recursively get layer tree
