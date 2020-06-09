@@ -64,6 +64,7 @@
       "querying": "Interogare...",
       "noresults": "Nu există informații în punctul cerut",
       "export": "Export",
+      "exportformat": "",
       "featureReport": "Raport entitate",
       "noattributes": "Fără atribute",
       "title": "Info Entități",

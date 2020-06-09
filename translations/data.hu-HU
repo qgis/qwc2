@@ -64,6 +64,7 @@
       "querying": "Lekérdezés...",
       "noresults": "Nincs információ a kiválasztott pontról",
       "export": "Exportálás",
+      "exportformat": "",
       "featureReport": "Lekérdezés eredménye",
       "noattributes": "",
       "title": "Lekérdezés információ",

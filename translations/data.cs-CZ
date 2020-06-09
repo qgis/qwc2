@@ -64,6 +64,7 @@
       "querying": "Dotazování...",
       "noresults": "Pro vybraný bod nejsou k dispozici žádné informace",
       "export": "Export",
+      "exportformat": "",
       "featureReport": "Report prvku",
       "noattributes": "Bez atributů",
       "title": "Informace o prvku",

@@ -37,7 +37,7 @@ class IdentifyViewer extends React.Component {
         responses: PropTypes.array,
         addLayerFeatures: PropTypes.func,
         removeLayer: PropTypes.func,
-        exportFormat: PropTypes.string,
+        enableExport: PropTypes.bool,
         longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
         displayResultTree: PropTypes.bool,
         attributeCalculator: PropTypes.func,
@@ -61,7 +61,8 @@ class IdentifyViewer extends React.Component {
         resultTree: {},
         currentResult: null,
         currentLayer: null,
-        displayFieldMap: {}
+        displayFieldMap: {},
+        exportFormat: 'json'
     }
     constructor(props) {
         super(props);
@@ -222,10 +223,10 @@ class IdentifyViewer extends React.Component {
         this.export(filteredResults);
     }
     export = (json) => {
-        if(this.state.format.toLowerCase() === 'json') {
+        if(this.state.exportFormat === 'json') {
             let data = JSON.stringify(json, null, ' ');
             FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "results.json");
-        } else if(this.state.format.toLowerCase() === 'csv') {
+        } else if(this.state.exportFormat === 'csv') {
             let csv = "";
             Object.entries(json).forEach(([layerName, features]) => {
                 csv += layerName + "\n";
@@ -242,7 +243,7 @@ class IdentifyViewer extends React.Component {
                 csv += "\n";
             })
             FileSaver.saveAs(new Blob([csv], {type: "text/plain;charset=utf-8"}), "results.csv");
-        } else if(this.state.format.toLowerCase() === 'csv + zip') {
+        } else if(this.state.exportFormat === 'csvzip') {
             let first = true;
             let file = 0 ;
             let blobs = [];
@@ -410,7 +411,7 @@ class IdentifyViewer extends React.Component {
             zoomToFeatureButton = (<Icon icon="zoom" onClick={() => this.props.zoomToExtent(result.bbox, result.crs)} />);
         }
         return (
-            <div className={resultClass}>
+            <div className={resultClass} key="results-attributes">
                 <div className="identify-result-title">
                     <span>{this.layerTitle(layer, result) + ": " + this.resultDisplayName(layer, result)}</span>
                     {zoomToFeatureButton}
@@ -443,7 +444,7 @@ class IdentifyViewer extends React.Component {
             >
                 <span className={this.state.currentResult === result ? "active clickable" : "clickable"} onClick={()=> this.setCurrentResult(layer, result)} ref={ref}>{displayName}</span>
                 <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResult(layer, result)} />
-                {this.props.exportFormat ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResult(layer, result)} />) : null}
+                {this.props.enableExport ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResult(layer, result)} />) : null}
             </div>
         );
     }
@@ -460,7 +461,7 @@ class IdentifyViewer extends React.Component {
                 >
                     <span className="clickable" onClick={()=> this.toggleExpanded(layer, true)}><b>{this.layerTitle(layer, {})}</b></span>
                     <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResultLayer(layer)} />
-                    {this.props.exportFormat ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResultLayer(layer)} />) : null}
+                    {this.props.enableExport ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResultLayer(layer)} />) : null}
                 </div>
                 <div className="identify-layer-entries">
                     {results.map(result => this.renderResult(layer, result))}
@@ -479,70 +480,50 @@ class IdentifyViewer extends React.Component {
             }
         } else if(tree) {
             let contents = Object.keys(this.state.resultTree).map(layer => this.renderLayer(layer));
-            let attributes = this.renderResultAttributes(this.state.currentLayer, this.state.currentResult, 'identify-result-tree-frame');
             let resultsContainerStyle = {
                 maxHeight: attributes ? '10em' : 'initial'
             };
-            body = (
-                <div className="identify-body" role="body">
-                    <div className="identify-results-container" style={resultsContainerStyle}>
-                        {contents}
-                    </div>
-                    {attributes}
-                    <div className="identify-buttonbox">
-                        {
-                            this.props.exportFormat ?
-                            (<div>
-                                <Message msgId="identify.exportformat" />
-                                <select value={this.state.format} onChange={ev => this.setState({format: ev.target.value})}>
-                                    <option value="json">json</option>
-                                    <option value="csv">csv</option>
-                                    <option value="csv + zip">csv + zip</option>
-                                </select>
-                            </div>) : null
-                        }
-                        {this.props.exportFormat ? (<button className="button" onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
-                    </div>
-                </div>
-            );
+            body = [
+                (<div key="results-container" className="identify-results-container" style={resultsContainerStyle}>{contents}</div>),
+                this.renderResultAttributes(this.state.currentLayer, this.state.currentResult, 'identify-result-tree-frame')
+            ];
         } else {
-            // "el.style.background='inherit'": HACK to trigger an additional repaint, since Safari/Chrome on iOS render the element cut off the first time
             body = (
-                <div className="identify-body" role="body" ref={el => { if(el) el.style.background='inherit'; } }>
-                    <div className="identify-flat-results-list">
-                        {Object.keys(this.state.resultTree).map(layer => {
-                            let layerResults = this.state.resultTree[layer];
-                            return layerResults.map(result => {
-                                let resultClass = this.state.currentResult == result ? 'identify-result-frame-highlighted' : 'identify-result-frame-normal';
-                                return (
-                                    <div key={result.id}
-                                        onMouseEnter={() => this.setState({currentResult: result, currentLayer: layer})}
-                                        onMouseLeave={() => this.setState({currentResult: null, currentLayer: null})}
-                                    >{this.renderResultAttributes(layer, result, resultClass)}</div>
-                                );
-                            });
-                        })}
-                    </div>
-                    <div className="identify-buttonbox">
-                        {
-                            this.props.exportFormat ?
-                            (<div>
-                                <Message msgId="identify.exportformat" />
-                                <select value={this.state.format} onChange={ev => this.setState({format: ev.target.value})}>
-                                    <option value="json">json</option>
-                                    <option value="csv">csv</option>
-                                    <option value="csv + zip">csv + zip</option>
-                                </select>
-                            </div>) : null
-                        }
-                        {this.props.exportFormat ? (<button className="button" onClick={this.exportResults}><Message msgId="identify.export" /></button>) : null}
-                    </div>
+                <div className="identify-flat-results-list">
+                    {Object.keys(this.state.resultTree).map(layer => {
+                        let layerResults = this.state.resultTree[layer];
+                        return layerResults.map(result => {
+                            let resultClass = this.state.currentResult == result ? 'identify-result-frame-highlighted' : 'identify-result-frame-normal';
+                            return (
+                                <div key={result.id}
+                                    onMouseEnter={() => this.setState({currentResult: result, currentLayer: layer})}
+                                    onMouseLeave={() => this.setState({currentResult: null, currentLayer: null})}
+                                >{this.renderResultAttributes(layer, result, resultClass)}</div>
+                            );
+                        });
+                    })}
                 </div>
             );
         }
+        // "el.style.background='inherit'": HACK to trigger an additional repaint, since Safari/Chrome on iOS render the element cut off the first time
         return (
             <ResizeableWindow title="identify.title" icon="info-sign" onClose={this.props.onClose} initialX={0} initialY={0} initiallyDocked={this.props.initiallyDocked} initialWidth={this.props.initialWidth} initialHeight={this.props.initialHeight}>
-                {body}
+                <div className="identify-body" role="body" ref={el => { if(el) el.style.background='inherit'; } }>
+                    {body}
+                    {this.props.enableExport ? (
+                        <div className="identify-buttonbox">
+                            <div>
+                                <Message msgId="identify.exportformat" />&nbsp;
+                                <select className="combo" value={this.state.exportFormat} onChange={ev => this.setState({exportFormat: ev.target.value})}>
+                                    <option value="json">json</option>
+                                    <option value="csv">csv</option>
+                                    <option value="csvzip">csv + zip</option>
+                                </select>
+                                <button className="button" onClick={this.exportResults}><Message msgId="identify.export" /></button>
+                            </div>
+                        </div>
+                    ) : null}
+                </div>
             </ResizeableWindow>
         );
 

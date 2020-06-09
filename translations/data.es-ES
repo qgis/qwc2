@@ -64,6 +64,7 @@
       "querying": "Consultando...",
       "noresults": "Sin información disponible sobre el punto seleccionado",
       "export": "Exportar",
+      "exportformat": "",
       "featureReport": "Informe del elemento",
       "noattributes": "Sin atributos",
       "title": "Información del elemento",

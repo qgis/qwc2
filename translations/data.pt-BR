@@ -64,6 +64,7 @@
       "querying": "Consultando...",
       "noresults": "Nenhuma informação disponível para o ponto selecionado",
       "export": "Exportar",
+      "exportformat": "",
       "featureReport": "Reportar",
       "noattributes": "",
       "title": "Informações da Funcionalidade",

@@ -64,6 +64,7 @@
       "querying": "Frågar...",
       "noresults": "Ingen information för vald punkt",
       "export": "Exportera",
+      "exportformat": "",
       "featureReport": "Objektrapport",
       "noattributes": "Inga attribut",
       "title": "Objektinformation",

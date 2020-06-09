@@ -64,6 +64,7 @@
       "querying": "Søker...",
       "noresults": "Ingen informasjon for valgt punkt",
       "export": "Eksporter",
+      "exportformat": "",
       "featureReport": "Objektrapport",
       "noattributes": "Ingen attributt",
       "title": "Objektinformasjon",

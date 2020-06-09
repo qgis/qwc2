@@ -64,6 +64,7 @@
       "querying": "Caricando...",
       "noresults": "Nessun risultato",
       "export": "Esporta",
+      "exportformat": "",
       "featureReport": "Oggetto formulario",
       "noattributes": "Nessun attributo",
       "title": "Titolo",

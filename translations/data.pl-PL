@@ -64,6 +64,7 @@
       "querying": "Przetwarzam zapytanie...",
       "noresults": "Brak dostępnych danych dla wybranego punktu",
       "export": "Eksport",
+      "exportformat": "",
       "featureReport": "Feature report",
       "noattributes": "Brak atrybutów",
       "title": "Feature Info",
