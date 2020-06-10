@@ -486,7 +486,7 @@ class IdentifyViewer extends React.Component {
             };
             body = [
                 (<div key="results-container" className="identify-results-container" style={resultsContainerStyle}>{contents}</div>),
-                this.renderResultAttributes(this.state.currentLayer, this.state.currentResult, 'identify-result-tree-frame')
+                attributes
             ];
         } else {
             body = (
