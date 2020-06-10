@@ -220,9 +220,9 @@ const VectorLayerUtils = {
             style = style[0] || style;
 
             let styleOptions = {
-                strokeColor: style.getStroke().getColor(),
-                strokeWidth: style.getStroke().getWidth(),
-                strokeDash: style.getStroke().getLineDash() || [],
+                strokeColor: style.getStroke() ? style.getStroke().getColor() : '#000000',
+                strokeWidth: style.getStroke() ? style.getStroke().getWidth(): 1,
+                strokeDash: style.getStroke() ? style.getStroke().getLineDash() : [],
                 fillColor: style.getFill() ? style.getFill().getColor() : '#FFFFFF',
                 textFill: style.getText() && style.getText().getFill() ? style.getText().getFill().getColor() : 'rgba(0, 0, 0 ,0)',
                 textStroke: style.getText() && style.getText().getStroke() ? style.getText().getStroke().getColor() : 'rgba(0, 0, 0, 0)'
