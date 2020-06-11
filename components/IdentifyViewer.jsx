@@ -226,6 +226,19 @@ class IdentifyViewer extends React.Component {
         if(this.state.exportFormat === 'json') {
             let data = JSON.stringify(json, null, ' ');
             FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "results.json");
+        } else if(this.state.exportFormat === 'geojson') {
+            Object.entries(json).forEach(([layerName, features]) => {
+                let data = {
+                    "type":"FeatureCollection",
+                    "features":[]
+                };
+                let datageojson = {};
+                features.forEach(feature => {
+                    data.features = data.features.concat(feature);
+                    datageojson = JSON.stringify(data, null, ' ');
+                });
+                FileSaver.saveAs(new Blob([datageojson], {type: "application/geo+json;charset=utf-8"}), layerName + ".geojson");
+            })
         } else if(this.state.exportFormat === 'csv') {
             let csv = "";
             Object.entries(json).forEach(([layerName, features]) => {
@@ -517,6 +530,7 @@ class IdentifyViewer extends React.Component {
                                 <Message msgId="identify.exportformat" />&nbsp;
                                 <select className="combo" value={this.state.exportFormat} onChange={ev => this.setState({exportFormat: ev.target.value})}>
                                     <option value="json">json</option>
+                                    <option value="geojson">geojson</option>
                                     <option value="csv">csv</option>
                                     <option value="csvzip">csv + zip</option>
                                 </select>
