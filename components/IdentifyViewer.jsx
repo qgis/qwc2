@@ -230,14 +230,11 @@ class IdentifyViewer extends React.Component {
             Object.entries(json).forEach(([layerName, features]) => {
                 let data = {
                     "type":"FeatureCollection",
-                    "features":[]
+                    "features": features
                 };
-                let datageojson = {};
-                features.forEach(feature => {
-                    data.features = data.features.concat(feature);
-                    datageojson = JSON.stringify(data, null, ' ');
-                });
-                FileSaver.saveAs(new Blob([datageojson], {type: "application/geo+json;charset=utf-8"}), layerName + ".geojson");
+                FileSaver.saveAs(
+                    new Blob([JSON.stringify(data, null, ' ')],
+                    {type: "application/geo+json;charset=utf-8"}), layerName + ".geojson");
             })
         } else if(this.state.exportFormat === 'csv') {
             let csv = "";
