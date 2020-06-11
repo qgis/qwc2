@@ -407,7 +407,7 @@ class SearchBox extends React.Component {
             this.addSearchResults(searchSession, "__fulltext", searchResults);
         }).catch(e => {
             console.warn("Search failed: " + e);
-            this.addSearchResults(searchSession, "__fulltext", searchResults);
+            this.addSearchResults(searchSession, "__fulltext", {results: [], tot_result_count: 0});
         });
         // Additional provider searches
         let searchOptions = {displaycrs: this.props.displaycrs};
