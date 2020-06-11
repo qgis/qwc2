@@ -229,7 +229,7 @@ class IdentifyViewer extends React.Component {
         } else if(this.state.exportFormat === 'geojson') {
             Object.entries(json).forEach(([layerName, features]) => {
                 let data = {
-                    "type":"FeatureCollection",
+                    "type": "FeatureCollection",
                     "features": features
                 };
                 FileSaver.saveAs(
