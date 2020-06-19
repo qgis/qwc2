@@ -10,6 +10,7 @@ const ol = require('openlayers');
 const assign = require('object-assign');
 const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
 const ConfigUtils = require('../../../../utils/ConfigUtils');
+const MapUtils = require('../../../../utils/MapUtils');
 
 
 function wmsToOpenlayersOptions(options) {
@@ -33,6 +34,10 @@ function getWMSURLs( urls ) {
 
 let WMSLayer = {
     create: (options, map) => {
+        console.log({
+            minResolution: options.minScale == null ? undefined : MapUtils.getResolutionsForScales([options.minScale], options.srs)[0],
+            maxResolution: options.maxScale == null ? undefined : MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0]
+        });
         const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]);
         const queryParameters = wmsToOpenlayersOptions(options) || {};
         if(options.tiled && !options.boundingBox) {
@@ -43,6 +48,8 @@ let WMSLayer = {
                 opacity: options.opacity !== undefined ? options.opacity : 1,
                 visible: !!queryParameters["LAYERS"] && options.visibility !== false,
                 zIndex: options.zIndex,
+                minResolution: options.minScale == null ? undefined : MapUtils.getResolutionsForScales([options.minScale], options.srs)[0],
+                maxResolution: options.maxScale == null ? undefined : MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0],
                 source: new ol.source.ImageWMS({
                     url: urls[0],
                     serverType: 'qgis',
@@ -63,6 +70,8 @@ let WMSLayer = {
             opacity: options.opacity !== undefined ? options.opacity : 1,
             visible: options.visibility !== false,
             zIndex: options.zIndex,
+            minResolution: options.minScale == null ? undefined : MapUtils.getResolutionsForScales([options.minScale], options.srs)[0],
+            maxResolution: options.maxScale == null ? undefined : MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0],
             source: new ol.source.TileWMS({
               urls: urls,
               params: queryParameters,

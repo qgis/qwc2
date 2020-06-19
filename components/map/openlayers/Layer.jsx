@@ -11,6 +11,7 @@ const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const isEqual = require('lodash.isequal');
 const omit = require('lodash.omit');
+const ol = require('openlayers');
 const CoordinatesUtils = require('../../../utils/CoordinatesUtils');
 const LayerRegistry = require('./plugins/index');
 
@@ -96,15 +97,33 @@ class OpenlayersLayer extends React.Component {
         return assign({}, options, {zIndex: zIndex, srs});
     }
     createLayer = (type, options, zIndex) => {
-        let layerCreator = LayerRegistry[type];
-        if (layerCreator) {
-            const layerOptions = this.generateOpts(options, zIndex, CoordinatesUtils.normalizeSRS(this.props.srs));
-            let layer = layerCreator.create(layerOptions, this.props.map, this.props.mapId);
-            if (layer) {
-                layer.set('id', layerOptions.id);
-                if (!layer.detached) {
-                    this.addLayer(layer, options);
+        let layer = null;
+        let sublayers = [];
+        if(type === 'group') {
+            layer = new ol.layer.Group({zIndex});
+            layer.setLayers(new ol.Collection(options.items.map(item => {
+                let layerCreator = LayerRegistry[item.type];
+                if(layerCreator) {
+                    const layerOptions = this.generateOpts(item, zIndex, CoordinatesUtils.normalizeSRS(this.props.srs));
+                    let sublayer = layerCreator.create(layerOptions, this.props.map, this.props.mapId);
+                    layer.set('id', options.id + "#" + layerOptions.name);
+                    return sublayer;
+                } else {
+                    return null;
                 }
+            }).filter(x => x)));
+        } else {
+            let layerCreator = LayerRegistry[type];
+            if (layerCreator) {
+                const layerOptions = this.generateOpts(options, zIndex, CoordinatesUtils.normalizeSRS(this.props.srs));
+                layer = layerCreator.create(layerOptions, this.props.map, this.props.mapId);
+            }
+        }
+        if (layer) {
+            layer.set('id', options.id);
+            layer.setVisible(options.visibility);
+            if (!layer.detached) {
+                this.addLayer(layer, options);
             }
             this.setState({layer: layer});
         }
@@ -146,7 +165,7 @@ class OpenlayersLayer extends React.Component {
                 event.context.restore();
             });
 
-            if(options.zoomToExtent) {
+            if(options.zoomToExtent && layer.getSource()) {
                 let map = this.props.map;
                 let source = layer.getSource();
                 source.once('change',(e) => {
@@ -157,37 +176,47 @@ class OpenlayersLayer extends React.Component {
                     }
                 });
             }
-            if (!options.tiled) {
-                layer.getSource().on('imageloadstart', () => {
-                    this.props.setLayerLoading(options.uuid, true);
-                });
-                layer.getSource().on('imageloadend', () => {
-                    this.props.setLayerLoading(options.uuid, false);
-                });
-                layer.getSource().on('imageloaderror', (event) => {
-                    this.props.setLayerLoading(options.uuid, false);
-                });
+            let sublayers = {};
+            if(layer instanceof ol.layer.Group) {
+                layer.getLayers().forEach(sublayer => {
+                    sublayers[options.uuid + "#" + sublayer.get('id')] = sublayer;
+                })
+            } else {
+                sublayers[options.uuid] = layer;
             }
-            else {
-                layer.getSource().on('tileloadstart', () => {
-                    if (this.tilestoload === 0) {
-                        this.props.setLayerLoading(options.uuid, true);
-                    }
-                    this.tilestoload++;
-                });
-                layer.getSource().on('tileloadend', () => {
-                    this.tilestoload--;
-                    if (this.tilestoload === 0) {
-                        this.props.setLayerLoading(options.uuid, false);
-                    }
-                });
-                layer.getSource().on('tileloaderror', (event) => {
-                    this.tilestoload--;
-                    if (this.tilestoload === 0) {
-                        this.props.setLayerLoading(options.uuid, false);
-                    }
-                });
-            }
+            Object.entries(sublayers).map(([id, sublayer]) => {
+                if (!sublayer.getTileLoadFunction) {
+                    sublayer.getSource().on('imageloadstart', () => {
+                        this.props.setLayerLoading(id, true);
+                    });
+                    sublayer.getSource().on('imageloadend', () => {
+                        this.props.setLayerLoading(id, false);
+                    });
+                    sublayer.getSource().on('imageloaderror', (event) => {
+                        this.props.setLayerLoading(id, false);
+                    });
+                }
+                else {
+                    sublayer.getSource().on('tileloadstart', () => {
+                        if (this.tilestoload === 0) {
+                            this.props.setLayerLoading(id, true);
+                        }
+                        this.tilestoload++;
+                    });
+                    sublayer.getSource().on('tileloadend', () => {
+                        this.tilestoload--;
+                        if (this.tilestoload === 0) {
+                            this.props.setLayerLoading(id, false);
+                        }
+                    });
+                    sublayer.getSource().on('tileloaderror', (event) => {
+                        this.tilestoload--;
+                        if (this.tilestoload === 0) {
+                            this.props.setLayerLoading(id, false);
+                        }
+                    });
+                }
+            });
         }
     }
     isValid = (layer) => {

@@ -9,6 +9,7 @@
 const ol = require('openlayers');
 const assign = require('object-assign');
 const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
+const MapUtils = require('../../../../utils/MapUtils');
 
 function getWMSURLs( urls ) {
     return urls.map((url) => url.split("\?")[0]);
@@ -32,6 +33,8 @@ let WMTSLayer = {
               layer: options.name,
               projection: projection && projection.getExtent() ? projection : null,
               matrixSet: options.tileMatrixSet,
+              minResolution: options.minScale == null ? undefined : MapUtils.getResolutionsForScales([options.minScale], options.srs)[0],
+              maxResolution: options.maxScale == null ? undefined : MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0],
               tileGrid: new ol.tilegrid.WMTS({
                 origin: [options.originX, options.originY],
                 resolutions: resolutions,

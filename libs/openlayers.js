@@ -54,7 +54,8 @@ module.exports = {
   layer: {
     Image: require('ol/layer/Image').default,
     Tile: require('ol/layer/Tile').default,
-    Vector: require('ol/layer/Vector').default
+    Vector: require('ol/layer/Vector').default,
+    Group: require('ol/layer/Group').default
   },
   loadingstrategy: require('ol/loadingstrategy'),
   Map: require('ol/Map').default,

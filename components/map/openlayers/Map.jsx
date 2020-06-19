@@ -218,9 +218,18 @@ class OpenlayersMap extends React.Component {
             this.map.setView(this.createView(newProps.center, newProps.zoom, newProps.projection, newProps.resolutions));
             // We have to force ol to drop tile and reload
             this.map.getLayers().forEach((l) => {
-                let source = l.getSource();
-                if (source.getTileLoadFunction) {
-                    source.setTileLoadFunction(source.getTileLoadFunction());
+                if(l instanceof ol.layer.Group) {
+                    l.getLayers().forEach(sublayer => {
+                        let source = sublayer.getSource();
+                        if (source.getTileLoadFunction) {
+                            source.setTileLoadFunction(source.getTileLoadFunction());
+                        }
+                    });
+                } else {
+                    let source = l.getSource();
+                    if (source.getTileLoadFunction) {
+                        source.setTileLoadFunction(source.getTileLoadFunction());
+                    }
                 }
             });
             this.map.render();

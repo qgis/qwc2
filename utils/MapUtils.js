@@ -72,7 +72,7 @@ function getGoogleMercatorScales(minZoom, maxZoom, dpi = DEFAULT_SCREEN_DPI) {
  * @param dpi {number} screen resolution in dots per inch.
  * @return {array} a list of resolutions corresponding to the given scales, projection and dpi.
  */
-function getResolutionsForScales(scales, projection, dpi) {
+function getResolutionsForScales(scales, projection, dpi=null) {
     const dpu = dpi2dpu(dpi, projection);
     const resolutions = scales.map((scale) => {
         return scale / dpu;

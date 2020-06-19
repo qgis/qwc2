@@ -45,10 +45,25 @@ const ThemeUtils = {
                 if (bgLayer.name === visibleLayer) {
                     visibleIdx = bgLayers.length;
                 }
-                bgLayers.push(assign({}, bgLayer, {
+                bgLayer = assign({}, bgLayer, {
                     role: LayerRole.BACKGROUND,
                     visibility: false
-                }));
+                });
+                if(bgLayer.type === "group") {
+                    bgLayer.items = bgLayer.items.map(item => {
+                        if(item.ref) {
+                            let sublayer = themes.backgroundLayers.find(l => l.name === item.ref);
+                            if(sublayer) {
+                                item = assign({}, item, sublayer);
+                                delete item.ref;
+                            } else {
+                                item = null;
+                            }
+                        }
+                        return item;
+                    }).filter(x => x);
+                }
+                bgLayers.push(bgLayer);
             } else {
                 console.warn("Could not find background layer " + entry.name);
             }
