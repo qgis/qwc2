@@ -14,6 +14,7 @@ const {SideBar} = require('../components/SideBar');
 const ThemeList = require('../components/ThemeList');
 const ConfigUtils = require("../utils/ConfigUtils");
 const LocaleUtils = require("../utils/LocaleUtils");
+const ThemeLayersListWindow = require('../components/ThemeLayersListWindow');
 require('./style/ThemeSwitcher.css');
 
 class ThemeSwitcher extends React.Component {
@@ -21,11 +22,13 @@ class ThemeSwitcher extends React.Component {
         activeTheme: PropTypes.object,
         width: PropTypes.string,
         showLayerAfterChangeTheme: PropTypes.bool,
-        collapsibleGroups: PropTypes.bool
+        collapsibleGroups: PropTypes.bool,
+        themeLayersListWindowSize: PropTypes.object,
     }
     static defaultProps = {
         width: "50%",
-        showLayerAfterChangeTheme: false
+        showLayerAfterChangeTheme: false,
+        themeLayersListWindowSize: {width: 400, height: 300},
     }
     state = {
         filter: "",
@@ -43,19 +46,22 @@ class ThemeSwitcher extends React.Component {
         );
         let filter = this.state.filter ? new RegExp(removeDiacritics(this.state.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i") : null;
         return (
-            <SideBar id="ThemeSwitcher" minWidth="16em" width={this.props.width} title="appmenu.items.ThemeSwitcher"
-                icon="themes" extraTitlebarContent={extraTitlebarContent}>
-                {() => ({
-                    body: (
-                        <ThemeList
-                            showLayerAfterChangeTheme={this.props.showLayerAfterChangeTheme}
-                            collapsibleGroups={this.props.collapsibleGroups}
-                            allowAddingOtherThemes={allowAddingOtherThemes}
-                            activeTheme={this.props.activeTheme}
-                            filter={this.state.filter} />
-                    )
-                })}
-            </SideBar>
+            <div>
+                <SideBar id="ThemeSwitcher" minWidth="16em" width={this.props.width} title="appmenu.items.ThemeSwitcher"
+                    icon="themes" extraTitlebarContent={extraTitlebarContent}>
+                    {() => ({
+                        body: (
+                            <ThemeList
+                                showLayerAfterChangeTheme={this.props.showLayerAfterChangeTheme}
+                                collapsibleGroups={this.props.collapsibleGroups}
+                                allowAddingOtherThemes={allowAddingOtherThemes}
+                                activeTheme={this.props.activeTheme}
+                                filter={this.state.filter} />
+                        )
+                    })}
+                </SideBar>
+                <ThemeLayersListWindow windowSize={this.props.themeLayersListWindowSize} bboxDependentLegend={this.props.bboxDependentLegend} />                
+            </div>
         );
     }
     focusFilterField = (el) => {

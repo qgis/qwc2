@@ -75,7 +75,7 @@ const ThemeUtils = {
         }
         return bgLayers;
     },
-    createThemeLayer: function(theme, themes, role=LayerRole.THEME) {
+    createThemeLayer: function(theme, themes, role=LayerRole.THEME, subLayers=[]) {
         let layer = {
             type: "wms",
             url: theme.url,
@@ -85,7 +85,7 @@ const ThemeUtils = {
             name: theme.name,
             title: theme.title,
             boundingBox: theme.bbox,
-            sublayers : theme.sublayers,
+            sublayers : (Array.isArray(subLayers) && subLayers.length) ? subLayers : theme.sublayers,
             tiled: theme.tiled,
             ratio: !theme.tiled ? 1 : undefined,
             format: theme.format,

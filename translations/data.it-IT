@@ -208,9 +208,15 @@
       "zoomout": "Rimpicciolisci",
       "background": "Cambia sfondo"
     },
+    "themelayerslist": {
+      "addlayer": "",
+      "addlayerstotheme": "",
+      "addselectedlayers": ""
+    },
     "themeswitcher": {
       "filter": "Filtra...",
       "addtotheme": "Aggiungere al tema corrente",
+      "addlayerstotheme": "",
       "match": {
         "title": "Titolo",
         "keywords": "Parole chiavi",

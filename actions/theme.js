@@ -19,6 +19,7 @@ const {LayerRole, addLayer, removeLayer, removeAllLayers, replacePlaceholderLaye
 const {configureMap} = require("./map");
 
 const THEMES_LOADED = 'THEMES_LOADED';
+const SET_THEME_LAYERS_LIST = 'SET_THEME_LAYERS_LIST';
 const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
 const SWITCHING_THEME = 'SWITCHING_THEME';
 
@@ -27,6 +28,13 @@ function themesLoaded(themes) {
     return {
         type: THEMES_LOADED,
         themes
+    };
+}
+
+function setThemeLayersList(theme) {
+    return {
+        type: SET_THEME_LAYERS_LIST,
+        themelist: theme
     };
 }
 
@@ -191,9 +199,11 @@ function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, perm
 
 module.exports = {
     THEMES_LOADED,
+    SET_THEME_LAYERS_LIST,
     SET_CURRENT_THEME,
     SWITCHING_THEME,
     themesLoaded,
     restoreDefaultTheme,
+    setThemeLayersList,
     setCurrentTheme,
 };

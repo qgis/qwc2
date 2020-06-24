@@ -208,9 +208,15 @@
       "zoomout": "",
       "background": ""
     },
+    "themelayerslist": {
+      "addlayer": "",
+      "addlayerstotheme": "",
+      "addselectedlayers": ""
+    },
     "themeswitcher": {
       "filter": "Filtro...",
       "addtotheme": "",
+      "addlayerstotheme": "",
       "match": {
         "title": "",
         "keywords": "",

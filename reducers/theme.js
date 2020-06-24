@@ -8,7 +8,7 @@
 
 const assign = require('object-assign');
 const {UrlParams} = require("../utils/PermaLinkUtils");
-const {THEMES_LOADED, SET_CURRENT_THEME, CLEAR_CURRENT_THEME, SWITCHING_THEME} = require('../actions/theme');
+const {THEMES_LOADED, SET_THEME_LAYERS_LIST, SET_CURRENT_THEME, CLEAR_CURRENT_THEME, SWITCHING_THEME} = require('../actions/theme');
 
 function theme(state = {}, action) {
     switch (action.type) {
@@ -20,6 +20,10 @@ function theme(state = {}, action) {
             return assign({}, state, {
                 themes: action.themes
             });
+        case SET_THEME_LAYERS_LIST:
+            return assign({}, state, {
+                themelist: action.themelist
+            });            
         case CLEAR_CURRENT_THEME:
             UrlParams.updateParams({t: undefined, l: undefined});
             return assign({}, state, {

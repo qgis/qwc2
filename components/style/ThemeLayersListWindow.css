@@ -1,0 +1,42 @@
+div.theme-list-window-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+h4.theme-list-window-title {
+    flex: 0 0 auto;
+}
+
+div.theme-list-window-frame {
+    border: 1px solid @item_border@;
+    background-color: white;
+    font-size: small;
+    flex: 1 1 auto;
+    overflow: auto;
+}
+
+div.layerlist-item {
+    display: flex;
+    align-items: center;
+    height: 1.75em;
+    margin-left: 0.5em;
+}
+
+span.layerlist-item-checkbox {
+    margin-right: 0.5em;
+    flex: 0 0 auto;
+}
+
+span.layerlist-item-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 0 1 auto;
+}
+
+span.layerlist-item-add {
+    margin-left: auto;
+    margin-right: 0.5em;
+    flex: 0 0 auto;
+}

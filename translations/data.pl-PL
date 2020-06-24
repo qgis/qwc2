@@ -208,9 +208,15 @@
       "zoomout": "Oddal",
       "background": "Zmień podkład map"
     },
+    "themelayerslist": {
+      "addlayer": "",
+      "addlayerstotheme": "",
+      "addselectedlayers": ""
+    },
     "themeswitcher": {
       "filter": "Filtruj...",
       "addtotheme": "Dodaj do obecnego motywu",
+      "addlayerstotheme": "",
       "match": {
         "title": "",
         "keywords": "",

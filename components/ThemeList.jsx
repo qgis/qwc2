@@ -21,6 +21,7 @@ const {LayerRole, addLayer} = require("../actions/layers");
 const {setCurrentTheme} = require("../actions/theme");
 const {setCurrentTask} = require("../actions/task");
 const {setActiveLayerInfo} = require("../actions/layerinfo");
+const {setThemeLayersList} = require("../actions/theme");
 require('./style/ThemeList.css');
 
 class ThemeList extends React.Component {
@@ -33,6 +34,7 @@ class ThemeList extends React.Component {
         mapConfig: PropTypes.object,
         addLayer: PropTypes.func,
         setActiveLayerInfo: PropTypes.func,
+        setThemeLayersList: PropTypes.func,
         allowAddingOtherThemes: PropTypes.bool,
         showLayerAfterChangeTheme: PropTypes.bool,
         collapsibleGroups: PropTypes.bool,
@@ -88,6 +90,7 @@ class ThemeList extends React.Component {
             );
         });
         let activeThemeId = this.props.activeTheme ? this.props.activeTheme.id : null;
+        let addLayersTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addlayerstotheme");
         let addTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addtotheme");
         let openTabTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.openintab");
         return (
@@ -134,6 +137,7 @@ class ThemeList extends React.Component {
                                 <img className="theme-item-thumbnail" src={assetsPath + "/" + item.thumbnail} />
                             </div>
                             <div className="theme-item-icons">
+                                {this.props.allowAddingOtherThemes ? (<Icon icon="layers" title={addLayersTitle} onClick={ev => this.getThemeLayersToList(ev, item)} />) : null}
                                 {this.props.allowAddingOtherThemes ? (<Icon icon="plus" title={addTitle} onClick={ev => this.addThemeLayers(ev, item)} />) : null}
                                 <Icon icon="open_link" title={openTabTitle} onClick={ev => this.openInTab(ev, item.id)} />
                             </div>
@@ -205,6 +209,12 @@ class ThemeList extends React.Component {
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
     }
+    getThemeLayersToList = (ev, theme) => {
+        ev.stopPropagation();
+        this.props.setThemeLayersList(theme);
+        // Show layer tree to notify user that something has happened
+        this.props.setCurrentTask('LayerTree');
+    }
     openInTab = (ev, themeid) => {
         ev.stopPropagation();
         let url = location.href.split("?")[0] + '?t=' + themeid;
@@ -223,5 +233,6 @@ module.exports = connect(selector, {
     changeTheme: setCurrentTheme,
     setCurrentTask: setCurrentTask,
     addLayer: addLayer,
-    setActiveLayerInfo: setActiveLayerInfo
+    setActiveLayerInfo: setActiveLayerInfo,
+    setThemeLayersList: setThemeLayersList
 })(ThemeList);
