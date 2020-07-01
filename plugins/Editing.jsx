@@ -90,7 +90,7 @@ class Editing extends React.Component {
             const oldPoint = this.props.map.clickPoint || {};
             if(newPoint.coordinate && !isEqual(newPoint.coordinate, oldPoint.coordinate)) {
                 let scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
-                this.props.iface.getFeature(this.state.selectedLayer, newPoint.coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
+                this.props.iface.getFeature(this.editLayerId(this.state.selectedLayer), newPoint.coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
                     let features = featureCollection ? featureCollection.features : null;
                     this.setState({pickedFeatures: features});
                     let feature = features ? features[0] : null;
@@ -99,7 +99,7 @@ class Editing extends React.Component {
                     // Query relation values for picked feature
                     if(feature) {
                         let relTables = Object.entries(this.state.relationTables).map(([name,fk]) => name + ":" + fk).join(",");
-                        this.props.iface.getRelations(this.state.selectedLayer, feature.id, relTables, (response => {
+                        this.props.iface.getRelations(this.editLayerId(this.state.selectedLayer), feature.id, relTables, (response => {
                             let newFeature = assign({}, this.props.editing.feature, {relationValues: response.relationvalues});
                             this.props.changeEditingState(assign({}, this.props.editing, {feature: newFeature}));
                         }));
@@ -120,6 +120,12 @@ class Editing extends React.Component {
         if(newProps.map.clickPoint && newProps.enabled) {
             this.props.clickOnMap(null);
         }
+    }
+    editLayerId = (layerId) => {
+        if(this.props.theme && this.props.theme.editConfig && this.props.theme.editConfig[layerId]) {
+            return this.props.theme.editConfig[layerId].editDataset || layerId;
+        }
+        return layerId;
     }
 
     renderBody = () => {
@@ -383,9 +389,9 @@ class Editing extends React.Component {
         });
 
         if(this.props.editing.action === "Draw") {
-            this.props.iface.addFeature(this.state.selectedLayer, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues));
+            this.props.iface.addFeature(this.editLayerId(this.state.selectedLayer), feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues));
         } else if(this.props.editing.action === "Pick") {
-            this.props.iface.editFeature(this.state.selectedLayer, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues));
+            this.props.iface.editFeature(this.editLayerId(this.state.selectedLayer), feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues));
         }
     }
     featureCommited = (success, result, relationValues) => {
@@ -396,7 +402,7 @@ class Editing extends React.Component {
         let newFeature = result;
         // Commit relations
         if(!isEmpty(relationValues)) {
-            this.props.iface.writeRelations(this.state.selectedLayer, newFeature.id, relationValues, (result) => {
+            this.props.iface.writeRelations(this.editLayerId(this.state.selectedLayer), newFeature.id, relationValues, (result) => {
                 if(result.success !== true) {
                     // Relation values commit failed, switch to pick update relation values with response and switch to pick to
                     // to avoid adding feature again on next attempt
@@ -422,7 +428,7 @@ class Editing extends React.Component {
     deleteFeature = (action) => {
         if(action == 'Yes') {
             this.setState({busy: true});
-            this.props.iface.deleteFeature(this.state.selectedLayer, this.props.editing.feature.id, this.deleteFinished);
+            this.props.iface.deleteFeature(this.editLayerId(this.state.selectedLayer), this.props.editing.feature.id, this.deleteFinished);
         } else {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
