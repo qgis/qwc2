@@ -82,11 +82,12 @@ function addLayerFeatures(layer, features, clear=false) {
     }
 }
 
-function removeLayerFeatures(layerId, featureIds) {
+function removeLayerFeatures(layerId, featureIds, keepEmptyLayer=false) {
     return {
         type: REMOVE_LAYER_FEATURES,
         layerId,
-        featureIds
+        featureIds,
+        keepEmptyLayer
     }
 }
 

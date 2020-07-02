@@ -202,7 +202,7 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             let newLayers = (state.flat || []).reduce((result, layer) => {
                 if(layer.id === action.layerId) {
                     let newFeatures = layer.features.filter(f => action.featureIds.includes(f.id) === false);
-                    if(!isEmpty(newFeatures)) {
+                    if(!isEmpty(newFeatures) || action.keepEmptyLayer) {
                         result.push(assign({}, layer, {features: newFeatures}));
                     }
                 } else {

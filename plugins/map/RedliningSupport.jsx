@@ -255,7 +255,7 @@ class RedliningSupport extends React.Component {
     }
     deleteCurrentFeature = (oldProps) => {
         if(this.currentFeature) {
-            this.props.removeLayerFeatures(this.props.redlining.layer, [this.currentFeature.getId()]);
+            this.props.removeLayerFeatures(this.props.redlining.layer, [this.currentFeature.getId()], true);
             this.currentFeature = null;
             this.props.changeRedliningState(assign({}, oldProps.redlining, {selectedFeature: null}));
         }
