@@ -55,7 +55,8 @@ class MapPlugin extends React.Component {
                         let sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
                         if(!sublayerInvisible) {
                             layers.push(assign({}, layer.externalLayers[sublayers[i]], {
-                                opacity: opacities[i]
+                                opacity: opacities[i],
+                                visibility: true
                             }));
                         }
                     } else if(layers.length > 0 && layers[layers.length - 1].id === layer.id) {
