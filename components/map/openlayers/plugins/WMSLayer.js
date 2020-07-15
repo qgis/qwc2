@@ -34,10 +34,6 @@ function getWMSURLs( urls ) {
 
 let WMSLayer = {
     create: (options, map) => {
-        console.log({
-            minResolution: options.minScale == null ? undefined : MapUtils.getResolutionsForScales([options.minScale], options.srs)[0],
-            maxResolution: options.maxScale == null ? undefined : MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0]
-        });
         const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]);
         const queryParameters = wmsToOpenlayersOptions(options) || {};
         if(options.tiled && !options.boundingBox) {
