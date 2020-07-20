@@ -13,11 +13,11 @@ img.icon {
 }
 
 span.icon_large:before {
-    font-size: large;
+    font-size: 150%;
 }
 
 span.icon_xlarge:before {
-    font-size: x-large;
+    font-size: 175%;
 }
 
 .icon_clickable {
