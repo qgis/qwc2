@@ -482,6 +482,7 @@ class IdentifyViewer extends React.Component {
     render() {
         let tree = this.props.displayResultTree;
         let body = null;
+        let haveResults = false;
         if(isEmpty(this.state.resultTree)) {
             if(this.props.missingResponses > 0) {
                 body = (<div className="identify-body" role="body"><Message msgId="identify.querying" /></div>);
@@ -498,6 +499,7 @@ class IdentifyViewer extends React.Component {
                 (<div key="results-container" className="identify-results-container" style={resultsContainerStyle}>{contents}</div>),
                 attributes
             ];
+            haveResults = true;
         } else {
             body = (
                 <div className="identify-flat-results-list">
@@ -515,13 +517,14 @@ class IdentifyViewer extends React.Component {
                     })}
                 </div>
             );
+            haveResults = true;
         }
         // "el.style.background='inherit'": HACK to trigger an additional repaint, since Safari/Chrome on iOS render the element cut off the first time
         return (
             <ResizeableWindow title="identify.title" icon="info-sign" onClose={this.props.onClose} initialX={0} initialY={0} initiallyDocked={this.props.initiallyDocked} initialWidth={this.props.initialWidth} initialHeight={this.props.initialHeight}>
                 <div className="identify-body" role="body" ref={el => { if(el) el.style.background='inherit'; } }>
                     {body}
-                    {this.props.enableExport ? (
+                    {haveResults && this.props.enableExport ? (
                         <div className="identify-buttonbox">
                             <div>
                                 <Message msgId="identify.exportformat" />&nbsp;
