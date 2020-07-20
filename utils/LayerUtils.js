@@ -121,14 +121,14 @@ const LayerUtils = {
         if(!Array.isArray(layer.sublayers)) {
             return {
                 params: assign({}, layer.params || {LAYERS: layer.name}, {MAP: query.map || query.MAP}),
-                queryLayers: [layer.name]
+                queryLayers: layer.queryable ? [layer.name] : []
             };
         }
         let layerNames = [];
         let opacities = [];
-        let queryable = [];
+        let queryLayers = [];
         layer.sublayers.map(sublayer => {
-            LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, queryable);
+            LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, queryLayers);
         });
         layerNames.reverse();
         opacities.reverse();
@@ -144,7 +144,7 @@ const LayerUtils = {
         });
         return {
             params: newParams,
-            queryLayers: queryable
+            queryLayers: queryLayers
         };
     },
     addUUIDs(group, usedUUIDs=new Set()) {
