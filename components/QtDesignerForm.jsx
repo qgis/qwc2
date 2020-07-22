@@ -26,7 +26,8 @@ class QtDesignerForm extends React.Component {
         addRelationRecord: PropTypes.func,
         removeRelationRecord: PropTypes.func,
         updateRelationField: PropTypes.func,
-        iface: PropTypes.object
+        iface: PropTypes.object,
+        mapPrefix: PropTypes.string
     }
     static defaultProps = {
         relationValues: {}
@@ -235,8 +236,8 @@ class QtDesignerForm extends React.Component {
         let root = json.ui.widget;
         let keyvals = {};
         this.reformatWidget(root, keyvals);
-        this.props.iface.getKeyValues(Object.values(keyvals).map(entry => entry.table + ":" + entry.key + ":" + entry.value).join(","), (result) => {
-            let keyvalues = Object.entries(keyvals).reduce((res, [key, val]) => assign(res, {[key]: result.keyvalues[val.table]}), {});
+        this.props.iface.getKeyValues(Object.values(keyvals).map(entry => this.props.mapPrefix + entry.table + ":" + entry.key + ":" + entry.value).join(","), (result) => {
+            let keyvalues = Object.entries(keyvals).reduce((res, [key, val]) => assign(res, {[key]: result.keyvalues[this.props.mapPrefix + val.table]}), {});
             this.setState({keyvalues});
         });
         // console.log(root);

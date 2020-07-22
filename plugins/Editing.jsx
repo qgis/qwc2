@@ -97,11 +97,14 @@ class Editing extends React.Component {
                     this.props.changeEditingState(assign({}, this.props.editing, {feature: feature, changed: false}));
 
                     // Query relation values for picked feature
+                    let editDataset = this.editLayerId(this.state.selectedLayer);
+                    let mapPrefix = editDataset.replace(new RegExp("." + this.state.selectedLayer + "$"), ".");
                     if(feature) {
-                        let relTables = Object.entries(this.state.relationTables).map(([name,fk]) => name + ":" + fk).join(",");
-                        this.props.iface.getRelations(this.editLayerId(this.state.selectedLayer), feature.id, relTables, (response => {
-                            let newFeature = assign({}, this.props.editing.feature, {relationValues: response.relationvalues});
-                            this.props.changeEditingState(assign({}, this.props.editing, {feature: newFeature}));
+                        let relTables = Object.entries(this.state.relationTables).map(([name,fk]) => mapPrefix + name + ":" + fk).join(",");
+                        this.props.iface.getRelations(editDataset, feature.id, relTables, (response => {
+                            let relationValues = this.unprefixRelationValues(response.relationvalues, mapPrefix);
+                            let newFeature = assign({}, this.props.editing.feature, {relationValues: relationValues});
+                            this.props.changeEditingState(assign({}, this.props.editing, { feature: newFeature}));
                         }));
                     }
                 });
@@ -174,6 +177,8 @@ class Editing extends React.Component {
         }
         let fieldsTable = null;
         if(this.props.editing.feature) {
+            let editDataset = this.editLayerId(this.state.selectedLayer);
+            let mapPrefix = editDataset.replace(new RegExp("." + this.state.selectedLayer + "$"), ".");
             fieldsTable = (
                 <div className="editing-edit-frame">
                     <form action="" onSubmit={this.onSubmit}>
@@ -181,7 +186,7 @@ class Editing extends React.Component {
                             <QtDesignerForm values={this.props.editing.feature.properties} updateField={this.updateField} form={curConfig.form}
                                 addRelationRecord={this.addRelationRecord} removeRelationRecord={this.removeRelationRecord}
                                 updateRelationField={this.updateRelationField} relationValues={this.props.editing.feature.relationValues}
-                                iface={this.props.iface} />
+                                iface={this.props.iface} mapPrefix={mapPrefix} />
                         ) : (
                             <AutoEditForm fields={curConfig.fields} values={this.props.editing.feature.properties}
                                 touchFriendly={this.props.touchFriendly} updateField={this.updateField} />
@@ -344,6 +349,34 @@ class Editing extends React.Component {
         let newFeature = assign({}, this.props.editing.feature, {relationValues: newRelationValues});
         this.props.changeEditingState(assign({}, this.props.editing, {feature: newFeature, changed: true}));
     }
+    unprefixRelationValues = (relationValues, mapPrefix) => {
+        if(!mapPrefix) {
+            return relationValues;
+        }
+        let mapPrefixRe = new RegExp("^" + mapPrefix);
+        return Object.entries(relationValues).reduce((res, [table, value]) => {
+            let tblname = table.replace(mapPrefixRe, "");
+            value.records = (value.records || []).map(record => Object.entries(record).reduce((result, [key, val]) => {
+                result[key.replace(table, tblname)] = val;
+                return result;
+            }, {}));
+            res[tblname] = value;
+            return res;
+        }, {});
+    }
+    prefixRelationValues = (relationValues, mapPrefix) => {
+        if(!mapPrefix) {
+            return relationValues;
+        }
+        return Object.entries(relationValues).reduce((res, [table, value]) => {
+            value.records = (value.records || []).map(record => Object.entries(record).reduce((result, [key, val]) => {
+                result[key.startsWith("__") || key == "id" ? key : mapPrefix + key] = val;
+                return result;
+            }, {}));
+            res[mapPrefix + table] = value;
+            return res;
+        }, {});
+    }
     onDiscard = (action) => {
         if(action === "Discard") {
             this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
@@ -377,8 +410,8 @@ class Editing extends React.Component {
                     let field = parts[1];
                     let index = parseInt(parts[2]);
                     // relationValues for table must exist as rows are either pre-existing or were added
-                    if(relationValues[parts[0]].records[index][table + "__" + field] === undefined) {
-                        relationValues[parts[0]].records[index][table + "__" + field] = value;
+                    if(relationValues[table].records[index][table + "__" + field] === undefined) {
+                        relationValues[table].records[index][table + "__" + field] = value;
                     }
                 } else {
                     if(feature.properties[name] === undefined) {
@@ -402,12 +435,16 @@ class Editing extends React.Component {
         let newFeature = result;
         // Commit relations
         if(!isEmpty(relationValues)) {
+            // Prefix relation tables and fields
+            let editDataset = this.editLayerId(this.state.selectedLayer);
+            let mapPrefix = editDataset.replace(new RegExp("." + this.state.selectedLayer + "$"), ".");
+            relationValues = this.prefixRelationValues(relationValues, mapPrefix);
             this.props.iface.writeRelations(this.editLayerId(this.state.selectedLayer), newFeature.id, relationValues, (result) => {
                 if(result.success !== true) {
                     // Relation values commit failed, switch to pick update relation values with response and switch to pick to
                     // to avoid adding feature again on next attempt
                     this.commitFinished(false, "Some relation records could not be committed");
-                    newFeature = assign({}, newFeature, {relationValues: result.relationvalues});
+                    newFeature = assign({}, newFeature, {relationValues: this.unprefixRelationValues(result.relationvalues, mapPrefix)});
                     this.props.changeEditingState(assign({}, this.props.editing, {action: "Pick", feature: newFeature, changed: true}));
                 } else {
                     this.commitFinished(true);
