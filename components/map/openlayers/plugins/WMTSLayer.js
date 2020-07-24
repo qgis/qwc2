@@ -28,13 +28,13 @@ let WMTSLayer = {
         return new ol.layer.Tile({
             opacity: options.opacity !== undefined ? options.opacity : 1,
             visible: options.visibility !== false,
+            minResolution: options.minScale == null ? undefined : MapUtils.getResolutionsForScales([options.minScale], options.srs)[0],
+            maxResolution: options.maxScale == null ? undefined : MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0],
             source: new ol.source.WMTS(assign({
               urls: urls,
               layer: options.name,
               projection: projection && projection.getExtent() ? projection : null,
               matrixSet: options.tileMatrixSet,
-              minResolution: options.minScale == null ? undefined : MapUtils.getResolutionsForScales([options.minScale], options.srs)[0],
-              maxResolution: options.maxScale == null ? undefined : MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0],
               tileGrid: new ol.tilegrid.WMTS({
                 origin: [options.originX, options.originY],
                 resolutions: resolutions,
