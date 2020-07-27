@@ -331,11 +331,6 @@ const LayerUtils = {
         }
         // Re-assemble layers (if swipe is active, keep first sublayer separate)
         let newlayers = LayerUtils.implodeLayers(exploded, swipeActive);
-        for(let layer of newlayers) {
-            if(layer.type === "wms") {
-                assign(layer, LayerUtils.buildWMSLayerParams(layer));
-            }
-        }
         // Re-add background layers
         return [
             ...newlayers,
@@ -411,6 +406,11 @@ const LayerUtils = {
         // Ensure mutually exclusive groups have exactly one visible layer
         for(let layer of newlayers) {
             LayerUtils.ensureMutuallyExclusive(layer);
+        }
+        for(let layer of newlayers) {
+            if(layer.type === "wms") {
+                assign(layer, LayerUtils.buildWMSLayerParams(layer));
+            }
         }
         if(swipeLayer) {
             newlayers.unshift(swipeLayer);
