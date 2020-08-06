@@ -17,9 +17,12 @@ const xml2js = require('xml2js');
 
 require('./style/QtDesignerForm.css');
 
+
 class QtDesignerForm extends React.Component {
     static propTypes = {
         form: PropTypes.string,
+        editLayerId: PropTypes.string,
+        featureId: PropTypes.number,
         values: PropTypes.object,
         relationValues: PropTypes.object,
         updateField: PropTypes.func,
@@ -135,8 +138,20 @@ class QtDesignerForm extends React.Component {
         } else if(widget.class === "QTextEdit") {
             return (<textarea name={elname} value={value} onChange={(ev) => updateField(widget.name, ev.target.value)}></textarea>);
         } else if(widget.class === "QLineEdit") {
-            let placeholder = prop.placeholderText || "";
-            return (<input name={elname} placeholder={placeholder} type="text" value={value} onChange={(ev) => updateField(widget.name, ev.target.value)} />);
+            if(widget.name.endsWith("__upload")) {
+                let value = ((values || {})[widget.name.replace(/__upload/, '')] || "").replace(/attachment:\/\//, '');
+                let editServiceUrl = ConfigUtils.getConfigProp("editServiceUrl");
+
+                return value ? (
+                    <span className="qt-designer-uploaded-file">
+                        <a target="_blank" href={editServiceUrl + "/" + this.props.editLayerId + "/" + this.props.featureId + "/attachment?file=" + encodeURIComponent(value)}>{value.replace(/.*\//, '')}</a>
+                        <Icon icon="clear" onClick={ev => updateField(widget.name.replace(/__upload/, ''), '')} />
+                    </span>
+                ) : (<input name={elname.replace(/__upload/, '')} type="file" onChange={ev => updateField(widget.name.replace(/__upload/, ''), '')} />);
+            } else {
+                let placeholder = prop.placeholderText || "";
+                return (<input name={elname} placeholder={placeholder} type="text" value={value} onChange={(ev) => updateField(widget.name, ev.target.value)} />);
+            }
         } else if(widget.class === "QCheckBox" || widget.class === "QRadioButton") {
             let type = widget.class === "QCheckBox" ? "checkbox" : "radio";
             let inGroup = attr.buttonGroup;

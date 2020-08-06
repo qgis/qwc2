@@ -66,3 +66,19 @@ table.AutoEditForm span.input-frame select {
     min-width: 0;
     width: 0;
 }
+
+span.upload-file-field {
+    border: 1px solid @item_border@;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 0.25em;
+}
+
+span.upload-file-field > a {
+    flex: 1 1 auto;
+}
+
+span.upload-file-field > span.icon {
+    flex: 0 0 auto;
+}

@@ -112,3 +112,19 @@ div.qt-designer-widget-relation-record > span.icon-trash {
 div.qt-designer-widget-relation-record-new {
     background-color: rgb(127,255,127);
 }
+
+span.qt-designer-uploaded-file {
+    border: 1px solid @item_border@;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 0.25em;
+}
+
+span.qt-designer-uploaded-file > a {
+    flex: 1 1 auto;
+}
+
+span.qt-designer-uploaded-file > span.icon {
+    flex: 0 0 auto;
+}

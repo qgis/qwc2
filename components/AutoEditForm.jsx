@@ -9,7 +9,9 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const NumericInput = require('react-numeric-input');
+const Icon = require("./Icon");
 const ToggleSwitch = require('./widgets/ToggleSwitch');
+const ConfigUtils = require('../utils/ConfigUtils');
 const LocaleUtils = require("../utils/LocaleUtils");
 require('./style/AutoEditForm.css');
 
@@ -18,7 +20,9 @@ class AutoEditForm extends(React.Component) {
         fields: PropTypes.array,
         values: PropTypes.object,
         touchFriendly: PropTypes.bool,
-        updateField: PropTypes.func
+        updateField: PropTypes.func,
+        editLayerId: PropTypes.string,
+        featureId: PropTypes.number
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -98,6 +102,16 @@ class AutoEditForm extends(React.Component) {
             input = (
                 <textarea name={field.id} value={value} {...constraints} onChange={(ev) => this.props.updateField(field.id, ev.target.value)}></textarea>
             );
+        } else if(field.type == "file") {
+            let fileValue = value.replace(/attachment:\/\//, '');
+            let editServiceUrl = ConfigUtils.getConfigProp("editServiceUrl");
+
+            input = fileValue ? (
+                <span className="upload-file-field">
+                    <a target="_blank" href={editServiceUrl + "/" + this.props.editLayerId + "/" + this.props.featureId + "/attachment?file=" + encodeURIComponent(fileValue)}>{fileValue.replace(/.*\//, '')}</a>
+                    <Icon icon="clear" onClick={ev => this.props.updateField(field.id, '')} />
+                </span>
+            ) : (<input name={field.id} type="file" onChange={ev => this.props.updateField(field.id, '')} />);
         } else {
             input = (
                 <span className="input-frame">

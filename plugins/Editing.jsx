@@ -186,10 +186,11 @@ class Editing extends React.Component {
                             <QtDesignerForm values={this.props.editing.feature.properties} updateField={this.updateField} form={curConfig.form}
                                 addRelationRecord={this.addRelationRecord} removeRelationRecord={this.removeRelationRecord}
                                 updateRelationField={this.updateRelationField} relationValues={this.props.editing.feature.relationValues}
-                                iface={this.props.iface} mapPrefix={mapPrefix} />
+                                iface={this.props.iface} editLayerId={editDataset} featureId={this.props.editing.feature.id} mapPrefix={mapPrefix} />
                         ) : (
                             <AutoEditForm fields={curConfig.fields} values={this.props.editing.feature.properties}
-                                touchFriendly={this.props.touchFriendly} updateField={this.updateField} />
+                                touchFriendly={this.props.touchFriendly} updateField={this.updateField}
+                                editLayerId={editDataset} featureId={this.props.editing.feature.id} />
                         )}
                         {commitBar}
                     </form>
@@ -388,11 +389,19 @@ class Editing extends React.Component {
 
         let feature = this.props.editing.feature;
         // Ensure properties is not null
-        feature = assign({}, feature, {properties: feature.properties || {}});
+        feature = assign({}, feature, {
+            properties: feature.properties || {},
+            crs: {
+                type: "name",
+                properties: {name: "urn:ogc:def:crs:EPSG::" + this.props.map.projection.split(":")[1]}
+            }
+        });
 
         // Keep relation values separate
         let relationValues = clone(feature.relationValues || {});
         delete feature.relationValues;
+        let relationUploads = {};
+        let featureUploads = {};
 
         // Collect all values from form fields
         let fieldnames = Array.from(ev.target.elements).map(element => element.name).filter(x => x);
@@ -413,21 +422,30 @@ class Editing extends React.Component {
                     if(relationValues[table].records[index][table + "__" + field] === undefined) {
                         relationValues[table].records[index][table + "__" + field] = value;
                     }
+                    if(element.type === "file" && element.files.length > 0) {
+                        relationUploads[name] = element.files[0];
+                    }
                 } else {
                     if(feature.properties[name] === undefined) {
                         feature.properties[name] = value;
                     }
+                    if(element.type === "file" && element.files.length > 0) {
+                        featureUploads[name] = element.files[0];
+                    }
                 }
             }
         });
+        let featureData = new FormData();
+        featureData.set('feature', JSON.stringify(feature));
+        Object.entries(featureUploads).forEach(([key, value]) => featureData.set('file:' + key, value));
 
         if(this.props.editing.action === "Draw") {
-            this.props.iface.addFeature(this.editLayerId(this.state.selectedLayer), feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues));
+            this.props.iface.addFeatureMultipart(this.editLayerId(this.state.selectedLayer), featureData, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
         } else if(this.props.editing.action === "Pick") {
-            this.props.iface.editFeature(this.editLayerId(this.state.selectedLayer), feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues));
+            this.props.iface.editFeatureMultipart(this.editLayerId(this.state.selectedLayer), feature.id, featureData, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
         }
     }
-    featureCommited = (success, result, relationValues) => {
+    featureCommited = (success, result, relationValues, relationUploads) => {
         if(!success) {
             this.commitFinished(success, result);
             return;
@@ -439,7 +457,11 @@ class Editing extends React.Component {
             let editDataset = this.editLayerId(this.state.selectedLayer);
             let mapPrefix = editDataset.replace(new RegExp("." + this.state.selectedLayer + "$"), ".");
             relationValues = this.prefixRelationValues(relationValues, mapPrefix);
-            this.props.iface.writeRelations(this.editLayerId(this.state.selectedLayer), newFeature.id, relationValues, (result) => {
+            let relationData = new FormData();
+            relationData.set('values', JSON.stringify(relationValues));
+            Object.entries(relationUploads).forEach(([key, value]) => relationData.set(mapPrefix + key, value));
+
+            this.props.iface.writeRelations(this.editLayerId(this.state.selectedLayer), newFeature.id, relationData, (result) => {
                 if(result.success !== true) {
                     // Relation values commit failed, switch to pick update relation values with response and switch to pick to
                     // to avoid adding feature again on next attempt
