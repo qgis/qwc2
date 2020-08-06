@@ -355,7 +355,7 @@ class Editing extends React.Component {
             return relationValues;
         }
         let mapPrefixRe = new RegExp("^" + mapPrefix);
-        return Object.entries(relationValues).reduce((res, [table, value]) => {
+        return Object.entries(relationValues || {}).reduce((res, [table, value]) => {
             let tblname = table.replace(mapPrefixRe, "");
             value.records = (value.records || []).map(record => Object.entries(record).reduce((result, [key, val]) => {
                 result[key.replace(table, tblname)] = val;
