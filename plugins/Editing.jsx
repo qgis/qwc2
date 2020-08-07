@@ -440,9 +440,17 @@ class Editing extends React.Component {
         Object.entries(featureUploads).forEach(([key, value]) => featureData.set('file:' + key, value));
 
         if(this.props.editing.action === "Draw") {
-            this.props.iface.addFeatureMultipart(this.editLayerId(this.state.selectedLayer), featureData, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+            if(this.props.iface.addFeatureMultipart) {
+                this.props.iface.addFeatureMultipart(this.editLayerId(this.state.selectedLayer), featureData, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+            } else {
+                this.props.iface.addFeature(this.editLayerId(this.state.selectedLayer), feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+            }
         } else if(this.props.editing.action === "Pick") {
-            this.props.iface.editFeatureMultipart(this.editLayerId(this.state.selectedLayer), feature.id, featureData, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+            if(this.props.iface.editFeatureMultipart) {
+                this.props.iface.editFeatureMultipart(this.editLayerId(this.state.selectedLayer), feature.id, featureData, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+            } else {
+                this.props.iface.editFeature(this.editLayerId(this.state.selectedLayer), feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+            }
         }
     }
     featureCommited = (success, result, relationValues, relationUploads) => {
