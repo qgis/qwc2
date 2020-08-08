@@ -1,6 +1,6 @@
 {
     "name": "qwc2",
-    "version": "1.1.0",
+    "version": "1.1.0-beta1",
     "description": "QGIS Web Client 2 core",
     "author": "Sourcepole AG",
     "contributors": [
