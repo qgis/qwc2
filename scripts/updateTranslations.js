@@ -50,6 +50,7 @@ const createSkel = (strings) => {
 
 // Determine workspaces
 let workspaces = readJSON('/package.json').workspaces || [];
+workspaces.push('node_modules/qwc2');
 
 // Generate workspace translations
 for(let workspace of workspaces) {
