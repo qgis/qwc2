@@ -14,7 +14,7 @@ const readJSON = (path) => {
 
 let workspaces = readJSON('/package.json').workspaces || [];
 
-let icons = [];
+let icons = glob.sync(path.join(__dirname, '..', "icons/*.svg"));
 for(let workspace of workspaces) {
     icons = icons.concat(glob.sync(workspace + "/icons/*.svg"));
 }
@@ -26,7 +26,7 @@ let uniqueIcons = new Set();
 icons = icons.filter(icon => {
    let iconName = path.basename(icon);
    if(uniqueIcons.has(iconName)) {
-       console.log("* " + icon + " was overriden");
+       console.log("* " + icon + " was overridden");
        return false;
    }
    uniqueIcons.add(iconName);

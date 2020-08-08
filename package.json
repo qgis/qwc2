@@ -3,8 +3,20 @@
     "version": "1.1.0",
     "description": "QGIS Web Client 2 core",
     "author": "Sourcepole AG",
+    "contributors": [
+        {
+            "name": "Nicu Tofan",
+            "email": "nicu.tofan@gmail.com",
+            "url": "https://advaita.ro"
+        }
+    ],
     "license": "BSD-2-Clause",
-    "repository": "git@github.com:qgis/qwc2.git",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/qgis/qwc2-demo-app.git"
+    },
+    "homepage": "https://github.com/qgis/qwc2",
+    "bugs": "https://github.com/qgis/qwc2-demo-app/issues",
     "scripts": {
         "test": "echo \"no test specified\" && exit 0"
     },
