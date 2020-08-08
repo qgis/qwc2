@@ -5,6 +5,20 @@
     "author": "Sourcepole AG",
     "license": "BSD-2-Clause",
     "repository": "git@github.com:qgis/qwc2.git",
+    "scripts": {
+        "test": "echo \"no test specified\" && exit 0"
+    },
+    "keywords": [
+        "qgis",
+        "qgis-server",
+        "qwc",
+        "map",
+        "openlayers",
+        "wms",
+        "wfs",
+        "wcs",
+        "ogc"
+    ],
     "dependencies": {
         "@turf/buffer": "5.1.0",
         "axios": "0.19.0",
