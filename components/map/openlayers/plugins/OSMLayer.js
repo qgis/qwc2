@@ -7,6 +7,7 @@
  */
 
 const ol = require('openlayers');
+const MapUtils = require('../../../../utils/MapUtils');
 
 let OSMLayer = {
     create: (options) => {
