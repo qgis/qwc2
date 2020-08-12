@@ -14,9 +14,11 @@ const {createSelector} = require('reselect');
 const isEmpty = require('lodash.isempty');
 const axios = require('axios');
 const uuid = require('uuid');
+const {SearchResultType} = require('../actions/search');
 const {logAction} = require('../actions/logging');
 const {zoomToPoint,panTo} = require('../actions/map');
 const {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer} = require('../actions/layers');
+const {setCurrentTheme} = require('../actions/theme');
 const {setCurrentTask} = require('../actions/task');
 const Icon = require('./Icon');
 const Message = require("./I18N/Message");
@@ -35,6 +37,7 @@ class SearchBox extends React.Component {
     static propTypes = {
         map: PropTypes.object,
         theme: PropTypes.object,
+        themes: PropTypes.object,
         layers: PropTypes.array,
         localConfig: PropTypes.object,
         searchFilter: PropTypes.string,
@@ -46,6 +49,7 @@ class SearchBox extends React.Component {
         zoomToPoint: PropTypes.func,
         panTo: PropTypes.func,
         logAction: PropTypes.func,
+        setCurrentTheme: PropTypes.func,
         searchProviders: PropTypes.object,
         searchOptions: PropTypes.shape({
             minScaleDenom: PropTypes.number,
@@ -462,25 +466,43 @@ class SearchBox extends React.Component {
     }
     selectProviderResult = (result, zoom=true) => {
         this.updateRecentSearches();
-        if(zoom) {
-            this.props.zoomToPoint([result.x, result.y], this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom, result.crs);
-        } else {
-            this.props.panTo([result.x, result.y], result.crs);
+        let resultType = result.type || SearchResultType.PLACE;
+        if(resultType === SearchResultType.PLACE) {
+            if(zoom) {
+                this.props.zoomToPoint([result.x, result.y], this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom, result.crs);
+            } else {
+                this.props.panTo([result.x, result.y], result.crs);
+            }
+            let feature = {
+                geometry: {type: 'Point', coordinates: [result.x, result.y]},
+                properties: { label: result.label !== undefined ? result.label : result.text },
+                styleName: 'marker',
+                crs: result.crs
+            }
+            let layer = {
+                id: "searchselection",
+                role: LayerRole.SELECTION
+            };
+            this.props.addLayerFeatures(layer, [feature], true);
+            UrlParams.updateParams({hp: undefined, hf: undefined, hc: "1"});
+            this.props.logAction("SEARCH_TEXT", {"searchText": this.state.searchText});
+            this.props.logAction("SEARCH_RESULT_SELECTED", {"place": result.text});
+        } else if(resultType === SearchResultType.THEMELAYER) {
+            this.props.addThemeSublayer(result.layer);
+            // Show layer tree to notify user that something has happened
+            this.props.setCurrentTask('LayerTree');
+        } else if(resultType === SearchResultType.EXTERNALLAYER) {
+            // Check if layer is already in the LayerTree
+            let sublayers = LayerUtils.getSublayerNames(result.layer);
+            let existing = this.props.layers.find(l => {
+                return l.type === result.layer.type && l.url === result.layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)))
+            });
+            this.props.addLayer(result.layer);
+            // Show layer tree to notify user that something has happened
+            this.props.setCurrentTask('LayerTree');
+        } else if(resultType === SearchResultType.THEME) {
+            this.props.setCurrentTheme(result.theme, this.props.themes);
         }
-        let feature = {
-            geometry: {type: 'Point', coordinates: [result.x, result.y]},
-            properties: { label: result.label !== undefined ? result.label : result.text },
-            styleName: 'marker',
-            crs: result.crs
-        }
-        let layer = {
-            id: "searchselection",
-            role: LayerRole.SELECTION
-        };
-        this.props.addLayerFeatures(layer, [feature], true);
-        UrlParams.updateParams({hp: undefined, hf: undefined, hc: "1"});
-        this.props.logAction("SEARCH_TEXT", {"searchText": this.state.searchText});
-        this.props.logAction("SEARCH_RESULT_SELECTED", {"place": result.text});
     }
     selectFeatureResult = (result) => {
         this.updateRecentSearches();
@@ -581,6 +603,7 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
             map: state.map,
             layers: state.layers.flat,
             theme: state.theme.current,
+            themes: state.theme.themes,
             localConfig: state.localConfig,
             searchFilter: searchFilter,
             displaycrs: displaycrs,
@@ -593,6 +616,7 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
         setCurrentTask: setCurrentTask,
         zoomToPoint: zoomToPoint,
         panTo: panTo,
-        logAction: logAction
+        logAction: logAction,
+        setCurrentTheme: setCurrentTheme
     })(SearchBox);
 }
