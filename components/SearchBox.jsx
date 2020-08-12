@@ -565,7 +565,9 @@ const searchFilterSelector = createSelector([state => state.theme, state => stat
     for(let layer of layers) {
         if(layer.role === LayerRole.THEME) {
             for(let entry of LayerUtils.explodeLayers([layer])) {
-                searchFilter = searchFilter.concat(entry.sublayer.searchterms || []);
+                if(entry.sublayer.visibility === true) {
+                    searchFilter = searchFilter.concat(entry.sublayer.searchterms || []);
+                }
             }
         }
     }
