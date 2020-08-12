@@ -21,8 +21,7 @@ class AutoEditForm extends(React.Component) {
         values: PropTypes.object,
         touchFriendly: PropTypes.bool,
         updateField: PropTypes.func,
-        editLayerId: PropTypes.string,
-        featureId: PropTypes.number
+        editLayerId: PropTypes.string
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -108,7 +107,7 @@ class AutoEditForm extends(React.Component) {
 
             input = fileValue ? (
                 <span className="upload-file-field">
-                    <a target="_blank" href={editServiceUrl + "/" + this.props.editLayerId + "/" + this.props.featureId + "/attachment?file=" + encodeURIComponent(fileValue)}>{fileValue.replace(/.*\//, '')}</a>
+                    <a target="_blank" href={editServiceUrl + "/" + this.props.editLayerId + "/attachment?file=" + encodeURIComponent(fileValue)}>{fileValue.replace(/.*\//, '')}</a>
                     <Icon icon="clear" onClick={ev => this.props.updateField(field.id, '')} />
                 </span>
             ) : (<input name={field.id} type="file" onChange={ev => this.props.updateField(field.id, '')} />);

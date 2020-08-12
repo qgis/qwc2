@@ -22,7 +22,6 @@ class QtDesignerForm extends React.Component {
     static propTypes = {
         form: PropTypes.string,
         editLayerId: PropTypes.string,
-        featureId: PropTypes.number,
         values: PropTypes.object,
         relationValues: PropTypes.object,
         updateField: PropTypes.func,
@@ -144,7 +143,7 @@ class QtDesignerForm extends React.Component {
 
                 return value ? (
                     <span className="qt-designer-uploaded-file">
-                        <a target="_blank" href={editServiceUrl + "/" + this.props.editLayerId + "/" + this.props.featureId + "/attachment?file=" + encodeURIComponent(value)}>{value.replace(/.*\//, '')}</a>
+                        <a target="_blank" href={editServiceUrl + "/" + this.props.editLayerId + "/attachment?file=" + encodeURIComponent(value)}>{value.replace(/.*\//, '')}</a>
                         <Icon icon="clear" onClick={ev => updateField(widget.name.replace(/__upload/, ''), '')} />
                     </span>
                 ) : (<input name={elname.replace(/__upload/, '')} type="file" onChange={ev => updateField(widget.name.replace(/__upload/, ''), '')} />);

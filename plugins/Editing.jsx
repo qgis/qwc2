@@ -186,11 +186,11 @@ class Editing extends React.Component {
                             <QtDesignerForm values={this.props.editing.feature.properties} updateField={this.updateField} form={curConfig.form}
                                 addRelationRecord={this.addRelationRecord} removeRelationRecord={this.removeRelationRecord}
                                 updateRelationField={this.updateRelationField} relationValues={this.props.editing.feature.relationValues}
-                                iface={this.props.iface} editLayerId={editDataset} featureId={this.props.editing.feature.id} mapPrefix={mapPrefix} />
+                                iface={this.props.iface} editLayerId={editDataset} mapPrefix={mapPrefix} />
                         ) : (
                             <AutoEditForm fields={curConfig.fields} values={this.props.editing.feature.properties}
                                 touchFriendly={this.props.touchFriendly} updateField={this.updateField}
-                                editLayerId={editDataset} featureId={this.props.editing.feature.id} />
+                                editLayerId={editDataset} />
                         )}
                         {commitBar}
                     </form>
