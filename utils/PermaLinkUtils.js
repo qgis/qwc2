@@ -29,7 +29,11 @@ const UrlParams = {
            }
        }
        delete urlObj.search;
-       history.replaceState({id: urlObj.host}, '', url.format(urlObj));
+       location.hash = location.hash;
+       // Timeout: avoid wierd issue where Firefox triggers a full reload when invoking history-replaceState directly
+       setTimeout((ev) => {
+           history.replaceState({id: urlObj.host}, '', url.format(urlObj));
+       }, 0);
    },
    getParam: function(key) {
        var urlObj = url.parse(window.location.href, true);
