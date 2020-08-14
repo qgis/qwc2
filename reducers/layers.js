@@ -161,11 +161,12 @@ function layers(state = {flat: [], swipe: undefined}, action) {
             return assign({}, state, {flat: newLayers});
         }
         case ADD_LAYER_FEATURES: {
-            let newLayers = (state.flat || []).concat();
-            let idx = newLayers.findIndex(layer => layer.id === action.layer.id);
             let layerId = action.layer.id || uuid.v4();
+            let newLayers = (state.flat || []).concat();
+            let idx = newLayers.findIndex(layer => layer.id === layerId);
             if(idx === -1 || action.clear) {
                 let newLayer = assign({}, action.layer, {
+                    id: layerId,
                     type: 'vector',
                     name: action.layer.name || layerId,
                     uuid: uuid.v4(),
