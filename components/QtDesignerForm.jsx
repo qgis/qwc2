@@ -146,7 +146,7 @@ class QtDesignerForm extends React.Component {
                         <a target="_blank" href={editServiceUrl + "/" + this.props.editLayerId + "/attachment?file=" + encodeURIComponent(value)}>{value.replace(/.*\//, '')}</a>
                         <Icon icon="clear" onClick={ev => updateField(widget.name.replace(/__upload/, ''), '')} />
                     </span>
-                ) : (<input name={elname.replace(/__upload/, '')} type="file" onChange={ev => updateField(widget.name.replace(/__upload/, ''), '')} />);
+                ) : (<input name={elname.replace(/__upload/, '')} accept={prop.text || ""} type="file" onChange={ev => updateField(widget.name.replace(/__upload/, ''), '')} />);
             } else {
                 let placeholder = prop.placeholderText || "";
                 return (<input name={elname} placeholder={placeholder} type="text" value={value} onChange={(ev) => updateField(widget.name, ev.target.value)} />);

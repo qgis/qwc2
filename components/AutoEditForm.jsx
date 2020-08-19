@@ -110,7 +110,7 @@ class AutoEditForm extends(React.Component) {
                     <a target="_blank" href={editServiceUrl + "/" + this.props.editLayerId + "/attachment?file=" + encodeURIComponent(fileValue)}>{fileValue.replace(/.*\//, '')}</a>
                     <Icon icon="clear" onClick={ev => this.props.updateField(field.id, '')} />
                 </span>
-            ) : (<input name={field.id} type="file" onChange={ev => this.props.updateField(field.id, '')} />);
+            ) : (<input name={field.id} type="file" {...constraints} onChange={ev => this.props.updateField(field.id, '')} />);
         } else {
             input = (
                 <span className="input-frame">
