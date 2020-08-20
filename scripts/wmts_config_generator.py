@@ -84,6 +84,9 @@ for tmsl in layer.getElementsByTagName("TileMatrixSetLink"):
 
 if not matrixconfig:
     print("Error: failed to find file matrix for projection %s" % projection, file=sys.stderr)
+    print("Available tile matrix sets:")
+    print(json.dumps(tilematrixsets, indent=2))
+    sys.exit(1)
 
 # Generate config
 resurl = re.sub("\.\w+$", '', layer.getElementsByTagName("ResourceURL")[0].getAttribute("template")) + "." + fmt
