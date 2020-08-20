@@ -5,7 +5,7 @@ if [ "$1" == "build" ]; then
     npm run clean
     npm run iconfont
     mkdir -p ./dist
-    echo "running webpack, this may take some time"
+    echo "Running webpack, this may take some time..."
     NODE_ENV='production' webpack
     exit 0
 fi
