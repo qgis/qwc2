@@ -38,6 +38,8 @@
       "symbologyscale": "Symbolskala:"
     },
     "editing": {
+      "maximize": "Maksimer",
+      "minimize": "Minimer",
       "canceldelete": "Ikke slett",
       "commit": "Bekreft",
       "delete": "Slett",

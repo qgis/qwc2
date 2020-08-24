@@ -38,6 +38,8 @@
       "symbologyscale": "Escala de la simbología:"
     },
     "editing": {
+      "maximize": "Maximizar",
+      "minimize": "Minimizar",
       "canceldelete": "No borrar",
       "commit": "Confirmar",
       "delete": "Borrar",

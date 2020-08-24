@@ -38,6 +38,8 @@
       "symbologyscale": "Масштаб символики:"
     },
     "editing": {
+      "maximize": "Развернуть",
+      "minimize": "Свернуть",
       "canceldelete": "Не удалять",
       "commit": "Подтвердить изменения",
       "delete": "Удалить",

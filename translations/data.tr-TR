@@ -38,6 +38,8 @@
       "symbologyscale": "Sembol Ölçeği:"
     },
     "editing": {
+      "maximize": "Büyült",
+      "minimize": "Küçült",
       "canceldelete": "Silme",
       "commit": "Onayla",
       "delete": "Sil",

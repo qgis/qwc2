@@ -38,6 +38,8 @@
       "symbologyscale": "Symbology scale:"
     },
     "editing": {
+      "maximize": "Maximize",
+      "minimize": "Minimize",
       "canceldelete": "Don't delete",
       "commit": "Commit",
       "delete": "Delete",

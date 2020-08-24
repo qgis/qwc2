@@ -38,6 +38,8 @@
       "symbologyscale": "Jel méretatarány:"
     },
     "editing": {
+      "maximize": "",
+      "minimize": "",
       "canceldelete": "Ne töröld",
       "commit": "Jóváhagyás",
       "delete": "Törlés",
