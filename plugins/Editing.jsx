@@ -469,8 +469,10 @@ class Editing extends React.Component {
             relationData.set('values', JSON.stringify(relationValues));
             Object.entries(relationUploads).forEach(([key, value]) => relationData.set(mapPrefix + key, value));
 
-            this.props.iface.writeRelations(this.editLayerId(this.state.selectedLayer), newFeature.id, relationData, (result) => {
-                if(result.success !== true) {
+            this.props.iface.writeRelations(this.editLayerId(this.state.selectedLayer), newFeature.id, relationData, (result, errorMsg) => {
+                if(result === false) {
+                    this.commitFinished(false, errorMsg);
+                } else if(result.success !== true) {
                     // Relation values commit failed, switch to pick update relation values with response and switch to pick to
                     // to avoid adding feature again on next attempt
                     this.commitFinished(false, "Some relation records could not be committed");
