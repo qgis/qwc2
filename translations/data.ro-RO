@@ -38,6 +38,8 @@
       "symbologyscale": "Scara simboluri:"
     },
     "editing": {
+      "maximize": "Maximizează",
+      "minimize": "Minimizează",
       "canceldelete": "Elimină modificările",
       "commit": "Salvează",
       "delete": "Șterge",

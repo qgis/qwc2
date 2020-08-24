@@ -38,6 +38,8 @@
       "symbologyscale": "Scala per la simbologia"
     },
     "editing": {
+      "maximize": "Massimizza",
+      "minimize": "Minimizza",
       "canceldelete": "Annulla",
       "commit": "Salva",
       "delete": "Elimina",

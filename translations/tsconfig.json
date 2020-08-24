@@ -41,6 +41,8 @@
     "copybtn.copied",
     "dxfexport.selectinfo",
     "dxfexport.symbologyscale",
+    "editing.maximize",
+    "editing.minimize",
     "editing.canceldelete",
     "editing.commit",
     "editing.delete",

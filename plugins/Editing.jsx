@@ -24,6 +24,7 @@ const {LayerRole, refreshLayer, changeLayerProperty} = require('../actions/layer
 const {clickOnMap} = require("../actions/map");
 const AutoEditForm = require('../components/AutoEditForm');
 const QtDesignerForm = require('../components/QtDesignerForm');
+const Icon = require('../components/Icon');
 const {SideBar} = require('../components/SideBar');
 const ButtonBar = require('../components/widgets/ButtonBar');
 const ConfigUtils = require('../utils/ConfigUtils');
@@ -44,7 +45,8 @@ class Editing extends React.Component {
         refreshLayer: PropTypes.func,
         changeLayerProperty: PropTypes.func,
         touchFriendly: PropTypes.bool,
-        width: PropTypes.string
+        width: PropTypes.string,
+        minimized: false
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -67,6 +69,7 @@ class Editing extends React.Component {
     onHide = () => {
         this.props.changeEditingState({action: null, geomType: null, feature: null})
         this.setLayerVisibility(this.state.selectedLayer, this.state.selectedLayerVisibility)
+        this.setState({minimized: false});
     }
 
     componentWillReceiveProps(newProps) {
@@ -240,11 +243,13 @@ class Editing extends React.Component {
         );
     }
     render() {
+        let minMaxTooltip = LocaleUtils.getMessageById(this.context.messages, this.state.minimized ? "editing.maximize" : "editing.minimize");
+        let extraTitlebarContent = (<Icon title={minMaxTooltip} className="editing-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={ev => this.setState({minimized: !this.state.minimized})}/>)
         return (
             <SideBar id="Editing" width={this.props.width} onShow={this.onShow} onHide={this.onHide}
-                title="appmenu.items.Editing" icon="editing">
+                title="appmenu.items.Editing" extraTitlebarContent={extraTitlebarContent} icon={"editing"}>
                 {() => ({
-                    body: this.renderBody()
+                    body: this.state.minimized ? null : this.renderBody()
                 })}
             </SideBar>
         );

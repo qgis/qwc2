@@ -38,6 +38,8 @@
       "symbologyscale": "Symbolskala:"
     },
     "editing": {
+      "maximize": "Maximera",
+      "minimize": "Minimera",
       "canceldelete": "Radera inte",
       "commit": "Skicka",
       "delete": "Radera",

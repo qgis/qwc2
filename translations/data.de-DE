@@ -38,6 +38,8 @@
       "symbologyscale": "Darstellungsmassstab"
     },
     "editing": {
+      "maximize": "Maximieren",
+      "minimize": "Minimieren",
       "canceldelete": "Abbrechen",
       "commit": "Speichern",
       "delete": "Löschen",
