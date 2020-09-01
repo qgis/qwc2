@@ -87,8 +87,9 @@ class SearchBox extends React.Component {
             let hp = UrlParams.getParam('hp');
             let hf = UrlParams.getParam('hf');
             if(hp && hf) {
-                const SERVICE_URL = ConfigUtils.getConfigProp("searchServiceUrl").replace(/\/$/g, "");
-                axios.get(SERVICE_URL + "/" + hp + "/?filter=" + hf)
+                const DATA_URL = ConfigUtils.getConfigProp("searchDataServiceUrl").replace(/\/$/g, "");
+                console.log(DATA_URL + "/" + hp + "/?filter=" + hf);
+                axios.get(DATA_URL + "/" + hp + "/?filter=" + hf)
                 .then(response => this.showFeatureGeometry(response.data, this.props.localConfig.startupParams.s));
             } else if(typeof(hc) === "string" && (hc.toLowerCase() === "true" || hc === "1")) {
                 this.selectProviderResult({
