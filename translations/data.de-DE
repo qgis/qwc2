@@ -226,6 +226,9 @@
       },
       "openintab": "In Tab öffnen"
     },
+    "vectorlayerpicker": {
+      "prompt": "Ebenenname eingeben"
+    },
     "window": {
       "close": "Schließen",
       "dock": "Andocken",

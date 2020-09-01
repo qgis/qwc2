@@ -226,6 +226,9 @@
       },
       "openintab": ""
     },
+    "vectorlayerpicker": {
+      "prompt": ""
+    },
     "window": {
       "close": "",
       "dock": "",

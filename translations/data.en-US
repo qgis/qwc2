@@ -226,6 +226,9 @@
       },
       "openintab": "Open in Tab"
     },
+    "vectorlayerpicker": {
+      "prompt": "Enter layer name"
+    },
     "window": {
       "close": "Close",
       "dock": "Dock",

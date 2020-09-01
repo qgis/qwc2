@@ -184,6 +184,7 @@
     "themeswitcher.match.keywords",
     "themeswitcher.match.abstract",
     "themeswitcher.openintab",
+    "vectorlayerpicker.prompt",
     "window.close",
     "window.dock",
     "window.undock"

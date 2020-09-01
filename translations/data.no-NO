@@ -226,6 +226,9 @@
       },
       "openintab": "Åpne i nytt vindu"
     },
+    "vectorlayerpicker": {
+      "prompt": ""
+    },
     "window": {
       "close": "Lukk",
       "dock": "Fest",

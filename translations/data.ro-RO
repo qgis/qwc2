@@ -226,6 +226,9 @@
       },
       "openintab": "Deschide în tab nou"
     },
+    "vectorlayerpicker": {
+      "prompt": ""
+    },
     "window": {
       "close": "Închide",
       "dock": "Andocare",

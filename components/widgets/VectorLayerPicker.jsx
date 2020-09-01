@@ -11,6 +11,7 @@ const PropTypes = require('prop-types');
 const uuid = require('uuid');
 const {LayerRole} = require('../../actions/layers');
 const Icon = require('../../components/Icon');
+const LocaleUtils = require('../../utils/LocaleUtils');
 
 require('./style/VectorLayerPicker.css');
 
@@ -21,6 +22,9 @@ class VectorLayerPicker extends React.Component {
         layers: PropTypes.array,
         onChange: PropTypes.func,
         addLayer: PropTypes.func
+    }
+    static contextTypes = {
+        messages: PropTypes.object
     }
     render() {
         return (
@@ -33,7 +37,8 @@ class VectorLayerPicker extends React.Component {
         );
     }
     addLayer = () => {
-        let name = prompt("Enter layer name");
+        let message = LocaleUtils.getMessageById(this.context.messages, "vectorlayerpicker.prompt");
+        let name = prompt(message);
         if(name) {
             let layer = {
                 title: name,

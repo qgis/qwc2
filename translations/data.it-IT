@@ -226,6 +226,9 @@
       },
       "openintab": "Apri in nuova scheda"
     },
+    "vectorlayerpicker": {
+      "prompt": "Nome del layer"
+    },
     "window": {
       "close": "Chiudi",
       "dock": "Aggancia",

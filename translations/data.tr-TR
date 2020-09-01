@@ -226,6 +226,9 @@
       },
       "openintab": "Sekmede aç"
     },
+    "vectorlayerpicker": {
+      "prompt": ""
+    },
     "window": {
       "close": "Kapat",
       "dock": "Sabitle",
