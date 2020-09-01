@@ -19,19 +19,19 @@ const UrlParams = {
        if(ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
            return;
        }
-       var urlObj = url.parse(window.location.href, true);
-       urlObj.query = assign(urlObj.query, dict);
-       var propNames = Object.getOwnPropertyNames(urlObj.query);
-
-       for (let propName of propNames) {
-           if(urlObj.query[propName] === undefined) {
-               delete urlObj.query[propName];
-           }
-       }
-       delete urlObj.search;
-       location.hash = location.hash;
        // Timeout: avoid wierd issue where Firefox triggers a full reload when invoking history-replaceState directly
        setTimeout((ev) => {
+           var urlObj = url.parse(window.location.href, true);
+           urlObj.query = assign(urlObj.query, dict);
+           var propNames = Object.getOwnPropertyNames(urlObj.query);
+
+           for (let propName of propNames) {
+               if(urlObj.query[propName] === undefined) {
+                   delete urlObj.query[propName];
+               }
+           }
+           delete urlObj.search;
+           location.hash = location.hash;
            history.replaceState({id: urlObj.host}, '', url.format(urlObj));
        }, 0);
    },
