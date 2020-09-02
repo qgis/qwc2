@@ -7,7 +7,7 @@
  */
 const React = require('react');
 const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
+const { connect } = require('react-redux');
 const url = require('url');
 const urlQuery = url.parse(window.location.href, true).query;
 const WindowManager = require('./WindowManager');
@@ -28,15 +28,15 @@ class PluginsContainer extends React.Component {
         pluginsAppConfig: {}
     }
     renderPlugins = (pluginsConfig) => {
-        return pluginsConfig.map(pluginConf => {
+        return pluginsConfig.map((pluginConf, idx) => {
             let Plugin = this.props.plugins[pluginConf.name + "Plugin"];
-            if(!Plugin) {
+            if (!Plugin) {
                 console.warn("Non-existing plugin: " + pluginConf.name);
                 return null;
             }
             let cfg = pluginConf.cfg || {};
             let appCfg = this.props.pluginsAppConfig[pluginConf.name + "Plugin"] || {};
-            return (<Plugin key={pluginConf.name} {...cfg} {...appCfg} />);
+            return (<Plugin key={pluginConf.name + idx} {...cfg} {...appCfg} />);
         });
     }
     render() {
@@ -44,7 +44,7 @@ class PluginsContainer extends React.Component {
             return (
                 <div id="PluginsContainer">
                     {
-                     this.renderPlugins(this.props.pluginsConfig[this.props.mode])
+                        this.renderPlugins(this.props.pluginsConfig[this.props.mode])
                     }
                     <WindowManager />
                 </div>
