@@ -187,7 +187,7 @@ class LayerTree extends React.Component {
             <div className="layertree-item-container" key={group.uuid} data-id={JSON.stringify({layer: layer.uuid, path: path})}>
                 <div className={classnames(itemclasses)}>
                     <Icon className="layertree-item-expander" icon={expanderstate} onClick={() => this.groupExpandedToggled(layer, path, group.expanded)} />
-                    <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.itemVisibilityToggled(layer, path, visibility, inMutuallyExclusiveGroup)} />
+                    <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.itemVisibilityToggled(layer, path, visibility)} />
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
                     <span className="layertree-item-spacer"></span>
                     {allowReordering ? (<Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(group.uuid)}/>) : null}
@@ -268,7 +268,7 @@ class LayerTree extends React.Component {
         } else if(layer.type === "separator") {
             checkbox = null;
         } else {
-            checkbox = (<Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.itemVisibilityToggled(layer, path, sublayer.visibility, inMutuallyExclusiveGroup)} />);
+            checkbox = (<Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.itemVisibilityToggled(layer, path, sublayer.visibility)} />);
         }
         let title = null;
         if(layer.type === "separator") {
@@ -477,7 +477,7 @@ class LayerTree extends React.Component {
     groupExpandedToggled = (layer, grouppath, oldexpanded) => {
         this.props.changeLayerProperty(layer.uuid, "expanded", !oldexpanded, grouppath);
     }
-    itemVisibilityToggled = (layer, grouppath, oldvisibility, inMutuallyExclusiveGroup) => {
+    itemVisibilityToggled = (layer, grouppath, oldvisibility) => {
         let recurseDirection = null;
         // If item becomes visible, also make parents visible
         if(this.props.groupTogglesSublayers) {
