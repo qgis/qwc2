@@ -146,7 +146,7 @@ class LayerTree extends React.Component {
         }
         let visibility = true;
         let checkboxstate;
-        if(this.props.groupTogglesSublayers) {
+        if(this.props.groupTogglesSublayers && !inMutuallyExclusiveGroup) {
             visibility = subtreevisibility > 0;
             checkboxstate = subtreevisibility === 1 ? 'checked' : subtreevisibility === 0 ? 'unchecked' : 'tristate';
         } else {
