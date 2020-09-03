@@ -45,8 +45,7 @@ class Editing extends React.Component {
         refreshLayer: PropTypes.func,
         changeLayerProperty: PropTypes.func,
         touchFriendly: PropTypes.bool,
-        width: PropTypes.string,
-        minimized: false
+        width: PropTypes.string
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -61,7 +60,8 @@ class Editing extends React.Component {
         relationTables: {},
         pickedFeatures: null,
         busy: false,
-        deleteClicked: false
+        deleteClicked: false,
+        minimized: false
     }
     onShow = (mode) => {
         this.changeSelectedLayer(this.state.selectedLayer, "Pick");
