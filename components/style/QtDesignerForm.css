@@ -5,6 +5,38 @@ div.qt-designer-form {
 div.qt-designer-form input[type=text],
 div.qt-designer-form input[type=number],
 div.qt-designer-form input[type=date],
+
+div.qt-designer-tabs {
+   display: flex;
+   flex-wrap: wrap; 
+}
+div.qt-designer-tabs label {
+  border: 1px solid #999;
+  background: lightgrey;
+  padding: 4px 12px;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  top: 1px;
+  transition: background ease 0.2s;
+}
+div.qt-designer-tabs .qt-designer-tab {
+    order: 99; 
+    flex-grow: 1;
+    width: 100%;
+    display: none;
+    padding: 1rem;
+    background: lightgrey;
+}
+div.qt-designer-tabs input[type="radio"] {
+    display: none;
+}
+div.qt-designer-tabs input[type="radio"]:checked + label {
+    background: #FFF;
+    border-bottom: 1px solid transparent;
+}
+div.qt-designer-tabs input[type="radio"]:checked + label + .qt-designer-tab {
+    display: block;
+}
 div.qt-designer-form select {
     border: 1px solid @item_border@;
     background-color: white;

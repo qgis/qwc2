@@ -75,7 +75,7 @@ class AppInitComponent extends React.Component {
     init = () => {
         this.initialized = true;
 
-        // Load themes.json
+        // Load themes.json//
         axios.get("themes.json").then(response => {
             let themes = response.data.themes || {};
             this.props.themesLoaded(themes);

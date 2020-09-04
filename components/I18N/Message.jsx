@@ -20,14 +20,19 @@ class Message extends React.Component {
         intl: PropTypes.object
     }
     render() {
-        if(!this.context.intl) {
+        if (!this.context.intl) {
             return (<span>{this.props.msgId || ""}</span>);
         }
-        return (
-            <FormattedMessage id={this.props.msgId} values={this.props.msgParams}>
-                {typeof this.props.children === "function" ? this.props.children : null}
-            </FormattedMessage>
-        );
+        const stringExists = !!this.context.intl.messages[this.props.msgId];
+        if (stringExists) {
+            return (
+                <FormattedMessage id={this.props.msgId} values={this.props.msgParams}>
+                    {typeof this.props.children === "function" ? this.props.children : null}
+                </FormattedMessage>
+            );
+        } else {
+            return this.props.msgId.split('.').slice(-1).toString()
+        }
     }
 };
 
