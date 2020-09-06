@@ -7,6 +7,7 @@
 # LICENSE file in the root directory of this source tree.
 
 import os
+
 try:
     from urllib import request
 except:
@@ -29,6 +30,7 @@ themesConfig = os.environ.get("QWC2_THEMES_CONFIG", "themesConfig.json")
 
 usedThemeIds = []
 
+
 def uniqueThemeId(themeName):
     if not themeName:
         return str(uuid.uuid1())
@@ -44,10 +46,12 @@ def uniqueThemeId(themeName):
 
 
 def getUrlOpener(configItem):
-    auth = configItem.get('wmsBasicAuth')
+    auth = configItem.get("wmsBasicAuth")
     if auth:
         manager = request.HTTPPasswordMgrWithDefaultRealm()
-        manager.add_password(None, configItem["url"], auth['username'], auth['password'])
+        manager.add_password(
+            None, configItem["url"], auth["username"], auth["password"]
+        )
         auth_handler = request.HTTPBasicAuthHandler(manager)
         opener = request.build_opener(auth_handler).open
     else:
@@ -58,19 +62,25 @@ def getUrlOpener(configItem):
 # load thumbnail from file or GetMap
 def getThumbnail(configItem, resultItem, layers, crs, extent):
     if "thumbnail" in configItem:
-        if os.path.exists(qwc2_path + "/assets/img/mapthumbs/" + configItem["thumbnail"]):
+        if os.path.exists(
+            qwc2_path + "/assets/img/mapthumbs/" + configItem["thumbnail"]
+        ):
             resultItem["thumbnail"] = "img/mapthumbs/" + configItem["thumbnail"]
             return
 
     print("Using WMS GetMap to generate thumbnail for " + configItem["url"])
 
     # WMS GetMap request
-    url = urljoin(baseUrl, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&STYLES=&WIDTH=200&HEIGHT=100&CRS=" + crs
+    url = (
+        urljoin(baseUrl, configItem["url"])
+        + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&STYLES=&WIDTH=200&HEIGHT=100&CRS="
+        + crs
+    )
     bboxw = extent[2] - extent[0]
     bboxh = extent[3] - extent[1]
     bboxcx = 0.5 * (extent[0] + extent[2])
     bboxcy = 0.5 * (extent[1] + extent[3])
-    imgratio = 200. / 100.
+    imgratio = 200.0 / 100.0
     if bboxw > bboxh:
         bboxratio = bboxw / bboxh
         if bboxratio > imgratio:
@@ -79,10 +89,14 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
             bboxw = bboxh * imgratio
     else:
         bboxw = bboxh * imgratio
-    adjustedExtent = [bboxcx - 0.5 * bboxw, bboxcy - 0.5 * bboxh,
-                      bboxcx + 0.5 * bboxw, bboxcy + 0.5 * bboxh]
+    adjustedExtent = [
+        bboxcx - 0.5 * bboxw,
+        bboxcy - 0.5 * bboxh,
+        bboxcx + 0.5 * bboxw,
+        bboxcy + 0.5 * bboxh,
+    ]
     url += "&BBOX=" + (",".join(map(str, adjustedExtent)))
-    url += "&LAYERS=" + quote(",".join(layers).encode('utf-8'))
+    url += "&LAYERS=" + quote(",".join(layers).encode("utf-8"))
 
     try:
         opener = getUrlOpener(configItem)
@@ -91,21 +105,25 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
         try:
             os.makedirs(qwc2_path + "/assets/img/genmapthumbs/")
         except Exception as e:
-            if not isinstance(e, FileExistsError): raise e
+            if not isinstance(e, FileExistsError):
+                raise e
         thumbnail = qwc2_path + "/assets/img/genmapthumbs/" + basename
         with open(thumbnail, "wb") as fh:
             fh.write(reply)
         resultItem["thumbnail"] = "img/genmapthumbs/" + basename
     except Exception as e:
-        print("ERROR generating thumbnail for WMS " + configItem["url"] + ":\n" + str(e))
+        print(
+            "ERROR generating thumbnail for WMS " + configItem["url"] + ":\n" + str(e)
+        )
         resultItem["thumbnail"] = "img/mapthumbs/default.jpg"
         traceback.print_exc()
+
 
 def getEditConfig(editConfig):
     if not editConfig:
         return None
     elif os.path.isabs(editConfig) and os.path.exists(editConfig):
-        with open(editConfig, encoding='utf-8') as fh:
+        with open(editConfig, encoding="utf-8") as fh:
             config = json.load(fh)
         return config
     else:
@@ -114,19 +132,22 @@ def getEditConfig(editConfig):
             dirname = "."
         filename = os.path.join(dirname, editConfig)
         if os.path.exists(filename):
-            with open(filename, encoding='utf-8') as fh:
+            with open(filename, encoding="utf-8") as fh:
                 config = json.load(fh)
             return config
     return None
 
+
 def getDirectChildElements(parent, tagname):
-    return [node for node in parent.childNodes if node.nodeName.split(':')[-1] == tagname]
+    return [
+        node for node in parent.childNodes if node.nodeName.split(":")[-1] == tagname
+    ]
 
 
 def getChildElement(parent, path):
     for part in path.split("/"):
         for node in parent.childNodes:
-            if node.nodeName.split(':')[-1] == part:
+            if node.nodeName.split(":")[-1] == part:
                 parent = node
                 break
         else:
@@ -143,7 +164,16 @@ def getChildElementValue(parent, path):
 
 
 # recursively get layer tree
-def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, featureReports):
+def getLayerTree(
+    layer,
+    resultLayers,
+    visibleLayers,
+    printLayers,
+    level,
+    collapseBelowLevel,
+    titleNameMap,
+    featureReports,
+):
     name = getChildElementValue(layer, "Name")
     title = getChildElementValue(layer, "Title")
     layers = getDirectChildElements(layer, "Layer")
@@ -161,7 +191,10 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
     layerEntry = {"name": name, "title": title}
 
     if not layers:
-        if layer.getAttribute("geometryType") == "WKBNoGeometry" or layer.getAttribute("geometryType") == "NoGeometry":
+        if (
+            layer.getAttribute("geometryType") == "WKBNoGeometry"
+            or layer.getAttribute("geometryType") == "NoGeometry"
+        ):
             # skip layers without geometry
             return
 
@@ -179,7 +212,9 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             onlineResource = getChildElement(layer, "Attribution/OnlineResource")
             layerEntry["attribution"] = {
                 "Title": getChildElementValue(layer, "Attribution/Title"),
-                "OnlineResource": onlineResource.getAttribute("xlink:href") if onlineResource else ""
+                "OnlineResource": onlineResource.getAttribute("xlink:href")
+                if onlineResource
+                else "",
             }
         except:
             pass
@@ -199,14 +234,18 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             pass
         try:
             keywords = []
-            for keyword in getChildElement(layer, "KeywordList").getElementsByTagName("Keyword"):
+            for keyword in getChildElement(layer, "KeywordList").getElementsByTagName(
+                "Keyword"
+            ):
                 keywords.append(getElementValue(keyword))
             layerEntry["keywords"] = ",".join(keywords)
         except:
             pass
 
         if layer.getAttribute("transparency"):
-            layerEntry["opacity"] = 255 - int(float(layer.getAttribute("transparency")) * 255)
+            layerEntry["opacity"] = 255 - int(
+                float(layer.getAttribute("transparency")) * 255
+            )
         elif layer.getAttribute("opacity"):
             layerEntry["opacity"] = int(float(layer.getAttribute("opacity")) * 255)
         else:
@@ -225,8 +264,8 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
                     float(getChildElementValue(geoBBox, "westBoundLongitude")),
                     float(getChildElementValue(geoBBox, "southBoundLatitude")),
                     float(getChildElementValue(geoBBox, "eastBoundLongitude")),
-                    float(getChildElementValue(geoBBox, "northBoundLatitude"))
-                ]
+                    float(getChildElementValue(geoBBox, "northBoundLatitude")),
+                ],
             }
         if name in featureReports:
             layerEntry["featureReport"] = featureReports[name]
@@ -237,9 +276,22 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
         if layer.getAttribute("expanded") == "0":
             layerEntry["expanded"] = False
         else:
-            layerEntry["expanded"] = False if collapseBelowLevel >= 0 and level >= collapseBelowLevel else True
+            layerEntry["expanded"] = (
+                False
+                if collapseBelowLevel >= 0 and level >= collapseBelowLevel
+                else True
+            )
         for sublayer in layers:
-            getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap, featureReports)
+            getLayerTree(
+                sublayer,
+                layerEntry["sublayers"],
+                visibleLayers,
+                printLayers,
+                level + 1,
+                collapseBelowLevel,
+                titleNameMap,
+                featureReports,
+            )
 
         if not layerEntry["sublayers"]:
             # skip empty groups
@@ -251,7 +303,10 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
 
 # parse GetCapabilities for theme
 def getTheme(config, configItem, result, resultItem):
-    url = urljoin(baseUrl, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
+    url = (
+        urljoin(baseUrl, configItem["url"])
+        + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
+    )
 
     try:
         opener = getUrlOpener(configItem)
@@ -264,8 +319,12 @@ def getTheme(config, configItem, result, resultItem):
         wmsName = re.sub(r".*/", "", configItem["url"]).rstrip("?")
 
         # use name from config or fallback to WMS title
-        wmsTitle = configItem.get("title") or getChildElementValue(capabilities, "Service/Title") or getChildElementValue(topLayer, "Title") or wmsName
-
+        wmsTitle = (
+            configItem.get("title")
+            or getChildElementValue(capabilities, "Service/Title")
+            or getChildElementValue(topLayer, "Title")
+            or wmsName
+        )
 
         # keywords
         keywords = []
@@ -279,7 +338,11 @@ def getTheme(config, configItem, result, resultItem):
         # collect WMS layers for printing
         printLayers = []
         if "backgroundLayers" in configItem:
-            printLayers = [entry["printLayer"] for entry in configItem["backgroundLayers"] if "printLayer" in entry]
+            printLayers = [
+                entry["printLayer"]
+                for entry in configItem["backgroundLayers"]
+                if "printLayer" in entry
+            ]
 
         # layer tree and visible layers
         collapseLayerGroupsBelowLevel = -1
@@ -289,63 +352,112 @@ def getTheme(config, configItem, result, resultItem):
         layerTree = []
         visibleLayers = []
         titleNameMap = {}
-        featureReports = configItem["featureReport"] if "featureReport" in configItem else {}
-        getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, featureReports)
+        featureReports = (
+            configItem["featureReport"] if "featureReport" in configItem else {}
+        )
+        getLayerTree(
+            topLayer,
+            layerTree,
+            visibleLayers,
+            printLayers,
+            1,
+            collapseLayerGroupsBelowLevel,
+            titleNameMap,
+            featureReports,
+        )
         visibleLayers.reverse()
 
         # print templates
         printTemplates = []
-        composerTemplates = getChildElement(capabilities, "Capability/ComposerTemplates")
+        composerTemplates = getChildElement(
+            capabilities, "Capability/ComposerTemplates"
+        )
         if composerTemplates:
-            for composerTemplate in composerTemplates.getElementsByTagName("ComposerTemplate"):
-                printTemplate = {
-                    "name": composerTemplate.getAttribute("name")
-                }
+            for composerTemplate in composerTemplates.getElementsByTagName(
+                "ComposerTemplate"
+            ):
+                printTemplate = {"name": composerTemplate.getAttribute("name")}
                 composerMap = getChildElement(composerTemplate, "ComposerMap")
                 if composerMap:
                     printTemplate["map"] = {
                         "name": composerMap.getAttribute("name"),
                         "width": float(composerMap.getAttribute("width")),
-                        "height": float(composerMap.getAttribute("height"))
+                        "height": float(composerMap.getAttribute("height")),
                     }
                 composerLabels = composerTemplate.getElementsByTagName("ComposerLabel")
-                labels = [composerLabel.getAttribute("name") for composerLabel in composerLabels]
+                labels = [
+                    composerLabel.getAttribute("name")
+                    for composerLabel in composerLabels
+                ]
                 if "printLabelBlacklist" in configItem:
-                    labels = list(filter(lambda label: label not in configItem["printLabelBlacklist"], labels))
+                    labels = list(
+                        filter(
+                            lambda label: label
+                            not in configItem["printLabelBlacklist"],
+                            labels,
+                        )
+                    )
 
                 if labels:
                     printTemplate["labels"] = labels
                 printTemplates.append(printTemplate)
 
         # drawing order
-        drawingOrder = getChildElementValue(capabilities, "Capability/LayerDrawingOrder").split(",")
-        drawingOrder = list(map(lambda title: titleNameMap[title] if title in titleNameMap else title, drawingOrder))
+        drawingOrder = getChildElementValue(
+            capabilities, "Capability/LayerDrawingOrder"
+        ).split(",")
+        drawingOrder = list(
+            map(
+                lambda title: titleNameMap[title] if title in titleNameMap else title,
+                drawingOrder,
+            )
+        )
 
         # getmap formats
         availableFormats = []
-        for format in getChildElement(capabilities, "Capability/Request/GetMap").getElementsByTagName("Format"):
-          availableFormats.append(getElementValue(format))
+        for format in getChildElement(
+            capabilities, "Capability/Request/GetMap"
+        ).getElementsByTagName("Format"):
+            availableFormats.append(getElementValue(format))
 
         # update theme config
         resultItem["url"] = configItem["url"]
         resultItem["id"] = uniqueThemeId(wmsName)
         resultItem["name"] = getChildElementValue(topLayer, "Name")
         resultItem["title"] = wmsTitle
-        resultItem["description"] = configItem["description"] if "description" in configItem else ""
+        resultItem["description"] = (
+            configItem["description"] if "description" in configItem else ""
+        )
         resultItem["attribution"] = {
             "Title": configItem["attribution"] if "attribution" in configItem else "",
-            "OnlineResource": configItem["attributionUrl"] if "attributionUrl" in configItem else ""
+            "OnlineResource": configItem["attributionUrl"]
+            if "attributionUrl" in configItem
+            else "",
         }
         # service info
         resultItem["abstract"] = getChildElementValue(capabilities, "Service/Abstract")
         resultItem["keywords"] = ", ".join(keywords)
-        resultItem["onlineResource"] = getChildElement(capabilities, "Service/OnlineResource").getAttribute("xlink:href")
+        resultItem["onlineResource"] = getChildElement(
+            capabilities, "Service/OnlineResource"
+        ).getAttribute("xlink:href")
         resultItem["contact"] = {
-            "person": getChildElementValue(capabilities, "Service/ContactInformation/ContactPersonPrimary/ContactPerson"),
-            "organization": getChildElementValue(capabilities, "Service/ContactInformation/ContactPersonPrimary/ContactOrganization"),
-            "position": getChildElementValue(capabilities, "Service/ContactInformation/ContactPosition"),
-            "phone": getChildElementValue(capabilities, "Service/ContactInformation/ContactVoiceTelephone"),
-            "email": getChildElementValue(capabilities, "Service/ContactInformation/ContactElectronicMailAddress")
+            "person": getChildElementValue(
+                capabilities,
+                "Service/ContactInformation/ContactPersonPrimary/ContactPerson",
+            ),
+            "organization": getChildElementValue(
+                capabilities,
+                "Service/ContactInformation/ContactPersonPrimary/ContactOrganization",
+            ),
+            "position": getChildElementValue(
+                capabilities, "Service/ContactInformation/ContactPosition"
+            ),
+            "phone": getChildElementValue(
+                capabilities, "Service/ContactInformation/ContactVoiceTelephone"
+            ),
+            "email": getChildElementValue(
+                capabilities, "Service/ContactInformation/ContactElectronicMailAddress"
+            ),
         }
 
         if "format" in configItem:
@@ -357,22 +469,40 @@ def getTheme(config, configItem, result, resultItem):
             resultItem["version"] = configItem["version"]
         elif "defaultWMSVersion" in config:
             resultItem["version"] = config["defaultWMSVersion"]
-        resultItem["infoFormats"] = [getElementValue(format) for format in getChildElement(capabilities, "Capability/Request/GetFeatureInfo").getElementsByTagName("Format")]
+        resultItem["infoFormats"] = [
+            getElementValue(format)
+            for format in getChildElement(
+                capabilities, "Capability/Request/GetFeatureInfo"
+            ).getElementsByTagName("Format")
+        ]
         # use geographic bounding box for theme, as default CRS may have inverted axis order with WMS 1.3.0
         bounds = [
-            float(getChildElementValue(topLayer, "EX_GeographicBoundingBox/westBoundLongitude")),
-            float(getChildElementValue(topLayer, "EX_GeographicBoundingBox/southBoundLatitude")),
-            float(getChildElementValue(topLayer, "EX_GeographicBoundingBox/eastBoundLongitude")),
-            float(getChildElementValue(topLayer, "EX_GeographicBoundingBox/northBoundLatitude"))
+            float(
+                getChildElementValue(
+                    topLayer, "EX_GeographicBoundingBox/westBoundLongitude"
+                )
+            ),
+            float(
+                getChildElementValue(
+                    topLayer, "EX_GeographicBoundingBox/southBoundLatitude"
+                )
+            ),
+            float(
+                getChildElementValue(
+                    topLayer, "EX_GeographicBoundingBox/eastBoundLongitude"
+                )
+            ),
+            float(
+                getChildElementValue(
+                    topLayer, "EX_GeographicBoundingBox/northBoundLatitude"
+                )
+            ),
         ]
-        resultItem["bbox"] = {
-            "crs": "EPSG:4326",
-            "bounds": bounds
-        }
+        resultItem["bbox"] = {"crs": "EPSG:4326", "bounds": bounds}
         if "extent" in configItem:
             resultItem["initialBbox"] = {
                 "crs": configItem["mapCrs"] if "mapCrs" in configItem else "EPSG:4326",
-                "bounds": configItem["extent"]
+                "bounds": configItem["extent"],
             }
         else:
             resultItem["initialBbox"] = resultItem["bbox"]
@@ -385,7 +515,11 @@ def getTheme(config, configItem, result, resultItem):
         if "printGrid" in configItem:
             resultItem["printGrid"] = configItem["printGrid"]
         # NOTE: skip root WMS layer
-        resultItem["sublayers"] = layerTree[0]["sublayers"] if len(layerTree) > 0 and "sublayers" in layerTree[0] else []
+        resultItem["sublayers"] = (
+            layerTree[0]["sublayers"]
+            if len(layerTree) > 0 and "sublayers" in layerTree[0]
+            else []
+        )
         resultItem["expanded"] = True
         if "backgroundLayers" in configItem:
             resultItem["backgroundLayers"] = configItem["backgroundLayers"]
@@ -395,11 +529,13 @@ def getTheme(config, configItem, result, resultItem):
             resultItem["pluginData"] = configItem["pluginData"]
         if "minSearchScaleDenom" in configItem:
             resultItem["minSearchScaleDenom"] = configItem["minSearchScaleDenom"]
-        elif "minSearchScale" in configItem: # Legacy name
+        elif "minSearchScale" in configItem:  # Legacy name
             resultItem["minSearchScaleDenom"] = configItem["minSearchScale"]
         if "themeInfoLinks" in configItem:
             resultItem["themeInfoLinks"] = configItem["themeInfoLinks"]
-        resultItem["searchProviders"] = configItem["searchProviders"] if "searchProviders" in configItem else []
+        resultItem["searchProviders"] = (
+            configItem["searchProviders"] if "searchProviders" in configItem else []
+        )
         if "additionalMouseCrs" in configItem:
             resultItem["additionalMouseCrs"] = configItem["additionalMouseCrs"]
         if "mapCrs" in configItem:
@@ -409,21 +545,52 @@ def getTheme(config, configItem, result, resultItem):
         if printTemplates:
             resultItem["print"] = printTemplates
         resultItem["drawingOrder"] = drawingOrder
-        extraLegenParams = configItem["extraLegendParameters"] if "extraLegendParameters" in configItem else ""
+        extraLegenParams = (
+            configItem["extraLegendParameters"]
+            if "extraLegendParameters" in configItem
+            else ""
+        )
         if "legendUrl" in configItem:
             resultItem["legendUrl"] = configItem["legendUrl"]
         else:
-            resultItem["legendUrl"] = getChildElement(capabilities, "Capability/Request/GetLegendGraphic/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href").rstrip("?") + "?" + extraLegenParams
+            resultItem["legendUrl"] = (
+                getChildElement(
+                    capabilities,
+                    "Capability/Request/GetLegendGraphic/DCPType/HTTP/Get/OnlineResource",
+                )
+                .getAttribute("xlink:href")
+                .rstrip("?")
+                + "?"
+                + extraLegenParams
+            )
         if "featureInfoUrl" in configItem:
             resultItem["featureInfoUrl"] = configItem["featureInfoUrl"]
         else:
-            resultItem["featureInfoUrl"] = getChildElement(capabilities, "Capability/Request/GetFeatureInfo/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href").rstrip("?") + "?"
+            resultItem["featureInfoUrl"] = (
+                getChildElement(
+                    capabilities,
+                    "Capability/Request/GetFeatureInfo/DCPType/HTTP/Get/OnlineResource",
+                )
+                .getAttribute("xlink:href")
+                .rstrip("?")
+                + "?"
+            )
         if "printUrl" in configItem:
             resultItem["printUrl"] = configItem["printUrl"]
         else:
-            resultItem["printUrl"] = getChildElement(capabilities, "Capability/Request/GetPrint/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href").rstrip("?") + "?"
+            resultItem["printUrl"] = (
+                getChildElement(
+                    capabilities,
+                    "Capability/Request/GetPrint/DCPType/HTTP/Get/OnlineResource",
+                )
+                .getAttribute("xlink:href")
+                .rstrip("?")
+                + "?"
+            )
         if "printLabelForSearchResult" in configItem:
-            resultItem["printLabelForSearchResult"] = configItem["printLabelForSearchResult"]
+            resultItem["printLabelForSearchResult"] = configItem[
+                "printLabelForSearchResult"
+            ]
         if "printLabelConfig" in configItem:
             resultItem["printLabelConfig"] = configItem["printLabelConfig"]
 
@@ -431,7 +598,9 @@ def getTheme(config, configItem, result, resultItem):
             resultItem["watermark"] = configItem["watermark"]
 
         if "skipEmptyFeatureAttributes" in configItem:
-            resultItem["skipEmptyFeatureAttributes"] = configItem["skipEmptyFeatureAttributes"]
+            resultItem["skipEmptyFeatureAttributes"] = configItem[
+                "skipEmptyFeatureAttributes"
+            ]
 
         if "config" in configItem:
             resultItem["config"] = configItem["config"]
@@ -442,7 +611,9 @@ def getTheme(config, configItem, result, resultItem):
         if "userMap" in configItem:
             resultItem["userMap"] = configItem["userMap"]
 
-        resultItem["editConfig"] = getEditConfig(configItem["editConfig"] if "editConfig" in configItem else None)
+        resultItem["editConfig"] = getEditConfig(
+            configItem["editConfig"] if "editConfig" in configItem else None
+        )
 
         # set default theme
         if "default" in configItem or not result["themes"]["defaultTheme"]:
@@ -460,14 +631,19 @@ def getTheme(config, configItem, result, resultItem):
                     float(bbox.getAttribute("minx")),
                     float(bbox.getAttribute("miny")),
                     float(bbox.getAttribute("maxx")),
-                    float(bbox.getAttribute("maxy"))
+                    float(bbox.getAttribute("maxy")),
                 ]
                 break
         if extent:
             getThumbnail(configItem, resultItem, visibleLayers, crs, extent)
 
     except Exception as e:
-        print("ERROR reading WMS GetProjectSettings of " + configItem["url"] + ":\n" + str(e))
+        print(
+            "ERROR reading WMS GetProjectSettings of "
+            + configItem["url"]
+            + ":\n"
+            + str(e)
+        )
         resultItem["error"] = "Could not read GetProjectSettings"
         resultItem["title"] = "Error"
         traceback.print_exc()
@@ -488,7 +664,7 @@ def getGroupThemes(config, configGroup, result, resultGroup, groupCounter):
                 "id": "g%d" % groupCounter,
                 "title": group["title"],
                 "items": [],
-                "subdirs": []
+                "subdirs": [],
             }
             getGroupThemes(config, group, result, groupEntry, groupCounter)
             resultGroup["subdirs"].append(groupEntry)
@@ -497,7 +673,9 @@ def getGroupThemes(config, configGroup, result, resultGroup, groupCounter):
 def reformatAttribution(entry):
     entry["attribution"] = {
         "Title": entry["attribution"] if "attribution" in entry else None,
-        "OnlineResource": entry["attributionUrl"] if "attributionUrl" in entry else None
+        "OnlineResource": entry["attributionUrl"]
+        if "attributionUrl" in entry
+        else None,
     }
     entry.pop("attributionUrl", None)
     return entry
@@ -505,11 +683,14 @@ def reformatAttribution(entry):
 
 def genThemes(themesConfig):
     # load themesConfig.json
-    try:
-        with open(themesConfig, encoding='utf-8') as fh:
-            config = json.load(fh)
-    except:
-        return {"error": "Failed to read themesConfig.json"}
+    if isinstance(themesConfig, dict):
+        config = themesConfig
+    else:
+        try:
+            with open(themesConfig, encoding="utf-8") as fh:
+                config = json.load(fh)
+        except:
+            return {"error": "Failed to read themesConfig.json"}
 
     result = {
         "themes": {
@@ -518,15 +699,31 @@ def genThemes(themesConfig):
             "items": [],
             "defaultTheme": None,
             "defaultScales": config["defaultScales"],
-            "defaultPrintScales": config["defaultPrintScales"] if "defaultPrintScales" in config else None,
-            "defaultPrintResolutions": config["defaultPrintResolutions"] if "defaultPrintResolutions" in config else None,
-            "defaultPrintGrid": config["defaultPrintGrid"] if "defaultPrintGrid" in config else None,
-            "pluginData": config["themes"]["pluginData"] if "pluginData" in config["themes"] else [],
-            "themeInfoLinks": config["themes"]["themeInfoLinks"] if "themeInfoLinks" in config["themes"] else [],
-            "externalLayers": config["themes"]["externalLayers"] if "externalLayers" in config["themes"] else [],
-            "backgroundLayers": list(map(reformatAttribution, config["themes"]["backgroundLayers"])),
-            "defaultWMSVersion": config["defaultWMSVersion"] if "defaultWMSVersion" in config else None
-            }
+            "defaultPrintScales": config["defaultPrintScales"]
+            if "defaultPrintScales" in config
+            else None,
+            "defaultPrintResolutions": config["defaultPrintResolutions"]
+            if "defaultPrintResolutions" in config
+            else None,
+            "defaultPrintGrid": config["defaultPrintGrid"]
+            if "defaultPrintGrid" in config
+            else None,
+            "pluginData": config["themes"]["pluginData"]
+            if "pluginData" in config["themes"]
+            else [],
+            "themeInfoLinks": config["themes"]["themeInfoLinks"]
+            if "themeInfoLinks" in config["themes"]
+            else [],
+            "externalLayers": config["themes"]["externalLayers"]
+            if "externalLayers" in config["themes"]
+            else [],
+            "backgroundLayers": list(
+                map(reformatAttribution, config["themes"]["backgroundLayers"])
+            ),
+            "defaultWMSVersion": config["defaultWMSVersion"]
+            if "defaultWMSVersion" in config
+            else None,
+        }
     }
     groupCounter = 0
     getGroupThemes(config, config["themes"], result, result["themes"], groupCounter)
@@ -542,9 +739,10 @@ def genThemes(themesConfig):
     return result
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("Reading " + themesConfig)
     themes = genThemes(themesConfig)
     # write config file
     with open("./themes.json", "w") as fh:
-        json.dump(themes, fh, indent=2, separators=(',', ': '), sort_keys=True)
+        json.dump(themes, fh, indent=2, separators=(",", ": "), sort_keys=True)
+
