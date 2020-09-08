@@ -13,10 +13,10 @@ try:
 except:
     import urllib2 as request
 try:
-    from urllib.parse import quote, urljoin
+    from urllib.parse import quote, urljoin, urlparse, parse_qs, urlencode, urlunparse
 except:
     from urllib import quote
-    from urlparse import urljoin
+    from urlparse import urljoin, urlparse, parse_qs, urlencode, urlunparse
 from xml.dom.minidom import parseString
 import json
 import traceback
@@ -59,6 +59,20 @@ def getUrlOpener(configItem):
     return opener
 
 
+def themesUrlJoin(configItem, adddingqs):
+    url = urljoin(baseUrl, configItem["url"])
+    urlparsed = urlparse(url)
+    configItemUrlQs = parse_qs(urlparsed.query)
+    print("*", urlparsed.query, configItemUrlQs)
+    addedQs = parse_qs(adddingqs)
+    print("addedQs", addedQs)
+    finalqs = urlencode({**configItemUrlQs, **addedQs}, doseq=True)
+    print("finalqs", finalqs)
+    urlparsed = urlparsed._replace(query=finalqs)
+    print("**", urlunparse(urlparsed))
+    return urlunparse(urlparsed)
+
+
 # load thumbnail from file or GetMap
 def getThumbnail(configItem, resultItem, layers, crs, extent):
     if "thumbnail" in configItem:
@@ -71,11 +85,18 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
     print("Using WMS GetMap to generate thumbnail for " + configItem["url"])
 
     # WMS GetMap request
-    url = (
-        urljoin(baseUrl, configItem["url"])
-        + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&STYLES=&WIDTH=200&HEIGHT=100&CRS="
-        + crs
+    # url = (
+    #     urljoin(baseUrl, configItem["url"])
+    #     + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&STYLES=&WIDTH=200&HEIGHT=100&CRS="
+    #     + crs
+    # )
+
+    url = themesUrlJoin(
+        configItem,
+        "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&STYLES=&WIDTH=200&HEIGHT=100&CRS="
+        + crs,
     )
+
     bboxw = extent[2] - extent[0]
     bboxh = extent[3] - extent[1]
     bboxcx = 0.5 * (extent[0] + extent[2])
@@ -99,6 +120,7 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
     url += "&LAYERS=" + quote(",".join(layers).encode("utf-8"))
 
     try:
+        print(configItem)
         opener = getUrlOpener(configItem)
         reply = opener(url).read()
         basename = configItem["url"].rsplit("/")[-1].rstrip("?") + ".png"
@@ -303,10 +325,17 @@ def getLayerTree(
 
 # parse GetCapabilities for theme
 def getTheme(config, configItem, result, resultItem):
-    url = (
-        urljoin(baseUrl, configItem["url"])
-        + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
+    url = themesUrlJoin(
+        configItem, "SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
     )
+    # car = "&" if urlparse(configItem["url"]).query else "?"
+    # url = (
+    #     urljoin(baseUrl, configItem["url"])
+    #     + car
+    #     + "SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
+    # )
+
+    print("*", url, baseUrl, configItem["url"])
 
     try:
         opener = getUrlOpener(configItem)
