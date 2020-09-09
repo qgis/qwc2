@@ -190,8 +190,8 @@ class MeasurementSupport extends React.Component {
         this.modifyInteraction = new ol.interaction.Modify({
             features: new ol.Collection([this.sketchFeature]),
             condition: (event) => {  return event.pointerEvent.buttons === 1 },
-            insertVertexCondition: (event) => { return false; },
-            deleteCondition: (event) => { return false; }
+            insertVertexCondition: (event) => { return this.props.measurement.geomType === 'Bearing'? false : true; },
+            deleteCondition: (event) => { return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event); }
         });
         this.modifyInteraction.on('modifystart', ev => {
             this.props.map.on('pointermove', this.measurementGeometryUpdated);
@@ -221,6 +221,25 @@ class MeasurementSupport extends React.Component {
         let length = null;
         if(this.props.measurement.geomType === 'LineString') {
             length = this.calculateGeodesicDistances(coo);
+            if (this.segmentMarkers.length < coo.length - 1){
+                let point = new ol.Feature({
+                            geometry: new ol.geom.Point(coo[coo.length - 1])
+                        });
+                        let label = new ol.style.Text({
+                            font: '10pt sans-serif',
+                            text: "",
+                            fill: new ol.style.Fill({color: 'white'}),
+                            stroke: new ol.style.Stroke({color: [0,0,0,0.5], width: 4}),
+                            rotation: 0,
+                            offsetY: 10
+                        });
+                        point.setStyle(new ol.style.Style({text: label}));
+                        this.measureLayer.getSource().addFeature(point);
+                        this.segmentMarkers.push(point);
+            }
+            if (this.segmentMarkers.length > coo.length - 1){
+                this.measureLayer.getSource().removeFeature(this.segmentMarkers.pop());
+            }
             for(let i = 0; i < this.segmentMarkers.length; ++i) {
                 this.updateSegmentMarker(this.segmentMarkers[i], coo[i], coo[i + 1], length[i]);
             }
