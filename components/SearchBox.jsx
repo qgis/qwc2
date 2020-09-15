@@ -28,6 +28,7 @@ const ConfigUtils = require("../utils/ConfigUtils");
 const LayerUtils = require('../utils/LayerUtils');
 const LocaleUtils = require('../utils/LocaleUtils');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
+const VectorLayerUtils = require('../utils/VectorLayerUtils');
 const MapUtils = require('../utils/MapUtils');
 const MiscUtils = require('../utils/MiscUtils');
 const {UrlParams} = require("../utils/PermaLinkUtils");
@@ -541,6 +542,9 @@ class SearchBox extends React.Component {
             id: "searchselection",
             role: LayerRole.SELECTION
         };
+        for(let feature of data.features) {
+            feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, data.crs.properties.name, this.props.map.projection);
+        }
         this.props.addLayerFeatures(layer, data.features, true);
 
     }
