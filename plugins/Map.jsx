@@ -8,12 +8,12 @@
 
 const React = require('react');
 const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
+const { connect } = require('react-redux');
 const assign = require('object-assign');
 const Message = require('../components/I18N/Message');
 const Spinner = require('../components/Spinner');
-const {LayerRole} = require('../actions/layers');
-const {Map, Layer} = require('./map/MapComponents');
+const { LayerRole } = require('../actions/layers');
+const { Map, Layer } = require('./map/MapComponents');
 const MapUtils = require('../utils/MapUtils');
 const LayerUtils = require('../utils/LayerUtils');
 
@@ -46,28 +46,33 @@ class MapPlugin extends React.Component {
         const topLayer = (this.props.layers || [])[0];
         return this.props.layers.slice(0).reverse().map((layer, index) => {
             let layers = [];
-            if(layer.type === "wms" && layer.role === LayerRole.THEME) {
+            if (layer.type === "wms" && layer.role === LayerRole.THEME) {
                 let sublayers = layer.params.LAYERS.split(",");
                 let opacities = layer.params.OPACITIES.split(",");
-                for(let i = 0; i < sublayers.length; ++i) {
-                    if(layer.externalLayers[sublayers[i]]) {
+                let styles = layer.params.STYLES ? layer.params.STYLES.split(",") : null
+                for (let i = 0; i < sublayers.length; ++i) {
+                    if (layer.externalLayers[sublayers[i]]) {
                         let sublayer = LayerUtils.searchSubLayer(layer, "name", sublayers[i]);
                         let sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
-                        if(!sublayerInvisible) {
+                        if (!sublayerInvisible) {
                             layers.push(assign({}, layer.externalLayers[sublayers[i]], {
                                 opacity: opacities[i],
                                 visibility: true
                             }));
                         }
-                    } else if(layers.length > 0 && layers[layers.length - 1].id === layer.id) {
+                    } else if (layers.length > 0 && layers[layers.length - 1].id === layer.id) {
                         layers[layers.length - 1].params.LAYERS += "," + sublayers[i];
                         layers[layers.length - 1].params.OPACITIES += "," + opacities[i];
+                        styles ? layers[layers.length - 1].params.STYLES += "," + styles[i] : null
                     } else {
-                        layers.push(assign({}, layer, {uuid: layer.uuid + "-" + i, params: {
-                            LAYERS: sublayers[i],
-                            OPACITIES: opacities[i],
-                            MAP: layer.params.MAP
-                        }}));
+                        layers.push(assign({}, layer, {
+                            uuid: layer.uuid + "-" + i, params: {
+                                LAYERS: sublayers[i],
+                                OPACITIES: opacities[i],
+                                MAP: layer.params.MAP,
+                                STYLES: styles ? styles[i] : ''
+                            }
+                        }));
                     }
                 }
             } else {
@@ -82,20 +87,20 @@ class MapPlugin extends React.Component {
         return Object.keys(this.props.tools).map((tool) => {
             const Tool = this.props.tools[tool];
             const options = this.props.toolsOptions[tool] || {};
-            return <Tool key={tool} options={options}/>;
+            return <Tool key={tool} options={options} />;
         });
     }
     render() {
         if (this.props.map) {
             let loadingIndicator = null;
-            if(this.props.showLoading && this.props.layers.find(layer => layer.loading === true) != undefined){
+            if (this.props.showLoading && this.props.layers.find(layer => layer.loading === true) != undefined) {
                 loadingIndicator = (
-                <span ref={el => this.loadingEl = el} className="map-loading-indicator" key="map-loading">
-                    <Spinner className="spinner" />
-                    <Message msgId="map.loading" />
-                </span>);
+                    <span ref={el => this.loadingEl = el} className="map-loading-indicator" key="map-loading">
+                        <Spinner className="spinner" />
+                        <Message msgId="map.loading" />
+                    </span>);
                 setTimeout(() => {
-                    if(this.loadingEl) {
+                    if (this.loadingEl) {
                         this.loadingEl.style.opacity = 1;
                     }
                 }, 1000);
@@ -114,11 +119,13 @@ class MapPlugin extends React.Component {
     }
 };
 
-module.exports = (tools) => { return {
-    MapPlugin: connect((state) => ({
-        map: state.map,
-        layers: state.layers && state.layers.flat || [],
-        swipe: state.layers && state.layers.swipe || undefined,
-        tools
-    }))(MapPlugin)
-}};
+module.exports = (tools) => {
+    return {
+        MapPlugin: connect((state) => ({
+            map: state.map,
+            layers: state.layers && state.layers.flat || [],
+            swipe: state.layers && state.layers.swipe || undefined,
+            tools
+        }))(MapPlugin)
+    }
+};
