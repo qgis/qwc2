@@ -42,7 +42,7 @@ class Print extends React.Component {
         defaultDpi: PropTypes.number,
         defaultScaleFactor: PropTypes.number,
         displayRotation: PropTypes.bool,
-        displayGrid: PropTypes.bool
+        gridInitiallyEnabled: PropTypes.bool
     }
     static defaultProps = {
         printExternalLayers: false,
@@ -51,7 +51,7 @@ class Print extends React.Component {
         defaultDpi: 300,
         defaultScaleFactor: 0.5,
         displayRotation: true,
-        displayGrid: true
+        gridInitiallyEnabled: false
     }
     state = {
         layout: null,
@@ -68,6 +68,9 @@ class Print extends React.Component {
     constructor(props) {
         super(props);
         this.printForm = null;
+    }
+    componentDidMount() {
+        this.setState({grid: this.props.gridInitiallyEnabled});
     }
     componentWillReceiveProps(newProps) {
         if(newProps.theme !== this.props.theme || !this.state.layout) {
