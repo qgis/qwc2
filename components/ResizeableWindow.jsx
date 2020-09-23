@@ -121,7 +121,7 @@ class ResizeableWindow extends React.Component {
             </div>)
         ];
 
-        if(this.state.dock) {
+        if(this.state.dock && this.props.visible) {
             return (
                 <div className="dock-window" style={{zIndex: this.props.zIndex, width: this.props.initialWidth + 'px'}} onMouseDown={this.startDockResize} ref={c => this.dock = c}>
                     {content}
