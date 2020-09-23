@@ -17,6 +17,7 @@ require('./style/ResizeableWindow.css');
 class ResizeableWindow extends React.Component {
     static propTypes = {
         title: PropTypes.string,
+        titlelabel: PropTypes.string,
         icon: PropTypes.string,
         onClose: PropTypes.func,
         scrollable: PropTypes.bool,
@@ -107,7 +108,7 @@ class ResizeableWindow extends React.Component {
             (<div className="resizeable-window-titlebar" key="titlebar">
                 {icon}
                 <span className="resizeable-window-titlebar-title">
-                    <Message msgId={this.props.title} />
+                    {this.props.title ? (<Message msgId={this.props.title} />) : (this.props.titlelabel || "")}
                 </span>
                 {(this.props.extraControls || []).map(entry => (
                     <Icon key={entry.icon} className="resizeable-window-titlebar-control" onClick={entry.callback} icon={entry.icon}/>
