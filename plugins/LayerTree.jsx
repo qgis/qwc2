@@ -65,7 +65,8 @@ class LayerTree extends React.Component {
         infoInSettings: PropTypes.bool,
         showToggleAllLayersCheckbox: PropTypes.bool,
         addLayerSeparator: PropTypes.func,
-        zoomToExtent: PropTypes.func
+        zoomToExtent: PropTypes.func,
+        transparencyIcon: PropTypes.bool
     }
     static defaultProps = {
         layers: [],
@@ -84,7 +85,8 @@ class LayerTree extends React.Component {
         enableLegendPrint: true,
         enableVisibleFilter: true,
         infoInSettings: true,
-        showToggleAllLayersCheckbox: true
+        showToggleAllLayersCheckbox: true,
+        transparencyIcon: true
     }
     state = {
         activemenu: null,
@@ -244,7 +246,7 @@ class LayerTree extends React.Component {
                 <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
                     <div className="layertree-item-edit-items">
                         {zoomToLayerButton}
-                        <Icon icon="transparency" />
+                        {this.props.transparencyIcon ? (<Icon icon="transparency" />) : (<Message msgId="layertree.transparency" />)}
                         <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onTouchEnd={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} />
                         {reorderButtons}
                         {this.props.infoInSettings ? infoButton : null}
