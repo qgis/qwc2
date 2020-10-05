@@ -106,7 +106,8 @@
       "visiblefilter": "Filtrer usynlige lag",
       "separator": "Separator",
       "separatortooltip": "Legg til separator",
-      "zoomtolayer": "Zoom til lag"
+      "zoomtolayer": "Zoom til lag",
+      "transparency": ""
     },
     "locate": {
       "metersUnit": "meter",

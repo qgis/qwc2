@@ -106,7 +106,8 @@
       "visiblefilter": "",
       "separator": "",
       "separatortooltip": "",
-      "zoomtolayer": ""
+      "zoomtolayer": "",
+      "transparency": ""
     },
     "locate": {
       "metersUnit": "metry",

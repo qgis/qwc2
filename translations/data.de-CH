@@ -106,7 +106,8 @@
       "visiblefilter": "Unsichtbare Ebenen filtern",
       "separator": "Separator",
       "separatortooltip": "Separator hinzufügen",
-      "zoomtolayer": ""
+      "zoomtolayer": "Auf Layer zoomen",
+      "transparency": "Transparenz"
     },
     "locate": {
       "metersUnit": "Meter",
@@ -211,14 +212,14 @@
       "background": "Hintergrundkarte wechseln"
     },
     "themelayerslist": {
-      "addlayer": "",
-      "addlayerstotheme": "",
-      "addselectedlayers": ""
+      "addlayer": "Layer hinzufügen",
+      "addlayerstotheme": "Ebenen der Karte hinzufügen",
+      "addselectedlayers": "Selektierte Ebenen hinzufügen"
     },
     "themeswitcher": {
       "filter": "Filter",
       "addtotheme": "Dem aktuellen Thema hinzufügen",
-      "addlayerstotheme": "",
+      "addlayerstotheme": "Ebenen der Karte hinzufügen",
       "match": {
         "title": "Titel",
         "keywords": "Schlüsselwörter",

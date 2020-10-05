@@ -106,7 +106,8 @@
       "visiblefilter": "Filter invisible layers",
       "separator": "Separator",
       "separatortooltip": "Add separator",
-      "zoomtolayer": "Zoom to layer"
+      "zoomtolayer": "Zoom to layer",
+      "transparency": "Trasparency"
     },
     "locate": {
       "metersUnit": "meters",

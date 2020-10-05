@@ -106,7 +106,8 @@
       "visiblefilter": "Filtrează straturile invizibile",
       "separator": "separator",
       "separatortooltip": "Indiciu separator",
-      "zoomtolayer": "Zoom la strat"
+      "zoomtolayer": "Zoom la strat",
+      "transparency": ""
     },
     "locate": {
       "metersUnit": "metri",

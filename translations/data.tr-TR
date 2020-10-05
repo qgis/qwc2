@@ -106,7 +106,8 @@
       "visiblefilter": "Görünmeyen katmanları filtrele",
       "separator": "Ayırıcı",
       "separatortooltip": "Ayırıcı ekle",
-      "zoomtolayer": "Katman sınırlarına yaklaş"
+      "zoomtolayer": "Katman sınırlarına yaklaş",
+      "transparency": ""
     },
     "locate": {
       "metersUnit": "metre",
