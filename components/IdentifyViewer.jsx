@@ -409,7 +409,7 @@ class IdentifyViewer extends React.Component {
                         {featureReportTemplate ? (
                             <tr>
                                 <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i><Message msgId="identify.featureReport" /></i></td>
-                                <td className={"identify-attr-value " + this.props.longAttributesDisplay}><a href={this.getFeatureReportUrl(featureReportTemplate, result)}><Message msgId="identify.link" /></a></td>
+                                <td className={"identify-attr-value " + this.props.longAttributesDisplay}><a target="_blank" href={this.getFeatureReportUrl(featureReportTemplate, result)}><Message msgId="identify.link" /></a></td>
                             </tr>
                         ) : null}
                     </tbody></table>
