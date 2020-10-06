@@ -199,6 +199,17 @@
       "places": "Steder",
       "recent": "Nylige søk"
     },
+    "serviceinfo": {
+      "title": "",
+      "abstract": "",
+      "keywords": "",
+      "onlineResource": "",
+      "contactPerson": "",
+      "contactOrganization": "",
+      "contactPosition": "",
+      "contactPhone": "",
+      "contactEmail": ""
+    },
     "share": {
       "directLinkTitle": "Direktelenke",
       "generatingpermalink": "Generer permalink...",

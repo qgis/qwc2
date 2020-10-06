@@ -199,6 +199,17 @@
       "places": "",
       "recent": ""
     },
+    "serviceinfo": {
+      "title": "",
+      "abstract": "",
+      "keywords": "",
+      "onlineResource": "",
+      "contactPerson": "",
+      "contactOrganization": "",
+      "contactPosition": "",
+      "contactPhone": "",
+      "contactEmail": ""
+    },
     "share": {
       "directLinkTitle": "Vía un vínculo directo",
       "generatingpermalink": "Generando un enlace permanente...",

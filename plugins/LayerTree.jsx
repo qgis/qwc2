@@ -17,12 +17,14 @@ const FileSaver = require('file-saver');
 const Message = require('../components/I18N/Message');
 const {LayerRole, changeLayerProperty, removeLayer, reorderLayer, setSwipe, addLayerSeparator} = require('../actions/layers')
 const {setActiveLayerInfo} = require('../actions/layerinfo');
+const {setActiveServiceInfo} = require('../actions/serviceinfo');
 const {toggleMapTips, zoomToExtent} = require('../actions/map');
 const ConfigUtils = require("../utils/ConfigUtils");
 const LocaleUtils = require("../utils/LocaleUtils");
 const Icon = require('../components/Icon');
 const ImportLayer = require('../components/ImportLayer');
 const LayerInfoWindow = require('../components/LayerInfoWindow');
+const ServiceInfoWindow = require('../components/ServiceInfoWindow');
 const {SideBar} = require('../components/SideBar');
 const Spinner = require('../components/Spinner');
 const LayerUtils = require('../utils/LayerUtils');
@@ -412,13 +414,15 @@ class LayerTree extends React.Component {
             let deleteAllLayersTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.deletealllayers");
             deleteAllLayersIcon = (<Icon title={deleteAllLayersTooltip} className="layertree-delete-legend" icon="trash" onClick={this.deleteAllLayers}/>);
         }
+
         let extraTitlebarContent = null;
-        if(legendPrintIcon || deleteAllLayersIcon || visibleFilterIcon) {
+        if(legendPrintIcon || deleteAllLayersIcon || visibleFilterIcon || infoIcon) {
             extraTitlebarContent = (
                 <span>
                     {legendPrintIcon}
                     {visibleFilterIcon}
                     {deleteAllLayersIcon}
+                    <Icon className="layertree-theme-metadata" icon="info-sign" onClick={() => this.props.setActiveServiceInfo(this.props.theme)}/>
                 </span>
             );
         }
@@ -444,6 +448,7 @@ class LayerTree extends React.Component {
                 </SideBar>
                 {legendTooltip}
                 <LayerInfoWindow windowSize={this.props.layerInfoWindowSize} bboxDependentLegend={this.props.bboxDependentLegend} />
+                <ServiceInfoWindow windowSize={this.props.layerInfoWindowSize} />
             </div>
         );
     }
@@ -613,10 +618,12 @@ module.exports = {
         toggleMapTips: toggleMapTips,
         setSwipe: setSwipe,
         setActiveLayerInfo: setActiveLayerInfo,
+        setActiveServiceInfo: setActiveServiceInfo,
         zoomToExtent: zoomToExtent
     })(LayerTree),
     reducers: {
         layers: require('../reducers/layers'),
         layerinfo: require('../reducers/layerinfo'),
+        serviceinfo: require('../reducers/serviceinfo')
     }
 };

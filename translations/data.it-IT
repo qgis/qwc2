@@ -199,6 +199,17 @@
       "places": "Luoghi",
       "recent": "Ricerche recenti"
     },
+    "serviceinfo": {
+      "title": "Informazioni sul tema",
+      "abstract": "Riassunto",
+      "keywords": "Parole chiavi",
+      "onlineResource": "Risorsa online",
+      "contactPerson": "Persona di contatto",
+      "contactOrganization": "Organizzazione",
+      "contactPosition": "Posizione",
+      "contactPhone": "Telefono",
+      "contactEmail": "Email"
+    },
     "share": {
       "directLinkTitle": "Collegamento diretto",
       "generatingpermalink": "Sto generando il permalink",

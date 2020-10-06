@@ -9,7 +9,8 @@
 
 #LayerTree span.layertree-print-legend,
 #LayerTree span.layertree-visible-filter,
-#LayerTree span.layertree-delete-legend {
+#LayerTree span.layertree-delete-legend,
+#LayerTree span.layertree-theme-metadata {
     margin-left: 0.5em;
     border: 1px solid transparent;
     padding: 0.25em;
@@ -17,7 +18,8 @@
 
 #LayerTree span.layertree-print-legend:hover,
 #LayerTree span.layertree-visible-filter:hover,
-#LayerTree span.layertree-delete-legend:hover {
+#LayerTree span.layertree-delete-legend:hover,
+#LayerTree span.layertree-theme-metadata:hover {
     border: 1px solid white;
 }
 

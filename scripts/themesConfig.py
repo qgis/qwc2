@@ -336,8 +336,18 @@ def getTheme(config, configItem, result, resultItem):
             "Title": configItem["attribution"] if "attribution" in configItem else "",
             "OnlineResource": configItem["attributionUrl"] if "attributionUrl" in configItem else ""
         }
+        # service info
         resultItem["abstract"] = getChildElementValue(capabilities, "Service/Abstract")
         resultItem["keywords"] = ", ".join(keywords)
+        resultItem["onlineResource"] = getChildElement(capabilities, "Service/OnlineResource").getAttribute("xlink:href")
+        resultItem["contact"] = {
+            "person": getChildElementValue(capabilities, "Service/ContactInformation/ContactPersonPrimary/ContactPerson"),
+            "organization": getChildElementValue(capabilities, "Service/ContactInformation/ContactPersonPrimary/ContactOrganization"),
+            "position": getChildElementValue(capabilities, "Service/ContactInformation/ContactPosition"),
+            "phone": getChildElementValue(capabilities, "Service/ContactInformation/ContactVoiceTelephone"),
+            "email": getChildElementValue(capabilities, "Service/ContactInformation/ContactElectronicMailAddress")
+        }
+
         if "format" in configItem:
             resultItem["format"] = configItem["format"]
         resultItem["availableFormats"] = availableFormats

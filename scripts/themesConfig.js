@@ -13,6 +13,7 @@ const axios = require('axios');
 const xml2js = require('xml2js');
 const fs = require('fs');
 const path = require('path');
+const objectPath = require('object-path');
 const isEmpty = require('lodash.isempty');
 let fqdn = null;
 try {
@@ -345,9 +346,18 @@ function getTheme(config, configItem, result, resultItem, proxy) {
                 Title: configItem.attribution || "",
                 OnlineResource: configItem.attributionUrl || ""
             };
-            // abstract
+            // service info
             resultItem.abstract = capabilities.Service.Abstract || "";
             resultItem.keywords = keywords.join(', ');
+            resultItem.onlineResource = capabilities.Service.OnlineResource.$['xlink:href'];
+            resultItem.contact = {
+                person: objectPath.get(capabilities, "Service.ContactInformation.ContactPersonPrimary.ContactPerson", ""),
+                organization: objectPath.get(capabilities, "Service.ContactInformation.ContactPersonPrimary.ContactOrganization", ""),
+                position: objectPath.get(capabilities, "Service.ContactInformation.ContactPosition", ""),
+                phone: objectPath.get(capabilities, "Service.ContactInformation.ContactVoiceTelephone", ""),
+                email: objectPath.get(capabilities, "Service.ContactInformation.ContactElectronicMailAddress", "")
+            }
+
             resultItem.format = configItem.format;
             resultItem.availableFormats = capabilities.Capability.Request.GetMap.Format;
             resultItem.tiled = configItem.tiled;

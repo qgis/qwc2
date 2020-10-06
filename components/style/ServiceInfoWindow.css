@@ -1,0 +1,34 @@
+div.service-info-window-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+h4.service-info-window-title {
+    flex: 0 0 auto;
+}
+
+div.service-info-window-frame {
+    border: 1px solid @item_border@;
+    background-color: white;
+    font-size: small;
+    flex: 1 1 auto;
+    overflow: auto;
+}
+
+table.service-info-window-table {
+    width: 100%;
+}
+
+table.service-info-window-table td {
+    padding: 0.5em;
+    vertical-align: top;
+}
+
+table.service-info-window-table td:first-child {
+    white-space: nowrap;
+}
+
+table.service-info-window-table td:last-child {
+    width: 99%;
+}
