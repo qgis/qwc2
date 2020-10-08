@@ -28,7 +28,7 @@ const VectorLayerUtils = {
             labelSizes: []
         }
         const defaultFeatureStyle = ConfigUtils.getConfigProp("defaultFeatureStyle");
-        const ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
+        const ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : '#' + [255-(rgb[3] || 1)*255, ...rgb.slice(0, 3)].map(v => v.toString(16).padStart(2, '0')).join(''));
 
         for(let layer of layers.slice(0).reverse()) {
             if(layer.type != 'vector' || (layer.features || []).length == 0 || layer.visibility === false) {
@@ -58,7 +58,7 @@ const VectorLayerUtils = {
                     params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
                     params.labelFillColors.push(ensureHex(feature.styleOptions.fillColor));
                     params.labelOultineColors.push(ensureHex(feature.styleOptions.strokeColor));
-                    params.labelOutlineSizes.push(scaleFactor);
+                    params.labelOutlineSizes.push(scaleFactor * feature.styleOptions.strokeWidth);
                     params.labelSizes.push(Math.round(10 * feature.styleOptions.strokeWidth * scaleFactor));
                 } else {
                     params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
@@ -100,7 +100,7 @@ const VectorLayerUtils = {
                      '<se:SvgParameter name="stroke">' + ensureHex(opts.strokeColor) + '</se:SvgParameter>' +
                      '<se:SvgParameter name="stroke-opacity">' + opacity(opts.strokeColor) + '</se:SvgParameter>' +
                      '<se:SvgParameter name="stroke-width">' + (opts.strokeWidth * dpiScale) + '</se:SvgParameter>' +
-                     '<se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>' +
+                     '<se:SvgParameter name="stroke-linejoin">round</se:SvgParameter>' +
                      (!isEmpty(opts.strokeDash) ? '<CssParameter name="stroke-dasharray">' + opts.strokeDash.join(' ') + '</CssParameter>' : '') +
                      '</se:Stroke>';
         let fill = '<se:Fill>' +
