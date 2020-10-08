@@ -59,13 +59,13 @@ const VectorLayerUtils = {
                     params.labelFillColors.push(ensureHex(feature.styleOptions.fillColor));
                     params.labelOultineColors.push(ensureHex(feature.styleOptions.strokeColor));
                     params.labelOutlineSizes.push(scaleFactor);
-                    params.labelSizes.push(10 * feature.styleOptions.strokeWidth * scaleFactor);
+                    params.labelSizes.push(Math.round(10 * feature.styleOptions.strokeWidth * scaleFactor));
                 } else {
                     params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
                     params.labelFillColors.push(defaultFeatureStyle.textFill);
                     params.labelOultineColors.push(defaultFeatureStyle.textStroke);
                     params.labelOutlineSizes.push(scaleFactor);
-                    params.labelSizes.push(10 * scaleFactor);
+                    params.labelSizes.push(Math.round(10 * scaleFactor));
                 }
             }
         }
