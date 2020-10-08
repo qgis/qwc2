@@ -109,10 +109,10 @@ function changeLayerProperty(layerUuid, property, newvalue, sublayerpath=[], rec
     };
 }
 
-function setLayerLoading(layerUuid, loading) {
+function setLayerLoading(layerId, loading) {
     return {
         type: SET_LAYER_LOADING,
-        layerUuid: layerUuid,
+        layerId: layerId,
         loading
     };
 }

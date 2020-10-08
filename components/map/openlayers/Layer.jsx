@@ -179,10 +179,10 @@ class OpenlayersLayer extends React.Component {
             let sublayers = {};
             if(layer instanceof ol.layer.Group) {
                 layer.getLayers().forEach(sublayer => {
-                    sublayers[options.uuid + "#" + sublayer.get('id')] = sublayer;
+                    sublayers[options.id + "#" + sublayer.get('id')] = sublayer;
                 })
             } else {
-                sublayers[options.uuid] = layer;
+                sublayers[options.id] = layer;
             }
             Object.entries(sublayers).map(([id, sublayer]) => {
                 if (!sublayer.getTileLoadFunction) {
