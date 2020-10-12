@@ -41,6 +41,7 @@ class IdentifyViewer extends React.Component {
         longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
         displayResultTree: PropTypes.bool,
         attributeCalculator: PropTypes.func,
+        attributeTransform: PropTypes.func,
         setActiveLayerInfo: PropTypes.func,
         onClose: PropTypes.func,
         featureInfoReturnsLayerName: PropTypes.bool,
@@ -54,6 +55,7 @@ class IdentifyViewer extends React.Component {
         longAttributesDisplay: 'ellipsis',
         displayResultTree: true,
         attributeCalculator: (layer, feature) => { return []; },
+        attributeTransform: (value, layer, feature) => value,
         featureInfoReturnsLayerName: true
     }
     state = {
@@ -361,7 +363,7 @@ class IdentifyViewer extends React.Component {
             if(properties.length === 1 && result.properties["maptip"]) {
                 rows = properties.map(attrib =>
                     <tr key={attrib}>
-                        <td className="identify-attr-value">{this.attribValue(result.properties[attrib])}</td>
+                        <td className="identify-attr-value">{this.attribValue(result.properties[attrib], attrib, layer, result)}</td>
                     </tr>
                 );
             } else {
@@ -372,7 +374,7 @@ class IdentifyViewer extends React.Component {
                     return (
                         <tr key={attrib}>
                             <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i>{attrib}</i></td>
-                            <td className={"identify-attr-value " + this.props.longAttributesDisplay}>{this.attribValue(result.properties[attrib])}</td>
+                            <td className={"identify-attr-value " + this.props.longAttributesDisplay}>{this.attribValue(result.properties[attrib], attrib, layer, result)}</td>
                         </tr>
                     );
                 });
@@ -625,8 +627,9 @@ class IdentifyViewer extends React.Component {
             this.props.setActiveLayerInfo(matchlayer, matchsublayer)
         }
     }
-    attribValue = (text) => {
+    attribValue = (text, attrName, layer, result) => {
         text = "" + text; // Ensure text is a string
+        text = this.props.attributeTransform(attrName, text, layer, result);
         text = MiscUtils.addLinkAnchors(text);
         return ReactHtmlParser(text, {transform: (node, index) => {
             if(node.name === "a") {

@@ -43,6 +43,7 @@ class Identify extends React.Component {
         initiallyDocked: PropTypes.bool,
         params: PropTypes.object,
         attributeCalculator: PropTypes.func,
+        attributeTransform: PropTypes.func,
         featureInfoReturnsLayerName: PropTypes.bool,
         removeLayer: PropTypes.func
     }
@@ -154,6 +155,7 @@ class Identify extends React.Component {
                 longAttributesDisplay={this.props.longAttributesDisplay}
                 displayResultTree={this.props.displayResultTree}
                 attributeCalculator={this.props.attributeCalculator}
+                attributeTransform={this.props.attributeTransform}
                 initialWidth={this.props.initialWidth}
                 initialHeight={this.props.initialHeight}
                 initiallyDocked={this.props.initiallyDocked}
