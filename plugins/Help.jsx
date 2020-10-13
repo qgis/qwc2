@@ -24,7 +24,7 @@ class Help extends React.Component {
             <SideBar id="Help" width="20em" title="appmenu.items.Help"
                 icon="info">
                 {() => ({
-                    body: (<div>{this.props.renderBody()}</div>)
+                    body: (<div>{this.props.renderBody(this.props)}</div>)
                 })}
             </SideBar>
         );
