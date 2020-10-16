@@ -401,17 +401,17 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             if (configItem.legendUrl) {
                 resultItem.legendUrl = configItem.legendUrl;
             } else{
-                resultItem.legendUrl = capabilities.Capability.Request.GetLegendGraphic.DCPType.HTTP.Get.OnlineResource.$['xlink:href'] + (configItem.extraLegendParameters ? configItem.extraLegendParameters : '');
+                resultItem.legendUrl = capabilities.Capability.Request.GetLegendGraphic.DCPType.HTTP.Get.OnlineResource.$['xlink:href'].replace(/\?$/, "") + "?" + (configItem.extraLegendParameters ? configItem.extraLegendParameters : '');
             }
             if (configItem.featureInfoUrl) {
                 resultItem.featureInfoUrl = configItem.featureInfoUrl;
             } else{
-                resultItem.featureInfoUrl = capabilities.Capability.Request.GetFeatureInfo.DCPType.HTTP.Get.OnlineResource.$['xlink:href'];
+                resultItem.featureInfoUrl = capabilities.Capability.Request.GetFeatureInfo.DCPType.HTTP.Get.OnlineResource.$['xlink:href'].replace(/\?$/, "") + "?";
             }
             if (configItem.printUrl) {
                 resultItem.printUrl = configItem.printUrl;
             } else{
-                resultItem.printUrl = capabilities.Capability.Request.GetPrint.DCPType.HTTP.Get.OnlineResource.$['xlink:href'];
+                resultItem.printUrl = capabilities.Capability.Request.GetPrint.DCPType.HTTP.Get.OnlineResource.$['xlink:href'].replace(/\?$/, "") + "?";
             }
             if(configItem.printLabelForSearchResult) {
                 resultItem.printLabelForSearchResult = configItem.printLabelForSearchResult;
