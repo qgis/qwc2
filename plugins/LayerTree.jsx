@@ -260,7 +260,7 @@ class LayerTree extends React.Component {
         let legendicon = null;
         if(this.props.showLegendIcons) {
             if(layer.legendUrl) {
-                let request = layer.legendUrl + (layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + "SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + (layer.version || "1.3.0") + "&FORMAT=image/png&LAYER=" + sublayer.name;
+                let request = layer.legendUrl + (layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + "SERVICE=WMS&REQUEST=GetLegendGraphic&VERSION=" + (layer.version || "1.3.0") + "&FORMAT=image/png&LAYER=" + encodeURIComponent(sublayer.name);
                 legendicon = (<img className="layertree-item-legend-thumbnail" src={request + "&TYPE=thumbnail"} onMouseOver={ev => this.showLegendTooltip(ev, request)} onMouseOut={this.hideLegendTooltip} onTouchStart={ev => this.showLegendTooltip(ev, request)} />);
             } else if(layer.color) {
                 legendicon = (<span className="layertree-item-legend-coloricon" style={{backgroundColor: layer.color}} />);

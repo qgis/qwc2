@@ -51,7 +51,7 @@ class LayerInfoWindow extends React.Component {
                                 "&REQUEST=GetLegendGraphic" +
                                 "&VERSION=" + (this.props.layer.version || "1.3.0") +
                                 "&FORMAT=image/png" +
-                                "&LAYER=" + this.props.sublayer.name +
+                                "&LAYER=" + encodeURIComponent(this.props.sublayer.name) +
                                 "&CRS=" + this.props.map.projection +
                                 "&SCALE=" + Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom)) +
                                 "&WIDTH=" + this.props.map.size.width +
