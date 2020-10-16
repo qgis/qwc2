@@ -48,7 +48,12 @@ function loadLocale(translationFolder, language) {
                 dispatch(changeLocale(response.data));
             }
         }).catch((e) => {
-            dispatch(localeError(e));
+			let fallbackLocale = ConfigUtils.getConfigProp("fallbackLocale") || "en-US";
+			if(language != fallbackLocale) {
+				dispatch(loadLocale(translationFolder, fallbackLocale));
+			} else {
+				dispatch(localeError(e));
+			}
         });
     };
 }

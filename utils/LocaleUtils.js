@@ -57,7 +57,7 @@ const LocaleUtils = {
         let locale = supportedLocales[
             LocaleUtils.normalizeLocaleCode(query.locale || ConfigUtils.getConfigProp("locale") || (navigator ? navigator.language || navigator.browserLanguage : "en"))
         ];
-        return locale ? locale.code : "en-US";
+        return locale ? locale.code : (ConfigUtils.getConfigProp("fallbackLocale") || "en-US");
     },
     getSupportedLocales: function() {
         return supportedLocales;
