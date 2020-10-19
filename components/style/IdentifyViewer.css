@@ -184,7 +184,6 @@ div.identify-body td.identify-attr-title {
 }
 
 div.identify-body td.identify-attr-value {
-    max-width: 0;
     width: 60%;
 }
 
