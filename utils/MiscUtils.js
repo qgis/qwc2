@@ -8,6 +8,11 @@
 
 const MiscUtils = {
     addLinkAnchors: (text) => {
+        // If text already contains tags, do nothing
+        const tagRegEx = /(<.[^(><.)]+>)/;
+        if(tagRegEx.exec(text)) {
+            return text;
+        }
         const urlRegEx = /(\s|^)((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
 
         let value = text;
