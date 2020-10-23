@@ -55,7 +55,7 @@ class IdentifyViewer extends React.Component {
         longAttributesDisplay: 'ellipsis',
         displayResultTree: true,
         attributeCalculator: (layer, feature) => { return []; },
-        attributeTransform: (value, layer, feature) => value,
+        attributeTransform: (name, value, layer, feature) => value,
         featureInfoReturnsLayerName: true
     }
     state = {
@@ -629,7 +629,7 @@ class IdentifyViewer extends React.Component {
     }
     attribValue = (text, attrName, layer, result) => {
         text = "" + text; // Ensure text is a string
-        text = this.props.attributeTransform(text, attrName, layer, result);
+        text = this.props.attributeTransform(attrName, text, layer, result);
         text = MiscUtils.addLinkAnchors(text);
         return ReactHtmlParser(text, {transform: (node, index) => {
             if(node.name === "a") {
