@@ -63,13 +63,9 @@ def themesUrlJoin(configItem, adddingqs):
     url = urljoin(baseUrl, configItem["url"])
     urlparsed = urlparse(url)
     configItemUrlQs = parse_qs(urlparsed.query)
-    print("*", urlparsed.query, configItemUrlQs)
     addedQs = parse_qs(adddingqs)
-    print("addedQs", addedQs)
     finalqs = urlencode({**configItemUrlQs, **addedQs}, doseq=True)
-    print("finalqs", finalqs)
     urlparsed = urlparsed._replace(query=finalqs)
-    print("**", urlunparse(urlparsed))
     return urlunparse(urlparsed)
 
 
@@ -83,13 +79,6 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
             return
 
     print("Using WMS GetMap to generate thumbnail for " + configItem["url"])
-
-    # WMS GetMap request
-    # url = (
-    #     urljoin(baseUrl, configItem["url"])
-    #     + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&STYLES=&WIDTH=200&HEIGHT=100&CRS="
-    #     + crs
-    # )
 
     url = themesUrlJoin(
         configItem,
@@ -120,7 +109,6 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
     url += "&LAYERS=" + quote(",".join(layers).encode("utf-8"))
 
     try:
-        print(configItem)
         opener = getUrlOpener(configItem)
         reply = opener(url).read()
         basename = configItem["url"].rsplit("/")[-1].rstrip("?") + ".png"
@@ -334,8 +322,6 @@ def getTheme(config, configItem, result, resultItem):
     #     + car
     #     + "SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
     # )
-
-    print("*", url, baseUrl, configItem["url"])
 
     try:
         opener = getUrlOpener(configItem)
