@@ -61,7 +61,6 @@ class Identify extends React.Component {
         if (point || clickFeature) {
             // Remove any search selection layer to avoid confusion
             this.props.removeLayer("searchselection");
-            this.props.purgeResults();
 
             let queryableLayers = [];
             if(point) {
@@ -112,12 +111,14 @@ class Identify extends React.Component {
         if (props.enabled && props.clickFeature && props.clickFeature.feature === 'searchmarker' && props.clickFeature.geometry) {
             if (this.props.clickFeature !== props.clickFeature)
             {
+                this.props.purgeResults();
                 return props.clickFeature.geometry;
             }
         }
-        if (props.enabled && props.clickFeature&& props.clickFeature.coordinate) {
+        if (props.enabled && props.clickFeature && props.clickFeature.coordinate) {
             if (!this.props.clickFeature || this.props.clickFeature.coordinate !== props.clickFeature.coordinate)
             {
+                this.props.purgeResults();
                 return props.clickFeature.coordinate;
             }
         }
