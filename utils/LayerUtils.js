@@ -120,7 +120,7 @@ const LayerUtils = {
 
         if(!Array.isArray(layer.sublayers)) {
             return {
-                params: assign({}, layer.params || {LAYERS: layer.name}, {MAP: query.map || query.MAP}),
+                params: assign({}, layer.params || {LAYERS: layer.name}, {MAP: query.map || query.MAP || layer.params.map || layer.params.MAP}),
                 queryLayers: layer.queryable ? [layer.name] : []
             };
         }
