@@ -11,6 +11,7 @@ const PropTypes = require('prop-types');
 const classnames = require('classnames');
 const {Rnd} = require('react-rnd');
 const Message = require('../components/I18N/Message');
+const ConfigUtils = require('../utils/ConfigUtils');
 const Icon = require('./Icon');
 require('./style/ResizeableWindow.css');
 
@@ -88,6 +89,7 @@ class ResizeableWindow extends React.Component {
         };
     }
     render() {
+        let dockable = this.props.dockable && ConfigUtils.getConfigProp("globallyDisableDockableDialogs") !== true;
         let initial = {
             ...this.initialPosition(),
             width: this.props.initialWidth,
@@ -113,7 +115,7 @@ class ResizeableWindow extends React.Component {
                 {(this.props.extraControls || []).map(entry => (
                     <Icon key={entry.icon} className="resizeable-window-titlebar-control" onClick={entry.callback} icon={entry.icon}/>
                 ))}
-                {this.props.dockable ? (<Icon className="resizeable-window-titlebar-control" onClick={() => this.setState({dock: !this.state.dock})} icon={this.state.dock ? "undock" : "dock"} titlemsgid={this.state.dock ? "window.undock" : "window.dock"} />) : null}
+                {dockable ? (<Icon className="resizeable-window-titlebar-control" onClick={() => this.setState({dock: !this.state.dock})} icon={this.state.dock ? "undock" : "dock"} titlemsgid={this.state.dock ? "window.undock" : "window.dock"} />) : null}
                 <Icon className="resizeable-window-titlebar-control" onClick={this.onClose} icon="remove" titlemsgid="window.close"/>
             </div>),
             (<div className={bodyclasses} onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent} key="body">
