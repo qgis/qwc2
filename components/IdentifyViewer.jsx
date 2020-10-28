@@ -523,7 +523,7 @@ class IdentifyViewer extends React.Component {
         }
         // "el.style.background='inherit'": HACK to trigger an additional repaint, since Safari/Chrome on iOS render the element cut off the first time
         return (
-            <ResizeableWindow title="identify.title" icon="info-sign" onClose={this.props.onClose} initialX={0} initialY={0} initiallyDocked={this.props.initiallyDocked} initialWidth={this.props.initialWidth} initialHeight={this.props.initialHeight}>
+            <ResizeableWindow title="identify.title" icon="info-sign" onClose={this.props.onClose} initialX={0} initialY={0} initiallyDocked={this.props.initiallyDocked} initialWidth={this.props.initialWidth} initialHeight={this.props.initialHeight} zIndex={8}>
                 <div className="identify-body" role="body" ref={el => { if(el) el.style.background='inherit'; } }>
                     {body}
                     {haveResults && this.props.enableExport ? (

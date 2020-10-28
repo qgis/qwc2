@@ -65,7 +65,7 @@ class LayerInfoWindow extends React.Component {
             legend = (<span className="layer-info-window-coloricon" style={{backgroundColor: this.props.layer.color}} />);
         }
         return (
-            <ResizeableWindow title="layerinfo.title" icon="info-sign" onClose={this.onClose}
+            <ResizeableWindow title="layerinfo.title" icon="info-sign" onClose={this.onClose} zIndex={9}
                 initialWidth={this.props.windowSize.width} initialHeight={this.props.windowSize.height}>
                 <div role="body" className="layer-info-window-body">
                     <h4 className="layer-info-window-title">{this.props.sublayer.title}</h4>

@@ -42,7 +42,7 @@ class ServiceInfoWindow extends React.Component {
             return null;
         }
         return (
-            <ResizeableWindow title="serviceinfo.title" icon="info-sign" onClose={this.onClose}
+            <ResizeableWindow title="serviceinfo.title" icon="info-sign" onClose={this.onClose} zIndex={10}
                 initialWidth={this.props.windowSize.width} initialHeight={this.props.windowSize.height}>
                 <div role="body" className="service-info-window-body">
                     <h4 className="service-info-window-title">{this.props.service.title}</h4>

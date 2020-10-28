@@ -4,7 +4,7 @@
     right: 0;
     bottom: 0;
     height: 3em;
-    z-index: 6;
+    z-index: 100;
     color: @panel_fg@;
     background-color: @panel_bg@;
     box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
