@@ -241,8 +241,8 @@ class IdentifyViewer extends React.Component {
         } else if(this.state.exportFormat === 'csv') {
             let csv = "";
             Object.entries(json).forEach(([layerName, features]) => {
-                csv += layerName + "\n";
                 features.forEach(feature => {
+                    csv += layerName + ": " + this.resultDisplayName(layerName, feature) + "\n";
                     Object.entries(feature.properties || {}).forEach(([attrib, value]) => {
                         if(attrib !== "htmlContent") {
                             csv += '\t"' + attrib + '"\t"' + String(value).replace('"', '""') + '"\n';
