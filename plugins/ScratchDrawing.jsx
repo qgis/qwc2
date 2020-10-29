@@ -55,7 +55,7 @@ class ScratchDrawing extends React.Component {
         }
         // Call callback if task unset
         if(newProps.task.id !== this.props.task.id && this.props.task.id == "ScratchDrawing" && !this.submitted) {
-            this.props.task.data.callback(null);
+            this.props.task.data.callback(null, null);
         }
     }
     keyPressed = (ev) => {
@@ -112,7 +112,7 @@ class ScratchDrawing extends React.Component {
         let layer = this.props.layers.find(layer => layer.id === "__scratchdrawing");
         features = (layer || {}).features || [];
         this.submitted = true;
-        this.props.task.data.callback(features);
+        this.props.task.data.callback(features, this.props.projection);
         this.props.setCurrentTask(null);
     }
 };
