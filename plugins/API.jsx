@@ -10,21 +10,20 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
-const {addLayer,LayerRole} = require('../actions/layers');
-const {showIframeDialog} = require('../actions/windows');
+const {LayerRole} = require('../actions/layers');
 const LayerUtils = require('../utils/LayerUtils');
 const ServiceLayerUtils = require('../utils/ServiceLayerUtils');
 
 class API extends React.Component {
-    static propTypes = {
-        addLayer: PropTypes.func,
-        showIframeDialog: PropTypes.func,
-        layers: PropTypes.array
-    }
     componentDidMount() {
         window.qwc2 = {};
+        // Auto-binded functions
+        for(let prop in this.props) {
+            window.qwc2[prop] = this.props[prop];
+        }
+        // Additional exports
+        window.qwc2.LayerRole = LayerRole;
         window.qwc2.addExternalLayer = this.addExternalLayer;
-        window.qwc2.openIframeDialog = this.openIframeDialog;
     }
     render() {
         return null;
@@ -37,16 +36,26 @@ class API extends React.Component {
             }
         });
     }
-    openIframeDialog = (dialogname, url, options) => {
-        this.props.showIframeDialog(dialogname, url, options);
     }
 };
 
+function extractFunctions(obj) {
+    return Object.entries(obj).reduce((result, [key, value]) => {
+        if(typeof value === "function") {
+            result[key] = value;
+        };
+        return result;
+    }, {});
+}
+
 module.exports = module.exports = {
     APIPlugin: connect(state => ({
-        layers: state.layers.flat
-    }), {
-        addLayer: addLayer,
-        showIframeDialog: showIframeDialog
-    })(API)
+    }),
+    assign(
+        {},
+        extractFunctions(require('../actions/layers')),
+        extractFunctions(require('../actions/map')),
+        extractFunctions(require('../actions/task')),
+        extractFunctions(require('../actions/windows'))
+    ))(API)
 };
