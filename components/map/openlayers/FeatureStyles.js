@@ -29,7 +29,7 @@ const FeatureStyles = {
                 stroke: new ol.style.Stroke({color: opts.strokeColor, width: opts.strokeWidth})
             }) : null,
             text: new ol.style.Text({
-              font: '11pt sans-serif',
+              font: opts.textFont || '11pt sans-serif',
               text: feature.getProperties()["label"] || "",
               fill: new ol.style.Fill({color: opts.textFill}),
               stroke: new ol.style.Stroke({color: opts.textStroke, width: 3}),
