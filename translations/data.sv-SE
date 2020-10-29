@@ -178,6 +178,9 @@
       "text": "Text",
       "width": "Bredd"
     },
+    "scratchdrawing": {
+      "finish": ""
+    },
     "search": {
       "more": "Mer",
       "search": "",

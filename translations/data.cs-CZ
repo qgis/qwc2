@@ -178,6 +178,9 @@
       "text": "Text",
       "width": "Šířka"
     },
+    "scratchdrawing": {
+      "finish": ""
+    },
     "search": {
       "more": "Více...",
       "search": "Hledat",

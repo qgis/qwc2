@@ -178,6 +178,9 @@
       "text": "Текст",
       "width": "Ширина"
     },
+    "scratchdrawing": {
+      "finish": ""
+    },
     "search": {
       "more": "Больше...",
       "search": "Поиск",

@@ -1,0 +1,8 @@
+div.scratch-drawing-taskbar-body {
+    display: flex;
+    align-items: center;
+}
+
+div.scratch-drawing-taskbar-body span {
+    margin: 0 0.5em;
+}

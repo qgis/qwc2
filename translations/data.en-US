@@ -178,6 +178,9 @@
       "text": "Text",
       "width": "Width"
     },
+    "scratchdrawing": {
+      "finish": "Finish"
+    },
     "search": {
       "more": "More...",
       "search": "Search",

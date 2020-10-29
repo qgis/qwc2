@@ -178,6 +178,9 @@
       "text": "Tekst",
       "width": "Bredde"
     },
+    "scratchdrawing": {
+      "finish": ""
+    },
     "search": {
       "more": "Flere resultater",
       "search": "Søk",

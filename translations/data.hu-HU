@@ -178,6 +178,9 @@
       "text": "Szöveg",
       "width": "Szélesség"
     },
+    "scratchdrawing": {
+      "finish": ""
+    },
     "search": {
       "more": "Több...",
       "search": "Keresés",

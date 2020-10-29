@@ -24,6 +24,7 @@ class API extends React.Component {
         // Additional exports
         window.qwc2.LayerRole = LayerRole;
         window.qwc2.addExternalLayer = this.addExternalLayer;
+        window.qwc2.drawScratch = this.drawScratch;
     }
     render() {
         return null;
@@ -36,6 +37,8 @@ class API extends React.Component {
             }
         });
     }
+    drawScratch = (geomType, message, callback) => {
+        this.props.setCurrentTask("ScratchDrawing", null, null, {geomType, message, callback});
     }
 };
 

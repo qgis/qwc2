@@ -17,7 +17,7 @@ function task(state = {}, action)
             if(state.blocked) {
                 return state;
             }
-            return assign({}, state, {id: action.id, mode: action.mode, unsetOnMapClick: action.unsetOnMapClick});
+            return assign({}, state, {id: action.id, mode: action.mode, data: action.data, unsetOnMapClick: action.unsetOnMapClick});
         case SET_CURRENT_TASK_BLOCKED:
             return assign({}, state, {blocked: action.blocked});
         default:

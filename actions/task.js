@@ -15,7 +15,7 @@ const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const MapUtils = require('../utils/MapUtils');
 const {UrlParams} = require('../utils/PermaLinkUtils');
 
-function setCurrentTask(task, mode=null, mapClickAction=null) {
+function setCurrentTask(task, mode=null, mapClickAction=null, data=null) {
     return (dispatch, getState) => {
         // Don't do anything if current task is blocked
         if(getState().task && getState().task.blocked === true) {
@@ -34,6 +34,7 @@ function setCurrentTask(task, mode=null, mapClickAction=null) {
             type: SET_CURRENT_TASK,
             id: task,
             mode: mode,
+            data: data,
             unsetOnMapClick: mapClickAction === 'unset'
         });
     }

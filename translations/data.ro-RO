@@ -178,6 +178,9 @@
       "text": "Text",
       "width": "Lățime"
     },
+    "scratchdrawing": {
+      "finish": ""
+    },
     "search": {
       "more": "Mai multe...",
       "search": "Caută",
