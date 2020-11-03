@@ -17,6 +17,7 @@ const Message = require('../components/I18N/Message');
 const ConfigUtils = require("../utils/ConfigUtils");
 const {toggleFullscreen} = require('../actions/display');
 const {openExternalUrl} = require('../actions/task');
+const {setTopbarHeight} = require('../actions/map');
 const {restoreDefaultTheme} = require('../actions/theme');
 require('./style/TopBar.css');
 
@@ -36,7 +37,8 @@ class TopBar extends React.Component {
         appMenuClearsTask: PropTypes.bool,
         appMenuVisibleOnStartup: PropTypes.bool,
         logoSrc: PropTypes.string,
-        logoUrl: PropTypes.string
+        logoUrl: PropTypes.string,
+        setTopbarHeight: PropTypes.func
     }
     static defaultProps = {
         searchOptions: {},
@@ -82,7 +84,7 @@ class TopBar extends React.Component {
                 onSwipedUp={() => this.props.toggleFullscreen(true)}
                 onSwipedDown={() => this.props.toggleFullscreen(false)}
                 preventDefaultTouchmoveEvent={true}>
-                <div id="TopBar" className={classes}>
+                <div id="TopBar" ref={this.storeHeight} className={classes}>
                     {logoEl}
                     <div className="center-span">
                         <this.props.components.Search searchOptions={searchOptions}/>
@@ -101,6 +103,11 @@ class TopBar extends React.Component {
      triggerFullscreen = () => {
          this.props.toggleFullscreen(true);
      }
+     storeHeight = (el) => {
+         if(el) {
+             this.props.setTopbarHeight(el.clientHeight);
+         }
+     }
 };
 
 module.exports = (components) => { return {
@@ -111,7 +118,8 @@ module.exports = (components) => { return {
     }), {
         toggleFullscreen: toggleFullscreen,
         restoreDefaultTheme: restoreDefaultTheme,
-        openExternalUrl: openExternalUrl
+        openExternalUrl: openExternalUrl,
+        setTopbarHeight: setTopbarHeight
     })(TopBar),
     reducers: {
         display: require("../reducers/display"),

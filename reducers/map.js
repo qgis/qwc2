@@ -8,7 +8,8 @@
 
 const {
     CHANGE_MAP_VIEW, CONFIGURE_MAP, CHANGE_ZOOM_LVL, ZOOM_TO_EXTENT, ZOOM_TO_POINT,
-    PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, CLICK_FEATURE_ON_MAP, TOGGLE_MAPTIPS
+    PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, CLICK_FEATURE_ON_MAP, TOGGLE_MAPTIPS,
+    SET_TOPBAR_HEIGHT
 } = require('../actions/map');
 
 const assign = require('object-assign');
@@ -24,7 +25,8 @@ const defaultState = {
     projection: "EPSG:4326",
     zoom: 0,
     scales: [0],
-    resolutions: [0]
+    resolutions: [0],
+    topbarHeight: 0
 };
 
 function map(state = defaultState, action) {
@@ -90,6 +92,13 @@ function map(state = defaultState, action) {
         }
         case ZOOM_TO_EXTENT: {
             let bounds = CoordinatesUtils.reprojectBbox(action.extent, action.crs || state.projection, state.projection);
+            let padding = (state.topbarHeight + 10) / state.size.height;
+            let width = bounds[2] - bounds[0];
+            let height = bounds[3] - bounds[1];
+            bounds[0] -= padding * width;
+            bounds[2] += padding * width;
+            bounds[1] -= padding * height;
+            bounds[3] += padding * height;
             return assign({}, state, {
                 center: [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])],
                 zoom: MapUtils.getZoomForExtent(bounds, state.resolutions, state.size, 0, state.scales.length - 1),
@@ -120,6 +129,9 @@ function map(state = defaultState, action) {
         }
         case TOGGLE_MAPTIPS: {
             return assign({}, state, {maptips: action.active});
+        }
+        case SET_TOPBAR_HEIGHT: {
+            return assign({}, state, {topbarHeight: action.height});
         }
         default:
             return state;

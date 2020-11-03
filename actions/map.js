@@ -17,6 +17,7 @@ const ZOOM_TO_EXTENT = 'ZOOM_TO_EXTENT';
 const ZOOM_TO_POINT = 'ZOOM_TO_POINT';
 const CHANGE_ROTATION = 'CHANGE_ROTATION';
 const TOGGLE_MAPTIPS = 'TOGGLE_MAPTIPS';
+const SET_TOPBAR_HEIGHT = 'SET_TOPBAR_HEIGHT';
 
 function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
     return {
@@ -107,6 +108,13 @@ function toggleMapTips(active) {
     }
 }
 
+function setTopbarHeight(height) {
+    return {
+        type: SET_TOPBAR_HEIGHT,
+        height
+    };
+}
+
 module.exports = {
     CHANGE_MAP_VIEW,
     CONFIGURE_MAP,
@@ -118,6 +126,7 @@ module.exports = {
     ZOOM_TO_POINT,
     CHANGE_ROTATION,
     TOGGLE_MAPTIPS,
+    SET_TOPBAR_HEIGHT,
     changeMapView,
     configureMap,
     clickOnMap,
@@ -127,5 +136,6 @@ module.exports = {
     zoomToPoint,
     panTo,
     changeRotation,
-    toggleMapTips
+    toggleMapTips,
+    setTopbarHeight
 };
