@@ -22,6 +22,7 @@ const {
     CHANGE_LAYER_PROPERTY,
     ADD_LAYER_FEATURES,
     REMOVE_LAYER_FEATURES,
+    CLEAR_LAYER,
     ADD_THEME_SUBLAYER,
     REFRESH_LAYER,
     REMOVE_ALL_LAYERS,
@@ -211,6 +212,16 @@ function layers(state = {flat: [], swipe: undefined}, action) {
                 }
                 return result;
             }, []);
+            return assign({}, state, {flat: newLayers});
+        }
+        case CLEAR_LAYER: {
+            let newLayers = (state.flat || []).map(layer => {
+                if(layer.id === action.layerId) {
+                    return assign({}, layer, {features: []});
+                } else {
+                    return layer;
+                }
+            });
             return assign({}, state, {flat: newLayers});
         }
         case ADD_THEME_SUBLAYER: {

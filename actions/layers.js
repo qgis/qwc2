@@ -16,6 +16,7 @@ const REORDER_LAYER = 'REORDER_LAYER';
 const ADD_LAYER_FEATURES = 'ADD_LAYER_FEATURES';
 const ADD_THEME_SUBLAYER = 'ADD_THEME_SUBLAYER';
 const REMOVE_LAYER_FEATURES = 'REMOVE_LAYER_FEATURES';
+const CLEAR_LAYER = 'CLEAR_LAYER';
 const CHANGE_LAYER_PROPERTY = 'CHANGE_LAYER_PROPERTY';
 const REFRESH_LAYER = 'REFRESH_LAYER';
 const REMOVE_ALL_LAYERS = 'REMOVE_ALL_LAYERS';
@@ -87,6 +88,13 @@ function removeLayerFeatures(layerId, featureIds, keepEmptyLayer=false) {
         featureIds,
         keepEmptyLayer
     }
+}
+
+function clearLayer(layerId) {
+    return {
+        type: CLEAR_LAYER,
+        layerId
+    };
 }
 
 function addThemeSublayer(layer) {
@@ -183,6 +191,7 @@ module.exports = {
     reorderLayer,
     addLayerFeatures,
     removeLayerFeatures,
+    clearLayer,
     addThemeSublayer,
     changeLayerProperty,
     addMarker,
@@ -199,6 +208,7 @@ module.exports = {
     REORDER_LAYER,
     ADD_LAYER_FEATURES,
     REMOVE_LAYER_FEATURES,
+    CLEAR_LAYER,
     ADD_THEME_SUBLAYER,
     CHANGE_LAYER_PROPERTY,
     REFRESH_LAYER,
