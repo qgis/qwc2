@@ -61,7 +61,7 @@ class ScratchDrawing extends React.Component {
         // Change drawing mode if task data changes
         if(newProps.task.id === "ScratchDrawing" && newProps.task.data !== this.props.task.data) {
             let data = newProps.task.data || {};
-            this.props.changeRedliningState({action: 'Draw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null});
+            this.props.changeRedliningState({action: 'Draw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null, drawMultiple: data.drawMultiple});
         }
         if(newProps.task.id === "ScratchDrawing" && newProps.redlining.geomType !== this.props.redlining.geomType) {
             this.props.clearLayer('__scratchdrawing');
@@ -82,12 +82,12 @@ class ScratchDrawing extends React.Component {
             type: 'vector'
         };
         this.props.addLayer(layer);
-        this.props.changeRedliningState({action: 'Draw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null});
+        this.props.changeRedliningState({action: 'Draw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null, drawMultiple: data.drawMultiple});
         this.submitted = false;
         Mousetrap.bind('del', this.triggerDelete);
     }
     onHide = () => {
-        this.props.changeRedliningState({action: null, geomType: null, featureSelected: false, layer: null, layerTitle: null});
+        this.props.changeRedliningState({action: null, geomType: null, featureSelected: false, layer: null, layerTitle: null, drawMultiple: true});
         Mousetrap.unbind('del', this.triggerDelete);
         this.submitted = false;
     }

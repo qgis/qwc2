@@ -23,7 +23,8 @@ function redlining(state = {
     },
     layer: 'redlining',
     layerTitle: 'Redlining',
-    selectedFeature: null
+    selectedFeature: null,
+    drawMultiple: true
 }, action) {
     switch (action.type) {
         case CHANGE_REDLINING_STATE:

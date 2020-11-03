@@ -116,6 +116,9 @@ class RedliningSupport extends React.Component {
             freehand: isFreeHand
         });
         drawInteraction.on('drawstart', (evt) => {
+            if(this.picking && this.props.redlining.drawMultiple === false) {
+                return;
+            }
             this.leaveTemporaryPickMode();
             this.currentFeature = evt.feature;
             this.currentFeature.setId(uuid.v4());
@@ -162,7 +165,7 @@ class RedliningSupport extends React.Component {
             this.commitCurrentFeature();
         }
         if(this.picking) {
-            // Remote modify interactions
+            // Remove modify interactions
             this.props.map.removeInteraction(this.interactions.pop());
             this.picking = false;
         }
