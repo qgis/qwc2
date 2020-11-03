@@ -16,7 +16,7 @@ const NumericInput = require('react-numeric-input');
 const uuid = require('uuid');
 const Message = require('../components/I18N/Message');
 const {changeRedliningState} = require('../actions/redlining');
-const {LayerRole,addLayer,removeLayer} = require('../actions/layers');
+const {LayerRole,addLayer,removeLayer,clearLayer} = require('../actions/layers');
 const {setCurrentTask} = require('../actions/task');
 const {TaskBar} = require('../components/TaskBar');
 const ButtonBar = require('../components/widgets/ButtonBar');
@@ -35,6 +35,7 @@ class ScratchDrawing extends React.Component {
         setCurrentTask: PropTypes.func,
         changeRedliningState: PropTypes.func,
         addLayer: PropTypes.func,
+        clearLayer: PropTypes.func,
         removeLayer: PropTypes.func
     }
     static contextTypes = {
@@ -56,6 +57,14 @@ class ScratchDrawing extends React.Component {
         // Call callback if task unset
         if(newProps.task.id !== this.props.task.id && this.props.task.id == "ScratchDrawing" && !this.submitted) {
             this.props.task.data.callback(null, null);
+        }
+        // Change drawing mode if task data changes
+        if(newProps.task.id === "ScratchDrawing" && newProps.task.data !== this.props.task.data) {
+            let data = newProps.task.data || {};
+            this.props.changeRedliningState({action: 'Draw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null});
+        }
+        if(newProps.task.id === "ScratchDrawing" && newProps.redlining.geomType !== this.props.redlining.geomType) {
+            this.props.clearLayer('__scratchdrawing');
         }
     }
     keyPressed = (ev) => {
@@ -127,6 +136,7 @@ module.exports = {
     }), {
         changeRedliningState: changeRedliningState,
         addLayer: addLayer,
+        clearLayer: clearLayer,
         removeLayer: removeLayer,
         setCurrentTask: setCurrentTask
     })(ScratchDrawing),
