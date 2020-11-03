@@ -138,7 +138,7 @@ class OpenlayersLayer extends React.Component {
             }
         }
         let layerCreator = LayerRegistry[this.props.type];
-        if (layerCreator && layerCreator.update) {
+        if (layerCreator && layerCreator.update && this.state.layer) {
             layerCreator.update(
             this.state.layer,
             this.generateOpts(newProps.options, newProps.zIndex, CoordinatesUtils.normalizeSRS(newProps.srs)),
