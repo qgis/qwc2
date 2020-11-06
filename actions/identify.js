@@ -97,9 +97,9 @@ function setIdentifyFeatureResult(pos, layername, feature) {
     };
 }
 
-function setIdentifyEnabled(enabled) {
+function setIdentifyEnabled(enabled, theme=null) {
     return (dispatch, getState) => {
-        let identifyTool = ConfigUtils.getConfigProp("identifyTool", getState().theme.current);
+        let identifyTool = ConfigUtils.getConfigProp("identifyTool", theme || getState().theme.current);
         identifyTool = identifyTool !== undefined ? identifyTool : "Identify";
         dispatch({
             type: SET_IDENTIFY_TOOL,

@@ -185,7 +185,7 @@ function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, perm
         }
     }
 
-    dispatch(setIdentifyEnabled(true));
+    dispatch(setIdentifyEnabled(true, theme));
     dispatch({
         type: SET_CURRENT_THEME,
         theme: theme,
