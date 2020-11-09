@@ -11,6 +11,7 @@ const isEmpty = require('lodash.isempty');
 const uuid = require('uuid');
 
 const ConfigUtils = require("../utils/ConfigUtils");
+const LayerUtils = require("../utils/LayerUtils");
 const {LayerRole} = require("../actions/layers");
 const removeDiacritics = require('diacritics').remove;
 
@@ -54,7 +55,7 @@ const ThemeUtils = {
                         if(item.ref) {
                             let sublayer = themes.backgroundLayers.find(l => l.name === item.ref);
                             if(sublayer) {
-                                item = assign({}, item, sublayer);
+                                item = assign({}, item, sublayer, LayerUtils.buildWMSLayerParams(sublayer));
                                 delete item.ref;
                             } else {
                                 item = null;

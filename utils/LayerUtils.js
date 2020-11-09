@@ -140,7 +140,7 @@ const LayerUtils = {
         let newParams = assign({}, layer.params, {
             LAYERS: layerNames.join(","),
             OPACITIES: opacities.join(","),
-            MAP: query.map || query.MAP
+            MAP: query.map || query.MAP || (layer.params || {}).map || (layer.params || {}).MAP
         });
         return {
             params: newParams,
