@@ -143,6 +143,7 @@ class Identify extends React.Component {
     }
     onClose = () => {
         this.props.removeMarker('identify');
+        this.props.removeLayer("identifyslection");
         this.props.purgeResults();
     }
     render() {
