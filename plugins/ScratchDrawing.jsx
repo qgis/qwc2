@@ -45,6 +45,7 @@ class ScratchDrawing extends React.Component {
         super(props);
         window.addEventListener('keydown', this.keyPressed);
         this.submitted = false;
+        this.prevstyle = null;
     }
     componentWillUnmount() {
         window.removeEventListener('keydown', this.keyPressed);
@@ -61,11 +62,19 @@ class ScratchDrawing extends React.Component {
         // Change drawing mode if task data changes
         if(newProps.task.id === "ScratchDrawing" && newProps.task.data !== this.props.task.data) {
             let data = newProps.task.data || {};
-            this.props.changeRedliningState({action: 'Draw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null, drawMultiple: data.drawMultiple});
+            this.props.changeRedliningState({action: 'Draw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
         }
         if(newProps.task.id === "ScratchDrawing" && newProps.redlining.geomType !== this.props.redlining.geomType) {
             this.props.clearLayer('__scratchdrawing');
         }
+    }
+    drawingStyle = (style) => {
+        return assign({}, {
+            borderColor: [255, 0, 0, 1],
+            size: 2,
+            fillColor:  [255, 255, 255, 0.5],
+            text: ""
+        }, style);
     }
     keyPressed = (ev) => {
         if(ev.keyCode === 27) {
@@ -75,6 +84,7 @@ class ScratchDrawing extends React.Component {
         }
     };
     onShow = (mode) => {
+        this.prevstyle = this.props.redlining.style;
         let data = this.props.task.data || {};
         let layer = {
             id: "__scratchdrawing",
@@ -82,12 +92,13 @@ class ScratchDrawing extends React.Component {
             type: 'vector'
         };
         this.props.addLayer(layer);
-        this.props.changeRedliningState({action: 'Draw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null, drawMultiple: data.drawMultiple});
+        this.props.changeRedliningState({action: 'Draw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
         this.submitted = false;
         Mousetrap.bind('del', this.triggerDelete);
     }
     onHide = () => {
-        this.props.changeRedliningState({action: null, geomType: null, featureSelected: false, layer: null, layerTitle: null, drawMultiple: true});
+        this.props.changeRedliningState({action: null, geomType: null, featureSelected: false, layer: null, layerTitle: null, drawMultiple: true, style: this.prevstyle || this.props.redlining.style});
+        this.prevstyle = null;
         Mousetrap.unbind('del', this.triggerDelete);
         this.submitted = false;
     }
