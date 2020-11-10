@@ -160,10 +160,10 @@ class QtDesignerForm extends React.Component {
                 {widget.property.text}
             </label>);
         } else if(widget.class === "QComboBox") {
-            if(this.state.keyvalues[elname]) {
+            if(this.state.keyvalues[widget.name]) {
                 return (
                     <select name={elname} value={value} onChange={ev => updateField(widget.name, ev.target.value)}>
-                        {this.state.keyvalues[elname].map((item, idx) => (
+                        {this.state.keyvalues[widget.name].map((item, idx) => (
                             <option key={item.key} value={item.key}>{item.value}</option>
                         ))}
                     </select>
