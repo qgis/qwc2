@@ -26,6 +26,8 @@ const hostFqdn = fqdn ? "http://" + String(fqdn()) : "";
 const themesConfig = process.env["QWC2_THEMES_CONFIG"] || "themesConfig.json";
 
 let usedThemeIds = [];
+let autogenExternalLayers = [];
+
 function uniqueThemeId(themeName) {
     if(!themeName) {
         return uuid.v1();
@@ -128,7 +130,7 @@ function toArray(obj) {
 }
 
 // recursively get layer tree
-function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, featureReports) {
+function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, featureReports, externalLayers) {
     // skip print layers
     for(let printLayer of printLayers) {
         if(Array.isArray(printLayer)) {
@@ -171,6 +173,10 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         }
         if(layer.DataURL && layer.DataURL.OnlineResource) {
             layerEntry.dataUrl = layer.DataURL.OnlineResource.$['xlink:href'];
+            if(layerEntry.dataUrl.startsWith("wms:")) {
+                externalLayers.push({"internalLayer": layer.Name, "name": layerEntry.dataUrl});
+                layerEntry.dataUrl = "";
+            }
         }
         if(layer.MetadataURL && layer.MetadataURL.OnlineResource) {
             layerEntry.metadataUrl = layer.MetadataURL.OnlineResource.$['xlink:href'];
@@ -214,7 +220,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         layerEntry.sublayers = [];
         layerEntry.expanded = (layer.$ || {}).expanded === '0' ? false : collapseBelowLevel >= 0 && level >= collapseBelowLevel ? false : true;
         for (let subLayer of toArray(layer.Layer)) {
-            getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap, featureReports);
+            getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap, featureReports, externalLayers);
         }
         if (layerEntry.sublayers.length === 0) {
             // skip empty groups
@@ -301,7 +307,9 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             let layerTree = [];
             let visibleLayers = [];
             let titleNameMap = {};
-            getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, configItem.featureReport || {});
+            let externalLayers = configItem.externalLayers || [];
+            getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, configItem.featureReport || {}, externalLayers);
+            autogenExternalLayers.push(...externalLayers.map(entry => entry.name));
             visibleLayers.reverse();
 
             // print templates
@@ -389,7 +397,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             // NOTE: skip root WMS layer
             resultItem.sublayers = isEmpty(layerTree) ? [] : layerTree[0].sublayers;
             resultItem.expanded = true;
-            resultItem.externalLayers = configItem.externalLayers || [];
+            resultItem.externalLayers = externalLayers;
             resultItem.backgroundLayers = configItem.backgroundLayers;
             resultItem.searchProviders = configItem.searchProviders;
             resultItem.additionalMouseCrs = configItem.additionalMouseCrs;
@@ -496,7 +504,7 @@ function genThemes(themesConfig) {
             defaultPrintScales: config.defaultPrintScales,
             defaultPrintResolutions: config.defaultPrintResolutions,
             defaultPrintGrid: config.defaultPrintGrid,
-            externalLayers: config.themes.externalLayers,
+            externalLayers: config.themes.externalLayers || [],
             pluginData: config.themes.pluginData,
             themeInfoLinks: config.themes.themeInfoLinks,
             backgroundLayers: config.themes.backgroundLayers.map(bglayer => {
@@ -514,34 +522,50 @@ function genThemes(themesConfig) {
     let groupCounter = 0;
     getGroupThemes(config, config.themes, result, result.themes, proxy, groupCounter);
 
-    if (result.themes.backgroundLayers !== undefined) {
-        // get thumbnails for background layers
-        result.themes.backgroundLayers.map((backgroundLayer) => {
-            let imgPath = "img/mapthumbs/" + backgroundLayer.thumbnail;
-            if (!fs.existsSync("./assets/" + imgPath)) {
-                imgPath = "img/mapthumbs/default.jpg";
+    Promise.all(tasks).then(() => {
+        for(let entry of autogenExternalLayers) {
+            let pos = entry.lastIndexOf('#');
+            let type = entry.slice(0, 3);
+            let url = entry.slice(4, pos);
+            let layername = entry.slice(pos + 1);
+            result.themes.externalLayers.push({
+                "name": entry,
+                "type": type,
+                "url": url,
+                "params": {"LAYERS": layername},
+                "infoFormats": ["text/plain"]
+            });
+        }
+
+        if (result.themes.backgroundLayers !== undefined) {
+            // get thumbnails for background layers
+            result.themes.backgroundLayers.map((backgroundLayer) => {
+                let imgPath = "img/mapthumbs/" + backgroundLayer.thumbnail;
+                if (!fs.existsSync("./assets/" + imgPath)) {
+                    imgPath = "img/mapthumbs/default.jpg";
+                }
+                backgroundLayer.thumbnail = imgPath;
+            });
+        }
+
+        // write config file
+        fs.writeFile(process.cwd() + '/themes.json', JSON.stringify(result, null, 2), (error) => {
+            if (error) {
+                console.error("ERROR:", error);
+                process.exit(1);
+            } else {
+                console.log("\nCreated themes.json\n\n");
             }
-            backgroundLayer.thumbnail = imgPath;
         });
-    }
+
+    }).catch((error) => {
+        console.error("ERROR:", error);
+        process.exit(1);
+    });
 
     return result;
 }
 
 console.log("Reading " + themesConfig);
 
-themes = genThemes(themesConfig);
-Promise.all(tasks).then(() => {
-    // write config file
-    fs.writeFile(process.cwd() + '/themes.json', JSON.stringify(themes, null, 2), (error) => {
-        if (error) {
-            console.error("ERROR:", error);
-            process.exit(1);
-        } else {
-            console.log("\nCreated themes.json\n\n");
-        }
-    });
-}).catch((error) => {
-    console.error("ERROR:", error);
-    process.exit(1);
-});
+genThemes(themesConfig);

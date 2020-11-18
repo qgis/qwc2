@@ -28,6 +28,7 @@ qwc2_path = "."
 themesConfig = os.environ.get("QWC2_THEMES_CONFIG", "themesConfig.json")
 
 usedThemeIds = []
+autogenExternalLayers = []
 
 def uniqueThemeId(themeName):
     if not themeName:
@@ -143,7 +144,7 @@ def getChildElementValue(parent, path):
 
 
 # recursively get layer tree
-def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, featureReports):
+def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, featureReports, externalLayers):
     name = getChildElementValue(layer, "Name")
     title = getChildElementValue(layer, "Title")
     layers = getDirectChildElements(layer, "Layer")
@@ -190,6 +191,9 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
         try:
             onlineResource = getChildElement(layer, "DataURL/OnlineResource")
             layerEntry["dataUrl"] = onlineResource.getAttribute("xlink:href")
+            if layerEntry["dataUrl"].startswith("wms:"):
+                externalLayers.append({"internalLayer": name, "name": layerEntry["dataUrl"]})
+                layerEntry["dataUrl"] = ""
         except:
             pass
         try:
@@ -239,7 +243,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
         else:
             layerEntry["expanded"] = False if collapseBelowLevel >= 0 and level >= collapseBelowLevel else True
         for sublayer in layers:
-            getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap, featureReports)
+            getLayerTree(sublayer, layerEntry["sublayers"], visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap, featureReports, externalLayers)
 
         if not layerEntry["sublayers"]:
             # skip empty groups
@@ -251,6 +255,8 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
 
 # parse GetCapabilities for theme
 def getTheme(config, configItem, result, resultItem):
+    global autogenExternalLayers
+
     url = urljoin(baseUrl, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
 
     try:
@@ -290,7 +296,9 @@ def getTheme(config, configItem, result, resultItem):
         visibleLayers = []
         titleNameMap = {}
         featureReports = configItem["featureReport"] if "featureReport" in configItem else {}
-        getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, featureReports)
+        externalLayers = configItem["externalLayers"] if "externalLayers" in configItem else []
+        getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, featureReports, externalLayers)
+        autogenExternalLayers += list(map(lambda entry: entry["name"], externalLayers))
         visibleLayers.reverse()
 
         # print templates
@@ -389,8 +397,7 @@ def getTheme(config, configItem, result, resultItem):
         resultItem["expanded"] = True
         if "backgroundLayers" in configItem:
             resultItem["backgroundLayers"] = configItem["backgroundLayers"]
-        if "externalLayers" in configItem:
-            resultItem["externalLayers"] = configItem["externalLayers"]
+        resultItem["externalLayers"] = externalLayers
         if "pluginData" in configItem:
             resultItem["pluginData"] = configItem["pluginData"]
         if "minSearchScaleDenom" in configItem:
@@ -530,6 +537,19 @@ def genThemes(themesConfig):
     }
     groupCounter = 0
     getGroupThemes(config, config["themes"], result, result["themes"], groupCounter)
+
+    for entry in autogenExternalLayers:
+        pos = entry.rfind('#')
+        type = entry[0:3]
+        url = entry[4:pos]
+        layername = entry[pos+1:]
+        result["themes"]["externalLayers"].append({
+            "name": entry,
+            "type": type,
+            "url": url,
+            "params": {"LAYERS": layername},
+            "infoFormats": ["text/plain"]
+        })
 
     if "backgroundLayers" in result["themes"]:
         # get thumbnails for background layers
