@@ -93,6 +93,7 @@ class Redlining extends React.Component {
             {key: "Point", tooltip: "redlining.point", icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
             {key: "LineString", tooltip: "redlining.line", icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
             {key: "Polygon", tooltip: "redlining.polygon", icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
+            {key: "Circle", tooltip: "redlining.circle", icon: "circle", data: {action: "Draw", geomType: "Circle", text: ""}},
             {key: "Text", tooltip: "redlining.text", icon: "text", data: {action: "Draw", geomType: "Text", text: ""}},
         ];
         let activeFreeHand = this.props.redlining.freehand ? "HandDrawing" : null;

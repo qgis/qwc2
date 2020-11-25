@@ -55,9 +55,13 @@ class RedliningSupport extends React.Component {
                     return new ol.geom.MultiPoint([f.getGeometry().getCoordinates()]);
                 } else if(f.getGeometry().getType() === "LineString") {
                     return new ol.geom.MultiPoint(f.getGeometry().getCoordinates());
-                } else {
+                } else if(f.getGeometry().getType() == "Polygon") {
                     return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
+                } else if(f.getGeometry().getType() == "Circle") {
+                    let center = f.getGeometry().getCenter();
+                    return new ol.geom.MultiPoint([center, [center[0] + f.getGeometry().getRadius(), center[1]]]);
                 }
+                return null;
             }
         });
     }
@@ -142,6 +146,10 @@ class RedliningSupport extends React.Component {
         if(!this.currentFeature) {
             return;
         }
+        let circle = this.currentFeature.get('circle');
+        if(circle) {
+            this.currentFeature.setGeometry(new ol.geom.Circle(circle.center, circle.radius));
+        }
         this.updateFeatureStyle(this.props.redlining.style);
 
         let modifyInteraction = new ol.interaction.Modify({
@@ -195,6 +203,10 @@ class RedliningSupport extends React.Component {
             }
             if(evt.selected.length === 1) {
                 this.currentFeature = evt.selected[0];
+                let circle = this.currentFeature.get('circle');
+                if(circle) {
+                    this.currentFeature.setGeometry(new ol.geom.Circle(circle.center, circle.radius));
+                }
                 let newRedliningState = null;
                 if(this.currentFeature.get("isText") === true) {
                     newRedliningState = {
@@ -247,6 +259,19 @@ class RedliningSupport extends React.Component {
         }
         let format = new ol.format.GeoJSON();
         let feature = format.writeFeatureObject(this.currentFeature);
+        if(this.currentFeature.getGeometry() instanceof ol.geom.Circle) {
+            let center = this.currentFeature.getGeometry().getCenter();
+            let radius = this.currentFeature.getGeometry().getRadius();
+            let deg2rad = Math.PI / 180.;
+            feature.geometry.type = "Polygon";
+            feature.geometry.coordinates = [
+                Array.apply(null, Array(360)).map((item, index) => ([center[0] + radius * Math.cos(index * deg2rad), center[1] + radius * Math.sin(index * deg2rad)]))
+            ];
+            assign(feature.properties, {"circle": {
+                center: center,
+                radius: radius
+            }});
+        }
         assign(feature, {styleName: isText ? "text" : "default", styleOptions: this.styleOptions(this.props.redlining.style)});
         let layer = {
             id: this.props.redlining.layer,

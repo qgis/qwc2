@@ -162,6 +162,7 @@
       "bufferlayer": "Mållag",
       "buffercompute": "Beregner",
       "bufferselectfeature": "Velg et objekt fra buffer",
+      "circle": "",
       "delete": "Slett",
       "draw": "Tegn",
       "edit": "Rediger",

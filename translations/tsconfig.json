@@ -135,6 +135,7 @@
     "redlining.bufferlayer",
     "redlining.buffercompute",
     "redlining.bufferselectfeature",
+    "redlining.circle",
     "redlining.delete",
     "redlining.draw",
     "redlining.edit",

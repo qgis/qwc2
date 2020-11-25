@@ -162,6 +162,7 @@
       "bufferlayer": "Destination",
       "buffercompute": "Compute",
       "bufferselectfeature": "Select a feature to buffer...",
+      "circle": "Circle",
       "delete": "Delete",
       "draw": "Draw",
       "edit": "Edit",

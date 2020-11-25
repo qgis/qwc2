@@ -162,6 +162,7 @@
       "bufferlayer": "Mållager",
       "buffercompute": "Beräkna",
       "bufferselectfeature": "Välj ett objekt att buffra",
+      "circle": "",
       "delete": "Radera",
       "draw": "Rita",
       "edit": "Redigera",
