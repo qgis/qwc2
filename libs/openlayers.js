@@ -46,6 +46,7 @@ module.exports = {
     DoubleClickZoom: require('ol/interaction/DoubleClickZoom').default,
     DragPan: require('ol/interaction/DragPan').default,
     Draw: require('ol/interaction/Draw').default,
+    createBox: require('ol/interaction/Draw').createBox,
     Modify: require('ol/interaction/Modify').default,
     MouseWheelZoom: require('ol/interaction/MouseWheelZoom').default,
     Select: require('ol/interaction/Select').default,

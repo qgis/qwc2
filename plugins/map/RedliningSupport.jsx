@@ -111,13 +111,22 @@ class RedliningSupport extends React.Component {
     }
     addDrawInteraction = (newProps) => {
         this.reset();
+        const typeMap = {
+            "Text": "Point",
+            "Point": "Point",
+            "LineString": "LineString",
+            "Polygon": "Polygon",
+            "Circle": "Circle",
+            "Box": "Circle"
+        }
         let isText = newProps.redlining.geomType === "Text";
         let isFreeHand = newProps.redlining.freehand;
         let drawInteraction = new ol.interaction.Draw({
-            type: isText ? "Point" : newProps.redlining.geomType,
+            type: typeMap[newProps.redlining.geomType],
             condition: (event) => {  return event.pointerEvent.buttons === 1 },
             style: new ol.style.Style(),
-            freehand: isFreeHand
+            freehand: isFreeHand,
+            geometryFunction: newProps.redlining.geomType === "Box" ? ol.interaction.createBox() : undefined
         });
         drawInteraction.on('drawstart', (evt) => {
             if(this.picking && this.props.redlining.drawMultiple === false) {
