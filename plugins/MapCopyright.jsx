@@ -31,7 +31,7 @@ class MapCopyright extends React.Component {
         if(newProps.map && newProps.map.bbox && newProps.layers) {
             let transformedbboxes = {};
             transformedbboxes[newProps.map.projection] = newProps.map.bbox.bounds;
-            let copyrights = [];
+            let copyrights = {};
             newProps.layers.map(layer => this.collectCopyrigths(layer, newProps.map, transformedbboxes, copyrights));
             this.setState({currentCopyrights: copyrights});
         }
@@ -56,18 +56,20 @@ class MapCopyright extends React.Component {
                 mapbbox[1] < laybbox[3] && mapbbox[3] > laybbox[1])
             {
                 // Extents overlap
-                copyrights.push({label: layer.attribution.Title, url: layer.attribution.OnlineResource});
+                copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
             }
         } else {
-            copyrights.push({label: layer.attribution.Title, url: layer.attribution.OnlineResource});
+            copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
         }
     }
     render() {
-        let copyrights = this.state.currentCopyrights.map((attribution, index) => {
-            if(attribution.url) {
-                return (<span key={"attribution" + index}><a href={attribution.url} target="_blank">{attribution.label}</a></span>);
+        // If attribution has both url and label, "key" is the url and "value" the label.
+        // If it only has a label, "key" is the label and "value" is null.
+        let copyrights = Object.entries(this.state.currentCopyrights).map(([key, value]) => {
+            if(value) {
+                return (<span key={key}><a href={key} target="_blank">{value}</a></span>);
             } else {
-                return (<span key={"attribution" + index} dangerouslySetInnerHTML={{__html: attribution.label}} />);
+                return (<span key={key} dangerouslySetInnerHTML={{__html: key}} />);
             }
         })
         if(isEmpty(copyrights)) {
