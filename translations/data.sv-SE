@@ -84,7 +84,7 @@
       "noresults": "Inget svar eller ogiltig URL",
       "loading": "",
       "url": "URL",
-      "urlplaceholder": "Skriv in URL till WMS, WFS, KML GeoJSON..."
+      "urlplaceholder": "Skriv in URL till WMS, WMTS, WFS..."
     },
     "layerinfo": {
       "title": "Information om lager",

@@ -30,6 +30,7 @@ module.exports = {
     KML: require('ol/format/KML').default,
     WFS: require('ol/format/WFS').default,
     WMSCapabilities: require('ol/format/WMSCapabilities').default,
+    WMTSCapabilities: require('ol/format/WMTSCapabilities').default,
     WKT: require('ol/format/WKT').default
   },
   Geolocation: require('ol/Geolocation').default,

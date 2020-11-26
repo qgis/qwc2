@@ -37,6 +37,59 @@ const ServiceLayerUtils = {
         }
         return result;
     },
+    getWMTSLayers(capabilitiesXml, capabilitiesUrl, mapCrs) {
+        let wmtsFormat = new ol.format.WMTSCapabilities();
+        let capabilities = wmtsFormat.read(capabilitiesXml);
+        let tileMatrices = capabilities.Contents.TileMatrixSet.reduce((res, entry) => {
+            res[entry.Identifier] = {
+                crs: entry.SupportedCRS.replace("urn:ogc:def:crs:", ""),
+                matrix: entry.TileMatrix
+            };
+            return res;
+        }, {});
+        let layers = capabilities.Contents.Layer.map(layer => {
+            let matchingMatrix = layer.TileMatrixSetLink.find(link => tileMatrices[link.TileMatrixSet].crs === mapCrs);
+            let tileMatrixSet = matchingMatrix ? matchingMatrix.TileMatrixSet : layer.TileMatrixSetLink[0].TileMatrixSet;
+            let topMatrix = tileMatrices[tileMatrixSet].matrix[0];
+            let origin = topMatrix.TopLeftCorner;
+            let resolutions = tileMatrices[tileMatrixSet].matrix.map(entry => {
+                // 0.00028: assumed pixel width in meters, as per WMTS standard
+                return entry.ScaleDenominator * 0.00028;
+            });
+            let url = layer.ResourceURL.find(url => url.resourceType === "tile").template;
+            let dimensions = layer.Dimension.forEach(dim => {
+                url = url.replace("{" + dim.Identifier + "}", dim.Default);
+            });
+            return {
+                "type":"wmts",
+                "url": url,
+                "capabilitiesUrl": capabilitiesUrl,
+                "title": layer.Title,
+                "name": layer.Identifier,
+                "tileMatrixPrefix":"",
+                "tileMatrixSet": tileMatrixSet,
+                "originX": origin[0],
+                "originY": origin[1],
+                "projection:": tileMatrices[tileMatrixSet].crs,
+                "tileSize": [
+                    topMatrix.TileWidth,
+                    topMatrix.TileHeight
+                ],
+                "boundingBox": {
+                    "crs": "EPSG:4326",
+                    "bounds": layer.WGS84BoundingBox
+                },
+                "resolutions": resolutions,
+                "abstract": layer.Abstract,
+                "attribution":{
+                    "Title": capabilities.ServiceProvider.ProviderName,
+                    "OnlineResource": capabilities.ServiceProvider.ProviderSite
+                }
+            };
+        });
+        layers.sort((a, b) => a.title.localeCompare(b.title));
+        return layers;
+    },
     getWMSLayers(capabilitiesXml, asGroup=false) {
         let wmsFormat = new ol.format.WMSCapabilities();
         let capabilities = wmsFormat.read(capabilitiesXml);
@@ -218,10 +271,12 @@ const ServiceLayerUtils = {
         }
         return layers;
     },
-    findLayers(type, serviceUrl, layerConfigs, callback) {
+    findLayers(type, serviceUrl, layerConfigs, mapCrs, callback) {
         // Scan the capabilities of the specified service for the specified layers
         let url = serviceUrl.replace(/\?$/, '');
-        if(url.includes('?')) {
+        if(type === "wmts") {
+            // Do nothing
+        } else if(url.includes('?')) {
             url += "&service=" + type.toUpperCase() + "&request=GetCapabilities";
         } else {
             url += "?service=" + type.toUpperCase() + "&request=GetCapabilities";
@@ -233,6 +288,8 @@ const ServiceLayerUtils = {
                     result = ServiceLayerUtils.getWMSLayers(response.data);
                 } else if(type === "wfs") {
                     result = ServiceLayerUtils.getWFSLayers(response.data);
+                } else if(type === "wmts") {
+                    result = ServiceLayerUtils.getWMTSLayers(response.data, url, mapCrs);
                 }
                 let layer = LayerUtils.searchSubLayer({sublayers: result}, "name", layerConfig.name);
                 let source = type + ':' + serviceUrl + '#' + layerConfig.name;

@@ -84,7 +84,7 @@
       "noresults": "Bez výsledku nebo nevalidní URL",
       "loading": "",
       "url": "",
-      "urlplaceholder": "Vložit URL pro WMS, WFS..."
+      "urlplaceholder": "Vložit URL pro WMS, WMTS, WFS..."
     },
     "layerinfo": {
       "title": "Informace o vrstvě",

@@ -84,7 +84,7 @@
       "noresults": "Keine Resultate oder ungültige URL",
       "loading": "Laden...",
       "url": "URL",
-      "urlplaceholder": "WMS, WFS, KML oder GeoJSON URL eingeben..."
+      "urlplaceholder": "WMS, WMTS oder WFS URL eingeben..."
     },
     "layerinfo": {
       "title": "Ebeneninformationen",

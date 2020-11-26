@@ -84,7 +84,7 @@
       "noresults": "Sonuç yok ya da geçersiz URL",
       "loading": "Yükleniyor...",
       "url": "URL",
-      "urlplaceholder": "WMS, WFS Adresini giriniz..."
+      "urlplaceholder": "WMS, WMTS, WFS Adresini giriniz..."
     },
     "layerinfo": {
       "title": "Katman Bilgisi",

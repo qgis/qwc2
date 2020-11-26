@@ -226,7 +226,7 @@ class LayerTree extends React.Component {
         };
         let editframe = null;
         let infoButton = null;
-        if(layer.type === "wms" || layer.type === "wfs") {
+        if(layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts") {
             infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.props.setActiveLayerInfo(layer, sublayer)}/>);
         }
         if(this.state.activemenu === sublayer.uuid) {

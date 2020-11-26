@@ -84,7 +84,7 @@
       "noresults": "",
       "loading": "",
       "url": "",
-      "urlplaceholder": "URL a WMS, WFS adatokhoz..."
+      "urlplaceholder": "URL a WMS, WMTS, WFS adatokhoz..."
     },
     "layerinfo": {
       "title": "Fólia információ",

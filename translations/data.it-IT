@@ -84,7 +84,7 @@
       "noresults": "Nessun risultato o URL non valido",
       "loading": "Caricamento...",
       "url": "URL",
-      "urlplaceholder": "Indirizzo WMS, WFS KML, GeoJSON..."
+      "urlplaceholder": "Indirizzo WMS, WMTS, WFS..."
     },
     "layerinfo": {
       "title": "Informazioni livello",

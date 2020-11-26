@@ -84,7 +84,7 @@
       "noresults": "",
       "loading": "",
       "url": "",
-      "urlplaceholder": "Введите URL для WMS, WFS..."
+      "urlplaceholder": "Введите URL для WMS, WMTS, WFS..."
     },
     "layerinfo": {
       "title": "Информация о слое",

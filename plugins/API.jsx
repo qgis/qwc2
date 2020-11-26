@@ -26,12 +26,15 @@ class API extends React.Component {
         window.qwc2.addExternalLayer = this.addExternalLayer;
         window.qwc2.drawScratch = this.drawScratch;
     }
+    static propTypes = {
+        mapCrs: PropTypes.string
+    }
     render() {
         return null;
     }
     addExternalLayer = (resource, beforeLayerName=null) => {
         let params = LayerUtils.splitLayerUrlParam(resource);
-        ServiceLayerUtils.findLayers(params.type, params.url, [params], (id, layer) => {
+        ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
             if(layer) {
                 this.props.addLayer(layer, null, beforeLayerName);
             }
@@ -53,6 +56,7 @@ function extractFunctions(obj) {
 
 module.exports = module.exports = {
     APIPlugin: connect(state => ({
+        mapCrs: state.map.projection
     }),
     assign(
         {},

@@ -166,8 +166,8 @@ const LayerUtils = {
         for(let layer of layers) {
             if(layer.role === LayerRole.THEME) {
                 LayerUtils.collectWMSSublayerParams(layer, layernames, opacities, queryable, visibilities);
-            } else if(layer.role === LayerRole.USERLAYER && (layer.type === "wms" || layer.type === "wfs")) {
-                layernames.push(layer.type + ':' + layer.url + "#" + layer.name);
+            } else if(layer.role === LayerRole.USERLAYER && (layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts")) {
+                layernames.push(layer.type + ':' + (layer.capabilitiesUrl || layer.url) + "#" + layer.name);
                 opacities.push(layer.opacity);
                 visibilities.push(layer.visibility);
             } else if(layer.role === LayerRole.USERLAYER && layer.type === "separator") {

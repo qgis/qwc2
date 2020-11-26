@@ -84,7 +84,7 @@
       "noresults": "Ingen svar eller ugyldig URL",
       "loading": "Laster inn...",
       "url": "URL",
-      "urlplaceholder": "Skriv inn URL til WMS, WFS, KML GeoJSON..."
+      "urlplaceholder": "Skriv inn URL til WMS, WMTS, WFS..."
     },
     "layerinfo": {
       "title": "Informasjon om lag",

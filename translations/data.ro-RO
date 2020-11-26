@@ -84,7 +84,7 @@
       "noresults": "Fără rezultat sau URL invalid",
       "loading": "Se încarcă",
       "url": "URL",
-      "urlplaceholder": "Introdu URL către WMS, WFS, KML, GeoJSON..."
+      "urlplaceholder": "Introdu URL către WMS, WMTS, WFS..."
     },
     "layerinfo": {
       "title": "Info Strat",

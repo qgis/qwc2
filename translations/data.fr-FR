@@ -84,7 +84,7 @@
       "noresults": "Pas de résultat ou URL non valide",
       "loading": "",
       "url": "",
-      "urlplaceholder": "Entrer l'URL d'un WMS, WFS..."
+      "urlplaceholder": "Entrer l'URL d'un WMS, WMTS, WFS..."
     },
     "layerinfo": {
       "title": "Informations dur la couche",

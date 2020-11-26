@@ -84,7 +84,7 @@
       "noresults": "No results or invalid URL",
       "loading": "Loading...",
       "url": "URL",
-      "urlplaceholder": "Enter URL to WMS, WFS..."
+      "urlplaceholder": "Enter URL to WMS, WMTS, WFS..."
     },
     "layerinfo": {
       "title": "Layer Info",

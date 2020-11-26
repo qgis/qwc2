@@ -84,7 +84,7 @@
       "noresults": "Sin resultados o la dirección URL no es válida",
       "loading": "",
       "url": "",
-      "urlplaceholder": "Ingrese dirección URL o WMS, WFS..."
+      "urlplaceholder": "Ingrese dirección URL o WMS, WMTS, WFS..."
     },
     "layerinfo": {
       "title": "Información de la capa",

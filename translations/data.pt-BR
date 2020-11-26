@@ -84,7 +84,7 @@
       "noresults": "",
       "loading": "",
       "url": "",
-      "urlplaceholder": "Informe URL para WMS, WFS..."
+      "urlplaceholder": "Informe URL para WMS, WMTS, WFS..."
     },
     "layerinfo": {
       "title": "Infomações da camada",

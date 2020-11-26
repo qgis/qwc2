@@ -97,12 +97,12 @@ class ImportLayerList extends React.PureComponent {
     addServiceLayer = (entry) => {
         if(entry.resource) {
             let params = LayerUtils.splitLayerUrlParam(entry.resource);
-            ServiceLayerUtils.findLayers(params.type, params.url, [params], (id, layer) => {
+            ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
                 if(layer) {
                     this.props.addLayer(layer);
                 }
             });
-        } else if(entry.type === "wms" || entry.type === "wfs") {
+        } else if(entry.type === "wms" || entry.type === "wfs" || entry.type === "wmts") {
             this.props.addLayer(assign({}, entry, {sublayers: null}));
         }
     }
@@ -111,6 +111,7 @@ class ImportLayerList extends React.PureComponent {
 class ImportLayer extends React.Component {
     static propTypes = {
         theme: PropTypes.object,
+        mapCrs: PropTypes.string,
         addLayer: PropTypes.func,
         addLayerFeatures: PropTypes.func
     }
@@ -191,7 +192,7 @@ class ImportLayer extends React.Component {
         let pendingRequests = 0;
         this.setState({pendingRequests: pendingRequests, serviceLayers: null, filter: ""});
         // Attempt to load catalog
-        if(url.toLowerCase().endsWith(".json") || url.toLowerCase().endsWith(".xml")) {
+        if(url.toLowerCase().endsWith(".json") || (url.toLowerCase().endsWith(".xml") && !url.toLowerCase().endsWith("wmtscapabilities.xml"))) {
             this.setState({pendingRequests: ++pendingRequests});
             let type;
             if(url.toLowerCase().endsWith(".json")) {
@@ -239,6 +240,19 @@ class ImportLayer extends React.Component {
             });
             return;
         }
+
+        // Attempt to load as WMTS
+        this.setState({pendingRequests: ++pendingRequests});
+        axios.get(url).then(response => {
+            let result = ServiceLayerUtils.getWMTSLayers(response.data, url, this.props.mapCrs);
+            this.setState({
+                pendingRequests: this.state.pendingRequests - 1,
+                serviceLayers: (this.state.serviceLayers || []).concat(result)
+            });
+        }).catch(err => {
+            this.setState({pendingRequests: this.state.pendingRequests - 1});
+        });
+
         // Attempt to load as WMS
         let wmsParams = "?service=WMS&request=GetCapabilities&version=1.3.0";
         this.setState({pendingRequests: ++pendingRequests});
@@ -251,6 +265,7 @@ class ImportLayer extends React.Component {
         }).catch(err => {
             this.setState({pendingRequests: this.state.pendingRequests - 1});
         });
+
         // Attempt to load as WFS
         let wfsParams = "?service=WFS&request=GetCapabilities"
         this.setState({pendingRequests: ++pendingRequests});
@@ -315,6 +330,7 @@ class ImportLayer extends React.Component {
 };
 
 module.exports = connect((state) => ({
+    mapCrs: state.map.projection
 }), {
     addLayer: addLayer,
     addLayerFeatures: addLayerFeatures

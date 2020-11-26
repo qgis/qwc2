@@ -84,7 +84,7 @@
       "noresults": "Brak wyników lub błędny adres URL",
       "loading": "",
       "url": "URL",
-      "urlplaceholder": "Podaj URL do WMS, WFS..."
+      "urlplaceholder": "Podaj URL do WMS, WFS, WMTS..."
     },
     "layerinfo": {
       "title": "Informacja o warstwie",
