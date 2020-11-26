@@ -49,7 +49,7 @@ class ImportLayerList extends React.PureComponent {
         if(sublayers.filter(item => item).length == 0 && filter && !removeDiacritics(entry.title).match(filter)) {
             return null;
         }
-        let type = entry.resource ? entry.resource.slice(0, 3) : entry.type;
+        let type = entry.resource ? entry.resource.slice(0, entry.resource.indexOf(":")) : entry.type;
         let key = (entry.resource || (entry.type + ":" + entry.name)) + ":" + idx;
         return (
             <div key={key} style={{paddingLeft: level + 'em'}}>

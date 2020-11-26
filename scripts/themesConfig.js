@@ -524,10 +524,11 @@ function genThemes(themesConfig) {
 
     Promise.all(tasks).then(() => {
         for(let entry of autogenExternalLayers) {
-            let pos = entry.lastIndexOf('#');
-            let type = entry.slice(0, 3);
-            let url = entry.slice(4, pos);
-            let layername = entry.slice(pos + 1);
+            let cpos = entry.indexOf(":");
+            let hpos = entry.lastIndexOf('#');
+            let type = entry.slice(0, cpos);
+            let url = entry.slice(cpos + 1, hpos);
+            let layername = entry.slice(hpos + 1);
             result.themes.externalLayers.push({
                 "name": entry,
                 "type": type,

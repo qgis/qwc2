@@ -177,9 +177,10 @@ function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, perm
         });
     } else {
         for(let key of Object.keys(externalLayers)) {
-            let service = key.slice(0, 3);
-            let serviceUrl = key.slice(4);
-            ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], (id, layer) => {
+            let idx = key.indexOf(":");
+            let service = key.slice(0, idx);
+            let serviceUrl = key.slice(idx + 1);
+            ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], themeLayer.mapCrs, (id, layer) => {
                 dispatch(replacePlaceholderLayer(id, layer));
             });
         }

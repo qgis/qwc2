@@ -209,11 +209,12 @@ const LayerUtils = {
             name = match[1];
             opacity = Math.round(255 - parseFloat(match[2]) / 100 * 255);
         }
-        if(name.search(/^w(m|f)s:/) != -1) {
-            let pos = name.lastIndexOf('#');
-            type = name.slice(0, 3);
-            url = name.slice(4, pos);
-            name = name.slice(pos + 1);
+        if(match = name.match(/^(\w+):(.*)#([^#]+)$/)) {
+            let cpos = name.indexOf(":");
+            let hpos = name.lastIndexOf('#');
+            type = match[1];
+            url = match[2];
+            name = match[3];
         } else if(name.startsWith('sep:')) {
             type = 'separator';
             name = name.slice(4);
