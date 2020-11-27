@@ -98,12 +98,13 @@ const ThemeUtils = {
             infoFormats: theme.infoFormats,
             externalLayers: (theme.externalLayers || []).reduce((res, cur) => {
                 res[cur.internalLayer] = assign({}, themes.externalLayers.find(entry => entry.name === cur.name), {
-                    uuid: uuid.v4(),
-                    type: "wms"
+                    uuid: uuid.v4()
                 });
                 res[cur.internalLayer].title = res[cur.internalLayer].title || res[cur.internalLayer].name;
-                res[cur.internalLayer].featureInfoUrl = res[cur.internalLayer].featureInfoUrl || res[cur.internalLayer].url;
-                res[cur.internalLayer].queryLayers = res[cur.internalLayer].queryLayers || res[cur.internalLayer].params.LAYERS.split(",");
+                if(res[cur.internalLayer].type === "wms") {
+                    res[cur.internalLayer].featureInfoUrl = res[cur.internalLayer].featureInfoUrl || res[cur.internalLayer].url;
+                    res[cur.internalLayer].queryLayers = res[cur.internalLayer].queryLayers || res[cur.internalLayer].params.LAYERS.split(",");
+                }
                 return res;
              }, {})
         };
