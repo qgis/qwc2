@@ -101,7 +101,8 @@ const ThemeUtils = {
                     uuid: uuid.v4()
                 });
                 res[cur.internalLayer].title = res[cur.internalLayer].title || res[cur.internalLayer].name;
-                if(res[cur.internalLayer].type === "wms") {
+                if(res[cur.internalLayer].type === "wms" || res[cur.internalLayer].params) {
+                    res[cur.internalLayer].type = "wms";
                     res[cur.internalLayer].featureInfoUrl = res[cur.internalLayer].featureInfoUrl || res[cur.internalLayer].url;
                     res[cur.internalLayer].queryLayers = res[cur.internalLayer].queryLayers || res[cur.internalLayer].params.LAYERS.split(",");
                 }
