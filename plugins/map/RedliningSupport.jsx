@@ -274,7 +274,7 @@ class RedliningSupport extends React.Component {
             let deg2rad = Math.PI / 180.;
             feature.geometry.type = "Polygon";
             feature.geometry.coordinates = [
-                Array.apply(null, Array(360)).map((item, index) => ([center[0] + radius * Math.cos(index * deg2rad), center[1] + radius * Math.sin(index * deg2rad)]))
+                Array.apply(null, Array(361)).map((item, index) => ([center[0] + radius * Math.cos(index * deg2rad), center[1] + radius * Math.sin(index * deg2rad)]))
             ];
             assign(feature.properties, {"circle": {
                 center: center,
