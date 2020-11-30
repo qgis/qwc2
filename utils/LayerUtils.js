@@ -447,6 +447,8 @@ const LayerUtils = {
     },
     mergeSubLayers(baselayer, addlayer, swipeActive=false) {
         addlayer = {...baselayer, sublayers: addlayer.sublayers};
+        addlayer.externalLayers = addlayer.externalLayers || {};
+        LayerUtils.extractExternalLayersFromSublayers(addlayer, addlayer);
         LayerUtils.addUUIDs(addlayer);
         if(isEmpty(addlayer.sublayers)) {
             return {...baselayer};
@@ -526,6 +528,33 @@ const LayerUtils = {
             }
         }
         return newLayerConfigs;
+    },
+    extractExternalLayersFromSublayers(toplayer, layer) {
+        if(layer.sublayers) {
+            layer.sublayers = layer.sublayers.map(sublayer => {
+                if(sublayer.externalLayer) {
+                    let externalLayer = assign(
+                        {},
+                        sublayer.externalLayer,
+                        {
+                            title: sublayer.externalLayer.title || sublayer.externalLayer.name,
+                            uuid: uuid.v4()
+                        }
+                    );
+                    if(externalLayer.type === "wms") {
+                        externalLayer.featureInfoUrl = externalLayer.featureInfoUrl || externalLayer.url;
+                        externalLayer.queryLayers = externalLayer.queryLayers || externalLayer.params.LAYERS.split(",");
+                    }
+                    toplayer.externalLayers[sublayer.name] = externalLayer;
+                    sublayer = assign({}, sublayer);
+                    delete sublayer["externalLayer"];
+                }
+                if(sublayer.sublayers) {
+                    LayerUtils.reformatExternalLayers(themeLayer, sublayer);
+                }
+                return sublayer;
+            });
+        }
     }
 };
 
