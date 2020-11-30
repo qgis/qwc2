@@ -85,7 +85,7 @@ const ThemeUtils = {
             expanded: theme.expanded,
             name: theme.name,
             title: theme.title,
-            boundingBox: theme.bbox,
+            bbox: theme.bbox,
             sublayers : (Array.isArray(subLayers) && subLayers.length) ? subLayers : theme.sublayers,
             tiled: theme.tiled,
             ratio: !theme.tiled ? 1 : undefined,

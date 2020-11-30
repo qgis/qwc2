@@ -36,10 +36,10 @@ let WMSLayer = {
     create: (options, map) => {
         const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]);
         const queryParameters = wmsToOpenlayersOptions(options) || {};
-        if(options.tiled && !options.boundingBox) {
+        if(options.tiled && !options.bbox) {
             console.warn("Tiled WMS requested without specifying bounding box, falling back to non-tiled.");
         }
-        if (!options.tiled || !options.boundingBox) {
+        if (!options.tiled || !options.bbox) {
             return new ol.layer.Image({
                 opacity: options.opacity !== undefined ? options.opacity : 1,
                 visible: !!queryParameters["LAYERS"] && options.visibility !== false,
@@ -55,7 +55,7 @@ let WMSLayer = {
                 })
             });
         }
-        let extent = CoordinatesUtils.reprojectBbox(options.boundingBox.bounds, options.boundingBox.crs, options.srs);
+        let extent = CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, options.srs);
         let tileGrid = new ol.tilegrid.TileGrid({
             extent: extent,
             tileSize: options.tileSize || 256,

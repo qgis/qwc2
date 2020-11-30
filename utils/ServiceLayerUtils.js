@@ -75,7 +75,7 @@ const ServiceLayerUtils = {
                     topMatrix.TileWidth,
                     topMatrix.TileHeight
                 ],
-                "boundingBox": {
+                "bbox": {
                     "crs": "EPSG:4326",
                     "bounds": layer.WGS84BoundingBox
                 },
@@ -158,7 +158,7 @@ const ServiceLayerUtils = {
             queryable: layer.queryable,
             sublayers: isEmpty(sublayers) ? null : sublayers,
             expanded: false,
-            boundingBox: bbox,
+            bbox: bbox,
             visibility: true,
             opacity: 255,
             external: true,
@@ -216,7 +216,7 @@ const ServiceLayerUtils = {
                 name: name,
                 title: title,
                 abstract: abstract,
-                boundingBox: bbox,
+                bbox: bbox,
                 url: serviceUrl,
                 version: version,
                 formats: formats,

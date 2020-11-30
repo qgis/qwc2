@@ -44,14 +44,14 @@ class MapCopyright extends React.Component {
             return;
         }
         if(layer.role !== LayerRole.BACKGROUND) {
-            if(!layer.boundingBox) {
+            if(!layer.bbox) {
                 return;
             }
-            if(!transformedbboxes[layer.boundingBox.crs]) {
-                transformedbboxes[layer.boundingBox.crs] = CoordinatesUtils.reprojectBbox(map.bbox.bounds, map.projection, layer.boundingBox.crs);
+            if(!transformedbboxes[layer.bbox.crs]) {
+                transformedbboxes[layer.bbox.crs] = CoordinatesUtils.reprojectBbox(map.bbox.bounds, map.projection, layer.bbox.crs);
             }
-            let mapbbox = transformedbboxes[layer.boundingBox.crs];
-            let laybbox = layer.boundingBox.bounds;
+            let mapbbox = transformedbboxes[layer.bbox.crs];
+            let laybbox = layer.bbox.bounds;
             if( mapbbox[0] < laybbox[2] && mapbbox[2] > laybbox[0] &&
                 mapbbox[1] < laybbox[3] && mapbbox[3] > laybbox[1])
             {
