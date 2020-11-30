@@ -165,6 +165,9 @@ function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, perm
             layers = LayerUtils.restoreOrderedLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
         }
     }
+    if(isEmpty(layers)) {
+        layers = [assign(themeLayer, {sublayers: []})];
+    }
 
     for(let layer of layers.reverse()) {
         dispatch(addLayer(layer, insertPos));
