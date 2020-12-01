@@ -447,7 +447,7 @@ const LayerUtils = {
     },
     mergeSubLayers(baselayer, addlayer, swipeActive=false) {
         addlayer = {...baselayer, sublayers: addlayer.sublayers};
-        addlayer.externalLayers = addlayer.externalLayers || {};
+        addlayer.externalLayerMap = addlayer.externalLayerMap || {};
         LayerUtils.extractExternalLayersFromSublayers(addlayer, addlayer);
         LayerUtils.addUUIDs(addlayer);
         if(isEmpty(addlayer.sublayers)) {
@@ -545,12 +545,12 @@ const LayerUtils = {
                         externalLayer.featureInfoUrl = externalLayer.featureInfoUrl || externalLayer.url;
                         externalLayer.queryLayers = externalLayer.queryLayers || externalLayer.params.LAYERS.split(",");
                     }
-                    toplayer.externalLayers[sublayer.name] = externalLayer;
+                    toplayer.externalLayerMap[sublayer.name] = externalLayer;
                     sublayer = assign({}, sublayer);
                     delete sublayer["externalLayer"];
                 }
                 if(sublayer.sublayers) {
-                    LayerUtils.reformatExternalLayers(themeLayer, sublayer);
+                    LayerUtils.extractExternalLayersFromSublayers(themeLayer, sublayer);
                 }
                 return sublayer;
             });

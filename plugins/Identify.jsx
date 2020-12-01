@@ -73,11 +73,11 @@ class Identify extends React.Component {
                     let layers = [];
                     let queryLayers = layer.queryLayers;
                     for(let i = 0; i < queryLayers.length; ++i) {
-                        if(layer.externalLayers && layer.externalLayers[queryLayers[i]]) {
+                        if(layer.externalLayerMap && layer.externalLayerMap[queryLayers[i]]) {
                             let sublayer = LayerUtils.searchSubLayer(layer, "name", queryLayers[i]);
                             let sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
-                            if(!isEmpty(layer.externalLayers[queryLayers[i]].queryLayers) && !sublayerInvisible) {
-                                layers.push(layer.externalLayers[queryLayers[i]]);
+                            if(!isEmpty(layer.externalLayerMap[queryLayers[i]].queryLayers) && !sublayerInvisible) {
+                                layers.push(layer.externalLayerMap[queryLayers[i]]);
                             }
                         } else if(layers.length > 0 && layers[layers.length - 1].id === layer.id) {
                             layers[layers.length - 1].queryLayers.push(queryLayers[i]);

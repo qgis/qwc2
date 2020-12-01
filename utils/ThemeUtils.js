@@ -96,7 +96,7 @@ const ThemeUtils = {
             printUrl: theme.printUrl,
             featureInfoUrl: theme.featureInfoUrl,
             infoFormats: theme.infoFormats,
-            externalLayers: (theme.externalLayers || []).reduce((res, cur) => {
+            externalLayerMap: assign({}, theme.externalLayerMap, (theme.externalLayers || []).reduce((res, cur) => {
                 res[cur.internalLayer] = assign({}, themes.externalLayers.find(entry => entry.name === cur.name), {
                     uuid: uuid.v4()
                 });
@@ -107,7 +107,7 @@ const ThemeUtils = {
                     res[cur.internalLayer].queryLayers = res[cur.internalLayer].queryLayers || res[cur.internalLayer].params.LAYERS.split(",");
                 }
                 return res;
-             }, {})
+            }, {}))
         };
         // Drawing order only makes sense if layer reordering is disabled
         if(ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {
