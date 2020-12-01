@@ -48,6 +48,7 @@ module.exports = {
     DragPan: require('ol/interaction/DragPan').default,
     Draw: require('ol/interaction/Draw').default,
     createBox: require('ol/interaction/Draw').createBox,
+    Interaction: require('ol/interaction/Interaction').default,
     Modify: require('ol/interaction/Modify').default,
     MouseWheelZoom: require('ol/interaction/MouseWheelZoom').default,
     Select: require('ol/interaction/Select').default,
