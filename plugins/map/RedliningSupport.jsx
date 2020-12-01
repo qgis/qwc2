@@ -161,9 +161,13 @@ class RedliningSupport extends React.Component {
         }
         this.updateFeatureStyle(this.props.redlining.style);
 
+        // Disable a-posteriori editing of box, as editing does not enforce the box geometry (but edits it as a polygon)
+        let blockModify = this.props.redlining.geomType === "Box";
         let modifyInteraction = new ol.interaction.Modify({
             features: new ol.Collection([this.currentFeature]),
-            condition: (event) => {  return event.pointerEvent.buttons === 1 },
+            condition: (event) => {
+                return event.pointerEvent.buttons === 1 && !blockModify;
+            },
             deleteCondition: (event) => {
                 // delete vertices on SHIFT + click
                 return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
