@@ -121,6 +121,8 @@ class IdentifyViewer extends React.Component {
             newResults = IdentifyUtils.parseGeoJSONResponse(response.data, this.props.mapcrs);
         } else if(response.responseType === "text/xml") {
             newResults = IdentifyUtils.parseXmlResponse(response, this.props.mapcrs);
+        } else if(response.responseType === "application/vnd.ogc.gml") {
+            newResults = IdentifyUtils.parseGmlResponse(response, this.props.mapcrs);
         } else if(response.responseType === "text/plain") {
             newResults[response.request.metadata.layer] = [{type: "text", text: response.data, id: response.request.metadata.posstr}];
         } else if(response.responseType === "text/html") {

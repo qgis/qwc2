@@ -33,6 +33,8 @@ const IdentifyUtils = {
             format = 'application/json';
         } else if(infoFormats.includes('text/html')) {
             format = 'text/html';
+        } else if(infoFormats.includes('application/vnd.ogc.gml')) {
+            format = 'application/vnd.ogc.gml';
         }
         return {
             url: layer.featureInfoUrl.replace(/[?].*$/g, ''),
@@ -192,6 +194,49 @@ const IdentifyUtils = {
             }
             result[layer].push(assign({}, feature, {geometry: geometry, id: feature.id.substr(feature.id.lastIndexOf(".") + 1)}));
         });
+        return result;
+    },
+    parseGmlResponse(response, geometrycrs) {
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(response.data, "text/xml");
+        let result = {};
+
+        let msGMLOutput = doc.getElementsByTagName("msGMLOutput")[0];
+        if(msGMLOutput) {
+            let count = 0;
+            for(let layerEl of [].slice.call(msGMLOutput.children)) {
+                let layerName = layerEl.nodeName.replace(/_layer$/, "");
+                let layerTitle = layerEl.getElementsByTagName("gml:name")[0].textContent;
+                let featureName = layerName + "_feature";
+                result[layerName] = [];
+                for(let featureEl of [].slice.call(layerEl.getElementsByTagName(featureName))) {
+                    let feature = {
+                        "type": "Feature",
+                        "id": count++,
+                        "layername": layerName,
+                        "properties": {}
+                    }
+                    for(let propEl of [].slice.call(featureEl.children)) {
+                        if(propEl.nodeName === "gml:boundedBy") {
+                            let boxEl = propEl.getElementsByTagName("gml:Box")[0];
+                            if(boxEl) {
+                                let coordinatesEl = boxEl.getElementsByTagName("gml:coordinates")[0];
+                                if(coordinatesEl) {
+                                    feature["crs"] = boxEl.getAttribute("srsName");
+                                    feature["bbox"] = coordinatesEl.textContent.split(/[,\s]/).map(coo => parseFloat(coo));
+                                }
+                            }
+                        } else {
+                            feature.properties[propEl.nodeName] = propEl.textContent;
+                        }
+                    }
+                    result[layerName].push(feature);
+                }
+            }
+        } else {
+            result[response.request.metadata.layer] = [{type: "text", text: response.data, id: response.request.metadata.posstr}];
+        }
+
         return result;
     }
 }
