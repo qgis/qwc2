@@ -559,7 +559,7 @@ const LayerUtils = {
                     delete sublayer["externalLayer"];
                 }
                 if(sublayer.sublayers) {
-                    LayerUtils.extractExternalLayersFromSublayers(themeLayer, sublayer);
+                    LayerUtils.extractExternalLayersFromSublayers(toplayer, sublayer);
                 }
                 return sublayer;
             });
