@@ -13,6 +13,7 @@ const Message = require('../components/I18N/Message');
 const MapUtils = require('../utils/MapUtils');
 const {setActiveLayerInfo} = require('../actions/layerinfo');
 const ResizeableWindow = require("../components/ResizeableWindow");
+const LayerUtils = require('../utils/LayerUtils');
 const MiscUtils = require('../utils/MiscUtils');
 require('./style/LayerInfoWindow.css');
 
@@ -47,19 +48,8 @@ class LayerInfoWindow extends React.Component {
         }
         let legend = null;
         if(this.props.layer.legendUrl) {
-            let requestParams = "SERVICE=WMS" +
-                                "&REQUEST=GetLegendGraphic" +
-                                "&VERSION=" + (this.props.layer.version || "1.3.0") +
-                                "&FORMAT=image/png" +
-                                "&LAYER=" + encodeURIComponent(this.props.sublayer.name) +
-                                "&CRS=" + this.props.map.projection +
-                                "&SCALE=" + Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom)) +
-                                "&WIDTH=" + this.props.map.size.width +
-                                "&HEIGHT=" + this.props.map.size.height;
-            if(this.props.bboxDependentLegend) {
-                requestParams += "&BBOX=" + this.props.map.bbox.bounds.join(",");
-            }
-            let request = this.props.layer.legendUrl + (this.props.layer.legendUrl.indexOf('?') === -1 ? '?' : '&') + requestParams;
+            let scale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
+            let request = LayerUtils.getLegendUrl(this.props.layer, this.props.sublayer, scale, this.props.map.projection, this.props.bboxDependentLegend ? this.props.map : null);
             legend = (<img className="layer-info-window-legend" src={request} />);
         } else if(this.props.layer.color) {
             legend = (<span className="layer-info-window-coloricon" style={{backgroundColor: this.props.layer.color}} />);

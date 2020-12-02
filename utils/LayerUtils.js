@@ -543,6 +543,7 @@ const LayerUtils = {
                     );
                     if(externalLayer.type === "wms") {
                         externalLayer.featureInfoUrl = externalLayer.featureInfoUrl || externalLayer.url;
+                        externalLayer.legendUrl = externalLayer.legendUrl || externalLayer.url;
                         externalLayer.queryLayers = externalLayer.queryLayers || externalLayer.params.LAYERS.split(",");
                     }
                     toplayer.externalLayerMap[sublayer.name] = externalLayer;
@@ -555,6 +556,25 @@ const LayerUtils = {
                 return sublayer;
             });
         }
+    },
+    getLegendUrl(layer, sublayer, scale, projection, map) {
+        let params = "SERVICE=WMS"
+                   + "&REQUEST=GetLegendGraphic"
+                   + "&VERSION=" + (layer.version || "1.3.0")
+                   + "&FORMAT=image/png"
+                   + "&LAYER=" + encodeURIComponent(sublayer.name)
+                   + "&CRS=" + projection
+                   + "&SCALE=" + Math.round(scale);
+        if(map) {
+            params += "&WIDTH=" + map.size.width
+                    + "&HEIGHT=" + map.size.height
+                    + "&BBOX=" + map.bbox.bounds.join(",");
+        }
+        let requestUrl = layer.legendUrl;
+        if(layer.externalLayerMap && layer.externalLayerMap[sublayer.name]) {
+            requestUrl = layer.externalLayerMap[sublayer.name].legendUrl;
+        }
+        return requestUrl + (requestUrl.indexOf('?') === -1 ? '?' : '&') + params;
     }
 };
 
