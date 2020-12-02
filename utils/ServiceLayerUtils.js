@@ -13,6 +13,7 @@ const deepmerge = require('deepmerge');
 const isEmpty = require('lodash.isempty');
 const fastXmlParser = require('fast-xml-parser');
 const randomColor = require('randomcolor');
+const ConfigUtils = require('./ConfigUtils');
 const LayerUtils = require('./LayerUtils');
 const {LayerRole} = require('../actions/layers');
 
@@ -93,12 +94,6 @@ const ServiceLayerUtils = {
     getWMSLayers(capabilitiesXml, asGroup=false) {
         let wmsFormat = new ol.format.WMSCapabilities();
         let capabilities = wmsFormat.read(capabilitiesXml);
-        let infoFormats = null;
-        try {
-            infoFormats = capabilities.Capability.Request.GetFeatureInfo.Format;
-        } catch(e) {
-            infoFormats = ['text/plain'];
-        }
         let topLayer = null;
         let serviceUrl = null;
         try {
@@ -112,6 +107,19 @@ const ServiceLayerUtils = {
             featureInfoUrl = ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType)["HTTP"]["Get"]["OnlineResource"];
         } catch (e) {
             featureInfoUrl = serviceUrl;
+        }
+        let infoFormats = null;
+        try {
+            infoFormats = capabilities.Capability.Request.GetFeatureInfo.Format;
+        } catch(e) {
+            infoFormats = ['text/plain'];
+        }
+        let externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp("externalLayerFeatureInfoFormats") || {};
+        for(let entry of Object.keys(externalLayerFeatureInfoFormats)) {
+            if(featureInfoUrl.toLowerCase().includes(entry.toLowerCase())) {
+                infoFormats = [externalLayerFeatureInfoFormats[entry]];
+                break;
+            }
         }
         let version = capabilities.version;
         if(!topLayer.Layer || asGroup) {

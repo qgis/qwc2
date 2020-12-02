@@ -545,6 +545,14 @@ const LayerUtils = {
                         externalLayer.featureInfoUrl = externalLayer.featureInfoUrl || externalLayer.url;
                         externalLayer.legendUrl = externalLayer.legendUrl || externalLayer.url;
                         externalLayer.queryLayers = externalLayer.queryLayers || externalLayer.params.LAYERS.split(",");
+
+                        let externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp("externalLayerFeatureInfoFormats") || {};
+                        for(let entry of Object.keys(externalLayerFeatureInfoFormats)) {
+                            if(externalLayer.featureInfoUrl.toLowerCase().includes(entry.toLowerCase())) {
+                                externalLayer.infoFormats = [externalLayerFeatureInfoFormats[entry]];
+                                break;
+                            }
+                        }
                     }
                     toplayer.externalLayerMap[sublayer.name] = externalLayer;
                     sublayer = assign({}, sublayer);

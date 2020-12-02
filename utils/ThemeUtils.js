@@ -106,6 +106,14 @@ const ThemeUtils = {
                     res[cur.internalLayer].featureInfoUrl = res[cur.internalLayer].featureInfoUrl || res[cur.internalLayer].url;
                     res[cur.internalLayer].legendUrl = res[cur.internalLayer].legendUrl || res[cur.internalLayer].url;
                     res[cur.internalLayer].queryLayers = res[cur.internalLayer].queryLayers || res[cur.internalLayer].params.LAYERS.split(",");
+
+                    let externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp("externalLayerFeatureInfoFormats") || {};
+                    for(let entry of Object.keys(externalLayerFeatureInfoFormats)) {
+                        if(res[cur.internalLayer].featureInfoUrl.toLowerCase().includes(entry.toLowerCase())) {
+                            res[cur.internalLayer].infoFormats = [externalLayerFeatureInfoFormats[entry]];
+                            break;
+                        }
+                    }
                 }
                 return res;
             }, {}))
