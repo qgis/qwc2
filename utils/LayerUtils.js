@@ -564,7 +564,8 @@ const LayerUtils = {
                    + "&FORMAT=image/png"
                    + "&LAYER=" + encodeURIComponent(sublayer.name)
                    + "&CRS=" + projection
-                   + "&SCALE=" + Math.round(scale);
+                   + "&SCALE=" + Math.round(scale)
+                   + "&SLD_VERSION=1.1.0";
         if(map) {
             params += "&WIDTH=" + map.size.width
                     + "&HEIGHT=" + map.size.height
