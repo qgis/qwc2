@@ -22,6 +22,7 @@ if [ "$1" == "prod" ]; then
     cp -a ./dist ./index.html ./assets ./themes.json ./prod
     cp -a  $config ./prod/config.json
     cp -a ./translations/data.* ./prod/translations
+    echo "<!-- Built: $(date -R) -->" >> ./prod/index.html
     exit $?
 fi
 if [ "$1" == "analyze" ]; then
