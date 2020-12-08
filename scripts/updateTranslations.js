@@ -62,13 +62,13 @@ for(let workspace of workspaces) {
         let langskel = merge(skel, {"locale": lang});
 
         // Merge translations
-        let data = merge(langskel, cleanMessages(readJSON('/' + workspace + '/translations/data.' + lang), langskel));
+        let data = merge(langskel, cleanMessages(readJSON('/' + workspace + '/translations/' + lang + '.json'), langskel));
         // Write updated translations file
         try {
-            fs.writeFileSync(process.cwd() + '/' + workspace + '/translations/data.' + lang, JSON.stringify(data, null, 2) + "\n");
-            console.log('Wrote ' + workspace + '/translations/data.' + lang);
+            fs.writeFileSync(process.cwd() + '/' + workspace + '/translations/' + lang + ".json", JSON.stringify(data, null, 2) + "\n");
+            console.log('Wrote ' + workspace + '/translations/' + lang + '.json');
         } catch(e) {
-            console.error('Failed to write ' + workspace + '/translations/data.' + lang + ': ' + e);
+            console.error('Failed to write ' + workspace + '/translations/' + lang + '.json: ' + e);
         }
     }
 }
@@ -80,12 +80,12 @@ let skel = createSkel(strings);
 for(let lang of config.languages || []) {
     let langskel = merge(skel, {"locale": lang});
 
-    let origData = readJSON('/translations/data.' + lang);
-    let data = merge(langskel, cleanMessages(readJSON('/translations/data.' + lang), langskel));
+    let origData = readJSON('/translations/' + lang + '.json');
+    let data = merge(langskel, cleanMessages(readJSON('/translations/' + lang + '.json'), langskel));
 
     // Merge translations from workspaces
     for(let workspace of workspaces) {
-        data = merge(data, readJSON('/' + workspace + '/translations/data.' + lang));
+        data = merge(data, readJSON('/' + workspace + '/translations/' + lang + '.json'));
     }
 
     // Revert to original values for strings specified in overrides
@@ -98,9 +98,9 @@ for(let lang of config.languages || []) {
 
     // Write output
     try {
-        fs.writeFileSync(process.cwd() + '/translations/data.' + lang, JSON.stringify(data, null, 2) + "\n");
-        console.log('Wrote translations/data.' + lang);
+        fs.writeFileSync(process.cwd() + '/translations/' + lang + '.json', JSON.stringify(data, null, 2) + "\n");
+        console.log('Wrote translations/' + lang + '.json');
     } catch(e) {
-        console.error('Failed to write translations/data.' + lang + ': ' + e);
+        console.error('Failed to write translations/' + lang + '.json: ' + e);
     }
 }

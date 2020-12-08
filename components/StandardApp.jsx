@@ -36,7 +36,6 @@ const {themesLoaded,setCurrentTheme} = require('../actions/theme');
 
 const ConfigUtils = require('../utils/ConfigUtils');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const LocaleUtils = require('../utils/LocaleUtils');
 const MapUtils = require('../utils/MapUtils');
 const PluginsUtils = require('../utils/PluginsUtils');
 const LayerUtils = require('../utils/LayerUtils');
@@ -222,9 +221,6 @@ class StandardApp extends React.Component {
         // Detect browser properties
         this.store.dispatch(changeBrowserProperties(ConfigUtils.getBrowserProperties()));
 
-        // Load locale
-        LocaleUtils.setSupportedLocales(this.props.appConfig.supportedLocales);
-
         // Load config.json
         let configParams = Object.entries(UrlParams.getParams()).reduce((res, [key, value]) => {
             if(key.startsWith("config:")) {
@@ -235,7 +231,7 @@ class StandardApp extends React.Component {
         ConfigUtils.loadConfiguration(configParams).then((config) => {
             this.store.dispatch(localConfigLoaded(config));
             // Dispatch user locale
-            this.store.dispatch(loadLocale(null, LocaleUtils.getUserLocale()));
+            this.store.dispatch(loadLocale(this.props.appConfig.defaultLocale));
             // Add projections from config
             for(let proj of config.projections || []) {
                 if(Proj4js.defs(proj.code) === undefined) {

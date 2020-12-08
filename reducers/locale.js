@@ -6,24 +6,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var {CHANGE_LOCALE, LOCALE_LOAD_ERROR} = require('../actions/locale');
+const {CHANGE_LOCALE} = require('../actions/locale');
+const flatten = require('flat');
 
 function locale(state = {
     messages: {},
     current: ''
 }, action) {
     switch (action.type) {
-        case CHANGE_LOCALE:
-            return {
-                messages: action.messages,
-                current: action.locale
-            };
-        case LOCALE_LOAD_ERROR:
-            return {
-                loadingError: action.error
-            };
-        default:
-            return state;
+    case CHANGE_LOCALE:
+        return {
+            messages: flatten(action.messages),
+            current: action.locale
+        };
+    default:
+        return state;
     }
 }
 

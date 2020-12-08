@@ -7,55 +7,37 @@
  */
 
 const axios = require('axios');
-
-var LocaleUtils = require('../utils/LocaleUtils');
-
 const ConfigUtils = require('../utils/ConfigUtils');
+const {UrlParams} = require('../utils/PermaLinkUtils');
 
 const CHANGE_LOCALE = 'CHANGE_LOCALE';
-const LOCALE_LOAD_ERROR = 'LOCALE_LOAD_ERROR';
 
-function changeLocale(data) {
-    return {
-        type: CHANGE_LOCALE,
-        messages: data.messages,
-        locale: data.locale
-    };
-}
-
-function localeError(e) {
-    return {
-        type: LOCALE_LOAD_ERROR,
-        error: e
-    };
-}
-
-function loadLocale(translationFolder, language) {
-    return (dispatch) => {
-        let locale = language;
-        if (!locale) {
-            locale = LocaleUtils.getUserLocale();
-        }
-        return axios.get((translationFolder || ConfigUtils.getConfigProp('translationsPath')) + '/data.' + locale).then((response) => {
-            if (typeof response.data === "string") {
-                try {
-                    JSON.parse(response.data);
-                } catch(e) {
-                    console.warn('Locale file broken  for (' + language + '): ' + e.message);
-                    dispatch(localeError('Locale file broken  for (' + language + '): ' + e.message));
-                }
-            } else {
-                dispatch(changeLocale(response.data));
-            }
+function loadLocale(defaultLangData) {
+    return dispatch => {
+        let lang = UrlParams.getParam("lang") || (navigator ? (navigator.language || navigator.browserLanguage) : "en-US");
+        let config = {
+            headers: {'Content-Type': 'application/json'},
+            data: {}
+        };
+        let translationsPath = ConfigUtils.getConfigProp("translationsPath");
+        axios.get(translationsPath + '/' + lang + '.json', config).then(response => {
+            dispatch({
+                type: CHANGE_LOCALE,
+                locale: lang,
+                messages: response.data.messages
+            });
         }).catch((e) => {
-			let fallbackLocale = ConfigUtils.getConfigProp("fallbackLocale") || "en-US";
-			if(language != fallbackLocale) {
-				dispatch(loadLocale(translationFolder, fallbackLocale));
-			} else {
-				dispatch(localeError(e));
-			}
+            console.warn("Failed to load locale for " + lang + " (" + e + "), defaulting to " + defaultLangData.locale);
+            dispatch({
+                type: CHANGE_LOCALE,
+                locale: defaultLangData.locale,
+                messages: defaultLangData.messages
+            });
         });
     };
 }
 
-module.exports = {CHANGE_LOCALE, LOCALE_LOAD_ERROR, loadLocale};
+module.exports = {
+    CHANGE_LOCALE,
+    loadLocale
+};

@@ -7,28 +7,17 @@
  */
 const React = require('react');
 const PropTypes = require('prop-types');
-const ReactIntl = require('react-intl');
-
-const FormattedMessage = ReactIntl.FormattedMessage;
 
 class Message extends React.Component {
     static propTypes = {
-        msgId: PropTypes.string.isRequired,
-        msgParams: PropTypes.object
+        msgId: PropTypes.string.isRequired
     }
     static contextTypes = {
-        intl: PropTypes.object
+        messages: PropTypes.object
     }
     render() {
-        if(!this.context.intl) {
-            return (<span>{this.props.msgId || ""}</span>);
-        }
-        return (
-            <FormattedMessage id={this.props.msgId} values={this.props.msgParams}>
-                {typeof this.props.children === "function" ? this.props.children : null}
-            </FormattedMessage>
-        );
+        return (<span>{this.context.messages[this.props.msgId] || this.props.msgId}</span>);
     }
-};
+}
 
 module.exports = Message;

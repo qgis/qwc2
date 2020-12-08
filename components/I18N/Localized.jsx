@@ -13,9 +13,9 @@ const {IntlProvider} = require('react-intl');
 
 class Localized extends React.Component {
     static propTypes = {
+        children: PropTypes.node,
         locale: PropTypes.string,
-        messages: PropTypes.object,
-        loadingError: PropTypes.string
+        messages: PropTypes.object
     }
     static childContextTypes = {
         locale: PropTypes.string,
@@ -23,44 +23,23 @@ class Localized extends React.Component {
     }
     getChildContext = () => {
         return {
-           locale: this.props.locale,
-           messages: this.props.messages
+            locale: this.props.locale,
+            messages: this.props.messages
         };
     }
     render() {
-        let { children } = this.props;
-
         if (this.props.messages && this.props.locale) {
-            if (typeof children === 'function') {
-                children = children();
-            }
-
-            return (<IntlProvider key={this.props.locale} locale={this.props.locale}
-                 messages={this.flattenMessages(this.props.messages)}
-                >
-                {children}
-            </IntlProvider>);
-            // return React.Children.only(children);
-        } else if (this.props.loadingError) {
-            return <div className="loading-locale-error">{this.props.loadingError}</div>;
+            return (
+                <IntlProvider key={this.props.locale} locale={this.props.locale} messages={this.props.messages}>
+                    {this.props.children}
+                </IntlProvider>
+            );
         }
         return null;
     }
-    flattenMessages = (messages, prefix = '') => {
-        return Object.keys(messages).reduce((previous, current) => {
-            return (typeof messages[current] === 'string') ? {
-                 [prefix + current]: messages[current],
-                ...previous
-            } : {
-                ...this.flattenMessages(messages[current], prefix + current + '.'),
-                ...previous
-            };
-        }, {});
-    }
- };
+}
 
- module.exports = connect((state) => ({
-     locale: state.locale.current,
-     messages: state.locale.messages,
-     loadingError: state.locale.localeError
- }), {})(Localized);
+module.exports = connect((state) => ({
+    locale: state.locale.current,
+    messages: state.locale.messages
+}), {})(Localized);
