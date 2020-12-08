@@ -7,7 +7,6 @@
  */
 
 var ol = require('openlayers');
-var eventListener = require('eventlistener');
 
 const removeIds = (items) => {
     if (items.length !== 0) {
@@ -33,7 +32,7 @@ const cloneOriginalOverlay = (original, options) => {
         const onClose = (e) => {
             options.onClose(e.target.getAttribute('data-overlayid'));
         };
-        eventListener.add(close, 'click', onClose);
+        close.addEventListener("click", onClose);
     }
     return cloned;
 };
