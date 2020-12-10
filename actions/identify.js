@@ -56,37 +56,6 @@ function sendIdentifyRequest(request) {
     };
 }
 
-function sendIdentifyRegionRequest(serviceUrl, requestParams, wgs84FilterPoly = null) {
-    const defaultParams = {
-        service: 'WFS',
-        version: '1.0.0',
-        request: 'GetFeature',
-    };
-
-    const params = assign({}, defaultParams, requestParams);
-    const reqId = uuid.v1();
-    return (dispatch) => {
-        dispatch(newMapInfoRequest(reqId, param));
-        axios.get(serviceUrl, {params: params}).then((response) => {
-            if(wgs84FilterPoly) {
-                let geomFactory = new jsts.geom.GeometryFactory();
-                let jsonReader = new jsts.io.GeoJSONReader(geomFactory);
-                let filterGeom = jsonReader.read({
-                    "type": "Polygon",
-                    "coordinates": [wgs84FilterPoly]
-                });
-                response.data.features = response.data.features.filter(feature => {
-                    let geom = jsonReader.read(feature.geometry);
-                    return filterGeom.contains(geom);
-                });
-            }
-            dispatch(identifyResponse(reqId, {url: serviceUrl, params}, response.data));
-        }).catch((e) => {
-            dispatch(identifyResponse(reqId, null, null, e));
-        });
-    };
-}
-
 function setIdentifyFeatureResult(pos, layername, feature) {
     return {
         type: SET_IDENTIFY_FEATURE_RESULT,

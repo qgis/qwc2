@@ -12,7 +12,7 @@ const {connect} = require('react-redux');
 const {stringify} = require('wellknown');
 const Message = require('../components/I18N/Message');
 const {LayerRole} = require('../actions/layers');
-const {sendIdentifyRegionRequest, sendIdentifyRequest} = require('../actions/identify');
+const {sendIdentifyRequest} = require('../actions/identify');
 const {changeSelectionState} = require('../actions/selection');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const {setCurrentTask} = require("../actions/task");
@@ -27,12 +27,7 @@ class IdentifyRegion extends React.Component {
         theme: PropTypes.object,
         layers: PropTypes.array,
         setCurrentTask: PropTypes.func,
-        sendRequest: PropTypes.func,
-        sendWFSRequest: PropTypes.func,
-        useWfs: PropTypes.bool
-    }
-    static defaultProps = {
-        useWfs: false
+        sendRequest: PropTypes.func
     }
     componentDidUpdate(prevProps, prevState) {
         if(this.props.selection.polygon && this.props.selection !== prevProps.selection) {
@@ -69,41 +64,20 @@ class IdentifyRegion extends React.Component {
             return;
         }
         this.props.changeSelectionState({reset: true});
-        if(this.props.useWfs) {
-            let bbox = [poly[0][0], poly[0][1], poly[0][0], poly[0][1]];
-            for(let i = 1; i < poly.length; ++i) {
-                bbox[0] = Math.min(bbox[0], poly[i][0]);
-                bbox[1] = Math.min(bbox[1], poly[i][1]);
-                bbox[2] = Math.max(bbox[2], poly[i][0]);
-                bbox[3] = Math.max(bbox[3], poly[i][1]);
-            }
-            let bboxstr = bbox[0] + "," + bbox[1] + "," + bbox[2] + "," + bbox[3];
-            let requestParams = {
-                bbox: bboxstr,
-                outputformat: "GeoJSON",
-                typename: queryLayers,
-                srsName: this.props.map.projection
-            };
-            let wgs84poly = poly.map(coo => {
-                return CoordinatesUtils.reproject(coo, this.props.map.projection, "EPSG:4326");
-            });
-            this.props.sendWFSRequest(this.props.theme.url, requestParams, wgs84poly);
-        } else {
-            let layer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
-            let center = [0, 0];
-            for(let i = 0; i < poly.length; ++i) {
-                center[0] += poly[i][0];
-                center[1] += poly[i][1];
-            }
-            center[0] /= poly.length;
-            center[1] /= poly.length;
-            let geometry = {
-                "type": "Polygon",
-                "coordinates": [poly]
-            };
-            let filter = stringify(geometry);
-            this.props.sendRequest(IdentifyUtils.buildFilterRequest(layer, queryLayers, filter, this.props.map, {}));
+        let layer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
+        let center = [0, 0];
+        for(let i = 0; i < poly.length; ++i) {
+            center[0] += poly[i][0];
+            center[1] += poly[i][1];
         }
+        center[0] /= poly.length;
+        center[1] /= poly.length;
+        let geometry = {
+            "type": "Polygon",
+            "coordinates": [poly]
+        };
+        let filter = stringify(geometry);
+        this.props.sendRequest(IdentifyUtils.buildFilterRequest(layer, queryLayers, filter, this.props.map, {}));
     }
 };
 
@@ -118,8 +92,7 @@ module.exports = {
     IdentifyRegionPlugin: connect(selector, {
         changeSelectionState: changeSelectionState,
         setCurrentTask: setCurrentTask,
-        sendRequest: sendIdentifyRequest,
-        sendWFSRequest: sendIdentifyRegionRequest
+        sendRequest: sendIdentifyRequest
     })(IdentifyRegion),
     reducers: {
         selection: require('../reducers/selection')
