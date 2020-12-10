@@ -566,11 +566,12 @@ const LayerUtils = {
         }
     },
     getLegendUrl(layer, sublayer, scale, projection, map) {
+        let name = layer.externalLayerMap[sublayer.name] ? layer.externalLayerMap[sublayer.name].params.LAYERS : sublayer.name;
         let params = "SERVICE=WMS"
                    + "&REQUEST=GetLegendGraphic"
                    + "&VERSION=" + (layer.version || "1.3.0")
                    + "&FORMAT=image/png"
-                   + "&LAYER=" + encodeURIComponent(sublayer.name)
+                   + "&LAYER=" + encodeURIComponent(name)
                    + "&CRS=" + projection
                    + "&SCALE=" + Math.round(scale)
                    + "&SLD_VERSION=1.1.0";
