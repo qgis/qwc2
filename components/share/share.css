@@ -1,5 +1,9 @@
+.social-links .social-boxes {
+    display: flex;
+    align-items: flex-start;
+}
+
 .social-links .social-box  {
-    display:inline-block;
     text-align: center;
     margin-right: 15px
 }

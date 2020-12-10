@@ -45,48 +45,50 @@ class ShareSocials extends React.Component {
                     <Message msgId="share.socialIntro"/>
                 </h4>
 
-                <div className="social-box facebook">
-                <FacebookShareButton
-                    url={this.props.shareUrl}
-                    quote={title}
-                    className="share-facebook">
-                    <FacebookIcon
-                    size={32}
-                    round />
-                </FacebookShareButton>
-                <FacebookShareCount
-                    url={this.props.shareUrl}
-                    {...countProps}
-                    className="share-facebook-count">
-                    {count => count}
-                </FacebookShareCount>
-                </div>
-
-                <div className="social-box twitter">
-                    <TwitterShareButton
-                    url={this.props.shareUrl}
-                    title={title}
-                    className="share-twitter">
-                    <TwitterIcon
+                <div className="social-boxes">
+                    <div className="social-box facebook">
+                    <FacebookShareButton
+                        url={this.props.shareUrl}
+                        quote={title}
+                        className="share-facebook">
+                        <FacebookIcon
                         size={32}
                         round />
-                    </TwitterShareButton>
-                    <div className="share-twitter-count">
-                    &nbsp;
+                    </FacebookShareButton>
+                    <FacebookShareCount
+                        url={this.props.shareUrl}
+                        {...countProps}
+                        className="share-facebook-count">
+                        {count => count}
+                    </FacebookShareCount>
                     </div>
-                </div>
 
-                <div className="social-box linkedin">
-                    <LinkedinShareButton
-                    url={this.props.shareUrl}
-                    title={title}
-                    className="share-linkedin-count">
-                    <LinkedinIcon
-                        size={32}
-                        round />
-                    </LinkedinShareButton>
-                    <div className="linkedin-twitter-count">
-                    &nbsp;
+                    <div className="social-box twitter">
+                        <TwitterShareButton
+                        url={this.props.shareUrl}
+                        title={title}
+                        className="share-twitter">
+                        <TwitterIcon
+                            size={32}
+                            round />
+                        </TwitterShareButton>
+                        <div className="share-twitter-count">
+                        &nbsp;
+                        </div>
+                    </div>
+
+                    <div className="social-box linkedin">
+                        <LinkedinShareButton
+                        url={this.props.shareUrl}
+                        title={title}
+                        className="share-linkedin-count">
+                        <LinkedinIcon
+                            size={32}
+                            round />
+                        </LinkedinShareButton>
+                        <div className="linkedin-twitter-count">
+                        &nbsp;
+                        </div>
                     </div>
                 </div>
         </div>
