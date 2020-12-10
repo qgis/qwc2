@@ -48,7 +48,7 @@ div.ol-overviewmap {
     bottom: 0.25em!important;
     right: 0.25em!important;
     left: auto!important;
-    z-index: 7;
+    z-index: 101;
     padding: 0;
     margin: 2px;
 }
