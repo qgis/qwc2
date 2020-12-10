@@ -15,14 +15,6 @@ const DevTools = require('../components/development/DevTools');
 
 
 const urlQuery = url.parse(window.location.href, true).query;
-/*eslint-disable */
-var warn = console.warn;
-/*eslint-enable */
-
-var warningFilterKey = function(warning) {
-    // avoid React 0.13.x warning about nested context. Will remove in 0.14
-    return warning.indexOf("Warning: owner-based and parent-based contexts differ") >= 0;
-};
 
 var DebugUtils = {
     createDebugStore: function(reducer, initialState, userMiddlewares, enhancer) {
@@ -41,15 +33,5 @@ var DebugUtils = {
         return finalCreateStore(reducer, initialState, enhancer);
     }
 };
-
-/*eslint-disable */
-console.warn = function() {
-    if ( arguments && arguments.length > 0 && typeof arguments[0] === "string" && warningFilterKey(arguments[0]) ) {
-        // do not warn
-    } else {
-        warn.apply(console, arguments);
-    }
-};
-/*eslint-enable */
 
 module.exports = DebugUtils;
