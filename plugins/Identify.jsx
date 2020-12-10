@@ -45,7 +45,8 @@ class Identify extends React.Component {
         attributeCalculator: PropTypes.func,
         attributeTransform: PropTypes.func,
         featureInfoReturnsLayerName: PropTypes.bool,
-        removeLayer: PropTypes.func
+        removeLayer: PropTypes.func,
+        setIdentifyFeatureResult: PropTypes.func
     }
     static defaultProps = {
         enableExport: true,
@@ -55,16 +56,16 @@ class Identify extends React.Component {
         initialHeight: 320,
         featureInfoReturnsLayerName: true
     }
-    componentWillReceiveProps(newProps) {
-        let point = this.queryPoint(newProps);
-        let clickFeature = this.queryFeature(newProps);
+    componentDidUpdate(prevProps, prevState) {
+        let point = this.queryPoint(this.props);
+        let clickFeature = this.queryFeature(this.props);
         if (point || clickFeature) {
             // Remove any search selection layer to avoid confusion
             this.props.removeLayer("searchselection");
 
             let queryableLayers = [];
             if(point) {
-                queryableLayers = newProps.layers.filter((l) => {
+                queryableLayers = this.props.layers.filter((l) => {
                     // All non-background WMS layers with a non-empty queryLayers list
                     return l.visibility && l.type === 'wms' && l.role !== LayerRole.BACKGROUND && (l.queryLayers || []).length > 0
                 });
@@ -85,12 +86,12 @@ class Identify extends React.Component {
                             layers.push(assign({}, layer, {queryLayers: [queryLayers[i]]}));
                         }
                     }
-                    layers.forEach(l => this.props.sendRequest(IdentifyUtils.buildRequest(l, l.queryLayers.join(","), point, newProps.map, newProps.params)));
+                    layers.forEach(l => this.props.sendRequest(IdentifyUtils.buildRequest(l, l.queryLayers.join(","), point, this.props.map, this.props.params)));
                 });
             }
             let queryFeature = null;
             if(clickFeature) {
-                let layer = newProps.layers.find(layer => layer.id === clickFeature.layer);
+                let layer = this.props.layers.find(l => l.id === clickFeature.layer);
                 if(layer && layer.role === LayerRole.USERLAYER && layer.type === "vector" && !isEmpty(layer.features)) {
                     queryFeature = layer.features.find(feature =>  feature.id === clickFeature.feature);
                     if(queryFeature && !isEmpty(queryFeature.properties)) {
@@ -101,9 +102,9 @@ class Identify extends React.Component {
             if(isEmpty(queryableLayers) && !queryFeature) {
                 this.props.identifyEmpty();
             }
-            this.props.addMarker('identify', point, '', newProps.map.projection);
+            this.props.addMarker('identify', point, '', this.props.map.projection);
         }
-        if (!newProps.enabled && this.props.enabled) {
+        if (!this.props.enabled && prevProps.enabled) {
             this.onClose();
         }
     }

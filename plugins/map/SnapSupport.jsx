@@ -17,6 +17,7 @@ const ol = require('openlayers');
 
 class SnapSupport extends React.Component {
     static propTypes = {
+        drawing: PropTypes.bool,
         mousepos: PropTypes.object,
         map: PropTypes.object,
         mapObj: PropTypes.object,
@@ -58,15 +59,15 @@ class SnapSupport extends React.Component {
         this.props.map.addLayer(this.snapLayer);
         this.curPos = null;
     }
-    componentWillReceiveProps(newProps) {
-        if(this.props.drawing && newProps.mousepos &&
+    componentDidUpdate(prevProps, prevState) {
+        if(prevProps.drawing && this.props.mousepos &&
                 (!this.curPos ||
-                Math.abs(newProps.mousepos.pixel[0] - this.curPos[0]) > 5 ||
-                Math.abs(newProps.mousepos.pixel[1] - this.curPos[1]) > 5)) {
+                Math.abs(this.props.mousepos.pixel[0] - this.curPos[0]) > 5 ||
+                Math.abs(this.props.mousepos.pixel[1] - this.curPos[1]) > 5)) {
             clearTimeout(this.timeoutId);
-            this.curPos = newProps.mousepos.pixel;
+            this.curPos = this.props.mousepos.pixel;
             this.timeoutId = setTimeout(() => this.getFeature(), 500);
-        } else if(!this.props.drawing) {
+        } else if(!prevProps) {
             this.reset();
         }
     }

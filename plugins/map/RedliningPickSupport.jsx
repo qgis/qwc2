@@ -44,20 +44,20 @@ class RedliningPickSupport extends React.Component {
             }
         });
     }
-    componentWillReceiveProps(newProps) {
-        if(newProps.redliningPick === this.props.redliningPick) {
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.redliningPick === prevProps.redliningPick) {
             // pass
-        } else if(!newProps.redliningPick.active && this.props.redliningPick.active) {
-            this.reset(newProps.redliningPick.layer);
-        } else if(newProps.redliningPick.active && !this.props.redliningPick.active) {
-            this.addPickInteraction(newProps.redliningPick.layer);
-        } else if(
-            newProps.redliningPick.active == this.props.redliningPick.active &&
-            isEmpty(newProps.redliningPick.selectedFeatures) && !isEmpty(this.props.redliningPick.selectedFeatures))
-        {
-            // Re-initialize
+        } else if(!this.props.redliningPick.active && prevProps.redliningPick.active) {
             this.reset(this.props.redliningPick.layer);
-            this.addPickInteraction(newProps.redliningPick.layer);
+        } else if(this.props.redliningPick.active && !prevProps.redliningPick.active) {
+            this.addPickInteraction(this.props.redliningPick.layer);
+        } else if(
+            this.props.redliningPick.active === prevProps.redliningPick.active &&
+            isEmpty(this.props.redliningPick.selectedFeatures) && !isEmpty(prevProps.redliningPick.selectedFeatures)
+        ) {
+            // Re-initialize
+            this.reset(prevProps.redliningPick.layer);
+            this.addPickInteraction(this.props.redliningPick.layer);
         }
     }
     render() {

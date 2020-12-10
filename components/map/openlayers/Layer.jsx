@@ -37,24 +37,27 @@ class OpenlayersLayer extends React.Component {
         this.tilestoload = 0;
         this.createLayer(this.props.type, this.props.options, this.props.zIndex);
     }
-    componentWillReceiveProps(newProps) {
-        if (this.props.options) {
-            this.updateLayer(newProps, this.props);
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.options) {
+            this.updateLayer(this.props, prevProps);
         }
         if(!this.state.layer) {
             return;
         }
-        const newVisibility = newProps.options && newProps.options.visibility !== false;
-        this.setLayerVisibility(newVisibility);
-
-        const newOpacity = (newProps.options && newProps.options.opacity !== undefined) ? newProps.options.opacity : 255.;
-        this.state.layer.setOpacity(newOpacity / 255.);
-
-        if (newProps.zIndex !== this.props.zIndex && this.state.layer.setZIndex) {
-            this.state.layer.setZIndex(newProps.zIndex);
+        const newVisibility = this.props.options && this.props.options.visibility !== false;
+        const oldVisibility = prevProps.options && prevProps.options.visibility !== false;
+        if (newVisibility !== oldVisibility && this.state.layer && this.isValid(this.state.layer)) {
+            this.state.layer.setVisible(newVisibility);
         }
-        if(newProps.swipe != this.props.swipe) {
-            newProps.map.render();
+
+        const newOpacity = (this.props.options && this.props.options.opacity !== undefined) ? this.props.options.opacity : 255.0;
+        this.state.layer.setOpacity(newOpacity / 255.0);
+
+        if (this.props.zIndex !== prevProps.zIndex && this.state.layer.setZIndex) {
+            this.state.layer.setZIndex(this.props.zIndex);
+        }
+        if(this.props.swipe !== prevProps.swipe) {
+            this.props.map.render();
         }
     }
     componentWillUnmount() {
@@ -86,12 +89,6 @@ class OpenlayersLayer extends React.Component {
             return layerCreator.render(this.props.options, this.props.map, this.props.mapId, this.state.layer);
         }
         return null;
-    }
-    setLayerVisibility = (visibility) => {
-        var oldVisibility = this.props.options && this.props.options.visibility !== false;
-        if (visibility !== oldVisibility && this.state.layer && this.isValid(this.state.layer)) {
-            this.state.layer.setVisible(visibility);
-        }
     }
     generateOpts = (options, zIndex, srs) => {
         return assign({}, options, {zIndex: zIndex, srs});

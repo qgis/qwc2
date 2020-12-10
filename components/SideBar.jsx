@@ -39,20 +39,20 @@ class SideBar extends React.Component {
     state = {
         render: false
     }
-    componentDidMount(props) {
-        let visible = this.props.currentTask && this.props.currentTask.id === this.props.id;
-        this.setState({render: visible});
+    constructor(props) {
+        super(props);
+        this.state.render = props.currentTask && props.currentTask.id === props.id;
     }
-    componentWillReceiveProps(newProps) {
-        let newVisible = newProps.currentTask && newProps.currentTask.id === newProps.id;
-        let oldVisible = this.props.currentTask && this.props.currentTask.id === this.props.id;
-        if(newVisible && (!oldVisible || newProps.currentTask.mode !== this.props.currentTask.mode)) {
+    componentDidUpdate(prevProps, prevState) {
+        let newVisible = this.props.currentTask && this.props.currentTask.id === this.props.id;
+        let oldVisible = prevProps.currentTask && prevProps.currentTask.id === prevProps.id;
+        if(newVisible && (!oldVisible || this.props.currentTask.mode !== prevProps.currentTask.mode)) {
             this.setState({render: true});
-            newProps.onShow(newProps.currentTask.mode);
+            this.props.onShow(this.props.currentTask.mode);
         } else if(!newVisible && oldVisible) {
-            newProps.onHide();
+            this.props.onHide();
             // Hide the element after the transition period (see SideBar.css)
-            setTimeout(() => {this.setState({render: false})}, 300);
+            setTimeout(() => { this.setState({render: false}); }, 300);
         }
     }
     closeClicked = () => {

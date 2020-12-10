@@ -33,9 +33,9 @@ class PrintFrame extends React.Component {
     componentDidMount() {
         this.recomputeBox(this.props, {});
     }
-    componentWillReceiveProps(newProps) {
-        if(newProps.map !== this.props.map || !isEqual(newProps.fixedFrame, this.props.fixedFrame)) {
-            this.recomputeBox(newProps, this.props);
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.map !== prevProps.map || !isEqual(this.props.fixedFrame, prevProps.fixedFrame)) {
+            this.recomputeBox(this.props, prevProps);
         }
     }
     recomputeBox = (newProps, oldProps) => {

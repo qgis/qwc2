@@ -63,12 +63,10 @@ class ResizeableWindow extends React.Component {
     constructor(props) {
         super(props);
         this.rnd = null;
+        this.state.doc = props.initiallyDocked || false;
     }
-    componentDidMount() {
-        this.setState({dock: this.props.initiallyDocked || false});
-    }
-    componentWillReceiveProps(newProps) {
-        if(this.rnd && newProps.visible && newProps.visible !== this.props.visible) {
+    componentDidUpdate(prevProps, prevState) {
+        if(this.rnd && this.props.visible && this.props.visible !== prevProps.visible) {
             this.rnd.updatePosition(this.initialPosition());
         }
     }

@@ -65,22 +65,22 @@ class RedliningSupport extends React.Component {
             }
         });
     }
-    componentWillReceiveProps(newProps) {
-        let layerChanged = newProps.redlining.layer !== this.props.redlining.layer;
-        if(newProps.redlining == this.props.redlining) {
+    componentDidUpdate(prevProps, prevState) {
+        let layerChanged = this.props.redlining.layer !== prevProps.redlining.layer;
+        if(this.props.redlining === prevProps.redlining) {
             // pass
-        } else if(!newProps.redlining || !newProps.redlining.action) {
+        } else if(!this.props.redlining || !this.props.redlining.action) {
             this.reset();
-        } else if((newProps.redlining.action === 'Pick' || newProps.redlining.action === 'Buffer') && (this.props.redlining.action !== newProps.redlining.action || layerChanged)) {
-            this.addPickInteraction(newProps);
-        } else if(newProps.redlining.action === 'Delete') {
-            this.deleteCurrentFeature(this.props);
-        } else if(newProps.redlining.action === 'Draw' && (this.props.redlining.action !== 'Draw' || newProps.redlining.geomType !== this.props.redlining.geomType || layerChanged)) {
-            this.addDrawInteraction(newProps);
-        } else if(newProps.redlining.freehand !== this.props.redlining.freehand) {
-            this.addDrawInteraction(newProps);
-        } else if(newProps.redlining.style !== this.props.redlining.style) {
-            this.updateFeatureStyle(newProps.redlining.style);
+        } else if((this.props.redlining.action === 'Pick' || this.props.redlining.action === 'Buffer') && (prevProps.redlining.action !== this.props.redlining.action || layerChanged)) {
+            this.addPickInteraction(this.props, layerChanged);
+        } else if(this.props.redlining.action === 'Delete') {
+            this.deleteCurrentFeature(prevProps);
+        } else if(this.props.redlining.action === 'Draw' && (prevProps.redlining.action !== 'Draw' || this.props.redlining.geomType !== prevProps.redlining.geomType || layerChanged)) {
+            this.addDrawInteraction(this.props, layerChanged);
+        } else if(this.props.redlining.freehand !== prevProps.redlining.freehand) {
+            this.addDrawInteraction(this.props);
+        } else if(this.props.redlining.style !== prevProps.redlining.style) {
+            this.updateFeatureStyle(this.props.redlining.style);
         }
     }
     render() {
@@ -109,8 +109,8 @@ class RedliningSupport extends React.Component {
             this.currentFeature.setStyle(styles.concat(style, this.selectedStyle));
         }
     }
-    addDrawInteraction = (newProps) => {
-        this.reset();
+    addDrawInteraction = (newProps, layerChanged) => {
+        this.reset(layerChanged);
         const typeMap = {
             "Text": "Point",
             "Point": "Point",
@@ -194,8 +194,8 @@ class RedliningSupport extends React.Component {
             this.picking = false;
         }
     }
-    addPickInteraction = (newProps) => {
-        this.reset();
+    addPickInteraction = (newProps, layerChanged) => {
+        this.reset(layerChanged);
         let redliningLayer = this.searchRedliningLayer(newProps.redlining.layer);
         if(!redliningLayer) {
             return;
@@ -304,11 +304,11 @@ class RedliningSupport extends React.Component {
             this.props.changeRedliningState(assign({}, oldProps.redlining, {selectedFeature: null}));
         }
     }
-    reset = () => {
+    reset = (layerChanged=false) => {
         while(this.interactions.length > 0) {
             this.props.map.removeInteraction(this.interactions.shift());
         }
-        if(this.picking) {
+        if(this.picking && !layerChanged) {
             this.commitCurrentFeature();
         } else {
             this.resetSelectedFeature();

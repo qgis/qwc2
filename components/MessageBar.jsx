@@ -23,8 +23,8 @@ class MessageBar extends React.Component {
         onHide: () => {},
         hideOnTaskChange: false
     }
-    componentWillReceiveProps(newProps) {
-        if(newProps.task !== this.props.task && newProps.hideOnTaskChange) {
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.task !== prevProps.task && this.props.hideOnTaskChange) {
             this.props.onHide();
         }
     }

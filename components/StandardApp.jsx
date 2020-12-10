@@ -65,11 +65,8 @@ class AppInitComponent extends React.Component {
             this.init();
         }
     }
-    componentWillReceiveProps(newProps) {
-        // The map component needs to have finished loading before theme initialization can proceed
-        if(newProps.mapSize && !this.initialized) {
-            this.init();
-        }
+    componentDidUpdate(prevProps, prevState) {
+        this.componentDidMount();
     }
     init = () => {
         this.initialized = true;

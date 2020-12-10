@@ -26,8 +26,8 @@ class WindowManager extends React.Component {
         super(props);
         this.iframes = {};
     }
-    componentWillReceiveProps(newProps) {
-        if(newProps.currentTheme !== this.props.currentTheme) {
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.currentTheme !== prevProps.currentTheme) {
             this.props.closeAllWindows();
         }
     }

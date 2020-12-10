@@ -27,18 +27,19 @@ class MapCopyright extends React.Component {
     state = {
         currentCopyrights: []
     }
-    componentWillReceiveProps(newProps) {
-        if(newProps.map && newProps.map.bbox && newProps.layers) {
+    static getDerivedStateFromProps(nextProps) {
+        if(nextProps.map && nextProps.map.bbox && nextProps.layers) {
             let transformedbboxes = {};
-            transformedbboxes[newProps.map.projection] = newProps.map.bbox.bounds;
+            transformedbboxes[nextProps.map.projection] = nextProps.map.bbox.bounds;
             let copyrights = {};
-            newProps.layers.map(layer => this.collectCopyrigths(layer, newProps.map, transformedbboxes, copyrights));
-            this.setState({currentCopyrights: copyrights});
+            nextProps.layers.map(layer => MapCopyright.collectCopyrigths(layer, nextProps.map, transformedbboxes, copyrights));
+            return {currentCopyrights: copyrights};
         }
+        return null;
     }
-    collectCopyrigths = (layer, map, transformedbboxes, copyrights) => {
+    static collectCopyrigths = (layer, map, transformedbboxes, copyrights) => {
         if(layer.sublayers) {
-            layer.sublayers.map(layer => this.collectCopyrigths(layer, map, transformedbboxes, copyrights));
+            layer.sublayers.map(sublayer => MapCopyright.collectCopyrigths(sublayer, map, transformedbboxes, copyrights));
         }
         if(!layer.attribution || !layer.attribution.Title || !layer.visibility) {
             return;

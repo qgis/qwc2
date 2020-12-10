@@ -33,7 +33,8 @@ class OpenlayersMap extends React.Component {
         onMouseMove: PropTypes.func,
         setLayerLoading: PropTypes.func,
         registerHooks: PropTypes.bool,
-        interactive: PropTypes.bool
+        interactive: PropTypes.bool,
+        resolutions: PropTypes.array
     }
     static defaultProps = {
         id: 'map',
@@ -46,6 +47,11 @@ class OpenlayersMap extends React.Component {
         projection: 'EPSG:3857',
         registerHooks: true,
         interactive: true
+    }
+    state = {
+        projection: null,
+        resolutions: [],
+        rebuildView: false
     }
     componentDidMount() {
         let interactionsOptions = assign(this.props.interactive ? {} : {
@@ -197,25 +203,57 @@ class OpenlayersMap extends React.Component {
         };
         this.props.onMapViewChanges(c, view.getZoom() || 0, bbox, size, this.props.id, this.props.projection);
     }
-    componentWillReceiveProps(newProps) {
-        if (newProps.mousePointer !== this.props.mousePointer) {
-            this.setMousePointer(newProps.mousePointer);
+    static getDerivedStateFromProps(nextProps, state) {
+        if ((nextProps.projection !== state.projection) || (nextProps.resolutions !== state.resolutions)) {
+            return {
+                rebuildView: true,
+                projection: nextProps.projection,
+                resolutions: nextProps.resolutions
+            };
+        }
+        return null;
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.mousePointer !== prevProps.mousePointer) {
+            this.setMousePointer(this.props.mousePointer);
         }
 
-        if (newProps.zoomControl !== this.props.zoomControl) {
-            if (newProps.zoomControl) {
+        if (this.props.zoomControl !== prevProps.zoomControl) {
+            if (this.props.zoomControl) {
                 this.map.addControl(new ol.control.Zoom());
             } else {
                 this.map.removeControl(this.map.getControls().getArray().filter((ctl) => ctl instanceof ol.control.Zoom)[0]);
             }
         }
 
-        if (this.props.id !== newProps.mapStateSource) {
-            this._updateMapPositionFromNewProps(newProps);
+        if (prevProps.id !== this.props.mapStateSource) {
+            let view = this.map.getView();
+            const centerChanged = prevProps.center[0] !== this.props.center[0] ||
+                                  prevProps.center[1] !== this.props.center[1];
+
+            if (centerChanged) {
+                view.setCenter(this.props.center);
+            }
+            if (prevProps.zoom !== this.props.zoom) {
+                view.setZoom(this.props.zoom);
+            }
+            if(prevProps.bbox.rotation !== this.props.bbox.rotation) {
+                view.setRotation(this.props.bbox.rotation);
+            }
         }
 
-        if ((this.props.projection !== newProps.projection) || (this.props.resolutions !== newProps.resolutions)) {
-            this.map.setView(this.createView(newProps.center, newProps.zoom, newProps.projection, newProps.resolutions));
+        if(this.state.rebuildView) {
+            this.setState({rebuildView: false});
+        }
+    }
+    componentWillUnmount() {
+        this.map.setTarget(null);
+    }
+    render() {
+        const map = this.map;
+
+        if (map && this.state.rebuildView) {
+            this.map.setView(this.createView(this.props.center, this.props.zoom, this.props.projection, this.props.resolutions));
             // We have to force ol to drop tile and reload
             this.map.getLayers().forEach((l) => {
                 if(l instanceof ol.layer.Group) {
@@ -234,12 +272,7 @@ class OpenlayersMap extends React.Component {
             });
             this.map.render();
         }
-    }
-    componentWillUnmount() {
-        this.map.setTarget(null);
-    }
-    render() {
-        const map = this.map;
+
         const children = map ? React.Children.map(this.props.children, child => {
             return child ? React.cloneElement(child, {
                 map: map,
@@ -266,21 +299,6 @@ class OpenlayersMap extends React.Component {
             ol.proj.get(projection).setExtent(this.props.maxExtent);
         }
         return new ol.View(viewOptions);
-    }
-    _updateMapPositionFromNewProps = (newProps) => {
-        var view = this.map.getView();
-        const centerChanged = newProps.center[0] != this.props.center[0] ||
-                              newProps.center[1] != this.props.center[1];
-
-        if (centerChanged) {
-            view.setCenter(newProps.center);
-        }
-        if (newProps.zoom !== this.props.zoom) {
-            view.setZoom(newProps.zoom);
-        }
-        if(newProps.bbox.rotation !== this.props.bbox.rotation) {
-            view.setRotation(newProps.bbox.rotation);
-        }
     }
     setMousePointer = (pointer) => {
         if (this.map) {

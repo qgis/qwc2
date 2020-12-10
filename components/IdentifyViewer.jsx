@@ -71,31 +71,40 @@ class IdentifyViewer extends React.Component {
         this.currentResultElRef = null;
         this.scrollIntoView = false;
     }
-    componentWillReceiveProps(nextProps) {
+    static getDerivedStateFromProps(nextProps) {
+        let newState = {};
         if(nextProps.layers !== this.props.layers) {
             let displayFieldMap = {};
             for(let layer of nextProps.layers) {
-                this.populateDisplayFieldMap(displayFieldMap, layer);
+                IdentifyViewer.populateDisplayFieldMap(displayFieldMap, layer);
             }
-            this.setState({displayFieldMap: displayFieldMap});
+            newState.displayFieldMap = displayFieldMap;
         }
-        if(nextProps.missingResponses == 0 && nextProps.responses !== this.props.responses) {
+        if(nextProps.missingResponses === 0 && nextProps.responses !== this.props.responses) {
             let result = {};
             let stats = {count: 0, lastResult: null};
             (nextProps.responses || []).map(response => response.data ? this.parseResponse(response, result, stats) : null);
-            this.setState({
+            assign(newState, {
                 expanded: {},
                 resultTree: result,
                 currentResult: stats.count === 1 ? stats.lastResult : null,
-                currentLayer: stats.count === 1 ? stats.lastLayer : null});
+                currentLayer: stats.count === 1 ? stats.lastLayer : null
+            });
         }
+        return newState;
     }
-    componentWillUpdate(nextProps, nextState) {
-        if(nextState.currentResult !== this.state.currentResult || nextState.resultTree !== this.state.resultTree) {
-            this.setHighlightedResults(nextState.currentResult === null ? null : [nextState.currentResult], nextState.resultTree)
+    static populateDisplayFieldMap = (displayFieldMap, item) => {
+        if(item.sublayers) {
+            item.sublayers.map(child => IdentifyViewer.populateDisplayFieldMap(displayFieldMap, child));
+        } else if(item.displayField) {
+            displayFieldMap[item.name] = item.displayField;
+            displayFieldMap[item.title] = item.displayField;
         }
     }
     componentDidUpdate(prevProps, prevState) {
+        if(prevState.currentResult !== this.state.currentResult || prevState.resultTree !== this.state.resultTree) {
+            this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree);
+        }
         // Scroll to selected result
         if(this.state.currentResult && this.state.currentResult !== prevState.currentResult &&
         this.currentResultElRef && this.scrollIntoView) {
@@ -106,14 +115,6 @@ class IdentifyViewer extends React.Component {
     }
     componentWillUnmount() {
         this.props.removeLayer("identifyslection");
-    }
-    populateDisplayFieldMap = (displayFieldMap, item) => {
-        if(item.sublayers) {
-            item.sublayers.map(child => this.populateDisplayFieldMap(displayFieldMap, child));
-        } else if(item.displayField){
-            displayFieldMap[item.name] = item.displayField;
-            displayFieldMap[item.title] = item.displayField;
-        }
     }
     parseResponse = (response, results, stats) => {
         let newResults = {};

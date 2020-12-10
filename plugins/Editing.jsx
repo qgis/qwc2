@@ -71,14 +71,13 @@ class Editing extends React.Component {
         this.setLayerVisibility(this.state.selectedLayer, this.state.selectedLayerVisibility)
         this.setState({minimized: false});
     }
-
-    componentWillReceiveProps(newProps) {
-        let themeSublayers = newProps.layers.reduce((accum, layer) => {
+    componentDidUpdate(prevProps, prevState) {
+        let themeSublayers = this.props.layers.reduce((accum, layer) => {
             return layer.role === LayerRole.THEME ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
         }, []);
         // Update selected layer on layers change
-        if(newProps.layers !== this.props.layers) {
-            let layerIds = Object.keys(newProps.theme && newProps.theme.editConfig || {}).filter(layerId => themeSublayers.includes(layerId));
+        if(this.props.layers !== prevProps.layers) {
+            let layerIds = Object.keys(this.props.theme && this.props.theme.editConfig || {}).filter(layerId => themeSublayers.includes(layerId));
             if(!isEmpty(layerIds)) {
                 if(!layerIds.includes(this.state.selectedLayer)) {
                     this.changeSelectedLayer(layerIds[0]);
@@ -88,9 +87,9 @@ class Editing extends React.Component {
             }
         }
         // If clickPoint changed and in pick mode with a selected layer, trigger a pick
-        if(newProps.enabled && this.props.enabled && newProps.editing.action === 'Pick' && this.state.selectedLayer && !newProps.editing.changed) {
-            const newPoint = newProps.map.clickPoint || {};
-            const oldPoint = this.props.map.clickPoint || {};
+        if(this.props.enabled && prevProps.enabled && this.props.editing.action === 'Pick' && this.state.selectedLayer && !this.props.editing.changed) {
+            const newPoint = this.props.map.clickPoint || {};
+            const oldPoint = prevProps.map.clickPoint || {};
             if(newPoint.coordinate && !isEqual(newPoint.coordinate, oldPoint.coordinate)) {
                 let scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
                 this.props.iface.getFeature(this.editLayerId(this.state.selectedLayer), newPoint.coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
@@ -113,17 +112,17 @@ class Editing extends React.Component {
                 });
             }
         }
-        if(this.props.editing.changed !== newProps.editing.changed) {
-            this.props.setCurrentTaskBlocked(newProps.editing.changed === true);
+        if(prevProps.editing.changed !== this.props.editing.changed) {
+            this.props.setCurrentTaskBlocked(this.props.editing.changed === true);
         }
-        if(!newProps.editing.feature || newProps.editing.changed) {
+        if((!this.props.editing.feature || this.props.editing.changed) && this.state.deleteClicked) {
             this.setState({deleteClicked: false});
         }
-        if(!newProps.editing.feature) {
+        if(!this.props.editing.feature && prevState.pickedFeatures) {
             this.setState({pickedFeatures: null});
         }
         // Always clear clicked pos if enabled
-        if(newProps.map.clickPoint && newProps.enabled) {
+        if(this.props.map.clickPoint && this.props.enabled) {
             this.props.clickOnMap(null);
         }
     }

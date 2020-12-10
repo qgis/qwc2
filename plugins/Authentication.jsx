@@ -15,11 +15,11 @@ class Authentication extends React.Component {
     static propTypes = {
         task: PropTypes.string,
     }
-    componentWillReceiveProps(newProps) {
-        if(newProps.task !== this.props.task) {
-            if(newProps.task === "Login") {
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.task !== prevProps.task) {
+            if(this.props.task === "Login") {
                 window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "login?url=" + encodeURIComponent(window.location.href);
-            } else if(newProps.task === "Logout") {
+            } else if(this.props.task === "Logout") {
                 window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "logout?url=" + encodeURIComponent(window.location.href);
             }
         }

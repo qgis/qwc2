@@ -76,28 +76,26 @@ class SearchBox extends React.Component {
         this.searchBox = null;
         this.searchTimeout = null;
         this.preventBlur = false;
-    }
-    componentDidMount() {
-        this.setState({searchText: UrlParams.getParam('st') || ""});
+        this.state.searchText = UrlParams.getParam('st') || "";
         UrlParams.updateParams({st: undefined});
     }
-    componentWillReceiveProps = (newProps) => {
+    componentDidUpdate(prevProps, prevState) {
         // Restore highlight from URL as soon as theme is loaded
-        if(newProps.theme && !this.props.theme) {
+        if(this.props.theme && !prevProps.theme) {
             let hc = UrlParams.getParam('hc');
             let hp = UrlParams.getParam('hp');
             let hf = UrlParams.getParam('hf');
             if(hp && hf) {
                 const DATA_URL = ConfigUtils.getConfigProp("searchDataServiceUrl").replace(/\/$/g, "");
-                console.log(DATA_URL + "/" + hp + "/?filter=" + hf);
-                axios.get(DATA_URL + "/" + hp + "/?filter=" + hf)
-                .then(response => this.showFeatureGeometry(response.data, this.props.localConfig.startupParams.s));
+                axios.get(DATA_URL + "/" + hp + "/?filter=" + hf).then(response => {
+                    this.showFeatureGeometry(response.data, prevProps.localConfig.startupParams.s);
+                });
             } else if(typeof(hc) === "string" && (hc.toLowerCase() === "true" || hc === "1")) {
                 this.selectProviderResult({
                     label: "",
-                    x: newProps.map.center[0],
-                    y: newProps.map.center[1],
-                    crs: newProps.displaycrs
+                    x: this.props.map.center[0],
+                    y: this.props.map.center[1],
+                    crs: this.props.displaycrs
                 }, false);
             }
             UrlParams.updateParams({hp: undefined, hf: undefined, hc: undefined});

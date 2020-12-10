@@ -29,20 +29,20 @@ class StartupMarker extends React.Component {
         super(props);
         this.markerSet = false;
     }
-    componentWillReceiveProps(newProps) {
-        let highlight = ["true", "1"].includes("" + (newProps.startupParams && newProps.startupParams.hc || "").toLowerCase());
-        if(highlight && newProps.theme && !this.props.theme && newProps.startupParams.c) {
+    componentDidUpdate(prevProps, prevState) {
+        let highlight = ["true", "1"].includes("" + (this.props.startupParams && this.props.startupParams.hc || "").toLowerCase());
+        if(highlight && this.props.theme && !prevProps.theme && this.props.startupParams.c) {
             UrlParams.updateParams({hc: undefined});
-            let point = newProps.startupParams.c.split(/[;,]/g).map(x => parseFloat(x));
-            this.props.addMarker('startupposmarker', point, '', newProps.startupParams.crs || newProps.map.projection);
+            let point = this.props.startupParams.c.split(/[;,]/g).map(x => parseFloat(x));
+            prevProps.addMarker('startupposmarker', point, '', this.props.startupParams.crs || this.props.map.projection);
             this.markerSet = true;
         } else if(this.markerSet) {
             if(
-                (this.props.removeMode === 'onpan' && newProps.map.center !== this.props.map.center && newProps.map.zoom === this.props.map.zoom) ||
-                (this.props.removeMode === 'onzoom' && newProps.map.zoom !== this.props.map.zoom) ||
-                (this.props.removeMode === 'onclickonmarker' && newProps.clickFeature && newProps.clickFeature.feature === 'startupposmarker')
+                (prevProps.removeMode === 'onpan' && this.props.map.center !== prevProps.map.center && this.props.map.zoom === prevProps.map.zoom) ||
+                (prevProps.removeMode === 'onzoom' && this.props.map.zoom !== prevProps.map.zoom) ||
+                (prevProps.removeMode === 'onclickonmarker' && this.props.clickFeature && this.props.clickFeature.feature === 'startupposmarker')
             ) {
-                this.props.removeMarker('startupposmarker');
+                prevProps.removeMarker('startupposmarker');
                 this.markerSet = false;
             }
         }

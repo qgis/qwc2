@@ -34,9 +34,9 @@ class IdentifyRegion extends React.Component {
     static defaultProps = {
         useWfs: false
     }
-    componentWillReceiveProps(newProps) {
-        if(newProps.selection.polygon && newProps.selection !== this.props.selection) {
-            this.getFeatures(newProps.selection.polygon);
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.selection.polygon && this.props.selection !== prevProps.selection) {
+            this.getFeatures(this.props.selection.polygon);
         }
     }
     onShow = () => {

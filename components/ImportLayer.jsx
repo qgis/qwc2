@@ -37,11 +37,12 @@ class ImportLayerList extends React.PureComponent {
     state = {
         serviceLayers: []
     }
-    componentDidMount(props) {
-        this.setState({serviceLayers: this.props.serviceLayers || []});
+    constructor(props) {
+        super(props);
+        this.state.serviceLayers = this.props.serviceLayers || [];
     }
-    componentWillReceiveProps(newProps) {
-        this.setState({serviceLayers: newProps.serviceLayers || []});
+    static getDerivedStateFromProps(nextProps) {
+        return {serviceLayers: nextProps.serviceLayers || []};
     }
     renderServiceLayerListEntry(entry, filter, path, level = 0, idx) {
         let hasSublayers = !isEmpty(entry.sublayers);

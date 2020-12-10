@@ -81,44 +81,42 @@ class Search extends React.Component {
         let sp = UrlParams.getParam('sp');
         this.props.changeSearch(UrlParams.getParam('st') || "", sp ? sp.split(",") : null);
     }
-    componentWillReceiveProps(newProps) {
+    componentDidUpdate(prevProps, prevState) {
         // If search text changed, clear result
-        if(newProps.searchText !== this.props.searchText) {
-            this.props.removeLayer('searchselection');
+        if(this.props.searchText !== prevProps.searchText) {
+            prevProps.removeLayer('searchselection');
         }
         // If the theme changed, reset search and select provider
-        if(newProps.theme && (newProps.theme !== this.props.theme || !isEqual(Object.keys(newProps.searchProviders), Object.keys(this.props.searchProviders)))) {
+        if(this.props.theme && (this.props.theme !== prevProps.theme || !isEqual(Object.keys(this.props.searchProviders), Object.keys(prevProps.searchProviders)))) {
             // Only reset search text if the theme was changed (as opposed to the initial theme loaded)
-            let searchText = this.props.theme ? "" : newProps.searchText;
+            let searchText = prevProps.theme ? "" : this.props.searchText;
 
             // Ensure search providers references valid providers
-            let activeProviders = newProps.activeProviders;
-            if(!newProps.searchOptions.showProviderSelection || isEmpty(newProps.searchProviders)) {
+            let activeProviders = this.props.activeProviders;
+            if(!this.props.searchOptions.showProviderSelection || isEmpty(this.props.searchProviders)) {
                 activeProviders = null;
             } else {
-                activeProviders = (activeProviders || []).filter(key => newProps.searchProviders[key] !== undefined);
+                activeProviders = (activeProviders || []).filter(key => this.props.searchProviders[key] !== undefined);
                 if(isEmpty(activeProviders)) {
-                    activeProviders = newProps.searchOptions.providerSelectionAllowAll ? null : [newProps.searchProviders[0].key];
+                    activeProviders = this.props.searchOptions.providerSelectionAllowAll ? null : [this.props.searchProviders[0].key];
                 }
             }
 
-            newProps.changeSearch(searchText, activeProviders);
+            this.props.changeSearch(searchText, activeProviders);
 
             // If initial theme loaded and a search text is defined, fire off the search
-            if(!this.props.theme) {
-                this.search(assign({}, newProps, {activeProviders}), true);
+            if(!prevProps.theme) {
+                this.search(assign({}, this.props, {activeProviders}), true);
             }
-        }
-        else if(newProps.results && newProps.results !== this.props.results && isEmpty(newProps.pendingProviders)) {
+        } else if(this.props.results && this.props.results !== prevProps.results && isEmpty(this.props.pendingProviders)) {
             // If results changed and a unique result is returned, select it automatically if it is a Place result
-            if(newProps.results.length === 1 && newProps.results[0].items.length == 1) {
-                let item = newProps.results[0].items[0];
+            if(this.props.results.length === 1 && this.props.results[0].items.length === 1) {
+                let item = this.props.results[0].items[0];
                 if((item.type || SearchResultType.PLACE) === SearchResultType.PLACE) {
-                    this.showResult(item, newProps.startupSearch, newProps.startupSearch);
+                    this.showResult(item, this.props.startupSearch, this.props.startupSearch);
                 }
-            }
-            // If multiple results are available and search field is not focused, focus it (unless explicitly blurred before)
-            else if(this.input && !this.blurred) {
+            } else if(this.input && !this.blurred) {
+                // If multiple results are available and search field is not focused, focus it (unless explicitly blurred before)
                 this.input.focus();
             }
         }

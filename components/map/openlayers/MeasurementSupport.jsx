@@ -45,13 +45,13 @@ class MeasurementSupport extends React.Component {
             })
         ]
     }
-    componentWillReceiveProps(newProps) {
-        if (newProps.measurement.geomType && newProps.measurement.geomType !== this.props.measurement.geomType ) {
-            this.addDrawInteraction(newProps);
-        } else if (!newProps.measurement.geomType) {
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.measurement.geomType && this.props.measurement.geomType !== prevProps.measurement.geomType ) {
+            this.addDrawInteraction(this.props);
+        } else if (!this.props.measurement.geomType) {
             this.reset();
-        } else if(newProps.measurement.lenUnit !== this.props.measurement.lenUnit) {
-            this.relabelSegments(newProps);
+        } else if(this.props.measurement.lenUnit !== prevProps.measurement.lenUnit) {
+            this.relabelSegments(this.props);
         }
     }
     render() {

@@ -22,7 +22,8 @@ class Locate extends React.Component {
         onLocateError: PropTypes.func,
         // See ../../../utils/openlayers/OlLocate
         options: PropTypes.object,
-        startupParams: PropTypes.object
+        startupParams: PropTypes.object,
+        projection: PropTypes.string
     }
     static defaultProps = {
         id: 'overview',
@@ -60,15 +61,15 @@ class Locate extends React.Component {
             }
         }
     }
-    componentWillReceiveProps(newProps) {
-        if (newProps.status !== this.props.status) {
-            this.configureLocate(newProps.status);
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.status !== prevProps.status) {
+            this.configureLocate(this.props.status);
         }
-        if (newProps.messages !== this.props.messages) {
-            this.locate.setStrings(newProps.messages);
+        if (this.props.messages !== prevProps.messages) {
+            this.locate.setStrings(this.props.messages);
         }
-        if(newProps.projection !== this.props.projection) {
-            this.locate.setProjection(newProps.projection);
+        if(this.props.projection !== prevProps.projection) {
+            this.locate.setProjection(this.props.projection);
         }
     }
     configureLocate = (newStatus) => {

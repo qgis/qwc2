@@ -26,20 +26,20 @@ class SelectionSupport extends React.Component {
     static defaultProps = {
         selection: {}
     }
-    componentWillReceiveProps(newProps) {
-        if (newProps.selection.geomType && newProps.selection.geomType !== this.props.selection.geomType ) {
-            this.addDrawInteraction(newProps);
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.selection.geomType && this.props.selection.geomType !== prevProps.selection.geomType ) {
+            this.addDrawInteraction(this.props);
         }
 
-        if (!newProps.selection.geomType) {
+        if (!this.props.selection.geomType) {
             this.removeDrawInteraction();
         }
-        if(newProps.selection.reset) {
+        if(this.props.selection.reset) {
             this.removeDrawInteraction();
             this.props.changeSelectionState({
-                geomType: this.props.selection.geomType,
-                style: this.props.selection.style,
-                styleOptions: this.props.selection.styleOptions
+                geomType: prevProps.selection.geomType,
+                style: prevProps.selection.style,
+                styleOptions: prevProps.selection.styleOptions
             });
         }
     }

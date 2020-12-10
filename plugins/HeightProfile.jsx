@@ -60,11 +60,11 @@ class HeightProfile extends React.Component {
     handleResize = (ev) => {
         this.setState({width: window.innerWidth});
     }
-    componentWillReceiveProps(newProps) {
-        if(newProps.measurement.coordinates !== this.props.measurement.coordinates) {
-            if(newProps.measurement.drawing === false && newProps.measurement.geomType === "LineString" && !isEmpty(newProps.measurement.coordinates) ) {
-                this.queryElevations(newProps.measurement.coordinates, newProps.measurement.length, newProps.projection);
-            } else {
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.measurement.coordinates !== prevProps.measurement.coordinates) {
+            if(this.props.measurement.drawing === false && this.props.measurement.geomType === "LineString" && !isEmpty(this.props.measurement.coordinates) ) {
+                this.queryElevations(this.props.measurement.coordinates, this.props.measurement.length, this.props.projection);
+            } else if(!isEmpty(this.state.data)) {
                 this.setState({data: []});
             }
         }

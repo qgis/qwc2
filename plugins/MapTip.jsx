@@ -48,16 +48,16 @@ class MapTip extends React.Component {
             }, false);
         }
     }
-    componentWillReceiveProps(newProps) {
-        if(newProps.mapTipsEnabled && newProps.mousepos && (
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.mapTipsEnabled && this.props.mousepos && (
             !this.curPos ||
-            Math.abs(newProps.mousepos.pixel[0] - this.curPos[0]) > 5 ||
-            Math.abs(newProps.mousepos.pixel[1] - this.curPos[1]) > 5
+            Math.abs(this.props.mousepos.pixel[0] - this.curPos[0]) > 5 ||
+            Math.abs(this.props.mousepos.pixel[1] - this.curPos[1]) > 5
         )) {
             this.clearMaptip();
-            this.curPos = newProps.mousepos.pixel;
+            this.curPos = this.props.mousepos.pixel;
             this.timeoutId = setTimeout(() => this.queryMapTip(this.curPos[0], this.curPos[1]), 500);
-        } else if(!newProps.mapTipsEnabled && this.props.mapTipsEnabled) {
+        } else if(!this.props.mapTipsEnabled && prevProps.mapTipsEnabled) {
             this.clearMaptip();
         }
     }

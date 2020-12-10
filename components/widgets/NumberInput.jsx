@@ -19,11 +19,12 @@ class NumberInput extends React.Component {
     state = {
         curValue: ""
     }
-    componentDidMount() {
-        this.setState({curValue: this.props.value});
+    constructor(props) {
+        super(props);
+        this.state.curValue = props.value;
     }
-    componentWillReceiveProps(newProps) {
-        this.setState({curValue: newProps.value});
+    static getDerivedStateFromProps(nextProps) {
+        return {curValue: nextProps.value};
     }
     render() {
         return (<input type="number" min={this.props.min} max={this.props.max} value={this.state.curValue} onChange={this.onChange} onBlur={this.onBlur}/>);

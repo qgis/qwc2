@@ -68,17 +68,14 @@ class Print extends React.Component {
     constructor(props) {
         super(props);
         this.printForm = null;
+        this.state.grid = props.gridInitiallyEnabled;
     }
-    componentDidMount() {
-        this.setState({grid: this.props.gridInitiallyEnabled});
-    }
-    componentWillReceiveProps(newProps) {
-        if(newProps.theme !== this.props.theme || !this.state.layout) {
-            let layout = null;
-            if(newProps.theme && newProps.theme.print && newProps.theme.print.length > 0) {
-                layout = newProps.theme.print.find(layout => layout.default) || newProps.theme.print[0];
+    componentDidUpdate(prevProps, prevState) {
+        if(prevProps.theme !== this.props.theme || !this.state.layout) {
+            if(this.props.theme && !isEmpty(this.props.theme.print)) {
+                let layout = this.props.theme.print.find(l => l.default) || this.props.theme.print[0];
+                this.setState({layout: layout});
             }
-            this.setState({layout: layout});
         }
     }
     onShow = () => {

@@ -51,9 +51,9 @@ class Overview extends React.Component {
         this.overview = new ol.control.OverviewMap(opt);
         this.overview.setMap(this.props.map);
     }
-    componentWillReceiveProps(newProps) {
+    componentDidUpdate(prevProps, prevState) {
         let oldProj = this.overview.getOverviewMap().getView().getProjection();
-        let newProj = newProps.map.getView().getProjection();
+        let newProj = this.props.map.getView().getProjection();
         if(oldProj !== newProj) {
             this.overview.getOverviewMap().setView(
                 new ol.View({projection: newProj})

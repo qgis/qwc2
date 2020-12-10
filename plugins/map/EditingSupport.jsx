@@ -54,14 +54,14 @@ class EditingSupport extends React.Component {
             })
         ];
     }
-    componentWillReceiveProps(newProps) {
-        if(newProps.editing === this.props.editing) {
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.editing === prevProps.editing) {
             // pass
-        } else if(newProps.editing.action === 'Pick' && newProps.editing.feature) {
-            this.addEditInteraction(newProps);
-        } else if(newProps.editing.action === 'Draw' && newProps.editing.geomType) {
-            if(!newProps.editing.feature || this.props.editing.geomType !== newProps.editing.geomType) {
-                this.addDrawInteraction(newProps);
+        } else if(this.props.editing.action === 'Pick' && this.props.editing.feature) {
+            this.addEditInteraction(this.props);
+        } else if(this.props.editing.action === 'Draw' && this.props.editing.geomType) {
+            if(!this.props.editing.feature || prevProps.editing.geomType !== this.props.editing.geomType) {
+                this.addDrawInteraction(this.props);
             }
         } else {
             this.reset();

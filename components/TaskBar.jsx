@@ -28,13 +28,13 @@ class TaskBar extends React.Component {
         onHide: () => {},
         unblockOnClose: false
     }
-    componentWillReceiveProps(newProps) {
-        let newVisible = newProps.currentTask && newProps.currentTask.id === newProps.task;
-        let oldVisible = this.props.currentTask && this.props.currentTask.id === newProps.task;
-        if(newVisible && (!oldVisible || newProps.currentTask.mode !== this.props.currentTask.mode)) {
-            newProps.onShow(newProps.currentTask.mode);
+    componentDidUpdate(prevProps, prevState) {
+        let newVisible = this.props.currentTask && this.props.currentTask.id === this.props.task;
+        let oldVisible = prevProps.currentTask && prevProps.currentTask.id === this.props.task;
+        if(newVisible && (!oldVisible || this.props.currentTask.mode !== prevProps.currentTask.mode)) {
+            this.props.onShow(this.props.currentTask.mode);
         } else if(!newVisible && oldVisible) {
-            newProps.onHide();
+            this.props.onHide();
         }
     }
     closeClicked = () => {

@@ -25,8 +25,8 @@ class FileSelector extends React.Component {
         super(props);
         this.fileinput = null;
     }
-    componentWillReceiveProps(newProps) {
-        if(!newProps.file && this.fileinput) {
+    componentDidUpdate(prevProps, prevState) {
+        if(!this.props.file && this.fileinput) {
             this.fileinput.value = null;
         }
     }

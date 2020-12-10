@@ -111,9 +111,9 @@ class LayerTree extends React.Component {
             }
         });
     }
-    componentWillReceiveProps(newProps) {
-        if(newProps.theme.mapTips !== undefined && newProps.theme.mapTips !== this.props.theme.mapTips) {
-            this.props.toggleMapTips(newProps.theme.mapTips && !this.props.mobile);
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.theme.mapTips !== undefined && this.props.theme.mapTips !== prevProps.theme.mapTips) {
+            this.props.toggleMapTips(this.props.theme.mapTips && !prevProps.mobile);
         }
     }
     getGroupVisibility = (group) => {

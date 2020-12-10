@@ -12,8 +12,8 @@ const {connect} = require('react-redux');
 const assign = require('object-assign');
 const buffer = require('@turf/buffer').default;
 const uuid = require('uuid');
-const NumericInput = require('react-numeric-input');
-const {LayerRole,addLayer,addLayerFeatures} = require('../../actions/layers');
+const NumericInput = require('react-numeric-input2');
+const {LayerRole, addLayer, addLayerFeatures} = require('../../actions/layers');
 const Message = require('../../components/I18N/Message');
 const VectorLayerPicker = require('../../components/widgets/VectorLayerPicker');
 const LocaleUtils = require('../../utils/LocaleUtils');
@@ -28,22 +28,23 @@ class RedliningBufferSupport extends React.Component {
         addLayer: PropTypes.func,
         addLayerFeatures: PropTypes.func
     }
+    static contextTypes = {
+        messages: PropTypes.object
+    }
     state = {
         bufferDistance: 0,
         bufferLayer: null
     }
-    static contextTypes = {
-        messages: PropTypes.object
-    }
-    componentWillMount() {
-        this.setState({bufferLayer: {
+    constructor(props, context) {
+        super(props, context);
+        this.state.bufferLayer = {
             id: "buffer",
-            title: LocaleUtils.getMessageById(this.context.messages, "redlining.bufferlayername"),
+            title: LocaleUtils.getMessageById(context.messages, "redlining.bufferlayername"),
             role: LayerRole.USERLAYER
-        }});
+        };
     }
-    componentWillReceiveProps(newProps) {
-        if(this.state.bufferLayer && !newProps.layers.find(layer => layer.id === this.state.bufferLayer.id)) {
+    componentDidUpdate(prevProps, prevState) {
+        if(this.state.bufferLayer && this.state.bufferLayer.id !== "buffer" && !this.props.layers.find(layer => layer.id === this.state.bufferLayer.id)) {
             this.setState({bufferLayer: {
                 id: "buffer",
                 title: LocaleUtils.getMessageById(this.context.messages, "redlining.bufferlayername"),

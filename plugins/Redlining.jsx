@@ -9,7 +9,7 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const NumericInput = require('react-numeric-input');
+const NumericInput = require('react-numeric-input2');
 const assign = require('object-assign');
 const classnames = require('classnames');
 const isEmpty = require('lodash.isempty');
@@ -53,11 +53,11 @@ class Redlining extends React.Component {
         this.labelInput = null;
         window.addEventListener('keydown', this.keyPressed);
     }
-    componentWillReceiveProps(newProps) {
-        if(newProps.redlining.geomType !== this.props.redlining.geomType && newProps.redlining.geomType === 'Text') {
+    componentDidUpdate(prevProps, prevState) {
+        if(prevProps.redlining.geomType !== this.props.redlining.geomType && this.props.redlining.geomType === 'Text' && !this.state.selectText) {
             this.setState({selectText: true});
         }
-        if(!newProps.layers.find(layer => layer.id === newProps.redlining.layer) && newProps.redlining.layer !== 'redlining') {
+        if(!this.props.layers.find(layer => layer.id === this.props.redlining.layer) && this.props.redlining.layer !== 'redlining') {
             this.props.changeRedliningState({layer: 'redlining', layerTitle: 'Redlining'});
         }
     }

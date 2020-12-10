@@ -12,7 +12,7 @@ const {connect} = require('react-redux');
 const assign = require('object-assign');
 const Mousetrap = require('mousetrap');
 const isEmpty = require('lodash.isempty');
-const NumericInput = require('react-numeric-input');
+const NumericInput = require('react-numeric-input2');
 const uuid = require('uuid');
 const Message = require('../components/I18N/Message');
 const {changeRedliningState} = require('../actions/redlining');
@@ -50,21 +50,22 @@ class ScratchDrawing extends React.Component {
     componentWillUnmount() {
         window.removeEventListener('keydown', this.keyPressed);
     }
-    componentWillReceiveProps(newProps, newState) {
+    componentDidUpdate(prevProps, prevState) {
         // Remove layers when not used anymore
-        if(this.props.redlining.layer === "__scratchdrawing" && newProps.redlining.layer != "__scratchdrawing") {
+        if(prevProps.redlining.layer === "__scratchdrawing" && this.props.redlining.layer !== "__scratchdrawing") {
             this.props.removeLayer("__scratchdrawing");
         }
         // Call callback if task unset
-        if(newProps.task.id !== this.props.task.id && this.props.task.id == "ScratchDrawing" && !this.submitted) {
-            this.props.task.data.callback(null, null);
+        if(this.props.task.id !== prevProps.task.id && prevProps.task.id === "ScratchDrawing" && !this.submitted) {
+            prevProps.task.data.callback(null, null);
         }
+        this.submitted = false;
         // Change drawing mode if task data changes
-        if(newProps.task.id === "ScratchDrawing" && newProps.task.data !== this.props.task.data) {
-            let data = newProps.task.data || {};
+        if(this.props.task.id === "ScratchDrawing" && this.props.task.data !== prevProps.task.data) {
+            let data = this.props.task.data || {};
             this.props.changeRedliningState({action: 'Draw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
         }
-        if(newProps.task.id === "ScratchDrawing" && newProps.redlining.geomType !== this.props.redlining.geomType) {
+        if(this.props.task.id === "ScratchDrawing" && this.props.redlining.geomType !== prevProps.redlining.geomType) {
             this.props.clearLayer('__scratchdrawing');
         }
     }
@@ -100,7 +101,6 @@ class ScratchDrawing extends React.Component {
         this.props.changeRedliningState({action: null, geomType: null, featureSelected: false, layer: null, layerTitle: null, drawMultiple: true, style: this.prevstyle || this.props.redlining.style});
         this.prevstyle = null;
         Mousetrap.unbind('del', this.triggerDelete);
-        this.submitted = false;
     }
     updateRedliningState = (diff) => {
         let newState = assign({}, this.props.redlining, diff)

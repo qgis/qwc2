@@ -8,7 +8,7 @@
 
 const React = require('react');
 const PropTypes = require('prop-types');
-const NumericInput = require('react-numeric-input');
+const NumericInput = require('react-numeric-input2');
 const Icon = require("./Icon");
 const ToggleSwitch = require('./widgets/ToggleSwitch');
 const ConfigUtils = require('../utils/ConfigUtils');

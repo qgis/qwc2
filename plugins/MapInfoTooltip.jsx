@@ -40,31 +40,33 @@ class MapInfoTooltip extends React.Component {
     static contextTypes = {
         messages: PropTypes.object
     }
-    componentWillReceiveProps(newProps) {
-        if(!newProps.enabled) {
+    componentDidUpdate(prevProps, prevState) {
+        if(!this.props.enabled && this.state.coordinate) {
             this.clear();
             return;
         }
-        let newPoint = newProps.map.clickPoint;
+        let newPoint = this.props.map.clickPoint;
         if(!newPoint || newPoint.button !== 2) {
-            this.clear()
+            if(this.state.coordinate) {
+                this.clear();
+            }
         } else {
-            let oldPoint = this.props.map.clickPoint;
+            let oldPoint = prevProps.map.clickPoint;
             if(!oldPoint || oldPoint.pixel[0] !== newPoint.pixel[0] || oldPoint.pixel[1] !== newPoint.pixel[1]) {
                 this.setState({coordinate: newPoint.coordinate, elevation: null});
-                let serviceParams = {pos: newPoint.coordinate.join(","), crs: newProps.map.projection};
+                let serviceParams = {pos: newPoint.coordinate.join(","), crs: this.props.map.projection};
                 let elevationService = (ConfigUtils.getConfigProp("elevationServiceUrl") || "").replace(/\/$/, '');
-                let elevationPrecision = this.props.elevationPrecision;
+                let elevationPrecision = prevProps.elevationPrecision;
                 if(elevationService) {
                     axios.get(elevationService + '/getelevation', {params: serviceParams}).then(response => {
-                        this.setState({elevation: Math.round(response.data.elevation * Math.pow(10, elevationPrecision))/Math.pow(10, elevationPrecision)});
-                    }).catch(e => {});
+                        this.setState({elevation: Math.round(response.data.elevation * Math.pow(10, elevationPrecision)) / Math.pow(10, elevationPrecision)});
+                    }).catch(() => {});
                 }
                 let mapInfoService = ConfigUtils.getConfigProp("mapInfoService");
                 if(mapInfoService) {
                     axios.get(mapInfoService, {params: serviceParams}).then(response => {
                         this.setState({extraInfo: response.data.results});
-                    }).catch(e => {});
+                    }).catch(() => {});
                 }
             }
         }
