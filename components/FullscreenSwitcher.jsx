@@ -14,9 +14,9 @@ require('./style/FullscreenSwitcher.css');
 
 class FullscreenSwitcher extends React.Component {
     static propTypes = {
-        mobile: PropTypes.bool,
         fullscreen: PropTypes.bool,
-        fullscreenToggled: PropTypes.func
+        fullscreenToggled: PropTypes.func,
+        mobile: PropTypes.bool
     }
     static defaultProps = {
         fullscreen: false
@@ -25,48 +25,48 @@ class FullscreenSwitcher extends React.Component {
         this.props.fullscreenToggled(!this.props.fullscreen);
     }
     componentDidMount() {
-        if(document.onfullscreenchange !== undefined) {
+        if (document.onfullscreenchange !== undefined) {
             document.onfullscreenchange = this.checkFullscreenState;
-        } else if(document.onwebkitfullscreenchange !== undefined) {
+        } else if (document.onwebkitfullscreenchange !== undefined) {
             document.onwebkitfullscreenchange = this.checkFullscreenState;
-        } else if(document.onmozfullscreenchange !== undefined) {
+        } else if (document.onmozfullscreenchange !== undefined) {
             document.onmozfullscreenchange = this.checkFullscreenState;
-        } else if(document.onmsfullscreenchange !== undefined) {
+        } else if (document.onmsfullscreenchange !== undefined) {
             document.onmsfullscreenchange = this.checkFullscreenState;
         }
-        if(document.onfullscreenerror !== undefined) {
+        if (document.onfullscreenerror !== undefined) {
             document.onfullscreenerror = this.checkFullscreenState;
-        } else if(document.onwebkitfullscreenerror !== undefined) {
+        } else if (document.onwebkitfullscreenerror !== undefined) {
             document.onwebkitfullscreenerror = this.checkFullscreenState;
-        } else if(document.onmozfullscreenerror !== undefined) {
+        } else if (document.onmozfullscreenerror !== undefined) {
             document.onmozfullscreenerror = this.checkFullscreenState;
-        } else if(document.onmsfullscreenerror !== undefined) {
+        } else if (document.onmsfullscreenerror !== undefined) {
             document.onmsfullscreenerror = this.checkFullscreenState;
         }
     }
     checkFullscreenState = () => {
-        var isFullScreen = (
+        const isFullScreen = (
             document.fullscreenElement ||
             document.webkitFullscreenElement ||
             document.mozFullScreenElement ||
             document.msFullscreenElement
-        ) != undefined;
-        if(isFullScreen != this.props.fullscreen) {
+        ) !== undefined;
+        if (isFullScreen !== this.props.fullscreen) {
             this.props.fullscreenToggled(!this.props.fullscreen);
         }
     }
     render() {
         // Render nothing on mobile, but keep the component for the onfullscreenchange logic
-        if(this.props.mobile) {
+        if (this.props.mobile) {
             return null;
         }
         return (
             <span id="FullScreenSwitcher" onClick={this.toggleFullscreen}>
-                <span className={this.props.fullscreen ? "minimize" : "maximize"}></span>
+                <span className={this.props.fullscreen ? "minimize" : "maximize"} />
             </span>
         );
     }
-};
+}
 
 const selector = (state) => ({
     mobile: state.browser ? state.browser.mobile : false,

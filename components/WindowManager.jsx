@@ -17,25 +17,25 @@ require('./style/WindowManager.css');
 
 class WindowManager extends React.Component {
     static propTypes = {
-        windows: PropTypes.object,
-        currentTheme: PropTypes.object,
+        closeAllWindows: PropTypes.func,
         closeWindow: PropTypes.func,
-        closeAllWindows: PropTypes.func
+        currentTheme: PropTypes.object,
+        windows: PropTypes.object
     }
     constructor(props) {
         super(props);
         this.iframes = {};
     }
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.currentTheme !== prevProps.currentTheme) {
+        if (this.props.currentTheme !== prevProps.currentTheme) {
             this.props.closeAllWindows();
         }
     }
     render() {
         return Object.entries(this.props.windows).map(([key, data]) => {
-            if(data.type === "iframedialog") {
+            if (data.type === "iframedialog") {
                 return this.renderIframeDialog(key, data);
-            } else if(data.type === "notification") {
+            } else if (data.type === "notification") {
                 return this.renderNotification(key, data);
             } else {
                 return null;
@@ -43,32 +43,32 @@ class WindowManager extends React.Component {
         });
     }
     renderIframeDialog = (key, data) => {
-        let extraControls = [];
-        if(data.options.print) {
+        const extraControls = [];
+        if (data.options.print) {
             extraControls.push({icon: "print", callback: () => this.printIframe(key)});
         }
         return (
-            <ResizeableWindow key={key} title={"windows." + key} icon={data.icon || ""}
-                initialWidth={data.options.w || 640} initialHeight={data.options.h || 480}
+            <ResizeableWindow extraControls={extraControls} icon={data.icon || ""} initialHeight={data.options.h || 480}
+                initialWidth={data.options.w || 640} key={key}
                 onClose={() => this.closeWindow(key)}
-                extraControls={extraControls}>
-                <iframe onLoad={(ev) => this.iframes[key] = ev.target} className="windows-iframe-dialog-body" role="body" src={data.url} />
+                title={"windows." + key}>
+                <iframe className="windows-iframe-dialog-body" onLoad={(ev) => { this.iframes[key] = ev.target; }} role="body" src={data.url} />
             </ResizeableWindow>
         );
     }
     renderNotification = (key, data) => {
         return (
-            <MessageBar key={key} onHide={() => this.closeWindow(key)} hideOnTaskChange={true}>
+            <MessageBar hideOnTaskChange key={key} onHide={() => this.closeWindow(key)}>
                 <span role="body">{data.text}</span>
             </MessageBar>
         );
     }
     closeWindow = (key) => {
-        delete this.refs[key];
+        delete this.iframes[key];
         this.props.closeWindow(key);
     }
     printIframe = (key) => {
-        if(this.iframes[key]) {
+        if (this.iframes[key]) {
             this.iframes[key].contentWindow.print();
         }
     }

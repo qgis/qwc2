@@ -9,7 +9,6 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const uuid = require('uuid');
-const {LayerRole} = require('../../actions/layers');
 const Icon = require('../../components/Icon');
 const LocaleUtils = require('../../utils/LocaleUtils');
 
@@ -18,10 +17,10 @@ require('./style/VectorLayerPicker.css');
 
 class VectorLayerPicker extends React.Component {
     static propTypes = {
-        value: PropTypes.string,
+        addLayer: PropTypes.func,
         layers: PropTypes.array,
         onChange: PropTypes.func,
-        addLayer: PropTypes.func
+        value: PropTypes.string
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -29,7 +28,7 @@ class VectorLayerPicker extends React.Component {
     render() {
         return (
             <div className="VectorLayerPicker">
-                <select className="combo" value={this.props.value} onChange={ev => this.props.onChange(this.props.layers.find(layer => layer.id === ev.target.value))}>
+                <select className="combo" onChange={ev => this.props.onChange(this.props.layers.find(layer => layer.id === ev.target.value))} value={this.props.value}>
                     {this.props.layers.map(layer => (<option key={layer.id} value={layer.id}>{layer.title}</option>))}
                 </select>
                 <button className="button" onClick={this.addLayer} style={{borderLeftWidth: 0}}><Icon icon="plus" /></button>
@@ -37,10 +36,10 @@ class VectorLayerPicker extends React.Component {
         );
     }
     addLayer = () => {
-        let message = LocaleUtils.getMessageById(this.context.messages, "vectorlayerpicker.prompt");
-        let name = prompt(message);
-        if(name) {
-            let layer = {
+        const message = LocaleUtils.getMessageById(this.context.messages, "vectorlayerpicker.prompt");
+        const name = prompt(message);
+        if (name) {
+            const layer = {
                 id: uuid.v4(),
                 title: name,
                 type: 'vector'
@@ -49,6 +48,6 @@ class VectorLayerPicker extends React.Component {
             this.props.onChange(layer);
         }
     }
-};
+}
 
 module.exports = VectorLayerPicker;

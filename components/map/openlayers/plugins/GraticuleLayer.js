@@ -6,16 +6,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var ol = require('openlayers');
+const ol = require('openlayers');
 
-let GraticuleLayer = {
+const GraticuleLayer = {
     create: (options, map) => {
-        let graticule = new ol.Graticule({
-          strokeStyle: options.style || new ol.style.Stroke({
-            color: 'rgba(255,120,0,0.9)',
-            width: 2,
-            lineDash: [0.5, 4]
-          })
+        const graticule = new ol.Graticule({
+            strokeStyle: options.style || new ol.style.Stroke({
+                color: 'rgba(255,120,0,0.9)',
+                width: 2,
+                lineDash: [0.5, 4]
+            })
         });
         graticule.setMap(map);
 

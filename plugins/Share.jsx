@@ -12,7 +12,6 @@ const PropTypes = require('prop-types');
 const Message = require('../components/I18N/Message');
 const ShareSocials = require('../components/share/ShareSocials');
 const ShareQRCode = require('../components/share/ShareQRCode');
-const ConfigUtils = require('../utils/ConfigUtils');
 const ShareLink = require('../components/ShareLink');
 const {SideBar} = require('../components/SideBar');
 const {generatePermaLink} = require('../utils/PermaLinkUtils');
@@ -20,9 +19,9 @@ require('./style/Share.css');
 
 class Share extends React.Component {
     static propTypes = {
-        showSocials: PropTypes.bool,
         showLink: PropTypes.bool,
         showQRCode: PropTypes.bool,
+        showSocials: PropTypes.bool,
         state: PropTypes.object
     }
     static defaultProps = {
@@ -38,8 +37,8 @@ class Share extends React.Component {
         generatePermaLink(this.props.state, (permalink => this.setState({location: permalink})));
     }
     renderBody = () => {
-        if(this.state.location) {
-            const shareSocials = this.props.showSocials ? <ShareSocials shareUrl={this.state.location} shareTitle="QWC2" getCount={this.props.getCount}/> : null;
+        if (this.state.location) {
+            const shareSocials = this.props.showSocials ? <ShareSocials shareTitle="QWC2" shareUrl={this.state.location}/> : null;
             const shareLink = this.props.showLink ? <ShareLink shareUrl={this.state.location}/> : null;
             const shareQRCode = this.props.showQRCode ? <ShareQRCode shareUrl={this.state.location}/> : null;
             return (
@@ -58,19 +57,19 @@ class Share extends React.Component {
     }
     render() {
         return (
-            <SideBar id="Share" onShow={this.onShow} width="20em"
-                title="appmenu.items.Share" icon="share">
+            <SideBar icon="share" id="Share" onShow={this.onShow}
+                title="appmenu.items.Share" width="20em">
                 {() => ({
                     body: this.renderBody()
                 })}
             </SideBar>
         );
     }
-};
+}
 
 module.exports = {
     SharePlugin: connect(state => ({state}))(Share),
     reducers: {
         task: require('../reducers/task')
     }
-}
+};

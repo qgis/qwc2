@@ -17,6 +17,7 @@ require('./style/ButtonBar.css');
 
 class ButtonBar extends React.Component {
     static propTypes = {
+        active: PropTypes.string,
         buttons: PropTypes.arrayOf(PropTypes.shape({
             key: PropTypes.string,
             label: PropTypes.string,
@@ -27,10 +28,9 @@ class ButtonBar extends React.Component {
             type: PropTypes.string,
             disabled: PropTypes.bool
         })),
-        active: PropTypes.string,
-        onClick: PropTypes.func,
+        disabled: PropTypes.bool,
         mobile: PropTypes.bool,
-        disabled: PropTypes.bool
+        onClick: PropTypes.func
     }
     static defaultProps = {
         disabled: false
@@ -40,13 +40,17 @@ class ButtonBar extends React.Component {
             <div className={"ButtonBar" + (this.props.disabled ? " buttonbar-disabled" : "")}>
                 {this.props.buttons.map(button => {
                     let classes = classnames({
-                        "button": true,
-                        "pressed": this.props.active === button.key
+                        button: true,
+                        pressed: this.props.active === button.key
                     });
                     classes += button.extraClasses ? ' ' + button.extraClasses : '';
                     return (
                         <span className="buttonbar-button-container"  key={button.key}>
-                            <button type={button.type || "button"} disabled={button.disabled} className={classes} onClick={button.type !== "submit" ? (ev) => this.props.onClick(button.key, button.data) : null}>
+                            <button
+                                className={classes} disabled={button.disabled}
+                                onClick={button.type !== "submit" ? () => this.props.onClick(button.key, button.data) : null}
+                                type={button.type || "button"}
+                            >
                                 {button.icon ? (<Icon icon={button.icon} />) : null}
                                 {button.label && (!this.props.mobile || !button.icon) ? (<Message msgId={button.label} />) : null}
                             </button>
@@ -57,12 +61,12 @@ class ButtonBar extends React.Component {
                     );
                 })}
             </div>
-        )
+        );
     }
-};
+}
 
 const selector = (state) => ({
-    mobile: state.browser ? state.browser.mobile : false,
+    mobile: state.browser ? state.browser.mobile : false
 });
 
 module.exports = connect(selector, {})(ButtonBar);

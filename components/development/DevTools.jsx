@@ -12,8 +12,7 @@ const LogMonitor = require('redux-devtools-log-monitor').default;
 const DockMonitor = require('redux-devtools-dock-monitor').default;
 
 module.exports = createDevTools(
-   <DockMonitor toggleVisibilityKey="ctrl-h"
-                changePositionKey="ctrl-q">
-       <LogMonitor theme="tomorrow" />
-   </DockMonitor>
+    <DockMonitor changePositionKey="ctrl-q" toggleVisibilityKey="ctrl-h">
+        <LogMonitor theme="tomorrow" />
+    </DockMonitor>
 );

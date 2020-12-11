@@ -9,17 +9,17 @@
 const ol = require('openlayers');
 const MapUtils = require('../../../../utils/MapUtils');
 
-let OSMLayer = {
+const OSMLayer = {
     create: (options) => {
         return new ol.layer.Tile({
             opacity: options.opacity !== undefined ? options.opacity : 1,
             visible: options.visibility,
             zIndex: options.zIndex,
-            minResolution: options.minScale == null ? undefined : MapUtils.getResolutionsForScales([options.minScale], options.srs)[0],
-            maxResolution: options.maxScale == null ? undefined : MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0],
+            minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.srs)[0] : undefined,
+            maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0] : undefined,
             source: new ol.source.OSM({
                 url: options.url,
-                projection: options.projection,
+                projection: options.projection
             })
         });
     }

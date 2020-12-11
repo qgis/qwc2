@@ -14,9 +14,10 @@ require('./style/MessageBar.css');
 
 class MessageBar extends React.Component {
     static propTypes = {
-        onHide: PropTypes.func,
+        children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         className: PropTypes.string,
         hideOnTaskChange: PropTypes.bool,
+        onHide: PropTypes.func,
         task: PropTypes.string
     }
     static defaultProps = {
@@ -24,7 +25,7 @@ class MessageBar extends React.Component {
         hideOnTaskChange: false
     }
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.task !== prevProps.task && this.props.hideOnTaskChange) {
+        if (this.props.task !== prevProps.task && this.props.hideOnTaskChange) {
             this.props.onHide();
         }
     }
@@ -32,7 +33,7 @@ class MessageBar extends React.Component {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
     }
     render() {
-        let contents = (typeof this.props.children === "function") ? this.props.children() : null;
+        const contents = (typeof this.props.children === "function") ? this.props.children() : null;
         return (
             <div>
                 <div id="MessageBar">
@@ -41,7 +42,7 @@ class MessageBar extends React.Component {
                             {contents ? contents.body || null : this.renderRole("body")}
                         </div>
                         <span className="closewrapper">
-                            <Icon className="close" onClick={this.props.onHide} icon="remove" size="large"/>
+                            <Icon className="close" icon="remove" onClick={this.props.onHide} size="large"/>
                         </span>
                     </div>
                 </div>
@@ -49,7 +50,7 @@ class MessageBar extends React.Component {
             </div>
         );
     }
-};
+}
 
 const selector = (state) => ({
     task: state.task ? state.task.id : null
@@ -57,4 +58,4 @@ const selector = (state) => ({
 
 module.exports = {
     MessageBar: connect(selector, {})(MessageBar)
-}
+};

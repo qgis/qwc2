@@ -9,7 +9,6 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const Message = require('../components/I18N/Message');
 const {SideBar} = require('../components/SideBar');
 
 class Help extends React.Component {
@@ -21,21 +20,22 @@ class Help extends React.Component {
     }
     render() {
         return (
-            <SideBar id="Help" width="20em" title="appmenu.items.Help"
-                icon="info">
+            <SideBar icon="info" id="Help" title="appmenu.items.Help" width="20em">
                 {() => ({
                     body: (<div>{this.props.renderBody(this.props)}</div>)
                 })}
             </SideBar>
         );
     }
-};
+}
 
-module.exports = (renderHelp) => { return {
-    HelpPlugin: connect((state) => ({
-        renderBody: renderHelp
-    }), {})(Help),
-    reducers: {
-        task: require('../reducers/task')
-    }
-}};
+module.exports = (renderHelp) => {
+    return {
+        HelpPlugin: connect(() => ({
+            renderBody: renderHelp
+        }), {})(Help),
+        reducers: {
+            task: require('../reducers/task')
+        }
+    };
+};

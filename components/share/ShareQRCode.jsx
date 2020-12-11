@@ -6,10 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
- /* DESCRIPTION
-    This component it creates a qr code base on the url passed via the shareUrl property
- */
-
 const React = require('react');
 const PropTypes = require('prop-types');
 const QRCode = require('qrcode.react');
@@ -25,10 +21,10 @@ class ShareQRCode extends React.Component {
                 <h4>
                     <Message msgId="share.QRCodeLinkTitle"/>
                 </h4>
-            <QRCode value={this.props.shareUrl} />
-        </div>
+                <QRCode value={this.props.shareUrl} />
+            </div>
         );
     }
-};
+}
 
 module.exports = ShareQRCode;

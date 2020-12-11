@@ -13,21 +13,21 @@ const objectPath = require('object-path');
 const readJSON = (path) => {
     try {
         return JSON.parse(fs.readFileSync(process.cwd() + path, "utf8"));
-    } catch(e) {
-        return {}
+    } catch (e) {
+        return {};
     }
-}
+};
 
 const cleanMessages = (data, ref) => {
-    for (let property of Object.keys(data)) {
-        let omit = ref && !(property in ref);
-        if (typeof data[property] == "object") {
-            if(omit) {
+    for (const property of Object.keys(data)) {
+        const omit = ref && !(property in ref);
+        if (typeof data[property] === "object") {
+            if (omit) {
                 delete data[property];
             } else {
                 cleanMessages(data[property], ref ? ref[property] : undefined);
             }
-        } else if(data[property] === "" || omit) {
+        } else if (data[property] === "" || omit) {
             delete data[property];
         }
     }
@@ -35,63 +35,63 @@ const cleanMessages = (data, ref) => {
 };
 
 const createSkel = (strings) => {
-    let skel = {"locale": "", "messages": {}};
-    for(let string of strings) {
-        let path = string.split(".");
+    const skel = {locale: "", messages: {}};
+    for (const string of strings) {
+        const path = string.split(".");
         let cur = skel.messages;
-        for(let i = 0; i < path.length - 1; ++i) {
+        for (let i = 0; i < path.length - 1; ++i) {
             cur[path[i]] = cur[path[i]] || {};
             cur = cur[path[i]];
         }
         cur[path[path.length - 1]] = "";
     }
     return skel;
-}
+};
 
 // Determine workspaces
-let workspaces = readJSON('/package.json').workspaces || [];
+const workspaces = readJSON('/package.json').workspaces || [];
 
 // Generate workspace translations
-for(let workspace of workspaces) {
+for (const workspace of workspaces) {
     console.log("Generating translations for " + workspace);
-    let config = readJSON('/' + workspace + '/translations/tsconfig.json');
-    let strings = config.strings || [];
-    let skel = createSkel(strings);
+    const config = readJSON('/' + workspace + '/translations/tsconfig.json');
+    const strings = config.strings || [];
+    const skel = createSkel(strings);
 
-    for(let lang of config.languages || []) {
-        let langskel = merge(skel, {"locale": lang});
+    for (const lang of config.languages || []) {
+        const langskel = merge(skel, {locale: lang});
 
         // Merge translations
-        let data = merge(langskel, cleanMessages(readJSON('/' + workspace + '/translations/' + lang + '.json'), langskel));
+        const data = merge(langskel, cleanMessages(readJSON('/' + workspace + '/translations/' + lang + '.json'), langskel));
         // Write updated translations file
         try {
             fs.writeFileSync(process.cwd() + '/' + workspace + '/translations/' + lang + ".json", JSON.stringify(data, null, 2) + "\n");
             console.log('Wrote ' + workspace + '/translations/' + lang + '.json');
-        } catch(e) {
+        } catch (e) {
             console.error('Failed to write ' + workspace + '/translations/' + lang + '.json: ' + e);
         }
     }
 }
 
 // Generate application translations
-let config = readJSON('/translations/tsconfig.json');
-let strings = config.strings || [];
-let skel = createSkel(strings);
-for(let lang of config.languages || []) {
-    let langskel = merge(skel, {"locale": lang});
+const config = readJSON('/translations/tsconfig.json');
+const strings = config.strings || [];
+const skel = createSkel(strings);
+for (const lang of config.languages || []) {
+    const langskel = merge(skel, {locale: lang});
 
-    let origData = readJSON('/translations/' + lang + '.json');
+    const origData = readJSON('/translations/' + lang + '.json');
     let data = merge(langskel, cleanMessages(readJSON('/translations/' + lang + '.json'), langskel));
 
     // Merge translations from workspaces
-    for(let workspace of workspaces) {
+    for (const workspace of workspaces) {
         data = merge(data, readJSON('/' + workspace + '/translations/' + lang + '.json'));
     }
 
     // Revert to original values for strings specified in overrides
-    for(let path of config.overrides || []) {
-        let value = objectPath.get(origData.messages, path);
-        if(value !== undefined) {
+    for (const path of config.overrides || []) {
+        const value = objectPath.get(origData.messages, path);
+        if (value !== undefined) {
             objectPath.set(data.messages, path, value);
         }
     }
@@ -100,7 +100,7 @@ for(let lang of config.languages || []) {
     try {
         fs.writeFileSync(process.cwd() + '/translations/' + lang + '.json', JSON.stringify(data, null, 2) + "\n");
         console.log('Wrote translations/' + lang + '.json');
-    } catch(e) {
+    } catch (e) {
         console.error('Failed to write translations/' + lang + '.json: ' + e);
     }
 }

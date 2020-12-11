@@ -11,10 +11,10 @@ const PropTypes = require('prop-types');
 
 class NumberInput extends React.Component {
     static propTypes = {
-        value: PropTypes.number,
-        onChange: PropTypes.func,
+        max: PropTypes.number,
         min: PropTypes.number,
-        max: PropTypes.number
+        onChange: PropTypes.func,
+        value: PropTypes.number
     }
     state = {
         curValue: ""
@@ -27,11 +27,11 @@ class NumberInput extends React.Component {
         return {curValue: nextProps.value};
     }
     render() {
-        return (<input type="number" min={this.props.min} max={this.props.max} value={this.state.curValue} onChange={this.onChange} onBlur={this.onBlur}/>);
+        return (<input max={this.props.max} min={this.props.min} onBlur={this.onBlur} onChange={this.onChange} type="number" value={this.state.curValue} />);
     }
     onChange = (ev) => {
-        let value = parseInt(ev.target.value);
-        if(Number.isInteger(value)) {
+        const value = parseInt(ev.target.value, 10);
+        if (Number.isInteger(value)) {
             this.props.onChange(value);
         } else {
             this.setState({curValue: ""});
@@ -40,6 +40,6 @@ class NumberInput extends React.Component {
     onBlur = () => {
         this.setState({curValue: this.props.value});
     }
-};
+}
 
 module.exports = NumberInput;

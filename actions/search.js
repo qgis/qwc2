@@ -36,10 +36,10 @@ function changeSearch(text, providers) {
     };
 }
 
-function startSearch(text, options, providers, startup=false) {
+function startSearch(text, options, providers, startup = false) {
     return (dispatch, getState) => {
-        let reqId = uuid.v1();
-        let providerKeys = Object.keys(providers);
+        const reqId = uuid.v1();
+        const providerKeys = Object.keys(providers);
         dispatch({
             type: SEARCH_SET_REQUEST,
             id: reqId,
@@ -49,13 +49,13 @@ function startSearch(text, options, providers, startup=false) {
         Object.keys(providers).map(provider => {
             providers[provider].onSearch(text, reqId, options, dispatch, getState());
         });
-    }
+    };
 }
 
 function searchMore(moreItem, text, providers) {
     return (dispatch) => {
-        if(moreItem.provider && providers[moreItem.provider].getMoreResults) {
-            let reqId = uuid.v1();
+        if (moreItem.provider && providers[moreItem.provider].getMoreResults) {
+            const reqId = uuid.v1();
             dispatch({
                 type: SEARCH_SET_REQUEST,
                 id: reqId,
@@ -66,7 +66,7 @@ function searchMore(moreItem, text, providers) {
     };
 }
 
-function addSearchResults(results, append=true) {
+function addSearchResults(results, append = true) {
     return {
         type: SEARCH_ADD_RESULTS,
         results: results,

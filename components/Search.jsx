@@ -26,7 +26,7 @@ const LayerUtils = require('../utils/LayerUtils');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const {LayerRole, addLayerFeatures, removeLayer, addLayer, addThemeSublayer, changeLayerProperty} = require('../actions/layers');
 const {zoomToPoint} = require('../actions/map');
-const {addSearchResults, changeSearch, startSearch, searchMore, setCurrentSearchResult, SearchResultType} = require("../actions/search");
+const {changeSearch, startSearch, searchMore, setCurrentSearchResult, SearchResultType} = require("../actions/search");
 const {setCurrentTask} = require('../actions/task');
 const {setCurrentTheme} = require('../actions/theme');
 const {showNotification} = require('../actions/windows');
@@ -39,32 +39,33 @@ require('./style/Search.css');
 
 class Search extends React.Component {
     static propTypes = {
-        searchText: PropTypes.string,
         activeProviders: PropTypes.array, // The active provider keys
-        pendingProviders: PropTypes.array, // Providers for which results are pending
-        searchProviders: PropTypes.object, // All available search providers
-        startupSearch: PropTypes.bool,
-        results: PropTypes.array,
-        currentResult: PropTypes.object,
-        theme: PropTypes.object,
-        themes: PropTypes.object,
-        map: PropTypes.object,
-        displaycrs: PropTypes.string,
-        changeSearch: PropTypes.func,
-        startSearch: PropTypes.func,
-        searchMore: PropTypes.func,
-        panToResult: PropTypes.func,
-        addLayerFeatures: PropTypes.func,
-        removeLayer: PropTypes.func,
         addLayer: PropTypes.func,
+        addLayerFeatures: PropTypes.func,
         addThemeSublayer: PropTypes.func,
+        changeLayerProperty: PropTypes.func,
+        changeSearch: PropTypes.func,
+        currentResult: PropTypes.object,
+        displaycrs: PropTypes.string,
+        layers: PropTypes.array,
+        map: PropTypes.object,
+        panToResult: PropTypes.func,
+        pendingProviders: PropTypes.array, // Providers for which results are pending
+        removeLayer: PropTypes.func,
+        results: PropTypes.array,
+        searchMore: PropTypes.func,
+        searchOptions: PropTypes.object,
+        searchProviders: PropTypes.object, // All available search providers
+        searchText: PropTypes.string,
+        setCurrentSearchResult: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
         showNotification: PropTypes.func,
-        searchOptions: PropTypes.object,
-        layers: PropTypes.array,
-        changeLayerProperty: PropTypes.func,
-        startupParams: PropTypes.object
+        startSearch: PropTypes.func,
+        startupParams: PropTypes.object,
+        startupSearch: PropTypes.bool,
+        theme: PropTypes.object,
+        themes: PropTypes.object
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -78,26 +79,26 @@ class Search extends React.Component {
         this.preventBlur = false;
         this.blurred = false;
 
-        let sp = UrlParams.getParam('sp');
+        const sp = UrlParams.getParam('sp');
         this.props.changeSearch(UrlParams.getParam('st') || "", sp ? sp.split(",") : null);
     }
     componentDidUpdate(prevProps, prevState) {
         // If search text changed, clear result
-        if(this.props.searchText !== prevProps.searchText) {
+        if (this.props.searchText !== prevProps.searchText) {
             prevProps.removeLayer('searchselection');
         }
         // If the theme changed, reset search and select provider
-        if(this.props.theme && (this.props.theme !== prevProps.theme || !isEqual(Object.keys(this.props.searchProviders), Object.keys(prevProps.searchProviders)))) {
+        if (this.props.theme && (this.props.theme !== prevProps.theme || !isEqual(Object.keys(this.props.searchProviders), Object.keys(prevProps.searchProviders)))) {
             // Only reset search text if the theme was changed (as opposed to the initial theme loaded)
-            let searchText = prevProps.theme ? "" : this.props.searchText;
+            const searchText = prevProps.theme ? "" : this.props.searchText;
 
             // Ensure search providers references valid providers
             let activeProviders = this.props.activeProviders;
-            if(!this.props.searchOptions.showProviderSelection || isEmpty(this.props.searchProviders)) {
+            if (!this.props.searchOptions.showProviderSelection || isEmpty(this.props.searchProviders)) {
                 activeProviders = null;
             } else {
                 activeProviders = (activeProviders || []).filter(key => this.props.searchProviders[key] !== undefined);
-                if(isEmpty(activeProviders)) {
+                if (isEmpty(activeProviders)) {
                     activeProviders = this.props.searchOptions.providerSelectionAllowAll ? null : [this.props.searchProviders[0].key];
                 }
             }
@@ -105,17 +106,17 @@ class Search extends React.Component {
             this.props.changeSearch(searchText, activeProviders);
 
             // If initial theme loaded and a search text is defined, fire off the search
-            if(!prevProps.theme) {
+            if (!prevProps.theme) {
                 this.search(assign({}, this.props, {activeProviders}), true);
             }
-        } else if(this.props.results && this.props.results !== prevProps.results && isEmpty(this.props.pendingProviders)) {
+        } else if (this.props.results && this.props.results !== prevProps.results && isEmpty(this.props.pendingProviders)) {
             // If results changed and a unique result is returned, select it automatically if it is a Place result
-            if(this.props.results.length === 1 && this.props.results[0].items.length === 1) {
-                let item = this.props.results[0].items[0];
-                if((item.type || SearchResultType.PLACE) === SearchResultType.PLACE) {
+            if (this.props.results.length === 1 && this.props.results[0].items.length === 1) {
+                const item = this.props.results[0].items[0];
+                if ((item.type || SearchResultType.PLACE) === SearchResultType.PLACE) {
                     this.showResult(item, this.props.startupSearch, this.props.startupSearch);
                 }
-            } else if(this.input && !this.blurred) {
+            } else if (this.input && !this.blurred) {
                 // If multiple results are available and search field is not focused, focus it (unless explicitly blurred before)
                 this.input.focus();
             }
@@ -125,8 +126,8 @@ class Search extends React.Component {
         ev.preventDefault();
         ev.stopPropagation();
     }
-    search = (props, startup=false)  => {
-        if(props.searchText) {
+    search = (props, startup = false)  => {
+        if (props.searchText) {
             this.setState({invisibleLayerQuery: null});
             props.startSearch(props.searchText, {displaycrs: props.displaycrs}, this.activeProviders(props), startup);
         }
@@ -141,20 +142,20 @@ class Search extends React.Component {
         this.searchTimer = setTimeout(() => this.search(this.props), 500);
     }
     checkShowFields = (ev) => {
-        if((this.props.activeProviders || []).length === 1 && this.props.searchProviders[this.props.activeProviders[0]].fields) {
+        if ((this.props.activeProviders || []).length === 1 && this.props.searchProviders[this.props.activeProviders[0]].fields) {
             this.setState({showfields: true, focused: false});
             ev.preventDefault();
         }
     }
     onFocus = () => {
-        if(!this.state.showfields && this.props.searchText && !this.props.results) {
+        if (!this.state.showfields && this.props.searchText && !this.props.results) {
             this.search(this.props);
         }
         this.setState({focused: true});
         this.blurred = false;
     }
-    onBlur = (ev) => {
-        if(this.preventBlur && this.input) {
+    onBlur = () => {
+        if (this.preventBlur && this.input) {
             this.input.focus();
         } else {
             this.setState({focused: false});
@@ -162,16 +163,16 @@ class Search extends React.Component {
         this.blurred = true;
     }
     onKeyDown = (ev) => {
-        if(ev.keyCode === 13) {
+        if (ev.keyCode === 13) {
             this.search(this.props);
-        } else if(ev.keyCode === 27) {
+        } else if (ev.keyCode === 27) {
             ev.target.blur();
         }
     }
     activeProviders = (props) => {
-        let keys = isEmpty(props.activeProviders) ? Object.keys(props.searchProviders) : props.activeProviders;
+        const keys = isEmpty(props.activeProviders) ? Object.keys(props.searchProviders) : props.activeProviders;
         return keys.reduce((result, key) => {
-            if(props.searchProviders[key]) {
+            if (props.searchProviders[key]) {
                 result[key] = props.searchProviders[key];
             }
             return result;
@@ -179,10 +180,10 @@ class Search extends React.Component {
     }
     render() {
         let placeholder = "";
-        if(this.props.searchOptions.showProvidersInPlaceholder || !isEmpty(this.props.activeProviders)) {
-             placeholder = LocaleUtils.getMessageById(this.context.messages, "search.search");
-            let providers = this.activeProviders(this.props);
-            if(!isEmpty(providers)) {
+        if (this.props.searchOptions.showProvidersInPlaceholder || !isEmpty(this.props.activeProviders)) {
+            placeholder = LocaleUtils.getMessageById(this.context.messages, "search.search");
+            const providers = this.activeProviders(this.props);
+            if (!isEmpty(providers)) {
                 placeholder +=  ": " + Object.values(providers).map(prov => {
                     return prov.labelmsgid ? LocaleUtils.getMessageById(this.context.messages, prov.labelmsgid) : prov.label;
                 }).join(", ");
@@ -190,20 +191,21 @@ class Search extends React.Component {
         } else {
             placeholder = LocaleUtils.getMessageById(this.context.messages, "search.searchall");
         }
-        if(!this.props.searchText) {
-            var addonAfter = (<Icon icon="search"/>);
+        let addonAfter = null;
+        if (!this.props.searchText) {
+            addonAfter = (<Icon icon="search"/>);
         } else if(this.props.searchText && this.state.focused && this.props.pendingProviders && this.props.pendingProviders.length > 0) {
-            var addonAfter = (<Spinner/>);
+            addonAfter = (<Spinner/>);
         } else {
-            var addonAfter = (<Icon icon="remove" onClick={this.resetSearch}/>);
+            addonAfter = (<Icon icon="remove" onClick={this.resetSearch}/>);
         }
         let providerSelection = null;
-        if(this.props.searchOptions.showProviderSelection) {
+        if (this.props.searchOptions.showProviderSelection) {
             let providerSelectionMenu = null;
-            if(this.state.providerSelectionVisible) {
+            if (this.state.providerSelectionVisible) {
                 let allEntry = null;
-                if(this.props.searchOptions.providerSelectionAllowAll) {
-                    let itemClass = classnames({
+                if (this.props.searchOptions.providerSelectionAllowAll) {
+                    const itemClass = classnames({
                         'searchbar-provider-selection-all': true,
                         'searchbar-provider-selection-active': isEmpty(this.props.activeProviders)
                     });
@@ -214,20 +216,22 @@ class Search extends React.Component {
                 providerSelectionMenu = (
                     <ul className="searchbar-provider-selection">
                         {allEntry}
-                        {Object.entries(this.props.searchProviders).map(([key,prov]) => {
-                            let itemClass = classnames({
+                        {Object.entries(this.props.searchProviders).map(([key, prov]) => {
+                            const itemClass = classnames({
                                 'searchbar-provider-selection-active': (this.props.activeProviders || []).length === 1 && this.props.activeProviders[0] === key
                             });
                             return (
-                                <li className={itemClass} key={key} onClick={() => this.props.changeSearch("", [key])}>{
+                                <li className={itemClass} key={key} onClick={() => this.props.changeSearch("", [key])}>
+                                    {
                                         prov.labelmsgid ? LocaleUtils.getMessageById(this.context.messages, prov.labelmsgid) : prov.label
-                                    }</li>
+                                    }
+                                </li>
                             );
                         })}
                     </ul>
                 );
             }
-            let addonClasses = classnames({
+            const addonClasses = classnames({
                 'searchbar-addon': true,
                 'searchbar-addon-active': this.state.providerSelectionVisible,
                 'searchbar-addon-filter-active': !isEmpty(this.props.activeProviders)
@@ -235,19 +239,19 @@ class Search extends React.Component {
             providerSelection = (
                 <span className={addonClasses} onClick={() => this.setState({providerSelectionVisible: !this.state.providerSelectionVisible})}>
                     <Icon icon="filter" />
-                    <Icon icon="chevron-down" className="searchbar-addon-menu-icon" />
+                    <Icon className="searchbar-addon-menu-icon" icon="chevron-down" />
                     {providerSelectionMenu}
                 </span>
             );
         }
         let searchform = null;
         this.formfields = {};
-        if(this.state.showfields) {
-            let fields = this.props.searchProviders[UrlParams.getParam("sp")].fields;
-            let values = {};
+        if (this.state.showfields) {
+            const fields = this.props.searchProviders[UrlParams.getParam("sp")].fields;
+            const values = {};
             this.props.searchText.split(/\s*AND\s*/).map(pair => {
-                let parts = pair.split(/\s*=\s*/);
-                if(parts.length === 2) {
+                const parts = pair.split(/\s*=\s*/);
+                if (parts.length === 2) {
                     values[parts[0]] = parts[1];
                 }
             });
@@ -258,7 +262,7 @@ class Search extends React.Component {
                             {fields.map(field => (
                                 <tr key={field.id}>
                                     <td>{field.label}</td>
-                                    <td><input ref={el => this.formfields[field.id] = el} type="text" defaultValue={values[field.id] || ""} /></td>
+                                    <td><input defaultValue={values[field.id] || ""} ref={el => { this.formfields[field.id] = el; }} type="text" /></td>
                                 </tr>
                             ))}
                         </tbody>
@@ -271,11 +275,11 @@ class Search extends React.Component {
             );
         }
         let invisibleLayerQuery = null;
-        if(this.state.invisibleLayerQuery) {
+        if (this.state.invisibleLayerQuery) {
             invisibleLayerQuery = (
-                <MessageBar key="invisibleLayerQuery" className="searchbar-invisible-layer-notification"
+                <MessageBar className="searchbar-invisible-layer-notification" hideOnTaskChange
+                    key="invisibleLayerQuery"
                     onHide={() => this.setState({invisibleLayerQuery: null})}
-                    hideOnTaskChange={true}
                 >
                     <span role="body"><Message msgId="search.invisiblelayer" /> <button onClick={this.enableLayer}><Message msgId="search.enablelayer" /></button></span>
                 </MessageBar>
@@ -283,20 +287,20 @@ class Search extends React.Component {
         }
         return [
             (
-                <div id="Search" key="SearchBox" onTouchStart={ev => ev.stopPropagation()} onTouchMove={ev => ev.stopPropagation()}  onTouchEnd={ev => ev.stopPropagation()}>
+                <div id="Search" key="SearchBox" onTouchEnd={ev => ev.stopPropagation()} onTouchMove={ev => ev.stopPropagation()}  onTouchStart={ev => ev.stopPropagation()}>
                     <div className="searchbar-wrapper">
                         <div className="searchbar-container">
                             <input
                                 className="searchbar"
-                                placeholder={placeholder}
-                                type="text"
-                                ref={el => this.input = el}
-                                value={this.props.searchText}
-                                onMouseDown={this.checkShowFields}
-                                onFocus={this.onFocus}
                                 onBlur={this.onBlur}
+                                onChange={this.onChange}
+                                onFocus={this.onFocus}
                                 onKeyDown={this.onKeyDown}
-                                onChange={this.onChange} />
+                                onMouseDown={this.checkShowFields}
+                                placeholder={placeholder}
+                                ref={el => { this.input = el; }}
+                                type="text"
+                                value={this.props.searchText} />
                             <span className="searchbar-addon">
                                 {addonAfter}
                             </span>
@@ -310,18 +314,18 @@ class Search extends React.Component {
         ];
     }
     enableLayer = () => {
-        if(this.state.invisibleLayerQuery) {
+        if (this.state.invisibleLayerQuery) {
             this.props.changeLayerProperty(this.state.invisibleLayerQuery.layer.uuid, "visibility", true, this.state.invisibleLayerQuery.sublayerpath);
             this.setState({invisibleLayerQuery: null});
         }
     }
     submitFormSearch = () => {
-        let comp = this.props.searchProviders[UrlParams.getParam("sp")].comparator;
-        let filters = Object.keys(this.formfields).map(key => {
+        const comp = this.props.searchProviders[UrlParams.getParam("sp")].comparator;
+        const filters = Object.keys(this.formfields).map(key => {
             return  key + "=" + this.formfields[key].value;
         });
-        let searchText = filters.join(" AND ");
-        if(searchText !== this.props.searchText || !this.props.results) {
+        const searchText = filters.join(" AND ");
+        if (searchText !== this.props.searchText || !this.props.results) {
             this.props.changeSearch(searchText, this.props.activeProviders);
             this.props.startSearch(searchText, {displaycrs: this.props.displaycrs}, this.activeProviders(this.props));
         }
@@ -329,7 +333,7 @@ class Search extends React.Component {
         this.setState({showfields: false});
     }
     renderSearchResults = () => {
-        if(!this.props.results || this.props.results.length === 0 || !this.state.focused) {
+        if (!this.props.results || this.props.results.length === 0 || !this.state.focused) {
             return null;
         }
         return (
@@ -338,69 +342,69 @@ class Search extends React.Component {
             </ul>
         );
     }
-    setPreventBlur = (ev) => {
+    setPreventBlur = () => {
         this.preventBlur = true;
         setTimeout(() => {this.preventBlur = false; return false;}, 100);
     }
     setupKillTouchEvents = (el) => {
-        if(el) {
+        if (el) {
             el.addEventListener('touchmove', ev => ev.stopPropagation(), { passive: false });
         }
     }
     renderCategory = (category) => {
-        let title = category.titlemsgid ? (<Message msgId={category.titlemsgid} />) : category.title;
+        const title = category.titlemsgid ? (<Message msgId={category.titlemsgid} />) : category.title;
         return (
             <li key={category.id} onMouseDown={this.killEvent}>
                 <span className="search-results-category-title">{title}</span>
                 <ul>{category.items.map(item => this.renderItem(item))}</ul>
             </li>
-        )
+        );
     }
     renderItem = (item) => {
-        if(item.more) {
+        if (item.more) {
             return (
                 <li key={item.id}
-                    onMouseDown={this.killEvent}
-                    onClick={() => this.props.searchMore(item, this.props.searchText, this.activeProviders(this.props))}>
+                    onClick={() => this.props.searchMore(item, this.props.searchText, this.activeProviders(this.props))}
+                    onMouseDown={this.killEvent}>
                     <i><Message msgId="search.more" /></i>
                 </li>
             );
         }
-        let addTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addtotheme");
-        let addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
+        const addTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addtotheme");
+        const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
         return (
-            <li key={item.id} title={item.text} onMouseDown={this.killEvent}
-                onClick={() => {this.showResult(item); this.input.blur(); }}
+            <li key={item.id} onClick={() => {this.showResult(item); this.input.blur(); }} onMouseDown={this.killEvent}
+                title={item.text}
             >
                 {item.thumbnail ? (<img src={item.thumbnail} />) : null}
-                <span dangerouslySetInnerHTML={{__html: item.text}}></span>
-                {item.theme && addThemes ? (<Icon onClick={(ev) => {this.addThemeLayers(ev, item.theme); this.input.blur();}} icon="plus" title={addTitle}/>) : null}
+                <span dangerouslySetInnerHTML={{__html: item.text}} />
+                {item.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {this.addThemeLayers(ev, item.theme); this.input.blur();}} title={addTitle}/>) : null}
             </li>
         );
     }
     showResult = (item, zoom=true, startupSearch=false) => {
-        let resultType = item.type || SearchResultType.PLACE;
-        if(resultType !== SearchResultType.PLACE && !this.props.searchOptions.zoomToLayers) {
+        const resultType = item.type || SearchResultType.PLACE;
+        if (resultType !== SearchResultType.PLACE && !this.props.searchOptions.zoomToLayers) {
             zoom = false;
         }
-        if(zoom) {
-            let bbox = item.bbox ? item.bbox.slice(0) : [];
+        if (zoom) {
+            const bbox = item.bbox ? item.bbox.slice(0) : [];
             let crs = item.crs;
             let x = !isEmpty(item.bbox) ? 0.5 * (item.bbox[0] + item.bbox[2]) : item.x;
             let y = !isEmpty(item.bbox) ? 0.5 * (item.bbox[1] + item.bbox[3]) : item.y;
 
             // find max zoom level greater than min scale
-            let maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom);
+            const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom);
 
-            if(resultType !== SearchResultType.PLACE && item.layer) {
+            if (resultType !== SearchResultType.PLACE && item.layer) {
                 const maxbbox = (layer, bounds) => {
-                    if(layer.sublayers) {
-                        for(sublayer in layer.sublayers) {
+                    if (layer.sublayers) {
+                        for (const sublayer of layer.sublayers) {
                             maxbbox(layer.sublayers[sublayer], bounds);
                         }
                     } else {
                         const newbounds = CoordinatesUtils.reprojectBbox(layer.bbox.bounds, layer.bbox.crs, this.props.map.projection);
-                        if(bounds.length) {
+                        if (bounds.length) {
                             bounds[0] = Math.min(newbounds[0], bounds[0]);
                             bounds[1] = Math.min(newbounds[1], bounds[1]);
                             bounds[2] = Math.max(newbounds[2], bounds[2]);
@@ -409,7 +413,7 @@ class Search extends React.Component {
                             bounds.push(...newbounds);
                         }
                     }
-                }
+                };
                 maxbbox(item.layer, bbox);
                 crs = this.props.map.projection;
                 x = 0.5 * (bbox[0] + bbox[2]);
@@ -418,83 +422,83 @@ class Search extends React.Component {
 
             // zoom to result using max zoom level
             let newZoom;
-            if(!isEmpty(bbox) && bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
-                let mapbbox = CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection)
+            if (!isEmpty(bbox) && bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
+                const mapbbox = CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection)
                 newZoom = Math.max(0, MapUtils.getZoomForExtent(mapbbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom + 1) - 1);
             } else {
                 newZoom = MapUtils.computeZoom(this.props.map.scales, item.scale || 0);
                 newZoom = Math.max(0, Math.min(newZoom, maxZoom));
             }
-            if(startupSearch) {
-                if(this.props.startupParams.s) {
+            if (startupSearch) {
+                if (this.props.startupParams.s) {
                     newZoom = MapUtils.computeZoom(this.props.map.scales, this.props.startupParams.s);
                 }
             }
             this.props.panToResult([x, y], newZoom, crs);
         }
-        if(resultType === SearchResultType.PLACE) {
+        if (resultType === SearchResultType.PLACE) {
             this.props.removeLayer("searchselection");
             let text = item.label !== undefined ? item.label : item.text;
-            text = text.replace(/<[^>]*>/g, '')
-            if(item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
-                this.props.searchProviders[item.provider].getResultGeometry(item, (item, geometry, crs) => { this.showFeatureGeometry(item, geometry, crs, text)});
+            text = text.replace(/<[^>]*>/g, '');
+            if (item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
+                this.props.searchProviders[item.provider].getResultGeometry(item, (itm, geometry, crs) => { this.showFeatureGeometry(itm, geometry, crs, text); });
             } else {
-                let layer = {
+                const layer = {
                     id: "searchselection",
                     role: LayerRole.SELECTION
                 };
-                let marker = this.createMarker([item.x, item.y], item.crs, text);
+                const marker = this.createMarker([item.x, item.y], item.crs, text);
                 this.props.addLayerFeatures(layer, [marker], true);
             }
             this.props.setCurrentSearchResult(item);
-        } else if(resultType === SearchResultType.THEMELAYER) {
+        } else if (resultType === SearchResultType.THEMELAYER) {
             this.props.addThemeSublayer(item.layer);
             // Show layer tree to notify user that something has happened
             this.props.setCurrentTask('LayerTree');
-        } else if(resultType === SearchResultType.EXTERNALLAYER) {
+        } else if (resultType === SearchResultType.EXTERNALLAYER) {
             // Check if layer is already in the LayerTree
-            let sublayers = LayerUtils.getSublayerNames(item.layer);
-            let existing = this.props.layers.find(l => {
+            const sublayers = LayerUtils.getSublayerNames(item.layer);
+            const existing = this.props.layers.find(l => {
                 return l.type === item.layer.type && l.url === item.layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)))
             });
-            if(existing) {
-                let text = LocaleUtils.getMessageById(this.context.messages, "search.existinglayer") + ":" + item.layer.title;
+            if (existing) {
+                const text = LocaleUtils.getMessageById(this.context.messages, "search.existinglayer") + ":" + item.layer.title;
                 this.props.showNotification("existinglayer", text);
             }
             this.props.addLayer(item.layer);
             // Show layer tree to notify user that something has happened
             this.props.setCurrentTask('LayerTree');
-        } else if(resultType === SearchResultType.THEME) {
+        } else if (resultType === SearchResultType.THEME) {
             this.props.setCurrentTheme(item.theme, this.props.themes);
         }
 
         // if item specifies a layer, query user to make it visible if not visible
         let invisibleLayerQuery = null;
-        if(resultType === SearchResultType.PLACE && item.layer) {
+        if (resultType === SearchResultType.PLACE && item.layer) {
             let sublayerpath = null;
             let sublayer = null;
-            let layer = this.props.layers.find(layer => {
+            const layer = this.props.layers.find(l => {
                 sublayerpath = [];
-                sublayer = LayerUtils.searchSubLayer(layer, 'name', item.layer, sublayerpath);
+                sublayer = LayerUtils.searchSubLayer(l, 'name', item.layer, sublayerpath);
                 return sublayer !== null;
             });
-            if(sublayer && !sublayer.visibility) {
+            if (sublayer && !sublayer.visibility) {
                 invisibleLayerQuery = {layer, sublayerpath};
             }
         }
         this.setState({invisibleLayerQuery});
     }
     showFeatureGeometry = (item, geometry, crs, text) => {
-        if(item === this.props.currentResult && !isEmpty(geometry)) {
+        if (item === this.props.currentResult && !isEmpty(geometry)) {
             let features = [];
-            let highlightFeature = VectorLayerUtils.wktToGeoJSON(geometry, crs, this.props.map.projection);
-            if(highlightFeature) {
-                let center = this.getFeatureCenter(highlightFeature);
+            const highlightFeature = VectorLayerUtils.wktToGeoJSON(geometry, crs, this.props.map.projection);
+            if (highlightFeature) {
+                const center = this.getFeatureCenter(highlightFeature);
                 features = [highlightFeature, this.createMarker(center, item.crs, text)];
             } else {
                 features = [this.createMarker([item.x, item.y], item.crs, text)];
             }
-            let layer = {
+            const layer = {
                 id: "searchselection",
                 role: LayerRole.SELECTION
             };
@@ -511,32 +515,34 @@ class Search extends React.Component {
         };
     }
     getFeatureCenter = (feature) => {
-        let geojson = new ol.format.GeoJSON().readFeature(feature);
-        let geometry = geojson.getGeometry();
-        let type = geometry.getType();
-        let center;
+        const geojson = new ol.format.GeoJSON().readFeature(feature);
+        const geometry = geojson.getGeometry();
+        const type = geometry.getType();
+        let center = null;
         switch (type) {
-            case "Polygon":
-                center = geometry.getInteriorPoint().getCoordinates();
-                break;
-            case "MultiPolygon":
-                center = geometry.getInteriorPoints().getClosestPoint(ol.extent.getCenter(geometry.getExtent()));
-                break;
-            case "Point":
-                center = geometry.getCoordinates();
-                break;
-            case "MultiPoint":
-                center = geometry.getClosestPoint(ol.extent.getCenter(geometry.getExtent()));
-                break;
-            case "LineString":
-                center = geometry.getCoordinateAt(0.5);
-                break;
-            case "MultiLineString":
-                center = geometry.getClosestPoint(ol.extent.getCenter(geometry.getExtent()));
-                break;
-            case "Circle":
-                center = geometry.getCenter();
-                break;
+        case "Polygon":
+            center = geometry.getInteriorPoint().getCoordinates();
+            break;
+        case "MultiPolygon":
+            center = geometry.getInteriorPoints().getClosestPoint(ol.extent.getCenter(geometry.getExtent()));
+            break;
+        case "Point":
+            center = geometry.getCoordinates();
+            break;
+        case "MultiPoint":
+            center = geometry.getClosestPoint(ol.extent.getCenter(geometry.getExtent()));
+            break;
+        case "LineString":
+            center = geometry.getCoordinateAt(0.5);
+            break;
+        case "MultiLineString":
+            center = geometry.getClosestPoint(ol.extent.getCenter(geometry.getExtent()));
+            break;
+        case "Circle":
+            center = geometry.getCenter();
+            break;
+        default:
+            break;
         }
         return center;
     }
@@ -546,13 +552,12 @@ class Search extends React.Component {
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
     }
-};
+}
 
-
-module.exports = (searchProviders, providerFactory=(entry) => { return null; }) => {
+module.exports = (searchProviders, providerFactory = () => { return null; }) => {
     const providersSelector = searchProvidersSelector(searchProviders, providerFactory);
     return connect(
-        createSelector([state => state, displayCrsSelector, providersSelector], (state, displaycrs, searchProviders) => ({
+        createSelector([state => state, displayCrsSelector, providersSelector], (state, displaycrs, providers) => ({
             searchText: state.search.text,
             activeProviders: state.search.providers,
             pendingProviders: state.search.pendingProviders,
@@ -564,22 +569,23 @@ module.exports = (searchProviders, providerFactory=(entry) => { return null; }) 
             theme: state.theme.current,
             themes: state.theme.themes,
             layers: state.layers.flat || [],
-            searchProviders: searchProviders,
+            searchProviders: providers,
             startupParams: state.localConfig.startupParams
-        })
-    ), {
-        changeSearch: changeSearch,
-        startSearch: startSearch,
-        searchMore: searchMore,
-        setCurrentSearchResult: setCurrentSearchResult,
-        panToResult: zoomToPoint,
-        addLayerFeatures: addLayerFeatures,
-        removeLayer: removeLayer,
-        addLayer: addLayer,
-        addThemeSublayer: addThemeSublayer,
-        changeLayerProperty: changeLayerProperty,
-        setCurrentTask: setCurrentTask,
-        setCurrentTheme: setCurrentTheme,
-        showNotification: showNotification
-    })(Search);
-}
+        })),
+        {
+            changeSearch: changeSearch,
+            startSearch: startSearch,
+            searchMore: searchMore,
+            setCurrentSearchResult: setCurrentSearchResult,
+            panToResult: zoomToPoint,
+            addLayerFeatures: addLayerFeatures,
+            removeLayer: removeLayer,
+            addLayer: addLayer,
+            addThemeSublayer: addThemeSublayer,
+            changeLayerProperty: changeLayerProperty,
+            setCurrentTask: setCurrentTask,
+            setCurrentTheme: setCurrentTheme,
+            showNotification: showNotification
+        }
+    )(Search);
+};

@@ -15,7 +15,6 @@ const isEmpty = require('lodash.isempty');
 const proj4js = require('proj4').default;
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const LocaleUtils = require('../utils/LocaleUtils');
-const Message = require('../components/I18N/Message');
 const measureUtils = require('../utils/MeasureUtils');
 const {changeMeasurementState} = require('../actions/measurement.js');
 const displayCrsSelector = require('../selectors/displaycrs');
@@ -25,10 +24,10 @@ require('./style/Measure.css');
 
 class Measure extends React.Component {
     static propTypes = {
-        measureState: PropTypes.object,
-        mapcrs: PropTypes.string,
-        displaycrs: PropTypes.string,
         changeMeasurementState: PropTypes.func,
+        displaycrs: PropTypes.string,
+        mapcrs: PropTypes.string,
+        measureState: PropTypes.object,
         showMeasureModeSwitcher: PropTypes.bool
     }
     static defaultProps = {
@@ -41,7 +40,7 @@ class Measure extends React.Component {
         this.props.changeMeasurementState({geomType: null});
     }
     setMeasureMode = (geomType) => {
-        if(geomType !== this.props.measureState.geomType) {
+        if (geomType !== this.props.measureState.geomType) {
             this.props.changeMeasurementState({geomType: geomType});
         }
     }
@@ -52,32 +51,31 @@ class Measure extends React.Component {
         this.props.changeMeasurementState(assign({}, this.props.measureState, {areaUnit: ev.target.value}));
     }
     renderModeSwitcher = () => {
-        if(!this.props.showMeasureModeSwitcher) {
+        if (!this.props.showMeasureModeSwitcher) {
             return null;
         }
-        let buttons = [
+        const buttons = [
             {key: "Point", label: "measureComponent.pointLabel"},
             {key: "LineString", label: "measureComponent.lengthLabel"},
             {key: "Polygon", label: "measureComponent.areaLabel"},
             {key: "Bearing", label: "measureComponent.bearingLabel"}
         ];
         return (
-            <ButtonBar buttons={buttons} active={this.props.measureState.geomType} onClick={this.setMeasureMode} />
+            <ButtonBar active={this.props.measureState.geomType} buttons={buttons} onClick={this.setMeasureMode} />
         );
     }
     renderResult = () => {
         let resultBody = null;
-        let decimalFormat = {style: "decimal", minimumIntegerDigits: 1, maximumFractionDigits: 2, minimumFractionDigits: 2};
-        if(this.props.measureState.geomType === "Point") {
-            let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
+        if (this.props.measureState.geomType === "Point") {
+            const digits = proj4js.defs(this.props.displaycrs).units === 'degrees' ? 4 : 0;
             let text = "0 0";
-            if(!isEmpty(this.props.measureState.coordinates)) {
-                let coo = CoordinatesUtils.reproject(this.props.measureState.coordinates, this.props.mapcrs, this.props.displaycrs);
+            if (!isEmpty(this.props.measureState.coordinates)) {
+                const coo = CoordinatesUtils.reproject(this.props.measureState.coordinates, this.props.mapcrs, this.props.displaycrs);
                 text = LocaleUtils.toLocaleFixed(coo[0], digits) + " " + LocaleUtils.toLocaleFixed(coo[1], digits);
             }
             resultBody = (<div className="resultbody"><span>{text}</span></div>);
-        } else if(this.props.measureState.geomType === "LineString") {
-            let length = (this.props.measureState.length || []).reduce((tot, num) => tot + num, 0);
+        } else if (this.props.measureState.geomType === "LineString") {
+            const length = (this.props.measureState.length || []).reduce((tot, num) => tot + num, 0);
             resultBody = (
                 <div className="resultbody">
                     <span>{LocaleUtils.toLocaleFixed(measureUtils.getFormattedLength(this.props.measureState.lenUnit, length), 2)}</span>
@@ -89,7 +87,7 @@ class Measure extends React.Component {
                     </select>
                 </div>
             );
-        } else if(this.props.measureState.geomType === "Polygon") {
+        } else if (this.props.measureState.geomType === "Polygon") {
             resultBody = (
                 <div className="resultbody">
                     <span>{LocaleUtils.toLocaleFixed(measureUtils.getFormattedArea(this.props.measureState.areaUnit, this.props.measureState.area), 2)}</span>
@@ -101,7 +99,7 @@ class Measure extends React.Component {
                     </select>
                 </div>
             );
-        } else if(this.props.measureState.geomType === "Bearing") {
+        } else if (this.props.measureState.geomType === "Bearing") {
             resultBody = (
                 <div className="resultbody">
                     <span>{measureUtils.getFormattedBearingValue(this.props.measureState.bearing)}</span>
@@ -120,14 +118,14 @@ class Measure extends React.Component {
     }
     render() {
         return (
-            <TaskBar task="Measure" onShow={this.onShow} onHide={this.onHide}>
+            <TaskBar onHide={this.onHide} onShow={this.onShow} task="Measure">
                 {() => ({
                     body: this.renderBody()
                 })}
             </TaskBar>
         );
     }
-};
+}
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
     measureState: state.measurement,
@@ -142,4 +140,4 @@ module.exports = {
     reducers: {
         measurement: require('../reducers/measurement')
     }
-}
+};

@@ -25,7 +25,7 @@ function identifyEmpty() {
     };
 }
 
-function identifyResponse(reqId, request, data, error=null) {
+function identifyResponse(reqId, request, data, error = null) {
     return {
         type: IDENTIFY_RESPONSE,
         reqId: reqId,
@@ -66,7 +66,7 @@ function setIdentifyFeatureResult(pos, layername, feature) {
     };
 }
 
-function setIdentifyEnabled(enabled, theme=null) {
+function setIdentifyEnabled(enabled, theme = null) {
     return (dispatch, getState) => {
         let identifyTool = ConfigUtils.getConfigProp("identifyTool", theme || getState().theme.current);
         identifyTool = identifyTool !== undefined ? identifyTool : "Identify";

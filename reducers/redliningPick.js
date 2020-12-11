@@ -6,22 +6,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {
-    CHANGE_REDLINING_PICK_STATE
-} = require('../actions/redliningPick');
-
+const {CHANGE_REDLINING_PICK_STATE} = require('../actions/redliningPick');
 const assign = require('object-assign');
 
-function redliningPick(state = {
+const defaultState = {
     active: false,
     selectedFeatures: [],
     layer: 'redlining'
-}, action) {
+};
+
+function redliningPick(state = defaultState, action) {
     switch (action.type) {
-        case CHANGE_REDLINING_PICK_STATE:
-            return assign({}, state, action.data);
-        default:
-            return state;
+    case CHANGE_REDLINING_PICK_STATE: {
+        return assign({}, state, action.data);
+    }
+    default:
+        return state;
     }
 }
 

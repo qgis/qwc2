@@ -14,8 +14,8 @@ require('./style/FileSelector.css');
 
 class FileSelector extends React.Component {
     static propTypes = {
-        file: PropTypes.object,
         accept: PropTypes.string,
+        file: PropTypes.object,
         onFileSelected: PropTypes.func
     }
     static contextTypes = {
@@ -26,47 +26,47 @@ class FileSelector extends React.Component {
         this.fileinput = null;
     }
     componentDidUpdate(prevProps, prevState) {
-        if(!this.props.file && this.fileinput) {
+        if (!this.props.file && this.fileinput) {
             this.fileinput.value = null;
         }
     }
     render() {
         let value = "";
-        if(this.props.file) {
+        if (this.props.file) {
             value = this.props.file.name + " (" + this.humanFileSize(this.props.file.size) + ")";
         }
-        let placeholder = LocaleUtils.getMessageById(this.context.messages, "fileselector.placeholder");
+        const placeholder = LocaleUtils.getMessageById(this.context.messages, "fileselector.placeholder");
         return (
             <div className="FileSelector" onClick={this.triggerFileOpen}>
-                <input type="text" readOnly={true} placeholder={placeholder} value={value}/>
+                <input placeholder={placeholder} readOnly type="text" value={value} />
                 <span>
                     <Icon icon="folder-open" />
                 </span>
-                <input type="file" onChange={this.fileChanged} accept={this.props.accept} ref={el => this.fileinput = el}/>
+                <input accept={this.props.accept} onChange={this.fileChanged} ref={el => { this.fileinput = el; }} type="file" />
             </div>
         );
     }
-    triggerFileOpen = (ev) => {
-        if(this.fileinput) {
+    triggerFileOpen = () => {
+        if (this.fileinput) {
             this.fileinput.click();
         }
     }
     fileChanged = (ev) => {
         let file = null;
-        if(ev.target.files && ev.target.files.length > 0) {
+        if (ev.target.files && ev.target.files.length > 0) {
             file = ev.target.files[0];
         }
         this.props.onFileSelected(file);
     }
     humanFileSize(bytes) {
         const thresh = 1000;
-        const units = ['B', 'kB','MB','GB','TB','PB','EB','ZB','YB']
+        const units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
         let u = 0;
-        for(; bytes >= thresh && u < units.length; ++u) {
+        for (; bytes >= thresh && u < units.length; ++u) {
             bytes /= thresh;
         }
         return bytes.toFixed(1) + ' ' + units[u];
     }
-};
+}
 
 module.exports = FileSelector;

@@ -8,7 +8,6 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const assign = require('object-assign');
-const isEmpty = require('lodash.isempty');
 const isEqual = require('lodash.isequal');
 const omit = require('lodash.omit');
 const ol = require('openlayers');
@@ -17,14 +16,15 @@ const LayerRegistry = require('./plugins/index');
 
 class OpenlayersLayer extends React.Component {
     static propTypes = {
+        children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         map: PropTypes.object,
         mapId: PropTypes.string,
-        type: PropTypes.string,
-        srs: PropTypes.string,
-        zIndex: PropTypes.number,
         options: PropTypes.object,
         setLayerLoading: PropTypes.func,
-        swipe: PropTypes.number
+        srs: PropTypes.string,
+        swipe: PropTypes.number,
+        type: PropTypes.string,
+        zIndex: PropTypes.number
     }
     static defaultProps = {
         swipe: null
@@ -41,7 +41,7 @@ class OpenlayersLayer extends React.Component {
         if (prevProps.options) {
             this.updateLayer(this.props, prevProps);
         }
-        if(!this.state.layer) {
+        if (!this.state.layer) {
             return;
         }
         const newVisibility = this.props.options && this.props.options.visibility !== false;
@@ -56,7 +56,7 @@ class OpenlayersLayer extends React.Component {
         if (this.props.zIndex !== prevProps.zIndex && this.state.layer.setZIndex) {
             this.state.layer.setZIndex(this.props.zIndex);
         }
-        if(this.props.swipe !== prevProps.swipe) {
+        if (this.props.swipe !== prevProps.swipe) {
             this.props.map.render();
         }
     }
@@ -72,7 +72,7 @@ class OpenlayersLayer extends React.Component {
     render() {
         if (this.props.children) {
             const layer = this.state.layer;
-            if(!layer) {
+            if (!layer) {
                 return null;
             }
             return (
@@ -84,7 +84,7 @@ class OpenlayersLayer extends React.Component {
             );
         }
 
-        let layerCreator = LayerRegistry[this.props.type];
+        const layerCreator = LayerRegistry[this.props.type];
         if (layerCreator && layerCreator.render) {
             return layerCreator.render(this.props.options, this.props.map, this.props.mapId, this.state.layer);
         }
@@ -95,14 +95,13 @@ class OpenlayersLayer extends React.Component {
     }
     createLayer = (type, options, zIndex) => {
         let layer = null;
-        let sublayers = [];
-        if(type === 'group') {
+        if (type === 'group') {
             layer = new ol.layer.Group({zIndex});
             layer.setLayers(new ol.Collection(options.items.map(item => {
-                let layerCreator = LayerRegistry[item.type];
-                if(layerCreator) {
+                const layerCreator = LayerRegistry[item.type];
+                if (layerCreator) {
                     const layerOptions = this.generateOpts(item, zIndex, CoordinatesUtils.normalizeSRS(this.props.srs));
-                    let sublayer = layerCreator.create(layerOptions, this.props.map, this.props.mapId);
+                    const sublayer = layerCreator.create(layerOptions, this.props.map, this.props.mapId);
                     layer.set('id', options.id + "#" + layerOptions.name);
                     return sublayer;
                 } else {
@@ -110,7 +109,7 @@ class OpenlayersLayer extends React.Component {
                 }
             }).filter(x => x)));
         } else {
-            let layerCreator = LayerRegistry[type];
+            const layerCreator = LayerRegistry[type];
             if (layerCreator) {
                 const layerOptions = this.generateOpts(options, zIndex, CoordinatesUtils.normalizeSRS(this.props.srs));
                 layer = layerCreator.create(layerOptions, this.props.map, this.props.mapId);
@@ -134,25 +133,26 @@ class OpenlayersLayer extends React.Component {
                 return;
             }
         }
-        let layerCreator = LayerRegistry[this.props.type];
+        const layerCreator = LayerRegistry[this.props.type];
         if (layerCreator && layerCreator.update && this.state.layer) {
             layerCreator.update(
-            this.state.layer,
-            this.generateOpts(newProps.options, newProps.zIndex, CoordinatesUtils.normalizeSRS(newProps.srs)),
-            this.generateOpts(oldProps.options, oldProps.zIndex, CoordinatesUtils.normalizeSRS(oldProps.srs)),
-            this.props.map,
-            this.props.mapId);
+                this.state.layer,
+                this.generateOpts(newProps.options, newProps.zIndex, CoordinatesUtils.normalizeSRS(newProps.srs)),
+                this.generateOpts(oldProps.options, oldProps.zIndex, CoordinatesUtils.normalizeSRS(oldProps.srs)),
+                this.props.map,
+                this.props.mapId
+            );
         }
     }
     addLayer = (layer, options) => {
         if (this.isValid(layer)) {
             this.props.map.addLayer(layer);
             layer.on('precompose', (event) => {
-                let ctx = event.context;
+                const ctx = event.context;
                 ctx.save();
                 ctx.beginPath();
-                if(this.props.swipe) {
-                    let width = ctx.canvas.width * (this.props.swipe / 100.);
+                if (this.props.swipe) {
+                    const width = ctx.canvas.width * (this.props.swipe / 100);
                     ctx.rect(0, 0, width, ctx.canvas.height);
                     ctx.clip();
                 }
@@ -162,22 +162,22 @@ class OpenlayersLayer extends React.Component {
                 event.context.restore();
             });
 
-            if(options.zoomToExtent && layer.getSource()) {
-                let map = this.props.map;
-                let source = layer.getSource();
-                source.once('change',(e) => {
-                    if(source.getState() === 'ready') {
-                        if(source.getFeatures().length > 0) {
+            if (options.zoomToExtent && layer.getSource()) {
+                const map = this.props.map;
+                const source = layer.getSource();
+                source.once('change', () => {
+                    if (source.getState() === 'ready') {
+                        if (source.getFeatures().length > 0) {
                             map.getView().fit(source.getExtent(), map.getSize());
                         }
                     }
                 });
             }
-            let sublayers = {};
-            if(layer instanceof ol.layer.Group) {
+            const sublayers = {};
+            if (layer instanceof ol.layer.Group) {
                 layer.getLayers().forEach(sublayer => {
                     sublayers[options.id + "#" + sublayer.get('id')] = sublayer;
-                })
+                });
             } else {
                 sublayers[options.id] = layer;
             }
@@ -189,11 +189,10 @@ class OpenlayersLayer extends React.Component {
                     sublayer.getSource().on('imageloadend', () => {
                         this.props.setLayerLoading(id, false);
                     });
-                    sublayer.getSource().on('imageloaderror', (event) => {
+                    sublayer.getSource().on('imageloaderror', () => {
                         this.props.setLayerLoading(id, false);
                     });
-                }
-                else {
+                } else {
                     sublayer.getSource().on('tileloadstart', () => {
                         if (this.tilestoload === 0) {
                             this.props.setLayerLoading(id, true);
@@ -206,7 +205,7 @@ class OpenlayersLayer extends React.Component {
                             this.props.setLayerLoading(id, false);
                         }
                     });
-                    sublayer.getSource().on('tileloaderror', (event) => {
+                    sublayer.getSource().on('tileloaderror', () => {
                         this.tilestoload--;
                         if (this.tilestoload === 0) {
                             this.props.setLayerLoading(id, false);
@@ -217,10 +216,10 @@ class OpenlayersLayer extends React.Component {
         }
     }
     isValid = (layer) => {
-        var layerCreator = LayerRegistry[this.props.type];
+        const layerCreator = LayerRegistry[this.props.type];
         this.valid = layerCreator && layerCreator.isValid ? layerCreator.isValid(layer) : true;
         return this.valid;
     }
-};
+}
 
 module.exports = OpenlayersLayer;

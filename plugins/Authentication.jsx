@@ -13,13 +13,13 @@ const ConfigUtils = require('../utils/ConfigUtils');
 
 class Authentication extends React.Component {
     static propTypes = {
-        task: PropTypes.string,
+        task: PropTypes.string
     }
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.task !== prevProps.task) {
-            if(this.props.task === "Login") {
+        if (this.props.task !== prevProps.task) {
+            if (this.props.task === "Login") {
                 window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "login?url=" + encodeURIComponent(window.location.href);
-            } else if(this.props.task === "Logout") {
+            } else if (this.props.task === "Logout") {
                 window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "logout?url=" + encodeURIComponent(window.location.href);
             }
         }
@@ -27,7 +27,7 @@ class Authentication extends React.Component {
     render() {
         return null;
     }
-};
+}
 
 module.exports = {
     AuthenticationPlugin: connect(state => ({

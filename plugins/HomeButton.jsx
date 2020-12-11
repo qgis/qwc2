@@ -27,7 +27,7 @@ class HomeButton extends React.Component {
         messages: PropTypes.object
     }
     render() {
-        let tooltip = LocaleUtils.getMessageById(this.context.messages, "tooltip.home");
+        const tooltip = LocaleUtils.getMessageById(this.context.messages, "tooltip.home");
         return (
             <button className="map-button" onClick={this.resetExtent} style={{bottom: (5 + 4 * this.props.position) + 'em'}} title={tooltip}>
                 <Icon icon="home"/>
@@ -35,12 +35,12 @@ class HomeButton extends React.Component {
         );
     }
     resetExtent = () => {
-        if(this.props.currentTheme) {
-            let bbox = this.props.currentTheme.initialBbox;
+        if (this.props.currentTheme) {
+            const bbox = this.props.currentTheme.initialBbox;
             this.props.zoomToExtent(bbox.bounds, bbox.crs);
         }
     }
-};
+}
 
 module.exports = {
     HomeButtonPlugin: connect((state) => ({

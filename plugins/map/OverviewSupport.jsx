@@ -32,8 +32,8 @@ class Overview extends React.Component {
         options: PropTypes.object
     }
     static defaultProps = {
-      id: 'overview',
-      options: {}
+        id: 'overview',
+        options: {}
     }
     static defaultOpt = {
         className: 'ol-overviewmap ol-custom-overviewmap',
@@ -43,7 +43,7 @@ class Overview extends React.Component {
         collapsible: true
     }
     componentDidMount() {
-        let opt = assign({
+        const opt = assign({
             view: new ol.View({
                 projection: this.props.map.getView().getProjection()
             })
@@ -52,9 +52,9 @@ class Overview extends React.Component {
         this.overview.setMap(this.props.map);
     }
     componentDidUpdate(prevProps, prevState) {
-        let oldProj = this.overview.getOverviewMap().getView().getProjection();
-        let newProj = this.props.map.getView().getProjection();
-        if(oldProj !== newProj) {
+        const oldProj = this.overview.getOverviewMap().getView().getProjection();
+        const newProj = this.props.map.getView().getProjection();
+        if (oldProj !== newProj) {
             this.overview.getOverviewMap().setView(
                 new ol.View({projection: newProj})
             );
@@ -63,6 +63,6 @@ class Overview extends React.Component {
     render() {
         return null;
     }
-};
+}
 
 module.exports = Overview;

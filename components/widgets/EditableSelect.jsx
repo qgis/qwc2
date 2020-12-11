@@ -14,11 +14,11 @@ require('./style/EditableSelect.css');
 
 class EditableSelect extends React.Component {
     static propTypes = {
-        readOnly: PropTypes.bool,
-        placeholder: PropTypes.string,
-        options: PropTypes.array,
         onChange: PropTypes.func,
-        onSubmit: PropTypes.func
+        onSubmit: PropTypes.func,
+        options: PropTypes.array,
+        placeholder: PropTypes.string,
+        readOnly: PropTypes.bool
     }
     static defaultProps = {
         onSubmit: () => {}
@@ -32,14 +32,16 @@ class EditableSelect extends React.Component {
         return (
             <div className="EditableSelect">
                 <div className="editable-select-inputcontainer">
-                    <input type="text" value={this.state.textValue}
-                        ref={el => this.input = el}
+                    <input
+                        onBlur={() => this.setState({focused: false})}
+                        onChange={this.valueChanged}
+                        onClick={() => this.setState({focused: true})}
+                        onKeyPress={this.onKeyPress}
                         placeholder={this.state.selectedOption ? "" : this.props.placeholder}
                         readOnly={this.props.readOnly}
-                        onChange={this.valueChanged}
-                        onKeyPress={this.onKeyPress}
-                        onClick={() => this.setState({focused: true})}
-                        onBlur={() => this.setState({focused: false})} />
+                        ref={el => { this.input = el; }}
+                        type="text"
+                        value={this.state.textValue} />
                     <Icon icon="clear" onClick={this.clear} />
                 </div>
                 {this.state.selectedOption !== null ? this.renderSelectedOption() : null}
@@ -56,13 +58,13 @@ class EditableSelect extends React.Component {
     renderOptions = () => {
         return (
             <div className="editable-select-dropdown">
-                {this.props.options.map((option ,idx) => {
-                    let label = this.optionLabel(option);
-                    if(this.state.textValue && !label.toLowerCase().startsWith(this.state.textValue.toLowerCase())) {
+                {this.props.options.map((option, idx) => {
+                    const label = this.optionLabel(option);
+                    if (this.state.textValue && !label.toLowerCase().startsWith(this.state.textValue.toLowerCase())) {
                         return null;
                     }
                     return (
-                        <div key={"opt" + idx} onMouseDown={this.killEvent} onClick={() => this.optionSelected(option)}>{this.optionLabel(option)}</div>
+                        <div key={"opt" + idx} onClick={() => this.optionSelected(option)} onMouseDown={this.killEvent}>{this.optionLabel(option)}</div>
                     );
                 })}
             </div>
@@ -88,7 +90,7 @@ class EditableSelect extends React.Component {
         this.props.onChange("");
     }
     onKeyPress = (ev) => {
-        if(!ev.target.readOnly && ev.key === 'Enter') {
+        if (!ev.target.readOnly && ev.key === 'Enter') {
             this.props.onSubmit();
         }
     }

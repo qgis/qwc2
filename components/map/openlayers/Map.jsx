@@ -11,30 +11,33 @@ const PropTypes = require('prop-types');
 const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 
-const CoordinatesUtils = require('../../../utils/CoordinatesUtils');
 const mapUtils = require('../../../utils/MapUtils');
 
 class OpenlayersMap extends React.Component {
     static propTypes = {
-        id: PropTypes.string,
+        bbox: PropTypes.object,
         center: PropTypes.array,
-        zoom: PropTypes.number.isRequired,
+        children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+        id: PropTypes.string,
+        identifyEnabled: PropTypes.bool,
+        interactive: PropTypes.bool,
+        mapOptions: PropTypes.object,
         mapStateSource: PropTypes.string,
-        projection: PropTypes.string,
-        onMapViewChanges: PropTypes.func,
+        maxExtent: PropTypes.array,
+        mousePointer: PropTypes.string,
         onClick: PropTypes.func,
         onFeatureClick: PropTypes.func,
-        mapOptions: PropTypes.object,
-        zoomControl: PropTypes.bool,
-        mousePointer: PropTypes.string,
-        trackMousePos: PropTypes.bool,
-        identifyEnabled: PropTypes.bool,
-        unsetTaskOnMapClick: PropTypes.bool,
+        onMapViewChanges: PropTypes.func,
         onMouseMove: PropTypes.func,
-        setLayerLoading: PropTypes.func,
+        projection: PropTypes.string,
         registerHooks: PropTypes.bool,
-        interactive: PropTypes.bool,
-        resolutions: PropTypes.array
+        resolutions: PropTypes.array,
+        setCurrentTask: PropTypes.func,
+        setLayerLoading: PropTypes.func,
+        trackMousePos: PropTypes.bool,
+        unsetTaskOnMapClick: PropTypes.bool,
+        zoom: PropTypes.number.isRequired,
+        zoomControl: PropTypes.bool
     }
     static defaultProps = {
         id: 'map',
@@ -54,7 +57,7 @@ class OpenlayersMap extends React.Component {
         rebuildView: false
     }
     componentDidMount() {
-        let interactionsOptions = assign(this.props.interactive ? {} : {
+        const interactionsOptions = assign(this.props.interactive ? {} : {
             doubleClickZoom: false,
             altShiftDragRotate: true,
             shiftDragZoom: true,
@@ -62,31 +65,32 @@ class OpenlayersMap extends React.Component {
             pinchZoom: true
         }, this.props.mapOptions.interactions);
 
-        let interactions = ol.interaction.defaults(assign(
-            interactionsOptions, {
+        const interactions = ol.interaction.defaults(
+            assign(interactionsOptions, {
                 dragPan: false, // don't create default interaction, but create it below with custom params
                 mouseWheelZoom: false // don't create default interaction, but create it below with custom params
-        }));
+            })
+        );
         interactions.extend([
             new ol.interaction.DragPan({kinetic: null})
         ]);
         interactions.extend([
             new ol.interaction.MouseWheelZoom({duration: this.props.mapOptions.zoomDuration || 0})
         ]);
-        let controls = ol.control.defaults(assign({
+        const controls = ol.control.defaults(assign({
             zoom: this.props.zoomControl,
             attributionOptions: ({
-              collapsible: false
+                collapsible: false
             })
         }, this.props.mapOptions.controls));
-        let map = new ol.Map({
-          layers: [],
-          controls: controls,
-          interactions: interactions,
-          target: this.props.id,
-          view: this.createView(this.props.center, this.props.zoom, this.props.projection, this.props.resolutions)
+        const map = new ol.Map({
+            layers: [],
+            controls: controls,
+            interactions: interactions,
+            target: this.props.id,
+            view: this.createView(this.props.center, this.props.zoom, this.props.projection, this.props.resolutions)
         });
-        if(this.props.mapOptions.antialiasing === false) {
+        if (this.props.mapOptions.antialiasing === false) {
             map.on('precompose', function(evt) {
                 evt.context.imageSmoothingEnabled = false;
                 evt.context.webkitImageSmoothingEnabled = false;
@@ -96,17 +100,17 @@ class OpenlayersMap extends React.Component {
         }
         map.on('moveend', this.updateMapInfoState);
         map.on('singleclick', (event) => {
-            if(this.props.unsetTaskOnMapClick) {
+            if (this.props.unsetTaskOnMapClick) {
                 this.props.setCurrentTask(null);
                 return;
             }
-            let features = [];
+            const features = [];
             this.map.forEachFeatureAtPixel(event.pixel, (feature, layer) => {
                 features.push([feature, layer]);
             });
-            if(!this.props.identifyEnabled && !isEmpty(features)) {
-                let feature = features[0][0];
-                let layer = features[0][1];
+            if (!this.props.identifyEnabled && !isEmpty(features)) {
+                const feature = features[0][0];
+                const layer = features[0][1];
                 this.props.onFeatureClick({
                     coordinate: this.map.getEventCoordinate(event.originalEvent),
                     pixel: this.map.getEventPixel(event.originalEvent),
@@ -136,13 +140,13 @@ class OpenlayersMap extends React.Component {
         });
         map.getViewport().addEventListener('contextmenu', (event)  => {
             event.preventDefault();
-            let features = [];
+            const features = [];
             this.map.forEachFeatureAtPixel(this.map.getEventPixel(event), (feature, layer) => {
                 features.push([feature, layer]);
             });
-            if(!this.props.identifyEnabled && !isEmpty(features)) {
-                let feature = features[0][0];
-                let layer = features[0][1];
+            if (!this.props.identifyEnabled && !isEmpty(features)) {
+                const feature = features[0][0];
+                const layer = features[0][1];
                 this.props.onFeatureClick({
                     coordinate: this.map.getEventCoordinate(event),
                     pixel: this.map.getEventPixel(event),
@@ -170,7 +174,7 @@ class OpenlayersMap extends React.Component {
             return false;
         });
         map.on('pointermove', (event) => {
-            if(this.props.trackMousePos) {
+            if (this.props.trackMousePos) {
                 this.props.onMouseMove({
                     position: {
                         coordinate: event.coordinate,
@@ -191,13 +195,13 @@ class OpenlayersMap extends React.Component {
         }
     }
     updateMapInfoState = () => {
-        let view = this.map.getView();
-        let c = view.getCenter() || [0, 0];
-        let bbox = {
+        const view = this.map.getView();
+        const c = view.getCenter() || [0, 0];
+        const bbox = {
             bounds: view.calculateExtent(this.map.getSize()),
             rotation: view.getRotation()
-        }
-        let size = {
+        };
+        const size = {
             width: this.map.getSize()[0],
             height: this.map.getSize()[1]
         };
@@ -227,7 +231,7 @@ class OpenlayersMap extends React.Component {
         }
 
         if (prevProps.id !== this.props.mapStateSource) {
-            let view = this.map.getView();
+            const view = this.map.getView();
             const centerChanged = prevProps.center[0] !== this.props.center[0] ||
                                   prevProps.center[1] !== this.props.center[1];
 
@@ -237,12 +241,12 @@ class OpenlayersMap extends React.Component {
             if (prevProps.zoom !== this.props.zoom) {
                 view.setZoom(this.props.zoom);
             }
-            if(prevProps.bbox.rotation !== this.props.bbox.rotation) {
+            if (prevProps.bbox.rotation !== this.props.bbox.rotation) {
                 view.setRotation(this.props.bbox.rotation);
             }
         }
 
-        if(this.state.rebuildView) {
+        if (this.state.rebuildView) {
             this.setState({rebuildView: false});
         }
     }
@@ -256,15 +260,15 @@ class OpenlayersMap extends React.Component {
             this.map.setView(this.createView(this.props.center, this.props.zoom, this.props.projection, this.props.resolutions));
             // We have to force ol to drop tile and reload
             this.map.getLayers().forEach((l) => {
-                if(l instanceof ol.layer.Group) {
+                if (l instanceof ol.layer.Group) {
                     l.getLayers().forEach(sublayer => {
-                        let source = sublayer.getSource();
+                        const source = sublayer.getSource();
                         if (source.getTileLoadFunction) {
                             source.setTileLoadFunction(source.getTileLoadFunction());
                         }
                     });
                 } else {
-                    let source = l.getSource();
+                    const source = l.getSource();
                     if (source.getTileLoadFunction) {
                         source.setTileLoadFunction(source.getTileLoadFunction());
                     }
@@ -278,7 +282,7 @@ class OpenlayersMap extends React.Component {
                 map: map,
                 mapId: this.props.id,
                 projection: this.props.projection,
-                setLayerLoading: this.props.setLayerLoading,
+                setLayerLoading: this.props.setLayerLoading
             }) : null;
         }) : null;
 
@@ -295,7 +299,7 @@ class OpenlayersMap extends React.Component {
             zoom: zoom,
             resolutions: resolutions
         };
-        if(this.props.maxExtent) {
+        if (this.props.maxExtent) {
             ol.proj.get(projection).setExtent(this.props.maxExtent);
         }
         return new ol.View(viewOptions);
@@ -314,6 +318,6 @@ class OpenlayersMap extends React.Component {
             return this.map.getCoordinateFromPixel(pixel);
         });
     }
-};
+}
 
 module.exports = OpenlayersMap;

@@ -5,7 +5,6 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-const assign = require('object-assign');
 const {combineReducers} = require('redux');
 const merge = require('deepmerge');
 
@@ -27,15 +26,15 @@ module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeO
     });
 
     const defaultState =  merge({
-        ...allReducers({}, {type: null}),
+        ...allReducers({}, {type: null})
     }, initialState.defaultState);
     const mobileOverride = initialState.mobile;
 
     const rootReducer = (state, action) => {
         let newState = {
-            ...allReducers(state, action),
+            ...allReducers(state, action)
         };
-        if(actionLogger) {
+        if (actionLogger) {
             actionLogger(action, newState, state);
         }
         if (action && action.type === CHANGE_BROWSER_PROPERTIES && newState.browser.mobile) {

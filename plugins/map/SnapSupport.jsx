@@ -18,15 +18,15 @@ const ol = require('openlayers');
 class SnapSupport extends React.Component {
     static propTypes = {
         drawing: PropTypes.bool,
-        mousepos: PropTypes.object,
+        layers: PropTypes.array,
         map: PropTypes.object,
         mapObj: PropTypes.object,
-        layers: PropTypes.array
+        mousepos: PropTypes.object
     }
     constructor(props) {
         super(props);
 
-        snapStyle = [
+        const snapStyle = [
             new ol.style.Style({
                 fill: new ol.style.Fill({ color: [255, 255, 255, 0.05] }),
                 stroke: new ol.style.Stroke({ color: '#3399CC', width: 1})
@@ -40,9 +40,9 @@ class SnapSupport extends React.Component {
                     angle: Math.PI / 4
                 }),
                 geometry: (feature) => {
-                    if(feature.getGeometry().getType() === "Point") {
+                    if (feature.getGeometry().getType() === "Point") {
                         return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
-                    } else if(feature.getGeometry().getType() === "LineString") {
+                    } else if (feature.getGeometry().getType() === "LineString") {
                         return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
                     } else {
                         return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
@@ -60,14 +60,14 @@ class SnapSupport extends React.Component {
         this.curPos = null;
     }
     componentDidUpdate(prevProps, prevState) {
-        if(prevProps.drawing && this.props.mousepos &&
+        if (prevProps.drawing && this.props.mousepos &&
                 (!this.curPos ||
                 Math.abs(this.props.mousepos.pixel[0] - this.curPos[0]) > 5 ||
                 Math.abs(this.props.mousepos.pixel[1] - this.curPos[1]) > 5)) {
             clearTimeout(this.timeoutId);
             this.curPos = this.props.mousepos.pixel;
             this.timeoutId = setTimeout(() => this.getFeature(), 500);
-        } else if(!prevProps) {
+        } else if (!prevProps) {
             this.reset();
         }
     }
@@ -75,13 +75,11 @@ class SnapSupport extends React.Component {
         this.reset();
         const format = new ol.format.GeoJSON();
         const features = format.readFeatures(geojson);
-        for(let feature of features) {
+        for (const feature of features) {
             this.snapSource.addFeature(feature);
         }
     }
     addSnapInteraction = () => {
-        const drawInteraction = new ol.interaction.Draw({source: this.snapSource});
-        const modifyInteraction = new ol.interaction.Modify({source: this.snapSource});
         this.snapInteraction = new ol.interaction.Snap({source: this.snapSource});
         this.props.map.addInteraction(this.snapInteraction);
     }
@@ -93,7 +91,7 @@ class SnapSupport extends React.Component {
             return layer.role === LayerRole.THEME ? accum.concat(layer.queryLayers) : accum;
         }, []).join(",");
 
-        if(!layers || !queryLayers) {
+        if (!layers || !queryLayers) {
             return;
         }
 
@@ -109,28 +107,28 @@ class SnapSupport extends React.Component {
         axios.get(request.url, {params: request.params}).then(response => {
             const results = IdentifyUtils.parseXmlResponse({data: response.data, request}, this.props.mapObj.projection);
             const features = [];
-            for(let i in results) {
-                for(let feature of results[i]) {
-                    if(feature.geometry) {
-                        feature["id"] = uuid.v4();
+            for (const i of results) {
+                for (const feature of results[i]) {
+                    if (feature.geometry) {
+                        feature.id = uuid.v4();
                         features.push(feature);
                     }
                 }
             }
 
-            if(!features) {
+            if (!features) {
                 return;
             }
 
             const geojson = {
-                'type': 'FeatureCollection',
-                'crs': {
-                    'type': 'name',
-                    'properties': {
-                        'name': this.props.mapObj.projection
+                type: 'FeatureCollection',
+                crs: {
+                    type: 'name',
+                    properties: {
+                        name: this.props.mapObj.projection
                     }
                 },
-                'features': features
+                features: features
             };
 
             this.addSnapFeatures(geojson);
@@ -138,17 +136,17 @@ class SnapSupport extends React.Component {
         });
     }
     reset = () => {
-        if(this.snapInteractions) {
+        if (this.snapInteractions) {
             this.props.map.removeInteraction(this.snapInteraction);
         }
-        for(let feature of this.snapSource.getFeatures()) {
+        for (const feature of this.snapSource.getFeatures()) {
             this.snapSource.removeFeature(feature);
         }
     }
     render() {
         return null;
     }
-};
+}
 
 const selector = (state) => ({
     mapObj: state.map ? state.map : null,

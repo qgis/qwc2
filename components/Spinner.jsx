@@ -10,15 +10,15 @@ require('./style/Spinner.css');
 
 class Spinner extends React.Component {
     render() {
-        let bars = [];
+        const bars = [];
 
         for (let i = 0; i < 12; ++i) {
-            let barStyle = {};
+            const barStyle = {};
             barStyle.WebkitAnimationDelay = barStyle.animationDelay = (i - 12) / 10 + 's';
             barStyle.WebkitTransform = barStyle.transform = 'rotate(' + (i * 30) + 'deg) translate(146%)';
 
             bars.push(
-                <div style={barStyle} key={i} />
+                <div key={i} style={barStyle} />
             );
         }
 
@@ -28,6 +28,6 @@ class Spinner extends React.Component {
             </div>
         );
     }
-};
+}
 
 module.exports = Spinner;

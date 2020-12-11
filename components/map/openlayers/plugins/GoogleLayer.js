@@ -9,47 +9,47 @@
 const React = require('react');
 const ol = require('openlayers');
 
-var layersMap;
-var rendererItem;
-var gmaps = {};
-var isTouchSupported = 'ontouchstart' in window;
-var startEvent = isTouchSupported ? 'touchstart' : 'mousedown';
-var moveEvent = isTouchSupported ? 'touchmove' : 'mousemove';
-var endEvent = isTouchSupported ? 'touchend' : 'mouseup';
+let layersMap;
+let rendererItem;
+const gmaps = {};
+const isTouchSupported = 'ontouchstart' in window;
+const startEvent = isTouchSupported ? 'touchstart' : 'mousedown';
+const moveEvent = isTouchSupported ? 'touchmove' : 'mousemove';
+const endEvent = isTouchSupported ? 'touchend' : 'mouseup';
 
 // NOTE: For the GoogleLayer to work, you MUST use EPSG:3857 as map projection and the google mercator scales:
 // [591658711,295829355,147914678,73957339,36978669,18489335,9244667,4622334,2311167,1155583,577792,288896,144448,72224,36112,18056,9028,4514,2257,1128,564,282,141,71,35,18,9,4,2]
 
-let GoogleLayer = {
+const GoogleLayer = {
     create: (options, map, mapId) => {
-        let google = window.google;
+        const google = window.google;
         if (!layersMap) {
             layersMap = {
-               'HYBRID': google.maps.MapTypeId.HYBRID,
-               'SATELLITE': google.maps.MapTypeId.SATELLITE,
-               'ROADMAP': google.maps.MapTypeId.ROADMAP,
-               'TERRAIN': google.maps.MapTypeId.TERRAIN
-           };
+                HYBRID: google.maps.MapTypeId.HYBRID,
+                SATELLITE: google.maps.MapTypeId.SATELLITE,
+                ROADMAP: google.maps.MapTypeId.ROADMAP,
+                TERRAIN: google.maps.MapTypeId.TERRAIN
+            };
         }
         if (!gmaps[mapId]) {
             gmaps[mapId] = new google.maps.Map(document.getElementById(mapId + 'gmaps'), {
-              disableDefaultUI: true,
-              keyboardShortcuts: false,
-              draggable: false,
-              disableDoubleClickZoom: true,
-              scrollwheel: false,
-              streetViewControl: false
+                disableDefaultUI: true,
+                keyboardShortcuts: false,
+                draggable: false,
+                disableDoubleClickZoom: true,
+                scrollwheel: false,
+                streetViewControl: false
             });
         }
         gmaps[mapId].setMapTypeId(layersMap[options.name]);
-        let mapContainer = document.getElementById(mapId + 'gmaps');
-        let setCenter = () => {
+        const mapContainer = document.getElementById(mapId + 'gmaps');
+        const setCenter = () => {
             if (mapContainer.style.visibility !== 'hidden') {
                 const center = ol.proj.transform(map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
                 gmaps[mapId].setCenter(new google.maps.LatLng(center[1], center[0]));
             }
         };
-        let setZoom = () => {
+        const setZoom = () => {
             if (mapContainer.style.visibility !== 'hidden') {
                 gmaps[mapId].setZoom(Math.round(map.getView().getZoom()));
             }
@@ -59,13 +59,13 @@ let GoogleLayer = {
          * @param point {array}: [x, y]
          * @param alpha {number}: rotation in degrees
          */
-        let rotatePoint = (point, alpha) => {
+        const rotatePoint = (point, alpha) => {
             const radAlpha = alpha * Math.PI / 180;
             const x = point[0];
             const y = point[1];
 
-            let rx = x * Math.cos(radAlpha) - y * Math.sin(radAlpha);
-            let ry = x * Math.sin(radAlpha) + y * Math.cos(radAlpha);
+            const rx = x * Math.cos(radAlpha) - y * Math.sin(radAlpha);
+            const ry = x * Math.sin(radAlpha) + y * Math.cos(radAlpha);
 
             return [rx, ry];
         };
@@ -74,11 +74,11 @@ let GoogleLayer = {
          * @param rotation {number}: rotation in degrees
          * @param size {array}: map size [w, h]
          */
-        let calculateRotatedSize = (rotation, size) => {
-            let w = size[0];
-            let h = size[1];
+        const calculateRotatedSize = (rotation, size) => {
+            const w = size[0];
+            const h = size[1];
 
-            let vertices = [
+            const vertices = [
             //  [   x  ,   y  ]
                 [ w / 2, h / 2],
                 [-w / 2, h / 2],
@@ -86,23 +86,23 @@ let GoogleLayer = {
                 [ w / 2, -h / 2]
             ];
 
-            let rVertices = vertices.map((p) => {return rotatePoint(p, rotation); });
+            const rVertices = vertices.map((p) => {return rotatePoint(p, rotation); });
 
-            let Xs = rVertices.map((p) => {return p[0]; });
-            let Ys = rVertices.map((p) => {return p[1]; });
+            const Xs = rVertices.map((p) => {return p[0]; });
+            const Ys = rVertices.map((p) => {return p[1]; });
 
-            let maxX = Math.max.apply(null, Xs);
-            let minX = Math.min.apply(null, Xs);
-            let maxY = Math.max.apply(null, Ys);
-            let minY = Math.min.apply(null, Ys);
+            const maxX = Math.max.apply(null, Xs);
+            const minX = Math.min.apply(null, Xs);
+            const maxY = Math.max.apply(null, Ys);
+            const minY = Math.min.apply(null, Ys);
 
-            let H = Math.abs(maxY) + Math.abs(minY);
-            let W = Math.abs(maxX) + Math.abs(minX);
+            const H = Math.abs(maxY) + Math.abs(minY);
+            const W = Math.abs(maxX) + Math.abs(minX);
 
             return {width: W, height: H};
         };
 
-        let setRotation = () => {
+        const setRotation = () => {
             if (mapContainer.style.visibility !== 'hidden') {
                 const rotation = map.getView().getRotation() * 180 / Math.PI;
 
@@ -111,30 +111,30 @@ let GoogleLayer = {
             }
         };
 
-        let setViewEventListeners = () => {
-            let view = map.getView();
+        const setViewEventListeners = () => {
+            const view = map.getView();
             view.on('change:center', setCenter);
             view.on('change:resolution', setZoom);
             view.on('change:rotation', setRotation);
-        }
+        };
         map.on('change:view', setViewEventListeners);
 
         setViewEventListeners();
         setCenter();
         setZoom();
 
-        let viewport = map.getViewport();
+        const viewport = map.getViewport();
         let oldTrans = document.getElementById(mapId + 'gmaps').style.transform;
 
         let mousedown = false;
         let mousemove = false;
 
-        let resizeGoogleLayerIfRotated = () => {
-            let degrees = /[\+\-]?\d+\.?\d*/i;
-            let newTrans = document.getElementById(mapId + 'gmaps').style.transform;
+        const resizeGoogleLayerIfRotated = () => {
+            const degrees = /[+-]?\d+\.?\d*/i;
+            const newTrans = document.getElementById(mapId + 'gmaps').style.transform;
             if (newTrans !== oldTrans && newTrans.indexOf('rotate') !== -1) {
-                let rotation = parseFloat(newTrans.match(degrees)[0]);
-                let size = calculateRotatedSize(-rotation, map.getSize());
+                const rotation = parseFloat(newTrans.match(degrees)[0]);
+                const size = calculateRotatedSize(-rotation, map.getSize());
                 mapContainer.style.width = size.width + 'px';
                 mapContainer.style.height = size.height + 'px';
                 mapContainer.style.left = (Math.round((map.getSize()[0] - size.width) / 2.0)) + 'px';
@@ -165,7 +165,7 @@ let GoogleLayer = {
         if (!rendererItem) {
             rendererItem = options.name;
         }
-        let wrapperStyle = {
+        const wrapperStyle = {
             zIndex: -1,
             position: 'fixed',
             left: 0,
@@ -173,11 +173,11 @@ let GoogleLayer = {
             top: 0,
             bottom: 0
         };
-        let gmapsStyle = {
+        const gmapsStyle = {
             height: '100%'
         };
         if (options.visibility === true) {
-            let div = document.getElementById(mapId + "gmaps");
+            const div = document.getElementById(mapId + "gmaps");
             if (div) {
                 div.style.visibility = 'visible';
             }
@@ -192,22 +192,22 @@ let GoogleLayer = {
         // instance of google layer
         if (rendererItem === options.name) {
             // assume the first render the div for gmaps
-            let div = document.getElementById(mapId + "gmaps");
+            const div = document.getElementById(mapId + "gmaps");
             if (div) {
                 div.style.visibility = options.visibility ? 'visible' : 'hidden';
             }
             return (
                 <div style={wrapperStyle}>
-                <div id={mapId + "gmaps"} className="fill" style={gmapsStyle}></div>
+                    <div className="fill" id={mapId + "gmaps"} style={gmapsStyle} />
                 </div>
             );
         }
         return null;
     },
     update(layer, newOptions, oldOptions, map, mapId) {
-        let google = window.google;
+        const google = window.google;
         if (!oldOptions.visibility && newOptions.visibility) {
-            let view = map.getView();
+            const view = map.getView();
             const center = ol.proj.transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326');
             gmaps[mapId].setCenter(new google.maps.LatLng(center[1], center[0]));
             gmaps[mapId].setZoom(view.getZoom());

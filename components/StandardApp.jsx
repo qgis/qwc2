@@ -14,17 +14,16 @@ require("babel-polyfill");
 
 // Avoid Intl is not defined (Intl needed by react-intl further on)
 if (!global.Intl) {
-   require('intl')
+    require('intl');
 }
 
 const axios = require('axios');
 const assign = require('object-assign');
-const isEmpty = require('lodash.isempty');
 const Proj4js = require('proj4').default;
 const olProj4 = require('ol/proj/proj4');
 
 const Localized = require('../components/I18N/Localized');
-const StandardStore = require('../stores/StandardStore')
+const StandardStore = require('../stores/StandardStore');
 const PluginsContainer = require('./PluginsContainer');
 
 const {changeBrowserProperties} = require('../actions/browser');
@@ -32,13 +31,12 @@ const {loadLocale} = require('../actions/locale');
 const {localConfigLoaded, setStartupParameters} = require('../actions/localConfig');
 const {addLayer} = require('../actions/layers');
 const {changeSearch} = require('../actions/search');
-const {themesLoaded,setCurrentTheme} = require('../actions/theme');
+const {themesLoaded, setCurrentTheme} = require('../actions/theme');
 
 const ConfigUtils = require('../utils/ConfigUtils');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const MapUtils = require('../utils/MapUtils');
 const PluginsUtils = require('../utils/PluginsUtils');
-const LayerUtils = require('../utils/LayerUtils');
 const {UrlParams, resolvePermaLink} = require('../utils/PermaLinkUtils');
 const ThemeUtils = require('../utils/ThemeUtils');
 
@@ -47,13 +45,13 @@ require('./style/App.css');
 
 class AppInitComponent extends React.Component {
     static propTypes = {
+        addLayer: PropTypes.func,
         appConfig: PropTypes.object,
+        changeSearch: PropTypes.func,
         initialParams: PropTypes.object,
         mapSize: PropTypes.object,
-        themesLoaded: PropTypes.func,
-        changeSearch: PropTypes.func,
         setCurrentTheme: PropTypes.func,
-        addLayer: PropTypes.func
+        themesLoaded: PropTypes.func
     }
     constructor(props) {
         super(props);
@@ -61,7 +59,7 @@ class AppInitComponent extends React.Component {
     }
     componentDidMount() {
         // The map component needs to have finished loading before theme initialization can proceed
-        if(this.props.mapSize && !this.initialized) {
+        if (this.props.mapSize && !this.initialized) {
             this.init();
         }
     }
@@ -73,38 +71,38 @@ class AppInitComponent extends React.Component {
 
         // Load themes.json
         axios.get("themes.json").then(response => {
-            let themes = response.data.themes || {};
+            const themes = response.data.themes || {};
             this.props.themesLoaded(themes);
 
             // Resolve permalink and restore settings
             resolvePermaLink(this.props.initialParams, (params, state) => {
                 let theme = ThemeUtils.getThemeById(themes,  params.t);
-                if(!theme) {
-                    if(ConfigUtils.getConfigProp("dontLoadDefaultTheme")) {
+                if (!theme) {
+                    if (ConfigUtils.getConfigProp("dontLoadDefaultTheme")) {
                         return;
                     }
                     theme = ThemeUtils.getThemeById(themes, themes.defaultTheme);
                     params = {};
                 }
-                let layerParams = params.l !== undefined ? params.l.split(",").filter(entry => entry) : null;
-                if(layerParams && ConfigUtils.getConfigProp("urlReverseLayerOrder")) {
+                const layerParams = params.l !== undefined ? params.l.split(",").filter(entry => entry) : null;
+                if (layerParams && ConfigUtils.getConfigProp("urlReverseLayerOrder")) {
                     layerParams.reverse();
                 }
-                let visibleBgLayer = params.bl || params.bl === '' ? params.bl : null;
+                const visibleBgLayer = params.bl || params.bl === '' ? params.bl : null;
                 let initialView = null;
-                if(params.c && params.s !== undefined) {
-                    let coords = params.c.split(/[;,]/g).map(x => parseFloat(x));
-                    let scales = theme.scales || themes.defaultScales;
-                    let zoom = MapUtils.computeZoom(scales, params.s);
-                    if(coords.length === 2) {
+                if (params.c && params.s !== undefined) {
+                    const coords = params.c.split(/[;,]/g).map(x => parseFloat(x));
+                    const scales = theme.scales || themes.defaultScales;
+                    const zoom = MapUtils.computeZoom(scales, params.s);
+                    if (coords.length === 2) {
                         initialView = {
                             center: coords,
                             zoom: zoom,
                             crs: params.crs || theme.mapCrs};
                     }
-                } else if(params.e) {
-                    let bounds = params.e.split(/[;,]/g).map(x => parseFloat(x));
-                    if(bounds.length === 4) {
+                } else if (params.e) {
+                    const bounds = params.e.split(/[;,]/g).map(x => parseFloat(x));
+                    if (bounds.length === 4) {
                         initialView = {
                             bounds: bounds,
                             crs: params.crs || theme.mapCrs
@@ -118,7 +116,7 @@ class AppInitComponent extends React.Component {
                 // Restore theme and layers
                 try {
                     this.props.setCurrentTheme(theme, themes, false, initialView, layerParams, visibleBgLayer, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer);
-                } catch(e) {
+                } catch (e) {
                     console.log(e.stack);
                 }
             });
@@ -129,7 +127,7 @@ class AppInitComponent extends React.Component {
     }
 }
 
-let AppInit = connect(state => ({
+const AppInit = connect(state => ({
     mapSize: state.map.size,
     layers: state.layers.flat
 }), {
@@ -165,11 +163,11 @@ class StandardApp extends React.Component {
         document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01 ) + 'px');
     }
     render() {
-        let plugins = assign(PluginsUtils.getPlugins(this.props.appConfig.pluginsDef.plugins));
+        const plugins = assign(PluginsUtils.getPlugins(this.props.appConfig.pluginsDef.plugins));
         return (
             <Provider store={this.store}>
                 <div ref={this.setupTouchEvents}>
-                    <AppInit initialParams={this.initialParams} appConfig={this.props.appConfig}/>
+                    <AppInit appConfig={this.props.appConfig} initialParams={this.initialParams}/>
                     <Localized>
                         <PluginsContainer plugins={plugins} pluginsAppConfig={this.props.appConfig.pluginsDef.cfg || {}} />
                     </Localized>
@@ -180,37 +178,34 @@ class StandardApp extends React.Component {
     setupTouchEvents = (el) => {
         el.addEventListener('touchstart', ev => {
             this.touchY = ev.targetTouches[0].clientY;
-        }, { passive: false })
-        el.addEventListener('touchmove', this.preventOverscroll, { passive: false })
+        }, { passive: false });
+        el.addEventListener('touchmove', this.preventOverscroll, { passive: false });
     }
     preventOverscroll = (ev) => {
         let scrollEvent = false;
         let element = ev.target;
-        let direction = ev.targetTouches[0].clientY - this.touchY;
+        const direction = ev.targetTouches[0].clientY - this.touchY;
         this.touchY = ev.targetTouches[0].clientY;
-        while(!scrollEvent && element) {
+        while (!scrollEvent && element) {
             let scrollable = element.scrollHeight > element.clientHeight;
             // Workaround for resizeable-window having scrollHeight > clientHeight even though it has no scrollbar
-            if(element.classList.contains('resizeable-window')) {
+            if (element.classList.contains('resizeable-window')) {
                 scrollable = false;
             }
-            // If it is a range element, treat it as a scroll event
-            if(element.type === "range") {
+            if (element.type === "range") {
+                // If it is a range element, treat it as a scroll event
                 scrollEvent = true;
-            }
-            // User scrolls down and element is not at end of scroll
-            else if (scrollable && (element.scrollTop + element.clientHeight < element.scrollHeight) && direction < 0) {
+            } else if (scrollable && (element.scrollTop + element.clientHeight < element.scrollHeight) && direction < 0) {
+                // User scrolls down and element is not at end of scroll
                 scrollEvent = true;
-            }
-            // User scrolls up and element is not at start of scroll
-            else if (scrollable && element.scrollTop > 0 && direction > 0) {
+            } else if (scrollable && element.scrollTop > 0 && direction > 0) {
+                // User scrolls up and element is not at start of scroll
                 scrollEvent = true;
-            }
-            else {
+            } else {
                 element = element.parentElement;
             }
         }
-        if(!scrollEvent) {
+        if (!scrollEvent) {
             ev.preventDefault();
         }
     }
@@ -230,8 +225,8 @@ class StandardApp extends React.Component {
             // Dispatch user locale
             this.store.dispatch(loadLocale(this.props.appConfig.defaultLocale));
             // Add projections from config
-            for(let proj of config.projections || []) {
-                if(Proj4js.defs(proj.code) === undefined) {
+            for (const proj of config.projections || []) {
+                if (Proj4js.defs(proj.code) === undefined) {
                     Proj4js.defs(proj.code, proj.proj);
                 }
                 CoordinatesUtils.setCrsLabels({[proj.code]: proj.label});

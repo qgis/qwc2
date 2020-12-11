@@ -16,7 +16,6 @@ const {
     FacebookShareCount,
     FacebookIcon,
     TwitterIcon,
-    GooglePlusIcon,
     LinkedinIcon
 } = require('react-share');
 require('./share.css');
@@ -24,15 +23,15 @@ require('./share.css');
 
 class ShareSocials extends React.Component {
     static propTypes = {
-        shareUrl: PropTypes.string,
-         getCount: PropTypes.func,
-         shareTitle: PropTypes.string
+        getCount: PropTypes.func,
+        shareTitle: PropTypes.string,
+        shareUrl: PropTypes.string
     }
     static defaultProps = {
         shareTitle: 'GeoSolutions'
     }
     render() {
-        let countProps = {};
+        const countProps = {};
         if (this.props.getCount) {
             countProps.getCount = this.props.getCount;
         }
@@ -40,60 +39,40 @@ class ShareSocials extends React.Component {
 
         return (
             <div className="social-links">
-
                 <h4>
                     <Message msgId="share.socialIntro"/>
                 </h4>
-
                 <div className="social-boxes">
                     <div className="social-box facebook">
-                    <FacebookShareButton
-                        url={this.props.shareUrl}
-                        quote={title}
-                        className="share-facebook">
-                        <FacebookIcon
-                        size={32}
-                        round />
-                    </FacebookShareButton>
-                    <FacebookShareCount
-                        url={this.props.shareUrl}
-                        {...countProps}
-                        className="share-facebook-count">
-                        {count => count}
-                    </FacebookShareCount>
+                        <FacebookShareButton className="share-facebook" quote={title} url={this.props.shareUrl}>
+                            <FacebookIcon round size={32} />
+                        </FacebookShareButton>
+                        <FacebookShareCount className="share-facebook-count" url={this.props.shareUrl} {...countProps}>
+                            {count => count}
+                        </FacebookShareCount>
                     </div>
 
                     <div className="social-box twitter">
-                        <TwitterShareButton
-                        url={this.props.shareUrl}
-                        title={title}
-                        className="share-twitter">
-                        <TwitterIcon
-                            size={32}
-                            round />
+                        <TwitterShareButton className="share-twitter" title={title} url={this.props.shareUrl}>
+                            <TwitterIcon round size={32} />
                         </TwitterShareButton>
                         <div className="share-twitter-count">
-                        &nbsp;
+                            &nbsp;
                         </div>
                     </div>
 
                     <div className="social-box linkedin">
-                        <LinkedinShareButton
-                        url={this.props.shareUrl}
-                        title={title}
-                        className="share-linkedin-count">
-                        <LinkedinIcon
-                            size={32}
-                            round />
+                        <LinkedinShareButton className="share-linkedin-count" title={title} url={this.props.shareUrl}>
+                            <LinkedinIcon round size={32} />
                         </LinkedinShareButton>
                         <div className="linkedin-twitter-count">
-                        &nbsp;
+                            &nbsp;
                         </div>
                     </div>
                 </div>
-        </div>
+            </div>
         );
     }
-};
+}
 
 module.exports = ShareSocials;

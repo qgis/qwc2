@@ -17,13 +17,15 @@ const ConfigUtils = require('./ConfigUtils');
 const LayerUtils = require('./LayerUtils');
 const {LayerRole} = require('../actions/layers');
 
-const owsNS = "http://www.opengis.net/ows";
-const xlinkNS="http://www.w3.org/1999/xlink";
-
 function strcmp(a, b) {
-    let al = a.toLowerCase();
-    let bl = b.toLowerCase();
-    return al < bl ? -1 : al > bl ? 1 : 0;
+    const al = a.toLowerCase();
+    const bl = b.toLowerCase();
+    if (al < bl) {
+        return -1;
+    } else if (al > bl) {
+        return 1;
+    }
+    return 0;
 }
 
 function array(obj) {
@@ -33,41 +35,41 @@ function array(obj) {
 const ServiceLayerUtils = {
     getDCPTypes(dcpTypes) {
         let result = {};
-        for(let dcpType of dcpTypes) {
+        for (const dcpType of dcpTypes) {
             result = deepmerge(result, dcpType);
         }
         return result;
     },
     getWMTSLayers(capabilitiesXml, capabilitiesUrl, mapCrs) {
-        let wmtsFormat = new ol.format.WMTSCapabilities();
-        let capabilities = wmtsFormat.read(capabilitiesXml);
-        let tileMatrices = capabilities.Contents.TileMatrixSet.reduce((res, entry) => {
+        const wmtsFormat = new ol.format.WMTSCapabilities();
+        const capabilities = wmtsFormat.read(capabilitiesXml);
+        const tileMatrices = capabilities.Contents.TileMatrixSet.reduce((res, entry) => {
             res[entry.Identifier] = {
                 crs: entry.SupportedCRS.replace("urn:ogc:def:crs:", ""),
                 matrix: entry.TileMatrix
             };
             return res;
         }, {});
-        let layers = capabilities.Contents.Layer.map(layer => {
-            let matchingMatrix = layer.TileMatrixSetLink.find(link => tileMatrices[link.TileMatrixSet].crs === mapCrs);
-            let tileMatrixSet = matchingMatrix ? matchingMatrix.TileMatrixSet : layer.TileMatrixSetLink[0].TileMatrixSet;
-            let topMatrix = tileMatrices[tileMatrixSet].matrix[0];
-            let origin = topMatrix.TopLeftCorner;
-            let resolutions = tileMatrices[tileMatrixSet].matrix.map(entry => {
+        const layers = capabilities.Contents.Layer.map(layer => {
+            const matchingMatrix = layer.TileMatrixSetLink.find(link => tileMatrices[link.TileMatrixSet].crs === mapCrs);
+            const tileMatrixSet = matchingMatrix ? matchingMatrix.TileMatrixSet : layer.TileMatrixSetLink[0].TileMatrixSet;
+            const topMatrix = tileMatrices[tileMatrixSet].matrix[0];
+            const origin = topMatrix.TopLeftCorner;
+            const resolutions = tileMatrices[tileMatrixSet].matrix.map(entry => {
                 // 0.00028: assumed pixel width in meters, as per WMTS standard
                 return entry.ScaleDenominator * 0.00028;
             });
-            let url = layer.ResourceURL.find(url => url.resourceType === "tile").template;
-            let dimensions = layer.Dimension.forEach(dim => {
+            let url = layer.ResourceURL.find(u => u.resourceType === "tile").template;
+            layer.Dimension.forEach(dim => {
                 url = url.replace("{" + dim.Identifier + "}", dim.Default);
             });
             return {
-                "type":"wmts",
+                "type": "wmts",
                 "url": url,
                 "capabilitiesUrl": capabilitiesUrl,
                 "title": layer.Title,
                 "name": layer.Identifier,
-                "tileMatrixPrefix":"",
+                "tileMatrixPrefix": "",
                 "tileMatrixSet": tileMatrixSet,
                 "originX": origin[0],
                 "originY": origin[1],
@@ -77,73 +79,73 @@ const ServiceLayerUtils = {
                     topMatrix.TileHeight
                 ],
                 "bbox": {
-                    "crs": "EPSG:4326",
-                    "bounds": layer.WGS84BoundingBox
+                    crs: "EPSG:4326",
+                    bounds: layer.WGS84BoundingBox
                 },
                 "resolutions": resolutions,
                 "abstract": layer.Abstract,
-                "attribution":{
-                    "Title": capabilities.ServiceProvider.ProviderName,
-                    "OnlineResource": capabilities.ServiceProvider.ProviderSite
+                "attribution": {
+                    Title: capabilities.ServiceProvider.ProviderName,
+                    OnlineResource: capabilities.ServiceProvider.ProviderSite
                 }
             };
         });
         layers.sort((a, b) => a.title.localeCompare(b.title));
         return layers;
     },
-    getWMSLayers(capabilitiesXml, asGroup=false) {
-        let wmsFormat = new ol.format.WMSCapabilities();
-        let capabilities = wmsFormat.read(capabilitiesXml);
+    getWMSLayers(capabilitiesXml, asGroup = false) {
+        const wmsFormat = new ol.format.WMSCapabilities();
+        const capabilities = wmsFormat.read(capabilitiesXml);
         let topLayer = null;
         let serviceUrl = null;
         try {
             topLayer = capabilities.Capability.Layer;
-            serviceUrl = ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetMap.DCPType)["HTTP"]["Get"]["OnlineResource"];
+            serviceUrl = ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetMap.DCPType).HTTP.Get.OnlineResource;
         } catch (e) {
             return [];
         }
         let featureInfoUrl = null;
         try {
-            featureInfoUrl = ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType)["HTTP"]["Get"]["OnlineResource"];
+            featureInfoUrl = ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType).HTTP.Get.OnlineResource;
         } catch (e) {
             featureInfoUrl = serviceUrl;
         }
         let infoFormats = null;
         try {
             infoFormats = capabilities.Capability.Request.GetFeatureInfo.Format;
-        } catch(e) {
+        } catch (e) {
             infoFormats = ['text/plain'];
         }
-        let externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp("externalLayerFeatureInfoFormats") || {};
-        for(let entry of Object.keys(externalLayerFeatureInfoFormats)) {
-            if(featureInfoUrl.toLowerCase().includes(entry.toLowerCase())) {
+        const externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp("externalLayerFeatureInfoFormats") || {};
+        for (const entry of Object.keys(externalLayerFeatureInfoFormats)) {
+            if (featureInfoUrl.toLowerCase().includes(entry.toLowerCase())) {
                 infoFormats = [externalLayerFeatureInfoFormats[entry]];
                 break;
             }
         }
-        let version = capabilities.version;
-        if(!topLayer.Layer || asGroup) {
+        const version = capabilities.version;
+        if (!topLayer.Layer || asGroup) {
             return [this.getWMSLayerParams(topLayer, topLayer.CRS, serviceUrl, version, featureInfoUrl, infoFormats)].filter(entry => entry);
         } else {
-            let entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, serviceUrl, version, featureInfoUrl, infoFormats)).filter(entry => entry);
+            const entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, serviceUrl, version, featureInfoUrl, infoFormats)).filter(entry => entry);
             return entries.sort((a, b) => strcmp(a.title, b.title));
         }
     },
     getWMSLayerParams(layer, parentCrs, serviceUrl, version, featureInfoUrl, infoFormats) {
         let supportedCrs = layer.CRS;
-        if(isEmpty(supportedCrs)) {
+        if (isEmpty(supportedCrs)) {
             supportedCrs = [...parentCrs];
         } else {
             supportedCrs = [...parentCrs, ...supportedCrs];
         }
         let sublayers = [];
-        if(!isEmpty(layer.Layer)) {
+        if (!isEmpty(layer.Layer)) {
             sublayers = layer.Layer.map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, serviceUrl, version, featureInfoUrl, infoFormats)).filter(entry => entry);
         }
-        if(isEmpty(layer.BoundingBox)) {
+        if (isEmpty(layer.BoundingBox)) {
             return null;
         }
-        let bbox = {
+        const bbox = {
             crs: layer.BoundingBox[0].crs,
             bounds: layer.BoundingBox[0].extent
         };
@@ -151,6 +153,7 @@ const ServiceLayerUtils = {
         try {
             legendUrl = layer.Style[0].LegendURL[0].OnlineResource;
         } catch (e) {
+            /* Pass */
         }
         return {
             type: "wms",
@@ -175,7 +178,7 @@ const ServiceLayerUtils = {
         };
     },
     getWFSLayers(capabilitiesXml) {
-        let options = {
+        const options = {
             attrPrefix: "",
             ignoreNonTextNodeAttr: false,
             ignoreTextNodeAttr: false,
@@ -183,10 +186,10 @@ const ServiceLayerUtils = {
             textAttrConversion: true,
             ignoreNameSpace: true
         };
-        let capabilities = fastXmlParser.convertToJson(fastXmlParser.getTraversalObj(capabilitiesXml, options));
-        if(!capabilities || !capabilities.WFS_Capabilities || !capabilities.WFS_Capabilities.version) {
+        const capabilities = fastXmlParser.convertToJson(fastXmlParser.getTraversalObj(capabilitiesXml, options));
+        if (!capabilities || !capabilities.WFS_Capabilities || !capabilities.WFS_Capabilities.version) {
             return [];
-        } else if(capabilities.WFS_Capabilities.version < "1.1.0") {
+        } else if (capabilities.WFS_Capabilities.version < "1.1.0") {
             return ServiceLayerUtils.getWFS10Layers(capabilities.WFS_Capabilities);
         } else {
             return ServiceLayerUtils.getWFS11_20Layers(capabilities.WFS_Capabilities);
@@ -194,30 +197,31 @@ const ServiceLayerUtils = {
     },
     getWFS10Layers(capabilities) {
         let serviceUrl = null;
-        let version = capabilities.version;
+        const version = capabilities.version;
         let formats = null;
         try {
-            serviceUrl = ServiceLayerUtils.getDCPTypes(array(capabilities.Capability.Request.GetFeature.DCPType))["HTTP"]["Get"]["onlineResource"];
+            serviceUrl = ServiceLayerUtils.getDCPTypes(array(capabilities.Capability.Request.GetFeature.DCPType)).HTTP.Get.onlineResource;
             formats = Object.keys(capabilities.Capability.Request.GetFeature.ResultFormat);
-        } catch(e) {
+        } catch (e) {
             return [];
         }
 
-        let layers = [];
-        for(let featureType of array(capabilities.FeatureTypeList.FeatureType)) {
-            let name, bbox;
+        const layers = [];
+        for (const featureType of array(capabilities.FeatureTypeList.FeatureType)) {
+            let name;
+            let bbox;
             try {
                 name = featureType.Name;
-                let llbbox = featureType.LatLongBoundingBox;
+                const llbbox = featureType.LatLongBoundingBox;
                 bbox = {
                     crs: featureType.SRS,
                     bounds: [llbbox.minx, llbbox.miny, llbbox.maxx, llbbox.maxy]
                 }
-            } catch(e) {
+            } catch (e) {
                 continue; // Name and bbox are required
             }
-            let title = featureType.Title || name;
-            let abstract = featureType.Abstract || "";
+            const title = featureType.Title || name;
+            const abstract = featureType.Abstract || "";
 
             layers.push({
                 type: "wfs",
@@ -236,33 +240,34 @@ const ServiceLayerUtils = {
     },
     getWFS11_20Layers(capabilities) {
         let serviceUrl = null;
-        let version = capabilities.version;
+        const version = capabilities.version;
         let formats = null;
         try {
-            let getFeatureOp = array(capabilities.OperationsMetadata.Operation).find(el => el.name === "GetFeature");
+            const getFeatureOp = array(capabilities.OperationsMetadata.Operation).find(el => el.name === "GetFeature");
             serviceUrl = ServiceLayerUtils.getDCPTypes(array(getFeatureOp.DCP)).HTTP.Get.href;
-            let outputFormat = array(getFeatureOp.Parameter).find(el => el.name === "outputFormat");
+            const outputFormat = array(getFeatureOp.Parameter).find(el => el.name === "outputFormat");
             formats = outputFormat.AllowedValues ? outputFormat.AllowedValues.Value : outputFormat.Value;
-        } catch(e) {
+        } catch (e) {
             return [];
         }
 
-        let layers = [];
-        for(let featureType of array(capabilities.FeatureTypeList.FeatureType)) {
-            let name, bbox;
+        const layers = [];
+        for (const featureType of array(capabilities.FeatureTypeList.FeatureType)) {
+            let name;
+            let bbox;
             try {
                 name = featureType.Name;
-                let lc = featureType.WGS84BoundingBox.LowerCorner.split(/\s+/);
-                let uc = featureType.WGS84BoundingBox.UpperCorner.split(/\s+/);
+                const lc = featureType.WGS84BoundingBox.LowerCorner.split(/\s+/);
+                const uc = featureType.WGS84BoundingBox.UpperCorner.split(/\s+/);
                 bbox = {
                     crs: "EPSG:4326",
                     bounds: [lc[0], lc[1], uc[0], uc[1]]
-                }
-            } catch(e) {
+                };
+            } catch (e) {
                 continue; // Name and bbox are required
             }
-            let title = featureType.Title || name;
-            let abstract = featureType.Abstract || "";
+            const title = featureType.Title || name;
+            const abstract = featureType.Abstract || "";
 
             layers.push({
                 type: "wfs",
@@ -282,26 +287,25 @@ const ServiceLayerUtils = {
     findLayers(type, serviceUrl, layerConfigs, mapCrs, callback) {
         // Scan the capabilities of the specified service for the specified layers
         let url = serviceUrl.replace(/\?$/, '');
-        if(type === "wmts") {
+        if (type === "wmts") {
             // Do nothing
-        } else if(url.includes('?')) {
+        } else if (url.includes('?')) {
             url += "&service=" + type.toUpperCase() + "&request=GetCapabilities";
         } else {
             url += "?service=" + type.toUpperCase() + "&request=GetCapabilities";
         }
         axios.get(url).then(response => {
-            for(let layerConfig of layerConfigs) {
+            for (const layerConfig of layerConfigs) {
                 let result = null;
-                if(type === "wms") {
+                if (type === "wms") {
                     result = ServiceLayerUtils.getWMSLayers(response.data);
-                } else if(type === "wfs") {
+                } else if (type === "wfs") {
                     result = ServiceLayerUtils.getWFSLayers(response.data);
-                } else if(type === "wmts") {
+                } else if (type === "wmts") {
                     result = ServiceLayerUtils.getWMTSLayers(response.data, url, mapCrs);
                 }
                 let layer = LayerUtils.searchSubLayer({sublayers: result}, "name", layerConfig.name);
-                let source = type + ':' + serviceUrl + '#' + layerConfig.name;
-                if(layer) {
+                if (layer) {
                     layer = assign({}, layer, {
                         id: layerConfig.id,
                         opacity: layerConfig.opacity,
@@ -315,10 +319,10 @@ const ServiceLayerUtils = {
                     callback(layerConfig.id, null);
                 }
             }
-        }).catch(err => {
+        }).catch(() => {
             console.warn("Failed to read " + serviceUrl);
-            for(let layerConfig of layerConfigs) {
-                let source = type + ':' + serviceUrl + '#' + layerConfig.name;
+            for (const layerConfig of layerConfigs) {
+                const source = type + ':' + serviceUrl + '#' + layerConfig.name;
                 callback(source, null);
             }
         });

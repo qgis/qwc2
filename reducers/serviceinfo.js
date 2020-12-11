@@ -6,15 +6,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
- const assign = require('object-assign');
+const assign = require('object-assign');
 const {SET_ACTIVE_SERVICEINFO} = require('../actions/serviceinfo');
 
-function serviceInfo(state = {}, action) {
+const defaultState = {};
+
+function serviceInfo(state = defaultState, action) {
     switch (action.type) {
-        case SET_ACTIVE_SERVICEINFO:
-            return assign({}, state, {service: action.service});
-        default:
-            return state;
+    case SET_ACTIVE_SERVICEINFO: {
+        return assign({}, state, {service: action.service});
+    }
+    default:
+        return state;
     }
 }
 

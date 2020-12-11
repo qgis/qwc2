@@ -15,10 +15,10 @@ const MeasureUtils = require('../../../utils/MeasureUtils');
 
 class MeasurementSupport extends React.Component {
     static propTypes = {
-        map: PropTypes.object,
-        projection: PropTypes.string,
-        measurement: PropTypes.object,
         changeMeasurementState: PropTypes.func,
+        map: PropTypes.object,
+        measurement: PropTypes.object,
+        projection: PropTypes.string
     }
     constructor(props) {
         super(props);
@@ -31,26 +31,26 @@ class MeasurementSupport extends React.Component {
                 image: new ol.style.Circle({
                     radius: 5,
                     fill: new ol.style.Fill({color: 'white'}),
-                    stroke: new ol.style.Stroke({ color: 'red', width: 2 }),
+                    stroke: new ol.style.Stroke({ color: 'red', width: 2 })
                 }),
                 geometry: (feature) => {
-                    if(feature.getGeometry().getType() === "Point") {
+                    if (feature.getGeometry().getType() === "Point") {
                         return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
-                    } else if(feature.getGeometry().getType() === "LineString") {
+                    } else if (feature.getGeometry().getType() === "LineString") {
                         return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
                     } else {
                         return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
                     }
                 }
             })
-        ]
+        ];
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.measurement.geomType && this.props.measurement.geomType !== prevProps.measurement.geomType ) {
             this.addDrawInteraction(this.props);
         } else if (!this.props.measurement.geomType) {
             this.reset();
-        } else if(this.props.measurement.lenUnit !== prevProps.measurement.lenUnit) {
+        } else if (this.props.measurement.lenUnit !== prevProps.measurement.lenUnit) {
             this.relabelSegments(this.props);
         }
     }
@@ -76,7 +76,7 @@ class MeasurementSupport extends React.Component {
         // create an interaction to draw with
         this.drawInteraction = new ol.interaction.Draw({
             source: this.measureLayer.getSource(),
-            condition: (event) => {  return event.pointerEvent.buttons === 1 },
+            condition: (event) => { return event.pointerEvent.buttons === 1; },
             type: geometryType,
             style: []
         });
@@ -94,7 +94,7 @@ class MeasurementSupport extends React.Component {
             this.props.map.un('pointermove', this.updateMeasurementResults);
             this.props.map.un('click', this.updateMeasurementResults);
             this.updateMeasurementResults(ev, false);
-            if(this.segmentMarkers.length > 0) {
+            if (this.segmentMarkers.length > 0) {
                 this.measureLayer.getSource().removeFeature(this.segmentMarkers.pop());
             }
             this.enterTemporaryPickMode();
@@ -111,43 +111,43 @@ class MeasurementSupport extends React.Component {
             this.segmentMarkers = [];
         }
     }
-    updateMeasurementResults = (ev, drawing=true) => {
-        if(!this.sketchFeature) {
+    updateMeasurementResults = (ev, drawing = true) => {
+        if (!this.sketchFeature) {
             return;
         }
-        let coo = this.sketchFeature.getGeometry().getCoordinates();
+        const coo = this.sketchFeature.getGeometry().getCoordinates();
 
         let bearing = 0;
         if (this.props.measurement.geomType === 'Bearing' && coo.length > 1) {
             // calculate the azimuth as base for bearing information
             bearing = CoordinatesUtils.calculateAzimuth(coo[0], coo[1], this.props.projection);
-            if(coo.length > 2) {
+            if (coo.length > 2) {
                 this.drawInteraction.finishDrawing();
             }
         }
         let length = null;
-        if(this.props.measurement.geomType === 'LineString') {
+        if (this.props.measurement.geomType === 'LineString') {
             length = this.calculateGeodesicDistances(coo);
 
-            let vertexAdded = (coo.length > 0 && this.segmentMarkers.length < coo.length - 1);
+            const vertexAdded = (coo.length > 0 && this.segmentMarkers.length < coo.length - 1);
 
             // Adjust previous marker if any
-            if(vertexAdded && this.segmentMarkers.length > 0) {
-                let p1 = coo[coo.length - 3];
-                let p2 = coo[coo.length - 2];
+            if (vertexAdded && this.segmentMarkers.length > 0) {
+                const p1 = coo[coo.length - 3];
+                const p2 = coo[coo.length - 2];
                 this.updateSegmentMarker(this.segmentMarkers[this.segmentMarkers.length - 1], p1, p2, length[coo.length - 3]);
             }
 
             // Add segment markers as neccessary
-            if(coo.length > 0 && this.segmentMarkers.length < coo.length - 1) {
-                let point = new ol.Feature({
+            if (coo.length > 0 && this.segmentMarkers.length < coo.length - 1) {
+                const point = new ol.Feature({
                     geometry: new ol.geom.Point(coo[coo.length - 1])
                 });
-                let label = new ol.style.Text({
+                const label = new ol.style.Text({
                     font: '10pt sans-serif',
                     text: "",
                     fill: new ol.style.Fill({color: 'white'}),
-                    stroke: new ol.style.Stroke({color: [0,0,0,0.5], width: 4}),
+                    stroke: new ol.style.Stroke({color: [0, 0, 0, 0.5], width: 4}),
                     rotation: 0,
                     offsetY: 10
                 });
@@ -156,14 +156,14 @@ class MeasurementSupport extends React.Component {
                 this.segmentMarkers.push(point);
             }
 
-            if(!vertexAdded && coo.length > 1) {
-                let p1 = coo[coo.length - 2];
-                let p2 = coo[coo.length - 1];
+            if (!vertexAdded && coo.length > 1) {
+                const p1 = coo[coo.length - 2];
+                const p2 = coo[coo.length - 1];
                 this.updateSegmentMarker(this.segmentMarkers[this.segmentMarkers.length - 1], p1, p2, length[coo.length - 2]);
             }
         }
         let area = null;
-        if(this.props.measurement.geomType === 'Polygon') {
+        if (this.props.measurement.geomType === 'Polygon') {
             area = this.calculateGeodesicArea(this.sketchFeature.getGeometry().getLinearRing(0).getCoordinates());
         }
 
@@ -173,15 +173,15 @@ class MeasurementSupport extends React.Component {
             coordinates: coo,
             length: length,
             area: area,
-            bearing: bearing,
+            bearing: bearing
         });
     }
     updateSegmentMarker = (marker, p1, p2, length) => {
         let angle = -Math.atan2(p2[1] - p1[1], p2[0] - p1[0]);
-        if(Math.abs(angle) > 0.5 * Math.PI) {
+        if (Math.abs(angle) > 0.5 * Math.PI) {
             angle += Math.PI;
         }
-        let text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedLength(this.props.measurement.lenUnit, length), 2);
+        const text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedLength(this.props.measurement.lenUnit, length), 2);
         marker.getStyle().getText().setText(text);
         marker.getStyle().getText().setRotation(angle);
         marker.setGeometry(new ol.geom.Point([0.5 * (p1[0] + p2[0]), 0.5 * (p1[1] + p2[1])]));
@@ -189,11 +189,11 @@ class MeasurementSupport extends React.Component {
     enterTemporaryPickMode = () => {
         this.modifyInteraction = new ol.interaction.Modify({
             features: new ol.Collection([this.sketchFeature]),
-            condition: (event) => {  return event.pointerEvent.buttons === 1 },
-            insertVertexCondition: (event) => { return this.props.measurement.geomType === 'Bearing'? false : true; },
+            condition: (event) => { return event.pointerEvent.buttons === 1; },
+            insertVertexCondition: () => { return this.props.measurement.geomType === 'Bearing' ? false : true; },
             deleteCondition: (event) => { return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event); }
         });
-        this.modifyInteraction.on('modifystart', ev => {
+        this.modifyInteraction.on('modifystart', () => {
             this.props.map.on('pointermove', this.measurementGeometryUpdated);
             this.props.map.on('click', this.measurementGeometryUpdated);
         });
@@ -205,13 +205,13 @@ class MeasurementSupport extends React.Component {
         this.props.map.addInteraction(this.modifyInteraction);
     }
     leaveTemporaryPickMode = () => {
-        if(this.modifyInteraction) {
+        if (this.modifyInteraction) {
             this.props.map.removeInteraction(this.modifyInteraction);
             this.modifyInteraction = null;
         }
     }
-    measurementGeometryUpdated = (ev, drawing=true) => {
-        let coo = this.sketchFeature.getGeometry().getCoordinates();
+    measurementGeometryUpdated = (ev, drawing = true) => {
+        const coo = this.sketchFeature.getGeometry().getCoordinates();
 
         let bearing = 0;
         if (this.props.measurement.geomType === 'Bearing' && coo.length > 1) {
@@ -219,33 +219,33 @@ class MeasurementSupport extends React.Component {
             bearing = CoordinatesUtils.calculateAzimuth(coo[0], coo[1], this.props.projection);
         }
         let length = null;
-        if(this.props.measurement.geomType === 'LineString') {
+        if (this.props.measurement.geomType === 'LineString') {
             length = this.calculateGeodesicDistances(coo);
-            if (this.segmentMarkers.length < coo.length - 1){
-                let point = new ol.Feature({
-                            geometry: new ol.geom.Point(coo[coo.length - 1])
-                        });
-                        let label = new ol.style.Text({
-                            font: '10pt sans-serif',
-                            text: "",
-                            fill: new ol.style.Fill({color: 'white'}),
-                            stroke: new ol.style.Stroke({color: [0,0,0,0.5], width: 4}),
-                            rotation: 0,
-                            offsetY: 10
-                        });
-                        point.setStyle(new ol.style.Style({text: label}));
-                        this.measureLayer.getSource().addFeature(point);
-                        this.segmentMarkers.push(point);
+            if (this.segmentMarkers.length < coo.length - 1) {
+                const point = new ol.Feature({
+                    geometry: new ol.geom.Point(coo[coo.length - 1])
+                });
+                const label = new ol.style.Text({
+                    font: '10pt sans-serif',
+                    text: "",
+                    fill: new ol.style.Fill({color: 'white'}),
+                    stroke: new ol.style.Stroke({color: [0, 0, 0, 0.5], width: 4}),
+                    rotation: 0,
+                    offsetY: 10
+                });
+                point.setStyle(new ol.style.Style({text: label}));
+                this.measureLayer.getSource().addFeature(point);
+                this.segmentMarkers.push(point);
             }
-            if (this.segmentMarkers.length > coo.length - 1){
+            if (this.segmentMarkers.length > coo.length - 1) {
                 this.measureLayer.getSource().removeFeature(this.segmentMarkers.pop());
             }
-            for(let i = 0; i < this.segmentMarkers.length; ++i) {
+            for (let i = 0; i < this.segmentMarkers.length; ++i) {
                 this.updateSegmentMarker(this.segmentMarkers[i], coo[i], coo[i + 1], length[i]);
             }
         }
         let area = null;
-        if(this.props.measurement.geomType === 'Polygon') {
+        if (this.props.measurement.geomType === 'Polygon') {
             area = this.calculateGeodesicArea(this.sketchFeature.getGeometry().getLinearRing(0).getCoordinates());
         }
 
@@ -255,18 +255,18 @@ class MeasurementSupport extends React.Component {
             coordinates: coo,
             length: length,
             area: area,
-            bearing: bearing,
+            bearing: bearing
         });
     }
     relabelSegments = (props) => {
-        if(!this.sketchFeature) {
+        if (!this.sketchFeature) {
             return;
         }
-        if(props.measurement.geomType === 'LineString') {
-            let coo = this.sketchFeature.getGeometry().getCoordinates();
-            let length = this.calculateGeodesicDistances(coo);
-            for(let i = 0; i < this.segmentMarkers.length; ++i) {
-                let text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedLength(props.measurement.lenUnit, length[i]), 2);
+        if (props.measurement.geomType === 'LineString') {
+            const coo = this.sketchFeature.getGeometry().getCoordinates();
+            const length = this.calculateGeodesicDistances(coo);
+            for (let i = 0; i < this.segmentMarkers.length; ++i) {
+                const text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedLength(props.measurement.lenUnit, length[i]), 2);
                 this.segmentMarkers[i].getStyle().getText().setText(text);
             }
             this.measureLayer.changed();
@@ -278,17 +278,17 @@ class MeasurementSupport extends React.Component {
         });
     }
     calculateGeodesicDistances = (coordinates) => {
-        let reprojectedCoordinates = this.reprojectedCoordinates(coordinates);
-        let lengths = [];
+        const reprojectedCoordinates = this.reprojectedCoordinates(coordinates);
+        const lengths = [];
         for (let i = 0; i < reprojectedCoordinates.length - 1; ++i) {
             lengths.push(ol.sphere.getDistance(reprojectedCoordinates[i], reprojectedCoordinates[i + 1]));
         }
         return lengths;
     }
     calculateGeodesicArea = (coordinates) => {
-        let reprojectedCoordinates = this.reprojectedCoordinates(coordinates);
+        const reprojectedCoordinates = this.reprojectedCoordinates(coordinates);
         return Math.abs(ol.sphere.getArea(new ol.geom.Polygon([reprojectedCoordinates]), {projection: 'EPSG:4326'}));
     }
-};
+}
 
 module.exports = MeasurementSupport;

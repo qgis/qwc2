@@ -29,23 +29,23 @@ function wmsToOpenlayersOptions(options) {
 }
 
 function getWMSURLs( urls ) {
-    return urls.map((url) => url.split("\?")[0]);
+    return urls.map((url) => url.split("?")[0]);
 }
 
-let WMSLayer = {
+const WMSLayer = {
     create: (options, map) => {
         const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]);
         const queryParameters = wmsToOpenlayersOptions(options) || {};
-        if(options.tiled && !options.bbox) {
+        if (options.tiled && !options.bbox) {
             console.warn("Tiled WMS requested without specifying bounding box, falling back to non-tiled.");
         }
         if (!options.tiled || !options.bbox) {
             return new ol.layer.Image({
                 opacity: options.opacity !== undefined ? options.opacity : 1,
-                visible: !!queryParameters["LAYERS"] && options.visibility !== false,
+                visible: !!queryParameters.LAYERS && options.visibility !== false,
                 zIndex: options.zIndex,
-                minResolution: options.minScale == null ? undefined : MapUtils.getResolutionsForScales([options.minScale], options.srs)[0],
-                maxResolution: options.maxScale == null ? undefined : MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0],
+                minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.srs)[0] : undefined,
+                maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0] : undefined,
                 source: new ol.source.ImageWMS({
                     url: urls[0],
                     serverType: 'qgis',
@@ -55,8 +55,8 @@ let WMSLayer = {
                 })
             });
         }
-        let extent = CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, options.srs);
-        let tileGrid = new ol.tilegrid.TileGrid({
+        const extent = CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, options.srs);
+        const tileGrid = new ol.tilegrid.TileGrid({
             extent: extent,
             tileSize: options.tileSize || 256,
             maxZoom: map.getView().getResolutions().length,
@@ -66,15 +66,15 @@ let WMSLayer = {
             opacity: options.opacity !== undefined ? options.opacity : 1,
             visible: options.visibility !== false,
             zIndex: options.zIndex,
-            minResolution: options.minScale == null ? undefined : MapUtils.getResolutionsForScales([options.minScale], options.srs)[0],
-            maxResolution: options.maxScale == null ? undefined : MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0],
+            minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.srs)[0] : undefined,
+            maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0] : undefined,
             source: new ol.source.TileWMS({
-              urls: urls,
-              params: queryParameters,
-              serverType: 'qgis',
-              tileGrid: tileGrid,
-              hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false
-          })
+                urls: urls,
+                params: queryParameters,
+                serverType: 'qgis',
+                tileGrid: tileGrid,
+                hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false
+            })
         });
     },
     update: (layer, newOptions, oldOptions) => {
@@ -90,8 +90,8 @@ let WMSLayer = {
             } else if (!oldOptions.params && newOptions.params) {
                 changed = true;
             }
-            let oldParams = wmsToOpenlayersOptions(oldOptions);
-            let newParams = wmsToOpenlayersOptions(newOptions);
+            const oldParams = wmsToOpenlayersOptions(oldOptions);
+            const newParams = wmsToOpenlayersOptions(newOptions);
             changed |= ["LAYERS", "STYLES", "FORMAT", "TRANSPARENT", "TILED", "VERSION" ].reduce((found, param) => {
                 if (oldParams[param] !== newParams[param]) {
                     return true;
@@ -101,7 +101,7 @@ let WMSLayer = {
             if (changed) {
                 layer.getSource().updateParams(assign(newParams, newOptions.params, {t: new Date().getMilliseconds()}));
                 layer.getSource().changed();
-                layer.setVisible(newOptions.visibility && !!newParams["LAYERS"]);
+                layer.setVisible(newOptions.visibility && !!newParams.LAYERS);
             }
         }
     }

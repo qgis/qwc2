@@ -15,7 +15,7 @@ const isEmpty = require('lodash.isempty');
 const Sortable = require('react-sortablejs');
 const FileSaver = require('file-saver');
 const Message = require('../components/I18N/Message');
-const {LayerRole, changeLayerProperty, removeLayer, reorderLayer, setSwipe, addLayerSeparator} = require('../actions/layers')
+const {LayerRole, changeLayerProperty, removeLayer, reorderLayer, setSwipe, addLayerSeparator} = require('../actions/layers');
 const {setActiveLayerInfo} = require('../actions/layerinfo');
 const {setActiveServiceInfo} = require('../actions/serviceinfo');
 const {toggleMapTips, zoomToExtent} = require('../actions/map');
@@ -28,7 +28,6 @@ const ServiceInfoWindow = require('../components/ServiceInfoWindow');
 const {SideBar} = require('../components/SideBar');
 const Spinner = require('../components/Spinner');
 const LayerUtils = require('../utils/LayerUtils');
-const ThemeUtils = require('../utils/ThemeUtils');
 const MapUtils = require('../utils/MapUtils');
 const VectorLayerUtils = require('../utils/VectorLayerUtils');
 require('./style/LayerTree.css');
@@ -36,40 +35,41 @@ require('./style/LayerTree.css');
 
 class LayerTree extends React.Component {
     static propTypes = {
-        layers: PropTypes.array,
-        mapCrs: PropTypes.string,
-        mapScale: PropTypes.number,
-        swipe: PropTypes.number,
-        mobile: PropTypes.bool,
-        fallbackDrag: PropTypes.bool,
-        theme: PropTypes.object,
-        mapTipsEnabled: PropTypes.bool,
-        changeLayerProperty: PropTypes.func,
-        removeLayer: PropTypes.func,
-        reorderLayer: PropTypes.func,
-        toggleMapTips: PropTypes.func,
-        showLegendIcons: PropTypes.bool,
-        showRootEntry: PropTypes.bool,
-        showQueryableIcon: PropTypes.bool,
-        allowMapTips: PropTypes.bool,
+        addLayerSeparator: PropTypes.func,
         allowCompare: PropTypes.bool,
         allowImport: PropTypes.bool,
-        groupTogglesSublayers: PropTypes.bool,
-        grayUnchecked: PropTypes.bool,
-        layerInfoWindowSize: PropTypes.object,
+        allowMapTips: PropTypes.bool,
         bboxDependentLegend: PropTypes.bool,
-        flattenGroups: PropTypes.bool,
-        setSwipe: PropTypes.func,
-        setActiveLayerInfo: PropTypes.func,
-        width: PropTypes.string,
+        changeLayerProperty: PropTypes.func,
         enableLegendPrint: PropTypes.bool,
         enableServiceInfo: PropTypes.bool,
         enableVisibleFilter: PropTypes.bool,
+        fallbackDrag: PropTypes.bool,
+        flattenGroups: PropTypes.bool,
+        grayUnchecked: PropTypes.bool,
+        groupTogglesSublayers: PropTypes.bool,
         infoInSettings: PropTypes.bool,
+        layerInfoWindowSize: PropTypes.object,
+        layers: PropTypes.array,
+        mapCrs: PropTypes.string,
+        mapScale: PropTypes.number,
+        mapTipsEnabled: PropTypes.bool,
+        mobile: PropTypes.bool,
+        removeLayer: PropTypes.func,
+        reorderLayer: PropTypes.func,
+        setActiveLayerInfo: PropTypes.func,
+        setActiveServiceInfo: PropTypes.func,
+        setSwipe: PropTypes.func,
+        showLegendIcons: PropTypes.bool,
+        showQueryableIcon: PropTypes.bool,
+        showRootEntry: PropTypes.bool,
         showToggleAllLayersCheckbox: PropTypes.bool,
-        addLayerSeparator: PropTypes.func,
-        zoomToExtent: PropTypes.func,
-        transparencyIcon: PropTypes.bool
+        swipe: PropTypes.number,
+        theme: PropTypes.object,
+        toggleMapTips: PropTypes.func,
+        transparencyIcon: PropTypes.bool,
+        width: PropTypes.string,
+        zoomToExtent: PropTypes.func
     }
     static defaultProps = {
         layers: [],
@@ -105,25 +105,25 @@ class LayerTree extends React.Component {
     constructor(props) {
         super(props);
         this.legendPrintWindow = null;
-        window.addEventListener('beforeunload', (ev) => {
-            if(this.legendPrintWindow && !this.legendPrintWindow.closed) {
+        window.addEventListener('beforeunload', () => {
+            if (this.legendPrintWindow && !this.legendPrintWindow.closed) {
                 this.legendPrintWindow.close();
             }
         });
     }
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.theme.mapTips !== undefined && this.props.theme.mapTips !== prevProps.theme.mapTips) {
+        if (this.props.theme.mapTips !== undefined && this.props.theme.mapTips !== prevProps.theme.mapTips) {
             this.props.toggleMapTips(this.props.theme.mapTips && !prevProps.mobile);
         }
     }
     getGroupVisibility = (group) => {
-        if(isEmpty(group.sublayers) || group.visibility === false) {
+        if (isEmpty(group.sublayers) || group.visibility === false) {
             return 0;
         }
         let visible = 0;
         group.sublayers.map(sublayer => {
-            let sublayervisibility = sublayer.visibility === undefined ? true : sublayer.visibility;
-            if(sublayer.sublayers && sublayervisibility) {
+            const sublayervisibility = sublayer.visibility === undefined ? true : sublayer.visibility;
+            if (sublayer.sublayers && sublayervisibility) {
                 visible += this.getGroupVisibility(sublayer);
             } else {
                 visible += sublayervisibility ? 1 : 0;
@@ -131,55 +131,65 @@ class LayerTree extends React.Component {
         });
         return visible / group.sublayers.length;
     }
-    renderSubLayers = (layer, group, path, enabled, inMutuallyExclusiveGroup=false) => {
+    renderSubLayers = (layer, group, path, enabled, inMutuallyExclusiveGroup = false) => {
         return (group.sublayers || []).map((sublayer, idx) => {
-            let subpath = [...path, idx];
-            if(sublayer.sublayers) {
-                return this.renderLayerGroup(layer, sublayer, subpath, enabled, inMutuallyExclusiveGroup)
+            const subpath = [...path, idx];
+            if (sublayer.sublayers) {
+                return this.renderLayerGroup(layer, sublayer, subpath, enabled, inMutuallyExclusiveGroup);
             } else {
                 return this.renderLayer(layer, sublayer, subpath, enabled, inMutuallyExclusiveGroup);
             }
         });
     }
-    renderLayerGroup = (layer, group, path, enabled, inMutuallyExclusiveGroup=false) => {
-        let flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
-        if(flattenGroups) {
+    renderLayerGroup = (layer, group, path, enabled, inMutuallyExclusiveGroup = false) => {
+        const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
+        if (flattenGroups) {
             return this.renderSubLayers(layer, group, path, enabled, false);
         }
-        let subtreevisibility = this.getGroupVisibility(group);
-        if(subtreevisibility === 0 && this.state.filtervisiblelayers) {
+        const subtreevisibility = this.getGroupVisibility(group);
+        if (subtreevisibility === 0 && this.state.filtervisiblelayers) {
             return null;
         }
         let visibility = true;
-        let checkboxstate;
-        if(this.props.groupTogglesSublayers && !inMutuallyExclusiveGroup) {
+        let checkboxstate = "";
+        if (this.props.groupTogglesSublayers && !inMutuallyExclusiveGroup) {
             visibility = subtreevisibility > 0;
-            checkboxstate = subtreevisibility === 1 ? 'checked' : subtreevisibility === 0 ? 'unchecked' : 'tristate';
+            if (subtreevisibility === 1) {
+                checkboxstate = "checked";
+            } else if (subtreevisibility === 0) {
+                checkboxstate = "unchecked";
+            } else {
+                checkboxstate = "tristate";
+            }
         } else {
             visibility = group.visibility === undefined ? true : group.visibility;
-            checkboxstate = visibility === true ? subtreevisibility === 1 ? 'checked' : 'tristate' : 'unchecked';
+            if (visibility) {
+                checkboxstate = subtreevisibility === 1 ? 'checked' : 'tristate';
+            } else {
+                checkboxstate = 'unchecked';
+            }
         }
-        if(inMutuallyExclusiveGroup) {
+        if (inMutuallyExclusiveGroup) {
             checkboxstate = 'radio_' + checkboxstate;
         }
-        let expanderstate = group.expanded ? 'tree_minus' : 'tree_plus';
-        let itemclasses = {
+        const expanderstate = group.expanded ? 'tree_minus' : 'tree_plus';
+        const itemclasses = {
             "layertree-item": true,
             "layertree-item-disabled": (!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !visibility)
         };
         let sublayersContent = null;
-        if(group.expanded) {
+        if (group.expanded) {
             sublayersContent = this.renderSubLayers(layer, group, path, enabled && visibility, group.mutuallyExclusive === true);
         }
-        let cogclasses = classnames({
+        const cogclasses = classnames({
             "layertree-item-cog": true,
             "layertree-item-cog-active": this.state.activemenu === group.uuid
         });
         let editframe = null;
-        let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
-        let allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filtervisiblelayers;
-        let sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true;
-        if(this.state.activemenu === group.uuid && allowReordering) {
+        const allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
+        const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filtervisiblelayers;
+        const sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true;
+        if (this.state.activemenu === group.uuid && allowReordering) {
             editframe = (
                 <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
                     <div className="layertree-item-edit-items">
@@ -190,37 +200,37 @@ class LayerTree extends React.Component {
             );
         }
         return (
-            <div className="layertree-item-container" key={group.uuid} data-id={JSON.stringify({layer: layer.uuid, path: path})}>
+            <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.uuid, path: path})} key={group.uuid}>
                 <div className={classnames(itemclasses)}>
                     <Icon className="layertree-item-expander" icon={expanderstate} onClick={() => this.groupExpandedToggled(layer, path, group.expanded)} />
                     <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.itemVisibilityToggled(layer, path, visibility)} />
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
-                    <span className="layertree-item-spacer"></span>
+                    <span className="layertree-item-spacer" />
                     {allowReordering ? (<Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(group.uuid)}/>) : null}
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
                 {editframe}
-                <Sortable options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}} onChange={this.onSortChange}>
+                <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
                     {sublayersContent}
                 </Sortable>
             </div>
         );
     }
-    renderLayer = (layer, sublayer, path, enabled=true, inMutuallyExclusiveGroup=false, skipExpanderPlaceholder=false) => {
-        if(this.state.filtervisiblelayers && !sublayer.visibility) {
+    renderLayer = (layer, sublayer, path, enabled = true, inMutuallyExclusiveGroup = false, skipExpanderPlaceholder = false) => {
+        if (this.state.filtervisiblelayers && !sublayer.visibility) {
             return null;
         }
-        let allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
-        let allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
+        const allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
+        const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
         let checkboxstate = sublayer.visibility === true ? 'checked' : 'unchecked';
-        if(inMutuallyExclusiveGroup) {
+        if (inMutuallyExclusiveGroup) {
             checkboxstate = 'radio_' + checkboxstate;
         }
-        let cogclasses = classnames({
+        const cogclasses = classnames({
             "layertree-item-cog": true,
             "layertree-item-cog-active": this.state.activemenu === sublayer.uuid
         });
-        let itemclasses = {
+        const itemclasses = {
             "layertree-item": true,
             "layertree-item-disabled": layer.type !== "separator" && ((!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !sublayer.visibility)),
             "layertree-item-separator": layer.type === "separator",
@@ -228,30 +238,30 @@ class LayerTree extends React.Component {
         };
         let editframe = null;
         let infoButton = null;
-        if(layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts") {
+        if (layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts") {
             infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.props.setActiveLayerInfo(layer, sublayer)}/>);
         }
-        if(this.state.activemenu === sublayer.uuid) {
+        if (this.state.activemenu === sublayer.uuid) {
             let reorderButtons = null;
-            if(allowReordering && !this.state.filtervisiblelayers) {
+            if (allowReordering && !this.state.filtervisiblelayers) {
                 reorderButtons = [
-                    (<Icon key="layertree-item-move-down" className="layertree-item-move" icon="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
-                    (<Icon key="layertree-item-move-up" className="layertree-item-move" icon="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
+                    (<Icon className="layertree-item-move" icon="arrow-down" key="layertree-item-move-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
+                    (<Icon className="layertree-item-move" icon="arrow-up" key="layertree-item-move-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
                 ];
             }
             let zoomToLayerButton = null;
-            if(sublayer.bbox && sublayer.bbox.bounds && sublayer.bbox.crs) {
-                let zoomToLayerTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.zoomtolayer");
+            if (sublayer.bbox && sublayer.bbox.bounds && sublayer.bbox.crs) {
+                const zoomToLayerTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.zoomtolayer");
                 zoomToLayerButton = (
-                    <Icon icon="zoom" title={zoomToLayerTooltip} onClick={() => this.props.zoomToExtent(sublayer.bbox.bounds, sublayer.bbox.crs)} />
-                )
+                    <Icon icon="zoom" onClick={() => this.props.zoomToExtent(sublayer.bbox.bounds, sublayer.bbox.crs)} title={zoomToLayerTooltip} />
+                );
             }
             editframe = (
                 <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
                     <div className="layertree-item-edit-items">
                         {zoomToLayerButton}
                         {this.props.transparencyIcon ? (<Icon icon="transparency" />) : (<Message msgId="layertree.transparency" />)}
-                        <input className="layertree-item-transparency-slider" type="range" min="0" max="255" step="1" defaultValue={255-sublayer.opacity} onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onTouchEnd={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} />
+                        <input className="layertree-item-transparency-slider" defaultValue={255 - sublayer.opacity} max="255" min="0" onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onTouchEnd={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} step="1" type="range" />
                         {reorderButtons}
                         {this.props.infoInSettings ? infoButton : null}
                         {layer.type === 'vector' ? (<Icon icon="export" onClick={() => this.exportRedliningLayer(layer)} />) : null}
@@ -260,43 +270,43 @@ class LayerTree extends React.Component {
             );
         }
         let legendicon = null;
-        if(this.props.showLegendIcons) {
-            if(layer.legendUrl) {
-                let request = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.mapCrs);
-                legendicon = (<img className="layertree-item-legend-thumbnail" src={request + "&TYPE=thumbnail"} onMouseOver={ev => this.showLegendTooltip(ev, request)} onMouseOut={this.hideLegendTooltip} onTouchStart={ev => this.showLegendTooltip(ev, request)} />);
-            } else if(layer.color) {
+        if (this.props.showLegendIcons) {
+            if (layer.legendUrl) {
+                const request = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.mapCrs);
+                legendicon = (<img className="layertree-item-legend-thumbnail" onMouseOut={this.hideLegendTooltip} onMouseOver={ev => this.showLegendTooltip(ev, request)} onTouchStart={ev => this.showLegendTooltip(ev, request)} src={request + "&TYPE=thumbnail"} />);
+            } else if (layer.color) {
                 legendicon = (<span className="layertree-item-legend-coloricon" style={{backgroundColor: layer.color}} />);
             }
         }
         let checkbox = null;
-        if(layer.type === "placeholder") {
+        if (layer.type === "placeholder") {
             checkbox = (<Spinner />);
-        } else if(layer.type === "separator") {
+        } else if (layer.type === "separator") {
             checkbox = null;
         } else {
             checkbox = (<Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.itemVisibilityToggled(layer, path, sublayer.visibility)} />);
         }
         let title = null;
-        if(layer.type === "separator") {
-            title = (<input value={sublayer.title} onChange={ev => this.props.changeLayerProperty(layer.uuid, "title", ev.target.value)}/>);
+        if (layer.type === "separator") {
+            title = (<input onChange={ev => this.props.changeLayerProperty(layer.uuid, "title", ev.target.value)} value={sublayer.title}/>);
         } else {
             title = (<span className="layertree-item-title" title={sublayer.title}>{sublayer.title}</span>);
         }
-        let allowOptions = layer.type !== "placeholder" && layer.type !== "separator";
-        let flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
-        let allowSeparators = flattenGroups && allowReordering && ConfigUtils.getConfigProp("allowLayerTreeSeparators", this.props.theme);
-        let separatorTitle = LocaleUtils.getMessageById(this.context.messages, "layertree.separator");
-        let separatorTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.separatortooltip");
+        const allowOptions = layer.type !== "placeholder" && layer.type !== "separator";
+        const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
+        const allowSeparators = flattenGroups && allowReordering && ConfigUtils.getConfigProp("allowLayerTreeSeparators", this.props.theme);
+        const separatorTitle = LocaleUtils.getMessageById(this.context.messages, "layertree.separator");
+        const separatorTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.separatortooltip");
         return (
-            <div className="layertree-item-container" key={sublayer.uuid} data-id={JSON.stringify({layer: layer.uuid, path: path})}>
-                {allowSeparators ? (<div title={separatorTooltip} className="layertree-item-addsep" onClick={() => this.props.addLayerSeparator(separatorTitle, layer.id, path)}></div>) : null}
+            <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.uuid, path: path})} key={sublayer.uuid}>
+                {allowSeparators ? (<div className="layertree-item-addsep" onClick={() => this.props.addLayerSeparator(separatorTitle, layer.id, path)} title={separatorTooltip} />) : null}
                 <div className={classnames(itemclasses)}>
-                    {(flattenGroups || skipExpanderPlaceholder) ? null : (<span className="layertree-item-expander"></span>)}
+                    {(flattenGroups || skipExpanderPlaceholder) ? null : (<span className="layertree-item-expander" />)}
                     {checkbox}
                     {legendicon}
                     {title}
                     {sublayer.queryable && this.props.showQueryableIcon ? (<Icon className="layertree-item-queryable" icon="info-sign" />) : null}
-                    <span className="layertree-item-spacer"></span>
+                    <span className="layertree-item-spacer" />
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}
                     {allowOptions ? (<Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>) : null}
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
@@ -306,17 +316,17 @@ class LayerTree extends React.Component {
         );
     }
     renderLayerTree = (layer) => {
-        if(layer.role === LayerRole.BACKGROUND || layer.layertreehidden) {
+        if (layer.role === LayerRole.BACKGROUND || layer.layertreehidden) {
             return null;
-        } else if(!Array.isArray(layer.sublayers)) {
+        } else if (!Array.isArray(layer.sublayers)) {
             return this.renderLayer(layer, layer, [], layer.visibility);
-        } else if(this.props.showRootEntry) {
+        } else if (this.props.showRootEntry) {
             return this.renderLayerGroup(layer, layer, [], layer.visibility);
         } else {
             return layer.sublayers.map((sublayer, idx) => {
-                let subpath = [idx];
-                if(sublayer.sublayers) {
-                    return this.renderLayerGroup(layer, sublayer, subpath, layer.visibility)
+                const subpath = [idx];
+                if (sublayer.sublayers) {
+                    return this.renderLayerGroup(layer, sublayer, subpath, layer.visibility);
                 } else {
                     return this.renderLayer(layer, sublayer, subpath, layer.visibility, false, true);
                 }
@@ -324,16 +334,16 @@ class LayerTree extends React.Component {
         }
     }
     renderBody = () => {
-        let maptipcheckboxstate = this.props.mapTipsEnabled === true ? 'checked' : 'unchecked';
+        const maptipcheckboxstate = this.props.mapTipsEnabled === true ? 'checked' : 'unchecked';
         let maptipCheckbox = null;
         let maptipsEnabled = false;
-        if(this.props.theme.mapTips !== undefined) {
+        if (this.props.theme.mapTips !== undefined) {
             maptipsEnabled = this.props.theme.mapTips !== null && this.props.allowMapTips;
         } else {
             maptipsEnabled = this.props.allowMapTips;
         }
 
-        if(!this.props.mobile && maptipsEnabled) {
+        if (!this.props.mobile && maptipsEnabled) {
             maptipCheckbox = (
                 <div className="layertree-option">
                     <Icon icon={maptipcheckboxstate} onClick={this.toggleMapTips} />
@@ -341,10 +351,10 @@ class LayerTree extends React.Component {
                 </div>
             );
         }
-        let allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filtervisiblelayers;
+        const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filtervisiblelayers;
         let compareCheckbox = null;
-        if(this.props.allowCompare && allowReordering) {
-            let swipecheckboxstate = this.props.swipe || this.props.swipe === 0 ? 'checked' : 'unchecked';
+        if (this.props.allowCompare && allowReordering) {
+            const swipecheckboxstate = this.props.swipe || this.props.swipe === 0 ? 'checked' : 'unchecked';
             compareCheckbox = (
                 <div className="layertree-option">
                     <Icon icon={swipecheckboxstate} onClick={this.toggleSwipe} />
@@ -353,24 +363,24 @@ class LayerTree extends React.Component {
             );
         }
         let layerImportExpander = null;
-        if(this.props.allowImport) {
+        if (this.props.allowImport) {
             layerImportExpander = (
                 <div className="layertree-option" onClick={this.toggleImportLayers}>
                     <Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> <Message msgId="layertree.importlayer" />
                 </div>
             );
         }
-        let flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
-        let sortable = allowReordering && (ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true || flattenGroups === true);
+        const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
+        const sortable = allowReordering && (ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true || flattenGroups === true);
         return (
-            <div role="body" className="layertree-container-wrapper">
+            <div className="layertree-container-wrapper" role="body">
                 <div className="layertree-container">
                     <div className="layertree-tree"
-                        onTouchStart={ev => { ev.stopPropagation(); }}
-                        onTouchMove={ev => { ev.stopPropagation(); }}
+                        onContextMenuCapture={ev => {ev.stopPropagation(); ev.preventDefault(); return false; }}
                         onTouchEnd={ev => { ev.stopPropagation(); }}
-                        onContextMenuCapture={ev => {ev.stopPropagation(); ev.preventDefault(); return false; }}>
-                        <Sortable options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}} onChange={this.onSortChange}>
+                        onTouchMove={ev => { ev.stopPropagation(); }}
+                        onTouchStart={ev => { ev.stopPropagation(); }}>
+                        <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
                             {this.props.layers.map(this.renderLayerTree)}
                         </Sortable>
                     </div>
@@ -384,8 +394,8 @@ class LayerTree extends React.Component {
     }
     render() {
         let legendTooltip = null;
-        if(this.state.legendTooltip) {
-            let style = {
+        if (this.state.legendTooltip) {
+            const style = {
                 left: this.state.legendTooltip.x,
                 top: this.state.legendTooltip.y,
                 maxWidth: (window.innerWidth - this.state.legendTooltip.x - 2),
@@ -393,28 +403,28 @@ class LayerTree extends React.Component {
                 visibility: 'hidden'
             };
             legendTooltip = (
-                <img className="layertree-item-legend-tooltip" style={style} src={this.state.legendTooltip.img} onTouchStart={this.hideLegendTooltip} onLoad={this.legendTooltipLoaded}></img>
+                <img className="layertree-item-legend-tooltip" onLoad={this.legendTooltipLoaded} onTouchStart={this.hideLegendTooltip} src={this.state.legendTooltip.img} style={style} />
             );
         }
 
         let legendPrintIcon = null;
-        if(this.props.enableLegendPrint) {
-            let printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
-            legendPrintIcon = (<Icon title={printLegendTooltip} className="layertree-print-legend" icon="print" onClick={this.printLegend}/>);
+        if (this.props.enableLegendPrint) {
+            const printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
+            legendPrintIcon = (<Icon className="layertree-print-legend" icon="print" onClick={this.printLegend} title={printLegendTooltip}/>);
         }
         let visibleFilterIcon = null;
-        if(this.props.enableVisibleFilter) {
-            let visibleFilterTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.visiblefilter");
-            let classes = classnames({
+        if (this.props.enableVisibleFilter) {
+            const visibleFilterTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.visiblefilter");
+            const classes = classnames({
                 "layertree-visible-filter": true,
                 "layertree-visible-filter-active": this.state.filtervisiblelayers
             });
-            visibleFilterIcon = (<Icon title={visibleFilterTooltip} className={classes} icon="eye" onClick={ev => this.setState({filtervisiblelayers: !this.state.filtervisiblelayers})}/>);
+            visibleFilterIcon = (<Icon className={classes} icon="eye" onClick={() => this.setState({filtervisiblelayers: !this.state.filtervisiblelayers})} title={visibleFilterTooltip}/>);
         }
         let deleteAllLayersIcon = null;
-        if(ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true) {
-            let deleteAllLayersTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.deletealllayers");
-            deleteAllLayersIcon = (<Icon title={deleteAllLayersTooltip} className="layertree-delete-legend" icon="trash" onClick={this.deleteAllLayers}/>);
+        if (ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true) {
+            const deleteAllLayersTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.deletealllayers");
+            deleteAllLayersIcon = (<Icon className="layertree-delete-legend" icon="trash" onClick={this.deleteAllLayers} title={deleteAllLayersTooltip}/>);
         }
         let serviceInfoIcon = null;
         if(this.props.enableServiceInfo) {
@@ -422,7 +432,7 @@ class LayerTree extends React.Component {
         }
 
         let extraTitlebarContent = null;
-        if(legendPrintIcon || deleteAllLayersIcon || visibleFilterIcon || infoIcon) {
+        if (legendPrintIcon || deleteAllLayersIcon || visibleFilterIcon) {
             extraTitlebarContent = (
                 <span>
                     {legendPrintIcon}
@@ -433,52 +443,58 @@ class LayerTree extends React.Component {
             );
         }
 
-        let visibilities = [];
-        for(let layer of this.props.layers) {
-            if(layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
+        const visibilities = [];
+        for (const layer of this.props.layers) {
+            if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
                 visibilities.push(isEmpty(layer.sublayers) ? layer.visibility : this.getGroupVisibility(layer));
             }
         }
-        let vis = visibilities.reduce((sum, x) => sum + x, 0) / (visibilities.length || 1);
-        let visibilityCheckbox = this.props.showToggleAllLayersCheckbox ? (<Icon className="layertree-tree-visibility" icon={vis === 0 ? "unchecked" : vis === 1 ? "checked" : "tristate"} onClick={() => this.toggleLayerTreeVisibility(vis === 0)}/>) : null;
+        const vis = visibilities.reduce((sum, x) => sum + x, 0) / (visibilities.length || 1);
+        let visibilityIcon = "tristate";
+        if (vis === 0) {
+            visibilityIcon = "unchecked";
+        } else if (vis === 1) {
+            visibilityIcon = "checked";
+        }
+        const visibilityCheckbox = this.props.showToggleAllLayersCheckbox ? (<Icon className="layertree-tree-visibility" icon={visibilityIcon} onClick={() => this.toggleLayerTreeVisibility(vis === 0)}/>) : null;
 
         return (
             <div>
-                <SideBar id="LayerTree" width={this.state.sidebarwidth || this.props.width}
-                    title="appmenu.items.LayerTree" icon="layers"
-                    extraBeforeContent={visibilityCheckbox}
-                    onHide={this.hideLegendTooltip} extraTitlebarContent={extraTitlebarContent}>
+                <SideBar extraBeforeContent={visibilityCheckbox} extraTitlebarContent={extraTitlebarContent}
+                    icon="layers" id="LayerTree"
+                    onHide={this.hideLegendTooltip}
+                    title="appmenu.items.LayerTree" width={this.state.sidebarwidth || this.props.width}>
                     {() => ({
                         body: this.renderBody()
                     })}
                 </SideBar>
                 {legendTooltip}
-                <LayerInfoWindow windowSize={this.props.layerInfoWindowSize} bboxDependentLegend={this.props.bboxDependentLegend} />
+                <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} windowSize={this.props.layerInfoWindowSize} />
                 <ServiceInfoWindow windowSize={this.props.layerInfoWindowSize} />
             </div>
         );
     }
     legendTooltipLoaded = (ev) => {
-        if(ev.target.naturalWidth > 1) {
+        if (ev.target.naturalWidth > 1) {
             ev.target.style.visibility = 'visible';
         }
     }
     onSortChange = (order, sortable, ev) => {
-        let moved = JSON.parse(order[ev.newIndex]);
-        let layer = this.props.layers.find(layer => layer.uuid === moved.layer);
-        if(layer) {
+        const moved = JSON.parse(order[ev.newIndex]);
+        const layer = this.props.layers.find(l => l.uuid === moved.layer);
+        if (layer) {
             this.props.reorderLayer(layer, moved.path, ev.newIndex - ev.oldIndex);
         }
     }
     toggleImportLayers = () => {
-        let visible = !this.state.importvisible;
+        const visible = !this.state.importvisible;
         this.setState({importvisible: visible, sidebarwidth: visible ? '40em' : null});
     }
-    propagateOptions = (layer, options, path=null) => {
-        if(layer.sublayers) {
+    propagateOptions = (layer, options, path = null) => {
+        if (layer.sublayers) {
             layer.sublayers = layer.sublayers.map((sublayer, idx) => {
-                if(path === null || (!isEmpty(path) && path[0] == idx)) {
-                    let newsublayer = assign({}, sublayer, options);
+                if (path === null || (!isEmpty(path) && path[0] === idx)) {
+                    const newsublayer = assign({}, sublayer, options);
                     this.propagateOptions(newsublayer, options, path ? path.slice(1) : null);
                     return newsublayer;
                 } else {
@@ -493,7 +509,7 @@ class LayerTree extends React.Component {
     itemVisibilityToggled = (layer, grouppath, oldvisibility) => {
         let recurseDirection = null;
         // If item becomes visible, also make parents visible
-        if(this.props.groupTogglesSublayers) {
+        if (this.props.groupTogglesSublayers) {
             recurseDirection = !oldvisibility ? "both" : "children";
         } else {
             recurseDirection = !oldvisibility ? "parents" : null;
@@ -515,56 +531,55 @@ class LayerTree extends React.Component {
             }
         });
     }
-    hideLegendTooltip = (ev) => {
+    hideLegendTooltip = () => {
         this.setState({legendTooltip: undefined});
     }
     toggleMapTips = () => {
-        this.props.toggleMapTips(!this.props.mapTipsEnabled)
+        this.props.toggleMapTips(!this.props.mapTipsEnabled);
     }
     toggleSwipe = () => {
         this.props.setSwipe(this.props.swipe || this.props.swipe === 0 ? undefined : 50);
     }
     printLegend = () => {
         let body = '<p id="legendcontainerbody">';
-        let printLabel = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
+        const printLabel = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
         body += '<div id="print">' +
                 '<style type="text/css">@media print{ #print { display: none; }}</style>' +
                 '<button onClick="(function(){window.print();})()">' + printLabel + '</button>' +
                 '</div>';
         body += this.props.layers.map(layer => {
-            if(!layer.visibility) {
+            if (!layer.visibility) {
                 return "";
-            } else if(layer.legendUrl) {
+            } else if (layer.legendUrl) {
                 return layer.params.LAYERS ? layer.params.LAYERS.split(",").reverse().map(sublayer => {
-                    let request = LayerUtils.getLegendUrl(layer, {"name": sublayer}, this.props.mapScale, this.props.mapCrs);
+                    const request = LayerUtils.getLegendUrl(layer, {"name": sublayer}, this.props.mapScale, this.props.mapCrs);
                     return '<div><img src="' + request + '" /></div>';
                 }).join("\n") : "";
-            } else if(layer.color) {
+            } else if (layer.color) {
                 return '<div><span style="display: inline-block; width: 1em; height: 1em; box-shadow: inset 0 0 0 1000px ' + layer.color + '; margin: 0.25em; border: 1px solid black;">&nbsp;</span>' + (layer.title || layer.name) + '</div>';
             } else {
                 return "";
             }
         }).join("");
         body += "</p>";
-        let setLegendPrintContent = () => {
-            let container = this.legendPrintWindow.document.getElementById("legendcontainer");
-            if(container) {
+        const setLegendPrintContent = () => {
+            const container = this.legendPrintWindow.document.getElementById("legendcontainer");
+            if (container) {
                 container.innerHTML = body;
             } else {
                 this.legendPrintWindow.document.body.innerHTML = "Broken template. An element with id=legendcontainer must exist.";
             }
         };
 
-        if(this.legendPrintWindow && !this.legendPrintWindow.closed) {
-            let container = this.legendPrintWindow.document.getElementById("legendcontainer");
+        if (this.legendPrintWindow && !this.legendPrintWindow.closed) {
             setLegendPrintContent();
             this.legendPrintWindow.focus();
         } else {
-            let assetsPath = ConfigUtils.getConfigProp("assetsPath");
+            const assetsPath = ConfigUtils.getConfigProp("assetsPath");
             this.legendPrintWindow = window.open(assetsPath + "/templates/legendprint.html", "Legend", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes");
-            if(window.navigator.userAgent.indexOf('Trident/') > 0) {
+            if (window.navigator.userAgent.indexOf('Trident/') > 0) {
                 // IE...
-                let interval = setInterval(() => {
+                const interval = setInterval(() => {
                     if (this.legendPrintWindow.document.readyState === 'complete') {
                         setLegendPrintContent();
                         clearInterval(interval);
@@ -576,32 +591,32 @@ class LayerTree extends React.Component {
         }
     }
     deleteAllLayers = () => {
-        for(let layer of this.props.layers) {
-            if(layer.role === LayerRole.THEME) {
-                let sublayers = layer.sublayers || [];
-                for(let i = sublayers.length - 1; i >= 0; --i) {
+        for (const layer of this.props.layers) {
+            if (layer.role === LayerRole.THEME) {
+                const sublayers = layer.sublayers || [];
+                for (let i = sublayers.length - 1; i >= 0; --i) {
                     this.props.removeLayer(layer.id, [i]);
                 }
-            } else if(layer.role === LayerRole.USERLAYER) {
+            } else if (layer.role === LayerRole.USERLAYER) {
                 this.props.removeLayer(layer.id);
             }
         }
     }
     toggleLayerTreeVisibility = (visibile) => {
-        for(let layer of this.props.layers) {
-            if(layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
+        for (const layer of this.props.layers) {
+            if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
                 this.props.changeLayerProperty(layer.uuid, "visibility", visibile, [], this.props.groupTogglesSublayers ? "children" : null);
             }
         }
     }
     exportRedliningLayer = (layer) => {
-        let data = JSON.stringify({
+        const data = JSON.stringify({
             type: "FeatureCollection",
-	        features: layer.features.map(feature => ({...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.mapCrs, 'EPSG:4326')}))
+            features: layer.features.map(feature => ({...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.mapCrs, 'EPSG:4326')}))
         }, null, ' ');
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
     }
-};
+}
 
 const selector = (state) => ({
     mobile: state.browser ? state.browser.mobile : false,

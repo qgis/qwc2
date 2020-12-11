@@ -9,14 +9,14 @@ const Proj4js = require('proj4').default;
 const assign = require('object-assign');
 const ol = require('openlayers');
 
-let crsLabels = {
+const crsLabels = {
     "EPSG:4326": "WGS 84",
     "EPSG:3857": "WGS 84 / Pseudo Mercator"
 };
 
-var CoordinatesUtils = {
+const CoordinatesUtils = {
     setCrsLabels(labels) {
-        assign(crsLabels, labels)
+        assign(crsLabels, labels);
     },
     getCrsLabels() {
         return crsLabels;
@@ -26,21 +26,21 @@ var CoordinatesUtils = {
         return proj.units || 'degrees';
     },
     getAxisOrder: function(projection) {
-        const axis = ol.proj.get(projection).getAxisOrientation()
-        return axis || 'enu'
+        const axis = ol.proj.get(projection).getAxisOrientation();
+        return axis || 'enu';
     },
     reproject: function(point, source, dest) {
-        if(source === dest) {
+        if (source === dest) {
             return [...point];
         }
         const sourceProj = Proj4js.defs(source) ? new Proj4js.Proj(source) : null;
         const destProj = Proj4js.defs(dest) ? new Proj4js.Proj(dest) : null;
         if (sourceProj && destProj) {
-            let p = Array.isArray(point) ? Proj4js.toPoint(point) : Proj4js.toPoint([point.x, point.y]);
+            const p = Array.isArray(point) ? Proj4js.toPoint(point) : Proj4js.toPoint([point.x, point.y]);
             let transformed = null;
             try {
                 transformed = Proj4js.transform(sourceProj, destProj, p);
-            } catch(e) {
+            } catch (e) {
                 transformed = {x: 0, y: 0};
             }
             return [transformed.x, transformed.y];
@@ -57,8 +57,8 @@ var CoordinatesUtils = {
      * @return {array} [minx, miny, maxx, maxy]
      */
     reprojectBbox: function(bbox, source, dest) {
-        let sw = CoordinatesUtils.reproject([bbox[0], bbox[1]], source, dest);
-        let ne = CoordinatesUtils.reproject([bbox[2], bbox[3]], source, dest);
+        const sw = CoordinatesUtils.reproject([bbox[0], bbox[1]], source, dest);
+        const ne = CoordinatesUtils.reproject([bbox[2], bbox[3]], source, dest);
         return [...sw, ...ne];
     },
     getCompatibleSRS(srs, allowedSRS) {
@@ -81,26 +81,25 @@ var CoordinatesUtils = {
         return allowedSRS[CoordinatesUtils.getCompatibleSRS(srs, allowedSRS)];
     },
     getAvailableCRS: function() {
-        let crsList = {};
-        for (let a in Proj4js.defs) {
-            if (Proj4js.defs.hasOwnProperty(a)) {
+        const crsList = {};
+        for (const a in Proj4js.defs) {
+            if (Object.prototype.hasOwnProperty.call(Proj4js.defs, a)) {
                 crsList[a] = {label: crsLabels[a] || a};
             }
         }
         return crsList;
     },
     calculateAzimuth: function(p1, p2, pj) {
-        var p1proj = CoordinatesUtils.reproject(p1, pj, 'EPSG:4326');
-        var p2proj = CoordinatesUtils.reproject(p2, pj, 'EPSG:4326');
-        var lon1 = p1proj[0] * Math.PI / 180.0;
-        var lat1 = p1proj[1] * Math.PI / 180.0;
-        var lon2 = p2proj[0] * Math.PI / 180.0;
-        var lat2 = p2proj[1] * Math.PI / 180.0;
-        var dLon = lon2 - lon1;
-        var y = Math.sin(dLon) * Math.cos(lat2);
-        var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-
-        var azimuth = (((Math.atan2(y, x) * 180.0 / Math.PI) + 360 ) % 360 );
+        const p1proj = CoordinatesUtils.reproject(p1, pj, 'EPSG:4326');
+        const p2proj = CoordinatesUtils.reproject(p2, pj, 'EPSG:4326');
+        const lon1 = p1proj[0] * Math.PI / 180.0;
+        const lat1 = p1proj[1] * Math.PI / 180.0;
+        const lon2 = p2proj[0] * Math.PI / 180.0;
+        const lat2 = p2proj[1] * Math.PI / 180.0;
+        const dLon = lon2 - lon1;
+        const y = Math.sin(dLon) * Math.cos(lat2);
+        const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+        const azimuth = (((Math.atan2(y, x) * 180.0 / Math.PI) + 360 ) % 360 );
 
         return azimuth;
     },
@@ -141,7 +140,7 @@ var CoordinatesUtils = {
         }
 
         let rotatedAngle; let x; let y;
-        let points = [[]];
+        const points = [[]];
         for (let i = 0; i < sides; i++) {
             rotatedAngle = angle + (i * 2 * Math.PI / sides);
             x = center[0] + (radius * Math.cos(rotatedAngle));

@@ -14,23 +14,22 @@ const Message = require('../components/I18N/Message');
 const {LayerRole} = require('../actions/layers');
 const {sendIdentifyRequest} = require('../actions/identify');
 const {changeSelectionState} = require('../actions/selection');
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const {setCurrentTask} = require("../actions/task");
 const {TaskBar} = require('../components/TaskBar');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 
 class IdentifyRegion extends React.Component {
     static propTypes = {
-        selection: PropTypes.object,
         changeSelectionState: PropTypes.func,
-        map: PropTypes.object,
-        theme: PropTypes.object,
         layers: PropTypes.array,
+        map: PropTypes.object,
+        selection: PropTypes.object,
+        sendRequest: PropTypes.func,
         setCurrentTask: PropTypes.func,
-        sendRequest: PropTypes.func
+        theme: PropTypes.object
     }
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.selection.polygon && this.props.selection !== prevProps.selection) {
+        if (this.props.selection.polygon && this.props.selection !== prevProps.selection) {
             this.getFeatures(this.props.selection.polygon);
         }
     }
@@ -49,7 +48,7 @@ class IdentifyRegion extends React.Component {
     }
     render() {
         return (
-            <TaskBar task="IdentifyRegion" onShow={this.onShow} onHide={this.onHide}>
+            <TaskBar onHide={this.onHide} onShow={this.onShow} task="IdentifyRegion">
                 {() => ({
                     body: this.renderBody()
                 })}
@@ -57,29 +56,29 @@ class IdentifyRegion extends React.Component {
         );
     }
     getFeatures = (poly) => {
-        let queryLayers = this.props.layers.reduce((accum, layer) => {
+        const queryLayers = this.props.layers.reduce((accum, layer) => {
             return layer.role === LayerRole.THEME ? accum.concat(layer.queryLayers) : accum;
         }, []).join(",");
-        if(poly.length < 1 || !queryLayers) {
+        if (poly.length < 1 || !queryLayers) {
             return;
         }
         this.props.changeSelectionState({reset: true});
-        let layer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
-        let center = [0, 0];
-        for(let i = 0; i < poly.length; ++i) {
+        const layer = this.props.layers.find(l => l.role === LayerRole.THEME);
+        const center = [0, 0];
+        for (let i = 0; i < poly.length; ++i) {
             center[0] += poly[i][0];
             center[1] += poly[i][1];
         }
         center[0] /= poly.length;
         center[1] /= poly.length;
-        let geometry = {
-            "type": "Polygon",
-            "coordinates": [poly]
+        const geometry = {
+            type: "Polygon",
+            coordinates: [poly]
         };
-        let filter = stringify(geometry);
+        const filter = stringify(geometry);
         this.props.sendRequest(IdentifyUtils.buildFilterRequest(layer, queryLayers, filter, this.props.map, {}));
     }
-};
+}
 
 const selector = (state) => ({
     selection: state.selection,
@@ -97,4 +96,4 @@ module.exports = {
     reducers: {
         selection: require('../reducers/selection')
     }
-}
+};

@@ -13,7 +13,7 @@ const LocaleUtils = {
         return messages ? messages[msgId] || msgId : msgId;
     },
     toLocaleFixed(number, digits) {
-        if(ConfigUtils.getConfigProp("localeAwareNumbers")) {
+        if (ConfigUtils.getConfigProp("localeAwareNumbers")) {
             return number.toLocaleString(LocaleUtils.getUserLocale(), { minimumFractionDigits: digits, maximumFractionDigits: digits });
         } else {
             return number.toFixed(digits);

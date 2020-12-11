@@ -73,7 +73,8 @@ function changeZoomLevel(zoomLvl, mapStateSource) {
 function panTo(pos, crs) {
     return {
         type: PAN_TO,
-        pos
+        pos,
+        crs
     };
 }
 
@@ -91,7 +92,7 @@ function zoomToPoint(pos, zoom, crs) {
         pos,
         zoom,
         crs
-    }
+    };
 }
 
 function changeRotation(rotation) {
@@ -105,7 +106,7 @@ function toggleMapTips(active) {
     return {
         type: TOGGLE_MAPTIPS,
         active: active
-    }
+    };
 }
 
 function setTopbarHeight(height) {

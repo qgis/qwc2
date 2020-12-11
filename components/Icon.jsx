@@ -15,12 +15,12 @@ require('./style/Icon.css');
 
 class Icon extends React.Component {
     static propTypes = {
-        icon: PropTypes.string,
         className: PropTypes.string,
-        title: PropTypes.string,
-        titlemsgid: PropTypes.string,
+        icon: PropTypes.string,
         onClick: PropTypes.func,
-        size: PropTypes.string
+        size: PropTypes.string,
+        title: PropTypes.string,
+        titlemsgid: PropTypes.string
     }
     static defaultProps = {
         className: "",
@@ -30,33 +30,29 @@ class Icon extends React.Component {
         messages: PropTypes.object
     }
     render() {
-        let classes = classnames({
-            "icon": true,
+        const classes = classnames({
+            icon: true,
             ["icon-" + this.props.icon]: true,
             ["icon_" + this.props.size]: !!this.props.size,
             [this.props.className]: !!this.props.className,
-            "icon_clickable": !!this.props.onClick
+            icon_clickable: !!this.props.onClick
         });
         let title = this.props.title;
-        if(this.props.titlemsgid) {
+        if (this.props.titlemsgid) {
             title = LocaleUtils.getMessageById(this.context.messages, this.props.titlemsgid);
         }
-        if(this.props.icon.startsWith(":/")) {
-            let assetsPath = ConfigUtils.getConfigProp("assetsPath");
-            let src = assetsPath + this.props.icon.substr(1);
+        if (this.props.icon.startsWith(":/")) {
+            const assetsPath = ConfigUtils.getConfigProp("assetsPath");
+            const src = assetsPath + this.props.icon.substr(1);
             return (
-                <img src={src} alt={title} title={title}
-                    className={classes} onClick={this.props.onClick}
-                />
+                <img alt={title} className={classes} onClick={this.props.onClick} src={src} title={title} />
             );
         } else {
             return (
-                <span title={title}
-                    className={classes} onClick={this.props.onClick}
-                ></span>
+                <span className={classes} onClick={this.props.onClick} title={title} />
             );
         }
     }
-};
+}
 
 module.exports = Icon;

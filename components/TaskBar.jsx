@@ -9,37 +9,37 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const {setCurrentTask,setCurrentTaskBlocked} = require("../actions/task");
-const Icon = require('./Icon');
+const {setCurrentTask, setCurrentTaskBlocked} = require("../actions/task");
 const {MessageBar} = require('./MessageBar');
 
 class TaskBar extends React.Component {
     static propTypes = {
-        task: PropTypes.string.isRequired,
+        children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         currentTask: PropTypes.object,
-        onShow: PropTypes.func,
         onHide: PropTypes.func,
+        onShow: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
+        task: PropTypes.string.isRequired,
         unblockOnClose: PropTypes.bool
     }
     static defaultProps = {
-        onShow: (mode) => {},
+        onShow: () => {},
         onHide: () => {},
         unblockOnClose: false
     }
     componentDidUpdate(prevProps, prevState) {
-        let newVisible = this.props.currentTask && this.props.currentTask.id === this.props.task;
-        let oldVisible = prevProps.currentTask && prevProps.currentTask.id === this.props.task;
-        if(newVisible && (!oldVisible || this.props.currentTask.mode !== prevProps.currentTask.mode)) {
+        const newVisible = this.props.currentTask && this.props.currentTask.id === this.props.task;
+        const oldVisible = prevProps.currentTask && prevProps.currentTask.id === this.props.task;
+        if (newVisible && (!oldVisible || this.props.currentTask.mode !== prevProps.currentTask.mode)) {
             this.props.onShow(this.props.currentTask.mode);
-        } else if(!newVisible && oldVisible) {
+        } else if (!newVisible && oldVisible) {
             this.props.onHide();
         }
     }
     closeClicked = () => {
-        if(this.props.currentTask.id === this.props.task) {
-            if(this.props.unblockOnClose) {
+        if (this.props.currentTask.id === this.props.task) {
+            if (this.props.unblockOnClose) {
                 this.props.setCurrentTaskBlocked(false);
             }
             this.props.setCurrentTask(null);
@@ -49,16 +49,16 @@ class TaskBar extends React.Component {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
     }
     render() {
-        if(this.props.currentTask.id !== this.props.task) {
+        if (this.props.currentTask.id !== this.props.task) {
             return null;
         }
         return (
-            <MessageBar onHide={this.closeClicked} className={this.props.task}>
+            <MessageBar className={this.props.task} onHide={this.closeClicked}>
                 {this.props.children}
             </MessageBar>
         );
     }
-};
+}
 
 const selector = (state) => ({
     currentTask: state.task
@@ -72,4 +72,4 @@ module.exports = {
     reducers: {
         task: require('../reducers/task')
     }
-}
+};

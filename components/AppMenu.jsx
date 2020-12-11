@@ -18,15 +18,16 @@ require('./style/AppMenu.css');
 
 class AppMenu extends React.Component {
     static propTypes = {
-        buttonContents: PropTypes.object,
-        menuItems: PropTypes.array,
         appMenuClearsTask: PropTypes.bool,
+        buttonContents: PropTypes.object,
         currentTaskBlocked: PropTypes.bool,
-        setCurrentTask: PropTypes.func,
         currentTheme: PropTypes.object,
-        showOnStartup: PropTypes.bool,
+        keepMenuOpen: PropTypes.bool,
+        menuItems: PropTypes.array,
         onMenuToggled: PropTypes.func,
-        keepMenuOpen: PropTypes.bool
+        openExternalUrl: PropTypes.func,
+        setCurrentTask: PropTypes.func,
+        showOnStartup: PropTypes.bool
     }
     static defaultProps = {
         buttonContents: null,
@@ -43,15 +44,15 @@ class AppMenu extends React.Component {
         this.menuEl = null;
     }
     componentDidMount() {
-        if(this.props.showOnStartup) {
+        if (this.props.showOnStartup) {
             this.toggleMenu();
         }
     }
     toggleMenu = () => {
-        if(!this.state.menuVisible && this.props.appMenuClearsTask) {
+        if (!this.state.menuVisible && this.props.appMenuClearsTask) {
             this.props.setCurrentTask(null);
         }
-        if(!this.state.menuVisible) {
+        if (!this.state.menuVisible) {
             document.addEventListener('click', this.checkCloseMenu);
         } else {
             document.removeEventListener('click', this.checkCloseMenu);
@@ -60,47 +61,47 @@ class AppMenu extends React.Component {
         this.setState({ menuVisible: !this.state.menuVisible, submenusVisible: [] });
     }
     checkCloseMenu = (ev) => {
-        if(this.menuEl && !this.menuEl.contains(ev.target) && !this.props.keepMenuOpen) {
+        if (this.menuEl && !this.menuEl.contains(ev.target) && !this.props.keepMenuOpen) {
             this.toggleMenu();
         }
     }
     onSubmenuClicked = (key, level) => {
-        let a = this.state.submenusVisible[level] === key ? [] : [key];
+        const a = this.state.submenusVisible[level] === key ? [] : [key];
         this.setState({ submenusVisible: this.state.submenusVisible.slice(0, level).concat(a) });
     }
     onMenuitemClicked = (item) => {
-        if(!this.props.keepMenuOpen) {
+        if (!this.props.keepMenuOpen) {
             this.toggleMenu();
         }
-        if(item.url) {
+        if (item.url) {
             this.props.openExternalUrl(item.url, item.target, "appmenu.items." + item.key);
         } else {
             this.props.setCurrentTask(item.task || item.key, item.mode, item.mapClickAction || (item.identifyEnabled ? "identify" : null));
         }
     }
     renderMenuItems = (items, level) => {
-        if(items) {
+        if (items) {
             return items.map(item => {
-                if(item.themeWhitelist && !item.themeWhitelist.includes(this.props.currentTheme.title)) {
+                if (item.themeWhitelist && !item.themeWhitelist.includes(this.props.currentTheme.title)) {
                     return null;
                 }
-                if(item.subitems) {
+                if (item.subitems) {
                     return (
-                        <li key={item.key}
-                            className={this.state.submenusVisible[level] === item.key ? "expanded" : ""}
-                            onClick={ev => this.onSubmenuClicked(item.key, level)}
+                        <li className={this.state.submenusVisible[level] === item.key ? "expanded" : ""}
+                            key={item.key}
+                            onClick={() => this.onSubmenuClicked(item.key, level)}
                         >
                             <Icon icon={item.icon} size="xlarge"/>
                             <Message msgId={"appmenu.items." + item.key} />
                             {item.title}
                             <ul>
-                            {this.renderMenuItems(item.subitems, level + 1)}
+                                {this.renderMenuItems(item.subitems, level + 1)}
                             </ul>
                         </li>
                     );
                 } else {
                     return (
-                        <li className="appmenu-leaf" key={item.key + (item.mode || "")} onClick={ev => this.onMenuitemClicked(item)} >
+                        <li className="appmenu-leaf" key={item.key + (item.mode || "")} onClick={() => this.onMenuitemClicked(item)} >
                             <Icon icon={item.icon} size="xlarge"/>
                             <span className="appmenu-leaf-label">
                                 <Message msgId={"appmenu.items." + item.key} />
@@ -117,15 +118,21 @@ class AppMenu extends React.Component {
         }
     }
     render() {
-        return(
-            <div className={"AppMenu " + (this.props.currentTaskBlocked ? "appmenu-blocked" : this.state.menuVisible ? "appmenu-visible" : "")}
-                ref={el => this.menuEl = el} onClick={ev => {}}
-                onTouchStart={ev => ev.stopPropagation()} onTouchMove={ev => ev.stopPropagation()}  onTouchEnd={ev => ev.stopPropagation()}
-                >
+        let className = "";
+        if (this.props.currentTaskBlocked) {
+            className = "appmenu-blocked";
+        } else if (this.state.menuVisible) {
+            className = "appmenu-visible";
+        }
+        return (
+            <div className={"AppMenu " + className}
+                onTouchEnd={ev => ev.stopPropagation()}
+                onTouchMove={ev => ev.stopPropagation()} onTouchStart={ev => ev.stopPropagation()}  ref={el => { this.menuEl = el; }}
+            >
                 <div className="appmenu-button-container" onMouseDown={this.toggleMenu}>
                     {this.props.buttonContents}
                 </div>
-                <Swipeable onSwipedUp={this.toggleMenu} preventDefaultTouchmoveEvent={true}>
+                <Swipeable onSwipedUp={this.toggleMenu} preventDefaultTouchmoveEvent>
                     <div className="appmenu-menu-container">
                         <ul className="appmenu-menu">
                             {this.renderMenuItems(this.props.menuItems, 0)}
@@ -135,7 +142,7 @@ class AppMenu extends React.Component {
             </div>
         );
     }
-};
+}
 
 module.exports = connect((state) => ({
     currentTaskBlocked: state.task && state.task.blocked || false,

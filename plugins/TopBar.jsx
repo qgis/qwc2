@@ -24,21 +24,21 @@ require('./style/TopBar.css');
 
 class TopBar extends React.Component {
     static propTypes = {
-        mobile: PropTypes.bool,
-        menuItems: PropTypes.array,
-        toolbarItems: PropTypes.array,
-        components: PropTypes.object,
-        fullscreen: PropTypes.bool,
-        toggleFullscreen: PropTypes.func,
-        restoreDefaultTheme: PropTypes.func,
-        openExternalUrl: PropTypes.func,
-        logoFormat: PropTypes.string,
-        searchOptions: PropTypes.object,
         appMenuClearsTask: PropTypes.bool,
         appMenuVisibleOnStartup: PropTypes.bool,
+        components: PropTypes.object,
+        fullscreen: PropTypes.bool,
+        logoFormat: PropTypes.string,
         logoSrc: PropTypes.string,
         logoUrl: PropTypes.string,
-        setTopbarHeight: PropTypes.func
+        menuItems: PropTypes.array,
+        mobile: PropTypes.bool,
+        openExternalUrl: PropTypes.func,
+        restoreDefaultTheme: PropTypes.func,
+        searchOptions: PropTypes.object,
+        setTopbarHeight: PropTypes.func,
+        toggleFullscreen: PropTypes.func,
+        toolbarItems: PropTypes.array
     }
     static defaultProps = {
         searchOptions: {},
@@ -49,8 +49,8 @@ class TopBar extends React.Component {
     render() {
         let buttonContents;
         let logo;
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
-        if(this.props.mobile) {
+        const assetsPath = ConfigUtils.getConfigProp("assetsPath");
+        if (this.props.mobile) {
             buttonContents = (
                 <span className="appmenu-button">
                     <Icon className="appmenu-icon" icon="menu-hamburger"/>
@@ -67,62 +67,64 @@ class TopBar extends React.Component {
             logo = assetsPath + "/img/logo."  + this.props.logoFormat;
         }
 
-        let classes = classnames({
-            "mobile": this.props.mobile,
-            "fullscreen": this.props.fullscreen
+        const classes = classnames({
+            mobile: this.props.mobile,
+            fullscreen: this.props.fullscreen
         });
         let logoEl = (<img className="logo" src={this.props.logoSrc || logo} />);
         if (this.props.logoUrl) {
-            logoEl = (<a target="_blank" href={this.props.logoUrl}>{logoEl}</a>);
+            logoEl = (<a href={this.props.logoUrl} rel="noreferrer" target="_blank">{logoEl}</a>);
         }
         // Convert legacy minScale option to minScaleDenom
-        let searchOptions = assign({}, this.props.searchOptions);
+        const searchOptions = assign({}, this.props.searchOptions);
         searchOptions.minScaleDenom = searchOptions.minScaleDenom || searchOptions.minScale;
         delete searchOptions.minScale;
         return (
             <Swipeable
-                onSwipedUp={() => this.props.toggleFullscreen(true)}
                 onSwipedDown={() => this.props.toggleFullscreen(false)}
-                preventDefaultTouchmoveEvent={true}>
-                <div id="TopBar" ref={this.storeHeight} className={classes}>
+                onSwipedUp={() => this.props.toggleFullscreen(true)}
+                preventDefaultTouchmoveEvent>
+                <div className={classes} id="TopBar" ref={this.storeHeight}>
                     {logoEl}
                     <div className="center-span">
                         <this.props.components.Search searchOptions={searchOptions}/>
                         <this.props.components.Toolbar toolbarItems={this.props.toolbarItems} />
                     </div>
                     <this.props.components.AppMenu
-                        menuItems={this.props.menuItems} buttonContents={buttonContents}
+                        appMenuClearsTask={this.props.appMenuClearsTask} buttonContents={buttonContents}
+                        menuItems={this.props.menuItems}
                         openExternalUrl={this.props.openExternalUrl}
-                        appMenuClearsTask={this.props.appMenuClearsTask}
                         showOnStartup={this.props.appMenuVisibleOnStartup} />
                     <this.props.components.FullscreenSwitcher />
                 </div>
             </Swipeable>
-         );
-     }
-     triggerFullscreen = () => {
-         this.props.toggleFullscreen(true);
-     }
-     storeHeight = (el) => {
-         if(el) {
-             this.props.setTopbarHeight(el.clientHeight);
-         }
-     }
-};
-
-module.exports = (components) => { return {
-    TopBarPlugin: connect((state) => ({
-        mobile: state.browser ? state.browser.mobile : false,
-        fullscreen: state.display && state.display.fullscreen,
-        components: components
-    }), {
-        toggleFullscreen: toggleFullscreen,
-        restoreDefaultTheme: restoreDefaultTheme,
-        openExternalUrl: openExternalUrl,
-        setTopbarHeight: setTopbarHeight
-    })(TopBar),
-    reducers: {
-        display: require("../reducers/display"),
-        search: require("../reducers/search")
+        );
     }
-}};
+    triggerFullscreen = () => {
+        this.props.toggleFullscreen(true);
+    }
+    storeHeight = (el) => {
+        if (el) {
+            this.props.setTopbarHeight(el.clientHeight);
+        }
+    }
+}
+
+module.exports = (components) => {
+    return {
+        TopBarPlugin: connect((state) => ({
+            mobile: state.browser ? state.browser.mobile : false,
+            fullscreen: state.display && state.display.fullscreen,
+            components: components
+        }), {
+            toggleFullscreen: toggleFullscreen,
+            restoreDefaultTheme: restoreDefaultTheme,
+            openExternalUrl: openExternalUrl,
+            setTopbarHeight: setTopbarHeight
+        })(TopBar),
+        reducers: {
+            display: require("../reducers/display"),
+            search: require("../reducers/search")
+        }
+    };
+};

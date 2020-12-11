@@ -15,9 +15,9 @@ class OlLocate extends ol.Object {
         super();
         this.set("state", "DISABLED");
         this.map = map;
-        let defOptions = {
-            drawCircle: true,// draw accuracy circle
-            follow: true,// follow with zoom and pan the user's location
+        const defOptions = {
+            drawCircle: true, // draw accuracy circle
+            follow: true, // follow with zoom and pan the user's location
             stopFollowingOnDrag: false, // if follow is true, stop following when map is dragged (deprecated)
             // if true locate control remains active on click even if the user's location is in view.
             // clicking control will just pan to location not implemented
@@ -126,7 +126,7 @@ class OlLocate extends ol.Object {
         alert(err.message);
     }
     mapClick = (evt) => {
-        let feature = this.map.forEachFeatureAtPixel(evt.pixel, (ft) => ft);
+        const feature = this.map.forEachFeatureAtPixel(evt.pixel, (ft) => ft);
         if (feature && feature.get('id') === '_locate-pos' && this.popup.hidden) {
             this._updatePopUpCnt();
         } else if (!this.popup.hidden ) {
@@ -141,16 +141,16 @@ class OlLocate extends ol.Object {
         this.geolocate.setProjection(projection);
     }
     _updatePosFt = () => {
-        let state = this.get("state");
-        let nState = (this.follow) ? "FOLLOWING" : "ENABLED";
+        const state = this.get("state");
+        const nState = (this.follow) ? "FOLLOWING" : "ENABLED";
         if (nState !== state) {
             this.set("state", nState);
         }
-        let p = this.geolocate.getPosition();
+        const p = this.geolocate.getPosition();
         this.p = p;
-        let point = new ol.geom.Point(p);
+        const point = new ol.geom.Point(p);
         if (this.options.drawCircle) {
-            let accuracy = new ol.geom.Circle(point.getCoordinates(), this.geolocate.getAccuracy());
+            const accuracy = new ol.geom.Circle(point.getCoordinates(), this.geolocate.getAccuracy());
             this.posFt.setGeometry(new ol.geom.GeometryCollection([point, accuracy]));
         } else {
             this.posFt.setGeometry(new ol.geom.GeometryCollection([point]));
@@ -176,7 +176,7 @@ class OlLocate extends ol.Object {
             distance = Math.round(this.geolocate.getAccuracy() * 3.2808399);
             unit = this.options.strings.feetUnit;
         }
-        let cnt = this.options.strings.popup.replace("{distance}", distance);
+        const cnt = this.options.strings.popup.replace("{distance}", distance);
         this.popCnt.innerHTML = cnt.replace("{unit}", unit);
         this.overlay.setPosition(this.posFt.getGeometry().getGeometries()[0].getCoordinates());
         this.popup.hidden = false;
@@ -192,6 +192,6 @@ class OlLocate extends ol.Object {
             stroke: new ol.style.Stroke({color: 'rgba(19,106,236,1)', width: 2})
         });
     }
-};
+}
 
 module.exports = OlLocate;

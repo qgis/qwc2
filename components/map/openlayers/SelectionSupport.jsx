@@ -7,21 +7,20 @@
  */
 
 const React = require('react');
-const assign = require('object-assign');
 const PropTypes = require('prop-types');
 const ol = require('openlayers');
 const FeatureStyles = require('./FeatureStyles');
 
 const drawStyle = {
-    "circleRadius": 0
+    circleRadius: 0
 };
 
 class SelectionSupport extends React.Component {
     static propTypes = {
+        changeSelectionState: PropTypes.func,
         map: PropTypes.object,
         projection: PropTypes.string,
-        selection: PropTypes.object,
-        changeSelectionState: PropTypes.func
+        selection: PropTypes.object
     }
     static defaultProps = {
         selection: {}
@@ -34,7 +33,7 @@ class SelectionSupport extends React.Component {
         if (!this.props.selection.geomType) {
             this.removeDrawInteraction();
         }
-        if(this.props.selection.reset) {
+        if (this.props.selection.reset) {
             this.removeDrawInteraction();
             this.props.changeSelectionState({
                 geomType: prevProps.selection.geomType,
@@ -52,8 +51,8 @@ class SelectionSupport extends React.Component {
             this.removeDrawInteraction();
         }
         // create a layer to draw on
-        let source = new ol.source.Vector();
-        let vector = new ol.layer.Vector({
+        const source = new ol.source.Vector();
+        const vector = new ol.layer.Vector({
             source: source,
             zIndex: 1000000,
             style: feature => FeatureStyles[newProps.selection.style](feature, newProps.selection.styleOptions)
@@ -62,11 +61,11 @@ class SelectionSupport extends React.Component {
         this.props.map.addLayer(vector);
 
         // create an interaction to draw with
-        let draw = new ol.interaction.Draw({
+        const draw = new ol.interaction.Draw({
             source: source,
             condition: event => event.pointerEvent.buttons === 1,
             type: newProps.selection.geomType,
-            style: feature => FeatureStyles['default'](feature, drawStyle)
+            style: feature => FeatureStyles.default(feature, drawStyle)
         });
 
         draw.on('drawstart', (evt) => {
@@ -76,7 +75,7 @@ class SelectionSupport extends React.Component {
             // clear previous sketches
             source.clear();
         }, this);
-        draw.on('drawend', (evt) => {
+        draw.on('drawend', () => {
             this.updateSelectionState();
         }, this);
 
@@ -85,7 +84,7 @@ class SelectionSupport extends React.Component {
         this.selectionLayer = vector;
         this.setDoubleClickZoomEnabled(false);
 
-        if(newProps.selection.cursor) {
+        if (newProps.selection.cursor) {
             this.props.map.getViewport().style.cursor = newProps.selection.cursor;
         }
     }
@@ -95,18 +94,18 @@ class SelectionSupport extends React.Component {
             this.drawInteraction = null;
             this.props.map.removeLayer(this.selectionLayer);
             this.sketchFeature = null;
-            //Delay execution of activation of double click zoom function
+            // Delay execution of activation of double click zoom function
             setTimeout(() => this.setDoubleClickZoomEnabled(true), 251);
         }
         this.props.map.getViewport().style.cursor = '';
     }
     updateSelectionState = () => {
-        if(!this.sketchFeature) {
+        if (!this.sketchFeature) {
             return;
         }
-        var sketchCoords = this.sketchFeature.getGeometry().getCoordinates();
+        const sketchCoords = this.sketchFeature.getGeometry().getCoordinates();
 
-        let newSelectionState = {...this.props.selection,
+        const newSelectionState = {...this.props.selection,
             point: this.props.selection.geomType === 'Point' ?
                 [sketchCoords[0], sketchCoords[1]] : null,
             line: this.props.selection.geomType === 'LineString' ?
@@ -117,15 +116,15 @@ class SelectionSupport extends React.Component {
         this.props.changeSelectionState(newSelectionState);
     }
     setDoubleClickZoomEnabled = (enabled) => {
-        let interactions = this.props.map.getInteractions();
+        const interactions = this.props.map.getInteractions();
         for (let i = 0; i < interactions.getLength(); i++) {
-            let interaction = interactions.item(i);
+            const interaction = interactions.item(i);
             if (interaction instanceof ol.interaction.DoubleClickZoom) {
                 interaction.setActive(enabled);
                 break;
             }
         }
     }
-};
+}
 
 module.exports = SelectionSupport;

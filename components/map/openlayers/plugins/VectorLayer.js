@@ -7,34 +7,33 @@
  */
 
 const ol = require('openlayers');
-const isEqual = require('lodash.isequal');
 const FeatureStyles = require('../FeatureStyles');
 
-let VectorLayer = {
-    create: (options, map) => {
-        let source = new ol.source.Vector();
+const VectorLayer = {
+    create: (options) => {
+        const source = new ol.source.Vector();
         const format = new ol.format.GeoJSON();
 
-        let features = (options.features || []).reduce((collection, feature) => {
-            let featureObject = format.readFeatures({...feature, type: "Feature"});
+        const features = (options.features || []).reduce((collection, feature) => {
+            const featureObject = format.readFeatures({...feature, type: "Feature"});
             featureObject.forEach(f => {
-                if(feature.crs && feature.crs !== options.srs) {
+                if (feature.crs && feature.crs !== options.srs) {
                     f.getGeometry().transform(feature.crs, options.srs);
                 }
-                if(feature.styleName) {
+                if (feature.styleName) {
                     f.setStyle(FeatureStyles[feature.styleName](f, feature.styleOptions || {}));
                 }
             });
             return collection.concat(featureObject);
         }, []);
         source.addFeatures(features);
-        let vectorLayer = new ol.layer.Vector({
+        const vectorLayer = new ol.layer.Vector({
             msId: options.id,
             source: source,
             zIndex: options.zIndex,
             style: feature => {
-                let styleName = options.styleName || 'default';
-                let styleOptions = options.styleOptions || {};
+                const styleName = options.styleName || 'default';
+                const styleOptions = options.styleOptions || {};
                 return FeatureStyles[styleName](feature, styleOptions);
             }
         });
@@ -48,58 +47,58 @@ let VectorLayer = {
                 f.getGeometry().transform(oldCrs, newCrs);
             });
         }
-        if(newOptions.styleName !== oldOptions.styleName || newOptions.styleOptions !== oldOptions.styleOptions) {
+        if (newOptions.styleName !== oldOptions.styleName || newOptions.styleOptions !== oldOptions.styleOptions) {
             layer.setStyle(feature => {
-                let styleName = newOptions.styleName || 'default';
-                let styleOptions = newOptions.styleOptions || {};
+                const styleName = newOptions.styleName || 'default';
+                const styleOptions = newOptions.styleOptions || {};
                 return FeatureStyles[styleName](feature, styleOptions);
             });
         }
-        if(newOptions.features !== oldOptions.features) {
+        if (newOptions.features !== oldOptions.features) {
             const format = new ol.format.GeoJSON();
-            let source = layer.getSource();
+            const source = layer.getSource();
 
-            let oldFeaturesMap = (oldOptions.features || []).reduce((res, f) => {
+            const oldFeaturesMap = (oldOptions.features || []).reduce((res, f) => {
                 res[f.id] = f; return res;
             }, {});
-            let newIds = new Set(newOptions.features.map(f => f.id));
-            let removed = Object.keys(oldFeaturesMap).filter(id => !newIds.has(id));
+            const newIds = new Set(newOptions.features.map(f => f.id));
+            const removed = Object.keys(oldFeaturesMap).filter(id => !newIds.has(id));
 
             // Remove removed features
-            for(let id of removed) {
-                let feature = source.getFeatureById(id);
-                if(feature) {
+            for (const id of removed) {
+                const feature = source.getFeatureById(id);
+                if (feature) {
                     source.removeFeature(feature);
                 }
             }
 
             // Add / update features
             let newFeatureObjects = [];
-            for(let feature of newOptions.features) {
-                if(oldFeaturesMap[feature.id] && oldFeaturesMap[feature.id] === feature) {
+            for (const feature of newOptions.features) {
+                if (oldFeaturesMap[feature.id] && oldFeaturesMap[feature.id] === feature) {
                     // Unchanged, continue
                     continue;
                 }
-                if(oldFeaturesMap[feature.id] && oldFeaturesMap[feature.id] !== feature) {
+                if (oldFeaturesMap[feature.id] && oldFeaturesMap[feature.id] !== feature) {
                     // Changed, remove
-                    let oldFeature = source.getFeatureById(feature.id);
-                    if(oldFeature) {
+                    const oldFeature = source.getFeatureById(feature.id);
+                    if (oldFeature) {
                         source.removeFeature(oldFeature);
                     }
                 }
                 // Add new
-                let featureObject = format.readFeatures({...feature, type: "Feature"});
+                const featureObject = format.readFeatures({...feature, type: "Feature"});
                 featureObject.forEach(f => {
-                    if(feature.crs && feature.crs !== newOptions.srs) {
+                    if (feature.crs && feature.crs !== newOptions.srs) {
                         f.getGeometry().transform(feature.crs, newOptions.srs);
                     }
-                    if(feature.styleName) {
+                    if (feature.styleName) {
                         f.setStyle(FeatureStyles[feature.styleName](f, feature.styleOptions || {}));
                     }
                 });
                 newFeatureObjects = newFeatureObjects.concat(featureObject);
             }
-            if(newFeatureObjects) {
+            if (newFeatureObjects) {
                 source.addFeatures(newFeatureObjects);
             }
         }

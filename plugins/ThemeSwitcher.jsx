@@ -9,7 +9,6 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const removeDiacritics = require('diacritics').remove;
 const {SideBar} = require('../components/SideBar');
 const ThemeList = require('../components/ThemeList');
 const ConfigUtils = require("../utils/ConfigUtils");
@@ -20,52 +19,53 @@ require('./style/ThemeSwitcher.css');
 class ThemeSwitcher extends React.Component {
     static propTypes = {
         activeTheme: PropTypes.object,
-        width: PropTypes.string,
-        showLayerAfterChangeTheme: PropTypes.bool,
+        bboxDependentLegend: PropTypes.bool,
         collapsibleGroups: PropTypes.bool,
+        currentTask: PropTypes.object,
+        showLayerAfterChangeTheme: PropTypes.bool,
         themeLayersListWindowSize: PropTypes.object,
+        width: PropTypes.string
     }
     static defaultProps = {
         width: "50%",
         showLayerAfterChangeTheme: false,
-        themeLayersListWindowSize: {width: 400, height: 300},
+        themeLayersListWindowSize: {width: 400, height: 300}
     }
     state = {
-        filter: "",
+        filter: ""
     }
     static contextTypes = {
         messages: PropTypes.object
     }
     render() {
-        let allowAddingOtherThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.activeTheme) ===  true;
-        let extraTitlebarContent = (
-            <input className="theme-switcher-filter" type="text"
-                value={this.state.filter} ref={this.focusFilterField}
-                onChange={ev => this.setState({filter: ev.target.value})}
-                placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")}/>
+        const allowAddingOtherThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.activeTheme) ===  true;
+        const extraTitlebarContent = (
+            <input className="theme-switcher-filter" onChange={ev => this.setState({filter: ev.target.value})}
+                placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")} ref={this.focusFilterField}
+                type="text"
+                value={this.state.filter}/>
         );
-        let filter = this.state.filter ? new RegExp(removeDiacritics(this.state.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i") : null;
         return (
             <div>
-                <SideBar id="ThemeSwitcher" minWidth="16em" width={this.props.width} title="appmenu.items.ThemeSwitcher"
-                    icon="themes" extraTitlebarContent={extraTitlebarContent}>
+                <SideBar extraTitlebarContent={extraTitlebarContent} icon="themes" id="ThemeSwitcher" minWidth="16em"
+                    title="appmenu.items.ThemeSwitcher" width={this.props.width}>
                     {() => ({
                         body: (
                             <ThemeList
-                                showLayerAfterChangeTheme={this.props.showLayerAfterChangeTheme}
-                                collapsibleGroups={this.props.collapsibleGroups}
-                                allowAddingOtherThemes={allowAddingOtherThemes}
                                 activeTheme={this.props.activeTheme}
-                                filter={this.state.filter} />
+                                allowAddingOtherThemes={allowAddingOtherThemes}
+                                collapsibleGroups={this.props.collapsibleGroups}
+                                filter={this.state.filter}
+                                showLayerAfterChangeTheme={this.props.showLayerAfterChangeTheme} />
                         )
                     })}
                 </SideBar>
-                <ThemeLayersListWindow windowSize={this.props.themeLayersListWindowSize} bboxDependentLegend={this.props.bboxDependentLegend} />                
+                <ThemeLayersListWindow bboxDependentLegend={this.props.bboxDependentLegend} windowSize={this.props.themeLayersListWindowSize} />
             </div>
         );
     }
     focusFilterField = (el) => {
-        if(el) {
+        if (el) {
             // Need to wait until slide in transition is over
             setTimeout(() => {
                 if (this.props.currentTask && this.props.currentTask.id === "ThemeSwitcher") {
@@ -74,7 +74,7 @@ class ThemeSwitcher extends React.Component {
             }, 500);
         }
     }
-};
+}
 
 const selector = (state) => ({
     activeTheme: state.theme ? state.theme.current : null
@@ -85,6 +85,6 @@ module.exports = {
     reducers: {
         theme: require('../reducers/theme'),
         task: require('../reducers/task'),
-        layers: require('../reducers/layers'),
+        layers: require('../reducers/layers')
     }
 };

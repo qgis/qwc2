@@ -9,25 +9,23 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const assign = require('object-assign');
 const axios = require('axios');
 const isEmpty = require('lodash.isempty');
 const ConfigUtils = require("../utils/ConfigUtils");
 const IdentifyUtils = require('../utils/IdentifyUtils');
-const ThemeUtils = require('../utils/ThemeUtils');
 const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
 require('./style/MapTip.css');
 
 class MapTip extends React.Component {
     static propTypes = {
-        mapTipsEnabled: PropTypes.bool,
-        theme: PropTypes.object,
+        addLayerFeatures: PropTypes.func,
+        layerFeatureCount: PropTypes.number,
         layers: PropTypes.array,
-        mousepos: PropTypes.object,
         map: PropTypes.object,
-        addLayer: PropTypes.func,
+        mapTipsEnabled: PropTypes.bool,
+        mousepos: PropTypes.object,
         removeLayer: PropTypes.func,
-        layerFeatureCount: PropTypes.number
+        theme: PropTypes.object
     }
     static defaultProps = {
         layerFeatureCount: 5
@@ -39,17 +37,17 @@ class MapTip extends React.Component {
     componentDidMount() {
         this.curPos = null;
         // Hide / abort map tip query if mouse leaves canvas
-        let mapEl = document.getElementById("map");
-        if(mapEl) {
+        const mapEl = document.getElementById("map");
+        if (mapEl) {
             mapEl.addEventListener("mouseout", (ev) => {
-                if(!ev.relatedTarget || ev.relatedTarget.id != "MapTip") {
+                if (!ev.relatedTarget || ev.relatedTarget.id !== "MapTip") {
                     this.clearMaptip();
                 }
             }, false);
         }
     }
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.mapTipsEnabled && this.props.mousepos && (
+        if (this.props.mapTipsEnabled && this.props.mousepos && (
             !this.curPos ||
             Math.abs(this.props.mousepos.pixel[0] - this.curPos[0]) > 5 ||
             Math.abs(this.props.mousepos.pixel[1] - this.curPos[1]) > 5
@@ -57,21 +55,21 @@ class MapTip extends React.Component {
             this.clearMaptip();
             this.curPos = this.props.mousepos.pixel;
             this.timeoutId = setTimeout(() => this.queryMapTip(this.curPos[0], this.curPos[1]), 500);
-        } else if(!this.props.mapTipsEnabled && prevProps.mapTipsEnabled) {
+        } else if (!this.props.mapTipsEnabled && prevProps.mapTipsEnabled) {
             this.clearMaptip();
         }
     }
     clearMaptip = () => {
         clearTimeout(this.timeoutId);
         this.timeoutId = null;
-        if(!isEmpty(this.state.maptips)) {
+        if (!isEmpty(this.state.maptips)) {
             this.props.removeLayer('maptipselection');
         }
         this.setState({maptips: [], pos: null});
     }
     queryMapTip = (x, y) => {
         this.timeoutId = null;
-        let options = {
+        const options = {
             info_format: 'text/xml',
             feature_count: this.props.layerFeatureCount,
             FI_POINT_TOLERANCE: 16,
@@ -79,30 +77,30 @@ class MapTip extends React.Component {
             FI_POLYGON_TOLERANCE: 4,
             with_maptip: true
         };
-        let layer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
-        let queryLayers = this.props.layers.reduce((accum, layer) => {
-            return layer.role === LayerRole.THEME ? accum.concat(layer.queryLayers) : accum;
+        const layer = this.props.layers.find(l => l.role === LayerRole.THEME);
+        let queryLayers = this.props.layers.reduce((accum, l) => {
+            return l.role === LayerRole.THEME ? accum.concat(l.queryLayers) : accum;
         }, []).join(",");
-        if(!layer || !queryLayers) {
+        if (!layer || !queryLayers) {
             return;
         }
-        if(!ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) && layer.drawingOrder) {
+        if (!ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) && layer.drawingOrder) {
             queryLayers = layer.drawingOrder.slice(0).reverse().filter(entry => layer.queryLayers.includes(entry)).join(",");
         }
 
-        let request = IdentifyUtils.buildRequest(layer, queryLayers, this.props.mousepos.coordinate, this.props.map, options);
+        const request = IdentifyUtils.buildRequest(layer, queryLayers, this.props.mousepos.coordinate, this.props.map, options);
 
         axios.get(request.url, {params: request.params}).then(response => {
-            let mapTips = [];
-            let result = IdentifyUtils.parseXmlResponse({data: response.data, request}, this.props.map.projection);
-            for(let layerName of request.params.layers.split(",")) {
-                for(let feature of result[layerName] || []) {
-                    if(feature.properties.maptip) {
-                        const layer = {
+            const mapTips = [];
+            const result = IdentifyUtils.parseXmlResponse({data: response.data, request}, this.props.map.projection);
+            for (const layerName of request.params.layers.split(",")) {
+                for (const feature of result[layerName] || []) {
+                    if (feature.properties.maptip) {
+                        const sellayer = {
                             id: "maptipselection",
                             role: LayerRole.SELECTION
                         };
-                        this.props.addLayerFeatures(layer, [feature], true);
+                        this.props.addLayerFeatures(sellayer, [feature], true);
                         mapTips.push(feature.properties.maptip);
                     }
                 }
@@ -111,40 +109,41 @@ class MapTip extends React.Component {
         });
     }
     render() {
-        if(!isEmpty(this.state.maptips) && this.state.pos) {
+        if (!isEmpty(this.state.maptips) && this.state.pos) {
             // Render off-screen first to measure dimensions, then place as necessary
-            let position = {
+            const position = {
                 left: 10000 + "px",
                 top: 10000 + "px"
             };
-            let x = this.state.pos[0];
-            let y = this.state.pos[1];
             return (
                 <div
-                    ref={el => {
-                        if(el) {
-                            let bbox = el.getBoundingClientRect();
-                            if(x + bbox.width > window.innerWidth) {
-                                x -= bbox.width;
-                            }
-                            if(y + bbox.height > window.innerHeight) {
-                                y -= bbox.height;
-                            }
-                            el.style.left = x + "px";
-                            el.style.top = y + "px";
-                        }
-                    }}
                     id="MapTip"
+                    ref={this.positionMapTip}
                     style={position}>
                     {this.state.maptips.map((maptip, idx) => (
-                        <div key={"tip" + idx} dangerouslySetInnerHTML={{__html: maptip}}></div>
+                        <div dangerouslySetInnerHTML={{__html: maptip}} key={"tip" + idx} />
                     ))}
                 </div>
-            )
+            );
         }
         return null;
     }
-};
+    positionMapTip = (el) => {
+        if (el) {
+            let x = this.state.pos[0];
+            let y = this.state.pos[1];
+            const bbox = el.getBoundingClientRect();
+            if (x + bbox.width > window.innerWidth) {
+                x -= bbox.width;
+            }
+            if (y + bbox.height > window.innerHeight) {
+                y -= bbox.height;
+            }
+            el.style.left = x + "px";
+            el.style.top = y + "px";
+        }
+    }
+}
 
 
 const selector = (state) => ({
@@ -158,9 +157,9 @@ const selector = (state) => ({
 module.exports = {
     MapTipPlugin: connect(selector, {
         addLayerFeatures: addLayerFeatures,
-        removeLayer: removeLayer,
+        removeLayer: removeLayer
     })(MapTip),
     reducers: {
         mousePosition: require('../reducers/mousePosition')
     }
-}
+};

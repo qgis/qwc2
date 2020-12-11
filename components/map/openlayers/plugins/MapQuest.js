@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-let MapQuestLayer = {
+const MapQuestLayer = {
     create: (options) => {
         // MapQuest is not supported on OpenLayers
         options.onError();

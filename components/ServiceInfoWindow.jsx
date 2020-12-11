@@ -22,15 +22,20 @@ class ServiceInfoWindow extends React.Component {
         windowSize: PropTypes.object
     }
     renderLink(text, url) {
-        return url ? (<a href={url} target="_blank">{text}</a>) : text ? text : null;
+        if (url) {
+            return (<a href={url} rel="noreferrer" target="_blank">{text}</a>);
+        } else if (text) {
+            return text;
+        }
+        return null;
     }
-    renderRow = (title, content, html=false) => {
-        if(content) {
+    renderRow = (title, content, html = false) => {
+        if (content) {
             return (
                 <tr>
                     <td><Message msgId={title} />:</td>
                     {html ? (
-                        <td dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(content)}}></td>
+                        <td dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(content)}} />
                     ) : (<td>{content}</td>)}
                 </tr>
             );
@@ -38,25 +43,25 @@ class ServiceInfoWindow extends React.Component {
         return null;
     }
     render() {
-        if(!this.props.service) {
+        if (!this.props.service) {
             return null;
         }
         return (
-            <ResizeableWindow title="serviceinfo.title" icon="info-sign" onClose={this.onClose} zIndex={10}
-                initialWidth={this.props.windowSize.width} initialHeight={this.props.windowSize.height}>
-                <div role="body" className="service-info-window-body">
+            <ResizeableWindow icon="info-sign" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width} onClose={this.onClose}
+                title="serviceinfo.title" zIndex={10}>
+                <div className="service-info-window-body" role="body">
                     <h4 className="service-info-window-title">{this.props.service.title}</h4>
                     <div className="service-info-window-frame">
                         <table className="service-info-window-table">
                             <tbody>
-                            {this.renderRow("serviceinfo.abstract", this.props.service.abstract, true)}
-                            {this.renderRow("serviceinfo.keywords", this.props.service.keywords)}
-                            {this.renderRow("serviceinfo.onlineResource", this.renderLink(this.props.service.onlineResource, this.props.service.onlineResource))}
-                            {this.renderRow("serviceinfo.contactPerson", this.props.service.contact.person)}
-                            {this.renderRow("serviceinfo.contactOrganization", this.props.service.contact.organization)}
-                            {this.renderRow("serviceinfo.contactPosition", this.props.service.contact.position)}
-                            {this.renderRow("serviceinfo.contactPhone", this.props.service.contact.phone)}
-                            {this.renderRow("serviceinfo.contactEmail", this.props.service.contact.email)}
+                                {this.renderRow("serviceinfo.abstract", this.props.service.abstract, true)}
+                                {this.renderRow("serviceinfo.keywords", this.props.service.keywords)}
+                                {this.renderRow("serviceinfo.onlineResource", this.renderLink(this.props.service.onlineResource, this.props.service.onlineResource))}
+                                {this.renderRow("serviceinfo.contactPerson", this.props.service.contact.person)}
+                                {this.renderRow("serviceinfo.contactOrganization", this.props.service.contact.organization)}
+                                {this.renderRow("serviceinfo.contactPosition", this.props.service.contact.position)}
+                                {this.renderRow("serviceinfo.contactPhone", this.props.service.contact.phone)}
+                                {this.renderRow("serviceinfo.contactEmail", this.props.service.contact.email)}
                             </tbody>
                         </table>
                     </div>
@@ -67,7 +72,7 @@ class ServiceInfoWindow extends React.Component {
     onClose = () => {
         this.props.setActiveServiceInfo(null);
     }
-};
+}
 
 const selector = state => ({
     service: state.serviceinfo.service || null

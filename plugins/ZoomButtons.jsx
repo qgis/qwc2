@@ -16,50 +16,52 @@ require('./style/Buttons.css');
 
 class ZoomButton extends React.Component {
     static propTypes = {
-        currentZoom : PropTypes.number,
-        position: PropTypes.number,
         changeZoomLevel: PropTypes.func,
+        currentZoom: PropTypes.number,
+        direction: PropTypes.number,
         maxZoom: PropTypes.number,
-        direction: PropTypes.number
+        position: PropTypes.number
     }
     static contextTypes = {
         messages: PropTypes.object
     }
     render() {
-        let position = this.props.position >= 0 ? this.props.position : (this.props.direction > 0 ? 4 : 3);
+        const position = this.props.position >= 0 ? this.props.position : (this.props.direction > 0 ? 4 : 3);
         let disabled = false;
-        if(this.props.direction > 0) {
+        if (this.props.direction > 0) {
             disabled = this.props.currentZoom >= this.props.maxZoom;
-        } else if(this.props.direction < 0) {
+        } else if (this.props.direction < 0) {
             disabled = this.props.currentZoom <= 0;
         }
-        let tooltip = LocaleUtils.getMessageById(this.context.messages, this.props.direction > 0 ? "tooltip.zoomin" : "tooltip.zoomout");
+        const tooltip = LocaleUtils.getMessageById(this.context.messages, this.props.direction > 0 ? "tooltip.zoomin" : "tooltip.zoomout");
         return (
             <button className="map-button"
-                onClick={ev => this.props.changeZoomLevel(this.props.currentZoom + this.props.direction)}
-                style={{bottom: (5 + 4 * position) + 'em'}}
                 disabled={disabled}
+                onClick={() => this.props.changeZoomLevel(this.props.currentZoom + this.props.direction)}
+                style={{bottom: (5 + 4 * position) + 'em'}}
                 title={tooltip}
             >
                 <Icon icon={this.props.direction > 0 ? "plus" : "minus"}/>
             </button>
         );
     }
-};
+}
 
 module.exports = {
     ZoomInPlugin: connect((state) => ({
         currentZoom: state.map.zoom,
         maxZoom: state.map.resolutions.length - 1,
         direction: +1
-    }),{
+    }),
+    {
         changeZoomLevel: changeZoomLevel
     })(ZoomButton),
     ZoomOutPlugin: connect((state) => ({
         currentZoom: state.map.zoom,
         maxZoom: state.map.resolutions.length - 1,
         direction: -1
-    }),{
+    }),
+    {
         changeZoomLevel: changeZoomLevel
     })(ZoomButton),
     reducers: {

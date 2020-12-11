@@ -21,10 +21,11 @@ require('./style/ThemeLayersListWindow.css');
 
 class ThemeLayersListWindow extends React.Component {
     static propTypes = {
-        themes: PropTypes.object,
-        theme: PropTypes.object,
-        setThemeLayersList: PropTypes.func,
         addLayer: PropTypes.func,
+        setCurrentTask: PropTypes.func,
+        setThemeLayersList: PropTypes.func,
+        theme: PropTypes.object,
+        themes: PropTypes.object,
         windowSize: PropTypes.object
     }
     static contextTypes = {
@@ -34,35 +35,34 @@ class ThemeLayersListWindow extends React.Component {
         selectedLayers: []
     }
     renderLayer(layer) {
-        let checkboxstate = this.state.selectedLayers.includes(layer) ? 'checked' : 'unchecked';
-        let addLayerTitle = LocaleUtils.getMessageById(this.context.messages, "themelayerslist.addlayer");
+        const checkboxstate = this.state.selectedLayers.includes(layer) ? 'checked' : 'unchecked';
+        const addLayerTitle = LocaleUtils.getMessageById(this.context.messages, "themelayerslist.addlayer");
         return (
             <div className="layerlist-item" key={layer.name}>
                 <Icon className="layerlist-item-checkbox" icon={checkboxstate} onClick={() => this.itemSelectionToggled(layer)} />
                 <span className="layerlist-item-title" title={layer.title}>{layer.title}</span>
-                <Icon className="layerlist-item-add" icon="plus" title={addLayerTitle} onClick={ev => this.addLayer(ev, layer)} />
+                <Icon className="layerlist-item-add" icon="plus" onClick={ev => this.addLayer(ev, layer)} title={addLayerTitle} />
             </div>
         );
     }
     renderLayers(layer) {
         return layer.sublayers.map((sublayer) => {
-            if(sublayer.sublayers) {
+            if (sublayer.sublayers) {
                 return this.renderLayers(sublayer);
-            }
-            else {
+            } else {
                 return this.renderLayer(sublayer);
             }
         });
     }
     render() {
-        if(!this.props.theme) {
+        if (!this.props.theme) {
             return null;
         }
-        let layerslist = this.renderLayers(this.props.theme);
+        const layerslist = this.renderLayers(this.props.theme);
         return (
-            <ResizeableWindow title="themelayerslist.addlayerstotheme" icon="layers" onClose={this.onClose}
-                initialWidth={this.props.windowSize.width} initialHeight={this.props.windowSize.height}>
-                <div role="body" className="theme-list-window-body">
+            <ResizeableWindow icon="layers" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width}
+                onClose={this.onClose} title="themelayerslist.addlayerstotheme">
+                <div className="theme-list-window-body" role="body">
                     <h4 className="theme-list-window-title">{this.props.theme.title}</h4>
                     <div className="theme-list-window-frame">
                         {layerslist}
@@ -73,7 +73,7 @@ class ThemeLayersListWindow extends React.Component {
         );
     }
     addLayer = (ev, layer) => {
-        let subLayers = [];
+        const subLayers = [];
         subLayers.push(layer);
         ev.stopPropagation();
         this.props.addLayer(ThemeUtils.createThemeLayer(this.props.theme, this.props.themes, LayerRole.USERLAYER, subLayers));
@@ -88,12 +88,10 @@ class ThemeLayersListWindow extends React.Component {
     itemSelectionToggled = (layer) => {
         // If item is already in array, this means it is selected so it is removed from the array. Else it is added
         if (this.state.selectedLayers.includes(layer)) {
-            let index = this.state.selectedLayers.indexOf(layer);
+            const index = this.state.selectedLayers.indexOf(layer);
             this.setState(state => {
                 const selectedLayers = state.selectedLayers.filter((item, j) => index !== j);
-                return {
-                  selectedLayers
-                };
+                return { selectedLayers };
             });
         } else {
             this.setState(state => {
@@ -103,11 +101,11 @@ class ThemeLayersListWindow extends React.Component {
                 };
             });
         }
-    }    
+    }
     onClose = () => {
         this.props.setThemeLayersList(null);
     }
-};
+}
 
 const selector = state => ({
     theme: state.theme.themelist,

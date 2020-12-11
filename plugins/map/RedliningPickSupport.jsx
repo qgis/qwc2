@@ -9,16 +9,16 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
 const ol = require('openlayers');
 const {changeRedliningPickState} = require('../../actions/redliningPick');
 
 class RedliningPickSupport extends React.Component {
     static propTypes = {
+        changeRedliningPickState: PropTypes.func,
+        changeState: PropTypes.func,
         map: PropTypes.object,
-        redliningPick: PropTypes.object,
-        changeState: PropTypes.func
+        redliningPick: PropTypes.object
     }
     constructor(props) {
         super(props);
@@ -34,9 +34,9 @@ class RedliningPickSupport extends React.Component {
                 angle: Math.PI / 4
             }),
             geometry: (f) => {
-                if(f.getGeometry().getType() === "Point") {
+                if (f.getGeometry().getType() === "Point") {
                     return new ol.geom.MultiPoint([f.getGeometry().getCoordinates()]);
-                } else if(f.getGeometry().getType() === "LineString") {
+                } else if (f.getGeometry().getType() === "LineString") {
                     return new ol.geom.MultiPoint(f.getGeometry().getCoordinates());
                 } else {
                     return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
@@ -45,13 +45,13 @@ class RedliningPickSupport extends React.Component {
         });
     }
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.redliningPick === prevProps.redliningPick) {
+        if (this.props.redliningPick === prevProps.redliningPick) {
             // pass
-        } else if(!this.props.redliningPick.active && prevProps.redliningPick.active) {
+        } else if (!this.props.redliningPick.active && prevProps.redliningPick.active) {
             this.reset(this.props.redliningPick.layer);
-        } else if(this.props.redliningPick.active && !prevProps.redliningPick.active) {
+        } else if (this.props.redliningPick.active && !prevProps.redliningPick.active) {
             this.addPickInteraction(this.props.redliningPick.layer);
-        } else if(
+        } else if (
             this.props.redliningPick.active === prevProps.redliningPick.active &&
             isEmpty(this.props.redliningPick.selectedFeatures) && !isEmpty(prevProps.redliningPick.selectedFeatures)
         ) {
@@ -65,19 +65,19 @@ class RedliningPickSupport extends React.Component {
     }
     addPickInteraction = (layerId) => {
         this.reset(layerId);
-        let redliningLayer = this.searchRedliningLayer(layerId);
-        if(!redliningLayer) {
+        const redliningLayer = this.searchRedliningLayer(layerId);
+        if (!redliningLayer) {
             return;
         }
 
-        let selectInteraction = new ol.interaction.Select({
+        const selectInteraction = new ol.interaction.Select({
             layers: [redliningLayer],
             toggleCondition: () => true}
         );
         selectInteraction.on('select', (evt) => {
             let selectedFeatures = this.props.redliningPick.selectedFeatures.slice(0);
             // Add newly selected features
-            for(let feature of evt.selected || []) {
+            for (const feature of evt.selected || []) {
                 // Skip text features for now
                 if(feature.get("isText")) {
                     continue;
@@ -86,7 +86,7 @@ class RedliningPickSupport extends React.Component {
                 this.selectFeature(feature);
             }
             // Deselect currently selected features
-            for(let feature of evt.deselected || []) {
+            for (const feature of evt.deselected || []) {
                 selectedFeatures = selectedFeatures.filter(id => id !== feature.getId());
                 this.deselectFeature(feature);
             }
@@ -96,7 +96,7 @@ class RedliningPickSupport extends React.Component {
         this.interactions = [selectInteraction];
     }
     reset = (layerId) => {
-        while(this.interactions.length > 0) {
+        while (this.interactions.length > 0) {
             this.props.map.removeInteraction(this.interactions.shift());
         }
         this.deselectAllFeatures(layerId);
@@ -104,7 +104,7 @@ class RedliningPickSupport extends React.Component {
     }
     selectFeature = (feature) => {
         let style = feature.getStyle();
-        if(Array.isArray(style)) {
+        if (Array.isArray(style)) {
             style = [...style, this.selectedStyle];
         } else {
             style = [style, this.selectedStyle];
@@ -113,17 +113,17 @@ class RedliningPickSupport extends React.Component {
     }
     deselectFeature = (feature) => {
         let style = feature.getStyle();
-        if(Array.isArray(style)) {
-            style = feature.getStyle().filter(entry => entry !== this.selectedStyle)
+        if (Array.isArray(style)) {
+            style = feature.getStyle().filter(entry => entry !== this.selectedStyle);
             feature.setStyle(style.length > 1 ? style : style[0]);
         }
     }
     deselectAllFeatures = (layerId) => {
-        let redliningLayer = this.searchRedliningLayer(layerId);
-        if(redliningLayer) {
-            for(let id of this.props.redliningPick.selectedFeatures || []) {
-                let feature = redliningLayer.getSource().getFeatureById(id);
-                if(feature) {
+        const redliningLayer = this.searchRedliningLayer(layerId);
+        if (redliningLayer) {
+            for (const id of this.props.redliningPick.selectedFeatures || []) {
+                const feature = redliningLayer.getSource().getFeatureById(id);
+                if (feature) {
                     this.deselectFeature(feature);
                 }
             }
@@ -132,13 +132,13 @@ class RedliningPickSupport extends React.Component {
     searchRedliningLayer = (layerId) => {
         let redliningLayer = null;
         this.props.map.getLayers().forEach(olLayer => {
-            if(olLayer.get('msId') === layerId) {
+            if (olLayer.get('msId') === layerId) {
                 redliningLayer = olLayer;
             }
         });
         return redliningLayer;
     }
-};
+}
 
 module.exports = connect((state) => ({
     redliningPick: state.redliningPick || {}

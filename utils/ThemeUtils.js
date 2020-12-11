@@ -17,30 +17,30 @@ const removeDiacritics = require('diacritics').remove;
 
 const ThemeUtils = {
     getThemeById: function(themes, id) {
-        for(let i = 0, n = themes.items.length; i < n; ++i) {
-            if(themes.items[i].id === id) {
+        for (let i = 0, n = themes.items.length; i < n; ++i) {
+            if (themes.items[i].id === id) {
                 return themes.items[i];
             }
         }
-        for(let i = 0, n = themes.subdirs.length; i < n; ++i) {
-            let theme = this.getThemeById(themes.subdirs[i], id);
-            if(theme) {
+        for (let i = 0, n = themes.subdirs.length; i < n; ++i) {
+            const theme = this.getThemeById(themes.subdirs[i], id);
+            if (theme) {
                 return theme;
             }
         }
         return null;
     },
-    createThemeBackgroundLayers: function(theme, themes, visibleLayer=null) {
-        let bgLayers = [];
+    createThemeBackgroundLayers: function(theme, themes, visibleLayer = null) {
+        const bgLayers = [];
         let visibleIdx = -1;
         let defaultVisibleIdx = -1;
-        for (let entry of (theme.backgroundLayers || [])) {
-            if(!entry.name) {
+        for (const entry of (theme.backgroundLayers || [])) {
+            if (!entry.name) {
                 continue;
             }
-            const bgLayer = themes.backgroundLayers.find(bgLayer => bgLayer.name === entry.name);
+            let bgLayer = themes.backgroundLayers.find(lyr => lyr.name === entry.name);
             if (bgLayer) {
-                if(entry.visibility === true) {
+                if (entry.visibility === true) {
                     defaultVisibleIdx = bgLayers.length;
                 }
                 if (bgLayer.name === visibleLayer) {
@@ -50,11 +50,11 @@ const ThemeUtils = {
                     role: LayerRole.BACKGROUND,
                     visibility: false
                 });
-                if(bgLayer.type === "group") {
+                if (bgLayer.type === "group") {
                     bgLayer.items = bgLayer.items.map(item => {
-                        if(item.ref) {
-                            let sublayer = themes.backgroundLayers.find(l => l.name === item.ref);
-                            if(sublayer) {
+                        if (item.ref) {
+                            const sublayer = themes.backgroundLayers.find(l => l.name === item.ref);
+                            if (sublayer) {
                                 item = assign({}, item, sublayer, LayerUtils.buildWMSLayerParams(sublayer));
                                 delete item.ref;
                             } else {
@@ -69,15 +69,15 @@ const ThemeUtils = {
                 console.warn("Could not find background layer " + entry.name);
             }
         }
-        if(visibleIdx >= 0) {
+        if (visibleIdx >= 0) {
             bgLayers[visibleIdx].visibility = true;
-        } else if(defaultVisibleIdx >= 0 && visibleLayer !== "") {
+        } else if (defaultVisibleIdx >= 0 && visibleLayer !== "") {
             bgLayers[defaultVisibleIdx].visibility = true;
         }
         return bgLayers;
     },
-    createThemeLayer: function(theme, themes, role=LayerRole.THEME, subLayers=[]) {
-        let layer = {
+    createThemeLayer: function(theme, themes, role = LayerRole.THEME, subLayers = []) {
+        const layer = {
             type: "wms",
             url: theme.url,
             version: theme.version,
@@ -86,7 +86,7 @@ const ThemeUtils = {
             name: theme.name,
             title: theme.title,
             bbox: theme.bbox,
-            sublayers : (Array.isArray(subLayers) && subLayers.length) ? subLayers : theme.sublayers,
+            sublayers: (Array.isArray(subLayers) && subLayers.length) ? subLayers : theme.sublayers,
             tiled: theme.tiled,
             ratio: !theme.tiled ? 1 : undefined,
             format: theme.format,
@@ -101,15 +101,15 @@ const ThemeUtils = {
                     uuid: uuid.v4()
                 });
                 res[cur.internalLayer].title = res[cur.internalLayer].title || res[cur.internalLayer].name;
-                if(res[cur.internalLayer].type === "wms" || res[cur.internalLayer].params) {
+                if (res[cur.internalLayer].type === "wms" || res[cur.internalLayer].params) {
                     res[cur.internalLayer].type = "wms";
                     res[cur.internalLayer].featureInfoUrl = res[cur.internalLayer].featureInfoUrl || res[cur.internalLayer].url;
                     res[cur.internalLayer].legendUrl = res[cur.internalLayer].legendUrl || res[cur.internalLayer].url;
                     res[cur.internalLayer].queryLayers = res[cur.internalLayer].queryLayers || res[cur.internalLayer].params.LAYERS.split(",");
 
-                    let externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp("externalLayerFeatureInfoFormats") || {};
-                    for(let entry of Object.keys(externalLayerFeatureInfoFormats)) {
-                        if(res[cur.internalLayer].featureInfoUrl.toLowerCase().includes(entry.toLowerCase())) {
+                    const externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp("externalLayerFeatureInfoFormats") || {};
+                    for (const entry of Object.keys(externalLayerFeatureInfoFormats)) {
+                        if (res[cur.internalLayer].featureInfoUrl.toLowerCase().includes(entry.toLowerCase())) {
                             res[cur.internalLayer].infoFormats = [externalLayerFeatureInfoFormats[entry]];
                             break;
                         }
@@ -119,14 +119,14 @@ const ThemeUtils = {
             }, {}))
         };
         // Drawing order only makes sense if layer reordering is disabled
-        if(ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {
+        if (ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {
             layer.drawingOrder = theme.drawingOrder;
         }
         return layer;
     },
     searchThemes: function(themes, searchtext, resultType) {
-        let filter = new RegExp(removeDiacritics(searchtext).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i");
-        let matches = ThemeUtils.searchThemeGroup(themes, filter);
+        const filter = new RegExp(removeDiacritics(searchtext).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
+        const matches = ThemeUtils.searchThemeGroup(themes, filter);
         return isEmpty(matches) ? [] : [{
             id: "themes",
             titlemsgid: "search.themes",
@@ -141,7 +141,7 @@ const ThemeUtils = {
         }];
     },
     searchThemeGroup: function(themeGroup, filter) {
-        let matches = [];
+        const matches = [];
         (themeGroup.subdirs || []).map(subdir => matches.push(...ThemeUtils.searchThemeGroup(subdir, filter)));
         matches.push(...(themeGroup.items || []).filter(item => {
             return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords).match(filter) || removeDiacritics(item.abstract).match(filter);

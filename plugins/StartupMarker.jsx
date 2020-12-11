@@ -14,13 +14,13 @@ const {UrlParams} = require("../utils/PermaLinkUtils");
 
 class StartupMarker extends React.Component {
     static propTypes = {
-        startupParams: PropTypes.object,
-        map: PropTypes.object,
-        theme: PropTypes.object,
-        clickFeature: PropTypes.object,
-        removeMode: PropTypes.string, // onpan, onzoom, onclickonmarker
         addMarker: PropTypes.func,
-        removeMarker: PropTypes.func
+        clickFeature: PropTypes.object,
+        map: PropTypes.object,
+        removeMarker: PropTypes.func,
+        removeMode: PropTypes.string, // onpan, onzoom, onclickonmarker
+        startupParams: PropTypes.object,
+        theme: PropTypes.object
     }
     static defaultProps = {
         removeMode: 'onpan'
@@ -30,14 +30,14 @@ class StartupMarker extends React.Component {
         this.markerSet = false;
     }
     componentDidUpdate(prevProps, prevState) {
-        let highlight = ["true", "1"].includes("" + (this.props.startupParams && this.props.startupParams.hc || "").toLowerCase());
-        if(highlight && this.props.theme && !prevProps.theme && this.props.startupParams.c) {
+        const highlight = ["true", "1"].includes("" + (this.props.startupParams && this.props.startupParams.hc || "").toLowerCase());
+        if (highlight && this.props.theme && !prevProps.theme && this.props.startupParams.c) {
             UrlParams.updateParams({hc: undefined});
-            let point = this.props.startupParams.c.split(/[;,]/g).map(x => parseFloat(x));
+            const point = this.props.startupParams.c.split(/[;,]/g).map(x => parseFloat(x));
             prevProps.addMarker('startupposmarker', point, '', this.props.startupParams.crs || this.props.map.projection);
             this.markerSet = true;
-        } else if(this.markerSet) {
-            if(
+        } else if (this.markerSet) {
+            if (
                 (prevProps.removeMode === 'onpan' && this.props.map.center !== prevProps.map.center && this.props.map.zoom === prevProps.map.zoom) ||
                 (prevProps.removeMode === 'onzoom' && this.props.map.zoom !== prevProps.map.zoom) ||
                 (prevProps.removeMode === 'onclickonmarker' && this.props.clickFeature && this.props.clickFeature.feature === 'startupposmarker')
@@ -50,7 +50,7 @@ class StartupMarker extends React.Component {
     render() {
         return null;
     }
-};
+}
 
 module.exports = {
     StartupMarkerPlugin: connect(state => ({
@@ -62,4 +62,4 @@ module.exports = {
         addMarker: addMarker,
         removeMarker: removeMarker
     })(StartupMarker)
-}
+};

@@ -11,14 +11,11 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const NumericInput = require('react-numeric-input2');
 const assign = require('object-assign');
-const classnames = require('classnames');
-const isEmpty = require('lodash.isempty');
 const Mousetrap = require('mousetrap');
 const LocaleUtils = require('../utils/LocaleUtils');
 const Message = require('../components/I18N/Message');
 const {changeRedliningState} = require('../actions/redlining');
-const {LayerRole,addLayer,addLayerFeatures} = require('../actions/layers');
-const Icon = require('../components/Icon');
+const {LayerRole, addLayer} = require('../actions/layers');
 const {TaskBar} = require('../components/TaskBar');
 const ButtonBar = require('../components/widgets/ButtonBar');
 const ColorButton = require('../components/widgets/ColorButton');
@@ -29,14 +26,14 @@ require('./style/Redlining.css');
 
 class Redlining extends React.Component {
     static propTypes = {
-        layers: PropTypes.array,
-        redlining: PropTypes.object,
-        mobile: PropTypes.bool,
-        setCurrentTask: PropTypes.func,
-        changeRedliningState: PropTypes.func,
         addLayer: PropTypes.func,
         allowGeometryLabels: PropTypes.bool,
-        plugins: PropTypes.object
+        changeRedliningState: PropTypes.func,
+        layers: PropTypes.array,
+        mobile: PropTypes.bool,
+        plugins: PropTypes.object,
+        redlining: PropTypes.object,
+        setCurrentTask: PropTypes.func
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -46,7 +43,7 @@ class Redlining extends React.Component {
         plugins: []
     }
     state = {
-        selectText: false,
+        selectText: false
     }
     constructor(props) {
         super(props);
@@ -54,10 +51,10 @@ class Redlining extends React.Component {
         window.addEventListener('keydown', this.keyPressed);
     }
     componentDidUpdate(prevProps, prevState) {
-        if(prevProps.redlining.geomType !== this.props.redlining.geomType && this.props.redlining.geomType === 'Text' && !this.state.selectText) {
+        if (prevProps.redlining.geomType !== this.props.redlining.geomType && this.props.redlining.geomType === 'Text' && !this.state.selectText) {
             this.setState({selectText: true});
         }
-        if(!this.props.layers.find(layer => layer.id === this.props.redlining.layer) && this.props.redlining.layer !== 'redlining') {
+        if (!this.props.layers.find(layer => layer.id === this.props.redlining.layer) && this.props.redlining.layer !== 'redlining') {
             this.props.changeRedliningState({layer: 'redlining', layerTitle: 'Redlining'});
         }
     }
@@ -65,8 +62,8 @@ class Redlining extends React.Component {
         window.removeEventListener('keydown', this.keyPressed);
     }
     keyPressed = (ev) => {
-        if(ev.keyCode === 27) {
-            if(this.props.redlining.action === 'Draw' && !this.props.redlining.selectedFeature) {
+        if (ev.keyCode === 27) {
+            if (this.props.redlining.action === 'Draw' && !this.props.redlining.selectedFeature) {
                 this.props.changeRedliningState({action: 'Delete'});
             }
         }
@@ -80,43 +77,43 @@ class Redlining extends React.Component {
         Mousetrap.unbind('del', this.triggerDelete);
     }
     updateRedliningState = (diff) => {
-        let newState = assign({}, this.props.redlining, diff)
+        const newState = assign({}, this.props.redlining, diff);
         this.props.changeRedliningState(newState);
     }
     updateRedliningStyle = (diff) => {
-        let newStyle = assign({}, this.props.redlining.style, diff);
+        const newStyle = assign({}, this.props.redlining.style, diff);
         this.updateRedliningState({style: newStyle});
     }
     renderBody = () => {
-        let activeButton = this.props.redlining.action == "Draw" ? this.props.redlining.geomType : this.props.redlining.action;
-        let drawButtons = [
+        const activeButton = this.props.redlining.action === "Draw" ? this.props.redlining.geomType : this.props.redlining.action;
+        const drawButtons = [
             {key: "Point", tooltip: "redlining.point", icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
             {key: "LineString", tooltip: "redlining.line", icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
             {key: "Polygon", tooltip: "redlining.polygon", icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
             {key: "Circle", tooltip: "redlining.circle", icon: "circle", data: {action: "Draw", geomType: "Circle", text: ""}},
-            {key: "Text", tooltip: "redlining.text", icon: "text", data: {action: "Draw", geomType: "Text", text: ""}},
+            {key: "Text", tooltip: "redlining.text", icon: "text", data: {action: "Draw", geomType: "Text", text: ""}}
         ];
-        let activeFreeHand = this.props.redlining.freehand ? "HandDrawing" : null;
-        let freehandButtons = [
-            {key: "HandDrawing", tooltip: "redlining.freehand", icon: "freehand",
+        const activeFreeHand = this.props.redlining.freehand ? "HandDrawing" : null;
+        const freehandButtons = [{
+            key: "HandDrawing", tooltip: "redlining.freehand", icon: "freehand",
             data: {action: "Draw", geomType: this.props.redlining.geomType, text: "", freehand: !this.props.redlining.freehand},
-            disabled: (this.props.redlining.geomType !== "LineString" && this.props.redlining.geomType !== "Polygon")}
-        ];
-        let editButtons = [
+            disabled: (this.props.redlining.geomType !== "LineString" && this.props.redlining.geomType !== "Polygon")
+        }];
+        const editButtons = [
             {key: "Pick", tooltip: "redlining.pick", icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
             {key: "Delete", tooltip: "redlining.delete", icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature}
         ];
-        for(let plugin of Object.values(this.props.plugins || {})) {
+        for (const plugin of Object.values(this.props.plugins || {})) {
             editButtons.push(plugin.cfg);
         }
         let vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER);
         // Ensure list always contains "Redlining" layer
-        if(!vectorLayers.find(layer => layer.id === 'redlining')) {
+        if (!vectorLayers.find(layer => layer.id === 'redlining')) {
             vectorLayers = [{id: 'redlining', title: 'Redlining'}, ...vectorLayers];
         }
 
-        let activePlugin = Object.values(this.props.plugins || {}).find(plugin => plugin.cfg.key === this.props.redlining.action);
-        let controls = activePlugin ? (<activePlugin.controls />) : this.renderStandardControls();
+        const activePlugin = Object.values(this.props.plugins || {}).find(plugin => plugin.cfg.key === this.props.redlining.action);
+        const controls = activePlugin ? (<activePlugin.controls />) : this.renderStandardControls();
 
         return (
             <div>
@@ -124,21 +121,21 @@ class Redlining extends React.Component {
                     <div className="redlining-group">
                         <div><Message msgId="redlining.layer" /></div>
                         <VectorLayerPicker
-                            value={this.props.redlining.layer} layers={vectorLayers}
-                            addLayer={this.props.addLayer} onChange={this.changeRedliningLayer} />
+                            addLayer={this.props.addLayer} layers={vectorLayers}
+                            onChange={this.changeRedliningLayer} value={this.props.redlining.layer} />
                     </div>
                     <div className="redlining-group">
                         <div><Message msgId="redlining.draw" /></div>
                         <span>
-                            <ButtonBar buttons={drawButtons} active={activeButton} onClick={(key, data) => this.actionChanged(data)} />
+                            <ButtonBar active={activeButton} buttons={drawButtons} onClick={(key, data) => this.actionChanged(data)} />
                             {this.props.redlining.action === "Draw" && (this.props.redlining.geomType === "LineString" || this.props.redlining.geomType === "Polygon") ?
-                                <ButtonBar buttons={freehandButtons} active={activeFreeHand} onClick={(key, data) => this.actionChanged(data)} /> : null
+                                <ButtonBar active={activeFreeHand} buttons={freehandButtons} onClick={(key, data) => this.actionChanged(data)} /> : null
                             }
                         </span>
                     </div>
                     <div className="redlining-group">
                         <div><Message msgId="redlining.edit" /></div>
-                        <ButtonBar buttons={editButtons} active={activeButton} onClick={(key, data) => this.actionChanged(data)} />
+                        <ButtonBar active={activeButton} buttons={editButtons} onClick={(key, data) => this.actionChanged(data)} />
                     </div>
                 </div>
                 {controls}
@@ -147,13 +144,13 @@ class Redlining extends React.Component {
     }
     renderStandardControls = () => {
         let sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.size");
-        if(this.props.redlining.geomType === "LineString") {
+        if (this.props.redlining.geomType === "LineString") {
             sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.width");
-        } else if(this.props.redlining.geomType === "Polygon") {
+        } else if (this.props.redlining.geomType === "Polygon") {
             sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.border");
         }
         let labelPlaceholder = LocaleUtils.getMessageById(this.context.messages, "redlining.label");
-        if(this.props.redlining.geomType === "Text") {
+        if (this.props.redlining.geomType === "Text") {
             labelPlaceholder = LocaleUtils.getMessageById(this.context.messages, "redlining.text");
         }
 
@@ -171,13 +168,13 @@ class Redlining extends React.Component {
                 )}
                 <span>
                     <span>{sizeLabel}:&nbsp;</span>
-                    <NumericInput mobile strict
-                        min={1} max={99} precision={0} step={1}
-                        value={this.props.redlining.style.size} onChange={(nr) => this.updateRedliningStyle({size: nr})}/>
+                    <NumericInput max={99} min={1}
+                        mobile onChange={(nr) => this.updateRedliningStyle({size: nr})} precision={0} step={1}
+                        strict value={this.props.redlining.style.size}/>
                 </span>
                 {(this.props.redlining.geomType === 'Text' || this.props.allowGeometryLabels) ? (
                     <span>
-                        <input ref={el => this.setLabelRef(el)} className="redlining-label" type="text" placeholder={labelPlaceholder} value={this.props.redlining.style.text} onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})}/>
+                        <input className="redlining-label" onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})} placeholder={labelPlaceholder} ref={el => this.setLabelRef(el)} type="text" value={this.props.redlining.style.text}/>
                     </span>
                 ) : null}
             </div>
@@ -185,7 +182,7 @@ class Redlining extends React.Component {
     }
     render() {
         return (
-            <TaskBar task="Redlining" onShow={this.onShow} onHide={this.onHide}>
+            <TaskBar onHide={this.onHide} onShow={this.onShow} task="Redlining">
                 {() => ({
                     body: this.renderBody()
                 })}
@@ -194,7 +191,7 @@ class Redlining extends React.Component {
     }
     setLabelRef = (el) => {
         this.labelInput = el;
-        if(el && this.state.selectText) {
+        if (el && this.state.selectText) {
             el.focus();
             el.select();
             this.setState({selectText: false});
@@ -204,7 +201,7 @@ class Redlining extends React.Component {
         this.updateRedliningState({action: "Delete", geomType: null});
     }
     actionChanged = (data) => {
-        if(data.action === "Draw" && data.geomType === "Text") {
+        if (data.action === "Draw" && data.geomType === "Text") {
             data = assign({}, data, {text: LocaleUtils.getMessageById(this.context.messages, "redlining.text")});
         }
         this.updateRedliningState({...data, featureSelected: false});
@@ -212,19 +209,21 @@ class Redlining extends React.Component {
     changeRedliningLayer = (layer) => {
         this.updateRedliningState({layer: layer.id, layerTitle: layer.title});
     }
-};
+}
 
-module.exports = (plugins) => { return {
-    RedliningPlugin: connect((state) => ({
-        layers: state.layers.flat,
-        redlining: state.redlining,
-        mobile: state.browser ? state.browser.mobile : false,
-        plugins: plugins
-    }), {
-        changeRedliningState: changeRedliningState,
-        addLayer: addLayer
-    })(Redlining),
-    reducers: {
-        redlining: require('../reducers/redlining')
-    }
-}};
+module.exports = (plugins) => {
+    return {
+        RedliningPlugin: connect((state) => ({
+            layers: state.layers.flat,
+            redlining: state.redlining,
+            mobile: state.browser ? state.browser.mobile : false,
+            plugins: plugins
+        }), {
+            changeRedliningState: changeRedliningState,
+            addLayer: addLayer
+        })(Redlining),
+        reducers: {
+            redlining: require('../reducers/redlining')
+        }
+    };
+};

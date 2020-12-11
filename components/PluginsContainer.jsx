@@ -18,8 +18,8 @@ class PluginsContainer extends React.Component {
     static propTypes = {
         mode: PropTypes.string,
         plugins: PropTypes.object,
-        pluginsConfig: PropTypes.object,
-        pluginsAppConfig: PropTypes.object
+        pluginsAppConfig: PropTypes.object,
+        pluginsConfig: PropTypes.object
     }
     static defaultProps = {
         mode: 'desktop',
@@ -29,13 +29,13 @@ class PluginsContainer extends React.Component {
     }
     renderPlugins = (pluginsConfig) => {
         return pluginsConfig.map(pluginConf => {
-            let Plugin = this.props.plugins[pluginConf.name + "Plugin"];
-            if(!Plugin) {
+            const Plugin = this.props.plugins[pluginConf.name + "Plugin"];
+            if (!Plugin) {
                 console.warn("Non-existing plugin: " + pluginConf.name);
                 return null;
             }
-            let cfg = pluginConf.cfg || {};
-            let appCfg = this.props.pluginsAppConfig[pluginConf.name + "Plugin"] || {};
+            const cfg = pluginConf.cfg || {};
+            const appCfg = this.props.pluginsAppConfig[pluginConf.name + "Plugin"] || {};
             return (<Plugin key={pluginConf.name} {...cfg} {...appCfg} />);
         });
     }
@@ -43,9 +43,7 @@ class PluginsContainer extends React.Component {
         if (this.props.pluginsConfig) {
             return (
                 <div id="PluginsContainer">
-                    {
-                     this.renderPlugins(this.props.pluginsConfig[this.props.mode])
-                    }
+                    {this.renderPlugins(this.props.pluginsConfig[this.props.mode])}
                     <WindowManager />
                 </div>
             );

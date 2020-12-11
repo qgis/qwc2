@@ -34,6 +34,6 @@ class ScaleBar extends React.Component {
     render() {
         return null;
     }
-};
+}
 
 module.exports = ScaleBar;

@@ -13,7 +13,7 @@ const {IntlProvider} = require('react-intl');
 
 class Localized extends React.Component {
     static propTypes = {
-        children: PropTypes.node,
+        children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         locale: PropTypes.string,
         messages: PropTypes.object
     }

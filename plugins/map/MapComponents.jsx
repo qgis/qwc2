@@ -6,9 +6,7 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const React = require('react');
 const {connect} = require('react-redux');
-const assign = require('object-assign');
 
 const {changeMapView, clickOnMap, clickFeatureOnMap} = require('../../actions/map');
 const {setLayerLoading} = require('../../actions/layers');

@@ -14,12 +14,12 @@ const CHANGE_LOCALE = 'CHANGE_LOCALE';
 
 function loadLocale(defaultLangData) {
     return dispatch => {
-        let lang = UrlParams.getParam("lang") || (navigator ? (navigator.language || navigator.browserLanguage) : "en-US");
-        let config = {
+        const lang = UrlParams.getParam("lang") || (navigator ? (navigator.language || navigator.browserLanguage) : "en-US");
+        const config = {
             headers: {'Content-Type': 'application/json'},
             data: {}
         };
-        let translationsPath = ConfigUtils.getConfigProp("translationsPath");
+        const translationsPath = ConfigUtils.getConfigProp("translationsPath");
         axios.get(translationsPath + '/' + lang + '.json', config).then(response => {
             dispatch({
                 type: CHANGE_LOCALE,

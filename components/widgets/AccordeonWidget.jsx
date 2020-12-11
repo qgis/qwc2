@@ -14,16 +14,16 @@ require('./style/AccordeonWidget.css');
 
 class AccordeonWidget extends React.Component {
     static propTypes = {
+        allowMultiple: PropTypes.bool,
+        className: PropTypes.string,
         sections: PropTypes.arrayOf(PropTypes.shape({
             key: PropTypes.string,
             widget: PropTypes.function,
             title: PropTypes.string
-        })),
-        className: PropTypes.string,
-        allowMultiple: PropTypes.bool
+        }))
     }
     static defaultProps = {
-      allowMultiple: false
+        allowMultiple: false
     }
     state = {
         currentSections: []
@@ -45,8 +45,8 @@ class AccordeonWidget extends React.Component {
     }
     toggleSection = (key) => {
         let currentSections = [];
-        if(this.props.allowMultiple) {
-            if(this.state.currentSections.includes(key)) {
+        if (this.props.allowMultiple) {
+            if (this.state.currentSections.includes(key)) {
                 currentSections = this.state.currentSections.filter(entry => entry !== key);
             } else {
                 currentSections = [...this.state.currentSections, key];
@@ -58,11 +58,11 @@ class AccordeonWidget extends React.Component {
     }
     render() {
         return (
-            <div role="body" className={this.props.className}>
+            <div className={this.props.className} role="body">
                 {this.props.sections.map(section => this.renderSection(section))}
             </div>
-        )
+        );
     }
-};
+}
 
 module.exports = AccordeonWidget;

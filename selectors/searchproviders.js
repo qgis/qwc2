@@ -14,19 +14,19 @@ const ThemeUtils = require('../utils/ThemeUtils');
 
 const searchProvidersSelector = (searchProviders, providerFactory) => createSelector(
     [state => state.theme, state => state.layers && state.layers.flat || null], (theme, layers) => {
-        let availableProviders = {};
-        let themeLayerNames = layers.map(layer => layer.role === LayerRole.THEME ? layer.params.LAYERS : "").join(",").split(",").filter(entry => entry);
-        let themeProviders = theme && theme.current ? theme.current.searchProviders : [];
-        for(let entry of themeProviders) {
-            let provider = searchProviders[entry] || (entry.key ? providerFactory(entry) : null);
-            if(provider) {
-                if(provider.requiresLayer && !themeLayerNames.includes(provider.requiresLayer)) {
+        const availableProviders = {};
+        const themeLayerNames = layers.map(layer => layer.role === LayerRole.THEME ? layer.params.LAYERS : "").join(",").split(",").filter(entry => entry);
+        const themeProviders = theme && theme.current ? theme.current.searchProviders : [];
+        for (const entry of themeProviders) {
+            const provider = searchProviders[entry] || (entry.key ? providerFactory(entry) : null);
+            if (provider) {
+                if (provider.requiresLayer && !themeLayerNames.includes(provider.requiresLayer)) {
                     continue;
                 }
                 availableProviders[entry.key || entry] = provider;
             }
         }
-        if(ConfigUtils.getConfigProp("searchThemes", theme)) {
+        if (ConfigUtils.getConfigProp("searchThemes", theme)) {
             availableProviders["themes"] = {
                 labelmsgid: "search.themes",
                 onSearch: (text, reqId, options, dispatch) => {
@@ -40,6 +40,6 @@ const searchProvidersSelector = (searchProviders, providerFactory) => createSele
         }
         return availableProviders;
     }
-)
+);
 
 module.exports = searchProvidersSelector;

@@ -14,11 +14,11 @@ require('./style/SuggestionInput.css');
 
 class SuggestionInput extends React.Component {
     static propTypes = {
-        value: PropTypes.string,
+        className: PropTypes.string,
         loadSuggestions: PropTypes.func,
-        onChange: PropTypes.func,
         onBlur: PropTypes.func,
-        className: PropTypes.string
+        onChange: PropTypes.func,
+        value: PropTypes.string
     }
     state = {
         suggestions: []
@@ -30,24 +30,24 @@ class SuggestionInput extends React.Component {
     render() {
         return (
             <span className={"suggestion-input " + (this.props.className || "")}>
-                <input list={this.datalistid} type="text" value={this.props.value} onChange={this.props.onChange} onFocus={this.onFocus} onBlur={this.onBlur} />
+                <input list={this.datalistid} onBlur={this.onBlur} onChange={this.props.onChange} onFocus={this.onFocus} type="text" value={this.props.value} />
                 <datalist id={this.datalistid}>
                     {this.state.suggestions.map((entry, idx) => (
-                        <option value={entry} key={"e" + idx} />
+                        <option key={"e" + idx} value={entry} />
                     ))}
                 </datalist>
             </span>
         );
     }
-    onFocus = (ev) => {
+    onFocus = () => {
         this.props.loadSuggestions(result => {
-            this.setState({suggestions: result})
+            this.setState({suggestions: result});
         });
     }
     onBlur = (ev) => {
         this.setState({suggestions: []});
         this.props.onBlur(ev);
     }
-};
+}
 
 module.exports = SuggestionInput;

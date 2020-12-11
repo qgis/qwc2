@@ -32,7 +32,7 @@ class ColorButton extends React.Component {
     }
     static defaultProps = {
         color: [255, 255, 255, 1],
-        onColorChanged: (color) => {}
+        onColorChanged: (/* color */) => {}
     }
     constructor(props) {
         super(props);
@@ -43,35 +43,35 @@ class ColorButton extends React.Component {
         this.pickerEl = null;
     }
     render() {
-        let pickerStyle = {
+        const pickerStyle = {
             visibility: this.state.pickerVisible ? 'visible' : 'hidden'
         };
-        let curColor = this.props.color;
+        const curColor = this.props.color;
         return (
             <span className="ColorButton">
                 <span className="colorbutton-icon" onClick={this.togglePicker}>
-                    <span style={{backgroundColor: this.cssColor(curColor)}}></span>
+                    <span style={{backgroundColor: this.cssColor(curColor)}} />
                 </span>
-                <div ref={el => this.pickerEl = el} className="colorbutton-picker" style={pickerStyle}>
+                <div className="colorbutton-picker" ref={el => { this.pickerEl = el; }} style={pickerStyle}>
                     {defaultColors.map((color, idx) => (
-                        <span onClick={() => this.selectColor(idx)} onContextMenu={ev => this.replaceDefaultColor(ev, idx)} className="colorbutton-icon" key={"color" + idx}>
-                            <span style={{backgroundColor: this.cssColor(color)}}></span>
+                        <span className="colorbutton-icon" key={"color" + idx} onClick={() => this.selectColor(idx)} onContextMenu={ev => this.replaceDefaultColor(ev, idx)}>
+                            <span style={{backgroundColor: this.cssColor(color)}} />
                         </span>
                     ))}
                     <div className="colorbutton-picker-input">
                         <span className="colorbutton-icon">
-                            <span style={{backgroundColor: this.cssColor(curColor)}}></span>
+                            <span style={{backgroundColor: this.cssColor(curColor)}} />
                         </span>
-                        <input value={this.state.hexStr || this.hexColor(curColor)} type="text" onChange={ev => this.changeColor(ev.target.value)} />
+                        <input onChange={ev => this.changeColor(ev.target.value)} type="text" value={this.state.hexStr || this.hexColor(curColor)} />
                         <span className="colorbutton-picker-alpha">
                             <span>
-                                <input value={curColor[3]} type="range" min="0" max="1" step="0.1" onChange={ev => this.changeColorAlpha(ev.target.value)}/>
+                                <input max="1" min="0" onChange={ev => this.changeColorAlpha(ev.target.value)} step="0.1" type="range" value={curColor[3]}/>
                             </span>
                         </span>
                     </div>
                 </div>
             </span>
-        )
+        );
     }
     cssColor(color) {
         return "rgba(" + color.join(",") + ")";
@@ -80,7 +80,7 @@ class ColorButton extends React.Component {
         return (0x1000000 + (color[2] | (color[1] << 8) | (color[0] << 16))).toString(16).slice(1).toUpperCase();
     }
     togglePicker = (ev) => {
-        if(!this.state.pickerVisible) {
+        if (!this.state.pickerVisible) {
             document.addEventListener('click', this.checkClosePicker);
         } else {
             document.removeEventListener('click', this.checkClosePicker);
@@ -89,7 +89,7 @@ class ColorButton extends React.Component {
         this.setState({hexStr: null, pickerVisible: !this.state.pickerVisible});
     }
     checkClosePicker = (ev) => {
-        if(this.pickerEl && !this.pickerEl.contains(ev.target)) {
+        if (this.pickerEl && !this.pickerEl.contains(ev.target)) {
             this.togglePicker(ev);
         }
     }
@@ -103,9 +103,9 @@ class ColorButton extends React.Component {
         ev.preventDefault();
     }
     changeColor = (hexStr) => {
-        let match = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexStr);
-        if(match) {
-            let newColor = [parseInt(match[1], 16), parseInt(match[2], 16), parseInt(match[3], 16), this.props.color[3]];
+        const match = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexStr);
+        if (match) {
+            const newColor = [parseInt(match[1], 16), parseInt(match[2], 16), parseInt(match[3], 16), this.props.color[3]];
             this.setState({hexStr: null});
             this.props.onColorChanged(newColor);
         } else {
@@ -113,9 +113,9 @@ class ColorButton extends React.Component {
         }
     }
     changeColorAlpha = (alpha) => {
-        let newColor = [...this.props.color.slice(0, 3), parseFloat(alpha)];
+        const newColor = [...this.props.color.slice(0, 3), parseFloat(alpha)];
         this.props.onColorChanged(newColor);
     }
-};
+}
 
 module.exports = ColorButton;

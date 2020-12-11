@@ -6,15 +6,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
- const assign = require('object-assign');
+const assign = require('object-assign');
 const {SET_ACTIVE_LAYERINFO} = require('../actions/layerinfo');
 
-function layerInfo(state = {}, action) {
+const defaultState = {};
+
+function layerInfo(state = defaultState, action) {
     switch (action.type) {
-        case SET_ACTIVE_LAYERINFO:
-            return assign({}, state, {layer: action.layer, sublayer: action.sublayer});
-        default:
-            return state;
+    case SET_ACTIVE_LAYERINFO: {
+        return assign({}, state, {layer: action.layer, sublayer: action.sublayer});
+    }
+    default:
+        return state;
     }
 }
 

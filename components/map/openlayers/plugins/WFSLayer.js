@@ -7,54 +7,53 @@
  */
 
 const ol = require('openlayers');
-const assign = require('object-assign');
 const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
 const FeatureStyles = require('../FeatureStyles');
 
 
-let WMSLayer = {
+const WMSLayer = {
     create: (options) => {
         const formatMap = {
-            "gml3": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
-            "gml32": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
+            gml3: (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
+            gml32: (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
             "application/gml+xml; version=3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
 
-            "gml2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), defaultDataProjection: proj}),
+            gml2: (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), defaultDataProjection: proj}),
 
             "text/xml; subtype=gml/3.1.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
             "text/xml; subtype=gml/3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
             "text/xml; subtype=gml/2.1.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), defaultDataProjection: proj}),
 
-            "kml": (proj) => new ol.format.KML({defaultDataProjection: proj}),
+            kml: (proj) => new ol.format.KML({defaultDataProjection: proj}),
             "application/vnd.google-earth.kml+xml": (proj) => new ol.format.KML({defaultDataProjection: proj}),
 
-            "geojson": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
-            "json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
+            geojson: (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
+            json: (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
             "application/json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj})
         };
 
         let olformat = null;
         let format = null;
-        for(let key of Object.keys(formatMap)) {
-            let fmt = options.formats.find(entry => entry.toLowerCase() === key);
-            if(fmt) {
+        for (const key of Object.keys(formatMap)) {
+            const fmt = options.formats.find(entry => entry.toLowerCase() === key);
+            if (fmt) {
                 olformat = formatMap[key](options.srs);
                 format = fmt;
                 break;
             }
         }
-        if(!format) {
+        if (!format) {
             console.warn("No supported WFS format found");
             return null;
         }
 
-        let typeName = options.version < "2.0.0" ? "typeName" : "typeNames";
+        const typeName = options.version < "2.0.0" ? "typeName" : "typeNames";
 
-        let vectorSource = new ol.source.Vector({
+        const vectorSource = new ol.source.Vector({
             format: olformat,
             url: function(extent) {
                 let requestExtent;
-                if(options.version >= "1.1.0") {
+                if (options.version >= "1.1.0") {
                     extent = CoordinatesUtils.reprojectBbox(extent, options.srs, 'EPSG:4326');
                     // http://augusttown.blogspot.com/2010/08/mysterious-bbox-parameter-in-web.html
                     // Invert WGS axis orentation
@@ -62,7 +61,7 @@ let WMSLayer = {
                 } else {
                     requestExtent = extent;
                 }
-                let url = options.url + (options.url.endsWith('?') ? '' : '?') + 'service=WFS&version=' + options.version +
+                const url = options.url + (options.url.endsWith('?') ? '' : '?') + 'service=WFS&version=' + options.version +
                     '&request=GetFeature&' + typeName + '=' + options.name +
                     '&outputFormat=' + encodeURIComponent(format) +
                     '&srsName=' + options.srs +
@@ -83,7 +82,7 @@ let WMSLayer = {
             })
         });
     },
-    update: (layer, newOptions, oldOptions) => {
+    update: (/* layer, newOptions, oldOptions */) => {
     }
 };
 

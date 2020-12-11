@@ -9,19 +9,21 @@
 const {SET_CURRENT_TASK, SET_CURRENT_TASK_BLOCKED} = require('../actions/task');
 const assign = require('object-assign');
 
+const defaultState = {};
 
-function task(state = {}, action)
-{
+function task(state = defaultState, action) {
     switch (action.type) {
-        case SET_CURRENT_TASK:
-            if(state.blocked) {
-                return state;
-            }
-            return assign({}, state, {id: action.id, mode: action.mode, data: action.data, unsetOnMapClick: action.unsetOnMapClick});
-        case SET_CURRENT_TASK_BLOCKED:
-            return assign({}, state, {blocked: action.blocked});
-        default:
+    case SET_CURRENT_TASK: {
+        if (state.blocked) {
             return state;
+        }
+        return assign({}, state, {id: action.id, mode: action.mode, data: action.data, unsetOnMapClick: action.unsetOnMapClick});
+    }
+    case SET_CURRENT_TASK_BLOCKED: {
+        return assign({}, state, {blocked: action.blocked});
+    }
+    default:
+        return state;
     }
 }
 

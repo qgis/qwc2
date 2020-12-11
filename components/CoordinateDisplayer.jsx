@@ -15,29 +15,30 @@ const LocaleUtils = require('../utils/LocaleUtils');
 
 class CoordinateDisplayer extends React.Component {
     static propTypes = {
+        className: PropTypes.string,
+        coordinate: PropTypes.object,
         displaycrs: PropTypes.string,
         mapcrs: PropTypes.string,
-        coordinate: PropTypes.object,
-        className: PropTypes.string
+        mousepos: PropTypes.object
     }
     render() {
         let value = "";
-        if(this.props.mousepos) {
-            let coo = CoordinatesUtils.reproject(this.props.mousepos.coordinate, this.props.mapcrs, this.props.displaycrs);
-            if(!isNaN(coo[0]) && !isNaN(coo[1])) {
-                let digits = proj4js.defs(this.props.displaycrs).units === 'degrees'? 4 : 0;
+        if (this.props.mousepos) {
+            const coo = CoordinatesUtils.reproject(this.props.mousepos.coordinate, this.props.mapcrs, this.props.displaycrs);
+            if (!isNaN(coo[0]) && !isNaN(coo[1])) {
+                const digits = proj4js.defs(this.props.displaycrs).units === 'degrees' ? 4 : 0;
                 value = LocaleUtils.toLocaleFixed(coo[0], digits) + " " + LocaleUtils.toLocaleFixed(coo[1], digits);
             }
         }
         return (
-            <input type="text" className={this.props.className} value={value} readOnly="readOnly"/>
-        )
+            <input className={this.props.className} readOnly="readOnly" type="text" value={value}/>
+        );
     }
-};
+}
 
 const selector = state => ({
     mapcrs: state.map.projection,
-    mousepos: state.mousePosition && state.mousePosition.position && state.mousePosition.position || undefined,
+    mousepos: state.mousePosition.position
 });
 
 module.exports = {

@@ -19,19 +19,19 @@ const checkLoaded = (layer, options) => {
     }
 };
 
-let BingLayer = {
+const BingLayer = {
     create: (options) => {
-        var key = options.apiKey;
-        var maxNativeZoom = options.maxNativeZoom || 19;
+        const key = options.apiKey;
+        const maxNativeZoom = options.maxNativeZoom || 19;
         const layer = new ol.layer.Tile({
             preload: Infinity,
             opacity: options.opacity !== undefined ? options.opacity : 1,
             zIndex: options.zIndex,
             visible: options.visibility,
             source: new ol.source.BingMaps({
-              key: key,
-              imagerySet: options.name,
-              maxZoom: maxNativeZoom
+                key: key,
+                imagerySet: options.name,
+                maxZoom: maxNativeZoom
             })
         });
         setTimeout(checkLoaded.bind(null, layer, options), 1000);

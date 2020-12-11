@@ -21,16 +21,16 @@ class MapComparePlugin extends React.Component {
         this.el = null;
     }
     static propTypes = {
-        swipe: PropTypes.number,
-        setSwipe: PropTypes.func
+        setSwipe: PropTypes.func,
+        swipe: PropTypes.number
     }
     render() {
-        if(!this.props.swipe && this.props.swipe !== 0) {
+        if (!this.props.swipe && this.props.swipe !== 0) {
             return null;
         }
-        let style = {left: this.props.swipe + "%"};
+        const style = {left: this.props.swipe + "%"};
         return (
-            <div ref={el => this.el = el} style={style} id="MapCompare" onMouseDown={this.mouseDragStart} onTouchStart={this.touchDragStart} onTouchMove={this.touchDrag}>
+            <div id="MapCompare" onMouseDown={this.mouseDragStart} onTouchMove={this.touchDrag} onTouchStart={this.touchDragStart} ref={el => { this.el = el; }} style={style}>
                 <span className="map-compare-handle">
                     <Icon className="map-compare-handle-icon" icon="triangle-left" />
                     <Icon className="map-compare-handle-icon" icon="triangle-right" />
@@ -39,8 +39,8 @@ class MapComparePlugin extends React.Component {
         );
     }
     mouseDragStart = (ev) => {
-        if(this.el) {
-            let rect = this.el.getBoundingClientRect();
+        if (this.el) {
+            const rect = this.el.getBoundingClientRect();
             this.clickOffset = ev.clientX - rect.left;
             document.addEventListener("mousemove", this.mouseDrag);
             document.addEventListener("mouseup", this.mouseDragEnd);
@@ -62,8 +62,8 @@ class MapComparePlugin extends React.Component {
         ev.stopPropagation();
     }
     touchDragStart = (ev) => {
-        if(this.el) {
-            let rect = this.el.getBoundingClientRect();
+        if (this.el) {
+            const rect = this.el.getBoundingClientRect();
             this.clickOffset = ev.touches[0].clientX - rect.left;
         }
     }
@@ -72,8 +72,7 @@ class MapComparePlugin extends React.Component {
         perc = Math.min(100, Math.max(0, perc));
         this.props.setSwipe(perc);
     }
-};
-
+}
 
 module.exports = {
     MapComparePlugin: connect((state) => ({

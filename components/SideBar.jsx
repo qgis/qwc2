@@ -12,26 +12,28 @@ const {connect} = require('react-redux');
 const {Swipeable} = require('react-swipeable');
 const Message = require('../components/I18N/Message');
 const {setCurrentTask} = require('../actions/task');
-const Icon = require('./Icon')
+const Icon = require('./Icon');
 require('./style/SideBar.css');
 
 class SideBar extends React.Component {
     static propTypes = {
-        id: PropTypes.string.isRequired,
-        extraClasses: PropTypes.string,
+        children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         currentTask: PropTypes.object,
-        onShow: PropTypes.func,
+        extraBeforeContent: PropTypes.object,
+        extraClasses: PropTypes.string,
+        extraTitlebarContent: PropTypes.object,
+        icon: PropTypes.string,
+        id: PropTypes.string.isRequired,
+        minWidth: PropTypes.string,
         onHide: PropTypes.func,
-        width: PropTypes.string,
+        onShow: PropTypes.func,
         setCurrentTask: PropTypes.func,
         title: PropTypes.string,
-        icon: PropTypes.string,
-        extraBeforeContent: PropTypes.object,
-        extraTitlebarContent: PropTypes.object
+        width: PropTypes.string
     }
     static defaultProps = {
         extraClasses: '',
-        onShow: (mode) => {},
+        onShow: () => {},
         onHide: () => {},
         width: '15em',
         minWidth: '15em'
@@ -44,19 +46,19 @@ class SideBar extends React.Component {
         this.state.render = props.currentTask && props.currentTask.id === props.id;
     }
     componentDidUpdate(prevProps, prevState) {
-        let newVisible = this.props.currentTask && this.props.currentTask.id === this.props.id;
-        let oldVisible = prevProps.currentTask && prevProps.currentTask.id === prevProps.id;
-        if(newVisible && (!oldVisible || this.props.currentTask.mode !== prevProps.currentTask.mode)) {
+        const newVisible = this.props.currentTask && this.props.currentTask.id === this.props.id;
+        const oldVisible = prevProps.currentTask && prevProps.currentTask.id === prevProps.id;
+        if (newVisible && (!oldVisible || this.props.currentTask.mode !== prevProps.currentTask.mode)) {
             this.setState({render: true});
             this.props.onShow(this.props.currentTask.mode);
-        } else if(!newVisible && oldVisible) {
+        } else if (!newVisible && oldVisible) {
             this.props.onHide();
             // Hide the element after the transition period (see SideBar.css)
             setTimeout(() => { this.setState({render: false}); }, 300);
         }
     }
     closeClicked = () => {
-        if(this.props.currentTask.id === this.props.id) {
+        if (this.props.currentTask.id === this.props.id) {
             this.props.setCurrentTask(null);
         }
     }
@@ -64,41 +66,47 @@ class SideBar extends React.Component {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
     }
     render() {
-        let visible = this.props.currentTask.id === this.props.id;
-        let render = visible || this.state.render;
-        let style = {
+        const visible = this.props.currentTask.id === this.props.id;
+        const render = visible || this.state.render;
+        const style = {
             width: this.props.width,
             minWidth: this.props.minWidth,
             right: 0,
             transform: visible ? '' : 'translateX(100%) translateX(8px)',
             zIndex: visible ? 5 : 4
-        }
+        };
         let contents = null;
-        if(render && typeof this.props.children === "function") {
+        if (render && typeof this.props.children === "function") {
             contents = this.props.children();
+        }
+        let body = null;
+        let extra = null;
+        if (render) {
+            body = contents ? contents.body || null : this.renderRole("body");
+            extra = contents ? contents.extra || null : this.renderRole("extra");
         }
         return (
             <div>
-                <Swipeable onSwipedRight={this.closeClicked} delta={30}>
-                    <div id={this.props.id} className={"sidebar" + " " + this.props.extraClasses} style={style}>
+                <Swipeable delta={30} onSwipedRight={this.closeClicked}>
+                    <div className={"sidebar" + " " + this.props.extraClasses} id={this.props.id} style={style}>
                         <div className="sidebar-titlebar">
                             {this.state.render ? this.props.extraBeforeContent : null}
                             <Icon className="sidebar-titlebar-icon" icon={this.props.icon} size="large"/>
                             <span className="sidebar-titlebar-title"><Message msgId={this.props.title} /></span>
                             {this.state.render ? this.props.extraTitlebarContent : null}
                             <span className="sidebar-titlebar-spacer" />
-                            <Icon className="sidebar-titlebar-closeicon" onClick={this.closeClicked} icon="chevron-right"/>
+                            <Icon className="sidebar-titlebar-closeicon" icon="chevron-right" onClick={this.closeClicked}/>
                         </div>
                         <div className="sidebar-body">
-                            {render ? (contents ? contents.body || null : this.renderRole("body")) : null}
+                            {body}
                         </div>
                     </div>
                 </Swipeable>
-                {render ? (contents ? contents.extra || null : this.renderRole("extra")) : null}
+                {extra}
             </div>
         );
     }
-};
+}
 
 const selector = (state) => ({
     currentTask: state.task
@@ -106,6 +114,6 @@ const selector = (state) => ({
 
 module.exports = {
     SideBar: connect(selector, {
-        setCurrentTask: setCurrentTask,
+        setCurrentTask: setCurrentTask
     })(SideBar)
-}
+};

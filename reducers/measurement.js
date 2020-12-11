@@ -9,7 +9,7 @@
 const assign = require('object-assign');
 const {CHANGE_MEASUREMENT_STATE} = require('../actions/measurement');
 
-function measurement(state = {
+const defaultState = {
     geomType: null,
     coordinates: null,
     length: null,
@@ -17,12 +17,15 @@ function measurement(state = {
     bearing: 0,
     lenUnit: 'm',
     areaUnit: 'sqm'
-}, action) {
+};
+
+function measurement(state = defaultState, action) {
     switch (action.type) {
-        case CHANGE_MEASUREMENT_STATE:
-            return assign({}, {lenUnit: state.lenUnit, areaUnit: state.areaUnit}, action.data);
-        default:
-            return state;
+    case CHANGE_MEASUREMENT_STATE: {
+        return assign({}, {lenUnit: state.lenUnit, areaUnit: state.areaUnit}, action.data);
+    }
+    default:
+        return state;
     }
 }
 

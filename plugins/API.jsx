@@ -18,7 +18,7 @@ class API extends React.Component {
     componentDidMount() {
         window.qwc2 = {};
         // Auto-binded functions
-        for(let prop in this.props) {
+        for (const prop of Object.keys(this.props)) {
             window.qwc2[prop] = this.props[prop];
         }
         // Additional exports
@@ -27,29 +27,31 @@ class API extends React.Component {
         window.qwc2.drawScratch = this.drawScratch;
     }
     static propTypes = {
-        mapCrs: PropTypes.string
+        addLayer: PropTypes.func,
+        mapCrs: PropTypes.string,
+        setCurrentTask: PropTypes.func
     }
     render() {
         return null;
     }
-    addExternalLayer = (resource, beforeLayerName=null) => {
-        let params = LayerUtils.splitLayerUrlParam(resource);
+    addExternalLayer = (resource, beforeLayerName = null) => {
+        const params = LayerUtils.splitLayerUrlParam(resource);
         ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
-            if(layer) {
+            if (layer) {
                 this.props.addLayer(layer, null, beforeLayerName);
             }
         });
     }
-    drawScratch = (geomType, message, drawMultiple, callback, style=null) => {
+    drawScratch = (geomType, message, drawMultiple, callback, style = null) => {
         this.props.setCurrentTask("ScratchDrawing", null, null, {geomType, message, drawMultiple, callback, style});
     }
-};
+}
 
 function extractFunctions(obj) {
     return Object.entries(obj).reduce((result, [key, value]) => {
-        if(typeof value === "function") {
+        if (typeof value === "function") {
             result[key] = value;
-        };
+        }
         return result;
     }, {});
 }

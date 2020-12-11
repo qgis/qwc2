@@ -16,26 +16,26 @@ require('./style/BackgroundSwitcher.css');
 
 class TaskButton extends React.Component {
     static propTypes = {
-        task: PropTypes.string,
-        mode: PropTypes.string,
-        icon: PropTypes.string,
-        position: PropTypes.number,
         currentTask: PropTypes.string,
-        setCurrentTask: PropTypes.func,
+        icon: PropTypes.string,
         mapClickAction: PropTypes.string,
+        mode: PropTypes.string,
+        position: PropTypes.number,
+        setCurrentTask: PropTypes.func,
+        task: PropTypes.string
     }
     static defaultProps = {
         mode: null,
         position: 1
     }
     render() {
-        let classes = classnames({
+        const classes = classnames({
             "map-button": true,
             "button-active": this.props.currentTask === this.props.task
         });
         return (
             <button className={classes} onClick={this.buttonClicked}
-                onClick={this.buttonClicked} style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
+                style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
                 <Icon icon={this.props.icon} />
             </button>
         );
@@ -43,7 +43,7 @@ class TaskButton extends React.Component {
     buttonClicked = () => {
         this.props.setCurrentTask(this.props.currentTask === this.props.task ? null : this.props.task, this.props.mode, this.props.mapClickAction);
     }
-};
+}
 
 const selector = (state) => ({
     currentTask: state.task && state.task.id || null
@@ -51,8 +51,8 @@ const selector = (state) => ({
 
 module.exports = {
     TaskButtonPlugin: connect(selector, {
-      setCurrentTask: setCurrentTask,
-  })(TaskButton),
+        setCurrentTask: setCurrentTask
+    })(TaskButton),
     reducers: {
     }
 };

@@ -11,7 +11,6 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
 const isEmpty = require('lodash.isempty');
-const uuid = require('uuid');
 const IdentifyUtils = require('../utils/IdentifyUtils');
 const MapUtils = require('../utils/MapUtils');
 const LayerUtils = require('../utils/LayerUtils');
@@ -23,29 +22,29 @@ const {IdentifyViewer} = require('../components/IdentifyViewer');
 
 class Identify extends React.Component {
     static propTypes = {
-        enabled: PropTypes.bool,
-        point: PropTypes.object,
-        clickFeature: PropTypes.object,
-        map: PropTypes.object,
-        layers: PropTypes.array,
-        requests: PropTypes.array,
-        responses: PropTypes.array,
-        purgeResults: PropTypes.func,
-        sendRequest: PropTypes.func,
-        identifyEmpty: PropTypes.func,
         addMarker: PropTypes.func,
-        removeMarker: PropTypes.func,
-        enableExport: PropTypes.bool,
-        longAttributesDisplay: PropTypes.string,
-        displayResultTree: PropTypes.bool,
-        initialWidth: PropTypes.number,
-        initialHeight: PropTypes.number,
-        initiallyDocked: PropTypes.bool,
-        params: PropTypes.object,
         attributeCalculator: PropTypes.func,
         attributeTransform: PropTypes.func,
+        clickFeature: PropTypes.object,
+        displayResultTree: PropTypes.bool,
+        enableExport: PropTypes.bool,
+        enabled: PropTypes.bool,
         featureInfoReturnsLayerName: PropTypes.bool,
+        identifyEmpty: PropTypes.func,
+        initialHeight: PropTypes.number,
+        initialWidth: PropTypes.number,
+        initiallyDocked: PropTypes.bool,
+        layers: PropTypes.array,
+        longAttributesDisplay: PropTypes.string,
+        map: PropTypes.object,
+        params: PropTypes.object,
+        point: PropTypes.object,
+        purgeResults: PropTypes.func,
         removeLayer: PropTypes.func,
+        removeMarker: PropTypes.func,
+        requests: PropTypes.array,
+        responses: PropTypes.array,
+        sendRequest: PropTypes.func,
         setIdentifyFeatureResult: PropTypes.func
     }
     static defaultProps = {
@@ -57,30 +56,30 @@ class Identify extends React.Component {
         featureInfoReturnsLayerName: true
     }
     componentDidUpdate(prevProps, prevState) {
-        let point = this.queryPoint(this.props);
-        let clickFeature = this.queryFeature(this.props);
+        const point = this.queryPoint(this.props);
+        const clickFeature = this.queryFeature(this.props);
         if (point || clickFeature) {
             // Remove any search selection layer to avoid confusion
             this.props.removeLayer("searchselection");
 
             let queryableLayers = [];
-            if(point) {
+            if (point) {
                 queryableLayers = this.props.layers.filter((l) => {
                     // All non-background WMS layers with a non-empty queryLayers list
-                    return l.visibility && l.type === 'wms' && l.role !== LayerRole.BACKGROUND && (l.queryLayers || []).length > 0
+                    return l.visibility && l.type === 'wms' && l.role !== LayerRole.BACKGROUND && (l.queryLayers || []).length > 0;
                 });
                 const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
                 queryableLayers.forEach((layer) => {
-                    let layers = [];
-                    let queryLayers = layer.queryLayers;
-                    for(let i = 0; i < queryLayers.length; ++i) {
-                        if(layer.externalLayerMap && layer.externalLayerMap[queryLayers[i]]) {
-                            let sublayer = LayerUtils.searchSubLayer(layer, "name", queryLayers[i]);
-                            let sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
-                            if(!isEmpty(layer.externalLayerMap[queryLayers[i]].queryLayers) && !sublayerInvisible) {
+                    const layers = [];
+                    const queryLayers = layer.queryLayers;
+                    for (let i = 0; i < queryLayers.length; ++i) {
+                        if (layer.externalLayerMap && layer.externalLayerMap[queryLayers[i]]) {
+                            const sublayer = LayerUtils.searchSubLayer(layer, "name", queryLayers[i]);
+                            const sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
+                            if (!isEmpty(layer.externalLayerMap[queryLayers[i]].queryLayers) && !sublayerInvisible) {
                                 layers.push(layer.externalLayerMap[queryLayers[i]]);
                             }
-                        } else if(layers.length > 0 && layers[layers.length - 1].id === layer.id) {
+                        } else if (layers.length > 0 && layers[layers.length - 1].id === layer.id) {
                             layers[layers.length - 1].queryLayers.push(queryLayers[i]);
                         } else {
                             layers.push(assign({}, layer, {queryLayers: [queryLayers[i]]}));
@@ -90,16 +89,16 @@ class Identify extends React.Component {
                 });
             }
             let queryFeature = null;
-            if(clickFeature) {
-                let layer = this.props.layers.find(l => l.id === clickFeature.layer);
-                if(layer && layer.role === LayerRole.USERLAYER && layer.type === "vector" && !isEmpty(layer.features)) {
+            if (clickFeature) {
+                const layer = this.props.layers.find(l => l.id === clickFeature.layer);
+                if (layer && layer.role === LayerRole.USERLAYER && layer.type === "vector" && !isEmpty(layer.features)) {
                     queryFeature = layer.features.find(feature =>  feature.id === clickFeature.feature);
-                    if(queryFeature && !isEmpty(queryFeature.properties)) {
+                    if (queryFeature && !isEmpty(queryFeature.properties)) {
                         this.props.setIdentifyFeatureResult(clickFeature.coordinate, layer.name, queryFeature);
                     }
                 }
             }
-            if(isEmpty(queryableLayers) && !queryFeature) {
+            if (isEmpty(queryableLayers) && !queryFeature) {
                 this.props.identifyEmpty();
             }
             this.props.addMarker('identify', point, '', this.props.map.projection);
@@ -110,15 +109,13 @@ class Identify extends React.Component {
     }
     queryPoint = (props) => {
         if (props.enabled && props.clickFeature && props.clickFeature.feature === 'searchmarker' && props.clickFeature.geometry) {
-            if (this.props.clickFeature !== props.clickFeature)
-            {
+            if (this.props.clickFeature !== props.clickFeature) {
                 this.props.purgeResults();
                 return props.clickFeature.geometry;
             }
         }
         if (props.enabled && props.clickFeature && props.clickFeature.coordinate) {
-            if (!this.props.clickFeature || this.props.clickFeature.coordinate !== props.clickFeature.coordinate)
-            {
+            if (!this.props.clickFeature || this.props.clickFeature.coordinate !== props.clickFeature.coordinate) {
                 this.props.purgeResults();
                 return props.clickFeature.coordinate;
             }
@@ -127,9 +124,9 @@ class Identify extends React.Component {
         if (props.enabled && props.point && props.point.button === 0 && props.point.coordinate) {
             if (!this.props.point.coordinate ||
                 this.props.point.coordinate[0] !== props.point.coordinate[0] ||
-                this.props.point.coordinate[1] !== props.point.coordinate[1] )
-            {
-                if(props.point.modifiers.ctrl !== true) {
+                this.props.point.coordinate[1] !== props.point.coordinate[1]
+            ) {
+                if (props.point.modifiers.ctrl !== true) {
                     this.props.purgeResults();
                 }
                 return props.point.coordinate;
@@ -141,6 +138,7 @@ class Identify extends React.Component {
         if (props.enabled && props.clickFeature && this.props.clickFeature !== props.clickFeature && props.clickFeature.geometry) {
             return props.clickFeature;
         }
+        return null;
     }
     onClose = () => {
         this.props.removeMarker('identify');
@@ -148,30 +146,30 @@ class Identify extends React.Component {
         this.props.purgeResults();
     }
     render() {
-        let missingResponses = this.props.requests.length - this.props.responses.length;
+        const missingResponses = this.props.requests.length - this.props.responses.length;
         return [this.props.requests.length === 0 ? null : (
-            <IdentifyViewer key="IdentifyViewer" onClose={this.onClose}
+            <IdentifyViewer attributeCalculator={this.props.attributeCalculator} attributeTransform={this.props.attributeTransform}
+                displayResultTree={this.props.displayResultTree}
+                enableExport={this.props.enableExport}
+                featureInfoReturnsLayerName={this.props.featureInfoReturnsLayerName}
+                initialHeight={this.props.initialHeight}
+                initialWidth={this.props.initialWidth}
+                initiallyDocked={this.props.initiallyDocked}
+                key="IdentifyViewer"
+                longAttributesDisplay={this.props.longAttributesDisplay}
                 map={this.props.map}
                 missingResponses={missingResponses}
-                responses={this.props.responses}
-                enableExport={this.props.enableExport}
-                longAttributesDisplay={this.props.longAttributesDisplay}
-                displayResultTree={this.props.displayResultTree}
-                attributeCalculator={this.props.attributeCalculator}
-                attributeTransform={this.props.attributeTransform}
-                initialWidth={this.props.initialWidth}
-                initialHeight={this.props.initialHeight}
-                initiallyDocked={this.props.initiallyDocked}
-                featureInfoReturnsLayerName={this.props.featureInfoReturnsLayerName} />
+                onClose={this.onClose}
+                responses={this.props.responses} />
         ), (
-            <TaskBar key="TaskBar" task="Identify" onHide={this.onClose}>
+            <TaskBar key="TaskBar" onHide={this.onClose} task="Identify">
                 {() => ({
                     body: (<Message msgId={"infotool.clickhelpPoint"} />)
                 })}
             </TaskBar>
         )];
     }
-};
+}
 
 const selector = (state) => ({
     enabled: state.task.id === "Identify" || state.identify.tool === "Identify",

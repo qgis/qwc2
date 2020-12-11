@@ -19,7 +19,7 @@ const METERS_PER_UNIT = {
 const GET_PIXEL_FROM_COORDINATES_HOOK = 'GET_PIXEL_FROM_COORDINATES_HOOK';
 const GET_COORDINATES_FROM_PIXEL_HOOK = 'GET_COORDINATES_FROM_PIXEL_HOOK';
 
-var hooks = {};
+const hooks = {};
 
 function registerHook(name, hook) {
     hooks[name] = hook;
@@ -59,7 +59,7 @@ function getGoogleMercatorScales(minZoom, maxZoom, dpi = DEFAULT_SCREEN_DPI) {
     const TILE_WIDTH = 256;
     const ZOOM_FACTOR = 2;
 
-    var retval = [];
+    const retval = [];
     for (let l = minZoom; l <= maxZoom; l++) {
         retval.push(2 * Math.PI * RADIUS / (TILE_WIDTH * Math.pow(ZOOM_FACTOR, l) / dpi2dpm(dpi)));
     }
@@ -72,7 +72,7 @@ function getGoogleMercatorScales(minZoom, maxZoom, dpi = DEFAULT_SCREEN_DPI) {
  * @param dpi {number} screen resolution in dots per inch.
  * @return {array} a list of resolutions corresponding to the given scales, projection and dpi.
  */
-function getResolutionsForScales(scales, projection, dpi=null) {
+function getResolutionsForScales(scales, projection, dpi = null) {
     const dpu = dpi2dpu(dpi, projection);
     const resolutions = scales.map((scale) => {
         return scale / dpu;
@@ -99,8 +99,8 @@ function getZoomForExtent(extent, resolutions, mapSize, minZoom, maxZoom) {
     const yResolution = Math.abs(hExtent / mapSize.height);
     const extentResolution = Math.max(xResolution, yResolution);
 
-    if(ConfigUtils.getConfigProp("allowFractionalZoom") === true) {
-        return Math.max(minZoom, Math.min(this.computeZoom(resolutions, extentResolution), maxZoom))
+    if (ConfigUtils.getConfigProp("allowFractionalZoom") === true) {
+        return Math.max(minZoom, Math.min(this.computeZoom(resolutions, extentResolution), maxZoom));
     } else {
         const {zoom, ...other} = resolutions.reduce((previous, resolution, index) => {
             const diff = Math.abs(resolution - extentResolution);
@@ -118,17 +118,17 @@ function getZoomForExtent(extent, resolutions, mapSize, minZoom, maxZoom) {
  * @param mapSize {Object} The current size of the map
  */
 function getExtentForCenterAndZoom(center, zoom, resolutions, mapSize) {
-    if(ConfigUtils.getConfigProp("allowFractionalZoom") !== true) {
+    if (ConfigUtils.getConfigProp("allowFractionalZoom") !== true) {
         zoom = Math.round(zoom);
     }
-    let width = this.computeForZoom(resolutions, zoom) * mapSize.width;
-    let height = this.computeForZoom(resolutions, zoom) * mapSize.height;
+    const width = this.computeForZoom(resolutions, zoom) * mapSize.width;
+    const height = this.computeForZoom(resolutions, zoom) * mapSize.height;
     return [
         center[0] - 0.5 * width,
         center[1] - 0.5 * height,
         center[0] + 0.5 * width,
         center[1] + 0.5 * height
-    ]
+    ];
 }
 
 /**
@@ -140,16 +140,16 @@ function getExtentForCenterAndZoom(center, zoom, resolutions, mapSize) {
  * @param height {number} Height in meters.
  */
 function transformExtent(projection, center, width, height) {
-    let units = CoordinatesUtils.getUnits(projection);
-    if(units == 'ft') {
-        return {width: width / METERS_PER_UNIT['ft'], height: height / METERS_PER_UNIT['ft']};
-    } else if(units == 'us-ft') {
+    const units = CoordinatesUtils.getUnits(projection);
+    if (units === 'ft') {
+        return {width: width / METERS_PER_UNIT.ft, height: height / METERS_PER_UNIT.ft};
+    } else if (units === 'us-ft') {
         return {width: width / METERS_PER_UNIT['us-ft'], height: height / METERS_PER_UNIT['us-ft']};
-    } else if(units == 'degrees') {
+    } else if (units === 'degrees') {
         // https://en.wikipedia.org/wiki/Geographic_coordinate_system#Length_of_a_degree
-        let phi = center[1] / 180 * Math.PI;
-        let latPerM = 111132.92 - 559.82 * Math.cos(2 * phi) + 1.175 * Math.cos(4 * phi) - 0.0023 * Math.cos(6 * phi);
-        let lonPerM = 111412.84 * Math.cos(phi) - 93.5 * Math.cos(3 * phi) + 0.118 * Math.cos(5 * phi);
+        const phi = center[1] / 180 * Math.PI;
+        const latPerM = 111132.92 - 559.82 * Math.cos(2 * phi) + 1.175 * Math.cos(4 * phi) - 0.0023 * Math.cos(6 * phi);
+        const lonPerM = 111412.84 * Math.cos(phi) - 93.5 * Math.cos(3 * phi) + 0.118 * Math.cos(5 * phi);
         return {width: width / lonPerM, height: height / latPerM};
     }
     return {width, height};
@@ -163,16 +163,16 @@ function transformExtent(projection, center, width, height) {
  * @return Scale of resolution matching zoomLevel
  */
 function computeForZoom(list, zoomLevel) {
-    if(ConfigUtils.getConfigProp("allowFractionalZoom") !== true) {
+    if (ConfigUtils.getConfigProp("allowFractionalZoom") !== true) {
         return list[Math.min(list.length - 1, Math.round(zoomLevel))];
     }
     zoomLevel = Math.max(zoomLevel, 0);
-    let upper = Math.ceil(zoomLevel);
-    let lower = Math.floor(zoomLevel);
-    if(upper >= list.length) {
+    const upper = Math.ceil(zoomLevel);
+    const lower = Math.floor(zoomLevel);
+    if (upper >= list.length) {
         return list[list.length - 1];
     }
-    let frac = zoomLevel - lower;
+    const frac = zoomLevel - lower;
     return list[lower] * (1 - frac) + list[upper] * frac;
 }
 
@@ -184,10 +184,10 @@ function computeForZoom(list, zoomLevel) {
  * @return Zoom level matching the specified scale or resolution.
  */
 function computeZoom(list, value) {
-    if(ConfigUtils.getConfigProp("allowFractionalZoom") === true) {
+    if (ConfigUtils.getConfigProp("allowFractionalZoom") === true) {
         let index = 0;
-        for(let i = 1; i < list.length - 1; ++i) {
-            if(value <= list[i]) {
+        for (let i = 1; i < list.length - 1; ++i) {
+            if (value <= list[i]) {
                 index = i;
             }
         }
@@ -195,9 +195,9 @@ function computeZoom(list, value) {
     } else {
         let closestVal = Math.abs(value - list[0]);
         let closestIdx = 0;
-        for(let i = 1; i < list.length; ++i) {
-            let currVal = Math.abs(value - list[i]);
-            if(currVal < closestVal) {
+        for (let i = 1; i < list.length; ++i) {
+            const currVal = Math.abs(value - list[i]);
+            if (currVal < closestVal) {
                 closestVal = currVal;
                 closestIdx = i;
             }

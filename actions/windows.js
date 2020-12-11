@@ -12,8 +12,7 @@ const CLOSE_WINDOW = 'CLOSE_WINDOW';
 const CLOSE_ALL_WINDOWS = 'CLOSE_ALL_WINDOWS';
 
 
-function showIframeDialog(name, url, options)
-{
+function showIframeDialog(name, url, options) {
     return {
         type: SHOW_IFRAME_DIALOG,
         name: name,
@@ -22,8 +21,7 @@ function showIframeDialog(name, url, options)
     };
 }
 
-function showNotification(name, text)
-{
+function showNotification(name, text) {
     return {
         type: SHOW_NOTIFICATION,
         name: name,
@@ -31,16 +29,14 @@ function showNotification(name, text)
     };
 }
 
-function closeWindow(name)
-{
+function closeWindow(name) {
     return {
         type: CLOSE_WINDOW,
         name: name
     };
 }
 
-function closeAllWindows()
-{
+function closeAllWindows() {
     return {
         type: CLOSE_ALL_WINDOWS
     };
@@ -55,4 +51,4 @@ module.exports = {
     showNotification,
     closeWindow,
     closeAllWindows
-}
+};

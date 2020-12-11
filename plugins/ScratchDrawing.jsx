@@ -11,15 +11,10 @@ const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
 const assign = require('object-assign');
 const Mousetrap = require('mousetrap');
-const isEmpty = require('lodash.isempty');
-const NumericInput = require('react-numeric-input2');
-const uuid = require('uuid');
-const Message = require('../components/I18N/Message');
 const {changeRedliningState} = require('../actions/redlining');
-const {LayerRole,addLayer,removeLayer,clearLayer} = require('../actions/layers');
+const {LayerRole, addLayer, removeLayer, clearLayer} = require('../actions/layers');
 const {setCurrentTask} = require('../actions/task');
 const {TaskBar} = require('../components/TaskBar');
-const ButtonBar = require('../components/widgets/ButtonBar');
 const LocaleUtils = require('../utils/LocaleUtils');
 
 require('./style/Redlining.css');
@@ -28,15 +23,15 @@ require('./style/ScratchDrawing.css');
 
 class ScratchDrawing extends React.Component {
     static propTypes = {
-        task: PropTypes.object,
-        layers: PropTypes.array,
-        redlining: PropTypes.object,
-        projection: PropTypes.string,
-        setCurrentTask: PropTypes.func,
-        changeRedliningState: PropTypes.func,
         addLayer: PropTypes.func,
+        changeRedliningState: PropTypes.func,
         clearLayer: PropTypes.func,
-        removeLayer: PropTypes.func
+        layers: PropTypes.array,
+        projection: PropTypes.string,
+        redlining: PropTypes.object,
+        removeLayer: PropTypes.func,
+        setCurrentTask: PropTypes.func,
+        task: PropTypes.object
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -52,20 +47,20 @@ class ScratchDrawing extends React.Component {
     }
     componentDidUpdate(prevProps, prevState) {
         // Remove layers when not used anymore
-        if(prevProps.redlining.layer === "__scratchdrawing" && this.props.redlining.layer !== "__scratchdrawing") {
+        if (prevProps.redlining.layer === "__scratchdrawing" && this.props.redlining.layer !== "__scratchdrawing") {
             this.props.removeLayer("__scratchdrawing");
         }
         // Call callback if task unset
-        if(this.props.task.id !== prevProps.task.id && prevProps.task.id === "ScratchDrawing" && !this.submitted) {
+        if (this.props.task.id !== prevProps.task.id && prevProps.task.id === "ScratchDrawing" && !this.submitted) {
             prevProps.task.data.callback(null, null);
         }
         this.submitted = false;
         // Change drawing mode if task data changes
-        if(this.props.task.id === "ScratchDrawing" && this.props.task.data !== prevProps.task.data) {
-            let data = this.props.task.data || {};
+        if (this.props.task.id === "ScratchDrawing" && this.props.task.data !== prevProps.task.data) {
+            const data = this.props.task.data || {};
             this.props.changeRedliningState({action: 'Draw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
         }
-        if(this.props.task.id === "ScratchDrawing" && this.props.redlining.geomType !== prevProps.redlining.geomType) {
+        if (this.props.task.id === "ScratchDrawing" && this.props.redlining.geomType !== prevProps.redlining.geomType) {
             this.props.clearLayer('__scratchdrawing');
         }
     }
@@ -73,21 +68,21 @@ class ScratchDrawing extends React.Component {
         return assign({}, {
             borderColor: [255, 0, 0, 1],
             size: 2,
-            fillColor:  [255, 255, 255, 0.5],
+            fillColor: [255, 255, 255, 0.5],
             text: ""
         }, style);
     }
     keyPressed = (ev) => {
-        if(ev.keyCode === 27) {
-            if(this.props.redlining.action === 'Draw' && !this.props.redlining.selectedFeature) {
+        if (ev.keyCode === 27) {
+            if (this.props.redlining.action === 'Draw' && !this.props.redlining.selectedFeature) {
                 this.props.changeRedliningState({action: 'Delete'});
             }
         }
     };
-    onShow = (mode) => {
+    onShow = () => {
         this.prevstyle = this.props.redlining.style;
-        let data = this.props.task.data || {};
-        let layer = {
+        const data = this.props.task.data || {};
+        const layer = {
             id: "__scratchdrawing",
             role: LayerRole.USERLAYER,
             type: 'vector'
@@ -103,14 +98,14 @@ class ScratchDrawing extends React.Component {
         Mousetrap.unbind('del', this.triggerDelete);
     }
     updateRedliningState = (diff) => {
-        let newState = assign({}, this.props.redlining, diff)
+        const newState = assign({}, this.props.redlining, diff);
         this.props.changeRedliningState(newState);
     }
     renderBody = () => {
         return (
             <div className="scratch-drawing-taskbar-body">
                 <span>{this.props.task.data.message}</span>
-                <button className="button" onClick={ev => this.submitGeometry()}>
+                <button className="button" onClick={() => this.submitGeometry()}>
                     {LocaleUtils.getMessageById(this.context.messages, "scratchdrawing.finish")}
                 </button>
             </div>
@@ -118,7 +113,7 @@ class ScratchDrawing extends React.Component {
     }
     render() {
         return (
-            <TaskBar task="ScratchDrawing" onShow={this.onShow} onHide={this.onHide}>
+            <TaskBar onHide={this.onHide} onShow={this.onShow} task="ScratchDrawing">
                 {() => ({
                     body: this.renderBody()
                 })}
@@ -129,13 +124,13 @@ class ScratchDrawing extends React.Component {
         this.updateRedliningState({action: "Delete", geomType: null});
     }
     submitGeometry = () => {
-        let layer = this.props.layers.find(layer => layer.id === "__scratchdrawing");
-        features = (layer || {}).features || [];
+        const layer = this.props.layers.find(l => l.id === "__scratchdrawing");
+        const features = (layer || {}).features || [];
         this.submitted = true;
         this.props.task.data.callback(features, this.props.projection);
         this.props.setCurrentTask(null);
     }
-};
+}
 
 module.exports = {
     ScratchDrawingPlugin: connect((state) => ({

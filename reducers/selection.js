@@ -6,32 +6,32 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {
-    CHANGE_SELECTION_STATE
-} = require('../actions/selection');
-
+const {CHANGE_SELECTION_STATE} = require('../actions/selection');
 const assign = require('object-assign');
 
-function selection(state = {
+const defaultState = {
     geomType: null,
     style: 'default',
     styleOptions: {},
     reset: false
-}, action) {
+};
+
+function selection(state = defaultState, action) {
     switch (action.type) {
-        case CHANGE_SELECTION_STATE:
-            return assign({}, state, {
-                geomType: action.geomType,
-                point: action.point,
-                line: action.line,
-                polygon: action.polygon,
-                style: action.style || 'default',
-                styleOptions: action.styleOptions || {},
-                cursor: action.cursor || null,
-                reset: action.reset || false
-            });
-        default:
-            return state;
+    case CHANGE_SELECTION_STATE: {
+        return assign({}, state, {
+            geomType: action.geomType,
+            point: action.point,
+            line: action.line,
+            polygon: action.polygon,
+            style: action.style || 'default',
+            styleOptions: action.styleOptions || {},
+            cursor: action.cursor || null,
+            reset: action.reset || false
+        });
+    }
+    default:
+        return state;
     }
 }
 

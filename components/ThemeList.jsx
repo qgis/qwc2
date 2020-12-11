@@ -9,7 +9,6 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const {connect} = require('react-redux');
-const isEqual = require('lodash.isequal');
 const isEmpty = require('lodash.isempty');
 const removeDiacritics = require('diacritics').remove;
 const Icon = require('./Icon');
@@ -26,20 +25,20 @@ require('./style/ThemeList.css');
 
 class ThemeList extends React.Component {
     static propTypes = {
-        themes: PropTypes.object,
         activeTheme: PropTypes.object,
-        layers: PropTypes.array,
-        changeTheme: PropTypes.func,
-        setCurrentTask: PropTypes.func,
-        mapConfig: PropTypes.object,
         addLayer: PropTypes.func,
-        setActiveLayerInfo: PropTypes.func,
-        setThemeLayersList: PropTypes.func,
         allowAddingOtherThemes: PropTypes.bool,
-        showLayerAfterChangeTheme: PropTypes.bool,
+        changeTheme: PropTypes.func,
         collapsibleGroups: PropTypes.bool,
+        dontPreserveLayersOnSwitch: PropTypes.bool,
         filter: PropTypes.string,
-        dontPreserveLayersOnSwitch: PropTypes.bool
+        layers: PropTypes.array,
+        mapConfig: PropTypes.object,
+        setActiveLayerInfo: PropTypes.func,
+        setCurrentTask: PropTypes.func,
+        setThemeLayersList: PropTypes.func,
+        showLayerAfterChangeTheme: PropTypes.bool,
+        themes: PropTypes.object
     }
     static contextTypes = {
         messages: PropTypes.object
@@ -52,17 +51,17 @@ class ThemeList extends React.Component {
         visibleThemeInfoMenu: null
     }
     groupMatchesFilter = (group, filter) => {
-        if(group && group.items) {
-            for(let i = 0, n = group.items.length; i < n; ++i) {
-                if(removeDiacritics(group.items[i].title).match(filter) ||
+        if (group && group.items) {
+            for (let i = 0, n = group.items.length; i < n; ++i) {
+                if (removeDiacritics(group.items[i].title).match(filter) ||
                    removeDiacritics(group.items[i].keywords).match(filter)) {
                     return true;
                 }
             }
         }
-        if(group && group.subdirs) {
-            for(let i = 0, n = group.subdirs.length; i < n; ++i) {
-                if(this.groupMatchesFilter(group.subdirs[i], filter)) {
+        if (group && group.subdirs) {
+            for (let i = 0, n = group.subdirs.length; i < n; ++i) {
+                if (this.groupMatchesFilter(group.subdirs[i], filter)) {
                     return true;
                 }
             }
@@ -70,50 +69,50 @@ class ThemeList extends React.Component {
         return false;
     }
     renderThemeGroup = (group, filter) => {
-        let assetsPath = ConfigUtils.getConfigProp("assetsPath");
+        const assetsPath = ConfigUtils.getConfigProp("assetsPath");
         let subdirs = (group && group.subdirs ? group.subdirs : []);
-        if(filter) {
+        if (filter) {
             subdirs = subdirs.filter(subdir => this.groupMatchesFilter(subdir, filter));
         }
-        let subtree = subdirs.map((subdir, idx) => {
-            let expanded = !this.props.collapsibleGroups || filter || this.state.expandedGroups.includes(subdir.id) || (this.props.activeTheme && this.groupContainsActiveTheme(subdir));
-            if(isEmpty(subdir.items)) {
+        const subtree = subdirs.map((subdir) => {
+            const expanded = !this.props.collapsibleGroups || filter || this.state.expandedGroups.includes(subdir.id) || (this.props.activeTheme && this.groupContainsActiveTheme(subdir));
+            if (isEmpty(subdir.items)) {
                 return null;
             }
             return (
-                <li key={subdir.id} className={"theme-group-header " + (expanded ? "theme-group-header-expanded" : "")}>
-                    <span onClick={ev => this.setState({expandedGroups: expanded ? this.state.expandedGroups.filter(id => id !== subdir.id) : [...this.state.expandedGroups, subdir.id]})}>
+                <li className={"theme-group-header " + (expanded ? "theme-group-header-expanded" : "")} key={subdir.id}>
+                    <span onClick={() => this.setState({expandedGroups: expanded ? this.state.expandedGroups.filter(id => id !== subdir.id) : [...this.state.expandedGroups, subdir.id]})}>
                         {this.props.collapsibleGroups ? (<Icon icon={expanded ? "collapse" : "expand"} />) : null} {subdir.title}
                     </span>
                     {expanded ? this.renderThemeGroup(subdir, filter) : null}
                 </li>
             );
         });
-        let activeThemeId = this.props.activeTheme ? this.props.activeTheme.id : null;
-        let addLayersTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addlayerstotheme");
-        let addTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addtotheme");
-        let openTabTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.openintab");
+        const activeThemeId = this.props.activeTheme ? this.props.activeTheme.id : null;
+        const addLayersTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addlayerstotheme");
+        const addTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addtotheme");
+        const openTabTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.openintab");
         return (
             <ul className="theme-group-body">
                 {(!isEmpty(group.items) ? group.items : []).map(item => {
-                    let infoLinks = (item.themeInfoLinks && item.themeInfoLinks.entries || []).map(name => this.props.themes.themeInfoLinks.find(entry => entry.name === name)).filter(entry => entry);
-                    let matches = [];
-                    if(filter) {
+                    const infoLinks = (item.themeInfoLinks && item.themeInfoLinks.entries || []).map(name => this.props.themes.themeInfoLinks.find(entry => entry.name === name)).filter(entry => entry);
+                    const matches = [];
+                    if (filter) {
                         let match = null;
-                        if(match = removeDiacritics(item.title).match(filter)) {
+                        if ((match = removeDiacritics(item.title).match(filter))) {
                             matches.push(["themeswitcher.match.title", this.extractSubstr(match, item.title), item.title]);
                         }
-                        if(match = removeDiacritics(item.keywords).match(filter)) {
+                        if ((match = removeDiacritics(item.keywords).match(filter))) {
                             matches.push(["themeswitcher.match.keywords", this.extractSubstr(match, item.keywords), item.keywords]);
                         }
-                        if(match = removeDiacritics(item.abstract).match(filter)) {
+                        if ((match = removeDiacritics(item.abstract).match(filter))) {
                             matches.push(["themeswitcher.match.abstract", this.extractSubstr(match, item.abstract), item.abstract]);
                         }
                     }
                     return (!filter || !isEmpty(matches)) ? (
-                        <li key={item.id}
-                            className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
-                            onClick={ev => this.setTheme(item)}
+                        <li className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
+                            key={item.id}
+                            onClick={() => this.setTheme(item)}
                             title={item.keywords}
                         >
                             <div className="theme-item-title" title={item.title}>
@@ -127,7 +126,7 @@ class ThemeList extends React.Component {
                                 {this.state.visibleThemeInfoMenu === item.id ? (
                                     <div className="theme-item-info-links" onClick={ev => ev.stopPropagation()}>
                                         {infoLinks.map(link => (
-                                            <a key={link.name} href={link.url} target={link.target}>{link.title}</a>
+                                            <a href={link.url} key={link.name} target={link.target}>{link.title}</a>
                                         ))}
                                     </div>
                                 ) : null}
@@ -137,9 +136,9 @@ class ThemeList extends React.Component {
                                 <img className="theme-item-thumbnail" src={assetsPath + "/" + item.thumbnail} />
                             </div>
                             <div className="theme-item-icons">
-                                {this.props.allowAddingOtherThemes ? (<Icon icon="layers" title={addLayersTitle} onClick={ev => this.getThemeLayersToList(ev, item)} />) : null}
-                                {this.props.allowAddingOtherThemes ? (<Icon icon="plus" title={addTitle} onClick={ev => this.addThemeLayers(ev, item)} />) : null}
-                                <Icon icon="open_link" title={openTabTitle} onClick={ev => this.openInTab(ev, item.id)} />
+                                {this.props.allowAddingOtherThemes ? (<Icon icon="layers" onClick={ev => this.getThemeLayersToList(ev, item)} title={addLayersTitle} />) : null}
+                                {this.props.allowAddingOtherThemes ? (<Icon icon="plus" onClick={ev => this.addThemeLayers(ev, item)} title={addTitle} />) : null}
+                                <Icon icon="open_link" onClick={ev => this.openInTab(ev, item.id)} title={openTabTitle} />
                             </div>
                             {isEmpty(matches) ? null : (
                                 <div className="theme-item-filterinfo-overlay">
@@ -155,20 +154,20 @@ class ThemeList extends React.Component {
         );
     }
     groupContainsActiveTheme = (group) => {
-        for(let item of (group.items || [])) {
-            if(item.id === this.props.activeTheme.id) {
+        for (const item of (group.items || [])) {
+            if (item.id === this.props.activeTheme.id) {
                 return true;
             }
         }
-        for(let subdir of (group.subdirs || [])) {
-            if(this.groupContainsActiveTheme(subdir)) {
+        for (const subdir of (group.subdirs || [])) {
+            if (this.groupContainsActiveTheme(subdir)) {
                 return true;
             }
         }
         return false;
     }
     render() {
-        let filter = this.props.filter ? new RegExp(removeDiacritics(this.props.filter).replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "i") : null;
+        const filter = this.props.filter ? new RegExp(removeDiacritics(this.props.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i") : null;
         return (
             <div className="ThemeList">
                 {this.renderThemeGroup(this.props.themes, filter)}
@@ -176,13 +175,13 @@ class ThemeList extends React.Component {
         );
     }
     extractSubstr = (match, text) => {
-        let cleanText = removeDiacritics(text);
-        let cleanFilter = removeDiacritics(this.props.filter);
-        let padding = Math.round((20 - cleanFilter.length)/2);
+        const cleanText = removeDiacritics(text);
+        const cleanFilter = removeDiacritics(this.props.filter);
+        let padding = Math.round((20 - cleanFilter.length) / 2);
         // Add unused right padding to left
         padding += -Math.min(cleanText.length - (match.index + cleanFilter.length) - padding, 0);
-        let leftStart = Math.max(match.index - padding, 0);
-        let leftLen = Math.min(match.index, padding);
+        const leftStart = Math.max(match.index - padding, 0);
+        const leftLen = Math.min(match.index, padding);
         return [
             (leftStart > 0 ? "\u2026" : "") + cleanText.substr(leftStart, leftLen),
             cleanText.substr(match.index, cleanFilter.length),
@@ -191,10 +190,9 @@ class ThemeList extends React.Component {
     }
     setTheme = (theme) => {
         this.props.setActiveLayerInfo(null, null);
-        if(this.props.showLayerAfterChangeTheme) {
+        if (this.props.showLayerAfterChangeTheme) {
             this.props.setCurrentTask('LayerTree');
-        }
-        else {
+        } else {
             this.props.setCurrentTask(null);
         }
         this.props.changeTheme(theme, this.props.themes, !this.props.dontPreserveLayersOnSwitch);
@@ -217,10 +215,10 @@ class ThemeList extends React.Component {
     }
     openInTab = (ev, themeid) => {
         ev.stopPropagation();
-        let url = location.href.split("?")[0] + '?t=' + themeid;
+        const url = location.href.split("?")[0] + '?t=' + themeid;
         window.open(url, '_blank');
     }
-};
+}
 
 const selector = (state) => ({
     themes: state.theme && state.theme.themes || {},

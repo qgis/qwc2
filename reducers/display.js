@@ -9,14 +9,17 @@
 const {TOGGLE_FULLSCREEN} = require('../actions/display');
 const assign = require('object-assign');
 
-function toggleFullscreen(state = {fullscreen: false}, action) {
+const defaultState = {
+    fullscreen: false
+};
+
+function toggleFullscreen(state = defaultState, action) {
     switch (action.type) {
-        case TOGGLE_FULLSCREEN:
-            return assign({}, state, {
-                fullscreen: action.fullscreen
-            });
-        default:
-            return state;
+    case TOGGLE_FULLSCREEN: {
+        return assign({}, state, {fullscreen: action.fullscreen});
+    }
+    default:
+        return state;
     }
 }
 

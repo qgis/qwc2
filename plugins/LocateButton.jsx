@@ -19,8 +19,8 @@ require('./style/Buttons.css');
 
 class LocateButton extends React.Component {
     static propTypes = {
-        locateState: PropTypes.string,
         changeLocateState: PropTypes.func,
+        locateState: PropTypes.string,
         position: PropTypes.number
     }
     static defaultProps = {
@@ -32,7 +32,7 @@ class LocateButton extends React.Component {
     constructor(props) {
         super(props);
 
-        if(!navigator.geolocation) {
+        if (!navigator.geolocation) {
             props.changeLocateState("PERMISSION_DENIED");
         } else {
             navigator.geolocation.getCurrentPosition(() => {
@@ -45,37 +45,37 @@ class LocateButton extends React.Component {
         }
     }
     onClick = () => {
-        if(this.props.locateState === "DISABLED") {
+        if (this.props.locateState === "DISABLED") {
             this.props.changeLocateState("ENABLED");
-        } else if(this.props.locateState === "ENABLED") {
+        } else if (this.props.locateState === "ENABLED") {
             this.props.changeLocateState("FOLLOWING");
         } else {
             this.props.changeLocateState("DISABLED");
         }
     }
     render = () => {
-        let tooltip = LocaleUtils.getMessageById(this.context.messages, "locate.statustooltip." + this.props.locateState);
+        const tooltip = LocaleUtils.getMessageById(this.context.messages, "locate.statustooltip." + this.props.locateState);
         let contents = null;
-        if(this.props.locateState === "LOCATING") {
+        if (this.props.locateState === "LOCATING") {
             contents = (<Spinner />);
         } else {
             contents = (<Icon icon="screenshot"/>);
         }
-        let classes = classnames({
+        const classes = classnames({
             "map-button": true,
             ["locate-button-" + this.props.locateState]: true
         });
         return (
             <button className={classes}
-                onClick={this.onClick} title={tooltip}
-                disabled={this.props.locateState === "PERMISSION_DENIED"}
+                disabled={this.props.locateState === "PERMISSION_DENIED"} onClick={this.onClick}
                 style={{bottom: (5 + 4 * this.props.position) + 'em'}}
-             >
+                title={tooltip}
+            >
                 {contents}
             </button>
         );
     }
-};
+}
 
 module.exports = {
     LocateButtonPlugin: connect(state => ({

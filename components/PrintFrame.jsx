@@ -8,20 +8,18 @@
 
 const React = require('react');
 const PropTypes = require('prop-types');
-const assign = require('object-assign');
 const isEqual = require('lodash.isequal');
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const MapUtils = require('../utils/MapUtils');
 require('./style/PrintFrame.css');
 
 class PrintFrame extends React.Component {
     static propTypes = {
-        map: PropTypes.object.isRequired,
+        bboxSelected: PropTypes.func,
         fixedFrame: PropTypes.shape({
             width: PropTypes.number, // in meters
             height: PropTypes.number // in meters
         }),
-        bboxSelected: PropTypes.func
+        map: PropTypes.object.isRequired
     }
     static defaultProps = {
         fixedFrame: null,
@@ -34,36 +32,40 @@ class PrintFrame extends React.Component {
         this.recomputeBox(this.props, {});
     }
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.map !== prevProps.map || !isEqual(this.props.fixedFrame, prevProps.fixedFrame)) {
+        if (this.props.map !== prevProps.map || !isEqual(this.props.fixedFrame, prevProps.fixedFrame)) {
             this.recomputeBox(this.props, prevProps);
         }
     }
     recomputeBox = (newProps, oldProps) => {
-        if(newProps.fixedFrame) {
-            let getPixelFromCoordinate = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK);
+        if (newProps.fixedFrame) {
+            const getPixelFromCoordinate = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK);
             let newState = {x: 0, y: 0, width: 0, height: 0, moving: false};
-            let cosa = Math.cos(-newProps.map.bbox.rotation);
-            let sina = Math.sin(-newProps.map.bbox.rotation);
-            let center = newProps.map.center;
-            let {width, height} = MapUtils.transformExtent(newProps.map.projection, center, newProps.fixedFrame.width, newProps.fixedFrame.height);
-            let mapp1 = [center[0] - .5 * width * cosa - .5 * height * sina,
-                         center[1] + .5 * width * sina - .5 * height * cosa];
-            let mapp2 = [center[0] + .5 * width * cosa + .5 * height * sina,
-                         center[1] - .5 * width * sina + .5 * height * cosa];
-            let pixp1 = getPixelFromCoordinate(mapp1);
-            let pixp2 = getPixelFromCoordinate(mapp2);
+            const cosa = Math.cos(-newProps.map.bbox.rotation);
+            const sina = Math.sin(-newProps.map.bbox.rotation);
+            const center = newProps.map.center;
+            const {width, height} = MapUtils.transformExtent(newProps.map.projection, center, newProps.fixedFrame.width, newProps.fixedFrame.height);
+            const mapp1 = [
+                center[0] - 0.5 * width * cosa - 0.5 * height * sina,
+                center[1] + 0.5 * width * sina - 0.5 * height * cosa
+            ];
+            const mapp2 = [
+                center[0] + 0.5 * width * cosa + 0.5 * height * sina,
+                center[1] - 0.5 * width * sina + 0.5 * height * cosa
+            ];
+            const pixp1 = getPixelFromCoordinate(mapp1);
+            const pixp2 = getPixelFromCoordinate(mapp2);
             newState = {
                 x: Math.min(pixp1[0], pixp2[0]),
                 y: Math.min(pixp1[1], pixp2[1]),
-                width: Math.abs(pixp2[0]- pixp1[0]),
-                height: Math.abs(pixp2[1]- pixp1[1])
+                width: Math.abs(pixp2[0] - pixp1[0]),
+                height: Math.abs(pixp2[1] - pixp1[1])
             };
             this.setState(newState);
         }
     }
     startSelection = (ev) => {
-        let x = Math.round(ev.clientX);
-        let y = Math.round(ev.clientY);
+        const x = Math.round(ev.clientX);
+        const y = Math.round(ev.clientY);
         this.setState({
             x: x,
             y: y,
@@ -73,43 +75,43 @@ class PrintFrame extends React.Component {
         });
     }
     updateSelection = (ev) => {
-        if(this.state.moving) {
-            let x = Math.round(ev.clientX);
-            let y = Math.round(ev.clientY);
-            let width = Math.round(Math.max(0, x - this.state.x));
-            let height = Math.round(Math.max(0, y - this.state.y));
+        if (this.state.moving) {
+            const x = Math.round(ev.clientX);
+            const y = Math.round(ev.clientY);
+            const width = Math.round(Math.max(0, x - this.state.x));
+            const height = Math.round(Math.max(0, y - this.state.y));
             this.setState({
                 width: width,
                 height: height
             });
         }
     }
-    endSelection = (ev) => {
+    endSelection = () => {
         this.setState({moving: false});
-        let getCoordinateFromPixel = MapUtils.getHook(MapUtils.GET_COORDINATES_FROM_PIXEL_HOOK);
-        let p1 = getCoordinateFromPixel([this.state.x, this.state.y]);
-        let p2 = getCoordinateFromPixel([this.state.x + this.state.width, this.state.y + this.state.height]);
-        let bbox = [
+        const getCoordinateFromPixel = MapUtils.getHook(MapUtils.GET_COORDINATES_FROM_PIXEL_HOOK);
+        const p1 = getCoordinateFromPixel([this.state.x, this.state.y]);
+        const p2 = getCoordinateFromPixel([this.state.x + this.state.width, this.state.y + this.state.height]);
+        const bbox = [
             Math.min(p1[0], p2[0]),
             Math.min(p1[1], p2[1]),
             Math.max(p1[0], p2[0]),
             Math.max(p1[1], p2[1])
         ];
-        if(bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
+        if (bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
             this.props.bboxSelected(bbox, this.props.map.projection, [this.state.width, this.state.height]);
         }
     }
     render() {
-        let boxStyle = {
+        const boxStyle = {
             left: this.state.x + 'px',
             top: this.state.y + 'px',
             width: this.state.width + 'px',
             height: this.state.height + 'px',
-            lineHeight: this.state.height + 'px',
+            lineHeight: this.state.height + 'px'
         };
-        if(this.props.fixedFrame) {
+        if (this.props.fixedFrame) {
             return (
-                <div id="PrintFrame" style={boxStyle}></div>
+                <div id="PrintFrame" style={boxStyle} />
             );
         } else {
             return (
@@ -117,9 +119,10 @@ class PrintFrame extends React.Component {
                     onMouseDown={this.startSelection}
                     onMouseMove={this.updateSelection}
                     onMouseUp={this.endSelection}
-                    onTouchStart={(ev) => this.startSelection(ev.changedTouches[0])}
+                    onTouchEnd={(ev) => this.endSelection(ev.changedTouches[0])}
                     onTouchMove={(ev) => {this.updateSelection(ev.changedTouches[0]); ev.preventDefault();}}
-                    onTouchEnd={(ev) => this.endSelection(ev.changedTouches[0])}>
+                    onTouchStart={(ev) => this.startSelection(ev.changedTouches[0])}
+                >
                     <div id="PrintFrame" style={boxStyle}>
                         <span className="size-box">{this.state.width + " x " + this.state.height}</span>
                     </div>
@@ -127,6 +130,6 @@ class PrintFrame extends React.Component {
             );
         }
     }
-};
+}
 
 module.exports = PrintFrame;

@@ -11,14 +11,18 @@ const {LOCAL_CONFIG_LOADED, SET_STARTUP_PARAMETERS} = require('../actions/localC
 const assign = require('object-assign');
 const ConfigUtils = require('../utils/ConfigUtils');
 
-function localConfig(state = ConfigUtils.getDefaults(), action) {
+const defaultState = ConfigUtils.getDefaults();
+
+function localConfig(state = defaultState, action) {
     switch (action.type) {
-        case LOCAL_CONFIG_LOADED:
-            return assign({}, state, action.config);
-        case SET_STARTUP_PARAMETERS:
-            return assign({}, state, {startupParams: action.params});
-        default:
-            return state;
+    case LOCAL_CONFIG_LOADED: {
+        return assign({}, state, action.config);
+    }
+    case SET_STARTUP_PARAMETERS: {
+        return assign({}, state, {startupParams: action.params});
+    }
+    default:
+        return state;
     }
 }
 

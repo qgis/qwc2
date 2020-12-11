@@ -11,19 +11,18 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const assign = require('object-assign');
 const OlLocate = require('../../../utils/openlayers/OlLocate');
-const {UrlParams} = require('../../../utils/PermaLinkUtils');
 
 class Locate extends React.Component {
     static propTypes = {
-        map: PropTypes.object,
-        status: PropTypes.string,
-        messages: PropTypes.object,
         changeLocateState: PropTypes.func,
+        map: PropTypes.object,
+        messages: PropTypes.object,
         onLocateError: PropTypes.func,
         // See ../../../utils/openlayers/OlLocate
         options: PropTypes.object,
+        projection: PropTypes.string,
         startupParams: PropTypes.object,
-        projection: PropTypes.string
+        status: PropTypes.string
     }
     static defaultProps = {
         id: 'overview',
@@ -34,7 +33,7 @@ class Locate extends React.Component {
     }
     static defaultOpt = {
         startupMode: "DISABLED", // either "DISABLED", "ENABLED" or "FOLLOWING"
-        follow: false,// follow with zoom and pan the user's location
+        follow: false, // follow with zoom and pan the user's location
         remainActive: true,
         metric: true,
         stopFollowingOnDrag: false,
@@ -48,15 +47,15 @@ class Locate extends React.Component {
     }
     componentDidMount() {
         if (this.props.map) {
-            let options = assign({}, Locate.defaultOpt, this.props.options);
+            const options = assign({}, Locate.defaultOpt, this.props.options);
             this.locate = new OlLocate(this.props.map, options);
             this.locate.setStrings(this.props.messages);
             this.locate.options.onLocationError = this.onLocationError;
             this.locate.on("propertychange", (e) => {this.onStateChange(e.target.get(e.key)); });
             this.configureLocate(this.props.status);
-            let startupMode = options.startupMode.toUpperCase();
-            let highlightCenter = ["true", "1"].includes("" + (this.props.startupParams && this.props.startupParams.hc || "").toLowerCase());
-            if(startupMode !== "DISABLED" && !this.props.startupParams.st && !highlightCenter) {
+            const startupMode = options.startupMode.toUpperCase();
+            const highlightCenter = ["true", "1"].includes("" + (this.props.startupParams && this.props.startupParams.hc || "").toLowerCase());
+            if (startupMode !== "DISABLED" && !this.props.startupParams.st && !highlightCenter) {
                 this.props.changeLocateState(startupMode);
             }
         }
@@ -68,12 +67,12 @@ class Locate extends React.Component {
         if (this.props.messages !== prevProps.messages) {
             this.locate.setStrings(this.props.messages);
         }
-        if(this.props.projection !== prevProps.projection) {
+        if (this.props.projection !== prevProps.projection) {
             this.locate.setProjection(this.props.projection);
         }
     }
     configureLocate = (newStatus) => {
-        let state = this.locate.get("state");
+        const state = this.locate.get("state");
         if (newStatus === "ENABLED" && state === "DISABLED") {
             this.locate.start();
         } else if (newStatus === "FOLLOWING" && state === "ENABLED") {
@@ -97,6 +96,6 @@ class Locate extends React.Component {
     render() {
         return null;
     }
-};
+}
 
 module.exports = Locate;

@@ -11,7 +11,7 @@ const TOGGLE_FULLSCREEN = 'TOGGLE_FULLSCREEN';
 function requestFullscreen() {
     if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();
-    } else if(document.documentElement.msRequestFullscreen) {
+    } else if (document.documentElement.msRequestFullscreen) {
         document.documentElement.msRequestFullscreen();
     } else if (document.documentElement.mozRequestFullScreen) {
         document.documentElement.mozRequestFullScreen();
@@ -21,21 +21,21 @@ function requestFullscreen() {
 }
 
 function endFullscreen() {
-    if(window.fullScreen) {
-        if(document.exitFullscreen) {
+    if (window.fullScreen) {
+        if (document.exitFullscreen) {
             document.exitFullscreen();
-        } else if(document.msExitFullscreen) {
+        } else if (document.msExitFullscreen) {
             document.msExitFullscreen();
-        } else if(document.mozCancelFullScreen) {
+        } else if (document.mozCancelFullScreen) {
             document.mozCancelFullScreen();
-        } else if(document.webkitExitFullscreen) {
+        } else if (document.webkitExitFullscreen) {
             document.webkitExitFullscreen();
         }
     }
 }
 
 function toggleFullscreen(fullscreen) {
-    if(fullscreen) {
+    if (fullscreen) {
         requestFullscreen();
     } else {
         endFullscreen();
@@ -49,4 +49,4 @@ function toggleFullscreen(fullscreen) {
 module.exports = {
     TOGGLE_FULLSCREEN,
     toggleFullscreen
-}
+};

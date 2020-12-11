@@ -8,17 +8,17 @@
 
 
 const LayerRegistry = {
-    'bing': require('./BingLayer'),
-    'google': require('./GoogleLayer'),
-    'graticule': require('./GraticuleLayer'),
-    'mapquest': require('./MapQuest'),
-    'osm': require('./OSMLayer'),
-    'overlay': require('./OverlayLayer'),
-    'tileprovider': require('./TileProviderLayer'),
-    'vector': require('./VectorLayer'),
-    'wms': require('./WMSLayer'),
-    'wmts': require('./WMTSLayer'),
-    'wfs': require('./WFSLayer')
+    bing: require('./BingLayer'),
+    google: require('./GoogleLayer'),
+    graticule: require('./GraticuleLayer'),
+    mapquest: require('./MapQuest'),
+    osm: require('./OSMLayer'),
+    overlay: require('./OverlayLayer'),
+    tileprovider: require('./TileProviderLayer'),
+    vector: require('./VectorLayer'),
+    wms: require('./WMSLayer'),
+    wmts: require('./WMTSLayer'),
+    wfs: require('./WFSLayer')
 };
 
 module.exports = LayerRegistry;

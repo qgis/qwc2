@@ -23,20 +23,20 @@ require('./style/BottomBar.css');
 
 class BottomBar extends React.Component {
     static propTypes = {
-        viewertitleUrl: PropTypes.string,
-        termsUrl: PropTypes.string,
-        displaycrs: PropTypes.string,
-        map: PropTypes.object,
-        fullscreen: PropTypes.bool,
         additionalMouseCrs: PropTypes.array,
         changeMousePositionState: PropTypes.func,
         changeZoomLevel: PropTypes.func,
         displayCoordinates: PropTypes.bool,
-        displayScales: PropTypes.bool
+        displayScales: PropTypes.bool,
+        displaycrs: PropTypes.string,
+        fullscreen: PropTypes.bool,
+        map: PropTypes.object,
+        termsUrl: PropTypes.string,
+        viewertitleUrl: PropTypes.string
     }
     static defaultProps = {
-      displayCoordinates: true,
-      displayScales: true
+        displayCoordinates: true,
+        displayScales: true
     }
     state = {
         scale: 0
@@ -48,27 +48,27 @@ class BottomBar extends React.Component {
         return {scale: Math.round(MapUtils.computeForZoom(nextProps.map.scales, nextProps.map.zoom))};
     }
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.map.projection !== prevProps.map.projection) {
+        if (this.props.map.projection !== prevProps.map.projection) {
             this.props.changeMousePositionState({crs: this.props.map.projection, position: null});
         }
     }
     render() {
-        if(this.props.fullscreen) {
+        if (this.props.fullscreen) {
             return null;
         }
 
         let viewertitleLink;
         if (this.props.viewertitleUrl) {
             viewertitleLink = (
-                <a href={this.props.viewertitleUrl} target="_blank">
+                <a href={this.props.viewertitleUrl} rel="noreferrer" target="_blank">
                     <Message className="viewertitle_label" msgId="bottombar.viewertitle_label" />
                 </a>
-            )
+            );
         }
         let termsLink;
         if (this.props.termsUrl) {
             termsLink = (
-                <a href={this.props.termsUrl} target="_blank">
+                <a href={this.props.termsUrl} rel="noreferrer" target="_blank">
                     <Message className="terms_label" msgId="bottombar.terms_label" />
                 </a>
             );
@@ -78,18 +78,17 @@ class BottomBar extends React.Component {
             bottomLinks = (
                 <span className="bottombar-links">
                     {viewertitleLink}
-                    {viewertitleLink && termsLink ? (<span dangerouslySetInnerHTML={{__html: "&nbsp;|&nbsp;"}}></span>) : null}
+                    {viewertitleLink && termsLink ? (<span dangerouslySetInnerHTML={{__html: "&nbsp;|&nbsp;"}} />) : null}
                     {termsLink}
                 </span>
             );
         }
-        let additionalMouseCrs = this.props.additionalMouseCrs || [];
-        let availableCRS = pickBy(CoordinatesUtils.getAvailableCRS(), (key, code) => {
+        const additionalMouseCrs = this.props.additionalMouseCrs || [];
+        const availableCRS = pickBy(CoordinatesUtils.getAvailableCRS(), (key, code) => {
             return code === "EPSG:4326" ||
                    code === this.props.map.projection ||
                    additionalMouseCrs.indexOf(code) !== -1;
-           }
-        );
+        });
         let coordinates = null;
         if (this.props.displayCoordinates) {
             coordinates = (
@@ -98,7 +97,7 @@ class BottomBar extends React.Component {
                     <CoordinateDisplayer className={"bottombar-mousepos"} displaycrs={this.props.displaycrs} />
                     <select className="bottombar-crs-selector" onChange={ev => this.props.changeMousePositionState({crs: ev.target.value})} value={this.props.displaycrs}>
                         {Object.keys(availableCRS).map(crs =>
-                            (<option value={crs} key={crs}>{availableCRS[crs].label}</option>)
+                            (<option key={crs} value={crs}>{availableCRS[crs].label}</option>)
                         )}
                     </select>
                 </span>
@@ -113,40 +112,40 @@ class BottomBar extends React.Component {
                         <span> 1 : </span>
                         <select onChange={ev => this.props.changeZoomLevel(parseInt(ev.target.value, 10))} value={Math.round(this.props.map.zoom)}>
                             {this.props.map.scales.map((item, index) =>
-                                (<option value={index} key={index}>{LocaleUtils.toLocaleFixed(item, 0)}</option>)
+                                (<option key={index} value={index}>{LocaleUtils.toLocaleFixed(item, 0)}</option>)
                             )}
                         </select>
-                        <input type="text" value={this.state.scale}
-                            onChange={ev => this.setState({scale: ev.target.value})}
-                            onKeyUp={ev => { if(ev.keyCode === 13) this.setScale(ev.target.value)} }
-                            onBlur={ev => this.setScale(ev.target.value)}/>
+                        <input onBlur={ev => this.setScale(ev.target.value)} onChange={ev => this.setState({scale: ev.target.value})}
+                            onKeyUp={ev => { if (ev.keyCode === 13) this.setScale(ev.target.value); } }
+                            type="text"
+                            value={this.state.scale}/>
                     </span>
                 </span>
-            )
+            );
         }
 
         return (
             <div id="BottomBar">
                 {coordinates}
                 {scales}
-                <span className="bottombar-spacer"></span>
+                <span className="bottombar-spacer" />
                 {bottomLinks}
             </div>
         );
     }
     setScale = (value) => {
-        let scale = parseInt(value);
-        if(!isNaN(scale)) {
-            let zoom = MapUtils.computeZoom(this.props.map.scales, scale);
+        const scale = parseInt(value, 10);
+        if (!isNaN(scale)) {
+            const zoom = MapUtils.computeZoom(this.props.map.scales, scale);
             this.props.changeZoomLevel(zoom);
         } else {
             this.props.changeZoomLevel(this.props.map.zoom);
         }
     }
-};
+}
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => {
-    let map = state && state.map && state.map ? state.map : null;
+    const map = state && state.map && state.map ? state.map : null;
     return {
         displaycrs: displaycrs,
         map: map,

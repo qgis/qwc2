@@ -15,8 +15,8 @@ require('./style/CopyButton.css');
 
 class CopyButton extends React.Component {
     static propTypes = {
-        text: PropTypes.string,
         buttonClass: PropTypes.string,
+        text: PropTypes.string,
         tooltipAlign: PropTypes.string
     }
     static defaultProps = {
@@ -26,17 +26,17 @@ class CopyButton extends React.Component {
         copied: false
     }
     render() {
-        let tooltipStyle = {};
-        if(this.props.tooltipAlign === "left") {
+        const tooltipStyle = {};
+        if (this.props.tooltipAlign === "left") {
             tooltipStyle.left = '0';
-        } else if(this.props.tooltipAlign === "right") {
+        } else if (this.props.tooltipAlign === "right") {
             tooltipStyle.right = '0';
         } else {
             tooltipStyle.left = '50%';
             tooltipStyle.transform = 'translateX(-50%)';
-        };
+        }
         return (
-            <CopyToClipboard text={this.props.text} onCopy={ () => this.setState({copied: true}) } >
+            <CopyToClipboard onCopy={ () => this.setState({copied: true}) } text={this.props.text} >
                 <span className={"CopyButton " + this.props.buttonClass} onMouseLeave={() => {this.setState({copied: false}); }} >
                     <Icon icon="copy"/>
                     <span className="copybutton-tooltip" style={tooltipStyle}>

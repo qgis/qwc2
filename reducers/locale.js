@@ -9,16 +9,19 @@
 const {CHANGE_LOCALE} = require('../actions/locale');
 const flatten = require('flat');
 
-function locale(state = {
+const defaultState = {
     messages: {},
     current: ''
-}, action) {
+};
+
+function locale(state = defaultState, action) {
     switch (action.type) {
-    case CHANGE_LOCALE:
+    case CHANGE_LOCALE: {
         return {
             messages: flatten(action.messages),
             current: action.locale
         };
+    }
     default:
         return state;
     }

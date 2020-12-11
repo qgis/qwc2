@@ -6,8 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/*eslint no-console: 0, vars-on-top: 0, camelcase: 0*/
-
 const urlUtil = require('url');
 const axios = require('axios');
 const xml2js = require('xml2js');
@@ -17,24 +15,25 @@ const objectPath = require('object-path');
 const isEmpty = require('lodash.isempty');
 let fqdn = null;
 try {
-	fqdn = require('node-fqdn');
-} catch(e) {
+    fqdn = require('node-fqdn');
+} catch (e) {
+    /* Pass */
 }
 const uuid = require('uuid');
 
 const hostFqdn = fqdn ? "http://" + String(fqdn()) : "";
-const themesConfig = process.env["QWC2_THEMES_CONFIG"] || "themesConfig.json";
+const themesConfigPath = process.env.QWC2_THEMES_CONFIG || "themesConfig.json";
 
-let usedThemeIds = [];
-let autogenExternalLayers = [];
+const usedThemeIds = [];
+const autogenExternalLayers = [];
 
 function uniqueThemeId(themeName) {
-    if(!themeName) {
+    if (!themeName) {
         return uuid.v1();
     }
-    if(usedThemeIds.includes(themeName)) {
+    if (usedThemeIds.includes(themeName)) {
         let i = 1;
-        for(; usedThemeIds.includes(themeName + i); ++i);
+        for (; usedThemeIds.includes(themeName + i); ++i);
         usedThemeIds.push(themeName + i);
         return themeName + i;
     } else {
@@ -47,7 +46,7 @@ function uniqueThemeId(themeName) {
 function getThumbnail(configItem, resultItem, layers, crs, extent, resolve, proxy) {
     if (configItem.thumbnail !== undefined) {
         // check if thumbnail can be read
-        if(fs.existsSync("./assets/img/mapthumbs/" + configItem.thumbnail)) {
+        if (fs.existsSync("./assets/img/mapthumbs/" + configItem.thumbnail)) {
             resultItem.thumbnail = "img/mapthumbs/" + configItem.thumbnail;
             // finish task
             resolve(true);
@@ -58,7 +57,7 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve, prox
     console.error("Using WMS GetMap to generate thumbnail for " + configItem.url);
 
     // WMS GetMap request
-    let parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
+    const parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
     parsedUrl.search = '';
     parsedUrl.query.SERVICE = "WMS";
     parsedUrl.query.VERSION = "1.3.0";
@@ -71,12 +70,12 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve, prox
     parsedUrl.query.CRS = crs;
     let bboxw = extent[2] - extent[0];
     let bboxh = extent[3] - extent[1];
-    let bboxcx = 0.5 * (extent[0] + extent[2]);
-    let bboxcy = 0.5 * (extent[1] + extent[3]);
-    let imgratio = 200./100.;
-    if(bboxw > bboxh) {
-        let bboxratio = bboxw/bboxh;
-        if(bboxratio > imgratio) {
+    const bboxcx = 0.5 * (extent[0] + extent[2]);
+    const bboxcy = 0.5 * (extent[1] + extent[3]);
+    const imgratio = 200 / 100;
+    if (bboxw > bboxh) {
+        const bboxratio = bboxw / bboxh;
+        if (bboxratio > imgratio) {
             bboxh = bboxw / imgratio;
         } else {
             bboxw = bboxh * imgratio;
@@ -84,8 +83,10 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve, prox
     } else {
         bboxw = bboxh * imgratio;
     }
-    let adjustedExtent = [bboxcx - 0.5 * bboxw, bboxcy - 0.5 * bboxh,
-                          bboxcx + 0.5 * bboxw, bboxcy + 0.5 * bboxh];
+    const adjustedExtent = [
+        bboxcx - 0.5 * bboxw, bboxcy - 0.5 * bboxh,
+        bboxcx + 0.5 * bboxw, bboxcy + 0.5 * bboxh
+    ];
     parsedUrl.query.BBOX = adjustedExtent.join(',');
     parsedUrl.query.LAYERS = layers.join(',');
     const getMapUrl = urlUtil.format(parsedUrl);
@@ -93,13 +94,13 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve, prox
     axios.get(getMapUrl, {
         proxy: proxy,
         responseType: "arraybuffer",
-        auth: configItem.wmsBasicAuth,
+        auth: configItem.wmsBasicAuth
     }).then((response) => {
-        let basename = configItem.url.replace(/.*\//, "").replace(/\?.*$/, "") + ".png";
+        const basename = configItem.url.replace(/.*\//, "").replace(/\?.*$/, "") + ".png";
         try {
             fs.mkdirSync("./assets/img/genmapthumbs/");
-        } catch(err) {
-            if(err.code !== 'EEXIST') throw err;
+        } catch (err) {
+            if (err.code !== 'EEXIST') throw err;
         }
         fs.writeFileSync("./assets/img/genmapthumbs/" + basename, response.data);
         resultItem.thumbnail = "img/genmapthumbs/" + basename;
@@ -114,11 +115,11 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve, prox
 }
 
 function getEditConfig(editConfig) {
-    if(isEmpty(editConfig)) {
+    if (isEmpty(editConfig)) {
         return null;
-    } else if(path.isAbsolute(editConfig) && fs.existsSync(editConfig)) {
+    } else if (path.isAbsolute(editConfig) && fs.existsSync(editConfig)) {
         return JSON.parse(fs.readFileSync(path, "utf8"));
-    } else if(fs.existsSync(process.cwd() + '/' + editConfig)) {
+    } else if (fs.existsSync(process.cwd() + '/' + editConfig)) {
         return JSON.parse(fs.readFileSync(process.cwd() + '/' + editConfig, "utf8"));
     }
     return null;
@@ -126,28 +127,31 @@ function getEditConfig(editConfig) {
 // convert non-array object to array containing the object
 // used to restore arrays lost by 'explicitArray: false' xml2js option
 function toArray(obj) {
-    return obj !== undefined ? Array.isArray(obj) ? obj : [obj] : [];
+    if (obj !== undefined) {
+        return Array.isArray(obj) ? obj : [obj];
+    }
+    return [];
 }
 
 // recursively get layer tree
 function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collapseBelowLevel, titleNameMap, featureReports, externalLayers) {
     // skip print layers
-    for(let printLayer of printLayers) {
-        if(Array.isArray(printLayer)) {
-            if(printLayer.find(entry => entry.name === layer.Name)) {
+    for (const printLayer of printLayers) {
+        if (Array.isArray(printLayer)) {
+            if (printLayer.find(entry => entry.name === layer.Name)) {
                 return;
             }
-        } else if(printLayer === layer.Name) {
+        } else if (printLayer === layer.Name) {
             return;
         }
     }
 
-    let layerEntry = {
+    const layerEntry = {
         name: layer.Name,
         title: layer.Title
     };
     if (layer.Layer === undefined) {
-        if (!layer.$ || layer.$.geometryType == "WKBNoGeometry" || layer.$.geometryType == "NoGeometry") {
+        if (!layer.$ || layer.$.geometryType === "WKBNoGeometry" || layer.$.geometryType === "NoGeometry") {
             // skip layers without geometry
             return;
         }
@@ -164,32 +168,32 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         }
         if (layer.Attribution) {
             layerEntry.attribution = {
-                "Title": layer.Attribution.Title,
-                "OnlineResource": layer.Attribution.OnlineResource ? layer.Attribution.OnlineResource.$["xlink:href"] : ""
+                Title: layer.Attribution.Title,
+                OnlineResource: layer.Attribution.OnlineResource ? layer.Attribution.OnlineResource.$["xlink:href"] : ""
             };
         }
         if (layer.Abstract) {
             layerEntry.abstract = layer.Abstract;
         }
-        if(layer.DataURL && layer.DataURL.OnlineResource) {
+        if (layer.DataURL && layer.DataURL.OnlineResource) {
             layerEntry.dataUrl = layer.DataURL.OnlineResource.$['xlink:href'];
-            if(layerEntry.dataUrl.startsWith("wms:")) {
-                externalLayers.push({"internalLayer": layer.Name, "name": layerEntry.dataUrl});
+            if (layerEntry.dataUrl.startsWith("wms:")) {
+                externalLayers.push({internalLayer: layer.Name, name: layerEntry.dataUrl});
                 layerEntry.dataUrl = "";
             }
         }
-        if(layer.MetadataURL && layer.MetadataURL.OnlineResource) {
+        if (layer.MetadataURL && layer.MetadataURL.OnlineResource) {
             layerEntry.metadataUrl = layer.MetadataURL.OnlineResource.$['xlink:href'];
         }
-        if(layer.$.transparency) {
-            layerEntry.opacity = 255 - Math.floor(parseFloat(layer.$.transparency) * 255)
-        } else if(layer.$.opacity) {
-            layerEntry.opacity = Math.round(parseFloat(layer.$.opacity) * 255)
+        if (layer.$.transparency) {
+            layerEntry.opacity = 255 - Math.floor(parseFloat(layer.$.transparency) * 255);
+        } else if (layer.$.opacity) {
+            layerEntry.opacity = Math.round(parseFloat(layer.$.opacity) * 255);
         } else {
             layerEntry.opacity = 255;
         }
-        if(layer.KeywordList) {
-            let keywords = [];
+        if (layer.KeywordList) {
+            const keywords = [];
             toArray(layer.KeywordList.Keyword).map((entry) => {
                 keywords.push((typeof entry === 'object') ? entry._ : entry);
             });
@@ -200,10 +204,10 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
             layerEntry.maxScale = Math.round(parseFloat(layer.MaxScaleDenominator));
         }
         // use geographic bounding box, as default CRS may have inverted axis order with WMS 1.3.0
-        if(layer.EX_GeographicBoundingBox) {
+        if (layer.EX_GeographicBoundingBox) {
             layerEntry.bbox = {
-                "crs": "EPSG:4326",
-                "bounds": [
+                crs: "EPSG:4326",
+                bounds: [
                     parseFloat(layer.EX_GeographicBoundingBox.westBoundLongitude),
                     parseFloat(layer.EX_GeographicBoundingBox.southBoundLatitude),
                     parseFloat(layer.EX_GeographicBoundingBox.eastBoundLongitude),
@@ -211,15 +215,19 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
                 ]
             };
         }
-        if(featureReports[layer.Name]) {
+        if (featureReports[layer.Name]) {
             layerEntry.featureReport = featureReports[layer.Name];
         }
     } else {
         // group
         layerEntry.mutuallyExclusive = (layer.$ || {}).mutuallyExclusive === '1';
         layerEntry.sublayers = [];
-        layerEntry.expanded = (layer.$ || {}).expanded === '0' ? false : collapseBelowLevel >= 0 && level >= collapseBelowLevel ? false : true;
-        for (let subLayer of toArray(layer.Layer)) {
+        if ((layer.$ || {}).expanded === '0' || (collapseBelowLevel >= 0 && level >= collapseBelowLevel)) {
+            layerEntry.expanded = false;
+        } else {
+            layerEntry.expanded = true;
+        }
+        for (const subLayer of toArray(layer.Layer)) {
             getLayerTree(subLayer, layerEntry.sublayers, visibleLayers, printLayers, level + 1, collapseBelowLevel, titleNameMap, featureReports, externalLayers);
         }
         if (layerEntry.sublayers.length === 0) {
@@ -233,7 +241,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
 
 // parse GetCapabilities for theme
 function getTheme(config, configItem, result, resultItem, proxy) {
-    let parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
+    const parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
     parsedUrl.search = '';
     parsedUrl.query.SERVICE = "WMS";
     parsedUrl.query.VERSION = "1.3.0";
@@ -241,45 +249,47 @@ function getTheme(config, configItem, result, resultItem, proxy) {
     const getCapabilitiesUrl = urlUtil.format(parsedUrl);
 
     return new Promise((resolve, reject) => {
-        axios.get(getCapabilitiesUrl, { proxy: proxy, auth: configItem.wmsBasicAuth, }).then((response) => {
+        axios.get(getCapabilitiesUrl, {proxy: proxy, auth: configItem.wmsBasicAuth}).then((response) => {
             // parse capabilities
             let capabilities;
-            xml2js.parseString(response.data, {
-                tagNameProcessors: [xml2js.processors.stripPrefix],
-                explicitArray: false
-            },
-            (ignore, result) => {
-                if (result === undefined || result.WMS_Capabilities === undefined) {
-                    // show response data on parse error
-                    throw new Error(response.data);
-                } else {
-                    capabilities = result.WMS_Capabilities;
+            xml2js.parseString(
+                response.data, {
+                    tagNameProcessors: [xml2js.processors.stripPrefix],
+                    explicitArray: false
+                },
+                (ignore, parseResult) => {
+                    if (parseResult === undefined || parseResult.WMS_Capabilities === undefined) {
+                        // show response data on parse error
+                        throw new Error(response.data);
+                    } else {
+                        capabilities = parseResult.WMS_Capabilities;
+                    }
                 }
-            });
+            );
 
             console.log("Parsing WMS GetProjectSettings of " + configItem.url);
 
             const topLayer = capabilities.Capability.Layer;
-            const wmsName = configItem.url.replace(/.*\//,'').replace(/\?^/, '');
+            const wmsName = configItem.url.replace(/.*\//, '').replace(/\?^/, '');
 
             // use name from config or fallback to WMS title
             const wmsTitle = configItem.title || capabilities.Service.Title || topLayer.Title || wmsName;
 
             // keywords
-            let keywords = [];
-            if(capabilities.Service.KeywordList) {
-              toArray(capabilities.Service.KeywordList.Keyword).map((entry) => {
-                  let value = (typeof entry === 'object') ? entry._ : entry;
-                  if (value !== "infoMapAccessService") {
-                      keywords.push(value);
-                  }
-              });
+            const keywords = [];
+            if (capabilities.Service.KeywordList) {
+                toArray(capabilities.Service.KeywordList.Keyword).map((entry) => {
+                    const value = (typeof entry === 'object') ? entry._ : entry;
+                    if (value !== "infoMapAccessService") {
+                        keywords.push(value);
+                    }
+                });
             }
 
             // use first CRS for thumbnail request
-            const crs = toArray(topLayer.CRS).filter(item => item != 'CRS:84')[0];
+            const crs = toArray(topLayer.CRS).filter(item => item !== 'CRS:84')[0];
             let extent = [];
-            for (let bbox of toArray(topLayer.BoundingBox)) {
+            for (const bbox of toArray(topLayer.BoundingBox)) {
                 if (bbox.$.CRS === crs) {
                     extent = [
                         parseFloat(bbox.$.minx),
@@ -294,38 +304,38 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             // collect WMS layers for printing
             let printLayers = [];
             if (configItem.backgroundLayers !== undefined) {
-                printLayers = configItem.backgroundLayers.reduce((printLayers, entry) => {
-                    if(entry.printLayer) {
-                        printLayers.push(entry.printLayer);
+                printLayers = configItem.backgroundLayers.reduce((printLyrs, entry) => {
+                    if (entry.printLayer) {
+                        printLyrs.push(entry.printLayer);
                     }
-                    return printLayers;
+                    return printLyrs;
                 }, []);
             }
 
             // layer tree and visible layers
-            collapseLayerGroupsBelowLevel = configItem.collapseLayerGroupsBelowLevel || -1
-            let layerTree = [];
-            let visibleLayers = [];
-            let titleNameMap = {};
-            let externalLayers = configItem.externalLayers || [];
+            const collapseLayerGroupsBelowLevel = configItem.collapseLayerGroupsBelowLevel || -1;
+            const layerTree = [];
+            const visibleLayers = [];
+            const titleNameMap = {};
+            const externalLayers = configItem.externalLayers || [];
             getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, configItem.featureReport || {}, externalLayers);
             autogenExternalLayers.push(...externalLayers.map(entry => entry.name));
             visibleLayers.reverse();
 
             // print templates
-            let printTemplates = [];
+            const printTemplates = [];
             if (capabilities.Capability.ComposerTemplates !== undefined) {
                 let templates = capabilities.Capability.ComposerTemplates.ComposerTemplate;
-                if(!templates.length) {
+                if (!templates.length) {
                     templates = [templates];
                 }
-                for (let composerTemplate of templates) {
-                    let printTemplate = {
+                for (const composerTemplate of templates) {
+                    const printTemplate = {
                         name: composerTemplate.$.name
                     };
                     if (composerTemplate.ComposerMap !== undefined) {
                         // use first map from GetProjectSettings
-                        let composerMap = toArray(composerTemplate.ComposerMap)[0];
+                        const composerMap = toArray(composerTemplate.ComposerMap)[0];
                         printTemplate.map = {
                             name: composerMap.$.name,
                             width: parseFloat(composerMap.$.width),
@@ -342,7 +352,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             }
 
             // drawing order
-            let drawingOrder = (capabilities.Capability.LayerDrawingOrder || "").split(",").map(title => title in titleNameMap ? titleNameMap[title] : title);
+            const drawingOrder = (capabilities.Capability.LayerDrawingOrder || "").split(",").map(title => title in titleNameMap ? titleNameMap[title] : title);
 
             // update theme config
             resultItem.url = configItem.url;
@@ -364,7 +374,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
                 position: objectPath.get(capabilities, "Service.ContactInformation.ContactPosition", ""),
                 phone: objectPath.get(capabilities, "Service.ContactInformation.ContactVoiceTelephone", ""),
                 email: objectPath.get(capabilities, "Service.ContactInformation.ContactElectronicMailAddress", "")
-            }
+            };
 
             resultItem.format = configItem.format;
             resultItem.availableFormats = capabilities.Capability.Request.GetMap.Format;
@@ -372,24 +382,24 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             resultItem.version = configItem.version ? configItem.version : config.defaultWMSVersion;
             resultItem.infoFormats = capabilities.Capability.Request.GetFeatureInfo.Format;
             // use geographic bounding box for theme, as default CRS may have inverted axis order with WMS 1.3.0
-            let bounds = [
+            const bounds = [
                 parseFloat(topLayer.EX_GeographicBoundingBox.westBoundLongitude),
                 parseFloat(topLayer.EX_GeographicBoundingBox.southBoundLatitude),
                 parseFloat(topLayer.EX_GeographicBoundingBox.eastBoundLongitude),
                 parseFloat(topLayer.EX_GeographicBoundingBox.northBoundLatitude)
             ];
             resultItem.bbox = {
-                "crs": "EPSG:4326",
-                "bounds": bounds
+                crs: "EPSG:4326",
+                bounds: bounds
             };
-            if(configItem.extent) {
+            if (configItem.extent) {
                 resultItem.initialBbox = {
-                    "crs": configItem.mapCrs || 'EPSG:3857',
-                    "bounds": configItem.extent
+                    crs: configItem.mapCrs || 'EPSG:3857',
+                    bounds: configItem.extent
                 };
             } else {
                 resultItem.initialBbox = resultItem.bbox;
-            };
+            }
             resultItem.scales = configItem.scales;
             resultItem.printScales = configItem.printScales;
             resultItem.printResolutions = configItem.printResolutions;
@@ -408,37 +418,37 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             resultItem.drawingOrder = drawingOrder;
             if (configItem.legendUrl) {
                 resultItem.legendUrl = configItem.legendUrl;
-            } else{
+            } else {
                 resultItem.legendUrl = capabilities.Capability.Request.GetLegendGraphic.DCPType.HTTP.Get.OnlineResource.$['xlink:href'].replace(/\?$/, "") + "?" + (configItem.extraLegendParameters ? configItem.extraLegendParameters : '');
             }
             if (configItem.featureInfoUrl) {
                 resultItem.featureInfoUrl = configItem.featureInfoUrl;
-            } else{
+            } else {
                 resultItem.featureInfoUrl = capabilities.Capability.Request.GetFeatureInfo.DCPType.HTTP.Get.OnlineResource.$['xlink:href'].replace(/\?$/, "") + "?";
             }
             if (configItem.printUrl) {
                 resultItem.printUrl = configItem.printUrl;
-            } else{
+            } else {
                 resultItem.printUrl = capabilities.Capability.Request.GetPrint.DCPType.HTTP.Get.OnlineResource.$['xlink:href'].replace(/\?$/, "") + "?";
             }
-            if(configItem.printLabelForSearchResult) {
+            if (configItem.printLabelForSearchResult) {
                 resultItem.printLabelForSearchResult = configItem.printLabelForSearchResult;
             }
-            if(configItem.printLabelConfig) {
+            if (configItem.printLabelConfig) {
                 resultItem.printLabelConfig = configItem.printLabelConfig;
             }
-            if(configItem.watermark) {
+            if (configItem.watermark) {
                 resultItem.watermark = configItem.watermark;
             }
-            if(configItem.pluginData) {
+            if (configItem.pluginData) {
                 resultItem.pluginData = configItem.pluginData;
             }
-            if(configItem.minSearchScaleDenom) {
+            if (configItem.minSearchScaleDenom) {
                 resultItem.minSearchScaleDenom = configItem.minSearchScaleDenom;
-            } else if(configItem.minSearchScale) { // Legacy name
+            } else if (configItem.minSearchScale) { // Legacy name
                 resultItem.minSearchScaleDenom = configItem.minSearchScale;
             }
-            if(configItem.themeInfoLinks) {
+            if (configItem.themeInfoLinks) {
                 resultItem.themeInfoLinks = configItem.themeInfoLinks;
             }
 
@@ -466,19 +476,19 @@ function getTheme(config, configItem, result, resultItem, proxy) {
 }
 
 // asynchronous tasks
-let tasks = [];
+const tasks = [];
 
 // recursively get themes for groups
 function getGroupThemes(config, configGroup, result, resultGroup, proxy, groupCounter) {
-    for (let item of configGroup.items) {
-        let itemEntry = {};
+    for (const item of configGroup.items) {
+        const itemEntry = {};
         tasks.push(getTheme(config, item, result, itemEntry, proxy));
         resultGroup.items.push(itemEntry);
     }
 
     if (configGroup.groups !== undefined) {
-        for (let group of configGroup.groups) {
-            let groupEntry = {
+        for (const group of configGroup.groups) {
+            const groupEntry = {
                 id: 'g' + (++groupCounter),
                 title: group.title,
                 items: [],
@@ -492,9 +502,9 @@ function getGroupThemes(config, configGroup, result, resultGroup, proxy, groupCo
 
 function genThemes(themesConfig) {
     // load themesConfig.json
-    let config = require(process.cwd() + '/' + themesConfig);
+    const config = require(process.cwd() + '/' + themesConfig);
 
-    let result = {
+    const result = {
         themes: {
             title: "root",
             subdirs: [],
@@ -508,33 +518,33 @@ function genThemes(themesConfig) {
             pluginData: config.themes.pluginData,
             themeInfoLinks: config.themes.themeInfoLinks,
             backgroundLayers: config.themes.backgroundLayers.map(bglayer => {
-                    bglayer.attribution = {
-                        Title: bglayer.attribution,
-                        OnlineResource: bglayer.attributionUrl
-                    };
-                    delete bglayer.attributionUrl;
-                    return bglayer;
-                }),
+                bglayer.attribution = {
+                    Title: bglayer.attribution,
+                    OnlineResource: bglayer.attributionUrl
+                };
+                delete bglayer.attributionUrl;
+                return bglayer;
+            }),
             defaultWMSVersion: config.defaultWMSVersion
         }
     };
-    let proxy = config.proxy || null;
-    let groupCounter = 0;
+    const proxy = config.proxy || null;
+    const groupCounter = 0;
     getGroupThemes(config, config.themes, result, result.themes, proxy, groupCounter);
 
     Promise.all(tasks).then(() => {
-        for(let entry of autogenExternalLayers) {
-            let cpos = entry.indexOf(":");
-            let hpos = entry.lastIndexOf('#');
-            let type = entry.slice(0, cpos);
-            let url = entry.slice(cpos + 1, hpos);
-            let layername = entry.slice(hpos + 1);
+        for (const entry of autogenExternalLayers) {
+            const cpos = entry.indexOf(":");
+            const hpos = entry.lastIndexOf('#');
+            const type = entry.slice(0, cpos);
+            const url = entry.slice(cpos + 1, hpos);
+            const layername = entry.slice(hpos + 1);
             result.themes.externalLayers.push({
-                "name": entry,
-                "type": type,
-                "url": url,
-                "params": {"LAYERS": layername},
-                "infoFormats": ["text/plain"]
+                name: entry,
+                type: type,
+                url: url,
+                params: {LAYERS: layername},
+                infoFormats: ["text/plain"]
             });
         }
 
@@ -567,6 +577,6 @@ function genThemes(themesConfig) {
     return result;
 }
 
-console.log("Reading " + themesConfig);
+console.log("Reading " + themesConfigPath);
 
-genThemes(themesConfig);
+genThemes(themesConfigPath);

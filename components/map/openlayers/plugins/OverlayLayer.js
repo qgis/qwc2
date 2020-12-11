@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var ol = require('openlayers');
+const ol = require('openlayers');
 
 const removeIds = (items) => {
     if (items.length !== 0) {
         for (let i = 0; i < items.length; i++) {
-            let item = items.item(i);
+            const item = items.item(i);
             item.removeAttribute('data-reactid');
             removeIds(item.children || []);
         }
@@ -19,7 +19,7 @@ const removeIds = (items) => {
 };
 
 const cloneOriginalOverlay = (original, options) => {
-    let cloned = original.cloneNode(true);
+    const cloned = original.cloneNode(true);
     cloned.id = options.id + '-overlay';
     cloned.className = (options.className || original.className) + "-overlay";
     cloned.removeAttribute('data-reactid');
@@ -37,7 +37,7 @@ const cloneOriginalOverlay = (original, options) => {
     return cloned;
 };
 
-let OverlayLayer = {
+const OverlayLayer = {
     create: (options, map) => {
         const original = document.getElementById(options.id);
         const cloned = cloneOriginalOverlay(original, options);

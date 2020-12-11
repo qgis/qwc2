@@ -34,7 +34,7 @@ const LayerRole = {
 };
 
 
-function addLayer(layer, pos=null, beforename=null) {
+function addLayer(layer, pos = null, beforename = null) {
     return {
         type: ADD_LAYER,
         layer,
@@ -52,7 +52,7 @@ function addLayerSeparator(title, afterLayerId, afterSublayerPath) {
     };
 }
 
-function removeLayer(layerId, sublayerpath=[]) {
+function removeLayer(layerId, sublayerpath = []) {
     return {
         type: REMOVE_LAYER,
         layerId: layerId,
@@ -72,22 +72,22 @@ function reorderLayer(layer, sublayerpath, direction) {
     };
 }
 
-function addLayerFeatures(layer, features, clear=false) {
+function addLayerFeatures(layer, features, clear = false) {
     return {
         type: ADD_LAYER_FEATURES,
         layer,
         features,
         clear
-    }
+    };
 }
 
-function removeLayerFeatures(layerId, featureIds, keepEmptyLayer=false) {
+function removeLayerFeatures(layerId, featureIds, keepEmptyLayer = false) {
     return {
         type: REMOVE_LAYER_FEATURES,
         layerId,
         featureIds,
         keepEmptyLayer
-    }
+    };
 }
 
 function clearLayer(layerId) {
@@ -101,11 +101,11 @@ function addThemeSublayer(layer) {
     return {
         type: ADD_THEME_SUBLAYER,
         layer
-    }
+    };
 }
 
 // recurseDirection: null (don't recurse), 'parents', 'children', 'both'
-function changeLayerProperty(layerUuid, property, newvalue, sublayerpath=[], recurseDirection=null) {
+function changeLayerProperty(layerUuid, property, newvalue, sublayerpath = [], recurseDirection = null) {
     return {
         type: CHANGE_LAYER_PROPERTY,
         layerUuid,
@@ -124,13 +124,13 @@ function setLayerLoading(layerId, loading) {
     };
 }
 
-function addMarker(id, point, label='', crs='EPSG:4326', zIndex=null) {
-    let layer = {
+function addMarker(id, point, label = '', crs = 'EPSG:4326', zIndex = null) {
+    const layer = {
         id: "markers",
         role: LayerRole.MARKER,
         zIndex: zIndex
-    }
-    let feature = {
+    };
+    const feature = {
         id: id,
         geometry: {
             type: 'Point',
@@ -165,7 +165,7 @@ function replacePlaceholderLayer(id, layer) {
         type: REPLACE_PLACEHOLDER_LAYER,
         id,
         layer
-    }
+    };
 }
 
 function setSwipe(swipe) {

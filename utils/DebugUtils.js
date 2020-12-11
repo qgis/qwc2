@@ -13,21 +13,20 @@ const immutable = require('redux-immutable-state-invariant').default;
 const {persistState} = require('redux-devtools');
 const DevTools = require('../components/development/DevTools');
 
-
 const urlQuery = url.parse(window.location.href, true).query;
 
-var DebugUtils = {
+const DebugUtils = {
     createDebugStore: function(reducer, initialState, userMiddlewares, enhancer) {
         let finalCreateStore;
         if (__DEVTOOLS__ && urlQuery.debug) {
-            let middlewares = (userMiddlewares || []).concat([immutable(), thunkMiddleware, logger]);
+            const middlewares = (userMiddlewares || []).concat([immutable(), thunkMiddleware, logger]);
             finalCreateStore = compose(
                 applyMiddleware.apply(null, middlewares),
                 window.devToolsExtension ? window.devToolsExtension() : DevTools.instrument(),
                 persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
             )(createStore);
         } else {
-            let middlewares = (userMiddlewares || []).concat([thunkMiddleware]);
+            const middlewares = (userMiddlewares || []).concat([thunkMiddleware]);
             finalCreateStore = applyMiddleware.apply(null, middlewares)(createStore);
         }
         return finalCreateStore(reducer, initialState, enhancer);
