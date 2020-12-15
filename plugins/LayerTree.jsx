@@ -63,6 +63,7 @@ class LayerTree extends React.Component {
         setActiveLayerInfo: PropTypes.func,
         width: PropTypes.string,
         enableLegendPrint: PropTypes.bool,
+        enableServiceInfo: PropTypes.bool,
         enableVisibleFilter: PropTypes.bool,
         infoInSettings: PropTypes.bool,
         showToggleAllLayersCheckbox: PropTypes.bool,
@@ -86,6 +87,7 @@ class LayerTree extends React.Component {
         width: "25em",
         enableLegendPrint: true,
         enableVisibleFilter: true,
+        enableServiceInfo: true,
         infoInSettings: true,
         showToggleAllLayersCheckbox: true,
         transparencyIcon: true
@@ -414,6 +416,10 @@ class LayerTree extends React.Component {
             let deleteAllLayersTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.deletealllayers");
             deleteAllLayersIcon = (<Icon title={deleteAllLayersTooltip} className="layertree-delete-legend" icon="trash" onClick={this.deleteAllLayers}/>);
         }
+        let serviceInfoIcon = null;
+        if(this.props.enableServiceInfo) {
+            serviceInfoIcon = (<Icon className="layertree-theme-metadata" icon="info-sign" onClick={() => this.props.setActiveServiceInfo(this.props.theme)}/>);
+        }
 
         let extraTitlebarContent = null;
         if(legendPrintIcon || deleteAllLayersIcon || visibleFilterIcon || infoIcon) {
@@ -422,7 +428,7 @@ class LayerTree extends React.Component {
                     {legendPrintIcon}
                     {visibleFilterIcon}
                     {deleteAllLayersIcon}
-                    <Icon className="layertree-theme-metadata" icon="info-sign" onClick={() => this.props.setActiveServiceInfo(this.props.theme)}/>
+                    {serviceInfoIcon}
                 </span>
             );
         }
