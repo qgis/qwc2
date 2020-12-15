@@ -536,7 +536,7 @@ class LayerTree extends React.Component {
                 return "";
             } else if(layer.legendUrl) {
                 return layer.params.LAYERS ? layer.params.LAYERS.split(",").reverse().map(sublayer => {
-                    let request = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.mapCrs);
+                    let request = LayerUtils.getLegendUrl(layer, {"name": sublayer}, this.props.mapScale, this.props.mapCrs);
                     return '<div><img src="' + request + '" /></div>';
                 }).join("\n") : "";
             } else if(layer.color) {
