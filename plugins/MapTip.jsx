@@ -93,17 +93,21 @@ class MapTip extends React.Component {
         axios.get(request.url, {params: request.params}).then(response => {
             const mapTips = [];
             const result = IdentifyUtils.parseXmlResponse({data: response.data, request}, this.props.map.projection);
+            const features = [];
             for (const layerName of request.params.layers.split(",")) {
                 for (const feature of result[layerName] || []) {
                     if (feature.properties.maptip) {
-                        const sellayer = {
-                            id: "maptipselection",
-                            role: LayerRole.SELECTION
-                        };
-                        this.props.addLayerFeatures(sellayer, [feature], true);
+                        features.push(feature);
                         mapTips.push(feature.properties.maptip);
                     }
                 }
+            }
+            if (!isEmpty(features)) {
+                const sellayer = {
+                    id: "maptipselection",
+                    role: LayerRole.SELECTION
+                };
+                this.props.addLayerFeatures(sellayer, features, true);
             }
             this.setState({maptips: mapTips, pos: [x, y]});
         });
