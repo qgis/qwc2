@@ -226,7 +226,13 @@ class StandardApp extends React.Component {
         LocaleUtils.setSupportedLocales(this.props.appConfig.supportedLocales);
 
         // Load config.json
-        ConfigUtils.loadConfiguration().then((config) => {
+        let configParams = Object.entries(UrlParams.getParams()).reduce((res, [key, value]) => {
+            if(key.startsWith("config:")) {
+                res[key.slice(7)] = value;
+            }
+            return res;
+        }, {});
+        ConfigUtils.loadConfiguration(configParams).then((config) => {
             this.store.dispatch(localConfigLoaded(config));
             // Dispatch user locale
             this.store.dispatch(loadLocale(null, LocaleUtils.getUserLocale()));
