@@ -56,8 +56,8 @@ class Identify extends React.Component {
         featureInfoReturnsLayerName: true
     }
     componentDidUpdate(prevProps, prevState) {
-        const point = this.queryPoint(this.props);
-        const clickFeature = this.queryFeature(this.props);
+        const point = this.queryPoint(prevProps);
+        const clickFeature = this.queryFeature(prevProps);
         if (point || clickFeature) {
             // Remove any search selection layer to avoid confusion
             this.props.removeLayer("searchselection");
@@ -107,36 +107,36 @@ class Identify extends React.Component {
             this.onClose();
         }
     }
-    queryPoint = (props) => {
-        if (props.enabled && props.clickFeature && props.clickFeature.feature === 'searchmarker' && props.clickFeature.geometry) {
-            if (this.props.clickFeature !== props.clickFeature) {
+    queryPoint = (prevProps) => {
+        if (this.props.enabled && this.props.clickFeature && this.props.clickFeature.feature === 'searchmarker' && this.props.clickFeature.geometry) {
+            if (this.props.clickFeature !== prevProps.clickFeature) {
                 this.props.purgeResults();
-                return props.clickFeature.geometry;
+                return this.props.clickFeature.geometry;
             }
         }
-        if (props.enabled && props.clickFeature && props.clickFeature.coordinate) {
-            if (!this.props.clickFeature || this.props.clickFeature.coordinate !== props.clickFeature.coordinate) {
+        if (this.props.enabled && this.props.clickFeature && this.props.clickFeature.coordinate) {
+            if (!this.props.clickFeature || this.props.clickFeature.coordinate !== prevProps.clickFeature.coordinate) {
                 this.props.purgeResults();
-                return props.clickFeature.coordinate;
+                return this.props.clickFeature.coordinate;
             }
         }
 
-        if (props.enabled && props.point && props.point.button === 0 && props.point.coordinate) {
-            if (!this.props.point.coordinate ||
-                this.props.point.coordinate[0] !== props.point.coordinate[0] ||
-                this.props.point.coordinate[1] !== props.point.coordinate[1]
+        if (this.props.enabled && this.props.point && this.props.point.button === 0 && this.props.point.coordinate) {
+            if (!prevProps.point.coordinate ||
+                this.props.point.coordinate[0] !== prevProps.point.coordinate[0] ||
+                this.props.point.coordinate[1] !== prevProps.point.coordinate[1]
             ) {
-                if (props.point.modifiers.ctrl !== true) {
+                if (this.props.point.modifiers.ctrl !== true) {
                     this.props.purgeResults();
                 }
-                return props.point.coordinate;
+                return this.props.point.coordinate;
             }
         }
         return null;
     }
-    queryFeature = (props) => {
-        if (props.enabled && props.clickFeature && this.props.clickFeature !== props.clickFeature && props.clickFeature.geometry) {
-            return props.clickFeature;
+    queryFeature = (prevProps) => {
+        if (this.props.enabled && this.props.clickFeature && this.props.clickFeature !== prevProps.clickFeature && this.props.clickFeature.geometry) {
+            return this.props.clickFeature;
         }
         return null;
     }

@@ -71,19 +71,19 @@ class IdentifyViewer extends React.Component {
         this.currentResultElRef = null;
         this.scrollIntoView = false;
     }
-    static getDerivedStateFromProps(nextProps) {
+    componentDidUpdate(prevProps, prevState) {
         const newState = {};
-        if (nextProps.layers !== this.props.layers) {
+        if (prevProps.layers !== this.props.layers) {
             const displayFieldMap = {};
-            for (const layer of nextProps.layers) {
-                IdentifyViewer.populateDisplayFieldMap(displayFieldMap, layer);
+            for (const layer of this.props.layers) {
+                this.populateDisplayFieldMap(displayFieldMap, layer);
             }
             newState.displayFieldMap = displayFieldMap;
         }
-        if (nextProps.missingResponses === 0 && nextProps.responses !== this.props.responses) {
+        if (this.props.missingResponses === 0 && prevProps.responses !== this.props.responses) {
             const result = {};
             const stats = {count: 0, lastResult: null};
-            (nextProps.responses || []).map(response => response.data ? this.parseResponse(response, result, stats) : null);
+            (this.props.responses || []).map(response => response.data ? this.parseResponse(response, result, stats) : null);
             assign(newState, {
                 expanded: {},
                 resultTree: result,
@@ -91,17 +91,10 @@ class IdentifyViewer extends React.Component {
                 currentLayer: stats.count === 1 ? stats.lastLayer : null
             });
         }
-        return newState;
-    }
-    static populateDisplayFieldMap = (displayFieldMap, item) => {
-        if (item.sublayers) {
-            item.sublayers.map(child => IdentifyViewer.populateDisplayFieldMap(displayFieldMap, child));
-        } else if (item.displayField) {
-            displayFieldMap[item.name] = item.displayField;
-            displayFieldMap[item.title] = item.displayField;
+        if (!isEmpty(newState)) {
+            this.setState(newState);
         }
-    }
-    componentDidUpdate(prevProps, prevState) {
+
         if (prevState.currentResult !== this.state.currentResult || prevState.resultTree !== this.state.resultTree) {
             this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree);
         }
@@ -115,6 +108,14 @@ class IdentifyViewer extends React.Component {
     }
     componentWillUnmount() {
         this.props.removeLayer("identifyslection");
+    }
+    populateDisplayFieldMap = (displayFieldMap, item) => {
+        if (item.sublayers) {
+            item.sublayers.map(child => this.populateDisplayFieldMap(displayFieldMap, child));
+        } else if (item.displayField) {
+            displayFieldMap[item.name] = item.displayField;
+            displayFieldMap[item.title] = item.displayField;
+        }
     }
     parseResponse = (response, results, stats) => {
         let newResults = {};
