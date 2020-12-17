@@ -566,7 +566,7 @@ const LayerUtils = {
         }
     },
     getLegendUrl(layer, sublayer, scale, projection, map) {
-        const name = layer.externalLayerMap[sublayer.name] ? layer.externalLayerMap[sublayer.name].params.LAYERS : sublayer.name;
+        const name = (layer.externalLayerMap || {})[sublayer.name] ? layer.externalLayerMap[sublayer.name].params.LAYERS : sublayer.name;
         let params = "SERVICE=WMS"
                    + "&REQUEST=GetLegendGraphic"
                    + "&VERSION=" + (layer.version || "1.3.0")
