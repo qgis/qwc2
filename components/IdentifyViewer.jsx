@@ -171,6 +171,8 @@ class IdentifyViewer extends React.Component {
                 role: LayerRole.SELECTION
             };
             this.props.addLayerFeatures(layer, results, true);
+        } else {
+            this.props.removeLayer("identifyslection");
         }
     }
     getExpandedClass = (path, deflt) => {
