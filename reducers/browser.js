@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {CHANGE_BROWSER_PROPERTIES} = require('../actions/browser');
-const assign = require('object-assign');
+import {CHANGE_BROWSER_PROPERTIES} from '../actions/browser';
+import assign from 'object-assign';
 
-function browser(state = null, action) {
+export default function browser(state = null, action) {
     switch (action.type) {
     case CHANGE_BROWSER_PROPERTIES: {
         return assign({}, state, action.newProperties);
@@ -18,5 +18,3 @@ function browser(state = null, action) {
         return state;
     }
 }
-
-module.exports = browser;

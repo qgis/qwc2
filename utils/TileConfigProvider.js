@@ -1,9 +1,9 @@
-const assign = require('object-assign');
-const CONFIGPROVIDER = require('./ConfigProvider');
-const CoordinatesUtils = require('./ConfigUtils');
+import assign from 'object-assign';
+import CONFIGPROVIDER from './ConfigProvider';
+import CoordinatesUtils from './ConfigUtils';
 
 const TileConfigProvider = {
-    getLayerConfig: (layer, options) => {
+    getLayerConfig(layer, options) {
         const providers = CONFIGPROVIDER;
         const parts = layer.split('.');
         const providerName = parts[0];
@@ -75,4 +75,4 @@ const TileConfigProvider = {
 };
 
 
-module.exports = TileConfigProvider;
+export default TileConfigProvider;

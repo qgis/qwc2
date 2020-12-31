@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const assign = require('object-assign');
-const {CHANGE_MEASUREMENT_STATE} = require('../actions/measurement');
+import assign from 'object-assign';
+import {CHANGE_MEASUREMENT_STATE} from '../actions/measurement';
 
 const defaultState = {
     geomType: null,
@@ -19,7 +19,7 @@ const defaultState = {
     areaUnit: 'sqm'
 };
 
-function measurement(state = defaultState, action) {
+export default function measurement(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_MEASUREMENT_STATE: {
         return assign({}, {lenUnit: state.lenUnit, areaUnit: state.areaUnit}, action.data);
@@ -28,5 +28,3 @@ function measurement(state = defaultState, action) {
         return state;
     }
 }
-
-module.exports = measurement;

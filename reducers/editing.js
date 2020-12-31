@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {CHANGE_EDITING_STATE} = require('../actions/editing');
-const assign = require('object-assign');
+import {CHANGE_EDITING_STATE} from '../actions/editing';
+import assign from 'object-assign';
 
 const defaultState = {
     action: null,
@@ -15,7 +15,7 @@ const defaultState = {
     feature: null
 };
 
-function editing(state = defaultState, action) {
+export default function editing(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_EDITING_STATE: {
         const changed = action.data.feature && action.data.changed !== false;
@@ -25,5 +25,3 @@ function editing(state = defaultState, action) {
         return state;
     }
 }
-
-module.exports = editing;

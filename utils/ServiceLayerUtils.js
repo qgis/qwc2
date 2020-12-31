@@ -6,16 +6,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const ol = require('openlayers');
-const assign = require('object-assign');
-const axios = require('axios');
-const deepmerge = require('deepmerge');
-const isEmpty = require('lodash.isempty');
-const fastXmlParser = require('fast-xml-parser');
-const randomColor = require('randomcolor');
-const ConfigUtils = require('./ConfigUtils');
-const LayerUtils = require('./LayerUtils');
-const {LayerRole} = require('../actions/layers');
+import ol from 'openlayers';
+import assign from 'object-assign';
+import axios from 'axios';
+import deepmerge from 'deepmerge';
+import isEmpty from 'lodash.isempty';
+import fastXmlParser from 'fast-xml-parser';
+import randomColor from 'randomcolor';
+import ConfigUtils from './ConfigUtils';
+import LayerUtils from './LayerUtils';
+import {LayerRole} from '../actions/layers';
 
 function strcmp(a, b) {
     const al = a.toLowerCase();
@@ -216,7 +216,7 @@ const ServiceLayerUtils = {
                 bbox = {
                     crs: featureType.SRS,
                     bounds: [llbbox.minx, llbbox.miny, llbbox.maxx, llbbox.maxy]
-                }
+                };
             } catch (e) {
                 continue; // Name and bbox are required
             }
@@ -329,4 +329,4 @@ const ServiceLayerUtils = {
     }
 };
 
-module.exports = ServiceLayerUtils;
+export default ServiceLayerUtils;

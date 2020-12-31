@@ -6,24 +6,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const CHANGE_LOCATE_STATE = 'CHANGE_LOCATE_STATE';
-const LOCATE_ERROR = 'LOCATE_ERROR';
+import {ReducerRegistry} from '../stores/StandardStore';
+import locateReducer from '../reducers/locate';
+ReducerRegistry.register("locate", locateReducer);
 
-function changeLocateState(state) {
+export const CHANGE_LOCATE_STATE = 'CHANGE_LOCATE_STATE';
+export const LOCATE_ERROR = 'LOCATE_ERROR';
+
+export function changeLocateState(state) {
     return {
         type: CHANGE_LOCATE_STATE,
         state: state
     };
 }
-function onLocateError(error) {
+
+export function onLocateError(error) {
     return {
         type: LOCATE_ERROR,
         error: error
     };
 }
-module.exports = {
-    CHANGE_LOCATE_STATE,
-    LOCATE_ERROR,
-    changeLocateState,
-    onLocateError
-};

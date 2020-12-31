@@ -17,14 +17,14 @@
  */
 
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const ol = require('openlayers');
-const assign = require('object-assign');
+import React from 'react';
+import PropTypes from 'prop-types';
+import ol from 'openlayers';
+import assign from 'object-assign';
 
-require('./style/OverviewSupport.css');
+import './style/OverviewSupport.css';
 
-class Overview extends React.Component {
+export default class Overview extends React.Component {
     static propTypes = {
         id: PropTypes.string,
         map: PropTypes.object,
@@ -64,5 +64,3 @@ class Overview extends React.Component {
         return null;
     }
 }
-
-module.exports = Overview;

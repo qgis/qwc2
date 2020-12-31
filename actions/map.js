@@ -7,19 +7,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const CHANGE_MAP_VIEW = 'CHANGE_MAP_VIEW';
-const CONFIGURE_MAP = 'CONFIGURE_MAP';
-const CLICK_ON_MAP = 'CLICK_ON_MAP';
-const CLICK_FEATURE_ON_MAP = 'CLICK_FEATURE_ON_MAP';
-const CHANGE_ZOOM_LVL = 'CHANGE_ZOOM_LVL';
-const PAN_TO = 'PAN_TO';
-const ZOOM_TO_EXTENT = 'ZOOM_TO_EXTENT';
-const ZOOM_TO_POINT = 'ZOOM_TO_POINT';
-const CHANGE_ROTATION = 'CHANGE_ROTATION';
-const TOGGLE_MAPTIPS = 'TOGGLE_MAPTIPS';
-const SET_TOPBAR_HEIGHT = 'SET_TOPBAR_HEIGHT';
+import {ReducerRegistry} from '../stores/StandardStore';
+import mapReducer from '../reducers/map';
+ReducerRegistry.register("map", mapReducer);
 
-function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
+export const CHANGE_MAP_VIEW = 'CHANGE_MAP_VIEW';
+export const CONFIGURE_MAP = 'CONFIGURE_MAP';
+export const CLICK_ON_MAP = 'CLICK_ON_MAP';
+export const CLICK_FEATURE_ON_MAP = 'CLICK_FEATURE_ON_MAP';
+export const CHANGE_ZOOM_LVL = 'CHANGE_ZOOM_LVL';
+export const PAN_TO = 'PAN_TO';
+export const ZOOM_TO_EXTENT = 'ZOOM_TO_EXTENT';
+export const ZOOM_TO_POINT = 'ZOOM_TO_POINT';
+export const CHANGE_ROTATION = 'CHANGE_ROTATION';
+export const TOGGLE_MAPTIPS = 'TOGGLE_MAPTIPS';
+export const SET_TOPBAR_HEIGHT = 'SET_TOPBAR_HEIGHT';
+
+export function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
     return {
         type: CHANGE_MAP_VIEW,
         center,
@@ -39,7 +43,7 @@ function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
  *             or
  *               {bounds: [xmin, ymin, xmax, ymax], crs: ...}
  */
-function configureMap(crs, scales, view) {
+export function configureMap(crs, scales, view) {
     return {
         type: CONFIGURE_MAP,
         crs,
@@ -48,21 +52,21 @@ function configureMap(crs, scales, view) {
     };
 }
 
-function clickOnMap(point) {
+export function clickOnMap(point) {
     return {
         type: CLICK_ON_MAP,
         point: point
     };
 }
 
-function clickFeatureOnMap(feature) {
+export function clickFeatureOnMap(feature) {
     return {
         type: CLICK_FEATURE_ON_MAP,
         feature: feature
     };
 }
 
-function changeZoomLevel(zoomLvl, mapStateSource) {
+export function changeZoomLevel(zoomLvl, mapStateSource) {
     return {
         type: CHANGE_ZOOM_LVL,
         zoom: zoomLvl,
@@ -70,7 +74,7 @@ function changeZoomLevel(zoomLvl, mapStateSource) {
     };
 }
 
-function panTo(pos, crs) {
+export function panTo(pos, crs) {
     return {
         type: PAN_TO,
         pos,
@@ -78,7 +82,7 @@ function panTo(pos, crs) {
     };
 }
 
-function zoomToExtent(extent, crs) {
+export function zoomToExtent(extent, crs) {
     return {
         type: ZOOM_TO_EXTENT,
         extent,
@@ -86,7 +90,7 @@ function zoomToExtent(extent, crs) {
     };
 }
 
-function zoomToPoint(pos, zoom, crs) {
+export function zoomToPoint(pos, zoom, crs) {
     return {
         type: ZOOM_TO_POINT,
         pos,
@@ -95,48 +99,23 @@ function zoomToPoint(pos, zoom, crs) {
     };
 }
 
-function changeRotation(rotation) {
+export function changeRotation(rotation) {
     return {
         type: CHANGE_ROTATION,
         rotation
     };
 }
 
-function toggleMapTips(active) {
+export function toggleMapTips(active) {
     return {
         type: TOGGLE_MAPTIPS,
         active: active
     };
 }
 
-function setTopbarHeight(height) {
+export function setTopbarHeight(height) {
     return {
         type: SET_TOPBAR_HEIGHT,
         height
     };
 }
-
-module.exports = {
-    CHANGE_MAP_VIEW,
-    CONFIGURE_MAP,
-    CLICK_ON_MAP,
-    CLICK_FEATURE_ON_MAP,
-    CHANGE_ZOOM_LVL,
-    PAN_TO,
-    ZOOM_TO_EXTENT,
-    ZOOM_TO_POINT,
-    CHANGE_ROTATION,
-    TOGGLE_MAPTIPS,
-    SET_TOPBAR_HEIGHT,
-    changeMapView,
-    configureMap,
-    clickOnMap,
-    clickFeatureOnMap,
-    changeZoomLevel,
-    zoomToExtent,
-    zoomToPoint,
-    panTo,
-    changeRotation,
-    toggleMapTips,
-    setTopbarHeight
-};

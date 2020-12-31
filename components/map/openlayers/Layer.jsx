@@ -5,16 +5,16 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-const React = require('react');
-const PropTypes = require('prop-types');
-const assign = require('object-assign');
-const isEqual = require('lodash.isequal');
-const omit = require('lodash.omit');
-const ol = require('openlayers');
-const CoordinatesUtils = require('../../../utils/CoordinatesUtils');
-const LayerRegistry = require('./plugins/index');
+import React from 'react';
+import PropTypes from 'prop-types';
+import assign from 'object-assign';
+import isEqual from 'lodash.isequal';
+import omit from 'lodash.omit';
+import ol from 'openlayers';
+import CoordinatesUtils from '../../../utils/CoordinatesUtils';
+import LayerRegistry from './plugins/index';
 
-class OpenlayersLayer extends React.Component {
+export default class OpenlayersLayer extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         map: PropTypes.object,
@@ -221,5 +221,3 @@ class OpenlayersLayer extends React.Component {
         return this.valid;
     }
 }
-
-module.exports = OpenlayersLayer;

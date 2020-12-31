@@ -5,42 +5,37 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-const React = require('react');
-const PropTypes = require('prop-types');
-const {Provider, connect} = require('react-redux');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {Provider, connect} from 'react-redux';
 
 // Needed for IE11 to avoid 'Promise not defined' error in axios
-require("babel-polyfill");
+import 'babel-polyfill';
 
-// Avoid Intl is not defined (Intl needed by react-intl further on)
-if (!global.Intl) {
-    require('intl');
-}
 
-const axios = require('axios');
-const assign = require('object-assign');
-const Proj4js = require('proj4').default;
-const olProj4 = require('ol/proj/proj4');
+import axios from 'axios';
+import assign from 'object-assign';
+import Proj4js from 'proj4';
+import {register as olProj4Register} from 'ol/proj/proj4';
 
-const Localized = require('../components/I18N/Localized');
-const StandardStore = require('../stores/StandardStore');
-const PluginsContainer = require('./PluginsContainer');
+import Localized from '../components/I18N/Localized';
+import StandardStore from '../stores/StandardStore';
+import PluginsContainer from './PluginsContainer';
 
-const {changeBrowserProperties} = require('../actions/browser');
-const {loadLocale} = require('../actions/locale');
-const {localConfigLoaded, setStartupParameters} = require('../actions/localConfig');
-const {addLayer} = require('../actions/layers');
-const {changeSearch} = require('../actions/search');
-const {themesLoaded, setCurrentTheme} = require('../actions/theme');
+import {changeBrowserProperties} from '../actions/browser';
+import {loadLocale} from '../actions/locale';
+import {localConfigLoaded, setStartupParameters} from '../actions/localConfig';
+import {addLayer} from '../actions/layers';
+import {changeSearch} from '../actions/search';
+import {themesLoaded, setCurrentTheme} from '../actions/theme';
 
-const ConfigUtils = require('../utils/ConfigUtils');
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const MapUtils = require('../utils/MapUtils');
-const PluginsUtils = require('../utils/PluginsUtils');
-const {UrlParams, resolvePermaLink} = require('../utils/PermaLinkUtils');
-const ThemeUtils = require('../utils/ThemeUtils');
+import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import MapUtils from '../utils/MapUtils';
+import {UrlParams, resolvePermaLink} from '../utils/PermaLinkUtils';
+import ThemeUtils from '../utils/ThemeUtils';
 
-require('./style/App.css');
+import './style/App.css';
 
 
 class AppInitComponent extends React.Component {
@@ -138,7 +133,7 @@ const AppInit = connect(state => ({
 })(AppInitComponent);
 
 
-class StandardApp extends React.Component {
+export default class StandardApp extends React.Component {
     static propTypes = {
         appConfig: PropTypes.object
     }
@@ -163,7 +158,7 @@ class StandardApp extends React.Component {
         document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01 ) + 'px');
     }
     render() {
-        const plugins = assign(PluginsUtils.getPlugins(this.props.appConfig.pluginsDef.plugins));
+        const plugins = this.props.appConfig.pluginsDef.plugins;
         return (
             <Provider store={this.store}>
                 <div ref={this.setupTouchEvents}>
@@ -232,9 +227,7 @@ class StandardApp extends React.Component {
                 CoordinatesUtils.setCrsLabels({[proj.code]: proj.label});
             }
 
-            olProj4.register(Proj4js);
+            olProj4Register(Proj4js);
         });
     }
 }
-
-module.exports = StandardApp;

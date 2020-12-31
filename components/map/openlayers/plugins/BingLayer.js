@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const ol = require('openlayers');
+import ol from 'openlayers';
 
 const checkLoaded = (layer, options) => {
     if (layer.getSource && layer.getSource().getState() === 'error') {
@@ -19,7 +19,7 @@ const checkLoaded = (layer, options) => {
     }
 };
 
-const BingLayer = {
+export default {
     create: (options) => {
         const key = options.apiKey;
         const maxNativeZoom = options.maxNativeZoom || 19;
@@ -44,5 +44,3 @@ const BingLayer = {
         return true;
     }
 };
-
-module.exports = BingLayer;

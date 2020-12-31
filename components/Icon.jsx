@@ -6,14 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const classnames = require('classnames');
-const ConfigUtils = require('../utils/ConfigUtils');
-const LocaleUtils = require('../utils/LocaleUtils');
-require('./style/Icon.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import ConfigUtils from '../utils/ConfigUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import './style/Icon.css';
 
-class Icon extends React.Component {
+export default class Icon extends React.Component {
     static propTypes = {
         className: PropTypes.string,
         icon: PropTypes.string,
@@ -54,5 +54,3 @@ class Icon extends React.Component {
         }
     }
 }
-
-module.exports = Icon;

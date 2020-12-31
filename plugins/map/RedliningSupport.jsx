@@ -6,15 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const assign = require('object-assign');
-const uuid = require('uuid');
-const ol = require('openlayers');
-const FeatureStyles = require('../../components/map/openlayers/FeatureStyles');
-const {changeRedliningState} = require('../../actions/redlining');
-const {LayerRole, addLayerFeatures, removeLayerFeatures} = require('../../actions/layers');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import assign from 'object-assign';
+import uuid from 'uuid';
+import ol from 'openlayers';
+import FeatureStyles from '../../components/map/openlayers/FeatureStyles';
+import {changeRedliningState} from '../../actions/redlining';
+import {LayerRole, addLayerFeatures, removeLayerFeatures} from '../../actions/layers';
 
 class RedliningSupport extends React.Component {
     static propTypes = {
@@ -343,7 +343,7 @@ class RedliningSupport extends React.Component {
     }
 }
 
-module.exports = connect((state) => ({
+export default connect((state) => ({
     redlining: state.redlining || {}
 }), {
     changeRedliningState: changeRedliningState,

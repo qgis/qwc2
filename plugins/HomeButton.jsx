@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const LocaleUtils = require('../utils/LocaleUtils');
-const {zoomToExtent} = require('../actions/map');
-const Icon = require('../components/Icon');
-require('./style/Buttons.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import LocaleUtils from '../utils/LocaleUtils';
+import {zoomToExtent} from '../actions/map';
+import Icon from '../components/Icon';
+import './style/Buttons.css';
 
 class HomeButton extends React.Component {
     static propTypes = {
@@ -42,13 +42,8 @@ class HomeButton extends React.Component {
     }
 }
 
-module.exports = {
-    HomeButtonPlugin: connect((state) => ({
-        currentTheme: state.theme ? state.theme.current : null
-    }), {
-        zoomToExtent: zoomToExtent
-    })(HomeButton),
-    reducers: {
-        map: require("../reducers/map")
-    }
-};
+export default connect((state) => ({
+    currentTheme: state.theme ? state.theme.current : null
+}), {
+    zoomToExtent: zoomToExtent
+})(HomeButton);

@@ -6,14 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const ResizeableWindow = require('./ResizeableWindow');
-const {MessageBar} = require('./MessageBar');
-const {closeWindow, closeAllWindows} = require('../actions/windows');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import ResizeableWindow from './ResizeableWindow';
+import MessageBar from './MessageBar';
+import {closeWindow, closeAllWindows} from '../actions/windows';
 
-require('./style/WindowManager.css');
+import './style/WindowManager.css';
 
 class WindowManager extends React.Component {
     static propTypes = {
@@ -79,7 +79,7 @@ const selector = (state) => ({
     currentTheme: state.theme.current
 });
 
-module.exports = connect(selector, {
+export default connect(selector, {
     closeWindow: closeWindow,
     closeAllWindows: closeAllWindows
 })(WindowManager);

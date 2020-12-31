@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const ol = require('openlayers');
-const assign = require('object-assign');
-const ConfigUtils = require('../../../utils/ConfigUtils');
-const markerIcon = require('./img/marker-icon.png');
+import ol from 'openlayers';
+import assign from 'object-assign';
+import ConfigUtils from '../../../utils/ConfigUtils';
+import markerIcon from './img/marker-icon.png';
 
-const FeatureStyles = {
+export default {
     default: (feature, options) => {
         const opts = assign({}, ConfigUtils.getConfigProp("defaultFeatureStyle"), options);
         return new ol.style.Style({
@@ -69,5 +69,3 @@ const FeatureStyles = {
         });
     }
 };
-
-module.exports = FeatureStyles;

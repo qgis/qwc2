@@ -6,17 +6,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const {stringify} = require('wellknown');
-const Message = require('../components/I18N/Message');
-const {LayerRole} = require('../actions/layers');
-const {sendIdentifyRequest} = require('../actions/identify');
-const {changeSelectionState} = require('../actions/selection');
-const {setCurrentTask} = require("../actions/task");
-const {TaskBar} = require('../components/TaskBar');
-const IdentifyUtils = require('../utils/IdentifyUtils');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {stringify} from 'wellknown';
+import Message from '../components/I18N/Message';
+import {LayerRole} from '../actions/layers';
+import {sendIdentifyRequest} from '../actions/identify';
+import {changeSelectionState} from '../actions/selection';
+import {setCurrentTask} from '../actions/task';
+import TaskBar from '../components/TaskBar';
+import IdentifyUtils from '../utils/IdentifyUtils';
 
 class IdentifyRegion extends React.Component {
     static propTypes = {
@@ -87,13 +87,8 @@ const selector = (state) => ({
     layers: state.layers && state.layers.flat || []
 });
 
-module.exports = {
-    IdentifyRegionPlugin: connect(selector, {
-        changeSelectionState: changeSelectionState,
-        setCurrentTask: setCurrentTask,
-        sendRequest: sendIdentifyRequest
-    })(IdentifyRegion),
-    reducers: {
-        selection: require('../reducers/selection')
-    }
-};
+export default connect(selector, {
+    changeSelectionState: changeSelectionState,
+    setCurrentTask: setCurrentTask,
+    sendRequest: sendIdentifyRequest
+})(IdentifyRegion);

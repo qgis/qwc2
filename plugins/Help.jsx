@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const {SideBar} = require('../components/SideBar');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import SideBar from '../components/SideBar';
 
 class Help extends React.Component {
     static propTypes = {
@@ -29,13 +29,8 @@ class Help extends React.Component {
     }
 }
 
-module.exports = (renderHelp) => {
-    return {
-        HelpPlugin: connect(() => ({
-            renderBody: renderHelp
-        }), {})(Help),
-        reducers: {
-            task: require('../reducers/task')
-        }
-    };
+export default (renderHelp) => {
+    return connect(() => ({
+        renderBody: renderHelp
+    }), {})(Help);
 };

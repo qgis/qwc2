@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const LocaleUtils = require('../utils/LocaleUtils');
-const {changeZoomLevel} = require('../actions/map');
-const Icon = require('../components/Icon');
-require('./style/Buttons.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import LocaleUtils from '../utils/LocaleUtils';
+import {changeZoomLevel} from '../actions/map';
+import Icon from '../components/Icon';
+import './style/Buttons.css';
 
 class ZoomButton extends React.Component {
     static propTypes = {
@@ -47,24 +47,20 @@ class ZoomButton extends React.Component {
     }
 }
 
-module.exports = {
-    ZoomInPlugin: connect((state) => ({
-        currentZoom: state.map.zoom,
-        maxZoom: state.map.resolutions.length - 1,
-        direction: +1
-    }),
-    {
-        changeZoomLevel: changeZoomLevel
-    })(ZoomButton),
-    ZoomOutPlugin: connect((state) => ({
-        currentZoom: state.map.zoom,
-        maxZoom: state.map.resolutions.length - 1,
-        direction: -1
-    }),
-    {
-        changeZoomLevel: changeZoomLevel
-    })(ZoomButton),
-    reducers: {
-        map: require("../reducers/map")
-    }
-};
+export const ZoomInPlugin = connect((state) => ({
+    currentZoom: state.map.zoom,
+    maxZoom: state.map.resolutions.length - 1,
+    direction: +1
+}),
+{
+    changeZoomLevel: changeZoomLevel
+})(ZoomButton);
+
+export const ZoomOutPlugin = connect((state) => ({
+    currentZoom: state.map.zoom,
+    maxZoom: state.map.resolutions.length - 1,
+    direction: -1
+}),
+{
+    changeZoomLevel: changeZoomLevel
+})(ZoomButton);

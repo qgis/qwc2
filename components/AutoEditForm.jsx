@@ -6,16 +6,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const NumericInput = require('react-numeric-input2');
-const Icon = require("./Icon");
-const ToggleSwitch = require('./widgets/ToggleSwitch');
-const ConfigUtils = require('../utils/ConfigUtils');
-const LocaleUtils = require("../utils/LocaleUtils");
-require('./style/AutoEditForm.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import NumericInput from 'react-numeric-input2';
+import Icon from './Icon';
+import ToggleSwitch from './widgets/ToggleSwitch';
+import ConfigUtils from '../utils/ConfigUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import './style/AutoEditForm.css';
 
-class AutoEditForm extends React.Component {
+export default class AutoEditForm extends React.Component {
     static propTypes = {
         editLayerId: PropTypes.string,
         fields: PropTypes.array,
@@ -139,5 +139,3 @@ class AutoEditForm extends React.Component {
         );
     }
 }
-
-module.exports = AutoEditForm;

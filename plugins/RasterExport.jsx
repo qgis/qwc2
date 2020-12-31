@@ -6,18 +6,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const Message = require('../components/I18N/Message');
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const {LayerRole} = require('../actions/layers');
-const {setCurrentTask} = require('../actions/task');
-const {TaskBar} = require('../components/TaskBar');
-const PrintFrame = require('../components/PrintFrame');
-const MapUtils = require('../utils/MapUtils');
-const VectorLayerUtils = require('../utils/VectorLayerUtils');
-require('./style/RasterExport.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import Message from '../components/I18N/Message';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import {LayerRole} from '../actions/layers';
+import {setCurrentTask} from '../actions/task';
+import TaskBar from '../components/TaskBar';
+import PrintFrame from '../components/PrintFrame';
+import MapUtils from '../utils/MapUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
+import './style/RasterExport.css';
 
 class RasterExport extends React.Component {
     static propTypes = {
@@ -171,8 +171,6 @@ const selector = (state) => ({
     layers: state.layers ? state.layers.flat : []
 });
 
-module.exports = {
-    RasterExportPlugin: connect(selector, {
-        setCurrentTask: setCurrentTask
-    })(RasterExport)
-};
+export default connect(selector, {
+    setCurrentTask: setCurrentTask
+})(RasterExport);

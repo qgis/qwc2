@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const classnames = require('classnames');
-const {setCurrentTask} = require('../actions/task');
-const Icon = require('../components/Icon');
-require('./style/BackgroundSwitcher.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import classnames from 'classnames';
+import {setCurrentTask} from '../actions/task';
+import Icon from '../components/Icon';
+import './style/BackgroundSwitcher.css';
 
 class TaskButton extends React.Component {
     static propTypes = {
@@ -49,10 +49,6 @@ const selector = (state) => ({
     currentTask: state.task && state.task.id || null
 });
 
-module.exports = {
-    TaskButtonPlugin: connect(selector, {
-        setCurrentTask: setCurrentTask
-    })(TaskButton),
-    reducers: {
-    }
-};
+export default connect(selector, {
+    setCurrentTask: setCurrentTask
+})(TaskButton);

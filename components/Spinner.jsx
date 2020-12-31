@@ -5,10 +5,10 @@
  * For a copy, see <https://opensource.org/licenses/MIT>.
  */
 
-const React = require('react');
-require('./style/Spinner.css');
+import React from 'react';
+import './style/Spinner.css';
 
-class Spinner extends React.Component {
+export default class Spinner extends React.Component {
     render() {
         const bars = [];
 
@@ -29,5 +29,3 @@ class Spinner extends React.Component {
         );
     }
 }
-
-module.exports = Spinner;

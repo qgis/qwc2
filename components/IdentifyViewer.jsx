@@ -5,28 +5,28 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const assign = require('object-assign');
-const isEmpty = require('lodash.isempty');
-const FileSaver = require('file-saver');
-const {stringify} = require('wellknown');
-const ReactHtmlParser = require('react-html-parser').default;
-const {convertNodeToElement} = require('react-html-parser');
-const ResizeableWindow = require("./ResizeableWindow");
-const Message = require('./I18N/Message');
-const ConfigUtils = require('../utils/ConfigUtils');
-const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
-const {setActiveLayerInfo} = require('../actions/layerinfo');
-const {showIframeDialog} = require('../actions/windows');
-const {zoomToExtent} = require('../actions/map');
-const IdentifyUtils = require('../utils/IdentifyUtils');
-const LayerUtils = require('../utils/LayerUtils');
-const MiscUtils = require('../utils/MiscUtils');
-const Icon = require('./Icon');
-const JSZip = require('jszip');
-require('./style/IdentifyViewer.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import assign from 'object-assign';
+import isEmpty from 'lodash.isempty';
+import FileSaver from 'file-saver';
+import {stringify} from 'wellknown';
+import ReactHtmlParser from 'react-html-parser';
+import {convertNodeToElement} from 'react-html-parser';
+import ResizeableWindow from './ResizeableWindow';
+import Message from './I18N/Message';
+import ConfigUtils from '../utils/ConfigUtils';
+import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
+import {setActiveLayerInfo} from '../actions/layerinfo';
+import {showIframeDialog} from '../actions/windows';
+import {zoomToExtent} from '../actions/map';
+import IdentifyUtils from '../utils/IdentifyUtils';
+import LayerUtils from '../utils/LayerUtils';
+import MiscUtils from '../utils/MiscUtils';
+import Icon from './Icon';
+import JSZip from 'jszip';
+import './style/IdentifyViewer.css';
 
 class IdentifyViewer extends React.Component {
     static propTypes = {
@@ -691,12 +691,10 @@ const selector = (state) => ({
     mapcrs: state && state.map && state.map ? state.map.projection : undefined
 });
 
-module.exports = {
-    IdentifyViewer: connect(selector, {
-        addLayerFeatures: addLayerFeatures,
-        removeLayer: removeLayer,
-        setActiveLayerInfo: setActiveLayerInfo,
-        showIframeDialog: showIframeDialog,
-        zoomToExtent: zoomToExtent
-    })(IdentifyViewer)
-};
+export default connect(selector, {
+    addLayerFeatures: addLayerFeatures,
+    removeLayer: removeLayer,
+    setActiveLayerInfo: setActiveLayerInfo,
+    showIframeDialog: showIframeDialog,
+    zoomToExtent: zoomToExtent
+})(IdentifyViewer);

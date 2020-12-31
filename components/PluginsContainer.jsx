@@ -5,14 +5,14 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const url = require('url');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import url from 'url';
 const urlQuery = url.parse(window.location.href, true).query;
-const WindowManager = require('./WindowManager');
+import WindowManager from './WindowManager';
 
-require('./style/PluginsContainer.css');
+import './style/PluginsContainer.css';
 
 class PluginsContainer extends React.Component {
     static propTypes = {
@@ -52,7 +52,7 @@ class PluginsContainer extends React.Component {
     }
 }
 
-module.exports = connect((state) => ({
+export default connect((state) => ({
     pluginsConfig: state.localConfig && state.localConfig.plugins || null,
     mode: (urlQuery.mode || (state.browser && state.browser.mobile ? 'mobile' : 'desktop'))
 }))(PluginsContainer);

@@ -5,9 +5,9 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-const Proj4js = require('proj4').default;
-const assign = require('object-assign');
-const ol = require('openlayers');
+import Proj4js from 'proj4';
+import assign from 'object-assign';
+import ol from 'openlayers';
 
 const crsLabels = {
     "EPSG:4326": "WGS 84",
@@ -21,15 +21,15 @@ const CoordinatesUtils = {
     getCrsLabels() {
         return crsLabels;
     },
-    getUnits: function(projection) {
+    getUnits(projection) {
         const proj = new Proj4js.Proj(projection);
         return proj.units || 'degrees';
     },
-    getAxisOrder: function(projection) {
+    getAxisOrder(projection) {
         const axis = ol.proj.get(projection).getAxisOrientation();
         return axis || 'enu';
     },
-    reproject: function(point, source, dest) {
+    reproject(point, source, dest) {
         if (source === dest) {
             return [...point];
         }
@@ -56,7 +56,7 @@ const CoordinatesUtils = {
      *
      * @return {array} [minx, miny, maxx, maxy]
      */
-    reprojectBbox: function(bbox, source, dest) {
+    reprojectBbox(bbox, source, dest) {
         const sw = CoordinatesUtils.reproject([bbox[0], bbox[1]], source, dest);
         const ne = CoordinatesUtils.reproject([bbox[2], bbox[3]], source, dest);
         return [...sw, ...ne];
@@ -70,7 +70,7 @@ const CoordinatesUtils = {
         }
         return srs;
     },
-    normalizeSRS: function(srs, allowedSRS) {
+    normalizeSRS(srs, allowedSRS) {
         const result = (srs === 'EPSG:900913' ? 'EPSG:3857' : srs);
         if (allowedSRS && !allowedSRS[result]) {
             return CoordinatesUtils.getCompatibleSRS(result, allowedSRS);
@@ -80,7 +80,7 @@ const CoordinatesUtils = {
     isAllowedSRS(srs, allowedSRS) {
         return allowedSRS[CoordinatesUtils.getCompatibleSRS(srs, allowedSRS)];
     },
-    getAvailableCRS: function() {
+    getAvailableCRS() {
         const crsList = {};
         for (const a in Proj4js.defs) {
             if (Object.prototype.hasOwnProperty.call(Proj4js.defs, a)) {
@@ -89,7 +89,7 @@ const CoordinatesUtils = {
         }
         return crsList;
     },
-    calculateAzimuth: function(p1, p2, pj) {
+    calculateAzimuth(p1, p2, pj) {
         const p1proj = CoordinatesUtils.reproject(p1, pj, 'EPSG:4326');
         const p2proj = CoordinatesUtils.reproject(p2, pj, 'EPSG:4326');
         const lon1 = p1proj[0] * Math.PI / 180.0;
@@ -111,7 +111,7 @@ const CoordinatesUtils = {
      *
      * @return {array} [minx, miny, maxx, maxy]
      */
-    extendExtent: function(extent1, extent2) {
+    extendExtent(extent1, extent2) {
         return [
             Math.min(extent1[0], extent2[0]),
             Math.min(extent1[1], extent2[1]),
@@ -126,13 +126,13 @@ const CoordinatesUtils = {
      *
      * @return {bool}
      */
-    isValidExtent: function(extent) {
+    isValidExtent(extent) {
         return !(
             extent.indexOf(Infinity) !== -1 || extent.indexOf(-Infinity) !== -1 ||
             extent[1] >= extent[2] || extent[1] >= extent[3]
         );
     },
-    calculateCircleCoordinates: function(center, radius, sides, rotation) {
+    calculateCircleCoordinates(center, radius, sides, rotation) {
         let angle = Math.PI * ((1 / sides) - (1 / 2));
 
         if (rotation) {
@@ -153,4 +153,4 @@ const CoordinatesUtils = {
     }
 };
 
-module.exports = CoordinatesUtils;
+export default CoordinatesUtils;

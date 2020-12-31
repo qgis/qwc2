@@ -5,25 +5,19 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-const {combineReducers} = require('redux');
-const merge = require('deepmerge');
+import {combineReducers} from 'redux';
+import merge from 'deepmerge';
+import DebugUtils from '../utils/DebugUtils';
 
-const DebugUtils = require('../utils/DebugUtils');
-const PluginsUtils = require('../utils/PluginsUtils');
+export const ReducerRegistry = {
+    reducers: {},
+    register(name, reducer) {
+        ReducerRegistry.reducers[name] = reducer;
+    }
+};
 
-const {CHANGE_BROWSER_PROPERTIES} = require('../actions/browser');
-
-module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeOpts, actionLogger) => {
-    const allReducers = combineReducers({
-        localConfig: require('../reducers/localConfig'),
-        locale: require('../reducers/locale'),
-        browser: require('../reducers/browser'),
-        identify: require('../reducers/identify'),
-        map: require('../reducers/map'),
-        layers: require('../reducers/layers'),
-        windows: require('../reducers/windows'),
-        ...PluginsUtils.getPluginReducers(plugins)
-    });
+export default (initialState = {defaultState: {}, mobile: {}}, plugins, storeOpts, actionLogger) => {
+    const allReducers = combineReducers(ReducerRegistry.reducers);
 
     const defaultState =  merge({
         ...allReducers({}, {type: null})
@@ -37,7 +31,7 @@ module.exports = (initialState = {defaultState: {}, mobile: {}}, plugins, storeO
         if (actionLogger) {
             actionLogger(action, newState, state);
         }
-        if (action && action.type === CHANGE_BROWSER_PROPERTIES && newState.browser.mobile) {
+        if (action && action.type === "CHANGE_BROWSER_PROPERTIES" && newState.browser.mobile) {
             newState = merge(newState, mobileOverride);
         }
 

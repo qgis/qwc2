@@ -6,17 +6,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {
+import {
     CHANGE_MAP_VIEW, CONFIGURE_MAP, CHANGE_ZOOM_LVL, ZOOM_TO_EXTENT, ZOOM_TO_POINT,
     PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, CLICK_FEATURE_ON_MAP, TOGGLE_MAPTIPS,
     SET_TOPBAR_HEIGHT
-} = require('../actions/map');
-const assign = require('object-assign');
-const isEmpty = require('lodash.isempty');
-const MapUtils = require('../utils/MapUtils');
-const {UrlParams} = require("../utils/PermaLinkUtils");
-const ConfigUtils = require('../utils/ConfigUtils');
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
+} from '../actions/map';
+import assign from 'object-assign';
+import isEmpty from 'lodash.isempty';
+import MapUtils from '../utils/MapUtils';
+import {UrlParams} from '../utils/PermaLinkUtils';
+import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 
 const defaultState = {
     bbox: {bounds: [0, 0, 0, 0], rotation: 0},
@@ -28,7 +28,7 @@ const defaultState = {
     topbarHeight: 0
 };
 
-function map(state = defaultState, action) {
+export default function map(state = defaultState, action) {
     // Always reset mapStateSource, CHANGE_MAP_VIEW will set it if necessary
     if (state.mapStateSource) {
         state = assign({}, state, {mapStateSource: null});
@@ -138,5 +138,3 @@ function map(state = defaultState, action) {
         return state;
     }
 }
-
-module.exports = map;

@@ -6,28 +6,28 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const axios = require('axios');
-const assign = require('object-assign');
-const isEmpty = require('lodash.isempty');
-const FileSaver = require('file-saver');
-const formDataEntries = require('form-data-entries').default;
-const Message = require('../components/I18N/Message');
-const MapUtils = require('../utils/MapUtils');
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const LocaleUtils = require("../utils/LocaleUtils");
-const Spinner = require("../components/Spinner");
-const {LayerRole} = require('../actions/layers');
-const {changeRotation} = require('../actions/map');
-const ToggleSwitch = require('../components/widgets/ToggleSwitch');
-const Icon = require('../components/Icon');
-const ResizeableWindow = require("../components/ResizeableWindow");
-const {SideBar} = require('../components/SideBar');
-const PrintFrame = require('../components/PrintFrame');
-const VectorLayerUtils = require('../utils/VectorLayerUtils');
-require('./style/Print.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import axios from 'axios';
+import assign from 'object-assign';
+import isEmpty from 'lodash.isempty';
+import FileSaver from 'file-saver';
+import formDataEntries from 'form-data-entries';
+import Message from '../components/I18N/Message';
+import MapUtils from '../utils/MapUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import Spinner from '../components/Spinner';
+import {LayerRole} from '../actions/layers';
+import {changeRotation} from '../actions/map';
+import ToggleSwitch from '../components/widgets/ToggleSwitch';
+import Icon from '../components/Icon';
+import ResizeableWindow from '../components/ResizeableWindow';
+import SideBar from '../components/SideBar';
+import PrintFrame from '../components/PrintFrame';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
+import './style/Print.css';
 
 class Print extends React.Component {
     static propTypes = {
@@ -423,11 +423,6 @@ const selector = (state) => ({
     search: state.search
 });
 
-module.exports = {
-    PrintPlugin: connect(selector, {
-        changeRotation: changeRotation
-    })(Print),
-    reducers: {
-        task: require('../reducers/task')
-    }
-};
+export default connect(selector, {
+    changeRotation: changeRotation
+})(Print);

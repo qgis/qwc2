@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {SET_CURRENT_TASK, SET_CURRENT_TASK_BLOCKED} = require('../actions/task');
-const assign = require('object-assign');
+import assign from 'object-assign';
+import {SET_CURRENT_TASK, SET_CURRENT_TASK_BLOCKED} from '../actions/task';
 
 const defaultState = {};
 
-function task(state = defaultState, action) {
+export default function task(state = defaultState, action) {
     switch (action.type) {
     case SET_CURRENT_TASK: {
         if (state.blocked) {
@@ -26,5 +26,3 @@ function task(state = defaultState, action) {
         return state;
     }
 }
-
-module.exports = task;

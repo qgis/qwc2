@@ -6,15 +6,16 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const {connect} = require('react-redux');
+import {connect} from 'react-redux';
+import {changeMapView, clickOnMap, clickFeatureOnMap} from '../../actions/map';
+import {setLayerLoading} from '../../actions/layers';
+import {changeMousePositionState} from '../../actions/mousePosition';
+import {setCurrentTask} from '../../actions/task';
+import olLayer from '../../components/map/openlayers/Layer';
+import olMap from '../../components/map/openlayers/Map';
 
-const {changeMapView, clickOnMap, clickFeatureOnMap} = require('../../actions/map');
-const {setLayerLoading} = require('../../actions/layers');
-const {changeMousePositionState} = require('../../actions/mousePosition');
-const {setCurrentTask} = require('../../actions/task');
 
-
-const Map = connect((state) => ({
+export const Map = connect((state) => ({
     trackMousePos: state.mousePosition.enabled || false,
     identifyEnabled: state.identify && state.identify.enabled ? true : false,
     unsetTaskOnMapClick: state.task && state.task.unsetOnMapClick
@@ -25,9 +26,6 @@ const Map = connect((state) => ({
     onMouseMove: changeMousePositionState,
     setLayerLoading: setLayerLoading,
     setCurrentTask: setCurrentTask
-})(require('../../components/map/openlayers/Map'));
+})(olMap);
 
-module.exports = {
-    Map: Map,
-    Layer: require('../../components/map/openlayers/Layer')
-};
+export const Layer = olLayer;

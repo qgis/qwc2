@@ -6,19 +6,19 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const classnames = require('classnames');
-const Icon = require('../Icon');
-require('./style/ToggleSwitch.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import Icon from '../Icon';
+import './style/ToggleSwitch.css';
 
-class ToggleSwitch extends React.Component {
+export default class ToggleSwitch extends React.Component {
     static propTypes = {
         active: PropTypes.bool.isRequired,
         name: PropTypes.string,
         onChange: PropTypes.func.isRequired,
-        readOnly: PropTypes.boolean,
-        required: PropTypes.boolean
+        readOnly: PropTypes.bool,
+        required: PropTypes.bool
     }
     render() {
         const classNames = classnames({
@@ -45,5 +45,3 @@ class ToggleSwitch extends React.Component {
         }
     }
 }
-
-module.exports = ToggleSwitch;

@@ -6,29 +6,29 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const isEmpty = require('lodash.isempty');
-const isEqual = require('lodash.isequal');
-const assign = require('object-assign');
-const axios = require('axios');
-const clone = require('clone');
-const LocaleUtils = require("../utils/LocaleUtils");
-const MapUtils = require("../utils/MapUtils");
-const Message = require('../components/I18N/Message');
-const {changeEditingState} = require('../actions/editing');
-const {setCurrentTaskBlocked} = require('../actions/task');
-const {LayerRole, refreshLayer, changeLayerProperty} = require('../actions/layers');
-const {clickOnMap} = require("../actions/map");
-const AutoEditForm = require('../components/AutoEditForm');
-const QtDesignerForm = require('../components/QtDesignerForm');
-const Icon = require('../components/Icon');
-const {SideBar} = require('../components/SideBar');
-const ButtonBar = require('../components/widgets/ButtonBar');
-const ConfigUtils = require('../utils/ConfigUtils');
-const LayerUtils = require("../utils/LayerUtils");
-require('./style/Editing.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import isEmpty from 'lodash.isempty';
+import isEqual from 'lodash.isequal';
+import assign from 'object-assign';
+import axios from 'axios';
+import clone from 'clone';
+import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
+import Message from '../components/I18N/Message';
+import {changeEditingState} from '../actions/editing';
+import {setCurrentTaskBlocked} from '../actions/task';
+import {LayerRole, refreshLayer, changeLayerProperty} from '../actions/layers';
+import {clickOnMap} from '../actions/map';
+import AutoEditForm from '../components/AutoEditForm';
+import QtDesignerForm from '../components/QtDesignerForm';
+import Icon from '../components/Icon';
+import SideBar from '../components/SideBar';
+import ButtonBar from '../components/widgets/ButtonBar';
+import ConfigUtils from '../utils/ConfigUtils';
+import LayerUtils from '../utils/LayerUtils';
+import './style/Editing.css';
 
 class Editing extends React.Component {
     static propTypes = {
@@ -528,24 +528,19 @@ class Editing extends React.Component {
     }
 }
 
-module.exports = (iface) => {
-    return {
-        EditingPlugin: connect(state => ({
-            enabled: state.task ? state.task.id === 'Editing' : false,
-            theme: state.theme ? state.theme.current : null,
-            layers: state.layers ? state.layers.flat : [],
-            map: state.map || {},
-            iface: iface,
-            editing: state.editing || {}
-        }), {
-            clickOnMap: clickOnMap,
-            changeEditingState: changeEditingState,
-            setCurrentTaskBlocked: setCurrentTaskBlocked,
-            refreshLayer: refreshLayer,
-            changeLayerProperty: changeLayerProperty
-        })(Editing),
-        reducers: {
-            editing: require('../reducers/editing')
-        }
-    };
+export default (iface) => {
+    return connect(state => ({
+        enabled: state.task ? state.task.id === 'Editing' : false,
+        theme: state.theme ? state.theme.current : null,
+        layers: state.layers ? state.layers.flat : [],
+        map: state.map || {},
+        iface: iface,
+        editing: state.editing || {}
+    }), {
+        clickOnMap: clickOnMap,
+        changeEditingState: changeEditingState,
+        setCurrentTaskBlocked: setCurrentTaskBlocked,
+        refreshLayer: refreshLayer,
+        changeLayerProperty: changeLayerProperty
+    })(Editing);
 };

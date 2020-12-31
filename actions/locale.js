@@ -6,13 +6,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const axios = require('axios');
-const ConfigUtils = require('../utils/ConfigUtils');
-const {UrlParams} = require('../utils/PermaLinkUtils');
+import {ReducerRegistry} from '../stores/StandardStore';
+import localeReducer from '../reducers/locale';
+ReducerRegistry.register("locale", localeReducer);
 
-const CHANGE_LOCALE = 'CHANGE_LOCALE';
+import axios from 'axios';
+import ConfigUtils from '../utils/ConfigUtils';
+import {UrlParams} from '../utils/PermaLinkUtils';
 
-function loadLocale(defaultLangData) {
+export const CHANGE_LOCALE = 'CHANGE_LOCALE';
+
+export function loadLocale(defaultLangData) {
     return dispatch => {
         const lang = UrlParams.getParam("lang") || (navigator ? (navigator.language || navigator.browserLanguage) : "en-US");
         const config = {
@@ -36,8 +40,3 @@ function loadLocale(defaultLangData) {
         });
     };
 }
-
-module.exports = {
-    CHANGE_LOCALE,
-    loadLocale
-};

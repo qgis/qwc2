@@ -6,18 +6,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const Icon = require('./Icon');
-const {connect} = require('react-redux');
-const Message = require('../components/I18N/Message');
-const {LayerRole, addLayer} = require('../actions/layers');
-const {setThemeLayersList} = require('../actions/theme');
-const {setCurrentTask} = require("../actions/task");
-const ResizeableWindow = require("../components/ResizeableWindow");
-const LocaleUtils = require("../utils/LocaleUtils");
-const ThemeUtils = require('../utils/ThemeUtils');
-require('./style/ThemeLayersListWindow.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import Icon from './Icon';
+import {connect} from 'react-redux';
+import Message from '../components/I18N/Message';
+import {LayerRole, addLayer} from '../actions/layers';
+import {setThemeLayersList} from '../actions/theme';
+import {setCurrentTask} from '../actions/task';
+import ResizeableWindow from '../components/ResizeableWindow';
+import LocaleUtils from '../utils/LocaleUtils';
+import ThemeUtils from '../utils/ThemeUtils';
+import './style/ThemeLayersListWindow.css';
 
 class ThemeLayersListWindow extends React.Component {
     static propTypes = {
@@ -112,7 +112,7 @@ const selector = state => ({
     themes: state.layers
 });
 
-module.exports = connect(selector, {
+export default connect(selector, {
     setThemeLayersList: setThemeLayersList,
     setCurrentTask: setCurrentTask,
     addLayer: addLayer

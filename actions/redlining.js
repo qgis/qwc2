@@ -6,16 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const CHANGE_REDLINING_STATE = 'CHANGE_REDLINING_STATE';
+import {ReducerRegistry} from '../stores/StandardStore';
+import redliningReducer from '../reducers/redlining';
+ReducerRegistry.register("redlining", redliningReducer);
 
-function changeRedliningState(redliningState) {
+export const CHANGE_REDLINING_STATE = 'CHANGE_REDLINING_STATE';
+
+export function changeRedliningState(redliningState) {
     return {
         type: CHANGE_REDLINING_STATE,
         data: redliningState
     };
 }
-
-module.exports = {
-    CHANGE_REDLINING_STATE,
-    changeRedliningState
-};

@@ -6,20 +6,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const {createSelector} = require('reselect');
-const pickBy = require('lodash.pickby');
-const Message = require('../components/I18N/Message');
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const MapUtils = require('../utils/MapUtils');
-const LocaleUtils = require('../utils/LocaleUtils');
-const {changeMousePositionState} = require('../actions/mousePosition');
-const {changeZoomLevel} = require('../actions/map');
-const {CoordinateDisplayer} = require('../components/CoordinateDisplayer');
-const displayCrsSelector = require('../selectors/displaycrs');
-require('./style/BottomBar.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {createSelector} from 'reselect';
+import pickBy from 'lodash.pickby';
+import Message from '../components/I18N/Message';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import MapUtils from '../utils/MapUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import {changeMousePositionState} from '../actions/mousePosition';
+import {changeZoomLevel} from '../actions/map';
+import CoordinateDisplayer from '../components/CoordinateDisplayer';
+import displayCrsSelector from '../selectors/displaycrs';
+import './style/BottomBar.css';
 
 class BottomBar extends React.Component {
     static propTypes = {
@@ -154,12 +154,7 @@ const selector = createSelector([state => state, displayCrsSelector], (state, di
     };
 });
 
-module.exports = {
-    BottomBarPlugin: connect(selector, {
-        changeMousePositionState: changeMousePositionState,
-        changeZoomLevel: changeZoomLevel
-    })(BottomBar),
-    reducers: {
-        mousePosition: require('../reducers/mousePosition')
-    }
-};
+export default connect(selector, {
+    changeMousePositionState: changeMousePositionState,
+    changeZoomLevel: changeZoomLevel
+})(BottomBar);

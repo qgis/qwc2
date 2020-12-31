@@ -6,14 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {TOGGLE_FULLSCREEN} = require('../actions/display');
-const assign = require('object-assign');
+import {TOGGLE_FULLSCREEN} from '../actions/display';
+import assign from 'object-assign';
 
 const defaultState = {
     fullscreen: false
 };
 
-function toggleFullscreen(state = defaultState, action) {
+export default function toggleFullscreen(state = defaultState, action) {
     switch (action.type) {
     case TOGGLE_FULLSCREEN: {
         return assign({}, state, {fullscreen: action.fullscreen});
@@ -22,5 +22,3 @@ function toggleFullscreen(state = defaultState, action) {
         return state;
     }
 }
-
-module.exports = toggleFullscreen;

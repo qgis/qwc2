@@ -5,10 +5,10 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-const React = require('react');
-const PropTypes = require('prop-types');
+import React from 'react';
+import PropTypes from 'prop-types';
 
-class Message extends React.Component {
+export default class Message extends React.Component {
     static propTypes = {
         msgId: PropTypes.string.isRequired
     }
@@ -19,5 +19,3 @@ class Message extends React.Component {
         return (<span>{this.context.messages[this.props.msgId] || this.props.msgId}</span>);
     }
 }
-
-module.exports = Message;

@@ -6,21 +6,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const {createSelector} = require('reselect');
-const assign = require('object-assign');
-const isEmpty = require('lodash.isempty');
-const proj4js = require('proj4').default;
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const LocaleUtils = require('../utils/LocaleUtils');
-const measureUtils = require('../utils/MeasureUtils');
-const {changeMeasurementState} = require('../actions/measurement.js');
-const displayCrsSelector = require('../selectors/displaycrs');
-const {TaskBar} = require('../components/TaskBar');
-const ButtonBar = require('../components/widgets/ButtonBar');
-require('./style/Measure.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {createSelector} from 'reselect';
+import assign from 'object-assign';
+import isEmpty from 'lodash.isempty';
+import proj4js from 'proj4';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import measureUtils from '../utils/MeasureUtils';
+import {changeMeasurementState} from '../actions/measurement.js';
+import displayCrsSelector from '../selectors/displaycrs';
+import TaskBar from '../components/TaskBar';
+import ButtonBar from '../components/widgets/ButtonBar';
+import './style/Measure.css';
 
 class Measure extends React.Component {
     static propTypes = {
@@ -133,11 +133,6 @@ const selector = createSelector([state => state, displayCrsSelector], (state, di
     displaycrs: displaycrs
 }));
 
-module.exports = {
-    MeasurePlugin: connect(selector, {
-        changeMeasurementState: changeMeasurementState
-    })(Measure),
-    reducers: {
-        measurement: require('../reducers/measurement')
-    }
-};
+export default connect(selector, {
+    changeMeasurementState: changeMeasurementState
+})(Measure);

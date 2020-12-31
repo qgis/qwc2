@@ -6,18 +6,18 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const assign = require('object-assign');
-const buffer = require('@turf/buffer').default;
-const uuid = require('uuid');
-const NumericInput = require('react-numeric-input2');
-const {LayerRole, addLayer, addLayerFeatures} = require('../../actions/layers');
-const Message = require('../../components/I18N/Message');
-const VectorLayerPicker = require('../../components/widgets/VectorLayerPicker');
-const LocaleUtils = require('../../utils/LocaleUtils');
-const VectorLayerUtils = require('../../utils/VectorLayerUtils');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import assign from 'object-assign';
+import buffer from '@turf/buffer';
+import uuid from 'uuid';
+import NumericInput from 'react-numeric-input2';
+import {LayerRole, addLayer, addLayerFeatures} from '../../actions/layers';
+import Message from '../../components/I18N/Message';
+import VectorLayerPicker from '../../components/widgets/VectorLayerPicker';
+import LocaleUtils from '../../utils/LocaleUtils';
+import VectorLayerUtils from '../../utils/VectorLayerUtils';
 
 
 class RedliningBufferSupport extends React.Component {
@@ -110,7 +110,7 @@ class RedliningBufferSupport extends React.Component {
     }
 }
 
-module.exports = {
+export default {
     cfg: {
         key: "Buffer",
         tooltip: "redlining.buffer",

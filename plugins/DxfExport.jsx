@@ -6,17 +6,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const isEmpty = require('lodash.isempty');
-const Message = require('../components/I18N/Message');
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const {LayerRole} = require('../actions/layers');
-const {setCurrentTask} = require('../actions/task');
-const {TaskBar} = require('../components/TaskBar');
-const PrintFrame = require('../components/PrintFrame');
-require('./style/DxfExport.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import isEmpty from 'lodash.isempty';
+import Message from '../components/I18N/Message';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import {LayerRole} from '../actions/layers';
+import {setCurrentTask} from '../actions/task';
+import TaskBar from '../components/TaskBar';
+import PrintFrame from '../components/PrintFrame';
+import './style/DxfExport.css';
 
 class DxfExport extends React.Component {
     static propTypes = {
@@ -80,11 +80,6 @@ const selector = (state) => ({
     layers: state.layers ? state.layers.flat : []
 });
 
-module.exports = {
-    DxfExportPlugin: connect(selector, {
-        setCurrentTask: setCurrentTask
-    })(DxfExport),
-    reducers: {
-        task: require('../reducers/task')
-    }
-};
+export default connect(selector, {
+    setCurrentTask: setCurrentTask
+})(DxfExport);

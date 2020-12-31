@@ -6,19 +6,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const assign = require('object-assign');
-const isEmpty = require('lodash.isempty');
-const IdentifyUtils = require('../utils/IdentifyUtils');
-const MapUtils = require('../utils/MapUtils');
-const LayerUtils = require('../utils/LayerUtils');
-const Message = require('../components/I18N/Message');
-const {TaskBar} = require('../components/TaskBar');
-const {sendIdentifyRequest, setIdentifyFeatureResult, purgeIdentifyResults, identifyEmpty} = require('../actions/identify');
-const {LayerRole, addMarker, removeMarker, removeLayer} = require('../actions/layers');
-const {IdentifyViewer} = require('../components/IdentifyViewer');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import assign from 'object-assign';
+import isEmpty from 'lodash.isempty';
+import IdentifyUtils from '../utils/IdentifyUtils';
+import MapUtils from '../utils/MapUtils';
+import LayerUtils from '../utils/LayerUtils';
+import Message from '../components/I18N/Message';
+import TaskBar from '../components/TaskBar';
+import {sendIdentifyRequest, setIdentifyFeatureResult, purgeIdentifyResults, identifyEmpty} from '../actions/identify';
+import {LayerRole, addMarker, removeMarker, removeLayer} from '../actions/layers';
+import IdentifyViewer from '../components/IdentifyViewer';
 
 class Identify extends React.Component {
     static propTypes = {
@@ -181,7 +181,7 @@ const selector = (state) => ({
     layers: state.layers && state.layers.flat || []
 });
 
-const IdentifyPlugin = connect(selector, {
+export default connect(selector, {
     sendRequest: sendIdentifyRequest,
     setIdentifyFeatureResult: setIdentifyFeatureResult,
     purgeResults: purgeIdentifyResults,
@@ -190,10 +190,3 @@ const IdentifyPlugin = connect(selector, {
     removeMarker: removeMarker,
     removeLayer: removeLayer
 })(Identify);
-
-module.exports = {
-    IdentifyPlugin: IdentifyPlugin,
-    reducers: {
-        identify: require('../reducers/identify')
-    }
-};

@@ -6,13 +6,13 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const classnames = require('classnames');
-const Icon = require('../Icon');
-const Message = require('../../components/I18N/Message');
-require('./style/ButtonBar.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import classnames from 'classnames';
+import Icon from '../Icon';
+import Message from '../../components/I18N/Message';
+import './style/ButtonBar.css';
 
 
 class ButtonBar extends React.Component {
@@ -69,4 +69,4 @@ const selector = (state) => ({
     mobile: state.browser ? state.browser.mobile : false
 });
 
-module.exports = connect(selector, {})(ButtonBar);
+export default connect(selector, {})(ButtonBar);

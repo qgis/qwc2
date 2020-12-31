@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const MapQuestLayer = {
+export default {
     create: (options) => {
         // MapQuest is not supported on OpenLayers
         options.onError();
@@ -17,5 +17,3 @@ const MapQuestLayer = {
         return false;
     }
 };
-
-module.exports = MapQuestLayer;

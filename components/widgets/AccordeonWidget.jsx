@@ -6,13 +6,13 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const Message = require("qwc2/components/I18N/Message");
-const Icon = require("qwc2/components/Icon");
-require('./style/AccordeonWidget.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import Message from 'qwc2/components/I18N/Message';
+import Icon from 'qwc2/components/Icon';
+import './style/AccordeonWidget.css';
 
-class AccordeonWidget extends React.Component {
+export default class AccordeonWidget extends React.Component {
     static propTypes = {
         allowMultiple: PropTypes.bool,
         className: PropTypes.string,
@@ -64,5 +64,3 @@ class AccordeonWidget extends React.Component {
         );
     }
 }
-
-module.exports = AccordeonWidget;

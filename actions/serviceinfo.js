@@ -6,16 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const SET_ACTIVE_SERVICEINFO = 'SET_ACTIVE_SERVICEINFO';
+import {ReducerRegistry} from '../stores/StandardStore';
+import serviceinfoReducer from '../reducers/serviceinfo';
+ReducerRegistry.register("serviceinfo", serviceinfoReducer);
 
-function setActiveServiceInfo(service) {
+export const SET_ACTIVE_SERVICEINFO = 'SET_ACTIVE_SERVICEINFO';
+
+export function setActiveServiceInfo(service) {
     return {
         type: SET_ACTIVE_SERVICEINFO,
         service: service
     };
 }
-
-module.exports = {
-    SET_ACTIVE_SERVICEINFO,
-    setActiveServiceInfo
-};

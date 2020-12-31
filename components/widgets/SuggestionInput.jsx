@@ -6,13 +6,13 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const uuid = require('uuid');
-require('./style/SuggestionInput.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import uuid from 'uuid';
+import './style/SuggestionInput.css';
 
 
-class SuggestionInput extends React.Component {
+export default class SuggestionInput extends React.Component {
     static propTypes = {
         className: PropTypes.string,
         loadSuggestions: PropTypes.func,
@@ -49,5 +49,3 @@ class SuggestionInput extends React.Component {
         this.props.onBlur(ev);
     }
 }
-
-module.exports = SuggestionInput;

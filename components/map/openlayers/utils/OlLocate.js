@@ -6,11 +6,34 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const ol = require('openlayers');
-const popUp = require('./OlPopUp')();
-const assign = require('object-assign');
+import assign from 'object-assign';
+import ol from 'openlayers';
+import './OlLocate.css';
 
-class OlLocate extends ol.Object {
+const createPopup = function() {
+    const pop = document.createElement('div');
+    pop.setAttribute("class", "ol-popup");
+    const popDismis = document.createElement('a');
+    popDismis.setAttribute("class", "ol-popup-close-btn");
+    popDismis.setAttribute("href", "#close");
+    popDismis.innerHTML = "x";
+    const popCntWrap = document.createElement('div');
+    popCntWrap.setAttribute("class", "ol-popup-cnt-wrapper");
+    const popCnt = document.createElement('div');
+    popCnt.setAttribute("class", "ol-popup-cnt");
+    popCntWrap.appendChild(popCnt);
+    const popTipWrap = document.createElement('div');
+    popTipWrap.setAttribute("class", "ol-popup-tip-wrapper");
+    const popTip = document.createElement('div');
+    popTip.setAttribute("class", "ol-popup-tip");
+    popTipWrap.appendChild(popTip);
+    pop.appendChild(popDismis);
+    pop.appendChild(popCntWrap);
+    pop.appendChild(popTipWrap);
+    return pop;
+};
+
+export default class OlLocate extends ol.Object {
     constructor(map, optOptions) {
         super();
         this.set("state", "DISABLED");
@@ -47,9 +70,9 @@ class OlLocate extends ol.Object {
             trackingOptions: this.options.locateOptions
         });
         this.geolocate.on('change:position', this._updatePosFt, this);
-        this.popup = popUp;
+        this.popup = createPopup();
         this.popup.hidden = true;
-        this.popCnt = popUp.getElementsByClassName("ol-popup-cnt")[0];
+        this.popCnt = this.popup.getElementsByClassName("ol-popup-cnt")[0];
         this.overlay = new ol.Overlay({
             element: this.popup,
             positioning: 'top-center',
@@ -193,5 +216,3 @@ class OlLocate extends ol.Object {
         });
     }
 }
-
-module.exports = OlLocate;

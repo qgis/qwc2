@@ -6,29 +6,32 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const uuid = require('uuid');
+import {ReducerRegistry} from '../stores/StandardStore';
+import searchReducer from '../reducers/search';
+ReducerRegistry.register("search", searchReducer);
 
-const SEARCH_CHANGE = 'SEARCH_CHANGE';
-const SEARCH_SET_REQUEST = 'SEARCH_SET_REQUEST';
-const SEARCH_ADD_RESULTS = 'SEARCH_ADD_RESULTS';
-const CLEAR_SEARCH = 'CLEAR_SEARCH';
-const SEARCH_SET_CURRENT_RESULT = 'SEARCH_SET_CURRENT_RESULT';
+import uuid from 'uuid';
 
-const SearchResultType = {
+export const SEARCH_CHANGE = 'SEARCH_CHANGE';
+export const SEARCH_SET_REQUEST = 'SEARCH_SET_REQUEST';
+export const SEARCH_ADD_RESULTS = 'SEARCH_ADD_RESULTS';
+export const CLEAR_SEARCH = 'CLEAR_SEARCH';
+export const SEARCH_SET_CURRENT_RESULT = 'SEARCH_SET_CURRENT_RESULT';
+
+export const SearchResultType = {
     PLACE: 0,
     THEMELAYER: 1,
     THEME: 2,
     EXTERNALLAYER: 3
 };
 
-function clearSearch() {
+export function clearSearch() {
     return {
         type: CLEAR_SEARCH
     };
 }
 
-function changeSearch(text, providers) {
+export function changeSearch(text, providers) {
     return {
         type: SEARCH_CHANGE,
         text: text || "",
@@ -36,7 +39,7 @@ function changeSearch(text, providers) {
     };
 }
 
-function startSearch(text, options, providers, startup = false) {
+export function startSearch(text, options, providers, startup = false) {
     return (dispatch, getState) => {
         const reqId = uuid.v1();
         const providerKeys = Object.keys(providers);
@@ -52,7 +55,7 @@ function startSearch(text, options, providers, startup = false) {
     };
 }
 
-function searchMore(moreItem, text, providers) {
+export function searchMore(moreItem, text, providers) {
     return (dispatch) => {
         if (moreItem.provider && providers[moreItem.provider].getMoreResults) {
             const reqId = uuid.v1();
@@ -66,7 +69,7 @@ function searchMore(moreItem, text, providers) {
     };
 }
 
-function addSearchResults(results, append = true) {
+export function addSearchResults(results, append = true) {
     return {
         type: SEARCH_ADD_RESULTS,
         results: results,
@@ -74,24 +77,9 @@ function addSearchResults(results, append = true) {
     };
 }
 
-function setCurrentSearchResult(result) {
+export function setCurrentSearchResult(result) {
     return {
         type: SEARCH_SET_CURRENT_RESULT,
         result: result
     };
 }
-
-module.exports = {
-    SearchResultType,
-    CLEAR_SEARCH,
-    SEARCH_CHANGE,
-    SEARCH_SET_REQUEST,
-    SEARCH_ADD_RESULTS,
-    SEARCH_SET_CURRENT_RESULT,
-    clearSearch,
-    changeSearch,
-    startSearch,
-    searchMore,
-    addSearchResults,
-    setCurrentSearchResult
-};

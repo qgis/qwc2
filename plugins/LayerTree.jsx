@@ -6,31 +6,31 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const assign = require('object-assign');
-const classnames = require('classnames');
-const isEmpty = require('lodash.isempty');
-const Sortable = require('react-sortablejs');
-const FileSaver = require('file-saver');
-const Message = require('../components/I18N/Message');
-const {LayerRole, changeLayerProperty, removeLayer, reorderLayer, setSwipe, addLayerSeparator} = require('../actions/layers');
-const {setActiveLayerInfo} = require('../actions/layerinfo');
-const {setActiveServiceInfo} = require('../actions/serviceinfo');
-const {toggleMapTips, zoomToExtent} = require('../actions/map');
-const ConfigUtils = require("../utils/ConfigUtils");
-const LocaleUtils = require("../utils/LocaleUtils");
-const Icon = require('../components/Icon');
-const ImportLayer = require('../components/ImportLayer');
-const LayerInfoWindow = require('../components/LayerInfoWindow');
-const ServiceInfoWindow = require('../components/ServiceInfoWindow');
-const {SideBar} = require('../components/SideBar');
-const Spinner = require('../components/Spinner');
-const LayerUtils = require('../utils/LayerUtils');
-const MapUtils = require('../utils/MapUtils');
-const VectorLayerUtils = require('../utils/VectorLayerUtils');
-require('./style/LayerTree.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import assign from 'object-assign';
+import classnames from 'classnames';
+import isEmpty from 'lodash.isempty';
+import Sortable from 'react-sortablejs';
+import FileSaver from 'file-saver';
+import Message from '../components/I18N/Message';
+import {LayerRole, changeLayerProperty, removeLayer, reorderLayer, setSwipe, addLayerSeparator} from '../actions/layers';
+import {setActiveLayerInfo} from '../actions/layerinfo';
+import {setActiveServiceInfo} from '../actions/serviceinfo';
+import {toggleMapTips, zoomToExtent} from '../actions/map';
+import ConfigUtils from '../utils/ConfigUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import Icon from '../components/Icon';
+import ImportLayer from '../components/ImportLayer';
+import LayerInfoWindow from '../components/LayerInfoWindow';
+import ServiceInfoWindow from '../components/ServiceInfoWindow';
+import SideBar from '../components/SideBar';
+import Spinner from '../components/Spinner';
+import LayerUtils from '../utils/LayerUtils';
+import MapUtils from '../utils/MapUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
+import './style/LayerTree.css';
 
 
 class LayerTree extends React.Component {
@@ -630,21 +630,14 @@ const selector = (state) => ({
     mapTipsEnabled: state.map && state.map.maptips
 });
 
-module.exports = {
-    LayerTreePlugin: connect(selector, {
-        addLayerSeparator: addLayerSeparator,
-        changeLayerProperty: changeLayerProperty,
-        removeLayer: removeLayer,
-        reorderLayer: reorderLayer,
-        toggleMapTips: toggleMapTips,
-        setSwipe: setSwipe,
-        setActiveLayerInfo: setActiveLayerInfo,
-        setActiveServiceInfo: setActiveServiceInfo,
-        zoomToExtent: zoomToExtent
-    })(LayerTree),
-    reducers: {
-        layers: require('../reducers/layers'),
-        layerinfo: require('../reducers/layerinfo'),
-        serviceinfo: require('../reducers/serviceinfo')
-    }
-};
+export default connect(selector, {
+    addLayerSeparator: addLayerSeparator,
+    changeLayerProperty: changeLayerProperty,
+    removeLayer: removeLayer,
+    reorderLayer: reorderLayer,
+    toggleMapTips: toggleMapTips,
+    setSwipe: setSwipe,
+    setActiveLayerInfo: setActiveLayerInfo,
+    setActiveServiceInfo: setActiveServiceInfo,
+    zoomToExtent: zoomToExtent
+})(LayerTree);

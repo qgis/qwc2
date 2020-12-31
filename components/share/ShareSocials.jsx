@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const Message = require('../../components/I18N/Message');
-const {
+import React from 'react';
+import PropTypes from 'prop-types';
+import Message from '../../components/I18N/Message';
+import {
     FacebookShareButton,
     LinkedinShareButton,
     TwitterShareButton,
@@ -17,11 +17,11 @@ const {
     FacebookIcon,
     TwitterIcon,
     LinkedinIcon
-} = require('react-share');
-require('./share.css');
+} from 'react-share';
+import './share.css';
 
 
-class ShareSocials extends React.Component {
+export default class ShareSocials extends React.Component {
     static propTypes = {
         getCount: PropTypes.func,
         shareTitle: PropTypes.string,
@@ -74,5 +74,3 @@ class ShareSocials extends React.Component {
         );
     }
 }
-
-module.exports = ShareSocials;

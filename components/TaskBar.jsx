@@ -6,11 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const {setCurrentTask, setCurrentTaskBlocked} = require("../actions/task");
-const {MessageBar} = require('./MessageBar');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
+import MessageBar from './MessageBar';
 
 class TaskBar extends React.Component {
     static propTypes = {
@@ -64,12 +64,7 @@ const selector = (state) => ({
     currentTask: state.task
 });
 
-module.exports = {
-    TaskBar: connect(selector, {
-        setCurrentTask: setCurrentTask,
-        setCurrentTaskBlocked: setCurrentTaskBlocked
-    })(TaskBar),
-    reducers: {
-        task: require('../reducers/task')
-    }
-};
+export default connect(selector, {
+    setCurrentTask: setCurrentTask,
+    setCurrentTaskBlocked: setCurrentTaskBlocked
+})(TaskBar);

@@ -6,15 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const {SideBar} = require('../components/SideBar');
-const ThemeList = require('../components/ThemeList');
-const ConfigUtils = require("../utils/ConfigUtils");
-const LocaleUtils = require("../utils/LocaleUtils");
-const ThemeLayersListWindow = require('../components/ThemeLayersListWindow');
-require('./style/ThemeSwitcher.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import SideBar from '../components/SideBar';
+import ThemeList from '../components/ThemeList';
+import ConfigUtils from '../utils/ConfigUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import ThemeLayersListWindow from '../components/ThemeLayersListWindow';
+import './style/ThemeSwitcher.css';
 
 class ThemeSwitcher extends React.Component {
     static propTypes = {
@@ -80,11 +80,4 @@ const selector = (state) => ({
     activeTheme: state.theme ? state.theme.current : null
 });
 
-module.exports = {
-    ThemeSwitcherPlugin: connect(selector, {})(ThemeSwitcher),
-    reducers: {
-        theme: require('../reducers/theme'),
-        task: require('../reducers/task'),
-        layers: require('../reducers/layers')
-    }
-};
+export default connect(selector, {})(ThemeSwitcher);

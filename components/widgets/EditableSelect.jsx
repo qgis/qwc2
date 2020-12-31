@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const Icon = require('../Icon');
+import React from 'react';
+import PropTypes from 'prop-types';
+import Icon from '../Icon';
 
-require('./style/EditableSelect.css');
+import './style/EditableSelect.css';
 
-class EditableSelect extends React.Component {
+export default class EditableSelect extends React.Component {
     static propTypes = {
         onChange: PropTypes.func,
         onSubmit: PropTypes.func,
@@ -99,5 +99,3 @@ class EditableSelect extends React.Component {
         ev.preventDefault();
     }
 }
-
-module.exports = EditableSelect;

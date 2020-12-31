@@ -6,15 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const ol = require('openlayers');
-const assign = require('object-assign');
-const MapUtils = require('../../../../utils/MapUtils');
+import ol from 'openlayers';
+import assign from 'object-assign';
+import MapUtils from '../../../../utils/MapUtils';
 
 function getWMSURLs(urls) {
     return urls.map((url) => url.split("?")[0]);
 }
 
-const WMTSLayer = {
+export default {
     create: (options) => {
         const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]);
         const projection = ol.proj.get(options.projection);
@@ -48,5 +48,3 @@ const WMTSLayer = {
         });
     }
 };
-
-module.exports = WMTSLayer;

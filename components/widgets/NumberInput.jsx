@@ -6,10 +6,10 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const React = require('react');
-const PropTypes = require('prop-types');
+import React from 'react';
+import PropTypes from 'prop-types';
 
-class NumberInput extends React.Component {
+export default class NumberInput extends React.Component {
     static propTypes = {
         max: PropTypes.number,
         min: PropTypes.number,
@@ -41,5 +41,3 @@ class NumberInput extends React.Component {
         this.setState({curValue: this.props.value});
     }
 }
-
-module.exports = NumberInput;

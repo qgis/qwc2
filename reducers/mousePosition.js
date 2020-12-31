@@ -6,14 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const assign = require('object-assign');
-const {CHANGE_MOUSE_POSITION_STATE} = require('../actions/mousePosition');
+import assign from 'object-assign';
+import {CHANGE_MOUSE_POSITION_STATE} from '../actions/mousePosition';
 
 const defaultState = {
     enabled: true
 };
 
-function mousePosition(state = defaultState, action) {
+export default function mousePosition(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_MOUSE_POSITION_STATE: {
         return assign({}, state, action.data);
@@ -22,5 +22,3 @@ function mousePosition(state = defaultState, action) {
         return state;
     }
 }
-
-module.exports = mousePosition;

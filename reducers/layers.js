@@ -6,13 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const assign = require('object-assign');
-const {UrlParams} = require("../utils/PermaLinkUtils");
-const LayerUtils = require("../utils/LayerUtils");
-const isEmpty = require('lodash.isempty');
-const uuid = require('uuid');
-
-const {
+import assign from 'object-assign';
+import {UrlParams} from '../utils/PermaLinkUtils';
+import LayerUtils from '../utils/LayerUtils';
+import isEmpty from 'lodash.isempty';
+import uuid from 'uuid';
+import {
     LayerRole,
     SET_LAYER_LOADING,
     ADD_LAYER,
@@ -29,7 +28,7 @@ const {
     REPLACE_PLACEHOLDER_LAYER,
     SET_SWIPE,
     SET_LAYERS
-} = require('../actions/layers');
+} from '../actions/layers';
 
 
 function propagateLayerProperty(newlayer, property, value, path = null) {
@@ -53,7 +52,7 @@ const defaultState = {
     swipe: undefined
 };
 
-function layers(state = defaultState, action) {
+export default function layers(state = defaultState, action) {
     switch (action.type) {
     case SET_LAYER_LOADING: {
         const newLayers = (state.flat || []).map((layer) => {
@@ -293,5 +292,3 @@ function layers(state = defaultState, action) {
         return state;
     }
 }
-
-module.exports = layers;

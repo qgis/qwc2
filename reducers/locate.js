@@ -6,14 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {CHANGE_LOCATE_STATE, LOCATE_ERROR} = require('../actions/locate');
-const assign = require('object-assign');
+import {CHANGE_LOCATE_STATE, LOCATE_ERROR} from '../actions/locate';
+import assign from 'object-assign';
 
 const defaultState = {
     state: "DISABLED"
 };
 
-function locate(state = defaultState, action) {
+export default function locate(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_LOCATE_STATE: {
         return assign({}, state, {
@@ -28,7 +28,4 @@ function locate(state = defaultState, action) {
     default:
         return state;
     }
-
 }
-
-module.exports = locate;

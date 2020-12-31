@@ -6,11 +6,12 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const {connect} = require('react-redux');
-const {changeMeasurementState} = require('../../actions/measurement');
+import {connect} from 'react-redux';
+import {changeMeasurementState} from '../../actions/measurement';
+import olMeasurementSupport from '../../components/map/openlayers/MeasurementSupport';
 
-module.exports = connect((state) => ({
+export default connect((state) => ({
     measurement: state.measurement || {}
 }), {
     changeMeasurementState
-})(require('../../components/map/openlayers/MeasurementSupport'));
+})(olMeasurementSupport);

@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const assign = require('object-assign');
-const proj4js = require('proj4').default;
-const isEmpty = require('lodash.isempty');
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const MapUtils = require('../utils/MapUtils');
-const VectorLayerUtils = require('./VectorLayerUtils');
+import assign from 'object-assign';
+import proj4js from 'proj4';
+import isEmpty from 'lodash.isempty';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import MapUtils from '../utils/MapUtils';
+import VectorLayerUtils from './VectorLayerUtils';
 
 const IdentifyUtils = {
     buildRequest(layer, queryLayers, center, map, options) {
@@ -239,4 +239,4 @@ const IdentifyUtils = {
     }
 };
 
-module.exports = IdentifyUtils;
+export default IdentifyUtils;

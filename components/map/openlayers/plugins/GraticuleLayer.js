@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const ol = require('openlayers');
+import ol from 'openlayers';
 
-const GraticuleLayer = {
+export default {
     create: (options, map) => {
         const graticule = new ol.Graticule({
             strokeStyle: options.style || new ol.style.Stroke({
@@ -27,5 +27,3 @@ const GraticuleLayer = {
         };
     }
 };
-
-module.exports = GraticuleLayer;

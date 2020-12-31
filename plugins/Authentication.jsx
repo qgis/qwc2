@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const ConfigUtils = require('../utils/ConfigUtils');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import ConfigUtils from '../utils/ConfigUtils';
 
 class Authentication extends React.Component {
     static propTypes = {
@@ -29,11 +29,7 @@ class Authentication extends React.Component {
     }
 }
 
-module.exports = {
-    AuthenticationPlugin: connect(state => ({
-        task: state.task ? state.task.id : null
-    }), {
-    })(Authentication),
-    reducers: {
-    }
-};
+export default connect(state => ({
+    task: state.task ? state.task.id : null
+}), {
+})(Authentication);

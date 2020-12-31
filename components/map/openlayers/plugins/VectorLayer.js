@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const ol = require('openlayers');
-const FeatureStyles = require('../FeatureStyles');
+import ol from 'openlayers';
+import FeatureStyles from '../FeatureStyles';
 
-const VectorLayer = {
+export default {
     create: (options) => {
         const source = new ol.source.Vector();
         const format = new ol.format.GeoJSON();
@@ -107,5 +107,3 @@ const VectorLayer = {
         return null;
     }
 };
-
-module.exports = VectorLayer;

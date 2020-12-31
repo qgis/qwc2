@@ -6,18 +6,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const classnames = require('classnames');
-const isEmpty = require('lodash.isempty');
-const sortBy = require('lodash.sortby');
-const ConfigUtils = require("../utils/ConfigUtils");
-const Message = require('../components/I18N/Message');
-const LocaleUtils = require('../utils/LocaleUtils');
-const {LayerRole, changeLayerProperty} = require('../actions/layers');
-const Icon = require('../components/Icon');
-require('./style/BackgroundSwitcher.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import classnames from 'classnames';
+import isEmpty from 'lodash.isempty';
+import sortBy from 'lodash.sortby';
+import ConfigUtils from '../utils/ConfigUtils';
+import Message from '../components/I18N/Message';
+import LocaleUtils from '../utils/LocaleUtils';
+import {LayerRole, changeLayerProperty} from '../actions/layers';
+import Icon from '../components/Icon';
+import './style/BackgroundSwitcher.css';
 
 class BackgroundSwitcher extends React.Component {
     static propTypes = {
@@ -151,10 +151,6 @@ const selector = (state) => ({
     layers: state.layers.flat || []
 });
 
-module.exports = {
-    BackgroundSwitcherPlugin: connect(selector, {
-        changeLayerProperty: changeLayerProperty
-    })(BackgroundSwitcher),
-    reducers: {
-    }
-};
+export default connect(selector, {
+    changeLayerProperty: changeLayerProperty
+})(BackgroundSwitcher);

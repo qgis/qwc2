@@ -6,13 +6,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const assign = require('object-assign');
-const {LayerRole} = require('../actions/layers');
-const LayerUtils = require('../utils/LayerUtils');
-const ServiceLayerUtils = require('../utils/ServiceLayerUtils');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import assign from 'object-assign';
+import {LayerRole} from '../actions/layers';
+import LayerUtils from '../utils/LayerUtils';
+import ServiceLayerUtils from '../utils/ServiceLayerUtils';
+
+import * as layerActions from '../actions/layers';
+import * as mapActions from '../actions/map';
+import * as taskActions from '../actions/task';
+import * as windowsActions from '../actions/windows';
+
 
 class API extends React.Component {
     componentDidMount() {
@@ -56,15 +62,13 @@ function extractFunctions(obj) {
     }, {});
 }
 
-module.exports = module.exports = {
-    APIPlugin: connect(state => ({
-        mapCrs: state.map.projection
-    }),
-    assign(
-        {},
-        extractFunctions(require('../actions/layers')),
-        extractFunctions(require('../actions/map')),
-        extractFunctions(require('../actions/task')),
-        extractFunctions(require('../actions/windows'))
-    ))(API)
-};
+export default connect(state => ({
+    mapCrs: state.map.projection
+}),
+assign(
+    {},
+    extractFunctions(layerActions),
+    extractFunctions(mapActions),
+    extractFunctions(taskActions),
+    extractFunctions(windowsActions)
+))(API);

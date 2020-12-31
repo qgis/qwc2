@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const LocaleUtils = require("../utils/LocaleUtils");
-const {setCurrentTask, openExternalUrl} = require('../actions/task');
-const Icon = require('./Icon');
-require('./style/Toolbar.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import LocaleUtils from '../utils/LocaleUtils';
+import {setCurrentTask, openExternalUrl} from '../actions/task';
+import Icon from './Icon';
+import './style/Toolbar.css';
 
 class Toolbar extends React.Component {
     static propTypes = {
@@ -61,7 +61,7 @@ class Toolbar extends React.Component {
     }
 }
 
-module.exports = connect((state) => ({
+export default connect((state) => ({
     currentTask: state.task ? state.task.id : "",
     currentTaskMode: state.task ? state.task.mode : "",
     currentTheme: state.theme.current || {}

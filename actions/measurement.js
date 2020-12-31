@@ -6,16 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const CHANGE_MEASUREMENT_STATE = 'CHANGE_MEASUREMENT_STATE';
+import {ReducerRegistry} from '../stores/StandardStore';
+import measurementReducer from '../reducers/measurement';
+ReducerRegistry.register("measurement", measurementReducer);
 
-function changeMeasurementState(measureState) {
+export const CHANGE_MEASUREMENT_STATE = 'CHANGE_MEASUREMENT_STATE';
+
+export function changeMeasurementState(measureState) {
     return {
         type: CHANGE_MEASUREMENT_STATE,
         data: measureState
     };
 }
-
-module.exports = {
-    CHANGE_MEASUREMENT_STATE,
-    changeMeasurementState
-};

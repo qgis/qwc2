@@ -6,13 +6,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const SHOW_IFRAME_DIALOG = 'SHOW_IFRAME_DIALOG';
-const SHOW_NOTIFICATION = 'SHOW_NOTIFICATION';
-const CLOSE_WINDOW = 'CLOSE_WINDOW';
-const CLOSE_ALL_WINDOWS = 'CLOSE_ALL_WINDOWS';
+import {ReducerRegistry} from '../stores/StandardStore';
+import windowsReducer from '../reducers/windows';
+ReducerRegistry.register("windows", windowsReducer);
+
+export const SHOW_IFRAME_DIALOG = 'SHOW_IFRAME_DIALOG';
+export const SHOW_NOTIFICATION = 'SHOW_NOTIFICATION';
+export const CLOSE_WINDOW = 'CLOSE_WINDOW';
+export const CLOSE_ALL_WINDOWS = 'CLOSE_ALL_WINDOWS';
 
 
-function showIframeDialog(name, url, options) {
+export function showIframeDialog(name, url, options) {
     return {
         type: SHOW_IFRAME_DIALOG,
         name: name,
@@ -21,7 +25,7 @@ function showIframeDialog(name, url, options) {
     };
 }
 
-function showNotification(name, text) {
+export function showNotification(name, text) {
     return {
         type: SHOW_NOTIFICATION,
         name: name,
@@ -29,26 +33,15 @@ function showNotification(name, text) {
     };
 }
 
-function closeWindow(name) {
+export function closeWindow(name) {
     return {
         type: CLOSE_WINDOW,
         name: name
     };
 }
 
-function closeAllWindows() {
+export function closeAllWindows() {
     return {
         type: CLOSE_ALL_WINDOWS
     };
 }
-
-module.exports = {
-    SHOW_IFRAME_DIALOG,
-    SHOW_NOTIFICATION,
-    CLOSE_WINDOW,
-    CLOSE_ALL_WINDOWS,
-    showIframeDialog,
-    showNotification,
-    closeWindow,
-    closeAllWindows
-};

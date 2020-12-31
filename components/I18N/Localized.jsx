@@ -5,11 +5,11 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
 
-const {IntlProvider} = require('react-intl');
+import {IntlProvider} from 'react-intl';
 
 class Localized extends React.Component {
     static propTypes = {
@@ -39,7 +39,7 @@ class Localized extends React.Component {
     }
 }
 
-module.exports = connect((state) => ({
+export default connect((state) => ({
     locale: state.locale.current,
     messages: state.locale.messages
 }), {})(Localized);

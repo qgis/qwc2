@@ -7,12 +7,12 @@
  *
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const assign = require('object-assign');
-const OlLocate = require('../../../utils/openlayers/OlLocate');
+import React from 'react';
+import PropTypes from 'prop-types';
+import assign from 'object-assign';
+import OlLocate from './utils/OlLocate';
 
-class Locate extends React.Component {
+export default class Locate extends React.Component {
     static propTypes = {
         changeLocateState: PropTypes.func,
         map: PropTypes.object,
@@ -97,5 +97,3 @@ class Locate extends React.Component {
         return null;
     }
 }
-
-module.exports = Locate;

@@ -6,26 +6,30 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const axios = require('axios');
-const uuid = require('uuid');
-const ConfigUtils = require('../utils/ConfigUtils');
+import {ReducerRegistry} from '../stores/StandardStore';
+import identifyReducer from '../reducers/identify';
+ReducerRegistry.register("identify", identifyReducer);
 
-const IDENTIFY_EMPTY = 'IDENTIFY_EMPTY';
-const IDENTIFY_RESPONSE = 'IDENTIFY_RESPONSE';
-const IDENTIFY_REQUEST = 'IDENTIFY_REQUEST';
-const SET_IDENTIFY_TOOL = 'SET_IDENTIFY_TOOL';
-const PURGE_IDENTIFY_RESULTS = 'PURGE_IDENTIFY_RESULTS';
-const SET_IDENTIFY_FEATURE_RESULT = 'SET_IDENTIFY_FEATURE_RESULT';
+import axios from 'axios';
+import uuid from 'uuid';
+import ConfigUtils from '../utils/ConfigUtils';
+
+export const IDENTIFY_EMPTY = 'IDENTIFY_EMPTY';
+export const IDENTIFY_RESPONSE = 'IDENTIFY_RESPONSE';
+export const IDENTIFY_REQUEST = 'IDENTIFY_REQUEST';
+export const SET_IDENTIFY_TOOL = 'SET_IDENTIFY_TOOL';
+export const PURGE_IDENTIFY_RESULTS = 'PURGE_IDENTIFY_RESULTS';
+export const SET_IDENTIFY_FEATURE_RESULT = 'SET_IDENTIFY_FEATURE_RESULT';
 
 
-function identifyEmpty() {
+export function identifyEmpty() {
     return {
         type: IDENTIFY_EMPTY,
         reqId: uuid.v1()
     };
 }
 
-function identifyResponse(reqId, request, data, error = null) {
+export function identifyResponse(reqId, request, data, error = null) {
     return {
         type: IDENTIFY_RESPONSE,
         reqId: reqId,
@@ -36,7 +40,7 @@ function identifyResponse(reqId, request, data, error = null) {
     };
 }
 
-function identifyRequest(reqId, request) {
+export function identifyRequest(reqId, request) {
     return {
         type: IDENTIFY_REQUEST,
         reqId: reqId,
@@ -44,7 +48,7 @@ function identifyRequest(reqId, request) {
     };
 }
 
-function sendIdentifyRequest(request) {
+export function sendIdentifyRequest(request) {
     const reqId = uuid.v1();
     return (dispatch) => {
         dispatch(identifyRequest(reqId, request));
@@ -56,7 +60,7 @@ function sendIdentifyRequest(request) {
     };
 }
 
-function setIdentifyFeatureResult(pos, layername, feature) {
+export function setIdentifyFeatureResult(pos, layername, feature) {
     return {
         type: SET_IDENTIFY_FEATURE_RESULT,
         reqId: uuid.v1(),
@@ -66,7 +70,7 @@ function setIdentifyFeatureResult(pos, layername, feature) {
     };
 }
 
-function setIdentifyEnabled(enabled, theme = null) {
+export function setIdentifyEnabled(enabled, theme = null) {
     return (dispatch, getState) => {
         let identifyTool = ConfigUtils.getConfigProp("identifyTool", theme || getState().theme.current);
         identifyTool = identifyTool !== undefined ? identifyTool : "Identify";
@@ -77,23 +81,8 @@ function setIdentifyEnabled(enabled, theme = null) {
     };
 }
 
-function purgeIdentifyResults() {
+export function purgeIdentifyResults() {
     return {
         type: PURGE_IDENTIFY_RESULTS
     };
 }
-
-
-module.exports = {
-    IDENTIFY_EMPTY,
-    IDENTIFY_RESPONSE,
-    IDENTIFY_REQUEST,
-    SET_IDENTIFY_FEATURE_RESULT,
-    SET_IDENTIFY_TOOL,
-    PURGE_IDENTIFY_RESULTS,
-    identifyEmpty,
-    sendIdentifyRequest,
-    setIdentifyEnabled,
-    purgeIdentifyResults,
-    setIdentifyFeatureResult
-};

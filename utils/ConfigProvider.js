@@ -1,4 +1,4 @@
-const CONFIGPROVIDER = {
+export default {
     OpenStreetMap: {
         url: '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         options: {
@@ -332,8 +332,8 @@ const CONFIGPROVIDER = {
                 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
             subdomains: '1234',
             mapID: 'newest',
-            'app_id': '<insert your app_id here>',
-            'app_code': '<insert your app_code here>',
+            app_id: '<insert your app_id here>',
+            app_code: '<insert your app_code here>',
             base: 'base',
             variant: 'normal.day',
             maxZoom: 20
@@ -615,5 +615,3 @@ const CONFIGPROVIDER = {
         }
     }
 };
-
-module.exports = CONFIGPROVIDER;

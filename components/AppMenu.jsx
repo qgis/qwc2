@@ -6,14 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const {Swipeable} = require('react-swipeable');
-const Message = require('../components/I18N/Message');
-const {setCurrentTask} = require('../actions/task');
-const Icon = require('./Icon');
-require('./style/AppMenu.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {Swipeable} from 'react-swipeable';
+import Message from '../components/I18N/Message';
+import {setCurrentTask} from '../actions/task';
+import Icon from './Icon';
+import './style/AppMenu.css';
 
 
 class AppMenu extends React.Component {
@@ -144,7 +144,7 @@ class AppMenu extends React.Component {
     }
 }
 
-module.exports = connect((state) => ({
+export default connect((state) => ({
     currentTaskBlocked: state.task && state.task.blocked || false,
     currentTheme: state.theme.current || {}
 }), {

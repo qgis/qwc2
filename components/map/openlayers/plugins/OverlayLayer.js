@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const ol = require('openlayers');
+import ol from 'openlayers';
 
 const removeIds = (items) => {
     if (items.length !== 0) {
@@ -37,7 +37,7 @@ const cloneOriginalOverlay = (original, options) => {
     return cloned;
 };
 
-const OverlayLayer = {
+export default {
     create: (options, map) => {
         const original = document.getElementById(options.id);
         const cloned = cloneOriginalOverlay(original, options);
@@ -62,5 +62,3 @@ const OverlayLayer = {
         };
     }
 };
-
-module.exports = OverlayLayer;

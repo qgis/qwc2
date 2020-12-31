@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const isEqual = require('lodash.isequal');
-const MapUtils = require('../utils/MapUtils');
-require('./style/PrintFrame.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import isEqual from 'lodash.isequal';
+import MapUtils from '../utils/MapUtils';
+import './style/PrintFrame.css';
 
-class PrintFrame extends React.Component {
+export default class PrintFrame extends React.Component {
     static propTypes = {
         bboxSelected: PropTypes.func,
         fixedFrame: PropTypes.shape({
@@ -131,5 +131,3 @@ class PrintFrame extends React.Component {
         }
     }
 }
-
-module.exports = PrintFrame;

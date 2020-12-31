@@ -6,26 +6,30 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const ConfigUtils = require("../utils/ConfigUtils");
+import {ReducerRegistry} from '../stores/StandardStore';
+import layersReducer from '../reducers/layers';
+ReducerRegistry.register("layers", layersReducer);
 
-const SET_LAYER_LOADING = 'SET_LAYER_LOADING';
-const ADD_LAYER = 'ADD_LAYER';
-const ADD_LAYER_SEPARATOR = 'ADD_LAYER_SEPARATOR';
-const REMOVE_LAYER = 'REMOVE_LAYER';
-const REORDER_LAYER = 'REORDER_LAYER';
-const ADD_LAYER_FEATURES = 'ADD_LAYER_FEATURES';
-const ADD_THEME_SUBLAYER = 'ADD_THEME_SUBLAYER';
-const REMOVE_LAYER_FEATURES = 'REMOVE_LAYER_FEATURES';
-const CLEAR_LAYER = 'CLEAR_LAYER';
-const CHANGE_LAYER_PROPERTY = 'CHANGE_LAYER_PROPERTY';
-const REFRESH_LAYER = 'REFRESH_LAYER';
-const REMOVE_ALL_LAYERS = 'REMOVE_ALL_LAYERS';
-const REPLACE_PLACEHOLDER_LAYER = 'REPLACE_PLACEHOLDER_LAYER';
-const SET_SWIPE = 'SET_SWIPE';
-const SET_LAYERS = 'SET_LAYERS';
+import ConfigUtils from '../utils/ConfigUtils';
+
+export const SET_LAYER_LOADING = 'SET_LAYER_LOADING';
+export const ADD_LAYER = 'ADD_LAYER';
+export const ADD_LAYER_SEPARATOR = 'ADD_LAYER_SEPARATOR';
+export const REMOVE_LAYER = 'REMOVE_LAYER';
+export const REORDER_LAYER = 'REORDER_LAYER';
+export const ADD_LAYER_FEATURES = 'ADD_LAYER_FEATURES';
+export const ADD_THEME_SUBLAYER = 'ADD_THEME_SUBLAYER';
+export const REMOVE_LAYER_FEATURES = 'REMOVE_LAYER_FEATURES';
+export const CLEAR_LAYER = 'CLEAR_LAYER';
+export const CHANGE_LAYER_PROPERTY = 'CHANGE_LAYER_PROPERTY';
+export const REFRESH_LAYER = 'REFRESH_LAYER';
+export const REMOVE_ALL_LAYERS = 'REMOVE_ALL_LAYERS';
+export const REPLACE_PLACEHOLDER_LAYER = 'REPLACE_PLACEHOLDER_LAYER';
+export const SET_SWIPE = 'SET_SWIPE';
+export const SET_LAYERS = 'SET_LAYERS';
 
 
-const LayerRole = {
+export const LayerRole = {
     BACKGROUND: 1,
     THEME: 2,
     USERLAYER: 3,
@@ -34,7 +38,7 @@ const LayerRole = {
 };
 
 
-function addLayer(layer, pos = null, beforename = null) {
+export function addLayer(layer, pos = null, beforename = null) {
     return {
         type: ADD_LAYER,
         layer,
@@ -43,7 +47,7 @@ function addLayer(layer, pos = null, beforename = null) {
     };
 }
 
-function addLayerSeparator(title, afterLayerId, afterSublayerPath) {
+export function addLayerSeparator(title, afterLayerId, afterSublayerPath) {
     return {
         type: ADD_LAYER_SEPARATOR,
         title: title,
@@ -52,7 +56,7 @@ function addLayerSeparator(title, afterLayerId, afterSublayerPath) {
     };
 }
 
-function removeLayer(layerId, sublayerpath = []) {
+export function removeLayer(layerId, sublayerpath = []) {
     return {
         type: REMOVE_LAYER,
         layerId: layerId,
@@ -60,7 +64,7 @@ function removeLayer(layerId, sublayerpath = []) {
     };
 }
 
-function reorderLayer(layer, sublayerpath, direction) {
+export function reorderLayer(layer, sublayerpath, direction) {
     return (dispatch, getState) => {
         dispatch({
             type: REORDER_LAYER,
@@ -72,7 +76,7 @@ function reorderLayer(layer, sublayerpath, direction) {
     };
 }
 
-function addLayerFeatures(layer, features, clear = false) {
+export function addLayerFeatures(layer, features, clear = false) {
     return {
         type: ADD_LAYER_FEATURES,
         layer,
@@ -81,7 +85,7 @@ function addLayerFeatures(layer, features, clear = false) {
     };
 }
 
-function removeLayerFeatures(layerId, featureIds, keepEmptyLayer = false) {
+export function removeLayerFeatures(layerId, featureIds, keepEmptyLayer = false) {
     return {
         type: REMOVE_LAYER_FEATURES,
         layerId,
@@ -90,14 +94,14 @@ function removeLayerFeatures(layerId, featureIds, keepEmptyLayer = false) {
     };
 }
 
-function clearLayer(layerId) {
+export function clearLayer(layerId) {
     return {
         type: CLEAR_LAYER,
         layerId
     };
 }
 
-function addThemeSublayer(layer) {
+export function addThemeSublayer(layer) {
     return {
         type: ADD_THEME_SUBLAYER,
         layer
@@ -105,7 +109,7 @@ function addThemeSublayer(layer) {
 }
 
 // recurseDirection: null (don't recurse), 'parents', 'children', 'both'
-function changeLayerProperty(layerUuid, property, newvalue, sublayerpath = [], recurseDirection = null) {
+export function changeLayerProperty(layerUuid, property, newvalue, sublayerpath = [], recurseDirection = null) {
     return {
         type: CHANGE_LAYER_PROPERTY,
         layerUuid,
@@ -116,7 +120,7 @@ function changeLayerProperty(layerUuid, property, newvalue, sublayerpath = [], r
     };
 }
 
-function setLayerLoading(layerId, loading) {
+export function setLayerLoading(layerId, loading) {
     return {
         type: SET_LAYER_LOADING,
         layerId: layerId,
@@ -124,7 +128,7 @@ function setLayerLoading(layerId, loading) {
     };
 }
 
-function addMarker(id, point, label = '', crs = 'EPSG:4326', zIndex = null) {
+export function addMarker(id, point, label = '', crs = 'EPSG:4326', zIndex = null) {
     const layer = {
         id: "markers",
         role: LayerRole.MARKER,
@@ -143,24 +147,24 @@ function addMarker(id, point, label = '', crs = 'EPSG:4326', zIndex = null) {
     return addLayerFeatures(layer, [feature]);
 }
 
-function removeMarker(id) {
+export function removeMarker(id) {
     return removeLayerFeatures("markers", [id]);
 }
 
-function refreshLayer(filter) {
+export function refreshLayer(filter) {
     return {
         type: REFRESH_LAYER,
         filter: filter
     };
 }
 
-function removeAllLayers() {
+export function removeAllLayers() {
     return {
         type: REMOVE_ALL_LAYERS
     };
 }
 
-function replacePlaceholderLayer(id, layer) {
+export function replacePlaceholderLayer(id, layer) {
     return {
         type: REPLACE_PLACEHOLDER_LAYER,
         id,
@@ -168,52 +172,16 @@ function replacePlaceholderLayer(id, layer) {
     };
 }
 
-function setSwipe(swipe) {
+export function setSwipe(swipe) {
     return {
         type: SET_SWIPE,
         swipe
     };
 }
 
-function setLayers(layers) {
+export function setLayers(layers) {
     return {
         type: SET_LAYERS,
         layers
     };
 }
-
-module.exports = {
-    LayerRole,
-    setLayerLoading,
-    addLayer,
-    addLayerSeparator,
-    removeLayer,
-    reorderLayer,
-    addLayerFeatures,
-    removeLayerFeatures,
-    clearLayer,
-    addThemeSublayer,
-    changeLayerProperty,
-    addMarker,
-    removeMarker,
-    refreshLayer,
-    removeAllLayers,
-    replacePlaceholderLayer,
-    setSwipe,
-    setLayers,
-    SET_LAYER_LOADING,
-    ADD_LAYER,
-    ADD_LAYER_SEPARATOR,
-    REMOVE_LAYER,
-    REORDER_LAYER,
-    ADD_LAYER_FEATURES,
-    REMOVE_LAYER_FEATURES,
-    CLEAR_LAYER,
-    ADD_THEME_SUBLAYER,
-    CHANGE_LAYER_PROPERTY,
-    REFRESH_LAYER,
-    REMOVE_ALL_LAYERS,
-    REPLACE_PLACEHOLDER_LAYER,
-    SET_SWIPE,
-    SET_LAYERS
-};

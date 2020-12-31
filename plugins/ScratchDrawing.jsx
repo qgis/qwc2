@@ -6,19 +6,19 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const assign = require('object-assign');
-const Mousetrap = require('mousetrap');
-const {changeRedliningState} = require('../actions/redlining');
-const {LayerRole, addLayer, removeLayer, clearLayer} = require('../actions/layers');
-const {setCurrentTask} = require('../actions/task');
-const {TaskBar} = require('../components/TaskBar');
-const LocaleUtils = require('../utils/LocaleUtils');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import assign from 'object-assign';
+import Mousetrap from 'mousetrap';
+import {changeRedliningState} from '../actions/redlining';
+import {LayerRole, addLayer, removeLayer, clearLayer} from '../actions/layers';
+import {setCurrentTask} from '../actions/task';
+import TaskBar from '../components/TaskBar';
+import LocaleUtils from '../utils/LocaleUtils';
 
-require('./style/Redlining.css');
-require('./style/ScratchDrawing.css');
+import './style/Redlining.css';
+import './style/ScratchDrawing.css';
 
 
 class ScratchDrawing extends React.Component {
@@ -132,21 +132,16 @@ class ScratchDrawing extends React.Component {
     }
 }
 
-module.exports = {
-    ScratchDrawingPlugin: connect((state) => ({
-        task: state.task,
-        layers: state.layers.flat,
-        redlining: state.redlining,
-        projection: state.map.projection,
-        theme: state.theme.current
-    }), {
-        changeRedliningState: changeRedliningState,
-        addLayer: addLayer,
-        clearLayer: clearLayer,
-        removeLayer: removeLayer,
-        setCurrentTask: setCurrentTask
-    })(ScratchDrawing),
-    reducers: {
-        redlining: require('qwc2/reducers/redlining')
-    }
-};
+export default connect((state) => ({
+    task: state.task,
+    layers: state.layers.flat,
+    redlining: state.redlining,
+    projection: state.map.projection,
+    theme: state.theme.current
+}), {
+    changeRedliningState: changeRedliningState,
+    addLayer: addLayer,
+    clearLayer: clearLayer,
+    removeLayer: removeLayer,
+    setCurrentTask: setCurrentTask
+})(ScratchDrawing);

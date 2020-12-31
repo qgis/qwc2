@@ -6,11 +6,12 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const {connect} = require('react-redux');
-const {changeSelectionState} = require('../../actions/selection');
+import {connect} from 'react-redux';
+import {changeSelectionState} from '../../actions/selection';
+import olSelectionSupport from '../../components/map/openlayers/SelectionSupport';
 
-module.exports = connect((state) => ({
+export default connect((state) => ({
     selection: state.selection || {}
 }), {
     changeSelectionState
-})(require('../../components/map/openlayers/SelectionSupport'));
+})(olSelectionSupport);

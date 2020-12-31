@@ -6,16 +6,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const {connect} = require('react-redux');
-const PropTypes = require('prop-types');
-const Message = require('../components/I18N/Message');
-const ShareSocials = require('../components/share/ShareSocials');
-const ShareQRCode = require('../components/share/ShareQRCode');
-const ShareLink = require('../components/ShareLink');
-const {SideBar} = require('../components/SideBar');
-const {generatePermaLink} = require('../utils/PermaLinkUtils');
-require('./style/Share.css');
+import React from 'react';
+import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
+import Message from '../components/I18N/Message';
+import ShareSocials from '../components/share/ShareSocials';
+import ShareQRCode from '../components/share/ShareQRCode';
+import ShareLink from '../components/ShareLink';
+import SideBar from '../components/SideBar';
+import {generatePermaLink} from '../utils/PermaLinkUtils';
+import './style/Share.css';
 
 class Share extends React.Component {
     static propTypes = {
@@ -67,9 +67,4 @@ class Share extends React.Component {
     }
 }
 
-module.exports = {
-    SharePlugin: connect(state => ({state}))(Share),
-    reducers: {
-        task: require('../reducers/task')
-    }
-};
+export default connect(state => ({state}))(Share);

@@ -6,20 +6,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const classnames = require('classnames');
-const assign = require('object-assign');
-const {connect} = require('react-redux');
-const {Swipeable} = require('react-swipeable');
-const Icon = require('../components/Icon');
-const Message = require('../components/I18N/Message');
-const ConfigUtils = require("../utils/ConfigUtils");
-const {toggleFullscreen} = require('../actions/display');
-const {openExternalUrl} = require('../actions/task');
-const {setTopbarHeight} = require('../actions/map');
-const {restoreDefaultTheme} = require('../actions/theme');
-require('./style/TopBar.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import assign from 'object-assign';
+import {connect} from 'react-redux';
+import {Swipeable} from 'react-swipeable';
+import Icon from '../components/Icon';
+import Message from '../components/I18N/Message';
+import ConfigUtils from '../utils/ConfigUtils';
+import {toggleFullscreen} from '../actions/display';
+import {openExternalUrl} from '../actions/task';
+import {setTopbarHeight} from '../actions/map';
+import {restoreDefaultTheme} from '../actions/theme';
+import './style/TopBar.css';
 
 
 class TopBar extends React.Component {
@@ -110,21 +110,15 @@ class TopBar extends React.Component {
     }
 }
 
-module.exports = (components) => {
-    return {
-        TopBarPlugin: connect((state) => ({
-            mobile: state.browser ? state.browser.mobile : false,
-            fullscreen: state.display && state.display.fullscreen,
-            components: components
-        }), {
-            toggleFullscreen: toggleFullscreen,
-            restoreDefaultTheme: restoreDefaultTheme,
-            openExternalUrl: openExternalUrl,
-            setTopbarHeight: setTopbarHeight
-        })(TopBar),
-        reducers: {
-            display: require("../reducers/display"),
-            search: require("../reducers/search")
-        }
-    };
+export default (components) => {
+    return connect((state) => ({
+        mobile: state.browser ? state.browser.mobile : false,
+        fullscreen: state.display && state.display.fullscreen,
+        components: components
+    }), {
+        toggleFullscreen: toggleFullscreen,
+        restoreDefaultTheme: restoreDefaultTheme,
+        openExternalUrl: openExternalUrl,
+        setTopbarHeight: setTopbarHeight
+    })(TopBar);
 };

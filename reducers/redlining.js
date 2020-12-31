@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {CHANGE_REDLINING_STATE} = require('../actions/redlining');
-const assign = require('object-assign');
+import assign from 'object-assign';
+import {CHANGE_REDLINING_STATE} from '../actions/redlining';
 
 const defaultState = {
     action: null,
@@ -24,7 +24,7 @@ const defaultState = {
     drawMultiple: true
 };
 
-function redlining(state = defaultState, action) {
+export default function redlining(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_REDLINING_STATE: {
         return assign({}, state, action.data);
@@ -33,5 +33,3 @@ function redlining(state = defaultState, action) {
         return state;
     }
 }
-
-module.exports = redlining;

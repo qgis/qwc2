@@ -6,15 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const classnames = require('classnames');
-const LocaleUtils = require('../utils/LocaleUtils');
-const {changeLocateState} = require('../actions/locate');
-const Icon = require('../components/Icon');
-const Spinner = require('../components/Spinner');
-require('./style/Buttons.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import classnames from 'classnames';
+import LocaleUtils from '../utils/LocaleUtils';
+import {changeLocateState} from '../actions/locate';
+import Icon from '../components/Icon';
+import Spinner from '../components/Spinner';
+import './style/Buttons.css';
 
 
 class LocateButton extends React.Component {
@@ -77,11 +77,8 @@ class LocateButton extends React.Component {
     }
 }
 
-module.exports = {
-    LocateButtonPlugin: connect(state => ({
-        locateState: state.locate.state || 'DISABLED'
-    }), {
-        changeLocateState: changeLocateState
-    })(LocateButton),
-    reducers: {locate: require('../reducers/locate')}
-};
+export default connect(state => ({
+    locateState: state.locate.state || 'DISABLED'
+}), {
+    changeLocateState: changeLocateState
+})(LocateButton);

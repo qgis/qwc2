@@ -6,14 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const {Swipeable} = require('react-swipeable');
-const Message = require('../components/I18N/Message');
-const {setCurrentTask} = require('../actions/task');
-const Icon = require('./Icon');
-require('./style/SideBar.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {Swipeable} from 'react-swipeable';
+import Message from '../components/I18N/Message';
+import {setCurrentTask} from '../actions/task';
+import Icon from './Icon';
+import './style/SideBar.css';
 
 class SideBar extends React.Component {
     static propTypes = {
@@ -112,8 +112,6 @@ const selector = (state) => ({
     currentTask: state.task
 });
 
-module.exports = {
-    SideBar: connect(selector, {
-        setCurrentTask: setCurrentTask
-    })(SideBar)
-};
+export default connect(selector, {
+    setCurrentTask: setCurrentTask
+})(SideBar);

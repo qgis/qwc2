@@ -6,15 +6,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const SET_CURRENT_TASK = 'SET_CURRENT_TASK';
-const SET_CURRENT_TASK_BLOCKED = 'SET_CURRENT_TASK_BLOCKED';
-const {setIdentifyEnabled} = require('./identify');
-const ConfigUtils = require('../utils/ConfigUtils');
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const MapUtils = require('../utils/MapUtils');
-const {UrlParams} = require('../utils/PermaLinkUtils');
+import {ReducerRegistry} from '../stores/StandardStore';
+import taskReducer from '../reducers/task';
+ReducerRegistry.register("task", taskReducer);
 
-function setCurrentTask(task, mode = null, mapClickAction = null, data = null) {
+import {setIdentifyEnabled} from './identify';
+import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import MapUtils from '../utils/MapUtils';
+import {UrlParams} from '../utils/PermaLinkUtils';
+
+export const SET_CURRENT_TASK = 'SET_CURRENT_TASK';
+export const SET_CURRENT_TASK_BLOCKED = 'SET_CURRENT_TASK_BLOCKED';
+
+export function setCurrentTask(task, mode = null, mapClickAction = null, data = null) {
     return (dispatch, getState) => {
         // Don't do anything if current task is blocked
         if (getState().task && getState().task.blocked === true) {
@@ -40,14 +45,14 @@ function setCurrentTask(task, mode = null, mapClickAction = null, data = null) {
     };
 }
 
-function setCurrentTaskBlocked(blocked) {
+export function setCurrentTaskBlocked(blocked) {
     return {
         type: SET_CURRENT_TASK_BLOCKED,
         blocked
     };
 }
 
-function openExternalUrl(url) {
+export function openExternalUrl(url) {
     return (dispatch, getState) => {
         // Replace all entries in URL
         Object.entries(UrlParams.getParams()).forEach(([key, value]) => {
@@ -82,11 +87,3 @@ function openExternalUrl(url) {
         window.open(url);
     };
 }
-
-module.exports = {
-    SET_CURRENT_TASK,
-    SET_CURRENT_TASK_BLOCKED,
-    setCurrentTask,
-    setCurrentTaskBlocked,
-    openExternalUrl
-};

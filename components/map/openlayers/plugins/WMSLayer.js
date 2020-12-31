@@ -6,11 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const ol = require('openlayers');
-const assign = require('object-assign');
-const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
-const ConfigUtils = require('../../../../utils/ConfigUtils');
-const MapUtils = require('../../../../utils/MapUtils');
+import ol from 'openlayers';
+import assign from 'object-assign';
+import CoordinatesUtils from '../../../../utils/CoordinatesUtils';
+import ConfigUtils from '../../../../utils/ConfigUtils';
+import MapUtils from '../../../../utils/MapUtils';
 
 
 function wmsToOpenlayersOptions(options) {
@@ -32,7 +32,7 @@ function getWMSURLs( urls ) {
     return urls.map((url) => url.split("?")[0]);
 }
 
-const WMSLayer = {
+export default {
     create: (options, map) => {
         const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]);
         const queryParameters = wmsToOpenlayersOptions(options) || {};
@@ -106,5 +106,3 @@ const WMSLayer = {
         }
     }
 };
-
-module.exports = WMSLayer;

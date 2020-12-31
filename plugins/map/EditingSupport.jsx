@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const uuid = require('uuid');
-const ol = require('openlayers');
-const {changeEditingState} = require('../../actions/editing');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import uuid from 'uuid';
+import ol from 'openlayers';
+import {changeEditingState} from '../../actions/editing';
 
 class EditingSupport extends React.Component {
     static propTypes = {
@@ -159,7 +159,7 @@ class EditingSupport extends React.Component {
     }
 }
 
-module.exports = connect((state) => ({
+export default connect((state) => ({
     editing: state.editing || {}
 }), {
     changeEditingState: changeEditingState

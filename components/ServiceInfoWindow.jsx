@@ -6,14 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const Message = require('../components/I18N/Message');
-const {setActiveServiceInfo} = require('../actions/serviceinfo');
-const ResizeableWindow = require("../components/ResizeableWindow");
-const MiscUtils = require('../utils/MiscUtils');
-require('./style/ServiceInfoWindow.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import Message from '../components/I18N/Message';
+import {setActiveServiceInfo} from '../actions/serviceinfo';
+import ResizeableWindow from '../components/ResizeableWindow';
+import MiscUtils from '../utils/MiscUtils';
+import './style/ServiceInfoWindow.css';
 
 class ServiceInfoWindow extends React.Component {
     static propTypes = {
@@ -78,6 +78,6 @@ const selector = state => ({
     service: state.serviceinfo.service || null
 });
 
-module.exports = connect(selector, {
+export default connect(selector, {
     setActiveServiceInfo: setActiveServiceInfo
 })(ServiceInfoWindow);

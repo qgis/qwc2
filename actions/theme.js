@@ -6,39 +6,43 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const assign = require('object-assign');
-const isEmpty = require('lodash.isempty');
-const {setIdentifyEnabled} = require("../actions/identify");
-const ConfigUtils = require("../utils/ConfigUtils");
-const CoordinatesUtils = require("../utils/CoordinatesUtils");
-const MapUtils = require("../utils/MapUtils");
-const LayerUtils = require("../utils/LayerUtils");
-const ServiceLayerUtils = require('../utils/ServiceLayerUtils');
-const ThemeUtils = require("../utils/ThemeUtils");
-const {LayerRole, addLayer, removeLayer, removeAllLayers, replacePlaceholderLayer, setSwipe} = require("./layers");
-const {configureMap} = require("./map");
+import {ReducerRegistry} from '../stores/StandardStore';
+import themeReducer from '../reducers/theme';
+ReducerRegistry.register("theme", themeReducer);
 
-const THEMES_LOADED = 'THEMES_LOADED';
-const SET_THEME_LAYERS_LIST = 'SET_THEME_LAYERS_LIST';
-const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
-const SWITCHING_THEME = 'SWITCHING_THEME';
+import assign from 'object-assign';
+import isEmpty from 'lodash.isempty';
+import {setIdentifyEnabled} from '../actions/identify';
+import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import MapUtils from '../utils/MapUtils';
+import LayerUtils from '../utils/LayerUtils';
+import ServiceLayerUtils from '../utils/ServiceLayerUtils';
+import ThemeUtils from '../utils/ThemeUtils';
+import {LayerRole, addLayer, removeLayer, removeAllLayers, replacePlaceholderLayer, setSwipe} from './layers';
+import {configureMap} from './map';
+
+export const THEMES_LOADED = 'THEMES_LOADED';
+export const SET_THEME_LAYERS_LIST = 'SET_THEME_LAYERS_LIST';
+export const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
+export const SWITCHING_THEME = 'SWITCHING_THEME';
 
 
-function themesLoaded(themes) {
+export function themesLoaded(themes) {
     return {
         type: THEMES_LOADED,
         themes
     };
 }
 
-function setThemeLayersList(theme) {
+export function setThemeLayersList(theme) {
     return {
         type: SET_THEME_LAYERS_LIST,
         themelist: theme
     };
 }
 
-function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer) {
+export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer) {
     // Create layer
     const themeLayer = ThemeUtils.createThemeLayer(theme, themes);
     let layers = [themeLayer];
@@ -88,7 +92,7 @@ function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, perm
     });
 }
 
-function setCurrentTheme(theme, themes, preserve = true, initialView = null, layerParams = null, visibleBgLayer = null, permalinkLayers = null, themeLayerRestorer = null, externalLayerRestorer = null) {
+export function setCurrentTheme(theme, themes, preserve = true, initialView = null, layerParams = null, visibleBgLayer = null, permalinkLayers = null, themeLayerRestorer = null, externalLayerRestorer = null) {
     return (dispatch, getState) => {
         dispatch({
             type: SWITCHING_THEME,
@@ -193,20 +197,9 @@ function setCurrentTheme(theme, themes, preserve = true, initialView = null, lay
     };
 }
 
-function restoreDefaultTheme() {
+export function restoreDefaultTheme() {
     return (dispatch, getState) => {
         const themes = getState().theme.themes;
         dispatch(setCurrentTheme(ThemeUtils.getThemeById(themes, themes.defaultTheme), themes, false));
     };
 }
-
-module.exports = {
-    THEMES_LOADED,
-    SET_THEME_LAYERS_LIST,
-    SET_CURRENT_THEME,
-    SWITCHING_THEME,
-    themesLoaded,
-    restoreDefaultTheme,
-    setThemeLayersList,
-    setCurrentTheme
-};

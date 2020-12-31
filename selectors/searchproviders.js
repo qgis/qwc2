@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {createSelector} = require('reselect');
-const {addSearchResults, SearchResultType} = require("../actions/search");
-const {LayerRole} = require('../actions/layers');
-const ConfigUtils = require('../utils/ConfigUtils');
-const ThemeUtils = require('../utils/ThemeUtils');
+import {createSelector} from 'reselect';
+import {addSearchResults, SearchResultType} from '../actions/search';
+import {LayerRole} from '../actions/layers';
+import ConfigUtils from '../utils/ConfigUtils';
+import ThemeUtils from '../utils/ThemeUtils';
 
-const searchProvidersSelector = (searchProviders, providerFactory) => createSelector(
+export default (searchProviders, providerFactory) => createSelector(
     [state => state.theme, state => state.layers && state.layers.flat || null], (theme, layers) => {
         const availableProviders = {};
         const themeLayerNames = layers.map(layer => layer.role === LayerRole.THEME ? layer.params.LAYERS : "").join(",").split(",").filter(entry => entry);
@@ -41,5 +41,3 @@ const searchProvidersSelector = (searchProviders, providerFactory) => createSele
         return availableProviders;
     }
 );
-
-module.exports = searchProvidersSelector;

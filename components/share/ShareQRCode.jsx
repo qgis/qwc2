@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const QRCode = require('qrcode.react');
-const Message = require('../../components/I18N/Message');
+import React from 'react';
+import PropTypes from 'prop-types';
+import QRCode from 'qrcode.react';
+import Message from '../../components/I18N/Message';
 
-class ShareQRCode extends React.Component {
+export default class ShareQRCode extends React.Component {
     static propTypes = {
         shareUrl: PropTypes.string
     }
@@ -26,5 +26,3 @@ class ShareQRCode extends React.Component {
         );
     }
 }
-
-module.exports = ShareQRCode;

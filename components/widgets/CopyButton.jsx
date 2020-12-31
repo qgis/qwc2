@@ -6,14 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const CopyToClipboard = require('react-copy-to-clipboard');
-const Icon = require('../Icon');
-const Message = require('../../components/I18N/Message');
-require('./style/CopyButton.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import Icon from '../Icon';
+import Message from '../../components/I18N/Message';
+import './style/CopyButton.css';
 
-class CopyButton extends React.Component {
+export default class CopyButton extends React.Component {
     static propTypes = {
         buttonClass: PropTypes.string,
         text: PropTypes.string,
@@ -47,5 +47,3 @@ class CopyButton extends React.Component {
         );
     }
 }
-
-module.exports = CopyButton;

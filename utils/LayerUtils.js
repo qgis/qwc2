@@ -6,16 +6,16 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const assign = require('object-assign');
-const isEmpty = require('lodash.isempty');
-const isEqual = require('lodash.isequal');
-const uuid = require('uuid');
-const url = require('url');
-const ConfigUtils = require('./ConfigUtils');
-const {LayerRole} = require('../actions/layers');
+import assign from 'object-assign';
+import isEmpty from 'lodash.isempty';
+import isEqual from 'lodash.isequal';
+import uuid from 'uuid';
+import url from 'url';
+import ConfigUtils from './ConfigUtils';
+import {LayerRole} from '../actions/layers';
 
 const LayerUtils = {
-    restoreLayerParams: function(themeLayer, layerConfigs, permalinkLayers, externalLayers) {
+    restoreLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers) {
         let exploded = LayerUtils.explodeLayers([themeLayer]);
         // Restore theme layer configuration
         for (const entry of exploded) {
@@ -40,7 +40,7 @@ const LayerUtils = {
         LayerUtils.insertPermalinkLayers(exploded, permalinkLayers);
         return LayerUtils.implodeLayers(exploded);
     },
-    restoreOrderedLayerParams: function(themeLayer, layerConfigs, permalinkLayers, externalLayers) {
+    restoreOrderedLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers) {
         const exploded = LayerUtils.explodeLayers([themeLayer]);
         let reordered = [];
         // Iterate over layer configs and reorder items accordingly, create external layer placeholders as neccessary
@@ -61,7 +61,7 @@ const LayerUtils = {
         LayerUtils.insertPermalinkLayers(reordered, permalinkLayers);
         return LayerUtils.implodeLayers(reordered);
     },
-    createSeparatorLayer: function(title) {
+    createSeparatorLayer(title) {
         return LayerUtils.explodeLayers([{
             type: "separator",
             title: title,
@@ -70,7 +70,7 @@ const LayerUtils = {
             id: uuid.v4()
         }]);
     },
-    createExternalLayerPlaceholder: function(layerConfig, externalLayers, id) {
+    createExternalLayerPlaceholder(layerConfig, externalLayers, id) {
         const key = layerConfig.type + ":" + layerConfig.url;
         (externalLayers[key] = externalLayers[key] || []).push({
             id: id,
@@ -87,14 +87,14 @@ const LayerUtils = {
             uuid: uuid.v4()
         }]);
     },
-    insertPermalinkLayers: function(exploded, layers) {
+    insertPermalinkLayers(exploded, layers) {
         for (const layer of layers || []) {
             const insLayer = LayerUtils.explodeLayers([layer])[0];
             delete insLayer.layer.pos;
             exploded.splice(layer.pos, 0, insLayer);
         }
     },
-    collectWMSSublayerParams: function(sublayer, layerNames, opacities, queryable, visibilities) {
+    collectWMSSublayerParams(sublayer, layerNames, opacities, queryable, visibilities) {
         const visibility = sublayer.visibility === undefined ? true : sublayer.visibility;
         if (visibility || visibilities) {
             if (!isEmpty(sublayer.sublayers)) {
@@ -114,7 +114,7 @@ const LayerUtils = {
             }
         }
     },
-    buildWMSLayerParams: function(layer) {
+    buildWMSLayerParams(layer) {
         // Handle QGIS Server setups without rewrite rule
         const query = url.parse(layer.url, true).query;
 
@@ -588,4 +588,4 @@ const LayerUtils = {
     }
 };
 
-module.exports = LayerUtils;
+export default LayerUtils;

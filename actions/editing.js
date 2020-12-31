@@ -6,16 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const CHANGE_EDITING_STATE = 'CHANGE_EDITING_STATE';
+import {ReducerRegistry} from '../stores/StandardStore';
+import editingReducer from '../reducers/editing';
+ReducerRegistry.register("editing", editingReducer);
 
-function changeEditingState(editingState) {
+export const CHANGE_EDITING_STATE = 'CHANGE_EDITING_STATE';
+
+export function changeEditingState(editingState) {
     return {
         type: CHANGE_EDITING_STATE,
         data: editingState
     };
 }
-
-module.exports = {
-    CHANGE_EDITING_STATE,
-    changeEditingState
-};

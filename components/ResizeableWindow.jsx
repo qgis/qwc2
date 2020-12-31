@@ -6,16 +6,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const classnames = require('classnames');
-const {Rnd} = require('react-rnd');
-const Message = require('../components/I18N/Message');
-const ConfigUtils = require('../utils/ConfigUtils');
-const Icon = require('./Icon');
-require('./style/ResizeableWindow.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import {Rnd} from 'react-rnd';
+import Message from '../components/I18N/Message';
+import ConfigUtils from '../utils/ConfigUtils';
+import Icon from './Icon';
+import './style/ResizeableWindow.css';
 
-class ResizeableWindow extends React.Component {
+export default class ResizeableWindow extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         dockable: PropTypes.bool,
@@ -165,5 +165,3 @@ class ResizeableWindow extends React.Component {
         }
     }
 }
-
-module.exports = ResizeableWindow;

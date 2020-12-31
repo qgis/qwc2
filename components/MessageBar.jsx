@@ -6,11 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const Icon = require('./Icon');
-require('./style/MessageBar.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import Icon from './Icon';
+import './style/MessageBar.css';
 
 class MessageBar extends React.Component {
     static propTypes = {
@@ -56,6 +56,4 @@ const selector = (state) => ({
     task: state.task ? state.task.id : null
 });
 
-module.exports = {
-    MessageBar: connect(selector, {})(MessageBar)
-};
+export default connect(selector, {})(MessageBar);

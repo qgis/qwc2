@@ -1,23 +1,28 @@
-const LOCAL_CONFIG_LOADED = 'LOCAL_CONFIG_LOADED';
-const SET_STARTUP_PARAMETERS = 'SET_STARTUP_PARAMETERS';
+/**
+ * Copyright 2016, Sourcepole AG.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
-function localConfigLoaded(config) {
+import {ReducerRegistry} from '../stores/StandardStore';
+import localConfigReducer from '../reducers/localConfig';
+ReducerRegistry.register("localConfig", localConfigReducer);
+
+export const LOCAL_CONFIG_LOADED = 'LOCAL_CONFIG_LOADED';
+export const SET_STARTUP_PARAMETERS = 'SET_STARTUP_PARAMETERS';
+
+export function localConfigLoaded(config) {
     return {
         type: LOCAL_CONFIG_LOADED,
         config
     };
 }
 
-function setStartupParameters(params) {
+export function setStartupParameters(params) {
     return {
         type: SET_STARTUP_PARAMETERS,
         params
     };
 }
-
-module.exports = {
-    LOCAL_CONFIG_LOADED,
-    SET_STARTUP_PARAMETERS,
-    localConfigLoaded,
-    setStartupParameters
-};

@@ -7,7 +7,7 @@
 */
 
 const MiscUtils = {
-    addLinkAnchors: (text) => {
+    addLinkAnchors(text) {
         // If text already contains tags, do nothing
         const tagRegEx = /(<.[^(><.)]+>)/;
         if (tagRegEx.exec(text)) {
@@ -39,7 +39,7 @@ const MiscUtils = {
         urlRegEx.lastIndex = 0;
         return value;
     },
-    htmlEncode: (text) => {
+    htmlEncode(text) {
         return text
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
@@ -49,4 +49,4 @@ const MiscUtils = {
     }
 };
 
-module.exports = MiscUtils;
+export default MiscUtils;

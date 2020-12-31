@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const Message = require('../components/I18N/Message');
-const CopyButton = require('./widgets/CopyButton');
-require('./style/ShareLink.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import Message from '../components/I18N/Message';
+import CopyButton from './widgets/CopyButton';
+import './style/ShareLink.css';
 
-class ShareLink extends React.Component {
+export default class ShareLink extends React.Component {
     static propTypes = {
         shareUrl: PropTypes.string
     }
@@ -28,5 +28,3 @@ class ShareLink extends React.Component {
         );
     }
 }
-
-module.exports = ShareLink;

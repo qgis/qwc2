@@ -6,9 +6,9 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-require('./style/ColorButton.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import './style/ColorButton.css';
 
 const defaultColors = [
     // [r, g, b, a]
@@ -25,7 +25,7 @@ const defaultColors = [
 ];
 
 
-class ColorButton extends React.Component {
+export default class ColorButton extends React.Component {
     static propTypes = {
         color: PropTypes.array,
         onColorChanged: PropTypes.func
@@ -117,5 +117,3 @@ class ColorButton extends React.Component {
         this.props.onColorChanged(newColor);
     }
 }
-
-module.exports = ColorButton;

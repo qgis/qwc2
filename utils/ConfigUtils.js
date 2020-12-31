@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const axios = require('axios');
-const assign = require('object-assign');
-const url = require('url');
-const isMobile = require('ismobilejs');
+import axios from 'axios';
+import assign from 'object-assign';
+import url from 'url';
+import isMobile from 'ismobilejs';
 
 let defaultConfig = {
     translationsPath: "translations",
@@ -27,10 +27,10 @@ let defaultConfig = {
 };
 
 const ConfigUtils = {
-    getDefaults: function() {
+    getDefaults() {
         return defaultConfig;
     },
-    loadConfiguration: function(configParams = {}) {
+    loadConfiguration(configParams = {}) {
         let configFile = 'config.json';
         const urlQuery = url.parse(window.location.href, true).query;
         if (urlQuery.localConfig) {
@@ -49,7 +49,7 @@ const ConfigUtils = {
     * Utility to detect browser properties.
     * Code from leaflet-src.js
     */
-    getBrowserProperties: function() {
+    getBrowserProperties() {
 
         const ie = 'ActiveXObject' in window;
         const ielt9 = ie && !document.addEventListener;
@@ -113,7 +113,7 @@ const ConfigUtils = {
             platform: navigator.platform
         };
     },
-    getConfigProp: function(prop, theme) {
+    getConfigProp(prop, theme) {
         if (theme && theme.config && theme.config[prop] !== undefined) {
             return theme.config[prop];
         }
@@ -121,4 +121,4 @@ const ConfigUtils = {
     }
 };
 
-module.exports = ConfigUtils;
+export default ConfigUtils;

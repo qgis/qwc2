@@ -6,18 +6,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const assign = require('object-assign');
-const Message = require('../components/I18N/Message');
-const Spinner = require('../components/Spinner');
-const {LayerRole} = require('../actions/layers');
-const {Map, Layer} = require('./map/MapComponents');
-const MapUtils = require('../utils/MapUtils');
-const LayerUtils = require('../utils/LayerUtils');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import assign from 'object-assign';
+import Message from '../components/I18N/Message';
+import Spinner from '../components/Spinner';
+import {LayerRole} from '../actions/layers';
+import {Map, Layer} from './map/MapComponents';
+import MapUtils from '../utils/MapUtils';
+import LayerUtils from '../utils/LayerUtils';
 
-require('./style/Map.css');
+import './style/Map.css';
 
 
 class MapPlugin extends React.Component {
@@ -115,13 +115,11 @@ class MapPlugin extends React.Component {
     }
 }
 
-module.exports = (tools) => {
-    return {
-        MapPlugin: connect((state) => ({
-            map: state.map,
-            layers: state.layers && state.layers.flat || [],
-            swipe: state.layers && state.layers.swipe || undefined,
-            tools
-        }))(MapPlugin)
-    };
+export default (tools) => {
+    return connect((state) => ({
+        map: state.map,
+        layers: state.layers && state.layers.flat || [],
+        swipe: state.layers && state.layers.swipe || undefined,
+        tools
+    }))(MapPlugin);
 };

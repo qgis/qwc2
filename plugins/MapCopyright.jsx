@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const isEmpty = require('lodash.isempty');
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const {LayerRole} = require('../actions/layers');
-require('./style/MapCopyright.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import isEmpty from 'lodash.isempty';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import {LayerRole} from '../actions/layers';
+import './style/MapCopyright.css';
 
 
 class MapCopyright extends React.Component {
@@ -90,6 +90,4 @@ const selector = (state) => ({
     map: state.map ? state.map : null
 });
 
-module.exports = {
-    MapCopyrightPlugin: connect(selector, {})(MapCopyright)
-};
+export default connect(selector, {})(MapCopyright);

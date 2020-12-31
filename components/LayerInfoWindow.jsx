@@ -6,16 +6,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const Message = require('../components/I18N/Message');
-const MapUtils = require('../utils/MapUtils');
-const {setActiveLayerInfo} = require('../actions/layerinfo');
-const ResizeableWindow = require("../components/ResizeableWindow");
-const LayerUtils = require('../utils/LayerUtils');
-const MiscUtils = require('../utils/MiscUtils');
-require('./style/LayerInfoWindow.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import Message from '../components/I18N/Message';
+import MapUtils from '../utils/MapUtils';
+import {setActiveLayerInfo} from '../actions/layerinfo';
+import ResizeableWindow from '../components/ResizeableWindow';
+import LayerUtils from '../utils/LayerUtils';
+import MiscUtils from '../utils/MiscUtils';
+import './style/LayerInfoWindow.css';
 
 class LayerInfoWindow extends React.Component {
     static propTypes = {
@@ -102,6 +102,6 @@ const selector = state => ({
     sublayer: state.layerinfo.sublayer || null
 });
 
-module.exports = connect(selector, {
+export default connect(selector, {
     setActiveLayerInfo: setActiveLayerInfo
 })(LayerInfoWindow);

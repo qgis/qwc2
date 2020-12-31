@@ -5,10 +5,10 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-const assign = require('object-assign');
-const ol = require('openlayers');
-const TileProvider = require('../../../../utils/TileConfigProvider');
-const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
+import assign from 'object-assign';
+import ol from 'openlayers';
+import TileProvider from '../../../../utils/TileConfigProvider';
+import CoordinatesUtils from '../../../../utils/CoordinatesUtils';
 
 function template(str, data) {
     return str.replace(/(?!(\{?[zyx]?\}))\{*([\w_]+)*\}/g, function() {
@@ -64,12 +64,10 @@ function tileXYZToOpenlayersOptions(options) {
     return olOpt;
 }
 
-const TileProviderLayer = {
+export default {
     create: (options) => {
         const [url, opt] = TileProvider.getLayerConfig(options.provider, options);
         opt.url = url;
         return new ol.layer.Tile(tileXYZToOpenlayersOptions(opt));
     }
 };
-
-module.exports = TileProviderLayer;

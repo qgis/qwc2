@@ -6,12 +6,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {SHOW_IFRAME_DIALOG, SHOW_NOTIFICATION, CLOSE_WINDOW, CLOSE_ALL_WINDOWS} = require('../actions/windows');
-const assign = require('object-assign');
+import assign from 'object-assign';
+import {
+    SHOW_IFRAME_DIALOG,
+    SHOW_NOTIFICATION,
+    CLOSE_WINDOW,
+    CLOSE_ALL_WINDOWS
+} from '../actions/windows';
 
 const defaultState = {};
 
-function windows(state = defaultState, action) {
+export default function windows(state = defaultState, action) {
     switch (action.type) {
     case SHOW_IFRAME_DIALOG: {
         return assign({}, state, {
@@ -35,5 +40,3 @@ function windows(state = defaultState, action) {
         return state;
     }
 }
-
-module.exports = windows;

@@ -6,14 +6,14 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const uuid = require('uuid');
-const {LayerRole} = require('../../actions/layers');
-const IdentifyUtils = require('../../utils/IdentifyUtils');
-const axios = require('axios');
-const ol = require('openlayers');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import uuid from 'uuid';
+import {LayerRole} from '../../actions/layers';
+import IdentifyUtils from '../../utils/IdentifyUtils';
+import axios from 'axios';
+import ol from 'openlayers';
 
 class SnapSupport extends React.Component {
     static propTypes = {
@@ -155,4 +155,4 @@ const selector = (state) => ({
     drawing: state.redlining.action || state.measurement.action || state.editing.action
 });
 
-module.exports = connect(selector, {})(SnapSupport);
+export default connect(selector, {})(SnapSupport);

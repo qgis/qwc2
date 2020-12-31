@@ -6,15 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const axios = require('axios');
-const isEmpty = require('lodash.isempty');
-const ConfigUtils = require("../utils/ConfigUtils");
-const IdentifyUtils = require('../utils/IdentifyUtils');
-const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
-require('./style/MapTip.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import axios from 'axios';
+import isEmpty from 'lodash.isempty';
+import ConfigUtils from '../utils/ConfigUtils';
+import IdentifyUtils from '../utils/IdentifyUtils';
+import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
+import './style/MapTip.css';
 
 class MapTip extends React.Component {
     static propTypes = {
@@ -158,12 +158,7 @@ const selector = (state) => ({
     map: state.map ? state.map : null
 });
 
-module.exports = {
-    MapTipPlugin: connect(selector, {
-        addLayerFeatures: addLayerFeatures,
-        removeLayer: removeLayer
-    })(MapTip),
-    reducers: {
-        mousePosition: require('../reducers/mousePosition')
-    }
-};
+export default connect(selector, {
+    addLayerFeatures: addLayerFeatures,
+    removeLayer: removeLayer
+})(MapTip);

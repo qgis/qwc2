@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const ConfigUtils = require('./ConfigUtils');
+import ConfigUtils from './ConfigUtils';
 
 const LocaleUtils = {
-    getMessageById: function(messages, msgId) {
+    getMessageById(messages, msgId) {
         return messages ? messages[msgId] || msgId : msgId;
     },
     toLocaleFixed(number, digits) {
@@ -21,4 +21,4 @@ const LocaleUtils = {
     }
 };
 
-module.exports = LocaleUtils;
+export default LocaleUtils;

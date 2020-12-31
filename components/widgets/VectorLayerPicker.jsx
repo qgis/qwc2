@@ -6,16 +6,16 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const uuid = require('uuid');
-const Icon = require('../../components/Icon');
-const LocaleUtils = require('../../utils/LocaleUtils');
+import React from 'react';
+import PropTypes from 'prop-types';
+import uuid from 'uuid';
+import Icon from '../../components/Icon';
+import LocaleUtils from '../../utils/LocaleUtils';
 
-require('./style/VectorLayerPicker.css');
+import './style/VectorLayerPicker.css';
 
 
-class VectorLayerPicker extends React.Component {
+export default class VectorLayerPicker extends React.Component {
     static propTypes = {
         addLayer: PropTypes.func,
         layers: PropTypes.array,
@@ -49,5 +49,3 @@ class VectorLayerPicker extends React.Component {
         }
     }
 }
-
-module.exports = VectorLayerPicker;

@@ -6,36 +6,36 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const assign = require('object-assign');
-const {createSelector} = require('reselect');
-const classnames = require('classnames');
-const isEmpty = require('lodash.isempty');
-const isEqual = require('lodash.isequal');
-const ol = require('openlayers');
-const Icon = require('./Icon');
-const Spinner = require('./Spinner');
-const {MessageBar} = require('./MessageBar');
-const Message = require('../components/I18N/Message');
-const LocaleUtils = require('../utils/LocaleUtils');
-const MapUtils = require('../utils/MapUtils');
-const ConfigUtils = require('../utils/ConfigUtils');
-const LayerUtils = require('../utils/LayerUtils');
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const {LayerRole, addLayerFeatures, removeLayer, addLayer, addThemeSublayer, changeLayerProperty} = require('../actions/layers');
-const {zoomToPoint} = require('../actions/map');
-const {changeSearch, startSearch, searchMore, setCurrentSearchResult, SearchResultType} = require("../actions/search");
-const {setCurrentTask} = require('../actions/task');
-const {setCurrentTheme} = require('../actions/theme');
-const {showNotification} = require('../actions/windows');
-const searchProvidersSelector = require('../selectors/searchproviders');
-const displayCrsSelector = require('../selectors/displaycrs');
-const ThemeUtils = require('../utils/ThemeUtils');
-const VectorLayerUtils = require('../utils/VectorLayerUtils');
-const {UrlParams} = require("../utils/PermaLinkUtils");
-require('./style/Search.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import assign from 'object-assign';
+import {createSelector} from 'reselect';
+import classnames from 'classnames';
+import isEmpty from 'lodash.isempty';
+import isEqual from 'lodash.isequal';
+import ol from 'openlayers';
+import Icon from './Icon';
+import Spinner from './Spinner';
+import MessageBar from './MessageBar';
+import Message from '../components/I18N/Message';
+import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
+import ConfigUtils from '../utils/ConfigUtils';
+import LayerUtils from '../utils/LayerUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import {LayerRole, addLayerFeatures, removeLayer, addLayer, addThemeSublayer, changeLayerProperty} from '../actions/layers';
+import {zoomToPoint} from '../actions/map';
+import {changeSearch, startSearch, searchMore, setCurrentSearchResult, SearchResultType} from '../actions/search';
+import {setCurrentTask} from '../actions/task';
+import {setCurrentTheme} from '../actions/theme';
+import {showNotification} from '../actions/windows';
+import searchProvidersSelector from '../selectors/searchproviders';
+import displayCrsSelector from '../selectors/displaycrs';
+import ThemeUtils from '../utils/ThemeUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
+import {UrlParams} from '../utils/PermaLinkUtils';
+import './style/Search.css';
 
 class Search extends React.Component {
     static propTypes = {
@@ -554,7 +554,7 @@ class Search extends React.Component {
     }
 }
 
-module.exports = (searchProviders, providerFactory = () => { return null; }) => {
+export default (searchProviders, providerFactory = () => { return null; }) => {
     const providersSelector = searchProvidersSelector(searchProviders, providerFactory);
     return connect(
         createSelector([state => state, displayCrsSelector, providersSelector], (state, displaycrs, providers) => ({

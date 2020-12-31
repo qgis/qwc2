@@ -6,15 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {CHANGE_LOCALE} = require('../actions/locale');
-const flatten = require('flat');
+import {CHANGE_LOCALE} from '../actions/locale';
+import flatten from 'flat';
 
 const defaultState = {
     messages: {},
     current: ''
 };
 
-function locale(state = defaultState, action) {
+export default function locale(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_LOCALE: {
         return {
@@ -26,5 +26,3 @@ function locale(state = defaultState, action) {
         return state;
     }
 }
-
-module.exports = locale;

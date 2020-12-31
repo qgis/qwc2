@@ -6,15 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const url = require('url');
-const axios = require('axios');
-const assign = require('object-assign');
-const {LayerRole} = require('../actions/layers');
-const ConfigUtils = require('../utils/ConfigUtils');
-const LayerUtils = require('../utils/LayerUtils');
+import url from 'url';
+import axios from 'axios';
+import assign from 'object-assign';
+import {LayerRole} from '../actions/layers';
+import ConfigUtils from '../utils/ConfigUtils';
+import LayerUtils from '../utils/LayerUtils';
 
-const UrlParams = {
-    updateParams: function(dict) {
+export const UrlParams = {
+    updateParams(dict) {
         if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
             return;
         }
@@ -33,19 +33,19 @@ const UrlParams = {
             history.replaceState({id: urlObj.host}, '', url.format(urlObj));
         }, 0);
     },
-    getParam: function(key) {
+    getParam(key) {
         const urlObj = url.parse(window.location.href, true);
         return urlObj.query[key];
     },
-    getParams: function() {
+    getParams() {
         return url.parse(window.location.href, true).query;
     },
-    clear: function() {
+    clear() {
         this.updateParams({k: undefined, t: undefined, l: undefined, bl: undefined, c: undefined, s: undefined, e: undefined, crs: undefined, st: undefined, sp: undefined});
     }
 };
 
-function generatePermaLink(state, callback, user = false) {
+export function generatePermaLink(state, callback, user = false) {
     if (!ConfigUtils.getConfigProp("permalinkServiceUrl")) {
         callback(window.location.href);
         return;
@@ -64,7 +64,7 @@ function generatePermaLink(state, callback, user = false) {
         .catch(() => callback(window.location.href));
 }
 
-function resolvePermaLink(initialParams, callback) {
+export function resolvePermaLink(initialParams, callback) {
     const key = UrlParams.getParam('k');
     if (key) {
         axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/resolvepermalink?key=" + key)
@@ -78,9 +78,3 @@ function resolvePermaLink(initialParams, callback) {
         callback(initialParams, {});
     }
 }
-
-module.exports = {
-    UrlParams,
-    generatePermaLink,
-    resolvePermaLink
-};

@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const proj4js = require('proj4').default;
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const LocaleUtils = require('../utils/LocaleUtils');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import proj4js from 'proj4';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 
 class CoordinateDisplayer extends React.Component {
     static propTypes = {
@@ -41,6 +41,4 @@ const selector = state => ({
     mousepos: state.mousePosition.position
 });
 
-module.exports = {
-    CoordinateDisplayer: connect(selector)(CoordinateDisplayer)
-};
+export default connect(selector)(CoordinateDisplayer);

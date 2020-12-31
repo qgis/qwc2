@@ -6,22 +6,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const isEmpty = require('lodash.isempty');
-const removeDiacritics = require('diacritics').remove;
-const Icon = require('./Icon');
-const Message = require('./I18N/Message');
-const ConfigUtils = require("../utils/ConfigUtils");
-const LocaleUtils = require("../utils/LocaleUtils");
-const ThemeUtils = require('../utils/ThemeUtils');
-const {LayerRole, addLayer} = require("../actions/layers");
-const {setCurrentTheme} = require("../actions/theme");
-const {setCurrentTask} = require("../actions/task");
-const {setActiveLayerInfo} = require("../actions/layerinfo");
-const {setThemeLayersList} = require("../actions/theme");
-require('./style/ThemeList.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import isEmpty from 'lodash.isempty';
+import {remove as removeDiacritics} from 'diacritics';
+import Icon from './Icon';
+import Message from './I18N/Message';
+import ConfigUtils from '../utils/ConfigUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import ThemeUtils from '../utils/ThemeUtils';
+import {LayerRole, addLayer} from '../actions/layers';
+import {setCurrentTheme} from '../actions/theme';
+import {setCurrentTask} from '../actions/task';
+import {setActiveLayerInfo} from '../actions/layerinfo';
+import {setThemeLayersList} from '../actions/theme';
+import './style/ThemeList.css';
 
 class ThemeList extends React.Component {
     static propTypes = {
@@ -227,7 +227,7 @@ const selector = (state) => ({
 });
 
 
-module.exports = connect(selector, {
+export default connect(selector, {
     changeTheme: setCurrentTheme,
     setCurrentTask: setCurrentTask,
     addLayer: addLayer,

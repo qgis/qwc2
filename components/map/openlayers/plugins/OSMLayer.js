@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const ol = require('openlayers');
-const MapUtils = require('../../../../utils/MapUtils');
+import ol from 'openlayers';
+import MapUtils from '../../../../utils/MapUtils';
 
-const OSMLayer = {
+export default {
     create: (options) => {
         return new ol.layer.Tile({
             opacity: options.opacity !== undefined ? options.opacity : 1,
@@ -24,5 +24,3 @@ const OSMLayer = {
         });
     }
 };
-
-module.exports = OSMLayer;

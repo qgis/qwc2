@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const ol = require('openlayers');
-const CoordinatesUtils = require('../../../utils/CoordinatesUtils');
-const LocaleUtils = require('../../../utils/LocaleUtils');
-const MeasureUtils = require('../../../utils/MeasureUtils');
+import React from 'react';
+import PropTypes from 'prop-types';
+import ol from 'openlayers';
+import CoordinatesUtils from '../../../utils/CoordinatesUtils';
+import LocaleUtils from '../../../utils/LocaleUtils';
+import MeasureUtils from '../../../utils/MeasureUtils';
 
 const measureLabelStyleFactory = () => new ol.style.Text({
     font: '10pt sans-serif',
@@ -47,7 +47,7 @@ const measureStyleFactory = () => [
 ];
 
 
-class MeasurementSupport extends React.Component {
+export default class MeasurementSupport extends React.Component {
     static propTypes = {
         changeMeasurementState: PropTypes.func,
         map: PropTypes.object,
@@ -243,5 +243,3 @@ class MeasurementSupport extends React.Component {
         return Math.abs(ol.sphere.getArea(new ol.geom.Polygon([reprojectedCoordinates]), {projection: 'EPSG:4326'}));
     }
 }
-
-module.exports = MeasurementSupport;

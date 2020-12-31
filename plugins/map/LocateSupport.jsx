@@ -6,14 +6,15 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const {connect} = require('react-redux');
-const {changeLocateState, onLocateError} = require('../../actions/locate');
+import {connect} from 'react-redux';
+import {changeLocateState, onLocateError} from '../../actions/locate';
+import olLocale from '../../components/map/openlayers/Locate';
 
-module.exports = connect((state) => ({
+export default connect((state) => ({
     status: state.locate && state.locate.state,
     messages: state.locale && state.locale.messages ? state.locale.messages.locate : undefined,
     startupParams: state.localConfig.startupParams
 }), {
     changeLocateState,
     onLocateError
-})(require('../../components/map/openlayers/Locate'));
+})(olLocale);

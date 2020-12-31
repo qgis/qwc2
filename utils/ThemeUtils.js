@@ -6,17 +6,17 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const assign = require("object-assign");
-const isEmpty = require('lodash.isempty');
-const uuid = require('uuid');
+import assign from 'object-assign';
+import isEmpty from 'lodash.isempty';
+import uuid from 'uuid';
 
-const ConfigUtils = require("../utils/ConfigUtils");
-const LayerUtils = require("../utils/LayerUtils");
-const {LayerRole} = require("../actions/layers");
-const removeDiacritics = require('diacritics').remove;
+import ConfigUtils from '../utils/ConfigUtils';
+import LayerUtils from '../utils/LayerUtils';
+import {LayerRole} from '../actions/layers';
+import {remove as removeDiacritics} from 'diacritics';
 
 const ThemeUtils = {
-    getThemeById: function(themes, id) {
+    getThemeById(themes, id) {
         for (let i = 0, n = themes.items.length; i < n; ++i) {
             if (themes.items[i].id === id) {
                 return themes.items[i];
@@ -30,7 +30,7 @@ const ThemeUtils = {
         }
         return null;
     },
-    createThemeBackgroundLayers: function(theme, themes, visibleLayer = null) {
+    createThemeBackgroundLayers(theme, themes, visibleLayer = null) {
         const bgLayers = [];
         let visibleIdx = -1;
         let defaultVisibleIdx = -1;
@@ -76,7 +76,7 @@ const ThemeUtils = {
         }
         return bgLayers;
     },
-    createThemeLayer: function(theme, themes, role = LayerRole.THEME, subLayers = []) {
+    createThemeLayer(theme, themes, role = LayerRole.THEME, subLayers = []) {
         const layer = {
             type: "wms",
             url: theme.url,
@@ -124,7 +124,7 @@ const ThemeUtils = {
         }
         return layer;
     },
-    searchThemes: function(themes, searchtext, resultType) {
+    searchThemes(themes, searchtext, resultType) {
         const filter = new RegExp(removeDiacritics(searchtext).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
         const matches = ThemeUtils.searchThemeGroup(themes, filter);
         return isEmpty(matches) ? [] : [{
@@ -140,7 +140,7 @@ const ThemeUtils = {
             }))
         }];
     },
-    searchThemeGroup: function(themeGroup, filter) {
+    searchThemeGroup(themeGroup, filter) {
         const matches = [];
         (themeGroup.subdirs || []).map(subdir => matches.push(...ThemeUtils.searchThemeGroup(subdir, filter)));
         matches.push(...(themeGroup.items || []).filter(item => {
@@ -150,4 +150,4 @@ const ThemeUtils = {
     }
 };
 
-module.exports = ThemeUtils;
+export default ThemeUtils;

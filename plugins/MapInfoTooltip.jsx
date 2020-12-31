@@ -6,20 +6,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const {createSelector} = require('reselect');
-const proj4js = require('proj4').default;
-const axios = require('axios');
-const ConfigUtils = require("../utils/ConfigUtils");
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const LocaleUtils = require("../utils/LocaleUtils");
-const MapUtils = require('../utils/MapUtils');
-const CopyButton = require('../components/widgets/CopyButton');
-const Icon = require('../components/Icon');
-const displayCrsSelector = require('../selectors/displaycrs');
-require('./style/MapInfoTooltip.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {createSelector} from 'reselect';
+import proj4js from 'proj4';
+import axios from 'axios';
+import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
+import CopyButton from '../components/widgets/CopyButton';
+import Icon from '../components/Icon';
+import displayCrsSelector from '../selectors/displaycrs';
+import './style/MapInfoTooltip.css';
 
 class MapInfoTooltip extends React.Component {
     static propTypes = {
@@ -145,11 +145,4 @@ const selector = createSelector([state => state, displayCrsSelector], (state, di
     displaycrs: displaycrs
 }));
 
-module.exports = {
-    MapInfoTooltipPlugin: connect(selector, {
-
-    })(MapInfoTooltip),
-    reducers: {
-        mousePosition: require('../reducers/mousePosition')
-    }
-};
+export default connect(selector, {})(MapInfoTooltip);

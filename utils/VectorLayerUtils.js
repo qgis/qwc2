@@ -6,17 +6,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const assign = require('object-assign');
-const uuid = require('uuid');
-const ol = require('openlayers');
-const isEmpty = require('lodash.isempty');
-const {stringify} = require('wellknown');
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const ConfigUtils = require('../utils/ConfigUtils');
-const {getDefaultImageStyle} = require('ol/format/KML');
+import assign from 'object-assign';
+import uuid from 'uuid';
+import ol from 'openlayers';
+import isEmpty from 'lodash.isempty';
+import {stringify} from 'wellknown';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import ConfigUtils from '../utils/ConfigUtils';
+import {getDefaultImageStyle} from 'ol/format/KML';
+
 
 const VectorLayerUtils = {
-
     createPrintHighlighParams(layers, printCrs, dpi = 96, scaleFactor = 1.0) {
         const params = {
             geoms: [],
@@ -270,4 +270,4 @@ const VectorLayerUtils = {
     }
 };
 
-module.exports = VectorLayerUtils;
+export default VectorLayerUtils;

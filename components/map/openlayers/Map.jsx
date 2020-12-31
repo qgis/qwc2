@@ -5,15 +5,15 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-const ol = require('openlayers');
-const React = require('react');
-const PropTypes = require('prop-types');
-const assign = require('object-assign');
-const isEmpty = require('lodash.isempty');
+import ol from 'openlayers';
+import React from 'react';
+import PropTypes from 'prop-types';
+import assign from 'object-assign';
+import isEmpty from 'lodash.isempty';
 
-const mapUtils = require('../../../utils/MapUtils');
+import mapUtils from '../../../utils/MapUtils';
 
-class OpenlayersMap extends React.Component {
+export default class OpenlayersMap extends React.Component {
     static propTypes = {
         bbox: PropTypes.object,
         center: PropTypes.array,
@@ -319,5 +319,3 @@ class OpenlayersMap extends React.Component {
         });
     }
 }
-
-module.exports = OpenlayersMap;

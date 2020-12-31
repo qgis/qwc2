@@ -5,88 +5,150 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
+import {inherits} from 'ol';
+import OlControlAttribution from 'ol/control/Attribution';
+import OlCollection from 'ol/Collection';
+import {defaults as olControlDefaults} from 'ol/control';
+import OlControlOverviewMap from 'ol/control/OverviewMap';
+import OlControlScaleLine from 'ol/control/ScaleLine';
+import OlControlZoom from 'ol/control/Zoom';
+import * as OlEventsCondition from 'ol/events/condition';
+import * as OlExtent from 'ol/extent';
+import OlFeature from 'ol/Feature';
+import OlFormatGeoJSON from 'ol/format/GeoJSON';
+import OlFormatGML2 from 'ol/format/GML2';
+import OlFormatGML3 from 'ol/format/GML3';
+import OlFormatKML from 'ol/format/KML';
+import OlFormatWFS from 'ol/format/WFS';
+import OlFormatWMSCapabilities from 'ol/format/WMSCapabilities';
+import OlFormatWMTSCapabilities from 'ol/format/WMTSCapabilities';
+import OlFormatWKT from 'ol/format/WKT';
+import OlGeolocation from 'ol/Geolocation';
+import OlGeomCircle from 'ol/geom/Circle';
+import OlGeomGeometryCollection from 'ol/geom/GeometryCollection';
+import OlGeomMultiPoint from 'ol/geom/MultiPoint';
+import OlGeomPoint from 'ol/geom/Point';
+import OlGeomPolygon from 'ol/geom/Polygon';
+import OlGraticule from 'ol/Graticule';
+import {defaults as olInteractionDefaults} from 'ol/interaction';
+import OlInteractionDoubleClickZoom from 'ol/interaction/DoubleClickZoom';
+import OlInteractionDragPan from 'ol/interaction/DragPan';
+import OlInteractionDraw from 'ol/interaction/Draw';
+import {createBox as olCreateBox} from 'ol/interaction/Draw';
+import OlInteractionInteraction from 'ol/interaction/Interaction';
+import OlInteractionModify from 'ol/interaction/Modify';
+import OlInteractionMouseWheelZoom from 'ol/interaction/MouseWheelZoom';
+import OlInteractionSelect from 'ol/interaction/Select';
+import OlInteractionTranslate from 'ol/interaction/Translate';
+import OlLayerImage from 'ol/layer/Image';
+import OlLayerTile from 'ol/layer/Tile';
+import OlLayerVector from 'ol/layer/Vector';
+import OlLayerGroup from 'ol/layer/Group';
+import * as OlLoadingstrategy from 'ol/loadingstrategy';
+import OlMap from 'ol/Map';
+import OlObject from 'ol/Object';
+import OlOverlay from 'ol/Overlay';
+import * as OlProj from 'ol/proj';
+import OlSourceBingMaps from 'ol/source/BingMaps';
+import OlSourceImageWMS from 'ol/source/ImageWMS';
+import OlSourceOSM from 'ol/source/OSM';
+import OlSourceTileWMS from 'ol/source/TileWMS';
+import OlSourceVector from 'ol/source/Vector';
+import OlSourceWMTS from 'ol/source/WMTS';
+import OlSourceXYZ from 'ol/source/XYZ';
+import * as OlSphere from 'ol/sphere';
+import OlStyleCircle from 'ol/style/Circle';
+import OlStyleFill from 'ol/style/Fill';
+import OlStyleIcon from 'ol/style/Icon';
+import OlStyleRegularShape from 'ol/style/RegularShape';
+import OlStyleStroke from 'ol/style/Stroke';
+import OlStyleStyle from 'ol/style/Style';
+import OlStyleText from 'ol/style/Text';
+import OlTilegridTileGrid from 'ol/tilegrid/TileGrid';
+import OlTilegridWMTS from 'ol/tilegrid/WMTS';
+import OlView from 'ol/View';
+import 'ol/ol.css';
 
-require('ol/ol.css');
 
-module.exports = {
-    inherits: require('ol').inherits,
-    Attribution: require('ol/control/Attribution').default,
-    Collection: require('ol/Collection').default,
+export default {
+    inherits: inherits,
+    Attribution: OlControlAttribution,
+    Collection: OlCollection,
     control: {
-        defaults: require('ol/control').defaults,
-        OverviewMap: require('ol/control/OverviewMap').default,
-        ScaleLine: require('ol/control/ScaleLine').default,
-        Zoom: require('ol/control/Zoom').default
+        defaults: olControlDefaults,
+        OverviewMap: OlControlOverviewMap,
+        ScaleLine: OlControlScaleLine,
+        Zoom: OlControlZoom
     },
     events: {
-        condition: require('ol/events/condition')
+        condition: OlEventsCondition
     },
-    extent: require('ol/extent'),
-    Feature: require('ol/Feature').default,
+    extent: OlExtent,
+    Feature: OlFeature,
     format: {
-        GeoJSON: require('ol/format/GeoJSON').default,
-        GML2: require('ol/format/GML2').default,
-        GML3: require('ol/format/GML3').default,
-        KML: require('ol/format/KML').default,
-        WFS: require('ol/format/WFS').default,
-        WMSCapabilities: require('ol/format/WMSCapabilities').default,
-        WMTSCapabilities: require('ol/format/WMTSCapabilities').default,
-        WKT: require('ol/format/WKT').default
+        GeoJSON: OlFormatGeoJSON,
+        GML2: OlFormatGML2,
+        GML3: OlFormatGML3,
+        KML: OlFormatKML,
+        WFS: OlFormatWFS,
+        WMSCapabilities: OlFormatWMSCapabilities,
+        WMTSCapabilities: OlFormatWMTSCapabilities,
+        WKT: OlFormatWKT
     },
-    Geolocation: require('ol/Geolocation').default,
+    Geolocation: OlGeolocation,
     geom: {
-        Circle: require('ol/geom/Circle').default,
-        GeometryCollection: require('ol/geom/GeometryCollection').default,
-        MultiPoint: require('ol/geom/MultiPoint').default,
-        Point: require('ol/geom/Point').default,
-        Polygon: require('ol/geom/Polygon').default
+        Circle: OlGeomCircle,
+        GeometryCollection: OlGeomGeometryCollection,
+        MultiPoint: OlGeomMultiPoint,
+        Point: OlGeomPoint,
+        Polygon: OlGeomPolygon
     },
-    Graticule: require('ol/Graticule').default,
+    Graticule: OlGraticule,
     interaction: {
-        defaults: require('ol/interaction').defaults,
-        DoubleClickZoom: require('ol/interaction/DoubleClickZoom').default,
-        DragPan: require('ol/interaction/DragPan').default,
-        Draw: require('ol/interaction/Draw').default,
-        createBox: require('ol/interaction/Draw').createBox,
-        Interaction: require('ol/interaction/Interaction').default,
-        Modify: require('ol/interaction/Modify').default,
-        MouseWheelZoom: require('ol/interaction/MouseWheelZoom').default,
-        Select: require('ol/interaction/Select').default,
-        Translate: require('ol/interaction/Translate').default
+        defaults: olInteractionDefaults,
+        DoubleClickZoom: OlInteractionDoubleClickZoom,
+        DragPan: OlInteractionDragPan,
+        Draw: OlInteractionDraw,
+        createBox: olCreateBox,
+        Interaction: OlInteractionInteraction,
+        Modify: OlInteractionModify,
+        MouseWheelZoom: OlInteractionMouseWheelZoom,
+        Select: OlInteractionSelect,
+        Translate: OlInteractionTranslate
     },
     layer: {
-        Image: require('ol/layer/Image').default,
-        Tile: require('ol/layer/Tile').default,
-        Vector: require('ol/layer/Vector').default,
-        Group: require('ol/layer/Group').default
+        Image: OlLayerImage,
+        Tile: OlLayerTile,
+        Vector: OlLayerVector,
+        Group: OlLayerGroup
     },
-    loadingstrategy: require('ol/loadingstrategy'),
-    Map: require('ol/Map').default,
-    Object: require('ol/Object').default,
-    Overlay: require('ol/Overlay').default,
-    proj: require('ol/proj'),
+    loadingstrategy: OlLoadingstrategy,
+    Map: OlMap,
+    Object: OlObject,
+    Overlay: OlOverlay,
+    proj: OlProj,
     source: {
-        BingMaps: require('ol/source/BingMaps').default,
-        ImageWMS: require('ol/source/ImageWMS').default,
-        OSM: require('ol/source/OSM').default,
-        TileWMS: require('ol/source/TileWMS').default,
-        Vector: require('ol/source/Vector').default,
-        WMTS: require('ol/source/WMTS').default,
-        XYZ: require('ol/source/XYZ').default
+        BingMaps: OlSourceBingMaps,
+        ImageWMS: OlSourceImageWMS,
+        OSM: OlSourceOSM,
+        TileWMS: OlSourceTileWMS,
+        Vector: OlSourceVector,
+        WMTS: OlSourceWMTS,
+        XYZ: OlSourceXYZ
     },
-    sphere: require('ol/sphere'),
+    sphere: OlSphere,
     style: {
-        Circle: require('ol/style/Circle').default,
-        Fill: require('ol/style/Fill').default,
-        Icon: require('ol/style/Icon').default,
-        RegularShape: require('ol/style/RegularShape').default,
-        Stroke: require('ol/style/Stroke').default,
-        Style: require('ol/style/Style').default,
-        Text: require('ol/style/Text').default
+        Circle: OlStyleCircle,
+        Fill: OlStyleFill,
+        Icon: OlStyleIcon,
+        RegularShape: OlStyleRegularShape,
+        Stroke: OlStyleStroke,
+        Style: OlStyleStyle,
+        Text: OlStyleText
     },
     tilegrid: {
-        TileGrid: require('ol/tilegrid/TileGrid').default,
-        WMTS: require('ol/tilegrid/WMTS').default
+        TileGrid: OlTilegridTileGrid,
+        WMTS: OlTilegridWMTS
     },
-    View: require('ol/View').default
+    View: OlView
 };

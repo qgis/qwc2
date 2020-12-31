@@ -6,14 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {LOCAL_CONFIG_LOADED, SET_STARTUP_PARAMETERS} = require('../actions/localConfig');
+import {LOCAL_CONFIG_LOADED, SET_STARTUP_PARAMETERS} from '../actions/localConfig';
 
-const assign = require('object-assign');
-const ConfigUtils = require('../utils/ConfigUtils');
+import assign from 'object-assign';
+import ConfigUtils from '../utils/ConfigUtils';
 
 const defaultState = ConfigUtils.getDefaults();
 
-function localConfig(state = defaultState, action) {
+export default function localConfig(state = defaultState, action) {
     switch (action.type) {
     case LOCAL_CONFIG_LOADED: {
         return assign({}, state, action.config);
@@ -25,5 +25,3 @@ function localConfig(state = defaultState, action) {
         return state;
     }
 }
-
-module.exports = localConfig;

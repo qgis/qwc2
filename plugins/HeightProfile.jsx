@@ -6,21 +6,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const axios = require('axios');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const isEmpty = require('lodash.isempty');
-const Chartist = require('chartist');
-const ChartistComponent = require('react-chartist').default;
-const ChartistAxisTitle = require('chartist-plugin-axistitle');
-const ConfigUtils = require('../utils/ConfigUtils');
-const LocaleUtils = require('../utils/LocaleUtils');
-const {addMarker, removeMarker} = require('../actions/layers');
-const Spinner = require('../components/Spinner');
-const Message = require('../components/I18N/Message');
+import React from 'react';
+import axios from 'axios';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import isEmpty from 'lodash.isempty';
+import Chartist from 'chartist';
+import ChartistComponent from 'react-chartist';
+import ChartistAxisTitle from 'chartist-plugin-axistitle';
+import ConfigUtils from '../utils/ConfigUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import {addMarker, removeMarker} from '../actions/layers';
+import Spinner from '../components/Spinner';
+import Message from '../components/I18N/Message';
 
-require('./style/HeightProfile.css');
+import './style/HeightProfile.css';
 
 class HeightProfile extends React.Component {
     static propTypes = {
@@ -207,13 +207,11 @@ class HeightProfile extends React.Component {
     }
 }
 
-module.exports = {
-    HeightProfilePlugin: connect((state) => ({
-        measurement: state.measurement,
-        projection: state.map.projection,
-        mobile: state.browser ? state.browser.mobile : false
-    }), {
-        addMarker: addMarker,
-        removeMarker: removeMarker
-    })(HeightProfile)
-};
+export default connect((state) => ({
+    measurement: state.measurement,
+    projection: state.map.projection,
+    mobile: state.browser ? state.browser.mobile : false
+}), {
+    addMarker: addMarker,
+    removeMarker: removeMarker
+})(HeightProfile);

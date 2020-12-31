@@ -6,15 +6,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {SEARCH_CHANGE, SEARCH_SET_REQUEST, SEARCH_ADD_RESULTS, CLEAR_SEARCH, SEARCH_SET_CURRENT_RESULT} = require('../actions/search');
-const assign = require('object-assign');
-const {UrlParams} = require("../utils/PermaLinkUtils");
+import assign from 'object-assign';
+import {
+    SEARCH_CHANGE,
+    SEARCH_SET_REQUEST,
+    SEARCH_ADD_RESULTS,
+    CLEAR_SEARCH,
+    SEARCH_SET_CURRENT_RESULT
+} from '../actions/search';
+import {UrlParams} from '../utils/PermaLinkUtils';
 
 const defaultState = {
     text: ''
 };
 
-function search(state = defaultState, action) {
+export default function search(state = defaultState, action) {
     switch (action.type) {
     case CLEAR_SEARCH: {
         return {...state, text: '', currentResult: null};
@@ -48,5 +54,3 @@ function search(state = defaultState, action) {
         return state;
     }
 }
-
-module.exports = search;

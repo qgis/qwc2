@@ -5,18 +5,18 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-const url = require('url');
-const {createStore, compose, applyMiddleware} = require('redux');
-const thunkMiddleware = require('redux-thunk').default;
-const logger = require('redux-logger').default;
-const immutable = require('redux-immutable-state-invariant').default;
-const {persistState} = require('redux-devtools');
-const DevTools = require('../components/development/DevTools');
+import url from 'url';
+import {createStore, compose, applyMiddleware} from 'redux';
+import thunkMiddleware from  'redux-thunk';
+import logger from 'redux-logger';
+import immutable from 'redux-immutable-state-invariant';
+import {persistState} from 'redux-devtools';
+import DevTools from '../components/development/DevTools';
 
 const urlQuery = url.parse(window.location.href, true).query;
 
 const DebugUtils = {
-    createDebugStore: function(reducer, initialState, userMiddlewares, enhancer) {
+    createDebugStore(reducer, initialState, userMiddlewares, enhancer) {
         let finalCreateStore;
         if (__DEVTOOLS__ && urlQuery.debug) {
             const middlewares = (userMiddlewares || []).concat([immutable(), thunkMiddleware, logger]);
@@ -33,4 +33,4 @@ const DebugUtils = {
     }
 };
 
-module.exports = DebugUtils;
+export default DebugUtils;

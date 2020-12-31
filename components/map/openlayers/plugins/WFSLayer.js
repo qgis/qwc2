@@ -6,29 +6,29 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const ol = require('openlayers');
-const CoordinatesUtils = require('../../../../utils/CoordinatesUtils');
-const FeatureStyles = require('../FeatureStyles');
+import ol from 'openlayers';
+import CoordinatesUtils from '../../../../utils/CoordinatesUtils';
+import FeatureStyles from '../FeatureStyles';
 
 
-const WMSLayer = {
+export default {
     create: (options) => {
         const formatMap = {
-            gml3: (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
-            gml32: (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
+            "gml3": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
+            "gml32": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
             "application/gml+xml; version=3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
 
-            gml2: (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), defaultDataProjection: proj}),
+            "gml2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), defaultDataProjection: proj}),
 
             "text/xml; subtype=gml/3.1.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
             "text/xml; subtype=gml/3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
             "text/xml; subtype=gml/2.1.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), defaultDataProjection: proj}),
 
-            kml: (proj) => new ol.format.KML({defaultDataProjection: proj}),
+            "kml": (proj) => new ol.format.KML({defaultDataProjection: proj}),
             "application/vnd.google-earth.kml+xml": (proj) => new ol.format.KML({defaultDataProjection: proj}),
 
-            geojson: (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
-            json: (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
+            "geojson": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
+            "json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
             "application/json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj})
         };
 
@@ -85,5 +85,3 @@ const WMSLayer = {
     update: (/* layer, newOptions, oldOptions */) => {
     }
 };
-
-module.exports = WMSLayer;

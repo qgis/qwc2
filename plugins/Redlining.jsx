@@ -6,22 +6,22 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const NumericInput = require('react-numeric-input2');
-const assign = require('object-assign');
-const Mousetrap = require('mousetrap');
-const LocaleUtils = require('../utils/LocaleUtils');
-const Message = require('../components/I18N/Message');
-const {changeRedliningState} = require('../actions/redlining');
-const {LayerRole, addLayer} = require('../actions/layers');
-const {TaskBar} = require('../components/TaskBar');
-const ButtonBar = require('../components/widgets/ButtonBar');
-const ColorButton = require('../components/widgets/ColorButton');
-const VectorLayerPicker = require('../components/widgets/VectorLayerPicker');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import NumericInput from 'react-numeric-input2';
+import assign from 'object-assign';
+import Mousetrap from 'mousetrap';
+import LocaleUtils from '../utils/LocaleUtils';
+import Message from '../components/I18N/Message';
+import {changeRedliningState} from '../actions/redlining';
+import {LayerRole, addLayer} from '../actions/layers';
+import TaskBar from '../components/TaskBar';
+import ButtonBar from '../components/widgets/ButtonBar';
+import ColorButton from '../components/widgets/ColorButton';
+import VectorLayerPicker from '../components/widgets/VectorLayerPicker';
 
-require('./style/Redlining.css');
+import './style/Redlining.css';
 
 
 class Redlining extends React.Component {
@@ -211,19 +211,14 @@ class Redlining extends React.Component {
     }
 }
 
-module.exports = (plugins) => {
-    return {
-        RedliningPlugin: connect((state) => ({
-            layers: state.layers.flat,
-            redlining: state.redlining,
-            mobile: state.browser ? state.browser.mobile : false,
-            plugins: plugins
-        }), {
-            changeRedliningState: changeRedliningState,
-            addLayer: addLayer
-        })(Redlining),
-        reducers: {
-            redlining: require('../reducers/redlining')
-        }
-    };
+export default (plugins) => {
+    return connect((state) => ({
+        layers: state.layers.flat,
+        redlining: state.redlining,
+        mobile: state.browser ? state.browser.mobile : false,
+        plugins: plugins
+    }), {
+        changeRedliningState: changeRedliningState,
+        addLayer: addLayer
+    })(Redlining);
 };

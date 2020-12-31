@@ -6,25 +6,25 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const isEmpty = require('lodash.isempty');
-const axios = require('axios');
-const assign = require('object-assign');
-const removeDiacritics = require('diacritics').remove;
-const Spinner = require('./Spinner');
-const Message = require('../components/I18N/Message');
-const EditableSelect = require('../components/widgets/EditableSelect');
-const LocaleUtils = require('../utils/LocaleUtils');
-const {addLayer, addLayerFeatures} = require('../actions/layers');
-const FileSelector = require('./widgets/FileSelector');
-const ConfigUtils = require('../utils/ConfigUtils');
-const LayerUtils = require('../utils/LayerUtils');
-const ServiceLayerUtils = require('../utils/ServiceLayerUtils');
-const VectorLayerUtils = require('../utils/VectorLayerUtils');
-const Icon = require('./Icon');
-require('./style/ImportLayer.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import isEmpty from 'lodash.isempty';
+import axios from 'axios';
+import assign from 'object-assign';
+import {remove as removeDiacritics} from 'diacritics';
+import Spinner from './Spinner';
+import Message from '../components/I18N/Message';
+import EditableSelect from '../components/widgets/EditableSelect';
+import LocaleUtils from '../utils/LocaleUtils';
+import {addLayer, addLayerFeatures} from '../actions/layers';
+import FileSelector from './widgets/FileSelector';
+import ConfigUtils from '../utils/ConfigUtils';
+import LayerUtils from '../utils/LayerUtils';
+import ServiceLayerUtils from '../utils/ServiceLayerUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
+import Icon from './Icon';
+import './style/ImportLayer.css';
 
 
 class ImportLayerList extends React.PureComponent {
@@ -334,7 +334,7 @@ class ImportLayer extends React.Component {
     }
 }
 
-module.exports = connect((state) => ({
+export default connect((state) => ({
     mapCrs: state.map.projection
 }), {
     addLayer: addLayer,

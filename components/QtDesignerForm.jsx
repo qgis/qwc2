@@ -6,18 +6,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const assign = require('object-assign');
-const ConfigUtils = require('../utils/ConfigUtils');
-const Icon = require("./Icon");
-const axios = require('axios');
-const xml2js = require('xml2js');
+import React from 'react';
+import PropTypes from 'prop-types';
+import assign from 'object-assign';
+import axios from 'axios';
+import xml2js from 'xml2js';
+import ConfigUtils from '../utils/ConfigUtils';
+import Icon from './Icon';
 
-require('./style/QtDesignerForm.css');
+import './style/QtDesignerForm.css';
 
 
-class QtDesignerForm extends React.Component {
+export default class QtDesignerForm extends React.Component {
     static propTypes = {
         addRelationRecord: PropTypes.func,
         editLayerId: PropTypes.string,
@@ -315,5 +315,3 @@ class QtDesignerForm extends React.Component {
         });
     }
 }
-
-module.exports = QtDesignerForm;

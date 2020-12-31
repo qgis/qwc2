@@ -6,11 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const {addMarker, removeMarker} = require('../actions/layers');
-const {UrlParams} = require("../utils/PermaLinkUtils");
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {addMarker, removeMarker} from '../actions/layers';
+import {UrlParams} from '../utils/PermaLinkUtils';
 
 class StartupMarker extends React.Component {
     static propTypes = {
@@ -52,14 +52,12 @@ class StartupMarker extends React.Component {
     }
 }
 
-module.exports = {
-    StartupMarkerPlugin: connect(state => ({
-        startupParams: state.localConfig.startupParams,
-        clickFeature: state.map.clickFeature || {},
-        map: state.map,
-        theme: state.theme && state.theme.current || null
-    }), {
-        addMarker: addMarker,
-        removeMarker: removeMarker
-    })(StartupMarker)
-};
+export default connect(state => ({
+    startupParams: state.localConfig.startupParams,
+    clickFeature: state.map.clickFeature || {},
+    map: state.map,
+    theme: state.theme && state.theme.current || null
+}), {
+    addMarker: addMarker,
+    removeMarker: removeMarker
+})(StartupMarker);

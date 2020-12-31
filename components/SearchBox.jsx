@@ -6,33 +6,33 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const assign = require('object-assign');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const {createSelector} = require('reselect');
-const isEmpty = require('lodash.isempty');
-const axios = require('axios');
-const uuid = require('uuid');
-const {SearchResultType} = require('../actions/search');
-const {logAction} = require('../actions/logging');
-const {panTo, zoomToPoint} = require('../actions/map');
-const {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer} = require('../actions/layers');
-const {setCurrentTheme} = require('../actions/theme');
-const {setCurrentTask} = require('../actions/task');
-const Icon = require('./Icon');
-const Message = require("./I18N/Message");
-const displayCrsSelector = require('../selectors/displaycrs');
-const searchProvidersSelector = require('../selectors/searchproviders');
-const ConfigUtils = require("../utils/ConfigUtils");
-const LayerUtils = require('../utils/LayerUtils');
-const LocaleUtils = require('../utils/LocaleUtils');
-const CoordinatesUtils = require('../utils/CoordinatesUtils');
-const VectorLayerUtils = require('../utils/VectorLayerUtils');
-const MapUtils = require('../utils/MapUtils');
-const MiscUtils = require('../utils/MiscUtils');
-const {UrlParams} = require("../utils/PermaLinkUtils");
-require('./style/SearchBox.css');
+import React from 'react';
+import assign from 'object-assign';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {createSelector} from 'reselect';
+import isEmpty from 'lodash.isempty';
+import axios from 'axios';
+import uuid from 'uuid';
+import {SearchResultType} from '../actions/search';
+import {logAction} from '../actions/logging';
+import {panTo, zoomToPoint} from '../actions/map';
+import {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer} from '../actions/layers';
+import {setCurrentTheme} from '../actions/theme';
+import {setCurrentTask} from '../actions/task';
+import Icon from './Icon';
+import Message from './I18N/Message';
+import displayCrsSelector from '../selectors/displaycrs';
+import searchProvidersSelector from '../selectors/searchproviders';
+import ConfigUtils from '../utils/ConfigUtils';
+import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
+import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
+import {UrlParams} from '../utils/PermaLinkUtils';
+import './style/SearchBox.css';
 
 class SearchBox extends React.Component {
     static propTypes = {
@@ -601,7 +601,7 @@ const searchFilterSelector = createSelector([state => state.theme, state => stat
     return [...new Set(searchFilter)].join(",");
 });
 
-module.exports = (searchProviders, providerFactory = () => { return null; }) => {
+export default (searchProviders, providerFactory = () => { return null; }) => {
     const providersSelector = searchProvidersSelector(searchProviders, providerFactory);
     return connect(
         createSelector([state => state, searchFilterSelector, displayCrsSelector, providersSelector], (state, searchFilter, displaycrs, searchproviders) => ({

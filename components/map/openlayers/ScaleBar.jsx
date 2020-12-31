@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const assign = require('object-assign');
-const ol = require('openlayers');
+import React from 'react';
+import PropTypes from 'prop-types';
+import assign from 'object-assign';
+import ol from 'openlayers';
 
-class ScaleBar extends React.Component {
+export default class ScaleBar extends React.Component {
     static propTypes = {
         map: PropTypes.object,
         // See https://openlayers.org/en/latest/apidoc/ol.control.ScaleLine.html
@@ -35,5 +35,3 @@ class ScaleBar extends React.Component {
         return null;
     }
 }
-
-module.exports = ScaleBar;

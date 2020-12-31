@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const {setSwipe} = require('../actions/layers');
-const Icon = require('../components/Icon');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {setSwipe} from '../actions/layers';
+import Icon from '../components/Icon';
 
-require('./style/MapCompare.css');
+import './style/MapCompare.css';
 
 class MapComparePlugin extends React.Component {
     constructor(props) {
@@ -74,10 +74,8 @@ class MapComparePlugin extends React.Component {
     }
 }
 
-module.exports = {
-    MapComparePlugin: connect((state) => ({
-        swipe: state.layers.swipe
-    }), {
-        setSwipe: setSwipe
-    })(MapComparePlugin)
-};
+export default connect((state) => ({
+    swipe: state.layers.swipe
+}), {
+    setSwipe: setSwipe
+})(MapComparePlugin);

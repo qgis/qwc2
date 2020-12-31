@@ -6,4 +6,5 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-module.exports = require('../../components/map/openlayers/ScaleBar');
+import ScaleBar from '../../components/map/openlayers/ScaleBar';
+export default ScaleBar;

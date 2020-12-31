@@ -6,13 +6,13 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const Icon = require('../Icon');
-const LocaleUtils = require('../../utils/LocaleUtils');
-require('./style/FileSelector.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import Icon from '../Icon';
+import LocaleUtils from '../../utils/LocaleUtils';
+import './style/FileSelector.css';
 
-class FileSelector extends React.Component {
+export default class FileSelector extends React.Component {
     static propTypes = {
         accept: PropTypes.string,
         file: PropTypes.object,
@@ -68,5 +68,3 @@ class FileSelector extends React.Component {
         return bytes.toFixed(1) + ' ' + units[u];
     }
 }
-
-module.exports = FileSelector;

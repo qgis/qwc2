@@ -6,11 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const {toggleFullscreen} = require('../actions/display');
-require('./style/FullscreenSwitcher.css');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {toggleFullscreen} from '../actions/display';
+import './style/FullscreenSwitcher.css';
 
 class FullscreenSwitcher extends React.Component {
     static propTypes = {
@@ -73,6 +73,6 @@ const selector = (state) => ({
     fullscreen: state.display && state.display.fullscreen
 });
 
-module.exports = connect(selector, {
+export default connect(selector, {
     fullscreenToggled: toggleFullscreen
 })(FullscreenSwitcher);

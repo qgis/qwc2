@@ -6,9 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const TOGGLE_FULLSCREEN = 'TOGGLE_FULLSCREEN';
+import {ReducerRegistry} from '../stores/StandardStore';
+import displayReducer from '../reducers/display';
+ReducerRegistry.register("display", displayReducer);
 
-function requestFullscreen() {
+export const TOGGLE_FULLSCREEN = 'TOGGLE_FULLSCREEN';
+
+export function requestFullscreen() {
     if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();
     } else if (document.documentElement.msRequestFullscreen) {
@@ -20,7 +24,7 @@ function requestFullscreen() {
     }
 }
 
-function endFullscreen() {
+export function endFullscreen() {
     if (window.fullScreen) {
         if (document.exitFullscreen) {
             document.exitFullscreen();
@@ -34,7 +38,7 @@ function endFullscreen() {
     }
 }
 
-function toggleFullscreen(fullscreen) {
+export function toggleFullscreen(fullscreen) {
     if (fullscreen) {
         requestFullscreen();
     } else {
@@ -45,8 +49,3 @@ function toggleFullscreen(fullscreen) {
         fullscreen: fullscreen
     };
 }
-
-module.exports = {
-    TOGGLE_FULLSCREEN,
-    toggleFullscreen
-};

@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const {connect} = require('react-redux');
-const isEmpty = require('lodash.isempty');
-const ol = require('openlayers');
-const {changeRedliningPickState} = require('../../actions/redliningPick');
+import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import isEmpty from 'lodash.isempty';
+import ol from 'openlayers';
+import {changeRedliningPickState} from '../../actions/redliningPick';
 
 class RedliningPickSupport extends React.Component {
     static propTypes = {
@@ -140,7 +140,7 @@ class RedliningPickSupport extends React.Component {
     }
 }
 
-module.exports = connect((state) => ({
+export default connect((state) => ({
     redliningPick: state.redliningPick || {}
 }), {
     changeRedliningPickState: changeRedliningPickState

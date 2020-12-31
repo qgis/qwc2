@@ -6,22 +6,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {
+import {
     IDENTIFY_EMPTY,
     IDENTIFY_RESPONSE,
     IDENTIFY_REQUEST,
     SET_IDENTIFY_TOOL,
     PURGE_IDENTIFY_RESULTS,
     SET_IDENTIFY_FEATURE_RESULT
-} = require('../actions/identify');
+} from '../actions/identify';
 
-const assign = require('object-assign');
+import assign from 'object-assign';
 
 const defaultState = {
     tool: null
 };
 
-function identify(state = defaultState, action) {
+export default function identify(state = defaultState, action) {
     switch (action.type) {
     case SET_IDENTIFY_TOOL: {
         return assign({}, state, {tool: action.tool});
@@ -72,5 +72,3 @@ function identify(state = defaultState, action) {
         return state;
     }
 }
-
-module.exports = identify;

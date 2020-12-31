@@ -6,16 +6,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const ol = require('openlayers');
-const FeatureStyles = require('./FeatureStyles');
+import React from 'react';
+import PropTypes from 'prop-types';
+import ol from 'openlayers';
+import FeatureStyles from './FeatureStyles';
 
 const drawStyle = {
     circleRadius: 0
 };
 
-class SelectionSupport extends React.Component {
+export default class SelectionSupport extends React.Component {
     static propTypes = {
         changeSelectionState: PropTypes.func,
         map: PropTypes.object,
@@ -126,5 +126,3 @@ class SelectionSupport extends React.Component {
         }
     }
 }
-
-module.exports = SelectionSupport;

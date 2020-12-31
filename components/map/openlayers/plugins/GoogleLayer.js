@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const ol = require('openlayers');
+import React from 'react';
+import ol from 'openlayers';
 
 let layersMap;
 let rendererItem;
@@ -20,7 +20,7 @@ const endEvent = isTouchSupported ? 'touchend' : 'mouseup';
 // NOTE: For the GoogleLayer to work, you MUST use EPSG:3857 as map projection and the google mercator scales:
 // [591658711,295829355,147914678,73957339,36978669,18489335,9244667,4622334,2311167,1155583,577792,288896,144448,72224,36112,18056,9028,4514,2257,1128,564,282,141,71,35,18,9,4,2]
 
-const GoogleLayer = {
+export default {
     create: (options, map, mapId) => {
         const google = window.google;
         if (!layersMap) {
@@ -213,7 +213,4 @@ const GoogleLayer = {
             gmaps[mapId].setZoom(view.getZoom());
         }
     }
-
 };
-
-module.exports = GoogleLayer;

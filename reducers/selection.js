@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {CHANGE_SELECTION_STATE} = require('../actions/selection');
-const assign = require('object-assign');
+import assign from 'object-assign';
+import {CHANGE_SELECTION_STATE} from '../actions/selection';
 
 const defaultState = {
     geomType: null,
@@ -16,7 +16,7 @@ const defaultState = {
     reset: false
 };
 
-function selection(state = defaultState, action) {
+export default function selection(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_SELECTION_STATE: {
         return assign({}, state, {
@@ -34,5 +34,3 @@ function selection(state = defaultState, action) {
         return state;
     }
 }
-
-module.exports = selection;
