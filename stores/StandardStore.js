@@ -5,9 +5,16 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import {combineReducers} from 'redux';
+import React from 'react';
+import {applyMiddleware, combineReducers, compose, createStore} from 'redux';
+import {createDevTools} from 'redux-devtools';
+import LogMonitor from 'redux-devtools-log-monitor';
+import DockMonitor from 'redux-devtools-dock-monitor';
+import immutable from 'redux-immutable-state-invariant';
+import logger from 'redux-logger';
+import thunkMiddleware from  'redux-thunk';
 import merge from 'deepmerge';
-import DebugUtils from '../utils/DebugUtils';
+import url from 'url';
 
 export const ReducerRegistry = {
     reducers: {},
@@ -16,7 +23,13 @@ export const ReducerRegistry = {
     }
 };
 
-export default (initialState = {defaultState: {}, mobile: {}}, plugins, storeOpts, actionLogger) => {
+const DevTools = createDevTools(
+    <DockMonitor changePositionKey="ctrl-q" toggleVisibilityKey="ctrl-h">
+        <LogMonitor theme="tomorrow" />
+    </DockMonitor>
+);
+
+export default (initialState, actionLogger) => {
     const allReducers = combineReducers(ReducerRegistry.reducers);
 
     const defaultState =  merge({
@@ -37,5 +50,17 @@ export default (initialState = {defaultState: {}, mobile: {}}, plugins, storeOpt
 
         return newState;
     };
-    return DebugUtils.createDebugStore(rootReducer, defaultState);
+
+    let finalCreateStore;
+    const urlQuery = url.parse(window.location.href, true).query;
+    if (process.env.NODE_ENV !== "production" && urlQuery.debug) {
+        const middlewares = [immutable(), thunkMiddleware, logger];
+        finalCreateStore = compose(
+            applyMiddleware.apply(null, middlewares),
+            window.devToolsExtension ? window.devToolsExtension() : DevTools.instrument()
+        )(createStore);
+    } else {
+        finalCreateStore = applyMiddleware.apply(null, [thunkMiddleware])(createStore);
+    }
+    return finalCreateStore(rootReducer, defaultState);
 };

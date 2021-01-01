@@ -14,7 +14,6 @@ import 'babel-polyfill';
 
 
 import axios from 'axios';
-import assign from 'object-assign';
 import Proj4js from 'proj4';
 import {register as olProj4Register} from 'ol/proj/proj4';
 
@@ -139,7 +138,7 @@ export default class StandardApp extends React.Component {
     }
     constructor(props) {
         super(props);
-        this.store = StandardStore(this.props.appConfig.initialState || {}, this.props.appConfig.pluginsDef.plugins, {onPersist: this.init}, this.props.appConfig.actionLogger);
+        this.store = StandardStore(this.props.appConfig.initialState || {}, this.props.appConfig.actionLogger);
         this.init();
         // Save initial params before they get overwritten
         this.initialParams = UrlParams.getParams();
