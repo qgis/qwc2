@@ -100,7 +100,7 @@ export default class OpenlayersLayer extends React.Component {
             layer.setLayers(new ol.Collection(options.items.map(item => {
                 const layerCreator = LayerRegistry[item.type];
                 if (layerCreator) {
-                    const layerOptions = this.generateOpts(item, zIndex, CoordinatesUtils.normalizeSRS(this.props.srs));
+                    const layerOptions = this.generateOpts(item, zIndex, this.props.srs);
                     const sublayer = layerCreator.create(layerOptions, this.props.map, this.props.mapId);
                     layer.set('id', options.id + "#" + layerOptions.name);
                     return sublayer;
@@ -111,7 +111,7 @@ export default class OpenlayersLayer extends React.Component {
         } else {
             const layerCreator = LayerRegistry[type];
             if (layerCreator) {
-                const layerOptions = this.generateOpts(options, zIndex, CoordinatesUtils.normalizeSRS(this.props.srs));
+                const layerOptions = this.generateOpts(options, zIndex, this.props.srs);
                 layer = layerCreator.create(layerOptions, this.props.map, this.props.mapId);
             }
         }
@@ -137,8 +137,8 @@ export default class OpenlayersLayer extends React.Component {
         if (layerCreator && layerCreator.update && this.state.layer) {
             layerCreator.update(
                 this.state.layer,
-                this.generateOpts(newProps.options, newProps.zIndex, CoordinatesUtils.normalizeSRS(newProps.srs)),
-                this.generateOpts(oldProps.options, oldProps.zIndex, CoordinatesUtils.normalizeSRS(oldProps.srs)),
+                this.generateOpts(newProps.options, newProps.zIndex, newProps.srs),
+                this.generateOpts(oldProps.options, oldProps.zIndex, oldProps.srs),
                 this.props.map,
                 this.props.mapId
             );

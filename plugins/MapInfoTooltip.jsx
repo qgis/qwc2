@@ -91,7 +91,7 @@ class MapInfoTooltip extends React.Component {
             const coo = CoordinatesUtils.reproject(this.state.coordinate, this.props.map.projection, crs);
             const digits = proj4js.defs(crs).units === 'degrees' ? 4 : 0;
             info.push([
-                CoordinatesUtils.getCrsLabels()[crs] || crs,
+                (CoordinatesUtils.getAvailableCRS()[crs] || {label: crs}).label,
                 coo.map(x => LocaleUtils.toLocaleFixed(x, digits)).join(", ")
             ]);
         });

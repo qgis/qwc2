@@ -18,8 +18,14 @@ const CoordinatesUtils = {
     setCrsLabels(labels) {
         assign(crsLabels, labels);
     },
-    getCrsLabels() {
-        return crsLabels;
+    getAvailableCRS() {
+        const crsList = {};
+        for (const a in Proj4js.defs) {
+            if (Object.prototype.hasOwnProperty.call(Proj4js.defs, a)) {
+                crsList[a] = {label: crsLabels[a] || a};
+            }
+        }
+        return crsList;
     },
     getUnits(projection) {
         const proj = new Proj4js.Proj(projection);
@@ -60,34 +66,6 @@ const CoordinatesUtils = {
         const sw = CoordinatesUtils.reproject([bbox[0], bbox[1]], source, dest);
         const ne = CoordinatesUtils.reproject([bbox[2], bbox[3]], source, dest);
         return [...sw, ...ne];
-    },
-    getCompatibleSRS(srs, allowedSRS) {
-        if (srs === 'EPSG:900913' && !allowedSRS['EPSG:900913'] && allowedSRS['EPSG:3857']) {
-            return 'EPSG:3857';
-        }
-        if (srs === 'EPSG:3857' && !allowedSRS['EPSG:3857'] && allowedSRS['EPSG:900913']) {
-            return 'EPSG:900913';
-        }
-        return srs;
-    },
-    normalizeSRS(srs, allowedSRS) {
-        const result = (srs === 'EPSG:900913' ? 'EPSG:3857' : srs);
-        if (allowedSRS && !allowedSRS[result]) {
-            return CoordinatesUtils.getCompatibleSRS(result, allowedSRS);
-        }
-        return result;
-    },
-    isAllowedSRS(srs, allowedSRS) {
-        return allowedSRS[CoordinatesUtils.getCompatibleSRS(srs, allowedSRS)];
-    },
-    getAvailableCRS() {
-        const crsList = {};
-        for (const a in Proj4js.defs) {
-            if (Object.prototype.hasOwnProperty.call(Proj4js.defs, a)) {
-                crsList[a] = {label: crsLabels[a] || a};
-            }
-        }
-        return crsList;
     },
     calculateAzimuth(p1, p2, pj) {
         const p1proj = CoordinatesUtils.reproject(p1, pj, 'EPSG:4326');
@@ -131,25 +109,6 @@ const CoordinatesUtils = {
             extent.indexOf(Infinity) !== -1 || extent.indexOf(-Infinity) !== -1 ||
             extent[1] >= extent[2] || extent[1] >= extent[3]
         );
-    },
-    calculateCircleCoordinates(center, radius, sides, rotation) {
-        let angle = Math.PI * ((1 / sides) - (1 / 2));
-
-        if (rotation) {
-            angle += (rotation / 180) * Math.PI;
-        }
-
-        let rotatedAngle; let x; let y;
-        const points = [[]];
-        for (let i = 0; i < sides; i++) {
-            rotatedAngle = angle + (i * 2 * Math.PI / sides);
-            x = center[0] + (radius * Math.cos(rotatedAngle));
-            y = center[1] + (radius * Math.sin(rotatedAngle));
-            points[0].push([x, y]);
-        }
-
-        points[0].push(points[0][0]);
-        return points;
     }
 };
 

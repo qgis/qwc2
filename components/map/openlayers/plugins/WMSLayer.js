@@ -20,8 +20,8 @@ function wmsToOpenlayersOptions(options) {
         STYLES: options.style || "",
         FORMAT: options.format || 'image/png',
         TRANSPARENT: options.transparent !== undefined ? options.transparent : true,
-        SRS: CoordinatesUtils.normalizeSRS(options.srs || 'EPSG:3857', options.allowedSRS),
-        CRS: CoordinatesUtils.normalizeSRS(options.srs || 'EPSG:3857', options.allowedSRS),
+        SRS: options.srs,
+        CRS: options.srs,
         TILED: options.tiled || false,
         VERSION: options.version || "1.3.0",
         DPI: options.dpi || ConfigUtils.getConfigProp("wmsDpi") || 90

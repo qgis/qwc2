@@ -43,7 +43,7 @@ function getUrls(opt) {
 
 function lBoundsToOlExtent(bounds, destPrj) {
     const [ [ miny, minx], [ maxy, maxx ] ] = bounds;
-    return CoordinatesUtils.reprojectBbox([minx, miny, maxx, maxy], 'EPSG:4326', CoordinatesUtils.normalizeSRS(destPrj));
+    return CoordinatesUtils.reprojectBbox([minx, miny, maxx, maxy], 'EPSG:4326', destPrj);
 }
 
 function tileXYZToOpenlayersOptions(options) {
