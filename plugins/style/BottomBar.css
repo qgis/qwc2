@@ -8,6 +8,7 @@
     color: @panel_fg@;
     background-color: @panel_bg@;
     box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
+    backdrop-filter: blur(3px);
     font-size: 75%;
     display: flex;
     align-items: center;

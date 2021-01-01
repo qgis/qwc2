@@ -18,6 +18,7 @@ button.map-button {
 
 button.map-button:disabled {
     opacity: 0.7;
+    cursor: default;
 }
 
 button.map-button-active {
