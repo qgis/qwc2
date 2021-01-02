@@ -12,9 +12,9 @@ import {connect} from 'react-redux';
 import assign from 'object-assign';
 import uuid from 'uuid';
 import ol from 'openlayers';
-import FeatureStyles from '../../components/map/FeatureStyles';
 import {changeRedliningState} from '../../actions/redlining';
 import {LayerRole, addLayerFeatures, removeLayerFeatures} from '../../actions/layers';
+import FeatureStyles from '../../utils/FeatureStyles';
 
 class RedliningSupport extends React.Component {
     static propTypes = {

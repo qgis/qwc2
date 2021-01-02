@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import ol from 'openlayers';
 import {changeSelectionState} from '../../actions/selection';
-import FeatureStyles from '../../components/map/FeatureStyles';
+import FeatureStyles from '../../utils/FeatureStyles';
 
 
 class SelectionSupport extends React.Component {

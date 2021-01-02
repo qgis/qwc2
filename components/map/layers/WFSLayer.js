@@ -8,7 +8,7 @@
 
 import ol from 'openlayers';
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
-import FeatureStyles from '../FeatureStyles';
+import FeatureStyles from '../../../utils/FeatureStyles';
 
 
 export default {
