@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import redliningPickReducer from '../reducers/redliningPick';
-ReducerRegistry.register("redliningPick", redliningPickReducer);
+ReducerIndex.register("redliningPick", redliningPickReducer);
 
 export const CHANGE_REDLINING_PICK_STATE = 'CHANGE_REDLINING_PICK_STATE';
 

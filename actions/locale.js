@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import localeReducer from '../reducers/locale';
-ReducerRegistry.register("locale", localeReducer);
+ReducerIndex.register("locale", localeReducer);
 
 import axios from 'axios';
 import ConfigUtils from '../utils/ConfigUtils';

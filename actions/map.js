@@ -7,9 +7,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import mapReducer from '../reducers/map';
-ReducerRegistry.register("map", mapReducer);
+ReducerIndex.register("map", mapReducer);
 
 export const CHANGE_MAP_VIEW = 'CHANGE_MAP_VIEW';
 export const CONFIGURE_MAP = 'CONFIGURE_MAP';

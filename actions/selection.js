@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import selectionReducer from '../reducers/selection';
-ReducerRegistry.register("selection", selectionReducer);
+ReducerIndex.register("selection", selectionReducer);
 
 export const CHANGE_SELECTION_STATE = 'CHANGE_SELECTION_STATE';
 

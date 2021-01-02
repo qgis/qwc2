@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import layerinfoReducer from '../reducers/layerinfo';
-ReducerRegistry.register("layerinfo", layerinfoReducer);
+ReducerIndex.register("layerinfo", layerinfoReducer);
 
 export const SET_ACTIVE_LAYERINFO = 'SET_ACTIVE_LAYERINFO';
 

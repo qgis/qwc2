@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import identifyReducer from '../reducers/identify';
-ReducerRegistry.register("identify", identifyReducer);
+ReducerIndex.register("identify", identifyReducer);
 
 import axios from 'axios';
 import uuid from 'uuid';

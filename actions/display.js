@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import displayReducer from '../reducers/display';
-ReducerRegistry.register("display", displayReducer);
+ReducerIndex.register("display", displayReducer);
 
 export const TOGGLE_FULLSCREEN = 'TOGGLE_FULLSCREEN';
 

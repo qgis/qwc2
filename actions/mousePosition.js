@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import mousePositionReducer from '../reducers/mousePosition';
-ReducerRegistry.register("mousePosition", mousePositionReducer);
+ReducerIndex.register("mousePosition", mousePositionReducer);
 
 export const CHANGE_MOUSE_POSITION_STATE = 'CHANGE_MOUSE_POSITION_STATE';
 

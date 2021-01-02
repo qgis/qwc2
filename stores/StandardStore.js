@@ -15,13 +15,9 @@ import logger from 'redux-logger';
 import thunkMiddleware from  'redux-thunk';
 import merge from 'deepmerge';
 import url from 'url';
+import {CHANGE_BROWSER_PROPERTIES} from '../actions/browser';
+import ReducerIndex from '../reducers/index';
 
-export const ReducerRegistry = {
-    reducers: {},
-    register(name, reducer) {
-        ReducerRegistry.reducers[name] = reducer;
-    }
-};
 
 const DevTools = createDevTools(
     <DockMonitor changePositionKey="ctrl-q" toggleVisibilityKey="ctrl-h">
@@ -30,7 +26,7 @@ const DevTools = createDevTools(
 );
 
 export default (initialState, actionLogger) => {
-    const allReducers = combineReducers(ReducerRegistry.reducers);
+    const allReducers = combineReducers(ReducerIndex.reducers);
 
     const defaultState =  merge({
         ...allReducers({}, {type: null})
@@ -44,7 +40,7 @@ export default (initialState, actionLogger) => {
         if (actionLogger) {
             actionLogger(action, newState, state);
         }
-        if (action && action.type === "CHANGE_BROWSER_PROPERTIES" && newState.browser.mobile) {
+        if (action && action.type === CHANGE_BROWSER_PROPERTIES && newState.browser.mobile) {
             newState = merge(newState, mobileOverride);
         }
 

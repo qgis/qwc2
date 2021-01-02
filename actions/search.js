@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import searchReducer from '../reducers/search';
-ReducerRegistry.register("search", searchReducer);
+ReducerIndex.register("search", searchReducer);
 
 import uuid from 'uuid';
 

@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import layersReducer from '../reducers/layers';
-ReducerRegistry.register("layers", layersReducer);
+ReducerIndex.register("layers", layersReducer);
 
 import ConfigUtils from '../utils/ConfigUtils';
 

@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import windowsReducer from '../reducers/windows';
-ReducerRegistry.register("windows", windowsReducer);
+ReducerIndex.register("windows", windowsReducer);
 
 export const SHOW_IFRAME_DIALOG = 'SHOW_IFRAME_DIALOG';
 export const SHOW_NOTIFICATION = 'SHOW_NOTIFICATION';

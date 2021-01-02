@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import measurementReducer from '../reducers/measurement';
-ReducerRegistry.register("measurement", measurementReducer);
+ReducerIndex.register("measurement", measurementReducer);
 
 export const CHANGE_MEASUREMENT_STATE = 'CHANGE_MEASUREMENT_STATE';
 

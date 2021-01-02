@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import serviceinfoReducer from '../reducers/serviceinfo';
-ReducerRegistry.register("serviceinfo", serviceinfoReducer);
+ReducerIndex.register("serviceinfo", serviceinfoReducer);
 
 export const SET_ACTIVE_SERVICEINFO = 'SET_ACTIVE_SERVICEINFO';
 

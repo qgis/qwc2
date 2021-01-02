@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import locateReducer from '../reducers/locate';
-ReducerRegistry.register("locate", locateReducer);
+ReducerIndex.register("locate", locateReducer);
 
 export const CHANGE_LOCATE_STATE = 'CHANGE_LOCATE_STATE';
 export const LOCATE_ERROR = 'LOCATE_ERROR';

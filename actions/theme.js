@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import themeReducer from '../reducers/theme';
-ReducerRegistry.register("theme", themeReducer);
+ReducerIndex.register("theme", themeReducer);
 
 import assign from 'object-assign';
 import isEmpty from 'lodash.isempty';

@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import localConfigReducer from '../reducers/localConfig';
-ReducerRegistry.register("localConfig", localConfigReducer);
+ReducerIndex.register("localConfig", localConfigReducer);
 
 export const LOCAL_CONFIG_LOADED = 'LOCAL_CONFIG_LOADED';
 export const SET_STARTUP_PARAMETERS = 'SET_STARTUP_PARAMETERS';

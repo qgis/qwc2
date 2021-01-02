@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ReducerRegistry} from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
 import taskReducer from '../reducers/task';
-ReducerRegistry.register("task", taskReducer);
+ReducerIndex.register("task", taskReducer);
 
 import {setIdentifyEnabled} from './identify';
 import ConfigUtils from '../utils/ConfigUtils';
