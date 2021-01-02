@@ -23,6 +23,7 @@ export default class ScaleBarSupport extends React.Component {
     constructor(props) {
         super(props);
         this.scalebar = new ol.control.ScaleLine({...ScaleBarSupport.defaultOpt, ...props.options});
+        props.map.addControl(this.scalebar);
     }
     render() {
         return null;
