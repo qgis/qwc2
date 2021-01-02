@@ -48,7 +48,7 @@ function propagateLayerProperty(newlayer, property, value, path = null) {
 
 const defaultState = {
     flat: [],
-    swipe: undefined
+    swipe: null
 };
 
 export default function layers(state = defaultState, action) {
@@ -147,7 +147,7 @@ export default function layers(state = defaultState, action) {
         return {...state, flat: newLayers};
     }
     case ADD_LAYER_SEPARATOR: {
-        const newLayers = LayerUtils.insertSeparator(state.flat, action.title, action.afterLayerId, action.afterSublayerPath, state.swipe);
+        const newLayers = LayerUtils.insertSeparator(state.flat, action.title, action.afterLayerId, action.afterSublayerPath);
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
         return {...state, flat: newLayers};
     }
@@ -160,7 +160,7 @@ export default function layers(state = defaultState, action) {
         if (layer.role === LayerRole.BACKGROUND || isEmpty(action.sublayerpath)) {
             newLayers = state.flat.filter(l => l.id !== action.layerId);
         } else {
-            newLayers = LayerUtils.removeLayer(state.flat, layer, action.sublayerpath, state.swipe);
+            newLayers = LayerUtils.removeLayer(state.flat, layer, action.sublayerpath);
         }
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
         return {...state, flat: newLayers};
@@ -233,7 +233,7 @@ export default function layers(state = defaultState, action) {
         const themeLayerIdx = state.flat.findIndex(layer => layer.role === LayerRole.THEME);
         if (themeLayerIdx >= 0) {
             const newLayers = state.flat.slice(0);
-            newLayers[themeLayerIdx] = LayerUtils.mergeSubLayers(state.flat[themeLayerIdx], action.layer, state.swipe || state.swipe === 0);
+            newLayers[themeLayerIdx] = LayerUtils.mergeSubLayers(state.flat[themeLayerIdx], action.layer);
             newLayers[themeLayerIdx].visibility = true;
             Object.assign(newLayers[themeLayerIdx], LayerUtils.buildWMSLayerParams(newLayers[themeLayerIdx]));
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
@@ -251,10 +251,10 @@ export default function layers(state = defaultState, action) {
         return {...state, flat: newLayers};
     }
     case REMOVE_ALL_LAYERS: {
-        return {...state, flat: [], swipe: undefined};
+        return {...state, flat: [], swipe: null};
     }
     case REORDER_LAYER: {
-        const newLayers = LayerUtils.reorderLayer(state.flat, action.layer, action.sublayerpath, action.direction, state.swipe, action.preventSplittingGroups);
+        const newLayers = LayerUtils.reorderLayer(state.flat, action.layer, action.sublayerpath, action.direction, action.preventSplittingGroups);
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
         return {...state, flat: newLayers};
     }
@@ -280,11 +280,7 @@ export default function layers(state = defaultState, action) {
         return {...state, flat: newLayers};
     }
     case SET_SWIPE: {
-        let newLayers = state.flat;
-        if ((state.swipe === undefined) !== (action.swipe === undefined)) {
-            newLayers = LayerUtils.reorderLayer(state.flat, null, null, null, action.swipe || action.swipe === 0);
-        }
-        return {...state, flat: newLayers, swipe: action.swipe};
+        return {...state, swipe: action.swipe};
     }
     case SET_LAYERS: {
         return {...state, flat: action.layers};

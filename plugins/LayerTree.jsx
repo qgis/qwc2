@@ -537,7 +537,7 @@ class LayerTree extends React.Component {
         this.props.toggleMapTips(!this.props.mapTipsEnabled);
     }
     toggleSwipe = () => {
-        this.props.setSwipe(this.props.swipe || this.props.swipe === 0 ? undefined : 50);
+        this.props.setSwipe(this.props.swipe !== null ? null : 50);
     }
     printLegend = () => {
         let body = '<p id="legendcontainerbody">';

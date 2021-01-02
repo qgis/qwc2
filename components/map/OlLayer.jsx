@@ -111,18 +111,18 @@ class OlLayer extends React.Component {
     }
     addLayer = (layer, options) => {
         this.props.map.addLayer(layer);
-        layer.on('precompose', (event) => {
+        layer.on('prerender', (event) => {
             const ctx = event.context;
             ctx.save();
             ctx.beginPath();
-            if (this.props.swipe) {
+            if (this.props.swipe !== null && this.props.swipe !== undefined) {
                 const width = ctx.canvas.width * (this.props.swipe / 100);
                 ctx.rect(0, 0, width, ctx.canvas.height);
                 ctx.clip();
             }
         });
 
-        layer.on('postcompose', (event) => {
+        layer.on('postrender', (event) => {
             event.context.restore();
         });
 

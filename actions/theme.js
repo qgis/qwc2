@@ -117,7 +117,7 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
         } else {
             dispatch(removeAllLayers());
         }
-        dispatch(setSwipe(undefined));
+        dispatch(setSwipe(null));
         if (!theme) {
             dispatch({
                 type: SWITCHING_THEME,

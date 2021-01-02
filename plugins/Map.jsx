@@ -42,10 +42,11 @@ class MapPlugin extends React.Component {
     }
     renderLayers = () => {
         const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
-        const topLayer = (this.props.layers || [])[0];
         let zIndex = 0;
-        return this.props.layers.slice(0).reverse().map((layer) => {
-            const layers = [];
+        const renderLayers = [];
+
+        // Inject external layers
+        this.props.layers.slice(0).reverse().forEach((layer) => {
             if (layer.type === "wms" && layer.role === LayerRole.THEME) {
                 const sublayers = layer.params.LAYERS.split(",");
                 const opacities = layer.params.OPACITIES.split(",");
@@ -54,17 +55,17 @@ class MapPlugin extends React.Component {
                         const sublayer = LayerUtils.searchSubLayer(layer, "name", sublayers[i]);
                         const sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
                         if (!sublayerInvisible) {
-                            layers.push({
+                            renderLayers.push({
                                 ...layer.externalLayerMap[sublayers[i]],
                                 opacity: parseInt(opacities[i], 10),
                                 visibility: true
                             });
                         }
-                    } else if (layers.length > 0 && layers[layers.length - 1].id === layer.id) {
-                        layers[layers.length - 1].params.LAYERS += "," + sublayers[i];
-                        layers[layers.length - 1].params.OPACITIES += "," + opacities[i];
+                    } else if (renderLayers.length > 0 && renderLayers[renderLayers.length - 1].id === layer.id) {
+                        renderLayers[renderLayers.length - 1].params.LAYERS += "," + sublayers[i];
+                        renderLayers[renderLayers.length - 1].params.OPACITIES += "," + opacities[i];
                     } else {
-                        layers.push({
+                        renderLayers.push({
                             ...layer,
                             uuid: layer.uuid + "-" + i, params: {
                                 LAYERS: sublayers[i],
@@ -75,15 +76,43 @@ class MapPlugin extends React.Component {
                     }
                 }
             } else {
-                layers.push(layer);
+                renderLayers.push(layer);
             }
-            return layers.map((l) => {
-                ++zIndex;
-                const options = {...l, zIndex: zIndex};
-                return (
-                    <OlLayer key={l.uuid} options={options} swipe={layer === topLayer ? this.props.swipe : null} />
-                );
-            });
+        });
+
+        // Break out swipe layer if necessary
+        if (renderLayers.length > 0 && this.props.swipe !== null && renderLayers[renderLayers.length - 1].role > LayerRole.BACKGROUND) {
+            const lastLayer = renderLayers[renderLayers.length - 1];
+            if (lastLayer.type === "wms" && lastLayer.params.LAYERS.split(",").length > 1) {
+                const paramLayers = lastLayer.params.LAYERS.split(",");
+                const paramOpacities = lastLayer.params.OPACITIES.split(",");
+                renderLayers[renderLayers.length - 1] = {
+                    ...lastLayer,
+                    params: {
+                        LAYERS: paramLayers.slice(0, -1).join(","),
+                        OPACITIES: paramOpacities.slice(0, -1).join(","),
+                        MAP: lastLayer.params.MAP
+                    }
+                };
+                renderLayers.push({
+                    ...lastLayer,
+                    uuid: lastLayer.uuid + ":swipe",
+                    params: {
+                        LAYERS: paramLayers.slice(-1).join(","),
+                        OPACITIES: paramOpacities.slice(-1).join(","),
+                        MAP: lastLayer.params.MAP
+                    }
+                });
+            }
+        }
+
+        return renderLayers.map(layer => {
+            ++zIndex;
+            const options = {...layer, zIndex: zIndex};
+            const swipe = this.props.swipe !== null && layer === renderLayers[renderLayers.length - 1];
+            return (
+                <OlLayer key={layer.uuid} options={options} swipe={swipe ? this.props.swipe : null} />
+            );
         });
     }
     renderSupportTools = () => {

@@ -222,15 +222,15 @@ const LayerUtils = {
     pathEqualOrBelow(parent, child) {
         return isEqual(child.slice(0, parent.length), parent);
     },
-    removeLayer(layers, layer, sublayerpath, swipeActive) {
+    removeLayer(layers, layer, sublayerpath) {
         // Extract foreground layers
         const fglayers = layers.filter(lyr => lyr.role !== LayerRole.BACKGROUND);
         // Explode layers (one entry for every single sublayer)
         let exploded = LayerUtils.explodeLayers(fglayers);
         // Remove matching entries
         exploded = exploded.filter(entry => entry.layer.uuid !== layer.uuid || !LayerUtils.pathEqualOrBelow(sublayerpath, entry.path));
-        // Re-assemble layers (if swipe is active, keep first sublayer separate)
-        const newlayers = LayerUtils.implodeLayers(exploded, swipeActive);
+        // Re-assemble layers
+        const newlayers = LayerUtils.implodeLayers(exploded);
         for (const lyr of newlayers) {
             if (lyr.type === "wms") {
                 Object.assign(lyr, LayerUtils.buildWMSLayerParams(lyr));
@@ -251,7 +251,7 @@ const LayerUtils = {
             ...layers.filter(lyr => lyr.role === LayerRole.BACKGROUND)
         ];
     },
-    insertSeparator(layers, title, beforelayerId, beforesublayerpath, swipeActive) {
+    insertSeparator(layers, title, beforelayerId, beforesublayerpath) {
         // Extract foreground layers
         const fglayers = layers.filter(layer => layer.role !== LayerRole.BACKGROUND);
         // Explode layers (one entry for every single sublayer)
@@ -262,8 +262,8 @@ const LayerUtils = {
             // Add separator
             exploded.splice(pos, 0, LayerUtils.createSeparatorLayer(title)[0]);
         }
-        // Re-assemble layers (if swipe is active, keep first sublayer separate)
-        const newlayers = LayerUtils.implodeLayers(exploded, swipeActive);
+        // Re-assemble layers
+        const newlayers = LayerUtils.implodeLayers(exploded);
         for (const layer of newlayers) {
             if (layer.type === "wms") {
                 Object.assign(layer, LayerUtils.buildWMSLayerParams(layer));
@@ -275,7 +275,7 @@ const LayerUtils = {
             ...layers.filter(layer => layer.role === LayerRole.BACKGROUND)
         ];
     },
-    reorderLayer(layers, movelayer, sublayerpath, delta, swipeActive, preventSplittingGroups) {
+    reorderLayer(layers, movelayer, sublayerpath, delta, preventSplittingGroups) {
         // Extract foreground layers
         const fglayers = layers.filter(layer => layer.role !== LayerRole.BACKGROUND);
         // Explode layers (one entry for every single sublayer)
@@ -330,8 +330,8 @@ const LayerUtils = {
                 }
             }
         }
-        // Re-assemble layers (if swipe is active, keep first sublayer separate)
-        const newlayers = LayerUtils.implodeLayers(exploded, swipeActive);
+        // Re-assemble layers
+        const newlayers = LayerUtils.implodeLayers(exploded);
         // Re-add background layers
         return [
             ...newlayers,
@@ -371,16 +371,10 @@ const LayerUtils = {
             }
         }
     },
-    implodeLayers(exploded, swipeActive = false) {
+    implodeLayers(exploded) {
         const newlayers = [];
         const usedLayerUUids = new Set();
 
-        // If swipe is active, keep first layer separate
-        let swipeLayer = null;
-        if (swipeActive && exploded.length > 0) {
-            swipeLayer = exploded.shift().layer;
-            LayerUtils.addUUIDs(swipeLayer, usedLayerUUids);
-        }
         // Merge all possible items of an exploded layer array
         for (const entry of exploded) {
             const layer = entry.layer;
@@ -413,9 +407,6 @@ const LayerUtils = {
                 Object.assign(layer, LayerUtils.buildWMSLayerParams(layer));
             }
         }
-        if (swipeLayer) {
-            newlayers.unshift(swipeLayer);
-        }
         return newlayers;
     },
     insertLayer(layers, newlayer, beforeattr, beforeval) {
@@ -445,7 +436,7 @@ const LayerUtils = {
             return list.concat([...this.getSublayerNames(sublayer)]);
         }, []));
     },
-    mergeSubLayers(baselayer, addlayer, swipeActive = false) {
+    mergeSubLayers(baselayer, addlayer) {
         addlayer = {...baselayer, sublayers: addlayer.sublayers};
         addlayer.externalLayerMap = addlayer.externalLayerMap || {};
         LayerUtils.extractExternalLayersFromSublayers(addlayer, addlayer);
@@ -460,7 +451,7 @@ const LayerUtils = {
         const existing = explodedBase.map(entry => entry.sublayer.name);
         let explodedAdd = LayerUtils.explodeLayers([addlayer]);
         explodedAdd = explodedAdd.filter(entry => !existing.includes(entry.sublayer.name));
-        return LayerUtils.implodeLayers(explodedAdd.concat(explodedBase), swipeActive)[0];
+        return LayerUtils.implodeLayers(explodedAdd.concat(explodedBase))[0];
     },
     searchSubLayer(layer, attr, value, path = []) {
         if (layer.sublayers) {

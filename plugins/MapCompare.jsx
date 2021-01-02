@@ -25,7 +25,7 @@ class MapComparePlugin extends React.Component {
         swipe: PropTypes.number
     }
     render() {
-        if (!this.props.swipe && this.props.swipe !== 0) {
+        if (this.props.swipe === null) {
             return null;
         }
         const style = {left: this.props.swipe + "%"};
