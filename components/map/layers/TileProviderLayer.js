@@ -7,8 +7,8 @@
  */
 import assign from 'object-assign';
 import ol from 'openlayers';
-import TileProvider from '../../../../utils/TileConfigProvider';
-import CoordinatesUtils from '../../../../utils/CoordinatesUtils';
+import TileProvider from '../../../utils/TileConfigProvider';
+import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 
 function template(str, data) {
     return str.replace(/(?!(\{?[zyx]?\}))\{*([\w_]+)*\}/g, function() {

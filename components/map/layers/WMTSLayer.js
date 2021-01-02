@@ -8,7 +8,7 @@
 
 import ol from 'openlayers';
 import assign from 'object-assign';
-import MapUtils from '../../../../utils/MapUtils';
+import MapUtils from '../../../utils/MapUtils';
 
 function getWMSURLs(urls) {
     return urls.map((url) => url.split("?")[0]);

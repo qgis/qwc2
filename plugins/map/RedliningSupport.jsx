@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import assign from 'object-assign';
 import uuid from 'uuid';
 import ol from 'openlayers';
-import FeatureStyles from '../../components/map/openlayers/FeatureStyles';
+import FeatureStyles from '../../components/map/FeatureStyles';
 import {changeRedliningState} from '../../actions/redlining';
 import {LayerRole, addLayerFeatures, removeLayerFeatures} from '../../actions/layers';
 

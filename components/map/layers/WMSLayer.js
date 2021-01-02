@@ -8,9 +8,9 @@
 
 import ol from 'openlayers';
 import assign from 'object-assign';
-import CoordinatesUtils from '../../../../utils/CoordinatesUtils';
-import ConfigUtils from '../../../../utils/ConfigUtils';
-import MapUtils from '../../../../utils/MapUtils';
+import CoordinatesUtils from '../../../utils/CoordinatesUtils';
+import ConfigUtils from '../../../utils/ConfigUtils';
+import MapUtils from '../../../utils/MapUtils';
 
 
 function wmsToOpenlayersOptions(options) {

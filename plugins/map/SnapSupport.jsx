@@ -6,14 +6,14 @@
 * LICENSE file in the root directory of this source tree.
 */
 
+import axios from 'axios';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import ol from 'openlayers';
 import uuid from 'uuid';
 import {LayerRole} from '../../actions/layers';
 import IdentifyUtils from '../../utils/IdentifyUtils';
-import axios from 'axios';
-import ol from 'openlayers';
 
 class SnapSupport extends React.Component {
     static propTypes = {

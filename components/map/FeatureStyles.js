@@ -8,7 +8,7 @@
 
 import ol from 'openlayers';
 import assign from 'object-assign';
-import ConfigUtils from '../../../utils/ConfigUtils';
+import ConfigUtils from '../../utils/ConfigUtils';
 import markerIcon from './img/marker-icon.png';
 
 export default {

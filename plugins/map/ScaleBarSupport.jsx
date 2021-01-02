@@ -1,10 +1,31 @@
 /**
-* Copyright 2016, GeoSolutions Sas.
-* All rights reserved.
-*
-* This source code is licensed under the BSD-style license found in the
-* LICENSE file in the root directory of this source tree.
-*/
+ * Copyright 2015, GeoSolutions Sas.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
-import ScaleBar from '../../components/map/openlayers/ScaleBar';
-export default ScaleBar;
+import React from 'react';
+import PropTypes from 'prop-types';
+import assign from 'object-assign';
+import ol from 'openlayers';
+
+export default class ScaleBarSupport extends React.Component {
+    static propTypes = {
+        map: PropTypes.object,
+        // See https://openlayers.org/en/latest/apidoc/ol.control.ScaleLine.html
+        options: PropTypes.object
+    }
+    static defaultOpt = {
+        minWidth: 64,
+        units: 'metric'
+    }
+    constructor(props) {
+        super(props);
+        this.scalebar = new ol.control.ScaleLine(assign({}, ScaleBarSupport.defaultOpt, props.options));
+    }
+    render() {
+        return null;
+    }
+}

@@ -7,7 +7,7 @@
  */
 
 import ol from 'openlayers';
-import MapUtils from '../../../../utils/MapUtils';
+import MapUtils from '../../../utils/MapUtils';
 
 export default {
     create: (options) => {

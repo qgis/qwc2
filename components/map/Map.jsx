@@ -10,10 +10,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
-import {changeMapView, clickOnMap, clickFeatureOnMap} from '../../../actions/map';
-import {changeMousePositionState} from '../../../actions/mousePosition';
-import {setCurrentTask} from '../../../actions/task';
-import MapUtils from '../../../utils/MapUtils';
+import {changeMapView, clickOnMap, clickFeatureOnMap} from '../../actions/map';
+import {changeMousePositionState} from '../../actions/mousePosition';
+import {setCurrentTask} from '../../actions/task';
+import MapUtils from '../../utils/MapUtils';
 
 class OpenlayersMap extends React.Component {
     static propTypes = {
@@ -189,7 +189,7 @@ class OpenlayersMap extends React.Component {
                 layer: layer ? layer.get('id') : null,
                 feature: feature.getId(),
                 geomType: feature.getGeometry().getType(),
-                geometry: feature.getGeometry().getCoordinates()
+                geometry: feature.getGeometry().getCoordinates ? feature.getGeometry().getCoordinates() : null
             });
         } else {
             this.props.onClick(data);

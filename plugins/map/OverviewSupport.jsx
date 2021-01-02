@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import ol from 'openlayers';
 import assign from 'object-assign';
 import {LayerRole} from '../../actions/layers';
-import Layer from '../../components/map/openlayers/Layer';
+import Layer from '../../components/map/Layer';
 
 import './style/OverviewSupport.css';
 

@@ -13,8 +13,8 @@ import assign from 'object-assign';
 import Message from '../components/I18N/Message';
 import Spinner from '../components/Spinner';
 import {LayerRole} from '../actions/layers';
-import Map from '../components/map/openlayers/Map';
-import Layer from '../components/map/openlayers/Layer';
+import Map from '../components/map/Map';
+import Layer from '../components/map/Layer';
 import MapUtils from '../utils/MapUtils';
 import LayerUtils from '../utils/LayerUtils';
 

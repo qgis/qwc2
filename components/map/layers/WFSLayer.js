@@ -7,7 +7,7 @@
  */
 
 import ol from 'openlayers';
-import CoordinatesUtils from '../../../../utils/CoordinatesUtils';
+import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import FeatureStyles from '../FeatureStyles';
 
 

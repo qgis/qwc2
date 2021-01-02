@@ -12,8 +12,8 @@ import assign from 'object-assign';
 import isEqual from 'lodash.isequal';
 import omit from 'lodash.omit';
 import ol from 'openlayers';
-import {setLayerLoading} from '../../../actions/layers';
-import LayerRegistry from './plugins/index';
+import {setLayerLoading} from '../../actions/layers';
+import LayerRegistry from './layers/index';
 
 class OpenlayersLayer extends React.Component {
     static propTypes = {
