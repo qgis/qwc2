@@ -8,8 +8,7 @@
 
 import {
     CHANGE_MAP_VIEW, CONFIGURE_MAP, CHANGE_ZOOM_LVL, ZOOM_TO_EXTENT, ZOOM_TO_POINT,
-    PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, CLICK_FEATURE_ON_MAP, TOGGLE_MAPTIPS,
-    SET_TOPBAR_HEIGHT
+    PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, TOGGLE_MAPTIPS, SET_TOPBAR_HEIGHT
 } from '../actions/map';
 import assign from 'object-assign';
 import isEmpty from 'lodash.isempty';
@@ -26,7 +25,8 @@ const defaultState = {
     zoom: 0,
     scales: [0],
     resolutions: [0],
-    topbarHeight: 0
+    topbarHeight: 0,
+    click: null
 };
 
 export default function map(state = defaultState, action) {
@@ -124,10 +124,7 @@ export default function map(state = defaultState, action) {
         });
     }
     case CLICK_ON_MAP: {
-        return assign({}, state, {clickPoint: action.point});
-    }
-    case CLICK_FEATURE_ON_MAP: {
-        return assign({}, state, {clickFeature: action.feature});
+        return assign({}, state, {click: action.click});
     }
     case TOGGLE_MAPTIPS: {
         return assign({}, state, {maptips: action.active});

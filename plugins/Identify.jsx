@@ -25,7 +25,7 @@ class Identify extends React.Component {
         addMarker: PropTypes.func,
         attributeCalculator: PropTypes.func,
         attributeTransform: PropTypes.func,
-        clickFeature: PropTypes.object,
+        click: PropTypes.object,
         displayResultTree: PropTypes.bool,
         enableExport: PropTypes.bool,
         enabled: PropTypes.bool,
@@ -38,7 +38,6 @@ class Identify extends React.Component {
         longAttributesDisplay: PropTypes.string,
         map: PropTypes.object,
         params: PropTypes.object,
-        point: PropTypes.object,
         purgeResults: PropTypes.func,
         removeLayer: PropTypes.func,
         removeMarker: PropTypes.func,
@@ -56,14 +55,13 @@ class Identify extends React.Component {
         featureInfoReturnsLayerName: true
     }
     componentDidUpdate(prevProps, prevState) {
-        const point = this.queryPoint(prevProps);
-        const clickFeature = this.queryFeature(prevProps);
-        if (point || clickFeature) {
+        const clickPoint = this.queryPoint(prevProps);
+        if (clickPoint) {
             // Remove any search selection layer to avoid confusion
             this.props.removeLayer("searchselection");
 
             let queryableLayers = [];
-            if (point) {
+            if (clickPoint) {
                 queryableLayers = this.props.layers.filter((l) => {
                     // All non-background WMS layers with a non-empty queryLayers list
                     return l.visibility && l.type === 'wms' && l.role !== LayerRole.BACKGROUND && (l.queryLayers || []).length > 0;
@@ -85,60 +83,39 @@ class Identify extends React.Component {
                             layers.push(assign({}, layer, {queryLayers: [queryLayers[i]]}));
                         }
                     }
-                    layers.forEach(l => this.props.sendRequest(IdentifyUtils.buildRequest(l, l.queryLayers.join(","), point, this.props.map, this.props.params)));
+                    layers.forEach(l => this.props.sendRequest(IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, this.props.params)));
                 });
             }
             let queryFeature = null;
-            if (clickFeature) {
-                const layer = this.props.layers.find(l => l.id === clickFeature.layer);
+            if (this.props.click.feature) {
+                const layer = this.props.layers.find(l => l.id === this.props.click.layer);
                 if (layer && layer.role === LayerRole.USERLAYER && layer.type === "vector" && !isEmpty(layer.features)) {
-                    queryFeature = layer.features.find(feature =>  feature.id === clickFeature.feature);
+                    queryFeature = layer.features.find(feature =>  feature.id === this.props.click.feature);
                     if (queryFeature && !isEmpty(queryFeature.properties)) {
-                        this.props.setIdentifyFeatureResult(clickFeature.coordinate, layer.name, queryFeature);
+                        this.props.setIdentifyFeatureResult(this.props.click.coordinate, layer.name, queryFeature);
                     }
                 }
             }
             if (isEmpty(queryableLayers) && !queryFeature) {
                 this.props.identifyEmpty();
             }
-            this.props.addMarker('identify', point, '', this.props.map.projection);
+            this.props.addMarker('identify', clickPoint, '', this.props.map.projection);
         }
         if (!this.props.enabled && prevProps.enabled) {
             this.onClose();
         }
     }
     queryPoint = (prevProps) => {
-        if (this.props.enabled && this.props.clickFeature && this.props.clickFeature.feature === 'searchmarker' && this.props.clickFeature.geometry) {
-            if (this.props.clickFeature !== prevProps.clickFeature) {
-                this.props.purgeResults();
-                return this.props.clickFeature.geometry;
-            }
+        if (!this.props.enabled || this.props.click.button !== 0 || this.props.click === prevProps.click || this.props.click.feature === "startupposmarker") {
+            return null;
         }
-        if (this.props.enabled && this.props.clickFeature && this.props.clickFeature.coordinate) {
-            if (!this.props.clickFeature || this.props.clickFeature.coordinate !== prevProps.clickFeature.coordinate) {
-                this.props.purgeResults();
-                return this.props.clickFeature.coordinate;
-            }
+        if (this.props.click.modifiers.ctrl !== true) {
+            this.props.purgeResults();
         }
-
-        if (this.props.enabled && this.props.point && this.props.point.button === 0 && this.props.point.coordinate) {
-            if (!prevProps.point.coordinate ||
-                this.props.point.coordinate[0] !== prevProps.point.coordinate[0] ||
-                this.props.point.coordinate[1] !== prevProps.point.coordinate[1]
-            ) {
-                if (this.props.point.modifiers.ctrl !== true) {
-                    this.props.purgeResults();
-                }
-                return this.props.point.coordinate;
-            }
+        if (this.props.click.feature === 'searchmarker' && this.props.click.geometry) {
+            return this.props.click.geometry;
         }
-        return null;
-    }
-    queryFeature = (prevProps) => {
-        if (this.props.enabled && this.props.clickFeature && this.props.clickFeature !== prevProps.clickFeature && this.props.clickFeature.geometry) {
-            return this.props.clickFeature;
-        }
-        return null;
+        return this.props.click.coordinate;
     }
     onClose = () => {
         this.props.removeMarker('identify');
@@ -173,12 +150,11 @@ class Identify extends React.Component {
 
 const selector = (state) => ({
     enabled: state.task.id === "Identify" || state.identify.tool === "Identify",
-    responses: state.identify && state.identify.responses || [],
-    requests: state.identify && state.identify.requests || [],
-    map: state.map ? state.map : null,
-    point: state.map && state.map.clickPoint || {},
-    clickFeature: state.map.clickFeature || {},
-    layers: state.layers && state.layers.flat || []
+    responses: state.identify.responses || [],
+    requests: state.identify.requests || [],
+    map: state.map,
+    click: state.map.click || {},
+    layers: state.layers.flat
 });
 
 export default connect(selector, {

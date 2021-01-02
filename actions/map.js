@@ -14,7 +14,6 @@ ReducerIndex.register("map", mapReducer);
 export const CHANGE_MAP_VIEW = 'CHANGE_MAP_VIEW';
 export const CONFIGURE_MAP = 'CONFIGURE_MAP';
 export const CLICK_ON_MAP = 'CLICK_ON_MAP';
-export const CLICK_FEATURE_ON_MAP = 'CLICK_FEATURE_ON_MAP';
 export const CHANGE_ZOOM_LVL = 'CHANGE_ZOOM_LVL';
 export const PAN_TO = 'PAN_TO';
 export const ZOOM_TO_EXTENT = 'ZOOM_TO_EXTENT';
@@ -52,17 +51,10 @@ export function configureMap(crs, scales, view) {
     };
 }
 
-export function clickOnMap(point) {
+export function clickOnMap(clickData) {
     return {
         type: CLICK_ON_MAP,
-        point: point
-    };
-}
-
-export function clickFeatureOnMap(feature) {
-    return {
-        type: CLICK_FEATURE_ON_MAP,
-        feature: feature
+        click: clickData
     };
 }
 

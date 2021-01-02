@@ -86,10 +86,10 @@ class Editing extends React.Component {
                 this.changeSelectedLayer(null);
             }
         }
-        // If clickPoint changed and in pick mode with a selected layer, trigger a pick
+        // If click point changed and in pick mode with a selected layer, trigger a pick
         if (this.props.enabled && prevProps.enabled && this.props.editing.action === 'Pick' && this.state.selectedLayer && !this.props.editing.changed) {
-            const newPoint = this.props.map.clickPoint || {};
-            const oldPoint = prevProps.map.clickPoint || {};
+            const newPoint = this.props.map.click || {};
+            const oldPoint = prevProps.map.click || {};
             if (newPoint.coordinate && !isEqual(newPoint.coordinate, oldPoint.coordinate)) {
                 const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
                 this.props.iface.getFeature(this.editLayerId(this.state.selectedLayer), newPoint.coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
@@ -122,7 +122,7 @@ class Editing extends React.Component {
             this.setState({pickedFeatures: null});
         }
         // Always clear clicked pos if enabled
-        if (this.props.map.clickPoint && this.props.enabled) {
+        if (this.props.map.click && this.props.enabled) {
             this.props.clickOnMap(null);
         }
     }

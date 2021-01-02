@@ -10,7 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
-import {changeMapView, clickOnMap, clickFeatureOnMap} from '../../actions/map';
+import {changeMapView, clickOnMap} from '../../actions/map';
 import {changeMousePositionState} from '../../actions/mousePosition';
 import {setCurrentTask} from '../../actions/task';
 import MapUtils from '../../utils/MapUtils';
@@ -21,11 +21,9 @@ class OlMap extends React.Component {
         center: PropTypes.array,
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         id: PropTypes.string,
-        identifyEnabled: PropTypes.bool,
         mapOptions: PropTypes.object,
         mapStateSource: PropTypes.string,
         onClick: PropTypes.func,
-        onFeatureClick: PropTypes.func,
         onMapViewChanges: PropTypes.func,
         onMouseMove: PropTypes.func,
         projection: PropTypes.string,
@@ -166,7 +164,7 @@ class OlMap extends React.Component {
         this.map.forEachFeatureAtPixel(pixel, (feature, layer) => {
             features.push([feature, layer]);
         });
-        const data = {
+        let data = {
             coordinate: this.map.getEventCoordinate(event),
             pixel: this.map.getEventPixel(event),
             modifiers: {
@@ -176,19 +174,18 @@ class OlMap extends React.Component {
             },
             button: button
         };
-        if (!this.props.identifyEnabled && !isEmpty(features)) {
+        if (!isEmpty(features)) {
             const feature = features[0][0];
             const layer = features[0][1];
-            this.props.onFeatureClick({
+            data = {
                 ...data,
                 layer: layer ? layer.get('id') : null,
                 feature: feature.getId(),
                 geomType: feature.getGeometry().getType(),
                 geometry: feature.getGeometry().getCoordinates ? feature.getGeometry().getCoordinates() : null
-            });
-        } else {
-            this.props.onClick(data);
+            };
         }
+        this.props.onClick(data);
     }
     updateMapInfoState = () => {
         const view = this.map.getView();
@@ -224,12 +221,10 @@ class OlMap extends React.Component {
 
 export default connect((state) => ({
     trackMousePos: state.mousePosition.enabled || false,
-    identifyEnabled: state.identify.tool ? true : false,
     unsetTaskOnMapClick: state.task.unsetOnMapClick
 }), {
     onMapViewChanges: changeMapView,
     onClick: clickOnMap,
-    onFeatureClick: clickFeatureOnMap,
     onMouseMove: changeMousePositionState,
     setCurrentTask: setCurrentTask
 })(OlMap);

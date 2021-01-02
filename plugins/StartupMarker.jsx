@@ -15,7 +15,7 @@ import {UrlParams} from '../utils/PermaLinkUtils';
 class StartupMarker extends React.Component {
     static propTypes = {
         addMarker: PropTypes.func,
-        clickFeature: PropTypes.object,
+        click: PropTypes.object,
         map: PropTypes.object,
         removeMarker: PropTypes.func,
         removeMode: PropTypes.string, // onpan, onzoom, onclickonmarker
@@ -40,7 +40,7 @@ class StartupMarker extends React.Component {
             if (
                 (prevProps.removeMode === 'onpan' && this.props.map.center !== prevProps.map.center && this.props.map.zoom === prevProps.map.zoom) ||
                 (prevProps.removeMode === 'onzoom' && this.props.map.zoom !== prevProps.map.zoom) ||
-                (prevProps.removeMode === 'onclickonmarker' && this.props.clickFeature && this.props.clickFeature.feature === 'startupposmarker')
+                (prevProps.removeMode === 'onclickonmarker' && this.props.click && this.props.click.feature === 'startupposmarker')
             ) {
                 prevProps.removeMarker('startupposmarker');
                 this.markerSet = false;
@@ -54,7 +54,7 @@ class StartupMarker extends React.Component {
 
 export default connect(state => ({
     startupParams: state.localConfig.startupParams,
-    clickFeature: state.map.clickFeature || {},
+    click: state.map.click || {},
     map: state.map,
     theme: state.theme && state.theme.current || null
 }), {
