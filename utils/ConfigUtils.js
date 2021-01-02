@@ -116,6 +116,12 @@ const ConfigUtils = {
             return theme.config[prop];
         }
         return defaultConfig[prop];
+    },
+    getAssetsPath() {
+        return (ConfigUtils.getConfigProp("assetsPath") || "assets").replace(/\/$/g, "");
+    },
+    getTranslationsPath() {
+        return (ConfigUtils.getConfigProp("translationsPath") || "translations").replace(/\/$/g, "");
     }
 };
 

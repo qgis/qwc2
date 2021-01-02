@@ -40,7 +40,7 @@ export default class QtDesignerForm extends React.Component {
     componentDidMount() {
         let url = this.props.form;
         if (url && url.startsWith(":/")) {
-            const assetsPath = ConfigUtils.getConfigProp("assetsPath");
+            const assetsPath = ConfigUtils.getAssetsPath();
             url = assetsPath + this.props.form.substr(1);
         }
 

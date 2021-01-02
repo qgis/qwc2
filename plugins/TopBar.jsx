@@ -48,7 +48,7 @@ class TopBar extends React.Component {
     render() {
         let buttonContents;
         let logo;
-        const assetsPath = ConfigUtils.getConfigProp("assetsPath");
+        const assetsPath = ConfigUtils.getAssetsPath();
         if (this.props.mobile) {
             buttonContents = (
                 <span className="appmenu-button">

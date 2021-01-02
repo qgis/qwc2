@@ -140,7 +140,7 @@ const ThemeUtils = {
                 id: theme.id,
                 text: theme.title,
                 theme: theme,
-                thumbnail: ConfigUtils.getConfigProp("assetsPath") + "/" + theme.thumbnail
+                thumbnail: ConfigUtils.getAssetsPath() + "/" + theme.thumbnail
             }))
         }];
     },

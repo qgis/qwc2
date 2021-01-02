@@ -285,7 +285,7 @@ class Editing extends React.Component {
         if (curConfig && curConfig.form) {
             let url = curConfig.form;
             if (url && url.startsWith(":/")) {
-                const assetsPath = ConfigUtils.getConfigProp("assetsPath");
+                const assetsPath = ConfigUtils.getAssetsPath();
                 url = assetsPath + curConfig.form.substr(1);
             }
             axios.get(url).then(response => {

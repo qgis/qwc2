@@ -574,7 +574,7 @@ class LayerTree extends React.Component {
             setLegendPrintContent();
             this.legendPrintWindow.focus();
         } else {
-            const assetsPath = ConfigUtils.getConfigProp("assetsPath");
+            const assetsPath = ConfigUtils.getAssetsPath();
             this.legendPrintWindow = window.open(assetsPath + "/templates/legendprint.html", "Legend", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes");
             if (window.navigator.userAgent.indexOf('Trident/') > 0) {
                 // IE...

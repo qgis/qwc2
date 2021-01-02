@@ -82,7 +82,7 @@ class BackgroundSwitcher extends React.Component {
         return null;
     }
     renderLayerItem = (layer, visible) => {
-        const assetsPath = ConfigUtils.getConfigProp("assetsPath");
+        const assetsPath = ConfigUtils.getAssetsPath();
         const itemclasses = classnames({
             "background-switcher-item": true,
             "background-switcher-item-active": visible
@@ -99,7 +99,7 @@ class BackgroundSwitcher extends React.Component {
         );
     }
     renderGroupItem = (entry) => {
-        const assetsPath = ConfigUtils.getConfigProp("assetsPath");
+        const assetsPath = ConfigUtils.getAssetsPath();
         const layer = (entry.layers.find(l => l.visibility === true) || entry.layers.find(l => l.default === true)) || entry.layers[entry.layers.length-1];
 
         const itemclasses = classnames({
@@ -127,7 +127,7 @@ class BackgroundSwitcher extends React.Component {
         );
     }
     updateGroupItem = (ev, layer) => {
-        const assetsPath = ConfigUtils.getConfigProp("assetsPath");
+        const assetsPath = ConfigUtils.getAssetsPath();
         ev.target.parentElement.parentElement.childNodes[0].firstChild.innerText = layer.title;
         ev.target.parentElement.parentElement.childNodes[1].firstChild.src = assetsPath + "/" + layer.thumbnail;
     }

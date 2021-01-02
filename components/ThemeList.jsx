@@ -66,7 +66,7 @@ class ThemeList extends React.Component {
         return false;
     }
     renderThemeGroup = (group, filter) => {
-        const assetsPath = ConfigUtils.getConfigProp("assetsPath");
+        const assetsPath = ConfigUtils.getAssetsPath();
         let subdirs = (group && group.subdirs ? group.subdirs : []);
         if (filter) {
             subdirs = subdirs.filter(subdir => this.groupMatchesFilter(subdir, filter));

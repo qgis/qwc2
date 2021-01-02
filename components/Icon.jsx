@@ -42,7 +42,7 @@ export default class Icon extends React.Component {
             title = LocaleUtils.getMessageById(this.context.messages, this.props.titlemsgid);
         }
         if (this.props.icon.startsWith(":/")) {
-            const assetsPath = ConfigUtils.getConfigProp("assetsPath");
+            const assetsPath = ConfigUtils.getAssetsPath();
             const src = assetsPath + this.props.icon.substr(1);
             return (
                 <img alt={title} className={classes} onClick={this.props.onClick} src={src} title={title} />

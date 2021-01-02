@@ -190,7 +190,7 @@ class SearchBox extends React.Component {
         }
         const featureResultCount = (searchResults.result_counts || []).reduce((res, entry) => res + (entry.dataproduct_id !== 'dataproduct' ? (entry.count || 0) : 0), 0);
         const additionalResults = featureResultCount - features.length;
-        const iconPath = ConfigUtils.getConfigProp("assetsPath").replace(/\/$/g, "") + '/img/search/';
+        const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
         return (
             <div key="places">
                 <div className="searchbox-results-section-title" onClick={() => this.toggleSection("places")} onMouseDown={this.killEvent}>
@@ -239,7 +239,7 @@ class SearchBox extends React.Component {
         );
     }
     renderLayer = (dataproduct, idx) => {
-        const iconPath = ConfigUtils.getConfigProp("assetsPath").replace(/\/$/g, "") + '/img/search/';
+        const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
         const showAbstract = dataproduct.dataproduct_id in (this.state.activeLayerInfo || {});
         return (
             <div key={"p" + idx}>
@@ -257,7 +257,7 @@ class SearchBox extends React.Component {
         );
     }
     renderLayerGroup = (dataproduct, idx) => {
-        const iconPath = ConfigUtils.getConfigProp("assetsPath").replace(/\/$/g, "") + '/img/search/';
+        const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
         const showAbstract = dataproduct.dataproduct_id in (this.state.activeLayerInfo || {});
         return [(
             <div key={"g" + idx}>

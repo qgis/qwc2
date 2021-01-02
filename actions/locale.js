@@ -23,7 +23,7 @@ export function loadLocale(defaultLangData) {
             headers: {'Content-Type': 'application/json'},
             data: {}
         };
-        const translationsPath = ConfigUtils.getConfigProp("translationsPath");
+        const translationsPath = ConfigUtils.getTranslationsPath();
         axios.get(translationsPath + '/' + lang + '.json', config).then(response => {
             dispatch({
                 type: CHANGE_LOCALE,
