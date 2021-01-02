@@ -21,7 +21,7 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 const defaultState = {
     bbox: {bounds: [0, 0, 0, 0], rotation: 0},
     center: [0, 0],
-    projection: "EPSG:4326",
+    projection: "EPSG:3857",
     zoom: 0,
     scales: [0],
     resolutions: [0],

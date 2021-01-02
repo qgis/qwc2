@@ -144,6 +144,7 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
 
         // Inherit defaults if necessary
         theme = assign({}, theme, {
+            mapCrs: theme.mapCrs || "EPSG:3857",
             version: theme.version || themes.defaultWMSVersion || "1.3.0",
             scales: theme.scales || themes.defaultScales || MapUtils.getGoogleMercatorScales(0, 21),
             printScales: theme.printScales || themes.defaultPrintScales || undefined,

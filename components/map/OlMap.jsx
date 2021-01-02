@@ -41,8 +41,7 @@ class OlMap extends React.Component {
         onClick: () => {},
         onFeatureClick: () => {},
         onMouseMove: () => {},
-        mapOptions: {},
-        projection: 'EPSG:3857'
+        mapOptions: {}
     }
     state = {
         projection: null,
