@@ -10,9 +10,20 @@ import ol from 'openlayers';
 import ConfigUtils from './ConfigUtils';
 import markerIcon from './img/marker-icon.png';
 
+const DEFAULT_FEATURE_STYLE = {
+    strokeColor: [0, 0, 255, 1],
+    strokeWidth: 1,
+    strokeDash: [4],
+    fillColor: [255, 0, 255, 0.33],
+    circleRadius: 10,
+    textFill: "black",
+    textStroke: "white",
+    textFont: "11pt sans-serif"
+};
+
 export default {
     default: (feature, options) => {
-        const opts = {...ConfigUtils.getConfigProp("defaultFeatureStyle"), ...options};
+        const opts = {...DEFAULT_FEATURE_STYLE, ...ConfigUtils.getConfigProp("defaultFeatureStyle"), ...options};
         return new ol.style.Style({
             fill: new ol.style.Fill({
                 color: opts.fillColor
