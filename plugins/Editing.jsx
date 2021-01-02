@@ -27,6 +27,7 @@ import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import ConfigUtils from '../utils/ConfigUtils';
+import EditingInterface from '../utils/EditingInterface';
 import LayerUtils from '../utils/LayerUtils';
 import './style/Editing.css';
 
@@ -528,7 +529,7 @@ class Editing extends React.Component {
     }
 }
 
-export default (iface) => {
+export default (iface = EditingInterface) => {
     return connect(state => ({
         enabled: state.task ? state.task.id === 'Editing' : false,
         theme: state.theme ? state.theme.current : null,
