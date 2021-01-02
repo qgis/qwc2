@@ -69,7 +69,7 @@ class RedliningSupport extends React.Component {
         if (this.props.redlining === prevProps.redlining) {
             // pass
         } else if (!this.props.redlining || !this.props.redlining.action) {
-            this.reset();
+            this.reset(this.props.redlining.layer !== prevProps.redlining.layer);
         } else if ((this.props.redlining.action === 'Pick' || this.props.redlining.action === 'Buffer') && (prevProps.redlining.action !== this.props.redlining.action || layerChanged)) {
             this.addPickInteraction(this.props, layerChanged);
         } else if (this.props.redlining.action === 'Delete') {
@@ -307,7 +307,7 @@ class RedliningSupport extends React.Component {
             this.props.changeRedliningState({...oldProps.redlining, selectedFeature: null});
         }
     }
-    reset = (layerChanged=false) => {
+    reset = (layerChanged = false) => {
         while (this.interactions.length > 0) {
             this.props.map.removeInteraction(this.interactions.shift());
         }
