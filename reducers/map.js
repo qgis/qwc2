@@ -21,6 +21,7 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 const defaultState = {
     bbox: {bounds: [0, 0, 0, 0], rotation: 0},
     center: [0, 0],
+    dpi: MapUtils.DEFAULT_SCREEN_DPI,
     projection: "EPSG:3857",
     zoom: 0,
     scales: [0],
@@ -66,7 +67,7 @@ export default function map(state = defaultState, action) {
         return newState;
     }
     case CONFIGURE_MAP: {
-        const resolutions = MapUtils.getResolutionsForScales(action.scales, action.crs, state.dpi || null);
+        const resolutions = MapUtils.getResolutionsForScales(action.scales, action.crs, state.dpi);
         let bounds;
         let center;
         let zoom;

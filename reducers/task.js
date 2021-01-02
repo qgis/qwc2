@@ -9,7 +9,9 @@
 import assign from 'object-assign';
 import {SET_CURRENT_TASK, SET_CURRENT_TASK_BLOCKED} from '../actions/task';
 
-const defaultState = {};
+const defaultState = {
+    unsetOnMapClick: false
+};
 
 export default function task(state = defaultState, action) {
     switch (action.type) {

@@ -11,7 +11,10 @@ import {LOCAL_CONFIG_LOADED, SET_STARTUP_PARAMETERS} from '../actions/localConfi
 import assign from 'object-assign';
 import ConfigUtils from '../utils/ConfigUtils';
 
-const defaultState = ConfigUtils.getDefaults();
+const defaultState = {
+    ...ConfigUtils.getDefaults(),
+    startupParams: {}
+};
 
 export default function localConfig(state = defaultState, action) {
     switch (action.type) {

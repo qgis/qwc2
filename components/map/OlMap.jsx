@@ -37,10 +37,6 @@ class OlMap extends React.Component {
     }
     static defaultProps = {
         id: 'map',
-        onMapViewChanges: () => {},
-        onClick: () => {},
-        onFeatureClick: () => {},
-        onMouseMove: () => {},
         mapOptions: {}
     }
     state = {
@@ -57,7 +53,7 @@ class OlMap extends React.Component {
         });
         interactions.extend([
             new ol.interaction.DragPan({kinetic: null}),
-            new ol.interaction.MouseWheelZoom({duration: props.mapOptions.zoomDuration || 0})
+            new ol.interaction.MouseWheelZoom({duration: props.mapOptions.zoomDuration || 250})
         ]);
         const controls = ol.control.defaults({
             zoom: false,
@@ -228,8 +224,8 @@ class OlMap extends React.Component {
 
 export default connect((state) => ({
     trackMousePos: state.mousePosition.enabled || false,
-    identifyEnabled: state.identify && state.identify.enabled ? true : false,
-    unsetTaskOnMapClick: state.task && state.task.unsetOnMapClick
+    identifyEnabled: state.identify.tool ? true : false,
+    unsetTaskOnMapClick: state.task.unsetOnMapClick
 }), {
     onMapViewChanges: changeMapView,
     onClick: clickOnMap,

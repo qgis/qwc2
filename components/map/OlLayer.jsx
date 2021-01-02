@@ -24,9 +24,6 @@ class OlLayer extends React.Component {
         swipe: PropTypes.number,
         zIndex: PropTypes.number
     }
-    static defaultProps = {
-        swipe: null
-    }
     state = {
         layer: null
     }
