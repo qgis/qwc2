@@ -62,7 +62,7 @@ const ConfigUtils = {
         const android23 = ua.search('android [23]') !== -1;
         const gecko = ua.indexOf('gecko') !== -1;
 
-        const mobile = isMobile.any; // typeof window.orientation !== undefined + '';
+        const mobile = isMobile(window.navigator).any;
         const msPointer = !window.PointerEvent && window.MSPointerEvent;
         const pointer = (window.PointerEvent && window.navigator.pointerEnabled && window.navigator.maxTouchPoints) || msPointer;
         const retina = ('devicePixelRatio' in window && window.devicePixelRatio > 1) ||
