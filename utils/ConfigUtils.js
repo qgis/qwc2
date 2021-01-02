@@ -14,7 +14,6 @@ import isMobile from 'ismobilejs';
 let defaultConfig = {
     translationsPath: "translations",
     bingApiKey: null,
-    mapquestApiKey: null,
     defaultFeatureStyle: {
         strokeColor: [0, 0, 255, 1],
         strokeWidth: 2,
