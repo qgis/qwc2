@@ -23,7 +23,7 @@ function wmsToOpenlayersOptions(options) {
         CRS: options.projection,
         TILED: options.tiled || false,
         VERSION: options.version || "1.3.0",
-        DPI: options.dpi || ConfigUtils.getConfigProp("wmsDpi") || 90,
+        DPI: options.dpi || ConfigUtils.getConfigProp("wmsDpi") || 96,
         ...options.params
     };
 }
