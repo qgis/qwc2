@@ -61,8 +61,11 @@ class MeasurementSupport extends React.Component {
             this.addDrawInteraction(this.props);
         } else if (!this.props.measurement.geomType) {
             this.reset();
-        } else if (this.props.measurement.lenUnit !== prevProps.measurement.lenUnit) {
-            this.relabelSegments(this.props);
+        } else if (
+            (this.props.measurement.lenUnit !== prevProps.measurement.lenUnit) ||
+            (this.props.measurement.areaUnit !== prevProps.measurement.areaUnit)
+        ) {
+            this.updateLabels(this.props);
         }
     }
     render() {
@@ -213,7 +216,7 @@ class MeasurementSupport extends React.Component {
         marker.getStyle().getText().setRotation(angle);
         marker.setGeometry(new ol.geom.Point([0.5 * (p1[0] + p2[0]), 0.5 * (p1[1] + p2[1])]));
     }
-    relabelSegments = (props) => {
+    updateLabels = (props) => {
         if (!this.sketchFeature) {
             return;
         }
@@ -224,6 +227,10 @@ class MeasurementSupport extends React.Component {
                 const text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedLength(props.measurement.lenUnit, length[i]), 2);
                 this.segmentMarkers[i].getStyle().getText().setText(text);
             }
+            this.measureLayer.changed();
+        } else if (props.measurement.geomType === 'Polygon') {
+            const text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedArea(this.props.measurement.areaUnit, props.measurement.area), 2);
+            this.sketchFeature.getStyle()[0].getText().setText(text);
             this.measureLayer.changed();
         }
     }
