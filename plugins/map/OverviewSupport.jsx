@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import ol from 'openlayers';
 import assign from 'object-assign';
 import {LayerRole} from '../../actions/layers';
-import Layer from '../../components/map/Layer';
+import OlLayer from '../../components/map/OlLayer';
 
 import './style/OverviewSupport.css';
 
@@ -41,7 +41,7 @@ class OverviewMap extends React.Component {
         const layer = this.props.layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility);
         if (layer) {
             return (
-                <Layer key={layer.uuid} map={this.overview.getOverviewMap()} options={layer} projection={this.props.projection} />
+                <OlLayer key={layer.uuid} map={this.overview.getOverviewMap()} options={layer} projection={this.props.projection} />
             );
         }
         return null;

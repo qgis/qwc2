@@ -15,7 +15,7 @@ import ol from 'openlayers';
 import {setLayerLoading} from '../../actions/layers';
 import LayerRegistry from './layers/index';
 
-class OpenlayersLayer extends React.Component {
+class OlLayer extends React.Component {
     static propTypes = {
         map: PropTypes.object,
         options: PropTypes.object,
@@ -185,4 +185,4 @@ class OpenlayersLayer extends React.Component {
 
 export default connect(() => ({}), {
     setLayerLoading: setLayerLoading
-})(OpenlayersLayer);
+})(OlLayer);

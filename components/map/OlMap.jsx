@@ -15,7 +15,7 @@ import {changeMousePositionState} from '../../actions/mousePosition';
 import {setCurrentTask} from '../../actions/task';
 import MapUtils from '../../utils/MapUtils';
 
-class OpenlayersMap extends React.Component {
+class OlMap extends React.Component {
     static propTypes = {
         bbox: PropTypes.object,
         center: PropTypes.array,
@@ -237,4 +237,4 @@ export default connect((state) => ({
     onFeatureClick: clickFeatureOnMap,
     onMouseMove: changeMousePositionState,
     setCurrentTask: setCurrentTask
-})(OpenlayersMap);
+})(OlMap);

@@ -13,8 +13,8 @@ import assign from 'object-assign';
 import Message from '../components/I18N/Message';
 import Spinner from '../components/Spinner';
 import {LayerRole} from '../actions/layers';
-import Map from '../components/map/Map';
-import Layer from '../components/map/Layer';
+import OlMap from '../components/map/OlMap';
+import OlLayer from '../components/map/OlLayer';
 import MapUtils from '../utils/MapUtils';
 import LayerUtils from '../utils/LayerUtils';
 
@@ -78,7 +78,7 @@ class MapPlugin extends React.Component {
                 ++zIndex;
                 const options = assign({}, l, {zIndex: zIndex});
                 return (
-                    <Layer key={l.uuid} options={options} swipe={layer === topLayer ? this.props.swipe : null} />
+                    <OlLayer key={l.uuid} options={options} swipe={layer === topLayer ? this.props.swipe : null} />
                 );
             });
         });
@@ -105,10 +105,10 @@ class MapPlugin extends React.Component {
             }, 1000);
         }
         return [(
-            <Map id="map" key="map" mapOptions={this.props.mapOptions} {...this.props.map}>
+            <OlMap id="map" key="map" mapOptions={this.props.mapOptions} {...this.props.map}>
                 {this.renderLayers()}
                 {this.renderSupportTools()}
-            </Map>
+            </OlMap>
         ), loadingIndicator];
     }
 }
