@@ -25,11 +25,8 @@ export default {
             matrixIds[z] = options.tileMatrixPrefix + z;
         }
         return new ol.layer.Tile({
-            opacity: options.opacity !== undefined ? options.opacity : 1,
-            visible: options.visibility !== false,
-            zIndex: options.zIndex,
-            minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.srs)[0] : undefined,
-            maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0] : undefined,
+            minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.projection)[0] : undefined,
+            maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.projection)[0] : undefined,
             source: new ol.source.WMTS(assign({
                 urls: urls,
                 layer: options.name,

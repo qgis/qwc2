@@ -55,12 +55,7 @@ function tileXYZToOpenlayersOptions(options) {
         minZoom: (options.minZoom) ? options.minZoom : 0 // dosen't affect ol layer rendering UNSUPPORTED
     });
     const source = new ol.source.XYZ(sourceOpt);
-    const olOpt = assign({}, {
-        opacity: options.opacity !== undefined ? options.opacity : 1,
-        visible: options.visibility !== false,
-        zIndex: options.zIndex,
-        source: source
-    }, (options.bounds) ? {extent: lBoundsToOlExtent(options.bounds, options.srs ? options.srs : 'EPSG:3857')} : {} );
+    const olOpt = assign({source: source}, (options.bounds) ? {extent: lBoundsToOlExtent(options.bounds, options.projection)} : {});
     return olOpt;
 }
 

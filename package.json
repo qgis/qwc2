@@ -31,7 +31,7 @@
         "lodash.sortby": "4.7.0",
         "mousetrap": "1.6.5",
         "object-assign": "4.1.1",
-        "ol": "5.3.3",
+        "ol": "6.5.0",
         "proj4": "2.6.3",
         "prop-types": "15.7.2",
         "qrcode.react": "1.0.1",

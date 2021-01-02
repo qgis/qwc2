@@ -13,7 +13,8 @@ import assign from 'object-assign';
 import Message from '../components/I18N/Message';
 import Spinner from '../components/Spinner';
 import {LayerRole} from '../actions/layers';
-import {Map, Layer} from './map/MapComponents';
+import Map from '../components/map/openlayers/Map';
+import Layer from '../components/map/openlayers/Layer';
 import MapUtils from '../utils/MapUtils';
 import LayerUtils from '../utils/LayerUtils';
 
@@ -31,20 +32,20 @@ class MapPlugin extends React.Component {
         toolsOptions: PropTypes.object
     }
     static defaultProps = {
-        tools: {},
-        toolsOptions: {},
+        mapOptions: {},
         showLoading: true,
-        mapOptions: {}
+        tools: {},
+        toolsOptions: {}
     }
     constructor(props) {
         super(props);
         this.loadingEl = null;
     }
     renderLayers = () => {
-        const projection = this.props.map.projection || 'EPSG:3857';
         const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
         const topLayer = (this.props.layers || [])[0];
-        return this.props.layers.slice(0).reverse().map((layer, index) => {
+        let zIndex = 0;
+        return this.props.layers.slice(0).reverse().map((layer) => {
             const layers = [];
             if (layer.type === "wms" && layer.role === LayerRole.THEME) {
                 const sublayers = layer.params.LAYERS.split(",");
@@ -55,7 +56,7 @@ class MapPlugin extends React.Component {
                         const sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
                         if (!sublayerInvisible) {
                             layers.push(assign({}, layer.externalLayerMap[sublayers[i]], {
-                                opacity: opacities[i],
+                                opacity: parseInt(opacities[i], 10),
                                 visibility: true
                             }));
                         }
@@ -73,45 +74,42 @@ class MapPlugin extends React.Component {
             } else {
                 layers.push(layer);
             }
-            return layers.map((l, i) => (
-                <Layer key={l.uuid} options={l} srs={projection} swipe={layer === topLayer ? this.props.swipe : null} type={l.type} zIndex={l.zIndex || (index * this.props.layers.length + i)} />
-            ));
+            return layers.map((l) => {
+                ++zIndex;
+                const options = assign({}, l, {zIndex: zIndex});
+                return (
+                    <Layer key={l.uuid} options={options} swipe={layer === topLayer ? this.props.swipe : null} />
+                );
+            });
         });
     }
     renderSupportTools = () => {
-        return Object.keys(this.props.tools).map((tool) => {
-            const Tool = this.props.tools[tool];
-            const options = this.props.toolsOptions[tool] || {};
-            return <Tool key={tool} options={options}/>;
+        return Object.entries(this.props.tools).map(([key, Tool]) => {
+            const options = this.props.toolsOptions[key] || {};
+            return <Tool key={key} options={options}/>;
         });
     }
     render() {
-        if (this.props.map) {
-            let loadingIndicator = null;
-            if (this.props.showLoading && this.props.layers.find(layer => layer.loading === true) !== undefined) {
-                loadingIndicator = (
-                    <span className="map-loading-indicator" key="map-loading" ref={el => { this.loadingEl = el; }}>
-                        <Spinner className="spinner" />
-                        <Message msgId="map.loading" />
-                    </span>
-                );
-                setTimeout(() => {
-                    if (this.loadingEl) {
-                        this.loadingEl.style.opacity = 1;
-                    }
-                }, 1000);
-            }
-            return [(
-                <Map id="map" key="map"
-                    mapOptions={this.props.mapOptions}
-                    {...this.props.map}
-                    zoomControl={false}>
-                    {this.renderLayers()}
-                    {this.renderSupportTools()}
-                </Map>
-            ), loadingIndicator];
+        let loadingIndicator = null;
+        if (this.props.showLoading && this.props.layers.find(layer => layer.loading === true) !== undefined) {
+            loadingIndicator = (
+                <span className="map-loading-indicator" key="map-loading" ref={el => { this.loadingEl = el; }}>
+                    <Spinner className="spinner" />
+                    <Message msgId="map.loading" />
+                </span>
+            );
+            setTimeout(() => {
+                if (this.loadingEl) {
+                    this.loadingEl.style.opacity = 1;
+                }
+            }, 1000);
         }
-        return null;
+        return [(
+            <Map id="map" key="map" mapOptions={this.props.mapOptions} {...this.props.map}>
+                {this.renderLayers()}
+                {this.renderSupportTools()}
+            </Map>
+        ), loadingIndicator];
     }
 }
 

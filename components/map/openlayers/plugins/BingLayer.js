@@ -25,9 +25,6 @@ export default {
         const maxNativeZoom = options.maxNativeZoom || 19;
         const layer = new ol.layer.Tile({
             preload: Infinity,
-            opacity: options.opacity !== undefined ? options.opacity : 1,
-            zIndex: options.zIndex,
-            visible: options.visibility,
             source: new ol.source.BingMaps({
                 key: key,
                 imagerySet: options.name,
@@ -36,11 +33,5 @@ export default {
         });
         setTimeout(checkLoaded.bind(null, layer, options), 1000);
         return layer;
-    },
-    isValid: (layer) => {
-        if (layer.getSource && layer.getSource().getState() === 'error') {
-            return false;
-        }
-        return true;
     }
 };

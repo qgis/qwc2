@@ -5,7 +5,7 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import {inherits} from 'ol';
+
 import OlControlAttribution from 'ol/control/Attribution';
 import OlCollection from 'ol/Collection';
 import {defaults as olControlDefaults} from 'ol/control';
@@ -29,7 +29,7 @@ import OlGeomGeometryCollection from 'ol/geom/GeometryCollection';
 import OlGeomMultiPoint from 'ol/geom/MultiPoint';
 import OlGeomPoint from 'ol/geom/Point';
 import OlGeomPolygon from 'ol/geom/Polygon';
-import OlGraticule from 'ol/Graticule';
+import OlGraticule from 'ol/layer/Graticule';
 import {defaults as olInteractionDefaults} from 'ol/interaction';
 import OlInteractionDoubleClickZoom from 'ol/interaction/DoubleClickZoom';
 import OlInteractionDragPan from 'ol/interaction/DragPan';
@@ -71,7 +71,6 @@ import 'ol/ol.css';
 
 
 export default {
-    inherits: inherits,
     Attribution: OlControlAttribution,
     Collection: OlCollection,
     control: {

@@ -6,24 +6,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 import React from 'react';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import assign from 'object-assign';
 import isEqual from 'lodash.isequal';
 import omit from 'lodash.omit';
 import ol from 'openlayers';
-import CoordinatesUtils from '../../../utils/CoordinatesUtils';
+import {setLayerLoading} from '../../../actions/layers';
 import LayerRegistry from './plugins/index';
 
-export default class OpenlayersLayer extends React.Component {
+class OpenlayersLayer extends React.Component {
     static propTypes = {
-        children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         map: PropTypes.object,
-        mapId: PropTypes.string,
         options: PropTypes.object,
+        projection: PropTypes.string,
         setLayerLoading: PropTypes.func,
-        srs: PropTypes.string,
         swipe: PropTypes.number,
-        type: PropTypes.string,
         zIndex: PropTypes.number
     }
     static defaultProps = {
@@ -33,191 +31,158 @@ export default class OpenlayersLayer extends React.Component {
         layer: null
     }
     componentDidMount() {
-        this.valid = true;
         this.tilestoload = 0;
-        this.createLayer(this.props.type, this.props.options, this.props.zIndex);
+        this.createLayer(this.makeOptions(this.props.options));
     }
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.options) {
-            this.updateLayer(this.props, prevProps);
-        }
         if (!this.state.layer) {
             return;
         }
-        const newVisibility = this.props.options && this.props.options.visibility !== false;
-        const oldVisibility = prevProps.options && prevProps.options.visibility !== false;
-        if (newVisibility !== oldVisibility && this.state.layer && this.isValid(this.state.layer)) {
-            this.state.layer.setVisible(newVisibility);
-        }
+        const newOptions = this.makeOptions(this.props.options);
+        const oldOptions = this.makeOptions(prevProps.options);
 
-        const newOpacity = (this.props.options && this.props.options.opacity !== undefined) ? this.props.options.opacity : 255.0;
-        this.state.layer.setOpacity(newOpacity / 255.0);
+        this.state.layer.setVisible(newOptions.visibility);
+        this.state.layer.setOpacity(newOptions.opacity / 255.0);
+        this.state.layer.setZIndex(newOptions.zIndex);
+        this.updateLayer(newOptions, oldOptions);
 
-        if (this.props.zIndex !== prevProps.zIndex && this.state.layer.setZIndex) {
-            this.state.layer.setZIndex(this.props.zIndex);
-        }
         if (this.props.swipe !== prevProps.swipe) {
             this.props.map.render();
         }
     }
     componentWillUnmount() {
         if (this.state.layer && this.props.map) {
-            if (this.state.layer.detached) {
-                this.state.layer.remove();
-            } else {
-                this.props.map.removeLayer(this.state.layer);
-            }
+            this.props.map.removeLayer(this.state.layer);
         }
     }
     render() {
-        if (this.props.children) {
-            const layer = this.state.layer;
-            if (!layer) {
-                return null;
-            }
-            return (
-                <noscript>
-                    {React.Children.map(this.props.children, child => {
-                        return child ? React.cloneElement(child, {container: layer}) : null;
-                    })}
-                </noscript>
-            );
-        }
-
-        const layerCreator = LayerRegistry[this.props.type];
-        if (layerCreator && layerCreator.render) {
-            return layerCreator.render(this.props.options, this.props.map, this.props.mapId, this.state.layer);
+        const layerCreator = LayerRegistry[this.props.options.type];
+        if (this.state.layer && layerCreator && layerCreator.render) {
+            return layerCreator.render(this.props.options, this.props.map, this.state.layer);
         }
         return null;
     }
-    generateOpts = (options, zIndex, srs) => {
-        return assign({}, options, {zIndex: zIndex, srs});
+    makeOptions = (options) => {
+        return assign({}, options, {
+            projection: options.srs || options.crs || options.projection || this.props.projection,
+            opacity: options.opacity !== undefined ? options.opacity : 255
+        });
     }
-    createLayer = (type, options, zIndex) => {
+    createLayer = (options) => {
         let layer = null;
-        if (type === 'group') {
-            layer = new ol.layer.Group({zIndex});
+        if (options.type === 'group') {
+            layer = new ol.layer.Group({zIndex: this.props.options.zIndex});
             layer.setLayers(new ol.Collection(options.items.map(item => {
                 const layerCreator = LayerRegistry[item.type];
                 if (layerCreator) {
-                    const layerOptions = this.generateOpts(item, zIndex, this.props.srs);
-                    const sublayer = layerCreator.create(layerOptions, this.props.map, this.props.mapId);
-                    layer.set('id', options.id + "#" + layerOptions.name);
+                    const sublayer = layerCreator.create(this.makeOptions(item), this.props.map);
+                    layer.set('id', options.id + "#" + item.name);
                     return sublayer;
                 } else {
                     return null;
                 }
             }).filter(x => x)));
         } else {
-            const layerCreator = LayerRegistry[type];
+            const layerCreator = LayerRegistry[options.type];
             if (layerCreator) {
-                const layerOptions = this.generateOpts(options, zIndex, this.props.srs);
-                layer = layerCreator.create(layerOptions, this.props.map, this.props.mapId);
+                layer = layerCreator.create(options, this.props.map);
             }
         }
         if (layer) {
             layer.set('id', options.id);
             layer.setVisible(options.visibility);
-            if (!layer.detached) {
-                this.addLayer(layer, options);
-            }
+            layer.setOpacity(options.opacity / 255.0);
+            layer.setZIndex(this.props.zIndex);
+            this.addLayer(layer, options);
             this.setState({layer: layer});
         }
     }
-    updateLayer = (newProps, oldProps) => {
+    updateLayer = (newOptions, oldOptions) => {
         // optimization to avoid to update the layer if not necessary
-        if (newProps.zIndex === oldProps.zIndex && newProps.srs === oldProps.srs) {
-            // check if options are the same, except loading
-            if (newProps.options === oldProps.options) return;
-            if (isEqual(omit(newProps.options, ["loading"]), omit(oldProps.options, ["loading"]) ) ) {
-                return;
-            }
+        if (isEqual(omit(newOptions, ["loading"]), omit(oldOptions, ["loading"]) ) ) {
+            return;
         }
-        const layerCreator = LayerRegistry[this.props.type];
-        if (layerCreator && layerCreator.update && this.state.layer) {
+        const layerCreator = LayerRegistry[this.props.options.type];
+        if (layerCreator && layerCreator.update) {
             layerCreator.update(
                 this.state.layer,
-                this.generateOpts(newProps.options, newProps.zIndex, newProps.srs),
-                this.generateOpts(oldProps.options, oldProps.zIndex, oldProps.srs),
-                this.props.map,
-                this.props.mapId
+                newOptions,
+                oldOptions,
+                this.props.map
             );
         }
     }
     addLayer = (layer, options) => {
-        if (this.isValid(layer)) {
-            this.props.map.addLayer(layer);
-            layer.on('precompose', (event) => {
-                const ctx = event.context;
-                ctx.save();
-                ctx.beginPath();
-                if (this.props.swipe) {
-                    const width = ctx.canvas.width * (this.props.swipe / 100);
-                    ctx.rect(0, 0, width, ctx.canvas.height);
-                    ctx.clip();
-                }
-            });
+        this.props.map.addLayer(layer);
+        layer.on('precompose', (event) => {
+            const ctx = event.context;
+            ctx.save();
+            ctx.beginPath();
+            if (this.props.swipe) {
+                const width = ctx.canvas.width * (this.props.swipe / 100);
+                ctx.rect(0, 0, width, ctx.canvas.height);
+                ctx.clip();
+            }
+        });
 
-            layer.on('postcompose', (event) => {
-                event.context.restore();
-            });
+        layer.on('postcompose', (event) => {
+            event.context.restore();
+        });
 
-            if (options.zoomToExtent && layer.getSource()) {
-                const map = this.props.map;
-                const source = layer.getSource();
-                source.once('change', () => {
-                    if (source.getState() === 'ready') {
-                        if (source.getFeatures().length > 0) {
-                            map.getView().fit(source.getExtent(), map.getSize());
-                        }
+        if (options.zoomToExtent && layer.getSource()) {
+            const map = this.props.map;
+            const source = layer.getSource();
+            source.once('change', () => {
+                if (source.getState() === 'ready') {
+                    if (source.getFeatures().length > 0) {
+                        map.getView().fit(source.getExtent(), map.getSize());
                     }
-                });
-            }
-            const sublayers = {};
-            if (layer instanceof ol.layer.Group) {
-                layer.getLayers().forEach(sublayer => {
-                    sublayers[options.id + "#" + sublayer.get('id')] = sublayer;
-                });
-            } else {
-                sublayers[options.id] = layer;
-            }
-            Object.entries(sublayers).map(([id, sublayer]) => {
-                if (!sublayer.getTileLoadFunction) {
-                    sublayer.getSource().on('imageloadstart', () => {
-                        this.props.setLayerLoading(id, true);
-                    });
-                    sublayer.getSource().on('imageloadend', () => {
-                        this.props.setLayerLoading(id, false);
-                    });
-                    sublayer.getSource().on('imageloaderror', () => {
-                        this.props.setLayerLoading(id, false);
-                    });
-                } else {
-                    sublayer.getSource().on('tileloadstart', () => {
-                        if (this.tilestoload === 0) {
-                            this.props.setLayerLoading(id, true);
-                        }
-                        this.tilestoload++;
-                    });
-                    sublayer.getSource().on('tileloadend', () => {
-                        this.tilestoload--;
-                        if (this.tilestoload === 0) {
-                            this.props.setLayerLoading(id, false);
-                        }
-                    });
-                    sublayer.getSource().on('tileloaderror', () => {
-                        this.tilestoload--;
-                        if (this.tilestoload === 0) {
-                            this.props.setLayerLoading(id, false);
-                        }
-                    });
                 }
             });
         }
-    }
-    isValid = (layer) => {
-        const layerCreator = LayerRegistry[this.props.type];
-        this.valid = layerCreator && layerCreator.isValid ? layerCreator.isValid(layer) : true;
-        return this.valid;
+        const sublayers = {};
+        if (layer instanceof ol.layer.Group) {
+            layer.getLayers().forEach(sublayer => {
+                sublayers[options.id + "#" + sublayer.get('id')] = sublayer;
+            });
+        } else {
+            sublayers[options.id] = layer;
+        }
+        Object.entries(sublayers).map(([id, sublayer]) => {
+            if (!sublayer.getTileLoadFunction) {
+                sublayer.getSource().on('imageloadstart', () => {
+                    this.props.setLayerLoading(id, true);
+                });
+                sublayer.getSource().on('imageloadend', () => {
+                    this.props.setLayerLoading(id, false);
+                });
+                sublayer.getSource().on('imageloaderror', () => {
+                    this.props.setLayerLoading(id, false);
+                });
+            } else {
+                sublayer.getSource().on('tileloadstart', () => {
+                    if (this.tilestoload === 0) {
+                        this.props.setLayerLoading(id, true);
+                    }
+                    this.tilestoload++;
+                });
+                sublayer.getSource().on('tileloadend', () => {
+                    this.tilestoload--;
+                    if (this.tilestoload === 0) {
+                        this.props.setLayerLoading(id, false);
+                    }
+                });
+                sublayer.getSource().on('tileloaderror', () => {
+                    this.tilestoload--;
+                    if (this.tilestoload === 0) {
+                        this.props.setLayerLoading(id, false);
+                    }
+                });
+            }
+        });
     }
 }
+
+export default connect(() => ({}), {
+    setLayerLoading: setLayerLoading
+})(OpenlayersLayer);

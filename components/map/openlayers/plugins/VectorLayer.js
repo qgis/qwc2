@@ -17,9 +17,11 @@ export default {
         const features = (options.features || []).reduce((collection, feature) => {
             const featureObject = format.readFeatures({...feature, type: "Feature"});
             featureObject.forEach(f => {
-                if (feature.crs && feature.crs !== options.srs) {
-                    f.getGeometry().transform(feature.crs, options.srs);
+                if (feature.crs && feature.crs !== options.projection) {
+                    f.getGeometry().transform(feature.crs, options.projection);
                 }
+                f.set('styleName', feature.styleName);
+                f.set('styleOptions', feature.styleOptions);
                 if (feature.styleName) {
                     f.setStyle(FeatureStyles[feature.styleName](f, feature.styleOptions || {}));
                 }
@@ -30,7 +32,6 @@ export default {
         const vectorLayer = new ol.layer.Vector({
             msId: options.id,
             source: source,
-            zIndex: options.zIndex,
             style: feature => {
                 const styleName = options.styleName || 'default';
                 const styleOptions = options.styleOptions || {};
@@ -40,8 +41,8 @@ export default {
         return vectorLayer;
     },
     update: (layer, newOptions, oldOptions) => {
-        const oldCrs = oldOptions.srs || 'EPSG:3857';
-        const newCrs = newOptions.srs || 'EPSG:3857';
+        const oldCrs = oldOptions.projection;
+        const newCrs = newOptions.projection;
         if (newCrs !== oldCrs) {
             layer.getSource().forEachFeature((f) => {
                 f.getGeometry().transform(oldCrs, newCrs);
@@ -89,9 +90,11 @@ export default {
                 // Add new
                 const featureObject = format.readFeatures({...feature, type: "Feature"});
                 featureObject.forEach(f => {
-                    if (feature.crs && feature.crs !== newOptions.srs) {
-                        f.getGeometry().transform(feature.crs, newOptions.srs);
+                    if (feature.crs && feature.crs !== newOptions.projection) {
+                        f.getGeometry().transform(feature.crs, newOptions.projection);
                     }
+                    f.set('styleName', feature.styleName);
+                    f.set('styleOptions', feature.styleOptions);
                     if (feature.styleName) {
                         f.setStyle(FeatureStyles[feature.styleName](f, feature.styleOptions || {}));
                     }

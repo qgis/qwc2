@@ -37,7 +37,7 @@ export default {
         for (const key of Object.keys(formatMap)) {
             const fmt = options.formats.find(entry => entry.toLowerCase() === key);
             if (fmt) {
-                olformat = formatMap[key](options.srs);
+                olformat = formatMap[key](options.projection);
                 format = fmt;
                 break;
             }
@@ -54,7 +54,7 @@ export default {
             url: function(extent) {
                 let requestExtent;
                 if (options.version >= "1.1.0") {
-                    extent = CoordinatesUtils.reprojectBbox(extent, options.srs, 'EPSG:4326');
+                    extent = CoordinatesUtils.reprojectBbox(extent, options.projection, 'EPSG:4326');
                     // http://augusttown.blogspot.com/2010/08/mysterious-bbox-parameter-in-web.html
                     // Invert WGS axis orentation
                     requestExtent = [extent[1], extent[0], extent[3], extent[2]];
@@ -64,7 +64,7 @@ export default {
                 const url = options.url + (options.url.endsWith('?') ? '' : '?') + 'service=WFS&version=' + options.version +
                     '&request=GetFeature&' + typeName + '=' + options.name +
                     '&outputFormat=' + encodeURIComponent(format) +
-                    '&srsName=' + options.srs +
+                    '&srsName=' + options.projection +
                     '&bbox=' + requestExtent.join(',');
                 return url;
             },
@@ -73,7 +73,6 @@ export default {
 
         return new ol.layer.Vector({
             source: vectorSource,
-            zIndex: options.zIndex,
             style: (feature) => FeatureStyles.default(feature, {
                 fillColor: options.color,
                 strokeColor: feature.getGeometry().getType().endsWith("LineString") ? options.color : "#000",

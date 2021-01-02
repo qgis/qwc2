@@ -84,7 +84,7 @@ export default class MeasurementSupport extends React.Component {
         // create an interaction to draw with
         this.drawInteraction = new ol.interaction.Draw({
             source: this.measureLayer.getSource(),
-            condition: (event) => { return event.pointerEvent.buttons === 1; },
+            condition: (event) => { return event.originalEvent.buttons === 1; },
             type: geometryType,
             style: []
         });
@@ -119,7 +119,7 @@ export default class MeasurementSupport extends React.Component {
     enterTemporaryPickMode = () => {
         this.modifyInteraction = new ol.interaction.Modify({
             features: new ol.Collection([this.sketchFeature]),
-            condition: (event) => { return event.pointerEvent.buttons === 1; },
+            condition: (event) => { return event.originalEvent.buttons === 1; },
             insertVertexCondition: () => { return this.props.measurement.geomType === 'Bearing' ? false : true; },
             deleteCondition: (event) => { return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event); }
         });

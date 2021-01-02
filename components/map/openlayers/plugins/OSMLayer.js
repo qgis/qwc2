@@ -12,11 +12,8 @@ import MapUtils from '../../../../utils/MapUtils';
 export default {
     create: (options) => {
         return new ol.layer.Tile({
-            opacity: options.opacity !== undefined ? options.opacity : 1,
-            visible: options.visibility,
-            zIndex: options.zIndex,
-            minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.srs)[0] : undefined,
-            maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0] : undefined,
+            minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.projection)[0] : undefined,
+            maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.projection)[0] : undefined,
             source: new ol.source.OSM({
                 url: options.url,
                 projection: options.projection

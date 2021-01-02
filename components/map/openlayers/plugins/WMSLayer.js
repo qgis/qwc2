@@ -14,14 +14,13 @@ import MapUtils from '../../../../utils/MapUtils';
 
 
 function wmsToOpenlayersOptions(options) {
-    // NOTE: can we use opacity to manage visibility?
     return assign({}, options.baseParams, {
         LAYERS: options.name,
         STYLES: options.style || "",
         FORMAT: options.format || 'image/png',
         TRANSPARENT: options.transparent !== undefined ? options.transparent : true,
-        SRS: options.srs,
-        CRS: options.srs,
+        SRS: options.projection,
+        CRS: options.projection,
         TILED: options.tiled || false,
         VERSION: options.version || "1.3.0",
         DPI: options.dpi || ConfigUtils.getConfigProp("wmsDpi") || 90
@@ -41,11 +40,8 @@ export default {
         }
         if (!options.tiled || !options.bbox) {
             return new ol.layer.Image({
-                opacity: options.opacity !== undefined ? options.opacity : 1,
-                visible: !!queryParameters.LAYERS && options.visibility !== false,
-                zIndex: options.zIndex,
-                minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.srs)[0] : undefined,
-                maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0] : undefined,
+                minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.projection)[0] : undefined,
+                maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.projection)[0] : undefined,
                 source: new ol.source.ImageWMS({
                     url: urls[0],
                     serverType: 'qgis',
@@ -55,7 +51,7 @@ export default {
                 })
             });
         }
-        const extent = CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, options.srs);
+        const extent = CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, options.projection);
         const tileGrid = new ol.tilegrid.TileGrid({
             extent: extent,
             tileSize: options.tileSize || 256,
@@ -63,11 +59,8 @@ export default {
             resolutions: map.getView().getResolutions()
         });
         return new ol.layer.Tile({
-            opacity: options.opacity !== undefined ? options.opacity : 1,
-            visible: options.visibility !== false,
-            zIndex: options.zIndex,
-            minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.srs)[0] : undefined,
-            maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0] : undefined,
+            minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.projection)[0] : undefined,
+            maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.projection)[0] : undefined,
             source: new ol.source.TileWMS({
                 urls: urls,
                 params: queryParameters,
@@ -101,7 +94,6 @@ export default {
             if (changed) {
                 layer.getSource().updateParams(assign(newParams, newOptions.params, {t: new Date().getMilliseconds()}));
                 layer.getSource().changed();
-                layer.setVisible(newOptions.visibility && !!newParams.LAYERS);
             }
         }
     }

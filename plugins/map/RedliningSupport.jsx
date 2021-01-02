@@ -123,7 +123,7 @@ class RedliningSupport extends React.Component {
         const isFreeHand = newProps.redlining.freehand;
         const drawInteraction = new ol.interaction.Draw({
             type: typeMap[newProps.redlining.geomType],
-            condition: (event) => { return event.pointerEvent.buttons === 1; },
+            condition: (event) => { return event.originalEvent.buttons === 1; },
             style: new ol.style.Style(),
             freehand: isFreeHand,
             geometryFunction: newProps.redlining.geomType === "Box" ? ol.interaction.createBox() : undefined
@@ -168,7 +168,7 @@ class RedliningSupport extends React.Component {
             const modifyInteraction = new ol.interaction.Modify({
                 features: new ol.Collection([this.currentFeature]),
                 condition: (event) => {
-                    return event.pointerEvent.buttons === 1;
+                    return event.originalEvent.buttons === 1;
                 },
                 deleteCondition: (event) => {
                     // delete vertices on SHIFT + click
@@ -204,14 +204,14 @@ class RedliningSupport extends React.Component {
         const selectInteraction = new ol.interaction.Select({layers: [redliningLayer], hitTolerance: 5});
         const modifyInteraction = new ol.interaction.Modify({
             features: selectInteraction.getFeatures(),
-            condition: (event) => { return event.pointerEvent.buttons === 1; },
+            condition: (event) => { return event.originalEvent.buttons === 1; },
             deleteCondition: (event) => {
                 // delete vertices on SHIFT + click
                 return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
             }
         });
         selectInteraction.on('select', (evt) => {
-            if (evt.selected.length === 1 && evt.selected[0] == this.currentFeature) {
+            if (evt.selected.length === 1 && evt.selected[0] === this.currentFeature) {
                 return;
             }
             if (this.currentFeature) {
@@ -224,14 +224,18 @@ class RedliningSupport extends React.Component {
                     this.currentFeature.setGeometry(new ol.geom.Circle(circle.center, circle.radius));
                 }
                 let newRedliningState = null;
+                const styleName = this.currentFeature.get('styleName');
+                const styleOptions = this.currentFeature.get('styleOptions');
+                this.currentFeature.setStyle(FeatureStyles[styleName](this.currentFeature, styleOptions || {}));
+                const style = this.currentFeature.getStyle();
                 if (this.currentFeature.get("isText") === true) {
                     newRedliningState = {
                         geomType: 'Text',
                         style: {
-                            borderColor: this.currentFeature.getStyle().getText().getStroke().getColor(),
-                            fillColor: this.currentFeature.getStyle().getText().getFill().getColor(),
-                            size: 2 * (this.currentFeature.getStyle().getText().getScale() - 1),
-                            text: this.currentFeature.getStyle().getText().getText()
+                            borderColor: style.getText().getStroke().getColor(),
+                            fillColor: style.getText().getFill().getColor(),
+                            size: 2 * (style.getText().getScale() - 1),
+                            text: style.getText().getText()
                         },
                         selectedFeature: this.currentFeatureObject()
                     };
@@ -239,10 +243,10 @@ class RedliningSupport extends React.Component {
                     newRedliningState = {
                         geomType: this.currentFeature.getGeometry().getType(),
                         style: {
-                            borderColor: this.currentFeature.getStyle().getStroke().getColor(),
-                            fillColor: this.currentFeature.getStyle().getFill().getColor(),
-                            size: 2 * (this.currentFeature.getStyle().getStroke().getWidth() - 1),
-                            text: this.currentFeature.getStyle().getText().getText()
+                            borderColor: style.getStroke().getColor(),
+                            fillColor: style.getFill().getColor(),
+                            size: 2 * (style.getStroke().getWidth() - 1),
+                            text: style.getText().getText()
                         },
                         selectedFeature: this.currentFeatureObject()
                     };
@@ -344,7 +348,7 @@ class RedliningSupport extends React.Component {
 }
 
 export default connect((state) => ({
-    redlining: state.redlining || {}
+    redlining: state.redlining
 }), {
     changeRedliningState: changeRedliningState,
     addLayerFeatures: addLayerFeatures,

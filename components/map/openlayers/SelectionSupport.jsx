@@ -63,7 +63,7 @@ export default class SelectionSupport extends React.Component {
         // create an interaction to draw with
         const draw = new ol.interaction.Draw({
             source: source,
-            condition: event => event.pointerEvent.buttons === 1,
+            condition: event => event.originalEvent.buttons === 1,
             type: newProps.selection.geomType,
             style: feature => FeatureStyles.default(feature, drawStyle)
         });

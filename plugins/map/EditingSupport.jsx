@@ -84,7 +84,7 @@ class EditingSupport extends React.Component {
         const drawInteraction = new ol.interaction.Draw({
             type: newProps.editing.geomType,
             source: this.layer.getSource(),
-            condition: (event) => { return event.pointerEvent.buttons === 1; },
+            condition: (event) => { return event.originalEvent.buttons === 1; },
             style: this.editStyle
         });
         drawInteraction.on('drawstart', (evt) => {
@@ -99,7 +99,7 @@ class EditingSupport extends React.Component {
                 this.currentFeature = feature;
                 const modifyInteraction = new ol.interaction.Modify({
                     features: new ol.Collection([this.currentFeature]),
-                    condition: (event) => { return event.pointerEvent.buttons === 1; },
+                    condition: (event) => { return event.originalEvent.buttons === 1; },
                     deleteCondition: (event) => {
                         // delete vertices on SHIFT + click
                         return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
@@ -126,7 +126,7 @@ class EditingSupport extends React.Component {
 
         const modifyInteraction = new ol.interaction.Modify({
             features: new ol.Collection([this.currentFeature]),
-            condition: (event) => { return event.pointerEvent.buttons === 1; },
+            condition: (event) => { return event.originalEvent.buttons === 1; },
             deleteCondition: (event) => {
                 // delete vertices on SHIFT + click
                 return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);

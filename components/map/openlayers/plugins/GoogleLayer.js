@@ -21,8 +21,9 @@ const endEvent = isTouchSupported ? 'touchend' : 'mouseup';
 // [591658711,295829355,147914678,73957339,36978669,18489335,9244667,4622334,2311167,1155583,577792,288896,144448,72224,36112,18056,9028,4514,2257,1128,564,282,141,71,35,18,9,4,2]
 
 export default {
-    create: (options, map, mapId) => {
+    create: (options, map) => {
         const google = window.google;
+        const mapId = map.get('id');
         if (!layersMap) {
             layersMap = {
                 HYBRID: google.maps.MapTypeId.HYBRID,
@@ -160,7 +161,8 @@ export default {
 
         return null;
     },
-    render(options, map, mapId) {
+    render(options, map) {
+        const mapId = map.get('id');
         // the first item that call render will take control
         if (!rendererItem) {
             rendererItem = options.name;
@@ -204,7 +206,8 @@ export default {
         }
         return null;
     },
-    update(layer, newOptions, oldOptions, map, mapId) {
+    update(layer, newOptions, oldOptions, map) {
+        const mapId = map.get('id');
         const google = window.google;
         if (!oldOptions.visibility && newOptions.visibility) {
             const view = map.getView();

@@ -5,62 +5,50 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-/**
- * Available configuration params refer to http://openlayers.org/en/v3.10.1/apidoc/ol.control.OverviewMap.html#on
- *
- * collapsed   boolean | undefined experimental Whether the control should start collapsed or not (expanded). Default to true.
- * collapseLabel   string | Node | undefined   experimental Text label to use for the expanded overviewmap button. Default is «. Instead of text, also a Node (e.g. a span element) can be used.
- * collapsible boolean | undefined experimental Whether the control can be collapsed or not. Default to true.
- * label   string | Node | undefined   experimental Text label to use for the collapsed overviewmap button. Default is ». Instead of text, also a Node (e.g. a span element) can be used.
- * target  Element | undefined experimental Specify a target if you want the control to be rendered outside of the map's viewport.
- * tipLabel    string | undefined  experimental Text label to use for the button tip. Default is Overview map
- */
-
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
 import ol from 'openlayers';
 import assign from 'object-assign';
+import {LayerRole} from '../../actions/layers';
+import Layer from '../../components/map/openlayers/Layer';
 
 import './style/OverviewSupport.css';
 
-export default class Overview extends React.Component {
+class OverviewMap extends React.Component {
     static propTypes = {
-        id: PropTypes.string,
+        layers: PropTypes.array,
         map: PropTypes.object,
         // See https://openlayers.org/en/latest/apidoc/ol.control.OverviewMap.html
-        options: PropTypes.object
+        options: PropTypes.object,
+        projection: PropTypes.string
     }
-    static defaultProps = {
-        id: 'overview',
-        options: {}
-    }
-    static defaultOpt = {
-        className: 'ol-overviewmap ol-custom-overviewmap',
-        collapseLabel: '\u00AB',
-        label: '\u00BB',
-        collapsed: true,
-        collapsible: true
-    }
-    componentDidMount() {
+    constructor(props) {
+        super(props);
         const opt = assign({
-            view: new ol.View({
-                projection: this.props.map.getView().getProjection()
-            })
-        }, Overview.defaultOpt, this.props.options);
+            className: "overview-map",
+            collapseLabel: '\u00BB',
+            label: '\u00AB',
+            collapsed: true,
+            collapsible: true
+        }, props.options);
         this.overview = new ol.control.OverviewMap(opt);
-        this.overview.setMap(this.props.map);
-    }
-    componentDidUpdate(prevProps, prevState) {
-        const oldProj = this.overview.getOverviewMap().getView().getProjection();
-        const newProj = this.props.map.getView().getProjection();
-        if (oldProj !== newProj) {
-            this.overview.getOverviewMap().setView(
-                new ol.View({projection: newProj})
-            );
-        }
+        props.map.addControl(this.overview);
+        this.overview.getOverviewMap().set('id', 'overview');
     }
     render() {
+        const layer = this.props.layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility);
+        if (layer) {
+            return (
+                <Layer key={layer.uuid} map={this.overview.getOverviewMap()} options={layer} projection={this.props.projection} />
+            );
+        }
         return null;
     }
 }
+
+export default connect((state) => ({
+    layers: state.layers.flat,
+    projection: state.map.projection
+}), {})(OverviewMap);
