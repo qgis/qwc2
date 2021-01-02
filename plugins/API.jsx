@@ -9,7 +9,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import assign from 'object-assign';
 import {LayerRole} from '../actions/layers';
 import LayerUtils from '../utils/LayerUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
@@ -64,11 +63,9 @@ function extractFunctions(obj) {
 
 export default connect(state => ({
     mapCrs: state.map.projection
-}),
-assign(
-    {},
-    extractFunctions(layerActions),
-    extractFunctions(mapActions),
-    extractFunctions(taskActions),
-    extractFunctions(windowsActions)
-))(API);
+}), {
+    ...extractFunctions(layerActions),
+    ...extractFunctions(mapActions),
+    ...extractFunctions(taskActions),
+    ...extractFunctions(windowsActions)
+})(API);

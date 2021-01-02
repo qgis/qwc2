@@ -9,7 +9,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import assign from 'object-assign';
 import Mousetrap from 'mousetrap';
 import {changeRedliningState} from '../actions/redlining';
 import {LayerRole, addLayer, removeLayer, clearLayer} from '../actions/layers';
@@ -65,12 +64,13 @@ class ScratchDrawing extends React.Component {
         }
     }
     drawingStyle = (style) => {
-        return assign({}, {
+        return {
             borderColor: [255, 0, 0, 1],
             size: 2,
             fillColor: [255, 255, 255, 0.5],
-            text: ""
-        }, style);
+            text: "",
+            ...style
+        };
     }
     keyPressed = (ev) => {
         if (ev.keyCode === 27) {
@@ -98,7 +98,7 @@ class ScratchDrawing extends React.Component {
         Mousetrap.unbind('del', this.triggerDelete);
     }
     updateRedliningState = (diff) => {
-        const newState = assign({}, this.props.redlining, diff);
+        const newState = {...this.props.redlining, ...diff};
         this.props.changeRedliningState(newState);
     }
     renderBody = () => {

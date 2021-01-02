@@ -7,7 +7,6 @@
  */
 
 import {CHANGE_LOCATE_STATE, LOCATE_ERROR} from '../actions/locate';
-import assign from 'object-assign';
 
 const defaultState = {
     state: "DISABLED"
@@ -16,14 +15,10 @@ const defaultState = {
 export default function locate(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_LOCATE_STATE: {
-        return assign({}, state, {
-            state: action.state
-        });
+        return {...state, state: action.state};
     }
     case LOCATE_ERROR: {
-        return assign({}, state, {
-            error: action.error
-        });
+        return {...state, error: action.error};
     }
     default:
         return state;

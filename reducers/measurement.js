@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assign from 'object-assign';
 import {CHANGE_MEASUREMENT_STATE} from '../actions/measurement';
 
 const defaultState = {
@@ -22,7 +21,7 @@ const defaultState = {
 export default function measurement(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_MEASUREMENT_STATE: {
-        return assign({}, {lenUnit: state.lenUnit, areaUnit: state.areaUnit}, action.data);
+        return {lenUnit: state.lenUnit, areaUnit: state.areaUnit, ...action.data};
     }
     default:
         return state;

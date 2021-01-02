@@ -5,7 +5,6 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import assign from 'object-assign';
 import ol from 'openlayers';
 import TileProvider from '../../../utils/TileConfigProvider';
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
@@ -48,14 +47,17 @@ function lBoundsToOlExtent(bounds, destPrj) {
 
 function tileXYZToOpenlayersOptions(options) {
     const urls = (options.url.match(/(\{s\})/)) ? getUrls(options) : [template(options.url, options)];
-    const sourceOpt = assign({}, {
+    const sourceOpt = {
         urls: urls,
         attributions: (options.attribution) ? [new ol.Attribution({ html: options.attribution})] : [],
         maxZoom: (options.maxZoom) ? options.maxZoom : 18,
         minZoom: (options.minZoom) ? options.minZoom : 0 // dosen't affect ol layer rendering UNSUPPORTED
-    });
+    };
     const source = new ol.source.XYZ(sourceOpt);
-    const olOpt = assign({source: source}, (options.bounds) ? {extent: lBoundsToOlExtent(options.bounds, options.projection)} : {});
+    const olOpt = {source: source};
+    if (options.bounds) {
+        olOpt.extent = lBoundsToOlExtent(options.bounds, options.projection);
+    }
     return olOpt;
 }
 

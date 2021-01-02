@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assign from 'object-assign';
 import uuid from 'uuid';
 import ol from 'openlayers';
 import isEmpty from 'lodash.isempty';
@@ -89,7 +88,7 @@ const VectorLayerUtils = {
             };
         } else {
             // Default style
-            opts = assign({}, ConfigUtils.getConfigProp("defaultFeatureStyle"), styleOptions);
+            opts = {...ConfigUtils.getConfigProp("defaultFeatureStyle"), ...styleOptions};
         }
         const dpiScale = dpi / 96 * scaleFactor;
 
@@ -246,8 +245,8 @@ const VectorLayerUtils = {
                 styleOptions.iconSrc = style.getImage().getSrc();
                 styleOptions.iconAnchor = anchor;
             }
-            let feature = geojsonFormat.writeFeatureObject(olFeature);
-            feature = assign(feature, {
+            const feature = geojsonFormat.writeFeatureObject(olFeature);
+            Object.assign(feature, {
                 styleName: styleOptions.iconSrc ? 'marker' : 'default',
                 styleOptions: styleOptions,
                 id: fid++,

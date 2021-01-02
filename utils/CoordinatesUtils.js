@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 import Proj4js from 'proj4';
-import assign from 'object-assign';
 import ol from 'openlayers';
 
 const crsLabels = {
@@ -16,7 +15,7 @@ const crsLabels = {
 
 const CoordinatesUtils = {
     setCrsLabels(labels) {
-        assign(crsLabels, labels);
+        Object.assign(crsLabels, labels);
     },
     getAvailableCRS() {
         const crsList = {};

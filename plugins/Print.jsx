@@ -10,7 +10,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import axios from 'axios';
-import assign from 'object-assign';
 import isEmpty from 'lodash.isempty';
 import FileSaver from 'file-saver';
 import formDataEntries from 'form-data-entries';
@@ -256,7 +255,10 @@ class Print extends React.Component {
                             </tr>
                         ) : null}
                         {(labels || []).map(label => {
-                            const opts = assign({rows: 1, name: label.toUpperCase()}, this.props.theme.printLabelConfig ? this.props.theme.printLabelConfig[label] : {});
+                            const opts = {rows: 1, name: label.toUpperCase()};
+                            if (this.props.theme.printLabelConfig) {
+                                Object.assign(opts, this.props.theme.printLabelConfig[label]);
+                            }
                             return (<tr key={"label." + label}>
                                 <td>{label}:</td>
                                 <td>

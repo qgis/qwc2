@@ -7,7 +7,6 @@
  */
 
 import axios from 'axios';
-import assign from 'object-assign';
 import url from 'url';
 import isMobile from 'ismobilejs';
 
@@ -37,7 +36,7 @@ const ConfigUtils = {
         }
         return axios.get(configFile, {params: configParams}).then(response => {
             if (typeof response.data === 'object') {
-                defaultConfig = assign({}, defaultConfig, response.data);
+                defaultConfig = {...defaultConfig, ...response.data};
             } else {
                 console.warn("Broken configuration file " + configFile + "!");
             }

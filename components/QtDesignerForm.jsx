@@ -8,7 +8,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import assign from 'object-assign';
 import axios from 'axios';
 import xml2js from 'xml2js';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -272,7 +271,7 @@ export default class QtDesignerForm extends React.Component {
         const keyvals = {};
         this.reformatWidget(root, keyvals);
         this.props.iface.getKeyValues(Object.values(keyvals).map(entry => this.props.mapPrefix + entry.table + ":" + entry.key + ":" + entry.value).join(","), (result) => {
-            const keyvalues = Object.entries(keyvals).reduce((res, [key, val]) => assign(res, {[key]: result.keyvalues[this.props.mapPrefix + val.table]}), {});
+            const keyvalues = Object.entries(keyvals).reduce((res, [key, val]) => ({...res, [key]: result.keyvalues[this.props.mapPrefix + val.table]}), {});
             this.setState({keyvalues});
         });
         // console.log(root);
@@ -282,13 +281,13 @@ export default class QtDesignerForm extends React.Component {
         if (widget.property) {
             widget.property = Array.isArray(widget.property) ? widget.property : [widget.property];
             widget.property = widget.property.reduce((res, prop) => {
-                return assign(res, {[prop.name]: prop[Object.keys(prop).find(key => key !== "name")]});
+                return ({...res, [prop.name]: prop[Object.keys(prop).find(key => key !== "name")]});
             }, {});
         }
         if (widget.attribute) {
             widget.attribute = Array.isArray(widget.attribute) ? widget.attribute : [widget.attribute];
             widget.attribute = widget.attribute.reduce((res, prop) => {
-                return assign(res, {[prop.name]: prop[Object.keys(prop).find(key => key !== "name")]});
+                return ({...res, [prop.name]: prop[Object.keys(prop).find(key => key !== "name")]});
             }, {});
         }
 

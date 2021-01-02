@@ -8,7 +8,6 @@
 
 import {LOCAL_CONFIG_LOADED, SET_STARTUP_PARAMETERS} from '../actions/localConfig';
 
-import assign from 'object-assign';
 import ConfigUtils from '../utils/ConfigUtils';
 
 const defaultState = {
@@ -19,10 +18,10 @@ const defaultState = {
 export default function localConfig(state = defaultState, action) {
     switch (action.type) {
     case LOCAL_CONFIG_LOADED: {
-        return assign({}, state, action.config);
+        return {...state, ...action.config};
     }
     case SET_STARTUP_PARAMETERS: {
-        return assign({}, state, {startupParams: action.params});
+        return {...state, startupParams: action.params};
     }
     default:
         return state;

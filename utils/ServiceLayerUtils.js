@@ -7,7 +7,6 @@
  */
 
 import ol from 'openlayers';
-import assign from 'object-assign';
 import axios from 'axios';
 import deepmerge from 'deepmerge';
 import isEmpty from 'lodash.isempty';
@@ -306,13 +305,14 @@ const ServiceLayerUtils = {
                 }
                 let layer = LayerUtils.searchSubLayer({sublayers: result}, "name", layerConfig.name);
                 if (layer) {
-                    layer = assign({}, layer, {
+                    layer = {
+                        ...layer,
                         id: layerConfig.id,
                         opacity: layerConfig.opacity,
                         visibility: layerConfig.visibility,
                         role: LayerRole.USERLAYER,
                         sublayers: null
-                    });
+                    };
                     callback(layerConfig.id, layer);
                 } else {
                     console.warn("Could not find layer " + layerConfig.name);

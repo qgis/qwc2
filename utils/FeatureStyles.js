@@ -7,13 +7,12 @@
  */
 
 import ol from 'openlayers';
-import assign from 'object-assign';
 import ConfigUtils from './ConfigUtils';
 import markerIcon from './img/marker-icon.png';
 
 export default {
     default: (feature, options) => {
-        const opts = assign({}, ConfigUtils.getConfigProp("defaultFeatureStyle"), options);
+        const opts = {...ConfigUtils.getConfigProp("defaultFeatureStyle"), ...options};
         return new ol.style.Style({
             fill: new ol.style.Fill({
                 color: opts.fillColor

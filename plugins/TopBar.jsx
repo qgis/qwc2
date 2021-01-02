@@ -9,7 +9,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import assign from 'object-assign';
 import {connect} from 'react-redux';
 import {Swipeable} from 'react-swipeable';
 import Icon from '../components/Icon';
@@ -76,7 +75,7 @@ class TopBar extends React.Component {
             logoEl = (<a href={this.props.logoUrl} rel="noreferrer" target="_blank">{logoEl}</a>);
         }
         // Convert legacy minScale option to minScaleDenom
-        const searchOptions = assign({}, this.props.searchOptions);
+        const searchOptions = {...this.props.searchOptions};
         searchOptions.minScaleDenom = searchOptions.minScaleDenom || searchOptions.minScale;
         delete searchOptions.minScale;
         return (

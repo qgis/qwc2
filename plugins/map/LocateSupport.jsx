@@ -10,7 +10,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import assign from 'object-assign';
 import OlLocate from '../../components/map/OlLocate';
 import {changeLocateState, onLocateError} from '../../actions/locate';
 
@@ -46,7 +45,7 @@ class LocateSupport extends React.Component {
         }
     }
     componentDidMount() {
-        const options = assign({}, LocateSupport.defaultOpt, this.props.options);
+        const options = {...LocateSupport.defaultOpt, ...this.props.options};
         this.locate = new OlLocate(this.props.map, options);
         this.locate.setStrings(this.props.messages);
         this.locate.options.onLocationError = this.onLocationError;

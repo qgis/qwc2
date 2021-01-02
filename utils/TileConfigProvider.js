@@ -1,4 +1,3 @@
-import assign from 'object-assign';
 import CONFIGPROVIDER from './ConfigProvider';
 import CoordinatesUtils from './ConfigUtils';
 
@@ -33,7 +32,7 @@ const TileConfigProvider = {
             }
             provider = {
                 url: variant.url || provider.url,
-                options: assign({}, provider.options, variantOptions)
+                options: {...provider.options, ...variantOptions}
             };
         } else if (typeof provider.url === 'function') {
             provider.url = provider.url(parts.splice(1, parts.length - 1).join('.'));
@@ -69,7 +68,7 @@ const TileConfigProvider = {
         provider.options.attribution = attributionReplacer(provider.options.attribution);
 
         // Compute final options combining provider options with any user overrides
-        const layerOpts = assign({}, provider.options, options);
+        const layerOpts = {...provider.options, ...options};
         return [provider.url, layerOpts];
     }
 };

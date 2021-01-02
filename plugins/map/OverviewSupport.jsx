@@ -10,7 +10,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import ol from 'openlayers';
-import assign from 'object-assign';
 import {LayerRole} from '../../actions/layers';
 import OlLayer from '../../components/map/OlLayer';
 
@@ -26,13 +25,14 @@ class OverviewMap extends React.Component {
     }
     constructor(props) {
         super(props);
-        const opt = assign({
+        const opt = {
             className: "overview-map",
             collapseLabel: '\u00BB',
             label: '\u00AB',
             collapsed: true,
-            collapsible: true
-        }, props.options);
+            collapsible: true,
+            ...props.options
+        };
         this.overview = new ol.control.OverviewMap(opt);
         props.map.addControl(this.overview);
         this.overview.getOverviewMap().set('id', 'overview');

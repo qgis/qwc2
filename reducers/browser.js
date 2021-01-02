@@ -7,14 +7,13 @@
  */
 
 import {CHANGE_BROWSER_PROPERTIES} from '../actions/browser';
-import assign from 'object-assign';
 
 const defaultState = {};
 
 export default function browser(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_BROWSER_PROPERTIES: {
-        return assign({}, state, action.newProperties);
+        return {...state, ...action.newProperties};
     }
     default:
         return state;

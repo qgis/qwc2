@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assign from 'object-assign';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import LayerUtils from '../utils/LayerUtils';
 import isEmpty from 'lodash.isempty';
@@ -32,12 +31,12 @@ import {
 
 
 function propagateLayerProperty(newlayer, property, value, path = null) {
-    assign(newlayer, {[property]: value});
+    Object.assign(newlayer, {[property]: value});
     // Don't propagate visibility for mutually exclusive groups
     if (newlayer.sublayers && !(property === "visibility" && newlayer.mutuallyExclusive)) {
         newlayer.sublayers = newlayer.sublayers.map((sublayer, idx) => {
             if (path === null || (!isEmpty(path) && path[0] === idx)) {
-                const newsublayer = assign({}, sublayer);
+                const newsublayer = {...sublayer};
                 propagateLayerProperty(newsublayer, property, value, path ? path.slice(1) : null);
                 return newsublayer;
             } else {
@@ -56,9 +55,9 @@ export default function layers(state = defaultState, action) {
     switch (action.type) {
     case SET_LAYER_LOADING: {
         const newLayers = (state.flat || []).map((layer) => {
-            return layer.id === action.layerId ? assign({}, layer, {loading: action.loading}) : layer;
+            return layer.id === action.layerId ? {...layer, loading: action.loading} : layer;
         });
-        return assign({}, state, {flat: newLayers});
+        return {...state, flat: newLayers};
     }
     case CHANGE_LAYER_PROPERTY: {
         const targetLayer = state.flat.find((layer) => {return layer.uuid === action.layerUuid; });
@@ -88,7 +87,7 @@ export default function layers(state = defaultState, action) {
                     let newParent = newlayer;
                     parentPath.forEach(index => { newParent = newParent.sublayers[index]; });
                     const targetIdx = action.sublayerpath[action.sublayerpath.length - 1];
-                    newParent.sublayers = newParent.sublayers.map((l, idx) => assign({}, l, {visibility: idx === targetIdx}));
+                    newParent.sublayers = newParent.sublayers.map((l, idx) => ({...l, visibility: idx === targetIdx}));
                 }
 
                 if (["children", "both"].includes(recurseDirection)) { // recurse to children (except visibility to children in mutex case)
@@ -99,24 +98,25 @@ export default function layers(state = defaultState, action) {
                 }
 
                 if (newlayer.type === "wms") {
-                    assign(newlayer, LayerUtils.buildWMSLayerParams(newlayer));
+                    Object.assign(newlayer, LayerUtils.buildWMSLayerParams(newlayer));
                 }
                 if (newlayer.role === LayerRole.BACKGROUND) {
                     UrlParams.updateParams({bl: newlayer.visibility ? newlayer.name : ''});
                 }
                 return newlayer;
             } else if (layer.role === LayerRole.BACKGROUND && backgroundVisibilityChanged) {
-                return assign({}, layer, {visibility: false});
+                return {...layer, visibility: false};
             }
             return layer;
         });
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-        return assign({}, state, {flat: newLayers});
+        return {...state, flat: newLayers};
     }
     case ADD_LAYER: {
         let newLayers = (state.flat || []).concat();
         const layerId = action.layer.id || uuid.v4();
-        const newLayer = assign({}, action.layer, {
+        const newLayer = {
+            ...action.layer,
             id: layerId,
             name: action.layer.name || layerId,
             role: action.layer.role || LayerRole.USERLAYER,
@@ -124,10 +124,10 @@ export default function layers(state = defaultState, action) {
             visibility: action.layer.visibility !== undefined ? action.layer.visibility : true,
             opacity: action.layer.opacity || 255,
             layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER
-        });
+        };
         LayerUtils.addUUIDs(newLayer);
         if (newLayer.type === "wms") {
-            assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
+            Object.assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
         }
         if (action.beforename) {
             newLayers = LayerUtils.insertLayer(newLayers, newLayer, "name", action.beforename);
@@ -144,12 +144,12 @@ export default function layers(state = defaultState, action) {
         if (newLayer.role === LayerRole.BACKGROUND && newLayer.visibility) {
             UrlParams.updateParams({bl: newLayer.name});
         }
-        return assign({}, state, {flat: newLayers});
+        return {...state, flat: newLayers};
     }
     case ADD_LAYER_SEPARATOR: {
         const newLayers = LayerUtils.insertSeparator(state.flat, action.title, action.afterLayerId, action.afterSublayerPath, state.swipe);
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-        return assign({}, state, {flat: newLayers});
+        return {...state, flat: newLayers};
     }
     case REMOVE_LAYER: {
         const layer = state.flat.find(l => l.id === action.layerId);
@@ -163,14 +163,15 @@ export default function layers(state = defaultState, action) {
             newLayers = LayerUtils.removeLayer(state.flat, layer, action.sublayerpath, state.swipe);
         }
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-        return assign({}, state, {flat: newLayers});
+        return {...state, flat: newLayers};
     }
     case ADD_LAYER_FEATURES: {
         const layerId = action.layer.id || uuid.v4();
         const newLayers = (state.flat || []).concat();
         const idx = newLayers.findIndex(layer => layer.id === layerId);
         if (idx === -1 || action.clear) {
-            const newLayer = assign({}, action.layer, {
+            const newLayer = {
+                ...action.layer,
                 id: layerId,
                 type: 'vector',
                 name: action.layer.name || layerId,
@@ -181,7 +182,7 @@ export default function layers(state = defaultState, action) {
                 visibility: action.layer.visibility || true,
                 opacity: action.layer.opacity || 255,
                 layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER
-            });
+            };
             if (idx === -1) {
                 let inspos = 0;
                 for (; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);
@@ -200,33 +201,33 @@ export default function layers(state = defaultState, action) {
                 }
             });
             newFeatures = newFeatures.concat(addFeatures);
-            newLayers[idx] = assign({}, newLayers[idx], {features: newFeatures});
+            newLayers[idx] = {...newLayers[idx], features: newFeatures};
         }
-        return assign({}, state, {flat: newLayers});
+        return {...state, flat: newLayers};
     }
     case REMOVE_LAYER_FEATURES: {
         const newLayers = (state.flat || []).reduce((result, layer) => {
             if (layer.id === action.layerId) {
                 const newFeatures = layer.features.filter(f => action.featureIds.includes(f.id) === false);
                 if (!isEmpty(newFeatures) || action.keepEmptyLayer) {
-                    result.push(assign({}, layer, {features: newFeatures}));
+                    result.push({...layer, features: newFeatures});
                 }
             } else {
                 result.push(layer);
             }
             return result;
         }, []);
-        return assign({}, state, {flat: newLayers});
+        return {...state, flat: newLayers};
     }
     case CLEAR_LAYER: {
         const newLayers = (state.flat || []).map(layer => {
             if (layer.id === action.layerId) {
-                return assign({}, layer, {features: []});
+                return {...layer, features: []};
             } else {
                 return layer;
             }
         });
-        return assign({}, state, {flat: newLayers});
+        return {...state, flat: newLayers};
     }
     case ADD_THEME_SUBLAYER: {
         const themeLayerIdx = state.flat.findIndex(layer => layer.role === LayerRole.THEME);
@@ -234,28 +235,28 @@ export default function layers(state = defaultState, action) {
             const newLayers = state.flat.slice(0);
             newLayers[themeLayerIdx] = LayerUtils.mergeSubLayers(state.flat[themeLayerIdx], action.layer, state.swipe || state.swipe === 0);
             newLayers[themeLayerIdx].visibility = true;
-            assign(newLayers[themeLayerIdx], LayerUtils.buildWMSLayerParams(newLayers[themeLayerIdx]));
+            Object.assign(newLayers[themeLayerIdx], LayerUtils.buildWMSLayerParams(newLayers[themeLayerIdx]));
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-            return assign({}, state, {flat: newLayers});
+            return {...state, flat: newLayers};
         }
         return state;
     }
     case REFRESH_LAYER: {
         const newLayers = (state.flat || []).map((layer) => {
             if (action.filter(layer)) {
-                return assign({}, layer, {rev: (layer.rev || 0) + 1});
+                return {...layer, rev: (layer.rev || 0) + 1};
             }
             return layer;
         });
-        return assign({}, state, {flat: newLayers});
+        return {...state, flat: newLayers};
     }
     case REMOVE_ALL_LAYERS: {
-        return assign({}, state, {flat: [], swipe: undefined});
+        return {...state, flat: [], swipe: undefined};
     }
     case REORDER_LAYER: {
         const newLayers = LayerUtils.reorderLayer(state.flat, action.layer, action.sublayerpath, action.direction, state.swipe, action.preventSplittingGroups);
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-        return assign({}, state, {flat: newLayers});
+        return {...state, flat: newLayers};
     }
     case REPLACE_PLACEHOLDER_LAYER: {
         let newLayers = state.flat || [];
@@ -265,7 +266,7 @@ export default function layers(state = defaultState, action) {
                     const newLayer = {...action.layer};
                     LayerUtils.addUUIDs(newLayer);
                     if (newLayer.type === "wms") {
-                        assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
+                        Object.assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
                     }
                     return newLayer;
                 } else {
@@ -276,17 +277,17 @@ export default function layers(state = defaultState, action) {
             newLayers = newLayers.filter(layer => !(layer.type === 'placeholder' && layer.id === action.id));
         }
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-        return assign({}, state, {flat: newLayers});
+        return {...state, flat: newLayers};
     }
     case SET_SWIPE: {
         let newLayers = state.flat;
         if ((state.swipe === undefined) !== (action.swipe === undefined)) {
             newLayers = LayerUtils.reorderLayer(state.flat, null, null, null, action.swipe || action.swipe === 0);
         }
-        return assign({}, state, {flat: newLayers, swipe: action.swipe});
+        return {...state, flat: newLayers, swipe: action.swipe};
     }
     case SET_LAYERS: {
-        return assign({}, {flat: action.layers});
+        return {...state, flat: action.layers};
     }
     default:
         return state;

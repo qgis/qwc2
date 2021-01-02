@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assign from 'object-assign';
 import {SET_CURRENT_TASK, SET_CURRENT_TASK_BLOCKED} from '../actions/task';
 
 const defaultState = {
@@ -23,10 +22,10 @@ export default function task(state = defaultState, action) {
         if (state.blocked) {
             return state;
         }
-        return assign({}, state, {id: action.id, mode: action.mode, data: action.data, unsetOnMapClick: action.unsetOnMapClick});
+        return {...state, id: action.id, mode: action.mode, data: action.data, unsetOnMapClick: action.unsetOnMapClick};
     }
     case SET_CURRENT_TASK_BLOCKED: {
-        return assign({}, state, {blocked: action.blocked});
+        return {...state, blocked: action.blocked};
     }
     default:
         return state;

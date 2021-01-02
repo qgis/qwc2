@@ -7,7 +7,6 @@
  */
 
 import {TOGGLE_FULLSCREEN} from '../actions/display';
-import assign from 'object-assign';
 
 const defaultState = {
     fullscreen: false
@@ -16,7 +15,7 @@ const defaultState = {
 export default function toggleFullscreen(state = defaultState, action) {
     switch (action.type) {
     case TOGGLE_FULLSCREEN: {
-        return assign({}, state, {fullscreen: action.fullscreen});
+        return {...state, fullscreen: action.fullscreen};
     }
     default:
         return state;

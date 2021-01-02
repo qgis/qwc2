@@ -11,7 +11,6 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import axios from 'axios';
-import assign from 'object-assign';
 import {remove as removeDiacritics} from 'diacritics';
 import Spinner from './Spinner';
 import Message from '../components/I18N/Message';
@@ -67,10 +66,10 @@ class ImportLayerList extends React.PureComponent {
     }
     toggleLayerListEntry = (path) => {
         const newServiceLayers = [...this.state.serviceLayers];
-        newServiceLayers[path[0]] = assign({}, newServiceLayers[path[0]]);
+        newServiceLayers[path[0]] = {...newServiceLayers[path[0]]};
         let cur = newServiceLayers[path[0]];
         for (const idx of path.slice(1)) {
-            cur.sublayers[idx] = assign({}, cur.sublayers[idx]);
+            cur.sublayers[idx] = {...cur.sublayers[idx]};
             cur = cur.sublayers[idx];
         }
         cur.expanded = !cur.expanded;
@@ -104,7 +103,7 @@ class ImportLayerList extends React.PureComponent {
                 }
             });
         } else if (entry.type === "wms" || entry.type === "wfs" || entry.type === "wmts") {
-            this.props.addLayer(assign({}, entry, {sublayers: null}));
+            this.props.addLayer({...entry, sublayers: null});
         }
     }
 }

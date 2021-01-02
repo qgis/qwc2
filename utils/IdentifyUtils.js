@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assign from 'object-assign';
 import proj4js from 'proj4';
 import isEmpty from 'lodash.isempty';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -192,7 +191,7 @@ const IdentifyUtils = {
             if (geometry) {
                 geometry = VectorLayerUtils.reprojectGeometry(geometry, "EPSG:4326", geometrycrs); // GeoJSON always wgs84
             }
-            result[layer].push(assign({}, feature, {geometry: geometry, id: feature.id.substr(feature.id.lastIndexOf(".") + 1)}));
+            result[layer].push({...feature, geometry: geometry, id: feature.id.substr(feature.id.lastIndexOf(".") + 1)});
         });
         return result;
     },

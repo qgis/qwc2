@@ -6,7 +6,6 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-import assign from 'object-assign';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
 import uuid from 'uuid';
@@ -120,7 +119,7 @@ const LayerUtils = {
 
         if (!Array.isArray(layer.sublayers)) {
             return {
-                params: assign({}, layer.params || {LAYERS: layer.name}, {MAP: query.map || query.MAP || (layer.params || {}).map || (layer.params || {}).MAP}),
+                params: {...(layer.params || {LAYERS: layer.name}), MAP: query.map || query.MAP || (layer.params || {}).map || (layer.params || {}).MAP},
                 queryLayers: layer.queryable ? [layer.name] : []
             };
         }
@@ -137,11 +136,12 @@ const LayerUtils = {
             layerNames = indices.map(idx => layerNames[idx]);
             opacities = indices.map(idx => opacities[idx]);
         }
-        const newParams = assign({}, layer.params, {
+        const newParams = {
+            ...layer.params,
             LAYERS: layerNames.join(","),
             OPACITIES: opacities.join(","),
             MAP: query.map || query.MAP || (layer.params || {}).map || (layer.params || {}).MAP
-        });
+        };
         return {
             params: newParams,
             queryLayers: queryLayers
@@ -151,7 +151,7 @@ const LayerUtils = {
         group.uuid = !group.uuid || usedUUIDs.has(group.uuid) ? uuid.v4() : group.uuid;
         usedUUIDs.add(group.uuid);
         if (!isEmpty(group.sublayers)) {
-            assign(group, {sublayers: group.sublayers.slice(0)});
+            Object.assign(group, {sublayers: group.sublayers.slice(0)});
             for (let i = 0; i < group.sublayers.length; ++i) {
                 group.sublayers[i] = {...group.sublayers[i]};
                 LayerUtils.addUUIDs(group.sublayers[i], usedUUIDs);
@@ -233,15 +233,15 @@ const LayerUtils = {
         const newlayers = LayerUtils.implodeLayers(exploded, swipeActive);
         for (const lyr of newlayers) {
             if (lyr.type === "wms") {
-                assign(layer, LayerUtils.buildWMSLayerParams(lyr));
+                Object.assign(lyr, LayerUtils.buildWMSLayerParams(lyr));
             }
         }
         // Ensure theme layer is never removed
         if (!newlayers.find(lyr => lyr.role === LayerRole.THEME)) {
             const oldThemeLayer = layers.find(lyr => lyr.role === LayerRole.THEME);
             if (oldThemeLayer) {
-                const newThemeLayer = assign({}, oldThemeLayer, {sublayers: []});
-                assign(newThemeLayer, LayerUtils.buildWMSLayerParams(newThemeLayer));
+                const newThemeLayer = {...oldThemeLayer, sublayers: []};
+                Object.assign(newThemeLayer, LayerUtils.buildWMSLayerParams(newThemeLayer));
                 newlayers.push(newThemeLayer);
             }
         }
@@ -266,7 +266,7 @@ const LayerUtils = {
         const newlayers = LayerUtils.implodeLayers(exploded, swipeActive);
         for (const layer of newlayers) {
             if (layer.type === "wms") {
-                assign(layer, LayerUtils.buildWMSLayerParams(layer));
+                Object.assign(layer, LayerUtils.buildWMSLayerParams(layer));
             }
         }
         // Re-add background layers
@@ -410,7 +410,7 @@ const LayerUtils = {
         }
         for (const layer of newlayers) {
             if (layer.type === "wms") {
-                assign(layer, LayerUtils.buildWMSLayerParams(layer));
+                Object.assign(layer, LayerUtils.buildWMSLayerParams(layer));
             }
         }
         if (swipeLayer) {
@@ -493,14 +493,15 @@ const LayerUtils = {
         return true;
     },
     cloneLayer(layer, sublayerpath) {
-        const newlayer = assign({}, layer);
+        const newlayer = {...layer};
         let cur = newlayer;
         for (let i = 0; i < sublayerpath.length; ++i) {
             const idx = sublayerpath[i];
             cur.sublayers = [
                 ...cur.sublayers.slice(0, idx),
-                assign({}, cur.sublayers[idx]),
-                ...cur.sublayers.slice(idx + 1)];
+                {...cur.sublayers[idx]},
+                ...cur.sublayers.slice(idx + 1)
+            ];
             cur = cur.sublayers[idx];
         }
         return {newlayer, newsublayer: cur};
@@ -533,14 +534,11 @@ const LayerUtils = {
         if (layer.sublayers) {
             layer.sublayers = layer.sublayers.map(sublayer => {
                 if (sublayer.externalLayer) {
-                    const externalLayer = assign(
-                        {},
-                        sublayer.externalLayer,
-                        {
-                            title: sublayer.externalLayer.title || sublayer.externalLayer.name,
-                            uuid: uuid.v4()
-                        }
-                    );
+                    const externalLayer = {
+                        ...sublayer.externalLayer,
+                        title: sublayer.externalLayer.title || sublayer.externalLayer.name,
+                        uuid: uuid.v4()
+                    };
                     if (externalLayer.type === "wms") {
                         externalLayer.featureInfoUrl = externalLayer.featureInfoUrl || externalLayer.url;
                         externalLayer.legendUrl = externalLayer.legendUrl || externalLayer.url;
@@ -555,7 +553,7 @@ const LayerUtils = {
                         }
                     }
                     toplayer.externalLayerMap[sublayer.name] = externalLayer;
-                    sublayer = assign({}, sublayer);
+                    sublayer = {...sublayer};
                     delete sublayer.externalLayer;
                 }
                 if (sublayer.sublayers) {

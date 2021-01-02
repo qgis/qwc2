@@ -6,7 +6,6 @@
 * LICENSE file in the root directory of this source tree.
 */
 
-import assign from 'object-assign';
 import isEmpty from 'lodash.isempty';
 import uuid from 'uuid';
 
@@ -46,16 +45,17 @@ const ThemeUtils = {
                 if (bgLayer.name === visibleLayer) {
                     visibleIdx = bgLayers.length;
                 }
-                bgLayer = assign({}, bgLayer, {
+                bgLayer = {
+                    ...bgLayer,
                     role: LayerRole.BACKGROUND,
                     visibility: false
-                });
+                };
                 if (bgLayer.type === "group") {
                     bgLayer.items = bgLayer.items.map(item => {
                         if (item.ref) {
                             const sublayer = themes.backgroundLayers.find(l => l.name === item.ref);
                             if (sublayer) {
-                                item = assign({}, item, sublayer, LayerUtils.buildWMSLayerParams(sublayer));
+                                item = {...item, ...sublayer, ...LayerUtils.buildWMSLayerParams(sublayer)};
                                 delete item.ref;
                             } else {
                                 item = null;
@@ -96,27 +96,31 @@ const ThemeUtils = {
             printUrl: theme.printUrl,
             featureInfoUrl: theme.featureInfoUrl,
             infoFormats: theme.infoFormats,
-            externalLayerMap: assign({}, theme.externalLayerMap, (theme.externalLayers || []).reduce((res, cur) => {
-                res[cur.internalLayer] = assign({}, themes.externalLayers.find(entry => entry.name === cur.name), {
-                    uuid: uuid.v4()
-                });
-                res[cur.internalLayer].title = res[cur.internalLayer].title || res[cur.internalLayer].name;
-                if (res[cur.internalLayer].type === "wms" || res[cur.internalLayer].params) {
-                    res[cur.internalLayer].type = "wms";
-                    res[cur.internalLayer].featureInfoUrl = res[cur.internalLayer].featureInfoUrl || res[cur.internalLayer].url;
-                    res[cur.internalLayer].legendUrl = res[cur.internalLayer].legendUrl || res[cur.internalLayer].url;
-                    res[cur.internalLayer].queryLayers = res[cur.internalLayer].queryLayers || res[cur.internalLayer].params.LAYERS.split(",");
+            externalLayerMap: {
+                ...theme.externalLayerMap,
+                ...(theme.externalLayers || []).reduce((res, cur) => {
+                    res[cur.internalLayer] = {
+                        ...themes.externalLayers.find(entry => entry.name === cur.name),
+                        uuid: uuid.v4()
+                    };
+                    res[cur.internalLayer].title = res[cur.internalLayer].title || res[cur.internalLayer].name;
+                    if (res[cur.internalLayer].type === "wms" || res[cur.internalLayer].params) {
+                        res[cur.internalLayer].type = "wms";
+                        res[cur.internalLayer].featureInfoUrl = res[cur.internalLayer].featureInfoUrl || res[cur.internalLayer].url;
+                        res[cur.internalLayer].legendUrl = res[cur.internalLayer].legendUrl || res[cur.internalLayer].url;
+                        res[cur.internalLayer].queryLayers = res[cur.internalLayer].queryLayers || res[cur.internalLayer].params.LAYERS.split(",");
 
-                    const externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp("externalLayerFeatureInfoFormats") || {};
-                    for (const entry of Object.keys(externalLayerFeatureInfoFormats)) {
-                        if (res[cur.internalLayer].featureInfoUrl.toLowerCase().includes(entry.toLowerCase())) {
-                            res[cur.internalLayer].infoFormats = [externalLayerFeatureInfoFormats[entry]];
-                            break;
+                        const externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp("externalLayerFeatureInfoFormats") || {};
+                        for (const entry of Object.keys(externalLayerFeatureInfoFormats)) {
+                            if (res[cur.internalLayer].featureInfoUrl.toLowerCase().includes(entry.toLowerCase())) {
+                                res[cur.internalLayer].infoFormats = [externalLayerFeatureInfoFormats[entry]];
+                                break;
+                            }
                         }
                     }
-                }
-                return res;
-            }, {}))
+                    return res;
+                }, {})
+            }
         };
         // Drawing order only makes sense if layer reordering is disabled
         if (ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {

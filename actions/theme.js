@@ -10,7 +10,6 @@ import ReducerIndex from '../reducers/index';
 import themeReducer from '../reducers/theme';
 ReducerIndex.register("theme", themeReducer);
 
-import assign from 'object-assign';
 import isEmpty from 'lodash.isempty';
 import {setIdentifyEnabled} from '../actions/identify';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -57,7 +56,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
         }
     }
     if (isEmpty(layers)) {
-        layers = [assign(themeLayer, {sublayers: []})];
+        layers = [{...themeLayer, sublayers: []}];
     }
 
     for (const layer of layers.reverse()) {
@@ -143,14 +142,15 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
         }
 
         // Inherit defaults if necessary
-        theme = assign({}, theme, {
+        theme = {
+            ...theme,
             mapCrs: theme.mapCrs || "EPSG:3857",
             version: theme.version || themes.defaultWMSVersion || "1.3.0",
             scales: theme.scales || themes.defaultScales || MapUtils.getGoogleMercatorScales(0, 21),
             printScales: theme.printScales || themes.defaultPrintScales || undefined,
             printResolutions: theme.printResolutions || themes.defaultPrintResolutions || undefined,
             printGrid: theme.printGrid || themes.defaultPrintGrid || undefined
-        });
+        };
 
         // Reconfigure map
         dispatch(configureMap(theme.mapCrs, theme.scales, initialView || theme.initialBbox));

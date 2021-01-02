@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assign from 'object-assign';
 import {
     SHOW_IFRAME_DIALOG,
     SHOW_NOTIFICATION,
@@ -19,14 +18,16 @@ const defaultState = {};
 export default function windows(state = defaultState, action) {
     switch (action.type) {
     case SHOW_IFRAME_DIALOG: {
-        return assign({}, state, {
+        return {
+            ...state,
             [action.name]: {type: 'iframedialog', url: action.url, options: action.options || {}}
-        });
+        };
     }
     case SHOW_NOTIFICATION: {
-        return assign({}, state, {
+        return {
+            ...state,
             [action.name]: {type: 'notification', text: action.text}
-        });
+        };
     }
     case CLOSE_WINDOW: {
         const newState = {...state};

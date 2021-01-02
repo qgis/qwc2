@@ -5,8 +5,6 @@
 * This source code is licensed under the BSD-style license found in the
 * LICENSE file in the root directory of this source tree.
 */
-
-import assign from 'object-assign';
 import ol from 'openlayers';
 import './OlLocate.css';
 
@@ -64,7 +62,7 @@ export default class OlLocate extends ol.Object {
             }
         };
 
-        this.options = assign({}, defOptions, optOptions || {} );
+        this.options = {...defOptions, ...optOptions};
         this.geolocate = new ol.Geolocation({
             projection: this.map.getView().getProjection(),
             trackingOptions: this.options.locateOptions
@@ -153,12 +151,12 @@ export default class OlLocate extends ol.Object {
         if (feature && feature.get('id') === '_locate-pos' && this.popup.hidden) {
             this._updatePopUpCnt();
         } else if (!this.popup.hidden ) {
-            popUp.hidden = true;
+            this.popUp.hidden = true;
         }
     }
 
     setStrings = (newStrings) => {
-        this.options.strings = assign({}, this.options.strings, newStrings);
+        this.options.strings = {...this.options.strings, ...newStrings};
     }
     setProjection = (projection) => {
         this.geolocate.setProjection(projection);

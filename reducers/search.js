@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assign from 'object-assign';
 import {
     SEARCH_CHANGE,
     SEARCH_SET_REQUEST,
@@ -30,7 +29,7 @@ export default function search(state = defaultState, action) {
         return {text: action.text, providers: action.providers};
     }
     case SEARCH_SET_REQUEST: {
-        return assign({}, state, {requestId: action.id, pendingProviders: action.providers, startup: action.startup, results: []});
+        return {...state, requestId: action.id, pendingProviders: action.providers, startup: action.startup, results: []};
     }
     case SEARCH_ADD_RESULTS: {
         if (state.requestId !== action.results.reqId || !(state.pendingProviders || []).includes(action.results.provider)) {
@@ -45,7 +44,7 @@ export default function search(state = defaultState, action) {
         });
         const pendingProviders = state.pendingProviders.slice(0);
         pendingProviders.splice(pendingProviders.indexOf(action.results.provider), 1);
-        return assign({}, state, { results: results, pendingProviders: pendingProviders });
+        return {...state, results: results, pendingProviders: pendingProviders};
     }
     case SEARCH_SET_CURRENT_RESULT: {
         return {...state, currentResult: action.result};

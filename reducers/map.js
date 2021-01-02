@@ -10,7 +10,6 @@ import {
     CHANGE_MAP_VIEW, CONFIGURE_MAP, CHANGE_ZOOM_LVL, ZOOM_TO_EXTENT, ZOOM_TO_POINT,
     PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, TOGGLE_MAPTIPS, SET_TOPBAR_HEIGHT
 } from '../actions/map';
-import assign from 'object-assign';
 import isEmpty from 'lodash.isempty';
 import MapUtils from '../utils/MapUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
@@ -32,13 +31,13 @@ const defaultState = {
 export default function map(state = defaultState, action) {
     // Always reset mapStateSource, CHANGE_MAP_VIEW will set it if necessary
     if (state.mapStateSource) {
-        state = assign({}, state, {mapStateSource: null});
+        state = {...state, mapStateSource: null};
     }
 
     switch (action.type) {
     case CHANGE_MAP_VIEW: {
         const {type, ...params} = action;
-        const newState = assign({}, state, params);
+        const newState = {...state, ...params};
 
         const newParams = {};
         const positionFormat = ConfigUtils.getConfigProp("urlPositionFormat");
@@ -49,16 +48,16 @@ export default function map(state = defaultState, action) {
             const x = Math.round(0.5 * (bounds[0] + bounds[2]) * roundfactor) / roundfactor;
             const y = Math.round(0.5 * (bounds[1] + bounds[3]) * roundfactor) / roundfactor;
             const scale = Math.round(MapUtils.computeForZoom(newState.scales, newState.zoom));
-            assign(newParams, {c: x + "," + y, s: scale});
+            Object.assign(newParams, {c: x + "," + y, s: scale});
         } else {
             const xmin = Math.round(bounds[0] * roundfactor) / roundfactor;
             const ymin = Math.round(bounds[1] * roundfactor) / roundfactor;
             const xmax = Math.round(bounds[2] * roundfactor) / roundfactor;
             const ymax = Math.round(bounds[3] * roundfactor) / roundfactor;
-            assign(newParams, {e: xmin + "," + ymin + "," + xmax + "," + ymax});
+            Object.assign(newParams, {e: xmin + "," + ymin + "," + xmax + "," + ymax});
         }
         if (positionCrs !== newState.projection) {
-            assign(newParams, {crs: positionCrs});
+            Object.assign(newParams, {crs: positionCrs});
         }
         if (!isEmpty(newParams)) {
             UrlParams.updateParams(newParams);
@@ -80,17 +79,18 @@ export default function map(state = defaultState, action) {
             center = [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])];
             zoom = MapUtils.getZoomForExtent(bounds, resolutions, state.size, 0, action.scales.length - 1);
         }
-        return assign({}, state, {
-            bbox: assign({}, state.bbox, {bounds: bounds}),
+        return {
+            ...state,
+            bbox: {...state.bbox, bounds: bounds},
             center: center,
             zoom: zoom,
             projection: action.crs,
             scales: action.scales,
             resolutions: resolutions
-        });
+        };
     }
     case CHANGE_ZOOM_LVL: {
-        return assign({}, state, {zoom: action.zoom});
+        return {...state, zoom: action.zoom};
     }
     case ZOOM_TO_EXTENT: {
         const bounds = CoordinatesUtils.reprojectBbox(action.extent, action.crs || state.projection, state.projection);
@@ -101,36 +101,40 @@ export default function map(state = defaultState, action) {
         bounds[2] += padding * width;
         bounds[1] -= padding * height;
         bounds[3] += padding * height;
-        return assign({}, state, {
+        return {
+            ...state,
             center: [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])],
             zoom: MapUtils.getZoomForExtent(bounds, state.resolutions, state.size, 0, state.scales.length - 1),
-            bbox: assign({}, state.bbox, {bounds: bounds})
-        });
+            bbox: {...state.bbox, bounds: bounds}
+        };
     }
     case ZOOM_TO_POINT: {
-        return assign({}, state, {
+        return {
+            ...state,
             center: CoordinatesUtils.reproject(action.pos, action.crs || state.projection, state.projection),
             zoom: action.zoom
-        });
+        };
     }
     case PAN_TO: {
-        return assign({}, state, {
+        return {
+            ...state,
             center: CoordinatesUtils.reproject(action.pos, action.crs || state.projection, state.projection)
-        });
+        };
     }
     case CHANGE_ROTATION: {
-        return assign({}, state, {
-            bbox: assign({}, state.bbox, {rotation: action.rotation})
-        });
+        return {
+            ...state,
+            bbox: {...state.bbox, rotation: action.rotation}
+        };
     }
     case CLICK_ON_MAP: {
-        return assign({}, state, {click: action.click});
+        return {...state, click: action.click};
     }
     case TOGGLE_MAPTIPS: {
-        return assign({}, state, {maptips: action.active});
+        return {...state, maptips: action.active};
     }
     case SET_TOPBAR_HEIGHT: {
-        return assign({}, state, {topbarHeight: action.height});
+        return {... state, topbarHeight: action.height};
     }
     default:
         return state;

@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assign from 'object-assign';
 import {CHANGE_MOUSE_POSITION_STATE} from '../actions/mousePosition';
 
 const defaultState = {
@@ -16,7 +15,7 @@ const defaultState = {
 export default function mousePosition(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_MOUSE_POSITION_STATE: {
-        return assign({}, state, action.data);
+        return {...state, ...action.data};
     }
     default:
         return state;

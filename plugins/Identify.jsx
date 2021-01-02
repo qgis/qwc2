@@ -9,7 +9,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import assign from 'object-assign';
 import isEmpty from 'lodash.isempty';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import MapUtils from '../utils/MapUtils';
@@ -80,7 +79,7 @@ class Identify extends React.Component {
                         } else if (layers.length > 0 && layers[layers.length - 1].id === layer.id) {
                             layers[layers.length - 1].queryLayers.push(queryLayers[i]);
                         } else {
-                            layers.push(assign({}, layer, {queryLayers: [queryLayers[i]]}));
+                            layers.push({...layer, queryLayers: [queryLayers[i]]});
                         }
                     }
                     layers.forEach(l => this.props.sendRequest(IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, this.props.params)));

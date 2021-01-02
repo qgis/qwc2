@@ -8,7 +8,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import assign from 'object-assign';
 import ol from 'openlayers';
 
 export default class ScaleBarSupport extends React.Component {
@@ -23,7 +22,7 @@ export default class ScaleBarSupport extends React.Component {
     }
     constructor(props) {
         super(props);
-        this.scalebar = new ol.control.ScaleLine(assign({}, ScaleBarSupport.defaultOpt, props.options));
+        this.scalebar = new ol.control.ScaleLine({...ScaleBarSupport.defaultOpt, ...props.options});
     }
     render() {
         return null;

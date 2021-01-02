@@ -10,7 +10,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
-import assign from 'object-assign';
 import isEmpty from 'lodash.isempty';
 import proj4js from 'proj4';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -45,10 +44,10 @@ class Measure extends React.Component {
         }
     }
     changeLengthUnit = (ev) => {
-        this.props.changeMeasurementState(assign({}, this.props.measureState, {lenUnit: ev.target.value}));
+        this.props.changeMeasurementState({...this.props.measureState, lenUnit: ev.target.value});
     }
     changeAreaUnit = (ev) => {
-        this.props.changeMeasurementState(assign({}, this.props.measureState, {areaUnit: ev.target.value}));
+        this.props.changeMeasurementState({...this.props.measureState, areaUnit: ev.target.value});
     }
     renderModeSwitcher = () => {
         if (!this.props.showMeasureModeSwitcher) {

@@ -7,14 +7,14 @@
  */
 
 import ol from 'openlayers';
-import assign from 'object-assign';
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import ConfigUtils from '../../../utils/ConfigUtils';
 import MapUtils from '../../../utils/MapUtils';
 
 
 function wmsToOpenlayersOptions(options) {
-    return assign({}, options.baseParams, {
+    return {
+        ...options.baseParams,
         LAYERS: options.name,
         STYLES: options.style || "",
         FORMAT: options.format || 'image/png',
@@ -23,8 +23,9 @@ function wmsToOpenlayersOptions(options) {
         CRS: options.projection,
         TILED: options.tiled || false,
         VERSION: options.version || "1.3.0",
-        DPI: options.dpi || ConfigUtils.getConfigProp("wmsDpi") || 90
-    }, options.params || {});
+        DPI: options.dpi || ConfigUtils.getConfigProp("wmsDpi") || 90,
+        ...options.params
+    };
 }
 
 function getWMSURLs( urls ) {
@@ -92,7 +93,7 @@ export default {
                 return found;
             }, false);
             if (changed) {
-                layer.getSource().updateParams(assign(newParams, newOptions.params, {t: new Date().getMilliseconds()}));
+                layer.getSource().updateParams(Object.assign(newParams, {...newOptions.params, t: new Date().getMilliseconds()}));
                 layer.getSource().changed();
             }
         }

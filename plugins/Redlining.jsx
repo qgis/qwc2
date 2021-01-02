@@ -10,7 +10,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import NumericInput from 'react-numeric-input2';
-import assign from 'object-assign';
 import Mousetrap from 'mousetrap';
 import LocaleUtils from '../utils/LocaleUtils';
 import Message from '../components/I18N/Message';
@@ -77,11 +76,11 @@ class Redlining extends React.Component {
         Mousetrap.unbind('del', this.triggerDelete);
     }
     updateRedliningState = (diff) => {
-        const newState = assign({}, this.props.redlining, diff);
+        const newState = {...this.props.redlining, ...diff};
         this.props.changeRedliningState(newState);
     }
     updateRedliningStyle = (diff) => {
-        const newStyle = assign({}, this.props.redlining.style, diff);
+        const newStyle = {...this.props.redlining.style, ...diff};
         this.updateRedliningState({style: newStyle});
     }
     renderBody = () => {
@@ -202,7 +201,7 @@ class Redlining extends React.Component {
     }
     actionChanged = (data) => {
         if (data.action === "Draw" && data.geomType === "Text") {
-            data = assign({}, data, {text: LocaleUtils.getMessageById(this.context.messages, "redlining.text")});
+            data = {...data, text: LocaleUtils.getMessageById(this.context.messages, "redlining.text")};
         }
         this.updateRedliningState({...data, featureSelected: false});
     }

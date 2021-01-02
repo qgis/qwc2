@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assign from 'object-assign';
 import {CHANGE_REDLINING_PICK_STATE} from '../actions/redliningPick';
 
 const defaultState = {
@@ -18,7 +17,7 @@ const defaultState = {
 export default function redliningPick(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_REDLINING_PICK_STATE: {
-        return assign({}, state, action.data);
+        return {...state, ...action.data};
     }
     default:
         return state;

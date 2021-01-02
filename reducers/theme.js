@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assign from 'object-assign';
 import {
     THEMES_LOADED,
     SET_THEME_LAYERS_LIST,
@@ -20,17 +19,17 @@ const defaultState = {};
 export default function theme(state = defaultState, action) {
     switch (action.type) {
     case SWITCHING_THEME: {
-        return assign({}, state, {switching: action.switching});
+        return {...state, switching: action.switching};
     }
     case THEMES_LOADED: {
-        return assign({}, state, {themes: action.themes});
+        return {...state, themes: action.themes};
     }
     case SET_THEME_LAYERS_LIST: {
-        return assign({}, state, {themelist: action.themelist});
+        return {...state, themelist: action.themelist};
     }
     case SET_CURRENT_THEME: {
         UrlParams.updateParams({t: action.theme.id});
-        return assign({}, state, {current: action.theme});
+        return {...state, current: action.theme};
     }
     default:
         return state;

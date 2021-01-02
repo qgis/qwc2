@@ -8,7 +8,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import assign from 'object-assign';
 import isEmpty from 'lodash.isempty';
 import FileSaver from 'file-saver';
 import {stringify} from 'wellknown';
@@ -84,7 +83,7 @@ class IdentifyViewer extends React.Component {
             const result = {};
             const stats = {count: 0, lastResult: null};
             (this.props.responses || []).map(response => response.data ? this.parseResponse(response, result, stats) : null);
-            assign(newState, {
+            Object.assign(newState, {
                 expanded: {},
                 resultTree: result,
                 currentResult: stats.count === 1 ? stats.lastResult : null,
@@ -161,7 +160,7 @@ class IdentifyViewer extends React.Component {
     setHighlightedResults = (results, resultTree) => {
         if (!results) {
             results = Object.keys(resultTree).reduce((res, layer) => {
-                return res.concat(resultTree[layer].map(result => assign({}, result, {id: layer + "." + result.id})));
+                return res.concat(resultTree[layer].map(result => ({...result, id: layer + "." + result.id})));
             }, []);
         }
         results = results.filter(result => result.type.toLowerCase() === "feature");
@@ -184,9 +183,9 @@ class IdentifyViewer extends React.Component {
         const diff = {};
         diff[path] = newstate;
         if (this.state.currentLayer === path && !newstate) {
-            this.setState(assign({}, this.state, {expanded: assign({}, this.state.expanded, diff), currentResult: null, currentLayer: null}));
+            this.setState({...this.state, expanded: {...this.state.expanded, ...diff}, currentResult: null, currentLayer: null});
         } else {
-            this.setState(assign({}, this.state, {expanded: assign({}, this.state.expanded, diff)}));
+            this.setState({...this.state, expanded: {...this.state.expanded, ...diff}});
         }
     }
     setCurrentResult = (layer, result) => {
@@ -198,7 +197,7 @@ class IdentifyViewer extends React.Component {
         }
     }
     removeResult = (layer, result) => {
-        const newResultTree = assign({}, this.state.resultTree);
+        const newResultTree = {...this.state.resultTree};
         newResultTree[layer] = this.state.resultTree[layer].filter(item => item !== result);
         this.setState({
             resultTree: newResultTree,
@@ -209,7 +208,7 @@ class IdentifyViewer extends React.Component {
         this.export({[layer]: [result]});
     }
     removeResultLayer = (layer) => {
-        const newResultTree = assign({}, this.state.resultTree);
+        const newResultTree = {...this.state.resultTree};
         delete newResultTree[layer];
         this.setState({
             resultTree: newResultTree,
@@ -571,7 +570,7 @@ class IdentifyViewer extends React.Component {
         let reports = {};
         if (entry.sublayers) {
             for (const sublayer of entry.sublayers) {
-                reports = assign({}, reports, this.collectFeatureReportTemplates(sublayer));
+                reports = {...reports, ...this.collectFeatureReportTemplates(sublayer)};
             }
         } else if (entry.featureReport) {
             reports[entry.title] = entry.featureReport;

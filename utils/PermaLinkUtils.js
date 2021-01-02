@@ -8,7 +8,6 @@
 
 import url from 'url';
 import axios from 'axios';
-import assign from 'object-assign';
 import {LayerRole} from '../actions/layers';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
@@ -21,7 +20,7 @@ export const UrlParams = {
         // Timeout: avoid wierd issue where Firefox triggers a full reload when invoking history-replaceState directly
         setTimeout(() => {
             const urlObj = url.parse(window.location.href, true);
-            urlObj.query = assign(urlObj.query, dict);
+            urlObj.query = Object.assign(urlObj.query, dict);
             const propNames = Object.getOwnPropertyNames(urlObj.query);
 
             for (const propName of propNames) {

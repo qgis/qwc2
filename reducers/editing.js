@@ -7,7 +7,6 @@
  */
 
 import {CHANGE_EDITING_STATE} from '../actions/editing';
-import assign from 'object-assign';
 
 const defaultState = {
     action: null,
@@ -19,7 +18,7 @@ export default function editing(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_EDITING_STATE: {
         const changed = action.data.feature && action.data.changed !== false;
-        return assign({}, state, action.data, {changed: changed});
+        return {...state, ...action.data, changed: changed};
     }
     default:
         return state;

@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assign from 'object-assign';
 import {CHANGE_SELECTION_STATE} from '../actions/selection';
 
 const defaultState = {
@@ -19,7 +18,8 @@ const defaultState = {
 export default function selection(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_SELECTION_STATE: {
-        return assign({}, state, {
+        return {
+            ...state,
             geomType: action.geomType,
             point: action.point,
             line: action.line,
@@ -28,7 +28,7 @@ export default function selection(state = defaultState, action) {
             styleOptions: action.styleOptions || {},
             cursor: action.cursor || null,
             reset: action.reset || false
-        });
+        };
     }
     default:
         return state;

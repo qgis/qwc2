@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assign from 'object-assign';
 import {SET_ACTIVE_LAYERINFO} from '../actions/layerinfo';
 
 const defaultState = {};
@@ -14,7 +13,7 @@ const defaultState = {};
 export default function layerInfo(state = defaultState, action) {
     switch (action.type) {
     case SET_ACTIVE_LAYERINFO: {
-        return assign({}, state, {layer: action.layer, sublayer: action.sublayer});
+        return {...state, layer: action.layer, sublayer: action.sublayer};
     }
     default:
         return state;

@@ -8,7 +8,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import assign from 'object-assign';
 import isEqual from 'lodash.isequal';
 import omit from 'lodash.omit';
 import ol from 'openlayers';
@@ -60,10 +59,11 @@ class OlLayer extends React.Component {
         return null;
     }
     makeOptions = (options) => {
-        return assign({}, options, {
+        return {
+            ...options,
             projection: options.srs || options.crs || options.projection || this.props.projection,
             opacity: options.opacity !== undefined ? options.opacity : 255
-        });
+        };
     }
     createLayer = (options) => {
         let layer = null;

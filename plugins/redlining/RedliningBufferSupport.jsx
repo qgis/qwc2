@@ -9,7 +9,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import assign from 'object-assign';
 import buffer from '@turf/buffer';
 import uuid from 'uuid';
 import NumericInput from 'react-numeric-input2';
@@ -95,7 +94,7 @@ class RedliningBufferSupport extends React.Component {
             return;
         }
         const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.projection, "EPSG:4326");
-        const wgsFeature = assign({}, feature, {geometry: wgsGeometry});
+        const wgsFeature = {...feature, geometry: wgsGeometry};
         const output = buffer(wgsFeature, this.state.bufferDistance, {units: 'meters'});
         if (output && output.geometry) {
             output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", this.props.projection);

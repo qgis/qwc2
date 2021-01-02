@@ -9,7 +9,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import assign from 'object-assign';
 import Message from '../components/I18N/Message';
 import Spinner from '../components/Spinner';
 import {LayerRole} from '../actions/layers';
@@ -55,20 +54,24 @@ class MapPlugin extends React.Component {
                         const sublayer = LayerUtils.searchSubLayer(layer, "name", sublayers[i]);
                         const sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
                         if (!sublayerInvisible) {
-                            layers.push(assign({}, layer.externalLayerMap[sublayers[i]], {
+                            layers.push({
+                                ...layer.externalLayerMap[sublayers[i]],
                                 opacity: parseInt(opacities[i], 10),
                                 visibility: true
-                            }));
+                            });
                         }
                     } else if (layers.length > 0 && layers[layers.length - 1].id === layer.id) {
                         layers[layers.length - 1].params.LAYERS += "," + sublayers[i];
                         layers[layers.length - 1].params.OPACITIES += "," + opacities[i];
                     } else {
-                        layers.push(assign({}, layer, {uuid: layer.uuid + "-" + i, params: {
-                            LAYERS: sublayers[i],
-                            OPACITIES: opacities[i],
-                            MAP: layer.params.MAP
-                        }}));
+                        layers.push({
+                            ...layer,
+                            uuid: layer.uuid + "-" + i, params: {
+                                LAYERS: sublayers[i],
+                                OPACITIES: opacities[i],
+                                MAP: layer.params.MAP
+                            }
+                        });
                     }
                 }
             } else {
@@ -76,7 +79,7 @@ class MapPlugin extends React.Component {
             }
             return layers.map((l) => {
                 ++zIndex;
-                const options = assign({}, l, {zIndex: zIndex});
+                const options = {...l, zIndex: zIndex};
                 return (
                     <OlLayer key={l.uuid} options={options} swipe={layer === topLayer ? this.props.swipe : null} />
                 );

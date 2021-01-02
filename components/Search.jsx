@@ -9,7 +9,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import assign from 'object-assign';
 import {createSelector} from 'reselect';
 import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
@@ -109,7 +108,7 @@ class Search extends React.Component {
 
             // If initial theme loaded and a search text is defined, fire off the search
             if (!prevProps.theme) {
-                this.search(assign({}, this.props, {activeProviders}), true);
+                this.search({...this.props, ...activeProviders}, true);
             }
         } else if (this.props.results && this.props.results !== prevProps.results && isEmpty(this.props.pendingProviders)) {
             // If results changed and a unique result is returned, select it automatically if it is a Place result

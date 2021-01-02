@@ -15,8 +15,6 @@ import {
     SET_IDENTIFY_FEATURE_RESULT
 } from '../actions/identify';
 
-import assign from 'object-assign';
-
 const defaultState = {
     tool: null
 };
@@ -24,33 +22,37 @@ const defaultState = {
 export default function identify(state = defaultState, action) {
     switch (action.type) {
     case SET_IDENTIFY_TOOL: {
-        return assign({}, state, {tool: action.tool});
+        return {...state, tool: action.tool};
     }
     case PURGE_IDENTIFY_RESULTS: {
-        return assign({}, state, {
+        return {
+            ...state,
             responses: [],
             requests: []
-        });
+        };
     }
     case IDENTIFY_REQUEST: {
         const {reqId, request} = action;
         const requests = state.requests || [];
-        return assign({}, state, {
+        return {
+            ...state,
             requests: [...requests, {reqId, request}]
-        });
+        };
     }
     case IDENTIFY_RESPONSE: {
         const {reqId, request, data, responseType, error} = action;
         const responses = state.responses || [];
-        return assign({}, state, {
+        return {
+            ...state,
             responses: [...responses, {reqId, request, data, responseType, error}]
-        });
+        };
     }
     case IDENTIFY_EMPTY: {
-        return assign({}, state, {
+        return {
+            ...state,
             requests: [{reqId: action.reqId, request: null}],
             responses: [{reqId: action.reqId, request: null, data: null}]
-        });
+        };
     }
     case SET_IDENTIFY_FEATURE_RESULT: {
         const request = {
@@ -60,13 +62,14 @@ export default function identify(state = defaultState, action) {
             type: "FeatureCollection",
             features: [
                 // See IdentifyUtils.parseGeoJSONResponse
-                assign({}, action.feature, {id: action.layername + "." + action.feature.id})
+                {...action.feature, id: action.layername + "." + action.feature.id}
             ]
         };
-        return assign({}, state, {
+        return {
+            ...state,
             requests: [...(state.requests || []), {reqId: action.reqId, request}],
             responses: [...(state.responses || []), {reqId: action.reqId, request, data: data, responseType: 'application/json'}]
-        });
+        };
     }
     default:
         return state;

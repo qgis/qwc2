@@ -9,7 +9,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import assign from 'object-assign';
 import uuid from 'uuid';
 import ol from 'openlayers';
 import {changeRedliningState} from '../../actions/redlining';
@@ -287,12 +286,12 @@ class RedliningSupport extends React.Component {
             feature.geometry.coordinates = [
                 Array.apply(null, Array(361)).map((item, index) => ([center[0] + radius * Math.cos(index * deg2rad), center[1] + radius * Math.sin(index * deg2rad)]))
             ];
-            assign(feature.properties, {circle: {
+            Object.assign(feature.properties, {circle: {
                 center: center,
                 radius: radius
             }});
         }
-        assign(feature, {styleName: isText ? "text" : "default", styleOptions: this.styleOptions(this.props.redlining.style)});
+        Object.assign(feature, {styleName: isText ? "text" : "default", styleOptions: this.styleOptions(this.props.redlining.style)});
         const layer = {
             id: this.props.redlining.layer,
             title: this.props.redlining.layerTitle,
@@ -305,7 +304,7 @@ class RedliningSupport extends React.Component {
         if (this.currentFeature) {
             this.props.removeLayerFeatures(this.props.redlining.layer, [this.currentFeature.getId()], true);
             this.currentFeature = null;
-            this.props.changeRedliningState(assign({}, oldProps.redlining, {selectedFeature: null}));
+            this.props.changeRedliningState({...oldProps.redlining, selectedFeature: null});
         }
     }
     reset = (layerChanged=false) => {

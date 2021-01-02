@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assign from 'object-assign';
 import {SET_ACTIVE_SERVICEINFO} from '../actions/serviceinfo';
 
 const defaultState = {};
@@ -14,7 +13,7 @@ const defaultState = {};
 export default function serviceInfo(state = defaultState, action) {
     switch (action.type) {
     case SET_ACTIVE_SERVICEINFO: {
-        return assign({}, state, {service: action.service});
+        return {...state, service: action.service};
     }
     default:
         return state;

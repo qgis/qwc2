@@ -7,7 +7,6 @@
  */
 
 import ol from 'openlayers';
-import assign from 'object-assign';
 import MapUtils from '../../../utils/MapUtils';
 
 function getWMSURLs(urls) {
@@ -27,7 +26,7 @@ export default {
         return new ol.layer.Tile({
             minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.projection)[0] : undefined,
             maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.projection)[0] : undefined,
-            source: new ol.source.WMTS(assign({
+            source: new ol.source.WMTS({
                 urls: urls,
                 layer: options.name,
                 projection: projection && projection.getExtent() ? projection : null,
@@ -41,7 +40,7 @@ export default {
                 style: options.style !== undefined ? options.style : '',
                 wrapX: options.wrapX !== undefined ? options.wrapX : true,
                 requestEncoding: options.requestEncoding !== undefined ? options.requestEncoding : "REST"
-            }))
+            })
         });
     }
 };

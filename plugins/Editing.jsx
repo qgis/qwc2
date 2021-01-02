@@ -11,7 +11,6 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
-import assign from 'object-assign';
 import axios from 'axios';
 import clone from 'clone';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -96,7 +95,7 @@ class Editing extends React.Component {
                     const features = featureCollection ? featureCollection.features : null;
                     this.setState({pickedFeatures: features});
                     const feature = features ? features[0] : null;
-                    this.props.changeEditingState(assign({}, this.props.editing, {feature: feature, changed: false}));
+                    this.props.changeEditingState({...this.props.editing, feature: feature, changed: false});
 
                     // Query relation values for picked feature
                     const editDataset = this.editLayerId(this.state.selectedLayer);
@@ -105,8 +104,8 @@ class Editing extends React.Component {
                         const relTables = Object.entries(this.state.relationTables).map(([name, fk]) => mapPrefix + name + ":" + fk).join(",");
                         this.props.iface.getRelations(editDataset, feature.id, relTables, (response => {
                             const relationValues = this.unprefixRelationValues(response.relationvalues, mapPrefix);
-                            const newFeature = assign({}, this.props.editing.feature, {relationValues: relationValues});
-                            this.props.changeEditingState(assign({}, this.props.editing, { feature: newFeature}));
+                            const newFeature = {...this.props.editing.feature, relationValues: relationValues};
+                            this.props.changeEditingState({...this.props.editing, feature: newFeature});
                         }));
                     }
                 });
@@ -273,7 +272,7 @@ class Editing extends React.Component {
 
     changeSelectedLayer = (selectedLayer, action = null) => {
         const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
-        this.props.changeEditingState(assign({}, this.props.editing, {action: action || this.props.editing.action, feature: null, geomType: curConfig ? curConfig.geomType : null}));
+        this.props.changeEditingState({...this.props.editing, action: action || this.props.editing.action, feature: null, geomType: curConfig ? curConfig.geomType : null});
 
         let prevLayerVisibility = null;
         if (this.state.selectedLayer !== null) {
@@ -309,12 +308,12 @@ class Editing extends React.Component {
         }
     }
     updateField = (key, value) => {
-        const newProperties = assign({}, this.props.editing.feature.properties, {[key]: value});
-        const newFeature = assign({}, this.props.editing.feature, {properties: newProperties});
-        this.props.changeEditingState(assign({}, this.props.editing, {feature: newFeature, changed: true}));
+        const newProperties = {...this.props.editing.feature.properties, [key]: value};
+        const newFeature = {...this.props.editing.feature, properties: newProperties};
+        this.props.changeEditingState({...this.props.editing, feature: newFeature, changed: true});
     }
     addRelationRecord = (table) => {
-        const newRelationValues = assign({}, this.props.editing.feature.relationValues || {});
+        const newRelationValues = {...this.props.editing.feature.relationValues};
         if (!newRelationValues[table]) {
             newRelationValues[table] = {
                 fk: this.state.relationTables[table],
@@ -324,35 +323,37 @@ class Editing extends React.Component {
         newRelationValues[table].records = newRelationValues[table].records.concat([{
             __status__: "new"
         }]);
-        const newFeature = assign({}, this.props.editing.feature, {relationValues: newRelationValues});
-        this.props.changeEditingState(assign({}, this.props.editing, {feature: newFeature, changed: true}));
+        const newFeature = {...this.props.editing.feature, relationValues: newRelationValues};
+        this.props.changeEditingState({...this.props.editing, feature: newFeature, changed: true});
     }
     removeRelationRecord = (table, idx) => {
-        const newRelationValues = assign({}, this.props.editing.feature.relationValues);
-        newRelationValues[table] = assign({}, newRelationValues[table]);
+        const newRelationValues = {...this.props.editing.feature.relationValues};
+        newRelationValues[table] = {...newRelationValues[table]};
         newRelationValues[table].records = newRelationValues[table].records.slice(0);
         const fieldStatus = newRelationValues[table].records[idx].__status__ || "";
         // If field was new, delete it directly, else mark it as deleted
         if (fieldStatus === "new") {
             newRelationValues[table].records.splice(idx, 1);
         } else {
-            newRelationValues[table].records[idx] = assign({}, newRelationValues[table].records[idx], {
+            newRelationValues[table].records[idx] = {
+                ...newRelationValues[table].records[idx],
                 __status__: fieldStatus.startsWith("deleted") ? fieldStatus.substr(8) : "deleted:" + fieldStatus
-            });
+            };
         }
-        const newFeature = assign({}, this.props.editing.feature, {relationValues: newRelationValues});
-        this.props.changeEditingState(assign({}, this.props.editing, {feature: newFeature, changed: true}));
+        const newFeature = {...this.props.editing.feature, relationValues: newRelationValues};
+        this.props.changeEditingState({...this.props.editing, feature: newFeature, changed: true});
     }
     updateRelationField = (table, idx, key, value) => {
-        const newRelationValues = assign({}, this.props.editing.feature.relationValues);
-        newRelationValues[table] = assign({}, newRelationValues[table]);
+        const newRelationValues = {...this.props.editing.feature.relationValues};
+        newRelationValues[table] = {...newRelationValues[table]};
         newRelationValues[table].records = newRelationValues[table].records.slice(0);
-        newRelationValues[table].records[idx] = assign({}, newRelationValues[table].records[idx], {
+        newRelationValues[table].records[idx] = {
+            ...newRelationValues[table].records[idx],
             [key]: value,
             __status__: newRelationValues[table].records[idx].__status__ === "new" ? "new" : "changed"
-        });
-        const newFeature = assign({}, this.props.editing.feature, {relationValues: newRelationValues});
-        this.props.changeEditingState(assign({}, this.props.editing, {feature: newFeature, changed: true}));
+        };
+        const newFeature = {...this.props.editing.feature, relationValues: newRelationValues};
+        this.props.changeEditingState({...this.props.editing, feature: newFeature, changed: true});
     }
     unprefixRelationValues = (relationValues, mapPrefix) => {
         if (!mapPrefix) {
@@ -384,7 +385,7 @@ class Editing extends React.Component {
     }
     onDiscard = (action) => {
         if (action === "Discard") {
-            this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
+            this.props.changeEditingState({...this.props.editing, feature: null});
         }
     }
     onSubmit = (ev) => {
@@ -393,13 +394,14 @@ class Editing extends React.Component {
 
         let feature = this.props.editing.feature;
         // Ensure properties is not null
-        feature = assign({}, feature, {
+        feature = {
+            ...feature,
             properties: feature.properties || {},
             crs: {
                 type: "name",
                 properties: {name: "urn:ogc:def:crs:EPSG::" + this.props.map.projection.split(":")[1]}
             }
-        });
+        };
 
         // Keep relation values separate
         const relationValues = clone(feature.relationValues || {});
@@ -480,8 +482,8 @@ class Editing extends React.Component {
                     // Relation values commit failed, switch to pick update relation values with response and switch to pick to
                     // to avoid adding feature again on next attempt
                     this.commitFinished(false, "Some relation records could not be committed");
-                    newFeature = assign({}, newFeature, {relationValues: this.unprefixRelationValues(relResult.relationvalues, mapPrefix)});
-                    this.props.changeEditingState(assign({}, this.props.editing, {action: "Pick", feature: newFeature, changed: true}));
+                    newFeature = {...newFeature, relationValues: this.unprefixRelationValues(relResult.relationvalues, mapPrefix)};
+                    this.props.changeEditingState({...this.props.editing, action: "Pick", feature: newFeature, changed: true});
                 } else {
                     this.commitFinished(true);
                 }
@@ -491,8 +493,8 @@ class Editing extends React.Component {
         }
     }
     setEditFeature = (featureId) => {
-        const feature = this.state.pickedFeatures.find(f => f.id == featureId);
-        this.props.changeEditingState(assign({}, this.props.editing, {feature: feature, changed: false}));
+        const feature = this.state.pickedFeatures.find(f => f.id === featureId);
+        this.props.changeEditingState({...this.props.editing, feature: feature, changed: false});
     }
     deleteClicked = () => {
         this.setState({deleteClicked: true});
@@ -510,7 +512,7 @@ class Editing extends React.Component {
     commitFinished = (success, errorMsg) => {
         this.setState({busy: false});
         if (success) {
-            this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
+            this.props.changeEditingState({...this.props.editing, feature: null});
             this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
         } else {
             alert(errorMsg);
@@ -521,7 +523,7 @@ class Editing extends React.Component {
         if (success) {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
-            this.props.changeEditingState(assign({}, this.props.editing, {feature: null}));
+            this.props.changeEditingState({...this.props.editing, feature: null});
             this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
         } else {
             alert(errorMsg);

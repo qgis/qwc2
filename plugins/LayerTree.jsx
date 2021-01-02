@@ -9,7 +9,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import assign from 'object-assign';
 import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import Sortable from 'react-sortablejs';
@@ -494,7 +493,7 @@ class LayerTree extends React.Component {
         if (layer.sublayers) {
             layer.sublayers = layer.sublayers.map((sublayer, idx) => {
                 if (path === null || (!isEmpty(path) && path[0] === idx)) {
-                    const newsublayer = assign({}, sublayer, options);
+                    const newsublayer = {...sublayer, ...options};
                     this.propagateOptions(newsublayer, options, path ? path.slice(1) : null);
                     return newsublayer;
                 } else {

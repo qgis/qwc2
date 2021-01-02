@@ -7,7 +7,6 @@
  */
 
 import React from 'react';
-import assign from 'object-assign';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
@@ -431,7 +430,7 @@ class SearchBox extends React.Component {
             return;
         }
         const pendingSearches = this.state.pendingSearches.filter(entry => entry == searchId);
-        const searchResults = assign({}, this.state.searchResults, {[searchId]: results});
+        const searchResults = {...this.state.searchResults, [searchId]: results};
         this.setState({
             searchResults:searchResults ,
             pendingSearches: pendingSearches
