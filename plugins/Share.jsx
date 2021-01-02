@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 import Message from '../components/I18N/Message';
 import ShareSocials from '../components/share/ShareSocials';
 import ShareQRCode from '../components/share/ShareQRCode';
-import ShareLink from '../components/ShareLink';
+import ShareLink from '../components/share/ShareLink';
 import SideBar from '../components/SideBar';
 import {generatePermaLink} from '../utils/PermaLinkUtils';
 import './style/Share.css';

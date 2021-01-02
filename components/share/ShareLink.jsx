@@ -8,8 +8,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import Message from '../components/I18N/Message';
-import CopyButton from './widgets/CopyButton';
+import Message from '../I18N/Message';
+import CopyButton from '../widgets/CopyButton';
 import './style/ShareLink.css';
 
 export default class ShareLink extends React.Component {

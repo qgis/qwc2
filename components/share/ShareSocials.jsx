@@ -18,7 +18,7 @@ import {
     TwitterIcon,
     LinkedinIcon
 } from 'react-share';
-import './share.css';
+import './style/ShareSocials.css';
 
 
 export default class ShareSocials extends React.Component {
