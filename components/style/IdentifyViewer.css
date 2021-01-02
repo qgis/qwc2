@@ -5,6 +5,10 @@ div.identify-body {
     flex-direction: column;
 }
 
+span.identify-body-message {
+    padding: 0.25em;
+}
+
 div.identify-body div.identify-results-container {
     overflow-y: auto;
     flex: 1 1 50%;

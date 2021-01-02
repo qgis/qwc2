@@ -10,12 +10,13 @@ import PropTypes from 'prop-types';
 
 export default class Message extends React.Component {
     static propTypes = {
+        className: PropTypes.string,
         msgId: PropTypes.string.isRequired
     }
     static contextTypes = {
         messages: PropTypes.object
     }
     render() {
-        return (<span>{this.context.messages[this.props.msgId] || this.props.msgId}</span>);
+        return (<span className={this.props.className || ""}>{this.context.messages[this.props.msgId] || this.props.msgId}</span>);
     }
 }

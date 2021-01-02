@@ -502,9 +502,9 @@ class IdentifyViewer extends React.Component {
         let haveResults = false;
         if (isEmpty(this.state.resultTree)) {
             if (this.props.missingResponses > 0) {
-                body = (<div className="identify-body" role="body"><Message msgId="identify.querying" /></div>);
+                body = (<div className="identify-body" role="body"><Message className="identify-body-message" msgId="identify.querying" /></div>);
             } else {
-                body = (<div className="identify-body" role="body"><Message msgId="identify.noresults" /></div>);
+                body = (<div className="identify-body" role="body"><Message className="identify-body-message" msgId="identify.noresults" /></div>);
             }
         } else if (tree) {
             const contents = Object.keys(this.state.resultTree).map(layer => this.renderLayer(layer));
