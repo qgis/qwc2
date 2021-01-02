@@ -25,7 +25,6 @@ class TaskButton extends React.Component {
         task: PropTypes.string
     }
     static defaultProps = {
-        mode: null,
         position: 1
     }
     render() {
@@ -46,7 +45,7 @@ class TaskButton extends React.Component {
 }
 
 const selector = (state) => ({
-    currentTask: state.task && state.task.id || null
+    currentTask: state.task.id
 });
 
 export default connect(selector, {

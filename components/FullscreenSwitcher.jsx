@@ -18,9 +18,6 @@ class FullscreenSwitcher extends React.Component {
         fullscreenToggled: PropTypes.func,
         mobile: PropTypes.bool
     }
-    static defaultProps = {
-        fullscreen: false
-    }
     toggleFullscreen = () => {
         this.props.fullscreenToggled(!this.props.fullscreen);
     }
@@ -69,8 +66,8 @@ class FullscreenSwitcher extends React.Component {
 }
 
 const selector = (state) => ({
-    mobile: state.browser ? state.browser.mobile : false,
-    fullscreen: state.display && state.display.fullscreen
+    mobile: state.browser.mobile,
+    fullscreen: state.display.fullscreen
 });
 
 export default connect(selector, {

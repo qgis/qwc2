@@ -166,9 +166,9 @@ class RasterExport extends React.Component {
 }
 
 const selector = (state) => ({
-    theme: state.theme ? state.theme.current : null,
-    map: state.map ? state.map : null,
-    layers: state.layers ? state.layers.flat : []
+    theme: state.theme.current,
+    map: state.map,
+    layers: state.layers.flat
 });
 
 export default connect(selector, {

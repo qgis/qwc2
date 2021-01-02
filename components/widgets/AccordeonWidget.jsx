@@ -22,9 +22,6 @@ export default class AccordeonWidget extends React.Component {
             title: PropTypes.string
         }))
     }
-    static defaultProps = {
-        allowMultiple: false
-    }
     state = {
         currentSections: []
     }

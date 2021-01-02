@@ -77,7 +77,7 @@ class ThemeSwitcher extends React.Component {
 }
 
 const selector = (state) => ({
-    activeTheme: state.theme ? state.theme.current : null
+    activeTheme: state.theme.current
 });
 
 export default connect(selector, {})(ThemeSwitcher);

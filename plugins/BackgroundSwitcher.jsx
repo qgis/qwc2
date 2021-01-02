@@ -148,7 +148,7 @@ class BackgroundSwitcher extends React.Component {
 }
 
 const selector = (state) => ({
-    layers: state.layers.flat || []
+    layers: state.layers.flat
 });
 
 export default connect(selector, {

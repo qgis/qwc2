@@ -51,8 +51,7 @@ export const ZoomInPlugin = connect((state) => ({
     currentZoom: state.map.zoom,
     maxZoom: state.map.resolutions.length - 1,
     direction: +1
-}),
-{
+}), {
     changeZoomLevel: changeZoomLevel
 })(ZoomButton);
 
@@ -60,7 +59,6 @@ export const ZoomOutPlugin = connect((state) => ({
     currentZoom: state.map.zoom,
     maxZoom: state.map.resolutions.length - 1,
     direction: -1
-}),
-{
+}), {
     changeZoomLevel: changeZoomLevel
 })(ZoomButton);

@@ -10,6 +10,10 @@ import assign from 'object-assign';
 import {SET_CURRENT_TASK, SET_CURRENT_TASK_BLOCKED} from '../actions/task';
 
 const defaultState = {
+    id: null,
+    mode: null,
+    data: null,
+    blocked: false,
     unsetOnMapClick: false
 };
 

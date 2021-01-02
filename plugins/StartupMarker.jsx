@@ -56,7 +56,7 @@ export default connect(state => ({
     startupParams: state.localConfig.startupParams,
     click: state.map.click || {},
     map: state.map,
-    theme: state.theme && state.theme.current || null
+    theme: state.theme.current
 }), {
     addMarker: addMarker,
     removeMarker: removeMarker

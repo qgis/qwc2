@@ -20,10 +20,6 @@ class MapCopyright extends React.Component {
         layers: PropTypes.array,
         map: PropTypes.object
     }
-    static defaultProps = {
-        layers: [],
-        map: null
-    }
     state = {
         currentCopyrights: []
     }
@@ -86,8 +82,8 @@ class MapCopyright extends React.Component {
 }
 
 const selector = (state) => ({
-    layers: state.layers && state.layers.flat ? state.layers.flat : [],
-    map: state.map ? state.map : null
+    layers: state.layers.flat,
+    map: state.map
 });
 
 export default connect(selector, {})(MapCopyright);

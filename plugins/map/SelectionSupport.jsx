@@ -21,9 +21,6 @@ class SelectionSupport extends React.Component {
         projection: PropTypes.string,
         selection: PropTypes.object
     }
-    static defaultProps = {
-        selection: {}
-    }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.selection.geomType && this.props.selection.geomType !== prevProps.selection.geomType ) {
             this.addDrawInteraction(this.props);
@@ -128,7 +125,7 @@ class SelectionSupport extends React.Component {
 
 
 export default connect((state) => ({
-    selection: state.selection || {}
+    selection: state.selection
 }), {
     changeSelectionState
 })(SelectionSupport);

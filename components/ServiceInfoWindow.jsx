@@ -75,7 +75,7 @@ class ServiceInfoWindow extends React.Component {
 }
 
 const selector = state => ({
-    service: state.serviceinfo.service || null
+    service: state.serviceinfo.service
 });
 
 export default connect(selector, {

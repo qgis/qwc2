@@ -619,15 +619,15 @@ class LayerTree extends React.Component {
 }
 
 const selector = (state) => ({
-    mobile: state.browser ? state.browser.mobile : false,
-    ie: state.browser ? state.browser.ie : false,
+    mobile: state.browser.mobile,
+    ie: state.browser.ie,
     fallbackDrag: state.browser.ie || (state.browser.platform === 'Win32' && state.browser.chrome),
-    layers: state.layers && state.layers.flat ? state.layers.flat : [],
+    layers: state.layers.flat,
     mapCrs: state.map.projection,
     mapScale: MapUtils.computeForZoom(state.map.scales, state.map.zoom),
-    swipe: state.layers && state.layers.swipe || undefined,
+    swipe: state.layers.swipe,
     theme: state.theme.current || {},
-    mapTipsEnabled: state.map && state.map.maptips
+    mapTipsEnabled: state.map.maptips
 });
 
 export default connect(selector, {

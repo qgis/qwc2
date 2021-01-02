@@ -98,8 +98,8 @@ class LocateSupport extends React.Component {
 }
 
 export default connect((state) => ({
-    status: state.locate && state.locate.state,
-    messages: state.locale && state.locale.messages ? state.locale.messages.locate : undefined,
+    status: state.locate.state,
+    messages: state.locale.messages.locate,
     startupParams: state.localConfig.startupParams
 }), {
     changeLocateState,

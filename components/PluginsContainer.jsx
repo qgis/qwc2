@@ -21,12 +21,6 @@ class PluginsContainer extends React.Component {
         pluginsAppConfig: PropTypes.object,
         pluginsConfig: PropTypes.object
     }
-    static defaultProps = {
-        mode: 'desktop',
-        plugins: {},
-        pluginsConfig: {},
-        pluginsAppConfig: {}
-    }
     renderPlugins = (pluginsConfig) => {
         return pluginsConfig.map(pluginConf => {
             const Plugin = this.props.plugins[pluginConf.name + "Plugin"];
@@ -53,6 +47,6 @@ class PluginsContainer extends React.Component {
 }
 
 export default connect((state) => ({
-    pluginsConfig: state.localConfig && state.localConfig.plugins || null,
-    mode: (urlQuery.mode || (state.browser && state.browser.mobile ? 'mobile' : 'desktop'))
+    pluginsConfig: state.localConfig.plugins,
+    mode: state.browser.mobile ? 'mobile' : 'desktop'
 }))(PluginsContainer);

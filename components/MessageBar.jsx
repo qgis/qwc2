@@ -21,8 +21,7 @@ class MessageBar extends React.Component {
         task: PropTypes.string
     }
     static defaultProps = {
-        onHide: () => {},
-        hideOnTaskChange: false
+        onHide: () => {}
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.task !== prevProps.task && this.props.hideOnTaskChange) {
@@ -53,7 +52,7 @@ class MessageBar extends React.Component {
 }
 
 const selector = (state) => ({
-    task: state.task ? state.task.id : null
+    task: state.task.id
 });
 
 export default connect(selector, {})(MessageBar);

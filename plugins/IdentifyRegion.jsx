@@ -83,8 +83,8 @@ class IdentifyRegion extends React.Component {
 const selector = (state) => ({
     selection: state.selection,
     map: state.map,
-    theme: state.theme ? state.theme.current : null,
-    layers: state.layers && state.layers.flat || []
+    theme: state.theme.current,
+    layers: state.layers.flat
 });
 
 export default connect(selector, {

@@ -116,8 +116,8 @@ class MapPlugin extends React.Component {
 export default (tools) => {
     return connect((state) => ({
         map: state.map,
-        layers: state.layers && state.layers.flat || [],
-        swipe: state.layers && state.layers.swipe || undefined,
+        layers: state.layers.flat,
+        swipe: state.layers.swipe,
         tools
     }))(MapPlugin);
 };

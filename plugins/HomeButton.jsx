@@ -43,7 +43,7 @@ class HomeButton extends React.Component {
 }
 
 export default connect((state) => ({
-    currentTheme: state.theme ? state.theme.current : null
+    currentTheme: state.theme.current
 }), {
     zoomToExtent: zoomToExtent
 })(HomeButton);

@@ -41,7 +41,6 @@ export default class ResizeableWindow extends React.Component {
         zIndex: PropTypes.number
     }
     static defaultProps = {
-        icon: null,
         initialX: null,
         initialY: null,
         initialWidth: 240,
@@ -51,8 +50,6 @@ export default class ResizeableWindow extends React.Component {
         maxWidth: null,
         maxHeight: null,
         onClose: () => {},
-        scrollable: false,
-        extraControls: null,
         zIndex: 8,
         visible: true,
         dockable: true

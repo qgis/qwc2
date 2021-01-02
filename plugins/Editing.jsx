@@ -531,12 +531,12 @@ class Editing extends React.Component {
 
 export default (iface = EditingInterface) => {
     return connect(state => ({
-        enabled: state.task ? state.task.id === 'Editing' : false,
-        theme: state.theme ? state.theme.current : null,
-        layers: state.layers ? state.layers.flat : [],
-        map: state.map || {},
+        enabled: state.task.id === 'Editing',
+        theme: state.theme.current,
+        layers: state.layers.flat,
+        map: state.map,
         iface: iface,
-        editing: state.editing || {}
+        editing: state.editing
     }), {
         clickOnMap: clickOnMap,
         changeEditingState: changeEditingState,

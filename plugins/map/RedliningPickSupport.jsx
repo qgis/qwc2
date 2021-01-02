@@ -141,7 +141,7 @@ class RedliningPickSupport extends React.Component {
 }
 
 export default connect((state) => ({
-    redliningPick: state.redliningPick || {}
+    redliningPick: state.redliningPick
 }), {
     changeRedliningPickState: changeRedliningPickState
 })(RedliningPickSupport);

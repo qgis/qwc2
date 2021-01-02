@@ -30,9 +30,6 @@ class AppMenu extends React.Component {
         showOnStartup: PropTypes.bool
     }
     static defaultProps = {
-        buttonContents: null,
-        appMenuClearsTask: false,
-        showOnStartup: false,
         onMenuToggled: () => {}
     }
     state = {
@@ -145,7 +142,7 @@ class AppMenu extends React.Component {
 }
 
 export default connect((state) => ({
-    currentTaskBlocked: state.task && state.task.blocked || false,
+    currentTaskBlocked: state.task.blocked,
     currentTheme: state.theme.current || {}
 }), {
     setCurrentTask: setCurrentTask

@@ -30,7 +30,7 @@ class Toolbar extends React.Component {
         if (item.themeWhitelist && !item.themeWhitelist.includes(this.props.currentTheme.title)) {
             return null;
         }
-        const active = this.props.currentTask == (item.task || item.key) && this.props.currentTaskMode == item.mode;
+        const active = this.props.currentTask === (item.task || item.key) && this.props.currentTaskMode === item.mode;
         const title = LocaleUtils.getMessageById(this.context.messages, "appmenu.items." + item.key) || null;
         return (
             <Icon
@@ -62,8 +62,8 @@ class Toolbar extends React.Component {
 }
 
 export default connect((state) => ({
-    currentTask: state.task ? state.task.id : "",
-    currentTaskMode: state.task ? state.task.mode : "",
+    currentTask: state.task.id,
+    currentTaskMode: state.task.mode,
     currentTheme: state.theme.current || {}
 }), {
     setCurrentTask: setCurrentTask,

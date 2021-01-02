@@ -141,7 +141,7 @@ class MapInfoTooltip extends React.Component {
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
     enabled: state.identify.tool !== null,
-    map: state.map ? state.map : null,
+    map: state.map,
     displaycrs: displaycrs
 }));
 

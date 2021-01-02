@@ -145,12 +145,11 @@ class BottomBar extends React.Component {
 }
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => {
-    const map = state && state.map && state.map ? state.map : null;
     return {
         displaycrs: displaycrs,
-        map: map,
+        map: state.map,
         fullscreen: state.display && state.display.fullscreen,
-        additionalMouseCrs: state.theme && state.theme.current ? state.theme.current.additionalMouseCrs : []
+        additionalMouseCrs: state.theme.current ? state.theme.current.additionalMouseCrs : []
     };
 });
 

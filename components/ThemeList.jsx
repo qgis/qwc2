@@ -43,9 +43,6 @@ class ThemeList extends React.Component {
     static contextTypes = {
         messages: PropTypes.object
     }
-    static defaultProps = {
-        showLayerAfterChangeTheme: false
-    }
     state = {
         expandedGroups: [],
         visibleThemeInfoMenu: null
@@ -221,9 +218,9 @@ class ThemeList extends React.Component {
 }
 
 const selector = (state) => ({
-    themes: state.theme && state.theme.themes || {},
-    layers: state.layers && state.layers.flat ? state.layers.flat : [],
-    mapConfig: state.map ? state.map : undefined
+    themes: state.theme.themes || {},
+    layers: state.layers.flat,
+    mapConfig: state.map
 });
 
 

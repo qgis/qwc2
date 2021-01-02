@@ -210,7 +210,7 @@ class HeightProfile extends React.Component {
 export default connect((state) => ({
     measurement: state.measurement,
     projection: state.map.projection,
-    mobile: state.browser ? state.browser.mobile : false
+    mobile: state.browser.mobile
 }), {
     addMarker: addMarker,
     removeMarker: removeMarker

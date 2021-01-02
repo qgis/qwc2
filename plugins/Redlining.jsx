@@ -215,7 +215,7 @@ export default (plugins) => {
     return connect((state) => ({
         layers: state.layers.flat,
         redlining: state.redlining,
-        mobile: state.browser ? state.browser.mobile : false,
+        mobile: state.browser.mobile,
         plugins: plugins
     }), {
         changeRedliningState: changeRedliningState,

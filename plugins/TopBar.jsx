@@ -112,8 +112,8 @@ class TopBar extends React.Component {
 
 export default (components) => {
     return connect((state) => ({
-        mobile: state.browser ? state.browser.mobile : false,
-        fullscreen: state.display && state.display.fullscreen,
+        mobile: state.browser.mobile,
+        fullscreen: state.display.fullscreen,
         components: components
     }), {
         toggleFullscreen: toggleFullscreen,

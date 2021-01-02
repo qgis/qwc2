@@ -32,9 +32,6 @@ class ButtonBar extends React.Component {
         mobile: PropTypes.bool,
         onClick: PropTypes.func
     }
-    static defaultProps = {
-        disabled: false
-    }
     render() {
         return (
             <div className={"ButtonBar" + (this.props.disabled ? " buttonbar-disabled" : "")}>
@@ -66,7 +63,7 @@ class ButtonBar extends React.Component {
 }
 
 const selector = (state) => ({
-    mobile: state.browser ? state.browser.mobile : false
+    mobile: state.browser.mobile
 });
 
 export default connect(selector, {})(ButtonBar);

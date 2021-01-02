@@ -247,7 +247,7 @@ class MeasurementSupport extends React.Component {
 }
 
 export default connect((state) => ({
-    measurement: state.measurement || {}
+    measurement: state.measurement
 }), {
     changeMeasurementState
 })(MeasurementSupport);

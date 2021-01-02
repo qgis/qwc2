@@ -160,7 +160,7 @@ class EditingSupport extends React.Component {
 }
 
 export default connect((state) => ({
-    editing: state.editing || {}
+    editing: state.editing
 }), {
     changeEditingState: changeEditingState
 })(EditingSupport);

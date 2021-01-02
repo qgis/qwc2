@@ -98,8 +98,8 @@ class LayerInfoWindow extends React.Component {
 
 const selector = state => ({
     map: state.map,
-    layer: state.layerinfo.layer || null,
-    sublayer: state.layerinfo.sublayer || null
+    layer: state.layerinfo.layer,
+    sublayer: state.layerinfo.sublayer
 });
 
 export default connect(selector, {

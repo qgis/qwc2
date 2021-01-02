@@ -78,7 +78,7 @@ class LocateButton extends React.Component {
 }
 
 export default connect(state => ({
-    locateState: state.locate.state || 'DISABLED'
+    locateState: state.locate.state
 }), {
     changeLocateState: changeLocateState
 })(LocateButton);

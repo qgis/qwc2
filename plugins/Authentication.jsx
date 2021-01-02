@@ -30,6 +30,6 @@ class Authentication extends React.Component {
 }
 
 export default connect(state => ({
-    task: state.task ? state.task.id : null
+    task: state.task.id
 }), {
 })(Authentication);

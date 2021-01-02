@@ -22,7 +22,6 @@ export default class PrintFrame extends React.Component {
         map: PropTypes.object.isRequired
     }
     static defaultProps = {
-        fixedFrame: null,
         bboxSelected: () => {}
     }
     state = {

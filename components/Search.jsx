@@ -71,7 +71,9 @@ class Search extends React.Component {
         messages: PropTypes.object
     }
     state = {
-        focused: false, showfields: false, providerSelectionVisible: false
+        focused: false,
+        showfields: false,
+        providerSelectionVisible: false
     }
     componentDidMount() {
         this.input = null;
@@ -568,7 +570,7 @@ export default (searchProviders, providerFactory = () => { return null; }) => {
             displaycrs: displaycrs,
             theme: state.theme.current,
             themes: state.theme.themes,
-            layers: state.layers.flat || [],
+            layers: state.layers.flat,
             searchProviders: providers,
             startupParams: state.localConfig.startupParams
         })),

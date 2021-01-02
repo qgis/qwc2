@@ -25,8 +25,7 @@ class TaskBar extends React.Component {
     }
     static defaultProps = {
         onShow: () => {},
-        onHide: () => {},
-        unblockOnClose: false
+        onHide: () => {}
     }
     componentDidUpdate(prevProps, prevState) {
         const newVisible = this.props.currentTask && this.props.currentTask.id === this.props.task;

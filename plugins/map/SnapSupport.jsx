@@ -149,9 +149,9 @@ class SnapSupport extends React.Component {
 }
 
 const selector = (state) => ({
-    mapObj: state.map ? state.map : null,
-    mousepos: state.mousePosition ? state.mousePosition.position : undefined,
-    layers: state.layers && state.layers.flat ? state.layers.flat : null,
+    mapObj: state.map,
+    mousepos: state.mousePosition.position,
+    layers: state.layers.flat,
     drawing: state.redlining.action || state.measurement.action || state.editing.action
 });
 

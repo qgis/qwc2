@@ -151,11 +151,11 @@ class MapTip extends React.Component {
 
 
 const selector = (state) => ({
-    mapTipsEnabled: state.map && state.map.maptips && state.identify.tool !== null,
-    theme: state.theme && state.theme.current || {},
-    layers: state.layers && state.layers.flat ? state.layers.flat : null,
-    mousepos: state.mousePosition ? state.mousePosition.position : undefined,
-    map: state.map ? state.map : null
+    mapTipsEnabled: state.map.maptips && state.identify.tool !== null,
+    theme: state.theme.current || {},
+    layers: state.layers.flat,
+    mousepos: state.mousePosition.position,
+    map: state.map
 });
 
 export default connect(selector, {
