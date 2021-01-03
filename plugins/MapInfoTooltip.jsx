@@ -37,6 +37,7 @@ class MapInfoTooltip extends React.Component {
         coordinate: null, elevation: null, extraInfo: null
     }
     static contextTypes = {
+        locale: PropTypes.string,
         messages: PropTypes.object
     }
     componentDidUpdate(prevProps, prevState) {
@@ -92,7 +93,7 @@ class MapInfoTooltip extends React.Component {
             const digits = proj4js.defs(crs).units === 'degrees' ? 4 : 0;
             info.push([
                 (CoordinatesUtils.getAvailableCRS()[crs] || {label: crs}).label,
-                coo.map(x => LocaleUtils.toLocaleFixed(x, digits)).join(", ")
+                coo.map(x => LocaleUtils.toLocaleFixed(this.context.locale, x, digits)).join(", ")
             ]);
         });
 

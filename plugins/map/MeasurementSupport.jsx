@@ -56,6 +56,9 @@ class MeasurementSupport extends React.Component {
         measurement: PropTypes.object,
         projection: PropTypes.string
     }
+    static contextTypes = {
+        locale: PropTypes.string
+    }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.measurement.geomType && this.props.measurement.geomType !== prevProps.measurement.geomType ) {
             this.addDrawInteraction(this.props);
@@ -193,7 +196,7 @@ class MeasurementSupport extends React.Component {
         let area = null;
         if (this.props.measurement.geomType === 'Polygon') {
             area = this.calculateGeodesicArea(this.sketchFeature.getGeometry().getLinearRing(0).getCoordinates());
-            const text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedArea(this.props.measurement.areaUnit, area), 2);
+            const text = LocaleUtils.toLocaleFixed(this.context.locale, MeasureUtils.getFormattedArea(this.props.measurement.areaUnit, area), 2);
             this.sketchFeature.getStyle()[0].getText().setText(text);
         }
 
@@ -211,7 +214,7 @@ class MeasurementSupport extends React.Component {
         if (Math.abs(angle) > 0.5 * Math.PI) {
             angle += Math.PI;
         }
-        const text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedLength(this.props.measurement.lenUnit, length), 2);
+        const text = LocaleUtils.toLocaleFixed(this.context.locale, MeasureUtils.getFormattedLength(this.props.measurement.lenUnit, length), 2);
         marker.getStyle().getText().setText(text);
         marker.getStyle().getText().setRotation(angle);
         marker.setGeometry(new ol.geom.Point([0.5 * (p1[0] + p2[0]), 0.5 * (p1[1] + p2[1])]));
@@ -224,12 +227,12 @@ class MeasurementSupport extends React.Component {
             const coo = this.sketchFeature.getGeometry().getCoordinates();
             const length = this.calculateGeodesicDistances(coo);
             for (let i = 0; i < this.segmentMarkers.length; ++i) {
-                const text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedLength(props.measurement.lenUnit, length[i]), 2);
+                const text = LocaleUtils.toLocaleFixed(this.context.locale, MeasureUtils.getFormattedLength(props.measurement.lenUnit, length[i]), 2);
                 this.segmentMarkers[i].getStyle().getText().setText(text);
             }
             this.measureLayer.changed();
         } else if (props.measurement.geomType === 'Polygon') {
-            const text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedArea(this.props.measurement.areaUnit, props.measurement.area), 2);
+            const text = LocaleUtils.toLocaleFixed(this.context.locale, MeasureUtils.getFormattedArea(this.props.measurement.areaUnit, props.measurement.area), 2);
             this.sketchFeature.getStyle()[0].getText().setText(text);
             this.measureLayer.changed();
         }

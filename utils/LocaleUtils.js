@@ -12,9 +12,9 @@ const LocaleUtils = {
     getMessageById(messages, msgId) {
         return messages ? messages[msgId] || msgId : msgId;
     },
-    toLocaleFixed(number, digits) {
+    toLocaleFixed(locale, number, digits) {
         if (ConfigUtils.getConfigProp("localeAwareNumbers")) {
-            return number.toLocaleString(LocaleUtils.getUserLocale(), { minimumFractionDigits: digits, maximumFractionDigits: digits });
+            return number.toLocaleString(locale, { minimumFractionDigits: digits, maximumFractionDigits: digits });
         } else {
             return number.toFixed(digits);
         }

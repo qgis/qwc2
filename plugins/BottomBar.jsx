@@ -38,6 +38,9 @@ class BottomBar extends React.Component {
         displayCoordinates: true,
         displayScales: true
     }
+    static contextTypes = {
+        locale: PropTypes.string
+    }
     state = {
         scale: 0
     }
@@ -112,7 +115,7 @@ class BottomBar extends React.Component {
                         <span> 1 : </span>
                         <select onChange={ev => this.props.changeZoomLevel(parseInt(ev.target.value, 10))} value={Math.round(this.props.map.zoom)}>
                             {this.props.map.scales.map((item, index) =>
-                                (<option key={index} value={index}>{LocaleUtils.toLocaleFixed(item, 0)}</option>)
+                                (<option key={index} value={index}>{LocaleUtils.toLocaleFixed(this.context.locale, item, 0)}</option>)
                             )}
                         </select>
                         <input onBlur={ev => this.setScale(ev.target.value)} onChange={ev => this.setState({scale: ev.target.value})}
