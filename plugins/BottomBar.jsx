@@ -129,6 +129,7 @@ class BottomBar extends React.Component {
 
         return (
             <div id="BottomBar">
+                <span className="bottombar-spacer" />
                 {coordinates}
                 {scales}
                 <span className="bottombar-spacer" />
