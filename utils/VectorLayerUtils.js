@@ -10,6 +10,7 @@ import uuid from 'uuid';
 import ol from 'openlayers';
 import isEmpty from 'lodash.isempty';
 import {stringify} from 'wellknown';
+import geojsonBbox from 'geojson-bounding-box';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import ConfigUtils from '../utils/ConfigUtils';
 import {getDefaultImageStyle} from 'ol/format/KML';
@@ -266,6 +267,12 @@ const VectorLayerUtils = {
             features.push(feature);
         }
         return features;
+    },
+    computeFeaturesBBox(features) {
+        return geojsonBbox({
+            type: "FeatureCollection",
+            features: features
+        });
     }
 };
 

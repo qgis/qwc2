@@ -6,9 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import isEmpty from 'lodash.isempty';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import LayerUtils from '../utils/LayerUtils';
-import isEmpty from 'lodash.isempty';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
 import uuid from 'uuid';
 import {
     LayerRole,
@@ -201,7 +202,7 @@ export default function layers(state = defaultState, action) {
                 }
             });
             newFeatures = newFeatures.concat(addFeatures);
-            newLayers[idx] = {...newLayers[idx], features: newFeatures};
+            newLayers[idx] = {...newLayers[idx], features: newFeatures, bbox: {bounds: VectorLayerUtils.computeFeaturesBBox(newFeatures)}};
         }
         return {...state, flat: newLayers};
     }
@@ -210,7 +211,7 @@ export default function layers(state = defaultState, action) {
             if (layer.id === action.layerId) {
                 const newFeatures = layer.features.filter(f => action.featureIds.includes(f.id) === false);
                 if (!isEmpty(newFeatures) || action.keepEmptyLayer) {
-                    result.push({...layer, features: newFeatures});
+                    result.push({...layer, features: newFeatures, bbox: {bounds: VectorLayerUtils.computeFeaturesBBox(newFeatures)}});
                 }
             } else {
                 result.push(layer);
@@ -222,7 +223,7 @@ export default function layers(state = defaultState, action) {
     case CLEAR_LAYER: {
         const newLayers = (state.flat || []).map(layer => {
             if (layer.id === action.layerId) {
-                return {...layer, features: []};
+                return {...layer, features: [], bbox: null};
             } else {
                 return layer;
             }

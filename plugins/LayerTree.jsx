@@ -249,10 +249,11 @@ class LayerTree extends React.Component {
                 ];
             }
             let zoomToLayerButton = null;
-            if (sublayer.bbox && sublayer.bbox.bounds && sublayer.bbox.crs) {
+            if (sublayer.bbox && sublayer.bbox.bounds) {
                 const zoomToLayerTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.zoomtolayer");
+                const crs = sublayer.bbox.crs || this.props.mapCrs;
                 zoomToLayerButton = (
-                    <Icon icon="zoom" onClick={() => this.props.zoomToExtent(sublayer.bbox.bounds, sublayer.bbox.crs)} title={zoomToLayerTooltip} />
+                    <Icon icon="zoom" onClick={() => this.props.zoomToExtent(sublayer.bbox.bounds, crs)} title={zoomToLayerTooltip} />
                 );
             }
             editframe = (
