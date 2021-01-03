@@ -6,21 +6,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
-const PropTypes = require('prop-types');
-const Icon = require('../components/Icon');
-const ConfigUtils = require('../utils/ConfigUtils');
-require('./style/LoginUser.css');
+import React from 'react';
+import Icon from '../components/Icon';
+import ConfigUtils from '../utils/ConfigUtils';
+import './style/LoginUser.css';
 
 
-class LoginUser extends React.Component {
+export default class LoginUser extends React.Component {
     static propTypes = {
     }
     state = {
     }
     render() {
-        let username = ConfigUtils.getConfigProp("username");
-        if(!username) {
+        const username = ConfigUtils.getConfigProp("username");
+        if (!username) {
             return null;
         }
         return (
@@ -30,8 +29,4 @@ class LoginUser extends React.Component {
             </div>
         );
     }
-};
-
-module.exports = {
-    LoginUserPlugin: LoginUser
 }
