@@ -74,7 +74,3 @@
 #BottomBar span.bottombar-spacer {
     flex: 1 1 auto;
 }
-
-#BottomBar span.bottombar-links {
-    margin-right: 3em;
-}
