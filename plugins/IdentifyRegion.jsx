@@ -10,13 +10,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {stringify} from 'wellknown';
-import Message from '../components/I18N/Message';
 import {LayerRole} from '../actions/layers';
 import {sendIdentifyRequest} from '../actions/identify';
 import {changeSelectionState} from '../actions/selection';
 import {setCurrentTask} from '../actions/task';
 import TaskBar from '../components/TaskBar';
 import IdentifyUtils from '../utils/IdentifyUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 
 class IdentifyRegion extends React.Component {
     static propTypes = {
@@ -42,7 +42,7 @@ class IdentifyRegion extends React.Component {
     renderBody = () => {
         return (
             <span role="body">
-                <Message msgId="identifyregion.info" />
+                {LocaleUtils.tr("identifyregion.info")}
             </span>
         );
     }

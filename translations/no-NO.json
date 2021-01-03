@@ -2,23 +2,23 @@
   "locale": "no-NO",
   "messages": {
     "appmenu": {
+      "menulabel": "Kart & Verktøy",
       "items": {
         "DxfExport": "Eksporter DXF",
+        "Editing": "Rediger",
         "Help": "Hjelp",
+        "IdentifyRegion": "Identifiser med område",
         "LayerTree": "Lag & tegnforklaring",
+        "Login": "Logg inn",
+        "Logout": "Logg ut",
         "Measure": "Mål",
         "Print": "Skriv ut",
         "RasterExport": "Eksporter Raster",
+        "Redlining": "Redlining",
         "Share": "Del lenke",
         "ThemeSwitcher": "Tema",
-        "Tools": "Kartverktøy",
-        "IdentifyRegion": "Identifiser med område",
-        "Redlining": "Redlining",
-        "Editing": "Rediger",
-        "Login": "Logg inn",
-        "Logout": "Logg ut"
-      },
-      "menulabel": "Kart & Verktøy"
+        "Tools": "Kartverktøy"
+      }
     },
     "bgswitcher": {
       "nobg": "Ingen bakgrunn"
@@ -38,16 +38,14 @@
       "symbologyscale": "Symbolskala:"
     },
     "editing": {
-      "maximize": "Maksimer",
-      "minimize": "Minimer",
       "canceldelete": "Ikke slett",
       "commit": "Bekreft",
       "delete": "Slett",
       "discard": "Forkast",
       "draw": "Tegn",
       "feature": "Objekt",
-      "fields": "Felt",
-      "layer": "Lag",
+      "maximize": "Maksimer",
+      "minimize": "Minimer",
       "noeditablelayers": "Ingen redigerbare lag",
       "pick": "Velg",
       "reallydelete": "Virkelig slette",
@@ -63,14 +61,14 @@
       "loading": "Beregner høydeprofil..."
     },
     "identify": {
-      "querying": "Søker...",
-      "noresults": "Ingen informasjon for valgt punkt",
       "export": "Eksporter",
       "exportformat": "",
       "featureReport": "Objektrapport",
+      "link": "Lenke",
       "noattributes": "Ingen attributt",
-      "title": "Objektinformasjon",
-      "link": "Lenke"
+      "noresults": "Ingen informasjon for valgt punkt",
+      "querying": "Søker...",
+      "title": "Objektinformasjon"
     },
     "identifyregion": {
       "info": "Tegn et polygon rundt objektene som skal identifieres"
@@ -79,45 +77,48 @@
       "addlayer": "Legg til lag",
       "connect": "Koble til",
       "filter": "Filter...",
+      "loading": "Laster inn...",
       "localfile": "Lokal fil",
       "nofeatures": "Ingen objekt kunne importeres",
       "noresults": "Ingen svar eller ugyldig URL",
-      "loading": "Laster inn...",
       "url": "URL",
       "urlplaceholder": "Skriv inn URL til WMS, WMTS, WFS..."
     },
+    "infotool": {
+      "clickhelpPoint": ""
+    },
     "layerinfo": {
-      "title": "Informasjon om lag",
       "abstract": "Oppsummering",
       "attribution": "Kilde",
-      "keywords": "Nøkkelord",
       "dataUrl": "Datalenke",
-      "metadataUrl": "Metadatalenke",
+      "keywords": "Nøkkelord",
       "legend": "Tegnforklaring",
       "maxscale": "Skala maksimum",
-      "minscale": "Skala minimum"
+      "metadataUrl": "Metadatalenke",
+      "minscale": "Skala minimum",
+      "title": "Informasjon om lag"
     },
     "layertree": {
       "compare": "Sammenlign øverste lag",
+      "deletealllayers": "Slett alle lag",
       "importlayer": "Importer lag",
       "maptip": "Vis karttips for lag",
       "printlegend": "Skriv ut tegnforklaring",
-      "deletealllayers": "Slett alle lag",
-      "visiblefilter": "Filtrer usynlige lag",
       "separator": "Separator",
       "separatortooltip": "Legg til separator",
-      "zoomtolayer": "Zoom til lag",
-      "transparency": ""
+      "transparency": "",
+      "visiblefilter": "Filtrer usynlige lag",
+      "zoomtolayer": "Zoom til lag"
     },
     "locate": {
-      "metersUnit": "meter",
       "feetUnit": "fot",
+      "metersUnit": "meter",
       "popup": "Du er innenfor {distance} {unit} fra dette punktet",
       "statustooltip": {
         "DISABLED": "Posisjon: deaktivert",
-        "LOCATING": "Posisjon: bestemt",
         "ENABLED": "Posisjon: aktivert",
         "FOLLOWING": "Posisjon: følger GPS",
+        "LOCATING": "Posisjon: bestemt",
         "PERMISSION_DENIED": "Posisjon: ikke tillatt"
       }
     },
@@ -135,17 +136,17 @@
       "pointLabel": "Posisjon"
     },
     "print": {
-      "layout": "Layout:",
       "grid": "Rutenett",
+      "layout": "Layout:",
       "maximize": "Maksimer",
       "minimize": "Minimer",
       "nolayouts": "Valgt tema støtter ikke utskrift",
       "notheme": "Ingen tema valgt",
+      "output": "Utskrift",
       "resolution": "Oppløsning:",
       "rotation": "Rotasjon:",
       "scale": "Skala:",
       "submit": "Skriv ut",
-      "output": "Utskrift",
       "wait": "Venter..."
     },
     "rasterexport": {
@@ -154,13 +155,12 @@
       "selectinfo": "Tegn en rektangel rundt området som skal eksporteres..."
     },
     "redlining": {
-      "add": "Legg til",
       "border": "Kant",
       "buffer": "Buffer",
-      "bufferlayername": "Buffer",
+      "buffercompute": "Beregner",
       "bufferdistance": "Avstand",
       "bufferlayer": "Mållag",
-      "buffercompute": "Beregner",
+      "bufferlayername": "Buffer",
       "bufferselectfeature": "Velg et objekt fra buffer",
       "circle": "",
       "delete": "Slett",
@@ -183,17 +183,16 @@
       "finish": ""
     },
     "search": {
+      "all": "Alle",
+      "enablelayer": "Aktiver lag",
+      "existinglayer": "Laget finnes allerede på kartet",
+      "invisiblelayer": "Resultatet finnes på et lag som er usynlig",
       "more": "Flere resultater",
       "search": "Søk",
       "searchall": "Søk etter steder eller legg til kart",
-      "all": "Alle",
-      "themes": "Tema",
-      "invisiblelayer": "Resultatet finnes på et lag som er usynlig",
-      "enablelayer": "Aktiver lag",
-      "existinglayer": "Laget finnes allerede på kartet"
+      "themes": "Tema"
     },
     "searchbox": {
-      "coordinates": "Koordinater",
       "filter": "Filtrer",
       "layers": "Lag",
       "more": "Flere resultater",
@@ -204,27 +203,21 @@
       "recent": "Nylige søk"
     },
     "serviceinfo": {
-      "title": "",
       "abstract": "",
+      "contactEmail": "",
+      "contactOrganization": "",
+      "contactPerson": "",
+      "contactPhone": "",
+      "contactPosition": "",
       "keywords": "",
       "onlineResource": "",
-      "contactPerson": "",
-      "contactOrganization": "",
-      "contactPosition": "",
-      "contactPhone": "",
-      "contactEmail": ""
+      "title": ""
     },
     "share": {
+      "QRCodeLinkTitle": "QR kode",
       "directLinkTitle": "Direktelenke",
       "generatingpermalink": "Generer permalink...",
-      "QRCodeLinkTitle": "QR kode",
       "socialIntro": "Sosiale nettvert"
-    },
-    "tooltip": {
-      "home": "Vis hele kartet",
-      "zoomin": "Zoom inn",
-      "zoomout": "Zoom ut",
-      "background": "Bytt bakgrunn"
     },
     "themelayerslist": {
       "addlayer": "",
@@ -232,15 +225,21 @@
       "addselectedlayers": ""
     },
     "themeswitcher": {
-      "filter": "Filtrer...",
-      "addtotheme": "Legg til nåværende tema",
       "addlayerstotheme": "",
+      "addtotheme": "Legg til nåværende tema",
+      "filter": "Filtrer...",
       "match": {
-        "title": "Tittel",
+        "abstract": "Sammendrag",
         "keywords": "Nøkkelord",
-        "abstract": "Sammendrag"
+        "title": "Tittel"
       },
       "openintab": "Åpne i nytt vindu"
+    },
+    "tooltip": {
+      "background": "Bytt bakgrunn",
+      "home": "Vis hele kartet",
+      "zoomin": "Zoom inn",
+      "zoomout": "Zoom ut"
     },
     "vectorlayerpicker": {
       "prompt": ""

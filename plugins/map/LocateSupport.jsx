@@ -18,7 +18,6 @@ class LocateSupport extends React.Component {
     static propTypes = {
         changeLocateState: PropTypes.func,
         map: PropTypes.object,
-        messages: PropTypes.object,
         onLocateError: PropTypes.func,
         options: PropTypes.object,
         projection: PropTypes.string,
@@ -48,7 +47,6 @@ class LocateSupport extends React.Component {
     componentDidMount() {
         const options = {...LocateSupport.defaultOpt, ...this.props.options};
         this.locate = new OlLocate(this.props.map, options);
-        this.locate.setStrings(this.props.messages);
         this.locate.options.onLocationError = this.onLocationError;
         this.locate.on("propertychange", (e) => {this.onStateChange(e.target.get(e.key)); });
         this.configureLocate(this.props.status);
@@ -62,9 +60,6 @@ class LocateSupport extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.props.status !== prevProps.status) {
             this.configureLocate(this.props.status);
-        }
-        if (this.props.messages !== prevProps.messages) {
-            this.locate.setStrings(this.props.messages);
         }
         if (this.props.projection !== prevProps.projection) {
             this.locate.setProjection(this.props.projection);
@@ -99,7 +94,6 @@ class LocateSupport extends React.Component {
 
 export default connect((state) => ({
     status: state.locate.state,
-    messages: state.locale.messages.locate,
     startupParams: state.localConfig.startupParams
 }), {
     changeLocateState,

@@ -10,7 +10,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import QRCode from 'qrcode.react';
-import Message from '../../components/I18N/Message';
+import LocaleUtils from '../../utils/LocaleUtils';
 
 export default class ShareQRCode extends React.Component {
     static propTypes = {
@@ -20,7 +20,7 @@ export default class ShareQRCode extends React.Component {
         return (
             <div className="qr-code">
                 <h4>
-                    <Message msgId="share.QRCodeLinkTitle"/>
+                    {LocaleUtils.tr("share.QRCodeLinkTitle")}
                 </h4>
                 <QRCode value={this.props.shareUrl} />
             </div>

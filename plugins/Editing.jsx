@@ -13,9 +13,6 @@ import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
 import axios from 'axios';
 import clone from 'clone';
-import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
-import Message from '../components/I18N/Message';
 import {changeEditingState} from '../actions/editing';
 import {setCurrentTaskBlocked} from '../actions/task';
 import {LayerRole, refreshLayer, changeLayerProperty} from '../actions/layers';
@@ -28,6 +25,8 @@ import ButtonBar from '../components/widgets/ButtonBar';
 import ConfigUtils from '../utils/ConfigUtils';
 import EditingInterface from '../utils/EditingInterface';
 import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import './style/Editing.css';
 
 class Editing extends React.Component {
@@ -45,9 +44,6 @@ class Editing extends React.Component {
         theme: PropTypes.object,
         touchFriendly: PropTypes.bool,
         width: PropTypes.string
-    }
-    static contextTypes = {
-        messages: PropTypes.object
     }
     static defaultProps = {
         touchFriendly: true,
@@ -136,7 +132,7 @@ class Editing extends React.Component {
         if (!this.props.theme || isEmpty(this.props.theme.editConfig)) {
             return (
                 <div role="body" style={{padding: "1em"}}>
-                    <Message msgId="editing.noeditablelayers" />
+                    {LocaleUtils.tr("editing.noeditablelayers")}
                 </div>
             );
         }
@@ -145,27 +141,27 @@ class Editing extends React.Component {
         if (!curConfig) {
             return (
                 <div role="body" style={{padding: "1em"}}>
-                    <Message msgId="editing.noeditablelayers" />
+                    {LocaleUtils.tr("editing.noeditablelayers")}
                 </div>
             );
         }
 
         const actionButtons = [
-            {key: 'Pick', icon: 'pick', label: "editing.pick", data: {action: 'Pick'}},
-            {key: 'Draw', icon: 'editdraw', label: "editing.draw", data: {action: 'Draw', feature: null}}
+            {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick"), data: {action: 'Pick'}},
+            {key: 'Draw', icon: 'editdraw', label: LocaleUtils.trmsg("editing.draw"), data: {action: 'Draw', feature: null}}
         ];
 
         let commitBar = null;
         if (this.props.editing.changed) {
             const commitButtons = [
-                {key: 'Commit', icon: 'ok', label: "editing.commit", extraClasses: "edit-commit", type: "submit"},
-                {key: 'Discard', icon: 'remove', label: "editing.discard", extraClasses: "edit-discard"}
+                {key: 'Commit', icon: 'ok', label: LocaleUtils.trmsg("editing.commit"), extraClasses: "edit-commit", type: "submit"},
+                {key: 'Discard', icon: 'remove', label: LocaleUtils.trmsg("editing.discard"), extraClasses: "edit-discard"}
             ];
             commitBar = (<ButtonBar buttons={commitButtons} onClick={this.onDiscard}/>); /* submit is handled via onSubmit in the form */
         }
         let featureSelection = null;
         if (this.state.pickedFeatures) {
-            const featureText = LocaleUtils.getMessageById(this.context.messages, "editing.feature");
+            const featureText = LocaleUtils.tr("editing.feature");
             featureSelection = (
                 <div className="editing-feature-selection">
                     <select className="editing-feature-select" disabled={this.props.editing.changed === true} onChange={(ev) => this.setEditFeature(ev.target.value)}  value={(this.props.editing.feature || {}).id || ""}>
@@ -202,13 +198,13 @@ class Editing extends React.Component {
         if (this.props.editing.action === 'Pick' && this.props.editing.feature && !this.props.editing.changed) {
             if (!this.state.deleteClicked) {
                 const deleteButtons = [
-                    {key: 'Delete', icon: 'trash', label: "editing.delete"}
+                    {key: 'Delete', icon: 'trash', label: LocaleUtils.trmsg("editing.delete")}
                 ];
                 deleteBar = (<ButtonBar buttons={deleteButtons} onClick={this.deleteClicked} />);
             } else {
                 const deleteButtons = [
-                    {key: 'Yes', icon: 'ok', label: "editing.reallydelete", extraClasses: "edit-commit"},
-                    {key: 'No', icon: 'remove', label: "editing.canceldelete", extraClasses: "edit-discard"}
+                    {key: 'Yes', icon: 'ok', label: LocaleUtils.trmsg("editing.reallydelete"), extraClasses: "edit-commit"},
+                    {key: 'No', icon: 'remove', label: LocaleUtils.trmsg("editing.canceldelete"), extraClasses: "edit-discard"}
                 ];
                 deleteBar = (<ButtonBar buttons={deleteButtons} onClick={this.deleteFeature} />);
             }
@@ -241,7 +237,7 @@ class Editing extends React.Component {
         );
     }
     render() {
-        const minMaxTooltip = LocaleUtils.getMessageById(this.context.messages, this.state.minimized ? "editing.maximize" : "editing.minimize");
+        const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("editing.maximize") : LocaleUtils.tr("editing.minimize");
         const extraTitlebarContent = (<Icon className="editing-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={ev => this.setState({minimized: !this.state.minimized})} title={minMaxTooltip}/>)
         return (
             <SideBar extraTitlebarContent={extraTitlebarContent} icon={"editing"} id="Editing" onHide={this.onHide}

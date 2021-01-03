@@ -27,9 +27,6 @@ class LocateButton extends React.Component {
     static defaultProps = {
         position: 2
     }
-    static contextTypes = {
-        messages: PropTypes.object
-    }
     constructor(props) {
         super(props);
 
@@ -55,7 +52,13 @@ class LocateButton extends React.Component {
         }
     }
     render = () => {
-        const tooltip = LocaleUtils.getMessageById(this.context.messages, "locate.statustooltip." + this.props.locateState);
+        const tooltipMsg = {
+            DISABLED: LocaleUtils.trmsg("locate.statustooltip.DISABLED"),
+            ENABLED: LocaleUtils.trmsg("locate.statustooltip.ENABLED"),
+            FOLLOWING: LocaleUtils.trmsg("locate.statustooltip.FOLLOWING"),
+            LOCATING: LocaleUtils.trmsg("locate.statustooltip.LOCATING"),
+            PERMISSION_DENIED: LocaleUtils.trmsg("locate.statustooltip.PERMISSION_DENIED")
+        };
         let contents = null;
         if (this.props.locateState === "LOCATING") {
             contents = (<Spinner />);
@@ -70,7 +73,7 @@ class LocateButton extends React.Component {
             <button className={classes}
                 disabled={this.props.locateState === "PERMISSION_DENIED"} onClick={this.onClick}
                 style={{bottom: (5 + 4 * this.props.position) + 'em'}}
-                title={tooltip}
+                title={tooltipMsg[this.props.locateState]}
             >
                 {contents}
             </button>

@@ -22,9 +22,6 @@ class ZoomButton extends React.Component {
         maxZoom: PropTypes.number,
         position: PropTypes.number
     }
-    static contextTypes = {
-        messages: PropTypes.object
-    }
     render() {
         const position = this.props.position >= 0 ? this.props.position : (this.props.direction > 0 ? 4 : 3);
         let disabled = false;
@@ -33,7 +30,7 @@ class ZoomButton extends React.Component {
         } else if (this.props.direction < 0) {
             disabled = this.props.currentZoom <= 0;
         }
-        const tooltip = LocaleUtils.getMessageById(this.context.messages, this.props.direction > 0 ? "tooltip.zoomin" : "tooltip.zoomout");
+        const tooltip = this.props.direction > 0 ? LocaleUtils.tr("tooltip.zoomin") : LocaleUtils.tr("tooltip.zoomout");
         return (
             <button className="map-button"
                 disabled={disabled}

@@ -18,9 +18,6 @@ export default class FileSelector extends React.Component {
         file: PropTypes.object,
         onFileSelected: PropTypes.func
     }
-    static contextTypes = {
-        messages: PropTypes.object
-    }
     constructor(props) {
         super(props);
         this.fileinput = null;
@@ -35,7 +32,7 @@ export default class FileSelector extends React.Component {
         if (this.props.file) {
             value = this.props.file.name + " (" + this.humanFileSize(this.props.file.size) + ")";
         }
-        const placeholder = LocaleUtils.getMessageById(this.context.messages, "fileselector.placeholder");
+        const placeholder = LocaleUtils.tr("fileselector.placeholder");
         return (
             <div className="FileSelector" onClick={this.triggerFileOpen}>
                 <input placeholder={placeholder} readOnly type="text" value={value} />

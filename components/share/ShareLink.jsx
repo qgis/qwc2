@@ -8,8 +8,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import Message from '../I18N/Message';
 import CopyButton from '../widgets/CopyButton';
+import LocaleUtils from '../../utils/LocaleUtils';
 import './style/ShareLink.css';
 
 export default class ShareLink extends React.Component {
@@ -19,7 +19,7 @@ export default class ShareLink extends React.Component {
     render() {
         return (
             <div className="share-link">
-                <h4><Message msgId="share.directLinkTitle"/></h4>
+                <h4>{LocaleUtils.tr("share.directLinkTitle")}</h4>
                 <div className="share-link-frame">
                     <input onFocus={ev => ev.target.select()} readOnly type="text" value={this.props.shareUrl} />
                     <CopyButton buttonClass="share-link-button" text={this.props.shareUrl} tooltipAlign="right" />

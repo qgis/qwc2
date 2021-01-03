@@ -7,6 +7,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 import ol from 'openlayers';
+import LocaleUtils from '../../utils/LocaleUtils';
 import './OlLocate.css';
 
 const createPopup = function() {
@@ -51,9 +52,9 @@ export default class OlLocate extends ol.Object {
             keepCurrentZoomLevel: false,
             showPopup: false, // display a popup when the user click on the inner marker
             strings: {
-                metersUnit: "meters",
-                feetUnit: "feet",
-                popup: "You are within {distance} {unit} from this point"
+                metersUnit: LocaleUtils.tr("locate.metersUnit"),
+                feetUnit: LocaleUtils.tr("locate.feetUnit"),
+                popup: LocaleUtils.tr("locate.popup")
             },
             locateOptions: {
                 maximumAge: 2000,

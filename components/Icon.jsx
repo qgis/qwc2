@@ -26,9 +26,6 @@ export default class Icon extends React.Component {
         className: "",
         title: ""
     }
-    static contextTypes = {
-        messages: PropTypes.object
-    }
     render() {
         const classes = classnames({
             icon: true,
@@ -39,7 +36,7 @@ export default class Icon extends React.Component {
         });
         let title = this.props.title;
         if (this.props.titlemsgid) {
-            title = LocaleUtils.getMessageById(this.context.messages, this.props.titlemsgid);
+            title = LocaleUtils.tr(this.props.titlemsgid);
         }
         if (this.props.icon.startsWith(":/")) {
             const assetsPath = ConfigUtils.getAssetsPath();

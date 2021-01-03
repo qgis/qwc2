@@ -9,11 +9,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import Message from '../components/I18N/Message';
 import ShareSocials from '../components/share/ShareSocials';
 import ShareQRCode from '../components/share/ShareQRCode';
 import ShareLink from '../components/share/ShareLink';
 import SideBar from '../components/SideBar';
+import LocaleUtils from '../utils/LocaleUtils';
 import {generatePermaLink} from '../utils/PermaLinkUtils';
 import './style/Share.css';
 
@@ -51,7 +51,7 @@ class Share extends React.Component {
         } else {
             return (
                 <div style={{padding: "1em"}}>
-                    <Message msgId="share.generatingpermalink" />
+                    {LocaleUtils.tr("share.generatingpermalink")}
                 </div>);
         }
     }

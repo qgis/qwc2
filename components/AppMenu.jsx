@@ -10,8 +10,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Swipeable} from 'react-swipeable';
-import Message from '../components/I18N/Message';
 import {setCurrentTask} from '../actions/task';
+import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
 import './style/AppMenu.css';
 
@@ -89,7 +89,7 @@ class AppMenu extends React.Component {
                             onClick={() => this.onSubmenuClicked(item.key, level)}
                         >
                             <Icon icon={item.icon} size="xlarge"/>
-                            <Message msgId={"appmenu.items." + item.key} />
+                            {LocaleUtils.tr("appmenu.items." + item.key)}
                             {item.title}
                             <ul>
                                 {this.renderMenuItems(item.subitems, level + 1)}
@@ -101,9 +101,9 @@ class AppMenu extends React.Component {
                         <li className="appmenu-leaf" key={item.key + (item.mode || "")} onClick={() => this.onMenuitemClicked(item)} >
                             <Icon icon={item.icon} size="xlarge"/>
                             <span className="appmenu-leaf-label">
-                                <Message msgId={"appmenu.items." + item.key} />
+                                {LocaleUtils.tr("appmenu.items." + item.key)}
                                 {item.comment ? (<div className="appmenu-leaf-comment">
-                                    <Message msgId={"appmenu.items." + item.key + (item.mode || "") + "_comment"} />
+                                    {LocaleUtils.tr("appmenu.items." + item.key + (item.mode || "") + "_comment")}
                                 </div>) : null}
                             </span>
                         </li>

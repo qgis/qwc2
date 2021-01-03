@@ -18,7 +18,7 @@ import axios from 'axios';
 import Proj4js from 'proj4';
 import {register as olProj4Register} from 'ol/proj/proj4';
 
-import Localized from '../components/I18N/Localized';
+import Localized from './Localized';
 import StandardStore from '../stores/StandardStore';
 import PluginsContainer from './PluginsContainer';
 
@@ -139,7 +139,8 @@ export default class StandardApp extends React.Component {
     }
     constructor(props) {
         super(props);
-        this.store = StandardStore(this.props.appConfig.initialState || {}, this.props.appConfig.actionLogger);
+        StandardStore.init(this.props.appConfig.initialState || {}, this.props.appConfig.actionLogger);
+        this.store = StandardStore.get();
         this.init();
         // Save initial params before they get overwritten
         this.initialParams = UrlParams.getParams();

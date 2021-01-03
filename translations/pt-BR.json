@@ -2,23 +2,23 @@
   "locale": "pt-BR",
   "messages": {
     "appmenu": {
+      "menulabel": "Mapa & Ferramentas",
       "items": {
         "DxfExport": "Exportar DXF",
+        "Editing": "Editando",
         "Help": "Ajuda",
+        "IdentifyRegion": "Identificar Região",
         "LayerTree": "Camadas & Legenda",
+        "Login": "",
+        "Logout": "",
         "Measure": "Medições",
         "Print": "Imprimir",
         "RasterExport": "Exportar Raster",
+        "Redlining": "Desenhar",
         "Share": "Compartilhar",
         "ThemeSwitcher": "Temas",
-        "Tools": "Ferramentas de mapa",
-        "IdentifyRegion": "Identificar Região",
-        "Redlining": "Desenhar",
-        "Editing": "Editando",
-        "Login": "",
-        "Logout": ""
-      },
-      "menulabel": "Mapa & Ferramentas"
+        "Tools": "Ferramentas de mapa"
+      }
     },
     "bgswitcher": {
       "nobg": "Sem plano de fundo"
@@ -38,16 +38,14 @@
       "symbologyscale": "Escala da simbologia:"
     },
     "editing": {
-      "maximize": "",
-      "minimize": "",
       "canceldelete": "Não deletar",
       "commit": "Enviar",
       "delete": "Deletar",
       "discard": "Descartar",
       "draw": "Desenhar",
       "feature": "",
-      "fields": "Campos",
-      "layer": "Camada",
+      "maximize": "",
+      "minimize": "",
       "noeditablelayers": "Camadas não editáveis.",
       "pick": "Pegar",
       "reallydelete": "Deletar",
@@ -63,14 +61,14 @@
       "loading": "Cálculo do perfil de altura..."
     },
     "identify": {
-      "querying": "Consultando...",
-      "noresults": "Nenhuma informação disponível para o ponto selecionado",
       "export": "Exportar",
       "exportformat": "",
       "featureReport": "Reportar",
+      "link": "Link",
       "noattributes": "",
-      "title": "Informações da Funcionalidade",
-      "link": "Link"
+      "noresults": "Nenhuma informação disponível para o ponto selecionado",
+      "querying": "Consultando...",
+      "title": "Informações da Funcionalidade"
     },
     "identifyregion": {
       "info": "Desenhe um polígono em torno dos elementos para identificar..."
@@ -79,45 +77,48 @@
       "addlayer": "Adicionar camada",
       "connect": "Conectar",
       "filter": "Filtrar...",
+      "loading": "",
       "localfile": "",
       "nofeatures": "Nenhum elemento pôde ser importado.",
       "noresults": "",
-      "loading": "",
       "url": "",
       "urlplaceholder": "Informe URL para WMS, WMTS, WFS..."
     },
+    "infotool": {
+      "clickhelpPoint": ""
+    },
     "layerinfo": {
-      "title": "Infomações da camada",
       "abstract": "Resumo",
       "attribution": "Atribuição",
-      "keywords": "Palavras-chave",
       "dataUrl": "Data URL",
-      "metadataUrl": "Metadados URL",
+      "keywords": "Palavras-chave",
       "legend": "Legenda",
       "maxscale": "",
-      "minscale": ""
+      "metadataUrl": "Metadados URL",
+      "minscale": "",
+      "title": "Infomações da camada"
     },
     "layertree": {
       "compare": "Comparar camada superior",
+      "deletealllayers": "",
       "importlayer": "Importar camada",
       "maptip": "Mostrar dicas de mapas de camadas",
       "printlegend": "Imprimir legenda",
-      "deletealllayers": "",
-      "visiblefilter": "",
       "separator": "",
       "separatortooltip": "",
-      "zoomtolayer": "",
-      "transparency": ""
+      "transparency": "",
+      "visiblefilter": "",
+      "zoomtolayer": ""
     },
     "locate": {
-      "metersUnit": "metros",
       "feetUnit": "pés",
+      "metersUnit": "metros",
       "popup": "Você está a {distance} {unit} desse ponto",
       "statustooltip": {
         "DISABLED": "Desativado",
-        "LOCATING": "Localizando...",
         "ENABLED": "Ativado",
         "FOLLOWING": "Seguindo",
+        "LOCATING": "Localizando...",
         "PERMISSION_DENIED": "Acesso negado"
       }
     },
@@ -135,17 +136,17 @@
       "pointLabel": "Ponto"
     },
     "print": {
-      "layout": "Formato:",
       "grid": "Grade/escala:",
+      "layout": "Formato:",
       "maximize": "",
       "minimize": "",
       "nolayouts": "O tema selecionado não suporta impressão",
       "notheme": "Nenhum tema selecionado",
+      "output": "",
       "resolution": "Resolução:",
       "rotation": "Rotação:",
       "scale": "Escala:",
       "submit": "Imprimir",
-      "output": "",
       "wait": ""
     },
     "rasterexport": {
@@ -154,13 +155,12 @@
       "selectinfo": "Desenhe um retângulo sobre uma região para exportar..."
     },
     "redlining": {
-      "add": "",
       "border": "Borda",
       "buffer": "",
-      "bufferlayername": "",
+      "buffercompute": "",
       "bufferdistance": "",
       "bufferlayer": "",
-      "buffercompute": "",
+      "bufferlayername": "",
       "bufferselectfeature": "",
       "circle": "",
       "delete": "",
@@ -183,17 +183,16 @@
       "finish": ""
     },
     "search": {
+      "all": "Tudo",
+      "enablelayer": "",
+      "existinglayer": "",
+      "invisiblelayer": "",
       "more": "Mais...",
       "search": "Buscar",
       "searchall": "",
-      "all": "Tudo",
-      "themes": "",
-      "invisiblelayer": "",
-      "enablelayer": "",
-      "existinglayer": ""
+      "themes": ""
     },
     "searchbox": {
-      "coordinates": "",
       "filter": "",
       "layers": "",
       "more": "",
@@ -204,27 +203,21 @@
       "recent": ""
     },
     "serviceinfo": {
-      "title": "",
       "abstract": "",
+      "contactEmail": "",
+      "contactOrganization": "",
+      "contactPerson": "",
+      "contactPhone": "",
+      "contactPosition": "",
       "keywords": "",
       "onlineResource": "",
-      "contactPerson": "",
-      "contactOrganization": "",
-      "contactPosition": "",
-      "contactPhone": "",
-      "contactEmail": ""
+      "title": ""
     },
     "share": {
+      "QRCodeLinkTitle": "QR code",
       "directLinkTitle": "Link direto",
       "generatingpermalink": "Gerando link permanente...",
-      "QRCodeLinkTitle": "QR code",
       "socialIntro": "Na sua rede social favorita"
-    },
-    "tooltip": {
-      "home": "",
-      "zoomin": "",
-      "zoomout": "",
-      "background": ""
     },
     "themelayerslist": {
       "addlayer": "",
@@ -232,15 +225,21 @@
       "addselectedlayers": ""
     },
     "themeswitcher": {
-      "filter": "Filtro...",
-      "addtotheme": "",
       "addlayerstotheme": "",
+      "addtotheme": "",
+      "filter": "Filtro...",
       "match": {
-        "title": "",
+        "abstract": "",
         "keywords": "",
-        "abstract": ""
+        "title": ""
       },
       "openintab": ""
+    },
+    "tooltip": {
+      "background": "",
+      "home": "",
+      "zoomin": "",
+      "zoomout": ""
     },
     "vectorlayerpicker": {
       "prompt": ""

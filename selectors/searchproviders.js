@@ -10,6 +10,7 @@ import {createSelector} from 'reselect';
 import {addSearchResults, SearchResultType} from '../actions/search';
 import {LayerRole} from '../actions/layers';
 import ConfigUtils from '../utils/ConfigUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 
 export default (searchProviders, providerFactory) => createSelector(
@@ -27,8 +28,8 @@ export default (searchProviders, providerFactory) => createSelector(
             }
         }
         if (ConfigUtils.getConfigProp("searchThemes", theme)) {
-            availableProviders["themes"] = {
-                labelmsgid: "search.themes",
+            availableProviders.themes = {
+                labelmsgid: LocaleUtils.trmsg("search.themes"),
                 onSearch: (text, reqId, options, dispatch) => {
                     dispatch(addSearchResults({
                         provider: "themes",

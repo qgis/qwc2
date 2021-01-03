@@ -34,14 +34,11 @@ class ThemeSwitcher extends React.Component {
     state = {
         filter: ""
     }
-    static contextTypes = {
-        messages: PropTypes.object
-    }
     render() {
         const allowAddingOtherThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.activeTheme) ===  true;
         const extraTitlebarContent = (
             <input className="theme-switcher-filter" onChange={ev => this.setState({filter: ev.target.value})}
-                placeholder={LocaleUtils.getMessageById(this.context.messages, "themeswitcher.filter")} ref={this.focusFilterField}
+                placeholder={LocaleUtils.tr("themeswitcher.filter")} ref={this.focusFilterField}
                 type="text"
                 value={this.state.filter}/>
         );

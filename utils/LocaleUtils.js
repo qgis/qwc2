@@ -7,15 +7,34 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import StandardStore from '../stores/StandardStore';
 import ConfigUtils from './ConfigUtils';
 
 const LocaleUtils = {
-    getMessageById(messages, msgId) {
-        return messages ? messages[msgId] || msgId : msgId;
+    tr(key) {
+        const state = StandardStore.get().getState();
+        const text = key in state.locale.messages ? state.locale.messages[key] : key;
+
+        const args = Array.prototype.slice.call(arguments, 1);
+        if (args.length > 0) {
+            return text.replace(/{(\d+)}/g, (match, number) => {
+                return typeof args[number] !== 'undefined' ? args[number] : match;
+            });
+        } else {
+            return text;
+        }
     },
-    toLocaleFixed(locale, number, digits) {
+    // Just a stub to make updateTranslations pick up the msgId
+    trmsg(key) {
+        return key;
+    },
+    lang() {
+        const state = StandardStore.get().getState();
+        return state.locale.lang;
+    },
+    toLocaleFixed(number, digits) {
         if (ConfigUtils.getConfigProp("localeAwareNumbers")) {
-            return number.toLocaleString(locale, { minimumFractionDigits: digits, maximumFractionDigits: digits });
+            return number.toLocaleString(LocaleUtils.lang(), { minimumFractionDigits: digits, maximumFractionDigits: digits });
         } else {
             return number.toFixed(digits);
         }

@@ -10,7 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Icon from '../Icon';
-import Message from '../../components/I18N/Message';
+import LocaleUtils from '../../utils/LocaleUtils';
 import './style/CopyButton.css';
 
 export default class CopyButton extends React.Component {
@@ -40,7 +40,7 @@ export default class CopyButton extends React.Component {
                 <span className={"CopyButton " + this.props.buttonClass} onMouseLeave={() => {this.setState({copied: false}); }} >
                     <Icon icon="copy"/>
                     <span className="copybutton-tooltip" style={tooltipStyle}>
-                        <Message msgId={this.state.copied ? "copybtn.copied" : "copybtn.click_to_copy"}/>
+                        {this.state.copied ? LocaleUtils.tr("copybtn.copied") : LocaleUtils.tr("copybtn.click_to_copy")}
                     </span>
                 </span>
             </CopyToClipboard>

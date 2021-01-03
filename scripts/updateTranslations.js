@@ -48,14 +48,58 @@ const createSkel = (strings) => {
     return skel;
 };
 
+const listDir = (dir, pattern) => {
+    let results = [];
+    const list = fs.readdirSync(dir);
+    list.forEach((file) => {
+        const path = dir + '/' + file;
+        const stat = fs.statSync(path);
+        if (stat && stat.isDirectory()) {
+            /* Recurse into a subdirectory */
+            results = results.concat(listDir(path, pattern));
+        } else if (pattern.exec(file)) {
+            /* Is a file */
+            results.push(path);
+        }
+    });
+    return results;
+};
+
+const updateTsConfig = (topdir, tsconfig, collectedMsgIds=null) => {
+    const files = listDir(topdir, new RegExp("^.*\.jsx?$"));
+    const trRegEx = /LocaleUtils\.tr(?:msg)?\((['\"])([A-Za-z0-9\._]+)\1\)/g;
+    const msgIds =  new Set();
+    for (const file of files) {
+        const data = fs.readFileSync(file).toString();
+        for (const match of data.matchAll(trRegEx)) {
+            if (!collectedMsgIds || !collectedMsgIds.has(match[2])) {
+                msgIds.add(match[2]);
+            }
+        }
+    }
+    const msgIdList = Array.from(msgIds);
+    msgIdList.sort();
+
+    const json = readJSON(tsconfig);
+    json.strings = msgIdList;
+    fs.writeFileSync(process.cwd() + '/' + tsconfig, JSON.stringify(json, null, 2) + "\n");
+    return msgIds;
+};
+
 // Determine workspaces
 const workspaces = readJSON('/package.json').workspaces || [];
 
 // Generate workspace translations
+let collectedMsgIds = new Set();
 for (const workspace of workspaces) {
     console.log("Generating translations for " + workspace);
+    const newMsgIds = updateTsConfig(process.cwd() + '/' + workspace, '/' + workspace + '/translations/tsconfig.json');
+    collectedMsgIds = new Set([...collectedMsgIds, ...newMsgIds]);
     const config = readJSON('/' + workspace + '/translations/tsconfig.json');
-    const strings = config.strings || [];
+    const strings = [
+        ...(config.strings || []),
+        ...(config.extra_strings || [])
+    ];
     const skel = createSkel(strings);
 
     for (const lang of config.languages || []) {
@@ -74,8 +118,12 @@ for (const workspace of workspaces) {
 }
 
 // Generate application translations
+updateTsConfig(process.cwd() + '/js', '/translations/tsconfig.json', collectedMsgIds);
 const config = readJSON('/translations/tsconfig.json');
-const strings = config.strings || [];
+const strings = [
+    ...(config.strings || []),
+    ...(config.extra_strings || [])
+];
 const skel = createSkel(strings);
 for (const lang of config.languages || []) {
     const langskel = merge(skel, {locale: lang});

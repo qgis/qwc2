@@ -11,13 +11,13 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {connect} from 'react-redux';
 import {Swipeable} from 'react-swipeable';
-import Icon from '../components/Icon';
-import Message from '../components/I18N/Message';
-import ConfigUtils from '../utils/ConfigUtils';
 import {toggleFullscreen} from '../actions/display';
 import {openExternalUrl} from '../actions/task';
 import {setTopbarHeight} from '../actions/map';
 import {restoreDefaultTheme} from '../actions/theme';
+import Icon from '../components/Icon';
+import ConfigUtils from '../utils/ConfigUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import './style/TopBar.css';
 
 
@@ -59,7 +59,7 @@ class TopBar extends React.Component {
         } else {
             buttonContents = (
                 <span className="appmenu-button">
-                    <span className="appmenu-label"><Message msgId="appmenu.menulabel" /></span>
+                    <span className="appmenu-label">{LocaleUtils.tr("appmenu.menulabel")}</span>
                     <Icon className="appmenu-icon" icon="menu-hamburger"/>
                 </span>
             );

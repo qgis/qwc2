@@ -36,10 +36,6 @@ class MapInfoTooltip extends React.Component {
     state = {
         coordinate: null, elevation: null, extraInfo: null
     }
-    static contextTypes = {
-        locale: PropTypes.string,
-        messages: PropTypes.object
-    }
     componentDidUpdate(prevProps, prevState) {
         if (!this.props.enabled && this.state.coordinate) {
             this.clear();
@@ -93,13 +89,13 @@ class MapInfoTooltip extends React.Component {
             const digits = proj4js.defs(crs).units === 'degrees' ? 4 : 0;
             info.push([
                 (CoordinatesUtils.getAvailableCRS()[crs] || {label: crs}).label,
-                coo.map(x => LocaleUtils.toLocaleFixed(this.context.locale, x, digits)).join(", ")
+                coo.map(x => LocaleUtils.toLocaleFixed(x, digits)).join(", ")
             ]);
         });
 
         if (this.state.elevation) {
             info.push([
-                LocaleUtils.getMessageById(this.context.messages, "mapinfotooltip.elevation"),
+                LocaleUtils.tr("mapinfotooltip.elevation"),
                 this.state.elevation + " m"
             ]);
         }
@@ -107,7 +103,7 @@ class MapInfoTooltip extends React.Component {
         if (this.state.extraInfo) {
             info.push(...this.state.extraInfo);
         }
-        const title = LocaleUtils.getMessageById(this.context.messages, "mapinfotooltip.title");
+        const title = LocaleUtils.tr("mapinfotooltip.title");
         const pixel = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK)(this.state.coordinate);
         const style = {
             left: pixel[0] + "px",

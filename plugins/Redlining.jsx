@@ -11,14 +11,13 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import NumericInput from 'react-numeric-input2';
 import Mousetrap from 'mousetrap';
-import LocaleUtils from '../utils/LocaleUtils';
-import Message from '../components/I18N/Message';
 import {changeRedliningState} from '../actions/redlining';
 import {LayerRole, addLayer} from '../actions/layers';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import ColorButton from '../components/widgets/ColorButton';
 import VectorLayerPicker from '../components/widgets/VectorLayerPicker';
+import LocaleUtils from '../utils/LocaleUtils';
 
 import './style/Redlining.css';
 
@@ -33,9 +32,6 @@ class Redlining extends React.Component {
         plugins: PropTypes.object,
         redlining: PropTypes.object,
         setCurrentTask: PropTypes.func
-    }
-    static contextTypes = {
-        messages: PropTypes.object
     }
     static defaultProps = {
         allowGeometryLabels: true,
@@ -86,21 +82,21 @@ class Redlining extends React.Component {
     renderBody = () => {
         const activeButton = this.props.redlining.action === "Draw" ? this.props.redlining.geomType : this.props.redlining.action;
         const drawButtons = [
-            {key: "Point", tooltip: "redlining.point", icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
-            {key: "LineString", tooltip: "redlining.line", icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
-            {key: "Polygon", tooltip: "redlining.polygon", icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
-            {key: "Circle", tooltip: "redlining.circle", icon: "circle", data: {action: "Draw", geomType: "Circle", text: ""}},
-            {key: "Text", tooltip: "redlining.text", icon: "text", data: {action: "Draw", geomType: "Text", text: ""}}
+            {key: "Point", tooltip: LocaleUtils.trmsg("redlining.point"), icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
+            {key: "LineString", tooltip: LocaleUtils.trmsg("redlining.line"), icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
+            {key: "Polygon", tooltip: LocaleUtils.trmsg("redlining.polygon"), icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
+            {key: "Circle", tooltip: LocaleUtils.trmsg("redlining.circle"), icon: "circle", data: {action: "Draw", geomType: "Circle", text: ""}},
+            {key: "Text", tooltip: LocaleUtils.trmsg("redlining.text"), icon: "text", data: {action: "Draw", geomType: "Text", text: ""}}
         ];
         const activeFreeHand = this.props.redlining.freehand ? "HandDrawing" : null;
         const freehandButtons = [{
-            key: "HandDrawing", tooltip: "redlining.freehand", icon: "freehand",
+            key: "HandDrawing", tooltip: LocaleUtils.trmsg("redlining.freehand"), icon: "freehand",
             data: {action: "Draw", geomType: this.props.redlining.geomType, text: "", freehand: !this.props.redlining.freehand},
             disabled: (this.props.redlining.geomType !== "LineString" && this.props.redlining.geomType !== "Polygon")
         }];
         const editButtons = [
-            {key: "Pick", tooltip: "redlining.pick", icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
-            {key: "Delete", tooltip: "redlining.delete", icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature}
+            {key: "Pick", tooltip: LocaleUtils.trmsg("redlining.pick"), icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
+            {key: "Delete", tooltip: LocaleUtils.trmsg("redlining.delete"), icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature}
         ];
         for (const plugin of Object.values(this.props.plugins || {})) {
             editButtons.push(plugin.cfg);
@@ -118,13 +114,13 @@ class Redlining extends React.Component {
             <div>
                 <div className="redlining-buttongroups">
                     <div className="redlining-group">
-                        <div><Message msgId="redlining.layer" /></div>
+                        <div>{LocaleUtils.tr("redlining.layer")}</div>
                         <VectorLayerPicker
                             addLayer={this.props.addLayer} layers={vectorLayers}
                             onChange={this.changeRedliningLayer} value={this.props.redlining.layer} />
                     </div>
                     <div className="redlining-group">
-                        <div><Message msgId="redlining.draw" /></div>
+                        <div>{LocaleUtils.tr("redlining.draw")}</div>
                         <span>
                             <ButtonBar active={activeButton} buttons={drawButtons} onClick={(key, data) => this.actionChanged(data)} />
                             {this.props.redlining.action === "Draw" && (this.props.redlining.geomType === "LineString" || this.props.redlining.geomType === "Polygon") ?
@@ -133,7 +129,7 @@ class Redlining extends React.Component {
                         </span>
                     </div>
                     <div className="redlining-group">
-                        <div><Message msgId="redlining.edit" /></div>
+                        <div>{LocaleUtils.tr("redlining.edit")}</div>
                         <ButtonBar active={activeButton} buttons={editButtons} onClick={(key, data) => this.actionChanged(data)} />
                     </div>
                 </div>
@@ -142,26 +138,26 @@ class Redlining extends React.Component {
         );
     }
     renderStandardControls = () => {
-        let sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.size");
+        let sizeLabel = LocaleUtils.tr("redlining.size");
         if (this.props.redlining.geomType === "LineString") {
-            sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.width");
+            sizeLabel = LocaleUtils.tr("redlining.width");
         } else if (this.props.redlining.geomType === "Polygon") {
-            sizeLabel = LocaleUtils.getMessageById(this.context.messages, "redlining.border");
+            sizeLabel = LocaleUtils.tr("redlining.border");
         }
-        let labelPlaceholder = LocaleUtils.getMessageById(this.context.messages, "redlining.label");
+        let labelPlaceholder = LocaleUtils.tr("redlining.label");
         if (this.props.redlining.geomType === "Text") {
-            labelPlaceholder = LocaleUtils.getMessageById(this.context.messages, "redlining.text");
+            labelPlaceholder = LocaleUtils.tr("redlining.text");
         }
 
         return (
             <div className="redlining-controlsbar">
                 <span>
-                    <span><Message msgId="redlining.outline" />:&nbsp;</span>
+                    <span>{LocaleUtils.tr("redlining.outline")}:&nbsp;</span>
                     <ColorButton color={this.props.redlining.style.borderColor} onColorChanged={(color) => this.updateRedliningStyle({borderColor: color})} />
                 </span>
                 {this.props.redlining.geomType === 'LineString' ? null : (
                     <span>
-                        <span><Message msgId="redlining.fill" />:&nbsp;</span>
+                        <span>{LocaleUtils.tr("redlining.fill")}:&nbsp;</span>
                         <ColorButton color={this.props.redlining.style.fillColor} onColorChanged={(color) => this.updateRedliningStyle({fillColor: color})} />
                     </span>
                 )}
@@ -201,7 +197,7 @@ class Redlining extends React.Component {
     }
     actionChanged = (data) => {
         if (data.action === "Draw" && data.geomType === "Text") {
-            data = {...data, text: LocaleUtils.getMessageById(this.context.messages, "redlining.text")};
+            data = {...data, text: LocaleUtils.tr("redlining.text")};
         }
         this.updateRedliningState({...data, featureSelected: false});
     }

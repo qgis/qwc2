@@ -13,7 +13,6 @@ import buffer from '@turf/buffer';
 import uuid from 'uuid';
 import NumericInput from 'react-numeric-input2';
 import {LayerRole, addLayer, addLayerFeatures} from '../../actions/layers';
-import Message from '../../components/I18N/Message';
 import VectorLayerPicker from '../../components/widgets/VectorLayerPicker';
 import LocaleUtils from '../../utils/LocaleUtils';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
@@ -27,9 +26,6 @@ class RedliningBufferSupport extends React.Component {
         projection: PropTypes.string,
         redlining: PropTypes.object
     }
-    static contextTypes = {
-        messages: PropTypes.object
-    }
     state = {
         bufferDistance: 0,
         bufferLayer: null
@@ -38,7 +34,7 @@ class RedliningBufferSupport extends React.Component {
         super(props, context);
         this.state.bufferLayer = {
             id: "buffer",
-            title: LocaleUtils.getMessageById(context.messages, "redlining.bufferlayername"),
+            title: LocaleUtils.tr("redlining.bufferlayername"),
             role: LayerRole.USERLAYER
         };
     }
@@ -46,7 +42,7 @@ class RedliningBufferSupport extends React.Component {
         if (this.state.bufferLayer && this.state.bufferLayer.id !== "buffer" && !this.props.layers.find(layer => layer.id === this.state.bufferLayer.id)) {
             this.setState({bufferLayer: {
                 id: "buffer",
-                title: LocaleUtils.getMessageById(this.context.messages, "redlining.bufferlayername"),
+                title: LocaleUtils.tr("redlining.bufferlayername"),
                 role: LayerRole.USERLAYER
             }});
         }
@@ -55,7 +51,7 @@ class RedliningBufferSupport extends React.Component {
         if (!this.props.redlining.selectedFeature) {
             return (
                 <div className="redlining-message">
-                    <Message msgId="redlining.bufferselectfeature" />
+                    {LocaleUtils.tr("redlining.bufferselectfeature")}
                 </div>
             );
         }
@@ -68,13 +64,13 @@ class RedliningBufferSupport extends React.Component {
         return (
             <div className="redlining-controlsbar">
                 <span>
-                    <span><Message msgId="redlining.bufferdistance" /> [m]:&nbsp;</span>
+                    <span>{LocaleUtils.tr("redlining.bufferdistance")} [m]:&nbsp;</span>
                     <NumericInput max={99999} min={-99999}
                         mobile onChange={(nr) => this.setState({bufferDistance: nr})} precision={0} step={1}
                         strict value={this.state.bufferDistance} />
                 </span>
                 <span>
-                    <span><Message msgId="redlining.bufferlayer" />:&nbsp;</span>
+                    <span>{LocaleUtils.tr("redlining.bufferlayer")}:&nbsp;</span>
                     <VectorLayerPicker
                         addLayer={this.props.addLayer} layers={layers}
                         onChange={layer => this.setState({bufferLayer: layer})}
@@ -82,7 +78,7 @@ class RedliningBufferSupport extends React.Component {
                 </span>
                 <span>
                     <button className="button" disabled={!enabled} onClick={this.computeBuffer}>
-                        <Message msgId="redlining.buffercompute" />
+                        {LocaleUtils.tr("redlining.buffercompute")}
                     </button>
                 </span>
             </div>
@@ -112,7 +108,7 @@ class RedliningBufferSupport extends React.Component {
 export default {
     cfg: {
         key: "Buffer",
-        tooltip: "redlining.buffer",
+        tooltip: LocaleUtils.trmsg("redlining.buffer"),
         icon: "buffer",
         data: {action: "Buffer", geomType: null}
     },

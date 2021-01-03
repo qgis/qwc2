@@ -10,9 +10,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Swipeable} from 'react-swipeable';
-import Message from '../components/I18N/Message';
-import {setCurrentTask} from '../actions/task';
 import Icon from './Icon';
+import {setCurrentTask} from '../actions/task';
+import LocaleUtils from '../utils/LocaleUtils';
 import './style/SideBar.css';
 
 class SideBar extends React.Component {
@@ -92,7 +92,7 @@ class SideBar extends React.Component {
                         <div className="sidebar-titlebar">
                             {this.state.render ? this.props.extraBeforeContent : null}
                             <Icon className="sidebar-titlebar-icon" icon={this.props.icon} size="large"/>
-                            <span className="sidebar-titlebar-title"><Message msgId={this.props.title} /></span>
+                            <span className="sidebar-titlebar-title">{LocaleUtils.tr(this.props.title)}</span>
                             {this.state.render ? this.props.extraTitlebarContent : null}
                             <span className="sidebar-titlebar-spacer" />
                             <Icon className="sidebar-titlebar-closeicon" icon="chevron-right" onClick={this.closeClicked}/>

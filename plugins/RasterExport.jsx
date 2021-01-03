@@ -9,12 +9,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import Message from '../components/I18N/Message';
-import CoordinatesUtils from '../utils/CoordinatesUtils';
 import {LayerRole} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import TaskBar from '../components/TaskBar';
 import PrintFrame from '../components/PrintFrame';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/RasterExport.css';
@@ -82,7 +82,7 @@ class RasterExport extends React.Component {
         if (this.props.dpis) {
             dpiSelector = (
                 <span>
-                    <Message msgId="rasterexport.resolution" />&nbsp;
+                    {LocaleUtils.tr("rasterexport.resolution")}&nbsp;
                     <select defaultValue={this.props.dpis[0]} name="DPI" onChange={this.dpiChanged}>
                         {this.props.dpis.map(dpi => {
                             return (<option key={dpi + "dpi"} value={dpi}>{dpi + " dpi"}</option>);
@@ -99,10 +99,10 @@ class RasterExport extends React.Component {
         return (
             <span>
                 <form action={action} method="POST" ref={form => { this.form = form; }} target="_blank" >
-                    <div className="help-text"><Message msgId="rasterexport.selectinfo" /></div>
+                    <div className="help-text">{LocaleUtils.tr("rasterexport.selectinfo")}</div>
                     <div className="raster-export-settings">
                         <span>
-                            <Message msgId="rasterexport.format" />&nbsp;
+                            {LocaleUtils.tr("rasterexport.format")}&nbsp;
                             <select name="FORMAT" onChange={this.formatChanged} value={selectedFormat}>
                                 {availableFormats.map(format => {
                                     if (format.startsWith('image/')) {

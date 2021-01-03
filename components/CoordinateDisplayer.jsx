@@ -21,16 +21,13 @@ class CoordinateDisplayer extends React.Component {
         mapcrs: PropTypes.string,
         mousepos: PropTypes.object
     }
-    static contextTypes = {
-        locale: PropTypes.string
-    }
     render() {
         let value = "";
         if (this.props.mousepos) {
             const coo = CoordinatesUtils.reproject(this.props.mousepos.coordinate, this.props.mapcrs, this.props.displaycrs);
             if (!isNaN(coo[0]) && !isNaN(coo[1])) {
                 const digits = proj4js.defs(this.props.displaycrs).units === 'degrees' ? 4 : 0;
-                value = LocaleUtils.toLocaleFixed(this.context.locale, coo[0], digits) + " " + LocaleUtils.toLocaleFixed(this.context.locale, coo[1], digits);
+                value = LocaleUtils.toLocaleFixed(coo[0], digits) + " " + LocaleUtils.toLocaleFixed(coo[1], digits);
             }
         }
         return (

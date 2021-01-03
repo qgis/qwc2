@@ -10,11 +10,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from './Icon';
 import {connect} from 'react-redux';
-import Message from '../components/I18N/Message';
+import ResizeableWindow from './ResizeableWindow';
 import {LayerRole, addLayer} from '../actions/layers';
 import {setThemeLayersList} from '../actions/theme';
 import {setCurrentTask} from '../actions/task';
-import ResizeableWindow from '../components/ResizeableWindow';
 import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 import './style/ThemeLayersListWindow.css';
@@ -28,15 +27,12 @@ class ThemeLayersListWindow extends React.Component {
         themes: PropTypes.object,
         windowSize: PropTypes.object
     }
-    static contextTypes = {
-        messages: PropTypes.object
-    }
     state = {
         selectedLayers: []
     }
     renderLayer(layer) {
         const checkboxstate = this.state.selectedLayers.includes(layer) ? 'checked' : 'unchecked';
-        const addLayerTitle = LocaleUtils.getMessageById(this.context.messages, "themelayerslist.addlayer");
+        const addLayerTitle = LocaleUtils.tr("themelayerslist.addlayer");
         return (
             <div className="layerlist-item" key={layer.name}>
                 <Icon className="layerlist-item-checkbox" icon={checkboxstate} onClick={() => this.itemSelectionToggled(layer)} />
@@ -61,13 +57,13 @@ class ThemeLayersListWindow extends React.Component {
         const layerslist = this.renderLayers(this.props.theme);
         return (
             <ResizeableWindow icon="layers" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width}
-                onClose={this.onClose} title="themelayerslist.addlayerstotheme">
+                onClose={this.onClose} title={LocaleUtils.trmsg("themelayerslist.addlayerstotheme")} >
                 <div className="theme-list-window-body" role="body">
                     <h4 className="theme-list-window-title">{this.props.theme.title}</h4>
                     <div className="theme-list-window-frame">
                         {layerslist}
                     </div>
-                    <button className="button" disabled={!this.state.selectedLayers.length} onClick={this.addSelectedLayers}><Message msgId="themelayerslist.addselectedlayers" /></button>
+                    <button className="button" disabled={!this.state.selectedLayers.length} onClick={this.addSelectedLayers}>{LocaleUtils.tr("themelayerslist.addselectedlayers")}</button>
                 </div>
             </ResizeableWindow>
         );

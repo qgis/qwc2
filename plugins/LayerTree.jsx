@@ -13,20 +13,19 @@ import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import Sortable from 'react-sortablejs';
 import FileSaver from 'file-saver';
-import Message from '../components/I18N/Message';
 import {LayerRole, changeLayerProperty, removeLayer, reorderLayer, setSwipe, addLayerSeparator} from '../actions/layers';
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import {setActiveServiceInfo} from '../actions/serviceinfo';
 import {toggleMapTips, zoomToExtent} from '../actions/map';
-import ConfigUtils from '../utils/ConfigUtils';
-import LocaleUtils from '../utils/LocaleUtils';
 import Icon from '../components/Icon';
 import ImportLayer from '../components/ImportLayer';
 import LayerInfoWindow from '../components/LayerInfoWindow';
 import ServiceInfoWindow from '../components/ServiceInfoWindow';
 import SideBar from '../components/SideBar';
 import Spinner from '../components/Spinner';
+import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/LayerTree.css';
@@ -97,9 +96,6 @@ class LayerTree extends React.Component {
         sidebarwidth: null,
         importvisible: false,
         filtervisiblelayers: false
-    }
-    static contextTypes = {
-        messages: PropTypes.object
     }
     constructor(props) {
         super(props);
@@ -250,7 +246,7 @@ class LayerTree extends React.Component {
             }
             let zoomToLayerButton = null;
             if (sublayer.bbox && sublayer.bbox.bounds) {
-                const zoomToLayerTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.zoomtolayer");
+                const zoomToLayerTooltip = LocaleUtils.tr("layertree.zoomtolayer");
                 const crs = sublayer.bbox.crs || this.props.mapCrs;
                 zoomToLayerButton = (
                     <Icon icon="zoom" onClick={() => this.props.zoomToExtent(sublayer.bbox.bounds, crs)} title={zoomToLayerTooltip} />
@@ -260,7 +256,7 @@ class LayerTree extends React.Component {
                 <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
                     <div className="layertree-item-edit-items">
                         {zoomToLayerButton}
-                        {this.props.transparencyIcon ? (<Icon icon="transparency" />) : (<Message msgId="layertree.transparency" />)}
+                        {this.props.transparencyIcon ? (<Icon icon="transparency" />) : LocaleUtils.tr("layertree.transparency")}
                         <input className="layertree-item-transparency-slider" defaultValue={255 - sublayer.opacity} max="255" min="0" onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onTouchEnd={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} step="1" type="range" />
                         {reorderButtons}
                         {this.props.infoInSettings ? infoButton : null}
@@ -295,8 +291,8 @@ class LayerTree extends React.Component {
         const allowOptions = layer.type !== "placeholder" && layer.type !== "separator";
         const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
         const allowSeparators = flattenGroups && allowReordering && ConfigUtils.getConfigProp("allowLayerTreeSeparators", this.props.theme);
-        const separatorTitle = LocaleUtils.getMessageById(this.context.messages, "layertree.separator");
-        const separatorTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.separatortooltip");
+        const separatorTitle = LocaleUtils.tr("layertree.separator");
+        const separatorTooltip = LocaleUtils.tr("layertree.separatortooltip");
         return (
             <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.uuid, path: path})} key={sublayer.uuid}>
                 {allowSeparators ? (<div className="layertree-item-addsep" onClick={() => this.props.addLayerSeparator(separatorTitle, layer.id, path)} title={separatorTooltip} />) : null}
@@ -347,7 +343,7 @@ class LayerTree extends React.Component {
             maptipCheckbox = (
                 <div className="layertree-option">
                     <Icon icon={maptipcheckboxstate} onClick={this.toggleMapTips} />
-                    <span onClick={this.toggleMapTips}><Message msgId="layertree.maptip" /></span>
+                    <span onClick={this.toggleMapTips}>{LocaleUtils.tr("layertree.maptip")}</span>
                 </div>
             );
         }
@@ -358,7 +354,7 @@ class LayerTree extends React.Component {
             compareCheckbox = (
                 <div className="layertree-option">
                     <Icon icon={swipecheckboxstate} onClick={this.toggleSwipe} />
-                    <span onClick={this.toggleSwipe}><Message msgId="layertree.compare" /></span>
+                    <span onClick={this.toggleSwipe}>{LocaleUtils.tr("layertree.compare")}</span>
                 </div>
             );
         }
@@ -366,7 +362,7 @@ class LayerTree extends React.Component {
         if (this.props.allowImport) {
             layerImportExpander = (
                 <div className="layertree-option" onClick={this.toggleImportLayers}>
-                    <Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> <Message msgId="layertree.importlayer" />
+                    <Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> {LocaleUtils.tr("layertree.importlayer")}
                 </div>
             );
         }
@@ -409,12 +405,12 @@ class LayerTree extends React.Component {
 
         let legendPrintIcon = null;
         if (this.props.enableLegendPrint) {
-            const printLegendTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
+            const printLegendTooltip = LocaleUtils.tr("layertree.printlegend");
             legendPrintIcon = (<Icon className="layertree-print-legend" icon="print" onClick={this.printLegend} title={printLegendTooltip}/>);
         }
         let visibleFilterIcon = null;
         if (this.props.enableVisibleFilter) {
-            const visibleFilterTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.visiblefilter");
+            const visibleFilterTooltip = LocaleUtils.tr("layertree.visiblefilter");
             const classes = classnames({
                 "layertree-visible-filter": true,
                 "layertree-visible-filter-active": this.state.filtervisiblelayers
@@ -423,7 +419,7 @@ class LayerTree extends React.Component {
         }
         let deleteAllLayersIcon = null;
         if (ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true) {
-            const deleteAllLayersTooltip = LocaleUtils.getMessageById(this.context.messages, "layertree.deletealllayers");
+            const deleteAllLayersTooltip = LocaleUtils.tr("layertree.deletealllayers");
             deleteAllLayersIcon = (<Icon className="layertree-delete-legend" icon="trash" onClick={this.deleteAllLayers} title={deleteAllLayersTooltip}/>);
         }
         let serviceInfoIcon = null;
@@ -542,7 +538,7 @@ class LayerTree extends React.Component {
     }
     printLegend = () => {
         let body = '<p id="legendcontainerbody">';
-        const printLabel = LocaleUtils.getMessageById(this.context.messages, "layertree.printlegend");
+        const printLabel = LocaleUtils.tr("layertree.printlegend");
         body += '<div id="print">' +
                 '<style type="text/css">@media print{ #print { display: none; }}</style>' +
                 '<button onClick="(function(){window.print();})()">' + printLabel + '</button>' +

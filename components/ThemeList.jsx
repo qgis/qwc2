@@ -12,7 +12,6 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import {remove as removeDiacritics} from 'diacritics';
 import Icon from './Icon';
-import Message from './I18N/Message';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
@@ -39,9 +38,6 @@ class ThemeList extends React.Component {
         setThemeLayersList: PropTypes.func,
         showLayerAfterChangeTheme: PropTypes.bool,
         themes: PropTypes.object
-    }
-    static contextTypes = {
-        messages: PropTypes.object
     }
     state = {
         expandedGroups: [],
@@ -86,9 +82,9 @@ class ThemeList extends React.Component {
             );
         });
         const activeThemeId = this.props.activeTheme ? this.props.activeTheme.id : null;
-        const addLayersTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addlayerstotheme");
-        const addTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addtotheme");
-        const openTabTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.openintab");
+        const addLayersTitle = LocaleUtils.tr("themeswitcher.addlayerstotheme");
+        const addTitle = LocaleUtils.tr("themeswitcher.addtotheme");
+        const openTabTitle = LocaleUtils.tr("themeswitcher.openintab");
         return (
             <ul className="theme-group-body">
                 {(!isEmpty(group.items) ? group.items : []).map(item => {
@@ -97,13 +93,13 @@ class ThemeList extends React.Component {
                     if (filter) {
                         let match = null;
                         if ((match = removeDiacritics(item.title).match(filter))) {
-                            matches.push(["themeswitcher.match.title", this.extractSubstr(match, item.title), item.title]);
+                            matches.push([LocaleUtils.trmsg("themeswitcher.match.title"), this.extractSubstr(match, item.title), item.title]);
                         }
                         if ((match = removeDiacritics(item.keywords).match(filter))) {
-                            matches.push(["themeswitcher.match.keywords", this.extractSubstr(match, item.keywords), item.keywords]);
+                            matches.push([LocaleUtils.trmsg("themeswitcher.match.keywords"), this.extractSubstr(match, item.keywords), item.keywords]);
                         }
                         if ((match = removeDiacritics(item.abstract).match(filter))) {
-                            matches.push(["themeswitcher.match.abstract", this.extractSubstr(match, item.abstract), item.abstract]);
+                            matches.push([LocaleUtils.trmsg("themeswitcher.match.abstract"), this.extractSubstr(match, item.abstract), item.abstract]);
                         }
                     }
                     return (!filter || !isEmpty(matches)) ? (
@@ -118,7 +114,7 @@ class ThemeList extends React.Component {
                             </div>
                             {!isEmpty(infoLinks) ? (<div className={"theme-item-info-menu " + (this.state.visibleThemeInfoMenu ? "theme-item-info-menu-active" : "")} onClick={ev => this.toggleThemeInfoMenu(ev, item.id)}>
                                 <Icon icon="info" />
-                                {item.themeInfoLinks.title ? (<span>{item.themeInfoLinks.title}</span>) : (<Message msgId={item.themeInfoLinks.titleMsgId} />)}
+                                {item.themeInfoLinks.title ? (<span>{item.themeInfoLinks.title}</span>) : LocaleUtils.tr(item.themeInfoLinks.titleMsgId)}
                                 <Icon icon="triangle-down" />
                                 {this.state.visibleThemeInfoMenu === item.id ? (
                                     <div className="theme-item-info-links" onClick={ev => ev.stopPropagation()}>
@@ -140,7 +136,7 @@ class ThemeList extends React.Component {
                             {isEmpty(matches) ? null : (
                                 <div className="theme-item-filterinfo-overlay">
                                     {matches.map(match => (
-                                        <div key={match[0]} title={match[2]}><i><Message msgId={match[0]} />:</i><br />{match[1][0]}<b>{match[1][1]}</b>{match[1][2]}</div>
+                                        <div key={match[0]} title={match[2]}><i>{LocaleUtils.tr(match[0])}:</i><br />{match[1][0]}<b>{match[1][1]}</b>{match[1][2]}</div>
                                     ))}
                                 </div>
                             )}

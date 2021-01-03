@@ -2,23 +2,23 @@
   "locale": "en-US",
   "messages": {
     "appmenu": {
+      "menulabel": "Map & Tools",
       "items": {
         "DxfExport": "DXF Export",
+        "Editing": "Editing",
         "Help": "Help",
+        "IdentifyRegion": "Identify Region",
         "LayerTree": "Layers & Legend",
+        "Login": "Login",
+        "Logout": "Logout",
         "Measure": "Measure",
         "Print": "Print",
         "RasterExport": "Raster Export",
+        "Redlining": "Redlining",
         "Share": "Share Link",
         "ThemeSwitcher": "Theme",
-        "Tools": "Map Tools",
-        "IdentifyRegion": "Identify Region",
-        "Redlining": "Redlining",
-        "Editing": "Editing",
-        "Login": "Login",
-        "Logout": "Logout"
-      },
-      "menulabel": "Map & Tools"
+        "Tools": "Map Tools"
+      }
     },
     "bgswitcher": {
       "nobg": "No background"
@@ -38,16 +38,14 @@
       "symbologyscale": "Symbology scale:"
     },
     "editing": {
-      "maximize": "Maximize",
-      "minimize": "Minimize",
       "canceldelete": "Don't delete",
       "commit": "Commit",
       "delete": "Delete",
       "discard": "Discard",
       "draw": "Draw",
       "feature": "Feature",
-      "fields": "Fields",
-      "layer": "Layer",
+      "maximize": "Maximize",
+      "minimize": "Minimize",
       "noeditablelayers": "No editable layers.",
       "pick": "Pick",
       "reallydelete": "Delete",
@@ -63,14 +61,14 @@
       "loading": "Calculating height profile..."
     },
     "identify": {
-      "querying": "Querying...",
-      "noresults": "No information available for the selected point",
       "export": "Export",
       "exportformat": "Export format:",
       "featureReport": "Feature report",
+      "link": "Link",
       "noattributes": "No attributes",
-      "title": "Feature Info",
-      "link": "Link"
+      "noresults": "No information available for the selected point",
+      "querying": "Querying...",
+      "title": "Feature Info"
     },
     "identifyregion": {
       "info": "Draw a polygon around the features to identify..."
@@ -79,45 +77,48 @@
       "addlayer": "Add layer",
       "connect": "Connect",
       "filter": "Filter...",
+      "loading": "Loading...",
       "localfile": "Local file",
       "nofeatures": "No features could be imported.",
       "noresults": "No results or invalid URL",
-      "loading": "Loading...",
       "url": "URL",
       "urlplaceholder": "Enter URL to WMS, WMTS, WFS..."
     },
+    "infotool": {
+      "clickhelpPoint": "Click a location to identify in the map..."
+    },
     "layerinfo": {
-      "title": "Layer Info",
       "abstract": "Abstract",
       "attribution": "Attribution",
-      "keywords": "Keywords",
       "dataUrl": "Data URL",
-      "metadataUrl": "Metadata URL",
+      "keywords": "Keywords",
       "legend": "Legend",
       "maxscale": "Max. displayscale",
-      "minscale": "Min. displayscale"
+      "metadataUrl": "Metadata URL",
+      "minscale": "Min. displayscale",
+      "title": "Layer Info"
     },
     "layertree": {
       "compare": "Compare top layer",
+      "deletealllayers": "Remove all layers",
       "importlayer": "Import layer",
       "maptip": "Show layer map tips",
       "printlegend": "Print legend",
-      "deletealllayers": "Remove all layers",
-      "visiblefilter": "Filter invisible layers",
       "separator": "Separator",
       "separatortooltip": "Add separator",
-      "zoomtolayer": "Zoom to layer",
-      "transparency": "Trasparency"
+      "transparency": "Trasparency",
+      "visiblefilter": "Filter invisible layers",
+      "zoomtolayer": "Zoom to layer"
     },
     "locate": {
-      "metersUnit": "meters",
       "feetUnit": "feet",
+      "metersUnit": "meters",
       "popup": "You are within {distance} {unit} from this point",
       "statustooltip": {
         "DISABLED": "Position: disabled",
-        "LOCATING": "Position: locating...",
         "ENABLED": "Position: enabled",
         "FOLLOWING": "Position: following",
+        "LOCATING": "Position: locating...",
         "PERMISSION_DENIED": "Position: permission denied"
       }
     },
@@ -135,17 +136,17 @@
       "pointLabel": "Position"
     },
     "print": {
-      "layout": "Layout:",
       "grid": "Grid:",
+      "layout": "Layout:",
       "maximize": "Maximize",
       "minimize": "Minimize",
       "nolayouts": "The selected theme does not support printing",
       "notheme": "No theme selected",
+      "output": "Print output",
       "resolution": "Resolution:",
       "rotation": "Rotation:",
       "scale": "Scale:",
       "submit": "Print",
-      "output": "Print output",
       "wait": "Please wait..."
     },
     "rasterexport": {
@@ -154,13 +155,12 @@
       "selectinfo": "Drag a rectangle around the region to export..."
     },
     "redlining": {
-      "add": "Add",
       "border": "Border",
       "buffer": "Buffer",
-      "bufferlayername": "Buffer",
+      "buffercompute": "Compute",
       "bufferdistance": "Distance",
       "bufferlayer": "Destination",
-      "buffercompute": "Compute",
+      "bufferlayername": "Buffer",
       "bufferselectfeature": "Select a feature to buffer...",
       "circle": "Circle",
       "delete": "Delete",
@@ -183,17 +183,16 @@
       "finish": "Finish"
     },
     "search": {
+      "all": "All",
+      "enablelayer": "Enable layer",
+      "existinglayer": "The layer already exists in the map",
+      "invisiblelayer": "The result lies on a layer which is not visible.",
       "more": "More...",
       "search": "Search",
       "searchall": "Search places or add maps...",
-      "all": "All",
-      "themes": "Themes",
-      "invisiblelayer": "The result lies on a layer which is not visible.",
-      "enablelayer": "Enable layer",
-      "existinglayer": "The layer already exists in the map"
+      "themes": "Themes"
     },
     "searchbox": {
-      "coordinates": "Coordinates",
       "filter": "Refine search",
       "layers": "Maps",
       "more": "more results",
@@ -204,27 +203,21 @@
       "recent": "Recent searches"
     },
     "serviceinfo": {
-      "title": "Theme Information",
       "abstract": "Abstract",
+      "contactEmail": "Email",
+      "contactOrganization": "Organization",
+      "contactPerson": "Contact person",
+      "contactPhone": "Phone",
+      "contactPosition": "Position",
       "keywords": "Keywords",
       "onlineResource": "Online resource",
-      "contactPerson": "Contact person",
-      "contactOrganization": "Organization",
-      "contactPosition": "Position",
-      "contactPhone": "Phone",
-      "contactEmail": "Email"
+      "title": "Theme Information"
     },
     "share": {
+      "QRCodeLinkTitle": "QR Code",
       "directLinkTitle": "Via a direct link",
       "generatingpermalink": "Generating permalink...",
-      "QRCodeLinkTitle": "QR Code",
       "socialIntro": "In your favourite social network"
-    },
-    "tooltip": {
-      "home": "Show entire map",
-      "zoomin": "Zoom in",
-      "zoomout": "Zoom out",
-      "background": "Switch background"
     },
     "themelayerslist": {
       "addlayer": "Add layer",
@@ -232,15 +225,21 @@
       "addselectedlayers": "Add selected layer(s)"
     },
     "themeswitcher": {
-      "filter": "Filter...",
-      "addtotheme": "Add to current theme",
       "addlayerstotheme": "Add layers to current map",
+      "addtotheme": "Add to current theme",
+      "filter": "Filter...",
       "match": {
-        "title": "Title",
+        "abstract": "Abstract",
         "keywords": "Keywords",
-        "abstract": "Abstract"
+        "title": "Title"
       },
       "openintab": "Open in Tab"
+    },
+    "tooltip": {
+      "background": "Switch background",
+      "home": "Show entire map",
+      "zoomin": "Zoom in",
+      "zoomout": "Zoom out"
     },
     "vectorlayerpicker": {
       "prompt": "Enter layer name"

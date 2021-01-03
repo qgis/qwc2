@@ -14,11 +14,10 @@ import isEmpty from 'lodash.isempty';
 import Chartist from 'chartist';
 import ChartistComponent from 'react-chartist';
 import ChartistAxisTitle from 'chartist-plugin-axistitle';
-import ConfigUtils from '../utils/ConfigUtils';
-import LocaleUtils from '../utils/LocaleUtils';
 import {addMarker, removeMarker} from '../actions/layers';
 import Spinner from '../components/Spinner';
-import Message from '../components/I18N/Message';
+import ConfigUtils from '../utils/ConfigUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 
 import './style/HeightProfile.css';
 
@@ -37,9 +36,6 @@ class HeightProfile extends React.Component {
         samples: 500,
         heighProfilePrecision: 0,
         height: 100
-    }
-    static contextTypes = {
-        messages: PropTypes.object
     }
     constructor(props) {
         super(props);
@@ -89,7 +85,7 @@ class HeightProfile extends React.Component {
                     <div id="HeightProfile">
                         <div className="height-profile-loading-indicator">
                             <Spinner className="spinner" />
-                            <Message msgId="heightprofile.loading" />
+                            {LocaleUtils.tr("heightprofile.loading")}
                         </div>
                     </div>
                 );
@@ -97,9 +93,9 @@ class HeightProfile extends React.Component {
                 return null;
             }
         }
-        const distanceStr = LocaleUtils.getMessageById(this.context.messages, "heightprofile.distance");
-        const heightStr = LocaleUtils.getMessageById(this.context.messages, "heightprofile.height");
-        const aslStr = LocaleUtils.getMessageById(this.context.messages, "heightprofile.asl");
+        const distanceStr = LocaleUtils.tr("heightprofile.distance");
+        const heightStr = LocaleUtils.tr("heightprofile.height");
+        const aslStr = LocaleUtils.tr("heightprofile.asl");
         const totLength = (this.props.measurement.length || []).reduce((tot, num) => tot + num, 0);
 
         // Compute tick positions (so that there are approx 10 ticks on desktop and 5 ticks on mobile on the x-axis)

@@ -12,11 +12,10 @@ import {connect} from 'react-redux';
 import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import sortBy from 'lodash.sortby';
-import ConfigUtils from '../utils/ConfigUtils';
-import Message from '../components/I18N/Message';
-import LocaleUtils from '../utils/LocaleUtils';
 import {LayerRole, changeLayerProperty} from '../actions/layers';
 import Icon from '../components/Icon';
+import ConfigUtils from '../utils/ConfigUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import './style/BackgroundSwitcher.css';
 
 class BackgroundSwitcher extends React.Component {
@@ -32,11 +31,8 @@ class BackgroundSwitcher extends React.Component {
     state = {
         visible: false
     }
-    static contextTypes = {
-        messages: PropTypes.object
-    }
     render() {
-        const tooltip = LocaleUtils.getMessageById(this.context.messages, "tooltip.background");
+        const tooltip = LocaleUtils.tr("tooltip.background");
         const classes = classnames({
             "map-button": true,
             "map-button-active": this.state.visible
@@ -90,7 +86,7 @@ class BackgroundSwitcher extends React.Component {
         return (
             <div className={itemclasses} key={layer ? layer.name : "empty"} onClick={() => this.backgroundLayerClicked(layer)}>
                 <div className="background-layer-title">
-                    {layer ? (<span>{layer.title}</span>) : (<Message msgId={"bgswitcher.nobg"} />)}
+                    {layer ? (<span>{layer.title}</span>) : LocaleUtils.tr("bgswitcher.nobg")}
                 </div>
                 <div className="background-layer-thumbnail">
                     <img src={layer ? assetsPath + "/" + layer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="} />

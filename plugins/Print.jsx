@@ -13,18 +13,17 @@ import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import FileSaver from 'file-saver';
 import formDataEntries from 'form-data-entries';
-import Message from '../components/I18N/Message';
-import MapUtils from '../utils/MapUtils';
-import CoordinatesUtils from '../utils/CoordinatesUtils';
-import LocaleUtils from '../utils/LocaleUtils';
-import Spinner from '../components/Spinner';
 import {LayerRole} from '../actions/layers';
 import {changeRotation} from '../actions/map';
-import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import Icon from '../components/Icon';
+import PrintFrame from '../components/PrintFrame';
 import ResizeableWindow from '../components/ResizeableWindow';
 import SideBar from '../components/SideBar';
-import PrintFrame from '../components/PrintFrame';
+import Spinner from '../components/Spinner';
+import ToggleSwitch from '../components/widgets/ToggleSwitch';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/Print.css';
 
@@ -99,11 +98,11 @@ class Print extends React.Component {
     }
     renderBody = () => {
         if (!this.state.layout) {
-            return (<div className="print-body" role="body"><Message msgId="print.nolayouts" /></div>);
+            return (<div className="print-body" role="body">{LocaleUtils.tr("print.nolayouts")}</div>);
         }
         const themeLayers = this.props.layers.filter(layer => layer.role === LayerRole.THEME);
         if (!this.props.theme || (!this.props.printExternalLayers && isEmpty(themeLayers))) {
-            return (<div className="print-body" role="body"><Message msgId="print.notheme" /></div>);
+            return (<div className="print-body" role="body">{LocaleUtils.tr("print.notheme")}</div>);
         }
         let printLayers = [];
         let printOpacities = [];
@@ -205,7 +204,7 @@ class Print extends React.Component {
                 >
                     <table className="options-table"><tbody>
                         <tr>
-                            <td><Message msgId="print.layout" /></td>
+                            <td>{LocaleUtils.tr("print.layout")}</td>
                             <td>
                                 <select name="TEMPLATE" onChange={this.changeLayout} value={currentLayoutname}>
                                     {this.props.theme.print.map(item => {
@@ -217,7 +216,7 @@ class Print extends React.Component {
                             </td>
                         </tr>
                         <tr>
-                            <td><Message msgId="print.scale" /></td>
+                            <td>{LocaleUtils.tr("print.scale")}</td>
                             <td>
                                 <span className="input-frame">
                                     <span>1&nbsp;:&nbsp;</span>
@@ -227,7 +226,7 @@ class Print extends React.Component {
                         </tr>
                         {resolutionChooser ? (
                             <tr>
-                                <td><Message msgId="print.resolution" /></td>
+                                <td>{LocaleUtils.tr("print.resolution")}</td>
                                 <td>
                                     <span className="input-frame">
                                         {resolutionChooser}
@@ -238,7 +237,7 @@ class Print extends React.Component {
                         ) : null}
                         {this.props.displayRotation === true ? (
                             <tr>
-                                <td><Message msgId="print.rotation" /></td>
+                                <td>{LocaleUtils.tr("print.rotation")}</td>
                                 <td>
                                     <span className="input-frame">
                                         <input name={mapName + ":rotation"} onChange={this.changeRotation} type="number" value={rotation}/>
@@ -248,7 +247,7 @@ class Print extends React.Component {
                         ) : null}
                         {printGrid && this.props.displayRotation === true ? (
                             <tr>
-                                <td><Message msgId="print.grid" /></td>
+                                <td>{LocaleUtils.tr("print.grid")}</td>
                                 <td>
                                     <ToggleSwitch active={this.state.grid} onChange={(newstate) => this.setState({grid: newstate})} />
                                 </td>
@@ -298,7 +297,7 @@ class Print extends React.Component {
                     </div>
                     <div className="button-bar">
                         <button className="button" disabled={!printLayers || this.state.printing} type="submit">
-                            {this.state.printing ? (<span className="print-wait"><Spinner /> <Message msgId="print.wait" /></span>) : (<Message msgId="print.submit" />)}
+                            {this.state.printing ? (<span className="print-wait"><Spinner /> {LocaleUtils.tr("print.wait")}</span>) : LocaleUtils.tr("print.submit")}
                         </button>
                     </div>
                 </form>
@@ -320,12 +319,12 @@ class Print extends React.Component {
         return (
             <ResizeableWindow icon="print" initialHeight={0.75 * window.innerHeight} initialWidth={0.5 * window.innerWidth}
                 key="PrintOutputWindow" onClose={() => this.setState({printOutputVisible: false, outputLoaded: false})}
-                title="print.output" visible={this.state.printOutputVisible}
+                title={LocaleUtils.trmsg("print.output")} visible={this.state.printOutputVisible}
             >
                 <div className="print-output-window-body" role="body">
                     {!this.state.outputLoaded ? (
                         <span className="print-output-window-wait">
-                            <Spinner /> <Message msgId="print.wait" />
+                            <Spinner /> {LocaleUtils.tr("print.wait")}
                         </span>
                     ) : null}
                     <iframe name="print-output-window" onLoad={() => this.setState({outputLoaded: true})}/>
@@ -334,7 +333,7 @@ class Print extends React.Component {
         );
     }
     render() {
-        const minMaxTooltip = LocaleUtils.getMessageById(this.context.messages, this.state.minimized ? "print.maximize" : "print.minimize");
+        const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("print.maximize") : LocaleUtils.tr("print.minimize");
         const extraTitlebarContent = (<Icon className="print-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState({minimized: !this.state.minimized})} title={minMaxTooltip}/>);
         return (
             <SideBar extraTitlebarContent={extraTitlebarContent} icon={"print"} id="Print"

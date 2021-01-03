@@ -10,13 +10,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import Message from '../components/I18N/Message';
-import Spinner from '../components/Spinner';
 import {LayerRole} from '../actions/layers';
 import OlMap from '../components/map/OlMap';
 import OlLayer from '../components/map/OlLayer';
+import Spinner from '../components/Spinner';
 import MapUtils from '../utils/MapUtils';
 import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 
 import './style/Map.css';
 
@@ -128,7 +128,7 @@ class MapPlugin extends React.Component {
             loadingIndicator = (
                 <span className="map-loading-indicator" key="map-loading" ref={el => { this.loadingEl = el; }}>
                     <Spinner className="spinner" />
-                    <Message msgId="map.loading" />
+                    {LocaleUtils.tr("map.loading")}
                 </span>
             );
             setTimeout(() => {

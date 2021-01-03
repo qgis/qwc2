@@ -32,9 +32,6 @@ class Measure extends React.Component {
     static defaultProps = {
         showMeasureModeSwitcher: true
     }
-    static contextTypes = {
-        locale: PropTypes.string
-    }
     onShow = (mode) => {
         this.props.changeMeasurementState({geomType: mode || 'Point'});
     }
@@ -57,10 +54,10 @@ class Measure extends React.Component {
             return null;
         }
         const buttons = [
-            {key: "Point", label: "measureComponent.pointLabel"},
-            {key: "LineString", label: "measureComponent.lengthLabel"},
-            {key: "Polygon", label: "measureComponent.areaLabel"},
-            {key: "Bearing", label: "measureComponent.bearingLabel"}
+            {key: "Point", label: LocaleUtils.trmsg("measureComponent.pointLabel")},
+            {key: "LineString", label: LocaleUtils.trmsg("measureComponent.lengthLabel")},
+            {key: "Polygon", label: LocaleUtils.trmsg("measureComponent.areaLabel")},
+            {key: "Bearing", label: LocaleUtils.trmsg("measureComponent.bearingLabel")}
         ];
         return (
             <ButtonBar active={this.props.measureState.geomType} buttons={buttons} onClick={this.setMeasureMode} />
@@ -73,14 +70,14 @@ class Measure extends React.Component {
             let text = "0 0";
             if (!isEmpty(this.props.measureState.coordinates)) {
                 const coo = CoordinatesUtils.reproject(this.props.measureState.coordinates, this.props.mapcrs, this.props.displaycrs);
-                text = LocaleUtils.toLocaleFixed(this.context.locale, coo[0], digits) + " " + LocaleUtils.toLocaleFixed(this.context.locale, coo[1], digits);
+                text = LocaleUtils.toLocaleFixed(coo[0], digits) + " " + LocaleUtils.toLocaleFixed(coo[1], digits);
             }
             resultBody = (<div className="resultbody"><span>{text}</span></div>);
         } else if (this.props.measureState.geomType === "LineString") {
             const length = (this.props.measureState.length || []).reduce((tot, num) => tot + num, 0);
             resultBody = (
                 <div className="resultbody">
-                    <span>{LocaleUtils.toLocaleFixed(this.context.locale, measureUtils.getFormattedLength(this.props.measureState.lenUnit, length), 2)}</span>
+                    <span>{LocaleUtils.toLocaleFixed(measureUtils.getFormattedLength(this.props.measureState.lenUnit, length), 2)}</span>
                     <select onChange={this.changeLengthUnit} value={this.props.measureState.lenUnit}>
                         <option value="m">m</option>
                         <option value="ft">ft</option>
@@ -92,7 +89,7 @@ class Measure extends React.Component {
         } else if (this.props.measureState.geomType === "Polygon") {
             resultBody = (
                 <div className="resultbody">
-                    <span>{LocaleUtils.toLocaleFixed(this.context.locale, measureUtils.getFormattedArea(this.props.measureState.areaUnit, this.props.measureState.area), 2)}</span>
+                    <span>{LocaleUtils.toLocaleFixed(measureUtils.getFormattedArea(this.props.measureState.areaUnit, this.props.measureState.area), 2)}</span>
                     <select onChange={this.changeAreaUnit} value={this.props.measureState.areaUnit}>
                         <option value="sqm">m&#178;</option>
                         <option value="sqft">ft&#178;</option>

@@ -23,9 +23,6 @@ export default class AutoEditForm extends React.Component {
         updateField: PropTypes.func,
         values: PropTypes.object
     }
-    static contextTypes = {
-        messages: PropTypes.object
-    }
     render() {
         return (
             <table className="AutoEditForm">
@@ -62,7 +59,7 @@ export default class AutoEditForm extends React.Component {
                         required={constraints.required} value={value}
                     >
                         <option disabled value="">
-                            {LocaleUtils.getMessageById(this.context.messages, "editing.select")}
+                            {LocaleUtils.tr("editing.select")}
                         </option>
                         {constraints.values.map((item, index) => {
                             let optValue = "";

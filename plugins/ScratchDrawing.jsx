@@ -32,9 +32,6 @@ class ScratchDrawing extends React.Component {
         setCurrentTask: PropTypes.func,
         task: PropTypes.object
     }
-    static contextTypes = {
-        messages: PropTypes.object
-    }
     constructor(props) {
         super(props);
         window.addEventListener('keydown', this.keyPressed);
@@ -106,7 +103,7 @@ class ScratchDrawing extends React.Component {
             <div className="scratch-drawing-taskbar-body">
                 <span>{this.props.task.data.message}</span>
                 <button className="button" onClick={() => this.submitGeometry()}>
-                    {LocaleUtils.getMessageById(this.context.messages, "scratchdrawing.finish")}
+                    {LocaleUtils.tr("scratchdrawing.finish")}
                 </button>
             </div>
         );

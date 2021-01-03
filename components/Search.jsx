@@ -17,12 +17,6 @@ import ol from 'openlayers';
 import Icon from './Icon';
 import Spinner from './Spinner';
 import MessageBar from './MessageBar';
-import Message from '../components/I18N/Message';
-import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
-import ConfigUtils from '../utils/ConfigUtils';
-import LayerUtils from '../utils/LayerUtils';
-import CoordinatesUtils from '../utils/CoordinatesUtils';
 import {LayerRole, addLayerFeatures, removeLayer, addLayer, addThemeSublayer, changeLayerProperty} from '../actions/layers';
 import {zoomToPoint} from '../actions/map';
 import {changeSearch, startSearch, searchMore, setCurrentSearchResult, SearchResultType} from '../actions/search';
@@ -31,9 +25,14 @@ import {setCurrentTheme} from '../actions/theme';
 import {showNotification} from '../actions/windows';
 import searchProvidersSelector from '../selectors/searchproviders';
 import displayCrsSelector from '../selectors/displaycrs';
+import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
+import {UrlParams} from '../utils/PermaLinkUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
-import {UrlParams} from '../utils/PermaLinkUtils';
 import './style/Search.css';
 
 class Search extends React.Component {
@@ -65,9 +64,6 @@ class Search extends React.Component {
         startupSearch: PropTypes.bool,
         theme: PropTypes.object,
         themes: PropTypes.object
-    }
-    static contextTypes = {
-        messages: PropTypes.object
     }
     state = {
         focused: false,
@@ -182,15 +178,15 @@ class Search extends React.Component {
     render() {
         let placeholder = "";
         if (this.props.searchOptions.showProvidersInPlaceholder || !isEmpty(this.props.activeProviders)) {
-            placeholder = LocaleUtils.getMessageById(this.context.messages, "search.search");
+            placeholder = LocaleUtils.tr("search.search");
             const providers = this.activeProviders(this.props);
             if (!isEmpty(providers)) {
                 placeholder +=  ": " + Object.values(providers).map(prov => {
-                    return prov.labelmsgid ? LocaleUtils.getMessageById(this.context.messages, prov.labelmsgid) : prov.label;
+                    return prov.labelmsgid ? LocaleUtils.tr(prov.labelmsgid) : prov.label;
                 }).join(", ");
             }
         } else {
-            placeholder = LocaleUtils.getMessageById(this.context.messages, "search.searchall");
+            placeholder = LocaleUtils.tr("search.searchall");
         }
         let addonAfter = null;
         if (!this.props.searchText) {
@@ -211,7 +207,7 @@ class Search extends React.Component {
                         'searchbar-provider-selection-active': isEmpty(this.props.activeProviders)
                     });
                     allEntry = (
-                        <li className={itemClass} key="all" onClick={() => this.props.changeSearch("", null)}><Message msgId="search.all" /></li>
+                        <li className={itemClass} key="all" onClick={() => this.props.changeSearch("", null)}>{LocaleUtils.tr("search.all")}</li>
                     );
                 }
                 providerSelectionMenu = (
@@ -224,7 +220,7 @@ class Search extends React.Component {
                             return (
                                 <li className={itemClass} key={key} onClick={() => this.props.changeSearch("", [key])}>
                                     {
-                                        prov.labelmsgid ? LocaleUtils.getMessageById(this.context.messages, prov.labelmsgid) : prov.label
+                                        prov.labelmsgid ? LocaleUtils.tr(prov.labelmsgid) : prov.label
                                     }
                                 </li>
                             );
@@ -282,7 +278,7 @@ class Search extends React.Component {
                     key="invisibleLayerQuery"
                     onHide={() => this.setState({invisibleLayerQuery: null})}
                 >
-                    <span role="body"><Message msgId="search.invisiblelayer" /> <button onClick={this.enableLayer}><Message msgId="search.enablelayer" /></button></span>
+                    <span role="body">{LocaleUtils.tr("search.invisiblelayer")} <button onClick={this.enableLayer}>{LocaleUtils.tr("search.enablelayer")}</button></span>
                 </MessageBar>
             );
         }
@@ -353,7 +349,7 @@ class Search extends React.Component {
         }
     }
     renderCategory = (category) => {
-        const title = category.titlemsgid ? (<Message msgId={category.titlemsgid} />) : category.title;
+        const title = category.titlemsgid ? LocaleUtils.tr(category.titlemsgid) : category.title;
         return (
             <li key={category.id} onMouseDown={this.killEvent}>
                 <span className="search-results-category-title">{title}</span>
@@ -367,11 +363,11 @@ class Search extends React.Component {
                 <li key={item.id}
                     onClick={() => this.props.searchMore(item, this.props.searchText, this.activeProviders(this.props))}
                     onMouseDown={this.killEvent}>
-                    <i><Message msgId="search.more" /></i>
+                    <i>{LocaleUtils.tr("search.more")}</i>
                 </li>
             );
         }
-        const addTitle = LocaleUtils.getMessageById(this.context.messages, "themeswitcher.addtotheme");
+        const addTitle = LocaleUtils.tr("themeswitcher.addtotheme");
         const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
         return (
             <li key={item.id} onClick={() => {this.showResult(item); this.input.blur(); }} onMouseDown={this.killEvent}
@@ -463,7 +459,7 @@ class Search extends React.Component {
                 return l.type === item.layer.type && l.url === item.layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)))
             });
             if (existing) {
-                const text = LocaleUtils.getMessageById(this.context.messages, "search.existinglayer") + ":" + item.layer.title;
+                const text = LocaleUtils.tr("search.existinglayer") + ":" + item.layer.title;
                 this.props.showNotification("existinglayer", text);
             }
             this.props.addLayer(item.layer);

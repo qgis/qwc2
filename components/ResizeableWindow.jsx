@@ -10,8 +10,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {Rnd} from 'react-rnd';
-import Message from '../components/I18N/Message';
 import ConfigUtils from '../utils/ConfigUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
 import './style/ResizeableWindow.css';
 
@@ -105,7 +105,7 @@ export default class ResizeableWindow extends React.Component {
             (<div className="resizeable-window-titlebar" key="titlebar">
                 {icon}
                 <span className="resizeable-window-titlebar-title">
-                    {this.props.title ? (<Message msgId={this.props.title} />) : (this.props.titlelabel || "")}
+                    {this.props.title ? LocaleUtils.tr(this.props.title) : (this.props.titlelabel || "")}
                 </span>
                 {(this.props.extraControls || []).map(entry => (
                     <Icon className="resizeable-window-titlebar-control" icon={entry.icon} key={entry.icon} onClick={entry.callback}/>
@@ -114,9 +114,9 @@ export default class ResizeableWindow extends React.Component {
                     <Icon
                         className="resizeable-window-titlebar-control" icon={this.state.dock ? "undock" : "dock"}
                         onClick={() => this.setState({dock: !this.state.dock})}
-                        titlemsgid={this.state.dock ? "window.undock" : "window.dock"} />
+                        titlemsgid={this.state.dock ? LocaleUtils.trmsg("window.undock") : LocaleUtils.trmsg("window.dock")} />
                 ) : null}
-                <Icon className="resizeable-window-titlebar-control" icon="remove" onClick={this.onClose} titlemsgid="window.close"/>
+                <Icon className="resizeable-window-titlebar-control" icon="remove" onClick={this.onClose} titlemsgid={LocaleUtils.trmsg("window.close")} />
             </div>),
             (<div className={bodyclasses} key="body" onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
                 {this.renderRole("body")}

@@ -9,9 +9,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import Message from '../components/I18N/Message';
 import {setActiveServiceInfo} from '../actions/serviceinfo';
 import ResizeableWindow from '../components/ResizeableWindow';
+import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import './style/ServiceInfoWindow.css';
 
@@ -33,7 +33,7 @@ class ServiceInfoWindow extends React.Component {
         if (content) {
             return (
                 <tr>
-                    <td><Message msgId={title} />:</td>
+                    <td>{LocaleUtils.tr(title)}:</td>
                     {html ? (
                         <td dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(content)}} />
                     ) : (<td>{content}</td>)}
@@ -48,20 +48,20 @@ class ServiceInfoWindow extends React.Component {
         }
         return (
             <ResizeableWindow icon="info-sign" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width} onClose={this.onClose}
-                title="serviceinfo.title" zIndex={10}>
+                title={LocaleUtils.trmsg("serviceinfo.title")} zIndex={10}>
                 <div className="service-info-window-body" role="body">
                     <h4 className="service-info-window-title">{this.props.service.title}</h4>
                     <div className="service-info-window-frame">
                         <table className="service-info-window-table">
                             <tbody>
-                                {this.renderRow("serviceinfo.abstract", this.props.service.abstract, true)}
-                                {this.renderRow("serviceinfo.keywords", this.props.service.keywords)}
-                                {this.renderRow("serviceinfo.onlineResource", this.renderLink(this.props.service.onlineResource, this.props.service.onlineResource))}
-                                {this.renderRow("serviceinfo.contactPerson", this.props.service.contact.person)}
-                                {this.renderRow("serviceinfo.contactOrganization", this.props.service.contact.organization)}
-                                {this.renderRow("serviceinfo.contactPosition", this.props.service.contact.position)}
-                                {this.renderRow("serviceinfo.contactPhone", this.props.service.contact.phone)}
-                                {this.renderRow("serviceinfo.contactEmail", this.props.service.contact.email)}
+                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.abstract"), this.props.service.abstract, true)}
+                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.keywords"), this.props.service.keywords)}
+                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.onlineResource"), this.renderLink(this.props.service.onlineResource, this.props.service.onlineResource))}
+                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactPerson"), this.props.service.contact.person)}
+                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactOrganization"), this.props.service.contact.organization)}
+                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactPosition"), this.props.service.contact.position)}
+                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactPhone"), this.props.service.contact.phone)}
+                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactEmail"), this.props.service.contact.email)}
                             </tbody>
                         </table>
                     </div>

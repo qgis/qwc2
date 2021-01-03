@@ -2,23 +2,23 @@
   "locale": "tr-TR",
   "messages": {
     "appmenu": {
+      "menulabel": "Harita & Araçlar",
       "items": {
         "DxfExport": "DXF'e Veri Aktar",
+        "Editing": "Düzenleme",
         "Help": "Yardım",
+        "IdentifyRegion": "Bölgeden Bilgi Al",
         "LayerTree": "Katmanlar & Gösterim",
+        "Login": "Giriş",
+        "Logout": "Çıkış",
         "Measure": "Ölç",
         "Print": "Yazdır",
         "RasterExport": "Resim Olarak Kaydet",
+        "Redlining": "Çizim",
         "Share": "Bağlantı Paylaş",
         "ThemeSwitcher": "Tema",
-        "Tools": "Harita Araçları",
-        "IdentifyRegion": "Bölgeden Bilgi Al",
-        "Redlining": "Çizim",
-        "Editing": "Düzenleme",
-        "Login": "Giriş",
-        "Logout": "Çıkış"
-      },
-      "menulabel": "Harita & Araçlar"
+        "Tools": "Harita Araçları"
+      }
     },
     "bgswitcher": {
       "nobg": "Arkaplan Yok"
@@ -38,16 +38,14 @@
       "symbologyscale": "Sembol Ölçeği:"
     },
     "editing": {
-      "maximize": "Büyült",
-      "minimize": "Küçült",
       "canceldelete": "Silme",
       "commit": "Onayla",
       "delete": "Sil",
       "discard": "İptal",
       "draw": "Çiz",
       "feature": "Obje",
-      "fields": "Kolonlar",
-      "layer": "Katman",
+      "maximize": "Büyült",
+      "minimize": "Küçült",
       "noeditablelayers": "Düzenlenebilir katman yok.",
       "pick": "Seç",
       "reallydelete": "Sil",
@@ -63,14 +61,14 @@
       "loading": "Yükseklik profili hesaplanıyor..."
     },
     "identify": {
-      "querying": "Sorgulanıyor...",
-      "noresults": "Seçilen nokta için geçerli bilgi yok",
       "export": "Dışarıya aktar",
       "exportformat": "Dışarı aktarma formatı:",
       "featureReport": "Obje raporu",
+      "link": "Bağlantı",
       "noattributes": "Öznitelik yok",
-      "title": "Obje Bilgisi",
-      "link": "Bağlantı"
+      "noresults": "Seçilen nokta için geçerli bilgi yok",
+      "querying": "Sorgulanıyor...",
+      "title": "Obje Bilgisi"
     },
     "identifyregion": {
       "info": "Bilgi alınacak alanı poligon çizerek belirleyiniz..."
@@ -79,45 +77,48 @@
       "addlayer": "Katman ekle",
       "connect": "Bağlan",
       "filter": "Filtre...",
+      "loading": "Yükleniyor...",
       "localfile": "Yerel dosya",
       "nofeatures": "Herhangi bir obje içeriye aktarılamadı.",
       "noresults": "Sonuç yok ya da geçersiz URL",
-      "loading": "Yükleniyor...",
       "url": "URL",
       "urlplaceholder": "WMS, WMTS, WFS Adresini giriniz..."
     },
+    "infotool": {
+      "clickhelpPoint": ""
+    },
     "layerinfo": {
-      "title": "Katman Bilgisi",
       "abstract": "Özet",
       "attribution": "Özellikler",
-      "keywords": "Anahtar Kelimeler",
       "dataUrl": "Veri URL Adresi",
-      "metadataUrl": "Öznitelik URL",
+      "keywords": "Anahtar Kelimeler",
       "legend": "Gösterim",
       "maxscale": "Max. görünürlük ölçeği",
-      "minscale": "Min. görünürlük ölçeği"
+      "metadataUrl": "Öznitelik URL",
+      "minscale": "Min. görünürlük ölçeği",
+      "title": "Katman Bilgisi"
     },
     "layertree": {
       "compare": "En üst katmanı karşılaştır",
+      "deletealllayers": "Tüm katmanları kaldır",
       "importlayer": "Katmanı içeri al",
       "maptip": "Katman harita ipuçlarını göster",
       "printlegend": "Yazdırma Lejandı",
-      "deletealllayers": "Tüm katmanları kaldır",
-      "visiblefilter": "Görünmeyen katmanları filtrele",
       "separator": "Ayırıcı",
       "separatortooltip": "Ayırıcı ekle",
-      "zoomtolayer": "Katman sınırlarına yaklaş",
-      "transparency": ""
+      "transparency": "",
+      "visiblefilter": "Görünmeyen katmanları filtrele",
+      "zoomtolayer": "Katman sınırlarına yaklaş"
     },
     "locate": {
-      "metersUnit": "metre",
       "feetUnit": "feet",
+      "metersUnit": "metre",
       "popup": "Bu noktadan {distance} {unit} uzaktasınız",
       "statustooltip": {
         "DISABLED": "Konum: geçersiz",
-        "LOCATING": "Konum: bulunuyor...",
         "ENABLED": "Konum: geçerli",
         "FOLLOWING": "Konum: Takip ediliyor",
+        "LOCATING": "Konum: bulunuyor...",
         "PERMISSION_DENIED": "Konum: izin verilmedi"
       }
     },
@@ -135,17 +136,17 @@
       "pointLabel": "Konum"
     },
     "print": {
-      "layout": "Yazdırma düzeni:",
       "grid": "Grid:",
+      "layout": "Yazdırma düzeni:",
       "maximize": "Büyült",
       "minimize": "Küçült",
       "nolayouts": "Seçili tema yazdırma işlemini desteklemiyor",
       "notheme": "Tema seçilmedi",
+      "output": "Yazıcı çıktısı",
       "resolution": "Çözünürlük:",
       "rotation": "Döndürme:",
       "scale": "Ölçek:",
       "submit": "Yazdır",
-      "output": "Yazıcı çıktısı",
       "wait": "Lütfen bekleyiniz..."
     },
     "rasterexport": {
@@ -154,13 +155,12 @@
       "selectinfo": "Dışarı aktarılacak alana dikdörtgen çiziniz..."
     },
     "redlining": {
-      "add": "Ekle",
       "border": "Border",
       "buffer": "Tampon",
-      "bufferlayername": "Tampon",
+      "buffercompute": "Hesapla",
       "bufferdistance": "Mesafe",
       "bufferlayer": "Hedef",
-      "buffercompute": "Hesapla",
+      "bufferlayername": "Tampon",
       "bufferselectfeature": "Tampon atılacak bir obje seçiniz...",
       "circle": "",
       "delete": "Sil",
@@ -183,17 +183,16 @@
       "finish": ""
     },
     "search": {
+      "all": "Tümü",
+      "enablelayer": "Geçerli katman",
+      "existinglayer": "Katman zaten haritada mevcut",
+      "invisiblelayer": "Sonuç, görünmeyen bir katmanda bulunuyor.",
       "more": "Daha fazla...",
       "search": "Ara",
       "searchall": "Bir yer ara ya da harita ekle...",
-      "all": "Tümü",
-      "themes": "Temalar",
-      "invisiblelayer": "Sonuç, görünmeyen bir katmanda bulunuyor.",
-      "enablelayer": "Geçerli katman",
-      "existinglayer": "Katman zaten haritada mevcut"
+      "themes": "Temalar"
     },
     "searchbox": {
-      "coordinates": "Koordinatlar",
       "filter": "Gelişmiş arama",
       "layers": "Haritalar",
       "more": "Daha fazla sonuç",
@@ -204,27 +203,21 @@
       "recent": "Son aramalar"
     },
     "serviceinfo": {
-      "title": "",
       "abstract": "",
+      "contactEmail": "",
+      "contactOrganization": "",
+      "contactPerson": "",
+      "contactPhone": "",
+      "contactPosition": "",
       "keywords": "",
       "onlineResource": "",
-      "contactPerson": "",
-      "contactOrganization": "",
-      "contactPosition": "",
-      "contactPhone": "",
-      "contactEmail": ""
+      "title": ""
     },
     "share": {
+      "QRCodeLinkTitle": "Karekod",
       "directLinkTitle": "Doğrudan bağlantı yolu ile",
       "generatingpermalink": "Bağlantı yolu oluşturuluyor...",
-      "QRCodeLinkTitle": "Karekod",
       "socialIntro": "Favori sosyal ağınıza"
-    },
-    "tooltip": {
-      "home": "Haritanın tamamını göster",
-      "zoomin": "Yaklaş",
-      "zoomout": "Uzaklaş",
-      "background": "Arkaplanı değiştir"
     },
     "themelayerslist": {
       "addlayer": "Katman ekle",
@@ -232,15 +225,21 @@
       "addselectedlayers": "Seçili katmanları ekle"
     },
     "themeswitcher": {
-      "filter": "Filtre...",
-      "addtotheme": "Geçerli temaya ekle",
       "addlayerstotheme": "Geçerli haritaya katmanları ekle",
+      "addtotheme": "Geçerli temaya ekle",
+      "filter": "Filtre...",
       "match": {
-        "title": "Başlık",
+        "abstract": "Özet",
         "keywords": "Anahtar kelimeler",
-        "abstract": "Özet"
+        "title": "Başlık"
       },
       "openintab": "Sekmede aç"
+    },
+    "tooltip": {
+      "background": "Arkaplanı değiştir",
+      "home": "Haritanın tamamını göster",
+      "zoomin": "Yaklaş",
+      "zoomout": "Uzaklaş"
     },
     "vectorlayerpicker": {
       "prompt": ""

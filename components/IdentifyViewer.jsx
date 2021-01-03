@@ -14,7 +14,6 @@ import {stringify} from 'wellknown';
 import ReactHtmlParser from 'react-html-parser';
 import {convertNodeToElement} from 'react-html-parser';
 import ResizeableWindow from './ResizeableWindow';
-import Message from './I18N/Message';
 import ConfigUtils from '../utils/ConfigUtils';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {setActiveLayerInfo} from '../actions/layerinfo';
@@ -22,6 +21,7 @@ import {showIframeDialog} from '../actions/windows';
 import {zoomToExtent} from '../actions/map';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import Icon from './Icon';
 import JSZip from 'jszip';
@@ -394,14 +394,14 @@ class IdentifyViewer extends React.Component {
             if (featureReportTemplate) {
                 rows = rows.concat(
                     <tr key="__featurereport">
-                        <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i><Message msgId="identify.featureReport" /></i></td>
-                        <td className={"identify-attr-value " + this.props.longAttributesDisplay}><a href={this.getFeatureReportUrl(featureReportTemplate, result)}><Message msgId="identify.link" /></a></td>
+                        <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i>{LocaleUtils.tr("identify.featureReport")}</i></td>
+                        <td className={"identify-attr-value " + this.props.longAttributesDisplay}><a href={this.getFeatureReportUrl(featureReportTemplate, result)}>{LocaleUtils.tr("identify.link")}</a></td>
                     </tr>
                 );
             }
             if (isEmpty(rows)) {
                 rows = (
-                    <tr><td className="identify-attr-value"><i><Message msgId="identify.noattributes" /></i></td></tr>
+                    <tr><td className="identify-attr-value"><i>{LocaleUtils.tr("identify.noattributes")}</i></td></tr>
                 );
             }
             resultbox = (
@@ -420,11 +420,11 @@ class IdentifyViewer extends React.Component {
                         {featureReportTemplate ? (
                             <tr>
                                 <td className={"identify-attr-title " + this.props.longAttributesDisplay}>
-                                    <i><Message msgId="identify.featureReport" /></i>
+                                    <i>{LocaleUtils.tr("identify.featureReport")}</i>
                                 </td>
                                 <td className={"identify-attr-value " + this.props.longAttributesDisplay}>
                                     <a href={this.getFeatureReportUrl(featureReportTemplate, result)} rel="noreferrer" target="_blank">
-                                        <Message msgId="identify.link" />
+                                        {LocaleUtils.tr("identify.link")}
                                     </a>
                                 </td>
                             </tr>
@@ -502,9 +502,9 @@ class IdentifyViewer extends React.Component {
         let haveResults = false;
         if (isEmpty(this.state.resultTree)) {
             if (this.props.missingResponses > 0) {
-                body = (<div className="identify-body" role="body"><Message className="identify-body-message" msgId="identify.querying" /></div>);
+                body = (<div className="identify-body" role="body"><span className="identify-body-message">{LocaleUtils.tr("identify.querying")}</span></div>);
             } else {
-                body = (<div className="identify-body" role="body"><Message className="identify-body-message" msgId="identify.noresults" /></div>);
+                body = (<div className="identify-body" role="body"><span className="identify-body-message">{LocaleUtils.tr("identify.noresults")}</span></div>);
             }
         } else if (tree) {
             const contents = Object.keys(this.state.resultTree).map(layer => this.renderLayer(layer));
@@ -543,21 +543,21 @@ class IdentifyViewer extends React.Component {
             <ResizeableWindow icon="info-sign"
                 initialHeight={this.props.initialHeight} initialWidth={this.props.initialWidth}
                 initialX={0} initialY={0} initiallyDocked={this.props.initiallyDocked}
-                onClose={this.props.onClose} title="identify.title" zIndex={8}
+                onClose={this.props.onClose} title={LocaleUtils.trmsg("identify.title")} zIndex={8}
             >
                 <div className="identify-body" ref={el => { if (el) el.style.background = 'inherit'; } } role="body">
                     {body}
                     {haveResults && this.props.enableExport ? (
                         <div className="identify-buttonbox">
                             <div>
-                                <Message msgId="identify.exportformat" />&nbsp;
+                                {LocaleUtils.tr("identify.exportformat")}&nbsp;
                                 <select className="combo" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
                                     <option value="json">json</option>
                                     <option value="geojson">geojson</option>
                                     <option value="csv">csv</option>
                                     <option value="csvzip">csv + zip</option>
                                 </select>
-                                <button className="button" onClick={this.exportResults}><Message msgId="identify.export" /></button>
+                                <button className="button" onClick={this.exportResults}>{LocaleUtils.tr("identify.export")}</button>
                             </div>
                         </div>
                     ) : null}

@@ -2,23 +2,23 @@
   "locale": "it-IT",
   "messages": {
     "appmenu": {
+      "menulabel": "Mappa e strumenti",
       "items": {
         "DxfExport": "Esporta su DXF",
+        "Editing": "Strumenti di modifica",
         "Help": "Aiuto",
+        "IdentifyRegion": "Identifica in un poligono",
         "LayerTree": "Livelli",
+        "Login": "Accedi",
+        "Logout": "Disconnetti",
         "Measure": "Misura",
         "Print": "Stampa",
         "RasterExport": "Esporta su immagine",
+        "Redlining": "Strumenti di disegno",
         "Share": "Condividi",
         "ThemeSwitcher": "Temi",
-        "Tools": "Strumenti",
-        "IdentifyRegion": "Identifica in un poligono",
-        "Redlining": "Strumenti di disegno",
-        "Editing": "Strumenti di modifica",
-        "Login": "Accedi",
-        "Logout": "Disconnetti"
-      },
-      "menulabel": "Mappa e strumenti"
+        "Tools": "Strumenti"
+      }
     },
     "bgswitcher": {
       "nobg": "Nessuno sfondo"
@@ -38,16 +38,14 @@
       "symbologyscale": "Scala per la simbologia"
     },
     "editing": {
-      "maximize": "Massimizza",
-      "minimize": "Minimizza",
       "canceldelete": "Annulla",
       "commit": "Salva",
       "delete": "Elimina",
       "discard": "Annulla",
       "draw": "Disegna",
       "feature": "Oggetto",
-      "fields": "Attributi",
-      "layer": "Livello",
+      "maximize": "Massimizza",
+      "minimize": "Minimizza",
       "noeditablelayers": "Nessun livello modificabile",
       "pick": "Seleziona",
       "reallydelete": "Elimina",
@@ -63,14 +61,14 @@
       "loading": "Calcolo del profilo di altezza..."
     },
     "identify": {
-      "querying": "Caricando...",
-      "noresults": "Nessun risultato",
       "export": "Esporta",
       "exportformat": "Formato d'esportazione",
       "featureReport": "Oggetto formulario",
+      "link": "Link",
       "noattributes": "Nessun attributo",
-      "title": "Titolo",
-      "link": "Link"
+      "noresults": "Nessun risultato",
+      "querying": "Caricando...",
+      "title": "Titolo"
     },
     "identifyregion": {
       "info": "Disegna un poligono attorno all'area da identificare"
@@ -79,45 +77,48 @@
       "addlayer": "Aggiungi livello",
       "connect": "Connetti",
       "filter": "Filtro",
+      "loading": "Caricamento...",
       "localfile": "File locale",
       "nofeatures": "Non è stato importato nessun oggetto ",
       "noresults": "Nessun risultato o URL non valido",
-      "loading": "Caricamento...",
       "url": "URL",
       "urlplaceholder": "Indirizzo WMS, WMTS, WFS..."
     },
+    "infotool": {
+      "clickhelpPoint": "Seleziona un luogo da identificare sulla mappa..."
+    },
     "layerinfo": {
-      "title": "Informazioni livello",
       "abstract": "Riassunto",
       "attribution": "Attribuzione",
-      "keywords": "Parole chiavi",
       "dataUrl": "URL dati",
-      "metadataUrl": "URL metadati",
+      "keywords": "Parole chiavi",
       "legend": "Legenda",
       "maxscale": "Scala massima",
-      "minscale": "Scala minima"
+      "metadataUrl": "URL metadati",
+      "minscale": "Scala minima",
+      "title": "Informazioni livello"
     },
     "layertree": {
       "compare": "Compara il primo livello",
+      "deletealllayers": "Rimuovi tutti i livelli",
       "importlayer": "Importa livello",
       "maptip": "Attiva maptip",
       "printlegend": "Stampa legenda",
-      "deletealllayers": "Rimuovi tutti i livelli",
-      "visiblefilter": "Filtra livelli non visibili",
       "separator": "Separatore",
       "separatortooltip": "Aggiungi separatore",
-      "zoomtolayer": "Zoom a tutto il livello",
-      "transparency": "Trasparenza"
+      "transparency": "Trasparenza",
+      "visiblefilter": "Filtra livelli non visibili",
+      "zoomtolayer": "Zoom a tutto il livello"
     },
     "locate": {
-      "metersUnit": "metri",
       "feetUnit": "piedi",
+      "metersUnit": "metri",
       "popup": "Sei distante {distance} {unit} da questa posizione",
       "statustooltip": {
         "DISABLED": "Posizione: disattivato",
-        "LOCATING": "Posizione: rilevando",
         "ENABLED": "Posizione: attivato",
         "FOLLOWING": "Posizione: seguendo",
+        "LOCATING": "Posizione: rilevando",
         "PERMISSION_DENIED": "Posizione: permesso negato"
       }
     },
@@ -135,17 +136,17 @@
       "pointLabel": "Posizione"
     },
     "print": {
-      "layout": "Layout",
       "grid": "Griglia",
+      "layout": "Layout",
       "maximize": "Massimizza",
       "minimize": "Minimizza",
       "nolayouts": "Nessun layout di stampa",
       "notheme": "Nessun tema selezionato",
+      "output": "Stampa",
       "resolution": "Risoluzione:",
       "rotation": "Rotazione:",
       "scale": "Scala:",
       "submit": "Stampa",
-      "output": "Stampa",
       "wait": "Attendere..."
     },
     "rasterexport": {
@@ -154,13 +155,12 @@
       "selectinfo": "Seleziona l'area da esportare"
     },
     "redlining": {
-      "add": "Aggiungi",
       "border": "Bordo",
       "buffer": "Buffer",
-      "bufferlayername": "Buffer",
+      "buffercompute": "Calcola",
       "bufferdistance": "Distanza",
       "bufferlayer": "Destinazione",
-      "buffercompute": "Calcola",
+      "bufferlayername": "Buffer",
       "bufferselectfeature": "Seleziona un oggetto...",
       "circle": "Cerchio",
       "delete": "Elimina",
@@ -183,17 +183,16 @@
       "finish": "Finito"
     },
     "search": {
+      "all": "Tutti",
+      "enablelayer": "Attivare il livello",
+      "existinglayer": "Il livello esiste già nella mappa",
+      "invisiblelayer": "Il risultato si trova su un livello che non è visibile.",
       "more": "Altri risultati",
       "search": "Cerca",
       "searchall": "Cerca località o aggiungi cartine...",
-      "all": "Tutti",
-      "themes": "Temi",
-      "invisiblelayer": "Il risultato si trova su un livello che non è visibile.",
-      "enablelayer": "Attivare il livello",
-      "existinglayer": "Il livello esiste già nella mappa"
+      "themes": "Temi"
     },
     "searchbox": {
-      "coordinates": "Coordinate",
       "filter": "Filtro",
       "layers": "Livelli",
       "more": "Altri risultati",
@@ -204,27 +203,21 @@
       "recent": "Ricerche recenti"
     },
     "serviceinfo": {
-      "title": "Informazioni sul tema",
       "abstract": "Riassunto",
+      "contactEmail": "Email",
+      "contactOrganization": "Organizzazione",
+      "contactPerson": "Persona di contatto",
+      "contactPhone": "Telefono",
+      "contactPosition": "Posizione",
       "keywords": "Parole chiavi",
       "onlineResource": "Risorsa online",
-      "contactPerson": "Persona di contatto",
-      "contactOrganization": "Organizzazione",
-      "contactPosition": "Posizione",
-      "contactPhone": "Telefono",
-      "contactEmail": "Email"
+      "title": "Informazioni sul tema"
     },
     "share": {
+      "QRCodeLinkTitle": "Codice QR",
       "directLinkTitle": "Collegamento diretto",
       "generatingpermalink": "Sto generando il permalink",
-      "QRCodeLinkTitle": "Codice QR",
       "socialIntro": "Social network"
-    },
-    "tooltip": {
-      "home": "Mostra tutta la mappa intera",
-      "zoomin": "Ingrandisci",
-      "zoomout": "Rimpicciolisci",
-      "background": "Cambia sfondo"
     },
     "themelayerslist": {
       "addlayer": "Aggiungi layer",
@@ -232,15 +225,21 @@
       "addselectedlayers": "Aggiungi i layer selezionati"
     },
     "themeswitcher": {
-      "filter": "Filtra...",
-      "addtotheme": "Aggiungere al tema corrente",
       "addlayerstotheme": "Aggiungi layer alla mappa corrente",
+      "addtotheme": "Aggiungere al tema corrente",
+      "filter": "Filtra...",
       "match": {
-        "title": "Titolo",
+        "abstract": "Riassunto",
         "keywords": "Parole chiavi",
-        "abstract": "Riassunto"
+        "title": "Titolo"
       },
       "openintab": "Apri in nuova scheda"
+    },
+    "tooltip": {
+      "background": "Cambia sfondo",
+      "home": "Mostra tutta la mappa intera",
+      "zoomin": "Ingrandisci",
+      "zoomout": "Rimpicciolisci"
     },
     "vectorlayerpicker": {
       "prompt": "Nome del layer"

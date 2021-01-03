@@ -22,9 +22,6 @@ export default class VectorLayerPicker extends React.Component {
         onChange: PropTypes.func,
         value: PropTypes.string
     }
-    static contextTypes = {
-        messages: PropTypes.object
-    }
     render() {
         return (
             <div className="VectorLayerPicker">
@@ -36,7 +33,7 @@ export default class VectorLayerPicker extends React.Component {
         );
     }
     addLayer = () => {
-        const message = LocaleUtils.getMessageById(this.context.messages, "vectorlayerpicker.prompt");
+        const message = LocaleUtils.tr("vectorlayerpicker.prompt");
         const name = prompt(message);
         if (name) {
             const layer = {

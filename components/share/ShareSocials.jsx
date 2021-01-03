@@ -9,7 +9,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import Message from '../../components/I18N/Message';
 import {
     FacebookShareButton,
     LinkedinShareButton,
@@ -21,6 +20,7 @@ import {
     LinkedinIcon,
     WhatsappIcon
 } from 'react-share';
+import LocaleUtils from '../../utils/LocaleUtils';
 import './style/ShareSocials.css';
 
 
@@ -43,7 +43,7 @@ export default class ShareSocials extends React.Component {
         return (
             <div className="social-links">
                 <h4>
-                    <Message msgId="share.socialIntro"/>
+                    {LocaleUtils.tr("share.socialIntro")}
                 </h4>
                 <div className="social-boxes">
                     <div className="social-box">

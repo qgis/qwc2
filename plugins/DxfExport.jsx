@@ -10,12 +10,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
-import Message from '../components/I18N/Message';
-import CoordinatesUtils from '../utils/CoordinatesUtils';
 import {LayerRole} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import TaskBar from '../components/TaskBar';
 import PrintFrame from '../components/PrintFrame';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import './style/DxfExport.css';
 
 class DxfExport extends React.Component {
@@ -36,9 +36,9 @@ class DxfExport extends React.Component {
         return (
             <span>
                 <form action={action} method="POST" ref={form => { this.form = form; }} target="_blank">
-                    <div className="help-text"><Message msgId="dxfexport.selectinfo" /></div>
+                    <div className="help-text">{LocaleUtils.tr("dxfexport.selectinfo")}</div>
                     <div className="export-settings">
-                        <Message msgId="dxfexport.symbologyscale" />
+                        {LocaleUtils.tr("dxfexport.symbologyscale")}
                         <span className="input-frame"><span>1&nbsp;:&nbsp;</span><input defaultValue="500" name="SCALE" type="number" /></span>
                     </div>
                     <input name="SERVICE" readOnly type="hidden" value="WMS" />

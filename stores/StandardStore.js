@@ -26,38 +26,44 @@ const DevTools = createDevTools(
     </DockMonitor>
 );
 
-export default (initialState, actionLogger) => {
-    const allReducers = combineReducers(ReducerIndex.reducers);
+export default class StandardStore {
+    static store = null;
+    static init = (initialState, actionLogger) => {
+        const allReducers = combineReducers(ReducerIndex.reducers);
 
-    const defaultState =  merge({
-        ...allReducers({}, {type: null})
-    }, initialState.defaultState);
-    const mobileOverride = initialState.mobile;
+        const defaultState =  merge({
+            ...allReducers({}, {type: null})
+        }, initialState.defaultState);
+        const mobileOverride = initialState.mobile;
 
-    const rootReducer = (state, action) => {
-        let newState = {
-            ...allReducers(state, action)
+        const rootReducer = (state, action) => {
+            let newState = {
+                ...allReducers(state, action)
+            };
+            if (actionLogger) {
+                actionLogger(action, newState, state);
+            }
+            if (action && action.type === CHANGE_BROWSER_PROPERTIES && newState.browser.mobile) {
+                newState = merge(newState, mobileOverride);
+            }
+
+            return newState;
         };
-        if (actionLogger) {
-            actionLogger(action, newState, state);
-        }
-        if (action && action.type === CHANGE_BROWSER_PROPERTIES && newState.browser.mobile) {
-            newState = merge(newState, mobileOverride);
-        }
 
-        return newState;
-    };
-
-    let finalCreateStore;
-    const urlQuery = url.parse(window.location.href, true).query;
-    if (process.env.NODE_ENV !== "production" && urlQuery.debug) {
-        const middlewares = [immutable(), thunkMiddleware, logger];
-        finalCreateStore = compose(
-            applyMiddleware.apply(null, middlewares),
-            window.devToolsExtension ? window.devToolsExtension() : DevTools.instrument()
-        )(createStore);
-    } else {
-        finalCreateStore = applyMiddleware.apply(null, [thunkMiddleware])(createStore);
+        let finalCreateStore;
+        const urlQuery = url.parse(window.location.href, true).query;
+        if (process.env.NODE_ENV !== "production" && urlQuery.debug) {
+            const middlewares = [immutable(), thunkMiddleware, logger];
+            finalCreateStore = compose(
+                applyMiddleware.apply(null, middlewares),
+                window.devToolsExtension ? window.devToolsExtension() : DevTools.instrument()
+            )(createStore);
+        } else {
+            finalCreateStore = applyMiddleware.apply(null, [thunkMiddleware])(createStore);
+        }
+        StandardStore.store = finalCreateStore(rootReducer, defaultState);
     }
-    return finalCreateStore(rootReducer, defaultState);
-};
+    static get = () => {
+        return StandardStore.store;
+    }
+}

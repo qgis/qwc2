@@ -9,11 +9,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import Message from '../components/I18N/Message';
-import MapUtils from '../utils/MapUtils';
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import './style/LayerInfoWindow.css';
 
@@ -38,7 +38,7 @@ class LayerInfoWindow extends React.Component {
         if (content) {
             return (
                 <tr>
-                    <td><Message msgId={title} />:</td>
+                    <td>{LocaleUtils.tr(title)}:</td>
                     {html ? (
                         <td dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(content)}} />
                     ) : (<td>{content}</td>)}
@@ -61,20 +61,20 @@ class LayerInfoWindow extends React.Component {
         }
         return (
             <ResizeableWindow icon="info-sign" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width} onClose={this.onClose}
-                title="layerinfo.title" zIndex={9}>
+                title={LocaleUtils.trmsg("layerinfo.title")} zIndex={9}>
                 <div className="layer-info-window-body" role="body">
                     <h4 className="layer-info-window-title">{this.props.sublayer.title}</h4>
                     <div className="layer-info-window-frame">
                         <table className="layer-info-window-table">
                             <tbody>
-                                {this.renderRow("layerinfo.abstract", this.props.sublayer.abstract, true)}
-                                {this.props.sublayer.attribution ? this.renderRow("layerinfo.attribution", this.renderLink(this.props.sublayer.attribution.Title, this.props.sublayer.attribution.OnlineResource)) : null}
-                                {this.renderRow("layerinfo.keywords", this.props.sublayer.keywords)}
-                                {this.renderRow("layerinfo.dataUrl", this.renderLink(this.props.sublayer.dataUrl, this.props.sublayer.dataUrl))}
-                                {this.renderRow("layerinfo.metadataUrl", this.renderLink(this.props.sublayer.metadataUrl, this.props.sublayer.metadataUrl))}
-                                {this.props.sublayer.minScale !== undefined ? this.renderRow("layerinfo.maxscale", this.renderScale(this.props.sublayer.minScale)) : null}
-                                {this.props.sublayer.maxScale !== undefined ? this.renderRow("layerinfo.minscale", this.renderScale(this.props.sublayer.maxScale)) : null}
-                                {this.renderRow("layerinfo.legend", legend)}
+                                {this.renderRow(LocaleUtils.trmsg("layerinfo.abstract"), this.props.sublayer.abstract, true)}
+                                {this.props.sublayer.attribution ? this.renderRow(LocaleUtils.trmsg("layerinfo.attribution"), this.renderLink(this.props.sublayer.attribution.Title, this.props.sublayer.attribution.OnlineResource)) : null}
+                                {this.renderRow(LocaleUtils.trmsg("layerinfo.keywords"), this.props.sublayer.keywords)}
+                                {this.renderRow(LocaleUtils.trmsg("layerinfo.dataUrl"), this.renderLink(this.props.sublayer.dataUrl, this.props.sublayer.dataUrl))}
+                                {this.renderRow(LocaleUtils.trmsg("layerinfo.metadataUrl"), this.renderLink(this.props.sublayer.metadataUrl, this.props.sublayer.metadataUrl))}
+                                {this.props.sublayer.minScale !== undefined ? this.renderRow(LocaleUtils.trmsg("layerinfo.maxscale"), this.renderScale(this.props.sublayer.minScale)) : null}
+                                {this.props.sublayer.maxScale !== undefined ? this.renderRow(LocaleUtils.trmsg("layerinfo.minscale"), this.renderScale(this.props.sublayer.maxScale)) : null}
+                                {this.renderRow(LocaleUtils.trmsg("layerinfo.legend"), legend)}
                             </tbody>
                         </table>
                     </div>

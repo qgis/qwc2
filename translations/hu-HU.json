@@ -2,23 +2,23 @@
   "locale": "hu-HU",
   "messages": {
     "appmenu": {
+      "menulabel": "Eszközök",
       "items": {
         "DxfExport": "DXF Exportálás",
+        "Editing": "Szerkesztés",
         "Help": "Segítség",
+        "IdentifyRegion": "Adatok lekérdezése",
         "LayerTree": "Fóliák és jelmagyarázat",
+        "Login": "",
+        "Logout": "",
         "Measure": "Mérés",
         "Print": "Nyomtatás",
         "RasterExport": "Kép exportálása",
+        "Redlining": "Vázlat",
         "Share": "Megosztható link",
         "ThemeSwitcher": "Térkép",
-        "Tools": "Térkép eszközök",
-        "IdentifyRegion": "Adatok lekérdezése",
-        "Redlining": "Vázlat",
-        "Editing": "Szerkesztés",
-        "Login": "",
-        "Logout": ""
-      },
-      "menulabel": "Eszközök"
+        "Tools": "Térkép eszközök"
+      }
     },
     "bgswitcher": {
       "nobg": "Nincs háttér"
@@ -38,16 +38,14 @@
       "symbologyscale": "Jel méretatarány:"
     },
     "editing": {
-      "maximize": "",
-      "minimize": "",
       "canceldelete": "Ne töröld",
       "commit": "Jóváhagyás",
       "delete": "Törlés",
       "discard": "Elvetés",
       "draw": "Rajzolás",
       "feature": "",
-      "fields": "Mezők",
-      "layer": "Fólia",
+      "maximize": "",
+      "minimize": "",
       "noeditablelayers": "Nincs szerkeszthető fólia.",
       "pick": "Kiválasztás",
       "reallydelete": "Törlés",
@@ -63,14 +61,14 @@
       "loading": "A magassági profil kiszámítása..."
     },
     "identify": {
-      "querying": "Lekérdezés...",
-      "noresults": "Nincs információ a kiválasztott pontról",
       "export": "Exportálás",
       "exportformat": "",
       "featureReport": "Lekérdezés eredménye",
+      "link": "Link",
       "noattributes": "",
-      "title": "Lekérdezés információ",
-      "link": "Link"
+      "noresults": "Nincs információ a kiválasztott pontról",
+      "querying": "Lekérdezés...",
+      "title": "Lekérdezés információ"
     },
     "identifyregion": {
       "info": "Rajzolj egy poligont a lekérdezni kívánt terület köré..."
@@ -79,45 +77,48 @@
       "addlayer": "Fólia hozzáadása",
       "connect": "Kapcsolódás",
       "filter": "Szűrés...",
+      "loading": "",
       "localfile": "",
       "nofeatures": "Nem sikerült az importálás.",
       "noresults": "",
-      "loading": "",
       "url": "",
       "urlplaceholder": "URL a WMS, WMTS, WFS adatokhoz..."
     },
+    "infotool": {
+      "clickhelpPoint": ""
+    },
     "layerinfo": {
-      "title": "Fólia információ",
       "abstract": "Kivonat",
       "attribution": "Tulajdonjog",
-      "keywords": "Címszavak",
       "dataUrl": "Adat URL",
-      "metadataUrl": "Metaadat URL",
+      "keywords": "Címszavak",
       "legend": "Jelmagyarázat",
       "maxscale": "",
-      "minscale": ""
+      "metadataUrl": "Metaadat URL",
+      "minscale": "",
+      "title": "Fólia információ"
     },
     "layertree": {
       "compare": "Összehasonlítás a felső fóliával",
+      "deletealllayers": "",
       "importlayer": "Fólia importálása",
       "maptip": "Show layer map tips",
       "printlegend": "Print legend",
-      "deletealllayers": "",
-      "visiblefilter": "",
       "separator": "",
       "separatortooltip": "",
-      "zoomtolayer": "",
-      "transparency": ""
+      "transparency": "",
+      "visiblefilter": "",
+      "zoomtolayer": ""
     },
     "locate": {
-      "metersUnit": "méter",
       "feetUnit": "láb",
+      "metersUnit": "méter",
       "popup": "{distance} {unit} távolságra vagy ettől a ponttól",
       "statustooltip": {
         "DISABLED": "Kikapcsolva",
-        "LOCATING": "Hely keresése...",
         "ENABLED": "Bekapcsolva",
         "FOLLOWING": "Követés",
+        "LOCATING": "Hely keresése...",
         "PERMISSION_DENIED": "Hozzáférés megtagadva"
       }
     },
@@ -135,17 +136,17 @@
       "pointLabel": "Pozíció"
     },
     "print": {
-      "layout": "Elrendezés:",
       "grid": "Rács:",
+      "layout": "Elrendezés:",
       "maximize": "",
       "minimize": "",
       "nolayouts": "A kiválasztott térkép nem támogatja a nyomtatást",
       "notheme": "Nincs térkép kiválasztva",
+      "output": "",
       "resolution": "Felbontás:",
       "rotation": "Forgatás:",
       "scale": "Méretarány:",
       "submit": "Nyomtatás",
-      "output": "",
       "wait": ""
     },
     "rasterexport": {
@@ -154,13 +155,12 @@
       "selectinfo": "Rajzolj egy négyszöget az exportálni kívánt terület köré..."
     },
     "redlining": {
-      "add": "",
       "border": "Szegély",
       "buffer": "",
-      "bufferlayername": "",
+      "buffercompute": "",
       "bufferdistance": "",
       "bufferlayer": "",
-      "buffercompute": "",
+      "bufferlayername": "",
       "bufferselectfeature": "",
       "circle": "",
       "delete": "",
@@ -183,17 +183,16 @@
       "finish": ""
     },
     "search": {
+      "all": "Minden",
+      "enablelayer": "",
+      "existinglayer": "",
+      "invisiblelayer": "",
       "more": "Több...",
       "search": "Keresés",
       "searchall": "",
-      "all": "Minden",
-      "themes": "",
-      "invisiblelayer": "",
-      "enablelayer": "",
-      "existinglayer": ""
+      "themes": ""
     },
     "searchbox": {
-      "coordinates": "",
       "filter": "",
       "layers": "",
       "more": "",
@@ -204,27 +203,21 @@
       "recent": ""
     },
     "serviceinfo": {
-      "title": "",
       "abstract": "",
+      "contactEmail": "",
+      "contactOrganization": "",
+      "contactPerson": "",
+      "contactPhone": "",
+      "contactPosition": "",
       "keywords": "",
       "onlineResource": "",
-      "contactPerson": "",
-      "contactOrganization": "",
-      "contactPosition": "",
-      "contactPhone": "",
-      "contactEmail": ""
+      "title": ""
     },
     "share": {
+      "QRCodeLinkTitle": "QR-kód",
       "directLinkTitle": "Közvetlen hivatkozással...",
       "generatingpermalink": "Hivatkozás készítése...",
-      "QRCodeLinkTitle": "QR-kód",
       "socialIntro": "A kedvenc közösségi hálózatodon"
-    },
-    "tooltip": {
-      "home": "",
-      "zoomin": "",
-      "zoomout": "",
-      "background": ""
     },
     "themelayerslist": {
       "addlayer": "",
@@ -232,15 +225,21 @@
       "addselectedlayers": ""
     },
     "themeswitcher": {
-      "filter": "Szűrés...",
-      "addtotheme": "",
       "addlayerstotheme": "",
+      "addtotheme": "",
+      "filter": "Szűrés...",
       "match": {
-        "title": "",
+        "abstract": "",
         "keywords": "",
-        "abstract": ""
+        "title": ""
       },
       "openintab": ""
+    },
+    "tooltip": {
+      "background": "",
+      "home": "",
+      "zoomin": "",
+      "zoomout": ""
     },
     "vectorlayerpicker": {
       "prompt": ""

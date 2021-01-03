@@ -23,11 +23,8 @@ class HomeButton extends React.Component {
     static defaultProps = {
         position: 5
     }
-    static contextTypes = {
-        messages: PropTypes.object
-    }
     render() {
-        const tooltip = LocaleUtils.getMessageById(this.context.messages, "tooltip.home");
+        const tooltip = LocaleUtils.tr("tooltip.home");
         return (
             <button className="map-button" onClick={this.resetExtent} style={{bottom: (5 + 4 * this.props.position) + 'em'}} title={tooltip}>
                 <Icon icon="home"/>

@@ -10,14 +10,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
-import IdentifyUtils from '../utils/IdentifyUtils';
-import MapUtils from '../utils/MapUtils';
-import LayerUtils from '../utils/LayerUtils';
-import Message from '../components/I18N/Message';
-import TaskBar from '../components/TaskBar';
 import {sendIdentifyRequest, setIdentifyFeatureResult, purgeIdentifyResults, identifyEmpty} from '../actions/identify';
 import {LayerRole, addMarker, removeMarker, removeLayer} from '../actions/layers';
 import IdentifyViewer from '../components/IdentifyViewer';
+import TaskBar from '../components/TaskBar';
+import IdentifyUtils from '../utils/IdentifyUtils';
+import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 
 class Identify extends React.Component {
     static propTypes = {
@@ -140,7 +140,7 @@ class Identify extends React.Component {
         ), (
             <TaskBar key="TaskBar" onHide={this.onClose} task="Identify">
                 {() => ({
-                    body: (<Message msgId={"infotool.clickhelpPoint"} />)
+                    body: LocaleUtils.tr("infotool.clickhelpPoint")
                 })}
             </TaskBar>
         )];

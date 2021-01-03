@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import classnames from 'classnames';
 import Icon from '../Icon';
-import Message from '../../components/I18N/Message';
+import LocaleUtils from '../../utils/LocaleUtils';
 import './style/ButtonBar.css';
 
 
@@ -49,10 +49,10 @@ class ButtonBar extends React.Component {
                                 type={button.type || "button"}
                             >
                                 {button.icon ? (<Icon icon={button.icon} />) : null}
-                                {button.label && (!this.props.mobile || !button.icon) ? (<Message msgId={button.label} />) : null}
+                                {button.label && (!this.props.mobile || !button.icon) ? LocaleUtils.tr(button.label) : null}
                             </button>
                             {button.tooltip ? (<span className="buttonbar-button-tooltip">
-                                <Message msgId={button.tooltip} />
+                                {LocaleUtils.tr(button.tooltip)}
                             </span>) : null}
                         </span>
                     );

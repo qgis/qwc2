@@ -13,13 +13,12 @@ import isEmpty from 'lodash.isempty';
 import axios from 'axios';
 import {remove as removeDiacritics} from 'diacritics';
 import Spinner from './Spinner';
-import Message from '../components/I18N/Message';
 import EditableSelect from '../components/widgets/EditableSelect';
-import LocaleUtils from '../utils/LocaleUtils';
 import {addLayer, addLayerFeatures} from '../actions/layers';
 import FileSelector from './widgets/FileSelector';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
@@ -30,6 +29,7 @@ class ImportLayerList extends React.PureComponent {
     static propTypes = {
         addLayer: PropTypes.func,
         filter: PropTypes.string,
+        mapCrs: PropTypes.string,
         pendingRequests: PropTypes.number,
         serviceLayers: PropTypes.array
     }
@@ -80,11 +80,11 @@ class ImportLayerList extends React.PureComponent {
         let emptyEntry = null;
         if (isEmpty(this.state.serviceLayers) && this.props.pendingRequests === 0) {
             emptyEntry = (
-                <div className="layertree-item-noresults"><Message msgId="importlayer.noresults" /></div>
+                <div className="layertree-item-noresults">{LocaleUtils.tr("importlayer.noresults")}</div>
             );
         } else if (isEmpty(this.state.serviceLayers)) {
             emptyEntry = (
-                <div className="layertree-item-noresults"><Message msgId="importlayer.loading" /></div>
+                <div className="layertree-item-noresults">{LocaleUtils.tr("importlayer.loading")}</div>
             );
         }
         return (
@@ -115,9 +115,6 @@ class ImportLayer extends React.Component {
         mapCrs: PropTypes.string,
         theme: PropTypes.object
     }
-    static contextTypes = {
-        messages: PropTypes.object
-    }
     state = {
         type: 'URL',
         file: null,
@@ -127,7 +124,7 @@ class ImportLayer extends React.Component {
         filter: ""
     }
     renderInputField() {
-        const placeholder = LocaleUtils.getMessageById(this.context.messages, "importlayer.urlplaceholder");
+        const placeholder = LocaleUtils.tr("importlayer.urlplaceholder");
         const urlPresets = ConfigUtils.getConfigProp("importLayerUrlPresets", this.props.theme) || [];
         if (this.state.type === "Local") {
             return (
@@ -147,19 +144,19 @@ class ImportLayer extends React.Component {
             button = (
                 <button className="button importlayer-addbutton" disabled={!this.state.url || this.state.pendingRequests > 0} onClick={this.scanService}>
                     {this.state.pendingRequests > 0 ? (<Spinner />) : null}
-                    <Message msgId="importlayer.connect" />
+                    {LocaleUtils.tr("importlayer.connect")}
                 </button>
             );
         } else {
             button = (
                 <button className="button importlayer-addbutton" disabled={this.state.file === null} onClick={this.importFileLayer} type="button">
-                    <Message msgId="importlayer.addlayer" />
+                    {LocaleUtils.tr("importlayer.addlayer")}
                 </button>
             );
         }
         let layerList = null;
         if (this.state.serviceLayers !== null) {
-            const filterplaceholder = LocaleUtils.getMessageById(this.context.messages, "importlayer.filter");
+            const filterplaceholder = LocaleUtils.tr("importlayer.filter");
             layerList = [
                 (<input className="importlayer-list-filter" key="importlayer-list-filter" onChange={ev => this.setState({filter: ev.target.value})} placeholder={filterplaceholder} type="text" value={this.state.filter}/>),
                 (<ImportLayerList addLayer={this.props.addLayer} filter={this.state.filter} key="importlayer-list" pendingRequests={this.state.pendingRequests} serviceLayers={this.state.serviceLayers} />)
@@ -170,8 +167,8 @@ class ImportLayer extends React.Component {
             <div id="ImportLayer">
                 <div className="importlayer-input-fields">
                     <select disabled={this.state.pendingRequests > 0} onChange={ev => this.setState({type: ev.target.value, file: null, url: "", serviceLayers: null, filter: ""})} value={this.state.type}>
-                        <option value="URL">{LocaleUtils.getMessageById(this.context.messages, "importlayer.url")}</option>
-                        {!disableLocal ? (<option value="Local">{LocaleUtils.getMessageById(this.context.messages, "importlayer.localfile")}</option>) : null}
+                        <option value="URL">{LocaleUtils.tr("importlayer.url")}</option>
+                        {!disableLocal ? (<option value="Local">{LocaleUtils.tr("importlayer.localfile")}</option>) : null}
                     </select>
                     {this.renderInputField()}
                 </div>
@@ -328,7 +325,7 @@ class ImportLayer extends React.Component {
                 zoomToExtent: true
             }, features, true);
         } else {
-            alert(LocaleUtils.getMessageById(this.context.messages, "importlayer.nofeatures"));
+            alert(LocaleUtils.tr("importlayer.nofeatures"));
         }
     }
 }

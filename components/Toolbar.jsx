@@ -23,15 +23,12 @@ class Toolbar extends React.Component {
         setCurrentTask: PropTypes.func,
         toolbarItems: PropTypes.array
     }
-    static contextTypes = {
-        messages: PropTypes.object
-    }
     renderToolbarItem = (item) => {
         if (item.themeWhitelist && !item.themeWhitelist.includes(this.props.currentTheme.title)) {
             return null;
         }
         const active = this.props.currentTask === (item.task || item.key) && this.props.currentTaskMode === item.mode;
-        const title = LocaleUtils.getMessageById(this.context.messages, "appmenu.items." + item.key) || null;
+        const title = LocaleUtils.tr("appmenu.items." + item.key) || null;
         return (
             <Icon
                 className={active ? "toolbar-item-active" : ""}

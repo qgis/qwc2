@@ -11,14 +11,13 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
 import pickBy from 'lodash.pickby';
-import Message from '../components/I18N/Message';
-import CoordinatesUtils from '../utils/CoordinatesUtils';
-import MapUtils from '../utils/MapUtils';
-import LocaleUtils from '../utils/LocaleUtils';
 import {changeMousePositionState} from '../actions/mousePosition';
 import {changeZoomLevel} from '../actions/map';
 import CoordinateDisplayer from '../components/CoordinateDisplayer';
 import displayCrsSelector from '../selectors/displaycrs';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import './style/BottomBar.css';
 
 class BottomBar extends React.Component {
@@ -37,9 +36,6 @@ class BottomBar extends React.Component {
     static defaultProps = {
         displayCoordinates: true,
         displayScales: true
-    }
-    static contextTypes = {
-        locale: PropTypes.string
     }
     state = {
         scale: 0
@@ -64,7 +60,7 @@ class BottomBar extends React.Component {
         if (this.props.viewertitleUrl) {
             viewertitleLink = (
                 <a href={this.props.viewertitleUrl} rel="noreferrer" target="_blank">
-                    <Message className="viewertitle_label" msgId="bottombar.viewertitle_label" />
+                    <span className="viewertitle_label">{LocaleUtils.tr("bottombar.viewertitle_label")}</span>
                 </a>
             );
         }
@@ -72,7 +68,7 @@ class BottomBar extends React.Component {
         if (this.props.termsUrl) {
             termsLink = (
                 <a href={this.props.termsUrl} rel="noreferrer" target="_blank">
-                    <Message className="terms_label" msgId="bottombar.terms_label" />
+                    <span className="terms_label">{LocaleUtils.tr("bottombar.terms_label")}</span>
                 </a>
             );
         }
@@ -96,7 +92,7 @@ class BottomBar extends React.Component {
         if (this.props.displayCoordinates) {
             coordinates = (
                 <span>
-                    <span><Message msgId="bottombar.mousepos_label" />:&nbsp;</span>
+                    <span>{LocaleUtils.tr("bottombar.mousepos_label")}:&nbsp;</span>
                     <CoordinateDisplayer className={"bottombar-mousepos"} displaycrs={this.props.displaycrs} />
                     <select className="bottombar-crs-selector" onChange={ev => this.props.changeMousePositionState({crs: ev.target.value})} value={this.props.displaycrs}>
                         {Object.keys(availableCRS).map(crs =>
@@ -110,12 +106,12 @@ class BottomBar extends React.Component {
         if (this.props.displayScales) {
             scales = (
                 <span>
-                    <span><Message msgId="bottombar.scale_label" />:&nbsp;</span>
+                    <span>{LocaleUtils.tr("bottombar.scale_label")}:&nbsp;</span>
                     <span className="bottombar-scale-combo">
                         <span> 1 : </span>
                         <select onChange={ev => this.props.changeZoomLevel(parseInt(ev.target.value, 10))} value={Math.round(this.props.map.zoom)}>
                             {this.props.map.scales.map((item, index) =>
-                                (<option key={index} value={index}>{LocaleUtils.toLocaleFixed(this.context.locale, item, 0)}</option>)
+                                (<option key={index} value={index}>{LocaleUtils.toLocaleFixed(item, 0)}</option>)
                             )}
                         </select>
                         <input onBlur={ev => this.setScale(ev.target.value)} onChange={ev => this.setState({scale: ev.target.value})}
