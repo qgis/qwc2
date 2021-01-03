@@ -160,7 +160,7 @@ class SearchBox extends React.Component {
                         <div key={sectionId}>
                             <div className="searchbox-results-section-title" onClick={() => this.toggleSection(sectionId)} onMouseDown={this.killEvent}>
                                 <Icon icon={this.state.collapsedSections[sectionId] ? "expand" : "collapse"} />
-                                {group.titlemsgid ? ({LocaleUtils.tr(group.titlemsgid)}) : (<span>{group.title}</span>)}
+                                {group.titlemsgid ? LocaleUtils.tr(group.titlemsgid) : (<span>{group.title}</span>)}
                             </div>
                             {!this.state.collapsedSections[sectionId] ? (
                                 <div className="searchbox-results-section-body">
