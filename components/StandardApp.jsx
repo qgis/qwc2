@@ -210,8 +210,8 @@ export default class StandardApp extends React.Component {
         this.store.dispatch(changeBrowserProperties(ConfigUtils.getBrowserProperties()));
 
         // Load config.json
-        let configParams = Object.entries(UrlParams.getParams()).reduce((res, [key, value]) => {
-            if(key.startsWith("config:")) {
+        const configParams = Object.entries(UrlParams.getParams()).reduce((res, [key, value]) => {
+            if (key.startsWith("config:")) {
                 res[key.slice(7)] = value;
             }
             return res;
