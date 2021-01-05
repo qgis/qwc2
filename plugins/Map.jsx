@@ -51,6 +51,7 @@ class MapPlugin extends React.Component {
             if (layer.type === "wms" && layer.role === LayerRole.THEME) {
                 const sublayers = layer.params.LAYERS.split(",");
                 const opacities = layer.params.OPACITIES.split(",");
+                const styles = (layer.params.STYLES || "").split(",");
                 for (let i = 0; i < sublayers.length; ++i) {
                     if (layer.externalLayerMap[sublayers[i]]) {
                         const sublayer = LayerUtils.searchSubLayer(layer, "name", sublayers[i]);
@@ -65,12 +66,14 @@ class MapPlugin extends React.Component {
                     } else if (renderLayers.length > 0 && renderLayers[renderLayers.length - 1].id === layer.id) {
                         renderLayers[renderLayers.length - 1].params.LAYERS += "," + sublayers[i];
                         renderLayers[renderLayers.length - 1].params.OPACITIES += "," + opacities[i];
+                        renderLayers[renderLayers.length - 1].params.STYLES += "," + styles[i] || "";
                     } else {
                         renderLayers.push({
                             ...layer,
                             uuid: layer.uuid + "-" + i, params: {
                                 LAYERS: sublayers[i],
                                 OPACITIES: opacities[i],
+                                STYLES: styles[i] || "",
                                 MAP: layer.params.MAP
                             }
                         });

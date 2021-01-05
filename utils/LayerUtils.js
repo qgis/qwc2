@@ -93,17 +93,18 @@ const LayerUtils = {
             exploded.splice(layer.pos, 0, insLayer);
         }
     },
-    collectWMSSublayerParams(sublayer, layerNames, opacities, queryable, visibilities) {
+    collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryable, visibilities) {
         const visibility = sublayer.visibility === undefined ? true : sublayer.visibility;
         if (visibility || visibilities) {
             if (!isEmpty(sublayer.sublayers)) {
                 // Is group
                 sublayer.sublayers.map(sublyr => {
-                    LayerUtils.collectWMSSublayerParams(sublyr, layerNames, opacities, queryable, visibilities);
+                    LayerUtils.collectWMSSublayerParams(sublyr, layerNames, opacities, styles, queryable, visibilities);
                 });
             } else {
                 layerNames.push(sublayer.name);
                 opacities.push(Number.isInteger(sublayer.opacity) ? sublayer.opacity : 255);
+                styles.push(sublayer.style || "");
                 if (sublayer.queryable) {
                     queryable.push(sublayer.name);
                 }
@@ -125,21 +126,25 @@ const LayerUtils = {
         }
         let layerNames = [];
         let opacities = [];
+        let styles = [];
         const queryLayers = [];
         layer.sublayers.map(sublayer => {
-            LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, queryLayers);
+            LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryLayers);
         });
         layerNames.reverse();
         opacities.reverse();
+        styles.reverse();
         if (layer.drawingOrder && layer.drawingOrder.length > 0) {
             const indices = layer.drawingOrder.map(lyr => layerNames.indexOf(lyr)).filter(idx => idx >= 0);
             layerNames = indices.map(idx => layerNames[idx]);
             opacities = indices.map(idx => opacities[idx]);
+            styles = indices.map(idx => styles[idx]);
         }
         const newParams = {
             ...layer.params,
             LAYERS: layerNames.join(","),
             OPACITIES: opacities.join(","),
+            STYLES: styles.join(","),
             MAP: query.map || query.MAP || (layer.params || {}).map || (layer.params || {}).MAP
         };
         return {
@@ -161,18 +166,21 @@ const LayerUtils = {
     buildWMSLayerUrlParam(layers) {
         const layernames = [];
         const opacities = [];
+        const styles = [];
         const visibilities = [];
         const queryable = [];
         for (const layer of layers) {
             if (layer.role === LayerRole.THEME) {
-                LayerUtils.collectWMSSublayerParams(layer, layernames, opacities, queryable, visibilities);
+                LayerUtils.collectWMSSublayerParams(layer, layernames, opacities, styles, queryable, visibilities);
             } else if (layer.role === LayerRole.USERLAYER && (layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts")) {
                 layernames.push(layer.type + ':' + (layer.capabilitiesUrl || layer.url) + "#" + layer.name);
                 opacities.push(layer.opacity);
+                styles.push(layer.style);
                 visibilities.push(layer.visibility);
             } else if (layer.role === LayerRole.USERLAYER && layer.type === "separator") {
                 layernames.push("sep:" + layer.title);
                 opacities.push(255);
+                styles.push('');
                 visibilities.push(true);
             }
         }
