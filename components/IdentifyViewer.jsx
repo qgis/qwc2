@@ -13,6 +13,7 @@ import FileSaver from 'file-saver';
 import {stringify} from 'wellknown';
 import ReactHtmlParser from 'react-html-parser';
 import {convertNodeToElement} from 'react-html-parser';
+import geojsonBbox from 'geojson-bounding-box';
 import ResizeableWindow from './ResizeableWindow';
 import ConfigUtils from '../utils/ConfigUtils';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
@@ -131,6 +132,10 @@ class IdentifyViewer extends React.Component {
         }
         for (const key of Object.keys(newResults)) {
             for (const item of newResults[key]) {
+                if (item.type === "Feature" && !item.bbox) {
+                    item.crs = this.props.mapcrs;
+                    item.bbox = geojsonBbox(item);
+                }
                 item.clickPos = response.request.metadata.pos;
             }
         }
