@@ -204,6 +204,9 @@ class IdentifyViewer extends React.Component {
     removeResult = (layer, result) => {
         const newResultTree = {...this.state.resultTree};
         newResultTree[layer] = this.state.resultTree[layer].filter(item => item !== result);
+        if (isEmpty(newResultTree[layer])) {
+            delete newResultTree[layer];
+        }
         this.setState({
             resultTree: newResultTree,
             currentResult: this.state.currentResult === result ? null : this.state.currentResult
@@ -445,6 +448,7 @@ class IdentifyViewer extends React.Component {
         return (
             <div className={resultClass} key="results-attributes">
                 <div className="identify-result-title">
+                    <Icon icon="minus" onClick={() => this.removeResult(layer, result)} />
                     <span>{this.layerTitle(layer, result) + ": " + this.resultDisplayName(layer, result)}</span>
                     {zoomToFeatureButton}
                     <Icon icon="info-sign" onClick={() => this.showLayerInfo(layer, result)} />
