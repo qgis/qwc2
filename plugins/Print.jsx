@@ -39,7 +39,6 @@ class Print extends React.Component {
         map: PropTypes.object,
         printExternalLayers: PropTypes.bool, // Caution: requires explicit server-side support!
         scaleFactor: PropTypes.number,
-        search: PropTypes.object,
         theme: PropTypes.object
     }
     static defaultProps = {
@@ -262,8 +261,8 @@ class Print extends React.Component {
                                 <td>{label}:</td>
                                 <td>
                                     {
-                                        this.props.theme.printLabelForSearchResult === label && this.props.search ?
-                                            (<textarea {...opts} defaultValue={this.props.search.markerLabel}/>) :
+                                        this.props.theme.printLabelForSearchResult === label ?
+                                            (<textarea {...opts} defaultValue={this.getSearchMarkerLabel()}/>) :
                                             (<textarea {...opts}/>)
                                     }
                                 </td>
@@ -303,6 +302,16 @@ class Print extends React.Component {
                 </form>
             </div>
         );
+    }
+    getSearchMarkerLabel = () => {
+        const searchsellayer = this.props.layers.find(layer => layer.id === "searchselection");
+        if (searchsellayer && searchsellayer.features) {
+            const feature = searchsellayer.features.find(f => f.id === "searchmarker");
+            if (feature && feature.properties) {
+                return feature.properties.label;
+            }
+        }
+        return "";
     }
     renderPrintFrame = () => {
         let printFrame = null;
@@ -420,8 +429,7 @@ class Print extends React.Component {
 const selector = (state) => ({
     theme: state.theme.current,
     map: state.map,
-    layers: state.layers.flat,
-    search: state.search
+    layers: state.layers.flat
 });
 
 export default connect(selector, {
