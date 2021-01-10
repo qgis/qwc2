@@ -473,7 +473,8 @@ class SearchBox extends React.Component {
                 geometry: {type: 'Point', coordinates: [result.x, result.y]},
                 properties: { label: result.label !== undefined ? result.label : result.text },
                 styleName: 'marker',
-                crs: result.crs
+                crs: result.crs,
+                id: 'searchmarker'
             };
             const layer = {
                 id: "searchselection",
