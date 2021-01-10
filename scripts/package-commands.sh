@@ -21,7 +21,7 @@ if [ "$1" == "prod" ]; then
     mkdir -p ./prod/translations
     cp -a ./dist ./index.html ./assets ./themes.json ./prod
     cp -a  $config ./prod/config.json
-    cp -a ./translations/data.* ./prod/translations
+    cp -a ./translations/*.json ./prod/translations
     echo "<!-- Built: $(date -R) -->" >> ./prod/index.html
     exit $?
 fi

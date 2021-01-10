@@ -16,7 +16,7 @@ xcopy dist\* prod\dist /s /i && ^
 copy index.html prod && ^
 xcopy assets\* prod\assets /s /i && ^
 copy themes.json prod && ^
-copy translations\data.* prod\translations
+copy translations\*.json prod\translations
 if exist config.prod.json (
 	copy config.prod.json prod\config.json
 ) else (
