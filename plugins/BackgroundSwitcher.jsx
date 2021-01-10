@@ -86,7 +86,7 @@ class BackgroundSwitcher extends React.Component {
         return (
             <div className={itemclasses} key={layer ? layer.name : "empty"} onClick={() => this.backgroundLayerClicked(layer)}>
                 <div className="background-layer-title">
-                    {layer ? (<span>{layer.title}</span>) : LocaleUtils.tr("bgswitcher.nobg")}
+                    {layer ? (<span>{layer.title}</span>) : (<span>{LocaleUtils.tr("bgswitcher.nobg")}</span>)}
                 </div>
                 <div className="background-layer-thumbnail">
                     <img src={layer ? assetsPath + "/" + layer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="} />
