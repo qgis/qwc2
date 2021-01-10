@@ -1,5 +1,5 @@
 /* Make place for the overview map button */
-#BottomBar span.bottomlinks {
+#BottomBar span.bottombar-links {
     margin-right: 3em;
 }
 
