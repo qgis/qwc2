@@ -219,7 +219,7 @@ export default class StandardApp extends React.Component {
         ConfigUtils.loadConfiguration(configParams).then((config) => {
             this.store.dispatch(localConfigLoaded(config));
             // Dispatch user locale
-            this.store.dispatch(loadLocale(this.props.appConfig.defaultLocale));
+            this.store.dispatch(loadLocale(this.props.appConfig.defaultLocaleData));
             // Add projections from config
             for (const proj of config.projections || []) {
                 if (Proj4js.defs(proj.code) === undefined) {
