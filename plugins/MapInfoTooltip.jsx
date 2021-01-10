@@ -41,13 +41,13 @@ class MapInfoTooltip extends React.Component {
             this.clear();
             return;
         }
-        const newPoint = this.props.map.clickPoint;
+        const newPoint = this.props.map.click;
         if (!newPoint || newPoint.button !== 2) {
             if (this.state.coordinate) {
                 this.clear();
             }
         } else {
-            const oldPoint = prevProps.map.clickPoint;
+            const oldPoint = prevProps.map.click;
             if (!oldPoint || oldPoint.pixel[0] !== newPoint.pixel[0] || oldPoint.pixel[1] !== newPoint.pixel[1]) {
                 this.setState({coordinate: newPoint.coordinate, elevation: null});
                 const serviceParams = {pos: newPoint.coordinate.join(","), crs: this.props.map.projection};
