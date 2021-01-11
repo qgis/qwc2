@@ -9,6 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import isEmpty from 'lodash.isempty';
 import {stringify} from 'wellknown';
 import {LayerRole} from '../actions/layers';
 import {sendIdentifyRequest} from '../actions/identify';
@@ -20,6 +21,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 
 class IdentifyRegion extends React.Component {
     static propTypes = {
+        active: PropTypes.bool,
         changeSelectionState: PropTypes.func,
         layers: PropTypes.array,
         map: PropTypes.object,
@@ -29,7 +31,7 @@ class IdentifyRegion extends React.Component {
         theme: PropTypes.object
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.selection.polygon && this.props.selection !== prevProps.selection) {
+        if (this.props.active && this.props.selection.polygon && this.props.selection !== prevProps.selection) {
             this.getFeatures(this.props.selection.polygon);
         }
     }
@@ -81,6 +83,7 @@ class IdentifyRegion extends React.Component {
 }
 
 const selector = (state) => ({
+    active: state.task.id === "IdentifyRegion",
     selection: state.selection,
     map: state.map,
     theme: state.theme.current,
