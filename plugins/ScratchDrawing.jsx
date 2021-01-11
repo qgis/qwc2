@@ -90,7 +90,7 @@ class ScratchDrawing extends React.Component {
         Mousetrap.bind('del', this.triggerDelete);
     }
     onHide = () => {
-        this.props.changeRedliningState({action: null, geomType: null, featureSelected: false, layer: null, layerTitle: null, drawMultiple: true, style: this.prevstyle || this.props.redlining.style});
+        this.props.changeRedliningState({action: null, geomType: null, layer: null, layerTitle: null, drawMultiple: true, style: this.prevstyle || this.props.redlining.style});
         this.prevstyle = null;
         Mousetrap.unbind('del', this.triggerDelete);
     }

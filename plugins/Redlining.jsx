@@ -68,7 +68,7 @@ class Redlining extends React.Component {
         Mousetrap.bind('del', this.triggerDelete);
     }
     onHide = () => {
-        this.props.changeRedliningState({action: null, geomType: null, featureSelected: false});
+        this.props.changeRedliningState({action: null, geomType: null});
         Mousetrap.unbind('del', this.triggerDelete);
     }
     updateRedliningState = (diff) => {
@@ -199,7 +199,7 @@ class Redlining extends React.Component {
         if (data.action === "Draw" && data.geomType === "Text") {
             data = {...data, text: LocaleUtils.tr("redlining.text")};
         }
-        this.updateRedliningState({...data, featureSelected: false});
+        this.updateRedliningState(data);
     }
     changeRedliningLayer = (layer) => {
         this.updateRedliningState({layer: layer.id, layerTitle: layer.title});
