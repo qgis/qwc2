@@ -465,7 +465,8 @@ class SearchBox extends React.Component {
         const resultType = result.type || SearchResultType.PLACE;
         if (resultType === SearchResultType.PLACE) {
             if (zoom) {
-                this.props.zoomToPoint([result.x, result.y], this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom, result.crs);
+                const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom);
+                this.props.zoomToPoint([result.x, result.y], maxZoom, result.crs);
             } else {
                 this.props.panTo([result.x, result.y], result.crs);
             }
