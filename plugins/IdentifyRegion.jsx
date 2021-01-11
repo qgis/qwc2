@@ -65,14 +65,6 @@ class IdentifyRegion extends React.Component {
             return;
         }
         this.props.changeSelectionState({reset: true});
-        const layer = this.props.layers.find(l => l.role === LayerRole.THEME);
-        const center = [0, 0];
-        for (let i = 0; i < poly.length; ++i) {
-            center[0] += poly[i][0];
-            center[1] += poly[i][1];
-        }
-        center[0] /= poly.length;
-        center[1] /= poly.length;
         const geometry = {
             type: "Polygon",
             coordinates: [poly]
