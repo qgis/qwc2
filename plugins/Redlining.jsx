@@ -101,7 +101,7 @@ class Redlining extends React.Component {
         for (const plugin of Object.values(this.props.plugins || {})) {
             editButtons.push(plugin.cfg);
         }
-        let vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER);
+        let vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER && !layer.readonly);
         // Ensure list always contains "Redlining" layer
         if (!vectorLayers.find(layer => layer.id === 'redlining')) {
             vectorLayers = [{id: 'redlining', title: 'Redlining'}, ...vectorLayers];
