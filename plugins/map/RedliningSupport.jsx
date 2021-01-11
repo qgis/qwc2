@@ -322,7 +322,7 @@ class RedliningSupport extends React.Component {
         if (this.currentFeature) {
             // Reset selection style
             const isText = this.currentFeature.get("isText") === true;
-            const style = FeatureStyles[isText ? "text" : "default"](this.currentFeature, this.styleOptions(this.props.redlining.style));
+            const style = FeatureStyles[isText ? "text" : "default"](this.currentFeature, this.currentFeature.get('styleOptions'));
             this.currentFeature.setStyle(style);
             this.currentFeature = null;
             this.props.changeRedliningState({selectedFeature: null});
