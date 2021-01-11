@@ -41,6 +41,7 @@ export default {
             text: new ol.style.Text({
                 font: opts.textFont || '11pt sans-serif',
                 text: feature.getProperties().label || "",
+                overflow: true,
                 fill: new ol.style.Fill({color: opts.textFill}),
                 stroke: new ol.style.Stroke({color: opts.textStroke, width: 3}),
                 textAlign: feature.getGeometry().getType() === "Point" ? 'left' : 'center',
