@@ -58,10 +58,8 @@ class IdentifyRegion extends React.Component {
         );
     }
     getFeatures = (poly) => {
-        const queryLayers = this.props.layers.reduce((accum, layer) => {
-            return layer.role === LayerRole.THEME ? accum.concat(layer.queryLayers) : accum;
-        }, []).join(",");
-        if (poly.length < 1 || !queryLayers) {
+        const queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
+        if (poly.length < 1 || isEmpty(queryableLayers)) {
             return;
         }
         this.props.changeSelectionState({reset: true});
@@ -70,7 +68,9 @@ class IdentifyRegion extends React.Component {
             coordinates: [poly]
         };
         const filter = stringify(geometry);
-        this.props.sendRequest(IdentifyUtils.buildFilterRequest(layer, queryLayers, filter, this.props.map, {}));
+        queryableLayers.forEach(layer => {
+            this.props.sendRequest(IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, {}));
+        });
     }
 }
 

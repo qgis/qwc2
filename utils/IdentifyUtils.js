@@ -8,12 +8,41 @@
 
 import proj4js from 'proj4';
 import isEmpty from 'lodash.isempty';
+import {LayerRole} from '../actions/layers';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LayerUtils from '../utils/LayerUtils';
 import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from './VectorLayerUtils';
 
 const IdentifyUtils = {
-    buildRequest(layer, queryLayers, center, map, options) {
+    getQueryLayers(maplayers, map) {
+        const queryableLayers = maplayers.filter((l) => {
+            // All non-background WMS layers with a non-empty queryLayers list
+            return l.visibility && l.type === 'wms' && l.role !== LayerRole.BACKGROUND && (l.queryLayers || []).length > 0;
+        });
+        const mapScale = MapUtils.computeForZoom(map.scales, map.zoom);
+        let result = [];
+        queryableLayers.forEach((layer) => {
+            const layers = [];
+            const queryLayers = layer.queryLayers;
+            for (let i = 0; i < queryLayers.length; ++i) {
+                if (layer.externalLayerMap && layer.externalLayerMap[queryLayers[i]]) {
+                    const sublayer = LayerUtils.searchSubLayer(layer, "name", queryLayers[i]);
+                    const sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
+                    if (!isEmpty(layer.externalLayerMap[queryLayers[i]].queryLayers) && !sublayerInvisible) {
+                        layers.push(layer.externalLayerMap[queryLayers[i]]);
+                    }
+                } else if (layers.length > 0 && layers[layers.length - 1].id === layer.id) {
+                    layers[layers.length - 1].queryLayers.push(queryLayers[i]);
+                } else {
+                    layers.push({...layer, queryLayers: [queryLayers[i]]});
+                }
+            }
+            result = result.concat(layers);
+        });
+        return result;
+    },
+    buildRequest(layer, queryLayers, center, map, options = {}) {
         const size = [101, 101];
         const resolution = MapUtils.computeForZoom(map.resolutions, map.zoom);
         const dx = 0.5 * resolution * size[0];
@@ -69,7 +98,7 @@ const IdentifyUtils = {
             }
         };
     },
-    buildFilterRequest(layer, queryLayers, filterGeom, map, options) {
+    buildFilterRequest(layer, queryLayers, filterGeom, map, options = {}) {
         const size = [101, 101];
         const version = layer.version || "1.3.0";
 
