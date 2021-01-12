@@ -678,7 +678,7 @@ class IdentifyViewer extends React.Component {
             const target = ev.target.target.split(":");
             const options = target.slice(2).reduce((res, cur) => {
                 const parts = cur.split("=");
-                if (parts.length == 2) {
+                if (parts.length === 2) {
                     const value = parseFloat(parts[1]);
                     res[parts[0]] = isNaN(value) ? parts[1] : value;
                 }
