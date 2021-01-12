@@ -47,8 +47,9 @@ class WindowManager extends React.Component {
         if (!["0", "false"].includes((data.options.print || "").toLowerCase())) {
             extraControls.push({icon: "print", callback: () => this.printIframe(key)});
         }
+        const dockable = !["0", "false"].includes((data.options.dockable || "").toLowerCase());
         return (
-            <ResizeableWindow extraControls={extraControls} icon={data.icon || ""} initialHeight={data.options.h || 480}
+            <ResizeableWindow dockable={dockable} extraControls={extraControls} icon={data.icon || ""} initialHeight={data.options.h || 480}
                 initialWidth={data.options.w || 640} key={key}
                 onClose={() => this.closeWindow(key)}
                 title={"windows." + key}>
