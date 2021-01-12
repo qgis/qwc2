@@ -233,7 +233,8 @@
         "keywords": "Schlüsselwörter",
         "title": "Titel"
       },
-      "openintab": "In Tab öffnen"
+      "openintab": "In Tab öffnen",
+      "restrictedthemeinfo": "Sie sind nicht Berechtigt oder sind nicht angemeldet"
     },
     "tooltip": {
       "background": "Hintergrundkarte wechseln",

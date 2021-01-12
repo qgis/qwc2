@@ -172,3 +172,16 @@ div.ThemeList div.theme-item-filterinfo-overlay > div {
 div.ThemeList div.theme-item-filterinfo-overlay > div:not(:last-child) {
     padding-bottom: 0.25em;
 }
+
+div.ThemeList div.theme-item-restricted-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(127, 127, 127, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 400%;
+}

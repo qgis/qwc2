@@ -233,7 +233,8 @@
         "keywords": "Keywords",
         "title": "Title"
       },
-      "openintab": "Open in Tab"
+      "openintab": "Open in Tab",
+      "restrictedthemeinfo": "You are not permitted to view the theme or not logged in"
     },
     "tooltip": {
       "background": "Switch background",

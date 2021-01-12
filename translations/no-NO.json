@@ -233,7 +233,8 @@
         "keywords": "Nøkkelord",
         "title": "Tittel"
       },
-      "openintab": "Åpne i nytt vindu"
+      "openintab": "Åpne i nytt vindu",
+      "restrictedthemeinfo": ""
     },
     "tooltip": {
       "background": "Bytt bakgrunn",

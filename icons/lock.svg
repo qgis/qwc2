@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   x="0px"
+   y="0px"
+   viewBox="0 0 24 24"
+   enable-background="new 0 0 1000 1000"
+   xml:space="preserve"
+   id="svg10"
+   sodipodi:docname="lock.svg"
+   width="24"
+   height="24"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"><defs
+   id="defs14" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1920"
+   inkscape:window-height="1021"
+   id="namedview12"
+   showgrid="true"
+   inkscape:zoom="10.680141"
+   inkscape:cx="26.018786"
+   inkscape:cy="31.109627"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="g8"
+   inkscape:document-rotation="0"><inkscape:grid
+     type="xygrid"
+     id="grid821" /></sodipodi:namedview>
+<metadata
+   id="metadata2"> Svg Vector Icons : http://www.onlinewebfonts.com/icon <rdf:RDF><cc:Work
+     rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+       rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata>
+<g
+   id="g8"
+   transform="translate(0,-976)"><path
+     d="m 17,986.75002 v -3.75 c 0,-2.75633 -2.24242,-5 -5,-5 -2.75695,0 -5,2.24367 -5,5 v 3.75 c -1.38062,0 -2.5,1.11937 -2.5,2.5 v 6.25 c 0,1.38066 1.11938,2.49996 2.5,2.49996 h 10 c 1.38063,0 2.5,-1.1193 2.5,-2.49996 v -6.25 c 0,-1.38063 -1.11937,-2.5 -2.5,-2.5 z m -4.375,6.05836 v 2.06664 c 0,0.34547 -0.27953,0.625 -0.625,0.625 -0.34547,0 -0.625,-0.27953 -0.625,-0.625 v -2.06664 c -0.36684,-0.21731 -0.625,-0.60059 -0.625,-1.05836 0,-0.69094 0.55969,-1.25 1.25,-1.25 0.69031,0 1.25,0.5591 1.25,1.25 0,0.45777 -0.25816,0.84105 -0.625,1.05836 z m 1.875,-6.05836 h -5 v -3.75 c 0,-1.37941 1.12121,-2.5 2.5,-2.5 1.37816,0 2.5,1.12063 2.5,2.5 z"
+     id="path2"
+     style="stroke-width:0.0390625" /></g>
+</svg>
