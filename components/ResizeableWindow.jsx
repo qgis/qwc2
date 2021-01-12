@@ -55,16 +55,24 @@ export default class ResizeableWindow extends React.Component {
         dockable: true
     }
     state = {
-        dock: false
+        dock: false,
+        geometry: null
     }
     constructor(props) {
         super(props);
         this.rnd = null;
         this.state.doc = props.initiallyDocked || false;
+        const height = Math.min(props.initialHeight, window.innerHeight - 100);
+        this.state.geometry = {
+            x: props.initialX !== null ? props.initialX : Math.max(0, Math.round(0.5 * (window.innerWidth - props.initialWidth))),
+            y: props.initialY !== null ? props.initialY : Math.max(0, Math.round(0.5 * height)),
+            width: props.initialWidth,
+            height: height
+        };
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.rnd && this.props.visible && this.props.visible !== prevProps.visible) {
-            this.rnd.updatePosition(this.initialPosition());
+            this.rnd.updatePosition(this.state.geometry);
         }
     }
     renderRole = (role) => {
@@ -77,19 +85,8 @@ export default class ResizeableWindow extends React.Component {
         this.props.onClose();
         ev.stopPropagation();
     }
-    initialPosition = () => {
-        return {
-            x: this.props.initialX !== null ? this.props.initialX : Math.max(0, Math.round(0.5 * (window.innerWidth - this.props.initialWidth))),
-            y: this.props.initialY !== null ? this.props.initialY : Math.max(0, Math.round(0.5 * (window.innerHeight - this.props.initialHeight)))
-        };
-    }
     render() {
         const dockable = this.props.dockable && ConfigUtils.getConfigProp("globallyDisableDockableDialogs") !== true;
-        const initial = {
-            ...this.initialPosition(),
-            width: this.props.initialWidth,
-            height: Math.min(this.props.initialHeight, window.innerHeight - 100)
-        };
         let icon = null;
         if (this.props.icon) {
             icon = (<Icon className="resizeable-window-titlebar-icon" icon={this.props.icon} />);
@@ -132,15 +129,27 @@ export default class ResizeableWindow extends React.Component {
         } else {
             return (
                 <div className="resizeable-window-container" style={style}>
-                    <Rnd bounds="parent" className="resizeable-window" default={initial}
+                    <Rnd bounds="parent" className="resizeable-window" default={this.state.geometry}
                         maxHeight={this.props.maxHeight || window.innerHeight} maxWidth={this.props.maxWidth || window.innerWidth}
                         minHeight={this.props.minHeight} minWidth={this.props.minWidth}
+                        onDragStop={this.onDragStop} onResizeStop={this.onResizeStop}
                         ref={c => { this.rnd = c; }} style={{zIndex: this.props.zIndex}}>
                         {content}
                     </Rnd>
                 </div>
             );
         }
+    }
+    onDragStop = (ev, data) => {
+        this.setState({geometry: {...this.state.geometry, x: data.x, y: data.y}});
+    }
+    onResizeStop = (ev, dir, ref, delta, position) => {
+        this.setState({geometry: {
+            x: position.x,
+            y: position.y,
+            width: this.state.geometry.width + delta.width,
+            height: this.state.geometry.height + delta.height
+        }});
     }
     startDockResize = (ev) => {
         if (ev.target === this.dock) {
