@@ -225,7 +225,7 @@ const LayerUtils = {
             type = 'separator';
             name = name.slice(4);
         }
-        return {id, type, layerUrl, name, opacity, visibility};
+        return {id, type, url: layerUrl, name, opacity, visibility};
     },
     pathEqualOrBelow(parent, child) {
         return isEqual(child.slice(0, parent.length), parent);
