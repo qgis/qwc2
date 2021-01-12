@@ -44,7 +44,7 @@ class WindowManager extends React.Component {
     }
     renderIframeDialog = (key, data) => {
         const extraControls = [];
-        if (data.options.print) {
+        if (!["0", "false"].includes((data.options.print || "").toLowerCase())) {
             extraControls.push({icon: "print", callback: () => this.printIframe(key)});
         }
         return (
