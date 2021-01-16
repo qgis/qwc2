@@ -581,6 +581,9 @@ const LayerUtils = {
         if (layer.externalLayerMap && layer.externalLayerMap[sublayer.name]) {
             requestUrl = layer.externalLayerMap[sublayer.name].legendUrl;
         }
+        if (!requestUrl) {
+            return "";
+        }
         return requestUrl + (requestUrl.indexOf('?') === -1 ? '?' : '&') + params;
     }
 };
