@@ -260,11 +260,11 @@ class LayerTree extends React.Component {
             );
         }
         let legendicon = null;
-        if(this.props.showLegendIcons) {
-            if(layer.legendUrl) {
-                let request = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.mapCrs);
-                legendicon = (<img className="layertree-item-legend-thumbnail" src={request + "&TYPE=thumbnail"} onMouseOver={ev => this.showLegendTooltip(ev, request)} onMouseOut={this.hideLegendTooltip} onTouchStart={ev => this.showLegendTooltip(ev, request)} />);
-            } else if(layer.color) {
+        if (this.props.showLegendIcons) {
+            const legendUrl = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.mapCrs);
+            if (legendUrl) {
+                legendicon = (<img className="layertree-item-legend-thumbnail" onMouseOut={this.hideLegendTooltip} onMouseOver={ev => this.showLegendTooltip(ev, legendUrl)} onTouchStart={ev => this.showLegendTooltip(ev, legendUrl)} src={legendUrl + "&TYPE=thumbnail"} />);
+            } else if (layer.color) {
                 legendicon = (<span className="layertree-item-legend-coloricon" style={{backgroundColor: layer.color}} />);
             }
         }
@@ -536,8 +536,8 @@ class LayerTree extends React.Component {
                 return "";
             } else if(layer.legendUrl) {
                 return layer.params.LAYERS ? layer.params.LAYERS.split(",").reverse().map(sublayer => {
-                    let request = LayerUtils.getLegendUrl(layer, {"name": sublayer}, this.props.mapScale, this.props.mapCrs);
-                    return '<div><img src="' + request + '" /></div>';
+                    const request = LayerUtils.getLegendUrl(layer, {name: sublayer}, this.props.mapScale, this.props.mapCrs);
+                    return request ? '<div><img src="' + request + '" /></div>' : "";
                 }).join("\n") : "";
             } else if(layer.color) {
                 return '<div><span style="display: inline-block; width: 1em; height: 1em; box-shadow: inset 0 0 0 1000px ' + layer.color + '; margin: 0.25em; border: 1px solid black;">&nbsp;</span>' + (layer.title || layer.name) + '</div>';
