@@ -63,7 +63,7 @@ class IdentifyViewer extends React.Component {
         currentResult: null,
         currentLayer: null,
         displayFieldMap: {},
-        exportFormat: 'json'
+        exportFormat: 'csv'
     }
     constructor(props) {
         super(props);
@@ -552,10 +552,10 @@ class IdentifyViewer extends React.Component {
                             <div>
                                 {LocaleUtils.tr("identify.exportformat")}&nbsp;
                                 <select className="combo" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
-                                    <option value="json">json</option>
-                                    <option value="geojson">geojson</option>
                                     <option value="csv">csv</option>
                                     <option value="csvzip">csv + zip</option>
+                                    <option value="json">json</option>
+                                    <option value="geojson">geojson</option>
                                 </select>
                                 <button className="button" onClick={this.exportResults}>{LocaleUtils.tr("identify.export")}</button>
                             </div>
