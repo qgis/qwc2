@@ -27,15 +27,15 @@ const measureLabelStyleFactory = () => new ol.style.Text({
 
 const measureStyleFactory = () => [
     new ol.style.Style({
-        fill: new ol.style.Fill({ color: 'rgba(255, 0, 0, 0.25)' }),
-        stroke: new ol.style.Stroke({ color: 'red', width: 4 }),
+        fill: new ol.style.Fill({ color: 'rgba(255, 255, 0, 0.25)' }),
+        stroke: new ol.style.Stroke({ color: 'orange', width: 4 }),
         text: measureLabelStyleFactory()
     }),
     new ol.style.Style({
         image: new ol.style.Circle({
             radius: 5,
             fill: new ol.style.Fill({color: 'white'}),
-            stroke: new ol.style.Stroke({ color: 'red', width: 2 })
+            stroke: new ol.style.Stroke({ color: 'orange', width: 2 })
         }),
         geometry: (feature) => {
             if (feature.getGeometry().getType() === "Point") {
