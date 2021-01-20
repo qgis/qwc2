@@ -11,7 +11,6 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import {stringify} from 'wellknown';
-import {LayerRole} from '../actions/layers';
 import {sendIdentifyRequest} from '../actions/identify';
 import {changeSelectionState} from '../actions/selection';
 import {setCurrentTask} from '../actions/task';
