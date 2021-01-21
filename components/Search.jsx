@@ -397,7 +397,7 @@ class Search extends React.Component {
                 const maxbbox = (layer, bounds) => {
                     if (layer.sublayers) {
                         for (const sublayer of layer.sublayers) {
-                            maxbbox(layer.sublayers[sublayer], bounds);
+                            maxbbox(sublayer, bounds);
                         }
                     } else {
                         const newbounds = CoordinatesUtils.reprojectBbox(layer.bbox.bounds, layer.bbox.crs, this.props.map.projection);
