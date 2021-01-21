@@ -28,8 +28,8 @@ const CoordinatesUtils = {
         return crsList;
     },
     getUnits(projection) {
-        const proj = new Proj4js.Proj(projection);
-        return proj.units || 'degrees';
+        const proj = ol.proj.get(projection);
+        return proj.getUnits() || 'degrees';
     },
     getAxisOrder(projection) {
         const axis = ol.proj.get(projection).getAxisOrientation();
@@ -39,17 +39,14 @@ const CoordinatesUtils = {
         if (source === dest) {
             return [...point];
         }
-        const sourceProj = Proj4js.defs(source) ? new Proj4js.Proj(source) : null;
-        const destProj = Proj4js.defs(dest) ? new Proj4js.Proj(dest) : null;
-        if (sourceProj && destProj) {
-            const p = Array.isArray(point) ? Proj4js.toPoint(point) : Proj4js.toPoint([point.x, point.y]);
+        if (source && dest) {
             let transformed = null;
             try {
-                transformed = Proj4js.transform(sourceProj, destProj, p);
+                transformed = ol.proj.transform(point, source, dest);
             } catch (e) {
-                transformed = {x: 0, y: 0};
+                transformed = [0, 0];
             }
-            return [transformed.x, transformed.y];
+            return transformed;
         }
         return null;
     },

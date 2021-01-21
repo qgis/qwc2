@@ -9,7 +9,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import proj4js from 'proj4';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 
@@ -26,7 +25,7 @@ class CoordinateDisplayer extends React.Component {
         if (this.props.mousepos) {
             const coo = CoordinatesUtils.reproject(this.props.mousepos.coordinate, this.props.mapcrs, this.props.displaycrs);
             if (!isNaN(coo[0]) && !isNaN(coo[1])) {
-                const digits = proj4js.defs(this.props.displaycrs).units === 'degrees' ? 4 : 0;
+                const digits = CoordinatesUtils.getUnits(this.props.displaycrs) === 'degrees' ? 4 : 0;
                 value = LocaleUtils.toLocaleFixed(coo[0], digits) + " " + LocaleUtils.toLocaleFixed(coo[1], digits);
             }
         }
