@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import proj4js from 'proj4';
 import isEmpty from 'lodash.isempty';
 import {LayerRole} from '../actions/layers';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -52,7 +51,7 @@ const IdentifyUtils = {
         if (CoordinatesUtils.getAxisOrder(map.projection).substr(0, 2) === 'ne' && version === '1.3.0') {
             bbox = [center[1] - dx, center[0] - dy, center[1] + dx, center[0] + dy];
         }
-        const digits = proj4js.defs(map.projection).units === 'degrees' ? 4 : 0;
+        const digits = CoordinatesUtils.getUnits(map.projection).units === 'degrees' ? 4 : 0;
 
         let format = 'text/plain';
         const infoFormats = layer.infoFormats || [];

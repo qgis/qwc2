@@ -10,7 +10,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
-import proj4js from 'proj4';
 import axios from 'axios';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -86,7 +85,7 @@ class MapInfoTooltip extends React.Component {
         }
         projections.map(crs => {
             const coo = CoordinatesUtils.reproject(this.state.coordinate, this.props.map.projection, crs);
-            const digits = proj4js.defs(crs).units === 'degrees' ? 4 : 0;
+            const digits = CoordinatesUtils.getUnits(crs) === 'degrees' ? 4 : 0;
             info.push([
                 (CoordinatesUtils.getAvailableCRS()[crs] || {label: crs}).label,
                 coo.map(x => LocaleUtils.toLocaleFixed(x, digits)).join(", ")
