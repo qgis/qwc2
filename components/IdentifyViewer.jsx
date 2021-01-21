@@ -132,7 +132,7 @@ class IdentifyViewer extends React.Component {
         }
         for (const key of Object.keys(newResults)) {
             for (const item of newResults[key]) {
-                if (item.type === "Feature" && !item.bbox) {
+                if (item.type === "Feature" && !item.bbox && item.geometry) {
                     item.crs = this.props.mapcrs;
                     item.bbox = geojsonBbox(item);
                 }
