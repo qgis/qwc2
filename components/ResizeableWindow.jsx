@@ -61,7 +61,7 @@ export default class ResizeableWindow extends React.Component {
     constructor(props) {
         super(props);
         this.rnd = null;
-        this.state.doc = props.initiallyDocked || false;
+        this.state.dock = props.initiallyDocked || false;
         const height = Math.min(props.initialHeight, window.innerHeight - 100);
         this.state.geometry = {
             x: props.initialX !== null ? props.initialX : Math.max(0, Math.round(0.5 * (window.innerWidth - props.initialWidth))),
