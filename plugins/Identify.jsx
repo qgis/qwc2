@@ -15,9 +15,7 @@ import {LayerRole, addMarker, removeMarker, removeLayer} from '../actions/layers
 import IdentifyViewer from '../components/IdentifyViewer';
 import TaskBar from '../components/TaskBar';
 import IdentifyUtils from '../utils/IdentifyUtils';
-import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
 
 class Identify extends React.Component {
     static propTypes = {
