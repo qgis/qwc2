@@ -86,7 +86,29 @@ class SearchBox extends React.Component {
                 const DATA_URL = ConfigUtils.getConfigProp("searchDataServiceUrl").replace(/\/$/g, "");
                 axios.get(DATA_URL + "/" + hp + "/?filter=" + hf).then(response => {
                     this.showFeatureGeometry(response.data, prevProps.localConfig.startupParams.s, ht);
-                });
+                }).catch(() => {});
+            } else if (hp && ht) {
+                const params = {
+                    searchtext: ht,
+                    filter: hp,
+                    limit: 1
+                };
+                const service = ConfigUtils.getConfigProp("searchServiceUrl").replace(/\/$/g, "") + '/';
+                axios.get(service, {params}).then(response => {
+                    if (response.data.results && response.data.results.length === 1 && response.data.result_counts[0].count === 1) {
+                        const result = response.data.results[0].feature;
+                        let filter = `[["${result.id_field_name}","=",`;
+                        if (typeof(result.feature_id) === 'string') {
+                            filter += `"${result.feature_id}"]]`;
+                        } else {
+                            filter += `${result.feature_id}]]`;
+                        }
+                        const DATA_URL = ConfigUtils.getConfigProp("searchDataServiceUrl").replace(/\/$/g, "");
+                        axios.get(DATA_URL + "/" + result.dataproduct_id + "/?filter=" + filter).then(r => this.showFeatureGeometry(r.data, undefined, result.display)).catch(() => {});
+                    } else {
+                        this.setState({searchText: ht});
+                    }
+                }).catch(() => {});
             } else if (typeof(hc) === "string" && (hc.toLowerCase() === "true" || hc === "1")) {
                 this.selectProviderResult({
                     label: "",
