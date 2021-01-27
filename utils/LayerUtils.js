@@ -533,24 +533,8 @@ const LayerUtils = {
         if (layer.sublayers) {
             layer.sublayers = layer.sublayers.map(sublayer => {
                 if (sublayer.externalLayer) {
-                    const externalLayer = {
-                        ...sublayer.externalLayer,
-                        title: sublayer.externalLayer.title || sublayer.externalLayer.name,
-                        uuid: uuid.v4()
-                    };
-                    if (externalLayer.type === "wms") {
-                        externalLayer.featureInfoUrl = externalLayer.featureInfoUrl || externalLayer.url;
-                        externalLayer.legendUrl = externalLayer.legendUrl || externalLayer.url;
-                        externalLayer.queryLayers = externalLayer.queryLayers || externalLayer.params.LAYERS.split(",");
-
-                        const externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp("externalLayerFeatureInfoFormats") || {};
-                        for (const entry of Object.keys(externalLayerFeatureInfoFormats)) {
-                            if (externalLayer.featureInfoUrl.toLowerCase().includes(entry.toLowerCase())) {
-                                externalLayer.infoFormats = [externalLayerFeatureInfoFormats[entry]];
-                                break;
-                            }
-                        }
-                    }
+                    const externalLayer = {...sublayer.externalLayer};
+                    LayerUtils.completeExternalLayer(externalLayer);
                     toplayer.externalLayerMap[sublayer.name] = externalLayer;
                     sublayer = {...sublayer};
                     delete sublayer.externalLayer;
@@ -560,6 +544,23 @@ const LayerUtils = {
                 }
                 return sublayer;
             });
+        }
+    },
+    completeExternalLayer(externalLayer) {
+        externalLayer.title = externalLayer.title || externalLayer.name;
+        externalLayer.uuid = uuid.v4();
+        if (externalLayer.type === "wms" || externalLayer.params) {
+            externalLayer.featureInfoUrl = externalLayer.featureInfoUrl || externalLayer.url;
+            externalLayer.legendUrl = externalLayer.legendUrl || externalLayer.url;
+            externalLayer.queryLayers = externalLayer.queryLayers || externalLayer.params.LAYERS.split(",");
+
+            const externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp("externalLayerFeatureInfoFormats") || {};
+            for (const entry of Object.keys(externalLayerFeatureInfoFormats)) {
+                if (externalLayer.featureInfoUrl.toLowerCase().includes(entry.toLowerCase())) {
+                    externalLayer.infoFormats = [externalLayerFeatureInfoFormats[entry]];
+                    break;
+                }
+            }
         }
     },
     getLegendUrl(layer, sublayer, scale, projection, map) {
