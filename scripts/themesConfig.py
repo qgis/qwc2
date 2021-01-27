@@ -297,9 +297,11 @@ def getTheme(config, configItem, result, resultItem):
         visibleLayers = []
         titleNameMap = {}
         featureReports = configItem["featureReport"] if "featureReport" in configItem else {}
-        externalLayers = configItem["externalLayers"] if "externalLayers" in configItem else []
+        externalLayers = []
         getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, featureReports, externalLayers)
         autogenExternalLayers += list(map(lambda entry: entry["name"], externalLayers))
+        if "externalLayers" in configItem:
+            externalLayers += configItem["externalLayers"]
         visibleLayers.reverse()
 
         # print templates

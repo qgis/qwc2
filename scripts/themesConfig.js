@@ -318,9 +318,10 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             const layerTree = [];
             const visibleLayers = [];
             const titleNameMap = {};
-            const externalLayers = configItem.externalLayers || [];
+            const externalLayers = [];
             getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, configItem.featureReport || {}, externalLayers);
             autogenExternalLayers.push(...externalLayers.map(entry => entry.name));
+            externalLayers.push(...(configItem.externalLayers || []));
             visibleLayers.reverse();
 
             // print templates
