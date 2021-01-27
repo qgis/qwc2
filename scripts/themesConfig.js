@@ -157,6 +157,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         }
 
         // layer
+        layerEntry.geometryType = layer.$.geometryType;
         layerEntry.visibility = layer.$.visible === '1';
         if (layerEntry.visibility) {
             // collect visible layers

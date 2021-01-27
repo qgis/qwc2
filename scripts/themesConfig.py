@@ -167,6 +167,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             return
 
         # layer
+        layerEntry["geometryType"] = layer.getAttribute("geometryType")
         layerEntry["visibility"] = layer.getAttribute("visible") == "1"
         if layerEntry["visibility"]:
             # collect visible layers
