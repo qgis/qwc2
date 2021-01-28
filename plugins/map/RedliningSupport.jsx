@@ -106,6 +106,8 @@ class RedliningSupport extends React.Component {
                 styles.push(this.selectedTextStyle(this.currentFeature, opts));
             }
             this.currentFeature.setStyle(styles.concat(style, this.selectedStyle));
+            this.currentFeature.set('styleName', styleName);
+            this.currentFeature.set('styleOptions', opts);
         }
     }
     addDrawInteraction = (layerChanged) => {
@@ -291,7 +293,8 @@ class RedliningSupport extends React.Component {
                 radius: radius
             }});
         }
-        Object.assign(feature, {styleName: isText ? "text" : "default", styleOptions: this.styleOptions(this.props.redlining.style)});
+        feature.styleName = this.currentFeature.get('styleName');
+        feature.styleOptions = this.currentFeature.get('styleOptions');
         const layer = {
             id: this.props.redlining.layer,
             title: this.props.redlining.layerTitle,
