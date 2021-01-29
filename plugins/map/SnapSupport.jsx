@@ -107,7 +107,7 @@ class SnapSupport extends React.Component {
         axios.get(request.url, {params: request.params}).then(response => {
             const results = IdentifyUtils.parseXmlResponse({data: response.data, request}, this.props.mapObj.projection);
             const features = [];
-            for (const i of results) {
+            for (const i in results) {
                 for (const feature of results[i]) {
                     if (feature.geometry) {
                         feature.id = uuid.v4();
@@ -149,10 +149,10 @@ class SnapSupport extends React.Component {
 }
 
 const selector = (state) => ({
+    drawing: state.redlining.geomType || state.measurement.geomType || state.editing.geomType ? true : false,
     mapObj: state.map,
     mousepos: state.mousePosition.position,
-    layers: state.layers.flat,
-    drawing: state.redlining.action || state.measurement.action || state.editing.action
+    layers: state.layers.flat
 });
 
 export default connect(selector, {})(SnapSupport);
