@@ -206,7 +206,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             keywords = []
             for keyword in getChildElement(layer, "KeywordList").getElementsByTagName("Keyword"):
                 keywords.append(getElementValue(keyword))
-            layerEntry["keywords"] = ",".join(keywords)
+            layerEntry["keywords"] = ", ".join(keywords)
         except:
             pass
 

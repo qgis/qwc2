@@ -198,7 +198,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
             toArray(layer.KeywordList.Keyword).map((entry) => {
                 keywords.push((typeof entry === 'object') ? entry._ : entry);
             });
-            layerEntry.keywords = keywords.join(",");
+            layerEntry.keywords = keywords.join(", ");
         }
         if (layer.MinScaleDenominator !== undefined) {
             layerEntry.minScale = Math.round(parseFloat(layer.MinScaleDenominator));
