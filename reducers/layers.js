@@ -171,7 +171,7 @@ export default function layers(state = defaultState, action) {
         const layerId = action.layer.id || uuid.v4();
         const newLayers = (state.flat || []).concat();
         const idx = newLayers.findIndex(layer => layer.id === layerId);
-        if (idx === -1 || action.clear) {
+        if (idx === -1) {
             const newLayer = {
                 ...action.layer,
                 id: layerId,
@@ -185,23 +185,22 @@ export default function layers(state = defaultState, action) {
                 opacity: action.layer.opacity || 255,
                 layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER
             };
-            if (idx === -1) {
-                let inspos = 0;
-                for (; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);
-                newLayers.splice(inspos, 0, newLayer);
-            } else if (action.clear) {
-                newLayers[idx] = newLayer;
-            }
+            let inspos = 0;
+            for (; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);
+            newLayers.splice(inspos, 0, newLayer);
         } else {
             const addFeatures = action.features.concat();
-            let newFeatures = (newLayers[idx].features || []).map( f => {
-                const fidx = addFeatures.findIndex(g => g.id === f.id);
-                if (fidx === -1) {
-                    return f;
-                } else {
-                    return addFeatures.splice(fidx, 1)[0];
-                }
-            });
+            let newFeatures = [];
+            if (!action.clear) {
+                newFeatures = (newLayers[idx].features || []).map( f => {
+                    const fidx = addFeatures.findIndex(g => g.id === f.id);
+                    if (fidx === -1) {
+                        return f;
+                    } else {
+                        return addFeatures.splice(fidx, 1)[0];
+                    }
+                });
+            }
             newFeatures = newFeatures.concat(addFeatures);
             newLayers[idx] = {...newLayers[idx], features: newFeatures, bbox: {bounds: VectorLayerUtils.computeFeaturesBBox(newFeatures)}};
         }
