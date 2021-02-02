@@ -221,17 +221,7 @@ class Editing extends React.Component {
                 <div className="editing-layer-selection">
                     <select className="editing-layer-select" disabled={this.props.editing.changed === true} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
                         {Object.keys(editConfig).filter(layerId => themeSublayers.includes(layerId)).map(layerId => {
-                            let label = editConfig[layerId].layerName;
-                            // Search matching layer by technical name
-                            for (const layer of this.props.layers) {
-                                if (layer.role === LayerRole.THEME) {
-                                    const matchsublayer = LayerUtils.searchSubLayer(layer, 'name', editConfig[layerId].layerName);
-                                    if (matchsublayer) {
-                                        label = matchsublayer.title;
-                                        break;
-                                    }
-                                }
-                            }
+                            const label = LayerUtils.findLayerTitle(this.props.layers, editConfig[layerId].layerName, [LayerRole.THEME]);
                             return (
                                 <option key={layerId} value={layerId}>{label}</option>
                             );

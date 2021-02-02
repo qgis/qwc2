@@ -608,16 +608,7 @@ class IdentifyViewer extends React.Component {
             return featureInfoLayerId;
         }
         const layername = result.layername || featureInfoLayerId;
-        // Search matching layer by technical name
-        for (const layer of this.props.layers) {
-            if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
-                const matchsublayer = LayerUtils.searchSubLayer(layer, 'name', layername);
-                if (matchsublayer) {
-                    return matchsublayer.title;
-                }
-            }
-        }
-        return layername;
+        return LayerUtils.findLayerTitle(this.props.layers, layername);
     }
     showLayerInfo = (featureInfoLayerId, result) => {
         let matchlayer = null;

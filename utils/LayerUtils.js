@@ -586,6 +586,18 @@ const LayerUtils = {
             return "";
         }
         return requestUrl + (requestUrl.indexOf('?') === -1 ? '?' : '&') + params;
+    },
+    findLayerTitle(layers, layerName, roles = [LayerRole.THEME, LayerRole.USERLAYER]) {
+        // Search matching layer by technical name
+        for (const layer of layers) {
+            if (roles.includes(layer.role)) {
+                const matchsublayer = LayerUtils.searchSubLayer(layer, 'name', layerName);
+                if (matchsublayer) {
+                    return matchsublayer.title;
+                }
+            }
+        }
+        return layerName;
     }
 };
 
