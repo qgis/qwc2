@@ -16,6 +16,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import MapUtils from '../utils/MapUtils';
 import LayerUtils from '../utils/LayerUtils';
+import {UrlParams} from '../utils/PermaLinkUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 import {LayerRole, addLayer, removeLayer, removeAllLayers, replacePlaceholderLayer, setSwipe} from './layers';
@@ -158,6 +159,9 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
         // Add background layers for theme
         for (const bgLayer of ThemeUtils.createThemeBackgroundLayers(theme, themes, visibleBgLayer)) {
             dispatch(addLayer(bgLayer));
+        }
+        if (visibleBgLayer === "") {
+            UrlParams.updateParams({bl: ""});
         }
 
         let layerConfigs = layerParams ? layerParams.map(param => LayerUtils.splitLayerUrlParam(param)) : null;
