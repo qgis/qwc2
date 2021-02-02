@@ -36,7 +36,7 @@ class Authentication extends React.Component {
             if (this.props.task === "Login") {
                 const urlObj = url.parse(window.location.href, true);
                 if (this.props.clearLayerParam) {
-                    urlObj.query.l = undefined;
+                    delete urlObj.query.l;
                 }
                 urlObj.search = undefined;
                 window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "login?url=" + encodeURIComponent(url.format(urlObj));
