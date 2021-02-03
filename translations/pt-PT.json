@@ -1,0 +1,254 @@
+{
+  "locale": "pt-PT",
+  "messages": {
+    "appmenu": {
+      "menulabel": "Mapas & Ferramentas",
+      "items": {
+        "DxfExport": "Exportar DXF",
+        "Editing": "Editando",
+        "Help": "Ajuda",
+        "IdentifyRegion": "Identificar zona",
+        "LayerTree": "Camadas & Leyenda",
+        "Login": "Inicio de sesión",
+        "Logout": "Cierre de sesión",
+        "Measure": "Medir",
+        "Print": "Imprimir",
+        "RasterExport": "Exportar trama",
+        "Redlining": "Línea de demarcación",
+        "Share": "Compartilhar enlace",
+        "ThemeSwitcher": "Tema",
+        "Tools": "Ferramentas de mapa"
+      }
+    },
+    "bgswitcher": {
+      "nobg": "Sem fundo"
+    },
+    "bottombar": {
+      "mousepos_label": "Coordenadas",
+      "scale_label": "Scale",
+      "terms_label": "Termos de uso",
+      "viewertitle_label": ""
+    },
+    "copybtn": {
+      "click_to_copy": "Clique para copiar",
+      "copied": "Copiado"
+    },
+    "dxfexport": {
+      "selectinfo": "Arraste um rectângulo ao redor da região para exportar...",
+      "symbologyscale": "Escala de simbología:"
+    },
+    "editing": {
+      "canceldelete": "Não apagues",
+      "commit": "Comprometer-se",
+      "delete": "Excluir",
+      "discard": "Descartar",
+      "draw": "Desenhar",
+      "feature": "Recurso",
+      "maximize": "Maximizar",
+      "minimize": "Minimizar",
+      "noeditablelayers": "Não camadas editadas.",
+      "pick": "Elegir",
+      "reallydelete": "Excluir",
+      "select": "Selecione"
+    },
+    "fileselector": {
+      "placeholder": "Selecione ficheiro..."
+    },
+    "heightprofile": {
+      "asl": "a.s.l.",
+      "distance": "Distância",
+      "height": "Altura",
+      "loading": "Calcular o perfil de altura..."
+    },
+    "identify": {
+      "export": "Exportação",
+      "exportformat": "Formato de exportação",
+      "featureReport": "Relatório de recurso",
+      "link": "Link",
+      "noattributes": "Sem atributos",
+      "noresults": "Nenhuma informação disponível para o ponto selecionado",
+      "querying": "Consulta...",
+      "title": "Información de recurso"
+    },
+    "identifyregion": {
+      "info": "Desenhe um polígono em torno das características para identificar..."
+    },
+    "importlayer": {
+      "addlayer": "Adicionar camada",
+      "connect": "Ligar",
+      "filter": "Filtro...",
+      "loading": "Carregar...",
+      "localfile": "Arquivo local",
+      "nofeatures": "Nenhuma característica poderia ser importada.",
+      "noresults": "Sem resultados ou URL inválido",
+      "url": "",
+      "urlplaceholder": "Ingrese dirección URL o WMS, WMTS, WFS..."
+    },
+    "infotool": {
+      "clickhelpPoint": "Clique numa localização para identificar no mapa..."
+    },
+    "layerinfo": {
+      "abstract": "Resumo",
+      "attribution": "Atribuição",
+      "dataUrl": "URL de dados",
+      "keywords": "Palavras-chave",
+      "legend": "Lenda",
+      "maxscale": "Escala de exibição Max",
+      "metadataUrl": "Dirección URL de metadatos",
+      "minscale": "Escala de exibição min. ",
+      "title": "Información de la capa"
+    },
+    "layertree": {
+      "compare": "Compare a camada superior",
+      "deletealllayers": "Remover todas as camadas",
+      "importlayer": "Camada de importação",
+      "maptip": "Mostrar dicas de mapa de camadas",
+      "printlegend": "Legenda da impressão",
+      "separator": "Separador",
+      "separatortooltip": "Adicionar separador",
+      "transparency": "Transparência",
+      "visiblefilter": "Filtrar camadas invisíveis",
+      "zoomtolayer": "Ampliar a camada"
+    },
+    "locate": {
+      "feetUnit": "pés",
+      "metersUnit": "metros",
+      "popup": "Estás a uma distância {unit} a partir deste ponto",
+      "statustooltip": {
+        "DISABLED": "Posição: deficiente",
+        "ENABLED": "Posição: ativada",
+        "FOLLOWING": "Posição: seguinte",
+        "LOCATING": "Posição: localização...",
+        "PERMISSION_DENIED": "Posição: permissão negada"
+      }
+    },
+    "map": {
+      "loading": "Carregar..."
+    },
+    "mapinfotooltip": {
+      "elevation": "Elevação",
+      "title": "Posição"
+    },
+    "measureComponent": {
+      "areaLabel": "Área",
+      "bearingLabel": "Dirección",
+      "lengthLabel": "Longitud",
+      "pointLabel": "Posição"
+    },
+    "print": {
+      "grid": "Rede:",
+      "layout": "Desenho:",
+      "maximize": "Maximizar",
+      "minimize": "Minimizar",
+      "nolayouts": "O tema selecionado não suporta a impressão",
+      "notheme": "Sem tema selecionado",
+      "output": "Impressão de saída",
+      "resolution": "Resolução:",
+      "rotation": "Rotação:",
+      "scale": "Escala:",
+      "submit": "Imprimir",
+      "wait": "Por favor, espera..."
+    },
+    "rasterexport": {
+      "format": "Formato:",
+      "resolution": "Resolução:",
+      "selectinfo": "Arraste um retângulo pela região para exportar..."
+    },
+    "redlining": {
+      "border": "Fronteira",
+      "buffer": "Tampão",
+      "buffercompute": "Compute",
+      "bufferdistance": "Distância",
+      "bufferlayer": "Destino",
+      "bufferlayername": "Tampão",
+      "bufferselectfeature": "Selecione uma característica para tampão...",
+      "circle": "Círculo",
+      "delete": "Excluir",
+      "draw": "Traçar",
+      "edit": "Editar",
+      "fill": "Preencha",
+      "freehand": "Desenho à mão livre ",
+      "label": "Etiqueta",
+      "layer": "Camada",
+      "line": "Línha",
+      "outline": "Contorno",
+      "pick": "Escolher",
+      "point": "Ponto",
+      "polygon": "Polígono",
+      "size": "Tamanho",
+      "text": "Texto",
+      "width": "Largura"
+    },
+    "scratchdrawing": {
+      "finish": "Terminar"
+    },
+    "search": {
+      "all": "Todos",
+      "enablelayer": "Ativar a camada",
+      "existinglayer": "A camada já existe no mapa",
+      "invisiblelayer": "O resultado reside numa camada que não é visível.",
+      "more": "Mais...",
+      "search": "Pesquisa",
+      "searchall": "Procurar lugares ou adicionar mapas...",
+      "themes": "Temas"
+    },
+    "searchbox": {
+      "filter": "Refinar a procura",
+      "layers": "Mapas",
+      "more": "mais resultados",
+      "morelayers": "Mais resultados disponíveis",
+      "nodescription": "Não há descrição disponível",
+      "placeholder": "Procurar local ou adicionar mapa...",
+      "places": "Lugares",
+      "recent": "Pesquisas recentes"
+    },
+    "serviceinfo": {
+      "abstract": "Resumo",
+      "contactEmail": "Email",
+      "contactOrganization": "Organização",
+      "contactPerson": "Pessoa de contacto",
+      "contactPhone": "Telefone",
+      "contactPosition": "Posição",
+      "keywords": "Palavras-chave",
+      "onlineResource": "Recurso online",
+      "title": "Informação temática"
+    },
+    "share": {
+      "QRCodeLinkTitle": "Código QR",
+      "directLinkTitle": "Via uma ligação direta",
+      "generatingpermalink": "Gerar permalink...",
+      "socialIntro": "Na sua rede social favorita"
+    },
+    "themelayerslist": {
+      "addlayer": "Adicionar camada",
+      "addlayerstotheme": "Adicionar camadas ao mapa atual",
+      "addselectedlayers": "Adicionar camadas selecionadas"
+    },
+    "themeswitcher": {
+      "addlayerstotheme": "Adicionar camadas ao mapa atual",
+      "addtotheme": "Adicione ao tema atual",
+      "filter": "Filtro...",
+      "match": {
+        "abstract": "Resumo",
+        "keywords": "Palavras-chave",
+        "title": "Título"
+      },
+      "openintab": "Aberto em separador",
+      "restrictedthemeinfo": "Não está autorizado a ver o tema ou não iniciar sessão"
+    },
+    "tooltip": {
+      "background": "Mudar de fundo",
+      "home": "Mostrar mapa inteiro",
+      "zoomin": "Mais zoom",
+      "zoomout": "Reduzir o zoom"
+    },
+    "vectorlayerpicker": {
+      "prompt": "Insira o nome da camada"
+    },
+    "window": {
+      "close": "Fechar",
+      "dock": "Juntar",
+      "undock": "Desencaixar"
+    }
+  }
+}
