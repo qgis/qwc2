@@ -95,7 +95,7 @@ class SearchBox extends React.Component {
                 };
                 const service = ConfigUtils.getConfigProp("searchServiceUrl").replace(/\/$/g, "") + '/';
                 axios.get(service, {params}).then(response => {
-                    if (response.data.results && response.data.results.length === 1 && response.data.result_counts[0].count === 1) {
+                    if (response.data.results && response.data.results.length === 1 && response.data.results[0].length === 1) {
                         const result = response.data.results[0].feature;
                         let filter = `[["${result.id_field_name}","=",`;
                         if (typeof(result.feature_id) === 'string') {
