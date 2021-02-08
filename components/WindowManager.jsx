@@ -44,10 +44,10 @@ class WindowManager extends React.Component {
     }
     renderIframeDialog = (key, data) => {
         const extraControls = [];
-        if (!["0", "false"].includes((data.options.print || "").toLowerCase())) {
+        if (this.boolVal(data.options.print) !== false) {
             extraControls.push({icon: "print", callback: () => this.printIframe(key)});
         }
-        const dockable = !["0", "false"].includes((data.options.dockable || "").toLowerCase());
+        const dockable = this.boolVal(data.options.dockable) !== false;
         return (
             <ResizeableWindow dockable={dockable} extraControls={extraControls} icon={data.icon || ""} initialHeight={data.options.h || 480}
                 initialWidth={data.options.w || 640} key={key}
@@ -72,6 +72,13 @@ class WindowManager extends React.Component {
         if (this.iframes[key]) {
             this.iframes[key].contentWindow.print();
         }
+    }
+    boolVal = (value) => {
+        const textVal = ("" + (value || "")).toLowerCase();
+        if (textVal === "") {
+            return undefined;
+        }
+        return ["0", "false"].includes(textVal) ? false : true;
     }
 }
 
