@@ -183,7 +183,8 @@ export default function layers(state = defaultState, action) {
                 queryable: action.layer.queryable || false,
                 visibility: action.layer.visibility || true,
                 opacity: action.layer.opacity || 255,
-                layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER
+                layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER,
+                bbox: {bounds: VectorLayerUtils.computeFeaturesBBox(action.features)}
             };
             let inspos = 0;
             for (; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);
