@@ -62,7 +62,7 @@ class OlMap extends React.Component {
             layers: [],
             controls: controls,
             interactions: interactions,
-            view: this.createView(props.center, props.zoom, props.projection, props.resolutions)
+            view: this.createView(props.center, props.zoom, props.projection, props.resolutions, props.mapOptions.enableRotation)
         });
         map.on('moveend', this.updateMapInfoState);
         map.on('singleclick', (event) => this.onClick(0, event.originalEvent, event.pixel));
@@ -116,7 +116,7 @@ class OlMap extends React.Component {
     render() {
         if (this.state.rebuildView) {
             const overviewMap = this.map.getControls().getArray().find(control => control instanceof ol.control.OverviewMap);
-            const view = this.createView(this.props.center, this.props.zoom, this.props.projection, this.props.resolutions);
+            const view = this.createView(this.props.center, this.props.zoom, this.props.projection, this.props.resolutions, this.props.mapOptions.enableRotation);
             if (overviewMap) {
                 overviewMap.getOverviewMap().setView(view);
             }
@@ -201,13 +201,14 @@ class OlMap extends React.Component {
         };
         this.props.onMapViewChanges(c, view.getZoom() || 0, bbox, size, this.props.id, this.props.projection);
     }
-    createView = (center, zoom, projection, resolutions) => {
+    createView = (center, zoom, projection, resolutions, enableRotation) => {
         const viewOptions = {
             projection: projection,
             center: center,
             zoom: zoom,
             resolutions: resolutions,
-            constrainRotation: false
+            constrainRotation: false,
+            enableRotation: enableRotation !== false
         };
         return new ol.View(viewOptions);
     }
