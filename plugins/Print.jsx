@@ -244,7 +244,7 @@ class Print extends React.Component {
                                 </td>
                             </tr>
                         ) : null}
-                        {printGrid && this.props.displayRotation === true ? (
+                        {printGrid ? (
                             <tr>
                                 <td>{LocaleUtils.tr("print.grid")}</td>
                                 <td>
