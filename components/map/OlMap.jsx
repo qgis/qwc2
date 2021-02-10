@@ -206,7 +206,8 @@ class OlMap extends React.Component {
             projection: projection,
             center: center,
             zoom: zoom,
-            resolutions: resolutions
+            resolutions: resolutions,
+            constrainRotation: false
         };
         return new ol.View(viewOptions);
     }
