@@ -68,10 +68,12 @@ class Print extends React.Component {
         this.state.grid = props.gridInitiallyEnabled;
     }
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.theme !== this.props.theme || !this.state.layout) {
+        if (prevProps.theme !== this.props.theme) {
             if (this.props.theme && !isEmpty(this.props.theme.print)) {
                 const layout = this.props.theme.print.find(l => l.default) || this.props.theme.print[0];
                 this.setState({layout: layout});
+            } else {
+                this.setState({layout: null});
             }
         }
     }
