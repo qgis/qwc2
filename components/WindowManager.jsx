@@ -25,6 +25,7 @@ class WindowManager extends React.Component {
     constructor(props) {
         super(props);
         this.iframes = {};
+        this.iframeGeometries = {};
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.currentTheme !== prevProps.currentTheme) {
@@ -49,10 +50,14 @@ class WindowManager extends React.Component {
         }
         const dockable = this.boolVal(data.options.dockable) !== false;
         const docked = this.boolVal(data.options.docked) !== false;
+        const geometry = this.iframeGeometries[key] || {};
         return (
             <ResizeableWindow dockable={dockable || docked} extraControls={extraControls} icon={data.icon || ""}
-                initialHeight={data.options.h || 480} initialWidth={data.options.w || 640} initiallyDocked={docked} key={key}
-                onClose={() => this.closeWindow(key)}
+                initialHeight={this.get(geometry, "height", data.options.h || 480)}
+                initialWidth={this.get(geometry, "width", data.options.w || 640)}
+                initialX={this.get(geometry, "x", null)} initialY={this.get(geometry, "y", null)}
+                initiallyDocked={this.get(geometry, "docked", docked)} key={key}
+                onClose={() => this.closeWindow(key)} onGeometryChanged={(geom) => { this.iframeGeometries[key] = geom; }}
                 title={"windows." + key}>
                 <iframe className="windows-iframe-dialog-body" onLoad={(ev) => { this.iframes[key] = ev.target; }} role="body" src={data.url} />
             </ResizeableWindow>
@@ -80,6 +85,12 @@ class WindowManager extends React.Component {
             return undefined;
         }
         return ["0", "false"].includes(textVal) ? false : true;
+    }
+    get = (obj, key, deflt) => {
+        if (obj[key] === undefined) {
+            return deflt;
+        }
+        return obj[key];
     }
 }
 

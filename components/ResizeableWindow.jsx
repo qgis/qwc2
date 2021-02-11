@@ -34,6 +34,7 @@ export default class ResizeableWindow extends React.Component {
         minHeight: PropTypes.number,
         minWidth: PropTypes.number,
         onClose: PropTypes.func,
+        onGeometryChanged: PropTypes.func,
         scrollable: PropTypes.bool,
         title: PropTypes.string,
         titlelabel: PropTypes.string,
@@ -52,7 +53,8 @@ export default class ResizeableWindow extends React.Component {
         onClose: () => {},
         zIndex: 8,
         visible: true,
-        dockable: true
+        dockable: true,
+        onGeometryChanged: () => {}
     }
     state = {
         dock: false,
@@ -110,7 +112,7 @@ export default class ResizeableWindow extends React.Component {
                 {dockable ? (
                     <Icon
                         className="resizeable-window-titlebar-control" icon={this.state.dock ? "undock" : "dock"}
-                        onClick={() => this.setState({dock: !this.state.dock})}
+                        onClick={this.toggleDock}
                         titlemsgid={this.state.dock ? LocaleUtils.trmsg("window.undock") : LocaleUtils.trmsg("window.dock")} />
                 ) : null}
                 <Icon className="resizeable-window-titlebar-control" icon="remove" onClick={this.onClose} titlemsgid={LocaleUtils.trmsg("window.close")} />
@@ -142,14 +144,26 @@ export default class ResizeableWindow extends React.Component {
     }
     onDragStop = (ev, data) => {
         this.setState({geometry: {...this.state.geometry, x: data.x, y: data.y}});
+        this.props.onGeometryChanged({
+            x: data.x, y: data.y, width: this.state.width, height: this.state.height, docked: this.state.dock
+        });
     }
     onResizeStop = (ev, dir, ref, delta, position) => {
-        this.setState({geometry: {
+        const geometry = {
             x: position.x,
             y: position.y,
             width: this.state.geometry.width + delta.width,
             height: this.state.geometry.height + delta.height
-        }});
+        };
+        this.setState({geometry: geometry});
+        this.props.onGeometryChanged({...geometry, docked: this.state.dock});
+    }
+    toggleDock = () => {
+        const newDockState = !this.state.dock;
+        this.setState({dock: newDockState});
+        this.props.onGeometryChanged({
+            x: this.state.x, y: this.state.y, width: this.state.width, height: this.state.height, docked: this.state.dock
+        });
     }
     startDockResize = (ev) => {
         if (ev.target === this.dock) {
