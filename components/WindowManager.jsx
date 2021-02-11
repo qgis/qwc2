@@ -48,9 +48,10 @@ class WindowManager extends React.Component {
             extraControls.push({icon: "print", callback: () => this.printIframe(key)});
         }
         const dockable = this.boolVal(data.options.dockable) !== false;
+        const docked = this.boolVal(data.options.docked) !== false;
         return (
-            <ResizeableWindow dockable={dockable} extraControls={extraControls} icon={data.icon || ""} initialHeight={data.options.h || 480}
-                initialWidth={data.options.w || 640} key={key}
+            <ResizeableWindow dockable={dockable || docked} extraControls={extraControls} icon={data.icon || ""}
+                initialHeight={data.options.h || 480} initialWidth={data.options.w || 640} initiallyDocked={docked} key={key}
                 onClose={() => this.closeWindow(key)}
                 title={"windows." + key}>
                 <iframe className="windows-iframe-dialog-body" onLoad={(ev) => { this.iframes[key] = ev.target; }} role="body" src={data.url} />
