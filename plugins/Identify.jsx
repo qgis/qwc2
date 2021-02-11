@@ -28,6 +28,7 @@ class Identify extends React.Component {
         enabled: PropTypes.bool,
         featureInfoReturnsLayerName: PropTypes.bool,
         identifyEmpty: PropTypes.func,
+        iframeDialogsInitiallyDocked: PropTypes.bool,
         initialHeight: PropTypes.number,
         initialWidth: PropTypes.number,
         initiallyDocked: PropTypes.bool,
@@ -107,6 +108,7 @@ class Identify extends React.Component {
                 displayResultTree={this.props.displayResultTree}
                 enableExport={this.props.enableExport}
                 featureInfoReturnsLayerName={this.props.featureInfoReturnsLayerName}
+                iframeDialogsInitiallyDocked={this.props.iframeDialogsInitiallyDocked}
                 initialHeight={this.props.initialHeight}
                 initialWidth={this.props.initialWidth}
                 initiallyDocked={this.props.initiallyDocked}

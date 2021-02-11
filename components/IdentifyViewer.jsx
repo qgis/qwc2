@@ -36,6 +36,7 @@ class IdentifyViewer extends React.Component {
         displayResultTree: PropTypes.bool,
         enableExport: PropTypes.bool,
         featureInfoReturnsLayerName: PropTypes.bool,
+        iframeDialogsInitiallyDocked: PropTypes.bool,
         initialHeight: PropTypes.number,
         initialWidth: PropTypes.number,
         initiallyDocked: PropTypes.bool,
@@ -676,6 +677,9 @@ class IdentifyViewer extends React.Component {
                 return res;
             }, {});
             if (target[1] === "iframedialog") {
+                if (this.props.iframeDialogsInitiallyDocked) {
+                    options.docked = true;
+                }
                 this.props.showIframeDialog(target[2], ev.target.href, options);
                 ev.preventDefault();
             }
