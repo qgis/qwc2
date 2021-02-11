@@ -282,6 +282,7 @@ class Print extends React.Component {
                         {/* This following one is needed for opacities to work!*/}
                         <input name="LAYERS" readOnly type={formvisibility} value={printLayers || ""} />
                         <input name="COLORS" readOnly type={formvisibility} value={printColors || ""} />
+                        <input name="CONTENT_DISPOSITION" readOnly type={formvisibility} value={this.props.inlinePrintOutput ? "inline" : "attachment"} />
                         <input name={mapName + ":LAYERS"} readOnly type={formvisibility} value={printLayers || ""} />
                         <input name={mapName + ":HIGHLIGHT_GEOM"} readOnly type={formvisibility} value={highlightParams.geoms.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_SYMBOL"} readOnly type={formvisibility} value={highlightParams.styles.join(";")} />
