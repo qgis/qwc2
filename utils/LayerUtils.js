@@ -564,8 +564,8 @@ const LayerUtils = {
         }
     },
     getLegendUrl(layer, sublayer, scale, projection, map) {
-        const name = (layer.externalLayerMap || {})[sublayer.name] ? layer.externalLayerMap[sublayer.name].params.LAYERS : sublayer.name;
-        const mapParam = (layer.externalLayerMap || {})[sublayer.name] ? layer.externalLayerMap[sublayer.name].params.MAP : (layer.params || []).MAP;
+        const name = (layer.externalLayerMap || {})[sublayer.name] ? (layer.externalLayerMap[sublayer.name].params || {}).LAYERS : sublayer.name;
+        const mapParam = (layer.externalLayerMap || {})[sublayer.name] ? (layer.externalLayerMap[sublayer.name].params || {}).MAP : (layer.params || {}).MAP;
         let params = "SERVICE=WMS"
                    + "&REQUEST=GetLegendGraphic"
                    + "&VERSION=" + (layer.version || "1.3.0")
