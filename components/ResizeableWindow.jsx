@@ -162,7 +162,7 @@ export default class ResizeableWindow extends React.Component {
         const newDockState = !this.state.dock;
         this.setState({dock: newDockState});
         this.props.onGeometryChanged({
-            x: this.state.x, y: this.state.y, width: this.state.width, height: this.state.height, docked: this.state.dock
+            x: this.state.x, y: this.state.y, width: this.state.width, height: this.state.height, docked: newDockState
         });
     }
     startDockResize = (ev) => {
