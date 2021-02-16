@@ -76,6 +76,7 @@ export default class ResizeableWindow extends React.Component {
                 docked: props.initiallyDocked || false
             };
         }
+        this.dragShield = null;
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.rnd && this.props.visible && this.props.visible !== prevProps.visible) {
@@ -129,6 +130,7 @@ export default class ResizeableWindow extends React.Component {
                 <Icon className="resizeable-window-titlebar-control" icon="remove" onClick={this.onClose} titlemsgid={LocaleUtils.trmsg("window.close")} />
             </div>),
             (<div className={bodyclasses} key="body" onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
+                <div className="resizeable-window-drag-shield" ref={el => {this.dragShield = el; }} />
                 {this.renderRole("body")}
             </div>)
         ];
@@ -145,6 +147,7 @@ export default class ResizeableWindow extends React.Component {
                     <Rnd bounds="parent" className="resizeable-window" default={this.state.geometry}
                         maxHeight={this.props.maxHeight || window.innerHeight} maxWidth={this.props.maxWidth || window.innerWidth}
                         minHeight={this.props.minHeight} minWidth={this.props.minWidth}
+                        onDragStart={this.onDragStart}
                         onDragStop={this.onDragStop} onResizeStop={this.onResizeStop}
                         ref={c => { this.rnd = c; }} style={{zIndex: this.props.zIndex}}>
                         {content}
@@ -153,9 +156,17 @@ export default class ResizeableWindow extends React.Component {
             );
         }
     }
+    onDragStart = (ev) => {
+        if (this.dragShield) {
+            this.dragShield.style.display = 'initial';
+        }
+    }
     onDragStop = (ev, data) => {
         const geometry = {...this.state.geometry, x: data.x, y: data.y};
         this.setState({geometry: geometry});
+        if (this.dragShield) {
+            this.dragShield.style.display = 'none';
+        }
     }
     onResizeStop = (ev, dir, ref, delta, position) => {
         const geometry = {
