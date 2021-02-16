@@ -77,7 +77,10 @@ class WindowManager extends React.Component {
         }
     }
     boolVal = (value, delft = false) => {
-        const textVal = ("" + (value || "")).toLowerCase();
+        if (value === undefined || value === null) {
+            return delft;
+        }
+        const textVal = ("" + value).toLowerCase();
         if (textVal === "") {
             return delft;
         }
