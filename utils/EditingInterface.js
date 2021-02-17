@@ -26,6 +26,9 @@ function buildErrMsg(err) {
             message += ":\n";
             message += err.response.data.geometry_errors.map(entry => " - " + entry.reason + " at " + entry.location);
         }
+        if (!isEmpty(err.response.data.data_errors)) {
+            message += ":\n - " + err.response.data.data_errors.join("\n - ");
+        }
     }
     return message;
 }
