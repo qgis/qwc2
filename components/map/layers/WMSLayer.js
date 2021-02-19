@@ -48,7 +48,7 @@ export default {
                     url: urls[0],
                     serverType: options.serverType,
                     params: queryParameters,
-                    ratio: options.ratio,
+                    ratio: options.ratio || 1,
                     hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false
                 })
             });
