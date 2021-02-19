@@ -89,6 +89,7 @@ const ThemeUtils = {
             sublayers: (Array.isArray(subLayers) && subLayers.length) ? subLayers : theme.sublayers,
             tiled: theme.tiled,
             ratio: !theme.tiled ? 1 : undefined,
+            serverType: 'qgis',
             format: theme.format,
             role: role,
             attribution: theme.attribution,
