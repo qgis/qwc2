@@ -167,6 +167,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             return
 
         # layer
+        layerEntry["geometryType"] = layer.getAttribute("geometryType")
         layerEntry["visibility"] = layer.getAttribute("visible") == "1"
         if layerEntry["visibility"]:
             # collect visible layers
@@ -205,7 +206,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             keywords = []
             for keyword in getChildElement(layer, "KeywordList").getElementsByTagName("Keyword"):
                 keywords.append(getElementValue(keyword))
-            layerEntry["keywords"] = ",".join(keywords)
+            layerEntry["keywords"] = ", ".join(keywords)
         except:
             pass
 
@@ -296,9 +297,11 @@ def getTheme(config, configItem, result, resultItem):
         visibleLayers = []
         titleNameMap = {}
         featureReports = configItem["featureReport"] if "featureReport" in configItem else {}
-        externalLayers = configItem["externalLayers"] if "externalLayers" in configItem else []
+        externalLayers = []
         getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, featureReports, externalLayers)
         autogenExternalLayers += list(map(lambda entry: entry["name"], externalLayers))
+        if "externalLayers" in configItem:
+            externalLayers += configItem["externalLayers"]
         visibleLayers.reverse()
 
         # print templates

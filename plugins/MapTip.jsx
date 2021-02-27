@@ -34,27 +34,19 @@ class MapTip extends React.Component {
         maptips: [],
         pos: null
     }
-    componentDidMount() {
-        this.curPos = null;
-        // Hide / abort map tip query if mouse leaves canvas
-        const mapEl = document.getElementById("map");
-        if (mapEl) {
-            mapEl.addEventListener("mouseout", (ev) => {
-                if (!ev.relatedTarget || ev.relatedTarget.id !== "MapTip") {
-                    this.clearMaptip();
-                }
-            }, false);
-        }
-    }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.mapTipsEnabled && this.props.mousepos && (
-            !this.curPos ||
-            Math.abs(this.props.mousepos.pixel[0] - this.curPos[0]) > 5 ||
-            Math.abs(this.props.mousepos.pixel[1] - this.curPos[1]) > 5
-        )) {
+        if (this.props.mapTipsEnabled && this.props.mousepos &&
+            this.props.mousepos !== prevProps.mousepos &&
+            (
+                isEmpty(this.state.pos) ||
+                Math.abs(this.props.mousepos.pixel[0] - this.state.pos[0]) > 5 ||
+                Math.abs(this.props.mousepos.pixel[1] - this.state.pos[1]) > 5
+            )
+        ) {
             this.clearMaptip();
-            this.curPos = this.props.mousepos.pixel;
-            this.timeoutId = setTimeout(() => this.queryMapTip(this.curPos[0], this.curPos[1]), 500);
+            const pos = this.props.mousepos.pixel;
+            this.setState({pos});
+            this.timeoutId = setTimeout(() => this.queryMapTip(pos[0], pos[1]), 500);
         } else if (!this.props.mapTipsEnabled && prevProps.mapTipsEnabled) {
             this.clearMaptip();
         }
@@ -109,7 +101,7 @@ class MapTip extends React.Component {
                 };
                 this.props.addLayerFeatures(sellayer, features, true);
             }
-            this.setState({maptips: mapTips, pos: [x, y]});
+            this.setState({maptips: mapTips});
         });
     }
     render() {
@@ -119,16 +111,22 @@ class MapTip extends React.Component {
                 left: 10000 + "px",
                 top: 10000 + "px"
             };
-            return (
+            const bufferPos = {
+                left: (this.state.pos[0] - 8) + "px",
+                top: (this.state.pos[1] - 8) + "px"
+            };
+            return [(
+                <div id="MapTipPointerBuffer" key="MapTipPointerBuffer" style={bufferPos} />
+            ), (
                 <div
-                    id="MapTip"
+                    id="MapTip" key="MapTip"
                     ref={this.positionMapTip}
                     style={position}>
                     {this.state.maptips.map((maptip, idx) => (
                         <div dangerouslySetInnerHTML={{__html: maptip}} key={"tip" + idx} />
                     ))}
                 </div>
-            );
+            )];
         }
         return null;
     }

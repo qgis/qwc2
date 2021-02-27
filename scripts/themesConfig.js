@@ -157,6 +157,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         }
 
         // layer
+        layerEntry.geometryType = layer.$.geometryType;
         layerEntry.visibility = layer.$.visible === '1';
         if (layerEntry.visibility) {
             // collect visible layers
@@ -197,7 +198,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
             toArray(layer.KeywordList.Keyword).map((entry) => {
                 keywords.push((typeof entry === 'object') ? entry._ : entry);
             });
-            layerEntry.keywords = keywords.join(",");
+            layerEntry.keywords = keywords.join(", ");
         }
         if (layer.MinScaleDenominator !== undefined) {
             layerEntry.minScale = Math.round(parseFloat(layer.MinScaleDenominator));
@@ -317,9 +318,10 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             const layerTree = [];
             const visibleLayers = [];
             const titleNameMap = {};
-            const externalLayers = configItem.externalLayers || [];
+            const externalLayers = [];
             getLayerTree(topLayer, layerTree, visibleLayers, printLayers, 1, collapseLayerGroupsBelowLevel, titleNameMap, configItem.featureReport || {}, externalLayers);
             autogenExternalLayers.push(...externalLayers.map(entry => entry.name));
+            externalLayers.push(...(configItem.externalLayers || []));
             visibleLayers.reverse();
 
             // print templates

@@ -15,7 +15,7 @@
  */
 import axios from 'axios';
 import {isEmpty} from 'lodash';
-import ConfigUtils from 'qwc2/utils/ConfigUtils';
+import ConfigUtils from './ConfigUtils';
 
 
 function buildErrMsg(err) {
@@ -26,6 +26,11 @@ function buildErrMsg(err) {
             message += ":\n";
             message += err.response.data.geometry_errors.map(entry => " - " + entry.reason + " at " + entry.location);
         }
+        if (!isEmpty(err.response.data.data_errors)) {
+            message += ":\n - " + err.response.data.data_errors.join("\n - ");
+        }
+    } else if (err.response && err.response.statusText) {
+        message += ": " + err.response.statusText;
     }
     return message;
 }

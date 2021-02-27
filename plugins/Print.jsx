@@ -68,10 +68,12 @@ class Print extends React.Component {
         this.state.grid = props.gridInitiallyEnabled;
     }
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.theme !== this.props.theme || !this.state.layout) {
+        if (prevProps.theme !== this.props.theme) {
             if (this.props.theme && !isEmpty(this.props.theme.print)) {
                 const layout = this.props.theme.print.find(l => l.default) || this.props.theme.print[0];
                 this.setState({layout: layout});
+            } else {
+                this.setState({layout: null});
             }
         }
     }
@@ -244,7 +246,7 @@ class Print extends React.Component {
                                 </td>
                             </tr>
                         ) : null}
-                        {printGrid && this.props.displayRotation === true ? (
+                        {printGrid ? (
                             <tr>
                                 <td>{LocaleUtils.tr("print.grid")}</td>
                                 <td>
@@ -282,6 +284,7 @@ class Print extends React.Component {
                         {/* This following one is needed for opacities to work!*/}
                         <input name="LAYERS" readOnly type={formvisibility} value={printLayers || ""} />
                         <input name="COLORS" readOnly type={formvisibility} value={printColors || ""} />
+                        <input name="CONTENT_DISPOSITION" readOnly type={formvisibility} value={this.props.inlinePrintOutput ? "inline" : "attachment"} />
                         <input name={mapName + ":LAYERS"} readOnly type={formvisibility} value={printLayers || ""} />
                         <input name={mapName + ":HIGHLIGHT_GEOM"} readOnly type={formvisibility} value={highlightParams.geoms.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_SYMBOL"} readOnly type={formvisibility} value={highlightParams.styles.join(";")} />

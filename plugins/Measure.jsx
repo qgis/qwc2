@@ -11,7 +11,6 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
 import isEmpty from 'lodash.isempty';
-import proj4js from 'proj4';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import measureUtils from '../utils/MeasureUtils';
@@ -66,7 +65,7 @@ class Measure extends React.Component {
     renderResult = () => {
         let resultBody = null;
         if (this.props.measureState.geomType === "Point") {
-            const digits = proj4js.defs(this.props.displaycrs).units === 'degrees' ? 4 : 0;
+            const digits = CoordinatesUtils.getUnits(this.props.displaycrs) === 'degrees' ? 4 : 0;
             let text = "0 0";
             if (!isEmpty(this.props.measureState.coordinates)) {
                 const coo = CoordinatesUtils.reproject(this.props.measureState.coordinates, this.props.mapcrs, this.props.displaycrs);

@@ -52,10 +52,10 @@ class LayerInfoWindow extends React.Component {
             return null;
         }
         let legend = null;
-        if (this.props.layer.legendUrl) {
-            const scale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
-            const request = LayerUtils.getLegendUrl(this.props.layer, this.props.sublayer, scale, this.props.map.projection, this.props.bboxDependentLegend ? this.props.map : null);
-            legend = (<img className="layer-info-window-legend" src={request} />);
+        const scale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
+        const legendUrl = LayerUtils.getLegendUrl(this.props.layer, this.props.sublayer, scale, this.props.map.projection, this.props.bboxDependentLegend ? this.props.map : null);
+        if (legendUrl) {
+            legend = (<img className="layer-info-window-legend" src={legendUrl} />);
         } else if (this.props.layer.color) {
             legend = (<span className="layer-info-window-coloricon" style={{backgroundColor: this.props.layer.color}} />);
         }

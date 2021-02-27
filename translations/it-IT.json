@@ -233,7 +233,8 @@
         "keywords": "Parole chiavi",
         "title": "Titolo"
       },
-      "openintab": "Apri in nuova scheda"
+      "openintab": "Apri in nuova scheda",
+      "restrictedthemeinfo": ""
     },
     "tooltip": {
       "background": "Cambia sfondo",

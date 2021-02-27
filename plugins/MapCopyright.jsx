@@ -18,7 +18,8 @@ import './style/MapCopyright.css';
 class MapCopyright extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
-        map: PropTypes.object
+        map: PropTypes.object,
+        showThemeCopyrightOnly: PropTypes.bool
     }
     state = {
         currentCopyrights: []
@@ -28,19 +29,25 @@ class MapCopyright extends React.Component {
             const transformedbboxes = {};
             transformedbboxes[nextProps.map.projection] = nextProps.map.bbox.bounds;
             const copyrights = {};
-            nextProps.layers.map(layer => MapCopyright.collectCopyrigths(layer, nextProps.map, transformedbboxes, copyrights));
+            nextProps.layers.map(layer => MapCopyright.collectCopyrigths(layer, nextProps.map, transformedbboxes, copyrights, nextProps.showThemeCopyrightOnly));
             return {currentCopyrights: copyrights};
         }
         return null;
     }
-    static collectCopyrigths = (layer, map, transformedbboxes, copyrights) => {
+    static collectCopyrigths = (layer, map, transformedbboxes, copyrights, showThemeCopyrightOnly) => {
         if (layer.sublayers) {
-            layer.sublayers.map(sublayer => MapCopyright.collectCopyrigths(sublayer, map, transformedbboxes, copyrights));
+            layer.sublayers.map(sublayer => MapCopyright.collectCopyrigths(sublayer, map, transformedbboxes, copyrights, showThemeCopyrightOnly));
         }
         if (!layer.attribution || !layer.attribution.Title || !layer.visibility) {
             return;
         }
-        if (layer.role !== LayerRole.BACKGROUND) {
+        if (showThemeCopyrightOnly) {
+            if (layer.role === LayerRole.THEME) {
+                copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
+            }
+        } else if (layer.role === LayerRole.BACKGROUND) {
+            copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
+        } else {
             if (!layer.bbox) {
                 return;
             }
@@ -56,8 +63,6 @@ class MapCopyright extends React.Component {
                 // Extents overlap
                 copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
             }
-        } else {
-            copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
         }
     }
     render() {

@@ -69,15 +69,15 @@ class RedliningSupport extends React.Component {
         if (this.props.redlining === prevProps.redlining) {
             // pass
         } else if (!this.props.redlining || !this.props.redlining.action) {
-            this.reset(this.props.redlining.layer !== prevProps.redlining.layer);
+            this.reset(layerChanged);
         } else if ((this.props.redlining.action === 'Pick' || this.props.redlining.action === 'Buffer') && (prevProps.redlining.action !== this.props.redlining.action || layerChanged)) {
-            this.addPickInteraction(this.props, layerChanged);
+            this.addPickInteraction(layerChanged);
         } else if (this.props.redlining.action === 'Delete') {
             this.deleteCurrentFeature(prevProps);
         } else if (this.props.redlining.action === 'Draw' && (prevProps.redlining.action !== 'Draw' || this.props.redlining.geomType !== prevProps.redlining.geomType || layerChanged)) {
-            this.addDrawInteraction(this.props, layerChanged);
+            this.addDrawInteraction(layerChanged);
         } else if (this.props.redlining.freehand !== prevProps.redlining.freehand) {
-            this.addDrawInteraction(this.props);
+            this.addDrawInteraction(layerChanged);
         } else if (this.props.redlining.style !== prevProps.redlining.style) {
             this.updateFeatureStyle(this.props.redlining.style);
         }
@@ -106,9 +106,11 @@ class RedliningSupport extends React.Component {
                 styles.push(this.selectedTextStyle(this.currentFeature, opts));
             }
             this.currentFeature.setStyle(styles.concat(style, this.selectedStyle));
+            this.currentFeature.set('styleName', styleName);
+            this.currentFeature.set('styleOptions', opts);
         }
     }
-    addDrawInteraction = (newProps, layerChanged) => {
+    addDrawInteraction = (layerChanged) => {
         this.reset(layerChanged);
         const typeMap = {
             Text: "Point",
@@ -118,14 +120,14 @@ class RedliningSupport extends React.Component {
             Circle: "Circle",
             Box: "Circle"
         };
-        const isText = newProps.redlining.geomType === "Text";
-        const isFreeHand = newProps.redlining.freehand;
+        const isText = this.props.redlining.geomType === "Text";
+        const isFreeHand = this.props.redlining.freehand;
         const drawInteraction = new ol.interaction.Draw({
-            type: typeMap[newProps.redlining.geomType],
+            type: typeMap[this.props.redlining.geomType],
             condition: (event) => { return event.originalEvent.buttons === 1; },
             style: new ol.style.Style(),
             freehand: isFreeHand,
-            geometryFunction: newProps.redlining.geomType === "Box" ? ol.interaction.createBox() : undefined
+            geometryFunction: this.props.redlining.geomType === "Box" ? ol.interaction.createBox() : undefined
         });
         drawInteraction.on('drawstart', (evt) => {
             if (this.picking && this.props.redlining.drawMultiple === false) {
@@ -140,7 +142,7 @@ class RedliningSupport extends React.Component {
         drawInteraction.on('drawend', () => {
             const feature = this.currentFeature;
             this.commitCurrentFeature(true);
-            this.enterTemporaryPickMode(feature, newProps.redlining.layer);
+            this.enterTemporaryPickMode(feature, this.props.redlining.layer);
         }, this);
         this.props.map.addInteraction(drawInteraction);
         this.interactions = [drawInteraction];
@@ -193,9 +195,9 @@ class RedliningSupport extends React.Component {
             this.picking = false;
         }
     }
-    addPickInteraction = (newProps, layerChanged) => {
+    addPickInteraction = (layerChanged) => {
         this.reset(layerChanged);
-        const redliningLayer = this.searchRedliningLayer(newProps.redlining.layer);
+        const redliningLayer = this.searchRedliningLayer(this.props.redlining.layer);
         if (!redliningLayer) {
             return;
         }
@@ -281,7 +283,7 @@ class RedliningSupport extends React.Component {
         if (this.currentFeature.getGeometry() instanceof ol.geom.Circle) {
             const center = this.currentFeature.getGeometry().getCenter();
             const radius = this.currentFeature.getGeometry().getRadius();
-            const deg2rad = Math.PI / 180.;
+            const deg2rad = Math.PI / 180;
             feature.geometry.type = "Polygon";
             feature.geometry.coordinates = [
                 Array.apply(null, Array(361)).map((item, index) => ([center[0] + radius * Math.cos(index * deg2rad), center[1] + radius * Math.sin(index * deg2rad)]))
@@ -291,7 +293,8 @@ class RedliningSupport extends React.Component {
                 radius: radius
             }});
         }
-        Object.assign(feature, {styleName: isText ? "text" : "default", styleOptions: this.styleOptions(this.props.redlining.style)});
+        feature.styleName = this.currentFeature.get('styleName');
+        feature.styleOptions = this.currentFeature.get('styleOptions');
         const layer = {
             id: this.props.redlining.layer,
             title: this.props.redlining.layerTitle,
@@ -322,7 +325,7 @@ class RedliningSupport extends React.Component {
         if (this.currentFeature) {
             // Reset selection style
             const isText = this.currentFeature.get("isText") === true;
-            const style = FeatureStyles[isText ? "text" : "default"](this.currentFeature, this.styleOptions(this.props.redlining.style));
+            const style = FeatureStyles[isText ? "text" : "default"](this.currentFeature, this.currentFeature.get('styleOptions'));
             this.currentFeature.setStyle(style);
             this.currentFeature = null;
             this.props.changeRedliningState({selectedFeature: null});

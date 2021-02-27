@@ -16,7 +16,7 @@
         "RasterExport": "Export image",
         "Redlining": "Dessiner",
         "Share": "Partager",
-        "ThemeSwitcher": "Cartes",
+        "ThemeSwitcher": "Thèmes",
         "Tools": "Outils"
       }
     },
@@ -31,10 +31,10 @@
     },
     "copybtn": {
       "click_to_copy": "Cliquer pour copier",
-      "copied": "Copiée"
+      "copied": "Copié"
     },
     "dxfexport": {
-      "selectinfo": "Paramétrage de l'export DXF",
+      "selectinfo": "Faites glisser un rectangle autour de la région à exporter..",
       "symbologyscale": "Echelle"
     },
     "editing": {
@@ -46,10 +46,10 @@
       "feature": "Objet",
       "maximize": "Maximiser",
       "minimize": "Minimiser",
-      "noeditablelayers": "Il n'y a pas de calque éditable pour ce thème",
+      "noeditablelayers": "Il n'y a pas de couche éditable pour ce thème",
       "pick": "Choisir",
       "reallydelete": "Supprimer",
-      "select": "Choisir"
+      "select": "Sélectionner"
     },
     "fileselector": {
       "placeholder": "Choisir un fichier..."
@@ -74,7 +74,7 @@
       "info": "Dessiner un polygone pour identifier les objets"
     },
     "importlayer": {
-      "addlayer": "Ajouter un calque",
+      "addlayer": "Ajouter une couche",
       "connect": "Connecter",
       "filter": "Filtrer",
       "loading": "",
@@ -85,7 +85,7 @@
       "urlplaceholder": "Entrer l'URL d'un WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": ""
+      "clickhelpPoint": "Cliquez sur un emplacement pour l'identifier sur la carte..."
     },
     "layerinfo": {
       "abstract": "Récapitulation",
@@ -96,24 +96,24 @@
       "maxscale": "",
       "metadataUrl": "URL des métadonnées",
       "minscale": "",
-      "title": "Informations dur la couche"
+      "title": "Informations sur la couche"
     },
     "layertree": {
       "compare": "Comparer",
-      "deletealllayers": "",
-      "importlayer": "Importer un calque",
+      "deletealllayers": "Supprimer toutes les couches",
+      "importlayer": "Importer une couche",
       "maptip": "Afficher les infobulles",
       "printlegend": "Afficher la légende",
-      "separator": "",
-      "separatortooltip": "",
-      "transparency": "",
-      "visiblefilter": "",
-      "zoomtolayer": ""
+      "separator": "Séparateur",
+      "separatortooltip": "Ajouter séparateur",
+      "transparency": "Transparence",
+      "visiblefilter": "Filtrer couches invisibles",
+      "zoomtolayer": "Zoomer sur la couche"
     },
     "locate": {
-      "feetUnit": "pied",
-      "metersUnit": "mètre",
-      "popup": "Dans un préimètre de {distance} {unit} de ce point",
+      "feetUnit": "pieds",
+      "metersUnit": "mètres",
+      "popup": "Vous êtes dans un périmètre de {distance} {unit} de ce point",
       "statustooltip": {
         "DISABLED": "Position: désactivée",
         "ENABLED": "Position: activée",
@@ -156,18 +156,18 @@
     },
     "redlining": {
       "border": "Bordure",
-      "buffer": "",
+      "buffer": "Tampon",
       "buffercompute": "Calculer",
       "bufferdistance": "Distance",
-      "bufferlayer": "Calque cible",
-      "bufferlayername": "",
-      "bufferselectfeature": "",
-      "circle": "",
+      "bufferlayer": "Couche cible",
+      "bufferlayername": "Sortie",
+      "bufferselectfeature": "Choisissez une entité pour le tampon...",
+      "circle": "Cercle",
       "delete": "Effacer",
       "draw": "Dessiner",
       "edit": "Editer",
       "fill": "Remplissage",
-      "freehand": "Dessin à main levée",
+      "freehand": "Dessin à main libre",
       "label": "Texte",
       "layer": "Couche",
       "line": "Ligne",
@@ -180,38 +180,38 @@
       "width": "Largeur"
     },
     "scratchdrawing": {
-      "finish": ""
+      "finish": "Terminer"
     },
     "search": {
       "all": "Tous",
-      "enablelayer": "Activer le calque",
-      "existinglayer": "",
-      "invisiblelayer": "Le résultat est sur un calque désactivé",
+      "enablelayer": "Activer la couche",
+      "existinglayer": "La couche existe déjà dans la carte",
+      "invisiblelayer": "Le résultat est sur une couche désactivé",
       "more": "Plus...",
       "search": "Chercher",
       "searchall": "Rechercher un lieu ou ajouter une carte...",
       "themes": "Cartes"
     },
     "searchbox": {
-      "filter": "",
-      "layers": "",
-      "more": "",
-      "morelayers": "",
-      "nodescription": "",
-      "placeholder": "",
-      "places": "",
-      "recent": ""
+      "filter": "Affiner la recherche",
+      "layers": "Cartes",
+      "more": "Plus de résultats",
+      "morelayers": "Plus de résultats disponibles",
+      "nodescription": "Pas de description disponible",
+      "placeholder": "Rechercher un lieu ou ajouter une carte...",
+      "places": "Lieux",
+      "recent": "Recherches récentes"
     },
     "serviceinfo": {
-      "abstract": "",
-      "contactEmail": "",
-      "contactOrganization": "",
-      "contactPerson": "",
-      "contactPhone": "",
-      "contactPosition": "",
-      "keywords": "",
-      "onlineResource": "",
-      "title": ""
+      "abstract": "Résumé",
+      "contactEmail": "Courrier électronique",
+      "contactOrganization": "Organisation",
+      "contactPerson": "Personne de contact",
+      "contactPhone": "Téléphone",
+      "contactPosition": "Poste",
+      "keywords": "mots-clés",
+      "onlineResource": "Ressource en ligne",
+      "title": "Information sur le thème"
     },
     "share": {
       "QRCodeLinkTitle": "QR code",
@@ -227,13 +227,14 @@
     "themeswitcher": {
       "addlayerstotheme": "Ajouter des couches à la carte",
       "addtotheme": "Ajouter au thème actuel",
-      "filter": "Filtre",
+      "filter": "Filtre...",
       "match": {
-        "abstract": "",
-        "keywords": "",
-        "title": ""
+        "abstract": "Résumé",
+        "keywords": "Mots-clés",
+        "title": "Titre"
       },
-      "openintab": ""
+      "openintab": "Ouvrir dans l'onglet",
+      "restrictedthemeinfo": "Vous n'êtes pas autorisé à voir le thème ou vous n'êtes pas connecté"
     },
     "tooltip": {
       "background": "Changer de fond",
@@ -242,12 +243,12 @@
       "zoomout": "Dézoomer"
     },
     "vectorlayerpicker": {
-      "prompt": ""
+      "prompt": "Entrez le nom de la couche"
     },
     "window": {
-      "close": "",
-      "dock": "",
-      "undock": ""
+      "close": "Fermer",
+      "dock": "attacher",
+      "undock": "détacher"
     }
   }
 }

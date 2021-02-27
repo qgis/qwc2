@@ -9,8 +9,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import isEmpty from 'lodash.isempty';
 import {stringify} from 'wellknown';
-import {LayerRole} from '../actions/layers';
 import {sendIdentifyRequest} from '../actions/identify';
 import {changeSelectionState} from '../actions/selection';
 import {setCurrentTask} from '../actions/task';
@@ -20,6 +20,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 
 class IdentifyRegion extends React.Component {
     static propTypes = {
+        active: PropTypes.bool,
         changeSelectionState: PropTypes.func,
         layers: PropTypes.array,
         map: PropTypes.object,
@@ -29,7 +30,7 @@ class IdentifyRegion extends React.Component {
         theme: PropTypes.object
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.selection.polygon && this.props.selection !== prevProps.selection) {
+        if (this.props.active && this.props.selection.polygon && this.props.selection !== prevProps.selection) {
             this.getFeatures(this.props.selection.polygon);
         }
     }
@@ -56,31 +57,24 @@ class IdentifyRegion extends React.Component {
         );
     }
     getFeatures = (poly) => {
-        const queryLayers = this.props.layers.reduce((accum, layer) => {
-            return layer.role === LayerRole.THEME ? accum.concat(layer.queryLayers) : accum;
-        }, []).join(",");
-        if (poly.length < 1 || !queryLayers) {
+        const queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
+        if (poly.length < 1 || isEmpty(queryableLayers)) {
             return;
         }
         this.props.changeSelectionState({reset: true});
-        const layer = this.props.layers.find(l => l.role === LayerRole.THEME);
-        const center = [0, 0];
-        for (let i = 0; i < poly.length; ++i) {
-            center[0] += poly[i][0];
-            center[1] += poly[i][1];
-        }
-        center[0] /= poly.length;
-        center[1] /= poly.length;
         const geometry = {
             type: "Polygon",
             coordinates: [poly]
         };
         const filter = stringify(geometry);
-        this.props.sendRequest(IdentifyUtils.buildFilterRequest(layer, queryLayers, filter, this.props.map, {}));
+        queryableLayers.forEach(layer => {
+            this.props.sendRequest(IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, {}));
+        });
     }
 }
 
 const selector = (state) => ({
+    active: state.task.id === "IdentifyRegion",
     selection: state.selection,
     map: state.map,
     theme: state.theme.current,

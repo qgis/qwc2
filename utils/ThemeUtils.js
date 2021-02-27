@@ -89,6 +89,7 @@ const ThemeUtils = {
             sublayers: (Array.isArray(subLayers) && subLayers.length) ? subLayers : theme.sublayers,
             tiled: theme.tiled,
             ratio: !theme.tiled ? 1 : undefined,
+            serverType: 'qgis',
             format: theme.format,
             role: role,
             attribution: theme.attribution,
@@ -100,24 +101,9 @@ const ThemeUtils = {
                 ...theme.externalLayerMap,
                 ...(theme.externalLayers || []).reduce((res, cur) => {
                     res[cur.internalLayer] = {
-                        ...themes.externalLayers.find(entry => entry.name === cur.name),
-                        uuid: uuid.v4()
+                        ...themes.externalLayers.find(entry => entry.name === cur.name)
                     };
-                    res[cur.internalLayer].title = res[cur.internalLayer].title || res[cur.internalLayer].name;
-                    if (res[cur.internalLayer].type === "wms" || res[cur.internalLayer].params) {
-                        res[cur.internalLayer].type = "wms";
-                        res[cur.internalLayer].featureInfoUrl = res[cur.internalLayer].featureInfoUrl || res[cur.internalLayer].url;
-                        res[cur.internalLayer].legendUrl = res[cur.internalLayer].legendUrl || res[cur.internalLayer].url;
-                        res[cur.internalLayer].queryLayers = res[cur.internalLayer].queryLayers || res[cur.internalLayer].params.LAYERS.split(",");
-
-                        const externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp("externalLayerFeatureInfoFormats") || {};
-                        for (const entry of Object.keys(externalLayerFeatureInfoFormats)) {
-                            if (res[cur.internalLayer].featureInfoUrl.toLowerCase().includes(entry.toLowerCase())) {
-                                res[cur.internalLayer].infoFormats = [externalLayerFeatureInfoFormats[entry]];
-                                break;
-                            }
-                        }
-                    }
+                    LayerUtils.completeExternalLayer(res[cur.internalLayer]);
                     return res;
                 }, {})
             }

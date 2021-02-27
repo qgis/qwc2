@@ -233,7 +233,8 @@
         "keywords": "Cuvinte cheie",
         "title": "Titlu"
       },
-      "openintab": "Deschide în tab nou"
+      "openintab": "Deschide în tab nou",
+      "restrictedthemeinfo": ""
     },
     "tooltip": {
       "background": "Straturi suport",

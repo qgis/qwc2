@@ -233,7 +233,8 @@
         "keywords": "Anahtar kelimeler",
         "title": "Başlık"
       },
-      "openintab": "Sekmede aç"
+      "openintab": "Sekmede aç",
+      "restrictedthemeinfo": ""
     },
     "tooltip": {
       "background": "Arkaplanı değiştir",

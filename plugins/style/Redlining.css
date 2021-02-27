@@ -18,6 +18,10 @@ div.redlining-group > div:first-child {
     font-size: 85%;
 }
 
+div.redlining-group > div:last-child {
+    margin: 0.25em 0;
+}
+
 div.redlining-group > div {
     white-space: nowrap;
 }

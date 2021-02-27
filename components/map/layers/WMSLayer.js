@@ -46,9 +46,9 @@ export default {
                 maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.projection)[0] : undefined,
                 source: new ol.source.ImageWMS({
                     url: urls[0],
-                    serverType: 'qgis',
+                    serverType: options.serverType,
                     params: queryParameters,
-                    ratio: options.ratio,
+                    ratio: options.ratio || 1,
                     hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false
                 })
             });
@@ -66,7 +66,7 @@ export default {
             source: new ol.source.TileWMS({
                 urls: urls,
                 params: queryParameters,
-                serverType: 'qgis',
+                serverType: options.serverType,
                 tileGrid: tileGrid,
                 hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false
             })

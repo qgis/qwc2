@@ -119,7 +119,7 @@ div.identify-body .identify-result-title {
     display: flex;
 }
 
-div.identify-body .identify-result-title > span:first-child {
+div.identify-body .identify-result-title > span:not(.icon) {
     flex: 1 1 auto;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -127,7 +127,10 @@ div.identify-body .identify-result-title > span:first-child {
 
 div.identify-body .identify-result-title > span.icon {
     flex: 0 0 auto;
-    padding-left: 0.25em;
+}
+
+div.identify-body .identify-result-title > span:not(:first-child) {
+    margin-left: 0.5em;
 }
 
 div.identify-body .identify-result-title > span.icon:hover {

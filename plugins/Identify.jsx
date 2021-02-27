@@ -15,9 +15,7 @@ import {LayerRole, addMarker, removeMarker, removeLayer} from '../actions/layers
 import IdentifyViewer from '../components/IdentifyViewer';
 import TaskBar from '../components/TaskBar';
 import IdentifyUtils from '../utils/IdentifyUtils';
-import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
 
 class Identify extends React.Component {
     static propTypes = {
@@ -30,6 +28,7 @@ class Identify extends React.Component {
         enabled: PropTypes.bool,
         featureInfoReturnsLayerName: PropTypes.bool,
         identifyEmpty: PropTypes.func,
+        iframeDialogsInitiallyDocked: PropTypes.bool,
         initialHeight: PropTypes.number,
         initialWidth: PropTypes.number,
         initiallyDocked: PropTypes.bool,
@@ -61,28 +60,9 @@ class Identify extends React.Component {
 
             let queryableLayers = [];
             if (clickPoint) {
-                queryableLayers = this.props.layers.filter((l) => {
-                    // All non-background WMS layers with a non-empty queryLayers list
-                    return l.visibility && l.type === 'wms' && l.role !== LayerRole.BACKGROUND && (l.queryLayers || []).length > 0;
-                });
-                const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
-                queryableLayers.forEach((layer) => {
-                    const layers = [];
-                    const queryLayers = layer.queryLayers;
-                    for (let i = 0; i < queryLayers.length; ++i) {
-                        if (layer.externalLayerMap && layer.externalLayerMap[queryLayers[i]]) {
-                            const sublayer = LayerUtils.searchSubLayer(layer, "name", queryLayers[i]);
-                            const sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
-                            if (!isEmpty(layer.externalLayerMap[queryLayers[i]].queryLayers) && !sublayerInvisible) {
-                                layers.push(layer.externalLayerMap[queryLayers[i]]);
-                            }
-                        } else if (layers.length > 0 && layers[layers.length - 1].id === layer.id) {
-                            layers[layers.length - 1].queryLayers.push(queryLayers[i]);
-                        } else {
-                            layers.push({...layer, queryLayers: [queryLayers[i]]});
-                        }
-                    }
-                    layers.forEach(l => this.props.sendRequest(IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, this.props.params)));
+                queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
+                queryableLayers.forEach(l => {
+                    this.props.sendRequest(IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, this.props.params));
                 });
             }
             let queryFeature = null;
@@ -128,6 +108,7 @@ class Identify extends React.Component {
                 displayResultTree={this.props.displayResultTree}
                 enableExport={this.props.enableExport}
                 featureInfoReturnsLayerName={this.props.featureInfoReturnsLayerName}
+                iframeDialogsInitiallyDocked={this.props.iframeDialogsInitiallyDocked}
                 initialHeight={this.props.initialHeight}
                 initialWidth={this.props.initialWidth}
                 initiallyDocked={this.props.initiallyDocked}

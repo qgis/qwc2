@@ -81,11 +81,34 @@ class SearchBox extends React.Component {
             const hc = UrlParams.getParam('hc');
             const hp = UrlParams.getParam('hp');
             const hf = UrlParams.getParam('hf');
+            const ht = UrlParams.getParam('ht') || "";
             if (hp && hf) {
                 const DATA_URL = ConfigUtils.getConfigProp("searchDataServiceUrl").replace(/\/$/g, "");
                 axios.get(DATA_URL + "/" + hp + "/?filter=" + hf).then(response => {
-                    this.showFeatureGeometry(response.data, prevProps.localConfig.startupParams.s);
-                });
+                    this.showFeatureGeometry(response.data, prevProps.localConfig.startupParams.s, ht);
+                }).catch(() => {});
+            } else if (hp && ht) {
+                const params = {
+                    searchtext: ht,
+                    filter: hp,
+                    limit: 1
+                };
+                const service = ConfigUtils.getConfigProp("searchServiceUrl").replace(/\/$/g, "") + '/';
+                axios.get(service, {params}).then(response => {
+                    if (response.data.results && response.data.results.length === 1) {
+                        const result = response.data.results[0].feature;
+                        let filter = `[["${result.id_field_name}","=",`;
+                        if (typeof(result.feature_id) === 'string') {
+                            filter += `"${result.feature_id}"]]`;
+                        } else {
+                            filter += `${result.feature_id}]]`;
+                        }
+                        const DATA_URL = ConfigUtils.getConfigProp("searchDataServiceUrl").replace(/\/$/g, "");
+                        axios.get(DATA_URL + "/" + result.dataproduct_id + "/?filter=" + filter).then(r => this.showFeatureGeometry(r.data, undefined, result.display)).catch(() => {});
+                    } else {
+                        this.setState({searchText: ht});
+                    }
+                }).catch(() => {});
             } else if (typeof(hc) === "string" && (hc.toLowerCase() === "true" || hc === "1")) {
                 this.selectProviderResult({
                     label: "",
@@ -94,7 +117,7 @@ class SearchBox extends React.Component {
                     crs: this.props.displaycrs
                 }, false);
             }
-            UrlParams.updateParams({hp: undefined, hf: undefined, hc: undefined});
+            UrlParams.updateParams({hp: undefined, hf: undefined, hc: undefined, ht: undefined});
         }
     }
     renderRecentResults = () => {
@@ -465,7 +488,8 @@ class SearchBox extends React.Component {
         const resultType = result.type || SearchResultType.PLACE;
         if (resultType === SearchResultType.PLACE) {
             if (zoom) {
-                this.props.zoomToPoint([result.x, result.y], this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom, result.crs);
+                const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom);
+                this.props.zoomToPoint([result.x, result.y], maxZoom, result.crs);
             } else {
                 this.props.panTo([result.x, result.y], result.crs);
             }
@@ -513,13 +537,13 @@ class SearchBox extends React.Component {
             filter += `${result.feature_id}]]`;
         }
         const DATA_URL = ConfigUtils.getConfigProp("searchDataServiceUrl").replace(/\/$/g, "");
-        axios.get(DATA_URL + "/" + result.dataproduct_id + "/?filter=" + filter).then(response => this.showFeatureGeometry(response.data));
-        UrlParams.updateParams({hp: result.dataproduct_id, hf: filter, hc: undefined});
+        axios.get(DATA_URL + "/" + result.dataproduct_id + "/?filter=" + filter).then(response => this.showFeatureGeometry(response.data, undefined, result.display));
+        UrlParams.updateParams({hp: result.dataproduct_id, hf: filter, hc: undefined, ht: result.display});
 
         this.props.logAction("SEARCH_TEXT", {searchText: this.state.searchText});
         this.props.logAction("SEARCH_RESULT_SELECTED", {feature: result.display});
     }
-    showFeatureGeometry = (data, scale = undefined) => {
+    showFeatureGeometry = (data, scale = undefined, label = "") => {
         // Zoom to bbox
         const bbox = CoordinatesUtils.reprojectBbox(data.bbox, data.crs.properties.name, this.props.map.projection);
         let zoom = 0;
@@ -540,6 +564,10 @@ class SearchBox extends React.Component {
         };
         for (const feature of data.features) {
             feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, data.crs.properties.name, this.props.map.projection);
+        }
+        if (!isEmpty(data.features)) {
+            data.features[0].properties = {...data.features[0].properties, label: label};
+            data.features[0].id = 'searchmarker';
         }
         this.props.addLayerFeatures(layer, data.features, true);
 

@@ -13,6 +13,7 @@ import FileSaver from 'file-saver';
 import {stringify} from 'wellknown';
 import ReactHtmlParser from 'react-html-parser';
 import {convertNodeToElement} from 'react-html-parser';
+import geojsonBbox from 'geojson-bounding-box';
 import ResizeableWindow from './ResizeableWindow';
 import ConfigUtils from '../utils/ConfigUtils';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
@@ -35,6 +36,7 @@ class IdentifyViewer extends React.Component {
         displayResultTree: PropTypes.bool,
         enableExport: PropTypes.bool,
         featureInfoReturnsLayerName: PropTypes.bool,
+        iframeDialogsInitiallyDocked: PropTypes.bool,
         initialHeight: PropTypes.number,
         initialWidth: PropTypes.number,
         initiallyDocked: PropTypes.bool,
@@ -131,6 +133,10 @@ class IdentifyViewer extends React.Component {
         }
         for (const key of Object.keys(newResults)) {
             for (const item of newResults[key]) {
+                if (item.type === "Feature" && !item.bbox && item.geometry) {
+                    item.crs = this.props.mapcrs;
+                    item.bbox = geojsonBbox(item);
+                }
                 item.clickPos = response.request.metadata.pos;
             }
         }
@@ -199,6 +205,9 @@ class IdentifyViewer extends React.Component {
     removeResult = (layer, result) => {
         const newResultTree = {...this.state.resultTree};
         newResultTree[layer] = this.state.resultTree[layer].filter(item => item !== result);
+        if (isEmpty(newResultTree[layer])) {
+            delete newResultTree[layer];
+        }
         this.setState({
             resultTree: newResultTree,
             currentResult: this.state.currentResult === result ? null : this.state.currentResult
@@ -440,6 +449,7 @@ class IdentifyViewer extends React.Component {
         return (
             <div className={resultClass} key="results-attributes">
                 <div className="identify-result-title">
+                    <Icon icon="minus" onClick={() => this.removeResult(layer, result)} />
                     <span>{this.layerTitle(layer, result) + ": " + this.resultDisplayName(layer, result)}</span>
                     {zoomToFeatureButton}
                     <Icon icon="info-sign" onClick={() => this.showLayerInfo(layer, result)} />
@@ -599,16 +609,7 @@ class IdentifyViewer extends React.Component {
             return featureInfoLayerId;
         }
         const layername = result.layername || featureInfoLayerId;
-        // Search matching layer by technical name
-        for (const layer of this.props.layers) {
-            if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
-                const matchsublayer = LayerUtils.searchSubLayer(layer, 'name', layername);
-                if (matchsublayer) {
-                    return matchsublayer.title;
-                }
-            }
-        }
-        return layername;
+        return LayerUtils.findLayerTitle(this.props.layers, layername);
     }
     showLayerInfo = (featureInfoLayerId, result) => {
         let matchlayer = null;
@@ -669,14 +670,16 @@ class IdentifyViewer extends React.Component {
             const target = ev.target.target.split(":");
             const options = target.slice(2).reduce((res, cur) => {
                 const parts = cur.split("=");
-                if (parts.length == 2) {
+                if (parts.length === 2) {
                     const value = parseFloat(parts[1]);
                     res[parts[0]] = isNaN(value) ? parts[1] : value;
                 }
                 return res;
             }, {});
-            options.print = true;
             if (target[1] === "iframedialog") {
+                if (this.props.iframeDialogsInitiallyDocked) {
+                    options.docked = true;
+                }
                 this.props.showIframeDialog(target[2], ev.target.href, options);
                 ev.preventDefault();
             }

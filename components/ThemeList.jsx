@@ -128,11 +128,17 @@ class ThemeList extends React.Component {
                                 {item.description ? (<div className="theme-item-description" dangerouslySetInnerHTML={{__html: item.description}} />) : null}
                                 <img className="theme-item-thumbnail" src={assetsPath + "/" + item.thumbnail} />
                             </div>
-                            <div className="theme-item-icons">
-                                {this.props.allowAddingOtherThemes ? (<Icon icon="layers" onClick={ev => this.getThemeLayersToList(ev, item)} title={addLayersTitle} />) : null}
-                                {this.props.allowAddingOtherThemes ? (<Icon icon="plus" onClick={ev => this.addThemeLayers(ev, item)} title={addTitle} />) : null}
-                                <Icon icon="open_link" onClick={ev => this.openInTab(ev, item.id)} title={openTabTitle} />
-                            </div>
+                            {!item.restricted ? (
+                                <div className="theme-item-icons">
+                                    {this.props.allowAddingOtherThemes ? (<Icon icon="layers" onClick={ev => this.getThemeLayersToList(ev, item)} title={addLayersTitle} />) : null}
+                                    {this.props.allowAddingOtherThemes ? (<Icon icon="plus" onClick={ev => this.addThemeLayers(ev, item)} title={addTitle} />) : null}
+                                    <Icon icon="open_link" onClick={ev => this.openInTab(ev, item.id)} title={openTabTitle} />
+                                </div>
+                            ) : (
+                                <div className="theme-item-restricted-overlay">
+                                    <Icon icon="lock" />
+                                </div>
+                            )}
                             {isEmpty(matches) ? null : (
                                 <div className="theme-item-filterinfo-overlay">
                                     {matches.map(match => (
@@ -182,6 +188,10 @@ class ThemeList extends React.Component {
         ];
     }
     setTheme = (theme) => {
+        if (theme.restricted) {
+            alert(LocaleUtils.tr("themeswitcher.restrictedthemeinfo"));
+            return;
+        }
         this.props.setActiveLayerInfo(null, null);
         if (this.props.showLayerAfterChangeTheme) {
             this.props.setCurrentTask('LayerTree');

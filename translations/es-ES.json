@@ -43,7 +43,7 @@
       "delete": "Borrar",
       "discard": "Descartar",
       "draw": "Trazar",
-      "feature": "",
+      "feature": "Elemento",
       "maximize": "Maximizar",
       "minimize": "Minimizar",
       "noeditablelayers": "Sin capas a modificar.",
@@ -62,7 +62,7 @@
     },
     "identify": {
       "export": "Exportar",
-      "exportformat": "",
+      "exportformat": "Exportar formato",
       "featureReport": "Informe del elemento",
       "link": "Link",
       "noattributes": "Sin atributos",
@@ -77,15 +77,15 @@
       "addlayer": "Agregar capa",
       "connect": "Conectar",
       "filter": "Filtrar...",
-      "loading": "",
-      "localfile": "",
+      "loading": "Cargando...",
+      "localfile": "Archivo local",
       "nofeatures": "No se pudieron importar elementos.",
       "noresults": "Sin resultados o la dirección URL no es válida",
-      "url": "",
+      "url": "URL",
       "urlplaceholder": "Ingrese dirección URL o WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": ""
+      "clickhelpPoint": "Haga click en una ubicación para identificar en el mapa..."
     },
     "layerinfo": {
       "abstract": "Resumen",
@@ -93,22 +93,22 @@
       "dataUrl": "Dirección URL de datos",
       "keywords": "Palabras claves",
       "legend": "Leyenda",
-      "maxscale": "",
+      "maxscale": "Escala máxima de visualización",
       "metadataUrl": "Dirección URL de metadatos",
-      "minscale": "",
+      "minscale": "Escala mínima de visualización",
       "title": "Información de la capa"
     },
     "layertree": {
       "compare": "Comparar con la capa superior",
-      "deletealllayers": "",
+      "deletealllayers": "Remover todas las capas",
       "importlayer": "Importar capa",
       "maptip": "Mostrar sugerencias de capas en el mapa",
       "printlegend": "Imprimir leyenda",
-      "separator": "",
-      "separatortooltip": "",
-      "transparency": "",
-      "visiblefilter": "",
-      "zoomtolayer": ""
+      "separator": "Separador",
+      "separatortooltip": "Agregar separador",
+      "transparency": "Transparencia",
+      "visiblefilter": "Filtrar capas no visibles",
+      "zoomtolayer": "Zoom a la capa"
     },
     "locate": {
       "feetUnit": "pies",
@@ -142,12 +142,12 @@
       "minimize": "Minimizar",
       "nolayouts": "El tema seleccionado no admite su impresión",
       "notheme": "No hay tema seleccionado",
-      "output": "",
+      "output": "Salida de impresión",
       "resolution": "Resolución:",
       "rotation": "Rotación:",
       "scale": "Escala:",
       "submit": "Imprimir",
-      "wait": ""
+      "wait": "Por favor espere..."
     },
     "rasterexport": {
       "format": "Formato:",
@@ -156,18 +156,18 @@
     },
     "redlining": {
       "border": "Límite",
-      "buffer": "",
-      "buffercompute": "",
-      "bufferdistance": "",
-      "bufferlayer": "",
-      "bufferlayername": "",
-      "bufferselectfeature": "",
-      "circle": "",
-      "delete": "",
-      "draw": "",
-      "edit": "",
+      "buffer": "Bufer",
+      "buffercompute": "Computar",
+      "bufferdistance": "Distancia",
+      "bufferlayer": "Destino",
+      "bufferlayername": "Bufer",
+      "bufferselectfeature": "Seleccione un elemento para almacenar en bufer",
+      "circle": "Círculo",
+      "delete": "Eliminar",
+      "draw": "Dibujar",
+      "edit": "Editar",
       "fill": "Relleno",
-      "freehand": "",
+      "freehand": "Dibujo a mano alzada",
       "label": "Etiqueta",
       "layer": "Capa",
       "line": "Línea",
@@ -180,38 +180,38 @@
       "width": "Ancho"
     },
     "scratchdrawing": {
-      "finish": ""
+      "finish": "Finalizar"
     },
     "search": {
       "all": "Todo",
-      "enablelayer": "",
-      "existinglayer": "",
-      "invisiblelayer": "",
+      "enablelayer": "Habilitar capa",
+      "existinglayer": "La capa ya existe en el mapa",
+      "invisiblelayer": "El resultado se encuentra en una capa no visible",
       "more": "Más...",
       "search": "Buscar",
       "searchall": "Buscar lugares o agregar mapas...",
       "themes": "Temas"
     },
     "searchbox": {
-      "filter": "",
-      "layers": "",
-      "more": "",
-      "morelayers": "",
-      "nodescription": "",
-      "placeholder": "",
-      "places": "",
-      "recent": ""
+      "filter": "Refinar búsqueda",
+      "layers": "Mapas",
+      "more": "más resultados",
+      "morelayers": "Más resultados disponibles",
+      "nodescription": "No hay descripción disponible",
+      "placeholder": "Busque un lugar o agregue mapa",
+      "places": "Lugares",
+      "recent": "Búsquedas recientes"
     },
     "serviceinfo": {
-      "abstract": "",
-      "contactEmail": "",
-      "contactOrganization": "",
-      "contactPerson": "",
-      "contactPhone": "",
-      "contactPosition": "",
-      "keywords": "",
-      "onlineResource": "",
-      "title": ""
+      "abstract": "Resumen",
+      "contactEmail": "Correo electrónico",
+      "contactOrganization": "Organización",
+      "contactPerson": "Persona de contacto",
+      "contactPhone": "Teléfono",
+      "contactPosition": "Posicion",
+      "keywords": "Palabras clave",
+      "onlineResource": "Recurso en línea",
+      "title": "Información del tema"
     },
     "share": {
       "QRCodeLinkTitle": "Código QR",
@@ -220,20 +220,21 @@
       "socialIntro": "En tu red social favorita"
     },
     "themelayerslist": {
-      "addlayer": "",
-      "addlayerstotheme": "",
-      "addselectedlayers": ""
+      "addlayer": "Agregar capa",
+      "addlayerstotheme": "Agregar capas al mapa actual",
+      "addselectedlayers": "Agregar capa(s) seleccionada(s)"
     },
     "themeswitcher": {
-      "addlayerstotheme": "",
+      "addlayerstotheme": "Agregar capas al mapa actual",
       "addtotheme": "Agregar al actual tema",
       "filter": "Filtrar...",
       "match": {
-        "abstract": "",
-        "keywords": "",
-        "title": ""
+        "abstract": "Resumen",
+        "keywords": "Palabras clave",
+        "title": "Título"
       },
-      "openintab": ""
+      "openintab": "Abrir en pestaña",
+      "restrictedthemeinfo": "Ud. no tiene permitido ver el tema o no está conectado"
     },
     "tooltip": {
       "background": "Cambiar fondo",
@@ -242,12 +243,12 @@
       "zoomout": "Alejarse"
     },
     "vectorlayerpicker": {
-      "prompt": ""
+      "prompt": "Ingrese nombre de la capa"
     },
     "window": {
-      "close": "",
-      "dock": "",
-      "undock": ""
+      "close": "Cerrar",
+      "dock": "Acoplar",
+      "undock": "Desacoplar"
     }
   }
 }

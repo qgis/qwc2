@@ -44,12 +44,16 @@ class WindowManager extends React.Component {
     }
     renderIframeDialog = (key, data) => {
         const extraControls = [];
-        if (data.options.print) {
+        if (this.boolVal(data.options.print, true) !== false) {
             extraControls.push({icon: "print", callback: () => this.printIframe(key)});
         }
+        const dockable = this.boolVal(data.options.dockable) !== false;
+        const docked = this.boolVal(data.options.docked) !== false;
         return (
-            <ResizeableWindow extraControls={extraControls} icon={data.icon || ""} initialHeight={data.options.h || 480}
-                initialWidth={data.options.w || 640} key={key}
+            <ResizeableWindow dockable={dockable || docked} extraControls={extraControls} icon={data.icon || ""}
+                initialHeight={data.options.h || 480}
+                initialWidth={data.options.w || 640}
+                initiallyDocked={docked} key={key}
                 onClose={() => this.closeWindow(key)}
                 title={"windows." + key}>
                 <iframe className="windows-iframe-dialog-body" onLoad={(ev) => { this.iframes[key] = ev.target; }} role="body" src={data.url} />
@@ -71,6 +75,22 @@ class WindowManager extends React.Component {
         if (this.iframes[key]) {
             this.iframes[key].contentWindow.print();
         }
+    }
+    boolVal = (value, delft = false) => {
+        if (value === undefined || value === null) {
+            return delft;
+        }
+        const textVal = ("" + value).toLowerCase();
+        if (textVal === "") {
+            return delft;
+        }
+        return ["0", "false"].includes(textVal) ? false : true;
+    }
+    get = (obj, key, deflt) => {
+        if (obj[key] === undefined) {
+            return deflt;
+        }
+        return obj[key];
     }
 }
 

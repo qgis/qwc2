@@ -3,3 +3,7 @@ iframe.windows-iframe-dialog-body {
     height: 100%;
     border: 0;
 }
+
+div.dock-window iframe.windows-iframe-dialog-body {
+    height: calc(100vh - 5.75em);
+}

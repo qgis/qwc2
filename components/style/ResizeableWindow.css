@@ -85,6 +85,7 @@ div.resizeable-window-body {
     height: calc(100% - 2.75em);
     cursor: default;
     flex: 1 1 auto;
+    position: relative;
 }
 
 
@@ -94,4 +95,14 @@ div.dock-window > div.resizeable-window-body {
 
 div.resizeable-window-body-scrollable {
     overflow-y: auto;
+}
+
+div.resizeable-window-drag-shield {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: none;
+    z-index: 1;
 }

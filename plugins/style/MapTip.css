@@ -1,3 +1,9 @@
+#MapTipPointerBuffer {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+}
+
 #MapTip {
     position: absolute;
     background: white;

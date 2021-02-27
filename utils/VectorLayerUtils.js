@@ -271,7 +271,7 @@ const VectorLayerUtils = {
     computeFeaturesBBox(features) {
         return geojsonBbox({
             type: "FeatureCollection",
-            features: features
+            features: features.filter(feature => feature.geometry)
         });
     }
 };

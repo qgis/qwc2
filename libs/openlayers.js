@@ -40,6 +40,7 @@ import OlInteractionInteraction from 'ol/interaction/Interaction';
 import OlInteractionModify from 'ol/interaction/Modify';
 import OlInteractionMouseWheelZoom from 'ol/interaction/MouseWheelZoom';
 import OlInteractionSelect from 'ol/interaction/Select';
+import OlInteractionSnap from 'ol/interaction/Snap';
 import OlInteractionTranslate from 'ol/interaction/Translate';
 import OlLayerImage from 'ol/layer/Image';
 import OlLayerTile from 'ol/layer/Tile';
@@ -114,6 +115,7 @@ export default {
         Modify: OlInteractionModify,
         MouseWheelZoom: OlInteractionMouseWheelZoom,
         Select: OlInteractionSelect,
+        Snap: OlInteractionSnap,
         Translate: OlInteractionTranslate
     },
     layer: {
