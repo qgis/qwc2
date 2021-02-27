@@ -13,7 +13,7 @@
     "license": "BSD-2-Clause",
     "repository": {
         "type": "git",
-        "url": "https://github.com/qgis/qwc2-demo-app.git"
+        "url": "https://github.com/qgis/qwc2.git"
     },
     "homepage": "https://github.com/qgis/qwc2",
     "bugs": "https://github.com/qgis/qwc2-demo-app/issues",
