@@ -20,6 +20,7 @@ import './style/DxfExport.css';
 
 class DxfExport extends React.Component {
     static propTypes = {
+        formatOptions: PropTypes.string,
         layers: PropTypes.array,
         map: PropTypes.object,
         setCurrentTask: PropTypes.func,
@@ -33,6 +34,10 @@ class DxfExport extends React.Component {
         const themeSubLayers = themeLayers.map(layer => layer.params.LAYERS).reverse().join(",");
         const filename = this.props.theme.name + ".dxf";
         const action = this.props.theme.url;
+        const formatOptions = this.props.formatOptions
+            ? <input name="FORMAT_OPTIONS" readOnly type="hidden" value={this.props.formatOptions} />
+            : null;
+
         return (
             <span>
                 <form action={action} method="POST" ref={form => { this.form = form; }} target="_blank">
@@ -49,6 +54,7 @@ class DxfExport extends React.Component {
                     <input name="CRS" readOnly type="hidden" value={this.props.map.projection} />
                     <input name="FILE_NAME" readOnly type="hidden" value={this.props.theme.name + ".dxf"} />
                     <input name="BBOX" readOnly ref={input => { this.extentInput = input; }} type="hidden" value="" />
+                    {formatOptions}
                 </form>
             </span>
         );
