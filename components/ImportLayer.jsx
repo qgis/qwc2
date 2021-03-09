@@ -40,8 +40,10 @@ class ImportLayerList extends React.PureComponent {
         super(props);
         this.state.serviceLayers = this.props.serviceLayers || [];
     }
-    static getDerivedStateFromProps(nextProps) {
-        return {serviceLayers: nextProps.serviceLayers || []};
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.serviceLayers !== prevProps.serviceLayers) {
+            this.setState({serviceLayers: this.props.serviceLayers || []});
+        }
     }
     renderServiceLayerListEntry(entry, filter, path, level = 0, idx) {
         const hasSublayers = !isEmpty(entry.sublayers);
@@ -217,7 +219,7 @@ class ImportLayer extends React.Component {
                             connUrl += (connUrl.includes("?") ? "&" : "?") + "service=" + service.toUpperCase() + "&request=GetCapabilities";
                             this.setState({pendingRequests: ++pendingRequests});
                             axios.get(connUrl).then(connResponse => {
-                                const result = service === "wms" ? ServiceLayerUtils.getWMSLayers(response.data, true) : ServiceLayerUtils.getWFSLayers(connResponse.data);
+                                const result = service === "wms" ? ServiceLayerUtils.getWMSLayers(connResponse.data, true) : ServiceLayerUtils.getWFSLayers(connResponse.data);
                                 this.setState({
                                     pendingRequests: this.state.pendingRequests - 1,
                                     serviceLayers: (this.state.serviceLayers || []).concat(result)
