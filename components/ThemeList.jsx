@@ -47,7 +47,8 @@ class ThemeList extends React.Component {
         if (group && group.items) {
             for (let i = 0, n = group.items.length; i < n; ++i) {
                 if (removeDiacritics(group.items[i].title).match(filter) ||
-                   removeDiacritics(group.items[i].keywords).match(filter)) {
+                    removeDiacritics(group.items[i].keywords || "").match(filter) ||
+                    removeDiacritics(group.items[i].abstract || "").match(filter)) {
                     return true;
                 }
             }
@@ -95,10 +96,10 @@ class ThemeList extends React.Component {
                         if ((match = removeDiacritics(item.title).match(filter))) {
                             matches.push([LocaleUtils.trmsg("themeswitcher.match.title"), this.extractSubstr(match, item.title), item.title]);
                         }
-                        if ((match = removeDiacritics(item.keywords).match(filter))) {
+                        if ((match = removeDiacritics(item.keywords || "").match(filter))) {
                             matches.push([LocaleUtils.trmsg("themeswitcher.match.keywords"), this.extractSubstr(match, item.keywords), item.keywords]);
                         }
-                        if ((match = removeDiacritics(item.abstract).match(filter))) {
+                        if ((match = removeDiacritics(item.abstract || "").match(filter))) {
                             matches.push([LocaleUtils.trmsg("themeswitcher.match.abstract"), this.extractSubstr(match, item.abstract), item.abstract]);
                         }
                     }
