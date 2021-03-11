@@ -18,6 +18,7 @@ const {getDefaultImageStyle} = require('ol/format/KML');
 const VectorLayerUtils = {
 
     createPrintHighlighParams(layers, printCrs, dpi = 96, scaleFactor = 1.0) {
+        const qgisServerVersion = ConfigUtils.getConfigProp("qgisServerVersion") || 3;
         let params = {
             geoms: [],
             styles: [],
@@ -28,7 +29,12 @@ const VectorLayerUtils = {
             labelSizes: []
         }
         const defaultFeatureStyle = ConfigUtils.getConfigProp("defaultFeatureStyle");
-        const ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : '#' + [255-(rgb[3] || 1)*255, ...rgb.slice(0, 3)].map(v => v.toString(16).padStart(2, '0')).join(''));
+        let ensureHex = null;
+        if (qgisServerVersion >= 3) {
+            ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : '#' + [255 - (rgb[3] || 1) * 255, ...rgb.slice(0, 3)].map(v => v.toString(16).padStart(2, '0')).join(''));
+        } else {
+            ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
+        }
 
         for(let layer of layers.slice(0).reverse()) {
             if(layer.type != 'vector' || (layer.features || []).length == 0 || layer.visibility === false) {
@@ -64,7 +70,11 @@ const VectorLayerUtils = {
                     params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
                     params.labelFillColors.push(defaultFeatureStyle.textFill);
                     params.labelOultineColors.push(defaultFeatureStyle.textStroke);
-                    params.labelOutlineSizes.push(scaleFactor);
+                    if (qgisServerVersion >= 3) {
+                        params.labelOutlineSizes.push(scaleFactor * feature.styleOptions.strokeWidth);
+                    } else {
+                        params.labelOutlineSizes.push(scaleFactor);
+                    }
                     params.labelSizes.push(Math.round(10 * scaleFactor));
                 }
             }
