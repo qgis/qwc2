@@ -53,9 +53,6 @@ class Authentication extends React.Component {
     }
     idleAutologout = () => {
         const urlObj = url.parse(window.location.href, true);
-        if (this.props.clearLayerParam) {
-            urlObj.query.l = undefined;
-        }
         urlObj.search = undefined;
         const loginUrl = ConfigUtils.getConfigProp("authServiceUrl") + "login?url=" + encodeURIComponent(url.format(urlObj));
         window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "logout?url=" + encodeURIComponent(loginUrl);
