@@ -91,7 +91,7 @@ class Identify extends React.Component {
         if (this.props.click.modifiers.ctrl !== true) {
             this.props.purgeResults();
         }
-        if (this.props.click.feature === 'searchmarker' && this.props.click.geometry) {
+        if (this.props.click.feature === 'searchmarker' && this.props.click.geometry && this.props.click.geomType === 'Point') {
             return this.props.click.geometry;
         }
         return this.props.click.coordinate;
