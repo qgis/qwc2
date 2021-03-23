@@ -199,6 +199,12 @@ export default class QtDesignerForm extends React.Component {
             return (
                 <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} type="date" value={value} />
             );
+        } else if (widget.class === "QDateTimeEdit") {
+            const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1900-01-01T00:00";
+            const max = prop.maximumDate ? this.dateConstraint(prop.maximumDate) : "9999-12-31T00:00";
+            return (
+                <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} type="datetime-local" value={value} />
+            );
         } else if (widget.class === "QWidget") {
             if (widget.name.startsWith("nrel__")) {
                 return this.renderNRelation(widget);
