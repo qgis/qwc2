@@ -137,13 +137,14 @@ const IdentifyUtils = {
             }
         };
     },
-    parseXmlFeature(feature, geometrycrs, id, featurereport, displayfield, layername, layerinfo) {
+    parseXmlFeature(feature, geometrycrs, id, featurereport, displayfield, layername, layertitle, layerinfo) {
         const featureResult = {};
         featureResult.type = "Feature";
         featureResult.id = id;
         featureResult.featurereport = featurereport;
         featureResult.displayfield = displayfield;
         featureResult.layername = layername;
+        featureResult.layertitle = layertitle;
         featureResult.layerinfo = layerinfo;
         const bboxes = feature.getElementsByTagName("BoundingBox");
         if (bboxes.length > 0) {
@@ -194,14 +195,15 @@ const IdentifyUtils = {
             const featurereport = layer.attributes.featurereport ? layer.attributes.featurereport.value : null;
             const displayfield = layer.attributes.displayfield ? layer.attributes.displayfield.value : null;
             const layername = layer.attributes.layername ? layer.attributes.layername.value : null;
+            const layertitle = layer.attributes.name ? layer.attributes.name.value : null;
             const layerinfo = layer.attributes.layerinfo ? layer.attributes.layerinfo.value : null;
             const features = [].slice.call(layer.getElementsByTagName("Feature"));
             if (features.length > 0) {
-                result[layer.attributes.name.value] = features.map(feature => this.parseXmlFeature(feature, geometrycrs, feature.attributes.id.value, featurereport, displayfield, layername, layerinfo));
+                result[layer.attributes.name.value] = features.map(feature => this.parseXmlFeature(feature, geometrycrs, feature.attributes.id.value, featurereport, displayfield, layername, layertitle, layerinfo));
             } else {
                 const attributes = [].slice.call(layer.getElementsByTagName("Attribute"));
                 if (attributes.length > 0) {
-                    result[layer.attributes.name.value] = [this.parseXmlFeature(layer, geometrycrs, response.request.metadata.posstr, featurereport, displayfield, layername, layerinfo)];
+                    result[layer.attributes.name.value] = [this.parseXmlFeature(layer, geometrycrs, response.request.metadata.posstr, featurereport, displayfield, layername, layertitle, layerinfo)];
                 }
             }
         }
@@ -233,6 +235,7 @@ const IdentifyUtils = {
             let count = 0;
             for (const layerEl of [].slice.call(msGMLOutput.children)) {
                 const layerName = layerEl.nodeName.replace(/_layer$/, "");
+                const layerTitle = layerEl.getElementsByTagName("gml:name")[0].textContent;
                 const featureName = layerName + "_feature";
                 result[layerName] = [];
                 for (const featureEl of [].slice.call(layerEl.getElementsByTagName(featureName))) {
@@ -240,6 +243,7 @@ const IdentifyUtils = {
                         type: "Feature",
                         id: count++,
                         layername: layerName,
+                        layertitle: layerTitle,
                         properties: {}
                     };
                     for (const propEl of [].slice.call(featureEl.children)) {

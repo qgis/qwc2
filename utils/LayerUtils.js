@@ -591,7 +591,7 @@ const LayerUtils = {
         }
         return requestUrl + (requestUrl.indexOf('?') === -1 ? '?' : '&') + params;
     },
-    findLayerTitle(layers, layerName, roles = [LayerRole.THEME, LayerRole.USERLAYER]) {
+    findLayerTitle(layers, layerName, roles = [LayerRole.THEME, LayerRole.USERLAYER], fallback = null) {
         // Search matching layer by technical name
         for (const layer of layers) {
             if (roles.includes(layer.role)) {
@@ -601,7 +601,7 @@ const LayerUtils = {
                 }
             }
         }
-        return layerName;
+        return fallback || layerName;
     }
 };
 

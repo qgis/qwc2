@@ -609,7 +609,7 @@ class IdentifyViewer extends React.Component {
             return featureInfoLayerId;
         }
         const layername = result.layername || featureInfoLayerId;
-        return LayerUtils.findLayerTitle(this.props.layers, layername);
+        return LayerUtils.findLayerTitle(this.props.layers, layername, [LayerRole.THEME, LayerRole.USERLAYER], result.layertitle);
     }
     showLayerInfo = (featureInfoLayerId, result) => {
         let matchlayer = null;
