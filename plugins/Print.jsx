@@ -125,7 +125,7 @@ class Print extends React.Component {
 
         const backgroundLayer = this.props.layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
         const backgroundLayerName = backgroundLayer ? backgroundLayer.name : null;
-        const themeBackgroundLayer = this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayerName);
+        const themeBackgroundLayer = backgroundLayer ? this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayerName) : null;
         const printBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
         if (printBackgroundLayer) {
             let printBgLayerName = printBackgroundLayer;
