@@ -61,7 +61,7 @@ class MapPlugin extends React.Component {
                     const opacities = layer.params.OPACITIES.split(",");
                     const styles = (layer.params.STYLES || "").split(",");
                     for (let i = 0; i < sublayers.length; ++i) {
-                        if (layer.externalLayerMap[sublayers[i]]) {
+                        if (layer.externalLayerMap && layer.externalLayerMap[sublayers[i]]) {
                             const sublayer = LayerUtils.searchSubLayer(layer, "name", sublayers[i]);
                             const sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
                             if (!sublayerInvisible) {
