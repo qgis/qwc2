@@ -96,7 +96,7 @@ class BackgroundSwitcher extends React.Component {
     }
     renderGroupItem = (entry) => {
         const assetsPath = ConfigUtils.getAssetsPath();
-        const layer = (entry.layers.find(l => l.visibility === true) || entry.layers.find(l => l.default === true)) || entry.layers[entry.layers.length-1];
+        const layer = (entry.layers.find(l => l.visibility === true) || entry.layers.find(l => l.default === true)) || entry.layers[entry.layers.length - 1];
 
         const itemclasses = classnames({
             "background-switcher-item": true,
