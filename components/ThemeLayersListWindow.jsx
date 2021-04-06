@@ -105,7 +105,7 @@ class ThemeLayersListWindow extends React.Component {
 
 const selector = state => ({
     theme: state.theme.themelist,
-    themes: state.layers
+    themes: state.theme.themes
 });
 
 export default connect(selector, {
