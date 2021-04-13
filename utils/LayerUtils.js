@@ -442,7 +442,7 @@ const LayerUtils = {
     getSublayerNames(layer) {
         return [layer.name].concat((layer.sublayers || []).reduce((list, sublayer) => {
             return list.concat([...this.getSublayerNames(sublayer)]);
-        }, []));
+        }, [])).filter(x => x);
     },
     mergeSubLayers(baselayer, addlayer) {
         addlayer = {...baselayer, sublayers: addlayer.sublayers};
