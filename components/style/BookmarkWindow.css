@@ -1,0 +1,84 @@
+.bookmark-body {
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.bookmark-create {
+    padding: 0.5em 1em;
+}
+
+div.bookmark-create {
+    display: flex;
+}
+
+div.bookmark-create > input {
+    flex: 1 1 auto;
+    border: 1px solid @item_border@;
+    background-color: white;
+    border-radius: 0;
+}
+
+.bookmark-add-button {
+    flex: 0 0 auto;
+    height: 2.5em;
+    width: 2.5em;
+    text-align: center;
+    background-color: @button_bg@;
+    border-top: 1px solid @item_border@;
+    border-right: 1px solid @item_border@;
+    border-bottom: 1px solid @item_border@;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bookmark-add-button:hover {
+    background-color: #ddd;
+}
+
+.bookmark-add-button:disabled {
+    background-color: transparent;
+    color: #ccc;
+    cursor: auto;
+}
+
+.bookmark-table {
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+    overflow: hidden;
+    text-align: center;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    border: 3px solid #ddd;
+    height: 100%;
+    width: 100%;
+}
+
+.bookmark-table-body {
+    overflow-y: auto;
+}
+
+.bookmark-table tbody td {
+    width: 100%;
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.bookmark-table tr:nth-child(even){background-color: #f2f2f2;}
+
+.bookmark-table tr:hover {background-color: #ddd;}
+
+.bookmark-item-remove {
+    width: 1.75em;
+    color: @item_border@;
+    flex: 0 0 auto;
+}
+
+.bookmark-item-remove:hover {
+    color: red;
+}
