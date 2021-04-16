@@ -65,8 +65,17 @@ export function generatePermaLink(state, callback, user = false) {
 
 export function resolvePermaLink(initialParams, callback) {
     const key = UrlParams.getParam('k');
+    const bkey = UrlParams.getParam('bk');
     if (key) {
         axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/resolvepermalink?key=" + key)
+            .then(response => {
+                callback(response.data.query || {}, response.data.state || {});
+            })
+            .catch(() => {
+                callback(initialParams, {});
+            });
+    } else if (bkey) {
+        axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey)
             .then(response => {
                 callback(response.data.query || {}, response.data.state || {});
             })
@@ -76,4 +85,63 @@ export function resolvePermaLink(initialParams, callback) {
     } else {
         callback(initialParams, {});
     }
+}
+
+export function getUserBookmarks(user, callback) {
+    if (user) {
+        axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks")
+            .then(response => {
+                callback(response.data || null);
+            })
+            .catch(() => {
+                callback(user, {});
+            });
+    }
+}
+
+export function removeBookmark(bkey, callback) {
+    if (bkey) {
+        axios.delete(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey)
+            .then(() => {
+                callback(true);
+            }).catch(err => callback(false));    
+    }
+}
+
+export function createBookmark(state, description, callback) {
+    if (!ConfigUtils.getConfigProp("permalinkServiceUrl")) {
+        callback(false);
+        return;
+    }
+    // Only store redlining layers
+    const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
+    const redliningLayers = exploded.map((entry, idx) => ({...entry, pos: idx}))
+        .filter(entry => entry.layer.role === LayerRole.USERLAYER && entry.layer.type === 'vector')
+        .map(entry => ({...entry.layer, pos: entry.pos}));
+    const bookmarkState = {
+        layers: redliningLayers
+    };
+    axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + 
+        "?url=" + encodeURIComponent(window.location.href) + "&description=" + description, bookmarkState)
+        .then(() => callback(true))
+        .catch(() => callback(false));
+}
+
+export function updateBookmark(state, bkey, description, callback) {
+    if (!ConfigUtils.getConfigProp("permalinkServiceUrl")) {
+        callback(false);
+        return;
+    }
+    // Only store redlining layers
+    const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
+    const redliningLayers = exploded.map((entry, idx) => ({...entry, pos: idx}))
+        .filter(entry => entry.layer.role === LayerRole.USERLAYER && entry.layer.type === 'vector')
+        .map(entry => ({...entry.layer, pos: entry.pos}));
+    const bookmarkState = {
+        layers: redliningLayers
+    };
+    axios.put(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey + 
+        "?url=" + encodeURIComponent(window.location.href) + "&description=" + description, bookmarkState)
+        .then(() => callback(true))
+        .catch(() => callback(false));
 }
