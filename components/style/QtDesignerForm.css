@@ -64,6 +64,13 @@ div.qt-designer-form-line {
     border-bottom: 1px solid @item_border@;
 }
 
+div.qt-designer-form-frame {
+    padding: 0.25em;
+    height: 100%;
+    width: 100%;
+    border: 1px solid @item_border@;
+}
+
 div.qt-designer-widget-relation {
     border: 1px solid @item_border@;
 }

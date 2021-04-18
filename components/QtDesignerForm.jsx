@@ -140,7 +140,22 @@ export default class QtDesignerForm extends React.Component {
             return (<span>{widget.property.text}</span>);
         } else if (widget.class === "Line") {
             return (<div className="qt-designer-form-line" />);
-        } else if (widget.class === "QTextEdit") {
+        } else if (widget.class === "QFrame") {
+            return (
+                <div className="qt-designer-form-frame">
+                    {this.renderLayout(widget.layout, values, updateField, nametransform)}
+                </div>
+            );
+        } else if (widget.class === "QGroupBox") {
+            return (
+                <div>
+                    <div>{prop.title}</div>
+                    <div className="qt-designer-form-frame">
+                        {this.renderLayout(widget.layout, values, updateField, nametransform)}
+                    </div>
+                </div>
+            );
+        } else if (widget.class === "QTextEdit" || widget.class === "QTextBrowser") {
             return (<textarea name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} value={value} />);
         } else if (widget.class === "QLineEdit") {
             if (widget.name.endsWith("__upload")) {
