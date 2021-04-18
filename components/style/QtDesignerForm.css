@@ -5,6 +5,7 @@ div.qt-designer-form {
 div.qt-designer-form input[type=text],
 div.qt-designer-form input[type=number],
 div.qt-designer-form input[type=date],
+div.qt-designer-form input[type=datetime-local],
 div.qt-designer-form select {
     border: 1px solid @item_border@;
     background-color: white;
