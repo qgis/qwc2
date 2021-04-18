@@ -97,6 +97,8 @@ export default class QtDesignerForm extends React.Component {
                         child = this.renderWidget(item.widget, values, updateField, nametransform);
                     } else if (item.layout) {
                         child = this.renderLayout(item.layout, values, updateField, nametransform);
+                    } else {
+                        return null;
                     }
                     return (
                         <div key={"i" + idx} style={itemStyle(item, idx)}>
