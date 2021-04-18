@@ -105,6 +105,8 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
 def getEditConfig(editConfig):
     if not editConfig:
         return None
+    elif isinstance(editConfig, dict):
+        return editConfig
     elif os.path.isabs(editConfig) and os.path.exists(editConfig):
         with open(editConfig, encoding='utf-8') as fh:
             config = json.load(fh)

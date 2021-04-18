@@ -117,6 +117,8 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve, prox
 function getEditConfig(editConfig) {
     if (isEmpty(editConfig)) {
         return null;
+    } else if (typeof editConfig === "object") {
+        return editConfig;
     } else if (path.isAbsolute(editConfig) && fs.existsSync(editConfig)) {
         return JSON.parse(fs.readFileSync(path, "utf8"));
     } else if (fs.existsSync(process.cwd() + '/' + editConfig)) {
