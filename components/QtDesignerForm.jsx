@@ -314,6 +314,7 @@ export default class QtDesignerForm extends React.Component {
             }, {});
         }
 
+        widget.name = widget.name || "";
         const parts = widget.name.split("__");
         if ((parts.length === 5 || parts.length === 6) && parts[0] === "kvrel") {
             const count = parts.length;
