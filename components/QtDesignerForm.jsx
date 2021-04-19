@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import xml2js from 'xml2js';
 import uuid from 'uuid';
+import isEmpty from 'lodash.isempty';
 import ConfigUtils from '../utils/ConfigUtils';
 import Icon from './Icon';
 
@@ -36,7 +37,7 @@ export default class QtDesignerForm extends React.Component {
     state = {
         formdata: null,
         keyvalues: {},
-        attributerelations: {}
+        activetabs: {}
     }
     componentDidMount() {
         let url = this.props.form;
@@ -153,6 +154,30 @@ export default class QtDesignerForm extends React.Component {
                     <div>{prop.title}</div>
                     <div className="qt-designer-form-frame">
                         {this.renderLayout(widget.layout, values, updateField, nametransform)}
+                    </div>
+                </div>
+            );
+        } else if (widget.class === "QTabWidget") {
+            if (isEmpty(widget.widget)) {
+                return null;
+            }
+            const activetab = this.state.activetabs[widget.name] || widget.widget[0].name;
+            const activewidget = widget.widget.find(child => child.name === activetab);
+            return (
+                <div>
+                    <div className="qt-designer-form-tabbar">
+                        {widget.widget.map(tab => (
+                            <span
+                                className={tab.name === activetab ? "qt-designer-form-tab-active" : ""}
+                                key={tab.name}
+                                onClick={() => this.setState({activetabs: {...this.state.activetabs, [widget.name]: tab.name}})}
+                            >
+                                {tab.attribute.title}
+                            </span>
+                        ))}
+                    </div>
+                    <div className="qt-designer-form-frame">
+                        {this.renderLayout(activewidget.layout, values, updateField, nametransform)}
                     </div>
                 </div>
             );

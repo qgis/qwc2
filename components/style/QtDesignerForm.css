@@ -72,6 +72,30 @@ div.qt-designer-form-frame {
     border: 1px solid @item_border@;
 }
 
+div.qt-designer-form-tabbar {
+    overflow-x: auto;
+}
+
+div.qt-designer-form-tabbar > span {
+    padding: 0.25em;
+    border-left: 1px solid @item_border@;
+    border-top: 1px solid @item_border@;
+    display: inline-block;
+    background-color: @button_bg@;
+    height: 2em;
+    display: inline-flex;
+    align-items: center;
+}
+
+div.qt-designer-form-tabbar > span:last-child {
+    border-right: 1px solid @item_border@;
+}
+
+div.qt-designer-form-tabbar > span.qt-designer-form-tab-active {
+    background-color: @item_active@;
+    color: white;
+}
+
 div.qt-designer-widget-relation {
     border: 1px solid @item_border@;
 }
