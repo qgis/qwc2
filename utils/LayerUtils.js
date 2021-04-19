@@ -89,6 +89,9 @@ const LayerUtils = {
     insertPermalinkLayers(exploded, layers) {
         for (const layer of layers || []) {
             const insLayer = LayerUtils.explodeLayers([layer])[0];
+            if(insLayer.layer.role !== LayerRole.USERLAYER || insLayer.layer.type !== 'vector') {
+                continue;
+            }
             delete insLayer.layer.pos;
             exploded.splice(layer.pos, 0, insLayer);
         }
