@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import {Swipeable} from 'react-swipeable';
 import {setCurrentTask} from '../actions/task';
 import LocaleUtils from '../utils/LocaleUtils';
+import ConfigUtils from '../utils/ConfigUtils';
 import Icon from './Icon';
 import './style/AppMenu.css';
 
@@ -80,6 +81,9 @@ class AppMenu extends React.Component {
         if (items) {
             return items.map(item => {
                 if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme.title) || item.themeWhitelist.includes(this.props.currentTheme.name))) {
+                    return null;
+                }
+                if (item.requireAuth && !ConfigUtils.getConfigProp("username")) {
                     return null;
                 }
                 if (item.subitems) {
