@@ -17,11 +17,21 @@
         "Redlining": "Rita",
         "Share": "Dela länk",
         "ThemeSwitcher": "Tema",
-        "Tools": "Kartverktyg"
+        "Tools": "Kartverktyg",
+        "Bookmark": ""
       }
     },
     "bgswitcher": {
       "nobg": "Ingen bakgrund"
+    },
+    "bookmark": {
+      "add": "",
+      "description": "",
+      "manage": "",
+      "openintab": "",
+      "remove": "",
+      "title": "",
+      "update": ""
     },
     "bottombar": {
       "mousepos_label": "Koordinater",

@@ -17,11 +17,21 @@
         "Redlining": "Обводка",
         "Share": "Поделиться ссылкой",
         "ThemeSwitcher": "Тема",
-        "Tools": "Средства картографии"
+        "Tools": "Средства картографии",
+        "Bookmark": ""
       }
     },
     "bgswitcher": {
       "nobg": "Фон отсутствует"
+    },
+    "bookmark": {
+      "add": "",
+      "description": "",
+      "manage": "",
+      "openintab": "",
+      "remove": "",
+      "title": "",
+      "update": ""
     },
     "bottombar": {
       "mousepos_label": "Координаты",

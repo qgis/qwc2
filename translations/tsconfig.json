@@ -31,11 +31,19 @@
     "appmenu.items.Redlining",
     "appmenu.items.Share",
     "appmenu.items.ThemeSwitcher",
-    "appmenu.items.Tools"
+    "appmenu.items.Tools",
+    "appmenu.items.Bookmark"
   ],
   "strings": [
     "appmenu.menulabel",
     "bgswitcher.nobg",
+    "bookmark.add",
+    "bookmark.description",
+    "bookmark.manage",
+    "bookmark.openintab",
+    "bookmark.remove",
+    "bookmark.title",
+    "bookmark.update",
     "bottombar.mousepos_label",
     "bottombar.scale_label",
     "bottombar.terms_label",

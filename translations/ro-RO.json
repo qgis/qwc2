@@ -17,11 +17,21 @@
         "Redlining": "Evidențiere",
         "Share": "Trimite Link",
         "ThemeSwitcher": "Hărți tematice",
-        "Tools": "Unelte hartă"
+        "Tools": "Unelte hartă",
+        "Bookmark": ""
       }
     },
     "bgswitcher": {
       "nobg": "Fără fundal"
+    },
+    "bookmark": {
+      "add": "",
+      "description": "",
+      "manage": "",
+      "openintab": "",
+      "remove": "",
+      "title": "",
+      "update": ""
     },
     "bottombar": {
       "mousepos_label": "Coordonate",
