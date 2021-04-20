@@ -61,7 +61,7 @@ class BookmarkWindow extends React.Component {
         const addBookmarkTitle = LocaleUtils.tr("bookmark.add");
         return ( 
             <ResizeableWindow icon="plus" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width}
-                onClose={this.onClose} title={LocaleUtils.trmsg("bookmark.title") + ' : ' + username} >
+                onClose={this.onClose} title={LocaleUtils.trmsg("bookmark.title")} >
                 <div className="bookmark-body" role="body">
                     <h5>{LocaleUtils.tr("bookmark.manage")}</h5>
                     <div className="bookmark-create">
