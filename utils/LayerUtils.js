@@ -569,27 +569,32 @@ const LayerUtils = {
         }
     },
     getLegendUrl(layer, sublayer, scale, projection, map) {
-        let params = "SERVICE=WMS"
-                   + "&REQUEST=GetLegendGraphic"
-                   + "&VERSION=" + (layer.version || "1.3.0")
-                   + "&FORMAT=image/png"
-                   + "&LAYER=" + encodeURIComponent(sublayer.name)
-                   + "&CRS=" + projection
-                   + "&SCALE=" + Math.round(scale)
-                   + "&SLD_VERSION=1.1.0";
+        let params = {
+            SERVICE: "WMS",
+            REQUEST: "GetLegendGraphic",
+            VERSION: layer.version || "1.3.0",
+            FORMAT: "image/png",
+            LAYER: encodeURIComponent(sublayer.name),
+            CRS: projection,
+            SCALE: Math.round(scale),
+            SLD_VERSION: "1.1.0"
+        };
         if(map) {
-            params += "&WIDTH=" + map.size.width
-                    + "&HEIGHT=" + map.size.height
-                    + "&BBOX=" + map.bbox.bounds.join(",");
+            params.WIDTH = map.size.width;
+            params.HEIGHT = map.size.height;
+            params.BBOX = map.bbox.bounds.join(",");
         }
         let requestUrl = layer.legendUrl;
         if(layer.externalLayerMap && layer.externalLayerMap[sublayer.name]) {
-            requestUrl = layer.externalLayerMap[sublayer.name].legendUrl;
+            const externalLayer = layer.externalLayerMap[sublayer.name];
+            requestUrl = externalLayer.legendUrl;
+            params.LAYER = externalLayer.params.LAYERS;
         }
         if (!requestUrl) {
             return "";
         }
-        return requestUrl + (requestUrl.indexOf('?') === -1 ? '?' : '&') + params;
+        let query = Object.entries(params).map(([key, value]) => key + "=" + value).join("&");
+        return requestUrl + (requestUrl.indexOf('?') === -1 ? '?' : '&') + query;
     }
 };
 
