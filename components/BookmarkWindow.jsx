@@ -11,26 +11,27 @@ import PropTypes from 'prop-types';
 import Icon from './Icon';
 import {connect} from 'react-redux';
 import ResizeableWindow from './ResizeableWindow';
-import {setActiveUser} from '../actions/bookmark';
 import LocaleUtils from '../utils/LocaleUtils';
+import ConfigUtils from '../utils/ConfigUtils';
 import {createBookmark, getUserBookmarks, removeBookmark, updateBookmark} from '../utils/PermaLinkUtils';
 import './style/BookmarkWindow.css';
+import { setCurrentTask } from '../actions/task';
 
 class BookmarkWindow extends React.Component {
     static propTypes = {
         windowSize: PropTypes.object,
-        user: PropTypes.string,
-        setActiveUser: PropTypes.func,
-        state: PropTypes.object
+        state: PropTypes.object,
+        task: PropTypes.string,
+        setCurrentTask: PropTypes.func,
     }
     state = {
         bookmarks: [],
         description: null,
-        change: false
+        change: true
     }
     componentDidUpdate(prevProps, prevState) {
-        if ((prevProps.user !== this.props.user) || (this.state.change)) {
-            getUserBookmarks(this.props.user, (bookmarks) => {
+        if (this.state.change) {
+            getUserBookmarks(ConfigUtils.getConfigProp("username"), (bookmarks) => {
                 this.setState({bookmarks: bookmarks, change: false});
             });
         }
@@ -55,11 +56,12 @@ class BookmarkWindow extends React.Component {
         })
     }
     render() {
+        const username = ConfigUtils.getConfigProp("username");
         const placeholder = LocaleUtils.tr("bookmark.description");
         const addBookmarkTitle = LocaleUtils.tr("bookmark.add");
-        return ( this.props.user ?
+        return ( 
             <ResizeableWindow icon="plus" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width}
-                onClose={this.onClose} title={LocaleUtils.trmsg("bookmark.title") + ' : ' + this.props.user} >
+                onClose={this.onClose} title={LocaleUtils.trmsg("bookmark.title") + ' : ' + username} >
                 <div className="bookmark-body" role="body">
                     <h5>{LocaleUtils.tr("bookmark.manage")}</h5>
                     <div className="bookmark-create">
@@ -77,7 +79,6 @@ class BookmarkWindow extends React.Component {
                     </table>
                 </div>
             </ResizeableWindow>
-            : null
         );
     }
     openInTab = (ev, bookmarkkey) => {
@@ -91,15 +92,11 @@ class BookmarkWindow extends React.Component {
     }
     onClose = () => {
         this.setState({description: null});
-        this.props.setActiveUser(null);
+        this.props.setCurrentTask(null);
     }    
 }
 
-const selector = state => ({
-    user: state.bookmark.user,
-    state
-});
-
-export default connect(selector, {
-    setActiveUser: setActiveUser
-})(BookmarkWindow);
+export default connect(state => ({state}), {
+    setCurrentTask: setCurrentTask
+})
+(BookmarkWindow);
