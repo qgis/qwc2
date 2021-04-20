@@ -17,11 +17,21 @@
         "Redlining": "Dessiner",
         "Share": "Partager",
         "ThemeSwitcher": "Thèmes",
-        "Tools": "Outils"
+        "Tools": "Outils",
+        "Bookmark": "Marque-pages"
       }
     },
     "bgswitcher": {
       "nobg": "Pas de fond"
+    },
+    "bookmark": {
+      "add": "Ajouter un marque-page",
+      "description": "Description",
+      "manage": "Gérer les marque-pages",
+      "openintab": "Ouvrir dans un nouvel onglet",
+      "remove": "Supprimer le marque-page",
+      "title": "Marque-pages",
+      "update": "Sauvegarder le marque-page"
     },
     "bottombar": {
       "mousepos_label": "Coordonnées",

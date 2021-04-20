@@ -17,11 +17,21 @@
         "Redlining": "Připomínkování",
         "Share": "Nasdílet Odkaz",
         "ThemeSwitcher": "Téma",
-        "Tools": "Nástroje Mapy"
+        "Tools": "Nástroje Mapy",
+        "Bookmark": ""
       }
     },
     "bgswitcher": {
       "nobg": "Bez podkladu"
+    },
+    "bookmark": {
+      "add": "",
+      "description": "",
+      "manage": "",
+      "openintab": "",
+      "remove": "",
+      "title": "",
+      "update": ""
     },
     "bottombar": {
       "mousepos_label": "Souřadnice",

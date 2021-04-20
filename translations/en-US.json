@@ -17,11 +17,21 @@
         "Redlining": "Redlining",
         "Share": "Share Link",
         "ThemeSwitcher": "Theme",
-        "Tools": "Map Tools"
+        "Tools": "Map Tools",
+        "Bookmark": "Bookmarks"
       }
     },
     "bgswitcher": {
       "nobg": "No background"
+    },
+    "bookmark": {
+      "add": "Add bookmark for current map",
+      "description": "Description",
+      "manage": "Manage your bookmarks",
+      "openintab": "Open bookmark in a new tab",
+      "remove": "Remove bookmark",
+      "title": "Bookmarks",
+      "update": "Update bookmark"
     },
     "bottombar": {
       "mousepos_label": "Coordinates",

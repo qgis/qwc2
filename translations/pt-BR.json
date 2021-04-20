@@ -17,11 +17,21 @@
         "Redlining": "Línea de demarcación",
         "Share": "Compartilhar enlace",
         "ThemeSwitcher": "Tema",
-        "Tools": "Ferramentas de mapa"
+        "Tools": "Ferramentas de mapa",
+        "Bookmark": ""
       }
     },
     "bgswitcher": {
       "nobg": "Sem fundo"
+    },
+    "bookmark": {
+      "add": "",
+      "description": "",
+      "manage": "",
+      "openintab": "",
+      "remove": "",
+      "title": "",
+      "update": ""
     },
     "bottombar": {
       "mousepos_label": "Coordenadas",
