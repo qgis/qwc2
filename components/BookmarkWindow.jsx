@@ -45,7 +45,7 @@ class BookmarkWindow extends React.Component {
                 <tr key={bookmark.key}>
                     <td>{bookmark.description}</td>
                     <td><Icon icon="open_link" title={openTabTitle} onClick={ev => this.openInTab(ev, bookmark.key)} /></td>
-                    <td><Icon icon="plus" title={updateTitle} 
+                    <td><Icon icon="save" title={updateTitle} 
                             onClick={() => updateBookmark(this.props.state, bookmark.key, bookmark.description, (result => this.setState({change: result})))} />
                     </td>
                     <td><Icon className="bookmark-item-remove" icon="trash" title={removeTitle} 
@@ -60,7 +60,7 @@ class BookmarkWindow extends React.Component {
         const placeholder = LocaleUtils.tr("bookmark.description");
         const addBookmarkTitle = LocaleUtils.tr("bookmark.add");
         return ( 
-            <ResizeableWindow icon="plus" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width}
+            <ResizeableWindow icon="bookmark" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width}
                 onClose={this.onClose} title={LocaleUtils.trmsg("bookmark.title")} >
                 <div className="bookmark-body" role="body">
                     <h5>{LocaleUtils.tr("bookmark.manage")}</h5>
