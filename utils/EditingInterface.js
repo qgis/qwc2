@@ -22,12 +22,15 @@ function buildErrMsg(err) {
     let message = "Commit failed";
     if (err.response && err.response.data && err.response.data.message) {
         message = err.response.data.message;
-        if (err.response.data.geometry_errors) {
+        if (!isEmpty(err.response.data.geometry_errors)) {
             message += ":\n";
             message += err.response.data.geometry_errors.map(entry => " - " + entry.reason + " at " + entry.location);
         }
         if (!isEmpty(err.response.data.data_errors)) {
             message += ":\n - " + err.response.data.data_errors.join("\n - ");
+        }
+        if (!isEmpty(err.response.data.validation_errors)) {
+            message += ":\n - " + err.response.data.validation_errors.join("\n - ");
         }
     } else if (err.response && err.response.statusText) {
         message += ": " + err.response.statusText;
