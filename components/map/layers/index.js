@@ -17,6 +17,7 @@ import vectorLayer from './VectorLayer';
 import wmsLayer from './WMSLayer';
 import wmtsLayer from './WMTSLayer';
 import wfsLayer from './WFSLayer';
+import xyzLayer from './XYZLayer';
 
 export default {
     bing: bingLayer,
@@ -28,5 +29,6 @@ export default {
     vector: vectorLayer,
     wms: wmsLayer,
     wmts: wmtsLayer,
-    wfs: wfsLayer
+    wfs: wfsLayer,
+    xyz: xyzLayer
 };
