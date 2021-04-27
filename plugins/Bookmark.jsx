@@ -1,5 +1,5 @@
 /**
- * Copyright 2020-2021 Sourcepole AG
+ * Copyright 2021 Oslandia SAS <infos+qwc2@oslandia.com>
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
