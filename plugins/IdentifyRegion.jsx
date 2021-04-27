@@ -24,10 +24,14 @@ class IdentifyRegion extends React.Component {
         changeSelectionState: PropTypes.func,
         layers: PropTypes.array,
         map: PropTypes.object,
+        params: PropTypes.object,
         selection: PropTypes.object,
         sendRequest: PropTypes.func,
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object
+    }
+    static defaultProps = {
+        params: {}
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.active && this.props.selection.polygon && this.props.selection !== prevProps.selection) {
@@ -68,7 +72,7 @@ class IdentifyRegion extends React.Component {
         };
         const filter = stringify(geometry);
         queryableLayers.forEach(layer => {
-            this.props.sendRequest(IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, {}));
+            this.props.sendRequest(IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, this.props.params));
         });
     }
 }
