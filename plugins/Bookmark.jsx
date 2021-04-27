@@ -9,29 +9,101 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
+import LocaleUtils from '../utils/LocaleUtils';
 import ConfigUtils from '../utils/ConfigUtils';
-import BookmarkWindow from '../components/BookmarkWindow';
- 
+import Icon from '../components/Icon';
+import ResizeableWindow from '../components/ResizeableWindow';
+import {createBookmark, getUserBookmarks, removeBookmark, updateBookmark} from '../utils/PermaLinkUtils';
+import { setCurrentTask } from '../actions/task';
+import './style/Bookmark.css';
+
 class Bookmark extends React.Component {
     static propTypes = {
         windowSize: PropTypes.object,
-        task: PropTypes.string
+        task: PropTypes.string,
+        state: PropTypes.object,
+        setCurrentTask: PropTypes.func
     }
-    static defaultProps = {
-        bookmarkWindowSize: {width: 400, height: 300}
+    state = {
+        bookmarks: [],
+        description: null,
+        change: true
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.change) {
+            getUserBookmarks(ConfigUtils.getConfigProp("username"), (bookmarks) => {
+                this.setState({bookmarks: bookmarks, change: false});
+            });
+        }
+    }
+    renderData() {
+        const openTabTitle = LocaleUtils.tr("bookmark.openintab");
+        const updateTitle = LocaleUtils.tr("bookmark.update");
+        const removeTitle = LocaleUtils.tr("bookmark.remove");
+        return this.state.bookmarks.map((bookmark, index) => {
+            return (
+                <tr key={bookmark.key}>
+                    <td>{bookmark.description}</td>
+                    <td><Icon icon="open_link" title={openTabTitle} onClick={ev => this.openInTab(ev, bookmark.key)} /></td>
+                    <td><Icon icon="save" title={updateTitle} 
+                            onClick={() => updateBookmark(this.props.state, bookmark.key, bookmark.description, (result => this.setState({change: result})))} />
+                    </td>
+                    <td><Icon className="bookmark-item-remove" icon="trash" title={removeTitle} 
+                            onClick={() => removeBookmark(bookmark.key, (result => this.setState({change: result})))} />
+                    </td>
+                </tr>
+            )
+        })
     }
     render() {
-        if (this.props.task !== "Bookmark" || !ConfigUtils.getConfigProp("username")) {
+        const username = ConfigUtils.getConfigProp("username");
+        const placeholder = LocaleUtils.tr("bookmark.description");
+        const addBookmarkTitle = LocaleUtils.tr("bookmark.add");
+        if (this.props.task !== "Bookmark" || !username) {
             return null;
         }
         return (
-            <BookmarkWindow windowSize={this.props.bookmarkWindowSize} />
+            <ResizeableWindow icon="bookmark" initialHeight={300} initialWidth={400}
+                 onClose={this.onClose} title={LocaleUtils.trmsg("bookmark.title")} >
+                <div className="bookmark-body" role="body">
+                    <h4>{LocaleUtils.tr("bookmark.manage")}</h4>
+                    <div className="bookmark-create">
+                        <input name="bookmark-description" type="text" placeholder={placeholder} onChange={ev => this.setState({description: ev.target.value})} />
+                        <button className="bookmark-add-button" disabled={!this.state.description} 
+                            onClick={this.state.description ? () => createBookmark(this.props.state, this.state.description, (result => this.setState({change: result}))) : null}>                            
+                            <Icon className="bookmark-add-icon" icon="plus" title={addBookmarkTitle}  
+                            />
+                        </button>
+                    </div>
+                    <table className="bookmark-table">
+                        <tbody className="bookmark-table-body">
+                            {this.renderData()}
+                        </tbody>
+                    </table>
+                </div>
+            </ResizeableWindow>
         );
-    }     
+    }
+    openInTab = (ev, bookmarkkey) => {
+        ev.stopPropagation();
+        const url = location.href.split("?")[0] + '?bk=' + bookmarkkey;
+        window.open(url, '_blank');
+    }
+    addBookmark = (ev) => {
+        ev.stopPropagation();
+        createBookmark(this.props.state, this.state.description, (result => this.setState({change: result})));
+    }
+    onClose = () => {
+        this.setState({description: null});
+        this.props.setCurrentTask(null);
+    }
 }
 
 const selector = state => ({
-    task: state.task.id
+    task: state.task.id,
+    state
 });
  
-export default connect(selector)(Bookmark);
+export default connect(selector, {    
+    setCurrentTask: setCurrentTask
+})(Bookmark);
