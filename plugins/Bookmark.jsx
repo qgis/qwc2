@@ -12,17 +12,14 @@ import PropTypes from 'prop-types';
 import LocaleUtils from '../utils/LocaleUtils';
 import ConfigUtils from '../utils/ConfigUtils';
 import Icon from '../components/Icon';
-import ResizeableWindow from '../components/ResizeableWindow';
+import SideBar from '../components/SideBar';
 import {createBookmark, getUserBookmarks, removeBookmark, updateBookmark} from '../utils/PermaLinkUtils';
-import { setCurrentTask } from '../actions/task';
 import './style/Bookmark.css';
 
 class Bookmark extends React.Component {
     static propTypes = {
-        windowSize: PropTypes.object,
         task: PropTypes.string,
-        state: PropTypes.object,
-        setCurrentTask: PropTypes.func
+        state: PropTypes.object
     }
     state = {
         bookmarks: [],
@@ -63,8 +60,8 @@ class Bookmark extends React.Component {
             return null;
         }
         return (
-            <ResizeableWindow icon="bookmark" initialHeight={300} initialWidth={400}
-                 onClose={this.onClose} title={LocaleUtils.trmsg("bookmark.title")} >
+            <SideBar icon="bookmark" id="Bookmark"
+                title="appmenu.items.Bookmark" width="20em">
                 <div className="bookmark-body" role="body">
                     <h4>{LocaleUtils.tr("bookmark.manage")}</h4>
                     <div className="bookmark-create">
@@ -81,7 +78,7 @@ class Bookmark extends React.Component {
                         </tbody>
                     </table>
                 </div>
-            </ResizeableWindow>
+            </SideBar>
         );
     }
     openInTab = (ev, bookmarkkey) => {
@@ -93,10 +90,6 @@ class Bookmark extends React.Component {
         ev.stopPropagation();
         createBookmark(this.props.state, this.state.description, (result => this.setState({change: result})));
     }
-    onClose = () => {
-        this.setState({description: null});
-        this.props.setCurrentTask(null);
-    }
 }
 
 const selector = state => ({
@@ -104,6 +97,4 @@ const selector = state => ({
     state
 });
  
-export default connect(selector, {    
-    setCurrentTask: setCurrentTask
-})(Bookmark);
+export default connect(selector)(Bookmark);
