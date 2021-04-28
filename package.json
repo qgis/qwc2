@@ -58,7 +58,6 @@
     },
     "devDependencies": {
         "@types/react": "^16.14.0",
-        "node-fqdn": "1.1.1",
         "object-path": "0.11.5",
         "redux-devtools": "3.7.0",
         "redux-devtools-dock-monitor": "1.2.0",
