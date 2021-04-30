@@ -58,12 +58,12 @@
     },
     "devDependencies": {
         "@types/react": "^16.14.0",
+        "@vusion/webfonts-generator": "0.7.2",
         "object-path": "0.11.5",
         "redux-devtools": "3.7.0",
         "redux-devtools-dock-monitor": "1.2.0",
         "redux-devtools-log-monitor": "2.1.0",
         "redux-immutable-state-invariant": "2.1.0",
-        "webfonts-generator": "0.4.0",
         "xml2js": "0.4.23"
     },
     "babel": {
