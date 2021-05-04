@@ -43,12 +43,12 @@ class BottomBar extends React.Component {
     componentDidMount() {
         this.props.changeMousePositionState({crs: this.props.map.projection});
     }
-    static getDerivedStateFromProps(nextProps) {
-        return {scale: Math.round(MapUtils.computeForZoom(nextProps.map.scales, nextProps.map.zoom))};
-    }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.map.projection !== prevProps.map.projection) {
             this.props.changeMousePositionState({crs: this.props.map.projection, position: null});
+        }
+        if (this.props.map.zoom !== prevProps.map.zoom) {
+            this.setState({scale: Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom))});
         }
     }
     render() {
