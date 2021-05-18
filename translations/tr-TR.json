@@ -80,7 +80,7 @@
       "title": "Obje Bilgisi"
     },
     "identifyregion": {
-      "info": "Bilgi alınacak alanı poligon çizerek belirleyiniz..."
+      "info": ""
     },
     "importlayer": {
       "addlayer": "Katman ekle",
@@ -94,7 +94,8 @@
       "urlplaceholder": "WMS, WMTS, WFS Adresini giriniz..."
     },
     "infotool": {
-      "clickhelpPoint": ""
+      "clickhelpPoint": "",
+      "clickhelpPolygon": "Bilgi alınacak alanı poligon çizerek belirleyiniz..."
     },
     "layerinfo": {
       "abstract": "Özet",

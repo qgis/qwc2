@@ -80,7 +80,7 @@
       "title": "Feature Info"
     },
     "identifyregion": {
-      "info": "Draw a polygon around the features to identify..."
+      "info": ""
     },
     "importlayer": {
       "addlayer": "Add layer",
@@ -94,7 +94,8 @@
       "urlplaceholder": "Enter URL to WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": "Click a location to identify in the map..."
+      "clickhelpPoint": "Click a location to identify in the map...",
+      "clickhelpPolygon": "Draw a polygon around the features to identify..."
     },
     "layerinfo": {
       "abstract": "Abstract",

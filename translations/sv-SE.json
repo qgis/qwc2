@@ -80,7 +80,7 @@
       "title": "Objektinformation"
     },
     "identifyregion": {
-      "info": "Rita en polygon runt objektn som ska identifieras"
+      "info": ""
     },
     "importlayer": {
       "addlayer": "Lägg till lager",
@@ -94,7 +94,8 @@
       "urlplaceholder": "Skriv in URL till WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": ""
+      "clickhelpPoint": "",
+      "clickhelpPolygon": "Rita en polygon runt objektn som ska identifieras"
     },
     "layerinfo": {
       "abstract": "Sammanfattning",

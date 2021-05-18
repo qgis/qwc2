@@ -80,7 +80,7 @@
       "title": "Información del elemento"
     },
     "identifyregion": {
-      "info": "Trace un polígono alrededor de los elementos para identificarlos..."
+      "info": ""
     },
     "importlayer": {
       "addlayer": "Agregar capa",
@@ -94,7 +94,8 @@
       "urlplaceholder": "Ingrese dirección URL o WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": "Haga click en una ubicación para identificar en el mapa..."
+      "clickhelpPoint": "Haga click en una ubicación para identificar en el mapa...",
+      "clickhelpPolygon": "Trace un polígono alrededor de los elementos para identificarlos..."
     },
     "layerinfo": {
       "abstract": "Resumen",

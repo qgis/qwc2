@@ -80,7 +80,7 @@
       "title": "Feature Info"
     },
     "identifyregion": {
-      "info": "Narysuj poligon wokół obiektów, aby zidentyfikować..."
+      "info": ""
     },
     "importlayer": {
       "addlayer": "Dodaj warstwę",
@@ -94,7 +94,8 @@
       "urlplaceholder": "Podaj URL do WMS, WFS, WMTS..."
     },
     "infotool": {
-      "clickhelpPoint": ""
+      "clickhelpPoint": "",
+      "clickhelpPolygon": "Narysuj poligon wokół obiektów, aby zidentyfikować..."
     },
     "layerinfo": {
       "abstract": "Abstrakt",

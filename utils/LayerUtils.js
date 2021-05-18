@@ -482,6 +482,17 @@ const LayerUtils = {
         }
         return null;
     },
+    searchLayer(layers, key, value, roles = [LayerRole.THEME, LayerRole.USERLAYER]) {
+        for (const layer of layers) {
+            if (roles.includes(layer.role)) {
+                const matchsublayer = LayerUtils.searchSubLayer(layer, key, value);
+                if (matchsublayer) {
+                    return {layer: layer, sublayer: matchsublayer};
+                }
+            }
+        }
+        return null;
+    },
     sublayerVisible(layer, sublayerpath) {
         let visible = layer.visibility !== false;
         let sublayer = layer;
@@ -593,18 +604,6 @@ const LayerUtils = {
             return "";
         }
         return requestUrl + (requestUrl.indexOf('?') === -1 ? '?' : '&') + params;
-    },
-    findLayerTitle(layers, layerName, roles = [LayerRole.THEME, LayerRole.USERLAYER], fallback = null) {
-        // Search matching layer by technical name
-        for (const layer of layers) {
-            if (roles.includes(layer.role)) {
-                const matchsublayer = LayerUtils.searchSubLayer(layer, 'name', layerName);
-                if (matchsublayer) {
-                    return matchsublayer.title;
-                }
-            }
-        }
-        return fallback || layerName;
     }
 };
 

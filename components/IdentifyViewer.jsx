@@ -13,14 +13,12 @@ import FileSaver from 'file-saver';
 import {stringify} from 'wellknown';
 import ReactHtmlParser from 'react-html-parser';
 import {convertNodeToElement} from 'react-html-parser';
-import geojsonBbox from 'geojson-bounding-box';
-import ResizeableWindow from './ResizeableWindow';
+import clone from 'clone';
 import ConfigUtils from '../utils/ConfigUtils';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import {showIframeDialog} from '../actions/windows';
 import {zoomToExtent} from '../actions/map';
-import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
@@ -35,18 +33,12 @@ class IdentifyViewer extends React.Component {
         attributeTransform: PropTypes.func,
         displayResultTree: PropTypes.bool,
         enableExport: PropTypes.bool,
-        featureInfoReturnsLayerName: PropTypes.bool,
+        identifyResults: PropTypes.object,
         iframeDialogsInitiallyDocked: PropTypes.bool,
-        initialHeight: PropTypes.number,
-        initialWidth: PropTypes.number,
-        initiallyDocked: PropTypes.bool,
         layers: PropTypes.array,
         longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
         mapcrs: PropTypes.string,
-        missingResponses: PropTypes.number,
-        onClose: PropTypes.func,
         removeLayer: PropTypes.func,
-        responses: PropTypes.array,
         setActiveLayerInfo: PropTypes.func,
         showIframeDialog: PropTypes.func,
         theme: PropTypes.object,
@@ -56,15 +48,13 @@ class IdentifyViewer extends React.Component {
         longAttributesDisplay: 'ellipsis',
         displayResultTree: true,
         attributeCalculator: (/* layer, feature */) => { return []; },
-        attributeTransform: (name, value, layer, feature) => value,
-        featureInfoReturnsLayerName: true
+        attributeTransform: (name, value, layer, feature) => value
     }
     state = {
         expanded: {},
         resultTree: {},
         currentResult: null,
         currentLayer: null,
-        displayFieldMap: {},
         exportFormat: 'json'
     }
     constructor(props) {
@@ -72,28 +62,12 @@ class IdentifyViewer extends React.Component {
         this.currentResultElRef = null;
         this.scrollIntoView = false;
     }
+    componentDidMount() {
+        this.updateResultTree();
+    }
     componentDidUpdate(prevProps, prevState) {
-        const newState = {};
-        if (prevProps.layers !== this.props.layers) {
-            const displayFieldMap = {};
-            for (const layer of this.props.layers) {
-                this.populateDisplayFieldMap(displayFieldMap, layer);
-            }
-            newState.displayFieldMap = displayFieldMap;
-        }
-        if (this.props.missingResponses === 0 && prevProps.responses !== this.props.responses) {
-            const result = {};
-            const stats = {count: 0, lastResult: null};
-            (this.props.responses || []).map(response => response.data ? this.parseResponse(response, result, stats) : null);
-            Object.assign(newState, {
-                expanded: {},
-                resultTree: result,
-                currentResult: stats.count === 1 ? stats.lastResult : null,
-                currentLayer: stats.count === 1 ? stats.lastLayer : null
-            });
-        }
-        if (!isEmpty(newState)) {
-            this.setState(newState);
+        if (this.props.identifyResults !== prevProps.identifyResults) {
+            this.updateResultTree();
         }
 
         if (prevState.currentResult !== this.state.currentResult || prevState.resultTree !== this.state.resultTree) {
@@ -110,57 +84,18 @@ class IdentifyViewer extends React.Component {
     componentWillUnmount() {
         this.props.removeLayer("identifyslection");
     }
-    populateDisplayFieldMap = (displayFieldMap, item) => {
-        if (item.sublayers) {
-            item.sublayers.map(child => this.populateDisplayFieldMap(displayFieldMap, child));
-        } else if (item.displayField) {
-            displayFieldMap[item.name] = item.displayField;
-            displayFieldMap[item.title] = item.displayField;
+    updateResultTree = () => {
+        const layers = Object.keys(this.props.identifyResults);
+        let currentResult = null;
+        let currentLayer = null;
+        if (layers.length === 1 && this.props.identifyResults[layers[0]].length === 1) {
+            currentResult = this.props.identifyResults[layers[0]][0];
+            currentLayer = layers[0];
         }
-    }
-    parseResponse = (response, results, stats) => {
-        let newResults = {};
-        if (response.responseType === "application/json" || response.responseType === "GeoJSON") {
-            newResults = IdentifyUtils.parseGeoJSONResponse(response.data, this.props.mapcrs);
-        } else if (response.responseType === "text/xml") {
-            newResults = IdentifyUtils.parseXmlResponse(response, this.props.mapcrs);
-        } else if (response.responseType === "application/vnd.ogc.gml") {
-            newResults = IdentifyUtils.parseGmlResponse(response, this.props.mapcrs);
-        } else if (response.responseType === "text/plain") {
-            newResults[response.request.metadata.layer] = [{type: "text", text: response.data, id: response.request.metadata.posstr}];
-        } else if (response.responseType === "text/html") {
-            newResults[response.request.metadata.layer] = [{type: "html", text: response.data, id: response.request.metadata.posstr}];
-        }
-        for (const key of Object.keys(newResults)) {
-            for (const item of newResults[key]) {
-                if (item.type === "Feature" && !item.bbox && item.geometry) {
-                    item.crs = this.props.mapcrs;
-                    item.bbox = geojsonBbox(item);
-                }
-                item.clickPos = response.request.metadata.pos;
-            }
-        }
-        // Merge with previous
-        Object.keys(newResults).map(layer => {
-            if (layer in results) {
-                newResults[layer].map(result => {
-                    if (!results[layer].find(r => r.id === result.id)) {
-                        results[layer].push(result);
-                    }
-                });
-            } else {
-                results[layer] = newResults[layer];
-            }
-        });
-        // Stats
-        Object.keys(results).map(layer => {
-            const layerResults = results[layer];
-            const numLayerResults = layerResults.length;
-            if (numLayerResults > 0) {
-                stats.count += numLayerResults;
-                stats.lastResult = layerResults[numLayerResults - 1];
-                stats.lastLayer = layer;
-            }
+        this.setState({
+            resultTree: clone(this.props.identifyResults),
+            currentResult: currentResult,
+            currentLayer: currentLayer
         });
     }
     setHighlightedResults = (results, resultTree) => {
@@ -202,6 +137,15 @@ class IdentifyViewer extends React.Component {
             this.scrollIntoView = true;
         }
     }
+    removeResultLayer = (layer) => {
+        const newResultTree = {...this.state.resultTree};
+        delete newResultTree[layer];
+        this.setState({
+            resultTree: newResultTree,
+            currentResult: this.state.currentLayer === layer ? null : this.state.currentResult,
+            currentLayer: this.state.currentLayer === layer ? null : this.state.currentLayer
+        });
+    }
     removeResult = (layer, result) => {
         const newResultTree = {...this.state.resultTree};
         newResultTree[layer] = this.state.resultTree[layer].filter(item => item !== result);
@@ -213,21 +157,6 @@ class IdentifyViewer extends React.Component {
             currentResult: this.state.currentResult === result ? null : this.state.currentResult
         });
     }
-    exportResult = (layer, result) => {
-        this.export({[layer]: [result]});
-    }
-    removeResultLayer = (layer) => {
-        const newResultTree = {...this.state.resultTree};
-        delete newResultTree[layer];
-        this.setState({
-            resultTree: newResultTree,
-            currentResult: this.state.currentLayer === layer ? null : this.state.currentResult,
-            currentLayer: this.state.currentLayer === layer ? null : this.state.currentLayer
-        });
-    }
-    exportResultLayer = (layer) => {
-        this.export({[layer]: this.state.resultTree[layer]});
-    }
     exportResults = () => {
         const filteredResults = {};
         Object.keys(this.state.resultTree).map(key => {
@@ -236,6 +165,12 @@ class IdentifyViewer extends React.Component {
             }
         });
         this.export(filteredResults);
+    }
+    exportResultLayer = (layer) => {
+        this.export({[layer]: this.state.resultTree[layer]});
+    }
+    exportResult = (layer, result) => {
+        this.export({[layer]: [result]});
     }
     export = (json) => {
         if (this.state.exportFormat === 'json') {
@@ -258,7 +193,7 @@ class IdentifyViewer extends React.Component {
             let csv = "";
             Object.entries(json).forEach(([layerName, features]) => {
                 features.forEach(feature => {
-                    csv += layerName + ": " + this.resultDisplayName(layerName, feature) + "\n";
+                    csv += layerName + ": " + feature.displayname + "\n";
                     Object.entries(feature.properties || {}).forEach(([attrib, value]) => {
                         if (attrib !== "htmlContent") {
                             csv += '\t"' + attrib + '"\t"' + String(value).replace('"', '""') + '"\n';
@@ -282,7 +217,7 @@ class IdentifyViewer extends React.Component {
                 if (first) {
                     Object.entries(features[0].properties || {}).forEach(([attrib]) => {
                         if (attrib !== "htmlContent") {
-                            csv += attrib  + ';' ;
+                            csv += attrib  + ';';
                         }
                     });
                     if (features[0].geometry) {
@@ -320,25 +255,40 @@ class IdentifyViewer extends React.Component {
             }
         }
     }
-    resultDisplayName = (layer, result) => {
-        let displayName = "";
-        try {
-            const displayFieldName = result.displayfield || this.state.displayFieldMap[layer];
-            displayName = result.properties[displayFieldName];
-        } catch (e) {
-            /* Pass */
+    renderLayer = (layer) => {
+        const results = this.state.resultTree[layer];
+        if (results.length === 0) {
+            return null;
         }
-        // Clear displayName if it contains HTML
-        if (displayName && displayName[0] === "<") {
-            displayName = "";
-        }
-        if (!displayName && result.properties) {
-            displayName = result.properties.name || result.properties.Name || result.properties.NAME || "";
-        }
-        if (!displayName) {
-            displayName = result.id;
-        }
-        return displayName;
+        return (
+            <div className={this.getExpandedClass(layer, true)} key={layer}>
+                <div className="identify-result-entry"
+                    onMouseEnter={() => this.setHighlightedResults(results, this.state.resultTree)}
+                    onMouseLeave={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
+                >
+                    <span className="clickable" onClick={()=> this.toggleExpanded(layer, true)}><b>{results[0].layertitle}</b></span>
+                    <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResultLayer(layer)} />
+                    {this.props.enableExport ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResultLayer(layer)} />) : null}
+                </div>
+                <div className="identify-layer-entries">
+                    {results.map(result => this.renderResult(layer, result))}
+                </div>
+            </div>
+        );
+    }
+    renderResult = (layer, result) => {
+        const ref = this.state.currentResult === result && this.scrollIntoView ? el => { this.currentResultElRef = el; } : null;
+        return (
+            <div className="identify-result-entry"
+                key={result.id}
+                onMouseEnter={() => this.setHighlightedResults([result], this.state.resultTree)}
+                onMouseLeave={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
+            >
+                <span className={this.state.currentResult === result ? "active clickable" : "clickable"} onClick={()=> this.setCurrentResult(layer, result)} ref={ref}>{result.displayname}</span>
+                <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResult(layer, result)} />
+                {this.props.enableExport ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResult(layer, result)} />) : null}
+            </div>
+        );
     }
     renderResultAttributes = (layer, result, resultClass) => {
         if (!result) {
@@ -450,7 +400,7 @@ class IdentifyViewer extends React.Component {
             <div className={resultClass} key="results-attributes">
                 <div className="identify-result-title">
                     <Icon icon="minus" onClick={() => this.removeResult(layer, result)} />
-                    <span>{this.layerTitle(layer, result) + ": " + this.resultDisplayName(layer, result)}</span>
+                    <span>{result.layertitle + ": " + result.displayname}</span>
                     {zoomToFeatureButton}
                     <Icon icon="info-sign" onClick={() => this.showLayerInfo(layer, result)} />
                 </div>
@@ -461,62 +411,10 @@ class IdentifyViewer extends React.Component {
             </div>
         );
     }
-    setIframeContent = (iframe, html) => {
-        if (iframe.getAttribute("identify-content-set")) {
-            return;
-        }
-        iframe.setAttribute("identify-content-set", true);
-        iframe.contentWindow.document.open();
-        iframe.contentWindow.document.write(html);
-        iframe.contentWindow.document.close();
-    }
-    renderResult = (layer, result) => {
-        const displayName = this.resultDisplayName(layer, result);
-        const ref = this.state.currentResult === result && this.scrollIntoView ? el => { this.currentResultElRef = el; } : null;
-        return (
-            <div className="identify-result-entry"
-                key={result.id}
-                onMouseEnter={() => this.setHighlightedResults([result], this.state.resultTree)}
-                onMouseLeave={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
-            >
-                <span className={this.state.currentResult === result ? "active clickable" : "clickable"} onClick={()=> this.setCurrentResult(layer, result)} ref={ref}>{displayName}</span>
-                <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResult(layer, result)} />
-                {this.props.enableExport ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResult(layer, result)} />) : null}
-            </div>
-        );
-    }
-    renderLayer = (layer) => {
-        const results = this.state.resultTree[layer];
-        if (results.length === 0) {
-            return null;
-        }
-        return (
-            <div className={this.getExpandedClass(layer, true)} key={layer}>
-                <div className="identify-result-entry"
-                    onMouseEnter={() => this.setHighlightedResults(results, this.state.resultTree)}
-                    onMouseLeave={() => this.setHighlightedResults(this.state.currentResult === null ? null : [this.state.currentResult], this.state.resultTree)}
-                >
-                    <span className="clickable" onClick={()=> this.toggleExpanded(layer, true)}><b>{this.layerTitle(layer, {})}</b></span>
-                    <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResultLayer(layer)} />
-                    {this.props.enableExport ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResultLayer(layer)} />) : null}
-                </div>
-                <div className="identify-layer-entries">
-                    {results.map(result => this.renderResult(layer, result))}
-                </div>
-            </div>
-        );
-    }
     render() {
         const tree = this.props.displayResultTree;
         let body = null;
-        let haveResults = false;
-        if (isEmpty(this.state.resultTree)) {
-            if (this.props.missingResponses > 0) {
-                body = (<div className="identify-body" role="body"><span className="identify-body-message">{LocaleUtils.tr("identify.querying")}</span></div>);
-            } else {
-                body = (<div className="identify-body" role="body"><span className="identify-body-message">{LocaleUtils.tr("identify.noresults")}</span></div>);
-            }
-        } else if (tree) {
+        if (tree) {
             const contents = Object.keys(this.state.resultTree).map(layer => this.renderLayer(layer));
             const attributes = this.renderResultAttributes(this.state.currentLayer, this.state.currentResult, 'identify-result-tree-frame');
             const resultsContainerStyle = {
@@ -526,7 +424,6 @@ class IdentifyViewer extends React.Component {
                 (<div className="identify-results-container" key="results-container" style={resultsContainerStyle}>{contents}</div>),
                 attributes
             ];
-            haveResults = true;
         } else {
             body = (
                 <div className="identify-flat-results-list">
@@ -546,35 +443,36 @@ class IdentifyViewer extends React.Component {
                     })}
                 </div>
             );
-            haveResults = true;
         }
         // "el.style.background='inherit'": HACK to trigger an additional repaint, since Safari/Chrome on iOS render the element cut off the first time
         return (
-            <ResizeableWindow icon="info-sign"
-                initialHeight={this.props.initialHeight} initialWidth={this.props.initialWidth}
-                initialX={0} initialY={0} initiallyDocked={this.props.initiallyDocked}
-                onClose={this.props.onClose} title={LocaleUtils.trmsg("identify.title")} zIndex={8}
-            >
-                <div className="identify-body" ref={el => { if (el) el.style.background = 'inherit'; } } role="body">
-                    {body}
-                    {haveResults && this.props.enableExport ? (
-                        <div className="identify-buttonbox">
-                            <div>
-                                {LocaleUtils.tr("identify.exportformat")}&nbsp;
-                                <select className="combo" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
-                                    <option value="json">json</option>
-                                    <option value="geojson">geojson</option>
-                                    <option value="csv">csv</option>
-                                    <option value="csvzip">csv + zip</option>
-                                </select>
-                                <button className="button" onClick={this.exportResults}>{LocaleUtils.tr("identify.export")}</button>
-                            </div>
+            <div className="identify-body" ref={el => { if (el) el.style.background = 'inherit'; } }>
+                {body}
+                {this.props.enableExport ? (
+                    <div className="identify-buttonbox">
+                        <div>
+                            {LocaleUtils.tr("identify.exportformat")}&nbsp;
+                            <select className="combo" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
+                                <option value="json">json</option>
+                                <option value="geojson">geojson</option>
+                                <option value="csv">csv</option>
+                                <option value="csvzip">csv + zip</option>
+                            </select>
+                            <button className="button" onClick={this.exportResults}>{LocaleUtils.tr("identify.export")}</button>
                         </div>
-                    ) : null}
-                </div>
-            </ResizeableWindow>
+                    </div>
+                ) : null}
+            </div>
         );
-
+    }
+    setIframeContent = (iframe, html) => {
+        if (iframe.getAttribute("identify-content-set")) {
+            return;
+        }
+        iframe.setAttribute("identify-content-set", true);
+        iframe.contentWindow.document.open();
+        iframe.contentWindow.document.write(html);
+        iframe.contentWindow.document.close();
     }
     collectFeatureReportTemplates = (entry) => {
         let reports = {};
@@ -604,48 +502,21 @@ class IdentifyViewer extends React.Component {
         };
         return serviceUrl + "/" + template + "?" + Object.keys(params).map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&");
     }
-    layerTitle = (featureInfoLayerId, result) => {
-        if (!this.props.featureInfoReturnsLayerName) {
-            return featureInfoLayerId;
-        }
-        const layername = result.layername || featureInfoLayerId;
-        return LayerUtils.findLayerTitle(this.props.layers, layername, [LayerRole.THEME, LayerRole.USERLAYER], result.layertitle);
-    }
     showLayerInfo = (featureInfoLayerId, result) => {
-        let matchlayer = null;
-        let matchsublayer = null;
-        const layername = result.layername || (this.props.featureInfoReturnsLayerName ? featureInfoLayerId : null);
-        if (layername || result.layerinfo) {
-            // Search matching layer by technical name
-            for (const name of [layername, result.layerinfo]) {
-                for (const layer of this.props.layers) {
-                    if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
-                        matchsublayer = LayerUtils.searchSubLayer(layer, 'name', name);
-                        if (matchsublayer) {
-                            matchlayer = layer;
-                            break;
-                        }
-                    }
-                }
-                if (matchsublayer) {
-                    break;
-                }
-            }
-        } else {
-            // Search matching layer by title
-            for (const layer of this.props.layers) {
-                if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
-                    matchsublayer = LayerUtils.searchSubLayer(layer, 'title', featureInfoLayerId);
-                    if (matchsublayer) {
-                        matchlayer = layer;
-                        break;
-                    }
-                }
+        let match = null;
+        // Search matching layer by technical name
+        for (const name of [result.layername, result.layerinfo]) {
+            match = LayerUtils.searchLayer(this.props.layers, 'name', name);
+            if (match) {
+                break;
             }
         }
-
-        if (matchlayer && matchsublayer) {
-            this.props.setActiveLayerInfo(matchlayer, matchsublayer);
+        if (!match) {
+            // Search matching layer by title
+            match = LayerUtils.searchLayer(this.props.layers, 'title', result.layertitle);
+        }
+        if (match) {
+            this.props.setActiveLayerInfo(match.layer, match.sublayer);
         }
     }
     attribValue = (text, attrName, layer, result) => {

@@ -80,7 +80,7 @@
       "title": "Info Entități"
     },
     "identifyregion": {
-      "info": "Încadrați într-un poligon entitățile de identificat..."
+      "info": ""
     },
     "importlayer": {
       "addlayer": "Adaugă strat",
@@ -94,7 +94,8 @@
       "urlplaceholder": "Introdu URL către WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": ""
+      "clickhelpPoint": "",
+      "clickhelpPolygon": "Încadrați într-un poligon entitățile de identificat..."
     },
     "layerinfo": {
       "abstract": "Abstract",

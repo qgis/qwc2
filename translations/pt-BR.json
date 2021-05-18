@@ -80,7 +80,7 @@
       "title": "Información de recurso"
     },
     "identifyregion": {
-      "info": "Desenhe um polígono em torno das características para identificar..."
+      "info": ""
     },
     "importlayer": {
       "addlayer": "Adicionar camada",
@@ -94,7 +94,8 @@
       "urlplaceholder": "Ingrese dirección URL o WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": "Clique numa localização para identificar no mapa..."
+      "clickhelpPoint": "Clique numa localização para identificar no mapa...",
+      "clickhelpPolygon": "Desenhe um polígono em torno das características para identificar..."
     },
     "layerinfo": {
       "abstract": "Resumo",

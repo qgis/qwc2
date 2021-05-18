@@ -87,6 +87,7 @@
     "importlayer.url",
     "importlayer.urlplaceholder",
     "infotool.clickhelpPoint",
+    "infotool.clickhelpPolygon",
     "layerinfo.abstract",
     "layerinfo.attribution",
     "layerinfo.dataUrl",

@@ -80,7 +80,7 @@
       "title": "Objektinformasjon"
     },
     "identifyregion": {
-      "info": "Tegn et polygon rundt objektene som skal identifieres"
+      "info": ""
     },
     "importlayer": {
       "addlayer": "Legg til lag",
@@ -94,7 +94,8 @@
       "urlplaceholder": "Skriv inn URL til WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": ""
+      "clickhelpPoint": "",
+      "clickhelpPolygon": "Tegn et polygon rundt objektene som skal identifieres"
     },
     "layerinfo": {
       "abstract": "Oppsummering",

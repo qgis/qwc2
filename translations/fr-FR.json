@@ -80,7 +80,7 @@
       "title": "Informations sur l'objet"
     },
     "identifyregion": {
-      "info": "Dessiner un polygone pour identifier les objets"
+      "info": ""
     },
     "importlayer": {
       "addlayer": "Ajouter une couche",
@@ -94,7 +94,8 @@
       "urlplaceholder": "Entrer l'URL d'un WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": "Cliquez sur un emplacement pour l'identifier sur la carte..."
+      "clickhelpPoint": "Cliquez sur un emplacement pour l'identifier sur la carte...",
+      "clickhelpPolygon": "Dessiner un polygone pour identifier les objets"
     },
     "layerinfo": {
       "abstract": "Récapitulation",

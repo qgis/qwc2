@@ -80,7 +80,7 @@
       "title": "Lekérdezés információ"
     },
     "identifyregion": {
-      "info": "Rajzolj egy poligont a lekérdezni kívánt terület köré..."
+      "info": ""
     },
     "importlayer": {
       "addlayer": "Fólia hozzáadása",
@@ -94,7 +94,8 @@
       "urlplaceholder": "URL a WMS, WMTS, WFS adatokhoz..."
     },
     "infotool": {
-      "clickhelpPoint": ""
+      "clickhelpPoint": "",
+      "clickhelpPolygon": "Rajzolj egy poligont a lekérdezni kívánt terület köré..."
     },
     "layerinfo": {
       "abstract": "Kivonat",

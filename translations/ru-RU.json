@@ -80,7 +80,7 @@
       "title": "Информация об объекте"
     },
     "identifyregion": {
-      "info": "Для получения информации обведите регион многоугольником..."
+      "info": ""
     },
     "importlayer": {
       "addlayer": "Добавить слой",
@@ -94,7 +94,8 @@
       "urlplaceholder": "Введите URL для WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": ""
+      "clickhelpPoint": "",
+      "clickhelpPolygon": "Для получения информации обведите регион многоугольником..."
     },
     "layerinfo": {
       "abstract": "Abstract",

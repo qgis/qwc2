@@ -84,7 +84,7 @@ class MapTip extends React.Component {
 
         axios.get(request.url, {params: request.params}).then(response => {
             const mapTips = [];
-            const result = IdentifyUtils.parseXmlResponse({data: response.data, request}, this.props.map.projection);
+            const result = IdentifyUtils.parseXmlResponse(response.data, this.props.map.projection);
             const features = [];
             for (const layerName of request.params.layers.split(",")) {
                 for (const feature of result[layerName] || []) {
