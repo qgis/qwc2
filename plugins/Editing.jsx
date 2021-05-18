@@ -490,7 +490,7 @@ class Editing extends React.Component {
         }
     }
     setEditFeature = (featureId) => {
-        const feature = this.state.pickedFeatures.find(f => f.id === featureId);
+        const feature = this.state.pickedFeatures.find(f => f.id.toString() === featureId);
         this.props.changeEditingState({...this.props.editing, feature: feature, changed: false});
     }
     deleteClicked = () => {
