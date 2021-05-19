@@ -71,7 +71,7 @@ const VectorLayerUtils = {
                     params.labelFillColors.push(defaultFeatureStyle.textFill);
                     params.labelOultineColors.push(defaultFeatureStyle.textStroke);
                     if (qgisServerVersion >= 3) {
-                        params.labelOutlineSizes.push(scaleFactor * feature.styleOptions.strokeWidth);
+                        params.labelOutlineSizes.push(scaleFactor * (feature.styleOptions || defaultFeatureStyle).strokeWidth);
                     } else {
                         params.labelOutlineSizes.push(scaleFactor);
                     }
