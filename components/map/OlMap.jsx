@@ -14,6 +14,7 @@ import isEmpty from 'lodash.isempty';
 import {changeMapView, clickOnMap} from '../../actions/map';
 import {changeMousePositionState} from '../../actions/mousePosition';
 import {setCurrentTask} from '../../actions/task';
+import ConfigUtils from '../../utils/ConfigUtils';
 import MapUtils from '../../utils/MapUtils';
 
 class OlMap extends React.Component {
@@ -52,7 +53,10 @@ class OlMap extends React.Component {
         });
         interactions.extend([
             new ol.interaction.DragPan({kinetic: null}),
-            new ol.interaction.MouseWheelZoom({duration: props.mapOptions.zoomDuration || 250})
+            new ol.interaction.MouseWheelZoom({
+                duration: props.mapOptions.zoomDuration || 250,
+                constrainResolution: ConfigUtils.getConfigProp('allowFractionalZoom') === true ? false : true
+            })
         ]);
         const controls = ol.control.defaults({
             zoom: false,
