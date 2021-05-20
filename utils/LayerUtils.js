@@ -37,7 +37,9 @@ const LayerUtils = {
         }
         exploded = [...external, ...exploded];
         LayerUtils.insertPermalinkLayers(exploded, permalinkLayers);
-        return LayerUtils.implodeLayers(exploded);
+        const layers = LayerUtils.implodeLayers(exploded);
+        LayerUtils.setGroupVisiblities(layers);
+        return layers;
     },
     restoreOrderedLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers) {
         const exploded = LayerUtils.explodeLayers([themeLayer]);
@@ -58,7 +60,19 @@ const LayerUtils = {
             }
         }
         LayerUtils.insertPermalinkLayers(reordered, permalinkLayers);
-        return LayerUtils.implodeLayers(reordered);
+        const layers = LayerUtils.implodeLayers(reordered);
+        LayerUtils.setGroupVisiblities(layers);
+        return layers;
+    },
+    setGroupVisiblities(layers) {
+        let hasVisible = false;
+        for (const layer of layers) {
+            if (!isEmpty(layer.sublayers)) {
+                layer.visibility = LayerUtils.setGroupVisiblities(layer.sublayers);
+            }
+            hasVisible = hasVisible || layer.visibility;
+        }
+        return hasVisible;
     },
     createSeparatorLayer(title) {
         return LayerUtils.explodeLayers([{
