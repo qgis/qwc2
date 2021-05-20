@@ -89,20 +89,20 @@ const LayerUtils = {
     insertPermalinkLayers(exploded, layers) {
         for (const layer of layers || []) {
             const insLayer = LayerUtils.explodeLayers([layer])[0];
-            if(insLayer.layer.role !== LayerRole.USERLAYER || insLayer.layer.type !== 'vector') {
+            if (insLayer.layer.role !== LayerRole.USERLAYER || insLayer.layer.type !== 'vector') {
                 continue;
             }
             delete insLayer.layer.pos;
             exploded.splice(layer.pos, 0, insLayer);
         }
     },
-    collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryable, visibilities) {
-        const visibility = sublayer.visibility === undefined ? true : sublayer.visibility;
+    collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryable, visibilities, parentVisibility) {
+        const visibility = (sublayer.visibility === undefined ? true : sublayer.visibility) && parentVisibility;
         if (visibility || visibilities) {
             if (!isEmpty(sublayer.sublayers)) {
                 // Is group
                 sublayer.sublayers.map(sublyr => {
-                    LayerUtils.collectWMSSublayerParams(sublyr, layerNames, opacities, styles, queryable, visibilities);
+                    LayerUtils.collectWMSSublayerParams(sublyr, layerNames, opacities, styles, queryable, visibilities, visibility);
                 });
             } else {
                 layerNames.push(sublayer.name);
@@ -132,7 +132,7 @@ const LayerUtils = {
         let styles = [];
         const queryLayers = [];
         layer.sublayers.map(sublayer => {
-            LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryLayers);
+            LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryLayers, null, layer.visibility);
         });
         layerNames.reverse();
         opacities.reverse();
@@ -174,7 +174,7 @@ const LayerUtils = {
         const queryable = [];
         for (const layer of layers) {
             if (layer.role === LayerRole.THEME) {
-                LayerUtils.collectWMSSublayerParams(layer, layernames, opacities, styles, queryable, visibilities);
+                LayerUtils.collectWMSSublayerParams(layer, layernames, opacities, styles, queryable, visibilities, layer.visibility);
             } else if (layer.role === LayerRole.USERLAYER && (layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts")) {
                 layernames.push(layer.type + ':' + (layer.capabilitiesUrl || layer.url) + "#" + layer.name);
                 opacities.push(layer.opacity);
