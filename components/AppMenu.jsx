@@ -105,7 +105,7 @@ class AppMenu extends React.Component {
                         <li className="appmenu-leaf" key={item.key + (item.mode || "")} onClick={() => this.onMenuitemClicked(item)} >
                             <Icon icon={item.icon} size="xlarge"/>
                             <span className="appmenu-leaf-label">
-                                {LocaleUtils.tr("appmenu.items." + item.key)}
+                                {LocaleUtils.tr("appmenu.items." + item.key + (item.mode || ""))}
                                 {item.comment ? (<div className="appmenu-leaf-comment">
                                     {LocaleUtils.tr("appmenu.items." + item.key + (item.mode || "") + "_comment")}
                                 </div>) : null}
