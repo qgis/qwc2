@@ -37,7 +37,7 @@ class LayerTree extends React.Component {
         allowCompare: PropTypes.bool,
         allowImport: PropTypes.bool,
         allowMapTips: PropTypes.bool,
-        bboxDependentLegend: PropTypes.bool,
+        bboxDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         changeLayerProperty: PropTypes.func,
         enableLegendPrint: PropTypes.bool,
         enableServiceInfo: PropTypes.bool,
@@ -49,12 +49,13 @@ class LayerTree extends React.Component {
         infoInSettings: PropTypes.bool,
         layerInfoWindowSize: PropTypes.object,
         layers: PropTypes.array,
-        mapCrs: PropTypes.string,
+        map: PropTypes.object,
         mapScale: PropTypes.number,
         mapTipsEnabled: PropTypes.bool,
         mobile: PropTypes.bool,
         removeLayer: PropTypes.func,
         reorderLayer: PropTypes.func,
+        scaleDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         setActiveLayerInfo: PropTypes.func,
         setActiveServiceInfo: PropTypes.func,
         setSwipe: PropTypes.func,
@@ -247,7 +248,7 @@ class LayerTree extends React.Component {
             let zoomToLayerButton = null;
             if (sublayer.bbox && sublayer.bbox.bounds) {
                 const zoomToLayerTooltip = LocaleUtils.tr("layertree.zoomtolayer");
-                const crs = sublayer.bbox.crs || this.props.mapCrs;
+                const crs = sublayer.bbox.crs || this.props.map.projection;
                 zoomToLayerButton = (
                     <Icon icon="zoom" onClick={() => this.props.zoomToExtent(sublayer.bbox.bounds, crs)} title={zoomToLayerTooltip} />
                 );
@@ -267,7 +268,7 @@ class LayerTree extends React.Component {
         }
         let legendicon = null;
         if (this.props.showLegendIcons) {
-            const legendUrl = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.mapCrs);
+            const legendUrl = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
             if (legendUrl) {
                 legendicon = (<img className="layertree-item-legend-thumbnail" onMouseOut={this.hideLegendTooltip} onMouseOver={ev => this.showLegendTooltip(ev, legendUrl)} onTouchStart={ev => this.showLegendTooltip(ev, legendUrl)} src={legendUrl + "&TYPE=thumbnail"} />);
             } else if (layer.color) {
@@ -465,7 +466,7 @@ class LayerTree extends React.Component {
                     })}
                 </SideBar>
                 {legendTooltip}
-                <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} windowSize={this.props.layerInfoWindowSize} />
+                <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} scaleDependentLegend={this.props.scaleDependentLegend} windowSize={this.props.layerInfoWindowSize} />
                 <ServiceInfoWindow windowSize={this.props.layerInfoWindowSize} />
             </div>
         );
@@ -548,7 +549,7 @@ class LayerTree extends React.Component {
                 return "";
             } else if (layer.legendUrl) {
                 return layer.params.LAYERS ? layer.params.LAYERS.split(",").reverse().map(sublayer => {
-                    const request = LayerUtils.getLegendUrl(layer, {name: sublayer}, this.props.mapScale, this.props.mapCrs);
+                    const request = LayerUtils.getLegendUrl(layer, {name: sublayer}, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
                     return request ? '<div><img src="' + request + '" /></div>' : "";
                 }).join("\n") : "";
             } else if (layer.color) {
@@ -608,7 +609,7 @@ class LayerTree extends React.Component {
     exportRedliningLayer = (layer) => {
         const data = JSON.stringify({
             type: "FeatureCollection",
-            features: layer.features.map(feature => ({...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.mapCrs, 'EPSG:4326')}))
+            features: layer.features.map(feature => ({...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.map.projection, 'EPSG:4326')}))
         }, null, ' ');
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
     }
@@ -619,7 +620,7 @@ const selector = (state) => ({
     ie: state.browser.ie,
     fallbackDrag: state.browser.ie || (state.browser.platform === 'Win32' && state.browser.chrome),
     layers: state.layers.flat,
-    mapCrs: state.map.projection,
+    map: state.map,
     mapScale: MapUtils.computeForZoom(state.map.scales, state.map.zoom),
     swipe: state.layers.swipe,
     theme: state.theme.current || {},

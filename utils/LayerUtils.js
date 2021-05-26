@@ -591,7 +591,7 @@ const LayerUtils = {
             }
         }
     },
-    getLegendUrl(layer, sublayer, scale, projection, map) {
+    getLegendUrl(layer, sublayer, scale, map, bboxDependentLegend, scaleDependentLegend) {
         const name = (layer.externalLayerMap || {})[sublayer.name] ? (layer.externalLayerMap[sublayer.name].params || {}).LAYERS : sublayer.name;
         const mapParam = (layer.externalLayerMap || {})[sublayer.name] ? (layer.externalLayerMap[sublayer.name].params || {}).MAP : (layer.params || {}).MAP;
         let params = "SERVICE=WMS"
@@ -599,10 +599,12 @@ const LayerUtils = {
                    + "&VERSION=" + (layer.version || "1.3.0")
                    + "&FORMAT=image/png"
                    + "&LAYER=" + encodeURIComponent(name)
-                   + "&CRS=" + projection
-                   + "&SCALE=" + Math.round(scale)
+                   + "&CRS=" + map.projection
                    + "&SLD_VERSION=1.1.0";
-        if (map) {
+        if (scaleDependentLegend === true || (scaleDependentLegend === "theme" && layer.role === LayerRole.THEME)) {
+            params += "&SCALE=" + Math.round(scale);
+        }
+        if (bboxDependentLegend === true || (bboxDependentLegend === "theme" && layer.role === LayerRole.THEME)) {
             params += "&WIDTH=" + map.size.width
                     + "&HEIGHT=" + map.size.height
                     + "&BBOX=" + map.bbox.bounds.join(",");
