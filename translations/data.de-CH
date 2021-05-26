@@ -34,6 +34,7 @@
       "copied": "Kopiert"
     },
     "dxfexport": {
+      "layers": "",
       "selectinfo": "Rechteck aufziehen um die zu exportierende Region",
       "symbologyscale": "Darstellungsmassstab"
     },

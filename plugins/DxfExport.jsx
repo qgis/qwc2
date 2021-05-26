@@ -20,32 +20,62 @@ require('./style/DxfExport.css');
 
 class DxfExport extends React.Component {
     static propTypes = {
-        theme: PropTypes.object,
-        map: PropTypes.object,
+        formatOptions: PropTypes.string,
+        layerOptions: PropTypes.array,
         layers: PropTypes.array,
-        setCurrentTask: PropTypes.func
+        map: PropTypes.object,
+        serviceUrl: PropTypes.string,
+        setCurrentTask: PropTypes.func,
+        theme: PropTypes.object
+    }
+    state = {
+        selectedLayers: ""
+    }
+    constructor(props) {
+        super(props);
+        this.state.selectedLayers = !isEmpty(props.layerOptions) ? props.layerOptions[0].layers : "";
     }
     renderBody = () => {
         let themeLayers = this.props.layers.filter(layer => layer.role === LayerRole.THEME);
         if(!this.props.theme || isEmpty(themeLayers)) {
             return null;
         }
-        let themeSubLayers = themeLayers.map(layer => layer.params.LAYERS).reverse().join(",");
-        let filename = this.props.theme.name + ".dxf";
-        let action = this.props.theme.url;
+        const themeSubLayers = themeLayers.map(layer => layer.params.LAYERS).reverse().join(",");
+        const action = this.props.serviceUrl || this.props.theme.url;
+        const formatOptions = this.props.formatOptions
+            ? <input name="FORMAT_OPTIONS" readOnly type="hidden" value={this.props.formatOptions} />
+            : null;
+        const basename = this.props.serviceUrl ? this.props.serviceUrl.replace(/\/$/, '').replace(/^.*\//, '') : this.props.theme.name;
         return (
             <span>
-                <form ref={form => this.form = form} action={action} method="POST" target="_blank">
-                <div className="help-text"><Message msgId="dxfexport.selectinfo" /></div>
-                <div className="export-settings"><Message msgId="dxfexport.symbologyscale" /> <span className="input-frame"><span>1&nbsp;:&nbsp;</span><input type="number" name="SCALE" defaultValue="500" /></span></div>
-                <input type="hidden" name="SERVICE" value="WMS" readOnly={true} />
-                <input type="hidden" name="VERSION" value={themeLayers[0].version || "1.3.0"} readOnly={true} />
-                <input type="hidden" name="REQUEST" value="GetMap" readOnly={true} />
-                <input type="hidden" name="FORMAT" value="application/dxf" readOnly={true} />
-                <input type="hidden" name="LAYERS" value={themeSubLayers} readOnly={true} />
-                <input type="hidden" name="CRS" value={this.props.map.projection} readOnly={true} />
-                <input type="hidden" name="FILE_NAME" value={this.props.theme.name + ".dxf"} readOnly={true} />
-                <input ref={input => this.extentInput = input} type="hidden" name="BBOX" value="" readOnly={true} />
+                <form action={action} method="POST" ref={form => { this.form = form; }} target="_blank">
+                    <div className="help-text"><Message msgId="dxfexport.selectinfo" /></div>
+                    <div className="export-settings">
+                        <span>
+                            <Message msgId="dxfexport.symbologyscale" />&nbsp;
+                            <span className="input-frame"><span>&nbsp;1&nbsp;:&nbsp;</span><input defaultValue="500" name="SCALE" type="number" /></span>
+                        </span>
+                        {!isEmpty(this.props.layerOptions) ? (
+                            <span>
+                                <Message msgId="dxfexport.layers" />&nbsp;
+                                <select name="LAYERS" onChange={ev => this.setState({selectedLayers: ev.target.value})} value={this.state.selectedLayers}>
+                                    {this.props.layerOptions.map(opt => (
+                                        <option key={opt.layers} value={opt.layers}>{opt.label}</option>
+                                    ))}
+                                </select>
+                            </span>
+                        ) : (
+                            <input name="LAYERS" readOnly type="hidden" value={themeSubLayers} />
+                        )}
+                    </div>
+                    <input name="SERVICE" readOnly type="hidden" value="WMS" />
+                    <input name="VERSION" readOnly type="hidden" value={themeLayers[0].version || "1.3.0"} />
+                    <input name="REQUEST" readOnly type="hidden" value="GetMap" />
+                    <input name="FORMAT" readOnly type="hidden" value="application/dxf" />
+                    <input name="CRS" readOnly type="hidden" value={this.props.map.projection} />
+                    <input name="FILE_NAME" readOnly type="hidden" value={basename + ".dxf"} />
+                    <input name="BBOX" readOnly ref={input => { this.extentInput = input; }} type="hidden" value="" />
+                    {formatOptions}
                 </form>
             </span>
         );

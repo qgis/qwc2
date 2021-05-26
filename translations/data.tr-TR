@@ -34,6 +34,7 @@
       "copied": "Kopyalandı"
     },
     "dxfexport": {
+      "layers": "",
       "selectinfo": "Export edilecek alana bir dikdörtgen çizin...",
       "symbologyscale": "Sembol Ölçeği:"
     },

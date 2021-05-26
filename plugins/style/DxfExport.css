@@ -7,9 +7,14 @@
     font-size: small;
 }
 
-.DxfExport span.input-frame {
+.DxfExport div.export-settings > span {
+    margin: 0 0.25em;
+}
+
+.DxfExport span.input-frame,
+.DxfExport div.export-settings select
+ {
     border: 1px solid @item_border@;
-    padding: 0.25em;
     background-color: white;
     display: inline-flex;
     align-items: center;

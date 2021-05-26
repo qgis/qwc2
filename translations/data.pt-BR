@@ -34,6 +34,7 @@
       "copied": "Copiado"
     },
     "dxfexport": {
+      "layers": "",
       "selectinfo": "Desenhe um retângulo sobre uma região para exportar...",
       "symbologyscale": "Escala da simbologia:"
     },
