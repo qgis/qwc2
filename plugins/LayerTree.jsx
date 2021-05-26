@@ -37,7 +37,7 @@ require('./style/LayerTree.css');
 class LayerTree extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
-        mapCrs: PropTypes.string,
+        map: PropTypes.object,
         mapScale: PropTypes.number,
         swipe: PropTypes.number,
         mobile: PropTypes.bool,
@@ -58,6 +58,7 @@ class LayerTree extends React.Component {
         grayUnchecked: PropTypes.bool,
         layerInfoWindowSize: PropTypes.object,
         bboxDependentLegend: PropTypes.bool,
+        scaleDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         flattenGroups: PropTypes.bool,
         setSwipe: PropTypes.func,
         setActiveLayerInfo: PropTypes.func,
@@ -83,6 +84,7 @@ class LayerTree extends React.Component {
         grayUnchecked: true,
         layerInfoWindowSize: {width: 320, height: 480},
         bboxDependentLegend: false,
+        scaleDependentLegend: false,
         flattenGroups: false,
         width: "25em",
         enableLegendPrint: true,
@@ -261,7 +263,7 @@ class LayerTree extends React.Component {
         }
         let legendicon = null;
         if (this.props.showLegendIcons) {
-            const legendUrl = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.mapCrs);
+            const legendUrl = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
             if (legendUrl) {
                 legendicon = (<img className="layertree-item-legend-thumbnail" onMouseOut={this.hideLegendTooltip} onMouseOver={ev => this.showLegendTooltip(ev, legendUrl)} onTouchStart={ev => this.showLegendTooltip(ev, legendUrl)} src={legendUrl + "&TYPE=thumbnail"} />);
             } else if (layer.color) {
@@ -453,7 +455,7 @@ class LayerTree extends React.Component {
                     })}
                 </SideBar>
                 {legendTooltip}
-                <LayerInfoWindow windowSize={this.props.layerInfoWindowSize} bboxDependentLegend={this.props.bboxDependentLegend} />
+                <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} scaleDependentLegend={this.props.scaleDependentLegend} windowSize={this.props.layerInfoWindowSize} />
                 <ServiceInfoWindow windowSize={this.props.layerInfoWindowSize} />
             </div>
         );
@@ -536,7 +538,7 @@ class LayerTree extends React.Component {
                 return "";
             } else if(layer.legendUrl) {
                 return layer.params.LAYERS ? layer.params.LAYERS.split(",").reverse().map(sublayer => {
-                    const request = LayerUtils.getLegendUrl(layer, {name: sublayer}, this.props.mapScale, this.props.mapCrs);
+                    const request = LayerUtils.getLegendUrl(layer, {name: sublayer}, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
                     return request ? '<div><img src="' + request + '" /></div>' : "";
                 }).join("\n") : "";
             } else if(layer.color) {
@@ -597,7 +599,7 @@ class LayerTree extends React.Component {
     exportRedliningLayer = (layer) => {
         let data = JSON.stringify({
             type: "FeatureCollection",
-	        features: layer.features.map(feature => ({...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.mapCrs, 'EPSG:4326')}))
+            features: layer.features.map(feature => ({...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.map.projection, 'EPSG:4326')}))
         }, null, ' ');
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
     }
@@ -607,8 +609,8 @@ const selector = (state) => ({
     mobile: state.browser ? state.browser.mobile : false,
     ie: state.browser ? state.browser.ie : false,
     fallbackDrag: state.browser.ie || (state.browser.platform === 'Win32' && state.browser.chrome),
-    layers: state.layers && state.layers.flat ? state.layers.flat : [],
-    mapCrs: state.map.projection,
+    layers: state.layers.flat,
+    map: state.map,
     mapScale: MapUtils.computeForZoom(state.map.scales, state.map.zoom),
     swipe: state.layers && state.layers.swipe || undefined,
     theme: state.theme.current || {},

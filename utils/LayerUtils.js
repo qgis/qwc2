@@ -568,20 +568,22 @@ const LayerUtils = {
             });
         }
     },
-    getLegendUrl(layer, sublayer, scale, projection, map) {
+    getLegendUrl(layer, sublayer, scale, map, bboxDependentLegend, scaleDependentLegend) {
         let params = {
             SERVICE: "WMS",
             REQUEST: "GetLegendGraphic",
             VERSION: layer.version || "1.3.0",
             FORMAT: "image/png",
             LAYER: encodeURIComponent(sublayer.name),
-            CRS: projection,
-            SCALE: Math.round(scale),
+            CRS: map.projection,
             SLD_VERSION: "1.1.0"
         };
-        if(map) {
+        if (scaleDependentLegend === true || (scaleDependentLegend === "theme" && layer.role === LayerRole.THEME)) {
+            params.SCALE = Math.round(scale);
+        }
+        if (bboxDependentLegend === true || (bboxDependentLegend === "theme" && layer.role === LayerRole.THEME)) {
             params.WIDTH = map.size.width;
-            params.HEIGHT = map.size.height;
+            params.HEIGHT =map.size.height;
             params.BBOX = map.bbox.bounds.join(",");
         }
         let requestUrl = layer.legendUrl;
