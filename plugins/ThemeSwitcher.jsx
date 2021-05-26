@@ -19,7 +19,6 @@ import './style/ThemeSwitcher.css';
 class ThemeSwitcher extends React.Component {
     static propTypes = {
         activeTheme: PropTypes.object,
-        bboxDependentLegend: PropTypes.bool,
         collapsibleGroups: PropTypes.bool,
         currentTask: PropTypes.object,
         showLayerAfterChangeTheme: PropTypes.bool,
@@ -57,7 +56,7 @@ class ThemeSwitcher extends React.Component {
                         )
                     })}
                 </SideBar>
-                <ThemeLayersListWindow bboxDependentLegend={this.props.bboxDependentLegend} windowSize={this.props.themeLayersListWindowSize} />
+                <ThemeLayersListWindow windowSize={this.props.themeLayersListWindowSize} />
             </div>
         );
     }
