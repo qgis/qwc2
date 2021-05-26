@@ -106,7 +106,7 @@ class MapPlugin extends React.Component {
                     const layer = renderLayers[i];
                     if (layer.role > LayerRole.USERLAYER) {
                         continue;
-                    } else if (layer.type === "wms" && layer.params.LAYERS.split(",").length > 1) {
+                    } else if (layer.type === "wms" && layer.params.LAYERS.split(",").length >= 1) {
                         const paramLayers = layer.params.LAYERS.split(",");
                         const paramOpacities = layer.params.OPACITIES.split(",");
                         const paramStyles = layer.params.STYLES.split(",");
