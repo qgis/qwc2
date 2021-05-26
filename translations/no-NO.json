@@ -43,6 +43,7 @@
       "copied": "Kopiert"
     },
     "dxfexport": {
+      "layers": "",
       "selectinfo": "Tegn et rektangel rundt området som skal eksporteres...",
       "symbologyscale": "Symbolskala:"
     },

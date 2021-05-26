@@ -43,6 +43,7 @@
       "copied": "Copiado"
     },
     "dxfexport": {
+      "layers": "",
       "selectinfo": "Arrastre un rectángulo alrededor de la zona para exportar...",
       "symbologyscale": "Escala de la simbología:"
     },

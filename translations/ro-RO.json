@@ -43,6 +43,7 @@
       "copied": "Copiat"
     },
     "dxfexport": {
+      "layers": "",
       "selectinfo": "Încadrați într-un dreptunghi zona de exportat..",
       "symbologyscale": "Scara simboluri:"
     },

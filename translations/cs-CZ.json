@@ -43,6 +43,7 @@
       "copied": "Zkopírováno"
     },
     "dxfexport": {
+      "layers": "",
       "selectinfo": "Vyberte obdélníkem oblast pro export...",
       "symbologyscale": "Meřítko symbolů:"
     },

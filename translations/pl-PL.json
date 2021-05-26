@@ -43,6 +43,7 @@
       "copied": "Skopiowano"
     },
     "dxfexport": {
+      "layers": "",
       "selectinfo": "Narysuj prostokąt, określając obszar do eksportu...",
       "symbologyscale": "Skala symbolizacji:"
     },

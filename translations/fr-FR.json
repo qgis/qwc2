@@ -43,6 +43,7 @@
       "copied": "Copié"
     },
     "dxfexport": {
+      "layers": "Couches",
       "selectinfo": "Faites glisser un rectangle autour de la région à exporter..",
       "symbologyscale": "Echelle"
     },

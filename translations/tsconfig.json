@@ -49,6 +49,7 @@
     "bottombar.viewertitle_label",
     "copybtn.click_to_copy",
     "copybtn.copied",
+    "dxfexport.layers",
     "dxfexport.selectinfo",
     "dxfexport.symbologyscale",
     "editing.canceldelete",

@@ -43,8 +43,9 @@
       "copied": "Copied"
     },
     "dxfexport": {
+      "layers": "Layers",
       "selectinfo": "Drag a rectangle around the region to export...",
-      "symbologyscale": "Symbology scale:"
+      "symbologyscale": "Symbology scale"
     },
     "editing": {
       "canceldelete": "Don't delete",

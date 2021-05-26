@@ -43,6 +43,7 @@
       "copied": "Kimásolva"
     },
     "dxfexport": {
+      "layers": "",
       "selectinfo": "Rajzolj egy négyszöget az exportálni kívánt terület köré...",
       "symbologyscale": "Jel méretatarány:"
     },
