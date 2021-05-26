@@ -67,6 +67,11 @@ class MapPlugin extends React.Component {
                             if (!sublayerInvisible) {
                                 renderLayers.push({
                                     ...layer.externalLayerMap[sublayers[i]],
+                                    params: {
+                                        ...layer.externalLayerMap[sublayers[i]].params,
+                                        OPACITIES: opacities[i],
+                                        STYLES: ""
+                                    },
                                     opacity: parseInt(opacities[i], 10),
                                     visibility: true
                                 });
