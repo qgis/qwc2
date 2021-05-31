@@ -136,8 +136,15 @@ const LayerUtils = {
         const query = url.parse(layer.url, true).query;
 
         if (!Array.isArray(layer.sublayers)) {
+            const params = layer.params || {};
             return {
-                params: {...(layer.params || {LAYERS: layer.name}), MAP: query.map || query.MAP || (layer.params || {}).map || (layer.params || {}).MAP},
+                params: {
+                    ...params,
+                    LAYERS: params.LAYERS || layer.name,
+                    OPACITIES: params.OPACITIES || ("" + layer.opacity),
+                    STYLES: params.STYLES || "",
+                    MAP: query.map || query.MAP || params.map || params.MAP
+                },
                 queryLayers: layer.queryable ? [layer.name] : []
             };
         }
