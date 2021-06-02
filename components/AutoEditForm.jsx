@@ -34,7 +34,10 @@ export default class AutoEditForm extends React.Component {
     }
     renderField = (field) => {
         const constraints = field.constraints || {};
-        let value = (this.props.values || {})[field.id] || "";
+        let value = (this.props.values || {})[field.id];
+        if (value === undefined || value === null) {
+            value = "";
+        }
         let input = null;
         let title = field.name + ":";
         if (field.type === "boolean" || field.type === "bool") {
