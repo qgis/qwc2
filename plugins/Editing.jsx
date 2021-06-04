@@ -401,6 +401,9 @@ class Editing extends React.Component {
             }
         };
 
+        const editConfig = this.props.theme.editConfig;
+        const curConfig = editConfig[this.state.selectedLayer];
+
         // Keep relation values separate
         const relationValues = clone(feature.relationValues || {});
         delete feature.relationValues;
@@ -410,10 +413,11 @@ class Editing extends React.Component {
         // Collect all values from form fields
         const fieldnames = Array.from(ev.target.elements).map(element => element.name).filter(x => x);
         fieldnames.forEach(name => {
+            const fieldConfig = (curConfig.fields || []).find(field => field.id === name) || {};
             const element = ev.target.elements.namedItem(name);
             if (element) {
                 let value = element.type === "radio" || element.type === "checkbox" ? element.checked : element.value;
-                if ((element.type === "date" || element.type === "number" ) && element.value === "") {
+                if ((element.type === "date" || element.type === "number" || fieldConfig.type === "date" || fieldConfig.type === "number") && element.value === "") {
                     // Set empty date/number value to null instead of empty string
                     value = null;
                 }
