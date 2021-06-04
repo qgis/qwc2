@@ -292,7 +292,7 @@ export default class QtDesignerForm extends React.Component {
                     let statusText = "";
                     if (record.error) {
                         statusIcon = "warning";
-                        statusText = record.error;
+                        statusText = this.buildErrMsg(record);
                     }
                     const extraClass = status.startsWith("deleted") ? "qt-designer-widget-relation-record-deleted" : "";
                     return (
@@ -377,5 +377,20 @@ export default class QtDesignerForm extends React.Component {
                 this.reformatLayout(item.layout, keyvals);
             }
         });
+    }
+    buildErrMsg = (record) => {
+        let message = record.error;
+        const errorDetails = record.error_details || {};
+        if (!isEmpty(errorDetails.geometry_errors)) {
+            message += ":\n";
+            message += errorDetails.geometry_errors.map(entry => " - " + entry.reason + " at " + entry.location);
+        }
+        if (!isEmpty(errorDetails.data_errors)) {
+            message += ":\n - " + errorDetails.data_errors.join("\n - ");
+        }
+        if (!isEmpty(errorDetails.validation_errors)) {
+            message += ":\n - " + errorDetails.validation_errors.join("\n - ");
+        }
+        return message;
     }
 }
