@@ -59,6 +59,7 @@
       "noeditablelayers": "Brak edytowalnych warstw.",
       "pick": "Wybierz",
       "reallydelete": "Usuń",
+      "relationcommitfailed": "",
       "select": "Zaznacz"
     },
     "fileselector": {

@@ -59,6 +59,7 @@
       "noeditablelayers": "Ingen redigerbare lag",
       "pick": "Velg",
       "reallydelete": "Virkelig slette",
+      "relationcommitfailed": "",
       "select": "Velg"
     },
     "fileselector": {

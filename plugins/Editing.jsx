@@ -479,7 +479,7 @@ class Editing extends React.Component {
                 } else if (relResult.success !== true) {
                     // Relation values commit failed, switch to pick update relation values with response and switch to pick to
                     // to avoid adding feature again on next attempt
-                    this.commitFinished(false, "Some relation records could not be committed");
+                    this.commitFinished(false, LocaleUtils.tr("editing.relationcommitfailed"));
                     newFeature = {...newFeature, relationValues: this.unprefixRelationValues(relResult.relationvalues, mapPrefix)};
                     this.props.changeEditingState({...this.props.editing, action: "Pick", feature: newFeature, changed: true});
                 } else {

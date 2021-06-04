@@ -59,6 +59,7 @@
       "noeditablelayers": "Sin capas a modificar.",
       "pick": "Elegir",
       "reallydelete": "Borrar",
+      "relationcommitfailed": "",
       "select": "Seleccionar"
     },
     "fileselector": {

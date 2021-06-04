@@ -63,6 +63,7 @@
     "editing.noeditablelayers",
     "editing.pick",
     "editing.reallydelete",
+    "editing.relationcommitfailed",
     "editing.select",
     "fileselector.placeholder",
     "heightprofile.asl",

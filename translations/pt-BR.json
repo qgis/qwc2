@@ -59,6 +59,7 @@
       "noeditablelayers": "Não camadas editadas.",
       "pick": "Elegir",
       "reallydelete": "Excluir",
+      "relationcommitfailed": "",
       "select": "Selecione"
     },
     "fileselector": {

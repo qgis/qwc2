@@ -59,6 +59,7 @@
       "noeditablelayers": "Inga redigerbara lager",
       "pick": "Välj",
       "reallydelete": "Verkligen radera",
+      "relationcommitfailed": "",
       "select": "Välj"
     },
     "fileselector": {

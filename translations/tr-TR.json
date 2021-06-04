@@ -59,6 +59,7 @@
       "noeditablelayers": "Düzenlenebilir katman yok.",
       "pick": "Seç",
       "reallydelete": "Sil",
+      "relationcommitfailed": "",
       "select": "Seçim"
     },
     "fileselector": {

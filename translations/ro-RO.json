@@ -59,6 +59,7 @@
       "noeditablelayers": "Tema nu conține straturi ce se pot modifica",
       "pick": "Alege",
       "reallydelete": "Șterge",
+      "relationcommitfailed": "",
       "select": "Selectează"
     },
     "fileselector": {

@@ -59,6 +59,7 @@
       "noeditablelayers": "Il n'y a pas de couche éditable pour ce thème",
       "pick": "Choisir",
       "reallydelete": "Supprimer",
+      "relationcommitfailed": "",
       "select": "Sélectionner"
     },
     "fileselector": {

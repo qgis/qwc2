@@ -59,6 +59,7 @@
       "noeditablelayers": "Keine editierbare Ebenen.",
       "pick": "Auswählen",
       "reallydelete": "Löschen",
+      "relationcommitfailed": "Einige Relationen konnten nicht gespeichert werden, siehe Tooltips der Ikonen für mehr Details.",
       "select": "Auswählen"
     },
     "fileselector": {

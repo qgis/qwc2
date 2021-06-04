@@ -59,6 +59,7 @@
       "noeditablelayers": "Nincs szerkeszthető fólia.",
       "pick": "Kiválasztás",
       "reallydelete": "Törlés",
+      "relationcommitfailed": "",
       "select": ""
     },
     "fileselector": {

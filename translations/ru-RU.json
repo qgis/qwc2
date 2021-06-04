@@ -59,6 +59,7 @@
       "noeditablelayers": "Отсутствуют доступные для редактирования слои.",
       "pick": "Выбрать",
       "reallydelete": "Удалить",
+      "relationcommitfailed": "",
       "select": "Выберите..."
     },
     "fileselector": {
