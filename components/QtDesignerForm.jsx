@@ -134,7 +134,10 @@ export default class QtDesignerForm extends React.Component {
         return columns;
     }
     renderWidget = (widget, values, updateField, nametransform = (name) => name) => {
-        const value = (values || {})[widget.name] || "";
+        let value = (values || {})[widget.name];
+        if (value === undefined || value === null) {
+            value = "";
+        }
         const prop = widget.property || {};
         const attr = widget.attribute || {};
         const elname = nametransform(widget.name);
