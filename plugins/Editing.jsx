@@ -413,8 +413,8 @@ class Editing extends React.Component {
             const element = ev.target.elements.namedItem(name);
             if (element) {
                 let value = element.type === "radio" || element.type === "checkbox" ? element.checked : element.value;
-                if (element.type === "date" && element.value === "") {
-                    // Set empty date value to null instead of empty string
+                if ((element.type === "date" || element.type === "number" ) && element.value === "") {
+                    // Set empty date/number value to null instead of empty string
                     value = null;
                 }
                 const parts = name.split("__");
