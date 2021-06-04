@@ -365,7 +365,10 @@ export default class QtDesignerForm extends React.Component {
         }
         if (widget.widget) {
             widget.widget = Array.isArray(widget.widget) ? widget.widget : [widget.widget];
-            widget.widget.forEach(child => this.reformatWidget(child, keyvals));
+            widget.widget.forEach(child => {
+                child.name = uuid.v1();
+                this.reformatWidget(child, keyvals);
+            });
         }
     }
     reformatLayout = (layout, keyvals) => {
