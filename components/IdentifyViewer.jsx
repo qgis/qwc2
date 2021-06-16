@@ -14,7 +14,7 @@ const FileSaver = require('file-saver');
 const {stringify} = require('wellknown');
 const ReactHtmlParser = require('react-html-parser').default;
 const {convertNodeToElement} = require('react-html-parser');
-const ResizeableWindow = require("./ResizeableWindow");
+//const ResizeableWindow = require("./ResizeableWindow");
 const Message = require('./I18N/Message');
 const ConfigUtils = require('../utils/ConfigUtils');
 const {LayerRole, addLayerFeatures, removeLayer} = require('../actions/layers');
@@ -43,13 +43,9 @@ class IdentifyViewer extends React.Component {
         attributeCalculator: PropTypes.func,
         attributeTransform: PropTypes.func,
         setActiveLayerInfo: PropTypes.func,
-        onClose: PropTypes.func,
         featureInfoReturnsLayerName: PropTypes.bool,
         showIframeDialog: PropTypes.func,
-        zoomToExtent: PropTypes.func,
-        initialWidth: PropTypes.number,
-        initialHeight: PropTypes.number,
-        initiallyDocked: PropTypes.bool
+        zoomToExtent: PropTypes.func
     }
     static defaultProps = {
         longAttributesDisplay: 'ellipsis',
@@ -525,25 +521,23 @@ class IdentifyViewer extends React.Component {
         }
         // "el.style.background='inherit'": HACK to trigger an additional repaint, since Safari/Chrome on iOS render the element cut off the first time
         return (
-            <ResizeableWindow title="identify.title" icon="info-sign" onClose={this.props.onClose} initialX={0} initialY={0} initiallyDocked={this.props.initiallyDocked} initialWidth={this.props.initialWidth} initialHeight={this.props.initialHeight} zIndex={8}>
-                <div className="identify-body" role="body" ref={el => { if(el) el.style.background='inherit'; } }>
-                    {body}
-                    {haveResults && this.props.enableExport ? (
-                        <div className="identify-buttonbox">
-                            <div>
-                                <Message msgId="identify.exportformat" />&nbsp;
-                                <select className="combo" value={this.state.exportFormat} onChange={ev => this.setState({exportFormat: ev.target.value})}>
-                                    <option value="json">json</option>
-                                    <option value="geojson">geojson</option>
-                                    <option value="csv">csv</option>
-                                    <option value="csvzip">csv + zip</option>
-                                </select>
-                                <button className="button" onClick={this.exportResults}><Message msgId="identify.export" /></button>
-                            </div>
+            <div className="identify-body" role="body" ref={el => { if(el) el.style.background='inherit'; } }>
+                {body}
+                {haveResults && this.props.enableExport ? (
+                    <div className="identify-buttonbox">
+                        <div>
+                            <Message msgId="identify.exportformat" />&nbsp;
+                            <select className="combo" value={this.state.exportFormat} onChange={ev => this.setState({exportFormat: ev.target.value})}>
+                                <option value="json">json</option>
+                                <option value="geojson">geojson</option>
+                                <option value="csv">csv</option>
+                                <option value="csvzip">csv + zip</option>
+                            </select>
+                            <button className="button" onClick={this.exportResults}><Message msgId="identify.export" /></button>
                         </div>
-                    ) : null}
-                </div>
-            </ResizeableWindow>
+                    </div>
+                ) : null}
+            </div>
         );
 
     }
