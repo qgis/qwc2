@@ -149,7 +149,7 @@ class Identify extends React.Component {
     render() {
         let missingResponses = this.props.requests.length - this.props.responses.length;
         return [this.props.requests.length === 0 ? null : (
-            <ResizeableWindow key="IdentifyMeshWindow" title="identify.title" icon="info-sign" onClose={this.onClose} initialX={0} initialY={0} initiallyDocked={this.props.initiallyDocked} initialWidth={this.props.initialWidth} initialHeight={this.props.initialHeight} zIndex={8}>
+            <ResizeableWindow key="IdentifyWindow" title="identify.title" icon="info-sign" onClose={this.onClose} initialX={0} initialY={0} initiallyDocked={this.props.initiallyDocked} initialWidth={this.props.initialWidth} initialHeight={this.props.initialHeight} zIndex={8}>
                 <IdentifyViewer key="IdentifyViewer" onClose={this.onClose}
                     map={this.props.map}
                     missingResponses={missingResponses}
