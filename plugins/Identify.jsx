@@ -149,19 +149,18 @@ class Identify extends React.Component {
     render() {
         let missingResponses = this.props.requests.length - this.props.responses.length;
         return [this.props.requests.length === 0 ? null : (
-            <IdentifyViewer key="IdentifyViewer" onClose={this.onClose}
-                map={this.props.map}
-                missingResponses={missingResponses}
-                responses={this.props.responses}
-                enableExport={this.props.enableExport}
-                longAttributesDisplay={this.props.longAttributesDisplay}
-                displayResultTree={this.props.displayResultTree}
-                attributeCalculator={this.props.attributeCalculator}
-                attributeTransform={this.props.attributeTransform}
-                initialWidth={this.props.initialWidth}
-                initialHeight={this.props.initialHeight}
-                initiallyDocked={this.props.initiallyDocked}
-                featureInfoReturnsLayerName={this.props.featureInfoReturnsLayerName} />
+            <ResizeableWindow key="IdentifyMeshWindow" title="identify.title" icon="info-sign" onClose={this.onClose} initialX={0} initialY={0} initiallyDocked={this.props.initiallyDocked} initialWidth={this.props.initialWidth} initialHeight={this.props.initialHeight} zIndex={8}>
+                <IdentifyViewer key="IdentifyViewer" onClose={this.onClose}
+                    map={this.props.map}
+                    missingResponses={missingResponses}
+                    responses={this.props.responses}
+                    enableExport={this.props.enableExport}
+                    longAttributesDisplay={this.props.longAttributesDisplay}
+                    displayResultTree={this.props.displayResultTree}
+                    attributeCalculator={this.props.attributeCalculator}
+                    attributeTransform={this.props.attributeTransform}
+                    featureInfoReturnsLayerName={this.props.featureInfoReturnsLayerName} />
+            </ResizeableWindow>
         ), (
             <TaskBar key="TaskBar" task="Identify" onHide={this.onClose}>
                 {() => ({
