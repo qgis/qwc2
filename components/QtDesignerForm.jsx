@@ -222,7 +222,7 @@ export default class QtDesignerForm extends React.Component {
             } else {
                 return (
                     <select name={elname} onChange={ev => updateField(widget.name, ev.target.value)} value={value}>
-                        {widget.item.map((item) => {
+                        {(widget.item || []).map((item) => {
                             const optval = item.property.value || item.property.text;
                             return (
                                 <option key={optval} value={optval}>{item.property.text}</option>
