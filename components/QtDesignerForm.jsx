@@ -12,6 +12,7 @@ import axios from 'axios';
 import xml2js from 'xml2js';
 import uuid from 'uuid';
 import isEmpty from 'lodash.isempty';
+import EditUploadField from './EditUploadField';
 import ConfigUtils from '../utils/ConfigUtils';
 import Icon from './Icon';
 
@@ -188,17 +189,10 @@ export default class QtDesignerForm extends React.Component {
             return (<textarea name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} value={value} />);
         } else if (widget.class === "QLineEdit") {
             if (widget.name.endsWith("__upload")) {
-                const fileValue = ((values || {})[widget.name.replace(/__upload/, '')] || "").replace(/attachment:\/\//, '');
-                const editServiceUrl = ConfigUtils.getConfigProp("editServiceUrl");
-
-                return fileValue ? (
-                    <span className="qt-designer-uploaded-file">
-                        <a href={editServiceUrl + "/" + this.props.editLayerId + "/attachment?file=" + encodeURIComponent(fileValue)} rel="noreferrer" target="_blank" >
-                            {fileValue.replace(/.*\//, '')}
-                        </a>
-                        <Icon icon="clear" onClick={() => updateField(widget.name.replace(/__upload/, ''), '')} />
-                    </span>
-                ) : (<input accept={prop.text || ""} name={elname.replace(/__upload/, '')} onChange={() => updateField(widget.name.replace(/__upload/, ''), '')} type="file" />);
+                const uploadValue = ((values || {})[widget.name.replace(/__upload/, '')] || "");
+                const fieldId = elname.replace(/__upload/, '');
+                const constraints = {accept: prop.text || ""};
+                return (<EditUploadField constraints={constraints} editLayerId={this.props.editLayerId} fieldId={fieldId} updateField={this.props.updateField} value={uploadValue} />);
             } else {
                 const placeholder = prop.placeholderText || "";
                 return (<input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} placeholder={placeholder} type="text" value={value} />);

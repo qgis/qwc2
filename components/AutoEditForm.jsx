@@ -9,9 +9,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import NumericInput from 'react-numeric-input2';
-import Icon from './Icon';
+import EditUploadField from './EditUploadField';
 import ToggleSwitch from './widgets/ToggleSwitch';
-import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/AutoEditForm.css';
 
@@ -107,21 +106,7 @@ export default class AutoEditForm extends React.Component {
                 <textarea name={field.id} value={value} {...constraints} onChange={(ev) => this.props.updateField(field.id, ev.target.value)} />
             );
         } else if (field.type === "file") {
-            const fileValue = value.replace(/attachment:\/\//, '');
-            const editServiceUrl = ConfigUtils.getConfigProp("editServiceUrl");
-
-            input = fileValue ? (
-                <span className="upload-file-field">
-                    <a href={editServiceUrl + "/" + this.props.editLayerId + "/attachment?file=" + encodeURIComponent(fileValue)}
-                        rel="noreferrer" target="_blank"
-                    >
-                        {fileValue.replace(/.*\//, '')}
-                    </a>
-                    <Icon icon="clear" onClick={() => this.props.updateField(field.id, '')} />
-                </span>
-            ) : (
-                <input name={field.id} type="file" {...constraints} onChange={() => this.props.updateField(field.id, '')} />
-            );
+            return (<EditUploadField constraints={constraints} editLayerId={this.props.editLayerId} fieldId={field.id} updateField={this.props.updateField} value={value} />);
         } else {
             input = (
                 <span className="input-frame">

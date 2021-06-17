@@ -1,0 +1,30 @@
+span.edit-upload-field {
+    border: 1px solid @item_border@;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 0.25em;
+}
+
+span.edit-upload-field > a {
+    flex: 1 1 auto;
+}
+
+span.edit-upload-field > span.icon {
+    flex: 0 0 auto;
+}
+
+span.edit-upload-field-input {
+    display: flex;
+    align-items: center;
+}
+
+span.edit-upload-field-input > input {
+    min-width: 0;
+    width: 0;
+    flex: 1 1 auto;
+}
+
+span.edit-upload-field-input > span.icon {
+    flex: 0 0 auto;
+}
