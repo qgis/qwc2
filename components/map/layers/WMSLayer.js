@@ -41,7 +41,7 @@ export default {
             console.warn("Tiled WMS requested without specifying bounding box, falling back to non-tiled.");
         }
         if (!options.tiled || !options.bbox) {
-            return new ol.layer.Image({
+            const layer = new ol.layer.Image({
                 minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.projection)[0] : undefined,
                 maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.projection)[0] : undefined,
                 source: new ol.source.ImageWMS({
@@ -52,6 +52,8 @@ export default {
                     hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false
                 })
             });
+            layer.set("empty", !queryParameters.LAYERS);
+            return layer;
         }
         const extent = CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, options.projection);
         const tileGrid = new ol.tilegrid.TileGrid({
@@ -60,7 +62,7 @@ export default {
             maxZoom: map.getView().getResolutions().length,
             resolutions: map.getView().getResolutions()
         });
-        return new ol.layer.Tile({
+        const layer = new ol.layer.Tile({
             minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.projection)[0] : undefined,
             maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.projection)[0] : undefined,
             source: new ol.source.TileWMS({
@@ -71,6 +73,8 @@ export default {
                 hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false
             })
         });
+        layer.set("empty", !queryParameters.LAYERS);
+        return layer;
     },
     update: (layer, newOptions, oldOptions) => {
         if (oldOptions && layer && layer.getSource() && layer.getSource().updateParams) {
@@ -94,6 +98,7 @@ export default {
                 return found;
             }, false);
             if (changed) {
+                layer.set("empty", !newParams.LAYERS);
                 layer.getSource().updateParams(Object.assign(newParams, {...newOptions.params, t: new Date().getMilliseconds()}));
                 layer.getSource().changed();
             }

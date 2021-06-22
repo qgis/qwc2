@@ -38,10 +38,10 @@ class OlLayer extends React.Component {
         const newOptions = this.makeOptions(this.props.options);
         const oldOptions = this.makeOptions(prevProps.options);
 
-        this.state.layer.setVisible(newOptions.visibility);
+        this.updateLayer(newOptions, oldOptions);
+        this.state.layer.setVisible(this.state.layer.get("empty") !== true && newOptions.visibility);
         this.state.layer.setOpacity(newOptions.opacity / 255.0);
         this.state.layer.setZIndex(newOptions.zIndex);
-        this.updateLayer(newOptions, oldOptions);
 
         if (this.props.swipe !== prevProps.swipe) {
             this.props.map.render();
@@ -88,7 +88,7 @@ class OlLayer extends React.Component {
         }
         if (layer) {
             layer.set('id', options.id);
-            layer.setVisible(options.visibility);
+            layer.setVisible(layer.get("empty") !== true && options.visibility);
             layer.setOpacity(options.opacity / 255.0);
             layer.setZIndex(this.props.zIndex);
             this.addLayer(layer, options);
