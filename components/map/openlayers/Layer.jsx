@@ -45,7 +45,7 @@ class OpenlayersLayer extends React.Component {
             return;
         }
         const newVisibility = newProps.options && newProps.options.visibility !== false;
-        this.setLayerVisibility(newVisibility);
+        this.setLayerVisibility(this.state.layer.get("empty") !== true && newVisibility);
 
         const newOpacity = (newProps.options && newProps.options.opacity !== undefined) ? newProps.options.opacity : 255.;
         this.state.layer.setOpacity(newOpacity / 255.);
@@ -121,7 +121,7 @@ class OpenlayersLayer extends React.Component {
         }
         if (layer) {
             layer.set('id', options.id);
-            layer.setVisible(options.visibility);
+            layer.setVisible(layer.get("empty") !== true && options.visibility);
             if (!layer.detached) {
                 this.addLayer(layer, options);
             }

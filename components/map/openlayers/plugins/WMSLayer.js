@@ -40,9 +40,8 @@ let WMSLayer = {
             console.warn("Tiled WMS requested without specifying bounding box, falling back to non-tiled.");
         }
         if (!options.tiled || !options.bbox) {
-            return new ol.layer.Image({
+            const layer = new ol.layer.Image({
                 opacity: options.opacity !== undefined ? options.opacity : 1,
-                visible: !!queryParameters["LAYERS"] && options.visibility !== false,
                 zIndex: options.zIndex,
                 minResolution: options.minScale == null ? undefined : MapUtils.getResolutionsForScales([options.minScale], options.srs)[0],
                 maxResolution: options.maxScale == null ? undefined : MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0],
@@ -54,6 +53,8 @@ let WMSLayer = {
                     hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false
                 })
             });
+            layer.set("empty", !queryParameters.LAYERS);
+            return layer;
         }
         let extent = CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, options.srs);
         let tileGrid = new ol.tilegrid.TileGrid({
@@ -62,9 +63,8 @@ let WMSLayer = {
             maxZoom: map.getView().getResolutions().length,
             resolutions: map.getView().getResolutions()
         });
-        return new ol.layer.Tile({
+        const layer = new ol.layer.Tile({
             opacity: options.opacity !== undefined ? options.opacity : 1,
-            visible: options.visibility !== false,
             zIndex: options.zIndex,
             minResolution: options.minScale == null ? undefined : MapUtils.getResolutionsForScales([options.minScale], options.srs)[0],
             maxResolution: options.maxScale == null ? undefined : MapUtils.getResolutionsForScales([options.maxScale], options.srs)[0],
@@ -76,6 +76,8 @@ let WMSLayer = {
               hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false
           })
         });
+        layer.set("empty", !queryParameters.LAYERS);
+        return layer;
     },
     update: (layer, newOptions, oldOptions) => {
         if (oldOptions && layer && layer.getSource() && layer.getSource().updateParams) {
@@ -99,6 +101,7 @@ let WMSLayer = {
                 return found;
             }, false);
             if (changed) {
+                layer.set("empty", !newParams.LAYERS);
                 layer.getSource().updateParams(assign(newParams, newOptions.params, {t: new Date().getMilliseconds()}));
                 layer.getSource().changed();
                 layer.setVisible(newOptions.visibility && !!newParams["LAYERS"]);
