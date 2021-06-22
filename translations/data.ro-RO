@@ -137,6 +137,7 @@
     },
     "print": {
       "layout": "Șablon:",
+      "legend": "",
       "grid": "Grid",
       "maximize": "Maximizează",
       "minimize": "Minimizează",

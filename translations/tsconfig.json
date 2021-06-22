@@ -114,6 +114,7 @@
     "measureComponent.lengthLabel",
     "measureComponent.pointLabel",
     "print.layout",
+    "print.legend",
     "print.grid",
     "print.maximize",
     "print.minimize",

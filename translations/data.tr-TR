@@ -137,6 +137,7 @@
     },
     "print": {
       "layout": "Yazdırma düzeni:",
+      "legend": "",
       "grid": "Grid:",
       "maximize": "Büyült",
       "minimize": "Küçült",

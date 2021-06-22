@@ -137,6 +137,7 @@
     },
     "print": {
       "layout": "Layout:",
+      "legend": "",
       "grid": "Rutenett",
       "maximize": "Maksimer",
       "minimize": "Minimer",

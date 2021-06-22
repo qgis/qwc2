@@ -137,6 +137,7 @@
     },
     "print": {
       "layout": "Formato:",
+      "legend": "",
       "grid": "Grade/escala:",
       "maximize": "",
       "minimize": "",

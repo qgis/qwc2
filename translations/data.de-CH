@@ -137,6 +137,7 @@
     },
     "print": {
       "layout": "Format",
+      "legend": "Legende",
       "grid": "Gitter",
       "maximize": "Maximieren",
       "minimize": "Minimieren",

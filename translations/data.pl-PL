@@ -137,6 +137,7 @@
     },
     "print": {
       "layout": "Layout:",
+      "legend": "",
       "grid": "Siatka:",
       "maximize": "Maksymalizuj",
       "minimize": "Minimalizuj",

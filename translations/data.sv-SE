@@ -137,6 +137,7 @@
     },
     "print": {
       "layout": "Layout:",
+      "legend": "",
       "grid": "Rutnät",
       "maximize": "Maximera",
       "minimize": "Minimera",

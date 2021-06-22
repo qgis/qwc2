@@ -137,6 +137,7 @@
     },
     "print": {
       "layout": "Rovržení:",
+      "legend": "",
       "grid": "Mřížka:",
       "maximize": "Maximální",
       "minimize": "Minimální",
