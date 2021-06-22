@@ -48,6 +48,7 @@ span.edit-upload-field-image > button {
 
 video.edit-capture-frame {
     height: 100%;
+    max-width: 100%;
 }
 
 div.edit-capture-controls {
