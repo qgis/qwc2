@@ -149,6 +149,7 @@
     "print": {
       "grid": "Grid:",
       "layout": "Yazdırma düzeni:",
+      "legend": "",
       "maximize": "Büyült",
       "minimize": "Küçült",
       "nolayouts": "Seçili tema yazdırma işlemini desteklemiyor",

@@ -149,6 +149,7 @@
     "print": {
       "grid": "Rede:",
       "layout": "Desenho:",
+      "legend": "",
       "maximize": "Maximizar",
       "minimize": "Minimizar",
       "nolayouts": "O tema selecionado não suporta a impressão",

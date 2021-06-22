@@ -149,6 +149,7 @@
     "print": {
       "grid": "Gitter",
       "layout": "Format",
+      "legend": "Legende",
       "maximize": "Maximieren",
       "minimize": "Minimieren",
       "nolayouts": "Das gewählte Thema stellt keine Druck-Vorlagen zur Verfügung.",

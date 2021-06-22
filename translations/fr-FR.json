@@ -149,6 +149,7 @@
     "print": {
       "grid": "Grille",
       "layout": "Format",
+      "legend": "",
       "maximize": "Maximiser",
       "minimize": "Minimiser",
       "nolayouts": "Il n'y a pas de mise en page disponible pour le thème choisi.",

@@ -149,6 +149,7 @@
     "print": {
       "grid": "Siatka:",
       "layout": "Layout:",
+      "legend": "",
       "maximize": "Maksymalizuj",
       "minimize": "Minimalizuj",
       "nolayouts": "Wybrany motyw nie umożliwia drukowania",

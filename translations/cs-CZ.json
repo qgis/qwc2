@@ -149,6 +149,7 @@
     "print": {
       "grid": "Mřížka:",
       "layout": "Rovržení:",
+      "legend": "",
       "maximize": "Maximální",
       "minimize": "Minimální",
       "nolayouts": "Vybrané téma nepodporuje tisk",

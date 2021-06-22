@@ -149,6 +149,7 @@
     "print": {
       "grid": "Rács:",
       "layout": "Elrendezés:",
+      "legend": "",
       "maximize": "",
       "minimize": "",
       "nolayouts": "A kiválasztott térkép nem támogatja a nyomtatást",

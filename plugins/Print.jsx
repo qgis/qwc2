@@ -56,6 +56,7 @@ class Print extends React.Component {
         dpi: 300,
         initialRotation: 0,
         grid: false,
+        legend: false,
         rotationNull: false,
         minimized: false,
         printOutputVisible: false,
@@ -120,9 +121,7 @@ class Print extends React.Component {
             }
         }
 
-        const currentLayoutname = this.state.layout ? this.state.layout.name : "";
-        const mapName = this.state.layout ? this.state.layout.map.name : "";
-
+        const mapName = this.state.layout.map.name;
         const backgroundLayer = this.props.layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
         const backgroundLayerName = backgroundLayer ? backgroundLayer.name : null;
         const themeBackgroundLayer = backgroundLayer ? this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayerName) : null;
@@ -192,6 +191,7 @@ class Print extends React.Component {
             gridIntervalX = (<input name={mapName + ":GRID_INTERVAL_X"} readOnly type={formvisibility} value={printGrid[cur].x} />);
             gridIntervalY = (<input name={mapName + ":GRID_INTERVAL_Y"} readOnly type={formvisibility} value={printGrid[cur].y} />);
         }
+        const printLegend = this.state.layout.legendLayout;
 
         const labels = this.state.layout && this.state.layout.labels ? this.state.layout.labels : [];
 
@@ -203,11 +203,12 @@ class Print extends React.Component {
                     onSubmit={this.print} ref={el => { this.printForm = el; }}
                     target="print-output-window"
                 >
+                    <input name="TEMPLATE" type="hidden" value={printLegend && this.state.legend ? printLegend : this.state.layout.name} />
                     <table className="options-table"><tbody>
                         <tr>
                             <td>{LocaleUtils.tr("print.layout")}</td>
                             <td>
-                                <select name="TEMPLATE" onChange={this.changeLayout} value={currentLayoutname}>
+                                <select onChange={this.changeLayout} value={this.state.layout.name}>
                                     {this.props.theme.print.map(item => {
                                         return (
                                             <option key={item.name} value={item.name}>{item.name}</option>
@@ -251,6 +252,14 @@ class Print extends React.Component {
                                 <td>{LocaleUtils.tr("print.grid")}</td>
                                 <td>
                                     <ToggleSwitch active={this.state.grid} onChange={(newstate) => this.setState({grid: newstate})} />
+                                </td>
+                            </tr>
+                        ) : null}
+                        {printLegend ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("print.legend")}</td>
+                                <td>
+                                    <ToggleSwitch active={this.state.legend} onChange={(newstate) => this.setState({legend: newstate})} />
                                 </td>
                             </tr>
                         ) : null}

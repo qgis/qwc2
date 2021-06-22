@@ -149,6 +149,7 @@
     "print": {
       "grid": "Grilla:",
       "layout": "Diseño:",
+      "legend": "",
       "maximize": "Maximizar",
       "minimize": "Minimizar",
       "nolayouts": "El tema seleccionado no admite su impresión",

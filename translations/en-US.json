@@ -149,6 +149,7 @@
     "print": {
       "grid": "Grid:",
       "layout": "Layout:",
+      "legend": "Legend",
       "maximize": "Maximize",
       "minimize": "Minimize",
       "nolayouts": "The selected theme does not support printing",

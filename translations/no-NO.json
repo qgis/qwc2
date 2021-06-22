@@ -149,6 +149,7 @@
     "print": {
       "grid": "Rutenett",
       "layout": "Layout:",
+      "legend": "",
       "maximize": "Maksimer",
       "minimize": "Minimer",
       "nolayouts": "Valgt tema støtter ikke utskrift",

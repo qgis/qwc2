@@ -149,6 +149,7 @@
     "print": {
       "grid": "Griglia",
       "layout": "Layout",
+      "legend": "Legenda",
       "maximize": "Massimizza",
       "minimize": "Minimizza",
       "nolayouts": "Nessun layout di stampa",
