@@ -144,3 +144,15 @@ div.qt-designer-widget-relation-record > span.icon-trash {
 div.qt-designer-widget-relation-record-new {
     background-color: rgb(127,255,127);
 }
+
+span.qt-designer-form-datetime {
+    display: flex;
+    border: 1px solid @item_border@;
+    gap: 2px;
+}
+
+span.qt-designer-form-datetime > input[type="date"],
+span.qt-designer-form-datetime > input[type="time"] {
+    border: 0;
+    flex: 1 1 auto;
+}

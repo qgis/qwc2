@@ -243,10 +243,15 @@ export default class QtDesignerForm extends React.Component {
                 <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} type="date" value={value} />
             );
         } else if (widget.class === "QDateTimeEdit") {
-            const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1900-01-01T00:00";
-            const max = prop.maximumDate ? this.dateConstraint(prop.maximumDate) : "9999-12-31T00:00";
+            const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1900-01-01";
+            const max = prop.maximumDate ? this.dateConstraint(prop.maximumDate) : "9999-12-31";
+            const parts = (value || "T").split("T");
             return (
-                <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} type="datetime-local" value={value} />
+                <span className="qt-designer-form-datetime">
+                    <input max={max[0]} min={min[0]} onChange={(ev) => updateField(widget.name, ev.target.value ? ev.target.value + "T" + parts[1] : "")} type="date" value={parts[0]} />
+                    <input disabled={!parts[0]} onChange={(ev) => updateField(widget.name, parts[0] + "T" + ev.target.value)} type="time" value={parts[1]} />
+                    <input name={elname} type="hidden" value={value} />
+                </span>
             );
         } else if (widget.class === "QWidget") {
             if (widget.name.startsWith("nrel__")) {
