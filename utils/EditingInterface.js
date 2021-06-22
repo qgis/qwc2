@@ -46,8 +46,8 @@ function buildErrMsg(err) {
 function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
 
-    // 5px tolerance
-    const tol = (5.0 / dpi) * 0.0254 * mapScale;
+    // 10px tolerance
+    const tol = (10.0 / dpi) * 0.0254 * mapScale;
     const bbox = (mapPos[0] - tol) + "," + (mapPos[1] - tol) + "," + (mapPos[0] + tol) + "," + (mapPos[1] + tol);
 
     const req = SERVICE_URL + layerId + '/?bbox=' + bbox + '&crs=' + mapCrs;
