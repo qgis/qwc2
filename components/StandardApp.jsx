@@ -11,7 +11,8 @@ import PropTypes from 'prop-types';
 import {Provider, connect} from 'react-redux';
 
 // Needed for IE11 to avoid 'Promise not defined' error in axios
-import 'babel-polyfill';
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 
 
 import axios from 'axios';
