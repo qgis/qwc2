@@ -48,7 +48,7 @@ class Editing extends React.Component {
     }
     static defaultProps = {
         touchFriendly: true,
-        width: "25em"
+        width: "30em"
     }
     state = {
         selectedLayer: null,
