@@ -18,19 +18,19 @@
         "Share": "Teilen",
         "ThemeSwitcher": "Themen",
         "Tools": "Werkzeuge",
-        "Bookmark": ""
+        "Bookmark": "Lesezeichen"
       }
     },
     "bgswitcher": {
       "nobg": "Kein Hintergrund"
     },
     "bookmark": {
-      "add": "",
-      "description": "",
-      "manage": "",
-      "openintab": "",
-      "remove": "",
-      "update": ""
+      "add": "Hinzufügen",
+      "description": "Beschreibung",
+      "manage": "Verwalten",
+      "openintab": "In Tab öffnen",
+      "remove": "Entfernen",
+      "update": "Aktualisieren"
     },
     "bottombar": {
       "mousepos_label": "Koordinaten",
@@ -49,6 +49,7 @@
     },
     "editing": {
       "canceldelete": "Abbrechen",
+      "clearpicture": "Zurücksetzen",
       "commit": "Speichern",
       "delete": "Löschen",
       "discard": "Abbrechen",
@@ -60,7 +61,8 @@
       "pick": "Auswählen",
       "reallydelete": "Löschen",
       "relationcommitfailed": "Einige Relationen konnten nicht gespeichert werden, siehe Tooltips der Ikonen für mehr Details.",
-      "select": "Auswählen"
+      "select": "Auswählen",
+      "takepicture": "Bild schiessen"
     },
     "fileselector": {
       "placeholder": "Datei auswählen"

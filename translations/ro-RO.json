@@ -49,6 +49,7 @@
     },
     "editing": {
       "canceldelete": "Elimină modificările",
+      "clearpicture": "",
       "commit": "Salvează",
       "delete": "Șterge",
       "discard": "Renunță",
@@ -60,7 +61,8 @@
       "pick": "Alege",
       "reallydelete": "Șterge",
       "relationcommitfailed": "",
-      "select": "Selectează"
+      "select": "Selectează",
+      "takepicture": ""
     },
     "fileselector": {
       "placeholder": "Selectează fișierul"

@@ -49,6 +49,7 @@
     },
     "editing": {
       "canceldelete": "Don't delete",
+      "clearpicture": "Clear",
       "commit": "Commit",
       "delete": "Delete",
       "discard": "Discard",
@@ -60,7 +61,8 @@
       "pick": "Pick",
       "reallydelete": "Delete",
       "relationcommitfailed": "Some relation values could not be committed, check the icon tooltips for details",
-      "select": "Select"
+      "select": "Select",
+      "takepicture": "Take picture"
     },
     "fileselector": {
       "placeholder": "Select file..."

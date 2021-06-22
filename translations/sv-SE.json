@@ -49,6 +49,7 @@
     },
     "editing": {
       "canceldelete": "Radera inte",
+      "clearpicture": "",
       "commit": "Skicka",
       "delete": "Radera",
       "discard": "Förkasta",
@@ -60,7 +61,8 @@
       "pick": "Välj",
       "reallydelete": "Verkligen radera",
       "relationcommitfailed": "",
-      "select": "Välj"
+      "select": "Välj",
+      "takepicture": ""
     },
     "fileselector": {
       "placeholder": "Välj fil..."

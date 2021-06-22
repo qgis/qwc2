@@ -49,6 +49,7 @@
     },
     "editing": {
       "canceldelete": "Neodstraňovat",
+      "clearpicture": "",
       "commit": "Potvrdit",
       "delete": "Odstranit",
       "discard": "Vyřadit",
@@ -60,7 +61,8 @@
       "pick": "Výběr",
       "reallydelete": "Odstranit",
       "relationcommitfailed": "",
-      "select": "Vybrat"
+      "select": "Vybrat",
+      "takepicture": ""
     },
     "fileselector": {
       "placeholder": "Vybrat soubor..."

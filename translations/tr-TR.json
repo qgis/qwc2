@@ -49,6 +49,7 @@
     },
     "editing": {
       "canceldelete": "Silme",
+      "clearpicture": "",
       "commit": "Onayla",
       "delete": "Sil",
       "discard": "İptal",
@@ -60,7 +61,8 @@
       "pick": "Seç",
       "reallydelete": "Sil",
       "relationcommitfailed": "",
-      "select": "Seçim"
+      "select": "Seçim",
+      "takepicture": ""
     },
     "fileselector": {
       "placeholder": "Dosya seç..."

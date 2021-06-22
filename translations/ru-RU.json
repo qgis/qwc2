@@ -49,6 +49,7 @@
     },
     "editing": {
       "canceldelete": "Не удалять",
+      "clearpicture": "",
       "commit": "Подтвердить изменения",
       "delete": "Удалить",
       "discard": "Отменить изменения",
@@ -60,7 +61,8 @@
       "pick": "Выбрать",
       "reallydelete": "Удалить",
       "relationcommitfailed": "",
-      "select": "Выберите..."
+      "select": "Выберите...",
+      "takepicture": ""
     },
     "fileselector": {
       "placeholder": "Выберите файл..."

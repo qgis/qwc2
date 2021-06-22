@@ -13,6 +13,7 @@ import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
 import axios from 'axios';
 import clone from 'clone';
+import uuid from 'uuid';
 import {changeEditingState} from '../actions/editing';
 import {setCurrentTaskBlocked} from '../actions/task';
 import {LayerRole, refreshLayer, changeLayerProperty} from '../actions/layers';
@@ -432,6 +433,8 @@ class Editing extends React.Component {
                     }
                     if (element.type === "file" && element.files.length > 0) {
                         relationUploads[name] = element.files[0];
+                    } else if (element.type === "hidden" && element.value.startsWith("data:")) {
+                        relationUploads[name] = new File([this.dataUriToBlob(element.value)], uuid.v1() + ".jpg", {type: "image/jpeg"});
                     }
                 } else {
                     if (feature.properties[name] === undefined) {
@@ -439,6 +442,8 @@ class Editing extends React.Component {
                     }
                     if (element.type === "file" && element.files.length > 0) {
                         featureUploads[name] = element.files[0];
+                    } else if (element.type === "hidden" && element.value.startsWith("data:")) {
+                        featureUploads[name] = new File([this.dataUriToBlob(element.value)], uuid.v1() + ".jpg", {type: "image/jpeg"});
                     }
                 }
             }
@@ -530,6 +535,17 @@ class Editing extends React.Component {
         } else {
             alert(errorMsg);
         }
+    }
+    dataUriToBlob = (dataUri) => {
+        const parts = dataUri.split(',');
+        const byteString = parts[0].indexOf('base64') >= 0 ? atob(parts[1]) : decodeURI(parts[1]);
+        const mimeString = parts[0].split(':')[1].split(';')[0];
+
+        const ia = new Uint8Array(byteString.length);
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ia], {type: mimeString});
     }
 }
 

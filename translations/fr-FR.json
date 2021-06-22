@@ -49,6 +49,7 @@
     },
     "editing": {
       "canceldelete": "Annuler la suppression",
+      "clearpicture": "",
       "commit": "Appliquer",
       "delete": "Supprimer",
       "discard": "Rejeter",
@@ -60,7 +61,8 @@
       "pick": "Choisir",
       "reallydelete": "Supprimer",
       "relationcommitfailed": "",
-      "select": "Sélectionner"
+      "select": "Sélectionner",
+      "takepicture": ""
     },
     "fileselector": {
       "placeholder": "Choisir un fichier..."
