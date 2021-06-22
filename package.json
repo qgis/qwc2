@@ -58,12 +58,12 @@
         "wellknown": "0.5.0"
     },
     "devDependencies": {
-        "@types/react": "^16.14.0",
-        "@vusion/webfonts-generator": "^0.7.3",
-        "object-path": "0.11.5",
         "@redux-devtools/core": "3.9.0",
         "@redux-devtools/dock-monitor": "1.4.0",
         "@redux-devtools/log-monitor": "2.3.0",
+        "@types/react": "^16.14.0",
+        "@vusion/webfonts-generator": "^0.7.3",
+        "object-path": "0.11.5",
         "redux-immutable-state-invariant": "2.1.0",
         "xml2js": "0.4.23"
     },
