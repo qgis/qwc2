@@ -48,7 +48,8 @@ const ThemeUtils = {
                 bgLayer = {
                     ...bgLayer,
                     role: LayerRole.BACKGROUND,
-                    visibility: false
+                    visibility: false,
+                    opacity: bgLayer.opacity !== undefined ? bgLayer.opacity : 255
                 };
                 if (bgLayer.type === "group") {
                     bgLayer.items = bgLayer.items.map(item => {
