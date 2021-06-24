@@ -258,7 +258,7 @@ class Print extends React.Component {
                         ) : null}
                         {printLegend ? (
                             <tr>
-                                <td>{LocaleUtils.tr("print.legend")}</td>
+                                <td><Message msgId="print.legend" /></td>
                                 <td>
                                     <ToggleSwitch active={this.state.legend} onChange={(newstate) => this.setState({legend: newstate})} />
                                 </td>
