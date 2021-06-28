@@ -70,6 +70,7 @@
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Vzdálenost",
+      "export": "",
       "height": "Výška",
       "loading": "Výpočet výškového profilu..."
     },

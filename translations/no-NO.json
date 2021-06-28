@@ -70,6 +70,7 @@
     "heightprofile": {
       "asl": "m.o.h.",
       "distance": "Avstand",
+      "export": "",
       "height": "Høyde",
       "loading": "Beregner høydeprofil..."
     },

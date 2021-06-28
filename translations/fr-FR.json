@@ -70,6 +70,7 @@
     "heightprofile": {
       "asl": "s/mer",
       "distance": "Distance",
+      "export": "Exporter le profil",
       "height": "Altitude",
       "loading": "Calcul du profil de hauteur..."
     },

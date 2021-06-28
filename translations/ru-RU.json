@@ -70,6 +70,7 @@
     "heightprofile": {
       "asl": "над у.м.",
       "distance": "Дистанция",
+      "export": "",
       "height": "Высота",
       "loading": "Расчет высоты профиля..."
     },
