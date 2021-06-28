@@ -70,6 +70,7 @@
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Distance",
+      "export": "Export profile",
       "height": "Height",
       "loading": "Calculating height profile..."
     },

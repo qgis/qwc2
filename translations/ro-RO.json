@@ -70,6 +70,7 @@
     "heightprofile": {
       "asl": "dM",
       "distance": "Distanța",
+      "export": "",
       "height": "Înălțimea",
       "loading": "Calcularea profilului înălțimii..."
     },

@@ -70,6 +70,7 @@
     "heightprofile": {
       "asl": "m.ö.h.",
       "distance": "Avstånd",
+      "export": "",
       "height": "Höjd",
       "loading": "Beräknar höjdprofil..."
     },
