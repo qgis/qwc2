@@ -14,6 +14,7 @@ import isEmpty from 'lodash.isempty';
 import Chartist from 'chartist';
 import ChartistComponent from 'react-chartist';
 import ChartistAxisTitle from 'chartist-plugin-axistitle';
+import FileSaver from 'file-saver';
 import {addMarker, removeMarker} from '../actions/layers';
 import Spinner from '../components/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -52,6 +53,23 @@ class HeightProfile extends React.Component {
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.handleResize);
+    }
+    exportProfile(data) {          
+        let csv = "";
+        let idx = 0;
+        csv += "index" + "\t" + "distance" + "\t" + "elevation" + "\n";
+        this.state.data.map(() => {
+                const sample = data.series[0][idx];
+                const heighProfilePrecision = this.props.heighProfilePrecision;
+                const distance = Math.round(sample.x * Math.pow(10, heighProfilePrecision)) / Math.pow(10, heighProfilePrecision);
+                const height = Math.round(sample.y * Math.pow(10, heighProfilePrecision)) / Math.pow(10, heighProfilePrecision);
+                csv += String(idx).replace('"', '""') + "\t" 
+                    + parseFloat(distance).toLocaleString() + "\t" 
+                    + parseFloat(height).toLocaleString() + "\n";
+                idx += 1;
+            }
+        );
+        FileSaver.saveAs(new Blob([csv], {type: "text/plain;charset=utf-8"}), "heightprofile.csv");
     }
     handleResize = () => {
         this.setState({width: window.innerWidth});
@@ -177,9 +195,14 @@ class HeightProfile extends React.Component {
         const height = 'calc(' + this.props.height + 'px + 0.5em)';
         return (
             <div id="HeightProfile" style={{height: height}}>
-                <ChartistComponent data={data} listener={listeners} options={options} type="Line" />
-                <span className="height-profile-tooltip" ref={el => { this.tooltip = el; }} />
-                <span className="height-profile-marker" ref={el => { this.marker = el; }} />
+                <div id="Chart">
+                    <ChartistComponent data={data} listener={listeners} options={options} type="Line" />
+                    <span className="height-profile-tooltip" ref={el => { this.tooltip = el; }} />
+                    <span className="height-profile-marker" ref={el => { this.marker = el; }} />
+                </div>
+                <div id="ExportProfile">
+                    <button className="button export-profile-button" onClick={() => this.exportProfile(data)}>{LocaleUtils.tr("heightprofile.export")}</button>
+                </div>
             </div>
         );
     }
