@@ -44,6 +44,9 @@ class LayerInfoWindow extends React.Component {
         }
         return null;
     }
+    renderMetadata = (metadata) => {
+        return metadata.map(entry => this.renderRow(entry.label, entry.content, true));
+    }
     render() {
         if(!this.props.layer || !this.props.sublayer) {
             return null;
@@ -72,6 +75,7 @@ class LayerInfoWindow extends React.Component {
                             {this.props.sublayer.minScale !== undefined ? this.renderRow("layerinfo.maxscale", this.renderScale(this.props.sublayer.minScale)) : null}
                             {this.props.sublayer.maxScale !== undefined ? this.renderRow("layerinfo.minscale", this.renderScale(this.props.sublayer.maxScale)) : null}
                             {this.renderRow("layerinfo.legend", legend)}
+                            {this.props.sublayer.metadata !== undefined ? this.renderMetadata(this.props.sublayer.metadata) : null}
                             </tbody>
                         </table>
                     </div>
