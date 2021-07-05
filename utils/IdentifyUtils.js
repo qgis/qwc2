@@ -205,7 +205,7 @@ const IdentifyUtils = {
         }
         return featureResult;
     },
-    parseXmlResponse(response, geometrycrs, posstr = null, featureInfoReturnsLayerTitle = true, mapLayers = null) {
+    parseXmlResponse(response, geometrycrs, posstr = null, featureInfoReturnsLayerName = false, mapLayers = null) {
         const parser = new DOMParser();
 
         const doc = parser.parseFromString(response, "text/xml");
@@ -217,13 +217,13 @@ const IdentifyUtils = {
             const displayfield = layer.attributes.displayfield ? layer.attributes.displayfield.value : null;
             let layername = "";
             let layertitle = "";
-            if (featureInfoReturnsLayerTitle) {
-                layertitle = layer.attributes.name.value;
-                layername = layer.attributes.layername ? layer.attributes.layername.value : layertitle;
-            } else {
+            if (featureInfoReturnsLayerName) {
                 layername = layer.attributes.name.value;
                 const match = LayerUtils.searchLayer(mapLayers, 'name', layername);
                 layertitle = match ? match.sublayer.title : layername;
+            } else {
+                layertitle = layer.attributes.name.value;
+                layername = layer.attributes.layername ? layer.attributes.layername.value : layertitle;
             }
 
             const layerinfo = layer.attributes.layerinfo ? layer.attributes.layerinfo.value : null;
