@@ -16,6 +16,7 @@ import ChartistComponent from 'react-chartist';
 import ChartistAxisTitle from 'chartist-plugin-axistitle';
 import FileSaver from 'file-saver';
 import {addMarker, removeMarker} from '../actions/layers';
+import Icon from '../components/Icon';
 import Spinner from '../components/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -134,7 +135,7 @@ class HeightProfile extends React.Component {
         const minHeight = Math.min(...this.state.data);
         const maxHeight = Math.max(...this.state.data);
         const options = {
-            width: this.state.width,
+            width: this.state.width - 20 + 'px',
             height: this.props.height,
             chartPadding: {left: 5, bottom: 1, top: 0},
             showArea: true,
@@ -195,14 +196,11 @@ class HeightProfile extends React.Component {
         const height = 'calc(' + this.props.height + 'px + 0.5em)';
         return (
             <div id="HeightProfile" style={{height: height}}>
-                <div id="Chart">
-                    <ChartistComponent data={data} listener={listeners} options={options} type="Line" />
-                    <span className="height-profile-tooltip" ref={el => { this.tooltip = el; }} />
-                    <span className="height-profile-marker" ref={el => { this.marker = el; }} />
-                </div>
-                <div id="ExportProfile">
-                    <button className="button export-profile-button" onClick={() => this.exportProfile(data)}>{LocaleUtils.tr("heightprofile.export")}</button>
-                </div>
+                <ChartistComponent data={data} listener={listeners} options={options} type="Line" />
+                <span className="height-profile-tooltip" ref={el => { this.tooltip = el; }} />
+                <span className="height-profile-marker" ref={el => { this.marker = el; }} />
+                <Icon className="export-profile-button" icon="export" onClick={() => this.exportProfile(data)}
+                title={LocaleUtils.tr("heightprofile.export")} />
             </div>
         );
     }
