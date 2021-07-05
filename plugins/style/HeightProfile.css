@@ -1,11 +1,10 @@
 #HeightProfile {
     display: flex;
-    flex-direction: column-reverse;
+    align-items: center;
     position: fixed;
     left: 0;
     right: 0;
     bottom: 2.25em;
-    width: 100%;
     background-color: rgba(255, 255, 255, 0.80);
     box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
     padding-top: 0.5em;
@@ -86,7 +85,8 @@
     margin-right: 0.25em;
 }
 
-#HeightProfile button.export-profile-button {
-    float: left;
-    margin: 0.25em;
+#HeightProfile span.export-profile-button {
+    color: @titlebar_bg@;
+    cursor: pointer;
+    font-size: large;
 }
