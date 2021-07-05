@@ -55,7 +55,7 @@ class HeightProfile extends React.Component {
     componentWillUnmount() {
         window.removeEventListener('resize', this.handleResize);
     }
-    exportProfile(data) {          
+    exportProfile(data) {
         let csv = "";
         let idx = 0;
         csv += "index" + "\t" + "distance" + "\t" + "elevation" + "\n";
@@ -64,8 +64,8 @@ class HeightProfile extends React.Component {
                 const heighProfilePrecision = this.props.heighProfilePrecision;
                 const distance = Math.round(sample.x * Math.pow(10, heighProfilePrecision)) / Math.pow(10, heighProfilePrecision);
                 const height = Math.round(sample.y * Math.pow(10, heighProfilePrecision)) / Math.pow(10, heighProfilePrecision);
-                csv += String(idx).replace('"', '""') + "\t" 
-                    + parseFloat(distance).toLocaleString() + "\t" 
+                csv += String(idx).replace('"', '""') + "\t"
+                    + parseFloat(distance).toLocaleString() + "\t"
                     + parseFloat(height).toLocaleString() + "\n";
                 idx += 1;
             }
@@ -200,7 +200,7 @@ class HeightProfile extends React.Component {
                 <span className="height-profile-tooltip" ref={el => { this.tooltip = el; }} />
                 <span className="height-profile-marker" ref={el => { this.marker = el; }} />
                 <Icon className="export-profile-button" icon="export" onClick={() => this.exportProfile(data)}
-                title={LocaleUtils.tr("heightprofile.export")} />
+                    title={LocaleUtils.tr("heightprofile.export")} />
             </div>
         );
     }
