@@ -1,6 +1,6 @@
 #HeightProfile {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     position: fixed;
     left: 0;
     right: 0;
@@ -89,4 +89,5 @@
     color: @titlebar_bg@;
     cursor: pointer;
     font-size: large;
+    margin-bottom: 0.25em;
 }
