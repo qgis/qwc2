@@ -314,7 +314,7 @@ class IdentifyViewer extends React.Component {
         } else if (result.properties.htmlContent) {
             if (result.properties.htmlContentInline) {
                 resultbox = (
-                    <div className="identify-result-box" dangerouslySetInnerHTML={{__html: result.properties.htmlContent}} />
+                    <div className="identify-result-box">{this.parsedContent(result.properties.htmlContent)}</div>
                 );
             } else {
                 resultbox = (
@@ -523,6 +523,9 @@ class IdentifyViewer extends React.Component {
         text = "" + text; // Ensure text is a string
         text = this.props.attributeTransform(attrName, text, layer, result);
         text = MiscUtils.addLinkAnchors(text);
+        return this.parsedContent(text);
+    }
+    parsedContent = (text) => {
         return ReactHtmlParser(text, {transform: (node, index) => {
             if (node.name === "a") {
                 return (
