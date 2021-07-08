@@ -132,7 +132,7 @@ const IdentifyUtils = {
         for (const layername of Object.keys(results)) {
             for (const item of results[layername]) {
                 if (item.type === "Feature" && !item.bbox && item.geometry) {
-                    item.crs = this.props.map.projection;
+                    item.crs = projection;
                     item.bbox = geojsonBbox(item);
                 }
                 item.clickPos = clickPoint;
