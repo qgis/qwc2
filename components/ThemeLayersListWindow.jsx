@@ -30,6 +30,11 @@ class ThemeLayersListWindow extends React.Component {
     state = {
         selectedLayers: []
     }
+    componentDidUpdate(prevProps) {
+        if (this.props.theme !== prevProps.theme) {
+            this.setState({selectedLayers: []});
+        }
+    }
     renderLayer(layer) {
         const checkboxstate = this.state.selectedLayers.includes(layer) ? 'checked' : 'unchecked';
         const addLayerTitle = LocaleUtils.tr("themelayerslist.addlayer");
