@@ -529,7 +529,7 @@ class IdentifyViewer extends React.Component {
         return ReactHtmlParser(text, {transform: (node, index) => {
             if (node.name === "a") {
                 return (
-                    <a href={node.attribs.href} key={"a" + index} onClick={this.attributeLinkClicked} target={node.attribs.target || "_blank"}>
+                    <a href={node.attribs.href} key={"a" + index} onClick={node.attribs.onclick ? (ev) => this.evalOnClick(ev, node.attribs.onclick) : this.attributeLinkClicked} target={node.attribs.target || "_blank"}>
                         {node.children.map((child, idx) => (
                             <React.Fragment key={"f" + idx}>{convertNodeToElement(child, idx)}</React.Fragment>)
                         )}
@@ -538,6 +538,10 @@ class IdentifyViewer extends React.Component {
             }
             return undefined;
         }});
+    }
+    evalOnClick = (ev, onclick) => {
+        eval(onclick);
+        ev.preventDefault();
     }
     attributeLinkClicked = (ev) => {
         if (ev.target.target.startsWith(":")) {
