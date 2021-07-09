@@ -21,7 +21,8 @@ const LayerUtils = {
             const layerConfig = layerConfigs.find(layer => layer.type === 'theme' && layer.name === entry.sublayer.name);
             if (layerConfig) {
                 entry.sublayer.opacity = layerConfig.opacity;
-                entry.sublayer.visibility = layerConfig.visibility;
+                entry.sublayer.visibility = layerConfig.visibility || layerConfig.tristate;
+                entry.sublayer.tristate = layerConfig.tristate;
             } else {
                 entry.sublayer.visibility = false;
             }
@@ -50,7 +51,8 @@ const LayerUtils = {
                 const entry = exploded.find(e => e.sublayer.name === layerConfig.name);
                 if (entry) {
                     entry.sublayer.opacity = layerConfig.opacity;
-                    entry.sublayer.visibility = layerConfig.visibility;
+                    entry.sublayer.visibility = layerConfig.visibility || layerConfig.tristate;
+                    entry.sublayer.tristate = layerConfig.tristate;
                     reordered.push(entry);
                 }
             } else if (layerConfig.type === 'separator') {
@@ -65,14 +67,17 @@ const LayerUtils = {
         return layers;
     },
     setGroupVisiblities(layers) {
-        let hasVisible = false;
+        let parentVisible = false;
+        let parentInvisible = false;
         for (const layer of layers) {
             if (!isEmpty(layer.sublayers)) {
                 layer.visibility = LayerUtils.setGroupVisiblities(layer.sublayers);
             }
-            hasVisible = hasVisible || layer.visibility;
+            parentInvisible = parentInvisible || layer.tristate;
+            delete layer.tristate;
+            parentVisible = parentVisible || layer.visibility;
         }
-        return hasVisible;
+        return parentVisible && !parentInvisible;
     },
     createSeparatorLayer(title) {
         return LayerUtils.explodeLayers([{
@@ -111,7 +116,8 @@ const LayerUtils = {
         }
     },
     collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryable, visibilities, parentVisibility) {
-        const visibility = (sublayer.visibility === undefined ? true : sublayer.visibility) && parentVisibility;
+        const layerVisibility = (sublayer.visibility === undefined ? true : sublayer.visibility);
+        const visibility = layerVisibility && parentVisibility;
         if (visibility || visibilities) {
             if (!isEmpty(sublayer.sublayers)) {
                 // Is group
@@ -126,7 +132,7 @@ const LayerUtils = {
                     queryable.push(sublayer.name);
                 }
                 if (visibilities) {
-                    visibilities.push(visibility);
+                    visibilities.push(layerVisibility ? (parentVisibility ? 1 : 0.5) : 0);
                 }
             }
         }
@@ -153,7 +159,7 @@ const LayerUtils = {
         let styles = [];
         const queryLayers = [];
         layer.sublayers.map(sublayer => {
-            LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryLayers, null, layer.visibility);
+            LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryLayers, null, null, layer.visibility);
         });
         layerNames.reverse();
         opacities.reverse();
@@ -213,8 +219,10 @@ const LayerUtils = {
             if (opacities[idx] < 255) {
                 param += "[" + (100 - Math.round(opacities[idx] / 255 * 100)) + "]";
             }
-            if (!visibilities[idx]) {
+            if (visibilities[idx] === 0) {
                 param += '!';
+            } else if (visibilities[idx] === 0.5) {
+                param += '~';
             }
             return param;
         });
@@ -231,8 +239,13 @@ const LayerUtils = {
         let layerUrl = null;
         let opacity = 255;
         let visibility = true;
+        let tristate = false;
         if (entry.endsWith('!')) {
             visibility = false;
+            entry = entry.slice(0, -1);
+        } else if (entry.endsWith('~')) {
+            visibility = false;
+            tristate = true;
             entry = entry.slice(0, -1);
         }
         let name = entry;
@@ -249,7 +262,7 @@ const LayerUtils = {
             type = 'separator';
             name = name.slice(4);
         }
-        return {id, type, url: layerUrl, name, opacity, visibility};
+        return {id, type, url: layerUrl, name, opacity, visibility, tristate};
     },
     pathEqualOrBelow(parent, child) {
         return isEqual(child.slice(0, parent.length), parent);
@@ -453,7 +466,8 @@ const LayerUtils = {
     ensureMutuallyExclusive(group) {
         if (!isEmpty(group.sublayers)) {
             if (group.mutuallyExclusive) {
-                const visibleSublayer = group.sublayers.find(sublayer => sublayer.visibility === true) || group.sublayers[0];
+                const tristateSublayer = group.sublayers.find(sublayer => sublayer.tristate === true);
+                const visibleSublayer = tristateSublayer || group.sublayers.find(sublayer => sublayer.visibility === true) || group.sublayers[0];
                 for (const sublayer of group.sublayers) {
                     sublayer.visibility = sublayer === visibleSublayer;
                 }
