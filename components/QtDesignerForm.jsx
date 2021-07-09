@@ -157,7 +157,7 @@ export default class QtDesignerForm extends React.Component {
         } else if (widget.class === "QGroupBox") {
             return (
                 <div>
-                    <div>{prop.title}</div>
+                    <div className="qt-designer-form-frame-title">{prop.title}</div>
                     <div className="qt-designer-form-frame">
                         {this.renderLayout(widget.layout, values, updateField, nametransform)}
                     </div>
