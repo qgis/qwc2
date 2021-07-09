@@ -141,6 +141,8 @@ export default class QtDesignerForm extends React.Component {
         }
         const prop = widget.property || {};
         const attr = widget.attribute || {};
+        const readOnly = prop.readOnly === "true";
+        const required = prop.required === "true";
         const elname = nametransform(widget.name);
         if (widget.class === "QLabel") {
             return (<span>{widget.property.text}</span>);
@@ -186,7 +188,7 @@ export default class QtDesignerForm extends React.Component {
                 </div>
             );
         } else if (widget.class === "QTextEdit" || widget.class === "QTextBrowser") {
-            return (<textarea name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} value={value} />);
+            return (<textarea name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} readOnly={readOnly} required={required} value={value} />);
         } else if (widget.class === "QLineEdit") {
             if (widget.name.endsWith("__upload")) {
                 const uploadValue = ((values || {})[widget.name.replace(/__upload/, '')] || "");
@@ -195,7 +197,7 @@ export default class QtDesignerForm extends React.Component {
                 return (<EditUploadField constraints={constraints} editLayerId={this.props.editLayerId} fieldId={fieldId} updateField={this.props.updateField} value={uploadValue} />);
             } else {
                 const placeholder = prop.placeholderText || "";
-                return (<input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} placeholder={placeholder} type="text" value={value} />);
+                return (<input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} placeholder={placeholder} readOnly={readOnly} required={required} type="text" value={value} />);
             }
         } else if (widget.class === "QCheckBox" || widget.class === "QRadioButton") {
             const type = widget.class === "QCheckBox" ? "checkbox" : "radio";
@@ -203,14 +205,14 @@ export default class QtDesignerForm extends React.Component {
             const checked = inGroup ? (this.props.values || {})[this.groupOrName(widget)] === widget.name : value;
             return (
                 <label>
-                    <input checked={checked} name={nametransform(this.groupOrName(widget))} onChange={ev => updateField(this.groupOrName(widget), inGroup ? widget.name : ev.target.checked)} type={type} />
+                    <input checked={checked} name={nametransform(this.groupOrName(widget))} onChange={ev => updateField(this.groupOrName(widget), inGroup ? widget.name : ev.target.checked)} readOnly={readOnly} required={required} type={type} />
                     {widget.property.text}
                 </label>
             );
         } else if (widget.class === "QComboBox") {
             if (this.state.keyvalues[widget.name]) {
                 return (
-                    <select name={elname} onChange={ev => updateField(widget.name, ev.target.value)} value={value}>
+                    <select name={elname} onChange={ev => updateField(widget.name, ev.target.value)} readOnly={readOnly} required={required} value={value}>
                         {this.state.keyvalues[widget.name].map((item) => (
                             <option key={item.key} value={item.key}>{item.value}</option>
                         ))}
@@ -218,7 +220,7 @@ export default class QtDesignerForm extends React.Component {
                 );
             } else {
                 return (
-                    <select name={elname} onChange={ev => updateField(widget.name, ev.target.value)} value={value}>
+                    <select name={elname} onChange={ev => updateField(widget.name, ev.target.value)} readOnly={readOnly} required={required} value={value}>
                         {(widget.item || []).map((item) => {
                             const optval = item.property.value || item.property.text;
                             return (
@@ -234,17 +236,17 @@ export default class QtDesignerForm extends React.Component {
             const step = prop.singleStep || 1;
             const type = (widget.class === "QSlider" ? "range" : "number");
             return (
-                <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} step={step} type={type} value={value} />
+                <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} readOnly={readOnly} required={required} step={step} type={type} value={value} />
             );
         } else if (widget.class === "QDateEdit") {
             const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1900-01-01";
             const max = prop.maximumDate ? this.dateConstraint(prop.maximumDate) : "9999-12-31";
             return (
-                <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} type="date" value={value} />
+                <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} readOnly={readOnly} required={required} type="date" value={value} />
             );
         } else if (widget.class === "QTimeEdit") {
             return (
-                <input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} type="time" value={value} />
+                <input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} readOnly={readOnly} required={required} type="time" value={value} />
             );
         } else if (widget.class === "QDateTimeEdit") {
             const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1900-01-01";
@@ -252,8 +254,8 @@ export default class QtDesignerForm extends React.Component {
             const parts = (value || "T").split("T");
             return (
                 <span className="qt-designer-form-datetime">
-                    <input max={max[0]} min={min[0]} onChange={(ev) => updateField(widget.name, ev.target.value ? ev.target.value + "T" + parts[1] : "")} type="date" value={parts[0]} />
-                    <input disabled={!parts[0]} onChange={(ev) => updateField(widget.name, parts[0] + "T" + ev.target.value)} type="time" value={parts[1]} />
+                    <input max={max[0]} min={min[0]} onChange={(ev) => updateField(widget.name, ev.target.value ? ev.target.value + "T" + parts[1] : "")} readOnly={readOnly} required={required} type="date" value={parts[0]} />
+                    <input disabled={!parts[0]} onChange={(ev) => updateField(widget.name, parts[0] + "T" + ev.target.value)} readOnly={readOnly} required={required}type="time" value={parts[1]} />
                     <input name={elname} type="hidden" value={value} />
                 </span>
             );
