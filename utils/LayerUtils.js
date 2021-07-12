@@ -159,7 +159,7 @@ const LayerUtils = {
         let styles = [];
         const queryLayers = [];
         layer.sublayers.map(sublayer => {
-            LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryLayers, null, null, layer.visibility);
+            LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryLayers, null, layer.visibility);
         });
         layerNames.reverse();
         opacities.reverse();
