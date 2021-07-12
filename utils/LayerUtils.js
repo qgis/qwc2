@@ -159,7 +159,7 @@ const LayerUtils = {
         let styles = [];
         const queryLayers = [];
         layer.sublayers.map(sublayer => {
-            LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryLayers, null, null, layer.visibility);
+            LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryLayers, null, layer.visibility);
         });
         layerNames.reverse();
         opacities.reverse();
@@ -202,7 +202,11 @@ const LayerUtils = {
         for (const layer of layers) {
             if (layer.role === LayerRole.THEME) {
                 LayerUtils.collectWMSSublayerParams(layer, layernames, opacities, styles, queryable, visibilities, layer.visibility);
-            } else if (layer.role === LayerRole.USERLAYER && (layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts")) {
+            } else if (layer.role === LayerRole.USERLAYER && layer.type === "wms") {
+                const sublayernames = [];
+                LayerUtils.collectWMSSublayerParams(layer, sublayernames, opacities, styles, queryable, visibilities, layer.visibility);
+                layernames.push(...sublayernames.map(name => "wms:" + layer.url + "#" + name));
+            } else if (layer.role === LayerRole.USERLAYER && (layer.type === "wfs" || layer.type === "wmts")) {
                 layernames.push(layer.type + ':' + (layer.capabilitiesUrl || layer.url) + "#" + layer.name);
                 opacities.push(layer.opacity);
                 styles.push(layer.style);
