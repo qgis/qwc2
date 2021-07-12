@@ -114,10 +114,16 @@ class Print extends React.Component {
                 printLayers.push(layer.params.LAYERS);
                 printOpacities.push(layer.params.OPACITIES);
                 printColors.push(layer.params.LAYERS.split(",").map(() => "").join(","));
-            } else if (this.props.printExternalLayers && layer.role === LayerRole.USERLAYER && layer.visibility && (layer.type === "wms" || layer.type === "wfs")) {
-                printLayers.push(layer.type + ':' + layer.url + "#" + layer.name);
-                printOpacities.push(layer.opacity);
-                printColors.push(layer.color ? layer.color : "");
+            } else if (this.props.printExternalLayers && layer.role === LayerRole.USERLAYER && layer.visibility) {
+                if (layer.type === "wms") {
+                    printLayers.push(layer.params.LAYERS.split(",").map(name => "wms:" + layer.url + "#" + name).join(","));
+                    printOpacities.push(layer.params.OPACITIES);
+                    printColors.push(layer.params.LAYERS.split(",").map(() => "").join(","));
+                } else if (layer.type === "wfs") {
+                    printLayers.push(layer.type + ':' + layer.url + "#" + layer.name);
+                    printOpacities.push(layer.opacity);
+                    printColors.push(layer.color ? layer.color : "");
+                }
             }
         }
 
