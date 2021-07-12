@@ -115,9 +115,26 @@ class Print extends React.Component {
                 printOpacities.push(layer.params.OPACITIES);
                 printColors.push(layer.params.LAYERS.split(",").map(() => "").join(","));
             } else if (this.props.printExternalLayers && layer.role === LayerRole.USERLAYER && layer.visibility && (layer.type === "wms" || layer.type === "wfs")) {
-                printLayers.push(layer.type + ':' + layer.url + "#" + layer.name);
-                printOpacities.push(layer.opacity);
-                printColors.push(layer.color ? layer.color : "");
+                if (layer.type === "wfs") {
+                    // external WFS layer
+                    printLayers.push(layer.type + ':' + layer.url + "#" + layer.name);
+                    printOpacities.push(layer.opacity);
+                    printColors.push(layer.color ? layer.color : "");
+                }
+                else {
+                    // external WMS layer or additional theme layer(s)
+                    if (layer.params.LAYERS) {
+                        let opacities = layer.params.OPACITIES.split(',');
+                        // add single external print layer for every sublayer
+                        layer.params.LAYERS.split(",").forEach((sublayerName, i) => {
+                            // scale sublayer opacity by layer opacity
+                            const opacity = Math.round((opacities[i] || 255) * layer.opacity / 255.0);
+                            printLayers.push(layer.type + ':' + layer.url + "#" + sublayerName);
+                            printOpacities.push(opacity);
+                            printColors.push("");
+                        });
+                    }
+                }
             }
         }
 
