@@ -80,7 +80,7 @@ const ThemeUtils = {
     createThemeLayer(theme, themes, role = LayerRole.THEME, subLayers = []) {
         const layer = {
             type: "wms",
-            url: theme.url,
+            url: ThemeUtils.fullUrl(theme.url),
             version: theme.version,
             visibility: true,
             expanded: theme.expanded,
@@ -94,9 +94,9 @@ const ThemeUtils = {
             format: theme.format,
             role: role,
             attribution: theme.attribution,
-            legendUrl: theme.legendUrl,
-            printUrl: theme.printUrl,
-            featureInfoUrl: theme.featureInfoUrl,
+            legendUrl: ThemeUtils.fullUrl(theme.legendUrl),
+            printUrl: ThemeUtils.fullUrl(theme.printUrl),
+            featureInfoUrl: ThemeUtils.fullUrl(theme.featureInfoUrl),
             infoFormats: theme.infoFormats,
             externalLayerMap: {
                 ...theme.externalLayerMap,
@@ -138,6 +138,16 @@ const ThemeUtils = {
             return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords || "").match(filter) || removeDiacritics(item.abstract || "").match(filter);
         }));
         return matches;
+    },
+    fullUrl(url) {
+        if (url.startsWith('http')) {
+            // keep original URL
+            return url;
+        }
+        else {
+            // full URL for relative URL on current location
+            return new URL(url, window.location.href).href;
+        }
     }
 };
 
