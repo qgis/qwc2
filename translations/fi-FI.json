@@ -1,0 +1,266 @@
+{
+  "locale": "fi-FI",
+  "messages": {
+    "appmenu": {
+      "menulabel": "Kartat & Työkalut",
+      "items": {
+        "DxfExport": "DXF vienti",
+        "Editing": "Editointi",
+        "Help": "Apua",
+        "IdentifyRegion": "Tunnista alue",
+        "LayerTree": "Karttatasot ja selite",
+        "Login": "Kirjaudu",
+        "Logout": "Kirjaudu ulos",
+        "Measure": "Mittaa",
+        "Print": "Tulosta",
+        "RasterExport": "Rasterin vienti",
+        "Redlining": "Omat merkinnät",
+        "Share": "Jaa linkki",
+        "ThemeSwitcher": "Teema",
+        "Tools": "Karttatyökalut",
+        "Bookmark": "Kirjanmerkit"
+      }
+    },
+    "bgswitcher": {
+      "nobg": "Ei taustakarttaa"
+    },
+    "bookmark": {
+      "add": "Lisää kirjanmerkki nykyiselle kartalle",
+      "description": "Kuvaus",
+      "manage": "Kirjanmerkkien hallinta",
+      "openintab": "Avaa kirjanmerkki uudessa välilehdessä",
+      "remove": "Poista kirjanmerkki",
+      "update": "Päivitä kirjanmerkki"
+    },
+    "bottombar": {
+      "mousepos_label": "Koordinaatit",
+      "scale_label": "Mittakaava",
+      "terms_label": "Käyttöehdot",
+      "viewertitle_label": ""
+    },
+    "copybtn": {
+      "click_to_copy": "Kopioi napsauttamalla",
+      "copied": "Kopioitu"
+    },
+    "dxfexport": {
+      "layers": "Karttatasot",
+      "selectinfo": "Piirrä suorakulmio alueen ympärille vientiä varten",
+      "symbologyscale": "Symbolien mittakaava"
+    },
+    "editing": {
+      "canceldelete": "Don't delete",
+      "clearpicture": "Clear",
+      "commit": "Commit",
+      "delete": "Delete",
+      "discard": "Discard",
+      "draw": "Draw",
+      "feature": "Feature",
+      "maximize": "Maximize",
+      "minimize": "Minimize",
+      "noeditablelayers": "No editable layers.",
+      "pick": "Pick",
+      "reallydelete": "Delete",
+      "relationcommitfailed": "Some relation values could not be committed, check the icon tooltips for details",
+      "select": "Select",
+      "takepicture": "Take picture"
+    },
+    "fileselector": {
+      "placeholder": "Valitse tiedosto..."
+    },
+    "heightprofile": {
+      "asl": "a.s.l.",
+      "distance": "Etäisyys",
+      "height": "Korkeus",
+      "loading": "Korkeusprofiilin laskenta käynnissä..."
+    },
+    "identify": {
+      "export": "Vienti",
+      "exportformat": "Viennin formaatti:",
+      "featureReport": "Ominaisuustietoraportti",
+      "link": "Linkki",
+      "noattributes": "Attribuutteja ei löytynyt",
+      "noresults": "Valitulla pisteellä ei ole informaatiota",
+      "querying": "Kysely käynnissä...",
+      "title": "Ominaisuustiedot"
+    },
+    "importlayer": {
+      "addlayer": "Lisää karttataso",
+      "connect": "Yhdistä",
+      "filter": "Suodatus...",
+      "loading": "Lataa...",
+      "localfile": "Paikallinen tiedosto",
+      "nofeatures": "Ominaisuustietoja ei voitu tuoda.",
+      "noresults": "Tuloksia ei ole tai virheellinen URL-osoite",
+      "url": "URL",
+      "urlplaceholder": "Anna rajapinnoille URL..."
+    },
+    "infotool": {
+      "clickhelpPoint": "Tunnista kohde klikkaamalla sijaintia kartalla...",
+      "clickhelpPolygon": "Tunnista kohteet piirtämällä alue niiden ympärille..."
+    },
+    "layerinfo": {
+      "abstract": "Tiivistelmä",
+      "attribution": "Attribuutio",
+      "dataUrl": "Data URL",
+      "keywords": "Avainsanat",
+      "legend": "Selite",
+      "maxscale": "Max. näyttöasteikko",
+      "metadataUrl": "Metadata URL",
+      "minscale": "Min. näyttöasteikko",
+      "title": "Karttatason tiedot"
+    },
+    "layertree": {
+      "compare": "Vertaa ylintä tasoa",
+      "deletealllayers": "Poista kaikki tasot",
+      "importlayer": "Tuo taso",
+      "maptip": "Näytä tason vinkkejä",
+      "printlegend": "Tulosta selite",
+      "separator": "Erotin",
+      "separatortooltip": "Lisää erotin",
+      "transparency": "Läpinäkyvyys",
+      "visiblefilter": "Suodata näkymättömät tasot",
+      "zoomtolayer": "Zoomaa tasolle"
+    },
+    "locate": {
+      "feetUnit": "jalka",
+      "metersUnit": "metrit",
+      "popup": "You are within {distance} {unit} from this point",
+      "statustooltip": {
+        "DISABLED": "Paikka: pois käytöstä",
+        "ENABLED": "Paikka: käytössä",
+        "FOLLOWING": "Paikka: seuraa",
+        "LOCATING": "Paikka: sijainti...",
+        "PERMISSION_DENIED": "Paikka: pääsy estetty"
+      }
+    },
+    "map": {
+      "loading": "Lataa..."
+    },
+    "mapinfotooltip": {
+      "elevation": "Korkeus",
+      "title": "Sijainti"
+    },
+    "measureComponent": {
+      "areaLabel": "Alue",
+      "bearingLabel": "Suunta",
+      "lengthLabel": "Pituus",
+      "pointLabel": "Sijainti"
+    },
+    "print": {
+      "grid": "Ristikko",
+      "layout": "Layout",
+      "legend": "Selite",
+      "maximize": "Maksimoi",
+      "minimize": "Minimoi",
+      "nolayouts": "Valittu teema ei tue tulostamista",
+      "notheme": "Teemaa ei ole valittu",
+      "output": "Tulosta tuotos",
+      "resolution": "Resoluutio:",
+      "rotation": "Rotaatio",
+      "scale": "Mittakaava",
+      "submit": "Tulosta",
+      "wait": "Odota..."
+    },
+    "rasterexport": {
+      "format": "Formaatti:",
+      "resolution": "Resoluutio:",
+      "selectinfo": "Piirrä suorakulmio alueen ympäri vientiä varten ..."
+    },
+    "redlining": {
+      "border": "Reunat",
+      "buffer": "Bufferi",
+      "buffercompute": "Laske",
+      "bufferdistance": "Etäisyys",
+      "bufferlayer": "Destination",
+      "bufferlayername": "Bufferi",
+      "bufferselectfeature": "Valitse bufferin ominaisuus...",
+      "circle": "Ympyrä",
+      "delete": "Poista",
+      "draw": "Piirrä",
+      "edit": "Editoi",
+      "fill": "Täyttö",
+      "freehand": "Vapaa piirto",
+      "label": "Selite",
+      "layer": "Taso",
+      "line": "Viiva",
+      "outline": "Ääriviiva",
+      "pick": "Poimi",
+      "point": "Piste",
+      "polygon": "Alue",
+      "size": "Koko",
+      "text": "Teksti",
+      "width": "Leveys"
+    },
+    "scratchdrawing": {
+      "finish": "Lopeta"
+    },
+    "search": {
+      "all": "Kaikki",
+      "enablelayer": "Aktivoi taso",
+      "existinglayer": "Taso on jo lisätty karttaan",
+      "invisiblelayer": "The result lies on a layer which is not visible.",
+      "more": "Lisää...",
+      "search": "Etsi",
+      "searchall": "Etsi kohteita tai lisää kartta...",
+      "themes": "Teemat"
+    },
+    "searchbox": {
+      "filter": "Tarkenna hakua",
+      "layers": "Kartat",
+      "more": "Lisää tuloksia",
+      "morelayers": "Tuloksia on lisää saatavilla",
+      "nodescription": "Kuvausta ei löytynyt",
+      "placeholder": "Etsi kohde tai lisää kartta...",
+      "places": "Kohteet",
+      "recent": "Viimeisimmät haut"
+    },
+    "serviceinfo": {
+      "abstract": "Tiivistelmä",
+      "contactEmail": "Email",
+      "contactOrganization": "Organisaatio",
+      "contactPerson": "Yhteyshenkilö",
+      "contactPhone": "Puhelinnumero",
+      "contactPosition": "Sijainti",
+      "keywords": "Avainsanat",
+      "onlineResource": "Online resurssit",
+      "title": "Teema informaatio"
+    },
+    "share": {
+      "QRCodeLinkTitle": "QR-koodi",
+      "directLinkTitle": "Suora linkillä",
+      "generatingpermalink": "Generoidaan pysyvä linkki, odota hetki...",
+      "socialIntro": "Jaa someen"
+    },
+    "themelayerslist": {
+      "addlayer": "Lisää taso",
+      "addlayerstotheme": "Lisää tasoja nykyiseen karttaan",
+      "addselectedlayers": "Lisää valitut tasot"
+    },
+    "themeswitcher": {
+      "addlayerstotheme": "Lisää tasoja nykyiseen karttaan",
+      "addtotheme": "Lisää nykyiseen teemaan",
+      "filter": "Suodatus...",
+      "match": {
+        "abstract": "Tiivistelmä",
+        "keywords": "Avainsanat",
+        "title": "Otsikko"
+      },
+      "openintab": "Avaa välilehdellä",
+      "restrictedthemeinfo": "Teeman tarkasteluun ei ole oikeuksia tai et ole kirjautunut sisään"
+    },
+    "tooltip": {
+      "background": "Vaihda tausta",
+      "home": "Näytä koko kartta",
+      "zoomin": "Zoomaa sisään",
+      "zoomout": "Zoomaa ulos"
+    },
+    "vectorlayerpicker": {
+      "prompt": "Syötä tason nimi"
+    },
+    "window": {
+      "close": "Sulje",
+      "dock": "Kiinnitä",
+      "undock": "Irrota"
+    }
+  }
+}
