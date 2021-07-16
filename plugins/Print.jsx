@@ -148,6 +148,10 @@ class Print extends React.Component {
                 printOpacities.push("255");
                 printColors.push("");
             }
+        } else if (backgroundLayer.type === "wms" && this.props.printExternalLayers) {
+            printLayers.push(backgroundLayer.params.LAYERS.split(",").map(name => "wms:" + backgroundLayer.url + "#" + name).join(","));
+            printOpacities.push(backgroundLayer.params.OPACITIES);
+            printColors.push(backgroundLayer.params.LAYERS.split(",").map(() => "").join(","));
         }
         printLayers = printLayers.reverse().join(",");
         printOpacities = printOpacities.reverse().join(",");
