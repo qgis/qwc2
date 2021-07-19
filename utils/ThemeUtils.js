@@ -140,11 +140,10 @@ const ThemeUtils = {
         return matches;
     },
     fullUrl(url) {
-        if (url.startsWith('http')) {
+        if (!url || url.startsWith('http')) {
             // keep original URL
             return url;
-        }
-        else {
+        } else {
             // full URL for relative URL on current location
             return new URL(url, window.location.href).href;
         }
