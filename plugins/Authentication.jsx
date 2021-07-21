@@ -16,6 +16,7 @@ class Authentication extends React.Component {
     static propTypes = {
         clearLayerParam: PropTypes.bool,
         idleTimeout: PropTypes.number,
+        logoutTargetUrl: PropTypes.string,
         task: PropTypes.string
     }
     constructor(props) {
@@ -41,7 +42,8 @@ class Authentication extends React.Component {
                 urlObj.search = undefined;
                 window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "login?url=" + encodeURIComponent(url.format(urlObj));
             } else if (this.props.task === "Logout") {
-                window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "logout?url=" + encodeURIComponent(window.location.href);
+                // logout and redirect to custom logoutTargetUrl or current location if not set
+                window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "logout?url=" + encodeURIComponent(this.props.logoutTargetUrl || window.location.href);
             }
         }
     }
