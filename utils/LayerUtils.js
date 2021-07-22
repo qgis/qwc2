@@ -147,7 +147,7 @@ const LayerUtils = {
                 params: {
                     ...params,
                     LAYERS: params.LAYERS || layer.name,
-                    OPACITIES: params.OPACITIES || ("" + layer.opacity),
+                    OPACITIES: params.OPACITIES || ("" + (layer.opacity !== undefined ? layer.opacity : 255)),
                     STYLES: params.STYLES || "",
                     MAP: query.map || query.MAP || params.map || params.MAP
                 },
