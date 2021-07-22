@@ -650,6 +650,7 @@ const LayerUtils = {
         return (layer.minScale === undefined || mapScale >= layer.minScale) && (layer.maxScale === undefined || mapScale < layer.maxScale);
     },
     collectPrintParams(layers, theme, printScale, printCrs, printExternalLayers) {
+        printExternalLayers = printExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion") >= 3;
         const params = {
             LAYERS: [],
             OPACITIES: [],
