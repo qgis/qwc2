@@ -14,6 +14,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 
 class Authentication extends React.Component {
     static propTypes = {
+        requireLogin: PropTypes.bool,
         clearLayerParam: PropTypes.bool,
         idleTimeout: PropTypes.number,
         logoutTargetUrl: PropTypes.string,
@@ -25,6 +26,9 @@ class Authentication extends React.Component {
     }
     componentDidMount() {
         const username = ConfigUtils.getConfigProp("username");
+        if (this.props.requireLogin && !username) {
+            this.showLogin();
+        }
         if (this.props.idleTimeout && username) {
             this.idleTimer = setTimeout(this.idleAutologout, this.props.idleTimeout * 1000);
             window.addEventListener('keydown', this.resetIdleTimer, {passive: true});
@@ -35,17 +39,20 @@ class Authentication extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.props.task !== prevProps.task) {
             if (this.props.task === "Login") {
-                const urlObj = url.parse(window.location.href, true);
-                if (this.props.clearLayerParam) {
-                    delete urlObj.query.l;
-                }
-                urlObj.search = undefined;
-                window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "login?url=" + encodeURIComponent(url.format(urlObj));
+                this.showLogin();
             } else if (this.props.task === "Logout") {
                 // logout and redirect to custom logoutTargetUrl or current location if not set
                 window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "logout?url=" + encodeURIComponent(this.props.logoutTargetUrl || window.location.href);
             }
         }
+    }
+    showLogin = () => {
+        const urlObj = url.parse(window.location.href, true);
+        if (this.props.clearLayerParam) {
+            delete urlObj.query.l;
+        }
+        urlObj.search = undefined;
+        window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "login?url=" + encodeURIComponent(url.format(urlObj));
     }
     resetIdleTimer = () => {
         if (this.idleTimer) {
