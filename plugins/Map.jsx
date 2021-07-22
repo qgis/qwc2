@@ -63,8 +63,8 @@ class MapPlugin extends React.Component {
                     for (let i = 0; i < sublayers.length; ++i) {
                         if (layer.externalLayerMap && layer.externalLayerMap[sublayers[i]]) {
                             const sublayer = LayerUtils.searchSubLayer(layer, "name", sublayers[i]);
-                            const sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
-                            if (!sublayerInvisible) {
+                            const sublayerVisible = LayerUtils.layerScaleInRange(sublayer, mapScale);
+                            if (sublayerVisible) {
                                 renderLayers.push({
                                     ...layer.externalLayerMap[sublayers[i]],
                                     params: {

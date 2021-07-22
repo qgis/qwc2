@@ -64,8 +64,8 @@ const IdentifyUtils = {
             for (let i = 0; i < queryLayers.length; ++i) {
                 if (layer.externalLayerMap && layer.externalLayerMap[queryLayers[i]]) {
                     const sublayer = LayerUtils.searchSubLayer(layer, "name", queryLayers[i]);
-                    const sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
-                    if (!isEmpty(layer.externalLayerMap[queryLayers[i]].queryLayers) && !sublayerInvisible) {
+                    const sublayerVisible = LayerUtils.layerScaleInRange(sublayer, mapScale);
+                    if (!isEmpty(layer.externalLayerMap[queryLayers[i]].queryLayers) && sublayerVisible) {
                         layers.push(layer.externalLayerMap[queryLayers[i]]);
                     }
                 } else if (layers.length > 0 && layers[layers.length - 1].id === layer.id) {

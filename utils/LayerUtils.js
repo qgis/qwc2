@@ -645,6 +645,9 @@ const LayerUtils = {
             return "";
         }
         return requestUrl + (requestUrl.indexOf('?') === -1 ? '?' : '&') + params;
+    },
+    layerScaleInRange(layer, mapScale) {
+        return (layer.minScale === undefined || mapScale >= layer.minScale) && (layer.maxScale === undefined || mapScale < layer.maxScale);
     }
 };
 
