@@ -22,6 +22,7 @@ import SideBar from '../components/SideBar';
 import Spinner from '../components/Spinner';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -42,7 +43,7 @@ class Print extends React.Component {
         theme: PropTypes.object
     }
     static defaultProps = {
-        printExternalLayers: false,
+        printExternalLayers: true,
         inlinePrintOutput: false,
         scaleFactor: 1.9, // Experimentally determined...
         defaultDpi: 300,
@@ -106,61 +107,15 @@ class Print extends React.Component {
         if (!this.props.theme || (!this.props.printExternalLayers && isEmpty(themeLayers))) {
             return (<div className="print-body" role="body">{LocaleUtils.tr("print.notheme")}</div>);
         }
-        let printLayers = [];
-        let printOpacities = [];
-        let printColors = [];
-        for (const layer of this.props.layers) {
-            if (layer.role === LayerRole.THEME && layer.params.LAYERS) {
-                printLayers.push(layer.params.LAYERS);
-                printOpacities.push(layer.params.OPACITIES);
-                printColors.push(layer.params.LAYERS.split(",").map(() => "").join(","));
-            } else if (this.props.printExternalLayers && layer.role === LayerRole.USERLAYER && layer.visibility) {
-                if (layer.type === "wms") {
-                    printLayers.push(layer.params.LAYERS.split(",").map(name => "wms:" + layer.url + "#" + name).join(","));
-                    printOpacities.push(layer.params.OPACITIES);
-                    printColors.push(layer.params.LAYERS.split(",").map(() => "").join(","));
-                } else if (layer.type === "wfs") {
-                    printLayers.push(layer.type + ':' + layer.url + "#" + layer.name);
-                    printOpacities.push(layer.opacity);
-                    printColors.push(layer.color ? layer.color : "");
-                }
-            }
-        }
-
-        const mapName = this.state.layout.map.name;
-        const backgroundLayer = this.props.layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
-        const backgroundLayerName = backgroundLayer ? backgroundLayer.name : null;
-        const themeBackgroundLayer = backgroundLayer ? this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayerName) : null;
-        const printBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
-        if (printBackgroundLayer) {
-            let printBgLayerName = printBackgroundLayer;
-            if (Array.isArray(printBackgroundLayer)) {
-                printBgLayerName = null;
-                for (let i = 0; i < printBackgroundLayer.length; ++i) {
-                    printBgLayerName = printBackgroundLayer[i].name;
-                    if (this.state.scale <= printBackgroundLayer[i].maxScale) {
-                        break;
-                    }
-                }
-            }
-            if (printBgLayerName) {
-                printLayers.push(printBgLayerName);
-                printOpacities.push("255");
-                printColors.push("");
-            }
-        } else if (backgroundLayer.type === "wms" && this.props.printExternalLayers) {
-            printLayers.push(backgroundLayer.params.LAYERS.split(",").map(name => "wms:" + backgroundLayer.url + "#" + name).join(","));
-            printOpacities.push(backgroundLayer.params.OPACITIES);
-            printColors.push(backgroundLayer.params.LAYERS.split(",").map(() => "").join(","));
-        }
-        printLayers = printLayers.reverse().join(",");
-        printOpacities = printOpacities.reverse().join(",");
-        printColors = printColors.reverse().join(",");
 
         const formvisibility = 'hidden';
         const printDpi = parseInt(this.state.dpi, 10);
         const mapCrs = this.props.map.projection;
         const version = this.props.theme.version || "1.3.0";
+
+        const mapName = this.state.layout.map.name;
+        const printParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, mapCrs, this.props.printExternalLayers);
+
         let extent = this.computeCurrentExtent();
         extent = (CoordinatesUtils.getAxisOrder(mapCrs).substr(0, 2) === 'ne' && version === '1.3.0') ?
             extent[1] + "," + extent[0] + "," + extent[3] + "," + extent[2] :
@@ -299,12 +254,9 @@ class Print extends React.Component {
                         <input name="TRANSPARENT" readOnly type={formvisibility} value="true" />
                         <input name="SRS" readOnly type={formvisibility} value={mapCrs} />
                         {!isEmpty(themeLayers) && themeLayers[0].params.MAP ? (<input name="MAP" readOnly type={formvisibility} value={themeLayers[0].params.MAP} />) : null}
-                        <input name="OPACITIES" readOnly type={formvisibility} value={printOpacities || ""} />
-                        {/* This following one is needed for opacities to work!*/}
-                        <input name="LAYERS" readOnly type={formvisibility} value={printLayers || ""} />
-                        <input name="COLORS" readOnly type={formvisibility} value={printColors || ""} />
+                        {Object.entries(printParams).map(([key, value]) => (<input key={key} name={key} type={formvisibility} value={value} />))}
                         <input name="CONTENT_DISPOSITION" readOnly type={formvisibility} value={this.props.inlinePrintOutput ? "inline" : "attachment"} />
-                        <input name={mapName + ":LAYERS"} readOnly type={formvisibility} value={printLayers || ""} />
+                        <input name={mapName + ":LAYERS"} readOnly type={formvisibility} value={printParams.LAYERS} />
                         <input name={mapName + ":HIGHLIGHT_GEOM"} readOnly type={formvisibility} value={highlightParams.geoms.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_SYMBOL"} readOnly type={formvisibility} value={highlightParams.styles.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_LABELSTRING"} readOnly type={formvisibility} value={highlightParams.labels.join(";")} />
@@ -317,7 +269,7 @@ class Print extends React.Component {
                         {resolutionInput}
                     </div>
                     <div className="button-bar">
-                        <button className="button" disabled={!printLayers || this.state.printing} type="submit">
+                        <button className="button" disabled={!printParams.LAYERS || this.state.printing} type="submit">
                             {this.state.printing ? (<span className="print-wait"><Spinner /> {LocaleUtils.tr("print.wait")}</span>) : LocaleUtils.tr("print.submit")}
                         </button>
                     </div>

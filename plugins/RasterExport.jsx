@@ -14,6 +14,7 @@ import {setCurrentTask} from '../actions/task';
 import TaskBar from '../components/TaskBar';
 import PrintFrame from '../components/PrintFrame';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -22,10 +23,14 @@ import './style/RasterExport.css';
 class RasterExport extends React.Component {
     static propTypes = {
         dpis: PropTypes.array,
+        exportExternalLayers: PropTypes.bool,
         layers: PropTypes.array,
         map: PropTypes.object,
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object
+    }
+    static defaultProps = {
+        exportExternalLayers: true
     }
     state = {
         selectedFormat: null,
@@ -56,28 +61,10 @@ class RasterExport extends React.Component {
         const selectedFormat = this.state.selectedFormat || defaultFormat;
         const filename = this.props.theme.name + "." + selectedFormat.split(";")[0].split("/").pop();
         const action = this.props.theme.url;
-        let exportLayers = themeLayers.map(layer => layer.params.LAYERS).reverse().join(",");
-        let exportOpacities = themeLayers.map(layer => layer.params.OPACITIES).reverse().join(",");
-        const backgroundLayer = this.props.layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
-        const themeBackgroundLayer = backgroundLayer ? this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayer.name) : null;
-        const exportBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
-        if (exportBackgroundLayer) {
-            let printBgLayerName = exportBackgroundLayer;
-            if (Array.isArray(exportBackgroundLayer)) {
-                const scale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
-                printBgLayerName = null;
-                for (let i = 0; i < exportBackgroundLayer.length; ++i) {
-                    printBgLayerName = exportBackgroundLayer[i].name;
-                    if (scale <= exportBackgroundLayer[i].maxScale) {
-                        break;
-                    }
-                }
-            }
-            if (printBgLayerName) {
-                exportLayers = printBgLayerName + "," + exportLayers;
-                exportOpacities = "255," + exportOpacities;
-            }
-        }
+
+        const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
+        const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, mapScale, this.props.map.projection, this.props.exportExternalLayers);
+
         let dpiSelector = null;
         if (this.props.dpis) {
             dpiSelector = (
@@ -118,8 +105,7 @@ class RasterExport extends React.Component {
                     <input name="SERVICE" readOnly type="hidden" value="WMS" />
                     <input name="VERSION" readOnly type="hidden" value={themeLayers[0].version || "1.3.0"} />
                     <input name="REQUEST" readOnly type="hidden" value="GetMap" />
-                    <input name="LAYERS" readOnly type="hidden" value={exportLayers} />
-                    <input name="OPACITIES" readOnly type="hidden" value={exportOpacities} />
+                    {Object.entries(exportParams).map(([key, value]) => (<input key={key} name={key} type="hidden" value={value} />))}
                     <input name="TRANSPARENT" readOnly type="hidden" value="true" />
                     <input name="TILED" readOnly type="hidden" value="false" />
                     <input name="STYLES" readOnly type="hidden" value="" />

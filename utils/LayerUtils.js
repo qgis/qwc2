@@ -648,6 +648,87 @@ const LayerUtils = {
     },
     layerScaleInRange(layer, mapScale) {
         return (layer.minScale === undefined || mapScale >= layer.minScale) && (layer.maxScale === undefined || mapScale < layer.maxScale);
+    },
+    collectPrintParams(layers, theme, printScale, printCrs, printExternalLayers) {
+        const params = {
+            LAYERS: [],
+            OPACITIES: [],
+            COLORS: []
+        };
+        let counter = 0;
+
+        for (const layer of layers) {
+            if (layer.role === LayerRole.THEME && layer.params.LAYERS) {
+                params.LAYERS.push(layer.params.LAYERS);
+                params.OPACITIES.push(layer.params.OPACITIES);
+                params.COLORS.push(layer.params.LAYERS.split(",").map(() => "").join(","));
+            } else if (printExternalLayers && layer.role === LayerRole.USERLAYER && layer.visibility && layer.type === "wms") {
+                const names = layer.params.LAYERS.split(",");
+                const opacities = layer.params.OPACITIES.split(",");
+                for (let idx = 0; idx < names.length; ++idx) {
+                    const identifier = String.fromCharCode(65 + (counter++));
+                    params.LAYERS.push("EXTERNAL_WMS:" + identifier);
+                    params.OPACITIES.push(opacities[idx]);
+                    params.COLORS.push("");
+                    params[identifier + ":url"] = layer.url;
+                    params[identifier + ":layers"] = names[idx];
+                    params[identifier + ":format"] = "image/png";
+                    params[identifier + ":crs"] = printCrs;
+                    params[identifier + ":styles"] = "";
+                    params[identifier + ":dpiMode"] = "7";
+                    params[identifier + ":contextualWMSLegend"] = "0";
+                }
+            }
+        }
+
+        const backgroundLayer = layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
+        if (backgroundLayer) {
+            const backgroundLayerName = backgroundLayer.name;
+            const themeBackgroundLayer = theme.backgroundLayers.find(entry => entry.name === backgroundLayerName);
+            const printBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
+            if (printBackgroundLayer) {
+                let printBgLayerName = printBackgroundLayer;
+                if (Array.isArray(printBackgroundLayer)) {
+                    printBgLayerName = null;
+                    for (let i = 0; i < printBackgroundLayer.length; ++i) {
+                        printBgLayerName = printBackgroundLayer[i].name;
+                        if (this.state.scale <= printBackgroundLayer[i].maxScale) {
+                            break;
+                        }
+                    }
+                }
+                if (printBgLayerName) {
+                    params.LAYERS.push(printBgLayerName);
+                    params.OPACITIES.push("255");
+                    params.COLORS.push("");
+                }
+            } else if (printExternalLayers) {
+                const items = backgroundLayer.type === "group" ? backgroundLayer.items : [backgroundLayer];
+                items.forEach(layer => {
+                    if (layer.type === "wms" && LayerUtils.layerScaleInRange(layer, printScale)) {
+                        const names = layer.params.LAYERS.split(",");
+                        const opacities = layer.params.OPACITIES.split(",");
+                        for (let idx = 0; idx < names.length; ++idx) {
+                            const identifier = String.fromCharCode(65 + (counter++));
+                            params.LAYERS.push("EXTERNAL_WMS:" + identifier);
+                            params.OPACITIES.push(opacities[idx]);
+                            params.COLORS.push("");
+                            params[identifier + ":url"] = layer.url;
+                            params[identifier + ":layers"] = names[idx];
+                            params[identifier + ":format"] = "image/png";
+                            params[identifier + ":crs"] = printCrs;
+                            params[identifier + ":styles"] = "";
+                            params[identifier + ":dpiMode"] = "7";
+                            params[identifier + ":contextualWMSLegend"] = "0";
+                        }
+                    }
+                });
+            }
+        }
+        params.LAYERS = params.LAYERS.reverse().join(",");
+        params.OPACITIES = params.OPACITIES.reverse().join(",");
+        params.COLORS = params.COLORS.reverse().join(",");
+        return params;
     }
 };
 
