@@ -693,7 +693,7 @@ const LayerUtils = {
                     printBgLayerName = null;
                     for (let i = 0; i < printBackgroundLayer.length; ++i) {
                         printBgLayerName = printBackgroundLayer[i].name;
-                        if (this.state.scale <= printBackgroundLayer[i].maxScale) {
+                        if (printScale <= printBackgroundLayer[i].maxScale) {
                             break;
                         }
                     }
