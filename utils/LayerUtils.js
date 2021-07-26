@@ -714,7 +714,7 @@ const LayerUtils = {
                             params.LAYERS.push("EXTERNAL_WMS:" + identifier);
                             params.OPACITIES.push(opacities[idx]);
                             params.COLORS.push("");
-                            params[identifier + ":url"] = layer.url;
+                            params[identifier + ":url"] = layer.url + (layer.params.MAP ? '?MAP=' + layer.params.MAP : '');
                             params[identifier + ":layers"] = names[idx];
                             params[identifier + ":format"] = "image/png";
                             params[identifier + ":crs"] = printCrs;
