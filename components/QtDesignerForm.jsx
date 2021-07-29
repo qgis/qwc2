@@ -191,10 +191,11 @@ export default class QtDesignerForm extends React.Component {
             return (<textarea name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} readOnly={readOnly} required={required} value={value} />);
         } else if (widget.class === "QLineEdit") {
             if (widget.name.endsWith("__upload")) {
-                const uploadValue = ((values || {})[widget.name.replace(/__upload/, '')] || "");
-                const fieldId = elname.replace(/__upload/, '');
+                const fieldId = widget.name.replace(/__upload/, '');
+                const uploadValue = ((values || {})[fieldId] || "");
+                const uploadElName = elname.replace(/__upload/, '');
                 const constraints = {accept: prop.text || ""};
-                return (<EditUploadField constraints={constraints} editLayerId={this.props.editLayerId} fieldId={fieldId} updateField={this.props.updateField} value={uploadValue} />);
+                return (<EditUploadField constraints={constraints} editLayerId={this.props.editLayerId} fieldId={fieldId} name={uploadElName} updateField={updateField} value={uploadValue} />);
             } else {
                 const placeholder = prop.placeholderText || "";
                 return (<input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} placeholder={placeholder} readOnly={readOnly} required={required} type="text" value={value} />);

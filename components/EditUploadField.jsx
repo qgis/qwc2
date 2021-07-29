@@ -21,6 +21,7 @@ export default class EditUploadField extends React.Component {
         constraints: PropTypes.object,
         editLayerId: PropTypes.string,
         fieldId: PropTypes.string,
+        name: PropTypes.string,
         updateField: PropTypes.func,
         value: PropTypes.string
     }
@@ -55,7 +56,7 @@ export default class EditUploadField extends React.Component {
             return (
                 <span className="edit-upload-field-image">
                     <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
-                    {this.state.imageData ? (<input name={this.props.fieldId} type="hidden" value={this.state.imageData} />) : null}
+                    {this.state.imageData ? (<input name={this.props.name} type="hidden" value={this.state.imageData} />) : null}
                     <button className="button" onClick={this.clearPicture} type="button">
                         <Icon icon="clear" />
                         {LocaleUtils.tr("editing.clearpicture")}
@@ -74,7 +75,7 @@ export default class EditUploadField extends React.Component {
         } else {
             return (
                 <span className="edit-upload-field-input">
-                    <input name={this.props.fieldId} type="file" {...constraints} onChange={() => this.props.updateField(this.props.fieldId, '')} />
+                    <input name={this.props.name} type="file" {...constraints} onChange={() => this.props.updateField(this.props.fieldId, '')} />
                     {mediaSupport ? (<Icon icon="camera" onClick={this.enableCamera} />) : null}
                     {this.state.camera ? this.renderCaptureFrame() : null}
                 </span>

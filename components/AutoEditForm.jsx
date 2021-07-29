@@ -106,7 +106,7 @@ export default class AutoEditForm extends React.Component {
                 <textarea name={field.id} value={value} {...constraints} onChange={(ev) => this.props.updateField(field.id, ev.target.value)} />
             );
         } else if (field.type === "file") {
-            return (<EditUploadField constraints={constraints} editLayerId={this.props.editLayerId} fieldId={field.id} updateField={this.props.updateField} value={value} />);
+            return (<EditUploadField constraints={constraints} editLayerId={this.props.editLayerId} fieldId={field.id} name={field.id} updateField={this.props.updateField} value={value} />);
         } else {
             input = (
                 <span className="input-frame">
