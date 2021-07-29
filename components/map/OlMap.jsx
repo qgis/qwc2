@@ -46,6 +46,7 @@ class OlMap extends React.Component {
     }
     constructor(props) {
         super(props);
+        this.ignoreNextClick = false;
 
         const interactions = ol.interaction.defaults({
             dragPan: false, // don't create default interaction, but create it below with custom params
@@ -82,6 +83,9 @@ class OlMap extends React.Component {
             }
         });
         map.set('id', props.id);
+        map.setIgnoreNextClick = (ignore) => {
+            this.ignoreNextClick = ignore;
+        };
 
         this.map = map;
         this.registerHooks();
@@ -158,6 +162,10 @@ class OlMap extends React.Component {
         );
     }
     onClick = (button, event, pixel) => {
+        if (this.ignoreNextClick) {
+            this.ignoreNextClick = false;
+            return;
+        }
         if (button === 2) {
             event.preventDefault();
         }

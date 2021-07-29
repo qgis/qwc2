@@ -102,6 +102,9 @@ class EditingSupport extends React.Component {
                     condition: (event) => { return event.originalEvent.buttons === 1; },
                     deleteCondition: (event) => {
                         // delete vertices on SHIFT + click
+                        if (event.type === "pointerdown" && ol.events.condition.shiftKeyOnly(event)) {
+                            this.props.map.setIgnoreNextClick(true);
+                        }
                         return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
                     }
                 });
@@ -129,6 +132,9 @@ class EditingSupport extends React.Component {
             condition: (event) => { return event.originalEvent.buttons === 1; },
             deleteCondition: (event) => {
                 // delete vertices on SHIFT + click
+                if (event.type === "pointerdown" && ol.events.condition.shiftKeyOnly(event)) {
+                    this.props.map.setIgnoreNextClick(true);
+                }
                 return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
             }
         });
