@@ -34,7 +34,7 @@
     },
     "bottombar": {
       "mousepos_label": "Koordinaten",
-      "scale_label": "Massstab",
+      "scale_label": "Maßstab",
       "terms_label": "Nutzungsbedingungen",
       "viewertitle_label": ""
     },
@@ -45,7 +45,7 @@
     "dxfexport": {
       "layers": "Ebenen",
       "selectinfo": "Rechteck aufziehen um die zu exportierende Region",
-      "symbologyscale": "Darstellungsmassstab"
+      "symbologyscale": "Darstellungsmaßstab"
     },
     "editing": {
       "canceldelete": "Abbrechen",
@@ -68,7 +68,7 @@
       "placeholder": "Datei auswählen"
     },
     "heightprofile": {
-      "asl": "ü.M.",
+      "asl": "ü. NHN",
       "distance": "Distanz",
       "export": "",
       "height": "Höhe",
@@ -158,7 +158,7 @@
       "output": "Druckausgabe",
       "resolution": "Auflösung",
       "rotation": "Rotation",
-      "scale": "Massstab",
+      "scale": "Maßstab",
       "submit": "PDF erzeugen",
       "wait": "Bitte warten..."
     },
