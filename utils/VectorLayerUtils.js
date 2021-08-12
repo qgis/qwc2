@@ -105,7 +105,7 @@ const VectorLayerUtils = {
 
         const ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
         const opacity =  (rgb) => {
-            if (Array.isArray(rgb) && rgb[3]) {
+            if (Array.isArray(rgb) && rgb.length > 3) {
                 return rgb[3] * layerOpacity / 255;
             }
             return 1 * layerOpacity / 255;
