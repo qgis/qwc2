@@ -218,6 +218,7 @@ class OlMap extends React.Component {
             projection: projection,
             center: center,
             zoom: zoom,
+            constrainResolution: ConfigUtils.getConfigProp('allowFractionalZoom') === true ? false : true,
             resolutions: resolutions,
             constrainRotation: false,
             enableRotation: enableRotation !== false
