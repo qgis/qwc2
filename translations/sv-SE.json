@@ -135,7 +135,8 @@
       }
     },
     "map": {
-      "loading": "Laddar..."
+      "loading": "Laddar...",
+      "resetRotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Höjd",

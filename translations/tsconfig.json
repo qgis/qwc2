@@ -121,6 +121,7 @@
     "locate.statustooltip.LOCATING",
     "locate.statustooltip.PERMISSION_DENIED",
     "map.loading",
+    "map.resetRotation",
     "mapinfotooltip.elevation",
     "mapinfotooltip.title",
     "measureComponent.areaLabel",

@@ -135,7 +135,8 @@
       }
     },
     "map": {
-      "loading": "Загрузка..."
+      "loading": "Загрузка...",
+      "resetRotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Высота над уровнем моря",

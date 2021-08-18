@@ -135,7 +135,8 @@
       }
     },
     "map": {
-      "loading": "Yükleniyor..."
+      "loading": "Yükleniyor...",
+      "resetRotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Yükseklik",

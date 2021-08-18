@@ -135,7 +135,8 @@
       }
     },
     "map": {
-      "loading": "Načítání..."
+      "loading": "Načítání...",
+      "resetRotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Nadmořská výška",

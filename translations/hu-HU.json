@@ -135,7 +135,8 @@
       }
     },
     "map": {
-      "loading": "Betöltés..."
+      "loading": "Betöltés...",
+      "resetRotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Magasság",

@@ -135,7 +135,8 @@
       }
     },
     "map": {
-      "loading": "Lataa..."
+      "loading": "Lataa...",
+      "resetRotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Korkeus",

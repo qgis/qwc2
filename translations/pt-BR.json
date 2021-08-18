@@ -135,7 +135,8 @@
       }
     },
     "map": {
-      "loading": "Carregar..."
+      "loading": "Carregar...",
+      "resetRotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Elevação",

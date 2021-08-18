@@ -135,7 +135,8 @@
       }
     },
     "map": {
-      "loading": "Karte wird geladen..."
+      "loading": "Karte wird geladen...",
+      "resetRotation": "Drehung zurücksetzen"
     },
     "mapinfotooltip": {
       "elevation": "Höhe",
