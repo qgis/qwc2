@@ -202,7 +202,10 @@
       "existinglayer": "Katman zaten haritada mevcut",
       "invisiblelayer": "Sonuç, görünmeyen bir katmanda bulunuyor.",
       "more": "Daha fazla...",
+      "providerSelection": "",
       "search": "Ara",
+      "searchInProgress": "",
+      "searchReset": "",
       "searchall": "Bir yer ara ya da harita ekle...",
       "themes": "Temalar"
     },

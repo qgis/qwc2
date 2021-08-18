@@ -202,7 +202,10 @@
       "existinglayer": "",
       "invisiblelayer": "",
       "more": "Více...",
+      "providerSelection": "",
       "search": "Hledat",
+      "searchInProgress": "",
+      "searchReset": "",
       "searchall": "Najít místo nebo přidat mapu...",
       "themes": "Témata"
     },

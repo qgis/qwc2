@@ -202,7 +202,10 @@
       "existinglayer": "A camada já existe no mapa",
       "invisiblelayer": "O resultado reside numa camada que não é visível.",
       "more": "Mais...",
+      "providerSelection": "",
       "search": "Pesquisa",
+      "searchInProgress": "",
+      "searchReset": "",
       "searchall": "Procurar lugares ou adicionar mapas...",
       "themes": "Temas"
     },

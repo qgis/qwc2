@@ -202,7 +202,10 @@
       "existinglayer": "Taso on jo lisätty karttaan",
       "invisiblelayer": "The result lies on a layer which is not visible.",
       "more": "Lisää...",
+      "providerSelection": "",
       "search": "Etsi",
+      "searchInProgress": "",
+      "searchReset": "",
       "searchall": "Etsi kohteita tai lisää kartta...",
       "themes": "Teemat"
     },

@@ -202,7 +202,10 @@
       "existinglayer": "The layer already exists in the map",
       "invisiblelayer": "The result lies on a layer which is not visible.",
       "more": "More...",
+      "providerSelection": "Search providers",
       "search": "Search",
+      "searchInProgress": "Search in progress",
+      "searchReset": "Reset search",
       "searchall": "Search places or add maps...",
       "themes": "Themes"
     },

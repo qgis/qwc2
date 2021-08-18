@@ -202,7 +202,10 @@
       "existinglayer": "Strat existent",
       "invisiblelayer": "Rezultatul este într-un strat invizibil",
       "more": "Mai multe...",
+      "providerSelection": "",
       "search": "Caută",
+      "searchInProgress": "",
+      "searchReset": "",
       "searchall": "Caută în toate",
       "themes": "Hărți tematice"
     },

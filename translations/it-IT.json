@@ -202,7 +202,10 @@
       "existinglayer": "Il livello esiste già nella mappa",
       "invisiblelayer": "Il risultato si trova su un livello che non è visibile.",
       "more": "Altri risultati",
+      "providerSelection": "",
       "search": "Cerca",
+      "searchInProgress": "",
+      "searchReset": "",
       "searchall": "Cerca località o aggiungi cartine...",
       "themes": "Temi"
     },

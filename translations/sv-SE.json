@@ -202,7 +202,10 @@
       "existinglayer": "",
       "invisiblelayer": "",
       "more": "Mer",
+      "providerSelection": "",
       "search": "",
+      "searchInProgress": "",
+      "searchReset": "",
       "searchall": "",
       "themes": ""
     },

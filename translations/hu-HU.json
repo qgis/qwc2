@@ -202,7 +202,10 @@
       "existinglayer": "",
       "invisiblelayer": "",
       "more": "Több...",
+      "providerSelection": "",
       "search": "Keresés",
+      "searchInProgress": "",
+      "searchReset": "",
       "searchall": "",
       "themes": ""
     },

@@ -202,7 +202,10 @@
       "existinglayer": "La capa ya existe en el mapa",
       "invisiblelayer": "El resultado se encuentra en una capa no visible",
       "more": "Más...",
+      "providerSelection": "",
       "search": "Buscar",
+      "searchInProgress": "",
+      "searchReset": "",
       "searchall": "Buscar lugares o agregar mapas...",
       "themes": "Temas"
     },

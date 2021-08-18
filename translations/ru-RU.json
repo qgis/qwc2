@@ -202,7 +202,10 @@
       "existinglayer": "",
       "invisiblelayer": "",
       "more": "Больше...",
+      "providerSelection": "",
       "search": "Поиск",
+      "searchInProgress": "",
+      "searchReset": "",
       "searchall": "",
       "themes": ""
     },

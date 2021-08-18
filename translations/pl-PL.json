@@ -202,7 +202,10 @@
       "existinglayer": "",
       "invisiblelayer": "Wynik znajduje się na warstwie, która nie jest widoczna.",
       "more": "Więcej...",
+      "providerSelection": "",
       "search": "Szukaj",
+      "searchInProgress": "",
+      "searchReset": "",
       "searchall": "Szukaj miejsc lub dodaj mapy...",
       "themes": "Motywy"
     },
