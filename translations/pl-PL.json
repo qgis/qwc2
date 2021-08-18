@@ -252,6 +252,8 @@
     },
     "tooltip": {
       "background": "Zmień podkład map",
+      "fullscreenDisable": "",
+      "fullscreenEnable": "",
       "home": "Pokaż całą mapę",
       "zoomin": "Przybliż",
       "zoomout": "Oddal"

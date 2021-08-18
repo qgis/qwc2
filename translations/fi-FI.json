@@ -252,6 +252,8 @@
     },
     "tooltip": {
       "background": "Vaihda tausta",
+      "fullscreenDisable": "",
+      "fullscreenEnable": "",
       "home": "Näytä koko kartta",
       "zoomin": "Zoomaa sisään",
       "zoomout": "Zoomaa ulos"

@@ -252,6 +252,8 @@
     },
     "tooltip": {
       "background": "Straturi suport",
+      "fullscreenDisable": "",
+      "fullscreenEnable": "",
       "home": "Arată toată harta",
       "zoomin": "Mărire",
       "zoomout": "Micșorare"

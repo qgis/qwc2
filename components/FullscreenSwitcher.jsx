@@ -10,6 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {toggleFullscreen} from '../actions/display';
+import LocaleUtils from '../utils/LocaleUtils';
 import './style/FullscreenSwitcher.css';
 
 class FullscreenSwitcher extends React.Component {
@@ -57,8 +58,9 @@ class FullscreenSwitcher extends React.Component {
         if (this.props.mobile) {
             return null;
         }
+        const tooltip = this.props.fullscreen ? LocaleUtils.tr("tooltip.fullscreenDisable") : LocaleUtils.tr("tooltip.fullscreenEnable");
         return (
-            <span id="FullScreenSwitcher" onClick={this.toggleFullscreen}>
+            <span id="FullScreenSwitcher" onClick={this.toggleFullscreen} title={tooltip}>
                 <span className={this.props.fullscreen ? "minimize" : "maximize"} />
             </span>
         );

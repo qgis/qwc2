@@ -252,6 +252,8 @@
     },
     "tooltip": {
       "background": "Switch background",
+      "fullscreenDisable": "Disable full screen mode",
+      "fullscreenEnable": "Enable full screen mode",
       "home": "Show entire map",
       "zoomin": "Zoom in",
       "zoomout": "Zoom out"

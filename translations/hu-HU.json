@@ -252,6 +252,8 @@
     },
     "tooltip": {
       "background": "",
+      "fullscreenDisable": "",
+      "fullscreenEnable": "",
       "home": "",
       "zoomin": "",
       "zoomout": ""

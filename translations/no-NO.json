@@ -252,6 +252,8 @@
     },
     "tooltip": {
       "background": "Bytt bakgrunn",
+      "fullscreenDisable": "",
+      "fullscreenEnable": "",
       "home": "Vis hele kartet",
       "zoomin": "Zoom inn",
       "zoomout": "Zoom ut"

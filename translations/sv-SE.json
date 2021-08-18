@@ -252,6 +252,8 @@
     },
     "tooltip": {
       "background": "Byt bakgrund",
+      "fullscreenDisable": "",
+      "fullscreenEnable": "",
       "home": "Visa hela kartan",
       "zoomin": "Zooma in",
       "zoomout": "Zooma ut"

@@ -252,6 +252,8 @@
     },
     "tooltip": {
       "background": "Přepnout podkladovou mapu",
+      "fullscreenDisable": "",
+      "fullscreenEnable": "",
       "home": "Zobrazit celou mapu",
       "zoomin": "Přiblížit",
       "zoomout": "Oddálit"

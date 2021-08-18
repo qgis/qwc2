@@ -252,6 +252,8 @@
     },
     "tooltip": {
       "background": "Cambia sfondo",
+      "fullscreenDisable": "",
+      "fullscreenEnable": "",
       "home": "Mostra tutta la mappa intera",
       "zoomin": "Ingrandisci",
       "zoomout": "Rimpicciolisci"

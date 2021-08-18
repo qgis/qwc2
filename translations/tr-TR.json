@@ -252,6 +252,8 @@
     },
     "tooltip": {
       "background": "Arkaplanı değiştir",
+      "fullscreenDisable": "",
+      "fullscreenEnable": "",
       "home": "Haritanın tamamını göster",
       "zoomin": "Yaklaş",
       "zoomout": "Uzaklaş"
