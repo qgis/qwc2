@@ -27,7 +27,7 @@ class HomeButton extends React.Component {
         const tooltip = LocaleUtils.tr("tooltip.home");
         return (
             <button className="map-button" onClick={this.resetExtent} style={{bottom: (5 + 4 * this.props.position) + 'em'}} title={tooltip}>
-                <Icon icon="home"/>
+                <Icon icon="home" title={tooltip}/>
             </button>
         );
     }
