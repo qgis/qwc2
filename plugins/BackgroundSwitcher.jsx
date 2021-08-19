@@ -66,7 +66,7 @@ class BackgroundSwitcher extends React.Component {
                 <div>
                     <button className={classes} onClick={this.buttonClicked}
                         style={{bottom: (5 + 4 * this.props.position) + 'em'}} title={tooltip}>
-                        <Icon icon="bglayer" />
+                        <Icon icon="bglayer" title={tooltip} />
                     </button>
                     <div className={this.state.visible ? 'bgswitcher-active' : ''} id="BackgroundSwitcher">
                         {this.renderLayerItem(null, backgroundLayers.filter(layer => layer.visibility === true).length === 0)}
