@@ -63,7 +63,7 @@ class LocateButton extends React.Component {
         if (this.props.locateState === "LOCATING") {
             contents = (<Spinner />);
         } else {
-            contents = (<Icon icon="screenshot"/>);
+            contents = (<Icon icon="screenshot" title={tooltipMsg[this.props.locateState]}/>);
         }
         const classes = classnames({
             "map-button": true,
