@@ -195,14 +195,13 @@ const ServiceLayerUtils = {
     },
     getWFSLayers(capabilitiesXml) {
         const options = {
-            attrPrefix: "",
-            ignoreNonTextNodeAttr: false,
-            ignoreTextNodeAttr: false,
-            textNodeConversion: true,
-            textAttrConversion: true,
+            attributeNamePrefix : "",
+            ignoreAttributes: false,
+            parseNodeValue: true,
+            parseAttributeValue: true,
             ignoreNameSpace: true
         };
-        const capabilities = fastXmlParser.convertToJson(fastXmlParser.getTraversalObj(capabilitiesXml, options));
+        const capabilities = fastXmlParser.convertToJson(fastXmlParser.getTraversalObj(capabilitiesXml, options), options);
         if (!capabilities || !capabilities.WFS_Capabilities || !capabilities.WFS_Capabilities.version) {
             return [];
         } else if (capabilities.WFS_Capabilities.version < "1.1.0") {
@@ -218,6 +217,10 @@ const ServiceLayerUtils = {
         try {
             serviceUrl = ServiceLayerUtils.getDCPTypes(array(capabilities.Capability.Request.GetFeature.DCPType)).HTTP.Get.onlineResource;
             formats = Object.keys(capabilities.Capability.Request.GetFeature.ResultFormat);
+            if (typeof(formats) === 'string') {
+                // convert to list if single entry
+                formats = [formats];
+            }
         } catch (e) {
             return [];
         }
@@ -263,6 +266,10 @@ const ServiceLayerUtils = {
             serviceUrl = ServiceLayerUtils.getDCPTypes(array(getFeatureOp.DCP)).HTTP.Get.href;
             const outputFormat = array(getFeatureOp.Parameter).find(el => el.name === "outputFormat");
             formats = outputFormat.AllowedValues ? outputFormat.AllowedValues.Value : outputFormat.Value;
+            if (typeof(formats) === 'string') {
+                // convert to list if single entry
+                formats = [formats];
+            }
         } catch (e) {
             return [];
         }
