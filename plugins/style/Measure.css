@@ -18,3 +18,19 @@ div.resultbody > span {
 div.resultbody > select {
     flex: 0 0 auto;
 }
+
+div.resultbody span.copy-measure-button {
+    flex: 0 0 auto;
+    width: 2.5em;
+    text-align: center;
+    background-color: @button_bg@;
+    border: 1px solid @item_border@;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.resultbody span.copy-measure-button:hover {
+    background-color: @button_hover_bg@;
+}
