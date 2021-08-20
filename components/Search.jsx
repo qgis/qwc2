@@ -312,7 +312,7 @@ class Search extends React.Component {
     }
     enableLayer = () => {
         if (this.state.invisibleLayerQuery) {
-            this.props.changeLayerProperty(this.state.invisibleLayerQuery.layer.uuid, "visibility", true, this.state.invisibleLayerQuery.sublayerpath);
+            this.props.changeLayerProperty(this.state.invisibleLayerQuery.layer.uuid, "visibility", true, this.state.invisibleLayerQuery.sublayerpath, "both");
             this.setState({invisibleLayerQuery: null});
         }
     }
