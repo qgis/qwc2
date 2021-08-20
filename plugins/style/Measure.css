@@ -2,11 +2,10 @@ div.resultbody {
     margin-top: 0.25em;
     border: 1px solid @item_border@;
     white-space: nowrap;
-    overflow: hidden;
+    overflow: visible;
     background-color: white;
-    min-width: 15em;
+    min-width: 17.5em;
     display: flex;
-    align-items: center;
 }
 
 div.resultbody > span {
@@ -17,6 +16,9 @@ div.resultbody > span {
 
 div.resultbody > select {
     flex: 0 0 auto;
+    padding: 0.25em;
+    border: none;
+    border-left: 1px solid @item_border@;
 }
 
 div.resultbody span.copy-measure-button {
@@ -24,11 +26,12 @@ div.resultbody span.copy-measure-button {
     width: 2.5em;
     text-align: center;
     background-color: @button_bg@;
-    border: 1px solid @item_border@;
+    border-left: 1px solid @item_border@;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0.25em;
 }
 
 div.resultbody span.copy-measure-button:hover {
