@@ -1,9 +1,29 @@
-input.theme-switcher-filter {
+div.theme-switcher-filter {
     flex: 100;
     max-width: 15em;
     min-width: 0;
     font-weight: normal;
-    padding: 0.25em;
     margin: 0 0.5em;
     color: @base_fg@;
+    background-color: white;
+}
+
+div.theme-switcher-filter-field {
+    width: 100%;
+    border: 1px solid @item_border@;
+    height: 2em;
+    display: flex;
+    align-items: center;
+}
+
+div.theme-switcher-filter-field > span.icon {
+    flex: 0 0 2em;
+    text-align: center;
+}
+
+div.theme-switcher-filter-field > input {
+    border: 0;
+    outline: 0;
+    min-width: 0;
+    flex: 1 1 auto;
 }
