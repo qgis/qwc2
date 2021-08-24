@@ -136,7 +136,7 @@
     },
     "map": {
       "loading": "Yükleniyor...",
-      "resetRotation": ""
+      "resetrotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Yükseklik",
@@ -202,10 +202,10 @@
       "existinglayer": "Katman zaten haritada mevcut",
       "invisiblelayer": "Sonuç, görünmeyen bir katmanda bulunuyor.",
       "more": "Daha fazla...",
-      "providerSelection": "",
+      "providerselection": "",
       "search": "Ara",
-      "searchInProgress": "",
-      "searchReset": "",
+      "searchinprogress": "",
+      "searchreset": "",
       "searchall": "Bir yer ara ya da harita ekle...",
       "themes": "Temalar"
     },
@@ -255,8 +255,8 @@
     },
     "tooltip": {
       "background": "Arkaplanı değiştir",
-      "fullscreenDisable": "",
-      "fullscreenEnable": "",
+      "fullscreendisable": "",
+      "fullscreenenable": "",
       "home": "Haritanın tamamını göster",
       "zoomin": "Yaklaş",
       "zoomout": "Uzaklaş"

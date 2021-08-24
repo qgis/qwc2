@@ -194,14 +194,14 @@ class Search extends React.Component {
             addonAfterTooltip = LocaleUtils.tr("search.search");
             addonAfter = (<Icon icon="search" title={addonAfterTooltip}/>);
         } else if(this.props.searchText && this.state.focused && this.props.pendingProviders && this.props.pendingProviders.length > 0) {
-            addonAfterTooltip = LocaleUtils.tr("search.searchInProgress");
+            addonAfterTooltip = LocaleUtils.tr("search.searchinprogress");
             addonAfter = (<Spinner/>);
         } else {
-            addonAfterTooltip = LocaleUtils.tr("search.searchReset");
+            addonAfterTooltip = LocaleUtils.tr("search.searchreset");
             addonAfter = (<Icon icon="remove" onClick={this.resetSearch} title={addonAfterTooltip}/>);
         }
         let providerSelection = null;
-        let providerSelectionTooltip = LocaleUtils.tr("search.providerSelection");
+        let providerSelectionTooltip = LocaleUtils.tr("search.providerselection");
         if (this.props.searchOptions.showProviderSelection) {
             let providerSelectionMenu = null;
             if (this.state.providerSelectionVisible) {

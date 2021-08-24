@@ -63,7 +63,7 @@ class OlMap extends React.Component {
         const controls = ol.control.defaults({
             zoom: false,
             attributionOptions: ({collapsible: false}),
-            rotateOptions: ({tipLabel: LocaleUtils.tr("map.resetRotation")})
+            rotateOptions: ({tipLabel: LocaleUtils.tr("map.resetrotation")})
         });
         const map = new ol.Map({
             layers: [],

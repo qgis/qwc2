@@ -58,7 +58,7 @@ class FullscreenSwitcher extends React.Component {
         if (this.props.mobile) {
             return null;
         }
-        const tooltip = this.props.fullscreen ? LocaleUtils.tr("tooltip.fullscreenDisable") : LocaleUtils.tr("tooltip.fullscreenEnable");
+        const tooltip = this.props.fullscreen ? LocaleUtils.tr("tooltip.fullscreendisable") : LocaleUtils.tr("tooltip.fullscreenenable");
         return (
             <span id="FullScreenSwitcher" onClick={this.toggleFullscreen} title={tooltip}>
                 <span className={this.props.fullscreen ? "minimize" : "maximize"} />

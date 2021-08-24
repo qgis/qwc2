@@ -136,7 +136,7 @@
     },
     "map": {
       "loading": "Lataa...",
-      "resetRotation": ""
+      "resetrotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Korkeus",
@@ -202,10 +202,10 @@
       "existinglayer": "Taso on jo lisätty karttaan",
       "invisiblelayer": "The result lies on a layer which is not visible.",
       "more": "Lisää...",
-      "providerSelection": "",
+      "providerselection": "",
       "search": "Etsi",
-      "searchInProgress": "",
-      "searchReset": "",
+      "searchinprogress": "",
+      "searchreset": "",
       "searchall": "Etsi kohteita tai lisää kartta...",
       "themes": "Teemat"
     },
@@ -255,8 +255,8 @@
     },
     "tooltip": {
       "background": "Vaihda tausta",
-      "fullscreenDisable": "",
-      "fullscreenEnable": "",
+      "fullscreendisable": "",
+      "fullscreenenable": "",
       "home": "Näytä koko kartta",
       "zoomin": "Zoomaa sisään",
       "zoomout": "Zoomaa ulos"

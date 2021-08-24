@@ -136,7 +136,7 @@
     },
     "map": {
       "loading": "Se încarcă...",
-      "resetRotation": ""
+      "resetrotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Altitudine",
@@ -202,10 +202,10 @@
       "existinglayer": "Strat existent",
       "invisiblelayer": "Rezultatul este într-un strat invizibil",
       "more": "Mai multe...",
-      "providerSelection": "",
+      "providerselection": "",
       "search": "Caută",
-      "searchInProgress": "",
-      "searchReset": "",
+      "searchinprogress": "",
+      "searchreset": "",
       "searchall": "Caută în toate",
       "themes": "Hărți tematice"
     },
@@ -255,8 +255,8 @@
     },
     "tooltip": {
       "background": "Straturi suport",
-      "fullscreenDisable": "",
-      "fullscreenEnable": "",
+      "fullscreendisable": "",
+      "fullscreenenable": "",
       "home": "Arată toată harta",
       "zoomin": "Mărire",
       "zoomout": "Micșorare"

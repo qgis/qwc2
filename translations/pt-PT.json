@@ -136,7 +136,7 @@
     },
     "map": {
       "loading": "Carregar...",
-      "resetRotation": ""
+      "resetrotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Elevação",
@@ -202,10 +202,10 @@
       "existinglayer": "A camada já existe no mapa",
       "invisiblelayer": "O resultado reside numa camada que não é visível.",
       "more": "Mais...",
-      "providerSelection": "",
+      "providerselection": "",
       "search": "Pesquisa",
-      "searchInProgress": "",
-      "searchReset": "",
+      "searchinprogress": "",
+      "searchreset": "",
       "searchall": "Procurar lugares ou adicionar mapas...",
       "themes": "Temas"
     },
@@ -255,8 +255,8 @@
     },
     "tooltip": {
       "background": "Mudar de fundo",
-      "fullscreenDisable": "",
-      "fullscreenEnable": "",
+      "fullscreendisable": "",
+      "fullscreenenable": "",
       "home": "Mostrar mapa inteiro",
       "zoomin": "Mais zoom",
       "zoomout": "Reduzir o zoom"

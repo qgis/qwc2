@@ -136,7 +136,7 @@
     },
     "map": {
       "loading": "Chargement de la carte...",
-      "resetRotation": ""
+      "resetrotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Altitude",
@@ -202,10 +202,10 @@
       "existinglayer": "La couche existe déjà dans la carte",
       "invisiblelayer": "Le résultat est sur une couche désactivé",
       "more": "Plus...",
-      "providerSelection": "",
+      "providerselection": "",
       "search": "Chercher",
-      "searchInProgress": "",
-      "searchReset": "",
+      "searchinprogress": "",
+      "searchreset": "",
       "searchall": "Rechercher un lieu ou ajouter une carte...",
       "themes": "Cartes"
     },
@@ -255,8 +255,8 @@
     },
     "tooltip": {
       "background": "Changer de fond",
-      "fullscreenDisable": "",
-      "fullscreenEnable": "",
+      "fullscreendisable": "",
+      "fullscreenenable": "",
       "home": "Afficher toute la carte",
       "zoomin": "Zoomer",
       "zoomout": "Dézoomer"

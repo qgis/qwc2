@@ -136,7 +136,7 @@
     },
     "map": {
       "loading": "Loading...",
-      "resetRotation": "Reset rotation"
+      "resetrotation": "Reset rotation"
     },
     "mapinfotooltip": {
       "elevation": "Elevation",
@@ -202,10 +202,10 @@
       "existinglayer": "The layer already exists in the map",
       "invisiblelayer": "The result lies on a layer which is not visible.",
       "more": "More...",
-      "providerSelection": "Search providers",
+      "providerselection": "Search providers",
       "search": "Search",
-      "searchInProgress": "Search in progress",
-      "searchReset": "Reset search",
+      "searchinprogress": "Search in progress",
+      "searchreset": "Reset search",
       "searchall": "Search places or add maps...",
       "themes": "Themes"
     },
@@ -255,8 +255,8 @@
     },
     "tooltip": {
       "background": "Switch background",
-      "fullscreenDisable": "Disable full screen mode",
-      "fullscreenEnable": "Enable full screen mode",
+      "fullscreendisable": "Disable full screen mode",
+      "fullscreenenable": "Enable full screen mode",
       "home": "Show entire map",
       "zoomin": "Zoom in",
       "zoomout": "Zoom out"

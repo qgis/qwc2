@@ -136,7 +136,7 @@
     },
     "map": {
       "loading": "Načítání...",
-      "resetRotation": ""
+      "resetrotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Nadmořská výška",
@@ -202,10 +202,10 @@
       "existinglayer": "",
       "invisiblelayer": "",
       "more": "Více...",
-      "providerSelection": "",
+      "providerselection": "",
       "search": "Hledat",
-      "searchInProgress": "",
-      "searchReset": "",
+      "searchinprogress": "",
+      "searchreset": "",
       "searchall": "Najít místo nebo přidat mapu...",
       "themes": "Témata"
     },
@@ -255,8 +255,8 @@
     },
     "tooltip": {
       "background": "Přepnout podkladovou mapu",
-      "fullscreenDisable": "",
-      "fullscreenEnable": "",
+      "fullscreendisable": "",
+      "fullscreenenable": "",
       "home": "Zobrazit celou mapu",
       "zoomin": "Přiblížit",
       "zoomout": "Oddálit"

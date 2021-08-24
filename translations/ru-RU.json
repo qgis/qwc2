@@ -136,7 +136,7 @@
     },
     "map": {
       "loading": "Загрузка...",
-      "resetRotation": ""
+      "resetrotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Высота над уровнем моря",
@@ -202,10 +202,10 @@
       "existinglayer": "",
       "invisiblelayer": "",
       "more": "Больше...",
-      "providerSelection": "",
+      "providerselection": "",
       "search": "Поиск",
-      "searchInProgress": "",
-      "searchReset": "",
+      "searchinprogress": "",
+      "searchreset": "",
       "searchall": "",
       "themes": ""
     },
@@ -255,8 +255,8 @@
     },
     "tooltip": {
       "background": "Сменить фон",
-      "fullscreenDisable": "",
-      "fullscreenEnable": "",
+      "fullscreendisable": "",
+      "fullscreenenable": "",
       "home": "Показать всю карту",
       "zoomin": "Увеличить",
       "zoomout": "Уменьшить"

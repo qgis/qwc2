@@ -136,7 +136,7 @@
     },
     "map": {
       "loading": "Betöltés...",
-      "resetRotation": ""
+      "resetrotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Magasság",
@@ -202,10 +202,10 @@
       "existinglayer": "",
       "invisiblelayer": "",
       "more": "Több...",
-      "providerSelection": "",
+      "providerselection": "",
       "search": "Keresés",
-      "searchInProgress": "",
-      "searchReset": "",
+      "searchinprogress": "",
+      "searchreset": "",
       "searchall": "",
       "themes": ""
     },
@@ -255,8 +255,8 @@
     },
     "tooltip": {
       "background": "",
-      "fullscreenDisable": "",
-      "fullscreenEnable": "",
+      "fullscreendisable": "",
+      "fullscreenenable": "",
       "home": "",
       "zoomin": "",
       "zoomout": ""
