@@ -135,7 +135,8 @@
       }
     },
     "map": {
-      "loading": "Karte wird geladen..."
+      "loading": "Karte wird geladen...",
+      "resetrotation": "Drehung zurücksetzen"
     },
     "mapinfotooltip": {
       "elevation": "Höhe",
@@ -201,7 +202,10 @@
       "existinglayer": "Die Ebene existiert bereits in der Karte",
       "invisiblelayer": "Das Resultat liegt auf einer Ebene, die ausgeschaltet ist.",
       "more": "Mehr...",
+      "providerselection": "Suchdienste",
       "search": "Suchen",
+      "searchinprogress": "Suche läuft",
+      "searchreset": "Suche zurücksetzen",
       "searchall": "Ort suchen oder Karte hinzufügen...",
       "themes": "Themen"
     },
@@ -251,6 +255,8 @@
     },
     "tooltip": {
       "background": "Hintergrundkarte wechseln",
+      "fullscreendisable": "Vollbildmodus deaktivieren",
+      "fullscreenenable": "Vollbildmodus aktivieren",
       "home": "Ganze Karte anzeigen",
       "zoomin": "Hineinzoomen",
       "zoomout": "Hinauszoomen"

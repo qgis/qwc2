@@ -189,14 +189,19 @@ class Search extends React.Component {
             placeholder = LocaleUtils.tr("search.searchall");
         }
         let addonAfter = null;
+        let addonAfterTooltip = null;
         if (!this.props.searchText) {
-            addonAfter = (<Icon icon="search"/>);
+            addonAfterTooltip = LocaleUtils.tr("search.search");
+            addonAfter = (<Icon icon="search" title={addonAfterTooltip}/>);
         } else if(this.props.searchText && this.state.focused && this.props.pendingProviders && this.props.pendingProviders.length > 0) {
+            addonAfterTooltip = LocaleUtils.tr("search.searchinprogress");
             addonAfter = (<Spinner/>);
         } else {
-            addonAfter = (<Icon icon="remove" onClick={this.resetSearch}/>);
+            addonAfterTooltip = LocaleUtils.tr("search.searchreset");
+            addonAfter = (<Icon icon="remove" onClick={this.resetSearch} title={addonAfterTooltip}/>);
         }
         let providerSelection = null;
+        let providerSelectionTooltip = LocaleUtils.tr("search.providerselection");
         if (this.props.searchOptions.showProviderSelection) {
             let providerSelectionMenu = null;
             if (this.state.providerSelectionVisible) {
@@ -207,7 +212,7 @@ class Search extends React.Component {
                         'searchbar-provider-selection-active': isEmpty(this.props.activeProviders)
                     });
                     allEntry = (
-                        <li className={itemClass} key="all" onClick={() => this.props.changeSearch("", null)}>{LocaleUtils.tr("search.all")}</li>
+                        <li className={itemClass} key="all" onClick={() => this.props.changeSearch("", null)} title="">{LocaleUtils.tr("search.all")}</li>
                     );
                 }
                 providerSelectionMenu = (
@@ -218,7 +223,7 @@ class Search extends React.Component {
                                 'searchbar-provider-selection-active': (this.props.activeProviders || []).length === 1 && this.props.activeProviders[0] === key
                             });
                             return (
-                                <li className={itemClass} key={key} onClick={() => this.props.changeSearch("", [key])}>
+                                <li className={itemClass} key={key} onClick={() => this.props.changeSearch("", [key])} title="">
                                     {
                                         prov.labelmsgid ? LocaleUtils.tr(prov.labelmsgid) : prov.label
                                     }
@@ -234,9 +239,9 @@ class Search extends React.Component {
                 'searchbar-addon-filter-active': !isEmpty(this.props.activeProviders)
             });
             providerSelection = (
-                <span className={addonClasses} onClick={() => this.setState({providerSelectionVisible: !this.state.providerSelectionVisible})}>
-                    <Icon icon="filter" />
-                    <Icon className="searchbar-addon-menu-icon" icon="chevron-down" />
+                <span className={addonClasses} onClick={() => this.setState({providerSelectionVisible: !this.state.providerSelectionVisible})} title={providerSelectionTooltip}>
+                    <Icon icon="filter" title={providerSelectionTooltip} />
+                    <Icon className="searchbar-addon-menu-icon" icon="chevron-down" title={providerSelectionTooltip} />
                     {providerSelectionMenu}
                 </span>
             );
@@ -298,7 +303,7 @@ class Search extends React.Component {
                                 ref={el => { this.input = el; }}
                                 type="text"
                                 value={this.props.searchText} />
-                            <span className="searchbar-addon">
+                            <span className="searchbar-addon" title={addonAfterTooltip}>
                                 {addonAfter}
                             </span>
                         </div>
