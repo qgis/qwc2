@@ -135,7 +135,8 @@
       }
     },
     "map": {
-      "loading": "Cargando..."
+      "loading": "Cargando...",
+      "resetrotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Elevación",
@@ -201,7 +202,10 @@
       "existinglayer": "La capa ya existe en el mapa",
       "invisiblelayer": "El resultado se encuentra en una capa no visible",
       "more": "Más...",
+      "providerselection": "",
       "search": "Buscar",
+      "searchinprogress": "",
+      "searchreset": "",
       "searchall": "Buscar lugares o agregar mapas...",
       "themes": "Temas"
     },
@@ -251,6 +255,8 @@
     },
     "tooltip": {
       "background": "Cambiar fondo",
+      "fullscreendisable": "",
+      "fullscreenenable": "",
       "home": "Mostrar todo el mapa",
       "zoomin": "Acercarse",
       "zoomout": "Alejarse"

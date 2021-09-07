@@ -18,6 +18,7 @@ import {changeMeasurementState} from '../actions/measurement.js';
 import displayCrsSelector from '../selectors/displaycrs';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
+import CopyButton from '../components/widgets/CopyButton';
 import './style/Measure.css';
 
 class Measure extends React.Component {
@@ -71,36 +72,47 @@ class Measure extends React.Component {
                 const coo = CoordinatesUtils.reproject(this.props.measureState.coordinates, this.props.mapcrs, this.props.displaycrs);
                 text = LocaleUtils.toLocaleFixed(coo[0], digits) + " " + LocaleUtils.toLocaleFixed(coo[1], digits);
             }
-            resultBody = (<div className="resultbody"><span>{text}</span></div>);
-        } else if (this.props.measureState.geomType === "LineString") {
-            const length = (this.props.measureState.length || []).reduce((tot, num) => tot + num, 0);
             resultBody = (
                 <div className="resultbody">
-                    <span>{LocaleUtils.toLocaleFixed(measureUtils.getFormattedLength(this.props.measureState.lenUnit, length), 2)}</span>
+                    <span>{text}</span>
+                    <CopyButton buttonClass="copy-measure-button" text={text} />
+                </div>
+            );
+        } else if (this.props.measureState.geomType === "LineString") {
+            const length = (this.props.measureState.length || []).reduce((tot, num) => tot + num, 0);
+            const text = LocaleUtils.toLocaleFixed(measureUtils.getFormattedLength(this.props.measureState.lenUnit, length), 2);
+            resultBody = (
+                <div className="resultbody">
+                    <span>{text}</span>
                     <select onChange={this.changeLengthUnit} value={this.props.measureState.lenUnit}>
                         <option value="m">m</option>
                         <option value="ft">ft</option>
                         <option value="km">km</option>
                         <option value="mi">mi</option>
                     </select>
+                    <CopyButton buttonClass="copy-measure-button" text={text} />
                 </div>
             );
         } else if (this.props.measureState.geomType === "Polygon") {
+            const text = LocaleUtils.toLocaleFixed(measureUtils.getFormattedArea(this.props.measureState.areaUnit, this.props.measureState.area), 2);
             resultBody = (
                 <div className="resultbody">
-                    <span>{LocaleUtils.toLocaleFixed(measureUtils.getFormattedArea(this.props.measureState.areaUnit, this.props.measureState.area), 2)}</span>
+                    <span>{text}</span>
                     <select onChange={this.changeAreaUnit} value={this.props.measureState.areaUnit}>
                         <option value="sqm">m&#178;</option>
                         <option value="sqft">ft&#178;</option>
                         <option value="sqkm">km&#178;</option>
                         <option value="sqmi">mi&#178;</option>
                     </select>
+                    <CopyButton buttonClass="copy-measure-button" text={text} />
                 </div>
             );
         } else if (this.props.measureState.geomType === "Bearing") {
+            const text = measureUtils.getFormattedBearingValue(this.props.measureState.bearing);
             resultBody = (
                 <div className="resultbody">
-                    <span>{measureUtils.getFormattedBearingValue(this.props.measureState.bearing)}</span>
+                    <span>{text}</span>
+                    <CopyButton buttonClass="copy-measure-button" text={text} />
                 </div>
             );
         }

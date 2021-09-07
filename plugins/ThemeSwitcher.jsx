@@ -9,6 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
 import ThemeList from '../components/ThemeList';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -36,10 +37,15 @@ class ThemeSwitcher extends React.Component {
     render() {
         const allowAddingOtherThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.activeTheme) ===  true;
         const extraTitlebarContent = (
-            <input className="theme-switcher-filter" onChange={ev => this.setState({filter: ev.target.value})}
-                placeholder={LocaleUtils.tr("themeswitcher.filter")} ref={this.focusFilterField}
-                type="text"
-                value={this.state.filter}/>
+            <div className="theme-switcher-filter">
+                <div className="theme-switcher-filter-field">
+                    <input onChange={ev => this.setState({filter: ev.target.value})}
+                        placeholder={LocaleUtils.tr("themeswitcher.filter")} ref={this.focusFilterField}
+                        type="text"
+                        value={this.state.filter}/>
+                    <Icon icon="remove" onClick={ev => this.setState({filter: ""})} />
+                </div>
+            </div>
         );
         return (
             <div>

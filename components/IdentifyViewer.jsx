@@ -195,7 +195,7 @@ class IdentifyViewer extends React.Component {
                 features.forEach(feature => {
                     csv += layerName + ": " + feature.displayname + "\n";
                     Object.entries(feature.properties || {}).forEach(([attrib, value]) => {
-                        if (attrib !== "htmlContent") {
+                        if (attrib !== "htmlContent" && attrib !== "htmlContentInline") {
                             csv += '\t"' + attrib + '"\t"' + String(value).replace('"', '""') + '"\n';
                         }
                     });
@@ -216,7 +216,7 @@ class IdentifyViewer extends React.Component {
                 file += 1;
                 if (first) {
                     Object.entries(features[0].properties || {}).forEach(([attrib]) => {
-                        if (attrib !== "htmlContent") {
+                        if (attrib !== "htmlContent" && attrib !== "htmlContentInline") {
                             csv += attrib  + ';';
                         }
                     });

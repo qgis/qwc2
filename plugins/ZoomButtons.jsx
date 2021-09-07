@@ -38,7 +38,7 @@ class ZoomButton extends React.Component {
                 style={{bottom: (5 + 4 * position) + 'em'}}
                 title={tooltip}
             >
-                <Icon icon={this.props.direction > 0 ? "plus" : "minus"}/>
+                <Icon icon={this.props.direction > 0 ? "plus" : "minus"} title={tooltip}/>
             </button>
         );
     }

@@ -15,6 +15,7 @@ import {changeMapView, clickOnMap} from '../../actions/map';
 import {changeMousePositionState} from '../../actions/mousePosition';
 import {setCurrentTask} from '../../actions/task';
 import ConfigUtils from '../../utils/ConfigUtils';
+import LocaleUtils from '../../utils/LocaleUtils';
 import MapUtils from '../../utils/MapUtils';
 
 class OlMap extends React.Component {
@@ -61,7 +62,8 @@ class OlMap extends React.Component {
         ]);
         const controls = ol.control.defaults({
             zoom: false,
-            attributionOptions: ({collapsible: false})
+            attributionOptions: ({collapsible: false}),
+            rotateOptions: ({tipLabel: LocaleUtils.tr("map.resetrotation")})
         });
         const map = new ol.Map({
             layers: [],
@@ -218,6 +220,7 @@ class OlMap extends React.Component {
             projection: projection,
             center: center,
             zoom: zoom,
+            constrainResolution: ConfigUtils.getConfigProp('allowFractionalZoom') === true ? false : true,
             resolutions: resolutions,
             constrainRotation: false,
             enableRotation: enableRotation !== false

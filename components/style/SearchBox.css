@@ -30,8 +30,8 @@ div.SearchBox > div.searchbox-results {
     left: 0;
     top: 100%;
     width: 100%;
-    max-height: calc(100vh - 4em);
-    max-height: calc(var(--vh, 1vh) * 100 - 4em);
+    max-height: calc(100vh - 5em);
+    max-height: calc(var(--vh, 1vh) * 100 - 5em);
     background-color: white;
     border-left: 1px solid @item_border@;
     border-right: 1px solid @item_border@;

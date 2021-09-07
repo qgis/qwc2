@@ -53,17 +53,17 @@ class LocateButton extends React.Component {
     }
     render = () => {
         const tooltipMsg = {
-            DISABLED: LocaleUtils.trmsg("locate.statustooltip.DISABLED"),
-            ENABLED: LocaleUtils.trmsg("locate.statustooltip.ENABLED"),
-            FOLLOWING: LocaleUtils.trmsg("locate.statustooltip.FOLLOWING"),
-            LOCATING: LocaleUtils.trmsg("locate.statustooltip.LOCATING"),
-            PERMISSION_DENIED: LocaleUtils.trmsg("locate.statustooltip.PERMISSION_DENIED")
+            DISABLED: LocaleUtils.tr("locate.statustooltip.DISABLED"),
+            ENABLED: LocaleUtils.tr("locate.statustooltip.ENABLED"),
+            FOLLOWING: LocaleUtils.tr("locate.statustooltip.FOLLOWING"),
+            LOCATING: LocaleUtils.tr("locate.statustooltip.LOCATING"),
+            PERMISSION_DENIED: LocaleUtils.tr("locate.statustooltip.PERMISSION_DENIED")
         };
         let contents = null;
         if (this.props.locateState === "LOCATING") {
             contents = (<Spinner />);
         } else {
-            contents = (<Icon icon="screenshot"/>);
+            contents = (<Icon icon="screenshot" title={tooltipMsg[this.props.locateState]}/>);
         }
         const classes = classnames({
             "map-button": true,

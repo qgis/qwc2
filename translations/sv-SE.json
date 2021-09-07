@@ -135,7 +135,8 @@
       }
     },
     "map": {
-      "loading": "Laddar..."
+      "loading": "Laddar...",
+      "resetrotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Höjd",
@@ -201,7 +202,10 @@
       "existinglayer": "",
       "invisiblelayer": "",
       "more": "Mer",
+      "providerselection": "",
       "search": "",
+      "searchinprogress": "",
+      "searchreset": "",
       "searchall": "",
       "themes": ""
     },
@@ -251,6 +255,8 @@
     },
     "tooltip": {
       "background": "Byt bakgrund",
+      "fullscreendisable": "",
+      "fullscreenenable": "",
       "home": "Visa hela kartan",
       "zoomin": "Zooma in",
       "zoomout": "Zooma ut"

@@ -135,7 +135,8 @@
       }
     },
     "map": {
-      "loading": "Ładowanie..."
+      "loading": "Ładowanie...",
+      "resetrotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Wysokość",
@@ -201,7 +202,10 @@
       "existinglayer": "",
       "invisiblelayer": "Wynik znajduje się na warstwie, która nie jest widoczna.",
       "more": "Więcej...",
+      "providerselection": "",
       "search": "Szukaj",
+      "searchinprogress": "",
+      "searchreset": "",
       "searchall": "Szukaj miejsc lub dodaj mapy...",
       "themes": "Motywy"
     },
@@ -251,6 +255,8 @@
     },
     "tooltip": {
       "background": "Zmień podkład map",
+      "fullscreendisable": "",
+      "fullscreenenable": "",
       "home": "Pokaż całą mapę",
       "zoomin": "Przybliż",
       "zoomout": "Oddal"
