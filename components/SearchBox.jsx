@@ -189,7 +189,7 @@ class SearchBox extends React.Component {
                                 <div className="searchbox-results-section-body">
                                     {group.items.map((entry, idx) => (
                                         <div className="searchbox-result" key={"c" + idx} onClick={() => {this.selectProviderResult(entry); this.blur(); }} onMouseDown={this.killEvent}>
-                                            <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: entry.text}} title={entry.label || entry.text} />
+                                            <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: entry.text.replace(/<br\s*\/>/ig, '')}} title={entry.label || entry.text} />
                                         </div>
                                     ))}
                                 </div>
@@ -495,7 +495,7 @@ class SearchBox extends React.Component {
             }
             const feature = {
                 geometry: {type: 'Point', coordinates: [result.x, result.y]},
-                properties: { label: result.label !== undefined ? result.label : result.text },
+                properties: { label: (result.label !== undefined ? result.label : result.text || '').replace(/<\/?\w+\s*\/?>/g, '') },
                 styleName: 'marker',
                 crs: result.crs,
                 id: 'searchmarker'
