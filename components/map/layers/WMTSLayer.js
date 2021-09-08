@@ -30,6 +30,7 @@ export default {
             source: new ol.source.WMTS({
                 urls: urls,
                 layer: options.name,
+                format: options.format,
                 projection: projection && projection.getExtent() ? projection : null,
                 matrixSet: options.tileMatrixSet,
                 tileGrid: new ol.tilegrid.WMTS({
