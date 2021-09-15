@@ -205,6 +205,7 @@
     "themelayerslist.addselectedlayers",
     "themeswitcher.addlayerstotheme",
     "themeswitcher.addtotheme",
+    "themeswitcher.confirmswitch",
     "themeswitcher.filter",
     "themeswitcher.match.abstract",
     "themeswitcher.match.keywords",

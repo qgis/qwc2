@@ -244,6 +244,7 @@
     "themeswitcher": {
       "addlayerstotheme": "",
       "addtotheme": "Adaugă la temă",
+      "confirmswitch": "",
       "filter": "Filtrare",
       "match": {
         "abstract": "Abstract",

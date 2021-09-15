@@ -244,6 +244,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Agregar capas al mapa actual",
       "addtotheme": "Agregar al actual tema",
+      "confirmswitch": "",
       "filter": "Filtrar...",
       "match": {
         "abstract": "Resumen",

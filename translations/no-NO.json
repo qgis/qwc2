@@ -244,6 +244,7 @@
     "themeswitcher": {
       "addlayerstotheme": "",
       "addtotheme": "Legg til nåværende tema",
+      "confirmswitch": "",
       "filter": "Filtrer...",
       "match": {
         "abstract": "Sammendrag",

@@ -244,6 +244,7 @@
     "themeswitcher": {
       "addlayerstotheme": "",
       "addtotheme": "Lägg till aktuellt tema",
+      "confirmswitch": "",
       "filter": "Filtrera...",
       "match": {
         "abstract": "",

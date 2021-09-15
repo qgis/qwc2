@@ -244,6 +244,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Add layers to current map",
       "addtotheme": "Add to current theme",
+      "confirmswitch": "Non-theme layers will be lost when switching theme. Proceed?",
       "filter": "Filter...",
       "match": {
         "abstract": "Abstract",

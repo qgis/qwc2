@@ -193,6 +193,11 @@ class ThemeList extends React.Component {
             alert(LocaleUtils.tr("themeswitcher.restrictedthemeinfo"));
             return;
         }
+        const hasUserLayer = this.props.layers.find(layer => layer.role === LayerRole.USERLAYER);
+        const preserveNonThemeLayers = ConfigUtils.getConfigProp("preserveNonThemeLayersOnThemeSwitch", this.props.activeTheme);
+        if (hasUserLayer && !preserveNonThemeLayers && !confirm(LocaleUtils.tr("themeswitcher.confirmswitch"))) {
+            return;
+        }
         this.props.setActiveLayerInfo(null, null);
         if (this.props.showLayerAfterChangeTheme) {
             this.props.setCurrentTask('LayerTree');

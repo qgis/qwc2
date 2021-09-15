@@ -244,6 +244,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Geçerli haritaya katmanları ekle",
       "addtotheme": "Geçerli temaya ekle",
+      "confirmswitch": "",
       "filter": "Filtre...",
       "match": {
         "abstract": "Özet",

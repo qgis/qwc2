@@ -244,6 +244,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Ajouter des couches à la carte",
       "addtotheme": "Ajouter au thème actuel",
+      "confirmswitch": "",
       "filter": "Filtre...",
       "match": {
         "abstract": "Résumé",

@@ -244,6 +244,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Lisää tasoja nykyiseen karttaan",
       "addtotheme": "Lisää nykyiseen teemaan",
+      "confirmswitch": "",
       "filter": "Suodatus...",
       "match": {
         "abstract": "Tiivistelmä",

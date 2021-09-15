@@ -244,6 +244,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Adicionar camadas ao mapa atual",
       "addtotheme": "Adicione ao tema atual",
+      "confirmswitch": "",
       "filter": "Filtro...",
       "match": {
         "abstract": "Resumo",

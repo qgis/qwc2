@@ -244,6 +244,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Ebenen der Karte hinzufügen",
       "addtotheme": "Dem aktuellen Thema hinzufügen",
+      "confirmswitch": "",
       "filter": "Filter",
       "match": {
         "abstract": "Zusammenfassung",

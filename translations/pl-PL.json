@@ -244,6 +244,7 @@
     "themeswitcher": {
       "addlayerstotheme": "",
       "addtotheme": "Dodaj do obecnego motywu",
+      "confirmswitch": "",
       "filter": "Filtruj...",
       "match": {
         "abstract": "",

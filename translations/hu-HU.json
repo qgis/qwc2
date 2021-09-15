@@ -244,6 +244,7 @@
     "themeswitcher": {
       "addlayerstotheme": "",
       "addtotheme": "",
+      "confirmswitch": "",
       "filter": "Szűrés...",
       "match": {
         "abstract": "",
