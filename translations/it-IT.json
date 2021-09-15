@@ -70,7 +70,7 @@
     "heightprofile": {
       "asl": "s.l.m.",
       "distance": "Distanza",
-      "export": "",
+      "export": "Esporta",
       "height": "Altitudine",
       "loading": "Calcolo del profilo di altezza..."
     },
@@ -136,7 +136,7 @@
     },
     "map": {
       "loading": "In caricamento...",
-      "resetrotation": ""
+      "resetrotation": "Resetta orientamento"
     },
     "mapinfotooltip": {
       "elevation": "Altitudine",
@@ -202,11 +202,11 @@
       "existinglayer": "Il livello esiste già nella mappa",
       "invisiblelayer": "Il risultato si trova su un livello che non è visibile.",
       "more": "Altri risultati",
-      "providerselection": "",
+      "providerselection": "Selezione provider",
       "search": "Cerca",
       "searchall": "Cerca località o aggiungi cartine...",
-      "searchinprogress": "",
-      "searchreset": "",
+      "searchinprogress": "Ricerca in corso...",
+      "searchreset": "Resetta ricerca",
       "themes": "Temi"
     },
     "searchbox": {
@@ -252,12 +252,12 @@
         "title": "Titolo"
       },
       "openintab": "Apri in nuova scheda",
-      "restrictedthemeinfo": ""
+      "restrictedthemeinfo": "Non sei autorizzato a visualizzare il tema oppure non hai effettuato il login"
     },
     "tooltip": {
       "background": "Cambia sfondo",
-      "fullscreendisable": "",
-      "fullscreenenable": "",
+      "fullscreendisable": "Disattiva modalità schermo intero",
+      "fullscreenenable": "Attiva modalitä schermo intero",
       "home": "Mostra tutta la mappa intera",
       "zoomin": "Ingrandisci",
       "zoomout": "Rimpicciolisci"
