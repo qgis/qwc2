@@ -150,7 +150,7 @@ const IdentifyUtils = {
         }
         const sublayer = LayerUtils.searchSubLayer(layer, 'name', layername);
         if (sublayer && sublayer.displayField) {
-            if ((!properties[sublayer.displayField] || "")[0] === "<") {
+            if ((properties[sublayer.displayField] || "")[0] !== "<") {
                 return properties[sublayer.displayField];
             }
         }
