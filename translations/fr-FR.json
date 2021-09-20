@@ -234,6 +234,7 @@
       "QRCodeLinkTitle": "QR code",
       "directLinkTitle": "Via un lien direct",
       "generatingpermalink": "Un lien permanent est généré...",
+      "showpin": "",
       "socialIntro": "Via votre réseau social favori"
     },
     "themelayerslist": {

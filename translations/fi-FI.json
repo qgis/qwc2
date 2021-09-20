@@ -234,6 +234,7 @@
       "QRCodeLinkTitle": "QR-koodi",
       "directLinkTitle": "Suora linkillä",
       "generatingpermalink": "Generoidaan pysyvä linkki, odota hetki...",
+      "showpin": "",
       "socialIntro": "Jaa someen"
     },
     "themelayerslist": {

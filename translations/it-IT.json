@@ -234,6 +234,7 @@
       "QRCodeLinkTitle": "Codice QR",
       "directLinkTitle": "Collegamento diretto",
       "generatingpermalink": "Sto generando il permalink",
+      "showpin": "Mostra pin",
       "socialIntro": "Social network"
     },
     "themelayerslist": {

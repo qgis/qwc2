@@ -7,3 +7,20 @@
 #Share div.SocialMediaShareButton {
     cursor: pointer;
 }
+
+#Share div.share-option-pin {
+    display: flex;
+    margin: 0.25em;
+    align-items: center;
+    padding: 0.5em 0 1em 0;
+    border-bottom: 1px solid @item_border@;
+}
+
+#Share div.share-option-pin > span:first-child {
+    flex: 0 0 auto;
+    padding-right: 0.5em;
+}
+
+#Share div.share-option-pin > span:last-child {
+    flex: 1 1 auto;
+}
