@@ -222,6 +222,8 @@
     "vectorlayerpicker.prompt",
     "window.close",
     "window.dock",
-    "window.undock"
+    "window.maximize",
+    "window.undock",
+    "window.unmaximize"
   ]
 }

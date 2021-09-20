@@ -269,7 +269,9 @@
     "window": {
       "close": "Fechar",
       "dock": "Juntar",
-      "undock": "Desencaixar"
+      "maximize": "",
+      "undock": "Desencaixar",
+      "unmaximize": ""
     }
   }
 }

@@ -111,6 +111,7 @@ export default class ResizeableWindow extends React.Component {
             "resizeable-window-body-nonscrollable": !this.props.scrollable
         });
         const style = {display: this.props.visible ? 'initial' : 'none'};
+        const maximized = this.state.geometry.maximized ? true : false;
 
         const content = [
             (<div className="resizeable-window-titlebar" key="titlebar">
@@ -121,12 +122,13 @@ export default class ResizeableWindow extends React.Component {
                 {(this.props.extraControls || []).map(entry => (
                     <Icon className="resizeable-window-titlebar-control" icon={entry.icon} key={entry.icon} onClick={entry.callback}/>
                 ))}
-                {dockable ? (
+                {!maximized && dockable ? (
                     <Icon
                         className="resizeable-window-titlebar-control" icon={this.state.geometry.docked ? "undock" : "dock"}
                         onClick={this.toggleDock}
                         titlemsgid={this.state.geometry.docked ? LocaleUtils.trmsg("window.undock") : LocaleUtils.trmsg("window.dock")} />
                 ) : null}
+                <Icon className="resizeable-window-titlebar-control" icon={maximized ? "unmaximize" : "maximize"} onClick={this.toggleMaximize} titlemsgid={maximized ? LocaleUtils.trmsg("window.unmaximize") : LocaleUtils.trmsg("window.maximize")} />
                 <Icon className="resizeable-window-titlebar-control" icon="remove" onClick={this.onClose} titlemsgid={LocaleUtils.trmsg("window.close")} />
             </div>),
             (<div className={bodyclasses} key="body" onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
@@ -135,7 +137,11 @@ export default class ResizeableWindow extends React.Component {
             </div>)
         ];
 
-        if (this.state.geometry.docked && this.props.visible) {
+        if (this.state.geometry.maximized && this.props.visible) {
+            return (
+                <div className="maximized-window">{content}</div>
+            );
+        } else if (this.state.geometry.docked && this.props.visible) {
             return (
                 <div className="dock-window" onMouseDown={this.startDockResize} ref={c => { this.dock = c; }} style={{zIndex: this.props.zIndex, width: this.props.initialWidth + 'px'}}>
                     {content}
@@ -156,7 +162,7 @@ export default class ResizeableWindow extends React.Component {
             );
         }
     }
-    onDragStart = (ev) => {
+    onDragStart = () => {
         if (this.dragShield) {
             this.dragShield.style.display = 'initial';
         }
@@ -182,6 +188,13 @@ export default class ResizeableWindow extends React.Component {
         const geometry = {
             ...this.state.geometry,
             docked: !this.state.geometry.docked
+        };
+        this.setState({geometry: geometry});
+    }
+    toggleMaximize = () => {
+        const geometry = {
+            ...this.state.geometry,
+            maximized: !this.state.geometry.maximized
         };
         this.setState({geometry: geometry});
     }

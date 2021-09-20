@@ -269,7 +269,9 @@
     "window": {
       "close": "Închide",
       "dock": "Andocare",
-      "undock": "Anulează andocarea"
+      "maximize": "",
+      "undock": "Anulează andocarea",
+      "unmaximize": ""
     }
   }
 }

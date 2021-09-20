@@ -269,7 +269,9 @@
     "window": {
       "close": "Schließen",
       "dock": "Andocken",
-      "undock": "Abdocken"
+      "maximize": "Maximieren",
+      "undock": "Abdocken",
+      "unmaximize": "Wiederherstellen"
     }
   }
 }

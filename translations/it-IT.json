@@ -269,7 +269,9 @@
     "window": {
       "close": "Chiudi",
       "dock": "Aggancia",
-      "undock": "Sgancia"
+      "maximize": "Massimizza",
+      "undock": "Sgancia",
+      "unmaximize": "Ripristina"
     }
   }
 }

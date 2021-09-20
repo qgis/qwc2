@@ -269,7 +269,9 @@
     "window": {
       "close": "Close",
       "dock": "Dock",
-      "undock": "Undock"
+      "maximize": "Maximize",
+      "undock": "Undock",
+      "unmaximize": "Restore"
     }
   }
 }

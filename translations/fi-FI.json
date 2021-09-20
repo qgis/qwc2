@@ -269,7 +269,9 @@
     "window": {
       "close": "Sulje",
       "dock": "Kiinnitä",
-      "undock": "Irrota"
+      "maximize": "",
+      "undock": "Irrota",
+      "unmaximize": ""
     }
   }
 }
