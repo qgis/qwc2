@@ -65,7 +65,7 @@ class LayerInfoWindow extends React.Component {
         }
         return (
             <ResizeableWindow icon="info-sign" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width} onClose={this.onClose}
-                title={LocaleUtils.trmsg("layerinfo.title")} zIndex={9}>
+                title={LocaleUtils.trmsg("layerinfo.title")}>
                 <div className="layer-info-window-body" role="body">
                     <h4 className="layer-info-window-title">{this.props.sublayer.title}</h4>
                     <div className="layer-info-window-frame">

@@ -95,7 +95,7 @@ class WindowManager extends React.Component {
 }
 
 const selector = (state) => ({
-    windows: state.windows,
+    windows: state.windows.entries,
     currentTheme: state.theme.current
 });
 

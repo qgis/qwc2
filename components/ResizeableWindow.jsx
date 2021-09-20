@@ -9,7 +9,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import {connect} from 'react-redux';
 import {Rnd} from 'react-rnd';
+import uuid from 'uuid';
+import {raiseWindow, registerWindow, unregisterWindow} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
@@ -17,7 +20,7 @@ import './style/ResizeableWindow.css';
 
 const WINDOW_GEOMETRIES = {};
 
-export default class ResizeableWindow extends React.Component {
+class ResizeableWindow extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         dockable: PropTypes.bool,
@@ -37,11 +40,14 @@ export default class ResizeableWindow extends React.Component {
         minWidth: PropTypes.number,
         onClose: PropTypes.func,
         onGeometryChanged: PropTypes.func,
+        raiseWindow: PropTypes.func,
+        registerWindow: PropTypes.func,
         scrollable: PropTypes.bool,
         title: PropTypes.string,
         titlelabel: PropTypes.string,
+        unregisterWindow: PropTypes.func,
         visible: PropTypes.bool,
-        zIndex: PropTypes.number
+        windowStacking: PropTypes.array
     }
     static defaultProps = {
         initialX: null,
@@ -53,7 +59,6 @@ export default class ResizeableWindow extends React.Component {
         maxWidth: null,
         maxHeight: null,
         onClose: () => {},
-        zIndex: 8,
         visible: true,
         dockable: true,
         onGeometryChanged: () => {}
@@ -77,6 +82,13 @@ export default class ResizeableWindow extends React.Component {
             };
         }
         this.dragShield = null;
+        this.id = uuid.v1();
+    }
+    componentDidMount() {
+        this.props.registerWindow(this.id);
+    }
+    componentWillUnmount() {
+        this.props.unregisterWindow(this.id);
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.rnd && this.props.visible && this.props.visible !== prevProps.visible) {
@@ -112,6 +124,7 @@ export default class ResizeableWindow extends React.Component {
         });
         const style = {display: this.props.visible ? 'initial' : 'none'};
         const maximized = this.state.geometry.maximized ? true : false;
+        const zIndex = 10 + this.props.windowStacking.findIndex(item => item === this.id);
 
         const content = [
             (<div className="resizeable-window-titlebar" key="titlebar">
@@ -131,7 +144,7 @@ export default class ResizeableWindow extends React.Component {
                 <Icon className="resizeable-window-titlebar-control" icon={maximized ? "unmaximize" : "maximize"} onClick={this.toggleMaximize} titlemsgid={maximized ? LocaleUtils.trmsg("window.unmaximize") : LocaleUtils.trmsg("window.maximize")} />
                 <Icon className="resizeable-window-titlebar-control" icon="remove" onClick={this.onClose} titlemsgid={LocaleUtils.trmsg("window.close")} />
             </div>),
-            (<div className={bodyclasses} key="body" onMouseDown={this.stopEvent} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
+            (<div className={bodyclasses} key="body" onMouseDown={(ev) => { this.stopEvent(ev); this.props.raiseWindow(this.id); }} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
                 <div className="resizeable-window-drag-shield" ref={el => {this.dragShield = el; }} />
                 {this.renderRole("body")}
             </div>)
@@ -143,7 +156,7 @@ export default class ResizeableWindow extends React.Component {
             );
         } else if (this.state.geometry.docked && this.props.visible) {
             return (
-                <div className="dock-window" onMouseDown={this.startDockResize} ref={c => { this.dock = c; }} style={{zIndex: this.props.zIndex, width: this.props.initialWidth + 'px'}}>
+                <div className="dock-window" onMouseDown={this.startDockResize} ref={c => { this.dock = c; }} style={{zIndex: zIndex, width: this.props.initialWidth + 'px'}}>
                     {content}
                 </div>
             );
@@ -154,8 +167,10 @@ export default class ResizeableWindow extends React.Component {
                         maxHeight={this.props.maxHeight || window.innerHeight} maxWidth={this.props.maxWidth || window.innerWidth}
                         minHeight={this.props.minHeight} minWidth={this.props.minWidth}
                         onDragStart={this.onDragStart}
-                        onDragStop={this.onDragStop} onResizeStop={this.onResizeStop}
-                        ref={c => { this.rnd = c; }} style={{zIndex: this.props.zIndex}}>
+                        onDragStop={this.onDragStop}
+                        onMouseDown={() => this.props.raiseWindow(this.id)}
+                        onResizeStop={this.onResizeStop}
+                        ref={c => { this.rnd = c; }} style={{zIndex: zIndex}}>
                         {content}
                     </Rnd>
                 </div>
@@ -218,3 +233,11 @@ export default class ResizeableWindow extends React.Component {
         }
     }
 }
+
+export default connect((state) => ({
+    windowStacking: state.windows.stacking
+}), {
+    raiseWindow: raiseWindow,
+    registerWindow: registerWindow,
+    unregisterWindow: unregisterWindow
+})(ResizeableWindow);

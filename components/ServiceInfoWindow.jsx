@@ -48,7 +48,7 @@ class ServiceInfoWindow extends React.Component {
         }
         return (
             <ResizeableWindow icon="info-sign" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width} onClose={this.onClose}
-                title={LocaleUtils.trmsg("serviceinfo.title")} zIndex={10}>
+                title={LocaleUtils.trmsg("serviceinfo.title")}>
                 <div className="service-info-window-body" role="body">
                     <h4 className="service-info-window-title">{this.props.service.title}</h4>
                     <div className="service-info-window-frame">
