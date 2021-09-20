@@ -70,7 +70,7 @@
     "heightprofile": {
       "asl": "ü.M.",
       "distance": "Distanz",
-      "export": "",
+      "export": "Exportieren",
       "height": "Höhe",
       "loading": "Höhenprofil wird berechnet..."
     },
@@ -245,7 +245,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Ebenen der Karte hinzufügen",
       "addtotheme": "Dem aktuellen Thema hinzufügen",
-      "confirmswitch": "",
+      "confirmswitch": "Ebenen, die nicht Teil des Themas sind, werden entfernt werden. Fortsetzen?",
       "filter": "Filter",
       "match": {
         "abstract": "Zusammenfassung",
