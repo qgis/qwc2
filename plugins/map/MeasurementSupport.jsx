@@ -57,6 +57,10 @@ class MeasurementSupport extends React.Component {
         measurement: PropTypes.object,
         projection: PropTypes.string
     }
+    constructor(props) {
+        super(props);
+        this.pickPositionCallbackTimeout = null;
+    }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.measurement.geomType && this.props.measurement.geomType !== prevProps.measurement.geomType ) {
             this.addDrawInteraction(this.props);
@@ -127,8 +131,23 @@ class MeasurementSupport extends React.Component {
             features: new ol.Collection([this.sketchFeature]),
             condition: (event) => { return event.originalEvent.buttons === 1; },
             insertVertexCondition: () => { return this.props.measurement.geomType === 'Bearing' ? false : true; },
-            deleteCondition: (event) => { return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event); }
+            deleteCondition: (event) => { return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event); },
+            style: (feature) => {
+                // Hack to get cursor position over geometry...
+                if (this.props.measurement.pickPositionCallback) {
+                    clearTimeout(this.pickPositionCallbackTimeout);
+                    this.props.measurement.pickPositionCallback(feature.getGeometry().getCoordinates());
+                }
+                return new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 6,
+                        fill: new ol.style.Fill({color: '#0099ff'}),
+                        stroke: new ol.style.Stroke({ color: 'white', width: 2 })
+                    })
+                });
+            }
         });
+        this.props.map.on('pointermove', this.clearPickPosition);
         this.modifyInteraction.on('modifystart', () => {
             this.props.map.on('pointermove', this.updateMeasurementResults);
             this.props.map.on('click', this.updateMeasurementResults);
@@ -142,8 +161,18 @@ class MeasurementSupport extends React.Component {
     }
     leaveTemporaryPickMode = () => {
         if (this.modifyInteraction) {
+            this.props.map.un('pointermove', this.clearPickPosition);
             this.props.map.removeInteraction(this.modifyInteraction);
             this.modifyInteraction = null;
+        }
+    }
+    clearPickPosition = () => {
+        if (this.props.measurement.pickPositionCallback) {
+            clearTimeout(this.pickPositionCallbackTimeout);
+            // Works because style function clears timeout if marker is rendered, i.e. if mouse is over measure geometry
+            this.pickPositionCallbackTimeout = setTimeout(() => {
+                this.props.measurement.pickPositionCallback(null);
+            }, 50);
         }
     }
     updateMeasurementResults = (ev, drawing = true) => {
