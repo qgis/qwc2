@@ -36,6 +36,7 @@
     "appmenu.items.Bookmark"
   ],
   "strings": [
+    "appmenu.filter",
     "appmenu.menulabel",
     "bgswitcher.nobg",
     "bookmark.add",

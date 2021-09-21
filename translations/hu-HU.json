@@ -2,6 +2,7 @@
   "locale": "hu-HU",
   "messages": {
     "appmenu": {
+      "filter": "",
       "menulabel": "Eszközök",
       "items": {
         "DxfExport": "DXF Exportálás",

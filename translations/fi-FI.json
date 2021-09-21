@@ -2,6 +2,7 @@
   "locale": "fi-FI",
   "messages": {
     "appmenu": {
+      "filter": "",
       "menulabel": "Kartat & Työkalut",
       "items": {
         "DxfExport": "DXF vienti",

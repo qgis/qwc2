@@ -2,6 +2,7 @@
   "locale": "tr-TR",
   "messages": {
     "appmenu": {
+      "filter": "",
       "menulabel": "Harita & Araçlar",
       "items": {
         "DxfExport": "DXF'e Veri Aktar",

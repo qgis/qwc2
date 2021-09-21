@@ -10,6 +10,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Swipeable} from 'react-swipeable';
+import {remove as removeDiacritics} from 'diacritics';
+import isEmpty from 'lodash.isempty';
 import {setCurrentTask} from '../actions/task';
 import LocaleUtils from '../utils/LocaleUtils';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -28,6 +30,7 @@ class AppMenu extends React.Component {
         onMenuToggled: PropTypes.func,
         openExternalUrl: PropTypes.func,
         setCurrentTask: PropTypes.func,
+        showFilterField: PropTypes.bool,
         showOnStartup: PropTypes.bool
     }
     static defaultProps = {
@@ -35,15 +38,23 @@ class AppMenu extends React.Component {
     }
     state = {
         menuVisible: false,
+        filter: "",
         submenusVisible: []
     }
     constructor(props) {
         super(props);
         this.menuEl = null;
+        this.filterfield = null;
     }
     componentDidMount() {
         if (this.props.showOnStartup) {
             this.toggleMenu();
+        }
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.menuVisible && !prevState.menuVisible && this.filterfield) {
+            // Need to wait until slide in transition is over
+            setTimeout(() => { this.filterfield.focus(); }, 400);
         }
     }
     toggleMenu = () => {
@@ -56,7 +67,7 @@ class AppMenu extends React.Component {
             document.removeEventListener('click', this.checkCloseMenu);
         }
         this.props.onMenuToggled(!this.state.menuVisible);
-        this.setState({ menuVisible: !this.state.menuVisible, submenusVisible: [] });
+        this.setState({ menuVisible: !this.state.menuVisible, submenusVisible: [], filter: "" });
     }
     checkCloseMenu = (ev) => {
         if (this.menuEl && !this.menuEl.contains(ev.target) && !this.props.keepMenuOpen) {
@@ -77,7 +88,7 @@ class AppMenu extends React.Component {
             this.props.setCurrentTask(item.task || item.key, item.mode, item.mapClickAction || (item.identifyEnabled ? "identify" : null));
         }
     }
-    renderMenuItems = (items, level) => {
+    renderMenuItems = (items, level, filter) => {
         if (items) {
             return items.map(item => {
                 if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme.title) || item.themeWhitelist.includes(this.props.currentTheme.name))) {
@@ -87,8 +98,13 @@ class AppMenu extends React.Component {
                     return null;
                 }
                 if (item.subitems) {
+                    const subitems = this.renderMenuItems(item.subitems, level + 1, filter);
+                    if (filter && isEmpty(subitems)) {
+                        return null;
+                    }
+                    const visible = (filter && !isEmpty(subitems)) || this.state.submenusVisible[level] === item.key;
                     return (
-                        <li className={this.state.submenusVisible[level] === item.key ? "expanded" : ""}
+                        <li className={visible ? "expanded" : ""}
                             key={item.key}
                             onClick={() => this.onSubmenuClicked(item.key, level)}
                         >
@@ -96,24 +112,27 @@ class AppMenu extends React.Component {
                             {LocaleUtils.tr("appmenu.items." + item.key)}
                             {item.title}
                             <ul>
-                                {this.renderMenuItems(item.subitems, level + 1)}
+                                {subitems}
                             </ul>
                         </li>
                     );
                 } else {
-                    return (
-                        <li className="appmenu-leaf" key={item.key + (item.mode || "")} onClick={() => this.onMenuitemClicked(item)} >
-                            <Icon icon={item.icon} size="xlarge"/>
-                            <span className="appmenu-leaf-label">
-                                {LocaleUtils.tr("appmenu.items." + item.key + (item.mode || ""))}
-                                {item.comment ? (<div className="appmenu-leaf-comment">
-                                    {LocaleUtils.tr("appmenu.items." + item.key + (item.mode || "") + "_comment")}
-                                </div>) : null}
-                            </span>
-                        </li>
-                    );
+                    const label = LocaleUtils.tr("appmenu.items." + item.key + (item.mode || ""));
+                    const comment = item.comment ? LocaleUtils.tr("appmenu.items." + item.key + (item.mode || "") + "_comment") : "";
+                    if (!filter || removeDiacritics(label.toLowerCase()).match(filter) || (comment && removeDiacritics(comment.toLowerCase()).match(filter))) {
+                        return (
+                            <li className="appmenu-leaf" key={item.key + (item.mode || "")} onClick={() => this.onMenuitemClicked(item)} >
+                                <Icon icon={item.icon} size="xlarge"/>
+                                <span className="appmenu-leaf-label">
+                                    {label}
+                                    {comment ? (<div className="appmenu-leaf-comment">{comment}</div>) : null}
+                                </span>
+                            </li>
+                        );
+                    }
+                    return null;
                 }
-            });
+            }).filter(x => x);
         } else {
             return null;
         }
@@ -125,6 +144,7 @@ class AppMenu extends React.Component {
         } else if (this.state.menuVisible) {
             className = "appmenu-visible";
         }
+        const filter = removeDiacritics(this.state.filter.toLowerCase());
         return (
             <div className={"AppMenu " + className}
                 onTouchEnd={ev => ev.stopPropagation()}
@@ -136,7 +156,19 @@ class AppMenu extends React.Component {
                 <Swipeable onSwipedUp={this.toggleMenu} preventDefaultTouchmoveEvent>
                     <div className="appmenu-menu-container">
                         <ul className="appmenu-menu">
-                            {this.renderMenuItems(this.props.menuItems, 0)}
+                            {this.props.showFilterField ? (
+                                <li className="appmenu-leaf">
+                                    <Icon icon={"search"} size="xlarge"/>
+                                    <div className="appmenu-filter">
+                                        <input onChange={ev => this.setState({filter: ev.target.value})}
+                                            placeholder={LocaleUtils.tr("appmenu.filter")} ref={el => {this.filterfield = el; }}
+                                            type="text"
+                                            value={this.state.filter}/>
+                                        <Icon icon="remove" onClick={() => this.setState({filter: ""})} />
+                                    </div>
+                                </li>
+                            ) : null}
+                            {this.renderMenuItems(this.props.menuItems, 0, filter)}
                         </ul>
                     </div>
                 </Swipeable>

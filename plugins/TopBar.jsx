@@ -24,6 +24,7 @@ import './style/TopBar.css';
 class TopBar extends React.Component {
     static propTypes = {
         appMenuClearsTask: PropTypes.bool,
+        appMenuFilterField: PropTypes.bool,
         appMenuVisibleOnStartup: PropTypes.bool,
         components: PropTypes.object,
         fullscreen: PropTypes.bool,
@@ -91,9 +92,11 @@ class TopBar extends React.Component {
                         <this.props.components.Toolbar toolbarItems={this.props.toolbarItems} />
                     </div>
                     <this.props.components.AppMenu
-                        appMenuClearsTask={this.props.appMenuClearsTask} buttonContents={buttonContents}
+                        appMenuClearsTask={this.props.appMenuClearsTask}
+                        buttonContents={buttonContents}
                         menuItems={this.props.menuItems}
                         openExternalUrl={this.props.openExternalUrl}
+                        showFilterField={this.props.appMenuFilterField}
                         showOnStartup={this.props.appMenuVisibleOnStartup} />
                     <this.props.components.FullscreenSwitcher />
                 </div>

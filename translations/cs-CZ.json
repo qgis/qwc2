@@ -2,6 +2,7 @@
   "locale": "cs-CZ",
   "messages": {
     "appmenu": {
+      "filter": "",
       "menulabel": "Mapa & Nástroje",
       "items": {
         "DxfExport": "DXF Export",

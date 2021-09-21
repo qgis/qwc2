@@ -2,6 +2,7 @@
   "locale": "pt-PT",
   "messages": {
     "appmenu": {
+      "filter": "",
       "menulabel": "Mapas & Ferramentas",
       "items": {
         "DxfExport": "Exportar DXF",

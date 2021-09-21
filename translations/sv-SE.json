@@ -2,6 +2,7 @@
   "locale": "sv-SE",
   "messages": {
     "appmenu": {
+      "filter": "",
       "menulabel": "Karta & Verktyg",
       "items": {
         "DxfExport": "DXF Export",

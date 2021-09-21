@@ -2,6 +2,7 @@
   "locale": "ru-RU",
   "messages": {
     "appmenu": {
+      "filter": "",
       "menulabel": "Карта и инструменты",
       "items": {
         "DxfExport": "Экспорт в DXF",

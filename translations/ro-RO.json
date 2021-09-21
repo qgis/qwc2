@@ -2,6 +2,7 @@
   "locale": "ro-RO",
   "messages": {
     "appmenu": {
+      "filter": "",
       "menulabel": "Hărți & Unelte",
       "items": {
         "DxfExport": "Export DXF",
