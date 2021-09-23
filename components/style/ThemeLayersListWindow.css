@@ -16,6 +16,10 @@ div.theme-list-window-frame {
     overflow: auto;
 }
 
+div.layerlist-group-items {
+    padding-left: 1em;
+}
+
 div.layerlist-item {
     display: flex;
     align-items: center;

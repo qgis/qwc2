@@ -47,9 +47,22 @@ class ThemeLayersListWindow extends React.Component {
         );
     }
     renderLayers(layer) {
+        const addLayerTitle = LocaleUtils.tr("themelayerslist.addlayer");
         return layer.sublayers.map((sublayer) => {
             if (sublayer.sublayers) {
-                return this.renderLayers(sublayer);
+                const checkboxstate = this.state.selectedLayers.includes(sublayer) ? 'checked' : 'unchecked';
+                return (
+                    <div className="layerlist-group" key={sublayer.name}>
+                        <div className="layerlist-item" key={sublayer.name}>
+                            <Icon className="layerlist-item-checkbox" icon={checkboxstate} onClick={() => this.itemSelectionToggled(sublayer)} />
+                            <span className="layerlist-item-title" title={sublayer.title}>{sublayer.title}</span>
+                            <Icon className="layerlist-item-add" icon="plus" onClick={ev => this.addLayer(ev, sublayer)} title={addLayerTitle} />
+                        </div>
+                        <div className="layerlist-group-items">
+                            {this.renderLayers(sublayer)}
+                        </div>
+                    </div>
+                );
             } else {
                 return this.renderLayer(sublayer);
             }
