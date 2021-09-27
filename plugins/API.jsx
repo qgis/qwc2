@@ -33,11 +33,13 @@ class API extends React.Component {
         window.qwc2.LayerRole = LayerRole;
         window.qwc2.addExternalLayer = this.addExternalLayer;
         window.qwc2.drawScratch = this.drawScratch;
+        window.qwc2.getState = this.getState;
     }
     static propTypes = {
         addLayer: PropTypes.func,
         mapCrs: PropTypes.string,
-        setCurrentTask: PropTypes.func
+        setCurrentTask: PropTypes.func,
+        state: PropTypes.object
     }
     render() {
         return null;
@@ -66,6 +68,12 @@ class API extends React.Component {
     drawScratch = (geomType, message, drawMultiple, callback, style = null) => {
         this.props.setCurrentTask("ScratchDrawing", null, null, {geomType, message, drawMultiple, callback, style});
     }
+    /*
+     * Return the current application state.
+     */
+    getState = () => {
+        return this.props.state;
+    }
 }
 
 function extractFunctions(obj) {
@@ -78,7 +86,8 @@ function extractFunctions(obj) {
 }
 
 export default connect(state => ({
-    mapCrs: state.map.projection
+    mapCrs: state.map.projection,
+    state: state
 }), {
     ...extractFunctions(displayActions),
     ...extractFunctions(layerActions),
