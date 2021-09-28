@@ -29,14 +29,17 @@ class SideBar extends React.Component {
         onShow: PropTypes.func,
         setCurrentTask: PropTypes.func,
         title: PropTypes.string,
-        width: PropTypes.string
+        width: PropTypes.string,
+        side: PropTypes.string
     }
     static defaultProps = {
         extraClasses: '',
         onShow: () => {},
         onHide: () => {},
         width: '15em',
-        minWidth: '15em'
+        minWidth: '15em',
+        // allowed values are 'left' and 'right'
+        side: 'right'
     }
     state = {
         render: false
@@ -71,10 +74,23 @@ class SideBar extends React.Component {
         const style = {
             width: this.props.width,
             minWidth: this.props.minWidth,
-            right: 0,
-            transform: visible ? '' : 'translateX(100%) translateX(8px)',
+            transform: '',
+            left: '',
+            right: '',
             zIndex: visible ? 5 : 4
         };
+        let closeIcon;
+        if (this.props.side === "right") {
+            style.transform = visible ? '' : 'translateX(100%) translateX(8px)';
+            style.left = '';
+            style.right = 0;
+            closeIcon = "chevron-right";
+        } else if(this.props.side === "left") {
+            style.transform = visible ? '' : 'translateX(-100%) translateX(-8px)';
+            style.right = '';
+            style.left = 0;
+            closeIcon = "chevron-left"
+        }
         let contents = null;
         if (render && typeof this.props.children === "function") {
             contents = this.props.children();
@@ -95,7 +111,7 @@ class SideBar extends React.Component {
                             <span className="sidebar-titlebar-title">{LocaleUtils.tr(this.props.title)}</span>
                             {this.state.render ? this.props.extraTitlebarContent : null}
                             <span className="sidebar-titlebar-spacer" />
-                            <Icon className="sidebar-titlebar-closeicon" icon="chevron-right" onClick={this.closeClicked}/>
+                            <Icon className="sidebar-titlebar-closeicon" icon={closeIcon} onClick={this.closeClicked}/>
                         </div>
                         <div className="sidebar-body">
                             {body}

@@ -13,14 +13,16 @@ import SideBar from '../components/SideBar';
 
 class Help extends React.Component {
     static propTypes = {
-        renderBody: PropTypes.func
+        renderBody: PropTypes.func,
+        side: PropTypes.string
     }
     static defaultProps = {
-        renderBody: () => { return null; }
+        renderBody: () => { return null; },
+        side: 'right'
     }
     render() {
         return (
-            <SideBar icon="info" id="Help" title="appmenu.items.Help" width="20em">
+            <SideBar side={this.props.side} icon="info" id="Help" title="appmenu.items.Help" width="20em">
                 {() => ({
                     body: (<div>{this.props.renderBody(this.props)}</div>)
                 })}

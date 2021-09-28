@@ -24,12 +24,14 @@ class ThemeSwitcher extends React.Component {
         currentTask: PropTypes.object,
         showLayerAfterChangeTheme: PropTypes.bool,
         themeLayersListWindowSize: PropTypes.object,
-        width: PropTypes.string
+        width: PropTypes.string,
+        side: PropTypes.string
     }
     static defaultProps = {
         width: "50%",
         showLayerAfterChangeTheme: false,
-        themeLayersListWindowSize: {width: 400, height: 300}
+        themeLayersListWindowSize: {width: 400, height: 300},
+        side: 'right'
     }
     state = {
         filter: ""
@@ -49,7 +51,7 @@ class ThemeSwitcher extends React.Component {
         );
         return (
             <div>
-                <SideBar extraTitlebarContent={extraTitlebarContent} icon="themes" id="ThemeSwitcher" minWidth="16em"
+                <SideBar side={this.props.side} extraTitlebarContent={extraTitlebarContent} icon="themes" id="ThemeSwitcher" minWidth="16em"
                     title="appmenu.items.ThemeSwitcher" width={this.props.width}>
                     {() => ({
                         body: (

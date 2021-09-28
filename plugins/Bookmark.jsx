@@ -19,7 +19,11 @@ import './style/Bookmark.css';
 class Bookmark extends React.Component {
     static propTypes = {
         task: PropTypes.string,
-        state: PropTypes.object
+        state: PropTypes.object,
+        side: PropTypes.string
+    }
+    static defaultProps = {
+        side: 'right'
     }
     state = {
         bookmarks: [],
@@ -61,6 +65,7 @@ class Bookmark extends React.Component {
         }
         return (
             <SideBar icon="bookmark" id="Bookmark"
+                side={this.props.side}
                 title="appmenu.items.Bookmark" width="20em">
                 <div className="bookmark-body" role="body">
                     <h4>{LocaleUtils.tr("bookmark.manage")}</h4>

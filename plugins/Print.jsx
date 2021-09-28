@@ -40,7 +40,8 @@ class Print extends React.Component {
         map: PropTypes.object,
         printExternalLayers: PropTypes.bool, // Caution: requires explicit server-side support!
         scaleFactor: PropTypes.number,
-        theme: PropTypes.object
+        theme: PropTypes.object,
+        side: PropTypes.string
     }
     static defaultProps = {
         printExternalLayers: true,
@@ -49,7 +50,8 @@ class Print extends React.Component {
         defaultDpi: 300,
         defaultScaleFactor: 0.5,
         displayRotation: true,
-        gridInitiallyEnabled: false
+        gridInitiallyEnabled: false,
+        side: 'right'
     }
     state = {
         layout: null,
@@ -319,7 +321,7 @@ class Print extends React.Component {
         const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("print.maximize") : LocaleUtils.tr("print.minimize");
         const extraTitlebarContent = (<Icon className="print-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState({minimized: !this.state.minimized})} title={minMaxTooltip}/>);
         return (
-            <SideBar extraTitlebarContent={extraTitlebarContent} icon={"print"} id="Print"
+            <SideBar side={this.props.side} extraTitlebarContent={extraTitlebarContent} icon={"print"} id="Print"
                 onHide={this.onHide} onShow={this.onShow} title="appmenu.items.Print"
                 width="20em">
                 {() => ({
