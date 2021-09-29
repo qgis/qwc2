@@ -26,12 +26,14 @@ class Share extends React.Component {
         showLink: PropTypes.bool,
         showQRCode: PropTypes.bool,
         showSocials: PropTypes.bool,
-        state: PropTypes.object
+        state: PropTypes.object,
+        side: PropTypes.string
     }
     static defaultProps = {
         showSocials: true,
         showLink: true,
-        showQRCode: true
+        showQRCode: true,
+        side: 'right'
     }
     state = {
         location: null,
@@ -81,7 +83,7 @@ class Share extends React.Component {
     }
     render() {
         return (
-            <SideBar icon="share" id="Share" onShow={this.onShow}
+            <SideBar side={this.props.side} icon="share" id="Share" onShow={this.onShow}
                 title="appmenu.items.Share" width="20em">
                 {() => ({
                     body: this.renderBody()

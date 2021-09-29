@@ -68,6 +68,7 @@ class LayerTree extends React.Component {
         toggleMapTips: PropTypes.func,
         transparencyIcon: PropTypes.bool,
         width: PropTypes.string,
+        side: PropTypes.string,
         zoomToExtent: PropTypes.func
     }
     static defaultProps = {
@@ -89,7 +90,8 @@ class LayerTree extends React.Component {
         enableServiceInfo: true,
         infoInSettings: true,
         showToggleAllLayersCheckbox: true,
-        transparencyIcon: true
+        transparencyIcon: true,
+        side: 'right',
     }
     state = {
         activemenu: null,
@@ -458,6 +460,7 @@ class LayerTree extends React.Component {
         return (
             <div>
                 <SideBar extraBeforeContent={visibilityCheckbox} extraTitlebarContent={extraTitlebarContent}
+                    side={this.props.side}
                     icon="layers" id="LayerTree"
                     onHide={this.hideLegendTooltip}
                     title="appmenu.items.LayerTree" width={this.state.sidebarwidth || this.props.width}>
