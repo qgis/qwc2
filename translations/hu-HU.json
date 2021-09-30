@@ -9,6 +9,7 @@
         "Editing": "Szerkesztés",
         "Help": "Segítség",
         "IdentifyRegion": "Adatok lekérdezése",
+        "LayerCatalog": "",
         "LayerTree": "Fóliák és jelmagyarázat",
         "Login": "",
         "Logout": "",
@@ -99,6 +100,9 @@
     "infotool": {
       "clickhelpPoint": "",
       "clickhelpPolygon": "Rajzolj egy poligont a lekérdezni kívánt terület köré..."
+    },
+    "layercatalog": {
+      "windowtitle": ""
     },
     "layerinfo": {
       "abstract": "Kivonat",

@@ -9,6 +9,7 @@
         "Editing": "Editing",
         "Help": "Help",
         "IdentifyRegion": "Identify Region",
+        "LayerCatalog": "Layer catalog",
         "LayerTree": "Layers & Legend",
         "Login": "Login",
         "Logout": "Logout",
@@ -99,6 +100,9 @@
     "infotool": {
       "clickhelpPoint": "Click a location to identify in the map...",
       "clickhelpPolygon": "Draw a polygon around the features to identify..."
+    },
+    "layercatalog": {
+      "windowtitle": "Layer catalog"
     },
     "layerinfo": {
       "abstract": "Abstract",

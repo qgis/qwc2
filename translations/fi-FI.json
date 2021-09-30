@@ -9,6 +9,7 @@
         "Editing": "Editointi",
         "Help": "Apua",
         "IdentifyRegion": "Tunnista alue",
+        "LayerCatalog": "",
         "LayerTree": "Karttatasot ja selite",
         "Login": "Kirjaudu",
         "Logout": "Kirjaudu ulos",
@@ -99,6 +100,9 @@
     "infotool": {
       "clickhelpPoint": "Tunnista kohde klikkaamalla sijaintia kartalla...",
       "clickhelpPolygon": "Tunnista kohteet piirtämällä alue niiden ympärille..."
+    },
+    "layercatalog": {
+      "windowtitle": ""
     },
     "layerinfo": {
       "abstract": "Tiivistelmä",

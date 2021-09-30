@@ -9,6 +9,7 @@
         "Editing": "Rediger",
         "Help": "Hjelp",
         "IdentifyRegion": "Identifiser med område",
+        "LayerCatalog": "",
         "LayerTree": "Lag & tegnforklaring",
         "Login": "Logg inn",
         "Logout": "Logg ut",
@@ -99,6 +100,9 @@
     "infotool": {
       "clickhelpPoint": "",
       "clickhelpPolygon": "Tegn et polygon rundt objektene som skal identifieres"
+    },
+    "layercatalog": {
+      "windowtitle": ""
     },
     "layerinfo": {
       "abstract": "Oppsummering",

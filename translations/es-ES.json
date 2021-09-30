@@ -9,6 +9,7 @@
         "Editing": "Editando",
         "Help": "Ayuda",
         "IdentifyRegion": "Identificar zona",
+        "LayerCatalog": "",
         "LayerTree": "Capas & Leyenda",
         "Login": "Inicio de sesión",
         "Logout": "Cierre de sesión",
@@ -99,6 +100,9 @@
     "infotool": {
       "clickhelpPoint": "Haga click en una ubicación para identificar en el mapa...",
       "clickhelpPolygon": "Trace un polígono alrededor de los elementos para identificarlos..."
+    },
+    "layercatalog": {
+      "windowtitle": ""
     },
     "layerinfo": {
       "abstract": "Resumen",

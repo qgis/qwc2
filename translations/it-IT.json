@@ -2,13 +2,14 @@
   "locale": "it-IT",
   "messages": {
     "appmenu": {
-      "filter": "",
+      "filter": "Filtra menü...",
       "menulabel": "Mappa e strumenti",
       "items": {
         "DxfExport": "Esporta su DXF",
         "Editing": "Strumenti di modifica",
         "Help": "Aiuto",
         "IdentifyRegion": "Identifica in un poligono",
+        "LayerCatalog": "Catalogo livelli",
         "LayerTree": "Livelli",
         "Login": "Accedi",
         "Logout": "Disconnetti",
@@ -99,6 +100,9 @@
     "infotool": {
       "clickhelpPoint": "Seleziona un luogo da identificare sulla mappa...",
       "clickhelpPolygon": "Disegna un poligono attorno all'area da identificare"
+    },
+    "layercatalog": {
+      "windowtitle": "Catalogo livelli"
     },
     "layerinfo": {
       "abstract": "Riassunto",

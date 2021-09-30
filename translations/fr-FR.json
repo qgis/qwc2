@@ -9,6 +9,7 @@
         "Editing": "Editer",
         "Help": "Aide",
         "IdentifyRegion": "Interroger la région",
+        "LayerCatalog": "",
         "LayerTree": "Couches",
         "Login": "Connexion",
         "Logout": "Déconnexion",
@@ -99,6 +100,9 @@
     "infotool": {
       "clickhelpPoint": "Cliquez sur un emplacement pour l'identifier sur la carte...",
       "clickhelpPolygon": "Dessiner un polygone pour identifier les objets"
+    },
+    "layercatalog": {
+      "windowtitle": ""
     },
     "layerinfo": {
       "abstract": "Récapitulation",

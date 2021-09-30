@@ -9,6 +9,7 @@
         "Editing": "Editieren",
         "Help": "Hilfe",
         "IdentifyRegion": "Region abfragen",
+        "LayerCatalog": "Ebenenkatalog",
         "LayerTree": "Ebenen und Legende",
         "Login": "Anmelden",
         "Logout": "Abmelden",
@@ -99,6 +100,9 @@
     "infotool": {
       "clickhelpPoint": "Zu identifizierende Position in der Karte auswählen...",
       "clickhelpPolygon": "Polygon um die zu identifizierende Objekte zeichnen"
+    },
+    "layercatalog": {
+      "windowtitle": "Ebenenkatalog"
     },
     "layerinfo": {
       "abstract": "Zusammenfassung",

@@ -9,6 +9,7 @@
         "Editing": "Editare",
         "Help": "Ajutor",
         "IdentifyRegion": "Interogare regiune",
+        "LayerCatalog": "",
         "LayerTree": "Straturi & Legendă",
         "Login": "Conectează-te",
         "Logout": "Deconectează-te",
@@ -99,6 +100,9 @@
     "infotool": {
       "clickhelpPoint": "",
       "clickhelpPolygon": "Încadrați într-un poligon entitățile de identificat..."
+    },
+    "layercatalog": {
+      "windowtitle": ""
     },
     "layerinfo": {
       "abstract": "Abstract",

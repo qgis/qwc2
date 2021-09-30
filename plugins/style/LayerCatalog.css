@@ -1,0 +1,8 @@
+div.layer-catalog {
+    margin-top: 0.25em;
+    height: 100%;
+}
+
+div.layer-catalog div.layer-catalog-widget {
+    height: 100%;
+}
