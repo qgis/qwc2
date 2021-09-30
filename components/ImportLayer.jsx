@@ -11,108 +11,20 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import axios from 'axios';
-import {remove as removeDiacritics} from 'diacritics';
+import LayerCatalogWidget from './widgets/LayerCatalogWidget';
 import Spinner from './Spinner';
 import EditableSelect from '../components/widgets/EditableSelect';
-import {addLayer, addLayerFeatures} from '../actions/layers';
+import {addLayerFeatures} from '../actions/layers';
 import FileSelector from './widgets/FileSelector';
 import ConfigUtils from '../utils/ConfigUtils';
-import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
-import Icon from './Icon';
 import './style/ImportLayer.css';
 
 
-class ImportLayerList extends React.PureComponent {
-    static propTypes = {
-        addLayer: PropTypes.func,
-        filter: PropTypes.string,
-        mapCrs: PropTypes.string,
-        pendingRequests: PropTypes.number,
-        serviceLayers: PropTypes.array
-    }
-    state = {
-        serviceLayers: []
-    }
-    constructor(props) {
-        super(props);
-        this.state.serviceLayers = this.props.serviceLayers || [];
-    }
-    componentDidUpdate(prevProps, prevState) {
-        if (this.props.serviceLayers !== prevProps.serviceLayers) {
-            this.setState({serviceLayers: this.props.serviceLayers || []});
-        }
-    }
-    renderServiceLayerListEntry(entry, filter, path, level = 0, idx) {
-        const hasSublayers = !isEmpty(entry.sublayers);
-        const sublayers = hasSublayers ? entry.sublayers.map((sublayer, i) => this.renderServiceLayerListEntry(sublayer, filter, [...path, i], level + 1, i)) : [];
-        if (sublayers.filter(item => item).length === 0 && filter && !removeDiacritics(entry.title).match(filter)) {
-            return null;
-        }
-        const type = entry.resource ? entry.resource.slice(0, entry.resource.indexOf(":")) : entry.type;
-        const key = (entry.resource || (entry.type + ":" + entry.name)) + ":" + idx;
-        return (
-            <div key={key} style={{paddingLeft: level + 'em'}}>
-                <div className="importlayer-list-entry">
-                    {hasSublayers ? (<Icon icon={entry.expanded ? 'tree_minus' : 'tree_plus'} onClick={() => this.toggleLayerListEntry(path)} />) : null}
-                    <span onClick={() => this.addServiceLayer(entry)}>
-                        <span className="importlayer-list-entry-service">{type}</span>
-                        {entry.title}
-                    </span>
-                </div>
-                {entry.expanded ? sublayers : null}
-            </div>
-        );
-    }
-    toggleLayerListEntry = (path) => {
-        const newServiceLayers = [...this.state.serviceLayers];
-        newServiceLayers[path[0]] = {...newServiceLayers[path[0]]};
-        let cur = newServiceLayers[path[0]];
-        for (const idx of path.slice(1)) {
-            cur.sublayers[idx] = {...cur.sublayers[idx]};
-            cur = cur.sublayers[idx];
-        }
-        cur.expanded = !cur.expanded;
-        this.setState({serviceLayers: newServiceLayers});
-    }
-    render() {
-        const filter = new RegExp(removeDiacritics(this.props.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
-        let emptyEntry = null;
-        if (isEmpty(this.state.serviceLayers) && this.props.pendingRequests === 0) {
-            emptyEntry = (
-                <div className="layertree-item-noresults">{LocaleUtils.tr("importlayer.noresults")}</div>
-            );
-        } else if (isEmpty(this.state.serviceLayers)) {
-            emptyEntry = (
-                <div className="layertree-item-noresults">{LocaleUtils.tr("importlayer.loading")}</div>
-            );
-        }
-        return (
-            <div className="importlayer-list">
-                {this.state.serviceLayers.map((entry, idx) => this.renderServiceLayerListEntry(entry, filter, [idx], 0, idx))}
-                {emptyEntry}
-            </div>
-        );
-    }
-    addServiceLayer = (entry) => {
-        if (entry.resource) {
-            const params = LayerUtils.splitLayerUrlParam(entry.resource);
-            ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
-                if (layer) {
-                    this.props.addLayer(layer);
-                }
-            });
-        } else if (entry.type === "wms" || entry.type === "wfs" || entry.type === "wmts") {
-            this.props.addLayer({...entry, sublayers: null});
-        }
-    }
-}
-
 class ImportLayer extends React.Component {
     static propTypes = {
-        addLayer: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         mapCrs: PropTypes.string,
         theme: PropTypes.object
@@ -122,8 +34,7 @@ class ImportLayer extends React.Component {
         file: null,
         url: '',
         pendingRequests: 0,
-        serviceLayers: null,
-        filter: ""
+        serviceLayers: null
     }
     renderInputField() {
         const placeholder = LocaleUtils.tr("importlayer.urlplaceholder");
@@ -158,17 +69,13 @@ class ImportLayer extends React.Component {
         }
         let layerList = null;
         if (this.state.serviceLayers !== null) {
-            const filterplaceholder = LocaleUtils.tr("importlayer.filter");
-            layerList = [
-                (<input className="importlayer-list-filter" key="importlayer-list-filter" onChange={ev => this.setState({filter: ev.target.value})} placeholder={filterplaceholder} type="text" value={this.state.filter}/>),
-                (<ImportLayerList addLayer={this.props.addLayer} filter={this.state.filter} key="importlayer-list" pendingRequests={this.state.pendingRequests} serviceLayers={this.state.serviceLayers} />)
-            ];
+            layerList = (<LayerCatalogWidget catalog={this.state.serviceLayers} pendingRequests={this.state.pendingRequests} />);
         }
         const disableLocal = ConfigUtils.getConfigProp("disableImportingLocalLayers", this.props.theme);
         return (
             <div id="ImportLayer">
                 <div className="importlayer-input-fields">
-                    <select disabled={this.state.pendingRequests > 0} onChange={ev => this.setState({type: ev.target.value, file: null, url: "", serviceLayers: null, filter: ""})} value={this.state.type}>
+                    <select disabled={this.state.pendingRequests > 0} onChange={ev => this.setState({type: ev.target.value, file: null, url: "", serviceLayers: null})} value={this.state.type}>
                         <option value="URL">{LocaleUtils.tr("importlayer.url")}</option>
                         {!disableLocal ? (<option value="Local">{LocaleUtils.tr("importlayer.localfile")}</option>) : null}
                     </select>
@@ -191,7 +98,7 @@ class ImportLayer extends React.Component {
             url = location.protocol + "//" + url;
         }
         let pendingRequests = 0;
-        this.setState({pendingRequests: pendingRequests, serviceLayers: null, filter: ""});
+        this.setState({pendingRequests: pendingRequests, serviceLayers: null});
         // Attempt to load catalog
         if (url.toLowerCase().endsWith(".json") || (url.toLowerCase().endsWith(".xml") && !url.toLowerCase().endsWith("wmtscapabilities.xml"))) {
             this.setState({pendingRequests: ++pendingRequests});
@@ -335,6 +242,5 @@ class ImportLayer extends React.Component {
 export default connect((state) => ({
     mapCrs: state.map.projection
 }), {
-    addLayer: addLayer,
     addLayerFeatures: addLayerFeatures
 })(ImportLayer);
