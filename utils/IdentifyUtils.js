@@ -144,13 +144,13 @@ const IdentifyUtils = {
     determineDisplayName(layer, layername, item) {
         const properties = item.properties || {};
         if (item.displayfield) {
-            if ((properties[item.displayfield] || "")[0] !== "<") {
+            if (properties[item.displayField] && (properties[item.displayField][0] !== "<")) {
                 return properties[item.displayfield];
             }
         }
         const sublayer = LayerUtils.searchSubLayer(layer, 'name', layername);
         if (sublayer && sublayer.displayField) {
-            if ((properties[sublayer.displayField] || "")[0] !== "<") {
+            if (properties[sublayer.displayField] && (properties[sublayer.displayField][0] !== "<")) {
                 return properties[sublayer.displayField];
             }
         }
