@@ -420,7 +420,7 @@ class Editing extends React.Component {
             const element = ev.target.elements.namedItem(name);
             if (element) {
                 let value = element.type === "radio" || element.type === "checkbox" ? element.checked : element.value;
-                if ((element.type === "date" || element.type === "number" || fieldConfig.type === "date" || fieldConfig.type === "number") && element.value === "") {
+                if ((element instanceof RadioNodeList || element.type === "date" || element.type === "number" || element.type === "radio" || fieldConfig.type === "date" || fieldConfig.type === "number") && element.value === "") {
                     // Set empty date/number value to null instead of empty string
                     value = null;
                 }
@@ -430,18 +430,14 @@ class Editing extends React.Component {
                     const field = parts[1];
                     const index = parseInt(parts[2], 10);
                     // relationValues for table must exist as rows are either pre-existing or were added
-                    if (relationValues[table].records[index][table + "__" + field] === undefined) {
-                        relationValues[table].records[index][table + "__" + field] = value;
-                    }
+                    relationValues[table].records[index][table + "__" + field] = value;
                     if (element.type === "file" && element.files.length > 0) {
                         relationUploads[name] = element.files[0];
                     } else if (element.type === "hidden" && element.value.startsWith("data:")) {
                         relationUploads[name] = new File([this.dataUriToBlob(element.value)], uuid.v1() + ".jpg", {type: "image/jpeg"});
                     }
                 } else {
-                    if (feature.properties[name] === undefined) {
-                        feature.properties[name] = value;
-                    }
+                    feature.properties[name] = value;
                     if (element.type === "file" && element.files.length > 0) {
                         featureUploads[name] = element.files[0];
                     } else if (element.type === "hidden" && element.value.startsWith("data:")) {
