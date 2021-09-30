@@ -40,8 +40,8 @@ class Print extends React.Component {
         map: PropTypes.object,
         printExternalLayers: PropTypes.bool, // Caution: requires explicit server-side support!
         scaleFactor: PropTypes.number,
-        theme: PropTypes.object,
-        side: PropTypes.string
+        side: PropTypes.string,
+        theme: PropTypes.object
     }
     static defaultProps = {
         printExternalLayers: true,

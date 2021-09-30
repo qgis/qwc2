@@ -28,9 +28,9 @@ class SideBar extends React.Component {
         onHide: PropTypes.func,
         onShow: PropTypes.func,
         setCurrentTask: PropTypes.func,
+        side: PropTypes.string,
         title: PropTypes.string,
-        width: PropTypes.string,
-        side: PropTypes.string
+        width: PropTypes.string
     }
     static defaultProps = {
         extraClasses: '',
@@ -85,11 +85,11 @@ class SideBar extends React.Component {
             style.left = '';
             style.right = 0;
             closeIcon = "chevron-right";
-        } else if(this.props.side === "left") {
+        } else if (this.props.side === "left") {
             style.transform = visible ? '' : 'translateX(-100%) translateX(-8px)';
             style.right = '';
             style.left = 0;
-            closeIcon = "chevron-left"
+            closeIcon = "chevron-left";
         }
         let contents = null;
         if (render && typeof this.props.children === "function") {

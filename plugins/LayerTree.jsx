@@ -63,12 +63,12 @@ class LayerTree extends React.Component {
         showQueryableIcon: PropTypes.bool,
         showRootEntry: PropTypes.bool,
         showToggleAllLayersCheckbox: PropTypes.bool,
+        side: PropTypes.string,
         swipe: PropTypes.number,
         theme: PropTypes.object,
         toggleMapTips: PropTypes.func,
         transparencyIcon: PropTypes.bool,
         width: PropTypes.string,
-        side: PropTypes.string,
         zoomToExtent: PropTypes.func
     }
     static defaultProps = {
@@ -91,7 +91,7 @@ class LayerTree extends React.Component {
         infoInSettings: true,
         showToggleAllLayersCheckbox: true,
         transparencyIcon: true,
-        side: 'right',
+        side: 'right'
     }
     state = {
         activemenu: null,
@@ -426,7 +426,7 @@ class LayerTree extends React.Component {
             deleteAllLayersIcon = (<Icon className="layertree-delete-legend" icon="trash" onClick={this.deleteAllLayers} title={deleteAllLayersTooltip}/>);
         }
         let serviceInfoIcon = null;
-        if(this.props.enableServiceInfo) {
+        if (this.props.enableServiceInfo) {
             serviceInfoIcon = (<Icon className="layertree-theme-metadata" icon="info-sign" onClick={() => this.props.setActiveServiceInfo(this.props.theme)}/>);
         }
 
@@ -460,9 +460,9 @@ class LayerTree extends React.Component {
         return (
             <div>
                 <SideBar extraBeforeContent={visibilityCheckbox} extraTitlebarContent={extraTitlebarContent}
+                    icon="layers"
+                    id="LayerTree" onHide={this.hideLegendTooltip}
                     side={this.props.side}
-                    icon="layers" id="LayerTree"
-                    onHide={this.hideLegendTooltip}
                     title="appmenu.items.LayerTree" width={this.state.sidebarwidth || this.props.width}>
                     {() => ({
                         body: this.renderBody()

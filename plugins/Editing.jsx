@@ -42,10 +42,10 @@ class Editing extends React.Component {
         map: PropTypes.object,
         refreshLayer: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
+        side: PropTypes.string,
         theme: PropTypes.object,
         touchFriendly: PropTypes.bool,
-        width: PropTypes.string,
-        side: PropTypes.string
+        width: PropTypes.string
     }
     static defaultProps = {
         touchFriendly: true,
@@ -245,8 +245,8 @@ class Editing extends React.Component {
         const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("editing.maximize") : LocaleUtils.tr("editing.minimize");
         const extraTitlebarContent = (<Icon className="editing-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={ev => this.setState({minimized: !this.state.minimized})} title={minMaxTooltip}/>)
         return (
-            <SideBar side={this.props.side} extraTitlebarContent={extraTitlebarContent} icon={"editing"} id="Editing" onHide={this.onHide}
-                onShow={this.onShow} title="appmenu.items.Editing" width={this.props.width}>
+            <SideBar extraTitlebarContent={extraTitlebarContent} icon={"editing"} id="Editing" onHide={this.onHide} onShow={this.onShow}
+                side={this.props.side} title="appmenu.items.Editing" width={this.props.width}>
                 {() => ({
                     body: this.state.minimized ? null : this.renderBody()
                 })}

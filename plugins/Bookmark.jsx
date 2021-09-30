@@ -18,9 +18,9 @@ import './style/Bookmark.css';
 
 class Bookmark extends React.Component {
     static propTypes = {
-        task: PropTypes.string,
+        side: PropTypes.string,
         state: PropTypes.object,
-        side: PropTypes.string
+        task: PropTypes.string
     }
     static defaultProps = {
         side: 'right'
@@ -41,20 +41,20 @@ class Bookmark extends React.Component {
         const openTabTitle = LocaleUtils.tr("bookmark.openintab");
         const updateTitle = LocaleUtils.tr("bookmark.update");
         const removeTitle = LocaleUtils.tr("bookmark.remove");
-        return this.state.bookmarks.map((bookmark, index) => {
+        return this.state.bookmarks.map((bookmark) => {
             return (
                 <tr key={bookmark.key}>
                     <td>{bookmark.description}</td>
-                    <td><Icon icon="open_link" title={openTabTitle} onClick={ev => this.openInTab(ev, bookmark.key)} /></td>
-                    <td><Icon icon="save" title={updateTitle} 
-                            onClick={() => updateBookmark(this.props.state, bookmark.key, bookmark.description, (result => this.setState({change: result})))} />
+                    <td><Icon icon="open_link" onClick={ev => this.openInTab(ev, bookmark.key)} title={openTabTitle} /></td>
+                    <td><Icon icon="save" onClick={() => updateBookmark(this.props.state, bookmark.key, bookmark.description, (result => this.setState({change: result})))}
+                            title={updateTitle} />
                     </td>
-                    <td><Icon className="bookmark-item-remove" icon="trash" title={removeTitle} 
-                            onClick={() => removeBookmark(bookmark.key, (result => this.setState({change: result})))} />
+                    <td><Icon className="bookmark-item-remove" icon="trash" onClick={() => removeBookmark(bookmark.key, (result => this.setState({change: result})))}
+                            title={removeTitle} />
                     </td>
                 </tr>
-            )
-        })
+            );
+        });
     }
     render() {
         const username = ConfigUtils.getConfigProp("username");
@@ -70,10 +70,10 @@ class Bookmark extends React.Component {
                 <div className="bookmark-body" role="body">
                     <h4>{LocaleUtils.tr("bookmark.manage")}</h4>
                     <div className="bookmark-create">
-                        <input name="bookmark-description" type="text" placeholder={placeholder} onChange={ev => this.setState({description: ev.target.value})} />
-                        <button className="bookmark-add-button" disabled={!this.state.description} 
-                            onClick={this.state.description ? () => createBookmark(this.props.state, this.state.description, (result => this.setState({change: result}))) : null}>                            
-                            <Icon className="bookmark-add-icon" icon="plus" title={addBookmarkTitle}  
+                        <input name="bookmark-description" onChange={ev => this.setState({description: ev.target.value})} placeholder={placeholder} type="text" />
+                        <button className="bookmark-add-button" disabled={!this.state.description}
+                            onClick={this.state.description ? () => createBookmark(this.props.state, this.state.description, (result => this.setState({change: result}))) : null}>
+                            <Icon className="bookmark-add-icon" icon="plus" title={addBookmarkTitle}
                             />
                         </button>
                     </div>
@@ -101,5 +101,5 @@ const selector = state => ({
     task: state.task.id,
     state
 });
- 
+
 export default connect(selector)(Bookmark);

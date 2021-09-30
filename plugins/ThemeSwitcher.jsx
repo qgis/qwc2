@@ -23,9 +23,9 @@ class ThemeSwitcher extends React.Component {
         collapsibleGroups: PropTypes.bool,
         currentTask: PropTypes.object,
         showLayerAfterChangeTheme: PropTypes.bool,
+        side: PropTypes.string,
         themeLayersListWindowSize: PropTypes.object,
-        width: PropTypes.string,
-        side: PropTypes.string
+        width: PropTypes.string
     }
     static defaultProps = {
         width: "50%",
@@ -45,13 +45,13 @@ class ThemeSwitcher extends React.Component {
                         placeholder={LocaleUtils.tr("themeswitcher.filter")} ref={this.focusFilterField}
                         type="text"
                         value={this.state.filter}/>
-                    <Icon icon="remove" onClick={ev => this.setState({filter: ""})} />
+                    <Icon icon="remove" onClick={() => this.setState({filter: ""})} />
                 </div>
             </div>
         );
         return (
             <div>
-                <SideBar side={this.props.side} extraTitlebarContent={extraTitlebarContent} icon="themes" id="ThemeSwitcher" minWidth="16em"
+                <SideBar extraTitlebarContent={extraTitlebarContent} icon="themes" id="ThemeSwitcher" minWidth="16em" side={this.props.side}
                     title="appmenu.items.ThemeSwitcher" width={this.props.width}>
                     {() => ({
                         body: (
