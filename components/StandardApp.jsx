@@ -29,6 +29,7 @@ import {localConfigLoaded, setStartupParameters} from '../actions/localConfig';
 import {addLayer} from '../actions/layers';
 import {changeSearch} from '../actions/search';
 import {themesLoaded, setCurrentTheme} from '../actions/theme';
+import {setCurrentTask} from '../actions/task';
 
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -140,6 +141,11 @@ class AppInitComponent extends React.Component {
                 }
             });
         });
+        const task = ConfigUtils.getConfigProp("startupTask")
+        if(task){
+            this.props.setCurrentTask(task.key, task.mode, task.mapClickAction);
+        }
+        
     }
     render() {
         return null;
@@ -148,7 +154,8 @@ class AppInitComponent extends React.Component {
 
 const AppInit = connect(state => ({
     mapSize: state.map.size,
-    layers: state.layers.flat
+    layers: state.layers.flat,
+    currentTask: state.task.id
 }), {
     themesLoaded: themesLoaded,
     changeSearch: changeSearch,
