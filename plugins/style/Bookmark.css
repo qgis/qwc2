@@ -1,17 +1,18 @@
 .bookmark-body {
-    display: flex;
-    flex-flow: column;
-    width: 100%;
+    padding: 0.5em;
     height: 100%;
-    padding: 0.5em 1em;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
-.bookmark-create {
-    padding: 0.5em;
+.bookmark-body > h4 {
+    flex: 0 0 auto;
 }
 
 div.bookmark-create {
     display: flex;
+    flex: 0 0 auto;
 }
 
 div.bookmark-create > input {
@@ -21,7 +22,7 @@ div.bookmark-create > input {
     border-radius: 0;
 }
 
-.bookmark-add-button {
+div.bookmark-create > button {
     flex: 0 0 auto;
     height: 2.5em;
     width: 2.5em;
@@ -36,26 +37,21 @@ div.bookmark-create > input {
     justify-content: center;
 }
 
-.bookmark-add-button:hover {
-    background-color: #ddd;
-}
-
-.bookmark-add-button:disabled {
+div.bookmark-create > button:disabled {
     background-color: transparent;
     color: #ccc;
     cursor: auto;
 }
 
 .bookmark-table {
+    flex: 1 1 auto;
     display: flex;
     flex-flow: column;
     flex: 1;
     overflow: hidden;
     text-align: center;
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     border-collapse: collapse;
-    border: 3px solid #ddd;
-    height: 100%;
+    border: 1px solid @item_border@;
     width: 100%;
 }
 
@@ -69,16 +65,18 @@ div.bookmark-create > input {
     padding: 8px;
 }
 
+.bookmark-table tbody td:first-child {
+    cursor: pointer;
+}
+
 .bookmark-table tr:nth-child(even){background-color: #f2f2f2;}
 
 .bookmark-table tr:hover {background-color: #ddd;}
 
-.bookmark-item-remove {
+.bookmark-table tbody td > span.icon {
     width: 1.75em;
-    color: @item_border@;
-    flex: 0 0 auto;
 }
 
-.bookmark-item-remove:hover {
+.bookmark-table tbody td > span.icon-trash {
     color: red;
 }

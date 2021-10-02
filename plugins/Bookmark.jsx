@@ -27,30 +27,28 @@ class Bookmark extends React.Component {
     }
     state = {
         bookmarks: [],
-        description: null,
-        change: true
+        description: null
     }
-    componentDidUpdate(prevProps, prevState) {
-        if (this.state.change) {
-            getUserBookmarks(ConfigUtils.getConfigProp("username"), (bookmarks) => {
-                this.setState({bookmarks: bookmarks, change: false});
-            });
-        }
+    componentDidMount() {
+        this.refresh();
     }
     renderData() {
+        const openTitle = LocaleUtils.tr("bookmark.open");
         const openTabTitle = LocaleUtils.tr("bookmark.openintab");
         const updateTitle = LocaleUtils.tr("bookmark.update");
         const removeTitle = LocaleUtils.tr("bookmark.remove");
         return this.state.bookmarks.map((bookmark) => {
             return (
                 <tr key={bookmark.key}>
-                    <td>{bookmark.description}</td>
-                    <td><Icon icon="open_link" onClick={ev => this.openInTab(ev, bookmark.key)} title={openTabTitle} /></td>
-                    <td><Icon icon="save" onClick={() => updateBookmark(this.props.state, bookmark.key, bookmark.description, (result => this.setState({change: result})))}
-                            title={updateTitle} />
+                    <td onClick={() => this.open(bookmark.key)} title={openTitle}>{bookmark.description}</td>
+                    <td>
+                        <Icon icon="open_link" onClick={() => this.openInTab(bookmark.key)} title={openTabTitle} />
                     </td>
-                    <td><Icon className="bookmark-item-remove" icon="trash" onClick={() => removeBookmark(bookmark.key, (result => this.setState({change: result})))}
-                            title={removeTitle} />
+                    <td>
+                        <Icon icon="save" onClick={() => updateBookmark(this.props.state, bookmark.key, bookmark.description, this.refresh)} title={updateTitle} />
+                    </td>
+                    <td>
+                        <Icon icon="trash" onClick={() => removeBookmark(bookmark.key, this.refresh)} title={removeTitle} />
                     </td>
                 </tr>
             );
@@ -60,40 +58,45 @@ class Bookmark extends React.Component {
         const username = ConfigUtils.getConfigProp("username");
         const placeholder = LocaleUtils.tr("bookmark.description");
         const addBookmarkTitle = LocaleUtils.tr("bookmark.add");
-        if (this.props.task !== "Bookmark" || !username) {
-            return null;
-        }
         return (
             <SideBar icon="bookmark" id="Bookmark"
                 side={this.props.side}
                 title="appmenu.items.Bookmark" width="20em">
-                <div className="bookmark-body" role="body">
-                    <h4>{LocaleUtils.tr("bookmark.manage")}</h4>
-                    <div className="bookmark-create">
-                        <input name="bookmark-description" onChange={ev => this.setState({description: ev.target.value})} placeholder={placeholder} type="text" />
-                        <button className="bookmark-add-button" disabled={!this.state.description}
-                            onClick={this.state.description ? () => createBookmark(this.props.state, this.state.description, (result => this.setState({change: result}))) : null}>
-                            <Icon className="bookmark-add-icon" icon="plus" title={addBookmarkTitle}
-                            />
-                        </button>
+                {!username ? (
+                    <div className="bookmark-body" role="body">{LocaleUtils.tr("bookmark.notloggedin")}</div>
+                ) : (
+                    <div className="bookmark-body" role="body">
+                        <h4>{LocaleUtils.tr("bookmark.manage")}</h4>
+                        <div className="bookmark-create">
+                            <input onChange={ev => this.setState({description: ev.target.value})} placeholder={placeholder} type="text" />
+                            <button disabled={!this.state.description}
+                                onClick={this.state.description ? () => createBookmark(this.props.state, this.state.description, this.refresh) : null}>
+                                <Icon className="bookmark-add-icon" icon="plus" title={addBookmarkTitle}
+                                />
+                            </button>
+                        </div>
+                        <table className="bookmark-table">
+                            <tbody className="bookmark-table-body">
+                                {this.renderData()}
+                            </tbody>
+                        </table>
                     </div>
-                    <table className="bookmark-table">
-                        <tbody className="bookmark-table-body">
-                            {this.renderData()}
-                        </tbody>
-                    </table>
-                </div>
+                )}
             </SideBar>
         );
     }
-    openInTab = (ev, bookmarkkey) => {
-        ev.stopPropagation();
+    open = (bookmarkkey) => {
+        const url = location.href.split("?")[0] + '?bk=' + bookmarkkey;
+        location.href = url;
+    }
+    openInTab = (bookmarkkey) => {
         const url = location.href.split("?")[0] + '?bk=' + bookmarkkey;
         window.open(url, '_blank');
     }
-    addBookmark = (ev) => {
-        ev.stopPropagation();
-        createBookmark(this.props.state, this.state.description, (result => this.setState({change: result})));
+    refresh = () => {
+        getUserBookmarks(ConfigUtils.getConfigProp("username"), (bookmarks) => {
+            this.setState({bookmarks: bookmarks});
+        });
     }
 }
 

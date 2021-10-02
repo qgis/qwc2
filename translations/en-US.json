@@ -30,6 +30,8 @@
       "add": "Add bookmark for current map",
       "description": "Description",
       "manage": "Manage your bookmarks",
+      "notloggedin": "You need to be logged in to store bookmarks",
+      "open": "Open bookmark",
       "openintab": "Open bookmark in a new tab",
       "remove": "Remove bookmark",
       "update": "Update bookmark"

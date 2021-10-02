@@ -43,6 +43,8 @@
     "bookmark.add",
     "bookmark.description",
     "bookmark.manage",
+    "bookmark.notloggedin",
+    "bookmark.open",
     "bookmark.openintab",
     "bookmark.remove",
     "bookmark.update",

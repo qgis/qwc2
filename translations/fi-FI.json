@@ -30,6 +30,8 @@
       "add": "Lisää kirjanmerkki nykyiselle kartalle",
       "description": "Kuvaus",
       "manage": "Kirjanmerkkien hallinta",
+      "notloggedin": "",
+      "open": "",
       "openintab": "Avaa kirjanmerkki uudessa välilehdessä",
       "remove": "Poista kirjanmerkki",
       "update": "Päivitä kirjanmerkki"

@@ -30,6 +30,8 @@
       "add": "Hinzufügen",
       "description": "Beschreibung",
       "manage": "Verwalten",
+      "notloggedin": "Sie müssen angemeldet sein, um Lesezeichen zu verwenden",
+      "open": "Öffnen",
       "openintab": "In Tab öffnen",
       "remove": "Entfernen",
       "update": "Aktualisieren"
