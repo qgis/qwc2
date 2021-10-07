@@ -11,6 +11,7 @@ import isEqual from 'lodash.isequal';
 import uuid from 'uuid';
 import url from 'url';
 import ConfigUtils from './ConfigUtils';
+import ThemeUtils from './ThemeUtils';
 import {LayerRole} from '../actions/layers';
 
 const LayerUtils = {
@@ -714,7 +715,7 @@ const LayerUtils = {
                             params.LAYERS.push("EXTERNAL_WMS:" + identifier);
                             params.OPACITIES.push(opacities[idx]);
                             params.COLORS.push("");
-                            params[identifier + ":url"] = layer.url + (layer.params.MAP ? '?MAP=' + layer.params.MAP : '');
+                            params[identifier + ":url"] = ThemeUtils.fullUrl(layer.url) + (layer.params.MAP ? '?MAP=' + layer.params.MAP : '');
                             params[identifier + ":layers"] = names[idx];
                             params[identifier + ":format"] = "image/png";
                             params[identifier + ":crs"] = printCrs;
