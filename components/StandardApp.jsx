@@ -178,6 +178,10 @@ export default class StandardApp extends React.Component {
         el.addEventListener('touchmove', this.preventOverscroll, { passive: false });
     }
     preventOverscroll = (ev) => {
+        if (ev.touches[0].touchType !== "direct") {
+            // Don't do anything for stylus inputs
+            return;
+        }
         let scrollEvent = false;
         let element = ev.target;
         const direction = ev.targetTouches[0].clientY - this.touchY;
