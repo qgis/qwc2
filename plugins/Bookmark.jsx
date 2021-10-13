@@ -13,8 +13,15 @@ import LocaleUtils from '../utils/LocaleUtils';
 import ConfigUtils from '../utils/ConfigUtils';
 import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
+import Spinner from '../components/Spinner';
 import {createBookmark, getUserBookmarks, removeBookmark, updateBookmark} from '../utils/PermaLinkUtils';
 import './style/Bookmark.css';
+
+export const BookmarkState = {
+    UNCHANGED: 0,
+    CHANGED: 1,
+    UPDATING: 2
+};
 
 class Bookmark extends React.Component {
     static propTypes = {
@@ -40,12 +47,18 @@ class Bookmark extends React.Component {
         return this.state.bookmarks.map((bookmark) => {
             return (
                 <tr key={bookmark.key}>
-                    <td onClick={() => this.open(bookmark.key)} title={openTitle}>{bookmark.description}</td>
+                    <td title={openTitle}>
+                        <input onBlur={() => this.updateBookmark(bookmark)} onChange={(ev) => this.renameBookmark(ev, bookmark.key)} type="text" value={bookmark.description} />
+                    </td>
                     <td>
                         <Icon icon="open_link" onClick={() => this.openInTab(bookmark.key)} title={openTabTitle} />
                     </td>
                     <td>
-                        <Icon icon="save" onClick={() => updateBookmark(this.props.state, bookmark.key, bookmark.description, this.refresh)} title={updateTitle} />
+                        {bookmark.state === BookmarkState.UPDATING ? (
+                            <Spinner />
+                        ) : (
+                            <Icon className={bookmark.state === BookmarkState.CHANGED ? 'bookmark-save-changed' : ''} icon="save" onClick={() => this.updateBookmark(bookmark, true)} title={updateTitle} />
+                        )}
                     </td>
                     <td>
                         <Icon icon="trash" onClick={() => removeBookmark(bookmark.key, this.refresh)} title={removeTitle} />
@@ -92,6 +105,20 @@ class Bookmark extends React.Component {
     openInTab = (bookmarkkey) => {
         const url = location.href.split("?")[0] + '?bk=' + bookmarkkey;
         window.open(url, '_blank');
+    }
+    renameBookmark = (ev, key) => {
+        const newBookmarks = this.state.bookmarks.map(bookmark => {
+            if (bookmark.key === key) {
+                return {...bookmark, description: ev.target.value, state: BookmarkState.CHANGED};
+            }
+            return bookmark;
+        });
+        this.setState({bookmarks: newBookmarks});
+    }
+    updateBookmark = (bookmark, force = false) => {
+        if (bookmark.state === BookmarkState.CHANGED || force) {
+            updateBookmark(this.props.state, bookmark.key, bookmark.description, this.refresh);
+        }
     }
     refresh = () => {
         getUserBookmarks(ConfigUtils.getConfigProp("username"), (bookmarks) => {

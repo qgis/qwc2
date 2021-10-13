@@ -62,11 +62,20 @@ div.bookmark-create > button:disabled {
 .bookmark-table tbody td {
     width: 100%;
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 0.25em;
 }
 
-.bookmark-table tbody td:first-child {
+.bookmark-table td > input {
     cursor: pointer;
+    min-width: 0;
+    width: 100%;
+    border: 1px solid transparent;
+    background-color: transparent;
+}
+
+.bookmark-table td > input:hover, .bookmark-table td > input:focus {
+    border: 1px solid @item_border@;
+    background-color: white;
 }
 
 .bookmark-table tr:nth-child(even){background-color: #f2f2f2;}
@@ -79,4 +88,13 @@ div.bookmark-create > button:disabled {
 
 .bookmark-table tbody td > span.icon-trash {
     color: red;
+}
+
+.bookmark-table tbody td > div.spinner {
+    width: 1.75em;
+    height: 1.5em;
+}
+
+.bookmark-table span.bookmark-save-changed {
+    color: green;
 }
