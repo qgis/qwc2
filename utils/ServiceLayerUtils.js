@@ -59,7 +59,7 @@ const ServiceLayerUtils = {
                 return entry.ScaleDenominator * 0.00028;
             });
             let url = layer.ResourceURL.find(u => u.resourceType === "tile").template;
-            layer.Dimension.forEach(dim => {
+            layer.Dimension && layer.Dimension.forEach(dim => {
                 url = url.replace("{" + dim.Identifier + "}", dim.Default);
             });
             return {
@@ -84,8 +84,8 @@ const ServiceLayerUtils = {
                 "resolutions": resolutions,
                 "abstract": layer.Abstract,
                 "attribution": {
-                    Title: capabilities.ServiceProvider.ProviderName,
-                    OnlineResource: capabilities.ServiceProvider.ProviderSite
+                    Title: capabilities.ServiceProvider?.ProviderName || capabilities.ServiceIdentification?.Title || "",
+                    OnlineResource: capabilities.ServiceProvider?.ProviderSite || ""
                 }
             };
         });
