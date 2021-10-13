@@ -177,11 +177,15 @@ class OlMap extends React.Component {
         }
         const features = [];
         this.map.forEachFeatureAtPixel(pixel, (feature, layer) => {
-            features.push([feature, layer]);
+            features.push({ layer: layer ? layer.get('id') : null,
+                feature: feature.getId(),
+                geomType: feature.getGeometry().getType(),
+                geometry: feature.getGeometry().getCoordinates ? feature.getGeometry().getCoordinates() : null})
         });
-        let data = {
+        const data = {
             coordinate: this.map.getEventCoordinate(event),
             pixel: this.map.getEventPixel(event),
+            features: features,
             modifiers: {
                 alt: event.altKey,
                 ctrl: event.ctrlKey,
@@ -189,17 +193,6 @@ class OlMap extends React.Component {
             },
             button: button
         };
-        if (!isEmpty(features)) {
-            const feature = features[0][0];
-            const layer = features[0][1];
-            data = {
-                ...data,
-                layer: layer ? layer.get('id') : null,
-                feature: feature.getId(),
-                geomType: feature.getGeometry().getType(),
-                geometry: feature.getGeometry().getCoordinates ? feature.getGeometry().getCoordinates() : null
-            };
-        }
         this.props.onClick(data);
     }
     updateMapInfoState = () => {

@@ -89,15 +89,21 @@ class Identify extends React.Component {
                 });
             });
 
-            let queryFeature = null;
-            if (this.props.click.feature) {
-                const layer = this.props.layers.find(l => l.id === this.props.click.layer);
-                if (layer && layer.role === LayerRole.USERLAYER && layer.type === "vector" && !isEmpty(layer.features)) {
-                    queryFeature = layer.features.find(feature =>  feature.id === this.props.click.feature);
-                    if (queryFeature && !isEmpty(queryFeature.properties)) {
-                        identifyResults[layer.name] = [queryFeature];
+            if (!isEmpty(this.props.click.features)) {
+                this.props.click.features.forEach((result) => {
+                    const layer = this.props.layers.find(l => l.id === result.layer);
+                    if (layer && layer.role === LayerRole.USERLAYER && layer.type === "vector" && !isEmpty(layer.features)) {
+                        const queryFeature = layer.features.find(feature =>  feature.id === result.feature);
+                        if (queryFeature && !isEmpty(queryFeature.properties)) {
+                            if (!identifyResults[layer.name]) {
+                                identifyResults[layer.name] = [];
+                            }
+                            queryFeature.displayname = queryFeature.properties.name || queryFeature.properties.Name || queryFeature.properties.NAME || queryFeature.properties.label || queryFeature.properties.id || queryFeature.id;
+                            queryFeature.layertitle = layer.title || layer.name || layer.id;
+                            identifyResults[layer.name].push(queryFeature);
+                        }
                     }
-                }
+                });
             }
             this.props.addMarker('identify', clickPoint, '', this.props.map.projection);
             this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests});

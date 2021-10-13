@@ -172,13 +172,16 @@ export default function layers(state = defaultState, action) {
         const newLayers = (state.flat || []).concat();
         const idx = newLayers.findIndex(layer => layer.id === layerId);
         if (idx === -1) {
+            const newFeatures = action.features.map(function(f) {
+                return {...f, id: f.id || f.properties.id || uuid.v4()};
+            });
             const newLayer = {
                 ...action.layer,
                 id: layerId,
                 type: 'vector',
                 name: action.layer.name || layerId,
                 uuid: uuid.v4(),
-                features: action.features,
+                features: newFeatures,
                 role: action.layer.role || LayerRole.USERLAYER,
                 queryable: action.layer.queryable || false,
                 visibility: action.layer.visibility || true,
