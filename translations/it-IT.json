@@ -5,7 +5,7 @@
       "filter": "Filtra menü...",
       "menulabel": "Mappa e strumenti",
       "items": {
-        "AttributeTable": "",
+        "AttributeTable": "Tabella attributi",
         "DxfExport": "Esporta su DXF",
         "Editing": "Strumenti di modifica",
         "Help": "Aiuto",
@@ -25,13 +25,13 @@
       }
     },
     "attribtable": {
-      "commit": "",
-      "discard": "",
-      "layer": "",
-      "loading": "",
-      "reload": "",
-      "selectlayer": "",
-      "title": ""
+      "commit": "Salva riga modificata",
+      "discard": "Ripristina riga modificata",
+      "layer": "Livello",
+      "loading": "Caricamento...",
+      "reload": "Ricarica dati",
+      "selectlayer": "Seleziona livello...",
+      "title": "Tabella attributi"
     },
     "bgswitcher": {
       "nobg": "Nessuno sfondo"
