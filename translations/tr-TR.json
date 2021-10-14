@@ -5,6 +5,7 @@
       "filter": "",
       "menulabel": "Harita & Araçlar",
       "items": {
+        "AttributeTable": "",
         "DxfExport": "DXF'e Veri Aktar",
         "Editing": "Düzenleme",
         "Help": "Yardım",
@@ -22,6 +23,15 @@
         "Tools": "Harita Araçları",
         "Bookmark": ""
       }
+    },
+    "attribtable": {
+      "commit": "",
+      "discard": "",
+      "layer": "",
+      "loading": "",
+      "reload": "",
+      "selectlayer": "",
+      "title": ""
     },
     "bgswitcher": {
       "nobg": "Arkaplan Yok"

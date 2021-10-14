@@ -1,0 +1,82 @@
+div.attribtable-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+div.attribtable-toolbar {
+    display: flex;
+    align-items: center;
+    padding: 0.25em;
+    flex: 0 0 auto;
+}
+
+div.attribtable-toolbar > * {
+    margin: 0.25em;
+}
+
+div.attribtable-toolbar > select {
+    border: 1px solid @item_border@;
+    height: 2em;
+}
+
+div.attribtable-toolbar button.edit-commit {
+    background-color: rgb(127,255,127);
+}
+
+div.attribtable-toolbar button.edit-discard {
+    background-color: rgb(255,127,127);
+}
+
+div.attribtable-contents {
+    flex: 1 1 auto;
+    background-color: white;
+    position: relative;
+}
+
+div.attribtable-loading,
+div.attribtable-reload {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(127, 127, 127, 0.4)
+}
+
+div.attribtable-loading > div.spinner {
+    width: 4em;
+    height: 4em;
+    margin-right: 1em;
+}
+
+div.attribtable-table-container {
+    height: 100%;
+    overflow: auto;
+}
+div.attribtable-contents table {
+    border-collapse: collapse;
+}
+
+div.attribtable-contents table td,
+div.attribtable-contents table th {
+    padding: 0.125em;
+    border: 1px solid @item_border@;
+}
+
+div.attribtable-contents table td > input,
+div.attribtable-contents table td > select,
+div.attribtable-contents table td > span.edit-upload-field {
+    width: 100%;
+    min-width: 4em;
+    border: none;
+    height: 100%;
+}
+
+div.attribtable-contents table tr.row-disabled,
+div.attribtable-contents table td > *:disabled {
+    background-color: #e0e0e0;
+}

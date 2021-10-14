@@ -5,6 +5,7 @@
       "filter": "Menü filtern...",
       "menulabel": "Karte & Werkzeuge",
       "items": {
+        "AttributeTable": "",
         "DxfExport": "DXF-Export",
         "Editing": "Editieren",
         "Help": "Hilfe",
@@ -22,6 +23,15 @@
         "Tools": "Werkzeuge",
         "Bookmark": "Lesezeichen"
       }
+    },
+    "attribtable": {
+      "commit": "",
+      "discard": "",
+      "layer": "",
+      "loading": "",
+      "reload": "",
+      "selectlayer": "",
+      "title": ""
     },
     "bgswitcher": {
       "nobg": "Kein Hintergrund"

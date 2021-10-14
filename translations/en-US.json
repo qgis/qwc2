@@ -5,6 +5,7 @@
       "filter": "Filter menu...",
       "menulabel": "Map & Tools",
       "items": {
+        "AttributeTable": "Attribute Table",
         "DxfExport": "DXF Export",
         "Editing": "Editing",
         "Help": "Help",
@@ -22,6 +23,15 @@
         "Tools": "Map Tools",
         "Bookmark": "Bookmarks"
       }
+    },
+    "attribtable": {
+      "commit": "Commit changed row",
+      "discard": "Discard changed row",
+      "layer": "Layer",
+      "loading": "Loading...",
+      "reload": "Reload data",
+      "selectlayer": "Select layer...",
+      "title": "Attribute Table"
     },
     "bgswitcher": {
       "nobg": "No background"

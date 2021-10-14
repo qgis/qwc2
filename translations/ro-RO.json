@@ -5,6 +5,7 @@
       "filter": "",
       "menulabel": "Hărți & Unelte",
       "items": {
+        "AttributeTable": "",
         "DxfExport": "Export DXF",
         "Editing": "Editare",
         "Help": "Ajutor",
@@ -22,6 +23,15 @@
         "Tools": "Unelte hartă",
         "Bookmark": "Marcaj"
       }
+    },
+    "attribtable": {
+      "commit": "",
+      "discard": "",
+      "layer": "",
+      "loading": "",
+      "reload": "",
+      "selectlayer": "",
+      "title": ""
     },
     "bgswitcher": {
       "nobg": "Fără fundal"

@@ -5,6 +5,7 @@
       "filter": "",
       "menulabel": "Eszközök",
       "items": {
+        "AttributeTable": "",
         "DxfExport": "DXF Exportálás",
         "Editing": "Szerkesztés",
         "Help": "Segítség",
@@ -22,6 +23,15 @@
         "Tools": "Térkép eszközök",
         "Bookmark": ""
       }
+    },
+    "attribtable": {
+      "commit": "",
+      "discard": "",
+      "layer": "",
+      "loading": "",
+      "reload": "",
+      "selectlayer": "",
+      "title": ""
     },
     "bgswitcher": {
       "nobg": "Nincs háttér"

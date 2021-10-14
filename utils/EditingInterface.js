@@ -40,8 +40,11 @@ function buildErrMsg(err) {
 
 /*
  layerId: The edit layer id
- featureData: a FormData instance, with a 'feature' entry containing the GeoJSON serialized feature and optionally one or more 'file:' prefixed file upload entries
- callback: function(success, result), if success = true, result is the committed GeoJSON feature, if success = false, result is an error message
+ mapPos: the map position
+ mapCrs: the map crs
+ mapScale: the map scale denominator
+ dpi: the map resolution
+ callback: function(result), on success result is a collection of features, on failure, result is null
 */
 function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
@@ -51,6 +54,22 @@ function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback) {
     const bbox = (mapPos[0] - tol) + "," + (mapPos[1] - tol) + "," + (mapPos[0] + tol) + "," + (mapPos[1] + tol);
 
     const req = SERVICE_URL + layerId + '/?bbox=' + bbox + '&crs=' + mapCrs;
+    axios.get(req).then(response => {
+        if (response.data && !isEmpty(response.data.features)) {
+            callback(response.data);
+        } else {
+            callback(null);
+        }
+    }).catch(() => callback(null));
+}
+
+/*
+ layerId: The edit layer id
+ callback: function(result), on success result is a collection of features, on failure, result is null
+*/
+function getFeatures(layerId, callback) {
+    const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
+    const req = SERVICE_URL + layerId + '/';
     axios.get(req).then(response => {
         if (response.data && !isEmpty(response.data.features)) {
             callback(response.data);
@@ -135,6 +154,7 @@ function getKeyValues(keyvalues, callback) {
 
 export default {
     getFeature,
+    getFeatures,
     addFeatureMultipart,
     editFeatureMultipart,
     deleteFeature,

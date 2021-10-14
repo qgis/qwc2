@@ -5,6 +5,7 @@
       "filter": "Filtra menü...",
       "menulabel": "Mappa e strumenti",
       "items": {
+        "AttributeTable": "",
         "DxfExport": "Esporta su DXF",
         "Editing": "Strumenti di modifica",
         "Help": "Aiuto",
@@ -22,6 +23,15 @@
         "Tools": "Strumenti",
         "Bookmark": "Segnalibri"
       }
+    },
+    "attribtable": {
+      "commit": "",
+      "discard": "",
+      "layer": "",
+      "loading": "",
+      "reload": "",
+      "selectlayer": "",
+      "title": ""
     },
     "bgswitcher": {
       "nobg": "Nessuno sfondo"

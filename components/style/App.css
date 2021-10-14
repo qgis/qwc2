@@ -137,7 +137,7 @@ h6 { font-size: 110%; }
 button.button {
     display: inline-flex;
     border: 1px solid @item_border@;
-    padding: 0.25em;
+    padding: 0.5em;
     align-items: center;
     justify-content: center;
     background-color: @button_bg@;
@@ -153,14 +153,14 @@ button.button > * {
     flex: 0 0 auto;
 }
 
+button.button > span:not(.icon) {
+    margin-left: 0.5em;
+}
+
 button.button:focus {
     outline: 0;
 }
 
-button.button > .icon
-{
-    margin-right: 0.25em;
-}
 button.button.pressed:not(:disabled) {
     background-color: @item_active@;
     color: white;

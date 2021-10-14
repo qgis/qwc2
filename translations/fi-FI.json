@@ -5,6 +5,7 @@
       "filter": "",
       "menulabel": "Kartat & Työkalut",
       "items": {
+        "AttributeTable": "",
         "DxfExport": "DXF vienti",
         "Editing": "Editointi",
         "Help": "Apua",
@@ -22,6 +23,15 @@
         "Tools": "Karttatyökalut",
         "Bookmark": "Kirjanmerkit"
       }
+    },
+    "attribtable": {
+      "commit": "",
+      "discard": "",
+      "layer": "",
+      "loading": "",
+      "reload": "",
+      "selectlayer": "",
+      "title": ""
     },
     "bgswitcher": {
       "nobg": "Ei taustakarttaa"

@@ -5,6 +5,7 @@
       "filter": "",
       "menulabel": "Zawartość mapy i narzędzia",
       "items": {
+        "AttributeTable": "",
         "DxfExport": "Eksport DXF",
         "Editing": "Edycja",
         "Help": "Pomoc",
@@ -22,6 +23,15 @@
         "Tools": "Narzędzia Mapy",
         "Bookmark": ""
       }
+    },
+    "attribtable": {
+      "commit": "",
+      "discard": "",
+      "layer": "",
+      "loading": "",
+      "reload": "",
+      "selectlayer": "",
+      "title": ""
     },
     "bgswitcher": {
       "nobg": "Bez tła"

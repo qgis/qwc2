@@ -5,6 +5,7 @@
       "filter": "",
       "menulabel": "Карта и инструменты",
       "items": {
+        "AttributeTable": "",
         "DxfExport": "Экспорт в DXF",
         "Editing": "Правка",
         "Help": "Помощь",
@@ -22,6 +23,15 @@
         "Tools": "Средства картографии",
         "Bookmark": ""
       }
+    },
+    "attribtable": {
+      "commit": "",
+      "discard": "",
+      "layer": "",
+      "loading": "",
+      "reload": "",
+      "selectlayer": "",
+      "title": ""
     },
     "bgswitcher": {
       "nobg": "Фон отсутствует"

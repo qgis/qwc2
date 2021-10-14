@@ -5,6 +5,7 @@
       "filter": "",
       "menulabel": "Kart & Verktøy",
       "items": {
+        "AttributeTable": "",
         "DxfExport": "Eksporter DXF",
         "Editing": "Rediger",
         "Help": "Hjelp",
@@ -22,6 +23,15 @@
         "Tools": "Kartverktøy",
         "Bookmark": ""
       }
+    },
+    "attribtable": {
+      "commit": "",
+      "discard": "",
+      "layer": "",
+      "loading": "",
+      "reload": "",
+      "selectlayer": "",
+      "title": ""
     },
     "bgswitcher": {
       "nobg": "Ingen bakgrunn"

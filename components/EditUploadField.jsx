@@ -19,11 +19,18 @@ import './style/EditUploadField.css';
 export default class EditUploadField extends React.Component {
     static propTypes = {
         constraints: PropTypes.object,
+        disabled: PropTypes.bool,
         editLayerId: PropTypes.string,
         fieldId: PropTypes.string,
         name: PropTypes.string,
+        showThumbnails: PropTypes.bool,
         updateField: PropTypes.func,
+        updateFile: PropTypes.func,
         value: PropTypes.string
+    }
+    static defaultProps = {
+        showThumbnails: true,
+        updateFile: () => {}
     }
     state = {
         camera: false,
@@ -51,13 +58,13 @@ export default class EditUploadField extends React.Component {
         const mediaSupport = 'mediaDevices' in navigator && constraints.accept.split(",").includes("image/jpeg");
         const imageData = fileType && fileType.startsWith('image/') ? fileUrl : this.state.imageData;
 
-        if (imageData) {
+        if (imageData && this.props.showThumbnails) {
             const extension = fileValue ? fileValue.replace(/^.*\./, '') : 'jpg';
             return (
                 <span className="edit-upload-field-image">
                     <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
                     {this.state.imageData ? (<input name={this.props.name} type="hidden" value={this.state.imageData} />) : null}
-                    <button className="button" onClick={this.clearPicture} type="button">
+                    <button className="button" disabled={this.props.disabled} onClick={this.clearPicture} type="button">
                         <Icon icon="clear" />
                         {LocaleUtils.tr("editing.clearpicture")}
                     </button>
@@ -65,18 +72,18 @@ export default class EditUploadField extends React.Component {
             );
         } else if (fileValue) {
             return (
-                <span className="edit-upload-field">
+                <span className={"edit-upload-field" + (this.props.disabled ? " edit-upload-field-disabled" : "")}>
                     <a href={fileUrl} rel="noreferrer" target="_blank">
                         {fileValue.replace(/.*\//, '')}
                     </a>
-                    <Icon icon="clear" onClick={() => this.props.updateField(this.props.fieldId, '')} />
+                    <Icon icon="clear" onClick={this.props.disabled ? null : () => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, null); }} />
                 </span>
             );
         } else {
             return (
-                <span className="edit-upload-field-input">
-                    <input name={this.props.name} type="file" {...constraints} onChange={() => this.props.updateField(this.props.fieldId, '')} />
-                    {mediaSupport ? (<Icon icon="camera" onClick={this.enableCamera} />) : null}
+                <span className={"edit-upload-field-input" + (this.props.disabled ? " edit-upload-field-input-disabled" : "")}>
+                    <input disabled={this.props.disabled} name={this.props.name} type="file" {...constraints} onChange={(ev) => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, ev.target.files[0]); }} />
+                    {mediaSupport ? (<Icon icon="camera" onClick={this.props.disabled ? null : this.enableCamera} />) : null}
                     {this.state.camera ? this.renderCaptureFrame() : null}
                 </span>
             );
@@ -111,12 +118,14 @@ export default class EditUploadField extends React.Component {
             const imageData = canvas.toDataURL("image/jpeg");
             this.setState({imageData: imageData});
             this.props.updateField(this.props.fieldId, '');
+            this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(imageData)], uuid.v1() + ".jpg", {type: "image/jpeg"}));
         }
         this.disableCamera();
     }
     clearPicture = () => {
         this.setState({imageData: null});
         this.props.updateField(this.props.fieldId, '');
+        this.props.updateFile(this.props.fieldId, null);
     }
     activateMediaStream = (el) => {
         if (this.state.camera && !this.cameraStream) {
