@@ -94,10 +94,7 @@ export default class AutoEditForm extends React.Component {
             input = (
                 <span className="input-frame">
                     <input name={field.id} type={field.type} {...constraints}
-                        onChange={(ev) => {
-                            // set empty date field value to null instead of empty string
-                            this.props.updateField(field.id, ev.target.value === '' ? null : ev.target.value);
-                        }}
+                        onChange={(ev) => this.props.updateField(field.id, ev.target.value)}
                         value={value} />
                 </span>
             );
