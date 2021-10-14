@@ -69,7 +69,7 @@ export function resolvePermaLink(initialParams, callback) {
     if (key) {
         axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/resolvepermalink?key=" + key)
             .then(response => {
-                callback(response.data.query || {}, response.data.state || {});
+                callback({...initialParams, ...(response.data.query || {})}, response.data.state || {});
             })
             .catch(() => {
                 callback(initialParams, {});
@@ -77,7 +77,7 @@ export function resolvePermaLink(initialParams, callback) {
     } else if (bkey) {
         axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey)
             .then(response => {
-                callback(response.data.query || {}, response.data.state || {});
+                callback({...initialParams, ...(response.data.query || {})}, response.data.state || {});
             })
             .catch(() => {
                 callback(initialParams, {});
