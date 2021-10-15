@@ -72,7 +72,7 @@ const ServiceLayerUtils = {
                 "tileMatrixSet": tileMatrixSet,
                 "originX": origin[0],
                 "originY": origin[1],
-                "projection:": tileMatrices[tileMatrixSet].crs,
+                "projection": tileMatrices[tileMatrixSet].crs,
                 "tileSize": [
                     topMatrix.TileWidth,
                     topMatrix.TileHeight
