@@ -161,7 +161,7 @@ class AttributeTable extends React.Component {
     }
     reload = () => {
         this.setState({loading: true, features: []});
-        this.props.iface.getFeatures(this.editLayerId(this.state.selectedLayer), (result) => {
+        this.props.iface.getFeatures(this.editLayerId(this.state.selectedLayer), this.props.mapCrs, (result) => {
             this.setState({loading: false, features: result.features || [], loadedLayer: this.state.selectedLayer});
         });
     }

@@ -65,11 +65,12 @@ function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback) {
 
 /*
  layerId: The edit layer id
+ mapCrs: the map crs
  callback: function(result), on success result is a collection of features, on failure, result is null
 */
-function getFeatures(layerId, callback) {
+function getFeatures(layerId, mapCrs, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
-    const req = SERVICE_URL + layerId + '/';
+    const req = SERVICE_URL + layerId + '/?crs=' + mapCrs;
     axios.get(req).then(response => {
         if (response.data && !isEmpty(response.data.features)) {
             callback(response.data);
