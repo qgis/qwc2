@@ -13,6 +13,7 @@ import isEmpty from 'lodash.isempty';
 import fastXmlParser from 'fast-xml-parser';
 import randomColor from 'randomcolor';
 import ConfigUtils from './ConfigUtils';
+import CoordinatesUtils from './CoordinatesUtils';
 import LayerUtils from './LayerUtils';
 import {LayerRole} from '../actions/layers';
 
