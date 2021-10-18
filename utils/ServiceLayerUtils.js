@@ -53,7 +53,7 @@ const ServiceLayerUtils = {
             const matchingMatrix = layer.TileMatrixSetLink.find(link => tileMatrices[link.TileMatrixSet].crs === mapCrs);
             const tileMatrixSet = matchingMatrix ? matchingMatrix.TileMatrixSet : layer.TileMatrixSetLink[0].TileMatrixSet;
             const topMatrix = tileMatrices[tileMatrixSet].matrix[0];
-            const origin = topMatrix.TopLeftCorner;
+            const origin = CoordinatesUtils.getAxisOrder(tileMatrices[tileMatrixSet].crs).substr(0, 2) === 'ne' ? [topMatrix.TopLeftCorner[1], topMatrix.TopLeftCorner[0]] : [topMatrix.TopLeftCorner[0], topMatrix.TopLeftCorner[1]];
             const resolutions = tileMatrices[tileMatrixSet].matrix.map(entry => {
                 // 0.00028: assumed pixel width in meters, as per WMTS standard
                 return entry.ScaleDenominator * 0.00028;
