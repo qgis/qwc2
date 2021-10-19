@@ -32,6 +32,7 @@ div.attribtable-contents {
     flex: 1 1 auto;
     background-color: white;
     position: relative;
+    overflow: auto;
 }
 
 div.attribtable-loading,
@@ -53,10 +54,6 @@ div.attribtable-loading > div.spinner {
     margin-right: 1em;
 }
 
-div.attribtable-table-container {
-    height: 100%;
-    overflow: auto;
-}
 div.attribtable-contents table {
     border-collapse: collapse;
 }
