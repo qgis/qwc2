@@ -85,13 +85,14 @@ class AttributeTable extends React.Component {
         let table = null;
         let navbar = null;
         if (currentEditConfig && this.state.features) {
-            const features = this.state.filteredFeatures;
             const fields = currentEditConfig.fields.reduce((res, field) => {
                 if (field.id !== "id") {
                     res.push(field);
                 }
                 return res;
             }, []);
+            const indexOffset = this.state.currentPage * this.state.pageSize;
+            const features = this.state.filteredFeatures.slice(indexOffset, indexOffset + this.state.pageSize);
             table = (
                 <table>
                     <tbody>
@@ -111,7 +112,7 @@ class AttributeTable extends React.Component {
                                     <td>{feature.id}</td>
                                     {fields.map(field => (
                                         <td key={field.id}>
-                                            {this.renderField(field, featureidx, filteredIndex, disabled || (!!this.state.filterVal && field.id === this.state.filterField) )}
+                                            {this.renderField(field, featureidx, indexOffset + filteredIndex, disabled || (!!this.state.filterVal && field.id === this.state.filterField) )}
                                         </td>
                                     ))}
                                 </tr>
@@ -120,20 +121,20 @@ class AttributeTable extends React.Component {
                     </tbody>
                 </table>
             );
-            const pages = Math.ceil(features.length / this.state.pageSize);
+            const pages = Math.ceil(this.state.filteredFeatures.length / this.state.pageSize);
             navbar = (
                 <div className="attribtable-footbar">
                     <span className="attribtable-nav">
-                        <button className="button" disabled={this.state.currentPage <= 0} onClick={() => this.setState({currentPage: this.state.currentPage - 1})}>
+                        <button className="button" disabled={this.state.currentPage <= 0 || this.state.changedFeatureIdx !== null} onClick={() => this.setState({currentPage: this.state.currentPage - 1})}>
                             <Icon icon="nav-left" />
                         </button>
-                        <select onChange={(ev) => this.setState({currentPage: parseInt(ev.target.value, 10)})} value={this.state.currentPage}>
+                        <select disabled={this.state.changedFeatureIdx !== null} onChange={(ev) => this.setState({currentPage: parseInt(ev.target.value, 10)})} value={this.state.currentPage}>
                             {new Array(pages).fill(0).map((x, idx) => (
-                                <option key={idx} value={idx}>{(idx * this.state.pageSize + 1) + " - " + (Math.min(features.length, (idx + 1) * this.state.pageSize))}</option>
+                                <option key={idx} value={idx}>{(idx * this.state.pageSize + 1) + " - " + (Math.min(this.state.filteredFeatures.length, (idx + 1) * this.state.pageSize))}</option>
                             ))}
                         </select>
-                        <span> / {features.length}</span>
-                        <button className="button" disabled={this.state.currentPage >= pages - 1} onClick={() => this.setState({currentPage: this.state.currentPage + 1})}>
+                        <span> / {this.state.filteredFeatures.length}</span>
+                        <button className="button" disabled={this.state.currentPage >= pages - 1 || this.state.changedFeatureIdx !== null} onClick={() => this.setState({currentPage: this.state.currentPage + 1})}>
                             <Icon icon="nav-right" />
                         </button>
                     </span>
