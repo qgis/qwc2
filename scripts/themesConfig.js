@@ -332,24 +332,24 @@ function getTheme(config, configItem, result, resultItem, proxy) {
                     templates = [templates];
                 }
                 for (const composerTemplate of templates) {
-                    const printTemplate = {
-                        name: composerTemplate.$.name
-                    };
                     if (composerTemplate.ComposerMap !== undefined) {
                         // use first map from GetProjectSettings
                         const composerMap = toArray(composerTemplate.ComposerMap)[0];
-                        printTemplate.map = {
-                            name: composerMap.$.name,
-                            width: parseFloat(composerMap.$.width),
-                            height: parseFloat(composerMap.$.height)
+                        const printTemplate = {
+                            name: composerTemplate.$.name,
+                            map: {
+                                name: composerMap.$.name,
+                                width: parseFloat(composerMap.$.width),
+                                height: parseFloat(composerMap.$.height)
+                            }
                         };
+                        if (composerTemplate.ComposerLabel !== undefined) {
+                            printTemplate.labels = toArray(composerTemplate.ComposerLabel).map((entry) => {
+                                return entry.$.name;
+                            }).filter(label => !(configItem.printLabelBlacklist || []).includes(label));
+                        }
+                        printTemplates.push(printTemplate);
                     }
-                    if (composerTemplate.ComposerLabel !== undefined) {
-                        printTemplate.labels = toArray(composerTemplate.ComposerLabel).map((entry) => {
-                            return entry.$.name;
-                        }).filter(label => !(configItem.printLabelBlacklist || []).includes(label));
-                    }
-                    printTemplates.push(printTemplate);
                 }
             }
 
