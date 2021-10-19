@@ -343,13 +343,13 @@ function getTheme(config, configItem, result, resultItem, proxy) {
                             width: parseFloat(composerMap.$.width),
                             height: parseFloat(composerMap.$.height)
                         };
+                        if (composerTemplate.ComposerLabel !== undefined) {
+                            printTemplate.labels = toArray(composerTemplate.ComposerLabel).map((entry) => {
+                                return entry.$.name;
+                            }).filter(label => !(configItem.printLabelBlacklist || []).includes(label));
+                        }
+                        printTemplates.push(printTemplate);
                     }
-                    if (composerTemplate.ComposerLabel !== undefined) {
-                        printTemplate.labels = toArray(composerTemplate.ComposerLabel).map((entry) => {
-                            return entry.$.name;
-                        }).filter(label => !(configItem.printLabelBlacklist || []).includes(label));
-                    }
-                    printTemplates.push(printTemplate);
                 }
             }
 
