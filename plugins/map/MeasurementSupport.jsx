@@ -20,7 +20,7 @@ const measureLabelStyleFactory = () => new ol.style.Text({
     font: '10pt sans-serif',
     text: "",
     fill: new ol.style.Fill({color: 'white'}),
-    stroke: new ol.style.Stroke({color: [0, 0, 0, 0.5], width: 4}),
+    stroke: new ol.style.Stroke({color: [0, 0, 0, 0.75], width: 4}),
     rotation: 0,
     offsetY: 10
 });
@@ -105,13 +105,10 @@ class MeasurementSupport extends React.Component {
             this.measureLayer.getSource().clear();
             this.sketchFeature = ev.feature;
             this.sketchFeature.setStyle(measureStyleFactory());
-            this.props.map.on('pointermove', this.updateMeasurementResults);
-            this.props.map.on('click', this.updateMeasurementResults);
+            this.sketchFeature.on('change', evt => this.updateMeasurementResults(evt.target));
         });
-        this.drawInteraction.on('drawend', (ev) => {
-            this.props.map.un('pointermove', this.updateMeasurementResults);
-            this.props.map.un('click', this.updateMeasurementResults);
-            this.updateMeasurementResults(ev, false);
+        this.drawInteraction.on('drawend', () => {
+            this.updateMeasurementResults(this.sketchFeature, false);
             this.enterTemporaryPickMode();
         });
 
@@ -148,14 +145,8 @@ class MeasurementSupport extends React.Component {
             }
         });
         this.props.map.on('pointermove', this.clearPickPosition);
-        this.modifyInteraction.on('modifystart', () => {
-            this.props.map.on('pointermove', this.updateMeasurementResults);
-            this.props.map.on('click', this.updateMeasurementResults);
-        });
-        this.modifyInteraction.on('modifyend', evt => {
-            this.props.map.un('pointermove', this.updateMeasurementResults);
-            this.props.map.un('click', this.updateMeasurementResults);
-            this.updateMeasurementResults(evt, false);
+        this.modifyInteraction.on('modifyend', () => {
+            this.updateMeasurementResults(this.sketchFeature, false);
         });
         this.props.map.addInteraction(this.modifyInteraction);
     }
@@ -175,11 +166,8 @@ class MeasurementSupport extends React.Component {
             }, 50);
         }
     }
-    updateMeasurementResults = (ev, drawing = true) => {
-        if (!this.sketchFeature) {
-            return;
-        }
-        const coo = this.sketchFeature.getGeometry().getCoordinates();
+    updateMeasurementResults = (feature, drawing = true) => {
+        const coo = feature.getGeometry().getCoordinates();
 
         let bearing = 0;
         if (this.props.measurement.geomType === 'Bearing' && coo.length > 1) {
@@ -189,10 +177,10 @@ class MeasurementSupport extends React.Component {
                 this.drawInteraction.finishDrawing();
             }
             const text = MeasureUtils.getFormattedBearingValue(bearing);
-            this.sketchFeature.getStyle()[0].getText().setText(text);
+            feature.getStyle()[0].getText().setText(text);
         }
         if (this.props.measurement.geomType === 'Point') {
-            this.sketchFeature.getStyle()[0].getText().setText(coo.map(x => x.toFixed(2)).join(", "));
+            feature.getStyle()[0].getText().setText(coo.map(x => x.toFixed(2)).join(", "));
         }
         let length = null;
         if (this.props.measurement.geomType === 'LineString') {
@@ -201,15 +189,7 @@ class MeasurementSupport extends React.Component {
                 const point = new ol.Feature({
                     geometry: new ol.geom.Point(coo[coo.length - 1])
                 });
-                const label = new ol.style.Text({
-                    font: '10pt sans-serif',
-                    text: "",
-                    fill: new ol.style.Fill({color: 'white'}),
-                    stroke: new ol.style.Stroke({color: [0, 0, 0, 0.5], width: 4}),
-                    rotation: 0,
-                    offsetY: 10
-                });
-                point.setStyle(new ol.style.Style({text: label}));
+                point.setStyle(new ol.style.Style({text: measureLabelStyleFactory()}));
                 this.measureLayer.getSource().addFeature(point);
                 this.segmentMarkers.push(point);
             }
@@ -222,9 +202,9 @@ class MeasurementSupport extends React.Component {
         }
         let area = null;
         if (this.props.measurement.geomType === 'Polygon') {
-            area = this.calculateGeodesicArea(this.sketchFeature.getGeometry().getLinearRing(0).getCoordinates());
+            area = this.calculateGeodesicArea(feature.getGeometry().getLinearRing(0).getCoordinates());
             const text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedArea(this.props.measurement.areaUnit, area), 2);
-            this.sketchFeature.getStyle()[0].getText().setText(text);
+            feature.getStyle()[0].getText().setText(text);
         }
 
         this.props.changeMeasurementState({
