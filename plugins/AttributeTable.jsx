@@ -9,7 +9,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import NumericInput from 'react-numeric-input2';
 import geojsonBbox from 'geojson-bounding-box';
 import {LayerRole} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
@@ -34,17 +33,24 @@ class AttributeTable extends React.Component {
         theme: PropTypes.object,
         zoomToExtent: PropTypes.func
     }
-    state = {
+    static defaultState = {
         loading: false,
         selectedLayer: "",
         loadedLayer: "",
         features: [],
+        filteredFeatures: [],
         changedFeatureIdx: null,
-        originalFeatureProps: null
+        originalFeatureProps: null,
+        pageSize: 50,
+        currentPage: 0,
+        filterField: "id",
+        filterOp: "~",
+        filterVal: ""
     }
     constructor(props) {
         super(props);
         this.changedFiles = {};
+        this.state = AttributeTable.defaultState;
     }
     render() {
         if (!this.props.active) {
@@ -77,7 +83,9 @@ class AttributeTable extends React.Component {
             }
         }
         let table = null;
+        let navbar = null;
         if (currentEditConfig && this.state.features) {
+            const features = this.state.filteredFeatures;
             const fields = currentEditConfig.fields.reduce((res, field) => {
                 if (field.id !== "id") {
                     res.push(field);
@@ -85,32 +93,65 @@ class AttributeTable extends React.Component {
                 return res;
             }, []);
             table = (
-                <div className="attribtable-table-container">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <th />
-                                <th>id</th>
-                                {fields.map(field => (
-                                    <th key={field.id}>{field.name}</th>
-                                ))}
-                            </tr>
-                            {this.state.features.map((feature, featureidx) => {
-                                const disabled = this.state.changedFeatureIdx !== null && this.state.changedFeatureIdx !== featureidx;
-                                return (
-                                    <tr className={disabled ? "row-disabled" : ""} key={feature.id}>
-                                        <td>{feature.geometry ? (<Icon icon="search" onClick={() => this.zoomToFeature(feature)} />) : null}</td>
-                                        <td>{feature.id}</td>
-                                        {fields.map(field => (
-                                            <td key={field.id}>
-                                                {this.renderField(field, featureidx, disabled)}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
+                <table>
+                    <tbody>
+                        <tr>
+                            <th />
+                            <th>id</th>
+                            {fields.map(field => (
+                                <th key={field.id}>{field.name}</th>
+                            ))}
+                        </tr>
+                        {features.map((feature, filteredIndex) => {
+                            const featureidx = feature.originalIndex;
+                            const disabled = this.state.changedFeatureIdx !== null && this.state.changedFeatureIdx !== featureidx;
+                            return (
+                                <tr className={disabled ? "row-disabled" : ""} key={feature.id}>
+                                    <td>{feature.geometry ? (<Icon icon="search" onClick={() => this.zoomToFeature(feature)} />) : null}</td>
+                                    <td>{feature.id}</td>
+                                    {fields.map(field => (
+                                        <td key={field.id}>
+                                            {this.renderField(field, featureidx, filteredIndex, disabled || (!!this.state.filterVal && field.id === this.state.filterField) )}
+                                        </td>
+                                    ))}
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            );
+            const pages = Math.ceil(features.length / this.state.pageSize);
+            navbar = (
+                <div className="attribtable-footbar">
+                    <span className="attribtable-nav">
+                        <button className="button" disabled={this.state.currentPage <= 0} onClick={() => this.setState({currentPage: this.state.currentPage - 1})}>
+                            <Icon icon="nav-left" />
+                        </button>
+                        <select onChange={(ev) => this.setState({currentPage: parseInt(ev.target.value, 10)})} value={this.state.currentPage}>
+                            {new Array(pages).fill(0).map((x, idx) => (
+                                <option key={idx} value={idx}>{(idx * this.state.pageSize + 1) + " - " + (Math.min(features.length, (idx + 1) * this.state.pageSize))}</option>
+                            ))}
+                        </select>
+                        <span> / {features.length}</span>
+                        <button className="button" disabled={this.state.currentPage >= pages - 1} onClick={() => this.setState({currentPage: this.state.currentPage + 1})}>
+                            <Icon icon="nav-right" />
+                        </button>
+                    </span>
+                    <span className="attribtable-filter">
+                        <Icon icon="filter" />
+                        <select disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterField", ev.target.value)} value={this.state.filterField}>
+                            <option value="id">id</option>
+                            {fields.map(field => (
+                                <option key={field.id} value={field.id}>{field.name}</option>
+                            ))}
+                        </select>
+                        <select disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterOp", ev.target.value)} value={this.state.filterOp}>
+                            <option value="~">~</option>
+                            <option value="=">=</option>
+                        </select>
+                        <input disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterVal", ev.target.value)} type="text" value={this.state.filterVal} />
+                        <button className="button" disabled={this.state.changedFeatureIdx !== null} onClick={() => this.updateFilter("filterVal", "")} value={this.state.filterValue}><Icon icon="clear" /></button>
+                    </span>
                 </div>
             );
         }
@@ -149,20 +190,23 @@ class AttributeTable extends React.Component {
                         {loadOverlay}
                         {table}
                     </div>
+                    {navbar}
                 </div>
             </ResizeableWindow>
         );
     }
     onClose = () => {
+        this.setState(AttributeTable.defaultState);
         this.props.setCurrentTask(null);
     }
     changeSelectedLayer = (value) => {
         this.setState({selectedLayer: value});
     }
     reload = () => {
-        this.setState({loading: true, features: []});
+        this.setState({...AttributeTable.defaultState, loading: true, selectedLayer: this.state.selectedLayer});
         this.props.iface.getFeatures(this.editLayerId(this.state.selectedLayer), this.props.mapCrs, (result) => {
-            this.setState({loading: false, features: result.features || [], loadedLayer: this.state.selectedLayer});
+            const features = result.features || [];
+            this.setState({loading: false, features: features, filteredFeatures: this.filteredFeatures(features, this.state), loadedLayer: this.state.selectedLayer});
         });
     }
     editLayerId = (layerId) => {
@@ -171,13 +215,13 @@ class AttributeTable extends React.Component {
         }
         return layerId;
     }
-    renderField = (field, featureidx, fielddisabled = false) => {
+    renderField = (field, featureidx, filteredIndex, fielddisabled = false) => {
         const feature = this.state.features[featureidx];
         let value = feature.properties[field.id];
         if (value === undefined || value === null) {
             value = "";
         }
-        const updateField = (fieldid, val, emptynull = false) => this.updateField(featureidx, fieldid, val, emptynull);
+        const updateField = (fieldid, val, emptynull = false) => this.updateField(featureidx, filteredIndex, fieldid, val, emptynull);
         const constraints = field.constraints || {};
         const disabled = constraints.readOnly || fielddisabled;
         let input = null;
@@ -234,13 +278,16 @@ class AttributeTable extends React.Component {
         }
         return input;
     }
-    updateField = (featureidx, fieldid, value, emptynull) => {
+    updateField = (featureidx, filteredIdx, fieldid, value, emptynull) => {
         value = value === "" && emptynull ? null : value;
         const newFeatures = [...this.state.features];
         newFeatures[featureidx] = {...newFeatures[featureidx]};
         newFeatures[featureidx].properties = {...newFeatures[featureidx].properties, [fieldid]: value};
+        const newFilteredFeatures = [...this.state.filteredFeatures];
+        newFilteredFeatures[filteredIdx] = {...newFilteredFeatures[filteredIdx]};
+        newFilteredFeatures[filteredIdx].properties = {...newFilteredFeatures[filteredIdx].properties, [fieldid]: value};
         const originalFeatureProps = this.state.originalFeature || {...this.state.features[featureidx].properties};
-        this.setState({features: newFeatures, changedFeatureIdx: featureidx, originalFeatureProps: originalFeatureProps});
+        this.setState({features: newFeatures, filteredFeatures: newFilteredFeatures, changedFeatureIdx: featureidx, originalFeatureProps: originalFeatureProps});
     }
     commit = () => {
         const feature = {
@@ -266,7 +313,7 @@ class AttributeTable extends React.Component {
             const newFeatures = [...this.state.features];
             newFeatures[featureidx] = result;
             this.changedFiles = {};
-            this.setState({features: newFeatures, changedFeatureIdx: null, originalFeature: null});
+            this.setState({features: newFeatures, filteredFeatures: this.filteredFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeature: null});
         }
     }
     discard = () => {
@@ -283,6 +330,37 @@ class AttributeTable extends React.Component {
             features: [feature]
         });
         this.props.zoomToExtent(bbox, this.props.mapCrs);
+    }
+    updateFilter = (state, val) => {
+        const newState = {...this.state, [state]: val};
+        this.setState({[state]: val, filteredFeatures: this.filteredFeatures(this.state.features, newState)});
+    }
+    filteredFeatures = (features, state) => {
+        if (!state.filterVal) {
+            return features.map((feature, idx) => ({...feature, originalIndex: idx}));
+        }
+        const filterVal = state.filterVal.toLowerCase();
+        let test = null;
+        if (state.filterOp === "~") {
+            test = (x) => (String(x).toLowerCase().includes(filterVal));
+        } else if (state.filterOp === "=") {
+            test = (x) => (String(x).toLowerCase() === filterVal);
+        }
+        if (state.filterField === "id") {
+            return features.reduce((res, feature, idx) => {
+                if (test(feature.id)) {
+                    res.push({...feature, originalIndex: idx});
+                }
+                return res;
+            }, []);
+        } else {
+            return features.reduce((res, feature, idx) => {
+                if (test(feature.properties[state.filterField])) {
+                    res.push({...feature, originalIndex: idx});
+                }
+                return res;
+            }, []);
+        }
     }
 }
 

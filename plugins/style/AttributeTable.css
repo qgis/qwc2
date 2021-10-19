@@ -80,3 +80,28 @@ div.attribtable-contents table tr.row-disabled,
 div.attribtable-contents table td > *:disabled {
     background-color: #e0e0e0;
 }
+
+div.attribtable-footbar {
+    flex: 0 0 auto;
+}
+
+div.attribtable-footbar input,
+div.attribtable-footbar select {
+    border: 1px solid @item_border@;
+    height: 2em;
+}
+
+span.attribtable-nav {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 1em;
+}
+
+span.attribtable-nav > * {
+    margin: 0.25em;
+}
+
+span.attribtable-filter {
+    display: inline-flex;
+    align-items: center;
+}
