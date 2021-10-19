@@ -311,15 +311,15 @@ def getTheme(config, configItem, result, resultItem):
         composerTemplates = getChildElement(capabilities, "Capability/ComposerTemplates")
         if composerTemplates:
             for composerTemplate in composerTemplates.getElementsByTagName("ComposerTemplate"):
-                printTemplate = {
-                    "name": composerTemplate.getAttribute("name")
-                }
                 composerMap = getChildElement(composerTemplate, "ComposerMap")
                 if composerMap:
-                    printTemplate["map"] = {
-                        "name": composerMap.getAttribute("name"),
-                        "width": float(composerMap.getAttribute("width")),
-                        "height": float(composerMap.getAttribute("height"))
+                    printTemplate = {
+                        "name": composerTemplate.getAttribute("name"),
+                        "map": {
+                            "name": composerMap.getAttribute("name"),
+                            "width": float(composerMap.getAttribute("width")),
+                            "height": float(composerMap.getAttribute("height"))
+                        }
                     }
                     composerLabels = composerTemplate.getElementsByTagName("ComposerLabel")
                     labels = [composerLabel.getAttribute("name") for composerLabel in composerLabels]
