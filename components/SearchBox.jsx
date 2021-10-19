@@ -16,7 +16,7 @@ import uuid from 'uuid';
 import {SearchResultType} from '../actions/search';
 import {logAction} from '../actions/logging';
 import {panTo, zoomToPoint} from '../actions/map';
-import {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer} from '../actions/layers';
+import {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer, addLayer} from '../actions/layers';
 import {setCurrentTheme} from '../actions/theme';
 import {setCurrentTask} from '../actions/task';
 import Icon from './Icon';
@@ -639,6 +639,7 @@ export default (searchProviders, providerFactory = () => { return null; }) => {
             searchProviders: searchproviders
         })), {
             addThemeSublayer: addThemeSublayer,
+            addLayer: addLayer,
             addLayerFeatures: addLayerFeatures,
             removeLayer: removeLayer,
             setCurrentTask: setCurrentTask,
