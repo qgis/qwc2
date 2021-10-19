@@ -206,8 +206,13 @@ class AttributeTable extends React.Component {
     reload = () => {
         this.setState({...AttributeTable.defaultState, loading: true, selectedLayer: this.state.selectedLayer});
         this.props.iface.getFeatures(this.editLayerId(this.state.selectedLayer), this.props.mapCrs, (result) => {
-            const features = result.features || [];
-            this.setState({loading: false, features: features, filteredFeatures: this.filteredFeatures(features, this.state), loadedLayer: this.state.selectedLayer});
+            if (result) {
+                const features = result.features || [];
+                this.setState({loading: false, features: features, filteredFeatures: this.filteredFeatures(features, this.state), loadedLayer: this.state.selectedLayer});
+            } else {
+                alert(LocaleUtils.tr("attribtable.loadfailed"));
+                this.setState({loading: false, features: [], filteredFeatures: [], loadedLayer: ""});
+            }
         });
     }
     editLayerId = (layerId) => {

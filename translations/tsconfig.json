@@ -43,6 +43,7 @@
     "attribtable.commit",
     "attribtable.discard",
     "attribtable.layer",
+    "attribtable.loadfailed",
     "attribtable.loading",
     "attribtable.reload",
     "attribtable.selectlayer",

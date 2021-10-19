@@ -28,6 +28,7 @@
       "commit": "Commit changed row",
       "discard": "Discard changed row",
       "layer": "Layer",
+      "loadfailed": "Failed to load the feature data",
       "loading": "Loading...",
       "reload": "Reload data",
       "selectlayer": "Select layer...",

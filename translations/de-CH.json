@@ -28,6 +28,7 @@
       "commit": "Geänderte Zeile speichern",
       "discard": "Geänderte Zeile zurücksetzen",
       "layer": "Ebene",
+      "loadfailed": "Die Objektdaten konnten nicht geladen werden",
       "loading": "Laden...",
       "reload": "Daten neu laden",
       "selectlayer": "Ebene auswählen...",

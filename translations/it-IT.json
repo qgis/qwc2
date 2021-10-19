@@ -28,6 +28,7 @@
       "commit": "Salva riga modificata",
       "discard": "Ripristina riga modificata",
       "layer": "Livello",
+      "loadfailed": "",
       "loading": "Caricamento...",
       "reload": "Ricarica dati",
       "selectlayer": "Seleziona livello...",
