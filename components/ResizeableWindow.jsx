@@ -127,7 +127,7 @@ class ResizeableWindow extends React.Component {
         const zIndex = 10 + this.props.windowStacking.findIndex(item => item === this.id);
 
         const content = [
-            (<div className="resizeable-window-titlebar" key="titlebar">
+            (<div className="resizeable-window-titlebar" key="titlebar" onDoubleClick={this.toggleMaximize}>
                 {icon}
                 <span className="resizeable-window-titlebar-title">
                     {this.props.title ? LocaleUtils.tr(this.props.title) : (this.props.titlelabel || "")}
