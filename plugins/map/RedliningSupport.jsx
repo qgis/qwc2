@@ -156,7 +156,7 @@ class RedliningSupport extends React.Component {
         if (!this.currentFeature) {
             return;
         }
-        const circle = this.currentFeature.get('circle');
+        const circle = this.currentFeature.get('circleParams');
         if (circle) {
             this.currentFeature.setGeometry(new ol.geom.Circle(circle.center, circle.radius));
         }
@@ -226,7 +226,7 @@ class RedliningSupport extends React.Component {
             }
             if (evt.selected.length === 1) {
                 this.currentFeature = evt.selected[0];
-                const circle = this.currentFeature.get('circle');
+                const circle = this.currentFeature.get('circleParams');
                 if (circle) {
                     this.currentFeature.setGeometry(new ol.geom.Circle(circle.center, circle.radius));
                 }
@@ -294,17 +294,26 @@ class RedliningSupport extends React.Component {
             feature.geometry.coordinates = [
                 Array.apply(null, Array(361)).map((item, index) => ([center[0] + radius * Math.cos(index * deg2rad), center[1] + radius * Math.sin(index * deg2rad)]))
             ];
-            Object.assign(feature.properties, {circle: {
+            feature.circleParams = {
                 center: center,
                 radius: radius
-            }});
+            };
         }
+        feature.isText = isText;
         feature.styleName = this.currentFeature.get('styleName');
         feature.styleOptions = this.currentFeature.get('styleOptions');
+        delete feature.properties.styleName;
+        delete feature.properties.styleOptions;
+        delete feature.properties.isText;
+        delete feature.properties.circleParams;
+        if (feature.properties.label === "") {
+            delete feature.properties.label;
+        }
         const layer = {
             id: this.props.redlining.layer,
             title: this.props.redlining.layerTitle,
-            role: LayerRole.USERLAYER
+            role: LayerRole.USERLAYER,
+            queryable: false
         };
         this.props.addLayerFeatures(layer, [feature]);
         this.resetSelectedFeature();
