@@ -275,10 +275,13 @@ const VectorLayerUtils = {
         return features;
     },
     computeFeaturesBBox(features) {
-        return geojsonBbox({
-            type: "FeatureCollection",
-            features: features.filter(feature => feature.geometry)
-        });
+        return {
+            crs: "EPSG:4326",
+            bounds: geojsonBbox({
+                type: "FeatureCollection",
+                features: features.filter(feature => feature.geometry)
+            })
+        };
     }
 };
 

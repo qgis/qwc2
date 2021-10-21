@@ -13,6 +13,7 @@ import isEqual from 'lodash.isequal';
 import omit from 'lodash.omit';
 import ol from 'openlayers';
 import {setLayerLoading} from '../../actions/layers';
+import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LayerRegistry from './layers/index';
 
 class OlLayer extends React.Component {
@@ -127,16 +128,10 @@ class OlLayer extends React.Component {
             event.context.restore();
         });
 
-        if (options.zoomToExtent && layer.getSource()) {
+        if (options.zoomToExtent && options.bbox) {
             const map = this.props.map;
-            const source = layer.getSource();
-            source.once('change', () => {
-                if (source.getState() === 'ready') {
-                    if (source.getFeatures().length > 0) {
-                        map.getView().fit(source.getExtent(), map.getSize());
-                    }
-                }
-            });
+            const extent = CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, map.getView().getProjection());
+            map.getView().fit(extent, map.getSize());
         }
         const sublayers = {};
         if (layer instanceof ol.layer.Group) {

@@ -187,7 +187,7 @@ export default function layers(state = defaultState, action) {
                 visibility: action.layer.visibility || true,
                 opacity: action.layer.opacity || 255,
                 layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER,
-                bbox: {bounds: VectorLayerUtils.computeFeaturesBBox(action.features)}
+                bbox: VectorLayerUtils.computeFeaturesBBox(action.features)
             };
             let inspos = 0;
             for (; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);
@@ -206,7 +206,7 @@ export default function layers(state = defaultState, action) {
                 });
             }
             newFeatures = newFeatures.concat(addFeatures);
-            newLayers[idx] = {...newLayers[idx], features: newFeatures, bbox: {bounds: VectorLayerUtils.computeFeaturesBBox(newFeatures)}};
+            newLayers[idx] = {...newLayers[idx], features: newFeatures, bbox: VectorLayerUtils.computeFeaturesBBox(newFeatures)};
         }
         return {...state, flat: newLayers};
     }
@@ -215,7 +215,7 @@ export default function layers(state = defaultState, action) {
             if (layer.id === action.layerId) {
                 const newFeatures = layer.features.filter(f => action.featureIds.includes(f.id) === false);
                 if (!isEmpty(newFeatures) || action.keepEmptyLayer) {
-                    result.push({...layer, features: newFeatures, bbox: {bounds: VectorLayerUtils.computeFeaturesBBox(newFeatures)}});
+                    result.push({...layer, features: newFeatures, bbox: VectorLayerUtils.computeFeaturesBBox(newFeatures)});
                 }
             } else {
                 result.push(layer);
