@@ -120,7 +120,7 @@ const VectorLayerUtils = {
                    '</se:Fill>';
 
         let rule = null;
-        if (geometrytype === "Point") {
+        if (geometrytype.endsWith("Point")) {
             rule = '<se:PointSymbolizer>' +
                    '<se:Graphic>' +
                    '<se:Mark>' +
@@ -135,11 +135,11 @@ const VectorLayerUtils = {
                    '<se:Size>' + (2 * opts.circleRadius * dpiScale) + '</se:Size>' +
                    '</se:Graphic>' +
                    '</se:PointSymbolizer>';
-        } else if (geometrytype === "LineString") {
+        } else if (geometrytype.endsWith("LineString")) {
             rule = '<se:LineSymbolizer>' +
                    stroke +
                    '</se:LineSymbolizer>';
-        } else if (geometrytype === "Polygon") {
+        } else if (geometrytype.endsWith("Polygon")) {
             rule = '<se:PolygonSymbolizer>' +
                    stroke +
                    fill +
