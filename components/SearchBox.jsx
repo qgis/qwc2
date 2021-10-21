@@ -19,6 +19,7 @@ import {panTo, zoomToPoint} from '../actions/map';
 import {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer, addLayer} from '../actions/layers';
 import {setCurrentTheme} from '../actions/theme';
 import {setCurrentTask} from '../actions/task';
+import {showNotification} from '../actions/windows';
 import Icon from './Icon';
 import displayCrsSelector from '../selectors/displaycrs';
 import searchProvidersSelector from '../selectors/searchproviders';
@@ -52,6 +53,7 @@ class SearchBox extends React.Component {
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
+        showNotification: PropTypes.func,
         theme: PropTypes.object,
         themes: PropTypes.object,
         zoomToPoint: PropTypes.func
@@ -448,10 +450,10 @@ class SearchBox extends React.Component {
         if (searchSession !== this.state.searchSession) {
             return;
         }
-        const pendingSearches = this.state.pendingSearches.filter(entry => entry == searchId);
+        const pendingSearches = this.state.pendingSearches.filter(entry => entry === searchId);
         const searchResults = {...this.state.searchResults, [searchId]: results};
         this.setState({
-            searchResults:searchResults ,
+            searchResults: searchResults,
             pendingSearches: pendingSearches
         });
         if (isEmpty(pendingSearches)) {
@@ -518,7 +520,10 @@ class SearchBox extends React.Component {
             const existing = this.props.layers.find(l => {
                 return l.type === result.layer.type && l.url === result.layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)));
             });
-            if (!existing) {
+            if (existing) {
+                const text = LocaleUtils.tr("search.existinglayer") + " : " + result.layer.title;
+                this.props.showNotification("existinglayer", text);
+            } else {
                 this.props.addLayer(result.layer);
             }
             // Show layer tree to notify user that something has happened
@@ -646,7 +651,8 @@ export default (searchProviders, providerFactory = () => { return null; }) => {
             zoomToPoint: zoomToPoint,
             panTo: panTo,
             logAction: logAction,
-            setCurrentTheme: setCurrentTheme
+            setCurrentTheme: setCurrentTheme,
+            showNotification: showNotification
         }
     )(SearchBox);
 };
