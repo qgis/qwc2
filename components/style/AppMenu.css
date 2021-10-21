@@ -98,6 +98,7 @@ div.AppMenu ul.appmenu-menu li.appmenu-leaf > span.icon {
 
 div.AppMenu ul.appmenu-menu li.appmenu-leaf > span.appmenu-leaf-label {
     flex: 1 1 auto;
+    margin: 0.25em 0;
 }
 
 div.AppMenu ul.appmenu-menu li.appmenu-leaf div.appmenu-leaf-comment {
