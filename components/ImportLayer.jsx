@@ -226,6 +226,9 @@ class ImportLayer extends React.Component {
                 } else if (typeof feature.crs === "string") {
                     crs = feature.crs;
                 }
+                if (feature.geometry && feature.geometry.coordinates) {
+                    feature.geometry.coordinates = feature.geometry.coordinates.map(VectorLayerUtils.convert3dto2d);
+                }
                 return {...feature, crs: crs};
             });
             this.props.addLayerFeatures({

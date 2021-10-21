@@ -274,6 +274,16 @@ const VectorLayerUtils = {
         }
         return features;
     },
+    convert3dto2d(entry) {
+        if (!Array.isArray(entry)) {
+            return entry;
+        } else if (entry.length >= 3 && !Array.isArray(entry[0])) {
+            return [entry[0], entry[1]];
+        } else if (Array.isArray(entry[0])) {
+            return entry.map(VectorLayerUtils.convert3dto2d);
+        }
+        return entry;
+    },
     computeFeaturesBBox(features) {
         return {
             crs: "EPSG:4326",
