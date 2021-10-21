@@ -96,7 +96,7 @@ class Search extends React.Component {
             } else {
                 activeProviders = (activeProviders || []).filter(key => this.props.searchProviders[key] !== undefined);
                 if (isEmpty(activeProviders)) {
-                    activeProviders = this.props.searchOptions.providerSelectionAllowAll ? null : [this.props.searchProviders[0].key];
+                    activeProviders = this.props.searchOptions.providerSelectionAllowAll ? null : [Object.keys(this.props.searchProviders)[0]];
                 }
             }
 
