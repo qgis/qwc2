@@ -80,7 +80,6 @@ class SearchBox extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         // Restore highlight from URL as soon as theme is loaded
         if (this.props.theme && !prevProps.theme) {
-            const hc = UrlParams.getParam('hc');
             const hp = UrlParams.getParam('hp');
             const hf = UrlParams.getParam('hf');
             const ht = UrlParams.getParam('ht') || "";
@@ -111,15 +110,8 @@ class SearchBox extends React.Component {
                         this.setState({searchText: ht});
                     }
                 }).catch(() => {});
-            } else if (typeof(hc) === "string" && (hc.toLowerCase() === "true" || hc === "1")) {
-                this.selectProviderResult({
-                    label: "",
-                    x: this.props.map.center[0],
-                    y: this.props.map.center[1],
-                    crs: this.props.displaycrs
-                }, false);
             }
-            UrlParams.updateParams({hp: undefined, hf: undefined, hc: undefined, ht: undefined});
+            UrlParams.updateParams({hp: undefined, hf: undefined, ht: undefined});
         }
     }
     renderRecentResults = () => {
