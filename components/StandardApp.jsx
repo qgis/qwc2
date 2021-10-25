@@ -47,6 +47,7 @@ class AppInitComponent extends React.Component {
         initialParams: PropTypes.object,
         mapSize: PropTypes.object,
         setCurrentTheme: PropTypes.func,
+        setStartupParameters: PropTypes.func,
         themesLoaded: PropTypes.func
     }
     constructor(props) {
@@ -72,6 +73,7 @@ class AppInitComponent extends React.Component {
 
             // Resolve permalink and restore settings
             resolvePermaLink(this.props.initialParams, (params, state) => {
+                this.props.setStartupParameters(params);
                 let theme = ThemeUtils.getThemeById(themes,  params.t);
                 if (!theme || theme.restricted) {
                     if (ConfigUtils.getConfigProp("dontLoadDefaultTheme")) {
@@ -129,6 +131,7 @@ const AppInit = connect(state => ({
     themesLoaded: themesLoaded,
     changeSearch: changeSearch,
     setCurrentTheme: setCurrentTheme,
+    setStartupParameters: setStartupParameters,
     addLayer: addLayer
 })(AppInitComponent);
 
@@ -144,7 +147,6 @@ export default class StandardApp extends React.Component {
         this.init();
         // Save initial params before they get overwritten
         this.initialParams = UrlParams.getParams();
-        this.store.dispatch(setStartupParameters(this.initialParams));
         this.touchY = null;
     }
     componentDidMount() {
