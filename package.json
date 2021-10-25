@@ -61,11 +61,18 @@
         "wellknown": "0.5.0"
     },
     "devDependencies": {
+        "@babel/core": "7.15.8",
+        "@babel/eslint-parser": "7.15.8",
+        "@babel/plugin-proposal-class-properties": "7.14.5",
+        "@babel/plugin-proposal-object-rest-spread": "7.15.6",
+        "@babel/preset-env": "7.15.8",
+        "@babel/preset-react": "7.14.5",
         "@redux-devtools/core": "3.9.0",
         "@redux-devtools/dock-monitor": "1.4.0",
         "@redux-devtools/log-monitor": "2.3.0",
         "@types/react": "17.0.32",
         "@vusion/webfonts-generator": "0.7.3",
+        "mkdirp": "1.0.4",
         "object-path": "0.11.8",
         "redux-immutable-state-invariant": "2.1.0",
         "xml2js": "0.4.23"
