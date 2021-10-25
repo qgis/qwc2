@@ -32,6 +32,5 @@ div.overview-map > div.ol-overviewmap-map {
 }
 
 div.overview-map.ol-collapsed > div.ol-overviewmap-map {
-    width: 0;
-    height: 0;
+    display: none;
 }

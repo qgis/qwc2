@@ -10,12 +10,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {connect} from 'react-redux';
-import {Swipeable} from 'react-swipeable';
 import {toggleFullscreen} from '../actions/display';
 import {openExternalUrl} from '../actions/task';
 import {setTopbarHeight} from '../actions/map';
 import {restoreDefaultTheme} from '../actions/theme';
 import Icon from '../components/Icon';
+import {Swipeable} from '../components/Swipeable';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/TopBar.css';
@@ -83,8 +83,7 @@ class TopBar extends React.Component {
         return (
             <Swipeable
                 onSwipedDown={() => this.props.toggleFullscreen(false)}
-                onSwipedUp={() => this.props.toggleFullscreen(true)}
-                preventDefaultTouchmoveEvent>
+                onSwipedUp={() => this.props.toggleFullscreen(true)}>
                 <div className={classes} id="TopBar" ref={this.storeHeight}>
                     {logoEl}
                     <div className="center-span">
@@ -102,9 +101,6 @@ class TopBar extends React.Component {
                 </div>
             </Swipeable>
         );
-    }
-    triggerFullscreen = () => {
-        this.props.toggleFullscreen(true);
     }
     storeHeight = (el) => {
         if (el) {

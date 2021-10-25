@@ -9,9 +9,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {Swipeable} from 'react-swipeable';
 import {remove as removeDiacritics} from 'diacritics';
 import isEmpty from 'lodash.isempty';
+import {Swipeable} from './Swipeable';
 import {setCurrentTask} from '../actions/task';
 import LocaleUtils from '../utils/LocaleUtils';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -146,14 +146,12 @@ class AppMenu extends React.Component {
         }
         const filter = removeDiacritics(this.state.filter.toLowerCase());
         return (
-            <div className={"AppMenu " + className}
-                onTouchEnd={ev => ev.stopPropagation()}
-                onTouchMove={ev => ev.stopPropagation()} onTouchStart={ev => ev.stopPropagation()}  ref={el => { this.menuEl = el; }}
+            <div className={"AppMenu " + className} ref={el => { this.menuEl = el; }}
             >
                 <div className="appmenu-button-container" onMouseDown={this.toggleMenu}>
                     {this.props.buttonContents}
                 </div>
-                <Swipeable onSwipedUp={this.toggleMenu} preventDefaultTouchmoveEvent>
+                <Swipeable onSwipedUp={this.toggleMenu} stopPropagation>
                     <div className="appmenu-menu-container">
                         <ul className="appmenu-menu">
                             {this.props.showFilterField ? (

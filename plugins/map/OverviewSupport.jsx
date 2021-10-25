@@ -39,7 +39,7 @@ class OverviewMap extends React.Component {
         this.overview.getOverviewMap().set('id', 'overview');
     }
     render() {
-        const layer = this.props.layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility);
+        const layer = this.props.layers.find(l => l.role === LayerRole.BACKGROUND && l.visibility);
         if (layer) {
             return (
                 <OlLayer key={layer.uuid} map={this.overview.getOverviewMap()} options={layer} projection={this.props.projection} />

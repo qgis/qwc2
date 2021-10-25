@@ -59,7 +59,7 @@ def getUrlOpener(configItem):
 # load thumbnail from file or GetMap
 def getThumbnail(configItem, resultItem, layers, crs, extent):
     if "thumbnail" in configItem:
-        if os.path.exists(qwc2_path + "/assets/img/mapthumbs/" + configItem["thumbnail"]):
+        if os.path.exists(qwc2_path + "/static/assets/img/mapthumbs/" + configItem["thumbnail"]):
             resultItem["thumbnail"] = "img/mapthumbs/" + configItem["thumbnail"]
             return
 
@@ -90,10 +90,10 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
         reply = opener(url).read()
         basename = configItem["url"].rsplit("/")[-1].rstrip("?") + ".png"
         try:
-            os.makedirs(qwc2_path + "/assets/img/genmapthumbs/")
+            os.makedirs(qwc2_path + "/static/assets/img/genmapthumbs/")
         except Exception as e:
             if not isinstance(e, FileExistsError): raise e
-        thumbnail = qwc2_path + "/assets/img/genmapthumbs/" + basename
+        thumbnail = qwc2_path + "/static/assets/img/genmapthumbs/" + basename
         with open(thumbnail, "wb") as fh:
             fh.write(reply)
         resultItem["thumbnail"] = "img/genmapthumbs/" + basename
@@ -561,7 +561,7 @@ def genThemes(themesConfig):
         # get thumbnails for background layers
         for backgroundLayer in result["themes"]["backgroundLayers"]:
             imgPath = "img/mapthumbs/" + backgroundLayer.get("thumbnail", "default.jpg")
-            if not os.path.isfile(qwc2_path + "/assets/" + imgPath):
+            if not os.path.isfile(qwc2_path + "/static/assets/" + imgPath):
                 imgPath = "img/mapthumbs/default.jpg"
             backgroundLayer["thumbnail"] = imgPath
 
@@ -572,5 +572,5 @@ if __name__ == '__main__':
     print("Reading " + themesConfig)
     themes = genThemes(themesConfig)
     # write config file
-    with open("./themes.json", "w") as fh:
+    with open("./static/themes.json", "w") as fh:
         json.dump(themes, fh, indent=2, separators=(',', ': '), sort_keys=True)

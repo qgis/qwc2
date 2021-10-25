@@ -44,7 +44,7 @@ function uniqueThemeId(themeName) {
 function getThumbnail(configItem, resultItem, layers, crs, extent, resolve, proxy) {
     if (configItem.thumbnail !== undefined) {
         // check if thumbnail can be read
-        if (fs.existsSync("./assets/img/mapthumbs/" + configItem.thumbnail)) {
+        if (fs.existsSync("./static/assets/img/mapthumbs/" + configItem.thumbnail)) {
             resultItem.thumbnail = "img/mapthumbs/" + configItem.thumbnail;
             // finish task
             resolve(true);
@@ -96,11 +96,11 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve, prox
     }).then((response) => {
         const basename = configItem.url.replace(/.*\//, "").replace(/\?.*$/, "") + ".png";
         try {
-            fs.mkdirSync("./assets/img/genmapthumbs/");
+            fs.mkdirSync("./static/assets/img/genmapthumbs/");
         } catch (err) {
             if (err.code !== 'EEXIST') throw err;
         }
-        fs.writeFileSync("./assets/img/genmapthumbs/" + basename, response.data);
+        fs.writeFileSync("./static/assets/img/genmapthumbs/" + basename, response.data);
         resultItem.thumbnail = "img/genmapthumbs/" + basename;
         // finish task
         resolve(true);
@@ -554,7 +554,7 @@ function genThemes(themesConfig) {
             // get thumbnails for background layers
             result.themes.backgroundLayers.map((backgroundLayer) => {
                 let imgPath = "img/mapthumbs/" + backgroundLayer.thumbnail;
-                if (!fs.existsSync("./assets/" + imgPath)) {
+                if (!fs.existsSync("./static/assets/" + imgPath)) {
                     imgPath = "img/mapthumbs/default.jpg";
                 }
                 backgroundLayer.thumbnail = imgPath;
@@ -562,7 +562,7 @@ function genThemes(themesConfig) {
         }
 
         // write config file
-        fs.writeFile(process.cwd() + '/themes.json', JSON.stringify(result, null, 2), (error) => {
+        fs.writeFile(process.cwd() + '/static/themes.json', JSON.stringify(result, null, 2), (error) => {
             if (error) {
                 console.error("ERROR:", error);
                 process.exit(1);
