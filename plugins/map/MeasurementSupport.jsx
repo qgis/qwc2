@@ -20,7 +20,7 @@ const measureLabelStyleFactory = () => new ol.style.Text({
     font: '10pt sans-serif',
     text: "",
     fill: new ol.style.Fill({color: 'white'}),
-    stroke: new ol.style.Stroke({color: [0, 0, 0, 0.75], width: 4}),
+    stroke: new ol.style.Stroke({color: [0, 0, 0, 0.75], width: 3}),
     rotation: 0,
     offsetY: 10
 });
