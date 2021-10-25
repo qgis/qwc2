@@ -110,7 +110,7 @@ class Identify extends React.Component {
         }
     }
     queryPoint = (prevProps) => {
-        if (this.props.click.button !== 0 || this.props.click === prevProps.click || this.props.click.feature === "startupposmarker") {
+        if (this.props.click.button !== 0 || this.props.click === prevProps.click || (this.props.click.features || []).find(entry => entry.feature === 'startupposmarker')) {
             return null;
         }
         if (this.props.click.feature === 'searchmarker' && this.props.click.geometry && this.props.click.geomType === 'Point') {

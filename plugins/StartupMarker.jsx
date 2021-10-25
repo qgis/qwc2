@@ -38,9 +38,9 @@ class StartupMarker extends React.Component {
             this.markerSet = true;
         } else if (this.markerSet) {
             if (
-                (prevProps.removeMode === 'onpan' && this.props.map.center !== prevProps.map.center && this.props.map.zoom === prevProps.map.zoom) ||
-                (prevProps.removeMode === 'onzoom' && this.props.map.zoom !== prevProps.map.zoom) ||
-                (prevProps.removeMode === 'onclickonmarker' && this.props.click && this.props.click.feature === 'startupposmarker')
+                (this.props.removeMode === 'onpan' && this.props.map.center !== prevProps.map.center && this.props.map.zoom === prevProps.map.zoom) ||
+                (this.props.removeMode === 'onzoom' && this.props.map.zoom !== prevProps.map.zoom) ||
+                (this.props.removeMode === 'onclickonmarker' && this.props.click && (this.props.click.features || []).find(entry => entry.feature === 'startupposmarker'))
             ) {
                 prevProps.removeMarker('startupposmarker');
                 this.markerSet = false;
