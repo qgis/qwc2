@@ -64,7 +64,7 @@ const VectorLayerUtils = {
                     params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
                     params.labelFillColors.push(ensureHex(feature.styleOptions.fillColor));
                     params.labelOultineColors.push(ensureHex(feature.styleOptions.strokeColor));
-                    params.labelOutlineSizes.push(scaleFactor * feature.styleOptions.strokeWidth);
+                    params.labelOutlineSizes.push(scaleFactor * feature.styleOptions.strokeWidth * 0.5);
                     params.labelSizes.push(Math.round(10 * feature.styleOptions.strokeWidth * scaleFactor));
                 } else {
                     params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
