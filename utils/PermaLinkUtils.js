@@ -89,7 +89,7 @@ export function resolvePermaLink(initialParams, callback) {
 
 export function getUserBookmarks(user, callback) {
     if (user) {
-        axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks")
+        axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/")
             .then(response => {
                 callback(response.data || []);
             })
