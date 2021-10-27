@@ -118,6 +118,7 @@ class MeasurementSupport extends React.Component {
         if (this.drawInteraction !== null) {
             this.props.map.removeInteraction(this.drawInteraction);
             this.drawInteraction = null;
+            this.leaveTemporaryPickMode();
             this.props.map.removeLayer(this.measureLayer);
             this.sketchFeature = null;
             this.segmentMarkers = [];
