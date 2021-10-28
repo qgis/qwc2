@@ -53,11 +53,13 @@ export default class ColorButton extends React.Component {
                     <span style={{backgroundColor: this.cssColor(curColor)}} />
                 </span>
                 <div className="colorbutton-picker" ref={el => { this.pickerEl = el; }} style={pickerStyle}>
-                    {defaultColors.map((color, idx) => (
-                        <span className="colorbutton-icon" key={"color" + idx} onClick={() => this.selectColor(idx)} onContextMenu={ev => this.replaceDefaultColor(ev, idx)}>
-                            <span style={{backgroundColor: this.cssColor(color)}} />
-                        </span>
-                    ))}
+                    <div className="colorbutton-picker-icons">
+                        {defaultColors.map((color, idx) => (
+                            <span className="colorbutton-icon" key={"color" + idx} onClick={() => this.selectColor(idx)} onContextMenu={ev => this.replaceDefaultColor(ev, idx)}>
+                                <span style={{backgroundColor: this.cssColor(color)}} />
+                            </span>
+                        ))}
+                    </div>
                     <div className="colorbutton-picker-input">
                         <span className="colorbutton-icon">
                             <span style={{backgroundColor: this.cssColor(curColor)}} />
