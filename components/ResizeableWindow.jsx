@@ -152,7 +152,7 @@ class ResizeableWindow extends React.Component {
 
         if (this.state.geometry.maximized && this.props.visible) {
             return (
-                <div className="maximized-window">{content}</div>
+                <div className="maximized-window" style={{zIndex: zIndex }}>{content}</div>
             );
         } else if (this.state.geometry.docked && this.props.visible) {
             return (
