@@ -64,27 +64,27 @@ const ServiceLayerUtils = {
                 url = url.replace("{" + dim.Identifier + "}", dim.Default);
             });
             return {
-                "type": "wmts",
-                "url": url,
-                "capabilitiesUrl": capabilitiesUrl,
-                "title": layer.Title,
-                "name": layer.Identifier,
-                "tileMatrixPrefix": "",
-                "tileMatrixSet": tileMatrixSet,
-                "originX": origin[0],
-                "originY": origin[1],
-                "projection": tileMatrices[tileMatrixSet].crs,
-                "tileSize": [
+                type: "wmts",
+                url: url,
+                capabilitiesUrl: capabilitiesUrl,
+                title: layer.Title,
+                name: layer.Identifier,
+                tileMatrixPrefix: "",
+                tileMatrixSet: tileMatrixSet,
+                originX: origin[0],
+                originY: origin[1],
+                projection: tileMatrices[tileMatrixSet].crs,
+                tileSize: [
                     topMatrix.TileWidth,
                     topMatrix.TileHeight
                 ],
-                "bbox": {
+                bbox: {
                     crs: "EPSG:4326",
                     bounds: layer.WGS84BoundingBox
                 },
-                "resolutions": resolutions,
-                "abstract": layer.Abstract,
-                "attribution": {
+                resolutions: resolutions,
+                abstract: layer.Abstract,
+                attribution: {
                     Title: capabilities.ServiceProvider?.ProviderName || capabilities.ServiceIdentification?.Title || "",
                     OnlineResource: capabilities.ServiceProvider?.ProviderSite || ""
                 }
