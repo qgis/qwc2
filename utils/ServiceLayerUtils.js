@@ -93,16 +93,17 @@ const ServiceLayerUtils = {
         layers.sort((a, b) => a.title.localeCompare(b.title));
         return layers;
     },
-    getWMSLayers(capabilitiesXml, asGroup = false) {
+    getWMSLayers(capabilitiesXml, serviceUrl, asGroup = false) {
         const wmsFormat = new ol.format.WMSCapabilities();
         const capabilities = wmsFormat.read(capabilitiesXml);
         let topLayer = null;
-        let serviceUrl = null;
+        serviceUrl = serviceUrl.replace(/\?.*$/, '');
+        let getMapUrl = null;
         try {
             topLayer = capabilities.Capability.Layer;
-            serviceUrl = ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetMap.DCPType).HTTP.Get.OnlineResource;
+            getMapUrl = ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetMap.DCPType).HTTP.Get.OnlineResource;
         } catch (e) {
-            return [];
+            getMapUrl = serviceUrl;
         }
         let featureInfoUrl = null;
         try {
@@ -125,13 +126,13 @@ const ServiceLayerUtils = {
         }
         const version = capabilities.version;
         if (!topLayer.Layer || asGroup) {
-            return [this.getWMSLayerParams(topLayer, topLayer.CRS, serviceUrl, version, featureInfoUrl, infoFormats)].filter(entry => entry);
+            return [this.getWMSLayerParams(topLayer, topLayer.CRS, getMapUrl, serviceUrl, version, featureInfoUrl, infoFormats)].filter(entry => entry);
         } else {
-            const entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, serviceUrl, version, featureInfoUrl, infoFormats)).filter(entry => entry);
+            const entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, getMapUrl, serviceUrl, version, featureInfoUrl, infoFormats)).filter(entry => entry);
             return entries.sort((a, b) => strcmp(a.title, b.title));
         }
     },
-    getWMSLayerParams(layer, parentCrs, serviceUrl, version, featureInfoUrl, infoFormats, groupbbox = null) {
+    getWMSLayerParams(layer, parentCrs, getMapUrl, serviceUrl, version, featureInfoUrl, infoFormats, groupbbox = null) {
         let supportedCrs = layer.CRS;
         if (isEmpty(supportedCrs)) {
             supportedCrs = [...parentCrs];
@@ -179,7 +180,8 @@ const ServiceLayerUtils = {
             abstract: layer.Abstract,
             attribution: layer.Attribution,
             legendUrl: legendUrl,
-            url: serviceUrl,
+            url: getMapUrl,
+            capabilitiesUrl: serviceUrl,
             version: version,
             infoFormats: infoFormats,
             featureInfoUrl: featureInfoUrl,
@@ -322,7 +324,7 @@ const ServiceLayerUtils = {
             for (const layerConfig of layerConfigs) {
                 let result = null;
                 if (type === "wms") {
-                    result = ServiceLayerUtils.getWMSLayers(response.data);
+                    result = ServiceLayerUtils.getWMSLayers(response.data, url);
                 } else if (type === "wfs") {
                     result = ServiceLayerUtils.getWFSLayers(response.data);
                 } else if (type === "wmts") {

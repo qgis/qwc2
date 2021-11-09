@@ -126,7 +126,7 @@ class ImportLayer extends React.Component {
                             connUrl += (connUrl.includes("?") ? "&" : "?") + "service=" + service.toUpperCase() + "&request=GetCapabilities";
                             this.setState({pendingRequests: ++pendingRequests});
                             axios.get(connUrl).then(connResponse => {
-                                const result = service === "wms" ? ServiceLayerUtils.getWMSLayers(connResponse.data, true) : ServiceLayerUtils.getWFSLayers(connResponse.data);
+                                const result = service === "wms" ? ServiceLayerUtils.getWMSLayers(connResponse.data, connUrl, true) : ServiceLayerUtils.getWFSLayers(connResponse.data);
                                 this.setState({
                                     pendingRequests: this.state.pendingRequests - 1,
                                     serviceLayers: (this.state.serviceLayers || []).concat(result)
@@ -165,7 +165,7 @@ class ImportLayer extends React.Component {
         const wmsParams = "?service=WMS&request=GetCapabilities&version=1.3.0";
         this.setState({pendingRequests: ++pendingRequests});
         axios.get(url.split("?")[0] + wmsParams).then(response => {
-            const result = ServiceLayerUtils.getWMSLayers(response.data);
+            const result = ServiceLayerUtils.getWMSLayers(response.data, url);
             this.setState({
                 pendingRequests: this.state.pendingRequests - 1,
                 serviceLayers: (this.state.serviceLayers || []).concat(result)
