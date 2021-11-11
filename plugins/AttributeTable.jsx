@@ -57,7 +57,7 @@ class AttributeTable extends React.Component {
             return null;
         }
 
-        const editConfig = this.props.theme.editConfig;
+        const editConfig = this.props.theme.editConfig || {};
         const currentEditConfig = editConfig[this.state.loadedLayer];
         const themeSublayers = this.props.layers.reduce((accum, layer) => {
             return layer.role === LayerRole.THEME ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
