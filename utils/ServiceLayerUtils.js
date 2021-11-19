@@ -146,22 +146,22 @@ const ServiceLayerUtils = {
             if (isEmpty(sublayerbounds)) {
                 return null;
             } else {
-                bbox = groupbbox;
+                bbox = sublayerbounds;
             }
         } else {
             bbox = {
                 crs: layer.BoundingBox[0].crs,
                 bounds: layer.BoundingBox[0].extent
             };
-            if (groupbbox !== null) {
-                if (isEmpty(groupbbox)) {
-                    Object.assign(groupbbox, bbox);
-                } else if (bbox.crs === groupbbox.crs) {
-                    groupbbox.bounds[0] = Math.min(bbox.bounds[0], groupbbox.bounds[0]);
-                    groupbbox.bounds[1] = Math.min(bbox.bounds[1], groupbbox.bounds[1]);
-                    groupbbox.bounds[2] = Math.max(bbox.bounds[2], groupbbox.bounds[2]);
-                    groupbbox.bounds[3] = Math.max(bbox.bounds[3], groupbbox.bounds[3]);
-                }
+        }
+        if (groupbbox !== null) {
+            if (isEmpty(groupbbox)) {
+                Object.assign(groupbbox, bbox);
+            } else if (bbox.crs === groupbbox.crs) {
+                groupbbox.bounds[0] = Math.min(bbox.bounds[0], groupbbox.bounds[0]);
+                groupbbox.bounds[1] = Math.min(bbox.bounds[1], groupbbox.bounds[1]);
+                groupbbox.bounds[2] = Math.max(bbox.bounds[2], groupbbox.bounds[2]);
+                groupbbox.bounds[3] = Math.max(bbox.bounds[3], groupbbox.bounds[3]);
             }
         }
         let legendUrl = null;
