@@ -192,15 +192,14 @@ const ServiceLayerUtils = {
         };
     },
     getWFSLayers(capabilitiesXml) {
-        let options = {
-            attrPrefix: "",
-            ignoreNonTextNodeAttr: false,
-            ignoreTextNodeAttr: false,
-            textNodeConversion: true,
-            textAttrConversion: true,
+        const options = {
+            attributeNamePrefix : "",
+            ignoreAttributes: false,
+            parseNodeValue: true,
+            parseAttributeValue: true,
             ignoreNameSpace: true
         };
-        let capabilities = fastXmlParser.convertToJson(fastXmlParser.getTraversalObj(capabilitiesXml, options));
+        const capabilities = fastXmlParser.convertToJson(fastXmlParser.getTraversalObj(capabilitiesXml, options), options);
         if(!capabilities || !capabilities.WFS_Capabilities || !capabilities.WFS_Capabilities.version) {
             return [];
         } else if(capabilities.WFS_Capabilities.version < "1.1.0") {
