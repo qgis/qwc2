@@ -7,28 +7,16 @@ div#map {
 }
 
 /** Move and re-style scalebar */
-div.ol-scale-line,
-div.leaflet-control-scale-line {
+div.ol-scale-line {
     z-index: 101;
     bottom: 3px !important;
     left: 3px!important;
     background-color: transparent!important;
 }
 
-div.leaflet-control-scale-line {
-    color: @panel_fg@!important;
-    border-color: @panel_fg@!important;
-}
-
 div.ol-scale-line > div.ol-scale-line-inner {
     color: @panel_fg@!important;
     border-color: @panel_fg@!important;
-}
-
-/** Hide attribution element */
-div.ol-attribution,
-div.leaflet-control-attribution {
-    display: none;
 }
 
 /* Move and re-style rotation reset button */
