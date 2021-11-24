@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import MapUtils from '../utils/MapUtils';
+import LayerUtils from '../utils/LayerUtils';
 import {LayerRole} from '../actions/layers';
 import './style/MapCopyright.css';
 
@@ -48,7 +49,7 @@ class MapCopyright extends React.Component {
             }
         } else if (layer.role === LayerRole.BACKGROUND) {
             const mapScale = MapUtils.computeForZoom(map.scales, map.zoom);
-            if ((layer.minScale && layer.minScale <= mapScale) || (layer.maxScale && layer.maxScale > mapScale)) {
+            if (LayerUtils.layerScaleInRange(layer, mapScale)) {
                 copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
             }
         } else {
