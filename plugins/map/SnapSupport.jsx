@@ -149,7 +149,7 @@ class SnapSupport extends React.Component {
 }
 
 const selector = (state) => ({
-    drawing: state.redlining.geomType || state.measurement.geomType || state.editing.geomType ? true : false,
+    drawing: state.task.id == "Redlining" || state.task.id == "Measure" || state.task.id == "Editing" ? true : false,
     mapObj: state.map,
     mousepos: state.mousePosition.position,
     layers: state.layers.flat
