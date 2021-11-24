@@ -11,6 +11,8 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import MapUtils from '../utils/MapUtils';
+import LayerUtils from '../utils/LayerUtils';
 import {LayerRole} from '../actions/layers';
 import './style/MapCopyright.css';
 
@@ -46,7 +48,10 @@ class MapCopyright extends React.Component {
                 copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
             }
         } else if (layer.role === LayerRole.BACKGROUND) {
-            copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
+            const mapScale = MapUtils.computeForZoom(map.scales, map.zoom);
+            if (LayerUtils.layerScaleInRange(layer, mapScale)) {
+                copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
+            }
         } else {
             if (!layer.bbox) {
                 return;
