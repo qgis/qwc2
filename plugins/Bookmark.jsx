@@ -41,13 +41,14 @@ class Bookmark extends React.Component {
     }
     renderData() {
         const openTitle = LocaleUtils.tr("bookmark.open");
+        const lastUpdateTitle = LocaleUtils.tr("bookmark.lastUpdate");
         const updateTitle = LocaleUtils.tr("bookmark.update");
         const removeTitle = LocaleUtils.tr("bookmark.remove");
         return this.state.bookmarks.map((bookmark) => {
             return (
                 <tr key={bookmark.key}>
-                    <td title={openTitle}>
-                        <input onBlur={() => this.updateBookmark(bookmark)} onChange={(ev) => this.renameBookmark(ev, bookmark.key)} type="text" value={bookmark.description} />
+                    <td>
+                        <input onBlur={() => this.updateBookmark(bookmark)} onChange={(ev) => this.renameBookmark(ev, bookmark.key)} title={lastUpdateTitle + ": " + bookmark.date} type="text" value={bookmark.description}/>
                     </td>
                     <td>
                         <a href={location.href.split("?")[0] + '?bk=' + bookmark.key} title={openTitle}><Icon icon="open_link" title={openTitle} /></a>
