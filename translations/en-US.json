@@ -40,6 +40,7 @@
     "bookmark": {
       "add": "Add bookmark for current map",
       "description": "Description",
+      "lastUpdate": "Last saved",
       "manage": "Manage your bookmarks",
       "notloggedin": "You need to be logged in to store bookmarks",
       "open": "Open bookmark",

@@ -40,6 +40,7 @@
     "bookmark": {
       "add": "Hinzufügen",
       "description": "Beschreibung",
+      "lastUpdate": "Zuletzt gespeichert",
       "manage": "Verwalten",
       "notloggedin": "Sie müßen angemeldet sein, um Lesezeichen zu verwenden",
       "open": "Öffnen",

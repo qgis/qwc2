@@ -28,7 +28,7 @@
       "commit": "Salva riga modificata",
       "discard": "Ripristina riga modificata",
       "layer": "Livello",
-      "loadfailed": "",
+      "loadfailed": "Errore nel caricamento dei dati",
       "loading": "Caricamento...",
       "reload": "Ricarica dati",
       "selectlayer": "Seleziona livello...",
@@ -40,6 +40,7 @@
     "bookmark": {
       "add": "Aggiungi",
       "description": "Descrizione",
+      "lastUpdate": "Ultimo salvataggio",
       "manage": "Gestisci",
       "notloggedin": "È necessario aver effettuato l'accesso per utilizzare i segnalibri",
       "open": "Apri",

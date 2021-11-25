@@ -40,6 +40,7 @@
     "bookmark": {
       "add": "Lisää kirjanmerkki nykyiselle kartalle",
       "description": "Kuvaus",
+      "lastUpdate": "",
       "manage": "Kirjanmerkkien hallinta",
       "notloggedin": "",
       "open": "",

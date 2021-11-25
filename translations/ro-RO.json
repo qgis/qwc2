@@ -40,6 +40,7 @@
     "bookmark": {
       "add": "Adaugă",
       "description": "Descriere",
+      "lastUpdate": "",
       "manage": "Gestionează",
       "notloggedin": "Nelogat",
       "open": "Deschide",

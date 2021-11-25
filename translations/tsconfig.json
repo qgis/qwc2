@@ -51,6 +51,7 @@
     "bgswitcher.nobg",
     "bookmark.add",
     "bookmark.description",
+    "bookmark.lastUpdate",
     "bookmark.manage",
     "bookmark.notloggedin",
     "bookmark.open",
