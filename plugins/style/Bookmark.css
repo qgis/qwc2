@@ -25,9 +25,11 @@ div.bookmark-create > input {
 div.bookmark-create > button {
     flex: 0 0 auto;
     height: 2.5em;
-    width: 2.5em;
+    width: calc(2.25em + 1px);
+    padding: 0;
     text-align: center;
     background-color: @button_bg@;
+    border-left: 0;
     border-top: 1px solid @item_border@;
     border-right: 1px solid @item_border@;
     border-bottom: 1px solid @item_border@;
@@ -51,7 +53,6 @@ div.bookmark-create > button:disabled {
     overflow: hidden;
     text-align: center;
     border-collapse: collapse;
-    border: 1px solid @item_border@;
     width: 100%;
 }
 
@@ -61,7 +62,7 @@ div.bookmark-create > button:disabled {
 
 .bookmark-table tbody td {
     width: 100%;
-    border: 1px solid #ddd;
+    border: 1px solid @item_border@;
     padding: 0.25em;
 }
 
