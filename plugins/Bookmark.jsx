@@ -83,7 +83,7 @@ class Bookmark extends React.Component {
                         <div className="bookmark-create">
                             <input onChange={ev => this.setState({description: ev.target.value})} placeholder={placeholder} type="text" />
                             <button disabled={!this.state.description}
-                                onClick={this.state.description ? () => createBookmark(this.props.state, this.state.description, this.refresh) : null}>
+                                onClick={this.addBookbark}>
                                 <Icon className="bookmark-add-icon" icon="plus" title={addBookmarkTitle}
                                 />
                             </button>
@@ -101,6 +101,12 @@ class Bookmark extends React.Component {
     open = (bookmarkkey) => {
         const url = location.href.split("?")[0] + '?bk=' + bookmarkkey;
         location.href = url;
+    }
+    addBookbark = () => {
+        if (this.state.description) {
+            createBookmark(this.props.state, this.state.description, this.refresh);
+            this.setState({description: ""});
+        }
     }
     renameBookmark = (ev, key) => {
         const newBookmarks = this.state.bookmarks.map(bookmark => {
