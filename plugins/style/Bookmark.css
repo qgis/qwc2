@@ -82,7 +82,8 @@ div.bookmark-create > button:disabled {
 
 .bookmark-table tr:hover {background-color: #ddd;}
 
-.bookmark-table tbody td > span.icon {
+.bookmark-table tbody td > span.icon,
+.bookmark-table tbody a > span.icon {
     width: 1.75em;
 }
 

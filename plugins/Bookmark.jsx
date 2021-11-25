@@ -41,7 +41,6 @@ class Bookmark extends React.Component {
     }
     renderData() {
         const openTitle = LocaleUtils.tr("bookmark.open");
-        const openTabTitle = LocaleUtils.tr("bookmark.openintab");
         const updateTitle = LocaleUtils.tr("bookmark.update");
         const removeTitle = LocaleUtils.tr("bookmark.remove");
         return this.state.bookmarks.map((bookmark) => {
@@ -51,7 +50,7 @@ class Bookmark extends React.Component {
                         <input onBlur={() => this.updateBookmark(bookmark)} onChange={(ev) => this.renameBookmark(ev, bookmark.key)} type="text" value={bookmark.description} />
                     </td>
                     <td>
-                        <Icon icon="open_link" onClick={() => this.openInTab(bookmark.key)} title={openTabTitle} />
+                        <a href={location.href.split("?")[0] + '?bk=' + bookmark.key} title={openTitle}><Icon icon="open_link" title={openTitle} /></a>
                     </td>
                     <td>
                         {bookmark.state === BookmarkState.UPDATING ? (
@@ -101,10 +100,6 @@ class Bookmark extends React.Component {
     open = (bookmarkkey) => {
         const url = location.href.split("?")[0] + '?bk=' + bookmarkkey;
         location.href = url;
-    }
-    openInTab = (bookmarkkey) => {
-        const url = location.href.split("?")[0] + '?bk=' + bookmarkkey;
-        window.open(url, '_blank');
     }
     renameBookmark = (ev, key) => {
         const newBookmarks = this.state.bookmarks.map(bookmark => {
