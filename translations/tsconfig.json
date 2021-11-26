@@ -23,7 +23,7 @@
     "appmenu.items.DxfExport",
     "appmenu.items.Editing",
     "appmenu.items.Help",
-    "appmenu.items.IdentifyRegion",
+    "appmenu.items.Identify",
     "appmenu.items.LayerCatalog",
     "appmenu.items.LayerTree",
     "appmenu.items.Login",
