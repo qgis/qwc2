@@ -28,7 +28,7 @@ class Toolbar extends React.Component {
             return null;
         }
         const active = this.props.currentTask === (item.task || item.key) && this.props.currentTaskMode === (item.mode || null);
-        const title = LocaleUtils.tr("appmenu.items." + item.key) || null;
+        const title = LocaleUtils.tr("appmenu.items." + item.key + (item.mode || ""));
         return (
             <Icon
                 className={active ? "toolbar-item-active" : ""}
