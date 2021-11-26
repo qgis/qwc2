@@ -54,29 +54,57 @@ div.attribtable-loading > div.spinner {
     margin-right: 1em;
 }
 
-div.attribtable-contents table {
+table.attribtable-table {
+    min-width: 100%;
     border-collapse: collapse;
+    position: relative;
 }
 
-div.attribtable-contents table td,
-div.attribtable-contents table th {
+table.attribtable-table td {
     padding: 0.125em;
     border: 1px solid @item_border@;
 }
 
-div.attribtable-contents table td > input,
-div.attribtable-contents table td > select,
-div.attribtable-contents table td > span.edit-upload-field {
+table.attribtable-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 0;
+}
+
+table.attribtable-table th > span {
+    background-color: white;
+    border: 1px solid @item_border@;
+    margin: 0 0 -1px -1px;
+    padding: 0.125em;
+    display: flex;
+    align-items: center;
+}
+
+table.attribtable-table th > span > span:first-child {
+    flex: 1 1 auto;
+    text-align: left;
+}
+
+table.attribtable-table th > span > span.icon {
+    flex: 0 0 auto;
+    margin-left: 0.5em;
+}
+
+table.attribtable-table td > input,
+table.attribtable-table td > select,
+table.attribtable-table td > span.edit-upload-field {
     width: 100%;
     min-width: 4em;
     border: none;
     height: 100%;
 }
 
-div.attribtable-contents table tr.row-disabled,
-div.attribtable-contents table td > *:disabled {
+table.attribtable-table tr.row-disabled,
+table.attribtable-table td > *:disabled {
     background-color: #e0e0e0;
 }
+
 
 div.attribtable-footbar {
     flex: 0 0 auto;

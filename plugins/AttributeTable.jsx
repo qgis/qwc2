@@ -38,14 +38,15 @@ class AttributeTable extends React.Component {
         selectedLayer: "",
         loadedLayer: "",
         features: [],
-        filteredFeatures: [],
+        filteredSortedFeatures: [],
         changedFeatureIdx: null,
         originalFeatureProps: null,
         pageSize: 50,
         currentPage: 0,
         filterField: "id",
         filterOp: "~",
-        filterVal: ""
+        filterVal: "",
+        sortField: null
     }
     constructor(props) {
         super(props);
@@ -92,17 +93,19 @@ class AttributeTable extends React.Component {
                 return res;
             }, []);
             const indexOffset = this.state.currentPage * this.state.pageSize;
-            const features = this.state.filteredFeatures.slice(indexOffset, indexOffset + this.state.pageSize);
+            const features = this.state.filteredSortedFeatures.slice(indexOffset, indexOffset + this.state.pageSize);
             table = (
-                <table>
-                    <tbody>
+                <table className="attribtable-table">
+                    <thead>
                         <tr>
-                            <th />
-                            <th>id</th>
+                            <th><span>&nbsp;</span></th>
+                            <th onClick={() => this.sortBy("id")}><span><span>id</span>{this.renderSortIndicator("id")}</span></th>
                             {fields.map(field => (
-                                <th key={field.id}>{field.name}</th>
+                                <th key={field.id} onClick={() => this.sortBy(field.id)}><span><span>{field.name}</span>{this.renderSortIndicator(field.id)}</span></th>
                             ))}
                         </tr>
+                    </thead>
+                    <tbody>
                         {features.map((feature, filteredIndex) => {
                             const featureidx = feature.originalIndex;
                             const disabled = this.state.changedFeatureIdx !== null && this.state.changedFeatureIdx !== featureidx;
@@ -121,7 +124,7 @@ class AttributeTable extends React.Component {
                     </tbody>
                 </table>
             );
-            const pages = Math.ceil(this.state.filteredFeatures.length / this.state.pageSize);
+            const pages = Math.ceil(this.state.filteredSortedFeatures.length / this.state.pageSize);
             navbar = (
                 <div className="attribtable-footbar">
                     <span className="attribtable-nav">
@@ -130,10 +133,10 @@ class AttributeTable extends React.Component {
                         </button>
                         <select disabled={this.state.changedFeatureIdx !== null} onChange={(ev) => this.setState({currentPage: parseInt(ev.target.value, 10)})} value={this.state.currentPage}>
                             {new Array(pages).fill(0).map((x, idx) => (
-                                <option key={idx} value={idx}>{(idx * this.state.pageSize + 1) + " - " + (Math.min(this.state.filteredFeatures.length, (idx + 1) * this.state.pageSize))}</option>
+                                <option key={idx} value={idx}>{(idx * this.state.pageSize + 1) + " - " + (Math.min(this.state.filteredSortedFeatures.length, (idx + 1) * this.state.pageSize))}</option>
                             ))}
                         </select>
-                        <span> / {this.state.filteredFeatures.length}</span>
+                        <span> / {this.state.filteredSortedFeatures.length}</span>
                         <button className="button" disabled={this.state.currentPage >= pages - 1 || this.state.changedFeatureIdx !== null} onClick={() => this.setState({currentPage: this.state.currentPage + 1})}>
                             <Icon icon="nav-right" />
                         </button>
@@ -196,6 +199,13 @@ class AttributeTable extends React.Component {
             </ResizeableWindow>
         );
     }
+    renderSortIndicator = (field) => {
+        if (this.state.sortField && this.state.sortField.field === field) {
+            return (<Icon icon={this.state.sortField.dir > 0 ? "chevron-down" : "chevron-up"} />);
+        } else {
+            return null;
+        }
+    }
     onClose = () => {
         this.setState(AttributeTable.defaultState);
         this.props.setCurrentTask(null);
@@ -208,12 +218,22 @@ class AttributeTable extends React.Component {
         this.props.iface.getFeatures(this.editLayerId(this.state.selectedLayer), this.props.mapCrs, (result) => {
             if (result) {
                 const features = result.features || [];
-                this.setState({loading: false, features: features, filteredFeatures: this.filteredFeatures(features, this.state), loadedLayer: this.state.selectedLayer});
+                this.setState({loading: false, features: features, filteredSortedFeatures: this.filteredSortedFeatures(features, this.state), loadedLayer: this.state.selectedLayer});
             } else {
                 alert(LocaleUtils.tr("attribtable.loadfailed"));
-                this.setState({loading: false, features: [], filteredFeatures: [], loadedLayer: ""});
+                this.setState({loading: false, features: [], filteredSortedFeatures: [], loadedLayer: ""});
             }
         });
+    }
+    sortBy = (field) => {
+        let newState = {};
+        if (this.state.sortField && this.state.sortField.field === field) {
+            newState = {sortField: {field: field, dir: -this.state.sortField.dir}};
+        } else {
+            newState = {sortField: {field: field, dir: 1}};
+        }
+        newState.filteredSortedFeatures = this.filteredSortedFeatures(this.state.features, {...this.state, ...newState});
+        this.setState(newState);
     }
     editLayerId = (layerId) => {
         if (this.props.theme && this.props.theme.editConfig && this.props.theme.editConfig[layerId]) {
@@ -289,11 +309,11 @@ class AttributeTable extends React.Component {
         const newFeatures = [...this.state.features];
         newFeatures[featureidx] = {...newFeatures[featureidx]};
         newFeatures[featureidx].properties = {...newFeatures[featureidx].properties, [fieldid]: value};
-        const newFilteredFeatures = [...this.state.filteredFeatures];
-        newFilteredFeatures[filteredIdx] = {...newFilteredFeatures[filteredIdx]};
-        newFilteredFeatures[filteredIdx].properties = {...newFilteredFeatures[filteredIdx].properties, [fieldid]: value};
+        const newfilteredSortedFeatures = [...this.state.filteredSortedFeatures];
+        newfilteredSortedFeatures[filteredIdx] = {...newfilteredSortedFeatures[filteredIdx]};
+        newfilteredSortedFeatures[filteredIdx].properties = {...newfilteredSortedFeatures[filteredIdx].properties, [fieldid]: value};
         const originalFeatureProps = this.state.originalFeature || {...this.state.features[featureidx].properties};
-        this.setState({features: newFeatures, filteredFeatures: newFilteredFeatures, changedFeatureIdx: featureidx, originalFeatureProps: originalFeatureProps});
+        this.setState({features: newFeatures, filteredSortedFeatures: newfilteredSortedFeatures, changedFeatureIdx: featureidx, originalFeatureProps: originalFeatureProps});
     }
     commit = () => {
         const feature = {
@@ -319,7 +339,7 @@ class AttributeTable extends React.Component {
             const newFeatures = [...this.state.features];
             newFeatures[featureidx] = result;
             this.changedFiles = {};
-            this.setState({features: newFeatures, filteredFeatures: this.filteredFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeature: null});
+            this.setState({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeature: null});
         }
     }
     discard = () => {
@@ -339,33 +359,37 @@ class AttributeTable extends React.Component {
     }
     updateFilter = (state, val) => {
         const newState = {...this.state, [state]: val};
-        this.setState({[state]: val, filteredFeatures: this.filteredFeatures(this.state.features, newState)});
+        this.setState({[state]: val, filteredSortedFeatures: this.filteredSortedFeatures(this.state.features, {...this.state, ...newState})});
     }
-    filteredFeatures = (features, state) => {
+    filteredSortedFeatures = (features, state) => {
+        let filteredFeatures = [];
         if (!state.filterVal) {
-            return features.map((feature, idx) => ({...feature, originalIndex: idx}));
-        }
-        const filterVal = state.filterVal.toLowerCase();
-        let test = null;
-        if (state.filterOp === "~") {
-            test = (x) => (String(x).toLowerCase().includes(filterVal));
-        } else if (state.filterOp === "=") {
-            test = (x) => (String(x).toLowerCase() === filterVal);
-        }
-        if (state.filterField === "id") {
-            return features.reduce((res, feature, idx) => {
-                if (test(feature.id)) {
-                    res.push({...feature, originalIndex: idx});
-                }
-                return res;
-            }, []);
+            filteredFeatures = features.map((feature, idx) => ({...feature, originalIndex: idx}));
         } else {
-            return features.reduce((res, feature, idx) => {
-                if (test(feature.properties[state.filterField])) {
+            const filterVal = state.filterVal.toLowerCase();
+            let test = null;
+            if (state.filterOp === "~") {
+                test = (x) => (String(x).toLowerCase().includes(filterVal));
+            } else if (state.filterOp === "=") {
+                test = (x) => (String(x).toLowerCase() === filterVal);
+            }
+            const filterFieldValue = state.filterField === "id" ? (feature) => feature.id : (feature) => feature.properties[state.filterField];
+            filteredFeatures = features.reduce((res, feature, idx) => {
+                if (test(filterFieldValue(feature))) {
                     res.push({...feature, originalIndex: idx});
                 }
                 return res;
             }, []);
+        }
+        if (state.sortField) {
+            const sortFieldValue = state.sortField.field === "id" ? (feature) => feature.id : (feature) => feature.properties[state.sortField.field];
+            return filteredFeatures.sort((f1, f2) => {
+                const v1 = String(sortFieldValue(f1));
+                const v2 = String(sortFieldValue(f2));
+                return v1.localeCompare(v2) * state.sortField.dir;
+            });
+        } else {
+            return filteredFeatures;
         }
     }
 }
