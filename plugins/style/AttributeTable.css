@@ -93,6 +93,10 @@ table.attribtable-table th > span > span.icon {
     margin-left: 0.5em;
 }
 
+table.attribtable-table tr:nth-child(even) {
+    background-color: #eee;
+}
+
 table.attribtable-table td:first-child {
     position: relative;
     background-color: @button_bg@;
@@ -156,11 +160,14 @@ table.attribtable-table td > span.edit-upload-field {
     min-width: 4em;
     border: none;
     height: 100%;
+    background-color: transparent;
 }
 
+table.attribtable-table td > *:disabled,
 table.attribtable-table tr.row-disabled,
-table.attribtable-table td > *:disabled {
-    background-color: #e0e0e0;
+table.attribtable-table tr.row-disabled * {
+    color: #999;
+    cursor: not-allowed!important;
 }
 
 
