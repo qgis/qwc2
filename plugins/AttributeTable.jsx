@@ -52,6 +52,7 @@ class AttributeTable extends React.Component {
         super(props);
         this.changedFiles = {};
         this.state = AttributeTable.defaultState;
+        this.table = null;
     }
     render() {
         if (!this.props.active) {
@@ -95,13 +96,26 @@ class AttributeTable extends React.Component {
             const indexOffset = this.state.currentPage * this.state.pageSize;
             const features = this.state.filteredSortedFeatures.slice(indexOffset, indexOffset + this.state.pageSize);
             table = (
-                <table className="attribtable-table">
+                <table className="attribtable-table" ref={el => { this.table = el; }}>
                     <thead>
                         <tr>
                             <th><span>&nbsp;</span></th>
-                            <th onClick={() => this.sortBy("id")}><span><span>id</span>{this.renderSortIndicator("id")}</span></th>
-                            {fields.map(field => (
-                                <th key={field.id} onClick={() => this.sortBy(field.id)}><span><span>{field.name}</span>{this.renderSortIndicator(field.id)}</span></th>
+                            <th onClick={() => this.sortBy("id")}>
+                                <span>
+                                    <span className="attribtable-table-headername">id</span>
+                                    {this.renderSortIndicator("id")}
+                                    {this.renderColumnResizeHandle(1, 'r')}
+                                </span>
+                            </th>
+                            {fields.map((field, idx) => (
+                                <th key={field.id} onClick={() => this.sortBy(field.id)}>
+                                    <span>
+                                        {this.renderColumnResizeHandle(idx + 1, 'l')}
+                                        <span className="attribtable-table-headername">{field.name}</span>
+                                        {this.renderSortIndicator(field.id)}
+                                        {idx < fields.length - 1 ? this.renderColumnResizeHandle(idx + 2, 'r') : null}
+                                    </span>
+                                </th>
                             ))}
                         </tr>
                     </thead>
@@ -111,7 +125,11 @@ class AttributeTable extends React.Component {
                             const disabled = this.state.changedFeatureIdx !== null && this.state.changedFeatureIdx !== featureidx;
                             return (
                                 <tr className={disabled ? "row-disabled" : ""} key={feature.id}>
-                                    <td>{feature.geometry ? (<Icon icon="search" onClick={() => this.zoomToFeature(feature)} />) : null}</td>
+                                    <td>
+                                        {filteredIndex > 0 ? this.renderRowResizeHandle(filteredIndex, 't') : null}
+                                        {feature.geometry ? (<Icon icon="search" onClick={() => this.zoomToFeature(feature)} />) : null}
+                                        {this.renderRowResizeHandle(filteredIndex + 1, 'b')}
+                                    </td>
                                     <td>{feature.id}</td>
                                     {fields.map(field => (
                                         <td key={field.id}>
@@ -205,6 +223,20 @@ class AttributeTable extends React.Component {
         } else {
             return null;
         }
+    }
+    renderColumnResizeHandle = (col, pos) => {
+        return (
+            <span className={"attribtable-table-" + pos + "draghandle"}
+                onClick={ev => { ev.preventDefault(); ev.stopPropagation(); }}
+                onMouseDown={(ev) => this.resizeTable(ev, col, true)} />
+        );
+    }
+    renderRowResizeHandle = (row, pos) => {
+        return (
+            <span className={"attribtable-table-" + pos + "draghandle"}
+                onClick={ev => { ev.preventDefault(); ev.stopPropagation(); }}
+                onMouseDown={(ev) => this.resizeTable(ev, row, false)} />
+        );
     }
     onClose = () => {
         this.setState(AttributeTable.defaultState);
@@ -390,6 +422,33 @@ class AttributeTable extends React.Component {
             });
         } else {
             return filteredFeatures;
+        }
+    }
+    resizeTable = (ev, index, resizeCol) => {
+        if (this.table) {
+            const element = this.table.getElementsByTagName(resizeCol ? "th" : "tr")[index];
+            const resize = {
+                anchor: resizeCol ? ev.clientX : ev.clientY,
+                element: element,
+                initial: resizeCol ? element.clientWidth : element.clientHeight
+            };
+            const resizeDo = resizeCol ? (event) => {
+                const delta = event.clientX - resize.anchor;
+                resize.element.style.minWidth = Math.max((resize.initial + delta), 16) + "px";
+            } : (event) => {
+                const delta = event.clientY - resize.anchor;
+                resize.element.style.height = Math.max((resize.initial + delta), 16) + "px";
+            };
+            document.body.classList.add(resizeCol ? 'ewresizing' : 'nsresizing');
+            document.addEventListener("mousemove", resizeDo);
+            document.addEventListener("mouseup", (event) => {
+                document.removeEventListener("mousemove", resizeDo);
+                event.preventDefault();
+                event.stopPropagation();
+                document.body.classList.remove(resizeCol ? 'ewresizing' : 'nsresizing');
+            }, {once: true, capture: true});
+            ev.preventDefault();
+            ev.stopPropagation();
         }
     }
 }

@@ -79,9 +79,10 @@ table.attribtable-table th > span {
     padding: 0.125em;
     display: flex;
     align-items: center;
+    position: relative;
 }
 
-table.attribtable-table th > span > span:first-child {
+span.attribtable-table-headername {
     flex: 1 1 auto;
     text-align: left;
 }
@@ -90,6 +91,47 @@ table.attribtable-table th > span > span.icon {
     flex: 0 0 auto;
     margin-left: 0.5em;
 }
+
+table.attribtable-table td:first-child {
+    position: relative;
+}
+
+span.attribtable-table-ldraghandle,
+span.attribtable-table-rdraghandle {
+    display: block;
+    position: absolute;
+    width: 4px;
+    top: 0;
+    bottom: 0;
+    cursor: ew-resize;
+}
+
+span.attribtable-table-ldraghandle {
+    left: -1px;
+}
+
+span.attribtable-table-rdraghandle {
+    right: 0px;
+}
+
+span.attribtable-table-tdraghandle,
+span.attribtable-table-bdraghandle {
+    display: block;
+    position: absolute;
+    height: 4px;
+    left: 0;
+    right: 0;
+    cursor: ns-resize;
+}
+
+span.attribtable-table-tdraghandle {
+    top: -1px;
+}
+
+span.attribtable-table-bdraghandle {
+    bottom: 0px;
+}
+
 
 table.attribtable-table td > input,
 table.attribtable-table td > select,
@@ -129,4 +171,12 @@ span.attribtable-nav > * {
 span.attribtable-filter {
     display: inline-flex;
     align-items: center;
+}
+
+body.ewresizing, body.ewresizing * {
+    cursor: ew-resize!important;
+}
+
+body.nsresizing, body.nsresizing * {
+    cursor: ns-resize!important;
 }
