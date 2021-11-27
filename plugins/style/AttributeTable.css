@@ -61,8 +61,9 @@ table.attribtable-table {
 }
 
 table.attribtable-table td {
-    padding: 0.125em;
+    padding: 0.25em;
     border: 1px solid @item_border@;
+    text-align: center;
 }
 
 table.attribtable-table th {
@@ -70,13 +71,13 @@ table.attribtable-table th {
     top: 0;
     z-index: 1;
     padding: 0;
+    background-color: @button_bg@;
 }
 
 table.attribtable-table th > span {
-    background-color: white;
     border: 1px solid @item_border@;
     margin: 0 0 -1px -1px;
-    padding: 0.125em;
+    padding: 0.25em;
     display: flex;
     align-items: center;
     position: relative;
@@ -94,6 +95,21 @@ table.attribtable-table th > span > span.icon {
 
 table.attribtable-table td:first-child {
     position: relative;
+    background-color: @button_bg@;
+    align-items: center;
+    padding: 0.25em 0.5em;
+    background-clip: padding-box;
+    position: sticky;
+    left: 0;
+}
+
+table.attribtable-table td:first-child::after {
+    position: absolute;
+    right: -1px;
+    top: 0;
+    bottom: 0;
+    border-right: 1px solid @item_border@;
+    content: '';
 }
 
 span.attribtable-table-ldraghandle,
@@ -133,7 +149,7 @@ span.attribtable-table-bdraghandle {
 }
 
 
-table.attribtable-table td > input,
+table.attribtable-table td > input:not([type=checkbox]),
 table.attribtable-table td > select,
 table.attribtable-table td > span.edit-upload-field {
     width: 100%;

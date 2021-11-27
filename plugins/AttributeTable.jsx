@@ -39,6 +39,7 @@ class AttributeTable extends React.Component {
         loadedLayer: "",
         features: [],
         filteredSortedFeatures: [],
+        selectedFeatures: {},
         changedFeatureIdx: null,
         originalFeatureProps: null,
         pageSize: 50,
@@ -126,9 +127,11 @@ class AttributeTable extends React.Component {
                             return (
                                 <tr className={disabled ? "row-disabled" : ""} key={feature.id}>
                                     <td>
-                                        {filteredIndex > 0 ? this.renderRowResizeHandle(filteredIndex, 't') : null}
-                                        {feature.geometry ? (<Icon icon="search" onClick={() => this.zoomToFeature(feature)} />) : null}
-                                        {this.renderRowResizeHandle(filteredIndex + 1, 'b')}
+                                        <span>
+                                            {filteredIndex > 0 ? this.renderRowResizeHandle(filteredIndex, 't') : null}
+                                            {<input checked={this.state.selectedFeatures[feature.id] === true} onChange={(ev) => this.setState({selectedFeatures: {...this.state.selectedFeatures, [feature.id]: ev.target.checked}})} type="checkbox" />}
+                                            {this.renderRowResizeHandle(filteredIndex + 1, 'b')}
+                                        </span>
                                     </td>
                                     <td>{feature.id}</td>
                                     {fields.map(field => (
@@ -146,16 +149,16 @@ class AttributeTable extends React.Component {
             navbar = (
                 <div className="attribtable-footbar">
                     <span className="attribtable-nav">
-                        <button className="button" disabled={this.state.currentPage <= 0 || this.state.changedFeatureIdx !== null} onClick={() => this.setState({currentPage: this.state.currentPage - 1})}>
+                        <button className="button" disabled={this.state.currentPage <= 0 || this.state.changedFeatureIdx !== null} onClick={() => this.changePage(this.state.currentPage - 1)}>
                             <Icon icon="nav-left" />
                         </button>
-                        <select disabled={this.state.changedFeatureIdx !== null} onChange={(ev) => this.setState({currentPage: parseInt(ev.target.value, 10)})} value={this.state.currentPage}>
+                        <select disabled={this.state.changedFeatureIdx !== null} onChange={(ev) => this.changePage(parseInt(ev.target.value, 10))} value={this.state.currentPage}>
                             {new Array(pages).fill(0).map((x, idx) => (
                                 <option key={idx} value={idx}>{(idx * this.state.pageSize + 1) + " - " + (Math.min(this.state.filteredSortedFeatures.length, (idx + 1) * this.state.pageSize))}</option>
                             ))}
                         </select>
                         <span> / {this.state.filteredSortedFeatures.length}</span>
-                        <button className="button" disabled={this.state.currentPage >= pages - 1 || this.state.changedFeatureIdx !== null} onClick={() => this.setState({currentPage: this.state.currentPage + 1})}>
+                        <button className="button" disabled={this.state.currentPage >= pages - 1 || this.state.changedFeatureIdx !== null} onClick={() => this.changePage(this.state.currentPage + 1)}>
                             <Icon icon="nav-right" />
                         </button>
                     </span>
@@ -194,6 +197,9 @@ class AttributeTable extends React.Component {
                         </select>
                         <button className="button" disabled={locked || !this.state.selectedLayer} onClick={this.reload}>
                             <Icon icon="refresh" />
+                        </button>
+                        <button className="button" disabled={!Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={this.zoomToSelection}>
+                            <Icon icon="search" />
                         </button>
                         {this.state.changedFeatureIdx !== null ? (
                             <button className="button edit-commit" onClick={this.commit}>
@@ -382,12 +388,15 @@ class AttributeTable extends React.Component {
         this.changedFiles = {};
         this.setState({features: newFeatures, changedFeatureIdx: null, originalFeature: null});
     }
-    zoomToFeature = (feature) => {
+    zoomToSelection = () => {
         const bbox = geojsonBbox({
             type: "FeatureCollection",
-            features: [feature]
+            features: this.state.filteredSortedFeatures.filter(feature => this.state.selectedFeatures[feature.id] === true)
         });
         this.props.zoomToExtent(bbox, this.props.mapCrs);
+    }
+    changePage = (newPage) => {
+        this.setState({currentPage: newPage, selectedFeatures: {}});
     }
     updateFilter = (state, val) => {
         const newState = {...this.state, [state]: val};
