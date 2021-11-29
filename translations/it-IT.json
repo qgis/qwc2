@@ -30,9 +30,11 @@
       "layer": "Livello",
       "loadfailed": "Errore nel caricamento dei dati",
       "loading": "Caricamento...",
-      "reload": "Ricarica dati",
+      "pleasereload": "Premere 'Ricarica' per caricare la tabella attributi...",
+      "reload": "Ricarica",
       "selectlayer": "Seleziona livello...",
-      "title": "Tabella attributi"
+      "title": "Tabella attributi",
+      "zoomtoselection": "Zoomare sugli oggetti selezionati"
     },
     "bgswitcher": {
       "nobg": "Nessuno sfondo"

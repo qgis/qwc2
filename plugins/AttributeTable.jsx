@@ -77,10 +77,7 @@ class AttributeTable extends React.Component {
             } else {
                 loadOverlay = (
                     <div className="attribtable-reload">
-                        <button className="button" onClick={this.reload}>
-                            <Icon icon="refresh" />
-                            <span>{LocaleUtils.tr("attribtable.reload")}</span>
-                        </button>
+                        <span>{LocaleUtils.tr("attribtable.pleasereload")}</span>
                     </div>
                 );
             }
@@ -195,10 +192,10 @@ class AttributeTable extends React.Component {
                                 );
                             })}
                         </select>
-                        <button className="button" disabled={locked || !this.state.selectedLayer} onClick={this.reload}>
+                        <button className="button" disabled={locked || !this.state.selectedLayer} onClick={this.reload} title={LocaleUtils.tr("attribtable.reload")}>
                             <Icon icon="refresh" />
                         </button>
-                        <button className="button" disabled={!Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={this.zoomToSelection}>
+                        <button className="button" disabled={!Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
                             <Icon icon="search" />
                         </button>
                         {this.state.changedFeatureIdx !== null ? (

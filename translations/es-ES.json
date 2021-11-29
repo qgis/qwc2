@@ -30,9 +30,11 @@
       "layer": "",
       "loadfailed": "",
       "loading": "",
+      "pleasereload": "",
       "reload": "",
       "selectlayer": "",
-      "title": ""
+      "title": "",
+      "zoomtoselection": ""
     },
     "bgswitcher": {
       "nobg": "Sin fondo"
