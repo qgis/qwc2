@@ -427,7 +427,7 @@ class AttributeTable extends React.Component {
             return filteredFeatures.sort((f1, f2) => {
                 const v1 = String(sortFieldValue(f1));
                 const v2 = String(sortFieldValue(f2));
-                return v1.localeCompare(v2) * state.sortField.dir;
+                return v1.localeCompare(v2, undefined, {numeric: true, sensitivity: 'base'}) * state.sortField.dir;
             });
         } else {
             return filteredFeatures;
