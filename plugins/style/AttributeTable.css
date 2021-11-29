@@ -97,6 +97,10 @@ table.attribtable-table tr:nth-child(even) {
     background-color: #eee;
 }
 
+table.attribtable-table tr:hover {
+    background-color: #ddddff;
+}
+
 table.attribtable-table td:first-child {
     position: relative;
     background-color: @button_bg@;
