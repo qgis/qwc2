@@ -49,14 +49,17 @@ export function generatePermaLink(state, callback, user = false) {
         callback(window.location.href);
         return;
     }
-    // Only store redlining layers
-    const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
-    const redliningLayers = exploded.map((entry, idx) => ({...entry, pos: idx}))
-        .filter(entry => entry.layer.role === LayerRole.USERLAYER && entry.layer.type === 'vector')
-        .map(entry => ({...entry.layer, pos: entry.pos}));
-    const permalinkState = {
-        layers: redliningLayers
-    };
+    const permalinkState = {};
+    if (ConfigUtils.getConfigProp("storeAllLayersInPermalink")) {
+        permalinkState.layers = state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND);
+    } else {
+        // Only store redlining layers
+        const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
+        const redliningLayers = exploded.map((entry, idx) => ({...entry, pos: idx}))
+            .filter(entry => entry.layer.role === LayerRole.USERLAYER && entry.layer.type === 'vector')
+            .map(entry => ({...entry.layer, pos: entry.pos}));
+        permalinkState.layers = redliningLayers;
+    }
     const route = user ? "userpermalink" : "createpermalink";
     axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/" + route + "?url=" + encodeURIComponent(window.location.href), permalinkState)
         .then(response => callback(response.data.permalink || window.location.href))

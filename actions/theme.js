@@ -49,15 +49,19 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
 
     // Restore theme layer configuration, create placeholders for missing layers
     const externalLayers = {};
-    if (layerConfigs) {
-        if (ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {
-            layers = LayerUtils.restoreLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
-        } else {
-            layers = LayerUtils.restoreOrderedLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
+    if (!isEmpty(permalinkLayers) && ConfigUtils.getConfigProp("storeAllLayersInPermalink")) {
+        layers = permalinkLayers;
+    } else {
+        if (layerConfigs) {
+            if (ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {
+                layers = LayerUtils.restoreLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
+            } else {
+                layers = LayerUtils.restoreOrderedLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
+            }
         }
-    }
-    if (isEmpty(layers)) {
-        layers = [{...themeLayer, sublayers: []}];
+        if (isEmpty(layers)) {
+            layers = [{...themeLayer, sublayers: []}];
+        }
     }
 
     for (const layer of layers.reverse()) {
