@@ -14,6 +14,7 @@ import {toggleFullscreen} from '../actions/display';
 import {openExternalUrl} from '../actions/task';
 import {setTopbarHeight} from '../actions/map';
 import {restoreDefaultTheme} from '../actions/theme';
+import {showIframeDialog} from '../actions/windows';
 import Icon from '../components/Icon';
 import {Swipeable} from '../components/Swipeable';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -37,6 +38,7 @@ class TopBar extends React.Component {
         restoreDefaultTheme: PropTypes.func,
         searchOptions: PropTypes.object,
         setTopbarHeight: PropTypes.func,
+        showIframeDialog: PropTypes.func,
         toggleFullscreen: PropTypes.func,
         toolbarItems: PropTypes.array
     }
@@ -94,13 +96,20 @@ class TopBar extends React.Component {
                         appMenuClearsTask={this.props.appMenuClearsTask}
                         buttonContents={buttonContents}
                         menuItems={this.props.menuItems}
-                        openExternalUrl={this.props.openExternalUrl}
+                        openExternalUrl={this.openUrl}
                         showFilterField={this.props.appMenuFilterField}
                         showOnStartup={this.props.appMenuVisibleOnStartup} />
                     <this.props.components.FullscreenSwitcher />
                 </div>
             </Swipeable>
         );
+    }
+    openUrl = (url, target, title) => {
+        if (target === "iframe") {
+            this.props.showIframeDialog("externallinkiframe", url, {title: title});
+        } else {
+            this.props.openExternalUrl(url);
+        }
     }
     storeHeight = (el) => {
         if (el) {
@@ -118,6 +127,7 @@ export default (components) => {
         toggleFullscreen: toggleFullscreen,
         restoreDefaultTheme: restoreDefaultTheme,
         openExternalUrl: openExternalUrl,
-        setTopbarHeight: setTopbarHeight
+        setTopbarHeight: setTopbarHeight,
+        showIframeDialog: showIframeDialog
     })(TopBar);
 };

@@ -55,7 +55,7 @@ class WindowManager extends React.Component {
                 initialWidth={data.options.w || 640}
                 initiallyDocked={docked} key={key}
                 onClose={() => this.closeWindow(key)}
-                title={"windows." + key}>
+                title={data.options.title || "windows." + key}>
                 <iframe className="windows-iframe-dialog-body" onLoad={(ev) => { this.iframes[key] = ev.target; }} role="body" src={data.url} />
             </ResizeableWindow>
         );
