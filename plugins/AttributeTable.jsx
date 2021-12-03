@@ -316,7 +316,7 @@ class AttributeTable extends React.Component {
             const precision = constraints.step > 0 ? Math.ceil(-Math.log10(constraints.step)) : 6;
             input = (
                 <input disabled={disabled} max={constraints.max} min={constraints.min}
-                    name={field.id} onChange={nr => updateField(field.id, nr, true)}
+                    name={field.id} onChange={ev => updateField(field.id, ev.target.value, true)}
                     precision={precision} readOnly={constraints.readOnly} required={constraints.required}
                     step={constraints.step || 1} type="number" value={value} />
             );
