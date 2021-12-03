@@ -5,7 +5,7 @@
       "filter": "",
       "menulabel": "Hărți & Unelte",
       "items": {
-        "AttributeTable": "",
+        "AttributeTable": "Tabela de atribute",
         "DxfExport": "Export DXF",
         "Editing": "Editare",
         "Help": "Ajutor",
@@ -25,16 +25,16 @@
       }
     },
     "attribtable": {
-      "commit": "",
-      "discard": "",
-      "layer": "",
-      "loadfailed": "",
-      "loading": "",
-      "pleasereload": "",
-      "reload": "",
-      "selectlayer": "",
-      "title": "",
-      "zoomtoselection": ""
+      "commit": "Salvează",
+      "discard": "Renunță",
+      "layer": "Strat",
+      "loadfailed": "Încărcarea a eșuat",
+      "loading": "Se încarcă",
+      "pleasereload": "Te rog reîncarcă",
+      "reload": "Reîncarcă",
+      "selectlayer": "Selectează strat",
+      "title": "Titlu",
+      "zoomtoselection": "Zoom la selecție"
     },
     "bgswitcher": {
       "nobg": "Fără fundal"
@@ -42,7 +42,7 @@
     "bookmark": {
       "add": "Adaugă",
       "description": "Descriere",
-      "lastUpdate": "",
+      "lastUpdate": "Ultima actualizare",
       "manage": "Gestionează",
       "notloggedin": "Nelogat",
       "open": "Deschide",
@@ -225,8 +225,8 @@
       "providerselection": "",
       "search": "Caută",
       "searchall": "Caută în toate",
-      "searchinprogress": "",
-      "searchreset": "",
+      "searchinprogress": "Căutare în progres",
+      "searchreset": "Resetează căutarea",
       "themes": "Hărți tematice"
     },
     "searchbox": {
