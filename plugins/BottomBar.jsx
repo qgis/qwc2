@@ -13,6 +13,8 @@ import {createSelector} from 'reselect';
 import pickBy from 'lodash.pickby';
 import {changeMousePositionState} from '../actions/mousePosition';
 import {changeZoomLevel} from '../actions/map';
+import {openExternalUrl} from '../actions/task';
+import {showIframeDialog} from '../actions/windows';
 import CoordinateDisplayer from '../components/CoordinateDisplayer';
 import displayCrsSelector from '../selectors/displaycrs';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -30,8 +32,12 @@ class BottomBar extends React.Component {
         displaycrs: PropTypes.string,
         fullscreen: PropTypes.bool,
         map: PropTypes.object,
+        openExternalUrl: PropTypes.func,
+        showIframeDialog: PropTypes.func,
         termsUrl: PropTypes.string,
-        viewertitleUrl: PropTypes.string
+        termsUrlTarget: PropTypes.string,
+        viewertitleUrl: PropTypes.string,
+        viewertitleUrlTarget: PropTypes.string
     }
     static defaultProps = {
         displayCoordinates: true,
@@ -59,7 +65,7 @@ class BottomBar extends React.Component {
         let viewertitleLink;
         if (this.props.viewertitleUrl) {
             viewertitleLink = (
-                <a href={this.props.viewertitleUrl} rel="noreferrer" target="_blank">
+                <a href={this.props.viewertitleUrl} onClick={(ev) => this.openUrl(ev, this.props.viewertitleUrl, this.props.viewertitleUrlTarget, LocaleUtils.tr("bottombar.viewertitle_label"))}>
                     <span className="viewertitle_label">{LocaleUtils.tr("bottombar.viewertitle_label")}</span>
                 </a>
             );
@@ -67,7 +73,7 @@ class BottomBar extends React.Component {
         let termsLink;
         if (this.props.termsUrl) {
             termsLink = (
-                <a href={this.props.termsUrl} rel="noreferrer" target="_blank">
+                <a href={this.props.termsUrl} onClick={(ev) => this.openUrl(ev, this.props.termsUrl, this.props.termsUrlTarget, LocaleUtils.tr("bottombar.viewertitle_label"))}>
                     <span className="terms_label">{LocaleUtils.tr("bottombar.terms_label")}</span>
                 </a>
             );
@@ -133,6 +139,14 @@ class BottomBar extends React.Component {
             </div>
         );
     }
+    openUrl = (ev, url, target, title) => {
+        ev.preventDefault();
+        if (target === "iframe") {
+            this.props.showIframeDialog("externallinkiframe", url, {title: title});
+        } else {
+            this.props.openExternalUrl(url);
+        }
+    }
     setScale = (value) => {
         const scale = parseInt(value, 10);
         if (!isNaN(scale)) {
@@ -155,5 +169,7 @@ const selector = createSelector([state => state, displayCrsSelector], (state, di
 
 export default connect(selector, {
     changeMousePositionState: changeMousePositionState,
-    changeZoomLevel: changeZoomLevel
+    changeZoomLevel: changeZoomLevel,
+    openExternalUrl: openExternalUrl,
+    showIframeDialog: showIframeDialog
 })(BottomBar);
