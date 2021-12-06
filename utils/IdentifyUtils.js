@@ -9,6 +9,7 @@
 const assign = require('object-assign');
 const proj4js = require('proj4').default;
 const isEmpty = require('lodash.isempty');
+const ol = require('openlayers');
 const CoordinatesUtils = require('../utils/CoordinatesUtils');
 const MapUtils = require('../utils/MapUtils');
 const VectorLayerUtils = require('./VectorLayerUtils');
@@ -211,28 +212,17 @@ const IdentifyUtils = {
                 let layerTitle = layerEl.getElementsByTagName("gml:name")[0].textContent;
                 let featureName = layerName + "_feature";
                 result[layerName] = [];
-                for(let featureEl of [].slice.call(layerEl.getElementsByTagName(featureName))) {
-                    let feature = {
-                        "type": "Feature",
-                        "id": count++,
-                        "layername": layerName,
-                        "layertitle": layerTitle,
-                        "properties": {}
-                    }
-                    for(let propEl of [].slice.call(featureEl.children)) {
-                        if(propEl.nodeName === "gml:boundedBy") {
-                            let boxEl = propEl.getElementsByTagName("gml:Box")[0];
-                            if(boxEl) {
-                                let coordinatesEl = boxEl.getElementsByTagName("gml:coordinates")[0];
-                                if(coordinatesEl) {
-                                    feature["crs"] = boxEl.getAttribute("srsName");
-                                    feature["bbox"] = coordinatesEl.textContent.split(/[,\s]/).map(coo => parseFloat(coo));
-                                }
-                            }
-                        } else {
-                            feature.properties[propEl.nodeName] = propEl.textContent;
-                        }
-                    }
+
+                for (const featureEl of [].slice.call(layerEl.getElementsByTagName(featureName))) {
+
+                    const context = [{
+                        featureType: featureName
+                    }];
+                    const feature = new ol.format.GeoJSON().writeFeatureObject(new ol.format.GML2().readFeatureElement(featureEl, context));
+                    feature.id = count++;
+                    feature.layername = layerName;
+                    feature.layertitle = layerTitle;
+                    delete feature.properties.boundedBy;
                     result[layerName].push(feature);
                 }
             }
