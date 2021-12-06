@@ -8,6 +8,7 @@
 
 import isEmpty from 'lodash.isempty';
 import geojsonBbox from 'geojson-bounding-box';
+import ol from 'openlayers';
 import {LayerRole} from '../actions/layers';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
@@ -269,28 +270,17 @@ const IdentifyUtils = {
                 const layerTitle = layerEl.getElementsByTagName("gml:name")[0].textContent;
                 const featureName = layerName + "_feature";
                 result[layerName] = [];
+
                 for (const featureEl of [].slice.call(layerEl.getElementsByTagName(featureName))) {
-                    const feature = {
-                        type: "Feature",
-                        id: count++,
-                        layername: layerName,
-                        layertitle: layerTitle,
-                        properties: {}
-                    };
-                    for (const propEl of [].slice.call(featureEl.children)) {
-                        if (propEl.nodeName === "gml:boundedBy") {
-                            const boxEl = propEl.getElementsByTagName("gml:Box")[0];
-                            if (boxEl) {
-                                const coordinatesEl = boxEl.getElementsByTagName("gml:coordinates")[0];
-                                if (coordinatesEl) {
-                                    feature.crs = boxEl.getAttribute("srsName");
-                                    feature.bbox = coordinatesEl.textContent.split(/[,\s]/).map(coo => parseFloat(coo));
-                                }
-                            }
-                        } else {
-                            feature.properties[propEl.nodeName] = propEl.textContent;
-                        }
-                    }
+
+                    const context = [{
+                        featureType: featureName
+                    }];
+                    const feature = new ol.format.GeoJSON().writeFeatureObject(new ol.format.GML2().readFeatureElement(featureEl, context));
+                    feature.id = count++;
+                    feature.layername = layerName;
+                    feature.layertitle = layerTitle;
+                    delete feature.properties.boundedBy;
                     result[layerName].push(feature);
                 }
             }
