@@ -52,7 +52,7 @@ export default class StandardStore {
 
         let finalCreateStore;
         const urlQuery = url.parse(window.location.href, true).query;
-        if (process.env.NODE_ENV !== "production" && (urlQuery.debug || "").toLowerCase() === true) {
+        if (process.env.NODE_ENV !== "production" && (urlQuery.debug || "").toLowerCase() === "true") {
             const middlewares = [immutable(), thunkMiddleware, logger];
             finalCreateStore = compose(
                 applyMiddleware.apply(null, middlewares),
