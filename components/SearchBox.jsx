@@ -15,7 +15,7 @@ import axios from 'axios';
 import uuid from 'uuid';
 import {SearchResultType} from '../actions/search';
 import {logAction} from '../actions/logging';
-import {panTo, zoomToPoint} from '../actions/map';
+import {panTo, zoomToExtent, zoomToPoint} from '../actions/map';
 import {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer, addLayer} from '../actions/layers';
 import {setCurrentTheme} from '../actions/theme';
 import {setCurrentTask} from '../actions/task';
@@ -56,6 +56,7 @@ class SearchBox extends React.Component {
         showNotification: PropTypes.func,
         theme: PropTypes.object,
         themes: PropTypes.object,
+        zoomToExtent: PropTypes.func,
         zoomToPoint: PropTypes.func
     }
     state = {
@@ -482,15 +483,19 @@ class SearchBox extends React.Component {
         const resultType = result.type || SearchResultType.PLACE;
         if (resultType === SearchResultType.PLACE) {
             if (zoom) {
-                const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom);
-                this.props.zoomToPoint([result.x, result.y], maxZoom, result.crs);
+                if (result.bbox) {
+                    this.props.zoomToExtent(result.bbox, result.crs);
+                } else {
+                    const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom);
+                    this.props.zoomToPoint([result.x, result.y], maxZoom, result.crs);
+                }
             } else {
                 this.props.panTo([result.x, result.y], result.crs);
             }
             const feature = {
-                geometry: {type: 'Point', coordinates: [result.x, result.y]},
+                geometry: result.geometry || {type: 'Point', coordinates: [result.x, result.y]},
                 properties: { label: (result.label !== undefined ? result.label : result.text || '').replace(/<\/?\w+\s*\/?>/g, '') },
-                styleName: 'marker',
+                styleName: result.geometry ? 'default' : 'marker',
                 crs: result.crs,
                 id: 'searchmarker'
             };
@@ -640,6 +645,7 @@ export default (searchProviders, providerFactory = () => { return null; }) => {
             addLayerFeatures: addLayerFeatures,
             removeLayer: removeLayer,
             setCurrentTask: setCurrentTask,
+            zoomToExtent: zoomToExtent,
             zoomToPoint: zoomToPoint,
             panTo: panTo,
             logAction: logAction,
