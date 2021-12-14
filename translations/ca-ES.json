@@ -1,0 +1,297 @@
+{
+  "locale": "ca-ES",
+  "messages": {
+    "appmenu": {
+      "filter": "",
+      "menulabel": "Mapa i Eines",
+      "items": {
+        "AttributeTable": "",
+        "DxfExport": "Exportar DXF",
+        "Editing": "Editant",
+        "Help": "Ajuda",
+        "IdentifyRegion": "Identificar zona",
+        "LayerCatalog": "Capes",
+        "LayerTree": "Capes i Llegenda",
+        "Login": "Inicio de sessió",
+        "Logout": "Tancament de sessió",
+        "Measure": "Mesurar",
+        "Print": "Imprimir",
+        "RasterExport": "Exportar trama",
+        "Redlining": "Línia de demarcació",
+        "Share": "Compartir link",
+        "ThemeSwitcher": "Tema",
+        "Tools": "Eines de Mapa",
+        "Bookmark": ""
+      }
+    },
+    "attribtable": {
+      "commit": "Commit",
+      "discard": "Descartar",
+      "layer": "Capa",
+      "loadfailed": "La càrrega ha fallat",
+      "loading": "Carregant",
+      "pleasereload": "Si us plau, torni a carregar",
+      "reload": "Carregar",
+      "selectlayer": "Escollir capa",
+      "title": "Títol",
+      "zoomtoselection": "Zoom a la selecció"
+    },
+    "bgswitcher": {
+      "nobg": "Sense fons"
+    },
+    "bookmark": {
+      "add": "Afegir",
+      "description": "Descripció",
+      "lastUpdate": "Darrer canvi",
+      "manage": "Gestionar",
+      "notloggedin": "No logat",
+      "open": "Obir",
+      "remove": "Esborrar",
+      "update": "Updatejar"
+    },
+    "bottombar": {
+      "mousepos_label": "Coordenades",
+      "scale_label": "Escala",
+      "terms_label": "Condicions del servei",
+      "viewertitle_label": ""
+    },
+    "copybtn": {
+      "click_to_copy": "Click per copiar",
+      "copied": "Copiat"
+    },
+    "dxfexport": {
+      "layers": "Capes",
+      "selectinfo": "Arrossega un rectangle al voltant de la zona per exportar...",
+      "symbologyscale": "Escala de la simbologia:"
+    },
+    "editing": {
+      "canceldelete": "No esborrar",
+      "clearpicture": "Netejar imatge",
+      "commit": "Confirmar",
+      "delete": "Esorrar",
+      "discard": "Descartar",
+      "draw": "Traçar",
+      "feature": "Element",
+      "maximize": "Maximitzar",
+      "minimize": "Minimitzar",
+      "noeditablelayers": "Sense capes a modificar.",
+      "pick": "Escollir",
+      "reallydelete": "Esborrar",
+      "relationcommitfailed": "Ha fallat el commit",
+      "select": "Seleccionar",
+      "takepicture": "Escull imatge"
+    },
+    "fileselector": {
+      "placeholder": "Selecciona arxiu..."
+    },
+    "heightprofile": {
+      "asl": "a.s.l.",
+      "distance": "Distància",
+      "export": "Exportar",
+      "height": "Alçada",
+      "loading": "Càlculant el perfil..."
+    },
+    "identify": {
+      "export": "Exportar",
+      "exportformat": "Exportar format",
+      "featureReport": "Informe d'element",
+      "link": "Link",
+      "noattributes": "Sense atributs",
+      "noresults": "Sense informació disponible sobre el punt seleccionat",
+      "querying": "Consultant...",
+      "title": "Informació del element"
+    },
+    "importlayer": {
+      "addlayer": "Afegir capa",
+      "connect": "Connectar",
+      "filter": "Filtrant...",
+      "loading": "Carregant...",
+      "localfile": "Arxiu local",
+      "nofeatures": "No s'han pogut importar els elements.",
+      "noresults": "Sense resultats o l'adreça URL no és vàlida",
+      "url": "URL",
+      "urlplaceholder": "Adreça URL o WMS, WMTS, WFS..."
+    },
+    "infotool": {
+      "clickhelpPoint": "Fes click en una ubicació per identificar en el mapa...",
+      "clickhelpPolygon": "Traça un polígon al voltant dels elements per a identificar-los..."
+    },
+    "layercatalog": {
+      "windowtitle": "Titol"
+    },
+    "layerinfo": {
+      "abstract": "Resum",
+      "attribution": "Atribucions",
+      "dataUrl": "Adreça URL de dades",
+      "keywords": "Paraules clau",
+      "legend": "Llegenda",
+      "maxscale": "Escala màxima de visualització",
+      "metadataUrl": "Adreça URL de metadades",
+      "minscale": "Escala mínima de visualització",
+      "title": "Informació de la capa"
+    },
+    "layertree": {
+      "compare": "Comparar amb la capa superior",
+      "deletealllayers": "Eliminar todas las capas",
+      "importlayer": "Importar capa",
+      "maptip": "Mostrar suggerències de capes en el mapa",
+      "printlegend": "Imprimir llegenda",
+      "separator": "Separador",
+      "separatortooltip": "Afegir separador",
+      "transparency": "Transparència",
+      "visiblefilter": "Filtrar capes no visibles",
+      "zoomtolayer": "Zoom a la capa"
+    },
+    "locate": {
+      "feetUnit": "feet",
+      "metersUnit": "metres",
+      "popup": "Estàs a {distance} {unit} d'aquest punt",
+      "statustooltip": {
+        "DISABLED": "Posició: deshabilitat",
+        "ENABLED": "Posició: habilitat",
+        "FOLLOWING": "Posició: seguint",
+        "LOCATING": "Posició: ubicant...",
+        "PERMISSION_DENIED": "Permis denegat"
+      }
+    },
+    "map": {
+      "loading": "Carregant...",
+      "resetrotation": ""
+    },
+    "mapinfotooltip": {
+      "elevation": "Elevació",
+      "title": "Posició"
+    },
+    "measureComponent": {
+      "areaLabel": "Àrea",
+      "bearingLabel": "Direcció",
+      "lengthLabel": "Longitud",
+      "pointLabel": "Posició"
+    },
+    "print": {
+      "grid": "Graella:",
+      "layout": "Diseny:",
+      "legend": "Llegenda",
+      "maximize": "Maximitzar",
+      "minimize": "Minimitzar",
+      "nolayouts": "El tema seleccionat no admet la impresió",
+      "notheme": "No hi ha tema seleccionat",
+      "output": "Sortida d'impressió",
+      "resolution": "Resolució:",
+      "rotation": "Rotació:",
+      "scale": "Escala:",
+      "submit": "Imprimir",
+      "wait": "Esperi si us plau..."
+    },
+    "rasterexport": {
+      "format": "Format:",
+      "resolution": "Resolució:",
+      "selectinfo": "Arrossesga un rectángle al voltant de la regió para a la seva exportació..."
+    },
+    "redlining": {
+      "border": "Límit",
+      "buffer": "Buffer",
+      "buffercompute": "Computar",
+      "bufferdistance": "Distància",
+      "bufferlayer": "Destí",
+      "bufferlayername": "Capa de buffer",
+      "bufferselectfeature": "Seleccioni un element para enmagatzemar en bufer",
+      "circle": "Circle",
+      "delete": "Eliminar",
+      "draw": "Dibuixar",
+      "edit": "Editar",
+      "fill": "Replè",
+      "freehand": "Dibuix a ma alçada",
+      "label": "Etiqueta",
+      "layer": "Capa",
+      "line": "Línia",
+      "outline": "Vora",
+      "pick": "Escollir",
+      "point": "Punt",
+      "polygon": "Polígon",
+      "size": "Tamany",
+      "text": "Text",
+      "width": "Amplada"
+    },
+    "scratchdrawing": {
+      "finish": "Finalitzar"
+    },
+    "search": {
+      "all": "Tot",
+      "enablelayer": "Habilitar capa",
+      "existinglayer": "La capa ja existeix en el mapa",
+      "invisiblelayer": "El resultat es troba en una capa no visible",
+      "more": "Més...",
+      "providerselection": "Proveidor",
+      "search": "Buscar",
+      "searchall": "Buscar llocs o agregar mapes...",
+      "searchinprogress": "Cercant...",
+      "searchreset": "Reset",
+      "themes": "Temes"
+    },
+    "searchbox": {
+      "filter": "Refinar búsqueda",
+      "layers": "Mapes",
+      "more": "Més resultats",
+      "morelayers": "Més resultats disponibles",
+      "nodescription": "No hi ha descripció disponible",
+      "placeholder": "Cerqui un lloc o afegueixi mapa",
+      "places": "Llocs",
+      "recent": "Cerques recents"
+    },
+    "serviceinfo": {
+      "abstract": "Resum",
+      "contactEmail": "Adreça electrònica",
+      "contactOrganization": "Organització",
+      "contactPerson": "Persona de contacte",
+      "contactPhone": "Telèfon",
+      "contactPosition": "Posició",
+      "keywords": "Paraules clau",
+      "onlineResource": "Recurs en línia",
+      "title": "Informació del tema"
+    },
+    "share": {
+      "QRCodeLinkTitle": "Codi QR",
+      "directLinkTitle": "Via link",
+      "generatingpermalink": "Generant un link permanent...",
+      "showpin": "",
+      "socialIntro": "En la teva xarxa social preferida"
+    },
+    "themelayerslist": {
+      "addlayer": "Afegir capa",
+      "addlayerstotheme": "Afegir capa al mapa actual",
+      "addselectedlayers": "Afegir capa(s) seleccionada(s)"
+    },
+    "themeswitcher": {
+      "addlayerstotheme": "Afegir capes al mapa actual",
+      "addtotheme": "Afegir al actual tema",
+      "confirmswitch": "Confirmar canvi",
+      "filter": "Filtrant...",
+      "match": {
+        "abstract": "Resumen",
+        "keywords": "Paraula clau",
+        "title": "Títol"
+      },
+      "openintab": "Obrir en pestaña",
+      "restrictedthemeinfo": "Vostè no te permisos per veure el tema o no està connectat"
+    },
+    "tooltip": {
+      "background": "Canvi de fons",
+      "fullscreendisable": "",
+      "fullscreenenable": "",
+      "home": "Mostrar tot el mapa",
+      "zoomin": "Apropar",
+      "zoomout": "Allunyar"
+    },
+    "vectorlayerpicker": {
+      "prompt": "Nom de la capa"
+    },
+    "window": {
+      "close": "Tancar",
+      "dock": "Acoblar",
+      "maximize": "Maximitzar",
+      "undock": "Desacoblar",
+      "unmaximize": "Minimitzar"
+    }
+  }
+}

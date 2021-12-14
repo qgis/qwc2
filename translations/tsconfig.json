@@ -16,7 +16,8 @@
     "sv-SE",
     "tr-TR",
     "cs-CZ",
-    "no-NO"
+    "no-NO",
+	"ca-ES"
   ],
   "extra_strings": [
     "appmenu.items.AttributeTable",
