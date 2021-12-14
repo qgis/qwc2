@@ -118,7 +118,7 @@ class Bookmark extends React.Component {
     }
     updateBookmark = (bookmark) => {
         this.setState({saving: true});
-        updateBookmark(this.props.state, bookmark.key, bookmark.description, (success) => {
+        updateBookmark(this.props.state, bookmark.key, this.state.description, (success) => {
             if (!success) {
                 /* eslint-disable-next-line */
                 alert(LocaleUtils.tr("bookmark.savefailed"));
