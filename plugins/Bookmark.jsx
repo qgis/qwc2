@@ -13,6 +13,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import ConfigUtils from '../utils/ConfigUtils';
 import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
+import Spinner from '../components/Spinner';
 import {createBookmark, getUserBookmarks, removeBookmark, updateBookmark} from '../utils/PermaLinkUtils';
 import './style/Bookmark.css';
 
@@ -29,7 +30,8 @@ class Bookmark extends React.Component {
     state = {
         bookmarks: [],
         currentBookmark: null,
-        description: ""
+        description: "",
+        saving: false
     }
     componentDidMount() {
         this.refresh();
@@ -72,9 +74,9 @@ class Bookmark extends React.Component {
                                     <Icon icon="plus" />
                                 </button>
                                 <button disabled={!currentBookmark || !this.state.description} onClick={() => this.updateBookmark(currentBookmark)} title={updateTitle}>
-                                    <Icon icon="save" />
+                                    {this.state.saving ? (<Spinner />) : (<Icon icon="save" />)}
                                 </button>
-                                <button disabled={!currentBookmark} onClick={() => removeBookmark(currentBookmark.key, this.refresh)} title={removeTitle}>
+                                <button disabled={!currentBookmark} onClick={() => this.removeBookmark(currentBookmark)} title={removeTitle}>
                                     <Icon icon="trash" />
                                 </button>
                             </span>
@@ -105,11 +107,34 @@ class Bookmark extends React.Component {
         }
     }
     addBookmark = () => {
-        createBookmark(this.props.state, this.state.description, this.refresh);
+        createBookmark(this.props.state, this.state.description, (success) => {
+            if (!success) {
+                /* eslint-disable-next-line */
+                alert(LocaleUtils.tr("bookmark.addfailed"));
+            }
+            this.refresh();
+        });
         this.setState({description: ""});
     }
     updateBookmark = (bookmark) => {
-        updateBookmark(this.props.state, bookmark.key, bookmark.description, this.refresh);
+        this.setState({saving: true});
+        updateBookmark(this.props.state, bookmark.key, bookmark.description, (success) => {
+            if (!success) {
+                /* eslint-disable-next-line */
+                alert(LocaleUtils.tr("bookmark.savefailed"));
+            }
+            this.setState({saving: false});
+            this.refresh();
+        });
+    }
+    removeBookmark = (bookmark) => {
+        removeBookmark(bookmark.key, (success) => {
+            if (!success) {
+                /* eslint-disable-next-line */
+                alert(LocaleUtils.tr("bookmark.removefailed"));
+            }
+            this.refresh();
+        });
     }
     refresh = () => {
         getUserBookmarks(ConfigUtils.getConfigProp("username"), (bookmarks) => {

@@ -36,6 +36,8 @@ div.bookmark-actions {
 
 span.bookmark-actions-buttonbox {
     flex: 0 0 auto;
+    display: flex;
+    align-items: center;
 }
 
 span.bookmark-actions-spacer {
@@ -73,6 +75,11 @@ span.bookmark-actions-buttonbox > button:disabled {
 
 span.bookmark-actions-buttonbox > button:first-child {
     border-left: 1px solid @item_border@;
+}
+
+span.bookmark-actions-buttonbox > button > div.spinner {
+    width: 2em;
+    height: 2em;
 }
 
 div.bookmark-list {

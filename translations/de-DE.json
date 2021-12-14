@@ -41,6 +41,7 @@
     },
     "bookmark": {
       "add": "Neues Lesezeichen anlegen",
+      "addfailed": "Lesezeichen konnte nicht angelegt werden",
       "description": "Beschreibung",
       "lastUpdate": "Zuletzt gespeichert",
       "manage": "Lesezeichen verwalten",
@@ -48,6 +49,8 @@
       "open": "In aktuellem Fenster Öffnen",
       "openTab": "In neuem Fenster öffnen",
       "remove": "Lesezeichen entfernen",
+      "removefailed": "Lesezeichen konnte nicht entfernt werden",
+      "savefailed": "Lesezeichen konnte nicht aktualisiert werden",
       "update": "Lesezeichen aktualisieren"
     },
     "bottombar": {

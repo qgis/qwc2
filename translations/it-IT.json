@@ -41,6 +41,7 @@
     },
     "bookmark": {
       "add": "Crea segnalibro",
+      "addfailed": "Impossibile creare il segnalibro",
       "description": "Descrizione",
       "lastUpdate": "Ultimo salvataggio",
       "manage": "Gestisci segnalibri",
@@ -48,6 +49,8 @@
       "open": "Apri nella finestra corrente",
       "openTab": "Apri in una nuova finestra",
       "remove": "Rimuovi segnalibro",
+      "removefailed": "Impossibile rimuovere il segnalibro",
+      "savefailed": "Impossibile aggiornare il segnalibro",
       "update": "Aggiorna segnalibro"
     },
     "bottombar": {

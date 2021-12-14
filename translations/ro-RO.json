@@ -41,6 +41,7 @@
     },
     "bookmark": {
       "add": "Adaugă",
+      "addfailed": "",
       "description": "Descriere",
       "lastUpdate": "Ultima actualizare",
       "manage": "Gestionează",
@@ -48,6 +49,8 @@
       "open": "Deschide",
       "openTab": "",
       "remove": "Elimină",
+      "removefailed": "",
+      "savefailed": "",
       "update": "Actualizează"
     },
     "bottombar": {

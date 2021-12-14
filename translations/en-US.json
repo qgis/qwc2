@@ -41,6 +41,7 @@
     },
     "bookmark": {
       "add": "Create new bookmark",
+      "addfailed": "Failed to create bookmark",
       "description": "Description",
       "lastUpdate": "Last saved",
       "manage": "Manage bookmarks",
@@ -48,6 +49,8 @@
       "open": "Open bookmark in current tab",
       "openTab": "Open bookmark in tab",
       "remove": "Remove bookmark",
+      "removefailed": "Failed to remove bookmark",
+      "savefailed": "Failed to update bookmark",
       "update": "Update bookmark"
     },
     "bottombar": {

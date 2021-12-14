@@ -41,6 +41,7 @@
     },
     "bookmark": {
       "add": "Lisää kirjanmerkki nykyiselle kartalle",
+      "addfailed": "",
       "description": "Kuvaus",
       "lastUpdate": "",
       "manage": "Kirjanmerkkien hallinta",
@@ -48,6 +49,8 @@
       "open": "",
       "openTab": "",
       "remove": "Poista kirjanmerkki",
+      "removefailed": "",
+      "savefailed": "",
       "update": "Päivitä kirjanmerkki"
     },
     "bottombar": {

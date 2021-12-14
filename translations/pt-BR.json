@@ -41,6 +41,7 @@
     },
     "bookmark": {
       "add": "",
+      "addfailed": "",
       "description": "",
       "lastUpdate": "",
       "manage": "",
@@ -48,6 +49,8 @@
       "open": "",
       "openTab": "",
       "remove": "",
+      "removefailed": "",
+      "savefailed": "",
       "update": ""
     },
     "bottombar": {
