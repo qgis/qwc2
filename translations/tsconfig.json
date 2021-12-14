@@ -57,6 +57,7 @@
     "bookmark.manage",
     "bookmark.notloggedin",
     "bookmark.open",
+    "bookmark.openTab",
     "bookmark.remove",
     "bookmark.update",
     "bottombar.mousepos_label",

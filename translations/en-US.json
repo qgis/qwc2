@@ -40,12 +40,13 @@
       "nobg": "No background"
     },
     "bookmark": {
-      "add": "Add bookmark for current map",
+      "add": "Create new bookmark",
       "description": "Description",
       "lastUpdate": "Last saved",
-      "manage": "Manage your bookmarks",
+      "manage": "Manage bookmarks",
       "notloggedin": "You need to be logged in to store bookmarks",
-      "open": "Open bookmark",
+      "open": "Open bookmark in current tab",
+      "openTab": "Open bookmark in tab",
       "remove": "Remove bookmark",
       "update": "Update bookmark"
     },

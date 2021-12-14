@@ -40,14 +40,15 @@
       "nobg": "Kein Hintergrund"
     },
     "bookmark": {
-      "add": "Hinzufügen",
+      "add": "Neues Lesezeichen anlegen",
       "description": "Beschreibung",
       "lastUpdate": "Zuletzt gespeichert",
-      "manage": "Verwalten",
+      "manage": "Lesezeichen verwalten",
       "notloggedin": "Sie müssen angemeldet sein, um Lesezeichen zu verwenden",
-      "open": "Öffnen",
-      "remove": "Entfernen",
-      "update": "Aktualisieren"
+      "open": "In aktuellem Fenster Öffnen",
+      "openTab": "In neuem Fenster öffnen",
+      "remove": "Lesezeichen entfernen",
+      "update": "Lesezeichen aktualisieren"
     },
     "bottombar": {
       "mousepos_label": "Koordinaten",

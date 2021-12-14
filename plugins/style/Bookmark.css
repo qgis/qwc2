@@ -20,10 +20,29 @@ div.bookmark-create > input {
     border: 1px solid @item_border@;
     background-color: white;
     border-radius: 0;
+    height: 2.5em;
 }
 
-div.bookmark-create > button {
+div.bookmark-create > button:disabled {
+    background-color: transparent;
+    color: #ccc;
+    cursor: auto;
+}
+
+div.bookmark-actions {
+    display: flex;
+    margin: 0.5em 0;
+}
+
+span.bookmark-actions-buttonbox {
     flex: 0 0 auto;
+}
+
+span.bookmark-actions-spacer {
+    flex: 1 1 auto;
+}
+
+span.bookmark-actions-buttonbox > button {
     height: 2.5em;
     width: calc(2.25em + 1px);
     padding: 0;
@@ -33,70 +52,41 @@ div.bookmark-create > button {
     border-top: 1px solid @item_border@;
     border-right: 1px solid @item_border@;
     border-bottom: 1px solid @item_border@;
+}
+
+span.bookmark-actions-buttonbox > button:not(:disabled) {
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-div.bookmark-create > button:disabled {
-    background-color: transparent;
-    color: #ccc;
-    cursor: auto;
-}
-
-.bookmark-table {
-    flex: 1 1 auto;
-    display: flex;
-    flex-flow: column;
-    flex: 1;
-    overflow: hidden;
-    text-align: center;
-    border-collapse: collapse;
-    width: 100%;
-}
-
-.bookmark-table-body {
-    overflow-y: auto;
-}
-
-.bookmark-table tbody td {
-    width: 100%;
-    border: 1px solid @item_border@;
-    padding: 0.25em;
-}
-
-.bookmark-table td > input {
-    cursor: pointer;
-    min-width: 0;
-    width: 100%;
-    border: 1px solid transparent;
-    background-color: transparent;
-}
-
-.bookmark-table td > input:hover, .bookmark-table td > input:focus {
-    border: 1px solid @item_border@;
-    background-color: white;
-}
-
-.bookmark-table tr:nth-child(even){background-color: #f2f2f2;}
-
-.bookmark-table tr:hover {background-color: #ddd;}
-
-.bookmark-table tbody td > span.icon,
-.bookmark-table tbody a > span.icon {
-    width: 1.75em;
-}
-
-.bookmark-table tbody td > span.icon-trash {
+span.bookmark-actions-buttonbox > button:not(:disabled) > span.icon-trash {
     color: red;
 }
 
-.bookmark-table tbody td > div.spinner {
-    width: 1.75em;
-    height: 1.5em;
+span.bookmark-actions-buttonbox > button:not(:disabled) > span.icon-folder-open,
+span.bookmark-actions-buttonbox > button:not(:disabled) > span.icon-open_link {
+    color: @item_active@;
 }
 
-.bookmark-table span.bookmark-save-changed {
-    color: green;
+span.bookmark-actions-buttonbox > button:disabled {
+    color: @item_border@;
+}
+
+span.bookmark-actions-buttonbox > button:first-child {
+    border-left: 1px solid @item_border@;
+}
+
+div.bookmark-list {
+    border: 1px solid @item_border@;
+}
+
+div.bookmark-list > div {
+    padding: 0.5em;
+}
+
+div.bookmark-list > div:nth-child(even):not(.bookmark-list-active) {
+    background-color: #eee;
+}
+
+div.bookmark-list-active {
+    background-color: #ddddff;
 }

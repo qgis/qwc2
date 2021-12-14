@@ -46,6 +46,7 @@
       "manage": "Kirjanmerkkien hallinta",
       "notloggedin": "",
       "open": "",
+      "openTab": "",
       "remove": "Poista kirjanmerkki",
       "update": "Päivitä kirjanmerkki"
     },

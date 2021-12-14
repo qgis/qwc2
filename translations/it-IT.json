@@ -40,14 +40,15 @@
       "nobg": "Nessuno sfondo"
     },
     "bookmark": {
-      "add": "Aggiungi",
+      "add": "Crea segnalibro",
       "description": "Descrizione",
       "lastUpdate": "Ultimo salvataggio",
-      "manage": "Gestisci",
+      "manage": "Gestisci segnalibri",
       "notloggedin": "È necessario aver effettuato l'accesso per utilizzare i segnalibri",
-      "open": "Apri",
-      "remove": "Rimuovi",
-      "update": "Aggiorna"
+      "open": "Apri nella finestra corrente",
+      "openTab": "Apri in una nuova finestra",
+      "remove": "Rimuovi segnalibro",
+      "update": "Aggiorna segnalibro"
     },
     "bottombar": {
       "mousepos_label": "Coordinate",
