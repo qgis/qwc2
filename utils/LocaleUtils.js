@@ -30,7 +30,7 @@ const LocaleUtils = {
     },
     lang() {
         const state = StandardStore.get().getState();
-        return state.locale.lang;
+        return state.locale.current;
     },
     toLocaleFixed(number, digits) {
         if (ConfigUtils.getConfigProp("localeAwareNumbers")) {
