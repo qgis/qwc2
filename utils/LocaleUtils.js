@@ -28,6 +28,10 @@ const LocaleUtils = {
     trmsg(key) {
         return key;
     },
+    trWithFallback(key, fallback) {
+        const state = StandardStore.get().getState();
+        return state.locale.messages[key] || fallback;
+    },
     lang() {
         const state = StandardStore.get().getState();
         return state.locale.current;
