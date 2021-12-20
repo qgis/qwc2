@@ -309,7 +309,7 @@ class IdentifyViewer extends React.Component {
             );
         } else if (result.type === "html") {
             resultbox = (
-                <iframe className="identify-result-box" onLoad={ev => this.setIframeContent(ev.target, result.text)} />
+                <iframe className="identify-result-box" onLoad={ev => this.setIframeContent(ev.target, result.text)} ref={el => this.pollIframe(el, result.text)} />
             );
         } else if (result.properties.htmlContent) {
             if (result.properties.htmlContentInline) {
@@ -318,7 +318,7 @@ class IdentifyViewer extends React.Component {
                 );
             } else {
                 resultbox = (
-                    <iframe className="identify-result-box" onLoad={ev => this.setIframeContent(ev.target, result.properties.htmlContent)} />
+                    <iframe className="identify-result-box" onLoad={ev => this.setIframeContent(ev.target, result.properties.htmlContent)} ref={el => this.pollIframe(el, result.properties.htmlContent)} />
                 );
             }
         } else {
@@ -473,6 +473,23 @@ class IdentifyViewer extends React.Component {
         iframe.contentWindow.document.open();
         iframe.contentWindow.document.write(html);
         iframe.contentWindow.document.close();
+    }
+    pollIframe = (iframe, html) => {
+        if (iframe && !iframe.getAttribute("identify-content-set")) {
+            const interval = setInterval(() => {
+                if (iframe.getAttribute("identify-content-set")) {
+                    return clearInterval(interval);
+                }
+                if (iframe.contentWindow && iframe.contentWindow.document) {
+                    iframe.setAttribute("identify-content-set", true);
+                    iframe.contentWindow.document.open();
+                    iframe.contentWindow.document.write(html);
+                    iframe.contentWindow.document.close();
+                    clearInterval(interval);
+                }
+                return true;
+            }, 500);
+        }
     }
     collectFeatureReportTemplates = (entry) => {
         let reports = {};
