@@ -10,7 +10,6 @@ import ol from 'openlayers';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import isEmpty from 'lodash.isempty';
 import {changeMapView, clickOnMap} from '../../actions/map';
 import {changeMousePositionState} from '../../actions/mousePosition';
 import {setCurrentTask} from '../../actions/task';
