@@ -321,9 +321,9 @@ class Print extends React.Component {
         const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("print.maximize") : LocaleUtils.tr("print.minimize");
         const extraTitlebarContent = (<Icon className="print-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState({minimized: !this.state.minimized})} title={minMaxTooltip}/>);
         return (
-            <SideBar side={this.props.side} extraTitlebarContent={extraTitlebarContent} icon={"print"} id="Print"
-                onHide={this.onHide} onShow={this.onShow} title="appmenu.items.Print"
-                width="20em">
+            <SideBar extraTitlebarContent={extraTitlebarContent} icon={"print"} id="Print"
+                onHide={this.onHide} onShow={this.onShow} side={this.props.side}
+                title="appmenu.items.Print" width="20em">
                 {() => ({
                     body: this.state.minimized ? null : this.renderBody(),
                     extra: [
