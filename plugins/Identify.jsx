@@ -35,6 +35,8 @@ class Identify extends React.Component {
         iframeDialogsInitiallyDocked: PropTypes.bool,
         initialHeight: PropTypes.number,
         initialWidth: PropTypes.number,
+        initialX: PropTypes.number,
+        initialY: PropTypes.number,
         initiallyDocked: PropTypes.bool,
         layers: PropTypes.array,
         longAttributesDisplay: PropTypes.string,
@@ -50,6 +52,8 @@ class Identify extends React.Component {
         displayResultTree: true,
         initialWidth: 240,
         initialHeight: 320,
+        initialX: 0,
+        initialY: 0,
         featureInfoReturnsLayerName: true
     }
     state = {
@@ -217,7 +221,7 @@ class Identify extends React.Component {
             resultWindow = (
                 <ResizeableWindow icon="info-sign"
                     initialHeight={this.props.initialHeight} initialWidth={this.props.initialWidth}
-                    initialX={0} initialY={0} initiallyDocked={this.props.initiallyDocked}
+                    initialX={this.props.initialX} initialY={this.props.initialY} initiallyDocked={this.props.initiallyDocked}
                     key="IdentifyWindow"
                     onClose={this.clearResults} title={LocaleUtils.trmsg("identify.title")}
                 >
