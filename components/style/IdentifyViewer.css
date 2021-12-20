@@ -5,6 +5,10 @@ div.identify-body {
     flex-direction: column;
 }
 
+div.dock-window > div.resizeable-window-body > div.identify-body {
+    max-height: calc(100vh - 8.75em); /* viewport - topbar - bottombar - sidebar_titlebar - window padding*/
+}
+
 span.identify-body-message {
     padding: 0.25em;
 }
