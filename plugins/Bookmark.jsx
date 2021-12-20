@@ -114,7 +114,7 @@ class Bookmark extends React.Component {
             }
             this.refresh();
         });
-        this.setState({description: ""});
+        this.setState({description: "", currentBookmark: null});
     }
     updateBookmark = (bookmark) => {
         this.setState({saving: true});
