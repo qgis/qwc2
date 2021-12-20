@@ -88,6 +88,8 @@ div.bookmark-list {
 
 div.bookmark-list > div {
     padding: 0.5em;
+    overflow: hidden;
+    overflow-wrap: anywhere;
 }
 
 div.bookmark-list > div:nth-child(even):not(.bookmark-list-active) {
