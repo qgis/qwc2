@@ -42,11 +42,11 @@ export default class Icon extends React.Component {
             const assetsPath = ConfigUtils.getAssetsPath();
             const src = assetsPath + this.props.icon.substr(1);
             return (
-                <img alt={title} className={classes} onClick={this.props.onClick} src={src} title={title} />
+                <img alt={title} className={classes} onClick={this.props.onClick} src={src} title={title || undefined} />
             );
         } else {
             return (
-                <span className={classes} onClick={this.props.onClick} title={title} />
+                <span className={classes} onClick={this.props.onClick} title={title || undefined} />
             );
         }
     }
