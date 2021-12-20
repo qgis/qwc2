@@ -41,12 +41,16 @@
     },
     "bookmark": {
       "add": "Afegir",
+      "addfailed": "",
       "description": "Descripció",
       "lastUpdate": "Darrer canvi",
       "manage": "Gestionar",
       "notloggedin": "No logat",
       "open": "Obir",
+      "openTab": "",
       "remove": "Esborrar",
+      "removefailed": "",
+      "savefailed": "",
       "update": "Updatejar"
     },
     "bottombar": {
