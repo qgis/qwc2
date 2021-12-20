@@ -74,7 +74,7 @@ class ResizeableWindow extends React.Component {
             this.state.geometry = WINDOW_GEOMETRIES[props.title];
         } else {
             this.state.geometry = {
-                x: props.initialX !== null ? props.initialX : Math.max(0, Math.round(0.5 * (window.innerWidth - props.initialWidth))),
+                x: props.initialX !== null ? this.computeInitialX(props.initialX) : Math.max(0, Math.round(0.5 * (window.innerWidth - props.initialWidth))),
                 y: props.initialY !== null ? props.initialY : Math.max(0, Math.round(0.5 * height)),
                 width: props.initialWidth,
                 height: height,
@@ -83,6 +83,9 @@ class ResizeableWindow extends React.Component {
         }
         this.dragShield = null;
         this.id = uuid.v1();
+    }
+    computeInitialX = (x) => {
+        return x >= 0 ? x : window.innerWidth - Math.abs(x);
     }
     componentDidMount() {
         this.props.registerWindow(this.id);
