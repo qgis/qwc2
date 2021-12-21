@@ -198,7 +198,7 @@ class AttributeTable extends React.Component {
                             <option value="~">~</option>
                             <option value="=">=</option>
                         </select>
-                        <input disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterVal", ev.target.value)} type="text" value={this.state.filterVal} />
+                        <input disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterVal", ev.target.value, true)} type="text" value={this.state.filterVal} />
                         <button className="button" disabled={this.state.changedFeatureIdx !== null} onClick={() => this.updateFilter("filterVal", "")} value={this.state.filterValue}><Icon icon="clear" /></button>
                     </div>
                 </div>
@@ -517,9 +517,13 @@ class AttributeTable extends React.Component {
         });
         this.props.zoomToExtent(bbox, this.props.mapCrs);
     }
-    updateFilter = (state, val) => {
-        const newState = {...this.state, [state]: val, currentPage: 0};
-        this.setState({[state]: val, filteredSortedFeatures: this.filteredSortedFeatures(this.state.features, {...this.state, ...newState})});
+    updateFilter = (state, val, resetPage = false) => {
+        const newState = {...this.state, [state]: val};
+        this.setState({
+            [state]: val,
+            currentPage: resetPage ? 0 : this.state.currentPage,
+            filteredSortedFeatures: this.filteredSortedFeatures(this.state.features, {...this.state, ...newState})
+        });
     }
     filteredSortedFeatures = (features, state) => {
         let filteredFeatures = [];
