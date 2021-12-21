@@ -82,7 +82,6 @@ class AttributeTable extends React.Component {
         const themeSublayers = this.props.layers.reduce((accum, layer) => {
             return layer.role === LayerRole.THEME ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
         }, []);
-        const locked = this.state.loading || this.state.changedFeatureIdx !== null;
         let loadOverlay = null;
         if (this.state.selectedLayer && this.state.selectedLayer !== this.state.loadedLayer) {
             if (this.state.loading) {
@@ -205,13 +204,17 @@ class AttributeTable extends React.Component {
                 </div>
             );
         }
+        const nolayer = !this.state.selectedLayer;
+        const loading = this.state.loading;
+        const editing = this.state.changedFeatureIdx !== null;
+        const layerChanged = this.state.selectedLayer !== this.state.loadedLayer;
         return (
             <ResizeableWindow icon="editing" initialHeight={480} initialWidth={800} onClose={this.onClose} title={LocaleUtils.tr("attribtable.title")}>
                 <div className="attribtable-body" role="body">
                     {loadOverlay}
                     <div className="attribtable-toolbar">
                         <span>{LocaleUtils.tr("attribtable.layer")}</span>
-                        <select disabled={locked} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
+                        <select disabled={loading || editing} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
                             <option disabled value="">{LocaleUtils.tr("attribtable.selectlayer")}</option>
                             {Object.keys(editConfig).filter(layerId => themeSublayers.includes(layerId)).map(layerId => {
                                 const layerName = editConfig[layerId].layerName;
@@ -221,13 +224,13 @@ class AttributeTable extends React.Component {
                                 );
                             })}
                         </select>
-                        <button className="button" disabled={locked || !this.state.selectedLayer} onClick={this.reload} title={LocaleUtils.tr("attribtable.reload")}>
+                        <button className="button" disabled={editing || nolayer} onClick={this.reload} title={LocaleUtils.tr("attribtable.reload")}>
                             <Icon icon="refresh" />
                         </button>
-                        <button className="button" disabled={locked || !this.state.loadedLayer} onClick={this.addFeature} title={LocaleUtils.tr("attribtable.addfeature")}>
+                        <button className="button" disabled={nolayer || editing || loading || layerChanged} onClick={this.addFeature} title={LocaleUtils.tr("attribtable.addfeature")}>
                             <Icon icon="plus" />
                         </button>
-                        <button className="button" disabled={!Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
+                        <button className="button" disabled={layerChanged || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
                             <Icon icon="search" />
                         </button>
                         {this.state.confirmDelete ? (
@@ -236,7 +239,7 @@ class AttributeTable extends React.Component {
                                 <span>{LocaleUtils.tr("attribtable.delete")}</span>
                             </button>
                         ) : (
-                            <button className="button" disabled={!Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
+                            <button className="button" disabled={layerChanged || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
                                 <Icon icon="trash" />
                             </button>
                         )}
