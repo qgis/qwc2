@@ -518,7 +518,7 @@ class AttributeTable extends React.Component {
         this.props.zoomToExtent(bbox, this.props.mapCrs);
     }
     updateFilter = (state, val) => {
-        const newState = {...this.state, [state]: val};
+        const newState = {...this.state, [state]: val, currentPage: 0};
         this.setState({[state]: val, filteredSortedFeatures: this.filteredSortedFeatures(this.state.features, {...this.state, ...newState})});
     }
     filteredSortedFeatures = (features, state) => {
