@@ -533,7 +533,22 @@ class AttributeTable extends React.Component {
             } else if (state.filterOp === "=") {
                 test = (x) => (String(x).toLowerCase() === filterVal);
             }
-            const filterFieldValue = state.filterField === "id" ? (feature) => feature.id : (feature) => feature.properties[state.filterField];
+            // Build value relation lookup
+            const editConfig = this.props.theme.editConfig || {};
+            const currentEditConfig = editConfig[this.state.loadedLayer];
+            const valueLookup = currentEditConfig.fields.reduce((res, field) => {
+                if (field.constraints && field.constraints.values) {
+                    res[field.id] = field.constraints.values.reduce((res2, constraint) => {
+                        res2[constraint.value] = constraint.label;
+                        return res2;
+                    }, {});
+                }
+                return res;
+            }, {});
+            const filterFieldValue = state.filterField === "id" ? (feature) => feature.id : (feature) => {
+                const value = feature.properties[state.filterField];
+                return valueLookup[state.filterField] ? valueLookup[state.filterField][value] : value;
+            };
             filteredFeatures = features.reduce((res, feature, idx) => {
                 if (test(filterFieldValue(feature))) {
                     res.push({...feature, originalIndex: idx});
