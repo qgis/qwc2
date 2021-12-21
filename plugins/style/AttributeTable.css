@@ -68,9 +68,7 @@ div.attribtable-loading > div.spinner {
 }
 
 table.attribtable-table {
-    min-width: 100%;
     border-collapse: collapse;
-    position: relative;
 }
 
 table.attribtable-table td {
@@ -85,10 +83,12 @@ table.attribtable-table th {
     z-index: 1;
     padding: 0;
     background-color: @button_bg@;
+    box-shadow: inset -1px 0 0 @item_border@,
+                inset 0 -1px 0 @item_border@,
+                inset 0 1px 0 @item_border@;
 }
 
 table.attribtable-table th > span {
-    border: 1px solid @item_border@;
     margin: 0 0 -1px -1px;
     padding: 0.25em;
     display: flex;
