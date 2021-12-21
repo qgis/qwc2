@@ -24,8 +24,16 @@ div.attribtable-toolbar button.edit-commit {
     background-color: rgb(127,255,127);
 }
 
+div.attribtable-toolbar button.edit-commit:hover {
+    background-color: rgb(97,255,97);
+}
+
 div.attribtable-toolbar button.edit-discard {
     background-color: rgb(255,127,127);
+}
+
+div.attribtable-toolbar button.edit-discard:hover {
+    background-color: rgb(255,97,97);
 }
 
 div.attribtable-contents {
@@ -45,7 +53,8 @@ div.attribtable-reload {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(127, 127, 127, 0.4)
+    background-color: rgba(200, 200, 200, 0.9);
+    z-index: 2;
 }
 
 div.attribtable-loading > div.spinner {

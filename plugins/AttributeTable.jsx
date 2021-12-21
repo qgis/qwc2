@@ -10,6 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import geojsonBbox from 'geojson-bounding-box';
+import isEmpty from 'lodash.isempty';
 import {LayerRole} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
@@ -47,13 +48,24 @@ class AttributeTable extends React.Component {
         filterField: "id",
         filterOp: "~",
         filterVal: "",
-        sortField: null
+        sortField: null,
+        deleteTask: null,
+        newFeature: false,
+        confirmDelete: false
     }
     constructor(props) {
         super(props);
         this.changedFiles = {};
         this.state = AttributeTable.defaultState;
         this.table = null;
+        this.attribTableContents = null;
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.newFeature && !prevState.newFeature) {
+            if (this.attribTableContents) {
+                this.attribTableContents.scrollTop = this.attribTableContents.scrollHeight;
+            }
+        }
     }
     render() {
         if (!this.props.active) {
@@ -65,7 +77,7 @@ class AttributeTable extends React.Component {
         const themeSublayers = this.props.layers.reduce((accum, layer) => {
             return layer.role === LayerRole.THEME ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
         }, []);
-        const locked = this.state.loading;
+        const locked = this.state.loading || this.state.changedFeatureIdx !== null;
         let loadOverlay = null;
         if (this.state.selectedLayer && this.state.selectedLayer !== this.state.loadedLayer) {
             if (this.state.loading) {
@@ -81,6 +93,12 @@ class AttributeTable extends React.Component {
                     </div>
                 );
             }
+        } else if (this.state.selectedLayer && this.state.deleteTask) {
+            loadOverlay = (
+                <div className="attribtable-loading">
+                    <Spinner /><span>{LocaleUtils.tr("attribtable.deleting")}</span>
+                </div>
+            );
         }
         let table = null;
         let navbar = null;
@@ -121,8 +139,9 @@ class AttributeTable extends React.Component {
                         {features.map((feature, filteredIndex) => {
                             const featureidx = feature.originalIndex;
                             const disabled = this.state.changedFeatureIdx !== null && this.state.changedFeatureIdx !== featureidx;
+                            const key = this.state.changedFeatureIdx === featureidx && this.state.newFeature ? "newfeature" : feature.id;
                             return (
-                                <tr className={disabled ? "row-disabled" : ""} key={feature.id}>
+                                <tr className={disabled ? "row-disabled" : ""} key={key}>
                                     <td>
                                         <span>
                                             {filteredIndex > 0 ? this.renderRowResizeHandle(filteredIndex, 't') : null}
@@ -195,9 +214,28 @@ class AttributeTable extends React.Component {
                         <button className="button" disabled={locked || !this.state.selectedLayer} onClick={this.reload} title={LocaleUtils.tr("attribtable.reload")}>
                             <Icon icon="refresh" />
                         </button>
+                        <button className="button" disabled={locked || !this.state.loadedLayer} onClick={this.addFeature} title={LocaleUtils.tr("attribtable.addfeature")}>
+                            <Icon icon="plus" />
+                        </button>
                         <button className="button" disabled={!Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
                             <Icon icon="search" />
                         </button>
+                        {this.state.confirmDelete ? (
+                            <button className="button edit-commit" onClick={this.deleteSelectedFeatured}>
+                                <Icon icon="ok" />
+                                <span>{LocaleUtils.tr("attribtable.delete")}</span>
+                            </button>
+                        ) : (
+                            <button className="button" disabled={!Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
+                                <Icon icon="trash" />
+                            </button>
+                        )}
+                        {this.state.confirmDelete ? (
+                            <button className="button edit-discard" onClick={() => this.setState({confirmDelete: false})}>
+                                <Icon icon="remove" />
+                                <span>{LocaleUtils.tr("attribtable.nodelete")}</span>
+                            </button>
+                        ) : null}
                         {this.state.changedFeatureIdx !== null ? (
                             <button className="button edit-commit" onClick={this.commit}>
                                 <Icon icon="ok" />
@@ -211,7 +249,7 @@ class AttributeTable extends React.Component {
                             </button>
                         ) : null}
                     </div>
-                    <div className="attribtable-contents">
+                    <div className="attribtable-contents" ref={el => {this.attribTableContents = el;}}>
                         {loadOverlay}
                         {table}
                     </div>
@@ -339,6 +377,63 @@ class AttributeTable extends React.Component {
         }
         return input;
     }
+    addFeature = () => {
+        const editConfig = this.props.theme.editConfig || {};
+        const currentEditConfig = editConfig[this.state.loadedLayer];
+        if (!currentEditConfig) {
+            return;
+        }
+        const feature = {
+            type: "Feature",
+            geometry: null,
+            properties: currentEditConfig.fields.reduce((res, field) => {
+                if (field.id !== "id") {
+                    res[field.id] = field.type === "text" ? "" : null;
+                }
+                return res;
+            }, {})
+        };
+        this.setState({
+            features: [...this.state.features, feature],
+            filteredSortedFeatures: [...this.state.filteredSortedFeatures, {...feature, originalIndex: this.state.features.length}],
+            filterVal: "",
+            currentPage: Math.floor(this.state.features.length / this.state.pageSize),
+            changedFeatureIdx: this.state.filteredSortedFeatures.length,
+            newFeature: true
+        });
+    }
+    deleteSelectedFeatured = () => {
+        const features = this.state.filteredSortedFeatures.filter(feature => this.state.selectedFeatures[feature.id] === true);
+        this.setState({deleteTask: {
+            pending: features.map(feature => feature.id),
+            failed: [],
+            deleted: []
+        }});
+        features.forEach(feature => {
+            this.props.iface.deleteFeature(this.editLayerId(this.state.selectedLayer), feature.id, (success) => {
+                const newState = {
+                    deleteTask: {
+                        ...this.state.deleteTask,
+                        pending: this.state.deleteTask.pending.filter(entry => entry !== feature.id),
+                        failed: success ? this.state.deleteTask.failed : [...this.state.deleteTask.failed, feature.id],
+                        deleted: !success ? this.state.deleteTask.deleted : [...this.state.deleteTask.deleted, feature.id]
+                    }
+                };
+                if (isEmpty(newState.deleteTask.pending)) {
+                    newState.features = this.state.features.filter(f => !newState.deleteTask.deleted.includes(f.id));
+                    newState.filteredSortedFeatures = this.filteredSortedFeatures(newState.features, this.state);
+                    if (!isEmpty(newState.deleteTask.failed)) {
+                        // eslint-disable-next-line
+                        alert(LocaleUtils.tr("attribtable.deletefailed"));
+                    }
+                    newState.deleteTask = null;
+                    newState.currentPage = Math.floor((newState.features.length - 1) / this.state.pageSize);
+                    newState.selectedFeatures = {};
+                }
+                this.setState(newState);
+            });
+        });
+    }
     updateField = (featureidx, filteredIdx, fieldid, value, emptynull) => {
         value = value === "" && emptynull ? null : value;
         const newFeatures = [...this.state.features];
@@ -361,29 +456,41 @@ class AttributeTable extends React.Component {
         const featureData = new FormData();
         featureData.set('feature', JSON.stringify(feature));
         Object.entries(this.changedFiles).forEach(([key, value]) => featureData.set('file:' + key, value));
-        this.props.iface.editFeatureMultipart(
-            this.editLayerId(this.state.loadedLayer), feature.id, featureData,
-            (success, result) => this.featureCommited(success, result)
-        );
+
+        if (this.state.newFeature) {
+            this.props.iface.addFeatureMultipart(
+                this.editLayerId(this.state.selectedLayer), featureData,
+                (success, result) => this.featureCommited(success, result)
+            );
+        } else {
+            this.props.iface.editFeatureMultipart(
+                this.editLayerId(this.state.loadedLayer), feature.id, featureData,
+                (success, result) => this.featureCommited(success, result)
+            );
+        }
     }
     featureCommited = (success, result) => {
         if (!success) {
+            // eslint-disable-next-line
             alert(result);
         } else {
-            const featureidx = this.state.changedFeatureIdx;
             const newFeatures = [...this.state.features];
-            newFeatures[featureidx] = result;
+            newFeatures[this.state.changedFeatureIdx] = result;
             this.changedFiles = {};
-            this.setState({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeature: null});
+            this.setState({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeature: null, newFeature: false});
         }
     }
     discard = () => {
-        const featureidx = this.state.changedFeatureIdx;
         const newFeatures = [...this.state.features];
-        newFeatures[featureidx] = {...newFeatures[featureidx]};
-        newFeatures[featureidx].properties = this.state.originalFeatureProps;
+        if (this.state.newFeature) {
+            newFeatures.splice(this.state.changedFeatureIdx, 1);
+        } else {
+            const featureidx = this.state.changedFeatureIdx;
+            newFeatures[featureidx] = {...newFeatures[featureidx]};
+            newFeatures[featureidx].properties = this.state.originalFeatureProps;
+        }
         this.changedFiles = {};
-        this.setState({features: newFeatures, changedFeatureIdx: null, originalFeature: null});
+        this.setState({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeature: null, newFeature: false});
     }
     zoomToSelection = () => {
         const bbox = geojsonBbox({

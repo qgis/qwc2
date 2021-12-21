@@ -25,11 +25,17 @@
       }
     },
     "attribtable": {
+      "addfeature": "Aggiungi oggetto",
       "commit": "Salva riga modificata",
+      "delete": "Elimina",
+      "deletefailed": "Impossibile eliminare uno o più oggetti",
+      "deletefeatures": "Elimina gli oggetti selezionati",
+      "deleting": "Eliminando...",
       "discard": "Ripristina riga modificata",
       "layer": "Livello",
       "loadfailed": "Errore nel caricamento dei dati",
       "loading": "Caricamento...",
+      "nodelete": "Non eliminare",
       "pleasereload": "Premere 'Ricarica' per caricare la tabella attributi...",
       "reload": "Ricarica",
       "selectlayer": "Seleziona livello...",

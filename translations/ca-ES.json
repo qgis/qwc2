@@ -25,11 +25,17 @@
       }
     },
     "attribtable": {
+      "addfeature": "",
       "commit": "Commit",
+      "delete": "",
+      "deletefailed": "",
+      "deletefeatures": "",
+      "deleting": "",
       "discard": "Descartar",
       "layer": "Capa",
       "loadfailed": "La càrrega ha fallat",
       "loading": "Carregant",
+      "nodelete": "",
       "pleasereload": "Si us plau, torni a carregar",
       "reload": "Carregar",
       "selectlayer": "Escollir capa",

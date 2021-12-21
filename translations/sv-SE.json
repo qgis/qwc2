@@ -25,11 +25,17 @@
       }
     },
     "attribtable": {
+      "addfeature": "",
       "commit": "",
+      "delete": "",
+      "deletefailed": "",
+      "deletefeatures": "",
+      "deleting": "",
       "discard": "",
       "layer": "",
       "loadfailed": "",
       "loading": "",
+      "nodelete": "",
       "pleasereload": "",
       "reload": "",
       "selectlayer": "",

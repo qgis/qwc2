@@ -25,13 +25,19 @@
       }
     },
     "attribtable": {
+      "addfeature": "Objekt hinzufügen",
       "commit": "Geänderte Zeile speichern",
+      "delete": "Löschen",
+      "deletefailed": "Ein oder mehrere Objekte konnten nicht gelöscht werden",
+      "deletefeatures": "Ausgewählte Objekte löschen",
+      "deleting": "Objekte werden gelöscht",
       "discard": "Geänderte Zeile zurücksetzen",
       "layer": "Ebene",
       "loadfailed": "Die Objektdaten konnten nicht geladen werden",
       "loading": "Laden...",
+      "nodelete": "Nicht löschen",
       "pleasereload": "Auf 'Neu laden' drücken, um die Attributtabelle zu laden...",
-      "reload": "Neu laden",
+      "reload": " Neu laden",
       "selectlayer": "Ebene auswählen...",
       "title": "Attributtabelle",
       "zoomtoselection": "Auf ausgewählte Objekte zoomen"

@@ -25,11 +25,17 @@
       }
     },
     "attribtable": {
+      "addfeature": "Add feature",
       "commit": "Commit changed row",
+      "delete": "Delete",
+      "deletefailed": "One or more features could not be deleted",
+      "deletefeatures": "Delete selected features",
+      "deleting": "Deleting features...",
       "discard": "Discard changed row",
       "layer": "Layer",
       "loadfailed": "Failed to load the feature data",
       "loading": "Loading...",
+      "nodelete": "Don't delete",
       "pleasereload": "Press 'Reload' to load the attribute table...",
       "reload": "Reload",
       "selectlayer": "Select layer...",
