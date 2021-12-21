@@ -18,6 +18,7 @@ import EditUploadField from '../components/EditUploadField';
 import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/Spinner';
+import NavBar from '../components/widgets/NavBar';
 import EditingInterface from '../utils/EditingInterface';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -101,7 +102,7 @@ class AttributeTable extends React.Component {
             );
         }
         let table = null;
-        let navbar = null;
+        let footbar = null;
         if (currentEditConfig && this.state.features) {
             const fields = currentEditConfig.fields.reduce((res, field) => {
                 if (field.id !== "id") {
@@ -161,24 +162,28 @@ class AttributeTable extends React.Component {
                     </tbody>
                 </table>
             );
-            const pages = Math.ceil(this.state.filteredSortedFeatures.length / this.state.pageSize);
-            navbar = (
+            const npages = Math.ceil(this.state.filteredSortedFeatures.length / this.state.pageSize);
+            const pages = [this.state.currentPage];
+            const extraright = Math.max(0, 2 - this.state.currentPage);
+            const extraleft = Math.max(0, this.state.currentPage - (npages - 3));
+            for (let i = 0; i < 3 + extraleft; ++i) {
+                if (this.state.currentPage - i > 0) {
+                    pages.unshift(this.state.currentPage - i);
+                }
+            }
+            for (let i = 0; i < 3 + extraright; ++i) {
+                if (this.state.currentPage + i < npages - 1) {
+                    pages.push(this.state.currentPage - i + 1);
+                }
+            }
+            footbar = (
                 <div className="attribtable-footbar">
-                    <span className="attribtable-nav">
-                        <button className="button" disabled={this.state.currentPage <= 0 || this.state.changedFeatureIdx !== null} onClick={() => this.changePage(this.state.currentPage - 1)}>
-                            <Icon icon="nav-left" />
-                        </button>
-                        <select disabled={this.state.changedFeatureIdx !== null} onChange={(ev) => this.changePage(parseInt(ev.target.value, 10))} value={this.state.currentPage}>
-                            {new Array(pages).fill(0).map((x, idx) => (
-                                <option key={idx} value={idx}>{(idx * this.state.pageSize + 1) + " - " + (Math.min(this.state.filteredSortedFeatures.length, (idx + 1) * this.state.pageSize))}</option>
-                            ))}
-                        </select>
-                        <span> / {this.state.filteredSortedFeatures.length}</span>
-                        <button className="button" disabled={this.state.currentPage >= pages - 1 || this.state.changedFeatureIdx !== null} onClick={() => this.changePage(this.state.currentPage + 1)}>
-                            <Icon icon="nav-right" />
-                        </button>
-                    </span>
-                    <span className="attribtable-filter">
+                    <NavBar
+                        currentPage={this.state.currentPage} disabled={this.state.changedFeatureIdx !== null}
+                        nPages={npages} pageChanged={currentPage => this.setState({currentPage})}
+                        pageSize={this.state.pageSize} pageSizeChanged={pageSize => this.setState({pageSize})} />
+
+                    <div className="attribtable-filter">
                         <Icon icon="filter" />
                         <select disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterField", ev.target.value)} value={this.state.filterField}>
                             <option value="id">id</option>
@@ -192,7 +197,7 @@ class AttributeTable extends React.Component {
                         </select>
                         <input disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterVal", ev.target.value)} type="text" value={this.state.filterVal} />
                         <button className="button" disabled={this.state.changedFeatureIdx !== null} onClick={() => this.updateFilter("filterVal", "")} value={this.state.filterValue}><Icon icon="clear" /></button>
-                    </span>
+                    </div>
                 </div>
             );
         }
@@ -253,7 +258,7 @@ class AttributeTable extends React.Component {
                         {loadOverlay}
                         {table}
                     </div>
-                    {navbar}
+                    {footbar}
                 </div>
             </ResizeableWindow>
         );
@@ -498,9 +503,6 @@ class AttributeTable extends React.Component {
             features: this.state.filteredSortedFeatures.filter(feature => this.state.selectedFeatures[feature.id] === true)
         });
         this.props.zoomToExtent(bbox, this.props.mapCrs);
-    }
-    changePage = (newPage) => {
-        this.setState({currentPage: newPage, selectedFeatures: {}});
     }
     updateFilter = (state, val) => {
         const newState = {...this.state, [state]: val};
