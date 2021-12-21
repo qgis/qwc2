@@ -4,6 +4,10 @@ div.attribtable-body {
     height: 100%;
 }
 
+div.dock-window > div.resizeable-window-body > div.attribtable-body {
+    max-height: calc(100vh - 8.75em); /* viewport - topbar - bottombar - sidebar_titlebar - window padding*/
+}
+
 div.attribtable-toolbar {
     display: flex;
     align-items: center;
