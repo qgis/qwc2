@@ -13,7 +13,7 @@ import geojsonBbox from 'geojson-bounding-box';
 import isEmpty from 'lodash.isempty';
 import {LayerRole} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
-import {setCurrentTask} from '../actions/task';
+import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import EditUploadField from '../components/EditUploadField';
 import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
@@ -32,6 +32,7 @@ class AttributeTable extends React.Component {
         layers: PropTypes.array,
         mapCrs: PropTypes.string,
         setCurrentTask: PropTypes.func,
+        setCurrentTaskBlocked: PropTypes.func,
         theme: PropTypes.object,
         zoomToExtent: PropTypes.func
     }
@@ -66,6 +67,9 @@ class AttributeTable extends React.Component {
             if (this.attribTableContents) {
                 this.attribTableContents.scrollTop = this.attribTableContents.scrollHeight;
             }
+        }
+        if (!this.props.active && prevProps.active) {
+            this.setState(AttributeTable.defaultState);
         }
     }
     render() {
@@ -285,8 +289,10 @@ class AttributeTable extends React.Component {
         );
     }
     onClose = () => {
-        this.setState(AttributeTable.defaultState);
-        this.props.setCurrentTask(null);
+        if (!this.state.changedFeatureIdx) {
+            this.setState(AttributeTable.defaultState);
+            this.props.setCurrentTask(null);
+        }
     }
     changeSelectedLayer = (value) => {
         this.setState({selectedLayer: value});
@@ -406,6 +412,7 @@ class AttributeTable extends React.Component {
             changedFeatureIdx: this.state.filteredSortedFeatures.length,
             newFeature: true
         });
+        this.props.setCurrentTaskBlocked(true);
     }
     deleteSelectedFeatured = () => {
         const features = this.state.filteredSortedFeatures.filter(feature => this.state.selectedFeatures[feature.id] === true);
@@ -449,6 +456,7 @@ class AttributeTable extends React.Component {
         newfilteredSortedFeatures[filteredIdx].properties = {...newfilteredSortedFeatures[filteredIdx].properties, [fieldid]: value};
         const originalFeatureProps = this.state.originalFeature || {...this.state.features[featureidx].properties};
         this.setState({features: newFeatures, filteredSortedFeatures: newfilteredSortedFeatures, changedFeatureIdx: featureidx, originalFeatureProps: originalFeatureProps});
+        this.props.setCurrentTaskBlocked(true);
     }
     commit = () => {
         const feature = {
@@ -484,6 +492,7 @@ class AttributeTable extends React.Component {
             this.changedFiles = {};
             this.setState({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeature: null, newFeature: false});
         }
+        this.props.setCurrentTaskBlocked(false);
     }
     discard = () => {
         const newFeatures = [...this.state.features];
@@ -496,6 +505,7 @@ class AttributeTable extends React.Component {
         }
         this.changedFiles = {};
         this.setState({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeature: null, newFeature: false});
+        this.props.setCurrentTaskBlocked(false);
     }
     zoomToSelection = () => {
         const bbox = geojsonBbox({
@@ -577,6 +587,7 @@ export default (iface = EditingInterface) => {
         theme: state.theme.current
     }), {
         setCurrentTask: setCurrentTask,
+        setCurrentTaskBlocked: setCurrentTaskBlocked,
         zoomToExtent: zoomToExtent
     })(AttributeTable);
 };
