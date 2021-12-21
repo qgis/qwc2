@@ -178,6 +178,9 @@
       "lengthLabel": "Длина",
       "pointLabel": "Позиция"
     },
+    "navbar": {
+      "perpage": ""
+    },
     "print": {
       "grid": "Сетка:",
       "layout": "Формат бумаги:",

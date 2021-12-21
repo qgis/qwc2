@@ -178,6 +178,9 @@
       "lengthLabel": "Lungime",
       "pointLabel": "Poziție"
     },
+    "navbar": {
+      "perpage": ""
+    },
     "print": {
       "grid": "Grid",
       "layout": "Șablon:",

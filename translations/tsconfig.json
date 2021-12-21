@@ -155,6 +155,7 @@
     "measureComponent.bearingLabel",
     "measureComponent.lengthLabel",
     "measureComponent.pointLabel",
+    "navbar.perpage",
     "print.grid",
     "print.layout",
     "print.legend",

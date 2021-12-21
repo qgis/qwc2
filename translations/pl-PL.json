@@ -178,6 +178,9 @@
       "lengthLabel": "Odległość",
       "pointLabel": "Pozycja"
     },
+    "navbar": {
+      "perpage": ""
+    },
     "print": {
       "grid": "Siatka:",
       "layout": "Layout:",

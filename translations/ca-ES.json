@@ -178,6 +178,9 @@
       "lengthLabel": "Longitud",
       "pointLabel": "Posició"
     },
+    "navbar": {
+      "perpage": ""
+    },
     "print": {
       "grid": "Graella:",
       "layout": "Diseny:",

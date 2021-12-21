@@ -178,6 +178,9 @@
       "lengthLabel": "Pituus",
       "pointLabel": "Sijainti"
     },
+    "navbar": {
+      "perpage": ""
+    },
     "print": {
       "grid": "Ristikko",
       "layout": "Layout",

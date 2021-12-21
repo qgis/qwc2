@@ -178,6 +178,9 @@
       "lengthLabel": "Longueur",
       "pointLabel": "Position"
     },
+    "navbar": {
+      "perpage": ""
+    },
     "print": {
       "grid": "Grille",
       "layout": "Format",

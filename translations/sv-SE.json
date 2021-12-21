@@ -178,6 +178,9 @@
       "lengthLabel": "Längd",
       "pointLabel": "Position"
     },
+    "navbar": {
+      "perpage": ""
+    },
     "print": {
       "grid": "Rutnät",
       "layout": "Layout:",
