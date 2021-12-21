@@ -454,7 +454,7 @@ class AttributeTable extends React.Component {
         const newfilteredSortedFeatures = [...this.state.filteredSortedFeatures];
         newfilteredSortedFeatures[filteredIdx] = {...newfilteredSortedFeatures[filteredIdx]};
         newfilteredSortedFeatures[filteredIdx].properties = {...newfilteredSortedFeatures[filteredIdx].properties, [fieldid]: value};
-        const originalFeatureProps = this.state.originalFeature || {...this.state.features[featureidx].properties};
+        const originalFeatureProps = this.state.originalFeatureProps || {...this.state.features[featureidx].properties};
         this.setState({features: newFeatures, filteredSortedFeatures: newfilteredSortedFeatures, changedFeatureIdx: featureidx, originalFeatureProps: originalFeatureProps});
         this.props.setCurrentTaskBlocked(true);
     }
@@ -490,7 +490,7 @@ class AttributeTable extends React.Component {
             const newFeatures = [...this.state.features];
             newFeatures[this.state.changedFeatureIdx] = result;
             this.changedFiles = {};
-            this.setState({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeature: null, newFeature: false});
+            this.setState({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeatureProps: null, newFeature: false});
         }
         this.props.setCurrentTaskBlocked(false);
     }
@@ -504,7 +504,7 @@ class AttributeTable extends React.Component {
             newFeatures[featureidx].properties = this.state.originalFeatureProps;
         }
         this.changedFiles = {};
-        this.setState({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeature: null, newFeature: false});
+        this.setState({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeatureProps: null, newFeature: false});
         this.props.setCurrentTaskBlocked(false);
     }
     zoomToSelection = () => {
