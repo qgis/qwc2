@@ -87,20 +87,20 @@ class AttributeTable extends React.Component {
         if (this.state.selectedLayer && this.state.selectedLayer !== this.state.loadedLayer) {
             if (this.state.loading) {
                 loadOverlay = (
-                    <div className="attribtable-loading">
+                    <div className="attribtable-overlay">
                         <Spinner /><span>{LocaleUtils.tr("attribtable.loading")}</span>
                     </div>
                 );
             } else {
                 loadOverlay = (
-                    <div className="attribtable-reload">
+                    <div className="attribtable-overlay">
                         <span>{LocaleUtils.tr("attribtable.pleasereload")}</span>
                     </div>
                 );
             }
         } else if (this.state.selectedLayer && this.state.deleteTask) {
             loadOverlay = (
-                <div className="attribtable-loading">
+                <div className="attribtable-overlay">
                     <Spinner /><span>{LocaleUtils.tr("attribtable.deleting")}</span>
                 </div>
             );
@@ -208,6 +208,7 @@ class AttributeTable extends React.Component {
         return (
             <ResizeableWindow icon="editing" initialHeight={480} initialWidth={800} onClose={this.onClose} title={LocaleUtils.tr("attribtable.title")}>
                 <div className="attribtable-body" role="body">
+                    {loadOverlay}
                     <div className="attribtable-toolbar">
                         <span>{LocaleUtils.tr("attribtable.layer")}</span>
                         <select disabled={locked} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
@@ -259,7 +260,6 @@ class AttributeTable extends React.Component {
                         ) : null}
                     </div>
                     <div className="attribtable-contents" ref={el => {this.attribTableContents = el;}}>
-                        {loadOverlay}
                         {table}
                     </div>
                     {footbar}

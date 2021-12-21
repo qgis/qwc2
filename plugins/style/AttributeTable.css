@@ -2,6 +2,26 @@ div.attribtable-body {
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
+}
+
+div.attribtable-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 2.75em;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(200, 200, 200, 0.9);
+    z-index: 2;
+}
+
+div.attribtable-overlay > div.spinner {
+    width: 4em;
+    height: 4em;
+    margin-right: 1em;
 }
 
 div.dock-window > div.resizeable-window-body > div.attribtable-body {
@@ -43,32 +63,12 @@ div.attribtable-toolbar button.edit-discard:hover {
 div.attribtable-contents {
     flex: 1 1 auto;
     background-color: white;
-    position: relative;
     overflow: auto;
-}
-
-div.attribtable-loading,
-div.attribtable-reload {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(200, 200, 200, 0.9);
-    z-index: 2;
-}
-
-div.attribtable-loading > div.spinner {
-    width: 4em;
-    height: 4em;
-    margin-right: 1em;
 }
 
 table.attribtable-table {
     border-collapse: collapse;
+    min-width: 100%;
 }
 
 table.attribtable-table td {
