@@ -65,7 +65,11 @@ class EditingSupport extends React.Component {
         if (this.props.editing === prevProps.editing) {
             // pass
         } else if (this.props.editing.action === 'Pick' && this.props.editing.feature) {
-            this.addEditInteraction(this.props);
+            if (!this.props.editing.feature.geometry && this.props.editing.geomType) {
+                this.addDrawInteraction(this.props);
+            } else {
+                this.addEditInteraction(this.props);
+            }
         } else if (this.props.editing.action === 'Draw' && this.props.editing.geomType) {
             if (!this.props.editing.feature || prevProps.editing.geomType !== this.props.editing.geomType) {
                 this.addDrawInteraction(this.props);
@@ -157,7 +161,10 @@ class EditingSupport extends React.Component {
             return;
         }
         const format = new ol.format.GeoJSON();
-        const feature = format.writeFeatureObject(this.currentFeature);
+        let feature = format.writeFeatureObject(this.currentFeature);
+        if (this.props.editing.feature) {
+            feature = {...this.props.editing.feature, geometry: feature.geometry};
+        }
         this.props.changeEditingState({feature: feature, changed: true});
     }
     reset = () => {
