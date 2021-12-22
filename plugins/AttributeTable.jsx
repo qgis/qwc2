@@ -242,7 +242,7 @@ class AttributeTable extends React.Component {
                                 <span>{LocaleUtils.tr("attribtable.delete")}</span>
                             </button>
                         ) : (
-                            <button className="button" disabled={layerChanged || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
+                            <button className="button" disabled={layerChanged || editing || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
                                 <Icon icon="trash" />
                             </button>
                         )}
