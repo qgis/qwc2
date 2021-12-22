@@ -142,6 +142,7 @@ button.button {
     justify-content: center;
     background-color: @button_bg@;
     height: 2em;
+    overflow: hidden;
 }
 
 button.button:disabled {
