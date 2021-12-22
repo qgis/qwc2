@@ -58,6 +58,9 @@ class AppMenu extends React.Component {
         }
     }
     toggleMenu = () => {
+        if (!this.state.menuVisible && this.props.currentTaskBlocked) {
+            return;
+        }
         if (!this.state.menuVisible && this.props.appMenuClearsTask) {
             this.props.setCurrentTask(null);
         }
