@@ -119,7 +119,7 @@ class AttributeTable extends React.Component {
                 <table className="attribtable-table" ref={el => { this.table = el; }}>
                     <thead>
                         <tr>
-                            <th><span>&nbsp;</span></th>
+                            <th />
                             <th onClick={() => this.sortBy("id")}>
                                 <span>
                                     <span className="attribtable-table-headername">id</span>
@@ -232,6 +232,9 @@ class AttributeTable extends React.Component {
                         </button>
                         <button className="button" disabled={layerChanged || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
                             <Icon icon="search" />
+                        </button>
+                        <button className="button" disabled={layerChanged || editing || Object.values(this.state.selectedFeatures).filter(entry => entry === true).length !== 1} onClick={this.switchToFormEditMode} title={LocaleUtils.tr("attribtable.formeditmode")}>
+                            <Icon icon="editing" />
                         </button>
                         {this.state.confirmDelete ? (
                             <button className="button edit-commit" onClick={this.deleteSelectedFeatured}>
@@ -516,6 +519,10 @@ class AttributeTable extends React.Component {
             features: this.state.filteredSortedFeatures.filter(feature => this.state.selectedFeatures[feature.id] === true)
         });
         this.props.zoomToExtent(bbox, this.props.mapCrs);
+    }
+    switchToFormEditMode = () => {
+        const feature = this.state.filteredSortedFeatures.find(f => this.state.selectedFeatures[f.id] === true);
+        this.props.setCurrentTask("Editing", null, null, {layer: this.state.loadedLayer, feature: feature});
     }
     updateFilter = (state, val, resetPage = false) => {
         const newState = {...this.state, [state]: val};

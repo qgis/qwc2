@@ -43,6 +43,7 @@ class Editing extends React.Component {
         refreshLayer: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
         side: PropTypes.string,
+        taskData: PropTypes.object,
         theme: PropTypes.object,
         touchFriendly: PropTypes.bool,
         width: PropTypes.string
@@ -62,7 +63,11 @@ class Editing extends React.Component {
         minimized: false
     }
     onShow = () => {
-        this.changeSelectedLayer(this.state.selectedLayer, "Pick");
+        if (this.props.taskData) {
+            this.changeSelectedLayer(this.props.taskData.layer, "Pick", this.props.taskData.feature);
+        } else {
+            this.changeSelectedLayer(this.state.selectedLayer, "Pick");
+        }
     }
     onHide = () => {
         this.props.changeEditingState({action: null, geomType: null, feature: null});
@@ -271,9 +276,9 @@ class Editing extends React.Component {
         return null;
     }
 
-    changeSelectedLayer = (selectedLayer, action = null) => {
+    changeSelectedLayer = (selectedLayer, action = null, feature = null) => {
         const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
-        this.props.changeEditingState({...this.props.editing, action: action || this.props.editing.action, feature: null, geomType: curConfig ? curConfig.geomType : null});
+        this.props.changeEditingState({...this.props.editing, action: action || this.props.editing.action, feature: feature, geomType: curConfig ? curConfig.geomType : null});
 
         let prevLayerVisibility = null;
         if (this.state.selectedLayer !== null) {
@@ -554,7 +559,8 @@ export default (iface = EditingInterface) => {
         layers: state.layers.flat,
         map: state.map,
         iface: iface,
-        editing: state.editing
+        editing: state.editing,
+        taskData: state.task.id === "Editing" ? state.task.data : null
     }), {
         clickOnMap: clickOnMap,
         changeEditingState: changeEditingState,

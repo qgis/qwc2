@@ -32,6 +32,7 @@
       "deletefeatures": "Delete selected features",
       "deleting": "Deleting features...",
       "discard": "Discard changed row",
+      "formeditmode": "Open the edit form for the selected feature",
       "layer": "Layer",
       "loadfailed": "Failed to load the feature data",
       "loading": "Loading...",

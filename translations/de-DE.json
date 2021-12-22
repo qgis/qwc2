@@ -32,6 +32,7 @@
       "deletefeatures": "Ausgewählte Objekte löschen",
       "deleting": "Objekte werden gelöscht",
       "discard": "Geänderte Zeile zurücksetzen",
+      "formeditmode": "Ausgewähltes Objekt in der Formularansicht editieren",
       "layer": "Ebene",
       "loadfailed": "Die Objektdaten konnten nicht geladen werden",
       "loading": "Laden...",

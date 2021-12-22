@@ -48,6 +48,7 @@
     "attribtable.deletefeatures",
     "attribtable.deleting",
     "attribtable.discard",
+    "attribtable.formeditmode",
     "attribtable.layer",
     "attribtable.loadfailed",
     "attribtable.loading",
