@@ -425,8 +425,10 @@ class Editing extends React.Component {
             const element = ev.target.elements.namedItem(name);
             if (element) {
                 let value = element.type === "radio" || element.type === "checkbox" ? element.checked : element.value;
-                if ((element instanceof RadioNodeList || element.type === "date" || element.type === "number" || element.type === "radio" || fieldConfig.type === "date" || fieldConfig.type === "number") && element.value === "") {
-                    // Set empty date/number value to null instead of empty string
+                const nullElements = ["date", "number", "radio"];
+                const nullFieldTypes = ["date", "number", "list"];
+                if ((element instanceof RadioNodeList || nullElements.includes(element.type) || nullFieldTypes.includes(fieldConfig.type)) && element.value === "") {
+                    // Set empty value to null instead of empty string
                     value = null;
                 }
                 const parts = name.split("__");
