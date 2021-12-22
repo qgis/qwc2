@@ -514,11 +514,13 @@ class AttributeTable extends React.Component {
         this.props.setCurrentTaskBlocked(false);
     }
     zoomToSelection = () => {
-        const bbox = geojsonBbox({
+        const collection = {
             type: "FeatureCollection",
-            features: this.state.filteredSortedFeatures.filter(feature => this.state.selectedFeatures[feature.id] === true)
-        });
-        this.props.zoomToExtent(bbox, this.props.mapCrs);
+            features: this.state.filteredSortedFeatures.filter(feature => this.state.selectedFeatures[feature.id] === true && feature.geometry)
+        };
+        if (!isEmpty(collection.features)) {
+            this.props.zoomToExtent(geojsonBbox(collection), this.props.mapCrs);
+        }
     }
     switchToFormEditMode = () => {
         const feature = this.state.filteredSortedFeatures.find(f => this.state.selectedFeatures[f.id] === true);
