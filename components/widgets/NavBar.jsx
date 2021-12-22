@@ -24,7 +24,7 @@ export default class NavBar extends React.Component {
         pageSizes: PropTypes.array
     }
     static defaultProps = {
-        pageSizes: [5, 10, 25, 50, 100]
+        pageSizes: [10, 25, 50, 100]
     }
     render() {
         const pages = [this.props.currentPage];
