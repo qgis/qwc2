@@ -10,10 +10,10 @@
 import axios from 'axios';
 import url from 'url';
 import isMobile from 'ismobilejs';
+import StandardStore from '../stores/StandardStore';
 
 let defaultConfig = {
     translationsPath: "translations",
-    bingApiKey: null,
     defaultFeatureStyle: {
         strokeColor: [0, 0, 255, 1],
         strokeWidth: 2,
@@ -123,6 +123,10 @@ const ConfigUtils = {
     },
     getTranslationsPath() {
         return (ConfigUtils.getConfigProp("translationsPath") || "translations").replace(/\/$/g, "");
+    },
+    havePlugin(name) {
+        const state = StandardStore.get().getState();
+        return defaultConfig.plugins[state.browser.mobile ? "mobile" : "desktop"].find(entry => entry.name === name);
     }
 };
 
