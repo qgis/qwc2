@@ -19,6 +19,7 @@ import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/Spinner';
 import NavBar from '../components/widgets/NavBar';
+import ConfigUtils from '../utils/ConfigUtils';
 import EditingInterface from '../utils/EditingInterface';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -233,9 +234,11 @@ class AttributeTable extends React.Component {
                         <button className="button" disabled={layerChanged || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
                             <Icon icon="search" />
                         </button>
-                        <button className="button" disabled={layerChanged || editing || Object.values(this.state.selectedFeatures).filter(entry => entry === true).length !== 1} onClick={this.switchToFormEditMode} title={LocaleUtils.tr("attribtable.formeditmode")}>
-                            <Icon icon="editing" />
-                        </button>
+                        {ConfigUtils.havePlugin("Editing") ? (
+                            <button className="button" disabled={layerChanged || editing || Object.values(this.state.selectedFeatures).filter(entry => entry === true).length !== 1} onClick={this.switchToFormEditMode} title={LocaleUtils.tr("attribtable.formeditmode")}>
+                                <Icon icon="editing" />
+                            </button>
+                        ) : null}
                         {this.state.confirmDelete ? (
                             <button className="button edit-commit" onClick={this.deleteSelectedFeatured}>
                                 <Icon icon="ok" />
