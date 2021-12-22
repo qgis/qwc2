@@ -76,6 +76,7 @@
       "symbologyscale": "Echelle"
     },
     "editing": {
+      "attrtable": "",
       "canceldelete": "Annuler la suppression",
       "clearpicture": "",
       "commit": "Appliquer",

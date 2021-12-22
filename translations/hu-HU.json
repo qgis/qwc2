@@ -76,6 +76,7 @@
       "symbologyscale": "Jel méretatarány:"
     },
     "editing": {
+      "attrtable": "",
       "canceldelete": "Ne töröld",
       "clearpicture": "",
       "commit": "Jóváhagyás",

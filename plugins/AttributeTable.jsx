@@ -34,6 +34,7 @@ class AttributeTable extends React.Component {
         mapCrs: PropTypes.string,
         setCurrentTask: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
+        taskData: PropTypes.object,
         theme: PropTypes.object,
         zoomToExtent: PropTypes.func
     }
@@ -71,6 +72,8 @@ class AttributeTable extends React.Component {
         }
         if (!this.props.active && prevProps.active) {
             this.setState(AttributeTable.defaultState);
+        } else if (this.props.active && !prevProps.active && this.props.taskData && this.props.taskData.layer) {
+            this.reload(this.props.taskData.layer);
         }
     }
     render() {
@@ -225,7 +228,7 @@ class AttributeTable extends React.Component {
                                 );
                             })}
                         </select>
-                        <button className="button" disabled={editing || nolayer} onClick={this.reload} title={LocaleUtils.tr("attribtable.reload")}>
+                        <button className="button" disabled={editing || nolayer} onClick={() => this.reload()} title={LocaleUtils.tr("attribtable.reload")}>
                             <Icon icon="refresh" />
                         </button>
                         <button className="button" disabled={nolayer || editing || loading || layerChanged} onClick={this.addFeature} title={LocaleUtils.tr("attribtable.addfeature")}>
@@ -306,13 +309,15 @@ class AttributeTable extends React.Component {
     changeSelectedLayer = (value) => {
         this.setState({selectedLayer: value});
     }
-    reload = () => {
-        this.setState({...AttributeTable.defaultState, loading: true, selectedLayer: this.state.selectedLayer});
-        this.props.iface.getFeatures(this.editLayerId(this.state.selectedLayer), this.props.mapCrs, (result) => {
+    reload = (layer = null) => {
+        const selectedLayer = layer || this.state.selectedLayer;
+        this.setState({...AttributeTable.defaultState, loading: true, selectedLayer: selectedLayer});
+        this.props.iface.getFeatures(this.editLayerId(selectedLayer), this.props.mapCrs, (result) => {
             if (result) {
                 const features = result.features || [];
-                this.setState({loading: false, features: features, filteredSortedFeatures: this.filteredSortedFeatures(features, this.state), loadedLayer: this.state.selectedLayer});
+                this.setState({loading: false, features: features, filteredSortedFeatures: this.filteredSortedFeatures(features, this.state), loadedLayer: selectedLayer});
             } else {
+                // eslint-disable-next-line
                 alert(LocaleUtils.tr("attribtable.loadfailed"));
                 this.setState({loading: false, features: [], filteredSortedFeatures: [], loadedLayer: ""});
             }
@@ -623,6 +628,7 @@ export default (iface = EditingInterface) => {
         iface: iface,
         layers: state.layers.flat,
         mapCrs: state.map.projection,
+        taskData: state.task.id === "AttributeTable" ? state.task.data : null,
         theme: state.theme.current
     }), {
         setCurrentTask: setCurrentTask,

@@ -76,6 +76,7 @@
       "symbologyscale": "Symbolien mittakaava"
     },
     "editing": {
+      "attrtable": "",
       "canceldelete": "Don't delete",
       "clearpicture": "Clear",
       "commit": "Commit",

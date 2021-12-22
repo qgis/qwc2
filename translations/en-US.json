@@ -76,6 +76,7 @@
       "symbologyscale": "Symbology scale"
     },
     "editing": {
+      "attrtable": "Table",
       "canceldelete": "Don't delete",
       "clearpicture": "Clear",
       "commit": "Commit",

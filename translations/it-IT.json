@@ -76,6 +76,7 @@
       "symbologyscale": "Scala per la simbologia"
     },
     "editing": {
+      "attrtable": "Tabella",
       "canceldelete": "Annulla",
       "clearpicture": "Cancella",
       "commit": "Salva",

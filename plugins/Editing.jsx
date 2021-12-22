@@ -15,7 +15,7 @@ import axios from 'axios';
 import clone from 'clone';
 import uuid from 'uuid';
 import {changeEditingState} from '../actions/editing';
-import {setCurrentTaskBlocked} from '../actions/task';
+import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import {LayerRole, refreshLayer, changeLayerProperty} from '../actions/layers';
 import {clickOnMap} from '../actions/map';
 import AutoEditForm from '../components/AutoEditForm';
@@ -41,6 +41,7 @@ class Editing extends React.Component {
         layers: PropTypes.array,
         map: PropTypes.object,
         refreshLayer: PropTypes.func,
+        setCurrentTask: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
         side: PropTypes.string,
         taskData: PropTypes.object,
@@ -158,6 +159,9 @@ class Editing extends React.Component {
             {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick"), data: {action: 'Pick'}},
             {key: 'Draw', icon: 'editdraw', label: LocaleUtils.trmsg("editing.draw"), data: {action: 'Draw', feature: null}}
         ];
+        if (ConfigUtils.havePlugin("AttributeTable")) {
+            actionButtons.push({key: 'AttribTable', icon: 'editing', label: LocaleUtils.trmsg("editing.attrtable"), data: {action: 'AttrTable'}});
+        }
 
         let commitBar = null;
         if (this.props.editing.changed) {
@@ -237,7 +241,7 @@ class Editing extends React.Component {
                         })}
                     </select>
                 </div>
-                <ButtonBar active={this.props.editing.action} buttons={actionButtons} disabled={this.props.editing.changed} onClick={(action, data) => this.props.changeEditingState({...data})} />
+                <ButtonBar active={this.props.editing.action} buttons={actionButtons} disabled={this.props.editing.changed} onClick={this.actionClicked} />
                 {featureSelection}
                 {fieldsTable}
                 {deleteBar}
@@ -248,7 +252,7 @@ class Editing extends React.Component {
     }
     render() {
         const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("editing.maximize") : LocaleUtils.tr("editing.minimize");
-        const extraTitlebarContent = (<Icon className="editing-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={ev => this.setState({minimized: !this.state.minimized})} title={minMaxTooltip}/>)
+        const extraTitlebarContent = (<Icon className="editing-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState({minimized: !this.state.minimized})} title={minMaxTooltip}/>);
         return (
             <SideBar extraTitlebarContent={extraTitlebarContent} icon={"editing"} id="Editing" onHide={this.onHide} onShow={this.onShow}
                 side={this.props.side} title="appmenu.items.Editing" width={this.props.width}>
@@ -258,7 +262,13 @@ class Editing extends React.Component {
             </SideBar>
         );
     }
-
+    actionClicked = (action, data) => {
+        if (action === "AttribTable") {
+            this.props.setCurrentTask("AttributeTable", null, null, {layer: this.state.selectedLayer});
+        } else {
+            this.props.changeEditingState({...data});
+        }
+    }
     setLayerVisibility = (selectedLayer, visibility) => {
         if (selectedLayer !== null) {
             const path = [];
@@ -275,7 +285,6 @@ class Editing extends React.Component {
         }
         return null;
     }
-
     changeSelectedLayer = (selectedLayer, action = null, feature = null) => {
         const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
         this.props.changeEditingState({...this.props.editing, action: action || this.props.editing.action, feature: feature, geomType: curConfig ? curConfig.geomType : null});
@@ -309,6 +318,7 @@ class Editing extends React.Component {
                 }
                 this.setState({relationTables: relationTables});
             }).catch(e => {
+                // eslint-disable-next-line
                 console.log(e);
             });
         }
@@ -527,6 +537,7 @@ class Editing extends React.Component {
             this.props.changeEditingState({...this.props.editing, feature: null});
             this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
         } else {
+            // eslint-disable-next-line
             alert(errorMsg);
         }
     }
@@ -538,6 +549,7 @@ class Editing extends React.Component {
             this.props.changeEditingState({...this.props.editing, feature: null});
             this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
         } else {
+            // eslint-disable-next-line
             alert(errorMsg);
         }
     }
@@ -566,6 +578,7 @@ export default (iface = EditingInterface) => {
     }), {
         clickOnMap: clickOnMap,
         changeEditingState: changeEditingState,
+        setCurrentTask: setCurrentTask,
         setCurrentTaskBlocked: setCurrentTaskBlocked,
         refreshLayer: refreshLayer,
         changeLayerProperty: changeLayerProperty

@@ -76,6 +76,7 @@
       "symbologyscale": "Масштаб символики:"
     },
     "editing": {
+      "attrtable": "",
       "canceldelete": "Не удалять",
       "clearpicture": "",
       "commit": "Подтвердить изменения",

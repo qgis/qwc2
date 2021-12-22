@@ -76,6 +76,7 @@
       "symbologyscale": "Skala symbolizacji:"
     },
     "editing": {
+      "attrtable": "",
       "canceldelete": "Nie usuwaj",
       "clearpicture": "",
       "commit": "Zatwierdź",

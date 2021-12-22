@@ -76,6 +76,7 @@
       "symbologyscale": "Symbolskala:"
     },
     "editing": {
+      "attrtable": "",
       "canceldelete": "Ikke slett",
       "clearpicture": "",
       "commit": "Bekreft",

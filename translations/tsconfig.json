@@ -80,6 +80,7 @@
     "dxfexport.layers",
     "dxfexport.selectinfo",
     "dxfexport.symbologyscale",
+    "editing.attrtable",
     "editing.canceldelete",
     "editing.clearpicture",
     "editing.commit",

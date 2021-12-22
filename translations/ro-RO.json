@@ -76,6 +76,7 @@
       "symbologyscale": "Scara simboluri:"
     },
     "editing": {
+      "attrtable": "",
       "canceldelete": "Elimină modificările",
       "clearpicture": "Elimină poza",
       "commit": "Salvează",

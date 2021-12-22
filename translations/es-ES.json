@@ -76,6 +76,7 @@
       "symbologyscale": "Escala de la simbología:"
     },
     "editing": {
+      "attrtable": "",
       "canceldelete": "No borrar",
       "clearpicture": "",
       "commit": "Confirmar",

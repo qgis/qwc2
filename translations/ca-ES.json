@@ -76,6 +76,7 @@
       "symbologyscale": "Escala de la simbologia:"
     },
     "editing": {
+      "attrtable": "",
       "canceldelete": "No esborrar",
       "clearpicture": "Netejar imatge",
       "commit": "Confirmar",

@@ -76,6 +76,7 @@
       "symbologyscale": "Darstellungsmassstab"
     },
     "editing": {
+      "attrtable": "Tabelle",
       "canceldelete": "Abbrechen",
       "clearpicture": "Zurücksetzen",
       "commit": "Speichern",
