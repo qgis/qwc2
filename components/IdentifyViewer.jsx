@@ -543,6 +543,7 @@ class IdentifyViewer extends React.Component {
         return this.parsedContent(text);
     }
     parsedContent = (text) => {
+        text = text.replace('&#10;', '<br />');
         return ReactHtmlParser(text, {transform: (node, index) => {
             if (node.name === "a") {
                 return (
