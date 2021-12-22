@@ -451,6 +451,7 @@ class AttributeTable extends React.Component {
                     newState.deleteTask = null;
                     newState.currentPage = Math.floor((newState.features.length - 1) / this.state.pageSize);
                     newState.selectedFeatures = {};
+                    newState.confirmDelete = false;
                 }
                 this.setState(newState);
             });
