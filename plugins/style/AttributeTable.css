@@ -170,14 +170,23 @@ span.attribtable-table-bdraghandle {
 }
 
 
+table.attribtable-table td {
+    height: 1.5em; /* Just an initial height */
+}
+
 table.attribtable-table td > input:not([type=checkbox]),
 table.attribtable-table td > select,
-table.attribtable-table td > span.edit-upload-field {
+table.attribtable-table td > span.edit-upload-field,
+table.attribtable-table td > textarea {
     width: 100%;
     min-width: 4em;
     border: none;
     height: 100%;
     background-color: transparent;
+}
+
+table.attribtable-table td > textarea {
+    margin-bottom: -0.25em;
 }
 
 table.attribtable-table td > *:disabled,

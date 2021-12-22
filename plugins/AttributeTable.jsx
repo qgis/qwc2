@@ -385,6 +385,10 @@ class AttributeTable extends React.Component {
             );
         } else if (field.type === "file") {
             return (<EditUploadField constraints={constraints} disabled={disabled} editLayerId={this.editLayerId(this.state.selectedLayer)} fieldId={field.id} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
+        } else if (field.type === "text") {
+            input = (
+                <textarea onChange={(ev) => updateField(field.id, ev.target.value)} rows={1} value={value} />
+            );
         } else {
             input = (
                 <input disabled={disabled} name={field.id} type={field.type} {...constraints}
