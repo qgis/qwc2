@@ -44,7 +44,7 @@ class ButtonBar extends React.Component {
                     return (
                         <span className="buttonbar-button-container"  key={button.key}>
                             <button
-                                className={classes} disabled={button.disabled}
+                                className={classes} disabled={button.disabled || this.props.disabled}
                                 onClick={button.type !== "submit" ? () => this.props.onClick(button.key, button.data) : null}
                                 type={button.type || "button"}
                             >
