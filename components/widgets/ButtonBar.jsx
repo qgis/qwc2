@@ -49,7 +49,7 @@ class ButtonBar extends React.Component {
                                 type={button.type || "button"}
                             >
                                 {button.icon ? (<Icon icon={button.icon} />) : null}
-                                {button.label && (!this.props.mobile || !button.icon) ? LocaleUtils.tr(button.label) : null}
+                                {button.label && (!this.props.mobile || !button.icon) ? (<span>{LocaleUtils.tr(button.label)}</span>) : null}
                             </button>
                             {button.tooltip ? (<span className="buttonbar-button-tooltip">
                                 {LocaleUtils.tr(button.tooltip)}
