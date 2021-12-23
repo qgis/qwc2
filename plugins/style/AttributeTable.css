@@ -72,7 +72,6 @@ table.attribtable-table {
 }
 
 table.attribtable-table td {
-    padding: 0.25em;
     border: 1px solid @item_border@;
     text-align: center;
 }
@@ -171,7 +170,7 @@ span.attribtable-table-bdraghandle {
 
 
 table.attribtable-table td {
-    height: 1.5em; /* Just an initial height */
+    height: 2em; /* Just an initial height */
 }
 
 table.attribtable-table td > input:not([type=checkbox]),
@@ -183,10 +182,11 @@ table.attribtable-table td > textarea {
     border: none;
     height: 100%;
     background-color: transparent;
+    margin: 0;
 }
 
 table.attribtable-table td > textarea {
-    margin-bottom: -0.25em;
+    resize: none;
 }
 
 table.attribtable-table td > *:disabled,
