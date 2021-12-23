@@ -71,11 +71,6 @@ table.attribtable-table {
     min-width: 100%;
 }
 
-table.attribtable-table td {
-    border: 1px solid @item_border@;
-    text-align: center;
-}
-
 table.attribtable-table th {
     position: sticky;
     top: 0;
@@ -168,9 +163,11 @@ span.attribtable-table-bdraghandle {
     bottom: 0px;
 }
 
-
 table.attribtable-table td {
+    border: 1px solid @item_border@;
+    text-align: center;
     height: 2em; /* Just an initial height */
+    vertical-align: top;
 }
 
 table.attribtable-table td > input:not([type=checkbox]),
@@ -180,13 +177,13 @@ table.attribtable-table td > textarea {
     width: 100%;
     min-width: 4em;
     border: none;
-    height: 100%;
     background-color: transparent;
     margin: 0;
 }
 
 table.attribtable-table td > textarea {
     resize: none;
+    height: 100%;
 }
 
 table.attribtable-table td > *:disabled,
