@@ -396,7 +396,7 @@ class AttributeTable extends React.Component {
             return (<EditUploadField constraints={constraints} disabled={disabled} editLayerId={this.editLayerId(this.state.selectedLayer)} fieldId={field.id} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
         } else if (field.type === "text") {
             input = [
-                (<input key={field.id + "_input"} name={field.id} type="hidden" value={value} />),
+                (<input className="attribtable-content-editable-hiddeninput" key={field.id + "_input"} name={field.id} type="text" value={value} />),
                 (<ContentEditable className="attribtable-content-editable" html={value} key={field.id + "_div"} onChange={(ev) => updateField(field.id, ev.target.value)} />)
             ];
         } else {

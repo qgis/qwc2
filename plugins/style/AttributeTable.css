@@ -170,10 +170,6 @@ table.attribtable-table td {
     position: relative;
 }
 
-table.attribtable-table td:not(:nth-child(1)):not(:nth-child(2)) {
-    min-width: 5em;
-}
-
 table.attribtable-table td > input:not([type=checkbox]),
 table.attribtable-table td > select,
 table.attribtable-table td > span.edit-upload-field {
@@ -182,6 +178,11 @@ table.attribtable-table td > span.edit-upload-field {
     border: none;
     background-color: transparent;
     margin: 0;
+}
+
+table.attribtable-table td > input.attribtable-content-editable-hiddeninput {
+    visibility: hidden;
+    min-width: 6em;
 }
 
 table.attribtable-table td > div.attribtable-content-editable {
