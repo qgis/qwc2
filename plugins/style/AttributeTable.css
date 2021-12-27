@@ -166,14 +166,17 @@ span.attribtable-table-bdraghandle {
 table.attribtable-table td {
     border: 1px solid @item_border@;
     text-align: center;
-    height: 2em; /* Just an initial height */
     vertical-align: top;
+    position: relative;
+}
+
+table.attribtable-table td:not(:nth-child(1)):not(:nth-child(2)) {
+    min-width: 5em;
 }
 
 table.attribtable-table td > input:not([type=checkbox]),
 table.attribtable-table td > select,
-table.attribtable-table td > span.edit-upload-field,
-table.attribtable-table td > textarea {
+table.attribtable-table td > span.edit-upload-field {
     width: 100%;
     min-width: 4em;
     border: none;
@@ -181,9 +184,19 @@ table.attribtable-table td > textarea {
     margin: 0;
 }
 
-table.attribtable-table td > textarea {
-    resize: none;
-    height: 100%;
+table.attribtable-table td > div.attribtable-content-editable {
+    padding: 0.125em;
+    text-align: left;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+table.attribtable-table td > div.attribtable-content-editable:focus {
+    outline: 2px solid #3584e4;
 }
 
 table.attribtable-table td > *:disabled,

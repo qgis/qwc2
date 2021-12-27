@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import geojsonBbox from 'geojson-bounding-box';
 import isEmpty from 'lodash.isempty';
+import ContentEditable from 'react-contenteditable';
 import {LayerRole} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
@@ -394,9 +395,10 @@ class AttributeTable extends React.Component {
         } else if (field.type === "file") {
             return (<EditUploadField constraints={constraints} disabled={disabled} editLayerId={this.editLayerId(this.state.selectedLayer)} fieldId={field.id} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
         } else if (field.type === "text") {
-            input = (
-                <textarea onChange={(ev) => updateField(field.id, ev.target.value)} rows={1} value={value} />
-            );
+            input = [
+                (<input key={field.id + "_input"} name={field.id} type="hidden" value={value} />),
+                (<ContentEditable className="attribtable-content-editable" html={value} key={field.id + "_div"} onChange={(ev) => updateField(field.id, ev.target.value)} />)
+            ];
         } else {
             input = (
                 <input disabled={disabled} name={field.id} type={field.type} {...constraints}
