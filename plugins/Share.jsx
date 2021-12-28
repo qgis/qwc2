@@ -48,11 +48,16 @@ class Share extends React.Component {
             } else {
                 this.props.removeMarker('sharecenter');
             }
+        }
+        if (isVisible !== wasVisible || this.props.state.map.center !== prevProps.state.map.center) {
             this.setState({location: ""});
         }
     }
     renderBody = () => {
-        const url = this.state.location || 'about:blank';
+        let url = this.state.location || 'about:blank';
+        if (this.state.pin && this.state.location) {
+            url += url.includes("?") ? "&hc=1" : "?hc=1";
+        }
         const shareSocials = this.props.showSocials ? <ShareSocials shareTitle="QWC2" shareUrl={url}/> : null;
         const shareLink = this.props.showLink ? <ShareLink shareUrl={url}/> : null;
         const shareQRCode = this.props.showQRCode ? <ShareQRCode shareUrl={url}/> : null;
@@ -87,9 +92,6 @@ class Share extends React.Component {
     }
     refreshPermalink = () => {
         generatePermaLink(this.props.state, (permalink => {
-            if (this.state.pin) {
-                permalink += permalink.includes("?") ? "&hc=1" : "?hc=1";
-            }
             this.setState({location: permalink});
         }));
     }
