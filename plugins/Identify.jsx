@@ -63,6 +63,7 @@ class Identify extends React.Component {
             this.props.removeLayer("searchselection");
 
             let queryableLayers = [];
+            let layersQueried = false;
             if(point) {
                 queryableLayers = newProps.layers.filter((l) => {
                     // All non-background WMS layers with a non-empty queryLayers list
@@ -85,6 +86,7 @@ class Identify extends React.Component {
                             layers.push(assign({}, layer, {queryLayers: [queryLayers[i]]}));
                         }
                     }
+                    layersQueried = !isEmpty(layers);
                     layers.forEach(l => this.props.sendRequest(IdentifyUtils.buildRequest(l, l.queryLayers.join(","), point, newProps.map, newProps.params)));
                 });
             }
@@ -98,7 +100,7 @@ class Identify extends React.Component {
                     }
                 }
             }
-            if(isEmpty(queryableLayers) && !queryFeature) {
+            if(!layersQueried && !queryFeature) {
                 this.props.identifyEmpty();
             }
             this.props.addMarker('identify', point, '', newProps.map.projection);
