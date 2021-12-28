@@ -82,6 +82,12 @@ table.attribtable-table th {
                 inset 0 1px 0 @item_border@;
 }
 
+table.attribtable-table th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+}
+
 table.attribtable-table th > span {
     margin: 0 0 -1px -1px;
     padding: 0.25em;
@@ -109,13 +115,13 @@ table.attribtable-table tr:hover {
 }
 
 table.attribtable-table td:first-child {
-    position: relative;
     background-color: @button_bg@;
     align-items: center;
     padding: 0.25em 0.5em;
     background-clip: padding-box;
     position: sticky;
     left: 0;
+    z-index: 1;
 }
 
 table.attribtable-table td:first-child::after {
