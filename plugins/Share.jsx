@@ -36,7 +36,7 @@ class Share extends React.Component {
         side: 'right'
     }
     state = {
-        location: null,
+        location: "",
         pin: false
     }
     componentDidUpdate(prevProps, prevState) {
@@ -48,38 +48,32 @@ class Share extends React.Component {
             } else {
                 this.props.removeMarker('sharecenter');
             }
+            this.setState({location: ""});
         }
     }
-    onShow = () => {
-        this.setState({location: null});
-        generatePermaLink(this.props.state, (permalink => this.setState({location: permalink})));
-    }
     renderBody = () => {
-        if (this.state.location) {
-            let url = this.state.location;
-            if (this.state.pin) {
-                url += url.includes("?") ? "&hc=1" : "?hc=1";
-            }
-            const shareSocials = this.props.showSocials ? <ShareSocials shareTitle="QWC2" shareUrl={url}/> : null;
-            const shareLink = this.props.showLink ? <ShareLink shareUrl={url}/> : null;
-            const shareQRCode = this.props.showQRCode ? <ShareQRCode shareUrl={url}/> : null;
-            return (
-                <div>
-                    <div className="share-option-pin">
-                        <span>{LocaleUtils.tr("share.showpin")}</span>
-                        <ToggleSwitch active={this.state.pin} onChange={active => this.setState({pin: active})} />
-                    </div>
+        const url = this.state.location || 'about:blank';
+        const shareSocials = this.props.showSocials ? <ShareSocials shareTitle="QWC2" shareUrl={url}/> : null;
+        const shareLink = this.props.showLink ? <ShareLink shareUrl={url}/> : null;
+        const shareQRCode = this.props.showQRCode ? <ShareQRCode shareUrl={url}/> : null;
+        return (
+            <div>
+                <div className="share-option-pin">
+                    <span>{LocaleUtils.tr("share.showpin")}</span>
+                    <ToggleSwitch active={this.state.pin} onChange={active => this.setState({pin: active})} />
+                </div>
+                <div className="share-body">
                     {shareSocials}
                     {shareLink}
                     {shareQRCode}
+                    {!this.state.location ? (
+                        <div className="share-reload-overlay">
+                            <button className="button" onClick={this.refreshPermalink}>{LocaleUtils.tr("share.refresh")}</button>
+                        </div>
+                    ) : null}
                 </div>
-            );
-        } else {
-            return (
-                <div style={{padding: "1em"}}>
-                    {LocaleUtils.tr("share.generatingpermalink")}
-                </div>);
-        }
+            </div>
+        );
     }
     render() {
         return (
@@ -90,6 +84,14 @@ class Share extends React.Component {
                 })}
             </SideBar>
         );
+    }
+    refreshPermalink = () => {
+        generatePermaLink(this.props.state, (permalink => {
+            if (this.state.pin) {
+                permalink += permalink.includes("?") ? "&hc=1" : "?hc=1";
+            }
+            this.setState({location: permalink});
+        }));
     }
 }
 

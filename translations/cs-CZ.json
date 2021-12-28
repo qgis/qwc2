@@ -268,7 +268,7 @@
     "share": {
       "QRCodeLinkTitle": "QR kód",
       "directLinkTitle": "Přes přímé spojení",
-      "generatingpermalink": "Generovat permalink...",
+      "refresh": "",
       "showpin": "",
       "socialIntro": "Ve vaší oblíbené sociální síti"
     },

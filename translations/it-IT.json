@@ -268,7 +268,7 @@
     "share": {
       "QRCodeLinkTitle": "Codice QR",
       "directLinkTitle": "Collegamento diretto",
-      "generatingpermalink": "Sto generando il permalink",
+      "refresh": "Genera permalink",
       "showpin": "Mostra pin",
       "socialIntro": "Social network"
     },

@@ -268,7 +268,7 @@
     "share": {
       "QRCodeLinkTitle": "QR-код",
       "directLinkTitle": "По прямой ссылке",
-      "generatingpermalink": "Создание постоянной ссылки...",
+      "refresh": "",
       "showpin": "",
       "socialIntro": "В Вашей любимой соцсети"
     },

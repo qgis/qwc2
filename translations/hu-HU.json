@@ -268,7 +268,7 @@
     "share": {
       "QRCodeLinkTitle": "QR-kód",
       "directLinkTitle": "Közvetlen hivatkozással...",
-      "generatingpermalink": "Hivatkozás készítése...",
+      "refresh": "",
       "showpin": "",
       "socialIntro": "A kedvenc közösségi hálózatodon"
     },

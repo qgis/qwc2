@@ -268,7 +268,7 @@
     "share": {
       "QRCodeLinkTitle": "Karekod",
       "directLinkTitle": "Doğrudan bağlantı yolu ile",
-      "generatingpermalink": "Bağlantı yolu oluşturuluyor...",
+      "refresh": "",
       "showpin": "",
       "socialIntro": "Favori sosyal ağınıza"
     },

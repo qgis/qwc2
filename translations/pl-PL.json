@@ -268,7 +268,7 @@
     "share": {
       "QRCodeLinkTitle": "QR code",
       "directLinkTitle": "Poprzez link bezpośredni",
-      "generatingpermalink": "Generowanie permalinku...",
+      "refresh": "",
       "showpin": "",
       "socialIntro": "W twoich ulubionych mediach społecznościowych"
     },

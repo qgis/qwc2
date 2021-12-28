@@ -268,7 +268,7 @@
     "share": {
       "QRCodeLinkTitle": "QR-koodi",
       "directLinkTitle": "Suora linkillä",
-      "generatingpermalink": "Generoidaan pysyvä linkki, odota hetki...",
+      "refresh": "",
       "showpin": "",
       "socialIntro": "Jaa someen"
     },

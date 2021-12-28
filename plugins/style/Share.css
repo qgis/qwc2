@@ -24,3 +24,19 @@
 #Share div.share-option-pin > span:last-child {
     flex: 1 1 auto;
 }
+
+#Share div.share-body {
+    position: relative;
+}
+
+#Share div.share-reload-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: @container_bg@EE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

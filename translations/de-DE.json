@@ -268,7 +268,7 @@
     "share": {
       "QRCodeLinkTitle": "QR Code (Smartphone)",
       "directLinkTitle": "Über einen direkten Link",
-      "generatingpermalink": "Permalink wird erzeugt",
+      "refresh": "Permalink generieren",
       "showpin": "Pin anzeigen",
       "socialIntro": "In den sozialen Medien"
     },
