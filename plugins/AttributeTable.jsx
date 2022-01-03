@@ -393,10 +393,18 @@ class AttributeTable extends React.Component {
         } else if (field.type === "file") {
             return (<EditUploadField constraints={constraints} disabled={disabled} editLayerId={this.editLayerId(this.state.selectedLayer)} fieldId={field.id} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
         } else if (field.type === "text") {
-            input = [
-                (<input className="attribtable-content-editable-hiddeninput" key={field.id + "_input"} name={field.id} type="text" value={value} />),
-                (<ContentEditable className="attribtable-content-editable" html={value} key={field.id + "_div"} onChange={(ev) => updateField(field.id, ev.target.value)} />)
-            ];
+            if (constraints.multiline) {
+                input = [
+                    (<input className="attribtable-content-editable-hiddeninput" key={field.id + "_input"} name={field.id} readOnly required={constraints.required} type="text" value={value} />),
+                    (<ContentEditable className="attribtable-content-editable" disabled={disabled} html={value} key={field.id + "_div"} onChange={(ev) => updateField(field.id, ev.target.value)} />)
+                ];
+            } else {
+                input = (
+                    <input disabled={disabled} name={field.id}
+                        onChange={(ev) => updateField(field.id, ev.target.value)}
+                        required={constraints.required} type={field.type} value={value}/>
+                );
+            }
         } else {
             input = (
                 <input disabled={disabled} name={field.id} type={field.type} {...constraints}

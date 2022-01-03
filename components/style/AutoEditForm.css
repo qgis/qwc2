@@ -43,6 +43,7 @@ table.AutoEditForm label > input {
 
 table.AutoEditForm textarea {
     width: 100%;
+    border: 1px solid @item_border@;
 }
 
 table.AutoEditForm span.input-frame input {
