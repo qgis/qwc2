@@ -84,9 +84,6 @@ class AttributeTable extends React.Component {
 
         const editConfig = this.props.theme.editConfig || {};
         const currentEditConfig = editConfig[this.state.loadedLayer];
-        const themeSublayers = this.props.layers.reduce((accum, layer) => {
-            return layer.role === LayerRole.THEME ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
-        }, []);
         let loadOverlay = null;
         if (this.state.selectedLayer && this.state.selectedLayer !== this.state.loadedLayer) {
             if (this.state.loading) {
@@ -221,7 +218,7 @@ class AttributeTable extends React.Component {
                         <span>{LocaleUtils.tr("attribtable.layer")}</span>
                         <select disabled={loading || editing} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
                             <option disabled value="">{LocaleUtils.tr("attribtable.selectlayer")}</option>
-                            {Object.keys(editConfig).filter(layerId => themeSublayers.includes(layerId)).map(layerId => {
+                            {Object.keys(editConfig).map(layerId => {
                                 const layerName = editConfig[layerId].layerName;
                                 const match = LayerUtils.searchLayer(this.props.layers, 'name', layerName, [LayerRole.THEME]);
                                 return (
@@ -538,6 +535,14 @@ class AttributeTable extends React.Component {
         }
     }
     switchToFormEditMode = () => {
+        const editConfig = this.props.theme.editConfig || {};
+        const currentEditConfig = editConfig[this.state.loadedLayer];
+        const hasGeometry = (currentEditConfig || {}).geomType !== null;
+        if (!hasGeometry) {
+            // eslint-disable-next-line
+            alert(LocaleUtils.tr("attribtable.nogeomnoform"));
+            return;
+        }
         const feature = this.state.filteredSortedFeatures.find(f => this.state.selectedFeatures[f.id] === true);
         this.props.setCurrentTask("Editing", null, null, {layer: this.state.loadedLayer, feature: feature});
     }

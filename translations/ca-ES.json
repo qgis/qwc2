@@ -37,6 +37,7 @@
       "loadfailed": "La càrrega ha fallat",
       "loading": "Carregant",
       "nodelete": "",
+      "nogeomnoform": "",
       "pleasereload": "Si us plau, torni a carregar",
       "reload": "Carregar",
       "selectlayer": "Escollir capa",

@@ -37,6 +37,7 @@
       "loadfailed": "Errore nel caricamento dei dati",
       "loading": "Caricamento...",
       "nodelete": "Non eliminare",
+      "nogeomnoform": "Il formulario non è disponibile per livelli senza geometria",
       "pleasereload": "Premere 'Ricarica' per caricare la tabella attributi...",
       "reload": "Ricarica",
       "selectlayer": "Seleziona livello...",

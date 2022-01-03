@@ -53,6 +53,7 @@
     "attribtable.loadfailed",
     "attribtable.loading",
     "attribtable.nodelete",
+    "attribtable.nogeomnoform",
     "attribtable.pleasereload",
     "attribtable.reload",
     "attribtable.selectlayer",

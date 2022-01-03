@@ -37,6 +37,7 @@
       "loadfailed": "Die Objektdaten konnten nicht geladen werden",
       "loading": "Laden...",
       "nodelete": "Nicht löschen",
+      "nogeomnoform": "Die Formularansicht ist für geometrielose Ebenen nicht verfügbar",
       "pleasereload": "Auf 'Neu laden' drücken, um die Attributtabelle zu laden...",
       "reload": " Neu laden",
       "selectlayer": "Ebene auswählen...",

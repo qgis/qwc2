@@ -37,6 +37,7 @@
       "loadfailed": "Failed to load the feature data",
       "loading": "Loading...",
       "nodelete": "Don't delete",
+      "nogeomnoform": "The edit form is not available for geometryless layers",
       "pleasereload": "Press 'Reload' to load the attribute table...",
       "reload": "Reload",
       "selectlayer": "Select layer...",
