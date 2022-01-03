@@ -33,6 +33,7 @@
       "deleting": "Objekte werden gelöscht",
       "discard": "Geänderte Zeile zurücksetzen",
       "formeditmode": "Ausgewähltes Objekt in der Formularansicht editieren",
+      "geomnoadd": "Bitte die Formularansicht verwenden, um neue Objekte für diese Ebene zu erstellen",
       "layer": "Ebene",
       "loadfailed": "Die Objektdaten konnten nicht geladen werden",
       "loading": "Laden...",

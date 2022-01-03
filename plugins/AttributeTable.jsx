@@ -30,6 +30,7 @@ import './style/AttributeTable.css';
 class AttributeTable extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
+        allowAddForGeometryLayers: PropTypes.bool,
         iface: PropTypes.object,
         layers: PropTypes.array,
         mapCrs: PropTypes.string,
@@ -409,6 +410,12 @@ class AttributeTable extends React.Component {
         const editConfig = this.props.theme.editConfig || {};
         const currentEditConfig = editConfig[this.state.loadedLayer];
         if (!currentEditConfig) {
+            return;
+        }
+        const hasGeometry = (currentEditConfig || {}).geomType !== null;
+        if (!this.props.allowAddForGeometryLayers && hasGeometry) {
+            // eslint-disable-next-line
+            alert(LocaleUtils.tr("attribtable.geomnoadd"));
             return;
         }
         const feature = {
