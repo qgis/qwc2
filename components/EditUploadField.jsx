@@ -158,4 +158,15 @@ export default class EditUploadField extends React.Component {
         a.setAttribute("download", filename);
         a.click();
     }
+    dataUriToBlob = (dataUri) => {
+        const parts = dataUri.split(',');
+        const byteString = parts[0].indexOf('base64') >= 0 ? atob(parts[1]) : decodeURI(parts[1]);
+        const mimeString = parts[0].split(':')[1].split(';')[0];
+
+        const ia = new Uint8Array(byteString.length);
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ia], {type: mimeString});
+    }
 }
