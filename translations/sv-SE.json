@@ -80,6 +80,7 @@
     "editing": {
       "attrtable": "",
       "canceldelete": "Radera inte",
+      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Skicka",
       "delete": "Radera",

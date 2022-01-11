@@ -80,6 +80,7 @@
     "editing": {
       "attrtable": "",
       "canceldelete": "Annuler la suppression",
+      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Appliquer",
       "delete": "Supprimer",

@@ -80,6 +80,7 @@
     "editing": {
       "attrtable": "",
       "canceldelete": "Elimină modificările",
+      "capturedpicture": "",
       "clearpicture": "Elimină poza",
       "commit": "Salvează",
       "delete": "Șterge",

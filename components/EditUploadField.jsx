@@ -10,6 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import mime from 'mime-to-extensions';
 import Icon from './Icon';
+import uuid from 'uuid';
 import ModalDialog from './ModalDialog';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -58,27 +59,33 @@ export default class EditUploadField extends React.Component {
         const mediaSupport = 'mediaDevices' in navigator && constraints.accept.split(",").includes("image/jpeg");
         const imageData = fileType && fileType.startsWith('image/') ? fileUrl : this.state.imageData;
 
-        if (imageData && this.props.showThumbnails) {
-            const extension = fileValue ? fileValue.replace(/^.*\./, '') : 'jpg';
-            return (
-                <span className="edit-upload-field-image">
-                    <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
-                    {this.state.imageData ? (<input name={this.props.name} type="hidden" value={this.state.imageData} />) : null}
-                    <button className="button" disabled={this.props.disabled} onClick={this.clearPicture} type="button">
-                        <Icon icon="clear" />
-                        {LocaleUtils.tr("editing.clearpicture")}
-                    </button>
-                </span>
-            );
-        } else if (fileValue) {
-            return (
-                <span className={"edit-upload-field" + (this.props.disabled ? " edit-upload-field-disabled" : "")}>
-                    <a href={fileUrl} rel="noreferrer" target="_blank">
-                        {fileValue.replace(/.*\//, '')}
-                    </a>
-                    <Icon icon="clear" onClick={this.props.disabled ? null : () => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, null); }} />
-                </span>
-            );
+        if (imageData) {
+            if (this.props.showThumbnails) {
+                const extension = fileValue ? fileValue.replace(/^.*\./, '') : 'jpg';
+                return (
+                    <span className="edit-upload-field-image">
+                        <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
+                        {this.state.imageData ? (<input name={this.props.name} type="hidden" value={this.state.imageData} />) : null}
+                        <button className="button" disabled={this.props.disabled} onClick={this.clearPicture} type="button">
+                            <Icon icon="clear" />
+                            {LocaleUtils.tr("editing.clearpicture")}
+                        </button>
+                    </span>
+                );
+            } else {
+                const extension = fileValue ? fileValue.replace(/^.*\./, '') : 'jpg';
+                return (
+                    <span className={"edit-upload-field edit-upload-field-imagelink" + (this.props.disabled ? " edit-upload-field-disabled" : "")}>
+                        {fileValue ? (
+                            <a href={fileUrl} rel="noreferrer" target="_blank">{fileValue.replace(/.*\//, '')}</a>
+                        ) : (
+                            <a href="#" onClick={(ev) => {this.download(imageData, this.props.fieldId + "." + extension); ev.preventDefault();}} rel="noreferrer" target="_blank">{LocaleUtils.tr("editing.capturedpicture")}</a>
+                        )}
+                        <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
+                        <Icon icon="clear" onClick={this.props.disabled ? null : () => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, null); }} />
+                    </span>
+                );
+            }
         } else {
             return (
                 <span className={"edit-upload-field-input" + (this.props.disabled ? " edit-upload-field-input-disabled" : "")}>

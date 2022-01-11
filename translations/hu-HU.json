@@ -80,6 +80,7 @@
     "editing": {
       "attrtable": "",
       "canceldelete": "Ne töröld",
+      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Jóváhagyás",
       "delete": "Törlés",

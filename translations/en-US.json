@@ -80,6 +80,7 @@
     "editing": {
       "attrtable": "Table",
       "canceldelete": "Don't delete",
+      "capturedpicture": "Captured picture",
       "clearpicture": "Clear",
       "commit": "Commit",
       "delete": "Delete",

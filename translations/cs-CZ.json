@@ -80,6 +80,7 @@
     "editing": {
       "attrtable": "",
       "canceldelete": "Neodstraňovat",
+      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Potvrdit",
       "delete": "Odstranit",

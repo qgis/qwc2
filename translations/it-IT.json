@@ -80,6 +80,7 @@
     "editing": {
       "attrtable": "Tabella",
       "canceldelete": "Annulla",
+      "capturedpicture": "Foto catturata",
       "clearpicture": "Cancella",
       "commit": "Salva",
       "delete": "Elimina",

@@ -84,6 +84,7 @@
     "dxfexport.symbologyscale",
     "editing.attrtable",
     "editing.canceldelete",
+    "editing.capturedpicture",
     "editing.clearpicture",
     "editing.commit",
     "editing.delete",

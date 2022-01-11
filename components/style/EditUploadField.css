@@ -52,6 +52,26 @@ span.edit-upload-field-image > button {
     width: 100%;
 }
 
+span.edit-upload-field-imagelink {
+    position: relative;
+    text-align: left;
+}
+
+span.edit-upload-field-imagelink > img {
+    display: none;
+    position: absolute;
+    max-width: 240px;
+    max-height: 240px;
+    top: 100%;
+    z-index: 1;
+    box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
+    cursor: pointer;
+}
+
+span.edit-upload-field-imagelink:hover > img {
+    display: initial;
+}
+
 video.edit-capture-frame {
     height: 100%;
     max-width: 100%;

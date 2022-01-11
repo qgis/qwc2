@@ -80,6 +80,7 @@
     "editing": {
       "attrtable": "",
       "canceldelete": "Ikke slett",
+      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Bekreft",
       "delete": "Slett",

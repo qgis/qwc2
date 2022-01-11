@@ -80,6 +80,7 @@
     "editing": {
       "attrtable": "Tabelle",
       "canceldelete": "Abbrechen",
+      "capturedpicture": "Aufgenommenes Bild",
       "clearpicture": "Zurücksetzen",
       "commit": "Speichern",
       "delete": "Löschen",

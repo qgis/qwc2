@@ -80,6 +80,7 @@
     "editing": {
       "attrtable": "",
       "canceldelete": "Silme",
+      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Onayla",
       "delete": "Sil",
