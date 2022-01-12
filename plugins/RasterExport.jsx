@@ -17,6 +17,7 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/RasterExport.css';
 
@@ -124,6 +125,7 @@ class RasterExport extends React.Component {
                     <input name={"HIGHLIGHT_LABELBUFFERCOLOR"} readOnly type="hidden" value={highlightParams.labelOultineColors.join(";")} />
                     <input name={"HIGHLIGHT_LABELBUFFERSIZE"} readOnly type="hidden" value={highlightParams.labelOutlineSizes.join(";")} />
                     <input name={"HIGHLIGHT_LABELSIZE"} readOnly type="hidden" value={highlightParams.labelSizes.join(";")} />
+                    <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
                 </form>
             </span>
         );

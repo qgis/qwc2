@@ -25,6 +25,7 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/Print.css';
 
@@ -248,6 +249,7 @@ class Print extends React.Component {
                         })}
                     </tbody></table>
                     <div>
+                        <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
                         <input name={mapName + ":extent"} readOnly type={formvisibility} value={extent || ""} />
                         <input name="SERVICE" readOnly type={formvisibility} value="WMS" />
                         <input name="VERSION" readOnly type={formvisibility} value={version || "1.3.0"} />

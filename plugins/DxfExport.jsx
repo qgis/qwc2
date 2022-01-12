@@ -16,6 +16,7 @@ import TaskBar from '../components/TaskBar';
 import PrintFrame from '../components/PrintFrame';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MiscUtils from '../utils/MiscUtils';
 import './style/DxfExport.css';
 
 class DxfExport extends React.Component {
@@ -75,6 +76,7 @@ class DxfExport extends React.Component {
                     <input name="CRS" readOnly type="hidden" value={this.props.map.projection} />
                     <input name="FILE_NAME" readOnly type="hidden" value={basename + ".dxf"} />
                     <input name="BBOX" readOnly ref={input => { this.extentInput = input; }} type="hidden" value="" />
+                    <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
                     {formatOptions}
                 </form>
             </span>

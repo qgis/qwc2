@@ -46,6 +46,10 @@ const MiscUtils = {
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
+    },
+    getCsrfToken() {
+        const csrfTag = Array.from(document.getElementsByTagName('meta')).find(tag => tag.getAttribute('name') === "csrf-token");
+        return csrfTag ? csrfTag.getAttribute('content') : "";
     }
 };
 

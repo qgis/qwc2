@@ -33,10 +33,25 @@ import {themesLoaded, setCurrentTheme} from '../actions/theme';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
 import {UrlParams, resolvePermaLink} from '../utils/PermaLinkUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 
 import './style/App.css';
+
+
+const CSRF_TOKEN = MiscUtils.getCsrfToken();
+
+if (CSRF_TOKEN) {
+    axios.interceptors.request.use((config) => {
+        if (["POST", "PUT", "PATCH", "DELETE"].includes(config.method.toUpperCase())) {
+            config.headers["X-CSRF-TOKEN"] = CSRF_TOKEN;
+        }
+        return config;
+    }, (error) => {
+        return Promise.reject(error);
+    });
+}
 
 
 class AppInitComponent extends React.Component {
