@@ -23,7 +23,7 @@ const WINDOW_GEOMETRIES = {};
 class ResizeableWindow extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-        dockable: PropTypes.bool,
+        dockable: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         extraControls: PropTypes.arrayOf(PropTypes.shape({
             icon: PropTypes.string.isRequired,
             callback: PropTypes.func.isRequired
@@ -115,7 +115,10 @@ class ResizeableWindow extends React.Component {
         ev.stopPropagation();
     }
     render() {
-        const dockable = this.props.dockable && ConfigUtils.getConfigProp("globallyDisableDockableDialogs") !== true;
+        let dockable = this.props.dockable;
+        if (ConfigUtils.getConfigProp("globallyDisableDockableDialogs")) {
+            dockable = false;
+        }
         let icon = null;
         if (this.props.icon) {
             icon = (<Icon className="resizeable-window-titlebar-icon" icon={this.props.icon} />);
@@ -128,6 +131,8 @@ class ResizeableWindow extends React.Component {
         const style = {display: this.props.visible ? 'initial' : 'none'};
         const maximized = this.state.geometry.maximized ? true : false;
         const zIndex = 10 + this.props.windowStacking.findIndex(item => item === this.id);
+        const dockBottom  = this.props.dockable === "bottom";
+        const dockIconSuffix = dockBottom ? "_bottom" : "";
 
         const content = [
             (<div className="resizeable-window-titlebar" key="titlebar" onDoubleClick={this.toggleMaximize}>
@@ -140,7 +145,7 @@ class ResizeableWindow extends React.Component {
                 ))}
                 {!maximized && dockable ? (
                     <Icon
-                        className="resizeable-window-titlebar-control" icon={this.state.geometry.docked ? "undock" : "dock"}
+                        className="resizeable-window-titlebar-control" icon={(this.state.geometry.docked ? "undock" : "dock") + dockIconSuffix}
                         onClick={this.toggleDock}
                         titlemsgid={this.state.geometry.docked ? LocaleUtils.trmsg("window.undock") : LocaleUtils.trmsg("window.dock")} />
                 ) : null}
@@ -156,15 +161,23 @@ class ResizeableWindow extends React.Component {
         const windowclasses = classnames({
             "resizeable-window": true,
             "resizeable-window-maximized": this.state.geometry.maximized,
-            "resizeable-window-docked": this.state.geometry.docked && !this.state.geometry.maximized
+            "resizeable-window-docked-left": this.state.geometry.docked && !dockBottom && !this.state.geometry.maximized,
+            "resizeable-window-docked-bottom": this.state.geometry.docked && dockBottom && !this.state.geometry.maximized
         });
-        let resizeMode = true;
+        let resizeMode = {
+            left: true,
+            right: true,
+            top: true,
+            bottom: true
+        };
         if (this.state.geometry.maximized) {
             resizeMode = false;
         } else if (this.state.geometry.docked) {
             resizeMode = {
-                right: true,
-                bottom: true
+                left: false,
+                right: !dockBottom,
+                top: dockBottom,
+                bottom: !dockBottom
             };
         }
         return (
