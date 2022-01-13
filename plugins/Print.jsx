@@ -322,19 +322,21 @@ class Print extends React.Component {
     render() {
         const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("print.maximize") : LocaleUtils.tr("print.minimize");
         const extraTitlebarContent = (<Icon className="print-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState({minimized: !this.state.minimized})} title={minMaxTooltip}/>);
-        return (
-            <SideBar extraTitlebarContent={extraTitlebarContent} icon={"print"} id="Print"
-                onHide={this.onHide} onShow={this.onShow} side={this.props.side}
-                title="appmenu.items.Print" width="20em">
-                {() => ({
-                    body: this.state.minimized ? null : this.renderBody(),
-                    extra: [
-                        this.renderPrintFrame(),
-                        this.props.inlinePrintOutput ? this.renderPrintOutputWindow() : null
-                    ]
-                })}
-            </SideBar>
-        );
+        return [
+            (
+                <SideBar extraTitlebarContent={extraTitlebarContent} icon={"print"} id="Print" key="Print"
+                    onHide={this.onHide} onShow={this.onShow} side={this.props.side}
+                    title="appmenu.items.Print" width="20em">
+                    {() => ({
+                        body: this.state.minimized ? null : this.renderBody(),
+                        extra: [
+                            this.renderPrintFrame()
+                        ]
+                    })}
+                </SideBar>
+            ),
+            this.renderPrintOutputWindow()
+        ];
     }
     changeLayout = (ev) => {
         const layout = this.props.theme.print.find(item => item.name === ev.target.value);
