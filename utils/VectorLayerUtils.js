@@ -232,12 +232,12 @@ const VectorLayerUtils = {
             style = style[0] || style;
 
             const styleOptions = {
-                strokeColor: style.getStroke() ? style.getStroke().getColor() : '#000000',
+                strokeColor: style.getStroke() ? style.getStroke().getColor() : [0, 0, 0, 1],
                 strokeWidth: style.getStroke() ? style.getStroke().getWidth() : 1,
                 strokeDash: style.getStroke() ? style.getStroke().getLineDash() : [],
-                fillColor: style.getFill() ? style.getFill().getColor() : '#FFFFFF',
-                textFill: style.getText() && style.getText().getFill() ? style.getText().getFill().getColor() : 'rgba(0, 0, 0 ,0)',
-                textStroke: style.getText() && style.getText().getStroke() ? style.getText().getStroke().getColor() : 'rgba(0, 0, 0, 0)'
+                fillColor: style.getFill() ? style.getFill().getColor() : [255, 255, 255, 1],
+                textFill: style.getText() && style.getText().getFill() ? style.getText().getFill().getColor() : [0, 0, 0, 1],
+                textStroke: style.getText() && style.getText().getStroke() ? style.getText().getStroke().getColor() : [255, 255, 255, 1]
             };
             if (style.getImage() && style.getImage() !== getDefaultImageStyle() && style.getImage().getSrc()) {
                 // FIXME: Uses private members of ol.style.Icon, style.getImage().getAnchor() returns null because style.getImage.getSize() is null because the the image is not yet loaded
