@@ -153,32 +153,36 @@ class ResizeableWindow extends React.Component {
             </div>)
         ];
 
-        if (this.state.geometry.maximized && this.props.visible) {
-            return (
-                <div className="maximized-window" style={{zIndex: zIndex }}>{content}</div>
-            );
-        } else if (this.state.geometry.docked && this.props.visible) {
-            return (
-                <div className="dock-window" onMouseDown={this.startDockResize} ref={c => { this.dock = c; }} style={{zIndex: zIndex, width: this.props.initialWidth + 'px'}}>
-                    {content}
-                </div>
-            );
-        } else {
-            return (
-                <div className="resizeable-window-container" style={style}>
-                    <Rnd bounds="parent" className="resizeable-window" default={this.state.geometry}
-                        maxHeight={this.props.maxHeight || window.innerHeight} maxWidth={this.props.maxWidth || window.innerWidth}
-                        minHeight={this.props.minHeight} minWidth={this.props.minWidth}
-                        onDragStart={this.onDragStart}
-                        onDragStop={this.onDragStop}
-                        onMouseDown={() => this.props.raiseWindow(this.id)}
-                        onResizeStop={this.onResizeStop}
-                        ref={c => { this.rnd = c; }} style={{zIndex: zIndex}}>
-                        {content}
-                    </Rnd>
-                </div>
-            );
+        const windowclasses = classnames({
+            "resizeable-window": true,
+            "resizeable-window-maximized": this.state.geometry.maximized,
+            "resizeable-window-docked": this.state.geometry.docked && !this.state.geometry.maximized
+        });
+        let resizeMode = true;
+        if (this.state.geometry.maximized) {
+            resizeMode = false;
+        } else if (this.state.geometry.docked) {
+            resizeMode = {
+                right: true,
+                bottom: true
+            };
         }
+        return (
+            <div className="resizeable-window-container" style={style}>
+                <Rnd bounds="parent" className={windowclasses} default={this.state.geometry}
+                    disableDragging={this.state.geometry.maximized || this.state.geometry.docked}
+                    enableResizing={resizeMode}
+                    maxHeight={this.props.maxHeight || window.innerHeight} maxWidth={this.props.maxWidth || window.innerWidth}
+                    minHeight={this.props.minHeight} minWidth={this.props.minWidth}
+                    onDragStart={this.onDragStart}
+                    onDragStop={this.onDragStop}
+                    onMouseDown={() => this.props.raiseWindow(this.id)}
+                    onResizeStop={this.onResizeStop}
+                    ref={c => { this.rnd = c; }} style={{zIndex: zIndex}}>
+                    {content}
+                </Rnd>
+            </div>
+        );
     }
     onDragStart = () => {
         if (this.dragShield) {
@@ -215,25 +219,6 @@ class ResizeableWindow extends React.Component {
             maximized: !this.state.geometry.maximized
         };
         this.setState({geometry: geometry});
-    }
-    startDockResize = (ev) => {
-        if (ev.target === this.dock) {
-            this.dockResizeStartWidth = ev.target.offsetWidth;
-            this.dockResizeStartMouse = ev.clientX;
-            document.addEventListener("mousemove", this.resizeDock);
-            document.addEventListener("mouseup", this.endDockResize);
-        }
-    }
-    endDockResize = () => {
-        document.removeEventListener("mousemove", this.resizeDock);
-        document.removeEventListener("mouseup", this.endDockResize);
-        this.dockResizeStartWidth = undefined;
-        this.dockResizeStartMouse = undefined;
-    }
-    resizeDock = (ev) => {
-        if (this.dock) {
-            this.dock.style.width = (this.dockResizeStartWidth + ev.clientX - this.dockResizeStartMouse) + 'px';
-        }
     }
 }
 
