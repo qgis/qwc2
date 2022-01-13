@@ -355,8 +355,7 @@ const ServiceLayerUtils = {
         }).catch(() => {
             console.warn("Failed to read " + serviceUrl);
             for (const layerConfig of layerConfigs) {
-                const source = type + ':' + serviceUrl + '#' + layerConfig.name;
-                callback(source, null);
+                callback(layerConfig.id, null);
             }
         });
     }
