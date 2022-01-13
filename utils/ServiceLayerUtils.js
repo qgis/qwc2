@@ -204,7 +204,7 @@ const ServiceLayerUtils = {
     },
     getWFSLayers(capabilitiesXml) {
         const options = {
-            attributeNamePrefix : "",
+            attributeNamePrefix: "",
             ignoreAttributes: false,
             parseNodeValue: true,
             parseAttributeValue: true,
@@ -348,11 +348,13 @@ const ServiceLayerUtils = {
                     };
                     callback(layerConfig.id, layer);
                 } else {
+                    // eslint-disable-next-line
                     console.warn("Could not find layer " + layerConfig.name);
                     callback(layerConfig.id, null);
                 }
             }
         }).catch(() => {
+            // eslint-disable-next-line
             console.warn("Failed to read " + serviceUrl);
             for (const layerConfig of layerConfigs) {
                 callback(layerConfig.id, null);

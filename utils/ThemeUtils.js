@@ -7,7 +7,6 @@
  */
 
 import isEmpty from 'lodash.isempty';
-import uuid from 'uuid';
 
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
@@ -67,6 +66,7 @@ const ThemeUtils = {
                 }
                 bgLayers.push(bgLayer);
             } else {
+                // eslint-disable-next-line
                 console.warn("Could not find background layer " + entry.name);
             }
         }
