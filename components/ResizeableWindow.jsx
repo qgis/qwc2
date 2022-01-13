@@ -168,13 +168,16 @@ class ResizeableWindow extends React.Component {
             left: true,
             right: true,
             top: true,
-            bottom: true
+            bottom: true,
+            bottomLeft: true,
+            bottomRight: true,
+            topLeft: true,
+            topRight: true
         };
         if (this.state.geometry.maximized) {
             resizeMode = false;
         } else if (this.state.geometry.docked) {
             resizeMode = {
-                left: false,
                 right: !dockBottom,
                 top: dockBottom,
                 bottom: !dockBottom
