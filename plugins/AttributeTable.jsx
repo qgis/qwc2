@@ -212,7 +212,7 @@ class AttributeTable extends React.Component {
         const editing = this.state.changedFeatureIdx !== null;
         const layerChanged = this.state.selectedLayer !== this.state.loadedLayer;
         return (
-            <ResizeableWindow icon="editing" initialHeight={480} initialWidth={800} onClose={this.onClose} title={LocaleUtils.tr("attribtable.title")}>
+            <ResizeableWindow dockable="bottom" icon="editing" initialHeight={480} initialWidth={800} onClose={this.onClose} title={LocaleUtils.tr("attribtable.title")}>
                 <div className="attribtable-body" role="body">
                     {loadOverlay}
                     <div className="attribtable-toolbar">
