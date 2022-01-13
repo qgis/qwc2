@@ -93,27 +93,34 @@ const ServiceLayerUtils = {
         layers.sort((a, b) => a.title.localeCompare(b.title));
         return layers;
     },
-    getWMSLayers(capabilitiesXml, serviceUrl, asGroup = false) {
+    getWMSLayers(capabilitiesXml, calledServiceUrl, asGroup = false) {
         const wmsFormat = new ol.format.WMSCapabilities();
         const capabilities = wmsFormat.read(capabilitiesXml);
+        calledServiceUrl = calledServiceUrl.replace(/\?.*$/, '');
         let topLayer = null;
-        serviceUrl = serviceUrl.replace(/\?.*$/, '');
+        let serviceUrl;
+        try {
+            topLayer = capabilities.Capability.Layer;
+            serviceUrl = capabilities.Service.OnlineResource;
+        } catch (e) {
+            serviceUrl = calledServiceUrl;
+        }
         let getMapUrl = null;
         try {
             topLayer = capabilities.Capability.Layer;
-            getMapUrl = ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetMap.DCPType).HTTP.Get.OnlineResource;
+            getMapUrl = ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetMap.DCPType).HTTP.Get.OnlineResource.replace(serviceUrl, calledServiceUrl);
         } catch (e) {
-            getMapUrl = serviceUrl;
+            getMapUrl = calledServiceUrl;
         }
         let featureInfoUrl = null;
         try {
-            featureInfoUrl = ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType).HTTP.Get.OnlineResource;
+            featureInfoUrl = ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType).HTTP.Get.OnlineResource.replace(serviceUrl, calledServiceUrl);
         } catch (e) {
-            featureInfoUrl = serviceUrl;
+            featureInfoUrl = calledServiceUrl;
         }
         let infoFormats = null;
         try {
-            infoFormats = capabilities.Capability.Request.GetFeatureInfo.Format;
+            infoFormats = capabilities.Capability.Request.GetFeatureInfo.Format.replace(serviceUrl, calledServiceUrl);
         } catch (e) {
             infoFormats = ['text/plain'];
         }
@@ -126,13 +133,13 @@ const ServiceLayerUtils = {
         }
         const version = capabilities.version;
         if (!topLayer.Layer || asGroup) {
-            return [this.getWMSLayerParams(topLayer, topLayer.CRS, getMapUrl, serviceUrl, version, featureInfoUrl, infoFormats)].filter(entry => entry);
+            return [this.getWMSLayerParams(topLayer, topLayer.CRS, getMapUrl, serviceUrl, calledServiceUrl, version, featureInfoUrl, infoFormats)].filter(entry => entry);
         } else {
-            const entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, getMapUrl, serviceUrl, version, featureInfoUrl, infoFormats)).filter(entry => entry);
+            const entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, getMapUrl, serviceUrl, calledServiceUrl, version, featureInfoUrl, infoFormats)).filter(entry => entry);
             return entries.sort((a, b) => strcmp(a.title, b.title));
         }
     },
-    getWMSLayerParams(layer, parentCrs, getMapUrl, serviceUrl, version, featureInfoUrl, infoFormats, groupbbox = null) {
+    getWMSLayerParams(layer, parentCrs, getMapUrl, serviceUrl, calledServiceUrl, version, featureInfoUrl, infoFormats, groupbbox = null) {
         let supportedCrs = layer.CRS;
         if (isEmpty(supportedCrs)) {
             supportedCrs = [...parentCrs];
@@ -142,7 +149,7 @@ const ServiceLayerUtils = {
         let sublayers = [];
         const sublayerbounds = {};
         if (!isEmpty(layer.Layer)) {
-            sublayers = layer.Layer.map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, getMapUrl, serviceUrl, version, featureInfoUrl, infoFormats, sublayerbounds)).filter(entry => entry);
+            sublayers = layer.Layer.map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, getMapUrl, serviceUrl, calledServiceUrl, version, featureInfoUrl, infoFormats, sublayerbounds)).filter(entry => entry);
         }
         let bbox = null;
         if (isEmpty(layer.BoundingBox)) {
@@ -169,7 +176,7 @@ const ServiceLayerUtils = {
         }
         let legendUrl = null;
         try {
-            legendUrl = layer.Style[0].LegendURL[0].OnlineResource;
+            legendUrl = layer.Style[0].LegendURL[0].OnlineResource.replace(serviceUrl, calledServiceUrl);
         } catch (e) {
             /* Pass */
         }
@@ -181,7 +188,6 @@ const ServiceLayerUtils = {
             attribution: layer.Attribution,
             legendUrl: legendUrl,
             url: getMapUrl,
-            capabilitiesUrl: serviceUrl,
             version: version,
             infoFormats: infoFormats,
             featureInfoUrl: featureInfoUrl,
