@@ -42,8 +42,9 @@ const ServiceLayerUtils = {
         let wmtsFormat = new ol.format.WMTSCapabilities();
         let capabilities = wmtsFormat.read(capabilitiesXml);
         let tileMatrices = capabilities.Contents.TileMatrixSet.reduce((res, entry) => {
+            const crsMatch = entry.SupportedCRS.match(/(EPSG).*:(\d+)/i);
             res[entry.Identifier] = {
-                crs: entry.SupportedCRS.replace("urn:ogc:def:crs:", ""),
+                crs: crsMatch ? "EPSG:" + crsMatch[2] : entry.SupportedCRS,
                 matrix: entry.TileMatrix
             };
             return res;
