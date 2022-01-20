@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import classnames from 'classnames';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
+import LocaleUtils from "../utils/LocaleUtils";
 import './style/BackgroundSwitcher.css';
 
 class TaskButton extends React.Component {
@@ -32,8 +33,10 @@ class TaskButton extends React.Component {
             "map-button": true,
             "button-active": this.props.currentTask === this.props.task
         });
+        const title = LocaleUtils.tr("appmenu.items." + this.props.task + (this.props.mode || ""));
         return (
             <button className={classes} onClick={this.buttonClicked}
+                title={title}
                 style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
                 <Icon icon={this.props.icon} />
             </button>
