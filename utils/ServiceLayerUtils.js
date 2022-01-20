@@ -59,7 +59,7 @@ const ServiceLayerUtils = {
                 return entry.ScaleDenominator * 0.00028;
             });
             let url = layer.ResourceURL.find(url => url.resourceType === "tile").template;
-            let dimensions = layer.Dimension.forEach(dim => {
+            layer.Dimension && layer.Dimension.forEach(dim => {
                 url = url.replace("{" + dim.Identifier + "}", dim.Default);
             });
             return {
