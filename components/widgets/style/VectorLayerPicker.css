@@ -4,6 +4,5 @@ div.VectorLayerPicker {
 }
 
 div.VectorLayerPicker > select {
-    margin: 0.25em 0;
     flex: 1 1 auto;
 }
