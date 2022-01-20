@@ -1,4 +1,4 @@
-const webfontsGenerator = require('webfonts-generator');
+const webfontsGenerator = require('@vusion/webfonts-generator');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
 const fs = require('fs');
