@@ -62,7 +62,7 @@
         "redux-devtools-dock-monitor": "1.1.3",
         "redux-devtools-log-monitor": "1.4.0",
         "redux-immutable-state-invariant": "2.1.0",
-        "@vusion/webfonts-generator": "0.7.3",
+        "webfonts-generator": "0.4.0",
         "xml2js": "0.4.19"
     },
     "babel": {
