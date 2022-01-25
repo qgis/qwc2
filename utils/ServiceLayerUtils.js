@@ -121,7 +121,7 @@ const ServiceLayerUtils = {
         }
         let infoFormats = null;
         try {
-            infoFormats = capabilities.Capability.Request.GetFeatureInfo.Format.replace(serviceUrl, calledServiceUrl);
+            infoFormats = capabilities.Capability.Request.GetFeatureInfo.Format;
         } catch (e) {
             infoFormats = ['text/plain'];
         }
