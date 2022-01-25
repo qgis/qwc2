@@ -155,7 +155,7 @@ div.identify-body table.attribute-list {
     table-layout: fixed;
 }
 
-div.identify-body table.attribute-list tr:nth-child(even) {
+div.identify-body table.attribute-list > tbody > tr:nth-child(even) {
     background-color: #F0F0F0;
 }
 
