@@ -48,7 +48,7 @@ export default class EditUploadField extends React.Component {
         this.disableMediaStream();
     }
     render() {
-        const fileValue = this.props.value.replace(/attachment:\/\//, '');
+        const fileValue = this.props.value.startsWith("attachment:") ? this.props.value.replace(/attachment:\/\//, '') : "";
         const fileType = mime.lookup(fileValue);
         const editServiceUrl = ConfigUtils.getConfigProp("editServiceUrl");
         const fileUrl = editServiceUrl + "/" + this.props.editLayerId + "/attachment?file=" + encodeURIComponent(fileValue);
