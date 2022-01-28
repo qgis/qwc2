@@ -90,7 +90,9 @@ class TopBar extends React.Component {
                     {logoEl}
                     <div className="center-span">
                         <this.props.components.Search searchOptions={searchOptions}/>
-                        <this.props.components.Toolbar toolbarItems={this.props.toolbarItems} />
+                        <this.props.components.Toolbar
+                            openExternalUrl={this.openUrl}
+                            toolbarItems={this.props.toolbarItems} />
                     </div>
                     <this.props.components.AppMenu
                         appMenuClearsTask={this.props.appMenuClearsTask}
