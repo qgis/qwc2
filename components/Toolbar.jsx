@@ -10,7 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import LocaleUtils from '../utils/LocaleUtils';
-import {setCurrentTask, openExternalUrl} from '../actions/task';
+import {setCurrentTask} from '../actions/task';
 import Icon from './Icon';
 import './style/Toolbar.css';
 
@@ -42,7 +42,7 @@ class Toolbar extends React.Component {
     }
     itemClicked = (item, active) => {
         if (item.url) {
-            this.props.openExternalUrl(item.url);
+            this.props.openExternalUrl(item.url, item.target, LocaleUtils.tr("appmenu.items." + item.key));
         } else if (active) {
             this.props.setCurrentTask(null);
         } else {
@@ -64,5 +64,4 @@ export default connect((state) => ({
     currentTheme: state.theme.current || {}
 }), {
     setCurrentTask: setCurrentTask,
-    openExternalUrl: openExternalUrl
 })(Toolbar);
