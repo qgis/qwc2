@@ -77,11 +77,8 @@ class Measure extends React.Component {
             resultBody = (
                 <div className="resultbody">
                     <span>{LocaleUtils.toLocaleFixed(measureUtils.getFormattedLength(this.props.measureState.lenUnit, length), 2)}</span>
-                    <select onChange={this.changeLengthUnit} value={this.props.measureState.lenUnit}>
-                        <option value="m">m</option>
-                        <option value="ft">ft</option>
-                        <option value="km">km</option>
-                        <option value="mi">mi</option>
+                    <select onChange={this.changeLengthUnit} value={this.props.measureState.lenUnit} disabled="true">
+                        <option value="m" selected="true">m</option>
                     </select>
                 </div>
             );
@@ -89,11 +86,8 @@ class Measure extends React.Component {
             resultBody = (
                 <div className="resultbody">
                     <span>{LocaleUtils.toLocaleFixed(measureUtils.getFormattedArea(this.props.measureState.areaUnit, this.props.measureState.area), 2)}</span>
-                    <select onChange={this.changeAreaUnit} value={this.props.measureState.areaUnit}>
-                        <option value="sqm">m&#178;</option>
-                        <option value="sqft">ft&#178;</option>
-                        <option value="sqkm">km&#178;</option>
-                        <option value="sqmi">mi&#178;</option>
+                    <select onChange={this.changeAreaUnit} value={this.props.measureState.areaUnit} disabled="true">
+                        <option value="sqm" selected="true">m&#178;</option>
                     </select>
                 </div>
             );
