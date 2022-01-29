@@ -15,11 +15,13 @@ import Sortable from 'react-sortablejs';
 import FileSaver from 'file-saver';
 import {LayerRole, changeLayerProperty, removeLayer, reorderLayer, setSwipe, addLayerSeparator} from '../actions/layers';
 import {setActiveLayerInfo} from '../actions/layerinfo';
+import {setVisibleLegendWindow} from '../actions/legendwindow';
 import {setActiveServiceInfo} from '../actions/serviceinfo';
 import {toggleMapTips, zoomToExtent} from '../actions/map';
 import Icon from '../components/Icon';
 import ImportLayer from '../components/ImportLayer';
 import LayerInfoWindow from '../components/LayerInfoWindow';
+import LegendWindow from '../components/LegendWindow';
 import ServiceInfoWindow from '../components/ServiceInfoWindow';
 import SideBar from '../components/SideBar';
 import Spinner from '../components/Spinner';
@@ -48,6 +50,7 @@ class LayerTree extends React.Component {
         groupTogglesSublayers: PropTypes.bool,
         infoInSettings: PropTypes.bool,
         layerInfoWindowSize: PropTypes.object,
+        legendWindowSize: PropTypes.object,
         layers: PropTypes.array,
         mapCrs: PropTypes.string,
         mapScale: PropTypes.number,
@@ -56,6 +59,7 @@ class LayerTree extends React.Component {
         removeLayer: PropTypes.func,
         reorderLayer: PropTypes.func,
         setActiveLayerInfo: PropTypes.func,
+        setVisibleLegendWindow: PropTypes.func,
         setActiveServiceInfo: PropTypes.func,
         setSwipe: PropTypes.func,
         showLegendIcons: PropTypes.bool,
@@ -80,12 +84,13 @@ class LayerTree extends React.Component {
         groupTogglesSublayers: false,
         grayUnchecked: true,
         layerInfoWindowSize: {width: 320, height: 480},
+        legendWindowSize: {width: 320, height: 480},
         bboxDependentLegend: false,
         flattenGroups: false,
         width: "25em",
         enableLegendPrint: true,
         enableVisibleFilter: true,
-        enableServiceInfo: true,
+        enableServiceInfo: false,
         infoInSettings: true,
         showToggleAllLayersCheckbox: true,
         transparencyIcon: true
@@ -427,6 +432,9 @@ class LayerTree extends React.Component {
             serviceInfoIcon = (<Icon className="layertree-theme-metadata" icon="info-sign" onClick={() => this.props.setActiveServiceInfo(this.props.theme)}/>);
         }
 
+        let legendWindowIcon = null;
+        legendWindowIcon = (<Icon className="layertree-theme-metadata" icon="info-sign" onClick={() => this.props.setVisibleLegendWindow(this.props.layers, true)}/>);
+
         let extraTitlebarContent = null;
         if (legendPrintIcon || deleteAllLayersIcon || visibleFilterIcon) {
             extraTitlebarContent = (
@@ -435,6 +443,7 @@ class LayerTree extends React.Component {
                     {visibleFilterIcon}
                     {deleteAllLayersIcon}
                     {serviceInfoIcon}
+                    {legendWindowIcon}
                 </span>
             );
         }
@@ -467,6 +476,7 @@ class LayerTree extends React.Component {
                 {legendTooltip}
                 <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} windowSize={this.props.layerInfoWindowSize} />
                 <ServiceInfoWindow windowSize={this.props.layerInfoWindowSize} />
+                <LegendWindow layers={this.props.layers} bboxDependentLegend={this.props.bboxDependentLegend} windowSize={this.props.legendWindowSize} />
             </div>
         );
     }
@@ -612,6 +622,7 @@ class LayerTree extends React.Component {
         }, null, ' ');
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
     }
+
 }
 
 const selector = (state) => ({
@@ -634,6 +645,7 @@ export default connect(selector, {
     toggleMapTips: toggleMapTips,
     setSwipe: setSwipe,
     setActiveLayerInfo: setActiveLayerInfo,
+    setVisibleLegendWindow: setVisibleLegendWindow,
     setActiveServiceInfo: setActiveServiceInfo,
     zoomToExtent: zoomToExtent
 })(LayerTree);
