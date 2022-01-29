@@ -60,8 +60,10 @@ class LegendWindow extends React.Component {
                     legendUrl = LayerUtils.getLegendUrl(layer, sublayer, scale, this.props.map.projection, this.props.bboxDependentLegend ? this.props.map : null);
                     if (legendUrl) {
                         legend.push(<img className="layer-info-window-legend" src={legendUrl} />);
+                        legend.push(<br />);
                     } else if (layer.color) {
                         legend.push(<span className="layer-info-window-coloricon" style={{backgroundColor: layer.color}} />);
+                        legend.push(<br />);
                     }
 
                 });
