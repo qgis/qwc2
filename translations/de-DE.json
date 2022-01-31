@@ -40,7 +40,7 @@
       "nodelete": "Nicht löschen",
       "nogeomnoform": "Die Formularansicht ist für geometrielose Ebenen nicht verfügbar",
       "pleasereload": "Auf 'Neu laden' drücken, um die Attributtabelle zu laden...",
-      "reload": " Neu laden",
+      "reload": "Neu laden",
       "selectlayer": "Ebene auswählen...",
       "title": "Attributtabelle",
       "zoomtoselection": "Auf ausgewählte Objekte zoomen"
@@ -55,7 +55,7 @@
       "lastUpdate": "Zuletzt gespeichert",
       "manage": "Lesezeichen verwalten",
       "notloggedin": "Sie müssen angemeldet sein, um Lesezeichen zu verwenden",
-      "open": "In aktuellem Fenster Öffnen",
+      "open": "In aktuellem Fenster öffnen",
       "openTab": "In neuem Fenster öffnen",
       "remove": "Lesezeichen entfernen",
       "removefailed": "Lesezeichen konnte nicht entfernt werden",
@@ -69,12 +69,12 @@
       "viewertitle_label": ""
     },
     "copybtn": {
-      "click_to_copy": "Kopieren in Zwischenablage",
+      "click_to_copy": "In Zwischenablage kopieren",
       "copied": "Kopiert"
     },
     "dxfexport": {
       "layers": "Ebenen",
-      "selectinfo": "Rechteck aufziehen um die zu exportierende Region",
+      "selectinfo": "Rechteck um die zu exportierende Region aufziehen",
       "symbologyscale": "Darstellungsmaßstab"
     },
     "editing": {
@@ -92,9 +92,9 @@
       "noeditablelayers": "Keine editierbare Ebenen.",
       "pick": "Auswählen",
       "reallydelete": "Löschen",
-      "relationcommitfailed": "Einige Relationen konnten nicht gespeichert werden, siehe Tooltips der Ikonen für mehr Details.",
+      "relationcommitfailed": "Einige Relationen konnten nicht gespeichert werden, siehe Tooltips der Icons für mehr Details.",
       "select": "Auswählen",
-      "takepicture": "Bild schiessen"
+      "takepicture": "Bild schießen"
     },
     "fileselector": {
       "placeholder": "Datei auswählen"
@@ -140,9 +140,9 @@
       "dataUrl": "Daten-URL",
       "keywords": "Schlüsselwörter",
       "legend": "Legende",
-      "maxscale": "Max. Darstellungsmassstab",
+      "maxscale": "Max. Darstellungsmaßstab",
       "metadataUrl": "Metadaten-URL",
-      "minscale": "Min. Darstellungsmassstab",
+      "minscale": "Min. Darstellungsmaßstab",
       "title": "Ebeneninformationen"
     },
     "layertree": {
@@ -158,7 +158,7 @@
       "zoomtolayer": "Auf den Layer zoomen"
     },
     "locate": {
-      "feetUnit": "Fuss",
+      "feetUnit": "Fuß",
       "metersUnit": "Meter",
       "popup": "Im Umkreis von {distance} {unit} von diesem Punkt",
       "statustooltip": {
@@ -204,7 +204,7 @@
     "rasterexport": {
       "format": "Format:",
       "resolution": "Auflösung",
-      "selectinfo": "Rechteck aufziehen um die zu exportierende Region"
+      "selectinfo": "Rechteck um die zu exportierende Region aufziehen"
     },
     "redlining": {
       "border": "Rand",
@@ -227,12 +227,12 @@
       "pick": "Auswählen",
       "point": "Punkt",
       "polygon": "Polygon",
-      "size": "Grösse",
+      "size": "Größe",
       "text": "Text",
       "width": "Breite"
     },
     "scratchdrawing": {
-      "finish": "Abschliessen"
+      "finish": "Abschließen"
     },
     "search": {
       "all": "Alle",
@@ -283,7 +283,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Ebenen der Karte hinzufügen",
       "addtotheme": "Dem aktuellen Thema hinzufügen",
-      "confirmswitch": "Ebenen, die nicht Teil des Themas sind, werden entfernt werden. Fortsetzen?",
+      "confirmswitch": "Ebenen, die nicht Teil des Themas sind, werden entfernt. Fortsetzen?",
       "filter": "Filter",
       "match": {
         "abstract": "Zusammenfassung",
@@ -291,7 +291,7 @@
         "title": "Titel"
       },
       "openintab": "In Tab öffnen",
-      "restrictedthemeinfo": "Sie sind nicht Berechtigt oder sind nicht angemeldet"
+      "restrictedthemeinfo": "Sie sind nicht berechtigt oder sind nicht angemeldet"
     },
     "tooltip": {
       "background": "Hintergrundkarte wechseln",
