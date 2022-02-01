@@ -12,7 +12,7 @@ try:
 except:
     import urllib2 as request
 try:
-    from urllib.parse import quote, urljoin
+    from urllib.parse import quote, urljoin, urlparse, parse_qsl, urlencode, urlunparse
 except:
     from urllib import quote
     from urlparse import urljoin
@@ -256,11 +256,22 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
     titleNameMap[treeName] = name
 
 
+def update_params(url,params):
+    url_parse = urlparse(url)
+    query = url_parse.query
+    url_dict = dict(parse_qsl(query))
+    url_dict.update(params)
+    url_new_query = urlencode(url_dict)
+    url_parse._replace(query=url_new_query)
+    new_url = urlunparse(url_parse)
+    return new_url
+
+
 # parse GetCapabilities for theme
 def getTheme(config, configItem, result, resultItem):
     global autogenExternalLayers
 
-    url = urljoin(baseUrl, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
+    url = update_params(urljoin(baseUrl, configItem["url"]), {'SERVICE': 'WMS', 'VERSION': '1.3.0', 'REQUEST': 'GetProjectSettings'})
 
     try:
         opener = getUrlOpener(configItem)
