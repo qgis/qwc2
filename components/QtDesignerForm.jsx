@@ -12,6 +12,7 @@ import axios from 'axios';
 import xml2js from 'xml2js';
 import uuid from 'uuid';
 import isEmpty from 'lodash.isempty';
+import EditComboField from './EditComboField';
 import EditUploadField from './EditUploadField';
 import ConfigUtils from '../utils/ConfigUtils';
 import Icon from './Icon';
@@ -37,7 +38,6 @@ export default class QtDesignerForm extends React.Component {
     }
     state = {
         formdata: null,
-        keyvalues: {},
         activetabs: {}
     }
     componentDidMount() {
@@ -135,10 +135,7 @@ export default class QtDesignerForm extends React.Component {
         return columns;
     }
     renderWidget = (widget, values, updateField, nametransform = (name) => name) => {
-        let value = (values || {})[widget.name];
-        if (value === undefined || value === null) {
-            value = "";
-        }
+        let value = (values || {})[widget.name] ?? "";
         const prop = widget.property || {};
         const attr = widget.attribute || {};
         const readOnly = prop.readOnly === "true";
@@ -211,13 +208,20 @@ export default class QtDesignerForm extends React.Component {
                 </label>
             );
         } else if (widget.class === "QComboBox") {
-            if (this.state.keyvalues[widget.name]) {
+            const parts = widget.name.split("__");
+            if ((parts.length === 5 || parts.length === 6) && parts[0] === "kvrel") {
+                // kvrel__attrname__datatable__keyfield__valuefield
+                // kvrel__reltablename__attrname__datatable__keyfield__valuefield
+                const count = parts.length;
+                const attrname = parts.slice(1, count - 3).join("__");
+                value = (values || [])[attrname] ?? "";
+                const fieldId = parts.slice(1, count - 3).join("__");
+                const keyvalrel = this.props.mapPrefix + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
                 return (
-                    <select name={elname} onChange={ev => updateField(widget.name, ev.target.value)} readOnly={readOnly} required={required} value={value}>
-                        {this.state.keyvalues[widget.name].map((item) => (
-                            <option key={item.key} value={item.key}>{item.value}</option>
-                        ))}
-                    </select>
+                    <EditComboField
+                        editIface={this.props.iface} fieldId={fieldId} keyvalrel={keyvalrel}
+                        mapPrefix={this.props.mapPrefix} name={nametransform(attrname)} readOnly={readOnly} required={required}
+                        updateField={updateField} value={value} />
                 );
             } else {
                 return (
@@ -329,16 +333,11 @@ export default class QtDesignerForm extends React.Component {
             json = result;
         });
         const root = json.ui.widget;
-        const keyvals = {};
-        this.reformatWidget(root, keyvals);
-        this.props.iface.getKeyValues(Object.values(keyvals).map(entry => this.props.mapPrefix + entry.table + ":" + entry.key + ":" + entry.value).join(","), (result) => {
-            const keyvalues = Object.entries(keyvals).reduce((res, [key, val]) => ({...res, [key]: result.keyvalues[this.props.mapPrefix + val.table]}), {});
-            this.setState({keyvalues});
-        });
+        this.reformatWidget(root);
         // console.log(root);
         this.setState({formdata: root});
     }
-    reformatWidget = (widget, keyvals) => {
+    reformatWidget = (widget) => {
         if (widget.property) {
             widget.property = this.ensureArray(widget.property).reduce((res, prop) => {
                 return ({...res, [prop.name]: prop[Object.keys(prop).find(key => key !== "name")]});
@@ -354,36 +353,28 @@ export default class QtDesignerForm extends React.Component {
             widget.attribute = {};
         }
         if (widget.item) {
-            this.ensureArray(widget.item).map(item => this.reformatWidget(item, keyvals));
+            this.ensureArray(widget.item).map(item => this.reformatWidget(item));
         }
 
         widget.name = widget.name || uuid.v1();
-        const parts = widget.name.split("__");
-        if ((parts.length === 5 || parts.length === 6) && parts[0] === "kvrel") {
-            const count = parts.length;
-            // kvrel__attrname__datatable__keyfield__valuefield
-            // kvrel__reltablename__attrname__datatable__keyfield__valuefield
-            keyvals[parts.slice(1, count - 3).join("__")] = {table: parts[count - 3], key: parts[count - 2], value: parts[count - 1]};
-            widget.name = parts.slice(1, count - 3).join("__");
-        }
         if (widget.layout) {
-            this.reformatLayout(widget.layout, keyvals);
+            this.reformatLayout(widget.layout);
         }
         if (widget.widget) {
             widget.widget = Array.isArray(widget.widget) ? widget.widget : [widget.widget];
             widget.widget.forEach(child => {
                 child.name = uuid.v1();
-                this.reformatWidget(child, keyvals);
+                this.reformatWidget(child);
             });
         }
     }
-    reformatLayout = (layout, keyvals) => {
+    reformatLayout = (layout) => {
         layout.item = Array.isArray(layout.item) ? layout.item : [layout.item];
         layout.item.forEach(item => {
             if (item.widget) {
-                this.reformatWidget(item.widget, keyvals);
+                this.reformatWidget(item.widget);
             } else if (item.layout) {
-                this.reformatLayout(item.layout, keyvals);
+                this.reformatLayout(item.layout);
             }
         });
     }

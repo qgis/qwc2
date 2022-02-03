@@ -9,15 +9,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import NumericInput from 'react-numeric-input2';
+import EditComboField from './EditComboField';
 import EditUploadField from './EditUploadField';
 import ToggleSwitch from './widgets/ToggleSwitch';
-import LocaleUtils from '../utils/LocaleUtils';
 import './style/AutoEditForm.css';
 
 export default class AutoEditForm extends React.Component {
     static propTypes = {
         editLayerId: PropTypes.string,
         fields: PropTypes.array,
+        iface: PropTypes.object,
+        mapPrefix: PropTypes.string,
         touchFriendly: PropTypes.bool,
         updateField: PropTypes.func,
         values: PropTypes.object
@@ -53,30 +55,13 @@ export default class AutoEditForm extends React.Component {
                     </label>
                 );
             }
-        } else if (constraints.values) {
+        } else if (constraints.values || constraints.keyvalrel) {
             input = (
                 <span className="input-frame">
-                    <select disabled={constraints.readOnly} name={field.id}
-                        onChange={ev => this.props.updateField(field.id, ev.target.value)}
-                        required={constraints.required} value={value}
-                    >
-                        <option disabled value="">
-                            {LocaleUtils.tr("editing.select")}
-                        </option>
-                        {constraints.values.map((item, index) => {
-                            let optValue = "";
-                            let label = "";
-                            if (typeof(item) === 'string') {
-                                optValue = label = item;
-                            } else {
-                                optValue = item.value;
-                                label = item.label;
-                            }
-                            return (
-                                <option key={field.id + index} value={optValue}>{label}</option>
-                            );
-                        })}
-                    </select>
+                    <EditComboField
+                        editIface={this.props.iface} fieldId={field.id} keyvalrel={constraints.keyvalrel}
+                        mapPrefix={this.props.mapPrefix} name={field.id} readOnly={constraints.readOnly} required={constraints.required}
+                        updateField={this.props.updateField} value={value} values={constraints.values} />
                 </span>
             );
         } else if (field.type === "number") {

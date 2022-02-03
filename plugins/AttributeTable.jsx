@@ -15,6 +15,7 @@ import ContentEditable from 'react-contenteditable';
 import {LayerRole} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
+import EditComboField from '../components/EditComboField';
 import EditUploadField from '../components/EditUploadField';
 import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
@@ -116,6 +117,9 @@ class AttributeTable extends React.Component {
                 }
                 return res;
             }, []);
+
+            const editDataset = this.editLayerId(this.state.selectedLayer);
+            const mapPrefix = editDataset.replace(new RegExp("." + this.state.selectedLayer + "$"), ".");
             const indexOffset = this.state.currentPage * this.state.pageSize;
             const features = this.state.filteredSortedFeatures.slice(indexOffset, indexOffset + this.state.pageSize);
             table = (
@@ -159,7 +163,7 @@ class AttributeTable extends React.Component {
                                     <td>{feature.id}</td>
                                     {fields.map(field => (
                                         <td key={field.id}>
-                                            {this.renderField(field, featureidx, indexOffset + filteredIndex, disabled || (!!this.state.filterVal && field.id === this.state.filterField) )}
+                                            {this.renderField(field, featureidx, indexOffset + filteredIndex, disabled || (!!this.state.filterVal && field.id === this.state.filterField), mapPrefix)}
                                         </td>
                                     ))}
                                 </tr>
@@ -338,7 +342,7 @@ class AttributeTable extends React.Component {
         }
         return layerId;
     }
-    renderField = (field, featureidx, filteredIndex, fielddisabled = false) => {
+    renderField = (field, featureidx, filteredIndex, fielddisabled, mapPrefix) => {
         const feature = this.state.features[featureidx];
         let value = feature.properties[field.id];
         if (value === undefined || value === null) {
@@ -350,29 +354,12 @@ class AttributeTable extends React.Component {
         let input = null;
         if (field.type === "boolean" || field.type === "bool") {
             input = (<input name={field.id} {...constraints} checked={value} disabled={disabled} onChange={ev => updateField(field.id, ev.target.checked)} type="checkbox" />);
-        } else if (constraints.values) {
+        } else if (constraints.values || constraints.keyvalrel) {
             input = (
-                <select disabled={constraints.readOnly || disabled} name={field.id}
-                    onChange={ev => updateField(field.id, ev.target.value)}
-                    required={constraints.required} value={value}
-                >
-                    <option disabled value="">
-                        {LocaleUtils.tr("editing.select")}
-                    </option>
-                    {constraints.values.map((item, index) => {
-                        let optValue = "";
-                        let label = "";
-                        if (typeof(item) === 'string') {
-                            optValue = label = item;
-                        } else {
-                            optValue = item.value;
-                            label = item.label;
-                        }
-                        return (
-                            <option key={field.id + index} value={optValue}>{label}</option>
-                        );
-                    })}
-                </select>
+                <EditComboField
+                    editIface={this.props.iface} fieldId={field.id} keyvalrel={constraints.keyvalrel}
+                    mapPrefix={mapPrefix} name={field.id} readOnly={constraints.readOnly || disabled} required={constraints.required}
+                    updateField={updateField} value={value} values={constraints.values} />
             );
         } else if (field.type === "number") {
             const precision = constraints.step > 0 ? Math.ceil(-Math.log10(constraints.step)) : 6;

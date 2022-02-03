@@ -198,6 +198,7 @@ class Editing extends React.Component {
                                 updateField={this.updateField} updateRelationField={this.updateRelationField} values={this.props.editing.feature.properties} />
                         ) : (
                             <AutoEditForm editLayerId={editDataset} fields={curConfig.fields}
+                                iface={this.props.iface} mapPrefix={mapPrefix}
                                 touchFriendly={this.props.touchFriendly} updateField={this.updateField}
                                 values={this.props.editing.feature.properties} />
                         )}
