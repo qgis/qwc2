@@ -304,7 +304,7 @@ class AttributeTable extends React.Component {
         );
     }
     onClose = () => {
-        if (!this.state.changedFeatureIdx) {
+        if (this.state.changedFeatureIdx === null) {
             this.setState(AttributeTable.defaultState);
             this.props.setCurrentTask(null);
         }
