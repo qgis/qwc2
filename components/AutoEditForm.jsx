@@ -8,6 +8,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import omit from 'lodash.omit';
 import NumericInput from 'react-numeric-input2';
 import EditComboField from './EditComboField';
 import EditUploadField from './EditUploadField';
@@ -34,7 +35,8 @@ export default class AutoEditForm extends React.Component {
         );
     }
     renderField = (field) => {
-        const constraints = field.constraints || {};
+        const multiline = (field.constraints || {}).multiline;
+        const constraints = omit(field.constraints || {}, ["multiline"]);
         let value = (this.props.values || {})[field.id];
         if (value === undefined || value === null) {
             value = "";
@@ -84,7 +86,7 @@ export default class AutoEditForm extends React.Component {
                 </span>
             );
         } else if (field.type === "text") {
-            if (constraints.multiline) {
+            if (multiline) {
                 input = (
                     <textarea name={field.id} onChange={(ev) => this.props.updateField(field.id, ev.target.value)} required={constraints.required} value={value} />
                 );
