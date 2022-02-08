@@ -65,14 +65,18 @@ class EditingSupport extends React.Component {
         if (this.props.editing === prevProps.editing) {
             // pass
         } else if (this.props.editing.action === 'Pick' && this.props.editing.feature) {
+            // If a feature without geometry was picked, enter draw mode, otherwise enter edit mode
             if (!this.props.editing.feature.geometry && this.props.editing.geomType) {
                 this.addDrawInteraction(this.props);
             } else {
                 this.addEditInteraction(this.props);
             }
         } else if (this.props.editing.action === 'Draw' && this.props.editing.geomType) {
+            // Usually, draw mode starts without a feature, but draw also can start with a pre-set geometry
             if (!this.props.editing.feature || prevProps.editing.geomType !== this.props.editing.geomType) {
                 this.addDrawInteraction(this.props);
+            } else if (this.props.editing.feature) {
+                this.addEditInteraction(this.props);
             }
         } else {
             this.reset();

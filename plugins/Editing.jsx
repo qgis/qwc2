@@ -16,7 +16,7 @@ import clone from 'clone';
 import uuid from 'uuid';
 import {changeEditingState} from '../actions/editing';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
-import {LayerRole, refreshLayer, changeLayerProperty} from '../actions/layers';
+import {LayerRole, addLayerFeatures, removeLayer, refreshLayer, changeLayerProperty} from '../actions/layers';
 import {clickOnMap} from '../actions/map';
 import AutoEditForm from '../components/AutoEditForm';
 import QtDesignerForm from '../components/QtDesignerForm';
@@ -25,6 +25,7 @@ import SideBar from '../components/SideBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import ConfigUtils from '../utils/ConfigUtils';
 import EditingInterface from '../utils/EditingInterface';
+import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -32,6 +33,7 @@ import './style/Editing.css';
 
 class Editing extends React.Component {
     static propTypes = {
+        addLayerFeatures: PropTypes.func,
         changeEditingState: PropTypes.func,
         changeLayerProperty: PropTypes.func,
         clickOnMap: PropTypes.func,
@@ -41,6 +43,7 @@ class Editing extends React.Component {
         layers: PropTypes.array,
         map: PropTypes.object,
         refreshLayer: PropTypes.func,
+        removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
         side: PropTypes.string,
@@ -61,7 +64,9 @@ class Editing extends React.Component {
         pickedFeatures: null,
         busy: false,
         deleteClicked: false,
-        minimized: false
+        minimized: false,
+        drawPick: false,
+        drawPickResults: null
     }
     onShow = () => {
         if (this.props.taskData) {
@@ -73,7 +78,7 @@ class Editing extends React.Component {
     onHide = () => {
         this.props.changeEditingState({action: null, geomType: null, feature: null});
         this.setLayerVisibility(this.state.selectedLayer, this.state.selectedLayerVisibility);
-        this.setState({minimized: false});
+        this.setState({minimized: false, drawPick: false, drawPickResults: null});
     }
     componentDidUpdate(prevProps, prevState) {
         const themeSublayers = this.props.layers.reduce((accum, layer) => {
@@ -125,9 +130,13 @@ class Editing extends React.Component {
         if (!this.props.editing.feature && prevState.pickedFeatures) {
             this.setState({pickedFeatures: null});
         }
-        // Always clear clicked pos if enabled
-        if (this.props.map.click && this.props.enabled) {
+        // Always clear clicked pos if enabled except in drawPick mode
+        if (this.props.map.click && this.props.enabled && !this.state.drawPick) {
             this.props.clickOnMap(null);
+        }
+        // Handle drawPick
+        if (this.state.drawPick && this.props.map.click && this.props.map.click !== prevProps.map.click) {
+            this.drawPickQuery(this.props.map.click.coordinate);
         }
     }
     editLayerId = (layerId) => {
@@ -183,6 +192,45 @@ class Editing extends React.Component {
                     </select>
                 </div>
             );
+        }
+        let pickBar = null;
+        if ((this.props.editing.action === "Draw" || this.state.drawPick) && !this.props.editing.feature) {
+            const pickButtons = [
+                {key: 'DrawPick', icon: 'pick', label: LocaleUtils.trmsg("editing.pickdrawfeature")}
+            ];
+            pickBar = (<ButtonBar active={this.state.drawPick ? "DrawPick" : null} buttons={pickButtons} onClick={this.toggleDrawPick} />);
+        }
+        let drawPickResults = null;
+        if (this.state.drawPickResults) {
+            let count = 0;
+            drawPickResults = (
+                <div className="editing-drawpick-results">
+                    {Object.entries(this.state.drawPickResults).map(([layername, features]) => {
+                        return features.map(feature => {
+                            if (!feature.geometry) {
+                                return null;
+                            }
+                            // If geomtype mismatches and is not convertible (i.e. multipart geom with one part to single part), skip
+                            const singlePartMultiGeom = feature.geometry.type.startsWith("Multi") && feature.geometry.coordinates.length === 1;
+                            if (!(feature.geometry.type === curConfig.geomType || (feature.geometry.type === "Multi" + curConfig.geomType && singlePartMultiGeom))) {
+                                return null;
+                            }
+                            count += 1;
+                            return (
+                                <div key={layername + "." + feature.id}
+                                    onClick={() => this.drawPickFeature(feature)}
+                                    onMouseEnter={() => this.drawPickSetHighlight(feature)} onMouseLeave={this.drawPickClearHighlight}
+                                >{((LayerUtils.searchLayer(this.props.layers, 'name', layername) || {sublayer: {}}).sublayer.title || layername) + ": " + feature.id}</div>
+                            );
+                        });
+                    })}
+                </div>
+            );
+            if (count === 0) {
+                drawPickResults = (
+                    <div className="editing-drawpick-results"><i>{LocaleUtils.tr("editing.nocompatpick")}</i></div>
+                );
+            }
         }
         let fieldsTable = null;
         if (this.props.editing.feature) {
@@ -242,8 +290,10 @@ class Editing extends React.Component {
                         })}
                     </select>
                 </div>
-                <ButtonBar active={this.props.editing.action} buttons={actionButtons} disabled={this.props.editing.changed} onClick={this.actionClicked} />
+                <ButtonBar active={this.state.drawPick ? "Draw" : this.props.editing.action} buttons={actionButtons} disabled={this.props.editing.changed} onClick={this.actionClicked} />
                 {featureSelection}
+                {pickBar}
+                {drawPickResults}
                 {fieldsTable}
                 {deleteBar}
                 {busyDiv}
@@ -264,6 +314,7 @@ class Editing extends React.Component {
         );
     }
     actionClicked = (action, data) => {
+        this.setState({drawPick: false, drawPickResults: null});
         if (action === "AttribTable") {
             this.props.setCurrentTask("AttributeTable", null, null, {layer: this.state.selectedLayer});
         } else {
@@ -288,7 +339,7 @@ class Editing extends React.Component {
     }
     changeSelectedLayer = (selectedLayer, action = null, feature = null) => {
         const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
-        this.props.changeEditingState({...this.props.editing, action: action || this.props.editing.action, feature: feature, geomType: curConfig ? curConfig.geomType : null});
+        this.props.changeEditingState({...this.props.editing, action: action || (this.state.drawPick ? "Draw" : this.props.editing.action), feature: feature, geomType: curConfig ? curConfig.geomType : null});
 
         let prevLayerVisibility = null;
         if (this.state.selectedLayer !== null) {
@@ -297,7 +348,13 @@ class Editing extends React.Component {
         }
 
         // Gather relation tables for selected layer if config is a designer form
-        this.setState({selectedLayer: selectedLayer, selectedLayerVisibility: prevLayerVisibility, relationTables: {}});
+        this.setState({
+            selectedLayer: selectedLayer,
+            selectedLayerVisibility: prevLayerVisibility,
+            relationTables: {},
+            drawPick: false,
+            drawPickResults: null
+        });
         if (curConfig && curConfig.form) {
             let url = curConfig.form;
             if (url && url.startsWith(":/")) {
@@ -519,6 +576,65 @@ class Editing extends React.Component {
         const feature = this.state.pickedFeatures.find(f => f.id.toString() === featureId);
         this.props.changeEditingState({...this.props.editing, feature: feature, changed: false});
     }
+    toggleDrawPick = () => {
+        const pickActive = !this.state.drawPick;
+        this.setState({drawPick: pickActive, drawPickResults: null});
+        this.props.changeEditingState({action: pickActive ? null : "Draw"});
+    }
+    drawPickQuery = (coordinates) => {
+        const queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
+        if (!queryableLayers) {
+            return;
+        }
+        this.setState({drawPickResults: {}});
+        queryableLayers.forEach(layer => {
+            const request = IdentifyUtils.buildRequest(layer, layer.queryLayers.join(","), coordinates, this.props.map);
+            axios.get(request.url, {params: request.params}).then(this.parseDrawPickResponse).catch(() => {});
+        });
+    }
+    parseDrawPickResponse = (response) => {
+        this.setState({drawPickResults: {...this.state.drawPickResults, ...IdentifyUtils.parseXmlResponse(response.data, this.props.map.projection)}});
+    }
+    drawPickFeature = (feature) => {
+        const curConfig = this.props.theme.editConfig[this.state.selectedLayer];
+        let geometry = feature.geometry;
+        if (geometry.type !== curConfig.geomType) {
+            if (("Multi" + geometry.type) === curConfig.geomType) {
+                // Convert picked geometry to multi-type
+                geometry = {
+                    type: "Multi" + geometry.type,
+                    coordinates: [geometry.coordinates]
+                };
+            } else if (geometry.type.replace(/^Multi/, "") === curConfig.geomType && geometry.coordinates.length === 1) {
+                // Convert picked geometry to single type
+                geometry = {
+                    type: geometry.type.replace(/^Multi/, ""),
+                    coordinates: geometry.coordinates[0]
+                };
+            } else {
+                // Should not happen, mismatching geometries should already have been filtered from the list of choices
+                return;
+            }
+        }
+        const editFeature = {
+            type: "Feature",
+            geometry: geometry,
+            id: uuid.v1()
+        };
+        this.props.changeEditingState({action: "Draw", feature: editFeature, changed: true});
+        this.setState({drawPick: false, drawPickResults: null});
+        this.drawPickClearHighlight();
+    }
+    drawPickSetHighlight = (feature) => {
+        const layer = {
+            id: "pickhighlight",
+            role: LayerRole.SELECTION
+        };
+        this.props.addLayerFeatures(layer, [feature], true);
+    }
+    drawPickClearHighlight = () => {
+        this.props.removeLayer("pickhighlight");
+    }
     deleteClicked = () => {
         this.setState({deleteClicked: true});
         this.props.setCurrentTaskBlocked(true);
@@ -577,6 +693,8 @@ export default (iface = EditingInterface) => {
         editing: state.editing,
         taskData: state.task.id === "Editing" ? state.task.data : null
     }), {
+        addLayerFeatures: addLayerFeatures,
+        removeLayer: removeLayer,
         clickOnMap: clickOnMap,
         changeEditingState: changeEditingState,
         setCurrentTask: setCurrentTask,

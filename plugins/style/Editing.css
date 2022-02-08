@@ -64,3 +64,25 @@
 #Editing .edit-discard {
     background-color: rgb(255,127,127);
 }
+
+#Editing div.editing-drawpick-results {
+    border: 1px solid @item_border@;
+    margin-top: -0.25em;
+}
+
+#Editing div.editing-drawpick-results > div {
+    padding: 0.25em 0.5em;
+    color: @appmenu_fg1@;
+    white-space: nowrap;
+    padding-right: 20px;
+    cursor: pointer;
+}
+
+#Editing div.editing-drawpick-results > div:not(:last-child) {
+    border-bottom: 1px solid @item_border@;
+}
+
+#Editing div.editing-drawpick-results > div:hover {
+    background-color: @item_active_hover@;
+    color: white;
+}
