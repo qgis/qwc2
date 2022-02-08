@@ -55,6 +55,14 @@ def getUrlOpener(configItem):
         opener = request.urlopen
     return opener
 
+def update_params(url,params):
+    url_parse = urlparse(url)
+    query = url_parse.query
+    url_dict = dict(parse_qsl(query))
+    url_dict.update(params)
+    url_new_query = urlencode(url_dict)
+    new_url = url_parse._replace(query=url_new_query).geturl()
+    return new_url
 
 # load thumbnail from file or GetMap
 def getThumbnail(configItem, resultItem, layers, crs, extent):
@@ -66,7 +74,7 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
     print("Using WMS GetMap to generate thumbnail for " + configItem["url"])
 
     # WMS GetMap request
-    url = urljoin(baseUrl, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&STYLES=&WIDTH=200&HEIGHT=100&CRS=" + crs
+    url = update_params(urljoin(baseUrl, configItem["url"]), {'SERVICE': 'WMS', 'VERSION': '1.3.0', 'REQUEST': 'GetMap', 'FORMAT': 'image/png', 'STYLES': '', 'WIDTH': '200', 'HEIGHT': '100', 'CRS': crs})
     bboxw = extent[2] - extent[0]
     bboxh = extent[3] - extent[1]
     bboxcx = 0.5 * (extent[0] + extent[2])
@@ -254,18 +262,6 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
 
     resultLayers.append(layerEntry)
     titleNameMap[treeName] = name
-
-
-def update_params(url,params):
-    url_parse = urlparse(url)
-    query = url_parse.query
-    url_dict = dict(parse_qsl(query))
-    url_dict.update(params)
-    url_new_query = urlencode(url_dict)
-    url_parse._replace(query=url_new_query)
-    new_url = urlunparse(url_parse)
-    return new_url
-
 
 # parse GetCapabilities for theme
 def getTheme(config, configItem, result, resultItem):
