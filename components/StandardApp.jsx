@@ -102,23 +102,25 @@ class AppInitComponent extends React.Component {
                 }
                 const visibleBgLayer = params.bl || params.bl === '' ? params.bl : null;
                 let initialView = null;
-                if (params.c && params.s !== undefined) {
-                    const coords = params.c.split(/[;,]/g).map(x => parseFloat(x));
-                    const scales = theme.scales || themes.defaultScales;
-                    const zoom = MapUtils.computeZoom(scales, params.s);
-                    if (coords.length === 2) {
-                        initialView = {
-                            center: coords,
-                            zoom: zoom,
-                            crs: params.crs || theme.mapCrs};
-                    }
-                } else if (params.e) {
-                    const bounds = params.e.split(/[;,]/g).map(x => parseFloat(x));
-                    if (bounds.length === 4) {
-                        initialView = {
-                            bounds: bounds,
-                            crs: params.crs || theme.mapCrs
-                        };
+                if (theme) {
+                    if (params.c && params.s !== undefined) {
+                        const coords = params.c.split(/[;,]/g).map(x => parseFloat(x));
+                        const scales = theme.scales || themes.defaultScales;
+                        const zoom = MapUtils.computeZoom(scales, params.s);
+                        if (coords.length === 2) {
+                            initialView = {
+                                center: coords,
+                                zoom: zoom,
+                                crs: params.crs || theme.mapCrs};
+                        }
+                    } else if (params.e) {
+                        const bounds = params.e.split(/[;,]/g).map(x => parseFloat(x));
+                        if (bounds.length === 4) {
+                            initialView = {
+                                bounds: bounds,
+                                crs: params.crs || theme.mapCrs
+                            };
+                        }
                     }
                 }
 
@@ -126,10 +128,12 @@ class AppInitComponent extends React.Component {
                 UrlParams.clear();
 
                 // Restore theme and layers
-                try {
-                    this.props.setCurrentTheme(theme, themes, false, initialView, layerParams, visibleBgLayer, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer);
-                } catch (e) {
-                    console.log(e.stack);
+                if (theme) {
+                    try {
+                        this.props.setCurrentTheme(theme, themes, false, initialView, layerParams, visibleBgLayer, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer);
+                    } catch (e) {
+                        console.log(e.stack);
+                    }
                 }
             });
         });
