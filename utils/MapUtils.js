@@ -199,6 +199,16 @@ const MapUtils = {
             }
             return closestIdx;
         }
+    },
+
+    /**
+     * Convert degrees to radians
+     * @param degrees {number}
+     * @return {number} in radians
+     */
+    degreesToRadians(degrees) {
+        const pi = Math.PI
+        return degrees * (pi/180);
     }
 };
 
