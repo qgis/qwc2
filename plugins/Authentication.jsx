@@ -14,10 +14,10 @@ import ConfigUtils from '../utils/ConfigUtils';
 
 class Authentication extends React.Component {
     static propTypes = {
-        requireLogin: PropTypes.bool,
         clearLayerParam: PropTypes.bool,
         idleTimeout: PropTypes.number,
         logoutTargetUrl: PropTypes.string,
+        requireLogin: PropTypes.bool,
         task: PropTypes.string
     }
     constructor(props) {
