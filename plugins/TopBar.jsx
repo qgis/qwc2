@@ -89,7 +89,9 @@ class TopBar extends React.Component {
                 <div className={classes} id="TopBar" ref={this.storeHeight}>
                     {logoEl}
                     <div className="center-span">
-                        <this.props.components.Search searchOptions={searchOptions}/>
+                        if (this.props.components.Search){
+                            <this.props.components.Search searchOptions={searchOptions}/>
+                        }
                         <this.props.components.Toolbar
                             openExternalUrl={this.openUrl}
                             toolbarItems={this.props.toolbarItems} />
