@@ -12,6 +12,7 @@ import deepmerge from 'deepmerge';
 import isEmpty from 'lodash.isempty';
 import fastXmlParser from 'fast-xml-parser';
 import randomColor from 'randomcolor';
+import url from 'url';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import LayerUtils from './LayerUtils';
@@ -60,13 +61,13 @@ const ServiceLayerUtils = {
                 // 0.00028: assumed pixel width in meters, as per WMTS standard
                 return entry.ScaleDenominator * 0.00028;
             });
-            let url = layer.ResourceURL.find(u => u.resourceType === "tile").template;
+            let serviceUrl = layer.ResourceURL.find(u => u.resourceType === "tile").template;
             layer.Dimension && layer.Dimension.forEach(dim => {
-                url = url.replace("{" + dim.Identifier + "}", dim.Default);
+                serviceUrl = serviceUrl.replace("{" + dim.Identifier + "}", dim.Default);
             });
             return {
                 type: "wmts",
-                url: url,
+                url: serviceUrl,
                 capabilitiesUrl: capabilitiesUrl,
                 title: layer.Title,
                 name: layer.Identifier,
@@ -97,7 +98,13 @@ const ServiceLayerUtils = {
     getWMSLayers(capabilitiesXml, calledServiceUrl, asGroup = false) {
         const wmsFormat = new ol.format.WMSCapabilities();
         const capabilities = wmsFormat.read(capabilitiesXml);
+        const query = url.parse(calledServiceUrl, true).query;
+        // Preserve map parameter in calledServiceUrl if present
         calledServiceUrl = calledServiceUrl.replace(/\?.*$/, '');
+        if (query.map || query.MAP || query.Map) {
+            calledServiceUrl += "?MAP=" + (query.map || query.MAP || query.Map);
+        }
+
         let topLayer = null;
         let serviceUrl;
         try {
