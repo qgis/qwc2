@@ -9,22 +9,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {setVisibleLegendWindow} from '../actions/legendwindow';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import './style/LayerInfoWindow.css';
+import {setCurrentTask} from '../actions/task';
 
 class LegendWindow extends React.Component {
     static propTypes = {
-        layers: PropTypes.object,
+        layers: PropTypes.array,
         bboxDependentLegend: PropTypes.bool,
-        windowSize: PropTypes.object,
         map: PropTypes.object,
-        setVisibleLegendWindow: PropTypes.func,
-        visible: PropTypes.bool
+        active: PropTypes.bool,
+        onHide: PropTypes.func
     }
     renderLink(text, url) {
         if (url) {
@@ -48,7 +47,7 @@ class LegendWindow extends React.Component {
         return null;
     }
     render() {
-        if (!this.props.visible) {
+        if (!this.props.active) {
             return null;
         }
         let legend = [];
@@ -71,7 +70,7 @@ class LegendWindow extends React.Component {
         });
         let legendTitle = LocaleUtils.tr(LocaleUtils.trmsg("layerinfo.legend"));
         return (
-            <ResizeableWindow icon="info-sign" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width} onClose={this.onClose}
+            <ResizeableWindow icon="layers" initialHeight="480" initialWidth="320" onClose={this.onClose}
                 title={LocaleUtils.trmsg("layerinfo.title")} zIndex={9}>
                 <div className="layer-info-window-body" role="body">
                     <h4 className="layer-info-window-title">{legendTitle}</h4>
@@ -96,15 +95,16 @@ class LegendWindow extends React.Component {
         }
     }
     onClose = () => {
-        this.props.setVisibleLegendWindow(null, false);
+        this.props.setCurrentTask('');
     }
 }
 
-const selector = state => ({
+const selector = (state) => ({
     map: state.map,
-    visible: state.legendwindow.visible
+    active: state.task.id === "LegendWindow",
+    layers: state.layers.flat
 });
 
 export default connect(selector, {
-    setVisibleLegendWindow: setVisibleLegendWindow
+    setCurrentTask: setCurrentTask
 })(LegendWindow);
