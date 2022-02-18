@@ -14,7 +14,7 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
-import './style/LayerInfoWindow.css';
+import './style/LegendWindow.css';
 import {setCurrentTask} from '../actions/task';
 
 class LegendWindow extends React.Component {

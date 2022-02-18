@@ -1,0 +1,45 @@
+div.layer-info-window-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+h4.layer-info-window-title {
+    flex: 0 0 auto;
+}
+
+div.layer-info-window-frame {
+    border: 1px solid @item_border@;
+    background-color: white;
+    font-size: small;
+    flex: 1 1 auto;
+    overflow: auto;
+}
+
+table.layer-info-window-table {
+    width: 100%;
+}
+
+table.layer-info-window-table td {
+    padding: 0.5em;
+    vertical-align: top;
+}
+
+table.layer-info-window-table td:first-child {
+    white-space: nowrap;
+}
+
+table.layer-info-window-table td:last-child {
+    width: 99%;
+}
+
+img.layer-info-window-legend {
+    box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
+}
+
+span.layer-info-window-coloricon {
+    width: 2em;
+    height: 2em;
+    box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
+    display: inline-block;
+}
