@@ -562,7 +562,7 @@ class IdentifyViewer extends React.Component {
         ev.preventDefault();
     }
     attributeLinkClicked = (ev) => {
-        if (ev.target.target.startsWith(":")) {
+        if (ev.currentTarget.target.startsWith(":")) {
             const target = ev.target.target.split(":");
             const options = target.slice(2).reduce((res, cur) => {
                 const parts = cur.split("=");
