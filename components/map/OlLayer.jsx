@@ -55,7 +55,8 @@ class OlLayer extends React.Component {
     }
     render() {
         const layerCreator = LayerRegistry[this.props.options.type];
-        if (this.state.layer && layerCreator && layerCreator.render) {
+        if (layerCreator && layerCreator.render) {
+            // NOTE: required for Google Maps layer
             return layerCreator.render(this.props.options, this.props.map, this.state.layer);
         }
         return null;

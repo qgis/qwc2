@@ -12,6 +12,8 @@ import ol from 'openlayers';
 
 let layersMap;
 let rendererItem;
+// internal state for visibility of all Google Maps layers in layer tree
+let layerVisibilities = {};
 const gmaps = {};
 const isTouchSupported = 'ontouchstart' in window;
 const startEvent = isTouchSupported ? 'touchstart' : 'mousedown';
@@ -25,6 +27,11 @@ export default {
     create: (options, map) => {
         const google = window.google;
         const mapId = map.get('id');
+        if (mapId != 'map') {
+            // ignore if not main map, e.g. overview
+            return;
+        }
+
         if (!layersMap) {
             layersMap = {
                 HYBRID: google.maps.MapTypeId.HYBRID,
@@ -40,7 +47,8 @@ export default {
                 draggable: false,
                 disableDoubleClickZoom: true,
                 scrollwheel: false,
-                streetViewControl: false
+                streetViewControl: false,
+                tilt: 0
             });
         }
         gmaps[mapId].setMapTypeId(layersMap[options.name]);
@@ -164,6 +172,11 @@ export default {
     },
     render(options, map) {
         const mapId = map.get('id');
+        if (mapId != 'map') {
+            // ignore if not main map, e.g. overview
+            return null;
+        }
+
         // the first item that call render will take control
         if (!rendererItem) {
             rendererItem = options.name;
@@ -179,14 +192,26 @@ export default {
         const gmapsStyle = {
             height: '100%'
         };
+
+        const visibilityChanged = (layerVisibilities[options.id] != options.visibility);
+        layerVisibilities[options.id] = options.visibility;
+
         if (options.visibility === true) {
             const div = document.getElementById(mapId + "gmaps");
             if (div) {
+                // override div visibility
                 div.style.visibility = 'visible';
             }
             if (gmaps[mapId] && layersMap) {
                 gmaps[mapId].setMapTypeId(layersMap[options.name]);
                 gmaps[mapId].setTilt(0);
+
+                if (visibilityChanged) {
+                    // update map extent when turning visibility on
+                    const center = ol.proj.transform(map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
+                    gmaps[mapId].setCenter(new window.google.maps.LatLng(center[1], center[0]));
+                    gmaps[mapId].setZoom(map.getView().getZoom());
+                }
             }
         } else {
             gmapsStyle.visibility = 'hidden'; // used only for the renered div
