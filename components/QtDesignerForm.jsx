@@ -220,7 +220,7 @@ export default class QtDesignerForm extends React.Component {
                 return (
                     <EditComboField
                         editIface={this.props.iface} fieldId={fieldId} keyvalrel={keyvalrel}
-                        mapPrefix={this.props.mapPrefix} name={nametransform(attrname)} readOnly={readOnly} required={required}
+                        name={nametransform(attrname)} readOnly={readOnly} required={required}
                         updateField={updateField} value={value} />
                 );
             } else {

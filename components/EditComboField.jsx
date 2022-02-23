@@ -44,7 +44,6 @@ export default class EditComboField extends React.Component {
         editIface: PropTypes.object,
         fieldId: PropTypes.string,
         keyvalrel: PropTypes.string,
-        mapPrefix: PropTypes.string,
         name: PropTypes.string,
         readOnly: PropTypes.bool,
         required: PropTypes.bool,

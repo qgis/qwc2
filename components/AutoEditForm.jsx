@@ -62,7 +62,7 @@ export default class AutoEditForm extends React.Component {
                 <span className="input-frame">
                     <EditComboField
                         editIface={this.props.iface} fieldId={field.id} keyvalrel={constraints.keyvalrel}
-                        mapPrefix={this.props.mapPrefix} name={field.id} readOnly={constraints.readOnly} required={constraints.required}
+                        name={field.id} readOnly={constraints.readOnly} required={constraints.required}
                         updateField={this.props.updateField} value={value} values={constraints.values} />
                 </span>
             );

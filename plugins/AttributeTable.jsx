@@ -358,7 +358,7 @@ class AttributeTable extends React.Component {
             input = (
                 <EditComboField
                     editIface={this.props.iface} fieldId={field.id} keyvalrel={constraints.keyvalrel}
-                    mapPrefix={mapPrefix} name={field.id} readOnly={constraints.readOnly || disabled} required={constraints.required}
+                    name={field.id} readOnly={constraints.readOnly || disabled} required={constraints.required}
                     updateField={updateField} value={value} values={constraints.values} />
             );
         } else if (field.type === "number") {
