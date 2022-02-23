@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import LocaleUtils from '../utils/LocaleUtils';
 
 
-class KeyValCache {
+export class KeyValCache {
     static store = {};
     static requests = {};
     static get = (editIface, keyvalrel, callback) => {
@@ -22,19 +22,25 @@ class KeyValCache {
         } else {
             this.requests[keyvalrel] = [callback];
             editIface.getKeyValues(keyvalrel, (result) => {
-                const dataSet = keyvalrel.split(":")[0];
-                if (result.keyvalues && result.keyvalues[dataSet]) {
-                    const values = result.keyvalues[dataSet].map(entry => ({
-                        value: entry.key, label: entry.value
-                    }));
-                    this.store[keyvalrel] = values;
-                } else {
-                    this.store[keyvalrel] = [];
+                if (keyvalrel in this.requests) {
+                    const dataSet = keyvalrel.split(":")[0];
+                    if (result.keyvalues && result.keyvalues[dataSet]) {
+                        const values = result.keyvalues[dataSet].map(entry => ({
+                            value: entry.key, label: entry.value
+                        }));
+                        this.store[keyvalrel] = values;
+                    } else {
+                        this.store[keyvalrel] = [];
+                    }
+                    this.requests[keyvalrel].forEach(cb => cb(this.store[keyvalrel]));
+                    delete this.requests[keyvalrel];
                 }
-                this.requests[keyvalrel].forEach(cb => cb(this.store[keyvalrel]));
-                delete this.requests[keyvalrel];
             });
         }
+    }
+    static clear = () => {
+        this.store = {};
+        this.requests = {};
     }
 }
 

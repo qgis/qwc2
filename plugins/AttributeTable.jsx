@@ -15,7 +15,7 @@ import ContentEditable from 'react-contenteditable';
 import {LayerRole} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
-import EditComboField from '../components/EditComboField';
+import EditComboField, {KeyValCache} from '../components/EditComboField';
 import EditUploadField from '../components/EditUploadField';
 import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
@@ -315,6 +315,7 @@ class AttributeTable extends React.Component {
     reload = (layer = null) => {
         const selectedLayer = layer || this.state.selectedLayer;
         this.setState({...AttributeTable.defaultState, loading: true, selectedLayer: selectedLayer});
+        KeyValCache.clear();
         this.props.iface.getFeatures(this.editLayerId(selectedLayer), this.props.mapCrs, (result) => {
             if (result) {
                 const features = result.features || [];

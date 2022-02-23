@@ -12,7 +12,7 @@ import axios from 'axios';
 import xml2js from 'xml2js';
 import uuid from 'uuid';
 import isEmpty from 'lodash.isempty';
-import EditComboField from './EditComboField';
+import EditComboField, {KeyValCache} from './EditComboField';
 import EditUploadField from './EditUploadField';
 import ConfigUtils from '../utils/ConfigUtils';
 import Icon from './Icon';
@@ -52,6 +52,9 @@ export default class QtDesignerForm extends React.Component {
         }).catch(e => {
             console.log(e);
         });
+    }
+    componentWillUnmount() {
+        KeyValCache.clear();
     }
     render() {
         if (!this.state.formdata) {
