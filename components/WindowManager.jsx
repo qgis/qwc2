@@ -22,10 +22,6 @@ class WindowManager extends React.Component {
         currentTheme: PropTypes.object,
         windows: PropTypes.object
     }
-    constructor(props) {
-        super(props);
-        this.iframes = {};
-    }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.currentTheme !== prevProps.currentTheme) {
             this.props.closeAllWindows();
@@ -56,7 +52,7 @@ class WindowManager extends React.Component {
                 initiallyDocked={docked} key={key}
                 onClose={() => this.closeWindow(key)}
                 title={data.options.title || "windows." + key}>
-                <iframe className="windows-iframe-dialog-body" rel={(el) => { if (el) this.iframes[key] = el; }} role="body" src={data.url} />
+                <iframe className="windows-iframe-dialog-body" name={key} role="body" src={data.url} />
             </ResizeableWindow>
         );
     }
@@ -68,12 +64,12 @@ class WindowManager extends React.Component {
         );
     }
     closeWindow = (key) => {
-        delete this.iframes[key];
         this.props.closeWindow(key);
     }
     printIframe = (key) => {
-        if (this.iframes[key]) {
-            this.iframes[key].contentWindow.print();
+        if (window.frames[key]) {
+            window.frames[key].focus();
+            window.frames[key].print();
         }
     }
     boolVal = (value, delft = false) => {
