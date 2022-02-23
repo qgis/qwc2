@@ -101,7 +101,7 @@ export default class AutoEditForm extends React.Component {
             }
         } else if (field.type === "file") {
             input = (
-                <EditUploadField constraints={constraints} editLayerId={this.props.editLayerId}
+                <EditUploadField constraints={constraints} dataset={this.props.editLayerId}
                     fieldId={field.id} name={field.id} updateField={this.props.updateField} value={value} />
             );
         } else {

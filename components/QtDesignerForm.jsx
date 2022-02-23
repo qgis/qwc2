@@ -60,11 +60,11 @@ export default class QtDesignerForm extends React.Component {
         const root = this.state.formdata;
         return (
             <div className="qt-designer-form">
-                {this.renderLayout(root.layout, this.props.values, this.props.updateField)}
+                {this.renderLayout(root.layout, this.props.values, this.props.editLayerId, this.props.updateField)}
             </div>
         );
     }
-    renderLayout = (layout, values, updateField, nametransform = (name) => name) => {
+    renderLayout = (layout, values, dataset, updateField, nametransform = (name) => name) => {
         let containerClass = "";
         let itemStyle = () => ({});
         let containerStyle = {};
@@ -97,9 +97,9 @@ export default class QtDesignerForm extends React.Component {
                 {layout.item.map((item, idx) => {
                     let child = null;
                     if (item.widget) {
-                        child = this.renderWidget(item.widget, values, updateField, nametransform);
+                        child = this.renderWidget(item.widget, values, dataset, updateField, nametransform);
                     } else if (item.layout) {
-                        child = this.renderLayout(item.layout, values, updateField, nametransform);
+                        child = this.renderLayout(item.layout, values, dataset, updateField, nametransform);
                     } else {
                         return null;
                     }
@@ -134,7 +134,7 @@ export default class QtDesignerForm extends React.Component {
         }
         return columns;
     }
-    renderWidget = (widget, values, updateField, nametransform = (name) => name) => {
+    renderWidget = (widget, values, dataset, updateField, nametransform = (name) => name) => {
         let value = (values || {})[widget.name] ?? "";
         const prop = widget.property || {};
         const attr = widget.attribute || {};
@@ -148,7 +148,7 @@ export default class QtDesignerForm extends React.Component {
         } else if (widget.class === "QFrame") {
             return (
                 <div className="qt-designer-form-frame">
-                    {this.renderLayout(widget.layout, values, updateField, nametransform)}
+                    {this.renderLayout(widget.layout, values, dataset, updateField, nametransform)}
                 </div>
             );
         } else if (widget.class === "QGroupBox") {
@@ -156,7 +156,7 @@ export default class QtDesignerForm extends React.Component {
                 <div>
                     <div className="qt-designer-form-frame-title">{prop.title}</div>
                     <div className="qt-designer-form-frame">
-                        {this.renderLayout(widget.layout, values, updateField, nametransform)}
+                        {this.renderLayout(widget.layout, values, dataset, updateField, nametransform)}
                     </div>
                 </div>
             );
@@ -180,7 +180,7 @@ export default class QtDesignerForm extends React.Component {
                         ))}
                     </div>
                     <div className="qt-designer-form-frame">
-                        {this.renderLayout(activewidget.layout, values, updateField, nametransform)}
+                        {this.renderLayout(activewidget.layout, values, dataset, updateField, nametransform)}
                     </div>
                 </div>
             );
@@ -192,7 +192,7 @@ export default class QtDesignerForm extends React.Component {
                 const uploadValue = ((values || {})[fieldId] || "");
                 const uploadElName = elname.replace(/__upload/, '');
                 const constraints = {accept: prop.text || ""};
-                return (<EditUploadField constraints={constraints} editLayerId={this.props.editLayerId} fieldId={fieldId} name={uploadElName} updateField={updateField} value={uploadValue} />);
+                return (<EditUploadField constraints={constraints} dataset={dataset} fieldId={fieldId} name={uploadElName} updateField={updateField} value={uploadValue} />);
             } else {
                 const placeholder = prop.placeholderText || "";
                 return (<input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} placeholder={placeholder} readOnly={readOnly} required={required} type="text" value={value} />);
@@ -268,7 +268,7 @@ export default class QtDesignerForm extends React.Component {
             if (widget.name.startsWith("nrel__")) {
                 return this.renderNRelation(widget);
             } else {
-                return this.renderLayout(widget.layout, values, updateField, nametransform);
+                return this.renderLayout(widget.layout, values, dataset, updateField, nametransform);
             }
         }
         return null;
@@ -308,7 +308,7 @@ export default class QtDesignerForm extends React.Component {
                     return (
                         <div className={"qt-designer-widget-relation-record " + extraClass} key={tablename + idx}>
                             {statusIcon ? (<Icon icon={statusIcon} title={statusText} />) : (<span />)}
-                            {this.renderLayout(widget.layout, record, updateField, nametransform)}
+                            {this.renderLayout(widget.layout, record, this.props.mapPrefix + tablename, updateField, nametransform)}
                             <Icon icon="trash" onClick={() => this.props.removeRelationRecord(tablename, idx)} />
                         </div>
                     );

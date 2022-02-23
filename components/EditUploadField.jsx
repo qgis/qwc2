@@ -20,8 +20,8 @@ import './style/EditUploadField.css';
 export default class EditUploadField extends React.Component {
     static propTypes = {
         constraints: PropTypes.object,
+        dataset: PropTypes.string,
         disabled: PropTypes.bool,
-        editLayerId: PropTypes.string,
         fieldId: PropTypes.string,
         name: PropTypes.string,
         showThumbnails: PropTypes.bool,
@@ -51,7 +51,7 @@ export default class EditUploadField extends React.Component {
         const fileValue = this.props.value.startsWith("attachment:") ? this.props.value.replace(/attachment:\/\//, '') : "";
         const fileType = mime.lookup(fileValue);
         const editServiceUrl = ConfigUtils.getConfigProp("editServiceUrl");
-        const fileUrl = editServiceUrl + "/" + this.props.editLayerId + "/attachment?file=" + encodeURIComponent(fileValue);
+        const fileUrl = editServiceUrl + "/" + this.props.dataset + "/attachment?file=" + encodeURIComponent(fileValue);
         const constraints = {
             ...this.props.constraints,
             accept: (this.props.constraints.accept || "").split(",").map(ext => mime.lookup(ext)).join(",")
