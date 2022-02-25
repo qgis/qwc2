@@ -2,7 +2,7 @@
   "locale": "it-IT",
   "messages": {
     "appmenu": {
-      "filter": "Filtra menü...",
+      "filter": "Filtra menù...",
       "menulabel": "Mappa e strumenti",
       "items": {
         "AttributeTable": "Tabella attributi",
