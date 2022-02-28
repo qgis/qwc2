@@ -151,7 +151,7 @@ export default class QtDesignerForm extends React.Component {
         } else if (widget.class === "QFrame") {
             return (
                 <div className="qt-designer-form-frame">
-                    {this.renderLayout(widget.layout, values, dataset, updateField, nametransform)}
+                    {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, values, dataset, updateField, nametransform)}
                 </div>
             );
         } else if (widget.class === "QGroupBox") {
@@ -159,7 +159,7 @@ export default class QtDesignerForm extends React.Component {
                 <div>
                     <div className="qt-designer-form-frame-title">{prop.title}</div>
                     <div className="qt-designer-form-frame">
-                        {this.renderLayout(widget.layout, values, dataset, updateField, nametransform)}
+                        {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, values, dataset, updateField, nametransform)}
                     </div>
                 </div>
             );
