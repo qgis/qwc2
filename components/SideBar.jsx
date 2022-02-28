@@ -80,16 +80,16 @@ class SideBar extends React.Component {
             zIndex: visible ? 5 : 4
         };
         let closeIcon;
-        if (this.props.side === "right") {
-            style.transform = visible ? '' : 'translateX(100%) translateX(8px)';
-            style.left = '';
-            style.right = 0;
-            closeIcon = "chevron-right";
-        } else if (this.props.side === "left") {
+        if (this.props.side === "left") {
             style.transform = visible ? '' : 'translateX(-100%) translateX(-8px)';
             style.right = '';
             style.left = 0;
             closeIcon = "chevron-left";
+        } else /* if (this.props.side === "right")*/ {
+            style.transform = visible ? '' : 'translateX(100%) translateX(8px)';
+            style.left = '';
+            style.right = 0;
+            closeIcon = "chevron-right";
         }
         let contents = null;
         if (render && typeof this.props.children === "function") {
@@ -105,6 +105,7 @@ class SideBar extends React.Component {
             <div>
                 <Swipeable delta={30} onSwipedRight={this.closeClicked}>
                     <div className={"sidebar" + " " + this.props.extraClasses} id={this.props.id} style={style}>
+                        <div className={"sidebar-resize-handle sidebar-resize-handle-" + this.props.side} onMouseDown={this.startSidebarResize}/>
                         <div className="sidebar-titlebar">
                             {this.state.render ? this.props.extraBeforeContent : null}
                             <Icon className="sidebar-titlebar-icon" icon={this.props.icon} size="large"/>
@@ -121,6 +122,22 @@ class SideBar extends React.Component {
                 {extra}
             </div>
         );
+    }
+    startSidebarResize = (ev) => {
+        const sidebar = document.getElementById(this.props.id);
+        if (!sidebar) {
+            return;
+        }
+        const startWidth = sidebar.offsetWidth;
+        const startMouseX = ev.clientX;
+        const sign = this.props.side === 'left' ? -1 : 1;
+        const resizeSidebar = (event) => {
+            sidebar.style.width = (startWidth + sign * (startMouseX - event.clientX)) + 'px';
+        };
+        window.addEventListener("mousemove", resizeSidebar);
+        window.addEventListener("mouseup", () => {
+            window.removeEventListener("mousemove", resizeSidebar);
+        }, {once: true});
     }
 }
 

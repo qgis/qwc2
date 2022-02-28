@@ -13,6 +13,23 @@ div.sidebar {
     max-width: 100vw;
 }
 
+div.sidebar-resize-handle {
+    position: absolute;
+    width: 6px;
+    top: 0;
+    bottom: 0;
+    cursor: ew-resize;
+    z-index: 2;
+}
+
+div.sidebar-resize-handle-left {
+    right: -3px;
+}
+
+div.sidebar-resize-handle-right {
+    left: -3px;
+}
+
 div.sidebar div.sidebar-titlebar {
     color: @titlebar_fg@;
     background-color: @titlebar_bg@;
