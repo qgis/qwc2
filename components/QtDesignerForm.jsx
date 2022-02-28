@@ -198,7 +198,7 @@ export default class QtDesignerForm extends React.Component {
                 return (<EditUploadField constraints={constraints} dataset={dataset} fieldId={fieldId} name={uploadElName} updateField={updateField} value={uploadValue} />);
             } else {
                 const placeholder = prop.placeholderText || "";
-                return (<input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} placeholder={placeholder} readOnly={readOnly} required={required} type="text" value={value} />);
+                return (<input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} placeholder={placeholder} readOnly={readOnly} required={required} size={5} type="text" value={value} />);
             }
         } else if (widget.class === "QCheckBox" || widget.class === "QRadioButton") {
             const type = widget.class === "QCheckBox" ? "checkbox" : "radio";
@@ -244,7 +244,7 @@ export default class QtDesignerForm extends React.Component {
             const step = prop.singleStep || 1;
             const type = (widget.class === "QSlider" ? "range" : "number");
             return (
-                <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} readOnly={readOnly} required={required} step={step} type={type} value={value} />
+                <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} readOnly={readOnly} required={required} size={5} step={step} type={type} value={value} />
             );
         } else if (widget.class === "QDateEdit") {
             const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1900-01-01";
