@@ -290,32 +290,49 @@ export default class QtDesignerForm extends React.Component {
             return null;
         }
         const tablename = parts[1];
+        const headerItems = widget.layout.item.filter(item => item.widget.name.startsWith("header__"));
         return (
             <div className="qt-designer-widget-relation">
-                {((this.props.relationValues[tablename] || []).records || []).map((record, idx) => {
-                    const updateField = (name, value) => this.props.updateRelationField(tablename, idx, name, value);
-                    const nametransform = (name) => (name + "__" + idx);
-                    const status = record.__status__ || "";
-                    let statusIcon = null;
-                    if (status === "new") {
-                        statusIcon = "new";
-                    } else if (status) {
-                        statusIcon = "edited";
-                    }
-                    let statusText = "";
-                    if (record.error) {
-                        statusIcon = "warning";
-                        statusText = this.buildErrMsg(record);
-                    }
-                    const extraClass = status.startsWith("deleted") ? "qt-designer-widget-relation-record-deleted" : "";
-                    return (
-                        <div className={"qt-designer-widget-relation-record " + extraClass} key={tablename + idx}>
-                            {statusIcon ? (<Icon icon={statusIcon} title={statusText} />) : (<span />)}
-                            {this.renderLayout(widget.layout, record, this.props.mapPrefix + tablename, updateField, nametransform)}
-                            <Icon icon="trash" onClick={() => this.props.removeRelationRecord(tablename, idx)} />
-                        </div>
-                    );
-                })}
+                <table>
+                    <tbody>
+                        {!isEmpty(headerItems) ? (
+                            <tr>
+                                <th />
+                                {headerItems.map(item => (<th key={item.widget.name}>{item.widget.property.text}</th>))}
+                                <th />
+                            </tr>
+                        ) : null}
+                        {((this.props.relationValues[tablename] || []).records || []).map((record, idx) => {
+                            const updateField = (name, value) => this.props.updateRelationField(tablename, idx, name, value);
+                            const nametransform = (name) => (name + "__" + idx);
+                            const status = record.__status__ || "";
+                            let statusIcon = null;
+                            if (status === "new") {
+                                statusIcon = "new";
+                            } else if (status) {
+                                statusIcon = "edited";
+                            }
+                            let statusText = "";
+                            if (record.error) {
+                                statusIcon = "warning";
+                                statusText = this.buildErrMsg(record);
+                            }
+                            const extraClass = status.startsWith("deleted") ? "qt-designer-widget-relation-record-deleted" : "";
+                            const widgetItems = widget.layout.item.filter(item => !item.widget.name.startsWith("header__"));
+                            return (
+                                <tr className={"qt-designer-widget-relation-record " + extraClass} key={tablename + idx}>
+                                    <td>{statusIcon ? (<Icon icon={statusIcon} title={statusText} />) : null}</td>
+                                    {widgetItems.map(item => (
+                                        <td key={item.widget.name}>{this.renderWidget(item.widget, record, this.props.mapPrefix + tablename, updateField, nametransform)}</td>
+                                    ))}
+                                    <td>
+                                        <Icon icon="trash" onClick={() => this.props.removeRelationRecord(tablename, idx)} />
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
                 <div><button className="qt-designer-widget-relation-add" onClick={() => this.props.addRelationRecord(tablename)} type="button">Add</button></div>
             </div>
         );

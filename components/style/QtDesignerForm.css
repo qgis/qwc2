@@ -101,53 +101,34 @@ div.qt-designer-form-tabbar > span.qt-designer-form-tab-active {
     color: white;
 }
 
-div.qt-designer-widget-relation {
-    border: 1px solid @item_border@;
+div.qt-designer-widget-relation > table td {
+    padding: 0.25em 0.125em;
+    text-align: center;
 }
 
-div.qt-designer-widget-relation > div {
-    display: flex;
-    align-items: center;
+div.qt-designer-widget-relation > table th {
+    background-color: @item_border@;
+    color: white;
 }
 
-div.qt-designer-widget-relation > div:not(:last-child) {
-    padding: 0.125em;
+div.qt-designer-widget-relation > table tr:not(:last-child) {
     border-bottom: 1px solid @item_border@;
 }
 
-div.qt-designer-widget-relation > div > div.qt-designer-layout-grid {
-    flex: 1 1 auto;
+tr.qt-designer-widget-relation-record-deleted {
+    background-color: rgb(255,127,127);
 }
 
 button.qt-designer-widget-relation-add {
-    border: none;
+    border: 1px solid @item_border@;
     width: 100%;
     padding: 0.25em;
     background-color: @button_bg@;
 }
+
 div.qt-designer-form label {
     display: flex;
     align-items: center;
-}
-
-div.qt-designer-widget-relation-record-deleted {
-    background-color: rgb(255,127,127);
-}
-
-div.qt-designer-widget-relation-record > span:first-child {
-    display: inline-block;
-    width: 1.5em;
-    text-align: center;
-}
-
-div.qt-designer-widget-relation-record > span.icon-trash {
-    flex: 0 0 auto;
-    padding: 0.25em;
-    margin-left: 1em;
-}
-
-div.qt-designer-widget-relation-record-new {
-    background-color: rgb(127,255,127);
 }
 
 span.qt-designer-form-datetime {
