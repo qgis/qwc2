@@ -39,6 +39,7 @@ span.edit-upload-field-input-disabled {
 span.edit-upload-field-image {
     display: flex;
     flex-direction: column;
+    max-width: 125px;
 }
 
 span.edit-upload-field-image > img {

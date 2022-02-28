@@ -101,6 +101,10 @@ div.qt-designer-form-tabbar > span.qt-designer-form-tab-active {
     color: white;
 }
 
+div.qt-designer-widget-relation > table {
+    width: 100%;
+}
+
 div.qt-designer-widget-relation > table td {
     padding: 0.25em 0.125em;
     text-align: center;
