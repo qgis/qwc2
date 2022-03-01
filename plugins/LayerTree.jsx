@@ -540,6 +540,21 @@ class LayerTree extends React.Component {
     toggleSwipe = () => {
         this.props.setSwipe(this.props.swipe !== null ? null : 50);
     }
+    printLayerLegend = (layer, sublayer) => {
+        let body = "";
+        if (sublayer.sublayers) {
+            body = '<div class="legend-group">' +
+                   '<h3 class="legend-group-title">' + (sublayer.title || sublayer.name) + '</h3>' +
+                   '<div class="legend-group-body">' +
+                   sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer)).join("\n") +
+                   '</div>' +
+                   '</div>';
+        } else {
+            const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
+            body = request ? '<div class="legend-entry"><img src="' + request + '" /></div>' : "";
+        }
+        return body;
+    }
     printLegend = () => {
         let body = '<p id="legendcontainerbody">';
         const printLabel = LocaleUtils.tr("layertree.printlegend");
@@ -551,12 +566,9 @@ class LayerTree extends React.Component {
             if (!layer.visibility) {
                 return "";
             } else if (layer.legendUrl) {
-                return layer.params.LAYERS ? layer.params.LAYERS.split(",").reverse().map(sublayer => {
-                    const request = LayerUtils.getLegendUrl(layer, {name: sublayer}, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
-                    return request ? '<div><img src="' + request + '" /></div>' : "";
-                }).join("\n") : "";
+                return this.printLayerLegend(layer, layer);
             } else if (layer.color) {
-                return '<div><span style="display: inline-block; width: 1em; height: 1em; box-shadow: inset 0 0 0 1000px ' + layer.color + '; margin: 0.25em; border: 1px solid black;">&nbsp;</span>' + (layer.title || layer.name) + '</div>';
+                return '<div class="legend-entry"><span style="display: inline-block; width: 1em; height: 1em; box-shadow: inset 0 0 0 1000px ' + layer.color + '; margin: 0.25em; border: 1px solid black;">&nbsp;</span>' + (layer.title || layer.name) + '</div>';
             } else {
                 return "";
             }
