@@ -184,6 +184,10 @@ class LayerTree extends React.Component {
             "layertree-item-cog-active": this.state.activemenu === group.uuid
         });
         let editframe = null;
+        let infoButton = null;
+        if (layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts") {
+            infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.props.setActiveLayerInfo(layer, group)}/>);
+        }
         const allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filtervisiblelayers;
         const sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true;
@@ -193,6 +197,7 @@ class LayerTree extends React.Component {
                     <div className="layertree-item-edit-items">
                         <Icon className="layertree-item-move" icon="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />
                         <Icon className="layertree-item-move" icon="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />
+                        {infoButton}
                     </div>
                 </div>
             );
