@@ -29,7 +29,7 @@ class ThemeList extends React.Component {
         allowAddingOtherThemes: PropTypes.bool,
         changeTheme: PropTypes.func,
         collapsibleGroups: PropTypes.bool,
-        dontPreserveLayersOnSwitch: PropTypes.bool,
+        dontPreserveSettingsOnSwitch: PropTypes.bool,
         filter: PropTypes.string,
         layers: PropTypes.array,
         mapConfig: PropTypes.object,
@@ -204,7 +204,7 @@ class ThemeList extends React.Component {
         } else {
             this.props.setCurrentTask(null);
         }
-        this.props.changeTheme(theme, this.props.themes, !this.props.dontPreserveLayersOnSwitch);
+        this.props.changeTheme(theme, this.props.themes, !this.props.dontPreserveSettingsOnSwitch);
     }
     toggleThemeInfoMenu = (ev, themeId) => {
         ev.stopPropagation();
