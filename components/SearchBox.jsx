@@ -18,8 +18,8 @@ import {logAction} from '../actions/logging';
 import {panTo, zoomToExtent, zoomToPoint} from '../actions/map';
 import {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer, addLayer} from '../actions/layers';
 import {setCurrentTheme} from '../actions/theme';
-import {setCurrentTask} from '../actions/task';
-import {showNotification} from '../actions/windows';
+import {openExternalUrl, setCurrentTask} from '../actions/task';
+import {showIframeDialog, showNotification} from '../actions/windows';
 import Icon from './Icon';
 import displayCrsSelector from '../selectors/displaycrs';
 import searchProvidersSelector from '../selectors/searchproviders';
@@ -43,6 +43,7 @@ class SearchBox extends React.Component {
         localConfig: PropTypes.object,
         logAction: PropTypes.func,
         map: PropTypes.object,
+        openExternalUrl: PropTypes.func,
         panTo: PropTypes.func,
         removeLayer: PropTypes.func,
         searchFilter: PropTypes.string,
@@ -53,6 +54,7 @@ class SearchBox extends React.Component {
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
+        showIframeDialog: PropTypes.func,
         showNotification: PropTypes.func,
         theme: PropTypes.object,
         themes: PropTypes.object,
@@ -185,6 +187,7 @@ class SearchBox extends React.Component {
                                     {group.items.map((entry, idx) => (
                                         <div className="searchbox-result" key={"c" + idx} onClick={() => {this.selectProviderResult(entry); this.blur(); }} onMouseDown={this.killEvent}>
                                             <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: entry.text.replace(/<br\s*\/>/ig, ' ')}} title={entry.label || entry.text} />
+                                            {entry.externalLink ? <Icon icon="info-sign" onClick={ev => { this.killEvent(ev); this.openUrl(entry.externalLink, entry.target, entry.label || entry.text); } } /> : null}
                                         </div>
                                     ))}
                                 </div>
@@ -603,6 +606,13 @@ class SearchBox extends React.Component {
             this.props.setCurrentTask('LayerTree');
         }
     }
+    openUrl = (url, target, title) => {
+        if (target === "iframe") {
+            this.props.showIframeDialog("externallinkiframe", url, {title: title});
+        } else {
+            this.props.openExternalUrl(url);
+        }
+    }
 }
 
 const searchFilterSelector = createSelector([state => state.theme, state => state.layers.flat], (theme, layers) => {
@@ -650,7 +660,9 @@ export default (searchProviders, providerFactory = () => { return null; }) => {
             panTo: panTo,
             logAction: logAction,
             setCurrentTheme: setCurrentTheme,
-            showNotification: showNotification
+            showNotification: showNotification,
+            openExternalUrl: openExternalUrl,
+            showIframeDialog: showIframeDialog
         }
     )(SearchBox);
 };
