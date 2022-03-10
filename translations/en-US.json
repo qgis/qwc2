@@ -15,6 +15,8 @@
         "Login": "Login",
         "Logout": "Logout",
         "Measure": "Measure",
+        "MeasureLineString": "Measure a line",
+        "MeasurePolygon": "Measure a polygon",
         "Print": "Print",
         "RasterExport": "Raster Export",
         "Redlining": "Redlining",

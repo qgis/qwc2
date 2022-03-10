@@ -15,6 +15,8 @@
         "Login": "Conectează-te",
         "Logout": "Deconectează-te",
         "Measure": "Măsoară",
+        "MeasureLineString": "Măsoară o linie",
+        "MeasurePolygon": "Măsoară un poligon",
         "Print": "Tipărire",
         "RasterExport": "Export Raster",
         "Redlining": "Evidențiere",

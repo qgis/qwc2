@@ -15,6 +15,8 @@
         "Login": "",
         "Logout": "",
         "Measure": "Измерения",
+        "MeasureLineString": "измерить линию",
+        "MeasurePolygon": "измерить многоугольник",
         "Print": "Печать",
         "RasterExport": "Экспорт в растровый Формат бумаги",
         "Redlining": "Обводка",

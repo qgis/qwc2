@@ -15,6 +15,8 @@
         "Login": "Connexion",
         "Logout": "Déconnexion",
         "Measure": "Mesurer",
+        "MeasureLineString": "Mesurer une ligne",
+        "MeasurePolygon": "Mesurer un polygone",
         "Print": "Imprimer",
         "RasterExport": "Export image",
         "Redlining": "Dessiner",

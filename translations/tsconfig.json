@@ -30,6 +30,8 @@
     "appmenu.items.Login",
     "appmenu.items.Logout",
     "appmenu.items.Measure",
+    "appmenu.items.MeasureLineString",
+    "appmenu.items.MeasurePolygon",
     "appmenu.items.Print",
     "appmenu.items.RasterExport",
     "appmenu.items.Redlining",
