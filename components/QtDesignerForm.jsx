@@ -260,10 +260,11 @@ export default class QtDesignerForm extends React.Component {
             const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1900-01-01";
             const max = prop.maximumDate ? this.dateConstraint(prop.maximumDate) : "9999-12-31";
             const parts = (value || "T").split("T");
+            parts[1] = parts[1].replace(/\.\d+$/, ''); // Strip milliseconds
             return (
                 <span className="qt-designer-form-datetime">
                     <input max={max[0]} min={min[0]} onChange={(ev) => updateField(widget.name, ev.target.value ? ev.target.value + "T" + parts[1] : "")} readOnly={readOnly} required={required} type="date" value={parts[0]} />
-                    <input disabled={!parts[0]} onChange={(ev) => updateField(widget.name, parts[0] + "T" + ev.target.value)} readOnly={readOnly} required={required}type="time" value={parts[1]} />
+                    <input disabled={!parts[0]} onChange={(ev) => updateField(widget.name, parts[0] + "T" + ev.target.value)} readOnly={readOnly} required={required} type="time" value={parts[1]} />
                     <input name={elname} type="hidden" value={value} />
                 </span>
             );
