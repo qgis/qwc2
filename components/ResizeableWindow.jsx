@@ -70,15 +70,16 @@ class ResizeableWindow extends React.Component {
         super(props);
         this.rnd = null;
         const height = Math.min(props.initialHeight, window.innerHeight - 100);
+        const width = Math.min(props.initialWidth, window.innerWidth);
         if (WINDOW_GEOMETRIES[props.title]) {
             this.state.geometry = WINDOW_GEOMETRIES[props.title];
         } else {
             this.state.geometry = {
-                x: props.initialX !== null ? this.computeInitialX(props.initialX) : Math.max(0, Math.round(0.5 * (window.innerWidth - props.initialWidth))),
-                y: props.initialY !== null ? props.initialY : Math.max(0, Math.round(0.5 * height)),
-                width: props.initialWidth,
+                x: props.initialX !== null ? this.computeInitialX(props.initialX) : Math.max(0, Math.round(0.5 * (window.innerWidth - width))),
+                y: props.initialY !== null ? this.computeInitialY(props.initialY) : Math.max(0, Math.round(0.5 * (window.innerHeight - height))),
+                width: width,
                 height: height,
-                docked: props.initiallyDocked || false
+                docked: false
             };
         }
         this.dragShield = null;
@@ -87,8 +88,14 @@ class ResizeableWindow extends React.Component {
     computeInitialX = (x) => {
         return x >= 0 ? x : window.innerWidth - Math.abs(x);
     }
+    computeInitialY = (y) => {
+        return y >= 0 ? y : window.innerHeight - Math.abs(y);
+    }
     componentDidMount() {
         this.props.registerWindow(this.id);
+        if (this.props.initiallyDocked) {
+            this.setState({geometry: {...this.state.geometry, docked: true}});
+        }
     }
     componentWillUnmount() {
         this.props.unregisterWindow(this.id);
