@@ -23,7 +23,8 @@
         "Share": "Share Link",
         "ThemeSwitcher": "Theme",
         "Tools": "Map Tools",
-        "Bookmark": "Bookmarks"
+        "Bookmark": "Bookmarks",
+        "TimeManager": "Time Manager"
       }
     },
     "attribtable": {
@@ -296,6 +297,24 @@
       },
       "openintab": "Open in Tab",
       "restrictedthemeinfo": "You are not permitted to view the theme or not logged in"
+    },
+    "timemanager": {
+      "animspeed": "Animation speed",
+      "notemporaldata": "No temporal layers exist in the map",
+      "persecond": "per second",
+      "play": "Play",
+      "rewind": "Rewind",
+      "stop": "Stop",
+      "title": "Time manager",
+      "toggle": "Temporal navigation",
+      "unit": {
+        "days": "days",
+        "hours": "hours",
+        "minutes": "minutes",
+        "months": "months",
+        "seconds": "seconds",
+        "years": "years"
+      }
     },
     "tooltip": {
       "background": "Switch background",

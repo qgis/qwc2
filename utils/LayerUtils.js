@@ -733,6 +733,21 @@ const LayerUtils = {
         params.OPACITIES = params.OPACITIES.reverse().join(",");
         params.COLORS = params.COLORS.reverse().join(",");
         return params;
+    },
+    getTimeDimensionValues(layer) {
+        const result = {names: new Set(), values: new Set()};
+        (layer.dimensions || []).forEach(dimension => {
+            if (dimension.units === "ISO8601") {
+                result.names.add(dimension.name);
+                dimension.value.split(/,\s+/).filter(x => x).forEach(x => result.values.add(x));
+            }
+        });
+        (layer.sublayers || []).forEach(sublayer => {
+            const sublayerResult = LayerUtils.getTimeDimensionValues(sublayer);
+            result.names.add(...sublayerResult.names);
+            sublayerResult.values.forEach(x => result.values.add(x));
+        });
+        return result;
     }
 };
 

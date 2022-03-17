@@ -15,13 +15,16 @@
         "Login": "Inicio de sessió",
         "Logout": "Tancament de sessió",
         "Measure": "Mesurar",
+        "MeasureLineString": "",
+        "MeasurePolygon": "",
         "Print": "Imprimir",
         "RasterExport": "Exportar trama",
         "Redlining": "Línia de demarcació",
         "Share": "Compartir link",
         "ThemeSwitcher": "Tema",
         "Tools": "Eines de Mapa",
-        "Bookmark": ""
+        "Bookmark": "",
+        "TimeManager": ""
       }
     },
     "attribtable": {
@@ -294,6 +297,24 @@
       },
       "openintab": "Obrir en pestaña",
       "restrictedthemeinfo": "Vostè no te permisos per veure el tema o no està connectat"
+    },
+    "timemanager": {
+      "animspeed": "",
+      "notemporaldata": "",
+      "persecond": "",
+      "play": "",
+      "rewind": "",
+      "stop": "",
+      "title": "",
+      "toggle": "",
+      "unit": {
+        "days": "",
+        "hours": "",
+        "minutes": "",
+        "months": "",
+        "seconds": "",
+        "years": ""
+      }
     },
     "tooltip": {
       "background": "Canvi de fons",

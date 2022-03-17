@@ -23,7 +23,8 @@
         "Share": "Del lenke",
         "ThemeSwitcher": "Tema",
         "Tools": "Kartverktøy",
-        "Bookmark": ""
+        "Bookmark": "",
+        "TimeManager": ""
       }
     },
     "attribtable": {
@@ -296,6 +297,24 @@
       },
       "openintab": "Åpne i nytt vindu",
       "restrictedthemeinfo": ""
+    },
+    "timemanager": {
+      "animspeed": "",
+      "notemporaldata": "",
+      "persecond": "",
+      "play": "",
+      "rewind": "",
+      "stop": "",
+      "title": "",
+      "toggle": "",
+      "unit": {
+        "days": "",
+        "hours": "",
+        "minutes": "",
+        "months": "",
+        "seconds": "",
+        "years": ""
+      }
     },
     "tooltip": {
       "background": "Bytt bakgrunn",

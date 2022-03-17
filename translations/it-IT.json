@@ -23,7 +23,8 @@
         "Share": "Condividi",
         "ThemeSwitcher": "Temi",
         "Tools": "Strumenti",
-        "Bookmark": "Segnalibri"
+        "Bookmark": "Segnalibri",
+        "TimeManager": "Linea temporale"
       }
     },
     "attribtable": {
@@ -296,6 +297,24 @@
       },
       "openintab": "Apri in nuova scheda",
       "restrictedthemeinfo": "Non sei autorizzato a visualizzare il tema oppure non hai effettuato il login"
+    },
+    "timemanager": {
+      "animspeed": "Velocità animazione",
+      "notemporaldata": "Nessun layer con dimensioni temporali nella cartina",
+      "persecond": "per secondo",
+      "play": "Avvia animazione",
+      "rewind": "Resetta animazione",
+      "stop": "Ferma animazione",
+      "title": "Linea temporale",
+      "toggle": "Abilità gesitone temporale",
+      "unit": {
+        "days": "giorni",
+        "hours": "ore",
+        "minutes": "minuti",
+        "months": "mesi",
+        "seconds": "secondi",
+        "years": "anni"
+      }
     },
     "tooltip": {
       "background": "Cambia sfondo",

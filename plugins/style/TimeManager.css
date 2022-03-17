@@ -1,0 +1,105 @@
+div.time-manager-notemporaldata {
+    padding: 1em;
+}
+
+div.time-manager-toolbar {
+    margin: 0.25em;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+div.time-manager-toolbar > * {
+    margin: 0.125em;
+}
+
+div.time-manager-toolbar input,
+div.time-manager-toolbar select {
+    border: 1px solid @item_border@;
+    height: 2em;
+    width: 6em;
+}
+
+div.time-manager-toolbar > div.ToggleSwitch {
+    max-width: 6em;
+}
+
+span.time-manager-toolbar-spacer {
+    flex: 1 1 auto;
+}
+
+span.time-manager-options-menubutton {
+    position: relative;
+}
+
+div.time-manager-options {
+    padding: 0.25em;
+    position: absolute;
+    right: 0;
+    top: calc(100% - 1px);
+    border: 1px solid @item_border@;
+    background-color: white;
+    z-index: 2;
+}
+
+div.time-manager-options > div {
+    white-space: nowrap;
+}
+
+div.time-manager-options > div > * {
+    margin: 0.125em;
+}
+
+div.time-manager-timeline {
+    height: 16px;
+    position: relative;
+    margin: 0.25em;
+    border: 1px solid @item_border@;
+}
+
+div.time-manager-time-blocks {
+    background-color: #ddd;
+    height: 100%;
+    display: flex;
+}
+
+div.time-manager-time-blocks > div {
+    flex: 1 1 auto;
+}
+
+div.time-manager-cursor {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: black;
+}
+
+div.time-manager-cursor-label {
+    position: absolute;
+    font-size: 75%;
+    top: calc(100%);
+    text-align: center;
+    padding: 0.25em;
+    background-color: white;
+    border: 1px solid @item_border@;
+}
+
+div.time-manager-ticks {
+    display: flex;
+    margin-top: 0.25em;
+}
+
+div.time-manager-ticks > div {
+    flex: 1 1 auto;
+    text-align: center;
+    font-size: 75%;
+}
+
+div.time-manager-ticks > div:first-child {
+    text-align: left;
+}
+
+div.time-manager-ticks > div:last-child {
+    text-align: right;
+}

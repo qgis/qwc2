@@ -23,7 +23,8 @@
         "Share": "Megosztható link",
         "ThemeSwitcher": "Térkép",
         "Tools": "Térkép eszközök",
-        "Bookmark": ""
+        "Bookmark": "",
+        "TimeManager": ""
       }
     },
     "attribtable": {
@@ -296,6 +297,24 @@
       },
       "openintab": "",
       "restrictedthemeinfo": ""
+    },
+    "timemanager": {
+      "animspeed": "",
+      "notemporaldata": "",
+      "persecond": "",
+      "play": "",
+      "rewind": "",
+      "stop": "",
+      "title": "",
+      "toggle": "",
+      "unit": {
+        "days": "",
+        "hours": "",
+        "minutes": "",
+        "months": "",
+        "seconds": "",
+        "years": ""
+      }
     },
     "tooltip": {
       "background": "",

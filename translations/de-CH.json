@@ -23,7 +23,8 @@
         "Share": "Teilen",
         "ThemeSwitcher": "Themen",
         "Tools": "Werkzeuge",
-        "Bookmark": "Lesezeichen"
+        "Bookmark": "Lesezeichen",
+        "TimeManager": "Zeitleiste"
       }
     },
     "attribtable": {
@@ -296,6 +297,24 @@
       },
       "openintab": "In Tab öffnen",
       "restrictedthemeinfo": "Sie sind nicht berechtigt oder sind nicht angemeldet"
+    },
+    "timemanager": {
+      "animspeed": "Animationsgeschwindigkeit",
+      "notemporaldata": "Keine Ebenen in der Karte sind mit Zeitinformationen versehen",
+      "persecond": "pro Sekunde",
+      "play": "Starten",
+      "rewind": "Zurücksetzten",
+      "stop": "Stoppen",
+      "title": "Zeitleiste",
+      "toggle": "Zeitsteuerung aktivieren",
+      "unit": {
+        "days": "Tage",
+        "hours": "Stunden",
+        "minutes": "Minuten",
+        "months": "Monate",
+        "seconds": "Sekunden",
+        "years": "Jahre"
+      }
     },
     "tooltip": {
       "background": "Hintergrundkarte wechseln",

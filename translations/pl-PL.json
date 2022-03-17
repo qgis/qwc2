@@ -23,7 +23,8 @@
         "Share": "Udostępnij Link",
         "ThemeSwitcher": "Motyw",
         "Tools": "Narzędzia Mapy",
-        "Bookmark": ""
+        "Bookmark": "",
+        "TimeManager": ""
       }
     },
     "attribtable": {
@@ -296,6 +297,24 @@
       },
       "openintab": "",
       "restrictedthemeinfo": ""
+    },
+    "timemanager": {
+      "animspeed": "",
+      "notemporaldata": "",
+      "persecond": "",
+      "play": "",
+      "rewind": "",
+      "stop": "",
+      "title": "",
+      "toggle": "",
+      "unit": {
+        "days": "",
+        "hours": "",
+        "minutes": "",
+        "months": "",
+        "seconds": "",
+        "years": ""
+      }
     },
     "tooltip": {
       "background": "Zmień podkład map",

@@ -23,7 +23,8 @@
         "Share": "Compartilhar enlace",
         "ThemeSwitcher": "Tema",
         "Tools": "Ferramentas de mapa",
-        "Bookmark": ""
+        "Bookmark": "",
+        "TimeManager": ""
       }
     },
     "attribtable": {
@@ -296,6 +297,24 @@
       },
       "openintab": "Aberto em separador",
       "restrictedthemeinfo": "Não está autorizado a ver o tema ou não iniciar sessão"
+    },
+    "timemanager": {
+      "animspeed": "",
+      "notemporaldata": "",
+      "persecond": "",
+      "play": "",
+      "rewind": "",
+      "stop": "",
+      "title": "",
+      "toggle": "",
+      "unit": {
+        "days": "",
+        "hours": "",
+        "minutes": "",
+        "months": "",
+        "seconds": "",
+        "years": ""
+      }
     },
     "tooltip": {
       "background": "Mudar de fundo",
