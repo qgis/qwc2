@@ -744,7 +744,7 @@ const LayerUtils = {
         });
         (layer.sublayers || []).forEach(sublayer => {
             const sublayerResult = LayerUtils.getTimeDimensionValues(sublayer);
-            result.names.add(...sublayerResult.names);
+            sublayerResult.names.forEach(x => result.names.add(x));
             sublayerResult.values.forEach(x => result.values.add(x));
         });
         return result;
