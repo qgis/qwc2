@@ -98,32 +98,31 @@ const ServiceLayerUtils = {
     getWMSLayers(capabilitiesXml, calledServiceUrl, asGroup = false) {
         const wmsFormat = new ol.format.WMSCapabilities();
         const capabilities = wmsFormat.read(capabilitiesXml);
-        const parts = url.parse(calledServiceUrl, true);
+        const calledUrlParts = url.parse(calledServiceUrl, true);
         // Preserve parameters (i.e. MAP) in calledServiceUrl
-        Object.keys(parts.query).filter(x => ["service", "version", "request"].includes(x.toLowerCase())).forEach(key => {
-            delete parts.query[key];
+        Object.keys(calledUrlParts.query).filter(x => ["service", "version", "request"].includes(x.toLowerCase())).forEach(key => {
+            delete calledUrlParts.query[key];
         });
-        delete parts.search;
-        calledServiceUrl = url.format(parts);
+        delete calledUrlParts.search;
+        calledServiceUrl = url.format(calledUrlParts);
 
-        let topLayer = null;
-        let serviceUrl;
-        try {
-            topLayer = capabilities.Capability.Layer;
-            serviceUrl = capabilities.Service.OnlineResource;
-        } catch (e) {
-            serviceUrl = calledServiceUrl;
-        }
+        const topLayer = capabilities.Capability.Layer;
+
         let getMapUrl = null;
         try {
-            topLayer = capabilities.Capability.Layer;
-            getMapUrl = ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetMap.DCPType).HTTP.Get.OnlineResource.replace(serviceUrl, calledServiceUrl);
+            const getMapParts = url.parse(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetMap.DCPType).HTTP.Get.OnlineResource);
+            getMapParts.host = calledUrlParts.host;
+            getMapParts.scheme = calledUrlParts.scheme;
+            getMapUrl = url.format(getMapParts);
         } catch (e) {
             getMapUrl = calledServiceUrl;
         }
         let featureInfoUrl = null;
         try {
-            featureInfoUrl = ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType).HTTP.Get.OnlineResource.replace(serviceUrl, calledServiceUrl);
+            const featureInfoParts = url.parse(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType).HTTP.Get.OnlineResource);
+            featureInfoParts.host = calledUrlParts.host;
+            featureInfoParts.scheme = calledUrlParts.scheme;
+            featureInfoUrl = url.format(featureInfoParts);
         } catch (e) {
             featureInfoUrl = calledServiceUrl;
         }
@@ -142,13 +141,13 @@ const ServiceLayerUtils = {
         }
         const version = capabilities.version;
         if (!topLayer.Layer || asGroup) {
-            return [this.getWMSLayerParams(topLayer, topLayer.CRS, getMapUrl, serviceUrl, calledServiceUrl, version, featureInfoUrl, infoFormats)].filter(entry => entry);
+            return [this.getWMSLayerParams(topLayer, topLayer.CRS, getMapUrl, calledUrlParts, calledServiceUrl, version, featureInfoUrl, infoFormats)].filter(entry => entry);
         } else {
-            const entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, getMapUrl, serviceUrl, calledServiceUrl, version, featureInfoUrl, infoFormats)).filter(entry => entry);
+            const entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, getMapUrl, calledUrlParts, calledServiceUrl, version, featureInfoUrl, infoFormats)).filter(entry => entry);
             return entries.sort((a, b) => strcmp(a.title, b.title));
         }
     },
-    getWMSLayerParams(layer, parentCrs, getMapUrl, serviceUrl, calledServiceUrl, version, featureInfoUrl, infoFormats, groupbbox = null) {
+    getWMSLayerParams(layer, parentCrs, getMapUrl, calledUrlParts, calledServiceUrl, version, featureInfoUrl, infoFormats, groupbbox = null) {
         let supportedCrs = layer.CRS;
         if (isEmpty(supportedCrs)) {
             supportedCrs = [...parentCrs];
@@ -158,7 +157,7 @@ const ServiceLayerUtils = {
         let sublayers = [];
         const sublayerbounds = {};
         if (!isEmpty(layer.Layer)) {
-            sublayers = layer.Layer.map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, getMapUrl, serviceUrl, calledServiceUrl, version, featureInfoUrl, infoFormats, sublayerbounds)).filter(entry => entry);
+            sublayers = layer.Layer.map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, getMapUrl, calledUrlParts, calledServiceUrl, version, featureInfoUrl, infoFormats, sublayerbounds)).filter(entry => entry);
         }
         let bbox = null;
         if (isEmpty(layer.BoundingBox)) {
@@ -185,7 +184,10 @@ const ServiceLayerUtils = {
         }
         let legendUrl = null;
         try {
-            legendUrl = layer.Style[0].LegendURL[0].OnlineResource.replace(serviceUrl, calledServiceUrl);
+            const legendParts = url.parse(layer.Style[0].LegendURL[0].OnlineResource);
+            legendParts.host = calledUrlParts.host;
+            legendParts.scheme = calledUrlParts.scheme;
+            legendUrl = url.format(legendParts);
         } catch (e) {
             /* Pass */
         }
