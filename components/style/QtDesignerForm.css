@@ -110,6 +110,15 @@ div.qt-designer-widget-relation > table td {
     text-align: center;
 }
 
+div.qt-designer-widget-relation > table td > * {
+    width: 100%;
+}
+
+div.qt-designer-widget-relation > table td > label {
+    display: block;
+    text-align: center;
+}
+
 div.qt-designer-widget-relation > table th {
     background-color: @item_border@;
     color: white;
