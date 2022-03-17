@@ -20,6 +20,7 @@ import {
     REMOVE_LAYER,
     REORDER_LAYER,
     CHANGE_LAYER_PROPERTY,
+    SET_LAYER_DIMENSIONS,
     ADD_LAYER_FEATURES,
     REMOVE_LAYER_FEATURES,
     CLEAR_LAYER,
@@ -112,6 +113,17 @@ export default function layers(state = defaultState, action) {
             return layer;
         });
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
+        return {...state, flat: newLayers};
+    }
+    case SET_LAYER_DIMENSIONS: {
+        const newLayers = (state.flat || []).map((layer) => {
+            if (layer.id === action.layerId) {
+                const newLayer = {...layer, dimensionValues: action.dimensions};
+                Object.assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
+                return newLayer;
+            }
+            return layer;
+        });
         return {...state, flat: newLayers};
     }
     case ADD_LAYER: {

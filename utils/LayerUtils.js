@@ -150,7 +150,8 @@ const LayerUtils = {
                     LAYERS: params.LAYERS || layer.name,
                     OPACITIES: params.OPACITIES || ("" + (layer.opacity !== undefined ? layer.opacity : 255)),
                     STYLES: params.STYLES || "",
-                    MAP: query.map || query.MAP || params.map || params.MAP
+                    MAP: query.map || query.MAP || params.map || params.MAP,
+                    ...layer.dimensionValues
                 },
                 queryLayers: layer.queryable ? [layer.name] : []
             };
@@ -176,7 +177,8 @@ const LayerUtils = {
             LAYERS: layerNames.join(","),
             OPACITIES: opacities.join(","),
             STYLES: styles.join(","),
-            MAP: query.map || query.MAP || (layer.params || {}).map || (layer.params || {}).MAP
+            MAP: query.map || query.MAP || (layer.params || {}).map || (layer.params || {}).MAP,
+            ...layer.dimensionValues
         };
         return {
             params: newParams,

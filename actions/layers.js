@@ -22,6 +22,7 @@ export const ADD_THEME_SUBLAYER = 'ADD_THEME_SUBLAYER';
 export const REMOVE_LAYER_FEATURES = 'REMOVE_LAYER_FEATURES';
 export const CLEAR_LAYER = 'CLEAR_LAYER';
 export const CHANGE_LAYER_PROPERTY = 'CHANGE_LAYER_PROPERTY';
+export const SET_LAYER_DIMENSIONS = 'SET_LAYER_DIMENSIONS';
 export const REFRESH_LAYER = 'REFRESH_LAYER';
 export const REMOVE_ALL_LAYERS = 'REMOVE_ALL_LAYERS';
 export const REPLACE_PLACEHOLDER_LAYER = 'REPLACE_PLACEHOLDER_LAYER';
@@ -117,6 +118,14 @@ export function changeLayerProperty(layerUuid, property, newvalue, sublayerpath 
         newvalue,
         sublayerpath,
         recurseDirection
+    };
+}
+
+export function setLayerDimensions(layerId, dimensions) {
+    return {
+        type: SET_LAYER_DIMENSIONS,
+        layerId: layerId,
+        dimensions: dimensions
     };
 }
 

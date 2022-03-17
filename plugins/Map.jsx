@@ -68,6 +68,7 @@ class MapPlugin extends React.Component {
                                 renderLayers.push({
                                     ...layer.externalLayerMap[sublayers[i]],
                                     params: {
+                                        ...layer.params,
                                         ...layer.externalLayerMap[sublayers[i]].params,
                                         OPACITIES: opacities[i],
                                         STYLES: ""
@@ -84,6 +85,7 @@ class MapPlugin extends React.Component {
                             renderLayers.push({
                                 ...layer,
                                 uuid: layer.uuid + "-" + i, params: {
+                                    ...layer.params,
                                     LAYERS: sublayers[i],
                                     OPACITIES: opacities[i],
                                     STYLES: styles[i] || "",
