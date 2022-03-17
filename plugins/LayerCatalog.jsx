@@ -28,7 +28,7 @@ class LayerCatalog extends React.Component {
         windowSize: {width: 320, height: 320}
     }
     state = {
-        catalog: []
+        catalog: null
     }
     componentDidUpdate(prevProps) {
         if (this.props.active && !prevProps.active && this.props.catalogUrl) {
@@ -39,25 +39,25 @@ class LayerCatalog extends React.Component {
     }
     setCatalog = (response) => {
         this.setState({
-            catalog: response.data.catalog
+            catalog: response.data.catalog || []
         });
         this.props.setCurrentTask("LayerTree");
     }
     render() {
-        if (isEmpty(this.state.catalog)) {
+        if (!this.state.catalog) {
             return null;
         }
         return (
             <ResizeableWindow icon="catalog" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width}
                 onClose={this.onClose} title={LocaleUtils.trmsg("layercatalog.windowtitle")} >
                 <div className="layer-catalog" role="body">
-                    <LayerCatalogWidget catalog={this.state.catalog} />
+                    <LayerCatalogWidget catalog={this.state.catalog} pendingRequests={0} />
                 </div>
             </ResizeableWindow>
         );
     }
     onClose = () => {
-        this.setState({catalog: []});
+        this.setState({catalog: null});
     }
 }
 
