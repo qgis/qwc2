@@ -112,15 +112,14 @@ class AppMenu extends React.Component {
                             onClick={() => this.onSubmenuClicked(item.key, level)}
                         >
                             <Icon icon={item.icon} size="xlarge"/>
-                            {LocaleUtils.tr("appmenu.items." + item.key)}
-                            {item.title}
+                            {item.title ? LocaleUtils.tr(item.title) : LocaleUtils.tr("appmenu.items." + item.key)}
                             <ul>
                                 {subitems}
                             </ul>
                         </li>
                     );
                 } else {
-                    const label = LocaleUtils.tr("appmenu.items." + item.key + (item.mode || ""));
+                    const label = item.title ? LocaleUtils.tr(item.title) : LocaleUtils.tr("appmenu.items." + item.key + (item.mode || ""));
                     const comment = item.comment ? LocaleUtils.tr("appmenu.items." + item.key + (item.mode || "") + "_comment") : "";
                     if (!filter || removeDiacritics(label.toLowerCase()).match(filter) || (comment && removeDiacritics(comment.toLowerCase()).match(filter))) {
                         return (
