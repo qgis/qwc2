@@ -1,4 +1,5 @@
 div.ToggleSwitch {
+    position: relative;
     display: flex;
     width: 100%;
     height: 2em;
@@ -16,12 +17,11 @@ div.ToggleSwitch.toggle-switch-inactive {
 }
 
 div.ToggleSwitch > span.toggle-switch-slider {
-    flex: 0 0 50%;
+    flex: 1 1 50%;
     background-color: white;
     border: 1px solid @item_border@;
     border-radius: 2px;
     text-align: center;
-    margin: 0 0.1em;
     color: lightgray;
     height: 100%;
     display: flex;
@@ -37,7 +37,7 @@ div.ToggleSwitch > span.toggle-switch-yes,
 div.ToggleSwitch > span.toggle-switch-no {
     color: white;
     text-align: center;
-    flex: 1 1 auto;
+    flex: 1 1 50%;
 }
 
 div.ToggleSwitch.toggle-switch-active > span.toggle-switch-no {
@@ -50,6 +50,7 @@ div.ToggleSwitch.toggle-switch-inactive > span.toggle-switch-yes {
 
 
 div.ToggleSwitch > input {
+    position: absolute;
     opacity: 0;
     width: 1px;
 }
