@@ -215,7 +215,7 @@ class TimeManager extends React.Component {
         this.props.layers.forEach(layer => {
             if (layer.id in timeDimensions) {
                 const dimensions = timeDimensions[layer.id].reduce((res, dimension) => {
-                    res[dimension] = currentTime;
+                    res[dimension.toUpperCase()] = currentTime;
                     return res;
                 }, {...(layer.dimensionValues || {})});
                 this.props.setLayerDimensions(layer.id, dimensions);
