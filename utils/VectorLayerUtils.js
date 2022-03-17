@@ -285,11 +285,22 @@ const VectorLayerUtils = {
         return entry;
     },
     computeFeaturesBBox(features) {
+        const featureCrs = new Set();
+        features.forEach(feature => {
+            if (feature.crs) {
+                featureCrs.add(feature.crs);
+            }
+        });
+        const bboxCrs = featureCrs.size === 1 ? [...featureCrs.keys()][0] : "EPSG:4326";
+        console.log(bboxCrs);
         return {
-            crs: "EPSG:4326",
+            crs: bboxCrs,
             bounds: geojsonBbox({
                 type: "FeatureCollection",
-                features: features.filter(feature => feature.geometry)
+                features: features.filter(feature => feature.geometry).map(feature => ({
+                    ...feature,
+                    geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs, bboxCrs)
+                }))
             })
         };
     }
