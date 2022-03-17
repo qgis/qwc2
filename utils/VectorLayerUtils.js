@@ -160,7 +160,7 @@ const VectorLayerUtils = {
         return null;
     },
     reprojectGeometry(geometry, srccrs, dstcrs) {
-        if (srccrs === dstcrs) {
+        if (srccrs === dstcrs || !srccrs || !dstcrs) {
             return geometry;
         }
         if (geometry.type === "Point") {

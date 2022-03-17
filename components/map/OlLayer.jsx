@@ -129,10 +129,14 @@ class OlLayer extends React.Component {
             event.context.restore();
         });
 
-        if (options.zoomToExtent && options.bbox) {
+        if (options.zoomToExtent && options.bbox && options.bbox.bounds) {
             const map = this.props.map;
             const extent = CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, map.getView().getProjection());
-            map.getView().fit(extent, map.getSize());
+            try {
+                map.getView().fit(extent, map.getSize());
+            } catch (e) {
+                /* pass */
+            }
         }
         const sublayers = {};
         if (layer instanceof ol.layer.Group) {

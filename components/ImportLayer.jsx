@@ -200,10 +200,10 @@ class ImportLayer extends React.Component {
                 let data = {};
                 try {
                     data = JSON.parse(ev.target.result);
+                    this.addGeoJSONLayer(file.name, data);
                 } catch (e) {
                     /* Pass */
                 }
-                this.addGeoJSONLayer(file.name, data);
             }
             this.setState({file: null});
         };
