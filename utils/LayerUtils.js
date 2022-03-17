@@ -139,18 +139,23 @@ const LayerUtils = {
         }
     },
     buildWMSLayerParams(layer) {
-        // Handle QGIS Server setups without rewrite rule
+        // Handle urls with extra params (like MAP etc)
         const query = url.parse(layer.url, true).query;
+        const baseParams = Object.keys(query).filter(x => x && !["service", "version", "request"].includes(x.toLowerCase())).reduce((res, key) => ({
+            ...res,
+            [key.toUpperCase()]: query[key]
+        }), {});
+
+        const params = Object.entries(layer.params || {}).reduce((res, [key, value]) => ({[key.toUpperCase()]: value}), {});
 
         if (!Array.isArray(layer.sublayers)) {
-            const params = layer.params || {};
             return {
                 params: {
+                    ...baseParams,
                     ...params,
                     LAYERS: params.LAYERS || layer.name,
                     OPACITIES: params.OPACITIES || ("" + (layer.opacity !== undefined ? layer.opacity : 255)),
                     STYLES: params.STYLES || "",
-                    MAP: query.map || query.MAP || params.map || params.MAP,
                     ...layer.dimensionValues
                 },
                 queryLayers: layer.queryable ? [layer.name] : []
@@ -173,11 +178,11 @@ const LayerUtils = {
             styles = indices.map(idx => styles[idx]);
         }
         const newParams = {
-            ...layer.params,
+            ...baseParams,
+            ...params,
             LAYERS: layerNames.join(","),
             OPACITIES: opacities.join(","),
             STYLES: styles.join(","),
-            MAP: query.map || query.MAP || (layer.params || {}).map || (layer.params || {}).MAP,
             ...layer.dimensionValues
         };
         return {

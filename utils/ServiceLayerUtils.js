@@ -98,12 +98,13 @@ const ServiceLayerUtils = {
     getWMSLayers(capabilitiesXml, calledServiceUrl, asGroup = false) {
         const wmsFormat = new ol.format.WMSCapabilities();
         const capabilities = wmsFormat.read(capabilitiesXml);
-        const query = url.parse(calledServiceUrl, true).query;
-        // Preserve map parameter in calledServiceUrl if present
-        calledServiceUrl = calledServiceUrl.replace(/\?.*$/, '');
-        if (query.map || query.MAP || query.Map) {
-            calledServiceUrl += "?MAP=" + (query.map || query.MAP || query.Map);
-        }
+        const parts = url.parse(calledServiceUrl, true);
+        // Preserve parameters (i.e. MAP) in calledServiceUrl
+        Object.keys(parts.query).filter(x => ["service", "version", "request"].includes(x.toLowerCase())).forEach(key => {
+            delete parts.query[key];
+        });
+        delete parts.search;
+        calledServiceUrl = url.format(parts);
 
         let topLayer = null;
         let serviceUrl;
