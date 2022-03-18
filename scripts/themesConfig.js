@@ -219,6 +219,17 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         if (featureReports[layer.Name]) {
             layerEntry.featureReport = featureReports[layer.Name];
         }
+
+        layerEntry.dimensions = [];
+        toArray(layer.Dimension).forEach(dim => {
+            layerEntry.dimensions.push({
+                units: dim.$.units,
+                name: dim.$.name,
+                multiple: dim.$.multipleValues === "1",
+                value: dim._
+            });
+        });
+
     } else {
         // group
         layerEntry.mutuallyExclusive = (layer.$ || {}).mutuallyExclusive === '1';

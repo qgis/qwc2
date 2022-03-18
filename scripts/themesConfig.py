@@ -160,6 +160,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
     layers = getDirectChildElements(layer, "Layer")
     treeName = getChildElementValue(layer, "TreeName")
 
+
     # skip print layers
     for printLayer in printLayers:
         if type(printLayer) is list:
@@ -245,6 +246,16 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             }
         if name in featureReports:
             layerEntry["featureReport"] = featureReports[name]
+
+        layerEntry["dimensions"] = []
+        for dim in getDirectChildElements(layer, "Dimension"):
+            layerEntry["dimensions"].append({
+                "units": dim.getAttribute("units"),
+                "name": dim.getAttribute("name"),
+                "multiple": dim.getAttribute("multipleValues") == "1",
+                "value": getElementValue(dim)
+            })
+
     else:
         # group
         layerEntry["mutuallyExclusive"] = layer.getAttribute("mutuallyExclusive") == "1"
