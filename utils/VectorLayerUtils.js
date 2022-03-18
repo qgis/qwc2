@@ -318,7 +318,6 @@ const VectorLayerUtils = {
             }
         });
         const bboxCrs = featureCrs.size === 1 ? [...featureCrs.keys()][0] : "EPSG:4326";
-        console.log(bboxCrs);
         return {
             crs: bboxCrs,
             bounds: geojsonBbox({
