@@ -59,8 +59,7 @@
         "reselect": "4.0.0",
         "sortablejs": "1.14.0",
         "stream-browserify": "^3.0.0",
-        "timers-browserify": "^2.0.12",
-        "wellknown": "0.5.0"
+        "timers-browserify": "^2.0.12"
     },
     "devDependencies": {
         "@babel/core": "7.15.8",

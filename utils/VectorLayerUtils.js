@@ -9,7 +9,6 @@
 import uuid from 'uuid';
 import ol from 'openlayers';
 import isEmpty from 'lodash.isempty';
-import {stringify} from 'wellknown';
 import geojsonBbox from 'geojson-bounding-box';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -61,13 +60,13 @@ const VectorLayerUtils = {
                             [x - 0.00001, y - 0.00001]
                         ]]
                     };
-                    params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
+                    params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 1));
                     params.labelFillColors.push(ensureHex(feature.styleOptions.fillColor));
                     params.labelOultineColors.push(ensureHex(feature.styleOptions.strokeColor));
                     params.labelOutlineSizes.push(scaleFactor * feature.styleOptions.strokeWidth * 0.5);
                     params.labelSizes.push(Math.round(10 * feature.styleOptions.strokeWidth * scaleFactor));
                 } else {
-                    params.geoms.push(VectorLayerUtils.geoJSONToWkt(geometry));
+                    params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 1));
                     params.labelFillColors.push(defaultFeatureStyle.textFill);
                     params.labelOultineColors.push(defaultFeatureStyle.textStroke);
                     params.labelOutlineSizes.push(scaleFactor);
@@ -200,9 +199,6 @@ const VectorLayerUtils = {
             return geometry;
         }
     },
-    geoJSONToWkt(geometry) {
-        return stringify(geometry);
-    },
     wktToGeoJSON(wkt, srccrs, dstcrs, id = uuid.v1()) {
         wkt = wkt
             .replace(/Point(\w+)/i, "Point $1")
@@ -220,6 +216,36 @@ const VectorLayerUtils = {
         } catch (e) {
             console.warn("Failed to parse geometry: " + wkt);
             return null;
+        }
+    },
+    geoJSONGeomToWkt(gj, precision = 4) {
+        if (gj.type === 'Feature') {
+            gj = gj.geometry;
+        }
+
+        const wrapParens = (s) =>  { return '(' + s + ')'; };
+        const pairWKT = (c) => { return c.map(x => x.toFixed(precision)).join(' '); };
+        const ringWKT = (r) => { return r.map(pairWKT).join(', '); };
+        const ringsWKT = (r) => { return r.map(ringWKT).map(wrapParens).join(', '); };
+        const multiRingsWKT = (r) => { return r.map(ringsWKT).map(wrapParens).join(', '); };
+
+        switch (gj.type) {
+        case 'Point':
+            return 'POINT (' + pairWKT(gj.coordinates) + ')';
+        case 'LineString':
+            return 'LINESTRING (' + ringWKT(gj.coordinates) + ')';
+        case 'Polygon':
+            return 'POLYGON (' + ringsWKT(gj.coordinates) + ')';
+        case 'MultiPoint':
+            return 'MULTIPOINT (' + ringWKT(gj.coordinates) + ')';
+        case 'MultiPolygon':
+            return 'MULTIPOLYGON (' + multiRingsWKT(gj.coordinates) + ')';
+        case 'MultiLineString':
+            return 'MULTILINESTRING (' + ringsWKT(gj.coordinates) + ')';
+        case 'GeometryCollection':
+            return 'GEOMETRYCOLLECTION (' + gj.geometries.map(VectorLayerUtils.geoJSONGeomToWkt).join(', ') + ')';
+        default:
+            throw new Error('Invalid geometry object');
         }
     },
     kmlToGeoJSON(kml) {

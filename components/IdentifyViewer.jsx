@@ -10,7 +10,6 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import FileSaver from 'file-saver';
-import {stringify} from 'wellknown';
 import ReactHtmlParser from 'react-html-parser';
 import {convertNodeToElement} from 'react-html-parser';
 import clone from 'clone';
@@ -22,6 +21,7 @@ import {zoomToExtent} from '../actions/map';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import JSZip from 'jszip';
 import './style/IdentifyViewer.css';
@@ -200,7 +200,7 @@ class IdentifyViewer extends React.Component {
                         }
                     });
                     if (feature.geometry) {
-                        csv += '\t"geometry"\t"' + stringify(feature.geometry) + '"\n';
+                        csv += '\t"geometry"\t"' + VectorLayerUtils.geoJSONGeomToWkt(feature.geometry) + '"\n';
                     }
                 });
                 csv += "\n";

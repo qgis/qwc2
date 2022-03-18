@@ -11,7 +11,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
-import {stringify} from 'wellknown';
 import {LayerRole, addMarker, removeMarker, removeLayer} from '../actions/layers';
 import {changeSelectionState} from '../actions/selection';
 import IdentifyViewer from '../components/IdentifyViewer';
@@ -19,6 +18,7 @@ import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 class Identify extends React.Component {
     static propTypes = {
@@ -145,7 +145,7 @@ class Identify extends React.Component {
         center[0] /= poly.length;
         center[1] /= poly.length;
 
-        const filter = stringify(geometry);
+        const filter = VectorLayerUtils.geoJSONGeomToWkt(geometry);
         let pendingRequests = 0;
         const params = {...this.props.params};
         if (this.props.params.region_feature_count) {
