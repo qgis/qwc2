@@ -343,7 +343,7 @@ const ServiceLayerUtils = {
             for (const layerConfig of layerConfigs) {
                 let result = null;
                 if (type === "wms") {
-                    result = ServiceLayerUtils.getWMSLayers(response.data, url);
+                    result = ServiceLayerUtils.getWMSLayers(response.data, url, true);
                 } else if (type === "wfs") {
                     result = ServiceLayerUtils.getWFSLayers(response.data);
                 } else if (type === "wmts") {
