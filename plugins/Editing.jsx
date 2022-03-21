@@ -500,10 +500,11 @@ class Editing extends React.Component {
                     value = null;
                 }
                 const parts = name.split("__");
-                if (parts.length === 3) {
+                if (parts.length >= 3) {
+                    // Usually <table>__<field>__<index>, but <field> might also contain __ (i.e. upload__user)
                     const table = parts[0];
-                    const field = parts[1];
-                    const index = parseInt(parts[2], 10);
+                    const field = parts.slice(1, parts.length - 1).join("__");
+                    const index = parseInt(parts[parts.length - 1], 10);
                     // relationValues for table must exist as rows are either pre-existing or were added
                     relationValues[table].records[index][table + "__" + field] = value;
                     if (element.type === "file" && element.files.length > 0) {
