@@ -100,10 +100,11 @@ const ServiceLayerUtils = {
         const capabilities = wmsFormat.read(capabilitiesXml);
         const calledUrlParts = url.parse(calledServiceUrl, true);
         // Preserve parameters (i.e. MAP) in calledServiceUrl
-        Object.keys(calledUrlParts.query).filter(x => ["service", "version", "request"].includes(x.toLowerCase())).forEach(key => {
-            delete calledUrlParts.query[key];
-        });
+        const baseParams = Object.keys(calledUrlParts.query).filter(key => {
+            return !["service", "version", "request"].includes(key.toLowerCase());
+        }).reduce((res, key) => ({...res, [key]: calledUrlParts.query[key]}), {});
         delete calledUrlParts.search;
+        delete calledUrlParts.query;
         calledServiceUrl = url.format(calledUrlParts);
 
         const topLayer = capabilities.Capability.Layer;
@@ -141,13 +142,13 @@ const ServiceLayerUtils = {
         }
         const version = capabilities.version;
         if (!topLayer.Layer || asGroup) {
-            return [this.getWMSLayerParams(topLayer, topLayer.CRS, getMapUrl, calledUrlParts, calledServiceUrl, version, featureInfoUrl, infoFormats)].filter(entry => entry);
+            return [this.getWMSLayerParams(topLayer, topLayer.CRS, getMapUrl, calledUrlParts, baseParams, version, featureInfoUrl, infoFormats)].filter(entry => entry);
         } else {
-            const entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, getMapUrl, calledUrlParts, calledServiceUrl, version, featureInfoUrl, infoFormats)).filter(entry => entry);
+            const entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, getMapUrl, calledUrlParts, baseParams, version, featureInfoUrl, infoFormats)).filter(entry => entry);
             return entries.sort((a, b) => strcmp(a.title, b.title));
         }
     },
-    getWMSLayerParams(layer, parentCrs, getMapUrl, calledUrlParts, calledServiceUrl, version, featureInfoUrl, infoFormats, groupbbox = null) {
+    getWMSLayerParams(layer, parentCrs, getMapUrl, calledUrlParts, baseParams, version, featureInfoUrl, infoFormats, groupbbox = null) {
         let supportedCrs = layer.CRS;
         if (isEmpty(supportedCrs)) {
             supportedCrs = [...parentCrs];
@@ -157,7 +158,7 @@ const ServiceLayerUtils = {
         let sublayers = [];
         const sublayerbounds = {};
         if (!isEmpty(layer.Layer)) {
-            sublayers = layer.Layer.map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, getMapUrl, calledUrlParts, calledServiceUrl, version, featureInfoUrl, infoFormats, sublayerbounds)).filter(entry => entry);
+            sublayers = layer.Layer.map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, getMapUrl, calledUrlParts, baseParams, version, featureInfoUrl, infoFormats, sublayerbounds)).filter(entry => entry);
         }
         let bbox = null;
         if (isEmpty(layer.BoundingBox)) {
@@ -197,6 +198,7 @@ const ServiceLayerUtils = {
             title: layer.Title,
             abstract: layer.Abstract,
             attribution: layer.Attribution,
+            baseParams: baseParams,
             legendUrl: legendUrl,
             url: getMapUrl,
             version: version,
@@ -355,6 +357,7 @@ const ServiceLayerUtils = {
                         opacity: layerConfig.opacity,
                         visibility: layerConfig.visibility,
                         role: LayerRole.USERLAYER,
+                        baseParams: {...layer.baseParams, ...layerConfig.params},
                         sublayers: null
                     };
                     callback(layerConfig.id, layer);

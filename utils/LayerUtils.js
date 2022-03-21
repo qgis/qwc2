@@ -95,7 +95,8 @@ const LayerUtils = {
             id: id,
             name: layerConfig.name,
             opacity: layerConfig.opacity,
-            visibility: layerConfig.visibility
+            visibility: layerConfig.visibility,
+            params: layerConfig.params
         });
         return LayerUtils.explodeLayers([{
             id: id,
@@ -139,20 +140,12 @@ const LayerUtils = {
         }
     },
     buildWMSLayerParams(layer) {
-        // Handle urls with extra params (like MAP etc)
-        const query = url.parse(layer.url, true).query;
-        const baseParams = Object.keys(query).filter(x => x && !["service", "version", "request"].includes(x.toLowerCase())).reduce((res, key) => ({
-            ...res,
-            [key.toUpperCase()]: query[key]
-        }), {});
-
-        const params = Object.entries(layer.params || {}).reduce((res, [key, value]) => ({[key.toUpperCase()]: value}), {});
+        const params = Object.entries(layer.params || {}).reduce((res, [key, value]) => ({...res, [key]: value}), {});
 
         if (!Array.isArray(layer.sublayers)) {
             return {
                 params: {
-                    ...baseParams,
-                    ...params,
+                    ...layer.baseParams,
                     LAYERS: params.LAYERS || layer.name,
                     OPACITIES: params.OPACITIES || ("" + (layer.opacity !== undefined ? layer.opacity : 255)),
                     STYLES: params.STYLES || "",
@@ -178,8 +171,7 @@ const LayerUtils = {
             styles = indices.map(idx => styles[idx]);
         }
         const newParams = {
-            ...baseParams,
-            ...params,
+            ...layer.baseParams,
             LAYERS: layerNames.join(","),
             OPACITIES: opacities.join(","),
             STYLES: styles.join(","),
@@ -213,7 +205,8 @@ const LayerUtils = {
             } else if (layer.role === LayerRole.USERLAYER && layer.type === "wms") {
                 const sublayernames = [];
                 LayerUtils.collectWMSSublayerParams(layer, sublayernames, opacities, styles, queryable, visibilities, layer.visibility);
-                layernames.push(...sublayernames.map(name => "wms:" + layer.url + "#" + name));
+                const options = Object.entries(layer.baseParams).map(([key, value]) => encodeURIComponent(key) + "=" + encodeURIComponent(value)).join("&");
+                layernames.push(...sublayernames.map(name => "wms:" + layer.url + "#" + name + "?" + options));
             } else if (layer.role === LayerRole.USERLAYER && (layer.type === "wfs" || layer.type === "wmts")) {
                 layernames.push(layer.type + ':' + (layer.capabilitiesUrl || layer.url) + "#" + layer.name);
                 opacities.push(layer.opacity);
@@ -252,6 +245,7 @@ const LayerUtils = {
         let opacity = 255;
         let visibility = true;
         let tristate = false;
+        let params = {};
         if (entry.endsWith('!')) {
             visibility = false;
             entry = entry.slice(0, -1);
@@ -270,11 +264,18 @@ const LayerUtils = {
             type = match[1];
             layerUrl = match[2];
             name = match[3];
+            const questionPos = name.indexOf('?');
+            if (questionPos !== -1) {
+                params = name.slice(questionPos + 1).split('&').map(x => x.split('=')).reduce((res, cur) => (
+                    {...res, [decodeURIComponent(cur[0])]: decodeURIComponent(cur[1])}
+                ), {});
+                name = name.slice(0, questionPos);
+            }
         } else if (name.startsWith('sep:')) {
             type = 'separator';
             name = name.slice(4);
         }
-        return {id, type, url: layerUrl, name, opacity, visibility, tristate};
+        return {id, type, url: layerUrl, name, opacity, visibility, tristate, params};
     },
     pathEqualOrBelow(parent, child) {
         return isEqual(child.slice(0, parent.length), parent);
@@ -686,6 +687,9 @@ const LayerUtils = {
                     params[identifier + ":styles"] = "";
                     params[identifier + ":dpiMode"] = "7";
                     params[identifier + ":contextualWMSLegend"] = "0";
+                    Object.keys(layer.baseParams || {}).forEach(key => {
+                        params[identifier + ":" + key] = layer.baseParams[key];
+                    });
                 }
             }
         }
@@ -729,6 +733,9 @@ const LayerUtils = {
                             params[identifier + ":styles"] = "";
                             params[identifier + ":dpiMode"] = "7";
                             params[identifier + ":contextualWMSLegend"] = "0";
+                            Object.keys(layer.baseParams || {}).forEach(key => {
+                                params[identifier + ":" + key] = layer.baseParams[key];
+                            });
                         }
                     }
                 });
