@@ -141,10 +141,15 @@ const LayerUtils = {
     },
     buildWMSLayerParams(layer) {
         const params = Object.entries(layer.params || {}).reduce((res, [key, value]) => ({...res, [key]: value}), {});
+        const urlQuery = url.parse(layer.url, true).query;
+        const urlParams = Object.keys(urlQuery).filter(key => {
+            return !["service", "version", "request"].includes(key.toLowerCase());
+        }).reduce((res, key) => ({...res, [key]: urlQuery[key]}), {});
 
         if (!Array.isArray(layer.sublayers)) {
             return {
                 params: {
+                    ...urlParams,
                     ...layer.baseParams,
                     LAYERS: params.LAYERS || layer.name,
                     OPACITIES: params.OPACITIES || ("" + (layer.opacity !== undefined ? layer.opacity : 255)),
@@ -171,6 +176,7 @@ const LayerUtils = {
             styles = indices.map(idx => styles[idx]);
         }
         const newParams = {
+            ...urlParams,
             ...layer.baseParams,
             LAYERS: layerNames.join(","),
             OPACITIES: opacities.join(","),
