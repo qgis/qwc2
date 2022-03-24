@@ -212,7 +212,7 @@ const LayerUtils = {
                 const sublayernames = [];
                 LayerUtils.collectWMSSublayerParams(layer, sublayernames, opacities, styles, queryable, visibilities, layer.visibility);
                 const options = Object.entries(layer.baseParams || {}).map(([key, value]) => encodeURIComponent(key) + "=" + encodeURIComponent(value)).join("&");
-                layernames.push(...sublayernames.map(name => "wms:" + layer.url + "#" + name + "?" + options));
+                layernames.push(...sublayernames.map(name => "wms:" + layer.url + "#" + name + (options ? "?" + options : "")));
             } else if (layer.role === LayerRole.USERLAYER && (layer.type === "wfs" || layer.type === "wmts")) {
                 layernames.push(layer.type + ':' + (layer.capabilitiesUrl || layer.url) + "#" + layer.name);
                 opacities.push(layer.opacity);
