@@ -299,11 +299,13 @@
       "restrictedthemeinfo": "You are not permitted to view the theme or not logged in"
     },
     "timemanager": {
-      "animspeed": "Animation speed",
+      "animationinterval": "Animation interval",
       "notemporaldata": "No temporal layers exist in the map",
-      "persecond": "per second",
       "play": "Play",
       "rewind": "Rewind",
+      "stepback": "Step back",
+      "stepfwd": "Step forward",
+      "stepsize": "Step size",
       "stop": "Stop",
       "title": "Time manager",
       "toggle": "Temporal navigation",

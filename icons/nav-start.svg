@@ -5,7 +5,7 @@
    height="24"
    viewBox="0 0 24 24"
    id="svg6"
-   sodipodi:docname="nav-left.svg"
+   sodipodi:docname="nav-start.svg"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -64,8 +64,7 @@
       <path
          id="rect847"
          style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stop-color:#000000"
-         d="m 4.0246728,23 v -8.849609 l 8.6855472,8.75 2.830078,-2.830078 L 8.5402978,13 15.540298,5.9296881 12.71022,3.0996091 4.0246728,11.849609 V 3.0000001 H 0.02467275 V 23 Z"
-         sodipodi:nodetypes="cccccccccccc" />
+         d="m -0.2175145,23 v -8.849609 l 8.685547,8.75 L 11.298111,20.070313 4.2981105,13 11.298111,5.9296881 8.4680325,3.0996091 -0.2175145,11.849609 V 3.0000001 h -4 V 23 Z M 16.95436,22.900391 19.782485,20.070313 12.712173,13 19.782485,5.9296881 16.95436,3.0996091 7.0539695,13 Z" />
       <g
          id="g1126"
          transform="rotate(-45,6.9393399,12.62132)" />

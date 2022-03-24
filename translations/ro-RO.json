@@ -299,11 +299,13 @@
       "restrictedthemeinfo": "Nu ai permisiunea de a accesa tema sau nu ești logat."
     },
     "timemanager": {
-      "animspeed": "",
+      "animationinterval": "",
       "notemporaldata": "",
-      "persecond": "",
       "play": "",
       "rewind": "",
+      "stepback": "",
+      "stepfwd": "",
+      "stepsize": "",
       "stop": "",
       "title": "",
       "toggle": "",

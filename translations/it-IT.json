@@ -299,11 +299,13 @@
       "restrictedthemeinfo": "Non sei autorizzato a visualizzare il tema oppure non hai effettuato il login"
     },
     "timemanager": {
-      "animspeed": "Velocità animazione",
+      "animationinterval": "Intervallo animazione",
       "notemporaldata": "Nessun layer con dimensioni temporali nella cartina",
-      "persecond": "per secondo",
       "play": "Avvia animazione",
       "rewind": "Resetta animazione",
+      "stepback": "Passo indietro",
+      "stepfwd": "Passo avanti",
+      "stepsize": "Passo",
       "stop": "Ferma animazione",
       "title": "Linea temporale",
       "toggle": "Abilità gesitone temporale",

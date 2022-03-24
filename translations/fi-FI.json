@@ -299,11 +299,13 @@
       "restrictedthemeinfo": "Teeman tarkasteluun ei ole oikeuksia tai et ole kirjautunut sisään"
     },
     "timemanager": {
-      "animspeed": "",
+      "animationinterval": "",
       "notemporaldata": "",
-      "persecond": "",
       "play": "",
       "rewind": "",
+      "stepback": "",
+      "stepfwd": "",
+      "stepsize": "",
       "stop": "",
       "title": "",
       "toggle": "",

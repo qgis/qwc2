@@ -299,11 +299,13 @@
       "restrictedthemeinfo": "Sie sind nicht berechtigt oder sind nicht angemeldet"
     },
     "timemanager": {
-      "animspeed": "Animationsgeschwindigkeit",
+      "animationinterval": "Animationsintervall",
       "notemporaldata": "Keine Ebenen in der Karte sind mit Zeitinformationen versehen",
-      "persecond": "pro Sekunde",
       "play": "Starten",
       "rewind": "Zurücksetzten",
+      "stepback": "Schritt zurück",
+      "stepfwd": "Schritt vorwärts",
+      "stepsize": "Schritt",
       "stop": "Stoppen",
       "title": "Zeitleiste",
       "toggle": "Zeitsteuerung aktivieren",

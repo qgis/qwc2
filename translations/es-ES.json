@@ -299,11 +299,13 @@
       "restrictedthemeinfo": "Ud. no tiene permitido ver el tema o no está conectado"
     },
     "timemanager": {
-      "animspeed": "",
+      "animationinterval": "",
       "notemporaldata": "",
-      "persecond": "",
       "play": "",
       "rewind": "",
+      "stepback": "",
+      "stepfwd": "",
+      "stepsize": "",
       "stop": "",
       "title": "",
       "toggle": "",

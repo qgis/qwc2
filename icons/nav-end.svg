@@ -5,7 +5,7 @@
    height="24"
    viewBox="0 0 24 24"
    id="svg6"
-   sodipodi:docname="rewind.svg"
+   sodipodi:docname="nav-end.svg"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -37,36 +37,38 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1600"
-     inkscape:window-height="837"
+     inkscape:window-width="1920"
+     inkscape:window-height="1171"
      id="namedview8"
      showgrid="true"
-     inkscape:zoom="14.75"
-     inkscape:cx="10.542373"
-     inkscape:cy="14.745763"
-     inkscape:window-x="0"
+     inkscape:zoom="29.5"
+     inkscape:cx="13.050847"
+     inkscape:cy="8.6271186"
+     inkscape:window-x="1600"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg6"
+     inkscape:current-layer="g1132"
      inkscape:document-rotation="0"
      inkscape:pagecheckerboard="0">
     <inkscape:grid
        type="xygrid"
-       id="grid823" />
+       id="grid908" />
   </sodipodi:namedview>
   <title
      id="title2">uniE080</title>
-  <path
-     d="m 7.00945,12 10.2851,10.2851 3.696,-3.696 -6.5891,-6.5891 6.5891,-6.5891 -3.696,-3.696 z"
-     id="path4"
-     inkscape:connector-curvature="0"
-     style="stroke-width:0.7" />
-  <rect
-     style="fill:#000000;stroke:none;stroke-width:2;stop-color:#000000;fill-opacity:1"
-     id="rect847"
-     width="5"
-     height="20"
-     x="2"
-     y="2"
-     ry="0" />
+  <g
+     id="g3356"
+     transform="translate(4.2175145,-1.0000001)">
+    <g
+       id="g1132">
+      <path
+         id="rect847"
+         style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stop-color:#000000"
+         d="M 20 2 L 20 10.849609 L 11.314453 2.0996094 L 8.484375 4.9296875 L 15.484375 12 L 8.484375 19.070312 L 11.314453 21.900391 L 20 13.150391 L 20 22 L 24 22 L 24 2 L 20 2 z M 2.828125 2.0996094 L 0 4.9296875 L 7.0703125 12 L 0 19.070312 L 2.828125 21.900391 L 12.728516 12 L 2.828125 2.0996094 z "
+         transform="translate(-4.2175145,1.0000001)" />
+      <g
+         id="g1126"
+         transform="rotate(-45,6.9393399,12.62132)" />
+    </g>
+  </g>
 </svg>

@@ -35,8 +35,9 @@ class TimeManager extends React.Component {
     }
     static defaultState = {
         animationActive: false,
-        animationSpeed: 1,
-        animationSpeedUnit: 'd', // 1 day
+        animationInterval: 1,
+        stepSize: 1,
+        stepSizeUnit: 'd', // 1 day
         timeEnabled: false,
         timeData: {
             layerDimensions: {},
@@ -51,8 +52,11 @@ class TimeManager extends React.Component {
         this.animationTimer = null;
     }
     componentDidUpdate(prevProps, prevState) {
-        if (!this.props.active && prevProps.active) {
+        if (!this.state.visible && prevState.visible) {
             this.setState(TimeManager.defaultState);
+        }
+        if (!prevProps.active && this.props.active) {
+            this.setState({visible: true});
         }
         if (this.props.layerUUIds !== prevProps.layerUUIds) {
             const timeData = {
@@ -72,6 +76,9 @@ class TimeManager extends React.Component {
         }
         if (this.state.currentTimestamp !== prevState.currentTimestamp || this.state.timeEnabled !== prevState.timeEnabled) {
             this.updateLayerTimeDimensions(this.state.timeData.layerDimensions, this.state.currentTimestamp);
+        }
+        if (this.state.animationActive && this.state.animInterval !== prevState.animInterval) {
+            this.stopAnimation();
         }
     }
     render() {
@@ -95,9 +102,11 @@ class TimeManager extends React.Component {
     }
     renderBody = (timeValues) => {
         const timeButtons = [
-            {key: "rewind", tooltip: LocaleUtils.trmsg("timemanager.rewind"), icon: "rewind"},
+            {key: "rewind", tooltip: LocaleUtils.trmsg("timemanager.rewind"), icon: "nav-start"},
+            {key: "prev", tooltip: LocaleUtils.trmsg("timemanager.stepback"), icon: "nav-left"},
             {key: "stop", tooltip: LocaleUtils.trmsg("timemanager.stop"), icon: "square", disabled: !this.state.animationActive},
-            {key: "play", tooltip: LocaleUtils.trmsg("timemanager.play"), icon: "triangle-right", disabled: this.state.animationActive}
+            {key: "play", tooltip: LocaleUtils.trmsg("timemanager.play"), icon: "triangle-right", disabled: this.state.animationActive},
+            {key: "next", tooltip: LocaleUtils.trmsg("timemanager.stepfwd"), icon: "nav-right"}
         ];
         // Time span, in seconds
         const deltaT = timeValues[timeValues.length - 1].diff(timeValues[0]);
@@ -111,19 +120,30 @@ class TimeManager extends React.Component {
 
         const options = (
             <div className="time-manager-options">
-                <div>
-                    <span>{LocaleUtils.tr("timemanager.animspeed")}:</span>
-                    <NumberInput max={100} min={1} onChange={value => this.setState({animationSpeed: value})} value={this.state.animationSpeed} />
-                    <select onChange={ev => this.setState({animationSpeedUnit: ev.target.value})} value={this.state.animationSpeedUnit}>
-                        <option key="s" value="s">{LocaleUtils.tr("timemanager.unit.seconds")}</option>
-                        <option key="m" value="m">{LocaleUtils.tr("timemanager.unit.minutes")}</option>
-                        <option key="h" value="h">{LocaleUtils.tr("timemanager.unit.hours")}</option>
-                        <option key="d" value="d">{LocaleUtils.tr("timemanager.unit.days")}</option>
-                        <option key="M" value="M">{LocaleUtils.tr("timemanager.unit.months")}</option>
-                        <option key="y" value="y">{LocaleUtils.tr("timemanager.unit.years")}</option>
-                    </select>
-                    <span>{LocaleUtils.tr("timemanager.persecond")}</span>
-                </div>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>{LocaleUtils.tr("timemanager.stepsize")}:</td>
+                            <td>
+                                <NumberInput max={100} min={1} onChange={value => this.setState({stepSize: value})} value={this.state.stepSize} />
+                                <select onChange={ev => this.setState({stepSizeUnit: ev.target.value})} value={this.state.stepSizeUnit}>
+                                    <option key="s" value="s">{LocaleUtils.tr("timemanager.unit.seconds")}</option>
+                                    <option key="m" value="m">{LocaleUtils.tr("timemanager.unit.minutes")}</option>
+                                    <option key="h" value="h">{LocaleUtils.tr("timemanager.unit.hours")}</option>
+                                    <option key="d" value="d">{LocaleUtils.tr("timemanager.unit.days")}</option>
+                                    <option key="M" value="M">{LocaleUtils.tr("timemanager.unit.months")}</option>
+                                    <option key="y" value="y">{LocaleUtils.tr("timemanager.unit.years")}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{LocaleUtils.tr("timemanager.animationinterval")}:</td>
+                            <td>
+                                <NumberInput max={10} min={1} onChange={value => this.setState({animationInterval: value})} value={this.state.animationInterval} />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         );
 
@@ -177,26 +197,31 @@ class TimeManager extends React.Component {
         this.setState({currentTimestamp: currentTimestamp});
     }
     animationButtonClicked = (action) => {
+        const timeValues = this.state.timeData.values;
+        this.stopAnimation();
         if (action === "rewind") {
-            clearInterval(this.animationTimer);
-            this.animationTimer = null;
-            const timeValues = this.state.timeData.values;
             this.setState({currentTimestamp: (+timeValues[0]) || 0, animationActive: false});
+        } else if (action === "prev") {
+            const day = dayjs(this.state.currentTimestamp);
+            const newday = day.subtract(this.state.stepSize, this.state.stepSizeUnit);
+            this.setState({currentTimestamp: +Math.max(newday, timeValues[0])});
+        } else if (action === "next") {
+            const day = dayjs(this.state.currentTimestamp);
+            const newday = day.add(this.state.stepSize, this.state.stepSizeUnit);
+            this.setState({currentTimestamp: +Math.min(newday, timeValues[timeValues.length - 1])});
         } else if (action === "stop") {
-            clearInterval(this.animationTimer);
-            this.animationTimer = null;
-            this.setState({animationActive: false});
+            /* Already stopped above, pass */
         } else if (action === "play") {
             this.animationTimer = setInterval(() => {
                 this.advanceAnimation();
-            }, 1000);
+            }, 1000 * this.state.animationInterval);
             this.setState({animationActive: true});
         }
     }
     advanceAnimation = () => {
         const timeValues = this.state.timeData.values;
         const day = dayjs(this.state.currentTimestamp);
-        const newday = day.add(this.state.animationSpeed, this.state.animationSpeedUnit);
+        const newday = day.add(this.state.stepSize, this.state.stepSizeUnit);
         const lastday = timeValues[timeValues.length - 1];
         if (newday > lastday) {
             this.setState({currentTimestamp: +lastday, animationActive: false});
@@ -204,6 +229,13 @@ class TimeManager extends React.Component {
             this.animationTimer = null;
         } else {
             this.setState({currentTimestamp: +newday});
+        }
+    }
+    stopAnimation = () => {
+        if (this.state.animationActive) {
+            clearInterval(this.animationTimer);
+            this.animationTimer = null;
+            this.setState({animationActive: false});
         }
     }
     onClose = () => {

@@ -42,12 +42,8 @@ div.time-manager-options {
     z-index: 2;
 }
 
-div.time-manager-options > div {
+div.time-manager-options td {
     white-space: nowrap;
-}
-
-div.time-manager-options > div > * {
-    margin: 0.125em;
 }
 
 div.time-manager-timeline {
