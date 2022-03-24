@@ -754,12 +754,14 @@ const LayerUtils = {
     },
     getTimeDimensionValues(layer) {
         const result = {names: new Set(), values: new Set()};
-        (layer.dimensions || []).forEach(dimension => {
-            if (dimension.units === "ISO8601") {
-                result.names.add(dimension.name);
-                dimension.value.split(/,\s+/).filter(x => x).forEach(x => result.values.add(x));
-            }
-        });
+        if (layer.visibility) {
+            (layer.dimensions || []).forEach(dimension => {
+                if (dimension.units === "ISO8601") {
+                    result.names.add(dimension.name);
+                    dimension.value.split(/,\s+/).filter(x => x).forEach(x => result.values.add(x));
+                }
+            });
+        }
         (layer.sublayers || []).forEach(sublayer => {
             const sublayerResult = LayerUtils.getTimeDimensionValues(sublayer);
             sublayerResult.names.forEach(x => result.names.add(x));

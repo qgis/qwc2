@@ -28,7 +28,7 @@ dayjs.extend(utc);
 class TimeManager extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
-        layerUUIds: PropTypes.array,
+        layerUUIds: PropTypes.object,
         layers: PropTypes.array,
         setCurrentTask: PropTypes.func,
         setLayerDimensions: PropTypes.func
@@ -60,6 +60,7 @@ class TimeManager extends React.Component {
             this.setState({visible: true});
         }
         if (this.props.layerUUIds !== prevProps.layerUUIds) {
+            this.stopAnimation();
             const timeData = {
                 layerDimensions: {},
                 values: new Set()

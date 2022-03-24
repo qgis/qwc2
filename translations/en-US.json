@@ -300,7 +300,7 @@
     },
     "timemanager": {
       "animationinterval": "Animation interval",
-      "notemporaldata": "No temporal layers exist in the map",
+      "notemporaldata": "No temporal layers are visible in the map.",
       "play": "Play",
       "rewind": "Rewind",
       "stepback": "Step back",

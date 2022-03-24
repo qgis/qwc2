@@ -300,7 +300,7 @@
     },
     "timemanager": {
       "animationinterval": "Animationsintervall",
-      "notemporaldata": "Keine Ebenen in der Karte sind mit Zeitinformationen versehen",
+      "notemporaldata": "Keine sichtbare Ebenen in der Karte sind mit Zeitinformationen versehen.",
       "play": "Starten",
       "rewind": "Zurücksetzten",
       "stepback": "Schritt zurück",
