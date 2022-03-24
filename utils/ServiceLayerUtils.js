@@ -113,7 +113,7 @@ const ServiceLayerUtils = {
         try {
             const getMapParts = url.parse(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetMap.DCPType).HTTP.Get.OnlineResource);
             getMapParts.host = calledUrlParts.host;
-            getMapParts.scheme = calledUrlParts.scheme;
+            getMapParts.protocol = calledUrlParts.protocol;
             getMapUrl = url.format(getMapParts);
         } catch (e) {
             getMapUrl = calledServiceUrl;
@@ -122,7 +122,7 @@ const ServiceLayerUtils = {
         try {
             const featureInfoParts = url.parse(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType).HTTP.Get.OnlineResource);
             featureInfoParts.host = calledUrlParts.host;
-            featureInfoParts.scheme = calledUrlParts.scheme;
+            featureInfoParts.protocol = calledUrlParts.protocol;
             featureInfoUrl = url.format(featureInfoParts);
         } catch (e) {
             featureInfoUrl = calledServiceUrl;
@@ -187,7 +187,7 @@ const ServiceLayerUtils = {
         try {
             const legendParts = url.parse(layer.Style[0].LegendURL[0].OnlineResource);
             legendParts.host = calledUrlParts.host;
-            legendParts.scheme = calledUrlParts.scheme;
+            legendParts.protocol = calledUrlParts.protocol;
             legendUrl = url.format(legendParts);
         } catch (e) {
             /* Pass */
