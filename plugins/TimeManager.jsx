@@ -44,7 +44,8 @@ class TimeManager extends React.Component {
             values: []
         },
         currentTimestamp: "",
-        settingsPopup: false
+        settingsPopup: false,
+        visible: false
     }
     constructor(props) {
         super(props);
@@ -82,7 +83,7 @@ class TimeManager extends React.Component {
         }
     }
     render() {
-        if (!this.props.active) {
+        if (!this.state.visible) {
             return null;
         }
         const timeValues = this.state.timeData.values;
@@ -240,7 +241,7 @@ class TimeManager extends React.Component {
     }
     onClose = () => {
         this.toggleTimeEnabled(false);
-        this.props.setCurrentTask(null);
+        this.setState({visible: false});
     }
     updateLayerTimeDimensions = (timeDimensions, currentTimestamp) => {
         const currentTime = this.state.timeEnabled ? new Date(currentTimestamp).toISOString() : undefined;
