@@ -203,12 +203,10 @@ class TimeManager extends React.Component {
         if (action === "rewind") {
             this.setState({currentTimestamp: (+timeValues[0]) || 0, animationActive: false});
         } else if (action === "prev") {
-            const day = dayjs(this.state.currentTimestamp);
-            const newday = day.subtract(this.state.stepSize, this.state.stepSizeUnit);
+            const newday = this.step(-1);
             this.setState({currentTimestamp: +Math.max(newday, timeValues[0])});
         } else if (action === "next") {
-            const day = dayjs(this.state.currentTimestamp);
-            const newday = day.add(this.state.stepSize, this.state.stepSizeUnit);
+            const newday = this.step(+1);
             this.setState({currentTimestamp: +Math.min(newday, timeValues[timeValues.length - 1])});
         } else if (action === "stop") {
             /* Already stopped above, pass */
@@ -221,8 +219,7 @@ class TimeManager extends React.Component {
     }
     advanceAnimation = () => {
         const timeValues = this.state.timeData.values;
-        const day = dayjs(this.state.currentTimestamp);
-        const newday = day.add(this.state.stepSize, this.state.stepSizeUnit);
+        const newday = this.step(+1);
         const lastday = timeValues[timeValues.length - 1];
         if (newday > lastday) {
             this.setState({currentTimestamp: +lastday, animationActive: false});
@@ -242,6 +239,22 @@ class TimeManager extends React.Component {
     onClose = () => {
         this.toggleTimeEnabled(false);
         this.setState({visible: false});
+    }
+    step = (direction) => {
+        const day = dayjs(this.state.currentTimestamp);
+        const newday = day.add(direction * this.state.stepSize, this.state.stepSizeUnit);
+        if (this.state.stepSizeUnit === "m") {
+            return newday.second(0);
+        } else if (this.state.stepSizeUnit === "h") {
+            return newday.second(0).minute(0);
+        } else if (this.state.stepSizeUnit === "d") {
+            return newday.second(0).minute(0).hour(0);
+        } else if (this.state.stepSizeUnit === "M") {
+            return newday.second(0).minute(0).hour(0).date(1);
+        } else if (this.state.stepSizeUnit === "y") {
+            return newday.second(0).minute(0).hour(0).date(1).month(0);
+        }
+        return newday;
     }
     updateLayerTimeDimensions = (timeDimensions, currentTimestamp) => {
         const currentTime = this.state.timeEnabled ? new Date(currentTimestamp).toISOString() : undefined;
