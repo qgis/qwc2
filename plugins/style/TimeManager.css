@@ -79,7 +79,7 @@ div.time-manager-cursor-label {
     padding: 0.25em;
     background-color: white;
     border: 1px solid @item_border@;
-    z-index: 2;
+    z-index: 1;
 }
 
 div.time-manager-ticks {
