@@ -32,6 +32,9 @@ function buildErrMsg(err) {
         if (!isEmpty(err.response.data.validation_errors)) {
             message += ":\n - " + err.response.data.validation_errors.join("\n - ");
         }
+        if (!isEmpty(err.response.data.attachment_errors)) {
+            message += ":\n - " + err.response.data.attachment_errors.join("\n - ");
+        }
     } else if (err.response && err.response.statusText) {
         message += ": " + err.response.statusText;
     }
