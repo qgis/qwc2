@@ -686,16 +686,17 @@ const LayerUtils = {
                     params.LAYERS.push("EXTERNAL_WMS:" + identifier);
                     params.OPACITIES.push(opacities[idx]);
                     params.COLORS.push("");
-                    params[identifier + ":url"] = layer.url;
+                    const query = Object.entries(layer.baseParams || {}).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`);
+                    if (layer.params.MAP) {
+                        query.push(`MAP=${encodeURIComponent(layer.params.MAP)}`);
+                    }
+                    params[identifier + ":url"] = ThemeUtils.fullUrl(layer.url) + (!isEmpty(query) ? `?${query.join('&')}` : "");
                     params[identifier + ":layers"] = names[idx];
                     params[identifier + ":format"] = "image/png";
                     params[identifier + ":crs"] = printCrs;
                     params[identifier + ":styles"] = "";
                     params[identifier + ":dpiMode"] = "7";
                     params[identifier + ":contextualWMSLegend"] = "0";
-                    Object.keys(layer.baseParams || {}).forEach(key => {
-                        params[identifier + ":" + key] = layer.baseParams[key];
-                    });
                 }
             }
         }
@@ -732,16 +733,17 @@ const LayerUtils = {
                             params.LAYERS.push("EXTERNAL_WMS:" + identifier);
                             params.OPACITIES.push(opacities[idx]);
                             params.COLORS.push("");
-                            params[identifier + ":url"] = ThemeUtils.fullUrl(layer.url) + (layer.params.MAP ? '?MAP=' + layer.params.MAP : '');
+                            const query = Object.entries(layer.baseParams || {}).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`);
+                            if (layer.params.MAP) {
+                                query.push(`MAP=${encodeURIComponent(layer.params.MAP)}`);
+                            }
+                            params[identifier + ":url"] = ThemeUtils.fullUrl(layer.url) + (!isEmpty(query) ? `?${query.join('&')}` : "");
                             params[identifier + ":layers"] = names[idx];
                             params[identifier + ":format"] = "image/png";
                             params[identifier + ":crs"] = printCrs;
                             params[identifier + ":styles"] = "";
                             params[identifier + ":dpiMode"] = "7";
                             params[identifier + ":contextualWMSLegend"] = "0";
-                            Object.keys(layer.baseParams || {}).forEach(key => {
-                                params[identifier + ":" + key] = layer.baseParams[key];
-                            });
                         }
                     }
                 });
