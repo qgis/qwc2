@@ -79,6 +79,7 @@ div.time-manager-cursor-label {
     padding: 0.25em;
     background-color: white;
     border: 1px solid @item_border@;
+    z-index: 2;
 }
 
 div.time-manager-ticks {
@@ -90,6 +91,10 @@ div.time-manager-ticks > div {
     flex: 1 1 auto;
     text-align: center;
     font-size: 75%;
+}
+
+div.time-manager-ticks > div > input {
+    border: 1px solid @item_border@;
 }
 
 div.time-manager-ticks > div:first-child {

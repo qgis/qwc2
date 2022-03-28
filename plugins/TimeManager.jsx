@@ -45,7 +45,9 @@ class TimeManager extends React.Component {
         },
         currentTimestamp: "",
         settingsPopup: false,
-        visible: false
+        visible: false,
+        startDate: null,
+        endDate: null
     }
     constructor(props) {
         super(props);
@@ -111,8 +113,8 @@ class TimeManager extends React.Component {
             {key: "next", tooltip: LocaleUtils.trmsg("timemanager.stepfwd"), icon: "nav-right"}
         ];
         // Time span, in seconds
-        const deltaT = timeValues[timeValues.length - 1].diff(timeValues[0]);
-        const perc = (dayjs(this.state.currentTimestamp).diff(timeValues[0]) / deltaT * 100).toFixed(2) + "%";
+        const deltaT = this.getEndTime().diff(this.getStartTime());
+        const perc = (dayjs(this.state.currentTimestamp).diff(this.getStartTime()) / deltaT * 100).toFixed(2) + "%";
         const cursorStyle = {
             left: perc
         };
@@ -173,8 +175,8 @@ class TimeManager extends React.Component {
                         </div>
                     ) : null}
                     <div className="time-manager-ticks">
-                        <div>{timeValues[0].format('YYYY-MM-DD')}</div>
-                        <div>{timeValues[timeValues.length - 1].format('YYYY-MM-DD')}</div>
+                        <div><input onChange={this.setStartTime} type="date" value={(this.state.startDate || timeValues[0]).format('YYYY-MM-DD')} /></div>
+                        <div><input onChange={this.setEndTime} type="date" value={(this.state.endDate || timeValues[timeValues.length - 1]).format('YYYY-MM-DD')} /></div>
                     </div>
                 </div>
             </div>
@@ -183,8 +185,7 @@ class TimeManager extends React.Component {
     toggleTimeEnabled = (enabled) => {
         clearInterval(this.animationTimer);
         this.animationTimer = null;
-        const timeValues = this.state.timeData.values;
-        this.setState({timeEnabled: enabled, currentTimestamp: (+timeValues[0]) || 0, animationActive: false});
+        this.setState({timeEnabled: enabled, currentTimestamp: (+this.getStartTime()) || 0, animationActive: false});
     }
     pickCurrentTimestamp = (ev) => {
         if (!this.state.timeEnabled) {
@@ -193,22 +194,20 @@ class TimeManager extends React.Component {
         const pos = ev.clientX;
         const rect = ev.currentTarget.getBoundingClientRect();
         const perc = (pos - rect.left) / rect.width;
-        const timeValues = this.state.timeData.values;
-        const deltaT = timeValues[timeValues.length - 1].diff(timeValues[0]);
-        const currentTimestamp = timeValues[0].add(perc * deltaT, 'ms');
+        const deltaT = this.getEndTime().diff(this.getStartTime());
+        const currentTimestamp = this.getStartTime().add(perc * deltaT, 'ms');
         this.setState({currentTimestamp: currentTimestamp});
     }
     animationButtonClicked = (action) => {
-        const timeValues = this.state.timeData.values;
         this.stopAnimation();
         if (action === "rewind") {
-            this.setState({currentTimestamp: (+timeValues[0]) || 0, animationActive: false});
+            this.setState({currentTimestamp: (+this.getStartTime()) || 0, animationActive: false});
         } else if (action === "prev") {
             const newday = this.step(-1);
-            this.setState({currentTimestamp: +Math.max(newday, timeValues[0])});
+            this.setState({currentTimestamp: +Math.max(newday, this.getStartTime())});
         } else if (action === "next") {
             const newday = this.step(+1);
-            this.setState({currentTimestamp: +Math.min(newday, timeValues[timeValues.length - 1])});
+            this.setState({currentTimestamp: +Math.min(newday, this.getEndTime())});
         } else if (action === "stop") {
             /* Already stopped above, pass */
         } else if (action === "play") {
@@ -219,9 +218,8 @@ class TimeManager extends React.Component {
         }
     }
     advanceAnimation = () => {
-        const timeValues = this.state.timeData.values;
         const newday = this.step(+1);
-        const lastday = timeValues[timeValues.length - 1];
+        const lastday = this.getEndTime();
         if (newday > lastday) {
             this.setState({currentTimestamp: +lastday, animationActive: false});
             clearInterval(this.animationTimer);
@@ -268,6 +266,26 @@ class TimeManager extends React.Component {
                 this.props.setLayerDimensions(layer.id, dimensions);
             }
         });
+    }
+    getStartTime = () => {
+        const date = this.state.startDate || this.state.timeData.values[0];
+        return date.hour(0).minute(0).second(0);
+    }
+    getEndTime = () => {
+        const date = (this.state.endDate || this.state.timeData.values[this.state.timeData.values.length - 1]);
+        return date.hour(23).minute(59).second(59);
+    }
+    setStartTime = (ev) => {
+        const date = (ev.target.value ? dayjs.utc(ev.target.value) : this.state.timeData.values[0]).hour(0).minute(0).second(0);
+        if (date < this.getEndTime()) {
+            this.setState({startDate: date});
+        }
+    }
+    setEndTime = (ev) => {
+        const date = (ev.target.value ? dayjs.utc(ev.target.value) : this.state.timeData.values[this.state.timeData.values.length - 1]).hour(23).minute(59).second(59);
+        if (date > this.getStartTime()) {
+            this.setState({endDate: date});
+        }
     }
 }
 
