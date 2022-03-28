@@ -548,12 +548,14 @@ class LayerTree extends React.Component {
     printLayerLegend = (layer, sublayer) => {
         let body = "";
         if (sublayer.sublayers) {
-            body = '<div class="legend-group">' +
-                   '<h3 class="legend-group-title">' + (sublayer.title || sublayer.name) + '</h3>' +
-                   '<div class="legend-group-body">' +
-                   sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer)).join("\n") +
-                   '</div>' +
-                   '</div>';
+            if (sublayer.visibility) {
+                body = '<div class="legend-group">' +
+                       '<h3 class="legend-group-title">' + (sublayer.title || sublayer.name) + '</h3>' +
+                       '<div class="legend-group-body">' +
+                       sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer)).join("\n") +
+                       '</div>' +
+                       '</div>';
+            }
         } else {
             const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
             body = request ? '<div class="legend-entry"><img src="' + request + '" /></div>' : "";
