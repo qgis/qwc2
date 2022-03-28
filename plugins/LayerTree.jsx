@@ -557,8 +557,10 @@ class LayerTree extends React.Component {
                        '</div>';
             }
         } else {
-            const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
-            body = request ? '<div class="legend-entry"><img src="' + request + '" /></div>' : "";
+            if (LayerUtils.layerScaleInRange(sublayer, this.props.mapScale)) {
+                const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
+                body = request ? '<div class="legend-entry"><img src="' + request + '" /></div>' : "";
+            }
         }
         return body;
     }
