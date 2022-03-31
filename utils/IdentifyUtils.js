@@ -9,6 +9,7 @@
 import isEmpty from 'lodash.isempty';
 import geojsonBbox from 'geojson-bounding-box';
 import ol from 'openlayers';
+import url from 'url';
 import {LayerRole} from '../actions/layers';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
@@ -17,8 +18,6 @@ import VectorLayerUtils from './VectorLayerUtils';
 
 
 function identifyRequestParams(layer, queryLayers, projection, params) {
-    const version = layer.version || "1.3.0";
-
     let format = 'text/plain';
     const infoFormats = layer.infoFormats || [];
     if (infoFormats.includes('text/xml') && (!layer.external || infoFormats.length === 1)) {
@@ -31,10 +30,11 @@ function identifyRequestParams(layer, queryLayers, projection, params) {
         format = 'application/vnd.ogc.gml';
     }
     return {
-        url: layer.featureInfoUrl.replace(/[?].*$/g, ''),
+        url: layer.featureInfoUrl.split("?")[0],
         params: {
+            ...url.parse(layer.featureInfoUrl,  true).query,
             service: 'WMS',
-            version: version,
+            version: layer.version,
             request: 'GetFeatureInfo',
             id: layer.id,
             layers: queryLayers,
@@ -45,7 +45,6 @@ function identifyRequestParams(layer, queryLayers, projection, params) {
             info_format: format,
             with_geometry: true,
             with_maptip: false,
-            map: layer.params.MAP,
             ...params
         }
     };

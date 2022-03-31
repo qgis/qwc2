@@ -257,7 +257,6 @@ class Print extends React.Component {
                         <input name="FORMAT" readOnly type={formvisibility} value="pdf" />
                         <input name="TRANSPARENT" readOnly type={formvisibility} value="true" />
                         <input name="SRS" readOnly type={formvisibility} value={mapCrs} />
-                        {!isEmpty(themeLayers) && themeLayers[0].params.MAP ? (<input name="MAP" readOnly type={formvisibility} value={themeLayers[0].params.MAP} />) : null}
                         {Object.entries(printParams).map(([key, value]) => (<input key={key} name={key} type={formvisibility} value={value} />))}
                         <input name="CONTENT_DISPOSITION" readOnly type={formvisibility} value={this.props.inlinePrintOutput ? "inline" : "attachment"} />
                         <input name={mapName + ":LAYERS"} readOnly type={formvisibility} value={printParams.LAYERS} />

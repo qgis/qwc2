@@ -62,6 +62,7 @@ class MapPlugin extends React.Component {
                     const styles = (layer.params.STYLES || "").split(",");
                     for (let i = 0; i < sublayers.length; ++i) {
                         if (layer.externalLayerMap && layer.externalLayerMap[sublayers[i]]) {
+                            // Sublayer is mapped to an external layer
                             const sublayer = LayerUtils.searchSubLayer(layer, "name", sublayers[i]);
                             const sublayerVisible = LayerUtils.layerScaleInRange(sublayer, mapScale);
                             if (sublayerVisible) {
@@ -78,18 +79,20 @@ class MapPlugin extends React.Component {
                                 });
                             }
                         } else if (renderLayers.length > 0 && renderLayers[renderLayers.length - 1].id === layer.id) {
+                            // Compress with previous renderlayer
                             renderLayers[renderLayers.length - 1].params.LAYERS += "," + sublayers[i];
                             renderLayers[renderLayers.length - 1].params.OPACITIES += "," + opacities[i];
                             renderLayers[renderLayers.length - 1].params.STYLES += "," + styles[i] || "";
                         } else {
+                            // Add new renderlayer
                             renderLayers.push({
                                 ...layer,
-                                uuid: layer.uuid + "-" + i, params: {
+                                uuid: layer.uuid + "-" + i,
+                                params: {
                                     ...layer.params,
                                     LAYERS: sublayers[i],
                                     OPACITIES: opacities[i],
-                                    STYLES: styles[i] || "",
-                                    MAP: layer.params.MAP
+                                    STYLES: styles[i] || ""
                                 }
                             });
                         }
@@ -129,8 +132,7 @@ class MapPlugin extends React.Component {
                                     params: {
                                         LAYERS: paramLayers.slice(0, j).join(","),
                                         OPACITIES: paramOpacities.slice(0, j).join(","),
-                                        STYLES: paramStyles.slice(0, j).join(","),
-                                        MAP: layer.params.MAP
+                                        STYLES: paramStyles.slice(0, j).join(",")
                                     }
                                 });
                             }
@@ -140,8 +142,7 @@ class MapPlugin extends React.Component {
                                 params: {
                                     LAYERS: paramLayers[j],
                                     OPACITIES: paramOpacities[j],
-                                    STYLES: paramStyles[j],
-                                    MAP: layer.params.MAP
+                                    STYLES: paramStyles[j]
                                 }
                             };
                             newLayers.push(swipeLayer);
@@ -152,8 +153,7 @@ class MapPlugin extends React.Component {
                                     params: {
                                         LAYERS: paramLayers.slice(j + 1).join(","),
                                         OPACITIES: paramOpacities.slice(j + 1).join(","),
-                                        STYLES: paramStyles.slice(j + 1).join(","),
-                                        MAP: layer.params.MAP
+                                        STYLES: paramStyles.slice(j + 1).join(",")
                                     }
                                 });
                             }

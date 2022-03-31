@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import {setLayerDimensions} from '../actions/layers';
+import {setLayerDimensions, addLayerFeatures, clearLayer} from '../actions/layers';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import Icon from '../components/Icon';
 import ButtonBar from '../components/widgets/ButtonBar';
@@ -28,6 +28,8 @@ dayjs.extend(utc);
 class TimeManager extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
+        addLayerFeatures: PropTypes.func,
+        clearLayer: PropTypes.func,
         layerUUIds: PropTypes.object,
         layers: PropTypes.array,
         setCurrentTask: PropTypes.func,
@@ -294,6 +296,8 @@ export default connect((state) => ({
     layers: state.layers.flat,
     layerUUIds: state.layers.uuids
 }), {
+    addLayerFeatures: addLayerFeatures,
+    clearLayer: clearLayer,
     setLayerDimensions: setLayerDimensions,
     setCurrentTask: setCurrentTask,
     setCurrentTaskBlocked: setCurrentTaskBlocked

@@ -11,7 +11,6 @@ import isEqual from 'lodash.isequal';
 import uuid from 'uuid';
 import url from 'url';
 import ConfigUtils from './ConfigUtils';
-import ThemeUtils from './ThemeUtils';
 import {LayerRole} from '../actions/layers';
 
 const LayerUtils = {
@@ -140,49 +139,41 @@ const LayerUtils = {
         }
     },
     buildWMSLayerParams(layer) {
-        const params = Object.entries(layer.params || {}).reduce((res, [key, value]) => ({...res, [key]: value}), {});
-        const urlQuery = url.parse(layer.url, true).query;
-        const urlParams = Object.keys(urlQuery).filter(key => {
-            return !["service", "version", "request"].includes(key.toLowerCase());
-        }).reduce((res, key) => ({...res, [key]: urlQuery[key]}), {});
+        const params = layer.params || {};
+        let newParams = {};
+        let queryLayers = [];
 
         if (!Array.isArray(layer.sublayers)) {
-            return {
-                params: {
-                    ...urlParams,
-                    ...layer.baseParams,
-                    LAYERS: params.LAYERS || layer.name,
-                    OPACITIES: params.OPACITIES || ("" + (layer.opacity !== undefined ? layer.opacity : 255)),
-                    STYLES: params.STYLES || "",
-                    ...layer.dimensionValues
-                },
-                queryLayers: layer.queryable ? [layer.name] : []
+            newParams = {
+                LAYERS: params.LAYERS || layer.name,
+                OPACITIES: params.OPACITIES || ("" + (layer.opacity !== undefined ? layer.opacity : 255)),
+                STYLES: params.STYLES || "",
+                ...layer.dimensionValues
+            };
+            queryLayers = layer.queryable ? [layer.name] : [];
+        } else {
+            let layerNames = [];
+            let opacities = [];
+            let styles = [];
+            layer.sublayers.map(sublayer => {
+                LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryLayers, null, layer.visibility);
+            });
+            layerNames.reverse();
+            opacities.reverse();
+            styles.reverse();
+            if (layer.drawingOrder && layer.drawingOrder.length > 0) {
+                const indices = layer.drawingOrder.map(lyr => layerNames.indexOf(lyr)).filter(idx => idx >= 0);
+                layerNames = indices.map(idx => layerNames[idx]);
+                opacities = indices.map(idx => opacities[idx]);
+                styles = indices.map(idx => styles[idx]);
+            }
+            newParams = {
+                LAYERS: layerNames.join(","),
+                OPACITIES: opacities.join(","),
+                STYLES: styles.join(","),
+                ...layer.dimensionValues
             };
         }
-        let layerNames = [];
-        let opacities = [];
-        let styles = [];
-        const queryLayers = [];
-        layer.sublayers.map(sublayer => {
-            LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryLayers, null, layer.visibility);
-        });
-        layerNames.reverse();
-        opacities.reverse();
-        styles.reverse();
-        if (layer.drawingOrder && layer.drawingOrder.length > 0) {
-            const indices = layer.drawingOrder.map(lyr => layerNames.indexOf(lyr)).filter(idx => idx >= 0);
-            layerNames = indices.map(idx => layerNames[idx]);
-            opacities = indices.map(idx => opacities[idx]);
-            styles = indices.map(idx => styles[idx]);
-        }
-        const newParams = {
-            ...urlParams,
-            ...layer.baseParams,
-            LAYERS: layerNames.join(","),
-            OPACITIES: opacities.join(","),
-            STYLES: styles.join(","),
-            ...layer.dimensionValues
-        };
         return {
             params: newParams,
             queryLayers: queryLayers
@@ -618,6 +609,7 @@ const LayerUtils = {
         externalLayer.title = externalLayer.title || externalLayer.name;
         externalLayer.uuid = uuid.v4();
         if (externalLayer.type === "wms" || externalLayer.params) {
+            externalLayer.version = externalLayer.version || "1.3.0";
             externalLayer.featureInfoUrl = externalLayer.featureInfoUrl || externalLayer.url;
             externalLayer.legendUrl = externalLayer.legendUrl || externalLayer.url;
             externalLayer.queryLayers = externalLayer.queryLayers || externalLayer.params.LAYERS.split(",");
@@ -632,40 +624,49 @@ const LayerUtils = {
         }
     },
     getLegendUrl(layer, sublayer, scale, map, bboxDependentLegend, scaleDependentLegend) {
-        const name = (layer.externalLayerMap || {})[sublayer.name] ? (layer.externalLayerMap[sublayer.name].params || {}).LAYERS : sublayer.name;
-        const mapParam = (layer.externalLayerMap || {})[sublayer.name] ? (layer.externalLayerMap[sublayer.name].params || {}).MAP : (layer.params || {}).MAP;
-        let params = "SERVICE=WMS"
-                   + "&REQUEST=GetLegendGraphic"
-                   + "&VERSION=" + (layer.version || "1.3.0")
-                   + "&FORMAT=image/png"
-                   + "&LAYER=" + encodeURIComponent(name)
-                   + "&CRS=" + map.projection
-                   + "&SLD_VERSION=1.1.0";
+        const requestParams = {
+            SERVICE: "WMS",
+            REQUEST: "GetLegendGraphic",
+            FORMAT: "image/png",
+            CRS: map.projection,
+            SLD_VERSION: "1.1.0"
+        };
         if (scaleDependentLegend === true || (scaleDependentLegend === "theme" && layer.role === LayerRole.THEME)) {
-            params += "&SCALE=" + Math.round(scale);
+            requestParams.SCALE = Math.round(scale);
         }
         if (bboxDependentLegend === true || (bboxDependentLegend === "theme" && layer.role === LayerRole.THEME)) {
-            params += "&WIDTH=" + map.size.width
-                    + "&HEIGHT=" + map.size.height
-                    + "&BBOX=" + map.bbox.bounds.join(",");
+            requestParams.WIDTH = map.size.width;
+            requestParams.HEIGHT = map.size.height;
+            requestParams.BBOX = map.bbox.bounds.join(",");
         }
-        if (mapParam) {
-            params += "&MAP=" + mapParam;
-        }
-        let requestUrl = layer.legendUrl;
         if (layer.externalLayerMap && layer.externalLayerMap[sublayer.name]) {
-            requestUrl = layer.externalLayerMap[sublayer.name].legendUrl;
+            const externalLayer = layer.externalLayerMap[sublayer.name];
+            const urlParts = url.parse(externalLayer.legendUrl, true);
+            urlParts.query = {
+                VERSION: layer.version,
+                ...urlParts.query,
+                ...externalLayer.params,
+                ...requestParams
+            };
+            delete urlParts.search;
+            return url.format(urlParts);
+        } else {
+            const urlParts = url.parse(layer.legendUrl, true);
+            urlParts.query = {
+                VERSION: layer.version,
+                ...urlParts.query,
+                ...requestParams,
+                LAYER: sublayer.name
+            };
+            delete urlParts.search;
+            return url.format(urlParts);
         }
-        if (!requestUrl) {
-            return "";
-        }
-        return requestUrl + (requestUrl.indexOf('?') === -1 ? '?' : '&') + params;
     },
     layerScaleInRange(layer, mapScale) {
         return (layer.minScale === undefined || mapScale >= layer.minScale) && (layer.maxScale === undefined || mapScale < layer.maxScale);
     },
     collectPrintParams(layers, theme, printScale, printCrs, printExternalLayers) {
-        printExternalLayers = printExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion") >= 3;
+        printExternalLayers = printExternalLayers && (ConfigUtils.getConfigProp("qgisServerVersion") || 3) >= 3;
         const params = {
             LAYERS: [],
             OPACITIES: [],
@@ -686,17 +687,14 @@ const LayerUtils = {
                     params.LAYERS.push("EXTERNAL_WMS:" + identifier);
                     params.OPACITIES.push(opacities[idx]);
                     params.COLORS.push("");
-                    const query = Object.entries(layer.baseParams || {}).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`);
-                    if (layer.params.MAP) {
-                        query.push(`MAP=${encodeURIComponent(layer.params.MAP)}`);
-                    }
-                    params[identifier + ":url"] = ThemeUtils.fullUrl(layer.url) + (!isEmpty(query) ? `?${query.join('&')}` : "");
+                    params[identifier + ":url"] = layer.url;
                     params[identifier + ":layers"] = names[idx];
                     params[identifier + ":format"] = "image/png";
                     params[identifier + ":crs"] = printCrs;
                     params[identifier + ":styles"] = "";
                     params[identifier + ":dpiMode"] = "7";
                     params[identifier + ":contextualWMSLegend"] = "0";
+                    params[identifier + ":ignoregetmapurl"] = "1";
                 }
             }
         }
@@ -733,17 +731,14 @@ const LayerUtils = {
                             params.LAYERS.push("EXTERNAL_WMS:" + identifier);
                             params.OPACITIES.push(opacities[idx]);
                             params.COLORS.push("");
-                            const query = Object.entries(layer.baseParams || {}).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`);
-                            if (layer.params.MAP) {
-                                query.push(`MAP=${encodeURIComponent(layer.params.MAP)}`);
-                            }
-                            params[identifier + ":url"] = ThemeUtils.fullUrl(layer.url) + (!isEmpty(query) ? `?${query.join('&')}` : "");
+                            params[identifier + ":url"] = layer.url;
                             params[identifier + ":layers"] = names[idx];
                             params[identifier + ":format"] = "image/png";
                             params[identifier + ":crs"] = printCrs;
                             params[identifier + ":styles"] = "";
                             params[identifier + ":dpiMode"] = "7";
                             params[identifier + ":contextualWMSLegend"] = "0";
+                            params[identifier + ":ignoregetmapurl"] = "1";
                         }
                     }
                 });
