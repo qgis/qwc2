@@ -144,7 +144,7 @@ const LayerUtils = {
         const urlQuery = url.parse(layer.url, true).query;
         const urlParams = Object.keys(urlQuery).filter(key => {
             return !["service", "version", "request"].includes(key.toLowerCase());
-        }).reduce((res, key) => ({...res, [key]: urlQuery[key]}), {});
+        }).reduce((res, key) => ({...res, [key.toUpperCase()]: urlQuery[key]}), {});
 
         if (!Array.isArray(layer.sublayers)) {
             return {
