@@ -379,7 +379,7 @@ class AttributeTable extends React.Component {
                     value={value} />
             );
         } else if (field.type === "file") {
-            return (<EditUploadField constraints={constraints} disabled={disabled} dataset={this.editLayerId(this.state.selectedLayer)} fieldId={field.id} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
+            return (<EditUploadField constraints={constraints} dataset={this.editLayerId(this.state.selectedLayer)} disabled={disabled} fieldId={field.id} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
         } else if (field.type === "text") {
             if (constraints.multiline) {
                 input = [
@@ -576,6 +576,11 @@ class AttributeTable extends React.Component {
                 if (field.constraints && field.constraints.values) {
                     res[field.id] = field.constraints.values.reduce((res2, constraint) => {
                         res2[constraint.value] = constraint.label;
+                        return res2;
+                    }, {});
+                } else if (field.constraints && field.constraints.keyvalrel) {
+                    res[field.id] = KeyValCache.getSync(field.constraints.keyvalrel).reduce((res2, entry) => {
+                        res2[entry.value] = entry.label;
                         return res2;
                     }, {});
                 }

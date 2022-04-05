@@ -38,6 +38,13 @@ export class KeyValCache {
             });
         }
     }
+    static getSync = (keyvalrel) => {
+        if (keyvalrel in this.store) {
+            return this.store[keyvalrel];
+        } else {
+            return [];
+        }
+    }
     static clear = () => {
         this.store = {};
         this.requests = {};
