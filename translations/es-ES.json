@@ -122,6 +122,7 @@
       "title": "Información del elemento"
     },
     "importlayer": {
+      "addfailed": "",
       "addlayer": "Agregar capa",
       "connect": "Conectar",
       "filter": "Filtrar...",

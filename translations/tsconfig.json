@@ -118,6 +118,7 @@
     "identify.noresults",
     "identify.querying",
     "identify.title",
+    "importlayer.addfailed",
     "importlayer.addlayer",
     "importlayer.connect",
     "importlayer.filter",

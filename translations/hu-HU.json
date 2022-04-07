@@ -122,6 +122,7 @@
       "title": "Lekérdezés információ"
     },
     "importlayer": {
+      "addfailed": "",
       "addlayer": "Fólia hozzáadása",
       "connect": "Kapcsolódás",
       "filter": "Szűrés...",

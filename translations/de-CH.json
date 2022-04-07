@@ -122,6 +122,7 @@
       "title": "Objektinformationen"
     },
     "importlayer": {
+      "addfailed": "Die Ebene konnte nicht hinzugefügt werden",
       "addlayer": "Ebene hinzufügen",
       "connect": "Verbinden",
       "filter": "Filter...",

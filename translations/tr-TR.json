@@ -122,6 +122,7 @@
       "title": "Obje Bilgisi"
     },
     "importlayer": {
+      "addfailed": "",
       "addlayer": "Katman ekle",
       "connect": "Bağlan",
       "filter": "Filtre...",

@@ -122,6 +122,7 @@
       "title": "Ominaisuustiedot"
     },
     "importlayer": {
+      "addfailed": "",
       "addlayer": "Lisää karttataso",
       "connect": "Yhdistä",
       "filter": "Suodatus...",

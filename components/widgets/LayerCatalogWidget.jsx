@@ -91,6 +91,8 @@ class LayerCatalogWidget extends React.PureComponent {
             ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
                 if (layer) {
                     this.props.addLayer(layer);
+                } else {
+                    alert(LocaleUtils.tr("importlayer.addfailed"));
                 }
             });
         } else if (entry.type === "wms" || entry.type === "wfs" || entry.type === "wmts") {

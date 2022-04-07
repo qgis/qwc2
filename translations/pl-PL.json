@@ -122,6 +122,7 @@
       "title": "Feature Info"
     },
     "importlayer": {
+      "addfailed": "",
       "addlayer": "Dodaj warstwę",
       "connect": "Połącz",
       "filter": "Filtruj...",

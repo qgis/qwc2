@@ -122,6 +122,7 @@
       "title": "Informations sur l'objet"
     },
     "importlayer": {
+      "addfailed": "",
       "addlayer": "Ajouter une couche",
       "connect": "Connecter",
       "filter": "Filtrer",

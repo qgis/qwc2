@@ -122,6 +122,7 @@
       "title": "Información de recurso"
     },
     "importlayer": {
+      "addfailed": "",
       "addlayer": "Adicionar camada",
       "connect": "Ligar",
       "filter": "Filtro...",

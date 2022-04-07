@@ -122,6 +122,7 @@
       "title": "Titolo"
     },
     "importlayer": {
+      "addfailed": "Impossibile aggiungere il livello",
       "addlayer": "Aggiungi livello",
       "connect": "Connetti",
       "filter": "Filtro",

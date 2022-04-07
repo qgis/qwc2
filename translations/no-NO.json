@@ -122,6 +122,7 @@
       "title": "Objektinformasjon"
     },
     "importlayer": {
+      "addfailed": "",
       "addlayer": "Legg til lag",
       "connect": "Koble til",
       "filter": "Filter...",
