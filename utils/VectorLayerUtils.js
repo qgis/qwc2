@@ -53,20 +53,20 @@ const VectorLayerUtils = {
                     geometry = {
                         type: "Polygon",
                         coordinates: [[
-                            [x - 0.00001, y - 0.00001],
-                            [x + 0.00001, y - 0.00001],
-                            [x + 0.00001, y + 0.00001],
-                            [x - 0.00001, y + 0.00001],
-                            [x - 0.00001, y - 0.00001]
+                            [x - 0.01, y - 0.01],
+                            [x + 0.01, y - 0.01],
+                            [x + 0.01, y + 0.01],
+                            [x - 0.01, y + 0.01],
+                            [x - 0.01, y - 0.01]
                         ]]
                     };
-                    params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 1));
+                    params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 2));
                     params.labelFillColors.push(ensureHex(feature.styleOptions.fillColor));
                     params.labelOultineColors.push(ensureHex(feature.styleOptions.strokeColor));
                     params.labelOutlineSizes.push(scaleFactor * feature.styleOptions.strokeWidth * 0.5);
                     params.labelSizes.push(Math.round(10 * feature.styleOptions.strokeWidth * scaleFactor));
                 } else {
-                    params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 1));
+                    params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 2));
                     params.labelFillColors.push(defaultFeatureStyle.textFill);
                     params.labelOultineColors.push(defaultFeatureStyle.textStroke);
                     params.labelOutlineSizes.push(scaleFactor);
