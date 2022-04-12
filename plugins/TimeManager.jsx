@@ -62,6 +62,8 @@ class TimeManager extends React.Component {
         }
         if (!prevProps.active && this.props.active) {
             this.setState({visible: true});
+            // Clear task immediately after showing, visibility is controlled by internal state
+            this.props.setCurrentTask(null);
         }
         if (this.props.layerUUIds !== prevProps.layerUUIds) {
             this.stopAnimation();
