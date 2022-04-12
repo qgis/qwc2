@@ -189,7 +189,7 @@ class TimeManager extends React.Component {
     toggleTimeEnabled = (enabled) => {
         clearInterval(this.animationTimer);
         this.animationTimer = null;
-        this.setState({timeEnabled: enabled, currentTimestamp: (+this.getStartTime()) || 0, animationActive: false});
+        this.setState({timeEnabled: enabled, currentTimestamp: +this.getStartTime(), animationActive: false});
     }
     pickCurrentTimestamp = (ev) => {
         if (!this.state.timeEnabled) {
@@ -205,7 +205,7 @@ class TimeManager extends React.Component {
     animationButtonClicked = (action) => {
         this.stopAnimation();
         if (action === "rewind") {
-            this.setState({currentTimestamp: (+this.getStartTime()) || 0, animationActive: false});
+            this.setState({currentTimestamp: +this.getStartTime(), animationActive: false});
         } else if (action === "prev") {
             const newday = this.step(-1);
             this.setState({currentTimestamp: +Math.max(newday, this.getStartTime())});
@@ -273,11 +273,11 @@ class TimeManager extends React.Component {
     }
     getStartTime = () => {
         const date = this.state.startDate || this.state.timeData.values[0];
-        return date.hour(0).minute(0).second(0);
+        return date ? date.hour(0).minute(0).second(0) : 0;
     }
     getEndTime = () => {
         const date = (this.state.endDate || this.state.timeData.values[this.state.timeData.values.length - 1]);
-        return date.hour(23).minute(59).second(59);
+        return date ? date.hour(23).minute(59).second(59) : 0;
     }
     setStartTime = (ev) => {
         const date = (ev.target.value ? dayjs.utc(ev.target.value) : this.state.timeData.values[0]).hour(0).minute(0).second(0);
