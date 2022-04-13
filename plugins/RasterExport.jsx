@@ -82,6 +82,16 @@ class RasterExport extends React.Component {
         // Local vector layer features
         const mapCrs = this.props.map.projection;
         const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, this.state.dpi);
+        const dimensionValues = this.props.layers.reduce((res, layer) => {
+            if (layer.role === LayerRole.THEME) {
+                Object.entries(layer.dimensionValues).forEach(([key, value]) => {
+                    if (value !== undefined) {
+                        res[key] = value;
+                    }
+                });
+            }
+            return res;
+        }, {});
 
         return (
             <span>
@@ -117,13 +127,16 @@ class RasterExport extends React.Component {
                     {Object.keys(this.props.theme.watermark || {}).map(key => {
                         return (<input key={key} name={"WATERMARK_" + key.toUpperCase()} readOnly type="hidden" value={this.props.theme.watermark[key]} />);
                     })}
-                    <input name={"HIGHLIGHT_GEOM"} readOnly type="hidden" value={highlightParams.geoms.join(";")} />
-                    <input name={"HIGHLIGHT_SYMBOL"} readOnly type="hidden" value={highlightParams.styles.join(";")} />
-                    <input name={"HIGHLIGHT_LABELSTRING"} readOnly type="hidden" value={highlightParams.labels.join(";")} />
-                    <input name={"HIGHLIGHT_LABELCOLOR"} readOnly type="hidden" value={highlightParams.labelFillColors.join(";")} />
-                    <input name={"HIGHLIGHT_LABELBUFFERCOLOR"} readOnly type="hidden" value={highlightParams.labelOultineColors.join(";")} />
-                    <input name={"HIGHLIGHT_LABELBUFFERSIZE"} readOnly type="hidden" value={highlightParams.labelOutlineSizes.join(";")} />
-                    <input name={"HIGHLIGHT_LABELSIZE"} readOnly type="hidden" value={highlightParams.labelSizes.join(";")} />
+                    <input name="HIGHLIGHT_GEOM" readOnly type="hidden" value={highlightParams.geoms.join(";")} />
+                    <input name="HIGHLIGHT_SYMBOL" readOnly type="hidden" value={highlightParams.styles.join(";")} />
+                    <input name="HIGHLIGHT_LABELSTRING" readOnly type="hidden" value={highlightParams.labels.join(";")} />
+                    <input name="HIGHLIGHT_LABELCOLOR" readOnly type="hidden" value={highlightParams.labelFillColors.join(";")} />
+                    <input name="HIGHLIGHT_LABELBUFFERCOLOR" readOnly type="hidden" value={highlightParams.labelOultineColors.join(";")} />
+                    <input name="HIGHLIGHT_LABELBUFFERSIZE" readOnly type="hidden" value={highlightParams.labelOutlineSizes.join(";")} />
+                    <input name="HIGHLIGHT_LABELSIZE" readOnly type="hidden" value={highlightParams.labelSizes.join(";")} />
+                    {Object.entries(dimensionValues).map(([key, value]) => (
+                        <input key={key} name={key} readOnly type="hidden" value={value} />
+                    ))}
                     <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
                 </form>
             </span>

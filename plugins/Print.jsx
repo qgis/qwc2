@@ -165,6 +165,17 @@ class Print extends React.Component {
 
         const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, printDpi, this.props.scaleFactor);
 
+        const dimensionValues = this.props.layers.reduce((res, layer) => {
+            if (layer.role === LayerRole.THEME) {
+                Object.entries(layer.dimensionValues).forEach(([key, value]) => {
+                    if (value !== undefined) {
+                        res[key] = value;
+                    }
+                });
+            }
+            return res;
+        }, {});
+
         return (
             <div className="print-body">
                 <form action={this.props.theme.printUrl} method="POST"
@@ -270,6 +281,9 @@ class Print extends React.Component {
                         {gridIntervalX}
                         {gridIntervalY}
                         {resolutionInput}
+                        {Object.entries(dimensionValues).map(([key, value]) => (
+                            <input key={key} name={key} readOnly type="hidden" value={value} />
+                        ))}
                     </div>
                     <div className="button-bar">
                         <button className="button" disabled={!printParams.LAYERS || this.state.printing} type="submit">

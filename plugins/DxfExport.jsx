@@ -47,6 +47,18 @@ class DxfExport extends React.Component {
             ? <input name="FORMAT_OPTIONS" readOnly type="hidden" value={this.props.formatOptions} />
             : null;
         const basename = this.props.serviceUrl ? this.props.serviceUrl.replace(/\/$/, '').replace(/^.*\//, '') : this.props.theme.name;
+
+        const dimensionValues = this.props.layers.reduce((res, layer) => {
+            if (layer.role === LayerRole.THEME) {
+                Object.entries(layer.dimensionValues).forEach(([key, value]) => {
+                    if (value !== undefined) {
+                        res[key] = value;
+                    }
+                });
+            }
+            return res;
+        }, {});
+
         return (
             <span>
                 <form action={action} method="POST" ref={form => { this.form = form; }} target="_blank">
@@ -76,6 +88,9 @@ class DxfExport extends React.Component {
                     <input name="CRS" readOnly type="hidden" value={this.props.map.projection} />
                     <input name="FILE_NAME" readOnly type="hidden" value={basename + ".dxf"} />
                     <input name="BBOX" readOnly ref={input => { this.extentInput = input; }} type="hidden" value="" />
+                    {Object.entries(dimensionValues).map(([key, value]) => (
+                        <input key={key} name={key} readOnly type="hidden" value={value} />
+                    ))}
                     <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
                     {formatOptions}
                 </form>
