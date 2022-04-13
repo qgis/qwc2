@@ -61,6 +61,7 @@ const ServiceLayerUtils = {
                 // 0.00028: assumed pixel width in meters, as per WMTS standard
                 return entry.ScaleDenominator * 0.00028;
             });
+            const style = ((layer.Style || []).find(entry => entry.isDefault) || {Identifier: ""}).Identifier;
             let serviceUrl = layer.ResourceURL.find(u => u.resourceType === "tile").template;
             layer.Dimension && layer.Dimension.forEach(dim => {
                 serviceUrl = serviceUrl.replace("{" + dim.Identifier + "}", dim.Default);
@@ -80,6 +81,7 @@ const ServiceLayerUtils = {
                     topMatrix.TileWidth,
                     topMatrix.TileHeight
                 ],
+                style: style,
                 bbox: {
                     crs: "EPSG:4326",
                     bounds: layer.WGS84BoundingBox
