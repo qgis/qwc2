@@ -83,7 +83,7 @@ const ThemeUtils = {
         const layer = {
             type: "wms",
             url: theme.url,
-            version: theme.version || "1.3.0",
+            version: theme.version,
             visibility: true,
             expanded: theme.expanded,
             name: theme.name,

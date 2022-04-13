@@ -44,8 +44,7 @@ class RasterExport extends React.Component {
         this.setState({dpi: parseInt(ev.target.value, 10)});
     }
     renderBody = () => {
-        const themeLayers = this.props.layers.filter(layer => layer.role === LayerRole.THEME);
-        if (!this.props.theme || !themeLayers) {
+        if (!this.props.theme) {
             return null;
         }
         const formatMap = {
@@ -104,7 +103,7 @@ class RasterExport extends React.Component {
                         {dpiSelector}
                     </div>
                     <input name="SERVICE" readOnly type="hidden" value="WMS" />
-                    <input name="VERSION" readOnly type="hidden" value={themeLayers[0].version || "1.3.0"} />
+                    <input name="VERSION" readOnly type="hidden" value={this.props.theme.version} />
                     <input name="REQUEST" readOnly type="hidden" value="GetMap" />
                     {Object.entries(exportParams).map(([key, value]) => (<input key={key} name={key} type="hidden" value={value} />))}
                     <input name="TRANSPARENT" readOnly type="hidden" value="true" />
@@ -141,7 +140,7 @@ class RasterExport extends React.Component {
         );
     }
     bboxSelected = (bbox, crs, pixelsize) => {
-        const version = this.props.theme.version || "1.3.0";
+        const version = this.props.theme.version;
         const extent = (CoordinatesUtils.getAxisOrder(crs).substr(0, 2) === 'ne' && version === '1.3.0') ?
             bbox[1] + "," + bbox[0] + "," + bbox[3] + "," + bbox[2] :
             bbox.join(',');

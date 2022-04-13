@@ -93,7 +93,7 @@ class DxfExport extends React.Component {
         );
     }
     bboxSelected = (bbox, crs) => {
-        const version = this.props.theme.version || "1.3.0";
+        const version = this.props.theme.version;
         const extent = (CoordinatesUtils.getAxisOrder(crs).substr(0, 2) === 'ne' && version === '1.3.0') ?
             bbox[1] + "," + bbox[0] + "," + bbox[3] + "," + bbox[2] :
             bbox.join(',');

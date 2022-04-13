@@ -177,7 +177,7 @@ const ServiceLayerUtils = {
             url: getMapUrl,
             featureInfoUrl: featureInfoUrl,
             legendUrl: legendUrl,
-            version: version || "1.3.0",
+            version: version,
             infoFormats: infoFormats,
             queryable: layer.queryable,
             sublayers: isEmpty(sublayers) ? null : sublayers,

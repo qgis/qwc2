@@ -83,7 +83,7 @@ const IdentifyUtils = {
         const resolution = MapUtils.computeForZoom(map.resolutions, map.zoom);
         const dx = 0.5 * resolution * size[0];
         const dy = 0.5 * resolution * size[1];
-        const version = layer.version || "1.3.0";
+        const version = layer.version;
         let bbox = [center[0] - dx, center[1] - dy, center[0] + dx, center[1] + dy];
         if (CoordinatesUtils.getAxisOrder(map.projection).substr(0, 2) === 'ne' && version === '1.3.0') {
             bbox = [center[1] - dx, center[0] - dy, center[1] + dx, center[0] + dy];

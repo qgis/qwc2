@@ -114,7 +114,7 @@ class Print extends React.Component {
         const formvisibility = 'hidden';
         const printDpi = parseInt(this.state.dpi, 10);
         const mapCrs = this.props.map.projection;
-        const version = this.props.theme.version || "1.3.0";
+        const version = this.props.theme.version;
 
         const mapName = this.state.layout.map.name;
         const printParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, mapCrs, this.props.printExternalLayers);
@@ -252,7 +252,7 @@ class Print extends React.Component {
                         <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
                         <input name={mapName + ":extent"} readOnly type={formvisibility} value={extent || ""} />
                         <input name="SERVICE" readOnly type={formvisibility} value="WMS" />
-                        <input name="VERSION" readOnly type={formvisibility} value={version || "1.3.0"} />
+                        <input name="VERSION" readOnly type={formvisibility} value={version} />
                         <input name="REQUEST" readOnly type={formvisibility} value="GetPrint" />
                         <input name="FORMAT" readOnly type={formvisibility} value="pdf" />
                         <input name="TRANSPARENT" readOnly type={formvisibility} value="true" />
