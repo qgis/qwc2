@@ -113,7 +113,7 @@ export default function map(state = defaultState, action) {
         return {
             ...state,
             center: CoordinatesUtils.reproject(action.pos, action.crs || state.projection, state.projection),
-            zoom: MapUtils.computeZoom(state.scales, action.zoom)
+            zoom: action.zoom
         };
     }
     case PAN_TO: {
