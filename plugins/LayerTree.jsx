@@ -265,7 +265,7 @@ class LayerTree extends React.Component {
                     <div className="layertree-item-edit-items">
                         {zoomToLayerButton}
                         {this.props.transparencyIcon ? (<Icon icon="transparency" />) : LocaleUtils.tr("layertree.transparency")}
-                        <input className="layertree-item-transparency-slider" defaultValue={255 - sublayer.opacity} max="255" min="0" onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onTouchEnd={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} step="1" type="range" />
+                        <input className="layertree-item-transparency-slider" defaultValue={255 - sublayer.opacity} max="255" min="0" onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onTouchEnd={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onKeyUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onWheel={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} step="1" type="range" />
                         {reorderButtons}
                         {this.props.infoInSettings ? infoButton : null}
                         {layer.type === 'vector' ? (<Icon icon="export" onClick={() => this.exportRedliningLayer(layer)} />) : null}
