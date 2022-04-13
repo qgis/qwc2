@@ -175,7 +175,7 @@ OlView.prototype.setRequestsPaused = function(paused) {
 // Overrides to pause image loading when requests are paused
 OlLayer.prototype.superRender = OlLayer.prototype.render;
 OlLayer.prototype.render = function(frameState, target) {
-    if (!frameState.viewState.requestsPaused) {
+    if (!frameState.viewState.requestsPaused || !this.getRenderer().getImage) {
         return this.superRender(frameState, target);
     } else if (this.getRenderer().getImage()) {
         return this.getRenderer().renderFrame(frameState, target);
