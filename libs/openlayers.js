@@ -42,6 +42,7 @@ import OlInteractionMouseWheelZoom from 'ol/interaction/MouseWheelZoom';
 import OlInteractionSelect from 'ol/interaction/Select';
 import OlInteractionSnap from 'ol/interaction/Snap';
 import OlInteractionTranslate from 'ol/interaction/Translate';
+import OlLayer from 'ol/layer/Layer';
 import OlLayerImage from 'ol/layer/Image';
 import OlLayerTile from 'ol/layer/Tile';
 import OlLayerVector from 'ol/layer/Vector';
@@ -66,6 +67,7 @@ import OlStyleRegularShape from 'ol/style/RegularShape';
 import OlStyleStroke from 'ol/style/Stroke';
 import OlStyleStyle from 'ol/style/Style';
 import OlStyleText from 'ol/style/Text';
+import OlTileQueue from 'ol/TileQueue';
 import OlTilegridTileGrid from 'ol/tilegrid/TileGrid';
 import OlTilegridWMTS from 'ol/tilegrid/WMTS';
 import OlView from 'ol/View';
@@ -119,6 +121,7 @@ export default {
         Translate: OlInteractionTranslate
     },
     layer: {
+        Layer: OlLayer,
         Image: OlLayerImage,
         Tile: OlLayerTile,
         Vector: OlLayerVector,
@@ -152,5 +155,43 @@ export default {
         TileGrid: OlTilegridTileGrid,
         WMTS: OlTilegridWMTS
     },
-    View: OlView
+    View: OlView,
+    TileQueue: OlTileQueue
+};
+
+// Overrides to inject requestsPaused into view state
+OlView.prototype.superGetState = OlView.prototype.getState;
+OlView.prototype.getState = function() {
+    return {
+        ...this.superGetState(),
+        requestsPaused: this.requestsPaused_
+    };
+};
+
+OlView.prototype.setRequestsPaused = function(paused) {
+    this.requestsPaused_ = paused;
+};
+
+// Overrides to pause image loading when requests are paused
+OlLayer.prototype.superRender = OlLayer.prototype.render;
+OlLayer.prototype.render = function(frameState, target) {
+    if (!frameState.viewState.requestsPaused) {
+        return this.superRender(frameState, target);
+    } else if (this.getRenderer().getImage()) {
+        return this.getRenderer().renderFrame(frameState, target);
+    } else {
+        return null;
+    }
+};
+
+// Overrides to pause tile loading when requests are paused
+OlTileQueue.prototype.superLoadMoreTiles = OlTileQueue.prototype.loadMoreTiles;
+OlTileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
+    if (!this.requestsPaused_) {
+        this.superLoadMoreTiles(maxTotalLoading, maxNewLoads);
+    }
+};
+
+OlTileQueue.prototype.setRequestsPaused = function(paused) {
+    this.requestsPaused_ = paused;
 };

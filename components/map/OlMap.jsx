@@ -19,17 +19,11 @@ import MapUtils from '../../utils/MapUtils';
 
 ol.Map.prototype.setRequestsPaused = function(paused) {
     this.requestsPaused_ = paused;
+    this.tileQueue_.setRequestsPaused(paused);
+    this.getView().setRequestsPaused(paused);
     if (!paused) {
-        this.getLayers().forEach((l) => {
-            if (l.getSource() && (l.getSource().getTileLoadFunction || l.getSource().getImageLoadFunction)) {
-                l.getSource().refresh();
-            }
-        });
+        this.render();
     }
-};
-
-ol.Map.prototype.getRequestsPaused = function() {
-    return this.requestsPaused_;
 };
 
 class OlMap extends React.Component {
@@ -86,16 +80,15 @@ class OlMap extends React.Component {
             view: this.createView(props.center, props.zoom, props.projection, props.resolutions, props.mapOptions.enableRotation, props.mapOptions.rotation)
         });
         this.unpauseTimeout = null;
-        this.moveStarted = false;
+        this.moving = false;
         map.on('movestart', () => {
-            this.moveStarted = true;
+            this.moving = true;
             this.blockRequests();
         });
-        map.on('moveend', this.updateMapInfoState);
         map.on('singleclick', (event) => this.onClick(0, event.originalEvent, event.pixel));
         map.getViewport().addEventListener('contextmenu', (event) => this.onClick(2, event, this.map.getEventPixel(event)));
         map.on('pointermove', (event) => {
-            if (this.props.trackMousePos) {
+            if (this.props.trackMousePos && !this.moving) {
                 this.props.onMouseMove({
                     position: {
                         coordinate: event.coordinate,
@@ -120,15 +113,16 @@ class OlMap extends React.Component {
         document.getElementById(this.props.id).addEventListener('wheel', this.blockRequests);
     }
     blockRequests = () => {
-        if (this.moveStarted) {
+        if (this.moving) {
             if (this.unpauseTimeout) {
                 clearTimeout(this.unpauseTimeout);
             }
             this.map.setRequestsPaused(true);
             this.unpauseTimeout = setTimeout(() => {
+                this.updateMapInfoState();
                 this.map.setRequestsPaused(false);
                 this.unpauseTimeout = null;
-                this.moveStarted = false;
+                this.moving = false;
             }, 500);
         }
     }
