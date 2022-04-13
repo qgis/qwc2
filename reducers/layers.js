@@ -224,18 +224,24 @@ export default function layers(state = defaultState, action) {
         return {...state, flat: newLayers, uuids: newLayers.reduce((res, l) => ({...res, [l.uuid]: l.visibility}), {})};
     }
     case REMOVE_LAYER_FEATURES: {
+        let changed = false;
         const newLayers = (state.flat || []).reduce((result, layer) => {
             if (layer.id === action.layerId) {
                 const newFeatures = layer.features.filter(f => action.featureIds.includes(f.id) === false);
                 if (!isEmpty(newFeatures) || action.keepEmptyLayer) {
                     result.push({...layer, features: newFeatures, bbox: VectorLayerUtils.computeFeaturesBBox(newFeatures)});
                 }
+                changed = true;
             } else {
                 result.push(layer);
             }
             return result;
         }, []);
-        return {...state, flat: newLayers, uuids: newLayers.reduce((res, l) => ({...res, [l.uuid]: l.visibility}), {})};
+        if (changed) {
+            return {...state, flat: newLayers, uuids: newLayers.reduce((res, l) => ({...res, [l.uuid]: l.visibility}), {})};
+        } else {
+            return state;
+        }
     }
     case CLEAR_LAYER: {
         const newLayers = (state.flat || []).map(layer => {

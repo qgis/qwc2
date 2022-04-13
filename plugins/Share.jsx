@@ -45,7 +45,7 @@ class Share extends React.Component {
         if (isVisible !== wasVisible || this.state.pin !== prevState.pin || this.props.state.map.center !== prevProps.state.map.center) {
             if (isVisible && this.state.pin) {
                 this.props.addMarker('sharecenter', this.props.state.map.center, '', this.props.state.map.projection);
-            } else {
+            } else if(wasVisible) {
                 this.props.removeMarker('sharecenter');
             }
         }
