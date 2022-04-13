@@ -85,9 +85,15 @@ export default {
             }
             if (changed) {
                 const queryParameters = {...url.parse(newOptions.url, true).query, ...newParams,  __t: +new Date()};
-                layer.set("empty", !queryParameters.LAYERS);
-                layer.getSource().updateParams(queryParameters);
-                layer.getSource().changed();
+                if (layer.get("updateTimeout")) {
+                    clearTimeout(layer.get("updateTimeout"));
+                }
+                layer.set("updateTimeout", setTimeout(() => {
+                    layer.set("empty", !queryParameters.LAYERS);
+                    layer.getSource().updateParams(queryParameters);
+                    layer.getSource().changed();
+                    layer.set("updateTimeout", null);
+                }, 500));
             }
         }
     }
