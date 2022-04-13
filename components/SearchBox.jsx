@@ -618,7 +618,7 @@ class SearchBox extends React.Component {
 const searchFilterSelector = createSelector([state => state.theme, state => state.layers.flat], (theme, layers) => {
     let searchFilter = [];
     // default filter from themes.json
-    if (theme && theme.current) {
+    if (theme && theme.current && theme.current.searchProviders) {
         const provider = theme.current.searchProviders.find(entry => entry.provider === "solr");
         if (provider) {
             searchFilter = provider.default;

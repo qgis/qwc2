@@ -17,7 +17,7 @@ export default (searchProviders, providerFactory) => createSelector(
     [state => state.theme, state => state.layers && state.layers.flat || null], (theme, layers) => {
         const availableProviders = {};
         const themeLayerNames = layers.map(layer => layer.role === LayerRole.THEME ? layer.params.LAYERS : "").join(",").split(",").filter(entry => entry);
-        const themeProviders = theme && theme.current ? theme.current.searchProviders : [];
+        const themeProviders = theme && theme.current && theme.current.searchProviders ? theme.current.searchProviders : [];
         for (const entry of themeProviders) {
             const provider = searchProviders[entry] || (entry.key ? providerFactory(entry) : null);
             if (provider) {
