@@ -167,7 +167,12 @@ const ServiceLayerUtils = {
                 groupbbox.bounds[3] = Math.max(bbox.bounds[3], groupbbox.bounds[3]);
             }
         }
-        const legendUrl = this.getWmsCapabilityUrl(layer.Style[0].LegendURL[0].OnlineResource, calledUrlParts);
+        let legendUrl = getMapUrl;
+        try {
+            legendUrl = this.getWmsCapabilityUrl(layer.Style[0].LegendURL[0].OnlineResource, calledUrlParts);
+        } catch (e) {
+            /* pass */
+        }
         return {
             type: "wms",
             name: layer.Name,
