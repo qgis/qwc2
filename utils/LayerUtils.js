@@ -624,6 +624,9 @@ const LayerUtils = {
         }
     },
     getLegendUrl(layer, sublayer, scale, map, bboxDependentLegend, scaleDependentLegend) {
+        if (layer.type !== "wms") {
+            return "";
+        }
         const requestParams = {
             SERVICE: "WMS",
             REQUEST: "GetLegendGraphic",
