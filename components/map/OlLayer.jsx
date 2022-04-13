@@ -147,7 +147,7 @@ class OlLayer extends React.Component {
             sublayers[options.id] = layer;
         }
         Object.entries(sublayers).map(([id, sublayer]) => {
-            if (!sublayer.getTileLoadFunction) {
+            if (sublayer.getSource() && sublayer.getSource().getImageLoadFunction) {
                 sublayer.getSource().on('imageloadstart', () => {
                     this.props.setLayerLoading(id, true);
                 });
@@ -157,7 +157,11 @@ class OlLayer extends React.Component {
                 sublayer.getSource().on('imageloaderror', () => {
                     this.props.setLayerLoading(id, false);
                 });
-            } else {
+
+                sublayer.getSource().setImageLoadFunction((image, src) => {
+                    image.getImage().src = this.props.map.getRequestsPaused() ? "" : src;
+                });
+            } else if (sublayer.getSource() && sublayer.getSource().getTileLoadFunction) {
                 sublayer.getSource().on('tileloadstart', () => {
                     if (this.tilestoload === 0) {
                         this.props.setLayerLoading(id, true);
@@ -175,6 +179,10 @@ class OlLayer extends React.Component {
                     if (this.tilestoload === 0) {
                         this.props.setLayerLoading(id, false);
                     }
+                });
+
+                sublayer.getSource().setTileLoadFunction((tile, src) => {
+                    tile.getImage().src = this.props.map.getRequestsPaused() ? "" : src;
                 });
             }
         });

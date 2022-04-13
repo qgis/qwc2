@@ -17,6 +17,21 @@ import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MapUtils from '../../utils/MapUtils';
 
+ol.Map.prototype.setRequestsPaused = function(paused) {
+    this.requestsPaused_ = paused;
+    if (!paused) {
+        this.getLayers().forEach((l) => {
+            if (l.getSource() && (l.getSource().getTileLoadFunction || l.getSource().getImageLoadFunction)) {
+                l.getSource().refresh();
+            }
+        });
+    }
+};
+
+ol.Map.prototype.getRequestsPaused = function() {
+    return this.requestsPaused_;
+};
+
 class OlMap extends React.Component {
     static propTypes = {
         bbox: PropTypes.object,
@@ -70,6 +85,12 @@ class OlMap extends React.Component {
             interactions: interactions,
             view: this.createView(props.center, props.zoom, props.projection, props.resolutions, props.mapOptions.enableRotation, props.mapOptions.rotation)
         });
+        this.unpauseTimeout = null;
+        this.moveStarted = false;
+        map.on('movestart', () => {
+            this.moveStarted = true;
+            this.blockRequests();
+        });
         map.on('moveend', this.updateMapInfoState);
         map.on('singleclick', (event) => this.onClick(0, event.originalEvent, event.pixel));
         map.getViewport().addEventListener('contextmenu', (event) => this.onClick(2, event, this.map.getEventPixel(event)));
@@ -94,6 +115,22 @@ class OlMap extends React.Component {
     componentDidMount() {
         this.map.setTarget(this.props.id);
         this.updateMapInfoState();
+        document.getElementById(this.props.id).addEventListener('mousedown', this.blockRequests);
+        document.getElementById(this.props.id).addEventListener('touchstart', this.blockRequests);
+        document.getElementById(this.props.id).addEventListener('wheel', this.blockRequests);
+    }
+    blockRequests = () => {
+        if (this.moveStarted) {
+            if (this.unpauseTimeout) {
+                clearTimeout(this.unpauseTimeout);
+            }
+            this.map.setRequestsPaused(true);
+            this.unpauseTimeout = setTimeout(() => {
+                this.map.setRequestsPaused(false);
+                this.unpauseTimeout = null;
+                this.moveStarted = false;
+            }, 500);
+        }
     }
     static getDerivedStateFromProps(nextProps, state) {
         if ((nextProps.projection !== state.projection) || (nextProps.resolutions !== state.resolutions)) {
