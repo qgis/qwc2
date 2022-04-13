@@ -648,8 +648,8 @@ const LayerUtils = {
             urlParts.query = {
                 VERSION: layer.version,
                 ...urlParts.query,
-                ...externalLayer.params,
-                ...requestParams
+                ...requestParams,
+                LAYER: externalLayer.params.LAYERS
             };
             delete urlParts.search;
             return url.format(urlParts);
