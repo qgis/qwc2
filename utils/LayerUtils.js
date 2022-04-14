@@ -145,7 +145,6 @@ const LayerUtils = {
 
         if (!Array.isArray(layer.sublayers)) {
             newParams = {
-                VERSION: params.VERSION || layer.version,
                 LAYERS: params.LAYERS || layer.name,
                 OPACITIES: params.OPACITIES || ("" + (layer.opacity !== undefined ? layer.opacity : 255)),
                 STYLES: params.STYLES || "",
@@ -169,7 +168,6 @@ const LayerUtils = {
                 styles = indices.map(idx => styles[idx]);
             }
             newParams = {
-                VERSION: params.VERSION || layer.version,
                 LAYERS: layerNames.join(","),
                 OPACITIES: opacities.join(","),
                 STYLES: styles.join(","),
