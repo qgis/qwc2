@@ -627,6 +627,7 @@ const LayerUtils = {
         if (layer.type !== "wms") {
             return "";
         }
+        let urlParts;
         const requestParams = {
             SERVICE: "WMS",
             REQUEST: "GetLegendGraphic",
@@ -644,13 +645,26 @@ const LayerUtils = {
         }
         if (layer.externalLayerMap && layer.externalLayerMap[sublayer.name]) {
             const externalLayer = layer.externalLayerMap[sublayer.name];
-            const urlParts = url.parse(externalLayer.legendUrl, true);
-            urlParts.query = {
-                VERSION: layer.version,
-                ...urlParts.query,
-                ...requestParams,
-                LAYER: externalLayer.params.LAYERS
-            };
+            if (externalLayer.type == "wmts") {
+                if (externalLayer.legendUrl !== undefined) {
+                    urlParts = url.parse(externalLayer.legendUrl, true);
+                } else {
+                    return "";
+                }
+                urlParts.query = {
+                    VERSION: layer.version,
+                    ...urlParts.query,
+                    ...requestParams
+                };
+            } else {
+                urlParts = url.parse(externalLayer.legendUrl, true);
+                urlParts.query = {
+                    VERSION: layer.version,
+                    ...urlParts.query,
+                    ...requestParams,
+                    LAYER: externalLayer.params.LAYERS
+                };
+            }
             delete urlParts.search;
             return url.format(urlParts);
         } else {
