@@ -79,10 +79,15 @@ const ThemeUtils = {
         return bgLayers;
     },
     createThemeLayer(theme, themes, role = LayerRole.THEME, subLayers = []) {
-        const baseParams = url.parse(theme.url, true).query;
+        const urlParts = url.parse(theme.url, true);
+        // Resolve relative urls
+        if (!urlParts.host) {
+            urlParts.host = url.parse(window.location.href).host;
+        }
+        const baseParams = urlParts.query;
         const layer = {
             type: "wms",
-            url: theme.url,
+            url: url.format(urlParts),
             version: theme.version,
             visibility: true,
             expanded: theme.expanded,
