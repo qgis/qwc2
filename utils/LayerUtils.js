@@ -625,7 +625,7 @@ const LayerUtils = {
     },
     getLegendUrl(layer, sublayer, scale, map, bboxDependentLegend, scaleDependentLegend) {
         if (layer.type !== "wms") {
-            return "";
+            return layer.legendUrl || "";
         }
         const requestParams = {
             SERVICE: "WMS",
@@ -644,6 +644,9 @@ const LayerUtils = {
         }
         if (layer.externalLayerMap && layer.externalLayerMap[sublayer.name]) {
             const externalLayer = layer.externalLayerMap[sublayer.name];
+            if (externalLayer.type !== "wms") {
+                return externalLayer.legendUrl || "";
+            }
             const urlParts = url.parse(externalLayer.legendUrl, true);
             urlParts.query = {
                 VERSION: layer.version,
