@@ -46,7 +46,7 @@ class MapTip extends React.Component {
             this.clearMaptip();
             const pos = this.props.mousepos.pixel;
             this.setState({pos});
-            this.timeoutId = setTimeout(() => this.queryMapTip(pos[0], pos[1]), 500);
+            this.timeoutId = setTimeout(() => this.queryMapTip(), 500);
         } else if (!this.props.mapTipsEnabled && prevProps.mapTipsEnabled) {
             this.clearMaptip();
         }
@@ -59,7 +59,7 @@ class MapTip extends React.Component {
         }
         this.setState({maptips: [], pos: null});
     }
-    queryMapTip = (x, y) => {
+    queryMapTip = () => {
         this.timeoutId = null;
         const options = {
             info_format: 'text/xml',

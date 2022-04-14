@@ -181,7 +181,7 @@ class ImportLayer extends React.Component {
                     pendingRequests: this.state.pendingRequests - 1,
                     serviceLayers: (this.state.serviceLayers || []).concat(result)
                 });
-            }).catch((e) => {
+            }).catch(() => {
                 this.setState({pendingRequests: this.state.pendingRequests - 1});
             });
         }
