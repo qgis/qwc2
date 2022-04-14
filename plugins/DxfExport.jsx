@@ -50,7 +50,7 @@ class DxfExport extends React.Component {
 
         const dimensionValues = this.props.layers.reduce((res, layer) => {
             if (layer.role === LayerRole.THEME) {
-                Object.entries(layer.dimensionValues).forEach(([key, value]) => {
+                Object.entries(layer.dimensionValues || {}).forEach(([key, value]) => {
                     if (value !== undefined) {
                         res[key] = value;
                     }

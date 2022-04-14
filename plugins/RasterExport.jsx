@@ -84,7 +84,7 @@ class RasterExport extends React.Component {
         const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, this.state.dpi);
         const dimensionValues = this.props.layers.reduce((res, layer) => {
             if (layer.role === LayerRole.THEME) {
-                Object.entries(layer.dimensionValues).forEach(([key, value]) => {
+                Object.entries(layer.dimensionValues || {}).forEach(([key, value]) => {
                     if (value !== undefined) {
                         res[key] = value;
                     }
