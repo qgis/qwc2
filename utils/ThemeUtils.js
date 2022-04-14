@@ -51,7 +51,9 @@ const ThemeUtils = {
                     visibility: false,
                     opacity: bgLayer.opacity !== undefined ? bgLayer.opacity : 255
                 };
-                if (bgLayer.type === "group") {
+                if (bgLayer.type === "wms") {
+                    bgLayer.version = bgLayer.params.VERSION || bgLayer.version || themes.defaultWMSVersion || "1.3.0";
+                } else if (bgLayer.type === "group") {
                     bgLayer.items = bgLayer.items.map(item => {
                         if (item.ref) {
                             const sublayer = themes.backgroundLayers.find(l => l.name === item.ref);
