@@ -84,7 +84,9 @@ const ThemeUtils = {
         const urlParts = url.parse(theme.url, true);
         // Resolve relative urls
         if (!urlParts.host) {
-            urlParts.host = url.parse(window.location.href).host;
+            const locationParts = url.parse(window.location.href);
+            urlParts.protocol = locationParts.protocol;
+            urlParts.host = locationParts.host;
         }
         const baseParams = urlParts.query;
         const layer = {
