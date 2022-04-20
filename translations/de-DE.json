@@ -301,6 +301,7 @@
     },
     "timemanager": {
       "animationinterval": "Animationsintervall",
+      "markers": "Marker",
       "notemporaldata": "Keine sichtbare Ebenen in der Karte sind mit Zeitinformationen versehen.",
       "play": "Starten",
       "rewind": "Zurücksetzten",

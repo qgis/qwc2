@@ -253,6 +253,7 @@
     "themeswitcher.openintab",
     "themeswitcher.restrictedthemeinfo",
     "timemanager.animationinterval",
+    "timemanager.markers",
     "timemanager.notemporaldata",
     "timemanager.play",
     "timemanager.rewind",

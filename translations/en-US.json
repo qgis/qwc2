@@ -301,6 +301,7 @@
     },
     "timemanager": {
       "animationinterval": "Animation interval",
+      "markers": "Markers",
       "notemporaldata": "No temporal layers are visible in the map.",
       "play": "Play",
       "rewind": "Rewind",

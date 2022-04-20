@@ -20,8 +20,15 @@ div.time-manager-toolbar select {
     width: 6em;
 }
 
-div.time-manager-toolbar > div.ToggleSwitch {
-    max-width: 6em;
+div.time-manager-toolbar div.ToggleSwitch {
+    width: 6em;
+    margin-left: 0.25em;
+}
+
+span.time-manager-toolbar-block {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
 }
 
 span.time-manager-toolbar-spacer {

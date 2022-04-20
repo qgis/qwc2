@@ -301,6 +301,7 @@
     },
     "timemanager": {
       "animationinterval": "Intervallo animazione",
+      "markers": "Marker",
       "notemporaldata": "Nessun layer con dimensioni temporali è attivo nella cartina.",
       "play": "Avvia animazione",
       "rewind": "Resetta animazione",
