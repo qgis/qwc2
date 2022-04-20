@@ -35,11 +35,11 @@ export default {
         const vectorLayer = new ol.layer.Vector({
             msId: options.id,
             source: source,
-            style: feature => {
+            style: options.styleFunction || (feature => {
                 const styleName = options.styleName || 'default';
                 const styleOptions = options.styleOptions || {};
                 return FeatureStyles[styleName](feature, styleOptions);
-            }
+            })
         });
         return vectorLayer;
     },
