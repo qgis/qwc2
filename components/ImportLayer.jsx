@@ -160,7 +160,7 @@ class ImportLayer extends React.Component {
                 serviceLayers: (this.state.serviceLayers || []).concat(result)
             });
         }).catch(() => {
-            this.setState({pendingRequests: this.state.pendingRequests - 1});
+            this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: this.state.serviceLayers || []});
         });
 
         // Attempt to load as WMS
@@ -182,7 +182,7 @@ class ImportLayer extends React.Component {
                     serviceLayers: (this.state.serviceLayers || []).concat(result)
                 });
             }).catch(() => {
-                this.setState({pendingRequests: this.state.pendingRequests - 1});
+                this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: this.state.serviceLayers || []});
             });
         }
 
@@ -204,7 +204,7 @@ class ImportLayer extends React.Component {
                     serviceLayers: (this.state.serviceLayers || []).concat(result)
                 });
             }).catch(() => {
-                this.setState({pendingRequests: this.state.pendingRequests - 1});
+                this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: this.state.serviceLayers || []});
             });
         }
     }
