@@ -7,6 +7,7 @@
     "repository": "git@github.com:qgis/qwc2.git",
     "dependencies": {
         "@turf/buffer": "6.5.0",
+        "any-date-parser": "^1.5.2",
         "axios": "0.23.0",
         "buffer": "^6.0.3",
         "chartist": "0.10.1",

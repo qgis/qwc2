@@ -12,10 +12,10 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
 import uuid from 'uuid';
 import isEqual from 'lodash.isequal';
 import ol from 'openlayers';
+import dateParser from 'any-date-parser';
 import {setLayerDimensions, addLayerFeatures, removeLayer, LayerRole} from '../actions/layers';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import Icon from '../components/Icon';
@@ -30,9 +30,7 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/TimeManager.css';
 import markerIcon from '../utils/img/marker-icon.png';
 
-
 dayjs.extend(utc);
-dayjs.extend(customParseFormat);
 
 class TimeManager extends React.Component {
     static propTypes = {
@@ -398,12 +396,14 @@ class TimeManager extends React.Component {
                             markers: [
                                 ...this.state.timeMarkers.markers,
                                 ...Object.values(features).reduce((res, cur) => [...res, ...cur.map(feature => {
+                                    const startdate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][0]]);
+                                    const enddate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][1]]);
                                     return {
                                         ...feature,
                                         properties: {
                                             ...feature.properties,
-                                            startdate: dayjs.utc(feature.properties[sublayerattrs[feature.layername][0]]),
-                                            enddate: dayjs.utc(feature.properties[sublayerattrs[feature.layername][1]])
+                                            startdate: dayjs.utc(startdate),
+                                            enddate: dayjs.utc(enddate)
                                         }
                                     };
                                 })], [])],
