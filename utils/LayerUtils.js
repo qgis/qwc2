@@ -202,8 +202,7 @@ const LayerUtils = {
             } else if (layer.role === LayerRole.USERLAYER && layer.type === "wms") {
                 const sublayernames = [];
                 LayerUtils.collectWMSSublayerParams(layer, sublayernames, opacities, styles, queryable, visibilities, layer.visibility);
-                const options = Object.entries(layer.baseParams || {}).map(([key, value]) => encodeURIComponent(key) + "=" + encodeURIComponent(value)).join("&");
-                layernames.push(...sublayernames.map(name => "wms:" + layer.url + "#" + name + (options ? "?" + options : "")));
+                layernames.push(...sublayernames.map(name => "wms:" + layer.url + "#" + name));
             } else if (layer.role === LayerRole.USERLAYER && (layer.type === "wfs" || layer.type === "wmts")) {
                 layernames.push(layer.type + ':' + (layer.capabilitiesUrl || layer.url) + "#" + layer.name);
                 opacities.push(layer.opacity);
@@ -242,7 +241,6 @@ const LayerUtils = {
         let opacity = 255;
         let visibility = true;
         let tristate = false;
-        let params = {};
         if (entry.endsWith('!')) {
             visibility = false;
             entry = entry.slice(0, -1);
@@ -261,18 +259,11 @@ const LayerUtils = {
             type = match[1];
             layerUrl = match[2];
             name = match[3];
-            const questionPos = name.indexOf('?');
-            if (questionPos !== -1) {
-                params = name.slice(questionPos + 1).split('&').map(x => x.split('=')).reduce((res, cur) => (
-                    {...res, [decodeURIComponent(cur[0])]: decodeURIComponent(cur[1])}
-                ), {});
-                name = name.slice(0, questionPos);
-            }
         } else if (name.startsWith('sep:')) {
             type = 'separator';
             name = name.slice(4);
         }
-        return {id, type, url: layerUrl, name, opacity, visibility, tristate, params};
+        return {id, type, url: layerUrl, name, opacity, visibility, tristate};
     },
     pathEqualOrBelow(parent, child) {
         return isEqual(child.slice(0, parent.length), parent);

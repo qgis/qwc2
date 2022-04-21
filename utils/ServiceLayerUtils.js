@@ -349,7 +349,6 @@ const ServiceLayerUtils = {
                         opacity: layerConfig.opacity,
                         visibility: layerConfig.visibility,
                         role: LayerRole.USERLAYER,
-                        baseParams: {...layer.baseParams, ...layerConfig.params},
                         sublayers: null
                     };
                     callback(layerConfig.id, layer);
