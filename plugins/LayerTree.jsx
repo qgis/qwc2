@@ -387,6 +387,19 @@ class LayerTree extends React.Component {
                             // Prevent context menu on drag-sort
                             ev.stopPropagation(); ev.preventDefault(); return false;
                         }}
+                        onTouchEnd={ev => {
+                            const target = ev.currentTarget;
+                            clearTimeout(target.preventScrollTimeout);
+                            target.preventScrollTimeout = null;
+                            target.removeEventListener("touchmove", MiscUtils.killEvent);
+                        }}
+                        onTouchStart={ev => {
+                            // Prevent touch-scroll after sortable trigger delay
+                            const target = ev.currentTarget;
+                            target.preventScrollTimeout = setTimeout(() => {
+                                target.addEventListener("touchmove", MiscUtils.killEvent, {passive: false});
+                            }, 200);
+                        }}
                         ref={MiscUtils.setupKillTouchEvents}
                     >
                         <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>

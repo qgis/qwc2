@@ -58,8 +58,10 @@ const MiscUtils = {
         }
     },
     killEvent(ev) {
-        ev.stopPropagation();
-        ev.preventDefault();
+        if (ev.cancelable) {
+            ev.stopPropagation();
+            ev.preventDefault();
+        }
     }
 };
 
