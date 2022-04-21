@@ -9,6 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from '../Icon';
+import MiscUtils from '../../utils/MiscUtils';
 
 import './style/EditableSelect.css';
 
@@ -64,7 +65,7 @@ export default class EditableSelect extends React.Component {
                         return null;
                     }
                     return (
-                        <div key={"opt" + idx} onClick={() => this.optionSelected(option)} onMouseDown={this.killEvent}>{this.optionLabel(option)}</div>
+                        <div key={"opt" + idx} onClick={() => this.optionSelected(option)} onMouseDown={MiscUtils.killEvent}>{this.optionLabel(option)}</div>
                     );
                 })}
             </div>
@@ -93,9 +94,5 @@ export default class EditableSelect extends React.Component {
         if (!ev.target.readOnly && ev.key === 'Enter') {
             this.props.onSubmit();
         }
-    }
-    killEvent = (ev) => {
-        ev.stopPropagation();
-        ev.preventDefault();
     }
 }

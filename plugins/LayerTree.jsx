@@ -27,6 +27,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/LayerTree.css';
 
@@ -382,10 +383,12 @@ class LayerTree extends React.Component {
             <div className="layertree-container-wrapper" role="body">
                 <div className="layertree-container">
                     <div className="layertree-tree"
-                        onContextMenuCapture={ev => {ev.stopPropagation(); ev.preventDefault(); return false; }}
-                        onTouchEnd={ev => { ev.stopPropagation(); }}
-                        onTouchMove={ev => { ev.stopPropagation(); }}
-                        onTouchStart={ev => { ev.stopPropagation(); }}>
+                        onContextMenuCapture={ev => {
+                            // Prevent context menu on drag-sort
+                            ev.stopPropagation(); ev.preventDefault(); return false;
+                        }}
+                        ref={MiscUtils.setupKillTouchEvents}
+                    >
                         <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
                             {this.props.layers.map(this.renderLayerTree)}
                         </Sortable>

@@ -14,6 +14,7 @@ import isEmpty from 'lodash.isempty';
 import {setCurrentTask} from '../actions/task';
 import LocaleUtils from '../utils/LocaleUtils';
 import ConfigUtils from '../utils/ConfigUtils';
+import MiscUtils from '../utils/MiscUtils';
 import Icon from './Icon';
 import './style/AppMenu.css';
 
@@ -147,9 +148,9 @@ class AppMenu extends React.Component {
         }
         const filter = removeDiacritics(this.state.filter.toLowerCase());
         return (
-            <div className={"AppMenu " + className} ref={el => { this.menuEl = el; }}
+            <div className={"AppMenu " + className} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }}
             >
-                <div className="appmenu-button-container" onMouseDown={this.toggleMenu}>
+                <div className="appmenu-button-container" onMouseDown={this.toggleMenu} >
                     {this.props.buttonContents}
                 </div>
                 <div className="appmenu-menu-container">

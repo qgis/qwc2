@@ -30,6 +30,7 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -118,10 +119,6 @@ class Search extends React.Component {
                 this.input.focus();
             }
         }
-    }
-    killEvent = (ev) => {
-        ev.preventDefault();
-        ev.stopPropagation();
     }
     search = (props, startup = false)  => {
         if (props.searchText) {
@@ -339,7 +336,7 @@ class Search extends React.Component {
             return null;
         }
         return (
-            <ul className="search-results" onMouseDown={this.setPreventBlur} ref={this.setupKillTouchEvents}>
+            <ul className="search-results" onMouseDown={this.setPreventBlur} ref={MiscUtils.setupKillTouchEvents}>
                 {this.props.results.map(category => this.renderCategory(category))}
             </ul>
         );
@@ -348,15 +345,10 @@ class Search extends React.Component {
         this.preventBlur = true;
         setTimeout(() => {this.preventBlur = false; return false;}, 100);
     }
-    setupKillTouchEvents = (el) => {
-        if (el) {
-            el.addEventListener('touchmove', ev => ev.stopPropagation(), { passive: false });
-        }
-    }
     renderCategory = (category) => {
         const title = category.titlemsgid ? LocaleUtils.tr(category.titlemsgid) : category.title;
         return (
-            <li key={category.id} onMouseDown={this.killEvent}>
+            <li key={category.id} onMouseDown={MiscUtils.killEvent}>
                 <span className="search-results-category-title">{title}</span>
                 <ul>{category.items.map(item => this.renderItem(item))}</ul>
             </li>
@@ -367,7 +359,7 @@ class Search extends React.Component {
             return (
                 <li key={item.id}
                     onClick={() => this.props.searchMore(item, this.props.searchText, this.activeProviders(this.props))}
-                    onMouseDown={this.killEvent}>
+                    onMouseDown={MiscUtils.killEvent}>
                     <i>{LocaleUtils.tr("search.more")}</i>
                 </li>
             );
@@ -375,7 +367,7 @@ class Search extends React.Component {
         const addTitle = LocaleUtils.tr("themeswitcher.addtotheme");
         const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
         return (
-            <li key={item.id} onClick={() => {this.showResult(item); this.input.blur(); }} onMouseDown={this.killEvent}
+            <li key={item.id} onClick={() => {this.showResult(item); this.input.blur(); }} onMouseDown={MiscUtils.killEvent}
                 title={item.text}
             >
                 {item.thumbnail ? (<img src={item.thumbnail} />) : null}

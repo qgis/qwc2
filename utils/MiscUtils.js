@@ -50,6 +50,16 @@ const MiscUtils = {
     getCsrfToken() {
         const csrfTag = Array.from(document.getElementsByTagName('meta')).find(tag => tag.getAttribute('name') === "csrf-token");
         return csrfTag ? csrfTag.getAttribute('content') : "";
+    },
+    setupKillTouchEvents(el) {
+        if (el) {
+            // To stop touchmove propagating to parent which can trigger a swipe
+            el.addEventListener('touchmove', (ev) => { ev.stopPropagation(); }, {passive: false});
+        }
+    },
+    killEvent(ev) {
+        ev.stopPropagation();
+        ev.preventDefault();
     }
 };
 
