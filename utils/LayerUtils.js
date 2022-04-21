@@ -691,7 +691,9 @@ const LayerUtils = {
                     params[identifier + ":styles"] = "";
                     params[identifier + ":dpiMode"] = "7";
                     params[identifier + ":contextualWMSLegend"] = "0";
-                    params[identifier + ":ignoregetmapurl"] = "1";
+                    if (layer.url.includes("?")) {
+                        params[identifier + ":IgnoreGetMapUrl"] = "1";
+                    }
                 }
             }
         }
