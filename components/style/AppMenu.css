@@ -30,6 +30,7 @@ div.AppMenu div.appmenu-menu-container {
     transition: transform 0.25s, opacity 0.25s;
     overflow-y: auto;
     max-height: calc(100vh - 5.75em);
+    max-height: calc(var(--vh, 1vh) * 100 - 5.75em);
 }
 
 div.AppMenu ul.appmenu-menu {
