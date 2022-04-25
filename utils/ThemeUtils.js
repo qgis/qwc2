@@ -59,6 +59,9 @@ const ThemeUtils = {
                             const sublayer = themes.backgroundLayers.find(l => l.name === item.ref);
                             if (sublayer) {
                                 item = {...item, ...sublayer, ...LayerUtils.buildWMSLayerParams(sublayer)};
+                                if (item.type === "wms") {
+                                    item.version = item.params.VERSION || item.version || themes.defaultWMSVersion || "1.3.0";
+                                }
                                 delete item.ref;
                             } else {
                                 item = null;
