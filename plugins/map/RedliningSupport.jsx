@@ -15,6 +15,14 @@ import {changeRedliningState} from '../../actions/redlining';
 import {LayerRole, addLayerFeatures, removeLayerFeatures} from '../../actions/layers';
 import FeatureStyles from '../../utils/FeatureStyles';
 
+const DrawStyle = new ol.style.Style({
+    image: new ol.style.Circle({
+        fill: new ol.style.Fill({color: '#0099FF'}),
+        stroke: new ol.style.Stroke({color: '#FFFFFF', width: 1.5}),
+        radius: 6
+    })
+});
+
 class RedliningSupport extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
@@ -125,7 +133,7 @@ class RedliningSupport extends React.Component {
         const drawInteraction = new ol.interaction.Draw({
             type: typeMap[this.props.redlining.geomType],
             condition: (event) => { return event.originalEvent.buttons === 1; },
-            style: new ol.style.Style(),
+            style: () => { return this.picking ? [] : DrawStyle; },
             freehand: isFreeHand,
             geometryFunction: this.props.redlining.geomType === "Box" ? ol.interaction.createBox() : undefined
         });
