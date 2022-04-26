@@ -281,6 +281,9 @@
       "showpin": "Arată pin",
       "socialIntro": "În rețeaua socială favorită"
     },
+    "snapping": {
+      "snappingenabled": ""
+    },
     "themelayerslist": {
       "addlayer": "Adaugă strat",
       "addlayerstotheme": "Adaugă strat la temă",

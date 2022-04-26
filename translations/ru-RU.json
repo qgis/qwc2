@@ -281,6 +281,9 @@
       "showpin": "",
       "socialIntro": "В Вашей любимой соцсети"
     },
+    "snapping": {
+      "snappingenabled": ""
+    },
     "themelayerslist": {
       "addlayer": "",
       "addlayerstotheme": "",

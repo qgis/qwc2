@@ -281,6 +281,9 @@
       "showpin": "",
       "socialIntro": "En la teva xarxa social preferida"
     },
+    "snapping": {
+      "snappingenabled": ""
+    },
     "themelayerslist": {
       "addlayer": "Afegir capa",
       "addlayerstotheme": "Afegir capa al mapa actual",

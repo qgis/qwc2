@@ -281,6 +281,9 @@
       "showpin": "",
       "socialIntro": "W twoich ulubionych mediach społecznościowych"
     },
+    "snapping": {
+      "snappingenabled": ""
+    },
     "themelayerslist": {
       "addlayer": "",
       "addlayerstotheme": "",

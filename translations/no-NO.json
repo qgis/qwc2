@@ -281,6 +281,9 @@
       "showpin": "",
       "socialIntro": "Sosiale nettvert"
     },
+    "snapping": {
+      "snappingenabled": ""
+    },
     "themelayerslist": {
       "addlayer": "",
       "addlayerstotheme": "",

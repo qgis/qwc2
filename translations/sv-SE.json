@@ -281,6 +281,9 @@
       "showpin": "",
       "socialIntro": "I ditt favoritnätverk"
     },
+    "snapping": {
+      "snappingenabled": ""
+    },
     "themelayerslist": {
       "addlayer": "",
       "addlayerstotheme": "",

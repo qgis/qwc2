@@ -281,6 +281,9 @@
       "showpin": "Mostra pin",
       "socialIntro": "Social network"
     },
+    "snapping": {
+      "snappingenabled": "Snapping attivo"
+    },
     "themelayerslist": {
       "addlayer": "Aggiungi layer",
       "addlayerstotheme": "Aggiungi layer alla mappa corrente",

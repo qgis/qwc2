@@ -281,6 +281,9 @@
       "showpin": "",
       "socialIntro": "Jaa someen"
     },
+    "snapping": {
+      "snappingenabled": ""
+    },
     "themelayerslist": {
       "addlayer": "Lisää taso",
       "addlayerstotheme": "Lisää tasoja nykyiseen karttaan",

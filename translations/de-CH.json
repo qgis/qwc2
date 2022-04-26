@@ -281,6 +281,9 @@
       "showpin": "Pin anzeigen",
       "socialIntro": "In den sozialen Medien"
     },
+    "snapping": {
+      "snappingenabled": "Snapping aktiviert"
+    },
     "themelayerslist": {
       "addlayer": "Layer hinzufügen",
       "addlayerstotheme": "Ebenen der Karte hinzufügen",
