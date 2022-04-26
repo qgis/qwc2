@@ -163,7 +163,9 @@ class MeasurementSupport extends React.Component {
             clearTimeout(this.pickPositionCallbackTimeout);
             // Works because style function clears timeout if marker is rendered, i.e. if mouse is over measure geometry
             this.pickPositionCallbackTimeout = setTimeout(() => {
-                this.props.measurement.pickPositionCallback(null);
+                if (this.props.measurement.pickPositionCallback) {
+                    this.props.measurement.pickPositionCallback(null);
+                }
             }, 50);
         }
     }
