@@ -37,7 +37,7 @@ class MapCopyright extends React.Component {
         return null;
     }
     static collectCopyrigths = (layer, map, transformedbboxes, copyrights, showThemeCopyrightOnly) => {
-        if (layer.sublayers) {
+        if (layer.sublayers && layer.visibility !== false) {
             layer.sublayers.map(sublayer => MapCopyright.collectCopyrigths(sublayer, map, transformedbboxes, copyrights, showThemeCopyrightOnly));
         }
         if (!layer.attribution || !layer.attribution.Title || !layer.visibility) {
