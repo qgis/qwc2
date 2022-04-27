@@ -102,6 +102,7 @@ class MeasurementSupport extends React.Component {
 
         // create an interaction to draw with
         this.drawInteraction = new ol.interaction.Draw({
+            stopClick: true,
             source: this.measureLayer.getSource(),
             condition: (event) => { return event.originalEvent.buttons === 1; },
             type: geometryType,

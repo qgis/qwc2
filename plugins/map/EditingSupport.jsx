@@ -98,6 +98,7 @@ class EditingSupport extends React.Component {
         this.reset();
         this.createLayer();
         const drawInteraction = new ol.interaction.Draw({
+            stopClick: true,
             type: newProps.editing.geomType,
             source: this.layer.getSource(),
             condition: (event) => { return event.originalEvent.buttons === 1; },

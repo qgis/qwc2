@@ -131,6 +131,7 @@ class RedliningSupport extends React.Component {
         const isText = this.props.redlining.geomType === "Text";
         const isFreeHand = this.props.redlining.freehand;
         const drawInteraction = new ol.interaction.Draw({
+            stopClick: true,
             type: typeMap[this.props.redlining.geomType],
             condition: (event) => { return event.originalEvent.buttons === 1; },
             style: () => { return this.picking ? [] : DrawStyle; },
