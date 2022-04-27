@@ -48,6 +48,16 @@ class SnappingSupport extends React.Component {
         if (this.props.mapObj.bbox !== prevProps.mapObj.bbox || this.props.theme !== prevProps.theme) {
             this.setState({invalid: true});
             this.refreshFeatureCache(true);
+        } else if (this.props.layers !== prevProps.layers && this.state.havesnaplayers) {
+            const revChanged = this.props.layers.find(layer => {
+                const prev = layer.role === LayerRole.THEME ? prevProps.layers.find(prevLayer => layer.uuid === prevLayer.uuid) : null;
+                return prev && layer.rev !== prev.rev;
+            });
+            if (revChanged) {
+                this.setState({invalid: true});
+                // Delay to avoid refreshing the cache before QGIS Server can pick up the new feature
+                setTimeout(() => { this.refreshFeatureCache(true); }, 1500);
+            }
         }
         if (this.state.active !== prevState.active) {
             this.snapInteraction.setActive(this.state.active);
