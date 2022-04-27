@@ -27,13 +27,15 @@ class Measure extends React.Component {
         displaycrs: PropTypes.string,
         mapcrs: PropTypes.string,
         measureState: PropTypes.object,
-        showMeasureModeSwitcher: PropTypes.bool
+        showMeasureModeSwitcher: PropTypes.bool,
+        snapping: PropTypes.bool
     }
     static defaultProps = {
-        showMeasureModeSwitcher: true
+        showMeasureModeSwitcher: true,
+        snapping: true
     }
     onShow = (mode) => {
-        this.props.changeMeasurementState({geomType: mode || 'Point'});
+        this.props.changeMeasurementState({geomType: mode || 'Point', snapping: this.props.snapping});
     }
     onHide = () => {
         this.props.changeMeasurementState({geomType: null});

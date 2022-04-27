@@ -47,6 +47,7 @@ class Editing extends React.Component {
         setCurrentTask: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
         side: PropTypes.string,
+        snapping: PropTypes.bool,
         taskData: PropTypes.object,
         theme: PropTypes.object,
         touchFriendly: PropTypes.bool,
@@ -55,7 +56,8 @@ class Editing extends React.Component {
     static defaultProps = {
         touchFriendly: true,
         width: "30em",
-        side: 'right'
+        side: 'right',
+        snapping: true
     }
     state = {
         selectedLayer: null,
@@ -74,6 +76,7 @@ class Editing extends React.Component {
         } else {
             this.changeSelectedLayer(this.state.selectedLayer, "Pick");
         }
+        this.props.changeEditingState({snapping: this.props.snapping});
     }
     onHide = () => {
         this.props.changeEditingState({action: null, geomType: null, feature: null});

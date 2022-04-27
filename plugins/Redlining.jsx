@@ -31,10 +31,12 @@ class Redlining extends React.Component {
         mobile: PropTypes.bool,
         plugins: PropTypes.object,
         redlining: PropTypes.object,
-        setCurrentTask: PropTypes.func
+        setCurrentTask: PropTypes.func,
+        snapping: PropTypes.bool
     }
     static defaultProps = {
         allowGeometryLabels: true,
+        snapping: true,
         plugins: []
     }
     state = {
@@ -64,7 +66,7 @@ class Redlining extends React.Component {
         }
     };
     onShow = (mode) => {
-        this.props.changeRedliningState({action: mode || 'Pick', geomType: null});
+        this.props.changeRedliningState({action: mode || 'Pick', geomType: null, snapping: this.props.snapping});
         Mousetrap.bind('del', this.triggerDelete);
     }
     onHide = () => {

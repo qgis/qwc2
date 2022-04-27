@@ -101,7 +101,7 @@ class SnappingSupport extends React.Component {
         let added = false;
         for (let i = 0; i < interactions.getLength(); ++i) {
             const interaction = interactions.item(i);
-            if ((interaction instanceof ol.interaction.Draw) || (interaction instanceof ol.interaction.Modify)) {
+            if (((interaction instanceof ol.interaction.Draw) || (interaction instanceof ol.interaction.Modify)) && interaction.get("snapping") === true) {
                 interactions.push(this.snapInteraction);
                 this.refreshFeatureCache();
                 added = true;
