@@ -133,10 +133,6 @@ class SnappingSupport extends React.Component {
         if (!this.state.invalid && !force) {
             return;
         }
-        this.setState({reqId: null, havesnaplayers: false});
-        if (!this.snapInteraction.getMap() || !this.snapInteraction.getActive()) {
-            return;
-        }
         const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
         if (!this.props.theme || !themeLayer) {
             return;
@@ -156,6 +152,10 @@ class SnappingSupport extends React.Component {
             return [...res, cur.name];
         }, []);
         if (snapLayers.length === 0) {
+            return;
+        }
+        this.setState({reqId: null, havesnaplayers: !!snapLayers});
+        if (!this.snapInteraction.getMap() || !this.snapInteraction.getActive()) {
             return;
         }
         const xmin = this.props.mapObj.bbox.bounds[0];
