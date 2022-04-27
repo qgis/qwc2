@@ -456,6 +456,9 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             if (configItem.pluginData) {
                 resultItem.pluginData = configItem.pluginData;
             }
+            if (configItem.snapping) {
+                resultItem.snapping = configItem.snapping;
+            }
             if (configItem.minSearchScaleDenom) {
                 resultItem.minSearchScaleDenom = configItem.minSearchScaleDenom;
             } else if (configItem.minSearchScale) { // Legacy name

@@ -423,6 +423,8 @@ def getTheme(config, configItem, result, resultItem):
         resultItem["externalLayers"] = externalLayers
         if "pluginData" in configItem:
             resultItem["pluginData"] = configItem["pluginData"]
+        if "snapping" in configItem:
+            resultItem["snapping"] = configItem["snapping"]
         if "minSearchScaleDenom" in configItem:
             resultItem["minSearchScaleDenom"] = configItem["minSearchScaleDenom"]
         elif "minSearchScale" in configItem: # Legacy name
