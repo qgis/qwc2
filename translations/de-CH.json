@@ -282,7 +282,8 @@
       "socialIntro": "In den sozialen Medien"
     },
     "snapping": {
-      "snappingenabled": "Snapping aktiviert"
+      "loading": "Einrastrungsgeometrien werden geladen...",
+      "snappingenabled": "Einrasten aktiviert"
     },
     "themelayerslist": {
       "addlayer": "Layer hinzufügen",

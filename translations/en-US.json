@@ -282,6 +282,7 @@
       "socialIntro": "In your favourite social network"
     },
     "snapping": {
+      "loading": "Loading snapping geometries...",
       "snappingenabled": "Snapping enabled"
     },
     "themelayerslist": {

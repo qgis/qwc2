@@ -67,7 +67,7 @@ class SnappingSupport extends React.Component {
                             <input checked={this.state.active} disabled={!this.state.havesnaplayers} onChange={ev => this.setState({active: ev.target.checked})} type="checkbox" />
                         )}
                         &nbsp;
-                        {LocaleUtils.tr("snapping.snappingenabled")}
+                        {this.state.reqId ? LocaleUtils.tr("snapping.loading") : LocaleUtils.tr("snapping.snappingenabled")}
                     </label>
                 </div>
             </div>
