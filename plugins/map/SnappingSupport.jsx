@@ -26,6 +26,8 @@ class SnappingSupport extends React.Component {
         layers: PropTypes.array,
         map: PropTypes.object,
         mapObj: PropTypes.object,
+        pluginConfig: PropTypes.array,
+        task: PropTypes.string,
         theme: PropTypes.object
     }
     state = {
@@ -45,6 +47,10 @@ class SnappingSupport extends React.Component {
         props.map.getInteractions().on('remove', this.handleInteractionRemoved);
     }
     componentDidUpdate(prevProps, prevState) {
+        if (this.props.task !== prevProps.task) {
+            const taskConfig = (this.props.pluginConfig.find(config => config.name === this.props.task) || {}).cfg || {};
+            this.setState({active: taskConfig.snappingActive !== false});
+        }
         if (this.props.mapObj.bbox !== prevProps.mapObj.bbox || this.props.theme !== prevProps.theme) {
             this.setState({invalid: true});
             this.refreshFeatureCache(true);
@@ -195,9 +201,16 @@ class SnappingSupport extends React.Component {
     }
 }
 
-export default connect((state) => ({
-    layers: state.layers.flat,
-    mapObj: state.map,
-    theme: state.theme.current
-}), {
+export default connect((state) => {
+    const device = state.browser && state.browser.mobile ? 'mobile' : 'desktop';
+    const pluginConfig = state.localConfig.plugins[device];
+
+    return {
+        pluginConfig: pluginConfig,
+        layers: state.layers.flat,
+        mapObj: state.map,
+        task: state.task.id,
+        theme: state.theme.current
+    };
+}, {
 })(SnappingSupport);
