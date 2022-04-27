@@ -111,10 +111,10 @@ class SnappingSupport extends React.Component {
         this.setState({drawing: added});
     }
     refreshFeatureCache = (force) => {
-        this.setState({reqId: null, havesnaplayers: false});
         if (!this.state.invalid && !force) {
             return;
         }
+        this.setState({reqId: null, havesnaplayers: false});
         if (!this.snapInteraction.getMap() || !this.snapInteraction.getActive()) {
             return;
         }
