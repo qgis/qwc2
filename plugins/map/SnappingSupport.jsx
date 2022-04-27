@@ -67,6 +67,9 @@ class SnappingSupport extends React.Component {
         }
         if (this.state.active !== prevState.active) {
             this.snapInteraction.setActive(this.state.active);
+            if (this.state.active) {
+                this.refreshFeatureCache();
+            }
         }
     }
     render() {
