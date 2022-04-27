@@ -110,31 +110,8 @@ class EditingSupport extends React.Component {
             this.currentFeature.setId(uuid.v4());
         }, this);
         drawInteraction.on('drawend', () => {
-            const feature = this.currentFeature;
             this.commitCurrentFeature();
-
-            setTimeout(() => {
-                this.currentFeature = feature;
-                const modifyInteraction = new ol.interaction.Modify({
-                    features: new ol.Collection([this.currentFeature]),
-                    condition: (event) => { return event.originalEvent.buttons === 1; },
-                    deleteCondition: (event) => {
-                        // delete vertices on SHIFT + click
-                        if (event.type === "pointerdown" && ol.events.condition.shiftKeyOnly(event)) {
-                            this.props.map.setIgnoreNextClick(true);
-                        }
-                        return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
-                    }
-                });
-                modifyInteraction.set('snapping', this.props.editing.snapping);
-                this.props.map.addInteraction(modifyInteraction);
-                this.interaction = modifyInteraction;
-                modifyInteraction.on('modifyend', () => {
-                    this.commitCurrentFeature();
-                }, this);
-
-                this.props.map.removeInteraction(drawInteraction);
-            }, 100);
+            this.props.map.removeInteraction(drawInteraction);
         }, this);
         this.props.map.addInteraction(drawInteraction);
         this.interaction = drawInteraction;
