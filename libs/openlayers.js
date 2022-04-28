@@ -37,6 +37,7 @@ import OlInteractionDragPan from 'ol/interaction/DragPan';
 import OlInteractionDraw from 'ol/interaction/Draw';
 import {createBox as olCreateBox} from 'ol/interaction/Draw';
 import OlInteractionInteraction from 'ol/interaction/Interaction';
+import OlInteractionPointer from 'ol/interaction/Pointer';
 import OlInteractionModify from 'ol/interaction/Modify';
 import OlInteractionMouseWheelZoom from 'ol/interaction/MouseWheelZoom';
 import OlInteractionSelect from 'ol/interaction/Select';
@@ -116,6 +117,7 @@ export default {
         Interaction: OlInteractionInteraction,
         Modify: OlInteractionModify,
         MouseWheelZoom: OlInteractionMouseWheelZoom,
+        Pointer: OlInteractionPointer,
         Select: OlInteractionSelect,
         Snap: OlInteractionSnap,
         Translate: OlInteractionTranslate

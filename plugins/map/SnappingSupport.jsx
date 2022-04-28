@@ -21,6 +21,52 @@ import VectorLayerUtils from '../../utils/VectorLayerUtils';
 
 import './style/SnappingSupport.css';
 
+
+class SnapInteraction extends ol.interaction.Snap {
+    constructor(options) {
+        super(options);
+        this.layer = new ol.layer.Vector({
+            source: new ol.source.Vector(),
+            style: new ol.style.Style({
+                image: new ol.style.Circle({
+                    stroke: new ol.style.Stroke({color: '#FF0000', width: 2}),
+                    radius: 10
+                })
+            }),
+            zIndex: Infinity
+        });
+        this.currentMap = null;
+    }
+    handleEvent(evt) {
+        const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
+        this.layer.getSource().clear();
+        if (result.snapped) {
+            evt.coordinate = result.vertex.slice(0, 2);
+            evt.pixel = result.vertexPixel;
+            this.layer.getSource().addFeature(new ol.Feature({
+                geometry: new ol.geom.Point(evt.coordinate)
+            }));
+        }
+        return ol.interaction.Pointer.prototype.handleEvent.call(this, evt);
+    }
+    setMap(map) {
+        if (map) {
+            map.addLayer(this.layer);
+            this.currentMap = map;
+        } else if (this.currentMap) {
+            this.currentMap.removeLayer(this.layer);
+            this.currentMap = null;
+        }
+        super.setMap(map);
+    }
+    setActive(active) {
+        if (this.layer) {
+            this.layer.setVisible(active);
+        }
+        super.setActive(active);
+    }
+}
+
 class SnappingSupport extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
@@ -40,7 +86,7 @@ class SnappingSupport extends React.Component {
     constructor(props) {
         super(props);
         this.source = new ol.source.Vector();
-        this.snapInteraction = new ol.interaction.Snap({source: this.source});
+        this.snapInteraction = new SnapInteraction({source: this.source});
         this.inEventHandler = false;
 
         props.map.getInteractions().on('add', this.handleInteractionAdded);
