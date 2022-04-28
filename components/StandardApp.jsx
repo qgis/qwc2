@@ -94,6 +94,20 @@ class AppInitComponent extends React.Component {
                     if (ConfigUtils.getConfigProp("dontLoadDefaultTheme")) {
                         return;
                     }
+
+                    // Determine default theme, and fallback if not available
+                    let availableThemes = themes.items.map((t) => t.id);
+                    let defaultTheme = themes.defaultTheme;
+                    if (!availableThemes.includes(themes.defaultTheme)) {
+                        console.log(`Default theme (${themes.defaultTheme}) is not available.`);
+                        if (availableThemes.length > 0) {
+                          defaultTheme = themes.items[0].id;
+                          console.log(`Falling back to ${defaultTheme}.`);
+                        } else {
+                          console.log(`No available theme to fallback to.`);
+                        }
+                    }
+
                     theme = ThemeUtils.getThemeById(themes, themes.defaultTheme);
                 }
                 const layerParams = params.l !== undefined ? params.l.split(",").filter(entry => entry) : null;
