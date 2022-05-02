@@ -14,6 +14,7 @@ import isEmpty from 'lodash.isempty';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import measureUtils from '../utils/MeasureUtils';
+import {setSnappingConfig} from '../actions/map.js';
 import {changeMeasurementState} from '../actions/measurement.js';
 import displayCrsSelector from '../selectors/displaycrs';
 import TaskBar from '../components/TaskBar';
@@ -27,15 +28,19 @@ class Measure extends React.Component {
         displaycrs: PropTypes.string,
         mapcrs: PropTypes.string,
         measureState: PropTypes.object,
+        setSnappingConfig: PropTypes.func,
         showMeasureModeSwitcher: PropTypes.bool,
-        snapping: PropTypes.bool
+        snapping: PropTypes.bool,
+        snappingActive: PropTypes.bool
     }
     static defaultProps = {
         showMeasureModeSwitcher: true,
-        snapping: true
+        snapping: true,
+        snappingActive: true
     }
     onShow = (mode) => {
-        this.props.changeMeasurementState({geomType: mode || 'Point', snapping: this.props.snapping});
+        this.props.changeMeasurementState({geomType: mode || 'Point'});
+        this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
     }
     onHide = () => {
         this.props.changeMeasurementState({geomType: null});
@@ -147,5 +152,6 @@ const selector = createSelector([state => state, displayCrsSelector], (state, di
 }));
 
 export default connect(selector, {
-    changeMeasurementState: changeMeasurementState
+    changeMeasurementState: changeMeasurementState,
+    setSnappingConfig: setSnappingConfig
 })(Measure);

@@ -13,6 +13,7 @@ import NumericInput from 'react-numeric-input2';
 import Mousetrap from 'mousetrap';
 import {changeRedliningState} from '../actions/redlining';
 import {LayerRole, addLayer} from '../actions/layers';
+import {setSnappingConfig} from '../actions/map';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import ColorButton from '../components/widgets/ColorButton';
@@ -32,11 +33,14 @@ class Redlining extends React.Component {
         plugins: PropTypes.object,
         redlining: PropTypes.object,
         setCurrentTask: PropTypes.func,
-        snapping: PropTypes.bool
+        setSnappingConfig: PropTypes.func,
+        snapping: PropTypes.bool,
+        snappingActive: PropTypes.bool
     }
     static defaultProps = {
         allowGeometryLabels: true,
         snapping: true,
+        snappingActive: true,
         plugins: []
     }
     state = {
@@ -66,7 +70,8 @@ class Redlining extends React.Component {
         }
     };
     onShow = (mode) => {
-        this.props.changeRedliningState({action: mode || 'Pick', geomType: null, snapping: this.props.snapping});
+        this.props.changeRedliningState({action: mode || 'Pick', geomType: null});
+        this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
         Mousetrap.bind('del', this.triggerDelete);
     }
     onHide = () => {
@@ -216,6 +221,7 @@ export default (plugins) => {
         plugins: plugins
     }), {
         changeRedliningState: changeRedliningState,
-        addLayer: addLayer
+        addLayer: addLayer,
+        setSnappingConfig: setSnappingConfig
     })(Redlining);
 };

@@ -104,7 +104,6 @@ class EditingSupport extends React.Component {
             condition: (event) => { return event.originalEvent.buttons === 1; },
             style: this.editStyle
         });
-        drawInteraction.set('snapping', this.props.editing.snapping);
         drawInteraction.on('drawstart', (evt) => {
             this.currentFeature = evt.feature;
             this.currentFeature.setId(uuid.v4());
@@ -134,7 +133,6 @@ class EditingSupport extends React.Component {
                 return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
             }
         });
-        modifyInteraction.set('snapping', this.props.editing.snapping);
         modifyInteraction.on('modifyend', () => {
             this.commitCurrentFeature();
         }, this);

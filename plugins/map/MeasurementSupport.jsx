@@ -108,7 +108,6 @@ class MeasurementSupport extends React.Component {
             type: geometryType,
             style: () => { return this.modifyInteraction ? [] : DrawStyle; }
         });
-        this.drawInteraction.set('snapping', this.props.measurement.snapping);
 
         this.drawInteraction.on('drawstart', (ev) => {
             this.leaveTemporaryPickMode();
@@ -156,7 +155,6 @@ class MeasurementSupport extends React.Component {
                 });
             }
         });
-        this.modifyInteraction.set('snapping', this.props.measurement.snapping);
         this.props.map.on('pointermove', this.clearPickPosition);
         this.modifyInteraction.on('modifyend', () => {
             this.updateMeasurementResults(this.sketchFeature, false);

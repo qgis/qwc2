@@ -138,7 +138,6 @@ class RedliningSupport extends React.Component {
             freehand: isFreeHand,
             geometryFunction: this.props.redlining.geomType === "Box" ? ol.interaction.createBox() : undefined
         });
-        drawInteraction.set('snapping', this.props.redlining.snapping);
         drawInteraction.on('drawstart', (evt) => {
             if (this.picking && this.props.redlining.drawMultiple === false) {
                 return;
@@ -189,7 +188,6 @@ class RedliningSupport extends React.Component {
                     return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
                 }
             });
-            modifyInteraction.set('snapping', this.props.redlining.snapping);
             modifyInteraction.on('modifyend', () => {
                 this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
             });
@@ -228,7 +226,6 @@ class RedliningSupport extends React.Component {
                 return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
             }
         });
-        modifyInteraction.set('snapping', this.props.redlining.snapping);
         selectInteraction.on('select', (evt) => {
             if (evt.selected.length === 1 && evt.selected[0] === this.currentFeature) {
                 return;

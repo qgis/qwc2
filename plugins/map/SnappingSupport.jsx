@@ -13,6 +13,7 @@ import {connect} from 'react-redux';
 import ol from 'openlayers';
 import uuid from 'uuid';
 import {LayerRole} from '../../actions/layers';
+import {setSnappingConfig} from '../../actions/map';
 import Spinner from '../../components/Spinner';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MapUtils from '../../utils/MapUtils';
@@ -72,7 +73,7 @@ class SnappingSupport extends React.Component {
         layers: PropTypes.array,
         map: PropTypes.object,
         mapObj: PropTypes.object,
-        pluginConfig: PropTypes.array,
+        setSnappingConfig: PropTypes.func,
         task: PropTypes.string,
         theme: PropTypes.object
     }
@@ -87,16 +88,13 @@ class SnappingSupport extends React.Component {
         super(props);
         this.source = new ol.source.Vector();
         this.snapInteraction = new SnapInteraction({source: this.source});
+        this.snapInteraction.setActive(this.props.mapObj.snapping.active);
         this.inEventHandler = false;
 
         props.map.getInteractions().on('add', this.handleInteractionAdded);
         props.map.getInteractions().on('remove', this.handleInteractionRemoved);
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.task !== prevProps.task) {
-            const taskConfig = (this.props.pluginConfig.find(config => config.name === this.props.task) || {}).cfg || {};
-            this.setState({active: taskConfig.snappingActive !== false});
-        }
         if (this.props.mapObj.bbox !== prevProps.mapObj.bbox || this.props.theme !== prevProps.theme) {
             this.setState({invalid: true});
             this.refreshFeatureCache(true);
@@ -111,9 +109,9 @@ class SnappingSupport extends React.Component {
                 setTimeout(() => { this.refreshFeatureCache(true); }, 1500);
             }
         }
-        if (this.state.active !== prevState.active) {
-            this.snapInteraction.setActive(this.state.active);
-            if (this.state.active) {
+        if (this.props.mapObj.snapping.active !== prevProps.mapObj.snapping.active) {
+            this.snapInteraction.setActive(this.props.mapObj.snapping.active);
+            if (this.props.mapObj.snapping.active) {
                 this.refreshFeatureCache();
             }
         }
@@ -129,7 +127,7 @@ class SnappingSupport extends React.Component {
                         {this.state.reqId !== null ? (
                             <Spinner/>
                         ) : (
-                            <input checked={this.state.active} disabled={!this.state.havesnaplayers} onChange={ev => this.setState({active: ev.target.checked})} type="checkbox" />
+                            <input checked={this.props.mapObj.snapping.active} disabled={!this.state.havesnaplayers} onChange={ev => this.props.setSnappingConfig(true, ev.target.checked)} type="checkbox" />
                         )}
                         &nbsp;
                         {this.state.reqId ? LocaleUtils.tr("snapping.loading") : LocaleUtils.tr("snapping.snappingenabled")}
@@ -164,13 +162,15 @@ class SnappingSupport extends React.Component {
         interactions.remove(this.snapInteraction);
         // If there is any draw or modify interaction, add snapping interaction
         let added = false;
-        for (let i = 0; i < interactions.getLength(); ++i) {
-            const interaction = interactions.item(i);
-            if (((interaction instanceof ol.interaction.Draw) || (interaction instanceof ol.interaction.Modify)) && interaction.get("snapping") === true) {
-                interactions.push(this.snapInteraction);
-                this.refreshFeatureCache();
-                added = true;
-                break;
+        if (this.props.mapObj.snapping.enabled) {
+            for (let i = 0; i < interactions.getLength(); ++i) {
+                const interaction = interactions.item(i);
+                if ((interaction instanceof ol.interaction.Draw) || (interaction instanceof ol.interaction.Modify)) {
+                    interactions.push(this.snapInteraction);
+                    this.refreshFeatureCache();
+                    added = true;
+                    break;
+                }
             }
         }
         this.setState({drawing: added});
@@ -250,16 +250,11 @@ class SnappingSupport extends React.Component {
     }
 }
 
-export default connect((state) => {
-    const device = state.browser && state.browser.mobile ? 'mobile' : 'desktop';
-    const pluginConfig = state.localConfig.plugins[device];
-
-    return {
-        pluginConfig: pluginConfig,
-        layers: state.layers.flat,
-        mapObj: state.map,
-        task: state.task.id,
-        theme: state.theme.current
-    };
-}, {
+export default connect((state) => ({
+    layers: state.layers.flat,
+    mapObj: state.map,
+    task: state.task.id,
+    theme: state.theme.current
+}), {
+    setSnappingConfig: setSnappingConfig
 })(SnappingSupport);
