@@ -90,6 +90,7 @@
       "discard": "Descartar",
       "draw": "Traçar",
       "feature": "Element",
+      "geomreadonly": "",
       "maximize": "Maximitzar",
       "minimize": "Minimitzar",
       "nocompatpick": "",

@@ -25,6 +25,15 @@
     flex: 0 0 auto;
 }
 
+#Editing div.editing-geom-readonly {
+    background-color: #FF6600;
+    border: 1px solid #FF0000;
+    color: white;
+    padding: 0.25em;
+    margin-bottom: 0.25em;
+    font-weight: bold;
+}
+
 #Editing div.editing-edit-frame {
     margin-top: 0.5em;
     padding-top: 0.5em;

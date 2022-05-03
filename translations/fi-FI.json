@@ -90,6 +90,7 @@
       "discard": "Discard",
       "draw": "Draw",
       "feature": "Feature",
+      "geomreadonly": "",
       "maximize": "Maximize",
       "minimize": "Minimize",
       "nocompatpick": "",

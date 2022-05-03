@@ -90,6 +90,7 @@
       "discard": "Forkast",
       "draw": "Tegn",
       "feature": "Objekt",
+      "geomreadonly": "",
       "maximize": "Maksimer",
       "minimize": "Minimer",
       "nocompatpick": "",

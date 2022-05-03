@@ -12,7 +12,8 @@ const defaultState = {
     action: null,
     geomType: null,
     feature: null,
-    changed: false
+    changed: false,
+    geomReadOnly: false
 };
 
 export default function editing(state = defaultState, action) {

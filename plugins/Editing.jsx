@@ -111,7 +111,7 @@ class Editing extends React.Component {
                     const features = featureCollection ? featureCollection.features : null;
                     this.setState({pickedFeatures: features});
                     const feature = features ? features[0] : null;
-                    this.props.changeEditingState({...this.props.editing, feature: feature, changed: false});
+                    this.props.changeEditingState({...this.props.editing, feature: feature, geomReadOnly: this.hasNonNullZ(feature), changed: false});
 
                     // Query relation values for picked feature
                     const editDataset = this.editLayerId(this.state.selectedLayer);
@@ -151,6 +151,12 @@ class Editing extends React.Component {
         }
         return layerId;
     }
+    hasNonNullZ = (feature) => {
+        const nonZeroCoordinate = (coordinates) => {
+            return coordinates.find(entry => Array.isArray(entry[0]) ? nonZeroCoordinate(entry) : entry.length >= 3 && entry[2] !== 0);
+        };
+        return nonZeroCoordinate((feature.geometry || {}).coordinates || []);
+    }
 
     renderBody = () => {
         if (!this.props.theme || isEmpty(this.props.theme.editConfig)) {
@@ -171,8 +177,8 @@ class Editing extends React.Component {
         }
 
         const actionButtons = [
-            {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick"), data: {action: 'Pick'}},
-            {key: 'Draw', icon: 'editdraw', label: LocaleUtils.trmsg("editing.draw"), data: {action: 'Draw', feature: null}}
+            {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick"), data: {action: 'Pick', geomReadOnly: false}},
+            {key: 'Draw', icon: 'editdraw', label: LocaleUtils.trmsg("editing.draw"), data: {action: 'Draw', feature: null, geomReadOnly: false}}
         ];
         if (ConfigUtils.havePlugin("AttributeTable")) {
             actionButtons.push({key: 'AttribTable', icon: 'editing', label: LocaleUtils.trmsg("editing.attrtable"), data: {action: 'AttrTable'}});
@@ -244,6 +250,9 @@ class Editing extends React.Component {
             const mapPrefix = editDataset.replace(new RegExp("." + this.state.selectedLayer + "$"), ".");
             fieldsTable = (
                 <div className="editing-edit-frame">
+                    {this.props.editing.geomReadOnly ? (
+                        <div className="editing-geom-readonly">{LocaleUtils.tr("editing.geomreadonly")}</div>
+                    ) : null}
                     <form action="" onSubmit={this.onSubmit}>
                         {curConfig.form ? (
                             <QtDesignerForm addRelationRecord={this.addRelationRecord} editLayerId={editDataset} form={curConfig.form}
@@ -581,7 +590,7 @@ class Editing extends React.Component {
     }
     setEditFeature = (featureId) => {
         const feature = this.state.pickedFeatures.find(f => f.id.toString() === featureId);
-        this.props.changeEditingState({...this.props.editing, feature: feature, changed: false});
+        this.props.changeEditingState({...this.props.editing, feature: feature, geomReadOnly: this.hasNonNullZ(feature), changed: false});
     }
     toggleDrawPick = () => {
         const pickActive = !this.state.drawPick;

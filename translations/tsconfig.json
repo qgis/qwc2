@@ -94,6 +94,7 @@
     "editing.discard",
     "editing.draw",
     "editing.feature",
+    "editing.geomreadonly",
     "editing.maximize",
     "editing.minimize",
     "editing.nocompatpick",

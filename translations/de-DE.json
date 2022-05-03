@@ -90,6 +90,7 @@
       "discard": "Abbrechen",
       "draw": "Zeichnen",
       "feature": "Objekt",
+      "geomreadonly": "Die Geometrie enthält Z-Werte ungleich Null und kann daher nicht veränderbar.",
       "maximize": "Maximieren",
       "minimize": "Minimieren",
       "nocompatpick": "Keine kompatible Geometrie",

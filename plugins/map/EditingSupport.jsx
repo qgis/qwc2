@@ -99,7 +99,7 @@ class EditingSupport extends React.Component {
         this.createLayer();
         const drawInteraction = new ol.interaction.Draw({
             stopClick: true,
-            type: newProps.editing.geomType,
+            type: newProps.editing.geomType.replace(/Z$/, ''),
             source: this.layer.getSource(),
             condition: (event) => { return event.originalEvent.buttons === 1; },
             style: this.editStyle
@@ -136,6 +136,7 @@ class EditingSupport extends React.Component {
         modifyInteraction.on('modifyend', () => {
             this.commitCurrentFeature();
         }, this);
+        modifyInteraction.setActive(!this.props.editing.geomReadOnly);
         this.props.map.addInteraction(modifyInteraction);
         this.interaction = modifyInteraction;
     }
@@ -147,6 +148,10 @@ class EditingSupport extends React.Component {
         let feature = format.writeFeatureObject(this.currentFeature);
         if (this.props.editing.feature) {
             feature = {...this.props.editing.feature, geometry: feature.geometry};
+        }
+        const addZCoordinateIfNeeded = (entry) => Array.isArray(entry[0]) ? entry.map(addZCoordinateIfNeeded) : [...entry.slice(0, 2), 0];
+        if (this.props.editing.geomType.endsWith('Z')) {
+            feature.geometry.coordinates = feature.geometry.coordinates.map(addZCoordinateIfNeeded);
         }
         this.props.changeEditingState({feature: feature, changed: true});
     }

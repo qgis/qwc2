@@ -90,6 +90,7 @@
       "discard": "Discard",
       "draw": "Draw",
       "feature": "Feature",
+      "geomreadonly": "The geometry contains non-zero Z values and is therefore read only.",
       "maximize": "Maximize",
       "minimize": "Minimize",
       "nocompatpick": "No compatible geometry found",
