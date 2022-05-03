@@ -24,7 +24,13 @@ function buildErrMsg(err) {
         message = err.response.data.message;
         if (!isEmpty(err.response.data.geometry_errors)) {
             message += ":\n";
-            message += err.response.data.geometry_errors.map(entry => " - " + entry.reason + " at " + entry.location);
+            message += err.response.data.geometry_errors.map(entry => {
+                let entrymsg = " - " + entry.reason;
+                if (entry.location) {
+                    entrymsg += " at " + entry.location;
+                }
+                return entrymsg;
+            });
         }
         if (!isEmpty(err.response.data.data_errors)) {
             message += ":\n - " + err.response.data.data_errors.join("\n - ");
