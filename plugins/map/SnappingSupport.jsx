@@ -10,6 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import {connect} from 'react-redux';
+import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
 import uuid from 'uuid';
 import {LayerRole} from '../../actions/layers';
@@ -153,10 +154,10 @@ class SnappingSupport extends React.Component {
             }
             return [...res, cur.name];
         }, []);
+        this.setState({reqId: null, havesnaplayers: !isEmpty(snapLayers)});
         if (snapLayers.length === 0) {
             return;
         }
-        this.setState({reqId: null, havesnaplayers: !!snapLayers});
         if (!this.snapInteraction.getMap() || !this.snapInteraction.getActive()) {
             return;
         }
