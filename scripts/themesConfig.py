@@ -456,6 +456,8 @@ def getTheme(config, configItem, result, resultItem):
             resultItem["printUrl"] = getChildElement(capabilities, "Capability/Request/GetPrint/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href").rstrip("?") + "?"
         if "printLabelForSearchResult" in configItem:
             resultItem["printLabelForSearchResult"] = configItem["printLabelForSearchResult"]
+        if "printLabelForAttribution" in configItem:
+            resultItem["printLabelForAttribution"] = configItem["printLabelForAttribution"]
         if "printLabelConfig" in configItem:
             resultItem["printLabelConfig"] = configItem["printLabelConfig"]
 

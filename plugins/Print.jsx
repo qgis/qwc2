@@ -249,13 +249,7 @@ class Print extends React.Component {
                             }
                             return (<tr key={"label." + label}>
                                 <td>{label}:</td>
-                                <td>
-                                    {
-                                        this.props.theme.printLabelForSearchResult === label ?
-                                            (<textarea {...opts} defaultValue={this.getSearchMarkerLabel()}/>) :
-                                            (<textarea {...opts}/>)
-                                    }
-                                </td>
+                                <td>{this.renderPrintLabelField(label, opts)}</td>
                             </tr>);
                         })}
                     </tbody></table>
@@ -294,6 +288,15 @@ class Print extends React.Component {
             </div>
         );
     }
+    renderPrintLabelField = (label, opts) => {
+        if (this.props.theme.printLabelForSearchResult === label) {
+            return (<textarea {...opts} defaultValue={this.getSearchMarkerLabel()}/>);
+        } else if (this.props.theme.printLabelForAttribution === label) {
+            return (<textarea {...opts} defaultValue={this.getAttributionLabel()}/>);
+        } else {
+            return (<textarea {...opts}/>);
+        }
+    }
     getSearchMarkerLabel = () => {
         const searchsellayer = this.props.layers.find(layer => layer.id === "searchselection");
         if (searchsellayer && searchsellayer.features) {
@@ -303,6 +306,16 @@ class Print extends React.Component {
             }
         }
         return "";
+    }
+    getAttributionLabel = () => {
+        const copyrights = this.props.layers.reduce((res, layer) => ({...res, ...LayerUtils.getAttribution(layer, this.props.map)}), {});
+        return Object.entries(copyrights).map(([key, value]) => {
+            if (value) {
+                return value;
+            } else {
+                return key;
+            }
+        }).join(" | ");
     }
     renderPrintFrame = () => {
         let printFrame = null;
