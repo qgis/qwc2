@@ -72,7 +72,7 @@ class Print extends React.Component {
         this.printForm = null;
         this.state.grid = props.gridInitiallyEnabled;
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (prevProps.theme !== this.props.theme) {
             if (this.props.theme && !isEmpty(this.props.theme.print)) {
                 const layout = this.props.theme.print.find(l => l.default) || this.props.theme.print[0];
@@ -424,8 +424,10 @@ class Print extends React.Component {
             }).catch(e => {
                 this.setState({printing: false});
                 if (e.response) {
+                    /* eslint-disable-next-line */
                     console.log(new TextDecoder().decode(e.response.data));
                 }
+                /* eslint-disable-next-line */
                 alert('Print failed');
             });
         }
