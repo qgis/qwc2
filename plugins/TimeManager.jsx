@@ -49,6 +49,7 @@ class TimeManager extends React.Component {
         startDate: null,
         endDate: null,
         currentTimestamp: "",
+        currentTimestampDrag: null, // Only when dragging
         animationActive: false,
         animationInterval: 1,
         stepSize: 1,
@@ -176,7 +177,7 @@ class TimeManager extends React.Component {
         ];
         // Time span, in seconds
         const deltaT = this.getEndTime().diff(this.getStartTime());
-        const perc = (dayjs(this.state.currentTimestamp).diff(this.getStartTime()) / deltaT * 100).toFixed(2) + "%";
+        const perc = (dayjs(this.state.currentTimestampDrag || this.state.currentTimestamp).diff(this.getStartTime()) / deltaT * 100).toFixed(2) + "%";
         const cursorStyle = {
             left: perc
         };
@@ -234,13 +235,13 @@ class TimeManager extends React.Component {
                     </span>
                 </div>
                 <div className="time-manager-timeline">
-                    <div className="time-manager-time-blocks" onClick={this.pickCurrentTimestamp}>
+                    <div className="time-manager-time-blocks" onMouseDown={this.pickCurrentTimestamp}>
                         {this.state.markersEnabled ? this.blockColors.map((color, i) => (<div key={"block" + i} style={{backgroundColor: color}} />)) : null}
                     </div>
                     {this.state.timeEnabled ? (
                         <div className="time-manager-cursor" style={cursorStyle}>
                             <div className="time-manager-cursor-label" style={labelStyle}>
-                                {dayjs(this.state.currentTimestamp).format("YYYY-MM-DD[\n]HH:mm:ss")}
+                                {dayjs(this.state.currentTimestampDrag || this.state.currentTimestamp).format("YYYY-MM-DD[\n]HH:mm:ss")}
                             </div>
                         </div>
                     ) : null}
@@ -259,37 +260,49 @@ class TimeManager extends React.Component {
         this.updateMapMarkersTimeout = null;
         this.setState({timeEnabled: enabled, currentTimestamp: +this.getStartTime(), animationActive: false, timeMarkers: null});
     }
-    pickCurrentTimestamp = (ev) => {
-        if (!this.state.timeEnabled) {
-            return;
-        }
-        const pos = ev.clientX;
-        const rect = ev.currentTarget.getBoundingClientRect();
-        const perc = (pos - rect.left) / rect.width;
-        const deltaT = this.getEndTime().diff(this.getStartTime());
-        let currentTimestamp = this.getStartTime().add(perc * deltaT, 'ms');
-        // Snap to configured step interval
-        let add = null;
-        if (this.state.stepSizeUnit === "m") {
-            add = currentTimestamp.second() > 30;
-            currentTimestamp = currentTimestamp.second(0);
-        } else if (this.state.stepSizeUnit === "h") {
-            add = currentTimestamp.minute() > 30;
-            currentTimestamp = currentTimestamp.second(0).minute(0);
-        } else if (this.state.stepSizeUnit === "d") {
-            add = currentTimestamp.hour() > 12;
-            currentTimestamp = currentTimestamp.second(0).minute(0).hour(0);
-        } else if (this.state.stepSizeUnit === "M") {
-            add = currentTimestamp.day() > 15;
-            currentTimestamp = currentTimestamp.second(0).minute(0).hour(0).date(1);
-        } else if (this.state.stepSizeUnit === "y") {
-            add = currentTimestamp.month() > 5;
-            currentTimestamp = currentTimestamp.second(0).minute(0).hour(0).date(1).month(0);
-        }
-        if (add) {
-            currentTimestamp = currentTimestamp.add(1, this.state.stepSizeUnit);
-        }
-        this.setState({currentTimestamp: currentTimestamp});
+    pickCurrentTimestamp = (event) => {
+        const target = event.currentTarget;
+
+        const computeTimestamp = (ev) => {
+            if (!this.state.timeEnabled) {
+                return;
+            }
+            const pos = ev.clientX;
+            const rect = target.getBoundingClientRect();
+            const perc = (pos - rect.left) / rect.width;
+            const deltaT = this.getEndTime().diff(this.getStartTime());
+            let currentTimestamp = this.getStartTime().add(perc * deltaT, 'ms');
+            // Snap to configured step interval
+            let add = null;
+            if (this.state.stepSizeUnit === "m") {
+                add = currentTimestamp.second() > 30;
+                currentTimestamp = currentTimestamp.second(0);
+            } else if (this.state.stepSizeUnit === "h") {
+                add = currentTimestamp.minute() > 30;
+                currentTimestamp = currentTimestamp.second(0).minute(0);
+            } else if (this.state.stepSizeUnit === "d") {
+                add = currentTimestamp.hour() > 12;
+                currentTimestamp = currentTimestamp.second(0).minute(0).hour(0);
+            } else if (this.state.stepSizeUnit === "M") {
+                add = currentTimestamp.day() > 15;
+                currentTimestamp = currentTimestamp.second(0).minute(0).hour(0).date(1);
+            } else if (this.state.stepSizeUnit === "y") {
+                add = currentTimestamp.month() > 5;
+                currentTimestamp = currentTimestamp.second(0).minute(0).hour(0).date(1).month(0);
+            }
+            if (add) {
+                currentTimestamp = currentTimestamp.add(1, this.state.stepSizeUnit);
+            }
+            this.setState({currentTimestampDrag: currentTimestamp});
+        };
+        document.addEventListener("mousemove", computeTimestamp);
+        document.addEventListener("mouseup", () => {
+            if (this.state.currentTimestampDrag) {
+                this.setState({currentTimestamp: this.state.currentTimestampDrag, currentTimestampDrag: null});
+            }
+            document.removeEventListener("mousemove", computeTimestamp);
+        }, {once: true, capture: true});
+        computeTimestamp(event);
     }
     animationButtonClicked = (action) => {
         this.stopAnimation();
