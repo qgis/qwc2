@@ -267,7 +267,28 @@ class TimeManager extends React.Component {
         const rect = ev.currentTarget.getBoundingClientRect();
         const perc = (pos - rect.left) / rect.width;
         const deltaT = this.getEndTime().diff(this.getStartTime());
-        const currentTimestamp = this.getStartTime().add(perc * deltaT, 'ms');
+        let currentTimestamp = this.getStartTime().add(perc * deltaT, 'ms');
+        // Snap to configured step interval
+        let add = null;
+        if (this.state.stepSizeUnit === "m") {
+            add = currentTimestamp.second() > 30;
+            currentTimestamp = currentTimestamp.second(0);
+        } else if (this.state.stepSizeUnit === "h") {
+            add = currentTimestamp.minute() > 30;
+            currentTimestamp = currentTimestamp.second(0).minute(0);
+        } else if (this.state.stepSizeUnit === "d") {
+            add = currentTimestamp.hour() > 12;
+            currentTimestamp = currentTimestamp.second(0).minute(0).hour(0);
+        } else if (this.state.stepSizeUnit === "M") {
+            add = currentTimestamp.day() > 15;
+            currentTimestamp = currentTimestamp.second(0).minute(0).hour(0).date(1);
+        } else if (this.state.stepSizeUnit === "y") {
+            add = currentTimestamp.month() > 5;
+            currentTimestamp = currentTimestamp.second(0).minute(0).hour(0).date(1).month(0);
+        }
+        if (add) {
+            currentTimestamp = currentTimestamp.add(1, this.state.stepSizeUnit);
+        }
         this.setState({currentTimestamp: currentTimestamp});
     }
     animationButtonClicked = (action) => {
