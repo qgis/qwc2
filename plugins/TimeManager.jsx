@@ -193,12 +193,12 @@ class TimeManager extends React.Component {
                             <td>
                                 <NumberInput max={100} min={1} onChange={value => this.setState({stepSize: value})} value={this.state.stepSize} />
                                 <select onChange={ev => this.setState({stepSizeUnit: ev.target.value})} value={this.state.stepSizeUnit}>
-                                    <option key="s" value="s">{LocaleUtils.tr("timemanager.unit.seconds")}</option>
-                                    <option key="m" value="m">{LocaleUtils.tr("timemanager.unit.minutes")}</option>
-                                    <option key="h" value="h">{LocaleUtils.tr("timemanager.unit.hours")}</option>
-                                    <option key="d" value="d">{LocaleUtils.tr("timemanager.unit.days")}</option>
-                                    <option key="M" value="M">{LocaleUtils.tr("timemanager.unit.months")}</option>
-                                    <option key="y" value="y">{LocaleUtils.tr("timemanager.unit.years")}</option>
+                                    <option value="s">{LocaleUtils.tr("timemanager.unit.seconds")}</option>
+                                    <option value="m">{LocaleUtils.tr("timemanager.unit.minutes")}</option>
+                                    <option value="h">{LocaleUtils.tr("timemanager.unit.hours")}</option>
+                                    <option value="d">{LocaleUtils.tr("timemanager.unit.days")}</option>
+                                    <option value="M">{LocaleUtils.tr("timemanager.unit.months")}</option>
+                                    <option value="y">{LocaleUtils.tr("timemanager.unit.years")}</option>
                                 </select>
                             </td>
                         </tr>
