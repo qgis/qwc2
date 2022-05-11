@@ -234,7 +234,7 @@ class TimeManager extends React.Component {
                 </div>
                 <div className="time-manager-timeline">
                     <div className="time-manager-time-blocks" onClick={this.pickCurrentTimestamp}>
-                        {this.blockColors.map((color, i) => (<div key={"block" + i} style={{backgroundColor: color}} />))}
+                        {this.state.markersEnabled ? this.blockColors.map((color, i) => (<div key={"block" + i} style={{backgroundColor: color}} />)) : null}
                     </div>
                     {this.state.timeEnabled ? (
                         <div className="time-manager-cursor" style={cursorStyle}>
