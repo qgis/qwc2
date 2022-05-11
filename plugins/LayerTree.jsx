@@ -115,21 +115,6 @@ class LayerTree extends React.Component {
             this.props.toggleMapTips(this.props.theme.mapTips && !prevProps.mobile);
         }
     }
-    getGroupVisibility = (group) => {
-        if (isEmpty(group.sublayers) || group.visibility === false) {
-            return 0;
-        }
-        let visible = 0;
-        group.sublayers.map(sublayer => {
-            const sublayervisibility = sublayer.visibility === undefined ? true : sublayer.visibility;
-            if (sublayer.sublayers && sublayervisibility) {
-                visible += this.getGroupVisibility(sublayer);
-            } else {
-                visible += sublayervisibility ? 1 : 0;
-            }
-        });
-        return visible / group.sublayers.length;
-    }
     renderSubLayers = (layer, group, path, enabled, inMutuallyExclusiveGroup = false) => {
         return (group.sublayers || []).map((sublayer, idx) => {
             const subpath = [...path, idx];
@@ -145,7 +130,7 @@ class LayerTree extends React.Component {
         if (flattenGroups) {
             return this.renderSubLayers(layer, group, path, enabled, false);
         }
-        const subtreevisibility = this.getGroupVisibility(group);
+        const subtreevisibility = LayerUtils.computeLayerVisibility(group);
         if (subtreevisibility === 0 && this.state.filtervisiblelayers) {
             return null;
         }
@@ -468,7 +453,7 @@ class LayerTree extends React.Component {
         const visibilities = [];
         for (const layer of this.props.layers) {
             if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
-                visibilities.push(isEmpty(layer.sublayers) ? layer.visibility : this.getGroupVisibility(layer));
+                visibilities.push(LayerUtils.computeLayerVisibility(layer));
             }
         }
         const vis = visibilities.reduce((sum, x) => sum + x, 0) / (visibilities.length || 1);

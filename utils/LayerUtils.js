@@ -543,6 +543,21 @@ const LayerUtils = {
         }
         return true;
     },
+    computeLayerVisibility(layer) {
+        if (isEmpty(layer.sublayers) || layer.visibility === false) {
+            return layer.visibility ? 1 : 0;
+        }
+        let visible = 0;
+        layer.sublayers.map(sublayer => {
+            const sublayervisibility = sublayer.visibility === undefined ? true : sublayer.visibility;
+            if (sublayer.sublayers && sublayervisibility) {
+                visible += LayerUtils.computeLayerVisibility(sublayer);
+            } else {
+                visible += sublayervisibility ? 1 : 0;
+            }
+        });
+        return visible / layer.sublayers.length;
+    },
     cloneLayer(layer, sublayerpath) {
         const newlayer = {...layer};
         let cur = newlayer;
