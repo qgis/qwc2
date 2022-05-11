@@ -36,7 +36,7 @@ class TimeManager extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
         addLayerFeatures: PropTypes.func,
-        layerUUIds: PropTypes.object,
+        layerVisibilities: PropTypes.object,
         layers: PropTypes.array,
         map: PropTypes.object,
         removeLayer: PropTypes.func,
@@ -83,7 +83,7 @@ class TimeManager extends React.Component {
             // Clear task immediately after showing, visibility is controlled by internal state
             this.props.setCurrentTask(null);
         }
-        if (!isEqual(this.props.layerUUIds, prevProps.layerUUIds)) {
+        if (!isEqual(this.props.layerVisibilities, prevProps.layerVisibilities)) {
             this.stopAnimation();
             const timeData = {
                 layerDimensions: {},
@@ -470,12 +470,18 @@ class TimeManager extends React.Component {
     }
 }
 
-export default connect((state) => ({
-    active: state.task.id === "TimeManager",
-    layers: state.layers.flat,
-    layerUUIds: state.layers.uuids,
-    map: state.map
-}), {
+export default connect((state) => {
+    const layerVisibilities = state.layers.flat.reduce((res, layer) => ({
+        ...res,
+        [layer.uuid]: LayerUtils.computeLayerVisibility(layer)
+    }), {});
+    return {
+        active: state.task.id === "TimeManager",
+        layers: state.layers.flat,
+        layerVisibilities: layerVisibilities,
+        map: state.map
+    };
+}, {
     addLayerFeatures: addLayerFeatures,
     removeLayer: removeLayer,
     setLayerDimensions: setLayerDimensions,

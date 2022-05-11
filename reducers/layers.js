@@ -51,7 +51,6 @@ function propagateLayerProperty(newlayer, property, value, path = null) {
 
 const defaultState = {
     flat: [],
-    uuids: {}, /* {layeruuid: visibility} */
     swipe: null
 };
 
@@ -114,7 +113,7 @@ export default function layers(state = defaultState, action) {
             return layer;
         });
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-        return {...state, flat: newLayers, uuids: newLayers.reduce((res, l) => ({...res, [l.uuid]: l.visibility}), {})};
+        return {...state, flat: newLayers};
     }
     case SET_LAYER_DIMENSIONS: {
         const newLayers = (state.flat || []).map((layer) => {
@@ -159,12 +158,12 @@ export default function layers(state = defaultState, action) {
         if (newLayer.role === LayerRole.BACKGROUND && newLayer.visibility) {
             UrlParams.updateParams({bl: newLayer.name});
         }
-        return {...state, flat: newLayers, uuids: newLayers.reduce((res, l) => ({...res, [l.uuid]: l.visibility}), {})};
+        return {...state, flat: newLayers};
     }
     case ADD_LAYER_SEPARATOR: {
         const newLayers = LayerUtils.insertSeparator(state.flat, action.title, action.afterLayerId, action.afterSublayerPath);
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-        return {...state, flat: newLayers, uuids: newLayers.reduce((res, l) => ({...res, [l.uuid]: l.visibility}), {})};
+        return {...state, flat: newLayers};
     }
     case REMOVE_LAYER: {
         const layer = state.flat.find(l => l.id === action.layerId);
@@ -178,7 +177,7 @@ export default function layers(state = defaultState, action) {
             newLayers = LayerUtils.removeLayer(state.flat, layer, action.sublayerpath);
         }
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-        return {...state, flat: newLayers, uuids: newLayers.reduce((res, l) => ({...res, [l.uuid]: l.visibility}), {})};
+        return {...state, flat: newLayers};
     }
     case ADD_LAYER_FEATURES: {
         const layerId = action.layer.id || uuid.v4();
@@ -221,7 +220,7 @@ export default function layers(state = defaultState, action) {
             newFeatures = newFeatures.concat(addFeatures);
             newLayers[idx] = {...newLayers[idx], features: newFeatures, bbox: VectorLayerUtils.computeFeaturesBBox(newFeatures)};
         }
-        return {...state, flat: newLayers, uuids: newLayers.reduce((res, l) => ({...res, [l.uuid]: l.visibility}), {})};
+        return {...state, flat: newLayers};
     }
     case REMOVE_LAYER_FEATURES: {
         let changed = false;
@@ -238,7 +237,7 @@ export default function layers(state = defaultState, action) {
             return result;
         }, []);
         if (changed) {
-            return {...state, flat: newLayers, uuids: newLayers.reduce((res, l) => ({...res, [l.uuid]: l.visibility}), {})};
+            return {...state, flat: newLayers};
         } else {
             return state;
         }
@@ -275,12 +274,12 @@ export default function layers(state = defaultState, action) {
         return {...state, flat: newLayers};
     }
     case REMOVE_ALL_LAYERS: {
-        return {...state, flat: [], swipe: null, uuids: {}};
+        return {...state, flat: [], swipe: null};
     }
     case REORDER_LAYER: {
         const newLayers = LayerUtils.reorderLayer(state.flat, action.layer, action.sublayerpath, action.direction, action.preventSplittingGroups);
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-        return {...state, flat: newLayers, uuids: newLayers.reduce((res, l) => ({...res, [l.uuid]: l.visibility}), {})};
+        return {...state, flat: newLayers};
     }
     case REPLACE_PLACEHOLDER_LAYER: {
         let newLayers = state.flat || [];
@@ -301,7 +300,7 @@ export default function layers(state = defaultState, action) {
             newLayers = newLayers.filter(layer => !(layer.type === 'placeholder' && layer.id === action.id));
         }
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-        return {...state, flat: newLayers, uuids: newLayers.reduce((res, l) => ({...res, [l.uuid]: l.visibility}), {})};
+        return {...state, flat: newLayers};
     }
     case SET_SWIPE: {
         return {...state, swipe: action.swipe};
