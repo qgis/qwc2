@@ -402,6 +402,7 @@ class TimeManager extends React.Component {
                                     const enddate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][1]]);
                                     return {
                                         ...feature,
+                                        id: feature.layername + "::" + feature.id,
                                         properties: {
                                             ...feature.properties,
                                             startdate: dayjs.utc(startdate),
