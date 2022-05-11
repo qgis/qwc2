@@ -92,12 +92,14 @@ class TimeManager extends React.Component {
             this.props.layers.forEach(layer => {
                 if (layer.type === "wms") {
                     const layertimeData = LayerUtils.getTimeDimensionValues(layer);
-                    timeData.layerDimensions[layer.id] = [...layertimeData.names];
-                    layertimeData.values.forEach(x => timeData.values.add(x));
-                    timeData.attributes[layer.uuid] = {
-                        ...timeData.attributes[layer.uuid],
-                        ...layertimeData.attributes
-                    };
+                    if (layertimeData.names.size > 0) {
+                        timeData.layerDimensions[layer.id] = [...layertimeData.names];
+                        layertimeData.values.forEach(x => timeData.values.add(x));
+                        timeData.attributes[layer.uuid] = {
+                            ...timeData.attributes[layer.uuid],
+                            ...layertimeData.attributes
+                        };
+                    }
                 }
             });
             timeData.values = [...timeData.values].sort().map(d => dayjs.utc(d));
