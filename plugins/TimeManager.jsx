@@ -48,12 +48,6 @@ class TimeManager extends React.Component {
         startDate: null,
         endDate: null,
         currentTimestamp: "",
-        timeData: {
-            layerDimensions: {},
-            values: [],
-            attributes: {},
-            ranges: []
-        },
         animationActive: false,
         animationInterval: 1,
         stepSize: 1,
@@ -63,9 +57,17 @@ class TimeManager extends React.Component {
         settingsPopup: false,
         visible: false
     }
+    state = {
+        timeData: {
+            layerDimensions: {},
+            values: [],
+            attributes: {},
+            ranges: []
+        },
+        ...TimeManager.defaultState
+    }
     constructor(props) {
         super(props);
-        this.state = TimeManager.defaultState;
         this.animationTimer = null;
         this.updateMapMarkersTimeout = null;
         this.blockColors = [
