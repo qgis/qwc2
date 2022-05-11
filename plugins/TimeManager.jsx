@@ -10,6 +10,7 @@ import axios from 'axios';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {createSelector} from 'reselect';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import uuid from 'uuid';
@@ -471,18 +472,25 @@ class TimeManager extends React.Component {
     }
 }
 
-export default connect((state) => {
-    const layerVisibilities = state.layers.flat.reduce((res, layer) => ({
+const layerVisiblitiesSelector = createSelector([
+    state => state.layers.flat
+], (layers) => {
+    return layers.reduce((res, layer) => ({
         ...res,
         [layer.uuid]: LayerUtils.computeLayerVisibility(layer)
     }), {});
+});
+
+const selector = createSelector([state => state, layerVisiblitiesSelector], (state, layerVisibilities) => {
     return {
         active: state.task.id === "TimeManager",
         layers: state.layers.flat,
         layerVisibilities: layerVisibilities,
         map: state.map
     };
-}, {
+});
+
+export default connect(selector, {
     addLayerFeatures: addLayerFeatures,
     removeLayer: removeLayer,
     setLayerDimensions: setLayerDimensions,
