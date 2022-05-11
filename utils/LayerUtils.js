@@ -758,7 +758,7 @@ const LayerUtils = {
         };
         if (layer.visibility) {
             (layer.dimensions || []).forEach(dimension => {
-                if (dimension.units === "ISO8601") {
+                if (dimension.units === "ISO8601" && dimension.value) {
                     result.names.add(dimension.name);
                     dimension.value.split(/,\s+/).filter(x => x).forEach(x => result.values.add(x));
                     result.attributes[layer.name] = [dimension.fieldName, dimension.endFieldName];
