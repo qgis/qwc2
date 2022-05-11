@@ -117,6 +117,7 @@ class TimeManager extends React.Component {
             }
             this.setState({timeData: timeData});
             this.updateLayerTimeDimensions(timeData.layerDimensions, this.state.currentTimestamp);
+            this.scheduleUpdateMapMarkers();
         }
         if (this.state.currentTimestamp !== prevState.currentTimestamp || this.state.timeEnabled !== prevState.timeEnabled) {
             this.updateLayerTimeDimensions(this.state.timeData.layerDimensions, this.state.currentTimestamp);
