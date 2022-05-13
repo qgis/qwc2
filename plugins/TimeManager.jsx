@@ -21,6 +21,7 @@ import {setLayerDimensions, addLayerFeatures, removeLayer, LayerRole} from '../a
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import Icon from '../components/Icon';
 import ButtonBar from '../components/widgets/ButtonBar';
+import DateInput from '../components/widgets/DateInput';
 import NumberInput from '../components/widgets/NumberInput';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import ResizeableWindow from '../components/ResizeableWindow';
@@ -246,8 +247,8 @@ class TimeManager extends React.Component {
                         </div>
                     ) : null}
                     <div className="time-manager-ticks">
-                        <div><input onChange={this.setStartTime} type="date" value={(this.state.startDate || timeValues[0]).format('YYYY-MM-DD')} /></div>
-                        <div><input onChange={this.setEndTime} type="date" value={(this.state.endDate || timeValues[timeValues.length - 1]).format('YYYY-MM-DD')} /></div>
+                        <div><DateInput onChange={this.setStartTime} value={(this.state.startDate || timeValues[0]).format('YYYY-MM-DD')} /></div>
+                        <div><DateInput onChange={this.setEndTime} value={(this.state.endDate || timeValues[timeValues.length - 1]).format('YYYY-MM-DD')} /></div>
                     </div>
                 </div>
             </div>
@@ -382,14 +383,14 @@ class TimeManager extends React.Component {
         const date = (this.state.endDate || this.state.timeData.values[this.state.timeData.values.length - 1]);
         return date ? date.hour(23).minute(59).second(59) : 0;
     }
-    setStartTime = (ev) => {
-        const date = (ev.target.value ? dayjs.utc(ev.target.value) : this.state.timeData.values[0]).hour(0).minute(0).second(0);
+    setStartTime = (value) => {
+        const date = (value ? dayjs.utc(value) : this.state.timeData.values[0]).hour(0).minute(0).second(0);
         if (date < this.getEndTime()) {
             this.setState({startDate: date});
         }
     }
-    setEndTime = (ev) => {
-        const date = (ev.target.value ? dayjs.utc(ev.target.value) : this.state.timeData.values[this.state.timeData.values.length - 1]).hour(23).minute(59).second(59);
+    setEndTime = (value) => {
+        const date = (value ? dayjs.utc(value) : this.state.timeData.values[this.state.timeData.values.length - 1]).hour(23).minute(59).second(59);
         if (date > this.getStartTime()) {
             this.setState({endDate: date});
         }
