@@ -423,5 +423,4 @@ class QtDesignerForm extends React.Component {
 export default connect((state) => ({
     locale: state.locale.current
 }), {
-    changeMeasurementState
 })(QtDesignerForm);
