@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import xml2js from 'xml2js';
@@ -20,12 +21,13 @@ import Icon from './Icon';
 import './style/QtDesignerForm.css';
 
 
-export default class QtDesignerForm extends React.Component {
+class QtDesignerForm extends React.Component {
     static propTypes = {
         addRelationRecord: PropTypes.func,
         editLayerId: PropTypes.string,
         form: PropTypes.string,
         iface: PropTypes.object,
+        locale: PropTypes.string,
         mapPrefix: PropTypes.string,
         relationValues: PropTypes.object,
         removeRelationRecord: PropTypes.func,
@@ -46,10 +48,12 @@ export default class QtDesignerForm extends React.Component {
             const assetsPath = ConfigUtils.getAssetsPath();
             url = assetsPath + this.props.form.substr(1);
         }
+        url += (url.includes('?') ? '&' : '?') + "lang=" + this.props.locale;
 
         axios.get(url).then(response => {
             this.parseForm(response.data);
         }).catch(e => {
+            // eslint-disable-next-line
             console.log(e);
         });
     }
@@ -415,3 +419,9 @@ export default class QtDesignerForm extends React.Component {
         return message;
     }
 }
+
+export default connect((state) => ({
+    locale: state.locale.current
+}), {
+    changeMeasurementState
+})(QtDesignerForm);
