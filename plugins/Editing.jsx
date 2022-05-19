@@ -151,10 +151,15 @@ class Editing extends React.Component {
             );
         }
 
-        const actionButtons = [
-            {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick"), data: {action: 'Pick'}},
-            {key: 'Draw', icon: 'editdraw', label: LocaleUtils.trmsg("editing.draw"), data: {action: 'Draw', feature: null}}
-        ];
+        const actionButtons = [];
+        if (typeof(curConfig.permissions) === 'undefined' || curConfig.permissions.updatable === true || curConfig.permissions.deletable === true) {
+            // Pick button will appear by default if no permissions are defined in theme editConfig or when updatable or deletable permissions are set
+            actionButtons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick"), data: {action: 'Pick', geomReadOnly: false}});
+        }
+        if (typeof(curConfig.permissions) === 'undefined' || curConfig.permissions.creatable === true) {
+            // Draw button will appear by default if no permissions are defined in theme editConfig or when creatable permission is set
+            actionButtons.push({key: 'Draw', icon: 'editdraw', label: LocaleUtils.trmsg("editing.draw"), data: {action: 'Draw', feature: null, geomReadOnly: false}});
+        }
         if (ConfigUtils.havePlugin("AttributeTable")) {
             actionButtons.push({key: 'AttribTable', icon: 'editing', label: LocaleUtils.trmsg("editing.attrtable"), data: {action: 'AttrTable'}});
         }
@@ -222,7 +227,6 @@ class Editing extends React.Component {
                 />
             );
         }
-
         const themeSublayers = this.props.layers.reduce((accum, layer) => {
             return layer.role === LayerRole.THEME ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
         }, []);
