@@ -278,8 +278,8 @@
     "share": {
       "QRCodeLinkTitle": "Código QR",
       "directLinkTitle": "Vía un vínculo directo",
-      "refresh": "",
-      "showpin": "",
+      "refresh": "Generar un enlace permanente",
+      "showpin": "Mostrar pin",
       "socialIntro": "En tu red social favorita"
     },
     "snapping": {

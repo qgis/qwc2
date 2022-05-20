@@ -86,7 +86,7 @@
       "capturedpicture": "",
       "clearpicture": "Netejar imatge",
       "commit": "Confirmar",
-      "delete": "Esorrar",
+      "delete": "Esborrar",
       "discard": "Descartar",
       "draw": "Traçar",
       "feature": "Element",
@@ -278,8 +278,8 @@
     "share": {
       "QRCodeLinkTitle": "Codi QR",
       "directLinkTitle": "Via link",
-      "refresh": "",
-      "showpin": "",
+      "refresh": "Generar l'enllaç permanent",
+      "showpin": "Mostrar el pin",
       "socialIntro": "En la teva xarxa social preferida"
     },
     "snapping": {
