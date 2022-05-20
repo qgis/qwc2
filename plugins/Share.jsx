@@ -9,6 +9,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
+import url from 'url';
 import {addMarker, removeMarker} from '../actions/layers';
 import ShareSocials from '../components/share/ShareSocials';
 import ShareQRCode from '../components/share/ShareQRCode';
@@ -16,6 +17,7 @@ import ShareLink from '../components/share/ShareLink';
 import SideBar from '../components/SideBar';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import LocaleUtils from '../utils/LocaleUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import {generatePermaLink} from '../utils/PermaLinkUtils';
 import './style/Share.css';
 
@@ -45,7 +47,7 @@ class Share extends React.Component {
         if (isVisible !== wasVisible || this.state.pin !== prevState.pin || this.props.state.map.center !== prevProps.state.map.center) {
             if (isVisible && this.state.pin) {
                 this.props.addMarker('sharecenter', this.props.state.map.center, '', this.props.state.map.projection);
-            } else if(wasVisible) {
+            } else if (wasVisible) {
                 this.props.removeMarker('sharecenter');
             }
         }
@@ -54,13 +56,21 @@ class Share extends React.Component {
         }
     }
     renderBody = () => {
-        let url = this.state.location || 'about:blank';
+        let shareUrl = this.state.location || 'about:blank';
         if (this.state.pin && this.state.location) {
-            url += url.includes("?") ? "&hc=1" : "?hc=1";
+            const urlParts = url.parse(shareUrl, true);
+            urlParts.query.hc = 1;
+            if (!urlParts.query.c) {
+                const posCrs = urlParts.query.crs || this.props.state.map.projection;
+                const prec = CoordinatesUtils.getUnits(posCrs) === 'degrees' ? 4 : 0;
+                urlParts.query.c = this.props.state.map.center.map(x => x.toFixed(prec)).join(",");
+            }
+            delete urlParts.search;
+            shareUrl = url.format(urlParts);
         }
-        const shareSocials = this.props.showSocials ? <ShareSocials shareTitle="QWC2" shareUrl={url}/> : null;
-        const shareLink = this.props.showLink ? <ShareLink shareUrl={url}/> : null;
-        const shareQRCode = this.props.showQRCode ? <ShareQRCode shareUrl={url}/> : null;
+        const shareSocials = this.props.showSocials ? <ShareSocials shareTitle="QWC2" shareUrl={shareUrl}/> : null;
+        const shareLink = this.props.showLink ? <ShareLink shareUrl={shareUrl}/> : null;
+        const shareQRCode = this.props.showQRCode ? <ShareQRCode shareUrl={shareUrl}/> : null;
         return (
             <div>
                 <div className="share-option-pin">
