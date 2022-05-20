@@ -143,6 +143,7 @@ class Editing extends React.Component {
         }
         const editConfig = this.props.theme.editConfig;
         const curConfig = editConfig[this.state.selectedLayer];
+        const editPermissions = curConfig.permissions || {};
         if (!curConfig) {
             return (
                 <div role="body" style={{padding: "1em"}}>
@@ -152,11 +153,11 @@ class Editing extends React.Component {
         }
 
         const actionButtons = [];
-        if (typeof(curConfig.permissions) === 'undefined' || curConfig.permissions.updatable === true || curConfig.permissions.deletable === true) {
+        if (isEmpty(editPermissions) || editPermissions.updatable === true || editPermissions.deletable === true) {
             // Pick button will appear by default if no permissions are defined in theme editConfig or when updatable or deletable permissions are set
             actionButtons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick"), data: {action: 'Pick', geomReadOnly: false}});
         }
-        if (typeof(curConfig.permissions) === 'undefined' || curConfig.permissions.creatable === true) {
+        if (isEmpty(editPermissions) || editPermissions.creatable === true) {
             // Draw button will appear by default if no permissions are defined in theme editConfig or when creatable permission is set
             actionButtons.push({key: 'Draw', icon: 'editdraw', label: LocaleUtils.trmsg("editing.draw"), data: {action: 'Draw', feature: null, geomReadOnly: false}});
         }
