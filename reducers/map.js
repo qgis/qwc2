@@ -47,19 +47,14 @@ export default function map(state = defaultState, action) {
         const newParams = {};
         const positionFormat = ConfigUtils.getConfigProp("urlPositionFormat");
         const positionCrs = ConfigUtils.getConfigProp("urlPositionCrs") || newState.projection;
-        const bounds = CoordinatesUtils.reprojectBbox(newState.bbox.bounds, newState.projection, positionCrs);
-        const roundfactor = CoordinatesUtils.getUnits(positionCrs) === 'degrees' ? 100000 : 1;
+        const prec = CoordinatesUtils.getUnits(positionCrs) === 'degrees' ? 4 : 0;
         if (positionFormat === "centerAndZoom") {
-            const x = Math.round(0.5 * (bounds[0] + bounds[2]) * roundfactor) / roundfactor;
-            const y = Math.round(0.5 * (bounds[1] + bounds[3]) * roundfactor) / roundfactor;
+            const center = CoordinatesUtils.reproject(newState.center, newState.projection, positionCrs);
             const scale = Math.round(MapUtils.computeForZoom(newState.scales, newState.zoom));
-            Object.assign(newParams, {c: x + "," + y, s: scale});
+            Object.assign(newParams, {c: center.map(x => x.toFixed(prec)).join(","), s: scale});
         } else {
-            const xmin = Math.round(bounds[0] * roundfactor) / roundfactor;
-            const ymin = Math.round(bounds[1] * roundfactor) / roundfactor;
-            const xmax = Math.round(bounds[2] * roundfactor) / roundfactor;
-            const ymax = Math.round(bounds[3] * roundfactor) / roundfactor;
-            Object.assign(newParams, {e: xmin + "," + ymin + "," + xmax + "," + ymax});
+            const bounds = CoordinatesUtils.reprojectBbox(newState.bbox.bounds, newState.projection, positionCrs);
+            Object.assign(newParams, {e: bounds.map(x => x.toFixed(prec)).join(",")});
         }
         if (positionCrs !== newState.projection) {
             Object.assign(newParams, {crs: positionCrs});
