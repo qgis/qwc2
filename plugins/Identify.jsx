@@ -240,7 +240,7 @@ class Identify extends React.Component {
 }
 
 const selector = (state) => ({
-    click: state.map.click || {},
+    click: state.map.click || {modifiers: {}},
     currentTask: state.task.id,
     currentIdentifyTool: state.identify.tool,
     layers: state.layers.flat,
