@@ -214,7 +214,6 @@ table.attribtable-table tr.row-disabled * {
     cursor: not-allowed!important;
 }
 
-
 div.attribtable-footbar {
     flex: 0 0 auto;
     display: flex;

@@ -12,8 +12,7 @@
     transform: scaleX(1);
 }
 
-#BackgroundSwitcher div.background-switcher-item
- {
+#BackgroundSwitcher div.background-switcher-item {
     background-color: white;
     cursor: pointer;
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
@@ -31,7 +30,6 @@
 #BackgroundSwitcher div.background-switcher-item:hover div.background-group-menu {
     display: block;
 }
-
 
 #BackgroundSwitcher div.background-switcher-item-active {
     border: 1px solid @item_active@;
@@ -83,7 +81,6 @@
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
     clip-path: inset(-8px -8px 0 -8px);
 }
-
 
 #BackgroundSwitcher div.background-group-menu > div {
     padding: 0.25em 0;

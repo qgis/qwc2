@@ -37,7 +37,6 @@
     height: 2em;
 }
 
-
 #BottomBar span.bottombar-scale-combo {
     position: relative;
     display: inline-block;
@@ -68,7 +67,6 @@
     height: calc(2em - 2px);
     top: 0;
     border: 0;
-
 }
 
 #BottomBar span.bottombar-spacer {

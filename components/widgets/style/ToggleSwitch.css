@@ -48,7 +48,6 @@ div.ToggleSwitch.toggle-switch-inactive > span.toggle-switch-yes {
     display: none;
 }
 
-
 div.ToggleSwitch > input {
     position: absolute;
     opacity: 0;

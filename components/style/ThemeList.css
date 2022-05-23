@@ -54,8 +54,7 @@ div.ThemeList div.theme-item-title > span.icon {
     font-size: large;
 }
 
-div.ThemeList li.theme-item-active div.theme-item-title > span:first-child
-{
+div.ThemeList li.theme-item-active div.theme-item-title > span:first-child {
     color: @item_active@;
 }
 

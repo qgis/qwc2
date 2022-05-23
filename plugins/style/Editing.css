@@ -16,12 +16,10 @@
     border: 1px solid white;
 }
 
-
 #Editing div.editing-body > div.editing-layer-selection,
 #Editing div.editing-body > div.editing-feature-selection,
 #Editing div.editing-body > div.ButtonBar,
-#Editing div.editing-body > div.editing-busy
-{
+#Editing div.editing-body > div.editing-busy {
     flex: 0 0 auto;
 }
 

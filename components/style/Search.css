@@ -88,7 +88,6 @@
 
 #Search ul.searchbar-provider-selection li:hover {
     background-color: @appmenu_active_bg1@;
-
 }
 
 #Search div.spinner {
@@ -145,7 +144,7 @@
 #Search ul.search-results {
     top: 100%;
     position: absolute;
-    background-color: rgba(255,255, 255, 0.85);
+    background-color: rgba(255, 255, 255, 0.85);
     max-height: calc(100vh - 4em);
     max-height: calc(var(--vh, 1vh) * 100 - 4em);
     width: 100%;
@@ -188,10 +187,10 @@
 
 #Search ul.search-results ul li > span.icon {
     flex: 0 0 auto;
-     border: 1px solid @item_border@;
-     background-color: white;
-     padding: 0.25em;
-     border-radius: 0.25em;
+    border: 1px solid @item_border@;
+    background-color: white;
+    padding: 0.25em;
+    border-radius: 0.25em;
 }
 
 #Search ul.search-results ul li > span.icon:hover {
