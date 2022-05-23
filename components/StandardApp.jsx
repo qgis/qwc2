@@ -108,7 +108,7 @@ class AppInitComponent extends React.Component {
                         }
                     }
 
-                    theme = ThemeUtils.getThemeById(themes, themes.defaultTheme);
+                    theme = ThemeUtils.getThemeById(themes, defaultTheme);
                 }
                 const layerParams = params.l !== undefined ? params.l.split(",").filter(entry => entry) : null;
                 if (layerParams && ConfigUtils.getConfigProp("urlReverseLayerOrder")) {
