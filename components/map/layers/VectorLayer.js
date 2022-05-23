@@ -57,6 +57,8 @@ export default {
                 const styleOptions = newOptions.styleOptions || {};
                 return FeatureStyles[styleName](feature, styleOptions);
             });
+        } else if (newOptions.styleFunction !== oldOptions.styleFunction) {
+            layer.setStyle(newOptions.styleFunction);
         }
         if (newOptions.features !== oldOptions.features) {
             const format = new ol.format.GeoJSON();
