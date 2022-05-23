@@ -16,12 +16,10 @@
     border: 1px solid white;
 }
 
-
 #Editing div.editing-body > div.editing-layer-selection,
 #Editing div.editing-body > div.editing-feature-selection,
-#Editing div.editing-body > div.ButtonBar
-#Editing div.editing-body > div.editing-busy
-{
+#Editing div.editing-body > div.ButtonBar,
+#Editing div.editing-body > div.editing-busy {
     flex: 0 0 auto;
 }
 
@@ -50,7 +48,7 @@
     bottom: 0;
     background-color: rgba(127, 127, 127, 0.25);
     cursor: wait;
-    zIndex: 2;
+    z-index: 2;
 }
 
 #Editing select.editing-layer-select,
