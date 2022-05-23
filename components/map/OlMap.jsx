@@ -210,7 +210,7 @@ class OlMap extends React.Component {
             features.push({ layer: layer ? layer.get('id') : null,
                 feature: feature.getId(),
                 geomType: feature.getGeometry().getType(),
-                geometry: feature.getGeometry().getCoordinates ? feature.getGeometry().getCoordinates() : null})
+                geometry: feature.getGeometry().getCoordinates ? feature.getGeometry().getCoordinates() : null});
         });
         const data = {
             coordinate: this.map.getEventCoordinate(event),
