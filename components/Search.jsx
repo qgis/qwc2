@@ -190,7 +190,7 @@ class Search extends React.Component {
         if (!this.props.searchText) {
             addonAfterTooltip = LocaleUtils.tr("search.search");
             addonAfter = (<Icon icon="search" title={addonAfterTooltip}/>);
-        } else if(this.props.searchText && this.state.focused && this.props.pendingProviders && this.props.pendingProviders.length > 0) {
+        } else if (this.props.searchText && this.state.focused && this.props.pendingProviders && this.props.pendingProviders.length > 0) {
             addonAfterTooltip = LocaleUtils.tr("search.searchinprogress");
             addonAfter = (<Spinner/>);
         } else {
@@ -198,7 +198,7 @@ class Search extends React.Component {
             addonAfter = (<Icon icon="remove" onClick={this.resetSearch} title={addonAfterTooltip}/>);
         }
         let providerSelection = null;
-        let providerSelectionTooltip = LocaleUtils.tr("search.providerselection");
+        const providerSelectionTooltip = LocaleUtils.tr("search.providerselection");
         if (this.props.searchOptions.showProviderSelection) {
             let providerSelectionMenu = null;
             if (this.state.providerSelectionVisible) {
@@ -376,7 +376,7 @@ class Search extends React.Component {
             </li>
         );
     }
-    showResult = (item, zoom=true, startupSearch=false) => {
+    showResult = (item, zoom = true, startupSearch = false) => {
         const resultType = item.type || SearchResultType.PLACE;
         if (resultType !== SearchResultType.PLACE && !this.props.searchOptions.zoomToLayers) {
             zoom = false;
@@ -417,7 +417,7 @@ class Search extends React.Component {
             // zoom to result using max zoom level
             let newZoom;
             if (!isEmpty(bbox) && bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
-                const mapbbox = CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection)
+                const mapbbox = CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection);
                 newZoom = Math.max(0, MapUtils.getZoomForExtent(mapbbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom + 1) - 1);
             } else {
                 newZoom = MapUtils.computeZoom(this.props.map.scales, item.scale || 0);
@@ -453,7 +453,7 @@ class Search extends React.Component {
             // Check if layer is already in the LayerTree
             const sublayers = LayerUtils.getSublayerNames(item.layer);
             const existing = this.props.layers.find(l => {
-                return l.type === item.layer.type && l.url === item.layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)))
+                return l.type === item.layer.type && l.url === item.layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)));
             });
             if (existing) {
                 const text = LocaleUtils.tr("search.existinglayer") + ":" + item.layer.title;
