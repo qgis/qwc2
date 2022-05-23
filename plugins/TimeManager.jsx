@@ -49,6 +49,7 @@ class TimeManager extends React.Component {
         timeEnabled: false,
         startDate: null,
         endDate: null,
+        ranges: [],
         currentTimestamp: "",
         currentTimestampDrag: null, // Only when dragging
         animationActive: false,
@@ -64,8 +65,7 @@ class TimeManager extends React.Component {
         timeData: {
             layerDimensions: {},
             values: [],
-            attributes: {},
-            ranges: []
+            attributes: {}
         },
         ...TimeManager.defaultState
     }
@@ -91,8 +91,7 @@ class TimeManager extends React.Component {
             const timeData = {
                 layerDimensions: {},
                 values: new Set(),
-                attributes: {},
-                ranges: []
+                attributes: {}
             };
             this.props.layers.forEach(layer => {
                 if (layer.type === "wms") {
@@ -108,16 +107,6 @@ class TimeManager extends React.Component {
                 }
             });
             timeData.values = [...timeData.values].sort().map(d => dayjs.utc(d));
-            if (timeData.values.length > 1) {
-                const interval = timeData.values[timeData.values.length - 1].diff(timeData.values[0], 'minute');
-                const blockInterval = interval / this.blockColors.length;
-                timeData.ranges = this.blockColors.map((entry, idx) => {
-                    return [
-                        timeData.values[0].add(idx * blockInterval, 'minute'),
-                        timeData.values[0].add((idx + 1) * blockInterval, 'minute')
-                    ];
-                });
-            }
             this.setState({timeData: timeData});
             this.updateLayerTimeDimensions(timeData.layerDimensions, this.state.currentTimestamp);
             this.scheduleUpdateMapMarkers();
@@ -133,6 +122,7 @@ class TimeManager extends React.Component {
             (this.state.visible && !prevState.visible) ||
             this.state.currentTimestamp !== prevState.currentTimestamp ||
             this.state.timeEnabled !== prevState.timeEnabled ||
+            this.state.ranges !== prevState.ranges ||
             (this.state.markersEnabled && !prevState.markersEnabled)
         ) {
             this.scheduleUpdateMapMarkers();
@@ -147,6 +137,22 @@ class TimeManager extends React.Component {
                 styleFunction: this.markerStyle
             };
             this.props.addLayerFeatures(layer, this.state.timeMarkers.markers, true);
+        }
+        if (this.state.timeData !== prevState.timeData || this.state.startDate !== prevState.startDate || this.state.endDate !== prevState.endDate) {
+            const startTime = this.getStartTime();
+            const endTime = this.getEndTime();
+            let ranges = [];
+            if (endTime - startTime > 0) {
+                const interval = endTime.diff(startTime, 'minute');
+                const blockInterval = interval / this.blockColors.length;
+                ranges = this.blockColors.map((entry, idx) => {
+                    return [
+                        startTime.add(idx * blockInterval, 'minute'),
+                        startTime.add((idx + 1) * blockInterval, 'minute')
+                    ];
+                });
+            }
+            this.setState({ranges: ranges});
         }
     }
     render() {
@@ -482,7 +488,7 @@ class TimeManager extends React.Component {
         const startDate = feature.getProperties().startdate;
         const endDate = feature.getProperties().enddate;
         const overlapRanges = [];
-        this.state.timeData.ranges.forEach((range, idx) => {
+        this.state.ranges.forEach((range, idx) => {
             // Check if ranges overlap
             if (startDate <= range[1] && endDate >= range[0]) {
                 overlapRanges.push(idx);
