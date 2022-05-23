@@ -153,11 +153,11 @@ class Editing extends React.Component {
         }
 
         const actionButtons = [];
-        if (isEmpty(editPermissions) || editPermissions.updatable === true || editPermissions.deletable === true) {
+        if ( editPermissions.updatable !== false || editPermissions.deletable !== false) {
             // Pick button will appear by default if no permissions are defined in theme editConfig or when updatable or deletable permissions are set
             actionButtons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick"), data: {action: 'Pick', geomReadOnly: false}});
         }
-        if (isEmpty(editPermissions) || editPermissions.creatable === true) {
+        if ( editPermissions.creatable !== false) {
             // Draw button will appear by default if no permissions are defined in theme editConfig or when creatable permission is set
             actionButtons.push({key: 'Draw', icon: 'editdraw', label: LocaleUtils.trmsg("editing.draw"), data: {action: 'Draw', feature: null, geomReadOnly: false}});
         }

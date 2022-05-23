@@ -215,8 +215,9 @@ class AttributeTable extends React.Component {
         const loading = this.state.loading;
         const editing = this.state.changedFeatureIdx !== null;
         const layerChanged = this.state.selectedLayer !== this.state.loadedLayer;
-				const showAddButton = typeof(editConfig[this.state.loadedLayer]) === 'undefined' || typeof(editConfig[this.state.loadedLayer].permissions) === 'undefined' || editConfig[this.state.loadedLayer].permissions.creatable === true;
-				const showDelButton = typeof(editConfig[this.state.loadedLayer]) === 'undefined' || typeof(editConfig[this.state.loadedLayer].permissions) === 'undefined' || editConfig[this.state.loadedLayer].permissions.deletable === true;
+        const editPermissions = (editConfig[this.state.loadedLayer] || {}).permissions || {};
+        const showAddButton = editPermissions.creatable !== false;
+        const showDelButton = editPermissions.deletable !== false;
         return (
             <ResizeableWindow dockable="bottom" icon="editing" initialHeight={480} initialWidth={800} onClose={this.onClose} title={LocaleUtils.tr("attribtable.title")}>
                 <div className="attribtable-body" role="body">
