@@ -134,7 +134,8 @@ class TimeManager extends React.Component {
             const layer = {
                 id: "timemarkers",
                 role: LayerRole.MARKER,
-                styleFunction: this.markerStyle
+                styleFunction: this.markerStyle,
+                rev: +new Date()
             };
             this.props.addLayerFeatures(layer, this.state.timeMarkers.markers, true);
         }

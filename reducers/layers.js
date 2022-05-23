@@ -218,7 +218,7 @@ export default function layers(state = defaultState, action) {
                 });
             }
             newFeatures = newFeatures.concat(addFeatures);
-            newLayers[idx] = {...newLayers[idx], features: newFeatures, bbox: VectorLayerUtils.computeFeaturesBBox(newFeatures)};
+            newLayers[idx] = {...newLayers[idx], features: newFeatures, bbox: VectorLayerUtils.computeFeaturesBBox(newFeatures), rev: action.layer.rev};
         }
         return {...state, flat: newLayers};
     }
