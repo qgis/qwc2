@@ -233,7 +233,7 @@ class IdentifyViewer extends React.Component {
                         csv += String(value).replace('"', '""') + ';';
                     });
                     if (feature.geometry) {
-                        csv += JSON.stringify(feature.geometry);
+                        csv += VectorLayerUtils.geoJSONGeomToWkt(feature.geometry);
                     } else if (csv !== "") {
                         csv = csv.slice(0, -1); // Remove trailling semi column ;
                     }
