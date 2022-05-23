@@ -35,9 +35,9 @@
     height: 2.5em;
     width: 2.5em;
     background-color: @button_bg@;
-    border-top: 1px solid @item_border@;;
-    border-right: 1px solid @item_border@;;
-    border-bottom: 1px solid @item_border@;;
+    border-top: 1px solid @item_border@;
+    border-right: 1px solid @item_border@;
+    border-bottom: 1px solid @item_border@;
     position: relative;
     align-items: center;
     display: flex;
