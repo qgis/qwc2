@@ -319,6 +319,7 @@
       "unit": {
         "days": "giorni",
         "hours": "ore",
+        "milliseconds": "millisecondi",
         "minutes": "minuti",
         "months": "mesi",
         "seconds": "secondi",

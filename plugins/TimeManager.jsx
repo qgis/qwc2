@@ -35,16 +35,42 @@ import markerIcon from '../utils/img/marker-icon.png';
 
 dayjs.extend(utc);
 
+const DateUnitLabels = {
+    ms: LocaleUtils.trmsg("timemanager.unit.milliseconds"),
+    s: LocaleUtils.trmsg("timemanager.unit.seconds"),
+    m: LocaleUtils.trmsg("timemanager.unit.minutes"),
+    h: LocaleUtils.trmsg("timemanager.unit.hours"),
+    d: LocaleUtils.trmsg("timemanager.unit.days"),
+    M: LocaleUtils.trmsg("timemanager.unit.months"),
+    y: LocaleUtils.trmsg("timemanager.unit.years")
+};
+
 class TimeManager extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
         addLayerFeatures: PropTypes.func,
+        blockColors: PropTypes.arrayOf(PropTypes.string),
+        defaultAnimationInterval: PropTypes.number,
+        defaultStepSize: PropTypes.number,
+        defaultStepUnit: PropTypes.string,
         layerVisibilities: PropTypes.object,
         layers: PropTypes.array,
         map: PropTypes.object,
+        markersAvailable: PropTypes.bool,
         removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
-        setLayerDimensions: PropTypes.func
+        setLayerDimensions: PropTypes.func,
+        stepUnits: PropTypes.arrayOf(PropTypes.string)
+    }
+    static defaultProps = {
+        blockColors: [
+            "#f7af7d", "#eacc6e", "#fef89a", "#c5e09b", "#a3d29c", "#7cc096", "#79c8c5", "#34afce"
+        ],
+        defaultAnimationInterval: 1,
+        defaultStepSize: 1,
+        defaultStepUnit: "d",
+        markersAvailable: true,
+        stepUnits: ["s", "m", "h", "d", "M", "y"]
     }
     static defaultState = {
         timeEnabled: false,
@@ -67,16 +93,22 @@ class TimeManager extends React.Component {
             layerDimensions: {},
             values: [],
             attributes: {}
-        },
-        ...TimeManager.defaultState
+        }
     }
     constructor(props) {
         super(props);
         this.animationTimer = null;
         this.updateMapMarkersTimeout = null;
-        this.blockColors = [
-            "#f7af7d", "#eacc6e", "#fef89a", "#c5e09b", "#a3d29c", "#7cc096", "#79c8c5", "#34afce"
-        ];
+        TimeManager.defaultState.stepSize = props.defaultStepSize;
+        TimeManager.defaultState.stepSizeUnit = props.defaultStepUnit;
+        if (!props.stepUnits.includes(TimeManager.defaultState.stepSizeUnit)) {
+            TimeManager.defaultState.stepSizeUnit = props.stepUnits[0];
+        }
+        TimeManager.defaultState.animationInterval = props.defaultAnimationInterval;
+        this.state = {
+            ...this.state,
+            ...TimeManager.defaultState
+        };
     }
     componentDidUpdate(prevProps, prevState) {
         if (!this.state.visible && prevState.visible) {
@@ -146,8 +178,8 @@ class TimeManager extends React.Component {
             let ranges = [];
             if (endTime - startTime > 0) {
                 const interval = endTime.diff(startTime, 'second');
-                const blockInterval = interval / (this.blockColors.length - 1);
-                ranges = this.blockColors.slice(0, -1).map((entry, idx) => {
+                const blockInterval = interval / (this.props.blockColors.length - 1);
+                ranges = this.props.blockColors.slice(0, -1).map((entry, idx) => {
                     return [
                         startTime.add(idx * blockInterval, 'second'),
                         startTime.add((idx + 1) * blockInterval, 'second')
@@ -202,13 +234,12 @@ class TimeManager extends React.Component {
                             <td>{LocaleUtils.tr("timemanager.stepsize")}:</td>
                             <td>
                                 <NumberInput max={100} min={1} onChange={value => this.setState({stepSize: value})} value={this.state.stepSize} />
+                            </td>
+                            <td>
                                 <select onChange={ev => this.setState({stepSizeUnit: ev.target.value})} value={this.state.stepSizeUnit}>
-                                    <option value="s">{LocaleUtils.tr("timemanager.unit.seconds")}</option>
-                                    <option value="m">{LocaleUtils.tr("timemanager.unit.minutes")}</option>
-                                    <option value="h">{LocaleUtils.tr("timemanager.unit.hours")}</option>
-                                    <option value="d">{LocaleUtils.tr("timemanager.unit.days")}</option>
-                                    <option value="M">{LocaleUtils.tr("timemanager.unit.months")}</option>
-                                    <option value="y">{LocaleUtils.tr("timemanager.unit.years")}</option>
+                                    {this.props.stepUnits.map(unit => (
+                                        <option key={unit} value={unit}>{LocaleUtils.tr(DateUnitLabels[unit])}</option>
+                                    ))}
                                 </select>
                             </td>
                         </tr>
@@ -216,6 +247,9 @@ class TimeManager extends React.Component {
                             <td>{LocaleUtils.tr("timemanager.animationinterval")}:</td>
                             <td>
                                 <NumberInput max={10} min={1} onChange={value => this.setState({animationInterval: value})} value={this.state.animationInterval} />
+                            </td>
+                            <td>
+                                &nbsp;{LocaleUtils.tr("timemanager.unit.seconds")}
                             </td>
                         </tr>
                     </tbody>
@@ -226,7 +260,7 @@ class TimeManager extends React.Component {
         let blocksStyle = {};
         if (this.state.markersEnabled) {
             blocksStyle = {
-                background: 'linear-gradient(90deg, ' + this.blockColors.join(", ") + ')'
+                background: 'linear-gradient(90deg, ' + this.props.blockColors.join(", ") + ')'
             };
         }
         return (
@@ -237,10 +271,12 @@ class TimeManager extends React.Component {
                         <ToggleSwitch active={this.state.timeEnabled} onChange={this.toggleTimeEnabled} />
                     </span>
                     <ButtonBar buttons={timeButtons} disabled={!this.state.timeEnabled} onClick={this.animationButtonClicked} />
-                    <span className="time-manager-toolbar-block">
-                        <span>{LocaleUtils.tr("timemanager.markers")}</span>
-                        <ToggleSwitch active={this.state.markersEnabled} onChange={value => this.setState({markersEnabled: value})} />
-                    </span>
+                    {this.props.markersAvailable ? (
+                        <span className="time-manager-toolbar-block">
+                            <span>{LocaleUtils.tr("timemanager.markers")}</span>
+                            <ToggleSwitch active={this.state.markersEnabled} onChange={value => this.setState({markersEnabled: value})} />
+                        </span>
+                    ) : null}
                     <span className="time-manager-toolbar-spacer" />
                     <span className="time-manager-options-menubutton">
                         <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState({settingsPopup: !this.state.settingsPopup})}>
@@ -498,15 +534,15 @@ class TimeManager extends React.Component {
             // Check if ranges overlap
             if (startDate <= range[1] && endDate >= range[0]) {
                 let kStart = (range[0] - startDate) / (endDate - startDate);
-                let cStart = this.blockColors[idx];
+                let cStart = this.props.blockColors[idx];
                 if (kStart < 0) {
-                    cStart = MiscUtils.blendColors(this.blockColors[idx], this.blockColors[idx + 1], 1 + kStart);
+                    cStart = MiscUtils.blendColors(this.props.blockColors[idx], this.props.blockColors[idx + 1], 1 + kStart);
                     kStart = 0;
                 }
                 let kEnd = (range[1] - startDate) / (endDate - startDate);
-                let cEnd = this.blockColors[idx + 1];
+                let cEnd = this.props.blockColors[idx + 1];
                 if (kEnd > 1) {
-                    cEnd = MiscUtils.blendColors(this.blockColors[idx], this.blockColors[idx + 1], 1 - (kEnd - 1));
+                    cEnd = MiscUtils.blendColors(this.props.blockColors[idx], this.props.blockColors[idx + 1], 1 - (kEnd - 1));
                     kEnd = 1;
                 }
                 gradientStops.push([kStart, cStart]);
