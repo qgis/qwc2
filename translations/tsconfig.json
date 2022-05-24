@@ -259,6 +259,7 @@
     "timemanager.markers",
     "timemanager.notemporaldata",
     "timemanager.play",
+    "timemanager.playrev",
     "timemanager.rewind",
     "timemanager.stepback",
     "timemanager.stepfwd",

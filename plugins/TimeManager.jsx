@@ -212,6 +212,7 @@ class TimeManager extends React.Component {
         const timeButtons = [
             {key: "rewind", tooltip: LocaleUtils.trmsg("timemanager.rewind"), icon: "nav-start"},
             {key: "prev", tooltip: LocaleUtils.trmsg("timemanager.stepback"), icon: "nav-left"},
+            {key: "playrev", tooltip: LocaleUtils.trmsg("timemanager.playrev"), icon: "triangle-left", disabled: this.state.animationActive},
             {key: "stop", tooltip: LocaleUtils.trmsg("timemanager.stop"), icon: "square", disabled: !this.state.animationActive},
             {key: "play", tooltip: LocaleUtils.trmsg("timemanager.play"), icon: "triangle-right", disabled: this.state.animationActive},
             {key: "next", tooltip: LocaleUtils.trmsg("timemanager.stepfwd"), icon: "nav-right"}
@@ -367,13 +368,18 @@ class TimeManager extends React.Component {
             /* Already stopped above, pass */
         } else if (action === "play") {
             this.animationTimer = setInterval(() => {
-                this.advanceAnimation();
+                this.advanceAnimation(+1);
+            }, 1000 * this.state.animationInterval);
+            this.setState({animationActive: true});
+        } else if (action === "playrev") {
+            this.animationTimer = setInterval(() => {
+                this.advanceAnimation(-1);
             }, 1000 * this.state.animationInterval);
             this.setState({animationActive: true});
         }
     }
-    advanceAnimation = () => {
-        const newday = this.step(+1);
+    advanceAnimation = (stepdir) => {
+        const newday = this.step(stepdir);
         const lastday = this.getEndTime();
         if (newday > lastday) {
             this.setState({currentTimestamp: +lastday, animationActive: false});

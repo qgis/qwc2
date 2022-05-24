@@ -309,6 +309,7 @@
       "markers": "Markers",
       "notemporaldata": "No temporal layers are visible in the map.",
       "play": "Play",
+      "playrev": "Play backwards",
       "rewind": "Rewind",
       "stepback": "Step back",
       "stepfwd": "Step forward",
