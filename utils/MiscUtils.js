@@ -62,6 +62,17 @@ const MiscUtils = {
             ev.stopPropagation();
             ev.preventDefault();
         }
+    },
+    blendColors(color1, color2, ratio) {
+        color1 = [parseInt(color1[1] + color1[2], 16), parseInt(color1[3] + color1[4], 16), parseInt(color1[5] + color1[6], 16)];
+        color2 = [parseInt(color2[1] + color2[2], 16), parseInt(color2[3] + color2[4], 16), parseInt(color2[5] + color2[6], 16)];
+        const color3 = [
+            (1 - ratio) * color1[0] + ratio * color2[0],
+            (1 - ratio) * color1[1] + ratio * color2[1],
+            (1 - ratio) * color1[2] + ratio * color2[2]
+        ];
+        const toHex = (num) => ("0" + Math.round(num).toString(16)).slice(-2);
+        return '#' + toHex(color3[0]) + toHex(color3[1]) + toHex(color3[2]);
     }
 };
 

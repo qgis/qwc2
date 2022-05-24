@@ -28,6 +28,7 @@ import ResizeableWindow from '../components/ResizeableWindow';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/TimeManager.css';
 import markerIcon from '../utils/img/marker-icon.png';
@@ -144,12 +145,12 @@ class TimeManager extends React.Component {
             const endTime = this.getEndTime();
             let ranges = [];
             if (endTime - startTime > 0) {
-                const interval = endTime.diff(startTime, 'minute');
-                const blockInterval = interval / this.blockColors.length;
-                ranges = this.blockColors.map((entry, idx) => {
+                const interval = endTime.diff(startTime, 'second');
+                const blockInterval = interval / (this.blockColors.length - 1);
+                ranges = this.blockColors.slice(0, -1).map((entry, idx) => {
                     return [
-                        startTime.add(idx * blockInterval, 'minute'),
-                        startTime.add((idx + 1) * blockInterval, 'minute')
+                        startTime.add(idx * blockInterval, 'second'),
+                        startTime.add((idx + 1) * blockInterval, 'second')
                     ];
                 });
             }
@@ -222,6 +223,12 @@ class TimeManager extends React.Component {
             </div>
         );
 
+        let blocksStyle = {};
+        if (this.state.markersEnabled) {
+            blocksStyle = {
+                background: 'linear-gradient(90deg, ' + this.blockColors.join(", ") + ')'
+            };
+        }
         return (
             <div className="time-manager-body" role="body">
                 <div className="time-manager-toolbar">
@@ -243,9 +250,7 @@ class TimeManager extends React.Component {
                     </span>
                 </div>
                 <div className="time-manager-timeline">
-                    <div className="time-manager-time-blocks" onMouseDown={this.pickCurrentTimestamp}>
-                        {this.state.markersEnabled ? this.blockColors.map((color, i) => (<div key={"block" + i} style={{backgroundColor: color}} />)) : null}
-                    </div>
+                    <div className="time-manager-time-blocks" onMouseDown={this.pickCurrentTimestamp} style={blocksStyle} />
                     {this.state.timeEnabled ? (
                         <div className="time-manager-cursor" style={cursorStyle}>
                             <div className="time-manager-cursor-label" style={labelStyle}>
@@ -488,28 +493,49 @@ class TimeManager extends React.Component {
         ];
         const startDate = feature.getProperties().startdate;
         const endDate = feature.getProperties().enddate;
-        const overlapRanges = [];
+        const gradientStops = [];
         this.state.ranges.forEach((range, idx) => {
             // Check if ranges overlap
             if (startDate <= range[1] && endDate >= range[0]) {
-                overlapRanges.push(idx);
+                let kStart = (range[0] - startDate) / (endDate - startDate);
+                let cStart = this.blockColors[idx];
+                if (kStart < 0) {
+                    cStart = MiscUtils.blendColors(this.blockColors[idx], this.blockColors[idx + 1], 1 + kStart);
+                    kStart = 0;
+                }
+                let kEnd = (range[1] - startDate) / (endDate - startDate);
+                let cEnd = this.blockColors[idx + 1];
+                if (kEnd > 1) {
+                    cEnd = MiscUtils.blendColors(this.blockColors[idx], this.blockColors[idx + 1], 1 - (kEnd - 1));
+                    kEnd = 1;
+                }
+                gradientStops.push([kStart, cStart]);
+                gradientStops.push([kEnd, cEnd]);
             }
         });
         const rectSize = 16;
-        let offsetX = -0.5 * (overlapRanges.length - 1) * rectSize;
-        overlapRanges.forEach(rangeIdx => {
-            style.push(new ol.style.Style({
-                image: new ol.style.RegularShape({
-                    fill: new ol.style.Fill({color: this.blockColors[rangeIdx]}),
-                    stroke: new ol.style.Stroke({color: 'black', width: 1}),
-                    points: 4,
-                    radius: 0.5 * rectSize * Math.sqrt(2),
-                    angle: Math.PI / 4,
-                    displacement: [offsetX, -0.5 * rectSize]
-                })
-            }));
-            offsetX += rectSize;
+        const blockSize = this.state.ranges[0][1] - this.state.ranges[0][0];
+        const width = (endDate - startDate) / blockSize * rectSize;
+
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        const gradient = context.createLinearGradient(-width, 0, width, 0);
+        gradientStops.forEach(stop => {
+            gradient.addColorStop(stop[0], stop[1]);
         });
+
+        style.push(new ol.style.Style({
+            image: new ol.style.RegularShape({
+                fill: new ol.style.Fill({color: gradient}),
+                stroke: new ol.style.Stroke({color: 'black', width: 1}),
+                points: 4,
+                radius: width / Math.SQRT2,
+                radius2: width,
+                angle: 0,
+                scale: [1, rectSize / width],
+                displacement: [0, -width]
+            })
+        }));
         return style;
     }
 }
