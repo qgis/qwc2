@@ -115,7 +115,7 @@ class TimeManager extends React.Component {
         if (this.state.currentTimestamp !== prevState.currentTimestamp || this.state.timeEnabled !== prevState.timeEnabled) {
             this.updateLayerTimeDimensions(this.state.timeData.layerDimensions, this.state.currentTimestamp);
         }
-        if (this.state.animationActive && this.state.animInterval !== prevState.animInterval) {
+        if (this.state.animationActive && this.state.animationInterval !== prevState.animationInterval) {
             this.stopAnimation();
         }
         if (
