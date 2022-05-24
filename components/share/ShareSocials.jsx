@@ -14,11 +14,13 @@ import {
     LinkedinShareButton,
     TwitterShareButton,
     WhatsappShareButton,
+    EmailShareButton,
     FacebookShareCount,
     FacebookIcon,
     TwitterIcon,
     LinkedinIcon,
-    WhatsappIcon
+    WhatsappIcon,
+    EmailIcon
 } from 'react-share';
 import LocaleUtils from '../../utils/LocaleUtils';
 import './style/ShareSocials.css';
@@ -68,6 +70,15 @@ export default class ShareSocials extends React.Component {
                         <LinkedinShareButton title={title} url={this.props.shareUrl}>
                             <LinkedinIcon round size={32} />
                         </LinkedinShareButton>
+                        <div>
+                            &nbsp;
+                        </div>
+                    </div>
+
+                    <div className="social-box">
+                        <EmailShareButton subject={title} url={this.props.shareUrl}>
+                            <EmailIcon round size={32} />
+                        </EmailShareButton>
                         <div>
                             &nbsp;
                         </div>
