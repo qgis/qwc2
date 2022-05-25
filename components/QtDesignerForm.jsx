@@ -226,7 +226,7 @@ class QtDesignerForm extends React.Component {
                 const keyvalrel = this.props.mapPrefix + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
                 return (
                     <EditComboField
-                        editIface={this.props.iface} fieldId={fieldId} keyvalrel={keyvalrel}
+                        key={fieldId} editIface={this.props.iface} fieldId={fieldId} keyvalrel={keyvalrel}
                         name={nametransform(attrname)} readOnly={readOnly} required={required}
                         updateField={updateField} value={value} />
                 );
