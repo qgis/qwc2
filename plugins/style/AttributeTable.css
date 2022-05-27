@@ -26,6 +26,7 @@ div.attribtable-overlay > div.spinner {
 
 div.dock-window > div.resizeable-window-body > div.attribtable-body {
     max-height: calc(100vh - 8.75em); /* viewport - topbar - bottombar - sidebar_titlebar - window padding*/
+    max-height: calc(var(--vh, 1vh) * 100 - 8.75em); /* viewport - topbar - bottombar - sidebar_titlebar - window padding*/
 }
 
 div.attribtable-toolbar {
