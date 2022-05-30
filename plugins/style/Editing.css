@@ -2,6 +2,7 @@
     padding: 0.25em;
     position: relative;
     max-height: calc(100vh - 8.25em); /* viewport - topbar - bottombar - sidebar_titlebar*/
+    max-height: calc(var(--vh, 1vh) * 100 - 8.25em); /* viewport - topbar - bottombar - sidebar_titlebar*/
     display: flex;
     flex-direction: column;
 }
