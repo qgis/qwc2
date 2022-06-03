@@ -31,6 +31,7 @@ class QtDesignerForm extends React.Component {
         loadRelationValues: PropTypes.func,
         locale: PropTypes.string,
         mapPrefix: PropTypes.string,
+        readOnly: PropTypes.bool,
         relationValues: PropTypes.object,
         removeRelationRecord: PropTypes.func,
         updateField: PropTypes.func,
@@ -164,7 +165,7 @@ class QtDesignerForm extends React.Component {
         let value = (values || {})[widget.name] ?? "";
         const prop = widget.property || {};
         const attr = widget.attribute || {};
-        const readOnly = prop.readOnly === "true";
+        const readOnly = this.props.readOnly || prop.readOnly === "true";
         const required = prop.required === "true";
         const elname = nametransform(widget.name);
         if (widget.class === "QLabel") {
@@ -349,15 +350,19 @@ class QtDesignerForm extends React.Component {
                                     {widgetItems.map(item => (
                                         <td key={item.widget.name}>{this.renderWidget(item.widget, record, this.props.mapPrefix + tablename, updateField, nametransform)}</td>
                                     ))}
-                                    <td>
-                                        <Icon icon="trash" onClick={() => this.props.removeRelationRecord(tablename, idx)} />
-                                    </td>
+                                    {!this.props.readOnly ? (
+                                        <td>
+                                            <Icon icon="trash" onClick={() => this.props.removeRelationRecord(tablename, idx)} />
+                                        </td>
+                                    ) : null}
                                 </tr>
                             );
                         })}
                     </tbody>
                 </table>
-                <div><button className="qt-designer-widget-relation-add" onClick={() => this.props.addRelationRecord(tablename)} type="button">Add</button></div>
+                {!this.props.readOnly ? (
+                    <div><button className="qt-designer-widget-relation-add" onClick={() => this.props.addRelationRecord(tablename)} type="button">Add</button></div>
+                ) : null}
             </div>
         );
     }

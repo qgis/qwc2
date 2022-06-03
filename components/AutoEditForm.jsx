@@ -21,6 +21,7 @@ export default class AutoEditForm extends React.Component {
         fields: PropTypes.array,
         iface: PropTypes.object,
         mapPrefix: PropTypes.string,
+        readOnly: PropTypes.bool,
         touchFriendly: PropTypes.bool,
         updateField: PropTypes.func,
         values: PropTypes.object
@@ -37,6 +38,7 @@ export default class AutoEditForm extends React.Component {
     renderField = (field) => {
         const multiline = (field.constraints || {}).multiline;
         const constraints = omit(field.constraints || {}, ["multiline"]);
+        const readOnly = this.props.readOnly || constraints.readOnly;
         let value = (this.props.values || {})[field.id];
         if (value === undefined || value === null) {
             value = "";
@@ -62,7 +64,7 @@ export default class AutoEditForm extends React.Component {
                 <span className="input-frame">
                     <EditComboField
                         editIface={this.props.iface} fieldId={field.id} keyvalrel={constraints.keyvalrel}
-                        name={field.id} readOnly={constraints.readOnly} required={constraints.required}
+                        name={field.id} readOnly={readOnly} required={constraints.required}
                         updateField={this.props.updateField} value={value} values={constraints.values} />
                 </span>
             );
@@ -71,7 +73,7 @@ export default class AutoEditForm extends React.Component {
             input = (
                 <NumericInput format={nr => String(Number(nr))} max={constraints.max} min={constraints.min}
                     mobile={this.props.touchFriendly} name={field.id} onChange={nr => this.props.updateField(field.id, nr)}
-                    precision={precision} readOnly={constraints.readOnly} required={constraints.required}
+                    precision={precision} readOnly={readOnly} required={constraints.required}
                     step={constraints.step || 1}
                     strict value={value} />
             );
@@ -88,14 +90,14 @@ export default class AutoEditForm extends React.Component {
         } else if (field.type === "text") {
             if (multiline) {
                 input = (
-                    <textarea name={field.id} onChange={(ev) => this.props.updateField(field.id, ev.target.value)} readOnly={constraints.readOnly} required={constraints.required} value={value} />
+                    <textarea name={field.id} onChange={(ev) => this.props.updateField(field.id, ev.target.value)} readOnly={readOnly} required={constraints.required} value={value} />
                 );
             } else {
                 input = (
                     <span className="input-frame">
                         <input name={field.id}
                             onChange={(ev) => this.props.updateField(field.id, ev.target.value)}
-                            readOnly={constraints.readOnly} required={constraints.required} type={field.type} value={value}/>
+                            readOnly={readOnly} required={constraints.required} type={field.type} value={value}/>
                     </span>
                 );
             }
