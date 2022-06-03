@@ -25,49 +25,68 @@ class QtDesignerForm extends React.Component {
     static propTypes = {
         addRelationRecord: PropTypes.func,
         editLayerId: PropTypes.string,
+        feature: PropTypes.object,
         form: PropTypes.string,
         iface: PropTypes.object,
+        loadRelationValues: PropTypes.func,
         locale: PropTypes.string,
         mapPrefix: PropTypes.string,
         relationValues: PropTypes.object,
         removeRelationRecord: PropTypes.func,
         updateField: PropTypes.func,
-        updateRelationField: PropTypes.func,
-        values: PropTypes.object
+        updateRelationField: PropTypes.func
     }
     static defaultProps = {
         relationValues: {}
     }
-    state = {
+    static defaultState = {
+        activetabs: {},
         formdata: null,
-        activetabs: {}
+        relationTables: null
+    }
+    constructor(props) {
+        super(props);
+        this.state = QtDesignerForm.defaultState;
     }
     componentDidMount() {
-        let url = this.props.form;
-        if (url && url.startsWith(":/")) {
-            const assetsPath = ConfigUtils.getAssetsPath();
-            url = assetsPath + this.props.form.substr(1);
-        }
-        url += (url.includes('?') ? '&' : '?') + "lang=" + this.props.locale;
+        this.componentDidUpdate({});
+    }
+    componentDidUpdate(prevProps, prevState) {
+        // Query form
+        if (this.props.form !== prevProps.form) {
+            this.setState(QtDesignerForm.defaultState);
+            let url = this.props.form;
+            if (url && url.startsWith(":/")) {
+                const assetsPath = ConfigUtils.getAssetsPath();
+                url = assetsPath + this.props.form.substr(1);
+            }
+            url += (url.includes('?') ? '&' : '?') + "lang=" + this.props.locale;
 
-        axios.get(url).then(response => {
-            this.parseForm(response.data);
-        }).catch(e => {
-            // eslint-disable-next-line
-            console.log(e);
-        });
+            axios.get(url).then(response => {
+                this.parseForm(response.data);
+            }).catch(e => {
+                // eslint-disable-next-line
+                console.log(e);
+            });
+        }
+        // Reload relation values if necessary
+        const feature = this.props.feature;
+        const prevFeature = prevProps.feature;
+        if (this.state.relationTables && feature && (feature.id !== (prevFeature || {}).id || (this.state.relationTables && !prevState.relationTables))) {
+            this.props.loadRelationValues(this.state.relationTables);
+        }
     }
     componentWillUnmount() {
         KeyValCache.clear();
     }
     render() {
-        if (!this.state.formdata) {
+        if (!this.state.formData) {
             return null;
         }
-        const root = this.state.formdata;
+        const root = this.state.formData;
         return (
             <div className="qt-designer-form">
-                {this.renderLayout(root.layout, this.props.values, this.props.editLayerId, this.props.updateField)}
+                {this.renderLayout(root.layout, this.props.feature.properties, this.props.editLayerId, this.props.updateField)}
             </div>
         );
     }
@@ -207,7 +226,7 @@ class QtDesignerForm extends React.Component {
         } else if (widget.class === "QCheckBox" || widget.class === "QRadioButton") {
             const type = widget.class === "QCheckBox" ? "checkbox" : "radio";
             const inGroup = attr.buttonGroup;
-            const checked = inGroup ? (this.props.values || {})[this.groupOrName(widget)] === widget.name : value;
+            const checked = inGroup ? (this.props.feature.properties || {})[this.groupOrName(widget)] === widget.name : value;
             return (
                 <label>
                     <input checked={checked} name={nametransform(this.groupOrName(widget))} onChange={ev => updateField(this.groupOrName(widget), inGroup ? widget.name : ev.target.checked)} readOnly={readOnly} required={required} type={type} value={widget.name} />
@@ -226,7 +245,7 @@ class QtDesignerForm extends React.Component {
                 const keyvalrel = this.props.mapPrefix + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
                 return (
                     <EditComboField
-                        key={fieldId} editIface={this.props.iface} fieldId={fieldId} keyvalrel={keyvalrel}
+                        editIface={this.props.iface} fieldId={fieldId} key={fieldId} keyvalrel={keyvalrel}
                         name={nametransform(attrname)} readOnly={readOnly} required={required}
                         updateField={updateField} value={value} />
                 );
@@ -349,20 +368,18 @@ class QtDesignerForm extends React.Component {
         return (constr.year + "-" + ("0" + constr.month).slice(-2) + "-" + ("0" + constr.day).slice(-2));
     }
     parseForm = (data) => {
-        let json;
         const options = {
             explicitArray: false,
             mergeAttrs: true
         };
-        xml2js.parseString(data, options, (err, result) => {
-            json = result;
+        xml2js.parseString(data, options, (err, json) => {
+            const relationTables = {};
+            this.reformatWidget(json.ui.widget, relationTables);
+            // console.log(root);
+            this.setState({formData: json.ui.widget, relationTables: relationTables});
         });
-        const root = json.ui.widget;
-        this.reformatWidget(root);
-        // console.log(root);
-        this.setState({formdata: root});
     }
-    reformatWidget = (widget) => {
+    reformatWidget = (widget, relationTables) => {
         if (widget.property) {
             widget.property = this.ensureArray(widget.property).reduce((res, prop) => {
                 return ({...res, [prop.name]: prop[Object.keys(prop).find(key => key !== "name")]});
@@ -378,28 +395,33 @@ class QtDesignerForm extends React.Component {
             widget.attribute = {};
         }
         if (widget.item) {
-            this.ensureArray(widget.item).map(item => this.reformatWidget(item));
+            this.ensureArray(widget.item).map(item => this.reformatWidget(item, relationTables));
         }
 
         widget.name = widget.name || uuid.v1();
         if (widget.layout) {
-            this.reformatLayout(widget.layout);
+            this.reformatLayout(widget.layout, relationTables);
         }
         if (widget.widget) {
             widget.widget = Array.isArray(widget.widget) ? widget.widget : [widget.widget];
             widget.widget.forEach(child => {
                 child.name = uuid.v1();
-                this.reformatWidget(child);
+                this.reformatWidget(child, relationTables);
             });
         }
+
+        const parts = widget.name.split("__");
+        if (parts.length === 3 && parts[0] === "nrel") {
+            relationTables[parts[1]] = parts[2];
+        }
     }
-    reformatLayout = (layout) => {
+    reformatLayout = (layout, relationTables) => {
         layout.item = Array.isArray(layout.item) ? layout.item : [layout.item];
         layout.item.forEach(item => {
             if (item.widget) {
-                this.reformatWidget(item.widget);
+                this.reformatWidget(item.widget, relationTables);
             } else if (item.layout) {
-                this.reformatLayout(item.layout);
+                this.reformatLayout(item.layout, relationTables);
             }
         });
     }

@@ -6,6 +6,7 @@
     display: flex;
     flex-direction: column;
 }
+
 #Editing .editing-minimize-maximize {
     margin-left: 1em;
     cursor: pointer;
@@ -19,37 +20,16 @@
 
 #Editing div.editing-body > div.editing-layer-selection,
 #Editing div.editing-body > div.editing-feature-selection,
-#Editing div.editing-body > div.ButtonBar,
-#Editing div.editing-body > div.editing-busy {
+#Editing div.editing-body > div.ButtonBar {
     flex: 0 0 auto;
 }
 
-#Editing div.editing-geom-readonly {
-    background-color: #FF6600;
-    border: 1px solid #FF0000;
-    color: white;
-    padding: 0.25em;
-    margin-bottom: 0.25em;
-    font-weight: bold;
-}
-
-#Editing div.editing-edit-frame {
+#Editing div.editing-body > div.AttributeForm {
     margin-top: 0.5em;
     padding-top: 0.5em;
     border-top: 1px solid @item_border@;
     flex: 1 1 auto;
     overflow-y: auto;
-}
-
-#Editing div.editing-busy {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(127, 127, 127, 0.25);
-    cursor: wait;
-    z-index: 2;
 }
 
 #Editing select.editing-layer-select,
@@ -63,14 +43,6 @@
 #Editing select.editing-layer-select:disabled,
 #Editing select.editing-feature-select:disabled {
     cursor: not-allowed;
-}
-
-#Editing .edit-commit {
-    background-color: rgb(127,255,127);
-}
-
-#Editing .edit-discard {
-    background-color: rgb(255,127,127);
 }
 
 #Editing div.editing-drawpick-results {
