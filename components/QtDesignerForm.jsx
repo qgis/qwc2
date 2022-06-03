@@ -16,6 +16,7 @@ import isEmpty from 'lodash.isempty';
 import EditComboField, {KeyValCache} from './EditComboField';
 import EditUploadField from './EditUploadField';
 import ConfigUtils from '../utils/ConfigUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
 
 import './style/QtDesignerForm.css';
@@ -361,7 +362,7 @@ class QtDesignerForm extends React.Component {
                     </tbody>
                 </table>
                 {!this.props.readOnly ? (
-                    <div><button className="qt-designer-widget-relation-add" onClick={() => this.props.addRelationRecord(tablename)} type="button">Add</button></div>
+                    <div><button className="qt-designer-widget-relation-add" onClick={() => this.props.addRelationRecord(tablename)} type="button">{LocaleUtils.tr("editing.add")}</button></div>
                 ) : null}
             </div>
         );

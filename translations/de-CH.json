@@ -81,6 +81,7 @@
       "symbologyscale": "Darstellungsmassstab"
     },
     "editing": {
+      "add": "Hinzufügen",
       "attrtable": "Tabelle",
       "canceldelete": "Abbrechen",
       "capturedpicture": "Aufgenommenes Bild",

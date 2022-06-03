@@ -81,6 +81,7 @@
       "symbologyscale": "Escala de la simbología:"
     },
     "editing": {
+      "add": "",
       "attrtable": "",
       "canceldelete": "No borrar",
       "capturedpicture": "",

@@ -81,6 +81,7 @@
       "symbologyscale": "Symbolien mittakaava"
     },
     "editing": {
+      "add": "",
       "attrtable": "",
       "canceldelete": "Don't delete",
       "capturedpicture": "",

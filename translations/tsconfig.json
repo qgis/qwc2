@@ -85,6 +85,7 @@
     "dxfexport.layers",
     "dxfexport.selectinfo",
     "dxfexport.symbologyscale",
+    "editing.add",
     "editing.attrtable",
     "editing.canceldelete",
     "editing.capturedpicture",

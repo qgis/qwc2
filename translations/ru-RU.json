@@ -81,6 +81,7 @@
       "symbologyscale": "Масштаб символики:"
     },
     "editing": {
+      "add": "",
       "attrtable": "",
       "canceldelete": "Не удалять",
       "capturedpicture": "",

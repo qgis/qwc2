@@ -81,6 +81,7 @@
       "symbologyscale": "Escala de la simbologia:"
     },
     "editing": {
+      "add": "",
       "attrtable": "",
       "canceldelete": "No esborrar",
       "capturedpicture": "",

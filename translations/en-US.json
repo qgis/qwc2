@@ -81,6 +81,7 @@
       "symbologyscale": "Symbology scale"
     },
     "editing": {
+      "add": "Add",
       "attrtable": "Table",
       "canceldelete": "Don't delete",
       "capturedpicture": "Captured picture",

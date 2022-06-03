@@ -81,6 +81,7 @@
       "symbologyscale": "Echelle"
     },
     "editing": {
+      "add": "",
       "attrtable": "Table",
       "canceldelete": "Annuler la suppression",
       "capturedpicture": "",
