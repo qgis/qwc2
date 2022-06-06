@@ -103,6 +103,12 @@
       "select": "Seçim",
       "takepicture": ""
     },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
+    },
     "fileselector": {
       "placeholder": "Dosya seç..."
     },

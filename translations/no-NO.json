@@ -103,6 +103,12 @@
       "select": "Velg",
       "takepicture": ""
     },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
+    },
     "fileselector": {
       "placeholder": "Velg fil..."
     },

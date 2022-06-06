@@ -103,6 +103,12 @@
       "select": "Seleziona...",
       "takepicture": "Foto"
     },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
+    },
     "fileselector": {
       "placeholder": "Seleziona file..."
     },

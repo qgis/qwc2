@@ -103,6 +103,12 @@
       "select": "Auswählen",
       "takepicture": "Bild schießen"
     },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
+    },
     "fileselector": {
       "placeholder": "Datei auswählen"
     },

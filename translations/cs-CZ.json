@@ -103,6 +103,12 @@
       "select": "Vybrat",
       "takepicture": ""
     },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
+    },
     "fileselector": {
       "placeholder": "Vybrat soubor..."
     },

@@ -103,6 +103,12 @@
       "select": "Selectează",
       "takepicture": "Fotografiază"
     },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
+    },
     "fileselector": {
       "placeholder": "Selectează fișierul"
     },

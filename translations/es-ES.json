@@ -103,6 +103,12 @@
       "select": "Seleccionar",
       "takepicture": ""
     },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
+    },
     "fileselector": {
       "placeholder": "Seleccionar archivo..."
     },

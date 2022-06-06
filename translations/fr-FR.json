@@ -103,6 +103,12 @@
       "select": "Sélectionner",
       "takepicture": "Ajouter une photo"
     },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
+    },
     "fileselector": {
       "placeholder": "Choisir un fichier..."
     },
