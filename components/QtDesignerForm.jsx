@@ -27,6 +27,7 @@ class QtDesignerForm extends React.Component {
         addRelationRecord: PropTypes.func,
         editLayerId: PropTypes.string,
         feature: PropTypes.object,
+        featureChanged: PropTypes.bool,
         form: PropTypes.string,
         iface: PropTypes.object,
         loadRelationValues: PropTypes.func,
@@ -74,7 +75,11 @@ class QtDesignerForm extends React.Component {
         // Reload relation values if necessary
         const feature = this.props.feature;
         const prevFeature = prevProps.feature;
-        if (this.state.relationTables && feature && (feature.id !== (prevFeature || {}).id || (this.state.relationTables && !prevState.relationTables))) {
+        if (this.state.relationTables && feature && (
+            feature.id !== (prevFeature || {}).id ||
+            (this.state.relationTables && !prevState.relationTables) ||
+            (!this.props.featureChanged && prevProps.featureChanged)
+        )) {
             this.props.loadRelationValues(this.state.relationTables);
         }
     }

@@ -99,6 +99,7 @@ class AttributeForm extends React.Component {
                 <form action="" onSubmit={this.onSubmit}>
                     {this.props.editConfig.form ? (
                         <QtDesignerForm addRelationRecord={this.addRelationRecord} editLayerId={this.props.editDataset} feature={this.props.editing.feature}
+                            featureChanged={this.props.editing.changed}
                             form={this.props.editConfig.form} iface={this.props.iface} loadRelationValues={this.loadRelationValues}
                             mapPrefix={this.props.editMapPrefix} relationValues={this.props.editing.feature.relationValues}
                             removeRelationRecord={this.removeRelationRecord} updateField={this.updateField} updateRelationField={this.updateRelationField} />
@@ -203,7 +204,10 @@ class AttributeForm extends React.Component {
     }
     onDiscard = (action) => {
         if (action === "Discard") {
-            this.props.changeEditingState({...this.props.editing, feature: null});
+            // Re-query the original feature
+            this.props.iface.getFeatureById(this.props.editDataset, this.props.editing.feature.id, this.props.map.projection, (feature) => {
+                this.props.changeEditingState({...this.props.editing, action: 'Pick', feature: feature, changed: false});
+            });
         }
     }
     onSubmit = (ev) => {
@@ -308,7 +312,7 @@ class AttributeForm extends React.Component {
                     newFeature = {...newFeature, relationValues: this.unprefixRelationValues(relResult.relationvalues, mapPrefix)};
                     this.props.changeEditingState({...this.props.editing, action: "Pick", feature: newFeature, changed: true});
                 } else {
-                    this.commitFinished(true);
+                    this.commitFinished(true, result);
                 }
             });
         } else {
@@ -328,14 +332,14 @@ class AttributeForm extends React.Component {
             this.props.setCurrentTaskBlocked(false);
         }
     }
-    commitFinished = (success, errorMsg) => {
+    commitFinished = (success, result) => {
         this.setState({busy: false});
         if (success) {
-            this.props.changeEditingState({...this.props.editing, feature: null});
+            this.props.changeEditingState({...this.props.editing, action: 'Pick', feature: result, changed: false});
             this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
         } else {
             // eslint-disable-next-line
-            alert(errorMsg);
+            alert(result);
         }
     }
     deleteFinished = (success, errorMsg) => {
@@ -343,7 +347,7 @@ class AttributeForm extends React.Component {
         if (success) {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
-            this.props.changeEditingState({...this.props.editing, feature: null});
+            this.props.changeEditingState({...this.props.editing, feature: null, changed: false});
             this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
         } else {
             // eslint-disable-next-line
