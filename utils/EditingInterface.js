@@ -74,6 +74,19 @@ function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback) {
 
 /*
  layerId: The edit layer id
+ featureId: The feature id
+ mapCrs: the map crs
+ callback: function(result), on success result is a feature, on failure, result is null
+*/
+function getFeatureById(layerId, featureId, mapCrs, callback) {
+    const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
+    const req = SERVICE_URL + layerId + '/' + featureId + '?crs=' + mapCrs;
+    axios.get(req).then(response => {
+        callback(response.data);
+    }).catch(() => callback(null));
+}
+/*
+ layerId: The edit layer id
  mapCrs: the map crs
  callback: function(result), on success result is a collection of features, on failure, result is null
 */
@@ -164,6 +177,7 @@ function getKeyValues(keyvalues, callback) {
 
 export default {
     getFeature,
+    getFeatureById,
     getFeatures,
     addFeatureMultipart,
     editFeatureMultipart,
