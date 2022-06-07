@@ -28,7 +28,8 @@ class RedliningBufferSupport extends React.Component {
     }
     state = {
         bufferDistance: 0,
-        bufferLayer: null
+        bufferLayer: null,
+        bufferUnit: "meters"
     }
     constructor(props, context) {
         super(props, context);
@@ -64,10 +65,16 @@ class RedliningBufferSupport extends React.Component {
         return (
             <div className="redlining-controlsbar">
                 <span>
-                    <span>{LocaleUtils.tr("redlining.bufferdistance")} [m]:&nbsp;</span>
+                    <span>{LocaleUtils.tr("redlining.bufferdistance")} &nbsp;</span>
                     <NumericInput max={99999} min={-99999}
                         mobile onChange={(nr) => this.setState({bufferDistance: nr})} precision={0} step={1}
                         strict value={this.state.bufferDistance} />
+                    <select className="combo" onChange={this.changeBufferUnit} value={this.state.bufferUnit}>
+                        <option value="meters">m</option>
+                        <option value="feet">ft</option>
+                        <option value="kilometers">km</option>
+                        <option value="miles">mi</option>
+                    </select>
                 </span>
                 <span>
                     <span>{LocaleUtils.tr("redlining.bufferlayer")}:&nbsp;</span>
@@ -84,6 +91,9 @@ class RedliningBufferSupport extends React.Component {
             </div>
         );
     }
+    changeBufferUnit = (ev) => {
+        this.setState({bufferUnit: ev.target.value});
+    }
     computeBuffer = () => {
         const feature = this.props.redlining.selectedFeature;
         if (!feature || !feature.geometry || !this.state.bufferLayer) {
@@ -91,7 +101,7 @@ class RedliningBufferSupport extends React.Component {
         }
         const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.projection, "EPSG:4326");
         const wgsFeature = {...feature, geometry: wgsGeometry};
-        const output = buffer(wgsFeature, this.state.bufferDistance, {units: 'meters'});
+        const output = buffer(wgsFeature, this.state.bufferDistance, {units: this.state.bufferUnit});
         if (output && output.geometry) {
             output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", this.props.projection);
             output.id = uuid.v4();
