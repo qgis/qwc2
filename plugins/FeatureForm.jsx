@@ -155,7 +155,7 @@ class FeatureForm extends React.Component {
             );
         }
         return (
-            <ResizeableWindow icon="info-sign"
+            <ResizeableWindow icon="featureform"
                 initialHeight={this.props.initialHeight} initialWidth={this.props.initialWidth}
                 initialX={this.props.initialX} initialY={this.props.initialY}
                 key="FeatureForm"
