@@ -23,6 +23,7 @@
     "appmenu.items.AttributeTable",
     "appmenu.items.DxfExport",
     "appmenu.items.Editing",
+    "appmenu.items.FeatureForm",
     "appmenu.items.Help",
     "appmenu.items.IdentifyRegion",
     "appmenu.items.LayerCatalog",

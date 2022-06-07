@@ -8,6 +8,7 @@
         "AttributeTable": "Tabella attributi",
         "DxfExport": "Esporta su DXF",
         "Editing": "Strumenti di modifica",
+        "FeatureForm": "Formulario oggetto",
         "Help": "Aiuto",
         "IdentifyRegion": "Identifica in un poligono",
         "LayerCatalog": "Catalogo livelli",
@@ -104,10 +105,10 @@
       "takepicture": "Foto"
     },
     "featureform": {
-      "feature": "",
-      "noresults": "",
-      "querying": "",
-      "title": ""
+      "feature": "Oggetto",
+      "noresults": "Nessun risultato",
+      "querying": "Caricando...",
+      "title": "Formulario oggetto"
     },
     "fileselector": {
       "placeholder": "Seleziona file..."

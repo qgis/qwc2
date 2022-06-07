@@ -8,6 +8,7 @@
         "AttributeTable": "Attributtabelle",
         "DxfExport": "DXF-Export",
         "Editing": "Editieren",
+        "FeatureForm": "Objektformular",
         "Help": "Hilfe",
         "IdentifyRegion": "Region abfragen",
         "LayerCatalog": "Ebenenkatalog",
@@ -104,10 +105,10 @@
       "takepicture": "Bild schießen"
     },
     "featureform": {
-      "feature": "",
-      "noresults": "",
-      "querying": "",
-      "title": ""
+      "feature": "Objekt",
+      "noresults": "Keine Ergebnisse",
+      "querying": "Objekte werden abgefragt...",
+      "title": "Objektformular"
     },
     "fileselector": {
       "placeholder": "Datei auswählen"

@@ -8,6 +8,7 @@
         "AttributeTable": "Attribute Table",
         "DxfExport": "DXF Export",
         "Editing": "Editing",
+        "FeatureForm": "Feature Form",
         "Help": "Help",
         "IdentifyRegion": "Identify Region",
         "LayerCatalog": "Layer catalog",
@@ -104,10 +105,10 @@
       "takepicture": "Take picture"
     },
     "featureform": {
-      "feature": "",
-      "noresults": "",
-      "querying": "",
-      "title": ""
+      "feature": "Feature",
+      "noresults": "No results",
+      "querying": "Querying...",
+      "title": "Feature form"
     },
     "fileselector": {
       "placeholder": "Select file..."
