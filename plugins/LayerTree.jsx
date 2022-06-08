@@ -146,7 +146,7 @@ class LayerTree extends React.Component {
                 checkboxstate = "tristate";
             }
         } else {
-            visibility = group.visibility === undefined ? true : group.visibility;
+            visibility = group.visibility === undefined ? subtreevisibility > 0 : group.visibility;
             if (visibility) {
                 checkboxstate = subtreevisibility === 1 ? 'checked' : 'tristate';
             } else {
