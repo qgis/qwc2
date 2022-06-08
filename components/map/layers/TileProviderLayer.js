@@ -64,8 +64,12 @@ function tileXYZToOpenlayersOptions(options) {
 
 export default {
     create: (options) => {
-        const [url, opt] = TileProvider.getLayerConfig(options.provider, options);
-        opt.url = url;
-        return new ol.layer.Tile(tileXYZToOpenlayersOptions(opt));
+        const config = TileProvider.getLayerConfig(options.provider, options);
+        if (config) {
+            const [url, opt] = config;
+            opt.url = url;
+            return new ol.layer.Tile(tileXYZToOpenlayersOptions(opt));
+        }
+        return null;
     }
 };
