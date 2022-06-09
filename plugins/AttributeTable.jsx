@@ -237,10 +237,11 @@ class AttributeTable extends React.Component {
                         <button className="button" disabled={editing || nolayer} onClick={() => this.reload()} title={LocaleUtils.tr("attribtable.reload")}>
                             <Icon icon="refresh" />
                         </button>
-                        {showAddButton ? (<button className="button" disabled={nolayer || editing || loading || layerChanged} onClick={this.addFeature} title={LocaleUtils.tr("attribtable.addfeature")}>
-                            <Icon icon="plus" />
-                        </button>
-												) : null}
+                        {showAddButton ? (
+                            <button className="button" disabled={nolayer || editing || loading || layerChanged} onClick={this.addFeature} title={LocaleUtils.tr("attribtable.addfeature")}>
+                                <Icon icon="plus" />
+                            </button>
+                        ) : null}
                         <button className="button" disabled={layerChanged || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
                             <Icon icon="search" />
                         </button>
@@ -258,7 +259,7 @@ class AttributeTable extends React.Component {
                             showDelButton ? (<button className="button" disabled={layerChanged || editing || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
                                 <Icon icon="trash" />
                             </button>
-														) : null
+                        ) : null
                         )}
                         {this.state.confirmDelete ? (
                             <button className="button edit-discard" onClick={() => this.setState({confirmDelete: false})}>
