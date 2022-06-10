@@ -326,7 +326,9 @@
       "title": "",
       "toggle": "",
       "unit": {
+        "century": "",
         "days": "jours",
+        "decade": "",
         "hours": "heures",
         "milliseconds": "",
         "minutes": "minutes",

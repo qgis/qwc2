@@ -326,7 +326,9 @@
       "title": "Linea temporale",
       "toggle": "Abilità gesitone temporale",
       "unit": {
+        "century": "secoli",
         "days": "giorni",
+        "decade": "decenni",
         "hours": "ore",
         "milliseconds": "millisecondi",
         "minutes": "minuti",

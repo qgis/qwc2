@@ -36,13 +36,15 @@ import markerIcon from '../utils/img/marker-icon.png';
 dayjs.extend(utc);
 
 const DateUnitLabels = {
-    ms: LocaleUtils.trmsg("timemanager.unit.milliseconds"),
-    s: LocaleUtils.trmsg("timemanager.unit.seconds"),
-    m: LocaleUtils.trmsg("timemanager.unit.minutes"),
-    h: LocaleUtils.trmsg("timemanager.unit.hours"),
-    d: LocaleUtils.trmsg("timemanager.unit.days"),
-    M: LocaleUtils.trmsg("timemanager.unit.months"),
-    y: LocaleUtils.trmsg("timemanager.unit.years")
+    "ms": LocaleUtils.trmsg("timemanager.unit.milliseconds"),
+    "s": LocaleUtils.trmsg("timemanager.unit.seconds"),
+    "m": LocaleUtils.trmsg("timemanager.unit.minutes"),
+    "h": LocaleUtils.trmsg("timemanager.unit.hours"),
+    "d": LocaleUtils.trmsg("timemanager.unit.days"),
+    "M": LocaleUtils.trmsg("timemanager.unit.months"),
+    "y": LocaleUtils.trmsg("timemanager.unit.years"),
+    "10y": LocaleUtils.trmsg("timemanager.unit.decade"),
+    "100y": LocaleUtils.trmsg("timemanager.unit.century")
 };
 
 class TimeManager extends React.Component {
@@ -324,24 +326,25 @@ class TimeManager extends React.Component {
             let currentTimestamp = this.getStartTime().add(perc * deltaT, 'ms');
             // Snap to configured step interval
             let add = null;
-            if (this.state.stepSizeUnit === "m") {
+            if (this.state.stepSizeUnit.endsWith("m")) {
                 add = currentTimestamp.second() > 30;
                 currentTimestamp = currentTimestamp.second(0);
-            } else if (this.state.stepSizeUnit === "h") {
+            } else if (this.state.stepSizeUnit.endsWith("h")) {
                 add = currentTimestamp.minute() > 30;
                 currentTimestamp = currentTimestamp.second(0).minute(0);
-            } else if (this.state.stepSizeUnit === "d") {
+            } else if (this.state.stepSizeUnit.endsWith("d")) {
                 add = currentTimestamp.hour() > 12;
                 currentTimestamp = currentTimestamp.second(0).minute(0).hour(0);
-            } else if (this.state.stepSizeUnit === "M") {
+            } else if (this.state.stepSizeUnit.endsWith("M")) {
                 add = currentTimestamp.day() > 15;
                 currentTimestamp = currentTimestamp.second(0).minute(0).hour(0).date(1);
-            } else if (this.state.stepSizeUnit === "y") {
+            } else if (this.state.stepSizeUnit.endsWith("y")) {
                 add = currentTimestamp.month() > 5;
                 currentTimestamp = currentTimestamp.second(0).minute(0).hour(0).date(1).month(0);
             }
             if (add) {
-                currentTimestamp = currentTimestamp.add(1, this.state.stepSizeUnit);
+                const num = parseInt(this.state.stepSizeUnit.slice(0, -1), 10) || 1;
+                currentTimestamp = currentTimestamp.add(num, this.state.stepSizeUnit.slice(-1));
             }
             this.setState({currentTimestampDrag: currentTimestamp});
         };
@@ -403,16 +406,17 @@ class TimeManager extends React.Component {
     }
     step = (direction) => {
         const day = dayjs(this.state.currentTimestamp);
-        const newday = day.add(direction * this.state.stepSize, this.state.stepSizeUnit);
-        if (this.state.stepSizeUnit === "m") {
+        const num = parseInt(this.state.stepSizeUnit.slice(0, -1), 10) || 1;
+        const newday = day.add(direction * this.state.stepSize * num, this.state.stepSizeUnit.slice(-1));
+        if (this.state.stepSizeUnit.endsWith("m")) {
             return newday.second(0);
-        } else if (this.state.stepSizeUnit === "h") {
+        } else if (this.state.stepSizeUnit.endsWith("h")) {
             return newday.second(0).minute(0);
-        } else if (this.state.stepSizeUnit === "d") {
+        } else if (this.state.stepSizeUnit.endsWith("d")) {
             return newday.second(0).minute(0).hour(0);
-        } else if (this.state.stepSizeUnit === "M") {
+        } else if (this.state.stepSizeUnit.endsWith("M")) {
             return newday.second(0).minute(0).hour(0).date(1);
-        } else if (this.state.stepSizeUnit === "y") {
+        } else if (this.state.stepSizeUnit.endsWith("y")) {
             return newday.second(0).minute(0).hour(0).date(1).month(0);
         }
         return newday;

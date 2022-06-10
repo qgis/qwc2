@@ -326,7 +326,9 @@
       "title": "Zeitleiste",
       "toggle": "Zeitsteuerung aktivieren",
       "unit": {
+        "century": "Jahrhunderte",
         "days": "Tage",
+        "decade": "Jahrzehnte",
         "hours": "Stunden",
         "milliseconds": "Millisekunden",
         "minutes": "Minuten",

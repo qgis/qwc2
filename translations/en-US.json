@@ -326,7 +326,9 @@
       "title": "Time manager",
       "toggle": "Temporal navigation",
       "unit": {
+        "century": "centuries",
         "days": "days",
+        "decade": "decades",
         "hours": "hours",
         "milliseconds": "milliseconds",
         "minutes": "minutes",
