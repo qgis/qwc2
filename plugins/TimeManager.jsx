@@ -55,6 +55,8 @@ class TimeManager extends React.Component {
         defaultAnimationInterval: PropTypes.number,
         defaultStepSize: PropTypes.number,
         defaultStepUnit: PropTypes.string,
+        drawMarkerOffset: PropTypes.array,
+        drawMarkerPins: PropTypes.bool,
         layerVisibilities: PropTypes.object,
         layers: PropTypes.array,
         map: PropTypes.object,
@@ -71,6 +73,8 @@ class TimeManager extends React.Component {
         defaultAnimationInterval: 1,
         defaultStepSize: 1,
         defaultStepUnit: "d",
+        drawMarkerOffset: [0, 0],
+        drawMarkerPins: true,
         markersAvailable: true,
         stepUnits: ["s", "m", "h", "d", "M", "y"]
     }
@@ -527,16 +531,19 @@ class TimeManager extends React.Component {
     }
     markerStyle = (feature) => {
         const style = [
-            new ol.style.Style({
+        ];
+        if (this.props.drawMarkerPins) {
+            style.push(new ol.style.Style({
                 image: new ol.style.Icon({
                     anchor: [0.5, 1],
                     anchorXUnits: 'fraction',
                     anchorYUnits: 'fraction',
                     opacity: 1,
+                    displacement: this.props.drawMarkerOffset,
                     src: markerIcon
                 })
-            })
-        ];
+            }));
+        }
         const startDate = feature.getProperties().startdate;
         const endDate = feature.getProperties().enddate;
         const gradientStops = [];
@@ -579,7 +586,7 @@ class TimeManager extends React.Component {
                 radius2: width,
                 angle: 0,
                 scale: [1, rectSize / width],
-                displacement: [0, -width]
+                displacement: [this.props.drawMarkerOffset[0], this.props.drawMarkerOffset[1] / rectSize * width - width]
             })
         }));
         return style;
