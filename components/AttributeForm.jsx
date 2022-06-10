@@ -77,6 +77,7 @@ class AttributeForm extends React.Component {
 
         let deleteBar = null;
         if (!this.props.newfeature && this.props.editing.feature && !this.props.editing.changed && editPermissions.deletable !== false) {
+            // Delete button bar will appear by default if no permissions are defined in editConfig or when deletable permission is set
             if (!this.state.deleteClicked) {
                 const deleteButtons = [
                     {key: 'Delete', icon: 'trash', label: LocaleUtils.trmsg("editing.delete")}
