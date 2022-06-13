@@ -14,15 +14,15 @@ import FeatureStyles from '../../../utils/FeatureStyles';
 export default {
     create: (options) => {
         const formatMap = {
-            "gml3": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
-            "gml32": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
-            "application/gml+xml; version=3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
+            "gml3": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), dataProjection: proj, version: options.version}),
+            "gml32": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32(), defaultDataProjection: proj}),
+            "application/gml+xml; version=3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32(), dataProjection: proj, version: options.version}),
 
-            "gml2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), defaultDataProjection: proj}),
+            "gml2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), dataProjection: proj, version: options.version}),
 
-            "text/xml; subtype=gml/3.1.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
-            "text/xml; subtype=gml/3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
-            "text/xml; subtype=gml/2.1.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), defaultDataProjection: proj}),
+            "text/xml; subtype=gml/3.1.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), dataProjection: proj, version: options.version}),
+            "text/xml; subtype=gml/3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32(), dataProjection: proj, version: options.version}),
+            "text/xml; subtype=gml/2.1.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), dataProjection: proj, version: options.version}),
 
             "kml": (proj) => new ol.format.KML({defaultDataProjection: proj}),
             "application/vnd.google-earth.kml+xml": (proj) => new ol.format.KML({defaultDataProjection: proj}),

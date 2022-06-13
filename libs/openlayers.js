@@ -19,6 +19,7 @@ import OlFeature from 'ol/Feature';
 import OlFormatGeoJSON from 'ol/format/GeoJSON';
 import OlFormatGML2 from 'ol/format/GML2';
 import OlFormatGML3 from 'ol/format/GML3';
+import OlFormatGML32 from 'ol/format/GML32';
 import OlFormatKML from 'ol/format/KML';
 import OlFormatWFS from 'ol/format/WFS';
 import OlFormatWMSCapabilities from 'ol/format/WMSCapabilities';
@@ -93,6 +94,7 @@ export default {
         GeoJSON: OlFormatGeoJSON,
         GML2: OlFormatGML2,
         GML3: OlFormatGML3,
+        GML32: OlFormatGML32,
         KML: OlFormatKML,
         WFS: OlFormatWFS,
         WMSCapabilities: OlFormatWMSCapabilities,
