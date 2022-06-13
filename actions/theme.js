@@ -78,7 +78,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
             const idx = key.indexOf(":");
             const service = key.slice(0, idx);
             const serviceUrl = key.slice(idx + 1);
-            ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], themeLayer.mapCrs, (id, layer) => {
+            ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], theme.mapCrs, (id, layer) => {
                 dispatch(replacePlaceholderLayer(id, layer));
             });
         }
