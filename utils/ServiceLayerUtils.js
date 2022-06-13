@@ -290,11 +290,7 @@ const ServiceLayerUtils = {
             serviceUrl = ServiceLayerUtils.getDCPTypes(array(getFeatureOp.DCP)).HTTP.Get.href;
             serviceUrl = this.mergeCalledServiceUrlQuery(serviceUrl, calledUrlParts);
             const outputFormat = array(getFeatureOp.Parameter).find(el => el.name === "outputFormat");
-            formats = outputFormat.AllowedValues ? outputFormat.AllowedValues.Value : outputFormat.Value;
-            if (typeof(formats) === 'string') {
-                // convert to list if single entry
-                formats = [formats];
-            }
+            formats = MiscUtils.ensureArray(outputFormat.AllowedValues ? outputFormat.AllowedValues.Value : outputFormat.Value);
         } catch (e) {
             return [];
         }
