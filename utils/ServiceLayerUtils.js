@@ -110,8 +110,8 @@ const ServiceLayerUtils = {
 
         const topLayer = capabilities.Capability.Layer;
 
-        const getMapUrl = this.getWmsCapabilityUrl(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetMap.DCPType).HTTP.Get.OnlineResource, calledUrlParts);
-        const featureInfoUrl = this.getWmsCapabilityUrl(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType).HTTP.Get.OnlineResource, calledUrlParts);
+        const getMapUrl = this.mergeCalledServiceUrlQuery(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetMap.DCPType).HTTP.Get.OnlineResource, calledUrlParts);
+        const featureInfoUrl = this.mergeCalledServiceUrlQuery(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType).HTTP.Get.OnlineResource, calledUrlParts);
         let infoFormats = null;
         try {
             infoFormats = capabilities.Capability.Request.GetFeatureInfo.Format;
@@ -170,7 +170,7 @@ const ServiceLayerUtils = {
         }
         let legendUrl = getMapUrl;
         try {
-            legendUrl = this.getWmsCapabilityUrl(layer.Style[0].LegendURL[0].OnlineResource, calledUrlParts);
+            legendUrl = this.mergeCalledServiceUrlQuery(layer.Style[0].LegendURL[0].OnlineResource, calledUrlParts);
         } catch (e) {
             /* pass */
         }
@@ -196,7 +196,7 @@ const ServiceLayerUtils = {
             maxScale: layer.MaxScaleDenominator
         };
     },
-    getWmsCapabilityUrl(capabilityUrl, calledServiceUrlParts) {
+    mergeCalledServiceUrlQuery(capabilityUrl, calledServiceUrlParts) {
         try {
             const urlParts = url.parse(capabilityUrl, true);
             urlParts.host = calledServiceUrlParts.host;
