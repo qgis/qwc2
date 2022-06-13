@@ -14,22 +14,22 @@ import FeatureStyles from '../../../utils/FeatureStyles';
 export default {
     create: (options) => {
         const formatMap = {
-            "gml3": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), dataProjection: proj, version: options.version}),
-            "gml32": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32(), defaultDataProjection: proj}),
-            "application/gml+xml; version=3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32(), dataProjection: proj, version: options.version}),
+            "gml3": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
+            "gml32": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
+            "application/gml+xml; version=3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
 
-            "gml2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), dataProjection: proj, version: options.version}),
+            "gml2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2({dataProjection: proj}), version: options.version}),
 
-            "text/xml; subtype=gml/3.1.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), dataProjection: proj, version: options.version}),
-            "text/xml; subtype=gml/3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32(), dataProjection: proj, version: options.version}),
-            "text/xml; subtype=gml/2.1.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), dataProjection: proj, version: options.version}),
+            "text/xml; subtype=gml/3.1.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
+            "text/xml; subtype=gml/3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
+            "text/xml; subtype=gml/2.1.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2({dataProjection: proj}), version: options.version}),
 
             "kml": (proj) => new ol.format.KML({defaultDataProjection: proj}),
-            "application/vnd.google-earth.kml+xml": (proj) => new ol.format.KML({defaultDataProjection: proj}),
+            "application/vnd.google-earth.kml+xml": (proj) => new ol.format.KML({dataProjection: proj}),
 
-            "geojson": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
-            "json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
-            "application/json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj})
+            "geojson": (proj) => new ol.format.GeoJSON({dataProjection: proj}),
+            "json": (proj) => new ol.format.GeoJSON({dataProjection: proj}),
+            "application/json": (proj) => new ol.format.GeoJSON({dataProjection: proj})
         };
 
         let olformat = null;
