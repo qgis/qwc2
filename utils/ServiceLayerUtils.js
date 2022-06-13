@@ -208,7 +208,14 @@ const ServiceLayerUtils = {
             return url.format(calledServiceUrlParts);
         }
     },
-    getWFSLayers(capabilitiesXml, mapCrs) {
+    getWFSLayers(capabilitiesXml, calledServiceUrl, mapCrs) {
+        const calledUrlParts = url.parse(calledServiceUrl, true);
+        // Filter service and request from calledServiceUrl, but keep other parameters (i.e. MAP)
+        calledUrlParts.query = Object.keys(calledUrlParts.query).filter(key => {
+            return !["service", "request"].includes(key.toLowerCase());
+        }).reduce((res, key) => ({...res, [key]: calledUrlParts.query[key]}), {});
+        delete calledUrlParts.search;
+
         const options = {
             attributeNamePrefix: "",
             ignoreAttributes: false,
@@ -220,17 +227,18 @@ const ServiceLayerUtils = {
         if (!capabilities || !capabilities.WFS_Capabilities || !capabilities.WFS_Capabilities.version) {
             return [];
         } else if (capabilities.WFS_Capabilities.version < "1.1.0") {
-            return ServiceLayerUtils.getWFS10Layers(capabilities.WFS_Capabilities, mapCrs);
+            return ServiceLayerUtils.getWFS10Layers(capabilities.WFS_Capabilities, calledUrlParts);
         } else {
-            return ServiceLayerUtils.getWFS11_20Layers(capabilities.WFS_Capabilities, mapCrs);
+            return ServiceLayerUtils.getWFS11_20Layers(capabilities.WFS_Capabilities, calledUrlParts, mapCrs);
         }
     },
-    getWFS10Layers(capabilities) {
+    getWFS10Layers(capabilities, calledUrlParts) {
         let serviceUrl = null;
         const version = capabilities.version;
         let formats = null;
         try {
             serviceUrl = ServiceLayerUtils.getDCPTypes(array(capabilities.Capability.Request.GetFeature.DCPType)).HTTP.Get.onlineResource;
+            serviceUrl = this.mergeCalledServiceUrlQuery(serviceUrl, calledUrlParts);
             formats = Object.keys(capabilities.Capability.Request.GetFeature.ResultFormat);
             if (typeof(formats) === 'string') {
                 // convert to list if single entry
@@ -273,13 +281,14 @@ const ServiceLayerUtils = {
         }
         return layers;
     },
-    getWFS11_20Layers(capabilities, mapCrs) {
+    getWFS11_20Layers(capabilities, calledUrlParts, mapCrs) {
         let serviceUrl = null;
         const version = capabilities.version;
         let formats = null;
         try {
             const getFeatureOp = array(capabilities.OperationsMetadata.Operation).find(el => el.name === "GetFeature");
             serviceUrl = ServiceLayerUtils.getDCPTypes(array(getFeatureOp.DCP)).HTTP.Get.href;
+            serviceUrl = this.mergeCalledServiceUrlQuery(serviceUrl, calledUrlParts);
             const outputFormat = array(getFeatureOp.Parameter).find(el => el.name === "outputFormat");
             formats = outputFormat.AllowedValues ? outputFormat.AllowedValues.Value : outputFormat.Value;
             if (typeof(formats) === 'string') {
@@ -345,7 +354,7 @@ const ServiceLayerUtils = {
                 if (type === "wms") {
                     result = ServiceLayerUtils.getWMSLayers(response.data, url, true);
                 } else if (type === "wfs") {
-                    result = ServiceLayerUtils.getWFSLayers(response.data, mapCrs);
+                    result = ServiceLayerUtils.getWFSLayers(response.data, url, mapCrs);
                 } else if (type === "wmts") {
                     result = ServiceLayerUtils.getWMTSLayers(response.data, url, mapCrs);
                 }

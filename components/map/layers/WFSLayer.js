@@ -7,6 +7,7 @@
  */
 
 import ol from 'openlayers';
+import url from 'url';
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import FeatureStyles from '../../../utils/FeatureStyles';
 
@@ -61,12 +62,20 @@ export default {
                     bbox = requestExtent.join(',') + "," + CoordinatesUtils.toOgcUrnCrs(options.projection);
                     srsName = CoordinatesUtils.toOgcUrnCrs(options.projection);
                 }
-                const url = options.url + (options.url.endsWith('?') ? '' : '?') + 'service=WFS&version=' + options.version +
-                    '&request=GetFeature&' + typeName + '=' + options.name +
-                    '&outputFormat=' + encodeURIComponent(format) +
-                    '&srsName=' + srsName +
-                    '&bbox=' + bbox;
-                return url;
+                const urlParts = url.parse(options.url, true);
+                const urlParams = Object.entries(urlParts.query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {});
+                delete urlParts.search;
+                urlParts.query = {
+                    ...urlParams,
+                    SERVICE: 'WFS',
+                    VERSION: options.version,
+                    REQUEST: 'GetFeature',
+                    [typeName]: options.name,
+                    outputFormat: format,
+                    srsName: srsName,
+                    bbox: bbox
+                };
+                return url.format(urlParts);
             },
             strategy: ol.loadingstrategy.bbox
         });
