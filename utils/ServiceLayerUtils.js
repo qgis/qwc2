@@ -308,8 +308,8 @@ const ServiceLayerUtils = {
             const title = featureType.Title || name;
             const abstract = featureType.Abstract || "";
             const projections = [
-                CoordinatesUtils.fromOgcUrnCrs(featureType.DefaultCRS),
-                ...MiscUtils.ensureArray(featureType.OtherCRS || []).map(crs => CoordinatesUtils.fromOgcUrnCrs(crs))
+                CoordinatesUtils.fromOgcUrnCrs(featureType.DefaultCRS || featureType.DefaultSRS),
+                ...MiscUtils.ensureArray(featureType.OtherCRS || featureType.OtherSRS || []).map(crs => CoordinatesUtils.fromOgcUrnCrs(crs))
             ];
             const projection = projections.includes(mapCrs) ? mapCrs : projections[0];
 
