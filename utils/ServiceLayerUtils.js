@@ -102,9 +102,9 @@ const ServiceLayerUtils = {
         const wmsFormat = new ol.format.WMSCapabilities();
         const capabilities = wmsFormat.read(capabilitiesXml);
         const calledUrlParts = url.parse(calledServiceUrl, true);
-        // Filter service, version and request from calledServiceUrl, but keep other parameters (i.e. MAP)
+        // Filter service and request from calledServiceUrl, but keep other parameters (i.e. MAP)
         calledUrlParts.query = Object.keys(calledUrlParts.query).filter(key => {
-            return !["service", "version", "request"].includes(key.toLowerCase());
+            return !["service", "request"].includes(key.toLowerCase());
         }).reduce((res, key) => ({...res, [key]: calledUrlParts.query[key]}), {});
         delete calledUrlParts.search;
 
