@@ -18,6 +18,7 @@ import EditableSelect from '../components/widgets/EditableSelect';
 import {addLayerFeatures} from '../actions/layers';
 import FileSelector from './widgets/FileSelector';
 import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -238,12 +239,12 @@ class ImportLayer extends React.Component {
             let defaultCrs = "EPSG:4326";
             if (data.crs && data.crs.properties && data.crs.properties.name) {
                 // Extract CRS from FeatureCollection crs
-                defaultCrs = data.crs.properties.name.replace(/urn:ogc:def:crs:EPSG::(\d+)/, "EPSG:$1");
+                defaultCrs = CoordinatesUtils.fromOgcUrnCrs(data.crs.properties.name);
             }
             const features = data.features.map(feature => {
                 let crs = defaultCrs;
                 if (feature.crs && feature.crs.properties && feature.crs.properties.name) {
-                    crs = feature.crs.properties.name.replace(/urn:ogc:def:crs:EPSG::(\d+)/, "EPSG:$1");
+                    crs = CoordinatesUtils.fromOgcUrnCrs(data.crs.properties.name);
                 } else if (typeof feature.crs === "string") {
                     crs = feature.crs;
                 }

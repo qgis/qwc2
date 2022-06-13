@@ -18,6 +18,7 @@ import {LayerRole, refreshLayer} from '../actions/layers';
 import AutoEditForm from '../components/AutoEditForm';
 import QtDesignerForm from '../components/QtDesignerForm';
 import ButtonBar from '../components/widgets/ButtonBar';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/AttributeForm.css';
 
@@ -221,7 +222,7 @@ class AttributeForm extends React.Component {
             properties: feature.properties || {},
             crs: {
                 type: "name",
-                properties: {name: "urn:ogc:def:crs:EPSG::" + this.props.map.projection.split(":")[1]}
+                properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.projection)}
             }
         };
 

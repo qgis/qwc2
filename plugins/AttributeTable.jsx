@@ -23,6 +23,7 @@ import Spinner from '../components/Spinner';
 import NavBar from '../components/widgets/NavBar';
 import ConfigUtils from '../utils/ConfigUtils';
 import EditingInterface from '../utils/EditingInterface';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/AttributeTable.css';
@@ -484,7 +485,7 @@ class AttributeTable extends React.Component {
             ...this.state.features[this.state.changedFeatureIdx],
             crs: {
                 type: "name",
-                properties: {name: "urn:ogc:def:crs:EPSG::" + this.props.mapCrs.split(":")[1]}
+                properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.mapCrs)}
             }
         };
         const featureData = new FormData();
