@@ -73,6 +73,14 @@ const MiscUtils = {
         ];
         const toHex = (num) => ("0" + Math.round(num).toString(16)).slice(-2);
         return '#' + toHex(color3[0]) + toHex(color3[1]) + toHex(color3[2]);
+    },
+    ensureArray(el) {
+        if (el === undefined) {
+            return [];
+        } else if (Array.isArray(el)) {
+            return el;
+        }
+        return [el];
     }
 };
 

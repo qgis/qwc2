@@ -17,6 +17,7 @@ import EditComboField, {KeyValCache} from './EditComboField';
 import EditUploadField from './EditUploadField';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MiscUtils from '../utils/MiscUtils';
 import Icon from './Icon';
 
 import './style/QtDesignerForm.css';
@@ -307,14 +308,6 @@ class QtDesignerForm extends React.Component {
         }
         return null;
     }
-    ensureArray = (el) => {
-        if (el === undefined) {
-            return [];
-        } else if (Array.isArray(el)) {
-            return el;
-        }
-        return [el];
-    }
     renderNRelation = (widget) => {
         const parts = widget.name.split("__");
         if (parts.length < 3) {
@@ -392,21 +385,21 @@ class QtDesignerForm extends React.Component {
     }
     reformatWidget = (widget, relationTables) => {
         if (widget.property) {
-            widget.property = this.ensureArray(widget.property).reduce((res, prop) => {
+            widget.property = MiscUtils.ensureArray(widget.property).reduce((res, prop) => {
                 return ({...res, [prop.name]: prop[Object.keys(prop).find(key => key !== "name")]});
             }, {});
         } else {
             widget.property = {};
         }
         if (widget.attribute) {
-            widget.attribute = this.ensureArray(widget.attribute).reduce((res, prop) => {
+            widget.attribute = MiscUtils.ensureArray(widget.attribute).reduce((res, prop) => {
                 return ({...res, [prop.name]: prop[Object.keys(prop).find(key => key !== "name")]});
             }, {});
         } else {
             widget.attribute = {};
         }
         if (widget.item) {
-            this.ensureArray(widget.item).map(item => this.reformatWidget(item, relationTables));
+            MiscUtils.ensureArray(widget.item).map(item => this.reformatWidget(item, relationTables));
         }
 
         widget.name = widget.name || uuid.v1();
