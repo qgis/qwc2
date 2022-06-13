@@ -16,6 +16,7 @@ import url from 'url';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import LayerUtils from './LayerUtils';
+import MiscUtils from './MiscUtils';
 import {LayerRole} from '../actions/layers';
 
 function strcmp(a, b) {
@@ -207,7 +208,7 @@ const ServiceLayerUtils = {
             return url.format(calledServiceUrlParts);
         }
     },
-    getWFSLayers(capabilitiesXml) {
+    getWFSLayers(capabilitiesXml, mapCrs) {
         const options = {
             attributeNamePrefix: "",
             ignoreAttributes: false,
@@ -219,9 +220,9 @@ const ServiceLayerUtils = {
         if (!capabilities || !capabilities.WFS_Capabilities || !capabilities.WFS_Capabilities.version) {
             return [];
         } else if (capabilities.WFS_Capabilities.version < "1.1.0") {
-            return ServiceLayerUtils.getWFS10Layers(capabilities.WFS_Capabilities);
+            return ServiceLayerUtils.getWFS10Layers(capabilities.WFS_Capabilities, mapCrs);
         } else {
-            return ServiceLayerUtils.getWFS11_20Layers(capabilities.WFS_Capabilities);
+            return ServiceLayerUtils.getWFS11_20Layers(capabilities.WFS_Capabilities, mapCrs);
         }
     },
     getWFS10Layers(capabilities) {
@@ -262,6 +263,7 @@ const ServiceLayerUtils = {
                 title: title,
                 abstract: abstract,
                 bbox: bbox,
+                projection: featureType.SRS,
                 url: serviceUrl,
                 version: version,
                 formats: formats,
@@ -271,7 +273,7 @@ const ServiceLayerUtils = {
         }
         return layers;
     },
-    getWFS11_20Layers(capabilities) {
+    getWFS11_20Layers(capabilities, mapCrs) {
         let serviceUrl = null;
         const version = capabilities.version;
         let formats = null;
@@ -305,6 +307,11 @@ const ServiceLayerUtils = {
             }
             const title = featureType.Title || name;
             const abstract = featureType.Abstract || "";
+            const projections = [
+                CoordinatesUtils.fromOgcUrnCrs(featureType.DefaultCRS),
+                ...MiscUtils.ensureArray(featureType.OtherCRS || []).map(crs => CoordinatesUtils.fromOgcUrnCrs(crs))
+            ];
+            const projection = projections.includes(mapCrs) ? mapCrs : projections[0];
 
             layers.push({
                 type: "wfs",
@@ -312,6 +319,7 @@ const ServiceLayerUtils = {
                 title: title,
                 abstract: abstract,
                 bbox: bbox,
+                projection: projection,
                 url: serviceUrl,
                 version: version,
                 formats: formats,
@@ -337,7 +345,7 @@ const ServiceLayerUtils = {
                 if (type === "wms") {
                     result = ServiceLayerUtils.getWMSLayers(response.data, url, true);
                 } else if (type === "wfs") {
-                    result = ServiceLayerUtils.getWFSLayers(response.data);
+                    result = ServiceLayerUtils.getWFSLayers(response.data, mapCrs);
                 } else if (type === "wmts") {
                     result = ServiceLayerUtils.getWMTSLayers(response.data, url, mapCrs);
                 }

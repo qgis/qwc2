@@ -52,20 +52,20 @@ export default {
         const vectorSource = new ol.source.Vector({
             format: olformat,
             url: function(extent) {
-                let requestExtent;
+                let bbox = extent.join(',');
+                let srsName = options.projection;
                 if (options.version >= "1.1.0") {
-                    extent = CoordinatesUtils.reprojectBbox(extent, options.projection, 'EPSG:4326');
                     // http://augusttown.blogspot.com/2010/08/mysterious-bbox-parameter-in-web.html
                     // Invert WGS axis orentation
-                    requestExtent = [extent[1], extent[0], extent[3], extent[2]];
-                } else {
-                    requestExtent = extent;
+                    const requestExtent = options.projection === 'EPSG:4326' ? [extent[1], extent[0], extent[3], extent[2]] : extent;
+                    bbox = requestExtent.join(',') + "," + CoordinatesUtils.toOgcUrnCrs(options.projection);
+                    srsName = CoordinatesUtils.toOgcUrnCrs(options.projection);
                 }
                 const url = options.url + (options.url.endsWith('?') ? '' : '?') + 'service=WFS&version=' + options.version +
                     '&request=GetFeature&' + typeName + '=' + options.name +
                     '&outputFormat=' + encodeURIComponent(format) +
-                    '&srsName=' + options.projection +
-                    '&bbox=' + requestExtent.join(',');
+                    '&srsName=' + srsName +
+                    '&bbox=' + bbox;
                 return url;
             },
             strategy: ol.loadingstrategy.bbox

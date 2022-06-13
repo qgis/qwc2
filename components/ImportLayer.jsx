@@ -129,7 +129,7 @@ class ImportLayer extends React.Component {
                             connUrl += (connUrl.includes("?") ? "&" : "?") + "service=" + service.toUpperCase() + "&request=GetCapabilities";
                             this.setState({pendingRequests: ++pendingRequests});
                             axios.get(connUrl).then(connResponse => {
-                                const result = service === "wms" ? ServiceLayerUtils.getWMSLayers(connResponse.data, connUrl, true) : ServiceLayerUtils.getWFSLayers(connResponse.data);
+                                const result = service === "wms" ? ServiceLayerUtils.getWMSLayers(connResponse.data, connUrl, true) : ServiceLayerUtils.getWFSLayers(connResponse.data, this.props.mapCrs);
                                 this.setState({
                                     pendingRequests: this.state.pendingRequests - 1,
                                     serviceLayers: (this.state.serviceLayers || []).concat(result)
@@ -199,7 +199,7 @@ class ImportLayer extends React.Component {
 
             this.setState({pendingRequests: ++pendingRequests});
             axios.get(url.format(urlParts)).then(response => {
-                const result = ServiceLayerUtils.getWFSLayers(response.data);
+                const result = ServiceLayerUtils.getWFSLayers(response.data, this.props.mapCrs);
                 this.setState({
                     pendingRequests: this.state.pendingRequests - 1,
                     serviceLayers: (this.state.serviceLayers || []).concat(result)
