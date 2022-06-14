@@ -11,6 +11,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
+import isEmpty from 'lodash.isempty';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import uuid from 'uuid';
@@ -566,6 +567,9 @@ class TimeManager extends React.Component {
                 gradientStops.push([kEnd, cEnd]);
             }
         });
+        if (isEmpty(gradientStops)) {
+            return null;
+        }
         const rectSize = 16;
         const blockSize = this.state.ranges[0][1] - this.state.ranges[0][0];
         const width = (endDate - startDate) / blockSize * rectSize;
