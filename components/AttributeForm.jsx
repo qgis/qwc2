@@ -77,6 +77,7 @@ class AttributeForm extends React.Component {
 
         const curConfig = this.props.editConfig;
         const editPermissions = curConfig.permissions || {};
+        const readOnly = editPermissions.updatable === false;
 
         let deleteBar = null;
         if (!this.props.newfeature && this.props.editing.feature && !this.props.editing.changed && editPermissions.deletable !== false) {
@@ -108,12 +109,12 @@ class AttributeForm extends React.Component {
                         <QtDesignerForm addRelationRecord={this.addRelationRecord} editLayerId={this.props.editDataset} feature={this.props.editing.feature}
                             featureChanged={this.props.editing.changed}
                             form={this.props.editConfig.form} iface={this.props.iface} loadRelationValues={this.loadRelationValues}
-                            mapPrefix={this.props.editMapPrefix} relationValues={this.props.editing.feature.relationValues}
+                            mapPrefix={this.props.editMapPrefix} readOnly={readOnly} relationValues={this.props.editing.feature.relationValues}
                             removeRelationRecord={this.removeRelationRecord} updateField={this.updateField} updateRelationField={this.updateRelationField} />
                     ) : (
                         <AutoEditForm editLayerId={this.props.editDataset} fields={this.props.editConfig.fields}
                             iface={this.props.iface} mapPrefix={this.props.editMapPrefix}
-                            touchFriendly={this.props.touchFriendly} updateField={this.updateField}
+                            readOnly={readOnly} touchFriendly={this.props.touchFriendly} updateField={this.updateField}
                             values={this.props.editing.feature.properties} />
                     )}
                     {commitBar}

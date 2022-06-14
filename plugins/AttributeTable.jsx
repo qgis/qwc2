@@ -87,6 +87,9 @@ class AttributeTable extends React.Component {
 
         const editConfig = this.props.theme.editConfig || {};
         const currentEditConfig = editConfig[this.state.loadedLayer];
+        const editPermissions = (editConfig[this.state.loadedLayer] || {}).permissions || {};
+        const readOnly = editPermissions.updatable === false;
+
         let loadOverlay = null;
         if (this.state.selectedLayer && this.state.selectedLayer !== this.state.loadedLayer) {
             if (this.state.loading) {
@@ -150,7 +153,7 @@ class AttributeTable extends React.Component {
                     <tbody>
                         {features.map((feature, filteredIndex) => {
                             const featureidx = feature.originalIndex;
-                            const disabled = this.state.changedFeatureIdx !== null && this.state.changedFeatureIdx !== featureidx;
+                            const disabled = readOnly || (this.state.changedFeatureIdx !== null && this.state.changedFeatureIdx !== featureidx);
                             const key = this.state.changedFeatureIdx === featureidx && this.state.newFeature ? "newfeature" : feature.id;
                             return (
                                 <tr className={disabled ? "row-disabled" : ""} key={key}>
@@ -216,9 +219,9 @@ class AttributeTable extends React.Component {
         const loading = this.state.loading;
         const editing = this.state.changedFeatureIdx !== null;
         const layerChanged = this.state.selectedLayer !== this.state.loadedLayer;
-        const editPermissions = (editConfig[this.state.loadedLayer] || {}).permissions || {};
         const showAddButton = editPermissions.creatable !== false;
         const showDelButton = editPermissions.deletable !== false;
+
         return (
             <ResizeableWindow dockable="bottom" icon="editing" initialHeight={480} initialWidth={800} onClose={this.onClose} title={LocaleUtils.tr("attribtable.title")}>
                 <div className="attribtable-body" role="body">
