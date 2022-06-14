@@ -545,8 +545,8 @@ class TimeManager extends React.Component {
                 })
             }));
         }
-        const startDate = feature.getProperties().startdate;
-        const endDate = feature.getProperties().enddate;
+        const startDate = Math.max(this.getStartTime(), feature.getProperties().startdate);
+        const endDate = Math.min(this.getEndTime(), feature.getProperties().enddate);
         const gradientStops = [];
         this.state.ranges.forEach((range, idx) => {
             // Check if ranges overlap
