@@ -225,7 +225,7 @@ class QtDesignerForm extends React.Component {
                     </div>
                 </div>
             );
-        } else if (widget.class === "QTextEdit" || widget.class === "QTextBrowser") {
+        } else if (widget.class === "QTextEdit" || widget.class === "QTextBrowser" || widget.class === "QPlainTextEdit") {
             return (<textarea name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} readOnly={readOnly} required={required} value={value} />);
         } else if (widget.class === "QLineEdit") {
             if (widget.name.endsWith("__upload")) {
