@@ -485,7 +485,7 @@ class AttributeTable extends React.Component {
             ...this.state.features[this.state.changedFeatureIdx],
             crs: {
                 type: "name",
-                properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.mapCrs)}
+                properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.mapCrs)}
             }
         };
         const featureData = new FormData();
