@@ -37,6 +37,10 @@ class DateInput extends React.Component {
     }
     onChange = (ev) => {
         this.setState({curValue: ev.target.value, changed: true});
+        if (document.activeElement !== ev.target) {
+            this.setState({value: ev.target.value});
+            this.props.onChange(ev.target.value);
+        }
     }
     onBlur = () => {
         this.commit();
@@ -48,6 +52,7 @@ class DateInput extends React.Component {
     }
     commit = () => {
         if (this.state.changed) {
+            this.setState({value: this.state.curValue});
             this.props.onChange(this.state.curValue);
         }
     }
