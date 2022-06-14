@@ -58,7 +58,6 @@ class ResizeableWindow extends React.Component {
         minHeight: 50,
         maxWidth: null,
         maxHeight: null,
-        onClose: () => {},
         visible: true,
         dockable: true,
         onGeometryChanged: () => {}
@@ -157,7 +156,7 @@ class ResizeableWindow extends React.Component {
                         titlemsgid={this.state.geometry.docked ? LocaleUtils.trmsg("window.undock") : LocaleUtils.trmsg("window.dock")} />
                 ) : null}
                 <Icon className="resizeable-window-titlebar-control" icon={maximized ? "unmaximize" : "maximize"} onClick={this.toggleMaximize} titlemsgid={maximized ? LocaleUtils.trmsg("window.unmaximize") : LocaleUtils.trmsg("window.maximize")} />
-                <Icon className="resizeable-window-titlebar-control" icon="remove" onClick={this.onClose} titlemsgid={LocaleUtils.trmsg("window.close")} />
+                {this.props.onClose ? (<Icon className="resizeable-window-titlebar-control" icon="remove" onClick={this.onClose} titlemsgid={LocaleUtils.trmsg("window.close")} />) : null}
             </div>),
             (<div className={bodyclasses} key="body" onMouseDown={(ev) => { this.stopEvent(ev); this.props.raiseWindow(this.id); }} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
                 <div className="resizeable-window-drag-shield" ref={el => {this.dragShield = el; }} />
