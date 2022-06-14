@@ -25,6 +25,7 @@ import './style/AttributeForm.css';
 class AttributeForm extends React.Component {
     static propTypes = {
         changeEditingState: PropTypes.func,
+        deleteMsgId: PropTypes.string,
         editConfig: PropTypes.object,
         editDataset: PropTypes.string,
         editMapPrefix: PropTypes.string,
@@ -37,6 +38,7 @@ class AttributeForm extends React.Component {
         touchFriendly: PropTypes.bool
     }
     static defaultProps = {
+        deleteMsgId: LocaleUtils.trmsg("editing.delete"),
         touchFriendly: true
     }
     state = {
@@ -77,7 +79,7 @@ class AttributeForm extends React.Component {
         if (!this.props.newfeature && this.props.editing.feature && !this.props.editing.changed) {
             if (!this.state.deleteClicked) {
                 const deleteButtons = [
-                    {key: 'Delete', icon: 'trash', label: LocaleUtils.trmsg("editing.delete")}
+                    {key: 'Delete', icon: 'trash', label: this.props.deleteMsgId}
                 ];
                 deleteBar = (<ButtonBar buttons={deleteButtons} onClick={this.deleteClicked} />);
             } else {
