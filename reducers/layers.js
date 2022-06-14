@@ -205,19 +205,13 @@ export default function layers(state = defaultState, action) {
             for (; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);
             newLayers.splice(inspos, 0, newLayer);
         } else {
-            const addFeatures = action.features.concat();
-            let newFeatures = [];
-            if (!action.clear) {
-                newFeatures = (newLayers[idx].features || []).map( f => {
-                    const fidx = addFeatures.findIndex(g => g.id === f.id);
-                    if (fidx === -1) {
-                        return f;
-                    } else {
-                        return addFeatures.splice(fidx, 1)[0];
-                    }
-                });
-            }
-            newFeatures = newFeatures.concat(addFeatures);
+            const addFeatures = action.features.map(f => ({
+                ...f, id: f.id || f.properties.id || uuid.v4()
+            }));
+            const newFeatures = [
+                ...(newLayers[idx].features || []).filter(f => !addFeatures.find(g => g.id === f.id)),
+                ...addFeatures
+            ];
             newLayers[idx] = {...newLayers[idx], features: newFeatures, bbox: VectorLayerUtils.computeFeaturesBBox(newFeatures), rev: action.layer.rev};
         }
         return {...state, flat: newLayers};
