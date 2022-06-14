@@ -176,7 +176,14 @@ class QtDesignerForm extends React.Component {
         const required = prop.required === "true";
         const elname = nametransform(widget.name);
         if (widget.class === "QLabel") {
-            return (<span>{widget.property.text}</span>);
+            const fontProps = widget.property.font || {};
+            const style = {
+                fontWeight: fontProps.bold === "true" ? "bold" : "normal",
+                fontStyle: fontProps.italic === "true" ? "italic" : "normal",
+                textDecoration: [fontProps.underline === "true" ? "underline" : "", fontProps.strikeout === "true" ? "line-through" : ""].join(" "),
+                fontSize: Math.round((fontProps.pointsize || 9) / 9 * 100) + "%"
+            };
+            return (<span style={style}>{widget.property.text}</span>);
         } else if (widget.class === "Line") {
             return (<div className="qt-designer-form-line" />);
         } else if (widget.class === "QFrame") {
