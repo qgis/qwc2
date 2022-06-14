@@ -75,8 +75,12 @@ class AttributeForm extends React.Component {
             commitBar = (<ButtonBar buttons={commitButtons} onClick={this.onDiscard}/>); /* submit is handled via onSubmit in the form */
         }
 
+        const curConfig = this.props.editConfig;
+        const editPermissions = curConfig.permissions || {};
+
         let deleteBar = null;
-        if (!this.props.newfeature && this.props.editing.feature && !this.props.editing.changed) {
+        if (!this.props.newfeature && this.props.editing.feature && !this.props.editing.changed && editPermissions.deletable !== false) {
+            // Delete button bar will appear by default if no permissions are defined in editConfig or when deletable permission is set
             if (!this.state.deleteClicked) {
                 const deleteButtons = [
                     {key: 'Delete', icon: 'trash', label: this.props.deleteMsgId}

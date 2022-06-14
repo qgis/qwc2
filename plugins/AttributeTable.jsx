@@ -216,6 +216,9 @@ class AttributeTable extends React.Component {
         const loading = this.state.loading;
         const editing = this.state.changedFeatureIdx !== null;
         const layerChanged = this.state.selectedLayer !== this.state.loadedLayer;
+        const editPermissions = (editConfig[this.state.loadedLayer] || {}).permissions || {};
+        const showAddButton = editPermissions.creatable !== false;
+        const showDelButton = editPermissions.deletable !== false;
         return (
             <ResizeableWindow dockable="bottom" icon="editing" initialHeight={480} initialWidth={800} onClose={this.onClose} title={LocaleUtils.tr("attribtable.title")}>
                 <div className="attribtable-body" role="body">
@@ -235,9 +238,11 @@ class AttributeTable extends React.Component {
                         <button className="button" disabled={editing || nolayer} onClick={() => this.reload()} title={LocaleUtils.tr("attribtable.reload")}>
                             <Icon icon="refresh" />
                         </button>
-                        <button className="button" disabled={nolayer || editing || loading || layerChanged} onClick={this.addFeature} title={LocaleUtils.tr("attribtable.addfeature")}>
-                            <Icon icon="plus" />
-                        </button>
+                        {showAddButton ? (
+                            <button className="button" disabled={nolayer || editing || loading || layerChanged} onClick={this.addFeature} title={LocaleUtils.tr("attribtable.addfeature")}>
+                                <Icon icon="plus" />
+                            </button>
+                        ) : null}
                         <button className="button" disabled={layerChanged || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
                             <Icon icon="search" />
                         </button>
@@ -252,9 +257,10 @@ class AttributeTable extends React.Component {
                                 <span>{LocaleUtils.tr("attribtable.delete")}</span>
                             </button>
                         ) : (
-                            <button className="button" disabled={layerChanged || editing || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
+                            showDelButton ? (<button className="button" disabled={layerChanged || editing || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
                                 <Icon icon="trash" />
                             </button>
+                        ) : null
                         )}
                         {this.state.confirmDelete ? (
                             <button className="button edit-discard" onClick={() => this.setState({confirmDelete: false})}>
