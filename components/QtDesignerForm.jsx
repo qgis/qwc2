@@ -359,7 +359,7 @@ class QtDesignerForm extends React.Component {
                                 <tr className={"qt-designer-widget-relation-record " + extraClass} key={tablename + idx}>
                                     <td>{statusIcon ? (<Icon icon={statusIcon} title={statusText} />) : null}</td>
                                     {widgetItems.map(item => (
-                                        <td key={item.widget.name}>{this.renderWidget(item.widget, record, this.props.mapPrefix + tablename, updateField, nametransform)}</td>
+                                        <td className="qt-designer-widget-relation-row-widget" key={item.widget.name}>{this.renderWidget(item.widget, record, this.props.mapPrefix + tablename, updateField, nametransform)}</td>
                                     ))}
                                     {!this.props.readOnly ? (
                                         <td>

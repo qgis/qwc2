@@ -97,6 +97,11 @@ div.qt-designer-form-tabbar > span.qt-designer-form-tab-active {
     color: white;
 }
 
+div.qt-designer-widget-relation {
+    max-height: 10em;
+    overflow-y: auto;
+}
+
 div.qt-designer-widget-relation > table {
     width: 100%;
 }
@@ -106,7 +111,11 @@ div.qt-designer-widget-relation > table td {
     text-align: center;
 }
 
-div.qt-designer-widget-relation > table td > * {
+div.qt-designer-widget-relation > table td:first-child,
+div.qt-designer-widget-relation > table td:last-child {
+    width: 1px;
+}
+div.qt-designer-widget-relation > table td.qt-designer-widget-relation-row-widget > * {
     width: 100%;
 }
 
