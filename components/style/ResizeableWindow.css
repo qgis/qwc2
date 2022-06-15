@@ -76,7 +76,7 @@ span.resizeable-window-titlebar-control {
 div.resizeable-window-body {
     padding: 0.25em;
     overflow: hidden;
-    height: calc(100% - 2.25em);
+    height: calc(100% - 2.5em);
     cursor: default;
     flex: 1 1 auto;
     position: relative;
