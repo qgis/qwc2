@@ -432,9 +432,11 @@ class QtDesignerForm extends React.Component {
         }
     }
     reformatLayout = (layout, relationTables) => {
-        layout.item = Array.isArray(layout.item) ? layout.item : [layout.item];
+        layout.item = MiscUtils.ensureArray(layout.item);
         layout.item.forEach(item => {
-            if (item.widget) {
+            if (!item) {
+                return;
+            } else if (item.widget) {
                 this.reformatWidget(item.widget, relationTables);
             } else if (item.layout) {
                 this.reformatLayout(item.layout, relationTables);
