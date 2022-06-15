@@ -329,48 +329,50 @@ class QtDesignerForm extends React.Component {
         const headerItems = widget.layout.item.filter(item => item.widget.name.startsWith("header__"));
         return (
             <div className="qt-designer-widget-relation">
-                <table>
-                    <tbody>
-                        {!isEmpty(headerItems) ? (
-                            <tr>
-                                <th />
-                                {headerItems.map(item => (<th key={item.widget.name}>{item.widget.property.text}</th>))}
-                                <th />
-                            </tr>
-                        ) : null}
-                        {((this.props.relationValues[tablename] || []).records || []).map((record, idx) => {
-                            const updateField = (name, value) => this.props.updateRelationField(tablename, idx, name, value);
-                            const nametransform = (name) => (name + "__" + idx);
-                            const status = record.__status__ || "";
-                            let statusIcon = null;
-                            if (status === "new") {
-                                statusIcon = "new";
-                            } else if (status) {
-                                statusIcon = "edited";
-                            }
-                            let statusText = "";
-                            if (record.error) {
-                                statusIcon = "warning";
-                                statusText = this.buildErrMsg(record);
-                            }
-                            const extraClass = status.startsWith("deleted") ? "qt-designer-widget-relation-record-deleted" : "";
-                            const widgetItems = widget.layout.item.filter(item => !item.widget.name.startsWith("header__"));
-                            return (
-                                <tr className={"qt-designer-widget-relation-record " + extraClass} key={tablename + idx}>
-                                    <td>{statusIcon ? (<Icon icon={statusIcon} title={statusText} />) : null}</td>
-                                    {widgetItems.map(item => (
-                                        <td className="qt-designer-widget-relation-row-widget" key={item.widget.name}>{this.renderWidget(item.widget, record, this.props.mapPrefix + tablename, updateField, nametransform)}</td>
-                                    ))}
-                                    {!this.props.readOnly ? (
-                                        <td>
-                                            <Icon icon="trash" onClick={() => this.props.removeRelationRecord(tablename, idx)} />
-                                        </td>
-                                    ) : null}
+                <div className="qt-designer-widget-relation-table-container">
+                    <table>
+                        <tbody>
+                            {!isEmpty(headerItems) ? (
+                                <tr>
+                                    <th />
+                                    {headerItems.map(item => (<th key={item.widget.name}>{item.widget.property.text}</th>))}
+                                    <th />
                                 </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                            ) : null}
+                            {((this.props.relationValues[tablename] || []).records || []).map((record, idx) => {
+                                const updateField = (name, value) => this.props.updateRelationField(tablename, idx, name, value);
+                                const nametransform = (name) => (name + "__" + idx);
+                                const status = record.__status__ || "";
+                                let statusIcon = null;
+                                if (status === "new") {
+                                    statusIcon = "new";
+                                } else if (status) {
+                                    statusIcon = "edited";
+                                }
+                                let statusText = "";
+                                if (record.error) {
+                                    statusIcon = "warning";
+                                    statusText = this.buildErrMsg(record);
+                                }
+                                const extraClass = status.startsWith("deleted") ? "qt-designer-widget-relation-record-deleted" : "";
+                                const widgetItems = widget.layout.item.filter(item => !item.widget.name.startsWith("header__"));
+                                return (
+                                    <tr className={"qt-designer-widget-relation-record " + extraClass} key={tablename + idx}>
+                                        <td>{statusIcon ? (<Icon icon={statusIcon} title={statusText} />) : null}</td>
+                                        {widgetItems.map(item => (
+                                            <td className="qt-designer-widget-relation-row-widget" key={item.widget.name}>{this.renderWidget(item.widget, record, this.props.mapPrefix + tablename, updateField, nametransform)}</td>
+                                        ))}
+                                        {!this.props.readOnly ? (
+                                            <td>
+                                                <Icon icon="trash" onClick={() => this.props.removeRelationRecord(tablename, idx)} />
+                                            </td>
+                                        ) : null}
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
                 {!this.props.readOnly ? (
                     <div><button className="qt-designer-widget-relation-add" onClick={() => this.props.addRelationRecord(tablename)} type="button">{LocaleUtils.tr("editing.add")}</button></div>
                 ) : null}

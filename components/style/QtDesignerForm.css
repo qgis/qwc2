@@ -103,39 +103,40 @@ div.qt-designer-form-tabbar > span.qt-designer-form-tab-active {
     color: white;
 }
 
-div.qt-designer-widget-relation {
+div.qt-designer-widget-relation-table-container {
     max-height: 10em;
     overflow-y: auto;
 }
 
-div.qt-designer-widget-relation > table {
+div.qt-designer-widget-relation-table-container > table {
     width: 100%;
+    border: 1px solid @item_border@;
 }
 
-div.qt-designer-widget-relation > table td {
+div.qt-designer-widget-relation-table-container > table td {
     padding: 0.25em 0.125em;
     text-align: center;
 }
 
-div.qt-designer-widget-relation > table td:first-child,
-div.qt-designer-widget-relation > table td:last-child {
+div.qt-designer-widget-relation-table-container > table td:first-child,
+div.qt-designer-widget-relation-table-container > table td:last-child {
     width: 1px;
 }
-div.qt-designer-widget-relation > table td.qt-designer-widget-relation-row-widget > * {
+div.qt-designer-widget-relation-table-container > table td.qt-designer-widget-relation-row-widget > * {
     width: 100%;
 }
 
-div.qt-designer-widget-relation > table td > label {
+div.qt-designer-widget-relation-table-container > table td > label {
     display: block;
     text-align: center;
 }
 
-div.qt-designer-widget-relation > table th {
+div.qt-designer-widget-relation-table-container > table th {
     background-color: @item_border@;
     color: white;
 }
 
-div.qt-designer-widget-relation > table tr:not(:last-child) {
+div.qt-designer-widget-relation-table-container > table tr:not(:last-child) {
     border-bottom: 1px solid @item_border@;
 }
 
