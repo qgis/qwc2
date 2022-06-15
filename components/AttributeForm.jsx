@@ -107,7 +107,7 @@ class AttributeForm extends React.Component {
                 <form action="" onSubmit={this.onSubmit}>
                     {this.props.editConfig.form ? (
                         <QtDesignerForm addRelationRecord={this.addRelationRecord} editLayerId={this.props.editDataset} feature={this.props.editing.feature}
-                            featureChanged={this.props.editing.changed}
+                            featureChanged={this.props.editing.changed} fields={this.fieldsMap(this.props.editConfig.fields)}
                             form={this.props.editConfig.form} iface={this.props.iface} loadRelationValues={this.loadRelationValues}
                             mapPrefix={this.props.editMapPrefix} readOnly={readOnly} relationValues={this.props.editing.feature.relationValues}
                             removeRelationRecord={this.removeRelationRecord} updateField={this.updateField} updateRelationField={this.updateRelationField} />
@@ -124,6 +124,9 @@ class AttributeForm extends React.Component {
             </div>
 
         );
+    }
+    fieldsMap = (fields) => {
+        return fields.reduce((res, field) => ({...res, [field.id]: field}), {});
     }
     updateField = (key, value) => {
         const newProperties = {...this.props.editing.feature.properties, [key]: value};
