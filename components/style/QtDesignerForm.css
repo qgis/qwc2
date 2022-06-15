@@ -10,6 +10,12 @@ div.qt-designer-form select {
     height: 2em;
 }
 
+div.qt-designer-form input:read-only,
+div.qt-designer-form select:read-only,
+div.qt-designer-form textarea:read-only {
+    color: #999;
+}
+
 div.qt-designer-form input[type=range] {
     background-color: transparent;
     height: 2em;
