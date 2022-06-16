@@ -13,7 +13,7 @@ import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
 import axios from 'axios';
 import uuid from 'uuid';
-import {changeEditingState} from '../actions/editing';
+import {setEditContext, clearEditContext} from '../actions/editing';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import {LayerRole, addLayerFeatures, removeLayer, refreshLayer, changeLayerProperty} from '../actions/layers';
 import {clickOnMap, setSnappingConfig} from '../actions/map';
@@ -33,10 +33,10 @@ import './style/Editing.css';
 class Editing extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
-        changeEditingState: PropTypes.func,
         changeLayerProperty: PropTypes.func,
+        clearEditContext: PropTypes.func,
         clickOnMap: PropTypes.func,
-        editing: PropTypes.object,
+        editContext: PropTypes.object,
         enabled: PropTypes.bool,
         iface: PropTypes.object,
         layers: PropTypes.array,
@@ -45,6 +45,7 @@ class Editing extends React.Component {
         removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
+        setEditContext: PropTypes.func,
         setSnappingConfig: PropTypes.func,
         side: PropTypes.string,
         snapping: PropTypes.bool,
@@ -79,7 +80,7 @@ class Editing extends React.Component {
         this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
     }
     onHide = () => {
-        this.props.changeEditingState({action: null, geomType: null, feature: null});
+        this.props.clearEditContext('Editing');
         this.setLayerVisibility(this.state.selectedLayer, this.state.selectedLayerVisibility);
         this.setState({minimized: false, drawPick: false, drawPickResults: null});
     }
@@ -99,7 +100,7 @@ class Editing extends React.Component {
             }
         }
         // If click point changed and in pick mode with a selected layer, trigger a pick
-        if (this.props.enabled && prevProps.enabled && this.props.editing.action === 'Pick' && this.state.selectedLayer && !this.props.editing.changed) {
+        if (this.props.enabled && prevProps.enabled && this.props.editContext.action === 'Pick' && this.state.selectedLayer && !this.props.editContext.changed) {
             const newPoint = this.props.map.click || {};
             const oldPoint = prevProps.map.click || {};
             if (newPoint.coordinate && !isEqual(newPoint.coordinate, oldPoint.coordinate)) {
@@ -108,14 +109,14 @@ class Editing extends React.Component {
                     const features = featureCollection ? featureCollection.features : null;
                     this.setState({pickedFeatures: features});
                     const feature = features ? features[0] : null;
-                    this.props.changeEditingState({...this.props.editing, feature: feature, changed: false});
+                    this.props.setEditContext('Editing', {feature: feature, changed: false});
                 });
             }
         }
-        if (prevProps.editing.changed !== this.props.editing.changed) {
-            this.props.setCurrentTaskBlocked(this.props.editing.changed === true);
+        if (prevProps.editContext.changed !== this.props.editContext.changed) {
+            this.props.setCurrentTaskBlocked(this.props.editContext.changed === true);
         }
-        if (!this.props.editing.feature && prevState.pickedFeatures) {
+        if (!this.props.editContext.feature && prevState.pickedFeatures) {
             this.setState({pickedFeatures: null});
         }
         // Always clear clicked pos if enabled except in drawPick mode
@@ -170,7 +171,7 @@ class Editing extends React.Component {
             const featureText = LocaleUtils.tr("editing.feature");
             featureSelection = (
                 <div className="editing-feature-selection">
-                    <select className="editing-feature-select" disabled={this.props.editing.changed === true} onChange={(ev) => this.setEditFeature(ev.target.value)}  value={(this.props.editing.feature || {}).id || ""}>
+                    <select className="editing-feature-select" disabled={this.props.editContext.changed === true} onChange={(ev) => this.setEditFeature(ev.target.value)}  value={(this.props.editContext.feature || {}).id || ""}>
                         {this.state.pickedFeatures.map(feature => (
                             <option key={feature.id} value={feature.id}>{editConfig.displayField ? feature.properties[editConfig.displayField] : featureText + " " + feature.id}</option>
                         ))}
@@ -179,7 +180,7 @@ class Editing extends React.Component {
             );
         }
         let pickBar = null;
-        if ((this.props.editing.action === "Draw" || this.state.drawPick) && !this.props.editing.feature) {
+        if ((this.props.editContext.action === "Draw" || this.state.drawPick) && !this.props.editContext.feature) {
             const pickButtons = [
                 {key: 'DrawPick', icon: 'pick', label: LocaleUtils.trmsg("editing.pickdrawfeature")}
             ];
@@ -218,13 +219,14 @@ class Editing extends React.Component {
             }
         }
         let attributeForm = null;
-        if (this.props.editing.feature) {
+        if (this.props.editContext.feature) {
             const editDataset = this.editLayerId(this.state.selectedLayer);
             const mapPrefix = editDataset.replace(new RegExp("." + this.state.selectedLayer + "$"), ".");
             attributeForm = (
-                <AttributeForm editConfig={curConfig} editDataset={editDataset}
+                <AttributeForm editConfig={curConfig} editContext={this.props.editContext}
+                    editContextId="Editing" editDataset={editDataset}
                     editMapPrefix={mapPrefix} iface={this.props.iface}
-                    newfeature={this.props.editing.action === 'Draw'}
+                    newfeature={this.props.editContext.action === 'Draw'}
                 />
             );
         }
@@ -234,7 +236,7 @@ class Editing extends React.Component {
         return (
             <div className="editing-body">
                 <div className="editing-layer-selection">
-                    <select className="editing-layer-select" disabled={this.props.editing.changed === true} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
+                    <select className="editing-layer-select" disabled={this.props.editContext.changed === true} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
                         {Object.keys(editConfig).filter(layerId => themeSublayers.includes(layerId)).map(layerId => {
                             const layerName = editConfig[layerId].layerName;
                             const match = LayerUtils.searchLayer(this.props.layers, 'name', layerName, [LayerRole.THEME]);
@@ -244,7 +246,7 @@ class Editing extends React.Component {
                         })}
                     </select>
                 </div>
-                <ButtonBar active={this.state.drawPick ? "Draw" : this.props.editing.action} buttons={actionButtons} disabled={this.props.editing.changed} onClick={this.actionClicked} />
+                <ButtonBar active={this.state.drawPick ? "Draw" : this.props.editContext.action} buttons={actionButtons} disabled={this.props.editContext.changed} onClick={this.actionClicked} />
                 {featureSelection}
                 {pickBar}
                 {drawPickResults}
@@ -270,7 +272,7 @@ class Editing extends React.Component {
         if (action === "AttribTable") {
             this.props.setCurrentTask("AttributeTable", null, null, {layer: this.state.selectedLayer});
         } else {
-            this.props.changeEditingState({...data});
+            this.props.setEditContext('Editing', {...data});
         }
     }
     setLayerVisibility = (selectedLayer, visibility) => {
@@ -291,7 +293,7 @@ class Editing extends React.Component {
     }
     changeSelectedLayer = (selectedLayer, action = null, feature = null) => {
         const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
-        this.props.changeEditingState({...this.props.editing, action: action || (this.state.drawPick ? "Draw" : this.props.editing.action), feature: feature, geomType: curConfig ? curConfig.geomType : null});
+        this.props.setEditContext('Editing', {action: action || (this.state.drawPick ? "Draw" : this.props.editContext.action), feature: feature, geomType: curConfig ? curConfig.geomType : null});
 
         let prevLayerVisibility = null;
         if (this.state.selectedLayer !== null) {
@@ -308,12 +310,12 @@ class Editing extends React.Component {
     }
     setEditFeature = (featureId) => {
         const feature = this.state.pickedFeatures.find(f => f.id.toString() === featureId);
-        this.props.changeEditingState({...this.props.editing, feature: feature, changed: false});
+        this.props.setEditContext('Editing', {feature: feature, changed: false});
     }
     toggleDrawPick = () => {
         const pickActive = !this.state.drawPick;
         this.setState({drawPick: pickActive, drawPickResults: null});
-        this.props.changeEditingState({action: pickActive ? null : "Draw"});
+        this.props.setEditContext('Editing', {action: pickActive ? null : "Draw"});
     }
     drawPickQuery = (coordinates) => {
         const queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
@@ -355,7 +357,7 @@ class Editing extends React.Component {
             geometry: geometry,
             id: uuid.v1()
         };
-        this.props.changeEditingState({action: "Draw", feature: editFeature, changed: true});
+        this.props.setEditContext('Editing', {action: "Draw", feature: editFeature, changed: true});
         this.setState({drawPick: false, drawPickResults: null});
         this.drawPickClearHighlight();
     }
@@ -378,13 +380,14 @@ export default (iface = EditingInterface) => {
         layers: state.layers.flat,
         map: state.map,
         iface: iface,
-        editing: state.editing,
+        editContext: state.editing.contexts.Editing || {},
         taskData: state.task.id === "Editing" ? state.task.data : null
     }), {
         addLayerFeatures: addLayerFeatures,
         removeLayer: removeLayer,
         clickOnMap: clickOnMap,
-        changeEditingState: changeEditingState,
+        clearEditContext: clearEditContext,
+        setEditContext: setEditContext,
         setSnappingConfig: setSnappingConfig,
         setCurrentTask: setCurrentTask,
         setCurrentTaskBlocked: setCurrentTaskBlocked,

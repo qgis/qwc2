@@ -6,31 +6,53 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {CHANGE_EDITING_STATE} from '../actions/editing';
+import {SET_EDIT_CONTEXT, CLEAR_EDIT_CONTEXT} from '../actions/editing';
 
 const defaultState = {
-    action: null,
-    geomType: null,
-    feature: null,
-    changed: false,
-    geomReadOnly: false
+    contexts: {},
+    currentContext: null
 };
 
 const nonZeroZCoordinate = (coordinates) => {
     return coordinates.find(entry => Array.isArray(entry[0]) ? nonZeroZCoordinate(entry) : entry.length >= 3 && entry[2] !== 0);
 };
 
+const checkGeomReadOnly = (oldState, newFeature) => {
+    // Only recompute if feature id in state changes
+    if (newFeature && newFeature.id !== (oldState.feature || {}).id) {
+        return nonZeroZCoordinate((newFeature.geometry || {}).coordinates || []);
+    }
+    return false;
+};
+
 export default function editing(state = defaultState, action) {
     switch (action.type) {
-    case CHANGE_EDITING_STATE: {
-        const changed = action.data.feature !== null && action.data.changed === true;
-        let geomReadOnly = state.geomReadOnly;
-        if (!action.data.feature) {
-            geomReadOnly = false;
-        } else if (action.data.feature && action.data.feature.id !== (state.feature || {}).id) {
-            geomReadOnly = nonZeroZCoordinate((action.data.feature.geometry || {}).coordinates || []);
-        }
-        return {...state, ...action.data, changed: changed, geomReadOnly: geomReadOnly};
+    case SET_EDIT_CONTEXT: {
+        return {
+            contexts: {
+                ...state.contexts,
+                [action.contextId]: {
+                    action: null,
+                    feature: null,
+                    geomType: null,
+                    changed: false,
+                    ...state.contexts[action.contextId],
+                    ...action.editContext,
+                    geomReadOnly: checkGeomReadOnly(state.contexts[action.contextId], action.feature)
+                }
+            },
+            currentContext: action.contextId
+        };
+    }
+    case CLEAR_EDIT_CONTEXT: {
+        const newState = {
+            contexts: {
+                ...state.contexts
+            },
+            currentContext: state.currentContext === action.contextId ? null : action.contextId
+        };
+        delete newState.contexts[action.contextId];
+        return newState;
     }
     default:
         return state;

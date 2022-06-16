@@ -10,7 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
-import {changeEditingState} from '../actions/editing';
+import {setEditContext, clearEditContext} from '../actions/editing';
 import {LayerRole} from '../actions/layers';
 import AttributeForm from '../components/AttributeForm';
 import ResizeableWindow from '../components/ResizeableWindow';
@@ -23,9 +23,9 @@ import './style/FeatureForm.css';
 
 class FeatureForm extends React.Component {
     static propTypes = {
-        changeEditingState: PropTypes.func,
+        clearEditContext: PropTypes.func,
         click: PropTypes.object,
-        editing: PropTypes.object,
+        editContext: PropTypes.object,
         enabled: PropTypes.bool,
         iface: PropTypes.object,
         initialHeight: PropTypes.number,
@@ -34,6 +34,7 @@ class FeatureForm extends React.Component {
         initialY: PropTypes.number,
         layers: PropTypes.array,
         map: PropTypes.object,
+        setEditContext: PropTypes.func,
         theme: PropTypes.object
     }
     static defaultProps = {
@@ -62,10 +63,10 @@ class FeatureForm extends React.Component {
             const feature = this.state.pickedFeatures ? this.state.pickedFeatures[this.state.selectedFeature] : null;
             const curLayerId = this.state.selectedFeature.split("::")[0];
             const curConfig = this.props.theme.editConfig[curLayerId] || {};
-            this.props.changeEditingState({action: 'Pick', feature: feature, changed: false, geomType: curConfig.geomType || null});
+            this.props.setEditContext('FeatureForm', {action: 'Pick', feature: feature, changed: false, geomType: curConfig.geomType || null});
         }
         if (!this.props.enabled && prevProps.enabled) {
-            this.props.changeEditingState({action: null, geomType: null, feature: null});
+            this.props.clearEditContext('FeatureForm');
             this.setState(FeatureForm.defaultState);
         }
     }
@@ -147,8 +148,9 @@ class FeatureForm extends React.Component {
                             </select>
                         </div>
                     ) : null}
-                    {this.props.editing.feature ? (
-                        <AttributeForm editConfig={curConfig} editDataset={editDataset}
+                    {this.props.editContext.feature ? (
+                        <AttributeForm editConfig={curConfig} editContext={this.props.editContext}
+                            editContextId={"FeatureForm"} editDataset={editDataset}
                             editMapPrefix={mapPrefix} iface={this.props.iface} />
                     ) : null}
                 </div>
@@ -183,12 +185,13 @@ export default (iface = EditingInterface) => {
     return connect((state) => ({
         click: state.map.click || {modifiers: {}},
         enabled: state.task.id === "FeatureForm",
-        editing: state.editing,
+        editContext: state.editing.contexts.FeatureForm || {},
         iface: iface,
         layers: state.layers.flat,
         map: state.map,
         theme: state.theme.current
     }), {
-        changeEditingState: changeEditingState
+        clearEditContext: clearEditContext,
+        setEditContext: setEditContext
     })(FeatureForm);
 };
