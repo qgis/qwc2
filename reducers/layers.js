@@ -208,7 +208,7 @@ export default function layers(state = defaultState, action) {
             const addFeatures = action.features.map(f => ({
                 ...f, id: f.id || f.properties.id || uuid.v4()
             }));
-            const newFeatures = [
+            const newFeatures = action.clear ? addFeatures : [
                 ...(newLayers[idx].features || []).filter(f => !addFeatures.find(g => g.id === f.id)),
                 ...addFeatures
             ];
