@@ -169,6 +169,7 @@ export default class EditUploadField extends React.Component {
     download = (href, filename) => {
         const a = document.createElement("a");
         a.href = href;
+        a.target = "_blank";
         a.setAttribute("download", filename);
         a.click();
     }
