@@ -171,3 +171,15 @@ span.qt-designer-form-datetime > input[type="time"] {
     border: 0;
     flex: 1 1 auto;
 }
+
+div.qt-designer-form-featurelink-buttons {
+    display: flex;
+}
+
+div.qt-designer-form-featurelink-buttons > div.ButtonBar {
+    flex: 1 1 auto;
+}
+
+div.qt-designer-form-featurelink-buttons > button.button {
+    margin: 0.25em 0;
+}

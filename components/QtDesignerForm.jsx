@@ -331,7 +331,12 @@ class QtDesignerForm extends React.Component {
                     const featurebuttons = [
                         {key: 'Edit', icon: 'editing', label: String(value)}
                     ];
-                    return (<ButtonBar buttons={featurebuttons} onClick={() => this.props.switchEditContext(":" + layer, 'Edit', layer, value, (v) => updateField(attrname, v))} />);
+                    return (
+                        <div className="qt-designer-form-featurelink-buttons">
+                            <ButtonBar buttons={featurebuttons} onClick={() => this.props.switchEditContext(":" + layer, 'Edit', layer, value, (v) => updateField(attrname, v))} />
+                            <button className="button" onClick={() => updateField(attrname, null)}><Icon icon="clear" /></button>
+                        </div>
+                    );
                 } else {
                     const featurebuttons = [
                         {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick")},
