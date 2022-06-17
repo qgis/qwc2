@@ -25,6 +25,7 @@ class FeatureForm extends React.Component {
     static propTypes = {
         clearEditContext: PropTypes.func,
         click: PropTypes.object,
+        currentEditContext: PropTypes.string,
         editContext: PropTypes.object,
         enabled: PropTypes.bool,
         iface: PropTypes.object,
@@ -52,8 +53,13 @@ class FeatureForm extends React.Component {
         super(props);
         this.state = FeatureForm.defaultState;
     }
+
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.enabled && this.state.pendingRequests === 0) {
+        if (this.props.enabled && !prevProps.enabled) {
+            this.props.setEditContext('FeatureForm', {action: 'Pick'});
+        }
+        const isCurrentContext = this.props.editContext.id === this.props.currentEditContext;
+        if (this.props.enabled && isCurrentContext && !this.props.editContext.changed && this.state.pendingRequests === 0) {
             const clickPoint = this.queryPoint(prevProps);
             if (clickPoint) {
                 this.queryFeatures(clickPoint);
@@ -176,6 +182,7 @@ export default (iface = EditingInterface) => {
         click: state.map.click || {modifiers: {}},
         enabled: state.task.id === "FeatureForm",
         editContext: state.editing.contexts.FeatureForm || {},
+        currentEditContext: state.editing.currentContext,
         iface: iface,
         layers: state.layers.flat,
         map: state.map,

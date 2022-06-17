@@ -36,6 +36,7 @@ class Editing extends React.Component {
         changeLayerProperty: PropTypes.func,
         clearEditContext: PropTypes.func,
         clickOnMap: PropTypes.func,
+        currentEditContext: PropTypes.string,
         editContext: PropTypes.object,
         enabled: PropTypes.bool,
         iface: PropTypes.object,
@@ -89,7 +90,7 @@ class Editing extends React.Component {
             return layer.role === LayerRole.THEME ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
         }, []);
         // Update selected layer on layers change
-        if (this.props.layers !== prevProps.layers) {
+        if (this.props.enabled && (this.props.layers !== prevProps.layers || !prevProps.enabled)) {
             const layerIds = Object.keys(this.props.theme && this.props.theme.editConfig || {}).filter(layerId => themeSublayers.includes(layerId));
             if (!isEmpty(layerIds)) {
                 if (!layerIds.includes(this.state.selectedLayer)) {
@@ -100,7 +101,8 @@ class Editing extends React.Component {
             }
         }
         // If click point changed and in pick mode with a selected layer, trigger a pick
-        if (this.props.enabled && prevProps.enabled && this.props.editContext.action === 'Pick' && this.state.selectedLayer && !this.props.editContext.changed) {
+        const isCurrentContext = this.props.editContext.id === this.props.currentEditContext;
+        if (this.props.enabled && isCurrentContext && this.props.editContext.action === 'Pick' && this.state.selectedLayer && !this.props.editContext.changed) {
             const newPoint = this.props.map.click || {};
             const oldPoint = prevProps.map.click || {};
             if (newPoint.coordinate && !isEqual(newPoint.coordinate, oldPoint.coordinate)) {
@@ -372,6 +374,7 @@ export default (iface = EditingInterface) => {
         map: state.map,
         iface: iface,
         editContext: state.editing.contexts.Editing || {},
+        currentEditContext: state.editing.currentContext,
         taskData: state.task.id === "Editing" ? state.task.data : null
     }), {
         addLayerFeatures: addLayerFeatures,
