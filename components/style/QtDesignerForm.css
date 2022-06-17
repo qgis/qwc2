@@ -15,7 +15,7 @@ div.qt-designer-form select {
 }
 
 div.qt-designer-form input:read-only,
-div.qt-designer-form select:read-only,
+div.qt-designer-form select:disabled,
 div.qt-designer-form textarea:read-only {
     color: #999;
 }
