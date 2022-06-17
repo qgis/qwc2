@@ -325,7 +325,7 @@ class QtDesignerForm extends React.Component {
             // featurelink__layer__reltable__attrname
             if (parts.length === 3 || parts.length === 4 ) {
                 const layer = parts[1];
-                const attrname = parts.slice(-2).join("__");
+                const attrname = parts.slice(2).join("__");
                 value = (values || [])[attrname] ?? "";
                 if (value) {
                     const featurebuttons = [
