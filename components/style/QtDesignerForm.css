@@ -1,3 +1,7 @@
+div.qt-designer-form {
+    overflow: auto;
+}
+
 div.qt-designer-form input[type=text],
 div.qt-designer-form input[type=number],
 div.qt-designer-form input[type=date],
