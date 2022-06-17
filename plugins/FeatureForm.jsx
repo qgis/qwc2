@@ -128,8 +128,6 @@ class FeatureForm extends React.Component {
             const featureText = LocaleUtils.tr("featureform.feature");
             const curLayerId = this.state.selectedFeature.split("::")[0];
             const curConfig = this.props.theme.editConfig[curLayerId];
-            const editDataset = this.editLayerId(curLayerId);
-            const mapPrefix = editDataset.replace(new RegExp("." + curLayerId + "$"), ".");
             body = (
                 <div className="feature-query-body" role="body">
                     {Object.keys(this.state.pickedFeatures).length > 1 ? (
@@ -149,9 +147,7 @@ class FeatureForm extends React.Component {
                         </div>
                     ) : null}
                     {this.props.editContext.feature ? (
-                        <AttributeForm editConfig={curConfig} editContext={this.props.editContext}
-                            editContextId={"FeatureForm"} editDataset={editDataset}
-                            editMapPrefix={mapPrefix} iface={this.props.iface} />
+                        <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} />
                     ) : null}
                 </div>
             );
@@ -166,12 +162,6 @@ class FeatureForm extends React.Component {
                 {body}
             </ResizeableWindow>
         );
-    }
-    editLayerId = (layerId) => {
-        if (this.props.theme && this.props.theme.editConfig && this.props.theme.editConfig[layerId]) {
-            return this.props.theme.editConfig[layerId].editDataset || layerId;
-        }
-        return layerId;
     }
     setSelectedFeature = (ev) => {
         this.setState({selectedFeature: ev.target.value});

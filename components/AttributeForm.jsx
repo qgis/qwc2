@@ -27,9 +27,6 @@ class AttributeForm extends React.Component {
         deleteMsgId: PropTypes.string,
         editConfig: PropTypes.object,
         editContext: PropTypes.object,
-        editContextId: PropTypes.string,
-        editDataset: PropTypes.string,
-        editMapPrefix: PropTypes.string,
         iface: PropTypes.object,
         map: PropTypes.object,
         newfeature: PropTypes.bool,
@@ -98,14 +95,15 @@ class AttributeForm extends React.Component {
                 ) : null}
                 <form action="" onSubmit={this.onSubmit}>
                     {this.props.editConfig.form ? (
-                        <QtDesignerForm addRelationRecord={this.addRelationRecord} editLayerId={this.props.editDataset} feature={this.props.editContext.feature}
+                        <QtDesignerForm addRelationRecord={this.addRelationRecord} editLayerId={this.props.editConfig.editDataset} feature={this.props.editContext.feature}
                             featureChanged={this.props.editContext.changed} fields={this.fieldsMap(this.props.editConfig.fields)}
                             form={this.props.editConfig.form} iface={this.props.iface} loadRelationValues={this.loadRelationValues}
-                            mapPrefix={this.props.editMapPrefix} readOnly={readOnly} relationValues={this.props.editContext.feature.relationValues}
-                            removeRelationRecord={this.removeRelationRecord} updateField={this.updateField} updateRelationField={this.updateRelationField} />
+                            mapPrefix={this.editMapPrefix()} readOnly={readOnly} relationValues={this.props.editContext.feature.relationValues}
+                            removeRelationRecord={this.removeRelationRecord}
+                            updateField={this.updateField} updateRelationField={this.updateRelationField} />
                     ) : (
-                        <AutoEditForm editLayerId={this.props.editDataset} fields={this.props.editConfig.fields}
-                            iface={this.props.iface} mapPrefix={this.props.editMapPrefix}
+                        <AutoEditForm editLayerId={this.props.editConfig.editDataset} fields={this.props.editConfig.fields}
+                            iface={this.props.iface}
                             readOnly={readOnly} touchFriendly={this.props.touchFriendly} updateField={this.updateField}
                             values={this.props.editContext.feature.properties} />
                     )}
@@ -123,15 +121,19 @@ class AttributeForm extends React.Component {
     updateField = (key, value) => {
         const newProperties = {...this.props.editContext.feature.properties, [key]: value};
         const newFeature = {...this.props.editContext.feature, properties: newProperties};
-        this.props.setEditContext(this.props.editContextId, {feature: newFeature, changed: true});
+        this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
+    }
+    editMapPrefix = () => {
+        return (this.props.editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
     }
     loadRelationValues = (relationTables) => {
-        const relTables = Object.entries(relationTables).map(([name, fk]) => this.props.editMapPrefix + name + ":" + fk).join(",");
+        const mapPrefix = this.editMapPrefix();
+        const relTables = Object.entries(relationTables).map(([name, fk]) => mapPrefix + name + ":" + fk).join(",");
         const feature = this.props.editContext.feature;
-        this.props.iface.getRelations(this.props.editDataset, feature.id, relTables, (response => {
-            const relationValues = this.unprefixRelationValues(response.relationvalues, this.props.editMapPrefix);
+        this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, (response => {
+            const relationValues = this.unprefixRelationValues(response.relationvalues, mapPrefix);
             const newFeature = {...feature, relationValues: relationValues};
-            this.props.setEditContext(this.props.editContextId, {feature: newFeature});
+            this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
         }));
     }
     addRelationRecord = (table) => {
@@ -146,7 +148,7 @@ class AttributeForm extends React.Component {
             __status__: "new"
         }]);
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
-        this.props.setEditContext(this.props.editContextId, {feature: newFeature, changed: true});
+        this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
     }
     removeRelationRecord = (table, idx) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
@@ -163,7 +165,7 @@ class AttributeForm extends React.Component {
             };
         }
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
-        this.props.setEditContext(this.props.editContextId, {feature: newFeature, changed: true});
+        this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
     }
     updateRelationField = (table, idx, key, value) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
@@ -175,7 +177,7 @@ class AttributeForm extends React.Component {
             __status__: newRelationValues[table].records[idx].__status__ === "new" ? "new" : "changed"
         };
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
-        this.props.setEditContext(this.props.editContextId, {feature: newFeature, changed: true});
+        this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
     }
     unprefixRelationValues = (relationValues, mapPrefix) => {
         if (!mapPrefix) {
@@ -209,11 +211,11 @@ class AttributeForm extends React.Component {
         if (action === "Discard") {
             if (this.props.editContext.action === 'Pick') {
                 // Re-query the original feature
-                this.props.iface.getFeatureById(this.props.editDataset, this.props.editContext.feature.id, this.props.map.projection, (feature) => {
-                    this.props.setEditContext(this.props.editContextId, {feature: feature, changed: false});
+                this.props.iface.getFeatureById(this.props.editConfig.editDataset, this.props.editContext.feature.id, this.props.map.projection, (feature) => {
+                    this.props.setEditContext(this.props.editContext.id, {feature: feature, changed: false});
                 });
             } else {
-                this.props.setEditContext(this.props.editContextId, {feature: null, changed: false});
+                this.props.setEditContext(this.props.editContext.id, {feature: null, changed: false});
             }
         }
     }
@@ -282,15 +284,15 @@ class AttributeForm extends React.Component {
 
         if (this.props.editContext.action === "Draw") {
             if (this.props.iface.addFeatureMultipart) {
-                this.props.iface.addFeatureMultipart(this.props.editDataset, featureData, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+                this.props.iface.addFeatureMultipart(this.props.editConfig.editDataset, featureData, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
             } else {
-                this.props.iface.addFeature(this.props.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+                this.props.iface.addFeature(this.props.editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
             }
         } else if (this.props.editContext.action === "Pick") {
             if (this.props.iface.editFeatureMultipart) {
-                this.props.iface.editFeatureMultipart(this.props.editDataset, feature.id, featureData, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+                this.props.iface.editFeatureMultipart(this.props.editConfig.editDataset, feature.id, featureData, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
             } else {
-                this.props.iface.editFeature(this.props.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+                this.props.iface.editFeature(this.props.editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
             }
         }
     }
@@ -303,13 +305,13 @@ class AttributeForm extends React.Component {
         // Commit relations
         if (!isEmpty(relationValues)) {
             // Prefix relation tables and fields
-            const mapPrefix = this.props.editMapPrefix;
+            const mapPrefix = this.editMapPrefix();
             relationValues = this.prefixRelationValues(relationValues, mapPrefix);
             const relationData = new FormData();
             relationData.set('values', JSON.stringify(relationValues));
             Object.entries(relationUploads).forEach(([key, value]) => relationData.set(mapPrefix + key, value));
 
-            this.props.iface.writeRelations(this.props.editDataset, newFeature.id, relationData, (relResult, errorMsg) => {
+            this.props.iface.writeRelations(this.props.editConfig.editDataset, newFeature.id, relationData, (relResult, errorMsg) => {
                 if (relResult === false) {
                     this.commitFinished(false, errorMsg);
                 } else if (relResult.success !== true) {
@@ -317,7 +319,7 @@ class AttributeForm extends React.Component {
                     // to avoid adding feature again on next attempt
                     this.commitFinished(false, LocaleUtils.tr("editing.relationcommitfailed"));
                     newFeature = {...newFeature, relationValues: this.unprefixRelationValues(relResult.relationvalues, mapPrefix)};
-                    this.props.setEditContext(this.props.editContextId, {action: "Pick", feature: newFeature, changed: true});
+                    this.props.setEditContext(this.props.editContext.id, {action: "Pick", feature: newFeature, changed: true});
                 } else {
                     this.commitFinished(true, result);
                 }
@@ -333,7 +335,7 @@ class AttributeForm extends React.Component {
     deleteFeature = (action) => {
         if (action === 'Yes') {
             this.setState({busy: true});
-            this.props.iface.deleteFeature(this.props.editDataset, this.props.editContext.feature.id, this.deleteFinished);
+            this.props.iface.deleteFeature(this.props.editConfig.editDataset, this.props.editContext.feature.id, this.deleteFinished);
         } else {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
@@ -342,7 +344,7 @@ class AttributeForm extends React.Component {
     commitFinished = (success, result) => {
         this.setState({busy: false});
         if (success) {
-            this.props.setEditContext(this.props.editContextId, {action: 'Pick', feature: result, changed: false});
+            this.props.setEditContext(this.props.editContext.id, {action: 'Pick', feature: result, changed: false});
             this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
         } else {
             // eslint-disable-next-line
@@ -354,7 +356,7 @@ class AttributeForm extends React.Component {
         if (success) {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
-            this.props.setEditContext(this.props.editContextId, {feature: null, changed: false});
+            this.props.setEditContext(this.props.editContext.id, {feature: null, changed: false});
             this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
         } else {
             // eslint-disable-next-line

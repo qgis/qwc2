@@ -105,7 +105,8 @@ class Editing extends React.Component {
             const oldPoint = prevProps.map.click || {};
             if (newPoint.coordinate && !isEqual(newPoint.coordinate, oldPoint.coordinate)) {
                 const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
-                this.props.iface.getFeature(this.editLayerId(this.state.selectedLayer), newPoint.coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
+                const editDataset = this.props.theme.editConfig[this.state.selectedLayer].editDataset;
+                this.props.iface.getFeature(editDataset, newPoint.coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
                     const features = featureCollection ? featureCollection.features : null;
                     this.setState({pickedFeatures: features});
                     const feature = features ? features[0] : null;
@@ -127,12 +128,6 @@ class Editing extends React.Component {
         if (this.state.drawPick && this.props.map.click && this.props.map.click !== prevProps.map.click) {
             this.drawPickQuery(this.props.map.click.coordinate);
         }
-    }
-    editLayerId = (layerId) => {
-        if (this.props.theme && this.props.theme.editConfig && this.props.theme.editConfig[layerId]) {
-            return this.props.theme.editConfig[layerId].editDataset || layerId;
-        }
-        return layerId;
     }
     renderBody = () => {
         if (!this.props.theme || isEmpty(this.props.theme.editConfig)) {
@@ -220,13 +215,9 @@ class Editing extends React.Component {
         }
         let attributeForm = null;
         if (this.props.editContext.feature) {
-            const editDataset = this.editLayerId(this.state.selectedLayer);
-            const mapPrefix = editDataset.replace(new RegExp("." + this.state.selectedLayer + "$"), ".");
             attributeForm = (
                 <AttributeForm editConfig={curConfig} editContext={this.props.editContext}
-                    editContextId="Editing" editDataset={editDataset}
-                    editMapPrefix={mapPrefix} iface={this.props.iface}
-                    newfeature={this.props.editContext.action === 'Draw'}
+                    iface={this.props.iface} newfeature={this.props.editContext.action === 'Draw'}
                 />
             );
         }

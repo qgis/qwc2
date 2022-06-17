@@ -16,7 +16,6 @@ import {setEditContext} from '../../actions/editing';
 class EditingSupport extends React.Component {
     static propTypes = {
         editContext: PropTypes.object,
-        editContextId: PropTypes.string,
         map: PropTypes.object,
         setEditContext: PropTypes.func
     }
@@ -151,7 +150,7 @@ class EditingSupport extends React.Component {
         if (this.props.editContext.geomType.endsWith('Z')) {
             feature.geometry.coordinates = feature.geometry.coordinates.map(addZCoordinateIfNeeded);
         }
-        this.props.setEditContext(this.props.editContextId, {feature: feature, changed: true});
+        this.props.setEditContext(this.props.editContext.id, {feature: feature, changed: true});
     }
     reset = () => {
         if (this.interaction) {
@@ -167,8 +166,7 @@ class EditingSupport extends React.Component {
 }
 
 export default connect((state) => ({
-    editContext: state.editing.contexts[state.editing.currentContext] || {},
-    editContextId: state.editing.currentContext
+    editContext: state.editing.contexts[state.editing.currentContext] || {}
 }), {
     setEditContext: setEditContext
 })(EditingSupport);

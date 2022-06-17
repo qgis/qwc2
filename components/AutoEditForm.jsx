@@ -20,7 +20,6 @@ export default class AutoEditForm extends React.Component {
         editLayerId: PropTypes.string,
         fields: PropTypes.array,
         iface: PropTypes.object,
-        mapPrefix: PropTypes.string,
         readOnly: PropTypes.bool,
         touchFriendly: PropTypes.bool,
         updateField: PropTypes.func,
