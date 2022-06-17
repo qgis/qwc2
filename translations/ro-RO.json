@@ -172,6 +172,12 @@
       "visiblefilter": "Filtrează straturile invizibile",
       "zoomtolayer": "Zoom la strat"
     },
+    "linkfeatureform": {
+      "cancel": "",
+      "drawhint": "",
+      "finish": "",
+      "pickhint": ""
+    },
     "locate": {
       "feetUnit": "picioare",
       "metersUnit": "metri",

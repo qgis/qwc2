@@ -172,6 +172,12 @@
       "visiblefilter": "Filter invisible layers",
       "zoomtolayer": "Zoom to layer"
     },
+    "linkfeatureform": {
+      "cancel": "Cancel",
+      "drawhint": "Draw the feature on the map...",
+      "finish": "Finish",
+      "pickhint": "Pick a feature on the map..."
+    },
     "locate": {
       "feetUnit": "feet",
       "metersUnit": "meters",

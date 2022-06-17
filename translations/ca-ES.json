@@ -172,6 +172,12 @@
       "visiblefilter": "Filtrar capes no visibles",
       "zoomtolayer": "Zoom a la capa"
     },
+    "linkfeatureform": {
+      "cancel": "",
+      "drawhint": "",
+      "finish": "",
+      "pickhint": ""
+    },
     "locate": {
       "feetUnit": "feet",
       "metersUnit": "metres",

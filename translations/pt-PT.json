@@ -172,6 +172,12 @@
       "visiblefilter": "Filtrar camadas invisíveis",
       "zoomtolayer": "Ampliar a camada"
     },
+    "linkfeatureform": {
+      "cancel": "",
+      "drawhint": "",
+      "finish": "",
+      "pickhint": ""
+    },
     "locate": {
       "feetUnit": "pés",
       "metersUnit": "metros",

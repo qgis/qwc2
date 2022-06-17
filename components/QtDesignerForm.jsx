@@ -13,6 +13,7 @@ import axios from 'axios';
 import xml2js from 'xml2js';
 import uuid from 'uuid';
 import isEmpty from 'lodash.isempty';
+import ButtonBar from './widgets/ButtonBar';
 import EditComboField, {KeyValCache} from './EditComboField';
 import EditUploadField from './EditUploadField';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -38,6 +39,7 @@ class QtDesignerForm extends React.Component {
         readOnly: PropTypes.bool,
         relationValues: PropTypes.object,
         removeRelationRecord: PropTypes.func,
+        switchEditContext: PropTypes.func,
         updateField: PropTypes.func,
         updateRelationField: PropTypes.func
     }
@@ -316,6 +318,27 @@ class QtDesignerForm extends React.Component {
                 return this.renderNRelation(widget);
             } else {
                 return this.renderLayout(widget.layout, values, dataset, updateField, nametransform);
+            }
+        } else if (widget.class === "QPushButton" && widget.name.startsWith("featurelink__")) {
+            const parts = widget.name.split("__");
+            // featurelink__layer__attrname
+            // featurelink__layer__reltable__attrname
+            if (parts.length === 3 || parts.length === 4 ) {
+                const layer = parts[1];
+                const attrname = parts.slice(-2).join("__");
+                value = (values || [])[attrname] ?? "";
+                if (value) {
+                    const featurebuttons = [
+                        {key: 'Edit', icon: 'editing', label: String(value)}
+                    ];
+                    return (<ButtonBar buttons={featurebuttons} onClick={() => this.props.switchEditContext(":" + layer, 'Edit', layer, value, (v) => updateField(attrname, v))} />);
+                } else {
+                    const featurebuttons = [
+                        {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick")},
+                        {key: 'Create', icon: 'draw', label: LocaleUtils.trmsg("editing.draw")}
+                    ];
+                    return (<ButtonBar buttons={featurebuttons} onClick={(action) => this.props.switchEditContext(":" + layer, action, layer, null, (v) => updateField(attrname, v))} />);
+                }
             }
         }
         return null;

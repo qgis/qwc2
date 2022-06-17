@@ -172,6 +172,12 @@
       "visiblefilter": "",
       "zoomtolayer": ""
     },
+    "linkfeatureform": {
+      "cancel": "",
+      "drawhint": "",
+      "finish": "",
+      "pickhint": ""
+    },
     "locate": {
       "feetUnit": "fot",
       "metersUnit": "meter",

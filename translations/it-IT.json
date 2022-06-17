@@ -172,6 +172,12 @@
       "visiblefilter": "Filtra livelli non visibili",
       "zoomtolayer": "Zoom a tutto il livello"
     },
+    "linkfeatureform": {
+      "cancel": "Annulla",
+      "drawhint": "Disegnare l'oggetto sulla mappa...",
+      "finish": "Finisci",
+      "pickhint": "Seleziona un oggetto sulla mappa..."
+    },
     "locate": {
       "feetUnit": "piedi",
       "metersUnit": "metri",

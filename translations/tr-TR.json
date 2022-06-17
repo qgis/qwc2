@@ -172,6 +172,12 @@
       "visiblefilter": "Görünmeyen katmanları filtrele",
       "zoomtolayer": "Katman sınırlarına yaklaş"
     },
+    "linkfeatureform": {
+      "cancel": "",
+      "drawhint": "",
+      "finish": "",
+      "pickhint": ""
+    },
     "locate": {
       "feetUnit": "feet",
       "metersUnit": "metre",

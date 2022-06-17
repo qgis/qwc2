@@ -172,6 +172,12 @@
       "visiblefilter": "Suodata näkymättömät tasot",
       "zoomtolayer": "Zoomaa tasolle"
     },
+    "linkfeatureform": {
+      "cancel": "",
+      "drawhint": "",
+      "finish": "",
+      "pickhint": ""
+    },
     "locate": {
       "feetUnit": "jalka",
       "metersUnit": "metrit",

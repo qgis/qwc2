@@ -172,6 +172,12 @@
       "visiblefilter": "Filtrer usynlige lag",
       "zoomtolayer": "Zoom til lag"
     },
+    "linkfeatureform": {
+      "cancel": "",
+      "drawhint": "",
+      "finish": "",
+      "pickhint": ""
+    },
     "locate": {
       "feetUnit": "fot",
       "metersUnit": "meter",

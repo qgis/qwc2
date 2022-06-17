@@ -1,6 +1,8 @@
 div.AttributeForm {
     display: flex;
     flex-direction: column;
+    position: relative;
+    padding: 0.25em;
 }
 
 div.AttributeForm > form {
@@ -51,4 +53,20 @@ div.AttributeForm .attrib-form-commit:hover {
 
 div.AttributeForm .attrib-form-discard:hover {
     background-color: rgb(225,127,127);
+}
+
+div.link-feature-form-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(200, 200, 200, 0.5);
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+}
+
+div.link-feature-form-container > div.link-feature-form {
+    flex: 1 1 auto;
 }

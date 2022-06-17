@@ -12,10 +12,11 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import clone from 'clone';
 import uuid from 'uuid';
-import {setEditContext} from '../actions/editing';
+import {setEditContext, clearEditContext} from '../actions/editing';
 import {setCurrentTaskBlocked} from '../actions/task';
 import {LayerRole, refreshLayer} from '../actions/layers';
 import AutoEditForm from './AutoEditForm';
+import LinkFeatureForm from './LinkFeatureForm';
 import QtDesignerForm from './QtDesignerForm';
 import ButtonBar from './widgets/ButtonBar';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -24,6 +25,7 @@ import './style/AttributeForm.css';
 
 class AttributeForm extends React.Component {
     static propTypes = {
+        clearEditContext: PropTypes.func,
         deleteMsgId: PropTypes.string,
         editConfig: PropTypes.object,
         editContext: PropTypes.object,
@@ -33,6 +35,7 @@ class AttributeForm extends React.Component {
         refreshLayer: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
         setEditContext: PropTypes.func,
+        theme: PropTypes.object,
         touchFriendly: PropTypes.bool
     }
     static defaultProps = {
@@ -41,7 +44,8 @@ class AttributeForm extends React.Component {
     }
     state = {
         busy: false,
-        deleteClicked: false
+        deleteClicked: false,
+        childEdit: null
     }
     componentDidUpdate(prevProps) {
         if (prevProps.editContext.changed !== this.props.editContext.changed) {
@@ -88,6 +92,14 @@ class AttributeForm extends React.Component {
         if (this.state.busy) {
             busyDiv = (<div className="attrib-form-busy" />);
         }
+        let childAttributeForm = null;
+        if (this.state.childEdit) {
+            childAttributeForm = (
+                <div className="link-feature-form-container">
+                    <LinkFeatureForm {...this.state.childEdit} finished={this.finishChildEdit} iface={this.props.iface} />
+                </div>
+            );
+        }
         return (
             <div className="AttributeForm">
                 {this.props.editContext.geomReadOnly ? (
@@ -99,7 +111,7 @@ class AttributeForm extends React.Component {
                             featureChanged={this.props.editContext.changed} fields={this.fieldsMap(this.props.editConfig.fields)}
                             form={this.props.editConfig.form} iface={this.props.iface} loadRelationValues={this.loadRelationValues}
                             mapPrefix={this.editMapPrefix()} readOnly={readOnly} relationValues={this.props.editContext.feature.relationValues}
-                            removeRelationRecord={this.removeRelationRecord}
+                            removeRelationRecord={this.removeRelationRecord} switchEditContext={this.startChildEdit}
                             updateField={this.updateField} updateRelationField={this.updateRelationField} />
                     ) : (
                         <AutoEditForm editLayerId={this.props.editConfig.editDataset} fields={this.props.editConfig.fields}
@@ -111,6 +123,7 @@ class AttributeForm extends React.Component {
                 </form>
                 {deleteBar}
                 {busyDiv}
+                {childAttributeForm}
             </div>
 
         );
@@ -315,6 +328,7 @@ class AttributeForm extends React.Component {
                 if (relResult === false) {
                     this.commitFinished(false, errorMsg);
                 } else if (relResult.success !== true) {
+                    console.log(relResult);
                     // Relation values commit failed, switch to pick update relation values with response and switch to pick to
                     // to avoid adding feature again on next attempt
                     this.commitFinished(false, LocaleUtils.tr("editing.relationcommitfailed"));
@@ -374,11 +388,24 @@ class AttributeForm extends React.Component {
         }
         return new Blob([ia], {type: mimeString});
     }
+    startChildEdit = (editContextId, action, layer, featureId, updateField) => {
+        const editConfig = (this.props.theme.editConfig || {})[layer];
+        this.setState({childEdit: {action, editConfig, editContextId, featureId, updateField}});
+    }
+    finishChildEdit = (featureId) => {
+        this.props.clearEditContext(this.state.childEdit.editContextId, this.props.editContext.id);
+        if (featureId !== this.state.childEdit.featureId) {
+            this.state.childEdit.updateField(featureId);
+        }
+        this.setState({childEdit: null});
+    }
 }
 
 export default connect(state => ({
-    map: state.map
+    map: state.map,
+    theme: state.theme.current
 }), {
+    clearEditContext: clearEditContext,
     setEditContext: setEditContext,
     setCurrentTaskBlocked: setCurrentTaskBlocked,
     refreshLayer: refreshLayer

@@ -172,6 +172,12 @@
       "visiblefilter": "Unsichtbare Ebenen filtern",
       "zoomtolayer": "Auf den Layer zoomen"
     },
+    "linkfeatureform": {
+      "cancel": "Abbrechen",
+      "drawhint": "Objekt auf der Karte zeichnen...",
+      "finish": "Abschliessen",
+      "pickhint": "Objekt auf der Karte auswählen..."
+    },
     "locate": {
       "feetUnit": "Fuss",
       "metersUnit": "Meter",

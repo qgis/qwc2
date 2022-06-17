@@ -172,6 +172,12 @@
       "visiblefilter": "Filtrer couches invisibles",
       "zoomtolayer": "Zoomer sur la couche"
     },
+    "linkfeatureform": {
+      "cancel": "",
+      "drawhint": "",
+      "finish": "",
+      "pickhint": ""
+    },
     "locate": {
       "feetUnit": "pieds",
       "metersUnit": "mètres",
