@@ -49,7 +49,7 @@ export default function editing(state = defaultState, action) {
             contexts: {
                 ...state.contexts
             },
-            currentContext: state.currentContext === action.contextId ? null : action.contextId
+            currentContext: state.currentContext === action.contextId ? action.newActiveContextId : action.contextId
         };
         delete newState.contexts[action.contextId];
         return newState;

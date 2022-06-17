@@ -21,9 +21,10 @@ export function setEditContext(contextId, editContext) {
     };
 }
 
-export function clearEditContext(contextId) {
+export function clearEditContext(contextId, newActiveContextId = null) {
     return {
         type: CLEAR_EDIT_CONTEXT,
-        contextId: contextId
+        contextId: contextId,
+        newActiveContextId: newActiveContextId
     };
 }
