@@ -451,11 +451,17 @@ class TimeManager extends React.Component {
         if (date < this.getEndTime()) {
             this.setState({startDate: date});
         }
+        if (dayjs(this.state.currentTimestamp) < date) {
+            this.setState({currentTimestamp: +date});
+        }
     }
     setEndTime = (value) => {
         const date = (value ? dayjs.utc(value) : this.state.timeData.values[this.state.timeData.values.length - 1]).hour(23).minute(59).second(59);
         if (date > this.getStartTime()) {
             this.setState({endDate: date});
+            if (dayjs(this.state.currentTimestamp) > date) {
+                this.setState({currentTimestamp: +date});
+            }
         }
     }
     scheduleUpdateMapMarkers = () => {
