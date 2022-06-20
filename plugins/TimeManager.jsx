@@ -489,7 +489,7 @@ class TimeManager extends React.Component {
         let pending = 0;
         const reqUUID = uuid.v1();
         this.props.layers.forEach(layer => {
-            if (layer.uuid in this.state.timeData.attributes) {
+            if (layer.uuid in this.state.timeData.attributes && layer.visibility) {
                 const sublayerattrs = this.state.timeData.attributes[layer.uuid];
                 const queryLayers = Object.keys(sublayerattrs).join(",");
                 const options = {
