@@ -91,7 +91,7 @@ div.time-manager-cursor-label {
 
 div.time-manager-ticks {
     display: flex;
-    margin-top: 0.25em;
+    margin: 0.25em 0.25em 0 0.25em;
 }
 
 div.time-manager-ticks > div {

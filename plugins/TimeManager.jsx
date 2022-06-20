@@ -208,7 +208,7 @@ class TimeManager extends React.Component {
             body = this.renderBody(timeValues);
         }
         return (
-            <ResizeableWindow dockable="bottom"  icon="time" initialHeight={140}
+            <ResizeableWindow dockable="bottom"  icon="time" initialHeight={155}
                 initialWidth={800}  onClose={this.onClose}
                 scrollable title={LocaleUtils.tr("timemanager.title")}>
                 {body}
@@ -293,6 +293,10 @@ class TimeManager extends React.Component {
                         {this.state.settingsPopup ? options : null}
                     </span>
                 </div>
+                <div className="time-manager-ticks">
+                    <div><DateInput onChange={this.setStartTime} value={(this.state.startDate || timeValues[0]).format('YYYY-MM-DD')} /></div>
+                    <div><DateInput onChange={this.setEndTime} value={(this.state.endDate || timeValues[timeValues.length - 1]).format('YYYY-MM-DD')} /></div>
+                </div>
                 <div className="time-manager-timeline">
                     <div className="time-manager-time-blocks" onMouseDown={this.pickCurrentTimestamp} style={blocksStyle} />
                     {this.state.timeEnabled ? (
@@ -302,10 +306,6 @@ class TimeManager extends React.Component {
                             </div>
                         </div>
                     ) : null}
-                    <div className="time-manager-ticks">
-                        <div><DateInput onChange={this.setStartTime} value={(this.state.startDate || timeValues[0]).format('YYYY-MM-DD')} /></div>
-                        <div><DateInput onChange={this.setEndTime} value={(this.state.endDate || timeValues[timeValues.length - 1]).format('YYYY-MM-DD')} /></div>
-                    </div>
                 </div>
             </div>
         );
