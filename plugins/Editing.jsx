@@ -94,7 +94,7 @@ class Editing extends React.Component {
             const layerIds = Object.keys(this.props.theme && this.props.theme.editConfig || {}).filter(layerId => themeSublayers.includes(layerId));
             if (!isEmpty(layerIds)) {
                 if (!layerIds.includes(this.state.selectedLayer)) {
-                    this.changeSelectedLayer(layerIds[0]);
+                    this.changeSelectedLayer(layerIds[0], "Pick");
                 }
             } else if (this.state.selectedLayer) {
                 this.changeSelectedLayer(null);
