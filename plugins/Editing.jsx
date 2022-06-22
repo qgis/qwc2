@@ -141,7 +141,6 @@ class Editing extends React.Component {
         }
         const editConfig = this.props.theme.editConfig;
         const curConfig = editConfig[this.state.selectedLayer];
-        const editPermissions = curConfig.permissions || {};
         if (!curConfig) {
             return (
                 <div role="body" style={{padding: "1em"}}>
@@ -149,6 +148,7 @@ class Editing extends React.Component {
                 </div>
             );
         }
+        const editPermissions = curConfig.permissions || {};
 
         const actionButtons = [];
         if ( editPermissions.updatable !== false || editPermissions.deletable !== false) {
