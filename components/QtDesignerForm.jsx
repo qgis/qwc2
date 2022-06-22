@@ -354,6 +354,7 @@ class QtDesignerForm extends React.Component {
             return null;
         }
         const tablename = parts[1];
+        const datasetname = this.props.mapPrefix + tablename;
         const headerItems = widget.layout.item.filter(item => item.widget.name.startsWith("header__"));
         return (
             <div className="qt-designer-widget-relation">
@@ -367,10 +368,14 @@ class QtDesignerForm extends React.Component {
                                     <th />
                                 </tr>
                             ) : null}
-                            {((this.props.relationValues[tablename] || []).records || []).map((record, idx) => {
-                                const updateField = (name, value) => this.props.updateRelationField(tablename, idx, name, value);
+                            {((this.props.relationValues[datasetname] || {}).features || []).map((feature, idx) => {
+                                const updateField = (name, value) => {
+                                    const fieldname = name.slice(tablename.length + 2); // Strip <tablename>__ prefix
+                                    this.props.updateRelationField(datasetname, idx, fieldname, value);
+                                };
                                 const nametransform = (name) => (name + "__" + idx);
-                                const status = record.__status__ || "";
+                                const status = feature.__status__ || "";
+                                const values = Object.entries(feature.properties).reduce((res, [key, value]) => ( {...res, [tablename + "__" + key]: value}), {});
                                 let statusIcon = null;
                                 if (status === "new") {
                                     statusIcon = "new";
@@ -378,21 +383,21 @@ class QtDesignerForm extends React.Component {
                                     statusIcon = "edited";
                                 }
                                 let statusText = "";
-                                if (record.error) {
+                                if (feature.error) {
                                     statusIcon = "warning";
-                                    statusText = this.buildErrMsg(record);
+                                    statusText = this.buildErrMsg(feature);
                                 }
                                 const extraClass = status.startsWith("deleted") ? "qt-designer-widget-relation-record-deleted" : "";
                                 const widgetItems = widget.layout.item.filter(item => !item.widget.name.startsWith("header__"));
                                 return (
-                                    <tr className={"qt-designer-widget-relation-record " + extraClass} key={tablename + idx}>
+                                    <tr className={"qt-designer-widget-relation-record " + extraClass} key={datasetname + idx}>
                                         <td>{statusIcon ? (<Icon icon={statusIcon} title={statusText} />) : null}</td>
                                         {widgetItems.map(item => (
-                                            <td className="qt-designer-widget-relation-row-widget" key={item.widget.name}>{this.renderWidget(item.widget, record, this.props.mapPrefix + tablename, updateField, nametransform)}</td>
+                                            <td className="qt-designer-widget-relation-row-widget" key={item.widget.name}>{this.renderWidget(item.widget, values, datasetname, updateField, nametransform)}</td>
                                         ))}
                                         {!this.props.readOnly ? (
                                             <td>
-                                                <Icon icon="trash" onClick={() => this.props.removeRelationRecord(tablename, idx)} />
+                                                <Icon icon="trash" onClick={() => this.props.removeRelationRecord(datasetname, idx)} />
                                             </td>
                                         ) : null}
                                     </tr>
@@ -402,7 +407,7 @@ class QtDesignerForm extends React.Component {
                     </table>
                 </div>
                 {!this.props.readOnly ? (
-                    <div><button className="qt-designer-widget-relation-add" onClick={() => this.props.addRelationRecord(tablename)} type="button">{LocaleUtils.tr("editing.add")}</button></div>
+                    <div><button className="qt-designer-widget-relation-add" onClick={() => this.props.addRelationRecord(datasetname)} type="button">{LocaleUtils.tr("editing.add")}</button></div>
                 ) : null}
             </div>
         );

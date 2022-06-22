@@ -144,8 +144,7 @@ class AttributeForm extends React.Component {
         const relTables = Object.entries(relationTables).map(([name, fk]) => mapPrefix + name + ":" + fk).join(",");
         const feature = this.props.editContext.feature;
         this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, (response => {
-            const relationValues = this.unprefixRelationValues(response.relationvalues, mapPrefix);
-            const newFeature = {...feature, relationValues: relationValues};
+            const newFeature = {...feature, relationValues: response.relationvalues};
             this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
         }));
     }
@@ -154,11 +153,13 @@ class AttributeForm extends React.Component {
         if (!newRelationValues[table]) {
             newRelationValues[table] = {
                 fk: this.state.relationTables[table],
-                records: []
+                features: []
             };
         }
-        newRelationValues[table].records = newRelationValues[table].records.concat([{
-            __status__: "new"
+        newRelationValues[table].features = newRelationValues[table].features.concat([{
+            __status__: "new",
+            type: "Feature",
+            properties: {}
         }]);
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
@@ -166,14 +167,14 @@ class AttributeForm extends React.Component {
     removeRelationRecord = (table, idx) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
         newRelationValues[table] = {...newRelationValues[table]};
-        newRelationValues[table].records = newRelationValues[table].records.slice(0);
-        const fieldStatus = newRelationValues[table].records[idx].__status__ || "";
+        newRelationValues[table].features = newRelationValues[table].features.slice(0);
+        const fieldStatus = newRelationValues[table].features[idx].__status__ || "";
         // If field was new, delete it directly, else mark it as deleted
         if (fieldStatus === "new") {
-            newRelationValues[table].records.splice(idx, 1);
+            newRelationValues[table].features.splice(idx, 1);
         } else {
-            newRelationValues[table].records[idx] = {
-                ...newRelationValues[table].records[idx],
+            newRelationValues[table].features[idx] = {
+                ...newRelationValues[table].features[idx],
                 __status__: fieldStatus.startsWith("deleted") ? fieldStatus.substr(8) : "deleted:" + fieldStatus
             };
         }
@@ -183,42 +184,17 @@ class AttributeForm extends React.Component {
     updateRelationField = (table, idx, key, value) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
         newRelationValues[table] = {...newRelationValues[table]};
-        newRelationValues[table].records = newRelationValues[table].records.slice(0);
-        newRelationValues[table].records[idx] = {
-            ...newRelationValues[table].records[idx],
-            [key]: value,
-            __status__: newRelationValues[table].records[idx].__status__ === "new" ? "new" : "changed"
+        newRelationValues[table].features = newRelationValues[table].features.slice(0);
+        newRelationValues[table].features[idx] = {
+            ...newRelationValues[table].features[idx],
+            properties: {
+                ...newRelationValues[table].features[idx].properties,
+                [key]: value
+            },
+            __status__: newRelationValues[table].features[idx].__status__ === "new" ? "new" : "changed"
         };
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
-    }
-    unprefixRelationValues = (relationValues, mapPrefix) => {
-        if (!mapPrefix) {
-            return relationValues;
-        }
-        const mapPrefixRe = new RegExp("^" + mapPrefix);
-        return Object.entries(relationValues || {}).reduce((res, [table, value]) => {
-            const tblname = table.replace(mapPrefixRe, "");
-            value.records = (value.records || []).map(record => Object.entries(record).reduce((result, [key, val]) => {
-                result[key.replace(table, tblname)] = val;
-                return result;
-            }, {}));
-            res[tblname] = value;
-            return res;
-        }, {});
-    }
-    prefixRelationValues = (relationValues, mapPrefix) => {
-        if (!mapPrefix) {
-            return relationValues;
-        }
-        return Object.entries(relationValues).reduce((res, [table, value]) => {
-            value.records = (value.records || []).map(record => Object.entries(record).reduce((result, [key, val]) => {
-                result[key.startsWith("__") || key === "id" ? key : mapPrefix + key] = val;
-                return result;
-            }, {}));
-            res[mapPrefix + table] = value;
-            return res;
-        }, {});
     }
     onDiscard = (action) => {
         if (action === "Discard") {
@@ -248,6 +224,7 @@ class AttributeForm extends React.Component {
         };
 
         const curConfig = this.props.editConfig;
+        const mapPrefix = this.editMapPrefix();
 
         // Keep relation values separate
         const relationValues = clone(feature.relationValues || {});
@@ -271,11 +248,12 @@ class AttributeForm extends React.Component {
                 const parts = name.split("__");
                 if (parts.length >= 3) {
                     // Usually <table>__<field>__<index>, but <field> might also contain __ (i.e. upload__user)
-                    const table = parts[0];
+                    const tablename = parts[0];
+                    const datasetname = mapPrefix + tablename;
                     const field = parts.slice(1, parts.length - 1).join("__");
                     const index = parseInt(parts[parts.length - 1], 10);
                     // relationValues for table must exist as rows are either pre-existing or were added
-                    relationValues[table].records[index][table + "__" + field] = value;
+                    relationValues[datasetname].features[index].properties[field] = value;
                     if (element.type === "file" && element.files.length > 0) {
                         relationUploads[name] = element.files[0];
                     } else if (element.type === "hidden" && element.value.startsWith("data:")) {
@@ -319,7 +297,6 @@ class AttributeForm extends React.Component {
         if (!isEmpty(relationValues)) {
             // Prefix relation tables and fields
             const mapPrefix = this.editMapPrefix();
-            relationValues = this.prefixRelationValues(relationValues, mapPrefix);
             const relationData = new FormData();
             relationData.set('values', JSON.stringify(relationValues));
             Object.entries(relationUploads).forEach(([key, value]) => relationData.set(mapPrefix + key, value));
@@ -328,11 +305,10 @@ class AttributeForm extends React.Component {
                 if (relResult === false) {
                     this.commitFinished(false, errorMsg);
                 } else if (relResult.success !== true) {
-                    console.log(relResult);
                     // Relation values commit failed, switch to pick update relation values with response and switch to pick to
                     // to avoid adding feature again on next attempt
                     this.commitFinished(false, LocaleUtils.tr("editing.relationcommitfailed"));
-                    newFeature = {...newFeature, relationValues: this.unprefixRelationValues(relResult.relationvalues, mapPrefix)};
+                    newFeature = {...newFeature, relationValues: relResult.relationvalues};
                     this.props.setEditContext(this.props.editContext.id, {action: "Pick", feature: newFeature, changed: true});
                 } else {
                     this.commitFinished(true, result);
