@@ -298,7 +298,7 @@
     },
     "snapping": {
       "loading": "Caricamento delle geometrie per snapping",
-      "snappingenabled": "Snapping attivo"
+      "snappingenabled": "Snapping"
     },
     "themelayerslist": {
       "addlayer": "Aggiungi layer",

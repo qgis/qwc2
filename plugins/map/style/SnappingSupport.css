@@ -29,3 +29,9 @@ div.snapping-toolbar-container > div div.spinner {
     width: 1.5em;
     height: 1.5em;
 }
+
+
+div.snapping-toolbar-inactive {
+    color: #999999;
+    font-style: italic;
+}
