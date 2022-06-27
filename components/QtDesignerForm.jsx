@@ -177,7 +177,7 @@ class QtDesignerForm extends React.Component {
         const attr = widget.attribute || {};
         const fieldConstraints = (this.props.fields[widget.name] || {}).constraints || {};
         const inputConstraints = {};
-        inputConstraints.readOnly = this.props.readOnly || prop.readOnly === "true" || fieldConstraints.readOnly === true;
+        inputConstraints.readOnly = this.props.readOnly || prop.readOnly === "true" || prop.enabled === "false" || fieldConstraints.readOnly === true;
         inputConstraints.required = !inputConstraints.readOnly && (prop.required === "true" || fieldConstraints.required === true);
         inputConstraints.placeholder = prop.placeholderText || fieldConstraints.placeholder || "";
 
