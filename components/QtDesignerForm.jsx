@@ -330,13 +330,13 @@ class QtDesignerForm extends React.Component {
                 const layer = parts[1];
                 const reltable = parts.length === 4 ? parts[2] : "";
                 const attrname = parts.slice(2).join("__");
-                value = (feature.properties || {})[attrname] ?? "";
+                value = (feature.properties || {})[attrname];
                 if (layer === reltable) {
                     const index = parseInt(nametransform("").split("__")[1], 10); // Ugh..
                     const reldataset = this.props.mapPrefix + reltable;
                     if (feature.__status__ !== "empty") {
                         const featurebuttons = [
-                            {key: 'Edit', icon: 'editing', label: String(value)}
+                            {key: 'Edit', icon: 'editing', label: String(value ?? "")}
                         ];
                         return (
                             <div className="qt-designer-form-featurelink-buttons">
@@ -351,9 +351,9 @@ class QtDesignerForm extends React.Component {
                         return (<ButtonBar buttons={featurebuttons} onClick={(action) => this.props.editRelationRecord(action, reltable, reldataset, index)} />);
                     }
                 } else {
-                    if (value !== undefined) {
+                    if (value !== null) {
                         const featurebuttons = [
-                            {key: 'Edit', icon: 'editing', label: String(value)}
+                            {key: 'Edit', icon: 'editing', label: String(value ?? "")}
                         ];
                         return (
                             <div className="qt-designer-form-featurelink-buttons">
@@ -364,7 +364,7 @@ class QtDesignerForm extends React.Component {
                     } else {
                         const featurebuttons = [
                             {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick")},
-                            {key: 'Create', icon: 'draw', label: LocaleUtils.trmsg("editing.draw")}
+                            {key: 'Create', icon: 'editdraw', label: LocaleUtils.trmsg("editing.create")}
                         ];
                         return (<ButtonBar buttons={featurebuttons} onClick={(action) => this.props.switchEditContext(action, layer, null, (v) => updateField(attrname, v))} />);
                     }
