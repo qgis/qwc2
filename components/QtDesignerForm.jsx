@@ -28,6 +28,7 @@ class QtDesignerForm extends React.Component {
     static propTypes = {
         addRelationRecord: PropTypes.func,
         editLayerId: PropTypes.string,
+        editRelationRecord: PropTypes.func,
         feature: PropTypes.object,
         featureChanged: PropTypes.bool,
         fields: PropTypes.object,
@@ -327,24 +328,46 @@ class QtDesignerForm extends React.Component {
             // featurelink__layer__reltable__attrname
             if (parts.length === 3 || parts.length === 4 ) {
                 const layer = parts[1];
+                const reltable = parts.length === 4 ? parts[2] : "";
                 const attrname = parts.slice(2).join("__");
                 value = (feature.properties || {})[attrname] ?? "";
-                if (value) {
-                    const featurebuttons = [
-                        {key: 'Edit', icon: 'editing', label: String(value)}
-                    ];
-                    return (
-                        <div className="qt-designer-form-featurelink-buttons">
-                            <ButtonBar buttons={featurebuttons} onClick={() => this.props.switchEditContext(":" + layer, 'Edit', layer, value, (v) => updateField(attrname, v))} />
-                            <button className="button" onClick={() => updateField(attrname, null)}><Icon icon="clear" /></button>
-                        </div>
-                    );
+                if (layer === reltable) {
+                    const index = parseInt(nametransform("").split("__")[1], 10); // Ugh..
+                    const reldataset = this.props.mapPrefix + reltable;
+                    if (feature.__status__ !== "empty") {
+                        const featurebuttons = [
+                            {key: 'Edit', icon: 'editing', label: String(value)}
+                        ];
+                        return (
+                            <div className="qt-designer-form-featurelink-buttons">
+                                <ButtonBar buttons={featurebuttons} onClick={() => this.props.editRelationRecord('Edit', reltable, reldataset, index)} />
+                            </div>
+                        );
+                    } else {
+                        const featurebuttons = [
+                            {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick")},
+                            {key: 'Create', icon: 'editdraw', label: LocaleUtils.trmsg("editing.create")}
+                        ];
+                        return (<ButtonBar buttons={featurebuttons} onClick={(action) => this.props.editRelationRecord(action, reltable, reldataset, index)} />);
+                    }
                 } else {
-                    const featurebuttons = [
-                        {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick")},
-                        {key: 'Create', icon: 'draw', label: LocaleUtils.trmsg("editing.draw")}
-                    ];
-                    return (<ButtonBar buttons={featurebuttons} onClick={(action) => this.props.switchEditContext(":" + layer, action, layer, null, (v) => updateField(attrname, v))} />);
+                    if (value !== undefined) {
+                        const featurebuttons = [
+                            {key: 'Edit', icon: 'editing', label: String(value)}
+                        ];
+                        return (
+                            <div className="qt-designer-form-featurelink-buttons">
+                                <ButtonBar buttons={featurebuttons} onClick={() => this.props.switchEditContext('Edit', layer, value, (v) => updateField(attrname, v))} />
+                                <button className="button" onClick={() => updateField(attrname, null)} type="button"><Icon icon="clear" /></button>
+                            </div>
+                        );
+                    } else {
+                        const featurebuttons = [
+                            {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick")},
+                            {key: 'Create', icon: 'draw', label: LocaleUtils.trmsg("editing.draw")}
+                        ];
+                        return (<ButtonBar buttons={featurebuttons} onClick={(action) => this.props.switchEditContext(action, layer, null, (v) => updateField(attrname, v))} />);
+                    }
                 }
             }
         }
@@ -382,7 +405,9 @@ class QtDesignerForm extends React.Component {
                                     properties: Object.entries(feature.properties).reduce((res, [key, value]) => ( {...res, [tablename + "__" + key]: value}), {})
                                 };
                                 let statusIcon = null;
-                                if (status === "new") {
+                                if (status === "empty") {
+                                    // Pass
+                                } else if (status === "new") {
                                     statusIcon = "new";
                                 } else if (status) {
                                     statusIcon = "edited";

@@ -88,6 +88,7 @@
       "capturedpicture": "Aufgenommenes Bild",
       "clearpicture": "Zurücksetzen",
       "commit": "Speichern",
+      "create": "Erstellen",
       "delete": "Löschen",
       "discard": "Abbrechen",
       "draw": "Zeichnen",
@@ -174,8 +175,8 @@
     },
     "linkfeatureform": {
       "cancel": "Abbrechen",
+      "close": "Schliessen",
       "drawhint": "Objekt auf der Karte zeichnen...",
-      "finish": "Abschliessen",
       "pickhint": "Objekt auf der Karte auswählen..."
     },
     "locate": {
