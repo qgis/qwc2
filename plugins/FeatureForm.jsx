@@ -180,7 +180,7 @@ class FeatureForm extends React.Component {
 export default (iface = EditingInterface) => {
     return connect((state) => ({
         click: state.map.click || {modifiers: {}},
-        enabled: state.task.id === "FeatureForm",
+        enabled: state.task.id === "FeatureForm" || state.identify.tool === "FeatureForm",
         editContext: state.editing.contexts.FeatureForm || {},
         currentEditContext: state.editing.currentContext,
         iface: iface,
