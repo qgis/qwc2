@@ -46,7 +46,8 @@ class AttributeForm extends React.Component {
     state = {
         busy: false,
         deleteClicked: false,
-        childEdit: null
+        childEdit: null,
+        relationTables: {}
     }
     componentDidUpdate(prevProps) {
         if (prevProps.editContext.changed !== this.props.editContext.changed) {
@@ -149,20 +150,20 @@ class AttributeForm extends React.Component {
                 this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
             }));
         }
+        this.setState({relationTables: relationTables});
     }
     addRelationRecord = (table) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
-        if (!newRelationValues[table]) {
-            newRelationValues[table] = {
-                fk: this.state.relationTables[table],
-                features: []
-            };
-        }
-        newRelationValues[table].features = newRelationValues[table].features.concat([{
+        const newRelFeature = {
             __status__: "new",
             type: "Feature",
             properties: {}
-        }]);
+        };
+        // If feature id is known, i.e. not when drawing new feature, set foreign key
+        if (this.props.editContext.action !== "Draw") {
+            newRelFeature.properties[this.state.relationTables[table]] = this.props.editContext.feature.id;
+        }
+        newRelationValues[table].features = newRelationValues[table].features.concat([newRelFeature]);
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
     }
@@ -298,10 +299,14 @@ class AttributeForm extends React.Component {
         // Commit relations
         if (!isEmpty(relationValues)) {
 
-            // Set CRS
+            // Set CRS and foreign key
             Object.keys(relationValues).forEach(relTable => {
                 relationValues[relTable].features = relationValues[relTable].features.filter(relFeature => relFeature.__status__ !== "empty").map(relFeature => ({
                     ...relFeature,
+                    properties: {
+                        ...relFeature.properties,
+                        [this.state.relationTables[relTable]]: newFeature.id
+                    },
                     crs: {
                         type: "name",
                         properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.projection)}
