@@ -105,7 +105,7 @@ class QtDesignerForm extends React.Component {
         let containerClass = "";
         let itemStyle = () => ({});
         let containerStyle = {};
-        if (layout.class === "QGridLayout") {
+        if (layout.class === "QGridLayout" || layout.class === "QFormLayout") {
             containerClass = "qt-designer-layout-grid";
             containerStyle = {
                 gridTemplateColumns: this.computeLayoutColumns(layout.item).join(" ")
