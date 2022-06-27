@@ -97,11 +97,11 @@ class QtDesignerForm extends React.Component {
         const root = this.state.formData;
         return (
             <div className="qt-designer-form">
-                {this.renderLayout(root.layout, this.props.feature.properties, this.props.editLayerId, this.props.updateField)}
+                {this.renderLayout(root.layout, this.props.feature, this.props.editLayerId, this.props.updateField)}
             </div>
         );
     }
-    renderLayout = (layout, values, dataset, updateField, nametransform = (name) => name) => {
+    renderLayout = (layout, feature, dataset, updateField, nametransform = (name) => name) => {
         let containerClass = "";
         let itemStyle = () => ({});
         let containerStyle = {};
@@ -134,9 +134,9 @@ class QtDesignerForm extends React.Component {
                 {layout.item.map((item, idx) => {
                     let child = null;
                     if (item.widget) {
-                        child = this.renderWidget(item.widget, values, dataset, updateField, nametransform);
+                        child = this.renderWidget(item.widget, feature, dataset, updateField, nametransform);
                     } else if (item.layout) {
-                        child = this.renderLayout(item.layout, values, dataset, updateField, nametransform);
+                        child = this.renderLayout(item.layout, feature, dataset, updateField, nametransform);
                     } else {
                         return null;
                     }
@@ -171,8 +171,8 @@ class QtDesignerForm extends React.Component {
         }
         return columns;
     }
-    renderWidget = (widget, values, dataset, updateField, nametransform = (name) => name) => {
-        let value = (values || {})[widget.name] ?? "";
+    renderWidget = (widget, feature, dataset, updateField, nametransform = (name) => name) => {
+        let value = (feature.properties || {})[widget.name] ?? "";
         const prop = widget.property || {};
         const attr = widget.attribute || {};
         const fieldConstraints = (this.props.fields[widget.name] || {}).constraints || {};
@@ -198,7 +198,7 @@ class QtDesignerForm extends React.Component {
         } else if (widget.class === "QFrame") {
             return (
                 <div className="qt-designer-form-frame">
-                    {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, values, dataset, updateField, nametransform)}
+                    {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, feature, dataset, updateField, nametransform)}
                 </div>
             );
         } else if (widget.class === "QGroupBox") {
@@ -206,7 +206,7 @@ class QtDesignerForm extends React.Component {
                 <div>
                     <div className="qt-designer-form-frame-title">{prop.title}</div>
                     <div className="qt-designer-form-frame">
-                        {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, values, dataset, updateField, nametransform)}
+                        {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, feature, dataset, updateField, nametransform)}
                     </div>
                 </div>
             );
@@ -230,7 +230,7 @@ class QtDesignerForm extends React.Component {
                         ))}
                     </div>
                     <div className="qt-designer-form-frame">
-                        {this.renderLayout(activewidget.layout, values, dataset, updateField, nametransform)}
+                        {this.renderLayout(activewidget.layout, feature, dataset, updateField, nametransform)}
                     </div>
                 </div>
             );
@@ -239,7 +239,7 @@ class QtDesignerForm extends React.Component {
         } else if (widget.class === "QLineEdit") {
             if (widget.name.endsWith("__upload")) {
                 const fieldId = widget.name.replace(/__upload/, '');
-                const uploadValue = ((values || {})[fieldId] || "");
+                const uploadValue = ((feature.properties || {})[fieldId] || "");
                 const uploadElName = elname.replace(/__upload/, '');
                 const constraints = {accept: prop.text || ""};
                 return (<EditUploadField constraints={constraints} dataset={dataset} disabled={inputConstraints.readOnly} fieldId={fieldId} name={uploadElName} updateField={updateField} value={uploadValue} />);
@@ -264,7 +264,7 @@ class QtDesignerForm extends React.Component {
                 const count = parts.length;
                 const attrname = parts.slice(1, count - 3).join("__");
                 const comboFieldConstraints = (this.props.fields[attrname] || {}).constraints || {};
-                value = (values || [])[attrname] ?? "";
+                value = (feature.properties || [])[attrname] ?? "";
                 const fieldId = parts.slice(1, count - 3).join("__");
                 const keyvalrel = this.props.mapPrefix + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
                 return (
@@ -319,7 +319,7 @@ class QtDesignerForm extends React.Component {
             if (widget.name.startsWith("nrel__")) {
                 return this.renderNRelation(widget);
             } else {
-                return this.renderLayout(widget.layout, values, dataset, updateField, nametransform);
+                return this.renderLayout(widget.layout, feature, dataset, updateField, nametransform);
             }
         } else if (widget.class === "QPushButton" && widget.name.startsWith("featurelink__")) {
             const parts = widget.name.split("__");
@@ -328,7 +328,7 @@ class QtDesignerForm extends React.Component {
             if (parts.length === 3 || parts.length === 4 ) {
                 const layer = parts[1];
                 const attrname = parts.slice(2).join("__");
-                value = (values || [])[attrname] ?? "";
+                value = (feature.properties || {})[attrname] ?? "";
                 if (value) {
                     const featurebuttons = [
                         {key: 'Edit', icon: 'editing', label: String(value)}
@@ -377,7 +377,10 @@ class QtDesignerForm extends React.Component {
                                 };
                                 const nametransform = (name) => (name + "__" + idx);
                                 const status = feature.__status__ || "";
-                                const values = Object.entries(feature.properties).reduce((res, [key, value]) => ( {...res, [tablename + "__" + key]: value}), {});
+                                const relFeature = {
+                                    ...feature,
+                                    properties: Object.entries(feature.properties).reduce((res, [key, value]) => ( {...res, [tablename + "__" + key]: value}), {})
+                                };
                                 let statusIcon = null;
                                 if (status === "new") {
                                     statusIcon = "new";
@@ -395,7 +398,7 @@ class QtDesignerForm extends React.Component {
                                     <tr className={"qt-designer-widget-relation-record " + extraClass} key={datasetname + idx}>
                                         <td>{statusIcon ? (<Icon icon={statusIcon} title={statusText} />) : null}</td>
                                         {widgetItems.map(item => (
-                                            <td className="qt-designer-widget-relation-row-widget" key={item.widget.name}>{this.renderWidget(item.widget, values, datasetname, updateField, nametransform)}</td>
+                                            <td className="qt-designer-widget-relation-row-widget" key={item.widget.name}>{this.renderWidget(item.widget, relFeature, datasetname, updateField, nametransform)}</td>
                                         ))}
                                         {!this.props.readOnly ? (
                                             <td>
