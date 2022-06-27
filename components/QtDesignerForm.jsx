@@ -181,7 +181,9 @@ class QtDesignerForm extends React.Component {
         inputConstraints.required = !inputConstraints.readOnly && (prop.required === "true" || fieldConstraints.required === true);
         inputConstraints.placeholder = prop.placeholderText || fieldConstraints.placeholder || "";
 
-        const elname = nametransform(widget.name);
+        const elname = widget.name.startsWith("ext__") ? undefined : nametransform(widget.name);
+        updateField = widget.name.startsWith("ext__") ? null : updateField;
+
         if (widget.class === "QLabel") {
             const fontProps = widget.property.font || {};
             const style = {
