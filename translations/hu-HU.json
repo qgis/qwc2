@@ -88,6 +88,7 @@
       "capturedpicture": "",
       "clearpicture": "",
       "commit": "Jóváhagyás",
+      "create": "",
       "delete": "Törlés",
       "discard": "Elvetés",
       "draw": "Rajzolás",
@@ -174,8 +175,8 @@
     },
     "linkfeatureform": {
       "cancel": "",
+      "close": "",
       "drawhint": "",
-      "finish": "",
       "pickhint": ""
     },
     "locate": {

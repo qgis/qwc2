@@ -29,6 +29,7 @@ class AttributeForm extends React.Component {
         deleteMsgId: PropTypes.string,
         editConfig: PropTypes.object,
         editContext: PropTypes.object,
+        hideCommitBar: PropTypes.bool,
         iface: PropTypes.object,
         map: PropTypes.object,
         newfeature: PropTypes.bool,
@@ -45,7 +46,8 @@ class AttributeForm extends React.Component {
     state = {
         busy: false,
         deleteClicked: false,
-        childEdit: null
+        childEdit: null,
+        relationTables: {}
     }
     componentDidUpdate(prevProps) {
         if (prevProps.editContext.changed !== this.props.editContext.changed) {
@@ -60,7 +62,7 @@ class AttributeForm extends React.Component {
     }
     render = () => {
         let commitBar = null;
-        if (this.props.editContext.changed) {
+        if (this.props.editContext.changed && !this.props.hideCommitBar) {
             const commitButtons = [
                 {key: 'Commit', icon: 'ok', label: LocaleUtils.trmsg("editing.commit"), extraClasses: "attrib-form-commit", type: "submit"},
                 {key: 'Discard', icon: 'remove', label: LocaleUtils.trmsg("editing.discard"), extraClasses: "attrib-form-discard"}
@@ -73,7 +75,7 @@ class AttributeForm extends React.Component {
         const readOnly = editPermissions.updatable === false;
 
         let deleteBar = null;
-        if (!this.props.newfeature && this.props.editContext.feature && !this.props.editContext.changed && editPermissions.deletable !== false) {
+        if (!this.props.newfeature && this.props.editContext.feature && !this.props.editContext.changed && editPermissions.deletable !== false && !this.props.hideCommitBar) {
             // Delete button bar will appear by default if no permissions are defined in editConfig or when deletable permission is set
             if (!this.state.deleteClicked) {
                 const deleteButtons = [
@@ -96,7 +98,7 @@ class AttributeForm extends React.Component {
         if (this.state.childEdit) {
             childAttributeForm = (
                 <div className="link-feature-form-container">
-                    <LinkFeatureForm {...this.state.childEdit} finished={this.finishChildEdit} iface={this.props.iface} />
+                    <LinkFeatureForm {...this.state.childEdit} finished={this.state.childEdit.finishCallback} iface={this.props.iface} />
                 </div>
             );
         }
@@ -107,7 +109,8 @@ class AttributeForm extends React.Component {
                 ) : null}
                 <form action="" onSubmit={this.onSubmit}>
                     {this.props.editConfig.form ? (
-                        <QtDesignerForm addRelationRecord={this.addRelationRecord} editLayerId={this.props.editConfig.editDataset} feature={this.props.editContext.feature}
+                        <QtDesignerForm addRelationRecord={this.addRelationRecord} editLayerId={this.props.editConfig.editDataset}
+                            editRelationRecord={this.editRelationRecord} feature={this.props.editContext.feature}
                             featureChanged={this.props.editContext.changed} fields={this.fieldsMap(this.props.editConfig.fields)}
                             form={this.props.editConfig.form} iface={this.props.iface} loadRelationValues={this.loadRelationValues}
                             mapPrefix={this.editMapPrefix()} readOnly={readOnly} relationValues={this.props.editContext.feature.relationValues}
@@ -140,40 +143,42 @@ class AttributeForm extends React.Component {
         return (this.props.editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
     }
     loadRelationValues = (relationTables) => {
-        const mapPrefix = this.editMapPrefix();
-        const relTables = Object.entries(relationTables).map(([name, fk]) => mapPrefix + name + ":" + fk).join(",");
-        const feature = this.props.editContext.feature;
-        this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, (response => {
-            const relationValues = this.unprefixRelationValues(response.relationvalues, mapPrefix);
-            const newFeature = {...feature, relationValues: relationValues};
-            this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
-        }));
+        if (!isEmpty(relationTables)) {
+            const relTables = Object.entries(relationTables).map(([name, fk]) => name + ":" + fk).join(",");
+            const feature = this.props.editContext.feature;
+            this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, this.props.map.projection, (response => {
+                const newFeature = {...feature, relationValues: response.relationvalues};
+                this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
+            }));
+        }
+        this.setState({relationTables: relationTables});
     }
     addRelationRecord = (table) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
-        if (!newRelationValues[table]) {
-            newRelationValues[table] = {
-                fk: this.state.relationTables[table],
-                records: []
-            };
+        const newRelFeature = {
+            __status__: "empty",
+            type: "Feature",
+            properties: {}
+        };
+        // If feature id is known, i.e. not when drawing new feature, set foreign key
+        if (this.props.editContext.action !== "Draw") {
+            newRelFeature.properties[this.state.relationTables[table]] = this.props.editContext.feature.id;
         }
-        newRelationValues[table].records = newRelationValues[table].records.concat([{
-            __status__: "new"
-        }]);
+        newRelationValues[table].features = newRelationValues[table].features.concat([newRelFeature]);
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
     }
     removeRelationRecord = (table, idx) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
         newRelationValues[table] = {...newRelationValues[table]};
-        newRelationValues[table].records = newRelationValues[table].records.slice(0);
-        const fieldStatus = newRelationValues[table].records[idx].__status__ || "";
+        newRelationValues[table].features = newRelationValues[table].features.slice(0);
+        const fieldStatus = newRelationValues[table].features[idx].__status__ || "";
         // If field was new, delete it directly, else mark it as deleted
-        if (fieldStatus === "new") {
-            newRelationValues[table].records.splice(idx, 1);
+        if (fieldStatus === "new" || fieldStatus === "empty") {
+            newRelationValues[table].features.splice(idx, 1);
         } else {
-            newRelationValues[table].records[idx] = {
-                ...newRelationValues[table].records[idx],
+            newRelationValues[table].features[idx] = {
+                ...newRelationValues[table].features[idx],
                 __status__: fieldStatus.startsWith("deleted") ? fieldStatus.substr(8) : "deleted:" + fieldStatus
             };
         }
@@ -183,42 +188,56 @@ class AttributeForm extends React.Component {
     updateRelationField = (table, idx, key, value) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
         newRelationValues[table] = {...newRelationValues[table]};
-        newRelationValues[table].records = newRelationValues[table].records.slice(0);
-        newRelationValues[table].records[idx] = {
-            ...newRelationValues[table].records[idx],
-            [key]: value,
-            __status__: newRelationValues[table].records[idx].__status__ === "new" ? "new" : "changed"
+        newRelationValues[table].features = newRelationValues[table].features.slice(0);
+        newRelationValues[table].features[idx] = {
+            ...newRelationValues[table].features[idx],
+            properties: {
+                ...newRelationValues[table].features[idx].properties,
+                [key]: value
+            },
+            __status__: newRelationValues[table].features[idx].__status__ === "new" ? "new" : "changed"
         };
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
     }
-    unprefixRelationValues = (relationValues, mapPrefix) => {
-        if (!mapPrefix) {
-            return relationValues;
-        }
-        const mapPrefixRe = new RegExp("^" + mapPrefix);
-        return Object.entries(relationValues || {}).reduce((res, [table, value]) => {
-            const tblname = table.replace(mapPrefixRe, "");
-            value.records = (value.records || []).map(record => Object.entries(record).reduce((result, [key, val]) => {
-                result[key.replace(table, tblname)] = val;
-                return result;
-            }, {}));
-            res[tblname] = value;
-            return res;
-        }, {});
+    editRelationRecord = (action, layer, dataset, idx) => {
+        const editConfig = (this.props.theme.editConfig || {})[layer];
+        const feature = this.props.editContext.feature.relationValues[dataset].features[idx];
+        this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, dataset, idx, feature, finishCallback: this.finishEditRelationRecord}});
     }
-    prefixRelationValues = (relationValues, mapPrefix) => {
-        if (!mapPrefix) {
-            return relationValues;
+    finishEditRelationRecord = (feature, changed) => {
+        this.props.clearEditContext(this.state.childEdit.editContextId, this.props.editContext.id);
+        if (feature) {
+            const table = this.state.childEdit.dataset;
+            const idx = this.state.childEdit.idx;
+            const newRelationValues = {...this.props.editContext.feature.relationValues};
+            // Foreign key will be set below
+            changed = changed || (feature.properties[this.state.relationTables[table]] !== this.props.editContext.feature.id);
+            let status = newRelationValues[table].features[idx].__status__;
+            if (status === "empty") {
+                status = "new";
+            } else if (changed && status !== "new") {
+                status = "changed";
+            }
+            newRelationValues[table] = {...newRelationValues[table]};
+            newRelationValues[table].features = newRelationValues[table].features.slice(0);
+            newRelationValues[table].features[idx] = {
+                ...feature,
+                properties: {
+                    ...feature.properties,
+                    [this.state.relationTables[table]]: this.props.editContext.feature.id
+                },
+                __status__: status
+            };
+            // If feature id is known, i.e. not when drawing new feature, set foreign key
+            if (this.props.editContext.action !== "Draw") {
+                newRelationValues[table].features[idx].properties[this.state.relationTables[table]] = this.props.editContext.feature.id;
+            }
+            const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
+            this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: this.props.editContext.changed || changed});
         }
-        return Object.entries(relationValues).reduce((res, [table, value]) => {
-            value.records = (value.records || []).map(record => Object.entries(record).reduce((result, [key, val]) => {
-                result[key.startsWith("__") || key === "id" ? key : mapPrefix + key] = val;
-                return result;
-            }, {}));
-            res[mapPrefix + table] = value;
-            return res;
-        }, {});
+
+        this.setState({childEdit: null});
     }
     onDiscard = (action) => {
         if (action === "Discard") {
@@ -248,6 +267,7 @@ class AttributeForm extends React.Component {
         };
 
         const curConfig = this.props.editConfig;
+        const mapPrefix = this.editMapPrefix();
 
         // Keep relation values separate
         const relationValues = clone(feature.relationValues || {});
@@ -271,11 +291,15 @@ class AttributeForm extends React.Component {
                 const parts = name.split("__");
                 if (parts.length >= 3) {
                     // Usually <table>__<field>__<index>, but <field> might also contain __ (i.e. upload__user)
-                    const table = parts[0];
+                    const tablename = parts[0];
+                    const datasetname = mapPrefix + tablename;
                     const field = parts.slice(1, parts.length - 1).join("__");
                     const index = parseInt(parts[parts.length - 1], 10);
                     // relationValues for table must exist as rows are either pre-existing or were added
-                    relationValues[table].records[index][table + "__" + field] = value;
+                    relationValues[datasetname].features[index].properties[field] = value;
+                    if (relationValues[datasetname].features[index].__status__ === "empty") {
+                        relationValues[datasetname].features[index].__status__ = "new";
+                    }
                     if (element.type === "file" && element.files.length > 0) {
                         relationUploads[name] = element.files[0];
                     } else if (element.type === "hidden" && element.value.startsWith("data:")) {
@@ -311,35 +335,48 @@ class AttributeForm extends React.Component {
     }
     featureCommited = (success, result, relationValues, relationUploads) => {
         if (!success) {
-            this.commitFinished(success, result);
+            this.commitFinished(false, result);
             return;
         }
         let newFeature = result;
         // Commit relations
         if (!isEmpty(relationValues)) {
-            // Prefix relation tables and fields
+
+            // Set CRS and foreign key
+            Object.keys(relationValues).forEach(relTable => {
+                relationValues[relTable].features = relationValues[relTable].features.filter(relFeature => relFeature.__status__ !== "empty").map(relFeature => ({
+                    ...relFeature,
+                    properties: {
+                        ...relFeature.properties,
+                        [this.state.relationTables[relTable]]: newFeature.id
+                    },
+                    crs: {
+                        type: "name",
+                        properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.projection)}
+                    }
+                }));
+            });
+
             const mapPrefix = this.editMapPrefix();
-            relationValues = this.prefixRelationValues(relationValues, mapPrefix);
             const relationData = new FormData();
             relationData.set('values', JSON.stringify(relationValues));
             Object.entries(relationUploads).forEach(([key, value]) => relationData.set(mapPrefix + key, value));
 
-            this.props.iface.writeRelations(this.props.editConfig.editDataset, newFeature.id, relationData, (relResult, errorMsg) => {
+            this.props.iface.writeRelations(this.props.editConfig.editDataset, newFeature.id, relationData, this.props.map.projection, (relResult, errorMsg) => {
                 if (relResult === false) {
                     this.commitFinished(false, errorMsg);
                 } else if (relResult.success !== true) {
-                    console.log(relResult);
                     // Relation values commit failed, switch to pick update relation values with response and switch to pick to
                     // to avoid adding feature again on next attempt
                     this.commitFinished(false, LocaleUtils.tr("editing.relationcommitfailed"));
-                    newFeature = {...newFeature, relationValues: this.unprefixRelationValues(relResult.relationvalues, mapPrefix)};
+                    newFeature = {...newFeature, relationValues: relResult.relationvalues};
                     this.props.setEditContext(this.props.editContext.id, {action: "Pick", feature: newFeature, changed: true});
                 } else {
-                    this.commitFinished(true, result);
+                    this.commitFinished(true, newFeature);
                 }
             });
         } else {
-            this.commitFinished(success, result);
+            this.commitFinished(true, newFeature);
         }
     }
     deleteClicked = () => {
@@ -388,14 +425,14 @@ class AttributeForm extends React.Component {
         }
         return new Blob([ia], {type: mimeString});
     }
-    startChildEdit = (editContextId, action, layer, featureId, updateField) => {
+    startChildEdit = (action, layer, featureId, updateField) => {
         const editConfig = (this.props.theme.editConfig || {})[layer];
-        this.setState({childEdit: {action, editConfig, editContextId, featureId, updateField}});
+        this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, featureId, updateField, finishCallback: this.finishChildEdit}});
     }
-    finishChildEdit = (featureId) => {
+    finishChildEdit = (feature) => {
         this.props.clearEditContext(this.state.childEdit.editContextId, this.props.editContext.id);
-        if (featureId !== this.state.childEdit.featureId) {
-            this.state.childEdit.updateField(featureId);
+        if (feature && feature.id !== this.state.childEdit.featureId) {
+            this.state.childEdit.updateField(feature.id);
         }
         this.setState({childEdit: null});
     }

@@ -23,6 +23,7 @@ class LinkFeatureForm extends React.Component {
         editConfig: PropTypes.object,
         editContextId: PropTypes.string,
         editing: PropTypes.object,
+        feature: PropTypes.object,
         featureId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         finished: PropTypes.func,
         iface: PropTypes.object,
@@ -37,13 +38,21 @@ class LinkFeatureForm extends React.Component {
     }
     componentDidMount() {
         if (this.props.action === 'Edit') {
-            this.props.iface.getFeatureById(this.props.editConfig.editDataset, this.props.featureId, this.props.map.projection, (result) => {
-                if (result) {
-                    this.props.setEditContext(this.props.editContextId, {action: 'Pick', feature: result, geomType: this.props.editConfig.geomType});
-                }
-            });
+            if (this.props.feature) {
+                this.props.setEditContext(this.props.editContextId, {action: 'Pick', feature: this.props.feature, geomType: this.props.editConfig.geomType});
+            } else {
+                this.props.iface.getFeatureById(this.props.editConfig.editDataset, this.props.featureId, this.props.map.projection, (result) => {
+                    if (result) {
+                        this.props.setEditContext(this.props.editContextId, {action: 'Pick', feature: result, geomType: this.props.editConfig.geomType});
+                    }
+                });
+            }
         } else if (this.props.action === 'Create') {
-            this.props.setEditContext(this.props.editContextId, {action: 'Draw', geomType: this.props.editConfig.geomType});
+            const featureTemplate = {
+                properties: {},
+                ...this.props.feature
+            };
+            this.props.setEditContext(this.props.editContextId, {action: 'Draw', geomType: this.props.editConfig.geomType, feature: featureTemplate});
         } else if (this.props.action === 'Pick') {
             this.props.setEditContext(this.props.editContextId, {action: null});
         }
@@ -86,7 +95,7 @@ class LinkFeatureForm extends React.Component {
                 </div>
             );
         } else {
-            const drawing = (editContext.action === 'Draw' && !editContext.feature);
+            const drawing = (editContext.action === 'Draw' && !editContext.feature.geometry && this.props.editConfig.geomType);
 
             return (
                 <div className="link-feature-form">
@@ -96,12 +105,12 @@ class LinkFeatureForm extends React.Component {
                         </div>
                     ) : (
                         <AttributeForm editConfig={this.props.editConfig} editContext={editContext}
-                            iface={this.props.iface} newfeature={editContext.action === 'Draw'}
+                            hideCommitBar={!!this.props.feature} iface={this.props.iface} newfeature={editContext.action === 'Draw'}
                         />
                     )}
                     <div className="link-feature-form-close">
-                        <button className="button" disabled={editContext.changed} onClick={this.finish}>
-                            {drawing ? LocaleUtils.tr("linkfeatureform.cancel") : LocaleUtils.tr("linkfeatureform.finish")}
+                        <button className="button" disabled={!this.props.feature && editContext.changed} onClick={this.finish}>
+                            {drawing ? LocaleUtils.tr("linkfeatureform.cancel") : LocaleUtils.tr("linkfeatureform.close")}
                         </button>
                     </div>
                 </div>
@@ -113,7 +122,7 @@ class LinkFeatureForm extends React.Component {
         this.props.iface.getFeature(this.props.editConfig.editDataset, coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
             const features = featureCollection ? featureCollection.features : null;
             if (features.length === 1) {
-                this.props.finished(features[0].id);
+                this.props.finished(features[0], false);
             } else {
                 this.setState({pickedFeatures: features});
             }
@@ -121,7 +130,7 @@ class LinkFeatureForm extends React.Component {
     }
     finish = () => {
         const editContext = this.props.editing.contexts[this.props.editContextId];
-        this.props.finished((editContext.feature || {}).id ?? null);
+        this.props.finished(editContext.feature, editContext.changed);
     }
     hoverFeature = (feature) => {
         const layer = {
@@ -139,7 +148,7 @@ class LinkFeatureForm extends React.Component {
     }
     pickFeatureSelected = (feature) => {
         this.unhoverFeature(feature);
-        this.props.finished(feature.id);
+        this.props.finished(feature, false);
     }
 }
 
