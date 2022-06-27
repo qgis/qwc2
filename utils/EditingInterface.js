@@ -57,13 +57,17 @@ function buildErrMsg(err) {
 */
 function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
+    const req = SERVICE_URL + layerId;
 
     // 10px tolerance
     const tol = (10.0 / dpi) * 0.0254 * mapScale;
     const bbox = (mapPos[0] - tol) + "," + (mapPos[1] - tol) + "," + (mapPos[0] + tol) + "," + (mapPos[1] + tol);
 
-    const req = SERVICE_URL + layerId + '/?bbox=' + bbox + '&crs=' + mapCrs;
-    axios.get(req).then(response => {
+    const params = {
+        bbox: bbox,
+        crs: mapCrs
+    };
+    axios.get(req, {params}).then(response => {
         if (response.data && !isEmpty(response.data.features)) {
             callback(response.data);
         } else {
@@ -80,8 +84,11 @@ function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback) {
 */
 function getFeatureById(layerId, featureId, mapCrs, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
-    const req = SERVICE_URL + layerId + '/' + featureId + '?crs=' + mapCrs;
-    axios.get(req).then(response => {
+    const req = SERVICE_URL + layerId + '/' + featureId;
+    const params = {
+        crs: mapCrs
+    };
+    axios.get(req, {params}).then(response => {
         callback(response.data);
     }).catch(() => callback(null));
 }
@@ -92,8 +99,11 @@ function getFeatureById(layerId, featureId, mapCrs, callback) {
 */
 function getFeatures(layerId, mapCrs, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
-    const req = SERVICE_URL + layerId + '/?crs=' + mapCrs;
-    axios.get(req).then(response => {
+    const req = SERVICE_URL + layerId;
+    const params = {
+        crs: mapCrs
+    };
+    axios.get(req, {params}).then(response => {
         if (response.data && !isEmpty(response.data.features)) {
             callback(response.data);
         } else {
