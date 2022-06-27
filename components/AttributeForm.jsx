@@ -29,6 +29,7 @@ class AttributeForm extends React.Component {
         deleteMsgId: PropTypes.string,
         editConfig: PropTypes.object,
         editContext: PropTypes.object,
+        hideCommitBar: PropTypes.bool,
         iface: PropTypes.object,
         map: PropTypes.object,
         newfeature: PropTypes.bool,
@@ -60,7 +61,7 @@ class AttributeForm extends React.Component {
     }
     render = () => {
         let commitBar = null;
-        if (this.props.editContext.changed) {
+        if (this.props.editContext.changed && !this.props.hideCommitBar) {
             const commitButtons = [
                 {key: 'Commit', icon: 'ok', label: LocaleUtils.trmsg("editing.commit"), extraClasses: "attrib-form-commit", type: "submit"},
                 {key: 'Discard', icon: 'remove', label: LocaleUtils.trmsg("editing.discard"), extraClasses: "attrib-form-discard"}
@@ -73,7 +74,7 @@ class AttributeForm extends React.Component {
         const readOnly = editPermissions.updatable === false;
 
         let deleteBar = null;
-        if (!this.props.newfeature && this.props.editContext.feature && !this.props.editContext.changed && editPermissions.deletable !== false) {
+        if (!this.props.newfeature && this.props.editContext.feature && !this.props.editContext.changed && editPermissions.deletable !== false && !this.props.hideCommitBar) {
             // Delete button bar will appear by default if no permissions are defined in editConfig or when deletable permission is set
             if (!this.state.deleteClicked) {
                 const deleteButtons = [
