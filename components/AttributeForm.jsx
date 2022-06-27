@@ -335,7 +335,7 @@ class AttributeForm extends React.Component {
     }
     featureCommited = (success, result, relationValues, relationUploads) => {
         if (!success) {
-            this.commitFinished(success, result);
+            this.commitFinished(false, result);
             return;
         }
         let newFeature = result;
@@ -372,11 +372,11 @@ class AttributeForm extends React.Component {
                     newFeature = {...newFeature, relationValues: relResult.relationvalues};
                     this.props.setEditContext(this.props.editContext.id, {action: "Pick", feature: newFeature, changed: true});
                 } else {
-                    this.commitFinished(true, result);
+                    this.commitFinished(true, newFeature);
                 }
             });
         } else {
-            this.commitFinished(success, result);
+            this.commitFinished(true, newFeature);
         }
     }
     deleteClicked = () => {
