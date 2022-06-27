@@ -468,7 +468,7 @@ class QtDesignerForm extends React.Component {
 
         const parts = widget.name.split("__");
         if (parts.length === 3 && parts[0] === "nrel") {
-            relationTables[parts[1]] = parts[2];
+            relationTables[this.props.mapPrefix + parts[1]] = parts[2];
         }
     }
     reformatLayout = (layout, relationTables) => {

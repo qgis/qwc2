@@ -141,13 +141,14 @@ class AttributeForm extends React.Component {
         return (this.props.editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
     }
     loadRelationValues = (relationTables) => {
-        const mapPrefix = this.editMapPrefix();
-        const relTables = Object.entries(relationTables).map(([name, fk]) => mapPrefix + name + ":" + fk).join(",");
-        const feature = this.props.editContext.feature;
-        this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, this.props.map.projection, (response => {
-            const newFeature = {...feature, relationValues: response.relationvalues};
-            this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
-        }));
+        if (!isEmpty(relationTables)) {
+            const relTables = Object.entries(relationTables).map(([name, fk]) => name + ":" + fk).join(",");
+            const feature = this.props.editContext.feature;
+            this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, this.props.map.projection, (response => {
+                const newFeature = {...feature, relationValues: response.relationvalues};
+                this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
+            }));
+        }
     }
     addRelationRecord = (table) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
