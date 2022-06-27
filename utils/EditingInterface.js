@@ -148,20 +148,27 @@ function deleteFeature(layerId, featureId, callback) {
     }).catch(err => callback(false, buildErrMsg(err)));
 }
 
-function getRelations(layerId, featureId, tables, callback) {
+function getRelations(layerId, featureId, tables, mapCrs, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
-    const req = SERVICE_URL + layerId + '/' + featureId + "/relations?tables=" + tables;
-    axios.get(req).then(response => {
+    const req = SERVICE_URL + layerId + '/' + featureId + "/relations";
+    const params = {
+        tables: tables,
+        crs: mapCrs
+    };
+    axios.get(req, {params}).then(response => {
         callback(response.data);
     }).catch(() => callback({}));
 }
 
-function writeRelations(layerId, featureId, relationData, callback) {
+function writeRelations(layerId, featureId, relationData, mapCrs, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
     const req = SERVICE_URL + layerId + '/' + featureId + "/relations";
-
+    const params = {
+        crs: mapCrs
+    };
     axios.post(req, relationData, {
-        headers: {'Content-Type': 'multipart/form-data' }
+        headers: {'Content-Type': 'multipart/form-data'},
+        params: params
     }).then(response => {
         callback(response.data);
     }).catch(err => callback(false, buildErrMsg(err)));

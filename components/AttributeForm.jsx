@@ -143,7 +143,7 @@ class AttributeForm extends React.Component {
         const mapPrefix = this.editMapPrefix();
         const relTables = Object.entries(relationTables).map(([name, fk]) => mapPrefix + name + ":" + fk).join(",");
         const feature = this.props.editContext.feature;
-        this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, (response => {
+        this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, this.props.map.projection, (response => {
             const newFeature = {...feature, relationValues: response.relationvalues};
             this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
         }));
@@ -295,13 +295,24 @@ class AttributeForm extends React.Component {
         let newFeature = result;
         // Commit relations
         if (!isEmpty(relationValues)) {
-            // Prefix relation tables and fields
+
+            // Set CRS
+            Object.keys(relationValues).forEach(relTable => {
+                relationValues[relTable].features = relationValues[relTable].features.filter(relFeature => relFeature.__status__ !== "empty").map(relFeature => ({
+                    ...relFeature,
+                    crs: {
+                        type: "name",
+                        properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.projection)}
+                    }
+                }));
+            });
+
             const mapPrefix = this.editMapPrefix();
             const relationData = new FormData();
             relationData.set('values', JSON.stringify(relationValues));
             Object.entries(relationUploads).forEach(([key, value]) => relationData.set(mapPrefix + key, value));
 
-            this.props.iface.writeRelations(this.props.editConfig.editDataset, newFeature.id, relationData, (relResult, errorMsg) => {
+            this.props.iface.writeRelations(this.props.editConfig.editDataset, newFeature.id, relationData, this.props.map.projection, (relResult, errorMsg) => {
                 if (relResult === false) {
                     this.commitFinished(false, errorMsg);
                 } else if (relResult.success !== true) {
