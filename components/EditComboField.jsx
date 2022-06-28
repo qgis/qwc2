@@ -60,6 +60,7 @@ export default class EditComboField extends React.Component {
         name: PropTypes.string,
         readOnly: PropTypes.bool,
         required: PropTypes.bool,
+        style: PropTypes.object,
         updateField: PropTypes.func,
         value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         values: PropTypes.array
@@ -82,7 +83,7 @@ export default class EditComboField extends React.Component {
         return (
             <select disabled={this.props.readOnly} name={this.props.name}
                 onChange={ev => this.props.updateField(this.props.fieldId, ev.target.value)}
-                required={this.props.required} value={String(this.props.value)}
+                required={this.props.required} style={this.props.style} value={String(this.props.value)}
             >
                 <option disabled value="">
                     {LocaleUtils.tr("editing.select")}
