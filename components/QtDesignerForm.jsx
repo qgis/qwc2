@@ -138,7 +138,7 @@ class QtDesignerForm extends React.Component {
     }
     computeLayoutColumns = (items, useIndex = false) => {
         const columns = [];
-        const fitWidgets = ["QLabel", "QCheckBox", "QRadioButton"];
+        const fitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line"];
         let index = 0;
         let hasAuto = false;
         for (const item of items) {
