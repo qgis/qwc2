@@ -30,27 +30,21 @@ class QtDesignerForm extends React.Component {
         editLayerId: PropTypes.string,
         editRelationRecord: PropTypes.func,
         feature: PropTypes.object,
-        featureChanged: PropTypes.bool,
         fields: PropTypes.object,
         form: PropTypes.string,
         iface: PropTypes.object,
-        loadRelationValues: PropTypes.func,
         locale: PropTypes.string,
         mapPrefix: PropTypes.string,
         readOnly: PropTypes.bool,
-        relationValues: PropTypes.object,
         removeRelationRecord: PropTypes.func,
+        setRelationTables: PropTypes.func,
         switchEditContext: PropTypes.func,
         updateField: PropTypes.func,
         updateRelationField: PropTypes.func
     }
-    static defaultProps = {
-        relationValues: {}
-    }
     static defaultState = {
         activetabs: {},
-        formdata: null,
-        relationTables: null
+        formdata: null
     }
     constructor(props) {
         super(props);
@@ -76,16 +70,6 @@ class QtDesignerForm extends React.Component {
                 // eslint-disable-next-line
                 console.log(e);
             });
-        }
-        // Reload relation values if necessary
-        const feature = this.props.feature;
-        const prevFeature = prevProps.feature;
-        if (this.state.relationTables && feature && (
-            feature.id !== (prevFeature || {}).id ||
-            (this.state.relationTables && !prevState.relationTables) ||
-            (!this.props.featureChanged && prevProps.featureChanged)
-        )) {
-            this.props.loadRelationValues(this.state.relationTables);
         }
     }
     componentWillUnmount() {
@@ -393,7 +377,7 @@ class QtDesignerForm extends React.Component {
                                     <th />
                                 </tr>
                             ) : null}
-                            {((this.props.relationValues[datasetname] || {}).features || []).map((feature, idx) => {
+                            {(((this.props.feature.relationValues || {})[datasetname] || {}).features || []).map((feature, idx) => {
                                 const updateField = (name, value) => {
                                     const fieldname = name.slice(tablename.length + 2); // Strip <tablename>__ prefix
                                     this.props.updateRelationField(datasetname, idx, fieldname, value);
@@ -457,7 +441,8 @@ class QtDesignerForm extends React.Component {
             const relationTables = {};
             this.reformatWidget(json.ui.widget, relationTables);
             // console.log(root);
-            this.setState({formData: json.ui.widget, relationTables: relationTables});
+            this.setState({formData: json.ui.widget});
+            this.props.setRelationTables(relationTables);
         });
     }
     reformatWidget = (widget, relationTables) => {

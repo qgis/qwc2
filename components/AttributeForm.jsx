@@ -49,12 +49,18 @@ class AttributeForm extends React.Component {
         childEdit: null,
         relationTables: {}
     }
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (prevProps.editContext.changed !== this.props.editContext.changed) {
             this.props.setCurrentTaskBlocked(this.props.editContext.changed === true);
         }
         if ((!this.props.editContext.feature || this.props.editContext.changed) && this.state.deleteClicked) {
             this.setState({deleteClicked: false});
+        }
+        // Reload relation values if necessary
+        const feature = this.props.editContext.feature;
+        const prevFeature = prevProps.editContext.feature;
+        if (this.state.relationTables !== prevState.relationTables || feature.id !== (prevFeature || {}).id) {
+            this.loadRelationValues();
         }
     }
     editLayerId = (layerId) => {
@@ -111,10 +117,9 @@ class AttributeForm extends React.Component {
                     {this.props.editConfig.form ? (
                         <QtDesignerForm addRelationRecord={this.addRelationRecord} editLayerId={this.props.editConfig.editDataset}
                             editRelationRecord={this.editRelationRecord} feature={this.props.editContext.feature}
-                            featureChanged={this.props.editContext.changed} fields={this.fieldsMap(this.props.editConfig.fields)}
-                            form={this.props.editConfig.form} iface={this.props.iface} loadRelationValues={this.loadRelationValues}
-                            mapPrefix={this.editMapPrefix()} readOnly={readOnly} relationValues={this.props.editContext.feature.relationValues}
-                            removeRelationRecord={this.removeRelationRecord} switchEditContext={this.startChildEdit}
+                            fields={this.fieldsMap(this.props.editConfig.fields)} form={this.props.editConfig.form} iface={this.props.iface}
+                            mapPrefix={this.editMapPrefix()} readOnly={readOnly} removeRelationRecord={this.removeRelationRecord}
+                            setRelationTables={this.setRelationTables} switchEditContext={this.startChildEdit}
                             updateField={this.updateField} updateRelationField={this.updateRelationField} />
                     ) : (
                         <AutoEditForm editLayerId={this.props.editConfig.editDataset} fields={this.props.editConfig.fields}
@@ -142,16 +147,18 @@ class AttributeForm extends React.Component {
     editMapPrefix = () => {
         return (this.props.editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
     }
-    loadRelationValues = (relationTables) => {
-        if (!isEmpty(relationTables)) {
-            const relTables = Object.entries(relationTables).map(([name, fk]) => name + ":" + fk).join(",");
+    setRelationTables = (relationTables) => {
+        this.setState({relationTables: relationTables});
+    }
+    loadRelationValues = () => {
+        if (!isEmpty(this.state.relationTables)) {
+            const relTables = Object.entries(this.state.relationTables).map(([name, fk]) => name + ":" + fk).join(",");
             const feature = this.props.editContext.feature;
             this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, this.props.map.projection, (response => {
                 const newFeature = {...feature, relationValues: response.relationvalues};
                 this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
             }));
         }
-        this.setState({relationTables: relationTables});
     }
     addRelationRecord = (table) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
@@ -245,6 +252,7 @@ class AttributeForm extends React.Component {
                 // Re-query the original feature
                 this.props.iface.getFeatureById(this.props.editConfig.editDataset, this.props.editContext.feature.id, this.props.map.projection, (feature) => {
                     this.props.setEditContext(this.props.editContext.id, {feature: feature, changed: false});
+                    this.loadRelationValues(); // Re-load relation values
                 });
             } else {
                 this.props.setEditContext(this.props.editContext.id, {feature: null, changed: false});
@@ -396,6 +404,7 @@ class AttributeForm extends React.Component {
         this.setState({busy: false});
         if (success) {
             this.props.setEditContext(this.props.editContext.id, {action: 'Pick', feature: result, changed: false});
+            this.loadRelationValues(); // Re-load relation values
             this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
         } else {
             // eslint-disable-next-line
