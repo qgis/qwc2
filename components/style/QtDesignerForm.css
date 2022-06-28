@@ -20,6 +20,12 @@ div.qt-designer-form textarea:read-only {
     color: #999;
 }
 
+div.qt-designer-form input:invalid,
+div.qt-designer-form select:invalid,
+div.qt-designer-form textarea:invalid {
+    background-color: #FFAAAA;
+}
+
 div.qt-designer-form input[type=range] {
     background-color: transparent;
     height: 2em;
