@@ -35,6 +35,7 @@ class AttributeForm extends React.Component {
         newfeature: PropTypes.bool,
         readOnly: PropTypes.bool,
         refreshLayer: PropTypes.func,
+        report: PropTypes.bool,
         setCurrentTaskBlocked: PropTypes.func,
         setEditContext: PropTypes.func,
         theme: PropTypes.object,
@@ -120,6 +121,7 @@ class AttributeForm extends React.Component {
                             editRelationRecord={this.editRelationRecord} feature={this.props.editContext.feature}
                             fields={this.fieldsMap(this.props.editConfig.fields)} form={this.props.editConfig.form} iface={this.props.iface}
                             mapPrefix={this.editMapPrefix()} readOnly={readOnly} removeRelationRecord={this.removeRelationRecord}
+                            report={this.props.report}
                             setRelationTables={this.setRelationTables} switchEditContext={this.startChildEdit}
                             updateField={this.updateField} updateRelationField={this.updateRelationField} />
                     ) : (

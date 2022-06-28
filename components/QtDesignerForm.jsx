@@ -37,6 +37,7 @@ class QtDesignerForm extends React.Component {
         mapPrefix: PropTypes.string,
         readOnly: PropTypes.bool,
         removeRelationRecord: PropTypes.func,
+        report: PropTypes.bool,
         setRelationTables: PropTypes.func,
         switchEditContext: PropTypes.func,
         updateField: PropTypes.func,
@@ -81,7 +82,7 @@ class QtDesignerForm extends React.Component {
         }
         const root = this.state.formData;
         return (
-            <div className="qt-designer-form">
+            <div className={this.props.report ? "qt-designer-report" : "qt-designer-form"}>
                 {this.renderLayout(root.layout, this.props.feature, this.props.editLayerId, this.props.updateField)}
             </div>
         );
@@ -223,7 +224,11 @@ class QtDesignerForm extends React.Component {
                 </div>
             );
         } else if (widget.class === "QTextEdit" || widget.class === "QTextBrowser" || widget.class === "QPlainTextEdit") {
-            return (<textarea name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} style={fontStyle} value={value} />);
+            if (this.props.report) {
+                return (<div className="qt-designer-form-textarea">{value}</div>);
+            } else {
+                return (<textarea name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} style={fontStyle} value={value} />);
+            }
         } else if (widget.class === "QLineEdit") {
             if (widget.name.endsWith("__upload")) {
                 const fieldId = widget.name.replace(/__upload/, '');

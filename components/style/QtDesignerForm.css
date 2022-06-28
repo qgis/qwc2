@@ -183,3 +183,23 @@ div.qt-designer-form-featurelink-buttons > div.ButtonBar {
 div.qt-designer-form-featurelink-buttons > button.button {
     margin: 0.25em 0;
 }
+
+div.qt-designer-report {
+    background-color: white;
+}
+
+div.qt-designer-report input,
+div.qt-designer-report textarea,
+div.qt-designer-report select {
+    border: none;
+}
+
+div.qt-designer-report select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+div.qt-designer-form-textarea {
+    padding: 0.25em;
+}
