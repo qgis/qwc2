@@ -183,7 +183,8 @@ class QtDesignerForm extends React.Component {
         if (widget.class === "QLabel") {
             return (<span style={fontStyle}>{widget.property.text}</span>);
         } else if (widget.class === "Line") {
-            return (<div className="qt-designer-form-line" />);
+            const linetype = (widget.property || {}).orientation === "Qt::Vertical" ? "vline" : "hline";
+            return (<div className={"qt-designer-form-" + linetype} />);
         } else if (widget.class === "QFrame") {
             return (
                 <div className="qt-designer-form-frame">

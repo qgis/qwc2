@@ -46,7 +46,7 @@ div.qt-designer-layout-grid > div {
     align-items: center;
 }
 
-div.qt-designer-layout-grid > div > * {
+div.qt-designer-layout-grid > div > *:not(.qt-designer-form-vline) {
     width: 100%;
 }
 
@@ -68,8 +68,13 @@ div.qt-designer-layout-vbox > div {
     align-items: center;
 }
 
-div.qt-designer-form-line {
+div.qt-designer-form-hline {
     border-bottom: 1px solid @item_border@;
+}
+
+div.qt-designer-form-vline {
+    border-right: 1px solid @item_border@;
+    height: 100%;
 }
 
 div.qt-designer-form-frame-title {
