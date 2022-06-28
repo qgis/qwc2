@@ -275,8 +275,8 @@ class QtDesignerForm extends React.Component {
                 );
             }
         } else if (widget.class === "QSpinBox" || widget.class === "QDoubleSpinBox" || widget.class === "QSlider") {
-            const min = prop.minimum ?? fieldConstraints.min ?? 0;
-            const max = prop.maximum ?? fieldConstraints.max ?? 100;
+            const min = prop.minimum ?? fieldConstraints.min ?? undefined;
+            const max = prop.maximum ?? fieldConstraints.max ?? undefined;
             const step = prop.singleStep ?? fieldConstraints.step ?? 1;
             const type = (widget.class === "QSlider" ? "range" : "number");
             return (
