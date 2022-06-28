@@ -33,6 +33,7 @@ class AttributeForm extends React.Component {
         iface: PropTypes.object,
         map: PropTypes.object,
         newfeature: PropTypes.bool,
+        readOnly: PropTypes.bool,
         refreshLayer: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
         setEditContext: PropTypes.func,
@@ -78,10 +79,10 @@ class AttributeForm extends React.Component {
 
         const curConfig = this.props.editConfig;
         const editPermissions = curConfig.permissions || {};
-        const readOnly = editPermissions.updatable === false;
+        const readOnly = this.props.readOnly || editPermissions.updatable === false;
 
         let deleteBar = null;
-        if (!this.props.newfeature && this.props.editContext.feature && !this.props.editContext.changed && editPermissions.deletable !== false && !this.props.hideCommitBar) {
+        if (!this.props.newfeature && this.props.editContext.feature && !this.props.editContext.changed && editPermissions.deletable !== false && !this.props.hideCommitBar && !this.props.readOnly) {
             // Delete button bar will appear by default if no permissions are defined in editConfig or when deletable permission is set
             if (!this.state.deleteClicked) {
                 const deleteButtons = [
