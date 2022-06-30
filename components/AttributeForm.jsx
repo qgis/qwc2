@@ -393,8 +393,7 @@ class AttributeForm extends React.Component {
                 if (relResult === false) {
                     this.commitFinished(false, errorMsg);
                 } else if (relResult.success !== true) {
-                    // Relation values commit failed, switch to pick update relation values with response and switch to pick to
-                    // to avoid adding feature again on next attempt
+                    // Relation values commit failed, switch to pick to avoid adding feature again on next attempt
                     this.commitFinished(false, LocaleUtils.tr("editing.relationcommitfailed"));
                     newFeature = {...newFeature, relationValues: relResult.relationvalues};
                     this.props.setEditContext(this.props.editContext.id, {action: "Pick", feature: newFeature, changed: true});
