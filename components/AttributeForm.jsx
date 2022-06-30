@@ -31,6 +31,8 @@ class AttributeForm extends React.Component {
         editContext: PropTypes.object,
         iface: PropTypes.object,
         map: PropTypes.object,
+        onCommit: PropTypes.func,
+        onDiscard: PropTypes.func,
         readOnly: PropTypes.bool,
         refreshLayer: PropTypes.func,
         report: PropTypes.bool,
@@ -258,6 +260,9 @@ class AttributeForm extends React.Component {
             } else {
                 this.props.setEditContext(this.props.editContext.id, {feature: null, changed: false});
             }
+            if (this.props.onDiscard) {
+                this.props.onDiscard();
+            }
         }
     }
     onSubmit = (ev) => {
@@ -407,6 +412,9 @@ class AttributeForm extends React.Component {
             this.props.setEditContext(this.props.editContext.id, {action: 'Pick', feature: result, changed: false});
             this.loadRelationValues(); // Re-load relation values
             this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
+            if (this.props.onCommit) {
+                this.props.onCommit(result);
+            }
         } else {
             // eslint-disable-next-line
             alert(result);
