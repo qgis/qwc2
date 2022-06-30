@@ -166,7 +166,10 @@ class AttributeForm extends React.Component {
                     this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
                 }));
             } else {
-                const newFeature = {...feature, relationValues: Object.keys(this.state.relationTables).reduce((res, cur) => ({...res, [cur]: {features: []}}), {})};
+                const newFeature = {...feature, relationValues: Object.entries(this.state.relationTables).reduce((res, [name, fk]) => ({...res, [name]: {
+                    fk: fk,
+                    features: []
+                }}), {})};
                 this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
             }
         }
