@@ -45,22 +45,6 @@ div.attribtable-toolbar > select {
     height: 2em;
 }
 
-div.attribtable-toolbar button.edit-commit {
-    background-color: rgb(127,255,127);
-}
-
-div.attribtable-toolbar button.edit-commit:hover {
-    background-color: rgb(97,255,97);
-}
-
-div.attribtable-toolbar button.edit-discard {
-    background-color: rgb(255,127,127);
-}
-
-div.attribtable-toolbar button.edit-discard:hover {
-    background-color: rgb(255,97,97);
-}
-
 div.attribtable-contents {
     flex: 1 1 auto;
     background-color: white;

@@ -39,22 +39,6 @@ div.AttributeForm div.attrib-form-busy {
     z-index: 2;
 }
 
-div.AttributeForm .attrib-form-commit {
-    background-color: rgb(127,255,127);
-}
-
-div.AttributeForm .attrib-form-discard {
-    background-color: rgb(255,127,127);
-}
-
-div.AttributeForm .attrib-form-commit:hover {
-    background-color: rgb(127,225,127);
-}
-
-div.AttributeForm .attrib-form-discard:hover {
-    background-color: rgb(225,127,127);
-}
-
 div.link-feature-form-container {
     position: absolute;
     left: 0;

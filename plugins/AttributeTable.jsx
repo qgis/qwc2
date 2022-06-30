@@ -255,7 +255,7 @@ class AttributeTable extends React.Component {
                             </button>
                         ) : null}
                         {this.state.confirmDelete ? (
-                            <button className="button edit-commit" onClick={this.deleteSelectedFeatured}>
+                            <button className="button button-accept" onClick={this.deleteSelectedFeatured}>
                                 <Icon icon="ok" />
                                 <span>{LocaleUtils.tr("attribtable.delete")}</span>
                             </button>
@@ -266,19 +266,19 @@ class AttributeTable extends React.Component {
                         ) : null
                         )}
                         {this.state.confirmDelete ? (
-                            <button className="button edit-discard" onClick={() => this.setState({confirmDelete: false})}>
+                            <button className="button button-reject" onClick={() => this.setState({confirmDelete: false})}>
                                 <Icon icon="remove" />
                                 <span>{LocaleUtils.tr("attribtable.nodelete")}</span>
                             </button>
                         ) : null}
                         {this.state.changedFeatureIdx !== null ? (
-                            <button className="button edit-commit" onClick={this.commit}>
+                            <button className="button button-accept" onClick={this.commit}>
                                 <Icon icon="ok" />
                                 <span>{LocaleUtils.tr("attribtable.commit")}</span>
                             </button>
                         ) : null}
                         {this.state.changedFeatureIdx !== null ? (
-                            <button className="button edit-discard" onClick={this.discard}>
+                            <button className="button button-reject" onClick={this.discard}>
                                 <Icon icon="remove" />
                                 <span>{LocaleUtils.tr("attribtable.discard")}</span>
                             </button>

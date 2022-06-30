@@ -180,6 +180,22 @@ button.button.pressed:not(:disabled):hover {
     background-color: @item_active_hover@;
 }
 
+button.button-accept {
+    background-color: rgb(127,255,127);
+}
+
+button.button-reject {
+    background-color: rgb(255,127,127);
+}
+
+button.button-accept:not(:disabled):hover {
+    background-color: rgb(127,225,127);
+}
+
+button.button-reject:not(:disabled):hover {
+    background-color: rgb(225,127,127);
+}
+
 select.combo {
     border: 1px solid @item_border@;
     background-color: white;

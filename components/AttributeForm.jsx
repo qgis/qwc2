@@ -72,8 +72,8 @@ class AttributeForm extends React.Component {
         let commitBar = null;
         if (this.props.editContext.changed) {
             const commitButtons = [
-                {key: 'Commit', icon: 'ok', label: LocaleUtils.trmsg("editing.commit"), extraClasses: "attrib-form-commit", type: "submit"},
-                {key: 'Discard', icon: 'remove', label: LocaleUtils.trmsg("editing.discard"), extraClasses: "attrib-form-discard"}
+                {key: 'Commit', icon: 'ok', label: LocaleUtils.trmsg("editing.commit"), extraClasses: "button-accept", type: "submit"},
+                {key: 'Discard', icon: 'remove', label: LocaleUtils.trmsg("editing.discard"), extraClasses: "button-reject"}
             ];
             commitBar = (<ButtonBar buttons={commitButtons} onClick={this.onDiscard}/>); /* submit is handled via onSubmit in the form */
         }
