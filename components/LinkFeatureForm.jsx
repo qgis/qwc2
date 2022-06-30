@@ -104,9 +104,7 @@ class LinkFeatureForm extends React.Component {
                             <span>{LocaleUtils.tr("linkfeatureform.drawhint")}</span>
                         </div>
                     ) : (
-                        <AttributeForm editConfig={this.props.editConfig} editContext={editContext}
-                            iface={this.props.iface} newfeature={editContext.action === 'Draw'}
-                        />
+                        <AttributeForm editConfig={this.props.editConfig} editContext={editContext} iface={this.props.iface} />
                     )}
                     <div className="link-feature-form-close">
                         <button className="button" disabled={editContext.changed} onClick={this.finish}>

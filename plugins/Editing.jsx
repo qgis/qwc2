@@ -218,9 +218,7 @@ class Editing extends React.Component {
         let attributeForm = null;
         if (this.props.editContext.feature) {
             attributeForm = (
-                <AttributeForm editConfig={curConfig} editContext={this.props.editContext}
-                    iface={this.props.iface} newfeature={this.props.editContext.action === 'Draw'}
-                />
+                <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} />
             );
         }
         const themeSublayers = this.props.layers.reduce((accum, layer) => {
