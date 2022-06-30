@@ -9,7 +9,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import uuid from 'uuid';
 import ol from 'openlayers';
 import {setEditContext} from '../../actions/editing';
 
@@ -103,7 +102,6 @@ class EditingSupport extends React.Component {
         });
         drawInteraction.on('drawstart', (evt) => {
             this.currentFeature = evt.feature;
-            this.currentFeature.setId(uuid.v4());
         }, this);
         drawInteraction.on('drawend', () => {
             this.commitCurrentFeature();
