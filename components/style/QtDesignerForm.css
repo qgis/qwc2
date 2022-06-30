@@ -215,3 +215,15 @@ div.qt-designer-report select {
 div.qt-designer-form-textarea {
     padding: 0.25em;
 }
+
+div.qt-designer-form-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.qt-designer-form-loading > div.spinner {
+    width: 4em;
+    height: 4em;
+    margin-right: 1em;
+}

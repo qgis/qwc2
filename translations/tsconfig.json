@@ -192,6 +192,7 @@
     "print.scale",
     "print.submit",
     "print.wait",
+    "qtdesignerform.loading",
     "rasterexport.format",
     "rasterexport.resolution",
     "rasterexport.selectinfo",

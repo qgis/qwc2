@@ -223,6 +223,9 @@
       "submit": "PDF erzeugen",
       "wait": "Bitte warten..."
     },
+    "qtdesignerform": {
+      "loading": "Formular wird geladen..."
+    },
     "rasterexport": {
       "format": "Format:",
       "resolution": "Auflösung",

@@ -223,6 +223,9 @@
       "submit": "Créer le PDF",
       "wait": "Veuillez patienter..."
     },
+    "qtdesignerform": {
+      "loading": ""
+    },
     "rasterexport": {
       "format": "Format:",
       "resolution": "Résolution",

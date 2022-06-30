@@ -223,6 +223,9 @@
       "submit": "Nyomtatás",
       "wait": ""
     },
+    "qtdesignerform": {
+      "loading": ""
+    },
     "rasterexport": {
       "format": "Formátum:",
       "resolution": "Felbontás:",

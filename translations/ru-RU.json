@@ -223,6 +223,9 @@
       "submit": "Печать",
       "wait": ""
     },
+    "qtdesignerform": {
+      "loading": ""
+    },
     "rasterexport": {
       "format": "Формат бумаги:",
       "resolution": "Разрешение:",

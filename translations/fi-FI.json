@@ -223,6 +223,9 @@
       "submit": "Tulosta",
       "wait": "Odota..."
     },
+    "qtdesignerform": {
+      "loading": ""
+    },
     "rasterexport": {
       "format": "Formaatti:",
       "resolution": "Resoluutio:",

@@ -223,6 +223,9 @@
       "submit": "Tisk",
       "wait": ""
     },
+    "qtdesignerform": {
+      "loading": ""
+    },
     "rasterexport": {
       "format": "Formát:",
       "resolution": "Rozlišení:",

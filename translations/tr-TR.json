@@ -223,6 +223,9 @@
       "submit": "Yazdır",
       "wait": "Lütfen bekleyiniz..."
     },
+    "qtdesignerform": {
+      "loading": ""
+    },
     "rasterexport": {
       "format": "Format:",
       "resolution": "Çözünürlük:",

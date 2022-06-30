@@ -223,6 +223,9 @@
       "submit": "Tipărește",
       "wait": "Așteaptă te rog.."
     },
+    "qtdesignerform": {
+      "loading": ""
+    },
     "rasterexport": {
       "format": "Format:",
       "resolution": "Rezoluție",

@@ -223,6 +223,9 @@
       "submit": "Print",
       "wait": "Please wait..."
     },
+    "qtdesignerform": {
+      "loading": "Loading form..."
+    },
     "rasterexport": {
       "format": "Format:",
       "resolution": "Resolution:",

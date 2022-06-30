@@ -16,6 +16,7 @@ import isEmpty from 'lodash.isempty';
 import ButtonBar from './widgets/ButtonBar';
 import EditComboField, {KeyValCache} from './EditComboField';
 import EditUploadField from './EditUploadField';
+import Spinner from './Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
@@ -55,7 +56,8 @@ class QtDesignerForm extends React.Component {
     }
     static defaultState = {
         activetabs: {},
-        formdata: null
+        formdata: null,
+        loading: false
     }
     constructor(props) {
         super(props);
@@ -87,15 +89,22 @@ class QtDesignerForm extends React.Component {
         KeyValCache.clear();
     }
     render() {
-        if (!this.state.formData) {
+        if (this.state.loading) {
+            return (
+                <div className="qt-designer-form-loading">
+                    <Spinner /><span>{LocaleUtils.tr("qtdesignerform.loading")}</span>
+                </div>
+            );
+        } else if (this.state.formData) {
+            const root = this.state.formData.ui.widget;
+            return (
+                <div className={this.props.report ? "qt-designer-report" : "qt-designer-form"}>
+                    {this.renderLayout(root.layout, this.props.feature, this.props.editLayerId, this.props.updateField)}
+                </div>
+            );
+        } else {
             return null;
         }
-        const root = this.state.formData;
-        return (
-            <div className={this.props.report ? "qt-designer-report" : "qt-designer-form"}>
-                {this.renderLayout(root.layout, this.props.feature, this.props.editLayerId, this.props.updateField)}
-            </div>
-        );
     }
     renderLayout = (layout, feature, dataset, updateField, nametransform = (name) => name) => {
         let containerClass = "";

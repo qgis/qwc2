@@ -223,6 +223,9 @@
       "submit": "Skriv ut",
       "wait": "Venter..."
     },
+    "qtdesignerform": {
+      "loading": ""
+    },
     "rasterexport": {
       "format": "Format:",
       "resolution": "Oppløsning:",
