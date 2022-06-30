@@ -155,12 +155,17 @@ class AttributeForm extends React.Component {
     }
     loadRelationValues = () => {
         if (!isEmpty(this.state.relationTables)) {
-            const relTables = Object.entries(this.state.relationTables).map(([name, fk]) => name + ":" + fk).join(",");
             const feature = this.props.editContext.feature;
-            this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, this.props.map.projection, (response => {
-                const newFeature = {...feature, relationValues: response.relationvalues};
+            if (feature.id) {
+                const relTables = Object.entries(this.state.relationTables).map(([name, fk]) => name + ":" + fk).join(",");
+                this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, this.props.map.projection, (response => {
+                    const newFeature = {...feature, relationValues: response.relationvalues};
+                    this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
+                }));
+            } else {
+                const newFeature = {...feature, relationValues: Object.keys(this.state.relationTables).reduce((res, cur) => ({...res, [cur]: {features: []}}), {})};
                 this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
-            }));
+            }
         }
     }
     addRelationRecord = (table) => {
