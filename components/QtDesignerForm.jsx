@@ -23,6 +23,16 @@ import Icon from './Icon';
 
 import './style/QtDesignerForm.css';
 
+const FormPreprocessors = {};
+
+export function registerFormPreprocessor(editLayerId, preprocessor) {
+    FormPreprocessors[editLayerId] = preprocessor;
+}
+
+export function removeFormPreprocessor(editLayerId) {
+    delete FormPreprocessors[editLayerId];
+}
+
 
 class QtDesignerForm extends React.Component {
     static propTypes = {
@@ -177,11 +187,18 @@ class QtDesignerForm extends React.Component {
             fontSize: Math.round((fontProps.pointsize || 9) / 9 * 100) + "%"
         };
 
-        const elname = widget.name.startsWith("ext__") ? undefined : nametransform(widget.name);
-        updateField = widget.name.startsWith("ext__") ? null : updateField;
+        let elname = undefined;
+        if (widget.name.startsWith("ext__")) {
+            updateField = null;
+            value = this.state.formData.externalFields[widget.name.slice(5)];
+            inputConstraints.readOnly = true;
+        } else {
+            elname = nametransform(widget.name);
+        }
 
         if (widget.class === "QLabel") {
-            return (<span style={fontStyle}>{widget.property.text}</span>);
+            const text = widget.name.startsWith("ext__") ? value : widget.property.text;
+            return (<span style={fontStyle}>{text}</span>);
         } else if (widget.class === "Line") {
             const linetype = (widget.property || {}).orientation === "Qt::Vertical" ? "vline" : "hline";
             return (<div className={"qt-designer-form-" + linetype} />);
@@ -313,6 +330,8 @@ class QtDesignerForm extends React.Component {
         } else if (widget.class === "QWidget") {
             if (widget.name.startsWith("nrel__")) {
                 return this.renderNRelation(widget);
+            } else if (widget.name.startsWith("ext__")) {
+                return value;
             } else {
                 return this.renderLayout(widget.layout, feature, dataset, updateField, nametransform);
             }
@@ -447,15 +466,24 @@ class QtDesignerForm extends React.Component {
             explicitArray: false,
             mergeAttrs: true
         };
+        this.setState({loading: true});
         xml2js.parseString(data, options, (err, json) => {
             const relationTables = {};
-            this.reformatWidget(json.ui.widget, relationTables);
+            const externalFields = {};
+            this.reformatWidget(json.ui.widget, relationTables, externalFields);
             // console.log(root);
-            this.setState({formData: json.ui.widget});
+            json.externalFields = externalFields;
+            if (FormPreprocessors[this.props.editLayerId]) {
+                FormPreprocessors[this.props.editLayerId](json, this.props.feature, (formData) => {
+                    this.setState({formData: formData, loading: false});
+                });
+            } else {
+                this.setState({formData: json, loading: false});
+            }
             this.props.setRelationTables(relationTables);
         });
     }
-    reformatWidget = (widget, relationTables) => {
+    reformatWidget = (widget, relationTables, externalFields) => {
         if (widget.property) {
             widget.property = MiscUtils.ensureArray(widget.property).reduce((res, prop) => {
                 return ({...res, [prop.name]: prop[Object.keys(prop).find(key => key !== "name")]});
@@ -471,18 +499,23 @@ class QtDesignerForm extends React.Component {
             widget.attribute = {};
         }
         if (widget.item) {
-            MiscUtils.ensureArray(widget.item).map(item => this.reformatWidget(item, relationTables));
+            MiscUtils.ensureArray(widget.item).map(item => this.reformatWidget(item, relationTables, externalFields));
         }
 
-        widget.name = widget.name || uuid.v1();
+        if (widget.name.startsWith("ext__")) {
+            externalFields[widget.name.slice(5)] = "";
+        } else {
+            widget.name = widget.name || uuid.v1();
+        }
+
         if (widget.layout) {
-            this.reformatLayout(widget.layout, relationTables);
+            this.reformatLayout(widget.layout, relationTables, externalFields);
         }
         if (widget.widget) {
             widget.widget = Array.isArray(widget.widget) ? widget.widget : [widget.widget];
             widget.widget.forEach(child => {
                 child.name = uuid.v1();
-                this.reformatWidget(child, relationTables);
+                this.reformatWidget(child, relationTables, externalFields);
             });
         }
 
@@ -491,15 +524,15 @@ class QtDesignerForm extends React.Component {
             relationTables[this.props.mapPrefix + parts[1]] = parts[2];
         }
     }
-    reformatLayout = (layout, relationTables) => {
+    reformatLayout = (layout, relationTables, externalFields) => {
         layout.item = MiscUtils.ensureArray(layout.item);
         layout.item.forEach(item => {
             if (!item) {
                 return;
             } else if (item.widget) {
-                this.reformatWidget(item.widget, relationTables);
+                this.reformatWidget(item.widget, relationTables, externalFields);
             } else if (item.layout) {
-                this.reformatLayout(item.layout, relationTables);
+                this.reformatLayout(item.layout, relationTables, externalFields);
             }
         });
     }
