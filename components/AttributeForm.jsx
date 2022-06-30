@@ -234,8 +234,7 @@ class AttributeForm extends React.Component {
             newRelationValues[table].features[idx] = {
                 ...feature,
                 properties: {
-                    ...feature.properties,
-                    [this.state.relationTables[table]]: this.props.editContext.feature.id
+                    ...feature.properties
                 },
                 __status__: status
             };
