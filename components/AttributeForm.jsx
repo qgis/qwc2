@@ -61,7 +61,10 @@ class AttributeForm extends React.Component {
         // Reload relation values if necessary
         const feature = this.props.editContext.feature;
         const prevFeature = prevProps.editContext.feature;
-        if (this.state.relationTables !== prevState.relationTables || feature.id !== (prevFeature || {}).id) {
+        if (
+            (!this.props.editContext.changed || !this.props.editContext.feature.relationValues) &&
+            (this.state.relationTables !== prevState.relationTables || feature.id !== (prevFeature || {}).id)
+        ) {
             this.loadRelationValues();
         }
     }
