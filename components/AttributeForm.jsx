@@ -184,7 +184,7 @@ class AttributeForm extends React.Component {
         newRelationValues[table].features = newRelationValues[table].features.slice(0);
         const fieldStatus = newRelationValues[table].features[idx].__status__ || "";
         // If field was new, delete it directly, else mark it as deleted
-        if (fieldStatus === "new" || fieldStatus === "empty") {
+        if (["new", "empty"].includes(fieldStatus)) {
             newRelationValues[table].features.splice(idx, 1);
         } else {
             newRelationValues[table].features[idx] = {
@@ -205,7 +205,7 @@ class AttributeForm extends React.Component {
                 ...newRelationValues[table].features[idx].properties,
                 [key]: value
             },
-            __status__: newRelationValues[table].features[idx].__status__ === "new" ? "new" : "changed"
+            __status__: ["new", "empty"].includes(newRelationValues[table].features[idx].__status__) ? "new" : "changed"
         };
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
