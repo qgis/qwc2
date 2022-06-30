@@ -105,11 +105,11 @@ class LinkFeatureForm extends React.Component {
                         </div>
                     ) : (
                         <AttributeForm editConfig={this.props.editConfig} editContext={editContext}
-                            hideCommitBar={!!this.props.feature} iface={this.props.iface} newfeature={editContext.action === 'Draw'}
+                            iface={this.props.iface} newfeature={editContext.action === 'Draw'}
                         />
                     )}
                     <div className="link-feature-form-close">
-                        <button className="button" disabled={!this.props.feature && editContext.changed} onClick={this.finish}>
+                        <button className="button" disabled={editContext.changed} onClick={this.finish}>
                             {drawing ? LocaleUtils.tr("linkfeatureform.cancel") : LocaleUtils.tr("linkfeatureform.close")}
                         </button>
                     </div>
