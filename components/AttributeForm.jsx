@@ -95,8 +95,8 @@ class AttributeForm extends React.Component {
                 deleteBar = (<ButtonBar buttons={deleteButtons} onClick={this.deleteClicked} />);
             } else {
                 const deleteButtons = [
-                    {key: 'Yes', icon: 'ok', label: LocaleUtils.trmsg("editing.reallydelete"), extraClasses: "attrib-form-commit"},
-                    {key: 'No', icon: 'remove', label: LocaleUtils.trmsg("editing.canceldelete"), extraClasses: "attrib-form-discard"}
+                    {key: 'Yes', icon: 'ok', label: LocaleUtils.trmsg("editing.reallydelete"), extraClasses: "button-accept"},
+                    {key: 'No', icon: 'remove', label: LocaleUtils.trmsg("editing.canceldelete"), extraClasses: "button-reject"}
                 ];
                 deleteBar = (<ButtonBar buttons={deleteButtons} onClick={this.deleteFeature} />);
             }
