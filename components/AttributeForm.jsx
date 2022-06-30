@@ -278,6 +278,7 @@ class AttributeForm extends React.Component {
         // Ensure properties is not null
         feature = {
             ...feature,
+            type: "Feature",
             properties: feature.properties || {},
             crs: {
                 type: "name",
@@ -365,6 +366,7 @@ class AttributeForm extends React.Component {
             Object.keys(relationValues).forEach(relTable => {
                 relationValues[relTable].features = relationValues[relTable].features.filter(relFeature => relFeature.__status__ !== "empty").map(relFeature => ({
                     ...relFeature,
+                    type: "Feature",
                     properties: {
                         ...relFeature.properties,
                         [this.state.relationTables[relTable]]: newFeature.id
