@@ -203,6 +203,7 @@ div.qt-designer-report input,
 div.qt-designer-report textarea,
 div.qt-designer-report select {
     border: none;
+    outline: none;
 }
 
 div.qt-designer-report select {
