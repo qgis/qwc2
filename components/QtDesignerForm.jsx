@@ -511,10 +511,9 @@ class QtDesignerForm extends React.Component {
             MiscUtils.ensureArray(widget.item).map(item => this.reformatWidget(item, relationTables, externalFields));
         }
 
+        widget.name = widget.name || uuid.v1();
         if (widget.name.startsWith("ext__")) {
             externalFields[widget.name.slice(5)] = "";
-        } else {
-            widget.name = widget.name || uuid.v1();
         }
 
         if (widget.layout) {
