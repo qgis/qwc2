@@ -84,6 +84,9 @@ class AppInitComponent extends React.Component {
         // Load themes.json
         axios.get("themes.json").then(response => {
             const themes = response.data.themes || {};
+            if (this.props.appConfig.themePreprocessor) {
+                this.props.appConfig.themePreprocessor(themes);
+            }
             this.props.themesLoaded(themes);
 
             // Resolve permalink and restore settings
