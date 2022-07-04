@@ -98,6 +98,7 @@
       "minimize": "Minimiser",
       "nocompatpick": "Aucune géométrie compatible trouvée",
       "noeditablelayers": "Il n'y a pas de couche éditable pour ce thème",
+      "paint": "",
       "pick": "Choisir",
       "pickdrawfeature": "Copier la géométrie existante",
       "reallydelete": "Supprimer",
@@ -130,6 +131,10 @@
       "noresults": "Pas de résultats pour la position sélectionnée",
       "querying": "Identification en cours...",
       "title": "Informations sur l'objet"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",

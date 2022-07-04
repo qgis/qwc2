@@ -98,6 +98,7 @@
       "minimize": "",
       "nocompatpick": "",
       "noeditablelayers": "Nincs szerkeszthető fólia.",
+      "paint": "",
       "pick": "Kiválasztás",
       "pickdrawfeature": "",
       "reallydelete": "Törlés",
@@ -130,6 +131,10 @@
       "noresults": "Nincs információ a kiválasztott pontról",
       "querying": "Lekérdezés...",
       "title": "Lekérdezés információ"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",

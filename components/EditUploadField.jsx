@@ -12,8 +12,10 @@ import mime from 'mime-to-extensions';
 import Icon from './Icon';
 import uuid from 'uuid';
 import ModalDialog from './ModalDialog';
+import ButtonBar from './widgets/ButtonBar';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import {showImageEditor} from '../utils/ImageEditor';
 import './style/EditUploadField.css';
 
 
@@ -62,14 +64,15 @@ export default class EditUploadField extends React.Component {
         if (imageData) {
             if (this.props.showThumbnails) {
                 const extension = fileValue ? fileValue.replace(/^.*\./, '') : 'jpg';
+                const imagebuttons = [
+                    {key: 'Draw', icon: 'paint', label: LocaleUtils.trmsg("editing.paint")},
+                    {key: 'Clear', icon: 'clear', label: LocaleUtils.trmsg("editing.clearpicture")}
+                ];
                 return (
                     <span className="edit-upload-field-image">
                         <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
                         {this.state.imageData ? (<input name={this.props.name} type="hidden" value={this.state.imageData} />) : null}
-                        <button className="button" disabled={this.props.disabled} onClick={this.clearPicture} type="button">
-                            <Icon icon="clear" />
-                            {LocaleUtils.tr("editing.clearpicture")}
-                        </button>
+                        <ButtonBar buttons={imagebuttons} onClick={this.imageButtonClicked} />
                     </span>
                 );
             } else {
@@ -147,10 +150,23 @@ export default class EditUploadField extends React.Component {
         }
         this.disableCamera();
     }
-    clearPicture = () => {
-        this.setState({imageData: null});
-        this.props.updateField(this.props.fieldId, '');
-        this.props.updateFile(this.props.fieldId, null);
+    imageButtonClicked = (action) => {
+        if (action === "Draw") {
+            const fileValue = this.props.value.startsWith("attachment:") ? this.props.value.replace(/attachment:\/\//, '') : "";
+            const fileType = mime.lookup(fileValue);
+            const editServiceUrl = ConfigUtils.getConfigProp("editServiceUrl");
+            const fileUrl = editServiceUrl + this.props.dataset + "/attachment?file=" + encodeURIComponent(fileValue);
+            const imageData = fileType && fileType.startsWith('image/') ? fileUrl : this.state.imageData;
+            showImageEditor(imageData, (newImageData) => {
+                this.setState({imageData: newImageData});
+                this.props.updateField(this.props.fieldId, '');
+                this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(newImageData)], uuid.v1() + ".jpg", {type: "image/jpeg"}));
+            });
+        } else if (action === "Clear") {
+            this.setState({imageData: null});
+            this.props.updateField(this.props.fieldId, '');
+            this.props.updateFile(this.props.fieldId, null);
+        }
     }
     activateMediaStream = (el) => {
         if (this.state.camera && !this.cameraStream) {

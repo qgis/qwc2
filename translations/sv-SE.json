@@ -98,6 +98,7 @@
       "minimize": "Minimera",
       "nocompatpick": "",
       "noeditablelayers": "Inga redigerbara lager",
+      "paint": "",
       "pick": "Välj",
       "pickdrawfeature": "",
       "reallydelete": "Verkligen radera",
@@ -130,6 +131,10 @@
       "noresults": "Ingen information för vald punkt",
       "querying": "Frågar...",
       "title": "Objektinformation"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",

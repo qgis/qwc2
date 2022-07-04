@@ -98,6 +98,7 @@
       "minimize": "Minimieren",
       "nocompatpick": "Keine kompatible Geometrie",
       "noeditablelayers": "Keine editierbare Ebenen.",
+      "paint": "Bearb.",
       "pick": "Auswählen",
       "pickdrawfeature": "Existierende Geometrie kopieren",
       "reallydelete": "Löschen",
@@ -130,6 +131,10 @@
       "noresults": "Keine Resultate an der ausgewählten Position",
       "querying": "Objekte werden abgefragt...",
       "title": "Objektinformationen"
+    },
+    "imageeditor": {
+      "confirmclose": "Schließen, ohne zu speichern?",
+      "title": "Bildbearbeitung"
     },
     "importlayer": {
       "addfailed": "Die Ebene konnte nicht hinzugefügt werden",

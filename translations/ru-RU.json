@@ -98,6 +98,7 @@
       "minimize": "Свернуть",
       "nocompatpick": "",
       "noeditablelayers": "Отсутствуют доступные для редактирования слои.",
+      "paint": "",
       "pick": "Выбрать",
       "pickdrawfeature": "",
       "reallydelete": "Удалить",
@@ -130,6 +131,10 @@
       "noresults": "Для выбранной точки нет доступной информации",
       "querying": "Выполняется запрос...",
       "title": "Информация об объекте"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",

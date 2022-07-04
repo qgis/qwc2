@@ -98,6 +98,7 @@
       "minimize": "Minimizza",
       "nocompatpick": "Nessuna geometria compatibile",
       "noeditablelayers": "Nessun livello modificabile",
+      "paint": "Modifica",
       "pick": "Seleziona",
       "pickdrawfeature": "Copia geometria esistente",
       "reallydelete": "Elimina",
@@ -130,6 +131,10 @@
       "noresults": "Nessun risultato",
       "querying": "Caricando...",
       "title": "Titolo"
+    },
+    "imageeditor": {
+      "confirmclose": "Chiudere senza salvare?",
+      "title": "Editor immagine"
     },
     "importlayer": {
       "addfailed": "Impossibile aggiungere il livello",

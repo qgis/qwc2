@@ -98,6 +98,7 @@
       "minimize": "Minimizar",
       "nocompatpick": "",
       "noeditablelayers": "Sin capas a modificar.",
+      "paint": "",
       "pick": "Elegir",
       "pickdrawfeature": "",
       "reallydelete": "Borrar",
@@ -130,6 +131,10 @@
       "noresults": "Sin información disponible sobre el punto seleccionado",
       "querying": "Consultando...",
       "title": "Información del elemento"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",

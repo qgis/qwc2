@@ -98,6 +98,7 @@
       "minimize": "Minimize",
       "nocompatpick": "",
       "noeditablelayers": "No editable layers.",
+      "paint": "",
       "pick": "Pick",
       "pickdrawfeature": "",
       "reallydelete": "Delete",
@@ -130,6 +131,10 @@
       "noresults": "Valitulla pisteellä ei ole informaatiota",
       "querying": "Kysely käynnissä...",
       "title": "Ominaisuustiedot"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",

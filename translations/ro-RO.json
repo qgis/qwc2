@@ -98,6 +98,7 @@
       "minimize": "Minimizează",
       "nocompatpick": "",
       "noeditablelayers": "Tema nu conține straturi ce se pot modifica",
+      "paint": "",
       "pick": "Alege",
       "pickdrawfeature": "",
       "reallydelete": "Șterge",
@@ -130,6 +131,10 @@
       "noresults": "Nu există informații în punctul cerut",
       "querying": "Interogare...",
       "title": "Info Entități"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",

@@ -98,6 +98,7 @@
       "minimize": "Minimer",
       "nocompatpick": "",
       "noeditablelayers": "Ingen redigerbare lag",
+      "paint": "",
       "pick": "Velg",
       "pickdrawfeature": "",
       "reallydelete": "Virkelig slette",
@@ -130,6 +131,10 @@
       "noresults": "Ingen informasjon for valgt punkt",
       "querying": "Søker...",
       "title": "Objektinformasjon"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",

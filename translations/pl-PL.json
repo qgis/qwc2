@@ -98,6 +98,7 @@
       "minimize": "Minimalizuj",
       "nocompatpick": "",
       "noeditablelayers": "Brak edytowalnych warstw.",
+      "paint": "",
       "pick": "Wybierz",
       "pickdrawfeature": "",
       "reallydelete": "Usuń",
@@ -130,6 +131,10 @@
       "noresults": "Brak dostępnych danych dla wybranego punktu",
       "querying": "Przetwarzam zapytanie...",
       "title": "Feature Info"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",

@@ -35,6 +35,7 @@
         "mime-to-extensions": "1.0.2",
         "mousetrap": "1.6.5",
         "ol": "6.9.0",
+        "painterro": "^1.2.78",
         "path-browserify": "^1.0.1",
         "proj4": "2.7.5",
         "prop-types": "15.7.2",

@@ -98,6 +98,7 @@
       "minimize": "Minimální",
       "nocompatpick": "",
       "noeditablelayers": "Needitovatelná vrstva.",
+      "paint": "",
       "pick": "Výběr",
       "pickdrawfeature": "",
       "reallydelete": "Odstranit",
@@ -130,6 +131,10 @@
       "noresults": "Pro vybraný bod nejsou k dispozici žádné informace",
       "querying": "Dotazování...",
       "title": "Informace o prvku"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",

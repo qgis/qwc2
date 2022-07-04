@@ -98,6 +98,7 @@
       "minimize": "Minimize",
       "nocompatpick": "No compatible geometry found",
       "noeditablelayers": "No editable layers.",
+      "paint": "Modify",
       "pick": "Pick",
       "pickdrawfeature": "Clone existing geometry",
       "reallydelete": "Delete",
@@ -130,6 +131,10 @@
       "noresults": "No information available for the selected point",
       "querying": "Querying...",
       "title": "Feature Info"
+    },
+    "imageeditor": {
+      "confirmclose": "Close without saving?",
+      "title": "Image editor"
     },
     "importlayer": {
       "addfailed": "Failed to add layer.",
