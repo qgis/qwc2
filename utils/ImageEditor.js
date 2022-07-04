@@ -9,6 +9,7 @@
 import Painterro from 'painterro';
 import LocaleUtils from '../utils/LocaleUtils';
 import StandardStore from '../stores/StandardStore';
+import '../components/style/ModalDialog.css';
 
 export function showImageEditor(imageData, imageDataCallback) {
     // Do old-school JS rather than react portal as portal event bubbling messes up Painterro
