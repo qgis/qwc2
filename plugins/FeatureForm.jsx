@@ -173,7 +173,9 @@ class FeatureForm extends React.Component {
         this.setState({selectedFeature: ev.target.value});
     }
     clearResults = () => {
-        this.setState(FeatureForm.defaultState);
+        if (!this.props.editContext.changed) {
+            this.setState(FeatureForm.defaultState);
+        }
     }
 }
 
