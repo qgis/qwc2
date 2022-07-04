@@ -328,17 +328,21 @@ class AttributeForm extends React.Component {
                     }
                     if (element.type === "file" && element.files.length > 0) {
                         relationUploads[name] = element.files[0];
+                        relationValues[datasetname].features[index].properties[field] = "";
                     } else if (element.type === "hidden" && element.value.startsWith("data:")) {
                         const type = element.value.match(/image\/\w+/);
                         relationUploads[name] = new File([this.dataUriToBlob(element.value)], uuid.v1() + ".jpg", {type: type});
+                        relationValues[datasetname].features[index].properties[field] = "";
                     }
                 } else {
                     feature.properties[name] = value;
                     if (element.type === "file" && element.files.length > 0) {
                         featureUploads[name] = element.files[0];
+                        feature.properties[name] = "";
                     } else if (element.type === "hidden" && element.value.startsWith("data:")) {
                         const type = element.value.match(/image\/\w+/);
                         featureUploads[name] = new File([this.dataUriToBlob(element.value)], uuid.v1() + ".jpg", {type: type});
+                        feature.properties[name] = "";
                     }
                 }
             }
