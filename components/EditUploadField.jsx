@@ -65,14 +65,14 @@ export default class EditUploadField extends React.Component {
             if (this.props.showThumbnails) {
                 const extension = fileValue ? fileValue.replace(/^.*\./, '') : 'jpg';
                 const imagebuttons = [
-                    {key: 'Draw', icon: 'paint', label: LocaleUtils.trmsg("editing.paint")},
-                    {key: 'Clear', icon: 'clear', label: LocaleUtils.trmsg("editing.clearpicture")}
+                    {key: 'Draw', icon: 'paint', tooltip: LocaleUtils.trmsg("editing.paint")},
+                    {key: 'Clear', icon: 'clear', tooltip: LocaleUtils.trmsg("editing.clearpicture")}
                 ];
                 return (
                     <span className="edit-upload-field-image">
                         <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
                         {this.state.imageData ? (<input name={this.props.name} type="hidden" value={this.state.imageData} />) : null}
-                        <ButtonBar buttons={imagebuttons} onClick={this.imageButtonClicked} />
+                        <ButtonBar buttons={imagebuttons} onClick={this.imageButtonClicked} tooltipPos="top" />
                     </span>
                 );
             } else {

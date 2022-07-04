@@ -48,9 +48,8 @@ span.edit-upload-field-image > img {
     cursor: pointer;
 }
 
-span.edit-upload-field-image > button {
-    flex: 0 0 auto;
-    width: 100%;
+span.edit-upload-field-image > div.ButtonBar {
+    margin: 0;
 }
 
 span.edit-upload-field-imagelink {

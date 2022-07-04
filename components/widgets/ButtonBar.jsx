@@ -30,7 +30,11 @@ class ButtonBar extends React.Component {
         })),
         disabled: PropTypes.bool,
         mobile: PropTypes.bool,
-        onClick: PropTypes.func
+        onClick: PropTypes.func,
+        tooltipPos: PropTypes.string
+    }
+    static defaultProps = {
+        tooltipPos: 'bottom'
     }
     render() {
         return (
@@ -51,7 +55,7 @@ class ButtonBar extends React.Component {
                                 {button.icon ? (<Icon icon={button.icon} />) : null}
                                 {button.label && (!this.props.mobile || !button.icon) ? (<span>{LocaleUtils.tr(button.label)}</span>) : null}
                             </button>
-                            {button.tooltip ? (<span className="buttonbar-button-tooltip">
+                            {button.tooltip ? (<span className={"buttonbar-button-tooltip " + ("buttonbar-button-tooltip-" + this.props.tooltipPos)}>
                                 {LocaleUtils.tr(button.tooltip)}
                             </span>) : null}
                         </span>

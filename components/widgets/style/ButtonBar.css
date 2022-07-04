@@ -42,11 +42,18 @@ div.ButtonBar span.buttonbar-button-tooltip {
     font-weight: normal;
     padding: 0.5em;
     border-radius: 0.5em;
-    top: 110%;
     white-space: nowrap;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
+}
+
+div.ButtonBar span.buttonbar-button-tooltip-top {
+    bottom: 110%;
+}
+
+div.ButtonBar span.buttonbar-button-tooltip-bottom {
+    top: 110%;
 }
 
 div.ButtonBar span.buttonbar-button-container:hover span.buttonbar-button-tooltip {
