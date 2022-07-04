@@ -269,7 +269,7 @@ class AttributeForm extends React.Component {
                     this.loadRelationValues(); // Re-load relation values
                 });
             } else {
-                this.props.setEditContext(this.props.editContext.id, {feature: {}, changed: false});
+                this.props.setEditContext(this.props.editContext.id, {feature: null, changed: false});
             }
             if (this.props.onDiscard) {
                 this.props.onDiscard();
