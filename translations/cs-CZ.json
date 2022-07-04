@@ -85,7 +85,6 @@
       "add": "",
       "attrtable": "",
       "canceldelete": "Neodstraňovat",
-      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Potvrdit",
       "create": "",
@@ -104,6 +103,7 @@
       "reallydelete": "Odstranit",
       "relationcommitfailed": "",
       "select": "Vybrat",
+      "selectedpicture": "",
       "takepicture": ""
     },
     "featureform": {

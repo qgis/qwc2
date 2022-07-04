@@ -85,7 +85,6 @@
       "add": "",
       "attrtable": "",
       "canceldelete": "Nie usuwaj",
-      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Zatwierdź",
       "create": "",
@@ -104,6 +103,7 @@
       "reallydelete": "Usuń",
       "relationcommitfailed": "",
       "select": "Zaznacz",
+      "selectedpicture": "",
       "takepicture": ""
     },
     "featureform": {

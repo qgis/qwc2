@@ -85,7 +85,6 @@
       "add": "",
       "attrtable": "",
       "canceldelete": "Elimină modificările",
-      "capturedpicture": "",
       "clearpicture": "Elimină poza",
       "commit": "Salvează",
       "create": "",
@@ -104,6 +103,7 @@
       "reallydelete": "Șterge",
       "relationcommitfailed": "Salvarea relației a eșuat",
       "select": "Selectează",
+      "selectedpicture": "",
       "takepicture": "Fotografiază"
     },
     "featureform": {

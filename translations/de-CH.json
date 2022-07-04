@@ -2,373 +2,373 @@
   "locale": "de-CH",
   "messages": {
     "appmenu": {
-      "filter": "Menü filtern...",
-      "menulabel": "Karte & Werkzeuge",
+      "filter": "",
+      "menulabel": "",
       "items": {
-        "AttributeTable": "Attributtabelle",
-        "DxfExport": "DXF-Export",
-        "Editing": "Editieren",
-        "FeatureForm": "Objektformular",
-        "Help": "Hilfe",
-        "IdentifyRegion": "Region abfragen",
-        "LayerCatalog": "Ebenenkatalog",
-        "LayerTree": "Ebenen und Legende",
-        "Login": "Anmelden",
-        "Logout": "Abmelden",
-        "Measure": "Messen",
-        "MeasureLineString": "Messen linie",
-        "MeasurePolygon": "Messen polygon",
-        "Print": "Drucken",
-        "RasterExport": "Raster-Export",
-        "Redlining": "Zeichnen",
-        "Share": "Teilen",
-        "ThemeSwitcher": "Themen",
-        "Tools": "Werkzeuge",
-        "Bookmark": "Lesezeichen",
-        "TimeManager": "Zeitleiste"
+        "AttributeTable": "",
+        "DxfExport": "",
+        "Editing": "",
+        "FeatureForm": "",
+        "Help": "",
+        "IdentifyRegion": "",
+        "LayerCatalog": "",
+        "LayerTree": "",
+        "Login": "",
+        "Logout": "",
+        "Measure": "",
+        "MeasureLineString": "",
+        "MeasurePolygon": "",
+        "Print": "",
+        "RasterExport": "",
+        "Redlining": "",
+        "Share": "",
+        "ThemeSwitcher": "",
+        "Tools": "",
+        "Bookmark": "",
+        "TimeManager": ""
       }
     },
     "attribtable": {
-      "addfeature": "Objekt hinzufügen",
-      "commit": "Geänderte Zeile speichern",
-      "delete": "Löschen",
-      "deletefailed": "Ein oder mehrere Objekte konnten nicht gelöscht werden",
-      "deletefeatures": "Ausgewählte Objekte löschen",
-      "deleting": "Objekte werden gelöscht",
-      "discard": "Geänderte Zeile zurücksetzen",
-      "formeditmode": "Ausgewähltes Objekt in der Formularansicht editieren",
-      "geomnoadd": "Bitte die Formularansicht verwenden, um neue Objekte für diese Ebene zu erstellen",
-      "layer": "Ebene",
-      "loadfailed": "Die Objektdaten konnten nicht geladen werden",
-      "loading": "Laden...",
-      "nodelete": "Nicht löschen",
-      "nogeomnoform": "Die Formularansicht ist für geometrielose Ebenen nicht verfügbar",
-      "pleasereload": "Auf 'Neu laden' drücken, um die Attributtabelle zu laden...",
-      "reload": "Neu laden",
-      "selectlayer": "Ebene auswählen...",
-      "title": "Attributtabelle",
-      "zoomtoselection": "Auf ausgewählte Objekte zoomen"
+      "addfeature": "",
+      "commit": "",
+      "delete": "",
+      "deletefailed": "",
+      "deletefeatures": "",
+      "deleting": "",
+      "discard": "",
+      "formeditmode": "",
+      "geomnoadd": "",
+      "layer": "",
+      "loadfailed": "",
+      "loading": "",
+      "nodelete": "",
+      "nogeomnoform": "",
+      "pleasereload": "",
+      "reload": "",
+      "selectlayer": "",
+      "title": "",
+      "zoomtoselection": ""
     },
     "bgswitcher": {
-      "nobg": "Kein Hintergrund"
+      "nobg": ""
     },
     "bookmark": {
-      "add": "Neues Lesezeichen anlegen",
-      "addfailed": "Lesezeichen konnte nicht angelegt werden",
-      "description": "Beschreibung",
-      "lastUpdate": "Zuletzt gespeichert",
-      "manage": "Lesezeichen verwalten",
-      "notloggedin": "Sie müssen angemeldet sein, um Lesezeichen zu verwenden",
-      "open": "In aktuellem Fenster öffnen",
-      "openTab": "In neuem Fenster öffnen",
-      "remove": "Lesezeichen entfernen",
-      "removefailed": "Lesezeichen konnte nicht entfernt werden",
-      "savefailed": "Lesezeichen konnte nicht aktualisiert werden",
-      "update": "Lesezeichen aktualisieren"
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "bottombar": {
-      "mousepos_label": "Koordinaten",
-      "scale_label": "Massstab",
-      "terms_label": "Nutzungsbedingungen",
+      "mousepos_label": "",
+      "scale_label": "",
+      "terms_label": "",
       "viewertitle_label": ""
     },
     "copybtn": {
-      "click_to_copy": "In Zwischenablage kopieren",
-      "copied": "Kopiert"
+      "click_to_copy": "",
+      "copied": ""
     },
     "dxfexport": {
-      "layers": "Ebenen",
-      "selectinfo": "Rechteck um die zu exportierende Region aufziehen",
-      "symbologyscale": "Darstellungsmassstab"
+      "layers": "",
+      "selectinfo": "",
+      "symbologyscale": ""
     },
     "editing": {
-      "add": "Hinzufügen",
-      "attrtable": "Tabelle",
-      "canceldelete": "Abbrechen",
-      "capturedpicture": "Aufgenommenes Bild",
-      "clearpicture": "Zurücksetzen",
-      "commit": "Speichern",
-      "create": "Erstellen",
-      "delete": "Löschen",
-      "discard": "Abbrechen",
-      "draw": "Zeichnen",
-      "feature": "Objekt",
-      "geomreadonly": "Die Geometrie enthält Z-Werte ungleich Null und kann daher nicht veränderbar.",
-      "maximize": "Maximieren",
-      "minimize": "Minimieren",
-      "nocompatpick": "Keine kompatible Geometrie",
-      "noeditablelayers": "Keine editierbare Ebenen.",
-      "paint": "Bearb.",
-      "pick": "Auswählen",
-      "pickdrawfeature": "Existierende Geometrie kopieren",
-      "reallydelete": "Löschen",
-      "relationcommitfailed": "Einige Relationen konnten nicht gespeichert werden, siehe Tooltips der Icons für mehr Details.",
-      "select": "Auswählen",
-      "takepicture": "Bild schiessen"
+      "add": "",
+      "attrtable": "",
+      "canceldelete": "",
+      "clearpicture": "",
+      "commit": "",
+      "create": "",
+      "delete": "",
+      "discard": "",
+      "draw": "",
+      "feature": "",
+      "geomreadonly": "",
+      "maximize": "",
+      "minimize": "",
+      "nocompatpick": "",
+      "noeditablelayers": "",
+      "paint": "",
+      "pick": "",
+      "pickdrawfeature": "",
+      "reallydelete": "",
+      "relationcommitfailed": "",
+      "select": "",
+      "selectedpicture": "",
+      "takepicture": ""
     },
     "featureform": {
-      "feature": "Objekt",
-      "noresults": "Keine Ergebnisse",
-      "querying": "Objekte werden abgefragt...",
-      "title": "Objektformular"
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
     },
     "fileselector": {
-      "placeholder": "Datei auswählen"
+      "placeholder": ""
     },
     "heightprofile": {
-      "asl": "ü.M.",
-      "distance": "Distanz",
-      "export": "Exportieren",
-      "height": "Höhe",
-      "loading": "Höhenprofil wird berechnet..."
+      "asl": "",
+      "distance": "",
+      "export": "",
+      "height": "",
+      "loading": ""
     },
     "identify": {
-      "export": "Exportieren",
-      "exportformat": "Exportformat",
-      "featureReport": "Objektblatt",
-      "link": "Link",
-      "noattributes": "Keine Attribute",
-      "noresults": "Keine Resultate an der ausgewählten Position",
-      "querying": "Objekte werden abgefragt...",
-      "title": "Objektinformationen"
+      "export": "",
+      "exportformat": "",
+      "featureReport": "",
+      "link": "",
+      "noattributes": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
     },
     "imageeditor": {
-      "confirmclose": "Schließen, ohne zu speichern?",
-      "title": "Bildbearbeitung"
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
-      "addfailed": "Die Ebene konnte nicht hinzugefügt werden",
-      "addlayer": "Ebene hinzufügen",
-      "connect": "Verbinden",
-      "filter": "Filter...",
-      "loading": "Laden...",
-      "localfile": "Lokale Datei",
-      "nofeatures": "Keine Objekte konnten importiert werden",
-      "noresults": "Keine Resultate oder ungültige URL",
-      "url": "URL",
-      "urlplaceholder": "WMS, WMTS oder WFS URL eingeben..."
+      "addfailed": "",
+      "addlayer": "",
+      "connect": "",
+      "filter": "",
+      "loading": "",
+      "localfile": "",
+      "nofeatures": "",
+      "noresults": "",
+      "url": "",
+      "urlplaceholder": ""
     },
     "infotool": {
-      "clickhelpPoint": "Zu identifizierende Position in der Karte auswählen...",
-      "clickhelpPolygon": "Polygon um die zu identifizierende Objekte zeichnen"
+      "clickhelpPoint": "",
+      "clickhelpPolygon": ""
     },
     "layercatalog": {
-      "windowtitle": "Ebenenkatalog"
+      "windowtitle": ""
     },
     "layerinfo": {
-      "abstract": "Zusammenfassung",
-      "attribution": "Attribution",
-      "dataUrl": "Daten-URL",
-      "keywords": "Schlüsselwörter",
-      "legend": "Legende",
-      "maxscale": "Max. Darstellungsmassstab",
-      "metadataUrl": "Metadaten-URL",
-      "minscale": "Min. Darstellungsmassstab",
-      "title": "Ebeneninformationen"
+      "abstract": "",
+      "attribution": "",
+      "dataUrl": "",
+      "keywords": "",
+      "legend": "",
+      "maxscale": "",
+      "metadataUrl": "",
+      "minscale": "",
+      "title": ""
     },
     "layertree": {
-      "compare": "Oberste Ebene vergleichen",
-      "deletealllayers": "Alle Ebenen entfernen",
-      "importlayer": "Ebene importieren",
-      "maptip": "Kartentipps anzeigen",
-      "printlegend": "Legende drucken",
-      "separator": "Separator",
-      "separatortooltip": "Separator hinzufügen",
-      "transparency": "Transparenz",
-      "visiblefilter": "Unsichtbare Ebenen filtern",
-      "zoomtolayer": "Auf den Layer zoomen"
+      "compare": "",
+      "deletealllayers": "",
+      "importlayer": "",
+      "maptip": "",
+      "printlegend": "",
+      "separator": "",
+      "separatortooltip": "",
+      "transparency": "",
+      "visiblefilter": "",
+      "zoomtolayer": ""
     },
     "linkfeatureform": {
-      "cancel": "Abbrechen",
-      "close": "Schliessen",
-      "drawhint": "Objekt auf der Karte zeichnen...",
-      "pickhint": "Objekt auf der Karte auswählen..."
+      "cancel": "",
+      "close": "",
+      "drawhint": "",
+      "pickhint": ""
     },
     "locate": {
-      "feetUnit": "Fuss",
-      "metersUnit": "Meter",
-      "popup": "Im Umkreis von {distance} {unit} von diesem Punkt",
+      "feetUnit": "",
+      "metersUnit": "",
+      "popup": "",
       "statustooltip": {
-        "DISABLED": "Position: deaktiviert",
-        "ENABLED": "Position: aktiviert",
-        "FOLLOWING": "Position: mit GPS bewegen",
-        "LOCATING": "Position: wird bestimmt...",
-        "PERMISSION_DENIED": "Position: Zugriff verweigert"
+        "DISABLED": "",
+        "ENABLED": "",
+        "FOLLOWING": "",
+        "LOCATING": "",
+        "PERMISSION_DENIED": ""
       }
     },
     "map": {
-      "loading": "Karte wird geladen...",
-      "resetrotation": "Drehung zurücksetzen"
+      "loading": "",
+      "resetrotation": ""
     },
     "mapinfotooltip": {
-      "elevation": "Höhe",
-      "title": "Position"
+      "elevation": "",
+      "title": ""
     },
     "measureComponent": {
-      "areaLabel": "Fläche",
-      "bearingLabel": "Richtung",
-      "lengthLabel": "Länge",
-      "pointLabel": "Position"
+      "areaLabel": "",
+      "bearingLabel": "",
+      "lengthLabel": "",
+      "pointLabel": ""
     },
     "navbar": {
-      "perpage": "pro Seite"
+      "perpage": ""
     },
     "print": {
-      "grid": "Gitter",
-      "layout": "Format",
-      "legend": "Legende",
-      "maximize": "Maximieren",
-      "minimize": "Minimieren",
-      "nolayouts": "Das gewählte Thema stellt keine Druck-Vorlagen zur Verfügung.",
-      "notheme": "Kein Thema selektiert",
-      "output": "Druckausgabe",
-      "resolution": "Auflösung",
-      "rotation": "Rotation",
-      "scale": "Massstab",
-      "submit": "PDF erzeugen",
-      "wait": "Bitte warten..."
+      "grid": "",
+      "layout": "",
+      "legend": "",
+      "maximize": "",
+      "minimize": "",
+      "nolayouts": "",
+      "notheme": "",
+      "output": "",
+      "resolution": "",
+      "rotation": "",
+      "scale": "",
+      "submit": "",
+      "wait": ""
     },
     "qtdesignerform": {
-      "loading": "Formular wird geladen..."
+      "loading": ""
     },
     "rasterexport": {
-      "format": "Format:",
-      "resolution": "Auflösung",
-      "selectinfo": "Rechteck um die zu exportierende Region aufziehen"
+      "format": "",
+      "resolution": "",
+      "selectinfo": ""
     },
     "redlining": {
-      "border": "Rand",
-      "buffer": "Puffern",
-      "buffercompute": "Berechnen",
-      "bufferdistance": "Distanz",
-      "bufferlayer": "Zielebene",
-      "bufferlayername": "Objektpuffer",
-      "bufferselectfeature": "Zu pufferndes Objekt auswählen...",
-      "circle": "Kreis",
-      "delete": "Löschen",
-      "draw": "Zeichnen",
-      "edit": "Bearbeiten",
-      "fill": "Füllung",
-      "freehand": "Freihand",
-      "label": "Beschriftung",
-      "layer": "Ebene",
-      "line": "Linie",
-      "outline": "Rand",
-      "pick": "Auswählen",
-      "point": "Punkt",
-      "polygon": "Polygon",
-      "size": "Grösse",
-      "text": "Text",
-      "width": "Breite"
+      "border": "",
+      "buffer": "",
+      "buffercompute": "",
+      "bufferdistance": "",
+      "bufferlayer": "",
+      "bufferlayername": "",
+      "bufferselectfeature": "",
+      "circle": "",
+      "delete": "",
+      "draw": "",
+      "edit": "",
+      "fill": "",
+      "freehand": "",
+      "label": "",
+      "layer": "",
+      "line": "",
+      "outline": "",
+      "pick": "",
+      "point": "",
+      "polygon": "",
+      "size": "",
+      "text": "",
+      "width": ""
     },
     "scratchdrawing": {
-      "finish": "Abschliessen"
+      "finish": ""
     },
     "search": {
-      "all": "Alle",
-      "enablelayer": "Ebene einschalten",
-      "existinglayer": "Die Ebene existiert bereits in der Karte",
-      "invisiblelayer": "Das Resultat liegt auf einer Ebene, die ausgeschaltet ist.",
-      "more": "Mehr...",
-      "providerselection": "Suchdienste",
-      "search": "Suchen",
-      "searchall": "Ort suchen oder Karte hinzufügen...",
-      "searchinprogress": "Suche läuft",
-      "searchreset": "Suche zurücksetzen",
-      "themes": "Themen"
+      "all": "",
+      "enablelayer": "",
+      "existinglayer": "",
+      "invisiblelayer": "",
+      "more": "",
+      "providerselection": "",
+      "search": "",
+      "searchall": "",
+      "searchinprogress": "",
+      "searchreset": "",
+      "themes": ""
     },
     "searchbox": {
-      "filter": "Suche verfeinern",
-      "layers": "Karten",
-      "more": "weitere Treffer",
-      "morelayers": "Weitere Treffer verfügbar",
-      "nodescription": "Keine Beschreibung verfügbar",
-      "placeholder": "Ort suchen oder Karte hinzufügen...",
-      "places": "Orte",
-      "recent": "Zuletzt gesucht"
+      "filter": "",
+      "layers": "",
+      "more": "",
+      "morelayers": "",
+      "nodescription": "",
+      "placeholder": "",
+      "places": "",
+      "recent": ""
     },
     "serviceinfo": {
-      "abstract": "Zusammenfassung",
-      "contactEmail": "Email",
-      "contactOrganization": "Organisation",
-      "contactPerson": "Kontaktperson",
-      "contactPhone": "Telefon",
-      "contactPosition": "Stelle",
-      "keywords": "Schlüsselwörter",
-      "onlineResource": "Online Ressource",
-      "title": "Informationen zum Thema"
+      "abstract": "",
+      "contactEmail": "",
+      "contactOrganization": "",
+      "contactPerson": "",
+      "contactPhone": "",
+      "contactPosition": "",
+      "keywords": "",
+      "onlineResource": "",
+      "title": ""
     },
     "share": {
-      "QRCodeLinkTitle": "QR Code (Smartphone)",
-      "directLinkTitle": "Über einen direkten Link",
-      "refresh": "Permalink generieren",
-      "showpin": "Pin anzeigen",
-      "socialIntro": "In den sozialen Medien"
+      "QRCodeLinkTitle": "",
+      "directLinkTitle": "",
+      "refresh": "",
+      "showpin": "",
+      "socialIntro": ""
     },
     "snapping": {
-      "loading": "Einrastrungsgeometrien werden geladen...",
-      "snappingenabled": "Einrasten"
+      "loading": "",
+      "snappingenabled": ""
     },
     "themelayerslist": {
-      "addlayer": "Layer hinzufügen",
-      "addlayerstotheme": "Ebenen der Karte hinzufügen",
-      "addselectedlayers": "Selektierte Ebenen hinzufügen"
+      "addlayer": "",
+      "addlayerstotheme": "",
+      "addselectedlayers": ""
     },
     "themeswitcher": {
-      "addlayerstotheme": "Ebenen der Karte hinzufügen",
-      "addtotheme": "Dem aktuellen Thema hinzufügen",
-      "confirmswitch": "Ebenen, die nicht Teil des Themas sind, werden entfernt. Fortsetzen?",
-      "filter": "Filter",
+      "addlayerstotheme": "",
+      "addtotheme": "",
+      "confirmswitch": "",
+      "filter": "",
       "match": {
-        "abstract": "Zusammenfassung",
-        "keywords": "Schlüsselwörter",
-        "title": "Titel"
+        "abstract": "",
+        "keywords": "",
+        "title": ""
       },
-      "openintab": "In Tab öffnen",
-      "restrictedthemeinfo": "Sie sind nicht berechtigt oder sind nicht angemeldet"
+      "openintab": "",
+      "restrictedthemeinfo": ""
     },
     "timemanager": {
-      "animationinterval": "Animationsintervall",
-      "markers": "Marker",
-      "notemporaldata": "Keine sichtbaren Ebenen in der Karte sind mit Zeitinformationen versehen.",
-      "play": "Abspielen",
-      "playrev": "Zurück abspielen",
-      "rewind": "Zurücksetzten",
-      "stepback": "Schritt zurück",
-      "stepfwd": "Schritt vorwärts",
-      "stepsize": "Schritt",
-      "stop": "Stoppen",
-      "title": "Zeitleiste",
-      "toggle": "Zeitsteuerung aktivieren",
+      "animationinterval": "",
+      "markers": "",
+      "notemporaldata": "",
+      "play": "",
+      "playrev": "",
+      "rewind": "",
+      "stepback": "",
+      "stepfwd": "",
+      "stepsize": "",
+      "stop": "",
+      "title": "",
+      "toggle": "",
       "unit": {
-        "century": "Jahrhunderte",
-        "days": "Tage",
-        "decade": "Jahrzehnte",
-        "hours": "Stunden",
-        "milliseconds": "Millisekunden",
-        "minutes": "Minuten",
-        "months": "Monate",
-        "seconds": "Sekunden",
-        "years": "Jahre"
+        "century": "",
+        "days": "",
+        "decade": "",
+        "hours": "",
+        "milliseconds": "",
+        "minutes": "",
+        "months": "",
+        "seconds": "",
+        "years": ""
       }
     },
     "tooltip": {
-      "background": "Hintergrundkarte wechseln",
-      "fullscreendisable": "Vollbildmodus deaktivieren",
-      "fullscreenenable": "Vollbildmodus aktivieren",
-      "home": "Ganze Karte anzeigen",
-      "zoomin": "Hineinzoomen",
-      "zoomout": "Hinauszoomen"
+      "background": "",
+      "fullscreendisable": "",
+      "fullscreenenable": "",
+      "home": "",
+      "zoomin": "",
+      "zoomout": ""
     },
     "vectorlayerpicker": {
-      "prompt": "Ebenenname eingeben"
+      "prompt": ""
     },
     "window": {
-      "close": "Schliessen",
-      "dock": "Andocken",
-      "maximize": "Maximieren",
-      "undock": "Abdocken",
-      "unmaximize": "Wiederherstellen"
+      "close": "",
+      "dock": "",
+      "maximize": "",
+      "undock": "",
+      "unmaximize": ""
     }
   }
 }

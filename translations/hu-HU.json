@@ -85,7 +85,6 @@
       "add": "",
       "attrtable": "",
       "canceldelete": "Ne töröld",
-      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Jóváhagyás",
       "create": "",
@@ -104,6 +103,7 @@
       "reallydelete": "Törlés",
       "relationcommitfailed": "",
       "select": "",
+      "selectedpicture": "",
       "takepicture": ""
     },
     "featureform": {

@@ -85,7 +85,6 @@
       "add": "",
       "attrtable": "",
       "canceldelete": "Radera inte",
-      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Skicka",
       "create": "",
@@ -104,6 +103,7 @@
       "reallydelete": "Verkligen radera",
       "relationcommitfailed": "",
       "select": "Välj",
+      "selectedpicture": "",
       "takepicture": ""
     },
     "featureform": {

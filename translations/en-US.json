@@ -85,7 +85,6 @@
       "add": "Add",
       "attrtable": "Table",
       "canceldelete": "Don't delete",
-      "capturedpicture": "Captured picture",
       "clearpicture": "Clear",
       "commit": "Commit",
       "create": "Create",
@@ -104,6 +103,7 @@
       "reallydelete": "Delete",
       "relationcommitfailed": "Some relation values could not be committed, check the icon tooltips for details",
       "select": "Select",
+      "selectedpicture": "Selected picture",
       "takepicture": "Take picture"
     },
     "featureform": {

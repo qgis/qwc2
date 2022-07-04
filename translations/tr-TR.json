@@ -85,7 +85,6 @@
       "add": "",
       "attrtable": "",
       "canceldelete": "Silme",
-      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Onayla",
       "create": "",
@@ -104,6 +103,7 @@
       "reallydelete": "Sil",
       "relationcommitfailed": "",
       "select": "Seçim",
+      "selectedpicture": "",
       "takepicture": ""
     },
     "featureform": {

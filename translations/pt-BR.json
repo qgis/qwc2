@@ -85,7 +85,6 @@
       "add": "",
       "attrtable": "",
       "canceldelete": "Não apagues",
-      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Comprometer-se",
       "create": "",
@@ -104,6 +103,7 @@
       "reallydelete": "Excluir",
       "relationcommitfailed": "",
       "select": "Selecione",
+      "selectedpicture": "",
       "takepicture": ""
     },
     "featureform": {

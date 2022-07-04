@@ -85,7 +85,6 @@
       "add": "",
       "attrtable": "Table",
       "canceldelete": "Annuler la suppression",
-      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Appliquer",
       "create": "",
@@ -104,6 +103,7 @@
       "reallydelete": "Supprimer",
       "relationcommitfailed": "Certaines relations n'ont pas pu être enregistrées. Pour plus de détails consulter le boutons d'informations",
       "select": "Sélectionner",
+      "selectedpicture": "",
       "takepicture": "Ajouter une photo"
     },
     "featureform": {

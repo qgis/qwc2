@@ -85,7 +85,6 @@
       "add": "",
       "attrtable": "",
       "canceldelete": "Ikke slett",
-      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Bekreft",
       "create": "",
@@ -104,6 +103,7 @@
       "reallydelete": "Virkelig slette",
       "relationcommitfailed": "",
       "select": "Velg",
+      "selectedpicture": "",
       "takepicture": ""
     },
     "featureform": {

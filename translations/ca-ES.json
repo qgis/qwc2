@@ -85,7 +85,6 @@
       "add": "",
       "attrtable": "",
       "canceldelete": "No esborrar",
-      "capturedpicture": "",
       "clearpicture": "Netejar imatge",
       "commit": "Confirmar",
       "create": "",
@@ -104,6 +103,7 @@
       "reallydelete": "Esborrar",
       "relationcommitfailed": "Ha fallat el commit",
       "select": "Seleccionar",
+      "selectedpicture": "",
       "takepicture": "Escull imatge"
     },
     "featureform": {

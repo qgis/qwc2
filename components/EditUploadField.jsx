@@ -82,7 +82,7 @@ export default class EditUploadField extends React.Component {
                         {fileValue ? (
                             <a href={fileUrl} rel="noreferrer" target="_blank">{fileValue.replace(/.*\//, '')}</a>
                         ) : (
-                            <a href="#" onClick={(ev) => {this.download(imageData, this.props.fieldId + "." + extension); ev.preventDefault();}} rel="noreferrer" target="_blank">{LocaleUtils.tr("editing.capturedpicture")}</a>
+                            <a href="#" onClick={(ev) => {this.download(imageData, this.props.fieldId + "." + extension); ev.preventDefault();}} rel="noreferrer" target="_blank">{LocaleUtils.tr("editing.selectedpicture")}</a>
                         )}
                         <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
                         <Icon icon="clear" onClick={this.props.disabled ? null : () => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, null); }} />
