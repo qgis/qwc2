@@ -184,6 +184,10 @@ button.button-accept {
     background-color: rgb(127,255,127);
 }
 
+button.button-warning {
+    background-color: #ffd979;
+}
+
 button.button-reject {
     background-color: rgb(255,127,127);
 }

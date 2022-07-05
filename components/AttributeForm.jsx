@@ -49,7 +49,8 @@ class AttributeForm extends React.Component {
         busy: false,
         deleteClicked: false,
         childEdit: null,
-        relationTables: {}
+        relationTables: {},
+        formValid: true
     }
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.editContext.changed !== this.props.editContext.changed) {
@@ -75,7 +76,7 @@ class AttributeForm extends React.Component {
         let commitBar = null;
         if (this.props.editContext.changed) {
             const commitButtons = [
-                {key: 'Commit', icon: 'ok', label: LocaleUtils.trmsg("editing.commit"), extraClasses: "button-accept", type: "submit"},
+                {key: 'Commit', icon: this.state.formValid ? 'ok' : 'warning', label: this.state.formValid ? LocaleUtils.trmsg("editing.commit") : LocaleUtils.trmsg("editing.invalidform"), extraClasses: this.state.formValid ? "button-accept" : "button-warning", type: "submit", disabled: !this.state.formValid},
                 {key: 'Discard', icon: 'remove', label: LocaleUtils.trmsg("editing.discard"), extraClasses: "button-reject"}
             ];
             commitBar = (<ButtonBar buttons={commitButtons} onClick={this.onDiscard}/>); /* submit is handled via onSubmit in the form */
@@ -118,7 +119,7 @@ class AttributeForm extends React.Component {
                 {this.props.editContext.geomReadOnly ? (
                     <div className="attrib-form-geom-readonly">{LocaleUtils.tr("editing.geomreadonly")}</div>
                 ) : null}
-                <form action="" onSubmit={this.onSubmit}>
+                <form action="" onChange={ev => this.checkValidity(ev.currentTarget)} onSubmit={this.onSubmit} ref={this.checkValidity}>
                     {this.props.editConfig.form ? (
                         <QtDesignerForm addRelationRecord={this.addRelationRecord} editLayerId={this.props.editConfig.editDataset}
                             editRelationRecord={this.editRelationRecord} feature={this.props.editContext.feature}
@@ -274,6 +275,11 @@ class AttributeForm extends React.Component {
             if (this.props.onDiscard) {
                 this.props.onDiscard();
             }
+        }
+    }
+    checkValidity = (form) => {
+        if (form) {
+            this.setState({formValid: form.checkValidity()});
         }
     }
     onSubmit = (ev) => {

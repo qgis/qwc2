@@ -97,6 +97,7 @@
     "editing.draw",
     "editing.feature",
     "editing.geomreadonly",
+    "editing.invalidform",
     "editing.maximize",
     "editing.minimize",
     "editing.nocompatpick",

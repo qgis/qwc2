@@ -93,6 +93,7 @@
       "draw": "Tegn",
       "feature": "Objekt",
       "geomreadonly": "",
+      "invalidform": "",
       "maximize": "Maksimer",
       "minimize": "Minimer",
       "nocompatpick": "",

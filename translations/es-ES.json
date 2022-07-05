@@ -93,6 +93,7 @@
       "draw": "Trazar",
       "feature": "Elemento",
       "geomreadonly": "",
+      "invalidform": "",
       "maximize": "Maximizar",
       "minimize": "Minimizar",
       "nocompatpick": "",

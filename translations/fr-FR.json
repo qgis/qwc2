@@ -93,6 +93,7 @@
       "draw": "Dessiner",
       "feature": "Objet",
       "geomreadonly": "",
+      "invalidform": "",
       "maximize": "Maximiser",
       "minimize": "Minimiser",
       "nocompatpick": "Aucune géométrie compatible trouvée",

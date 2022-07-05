@@ -93,6 +93,7 @@
       "draw": "Disegna",
       "feature": "Oggetto",
       "geomreadonly": "La geometria contiene valori Z non nulli ed è quindi di sola lettura.",
+      "invalidform": "Formulario invalido",
       "maximize": "Massimizza",
       "minimize": "Minimizza",
       "nocompatpick": "Nessuna geometria compatibile",

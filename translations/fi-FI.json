@@ -93,6 +93,7 @@
       "draw": "Draw",
       "feature": "Feature",
       "geomreadonly": "",
+      "invalidform": "",
       "maximize": "Maximize",
       "minimize": "Minimize",
       "nocompatpick": "",
