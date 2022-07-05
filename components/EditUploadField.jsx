@@ -72,7 +72,7 @@ export default class EditUploadField extends React.Component {
                     <span className="edit-upload-field-image">
                         <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
                         {this.state.imageData ? (<input name={this.props.name} type="hidden" value={this.state.imageData} />) : null}
-                        <ButtonBar buttons={imagebuttons} onClick={this.imageButtonClicked} tooltipPos="top" />
+                        {!this.props.disabled ? (<ButtonBar buttons={imagebuttons} onClick={this.imageButtonClicked} tooltipPos="top" />) : null}
                     </span>
                 );
             } else {
