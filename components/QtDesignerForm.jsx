@@ -57,7 +57,8 @@ class QtDesignerForm extends React.Component {
     static defaultState = {
         activetabs: {},
         formdata: null,
-        loading: false
+        loading: false,
+        loadingReqId: null
     }
     constructor(props) {
         super(props);
@@ -479,7 +480,8 @@ class QtDesignerForm extends React.Component {
             explicitArray: false,
             mergeAttrs: true
         };
-        this.setState({loading: true});
+        const loadingReqId = uuid.v1();
+        this.setState({loading: true, loadingReqId: loadingReqId});
         xml2js.parseString(data, options, (err, json) => {
             const relationTables = {};
             const externalFields = {};
@@ -488,10 +490,12 @@ class QtDesignerForm extends React.Component {
             json.externalFields = externalFields;
             if (FormPreprocessors[this.props.editLayerId]) {
                 FormPreprocessors[this.props.editLayerId](json, this.props.feature, (formData) => {
-                    this.setState({formData: formData, loading: false});
+                    if (this.state.loadingReqId === loadingReqId) {
+                        this.setState({formData: formData, loading: false, loadingReqId: null});
+                    }
                 });
             } else {
-                this.setState({formData: json, loading: false});
+                this.setState({formData: json, loading: false, loadingReqId: null});
             }
             this.props.setRelationTables(relationTables);
         });
