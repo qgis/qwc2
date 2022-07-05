@@ -131,7 +131,7 @@ class EditingSupport extends React.Component {
         modifyInteraction.on('modifyend', () => {
             this.commitCurrentFeature();
         }, this);
-        modifyInteraction.setActive(!this.props.editContext.geomReadOnly);
+        modifyInteraction.setActive(!this.props.editContext.geomReadOnly && this.props.editContext.geomType);
         this.props.map.addInteraction(modifyInteraction);
         this.interaction = modifyInteraction;
     }
