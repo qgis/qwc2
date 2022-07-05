@@ -94,7 +94,7 @@ class LinkFeatureForm extends React.Component {
                     </div>
                 </div>
             );
-        } else {
+        } else if (editContext.feature) {
             const drawing = (editContext.action === 'Draw' && !editContext.feature.geometry && this.props.editConfig.geomType);
 
             return (
@@ -104,7 +104,7 @@ class LinkFeatureForm extends React.Component {
                             <span>{LocaleUtils.tr("linkfeatureform.drawhint")}</span>
                         </div>
                     ) : (
-                        <AttributeForm editConfig={this.props.editConfig} editContext={editContext} iface={this.props.iface} />
+                        <AttributeForm editConfig={this.props.editConfig} editContext={editContext} iface={this.props.iface} onDiscard={this.onDiscard} />
                     )}
                     <div className="link-feature-form-close">
                         <button className="button" disabled={editContext.changed} onClick={this.finish}>
@@ -113,6 +113,8 @@ class LinkFeatureForm extends React.Component {
                     </div>
                 </div>
             );
+        } else {
+            return null;
         }
     }
     childPickQuery = (coordinate) => {
@@ -147,6 +149,13 @@ class LinkFeatureForm extends React.Component {
     pickFeatureSelected = (feature) => {
         this.unhoverFeature(feature);
         this.props.finished(feature, false);
+    }
+    onDiscard = () => {
+        const editContext = this.props.editing.contexts[this.props.editContextId];
+        if (editContext.action === "Draw") {
+            // Discarded draw = cancel
+            this.props.finished(null, false);
+        }
     }
 }
 
