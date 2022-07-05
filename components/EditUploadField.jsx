@@ -26,6 +26,7 @@ export default class EditUploadField extends React.Component {
         disabled: PropTypes.bool,
         fieldId: PropTypes.string,
         name: PropTypes.string,
+        report: PropTypes.bool,
         showThumbnails: PropTypes.bool,
         updateField: PropTypes.func,
         updateFile: PropTypes.func,
@@ -65,14 +66,14 @@ export default class EditUploadField extends React.Component {
             if (this.props.showThumbnails) {
                 const extension = fileValue ? fileValue.replace(/^.*\./, '') : 'jpg';
                 const imagebuttons = [
-                    {key: 'Draw', icon: 'paint', tooltip: LocaleUtils.trmsg("editing.paint")},
-                    {key: 'Clear', icon: 'clear', tooltip: LocaleUtils.trmsg("editing.clearpicture")}
+                    {key: 'Draw', icon: 'paint', tooltip: LocaleUtils.trmsg("editing.paint"), disabled: this.props.disabled},
+                    {key: 'Clear', icon: 'clear', tooltip: LocaleUtils.trmsg("editing.clearpicture"), disabled: this.props.disabled}
                 ];
                 return (
                     <span className="edit-upload-field-image">
                         <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
                         {this.state.imageData ? (<input name={this.props.name} type="hidden" value={this.state.imageData} />) : null}
-                        {!this.props.disabled ? (<ButtonBar buttons={imagebuttons} onClick={this.imageButtonClicked} tooltipPos="top" />) : null}
+                        {!this.props.report ? (<ButtonBar buttons={imagebuttons} onClick={this.imageButtonClicked} tooltipPos="top" />) : null}
                     </span>
                 );
             } else {
@@ -85,7 +86,7 @@ export default class EditUploadField extends React.Component {
                             <a href="#" onClick={(ev) => {this.download(imageData, this.props.fieldId + "." + extension); ev.preventDefault();}} rel="noreferrer" target="_blank">{LocaleUtils.tr("editing.selectedpicture")}</a>
                         )}
                         <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
-                        <Icon icon="clear" onClick={this.props.disabled ? null : () => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, null); }} />
+                        {this.props.report ? null : (<Icon icon="clear" onClick={this.props.disabled ? null : () => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, null); }} />)}
                     </span>
                 );
             }
@@ -93,10 +94,10 @@ export default class EditUploadField extends React.Component {
             return (
                 <span className={"edit-upload-field edit-upload-field-imagelink" + (this.props.disabled ? " edit-upload-field-disabled" : "")}>
                     <a href={fileUrl} rel="noreferrer" target="_blank">{fileValue.replace(/.*\//, '')}</a>
-                    <Icon icon="clear" onClick={this.props.disabled ? null : () => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, null); }} />
+                    {this.props.report ? null : (<Icon icon="clear" onClick={this.props.disabled ? null : () => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, null); }} />)}
                 </span>
             );
-        } else {
+        } else if (!this.props.report) {
             return (
                 <span className={"edit-upload-field-input" + (this.props.disabled ? " edit-upload-field-input-disabled" : "")}>
                     <input disabled={this.props.disabled} name={this.props.name} type="file" {...constraints} onChange={this.imageSelected} />
@@ -104,6 +105,8 @@ export default class EditUploadField extends React.Component {
                     {this.state.camera ? this.renderCaptureFrame() : null}
                 </span>
             );
+        } else {
+            return null;
         }
     }
     imageSelected = (ev) => {

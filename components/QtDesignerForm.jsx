@@ -267,7 +267,7 @@ class QtDesignerForm extends React.Component {
                 const uploadValue = ((feature.properties || {})[fieldId] || "");
                 const uploadElName = elname.replace(/__upload/, '');
                 const constraints = {accept: prop.text || ""};
-                return (<EditUploadField constraints={constraints} dataset={dataset} disabled={inputConstraints.readOnly} fieldId={fieldId} name={uploadElName} updateField={updateField} value={uploadValue} />);
+                return (<EditUploadField constraints={constraints} dataset={dataset} disabled={inputConstraints.readOnly} fieldId={fieldId} name={uploadElName} report={this.props.report} updateField={updateField} value={uploadValue} />);
             } else {
                 return (<input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} size={5} style={fontStyle} type="text" value={value} />);
             }
