@@ -106,7 +106,7 @@ class QtDesignerForm extends React.Component {
             return null;
         }
     }
-    renderLayout = (layout, feature, dataset, updateField, nametransform = (name) => name) => {
+    renderLayout = (layout, feature, dataset, updateField, nametransform = (name) => name, visible = true) => {
         let containerClass = "";
         let itemStyle = () => ({});
         let containerStyle = {};
@@ -136,8 +136,11 @@ class QtDesignerForm extends React.Component {
         } else {
             return null;
         }
+        if (!visible) {
+            containerStyle.display = 'none';
+        }
         return (
-            <div className={containerClass} style={containerStyle}>
+            <div className={containerClass} key={layout.name} style={containerStyle}>
                 {layout.item.map((item, idx) => {
                     let child = null;
                     if (item.widget) {
@@ -231,7 +234,6 @@ class QtDesignerForm extends React.Component {
                 return null;
             }
             const activetab = this.state.activetabs[widget.name] || widget.widget[0].name;
-            const activewidget = widget.widget.find(child => child.name === activetab);
             return (
                 <div>
                     <div className="qt-designer-form-tabbar">
@@ -246,7 +248,9 @@ class QtDesignerForm extends React.Component {
                         ))}
                     </div>
                     <div className="qt-designer-form-frame">
-                        {this.renderLayout(activewidget.layout, feature, dataset, updateField, nametransform)}
+                        {widget.widget.filter(child => child.layout).map(child => (
+                            this.renderLayout(child.layout, feature, dataset, updateField, nametransform, child.name === activetab)
+                        ))}
                     </div>
                 </div>
             );
@@ -534,6 +538,7 @@ class QtDesignerForm extends React.Component {
     }
     reformatLayout = (layout, relationTables, externalFields) => {
         layout.item = MiscUtils.ensureArray(layout.item);
+        layout.name = layout.name || uuid.v1();
         layout.item.forEach(item => {
             if (!item) {
                 return;
