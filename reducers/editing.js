@@ -22,7 +22,7 @@ const checkGeomReadOnly = (oldState, newFeature) => {
     if (newFeature && newFeature.id !== (oldState.feature || {}).id) {
         return nonZeroZCoordinate((newFeature.geometry || {}).coordinates || []);
     }
-    return false;
+    return (oldState || {}).geomReadOnly || false;
 };
 
 export default function editing(state = defaultState, action) {
