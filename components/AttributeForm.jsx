@@ -241,13 +241,15 @@ class AttributeForm extends React.Component {
                 properties: {...feature.properties}
             };
             // If feature id is known, i.e. not when drawing new feature, set foreign key
+            const changed = this.props.editContext.changed;
             const fk = this.state.relationTables[table];
             if (this.props.editContext.action !== "Draw" && feature.properties[fk] !== this.props.editContext.feature.id) {
                 newRelationValues[table].features[idx].properties[fk] = this.props.editContext.feature.id;
                 newRelationValues[table].features[idx].__status__ = "changed";
+                changed = true;
             }
             const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
-            this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
+            this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: changed});
         }
         this.setState({childEdit: null});
     }
