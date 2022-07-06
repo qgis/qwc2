@@ -122,7 +122,7 @@ class LinkFeatureForm extends React.Component {
         this.props.iface.getFeature(this.props.editConfig.editDataset, coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
             const features = featureCollection ? featureCollection.features : null;
             if (features.length === 1) {
-                this.props.finished(features[0], false);
+                this.props.finished(features[0]);
             } else {
                 this.setState({pickedFeatures: features});
             }
@@ -130,7 +130,7 @@ class LinkFeatureForm extends React.Component {
     }
     finish = () => {
         const editContext = this.props.editing.contexts[this.props.editContextId];
-        this.props.finished(editContext.feature, editContext.changed);
+        this.props.finished(editContext.feature);
     }
     hoverFeature = (feature) => {
         const layer = {
@@ -148,13 +148,13 @@ class LinkFeatureForm extends React.Component {
     }
     pickFeatureSelected = (feature) => {
         this.unhoverFeature(feature);
-        this.props.finished(feature, false);
+        this.props.finished(feature);
     }
     onDiscard = () => {
         const editContext = this.props.editing.contexts[this.props.editContextId];
         if (editContext.action === "Draw") {
             // Discarded draw = cancel
-            this.props.finished(null, false);
+            this.props.finished(null);
         }
     }
 }

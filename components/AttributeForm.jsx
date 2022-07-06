@@ -228,37 +228,27 @@ class AttributeForm extends React.Component {
         const feature = this.props.editContext.feature.relationValues[dataset].features[idx];
         this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, dataset, idx, feature, finishCallback: this.finishEditRelationRecord}});
     }
-    finishEditRelationRecord = (feature, changed) => {
+    finishEditRelationRecord = (feature) => {
         this.props.clearEditContext(this.state.childEdit.editContextId, this.props.editContext.id);
         if (feature) {
             const table = this.state.childEdit.dataset;
             const idx = this.state.childEdit.idx;
             const newRelationValues = {...this.props.editContext.feature.relationValues};
-            // Foreign key will be set below
-            changed = changed || (feature.properties[this.state.relationTables[table]] !== this.props.editContext.feature.id);
-            let status = newRelationValues[table].features[idx].__status__;
-            if (status === "empty") {
-                status = "new";
-            } else if (changed && status !== "new") {
-                status = "changed";
-            }
             newRelationValues[table] = {...newRelationValues[table]};
             newRelationValues[table].features = newRelationValues[table].features.slice(0);
             newRelationValues[table].features[idx] = {
                 ...feature,
-                properties: {
-                    ...feature.properties
-                },
-                __status__: status
+                properties: {...feature.properties}
             };
             // If feature id is known, i.e. not when drawing new feature, set foreign key
-            if (this.props.editContext.action !== "Draw") {
-                newRelationValues[table].features[idx].properties[this.state.relationTables[table]] = this.props.editContext.feature.id;
+            const fk = this.state.relationTables[table];
+            if (this.props.editContext.action !== "Draw" && feature.properties[fk] !== this.props.editContext.feature.id) {
+                newRelationValues[table].features[idx].properties[fk] = this.props.editContext.feature.id;
+                newRelationValues[table].features[idx].__status__ = "changed";
             }
             const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
-            this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: this.props.editContext.changed || changed});
+            this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
         }
-
         this.setState({childEdit: null});
     }
     onDiscard = (action) => {
@@ -382,18 +372,22 @@ class AttributeForm extends React.Component {
 
             // Set CRS and foreign key
             Object.keys(relationValues).forEach(relTable => {
-                relationValues[relTable].features = relationValues[relTable].features.filter(relFeature => relFeature.__status__ !== "empty").map(relFeature => ({
-                    ...relFeature,
-                    type: "Feature",
-                    properties: {
-                        ...relFeature.properties,
-                        [this.state.relationTables[relTable]]: newFeature.id
-                    },
-                    crs: {
-                        type: "name",
-                        properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.projection)}
-                    }
-                }));
+                relationValues[relTable].features = relationValues[relTable].features.filter(relFeature => relFeature.__status__ !== "empty").map(relFeature => {
+                    const fk = [this.state.relationTables[relTable]];
+                    return {
+                        ...relFeature,
+                        type: "Feature",
+                        properties: {
+                            ...relFeature.properties,
+                            [fk]: newFeature.id
+                        },
+                        __status__: relFeature.__status__ || (relFeature.properties[fk] !== newFeature.id ? "changed" : ""),
+                        crs: {
+                            type: "name",
+                            properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.projection)}
+                        }
+                    };
+                });
             });
 
             const mapPrefix = this.editMapPrefix();
