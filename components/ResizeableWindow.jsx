@@ -36,8 +36,10 @@ class ResizeableWindow extends React.Component {
         initiallyDocked: PropTypes.bool,
         maxHeight: PropTypes.number,
         maxWidth: PropTypes.number,
+        maximizeable: PropTypes.bool,
         minHeight: PropTypes.number,
         minWidth: PropTypes.number,
+        minimizeable: PropTypes.bool,
         onClose: PropTypes.func,
         onGeometryChanged: PropTypes.func,
         raiseWindow: PropTypes.func,
@@ -58,6 +60,8 @@ class ResizeableWindow extends React.Component {
         minHeight: 50,
         maxWidth: null,
         maxHeight: null,
+        maximizeable: true,
+        minimizeable: false,
         visible: true,
         dockable: true,
         onGeometryChanged: () => {}
@@ -82,6 +86,7 @@ class ResizeableWindow extends React.Component {
             };
         }
         this.dragShield = null;
+        this.titlebar = null;
         this.id = uuid.v1();
     }
     computeInitialX = (x) => {
@@ -136,12 +141,13 @@ class ResizeableWindow extends React.Component {
         });
         const style = {display: this.props.visible ? 'initial' : 'none'};
         const maximized = this.state.geometry.maximized ? true : false;
+        const minimized = this.state.geometry.minimized ? true : false;
         const zIndex = 10 + this.props.windowStacking.findIndex(item => item === this.id);
         const dockBottom  = this.props.dockable === "bottom";
         const dockIconSuffix = dockBottom ? "_bottom" : "";
 
         const content = [
-            (<div className="resizeable-window-titlebar" key="titlebar" onDoubleClick={this.toggleMaximize}>
+            (<div className="resizeable-window-titlebar" key="titlebar" onDoubleClick={this.toggleMaximize} ref={el => { this.titlebar = el; }}>
                 {icon}
                 <span className="resizeable-window-titlebar-title">
                     {this.props.title ? LocaleUtils.tr(this.props.title) : (this.props.titlelabel || "")}
@@ -155,7 +161,8 @@ class ResizeableWindow extends React.Component {
                         onClick={this.toggleDock}
                         titlemsgid={this.state.geometry.docked ? LocaleUtils.trmsg("window.undock") : LocaleUtils.trmsg("window.dock")} />
                 ) : null}
-                <Icon className="resizeable-window-titlebar-control" icon={maximized ? "unmaximize" : "maximize"} onClick={this.toggleMaximize} titlemsgid={maximized ? LocaleUtils.trmsg("window.unmaximize") : LocaleUtils.trmsg("window.maximize")} />
+                {this.props.maximizeable ? (<Icon className="resizeable-window-titlebar-control" icon={minimized ? "unminimize" : "minimize"} onClick={this.toggleMinimize} titlemsgid={maximized ? LocaleUtils.trmsg("window.unminimize") : LocaleUtils.trmsg("window.minimize")} />) : null}
+                {this.props.maximizeable ? (<Icon className="resizeable-window-titlebar-control" icon={maximized ? "unmaximize" : "maximize"} onClick={this.toggleMaximize} titlemsgid={maximized ? LocaleUtils.trmsg("window.unmaximize") : LocaleUtils.trmsg("window.maximize")} />) : null}
                 {this.props.onClose ? (<Icon className="resizeable-window-titlebar-control" icon="remove" onClick={this.onClose} titlemsgid={LocaleUtils.trmsg("window.close")} />) : null}
             </div>),
             (<div className={bodyclasses} key="body" onMouseDown={(ev) => { this.stopEvent(ev); this.props.raiseWindow(this.id); }} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
@@ -167,6 +174,7 @@ class ResizeableWindow extends React.Component {
         const windowclasses = classnames({
             "resizeable-window": true,
             "resizeable-window-maximized": this.state.geometry.maximized,
+            "resizeable-window-minimized": this.state.geometry.minimized,
             "resizeable-window-docked-left": this.state.geometry.docked && !dockBottom && !this.state.geometry.maximized,
             "resizeable-window-docked-bottom": this.state.geometry.docked && dockBottom && !this.state.geometry.maximized
         });
@@ -180,7 +188,7 @@ class ResizeableWindow extends React.Component {
             topLeft: true,
             topRight: true
         };
-        if (this.state.geometry.maximized) {
+        if (this.state.geometry.maximized || this.state.geometry.minimized) {
             resizeMode = false;
         } else if (this.state.geometry.docked) {
             resizeMode = {
@@ -235,10 +243,18 @@ class ResizeableWindow extends React.Component {
         };
         this.setState({geometry: geometry});
     }
+    toggleMinimize = () => {
+        const geometry = {
+            ...this.state.geometry,
+            minimized: !this.state.geometry.minimized
+        };
+        this.setState({geometry: geometry});
+    }
     toggleMaximize = () => {
         const geometry = {
             ...this.state.geometry,
-            maximized: !this.state.geometry.maximized
+            maximized: !this.state.geometry.maximized,
+            minimized: false
         };
         this.setState({geometry: geometry});
     }

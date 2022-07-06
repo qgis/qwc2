@@ -23,6 +23,11 @@ div.resizeable-window-maximized {
     height: initial!important;
 }
 
+div.resizeable-window-minimized {
+    height: 2.5em!important;
+    min-height: 2.5em!important;
+}
+
 div.resizeable-window-docked-left {
     transform: none!important;
     left: 0!important;
