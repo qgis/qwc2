@@ -368,8 +368,10 @@
       "close": "Fechar",
       "dock": "Juntar",
       "maximize": "",
+      "minimize": "",
       "undock": "Desencaixar",
-      "unmaximize": ""
+      "unmaximize": "",
+      "unminimize": ""
     }
   }
 }

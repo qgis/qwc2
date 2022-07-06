@@ -302,7 +302,9 @@
     "window.close",
     "window.dock",
     "window.maximize",
+    "window.minimize",
     "window.undock",
-    "window.unmaximize"
+    "window.unmaximize",
+    "window.unminimize"
   ]
 }

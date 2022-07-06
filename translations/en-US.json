@@ -368,8 +368,10 @@
       "close": "Close",
       "dock": "Dock",
       "maximize": "Maximize",
+      "minimize": "Minimize",
       "undock": "Undock",
-      "unmaximize": "Restore"
+      "unmaximize": "Restore",
+      "unminimize": "Unminimize"
     }
   }
 }

@@ -368,8 +368,10 @@
       "close": "Schließen",
       "dock": "Andocken",
       "maximize": "Maximieren",
+      "minimize": "Minimieren",
       "undock": "Abdocken",
-      "unmaximize": "Wiederherstellen"
+      "unmaximize": "Wiederherstellen",
+      "unminimize": "Vergrössern"
     }
   }
 }

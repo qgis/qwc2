@@ -368,8 +368,10 @@
       "close": "",
       "dock": "",
       "maximize": "",
+      "minimize": "",
       "undock": "",
-      "unmaximize": ""
+      "unmaximize": "",
+      "unminimize": ""
     }
   }
 }

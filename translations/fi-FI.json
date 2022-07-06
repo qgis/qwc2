@@ -368,8 +368,10 @@
       "close": "Sulje",
       "dock": "Kiinnitä",
       "maximize": "",
+      "minimize": "",
       "undock": "Irrota",
-      "unmaximize": ""
+      "unmaximize": "",
+      "unminimize": ""
     }
   }
 }

@@ -368,8 +368,10 @@
       "close": "Cerrar",
       "dock": "Acoplar",
       "maximize": "",
+      "minimize": "",
       "undock": "Desacoplar",
-      "unmaximize": ""
+      "unmaximize": "",
+      "unminimize": ""
     }
   }
 }

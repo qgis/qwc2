@@ -368,8 +368,10 @@
       "close": "Kapat",
       "dock": "Sabitle",
       "maximize": "",
+      "minimize": "",
       "undock": "Çöz",
-      "unmaximize": ""
+      "unmaximize": "",
+      "unminimize": ""
     }
   }
 }

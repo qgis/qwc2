@@ -368,8 +368,10 @@
       "close": "Lukk",
       "dock": "Fest",
       "maximize": "",
+      "minimize": "",
       "undock": "Utløs",
-      "unmaximize": ""
+      "unmaximize": "",
+      "unminimize": ""
     }
   }
 }

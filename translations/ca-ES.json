@@ -368,8 +368,10 @@
       "close": "Tancar",
       "dock": "Acoblar",
       "maximize": "Maximitzar",
+      "minimize": "",
       "undock": "Desacoblar",
-      "unmaximize": "Minimitzar"
+      "unmaximize": "Minimitzar",
+      "unminimize": ""
     }
   }
 }

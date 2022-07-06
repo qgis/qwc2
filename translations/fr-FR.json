@@ -368,8 +368,10 @@
       "close": "Fermer",
       "dock": "Attacher",
       "maximize": "Agrandir",
+      "minimize": "",
       "undock": "Détacher",
-      "unmaximize": "Réduire"
+      "unmaximize": "Réduire",
+      "unminimize": ""
     }
   }
 }
