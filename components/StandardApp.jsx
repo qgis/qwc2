@@ -142,6 +142,7 @@ class AppInitComponent extends React.Component {
             });
         });
         const task = ConfigUtils.getConfigProp("startupTask")
+        console.log(task);
         if(task){
             this.props.setCurrentTask(task.key, task.mode, task.mapClickAction);
         }
@@ -158,6 +159,7 @@ const AppInit = connect(state => ({
     currentTask: state.task.id
 }), {
     themesLoaded: themesLoaded,
+    setCurrentTask: setCurrentTask,
     changeSearch: changeSearch,
     setCurrentTheme: setCurrentTheme,
     setStartupParameters: setStartupParameters,
