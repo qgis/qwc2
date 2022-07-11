@@ -125,7 +125,7 @@ class AttributeForm extends React.Component {
                             editRelationRecord={this.editRelationRecord} feature={this.props.editContext.feature}
                             fields={this.fieldsMap(this.props.editConfig.fields)} form={this.props.editConfig.form} iface={this.props.iface}
                             mapPrefix={this.editMapPrefix()} readOnly={readOnly} removeRelationRecord={this.removeRelationRecord}
-                            report={this.props.report}
+                            reorderRelationRecord={this.reorderRelationRecord} report={this.props.report}
                             setRelationTables={this.setRelationTables} switchEditContext={this.startChildEdit}
                             updateField={this.updateField} updateRelationField={this.updateRelationField} />
                     ) : (
@@ -161,14 +161,20 @@ class AttributeForm extends React.Component {
         if (!isEmpty(this.state.relationTables)) {
             const feature = this.props.editContext.feature;
             if (feature.id) {
-                const relTables = Object.entries(this.state.relationTables).map(([name, fk]) => name + ":" + fk).join(",");
+                const relTables = Object.entries(this.state.relationTables).map(([name, entry]) => {
+                    if (entry.sortcol) {
+                        return name + ":" + entry.fk + ":" + entry.sortcol;
+                    } else {
+                        return name + ":" + entry.fk;
+                    }
+                }).join(",");
                 this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, this.props.map.projection, (response => {
                     const newFeature = {...feature, relationValues: response.relationvalues};
                     this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
                 }));
             } else {
-                const newFeature = {...feature, relationValues: Object.entries(this.state.relationTables).reduce((res, [name, fk]) => ({...res, [name]: {
-                    fk: fk,
+                const newFeature = {...feature, relationValues: Object.entries(this.state.relationTables).reduce((res, [name, entry]) => ({...res, [name]: {
+                    fk: entry.fk,
                     features: []
                 }}), {})};
                 this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
@@ -184,10 +190,33 @@ class AttributeForm extends React.Component {
         };
         // If feature id is known, i.e. not when drawing new feature, set foreign key
         if (this.props.editContext.action !== "Draw") {
-            newRelFeature.properties[this.state.relationTables[table]] = this.props.editContext.feature.id;
+            newRelFeature.properties[this.state.relationTables[table].fk] = this.props.editContext.feature.id;
         }
         newRelationValues[table] = {...newRelationValues[table]};
         newRelationValues[table].features = newRelationValues[table].features.concat([newRelFeature]);
+        const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
+        this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
+    }
+    reorderRelationRecord = (table, idx, dir) => {
+        const nFeatures = this.props.editContext.feature.relationValues[table].features.length;
+        if ((dir < 0 && idx === 0) || (dir > 0 && idx >= nFeatures - 1)) {
+            return;
+        }
+        const newRelationValues = {...this.props.editContext.feature.relationValues};
+        newRelationValues[table] = {...newRelationValues[table]};
+        const newFeatures = newRelationValues[table].features.slice(0);
+
+        const offset = dir < 0 ? 0 : 1;
+        newFeatures.splice(idx - 1 + offset, 2, newFeatures[idx + offset], newFeatures[idx - 1 + offset]);
+        newFeatures[idx - 1 + offset].properties = {
+            ...newFeatures[idx - 1 + offset].properties
+        };
+        newFeatures[idx + offset].properties = {
+            ...newFeatures[idx + offset].properties
+        };
+        newFeatures[idx - 1 + offset].__status__ = ["new", "empty"].includes(newFeatures[idx - 1 + offset].__status__) ? "new" : "changed";
+        newFeatures[idx + offset].__status__ = ["new", "empty"].includes(newFeatures[idx + offset].__status__) ? "new" : "changed";
+        newRelationValues[table].features = newFeatures;
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
     }
@@ -242,7 +271,7 @@ class AttributeForm extends React.Component {
             };
             // If feature id is known, i.e. not when drawing new feature, set foreign key
             let changed = this.props.editContext.changed;
-            const fk = this.state.relationTables[table];
+            const fk = this.state.relationTables[table].fk;
             if (this.props.editContext.action !== "Draw" && feature.properties[fk] !== this.props.editContext.feature.id) {
                 newRelationValues[table].features[idx].properties[fk] = this.props.editContext.feature.id;
                 newRelationValues[table].features[idx].__status__ = "changed";
@@ -372,11 +401,11 @@ class AttributeForm extends React.Component {
         // Commit relations
         if (!isEmpty(relationValues)) {
 
-            // Set CRS and foreign key
+            // Set CRS and foreign key, set sort index if necessary
             Object.keys(relationValues).forEach(relTable => {
-                relationValues[relTable].features = relationValues[relTable].features.filter(relFeature => relFeature.__status__ !== "empty").map(relFeature => {
-                    const fk = [this.state.relationTables[relTable]];
-                    return {
+                relationValues[relTable].features = relationValues[relTable].features.filter(relFeature => relFeature.__status__ !== "empty").map((relFeature, idx) => {
+                    const fk = this.state.relationTables[relTable].fk;
+                    const feature = {
                         ...relFeature,
                         type: "Feature",
                         properties: {
@@ -389,6 +418,12 @@ class AttributeForm extends React.Component {
                             properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.projection)}
                         }
                     };
+                    const sortcol = this.state.relationTables[relTable].sortcol;
+                    if (sortcol) {
+                        feature.__status__ = feature.__status__ || (feature.properties[sortcol] !== idx ? "changed" : "");
+                        feature.properties[sortcol] = idx;
+                    }
+                    return feature;
                 });
             });
 

@@ -48,6 +48,7 @@ class QtDesignerForm extends React.Component {
         mapPrefix: PropTypes.string,
         readOnly: PropTypes.bool,
         removeRelationRecord: PropTypes.func,
+        reorderRelationRecord: PropTypes.func,
         report: PropTypes.bool,
         setRelationTables: PropTypes.func,
         switchEditContext: PropTypes.func,
@@ -410,6 +411,7 @@ class QtDesignerForm extends React.Component {
             return null;
         }
         const tablename = parts[1];
+        const sortcol = parts[3] || null;
         const datasetname = this.props.mapPrefix + tablename;
         const headerItems = widget.layout.item.filter(item => item.widget.name.startsWith("header__"));
         return (
@@ -456,6 +458,13 @@ class QtDesignerForm extends React.Component {
                                         {widgetItems.map(item => (
                                             <td className="qt-designer-widget-relation-row-widget" key={item.widget.name}>{this.renderWidget(item.widget, relFeature, datasetname, updateField, nametransform)}</td>
                                         ))}
+                                        {!this.props.readOnly && sortcol ? (
+                                            <td>
+                                                <Icon icon="chevron-up" onClick={() => this.props.reorderRelationRecord(datasetname, idx, -1)} />
+                                                <br />
+                                                <Icon icon="chevron-down" onClick={() => this.props.reorderRelationRecord(datasetname, idx, 1)} />
+                                            </td>
+                                        ) : null}
                                         {!this.props.readOnly ? (
                                             <td>
                                                 <Icon icon="trash" onClick={() => this.props.removeRelationRecord(datasetname, idx)} />
@@ -540,8 +549,8 @@ class QtDesignerForm extends React.Component {
         }
 
         const parts = widget.name.split("__");
-        if (parts.length === 3 && parts[0] === "nrel") {
-            relationTables[this.props.mapPrefix + parts[1]] = parts[2];
+        if (parts.length >= 3 && parts[0] === "nrel") {
+            relationTables[this.props.mapPrefix + parts[1]] = {fk: parts[2], sortcol: parts[3] || null};
         }
     }
     reformatLayout = (layout, relationTables, externalFields) => {
