@@ -341,19 +341,23 @@ class AttributeForm extends React.Component {
             const fieldConfig = (curConfig.fields || []).find(field => field.id === name) || {};
             const element = ev.target.elements.namedItem(name);
             if (element) {
+                const parts = name.split("__");
                 let value = element.type === "radio" || element.type === "checkbox" ? element.checked : element.value;
                 const nullElements = ["date", "number", "radio"];
                 const nullFieldTypes = ["date", "number", "list"];
-                if ((element instanceof RadioNodeList || nullElements.includes(element.type) || nullFieldTypes.includes(fieldConfig.type)) && element.value === "") {
-                    // Set empty value to null instead of empty string
-                    value = null;
-                }
-                const parts = name.split("__");
                 if (parts.length >= 3) {
+                    // Relation value
                     // Usually <table>__<field>__<index>, but <field> might also contain __ (i.e. upload__user)
                     const tablename = parts[0];
                     const datasetname = mapPrefix + tablename;
                     const field = parts.slice(1, parts.length - 1).join("__");
+
+                    const nrelFieldConfig = (this.props.theme.editConfig[tablename].fields || []).find(f => f.id === field) || {};
+                    if ((element instanceof RadioNodeList || nullElements.includes(element.type) || nullFieldTypes.includes(nrelFieldConfig.type)) && element.value === "") {
+                        // Set empty value to null instead of empty string
+                        value = null;
+                    }
+
                     const index = parseInt(parts[parts.length - 1], 10);
                     // relationValues for table must exist as rows are either pre-existing or were added
                     relationValues[datasetname].features[index].properties[field] = value;
@@ -369,6 +373,10 @@ class AttributeForm extends React.Component {
                         relationValues[datasetname].features[index].properties[field] = "";
                     }
                 } else {
+                    if ((element instanceof RadioNodeList || nullElements.includes(element.type) || nullFieldTypes.includes(fieldConfig.type)) && element.value === "") {
+                        // Set empty value to null instead of empty string
+                        value = null;
+                    }
                     feature.properties[name] = value;
                     if (element.type === "file" && element.files.length > 0) {
                         featureUploads[name] = element.files[0];
