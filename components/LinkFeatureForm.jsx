@@ -28,6 +28,7 @@ class LinkFeatureForm extends React.Component {
         finished: PropTypes.func,
         iface: PropTypes.object,
         map: PropTypes.object,
+        pickFilter: PropTypes.func,
         removeLayer: PropTypes.func,
         setEditContext: PropTypes.func
     }
@@ -121,8 +122,10 @@ class LinkFeatureForm extends React.Component {
         const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
         this.props.iface.getFeature(this.props.editConfig.editDataset, coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
             const features = featureCollection ? featureCollection.features : null;
-            if (features.length === 1) {
-                this.props.finished(features[0]);
+            if (features && features.length === 1) {
+                if (!this.props.pickFilter || this.props.pickFilter(features[0])) {
+                    this.props.finished(features[0]);
+                }
             } else {
                 this.setState({pickedFeatures: features});
             }
@@ -148,7 +151,9 @@ class LinkFeatureForm extends React.Component {
     }
     pickFeatureSelected = (feature) => {
         this.unhoverFeature(feature);
-        this.props.finished(feature);
+        if (!this.props.pickFilter || this.props.pickFilter(feature)) {
+            this.props.finished(feature);
+        }
     }
     onDiscard = () => {
         const editContext = this.props.editing.contexts[this.props.editContextId];

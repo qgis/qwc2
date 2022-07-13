@@ -25,6 +25,7 @@ import './style/AttributeForm.css';
 
 class AttributeForm extends React.Component {
     static propTypes = {
+        childPickFilter: PropTypes.func,
         clearEditContext: PropTypes.func,
         deleteMsgId: PropTypes.string,
         editConfig: PropTypes.object,
@@ -110,7 +111,7 @@ class AttributeForm extends React.Component {
         if (this.state.childEdit) {
             childAttributeForm = (
                 <div className="link-feature-form-container">
-                    <LinkFeatureForm {...this.state.childEdit} finished={this.state.childEdit.finishCallback} iface={this.props.iface} />
+                    <LinkFeatureForm {...this.state.childEdit} finished={this.state.childEdit.finishCallback} iface={this.props.iface} pickFilter={this.props.childPickFilter}/>
                 </div>
             );
         }
