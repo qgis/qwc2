@@ -49,14 +49,16 @@ let beforeUnloadListener = null;
 
 export function setCurrentTaskBlocked(blocked, unloadmsg = null) {
     if (beforeUnloadListener) {
-        window.removeEventListener(beforeUnloadListener);
+        window.removeEventListener('beforeunload', beforeUnloadListener);
+        beforeUnloadListener = null;
     }
     if (blocked && unloadmsg !== null) {
-        beforeUnloadListener = window.addEventListener('beforeunload', (event) => {
+        beforeUnloadListener = (event) => {
             event.preventDefault();
             event.returnValue = unloadmsg;
             return unloadmsg;
-        });
+        };
+        window.addEventListener('beforeunload', beforeUnloadListener);
     }
     return {
         type: SET_CURRENT_TASK_BLOCKED,
