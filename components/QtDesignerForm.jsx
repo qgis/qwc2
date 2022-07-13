@@ -305,13 +305,20 @@ class QtDesignerForm extends React.Component {
                 return (
                     <EditComboField
                         editIface={this.props.iface} fieldId={fieldId} key={fieldId} keyvalrel={keyvalrel}
-                        name={nametransform(attrname)} readOnly={inputConstraints.readOnly || comboFieldConstraints.readOnly}
+                        name={nametransform(attrname)} placeholder={inputConstraints.placeholder}
+                        readOnly={inputConstraints.readOnly || comboFieldConstraints.readOnly}
                         required={inputConstraints.required || comboFieldConstraints.required}
                         style={fontStyle} updateField={updateField} value={value} />
                 );
             } else {
+                const haveEmpty = (widget.item || []).map((item) => (item.property.value || item.property.text) === "");
                 return (
                     <select name={elname} onChange={ev => updateField(widget.name, ev.target.value)} {...inputConstraints} style={fontStyle} value={value}>
+                        {!haveEmpty ? (
+                            <option disabled value="">
+                                {inputConstraints.placeholder || LocaleUtils.tr("editing.select")}
+                            </option>
+                        ) : null}
                         {(widget.item || []).map((item) => {
                             const optval = item.property.value || item.property.text;
                             return (

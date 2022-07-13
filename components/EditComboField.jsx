@@ -58,6 +58,7 @@ export default class EditComboField extends React.Component {
         fieldId: PropTypes.string,
         keyvalrel: PropTypes.string,
         name: PropTypes.string,
+        placeholder: PropTypes.string,
         readOnly: PropTypes.bool,
         required: PropTypes.bool,
         style: PropTypes.object,
@@ -86,7 +87,7 @@ export default class EditComboField extends React.Component {
                 required={this.props.required} style={this.props.style} value={String(this.props.value)}
             >
                 <option disabled value="">
-                    {LocaleUtils.tr("editing.select")}
+                    {this.props.placeholder || LocaleUtils.tr("editing.select")}
                 </option>
                 {this.state.values.map((item, index) => {
                     let optValue = "";
