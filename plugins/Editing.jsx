@@ -117,7 +117,7 @@ class Editing extends React.Component {
             }
         }
         if (prevProps.editContext.changed !== this.props.editContext.changed) {
-            this.props.setCurrentTaskBlocked(this.props.editContext.changed === true);
+            this.props.setCurrentTaskBlocked(this.props.editContext.changed === true, LocaleUtils.tr("editing.unsavedchanged"));
         }
         if (!this.props.editContext.feature && prevState.pickedFeatures) {
             this.setState({pickedFeatures: null});

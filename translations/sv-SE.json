@@ -105,7 +105,8 @@
       "relationcommitfailed": "",
       "select": "Välj",
       "selectedpicture": "",
-      "takepicture": ""
+      "takepicture": "",
+      "unsavedchanged": ""
     },
     "featureform": {
       "feature": "",

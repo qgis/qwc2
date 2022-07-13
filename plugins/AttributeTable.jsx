@@ -442,7 +442,7 @@ class AttributeTable extends React.Component {
             changedFeatureIdx: this.state.filteredSortedFeatures.length,
             newFeature: true
         });
-        this.props.setCurrentTaskBlocked(true);
+        this.props.setCurrentTaskBlocked(true, LocaleUtils.tr("editing.unsavedchanged"));
     }
     deleteSelectedFeatured = () => {
         const features = this.state.filteredSortedFeatures.filter(feature => this.state.selectedFeatures[feature.id] === true);
@@ -487,7 +487,7 @@ class AttributeTable extends React.Component {
         newfilteredSortedFeatures[filteredIdx].properties = {...newfilteredSortedFeatures[filteredIdx].properties, [fieldid]: value};
         const originalFeatureProps = this.state.originalFeatureProps || {...this.state.features[featureidx].properties};
         this.setState({features: newFeatures, filteredSortedFeatures: newfilteredSortedFeatures, changedFeatureIdx: featureidx, originalFeatureProps: originalFeatureProps});
-        this.props.setCurrentTaskBlocked(true);
+        this.props.setCurrentTaskBlocked(true, LocaleUtils.tr("editing.unsavedchanged"));
     }
     commit = () => {
         const feature = {

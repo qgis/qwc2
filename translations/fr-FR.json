@@ -105,7 +105,8 @@
       "relationcommitfailed": "Certaines relations n'ont pas pu être enregistrées. Pour plus de détails consulter le boutons d'informations",
       "select": "Sélectionner",
       "selectedpicture": "",
-      "takepicture": "Ajouter une photo"
+      "takepicture": "Ajouter une photo",
+      "unsavedchanged": "Il y a des changements non sauvegardés. Voulez-vous quitter la page de toute façon?"
     },
     "featureform": {
       "feature": "",

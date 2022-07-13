@@ -105,7 +105,8 @@
       "relationcommitfailed": "",
       "select": "Velg",
       "selectedpicture": "",
-      "takepicture": ""
+      "takepicture": "",
+      "unsavedchanged": ""
     },
     "featureform": {
       "feature": "",

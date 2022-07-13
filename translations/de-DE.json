@@ -105,7 +105,8 @@
       "relationcommitfailed": "Einige Relationen konnten nicht gespeichert werden, siehe Tooltips der Icons für mehr Details.",
       "select": "Auswählen",
       "selectedpicture": "Ausgewähltes Bild",
-      "takepicture": "Bild schießen"
+      "takepicture": "Bild schießen",
+      "unsavedchanged": "Es gibt nicht gespeicherte Änderungen. Soll die Seite trotzdem verlassen werden?"
     },
     "featureform": {
       "feature": "Objekt",

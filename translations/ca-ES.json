@@ -105,7 +105,8 @@
       "relationcommitfailed": "Ha fallat el commit",
       "select": "Seleccionar",
       "selectedpicture": "",
-      "takepicture": "Escull imatge"
+      "takepicture": "Escull imatge",
+      "unsavedchanged": ""
     },
     "featureform": {
       "feature": "",

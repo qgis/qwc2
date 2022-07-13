@@ -105,7 +105,8 @@
       "relationcommitfailed": "",
       "select": "Seleccionar",
       "selectedpicture": "",
-      "takepicture": ""
+      "takepicture": "",
+      "unsavedchanged": ""
     },
     "featureform": {
       "feature": "",

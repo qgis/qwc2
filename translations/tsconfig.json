@@ -110,6 +110,7 @@
     "editing.select",
     "editing.selectedpicture",
     "editing.takepicture",
+    "editing.unsavedchanged",
     "featureform.feature",
     "featureform.noresults",
     "featureform.querying",

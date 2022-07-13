@@ -55,7 +55,7 @@ class AttributeForm extends React.Component {
     }
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.editContext.changed !== this.props.editContext.changed) {
-            this.props.setCurrentTaskBlocked(this.props.editContext.changed === true);
+            this.props.setCurrentTaskBlocked(this.props.editContext.changed === true, LocaleUtils.tr("editing.unsavedchanged"));
         }
         if ((!this.props.editContext.feature || this.props.editContext.changed) && this.state.deleteClicked) {
             this.setState({deleteClicked: false});
@@ -456,7 +456,7 @@ class AttributeForm extends React.Component {
     }
     deleteClicked = () => {
         this.setState({deleteClicked: true});
-        this.props.setCurrentTaskBlocked(true);
+        this.props.setCurrentTaskBlocked(true, LocaleUtils.tr("editing.unsavedchanged"));
     }
     deleteFeature = (action) => {
         if (action === 'Yes') {

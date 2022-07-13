@@ -105,7 +105,8 @@
       "relationcommitfailed": "Some relation values could not be committed, check the icon tooltips for details",
       "select": "Select",
       "selectedpicture": "Selected picture",
-      "takepicture": "Take picture"
+      "takepicture": "Take picture",
+      "unsavedchanged": "There are unsaved changes. Do you want to leave the page anyway?"
     },
     "featureform": {
       "feature": "Feature",
