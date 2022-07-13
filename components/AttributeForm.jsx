@@ -299,6 +299,7 @@ class AttributeForm extends React.Component {
             } else {
                 this.props.setEditContext(this.props.editContext.id, {feature: null, changed: false});
             }
+            this.props.setCurrentTaskBlocked(false);
             if (this.props.onDiscard) {
                 this.props.onDiscard();
             }
