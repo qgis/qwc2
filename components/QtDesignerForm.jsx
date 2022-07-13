@@ -211,8 +211,13 @@ class QtDesignerForm extends React.Component {
         }
 
         if (widget.class === "QLabel") {
-            const text = widget.name.startsWith("ext__") ? value : widget.property.text;
-            return (<span style={fontStyle}>{text}</span>);
+            if (widget.name.startsWith("img__")) {
+                value = (feature.properties || [])[widget.name.split("__")[1]] ?? "";
+                return (<div className="qt-designer-form-image"><a href={value} rel="noreferrer" target="_blank"><img src={value} /></a></div>);
+            } else {
+                const text = widget.name.startsWith("ext__") ? value : widget.property.text;
+                return (<span style={fontStyle}>{text}</span>);
+            }
         } else if (widget.class === "Line") {
             const linetype = (widget.property || {}).orientation === "Qt::Vertical" ? "vline" : "hline";
             return (<div className={"qt-designer-form-" + linetype} />);
