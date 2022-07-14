@@ -70,7 +70,7 @@ class QtDesignerForm extends React.Component {
     }
     componentDidUpdate(prevProps, prevState) {
         // Query form
-        if (this.props.form !== prevProps.form) {
+        if (this.props.form !== prevProps.form || this.props.feature.__version__ !== prevProps.feature.__version__) {
             this.setState(QtDesignerForm.defaultState);
             let url = this.props.form;
             if (url && url.startsWith(":/")) {
