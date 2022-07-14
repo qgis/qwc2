@@ -154,7 +154,7 @@ function deleteFeature(layerId, featureId, callback) {
     const req = SERVICE_URL + layerId + '/' + featureId;
 
     axios.delete(req).then(() => {
-        callback(true);
+        callback(true, featureId);
     }).catch(err => callback(false, buildErrMsg(err)));
 }
 

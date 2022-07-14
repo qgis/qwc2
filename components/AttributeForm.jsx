@@ -33,6 +33,7 @@ class AttributeForm extends React.Component {
         iface: PropTypes.object,
         map: PropTypes.object,
         onCommit: PropTypes.func,
+        onDelete: PropTypes.func,
         onDiscard: PropTypes.func,
         readOnly: PropTypes.bool,
         refreshLayer: PropTypes.func,
@@ -490,16 +491,19 @@ class AttributeForm extends React.Component {
             alert(result);
         }
     }
-    deleteFinished = (success, errorMsg) => {
+    deleteFinished = (success, result) => {
         this.setState({busy: false});
         if (success) {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
             this.props.setEditContext(this.props.editContext.id, {feature: null, changed: false});
             this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
+            if (this.props.onDelete) {
+                this.props.onDelete(result);
+            }
         } else {
             // eslint-disable-next-line
-            alert(errorMsg);
+            alert(result);
         }
     }
     dataUriToBlob = (dataUri) => {
