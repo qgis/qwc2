@@ -69,6 +69,10 @@ function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback) {
     };
     axios.get(req, {params}).then(response => {
         if (response.data && !isEmpty(response.data.features)) {
+            const version = +new Date();
+            response.data.features.forEach(feature => {
+                feature.__version__ = version;
+            });
             callback(response.data);
         } else {
             callback(null);
@@ -89,6 +93,7 @@ function getFeatureById(layerId, featureId, mapCrs, callback) {
         crs: mapCrs
     };
     axios.get(req, {params}).then(response => {
+        response.data.__version__ = +new Date();
         callback(response.data);
     }).catch(() => callback(null));
 }
@@ -105,6 +110,10 @@ function getFeatures(layerId, mapCrs, callback) {
     };
     axios.get(req, {params}).then(response => {
         if (response.data && !isEmpty(response.data.features)) {
+            const version = +new Date();
+            response.data.features.forEach(feature => {
+                feature.__version__ = version;
+            });
             callback(response.data);
         } else {
             callback(null);
@@ -124,6 +133,7 @@ function addFeatureMultipart(layerId, featureData, callback) {
     axios.post(req, featureData, {
         headers: {'Content-Type': 'multipart/form-data' }
     }).then(response => {
+        response.data.__version__ = +new Date();
         callback(true, response.data);
     }).catch(err => callback(false, buildErrMsg(err)));
 }
@@ -140,6 +150,7 @@ function editFeatureMultipart(layerId, featureId, featureData, callback) {
     axios.put(req, featureData, {
         headers: {'Content-Type': 'multipart/form-data' }
     }).then(response => {
+        response.data.__version__ = +new Date();
         callback(true, response.data);
     }).catch(err => callback(false, buildErrMsg(err)));
 }
