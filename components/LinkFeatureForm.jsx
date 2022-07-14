@@ -123,8 +123,13 @@ class LinkFeatureForm extends React.Component {
         this.props.iface.getFeature(this.props.editConfig.editDataset, coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
             const features = featureCollection ? featureCollection.features : null;
             if (features && features.length === 1) {
-                if (!this.props.pickFilter || this.props.pickFilter(features[0])) {
+                if (!this.props.pickFilter) {
                     this.props.finished(features[0]);
+                } else {
+                    const newFeature = this.props.pickFilter(features[0]);
+                    if (newFeature) {
+                        this.props.finished(newFeature);
+                    }
                 }
             } else {
                 this.setState({pickedFeatures: features});
@@ -151,8 +156,13 @@ class LinkFeatureForm extends React.Component {
     }
     pickFeatureSelected = (feature) => {
         this.unhoverFeature(feature);
-        if (!this.props.pickFilter || this.props.pickFilter(feature)) {
+        if (!this.props.pickFilter) {
             this.props.finished(feature);
+        } else {
+            const newFeature = this.props.pickFilter(feature);
+            if (newFeature) {
+                this.props.finished(newFeature);
+            }
         }
     }
     onDiscard = () => {
