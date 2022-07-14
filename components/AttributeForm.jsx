@@ -291,18 +291,17 @@ class AttributeForm extends React.Component {
     }
     onDiscard = (action) => {
         if (action === "Discard") {
-            if (this.props.editContext.action === 'Pick') {
-                // Re-query the original feature
-                this.props.iface.getFeatureById(this.props.editConfig.editDataset, this.props.editContext.feature.id, this.props.map.projection, (feature) => {
-                    this.props.setEditContext(this.props.editContext.id, {feature: feature, changed: false});
-                    this.loadRelationValues(); // Re-load relation values
-                });
-            } else {
-                this.props.setEditContext(this.props.editContext.id, {feature: null, changed: false});
-            }
             this.props.setCurrentTaskBlocked(false);
-            if (this.props.onDiscard) {
-                this.props.onDiscard();
+            if (!this.props.onDiscard || !this.props.onDiscard()) {
+                if (this.props.editContext.action === 'Pick') {
+                    // Re-query the original feature
+                    this.props.iface.getFeatureById(this.props.editConfig.editDataset, this.props.editContext.feature.id, this.props.map.projection, (feature) => {
+                        this.props.setEditContext(this.props.editContext.id, {feature: feature, changed: false});
+                        this.loadRelationValues(); // Re-load relation values
+                    });
+                } else {
+                    this.props.setEditContext(this.props.editContext.id, {feature: null, changed: false});
+                }
             }
         }
     }
@@ -480,11 +479,11 @@ class AttributeForm extends React.Component {
     commitFinished = (success, result) => {
         this.setState({busy: false});
         if (success) {
-            this.props.setEditContext(this.props.editContext.id, {action: 'Pick', feature: result, changed: false});
-            this.loadRelationValues(); // Re-load relation values
             this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
-            if (this.props.onCommit) {
-                this.props.onCommit(result);
+            this.props.setCurrentTaskBlocked(false);
+            if (!this.props.onCommit || !this.props.onCommit(result)) {
+                this.props.setEditContext(this.props.editContext.id, {action: 'Pick', feature: result, changed: false});
+                this.loadRelationValues(); // Re-load relation values
             }
         } else {
             // eslint-disable-next-line
@@ -496,10 +495,9 @@ class AttributeForm extends React.Component {
         if (success) {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
-            this.props.setEditContext(this.props.editContext.id, {feature: null, changed: false});
             this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
-            if (this.props.onDelete) {
-                this.props.onDelete(result);
+            if (!this.props.onDelete || !this.props.onDelete(result)) {
+                this.props.setEditContext(this.props.editContext.id, {feature: null, changed: false});
             }
         } else {
             // eslint-disable-next-line
