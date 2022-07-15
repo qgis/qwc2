@@ -27,7 +27,7 @@ class Share extends React.Component {
         removeMarker: PropTypes.func,
         showLink: PropTypes.bool,
         showQRCode: PropTypes.bool,
-        showSocials: PropTypes.bool,
+        showSocials: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
         side: PropTypes.string,
         state: PropTypes.object
     }
@@ -68,7 +68,7 @@ class Share extends React.Component {
             delete urlParts.search;
             shareUrl = url.format(urlParts);
         }
-        const shareSocials = this.props.showSocials ? <ShareSocials shareTitle="QWC2" shareUrl={shareUrl}/> : null;
+        const shareSocials = this.props.showSocials !== false ? <ShareSocials shareTitle="QWC2" shareUrl={shareUrl} showSocials={this.props.showSocials}/> : null;
         const shareLink = this.props.showLink ? <ShareLink shareUrl={shareUrl}/> : null;
         const shareQRCode = this.props.showQRCode ? <ShareQRCode shareUrl={shareUrl}/> : null;
         return (
