@@ -101,12 +101,16 @@ function getFeatureById(layerId, featureId, mapCrs, callback) {
  layerId: The edit layer id
  mapCrs: the map crs
  callback: function(result), on success result is a collection of features, on failure, result is null
+ bbox: the filter bounding box as [xmin, xmax, ymin, xmax], or null
+ filter: the filter expression as [["<name>", "<op>", <value>],"and|or",["<name>","<op>",<value>],...], or null
 */
-function getFeatures(layerId, mapCrs, callback) {
+function getFeatures(layerId, mapCrs, callback, bbox = null, filter = null) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
     const req = SERVICE_URL + layerId;
     const params = {
-        crs: mapCrs
+        crs: mapCrs,
+        bbox: bbox ? bbox.join(",") : undefined,
+        filter: filter ? JSON.stringify(filter) : undefined
     };
     axios.get(req, {params}).then(response => {
         if (response.data && !isEmpty(response.data.features)) {
