@@ -331,14 +331,16 @@ const VectorLayerUtils = {
         }
         return {
             crs: bboxCrs,
-            bounds: geojsonBbox({
-                type: "FeatureCollection",
-                features: features.filter(feature => feature.geometry).map(feature => ({
-                    ...feature,
-                    geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs, bboxCrs)
-                }))
-            })
+            bounds: bounds
         };
+    },
+    computeFeatureBBox(feature) {
+        let bounds = geojsonBbox(feature);
+        // Discard z component
+        if (bounds.length === 6) {
+            bounds = [bounds[0], bounds[1], bounds[3], bounds[4]];
+        }
+        return bounds;
     }
 };
 
