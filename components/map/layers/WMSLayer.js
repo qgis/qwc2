@@ -15,14 +15,16 @@ import MapUtils from '../../../utils/MapUtils';
 
 
 function wmsToOpenlayersOptions(options) {
+    const urlParams = Object.entries(url.parse(options.url, true).query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {});
     return {
+        ...urlParams,
         LAYERS: options.name,
         STYLES: options.style || "",
         FORMAT: options.format || 'image/png',
         TRANSPARENT: options.transparent !== undefined ? options.transparent : true,
         SRS: options.projection,
         CRS: options.projection,
-        TILED: options.tiled || false,
+        TILED: String(urlParams.TILED ?? options.tiled ?? false).toLowerCase() === "true",
         VERSION: options.version,
         DPI: options.dpi || ConfigUtils.getConfigProp("wmsDpi") || 96,
         ...options.params
@@ -31,12 +33,12 @@ function wmsToOpenlayersOptions(options) {
 
 export default {
     create: (options, map) => {
-        const queryParameters = {...url.parse(options.url, true).query, ...wmsToOpenlayersOptions(options),  __t: +new Date()};
-        if (options.tiled && !options.bbox) {
+        const queryParameters = {...wmsToOpenlayersOptions(options), __t: +new Date()};
+        if (queryParameters.TILED && !options.bbox) {
             /* eslint-disable-next-line */
             console.warn("Tiled WMS requested without specifying bounding box, falling back to non-tiled.");
         }
-        if (!options.tiled || !options.bbox) {
+        if (!queryParameters.TILED || !options.bbox) {
             const layer = new ol.layer.Image({
                 minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.projection)[0] : undefined,
                 maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.projection)[0] : undefined,
@@ -84,12 +86,15 @@ export default {
                 }) !== null;
             }
             if (changed) {
-                const queryParameters = {...url.parse(newOptions.url, true).query, ...newParams,  __t: +new Date()};
+                const queryParameters = {...newParams,  __t: +new Date()};
                 if (layer.get("updateTimeout")) {
                     clearTimeout(layer.get("updateTimeout"));
                 }
+                if (!newOptions.visibility || !queryParameters.LAYERS) {
+                    layer.setVisible(false);
+                }
                 layer.set("updateTimeout", setTimeout(() => {
-                    layer.set("empty", !queryParameters.LAYERS);
+                    layer.setVisible(queryParameters.LAYERS && newOptions.visibility);
                     layer.getSource().updateParams(queryParameters);
                     layer.getSource().changed();
                     layer.set("updateTimeout", null);

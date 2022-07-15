@@ -10,11 +10,21 @@ import ReducerIndex from '../reducers/index';
 import editingReducer from '../reducers/editing';
 ReducerIndex.register("editing", editingReducer);
 
-export const CHANGE_EDITING_STATE = 'CHANGE_EDITING_STATE';
+export const SET_EDIT_CONTEXT = 'SET_EDIT_CONTEXT';
+export const CLEAR_EDIT_CONTEXT = 'CLEAR_EDIT_CONTEXT';
 
-export function changeEditingState(editingState) {
+export function setEditContext(contextId, editContext) {
     return {
-        type: CHANGE_EDITING_STATE,
-        data: editingState
+        type: SET_EDIT_CONTEXT,
+        contextId: contextId,
+        editContext: editContext
+    };
+}
+
+export function clearEditContext(contextId, newActiveContextId = null) {
+    return {
+        type: CLEAR_EDIT_CONTEXT,
+        contextId: contextId,
+        newActiveContextId: newActiveContextId
     };
 }

@@ -26,6 +26,7 @@ div.attribtable-overlay > div.spinner {
 
 div.dock-window > div.resizeable-window-body > div.attribtable-body {
     max-height: calc(100vh - 8.75em); /* viewport - topbar - bottombar - sidebar_titlebar - window padding*/
+    max-height: calc(var(--vh, 1vh) * 100 - 8.75em); /* viewport - topbar - bottombar - sidebar_titlebar - window padding*/
 }
 
 div.attribtable-toolbar {
@@ -42,22 +43,6 @@ div.attribtable-toolbar > * {
 div.attribtable-toolbar > select {
     border: 1px solid @item_border@;
     height: 2em;
-}
-
-div.attribtable-toolbar button.edit-commit {
-    background-color: rgb(127,255,127);
-}
-
-div.attribtable-toolbar button.edit-commit:hover {
-    background-color: rgb(97,255,97);
-}
-
-div.attribtable-toolbar button.edit-discard {
-    background-color: rgb(255,127,127);
-}
-
-div.attribtable-toolbar button.edit-discard:hover {
-    background-color: rgb(255,97,97);
 }
 
 div.attribtable-contents {
@@ -213,7 +198,6 @@ table.attribtable-table tr.row-disabled * {
     color: #999;
     cursor: not-allowed!important;
 }
-
 
 div.attribtable-footbar {
     flex: 0 0 auto;

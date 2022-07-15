@@ -24,7 +24,13 @@ function buildErrMsg(err) {
         message = err.response.data.message;
         if (!isEmpty(err.response.data.geometry_errors)) {
             message += ":\n";
-            message += err.response.data.geometry_errors.map(entry => " - " + entry.reason + " at " + entry.location);
+            message += err.response.data.geometry_errors.map(entry => {
+                let entrymsg = " - " + entry.reason;
+                if (entry.location) {
+                    entrymsg += " at " + entry.location;
+                }
+                return entrymsg;
+            });
         }
         if (!isEmpty(err.response.data.data_errors)) {
             message += ":\n - " + err.response.data.data_errors.join("\n - ");
@@ -51,14 +57,22 @@ function buildErrMsg(err) {
 */
 function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
+    const req = SERVICE_URL + layerId;
 
     // 10px tolerance
     const tol = (10.0 / dpi) * 0.0254 * mapScale;
     const bbox = (mapPos[0] - tol) + "," + (mapPos[1] - tol) + "," + (mapPos[0] + tol) + "," + (mapPos[1] + tol);
 
-    const req = SERVICE_URL + layerId + '/?bbox=' + bbox + '&crs=' + mapCrs;
-    axios.get(req).then(response => {
+    const params = {
+        bbox: bbox,
+        crs: mapCrs
+    };
+    axios.get(req, {params}).then(response => {
         if (response.data && !isEmpty(response.data.features)) {
+            const version = +new Date();
+            response.data.features.forEach(feature => {
+                feature.__version__ = version;
+            });
             callback(response.data);
         } else {
             callback(null);
@@ -68,14 +82,38 @@ function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback) {
 
 /*
  layerId: The edit layer id
+ featureId: The feature id
+ mapCrs: the map crs
+ callback: function(result), on success result is a feature, on failure, result is null
+*/
+function getFeatureById(layerId, featureId, mapCrs, callback) {
+    const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
+    const req = SERVICE_URL + layerId + '/' + featureId;
+    const params = {
+        crs: mapCrs
+    };
+    axios.get(req, {params}).then(response => {
+        response.data.__version__ = +new Date();
+        callback(response.data);
+    }).catch(() => callback(null));
+}
+/*
+ layerId: The edit layer id
  mapCrs: the map crs
  callback: function(result), on success result is a collection of features, on failure, result is null
 */
 function getFeatures(layerId, mapCrs, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
-    const req = SERVICE_URL + layerId + '/?crs=' + mapCrs;
-    axios.get(req).then(response => {
+    const req = SERVICE_URL + layerId;
+    const params = {
+        crs: mapCrs
+    };
+    axios.get(req, {params}).then(response => {
         if (response.data && !isEmpty(response.data.features)) {
+            const version = +new Date();
+            response.data.features.forEach(feature => {
+                feature.__version__ = version;
+            });
             callback(response.data);
         } else {
             callback(null);
@@ -95,6 +133,7 @@ function addFeatureMultipart(layerId, featureData, callback) {
     axios.post(req, featureData, {
         headers: {'Content-Type': 'multipart/form-data' }
     }).then(response => {
+        response.data.__version__ = +new Date();
         callback(true, response.data);
     }).catch(err => callback(false, buildErrMsg(err)));
 }
@@ -111,6 +150,7 @@ function editFeatureMultipart(layerId, featureId, featureData, callback) {
     axios.put(req, featureData, {
         headers: {'Content-Type': 'multipart/form-data' }
     }).then(response => {
+        response.data.__version__ = +new Date();
         callback(true, response.data);
     }).catch(err => callback(false, buildErrMsg(err)));
 }
@@ -125,24 +165,31 @@ function deleteFeature(layerId, featureId, callback) {
     const req = SERVICE_URL + layerId + '/' + featureId;
 
     axios.delete(req).then(() => {
-        callback(true);
+        callback(true, featureId);
     }).catch(err => callback(false, buildErrMsg(err)));
 }
 
-function getRelations(layerId, featureId, tables, callback) {
+function getRelations(layerId, featureId, tables, mapCrs, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
-    const req = SERVICE_URL + layerId + '/' + featureId + "/relations?tables=" + tables;
-    axios.get(req).then(response => {
+    const req = SERVICE_URL + layerId + '/' + featureId + "/relations";
+    const params = {
+        tables: tables,
+        crs: mapCrs
+    };
+    axios.get(req, {params}).then(response => {
         callback(response.data);
     }).catch(() => callback({}));
 }
 
-function writeRelations(layerId, featureId, relationData, callback) {
+function writeRelations(layerId, featureId, relationData, mapCrs, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
     const req = SERVICE_URL + layerId + '/' + featureId + "/relations";
-
+    const params = {
+        crs: mapCrs
+    };
     axios.post(req, relationData, {
-        headers: {'Content-Type': 'multipart/form-data' }
+        headers: {'Content-Type': 'multipart/form-data'},
+        params: params
     }).then(response => {
         callback(response.data);
     }).catch(err => callback(false, buildErrMsg(err)));
@@ -158,6 +205,7 @@ function getKeyValues(keyvalues, callback) {
 
 export default {
     getFeature,
+    getFeatureById,
     getFeatures,
     addFeatureMultipart,
     editFeatureMultipart,

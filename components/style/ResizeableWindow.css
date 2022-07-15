@@ -23,6 +23,11 @@ div.resizeable-window-maximized {
     height: initial!important;
 }
 
+div.resizeable-window-minimized {
+    height: 2.5em!important;
+    min-height: 2.5em!important;
+}
+
 div.resizeable-window-docked-left {
     transform: none!important;
     left: 0!important;
@@ -74,14 +79,13 @@ span.resizeable-window-titlebar-control {
 }
 
 div.resizeable-window-body {
-    margin: 0 0.25em;
+    padding: 0.25em;
     overflow: hidden;
-    height: calc(100% - 2.75em);
+    height: calc(100% - 2.5em);
     cursor: default;
     flex: 1 1 auto;
     position: relative;
 }
-
 
 div.dock-window > div.resizeable-window-body {
     margin: 0.25em;

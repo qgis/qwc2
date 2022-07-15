@@ -16,6 +16,15 @@ import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MeasureUtils from '../../utils/MeasureUtils';
 
+
+const DrawStyle = new ol.style.Style({
+    image: new ol.style.Circle({
+        fill: new ol.style.Fill({color: '#0099FF'}),
+        stroke: new ol.style.Stroke({color: '#FFFFFF', width: 1.5}),
+        radius: 6
+    })
+});
+
 const measureLabelStyleFactory = () => new ol.style.Text({
     font: '10pt sans-serif',
     text: "",
@@ -55,7 +64,12 @@ class MeasurementSupport extends React.Component {
         changeMeasurementState: PropTypes.func,
         map: PropTypes.object,
         measurement: PropTypes.object,
+        // See defaultOpts below
+        options: PropTypes.object,
         projection: PropTypes.string
+    }
+    static defaultOpts = {
+        geodesic: true
     }
     constructor(props) {
         super(props);
@@ -93,10 +107,11 @@ class MeasurementSupport extends React.Component {
 
         // create an interaction to draw with
         this.drawInteraction = new ol.interaction.Draw({
+            stopClick: true,
             source: this.measureLayer.getSource(),
             condition: (event) => { return event.originalEvent.buttons === 1; },
             type: geometryType,
-            style: []
+            style: () => { return this.modifyInteraction ? [] : DrawStyle; }
         });
 
         this.drawInteraction.on('drawstart', (ev) => {
@@ -163,7 +178,9 @@ class MeasurementSupport extends React.Component {
             clearTimeout(this.pickPositionCallbackTimeout);
             // Works because style function clears timeout if marker is rendered, i.e. if mouse is over measure geometry
             this.pickPositionCallbackTimeout = setTimeout(() => {
-                this.props.measurement.pickPositionCallback(null);
+                if (this.props.measurement.pickPositionCallback) {
+                    this.props.measurement.pickPositionCallback(null);
+                }
             }, 50);
         }
     }
@@ -185,7 +202,7 @@ class MeasurementSupport extends React.Component {
         }
         let length = null;
         if (this.props.measurement.geomType === 'LineString') {
-            length = this.calculateGeodesicDistances(coo);
+            length = this.calculateDistances(coo);
             if (this.segmentMarkers.length < coo.length - 1) {
                 const point = new ol.Feature({
                     geometry: new ol.geom.Point(coo[coo.length - 1])
@@ -203,7 +220,7 @@ class MeasurementSupport extends React.Component {
         }
         let area = null;
         if (this.props.measurement.geomType === 'Polygon') {
-            area = this.calculateGeodesicArea(feature.getGeometry().getLinearRing(0).getCoordinates());
+            area = this.calculateArea(feature.getGeometry().getLinearRing(0).getCoordinates());
             const text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedArea(this.props.measurement.areaUnit, area), 2);
             feature.getStyle()[0].getText().setText(text);
         }
@@ -233,7 +250,7 @@ class MeasurementSupport extends React.Component {
         }
         if (props.measurement.geomType === 'LineString') {
             const coo = this.sketchFeature.getGeometry().getCoordinates();
-            const length = this.calculateGeodesicDistances(coo);
+            const length = this.calculateDistances(coo);
             for (let i = 0; i < this.segmentMarkers.length; ++i) {
                 const text = LocaleUtils.toLocaleFixed(MeasureUtils.getFormattedLength(props.measurement.lenUnit, length[i]), 2);
                 this.segmentMarkers[i].getStyle().getText().setText(text);
@@ -250,17 +267,36 @@ class MeasurementSupport extends React.Component {
             return CoordinatesUtils.reproject(coordinate, this.props.projection, 'EPSG:4326');
         });
     }
-    calculateGeodesicDistances = (coordinates) => {
-        const reprojectedCoordinates = this.reprojectedCoordinates(coordinates);
+    calculateDistances = (coordinates) => {
         const lengths = [];
-        for (let i = 0; i < reprojectedCoordinates.length - 1; ++i) {
-            lengths.push(ol.sphere.getDistance(reprojectedCoordinates[i], reprojectedCoordinates[i + 1]));
+        if (this.getOptions().geodesic) {
+            const reprojectedCoordinates = this.reprojectedCoordinates(coordinates);
+            for (let i = 0; i < reprojectedCoordinates.length - 1; ++i) {
+                lengths.push(ol.sphere.getDistance(reprojectedCoordinates[i], reprojectedCoordinates[i + 1]));
+            }
+        } else {
+            for (let i = 0; i < coordinates.length - 1; ++i) {
+                const dx = coordinates[i + 1][0] - coordinates[i][0];
+                const dy = coordinates[i + 1][1] - coordinates[i][1];
+                lengths.push(Math.sqrt(dx * dx + dy * dy));
+            }
         }
         return lengths;
     }
-    calculateGeodesicArea = (coordinates) => {
-        const reprojectedCoordinates = this.reprojectedCoordinates(coordinates);
-        return Math.abs(ol.sphere.getArea(new ol.geom.Polygon([reprojectedCoordinates]), {projection: 'EPSG:4326'}));
+    calculateArea = (coordinates) => {
+        if (this.getOptions().geodesic) {
+            const reprojectedCoordinates = this.reprojectedCoordinates(coordinates);
+            return Math.abs(ol.sphere.getArea(new ol.geom.Polygon([reprojectedCoordinates]), {projection: 'EPSG:4326'}));
+        } else {
+            let area = 0;
+            for (let i = 0; i < coordinates.length - 1; ++i) {
+                area += coordinates[i][0] * coordinates[i + 1][1] - coordinates[i + 1][0] * coordinates[i][1];
+            }
+            return 0.5 * Math.abs(area);
+        }
+    }
+    getOptions = () => {
+        return {...MeasurementSupport.defaultOpts, ...this.props.options};
     }
 }
 

@@ -8,6 +8,7 @@
         "AttributeTable": "",
         "DxfExport": "Exportar DXF",
         "Editing": "Editando",
+        "FeatureForm": "",
         "Help": "Ajuda",
         "IdentifyRegion": "Identificar zona",
         "LayerCatalog": "",
@@ -81,25 +82,37 @@
       "symbologyscale": "Escala de simbología:"
     },
     "editing": {
+      "add": "",
       "attrtable": "",
       "canceldelete": "Não apagues",
-      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Comprometer-se",
+      "create": "",
       "delete": "Excluir",
       "discard": "Descartar",
       "draw": "Desenhar",
       "feature": "Recurso",
+      "geomreadonly": "",
+      "invalidform": "",
       "maximize": "Maximizar",
       "minimize": "Minimizar",
       "nocompatpick": "",
       "noeditablelayers": "Não camadas editadas.",
+      "paint": "",
       "pick": "Elegir",
       "pickdrawfeature": "",
       "reallydelete": "Excluir",
       "relationcommitfailed": "",
       "select": "Selecione",
-      "takepicture": ""
+      "selectedpicture": "",
+      "takepicture": "",
+      "unsavedchanged": ""
+    },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
     },
     "fileselector": {
       "placeholder": "Selecione ficheiro..."
@@ -120,6 +133,10 @@
       "noresults": "Nenhuma informação disponível para o ponto selecionado",
       "querying": "Consulta...",
       "title": "Información de recurso"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",
@@ -162,6 +179,12 @@
       "transparency": "Transparência",
       "visiblefilter": "Filtrar camadas invisíveis",
       "zoomtolayer": "Ampliar a camada"
+    },
+    "linkfeatureform": {
+      "cancel": "",
+      "close": "",
+      "drawhint": "",
+      "pickhint": ""
     },
     "locate": {
       "feetUnit": "pés",
@@ -206,6 +229,9 @@
       "scale": "Escala:",
       "submit": "Imprimir",
       "wait": "Por favor, espera..."
+    },
+    "qtdesignerform": {
+      "loading": ""
     },
     "rasterexport": {
       "format": "Formato:",
@@ -281,6 +307,10 @@
       "showpin": "",
       "socialIntro": "Na sua rede social favorita"
     },
+    "snapping": {
+      "loading": "",
+      "snappingenabled": ""
+    },
     "themelayerslist": {
       "addlayer": "Adicionar camada",
       "addlayerstotheme": "Adicionar camadas ao mapa atual",
@@ -301,8 +331,10 @@
     },
     "timemanager": {
       "animationinterval": "",
+      "markers": "",
       "notemporaldata": "",
       "play": "",
+      "playrev": "",
       "rewind": "",
       "stepback": "",
       "stepfwd": "",
@@ -311,8 +343,11 @@
       "title": "",
       "toggle": "",
       "unit": {
+        "century": "",
         "days": "",
+        "decade": "",
         "hours": "",
+        "milliseconds": "",
         "minutes": "",
         "months": "",
         "seconds": "",
@@ -334,8 +369,10 @@
       "close": "Fechar",
       "dock": "Juntar",
       "maximize": "",
+      "minimize": "",
       "undock": "Desencaixar",
-      "unmaximize": ""
+      "unmaximize": "",
+      "unminimize": ""
     }
   }
 }

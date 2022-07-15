@@ -83,7 +83,10 @@ class OlMap extends React.Component {
         this.moving = false;
         map.on('movestart', () => {
             this.moving = true;
-            this.blockRequests();
+            this.map.setRequestsPaused(true);
+        });
+        map.on('moveend', () => {
+            this.unblockRequests();
         });
         map.on('singleclick', (event) => this.onClick(0, event.originalEvent, event.pixel));
         map.getViewport().addEventListener('contextmenu', (event) => this.onClick(2, event, this.map.getEventPixel(event)));
@@ -108,16 +111,12 @@ class OlMap extends React.Component {
     componentDidMount() {
         this.map.setTarget(this.props.id);
         this.updateMapInfoState();
-        document.getElementById(this.props.id).addEventListener('mousedown', this.blockRequests);
-        document.getElementById(this.props.id).addEventListener('touchstart', this.blockRequests);
-        document.getElementById(this.props.id).addEventListener('wheel', this.blockRequests);
     }
-    blockRequests = () => {
+    unblockRequests = () => {
         if (this.moving) {
             if (this.unpauseTimeout) {
                 clearTimeout(this.unpauseTimeout);
             }
-            this.map.setRequestsPaused(true);
             this.unpauseTimeout = setTimeout(() => {
                 this.updateMapInfoState();
                 this.map.setRequestsPaused(false);
@@ -210,9 +209,10 @@ class OlMap extends React.Component {
             features.push({ layer: layer ? layer.get('id') : null,
                 feature: feature.getId(),
                 geomType: feature.getGeometry().getType(),
-                geometry: feature.getGeometry().getCoordinates ? feature.getGeometry().getCoordinates() : null})
+                geometry: feature.getGeometry().getCoordinates ? feature.getGeometry().getCoordinates() : null});
         });
         const data = {
+            ts: +new Date(),
             coordinate: this.map.getEventCoordinate(event),
             pixel: this.map.getEventPixel(event),
             features: features,

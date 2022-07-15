@@ -8,6 +8,7 @@
         "AttributeTable": "Tabela de atribute",
         "DxfExport": "Export DXF",
         "Editing": "Editare",
+        "FeatureForm": "",
         "Help": "Ajutor",
         "IdentifyRegion": "Interogare regiune",
         "LayerCatalog": "Catalog",
@@ -81,25 +82,37 @@
       "symbologyscale": "Scara simboluri:"
     },
     "editing": {
+      "add": "",
       "attrtable": "",
       "canceldelete": "Elimină modificările",
-      "capturedpicture": "",
       "clearpicture": "Elimină poza",
       "commit": "Salvează",
+      "create": "",
       "delete": "Șterge",
       "discard": "Renunță",
       "draw": "Adaugă",
       "feature": "Entitate",
+      "geomreadonly": "",
+      "invalidform": "",
       "maximize": "Maximizează",
       "minimize": "Minimizează",
       "nocompatpick": "",
       "noeditablelayers": "Tema nu conține straturi ce se pot modifica",
+      "paint": "",
       "pick": "Alege",
       "pickdrawfeature": "",
       "reallydelete": "Șterge",
       "relationcommitfailed": "Salvarea relației a eșuat",
       "select": "Selectează",
-      "takepicture": "Fotografiază"
+      "selectedpicture": "",
+      "takepicture": "Fotografiază",
+      "unsavedchanged": ""
+    },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
     },
     "fileselector": {
       "placeholder": "Selectează fișierul"
@@ -120,6 +133,10 @@
       "noresults": "Nu există informații în punctul cerut",
       "querying": "Interogare...",
       "title": "Info Entități"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",
@@ -162,6 +179,12 @@
       "transparency": "Transparență",
       "visiblefilter": "Filtrează straturile invizibile",
       "zoomtolayer": "Zoom la strat"
+    },
+    "linkfeatureform": {
+      "cancel": "",
+      "close": "",
+      "drawhint": "",
+      "pickhint": ""
     },
     "locate": {
       "feetUnit": "picioare",
@@ -206,6 +229,9 @@
       "scale": "Scară:",
       "submit": "Tipărește",
       "wait": "Așteaptă te rog.."
+    },
+    "qtdesignerform": {
+      "loading": ""
     },
     "rasterexport": {
       "format": "Format:",
@@ -281,6 +307,10 @@
       "showpin": "Arată pin",
       "socialIntro": "În rețeaua socială favorită"
     },
+    "snapping": {
+      "loading": "",
+      "snappingenabled": ""
+    },
     "themelayerslist": {
       "addlayer": "Adaugă strat",
       "addlayerstotheme": "Adaugă strat la temă",
@@ -301,8 +331,10 @@
     },
     "timemanager": {
       "animationinterval": "",
+      "markers": "",
       "notemporaldata": "",
       "play": "",
+      "playrev": "",
       "rewind": "",
       "stepback": "",
       "stepfwd": "",
@@ -311,8 +343,11 @@
       "title": "",
       "toggle": "",
       "unit": {
+        "century": "",
         "days": "",
+        "decade": "",
         "hours": "",
+        "milliseconds": "",
         "minutes": "",
         "months": "",
         "seconds": "",
@@ -334,8 +369,10 @@
       "close": "Închide",
       "dock": "Andocare",
       "maximize": "Maximizează",
+      "minimize": "",
       "undock": "Anulează andocarea",
-      "unmaximize": "Revenire"
+      "unmaximize": "Revenire",
+      "unminimize": ""
     }
   }
 }

@@ -8,6 +8,7 @@
         "AttributeTable": "Tabella attributi",
         "DxfExport": "Esporta su DXF",
         "Editing": "Strumenti di modifica",
+        "FeatureForm": "Formulario oggetto",
         "Help": "Aiuto",
         "IdentifyRegion": "Identifica in un poligono",
         "LayerCatalog": "Catalogo livelli",
@@ -81,25 +82,37 @@
       "symbologyscale": "Scala per la simbologia"
     },
     "editing": {
+      "add": "Aggiungi",
       "attrtable": "Tabella",
       "canceldelete": "Annulla",
-      "capturedpicture": "Foto catturata",
       "clearpicture": "Cancella",
       "commit": "Salva",
+      "create": "Crea",
       "delete": "Elimina",
       "discard": "Annulla",
       "draw": "Disegna",
       "feature": "Oggetto",
+      "geomreadonly": "La geometria contiene valori Z non nulli ed è quindi di sola lettura.",
+      "invalidform": "Formulario invalido",
       "maximize": "Massimizza",
       "minimize": "Minimizza",
       "nocompatpick": "Nessuna geometria compatibile",
       "noeditablelayers": "Nessun livello modificabile",
+      "paint": "Modifica",
       "pick": "Seleziona",
       "pickdrawfeature": "Copia geometria esistente",
       "reallydelete": "Elimina",
       "relationcommitfailed": "Alcune relazioni non sono state salvate, consultare i tooltip delle icone per i dettagli.",
       "select": "Seleziona...",
-      "takepicture": "Foto"
+      "selectedpicture": "Immagine selezionata",
+      "takepicture": "Foto",
+      "unsavedchanged": "Vi sono cambiamenti non salvati. Volete comunque lasciare la pagina?"
+    },
+    "featureform": {
+      "feature": "Oggetto",
+      "noresults": "Nessun risultato",
+      "querying": "Caricando...",
+      "title": "Formulario oggetto"
     },
     "fileselector": {
       "placeholder": "Seleziona file..."
@@ -120,6 +133,10 @@
       "noresults": "Nessun risultato",
       "querying": "Caricando...",
       "title": "Titolo"
+    },
+    "imageeditor": {
+      "confirmclose": "Chiudere senza salvare?",
+      "title": "Editor immagine"
     },
     "importlayer": {
       "addfailed": "Impossibile aggiungere il livello",
@@ -162,6 +179,12 @@
       "transparency": "Trasparenza",
       "visiblefilter": "Filtra livelli non visibili",
       "zoomtolayer": "Zoom a tutto il livello"
+    },
+    "linkfeatureform": {
+      "cancel": "Annulla",
+      "close": "Chiudi",
+      "drawhint": "Disegnare l'oggetto sulla mappa...",
+      "pickhint": "Seleziona un oggetto sulla mappa..."
     },
     "locate": {
       "feetUnit": "piedi",
@@ -206,6 +229,9 @@
       "scale": "Scala:",
       "submit": "Stampa",
       "wait": "Attendere..."
+    },
+    "qtdesignerform": {
+      "loading": "Caricando formulario..."
     },
     "rasterexport": {
       "format": "Formato:",
@@ -281,6 +307,10 @@
       "showpin": "Mostra pin",
       "socialIntro": "Social network"
     },
+    "snapping": {
+      "loading": "Caricamento delle geometrie per snapping",
+      "snappingenabled": "Snapping"
+    },
     "themelayerslist": {
       "addlayer": "Aggiungi layer",
       "addlayerstotheme": "Aggiungi layer alla mappa corrente",
@@ -301,8 +331,10 @@
     },
     "timemanager": {
       "animationinterval": "Intervallo animazione",
+      "markers": "Marker",
       "notemporaldata": "Nessun layer con dimensioni temporali è attivo nella cartina.",
-      "play": "Avvia animazione",
+      "play": "Anima",
+      "playrev": "Anima indietro",
       "rewind": "Resetta animazione",
       "stepback": "Passo indietro",
       "stepfwd": "Passo avanti",
@@ -311,8 +343,11 @@
       "title": "Linea temporale",
       "toggle": "Abilità gesitone temporale",
       "unit": {
+        "century": "secoli",
         "days": "giorni",
+        "decade": "decenni",
         "hours": "ore",
+        "milliseconds": "millisecondi",
         "minutes": "minuti",
         "months": "mesi",
         "seconds": "secondi",
@@ -334,8 +369,10 @@
       "close": "Chiudi",
       "dock": "Aggancia",
       "maximize": "Massimizza",
+      "minimize": "Minimizza",
       "undock": "Sgancia",
-      "unmaximize": "Ripristina"
+      "unmaximize": "Ripristina",
+      "unminimize": "Ingrandisci"
     }
   }
 }

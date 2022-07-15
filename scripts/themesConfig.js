@@ -447,6 +447,9 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             if (configItem.printLabelForSearchResult) {
                 resultItem.printLabelForSearchResult = configItem.printLabelForSearchResult;
             }
+            if (configItem.printLabelForAttribution) {
+                resultItem.printLabelForAttribution = configItem.printLabelForAttribution;
+            }
             if (configItem.printLabelConfig) {
                 resultItem.printLabelConfig = configItem.printLabelConfig;
             }
@@ -455,6 +458,9 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             }
             if (configItem.pluginData) {
                 resultItem.pluginData = configItem.pluginData;
+            }
+            if (configItem.snapping) {
+                resultItem.snapping = configItem.snapping;
             }
             if (configItem.minSearchScaleDenom) {
                 resultItem.minSearchScaleDenom = configItem.minSearchScaleDenom;

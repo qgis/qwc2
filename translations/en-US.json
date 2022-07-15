@@ -8,6 +8,7 @@
         "AttributeTable": "Attribute Table",
         "DxfExport": "DXF Export",
         "Editing": "Editing",
+        "FeatureForm": "Feature Form",
         "Help": "Help",
         "IdentifyRegion": "Identify Region",
         "LayerCatalog": "Layer catalog",
@@ -81,25 +82,37 @@
       "symbologyscale": "Symbology scale"
     },
     "editing": {
+      "add": "Add",
       "attrtable": "Table",
       "canceldelete": "Don't delete",
-      "capturedpicture": "Captured picture",
       "clearpicture": "Clear",
       "commit": "Commit",
+      "create": "Create",
       "delete": "Delete",
       "discard": "Discard",
       "draw": "Draw",
       "feature": "Feature",
+      "geomreadonly": "The geometry contains non-zero Z values and is therefore read only.",
+      "invalidform": "Invalid form",
       "maximize": "Maximize",
       "minimize": "Minimize",
       "nocompatpick": "No compatible geometry found",
       "noeditablelayers": "No editable layers.",
+      "paint": "Modify",
       "pick": "Pick",
       "pickdrawfeature": "Clone existing geometry",
       "reallydelete": "Delete",
       "relationcommitfailed": "Some relation values could not be committed, check the icon tooltips for details",
       "select": "Select",
-      "takepicture": "Take picture"
+      "selectedpicture": "Selected picture",
+      "takepicture": "Take picture",
+      "unsavedchanged": "There are unsaved changes. Do you want to leave the page anyway?"
+    },
+    "featureform": {
+      "feature": "Feature",
+      "noresults": "No results",
+      "querying": "Querying...",
+      "title": "Feature form"
     },
     "fileselector": {
       "placeholder": "Select file..."
@@ -120,6 +133,10 @@
       "noresults": "No information available for the selected point",
       "querying": "Querying...",
       "title": "Feature Info"
+    },
+    "imageeditor": {
+      "confirmclose": "Close without saving?",
+      "title": "Image editor"
     },
     "importlayer": {
       "addfailed": "Failed to add layer.",
@@ -162,6 +179,12 @@
       "transparency": "Trasparency",
       "visiblefilter": "Filter invisible layers",
       "zoomtolayer": "Zoom to layer"
+    },
+    "linkfeatureform": {
+      "cancel": "Cancel",
+      "close": "Close",
+      "drawhint": "Draw the feature on the map...",
+      "pickhint": "Pick a feature on the map..."
     },
     "locate": {
       "feetUnit": "feet",
@@ -206,6 +229,9 @@
       "scale": "Scale",
       "submit": "Print",
       "wait": "Please wait..."
+    },
+    "qtdesignerform": {
+      "loading": "Loading form..."
     },
     "rasterexport": {
       "format": "Format:",
@@ -281,6 +307,10 @@
       "showpin": "Show pin",
       "socialIntro": "In your favourite social network"
     },
+    "snapping": {
+      "loading": "Loading snapping geometries...",
+      "snappingenabled": "Snapping"
+    },
     "themelayerslist": {
       "addlayer": "Add layer",
       "addlayerstotheme": "Add layers to current map",
@@ -301,8 +331,10 @@
     },
     "timemanager": {
       "animationinterval": "Animation interval",
+      "markers": "Markers",
       "notemporaldata": "No temporal layers are visible in the map.",
       "play": "Play",
+      "playrev": "Play backwards",
       "rewind": "Rewind",
       "stepback": "Step back",
       "stepfwd": "Step forward",
@@ -311,8 +343,11 @@
       "title": "Time manager",
       "toggle": "Temporal navigation",
       "unit": {
+        "century": "centuries",
         "days": "days",
+        "decade": "decades",
         "hours": "hours",
+        "milliseconds": "milliseconds",
         "minutes": "minutes",
         "months": "months",
         "seconds": "seconds",
@@ -334,8 +369,10 @@
       "close": "Close",
       "dock": "Dock",
       "maximize": "Maximize",
+      "minimize": "Minimize",
       "undock": "Undock",
-      "unmaximize": "Restore"
+      "unmaximize": "Restore",
+      "unminimize": "Unminimize"
     }
   }
 }

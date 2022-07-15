@@ -30,6 +30,7 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -119,10 +120,6 @@ class Search extends React.Component {
             }
         }
     }
-    killEvent = (ev) => {
-        ev.preventDefault();
-        ev.stopPropagation();
-    }
     search = (props, startup = false)  => {
         if (props.searchText) {
             this.setState({invisibleLayerQuery: null});
@@ -193,7 +190,7 @@ class Search extends React.Component {
         if (!this.props.searchText) {
             addonAfterTooltip = LocaleUtils.tr("search.search");
             addonAfter = (<Icon icon="search" title={addonAfterTooltip}/>);
-        } else if(this.props.searchText && this.state.focused && this.props.pendingProviders && this.props.pendingProviders.length > 0) {
+        } else if (this.props.searchText && this.state.focused && this.props.pendingProviders && this.props.pendingProviders.length > 0) {
             addonAfterTooltip = LocaleUtils.tr("search.searchinprogress");
             addonAfter = (<Spinner/>);
         } else {
@@ -201,7 +198,7 @@ class Search extends React.Component {
             addonAfter = (<Icon icon="remove" onClick={this.resetSearch} title={addonAfterTooltip}/>);
         }
         let providerSelection = null;
-        let providerSelectionTooltip = LocaleUtils.tr("search.providerselection");
+        const providerSelectionTooltip = LocaleUtils.tr("search.providerselection");
         if (this.props.searchOptions.showProviderSelection) {
             let providerSelectionMenu = null;
             if (this.state.providerSelectionVisible) {
@@ -339,7 +336,7 @@ class Search extends React.Component {
             return null;
         }
         return (
-            <ul className="search-results" onMouseDown={this.setPreventBlur} ref={this.setupKillTouchEvents}>
+            <ul className="search-results" onMouseDown={this.setPreventBlur} ref={MiscUtils.setupKillTouchEvents}>
                 {this.props.results.map(category => this.renderCategory(category))}
             </ul>
         );
@@ -348,15 +345,10 @@ class Search extends React.Component {
         this.preventBlur = true;
         setTimeout(() => {this.preventBlur = false; return false;}, 100);
     }
-    setupKillTouchEvents = (el) => {
-        if (el) {
-            el.addEventListener('touchmove', ev => ev.stopPropagation(), { passive: false });
-        }
-    }
     renderCategory = (category) => {
         const title = category.titlemsgid ? LocaleUtils.tr(category.titlemsgid) : category.title;
         return (
-            <li key={category.id} onMouseDown={this.killEvent}>
+            <li key={category.id} onMouseDown={MiscUtils.killEvent}>
                 <span className="search-results-category-title">{title}</span>
                 <ul>{category.items.map(item => this.renderItem(item))}</ul>
             </li>
@@ -367,7 +359,7 @@ class Search extends React.Component {
             return (
                 <li key={item.id}
                     onClick={() => this.props.searchMore(item, this.props.searchText, this.activeProviders(this.props))}
-                    onMouseDown={this.killEvent}>
+                    onMouseDown={MiscUtils.killEvent}>
                     <i>{LocaleUtils.tr("search.more")}</i>
                 </li>
             );
@@ -375,7 +367,7 @@ class Search extends React.Component {
         const addTitle = LocaleUtils.tr("themeswitcher.addtotheme");
         const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
         return (
-            <li key={item.id} onClick={() => {this.showResult(item); this.input.blur(); }} onMouseDown={this.killEvent}
+            <li key={item.id} onClick={() => {this.showResult(item); this.input.blur(); }} onMouseDown={MiscUtils.killEvent}
                 title={item.text}
             >
                 {item.thumbnail ? (<img src={item.thumbnail} />) : null}
@@ -384,7 +376,7 @@ class Search extends React.Component {
             </li>
         );
     }
-    showResult = (item, zoom=true, startupSearch=false) => {
+    showResult = (item, zoom = true, startupSearch = false) => {
         const resultType = item.type || SearchResultType.PLACE;
         if (resultType !== SearchResultType.PLACE && !this.props.searchOptions.zoomToLayers) {
             zoom = false;
@@ -425,7 +417,7 @@ class Search extends React.Component {
             // zoom to result using max zoom level
             let newZoom;
             if (!isEmpty(bbox) && bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
-                const mapbbox = CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection)
+                const mapbbox = CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection);
                 newZoom = Math.max(0, MapUtils.getZoomForExtent(mapbbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom + 1) - 1);
             } else {
                 newZoom = MapUtils.computeZoom(this.props.map.scales, item.scale || 0);
@@ -461,7 +453,7 @@ class Search extends React.Component {
             // Check if layer is already in the LayerTree
             const sublayers = LayerUtils.getSublayerNames(item.layer);
             const existing = this.props.layers.find(l => {
-                return l.type === item.layer.type && l.url === item.layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)))
+                return l.type === item.layer.type && l.url === item.layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)));
             });
             if (existing) {
                 const text = LocaleUtils.tr("search.existinglayer") + ":" + item.layer.title;

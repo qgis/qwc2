@@ -8,6 +8,7 @@
         "AttributeTable": "",
         "DxfExport": "DXF'e Veri Aktar",
         "Editing": "Düzenleme",
+        "FeatureForm": "",
         "Help": "Yardım",
         "IdentifyRegion": "Bölgeden Bilgi Al",
         "LayerCatalog": "",
@@ -81,25 +82,37 @@
       "symbologyscale": "Sembol Ölçeği:"
     },
     "editing": {
+      "add": "",
       "attrtable": "",
       "canceldelete": "Silme",
-      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Onayla",
+      "create": "",
       "delete": "Sil",
       "discard": "İptal",
       "draw": "Çiz",
       "feature": "Obje",
+      "geomreadonly": "",
+      "invalidform": "",
       "maximize": "Büyült",
       "minimize": "Küçült",
       "nocompatpick": "",
       "noeditablelayers": "Düzenlenebilir katman yok.",
+      "paint": "",
       "pick": "Seç",
       "pickdrawfeature": "",
       "reallydelete": "Sil",
       "relationcommitfailed": "",
       "select": "Seçim",
-      "takepicture": ""
+      "selectedpicture": "",
+      "takepicture": "",
+      "unsavedchanged": ""
+    },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
     },
     "fileselector": {
       "placeholder": "Dosya seç..."
@@ -120,6 +133,10 @@
       "noresults": "Seçilen nokta için geçerli bilgi yok",
       "querying": "Sorgulanıyor...",
       "title": "Obje Bilgisi"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",
@@ -162,6 +179,12 @@
       "transparency": "",
       "visiblefilter": "Görünmeyen katmanları filtrele",
       "zoomtolayer": "Katman sınırlarına yaklaş"
+    },
+    "linkfeatureform": {
+      "cancel": "",
+      "close": "",
+      "drawhint": "",
+      "pickhint": ""
     },
     "locate": {
       "feetUnit": "feet",
@@ -206,6 +229,9 @@
       "scale": "Ölçek:",
       "submit": "Yazdır",
       "wait": "Lütfen bekleyiniz..."
+    },
+    "qtdesignerform": {
+      "loading": ""
     },
     "rasterexport": {
       "format": "Format:",
@@ -281,6 +307,10 @@
       "showpin": "",
       "socialIntro": "Favori sosyal ağınıza"
     },
+    "snapping": {
+      "loading": "",
+      "snappingenabled": ""
+    },
     "themelayerslist": {
       "addlayer": "Katman ekle",
       "addlayerstotheme": "Geçerli haritaya katman ekle",
@@ -301,8 +331,10 @@
     },
     "timemanager": {
       "animationinterval": "",
+      "markers": "",
       "notemporaldata": "",
       "play": "",
+      "playrev": "",
       "rewind": "",
       "stepback": "",
       "stepfwd": "",
@@ -311,8 +343,11 @@
       "title": "",
       "toggle": "",
       "unit": {
+        "century": "",
         "days": "",
+        "decade": "",
         "hours": "",
+        "milliseconds": "",
         "minutes": "",
         "months": "",
         "seconds": "",
@@ -334,8 +369,10 @@
       "close": "Kapat",
       "dock": "Sabitle",
       "maximize": "",
+      "minimize": "",
       "undock": "Çöz",
-      "unmaximize": ""
+      "unmaximize": "",
+      "unminimize": ""
     }
   }
 }

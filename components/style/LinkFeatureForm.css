@@ -1,0 +1,45 @@
+div.link-feature-form {
+    background-color: @container_bg@;
+    border: 2px solid @item_border@;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em;
+}
+
+div.link-feature-form > div.AttributeForm {
+    flex: 1 1 auto;
+}
+
+div.link-feature-form-feature-list {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    background-color: white;
+    border-style: solid;
+    border-color: @item_border@;
+    border-width: 1px 1px 0 1px;
+}
+
+div.link-feature-form-feature-list > div {
+    padding: 0.125em 0.25em;
+}
+
+div.link-feature-form-feature-list > div:hover {
+    background-color: @item_active@;
+    color: white;
+}
+
+div.link-feature-form-close {
+    border-top: 1px solid @item_border@;
+    padding-top: 0.5em;
+}
+
+div.link-feature-form-hint {
+    font-style: italic;
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+div.link-feature-form-close > button {
+    width: 100%;
+}

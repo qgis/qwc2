@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import isEmpty from 'lodash.isempty';
 import axios from 'axios';
 import {setCurrentTask} from '../actions/task';
 import LayerCatalogWidget from '../components/widgets/LayerCatalogWidget';
@@ -33,6 +32,7 @@ class LayerCatalog extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.active && !prevProps.active && this.props.catalogUrl) {
             axios.get(this.props.catalogUrl).then(this.setCatalog).catch(e => {
+                this.setState({catalog: []});
                 console.warn("Failed to load catalog: " + e);
             });
         }

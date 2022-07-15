@@ -8,6 +8,7 @@
         "AttributeTable": "Table d'attributs",
         "DxfExport": "Export DXF",
         "Editing": "Editer",
+        "FeatureForm": "",
         "Help": "Aide",
         "IdentifyRegion": "Interroger la région",
         "LayerCatalog": "Catalogue des couches",
@@ -81,25 +82,37 @@
       "symbologyscale": "Echelle"
     },
     "editing": {
+      "add": "",
       "attrtable": "Table",
       "canceldelete": "Annuler la suppression",
-      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Appliquer",
+      "create": "",
       "delete": "Supprimer",
       "discard": "Rejeter",
       "draw": "Dessiner",
       "feature": "Objet",
+      "geomreadonly": "",
+      "invalidform": "",
       "maximize": "Maximiser",
       "minimize": "Minimiser",
       "nocompatpick": "Aucune géométrie compatible trouvée",
       "noeditablelayers": "Il n'y a pas de couche éditable pour ce thème",
+      "paint": "",
       "pick": "Choisir",
       "pickdrawfeature": "Copier la géométrie existante",
       "reallydelete": "Supprimer",
       "relationcommitfailed": "Certaines relations n'ont pas pu être enregistrées. Pour plus de détails consulter le boutons d'informations",
       "select": "Sélectionner",
-      "takepicture": "Ajouter une photo"
+      "selectedpicture": "",
+      "takepicture": "Ajouter une photo",
+      "unsavedchanged": "Il y a des changements non sauvegardés. Voulez-vous quitter la page de toute façon?"
+    },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
     },
     "fileselector": {
       "placeholder": "Choisir un fichier..."
@@ -120,6 +133,10 @@
       "noresults": "Pas de résultats pour la position sélectionnée",
       "querying": "Identification en cours...",
       "title": "Informations sur l'objet"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",
@@ -162,6 +179,12 @@
       "transparency": "Transparence",
       "visiblefilter": "Filtrer couches invisibles",
       "zoomtolayer": "Zoomer sur la couche"
+    },
+    "linkfeatureform": {
+      "cancel": "",
+      "close": "",
+      "drawhint": "",
+      "pickhint": ""
     },
     "locate": {
       "feetUnit": "pieds",
@@ -206,6 +229,9 @@
       "scale": "Echelle",
       "submit": "Créer le PDF",
       "wait": "Veuillez patienter..."
+    },
+    "qtdesignerform": {
+      "loading": ""
     },
     "rasterexport": {
       "format": "Format:",
@@ -281,6 +307,10 @@
       "showpin": "Afficher les épingles",
       "socialIntro": "Via votre réseau social favori"
     },
+    "snapping": {
+      "loading": "",
+      "snappingenabled": ""
+    },
     "themelayerslist": {
       "addlayer": "Ajouter la couche",
       "addlayerstotheme": "Ajouter des couches à la carte",
@@ -301,8 +331,10 @@
     },
     "timemanager": {
       "animationinterval": "",
+      "markers": "",
       "notemporaldata": "Aucune couche temporelle n'est visible sur la carte.",
       "play": "Jouer",
+      "playrev": "",
       "rewind": "",
       "stepback": "",
       "stepfwd": "",
@@ -311,8 +343,11 @@
       "title": "",
       "toggle": "",
       "unit": {
+        "century": "",
         "days": "jours",
+        "decade": "",
         "hours": "heures",
+        "milliseconds": "",
         "minutes": "minutes",
         "months": "mois",
         "seconds": "secondes",
@@ -334,8 +369,10 @@
       "close": "Fermer",
       "dock": "Attacher",
       "maximize": "Agrandir",
+      "minimize": "",
       "undock": "Détacher",
-      "unmaximize": "Réduire"
+      "unmaximize": "Réduire",
+      "unminimize": ""
     }
   }
 }

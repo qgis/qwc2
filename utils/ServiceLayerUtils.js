@@ -16,6 +16,7 @@ import url from 'url';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import LayerUtils from './LayerUtils';
+import MiscUtils from './MiscUtils';
 import {LayerRole} from '../actions/layers';
 
 function strcmp(a, b) {
@@ -101,16 +102,16 @@ const ServiceLayerUtils = {
         const wmsFormat = new ol.format.WMSCapabilities();
         const capabilities = wmsFormat.read(capabilitiesXml);
         const calledUrlParts = url.parse(calledServiceUrl, true);
-        // Filter service, version and request from calledServiceUrl, but keep other parameters (i.e. MAP)
+        // Filter service and request from calledServiceUrl, but keep other parameters (i.e. MAP)
         calledUrlParts.query = Object.keys(calledUrlParts.query).filter(key => {
-            return !["service", "version", "request"].includes(key.toLowerCase());
+            return !["service", "request"].includes(key.toLowerCase());
         }).reduce((res, key) => ({...res, [key]: calledUrlParts.query[key]}), {});
         delete calledUrlParts.search;
 
         const topLayer = capabilities.Capability.Layer;
 
-        const getMapUrl = this.getWmsCapabilityUrl(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetMap.DCPType).HTTP.Get.OnlineResource, calledUrlParts);
-        const featureInfoUrl = this.getWmsCapabilityUrl(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType).HTTP.Get.OnlineResource, calledUrlParts);
+        const getMapUrl = this.mergeCalledServiceUrlQuery(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetMap.DCPType).HTTP.Get.OnlineResource, calledUrlParts);
+        const featureInfoUrl = this.mergeCalledServiceUrlQuery(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType).HTTP.Get.OnlineResource, calledUrlParts);
         let infoFormats = null;
         try {
             infoFormats = capabilities.Capability.Request.GetFeatureInfo.Format;
@@ -169,7 +170,7 @@ const ServiceLayerUtils = {
         }
         let legendUrl = getMapUrl;
         try {
-            legendUrl = this.getWmsCapabilityUrl(layer.Style[0].LegendURL[0].OnlineResource, calledUrlParts);
+            legendUrl = this.mergeCalledServiceUrlQuery(layer.Style[0].LegendURL[0].OnlineResource, calledUrlParts);
         } catch (e) {
             /* pass */
         }
@@ -195,7 +196,7 @@ const ServiceLayerUtils = {
             maxScale: layer.MaxScaleDenominator
         };
     },
-    getWmsCapabilityUrl(capabilityUrl, calledServiceUrlParts) {
+    mergeCalledServiceUrlQuery(capabilityUrl, calledServiceUrlParts) {
         try {
             const urlParts = url.parse(capabilityUrl, true);
             urlParts.host = calledServiceUrlParts.host;
@@ -207,7 +208,14 @@ const ServiceLayerUtils = {
             return url.format(calledServiceUrlParts);
         }
     },
-    getWFSLayers(capabilitiesXml) {
+    getWFSLayers(capabilitiesXml, calledServiceUrl, mapCrs) {
+        const calledUrlParts = url.parse(calledServiceUrl, true);
+        // Filter service and request from calledServiceUrl, but keep other parameters (i.e. MAP)
+        calledUrlParts.query = Object.keys(calledUrlParts.query).filter(key => {
+            return !["service", "request"].includes(key.toLowerCase());
+        }).reduce((res, key) => ({...res, [key]: calledUrlParts.query[key]}), {});
+        delete calledUrlParts.search;
+
         const options = {
             attributeNamePrefix: "",
             ignoreAttributes: false,
@@ -219,17 +227,18 @@ const ServiceLayerUtils = {
         if (!capabilities || !capabilities.WFS_Capabilities || !capabilities.WFS_Capabilities.version) {
             return [];
         } else if (capabilities.WFS_Capabilities.version < "1.1.0") {
-            return ServiceLayerUtils.getWFS10Layers(capabilities.WFS_Capabilities);
+            return ServiceLayerUtils.getWFS10Layers(capabilities.WFS_Capabilities, calledUrlParts);
         } else {
-            return ServiceLayerUtils.getWFS11_20Layers(capabilities.WFS_Capabilities);
+            return ServiceLayerUtils.getWFS11_20Layers(capabilities.WFS_Capabilities, calledUrlParts, mapCrs);
         }
     },
-    getWFS10Layers(capabilities) {
+    getWFS10Layers(capabilities, calledUrlParts) {
         let serviceUrl = null;
         const version = capabilities.version;
         let formats = null;
         try {
             serviceUrl = ServiceLayerUtils.getDCPTypes(array(capabilities.Capability.Request.GetFeature.DCPType)).HTTP.Get.onlineResource;
+            serviceUrl = this.mergeCalledServiceUrlQuery(serviceUrl, calledUrlParts);
             formats = Object.keys(capabilities.Capability.Request.GetFeature.ResultFormat);
             if (typeof(formats) === 'string') {
                 // convert to list if single entry
@@ -262,6 +271,7 @@ const ServiceLayerUtils = {
                 title: title,
                 abstract: abstract,
                 bbox: bbox,
+                projection: featureType.SRS,
                 url: serviceUrl,
                 version: version,
                 formats: formats,
@@ -271,19 +281,16 @@ const ServiceLayerUtils = {
         }
         return layers;
     },
-    getWFS11_20Layers(capabilities) {
+    getWFS11_20Layers(capabilities, calledUrlParts, mapCrs) {
         let serviceUrl = null;
         const version = capabilities.version;
         let formats = null;
         try {
             const getFeatureOp = array(capabilities.OperationsMetadata.Operation).find(el => el.name === "GetFeature");
             serviceUrl = ServiceLayerUtils.getDCPTypes(array(getFeatureOp.DCP)).HTTP.Get.href;
+            serviceUrl = this.mergeCalledServiceUrlQuery(serviceUrl, calledUrlParts);
             const outputFormat = array(getFeatureOp.Parameter).find(el => el.name === "outputFormat");
-            formats = outputFormat.AllowedValues ? outputFormat.AllowedValues.Value : outputFormat.Value;
-            if (typeof(formats) === 'string') {
-                // convert to list if single entry
-                formats = [formats];
-            }
+            formats = MiscUtils.ensureArray(outputFormat.AllowedValues ? outputFormat.AllowedValues.Value : outputFormat.Value);
         } catch (e) {
             return [];
         }
@@ -305,6 +312,11 @@ const ServiceLayerUtils = {
             }
             const title = featureType.Title || name;
             const abstract = featureType.Abstract || "";
+            const projections = [
+                CoordinatesUtils.fromOgcUrnCrs(featureType.DefaultCRS || featureType.DefaultSRS),
+                ...MiscUtils.ensureArray(featureType.OtherCRS || featureType.OtherSRS || []).map(crs => CoordinatesUtils.fromOgcUrnCrs(crs))
+            ];
+            const projection = projections.includes(mapCrs) ? mapCrs : projections[0];
 
             layers.push({
                 type: "wfs",
@@ -312,6 +324,7 @@ const ServiceLayerUtils = {
                 title: title,
                 abstract: abstract,
                 bbox: bbox,
+                projection: projection,
                 url: serviceUrl,
                 version: version,
                 formats: formats,
@@ -337,7 +350,7 @@ const ServiceLayerUtils = {
                 if (type === "wms") {
                     result = ServiceLayerUtils.getWMSLayers(response.data, url, true);
                 } else if (type === "wfs") {
-                    result = ServiceLayerUtils.getWFSLayers(response.data);
+                    result = ServiceLayerUtils.getWFSLayers(response.data, url, mapCrs);
                 } else if (type === "wmts") {
                     result = ServiceLayerUtils.getWMTSLayers(response.data, url, mapCrs);
                 }
@@ -349,7 +362,6 @@ const ServiceLayerUtils = {
                         opacity: layerConfig.opacity,
                         visibility: layerConfig.visibility,
                         role: LayerRole.USERLAYER,
-                        baseParams: {...layer.baseParams, ...layerConfig.params},
                         sublayers: null
                     };
                     callback(layerConfig.id, layer);

@@ -23,6 +23,7 @@ import Spinner from '../components/Spinner';
 import NavBar from '../components/widgets/NavBar';
 import ConfigUtils from '../utils/ConfigUtils';
 import EditingInterface from '../utils/EditingInterface';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/AttributeTable.css';
@@ -86,6 +87,9 @@ class AttributeTable extends React.Component {
 
         const editConfig = this.props.theme.editConfig || {};
         const currentEditConfig = editConfig[this.state.loadedLayer];
+        const editPermissions = (editConfig[this.state.loadedLayer] || {}).permissions || {};
+        const readOnly = editPermissions.updatable === false;
+
         let loadOverlay = null;
         if (this.state.selectedLayer && this.state.selectedLayer !== this.state.loadedLayer) {
             if (this.state.loading) {
@@ -149,7 +153,7 @@ class AttributeTable extends React.Component {
                     <tbody>
                         {features.map((feature, filteredIndex) => {
                             const featureidx = feature.originalIndex;
-                            const disabled = this.state.changedFeatureIdx !== null && this.state.changedFeatureIdx !== featureidx;
+                            const disabled = readOnly || (this.state.changedFeatureIdx !== null && this.state.changedFeatureIdx !== featureidx);
                             const key = this.state.changedFeatureIdx === featureidx && this.state.newFeature ? "newfeature" : feature.id;
                             return (
                                 <tr className={disabled ? "row-disabled" : ""} key={key}>
@@ -215,6 +219,9 @@ class AttributeTable extends React.Component {
         const loading = this.state.loading;
         const editing = this.state.changedFeatureIdx !== null;
         const layerChanged = this.state.selectedLayer !== this.state.loadedLayer;
+        const showAddButton = editPermissions.creatable !== false;
+        const showDelButton = editPermissions.deletable !== false;
+
         return (
             <ResizeableWindow dockable="bottom" icon="editing" initialHeight={480} initialWidth={800} onClose={this.onClose} title={LocaleUtils.tr("attribtable.title")}>
                 <div className="attribtable-body" role="body">
@@ -234,9 +241,11 @@ class AttributeTable extends React.Component {
                         <button className="button" disabled={editing || nolayer} onClick={() => this.reload()} title={LocaleUtils.tr("attribtable.reload")}>
                             <Icon icon="refresh" />
                         </button>
-                        <button className="button" disabled={nolayer || editing || loading || layerChanged} onClick={this.addFeature} title={LocaleUtils.tr("attribtable.addfeature")}>
-                            <Icon icon="plus" />
-                        </button>
+                        {showAddButton ? (
+                            <button className="button" disabled={nolayer || editing || loading || layerChanged} onClick={this.addFeature} title={LocaleUtils.tr("attribtable.addfeature")}>
+                                <Icon icon="plus" />
+                            </button>
+                        ) : null}
                         <button className="button" disabled={layerChanged || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
                             <Icon icon="search" />
                         </button>
@@ -246,29 +255,30 @@ class AttributeTable extends React.Component {
                             </button>
                         ) : null}
                         {this.state.confirmDelete ? (
-                            <button className="button edit-commit" onClick={this.deleteSelectedFeatured}>
+                            <button className="button button-accept" onClick={this.deleteSelectedFeatured}>
                                 <Icon icon="ok" />
                                 <span>{LocaleUtils.tr("attribtable.delete")}</span>
                             </button>
                         ) : (
-                            <button className="button" disabled={layerChanged || editing || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
+                            showDelButton ? (<button className="button" disabled={layerChanged || editing || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
                                 <Icon icon="trash" />
                             </button>
+                        ) : null
                         )}
                         {this.state.confirmDelete ? (
-                            <button className="button edit-discard" onClick={() => this.setState({confirmDelete: false})}>
+                            <button className="button button-reject" onClick={() => this.setState({confirmDelete: false})}>
                                 <Icon icon="remove" />
                                 <span>{LocaleUtils.tr("attribtable.nodelete")}</span>
                             </button>
                         ) : null}
                         {this.state.changedFeatureIdx !== null ? (
-                            <button className="button edit-commit" onClick={this.commit}>
+                            <button className="button button-accept" onClick={this.commit}>
                                 <Icon icon="ok" />
                                 <span>{LocaleUtils.tr("attribtable.commit")}</span>
                             </button>
                         ) : null}
                         {this.state.changedFeatureIdx !== null ? (
-                            <button className="button edit-discard" onClick={this.discard}>
+                            <button className="button button-reject" onClick={this.discard}>
                                 <Icon icon="remove" />
                                 <span>{LocaleUtils.tr("attribtable.discard")}</span>
                             </button>
@@ -432,7 +442,7 @@ class AttributeTable extends React.Component {
             changedFeatureIdx: this.state.filteredSortedFeatures.length,
             newFeature: true
         });
-        this.props.setCurrentTaskBlocked(true);
+        this.props.setCurrentTaskBlocked(true, LocaleUtils.tr("editing.unsavedchanged"));
     }
     deleteSelectedFeatured = () => {
         const features = this.state.filteredSortedFeatures.filter(feature => this.state.selectedFeatures[feature.id] === true);
@@ -477,14 +487,14 @@ class AttributeTable extends React.Component {
         newfilteredSortedFeatures[filteredIdx].properties = {...newfilteredSortedFeatures[filteredIdx].properties, [fieldid]: value};
         const originalFeatureProps = this.state.originalFeatureProps || {...this.state.features[featureidx].properties};
         this.setState({features: newFeatures, filteredSortedFeatures: newfilteredSortedFeatures, changedFeatureIdx: featureidx, originalFeatureProps: originalFeatureProps});
-        this.props.setCurrentTaskBlocked(true);
+        this.props.setCurrentTaskBlocked(true, LocaleUtils.tr("editing.unsavedchanged"));
     }
     commit = () => {
         const feature = {
             ...this.state.features[this.state.changedFeatureIdx],
             crs: {
                 type: "name",
-                properties: {name: "urn:ogc:def:crs:EPSG::" + this.props.mapCrs.split(":")[1]}
+                properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.mapCrs)}
             }
         };
         const featureData = new FormData();

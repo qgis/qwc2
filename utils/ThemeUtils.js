@@ -59,6 +59,9 @@ const ThemeUtils = {
                             const sublayer = themes.backgroundLayers.find(l => l.name === item.ref);
                             if (sublayer) {
                                 item = {...item, ...sublayer, ...LayerUtils.buildWMSLayerParams(sublayer)};
+                                if (item.type === "wms") {
+                                    item.version = item.params.VERSION || item.version || themes.defaultWMSVersion || "1.3.0";
+                                }
                                 delete item.ref;
                             } else {
                                 item = null;
@@ -84,13 +87,15 @@ const ThemeUtils = {
         const urlParts = url.parse(theme.url, true);
         // Resolve relative urls
         if (!urlParts.host) {
-            urlParts.host = url.parse(window.location.href).host;
+            const locationParts = url.parse(window.location.href);
+            urlParts.protocol = locationParts.protocol;
+            urlParts.host = locationParts.host;
         }
         const baseParams = urlParts.query;
         const layer = {
             type: "wms",
             url: url.format(urlParts),
-            version: theme.version,
+            version: theme.version || themes.defaultWMSVersion || "1.3.0",
             visibility: true,
             expanded: theme.expanded,
             name: theme.name,

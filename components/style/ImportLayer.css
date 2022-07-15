@@ -6,7 +6,6 @@
     display: flex;
 }
 
-
 #ImportLayer div.importlayer-input-fields > select {
     flex: 0 0 auto;
     height: 2em;

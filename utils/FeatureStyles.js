@@ -24,31 +24,43 @@ const DEFAULT_FEATURE_STYLE = {
 export default {
     default: (feature, options) => {
         const opts = {...DEFAULT_FEATURE_STYLE, ...ConfigUtils.getConfigProp("defaultFeatureStyle"), ...options};
-        return new ol.style.Style({
-            fill: new ol.style.Fill({
-                color: opts.fillColor
+        return [
+            new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: opts.fillColor
+                }),
+                stroke: new ol.style.Stroke({
+                    color: opts.strokeColor,
+                    width: opts.strokeWidth,
+                    lineDash: opts.strokeDash
+                }),
+                image: opts.circleRadius > 0 ? new ol.style.Circle({
+                    radius: opts.circleRadius,
+                    fill: new ol.style.Fill({ color: opts.fillColor }),
+                    stroke: new ol.style.Stroke({color: opts.strokeColor, width: opts.strokeWidth})
+                }) : null
             }),
-            stroke: new ol.style.Stroke({
-                color: opts.strokeColor,
-                width: opts.strokeWidth,
-                lineDash: opts.strokeDash
-            }),
-            image: opts.circleRadius > 0 ? new ol.style.Circle({
-                radius: opts.circleRadius,
-                fill: new ol.style.Fill({ color: opts.fillColor }),
-                stroke: new ol.style.Stroke({color: opts.strokeColor, width: opts.strokeWidth})
-            }) : null,
-            text: new ol.style.Text({
-                font: opts.textFont || '11pt sans-serif',
-                text: feature.getProperties().label || "",
-                overflow: true,
-                fill: new ol.style.Fill({color: opts.textFill}),
-                stroke: new ol.style.Stroke({color: opts.textStroke, width: 3}),
-                textAlign: feature.getGeometry().getType() === "Point" ? 'left' : 'center',
-                textBaseline: feature.getGeometry().getType() === "Point" ? 'bottom' : 'middle',
-                offsetX: feature.getGeometry().getType() === "Point" ? (5 + opts.circleRadius) : 0
+            new ol.style.Style({
+                geometry: (f) => {
+                    if (f.getGeometry().getType().startsWith("Multi")) {
+                        // Only label middle point
+                        const extent = f.getGeometry().getExtent();
+                        return new ol.geom.Point(f.getGeometry().getClosestPoint(ol.extent.getCenter(extent)));
+                    }
+                    return f.getGeometry();
+                },
+                text: new ol.style.Text({
+                    font: opts.textFont || '11pt sans-serif',
+                    text: feature.getProperties().label || "",
+                    overflow: true,
+                    fill: new ol.style.Fill({color: opts.textFill}),
+                    stroke: new ol.style.Stroke({color: opts.textStroke, width: 3}),
+                    textAlign: feature.getGeometry().getType() === "Point" ? 'left' : 'center',
+                    textBaseline: feature.getGeometry().getType() === "Point" ? 'bottom' : 'middle',
+                    offsetX: feature.getGeometry().getType() === "Point" ? (5 + opts.circleRadius) : 0
+                })
             })
-        });
+        ];
     },
     marker: (feature, options) => {
         return new ol.style.Style({

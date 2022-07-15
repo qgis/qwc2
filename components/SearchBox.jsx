@@ -124,13 +124,13 @@ class SearchBox extends React.Component {
         }
         return (
             <div key="recent">
-                <div className="searchbox-results-section-title" onClick={() => this.toggleSection("recent")} onMouseDown={this.killEvent}>
+                <div className="searchbox-results-section-title" onClick={() => this.toggleSection("recent")} onMouseDown={MiscUtils.killEvent}>
                     <Icon icon={this.state.collapsedSections.recent ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.recent")}
                 </div>
                 {!this.state.collapsedSections.recent ? (
                     <div className="searchbox-results-section-body">
                         {recentSearches.map((entry, idx) => (
-                            <div className="searchbox-result" key={"r" + idx} onClick={() => this.searchTextChanged(null, entry)} onMouseDown={this.killEvent}>
+                            <div className="searchbox-result" key={"r" + idx} onClick={() => this.searchTextChanged(null, entry)} onMouseDown={MiscUtils.killEvent}>
                                 {entry}
                             </div>
                         ))}
@@ -150,14 +150,14 @@ class SearchBox extends React.Component {
         values.sort((a, b) => a.localeCompare(b));
         return (
             <div key="filter">
-                <div className="searchbox-results-section-title" onClick={() => this.toggleSection("filter")} onMouseDown={this.killEvent}>
+                <div className="searchbox-results-section-title" onClick={() => this.toggleSection("filter")} onMouseDown={MiscUtils.killEvent}>
                     <Icon icon={collapsed ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.filter")}
                 </div>
                 {!collapsed ? (
                     <div className="searchbox-results-section-body">
                         {values.map((value, idx) => {
                             return (
-                                <div className="searchbox-result" key={"f" + idx} onClick={() => this.searchTextChanged(null, value)} onMouseDown={this.killEvent}>
+                                <div className="searchbox-result" key={"f" + idx} onClick={() => this.searchTextChanged(null, value)} onMouseDown={MiscUtils.killEvent}>
                                     <span className="searchbox-result-label">{value}</span>
                                 </div>
                             );
@@ -178,16 +178,16 @@ class SearchBox extends React.Component {
                     priority: group.priority || 0,
                     tree: (
                         <div key={sectionId}>
-                            <div className="searchbox-results-section-title" onClick={() => this.toggleSection(sectionId)} onMouseDown={this.killEvent}>
+                            <div className="searchbox-results-section-title" onClick={() => this.toggleSection(sectionId)} onMouseDown={MiscUtils.killEvent}>
                                 <Icon icon={this.state.collapsedSections[sectionId] ? "expand" : "collapse"} />
                                 {group.titlemsgid ? LocaleUtils.tr(group.titlemsgid) : (<span>{group.title}</span>)}
                             </div>
                             {!this.state.collapsedSections[sectionId] ? (
                                 <div className="searchbox-results-section-body">
                                     {group.items.map((entry, idx) => (
-                                        <div className="searchbox-result" key={"c" + idx} onClick={() => {this.selectProviderResult(entry); this.blur(); }} onMouseDown={this.killEvent}>
+                                        <div className="searchbox-result" key={"c" + idx} onClick={() => {this.selectProviderResult(entry); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
                                             <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: entry.text.replace(/<br\s*\/>/ig, ' ')}} title={entry.label || entry.text} />
-                                            {entry.externalLink ? <Icon icon="info-sign" onClick={ev => { this.killEvent(ev); this.openUrl(entry.externalLink, entry.target, entry.label || entry.text); } } /> : null}
+                                            {entry.externalLink ? <Icon icon="info-sign" onClick={ev => { MiscUtils.killEvent(ev); this.openUrl(entry.externalLink, entry.target, entry.label || entry.text); } } /> : null}
                                         </div>
                                     ))}
                                 </div>
@@ -210,13 +210,13 @@ class SearchBox extends React.Component {
         const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
         return (
             <div key="places">
-                <div className="searchbox-results-section-title" onClick={() => this.toggleSection("places")} onMouseDown={this.killEvent}>
+                <div className="searchbox-results-section-title" onClick={() => this.toggleSection("places")} onMouseDown={MiscUtils.killEvent}>
                     <Icon icon={this.state.collapsedSections.places ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.places")}
                 </div>
                 {!this.state.collapsedSections.places ? (
                     <div className="searchbox-results-section-body">
                         {features.map((entry, idx) => (
-                            <div className="searchbox-result" key={"p" + idx} onClick={() => { this.selectFeatureResult(entry.feature); this.blur(); }} onMouseDown={this.killEvent}>
+                            <div className="searchbox-result" key={"p" + idx} onClick={() => { this.selectFeatureResult(entry.feature); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
                                 <img onError={ev => { ev.target.src = iconPath + "feature.svg";}} src={iconPath + entry.feature.dataproduct_id + ".svg"} />
                                 <span className="searchbox-result-label">{entry.feature.display}</span>
                             </div>
@@ -239,7 +239,7 @@ class SearchBox extends React.Component {
         const additionalLayerResults = !isEmpty((searchResults.result_counts || []).filter(entry => entry.dataproduct_id === 'dataproduct'));
         return (
             <div key="layers">
-                <div className="searchbox-results-section-title" onClick={() => this.toggleSection("layers")} onMouseDown={this.killEvent}>
+                <div className="searchbox-results-section-title" onClick={() => this.toggleSection("layers")} onMouseDown={MiscUtils.killEvent}>
                     <Icon icon={this.state.collapsedSections.layers ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.layers")}
                 </div>
                 {!this.state.collapsedSections.layers ? (
@@ -260,10 +260,10 @@ class SearchBox extends React.Component {
         const showAbstract = dataproduct.dataproduct_id in (this.state.activeLayerInfo || {});
         return (
             <div key={"p" + idx}>
-                <div className={"searchbox-result " + (showAbstract ? "searchbox-result-expandedinfo" : "")} onClick={() => { this.selectLayerResult(dataproduct); this.blur(); }} onMouseDown={this.killEvent}>
+                <div className={"searchbox-result " + (showAbstract ? "searchbox-result-expandedinfo" : "")} onClick={() => { this.selectLayerResult(dataproduct); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
                     <img src={iconPath + "dataproduct.svg"} />
                     <span className="searchbox-result-label">{dataproduct.display}</span>
-                    {dataproduct.dset_info ? (<Icon icon="info-sign" onClick={ev => {this.killEvent(ev); this.selectLayerResult(dataproduct, true); }} />) : null}
+                    {dataproduct.dset_info ? (<Icon icon="info-sign" onClick={ev => {MiscUtils.killEvent(ev); this.selectLayerResult(dataproduct, true); }} />) : null}
                 </div>
                 {showAbstract ? (
                     <div className="searchbox-result-abstract"
@@ -278,10 +278,10 @@ class SearchBox extends React.Component {
         const showAbstract = dataproduct.dataproduct_id in (this.state.activeLayerInfo || {});
         return [(
             <div key={"g" + idx}>
-                <div className={"searchbox-result " + (showAbstract ? "searchbox-result-expandedinfo" : "")} onClick={() => { this.selectLayerResult(dataproduct); this.blur(); }} onMouseDown={this.killEvent}>
+                <div className={"searchbox-result " + (showAbstract ? "searchbox-result-expandedinfo" : "")} onClick={() => { this.selectLayerResult(dataproduct); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
                     <img onClick={ev => this.toggleLayerGroup(ev, dataproduct.dataproduct_id)} src={iconPath + (this.state.expandedLayerGroup === dataproduct.dataproduct_id ? "layergroup_close" : "layergroup_open") + ".svg"} />
                     <span className="searchbox-result-label">{dataproduct.display}</span>
-                    {dataproduct.dset_info ? (<Icon icon="info-sign" onClick={ev => {this.killEvent(ev); this.selectLayerResult(dataproduct, true); }} />) : null}
+                    {dataproduct.dset_info ? (<Icon icon="info-sign" onClick={ev => {MiscUtils.killEvent(ev); this.selectLayerResult(dataproduct, true); }} />) : null}
                 </div>
                 {showAbstract ? (
                     <div className="searchbox-result-abstract"
@@ -303,7 +303,7 @@ class SearchBox extends React.Component {
         }
     }
     toggleLayerGroup = (ev, dataproductId) => {
-        this.killEvent(ev);
+        MiscUtils.killEvent(ev);
         this.setState({expandedLayerGroup: this.state.expandedLayerGroup === dataproductId ? null : dataproductId});
     }
     renderSearchResults = () => {
@@ -322,7 +322,7 @@ class SearchBox extends React.Component {
             return null;
         }
         return (
-            <div className="searchbox-results" onMouseDown={this.setPreventBlur} ref={this.setupKillTouchEvents}>
+            <div className="searchbox-results" onMouseDown={this.setPreventBlur} ref={MiscUtils.setupKillTouchEvents}>
                 {children}
             </div>
         );
@@ -330,15 +330,6 @@ class SearchBox extends React.Component {
     setPreventBlur = () => {
         this.preventBlur = true;
         setTimeout(() => {this.preventBlur = false; return false;}, 100);
-    }
-    setupKillTouchEvents = (el) => {
-        if (el) {
-            el.addEventListener('touchmove', ev => ev.stopPropagation(), { passive: false });
-        }
-    }
-    killEvent = (ev) => {
-        ev.stopPropagation();
-        ev.preventDefault();
     }
     toggleSection = (key) => {
         const newCollapsedSections = {...this.state.collapsedSections};

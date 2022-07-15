@@ -27,6 +27,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/LayerTree.css';
 
@@ -114,21 +115,6 @@ class LayerTree extends React.Component {
             this.props.toggleMapTips(this.props.theme.mapTips && !prevProps.mobile);
         }
     }
-    getGroupVisibility = (group) => {
-        if (isEmpty(group.sublayers) || group.visibility === false) {
-            return 0;
-        }
-        let visible = 0;
-        group.sublayers.map(sublayer => {
-            const sublayervisibility = sublayer.visibility === undefined ? true : sublayer.visibility;
-            if (sublayer.sublayers && sublayervisibility) {
-                visible += this.getGroupVisibility(sublayer);
-            } else {
-                visible += sublayervisibility ? 1 : 0;
-            }
-        });
-        return visible / group.sublayers.length;
-    }
     renderSubLayers = (layer, group, path, enabled, inMutuallyExclusiveGroup = false) => {
         return (group.sublayers || []).map((sublayer, idx) => {
             const subpath = [...path, idx];
@@ -144,7 +130,7 @@ class LayerTree extends React.Component {
         if (flattenGroups) {
             return this.renderSubLayers(layer, group, path, enabled, false);
         }
-        const subtreevisibility = this.getGroupVisibility(group);
+        const subtreevisibility = LayerUtils.computeLayerVisibility(group);
         if (subtreevisibility === 0 && this.state.filtervisiblelayers) {
             return null;
         }
@@ -160,7 +146,7 @@ class LayerTree extends React.Component {
                 checkboxstate = "tristate";
             }
         } else {
-            visibility = group.visibility === undefined ? true : group.visibility;
+            visibility = group.visibility === undefined ? subtreevisibility > 0 : group.visibility;
             if (visibility) {
                 checkboxstate = subtreevisibility === 1 ? 'checked' : 'tristate';
             } else {
@@ -382,10 +368,25 @@ class LayerTree extends React.Component {
             <div className="layertree-container-wrapper" role="body">
                 <div className="layertree-container">
                     <div className="layertree-tree"
-                        onContextMenuCapture={ev => {ev.stopPropagation(); ev.preventDefault(); return false; }}
-                        onTouchEnd={ev => { ev.stopPropagation(); }}
-                        onTouchMove={ev => { ev.stopPropagation(); }}
-                        onTouchStart={ev => { ev.stopPropagation(); }}>
+                        onContextMenuCapture={ev => {
+                            // Prevent context menu on drag-sort
+                            ev.stopPropagation(); ev.preventDefault(); return false;
+                        }}
+                        onTouchEnd={ev => {
+                            const target = ev.currentTarget;
+                            clearTimeout(target.preventScrollTimeout);
+                            target.preventScrollTimeout = null;
+                            target.removeEventListener("touchmove", MiscUtils.killEvent);
+                        }}
+                        onTouchStart={ev => {
+                            // Prevent touch-scroll after sortable trigger delay
+                            const target = ev.currentTarget;
+                            target.preventScrollTimeout = setTimeout(() => {
+                                target.addEventListener("touchmove", MiscUtils.killEvent, {passive: false});
+                            }, 200);
+                        }}
+                        ref={MiscUtils.setupKillTouchEvents}
+                    >
                         <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
                             {this.props.layers.map(this.renderLayerTree)}
                         </Sortable>
@@ -452,7 +453,7 @@ class LayerTree extends React.Component {
         const visibilities = [];
         for (const layer of this.props.layers) {
             if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
-                visibilities.push(isEmpty(layer.sublayers) ? layer.visibility : this.getGroupVisibility(layer));
+                visibilities.push(LayerUtils.computeLayerVisibility(layer));
             }
         }
         const vis = visibilities.reduce((sum, x) => sum + x, 0) / (visibilities.length || 1);

@@ -8,6 +8,7 @@
         "AttributeTable": "",
         "DxfExport": "DXF vienti",
         "Editing": "Editointi",
+        "FeatureForm": "",
         "Help": "Apua",
         "IdentifyRegion": "Tunnista alue",
         "LayerCatalog": "",
@@ -81,25 +82,37 @@
       "symbologyscale": "Symbolien mittakaava"
     },
     "editing": {
+      "add": "",
       "attrtable": "",
       "canceldelete": "Don't delete",
-      "capturedpicture": "",
       "clearpicture": "Clear",
       "commit": "Commit",
+      "create": "",
       "delete": "Delete",
       "discard": "Discard",
       "draw": "Draw",
       "feature": "Feature",
+      "geomreadonly": "",
+      "invalidform": "",
       "maximize": "Maximize",
       "minimize": "Minimize",
       "nocompatpick": "",
       "noeditablelayers": "No editable layers.",
+      "paint": "",
       "pick": "Pick",
       "pickdrawfeature": "",
       "reallydelete": "Delete",
       "relationcommitfailed": "Some relation values could not be committed, check the icon tooltips for details",
       "select": "Select",
-      "takepicture": "Take picture"
+      "selectedpicture": "",
+      "takepicture": "Take picture",
+      "unsavedchanged": ""
+    },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
     },
     "fileselector": {
       "placeholder": "Valitse tiedosto..."
@@ -120,6 +133,10 @@
       "noresults": "Valitulla pisteellä ei ole informaatiota",
       "querying": "Kysely käynnissä...",
       "title": "Ominaisuustiedot"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",
@@ -162,6 +179,12 @@
       "transparency": "Läpinäkyvyys",
       "visiblefilter": "Suodata näkymättömät tasot",
       "zoomtolayer": "Zoomaa tasolle"
+    },
+    "linkfeatureform": {
+      "cancel": "",
+      "close": "",
+      "drawhint": "",
+      "pickhint": ""
     },
     "locate": {
       "feetUnit": "jalka",
@@ -206,6 +229,9 @@
       "scale": "Mittakaava",
       "submit": "Tulosta",
       "wait": "Odota..."
+    },
+    "qtdesignerform": {
+      "loading": ""
     },
     "rasterexport": {
       "format": "Formaatti:",
@@ -281,6 +307,10 @@
       "showpin": "",
       "socialIntro": "Jaa someen"
     },
+    "snapping": {
+      "loading": "",
+      "snappingenabled": ""
+    },
     "themelayerslist": {
       "addlayer": "Lisää taso",
       "addlayerstotheme": "Lisää tasoja nykyiseen karttaan",
@@ -301,8 +331,10 @@
     },
     "timemanager": {
       "animationinterval": "",
+      "markers": "",
       "notemporaldata": "",
       "play": "",
+      "playrev": "",
       "rewind": "",
       "stepback": "",
       "stepfwd": "",
@@ -311,8 +343,11 @@
       "title": "",
       "toggle": "",
       "unit": {
+        "century": "",
         "days": "",
+        "decade": "",
         "hours": "",
+        "milliseconds": "",
         "minutes": "",
         "months": "",
         "seconds": "",
@@ -334,8 +369,10 @@
       "close": "Sulje",
       "dock": "Kiinnitä",
       "maximize": "",
+      "minimize": "",
       "undock": "Irrota",
-      "unmaximize": ""
+      "unmaximize": "",
+      "unminimize": ""
     }
   }
 }

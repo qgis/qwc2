@@ -207,8 +207,8 @@ const MapUtils = {
      * @return {number} in radians
      */
     degreesToRadians(degrees) {
-        const pi = Math.PI
-        return degrees * (pi/180);
+        const pi = Math.PI;
+        return degrees * (pi / 180);
     }
 };
 

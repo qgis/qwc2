@@ -12,8 +12,10 @@ import mime from 'mime-to-extensions';
 import Icon from './Icon';
 import uuid from 'uuid';
 import ModalDialog from './ModalDialog';
+import ButtonBar from './widgets/ButtonBar';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import {showImageEditor} from '../utils/ImageEditor';
 import './style/EditUploadField.css';
 
 
@@ -24,6 +26,7 @@ export default class EditUploadField extends React.Component {
         disabled: PropTypes.bool,
         fieldId: PropTypes.string,
         name: PropTypes.string,
+        report: PropTypes.bool,
         showThumbnails: PropTypes.bool,
         updateField: PropTypes.func,
         updateFile: PropTypes.func,
@@ -62,14 +65,15 @@ export default class EditUploadField extends React.Component {
         if (imageData) {
             if (this.props.showThumbnails) {
                 const extension = fileValue ? fileValue.replace(/^.*\./, '') : 'jpg';
+                const imagebuttons = [
+                    {key: 'Draw', icon: 'paint', tooltip: LocaleUtils.trmsg("editing.paint"), disabled: this.props.disabled},
+                    {key: 'Clear', icon: 'clear', tooltip: LocaleUtils.trmsg("editing.clearpicture"), disabled: this.props.disabled}
+                ];
                 return (
                     <span className="edit-upload-field-image">
                         <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
                         {this.state.imageData ? (<input name={this.props.name} type="hidden" value={this.state.imageData} />) : null}
-                        <button className="button" disabled={this.props.disabled} onClick={this.clearPicture} type="button">
-                            <Icon icon="clear" />
-                            {LocaleUtils.tr("editing.clearpicture")}
-                        </button>
+                        {!this.props.report ? (<ButtonBar buttons={imagebuttons} onClick={this.imageButtonClicked} tooltipPos="top" />) : null}
                     </span>
                 );
             } else {
@@ -79,10 +83,10 @@ export default class EditUploadField extends React.Component {
                         {fileValue ? (
                             <a href={fileUrl} rel="noreferrer" target="_blank">{fileValue.replace(/.*\//, '')}</a>
                         ) : (
-                            <a href="#" onClick={(ev) => {this.download(imageData, this.props.fieldId + "." + extension); ev.preventDefault();}} rel="noreferrer" target="_blank">{LocaleUtils.tr("editing.capturedpicture")}</a>
+                            <a href="#" onClick={(ev) => {this.download(imageData, this.props.fieldId + "." + extension); ev.preventDefault();}} rel="noreferrer" target="_blank">{LocaleUtils.tr("editing.selectedpicture")}</a>
                         )}
                         <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
-                        <Icon icon="clear" onClick={this.props.disabled ? null : () => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, null); }} />
+                        {this.props.report ? null : (<Icon icon="clear" onClick={this.props.disabled ? null : () => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, null); }} />)}
                     </span>
                 );
             }
@@ -90,17 +94,30 @@ export default class EditUploadField extends React.Component {
             return (
                 <span className={"edit-upload-field edit-upload-field-imagelink" + (this.props.disabled ? " edit-upload-field-disabled" : "")}>
                     <a href={fileUrl} rel="noreferrer" target="_blank">{fileValue.replace(/.*\//, '')}</a>
-                    <Icon icon="clear" onClick={this.props.disabled ? null : () => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, null); }} />
+                    {this.props.report ? null : (<Icon icon="clear" onClick={this.props.disabled ? null : () => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, null); }} />)}
                 </span>
             );
-        } else {
+        } else if (!this.props.report) {
             return (
                 <span className={"edit-upload-field-input" + (this.props.disabled ? " edit-upload-field-input-disabled" : "")}>
-                    <input disabled={this.props.disabled} name={this.props.name} type="file" {...constraints} onChange={(ev) => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, ev.target.files[0]); }} />
+                    <input disabled={this.props.disabled} name={this.props.name} type="file" {...constraints} onChange={this.imageSelected} />
                     {mediaSupport ? (<Icon icon="camera" onClick={this.props.disabled ? null : this.enableCamera} />) : null}
                     {this.state.camera ? this.renderCaptureFrame() : null}
                 </span>
             );
+        } else {
+            return null;
+        }
+    }
+    imageSelected = (ev) => {
+        if (ev.target.files[0].type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.readAsDataURL(ev.target.files[0]);
+            reader.onload = () => {
+                this.setState({imageData: reader.result});
+                this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(reader.result)], ev.target.files[0].name, {type: ev.target.files[0].type}));
+                this.props.updateField(this.props.fieldId, '');
+            };
         }
     }
     enableCamera = () => {
@@ -136,10 +153,23 @@ export default class EditUploadField extends React.Component {
         }
         this.disableCamera();
     }
-    clearPicture = () => {
-        this.setState({imageData: null});
-        this.props.updateField(this.props.fieldId, '');
-        this.props.updateFile(this.props.fieldId, null);
+    imageButtonClicked = (action) => {
+        if (action === "Draw") {
+            const fileValue = this.props.value.startsWith("attachment:") ? this.props.value.replace(/attachment:\/\//, '') : "";
+            const fileType = mime.lookup(fileValue);
+            const editServiceUrl = ConfigUtils.getConfigProp("editServiceUrl");
+            const fileUrl = editServiceUrl + this.props.dataset + "/attachment?file=" + encodeURIComponent(fileValue);
+            const imageData = fileType && fileType.startsWith('image/') ? fileUrl : this.state.imageData;
+            showImageEditor(imageData, (newImageData) => {
+                this.setState({imageData: newImageData});
+                this.props.updateField(this.props.fieldId, '');
+                this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(newImageData)], uuid.v1() + ".jpg", {type: "image/jpeg"}));
+            });
+        } else if (action === "Clear") {
+            this.setState({imageData: null});
+            this.props.updateField(this.props.fieldId, '');
+            this.props.updateFile(this.props.fieldId, null);
+        }
     }
     activateMediaStream = (el) => {
         if (this.state.camera && !this.cameraStream) {
@@ -169,6 +199,7 @@ export default class EditUploadField extends React.Component {
     download = (href, filename) => {
         const a = document.createElement("a");
         a.href = href;
+        a.target = "_blank";
         a.setAttribute("download", filename);
         a.click();
     }

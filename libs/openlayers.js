@@ -19,6 +19,7 @@ import OlFeature from 'ol/Feature';
 import OlFormatGeoJSON from 'ol/format/GeoJSON';
 import OlFormatGML2 from 'ol/format/GML2';
 import OlFormatGML3 from 'ol/format/GML3';
+import OlFormatGML32 from 'ol/format/GML32';
 import OlFormatKML from 'ol/format/KML';
 import OlFormatWFS from 'ol/format/WFS';
 import OlFormatWMSCapabilities from 'ol/format/WMSCapabilities';
@@ -37,6 +38,7 @@ import OlInteractionDragPan from 'ol/interaction/DragPan';
 import OlInteractionDraw from 'ol/interaction/Draw';
 import {createBox as olCreateBox} from 'ol/interaction/Draw';
 import OlInteractionInteraction from 'ol/interaction/Interaction';
+import OlInteractionPointer from 'ol/interaction/Pointer';
 import OlInteractionModify from 'ol/interaction/Modify';
 import OlInteractionMouseWheelZoom from 'ol/interaction/MouseWheelZoom';
 import OlInteractionSelect from 'ol/interaction/Select';
@@ -92,6 +94,7 @@ export default {
         GeoJSON: OlFormatGeoJSON,
         GML2: OlFormatGML2,
         GML3: OlFormatGML3,
+        GML32: OlFormatGML32,
         KML: OlFormatKML,
         WFS: OlFormatWFS,
         WMSCapabilities: OlFormatWMSCapabilities,
@@ -116,6 +119,7 @@ export default {
         Interaction: OlInteractionInteraction,
         Modify: OlInteractionModify,
         MouseWheelZoom: OlInteractionMouseWheelZoom,
+        Pointer: OlInteractionPointer,
         Select: OlInteractionSelect,
         Snap: OlInteractionSnap,
         Translate: OlInteractionTranslate

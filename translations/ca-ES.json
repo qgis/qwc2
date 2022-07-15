@@ -8,6 +8,7 @@
         "AttributeTable": "",
         "DxfExport": "Exportar DXF",
         "Editing": "Editant",
+        "FeatureForm": "",
         "Help": "Ajuda",
         "IdentifyRegion": "Identificar zona",
         "LayerCatalog": "Capes",
@@ -81,25 +82,37 @@
       "symbologyscale": "Escala de la simbologia:"
     },
     "editing": {
+      "add": "",
       "attrtable": "",
       "canceldelete": "No esborrar",
-      "capturedpicture": "",
       "clearpicture": "Netejar imatge",
       "commit": "Confirmar",
-      "delete": "Esorrar",
+      "create": "",
+      "delete": "Esborrar",
       "discard": "Descartar",
       "draw": "Traçar",
       "feature": "Element",
+      "geomreadonly": "",
+      "invalidform": "",
       "maximize": "Maximitzar",
       "minimize": "Minimitzar",
       "nocompatpick": "",
       "noeditablelayers": "Sense capes a modificar.",
+      "paint": "",
       "pick": "Escollir",
       "pickdrawfeature": "",
       "reallydelete": "Esborrar",
       "relationcommitfailed": "Ha fallat el commit",
       "select": "Seleccionar",
-      "takepicture": "Escull imatge"
+      "selectedpicture": "",
+      "takepicture": "Escull imatge",
+      "unsavedchanged": ""
+    },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
     },
     "fileselector": {
       "placeholder": "Selecciona arxiu..."
@@ -120,6 +133,10 @@
       "noresults": "Sense informació disponible sobre el punt seleccionat",
       "querying": "Consultant...",
       "title": "Informació del element"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",
@@ -162,6 +179,12 @@
       "transparency": "Transparència",
       "visiblefilter": "Filtrar capes no visibles",
       "zoomtolayer": "Zoom a la capa"
+    },
+    "linkfeatureform": {
+      "cancel": "",
+      "close": "",
+      "drawhint": "",
+      "pickhint": ""
     },
     "locate": {
       "feetUnit": "feet",
@@ -206,6 +229,9 @@
       "scale": "Escala:",
       "submit": "Imprimir",
       "wait": "Esperi si us plau..."
+    },
+    "qtdesignerform": {
+      "loading": ""
     },
     "rasterexport": {
       "format": "Format:",
@@ -277,9 +303,13 @@
     "share": {
       "QRCodeLinkTitle": "Codi QR",
       "directLinkTitle": "Via link",
-      "refresh": "",
-      "showpin": "",
+      "refresh": "Generar l'enllaç permanent",
+      "showpin": "Mostrar el pin",
       "socialIntro": "En la teva xarxa social preferida"
+    },
+    "snapping": {
+      "loading": "",
+      "snappingenabled": ""
     },
     "themelayerslist": {
       "addlayer": "Afegir capa",
@@ -301,8 +331,10 @@
     },
     "timemanager": {
       "animationinterval": "",
+      "markers": "",
       "notemporaldata": "",
       "play": "",
+      "playrev": "",
       "rewind": "",
       "stepback": "",
       "stepfwd": "",
@@ -311,8 +343,11 @@
       "title": "",
       "toggle": "",
       "unit": {
+        "century": "",
         "days": "",
+        "decade": "",
         "hours": "",
+        "milliseconds": "",
         "minutes": "",
         "months": "",
         "seconds": "",
@@ -334,8 +369,10 @@
       "close": "Tancar",
       "dock": "Acoblar",
       "maximize": "Maximitzar",
+      "minimize": "",
       "undock": "Desacoblar",
-      "unmaximize": "Minimitzar"
+      "unmaximize": "Minimitzar",
+      "unminimize": ""
     }
   }
 }

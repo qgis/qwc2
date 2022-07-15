@@ -21,6 +21,7 @@ export const ZOOM_TO_POINT = 'ZOOM_TO_POINT';
 export const CHANGE_ROTATION = 'CHANGE_ROTATION';
 export const TOGGLE_MAPTIPS = 'TOGGLE_MAPTIPS';
 export const SET_TOPBAR_HEIGHT = 'SET_TOPBAR_HEIGHT';
+export const SET_SNAPPING_CONFIG = 'SET_SNAPPING_CONFIG';
 
 export function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
     return {
@@ -109,5 +110,13 @@ export function setTopbarHeight(height) {
     return {
         type: SET_TOPBAR_HEIGHT,
         height
+    };
+}
+
+export function setSnappingConfig(enabled, active) {
+    return {
+        type: SET_SNAPPING_CONFIG,
+        enabled: enabled,
+        active: active
     };
 }

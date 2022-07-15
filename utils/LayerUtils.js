@@ -11,6 +11,8 @@ import isEqual from 'lodash.isequal';
 import uuid from 'uuid';
 import url from 'url';
 import ConfigUtils from './ConfigUtils';
+import CoordinatesUtils from './CoordinatesUtils';
+import MapUtils from './MapUtils';
 import {LayerRole} from '../actions/layers';
 
 const LayerUtils = {
@@ -202,8 +204,7 @@ const LayerUtils = {
             } else if (layer.role === LayerRole.USERLAYER && layer.type === "wms") {
                 const sublayernames = [];
                 LayerUtils.collectWMSSublayerParams(layer, sublayernames, opacities, styles, queryable, visibilities, layer.visibility);
-                const options = Object.entries(layer.baseParams || {}).map(([key, value]) => encodeURIComponent(key) + "=" + encodeURIComponent(value)).join("&");
-                layernames.push(...sublayernames.map(name => "wms:" + layer.url + "#" + name + (options ? "?" + options : "")));
+                layernames.push(...sublayernames.map(name => "wms:" + layer.url + "#" + name));
             } else if (layer.role === LayerRole.USERLAYER && (layer.type === "wfs" || layer.type === "wmts")) {
                 layernames.push(layer.type + ':' + (layer.capabilitiesUrl || layer.url) + "#" + layer.name);
                 opacities.push(layer.opacity);
@@ -242,7 +243,6 @@ const LayerUtils = {
         let opacity = 255;
         let visibility = true;
         let tristate = false;
-        let params = {};
         if (entry.endsWith('!')) {
             visibility = false;
             entry = entry.slice(0, -1);
@@ -261,18 +261,11 @@ const LayerUtils = {
             type = match[1];
             layerUrl = match[2];
             name = match[3];
-            const questionPos = name.indexOf('?');
-            if (questionPos !== -1) {
-                params = name.slice(questionPos + 1).split('&').map(x => x.split('=')).reduce((res, cur) => (
-                    {...res, [decodeURIComponent(cur[0])]: decodeURIComponent(cur[1])}
-                ), {});
-                name = name.slice(0, questionPos);
-            }
         } else if (name.startsWith('sep:')) {
             type = 'separator';
             name = name.slice(4);
         }
-        return {id, type, url: layerUrl, name, opacity, visibility, tristate, params};
+        return {id, type, url: layerUrl, name, opacity, visibility, tristate};
     },
     pathEqualOrBelow(parent, child) {
         return isEqual(child.slice(0, parent.length), parent);
@@ -550,6 +543,21 @@ const LayerUtils = {
         }
         return true;
     },
+    computeLayerVisibility(layer) {
+        if (isEmpty(layer.sublayers) || layer.visibility === false) {
+            return layer.visibility ? 1 : 0;
+        }
+        let visible = 0;
+        layer.sublayers.map(sublayer => {
+            const sublayervisibility = sublayer.visibility === undefined ? true : sublayer.visibility;
+            if (sublayer.sublayers && sublayervisibility) {
+                visible += LayerUtils.computeLayerVisibility(sublayer);
+            } else {
+                visible += sublayervisibility ? 1 : 0;
+            }
+        });
+        return visible / layer.sublayers.length;
+    },
     cloneLayer(layer, sublayerpath) {
         const newlayer = {...layer};
         let cur = newlayer;
@@ -700,7 +708,9 @@ const LayerUtils = {
                     params[identifier + ":styles"] = "";
                     params[identifier + ":dpiMode"] = "7";
                     params[identifier + ":contextualWMSLegend"] = "0";
-                    params[identifier + ":ignoregetmapurl"] = "1";
+                    if (layer.url.includes("?")) {
+                        params[identifier + ":IgnoreGetMapUrl"] = "1";
+                    }
                 }
             }
         }
@@ -756,12 +766,17 @@ const LayerUtils = {
         return params;
     },
     getTimeDimensionValues(layer) {
-        const result = {names: new Set(), values: new Set()};
+        const result = {
+            names: new Set(),
+            values: new Set(),
+            attributes: {}
+        };
         if (layer.visibility) {
             (layer.dimensions || []).forEach(dimension => {
-                if (dimension.units === "ISO8601") {
+                if (dimension.units === "ISO8601" && dimension.value) {
                     result.names.add(dimension.name);
                     dimension.value.split(/,\s+/).filter(x => x).forEach(x => result.values.add(x));
+                    result.attributes[layer.name] = [dimension.fieldName, dimension.endFieldName];
                 }
             });
         }
@@ -769,8 +784,51 @@ const LayerUtils = {
             const sublayerResult = LayerUtils.getTimeDimensionValues(sublayer);
             sublayerResult.names.forEach(x => result.names.add(x));
             sublayerResult.values.forEach(x => result.values.add(x));
+            result.attributes = {...result.attributes, ...sublayerResult.attributes};
         });
         return result;
+    },
+    getAttribution(layer, map, showThemeCopyrightOnly = false, transformedbboxes = null) {
+        const copyrights = {};
+        if (!transformedbboxes) {
+            transformedbboxes = {};
+        }
+        if (layer.sublayers && layer.visibility !== false) {
+            Object.assign(
+                copyrights,
+                layer.sublayers.reduce((res, sublayer) => ({...res, ...LayerUtils.getAttribution(sublayer, map, showThemeCopyrightOnly, transformedbboxes)}), {})
+            );
+        }
+        if (!layer.attribution || !layer.attribution.Title || !layer.visibility) {
+            return copyrights;
+        }
+        if (showThemeCopyrightOnly) {
+            if (layer.role === LayerRole.THEME) {
+                copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
+            }
+        } else if (layer.role === LayerRole.BACKGROUND) {
+            const mapScale = MapUtils.computeForZoom(map.scales, map.zoom);
+            if (LayerUtils.layerScaleInRange(layer, mapScale)) {
+                copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
+            }
+        } else {
+            if (!layer.bbox) {
+                return copyrights;
+            }
+            if (!transformedbboxes[layer.bbox.crs]) {
+                transformedbboxes[layer.bbox.crs] = CoordinatesUtils.reprojectBbox(map.bbox.bounds, map.projection, layer.bbox.crs);
+            }
+            const mapbbox = transformedbboxes[layer.bbox.crs];
+            const laybbox = layer.bbox.bounds;
+            if (
+                mapbbox[0] < laybbox[2] && mapbbox[2] > laybbox[0] &&
+                mapbbox[1] < laybbox[3] && mapbbox[3] > laybbox[1]
+            ) {
+                // Extents overlap
+                copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
+            }
+        }
+        return copyrights;
     }
 };
 

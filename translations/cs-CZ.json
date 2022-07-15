@@ -8,6 +8,7 @@
         "AttributeTable": "",
         "DxfExport": "DXF Export",
         "Editing": "Úpravy",
+        "FeatureForm": "",
         "Help": "Nápověda",
         "IdentifyRegion": "Určit oblast",
         "LayerCatalog": "",
@@ -81,25 +82,37 @@
       "symbologyscale": "Meřítko symbolů:"
     },
     "editing": {
+      "add": "",
       "attrtable": "",
       "canceldelete": "Neodstraňovat",
-      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Potvrdit",
+      "create": "",
       "delete": "Odstranit",
       "discard": "Vyřadit",
       "draw": "Kreslit",
       "feature": "",
+      "geomreadonly": "",
+      "invalidform": "",
       "maximize": "Maximální",
       "minimize": "Minimální",
       "nocompatpick": "",
       "noeditablelayers": "Needitovatelná vrstva.",
+      "paint": "",
       "pick": "Výběr",
       "pickdrawfeature": "",
       "reallydelete": "Odstranit",
       "relationcommitfailed": "",
       "select": "Vybrat",
-      "takepicture": ""
+      "selectedpicture": "",
+      "takepicture": "",
+      "unsavedchanged": ""
+    },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
     },
     "fileselector": {
       "placeholder": "Vybrat soubor..."
@@ -120,6 +133,10 @@
       "noresults": "Pro vybraný bod nejsou k dispozici žádné informace",
       "querying": "Dotazování...",
       "title": "Informace o prvku"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",
@@ -162,6 +179,12 @@
       "transparency": "",
       "visiblefilter": "",
       "zoomtolayer": ""
+    },
+    "linkfeatureform": {
+      "cancel": "",
+      "close": "",
+      "drawhint": "",
+      "pickhint": ""
     },
     "locate": {
       "feetUnit": "stopy",
@@ -206,6 +229,9 @@
       "scale": "Měřítko:",
       "submit": "Tisk",
       "wait": ""
+    },
+    "qtdesignerform": {
+      "loading": ""
     },
     "rasterexport": {
       "format": "Formát:",
@@ -281,6 +307,10 @@
       "showpin": "",
       "socialIntro": "Ve vaší oblíbené sociální síti"
     },
+    "snapping": {
+      "loading": "",
+      "snappingenabled": ""
+    },
     "themelayerslist": {
       "addlayer": "",
       "addlayerstotheme": "",
@@ -301,8 +331,10 @@
     },
     "timemanager": {
       "animationinterval": "",
+      "markers": "",
       "notemporaldata": "",
       "play": "",
+      "playrev": "",
       "rewind": "",
       "stepback": "",
       "stepfwd": "",
@@ -311,8 +343,11 @@
       "title": "",
       "toggle": "",
       "unit": {
+        "century": "",
         "days": "",
+        "decade": "",
         "hours": "",
+        "milliseconds": "",
         "minutes": "",
         "months": "",
         "seconds": "",
@@ -334,8 +369,10 @@
       "close": "",
       "dock": "",
       "maximize": "",
+      "minimize": "",
       "undock": "",
-      "unmaximize": ""
+      "unmaximize": "",
+      "unminimize": ""
     }
   }
 }

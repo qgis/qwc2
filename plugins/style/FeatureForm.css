@@ -1,0 +1,23 @@
+div.feature-query-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+div.feature-query-body div.feature-query-selection {
+    flex: 0 0 auto;
+    padding-bottom: 0.25em;
+    border-bottom: 1px solid @item_border@;
+    margin-bottom: 0.25em;
+}
+
+div.feature-query-body div.feature-query-selection > select {
+    height: 2em;
+    width: 100%;
+    border: 1px solid @item_border@;
+}
+
+div.feature-query-body div.AttributeForm {
+    flex: 1 1 auto;
+    overflow: auto;
+}

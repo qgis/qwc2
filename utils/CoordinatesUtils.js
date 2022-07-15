@@ -106,6 +106,14 @@ const CoordinatesUtils = {
             extent.indexOf(Infinity) !== -1 || extent.indexOf(-Infinity) !== -1 ||
             extent[1] >= extent[2] || extent[1] >= extent[3]
         );
+    },
+    fromOgcUrnCrs(crsStr) {
+        const parts = crsStr.split(":");
+        return "EPSG:" + parts.slice(-1);
+    },
+    toOgcUrnCrs(crsStr) {
+        const parts = crsStr.split(":");
+        return "urn:ogc:def:crs:" + parts[0] + "::" + parts[1];
     }
 };
 

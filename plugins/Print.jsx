@@ -72,7 +72,7 @@ class Print extends React.Component {
         this.printForm = null;
         this.state.grid = props.gridInitiallyEnabled;
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (prevProps.theme !== this.props.theme) {
             if (this.props.theme && !isEmpty(this.props.theme.print)) {
                 const layout = this.props.theme.print.find(l => l.default) || this.props.theme.print[0];
@@ -249,13 +249,7 @@ class Print extends React.Component {
                             }
                             return (<tr key={"label." + label}>
                                 <td>{label}:</td>
-                                <td>
-                                    {
-                                        this.props.theme.printLabelForSearchResult === label ?
-                                            (<textarea {...opts} defaultValue={this.getSearchMarkerLabel()}/>) :
-                                            (<textarea {...opts}/>)
-                                    }
-                                </td>
+                                <td>{this.renderPrintLabelField(label, opts)}</td>
                             </tr>);
                         })}
                     </tbody></table>
@@ -294,6 +288,15 @@ class Print extends React.Component {
             </div>
         );
     }
+    renderPrintLabelField = (label, opts) => {
+        if (this.props.theme.printLabelForSearchResult === label) {
+            return (<textarea {...opts} defaultValue={this.getSearchMarkerLabel()}/>);
+        } else if (this.props.theme.printLabelForAttribution === label) {
+            return (<textarea {...opts} defaultValue={this.getAttributionLabel()}/>);
+        } else {
+            return (<textarea {...opts}/>);
+        }
+    }
     getSearchMarkerLabel = () => {
         const searchsellayer = this.props.layers.find(layer => layer.id === "searchselection");
         if (searchsellayer && searchsellayer.features) {
@@ -303,6 +306,16 @@ class Print extends React.Component {
             }
         }
         return "";
+    }
+    getAttributionLabel = () => {
+        const copyrights = this.props.layers.reduce((res, layer) => ({...res, ...LayerUtils.getAttribution(layer, this.props.map)}), {});
+        return Object.entries(copyrights).map(([key, value]) => {
+            if (value) {
+                return value;
+            } else {
+                return key;
+            }
+        }).join(" | ");
     }
     renderPrintFrame = () => {
         let printFrame = null;
@@ -411,8 +424,10 @@ class Print extends React.Component {
             }).catch(e => {
                 this.setState({printing: false});
                 if (e.response) {
+                    /* eslint-disable-next-line */
                     console.log(new TextDecoder().decode(e.response.data));
                 }
+                /* eslint-disable-next-line */
                 alert('Print failed');
             });
         }

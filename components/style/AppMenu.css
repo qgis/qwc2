@@ -30,6 +30,7 @@ div.AppMenu div.appmenu-menu-container {
     transition: transform 0.25s, opacity 0.25s;
     overflow-y: auto;
     max-height: calc(100vh - 5.75em);
+    max-height: calc(var(--vh, 1vh) * 100 - 5.75em);
 }
 
 div.AppMenu ul.appmenu-menu {
@@ -55,8 +56,8 @@ div.AppMenu ul.appmenu-menu li:not(:last-child) {
     border-bottom: 1px solid @appmenu_fg1@;
 }
 
-div.AppMenu ul.appmenu-menu>li:hover,
-div.AppMenu ul.appmenu-menu>li.expanded {
+div.AppMenu ul.appmenu-menu > li:hover,
+div.AppMenu ul.appmenu-menu > li.expanded {
     background-color: @appmenu_active_bg1@;
     color: @appmenu_active_fg1@;
 }

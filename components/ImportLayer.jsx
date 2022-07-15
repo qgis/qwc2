@@ -18,6 +18,7 @@ import EditableSelect from '../components/widgets/EditableSelect';
 import {addLayerFeatures} from '../actions/layers';
 import FileSelector from './widgets/FileSelector';
 import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -128,7 +129,7 @@ class ImportLayer extends React.Component {
                             connUrl += (connUrl.includes("?") ? "&" : "?") + "service=" + service.toUpperCase() + "&request=GetCapabilities";
                             this.setState({pendingRequests: ++pendingRequests});
                             axios.get(connUrl).then(connResponse => {
-                                const result = service === "wms" ? ServiceLayerUtils.getWMSLayers(connResponse.data, connUrl, true) : ServiceLayerUtils.getWFSLayers(connResponse.data);
+                                const result = service === "wms" ? ServiceLayerUtils.getWMSLayers(connResponse.data, connUrl, true) : ServiceLayerUtils.getWFSLayers(connResponse.data, connUrl, this.props.mapCrs);
                                 this.setState({
                                     pendingRequests: this.state.pendingRequests - 1,
                                     serviceLayers: (this.state.serviceLayers || []).concat(result)
@@ -160,7 +161,7 @@ class ImportLayer extends React.Component {
                 serviceLayers: (this.state.serviceLayers || []).concat(result)
             });
         }).catch(() => {
-            this.setState({pendingRequests: this.state.pendingRequests - 1});
+            this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: this.state.serviceLayers || []});
         });
 
         // Attempt to load as WMS
@@ -182,7 +183,7 @@ class ImportLayer extends React.Component {
                     serviceLayers: (this.state.serviceLayers || []).concat(result)
                 });
             }).catch(() => {
-                this.setState({pendingRequests: this.state.pendingRequests - 1});
+                this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: this.state.serviceLayers || []});
             });
         }
 
@@ -198,13 +199,13 @@ class ImportLayer extends React.Component {
 
             this.setState({pendingRequests: ++pendingRequests});
             axios.get(url.format(urlParts)).then(response => {
-                const result = ServiceLayerUtils.getWFSLayers(response.data);
+                const result = ServiceLayerUtils.getWFSLayers(response.data, reqUrl, this.props.mapCrs);
                 this.setState({
                     pendingRequests: this.state.pendingRequests - 1,
                     serviceLayers: (this.state.serviceLayers || []).concat(result)
                 });
             }).catch(() => {
-                this.setState({pendingRequests: this.state.pendingRequests - 1});
+                this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: this.state.serviceLayers || []});
             });
         }
     }
@@ -238,12 +239,12 @@ class ImportLayer extends React.Component {
             let defaultCrs = "EPSG:4326";
             if (data.crs && data.crs.properties && data.crs.properties.name) {
                 // Extract CRS from FeatureCollection crs
-                defaultCrs = data.crs.properties.name.replace(/urn:ogc:def:crs:EPSG::(\d+)/, "EPSG:$1");
+                defaultCrs = CoordinatesUtils.fromOgcUrnCrs(data.crs.properties.name);
             }
             const features = data.features.map(feature => {
                 let crs = defaultCrs;
                 if (feature.crs && feature.crs.properties && feature.crs.properties.name) {
-                    crs = feature.crs.properties.name.replace(/urn:ogc:def:crs:EPSG::(\d+)/, "EPSG:$1");
+                    crs = CoordinatesUtils.fromOgcUrnCrs(data.crs.properties.name);
                 } else if (typeof feature.crs === "string") {
                     crs = feature.crs;
                 }

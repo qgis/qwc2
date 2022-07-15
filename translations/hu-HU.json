@@ -8,6 +8,7 @@
         "AttributeTable": "",
         "DxfExport": "DXF Exportálás",
         "Editing": "Szerkesztés",
+        "FeatureForm": "",
         "Help": "Segítség",
         "IdentifyRegion": "Adatok lekérdezése",
         "LayerCatalog": "",
@@ -81,25 +82,37 @@
       "symbologyscale": "Jel méretatarány:"
     },
     "editing": {
+      "add": "",
       "attrtable": "",
       "canceldelete": "Ne töröld",
-      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Jóváhagyás",
+      "create": "",
       "delete": "Törlés",
       "discard": "Elvetés",
       "draw": "Rajzolás",
       "feature": "",
+      "geomreadonly": "",
+      "invalidform": "",
       "maximize": "",
       "minimize": "",
       "nocompatpick": "",
       "noeditablelayers": "Nincs szerkeszthető fólia.",
+      "paint": "",
       "pick": "Kiválasztás",
       "pickdrawfeature": "",
       "reallydelete": "Törlés",
       "relationcommitfailed": "",
       "select": "",
-      "takepicture": ""
+      "selectedpicture": "",
+      "takepicture": "",
+      "unsavedchanged": ""
+    },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
     },
     "fileselector": {
       "placeholder": "Fájl választása..."
@@ -120,6 +133,10 @@
       "noresults": "Nincs információ a kiválasztott pontról",
       "querying": "Lekérdezés...",
       "title": "Lekérdezés információ"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",
@@ -162,6 +179,12 @@
       "transparency": "",
       "visiblefilter": "",
       "zoomtolayer": ""
+    },
+    "linkfeatureform": {
+      "cancel": "",
+      "close": "",
+      "drawhint": "",
+      "pickhint": ""
     },
     "locate": {
       "feetUnit": "láb",
@@ -206,6 +229,9 @@
       "scale": "Méretarány:",
       "submit": "Nyomtatás",
       "wait": ""
+    },
+    "qtdesignerform": {
+      "loading": ""
     },
     "rasterexport": {
       "format": "Formátum:",
@@ -281,6 +307,10 @@
       "showpin": "",
       "socialIntro": "A kedvenc közösségi hálózatodon"
     },
+    "snapping": {
+      "loading": "",
+      "snappingenabled": ""
+    },
     "themelayerslist": {
       "addlayer": "",
       "addlayerstotheme": "",
@@ -301,8 +331,10 @@
     },
     "timemanager": {
       "animationinterval": "",
+      "markers": "",
       "notemporaldata": "",
       "play": "",
+      "playrev": "",
       "rewind": "",
       "stepback": "",
       "stepfwd": "",
@@ -311,8 +343,11 @@
       "title": "",
       "toggle": "",
       "unit": {
+        "century": "",
         "days": "",
+        "decade": "",
         "hours": "",
+        "milliseconds": "",
         "minutes": "",
         "months": "",
         "seconds": "",
@@ -334,8 +369,10 @@
       "close": "",
       "dock": "",
       "maximize": "",
+      "minimize": "",
       "undock": "",
-      "unmaximize": ""
+      "unmaximize": "",
+      "unminimize": ""
     }
   }
 }

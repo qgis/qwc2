@@ -27,12 +27,12 @@ input, select, button, textarea {
 
 textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]) {
     -webkit-appearance: none;
-    cursor:text;
+    cursor: text;
     padding: 0.25em;
 }
 
 /** Range slider **/
-input[type=range]{
+input[type=range] {
     -webkit-appearance: none;
     outline: none;
 }
@@ -96,7 +96,7 @@ input[type=range]::-ms-tooltip {
 }
 
 a {
-    cursor:pointer;
+    cursor: pointer;
     color: #337ab7;
     text-decoration: none;
 }
@@ -132,7 +132,6 @@ h3 { font-size: 140%; }
 h4 { font-size: 130%; }
 h5 { font-size: 120%; }
 h6 { font-size: 110%; }
-
 
 button.button {
     display: inline-flex;
@@ -181,6 +180,26 @@ button.button.pressed:not(:disabled):hover {
     background-color: @item_active_hover@;
 }
 
+button.button-accept {
+    background-color: rgb(127,255,127);
+}
+
+button.button-warning {
+    background-color: #ffd979;
+}
+
+button.button-reject {
+    background-color: rgb(255,127,127);
+}
+
+button.button-accept:not(:disabled):hover {
+    background-color: rgb(127,225,127);
+}
+
+button.button-reject:not(:disabled):hover {
+    background-color: rgb(225,127,127);
+}
+
 select.combo {
     border: 1px solid @item_border@;
     background-color: white;
@@ -188,10 +207,10 @@ select.combo {
 }
 
 span.react-numeric-input > input {
-  border-radius: 0!important;
-  height: 2em;
-  width: 100%;
-  border: 1px solid @item_border@!important;
+    border-radius: 0!important;
+    height: 2em;
+    width: 100%;
+    border: 1px solid @item_border@!important;
 }
 
 span.react-numeric-input > b {

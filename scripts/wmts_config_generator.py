@@ -100,7 +100,7 @@ config = {
     "originY": matrixconfig["origin"][1],
     "tileMatrixPrefix": "",
     "tileMatrixSet": ident,
-    "projection:": projection,
+    "projection": projection,
     "tileSize": matrixconfig["tilesize"],
     "thumbnail": "img/mapthumbs/" + layername + ".jpg",
     "resolutions": matrixconfig["resolutions"]

@@ -8,6 +8,7 @@
         "AttributeTable": "",
         "DxfExport": "Eksport DXF",
         "Editing": "Edycja",
+        "FeatureForm": "",
         "Help": "Pomoc",
         "IdentifyRegion": "Identifikuj Obszar",
         "LayerCatalog": "",
@@ -81,25 +82,37 @@
       "symbologyscale": "Skala symbolizacji:"
     },
     "editing": {
+      "add": "",
       "attrtable": "",
       "canceldelete": "Nie usuwaj",
-      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Zatwierdź",
+      "create": "",
       "delete": "Usuń",
       "discard": "Odrzuć",
       "draw": "Rysuj",
       "feature": "",
+      "geomreadonly": "",
+      "invalidform": "",
       "maximize": "Maksymalizuj",
       "minimize": "Minimalizuj",
       "nocompatpick": "",
       "noeditablelayers": "Brak edytowalnych warstw.",
+      "paint": "",
       "pick": "Wybierz",
       "pickdrawfeature": "",
       "reallydelete": "Usuń",
       "relationcommitfailed": "",
       "select": "Zaznacz",
-      "takepicture": ""
+      "selectedpicture": "",
+      "takepicture": "",
+      "unsavedchanged": ""
+    },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
     },
     "fileselector": {
       "placeholder": "Wybierz plik..."
@@ -120,6 +133,10 @@
       "noresults": "Brak dostępnych danych dla wybranego punktu",
       "querying": "Przetwarzam zapytanie...",
       "title": "Feature Info"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",
@@ -162,6 +179,12 @@
       "transparency": "",
       "visiblefilter": "",
       "zoomtolayer": ""
+    },
+    "linkfeatureform": {
+      "cancel": "",
+      "close": "",
+      "drawhint": "",
+      "pickhint": ""
     },
     "locate": {
       "feetUnit": "stopy",
@@ -206,6 +229,9 @@
       "scale": "Skala:",
       "submit": "Drukuj",
       "wait": "Proszę czekać..."
+    },
+    "qtdesignerform": {
+      "loading": ""
     },
     "rasterexport": {
       "format": "Format:",
@@ -281,6 +307,10 @@
       "showpin": "",
       "socialIntro": "W twoich ulubionych mediach społecznościowych"
     },
+    "snapping": {
+      "loading": "",
+      "snappingenabled": ""
+    },
     "themelayerslist": {
       "addlayer": "",
       "addlayerstotheme": "",
@@ -301,8 +331,10 @@
     },
     "timemanager": {
       "animationinterval": "",
+      "markers": "",
       "notemporaldata": "",
       "play": "",
+      "playrev": "",
       "rewind": "",
       "stepback": "",
       "stepfwd": "",
@@ -311,8 +343,11 @@
       "title": "",
       "toggle": "",
       "unit": {
+        "century": "",
         "days": "",
+        "decade": "",
         "hours": "",
+        "milliseconds": "",
         "minutes": "",
         "months": "",
         "seconds": "",
@@ -334,8 +369,10 @@
       "close": "",
       "dock": "",
       "maximize": "",
+      "minimize": "",
       "undock": "",
-      "unmaximize": ""
+      "unmaximize": "",
+      "unminimize": ""
     }
   }
 }

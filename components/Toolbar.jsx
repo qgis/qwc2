@@ -63,5 +63,5 @@ export default connect((state) => ({
     currentTaskMode: state.task.mode,
     currentTheme: state.theme.current || {}
 }), {
-    setCurrentTask: setCurrentTask,
+    setCurrentTask: setCurrentTask
 })(Toolbar);

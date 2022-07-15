@@ -8,6 +8,7 @@
         "AttributeTable": "",
         "DxfExport": "Exportar DXF",
         "Editing": "Editando",
+        "FeatureForm": "",
         "Help": "Ayuda",
         "IdentifyRegion": "Identificar zona",
         "LayerCatalog": "",
@@ -81,25 +82,37 @@
       "symbologyscale": "Escala de la simbología:"
     },
     "editing": {
+      "add": "",
       "attrtable": "",
       "canceldelete": "No borrar",
-      "capturedpicture": "",
       "clearpicture": "",
       "commit": "Confirmar",
+      "create": "",
       "delete": "Borrar",
       "discard": "Descartar",
       "draw": "Trazar",
       "feature": "Elemento",
+      "geomreadonly": "",
+      "invalidform": "",
       "maximize": "Maximizar",
       "minimize": "Minimizar",
       "nocompatpick": "",
       "noeditablelayers": "Sin capas a modificar.",
+      "paint": "",
       "pick": "Elegir",
       "pickdrawfeature": "",
       "reallydelete": "Borrar",
       "relationcommitfailed": "",
       "select": "Seleccionar",
-      "takepicture": ""
+      "selectedpicture": "",
+      "takepicture": "",
+      "unsavedchanged": ""
+    },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
     },
     "fileselector": {
       "placeholder": "Seleccionar archivo..."
@@ -120,6 +133,10 @@
       "noresults": "Sin información disponible sobre el punto seleccionado",
       "querying": "Consultando...",
       "title": "Información del elemento"
+    },
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
       "addfailed": "",
@@ -162,6 +179,12 @@
       "transparency": "Transparencia",
       "visiblefilter": "Filtrar capas no visibles",
       "zoomtolayer": "Zoom a la capa"
+    },
+    "linkfeatureform": {
+      "cancel": "",
+      "close": "",
+      "drawhint": "",
+      "pickhint": ""
     },
     "locate": {
       "feetUnit": "pies",
@@ -206,6 +229,9 @@
       "scale": "Escala:",
       "submit": "Imprimir",
       "wait": "Por favor espere..."
+    },
+    "qtdesignerform": {
+      "loading": ""
     },
     "rasterexport": {
       "format": "Formato:",
@@ -277,9 +303,13 @@
     "share": {
       "QRCodeLinkTitle": "Código QR",
       "directLinkTitle": "Vía un vínculo directo",
-      "refresh": "",
-      "showpin": "",
+      "refresh": "Generar un enlace permanente",
+      "showpin": "Mostrar pin",
       "socialIntro": "En tu red social favorita"
+    },
+    "snapping": {
+      "loading": "",
+      "snappingenabled": ""
     },
     "themelayerslist": {
       "addlayer": "Agregar capa",
@@ -301,8 +331,10 @@
     },
     "timemanager": {
       "animationinterval": "",
+      "markers": "",
       "notemporaldata": "",
       "play": "",
+      "playrev": "",
       "rewind": "",
       "stepback": "",
       "stepfwd": "",
@@ -311,8 +343,11 @@
       "title": "",
       "toggle": "",
       "unit": {
+        "century": "",
         "days": "",
+        "decade": "",
         "hours": "",
+        "milliseconds": "",
         "minutes": "",
         "months": "",
         "seconds": "",
@@ -334,8 +369,10 @@
       "close": "Cerrar",
       "dock": "Acoplar",
       "maximize": "",
+      "minimize": "",
       "undock": "Desacoplar",
-      "unmaximize": ""
+      "unmaximize": "",
+      "unminimize": ""
     }
   }
 }

@@ -12,8 +12,7 @@
 }
 
 .DxfExport span.input-frame,
-.DxfExport div.export-settings select
- {
+.DxfExport div.export-settings select {
     border: 1px solid @item_border@;
     background-color: white;
     display: inline-flex;

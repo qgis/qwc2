@@ -423,6 +423,8 @@ def getTheme(config, configItem, result, resultItem):
         resultItem["externalLayers"] = externalLayers
         if "pluginData" in configItem:
             resultItem["pluginData"] = configItem["pluginData"]
+        if "snapping" in configItem:
+            resultItem["snapping"] = configItem["snapping"]
         if "minSearchScaleDenom" in configItem:
             resultItem["minSearchScaleDenom"] = configItem["minSearchScaleDenom"]
         elif "minSearchScale" in configItem: # Legacy name
@@ -454,6 +456,8 @@ def getTheme(config, configItem, result, resultItem):
             resultItem["printUrl"] = getChildElement(capabilities, "Capability/Request/GetPrint/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href").rstrip("?") + "?"
         if "printLabelForSearchResult" in configItem:
             resultItem["printLabelForSearchResult"] = configItem["printLabelForSearchResult"]
+        if "printLabelForAttribution" in configItem:
+            resultItem["printLabelForAttribution"] = configItem["printLabelForAttribution"]
         if "printLabelConfig" in configItem:
             resultItem["printLabelConfig"] = configItem["printLabelConfig"]
 

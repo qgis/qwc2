@@ -78,7 +78,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
             const idx = key.indexOf(":");
             const service = key.slice(0, idx);
             const serviceUrl = key.slice(idx + 1);
-            ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], themeLayer.mapCrs, (id, layer) => {
+            ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], theme.mapCrs, (id, layer) => {
                 dispatch(replacePlaceholderLayer(id, layer));
             });
         }
@@ -131,6 +131,17 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
             return;
         }
 
+        // Inherit defaults if necessary
+        theme = {
+            ...theme,
+            mapCrs: theme.mapCrs || "EPSG:3857",
+            version: theme.version || themes.defaultWMSVersion || "1.3.0",
+            scales: theme.scales || themes.defaultScales || MapUtils.getGoogleMercatorScales(0, 21),
+            printScales: theme.printScales || themes.defaultPrintScales || undefined,
+            printResolutions: theme.printResolutions || themes.defaultPrintResolutions || undefined,
+            printGrid: theme.printGrid || themes.defaultPrintGrid || undefined
+        };
+
         // Preserve extent if desired and possible
         if (preserve && !initialView && getState().map.projection === theme.mapCrs) {
             if (ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch", theme) === true) {
@@ -145,17 +156,6 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
                 initialView = {bounds: getState().map.bbox.bounds, crs: getState().map.projection};
             }
         }
-
-        // Inherit defaults if necessary
-        theme = {
-            ...theme,
-            mapCrs: theme.mapCrs || "EPSG:3857",
-            version: theme.version || themes.defaultWMSVersion || "1.3.0",
-            scales: theme.scales || themes.defaultScales || MapUtils.getGoogleMercatorScales(0, 21),
-            printScales: theme.printScales || themes.defaultPrintScales || undefined,
-            printResolutions: theme.printResolutions || themes.defaultPrintResolutions || undefined,
-            printGrid: theme.printGrid || themes.defaultPrintGrid || undefined
-        };
 
         // Reconfigure map
         dispatch(configureMap(theme.mapCrs, theme.scales, initialView || theme.initialBbox));
