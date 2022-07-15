@@ -212,7 +212,7 @@ class QtDesignerForm extends React.Component {
 
         if (widget.class === "QLabel") {
             if (widget.name.startsWith("img__")) {
-                value = (feature.properties || [])[widget.name.split("__")[1]] ?? "";
+                value = (feature.properties || [])[widget.name.split("__")[1]] ?? widget.property.text;
                 return (<div className="qt-designer-form-image"><a href={value} rel="noreferrer" target="_blank"><img src={value} /></a></div>);
             } else {
                 const text = widget.name.startsWith("ext__") ? value : widget.property.text;
