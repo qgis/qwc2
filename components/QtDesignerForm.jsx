@@ -550,7 +550,7 @@ class QtDesignerForm extends React.Component {
 
         if (widget.name in this.props.fields) {
             fields[widget.name] = widget;
-        } else if (widget.name.startsWith("kvrel")) {
+        } else if (widget.name.startsWith("kvrel__") || widget.name.startsWith("img__")) {
             const parts = widget.name.split("__");
             if (parts[1] in this.props.fields) {
                 fields[parts[1]] = widget;
