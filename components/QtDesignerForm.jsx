@@ -111,6 +111,7 @@ class QtDesignerForm extends React.Component {
     renderLayout = (layout, feature, dataset, updateField, nametransform = (name) => name, visible = true) => {
         let containerClass = "";
         let itemStyle = () => ({});
+        let sortKey = (item, idx) => idx;
         let containerStyle = {};
         if (!layout) {
             return null;
@@ -122,11 +123,13 @@ class QtDesignerForm extends React.Component {
             itemStyle = item => ({
                 gridArea: (1 + parseInt(item.row, 10)) + "/" + (1 + parseInt(item.column, 10)) + "/ span " + parseInt(item.rowspan || 1, 10) + "/ span " + parseInt(item.colspan || 1, 10)
             });
+            sortKey = (item) => item.row;
         } else if (layout.class === "QVBoxLayout") {
             containerClass = "qt-designer-layout-grid";
             itemStyle = (item, idx) => ({
                 gridArea: (1 + idx) + "/1/ span 1/ span 1"
             });
+            sortKey = (item, idx) => idx;
         } else if (layout.class === "QHBoxLayout") {
             containerClass = "qt-designer-layout-grid";
             containerStyle = {
@@ -135,6 +138,7 @@ class QtDesignerForm extends React.Component {
             itemStyle = (item, idx) => ({
                 gridArea: "1/" + (1 + idx) + "/ span 1/ span 1"
             });
+            sortKey = (item, idx) => idx;
         } else {
             return null;
         }
@@ -143,7 +147,7 @@ class QtDesignerForm extends React.Component {
         }
         return (
             <div className={containerClass} key={layout.name} style={containerStyle}>
-                {layout.item.map((item, idx) => {
+                {layout.item.sort((a, b) => (sortKey(a) - sortKey(b))).map((item, idx) => {
                     let child = null;
                     if (item.widget) {
                         child = this.renderWidget(item.widget, feature, dataset, updateField, nametransform);
