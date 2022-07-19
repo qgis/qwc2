@@ -8,7 +8,7 @@
         "AttributeTable": "Table d'attributs",
         "DxfExport": "Export DXF",
         "Editing": "Editer",
-        "FeatureForm": "",
+        "FeatureForm": "Formulaire d'objet",
         "Help": "Aide",
         "IdentifyRegion": "Interroger la région",
         "LayerCatalog": "Catalogue des couches",
@@ -25,7 +25,7 @@
         "ThemeSwitcher": "Thèmes",
         "Tools": "Outils",
         "Bookmark": "Marque-pages",
-        "TimeManager": ""
+        "TimeManager": "Ligne du temps"
       }
     },
     "attribtable": {
@@ -82,17 +82,17 @@
       "symbologyscale": "Echelle"
     },
     "editing": {
-      "add": "",
+      "add": "Ajouter",
       "attrtable": "Table",
       "canceldelete": "Annuler la suppression",
-      "clearpicture": "",
+      "clearpicture": "Réinitialiser",
       "commit": "Appliquer",
       "create": "",
       "delete": "Supprimer",
       "discard": "Rejeter",
       "draw": "Dessiner",
       "feature": "Objet",
-      "geomreadonly": "",
+      "geomreadonly": "La géométrie contient des valeurs Z non nulles et ne peut donc pas être modifiée.",
       "invalidform": "",
       "maximize": "Maximiser",
       "minimize": "Minimiser",
@@ -106,13 +106,13 @@
       "select": "Sélectionner",
       "selectedpicture": "",
       "takepicture": "Ajouter une photo",
-      "unsavedchanged": "Il y a des changements non sauvegardés. Voulez-vous quitter la page de toute façon?"
+      "unsavedchanged": ""
     },
     "featureform": {
-      "feature": "",
-      "noresults": "",
-      "querying": "",
-      "title": ""
+      "feature": "Object",
+      "noresults": "Pas de résultats",
+      "querying": "Identification en cours...",
+      "title": "Formulaire d'objet"
     },
     "fileselector": {
       "placeholder": "Choisir un fichier..."
@@ -139,7 +139,7 @@
       "title": ""
     },
     "importlayer": {
-      "addfailed": "",
+      "addfailed": "La couche n'a pas pu être ajoutée",
       "addlayer": "Ajouter une couche",
       "connect": "Connecter",
       "filter": "Filtrer",
@@ -272,7 +272,7 @@
       "existinglayer": "La couche existe déjà dans la carte",
       "invisiblelayer": "Le résultat est sur une couche désactivé",
       "more": "Plus...",
-      "providerselection": "",
+      "providerselection": "Services de recherche",
       "search": "Chercher",
       "searchall": "Rechercher un lieu ou ajouter une carte...",
       "searchinprogress": "Recherche en cours",
@@ -308,8 +308,8 @@
       "socialIntro": "Via votre réseau social favori"
     },
     "snapping": {
-      "loading": "",
-      "snappingenabled": ""
+      "loading": "Chargement",
+      "snappingenabled": "Snapping activé"
     },
     "themelayerslist": {
       "addlayer": "Ajouter la couche",
@@ -330,18 +330,18 @@
       "restrictedthemeinfo": "Vous n'êtes pas autorisé à voir le thème ou vous n'êtes pas connecté"
     },
     "timemanager": {
-      "animationinterval": "",
-      "markers": "",
+      "animationinterval": "Intervalle d'animation",
+      "markers": "Marqueurs",
       "notemporaldata": "Aucune couche temporelle n'est visible sur la carte.",
       "play": "Jouer",
-      "playrev": "",
-      "rewind": "",
-      "stepback": "",
-      "stepfwd": "",
-      "stepsize": "",
+      "playrev": "Jouer en sens inverse",
+      "rewind": "Rembobiner",
+      "stepback": "Pas en arrière",
+      "stepfwd": "Pas en avant",
+      "stepsize": "aille de pas",
       "stop": "Stop",
-      "title": "",
-      "toggle": "",
+      "title": "Ligne du temps",
+      "toggle": "Activer le contrôle du temps",
       "unit": {
         "century": "",
         "days": "jours",
