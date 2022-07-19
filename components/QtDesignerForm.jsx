@@ -319,7 +319,7 @@ class QtDesignerForm extends React.Component {
                 return (
                     <select name={elname} onChange={ev => updateField(widget.name, ev.target.value)} {...inputConstraints} style={fontStyle} value={value}>
                         {!haveEmpty ? (
-                            <option disabled value="">
+                            <option disabled={inputConstraints.required} value="">
                                 {inputConstraints.placeholder || LocaleUtils.tr("editing.select")}
                             </option>
                         ) : null}

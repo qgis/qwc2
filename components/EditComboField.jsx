@@ -86,7 +86,7 @@ export default class EditComboField extends React.Component {
                 onChange={ev => this.props.updateField(this.props.fieldId, ev.target.value)}
                 required={this.props.required} style={this.props.style} value={String(this.props.value)}
             >
-                <option disabled value="">
+                <option disabled={this.props.required} value="">
                     {this.props.placeholder || LocaleUtils.tr("editing.select")}
                 </option>
                 {this.state.values.map((item, index) => {
