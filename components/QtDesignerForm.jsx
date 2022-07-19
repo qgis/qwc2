@@ -59,7 +59,8 @@ class QtDesignerForm extends React.Component {
         activetabs: {},
         formdata: null,
         loading: false,
-        loadingReqId: null
+        loadingReqId: null,
+        relationAddPressed: null
     }
     constructor(props) {
         super(props);
@@ -85,6 +86,12 @@ class QtDesignerForm extends React.Component {
                 // eslint-disable-next-line
                 console.log(e);
             });
+        }
+        // As soon as relation value is added, scroll to bottom of list
+        if (this.state.relationAddPressed && this.props.feature.relationValues !== prevProps.feature.relationValues) {
+            const relationWidget = this.state.relationAddPressed.parentNode.previousSibling;
+            relationWidget.scrollTo(0, relationWidget.scrollHeight);
+            this.setState({relationAddPressed: null});
         }
     }
     componentWillUnmount() {
@@ -493,10 +500,14 @@ class QtDesignerForm extends React.Component {
                     </table>
                 </div>
                 {!this.props.readOnly ? (
-                    <div><button className="qt-designer-widget-relation-add" onClick={() => this.props.addRelationRecord(datasetname)} type="button">{LocaleUtils.tr("editing.add")}</button></div>
+                    <div><button className="qt-designer-widget-relation-add" onClick={(ev) => this.addRelationRecord(ev, datasetname)} type="button">{LocaleUtils.tr("editing.add")}</button></div>
                 ) : null}
             </div>
         );
+    }
+    addRelationRecord = (ev, datasetname) => {
+        this.setState({relationAddPressed: ev.target});
+        this.props.addRelationRecord(datasetname);
     }
     groupOrName = (widget) => {
         return widget.attribute && widget.attribute.buttonGroup ? widget.attribute.buttonGroup._ : widget.name;
