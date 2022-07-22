@@ -39,6 +39,7 @@ class IdentifyViewer extends React.Component {
         longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
         mapcrs: PropTypes.string,
         removeLayer: PropTypes.func,
+        replaceImageUrls: PropTypes.bool,
         setActiveLayerInfo: PropTypes.func,
         showIframeDialog: PropTypes.func,
         theme: PropTypes.object,
@@ -537,6 +538,9 @@ class IdentifyViewer extends React.Component {
         }
     }
     attribValue = (text, attrName, layer, result) => {
+        if (this.props.replaceImageUrls && /^https?:\/\/.*\.(jpg|jpeg|png|bmp)$/i.exec(text)) {
+            return (<a href={text} rel="noreferrer" target="_blank"><img src={text} /></a>);
+        }
         text = "" + text; // Ensure text is a string
         text = this.props.attributeTransform(attrName, text, layer, result);
         text = MiscUtils.addLinkAnchors(text);

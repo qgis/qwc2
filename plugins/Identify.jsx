@@ -44,12 +44,14 @@ class Identify extends React.Component {
         params: PropTypes.object,
         removeLayer: PropTypes.func,
         removeMarker: PropTypes.func,
+        replaceImageUrls: PropTypes.func,
         selection: PropTypes.object
     }
     static defaultProps = {
         enableExport: true,
         longAttributesDisplay: 'ellipsis',
         displayResultTree: true,
+        replaceImageUrls: true,
         initialWidth: 240,
         initialHeight: 320,
         initialX: 0,
@@ -215,6 +217,7 @@ class Identify extends React.Component {
                         identifyResults={this.state.identifyResults}
                         iframeDialogsInitiallyDocked={this.props.iframeDialogsInitiallyDocked}
                         longAttributesDisplay={this.props.longAttributesDisplay}
+                        replaceImageUrls={this.props.replaceImageUrls}
                         role="body" />
                 );
             }
