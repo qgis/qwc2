@@ -187,6 +187,10 @@ div.identify-body td.identify-attr-value {
     width: 60%;
 }
 
+div.identify-body td.identify-attr-value > a > img {
+    max-width: 100%;
+}
+
 div.identify-body div.identify-buttonbox {
     margin-top: 0.5em;
     text-align: right;

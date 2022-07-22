@@ -45,12 +45,14 @@ class Identify extends React.Component {
         attributeCalculator: PropTypes.func,
         attributeTransform: PropTypes.func,
         featureInfoReturnsLayerName: PropTypes.bool,
-        removeLayer: PropTypes.func
+        removeLayer: PropTypes.func,
+        replaceImageUrls: PropTypes.func,
     }
     static defaultProps = {
         enableExport: true,
         longAttributesDisplay: 'ellipsis',
         displayResultTree: true,
+        replaceImageUrls: true,
         initialWidth: 240,
         initialHeight: 320,
         featureInfoReturnsLayerName: true
@@ -163,6 +165,7 @@ class Identify extends React.Component {
                 initialWidth={this.props.initialWidth}
                 initialHeight={this.props.initialHeight}
                 initiallyDocked={this.props.initiallyDocked}
+                replaceImageUrls={this.props.replaceImageUrls}
                 featureInfoReturnsLayerName={this.props.featureInfoReturnsLayerName} />
         ), (
             <TaskBar key="TaskBar" task="Identify" onHide={this.onClose}>
