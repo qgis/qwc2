@@ -157,6 +157,11 @@ button.button > span:not(.icon) {
     margin-left: 0.5em;
 }
 
+button.button > div.spinner {
+    width: 1.5em;
+    height: 1.5em;
+}
+
 button.button:focus {
     outline: 0;
 }
