@@ -62,6 +62,7 @@ class AppInitComponent extends React.Component {
         changeSearch: PropTypes.func,
         initialParams: PropTypes.object,
         mapSize: PropTypes.object,
+        setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
         setStartupParameters: PropTypes.func,
         themesLoaded: PropTypes.func
@@ -142,10 +143,9 @@ class AppInitComponent extends React.Component {
             });
         });
         const task = ConfigUtils.getConfigProp("startupTask");
-        if(task){
+        if (task) {
             this.props.setCurrentTask(task.key, task.mode, task.mapClickAction);
         }
-        
     }
     render() {
         return null;
