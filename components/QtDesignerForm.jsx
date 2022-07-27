@@ -72,7 +72,10 @@ class QtDesignerForm extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         // Query form
         if (this.props.form !== prevProps.form || this.props.feature.__version__ !== prevProps.feature.__version__) {
-            this.setState(QtDesignerForm.defaultState);
+            this.setState({
+                ...QtDesignerForm.defaultState,
+                activetabs: this.props.form === prevProps.form ? this.state.activetabs : {}
+            });
             let url = this.props.form;
             if (url && url.startsWith(":/")) {
                 const assetsPath = ConfigUtils.getAssetsPath();
@@ -526,7 +529,11 @@ class QtDesignerForm extends React.Component {
             const relationTables = {};
             const externalFields = {};
             const fields = {};
-            this.reformatWidget(json.ui.widget, relationTables, fields, externalFields);
+            const counters = {
+                widget: 0,
+                layout: 0
+            };
+            this.reformatWidget(json.ui.widget, relationTables, fields, externalFields, counters);
             // console.log(root);
             json.externalFields = externalFields;
             json.fields = fields;
@@ -542,7 +549,7 @@ class QtDesignerForm extends React.Component {
             this.props.setRelationTables(relationTables);
         });
     }
-    reformatWidget = (widget, relationTables, fields, externalFields) => {
+    reformatWidget = (widget, relationTables, fields, externalFields, counters) => {
         if (widget.property) {
             widget.property = MiscUtils.ensureArray(widget.property).reduce((res, prop) => {
                 return ({...res, [prop.name]: prop[Object.keys(prop).find(key => key !== "name")]});
@@ -558,10 +565,10 @@ class QtDesignerForm extends React.Component {
             widget.attribute = {};
         }
         if (widget.item) {
-            MiscUtils.ensureArray(widget.item).map(item => this.reformatWidget(item, relationTables, fields, externalFields));
+            MiscUtils.ensureArray(widget.item).map(item => this.reformatWidget(item, relationTables, fields, externalFields, counters));
         }
 
-        widget.name = widget.name || uuid.v1();
+        widget.name = widget.name || (":widget_" + counters.widget++);
 
         if (widget.name in this.props.fields) {
             fields[widget.name] = widget;
@@ -577,13 +584,13 @@ class QtDesignerForm extends React.Component {
         }
 
         if (widget.layout) {
-            this.reformatLayout(widget.layout, relationTables, fields, externalFields);
+            this.reformatLayout(widget.layout, relationTables, fields, externalFields, counters);
         }
         if (widget.widget) {
             widget.widget = Array.isArray(widget.widget) ? widget.widget : [widget.widget];
             widget.widget.forEach(child => {
-                child.name = uuid.v1();
-                this.reformatWidget(child, relationTables, fields, externalFields);
+                child.name = (":widget_" + counters.widget++);
+                this.reformatWidget(child, relationTables, fields, externalFields, counters);
             });
         }
 
@@ -592,16 +599,16 @@ class QtDesignerForm extends React.Component {
             relationTables[this.props.mapPrefix + parts[1]] = {fk: parts[2], sortcol: parts[3] || null};
         }
     }
-    reformatLayout = (layout, relationTables, fields, externalFields) => {
+    reformatLayout = (layout, relationTables, fields, externalFields, counters) => {
         layout.item = MiscUtils.ensureArray(layout.item);
-        layout.name = layout.name || uuid.v1();
+        layout.name = layout.name || (":layout_" + counters.layout++);
         layout.item.forEach(item => {
             if (!item) {
                 return;
             } else if (item.widget) {
-                this.reformatWidget(item.widget, relationTables, fields, externalFields);
+                this.reformatWidget(item.widget, relationTables, fields, externalFields, counters);
             } else if (item.layout) {
-                this.reformatLayout(item.layout, relationTables, fields, externalFields);
+                this.reformatLayout(item.layout, relationTables, fields, externalFields, counters);
             }
         });
     }
