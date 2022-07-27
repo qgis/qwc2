@@ -36,6 +36,7 @@ import {defaults as olInteractionDefaults} from 'ol/interaction';
 import OlInteractionDoubleClickZoom from 'ol/interaction/DoubleClickZoom';
 import OlInteractionDragPan from 'ol/interaction/DragPan';
 import OlInteractionDraw from 'ol/interaction/Draw';
+import OlInteractionDragBox from 'ol/interaction/DragBox';
 import {createBox as olCreateBox} from 'ol/interaction/Draw';
 import OlInteractionInteraction from 'ol/interaction/Interaction';
 import OlInteractionPointer from 'ol/interaction/Pointer';
@@ -114,6 +115,7 @@ export default {
         defaults: olInteractionDefaults,
         DoubleClickZoom: OlInteractionDoubleClickZoom,
         DragPan: OlInteractionDragPan,
+        DragBox: OlInteractionDragBox,
         Draw: OlInteractionDraw,
         createBox: olCreateBox,
         Interaction: OlInteractionInteraction,

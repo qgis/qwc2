@@ -16,6 +16,8 @@ export function changeSelectionState(selectionState) {
     return {
         type: CHANGE_SELECTION_STATE,
         geomType: selectionState.geomType,
+        box: selectionState.box,
+        circle: selectionState.circle,
         point: selectionState.point,
         line: selectionState.line,
         polygon: selectionState.polygon,

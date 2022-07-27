@@ -13,6 +13,7 @@ import {connect} from 'react-redux';
 import ol from 'openlayers';
 import {changeSelectionState} from '../../actions/selection';
 import FeatureStyles from '../../utils/FeatureStyles';
+import './style/SelectionSupport.css';
 
 
 class SelectionSupport extends React.Component {
@@ -57,28 +58,48 @@ class SelectionSupport extends React.Component {
 
         this.props.map.addLayer(vector);
 
-        // create an interaction to draw with
-        const draw = new ol.interaction.Draw({
-            stopClick: true,
-            source: source,
-            condition: event => event.originalEvent.buttons === 1,
-            type: newProps.selection.geomType,
-            style: feature => FeatureStyles.default(feature, {circleRadius: 0})
-        });
+        let interaction = null;
 
-        draw.on('drawstart', (evt) => {
-            // preserv the sketch feature of the draw controller
-            // to update length/area on drawing a new vertex
-            this.sketchFeature = evt.feature;
-            // clear previous sketches
-            source.clear();
-        }, this);
-        draw.on('drawend', () => {
-            this.updateSelectionState();
-        }, this);
+        if (this.props.selection.geomType === "DragBox") {
+            interaction = new ol.interaction.DragBox({
+                className: 'selection-drag-box',
+                condition: ol.events.condition.shiftKeyOnly
+            });
 
-        this.props.map.addInteraction(draw);
-        this.drawInteraction = draw;
+            interaction.on('boxend', () => {
+                this.updateSelectionState(interaction.getGeometry());
+            });
+        } else {
+            const typeMap = {
+                Text: "Point",
+                Point: "Point",
+                LineString: "LineString",
+                Polygon: "Polygon",
+                Circle: "Circle",
+                Box: "Circle"
+            };
+
+            // create an interaction to draw with
+            interaction = new ol.interaction.Draw({
+                stopClick: true,
+                source: source,
+                condition: event => event.originalEvent.buttons === 1,
+                type: typeMap[this.props.selection.geomType],
+                style: feature => FeatureStyles.default(feature, {circleRadius: 0}),
+                geometryFunction: this.props.selection.geomType === "Box" ? ol.interaction.createBox() : undefined
+            });
+
+            interaction.on('drawstart', () => {
+                // clear previous sketches
+                source.clear();
+            }, this);
+            interaction.on('drawend', (evt) => {
+                this.updateSelectionState(evt.feature.getGeometry());
+            }, this);
+        }
+
+        this.props.map.addInteraction(interaction);
+        this.drawInteraction = interaction;
         this.selectionLayer = vector;
 
         if (newProps.selection.cursor) {
@@ -90,23 +111,31 @@ class SelectionSupport extends React.Component {
             this.props.map.removeInteraction(this.drawInteraction);
             this.drawInteraction = null;
             this.props.map.removeLayer(this.selectionLayer);
-            this.sketchFeature = null;
         }
         this.props.map.getViewport().style.cursor = '';
     }
-    updateSelectionState = () => {
-        if (!this.sketchFeature) {
+    updateSelectionState = (geometry) => {
+        if (!geometry) {
             return;
         }
-        const sketchCoords = this.sketchFeature.getGeometry().getCoordinates();
+        const coords = this.props.selection.geomType === 'Circle' ? null : geometry.getCoordinates();
 
         const newSelectionState = {...this.props.selection,
             point: this.props.selection.geomType === 'Point' ?
-                [sketchCoords[0], sketchCoords[1]] : null,
+                [coords[0], coords[1]] : null,
             line: this.props.selection.geomType === 'LineString' ?
-                sketchCoords.map(coo => [coo[0], coo[1]]) : null,
+                coords.map(coo => [coo[0], coo[1]]) : null,
             polygon: this.props.selection.geomType === 'Polygon' ?
-                this.sketchFeature.getGeometry().getLinearRing(0).getCoordinates().map(coo => [coo[0], coo[1]]) : null
+                coords[0].map(coo => [coo[0], coo[1]]) : null,
+            circle: this.props.selection.geomType === 'Circle' ?
+                {center: geometry.getCenter(), radius: geometry.getRadius()} : null,
+            box: this.props.selection.geomType === 'DragBox' || this.props.selection.geomType === 'Box' ?
+                [
+                    Math.min(coords[0][0][0], coords[0][2][0]),
+                    Math.min(coords[0][0][1], coords[0][2][1]),
+                    Math.max(coords[0][0][0], coords[0][2][0]),
+                    Math.max(coords[0][0][1], coords[0][2][1])
+                ] : null
         };
         this.props.changeSelectionState(newSelectionState);
     }
