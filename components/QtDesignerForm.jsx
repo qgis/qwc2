@@ -301,7 +301,7 @@ class QtDesignerForm extends React.Component {
             const checked = inGroup ? (this.props.feature.properties || {})[this.groupOrName(widget)] === widget.name : value;
             return (
                 <label style={fontStyle}>
-                    <input checked={checked} name={nametransform(this.groupOrName(widget))} onChange={ev => updateField(this.groupOrName(widget), inGroup ? widget.name : ev.target.checked)} {...inputConstraints} type={type} value={widget.name} />
+                    <input checked={checked} disabled={inputConstraints.readOnly} name={nametransform(this.groupOrName(widget))} onChange={ev => updateField(this.groupOrName(widget), inGroup ? widget.name : ev.target.checked)} {...inputConstraints} type={type} value={widget.name} />
                     {widget.property.text}
                 </label>
             );
