@@ -322,7 +322,7 @@ const VectorLayerUtils = {
             type: "FeatureCollection",
             features: features.filter(feature => feature.geometry).map(feature => ({
                 ...feature,
-                geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs, bboxCrs)
+                geometry: feature.crs ? VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs, bboxCrs) : feature.geometry
             }))
         });
         // Discard z component
@@ -330,7 +330,7 @@ const VectorLayerUtils = {
             bounds = [bounds[0], bounds[1], bounds[3], bounds[4]];
         }
         return {
-            crs: bboxCrs,
+            crs: featureCrs.size > 0 ? bboxCrs : null,
             bounds: bounds
         };
     },
