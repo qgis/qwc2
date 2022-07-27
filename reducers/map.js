@@ -104,7 +104,7 @@ export default function map(state = defaultState, action) {
         return {
             ...state,
             center: [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])],
-            zoom: MapUtils.getZoomForExtent(bounds, state.resolutions, state.size, 0, state.scales.length - 1),
+            zoom: MapUtils.getZoomForExtent(bounds, state.resolutions, state.size, 0, state.scales.length - 1) + action.zoomOffset,
             bbox: {...state.bbox, bounds: bounds}
         };
     }

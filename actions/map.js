@@ -75,11 +75,12 @@ export function panTo(pos, crs) {
     };
 }
 
-export function zoomToExtent(extent, crs) {
+export function zoomToExtent(extent, crs, zoomOffset = 0) {
     return {
         type: ZOOM_TO_EXTENT,
         extent,
-        crs
+        crs,
+        zoomOffset
     };
 }
 
