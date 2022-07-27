@@ -97,6 +97,7 @@ function getFeatureById(layerId, featureId, mapCrs, callback) {
         callback(response.data);
     }).catch(() => callback(null));
 }
+
 /*
  layerId: The edit layer id
  mapCrs: the map crs
@@ -122,6 +123,24 @@ function getFeatures(layerId, mapCrs, callback, bbox = null, filter = null) {
         } else {
             callback(null);
         }
+    }).catch(() => callback(null));
+}
+
+/*
+ layerId: The edit layer id
+ mapCrs: the map crs
+ callback: function(result), on success result is a {"bbox": [xmin, ymin, xmax, ymax]} object, on failure, result is null
+ filter: the filter expression as [["<name>", "<op>", <value>],"and|or",["<name>","<op>",<value>],...], or null
+*/
+function getExtent(layerId, mapCrs, callback, filter = null) {
+    const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
+    const req = SERVICE_URL + layerId + "/extent";
+    const params = {
+        crs: mapCrs,
+        filter: filter ? JSON.stringify(filter) : undefined
+    };
+    axios.get(req, {params}).then(response => {
+        callback(response.data);
     }).catch(() => callback(null));
 }
 
@@ -211,6 +230,7 @@ export default {
     getFeature,
     getFeatureById,
     getFeatures,
+    getExtent,
     addFeatureMultipart,
     editFeatureMultipart,
     deleteFeature,
