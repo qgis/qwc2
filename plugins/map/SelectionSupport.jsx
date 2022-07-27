@@ -80,7 +80,6 @@ class SelectionSupport extends React.Component {
         this.props.map.addInteraction(draw);
         this.drawInteraction = draw;
         this.selectionLayer = vector;
-        this.setDoubleClickZoomEnabled(false);
 
         if (newProps.selection.cursor) {
             this.props.map.getViewport().style.cursor = newProps.selection.cursor;
@@ -92,8 +91,6 @@ class SelectionSupport extends React.Component {
             this.drawInteraction = null;
             this.props.map.removeLayer(this.selectionLayer);
             this.sketchFeature = null;
-            // Delay execution of activation of double click zoom function
-            setTimeout(() => this.setDoubleClickZoomEnabled(true), 251);
         }
         this.props.map.getViewport().style.cursor = '';
     }
@@ -112,16 +109,6 @@ class SelectionSupport extends React.Component {
                 this.sketchFeature.getGeometry().getLinearRing(0).getCoordinates().map(coo => [coo[0], coo[1]]) : null
         };
         this.props.changeSelectionState(newSelectionState);
-    }
-    setDoubleClickZoomEnabled = (enabled) => {
-        const interactions = this.props.map.getInteractions();
-        for (let i = 0; i < interactions.getLength(); i++) {
-            const interaction = interactions.item(i);
-            if (interaction instanceof ol.interaction.DoubleClickZoom) {
-                interaction.setActive(enabled);
-                break;
-            }
-        }
     }
 }
 
