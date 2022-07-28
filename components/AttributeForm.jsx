@@ -112,7 +112,7 @@ class AttributeForm extends React.Component {
         if (this.state.childEdit) {
             childAttributeForm = (
                 <div className="link-feature-form-container">
-                    <LinkFeatureForm {...this.state.childEdit} finished={this.state.childEdit.finishCallback} iface={this.props.iface} pickFilter={this.props.childPickFilter}/>
+                    <LinkFeatureForm {...this.state.childEdit} finished={this.state.childEdit.finishCallback} iface={this.props.iface} pickFilter={this.props.childPickFilter} readOnly={this.props.readOnly} />
                 </div>
             );
         }

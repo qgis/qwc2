@@ -29,6 +29,7 @@ class LinkFeatureForm extends React.Component {
         iface: PropTypes.object,
         map: PropTypes.object,
         pickFilter: PropTypes.func,
+        readOnly: PropTypes.bool,
         removeLayer: PropTypes.func,
         setEditContext: PropTypes.func
     }
@@ -105,7 +106,7 @@ class LinkFeatureForm extends React.Component {
                             <span>{LocaleUtils.tr("linkfeatureform.drawhint")}</span>
                         </div>
                     ) : (
-                        <AttributeForm editConfig={this.props.editConfig} editContext={editContext} iface={this.props.iface} onDiscard={this.onDiscard} />
+                        <AttributeForm editConfig={this.props.editConfig} editContext={editContext} iface={this.props.iface} onDiscard={this.onDiscard} readOnly={this.props.readOnly} />
                     )}
                     <div className="link-feature-form-close">
                         <button className="button" disabled={editContext.changed} onClick={this.finish}>
