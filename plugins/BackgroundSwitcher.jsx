@@ -77,6 +77,9 @@ class BackgroundSwitcher extends React.Component {
         }
         return null;
     }
+    itemTitle = (item) => {
+        return item.titleMsgId ? LocaleUtils.tr(item.titleMsgId) : item.title;
+    }
     renderLayerItem = (layer, visible) => {
         const assetsPath = ConfigUtils.getAssetsPath();
         const itemclasses = classnames({
@@ -86,7 +89,7 @@ class BackgroundSwitcher extends React.Component {
         return (
             <div className={itemclasses} key={layer ? layer.name : "empty"} onClick={() => this.backgroundLayerClicked(layer)}>
                 <div className="background-layer-title">
-                    {layer ? (<span>{layer.title}</span>) : (<span>{LocaleUtils.tr("bgswitcher.nobg")}</span>)}
+                    {layer ? (<span>{this.itemTitle(layer)}</span>) : (<span>{LocaleUtils.tr("bgswitcher.nobg")}</span>)}
                 </div>
                 <div className="background-layer-thumbnail">
                     <img src={layer ? assetsPath + "/" + layer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="} />
@@ -105,7 +108,7 @@ class BackgroundSwitcher extends React.Component {
         return (
             <div className={itemclasses} key={layer.name}>
                 <div className="background-layer-title">
-                    <span>{layer.title}</span><Icon icon="chevron-down" />
+                    <span>{this.itemTitle(layer)}</span><Icon icon="chevron-down" />
                 </div>
                 <div className="background-layer-thumbnail">
                     <img onClick={() => this.backgroundLayerClicked(layer)} src={assetsPath + "/" + layer.thumbnail} />
@@ -116,7 +119,7 @@ class BackgroundSwitcher extends React.Component {
                             onClick={() => this.backgroundLayerClicked(l)}
                             onMouseEnter={ev => this.updateGroupItem(ev, l)}
                             onMouseLeave={ev => this.updateGroupItem(ev, layer)}
-                        >{l.title}</div>
+                        >{this.itemTitle(l)}</div>
                     ))}
                 </div>
             </div>
@@ -124,7 +127,7 @@ class BackgroundSwitcher extends React.Component {
     }
     updateGroupItem = (ev, layer) => {
         const assetsPath = ConfigUtils.getAssetsPath();
-        ev.target.parentElement.parentElement.childNodes[0].firstChild.innerText = layer.title;
+        ev.target.parentElement.parentElement.childNodes[0].firstChild.innerText = this.itemTitle(layer);
         ev.target.parentElement.parentElement.childNodes[1].firstChild.src = assetsPath + "/" + layer.thumbnail;
     }
     buttonClicked = () => {
