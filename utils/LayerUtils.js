@@ -802,14 +802,21 @@ const LayerUtils = {
         if (!layer.attribution || !layer.attribution.Title || !layer.visibility) {
             return copyrights;
         }
+        const key = layer.attribution.OnlineResource || layer.attribution.Title;
         if (showThemeCopyrightOnly) {
             if (layer.role === LayerRole.THEME) {
-                copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
+                copyrights[key] = {
+                    title: layer.attribution.OnlineResource ? layer.attribution.Title : null,
+                    layers: [ ...((copyrights[key] || {}).layers || []), layer]
+                };
             }
         } else if (layer.role === LayerRole.BACKGROUND) {
             const mapScale = MapUtils.computeForZoom(map.scales, map.zoom);
             if (LayerUtils.layerScaleInRange(layer, mapScale)) {
-                copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
+                copyrights[key] = {
+                    title: layer.attribution.OnlineResource ? layer.attribution.Title : null,
+                    layers: [ ...((copyrights[key] || {}).layers || []), layer]
+                };
             }
         } else {
             if (!layer.bbox) {
@@ -825,7 +832,10 @@ const LayerUtils = {
                 mapbbox[1] < laybbox[3] && mapbbox[3] > laybbox[1]
             ) {
                 // Extents overlap
-                copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
+                copyrights[key] = {
+                    title: layer.attribution.OnlineResource ? layer.attribution.Title : null,
+                    layers: [ ...((copyrights[key] || {}).layers || []), layer]
+                };
             }
         }
         return copyrights;

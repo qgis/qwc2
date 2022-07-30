@@ -9,7 +9,7 @@
     font-size: x-small;
 }
 
-#MapCopyright span {
+#MapCopyright > span {
     padding: 0 0.5em;
 }
 

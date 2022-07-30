@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import './style/MapCopyright.css';
 
 
@@ -18,6 +19,7 @@ class MapCopyright extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
         map: PropTypes.object,
+        prefixCopyrightsWithLayerNames: PropTypes.bool,
         showThemeCopyrightOnly: PropTypes.bool
     }
     state = {
@@ -34,10 +36,10 @@ class MapCopyright extends React.Component {
         // If attribution has both url and label, "key" is the url and "value" the label.
         // If it only has a label, "key" is the label and "value" is null.
         const copyrights = Object.entries(this.state.currentCopyrights).map(([key, value]) => {
-            if (value) {
-                return (<span key={key}><a href={key} rel="noreferrer" target="_blank">{value}</a></span>);
+            if (value.title) {
+                return (<span key={key}><a href={key} rel="noreferrer" target="_blank">{this.layerNames(value.layers) + value.title}</a></span>);
             } else {
-                return (<span dangerouslySetInnerHTML={{__html: key}} key={key} />);
+                return (<span key={key}>{this.layerNames(value.layers)}<span dangerouslySetInnerHTML={{__html: key}} /></span>);
             }
         });
         if (isEmpty(copyrights)) {
@@ -48,6 +50,13 @@ class MapCopyright extends React.Component {
                 {copyrights}
             </div>
         );
+    }
+    layerNames = (layers) => {
+        if (!this.props.prefixCopyrightsWithLayerNames) {
+            return "";
+        } else {
+            return layers.map(layer => layer.titleMsgId ? LocaleUtils.tr(layer.titleMsgId) : layer.title).join(", ") + ": ";
+        }
     }
 }
 
