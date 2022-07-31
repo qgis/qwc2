@@ -158,6 +158,7 @@ class Editing extends React.Component {
         if ( editPermissions.creatable !== false) {
             // Draw button will appear by default if no permissions are defined in theme editConfig or when creatable permission is set
             const feature = getFeatureTemplate(editConfig.editDataset, {
+                type: "Feature",
                 properties: {}
             });
             actionButtons.push({key: 'Draw', icon: 'editdraw', label: LocaleUtils.trmsg("editing.draw"), data: {action: 'Draw', feature: feature, geomReadOnly: false}});

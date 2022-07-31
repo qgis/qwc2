@@ -51,6 +51,7 @@ class LinkFeatureForm extends React.Component {
             }
         } else if (this.props.action === 'Create') {
             const featureTemplate = getFeatureTemplate(this.props.editConfig.editDataset, {
+                type: "Feature",
                 properties: {},
                 ...this.props.feature
             });
