@@ -9,7 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {setEditContext} from '../actions/editing';
+import {setEditContext, getFeatureTemplate} from '../actions/editing';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import AttributeForm from './AttributeForm';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -50,10 +50,10 @@ class LinkFeatureForm extends React.Component {
                 });
             }
         } else if (this.props.action === 'Create') {
-            const featureTemplate = {
+            const featureTemplate = getFeatureTemplate(this.props.editConfig.editDataset, {
                 properties: {},
                 ...this.props.feature
-            };
+            });
             this.props.setEditContext(this.props.editContextId, {action: 'Draw', geomType: this.props.editConfig.geomType, feature: featureTemplate});
         } else if (this.props.action === 'Pick') {
             this.props.setEditContext(this.props.editContextId, {action: null});

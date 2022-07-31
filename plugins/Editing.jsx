@@ -13,7 +13,7 @@ import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
 import axios from 'axios';
 import uuid from 'uuid';
-import {setEditContext, clearEditContext} from '../actions/editing';
+import {setEditContext, clearEditContext, getFeatureTemplate} from '../actions/editing';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import {LayerRole, addLayerFeatures, removeLayer, refreshLayer, changeLayerProperty} from '../actions/layers';
 import {clickOnMap, setSnappingConfig} from '../actions/map';
@@ -157,7 +157,10 @@ class Editing extends React.Component {
         }
         if ( editPermissions.creatable !== false) {
             // Draw button will appear by default if no permissions are defined in theme editConfig or when creatable permission is set
-            actionButtons.push({key: 'Draw', icon: 'editdraw', label: LocaleUtils.trmsg("editing.draw"), data: {action: 'Draw', feature: null, geomReadOnly: false}});
+            const feature = getFeatureTemplate(editConfig.editDataset, {
+                properties: {}
+            });
+            actionButtons.push({key: 'Draw', icon: 'editdraw', label: LocaleUtils.trmsg("editing.draw"), data: {action: 'Draw', feature: feature, geomReadOnly: false}});
         }
         if (ConfigUtils.havePlugin("AttributeTable")) {
             actionButtons.push({key: 'AttribTable', icon: 'editing', label: LocaleUtils.trmsg("editing.attrtable"), data: {action: 'AttrTable'}});

@@ -28,3 +28,17 @@ export function clearEditContext(contextId, newActiveContextId = null) {
         newActiveContextId: newActiveContextId
     };
 }
+
+const FeatureTemplateFactories = {};
+
+export function setFeatureTemplateFactory(dataset, factory) {
+    FeatureTemplateFactories[dataset] = factory;
+}
+
+export function getFeatureTemplate(dataset, feature) {
+    if (dataset in FeatureTemplateFactories) {
+        return FeatureTemplateFactories[dataset](feature);
+    } else {
+        return feature;
+    }
+}

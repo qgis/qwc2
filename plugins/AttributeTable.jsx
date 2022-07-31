@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import geojsonBbox from 'geojson-bounding-box';
 import isEmpty from 'lodash.isempty';
 import ContentEditable from 'react-contenteditable';
+import {getFeatureTemplate} from '../actions/editing';
 import {LayerRole} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
@@ -424,7 +425,7 @@ class AttributeTable extends React.Component {
             alert(LocaleUtils.tr("attribtable.geomnoadd"));
             return;
         }
-        const feature = {
+        const feature = getFeatureTemplate(currentEditConfig.editDataset, {
             type: "Feature",
             geometry: null,
             properties: currentEditConfig.fields.reduce((res, field) => {
@@ -433,7 +434,7 @@ class AttributeTable extends React.Component {
                 }
                 return res;
             }, {})
-        };
+        });
         this.setState({
             features: [...this.state.features, feature],
             filteredSortedFeatures: [...this.state.filteredSortedFeatures, {...feature, originalIndex: this.state.features.length}],
