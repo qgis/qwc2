@@ -44,7 +44,7 @@ class Identify extends React.Component {
         params: PropTypes.object,
         removeLayer: PropTypes.func,
         removeMarker: PropTypes.func,
-        replaceImageUrls: PropTypes.func,
+        replaceImageUrls: PropTypes.bool,
         selection: PropTypes.object
     }
     static defaultProps = {
