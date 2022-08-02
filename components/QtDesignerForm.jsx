@@ -289,6 +289,9 @@ class QtDesignerForm extends React.Component {
                 const constraints = {accept: prop.text || ""};
                 return (<EditUploadField constraints={constraints} dataset={dataset} disabled={inputConstraints.readOnly} fieldId={fieldId} name={uploadElName} report={this.props.report} updateField={updateField} value={uploadValue} />);
             } else {
+                if (fieldConstraints.prec !== undefined && typeof value === 'number') {
+                    value = value.toFixed(fieldConstraints.prec);
+                }
                 if (this.props.report) {
                     return (<span>{value}</span>);
                 } else {
