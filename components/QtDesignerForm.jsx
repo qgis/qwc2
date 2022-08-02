@@ -380,51 +380,55 @@ class QtDesignerForm extends React.Component {
             } else {
                 return this.renderLayout(widget.layout, feature, dataset, updateField, nametransform);
             }
-        } else if (widget.class === "QPushButton" && widget.name.startsWith("featurelink__")) {
-            const parts = widget.name.split("__");
-            // featurelink__layer__attrname
-            // featurelink__layer__reltable__attrname
-            if (parts.length === 3 || parts.length === 4 ) {
-                const layer = parts[1];
-                const reltable = parts.length === 4 ? parts[2] : "";
-                const attrname = parts.slice(2).join("__");
-                value = (feature.properties || {})[attrname];
-                if (layer === reltable) {
-                    const index = parseInt(nametransform("").split("__")[1], 10); // Ugh..
-                    const reldataset = this.props.mapPrefix + reltable;
-                    if (feature.__status__ !== "empty") {
-                        const featurebuttons = [
-                            {key: 'Edit', icon: 'editing', label: String(value ?? "")}
-                        ];
-                        return (
-                            <div className="qt-designer-form-featurelink-buttons">
-                                <ButtonBar buttons={featurebuttons} onClick={() => this.props.editRelationRecord('Edit', reltable, reldataset, index)} />
-                            </div>
-                        );
+        } else if (widget.class === "QPushButton") {
+            if (widget.name.startsWith("btn__") && widget.onClick) {
+                return (<button className="button" disabled={inputConstraints.readOnly} onClick={widget.onClick}>{widget.property.text}</button>);
+            } else if (widget.name.startsWith("featurelink__")) {
+                const parts = widget.name.split("__");
+                // featurelink__layer__attrname
+                // featurelink__layer__reltable__attrname
+                if (parts.length === 3 || parts.length === 4 ) {
+                    const layer = parts[1];
+                    const reltable = parts.length === 4 ? parts[2] : "";
+                    const attrname = parts.slice(2).join("__");
+                    value = (feature.properties || {})[attrname];
+                    if (layer === reltable) {
+                        const index = parseInt(nametransform("").split("__")[1], 10); // Ugh..
+                        const reldataset = this.props.mapPrefix + reltable;
+                        if (feature.__status__ !== "empty") {
+                            const featurebuttons = [
+                                {key: 'Edit', icon: 'editing', label: String(value ?? "")}
+                            ];
+                            return (
+                                <div className="qt-designer-form-featurelink-buttons">
+                                    <ButtonBar buttons={featurebuttons} onClick={() => this.props.editRelationRecord('Edit', reltable, reldataset, index)} />
+                                </div>
+                            );
+                        } else {
+                            const featurebuttons = [
+                                {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick")},
+                                {key: 'Create', icon: 'editdraw', label: LocaleUtils.trmsg("editing.create")}
+                            ];
+                            return (<ButtonBar buttons={featurebuttons} onClick={(action) => this.props.editRelationRecord(action, reltable, reldataset, index)} />);
+                        }
                     } else {
-                        const featurebuttons = [
-                            {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick")},
-                            {key: 'Create', icon: 'editdraw', label: LocaleUtils.trmsg("editing.create")}
-                        ];
-                        return (<ButtonBar buttons={featurebuttons} onClick={(action) => this.props.editRelationRecord(action, reltable, reldataset, index)} />);
-                    }
-                } else {
-                    if (value !== null) {
-                        const featurebuttons = [
-                            {key: 'Edit', icon: 'editing', label: String(value ?? "")}
-                        ];
-                        return (
-                            <div className="qt-designer-form-featurelink-buttons">
-                                <ButtonBar buttons={featurebuttons} onClick={() => this.props.switchEditContext('Edit', layer, value, (v) => updateField(attrname, v))} />
-                                <button className="button" onClick={() => updateField(attrname, null)} type="button"><Icon icon="clear" /></button>
-                            </div>
-                        );
-                    } else {
-                        const featurebuttons = [
-                            {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick")},
-                            {key: 'Create', icon: 'editdraw', label: LocaleUtils.trmsg("editing.create")}
-                        ];
-                        return (<ButtonBar buttons={featurebuttons} onClick={(action) => this.props.switchEditContext(action, layer, null, (v) => updateField(attrname, v))} />);
+                        if (value !== null) {
+                            const featurebuttons = [
+                                {key: 'Edit', icon: 'editing', label: String(value ?? "")}
+                            ];
+                            return (
+                                <div className="qt-designer-form-featurelink-buttons">
+                                    <ButtonBar buttons={featurebuttons} onClick={() => this.props.switchEditContext('Edit', layer, value, (v) => updateField(attrname, v))} />
+                                    <button className="button" onClick={() => updateField(attrname, null)} type="button"><Icon icon="clear" /></button>
+                                </div>
+                            );
+                        } else {
+                            const featurebuttons = [
+                                {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick")},
+                                {key: 'Create', icon: 'editdraw', label: LocaleUtils.trmsg("editing.create")}
+                            ];
+                            return (<ButtonBar buttons={featurebuttons} onClick={(action) => this.props.switchEditContext(action, layer, null, (v) => updateField(attrname, v))} />);
+                        }
                     }
                 }
             }
@@ -529,14 +533,16 @@ class QtDesignerForm extends React.Component {
             const relationTables = {};
             const externalFields = {};
             const fields = {};
+            const buttons = {};
             const counters = {
                 widget: 0,
                 layout: 0
             };
-            this.reformatWidget(json.ui.widget, relationTables, fields, externalFields, counters);
+            this.reformatWidget(json.ui.widget, relationTables, fields, buttons, externalFields, counters);
             // console.log(root);
             json.externalFields = externalFields;
             json.fields = fields;
+            json.buttons = buttons;
             if (FormPreprocessors[this.props.editLayerId]) {
                 FormPreprocessors[this.props.editLayerId](json, this.props.feature, (formData) => {
                     if (this.state.loadingReqId === loadingReqId) {
@@ -549,7 +555,7 @@ class QtDesignerForm extends React.Component {
             this.props.setRelationTables(relationTables);
         });
     }
-    reformatWidget = (widget, relationTables, fields, externalFields, counters) => {
+    reformatWidget = (widget, relationTables, fields, buttons, externalFields, counters) => {
         if (widget.property) {
             widget.property = MiscUtils.ensureArray(widget.property).reduce((res, prop) => {
                 return ({...res, [prop.name]: prop[Object.keys(prop).find(key => key !== "name")]});
@@ -565,7 +571,7 @@ class QtDesignerForm extends React.Component {
             widget.attribute = {};
         }
         if (widget.item) {
-            MiscUtils.ensureArray(widget.item).map(item => this.reformatWidget(item, relationTables, fields, externalFields, counters));
+            MiscUtils.ensureArray(widget.item).map(item => this.reformatWidget(item, relationTables, fields, buttons, externalFields, counters));
         }
 
         widget.name = widget.name || (":widget_" + counters.widget++);
@@ -577,6 +583,8 @@ class QtDesignerForm extends React.Component {
             if (parts[1] in this.props.fields) {
                 fields[parts[1]] = widget;
             }
+        } else if (widget.name.startsWith("btn__")) {
+            buttons[widget.name.split("__")[1]] = widget;
         }
 
         if (widget.name.startsWith("ext__")) {
@@ -584,13 +592,13 @@ class QtDesignerForm extends React.Component {
         }
 
         if (widget.layout) {
-            this.reformatLayout(widget.layout, relationTables, fields, externalFields, counters);
+            this.reformatLayout(widget.layout, relationTables, fields, buttons, externalFields, counters);
         }
         if (widget.widget) {
             widget.widget = Array.isArray(widget.widget) ? widget.widget : [widget.widget];
             widget.widget.forEach(child => {
                 child.name = (":widget_" + counters.widget++);
-                this.reformatWidget(child, relationTables, fields, externalFields, counters);
+                this.reformatWidget(child, relationTables, fields, buttons, externalFields, counters);
             });
         }
 
@@ -599,16 +607,16 @@ class QtDesignerForm extends React.Component {
             relationTables[this.props.mapPrefix + parts[1]] = {fk: parts[2], sortcol: parts[3] || null};
         }
     }
-    reformatLayout = (layout, relationTables, fields, externalFields, counters) => {
+    reformatLayout = (layout, relationTables, fields, buttons, externalFields, counters) => {
         layout.item = MiscUtils.ensureArray(layout.item);
         layout.name = layout.name || (":layout_" + counters.layout++);
         layout.item.forEach(item => {
             if (!item) {
                 return;
             } else if (item.widget) {
-                this.reformatWidget(item.widget, relationTables, fields, externalFields, counters);
+                this.reformatWidget(item.widget, relationTables, fields, buttons, externalFields, counters);
             } else if (item.layout) {
-                this.reformatLayout(item.layout, relationTables, fields, externalFields, counters);
+                this.reformatLayout(item.layout, relationTables, fields, buttons, externalFields, counters);
             }
         });
     }
