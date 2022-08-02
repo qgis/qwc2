@@ -382,7 +382,7 @@ class QtDesignerForm extends React.Component {
             }
         } else if (widget.class === "QPushButton") {
             if (widget.name.startsWith("btn__") && widget.onClick) {
-                return (<button className="button" disabled={inputConstraints.readOnly} onClick={widget.onClick}>{widget.property.text}</button>);
+                return (<button className="button" disabled={inputConstraints.readOnly} onClick={widget.onClick} type="button">{widget.property.text}</button>);
             } else if (widget.name.startsWith("featurelink__")) {
                 const parts = widget.name.split("__");
                 // featurelink__layer__attrname
