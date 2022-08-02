@@ -171,7 +171,7 @@ class AttributeForm extends React.Component {
                     }
                 }).join(",");
                 this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, this.props.map.projection, (response => {
-                    const newFeature = {...feature, relationValues: response.relationvalues};
+                    const newFeature = {...this.props.editContext.feature, relationValues: response.relationvalues};
                     this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
                 }));
             } else {
