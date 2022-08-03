@@ -54,8 +54,9 @@ function buildErrMsg(err) {
  mapScale: the map scale denominator
  dpi: the map resolution
  callback: function(result), on success result is a collection of features, on failure, result is null
+ filter: the filter expression as [["<name>", "<op>", <value>],"and|or",["<name>","<op>",<value>],...], or null
 */
-function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback) {
+function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback, filter = null) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
     const req = SERVICE_URL + layerId;
 
@@ -65,7 +66,8 @@ function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback) {
 
     const params = {
         bbox: bbox,
-        crs: mapCrs
+        crs: mapCrs,
+        filter: filter ? JSON.stringify(filter) : undefined
     };
     axios.get(req, {params}).then(response => {
         if (response.data && !isEmpty(response.data.features)) {
