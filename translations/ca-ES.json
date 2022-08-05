@@ -59,7 +59,7 @@
       "lastUpdate": "Darrer canvi",
       "manage": "Gestionar",
       "notloggedin": "No logat",
-      "open": "Obir",
+      "open": "Obrir",
       "openTab": "Obrir en una pestanya",
       "remove": "Esborrar",
       "removefailed": "Error al eliminar",
@@ -266,19 +266,6 @@
     "scratchdrawing": {
       "finish": "Finalitzar"
     },
-    "search": {
-      "all": "Tot",
-      "enablelayer": "Habilitar capa",
-      "existinglayer": "La capa ja existeix en el mapa",
-      "invisiblelayer": "El resultat es troba en una capa no visible",
-      "more": "Més...",
-      "providerselection": "Proveidor",
-      "search": "Buscar",
-      "searchall": "Buscar llocs o agregar mapes...",
-      "searchinprogress": "Cercant...",
-      "searchreset": "Reset",
-      "themes": "Temes"
-    },
     "searchbox": {
       "filter": "Refinar búsqueda",
       "layers": "Mapes",
@@ -371,7 +358,7 @@
       "maximize": "Maximitzar",
       "minimize": "Minimitzar",
       "undock": "Desacoblar",
-      "unmaximize": "Minimitzar",
+      "unmaximize": "Restaurar",
       "unminimize": "Desminimitzar"
     }
   }
