@@ -58,7 +58,7 @@ function buildErrMsg(err) {
 */
 function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback, filter = null) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
-    const req = SERVICE_URL + layerId;
+    const req = SERVICE_URL + layerId + '/';
 
     // 10px tolerance
     const tol = (10.0 / dpi) * 0.0254 * mapScale;
@@ -109,7 +109,7 @@ function getFeatureById(layerId, featureId, mapCrs, callback) {
 */
 function getFeatures(layerId, mapCrs, callback, bbox = null, filter = null) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
-    const req = SERVICE_URL + layerId;
+    const req = SERVICE_URL + layerId + '/';
     const params = {
         crs: mapCrs,
         bbox: bbox ? bbox.join(",") : undefined,
