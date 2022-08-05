@@ -2,8 +2,9 @@
   "locale": "ca-ES",
   "messages": {
     "appmenu": {
+      "filter": "Menú de filtres...",
+      "menulabel": "Mapa i Eines",
       "items": {
-        "ExternalLink": "Enllaç extern - Abonats",
         "AttributeTable": "Taula d'atributs",
         "DxfExport": "Exportar DXF",
         "Editing": "Editant",
@@ -25,35 +26,7 @@
         "Tools": "Eines de Mapa",
         "Bookmark": "Marcador",
         "TimeManager": "Gestor de Temps"
-      },
-      "filter": "Menú filtres...",
-      "menulabel": "Mapa i Eines"
-    },
-    "search": {
-      "coordinates": "Coordenades",
-      "nominatim": {
-        "amenity": "Comoditat",
-        "boundary": "Límit",
-        "building": "Edifici",
-        "landuse": "Ús del sòl",
-        "leisure": "Oci",
-        "place": "Lloc",
-        "highway": "Autopista",
-        "natural": "Natural",
-        "railway": "Via",
-        "tourism": "Turisme"
-      },
-      "all": "Tot",
-      "enablelayer": "Habilitar capa",
-      "existinglayer": "La capa ja existeix en el mapa",
-      "invisiblelayer": "El resultat es troba en una capa no visible",
-      "more": "Més...",
-      "providerselection": "Proveidor",
-      "search": "Buscar",
-      "searchall": "Buscar llocs o agregar mapes...",
-      "searchinprogress": "Cercant...",
-      "searchreset": "Reset",
-      "themes": "Temes"
+      }
     },
     "attribtable": {
       "addfeature": "Afegir element",
@@ -86,7 +59,7 @@
       "lastUpdate": "Darrer canvi",
       "manage": "Gestionar",
       "notloggedin": "No logat",
-      "open": "Obir en la pestanya actual",
+      "open": "Obrir",
       "openTab": "Obrir en una pestanya",
       "remove": "Esborrar",
       "removefailed": "Error al eliminar",
@@ -293,6 +266,19 @@
     "scratchdrawing": {
       "finish": "Finalitzar"
     },
+    "search": {
+      "all": "Tot",
+      "enablelayer": "Habilitar capa",
+      "existinglayer": "La capa ja existeix en el mapa",
+      "invisiblelayer": "El resultat es troba en una capa no visible",
+      "more": "Més...",
+      "providerselection": "Proveidor",
+      "search": "Buscar",
+      "searchall": "Buscar llocs o agregar mapes...",
+      "searchinprogress": "Cercant...",
+      "searchreset": "Reset",
+      "themes": "Temes"
+    },
     "searchbox": {
       "filter": "Refinar búsqueda",
       "layers": "Mapes",
@@ -385,7 +371,7 @@
       "maximize": "Maximitzar",
       "minimize": "Minimitzar",
       "undock": "Desacoblar",
-      "unmaximize": "Restaurar",
+      "unmaximize": "Minimitzar",
       "unminimize": "Desminimitzar"
     }
   }
