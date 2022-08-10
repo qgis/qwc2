@@ -100,7 +100,7 @@ export default class EditUploadField extends React.Component {
         } else if (!this.props.report) {
             return (
                 <span className={"edit-upload-field-input" + (this.props.disabled ? " edit-upload-field-input-disabled" : "")}>
-                    <input disabled={this.props.disabled} name={this.props.name} type="file" {...constraints} onChange={this.imageSelected} />
+                    <input disabled={this.props.disabled} name={this.props.name} type="file" {...constraints} onChange={this.fileSelected} />
                     {mediaSupport ? (<Icon icon="camera" onClick={this.props.disabled ? null : this.enableCamera} />) : null}
                     {this.state.camera ? this.renderCaptureFrame() : null}
                 </span>
@@ -109,7 +109,7 @@ export default class EditUploadField extends React.Component {
             return null;
         }
     }
-    imageSelected = (ev) => {
+    fileSelected = (ev) => {
         if (ev.target.files[0].type.startsWith("image/")) {
             const reader = new FileReader();
             reader.readAsDataURL(ev.target.files[0]);
@@ -118,6 +118,9 @@ export default class EditUploadField extends React.Component {
                 this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(reader.result)], ev.target.files[0].name, {type: ev.target.files[0].type}));
                 this.props.updateField(this.props.fieldId, '');
             };
+        } else {
+            this.props.updateField(this.props.fieldId, '');
+            this.props.updateFile(this.props.fieldId, ev.target.files[0]);
         }
     }
     enableCamera = () => {
