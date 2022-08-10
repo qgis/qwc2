@@ -305,7 +305,8 @@
       "directLinkTitle": "Via link direct",
       "refresh": "",
       "showpin": "Arată pin",
-      "socialIntro": "În rețeaua socială favorită"
+      "socialIntro": "În rețeaua socială favorită",
+	  "shareTitle":"QWC2"
     },
     "snapping": {
       "loading": "",

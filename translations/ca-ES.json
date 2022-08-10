@@ -305,7 +305,8 @@
       "directLinkTitle": "Via link",
       "refresh": "Generar l'enllaç permanent",
       "showpin": "Mostrar el pin",
-      "socialIntro": "En la teva xarxa social preferida"
+      "socialIntro": "En la teva xarxa social preferida",
+	  "shareTitle":"QWC2"
     },
     "snapping": {
       "loading": "Carregant geometries de snapping",

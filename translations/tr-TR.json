@@ -305,7 +305,8 @@
       "directLinkTitle": "Doğrudan bağlantı yolu ile",
       "refresh": "",
       "showpin": "",
-      "socialIntro": "Favori sosyal ağınıza"
+      "socialIntro": "Favori sosyal ağınıza",
+	  "shareTitle":"QWC2"
     },
     "snapping": {
       "loading": "",

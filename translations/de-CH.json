@@ -305,7 +305,8 @@
       "directLinkTitle": "Über einen direkten Link",
       "refresh": "Permalink generieren",
       "showpin": "Pin anzeigen",
-      "socialIntro": "In den sozialen Medien"
+      "socialIntro": "In den sozialen Medien",
+	  "shareTitle":"QWC2"
     },
     "snapping": {
       "loading": "Einrastrungsgeometrien werden geladen...",

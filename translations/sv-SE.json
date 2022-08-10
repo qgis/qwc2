@@ -305,7 +305,8 @@
       "directLinkTitle": "Via en direktlänk",
       "refresh": "",
       "showpin": "",
-      "socialIntro": "I ditt favoritnätverk"
+      "socialIntro": "I ditt favoritnätverk",
+	  "shareTitle":"QWC2"
     },
     "snapping": {
       "loading": "",

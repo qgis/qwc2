@@ -305,7 +305,8 @@
       "directLinkTitle": "Via a direct link",
       "refresh": "Generate permalink",
       "showpin": "Show pin",
-      "socialIntro": "In your favourite social network"
+      "socialIntro": "In your favourite social network",
+	  "shareTitle":"QWC2"
     },
     "snapping": {
       "loading": "Loading snapping geometries...",

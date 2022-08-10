@@ -305,7 +305,8 @@
       "directLinkTitle": "Přes přímé spojení",
       "refresh": "",
       "showpin": "",
-      "socialIntro": "Ve vaší oblíbené sociální síti"
+      "socialIntro": "Ve vaší oblíbené sociální síti",
+	  "shareTitle":"QWC2"
     },
     "snapping": {
       "loading": "",
