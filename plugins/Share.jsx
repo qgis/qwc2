@@ -68,7 +68,7 @@ class Share extends React.Component {
             delete urlParts.search;
             shareUrl = url.format(urlParts);
         }
-        const shareSocials = this.props.showSocials !== false ? <ShareSocials shareTitle="QWC2" shareUrl={shareUrl} showSocials={this.props.showSocials}/> : null;
+        const shareSocials = this.props.showSocials !== false ? <ShareSocials shareTitle={LocaleUtils.tr("share.shareTitle")} shareUrl={shareUrl} showSocials={this.props.showSocials}/> : null;
         const shareLink = this.props.showLink ? <ShareLink shareUrl={shareUrl}/> : null;
         const shareQRCode = this.props.showQRCode ? <ShareQRCode shareUrl={shareUrl}/> : null;
         return (

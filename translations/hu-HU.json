@@ -305,7 +305,8 @@
       "directLinkTitle": "Közvetlen hivatkozással...",
       "refresh": "",
       "showpin": "",
-      "socialIntro": "A kedvenc közösségi hálózatodon"
+      "socialIntro": "A kedvenc közösségi hálózatodon",
+	  "shareTitle":"QWC2"
     },
     "snapping": {
       "loading": "",

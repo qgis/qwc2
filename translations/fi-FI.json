@@ -305,7 +305,8 @@
       "directLinkTitle": "Suora linkillä",
       "refresh": "",
       "showpin": "",
-      "socialIntro": "Jaa someen"
+      "socialIntro": "Jaa someen",
+	  "shareTitle":"QWC2"
     },
     "snapping": {
       "loading": "",

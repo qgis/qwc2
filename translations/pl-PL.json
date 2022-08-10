@@ -305,7 +305,8 @@
       "directLinkTitle": "Poprzez link bezpośredni",
       "refresh": "",
       "showpin": "",
-      "socialIntro": "W twoich ulubionych mediach społecznościowych"
+      "socialIntro": "W twoich ulubionych mediach społecznościowych",
+	  "shareTitle":"QWC2"
     },
     "snapping": {
       "loading": "",

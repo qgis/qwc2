@@ -305,7 +305,8 @@
       "directLinkTitle": "По прямой ссылке",
       "refresh": "",
       "showpin": "",
-      "socialIntro": "В Вашей любимой соцсети"
+      "socialIntro": "В Вашей любимой соцсети",
+	  "shareTitle":"QWC2"
     },
     "snapping": {
       "loading": "",
