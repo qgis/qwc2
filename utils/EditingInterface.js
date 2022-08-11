@@ -70,7 +70,10 @@ function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback, filter = n
         crs: mapCrs,
         filter: filter ? JSON.stringify(filter) : undefined
     };
-    axios.get(req, {params}).then(response => {
+    const headers = {
+        "Accept-Language": LocaleUtils.lang()
+    };
+    axios.get(req, {headers, params}).then(response => {
         if (response.data && !isEmpty(response.data.features)) {
             const version = +new Date();
             response.data.features.forEach(feature => {
@@ -95,7 +98,10 @@ function getFeatureById(layerId, featureId, mapCrs, callback) {
     const params = {
         crs: mapCrs
     };
-    axios.get(req, {params}).then(response => {
+    const headers = {
+        "Accept-Language": LocaleUtils.lang()
+    };
+    axios.get(req, {headers, params}).then(response => {
         response.data.__version__ = +new Date();
         callback(response.data);
     }).catch(() => callback(null));
@@ -116,7 +122,10 @@ function getFeatures(layerId, mapCrs, callback, bbox = null, filter = null) {
         bbox: bbox ? bbox.join(",") : undefined,
         filter: filter ? JSON.stringify(filter) : undefined
     };
-    axios.get(req, {params}).then(response => {
+    const headers = {
+        "Accept-Language": LocaleUtils.lang()
+    };
+    axios.get(req, {headers, params}).then(response => {
         if (response.data && !isEmpty(response.data.features)) {
             const version = +new Date();
             response.data.features.forEach(feature => {
@@ -142,7 +151,10 @@ function getExtent(layerId, mapCrs, callback, filter = null) {
         crs: mapCrs,
         filter: filter ? JSON.stringify(filter) : undefined
     };
-    axios.get(req, {params}).then(response => {
+    const headers = {
+        "Accept-Language": LocaleUtils.lang()
+    };
+    axios.get(req, {headers, params}).then(response => {
         callback(response.data);
     }).catch(() => callback(null));
 }
@@ -155,10 +167,11 @@ function getExtent(layerId, mapCrs, callback, filter = null) {
 function addFeatureMultipart(layerId, featureData, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
     const req = SERVICE_URL + layerId + '/multipart';
-
-    axios.post(req, featureData, {
-        headers: {'Content-Type': 'multipart/form-data' }
-    }).then(response => {
+    const headers = {
+        "Content-Type": "multipart/form-data",
+        "Accept-Language": LocaleUtils.lang()
+    };
+    axios.post(req, featureData, {headers}).then(response => {
         response.data.__version__ = +new Date();
         callback(true, response.data);
     }).catch(err => callback(false, buildErrMsg(err)));
@@ -173,9 +186,11 @@ function addFeatureMultipart(layerId, featureData, callback) {
 function editFeatureMultipart(layerId, featureId, featureData, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
     const req = SERVICE_URL + layerId + '/multipart/' + featureId;
-    axios.put(req, featureData, {
-        headers: {'Content-Type': 'multipart/form-data' }
-    }).then(response => {
+    const headers = {
+        "Content-Type": "multipart/form-data",
+        "Accept-Language": LocaleUtils.lang()
+    };
+    axios.put(req, featureData, {headers}).then(response => {
         response.data.__version__ = +new Date();
         callback(true, response.data);
     }).catch(err => callback(false, buildErrMsg(err)));
@@ -189,8 +204,10 @@ function editFeatureMultipart(layerId, featureId, featureData, callback) {
 function deleteFeature(layerId, featureId, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
     const req = SERVICE_URL + layerId + '/' + featureId;
-
-    axios.delete(req).then(() => {
+    const headers = {
+        "Accept-Language": LocaleUtils.lang()
+    };
+    axios.delete(req, {headers}).then(() => {
         callback(true, featureId);
     }).catch(err => callback(false, buildErrMsg(err)));
 }
@@ -202,7 +219,10 @@ function getRelations(layerId, featureId, tables, mapCrs, callback) {
         tables: tables,
         crs: mapCrs
     };
-    axios.get(req, {params}).then(response => {
+    const headers = {
+        "Accept-Language": LocaleUtils.lang()
+    };
+    axios.get(req, {headers, params}).then(response => {
         callback(response.data);
     }).catch(() => callback({}));
 }
@@ -213,10 +233,11 @@ function writeRelations(layerId, featureId, relationData, mapCrs, callback) {
     const params = {
         crs: mapCrs
     };
-    axios.post(req, relationData, {
-        headers: {'Content-Type': 'multipart/form-data'},
-        params: params
-    }).then(response => {
+    const headers = {
+        "Content-Type": "multipart/form-data",
+        "Accept-Language": LocaleUtils.lang()
+    };
+    axios.post(req, relationData, {headers, params}).then(response => {
         callback(response.data);
     }).catch(err => callback(false, buildErrMsg(err)));
 }
@@ -224,7 +245,10 @@ function writeRelations(layerId, featureId, relationData, mapCrs, callback) {
 function getKeyValues(keyvalues, callback) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
     const req = SERVICE_URL + "keyvals?tables=" + keyvalues;
-    axios.get(req).then(response => {
+    const headers = {
+        "Accept-Language": LocaleUtils.lang()
+    };
+    axios.get(req, {headers}).then(response => {
         callback(response.data);
     }).catch(() => callback({}));
 }
