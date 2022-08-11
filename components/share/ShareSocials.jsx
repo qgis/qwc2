@@ -36,74 +36,74 @@ export default class ShareSocials extends React.Component {
     static defaultProps = {
         shareTitle: 'GeoSolutions'
     }
-    getCountProps() {
+    render() {
         const countProps = {};
         if (this.props.getCount) {
             countProps.getCount = this.props.getCount;
         }
-        return countProps;
-    }
-    social_types = {
-        "email": (
-            <div className="social-box" key="email">
-                <EmailShareButton subject={this.props.shareTitle} url={this.props.shareUrl}>
-                    <EmailIcon round size={32} />
-                </EmailShareButton>
-                <div>
-                    &nbsp;
+        const title = this.props.shareTitle;
+        const url = this.props.shareUrl
+
+        const social_types = {
+            "email": (
+                <div className="social-box" key="email">
+                    <EmailShareButton subject={title} url={url}>
+                        <EmailIcon round size={32} />
+                    </EmailShareButton>
+                    <div>
+                        &nbsp;
+                    </div>
                 </div>
-            </div>
-        ),
-        "facebook": (
-            <div className="social-box" key="facebook">
-                <FacebookShareButton quote={this.props.shareTitle} url={this.props.shareUrl}>
-                    <FacebookIcon round size={32} />
-                </FacebookShareButton>
-                <FacebookShareCount url={this.props.shareUrl} {...this.getCountProps()}>
-                    {count => count}
-                </FacebookShareCount>
-            </div>
-        ),
-        "twitter": (
-            <div className="social-box" key="twitter">
-                <TwitterShareButton title={this.props.shareTitle} url={this.props.shareUrl}>
-                    <TwitterIcon round size={32} />
-                </TwitterShareButton>
-                <div>
-                    &nbsp;
+            ),
+            "facebook": (
+                <div className="social-box" key="facebook">
+                    <FacebookShareButton quote={title} url={url}>
+                        <FacebookIcon round size={32} />
+                    </FacebookShareButton>
+                    <FacebookShareCount url={url} {...countProps}>
+                        {count => count}
+                    </FacebookShareCount>
                 </div>
-            </div>
-        ),
-        "linkedin": (
-            <div className="social-box" key="linkedin">
-                <LinkedinShareButton title={this.props.shareTitle} url={this.props.shareUrl}>
-                    <LinkedinIcon round size={32} />
-                </LinkedinShareButton>
-                <div>
-                    &nbsp;
+            ),
+            "twitter": (
+                <div className="social-box" key="twitter">
+                    <TwitterShareButton title={title} url={url}>
+                        <TwitterIcon round size={32} />
+                    </TwitterShareButton>
+                    <div>
+                        &nbsp;
+                    </div>
                 </div>
-            </div>
-        ),
-        "whatsapp": (
-            <div className="social-box" key="whatsapp">
-                <WhatsappShareButton title={this.props.shareTitle} url={this.props.shareUrl}>
-                    <WhatsappIcon round size={32} />
-                </WhatsappShareButton>
-                <div>
-                    &nbsp;
+            ),
+            "linkedin": (
+                <div className="social-box" key="linkedin">
+                    <LinkedinShareButton title={title} url={url}>
+                        <LinkedinIcon round size={32} />
+                    </LinkedinShareButton>
+                    <div>
+                        &nbsp;
+                    </div>
                 </div>
-            </div>
-        )
-    }
-    render() {
-        const social_boxes = [];
+            ),
+            "whatsapp": (
+                <div className="social-box" key="whatsapp">
+                    <WhatsappShareButton title={title} url={url}>
+                        <WhatsappIcon round size={32} />
+                    </WhatsappShareButton>
+                    <div>
+                        &nbsp;
+                    </div>
+                </div>
+            )
+        }
+        let social_boxes = [];
         if (this.props.showSocials === true) {
-            Object.entries(this.social_types).map(([key, element]) => { social_boxes.push(element) })
+            social_boxes = Object.values(social_types)
         }
         else {
             this.props.showSocials.map(name => {
-                if (name in this.social_types) {
-                    social_boxes.push(this.social_types[name]);
+                if (name in social_types) {
+                    social_boxes.push(social_types[name]);
                 }
                 else {
                     console.error("`%s` is not a valid social network", name);
