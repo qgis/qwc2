@@ -305,9 +305,9 @@
       "QRCodeLinkTitle": "Cod QR",
       "directLinkTitle": "Via link direct",
       "refresh": "",
+      "shareTitle": "QWC2",
       "showpin": "Arată pin",
-      "socialIntro": "În rețeaua socială favorită",
-	  "shareTitle":"QWC2"
+      "socialIntro": "În rețeaua socială favorită"
     },
     "snapping": {
       "loading": "",

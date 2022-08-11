@@ -305,9 +305,9 @@
       "QRCodeLinkTitle": "QR Code",
       "directLinkTitle": "Via a direct link",
       "refresh": "Generate permalink",
+      "shareTitle": "QWC2",
       "showpin": "Show pin",
-      "socialIntro": "In your favourite social network",
-	  "shareTitle":"QWC2"
+      "socialIntro": "In your favourite social network"
     },
     "snapping": {
       "loading": "Loading snapping geometries...",

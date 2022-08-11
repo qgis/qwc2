@@ -305,9 +305,9 @@
       "QRCodeLinkTitle": "QR-kód",
       "directLinkTitle": "Közvetlen hivatkozással...",
       "refresh": "",
+      "shareTitle": "QWC2",
       "showpin": "",
-      "socialIntro": "A kedvenc közösségi hálózatodon",
-	  "shareTitle":"QWC2"
+      "socialIntro": "A kedvenc közösségi hálózatodon"
     },
     "snapping": {
       "loading": "",

@@ -305,9 +305,9 @@
       "QRCodeLinkTitle": "QR kód",
       "directLinkTitle": "Přes přímé spojení",
       "refresh": "",
+      "shareTitle": "QWC2",
       "showpin": "",
-      "socialIntro": "Ve vaší oblíbené sociální síti",
-	  "shareTitle":"QWC2"
+      "socialIntro": "Ve vaší oblíbené sociální síti"
     },
     "snapping": {
       "loading": "",

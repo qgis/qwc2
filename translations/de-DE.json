@@ -305,9 +305,9 @@
       "QRCodeLinkTitle": "QR Code (Smartphone)",
       "directLinkTitle": "Über einen direkten Link",
       "refresh": "Permalink generieren",
+      "shareTitle": "QWC2",
       "showpin": "Pin anzeigen",
-      "socialIntro": "In den sozialen Medien",
-	  "shareTitle":"QWC2"
+      "socialIntro": "In den sozialen Medien"
     },
     "snapping": {
       "loading": "Einrastrungsgeometrien werden geladen...",

@@ -305,9 +305,9 @@
       "QRCodeLinkTitle": "QR kode",
       "directLinkTitle": "Direktelenke",
       "refresh": "",
+      "shareTitle": "QWC2",
       "showpin": "",
-      "socialIntro": "Sosiale nettvert",
-	  "shareTitle":"QWC2"
+      "socialIntro": "Sosiale nettvert"
     },
     "snapping": {
       "loading": "",

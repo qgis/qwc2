@@ -305,9 +305,9 @@
       "QRCodeLinkTitle": "Código QR",
       "directLinkTitle": "Vía un vínculo directo",
       "refresh": "Generar un enlace permanente",
+      "shareTitle": "QWC2",
       "showpin": "Mostrar pin",
-      "socialIntro": "En tu red social favorita",
-	  "shareTitle":"QWC2"
+      "socialIntro": "En tu red social favorita"
     },
     "snapping": {
       "loading": "Cargando geometrías de snapping...",

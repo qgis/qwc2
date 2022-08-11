@@ -305,9 +305,9 @@
       "QRCodeLinkTitle": "Código QR",
       "directLinkTitle": "Via uma ligação direta",
       "refresh": "",
+      "shareTitle": "QWC2",
       "showpin": "",
-      "socialIntro": "Na sua rede social favorita",
-	  "shareTitle":"QWC2"
+      "socialIntro": "Na sua rede social favorita"
     },
     "snapping": {
       "loading": "",

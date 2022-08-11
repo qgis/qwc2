@@ -305,9 +305,9 @@
       "QRCodeLinkTitle": "QR-koodi",
       "directLinkTitle": "Suora linkillä",
       "refresh": "",
+      "shareTitle": "QWC2",
       "showpin": "",
-      "socialIntro": "Jaa someen",
-	  "shareTitle":"QWC2"
+      "socialIntro": "Jaa someen"
     },
     "snapping": {
       "loading": "",

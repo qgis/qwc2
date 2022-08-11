@@ -305,9 +305,9 @@
       "QRCodeLinkTitle": "Codi QR",
       "directLinkTitle": "Via link",
       "refresh": "Generar l'enllaç permanent",
+      "shareTitle": "QWC2",
       "showpin": "Mostrar el pin",
-      "socialIntro": "En la teva xarxa social preferida",
-	  "shareTitle":"QWC2"
+      "socialIntro": "En la teva xarxa social preferida"
     },
     "snapping": {
       "loading": "Carregant geometries de snapping",
