@@ -87,6 +87,7 @@
       "canceldelete": "Ne töröld",
       "clearpicture": "",
       "commit": "Jóváhagyás",
+      "commitfailed": "",
       "create": "",
       "delete": "Törlés",
       "discard": "Elvetés",

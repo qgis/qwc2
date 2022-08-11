@@ -87,6 +87,7 @@
       "canceldelete": "Annuler la suppression",
       "clearpicture": "Réinitialiser",
       "commit": "Appliquer",
+      "commitfailed": "Échec de l'enregistrement",
       "create": "Créer",
       "delete": "Supprimer",
       "discard": "Rejeter",

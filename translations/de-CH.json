@@ -87,6 +87,7 @@
       "canceldelete": "Abbrechen",
       "clearpicture": "Zurücksetzen",
       "commit": "Speichern",
+      "commitfailed": "",
       "create": "Erstellen",
       "delete": "Löschen",
       "discard": "Abbrechen",

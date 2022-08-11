@@ -16,10 +16,11 @@
 import axios from 'axios';
 import {isEmpty} from 'lodash';
 import ConfigUtils from './ConfigUtils';
+import LocaleUtils from './LocaleUtils';
 
 
 function buildErrMsg(err) {
-    let message = "Commit failed";
+    let message = LocaleUtils.tr("editing.commitfailed");
     if (err.response && err.response.data && err.response.data.message) {
         message = err.response.data.message;
         if (!isEmpty(err.response.data.geometry_errors)) {

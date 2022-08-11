@@ -87,6 +87,7 @@
       "canceldelete": "Ikke slett",
       "clearpicture": "",
       "commit": "Bekreft",
+      "commitfailed": "",
       "create": "",
       "delete": "Slett",
       "discard": "Forkast",

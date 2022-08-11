@@ -87,6 +87,7 @@
       "canceldelete": "Annulla",
       "clearpicture": "Cancella",
       "commit": "Salva",
+      "commitfailed": "Impossibile salvare",
       "create": "Crea",
       "delete": "Elimina",
       "discard": "Annulla",

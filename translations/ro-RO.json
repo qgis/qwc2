@@ -87,6 +87,7 @@
       "canceldelete": "Elimină modificările",
       "clearpicture": "Elimină poza",
       "commit": "Salvează",
+      "commitfailed": "",
       "create": "",
       "delete": "Șterge",
       "discard": "Renunță",

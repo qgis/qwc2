@@ -87,6 +87,7 @@
       "canceldelete": "Don't delete",
       "clearpicture": "Clear",
       "commit": "Commit",
+      "commitfailed": "",
       "create": "",
       "delete": "Delete",
       "discard": "Discard",

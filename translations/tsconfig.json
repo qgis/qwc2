@@ -91,6 +91,7 @@
     "editing.canceldelete",
     "editing.clearpicture",
     "editing.commit",
+    "editing.commitfailed",
     "editing.create",
     "editing.delete",
     "editing.discard",

@@ -87,6 +87,7 @@
       "canceldelete": "Не удалять",
       "clearpicture": "",
       "commit": "Подтвердить изменения",
+      "commitfailed": "",
       "create": "",
       "delete": "Удалить",
       "discard": "Отменить изменения",
