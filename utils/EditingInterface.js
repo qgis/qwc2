@@ -242,13 +242,21 @@ function writeRelations(layerId, featureId, relationData, mapCrs, callback) {
     }).catch(err => callback(false, buildErrMsg(err)));
 }
 
-function getKeyValues(keyvalues, callback) {
+/*
+ keyvalues: <dataset>:<key_column>:<value_column>,<dataset>:<key_column>:<value_column>,...
+ callback: function(result), result is a {"keyvalues": {"<dataset>": [{"key": <key>, "value": <value}, ...]}}
+ filter: the filter expression as [[["<name>", "<op>", <value>],"and|or",["<name>","<op>",<value>],...]] (one filter expr per keyvalue entry), or null
+*/
+function getKeyValues(keyvalues, callback, filter = null) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
     const req = SERVICE_URL + "keyvals?tables=" + keyvalues;
+    const params = {
+        filter: filter ? JSON.stringify(filter) : undefined
+    };
     const headers = {
         "Accept-Language": LocaleUtils.lang()
     };
-    axios.get(req, {headers}).then(response => {
+    axios.get(req, {headers, params}).then(response => {
         callback(response.data);
     }).catch(() => callback({}));
 }
