@@ -335,7 +335,7 @@ class Search extends React.Component {
         let results = null;
         if (!this.props.results || !this.state.focused) {
             return null;
-        } else if (this.props.results.length === 0) {
+        } else if (this.props.results.length === 0 && isEmpty(this.props.pendingProviders)) {
             results = (<li className="search-results-noresults">{LocaleUtils.tr("search.noresults")}</li>);
         } else {
             results = (this.props.results.map(category => this.renderCategory(category)));
