@@ -231,6 +231,7 @@
     "search.existinglayer",
     "search.invisiblelayer",
     "search.more",
+    "search.noresults",
     "search.providerselection",
     "search.search",
     "search.searchall",

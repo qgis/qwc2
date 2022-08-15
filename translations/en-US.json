@@ -273,6 +273,7 @@
       "existinglayer": "The layer already exists in the map",
       "invisiblelayer": "The result lies on a layer which is not visible.",
       "more": "More...",
+      "noresults": "No results",
       "providerselection": "Search providers",
       "search": "Search",
       "searchall": "Search places or add maps...",

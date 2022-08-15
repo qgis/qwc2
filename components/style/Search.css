@@ -168,6 +168,11 @@
     cursor: pointer;
 }
 
+#Search ul.search-results li.search-results-noresults {
+    padding: 0.25em 0.25em 0.25em 1em;
+    font-style: italic;
+}
+
 #Search ul.search-results ul li > img {
     flex: 0 0 6em;
     width: 6em;

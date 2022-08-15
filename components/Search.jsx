@@ -332,12 +332,17 @@ class Search extends React.Component {
         this.setState({showfields: false});
     }
     renderSearchResults = () => {
-        if (!this.props.results || this.props.results.length === 0 || !this.state.focused) {
+        let results = null;
+        if (!this.props.results || !this.state.focused) {
             return null;
+        } else if (this.props.results.length === 0) {
+            results = (<li className="search-results-noresults">{LocaleUtils.tr("search.noresults")}</li>);
+        } else {
+            results = (this.props.results.map(category => this.renderCategory(category)));
         }
         return (
             <ul className="search-results" onMouseDown={this.setPreventBlur} ref={MiscUtils.setupKillTouchEvents}>
-                {this.props.results.map(category => this.renderCategory(category))}
+                {results}
             </ul>
         );
     }

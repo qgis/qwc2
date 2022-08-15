@@ -273,6 +273,7 @@
       "existinglayer": "Il livello esiste già nella mappa",
       "invisiblelayer": "Il risultato si trova su un livello che non è visibile.",
       "more": "Altri risultati",
+      "noresults": "Nessun risultato",
       "providerselection": "Selezione provider",
       "search": "Cerca",
       "searchall": "Cerca località o aggiungi cartine...",

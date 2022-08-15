@@ -273,6 +273,7 @@
       "existinglayer": "La capa ja existeix en el mapa",
       "invisiblelayer": "El resultat es troba en una capa no visible",
       "more": "Més...",
+      "noresults": "",
       "providerselection": "Proveidor",
       "search": "Buscar",
       "searchall": "Buscar llocs o agregar mapes...",

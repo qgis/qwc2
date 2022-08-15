@@ -273,6 +273,7 @@
       "existinglayer": "Laget finnes allerede på kartet",
       "invisiblelayer": "Resultatet finnes på et lag som er usynlig",
       "more": "Flere resultater",
+      "noresults": "",
       "providerselection": "",
       "search": "Søk",
       "searchall": "Søk etter steder eller legg til kart",
