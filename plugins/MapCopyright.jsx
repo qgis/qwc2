@@ -33,7 +33,7 @@ class MapCopyright extends React.Component {
         return null;
     }
     render() {
-        // If attribution has both url and label, "key" is the url and "value" the label.
+        // If attribution has both url and label, "key" is the url and "value.title" the label.
         // If it only has a label, "key" is the label and "value" is null.
         const copyrights = Object.entries(this.state.currentCopyrights).map(([key, value]) => {
             if (value.title) {

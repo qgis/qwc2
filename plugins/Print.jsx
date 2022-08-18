@@ -310,8 +310,8 @@ class Print extends React.Component {
     getAttributionLabel = () => {
         const copyrights = this.props.layers.reduce((res, layer) => ({...res, ...LayerUtils.getAttribution(layer, this.props.map)}), {});
         return Object.entries(copyrights).map(([key, value]) => {
-            if (value) {
-                return value;
+            if (value.title) {
+                return value.title;
             } else {
                 return key;
             }
