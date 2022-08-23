@@ -176,7 +176,7 @@ class Editing extends React.Component {
             );
         }
         let pickBar = null;
-        if ((this.props.editContext.action === "Draw" || this.state.drawPick) && !this.props.editContext.feature) {
+        if ((this.props.editContext.action === "Draw" || this.state.drawPick) && !(this.props.editContext.feature || {}).geometry) {
             const pickButtons = [
                 {key: 'DrawPick', icon: 'pick', label: LocaleUtils.trmsg("editing.pickdrawfeature")}
             ];
