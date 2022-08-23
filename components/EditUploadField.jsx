@@ -86,7 +86,7 @@ export default class EditUploadField extends React.Component {
                             <a href="#" onClick={(ev) => {this.download(imageData, this.props.fieldId + "." + extension); ev.preventDefault();}} rel="noreferrer" target="_blank">{LocaleUtils.tr("editing.selectedpicture")}</a>
                         )}
                         <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
-                        {this.props.report ? null : (<Icon icon="clear" onClick={this.props.disabled ? null : () => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, null); }} />)}
+                        {this.props.report ? null : (<Icon icon="clear" onClick={this.props.disabled ? null : this.clearImage} />)}
                     </span>
                 );
             }
@@ -94,7 +94,7 @@ export default class EditUploadField extends React.Component {
             return (
                 <span className={"edit-upload-field edit-upload-field-imagelink" + (this.props.disabled ? " edit-upload-field-disabled" : "")}>
                     <a href={fileUrl} rel="noreferrer" target="_blank">{fileValue.replace(/.*\//, '')}</a>
-                    {this.props.report ? null : (<Icon icon="clear" onClick={this.props.disabled ? null : () => { this.props.updateField(this.props.fieldId, ''); this.props.updateFile(this.props.fieldId, null); }} />)}
+                    {this.props.report ? null : (<Icon icon="clear" onClick={this.props.disabled ? null : this.clearImage} />)}
                 </span>
             );
         } else if (!this.props.report) {
@@ -169,10 +169,13 @@ export default class EditUploadField extends React.Component {
                 this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(newImageData)], uuid.v1() + ".jpg", {type: "image/jpeg"}));
             });
         } else if (action === "Clear") {
-            this.setState({imageData: null});
-            this.props.updateField(this.props.fieldId, '');
-            this.props.updateFile(this.props.fieldId, null);
+            this.clearImage();
         }
+    }
+    clearImage = () => {
+        this.setState({imageData: null});
+        this.props.updateField(this.props.fieldId, '');
+        this.props.updateFile(this.props.fieldId, null);
     }
     activateMediaStream = (el) => {
         if (this.state.camera && !this.cameraStream) {
