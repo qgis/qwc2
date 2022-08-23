@@ -38,7 +38,7 @@ export default function editing(state = defaultState, action) {
                     changed: false,
                     ...state.contexts[action.contextId],
                     ...action.editContext,
-                    geomReadOnly: checkGeomReadOnly(state.contexts[action.contextId], action.feature),
+                    geomReadOnly: checkGeomReadOnly(state.contexts[action.contextId], action.editContext.feature),
                     id: action.contextId
                 }
             },
