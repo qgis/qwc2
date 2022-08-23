@@ -517,7 +517,12 @@ class AttributeForm extends React.Component {
     }
     startChildEdit = (action, layer, featureId, updateField) => {
         const editConfig = (this.props.theme.editConfig || {})[layer];
-        this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, featureId, updateField, finishCallback: this.finishChildEdit}});
+        if (!editConfig) {
+            // eslint-disable-next-line
+            console.warn("No edit config found for linked edit layer " + layer);
+        } else {
+            this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, featureId, updateField, finishCallback: this.finishChildEdit}});
+        }
     }
     finishChildEdit = (feature) => {
         this.props.clearEditContext(this.state.childEdit.editContextId, this.props.editContext.id);
