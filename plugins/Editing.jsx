@@ -16,7 +16,7 @@ import uuid from 'uuid';
 import {setEditContext, clearEditContext, getFeatureTemplate} from '../actions/editing';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import {LayerRole, addLayerFeatures, removeLayer, refreshLayer, changeLayerProperty} from '../actions/layers';
-import {clickOnMap, setSnappingConfig} from '../actions/map';
+import {setSnappingConfig} from '../actions/map';
 import AttributeForm from '../components/AttributeForm';
 import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
@@ -35,7 +35,6 @@ class Editing extends React.Component {
         addLayerFeatures: PropTypes.func,
         changeLayerProperty: PropTypes.func,
         clearEditContext: PropTypes.func,
-        clickOnMap: PropTypes.func,
         currentEditContext: PropTypes.string,
         editContext: PropTypes.object,
         enabled: PropTypes.bool,
@@ -121,10 +120,6 @@ class Editing extends React.Component {
         }
         if (!this.props.editContext.feature && prevState.pickedFeatures) {
             this.setState({pickedFeatures: null});
-        }
-        // Always clear clicked pos if enabled except in drawPick mode
-        if (this.props.map.click && this.props.enabled && !this.state.drawPick) {
-            this.props.clickOnMap(null);
         }
         // Handle drawPick
         if (this.state.drawPick && this.props.map.click && this.props.map.click !== prevProps.map.click) {
@@ -381,7 +376,6 @@ export default (iface = EditingInterface) => {
     }), {
         addLayerFeatures: addLayerFeatures,
         removeLayer: removeLayer,
-        clickOnMap: clickOnMap,
         clearEditContext: clearEditContext,
         setEditContext: setEditContext,
         setSnappingConfig: setSnappingConfig,
