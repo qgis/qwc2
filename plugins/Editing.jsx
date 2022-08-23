@@ -172,7 +172,7 @@ class Editing extends React.Component {
             const featureText = LocaleUtils.tr("editing.feature");
             featureSelection = (
                 <div className="editing-feature-selection">
-                    <select className="editing-feature-select" disabled={this.props.editContext.changed === true} onChange={(ev) => this.setEditFeature(ev.target.value)}  value={(this.props.editContext.feature || {}).id || ""}>
+                    <select className="editing-feature-select" disabled={this.props.editContext.changed === true || this.props.editContext.id !== this.props.currentEditContext} onChange={(ev) => this.setEditFeature(ev.target.value)}  value={(this.props.editContext.feature || {}).id || ""}>
                         {this.state.pickedFeatures.map(feature => (
                             <option key={feature.id} value={feature.id}>{editConfig.displayField ? feature.properties[editConfig.displayField] : featureText + " " + feature.id}</option>
                         ))}
@@ -231,7 +231,7 @@ class Editing extends React.Component {
         return (
             <div className="editing-body">
                 <div className="editing-layer-selection">
-                    <select className="editing-layer-select" disabled={this.props.editContext.changed === true} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
+                    <select className="editing-layer-select" disabled={this.props.editContext.changed === true || this.props.editContext.id !== this.props.currentEditContext} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
                         {Object.keys(editConfig).filter(layerId => themeSublayers.includes(layerId)).map(layerId => {
                             const layerName = editConfig[layerId].layerName;
                             const match = LayerUtils.searchLayer(this.props.layers, 'name', layerName, [LayerRole.THEME]);
@@ -241,7 +241,7 @@ class Editing extends React.Component {
                         })}
                     </select>
                 </div>
-                <ButtonBar active={this.state.drawPick ? "Draw" : this.props.editContext.action} buttons={actionButtons} disabled={this.props.editContext.changed} onClick={this.actionClicked} />
+                <ButtonBar active={this.state.drawPick ? "Draw" : this.props.editContext.action} buttons={actionButtons} disabled={this.props.editContext.changed || this.props.editContext.id !== this.props.currentEditContext} onClick={this.actionClicked} />
                 {featureSelection}
                 {pickBar}
                 {drawPickResults}
