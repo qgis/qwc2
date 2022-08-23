@@ -9,6 +9,7 @@ div.AttributeForm > form {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 }
 
 div.AttributeForm > form > * {

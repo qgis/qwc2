@@ -29,7 +29,7 @@
     padding-top: 0.5em;
     border-top: 1px solid @item_border@;
     flex: 1 1 auto;
-    overflow-y: auto;
+    overflow: hidden;
 }
 
 #Editing select.editing-layer-select,
