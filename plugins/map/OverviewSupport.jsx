@@ -22,7 +22,8 @@ class OverviewMap extends React.Component {
         map: PropTypes.object,
         // See https://openlayers.org/en/latest/apidoc/ol.control.OverviewMap.html
         options: PropTypes.object,
-        projection: PropTypes.string
+        projection: PropTypes.string,
+        theme: PropTypes.object
     }
     constructor(props) {
         super(props);
@@ -39,7 +40,16 @@ class OverviewMap extends React.Component {
         this.overview.getOverviewMap().set('id', 'overview');
     }
     render() {
-        const layer = this.props.layers.find(l => l.role === LayerRole.BACKGROUND && l.visibility);
+        const overviewMap = (((this.props.theme || {}).backgroundLayers || []).find(entry => entry.overview) || {}).name;
+        let layer = null;
+        if (overviewMap) {
+            layer = this.props.layers.find(l => l.role === LayerRole.BACKGROUND && l.name === overviewMap);
+            if (layer) {
+                layer = {...layer, visibility: true};
+            }
+        } else {
+            layer = this.props.layers.find(l => l.role === LayerRole.BACKGROUND && l.visibility);
+        }
         if (layer) {
             return (
                 <OlLayer key={layer.uuid} map={this.overview.getOverviewMap()} options={layer} projection={this.props.projection} />
@@ -50,6 +60,7 @@ class OverviewMap extends React.Component {
 }
 
 export default connect((state) => ({
+    theme: state.theme.current,
     layers: state.layers.flat,
     projection: state.map.projection
 }), {})(OverviewMap);
