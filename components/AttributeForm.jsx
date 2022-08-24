@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import clone from 'clone';
 import uuid from 'uuid';
-import {setEditContext, clearEditContext} from '../actions/editing';
+import {setEditContext, clearEditContext, getFeatureTemplate} from '../actions/editing';
 import {setCurrentTaskBlocked} from '../actions/task';
 import {LayerRole, refreshLayer} from '../actions/layers';
 import AutoEditForm from './AutoEditForm';
@@ -300,7 +300,11 @@ class AttributeForm extends React.Component {
                         this.loadRelationValues(); // Re-load relation values
                     });
                 } else {
-                    this.props.setEditContext(this.props.editContext.id, {feature: null, changed: false});
+                    const feature = getFeatureTemplate(this.props.editConfig.editDataset, {
+                        type: "Feature",
+                        properties: {}
+                    });
+                    this.props.setEditContext(this.props.editContext.id, {feature: feature, changed: false});
                 }
             }
         }
