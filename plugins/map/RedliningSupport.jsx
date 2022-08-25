@@ -268,6 +268,9 @@ class RedliningSupport extends React.Component {
             if (this.currentFeature) {
                 this.commitCurrentFeature();
             }
+            if (this.snapInteraction) {
+                this.props.map.removeInteraction(this.snapInteraction);
+            }
             if (evt.selected.length === 1) {
                 this.currentFeature = evt.selected[0];
                 const circle = this.currentFeature.get('circleParams');
@@ -282,6 +285,11 @@ class RedliningSupport extends React.Component {
                 this.updateFeatureStyle(newRedliningState.style);
                 this.props.changeRedliningState(newRedliningState);
                 this.props.map.addInteraction(modifyInteraction);
+                if (this.props.snappingConfig.enabled) {
+                    this.snapInteraction = new SnapInteraction({source: redliningLayer.getSource()});
+                    this.snapInteraction.setActive(this.props.snappingConfig.active);
+                    this.props.map.addInteraction(this.snapInteraction);
+                }
             } else {
                 this.props.changeRedliningState({geomType: null, selectedFeature: null});
                 this.props.map.removeInteraction(modifyInteraction);
@@ -293,11 +301,6 @@ class RedliningSupport extends React.Component {
         this.props.map.addInteraction(selectInteraction);
         this.interactions = [selectInteraction, modifyInteraction];
         this.picking = true;
-        if (this.props.snappingConfig.enabled) {
-            this.snapInteraction = new SnapInteraction({source: redliningLayer.getSource()});
-            this.snapInteraction.setActive(this.props.snappingConfig.active);
-
-        }
     }
     commitCurrentFeature = (newFeature = false) => {
         if (!this.currentFeature) {
