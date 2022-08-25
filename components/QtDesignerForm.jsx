@@ -26,6 +26,16 @@ import './style/QtDesignerForm.css';
 
 const FormPreprocessors = {};
 
+/* editLayerId: <mapname>.<datasetname>
+preprocessor: function(formData, feature, callback)
+    formData: {
+        fields: { dict of fields },
+        buttons: { dict of buttons },
+        externalFields: { dict of external fields}
+    }
+    feature: The feature for which the form is being displayed
+    callback: function(formData), return the updated formData
+*/
 export function registerFormPreprocessor(editLayerId, preprocessor) {
     FormPreprocessors[editLayerId] = preprocessor;
 }
