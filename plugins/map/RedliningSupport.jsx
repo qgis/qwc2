@@ -108,6 +108,16 @@ class RedliningSupport extends React.Component {
             strokeDash: []
         };
     }
+    styleProps = (feature) => {
+        const styleOptions = feature.get('styleOptions');
+        const label = feature.get("label") || "";
+        return {
+            borderColor: styleOptions.strokeColor,
+            size: (styleOptions.strokeWidth - 1) * 2,
+            fillColor: styleOptions.fillColor,
+            text: label
+        };
+    }
     updateFeatureStyle = (styleProps) => {
         if (this.currentFeature) {
             const isText = this.currentFeature.get("isText") === true;
@@ -264,42 +274,17 @@ class RedliningSupport extends React.Component {
                 if (circle) {
                     this.currentFeature.setGeometry(new ol.geom.Circle(circle.center, circle.radius));
                 }
-                let newRedliningState = null;
-                const styleName = this.currentFeature.get('styleName');
-                const styleOptions = this.currentFeature.get('styleOptions');
-                this.currentFeature.setStyle(FeatureStyles[styleName](this.currentFeature, styleOptions || {}));
-                const style = this.currentFeature.getStyle();
-                if (this.currentFeature.get("isText") === true) {
-                    newRedliningState = {
-                        geomType: 'Text',
-                        style: {
-                            borderColor: style.getText().getStroke().getColor(),
-                            fillColor: style.getText().getFill().getColor(),
-                            size: 2 * (style.getText().getScale() - 1),
-                            text: style.getText().getText()
-                        },
-                        selectedFeature: this.currentFeatureObject()
-                    };
-                } else {
-                    newRedliningState = {
-                        geomType: this.currentFeature.getGeometry().getType(),
-                        style: {
-                            borderColor: style.getStroke().getColor(),
-                            fillColor: style.getFill().getColor(),
-                            size: 2 * (style.getStroke().getWidth() - 1),
-                            text: style.getText().getText()
-                        },
-                        selectedFeature: this.currentFeatureObject()
-                    };
-                }
+                const newRedliningState = {
+                    geomType: this.currentFeature.get("isText") === true ? 'Text' : this.currentFeature.getGeometry().getType(),
+                    style: this.styleProps(this.currentFeature),
+                    selectedFeature: this.currentFeatureObject()
+                };
                 this.updateFeatureStyle(newRedliningState.style);
                 this.props.changeRedliningState(newRedliningState);
                 this.props.map.addInteraction(modifyInteraction);
-                this.props.map.addInteraction(this.snapInteraction);
             } else {
                 this.props.changeRedliningState({geomType: null, selectedFeature: null});
                 this.props.map.removeInteraction(modifyInteraction);
-                this.props.map.removeInteraction(this.snapInteraction);
             }
         }, this);
         modifyInteraction.on('modifyend', () => {
