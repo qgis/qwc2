@@ -132,10 +132,10 @@ const ServiceLayerUtils = {
     },
     getWMSLayerParams(layer, parentCrs, serviceUrl, version, featureInfoUrl, infoFormats, groupbbox = null) {
         let supportedCrs = layer.CRS;
-        if(isEmpty(supportedCrs)) {
-            supportedCrs = [...parentCrs];
+        if (isEmpty(supportedCrs)) {
+            supportedCrs = [...(parentCrs || [])];
         } else {
-            supportedCrs = [...parentCrs, ...supportedCrs];
+            supportedCrs = [...(parentCrs || []), ...supportedCrs];
         }
         let sublayers = [];
         const sublayerbounds = {};
