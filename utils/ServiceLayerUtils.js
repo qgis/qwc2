@@ -136,9 +136,9 @@ const ServiceLayerUtils = {
     getWMSLayerParams(layer, parentCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, groupbbox = null) {
         let supportedCrs = layer.CRS;
         if (isEmpty(supportedCrs)) {
-            supportedCrs = [...parentCrs];
+            supportedCrs = [...(parentCrs || [])];
         } else {
-            supportedCrs = [...parentCrs, ...supportedCrs];
+            supportedCrs = [...(parentCrs || []), ...supportedCrs];
         }
         let sublayers = [];
         const sublayerbounds = {};
