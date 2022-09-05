@@ -210,6 +210,9 @@ class QtDesignerForm extends React.Component {
     renderWidget = (widget, feature, dataset, updateField, nametransform = (name) => name) => {
         let value = (feature.properties || {})[widget.name] ?? "";
         const prop = widget.property || {};
+        if (prop.visible === "false") {
+            return null;
+        }
         const attr = widget.attribute || {};
         const fieldConstraints = (this.props.fields[widget.name] || {}).constraints || {};
         const inputConstraints = {};
