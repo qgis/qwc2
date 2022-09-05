@@ -220,13 +220,20 @@ class QtDesignerForm extends React.Component {
         inputConstraints.required = !inputConstraints.readOnly && (prop.required === "true" || fieldConstraints.required === true);
         inputConstraints.placeholder = prop.placeholderText || fieldConstraints.placeholder || "";
 
-        const fontProps = widget.property.font || {};
+        const fontProps = prop.font || {};
         const fontStyle = {
             fontWeight: fontProps.bold === "true" ? "bold" : "normal",
             fontStyle: fontProps.italic === "true" ? "italic" : "normal",
             textDecoration: [fontProps.underline === "true" ? "underline" : "", fontProps.strikeout === "true" ? "line-through" : ""].join(" "),
             fontSize: Math.round((fontProps.pointsize || 9) / 9 * 100) + "%"
         };
+        if (prop.alignment) {
+            if (prop.alignment.includes("Qt::AlignRight")) {
+                fontStyle.textAlign = 'right';
+            } else if (prop.alignment.includes("Qt::AlignCenter")) {
+                fontStyle.textAlign = 'center';
+            }
+        }
 
         let elname = undefined;
         if (widget.name.startsWith("ext__")) {
