@@ -75,6 +75,7 @@ class QtDesignerForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = QtDesignerForm.defaultState;
+        this.fitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
     }
     componentDidMount() {
         this.componentDidUpdate({});
@@ -187,13 +188,12 @@ class QtDesignerForm extends React.Component {
     }
     computeLayoutColumns = (items, useIndex = false) => {
         const columns = [];
-        const fitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line"];
         let index = 0;
         let hasAuto = false;
         for (const item of items) {
             const col = useIndex ? index : (parseInt(item.column, 10) || 0);
             const colSpan = useIndex ? 1 : (parseInt(item.colspan, 10) || 1);
-            if (item.widget && !fitWidgets.includes(item.widget.class) && colSpan === 1) {
+            if (item.widget && !this.fitWidgets.includes(item.widget.class) && colSpan === 1) {
                 columns[col] = 'auto';
                 hasAuto = true;
             } else {
@@ -456,7 +456,9 @@ class QtDesignerForm extends React.Component {
         const tablename = parts[1];
         const sortcol = parts[3] || null;
         const datasetname = this.props.mapPrefix + tablename;
-        const headerItems = widget.layout.item.filter(item => item.widget.name.startsWith("header__"));
+        const headerItems = widget.layout.item.filter(item => item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
+        const widgetItems = widget.layout.item.filter(item => !item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
+        const columnStyles = widgetItems.map(item => { return this.fitWidgets.includes(item.widget.class) ? {width: '1px'} : {}; });
         return (
             <div className="qt-designer-widget-relation">
                 <div className="qt-designer-widget-relation-table-container">
@@ -494,12 +496,13 @@ class QtDesignerForm extends React.Component {
                                     statusText = this.buildErrMsg(feature);
                                 }
                                 const extraClass = status.startsWith("deleted") ? "qt-designer-widget-relation-record-deleted" : "";
-                                const widgetItems = widget.layout.item.filter(item => !item.widget.name.startsWith("header__"));
                                 return (
                                     <tr className={"qt-designer-widget-relation-record " + extraClass} key={datasetname + idx}>
-                                        <td>{statusIcon ? (<Icon icon={statusIcon} title={statusText} />) : null}</td>
-                                        {widgetItems.map(item => (
-                                            <td className="qt-designer-widget-relation-row-widget" key={item.widget.name}>{this.renderWidget(item.widget, relFeature, datasetname, updateField, nametransform)}</td>
+                                        <td className="qt-designer-widget-relation-record-icon">
+                                            {statusIcon ? (<Icon icon={statusIcon} title={statusText} />) : null}
+                                        </td>
+                                        {widgetItems.map((item, widx) => (
+                                            <td className="qt-designer-widget-relation-row-widget" key={item.widget.name} style={columnStyles[widx]}>{this.renderWidget(item.widget, relFeature, datasetname, updateField, nametransform)}</td>
                                         ))}
                                         {!this.props.readOnly && sortcol ? (
                                             <td>
@@ -509,7 +512,7 @@ class QtDesignerForm extends React.Component {
                                             </td>
                                         ) : null}
                                         {!this.props.readOnly ? (
-                                            <td>
+                                            <td className="qt-designer-widget-relation-record-icon">
                                                 <Icon icon="trash" onClick={() => this.props.removeRelationRecord(datasetname, idx)} />
                                             </td>
                                         ) : null}
