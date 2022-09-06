@@ -547,7 +547,7 @@ class QtDesignerForm extends React.Component {
                                             if (item.widget) {
                                                 return (<td className="qt-designer-widget-relation-row-widget" key={item.widget.name} style={columnStyles[widx]}>{this.renderWidget(item.widget, relFeature, datasetname, updateField, nametransform)}</td>);
                                             } else if (item.spacer) {
-                                                return (<td />);
+                                                return (<td key={"spacer_" + widx} />);
                                             } else {
                                                 return null;
                                             }
