@@ -75,7 +75,11 @@ class QtDesignerForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = QtDesignerForm.defaultState;
-        this.fitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
+        if (props.report) {
+            this.fitWidgets = ["QPlainTextEdit", "QLineEdit", "QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
+        } else {
+            this.fitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
+        }
     }
     componentDidMount() {
         this.componentDidUpdate({});
@@ -178,7 +182,7 @@ class QtDesignerForm extends React.Component {
                         child = this.renderWidget(item.widget, feature, dataset, updateField, nametransform);
                     } else if (item.layout) {
                         child = this.renderLayout(item.layout, feature, dataset, updateField, nametransform);
-                    } else if (item.spacer && (item.spacer.property || {}).orientation === "Qt::Vertical") {
+                    } else if (item.spacer) {
                         child = (<div />);
                     } else {
                         return null;
@@ -200,6 +204,9 @@ class QtDesignerForm extends React.Component {
             const col = useIndex ? index : (parseInt(item.column, 10) || 0);
             const colSpan = useIndex ? 1 : (parseInt(item.colspan, 10) || 1);
             if (item.widget && !this.fitWidgets.includes(item.widget.class) && colSpan === 1) {
+                columns[col] = 'auto';
+                hasAuto = true;
+            } else if (item.spacer && (item.spacer.property || {}).orientation === "Qt::Horizontal") {
                 columns[col] = 'auto';
                 hasAuto = true;
             } else {
@@ -251,7 +258,8 @@ class QtDesignerForm extends React.Component {
             fontWeight: fontProps.bold === "true" ? "bold" : "normal",
             fontStyle: fontProps.italic === "true" ? "italic" : "normal",
             textDecoration: [fontProps.underline === "true" ? "underline" : "", fontProps.strikeout === "true" ? "line-through" : ""].join(" "),
-            fontSize: Math.round((fontProps.pointsize || 9) / 9 * 100) + "%"
+            fontSize: Math.round((fontProps.pointsize || 9) / 9 * 100) + "%",
+            textAlign: 'left'
         };
         if (prop.alignment) {
             if (prop.alignment.includes("Qt::AlignRight")) {
@@ -276,7 +284,7 @@ class QtDesignerForm extends React.Component {
                 return (<div className="qt-designer-form-image"><a href={value} rel="noreferrer" target="_blank"><img src={value} /></a></div>);
             } else {
                 const text = widget.name.startsWith("ext__") ? value : widget.property.text;
-                return (<span style={fontStyle}>{text}</span>);
+                return (<div style={fontStyle}>{text}</div>);
             }
         } else if (widget.class === "Line") {
             const linetype = (widget.property || {}).orientation === "Qt::Vertical" ? "vline" : "hline";
@@ -339,7 +347,7 @@ class QtDesignerForm extends React.Component {
                     value = value.toFixed(fieldConstraints.prec);
                 }
                 if (this.props.report) {
-                    return (<span style={fontStyle}>{value}</span>);
+                    return (<div style={fontStyle}>{value}</div>);
                 } else {
                     return (<input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} size={5} style={fontStyle} type="text" value={value} />);
                 }
@@ -492,9 +500,10 @@ class QtDesignerForm extends React.Component {
         const tablename = parts[1];
         const sortcol = parts[3] || null;
         const datasetname = this.props.mapPrefix + tablename;
-        const headerItems = widget.layout.item.filter(item => item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
-        const widgetItems = widget.layout.item.filter(item => !item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
-        const columnStyles = widgetItems.map(item => { return this.fitWidgets.includes(item.widget.class) ? {width: '1px'} : {}; });
+        const headerItems = widget.layout.item.filter(item => item.widget && item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
+        const widgetItems = widget.layout.item.filter(item => !item.widget || !item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
+        const tableFitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
+        const columnStyles = widgetItems.map(item => { return item.widget && tableFitWidgets.includes(item.widget.class) ? {width: '1px'} : {}; });
         return (
             <div className="qt-designer-widget-relation">
                 <div className="qt-designer-widget-relation-table-container">
@@ -537,9 +546,15 @@ class QtDesignerForm extends React.Component {
                                         <td className="qt-designer-widget-relation-record-icon">
                                             {statusIcon ? (<Icon icon={statusIcon} title={statusText} />) : null}
                                         </td>
-                                        {widgetItems.map((item, widx) => (
-                                            <td className="qt-designer-widget-relation-row-widget" key={item.widget.name} style={columnStyles[widx]}>{this.renderWidget(item.widget, relFeature, datasetname, updateField, nametransform)}</td>
-                                        ))}
+                                        {widgetItems.map((item, widx) => {
+                                            if (item.widget) {
+                                                return (<td className="qt-designer-widget-relation-row-widget" key={item.widget.name} style={columnStyles[widx]}>{this.renderWidget(item.widget, relFeature, datasetname, updateField, nametransform)}</td>);
+                                            } else if (item.spacer) {
+                                                return (<td />);
+                                            } else {
+                                                return null;
+                                            }
+                                        })}
                                         {!this.props.readOnly && sortcol ? (
                                             <td>
                                                 <Icon icon="chevron-up" onClick={() => this.props.reorderRelationRecord(datasetname, idx, -1)} />
