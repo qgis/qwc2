@@ -75,11 +75,6 @@ class QtDesignerForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = QtDesignerForm.defaultState;
-        if (props.report) {
-            this.fitWidgets = ["QPlainTextEdit", "QLineEdit", "QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
-        } else {
-            this.fitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
-        }
     }
     componentDidMount() {
         this.componentDidUpdate({});
@@ -198,12 +193,14 @@ class QtDesignerForm extends React.Component {
     }
     computeLayoutColumns = (items, useIndex = false) => {
         const columns = [];
+        const fitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
         let index = 0;
         let hasAuto = false;
+        const hasSpacer = items.find(item => (item.spacer && (item.spacer.property || {}).orientation === "Qt::Horizontal"));
         for (const item of items) {
             const col = useIndex ? index : (parseInt(item.column, 10) || 0);
             const colSpan = useIndex ? 1 : (parseInt(item.colspan, 10) || 1);
-            if (item.widget && !this.fitWidgets.includes(item.widget.class) && colSpan === 1) {
+            if (!hasSpacer && item.widget && !fitWidgets.includes(item.widget.class) && colSpan === 1) {
                 columns[col] = 'auto';
                 hasAuto = true;
             } else if (item.spacer && (item.spacer.property || {}).orientation === "Qt::Horizontal") {
