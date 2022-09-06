@@ -139,7 +139,8 @@ class QtDesignerForm extends React.Component {
         } else if (layout.class === "QGridLayout" || layout.class === "QFormLayout") {
             containerClass = "qt-designer-layout-grid";
             containerStyle = {
-                gridTemplateColumns: this.computeLayoutColumns(layout.item).join(" ")
+                gridTemplateColumns: this.computeLayoutColumns(layout.item).join(" "),
+                gridTemplateRows: this.computeLayoutRows(layout.item).join(" ")
             };
             itemStyle = item => ({
                 gridArea: (1 + parseInt(item.row, 10)) + "/" + (1 + parseInt(item.column, 10)) + "/ span " + parseInt(item.rowspan || 1, 10) + "/ span " + parseInt(item.colspan || 1, 10)
@@ -166,6 +167,9 @@ class QtDesignerForm extends React.Component {
         if (!visible) {
             containerStyle.display = 'none';
         }
+        if (layout.item.find(item => item.spacer && (item.spacer.property || {}).orientation === "Qt::Vertical")) {
+            containerStyle.height = '100%';
+        }
         return (
             <div className={containerClass} key={layout.name} style={containerStyle}>
                 {layout.item.sort((a, b) => (sortKey(a) - sortKey(b))).map((item, idx) => {
@@ -174,6 +178,8 @@ class QtDesignerForm extends React.Component {
                         child = this.renderWidget(item.widget, feature, dataset, updateField, nametransform);
                     } else if (item.layout) {
                         child = this.renderLayout(item.layout, feature, dataset, updateField, nametransform);
+                    } else if (item.spacer && (item.spacer.property || {}).orientation === "Qt::Vertical") {
+                        child = (<div />);
                     } else {
                         return null;
                     }
@@ -206,6 +212,26 @@ class QtDesignerForm extends React.Component {
             columns[col] = hasAuto ? (columns[col] || fit) : 'auto';
         }
         return columns;
+    }
+    computeLayoutRows = (items, useIndex = false) => {
+        const rows = [];
+        let index = 0;
+        let hasAuto = false;
+        for (const item of items) {
+            const row = useIndex ? index : (parseInt(item.row, 10) || 0);
+            if (item.spacer && (item.spacer.property || {}).orientation === "Qt::Vertical") {
+                rows[row] = 'auto';
+                hasAuto = true;
+            } else {
+                rows[row] = rows[row] || null; // Placeholder replaced by fit-content below
+            }
+            ++index;
+        }
+        const fit = 'fit-content(' + Math.round(1 / rows.length * 100) + '%)';
+        for (let row = 0; row < rows.length; ++row) {
+            rows[row] = hasAuto ? (rows[row] || fit) : 'auto';
+        }
+        return rows;
     }
     renderWidget = (widget, feature, dataset, updateField, nametransform = (name) => name) => {
         let value = (feature.properties || {})[widget.name] ?? "";
@@ -641,6 +667,10 @@ class QtDesignerForm extends React.Component {
                 return;
             } else if (item.widget) {
                 this.reformatWidget(item.widget, relationTables, fields, buttons, externalFields, counters);
+            } else if (item.spacer) {
+                item.spacer.property = MiscUtils.ensureArray(item.spacer.property).reduce((res, prop) => {
+                    return ({...res, [prop.name]: prop[Object.keys(prop).find(key => key !== "name")]});
+                }, {});
             } else if (item.layout) {
                 this.reformatLayout(item.layout, relationTables, fields, buttons, externalFields, counters);
             }
