@@ -344,7 +344,7 @@ class QtDesignerForm extends React.Component {
                     value = value.toFixed(fieldConstraints.prec);
                 }
                 if (this.props.report) {
-                    return (<div style={fontStyle}>{value}</div>);
+                    return (<div style={fontStyle}>{value || inputConstraints.placeholder}</div>);
                 } else {
                     return (<input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} size={5} style={fontStyle} type="text" value={value} />);
                 }
