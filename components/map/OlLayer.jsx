@@ -40,10 +40,7 @@ class OlLayer extends React.Component {
         const oldOptions = this.makeOptions(prevProps.options);
 
         this.updateLayer(newOptions, oldOptions);
-        // WMS layer handles visibility separately
-        if (newOptions.type !== "wms") {
-            this.state.layer.setVisible(newOptions.visibility);
-        }
+        this.state.layer.setVisible(newOptions.visibility);
         this.state.layer.setOpacity(newOptions.opacity / 255.0);
         this.state.layer.setZIndex(newOptions.zIndex);
 

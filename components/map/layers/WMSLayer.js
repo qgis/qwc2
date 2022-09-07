@@ -95,10 +95,10 @@ export default {
                 }
                 layer.set("updateTimeout", setTimeout(() => {
                     layer.setVisible(queryParameters.LAYERS && newOptions.visibility);
-                    layer.getSource().updateParams(queryParameters);
-                    layer.getSource().changed();
                     layer.set("updateTimeout", null);
-                }, 500));
+                }, 5));
+                layer.getSource().updateParams(queryParameters);
+                layer.getSource().changed();
             }
         }
     }
