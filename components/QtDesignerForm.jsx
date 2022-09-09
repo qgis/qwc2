@@ -486,6 +486,8 @@ class QtDesignerForm extends React.Component {
                     }
                 }
             }
+        } else if (widget.class === "QStackedWidget") {
+            return this.renderLayout(widget.widget[parseInt(widget.property.currentIndex, 10)].layout, feature, dataset, updateField, nametransform);
         }
         return null;
     }
