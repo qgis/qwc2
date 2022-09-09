@@ -214,7 +214,7 @@ div.qt-designer-report select {
 
 div.qt-designer-form-textarea {
     padding: 0.25em;
-    white-space: pre;
+    white-space: pre-wrap;
 }
 
 div.qt-designer-form-image img {
