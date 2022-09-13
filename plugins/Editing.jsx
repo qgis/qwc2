@@ -106,12 +106,14 @@ class Editing extends React.Component {
             const oldPoint = prevProps.map.click || {};
             if (newPoint.coordinate && !isEqual(newPoint.coordinate, oldPoint.coordinate)) {
                 const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
-                const editDataset = this.props.theme.editConfig[this.state.selectedLayer].editDataset;
+                const editConfig = this.props.theme.editConfig[this.state.selectedLayer];
+                const editPermissions = editConfig.permissions || {};
+                const editDataset = editConfig.editDataset;
                 this.props.iface.getFeature(editDataset, newPoint.coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
                     const features = featureCollection ? featureCollection.features : null;
                     this.setState({pickedFeatures: features});
                     const feature = features ? features[0] : null;
-                    this.props.setEditContext('Editing', {feature: feature, changed: false});
+                    this.props.setEditContext('Editing', {feature: feature, changed: false, geomReadOnly: editPermissions.updatable === false});
                 });
             }
         }
@@ -146,10 +148,7 @@ class Editing extends React.Component {
         const editPermissions = curConfig.permissions || {};
 
         const actionButtons = [];
-        if ( editPermissions.updatable !== false || editPermissions.deletable !== false) {
-            // Pick button will appear by default if no permissions are defined in theme editConfig or when updatable or deletable permissions are set
-            actionButtons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick"), data: {action: 'Pick', geomReadOnly: false}});
-        }
+        actionButtons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick"), data: {action: 'Pick', geomReadOnly: false}});
         if ( editPermissions.creatable !== false) {
             // Draw button will appear by default if no permissions are defined in theme editConfig or when creatable permission is set
             const feature = getFeatureTemplate(editConfig.editDataset, {
@@ -217,7 +216,7 @@ class Editing extends React.Component {
         let attributeForm = null;
         if (this.props.editContext.feature) {
             attributeForm = (
-                <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} />
+                <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} readOnly={editPermissions.updatable === false} />
             );
         }
         const themeSublayers = this.props.layers.reduce((accum, layer) => {
@@ -283,7 +282,8 @@ class Editing extends React.Component {
     }
     changeSelectedLayer = (selectedLayer, action = null, feature = null) => {
         const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
-        this.props.setEditContext('Editing', {action: action || (this.state.drawPick ? "Draw" : this.props.editContext.action), feature: feature, geomType: curConfig ? curConfig.geomType : null});
+        const editPermissions = curConfig ? (curConfig.permissions || {}) : {};
+        this.props.setEditContext('Editing', {action: action || (this.state.drawPick ? "Draw" : this.props.editContext.action), feature: feature, geomType: curConfig ? curConfig.geomType : null, geomReadOnly: editPermissions.updatable === false});
 
         let prevLayerVisibility = null;
         if (this.state.selectedLayer !== null) {
@@ -300,7 +300,9 @@ class Editing extends React.Component {
     }
     setEditFeature = (featureId) => {
         const feature = this.state.pickedFeatures.find(f => f.id.toString() === featureId);
-        this.props.setEditContext('Editing', {feature: feature, changed: false});
+        const editConfig = this.props.theme.editConfig[this.state.selectedLayer];
+        const editPermissions = editConfig.permissions || {};
+        this.props.setEditContext('Editing', {feature: feature, changed: false, geomReadOnly: editPermissions.updatable === false});
     }
     toggleDrawPick = () => {
         const pickActive = !this.state.drawPick;

@@ -69,7 +69,14 @@ class FeatureForm extends React.Component {
             const feature = this.state.pickedFeatures ? this.state.pickedFeatures[this.state.selectedFeature] : null;
             const curLayerId = this.state.selectedFeature.split("::")[0];
             const curConfig = this.props.theme.editConfig[curLayerId] || {};
-            this.props.setEditContext('FeatureForm', {action: 'Pick', feature: feature, changed: false, geomType: curConfig.geomType || null});
+            const editPermissions = curConfig.permissions || {};
+            this.props.setEditContext('FeatureForm', {
+                action: 'Pick',
+                feature: feature,
+                changed: false,
+                geomType: curConfig.geomType || null,
+                geomReadOnly: editPermissions.updatable === false
+            });
         }
         if (!this.props.enabled && prevProps.enabled) {
             this.props.clearEditContext('FeatureForm');
@@ -134,6 +141,7 @@ class FeatureForm extends React.Component {
             const featureText = LocaleUtils.tr("featureform.feature");
             const curLayerId = this.state.selectedFeature.split("::")[0];
             const curConfig = this.props.theme.editConfig[curLayerId];
+            const editPermissions = curConfig.permissions || {};
             body = (
                 <div className="feature-query-body" role="body">
                     {Object.keys(this.state.pickedFeatures).length > 1 ? (
@@ -153,7 +161,7 @@ class FeatureForm extends React.Component {
                         </div>
                     ) : null}
                     {this.props.editContext.feature ? (
-                        <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} />
+                        <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} readOnly={editPermissions.updatable === false} />
                     ) : null}
                 </div>
             );

@@ -118,7 +118,7 @@ class AttributeForm extends React.Component {
         }
         return (
             <div className="AttributeForm">
-                {this.props.editContext.geomReadOnly ? (
+                {this.props.editContext.geomReadOnly && !this.props.readOnly ? (
                     <div className="attrib-form-geom-readonly">{LocaleUtils.tr("editing.geomreadonly")}</div>
                 ) : null}
                 <form action="" onChange={ev => this.checkValidity(ev.currentTarget)} onSubmit={this.onSubmit} ref={this.checkValidity}>
