@@ -220,7 +220,7 @@ export default function layers(state = defaultState, action) {
         let changed = false;
         const newLayers = (state.flat || []).reduce((result, layer) => {
             if (layer.id === action.layerId) {
-                const newFeatures = layer.features.filter(f => action.featureIds.includes(f.id) === false);
+                const newFeatures = (layer.features || []).filter(f => action.featureIds.includes(f.id) === false);
                 if (!isEmpty(newFeatures) || action.keepEmptyLayer) {
                     result.push({...layer, features: newFeatures, bbox: VectorLayerUtils.computeFeaturesBBox(newFeatures)});
                 }
