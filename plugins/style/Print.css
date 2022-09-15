@@ -46,6 +46,11 @@
     outline: none;
 }
 
+#Print table.options-table input:read-only,
+#Print table.options-table textarea:read-only {
+    color: #AAA;
+}
+
 #Print table.options-table span.input-frame {
     border: 1px solid @item_border@;
     padding: 0.25em;

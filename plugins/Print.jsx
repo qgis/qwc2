@@ -290,9 +290,9 @@ class Print extends React.Component {
     }
     renderPrintLabelField = (label, opts) => {
         if (this.props.theme.printLabelForSearchResult === label) {
-            return (<textarea {...opts} defaultValue={this.getSearchMarkerLabel()}/>);
+            return (<textarea {...opts} defaultValue={this.getSearchMarkerLabel()} readOnly />);
         } else if (this.props.theme.printLabelForAttribution === label) {
-            return (<textarea {...opts} defaultValue={this.getAttributionLabel()}/>);
+            return (<textarea {...opts} defaultValue={this.getAttributionLabel()} readOnly />);
         } else {
             return (<textarea {...opts}/>);
         }
