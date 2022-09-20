@@ -36,6 +36,7 @@ class Print extends React.Component {
         defaultScaleFactor: PropTypes.number,
         displayRotation: PropTypes.bool,
         gridInitiallyEnabled: PropTypes.bool,
+        hideAutopopulatedFields: PropTypes.bool,
         inlinePrintOutput: PropTypes.bool,
         layers: PropTypes.array,
         map: PropTypes.object,
@@ -294,9 +295,17 @@ class Print extends React.Component {
     }
     renderPrintLabelField = (label, opts) => {
         if (this.props.theme.printLabelForSearchResult === label) {
-            return (<textarea {...opts} defaultValue={this.getSearchMarkerLabel()} readOnly />);
+            if (this.props.hideAutopopulatedFields) {
+                return (<input defaultValue={this.getSearchMarkerLabel()} type="hidden" />);
+            } else {
+                return (<textarea {...opts} defaultValue={this.getSearchMarkerLabel()} readOnly />);
+            }
         } else if (this.props.theme.printLabelForAttribution === label) {
-            return (<textarea {...opts} defaultValue={this.getAttributionLabel()} readOnly />);
+            if (this.props.hideAutopopulatedFields) {
+                return (<input defaultValue={this.getAttributionLabel()} type="hidden" />);
+            } else {
+                return (<textarea {...opts} defaultValue={this.getAttributionLabel()} readOnly />);
+            }
         } else {
             return (<textarea {...opts}/>);
         }
