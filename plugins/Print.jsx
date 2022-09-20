@@ -322,11 +322,14 @@ class Print extends React.Component {
     }
     getAttributionLabel = () => {
         const copyrights = this.props.layers.reduce((res, layer) => ({...res, ...LayerUtils.getAttribution(layer, this.props.map)}), {});
+        const el = document.createElement("span");
         return Object.entries(copyrights).map(([key, value]) => {
             if (value.title) {
-                return value.title;
+                el.innerHTML = value.title;
+                return el.innerText;
             } else {
-                return key;
+                el.innerHTML = key;
+                return el.innerText;
             }
         }).join(" | ");
     }
