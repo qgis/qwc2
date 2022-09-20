@@ -243,6 +243,10 @@ class Print extends React.Component {
                             </tr>
                         ) : null}
                         {(labels || []).map(label => {
+                            // Omit labels which start with __
+                            if (label.startsWith("__")) {
+                                return null;
+                            }
                             const opts = {rows: 1, name: label.toUpperCase()};
                             if (this.props.theme.printLabelConfig) {
                                 Object.assign(opts, this.props.theme.printLabelConfig[label]);
