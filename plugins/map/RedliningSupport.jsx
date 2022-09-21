@@ -306,6 +306,7 @@ class RedliningSupport extends React.Component {
         if (!this.currentFeature) {
             return;
         }
+        this.updateFeatureStyle(this.props.redlining.style);
         const isText = this.currentFeature.get("isText") === true;
         if (isText && !this.currentFeature.get("label")) {
             if (!newFeature) {
