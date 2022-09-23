@@ -425,7 +425,7 @@ class AttributeTable extends React.Component {
             alert(LocaleUtils.tr("attribtable.geomnoadd"));
             return;
         }
-        const feature = getFeatureTemplate(currentEditConfig.editDataset, {
+        const feature = getFeatureTemplate(currentEditConfig, {
             type: "Feature",
             geometry: null,
             properties: currentEditConfig.fields.reduce((res, field) => {

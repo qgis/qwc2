@@ -35,10 +35,19 @@ export function setFeatureTemplateFactory(dataset, factory) {
     FeatureTemplateFactories[dataset] = factory;
 }
 
-export function getFeatureTemplate(dataset, feature) {
-    if (dataset in FeatureTemplateFactories) {
-        return FeatureTemplateFactories[dataset](feature);
-    } else {
-        return feature;
+export function getFeatureTemplate(editConfig, feature) {
+    if (editConfig.editDataset in FeatureTemplateFactories) {
+        feature = FeatureTemplateFactories[editConfig.editDataset](feature);
     }
+    // Apply default values
+    editConfig.fields.forEach(field => {
+        if (field.defaultValue) {
+            feature.properties = {
+                ...feature.properties,
+                [field.id]: field.defaultValue
+            };
+        }
+    });
+
+    return feature;
 }

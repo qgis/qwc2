@@ -151,11 +151,7 @@ class Editing extends React.Component {
         actionButtons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick"), data: {action: 'Pick', geomReadOnly: false}});
         if ( editPermissions.creatable !== false) {
             // Draw button will appear by default if no permissions are defined in theme editConfig or when creatable permission is set
-            const feature = getFeatureTemplate(editConfig.editDataset, {
-                type: "Feature",
-                properties: {}
-            });
-            actionButtons.push({key: 'Draw', icon: 'editdraw', label: LocaleUtils.trmsg("editing.draw"), data: {action: 'Draw', feature: feature, geomReadOnly: false}});
+            actionButtons.push({key: 'Draw', icon: 'editdraw', label: LocaleUtils.trmsg("editing.draw"), data: {action: 'Draw', geomReadOnly: false}});
         }
         if (ConfigUtils.havePlugin("AttributeTable")) {
             actionButtons.push({key: 'AttribTable', icon: 'editing', label: LocaleUtils.trmsg("editing.attrtable"), data: {action: 'AttrTable'}});
@@ -260,6 +256,14 @@ class Editing extends React.Component {
         this.setState({drawPick: false, drawPickResults: null});
         if (action === "AttribTable") {
             this.props.setCurrentTask("AttributeTable", null, null, {layer: this.state.selectedLayer});
+        } else if (action === "Draw") {
+            const editConfig = this.props.theme.editConfig;
+            const curConfig = editConfig[this.state.selectedLayer];
+            const feature = getFeatureTemplate(curConfig, {
+                type: "Feature",
+                properties: {}
+            });
+            this.props.setEditContext('Editing', {...data, feature: feature});
         } else {
             this.props.setEditContext('Editing', {...data});
         }

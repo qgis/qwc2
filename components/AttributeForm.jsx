@@ -300,7 +300,7 @@ class AttributeForm extends React.Component {
                         this.loadRelationValues(); // Re-load relation values
                     });
                 } else {
-                    const feature = getFeatureTemplate(this.props.editConfig.editDataset, {
+                    const feature = getFeatureTemplate(this.props.editConfig, {
                         type: "Feature",
                         properties: {}
                     });
