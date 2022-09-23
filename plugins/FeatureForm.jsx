@@ -102,7 +102,7 @@ class FeatureForm extends React.Component {
             const path = [];
             let sublayer = null;
             const layer = this.props.layers.find(l => (l.role === LayerRole.THEME && (sublayer = LayerUtils.searchSubLayer(l, 'name', layerId, path))));
-            if (layer && sublayer && !sublayer.visibility) {
+            if (layer && sublayer && !LayerUtils.sublayerVisible(layer, path)) {
                 return;
             }
             ++pendingRequests;
