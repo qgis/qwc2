@@ -364,6 +364,12 @@ class AttributeForm extends React.Component {
 
                     const index = parseInt(parts[parts.length - 1], 10);
                     // relationValues for table must exist as rows are either pre-existing or were added
+                    if (!(field in relationValues[datasetname].features[index].properties)) {
+                        relationValues[datasetname].features[index].defaultedProperties = [
+                            ...(relationValues[datasetname].features[index].defaultedProperties || []),
+                            field
+                        ];
+                    }
                     relationValues[datasetname].features[index].properties[field] = value;
                     if (relationValues[datasetname].features[index].__status__ === "empty") {
                         relationValues[datasetname].features[index].__status__ = "new";
@@ -380,6 +386,12 @@ class AttributeForm extends React.Component {
                     if ((element instanceof RadioNodeList || nullElements.includes(element.type) || nullFieldTypes.includes(fieldConfig.type)) && element.value === "") {
                         // Set empty value to null instead of empty string
                         value = null;
+                    }
+                    if (!(name in feature.properties)) {
+                        feature.defaultedProperties = [
+                            ...(feature.defaultedProperties || []),
+                            name
+                        ];
                     }
                     feature.properties[name] = value;
                     if (element.type === "file" && element.files.length > 0) {
