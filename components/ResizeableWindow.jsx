@@ -153,7 +153,9 @@ class ResizeableWindow extends React.Component {
                     {this.props.title ? LocaleUtils.tr(this.props.title) : (this.props.titlelabel || "")}
                 </span>
                 {(this.props.extraControls || []).map(entry => (
-                    <Icon className="resizeable-window-titlebar-control" icon={entry.icon} key={entry.icon} onClick={entry.callback}/>
+                    <Icon
+                        className="resizeable-window-titlebar-control" icon={entry.icon} key={entry.icon}
+                        onClick={entry.callback} titlemsgid={entry.msgid ? LocaleUtils.trmsg(entry.msgid) : ""} />
                 ))}
                 {!maximized && dockable ? (
                     <Icon
