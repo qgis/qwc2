@@ -137,7 +137,7 @@ div.qt-designer-widget-relation {
 div.qt-designer-widget-relation-table-container {
     overflow-y: auto;
     flex: 1 1 auto;
-    height: 0;
+    height: 3.5em;
 }
 
 div.qt-designer-widget-relation-table-container > table {
