@@ -252,10 +252,7 @@ class Print extends React.Component {
                             if (this.props.theme.printLabelConfig) {
                                 Object.assign(opts, this.props.theme.printLabelConfig[label]);
                             }
-                            return (<tr key={"label." + label}>
-                                <td>{label}:</td>
-                                <td>{this.renderPrintLabelField(label, opts)}</td>
-                            </tr>);
+                            return this.renderPrintLabelField(label, opts);
                         })}
                     </tbody></table>
                     <div>
@@ -296,18 +293,33 @@ class Print extends React.Component {
     renderPrintLabelField = (label, opts) => {
         if (this.props.theme.printLabelForSearchResult === label) {
             if (this.props.hideAutopopulatedFields) {
-                return (<input defaultValue={this.getSearchMarkerLabel()} type="hidden" />);
+                return (<tr key={"label." + label}><td colSpan="2"><input defaultValue={this.getSearchMarkerLabel()} name={opts.name} type="hidden" /></td></tr>);
             } else {
-                return (<textarea {...opts} defaultValue={this.getSearchMarkerLabel()} readOnly />);
+                return (
+                    <tr key={"label." + label}>
+                        <td>{label}:</td>
+                        <td><textarea {...opts} defaultValue={this.getSearchMarkerLabel()} readOnly /></td>
+                    </tr>
+                );
             }
         } else if (this.props.theme.printLabelForAttribution === label) {
             if (this.props.hideAutopopulatedFields) {
-                return (<input defaultValue={this.getAttributionLabel()} type="hidden" />);
+                return (<tr key={"label." + label}><td colSpan="2"><input defaultValue={this.getAttributionLabel()} name={opts.name} type="hidden" /></td></tr>);
             } else {
-                return (<textarea {...opts} defaultValue={this.getAttributionLabel()} readOnly />);
+                return (
+                    <tr key={"label." + label}>
+                        <td>{label}:</td>
+                        <td><textarea {...opts} defaultValue={this.getAttributionLabel()} readOnly /></td>
+                    </tr>
+                );
             }
         } else {
-            return (<textarea {...opts}/>);
+            return (
+                <tr key={"label." + label}>
+                    <td>{label}:</td>
+                    <td><textarea {...opts}/></td>
+                </tr>
+            );
         }
     }
     getSearchMarkerLabel = () => {
