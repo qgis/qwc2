@@ -219,11 +219,17 @@ class QtDesignerForm extends React.Component {
     }
     computeLayoutRows = (items, useIndex = false) => {
         const rows = [];
+        const fitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEdit", "QDateEdit", "QTimeEdit", "QPushButton", "QComboBox", "QLineEdit"];
         let index = 0;
         let hasAuto = false;
+        const hasSpacer = items.find(item => (item.spacer && (item.spacer.property || {}).orientation === "Qt::Vertical"));
         for (const item of items) {
             const row = useIndex ? index : (parseInt(item.row, 10) || 0);
-            if (item.spacer && (item.spacer.property || {}).orientation === "Qt::Vertical") {
+            const rowSpan = useIndex ? 1 : (parseInt(item.rowspan, 10) || 1);
+            if (!hasSpacer && item.widget && !fitWidgets.includes(item.widget.class) && rowSpan === 1) {
+                rows[row] = 'auto';
+                hasAuto = true;
+            } else if (item.spacer && (item.spacer.property || {}).orientation === "Qt::Vertical") {
                 rows[row] = 'auto';
                 hasAuto = true;
             } else {
@@ -288,13 +294,15 @@ class QtDesignerForm extends React.Component {
             return (<div className={"qt-designer-form-" + linetype} />);
         } else if (widget.class === "QFrame") {
             return (
-                <div className="qt-designer-form-frame">
-                    {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, feature, dataset, updateField, nametransform)}
+                <div className="qt-designer-form-container">
+                    <div className="qt-designer-form-frame">
+                        {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, feature, dataset, updateField, nametransform)}
+                    </div>
                 </div>
             );
         } else if (widget.class === "QGroupBox") {
             return (
-                <div>
+                <div className="qt-designer-form-container">
                     <div className="qt-designer-form-frame-title" style={fontStyle}>{prop.title}</div>
                     <div className="qt-designer-form-frame">
                         {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, feature, dataset, updateField, nametransform)}
@@ -307,7 +315,7 @@ class QtDesignerForm extends React.Component {
             }
             const activetab = this.state.activetabs[widget.name] || widget.widget[0].name;
             return (
-                <div>
+                <div className="qt-designer-form-container">
                     <div className="qt-designer-form-tabbar">
                         {widget.widget.map(tab => (
                             <span
@@ -573,7 +581,9 @@ class QtDesignerForm extends React.Component {
                     </table>
                 </div>
                 {!this.props.readOnly ? (
-                    <div><button className="qt-designer-widget-relation-add" onClick={(ev) => this.addRelationRecord(ev, datasetname)} type="button">{LocaleUtils.tr("editing.add")}</button></div>
+                    <div className="qt-designer-widget-relation-buttons">
+                        <button className="qt-designer-widget-relation-add" onClick={(ev) => this.addRelationRecord(ev, datasetname)} type="button">{LocaleUtils.tr("editing.add")}</button>
+                    </div>
                 ) : null}
             </div>
         );

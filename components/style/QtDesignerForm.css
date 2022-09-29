@@ -36,6 +36,7 @@ div.qt-designer-form textarea {
     border: 1px solid @item_border@;
     background-color: white;
     padding: 0.25em;
+    height: 100%;
 }
 
 div.qt-designer-form label > input {
@@ -46,6 +47,7 @@ div.qt-designer-layout-grid {
     display: grid;
     grid-column-gap: 6px;
     grid-row-gap: 6px;
+    height: 100%;
 }
 
 div.qt-designer-layout-grid > div {
@@ -84,13 +86,20 @@ div.qt-designer-form-vline {
     height: 100%;
 }
 
+div.qt-designer-form-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 div.qt-designer-form-frame-title {
     font-weight: bold;
+    flex: 0 0 auto;
 }
 
 div.qt-designer-form-frame {
     padding: 0.25em;
-    height: 100%;
+    flex: 1 1 auto;
     width: 100%;
     border: 1px solid @item_border@;
 }
@@ -119,9 +128,16 @@ div.qt-designer-form-tabbar > span.qt-designer-form-tab-active {
     color: white;
 }
 
+div.qt-designer-widget-relation {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 div.qt-designer-widget-relation-table-container {
-    max-height: 10em;
     overflow-y: auto;
+    flex: 1 1 auto;
+    height: 0;
 }
 
 div.qt-designer-widget-relation-table-container > table {
@@ -157,6 +173,10 @@ div.qt-designer-widget-relation-table-container > table tr:not(:last-child) {
 
 tr.qt-designer-widget-relation-record-deleted {
     background-color: rgb(255,127,127);
+}
+
+div.qt-designer-widget-relation-buttons {
+    flex: 0 0 auto;
 }
 
 button.qt-designer-widget-relation-add {
