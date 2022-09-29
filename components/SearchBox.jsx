@@ -185,7 +185,7 @@ class SearchBox extends React.Component {
                             {!this.state.collapsedSections[sectionId] ? (
                                 <div className="searchbox-results-section-body">
                                     {group.items.map((entry, idx) => (
-                                        <div className="searchbox-result" key={"c" + idx} onClick={() => {this.selectProviderResult(entry); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
+                                        <div className="searchbox-result" key={"c" + idx} onClick={() => {this.selectProviderResult(entry, provider); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
                                             <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: entry.text.replace(/<br\s*\/>/ig, ' ')}} title={entry.label || entry.text} />
                                             {entry.externalLink ? <Icon icon="info-sign" onClick={ev => { MiscUtils.killEvent(ev); this.openUrl(entry.externalLink, entry.target, entry.label || entry.text); } } /> : null}
                                         </div>
@@ -452,7 +452,7 @@ class SearchBox extends React.Component {
                     this.selectFeatureResult(uniqueResult[1].feature);
                     this.blur();
                 } else if (uniqueResults[0] !== "__fulltext" && uniqueResults[1][0].items[0].bbox) {
-                    this.selectProviderResult(uniqueResults[1][0].items[0]);
+                    this.selectProviderResult(uniqueResults[1][0].items[0], uniqueResult[0]);
                     this.blur();
                 }
             }
@@ -472,7 +472,7 @@ class SearchBox extends React.Component {
             this.searchBox.blur();
         }
     }
-    selectProviderResult = (result, zoom = true) => {
+    selectProviderResult = (result, provider, zoom = true) => {
         this.updateRecentSearches();
         const resultType = result.type || SearchResultType.PLACE;
         if (resultType === SearchResultType.PLACE) {
@@ -485,6 +485,9 @@ class SearchBox extends React.Component {
                 }
             } else {
                 this.props.panTo([result.x, result.y], result.crs);
+            }
+            if (this.props.searchProviders[provider].getResultGeometry) {
+                this.props.searchProviders[provider].getResultGeometry(result, (itm, geometry, crs) => { this.showProviderResultGeometry(itm, geometry, crs, result.text); });
             }
             const feature = {
                 geometry: result.geometry || {type: 'Point', coordinates: [result.x, result.y]},
@@ -522,6 +525,32 @@ class SearchBox extends React.Component {
         } else if (resultType === SearchResultType.THEME) {
             this.props.setCurrentTheme(result.theme, this.props.themes);
         }
+    }
+    showProviderResultGeometry = (item, geometry, crs, text) => {
+        if (!isEmpty(geometry)) {
+            let features = [];
+            const highlightFeature = VectorLayerUtils.wktToGeoJSON(geometry, crs, this.props.map.projection);
+            if (highlightFeature) {
+                const center = VectorLayerUtils.getFeatureCenter(highlightFeature);
+                features = [highlightFeature, this.createMarker(center, this.props.map.projection, text)];
+            } else {
+                features = [this.createMarker([item.x, item.y], item.crs, text)];
+            }
+            const layer = {
+                id: "searchselection",
+                role: LayerRole.SELECTION
+            };
+            this.props.addLayerFeatures(layer, features, true);
+        }
+    }
+    createMarker = (center, crs, text) => {
+        return {
+            geometry: {type: 'Point', coordinates: center},
+            styleName: 'marker',
+            id: 'searchmarker',
+            crs: crs,
+            properties: { label: text }
+        };
     }
     selectFeatureResult = (result) => {
         this.updateRecentSearches();
@@ -566,7 +595,6 @@ class SearchBox extends React.Component {
             data.features[0].id = 'searchmarker';
         }
         this.props.addLayerFeatures(layer, data.features, true);
-
     }
     selectLayerResult = (result, info = false) => {
         if (!info) {
