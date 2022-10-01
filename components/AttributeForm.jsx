@@ -128,7 +128,7 @@ class AttributeForm extends React.Component {
                             fields={this.fieldsMap(this.props.editConfig.fields)} form={this.props.editConfig.form} iface={this.props.iface}
                             mapPrefix={this.editMapPrefix()} readOnly={readOnly} removeRelationRecord={this.removeRelationRecord}
                             reorderRelationRecord={this.reorderRelationRecord} report={this.props.report}
-                            setRelationTables={this.setRelationTables} switchEditContext={this.startChildEdit}
+                            setFormBusy={this.setFormBusy} setRelationTables={this.setRelationTables} switchEditContext={this.startChildEdit}
                             updateField={this.updateField} updateRelationField={this.updateRelationField} />
                     ) : (
                         <AutoEditForm editLayerId={this.props.editConfig.editDataset} fields={this.props.editConfig.fields}
@@ -144,6 +144,9 @@ class AttributeForm extends React.Component {
             </div>
 
         );
+    }
+    setFormBusy = (busy) => {
+        this.setState({busy: busy});
     }
     fieldsMap = (fields) => {
         return fields.reduce((res, field) => ({...res, [field.id]: field}), {});

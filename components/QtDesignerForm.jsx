@@ -60,6 +60,7 @@ class QtDesignerForm extends React.Component {
         removeRelationRecord: PropTypes.func,
         reorderRelationRecord: PropTypes.func,
         report: PropTypes.bool,
+        setFormBusy: PropTypes.func,
         setRelationTables: PropTypes.func,
         switchEditContext: PropTypes.func,
         updateField: PropTypes.func,
@@ -444,7 +445,7 @@ class QtDesignerForm extends React.Component {
             }
         } else if (widget.class === "QPushButton") {
             if (widget.name.startsWith("btn__") && widget.onClick) {
-                return (<button className="button" disabled={inputConstraints.readOnly} onClick={widget.onClick} type="button">{widget.property.text}</button>);
+                return (<button className="button" disabled={inputConstraints.readOnly} onClick={() => widget.onClick(this.props.setFormBusy)} type="button">{widget.property.text}</button>);
             } else if (widget.name.startsWith("featurelink__")) {
                 const parts = widget.name.split("__");
                 // featurelink__layer__attrname
