@@ -298,7 +298,9 @@ class AttributeForm extends React.Component {
             if (!this.props.onDiscard || !this.props.onDiscard()) {
                 if (this.props.editContext.action === 'Pick') {
                     // Re-query the original feature
+                    this.setState({busy: true});
                     this.props.iface.getFeatureById(this.props.editConfig.editDataset, this.props.editContext.feature.id, this.props.map.projection, (feature) => {
+                        this.setState({busy: false});
                         this.props.setEditContext(this.props.editContext.id, {feature: feature, changed: false});
                         this.loadRelationValues(); // Re-load relation values
                     });
