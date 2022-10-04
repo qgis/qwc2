@@ -243,7 +243,9 @@ const VectorLayerUtils = {
         case 'MultiLineString':
             return 'MULTILINESTRING (' + ringsWKT(gj.coordinates) + ')';
         case 'GeometryCollection':
-            return 'GEOMETRYCOLLECTION (' + gj.geometries.map(VectorLayerUtils.geoJSONGeomToWkt).join(', ') + ')';
+            return 'GEOMETRYCOLLECTION (' + gj.geometries.map(
+                function (x) { return VectorLayerUtils.geoJSONGeomToWkt(x, precision); }
+            ).join(', ') + ')';
         default:
             throw new Error('Invalid geometry object');
         }
