@@ -210,7 +210,7 @@ class Editing extends React.Component {
             }
         }
         let attributeForm = null;
-        if (this.props.editContext.feature) {
+        if (this.props.editContext.feature && (this.props.editContext.action === "Pick" || this.props.editContext.feature.geometry)) {
             attributeForm = (
                 <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} readOnly={editPermissions.updatable === false} />
             );
