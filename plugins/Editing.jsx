@@ -148,7 +148,7 @@ class Editing extends React.Component {
         const editPermissions = curConfig.permissions || {};
 
         const actionButtons = [];
-        actionButtons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick"), data: {action: 'Pick', geomReadOnly: false}});
+        actionButtons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick"), data: {action: 'Pick', geomReadOnly: false, feature: null}});
         if ( editPermissions.creatable !== false) {
             // Draw button will appear by default if no permissions are defined in theme editConfig or when creatable permission is set
             actionButtons.push({key: 'Draw', icon: 'editdraw', label: LocaleUtils.trmsg("editing.draw"), data: {action: 'Draw', geomReadOnly: false}});
