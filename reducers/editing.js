@@ -19,7 +19,9 @@ const nonZeroZCoordinate = (coordinates) => {
 
 const checkGeomReadOnly = (oldState, newFeature) => {
     // Only recompute if feature id in state changes
-    if (newFeature && newFeature.id !== ((oldState || {}).feature || {}).id) {
+    if (!newFeature) {
+        return false;
+    } else if (newFeature.id !== ((oldState || {}).feature || {}).id) {
         return nonZeroZCoordinate((newFeature.geometry || {}).coordinates || []);
     }
     return (oldState || {}).geomReadOnly || false;
