@@ -49,7 +49,8 @@ class SearchBox extends React.Component {
         searchFilter: PropTypes.string,
         searchOptions: PropTypes.shape({
             minScaleDenom: PropTypes.number,
-            resultLimit: PropTypes.number
+            resultLimit: PropTypes.number,
+            sectionsDefaultCollapsed: PropTypes.bool
         }),
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
@@ -125,9 +126,9 @@ class SearchBox extends React.Component {
         return (
             <div key="recent">
                 <div className="searchbox-results-section-title" onClick={() => this.toggleSection("recent")} onMouseDown={MiscUtils.killEvent}>
-                    <Icon icon={this.state.collapsedSections.recent ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.recent")}
+                    <Icon icon={this.isCollapsed("recent") ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.recent")}
                 </div>
-                {!this.state.collapsedSections.recent ? (
+                {!this.isCollapsed("recent") ? (
                     <div className="searchbox-results-section-body">
                         {recentSearches.map((entry, idx) => (
                             <div className="searchbox-result" key={"r" + idx} onClick={() => this.searchTextChanged(null, entry)} onMouseDown={MiscUtils.killEvent}>
@@ -145,7 +146,7 @@ class SearchBox extends React.Component {
         }
         const minResultsExanded = ConfigUtils.getConfigProp("minResultsExanded");
         const initialCollapsed = searchResults.tot_result_count < minResultsExanded;
-        const collapsed = (this.state.collapsedSections.filter === undefined) ? initialCollapsed : this.state.collapsedSections.filter;
+        const collapsed = this.isCollapsed('filter', initialCollapsed);
         const values = searchResults.result_counts.map(entry => entry.filterword + ": " + searchResults.query_text);
         values.sort((a, b) => a.localeCompare(b));
         return (
@@ -179,10 +180,10 @@ class SearchBox extends React.Component {
                     tree: (
                         <div key={sectionId}>
                             <div className="searchbox-results-section-title" onClick={() => this.toggleSection(sectionId)} onMouseDown={MiscUtils.killEvent}>
-                                <Icon icon={this.state.collapsedSections[sectionId] ? "expand" : "collapse"} />
+                                <Icon icon={this.isCollapsed(sectionId) ? "expand" : "collapse"} />
                                 {group.titlemsgid ? LocaleUtils.tr(group.titlemsgid) : (<span>{group.title}</span>)}
                             </div>
-                            {!this.state.collapsedSections[sectionId] ? (
+                            {!this.isCollapsed(sectionId) ? (
                                 <div className="searchbox-results-section-body">
                                     {group.items.map((entry, idx) => (
                                         <div className="searchbox-result" key={"c" + idx} onClick={() => {this.selectProviderResult(entry, provider); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
@@ -211,9 +212,9 @@ class SearchBox extends React.Component {
         return (
             <div key="places">
                 <div className="searchbox-results-section-title" onClick={() => this.toggleSection("places")} onMouseDown={MiscUtils.killEvent}>
-                    <Icon icon={this.state.collapsedSections.places ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.places")}
+                    <Icon icon={this.isCollapsed("places") ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.places")}
                 </div>
-                {!this.state.collapsedSections.places ? (
+                {!this.isCollapsed("places") ? (
                     <div className="searchbox-results-section-body">
                         {features.map((entry, idx) => (
                             <div className="searchbox-result" key={"p" + idx} onClick={() => { this.selectFeatureResult(entry.feature); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
@@ -240,9 +241,9 @@ class SearchBox extends React.Component {
         return (
             <div key="layers">
                 <div className="searchbox-results-section-title" onClick={() => this.toggleSection("layers")} onMouseDown={MiscUtils.killEvent}>
-                    <Icon icon={this.state.collapsedSections.layers ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.layers")}
+                    <Icon icon={this.isCollapsed("layers") ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.layers")}
                 </div>
-                {!this.state.collapsedSections.layers ? (
+                {!this.isCollapsed("layers") ? (
                     <div className="searchbox-results-section-body">
                         {layers.map((entry, idx) => !isEmpty(entry.dataproduct.sublayers) ? this.renderLayerGroup(entry.dataproduct, idx) : this.renderLayer(entry.dataproduct, idx))}
                         {additionalLayerResults ? (
@@ -333,8 +334,13 @@ class SearchBox extends React.Component {
     }
     toggleSection = (key) => {
         const newCollapsedSections = {...this.state.collapsedSections};
-        newCollapsedSections[key] = !newCollapsedSections[key];
+        const deflt = (this.props.searchOptions.sectionsDefaultCollapsed || false);
+        newCollapsedSections[key] = !(newCollapsedSections[key] ?? deflt);
         this.setState({collapsedSections: newCollapsedSections});
+    }
+    isCollapsed = (section, deflt = null) => {
+        deflt = deflt ?? (this.props.searchOptions.sectionsDefaultCollapsed || false);
+        return this.state.collapsedSections[section] ?? deflt;
     }
     render() {
         const placeholder = LocaleUtils.tr("searchbox.placeholder");
