@@ -12,13 +12,17 @@ import url from 'url';
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import ConfigUtils from '../../../utils/ConfigUtils';
 import MapUtils from '../../../utils/MapUtils';
+import {UrlParams} from '../../../utils/PermaLinkUtils';
 
 
 function wmsToOpenlayersOptions(options) {
     const urlParams = Object.entries(url.parse(options.url, true).query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {});
+    const urlFilter = UrlParams.getParams()['f'];
+
     return {
         ...urlParams,
         LAYERS: options.name,
+        FILTER: urlFilter,
         STYLES: options.style || "",
         FORMAT: options.format || 'image/png',
         TRANSPARENT: options.transparent !== undefined ? options.transparent : true,

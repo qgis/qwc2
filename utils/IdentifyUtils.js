@@ -15,9 +15,11 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from './VectorLayerUtils';
+import {UrlParams} from '../utils/PermaLinkUtils';
 
 
 function identifyRequestParams(layer, queryLayers, projection, params) {
+    const urlFilter = UrlParams.getParams()['f'];
     let format = 'text/plain';
     const infoFormats = layer.infoFormats || [];
     if (infoFormats.includes('text/xml') && (!layer.external || infoFormats.length === 1)) {
@@ -38,6 +40,7 @@ function identifyRequestParams(layer, queryLayers, projection, params) {
             request: 'GetFeatureInfo',
             id: layer.id,
             layers: queryLayers,
+            filter: urlFilter,
             query_layers: queryLayers,
             styles: layer.style,
             srs: projection,

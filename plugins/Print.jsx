@@ -27,6 +27,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
+import {UrlParams} from '../utils/PermaLinkUtils';
 import './style/Print.css';
 
 class Print extends React.Component {
@@ -119,6 +120,8 @@ class Print extends React.Component {
 
         const mapName = this.state.layout.map.name;
         const printParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, mapCrs, this.props.printExternalLayers);
+
+        const urlFilter = UrlParams.getParams()['f'];
 
         let extent = this.computeCurrentExtent();
         extent = (CoordinatesUtils.getAxisOrder(mapCrs).substr(0, 2) === 'ne' && version === '1.3.0') ?
@@ -264,6 +267,7 @@ class Print extends React.Component {
                         <input name="FORMAT" readOnly type={formvisibility} value="pdf" />
                         <input name="TRANSPARENT" readOnly type={formvisibility} value="true" />
                         <input name="SRS" readOnly type={formvisibility} value={mapCrs} />
+                        <input name="FILTER" readOnly type={formvisibility} value={urlFilter} />
                         {Object.entries(printParams).map(([key, value]) => (<input key={key} name={key} type={formvisibility} value={value} />))}
                         <input name="CONTENT_DISPOSITION" readOnly type={formvisibility} value={this.props.inlinePrintOutput ? "inline" : "attachment"} />
                         <input name={mapName + ":LAYERS"} readOnly type={formvisibility} value={printParams.LAYERS} />
