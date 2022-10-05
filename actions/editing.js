@@ -35,6 +35,22 @@ export function setFeatureTemplateFactory(dataset, factory) {
     FeatureTemplateFactories[dataset] = factory;
 }
 
+function evaluateDefaultValue(field) {
+    if (field.defaultValue.startsWith("expr:")) {
+        const expr = field.defaultValue.slice(5);
+        if (expr === "now()") {
+            if (field.type === "date") {
+                return (new Date()).toISOString().split("T")[0];
+            } else {
+                return (new Date()).toISOString();
+            }
+        }
+        return "";
+    } else {
+        return field.defaultValue;
+    }
+}
+
 export function getFeatureTemplate(editConfig, feature) {
     if (editConfig.editDataset in FeatureTemplateFactories) {
         feature = FeatureTemplateFactories[editConfig.editDataset](feature);
@@ -44,7 +60,7 @@ export function getFeatureTemplate(editConfig, feature) {
         if (field.defaultValue) {
             feature.properties = {
                 ...feature.properties,
-                [field.id]: field.defaultValue
+                [field.id]: evaluateDefaultValue(field)
             };
         }
     });
