@@ -44,6 +44,10 @@ function evaluateDefaultValue(field) {
             } else {
                 return (new Date()).toISOString();
             }
+        } else if (expr === "true") {
+            return true;
+        } else if (expr === "false") {
+            return false;
         }
         return "";
     } else {
