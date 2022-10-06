@@ -18,6 +18,7 @@ class TextInput extends React.Component {
         onChange: PropTypes.func,
         placeholder: PropTypes.string,
         readOnly: PropTypes.bool,
+        required: PropTypes.bool,
         style: PropTypes.object,
         value: PropTypes.string
     }
@@ -42,16 +43,16 @@ class TextInput extends React.Component {
                 <textarea disabled={this.props.disabled} name={this.props.name}
                     onBlur={this.onBlur} onChange={this.onChange} onKeyDown={this.onKeyDown}
                     placeholder={this.props.placeholder}
-                    readOnly={this.props.readOnly} style={this.props.style}
-                    value={this.state.curValue} />
+                    readOnly={this.props.readOnly} required={this.props.required}
+                    style={this.props.style} value={this.state.curValue} />
             );
         } else {
             return (
                 <input disabled={this.props.disabled} name={this.props.name}
                     onBlur={this.onBlur} onChange={this.onChange} onKeyDown={this.onKeyDown}
                     placeholder={this.props.placeholder}
-                    readOnly={this.props.readOnly} style={this.props.style}
-                    type="text" value={this.state.curValue} />
+                    readOnly={this.props.readOnly} required={this.props.required}
+                    style={this.props.style} type="text" value={this.state.curValue} />
             );
         }
     }
