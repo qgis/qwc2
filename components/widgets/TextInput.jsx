@@ -12,9 +12,13 @@ import PropTypes from 'prop-types';
 class TextInput extends React.Component {
     static propTypes = {
         disabled: PropTypes.bool,
+        immediateUpdate: PropTypes.bool,
+        multiline: PropTypes.bool,
+        name: PropTypes.string,
         onChange: PropTypes.func,
         placeholder: PropTypes.string,
         readOnly: PropTypes.bool,
+        style: PropTypes.object,
         value: PropTypes.string
     }
     state = {
@@ -33,16 +37,29 @@ class TextInput extends React.Component {
         return null;
     }
     render() {
-        return (
-            <input disabled={this.props.disabled} onBlur={this.onBlur}
-                onChange={this.onChange} onKeyDown={this.onKeyDown}
-                placeholder={this.props.placeholder}
-                readOnly={this.props.readOnly} type="text"
-                value={this.state.curValue} />
-        );
+        if (this.props.multiline) {
+            return (
+                <textarea disabled={this.props.disabled} name={this.props.name}
+                    onBlur={this.onBlur} onChange={this.onChange} onKeyDown={this.onKeyDown}
+                    placeholder={this.props.placeholder}
+                    readOnly={this.props.readOnly} style={this.props.style}
+                    value={this.state.curValue} />
+            );
+        } else {
+            return (
+                <input disabled={this.props.disabled} name={this.props.name}
+                    onBlur={this.onBlur} onChange={this.onChange} onKeyDown={this.onKeyDown}
+                    placeholder={this.props.placeholder}
+                    readOnly={this.props.readOnly} style={this.props.style}
+                    type="text" value={this.state.curValue} />
+            );
+        }
     }
     onChange = (ev) => {
         this.setState({curValue: ev.target.value, changed: true});
+        if (this.props.immediateUpdate) {
+            this.props.onChange(ev.target.value);
+        }
     }
     onBlur = () => {
         if (this.skipNextCommitOnBlur) {
@@ -52,7 +69,7 @@ class TextInput extends React.Component {
         }
     }
     onKeyDown = (ev) => {
-        if (ev.keyCode === 13) { // Enter
+        if (!this.props.multiline && ev.keyCode === 13) { // Enter
             this.commit();
         } else if (ev.keyCode === 27) { // Esc
             this.setState({value: this.props.value, curValue: this.props.value || "", changed: false});

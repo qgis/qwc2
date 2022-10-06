@@ -14,6 +14,7 @@ import xml2js from 'xml2js';
 import uuid from 'uuid';
 import isEmpty from 'lodash.isempty';
 import ButtonBar from './widgets/ButtonBar';
+import TextInput from './widgets/TextInput';
 import EditComboField, {KeyValCache} from './EditComboField';
 import EditUploadField from './EditUploadField';
 import Spinner from './Spinner';
@@ -339,7 +340,7 @@ class QtDesignerForm extends React.Component {
             if (this.props.report) {
                 return (<div className="qt-designer-form-textarea">{value}</div>);
             } else {
-                return (<textarea name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} style={fontStyle} value={value} />);
+                return (<TextInput immediateUpdate multiline name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} style={fontStyle} value={value} />);
             }
         } else if (widget.class === "QLineEdit") {
             if (widget.name.endsWith("__upload")) {
@@ -355,7 +356,7 @@ class QtDesignerForm extends React.Component {
                 if (this.props.report) {
                     return (<div style={fontStyle}>{value || inputConstraints.placeholder}</div>);
                 } else {
-                    return (<input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} size={5} style={fontStyle} type="text" value={value} />);
+                    return (<TextInput immediateUpdate name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} style={fontStyle} value={value} />);
                 }
             }
         } else if (widget.class === "QCheckBox" || widget.class === "QRadioButton") {
