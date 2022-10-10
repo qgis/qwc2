@@ -193,11 +193,12 @@ class AttributeForm extends React.Component {
     }
     addRelationRecord = (table) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
-        const newRelFeature = {
-            __status__: "empty",
+        const editConfig = this.props.theme.editConfig[table.split('.').slice(-1)];
+        const newRelFeature = getFeatureTemplate(editConfig, {
             type: "Feature",
             properties: {}
-        };
+        });
+        newRelFeature.__status__ = "empty";
         // If feature id is known, i.e. not when drawing new feature, set foreign key
         if (this.props.editContext.action !== "Draw") {
             newRelFeature.properties[this.state.relationTables[table].fk] = this.props.editContext.feature.id;
