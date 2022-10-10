@@ -160,6 +160,7 @@ div.qt-designer-widget-relation-table-container > table td.qt-designer-widget-re
 div.qt-designer-widget-relation-table-container > table td > label {
     display: block;
     text-align: center;
+    white-space: nowrap;
 }
 
 div.qt-designer-widget-relation-table-container > table th {
