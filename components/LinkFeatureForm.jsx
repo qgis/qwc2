@@ -20,6 +20,7 @@ class LinkFeatureForm extends React.Component {
     static propTypes = {
         action: PropTypes.string,
         addLayerFeatures: PropTypes.func,
+        displayField: PropTypes.string,
         editConfig: PropTypes.object,
         editContextId: PropTypes.string,
         editing: PropTypes.object,
@@ -86,7 +87,7 @@ class LinkFeatureForm extends React.Component {
                             {this.state.pickedFeatures.map(feature => (
                                 <div key={feature.id} onClick={() => this.pickFeatureSelected(feature)}
                                     onMouseOut={() => this.unhoverFeature(feature)} onMouseOver={() => this.hoverFeature(feature)}
-                                >{feature.id}</div>
+                                >{feature.properties[this.props.displayField] ?? feature.id}</div>
                             ))}
                         </div>
                     )}

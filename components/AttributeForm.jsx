@@ -263,10 +263,10 @@ class AttributeForm extends React.Component {
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
     }
-    editRelationRecord = (action, layer, dataset, idx) => {
+    editRelationRecord = (action, layer, dataset, idx, displayField) => {
         const editConfig = (this.props.theme.editConfig || {})[layer];
         const feature = this.props.editContext.feature.relationValues[dataset].features[idx];
-        this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, dataset, idx, feature, finishCallback: this.finishEditRelationRecord}});
+        this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, dataset, idx, feature, finishCallback: this.finishEditRelationRecord, displayField: displayField}});
     }
     finishEditRelationRecord = (feature) => {
         this.props.clearEditContext(this.state.childEdit.editContextId, this.props.editContext.id);
@@ -537,13 +537,13 @@ class AttributeForm extends React.Component {
         }
         return new Blob([ia], {type: mimeString});
     }
-    startChildEdit = (action, layer, featureId, updateField) => {
+    startChildEdit = (action, layer, featureId, updateField, displayField) => {
         const editConfig = (this.props.theme.editConfig || {})[layer];
         if (!editConfig) {
             // eslint-disable-next-line
             console.warn("No edit config found for linked edit layer " + layer);
         } else {
-            this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, featureId, updateField, finishCallback: this.finishChildEdit}});
+            this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, displayField, featureId, updateField, finishCallback: this.finishChildEdit}});
         }
     }
     finishChildEdit = (feature) => {
