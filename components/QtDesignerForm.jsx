@@ -245,7 +245,7 @@ class QtDesignerForm extends React.Component {
         }
         return rows;
     }
-    renderWidget = (widget, feature, dataset, updateField, nametransform = (name) => name) => {
+    renderWidget = (widget, feature, dataset, updateField, nametransform = (name) => name, disabled = false) => {
         let value = (feature.properties || {})[widget.name] ?? "";
         const prop = widget.property || {};
         if (prop.visible === "false") {
@@ -254,7 +254,7 @@ class QtDesignerForm extends React.Component {
         const attr = widget.attribute || {};
         const fieldConstraints = (this.props.fields[widget.name] || {}).constraints || {};
         const inputConstraints = {};
-        inputConstraints.readOnly = this.props.readOnly || prop.readOnly === "true" || prop.enabled === "false" || fieldConstraints.readOnly === true;
+        inputConstraints.readOnly = this.props.readOnly || prop.readOnly === "true" || prop.enabled === "false" || fieldConstraints.readOnly === true || disabled;
         inputConstraints.required = !inputConstraints.readOnly && (prop.required === "true" || fieldConstraints.required === true);
         inputConstraints.placeholder = prop.placeholderText || fieldConstraints.placeholder || "";
 
@@ -507,6 +507,7 @@ class QtDesignerForm extends React.Component {
         if (parts.length < 3) {
             return null;
         }
+        const disabled = (widget.property || {}).enabled === "false";
         const tablename = parts[1];
         const sortcol = parts[3] || null;
         const datasetname = this.props.mapPrefix + tablename;
@@ -558,21 +559,21 @@ class QtDesignerForm extends React.Component {
                                         </td>
                                         {widgetItems.map((item, widx) => {
                                             if (item.widget) {
-                                                return (<td className="qt-designer-widget-relation-row-widget" key={item.widget.name} style={columnStyles[widx]}>{this.renderWidget(item.widget, relFeature, datasetname, updateField, nametransform)}</td>);
+                                                return (<td className="qt-designer-widget-relation-row-widget" key={item.widget.name} style={columnStyles[widx]}>{this.renderWidget(item.widget, relFeature, datasetname, updateField, nametransform, disabled)}</td>);
                                             } else if (item.spacer) {
                                                 return (<td key={"spacer_" + widx} />);
                                             } else {
                                                 return null;
                                             }
                                         })}
-                                        {!this.props.readOnly && sortcol ? (
+                                        {!this.props.readOnly && !disabled && sortcol ? (
                                             <td>
                                                 <Icon icon="chevron-up" onClick={() => this.props.reorderRelationRecord(datasetname, idx, -1)} />
                                                 <br />
                                                 <Icon icon="chevron-down" onClick={() => this.props.reorderRelationRecord(datasetname, idx, 1)} />
                                             </td>
                                         ) : null}
-                                        {!this.props.readOnly ? (
+                                        {!this.props.readOnly && !disabled ? (
                                             <td className="qt-designer-widget-relation-record-icon">
                                                 <Icon icon="trash" onClick={() => this.props.removeRelationRecord(datasetname, idx)} />
                                             </td>
