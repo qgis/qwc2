@@ -61,6 +61,8 @@ class LayerTree extends React.Component {
         setActiveServiceInfo: PropTypes.func,
         setSwipe: PropTypes.func,
         showLegendIcons: PropTypes.bool,
+        showCustomLegendIcon: PropTypes.bool,
+        iconFormat: PropTypes.string,
         showQueryableIcon: PropTypes.bool,
         showRootEntry: PropTypes.bool,
         showToggleAllLayersCheckbox: PropTypes.bool,
@@ -75,6 +77,8 @@ class LayerTree extends React.Component {
     static defaultProps = {
         layers: [],
         showLegendIcons: true,
+        showCustomLegendIcon: false,
+        iconFormat: "svg",
         showRootEntry: true,
         showQueryableIcon: true,
         allowMapTips: true,
@@ -266,6 +270,15 @@ class LayerTree extends React.Component {
             const legendUrl = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
             if (legendUrl) {
                 legendicon = (<img className="layertree-item-legend-thumbnail" onMouseOut={this.hideLegendTooltip} onMouseOver={ev => this.showLegendTooltip(ev, legendUrl)} onTouchStart={ev => this.showLegendTooltip(ev, legendUrl)} src={legendUrl + "&TYPE=thumbnail"} />);
+            } else if (layer.color) {
+                legendicon = (<span className="layertree-item-legend-coloricon" style={{backgroundColor: layer.color}} />);
+            }
+        } else if (this.props.showCustomLegendIcon) {
+            const assetsPath = ConfigUtils.getAssetsPath();
+            legendicon = assetsPath + "/img/legend-icon." + this.props.iconFormat;
+            const legendUrl = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
+            if (legendUrl) {
+                legendicon = (<img className="layertree-item-legend-icon" onMouseOut={this.hideLegendTooltip} onMouseOver={ev => this.showLegendTooltip(ev, legendUrl)} onTouchStart={ev => this.showLegendTooltip(ev, legendUrl)} src={legendicon} />);
             } else if (layer.color) {
                 legendicon = (<span className="layertree-item-legend-coloricon" style={{backgroundColor: layer.color}} />);
             }

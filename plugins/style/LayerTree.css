@@ -138,6 +138,14 @@
     flex: 0 0 auto;
 }
 
+#LayerTree img.layertree-item-legend-icon {
+    height: 1.5em;
+    width: auto;
+    max-width: 2em;
+    margin-right: 0.5em;
+    flex: 0 0 auto;
+}
+
 #LayerTree span.layertree-item-legend-coloricon {
     display: inline-block;
     height: 1.5em;
