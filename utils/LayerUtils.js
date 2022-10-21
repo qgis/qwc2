@@ -738,7 +738,7 @@ const LayerUtils = {
                 }
             } else if (printExternalLayers) {
                 const items = backgroundLayer.type === "group" ? backgroundLayer.items : [backgroundLayer];
-                items.forEach(layer => {
+                items.slice(0).reverse().forEach(layer => {
                     if (layer.type === "wms" && LayerUtils.layerScaleInRange(layer, printScale)) {
                         const names = layer.params.LAYERS.split(",");
                         const opacities = layer.params.OPACITIES.split(",");
