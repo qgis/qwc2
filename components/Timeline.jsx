@@ -43,7 +43,7 @@ export default class Timeline extends React.Component {
         }
         return (
             <div className="timeline">
-                <div className="timeline-slider" onMouseDown={this.pickCurrentTimestamp} style={sliderStyle} />
+                <div className="timeline-slider" onMouseDown={this.pickCurrentTimestamp} onWheel={this.onSliderWheel} style={sliderStyle} />
                 {this.props.enabled ? (
                     <div className="timeline-cursor" style={cursorStyle}>
                         <div className="timeline-cursor-label" style={labelStyle}>
@@ -55,6 +55,7 @@ export default class Timeline extends React.Component {
         );
     }
     pickCurrentTimestamp = (event) => {
+        clearTimeout(this.timestampChangeTimeout);
         const target = event.currentTarget;
 
         const computeTimestamp = (ev) => {
@@ -99,5 +100,27 @@ export default class Timeline extends React.Component {
             document.removeEventListener("mousemove", computeTimestamp);
         }, {once: true, capture: true});
         computeTimestamp(event);
+    }
+    onSliderWheel = (ev) => {
+        clearTimeout(this.timestampChangeTimeout);
+        const currentTimestamp = dayjs(this.state.currentTimestampDrag || this.props.currentTimestamp);
+        let newTimeStamp = null;
+        if (ev.deltaY < 0) {
+            const num = parseInt(this.props.stepSizeUnit.slice(0, -1), 10) || 1;
+            newTimeStamp = dayjs(currentTimestamp).add(-num, this.props.stepSizeUnit.slice(-1));
+        } else {
+            const num = parseInt(this.props.stepSizeUnit.slice(0, -1), 10) || 1;
+            newTimeStamp = dayjs(currentTimestamp).add(num, this.props.stepSizeUnit.slice(-1));
+        }
+        if (newTimeStamp < this.props.startTime) {
+            newTimeStamp = this.props.startTime;
+        } else if (newTimeStamp > this.props.endTime) {
+            newTimeStamp = this.props.endTime;
+        }
+        this.setState({currentTimestampDrag: newTimeStamp});
+        this.timestampChangeTimeout = setTimeout(() => {
+            this.props.timestampChanged(+this.state.currentTimestampDrag);
+            this.setState({currentTimestampDrag: null});
+        }, 500);
     }
 }
