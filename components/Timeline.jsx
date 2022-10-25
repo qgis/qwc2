@@ -63,7 +63,7 @@ export default class Timeline extends React.Component {
             }
             const pos = ev.clientX;
             const rect = target.getBoundingClientRect();
-            const perc = (pos - rect.left) / rect.width;
+            const perc = Math.max(0, Math.min(1, (pos - rect.left) / rect.width));
             const deltaT = this.props.endTime.diff(this.props.startTime);
             let currentTimestamp = this.props.startTime.add(perc * deltaT, 'ms');
             // Snap to configured step interval
