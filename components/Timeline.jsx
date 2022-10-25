@@ -31,7 +31,7 @@ export default class Timeline extends React.Component {
         const deltaT = this.props.endTime.diff(this.props.startTime);
         const perc = (dayjs(this.state.currentTimestampDrag || this.props.currentTimestamp).diff(this.props.startTime) / deltaT * 100).toFixed(2) + "%";
         const cursorStyle = {
-            left: perc
+            left: 'calc(' + perc + ' - 2px)'
         };
         const labelStyle = {
             transform: "translateX(-" + perc + ")"
