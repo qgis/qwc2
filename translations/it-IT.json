@@ -334,6 +334,7 @@
     },
     "timemanager": {
       "animationinterval": "Intervallo animazione",
+      "loop": "Ripeti",
       "markers": "Marker",
       "notemporaldata": "Nessun layer con dimensioni temporali è attivo nella cartina.",
       "play": "Anima",

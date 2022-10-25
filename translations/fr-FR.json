@@ -334,6 +334,7 @@
     },
     "timemanager": {
       "animationinterval": "Intervalle d'animation",
+      "loop": "",
       "markers": "Marqueurs",
       "notemporaldata": "Aucune couche temporelle n'est visible sur la carte.",
       "play": "Jouer",

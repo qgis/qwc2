@@ -88,6 +88,7 @@ class TimeManager extends React.Component {
         currentTimestamp: 0,
         currentTimestampDrag: null, // Only when dragging
         animationActive: false,
+        animationLoop: false,
         animationInterval: 1,
         stepSize: 1,
         stepSizeUnit: 'd', // 1 day
@@ -223,7 +224,8 @@ class TimeManager extends React.Component {
             {key: "playrev", tooltip: LocaleUtils.trmsg("timemanager.playrev"), icon: "triangle-left", disabled: this.state.animationActive},
             {key: "stop", tooltip: LocaleUtils.trmsg("timemanager.stop"), icon: "square", disabled: !this.state.animationActive},
             {key: "play", tooltip: LocaleUtils.trmsg("timemanager.play"), icon: "triangle-right", disabled: this.state.animationActive},
-            {key: "next", tooltip: LocaleUtils.trmsg("timemanager.stepfwd"), icon: "nav-right"}
+            {key: "next", tooltip: LocaleUtils.trmsg("timemanager.stepfwd"), icon: "nav-right"},
+            {key: "loop", tooltip: LocaleUtils.trmsg("timemanager.loop"), icon: "refresh", pressed: this.state.animationLoop}
         ];
         const options = (
             <div className="time-manager-options">
@@ -317,15 +319,21 @@ class TimeManager extends React.Component {
                 this.advanceAnimation(-1);
             }, 1000 * this.state.animationInterval);
             this.setState({animationActive: true});
+        } else if (action === "loop") {
+            this.setState({animationLoop: !this.state.animationLoop});
         }
     }
     advanceAnimation = (stepdir) => {
         const newday = this.step(stepdir);
         const lastday = this.getEndTime();
         if (newday > lastday) {
-            this.setState({currentTimestamp: +lastday, animationActive: false});
-            clearInterval(this.animationTimer);
-            this.animationTimer = null;
+            if (this.state.animationLoop) {
+                this.setState({currentTimestamp: +this.getStartTime()});
+            } else {
+                this.setState({currentTimestamp: +lastday, animationActive: false});
+                clearInterval(this.animationTimer);
+                this.animationTimer = null;
+            }
         } else {
             this.setState({currentTimestamp: +newday});
         }

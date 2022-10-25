@@ -334,6 +334,7 @@
     },
     "timemanager": {
       "animationinterval": "Interval d'animació",
+      "loop": "",
       "markers": "Marcadors",
       "notemporaldata": "No hi ha capes temporals visibles al mapa",
       "play": "Reproduir",

@@ -334,6 +334,7 @@
     },
     "timemanager": {
       "animationinterval": "Animationsintervall",
+      "loop": "Schleife",
       "markers": "Marker",
       "notemporaldata": "Keine sichtbaren Ebenen in der Karte sind mit Zeitinformationen versehen.",
       "play": "Abspielen",

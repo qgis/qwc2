@@ -42,7 +42,7 @@ class ButtonBar extends React.Component {
                 {this.props.buttons.map(button => {
                     let classes = classnames({
                         button: true,
-                        pressed: this.props.active === button.key
+                        pressed: this.props.active === button.key || button.pressed
                     });
                     classes += button.extraClasses ? ' ' + button.extraClasses : '';
                     return (

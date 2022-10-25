@@ -276,6 +276,7 @@
     "themeswitcher.openintab",
     "themeswitcher.restrictedthemeinfo",
     "timemanager.animationinterval",
+    "timemanager.loop",
     "timemanager.markers",
     "timemanager.notemporaldata",
     "timemanager.play",
