@@ -53,42 +53,6 @@ div.time-manager-options td {
     white-space: nowrap;
 }
 
-div.time-manager-timeline {
-    height: 16px;
-    position: relative;
-    margin: 0.25em;
-    border: 1px solid @item_border@;
-}
-
-div.time-manager-time-blocks {
-    background-color: #ddd;
-    height: 100%;
-    display: flex;
-}
-
-div.time-manager-time-blocks > div {
-    flex: 1 1 auto;
-}
-
-div.time-manager-cursor {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background-color: black;
-}
-
-div.time-manager-cursor-label {
-    position: absolute;
-    font-size: 75%;
-    top: calc(100%);
-    text-align: center;
-    padding: 0.25em;
-    background-color: white;
-    border: 1px solid @item_border@;
-    z-index: 1;
-}
-
 div.time-manager-ticks {
     display: flex;
     margin: 0.25em 0.25em 0 0.25em;

@@ -21,6 +21,7 @@ import dateParser from 'any-date-parser';
 import {setLayerDimensions, addLayerFeatures, removeLayer, LayerRole} from '../actions/layers';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import Icon from '../components/Icon';
+import Timeline from '../components/Timeline';
 import ButtonBar from '../components/widgets/ButtonBar';
 import DateInput from '../components/widgets/DateInput';
 import NumberInput from '../components/widgets/NumberInput';
@@ -84,7 +85,7 @@ class TimeManager extends React.Component {
         startDate: null,
         endDate: null,
         ranges: [],
-        currentTimestamp: "",
+        currentTimestamp: 0,
         currentTimestampDrag: null, // Only when dragging
         animationActive: false,
         animationInterval: 1,
@@ -224,16 +225,6 @@ class TimeManager extends React.Component {
             {key: "play", tooltip: LocaleUtils.trmsg("timemanager.play"), icon: "triangle-right", disabled: this.state.animationActive},
             {key: "next", tooltip: LocaleUtils.trmsg("timemanager.stepfwd"), icon: "nav-right"}
         ];
-        // Time span, in seconds
-        const deltaT = this.getEndTime().diff(this.getStartTime());
-        const perc = (dayjs(this.state.currentTimestampDrag || this.state.currentTimestamp).diff(this.getStartTime()) / deltaT * 100).toFixed(2) + "%";
-        const cursorStyle = {
-            left: perc
-        };
-        const labelStyle = {
-            transform: "translateX(-" + perc + ")"
-        };
-
         const options = (
             <div className="time-manager-options">
                 <table>
@@ -265,12 +256,6 @@ class TimeManager extends React.Component {
             </div>
         );
 
-        let blocksStyle = {};
-        if (this.state.markersEnabled) {
-            blocksStyle = {
-                background: 'linear-gradient(90deg, ' + this.props.blockColors.join(", ") + ')'
-            };
-        }
         return (
             <div className="time-manager-body" role="body">
                 <div className="time-manager-toolbar">
@@ -297,16 +282,9 @@ class TimeManager extends React.Component {
                     <div><DateInput onChange={this.setStartTime} value={(this.state.startDate || timeValues[0]).format('YYYY-MM-DD')} /></div>
                     <div><DateInput onChange={this.setEndTime} value={(this.state.endDate || timeValues[timeValues.length - 1]).format('YYYY-MM-DD')} /></div>
                 </div>
-                <div className="time-manager-timeline">
-                    <div className="time-manager-time-blocks" onMouseDown={this.pickCurrentTimestamp} style={blocksStyle} />
-                    {this.state.timeEnabled ? (
-                        <div className="time-manager-cursor" style={cursorStyle}>
-                            <div className="time-manager-cursor-label" style={labelStyle}>
-                                {dayjs(this.state.currentTimestampDrag || this.state.currentTimestamp).format("YYYY-MM-DD[\n]HH:mm:ss")}
-                            </div>
-                        </div>
-                    ) : null}
-                </div>
+                <Timeline currentTimestamp={this.state.currentTimestamp} enabled={this.state.timeEnabled}
+                    endTime={this.getEndTime()} gradientSteps={this.state.markersEnabled ? this.props.blockColors : []}
+                    startTime={this.getStartTime()} stepSizeUnit={this.state.stepSizeUnit} timestampChanged={timestamp => this.setState({currentTimestamp: timestamp})}/>
             </div>
         );
     }
@@ -316,51 +294,6 @@ class TimeManager extends React.Component {
         this.animationTimer = null;
         this.updateMapMarkersTimeout = null;
         this.setState({timeEnabled: enabled, currentTimestamp: +this.getStartTime(), animationActive: false, timeMarkers: null});
-    }
-    pickCurrentTimestamp = (event) => {
-        const target = event.currentTarget;
-
-        const computeTimestamp = (ev) => {
-            if (!this.state.timeEnabled) {
-                return;
-            }
-            const pos = ev.clientX;
-            const rect = target.getBoundingClientRect();
-            const perc = (pos - rect.left) / rect.width;
-            const deltaT = this.getEndTime().diff(this.getStartTime());
-            let currentTimestamp = this.getStartTime().add(perc * deltaT, 'ms');
-            // Snap to configured step interval
-            let add = null;
-            if (this.state.stepSizeUnit.endsWith("m")) {
-                add = currentTimestamp.second() > 30;
-                currentTimestamp = currentTimestamp.second(0);
-            } else if (this.state.stepSizeUnit.endsWith("h")) {
-                add = currentTimestamp.minute() > 30;
-                currentTimestamp = currentTimestamp.second(0).minute(0);
-            } else if (this.state.stepSizeUnit.endsWith("d")) {
-                add = currentTimestamp.hour() > 12;
-                currentTimestamp = currentTimestamp.second(0).minute(0).hour(0);
-            } else if (this.state.stepSizeUnit.endsWith("M")) {
-                add = currentTimestamp.day() > 15;
-                currentTimestamp = currentTimestamp.second(0).minute(0).hour(0).date(1);
-            } else if (this.state.stepSizeUnit.endsWith("y")) {
-                add = currentTimestamp.month() > 5;
-                currentTimestamp = currentTimestamp.second(0).minute(0).hour(0).date(1).month(0);
-            }
-            if (add) {
-                const num = parseInt(this.state.stepSizeUnit.slice(0, -1), 10) || 1;
-                currentTimestamp = currentTimestamp.add(num, this.state.stepSizeUnit.slice(-1));
-            }
-            this.setState({currentTimestampDrag: currentTimestamp});
-        };
-        document.addEventListener("mousemove", computeTimestamp);
-        document.addEventListener("mouseup", () => {
-            if (this.state.currentTimestampDrag) {
-                this.setState({currentTimestamp: this.state.currentTimestampDrag, currentTimestampDrag: null});
-            }
-            document.removeEventListener("mousemove", computeTimestamp);
-        }, {once: true, capture: true});
-        computeTimestamp(event);
     }
     animationButtonClicked = (action) => {
         this.stopAnimation();

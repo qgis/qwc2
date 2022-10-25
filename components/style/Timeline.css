@@ -1,0 +1,31 @@
+div.timeline {
+    height: 16px;
+    position: relative;
+    margin: 0.25em;
+    border: 1px solid @item_border@;
+}
+
+div.timeline-slider {
+    background-color: #ddd;
+    height: 100%;
+    display: flex;
+}
+
+div.timeline-cursor {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: black;
+}
+
+div.timeline-cursor-label {
+    position: absolute;
+    font-size: 75%;
+    top: calc(100%);
+    text-align: center;
+    padding: 0.25em;
+    background-color: white;
+    border: 1px solid @item_border@;
+    z-index: 1;
+}
