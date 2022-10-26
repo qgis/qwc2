@@ -35,6 +35,9 @@ class MapTip extends React.Component {
         pos: null
     }
     componentDidUpdate(prevProps, prevState) {
+        if (this.props.map !== prevProps.map || this.props.theme !== prevProps.theme) {
+            clearTimeout(this.timeoutId);
+        }
         if (this.props.mapTipsEnabled && this.props.mousepos &&
             this.props.mousepos !== prevProps.mousepos &&
             (
