@@ -492,12 +492,13 @@ class SearchBox extends React.Component {
             } else {
                 this.props.panTo([result.x, result.y], result.crs);
             }
+            const label = (result.label !== undefined ? result.label : result.text || '').replace(/<\/?\w+\s*\/?>/g, '');
             if (this.props.searchProviders[provider].getResultGeometry) {
-                this.props.searchProviders[provider].getResultGeometry(result, (itm, geometry, crs) => { this.showProviderResultGeometry(itm, geometry, crs, result.text); });
+                this.props.searchProviders[provider].getResultGeometry(result, (itm, geometry, crs) => { this.showProviderResultGeometry(itm, geometry, crs, label); });
             }
             const feature = {
                 geometry: result.geometry || {type: 'Point', coordinates: [result.x, result.y]},
-                properties: { label: (result.label !== undefined ? result.label : result.text || '').replace(/<\/?\w+\s*\/?>/g, '') },
+                properties: { label: label },
                 styleName: result.geometry ? 'default' : 'marker',
                 crs: result.crs,
                 id: 'searchmarker'
