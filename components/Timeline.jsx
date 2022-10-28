@@ -10,6 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import isEmpty from 'lodash.isempty';
+import DateInput from './widgets/DateInput';
 import './style/Timeline.css';
 
 
@@ -18,8 +19,10 @@ export default class Timeline extends React.Component {
         currentTimestamp: PropTypes.number,
         enabled: PropTypes.bool,
         endTime: PropTypes.object,
+        endTimeChanged: PropTypes.func,
         gradientSteps: PropTypes.array,
         startTime: PropTypes.object,
+        startTimeChanged: PropTypes.func,
         stepSizeUnit: PropTypes.string,
         timestampChanged: PropTypes.func
     }
@@ -43,14 +46,20 @@ export default class Timeline extends React.Component {
         }
         return (
             <div className="timeline">
-                <div className="timeline-slider" onMouseDown={this.pickCurrentTimestamp} onWheel={this.onSliderWheel} style={sliderStyle} />
-                {this.props.enabled ? (
-                    <div className="timeline-cursor" style={cursorStyle}>
-                        <div className="timeline-cursor-label" style={labelStyle}>
-                            {dayjs(this.state.currentTimestampDrag || this.props.currentTimestamp).format("YYYY-MM-DD[\n]HH:mm:ss")}
+                <div className="timeline-ticks">
+                    <div><DateInput onChange={this.props.startTimeChanged} value={this.props.startTime.format('YYYY-MM-DD')} /></div>
+                    <div><DateInput onChange={this.props.endTimeChanged} value={this.props.endTime.format('YYYY-MM-DD')} /></div>
+                </div>
+                <div className="timeline-slider-container">
+                    <div className="timeline-slider" onMouseDown={this.pickCurrentTimestamp} onWheel={this.onSliderWheel} style={sliderStyle} />
+                    {this.props.enabled ? (
+                        <div className="timeline-cursor" style={cursorStyle}>
+                            <div className="timeline-cursor-label" style={labelStyle}>
+                                {dayjs(this.state.currentTimestampDrag || this.props.currentTimestamp).format("YYYY-MM-DD[\n]HH:mm:ss")}
+                            </div>
                         </div>
-                    </div>
-                ) : null}
+                    ) : null}
+                </div>
             </div>
         );
     }

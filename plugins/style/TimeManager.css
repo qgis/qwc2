@@ -52,26 +52,3 @@ div.time-manager-options {
 div.time-manager-options td {
     white-space: nowrap;
 }
-
-div.time-manager-ticks {
-    display: flex;
-    margin: 0.25em 0.25em 0 0.25em;
-}
-
-div.time-manager-ticks > div {
-    flex: 1 1 auto;
-    text-align: center;
-    font-size: 75%;
-}
-
-div.time-manager-ticks > div > input {
-    border: 1px solid @item_border@;
-}
-
-div.time-manager-ticks > div:first-child {
-    text-align: left;
-}
-
-div.time-manager-ticks > div:last-child {
-    text-align: right;
-}

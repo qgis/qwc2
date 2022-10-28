@@ -23,7 +23,6 @@ import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import Icon from '../components/Icon';
 import Timeline from '../components/Timeline';
 import ButtonBar from '../components/widgets/ButtonBar';
-import DateInput from '../components/widgets/DateInput';
 import NumberInput from '../components/widgets/NumberInput';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import ResizeableWindow from '../components/ResizeableWindow';
@@ -280,13 +279,11 @@ class TimeManager extends React.Component {
                         {this.state.settingsPopup ? options : null}
                     </span>
                 </div>
-                <div className="time-manager-ticks">
-                    <div><DateInput onChange={this.setStartTime} value={(this.state.startDate || timeValues[0]).format('YYYY-MM-DD')} /></div>
-                    <div><DateInput onChange={this.setEndTime} value={(this.state.endDate || timeValues[timeValues.length - 1]).format('YYYY-MM-DD')} /></div>
-                </div>
                 <Timeline currentTimestamp={this.state.currentTimestamp} enabled={this.state.timeEnabled}
-                    endTime={this.getEndTime()} gradientSteps={this.state.markersEnabled ? this.props.blockColors : []}
-                    startTime={this.getStartTime()} stepSizeUnit={this.state.stepSizeUnit} timestampChanged={timestamp => this.setState({currentTimestamp: timestamp})}/>
+                    endTime={this.getEndTime()} endTimeChanged={this.setEndTime}
+                    gradientSteps={this.state.markersEnabled ? this.props.blockColors : []}
+                    startTime={this.getStartTime()} startTimeChanged={this.setStartTime}
+                    stepSizeUnit={this.state.stepSizeUnit} timestampChanged={timestamp => this.setState({currentTimestamp: timestamp})}/>
             </div>
         );
     }

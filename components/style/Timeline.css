@@ -1,4 +1,4 @@
-div.timeline {
+div.timeline-slider-container {
     height: 16px;
     position: relative;
     margin: 0.25em;
@@ -28,4 +28,27 @@ div.timeline-cursor-label {
     background-color: white;
     border: 1px solid @item_border@;
     z-index: 1;
+}
+
+div.timeline-ticks {
+    display: flex;
+    margin: 0.25em 0.25em 0 0.25em;
+}
+
+div.timeline-ticks > div {
+    flex: 1 1 auto;
+    text-align: center;
+    font-size: 75%;
+}
+
+div.timeline-ticks > div > input {
+    border: 1px solid @item_border@;
+}
+
+div.timeline-ticks > div:first-child {
+    text-align: left;
+}
+
+div.timeline-ticks > div:last-child {
+    text-align: right;
 }
