@@ -23,12 +23,16 @@ class MapTip extends React.Component {
         layers: PropTypes.array,
         map: PropTypes.object,
         mapTipsEnabled: PropTypes.bool,
+        maxHeight: PropTypes.string,
+        maxWidth: PropTypes.string,
         mousepos: PropTypes.object,
         removeLayer: PropTypes.func,
         theme: PropTypes.object
     }
     static defaultProps = {
-        layerFeatureCount: 5
+        layerFeatureCount: 5,
+        maxHeight: "15em",
+        maxWidth: "20em"
     }
     state = {
         maptips: [],
@@ -111,9 +115,11 @@ class MapTip extends React.Component {
     render() {
         if (!isEmpty(this.state.maptips) && this.state.pos) {
             // Render off-screen first to measure dimensions, then place as necessary
-            const position = {
+            const style = {
                 left: 10000 + "px",
-                top: 10000 + "px"
+                top: 10000 + "px",
+                maxHeight: this.props.maxHeight,
+                maxWidth: this.props.maxWidth
             };
             const bufferPos = {
                 left: (this.state.pos[0] - 8) + "px",
@@ -125,7 +131,7 @@ class MapTip extends React.Component {
                 <div
                     id="MapTip" key="MapTip"
                     ref={this.positionMapTip}
-                    style={position}>
+                    style={style}>
                     {this.state.maptips.map((maptip, idx) => (
                         <div dangerouslySetInnerHTML={{__html: maptip}} key={"tip" + idx} />
                     ))}
