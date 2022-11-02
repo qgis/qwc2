@@ -495,19 +495,20 @@ class SearchBox extends React.Component {
             const label = (result.label !== undefined ? result.label : result.text || '').replace(/<\/?\w+\s*\/?>/g, '');
             if (this.props.searchProviders[provider].getResultGeometry) {
                 this.props.searchProviders[provider].getResultGeometry(result, (itm, geometry, crs) => { this.showProviderResultGeometry(itm, geometry, crs, label); });
+            } else {
+                const feature = {
+                    geometry: result.geometry || {type: 'Point', coordinates: [result.x, result.y]},
+                    properties: { label: label },
+                    styleName: result.geometry ? 'default' : 'marker',
+                    crs: result.crs,
+                    id: 'searchmarker'
+                };
+                const layer = {
+                    id: "searchselection",
+                    role: LayerRole.SELECTION
+                };
+                this.props.addLayerFeatures(layer, [feature], true);
             }
-            const feature = {
-                geometry: result.geometry || {type: 'Point', coordinates: [result.x, result.y]},
-                properties: { label: label },
-                styleName: result.geometry ? 'default' : 'marker',
-                crs: result.crs,
-                id: 'searchmarker'
-            };
-            const layer = {
-                id: "searchselection",
-                role: LayerRole.SELECTION
-            };
-            this.props.addLayerFeatures(layer, [feature], true);
             UrlParams.updateParams({hp: undefined, hf: undefined, hc: "1"});
             this.props.logAction("SEARCH_TEXT", {searchText: this.state.searchText});
             this.props.logAction("SEARCH_RESULT_SELECTED", {place: result.text});
