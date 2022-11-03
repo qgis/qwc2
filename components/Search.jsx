@@ -440,7 +440,7 @@ class Search extends React.Component {
             let text = item.label !== undefined ? item.label : item.text;
             text = text.replace(/<[^>]*>/g, '');
             if (item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
-                this.props.searchProviders[item.provider].getResultGeometry(item, (itm, geometry, crs) => { this.showFeatureGeometry(itm, geometry, crs, text); });
+                this.props.searchProviders[item.provider].getResultGeometry(item, (itm, geometry, crs, hidemarker) => { this.showFeatureGeometry(itm, geometry, crs, text, hidemarker); });
             } else {
                 const layer = {
                     id: "searchselection",
@@ -487,13 +487,16 @@ class Search extends React.Component {
         }
         this.setState({invisibleLayerQuery});
     }
-    showFeatureGeometry = (item, geometry, crs, text) => {
+    showFeatureGeometry = (item, geometry, crs, text, hidemarker) => {
         if (item === this.props.currentResult && !isEmpty(geometry)) {
             let features = [];
             const highlightFeature = VectorLayerUtils.wktToGeoJSON(geometry, crs, this.props.map.projection);
             if (highlightFeature) {
                 const center = VectorLayerUtils.getFeatureCenter(highlightFeature);
-                features = [highlightFeature, this.createMarker(center, item.crs, text)];
+                features = [highlightFeature];
+                if (!hidemarker) {
+                    features.push(this.createMarker(center, item.crs, text));
+                }
             } else {
                 features = [this.createMarker([item.x, item.y], item.crs, text)];
             }
