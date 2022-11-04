@@ -6,9 +6,9 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import React from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import {Provider, connect} from 'react-redux';
+import {Provider, useSelector, useDispatch} from 'react-redux';
 
 // Needed for IE11 to avoid 'Promise not defined' error in axios
 import "core-js/stable";
@@ -26,8 +26,6 @@ import PluginsContainer from './PluginsContainer';
 import {changeBrowserProperties} from '../actions/browser';
 import {loadLocale} from '../actions/locale';
 import {localConfigLoaded, setStartupParameters} from '../actions/localConfig';
-import {addLayer} from '../actions/layers';
-import {changeSearch} from '../actions/search';
 import {themesLoaded, setCurrentTheme} from '../actions/theme';
 import {setCurrentTask} from '../actions/task';
 
@@ -39,7 +37,6 @@ import {UrlParams, resolvePermaLink} from '../utils/PermaLinkUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 
 import './style/App.css';
-
 
 const CSRF_TOKEN = MiscUtils.getCsrfToken();
 
@@ -54,46 +51,28 @@ if (CSRF_TOKEN) {
     });
 }
 
+const AppInitComponent = ({ appConfig, initialParams }) => {
+    const { mapSize, layers } = useSelector((state) => ({
+        mapSize: state.map.size,
+        layers: state.layers.flat
+    }));
+    const dispatch = useDispatch();
+    const initializedRef = useRef(false);
 
-class AppInitComponent extends React.Component {
-    static propTypes = {
-        addLayer: PropTypes.func,
-        appConfig: PropTypes.object,
-        changeSearch: PropTypes.func,
-        initialParams: PropTypes.object,
-        mapSize: PropTypes.object,
-        setCurrentTask: PropTypes.func,
-        setCurrentTheme: PropTypes.func,
-        setStartupParameters: PropTypes.func,
-        themesLoaded: PropTypes.func
-    }
-    constructor(props) {
-        super(props);
-        this.initialized = false;
-    }
-    componentDidMount() {
-        // The map component needs to have finished loading before theme initialization can proceed
-        if (this.props.mapSize && !this.initialized) {
-            this.init();
-        }
-    }
-    componentDidUpdate(prevProps, prevState) {
-        this.componentDidMount();
-    }
-    init = () => {
-        this.initialized = true;
+    const init = () => {
+        initializedRef.current = true;
 
         // Load themes.json
         axios.get("themes.json").then(response => {
             const themes = response.data.themes || {};
-            if (this.props.appConfig.themePreprocessor) {
-                this.props.appConfig.themePreprocessor(themes);
+            if (appConfig.themePreprocessor) {
+                appConfig.themePreprocessor(themes);
             }
-            this.props.themesLoaded(themes);
+            dispatch(themesLoaded(themes));
 
             // Resolve permalink and restore settings
-            resolvePermaLink(this.props.initialParams, (params, state) => {
-                this.props.setStartupParameters(params);
+            resolvePermaLink(initialParams, (params) => {
+                dispatch(setStartupParameters(params));
                 let theme = ThemeUtils.getThemeById(themes,  params.t);
                 if (!theme || theme.restricted) {
                     if (ConfigUtils.getConfigProp("dontLoadDefaultTheme")) {
@@ -135,7 +114,19 @@ class AppInitComponent extends React.Component {
                 // Restore theme and layers
                 if (theme) {
                     try {
-                        this.props.setCurrentTheme(theme, themes, false, initialView, layerParams, visibleBgLayer, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer);
+                        dispatch(
+                            setCurrentTheme(
+                                theme,
+                                themes,
+                                false,
+                                initialView,
+                                layerParams,
+                                visibleBgLayer,
+                                layers,
+                                appConfig.themeLayerRestorer,
+                                appConfig.externalLayerRestorer
+                            )
+                        );
                     } catch (e) {
                         console.log(e.stack);
                     }
@@ -144,80 +135,80 @@ class AppInitComponent extends React.Component {
         });
         const task = ConfigUtils.getConfigProp("startupTask");
         if (task) {
-            this.props.setCurrentTask(task.key, task.mode, task.mapClickAction);
+            dispatch(setCurrentTask(task.key, task.mode, task.mapClickAction));
         }
-    }
-    render() {
-        return null;
-    }
-}
+    };
 
-const AppInit = connect(state => ({
-    mapSize: state.map.size,
-    layers: state.layers.flat,
-    currentTask: state.task.id
-}), {
-    themesLoaded: themesLoaded,
-    setCurrentTask: setCurrentTask,
-    changeSearch: changeSearch,
-    setCurrentTheme: setCurrentTheme,
-    setStartupParameters: setStartupParameters,
-    addLayer: addLayer
-})(AppInitComponent);
+    useEffect(() => {
+        if (mapSize && !initializedRef.current) {
+            init();
+        }
+    }, [mapSize]);
 
+    return null;
+};
 
-export default class StandardApp extends React.Component {
-    static propTypes = {
-        appConfig: PropTypes.object
-    }
-    constructor(props) {
-        super(props);
-        StandardStore.init(this.props.appConfig.initialState || {}, this.props.appConfig.actionLogger);
-        this.store = StandardStore.get();
-        this.init();
-        // Save initial params before they get overwritten
-        this.initialParams = UrlParams.getParams();
-        this.touchY = null;
-    }
-    componentDidMount() {
-        window.addEventListener('resize', this.computeVh);
-        this.computeVh();
-    }
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.computeVh);
-    }
-    computeVh = () => {
-        // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-        document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01 ) + 'px');
-    }
-    render() {
-        const plugins = this.props.appConfig.pluginsDef.plugins;
-        return (
-            <Provider store={this.store}>
-                <div ref={this.setupTouchEvents}>
-                    <AppInit appConfig={this.props.appConfig} initialParams={this.initialParams}/>
-                    <Localized>
-                        <PluginsContainer plugins={plugins} pluginsAppConfig={this.props.appConfig.pluginsDef.cfg || {}} />
-                    </Localized>
-                </div>
-            </Provider>
-        );
-    }
-    setupTouchEvents = (el) => {
-        el.addEventListener('touchstart', ev => {
-            this.touchY = ev.targetTouches[0].clientY;
-        }, { passive: false });
-        el.addEventListener('touchmove', this.preventOverscroll, { passive: false });
-    }
-    preventOverscroll = (ev) => {
+const StandardApp = ({ appConfig }) => {
+    const [store, setStore] = useState(() => {
+        StandardStore.init(appConfig.initialState || {}, appConfig.actionLogger);
+        return StandardStore.get();
+    });
+    const [initialParams] = useState(UrlParams.getParams());
+    const [touchY, setTouchY] = useState(null);
+
+    const init = () => {
+        // Detect browser properties
+        store.dispatch(changeBrowserProperties(ConfigUtils.getBrowserProperties()));
+
+        // Load config.json
+        const configParams = Object.entries(UrlParams.getParams()).reduce((res, [key, value]) => {
+            if (key.startsWith("config:")) {
+                res[key.slice(7)] = value;
+            }
+            return res;
+        }, {});
+        ConfigUtils.loadConfiguration(configParams).then((config) => {
+            store.dispatch(localConfigLoaded(config));
+            const defaultLocale = appConfig.getDefaultLocale ? appConfig.getDefaultLocale() : "";
+            // Dispatch user locale
+            store.dispatch(loadLocale(appConfig.defaultLocaleData, defaultLocale));
+            // Add projections from config
+            for (const proj of config.projections || []) {
+                if (Proj4js.defs(proj.code) === undefined) {
+                    Proj4js.defs(proj.code, proj.proj);
+                }
+                CoordinatesUtils.setCrsLabels({[proj.code]: proj.label});
+            }
+
+            olProj4Register(Proj4js);
+        });
+    };
+
+    useEffect(() => {
+        setStore(StandardStore.get());
+        init();
+    }, [store]);
+
+    useEffect(() => {
+        const computeVh = () => {
+            // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+            document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01 ) + 'px');
+        };
+        computeVh();
+        window.addEventListener('resize', computeVh);
+
+        return window.removeEventListener('resize', computeVh);
+    }, []);
+
+    const preventOverscroll = useCallback((ev) => {
         if (ev.touches[0].touchType !== "direct") {
             // Don't do anything for stylus inputs
             return;
         }
         let scrollEvent = false;
         let element = ev.target;
-        const direction = ev.targetTouches[0].clientY - this.touchY;
-        this.touchY = ev.targetTouches[0].clientY;
+        const direction = ev.targetTouches[0].clientY - touchY;
+        setTouchY(ev.targetTouches[0].clientY);
         while (!scrollEvent && element) {
             let scrollable = element.scrollHeight > element.clientHeight;
             // Workaround for resizeable-window having scrollHeight > clientHeight even though it has no scrollbar
@@ -240,32 +231,29 @@ export default class StandardApp extends React.Component {
         if (!scrollEvent) {
             ev.preventDefault();
         }
-    }
-    init = () => {
-        // Detect browser properties
-        this.store.dispatch(changeBrowserProperties(ConfigUtils.getBrowserProperties()));
+    }, [touchY]);
+    const setupTouchEvents = useCallback((el) => {
+        el.addEventListener('touchstart', ev => {
+            setTouchY(ev.targetTouches[0].clientY);
+        }, { passive: false });
+        el.addEventListener('touchmove', preventOverscroll, { passive: false });
+    }, [preventOverscroll]);
 
-        // Load config.json
-        const configParams = Object.entries(UrlParams.getParams()).reduce((res, [key, value]) => {
-            if (key.startsWith("config:")) {
-                res[key.slice(7)] = value;
-            }
-            return res;
-        }, {});
-        ConfigUtils.loadConfiguration(configParams).then((config) => {
-            this.store.dispatch(localConfigLoaded(config));
-            const defaultLocale = this.props.appConfig.getDefaultLocale ? this.props.appConfig.getDefaultLocale() : "";
-            // Dispatch user locale
-            this.store.dispatch(loadLocale(this.props.appConfig.defaultLocaleData, defaultLocale));
-            // Add projections from config
-            for (const proj of config.projections || []) {
-                if (Proj4js.defs(proj.code) === undefined) {
-                    Proj4js.defs(proj.code, proj.proj);
-                }
-                CoordinatesUtils.setCrsLabels({[proj.code]: proj.label});
-            }
+    const plugins = appConfig.pluginsDef.plugins;
+    return (
+        <Provider store={store}>
+            <div ref={setupTouchEvents}>
+                <AppInitComponent appConfig={appConfig} initialParams={initialParams}/>
+                <Localized>
+                    <PluginsContainer plugins={plugins} pluginsAppConfig={appConfig.pluginsDef.cfg || {}} />
+                </Localized>
+            </div>
+        </Provider>
+    );
+};
 
-            olProj4Register(Proj4js);
-        });
-    }
-}
+StandardApp.propTypes = {
+    appConfig: PropTypes.object
+};
+
+export default StandardApp;
