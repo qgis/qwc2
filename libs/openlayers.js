@@ -21,6 +21,7 @@ import OlFormatGML2 from 'ol/format/GML2';
 import OlFormatGML3 from 'ol/format/GML3';
 import OlFormatGML32 from 'ol/format/GML32';
 import OlFormatKML from 'ol/format/KML';
+import OlFormatMVT from 'ol/format/MVT';
 import OlFormatWFS from 'ol/format/WFS';
 import OlFormatWMSCapabilities from 'ol/format/WMSCapabilities';
 import OlFormatWMTSCapabilities from 'ol/format/WMTSCapabilities';
@@ -49,6 +50,7 @@ import OlLayer from 'ol/layer/Layer';
 import OlLayerImage from 'ol/layer/Image';
 import OlLayerTile from 'ol/layer/Tile';
 import OlLayerVector from 'ol/layer/Vector';
+import OlLayerVectorTile from 'ol/layer/VectorTile';
 import OlLayerGroup from 'ol/layer/Group';
 import * as OlLoadingstrategy from 'ol/loadingstrategy';
 import OlMap from 'ol/Map';
@@ -60,6 +62,7 @@ import OlSourceImageWMS from 'ol/source/ImageWMS';
 import OlSourceOSM from 'ol/source/OSM';
 import OlSourceTileWMS from 'ol/source/TileWMS';
 import OlSourceVector from 'ol/source/Vector';
+import OlSourceVectorTile from 'ol/source/VectorTile';
 import OlSourceWMTS from 'ol/source/WMTS';
 import OlSourceXYZ from 'ol/source/XYZ';
 import * as OlSphere from 'ol/sphere';
@@ -97,6 +100,7 @@ export default {
         GML3: OlFormatGML3,
         GML32: OlFormatGML32,
         KML: OlFormatKML,
+        MVT: OlFormatMVT,
         WFS: OlFormatWFS,
         WMSCapabilities: OlFormatWMSCapabilities,
         WMTSCapabilities: OlFormatWMTSCapabilities,
@@ -131,6 +135,7 @@ export default {
         Image: OlLayerImage,
         Tile: OlLayerTile,
         Vector: OlLayerVector,
+        VectorTile: OlLayerVectorTile,
         Group: OlLayerGroup
     },
     loadingstrategy: OlLoadingstrategy,
@@ -144,6 +149,7 @@ export default {
         OSM: OlSourceOSM,
         TileWMS: OlSourceTileWMS,
         Vector: OlSourceVector,
+        VectorTile: OlSourceVectorTile,
         WMTS: OlSourceWMTS,
         XYZ: OlSourceXYZ
     },
