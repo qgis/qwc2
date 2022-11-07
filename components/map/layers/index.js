@@ -10,6 +10,7 @@
 import bingLayer from './BingLayer';
 import googleLayer from './GoogleLayer';
 import graticuleLayer from './GraticuleLayer';
+import mvtLayer from './MVTLayer';
 import osmLayer from './OSMLayer';
 import overlayLayer from './OverlayLayer';
 import tileproviderLayer from './TileProviderLayer';
@@ -23,6 +24,7 @@ export default {
     bing: bingLayer,
     google: googleLayer,
     graticule: graticuleLayer,
+    mvt: mvtLayer,
     osm: osmLayer,
     overlay: overlayLayer,
     tileprovider: tileproviderLayer,
