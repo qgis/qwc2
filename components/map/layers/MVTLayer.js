@@ -7,10 +7,11 @@
  */
 
 import ol from 'openlayers';
+import { applyStyle } from 'ol-mapbox-style';
 
 export default {
     create: (options) => {
-        return new ol.layer.VectorTile({
+        const layer = new ol.layer.VectorTile({
             source: new ol.source.VectorTile({
                 minZoom: options.minZoom ? options.minZoom : 0,
                 maxZoom: options.maxZoom ? options.maxZoom : 18,
@@ -19,5 +20,13 @@ export default {
                 url: options.url
             })
         });
+        if (options.style) {
+            fetch(options.style).then(function(response) {
+                response.json().then(function(glStyle) {
+                    applyStyle(layer, glStyle, Object.keys(glStyle.sources)[0]);
+                });
+            });
+        }
+        return layer;
     }
 };
