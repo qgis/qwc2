@@ -158,7 +158,11 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
 
         // layer
         layerEntry.geometryType = layer.$.geometryType;
-        layerEntry.visibility = layer.$.visible === '1';
+        if (layer.$.visibilityChecked !== undefined) {
+            layerEntry.visibility = layer.$.visibilityChecked === '1';
+        } else {
+            layerEntry.visibility = layer.$.visible === '1';
+        }
         if (layerEntry.visibility) {
             // collect visible layers
             visibleLayers.push(layer.Name);
@@ -233,6 +237,11 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
     } else {
         // group
         layerEntry.mutuallyExclusive = (layer.$ || {}).mutuallyExclusive === '1';
+        if (layer.$.visibilityChecked !== undefined) {
+            layerEntry.visibility = layer.$.visibilityChecked === '1';
+        } else {
+            layerEntry.visibility = layer.$.visible === '1';
+        }
         layerEntry.sublayers = [];
         if ((layer.$ || {}).expanded === '0' || (collapseBelowLevel >= 0 && level >= collapseBelowLevel)) {
             layerEntry.expanded = false;

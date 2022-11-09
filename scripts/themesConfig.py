@@ -179,7 +179,10 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
 
         # layer
         layerEntry["geometryType"] = layer.getAttribute("geometryType")
-        layerEntry["visibility"] = layer.getAttribute("visible") == "1"
+        if layer.getAttribute("visibilityChecked") != "":
+            layerEntry["visibility"] = layer.getAttribute("visibilityChecked") == "1"
+        else:
+            layerEntry["visibility"] = layer.getAttribute("visible") == "1"
         if layerEntry["visibility"]:
             # collect visible layers
             visibleLayers.append(name)
@@ -259,6 +262,10 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
     else:
         # group
         layerEntry["mutuallyExclusive"] = layer.getAttribute("mutuallyExclusive") == "1"
+        if layer.getAttribute("visibilityChecked") != "":
+            layerEntry["visibility"] = layer.getAttribute("visibilityChecked") == "1"
+        else:
+            layerEntry["visibility"] = layer.getAttribute("visible") == "1"
         layerEntry["sublayers"] = []
         if layer.getAttribute("expanded") == "0":
             layerEntry["expanded"] = False
