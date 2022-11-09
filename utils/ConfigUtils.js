@@ -112,11 +112,11 @@ const ConfigUtils = {
             platform: navigator.platform
         };
     },
-    getConfigProp(prop, theme) {
+    getConfigProp(prop, theme, defval = undefined) {
         if (theme && theme.config && theme.config[prop] !== undefined) {
             return theme.config[prop];
         }
-        return defaultConfig[prop];
+        return defaultConfig[prop] ?? defval;
     },
     getAssetsPath() {
         return (ConfigUtils.getConfigProp("assetsPath") || "assets").replace(/\/$/g, "");
