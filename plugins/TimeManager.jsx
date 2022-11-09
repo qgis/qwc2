@@ -436,31 +436,31 @@ class TimeManager extends React.Component {
                     with_htmlcontent: false
                 };
                 const request = IdentifyUtils.buildFilterRequest(layer, queryLayers, filterGeom, this.props.map, options);
-                axios.get(request.url, {params: request.params}).then((response) => {
-                    const features = IdentifyUtils.parseXmlResponse(response.data, this.props.map.projection);
+                IdentifyUtils.sendRequest(request, (response) => {
                     if (this.state.timeMarkers && this.state.timeMarkers.reqUUID === reqUUID) {
-                        this.setState({timeMarkers: {
-                            ...this.state.timeMarkers,
-                            markers: [
-                                ...this.state.timeMarkers.markers,
-                                ...Object.values(features).reduce((res, cur) => [...res, ...cur.map(feature => {
-                                    const startdate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][0]]);
-                                    const enddate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][1]]);
-                                    return {
-                                        ...feature,
-                                        id: feature.layername + "::" + feature.id,
-                                        properties: {
-                                            ...feature.properties,
-                                            startdate: dayjs.utc(startdate),
-                                            enddate: dayjs.utc(enddate)
-                                        }
-                                    };
-                                })], [])],
-                            pending: this.state.timeMarkers.pending - 1
-                        }});
-                    }
-                }).catch(() => {
-                    if (this.state.timeMarkers && this.state.timeMarkers.reqUUID === reqUUID) {
+                        if (response) {
+                            const features = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
+                            this.setState({timeMarkers: {
+                                ...this.state.timeMarkers,
+                                markers: [
+                                    ...this.state.timeMarkers.markers,
+                                    ...Object.values(features).reduce((res, cur) => [...res, ...cur.map(feature => {
+                                        const startdate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][0]]);
+                                        const enddate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][1]]);
+                                        return {
+                                            ...feature,
+                                            id: feature.layername + "::" + feature.id,
+                                            properties: {
+                                                ...feature.properties,
+                                                startdate: dayjs.utc(startdate),
+                                                enddate: dayjs.utc(enddate)
+                                            }
+                                        };
+                                    })], [])],
+                                pending: this.state.timeMarkers.pending - 1
+                            }});
+                        }
+                    } else {
                         this.setState({timeMarkers: {
                             ...this.state.timeMarkers,
                             pending: this.state.timeMarkers.pending - 1

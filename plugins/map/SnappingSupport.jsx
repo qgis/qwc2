@@ -185,25 +185,24 @@ class SnappingSupport extends React.Component {
         const request = IdentifyUtils.buildFilterRequest(themeLayer, snapLayers.join(","), filterGeom, this.props.mapObj, options);
         const reqId = uuid.v1();
         this.setState({reqId: reqId});
-        axios.get(request.url, {params: request.params}).then((response) => {
+        IdentifyUtils.sendRequest(request, (response) => {
             if (this.state.reqId !== reqId) {
                 return;
             }
-            const result = IdentifyUtils.parseXmlResponse(response.data, this.props.mapObj.projection);
-            const features = Object.values(result).reduce((res, cur) => [...res, ...cur], []);
-            this.source.clear();
-            const format = new ol.format.GeoJSON();
-            const olFeatures = format.readFeatures({
-                type: "FeatureCollection",
-                features: features
-            });
-            this.source.addFeatures(olFeatures);
-            this.setState({invalid: false, reqId: null, havesnaplayers: true});
-        }).catch(e => {
-            if (this.state.reqId === reqId) {
+            if (response) {
+                const result = IdentifyUtils.parseXmlResponse(response, this.props.mapObj.projection);
+                const features = Object.values(result).reduce((res, cur) => [...res, ...cur], []);
+                this.source.clear();
+                const format = new ol.format.GeoJSON();
+                const olFeatures = format.readFeatures({
+                    type: "FeatureCollection",
+                    features: features
+                });
+                this.source.addFeatures(olFeatures);
+                this.setState({invalid: false, reqId: null, havesnaplayers: true});
+            } else {
                 this.setState({reqId: null});
             }
-            console.log(e);
         });
     }
 }

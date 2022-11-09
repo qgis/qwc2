@@ -86,12 +86,11 @@ class Identify extends React.Component {
             queryableLayers.forEach(l => {
                 const request = IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, this.props.params);
                 ++pendingRequests;
-                axios.get(request.url, {params: request.params}).then((response) => {
+                IdentifyUtils.sendRequest(request, (response) => {
                     this.setState({pendingRequests: this.state.pendingRequests - 1});
-                    this.parseResult(response.data, l, request.params.info_format, clickPoint);
-                }).catch((e) => {
-                    console.log(e);
-                    this.setState({pendingRequests: this.state.pendingRequests - 1});
+                    if (response) {
+                        this.parseResult(response, l, request.params.info_format, clickPoint);
+                    }
                 });
             });
 
@@ -157,12 +156,11 @@ class Identify extends React.Component {
         queryableLayers.forEach(layer => {
             const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, this.props.params);
             ++pendingRequests;
-            axios.get(request.url, {params: request.params}).then((response) => {
+            IdentifyUtils.sendRequest(request, (response) => {
                 this.setState({pendingRequests: this.state.pendingRequests - 1});
-                this.parseResult(response.data, layer, request.params.info_format, center);
-            }).catch((e) => {
-                console.log(e);
-                this.setState({pendingRequests: this.state.pendingRequests - 1});
+                if (response) {
+                    this.parseResult(response, layer, request.params.info_format, center);
+                }
             });
             this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests});
         });

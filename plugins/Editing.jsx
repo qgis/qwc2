@@ -321,11 +321,12 @@ class Editing extends React.Component {
         this.setState({drawPickResults: {}});
         queryableLayers.forEach(layer => {
             const request = IdentifyUtils.buildRequest(layer, layer.queryLayers.join(","), coordinates, this.props.map);
-            axios.get(request.url, {params: request.params}).then(this.parseDrawPickResponse).catch(() => {});
+            IdentifyUtils.sendRequest(request, (response) => {
+                if (response) {
+                    this.setState({drawPickResults: {...this.state.drawPickResults, ...IdentifyUtils.parseXmlResponse(response, this.props.map.projection)}});
+                }
+            });
         });
-    }
-    parseDrawPickResponse = (response) => {
-        this.setState({drawPickResults: {...this.state.drawPickResults, ...IdentifyUtils.parseXmlResponse(response.data, this.props.map.projection)}});
     }
     drawPickFeature = (feature) => {
         const curConfig = this.props.theme.editConfig[this.state.selectedLayer];

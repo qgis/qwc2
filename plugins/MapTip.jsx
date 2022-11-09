@@ -89,25 +89,26 @@ class MapTip extends React.Component {
         }
 
         const request = IdentifyUtils.buildRequest(layer, queryLayers, this.props.mousepos.coordinate, this.props.map, options);
-
-        axios.get(request.url, {params: request.params}).then(response => {
+        IdentifyUtils.sendRequest(request, (response) => {
             const mapTips = [];
-            const result = IdentifyUtils.parseXmlResponse(response.data, this.props.map.projection);
-            const features = [];
-            for (const layerName of request.params.layers.split(",")) {
-                for (const feature of result[layerName] || []) {
-                    if (feature.properties.maptip) {
-                        features.push(feature);
-                        mapTips.push(feature.properties.maptip);
+            if (response) {
+                const result = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
+                const features = [];
+                for (const layerName of request.params.layers.split(",")) {
+                    for (const feature of result[layerName] || []) {
+                        if (feature.properties.maptip) {
+                            features.push(feature);
+                            mapTips.push(feature.properties.maptip);
+                        }
                     }
                 }
-            }
-            if (!isEmpty(features)) {
-                const sellayer = {
-                    id: "maptipselection",
-                    role: LayerRole.SELECTION
-                };
-                this.props.addLayerFeatures(sellayer, features, true);
+                if (!isEmpty(features)) {
+                    const sellayer = {
+                        id: "maptipselection",
+                        role: LayerRole.SELECTION
+                    };
+                    this.props.addLayerFeatures(sellayer, features, true);
+                }
             }
             this.setState({maptips: mapTips});
         });

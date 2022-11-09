@@ -10,8 +10,10 @@ import isEmpty from 'lodash.isempty';
 import geojsonBbox from 'geojson-bounding-box';
 import ol from 'openlayers';
 import url from 'url';
+import axios from 'axios';
 import {LayerRole} from '../actions/layers';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from './VectorLayerUtils';
@@ -101,7 +103,6 @@ const IdentifyUtils = {
             ...options
         };
         return identifyRequestParams(layer, queryLayers, map.projection, params);
-
     },
     buildFilterRequest(layer, queryLayers, filterGeom, map, options = {}) {
         const size = [101, 101];
@@ -113,6 +114,38 @@ const IdentifyUtils = {
             ...options
         };
         return identifyRequestParams(layer, queryLayers, map.projection, params);
+    },
+    sendRequest(request, responseHandler) {
+        const urlParts = url.parse(request.url, true);
+        urlParts.query = {
+            ...urlParts.query,
+            ...request.params
+        };
+        delete urlParts.search;
+        const requestUrl = url.format(urlParts);
+        const maxUrlLength = ConfigUtils.getConfigProp("maxGetUrlLength", null, 2048);
+        if (requestUrl.length > maxUrlLength) {
+            // Switch to POST if url is too long
+            const reqUrlParts = requestUrl.split("?");
+            const options = {
+                headers: {'content-type': 'application/x-www-form-urlencoded'}
+            };
+            axios.post(reqUrlParts[0], reqUrlParts[1], options).then(postResp => {
+                responseHandler(postResp.data);
+            }).catch(() => {
+                axios.get(request.url, {params: request.params}).then(getResp => {
+                    responseHandler(getResp.data);
+                }).catch(() => {
+                    responseHandler(null);
+                });
+            });
+        } else {
+            axios.get(request.url, {params: request.params}).then(getResp => {
+                responseHandler(getResp.data);
+            }).catch(() => {
+                responseHandler(null);
+            });
+        }
     },
     parseResponse(response, layer, format, clickPoint, projection, featureInfoReturnsLayerName, layers) {
         const digits = CoordinatesUtils.getUnits(projection).units === 'degrees' ? 4 : 0;
