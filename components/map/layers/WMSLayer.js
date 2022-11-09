@@ -9,6 +9,7 @@
 
 import ol from 'openlayers';
 import url from 'url';
+import axios from 'axios';
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import ConfigUtils from '../../../utils/ConfigUtils';
 import MapUtils from '../../../utils/MapUtils';
@@ -31,6 +32,30 @@ function wmsToOpenlayersOptions(options) {
     };
 }
 
+function wmsImageLoadFunction(image, src) {
+    const maxUrlLength = ConfigUtils.getConfigProp("maxGetUrlLength", null, 2048);
+    if (src.length > maxUrlLength) {
+        // Switch to POST if url is too long
+        const urlParts = src.split("?");
+        const options = {
+            headers: {'content-type': 'application/x-www-form-urlencoded'},
+            responseType: "blob"
+        };
+        axios.post(urlParts[0], urlParts[1], options).then(response => {
+            const reader = new FileReader();
+            reader.readAsDataURL(response.data);
+            reader.onload = () => {
+                image.src = reader.result;
+            };
+        }).catch(() => {
+            // Fall back to GET
+            image.src = src;
+        });
+    } else {
+        image.src = src;
+    }
+}
+
 export default {
     create: (options, map) => {
         const queryParameters = {...wmsToOpenlayersOptions(options), __t: +new Date()};
@@ -47,7 +72,8 @@ export default {
                     serverType: options.serverType,
                     params: queryParameters,
                     ratio: options.ratio || 1,
-                    hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false
+                    hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false,
+                    imageLoadFunction: (image, src) => wmsImageLoadFunction(image.getImage(), src)
                 })
             });
             layer.set("empty", !queryParameters.LAYERS);
@@ -68,7 +94,8 @@ export default {
                     params: queryParameters,
                     serverType: options.serverType,
                     tileGrid: tileGrid,
-                    hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false
+                    hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false,
+                    tileLoadFunction: (imageTile, src) => wmsImageLoadFunction(imageTile.imageTile(), src)
                 })
             });
             layer.set("empty", !queryParameters.LAYERS);
