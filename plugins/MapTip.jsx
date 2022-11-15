@@ -11,6 +11,9 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import axios from 'axios';
 import isEmpty from 'lodash.isempty';
+import ReactHtmlParser from 'react-html-parser';
+import {convertNodeToElement} from 'react-html-parser';
+import {showIframeDialog} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
@@ -27,6 +30,7 @@ class MapTip extends React.Component {
         maxWidth: PropTypes.string,
         mousepos: PropTypes.object,
         removeLayer: PropTypes.func,
+        showIframeDialog: PropTypes.func,
         theme: PropTypes.object
     }
     static defaultProps = {
@@ -134,12 +138,52 @@ class MapTip extends React.Component {
                     ref={this.positionMapTip}
                     style={style}>
                     {this.state.maptips.map((maptip, idx) => (
-                        <div dangerouslySetInnerHTML={{__html: maptip}} key={"tip" + idx} />
+                        <div key={"tip" + idx}>
+                            {this.parsedContent(maptip)}
+                        </div>
                     ))}
                 </div>
             )];
         }
         return null;
+    }
+    parsedContent = (text) => {
+        return ReactHtmlParser(text, {transform: (node, index) => {
+            if (node.name === "a") {
+                return (
+                    <a href={node.attribs.href} key={"a" + index} onClick={node.attribs.onclick ? (ev) => this.evalOnClick(ev, node.attribs.onclick) : this.attributeLinkClicked} target={node.attribs.target || "_blank"}>
+                        {node.children.map((child, idx) => (
+                            <React.Fragment key={"f" + idx}>{convertNodeToElement(child, idx)}</React.Fragment>)
+                        )}
+                    </a>
+                );
+            }
+            return undefined;
+        }});
+    }
+    evalOnClick = (ev, onclick) => {
+        eval(onclick);
+        ev.preventDefault();
+    }
+    attributeLinkClicked = (ev) => {
+        if (ev.currentTarget.target.startsWith(":")) {
+            const target = ev.target.target.split(":");
+            const options = target.slice(2).reduce((res, cur) => {
+                const parts = cur.split("=");
+                if (parts.length === 2) {
+                    const value = parseFloat(parts[1]);
+                    res[parts[0]] = isNaN(value) ? parts[1] : value;
+                }
+                return res;
+            }, {});
+            if (target[1] === "iframedialog") {
+                if (this.props.iframeDialogsInitiallyDocked) {
+                    options.docked = true;
+                }
+                this.props.showIframeDialog(target[2], ev.target.href, options);
+                ev.preventDefault();
+            }
+        }
     }
     positionMapTip = (el) => {
         if (el) {
@@ -169,5 +213,6 @@ const selector = (state) => ({
 
 export default connect(selector, {
     addLayerFeatures: addLayerFeatures,
-    removeLayer: removeLayer
+    removeLayer: removeLayer,
+    showIframeDialog: showIframeDialog
 })(MapTip);
