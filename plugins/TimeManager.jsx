@@ -216,7 +216,7 @@ class TimeManager extends React.Component {
             </ResizeableWindow>
         );
     }
-    renderBody = (timeValues) => {
+    renderBody = () => {
         const timeButtons = [
             {key: "rewind", tooltip: LocaleUtils.trmsg("timemanager.rewind"), icon: "nav-start"},
             {key: "prev", tooltip: LocaleUtils.trmsg("timemanager.stepback"), icon: "nav-left"},
