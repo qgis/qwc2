@@ -171,7 +171,7 @@ class TimeManager extends React.Component {
         if (!this.state.markersEnabled && prevState.markersEnabled) {
             this.props.removeLayer("timemarkers");
         }
-        if (this.state.timeMarkers && this.state.timeMarkers !== prevState.timeMarkers && this.state.timeMarkers.pending === 0) {
+        if (this.state.markersEnabled && this.state.timeMarkers && this.state.timeMarkers !== prevState.timeMarkers && this.state.timeMarkers.pending === 0) {
             const layer = {
                 id: "timemarkers",
                 role: LayerRole.MARKER,
