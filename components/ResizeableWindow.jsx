@@ -97,9 +97,12 @@ class ResizeableWindow extends React.Component {
     }
     componentDidMount() {
         this.props.registerWindow(this.id);
+        const newGeomState = {...this.state.geometry};
         if (this.props.initiallyDocked) {
-            this.setState({geometry: {...this.state.geometry, docked: true}});
+            newGeomState.docked = true;
+            this.setState({geometry: newGeomState});
         }
+        this.props.onGeometryChanged(newGeomState);
     }
     componentWillUnmount() {
         this.props.unregisterWindow(this.id);
