@@ -41,7 +41,7 @@ export default class Timeline extends React.Component {
         };
 
         const sliderStyle = {};
-        if (this.props.enabled && !isEmpty(this.props.gradientSteps)) {
+        if (!isEmpty(this.props.gradientSteps)) {
             sliderStyle.background = 'linear-gradient(90deg, ' + this.props.gradientSteps.join(", ") + ')';
         }
         return (
