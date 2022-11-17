@@ -3,14 +3,14 @@ div.time-manager-notemporaldata {
 }
 
 div.time-manager-toolbar {
-    margin: 0.25em;
+    margin-bottom: 0.25em;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
 }
 
-div.time-manager-toolbar > * {
-    margin: 0.125em;
+div.time-manager-toolbar > *:not(:last-child) {
+    margin-right: 0.25em;
 }
 
 div.time-manager-toolbar input,
