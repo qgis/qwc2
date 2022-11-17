@@ -307,11 +307,21 @@ class TimeManager extends React.Component {
         } else if (action === "stop") {
             /* Already stopped above, pass */
         } else if (action === "play") {
+            const curday = dayjs(this.state.currentTimestamp);
+            const lastday = this.getEndTime();
+            if (curday >= lastday) {
+                this.setState({currentTimestamp: +this.getStartTime()});
+            }
             this.animationTimer = setInterval(() => {
                 this.advanceAnimation(+1);
             }, 1000 * this.state.animationInterval);
             this.setState({animationActive: true});
         } else if (action === "playrev") {
+            const curday = dayjs(this.state.currentTimestamp);
+            const firstday = this.getStartTime();
+            if (curday <= firstday) {
+                this.setState({currentTimestamp: +this.getEndTime()});
+            }
             this.animationTimer = setInterval(() => {
                 this.advanceAnimation(-1);
             }, 1000 * this.state.animationInterval);
@@ -322,12 +332,21 @@ class TimeManager extends React.Component {
     }
     advanceAnimation = (stepdir) => {
         const newday = this.step(stepdir);
+        const firstday = this.getStartTime();
         const lastday = this.getEndTime();
         if (newday > lastday) {
-            if (this.state.animationLoop) {
+            if (stepdir > 0 && this.state.animationLoop) {
                 this.setState({currentTimestamp: +this.getStartTime()});
             } else {
                 this.setState({currentTimestamp: +lastday, animationActive: false});
+                clearInterval(this.animationTimer);
+                this.animationTimer = null;
+            }
+        } else if (newday < firstday) {
+            if (stepdir < 0 && this.state.animationLoop) {
+                this.setState({currentTimestamp: +this.getEndTime()});
+            } else {
+                this.setState({currentTimestamp: +firstday, animationActive: false});
                 clearInterval(this.animationTimer);
                 this.animationTimer = null;
             }
