@@ -1,0 +1,121 @@
+div.ctimeline {
+    border: 1px solid @item_border@;
+    padding: 0 0.25em 0.25em 0.25em;
+}
+
+div.ctimeline-toolbar {
+    display: flex;
+    font-size: 75%;
+    align-items: center;
+}
+
+div.ctimeline-toolbar-timescale {
+    margin: 0 0.25em;
+}
+
+div.ctimeline-toolbar-timescale > input {
+    width: 5em;
+    border: 1px solid @item_border@;
+}
+
+div.ctimeline-toolbar-spacer {
+    flex: 1 1 auto;
+}
+
+div.ctimeline-clip {
+    overflow: hidden;
+    position: relative;
+}
+
+div.ctimeline-slider-container {
+    height: 16px;
+    position: relative;
+    margin-top: 0.125em;
+    border: 1px solid @item_border@;
+}
+
+div.ctimeline-slider {
+    background-color: #ddd;
+    height: 100%;
+    display: flex;
+}
+
+div.ctimeline-cursor {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: black;
+}
+
+div.ctimeline-cursor-label {
+    position: absolute;
+    font-size: 75%;
+    top: calc(100%);
+    text-align: center;
+    padding: 0.25em;
+    background-color: white;
+    border: 1px solid @item_border@;
+    z-index: 1;
+}
+
+div.ctimeline-ticks {
+    margin: 2em 0.25em 0 0.25em;
+    position: relative;
+    height: 10px;
+}
+
+div.ctimeline-pan-left,
+div.ctimeline-pan-right {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    width: 1.5em;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    background-color: @item_border@;
+}
+
+div.ctimeline-pan-left {
+    left: 0;
+}
+
+div.ctimeline-pan-right {
+    right: 0;
+}
+
+div.ctimeline-ticks > span.ctimeline-ltick {
+    position: absolute;
+    display: inline-block;
+    width: 2px;
+    height: 100%;
+    background-color: black;
+}
+
+div.ctimeline-ticks > span.ctimeline-ltick > span {
+    position: absolute;
+    width: 10em;
+    text-align: center;
+    white-space: pre;
+    font-size: 70%;
+    left: -5em;
+    top: -2.5em;
+}
+
+div.ctimeline-ticks > span.ctimeline-tick {
+    position: absolute;
+    display: inline-block;
+    width: 2px;
+    height: 50%;
+    bottom: 0;
+    background-color: gray;
+}
+
+div.ctimeline-ticks > div {
+    flex: 1 1 auto;
+    text-align: center;
+    font-size: 75%;
+}

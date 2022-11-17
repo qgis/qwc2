@@ -334,6 +334,7 @@
     },
     "timemanager": {
       "animationinterval": "Animationsintervall",
+      "home": "Zeitleiste zurücksetzten",
       "loop": "Schleife",
       "markers": "Marker",
       "notemporaldata": "Keine sichtbare Ebenen in der Karte sind mit Zeitinformationen versehen.",
@@ -344,6 +345,10 @@
       "stepfwd": "Schritt vorwärts",
       "stepsize": "Schritt",
       "stop": "Stoppen",
+      "timeline": "Zeitstrahl",
+      "timeline_continuous": "Kontinuierlich",
+      "timeline_fixed": "Fix",
+      "timelinescale": "Zeitskala (nichtlinearität)",
       "title": "Zeitleiste",
       "toggle": "Zeitsteuerung aktivieren",
       "unit": {
@@ -356,7 +361,9 @@
         "months": "Monate",
         "seconds": "Sekunden",
         "years": "Jahre"
-      }
+      },
+      "zoomin": "Vergrössern",
+      "zoomout": "Verkleinern"
     },
     "tooltip": {
       "background": "Hintergrundkarte wechseln",

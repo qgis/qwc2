@@ -334,6 +334,7 @@
     },
     "timemanager": {
       "animationinterval": "",
+      "home": "",
       "loop": "",
       "markers": "",
       "notemporaldata": "",
@@ -344,6 +345,10 @@
       "stepfwd": "",
       "stepsize": "",
       "stop": "",
+      "timeline": "",
+      "timeline_continuous": "",
+      "timeline_fixed": "",
+      "timelinescale": "",
       "title": "",
       "toggle": "",
       "unit": {
@@ -356,7 +361,9 @@
         "months": "",
         "seconds": "",
         "years": ""
-      }
+      },
+      "zoomin": "",
+      "zoomout": ""
     },
     "tooltip": {
       "background": "Vaihda tausta",

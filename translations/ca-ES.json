@@ -334,6 +334,7 @@
     },
     "timemanager": {
       "animationinterval": "Interval d'animació",
+      "home": "",
       "loop": "",
       "markers": "Marcadors",
       "notemporaldata": "No hi ha capes temporals visibles al mapa",
@@ -344,6 +345,10 @@
       "stepfwd": "Saltar enrere",
       "stepsize": "Mida del salt",
       "stop": "Parar",
+      "timeline": "",
+      "timeline_continuous": "",
+      "timeline_fixed": "",
+      "timelinescale": "",
       "title": "Gestor de temps",
       "toggle": "Navegació temporal",
       "unit": {
@@ -356,7 +361,9 @@
         "months": "mesos",
         "seconds": "segons",
         "years": "anys"
-      }
+      },
+      "zoomin": "",
+      "zoomout": ""
     },
     "tooltip": {
       "background": "Canvi de fons",

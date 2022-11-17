@@ -21,6 +21,7 @@ import dateParser from 'any-date-parser';
 import {setLayerDimensions, addLayerFeatures, removeLayer, LayerRole} from '../actions/layers';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import Icon from '../components/Icon';
+import ContinuousTimeline from '../components/ContinuousTimeline';
 import Timeline from '../components/Timeline';
 import ButtonBar from '../components/widgets/ButtonBar';
 import NumberInput from '../components/widgets/NumberInput';
@@ -101,7 +102,9 @@ class TimeManager extends React.Component {
             layerDimensions: {},
             values: [],
             attributes: {}
-        }
+        },
+        timeline: 'fixed',
+        dialogWidth: 0
     }
     constructor(props) {
         super(props);
@@ -209,8 +212,8 @@ class TimeManager extends React.Component {
             body = this.renderBody(timeValues);
         }
         return (
-            <ResizeableWindow dockable="bottom"  icon="time" initialHeight={155}
-                initialWidth={800}  onClose={this.onClose}
+            <ResizeableWindow dockable="bottom"  icon="time" initialHeight={240}
+                initialWidth={800} onClose={this.onClose} onGeometryChanged={this.dialogGeomChanged}
                 scrollable title={LocaleUtils.tr("timemanager.title")}>
                 {body}
             </ResizeableWindow>
@@ -252,6 +255,16 @@ class TimeManager extends React.Component {
                                 &nbsp;{LocaleUtils.tr("timemanager.unit.seconds")}
                             </td>
                         </tr>
+                        <tr>
+                            <td>{LocaleUtils.tr("timemanager.timeline")}</td>
+                            <td>
+                                <select onChange={ev => this.setState({timeline: ev.target.value})} value={this.state.timeline}>
+                                    <option value="fixed">{LocaleUtils.tr("timemanager.timeline_fixed")}</option>
+                                    <option value="continuous">{LocaleUtils.tr("timemanager.timeline_continuous")}</option>
+                                </select>
+                            </td>
+                            <td />
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -279,13 +292,24 @@ class TimeManager extends React.Component {
                         {this.state.settingsPopup ? options : null}
                     </span>
                 </div>
-                <Timeline currentTimestamp={this.state.currentTimestamp} enabled={this.state.timeEnabled}
-                    endTime={this.getEndTime()} endTimeChanged={this.setEndTime}
-                    gradientSteps={this.state.markersEnabled ? this.props.blockColors : []}
-                    startTime={this.getStartTime()} startTimeChanged={this.setStartTime}
-                    stepSizeUnit={this.state.stepSizeUnit} timestampChanged={timestamp => this.setState({currentTimestamp: timestamp})}/>
+                {this.state.timeline === "fixed" ? (
+                    <Timeline currentTimestamp={this.state.currentTimestamp} enabled={this.state.timeEnabled}
+                        endTime={this.getEndTime()} endTimeChanged={this.setEndTime}
+                        gradientSteps={this.state.markersEnabled ? this.props.blockColors : []}
+                        startTime={this.getStartTime()} startTimeChanged={this.setStartTime}
+                        stepSizeUnit={this.state.stepSizeUnit} timestampChanged={timestamp => this.setState({currentTimestamp: timestamp})}/>
+                ) : (
+                    <ContinuousTimeline currentTimestamp={this.state.currentTimestamp}
+                        dialogWidth={this.state.dialogWidth} enabled={this.state.timeEnabled}
+                        endTime={this.getEndTime()} startTime={this.getStartTime()}
+                        stepSizeUnit={this.state.stepSizeUnit}
+                        timestampChanged={timestamp => this.setState({currentTimestamp: timestamp})}/>
+                )}
             </div>
         );
+    }
+    dialogGeomChanged = (geom) => {
+        this.setState({dialogWidth: geom.width});
     }
     toggleTimeEnabled = (enabled) => {
         clearInterval(this.animationTimer);

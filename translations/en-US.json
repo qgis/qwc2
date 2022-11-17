@@ -334,6 +334,7 @@
     },
     "timemanager": {
       "animationinterval": "Animation interval",
+      "home": "Reset timeline",
       "loop": "Loop",
       "markers": "Markers",
       "notemporaldata": "No temporal layers are visible in the map.",
@@ -344,6 +345,10 @@
       "stepfwd": "Step forward",
       "stepsize": "Step size",
       "stop": "Stop",
+      "timeline": "Timeline",
+      "timeline_continuous": "Continuous",
+      "timeline_fixed": "Fixed",
+      "timelinescale": "Timescale (non-linearity)",
       "title": "Time manager",
       "toggle": "Temporal navigation",
       "unit": {
@@ -356,7 +361,9 @@
         "months": "months",
         "seconds": "seconds",
         "years": "years"
-      }
+      },
+      "zoomin": "Zoom in",
+      "zoomout": "Zoom out"
     },
     "tooltip": {
       "background": "Switch background",

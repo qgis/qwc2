@@ -334,6 +334,7 @@
     },
     "timemanager": {
       "animationinterval": "Intervalle d'animation",
+      "home": "",
       "loop": "",
       "markers": "Marqueurs",
       "notemporaldata": "Aucune couche temporelle n'est visible sur la carte.",
@@ -344,6 +345,10 @@
       "stepfwd": "Pas en avant",
       "stepsize": "aille de pas",
       "stop": "Stop",
+      "timeline": "",
+      "timeline_continuous": "",
+      "timeline_fixed": "",
+      "timelinescale": "",
       "title": "Ligne du temps",
       "toggle": "Activer le contrôle du temps",
       "unit": {
@@ -356,7 +361,9 @@
         "months": "mois",
         "seconds": "secondes",
         "years": "années"
-      }
+      },
+      "zoomin": "",
+      "zoomout": ""
     },
     "tooltip": {
       "background": "Changer de fond",

@@ -334,6 +334,7 @@
     },
     "timemanager": {
       "animationinterval": "Intervallo animazione",
+      "home": "Ripristina linea temporale",
       "loop": "Ripeti",
       "markers": "Marker",
       "notemporaldata": "Nessun layer con dimensioni temporali è attivo nella cartina.",
@@ -344,6 +345,10 @@
       "stepfwd": "Passo avanti",
       "stepsize": "Passo",
       "stop": "Ferma animazione",
+      "timeline": "Linea temporale",
+      "timeline_continuous": "Continua",
+      "timeline_fixed": "Fissa",
+      "timelinescale": "Scala temporale (non-linearità)",
       "title": "Linea temporale",
       "toggle": "Abilità gesitone temporale",
       "unit": {
@@ -356,7 +361,9 @@
         "months": "mesi",
         "seconds": "secondi",
         "years": "anni"
-      }
+      },
+      "zoomin": "Ingrandisci",
+      "zoomout": "Rimpicciolisci"
     },
     "tooltip": {
       "background": "Cambia sfondo",

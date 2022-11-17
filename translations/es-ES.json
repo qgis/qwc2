@@ -334,6 +334,7 @@
     },
     "timemanager": {
       "animationinterval": "Intervalo de la animación",
+      "home": "",
       "loop": "",
       "markers": "Marcadores",
       "notemporaldata": "No hay capas temporales visibles en el mapa",
@@ -344,6 +345,10 @@
       "stepfwd": "Saltar hacia delante",
       "stepsize": "Tamaño del salto",
       "stop": "Parar",
+      "timeline": "",
+      "timeline_continuous": "",
+      "timeline_fixed": "",
+      "timelinescale": "",
       "title": "Gestor de tiempo",
       "toggle": "Navegación temporal",
       "unit": {
@@ -356,7 +361,9 @@
         "months": "meses",
         "seconds": "segundos",
         "years": "años"
-      }
+      },
+      "zoomin": "",
+      "zoomout": ""
     },
     "tooltip": {
       "background": "Cambiar fondo",
