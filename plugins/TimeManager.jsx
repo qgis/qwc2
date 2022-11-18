@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import axios from 'axios';
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
@@ -119,67 +119,96 @@ class TimeManager extends React.Component {
         };
     }
     componentDidUpdate(prevProps, prevState) {
-        if (!this.state.visible && prevState.visible) {
-            this.setState(TimeManager.defaultState);
-        }
-        if (!prevProps.active && this.props.active) {
+        const activated = !prevProps.active && this.props.active;
+        if (activated) {
             this.setState({visible: true});
             // Clear task immediately after showing, visibility is controlled by internal state
             this.props.setCurrentTask(null);
         }
-        if (!isEqual(this.props.layerVisibilities, prevProps.layerVisibilities)) {
+        if (!this.state.visible && prevState.visible) {
+            this.setState(TimeManager.defaultState);
+            return;
+        }
+        if (!activated && !this.state.visible) {
+            return;
+        }
+        if (activated || !isEqual(this.props.layerVisibilities, prevProps.layerVisibilities)) {
             this.stopAnimation();
             const timeData = {
                 layerDimensions: {},
                 values: new Set(),
-                attributes: {}
+                attributes: {},
+                layers: []
             };
             this.props.layers.forEach(layer => {
                 if (layer.type === "wms") {
                     const layertimeData = LayerUtils.getTimeDimensionValues(layer);
                     if (layertimeData.names.size > 0) {
-                        timeData.layerDimensions[layer.id] = [...layertimeData.names];
+                        timeData.layerDimensions[layer.uuid] = [...layertimeData.names];
                         layertimeData.values.forEach(x => timeData.values.add(x));
                         timeData.attributes[layer.uuid] = {
                             ...timeData.attributes[layer.uuid],
                             ...layertimeData.attributes
                         };
+                        // Filter time dimension from layer - object cache in updateTimeFeatures below should query all objects regardless of time
+                        const layerNoTimeDims = {...layer};
+                        const layerDimsUC = timeData.layerDimensions[layer.uuid].map(name => name.toUpperCase());
+                        layerNoTimeDims.dimensionValues = Object.entries(layerNoTimeDims.dimensionValues || {}).reduce((res, [key, value]) => {
+                            if (layerDimsUC.includes(key)) {
+                                return res;
+                            } else {
+                                return {...res, [key]: value};
+                            }
+                        }, {});
+                        timeData.layers.push(layerNoTimeDims);
                     }
                 }
             });
             timeData.values = [...timeData.values].sort().map(d => dayjs.utc(d));
             this.setState({timeData: timeData});
-            this.updateLayerTimeDimensions(timeData.layerDimensions, this.state.currentTimestamp);
-            this.scheduleUpdateMapMarkers();
+            this.updateLayerTimeDimensions(timeData, this.state.currentTimestamp);
+            this.updateTimeFeatures(timeData);
+        } else {
+            if (this.state.currentTimestamp !== prevState.currentTimestamp || this.state.timeEnabled !== prevState.timeEnabled) {
+                this.updateLayerTimeDimensions(this.state.timeData, this.state.currentTimestamp);
+            }
+            if (this.state.visible && this.props.map.bbox !== prevProps.map.bbox) {
+                this.updateTimeFeatures(this.state.timeData);
+            }
         }
-        if (this.state.currentTimestamp !== prevState.currentTimestamp || this.state.timeEnabled !== prevState.timeEnabled) {
-            this.updateLayerTimeDimensions(this.state.timeData.layerDimensions, this.state.currentTimestamp);
-        }
+
         if (this.state.animationActive && this.state.animationInterval !== prevState.animationInterval) {
             this.stopAnimation();
         }
-        if (
-            this.props.map.bbox !== prevProps.map.bbox ||
-            (this.state.visible && !prevState.visible) ||
-            this.state.currentTimestamp !== prevState.currentTimestamp ||
-            this.state.timeEnabled !== prevState.timeEnabled ||
-            this.state.ranges !== prevState.ranges ||
-            (this.state.markersEnabled && !prevState.markersEnabled)
-        ) {
-            this.scheduleUpdateMapMarkers();
-        }
+
         if (!this.state.markersEnabled && prevState.markersEnabled) {
             this.props.removeLayer("timemarkers");
-        }
-        if (this.state.markersEnabled && this.state.timeMarkers && this.state.timeMarkers !== prevState.timeMarkers && this.state.timeMarkers.pending === 0) {
+        } else if (
+            this.state.markersEnabled && this.state.timeFeatures &&
+            (
+                this.state.markersEnabled !== prevState.markersEnabled ||
+                this.state.timeFeatures !== prevState.timeFeatures ||
+                this.state.currentTimestamp !== prevState.currentTimestamp ||
+                this.state.timeEnabled !== prevState.timeEnabled
+            ) &&
+            this.state.timeFeatures.pendingRequests === 0)
+        {
             const layer = {
                 id: "timemarkers",
                 role: LayerRole.MARKER,
                 styleFunction: this.markerStyle,
                 rev: +new Date()
             };
-            this.props.addLayerFeatures(layer, this.state.timeMarkers.markers, true);
+            const currentTime = dayjs(this.state.currentTimestamp);
+            let features = Object.values(this.state.timeFeatures.features).flat();
+            if (this.state.timeEnabled) {
+                features = features.filter(feature => {
+                    return feature.properties.startdate <= currentTime && feature.properties.enddate >= currentTime;
+                });
+            }
+            this.props.addLayerFeatures(layer, features, true);
         }
+
         if (this.state.timeData !== prevState.timeData || this.state.startDate !== prevState.startDate || this.state.endDate !== prevState.endDate) {
             const startTime = this.getStartTime();
             const endTime = this.getEndTime();
@@ -404,16 +433,14 @@ class TimeManager extends React.Component {
         }
         return newday;
     }
-    updateLayerTimeDimensions = (timeDimensions, currentTimestamp) => {
+    updateLayerTimeDimensions = (timeData, currentTimestamp) => {
         const currentTime = this.state.timeEnabled ? new Date(currentTimestamp).toISOString() : undefined;
-        this.props.layers.forEach(layer => {
-            if (layer.id in timeDimensions) {
-                const dimensions = timeDimensions[layer.id].reduce((res, dimension) => {
-                    res[dimension.toUpperCase()] = currentTime;
-                    return res;
-                }, {...(layer.dimensionValues || {})});
-                this.props.setLayerDimensions(layer.id, dimensions);
-            }
+        timeData.layers.forEach(layer => {
+            const dimensions = timeData.layerDimensions[layer.uuid].reduce((res, dimension) => {
+                res[dimension.toUpperCase()] = currentTime;
+                return res;
+            }, {...(layer.dimensionValues || {})});
+            this.props.setLayerDimensions(layer.id, dimensions);
         });
     }
     getStartTime = () => {
@@ -442,14 +469,8 @@ class TimeManager extends React.Component {
             }
         }
     }
-    scheduleUpdateMapMarkers = () => {
-        clearTimeout(this.updateMapMarkersTimeout);
-        this.updateMapMarkersTimeout = setTimeout(this.updateMapMarkers, 500);
-    }
-    updateMapMarkers = () => {
-        if (!this.state.visible || !this.state.markersEnabled) {
-            return;
-        }
+    updateTimeFeatures = (timeData) => {
+        // Query all features in extent
         const xmin = this.props.map.bbox.bounds[0];
         const ymin = this.props.map.bbox.bounds[1];
         const xmax = this.props.map.bbox.bounds[2];
@@ -466,25 +487,24 @@ class TimeManager extends React.Component {
         });
         let pending = 0;
         const reqUUID = uuid.v1();
-        this.props.layers.forEach(layer => {
-            if (layer.uuid in this.state.timeData.attributes && layer.visibility) {
-                const sublayerattrs = this.state.timeData.attributes[layer.uuid];
-                const queryLayers = Object.keys(sublayerattrs).join(",");
-                const options = {
-                    LAYERATTRIBS: JSON.stringify(sublayerattrs),
-                    GEOMCENTROID: true,
-                    with_htmlcontent: false
-                };
-                const request = IdentifyUtils.buildFilterRequest(layer, queryLayers, filterGeom, this.props.map, options);
-                IdentifyUtils.sendRequest(request, (response) => {
-                    if (this.state.timeMarkers && this.state.timeMarkers.reqUUID === reqUUID) {
-                        if (response) {
-                            const features = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
-                            this.setState({timeMarkers: {
-                                ...this.state.timeMarkers,
-                                markers: [
-                                    ...this.state.timeMarkers.markers,
-                                    ...Object.values(features).reduce((res, cur) => [...res, ...cur.map(feature => {
+        timeData.layers.forEach(layer => {
+            const sublayerattrs = timeData.attributes[layer.uuid];
+            const queryLayers = Object.keys(sublayerattrs).join(",");
+            const options = {
+                LAYERATTRIBS: JSON.stringify(sublayerattrs),
+                GEOMCENTROID: true,
+                with_htmlcontent: false
+            };
+            const request = IdentifyUtils.buildFilterRequest(layer, queryLayers, filterGeom, this.props.map, options);
+            IdentifyUtils.sendRequest(request, (response) => {
+                if (this.state.timeFeatures && this.state.timeFeatures.reqUUID === reqUUID) {
+                    if (response) {
+                        const features = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
+                        this.setState({timeFeatures: {
+                            features: {
+                                ...this.state.timeFeatures.features,
+                                ...Object.entries(features).reduce((res, [key, value]) => {
+                                    return {...res, [key]: value.map(feature => {
                                         const startdate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][0]]);
                                         const enddate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][1]]);
                                         return {
@@ -496,22 +516,23 @@ class TimeManager extends React.Component {
                                                 enddate: dayjs.utc(enddate)
                                             }
                                         };
-                                    })], [])],
-                                pending: this.state.timeMarkers.pending - 1
-                            }});
-                        }
-                    } else {
-                        this.setState({timeMarkers: {
-                            ...this.state.timeMarkers,
-                            pending: this.state.timeMarkers.pending - 1
+                                    })};
+                                }, {})
+                            },
+                            pendingRequests: this.state.timeFeatures.pendingRequests - 1
                         }});
                     }
-                });
-                ++pending;
-            }
+                } else {
+                    this.setState({timeFeatures: {
+                        ...this.state.timeFeatures,
+                        pendingRequests: this.state.timeFeatures.pendingRequests.pending - 1
+                    }});
+                }
+            });
+            ++pending;
         });
         this.setState({
-            timeMarkers: {markers: [], pending: pending, reqUUID: reqUUID}
+            timeFeatures: {features: {}, pendingRequests: pending, reqUUID: reqUUID}
         });
     }
     markerStyle = (feature) => {
@@ -584,7 +605,7 @@ class TimeManager extends React.Component {
 const layerVisiblitiesSelector = createSelector([
     state => state.layers.flat
 ], (layers) => {
-    return layers.reduce((res, layer) => ({
+    return layers.filter(layer => layer.type === "wms").reduce((res, layer) => ({
         ...res,
         [layer.uuid]: LayerUtils.computeLayerVisibility(layer)
     }), {});
