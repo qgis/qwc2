@@ -86,25 +86,22 @@ class TimeManager extends React.Component {
         endDate: null,
         ranges: [],
         currentTimestamp: 0,
-        currentTimestampDrag: null, // Only when dragging
         animationActive: false,
         animationLoop: false,
         animationInterval: 1,
         stepSize: 1,
         stepSizeUnit: 'd', // 1 day
+        dialogWidth: 0,
         markersEnabled: false,
-        timeMarkers: null,
-        settingsPopup: false,
-        visible: false
-    }
-    state = {
+        timeline: 'fixed',
         timeData: {
             layerDimensions: {},
             values: [],
             attributes: {}
         },
-        timeline: 'fixed',
-        dialogWidth: 0
+        timeFeatures: null,
+        settingsPopup: false,
+        visible: false
     }
     constructor(props) {
         super(props);
