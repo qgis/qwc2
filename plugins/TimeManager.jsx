@@ -238,7 +238,7 @@ class TimeManager extends React.Component {
             body = this.renderBody(timeValues);
         }
         return (
-            <ResizeableWindow dockable="bottom"  icon="time" initialHeight={240}
+            <ResizeableWindow dockable="bottom"  icon="time" initialHeight={320}
                 initialWidth={800} onClose={this.onClose} onGeometryChanged={this.dialogGeomChanged}
                 scrollable title={LocaleUtils.tr("timemanager.title")}>
                 {body}
@@ -318,19 +318,21 @@ class TimeManager extends React.Component {
                         {this.state.settingsPopup ? options : null}
                     </span>
                 </div>
-                {this.state.timeline === "fixed" ? (
-                    <Timeline currentTimestamp={this.state.currentTimestamp} enabled={this.state.timeEnabled}
-                        endTime={this.getEndTime()} endTimeChanged={this.setEndTime}
-                        gradientSteps={this.state.markersEnabled ? this.props.blockColors : []}
-                        startTime={this.getStartTime()} startTimeChanged={this.setStartTime}
-                        stepSizeUnit={this.state.stepSizeUnit} timestampChanged={timestamp => this.setState({currentTimestamp: timestamp})}/>
-                ) : (
-                    <ContinuousTimeline currentTimestamp={this.state.currentTimestamp}
-                        dialogWidth={this.state.dialogWidth} enabled={this.state.timeEnabled}
-                        endTime={this.getEndTime()} startTime={this.getStartTime()}
-                        stepSizeUnit={this.state.stepSizeUnit}
-                        timestampChanged={timestamp => this.setState({currentTimestamp: timestamp})}/>
-                )}
+                <div className="time-manager-timeline">
+                    {this.state.timeline === "fixed" ? (
+                        <Timeline currentTimestamp={this.state.currentTimestamp} enabled={this.state.timeEnabled}
+                            endTime={this.getEndTime()} endTimeChanged={this.setEndTime}
+                            gradientSteps={this.state.markersEnabled ? this.props.blockColors : []}
+                            startTime={this.getStartTime()} startTimeChanged={this.setStartTime}
+                            stepSizeUnit={this.state.stepSizeUnit} timestampChanged={timestamp => this.setState({currentTimestamp: timestamp})}/>
+                    ) : (
+                        <ContinuousTimeline currentTimestamp={this.state.currentTimestamp}
+                            dialogWidth={this.state.dialogWidth} enabled={this.state.timeEnabled}
+                            endTime={this.getEndTime()} startTime={this.getStartTime()}
+                            stepSizeUnit={this.state.stepSizeUnit} timeFeatures={this.state.timeFeatures}
+                            timestampChanged={timestamp => this.setState({currentTimestamp: timestamp})}/>
+                    )}
+                </div>
             </div>
         );
     }

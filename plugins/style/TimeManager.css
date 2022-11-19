@@ -2,7 +2,14 @@ div.time-manager-notemporaldata {
     padding: 1em;
 }
 
+div.time-manager-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 div.time-manager-toolbar {
+    flex: 0 0 auto;
     margin-bottom: 0.25em;
     display: flex;
     align-items: center;
@@ -51,4 +58,8 @@ div.time-manager-options {
 
 div.time-manager-options td {
     white-space: nowrap;
+}
+
+div.time-manager-timeline {
+    flex: 1 1 auto;
 }
