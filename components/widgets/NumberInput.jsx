@@ -9,35 +9,70 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class NumberInput extends React.Component {
+class NumberInput extends React.Component {
     static propTypes = {
+        decimals: PropTypes.number,
+        disabled: PropTypes.bool,
         max: PropTypes.number,
         min: PropTypes.number,
         onChange: PropTypes.func,
+        placeholder: PropTypes.string,
         value: PropTypes.number
     }
     state = {
-        curValue: ""
+        value: "",
+        curValue: "",
+        changed: false
+    }
+    static getDerivedStateFromProps(nextProps, state) {
+        if (state.value !== nextProps.value) {
+            return {value: nextProps.value, curValue: (typeof nextProps.value === "number") ? nextProps.value.toFixed(nextProps.decimals) : "", changed: false};
+        }
+        return null;
     }
     constructor(props) {
         super(props);
-        this.state.curValue = props.value;
-    }
-    static getDerivedStateFromProps(nextProps) {
-        return {curValue: nextProps.value};
+        this.focused = false;
     }
     render() {
-        return (<input max={this.props.max} min={this.props.min} onBlur={this.onBlur} onChange={this.onChange} type="number" value={this.state.curValue} />);
+        const step = Math.pow(10, -this.props.decimals || 0);
+        return (
+            <input disabled={this.props.disabled} max={this.props.max}
+                min={this.props.min} onBlur={this.onBlur} onChange={this.onChange}
+                onFocus={this.onFocus} onKeyDown={this.onKeyDown}
+                placeholder={this.props.placeholder} step={step}
+                type="number" value={this.state.curValue} />
+        );
     }
     onChange = (ev) => {
-        const value = parseInt(ev.target.value, 10);
-        if (Number.isInteger(value)) {
-            this.props.onChange(value);
+        const value = parseFloat(ev.target.value);
+        if (!this.focused) {
+            this.props.onChange(Number.isNaN(value) ? null : value);
+        } else if (!Number.isNaN(value)) {
+            const factor = Math.pow(10, this.props.decimals || 0);
+            this.setState({curValue: Math.round(value * factor) / factor, changed: true});
         } else {
-            this.setState({curValue: ""});
+            this.setState({curValue: "", changed: true});
         }
     }
-    onBlur = () => {
-        this.setState({curValue: this.props.value});
+    onFocus = () => {
+        this.focused = true;
     }
+    onBlur = () => {
+        this.commit();
+        this.focused = false;
+    }
+    onKeyDown = (ev) => {
+        if (ev.keyCode === 13) {
+            this.commit();
+        }
+    }
+    commit = () => {
+        if (this.state.changed) {
+            this.props.onChange(this.state.curValue === "" ? null : this.state.curValue);
+        }
+    }
+
 }
+
+export default NumberInput;
