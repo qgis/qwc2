@@ -1,12 +1,16 @@
 div.ctimeline {
-    border: 1px solid @item_border@;
     padding: 0 0.25em 0.25em 0.25em;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid @item_border@;
 }
 
 div.ctimeline-toolbar {
     display: flex;
     font-size: 75%;
     align-items: center;
+    flex: 0 0 auto;
 }
 
 div.ctimeline-toolbar-timescale {
@@ -25,19 +29,50 @@ div.ctimeline-toolbar-spacer {
 div.ctimeline-clip {
     overflow: hidden;
     position: relative;
+    flex: 0 0 auto;
 }
 
 div.ctimeline-slider-container {
-    height: 16px;
     position: relative;
     margin-top: 0.125em;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
     border: 1px solid @item_border@;
 }
 
 div.ctimeline-slider {
-    background-color: #ddd;
-    height: 100%;
+    flex: 1 1 auto;
+    background-color: white;
+    height: 100px;
+    min-height: 0px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+}
+
+div.ctimeline-slider-layertitle {
+    font-weight: bold;
+    font-size: 75%;
+    padding: 0.25em;
+    border-bottom: 1px solid @item_border@;
+}
+
+div.ctimeline-slider-feature {
+    font-size: 75%;
+    overflow: hidden;
+    position: absolute;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background-color: @item_border@;
+    height: 24px;
+    border-radius: 4px;
+}
+
+div.ctimeline-slider-feature:hover {
+    border: 1px solid @item_active@;
 }
 
 div.ctimeline-cursor {
@@ -51,7 +86,7 @@ div.ctimeline-cursor {
 div.ctimeline-cursor-label {
     position: absolute;
     font-size: 75%;
-    top: calc(100%);
+    bottom: 0;
     text-align: center;
     padding: 0.25em;
     background-color: white;

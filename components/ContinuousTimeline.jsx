@@ -8,29 +8,50 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
 import dayjs from 'dayjs';
+import {addLayerFeatures, removeLayer, LayerRole} from '../actions/layers';
 import Icon from './Icon';
 import ButtonBar from './widgets/ButtonBar';
+import NumberInput from './widgets/NumberInput';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/ContinuousTimeline.css';
 
 
-export default class ContinuousTimeline extends React.Component {
+class ContinuousTimeline extends React.Component {
     static propTypes = {
+        addLayerFeatures: PropTypes.func,
         currentTimestamp: PropTypes.number,
         dialogWidth: PropTypes.number, // Just to trigger a re-render when the width changes
         enabled: PropTypes.bool,
         endTime: PropTypes.object,
+        removeLayer: PropTypes.func,
         startTime: PropTypes.object,
         stepSizeUnit: PropTypes.string,
+        timeFeatures: PropTypes.object,
         timestampChanged: PropTypes.func
     }
     state = {
         ticksContainer: null,
         currentTimestampDrag: null,
+        highlightFeature: null,
         panOffset: 0, // pixels
         timeScale: 1,
         zoomFactor: 1 // 1 = [startTime, endTime] fits dialog width in linear scale
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.highlightFeature !== prevState.highlightFeature) {
+            if (!this.state.highlightFeature) {
+                this.props.removeLayer("ctimelinehighlight");
+            } else {
+                const layer = {
+                    id: "ctimelinehighlight",
+                    role: LayerRole.MARKER,
+                    rev: +new Date()
+                };
+                this.props.addLayerFeatures(layer, [this.state.highlightFeature], true);
+            }
+        }
     }
     render() {
         const cursorPos = this.state.currentTimestampDrag ? this.state.currentTimestampDrag.pos : ((-this.state.panOffset) + "px + 50%");
@@ -52,7 +73,7 @@ export default class ContinuousTimeline extends React.Component {
                     <ButtonBar buttons={navButtons} onClick={this.navButtonClicked} />
                     <div className="ctimeline-toolbar-timescale">
                         <span>{LocaleUtils.tr("timemanager.timelinescale")}: &nbsp;</span>
-                        <input max="10" min="0.01" onChange={(ev) => this.setState({timeScale: parseFloat(ev.target.value)})} step="0.01" type="number" value={this.state.timeScale} />
+                        <NumberInput decimals={2} max={10} min={0.01} onChange={(value) => this.setState({timeScale: value})} value={this.state.timeScale} />
                     </div>
                     <div className="ctimeline-toolbar-spacer" />
                 </div>
@@ -68,7 +89,9 @@ export default class ContinuousTimeline extends React.Component {
                     </div>
                 </div>
                 <div className="ctimeline-slider-container">
-                    <div className="ctimeline-slider" onMouseDown={this.pickCurrentTimestamp} />
+                    <div className="ctimeline-slider" onMouseDown={this.pickCurrentTimestamp}>
+                        {this.renderTimeFeatures()}
+                    </div>
                     {this.props.enabled ? (
                         <div className="ctimeline-cursor" style={cursorStyle}>
                             <div className="ctimeline-cursor-label" style={labelStyle}>
@@ -237,4 +260,53 @@ export default class ContinuousTimeline extends React.Component {
         ev.preventDefault();
         ev.stopPropagation();
     }
+    renderTimeFeatures = () => {
+        if (!this.state.ticksContainer) {
+            return null;
+        }
+
+        const rect = this.state.ticksContainer.getBoundingClientRect();
+        const mid = 0.5 * rect.width - this.state.panOffset;
+        const ib = 1 / this.state.timeScale;
+        const dt = 0.5 * this.props.endTime.diff(this.props.startTime) * this.state.zoomFactor;
+        let top = 20;
+
+        return Object.entries(this.props.timeFeatures.features).map(([layer, features]) => {
+            return (
+                <div key={layer}>
+                    <div className="ctimeline-slider-layertitle">{layer}</div>
+                    {features.map(feature => {
+
+                        const tstart = feature.properties.startdate;
+                        const tend = feature.properties.enddate;
+
+                        const left = mid + 0.5 * rect.width * Math.sign(tstart - this.props.currentTimestamp) * Math.pow(Math.abs(tstart - this.props.currentTimestamp) / dt, ib);
+                        const right = mid + 0.5 * rect.width * Math.sign(tend - this.props.currentTimestamp) * Math.pow(Math.abs(tend - this.props.currentTimestamp) / dt, ib);
+
+                        const style = {
+                            top: top + "px",
+                            left: left + "px",
+                            width: (right - left) + "px"
+                        };
+                        top += 26;
+
+                        const title = tstart.format("YYYY-MM-DD HH:mm:ss") + " - " + tend.format("YYYY-MM-DD HH:mm:ss");
+
+                        return (
+                            <div className="ctimeline-slider-feature" key={feature.id}
+                                onMouseEnter={() => this.setState({highlightFeature: feature})}
+                                onMouseLeave={() => this.setState({highlightFeature: this.state.highlightFeature === feature ? null : this.state.highlightFeature})}
+                                style={style} title={title}>{feature.properties.name}
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        });
+    }
 }
+
+export default connect(() => ({}), {
+    addLayerFeatures: addLayerFeatures,
+    removeLayer: removeLayer
+})(ContinuousTimeline);
