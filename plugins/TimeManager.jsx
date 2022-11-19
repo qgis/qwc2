@@ -85,7 +85,7 @@ class TimeManager extends React.Component {
         startDate: null,
         endDate: null,
         ranges: [],
-        currentTimestamp: 0,
+        currentTimestamp: null,
         animationActive: false,
         animationLoop: false,
         animationInterval: 1,
@@ -165,7 +165,7 @@ class TimeManager extends React.Component {
                 }
             });
             timeData.values = [...timeData.values].sort().map(d => dayjs.utc(d));
-            this.setState({timeData: timeData});
+            this.setState({timeData: timeData, currentTimestamp: this.state.currentTimestamp ?? +timeData.values[0]});
             this.updateLayerTimeDimensions(timeData, this.state.currentTimestamp);
             this.updateTimeFeatures(timeData);
         } else {
