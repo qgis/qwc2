@@ -37,6 +37,8 @@ class OlMap extends React.Component {
         onClick: PropTypes.func,
         onMapViewChanges: PropTypes.func,
         onMouseMove: PropTypes.func,
+        panPageSize: PropTypes.number,
+        panStepSize: PropTypes.number,
         projection: PropTypes.string,
         resolutions: PropTypes.array,
         setCurrentTask: PropTypes.func,
@@ -46,7 +48,9 @@ class OlMap extends React.Component {
     }
     static defaultProps = {
         id: 'map',
-        mapOptions: {}
+        mapOptions: {},
+        panPageSize: 1,
+        panStepSize: 0.5
     }
     state = {
         projection: null,
@@ -58,15 +62,19 @@ class OlMap extends React.Component {
         this.ignoreNextClick = false;
 
         const interactions = ol.interaction.defaults({
-            dragPan: false, // don't create default interaction, but create it below with custom params
-            mouseWheelZoom: false // don't create default interaction, but create it below with custom params
+            // don't create these default interactions, but create them below with custom params
+            dragPan: false,
+            mouseWheelZoom: false,
+            keyboard: false
         });
+        this.keyboardPanInteractions = [];
         interactions.extend([
             new ol.interaction.DragPan({kinetic: null}),
             new ol.interaction.MouseWheelZoom({
                 duration: props.mapOptions.zoomDuration || 250,
                 constrainResolution: ConfigUtils.getConfigProp('allowFractionalZoom') === true ? false : true
-            })
+            }),
+            new ol.interaction.KeyboardZoom()
         ]);
         const controls = ol.control.defaults({
             zoom: false,
@@ -77,6 +85,7 @@ class OlMap extends React.Component {
             layers: [],
             controls: controls,
             interactions: interactions,
+            keyboardEventTarget: document,
             view: this.createView(props.center, props.zoom, props.projection, props.resolutions, props.mapOptions.enableRotation, props.mapOptions.rotation)
         });
         this.unpauseTimeout = null;
@@ -107,10 +116,30 @@ class OlMap extends React.Component {
 
         this.map = map;
         this.registerHooks();
+
+        this.recreateKeyboardInteractions();
+        window.addEventListener('resize', this.recreateKeyboardInteractions);
     }
     componentDidMount() {
         this.map.setTarget(this.props.id);
         this.updateMapInfoState();
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.recreateKeyboardInteractions);
+    }
+    recreateKeyboardInteractions = () => {
+        this.keyboardPanInteractions.forEach(interaction => {
+            this.map.removeInteraction(interaction);
+        });
+        this.keyboardPanInteractions = [
+            new ol.interaction.KeyboardPan({pixelDelta: this.props.panStepSize * document.body.offsetWidth, condition: this.panHStepCondition}),
+            new ol.interaction.KeyboardPan({pixelDelta: this.props.panStepSize * document.body.offsetHeight, condition: this.panVStepCondition}),
+            new ol.interaction.KeyboardPan({pixelDelta: this.props.panPageSize * document.body.offsetWidth, condition: this.panHPageCondition}),
+            new ol.interaction.KeyboardPan({pixelDelta: this.props.panPageSize * document.body.offsetHeight, condition: this.panVPageCondition})
+        ];
+        this.keyboardPanInteractions.forEach(interaction => {
+            this.map.addInteraction(interaction);
+        });
     }
     unblockRequests = () => {
         if (this.moving) {
@@ -151,6 +180,22 @@ class OlMap extends React.Component {
         if (this.state.rebuildView) {
             this.setState({rebuildView: false});
         }
+    }
+    panHStepCondition = (ev) => {
+        const horiz = ev.originalEvent.keyCode === 37 || ev.originalEvent.keyCode === 39;
+        return horiz && ol.events.condition.noModifierKeys(ev) && ol.events.condition.targetNotEditable(ev);
+    }
+    panVStepCondition = (ev) => {
+        const vert = ev.originalEvent.keyCode === 38 || ev.originalEvent.keyCode === 40;
+        return vert && ol.events.condition.noModifierKeys(ev) && ol.events.condition.targetNotEditable(ev);
+    }
+    panHPageCondition = (ev) => {
+        const horiz = ev.originalEvent.keyCode === 37 || ev.originalEvent.keyCode === 39;
+        return horiz && ol.events.condition.shiftKeyOnly(ev) && ol.events.condition.targetNotEditable(ev);
+    }
+    panVPageCondition = (ev) => {
+        const vert = ev.originalEvent.keyCode === 38 || ev.originalEvent.keyCode === 40;
+        return vert && ol.events.condition.shiftKeyOnly(ev) && ol.events.condition.targetNotEditable(ev);
     }
     render() {
         if (this.state.rebuildView) {
