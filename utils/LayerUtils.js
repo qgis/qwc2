@@ -799,10 +799,11 @@ const LayerUtils = {
         }
 
         if (layer.bbox) {
-            if (!transformedMapBBoxes[layer.bbox.crs]) {
-                transformedMapBBoxes[layer.bbox.crs] = CoordinatesUtils.reprojectBbox(map.bbox.bounds, map.projection, layer.bbox.crs);
+            const layerCrs = layer.bbox.crs || map.projection;
+            if (!transformedMapBBoxes[layerCrs]) {
+                transformedMapBBoxes[layerCrs] = CoordinatesUtils.reprojectBbox(map.bbox.bounds, map.projection, layerCrs);
             }
-            const mapbbox = transformedMapBBoxes[layer.bbox.crs];
+            const mapbbox = transformedMapBBoxes[layerCrs];
             const laybbox = layer.bbox.bounds;
             if (
                 mapbbox[0] > laybbox[2] || mapbbox[2] < laybbox[0] ||
