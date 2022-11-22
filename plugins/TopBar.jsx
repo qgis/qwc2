@@ -26,6 +26,7 @@ class TopBar extends React.Component {
     static propTypes = {
         appMenuClearsTask: PropTypes.bool,
         appMenuFilterField: PropTypes.bool,
+        appMenuShortcut: PropTypes.string,
         appMenuVisibleOnStartup: PropTypes.bool,
         components: PropTypes.object,
         fullscreen: PropTypes.bool,
@@ -40,7 +41,8 @@ class TopBar extends React.Component {
         setTopbarHeight: PropTypes.func,
         showIframeDialog: PropTypes.func,
         toggleFullscreen: PropTypes.func,
-        toolbarItems: PropTypes.array
+        toolbarItems: PropTypes.array,
+        toolbarItemsShortcutPrefix: PropTypes.string
     }
     static defaultProps = {
         searchOptions: {},
@@ -95,12 +97,14 @@ class TopBar extends React.Component {
                         {this.props.components.Toolbar ? (
                             <this.props.components.Toolbar
                                 openExternalUrl={this.openUrl}
-                                toolbarItems={this.props.toolbarItems} />
+                                toolbarItems={this.props.toolbarItems}
+                                toolbarItemsShortcutPrefix={this.props.toolbarItemsShortcutPrefix} />
                         ) : null}
                     </div>
                     {this.props.components.AppMenu ? (
                         <this.props.components.AppMenu
                             appMenuClearsTask={this.props.appMenuClearsTask}
+                            appMenuShortcut={this.props.appMenuShortcut}
                             buttonContents={buttonContents}
                             menuItems={this.props.menuItems}
                             openExternalUrl={this.openUrl}

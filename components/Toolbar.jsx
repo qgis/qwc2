@@ -9,6 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import Mousetrap from 'mousetrap';
 import LocaleUtils from '../utils/LocaleUtils';
 import {setCurrentTask} from '../actions/task';
 import Icon from './Icon';
@@ -21,7 +22,26 @@ class Toolbar extends React.Component {
         currentTheme: PropTypes.object,
         openExternalUrl: PropTypes.func,
         setCurrentTask: PropTypes.func,
-        toolbarItems: PropTypes.array
+        toolbarItems: PropTypes.array,
+        toolbarItemsShortcutPrefix: PropTypes.string
+    }
+    componentDidMount() {
+        if (this.props.toolbarItemsShortcutPrefix) {
+            this.props.toolbarItems.forEach((item, index) => {
+                Mousetrap.bind(this.props.toolbarItemsShortcutPrefix + '+' + (index + 1), () => {
+                    const active = this.props.currentTask === (item.task || item.key) && this.props.currentTaskMode === (item.mode || null);
+                    this.itemClicked(item, active);
+                    return false;
+                });
+            });
+        }
+    }
+    componentWillUnmount() {
+        if (this.props.toolbarItemsShortcutPrefix) {
+            this.props.toolbarItems.forEach((item, index) => {
+                Mousetrap.unbind(this.props.toolbarItemsShortcutPrefix + '+' +  (index + 1));
+            });
+        }
     }
     renderToolbarItem = (item) => {
         if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme.title) || item.themeWhitelist.includes(this.props.currentTheme.name))) {

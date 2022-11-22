@@ -9,6 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import Mousetrap from 'mousetrap';
 import {remove as removeDiacritics} from 'diacritics';
 import isEmpty from 'lodash.isempty';
 import {setCurrentTask} from '../actions/task';
@@ -22,6 +23,7 @@ import './style/AppMenu.css';
 class AppMenu extends React.Component {
     static propTypes = {
         appMenuClearsTask: PropTypes.bool,
+        appMenuShortcut: PropTypes.string,
         buttonContents: PropTypes.object,
         currentTaskBlocked: PropTypes.bool,
         currentTheme: PropTypes.object,
@@ -45,10 +47,15 @@ class AppMenu extends React.Component {
         super(props);
         this.menuEl = null;
         this.filterfield = null;
+        this.boundShortcuts = [];
     }
     componentDidMount() {
         if (this.props.showOnStartup) {
             this.toggleMenu();
+        }
+        this.addKeyBindings(this.props.menuItems);
+        if (this.props.appMenuShortcut) {
+            Mousetrap.bind(this.props.appMenuShortcut, this.toggleMenu);
         }
     }
     componentDidUpdate(prevProps, prevState) {
@@ -56,6 +63,25 @@ class AppMenu extends React.Component {
             // Need to wait until slide in transition is over
             setTimeout(() => { this.filterfield.focus(); }, 400);
         }
+    }
+    componentWillUnmount() {
+        this.boundShortcuts.forEach(shortcut => Mousetrap.unbind(shortcut));
+        if (this.props.appMenuShortcut) {
+            Mousetrap.unbind(this.props.appMenuShortcut, this.toggleMenu);
+        }
+    }
+    addKeyBindings = (items) => {
+        items.forEach(item => {
+            if (item.subitems) {
+                this.addKeyBindings(item.subitems);
+            } else if (item.shortcut) {
+                Mousetrap.bind(item.shortcut, () => {
+                    this.onMenuitemClicked(item);
+                    this.boundShortcuts.push(item.shortcut);
+                    return false;
+                });
+            }
+        });
     }
     toggleMenu = () => {
         if (!this.state.menuVisible && this.props.currentTaskBlocked) {
@@ -82,7 +108,7 @@ class AppMenu extends React.Component {
         this.setState({ submenusVisible: this.state.submenusVisible.slice(0, level).concat(a) });
     }
     onMenuitemClicked = (item) => {
-        if (!this.props.keepMenuOpen) {
+        if (!this.props.keepMenuOpen && this.state.menuVisible) {
             this.toggleMenu();
         }
         if (item.url) {
@@ -160,7 +186,7 @@ class AppMenu extends React.Component {
                                 <Icon icon={"search"} size="xlarge"/>
                                 <div className="appmenu-filter">
                                     <input onChange={ev => this.setState({filter: ev.target.value})}
-                                        placeholder={LocaleUtils.tr("appmenu.filter")} ref={el => {this.filterfield = el; }}
+                                        placeholder={LocaleUtils.tr("appmenu.filter")} ref={this.setFilterField}
                                         type="text"
                                         value={this.state.filter}/>
                                     <Icon icon="remove" onClick={() => this.setState({filter: ""})} />
@@ -172,6 +198,13 @@ class AppMenu extends React.Component {
                 </div>
             </div>
         );
+    }
+    setFilterField = (el) => {
+        this.filterfield = el;
+        if (this.props.appMenuShortcut) {
+            Mousetrap(el).bind(this.props.appMenuShortcut, this.toggleMenu);
+        }
+        Mousetrap(el).bind('esc', this.toggleMenu);
     }
 }
 
