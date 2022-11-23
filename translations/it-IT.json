@@ -25,7 +25,8 @@
         "ThemeSwitcher": "Temi",
         "Tools": "Strumenti",
         "Bookmark": "Segnalibri",
-        "TimeManager": "Linea temporale"
+        "TimeManager": "Linea temporale",
+        "Settings": "Impostazioni"
       }
     },
     "attribtable": {
@@ -301,6 +302,11 @@
       "keywords": "Parole chiavi",
       "onlineResource": "Risorsa online",
       "title": "Informazioni sul tema"
+    },
+    "settings": {
+      "confirmlang": "L'applicazione sarà ricaricata per cambiare la lingua. Procedere?",
+      "language": "Lingua",
+      "systemlang": "Lingua del sistema"
     },
     "share": {
       "QRCodeLinkTitle": "Codice QR",

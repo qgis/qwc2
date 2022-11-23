@@ -25,7 +25,8 @@
         "ThemeSwitcher": "Tema",
         "Tools": "Ferramentas de mapa",
         "Bookmark": "",
-        "TimeManager": ""
+        "TimeManager": "",
+        "Settings": ""
       }
     },
     "attribtable": {
@@ -301,6 +302,11 @@
       "keywords": "Palavras-chave",
       "onlineResource": "Recurso online",
       "title": "Informação temática"
+    },
+    "settings": {
+      "confirmlang": "",
+      "language": "",
+      "systemlang": ""
     },
     "share": {
       "QRCodeLinkTitle": "Código QR",

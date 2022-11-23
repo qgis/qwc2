@@ -25,7 +25,8 @@
         "ThemeSwitcher": "Teema",
         "Tools": "Karttatyökalut",
         "Bookmark": "Kirjanmerkit",
-        "TimeManager": ""
+        "TimeManager": "",
+        "Settings": ""
       }
     },
     "attribtable": {
@@ -301,6 +302,11 @@
       "keywords": "Avainsanat",
       "onlineResource": "Online resurssit",
       "title": "Teema informaatio"
+    },
+    "settings": {
+      "confirmlang": "",
+      "language": "",
+      "systemlang": ""
     },
     "share": {
       "QRCodeLinkTitle": "QR-koodi",

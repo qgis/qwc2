@@ -25,7 +25,8 @@
         "ThemeSwitcher": "Themen",
         "Tools": "Werkzeuge",
         "Bookmark": "Lesezeichen",
-        "TimeManager": "Zeitleiste"
+        "TimeManager": "Zeitleiste",
+        "Settings": "Einstellungen"
       }
     },
     "attribtable": {
@@ -301,6 +302,11 @@
       "keywords": "Schlüsselwörter",
       "onlineResource": "Online Ressource",
       "title": "Informationen zum Thema"
+    },
+    "settings": {
+      "confirmlang": "Die Anwendung wird neugeladen, um die Sprache zu wechseln. Fortsetzen?",
+      "language": "Sprache",
+      "systemlang": "Systemsprache"
     },
     "share": {
       "QRCodeLinkTitle": "QR Code (Smartphone)",

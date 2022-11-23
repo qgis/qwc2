@@ -40,7 +40,8 @@
     "appmenu.items.ThemeSwitcher",
     "appmenu.items.Tools",
     "appmenu.items.Bookmark",
-    "appmenu.items.TimeManager"
+    "appmenu.items.TimeManager",
+    "appmenu.items.Settings"
   ],
   "strings": [
     "appmenu.filter",
@@ -255,6 +256,9 @@
     "serviceinfo.keywords",
     "serviceinfo.onlineResource",
     "serviceinfo.title",
+    "settings.confirmlang",
+    "settings.language",
+    "settings.systemlang",
     "share.QRCodeLinkTitle",
     "share.directLinkTitle",
     "share.refresh",

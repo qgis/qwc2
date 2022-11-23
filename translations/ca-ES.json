@@ -25,7 +25,8 @@
         "ThemeSwitcher": "Tema",
         "Tools": "Eines de Mapa",
         "Bookmark": "Marcador",
-        "TimeManager": "Gestor de Temps"
+        "TimeManager": "Gestor de Temps",
+        "Settings": ""
       }
     },
     "attribtable": {
@@ -301,6 +302,11 @@
       "keywords": "Paraules clau",
       "onlineResource": "Recurs en línia",
       "title": "Informació del tema"
+    },
+    "settings": {
+      "confirmlang": "",
+      "language": "",
+      "systemlang": ""
     },
     "share": {
       "QRCodeLinkTitle": "Codi QR",

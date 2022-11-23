@@ -25,7 +25,8 @@
         "ThemeSwitcher": "Hărți tematice",
         "Tools": "Unelte hartă",
         "Bookmark": "Marcaj",
-        "TimeManager": ""
+        "TimeManager": "",
+        "Settings": ""
       }
     },
     "attribtable": {
@@ -301,6 +302,11 @@
       "keywords": "Cuvinte cheie",
       "onlineResource": "Resursă online",
       "title": "Titlu"
+    },
+    "settings": {
+      "confirmlang": "",
+      "language": "",
+      "systemlang": ""
     },
     "share": {
       "QRCodeLinkTitle": "Cod QR",

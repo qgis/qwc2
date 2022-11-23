@@ -25,7 +25,8 @@
         "ThemeSwitcher": "Tema",
         "Tools": "Harita Araçları",
         "Bookmark": "",
-        "TimeManager": ""
+        "TimeManager": "",
+        "Settings": ""
       }
     },
     "attribtable": {
@@ -301,6 +302,11 @@
       "keywords": "",
       "onlineResource": "",
       "title": ""
+    },
+    "settings": {
+      "confirmlang": "",
+      "language": "",
+      "systemlang": ""
     },
     "share": {
       "QRCodeLinkTitle": "Karekod",

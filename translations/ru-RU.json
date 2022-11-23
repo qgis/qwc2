@@ -25,7 +25,8 @@
         "ThemeSwitcher": "Тема",
         "Tools": "Средства картографии",
         "Bookmark": "",
-        "TimeManager": ""
+        "TimeManager": "",
+        "Settings": ""
       }
     },
     "attribtable": {
@@ -301,6 +302,11 @@
       "keywords": "",
       "onlineResource": "",
       "title": ""
+    },
+    "settings": {
+      "confirmlang": "",
+      "language": "",
+      "systemlang": ""
     },
     "share": {
       "QRCodeLinkTitle": "QR-код",

@@ -25,7 +25,8 @@
         "ThemeSwitcher": "Theme",
         "Tools": "Map Tools",
         "Bookmark": "Bookmarks",
-        "TimeManager": "Time Manager"
+        "TimeManager": "Time Manager",
+        "Settings": "Settings"
       }
     },
     "attribtable": {
@@ -301,6 +302,11 @@
       "keywords": "Keywords",
       "onlineResource": "Online resource",
       "title": "Theme Information"
+    },
+    "settings": {
+      "confirmlang": "The application will be reloaded to change the language. Proceed?",
+      "language": "Language",
+      "systemlang": "System language"
     },
     "share": {
       "QRCodeLinkTitle": "QR Code",
