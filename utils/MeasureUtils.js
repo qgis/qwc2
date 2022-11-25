@@ -48,6 +48,8 @@ const MeasureUtils = {
             return this.sqmTosqmi(area);
         case 'ha':
             return this.sqmToha(area);
+        case 'acre':
+            return this.sqmToacre(area);
         default:
             return area;
         }
@@ -82,6 +84,9 @@ const MeasureUtils = {
     },
     sqmToha(area) {
         return area * 0.0001;
+    },
+    sqmToacre(area) {
+        return area * 0.000247105381467;
     }
 };
 

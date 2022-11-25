@@ -111,6 +111,7 @@ class Measure extends React.Component {
                         <option value="sqkm">km&#178;</option>
                         <option value="sqmi">mi&#178;</option>
                         <option value="ha">ha</option>
+                        <option value="acre">acre</option>
                     </select>
                     <CopyButton buttonClass="copy-measure-button" text={text} />
                 </div>
