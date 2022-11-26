@@ -219,16 +219,16 @@
       "perpage": ""
     },
     "print": {
-      "grid": "Grid:",
-      "layout": "Yazdırma düzeni:",
+      "grid": "Grid",
+      "layout": "Yazdırma düzeni",
       "legend": "",
       "maximize": "Büyült",
       "minimize": "Küçült",
       "nolayouts": "Seçili tema yazdırma işlemini desteklemiyor",
       "notheme": "Tema seçilmedi",
       "output": "Yazıcı çıktısı",
-      "resolution": "Çözünürlük:",
-      "rotation": "Döndürme:",
+      "resolution": "Çözünürlük",
+      "rotation": "Döndürme",
       "scale": "Ölçek:",
       "submit": "Yazdır",
       "wait": "Lütfen bekleyiniz..."

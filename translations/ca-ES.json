@@ -219,17 +219,17 @@
       "perpage": "per pàgina"
     },
     "print": {
-      "grid": "Graella:",
-      "layout": "Diseny:",
+      "grid": "Graella",
+      "layout": "Diseny",
       "legend": "Llegenda",
       "maximize": "Maximitzar",
       "minimize": "Minimitzar",
       "nolayouts": "El tema seleccionat no admet la impresió",
       "notheme": "No hi ha tema seleccionat",
       "output": "Sortida d'impressió",
-      "resolution": "Resolució:",
-      "rotation": "Rotació:",
-      "scale": "Escala:",
+      "resolution": "Resolució",
+      "rotation": "Rotació",
+      "scale": "Escala",
       "submit": "Imprimir",
       "wait": "Esperi si us plau..."
     },

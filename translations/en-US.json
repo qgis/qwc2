@@ -227,7 +227,7 @@
       "nolayouts": "The selected theme does not support printing",
       "notheme": "No theme selected",
       "output": "Print output",
-      "resolution": "Resolution:",
+      "resolution": "Resolution",
       "rotation": "Rotation",
       "scale": "Scale",
       "submit": "Print",

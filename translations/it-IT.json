@@ -227,9 +227,9 @@
       "nolayouts": "Nessun layout di stampa",
       "notheme": "Nessun tema selezionato",
       "output": "Stampa",
-      "resolution": "Risoluzione:",
-      "rotation": "Rotazione:",
-      "scale": "Scala:",
+      "resolution": "Risoluzione",
+      "rotation": "Rotazione",
+      "scale": "Scala",
       "submit": "Stampa",
       "wait": "Attendere..."
     },

@@ -238,7 +238,7 @@
     },
     "rasterexport": {
       "format": "Format:",
-      "resolution": "Résolution",
+      "resolution": "Résolution:",
       "selectinfo": "Dessiner un rectangle pour définir la zone à exporter"
     },
     "redlining": {

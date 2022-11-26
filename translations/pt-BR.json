@@ -219,17 +219,17 @@
       "perpage": ""
     },
     "print": {
-      "grid": "Rede:",
-      "layout": "Desenho:",
+      "grid": "Rede",
+      "layout": "Desenho",
       "legend": "",
       "maximize": "Maximizar",
       "minimize": "Minimizar",
       "nolayouts": "O tema selecionado não suporta a impressão",
       "notheme": "Sem tema selecionado",
       "output": "Impressão de saída",
-      "resolution": "Resolução:",
-      "rotation": "Rotação:",
-      "scale": "Escala:",
+      "resolution": "Resolução",
+      "rotation": "Rotação",
+      "scale": "Escala",
       "submit": "Imprimir",
       "wait": "Por favor, espera..."
     },

@@ -227,9 +227,9 @@
       "nolayouts": "Vybrané téma nepodporuje tisk",
       "notheme": "Není vybráno téma",
       "output": "",
-      "resolution": "Rozlišení:",
-      "rotation": "Rotace:",
-      "scale": "Měřítko:",
+      "resolution": "Rozlišení",
+      "rotation": "Rotace",
+      "scale": "Měřítko",
       "submit": "Tisk",
       "wait": ""
     },

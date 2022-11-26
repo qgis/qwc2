@@ -227,8 +227,8 @@
       "nolayouts": "El tema seleccionado no admite su impresión",
       "notheme": "No hay tema seleccionado",
       "output": "Salida de impresión",
-      "resolution": "Resolución:",
-      "rotation": "Rotación:",
+      "resolution": "Resolución",
+      "rotation": "Rotación",
       "scale": "Escala:",
       "submit": "Imprimir",
       "wait": "Por favor espere..."

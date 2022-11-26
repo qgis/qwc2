@@ -238,7 +238,7 @@
     },
     "rasterexport": {
       "format": "Format:",
-      "resolution": "Auflösung",
+      "resolution": "Auflösung:",
       "selectinfo": "Rechteck um die zu exportierende Region aufziehen"
     },
     "redlining": {

@@ -219,17 +219,17 @@
       "perpage": ""
     },
     "print": {
-      "grid": "Rács:",
-      "layout": "Elrendezés:",
+      "grid": "Rács",
+      "layout": "Elrendezés",
       "legend": "",
       "maximize": "",
       "minimize": "",
       "nolayouts": "A kiválasztott térkép nem támogatja a nyomtatást",
       "notheme": "Nincs térkép kiválasztva",
       "output": "",
-      "resolution": "Felbontás:",
-      "rotation": "Forgatás:",
-      "scale": "Méretarány:",
+      "resolution": "Felbontás",
+      "rotation": "Forgatás",
+      "scale": "Méretarány",
       "submit": "Nyomtatás",
       "wait": ""
     },

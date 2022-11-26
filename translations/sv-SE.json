@@ -227,9 +227,9 @@
       "nolayouts": "Valt tema stöder inte utskrift",
       "notheme": "Inget tema valt",
       "output": "Utskrift",
-      "resolution": "Upplösning:",
-      "rotation": "Rotation:",
-      "scale": "Skala:",
+      "resolution": "Upplösning",
+      "rotation": "Rotation",
+      "scale": "Skala",
       "submit": "Skriv ut",
       "wait": "Vänta..."
     },
