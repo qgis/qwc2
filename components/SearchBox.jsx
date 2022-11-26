@@ -313,7 +313,7 @@ class SearchBox extends React.Component {
             return false;
         }
         const fulltextResults = this.state.searchResults.__fulltext || {};
-        const children = [
+        let children = [
             this.renderRecentResults(),
             this.renderFilters(fulltextResults),
             this.renderProviderResults(),
@@ -321,7 +321,13 @@ class SearchBox extends React.Component {
             this.renderLayers(fulltextResults)
         ].filter(element => element);
         if (isEmpty(children)) {
-            return null;
+            if (isEmpty(this.state.pendingSearches) && this.state.searchResults.query_text) {
+                children = (
+                    <div className="searchbox-noresults">{LocaleUtils.tr("search.noresults")}</div>
+                );
+            } else {
+                return null;
+            }
         }
         return (
             <div className="searchbox-results" onMouseDown={this.setPreventBlur} ref={MiscUtils.setupKillTouchEvents}>
@@ -445,7 +451,7 @@ class SearchBox extends React.Component {
         if (searchSession !== this.state.searchSession) {
             return;
         }
-        const pendingSearches = this.state.pendingSearches.filter(entry => entry === searchId);
+        const pendingSearches = this.state.pendingSearches.filter(entry => entry !== searchId);
         const searchResults = {...this.state.searchResults, [searchId]: results};
         this.setState({
             searchResults: searchResults,
