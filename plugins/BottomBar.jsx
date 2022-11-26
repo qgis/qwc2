@@ -16,6 +16,7 @@ import {changeZoomLevel} from '../actions/map';
 import {openExternalUrl} from '../actions/task';
 import {showIframeDialog} from '../actions/windows';
 import CoordinateDisplayer from '../components/CoordinateDisplayer';
+import InputContainer from '../components/InputContainer';
 import displayCrsSelector from '../selectors/displaycrs';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -111,21 +112,22 @@ class BottomBar extends React.Component {
         let scales = null;
         if (this.props.displayScales) {
             scales = (
-                <span>
+                <div>
                     <span>{LocaleUtils.tr("bottombar.scale_label")}:&nbsp;</span>
-                    <span className="bottombar-scale-combo">
-                        <span> 1 : </span>
-                        <select onChange={ev => this.props.changeZoomLevel(parseInt(ev.target.value, 10))} value={Math.round(this.props.map.zoom)}>
+                    <InputContainer className="bottombar-scale-combo">
+                        <span className="bottombar-scale-combo-prefix" role="prefix"> 1 : </span>
+                        <select onChange={ev => this.props.changeZoomLevel(parseInt(ev.target.value, 10))} role="input" value={Math.round(this.props.map.zoom)}>
                             {this.props.map.scales.map((item, index) =>
                                 (<option key={index} value={index}>{LocaleUtils.toLocaleFixed(item, 0)}</option>)
                             )}
                         </select>
-                        <input onBlur={ev => this.setScale(ev.target.value)} onChange={ev => this.setState({scale: ev.target.value})}
+                        <input
+                            onBlur={ev => this.setScale(ev.target.value)}
+                            onChange={ev => this.setState({scale: ev.target.value})}
                             onKeyUp={ev => { if (ev.keyCode === 13) this.setScale(ev.target.value); } }
-                            type="text"
-                            value={this.state.scale}/>
-                    </span>
-                </span>
+                            role="input" type="text" value={this.state.scale}/>
+                    </InputContainer>
+                </div>
             );
         }
 

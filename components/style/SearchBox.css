@@ -9,21 +9,6 @@ div.SearchBox {
 
 div.SearchBox > div.searchbox-field {
     width: 100%;
-    border: 1px solid var(--border-color);
-    height: 2em;
-    display: flex;
-    align-items: center;
-}
-
-div.SearchBox > div.searchbox-field > span.icon {
-    flex: 0 0 2em;
-    text-align: center;
-}
-div.SearchBox > div.searchbox-field > input {
-    border: 0;
-    outline: 0;
-    min-width: 0;
-    flex: 1 1 auto;
 }
 
 div.SearchBox > div.searchbox-results {

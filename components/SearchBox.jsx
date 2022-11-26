@@ -21,6 +21,7 @@ import {setCurrentTheme} from '../actions/theme';
 import {openExternalUrl, setCurrentTask} from '../actions/task';
 import {showIframeDialog, showNotification} from '../actions/windows';
 import Icon from './Icon';
+import InputContainer from './InputContainer';
 import displayCrsSelector from '../selectors/displaycrs';
 import searchProvidersSelector from '../selectors/searchproviders';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -346,15 +347,16 @@ class SearchBox extends React.Component {
         const placeholder = LocaleUtils.tr("searchbox.placeholder");
         return (
             <div className="SearchBox">
-                <div className="searchbox-field">
-                    <Icon icon="search" />
+                <InputContainer className="searchbox-field">
+                    <Icon icon="search" role="prefix" />
                     <input onBlur={this.onBlur} onChange={ev => this.searchTextChanged(ev.target, ev.target.value)}
                         onFocus={this.onFocus} onKeyDown={this.onKeyDown}
                         onPaste={ev => ev.target.setAttribute('__pasted', 1)}
                         placeholder={placeholder} ref={el => { this.searchBox = el; }}
+                        role="input"
                         type="text" value={this.state.searchText} />
-                    <Icon icon="remove" onClick={this.clear} />
-                </div>
+                    <Icon icon="remove" onClick={this.clear} role="suffix" />
+                </InputContainer>
                 {this.renderSearchResults()}
             </div>
         );

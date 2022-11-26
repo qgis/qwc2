@@ -17,61 +17,30 @@
 }
 
 #Print table.options-table td {
-    padding: 0.25em;
+    padding: 0.125em 0;
 }
 
 #Print table.options-table td:first-child {
     max-width: 10em;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding-right: 0.25em;
 }
 
 #Print table.options-table td:nth-child(2) {
     width: 99%;
 }
 
-#Print table.options-table select {
-    background-color: var(--input-bg-color);
+#Print table.options-table td:nth-child(2) > * {
     width: 100%;
-}
-
-#Print table.options-table input {
-    outline: none;
-}
-
-#Print table.options-table input:read-only,
-#Print table.options-table textarea:read-only {
-    color: var(--input-text-color-disabled);
-}
-
-#Print table.options-table span.input-frame {
-    border: 1px solid var(--border-color);
-    padding: 0.25em;
-    background-color: var(--input-bg-color);
-    display: flex;
-    align-items: center;
-}
-
-#Print table.options-table span.input-frame input,
-#Print table.options-table span.input-frame select {
-    border: 0;
-    flex: 1;
-    min-width: 0;
-    width: 0;
-    margin: 0;
 }
 
 #Print table.options-table textarea {
-    border: 1px solid var(--border-color);
-    padding: 0.25em;
-    background-color: var(--input-bg-color);
-    width: 100%;
     resize: vertical;
 }
 
 #Print div.button-bar {
-    margin: 1em 0.25em 0.25em 0.25em;
-    text-align: center;
+    margin-top: 0.5em;
 }
 
 #Print div.button-bar > button {

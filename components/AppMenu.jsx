@@ -13,6 +13,7 @@ import Mousetrap from 'mousetrap';
 import {remove as removeDiacritics} from 'diacritics';
 import isEmpty from 'lodash.isempty';
 import {setCurrentTask} from '../actions/task';
+import InputContainer from '../components/InputContainer';
 import LocaleUtils from '../utils/LocaleUtils';
 import ConfigUtils from '../utils/ConfigUtils';
 import MiscUtils from '../utils/MiscUtils';
@@ -184,13 +185,14 @@ class AppMenu extends React.Component {
                         {this.props.showFilterField ? (
                             <li className="appmenu-leaf">
                                 <Icon icon={"search"} size="xlarge"/>
-                                <div className="appmenu-filter">
+                                <InputContainer className="appmenu-filter">
                                     <input onChange={ev => this.setState({filter: ev.target.value})}
                                         placeholder={LocaleUtils.tr("appmenu.filter")} ref={this.setFilterField}
+                                        role="input"
                                         type="text"
                                         value={this.state.filter}/>
-                                    <Icon icon="clear" onClick={() => this.setState({filter: ""})} />
-                                </div>
+                                    <Icon icon="clear" onClick={() => this.setState({filter: ""})} role="suffix" />
+                                </InputContainer>
                             </li>
                         ) : null}
                         {this.renderMenuItems(this.props.menuItems, 0, filter)}

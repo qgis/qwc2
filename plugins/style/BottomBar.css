@@ -25,47 +25,23 @@
 #BottomBar input.bottombar-mousepos {
     width: 20ch;
     text-align: center;
-    border-style: solid;
-    border-color: var(--border-color);
-    border-width: 1px 0px 1px 1px;
-    background-color: var(--input-bg-color);
-    color: var(--text-color);
-    height: 2em;
+    margin-right: -1px;
 }
 
-#BottomBar span.bottombar-scale-combo {
+#BottomBar div.bottombar-scale-combo {
     position: relative;
-    display: inline-block;
-    border: 1px solid var(--border-color);
-    background-color: var(--input-bg-color);
-    color: var(--text-color);
-    height: 2em;
-    padding-left: 0.25em;
-    display: flex;
-    align-items: center;
+    width: 10em;
 }
 
-#BottomBar span.bottombar-scale-combo > span {
-    white-space: nowrap;
+#BottomBar span.bottombar-scale-combo-prefix {
+    text-align: right;
+    width: 2em;
 }
-
-#BottomBar span.bottombar-scale-combo > select {
-    border: 0;
-    background-color: var(--input-bg-color);
-    color: var(--text-color);
-    width: 7em;
-    height: calc(2em - 2px);
-    outline: none;
-}
-
-#BottomBar span.bottombar-scale-combo > input {
+#BottomBar div.bottombar-scale-combo > input {
     position: absolute;
-    right: 2em;
-    width: 5em;
-    height: calc(2em - 2px);
     top: 0;
-    border: 0;
-    outline: none;
+    left: 2em;
+    width: 6em;
 }
 
 #BottomBar span.bottombar-spacer {

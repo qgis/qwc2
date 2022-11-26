@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import {remove as removeDiacritics} from 'diacritics';
 import {addLayer} from '../../actions/layers';
+import InputContainer from '../InputContainer';
 import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import ServiceLayerUtils from '../../utils/ServiceLayerUtils';
@@ -77,7 +78,12 @@ class LayerCatalogWidget extends React.PureComponent {
         const filterplaceholder = LocaleUtils.tr("importlayer.filter");
         return (
             <div className="layer-catalog-widget">
-                <input className="layer-catalog-widget-filter" onChange={ev => this.setState({filter: ev.target.value})} placeholder={filterplaceholder} type="text" value={this.state.filter}/>
+                <InputContainer className="layer-catalog-widget-filter">
+                    <input
+                        onChange={ev => this.setState({filter: ev.target.value})} placeholder={filterplaceholder} 
+                        role="input" type="text" value={this.state.filter} />
+                    <Icon icon="clear" onClick={() => this.setState({filter: ""})} role="suffix" />
+                </InputContainer>
                 <div className="layer-catalog-widget-body">
                     {this.state.catalog.map((entry, idx) => this.renderCatalogEntry(entry, filter, [idx], 0, idx))}
                     {emptyEntry}

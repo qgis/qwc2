@@ -17,6 +17,7 @@ import ButtonBar from './widgets/ButtonBar';
 import TextInput from './widgets/TextInput';
 import EditComboField, {KeyValCache} from './EditComboField';
 import EditUploadField from './EditUploadField';
+import InputContainer from './InputContainer';
 import Spinner from './Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -430,11 +431,17 @@ class QtDesignerForm extends React.Component {
             const parts = (value || "T").split("T");
             parts[1] = (parts[1] || "").replace(/\.\d+$/, ''); // Strip milliseconds
             return (
-                <span className="qt-designer-form-datetime">
-                    <input max={max[0]} min={min[0]} onChange={(ev) => updateField(widget.name, ev.target.value ? ev.target.value + "T" + parts[1] : "")} readOnly={inputConstraints.readOnly} required={inputConstraints.required} style={fontStyle} type="date" value={parts[0]} />
-                    <input disabled={!parts[0]} onChange={(ev) => updateField(widget.name, parts[0] + "T" + ev.target.value)} {...inputConstraints} style={fontStyle} type="time" value={parts[1]} />
-                    <input name={elname} type="hidden" value={value} />
-                </span>
+                <InputContainer className="qt-designer-form-datetime">
+                    <input
+                        max={max[0]} min={min[0]} 
+                        onChange={(ev) => updateField(widget.name, ev.target.value ? ev.target.value + "T" + parts[1] : "")}
+                        readOnly={inputConstraints.readOnly} required={inputConstraints.required} role="input"
+                        style={fontStyle} type="date" value={parts[0]} />
+                    <input
+                        disabled={!parts[0]} onChange={(ev) => updateField(widget.name, parts[0] + "T" + ev.target.value)}
+                        role="input" style={fontStyle} type="time" value={parts[1]} {...inputConstraints} />
+                    <input name={elname} role="input" type="hidden" value={value} />
+                </InputContainer>
             );
         } else if (widget.class === "QWidget") {
             if (widget.name.startsWith("nrel__")) {

@@ -16,6 +16,7 @@ import formDataEntries from 'form-data-entries';
 import {LayerRole} from '../actions/layers';
 import {changeRotation} from '../actions/map';
 import Icon from '../components/Icon';
+import InputContainer from '../components/InputContainer';
 import PrintFrame from '../components/PrintFrame';
 import ResizeableWindow from '../components/ResizeableWindow';
 import SideBar from '../components/SideBar';
@@ -128,11 +129,11 @@ class Print extends React.Component {
         if (!this.state.rotationNull) {
             rotation = this.props.map.bbox ? Math.round(this.props.map.bbox.rotation / Math.PI * 180) : 0;
         }
-        let scaleChooser = (<input min="1" name={mapName + ":scale"} onChange={this.changeScale} type="number" value={this.state.scale || ""}/>);
+        let scaleChooser = (<input min="1" name={mapName + ":scale"} onChange={this.changeScale} role="input" type="number" value={this.state.scale || ""}/>);
 
         if (this.props.theme.printScales && this.props.theme.printScales.length > 0) {
             scaleChooser = (
-                <select name={mapName + ":scale"} onChange={this.changeScale} value={this.state.scale || ""}>
+                <select name={mapName + ":scale"} onChange={this.changeScale} role="input" value={this.state.scale || ""}>
                     {this.props.theme.printScales.map(scale => (<option key={scale} value={scale}>{scale}</option>))}
                 </select>);
         }
@@ -141,14 +142,14 @@ class Print extends React.Component {
         if (!isEmpty(this.props.theme.printResolutions)) {
             if (this.props.theme.printResolutions.length > 1) {
                 resolutionChooser = (
-                    <select name={"DPI"} onChange={this.changeResolution} value={this.state.dpi || ""}>
+                    <select name={"DPI"} onChange={this.changeResolution} role="input" value={this.state.dpi || ""}>
                         {this.props.theme.printResolutions.map(res => (<option key={res} value={res}>{res}</option>))}
                     </select>);
             } else {
-                resolutionInput = (<input name="DPI" readOnly type={formvisibility} value={this.props.theme.printResolutions[0]} />);
+                resolutionInput = (<input name="DPI" readOnly role="input" type={formvisibility} value={this.props.theme.printResolutions[0]} />);
             }
         } else {
-            resolutionChooser = (<input max="1200" min="50" name="DPI" onChange={this.changeResolution} type="number" value={this.state.dpi || ""} />);
+            resolutionChooser = (<input max="1200" min="50" name="DPI" onChange={this.changeResolution} role="input" type="number" value={this.state.dpi || ""} />);
         }
 
         let gridIntervalX = null;
@@ -200,20 +201,20 @@ class Print extends React.Component {
                         <tr>
                             <td>{LocaleUtils.tr("print.scale")}</td>
                             <td>
-                                <span className="input-frame">
-                                    <span>1&nbsp;:&nbsp;</span>
+                                <InputContainer>
+                                    <span role="prefix">1&nbsp;:&nbsp;</span>
                                     {scaleChooser}
-                                </span>
+                                </InputContainer>
                             </td>
                         </tr>
                         {resolutionChooser ? (
                             <tr>
                                 <td>{LocaleUtils.tr("print.resolution")}</td>
                                 <td>
-                                    <span className="input-frame">
+                                    <InputContainer>
                                         {resolutionChooser}
-                                        <span>&nbsp;dpi</span>
-                                    </span>
+                                        <span role="suffix">&nbsp;dpi</span>
+                                    </InputContainer>
                                 </td>
                             </tr>
                         ) : null}
@@ -221,9 +222,7 @@ class Print extends React.Component {
                             <tr>
                                 <td>{LocaleUtils.tr("print.rotation")}</td>
                                 <td>
-                                    <span className="input-frame">
-                                        <input name={mapName + ":rotation"} onChange={this.changeRotation} type="number" value={rotation}/>
-                                    </span>
+                                    <input name={mapName + ":rotation"} onChange={this.changeRotation} type="number" value={rotation}/>
                                 </td>
                             </tr>
                         ) : null}
