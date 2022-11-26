@@ -76,7 +76,7 @@ class ImportLayer extends React.Component {
         }
         const disableLocal = ConfigUtils.getConfigProp("disableImportingLocalLayers", this.props.theme);
         return (
-            <div id="ImportLayer">
+            <div className="ImportLayer">
                 <div className="importlayer-input-fields">
                     <select
                         disabled={this.state.pendingRequests > 0} 

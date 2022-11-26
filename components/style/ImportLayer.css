@@ -1,28 +1,26 @@
-#ImportLayer {
+div.ImportLayer {
     padding: 0 0.5em;
 }
 
-#ImportLayer div.importlayer-input-fields {
+div.ImportLayer div.importlayer-input-fields {
     display: flex;
 }
 
-#ImportLayer div.importlayer-input-fields > select {
+div.ImportLayer div.importlayer-input-fields > select {
     flex: 0 0 auto;
     margin-right: -1px;
 }
 
-#ImportLayer div.importlayer-input-fields > div.EditableSelect,
-#ImportLayer div.importlayer-input-fields > div {
+div.ImportLayer div.importlayer-input-fields > div {
     flex: 1 1 auto;
-    height: 2em;
 }
 
-#ImportLayer button.importlayer-addbutton {
+div.ImportLayer button.importlayer-addbutton {
     width: 100%;
     margin: 0.5em 0;
 }
 
-#ImportLayer button.importlayer-addbutton > div.spinner {
+div.ImportLayer button.importlayer-addbutton > div.spinner {
     width: 1.5em;
     height: 1.5em;
     margin-right: 0.25em;
@@ -30,6 +28,6 @@
     flex: 0 0 auto;
 }
 
-#ImportLayer div.layer-catalog-widget {
+div.ImportLayer div.layer-catalog-widget {
     max-height: 13em;
 }

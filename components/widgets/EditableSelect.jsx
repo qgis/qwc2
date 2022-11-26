@@ -9,6 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from '../Icon';
+import InputContainer from '../InputContainer';
 import MiscUtils from '../../utils/MiscUtils';
 
 import './style/EditableSelect.css';
@@ -32,7 +33,7 @@ export default class EditableSelect extends React.Component {
     render() {
         return (
             <div className="EditableSelect">
-                <div className="editable-select-inputcontainer">
+                <InputContainer className="editable-select-inputcontainer">
                     <input
                         onBlur={() => this.setState({focused: false})}
                         onChange={this.valueChanged}
@@ -41,10 +42,11 @@ export default class EditableSelect extends React.Component {
                         placeholder={this.state.selectedOption ? "" : this.props.placeholder}
                         readOnly={this.props.readOnly}
                         ref={el => { this.input = el; }}
+                        role="input"
                         type="text"
                         value={this.state.textValue} />
-                    <Icon icon="clear" onClick={this.clear} />
-                </div>
+                    <Icon icon="clear" onClick={this.clear} role="suffix" />
+                </InputContainer>
                 {this.state.selectedOption !== null ? this.renderSelectedOption() : null}
                 {this.state.focused && !this.props.readOnly ? this.renderOptions() : null}
             </div>
