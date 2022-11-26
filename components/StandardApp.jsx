@@ -265,8 +265,11 @@ export default class StandardApp extends React.Component {
                 }
                 CoordinatesUtils.setCrsLabels({[proj.code]: proj.label});
             }
-
             olProj4Register(Proj4js);
+            // Set color scheme
+            const colorScheme = localStorage.getItem('qwc2-color-scheme') || config.defaultColorScheme || "default";
+            const root = document.querySelector(':root');
+            root.classList.add(colorScheme);
         });
     }
 }

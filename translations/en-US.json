@@ -305,7 +305,7 @@
       "title": "Theme Information"
     },
     "settings": {
-      "colorscheme": "",
+      "colorscheme": "Color scheme",
       "confirmlang": "The application will be reloaded to change the language. Proceed?",
       "language": "Language",
       "systemlang": "System language"

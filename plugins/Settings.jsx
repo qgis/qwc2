@@ -17,14 +17,21 @@ import './style/Settings.css';
 
 class Settings extends React.Component {
     static propTypes = {
+        colorSchemes: PropTypes.array,
         languages: PropTypes.array,
         side: PropTypes.string
     }
     static defaultProps = {
+        colorSchemes: [],
         languages: [],
         side: 'right'
     }
     state = {
+        colorScheme: 'default'
+    }
+    constructor(props) {
+        super(props);
+        this.state.colorScheme = localStorage.getItem('qwc2-color-scheme') || "default";
     }
     render() {
         return (
@@ -41,6 +48,7 @@ class Settings extends React.Component {
                 <table className="settings-table">
                     <tbody>
                         {this.renderLanguageSelector()}
+                        {this.renderColorSchemeSelector()}
                     </tbody>
                 </table>
             </div>
@@ -65,6 +73,23 @@ class Settings extends React.Component {
             </tr>
         );
     }
+    renderColorSchemeSelector = () => {
+        if (isEmpty(this.props.colorSchemes)) {
+            return null;
+        }
+        return (
+            <tr>
+                <td>{LocaleUtils.tr("settings.colorscheme")}</td>
+                <td>
+                    <select className="combo" onChange={this.changeColorScheme} value={this.state.colorScheme}>
+                        {this.props.colorSchemes.map(entry => (
+                            <option key={entry.value} value={entry.value}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
+                        ))}
+                    </select>
+                </td>
+            </tr>
+        );
+    }
     changeLocale = (ev) => {
         // eslint-disable-next-line
         if (confirm(LocaleUtils.tr("settings.confirmlang"))) {
@@ -81,6 +106,18 @@ class Settings extends React.Component {
             delete urlParts.search;
             location = url.format(urlParts);
         }
+    }
+    changeColorScheme = (ev) => {
+        const newColorScheme = ev.target.value;
+        const root = document.querySelector(':root');
+        if (this.state.colorScheme) {
+            root.classList.remove(this.state.colorScheme);
+        }
+        if (newColorScheme) {
+            root.classList.add(newColorScheme);
+        }
+        this.setState({colorScheme: newColorScheme});
+        localStorage.setItem('qwc2-color-scheme', newColorScheme);
     }
 }
 
