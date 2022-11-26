@@ -59,6 +59,7 @@
       "description": "Descripción",
       "lastUpdate": "Último guardado",
       "manage": "Administrar",
+      "nobookmarks": "",
       "notloggedin": "Se necesita tener sesión iniciada para guardar marcadores",
       "open": "Abrir en la pestaña actual",
       "openTab": "Abrir en pestaña",
@@ -304,6 +305,7 @@
       "title": "Información del tema"
     },
     "settings": {
+      "colorscheme": "",
       "confirmlang": "",
       "language": "",
       "systemlang": ""

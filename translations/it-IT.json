@@ -56,9 +56,10 @@
     "bookmark": {
       "add": "Crea segnalibro",
       "addfailed": "Impossibile creare il segnalibro",
-      "description": "Descrizione",
+      "description": "Inserire descrizione...",
       "lastUpdate": "Ultimo salvataggio",
       "manage": "Gestisci segnalibri",
+      "nobookmarks": "Nessun segnalibro",
       "notloggedin": "È necessario aver effettuato l'accesso per utilizzare i segnalibri",
       "open": "Apri nella finestra corrente",
       "openTab": "Apri in una nuova finestra",
@@ -304,6 +305,7 @@
       "title": "Informazioni sul tema"
     },
     "settings": {
+      "colorscheme": "",
       "confirmlang": "L'applicazione sarà ricaricata per cambiare la lingua. Procedere?",
       "language": "Lingua",
       "systemlang": "Lingua del sistema"

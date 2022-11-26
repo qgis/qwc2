@@ -17,6 +17,7 @@ import SideBar from '../components/SideBar';
 import Spinner from '../components/Spinner';
 import {createBookmark, getUserBookmarks, removeBookmark, updateBookmark} from '../utils/PermaLinkUtils';
 import './style/Bookmark.css';
+import isEmpty from 'lodash.isempty';
 
 
 class Bookmark extends React.Component {
@@ -92,6 +93,9 @@ class Bookmark extends React.Component {
                                     <div className={itemclasses} key={bookmark.key} onClick={() => this.toggleCurrentBookmark(bookmark)} title={lastUpdateTitle + ": " + bookmark.date}>{bookmark.description}</div>
                                 );
                             })}
+                            {isEmpty(this.state.bookmarks) ? (
+                                <div className="bookmark-list-item-empty">{LocaleUtils.tr("bookmark.nobookmarks")}</div>
+                            ) : null}
                         </div>
                     </div>
                 )}

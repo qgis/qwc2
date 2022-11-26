@@ -56,9 +56,10 @@
     "bookmark": {
       "add": "Neues Lesezeichen anlegen",
       "addfailed": "Lesezeichen konnte nicht angelegt werden",
-      "description": "Beschreibung",
+      "description": "Beschreibung eingeben...",
       "lastUpdate": "Zuletzt gespeichert",
       "manage": "Lesezeichen verwalten",
+      "nobookmarks": "Keine Lesezeichen",
       "notloggedin": "Sie müssen angemeldet sein, um Lesezeichen zu verwenden",
       "open": "In aktuellem Fenster öffnen",
       "openTab": "In neuem Fenster öffnen",
@@ -304,6 +305,7 @@
       "title": "Informationen zum Thema"
     },
     "settings": {
+      "colorscheme": "",
       "confirmlang": "Die Anwendung wird neugeladen, um die Sprache zu wechseln. Fortsetzen?",
       "language": "Sprache",
       "systemlang": "Systemsprache"

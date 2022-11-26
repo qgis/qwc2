@@ -56,9 +56,10 @@
     "bookmark": {
       "add": "Create new bookmark",
       "addfailed": "Failed to create bookmark",
-      "description": "Description",
+      "description": "Enter description...",
       "lastUpdate": "Last saved",
       "manage": "Manage bookmarks",
+      "nobookmarks": "No bookmarks",
       "notloggedin": "You need to be logged in to store bookmarks",
       "open": "Open bookmark in current tab",
       "openTab": "Open bookmark in tab",
@@ -304,6 +305,7 @@
       "title": "Theme Information"
     },
     "settings": {
+      "colorscheme": "",
       "confirmlang": "The application will be reloaded to change the language. Proceed?",
       "language": "Language",
       "systemlang": "System language"

@@ -59,6 +59,7 @@
       "description": "Descripció",
       "lastUpdate": "Darrer canvi",
       "manage": "Gestionar",
+      "nobookmarks": "",
       "notloggedin": "No logat",
       "open": "Obrir",
       "openTab": "Obrir en una pestanya",
@@ -304,6 +305,7 @@
       "title": "Informació del tema"
     },
     "settings": {
+      "colorscheme": "",
       "confirmlang": "",
       "language": "",
       "systemlang": ""

@@ -59,6 +59,7 @@
       "description": "Descriere",
       "lastUpdate": "Ultima actualizare",
       "manage": "Gestionează",
+      "nobookmarks": "",
       "notloggedin": "Nelogat",
       "open": "Deschide",
       "openTab": "",
@@ -304,6 +305,7 @@
       "title": "Titlu"
     },
     "settings": {
+      "colorscheme": "",
       "confirmlang": "",
       "language": "",
       "systemlang": ""

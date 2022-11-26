@@ -56,9 +56,10 @@
     "bookmark": {
       "add": "Ajouter un marque-page",
       "addfailed": "Echec de création du marque-page",
-      "description": "Description",
+      "description": "Entrer la description...",
       "lastUpdate": "Dernier enregistrement",
       "manage": "Gérer les marque-pages",
+      "nobookmarks": "Pas de marque-pages",
       "notloggedin": "Vous avez besoin d'être authentifié pour pouvoir enregistrer des marques-pages",
       "open": "Ouvrir le marque-page dans l'onglet courant",
       "openTab": "Ouvrir le marque-page dans un nouvel onglet",
@@ -304,6 +305,7 @@
       "title": "Information sur le thème"
     },
     "settings": {
+      "colorscheme": "",
       "confirmlang": "L'application sera rechargée pour changer la langue. Procéder?",
       "language": "Langue",
       "systemlang": "Langue du système"

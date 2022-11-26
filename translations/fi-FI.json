@@ -59,6 +59,7 @@
       "description": "Kuvaus",
       "lastUpdate": "",
       "manage": "Kirjanmerkkien hallinta",
+      "nobookmarks": "",
       "notloggedin": "",
       "open": "",
       "openTab": "",
@@ -304,6 +305,7 @@
       "title": "Teema informaatio"
     },
     "settings": {
+      "colorscheme": "",
       "confirmlang": "",
       "language": "",
       "systemlang": ""
