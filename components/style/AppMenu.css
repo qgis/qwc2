@@ -24,7 +24,6 @@ div.AppMenu .appmenu-icon {
     padding: 0.25em;
     margin: 0 1em;
     border: 2px solid var(--app-menu-text-color);
-    background-color: var(--app-submenu-text-color-hover);
     transition: color 0.25s, border-color 0.25s, background-color 0.25s;
 }
 
@@ -50,8 +49,8 @@ div.AppMenu div.appmenu-menu-container {
     transform: scaleY(0);
     transition: transform 0.25s, opacity 0.25s;
     overflow-y: auto;
-    max-height: calc(100vh - 5.75em);
-    max-height: calc(var(--vh, 1vh) * 100 - 5.75em);
+    max-height: calc(100vh - 5.9em);
+    max-height: calc(var(--vh, 1vh) * 100 - 5.9em);
 }
 
 div.AppMenu ul.appmenu-menu {
@@ -129,24 +128,6 @@ div.AppMenu ul.appmenu-menu li.appmenu-leaf div.appmenu-leaf-comment {
 }
 
 div.appmenu-filter {
-    border: 1px solid var(--border-color);
-    height: 2em;
-    display: flex;
-    align-items: center;
-    flex: 1 1 auto;
-    margin-right: 1em;
-    background-color: var(--input-bg-color);
-}
-
-div.appmenu-filter > span.icon {
-    flex: 0 0 2em;
-    text-align: center;
-}
-
-div.appmenu-filter > input {
-    border: 0;
-    outline: 0;
-    width: 0;
-    min-width: 0;
-    flex: 1 1 auto;
+    width: 100%;
+    margin-right: 0.5em;
 }

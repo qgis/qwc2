@@ -67,11 +67,11 @@ class LayerCatalogWidget extends React.PureComponent {
         let emptyEntry = null;
         if (isEmpty(this.state.catalog) && this.props.pendingRequests === 0) {
             emptyEntry = (
-                <div className="layertree-item-noresults">{LocaleUtils.tr("importlayer.noresults")}</div>
+                <div className="layer-catalog-placeholder">{LocaleUtils.tr("importlayer.noresults")}</div>
             );
         } else if (isEmpty(this.state.catalog)) {
             emptyEntry = (
-                <div className="layertree-item-noresults">{LocaleUtils.tr("importlayer.loading")}</div>
+                <div className="layer-catalog-placeholder">{LocaleUtils.tr("importlayer.loading")}</div>
             );
         }
         const filterplaceholder = LocaleUtils.tr("importlayer.filter");

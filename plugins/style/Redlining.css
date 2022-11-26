@@ -57,7 +57,4 @@ div.redlining-controlsbar span.react-numeric-input {
 
 div.redlining-controlsbar input.redlining-label {
     width: 7em;
-    height: 2em;
-    padding: 0.25em;
-    border: 1px solid var(--border-color);
 }

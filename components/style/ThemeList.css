@@ -25,7 +25,7 @@ div.ThemeList li.theme-group-header ul.theme-group-body {
 }
 
 div.ThemeList li.theme-item {
-    background-color: white;
+    background-color: var(--list-bg-color);
     font-weight: bold;
     font-size: small;
     border: 1px solid var(--border-color);
@@ -54,6 +54,10 @@ div.ThemeList div.theme-item-title > span.icon {
     font-size: large;
 }
 
+div.ThemeList div.theme-item-body {
+    background-color: white;
+}
+
 div.ThemeList li.theme-item-active div.theme-item-title > span:first-child {
     color: var(--color-active);
 }
@@ -75,7 +79,7 @@ div.ThemeList div.theme-item-icons > span.icon {
     flex: 0 0 auto;
     font-size: large;
     padding: 0.25em;
-    background-color: rgba(255, 255, 255, 0.75);
+    background-color: var(--button-bg-color);
     color: var(--text-color);
     z-index: 2;
 }

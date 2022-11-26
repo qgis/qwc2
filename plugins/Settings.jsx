@@ -63,7 +63,7 @@ class Settings extends React.Component {
             <tr>
                 <td>{LocaleUtils.tr("settings.language")}&nbsp;</td>
                 <td>
-                    <select className="combo" onChange={this.changeLocale} value={lang}>
+                    <select onChange={this.changeLocale} value={lang}>
                         <option key="syslang" value="">{LocaleUtils.tr("settings.systemlang")}</option>
                         {this.props.languages.map(entry => (
                             <option key={entry.value} value={entry.value}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
@@ -81,7 +81,7 @@ class Settings extends React.Component {
             <tr>
                 <td>{LocaleUtils.tr("settings.colorscheme")}</td>
                 <td>
-                    <select className="combo" onChange={this.changeColorScheme} value={this.state.colorScheme}>
+                    <select onChange={this.changeColorScheme} value={this.state.colorScheme}>
                         {this.props.colorSchemes.map(entry => (
                             <option key={entry.value} value={entry.value}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
                         ))}

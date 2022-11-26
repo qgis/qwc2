@@ -24,8 +24,6 @@
 #Search input.searchbar {
     flex: 1 1 auto;
     height: 2.5em;
-    padding: 0.25em 0.75em;
-    border: 1px solid var(--border-color);
     width: 0;
     min-width: 10ch;
 }
@@ -163,6 +161,7 @@
 #Search ul.search-results li.search-results-noresults {
     padding: 0.25em 0.25em 0.25em 1em;
     font-style: italic;
+    color: var(--text-color-disabled);
 }
 
 #Search ul.search-results ul li > img {

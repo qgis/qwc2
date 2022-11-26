@@ -8,7 +8,7 @@ div.navbar > select {
     margin-left: 0.25em;
 }
 div.navbar > button.button:not(:first-child) {
-    border-left-width: 0;
+    margin-left: -1px;
 }
 
 div.navbar > span.navbar-dots {

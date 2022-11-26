@@ -169,8 +169,8 @@ table.attribtable-table td > select,
 table.attribtable-table td > span.edit-upload-field {
     width: 100%;
     min-width: 4em;
-    border: none;
-    background-color: transparent;
+    border: none!important;
+    background-color: transparent!important;
     margin: 0;
 }
 
@@ -191,13 +191,13 @@ table.attribtable-table td > div.attribtable-content-editable {
 }
 
 table.attribtable-table td > div.attribtable-content-editable:focus {
-    outline: 2px solid #3584e4;
+    outline: var(--focus-outline);
 }
 
 table.attribtable-table td > *:disabled,
 table.attribtable-table tr.row-disabled,
 table.attribtable-table tr.row-disabled * {
-    color: var(--input-text-color-disabled);
+    color: var(--text-color-disabled);
     cursor: not-allowed!important;
 }
 
@@ -220,11 +220,6 @@ div.attribtable-filter {
     flex: 1 1 auto;
 }
 
-div.attribtable-filter input,
-div.attribtable-filter select {
-    border: 1px solid var(--border-color);
-    height: 2em;
-}
 div.attribtable-filter input {
     flex: 1 1 auto;
     width: 0;

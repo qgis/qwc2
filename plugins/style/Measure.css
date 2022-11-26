@@ -18,9 +18,9 @@ div.resultbody > span {
 
 div.resultbody > select {
     flex: 0 0 auto;
-    border-left-width: 0;
+    margin-left: -1px;
 }
 
 div.resultbody button.copy-measure-button {
-    border-left-width: 0;
+    margin-left: -1px;
 }

@@ -100,7 +100,7 @@ class BottomBar extends React.Component {
                 <span>
                     <span>{LocaleUtils.tr("bottombar.mousepos_label")}:&nbsp;</span>
                     <CoordinateDisplayer className={"bottombar-mousepos"} displaycrs={this.props.displaycrs} />
-                    <select className="combo" onChange={ev => this.props.changeMousePositionState({crs: ev.target.value})} value={this.props.displaycrs}>
+                    <select onChange={ev => this.props.changeMousePositionState({crs: ev.target.value})} value={this.props.displaycrs}>
                         {Object.keys(availableCRS).map(crs =>
                             (<option key={crs} value={crs}>{availableCRS[crs].label}</option>)
                         )}

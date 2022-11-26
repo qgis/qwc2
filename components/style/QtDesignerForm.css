@@ -2,40 +2,7 @@ div.qt-designer-form {
     overflow: auto;
 }
 
-div.qt-designer-form input[type=text],
-div.qt-designer-form input[type=number],
-div.qt-designer-form input[type=date],
-div.qt-designer-form input[type=time],
-div.qt-designer-form input[type=datetime-local],
-div.qt-designer-form select {
-    border: 1px solid var(--border-color);
-    background-color: var(--input-text-color);
-    padding: 0.25em;
-    height: 2em;
-}
-
-div.qt-designer-form input:read-only,
-div.qt-designer-form select:disabled,
-div.qt-designer-form textarea:read-only {
-    background-color: var(--input-bg-color-disabled);
-    color: var(--input-text-color-disabled);
-}
-
-div.qt-designer-form input:invalid,
-div.qt-designer-form select:invalid,
-div.qt-designer-form textarea:invalid {
-    background-color: #FFAAAA;
-}
-
-div.qt-designer-form input[type=range] {
-    background-color: transparent;
-    height: 2em;
-}
-
 div.qt-designer-form textarea {
-    border: 1px solid var(--border-color);
-    background-color: white;
-    padding: 0.25em;
     height: 100%;
 }
 
@@ -189,18 +156,6 @@ div.qt-designer-form label {
     align-items: center;
 }
 
-span.qt-designer-form-datetime {
-    display: flex;
-    border: 1px solid var(--border-color);
-    gap: 2px;
-}
-
-span.qt-designer-form-datetime > input[type="date"],
-span.qt-designer-form-datetime > input[type="time"] {
-    border: 0;
-    flex: 1 1 auto;
-}
-
 div.qt-designer-form-featurelink-buttons {
     display: flex;
 }
@@ -220,8 +175,8 @@ div.qt-designer-report {
 div.qt-designer-report input,
 div.qt-designer-report textarea,
 div.qt-designer-report select {
-    border: none;
-    outline: none;
+    border: none!important;
+    outline: none!important;
 }
 
 div.qt-designer-report select {

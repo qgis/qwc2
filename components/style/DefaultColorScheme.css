@@ -2,12 +2,13 @@
     /* Base colors */
     --text-color: #595959;
     --text-color-link: #337ab7;
+    --text-color-disabled: #999;
     --container-bg-color: #f8f8f8;
     --input-bg-color: white;
     --input-bg-color-disabled: #eee;
-    --input-text-color-disabled: #999;
     --border-color: #bbb;
     --color-active: #078aa3;
+    --focus-outline: 2px solid #3584e4;
     /* Tooltips */
     --tooltip-bg-color: rgba(0, 0, 0, 0.75);
     --tooltip-text-color: white;
@@ -34,7 +35,6 @@
     --button-text-color-active: white;
     --button-text-color-active-hover: white;
     --button-text-color-disabled: #bbb;
-    --button-border-color: #bbb;
     /* List */
     --list-bg-color: white;
     --list-section-bg-color: #ccc;

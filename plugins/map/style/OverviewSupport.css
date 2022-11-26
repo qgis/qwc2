@@ -22,8 +22,8 @@ div.overview-map > button {
 
 div.overview-map > div.ol-overviewmap-map {
     position: absolute;
-    right: 0;
-    bottom: 0;
+    right: 1px;
+    bottom: 1px;
     width: 200px;
     height: 200px;
     background-color: white;

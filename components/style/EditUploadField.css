@@ -34,7 +34,7 @@ span.edit-upload-field-input > span.icon {
 span.edit-upload-field-disabled,
 span.edit-upload-field-input-disabled {
     background-color: var(--input-bg-color-disabled);
-    color: var(--input-text-color-disabled);
+    color: var(--text-color-disabled);
 }
 
 span.edit-upload-field-image {

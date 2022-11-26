@@ -22,8 +22,6 @@ div.time-manager-toolbar > *:not(:last-child) {
 
 div.time-manager-toolbar input,
 div.time-manager-toolbar select {
-    border: 1px solid var(--border-color);
-    height: 2em;
     width: 6em;
 }
 

@@ -32,6 +32,6 @@ div.snapping-toolbar-container > div div.spinner {
 
 
 div.snapping-toolbar-inactive {
-    color: var(--input-text-color-disabled);
+    color: var(--text-color-disabled);
     font-style: italic;
 }

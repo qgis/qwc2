@@ -188,7 +188,7 @@ class Print extends React.Component {
                         <tr>
                             <td>{LocaleUtils.tr("print.layout")}</td>
                             <td>
-                                <select className="combo" onChange={this.changeLayout} value={this.state.layout.name}>
+                                <select onChange={this.changeLayout} value={this.state.layout.name}>
                                     {this.props.theme.print.map(item => {
                                         return (
                                             <option key={item.name} value={item.name}>{item.name}</option>

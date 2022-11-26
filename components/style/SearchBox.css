@@ -43,10 +43,13 @@ div.SearchBox > div.searchbox-results {
 }
 
 div.SearchBox div.searchbox-results-section-title {
-    background-color: var(--container-bg-color);
+    background-color: var(--list-section-bg-color);
+    color: var(--list-section-text-color);
     font-weight: bold;
     padding: 0.5em;
     cursor: pointer;
+    display: flex;
+    align-items: center;
 }
 
 div.SearchBox div.searchbox-results-section-title > span.icon {
@@ -57,7 +60,12 @@ div.searchbox-result {
     padding: 0.125em 0.5em;
     display: flex;
     align-items: center;
-    height: 1.75em;
+}
+
+div.searchbox-noresults {
+    padding: 0.125em 0.5em;
+    font-style: italic;
+    color: var(--text-color-disabled);
 }
 
 div.searchbox-result:hover {

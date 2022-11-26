@@ -79,7 +79,7 @@ class ImportLayer extends React.Component {
             <div id="ImportLayer">
                 <div className="importlayer-input-fields">
                     <select
-                        className="combo" disabled={this.state.pendingRequests > 0} 
+                        disabled={this.state.pendingRequests > 0} 
                         onChange={ev => this.setState({type: ev.target.value, file: null, url: "", serviceLayers: null})} value={this.state.type}
                     >
                         <option value="URL">{LocaleUtils.tr("importlayer.url")}</option>

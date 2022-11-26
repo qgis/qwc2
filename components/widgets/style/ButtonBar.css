@@ -25,11 +25,10 @@ div.ButtonBar span.buttonbar-button-container {
 
 div.ButtonBar span.buttonbar-button-container > button {
     width: 100%;
-    border-left-width: 0;
 }
 
-div.ButtonBar span.buttonbar-button-container:first-child > button {
-    border-left-width: 1px;
+div.ButtonBar span.buttonbar-button-container:not(:last-child) > button {
+    border-right-width: 0;
 }
 
 div.ButtonBar span.buttonbar-button-tooltip {

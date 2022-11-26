@@ -63,25 +63,43 @@ input, select, button, textarea {
     margin: 0;
 }
 
-textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]) {
-    -webkit-appearance: none;
-    cursor: text;
-    padding: 0.25em;
+input:focus, select:focus, button:focus, textarea:focus {
+    outline: var(--focus-outline);
 }
 
-select.combo {
-    height: 2em;
+textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]), select {
+    padding: 0.25em;
     border: 1px solid var(--border-color);
     background-color: var(--input-bg-color);
     color: var(--text-color);
-    outline: none;
+}
+
+input:not([type=checkbox]):not([type=radio]):not([type=range]), select {
+    height: 2em;
+}
+
+textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]) {
+    cursor: text;
+}
+
+input:read-only, textarea:read-only {
+    color: var(--text-color-disabled);
+}
+
+input:disabled, select:disabled, textarea:disabled {
+    background-color: var(--input-bg-color-disabled);
+    color: var(--text-color-disabled);
+}
+
+input:invalid, select:invalid, textarea:invalid {
+    background-color: #FFAAAA;
 }
 
 /** Button **/
 button.button {
     background-color: var(--button-bg-color);
     color: var(--button-text-color);
-    border: 1px solid var(--button-border-color);
+    border: 1px solid var(--border-color);
     display: inline-flex;
     padding: 0.5em;
     align-items: center;
@@ -89,10 +107,7 @@ button.button {
     height: 2em;
     overflow: hidden;
     cursor: pointer;
-}
-
-button.button:focus {
-    outline: 0;
+    outline: none;
 }
 
 button.button:disabled {
@@ -147,7 +162,7 @@ button.button:not(:disabled):active > * {
 }
 
 button.button > span:not(.icon) {
-    margin-left: 0.5em;
+    margin: 0 0.5em;
 }
 
 button.button > div.spinner {
@@ -158,7 +173,8 @@ button.button > div.spinner {
 /** Range slider **/
 input[type=range] {
     -webkit-appearance: none;
-    outline: none;
+    background-color: transparent;
+    height: 2em;
 }
 
 input[type=range]::-moz-range-track {
@@ -198,11 +214,11 @@ span.react-numeric-input > input {
     border-radius: 0!important;
     height: 2em;
     width: 100%;
-    border: 1px solid var(--button-border-color)important;
+    border: 1px solid var(--border-color)!important;
 }
 
 span.react-numeric-input > b {
-    border: 1px solid var(--button-border-color)!important;
+    border: 1px solid var(--border-color)!important;
     background-color: var(--button-bg-color)!important;
     color: var(--button-text-color)!important;
 }

@@ -41,10 +41,6 @@ div.timeline-ticks > div {
     font-size: 75%;
 }
 
-div.timeline-ticks > div > input {
-    border: 1px solid var(--border-color);
-}
-
 div.timeline-ticks > div:first-child {
     text-align: left;
 }

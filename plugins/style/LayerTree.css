@@ -56,8 +56,9 @@
 }
 
 #LayerTree div.layertree-tree .drop-ghost {
-    outline: 1px solid #ccc;
-    background-color: white;
+    outline: 1px solid var(--color-active);
+    background-color: var(--container-bg-color);
+    color: var(--text-color);
 }
 
 #LayerTree div.layertree-option {
@@ -88,17 +89,17 @@
 }
 
 #LayerTree div.layertree-item-disabled > span.layertree-item-title {
-    color: var(--input-text-color-disabled);
+    color: var(--text-color-disabled);
 }
 
 #LayerTree div.layertree-item-outsidescalerange > span.layertree-item-title {
     font-style: italic;
-    color: var(--input-text-color-disabled);
+    color: var(--text-color-disabled);
 }
 
 #LayerTree div.layertree-item-separator {
     font-weight: bold;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--color-active);
 }
 
 #LayerTree div.layertree-item-separator > input {
@@ -186,7 +187,6 @@ img.layertree-item-legend-tooltip {
 #LayerTree span.layertree-item-remove {
     text-align: center;
     width: 1.75em;
-    color: var(--border-color);
     flex: 0 0 auto;
 }
 
@@ -197,7 +197,6 @@ img.layertree-item-legend-tooltip {
 #LayerTree span.layertree-item-cog {
     text-align: center;
     width: 1.75em;
-    color: var(--border-color);
     flex: 0 0 auto;
     margin-left: 0.25em;
     height: 100%;
@@ -207,7 +206,7 @@ img.layertree-item-legend-tooltip {
 }
 
 #LayerTree span.layertree-item-cog-active {
-    background-color: var(--border-color);
+    background-color: var(--color-active);
     color: white;
 }
 
@@ -251,5 +250,5 @@ img.layertree-item-legend-tooltip {
 }
 
 #LayerTree div.layertree-item-addsep:hover {
-    border-top: 2px solid var(--border-color);
+    border-top: 2px solid var(--color-active);
 }

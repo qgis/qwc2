@@ -3,13 +3,9 @@ div.layer-catalog-widget {
     flex-direction: column;
 }
 
-input.layer-catalog-widget-filter {
-    border-width: 1px 1px 0 1px;
-    border-style: solid;
-    border-color: var(--border-color);
-    width: 100%;
-    padding: 0.25em;
+div.layer-catalog-widget-filter {
     flex: 0 0 auto;
+    margin-bottom: -1px;
 }
 
 div.layer-catalog-widget-body {
@@ -19,6 +15,11 @@ div.layer-catalog-widget-body {
     overflow-y: auto;
     margin-bottom: 0.5em;
     flex: 1 1 auto;
+}
+
+div.layer-catalog-placeholder {
+    font-style: italic;
+    color: var(--text-color-disabled);
 }
 
 div.layer-catalog-widget-entry {
@@ -53,7 +54,7 @@ div.layer-catalog-widget-entry > img {
 span.layer-catalog-widget-entry-service {
     display: inline-block;
     text-align: center;
-    color: var(--input-bg-color);
+    color: var(--text-color);
     background: var(--border-color);
     margin-right: 0.5em;
     border-radius: 0.25em;

@@ -25,7 +25,7 @@ export default class VectorLayerPicker extends React.Component {
     render() {
         return (
             <div className="VectorLayerPicker">
-                <select className="combo" onChange={ev => this.props.onChange(this.props.layers.find(layer => layer.id === ev.target.value))} value={this.props.value}>
+                <select onChange={ev => this.props.onChange(this.props.layers.find(layer => layer.id === ev.target.value))} value={this.props.value}>
                     {this.props.layers.map(layer => (<option key={layer.id} value={layer.id}>{layer.title}</option>))}
                 </select>
                 <button className="button" onClick={this.addLayer} style={{borderLeftWidth: 0}}><Icon icon="plus" /></button>

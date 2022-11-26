@@ -19,7 +19,6 @@ div.ctimeline-toolbar-timescale {
 
 div.ctimeline-toolbar-timescale > input {
     width: 5em;
-    border: 1px solid var(--border-color);
 }
 
 div.ctimeline-toolbar-spacer {

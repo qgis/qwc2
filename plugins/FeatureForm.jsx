@@ -152,7 +152,7 @@ class FeatureForm extends React.Component {
                 <div className="feature-query-body" role="body">
                     {Object.keys(this.state.pickedFeatures).length > 1 ? (
                         <div className="feature-query-selection">
-                            <select className="combo" onChange={this.setSelectedFeature} value={this.state.selectedFeature}>
+                            <select onChange={this.setSelectedFeature} value={this.state.selectedFeature}>
                                 {Object.entries(this.state.pickedFeatures).map(([id, feature]) => {
                                     const [layerId, featureId] = id.split("::");
                                     const editConfig = this.props.theme.editConfig[layerId];
