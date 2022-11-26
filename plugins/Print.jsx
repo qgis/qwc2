@@ -296,7 +296,7 @@ class Print extends React.Component {
             } else {
                 return (
                     <tr key={"label." + label}>
-                        <td>{label}:</td>
+                        <td>{MiscUtils.capitalizeFirst(label)}</td>
                         <td><textarea {...opts} defaultValue={this.getSearchMarkerLabel()} readOnly /></td>
                     </tr>
                 );
@@ -307,7 +307,7 @@ class Print extends React.Component {
             } else {
                 return (
                     <tr key={"label." + label}>
-                        <td>{label}:</td>
+                        <td>{MiscUtils.capitalizeFirst(label)}</td>
                         <td><textarea {...opts} defaultValue={this.getAttributionLabel()} readOnly /></td>
                     </tr>
                 );
@@ -315,7 +315,7 @@ class Print extends React.Component {
         } else {
             return (
                 <tr key={"label." + label}>
-                    <td>{label}:</td>
+                    <td>{MiscUtils.capitalizeFirst(label)}</td>
                     <td><textarea {...opts}/></td>
                 </tr>
             );
