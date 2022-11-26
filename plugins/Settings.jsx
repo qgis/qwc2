@@ -37,11 +37,13 @@ class Settings extends React.Component {
     }
     renderBody = () => {
         return (
-            <table style={{margin: "0.5em"}}>
-                <tbody>
-                    {this.renderLanguageSelector()}
-                </tbody>
-            </table>
+            <div className="settings-body">
+                <table className="settings-table">
+                    <tbody>
+                        {this.renderLanguageSelector()}
+                    </tbody>
+                </table>
+            </div>
         );
     }
     renderLanguageSelector = () => {
@@ -53,7 +55,7 @@ class Settings extends React.Component {
             <tr>
                 <td>{LocaleUtils.tr("settings.language")}&nbsp;</td>
                 <td>
-                    <select onChange={this.changeLocale} value={lang}>
+                    <select className="combo" onChange={this.changeLocale} value={lang}>
                         <option key="syslang" value="">{LocaleUtils.tr("settings.systemlang")}</option>
                         {this.props.languages.map(entry => (
                             <option key={entry.value} value={entry.value}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>

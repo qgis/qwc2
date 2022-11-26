@@ -5,8 +5,8 @@ div.accordeon-section {
 div.accordeon-section-header {
     display: flex;
     padding: 0.5em;
-    background-color: @titlebar_bg@;
-    color: @titlebar_fg@;
+    background-color: var(--titlebar-bg-color;
+    color: var(--titlebar-text-color);
     font-weight: bold;
 }
 
@@ -16,7 +16,7 @@ div.accordeon-section-header > span:first-child {
 
 div.accordeon-section-body {
     padding: 0.25em;
-    border-color: @item_border@;
+    border-color: var(--border-color);
     border-style: solid;
     border-width: 0 1px 1px 1px;
 }

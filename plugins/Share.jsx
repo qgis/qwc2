@@ -77,16 +77,17 @@ class Share extends React.Component {
                     <span>{LocaleUtils.tr("share.showpin")}</span>
                     <ToggleSwitch active={this.state.pin} onChange={active => this.setState({pin: active})} />
                 </div>
-                <div className="share-body">
-                    {shareSocials}
-                    {shareLink}
-                    {shareQRCode}
-                    {!this.state.location ? (
-                        <div className="share-reload-overlay">
-                            <button className="button" onClick={this.refreshPermalink}>{LocaleUtils.tr("share.refresh")}</button>
-                        </div>
-                    ) : null}
-                </div>
+                {!this.state.location ? (
+                    <div className="share-reload-overlay">
+                        <button className="button" onClick={this.refreshPermalink}>{LocaleUtils.tr("share.refresh")}</button>
+                    </div>
+                ) : (
+                    <div className="share-body">
+                        {shareSocials}
+                        {shareLink}
+                        {shareQRCode}
+                    </div>
+                )}
             </div>
         );
     }

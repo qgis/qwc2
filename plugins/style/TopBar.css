@@ -4,8 +4,8 @@
     top: 0;
     right: 0;
     height: 3.5em;
-    color: @panel_fg@;
-    background-color: @panel_bg@;
+    color: var(--panel-text-color);
+    background-color: var(--panel-bg-color);
     box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
     backdrop-filter: blur(3px);
     z-index: 102;
@@ -61,26 +61,3 @@
     margin-right: 0;
 }
 
-#TopBar div.AppMenu .appmenu-label {
-    font-weight: bold;
-    transition: color 0.25s;
-}
-
-#TopBar div.AppMenu.appmenu-visible .appmenu-label {
-    color: white;
-}
-
-#TopBar div.AppMenu .appmenu-icon {
-    color: @panel_fg@;
-    padding: 0.25em;
-    margin: 0 1em;
-    border: 2px solid @panel_fg@;
-    background-color: @panel_bg@;
-    transition: color 0.25s, border-color 0.25s, background-color 0.25s;
-}
-
-#TopBar div.AppMenu.appmenu-visible .appmenu-icon {
-    color: white;
-    border-color: white;
-    background-color: inherit;
-}

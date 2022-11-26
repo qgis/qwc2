@@ -6,17 +6,9 @@ div.navbar {
 
 div.navbar > select {
     margin-left: 0.25em;
-    border: 1px solid @item_border@;
-    height: 2em;
 }
 div.navbar > button.button:not(:first-child) {
     border-left-width: 0;
-}
-
-button.nav-button-current,
-button.button.nav-button-current:hover {
-    background-color: @item_active@;
-    color: white;
 }
 
 div.navbar > span.navbar-dots {

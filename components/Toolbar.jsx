@@ -71,9 +71,9 @@ class Toolbar extends React.Component {
     }
     render() {
         return (
-            <span id="Toolbar">
+            <div className="Toolbar">
                 {this.props.toolbarItems.map(this.renderToolbarItem)}
-            </span>
+            </div>
         );
     }
 }

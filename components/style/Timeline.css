@@ -2,7 +2,7 @@ div.timeline-slider-container {
     height: 16px;
     position: relative;
     margin: 0.25em;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
 }
 
 div.timeline-slider {
@@ -26,7 +26,7 @@ div.timeline-cursor-label {
     text-align: center;
     padding: 0.25em;
     background-color: white;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     z-index: 1;
 }
 
@@ -42,7 +42,7 @@ div.timeline-ticks > div {
 }
 
 div.timeline-ticks > div > input {
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
 }
 
 div.timeline-ticks > div:first-child {

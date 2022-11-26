@@ -57,7 +57,7 @@ export default class NavBar extends React.Component {
                 <button className="button" disabled={this.props.currentPage >= this.props.nPages - 1 || this.props.disabled} onClick={() => this.props.pageChanged(this.props.currentPage + 1)}>
                     <Icon icon="chevron-right" />
                 </button>
-                <select disabled={this.props.disabled} onChange={ev => this.props.pageSizeChanged(parseInt(ev.target.value, 10))} value={this.props.pageSize}>
+                <select className="combo" disabled={this.props.disabled} onChange={ev => this.props.pageSizeChanged(parseInt(ev.target.value, 10))} value={this.props.pageSize}>
                     {this.props.pageSizes.map(pageSize => (
                         <option key={pageSize} value={pageSize}>{pageSize} {LocaleUtils.tr("navbar.perpage")}</option>
                     ))}
@@ -69,7 +69,7 @@ export default class NavBar extends React.Component {
         if (page === -1) {
             return <span className="navbar-dots" key={idx}>...</span>;
         }
-        const className = "button" + (page === this.props.currentPage ? " nav-button-current" : "");
+        const className = "button" + (page === this.props.currentPage ? " pressed" : "");
         return (
             <button className={className} disabled={this.props.disabled} key={idx} onClick={() => this.props.pageChanged(page)}>
                 {page + 1}

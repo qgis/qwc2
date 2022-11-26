@@ -16,10 +16,10 @@
 
 #FullScreenSwitcher > span.maximize {
     border-width: 0 1em 1em 0;
-    border-color: transparent @panel_fg@ transparent transparent;
+    border-color: transparent var(--panel-text-color) transparent transparent;
 }
 
 #FullScreenSwitcher > span.minimize {
     border-width: 1em 0 0 1em;
-    border-color: transparent transparent transparent @panel_fg@;
+    border-color: transparent transparent transparent var(--panel-text-color);
 }

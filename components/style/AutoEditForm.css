@@ -21,8 +21,8 @@ table.AutoEditForm select.editing-layer-select,
 table.AutoEditForm select.editing-feature-select,
 table.AutoEditForm span.input-frame select {
     width: 100%;
-    border: 1px solid @item_border@;
-    background-color: white;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg-color);
     padding: 0.25em;
 }
 
@@ -43,7 +43,7 @@ table.AutoEditForm label > input {
 
 table.AutoEditForm textarea {
     width: 100%;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
 }
 
 table.AutoEditForm span.input-frame input {
@@ -52,9 +52,9 @@ table.AutoEditForm span.input-frame input {
 }
 
 table.AutoEditForm span.input-frame {
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     padding: 0.25em;
-    background-color: white;
+    background-color: var(--input-bg-color);
     display: flex;
     align-items: center;
     height: 2em;

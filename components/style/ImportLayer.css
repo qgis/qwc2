@@ -8,11 +8,7 @@
 
 #ImportLayer div.importlayer-input-fields > select {
     flex: 0 0 auto;
-    height: 2em;
-    border: 1px solid @item_border@;
-    background-color: @item_border@;
-    color: white;
-    outline: none;
+    margin-right: -1px;
 }
 
 #ImportLayer div.importlayer-input-fields > div.EditableSelect,

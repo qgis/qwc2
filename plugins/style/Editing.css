@@ -10,12 +10,7 @@
 #Editing .editing-minimize-maximize {
     margin-left: 1em;
     cursor: pointer;
-    border: 1px solid transparent;
     padding: 0.25em;
-}
-
-#LayerTree span.editing-minimize-maximize:hover {
-    border: 1px solid white;
 }
 
 #Editing div.editing-body > div.editing-layer-selection,
@@ -27,7 +22,7 @@
 #Editing div.editing-body > div.AttributeForm {
     margin-top: 0.5em;
     padding-top: 0.5em;
-    border-top: 1px solid @item_border@;
+    border-top: 1px solid var(--border-color);
     flex: 1 1 auto;
     overflow: hidden;
 }
@@ -35,9 +30,6 @@
 #Editing select.editing-layer-select,
 #Editing select.editing-feature-select {
     width: 100%;
-    border: 1px solid @item_border@;
-    background-color: white;
-    padding: 0.25em;
 }
 
 #Editing select.editing-layer-select:disabled,
@@ -46,23 +38,24 @@
 }
 
 #Editing div.editing-drawpick-results {
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     margin-top: -0.25em;
+    background-color: var(--list-bg-color);
 }
 
 #Editing div.editing-drawpick-results > div {
-    padding: 0.25em 0.5em;
-    color: @appmenu_fg1@;
+    padding: 0.25em;
     white-space: nowrap;
-    padding-right: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     cursor: pointer;
 }
 
-#Editing div.editing-drawpick-results > div:not(:last-child) {
-    border-bottom: 1px solid @item_border@;
+#Editing div.editing-drawpick-results > div:nth-child(even) {
+    background-color: var(--list-item-bg-color-even);
 }
 
 #Editing div.editing-drawpick-results > div:hover {
-    background-color: @item_active_hover@;
-    color: white;
+    background-color: var(--list-item-bg-color-hover);
+    color: var(--list-item-text-color-hover);
 }

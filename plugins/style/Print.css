@@ -9,12 +9,7 @@
 
 #Print .print-minimize-maximize {
     margin-left: 1em;
-    border: 1px solid transparent;
     padding: 0.25em;
-}
-
-#LayerTree span.print-minimize-maximize:hover {
-    border: 1px solid white;
 }
 
 #Print table.options-table {
@@ -36,10 +31,8 @@
 }
 
 #Print table.options-table select {
+    background-color: var(--input-bg-color);
     width: 100%;
-    border: 1px solid @item_border@;
-    background-color: white;
-    padding: 0.25em;
 }
 
 #Print table.options-table input {
@@ -48,13 +41,13 @@
 
 #Print table.options-table input:read-only,
 #Print table.options-table textarea:read-only {
-    color: #AAA;
+    color: var(--input-text-color-disabled);
 }
 
 #Print table.options-table span.input-frame {
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     padding: 0.25em;
-    background-color: white;
+    background-color: var(--input-bg-color);
     display: flex;
     align-items: center;
 }
@@ -69,9 +62,9 @@
 }
 
 #Print table.options-table textarea {
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     padding: 0.25em;
-    background-color: white;
+    background-color: var(--input-bg-color);
     width: 100%;
     resize: vertical;
 }

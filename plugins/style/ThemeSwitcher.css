@@ -4,16 +4,16 @@ div.theme-switcher-filter {
     min-width: 0;
     font-weight: normal;
     margin: 0 0.5em;
-    color: @base_fg@;
-    background-color: white;
 }
 
 div.theme-switcher-filter-field {
     width: 100%;
-    border: 1px solid @item_border@;
+    border: none;
     height: 2em;
     display: flex;
     align-items: center;
+    background-color: var(--titlebar-text-color);
+    color: var(--titlebar-bg-color);
 }
 
 div.theme-switcher-filter-field > span.icon {

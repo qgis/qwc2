@@ -453,7 +453,7 @@ class IdentifyViewer extends React.Component {
                     <div className="identify-buttonbox">
                         <div>
                             {LocaleUtils.tr("identify.exportformat")}&nbsp;
-                            <select className="combo" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
+                            <select className="combo identify-export-format" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
                                 <option value="json">json</option>
                                 <option value="geojson">geojson</option>
                                 <option value="csv">csv</option>

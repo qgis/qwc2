@@ -36,9 +36,9 @@ export default class FileSelector extends React.Component {
         return (
             <div className="FileSelector" onClick={this.triggerFileOpen}>
                 <input placeholder={placeholder} readOnly type="text" value={value} />
-                <span>
+                <button className="button">
                     <Icon icon="folder-open" />
-                </span>
+                </button>
                 <input accept={this.props.accept} onChange={this.fileChanged} ref={el => { this.fileinput = el; }} type="file" />
             </div>
         );

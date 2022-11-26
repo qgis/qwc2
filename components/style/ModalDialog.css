@@ -13,7 +13,7 @@ div.modal-dialog-container {
 
 div.modal-dialog {
     height: 100%;
-    background-color: @container_bg@;
+    background-color: var(--container-bg-color);
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.75);
     display: inline-flex;
     flex-direction: column;
@@ -21,8 +21,8 @@ div.modal-dialog {
 
 div.modal-dialog-title {
     font-weight: bold;
-    color: @titlebar_fg@;
-    background-color: @titlebar_bg@;
+    color: var(--titlebar-text-color);
+    background-color: var(--titlebar-bg-color);
     flex: 0 0 2.5em;
     display: flex;
     align-items: center;

@@ -91,7 +91,7 @@ class Measure extends React.Component {
             resultBody = (
                 <div className="resultbody">
                     <span>{text}</span>
-                    <select onChange={this.changeLengthUnit} value={this.props.measureState.lenUnit}>
+                    <select className="combo" onChange={this.changeLengthUnit} value={this.props.measureState.lenUnit}>
                         <option value="m">m</option>
                         <option value="ft">ft</option>
                         <option value="km">km</option>

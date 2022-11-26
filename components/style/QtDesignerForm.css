@@ -8,8 +8,8 @@ div.qt-designer-form input[type=date],
 div.qt-designer-form input[type=time],
 div.qt-designer-form input[type=datetime-local],
 div.qt-designer-form select {
-    border: 1px solid @item_border@;
-    background-color: white;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-text-color);
     padding: 0.25em;
     height: 2em;
 }
@@ -17,8 +17,8 @@ div.qt-designer-form select {
 div.qt-designer-form input:read-only,
 div.qt-designer-form select:disabled,
 div.qt-designer-form textarea:read-only {
-    color: #999;
-    background-color: #EEE;
+    background-color: var(--input-bg-color-disabled);
+    color: var(--input-text-color-disabled);
 }
 
 div.qt-designer-form input:invalid,
@@ -33,7 +33,7 @@ div.qt-designer-form input[type=range] {
 }
 
 div.qt-designer-form textarea {
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     background-color: white;
     padding: 0.25em;
     height: 100%;
@@ -78,11 +78,11 @@ div.qt-designer-layout-vbox > div {
 }
 
 div.qt-designer-form-hline {
-    border-bottom: 1px solid @item_border@;
+    border-bottom: 1px solid var(--border-color);
 }
 
 div.qt-designer-form-vline {
-    border-right: 1px solid @item_border@;
+    border-right: 1px solid var(--border-color);
     height: 100%;
 }
 
@@ -101,7 +101,7 @@ div.qt-designer-form-frame {
     padding: 0.25em;
     flex: 1 1 auto;
     width: 100%;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
 }
 
 div.qt-designer-form-tabbar {
@@ -110,22 +110,22 @@ div.qt-designer-form-tabbar {
 
 div.qt-designer-form-tabbar > span {
     padding: 0.25em;
-    border-left: 1px solid @item_border@;
-    border-top: 1px solid @item_border@;
+    border-left: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
     display: inline-block;
-    background-color: @button_bg@;
+    background-color: var(--button-bg-color);
     height: 2em;
     display: inline-flex;
     align-items: center;
 }
 
 div.qt-designer-form-tabbar > span:last-child {
-    border-right: 1px solid @item_border@;
+    border-right: 1px solid var(--border-color);
 }
 
 div.qt-designer-form-tabbar > span.qt-designer-form-tab-active {
-    background-color: @item_active@;
-    color: white;
+    background-color: var(--button-bg-color-active);
+    color: var(--button-text-color-active);
 }
 
 div.qt-designer-widget-relation {
@@ -142,7 +142,7 @@ div.qt-designer-widget-relation-table-container {
 
 div.qt-designer-widget-relation-table-container > table {
     width: 100%;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
 }
 
 div.qt-designer-widget-relation-table-container > table td {
@@ -164,12 +164,12 @@ div.qt-designer-widget-relation-table-container > table td > label {
 }
 
 div.qt-designer-widget-relation-table-container > table th {
-    background-color: @item_border@;
-    color: white;
+    background-color: var(--border-color);
+    color: var(--list-bg-color);
 }
 
 div.qt-designer-widget-relation-table-container > table tr:not(:last-child) {
-    border-bottom: 1px solid @item_border@;
+    border-bottom: 1px solid var(--border-color);
 }
 
 tr.qt-designer-widget-relation-record-deleted {
@@ -181,10 +181,7 @@ div.qt-designer-widget-relation-buttons {
 }
 
 button.qt-designer-widget-relation-add {
-    border: 1px solid @item_border@;
     width: 100%;
-    padding: 0.25em;
-    background-color: @button_bg@;
 }
 
 div.qt-designer-form label {
@@ -194,7 +191,7 @@ div.qt-designer-form label {
 
 span.qt-designer-form-datetime {
     display: flex;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     gap: 2px;
 }
 

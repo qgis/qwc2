@@ -13,7 +13,7 @@
 
 .DxfExport span.input-frame,
 .DxfExport div.export-settings select {
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     background-color: white;
     display: inline-flex;
     align-items: center;

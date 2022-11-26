@@ -7,10 +7,10 @@
 
 #MapTip {
     position: absolute;
-    background: white;
+    background: var(--list-bg-color);
     box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
     border-radius: 0.5em;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     overflow-y: auto;
 }
 
@@ -19,5 +19,5 @@
 }
 
 #MapTip > div:not(:last-child) {
-    border-bottom: 1px solid @item_border@;
+    border-bottom: 1px solid var(--border-color);
 }

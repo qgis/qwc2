@@ -38,6 +38,7 @@ import MiscUtils from '../utils/MiscUtils';
 import {UrlParams, resolvePermaLink} from '../utils/PermaLinkUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 
+import './style/DefaultColorScheme.css';
 import './style/App.css';
 
 

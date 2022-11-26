@@ -5,9 +5,9 @@ span.CopyButton {
 span.copybutton-tooltip {
     position: absolute;
     visibility: hidden;
-    background-color: rgba(0, 0, 0, 0.75);
-    border: 1px solid black;
-    color: white;
+    background-color: var(--tooltip-bg-color);
+    border: 1px solid var(--tooltip-border-color);
+    color: var(--tooltip-text-color);
     font-size: 75%;
     font-weight: normal;
     padding: 0.5em;

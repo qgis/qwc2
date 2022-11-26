@@ -41,18 +41,18 @@ div.attribtable-toolbar > * {
 }
 
 div.attribtable-toolbar > select {
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     height: 2em;
 }
 
 div.attribtable-contents {
     flex: 1 1 auto;
-    background-color: white;
+    background-color: var(--list-bg-color);
     overflow: auto;
+    border: 1px solid var(--border-color);
 }
 
 table.attribtable-table {
-    border-collapse: collapse;
     min-width: 100%;
 }
 
@@ -61,10 +61,10 @@ table.attribtable-table th {
     top: 0;
     z-index: 1;
     padding: 0;
-    background-color: @button_bg@;
-    box-shadow: inset -1px 0 0 @item_border@,
-                inset 0 -1px 0 @item_border@,
-                inset 0 1px 0 @item_border@;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    box-shadow: inset -1px 0 0 var(--border-color),
+                inset 0 -1px 0 var(--border-color);
 }
 
 table.attribtable-table th:first-child {
@@ -92,15 +92,17 @@ table.attribtable-table th > span > span.icon {
 }
 
 table.attribtable-table tr:nth-child(even) {
-    background-color: #eee;
+    background-color: var(--list-item-bg-color-even);
 }
 
-table.attribtable-table tr:hover {
-    background-color: #ddddff;
+table.attribtable-table tr:hover:not(.row-disabled) {
+    background-color: var(--list-item-bg-color-hover);
+    color: var(--list-item-text-color-hover);
 }
 
 table.attribtable-table td:first-child {
-    background-color: @button_bg@;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
     align-items: center;
     padding: 0.25em 0.5em;
     background-clip: padding-box;
@@ -115,7 +117,7 @@ table.attribtable-table td:first-child::after {
     right: -1px;
     top: 0;
     bottom: 0;
-    border-right: 1px solid @item_border@;
+    border-right: 1px solid var(--border-color);
     content: '';
 }
 
@@ -156,9 +158,9 @@ span.attribtable-table-bdraghandle {
 }
 
 table.attribtable-table td {
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     text-align: center;
-    vertical-align: top;
+    vertical-align: center;
     position: relative;
 }
 
@@ -195,7 +197,7 @@ table.attribtable-table td > div.attribtable-content-editable:focus {
 table.attribtable-table td > *:disabled,
 table.attribtable-table tr.row-disabled,
 table.attribtable-table tr.row-disabled * {
-    color: #999;
+    color: var(--input-text-color-disabled);
     cursor: not-allowed!important;
 }
 
@@ -220,7 +222,7 @@ div.attribtable-filter {
 
 div.attribtable-filter input,
 div.attribtable-filter select {
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     height: 2em;
 }
 div.attribtable-filter input {

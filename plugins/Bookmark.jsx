@@ -8,6 +8,7 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import LocaleUtils from '../utils/LocaleUtils';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -61,30 +62,36 @@ class Bookmark extends React.Component {
                         </div>
                         <div className="bookmark-actions">
                             <span className="bookmark-actions-buttonbox">
-                                <button disabled={!currentBookmark} onClick={() => this.open(currentBookmark.key, false)} title={openTitle}>
+                                <button className="button" disabled={!currentBookmark} onClick={() => this.open(currentBookmark.key, false)} title={openTitle}>
                                     <Icon icon="folder-open" />
                                 </button>
-                                <button disabled={!currentBookmark} onClick={() => this.open(currentBookmark.key, true)} title={openTabTitle}>
+                                <button className="button" disabled={!currentBookmark} onClick={() => this.open(currentBookmark.key, true)} title={openTabTitle}>
                                     <Icon icon="open_link" />
                                 </button>
                             </span>
                             <span className="bookmark-actions-spacer" />
                             <span className="bookmark-actions-buttonbox">
-                                <button disabled={!this.state.description} onClick={this.addBookmark} title={addBookmarkTitle}>
+                                <button className="button" disabled={!this.state.description} onClick={this.addBookmark} title={addBookmarkTitle}>
                                     <Icon icon="plus" />
                                 </button>
-                                <button disabled={!currentBookmark || !this.state.description} onClick={() => this.updateBookmark(currentBookmark)} title={updateTitle}>
+                                <button className="button" disabled={!currentBookmark || !this.state.description} onClick={() => this.updateBookmark(currentBookmark)} title={updateTitle}>
                                     {this.state.saving ? (<Spinner />) : (<Icon icon="save" />)}
                                 </button>
-                                <button disabled={!currentBookmark} onClick={() => this.removeBookmark(currentBookmark)} title={removeTitle}>
+                                <button className="button" disabled={!currentBookmark} onClick={() => this.removeBookmark(currentBookmark)} title={removeTitle}>
                                     <Icon icon="trash" />
                                 </button>
                             </span>
                         </div>
                         <div className="bookmark-list">
-                            {this.state.bookmarks.map((bookmark) => (
-                                <div className={this.state.currentBookmark === bookmark.key ? "bookmark-list-active" : ""} key={bookmark.key} onClick={() => this.toggleCurrentBookmark(bookmark)} title={lastUpdateTitle + ": " + bookmark.date}>{bookmark.description}</div>
-                            ))}
+                            {this.state.bookmarks.map((bookmark) => {
+                                const itemclasses = classnames({
+                                    "bookmark-list-item": true,
+                                    "bookmark-list-item-active": this.state.currentBookmark === bookmark.key
+                                });
+                                return (
+                                    <div className={itemclasses} key={bookmark.key} onClick={() => this.toggleCurrentBookmark(bookmark)} title={lastUpdateTitle + ": " + bookmark.date}>{bookmark.description}</div>
+                                );
+                            })}
                         </div>
                     </div>
                 )}

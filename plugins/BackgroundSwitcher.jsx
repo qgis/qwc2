@@ -114,13 +114,19 @@ class BackgroundSwitcher extends React.Component {
                     <img onClick={() => this.backgroundLayerClicked(layer)} src={assetsPath + "/" + layer.thumbnail} />
                 </div>
                 <div className="background-group-menu">
-                    {entry.layers.map(l => (
-                        <div className={l.visibility === true ? "background-group-menu-item-active" : ""} key={l.name}
-                            onClick={() => this.backgroundLayerClicked(l)}
-                            onMouseEnter={ev => this.updateGroupItem(ev, l)}
-                            onMouseLeave={ev => this.updateGroupItem(ev, layer)}
-                        >{this.itemTitle(l)}</div>
-                    ))}
+                    {entry.layers.map(l => {
+                        const menuitemclasses = classnames({
+                            "background-group-menu-item": true,
+                            "background-group-menu-item-active": l.visibility
+                        });
+                        return (
+                            <div className={menuitemclasses} key={l.name}
+                                onClick={() => this.backgroundLayerClicked(l)}
+                                onMouseEnter={ev => this.updateGroupItem(ev, l)}
+                                onMouseLeave={ev => this.updateGroupItem(ev, layer)}
+                            >{this.itemTitle(l)}</div>
+                        );
+                    })}
                 </div>
             </div>
         );

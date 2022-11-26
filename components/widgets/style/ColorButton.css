@@ -15,12 +15,12 @@ span.colorbutton-icon {
     background-image: linear-gradient(45deg, #808080 25%, transparent 25%), linear-gradient(-45deg, #808080 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #808080 75%), linear-gradient(-45deg, transparent 75%, #808080 75%);
     background-size: 12px 12px;
     background-position: 0 0, 0 6px, 6px -6px, -6px 0;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
 }
 
 span.colorbutton-icon-selected {
     outline-offset: 2px;
-    outline: 1px solid @item_border@;
+    outline: 1px solid var(--border-color);
 }
 
 span.colorbutton-icon > span {
@@ -75,7 +75,7 @@ div.colorbutton-picker-input > input[type=text] {
     font-size: 100%;
     display: inline-block;
     border-style: solid;
-    border-color: @item_border@;
+    border-color: var(--border-color);
     border-width: 1px 1px 1px 0;
     height: 2em;
     padding: 0.25em;
@@ -87,7 +87,7 @@ div.colorbutton-picker-input > input[type=text] {
 span.colorbutton-picker-alpha {
     border-radius: 0 4px 4px 0;
     border-style: solid;
-    border-color: @item_border@;
+    border-color: var(--border-color);
     border-width: 1px 1px 1px 0;
     display: inline-block;
     height: 2em;

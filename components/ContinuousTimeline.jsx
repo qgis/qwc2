@@ -78,15 +78,15 @@ class ContinuousTimeline extends React.Component {
                     <div className="ctimeline-toolbar-spacer" />
                 </div>
                 <div className="ctimeline-clip">
-                    <div className="ctimeline-pan-left" onMouseDown={() => this.pan(-20)}>
+                    <button className="button ctimeline-pan-left" onMouseDown={() => this.pan(-20)}>
                         <Icon icon="chevron-left" />
-                    </div>
+                    </button>
                     <div className="ctimeline-ticks" ref={this.setTicksRef}>
                         {this.renderTicks()}
                     </div>
-                    <div className="ctimeline-pan-right" onMouseDown={() => this.pan(20)}>
+                    <button className="button ctimeline-pan-right" onMouseDown={() => this.pan(20)}>
                         <Icon icon="chevron-right" />
-                    </div>
+                    </button>
                 </div>
                 <div className="ctimeline-slider-container">
                     <div className="ctimeline-slider" onMouseDown={this.pickCurrentTimestamp}>

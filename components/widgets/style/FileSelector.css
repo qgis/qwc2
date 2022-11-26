@@ -5,31 +5,18 @@ div.FileSelector {
     overflow-x: hidden;
 }
 
-div.FileSelector:active > input[type=text] {
-    border: 1px solid @item_active@;
-}
-
-div.FileSelector:active > span {
-    background-color: @item_active@;
-}
-
 div.FileSelector > input[type=text] {
     flex: 1 1 auto;
     height: 2em;
-    border: 1px solid @item_border@;
-    padding-left: 0.25em;
+    border: 1px solid var(--border-color);
+    padding: 0 0.25em;
     cursor: pointer;
+    margin-right: -1px;;
 }
 
-div.FileSelector > span {
-    display: inline-block;
+div.FileSelector > button {
     width: 2em;
     flex: 0 0 2em;
-    color: white;
-    background-color: @item_border@;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 div.FileSelector > input[type=file] {

@@ -5,8 +5,8 @@
     bottom: 0;
     height: 3em;
     z-index: 100;
-    color: @panel_fg@;
-    background-color: @panel_bg@;
+    color: var(--panel-text-color);
+    background-color: var(--panel-bg-color);
     box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
     backdrop-filter: blur(3px);
     font-size: 75%;
@@ -21,27 +21,24 @@
     align-items: center;
 }
 
-#BottomBar select.bottombar-crs-selector {
-    border: 1px solid @item_border@;
-    background-color: @panel_bg@;
-    height: 2em;
-}
 
 #BottomBar input.bottombar-mousepos {
     width: 20ch;
     text-align: center;
     border-style: solid;
-    border-color: @item_border@;
+    border-color: var(--border-color);
     border-width: 1px 0px 1px 1px;
-    background-color: @panel_bg@;
+    background-color: var(--input-bg-color);
+    color: var(--text-color);
     height: 2em;
 }
 
 #BottomBar span.bottombar-scale-combo {
     position: relative;
     display: inline-block;
-    border: 1px solid @item_border@;
-    background-color: @panel_bg@;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg-color);
+    color: var(--text-color);
     height: 2em;
     padding-left: 0.25em;
     display: flex;
@@ -54,7 +51,8 @@
 
 #BottomBar span.bottombar-scale-combo > select {
     border: 0;
-    background-color: @panel_bg@;
+    background-color: var(--input-bg-color);
+    color: var(--text-color);
     width: 7em;
     height: calc(2em - 2px);
     outline: none;
@@ -67,6 +65,7 @@
     height: calc(2em - 2px);
     top: 0;
     border: 0;
+    outline: none;
 }
 
 #BottomBar span.bottombar-spacer {

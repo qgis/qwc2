@@ -1,10 +1,10 @@
 #LayerTree span.layertree-tree-visibility {
     margin: 0 0.5em;
-    color: @base_fg@;
+    color: var(--titlebar-bg-color);
 }
 
 #LayerTree span.layertree-tree-visibility:before {
-    background-color: white;
+    background-color: var(--titlebar-text-color);
 }
 
 #LayerTree span.layertree-print-legend,
@@ -12,7 +12,6 @@
 #LayerTree span.layertree-delete-legend,
 #LayerTree span.layertree-theme-metadata {
     margin-left: 0.5em;
-    border: 1px solid transparent;
     padding: 0.25em;
 }
 
@@ -20,12 +19,13 @@
 #LayerTree span.layertree-visible-filter:hover,
 #LayerTree span.layertree-delete-legend:hover,
 #LayerTree span.layertree-theme-metadata:hover {
-    border: 1px solid white;
+    background-color: var(--titlebar-text-color);
+    color: var(--titlebar-bg-color);
 }
 
 #LayerTree span.layertree-visible-filter-active {
-    background-color: white;
-    color: @titlebar_bg@;
+    background-color: var(--titlebar-text-color);
+    color: var(--titlebar-bg-color);
 }
 
 /* https://github.com/philipwalton/flexbugs/issues/216 */
@@ -64,7 +64,7 @@
     flex: 0 0 auto;
     height: 2.25em;
     padding: 0.25em 0.5em 0.25em 0.5em;
-    border-top: 1px solid @item_border@;
+    border-top: 1px solid var(--border-color);
     display: flex;
     align-items: center;
 }
@@ -88,17 +88,17 @@
 }
 
 #LayerTree div.layertree-item-disabled > span.layertree-item-title {
-    color: #999999;
+    color: var(--input-text-color-disabled);
 }
 
 #LayerTree div.layertree-item-outsidescalerange > span.layertree-item-title {
     font-style: italic;
-    color: #999999;
+    color: var(--input-text-color-disabled);
 }
 
 #LayerTree div.layertree-item-separator {
     font-weight: bold;
-    border-bottom: 1px solid @item_border@;
+    border-bottom: 1px solid var(--border-color);
 }
 
 #LayerTree div.layertree-item-separator > input {
@@ -109,7 +109,7 @@
 }
 
 #LayerTree div.layertree-item-separator > input:focus {
-    background-color: white;
+    background-color: var(--input-bg-color);
 }
 
 #LayerTree span.layertree-item-expander {
@@ -134,7 +134,7 @@
     width: auto;
     max-width: 2em;
     margin-right: 0.5em;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     flex: 0 0 auto;
 }
 
@@ -143,7 +143,7 @@
     height: 1.5em;
     width: 1.5em;
     margin-right: 0.5em;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     flex: 0 0 auto;
 }
 
@@ -152,7 +152,7 @@ img.layertree-item-legend-tooltip {
     z-index: 6;
     box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
     border-radius: 0.5em;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     margin-left: 1px;
     padding: 0.25em;
     background-color: white;
@@ -173,7 +173,7 @@ img.layertree-item-legend-tooltip {
 
 #LayerTree span.layertree-item-queryable {
     margin-left: 0.25em;
-    color: #bbbbbb;
+    color: var(--border-color);
     font-size: xx-small;
     vertical-align: top;
     flex: 0 0 auto;
@@ -186,7 +186,7 @@ img.layertree-item-legend-tooltip {
 #LayerTree span.layertree-item-remove {
     text-align: center;
     width: 1.75em;
-    color: @item_border@;
+    color: var(--border-color);
     flex: 0 0 auto;
 }
 
@@ -197,7 +197,7 @@ img.layertree-item-legend-tooltip {
 #LayerTree span.layertree-item-cog {
     text-align: center;
     width: 1.75em;
-    color: @item_border@;
+    color: var(--border-color);
     flex: 0 0 auto;
     margin-left: 0.25em;
     height: 100%;
@@ -207,7 +207,7 @@ img.layertree-item-legend-tooltip {
 }
 
 #LayerTree span.layertree-item-cog-active {
-    background-color: @item_border@;
+    background-color: var(--border-color);
     color: white;
 }
 
@@ -221,12 +221,11 @@ img.layertree-item-legend-tooltip {
     flex: 0 0 auto;
     max-width: calc(100% - 1em);
     height: 1.75em;
-    border: 1px solid @item_border@;
-    color: @titlebar_bg@;
+    border: 1px solid var(--border-color);
     font-weight: bold;
     display: flex;
     align-items: center;
-    background-color: white;
+    background-color: var(--input-bg-color);
 }
 
 #LayerTree input.layertree-item-transparency-slider {
@@ -252,5 +251,5 @@ img.layertree-item-legend-tooltip {
 }
 
 #LayerTree div.layertree-item-addsep:hover {
-    border-top: 2px solid @item_border@;
+    border-top: 2px solid var(--border-color);
 }

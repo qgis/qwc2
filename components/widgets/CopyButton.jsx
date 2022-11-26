@@ -37,12 +37,12 @@ export default class CopyButton extends React.Component {
         }
         return (
             <CopyToClipboard onCopy={ () => this.setState({copied: true}) } text={this.props.text} >
-                <span className={"CopyButton " + this.props.buttonClass} onMouseLeave={() => {this.setState({copied: false}); }} >
+                <button className={"CopyButton button " + this.props.buttonClass} onMouseLeave={() => {this.setState({copied: false}); }} >
                     <Icon icon="copy"/>
                     <span className="copybutton-tooltip" style={tooltipStyle}>
                         {this.state.copied ? LocaleUtils.tr("copybtn.copied") : LocaleUtils.tr("copybtn.click_to_copy")}
                     </span>
-                </span>
+                </button>
             </CopyToClipboard>
         );
     }

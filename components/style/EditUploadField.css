@@ -1,8 +1,8 @@
 span.edit-upload-field {
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
-    background-color: white;
+    background-color: var(--input-bg-color);
     padding: 0.25em;
 }
 
@@ -33,7 +33,8 @@ span.edit-upload-field-input > span.icon {
 
 span.edit-upload-field-disabled,
 span.edit-upload-field-input-disabled {
-    background-color: #e0e0e0;
+    background-color: var(--input-bg-color-disabled);
+    color: var(--input-text-color-disabled);
 }
 
 span.edit-upload-field-image {

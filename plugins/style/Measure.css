@@ -1,39 +1,26 @@
 div.resultbody {
     margin-top: 0.25em;
-    border: 1px solid @item_border@;
     white-space: nowrap;
     overflow: visible;
-    background-color: white;
     min-width: 17.5em;
     display: flex;
 }
 
 div.resultbody > span {
     flex: 1 1 auto;
-    text-align: center;
-    padding: 0.25em;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg-color);
+    height: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 div.resultbody > select {
     flex: 0 0 auto;
-    padding: 0.25em;
-    border: none;
-    border-left: 1px solid @item_border@;
+    border-left-width: 0;
 }
 
-div.resultbody span.copy-measure-button {
-    flex: 0 0 auto;
-    width: 2.5em;
-    text-align: center;
-    background-color: @button_bg@;
-    border-left: 1px solid @item_border@;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.25em;
-}
-
-div.resultbody span.copy-measure-button:hover {
-    background-color: @button_hover_bg@;
+div.resultbody button.copy-measure-button {
+    border-left-width: 0;
 }

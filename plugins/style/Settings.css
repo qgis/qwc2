@@ -8,6 +8,4 @@ table.settings-table {
 
 table.settings-table td select {
     width: 100%;
-    border: 1px solid @item_border@;
-    height: 2em;
 }

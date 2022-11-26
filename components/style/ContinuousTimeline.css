@@ -3,7 +3,7 @@ div.ctimeline {
     height: 100%;
     display: flex;
     flex-direction: column;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
 }
 
 div.ctimeline-toolbar {
@@ -19,7 +19,7 @@ div.ctimeline-toolbar-timescale {
 
 div.ctimeline-toolbar-timescale > input {
     width: 5em;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
 }
 
 div.ctimeline-toolbar-spacer {
@@ -38,7 +38,7 @@ div.ctimeline-slider-container {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
 }
 
 div.ctimeline-slider {
@@ -55,7 +55,7 @@ div.ctimeline-slider-layertitle {
     font-weight: bold;
     font-size: 75%;
     padding: 0.25em;
-    border-bottom: 1px solid @item_border@;
+    border-bottom: 1px solid var(--border-color);
 }
 
 div.ctimeline-slider-feature {
@@ -71,11 +71,11 @@ div.ctimeline-slider-feature {
     border-radius: 4px;
     white-space: nowrap;
     text-overflow: ellipsis;
-    background-color: @item_border@;
+    background-color: var(--border-color);
 }
 
 div.ctimeline-slider-feature:hover {
-    border: 1px solid @item_active@;
+    border: 1px solid var(--color-active);
 }
 
 div.ctimeline-cursor {
@@ -93,7 +93,7 @@ div.ctimeline-cursor-label {
     text-align: center;
     padding: 0.25em;
     background-color: white;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     z-index: 1;
 }
 
@@ -103,25 +103,21 @@ div.ctimeline-ticks {
     height: 10px;
 }
 
-div.ctimeline-pan-left,
-div.ctimeline-pan-right {
+button.ctimeline-pan-left,
+button.ctimeline-pan-right {
     position: absolute;
     bottom: 0;
     top: 0;
     width: 1.5em;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: initial;
     z-index: 1;
-    background-color: @item_border@;
 }
 
-div.ctimeline-pan-left {
+button.ctimeline-pan-left {
     left: 0;
 }
 
-div.ctimeline-pan-right {
+button.ctimeline-pan-right {
     right: 0;
 }
 

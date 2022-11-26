@@ -189,7 +189,7 @@ class AppMenu extends React.Component {
                                         placeholder={LocaleUtils.tr("appmenu.filter")} ref={this.setFilterField}
                                         type="text"
                                         value={this.state.filter}/>
-                                    <Icon icon="remove" onClick={() => this.setState({filter: ""})} />
+                                    <Icon icon="clear" onClick={() => this.setState({filter: ""})} />
                                 </div>
                             </li>
                         ) : null}
