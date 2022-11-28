@@ -346,16 +346,16 @@ const LayerUtils = {
             if (preventSplittingGroups) {
                 // Prevent moving an entry out of a containing group
                 const idx = delta < 0 ? indices[0] : indices[indices.length - 1];
-                if (!isEqual(exploded[idx + delta].path.slice(0, sublayerpath.length - 1), sublayerpath.slice(0, -1))) {
+                const level = sublayerpath.length;
+                if (level > exploded[idx + delta].path.length || !isEqual(exploded[idx + delta].path.slice(0, level - 1), sublayerpath.slice(0, -1))) {
                     return layers;
                 }
                 // Avoid splitting sibling groups when reordering
-                if (!isEqual(exploded[idx + delta].path.slice(0, -1), sublayerpath.slice(0, -1))) {
+                if (exploded[idx + delta].path.length > level || !isEqual(exploded[idx + delta].path.slice(0, -1), sublayerpath.slice(0, -1))) {
                     // Find next slot
-                    const level = sublayerpath.length;
                     const siblinggrouppath = exploded[idx + delta].path.slice(0, level);
                     siblinggrouppath[siblinggrouppath.length - 1] += delta;
-                    while (idx + delta >= 0 && idx + delta < exploded.length && !isEqual(exploded[idx + delta].path.slice(0, level), siblinggrouppath)) {
+                    while (idx + delta >= 0 && idx + delta < exploded.length && (exploded[idx + delta].path.length > level || !isEqual(exploded[idx + delta].path.slice(0, level), siblinggrouppath))) {
                         delta += delta > 0 ? 1 : -1;
                     }
                     // The above logic adds the number of items to skip to the delta which is already -1 or +1, so we need to decrease delta by one accordingly
