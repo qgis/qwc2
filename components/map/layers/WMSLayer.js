@@ -33,7 +33,7 @@ function wmsToOpenlayersOptions(options) {
 }
 
 function wmsImageLoadFunction(image, src) {
-    const maxUrlLength = ConfigUtils.getConfigProp("maxGetUrlLength", null, 2048);
+    const maxUrlLength = ConfigUtils.getConfigProp("wmsMaxGetUrlLength", null, 2048);
     if (src.length > maxUrlLength) {
         // Switch to POST if url is too long
         const urlParts = src.split("?");

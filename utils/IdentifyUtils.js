@@ -123,7 +123,7 @@ const IdentifyUtils = {
         };
         delete urlParts.search;
         const requestUrl = url.format(urlParts);
-        const maxUrlLength = ConfigUtils.getConfigProp("maxGetUrlLength", null, 2048);
+        const maxUrlLength = ConfigUtils.getConfigProp("wmsMaxGetUrlLength", null, 2048);
         if (requestUrl.length > maxUrlLength) {
             // Switch to POST if url is too long
             const reqUrlParts = requestUrl.split("?");
