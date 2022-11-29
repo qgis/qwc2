@@ -296,7 +296,7 @@ class ContinuousTimeline extends React.Component {
                             <div className="ctimeline-slider-feature" key={feature.id}
                                 onMouseEnter={() => this.setState({highlightFeature: feature})}
                                 onMouseLeave={() => this.setState({highlightFeature: this.state.highlightFeature === feature ? null : this.state.highlightFeature})}
-                                style={style} title={title}>{feature.properties.name}
+                                style={style} title={title}>{feature.properties[feature.displayfield]}
                             </div>
                         );
                     })}
