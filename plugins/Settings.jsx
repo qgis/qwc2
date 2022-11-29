@@ -77,11 +77,12 @@ class Settings extends React.Component {
         if (isEmpty(this.props.colorSchemes)) {
             return null;
         }
+        const colorScheme = localStorage.getItem('qwc2-color-scheme') || "default";
         return (
             <tr>
                 <td>{LocaleUtils.tr("settings.colorscheme")}</td>
                 <td>
-                    <select onChange={this.changeColorScheme} value={this.state.colorScheme}>
+                    <select onChange={this.changeColorScheme} value={colorScheme}>
                         {this.props.colorSchemes.map(entry => (
                             <option key={entry.value} value={entry.value}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
                         ))}
@@ -116,7 +117,6 @@ class Settings extends React.Component {
         if (newColorScheme) {
             root.classList.add(newColorScheme);
         }
-        this.setState({colorScheme: newColorScheme});
         localStorage.setItem('qwc2-color-scheme', newColorScheme);
     }
 }

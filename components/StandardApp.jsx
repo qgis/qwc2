@@ -271,6 +271,7 @@ export default class StandardApp extends React.Component {
             const colorScheme = urlParams.style || localStorage.getItem('qwc2-color-scheme') || config.defaultColorScheme || "default";
             const root = document.querySelector(':root');
             root.classList.add(colorScheme);
+            localStorage.setItem('qwc2-color-scheme', colorScheme);
         });
     }
 }
