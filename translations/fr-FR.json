@@ -342,21 +342,25 @@
     },
     "timemanager": {
       "animationinterval": "Intervalle d'animation",
-      "home": "",
-      "loop": "",
+      "classify": "Classement par attribut",
+      "classifynone": "Aucun",
+      "endtime": "Fin",
+      "home": "Réinitialiser",
+      "loop": "Répéter",
       "markers": "Marqueurs",
       "notemporaldata": "Aucune couche temporelle n'est visible sur la carte.",
       "play": "Jouer",
       "playrev": "Jouer en sens inverse",
       "rewind": "Rembobiner",
+      "starttime": "Début",
       "stepback": "Pas en arrière",
       "stepfwd": "Pas en avant",
       "stepsize": "aille de pas",
       "stop": "Stop",
-      "timeline": "",
-      "timeline_continuous": "",
-      "timeline_fixed": "",
-      "timelinescale": "",
+      "timeline": "Chronologie",
+      "timeline_continuous": "Continu",
+      "timeline_fixed": "Fixe",
+      "timelinescale": "Èchelle de temps (non-linéarité)",
       "title": "Ligne du temps",
       "toggle": "Activer le contrôle du temps",
       "unit": {
@@ -370,8 +374,8 @@
         "seconds": "secondes",
         "years": "années"
       },
-      "zoomin": "",
-      "zoomout": ""
+      "zoomin": "Zoomer",
+      "zoomout": "Dézoomer"
     },
     "tooltip": {
       "background": "Changer de fond",

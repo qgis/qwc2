@@ -94,7 +94,7 @@ const IdentifyUtils = {
         const params = {
             height: size[0],
             width: size[1],
-            feature_count: 10,
+            feature_count: 100,
             x: Math.round(size[0] * 0.5),
             y: Math.round(size[1] * 0.5),
             i: Math.round(size[0] * 0.5),

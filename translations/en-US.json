@@ -342,6 +342,9 @@
     },
     "timemanager": {
       "animationinterval": "Animation interval",
+      "classify": "Classification attribute",
+      "classifynone": "None",
+      "endtime": "End",
       "home": "Reset timeline",
       "loop": "Loop",
       "markers": "Markers",
@@ -349,6 +352,7 @@
       "play": "Play",
       "playrev": "Play backwards",
       "rewind": "Rewind",
+      "starttime": "Start",
       "stepback": "Step back",
       "stepfwd": "Step forward",
       "stepsize": "Step size",

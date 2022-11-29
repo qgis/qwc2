@@ -342,6 +342,9 @@
     },
     "timemanager": {
       "animationinterval": "",
+      "classify": "",
+      "classifynone": "",
+      "endtime": "",
       "home": "",
       "loop": "",
       "markers": "",
@@ -349,6 +352,7 @@
       "play": "",
       "playrev": "",
       "rewind": "",
+      "starttime": "",
       "stepback": "",
       "stepfwd": "",
       "stepsize": "",

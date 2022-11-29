@@ -203,7 +203,7 @@ class TimeManager extends React.Component {
             let features = Object.values(this.state.timeFeatures.features).flat();
             if (this.state.timeEnabled) {
                 features = features.filter(feature => {
-                    return feature.properties.startdate <= currentTime && feature.properties.enddate >= currentTime;
+                    return feature.properties.__startdate <= currentTime && feature.properties.__enddate >= currentTime;
                 });
             }
             this.props.addLayerFeatures(layer, features, true);
@@ -493,7 +493,6 @@ class TimeManager extends React.Component {
             const sublayerattrs = timeData.attributes[layer.uuid];
             const queryLayers = Object.keys(sublayerattrs).join(",");
             const options = {
-                LAYERATTRIBS: JSON.stringify(sublayerattrs),
                 GEOMCENTROID: true,
                 with_htmlcontent: false
             };
@@ -501,12 +500,12 @@ class TimeManager extends React.Component {
             IdentifyUtils.sendRequest(request, (response) => {
                 if (this.state.timeFeatures && this.state.timeFeatures.reqUUID === reqUUID) {
                     if (response) {
-                        const features = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
+                        const layerFeatures = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
                         this.setState({timeFeatures: {
                             features: {
                                 ...this.state.timeFeatures.features,
-                                ...Object.entries(features).reduce((res, [key, value]) => {
-                                    return {...res, [key]: value.map(feature => {
+                                ...Object.entries(layerFeatures).reduce((res, [layername, features]) => {
+                                    return {...res, [layername]: features.map(feature => {
                                         const startdate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][0]]);
                                         const enddate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][1]]);
                                         return {
@@ -514,11 +513,17 @@ class TimeManager extends React.Component {
                                             id: feature.layername + "::" + feature.id,
                                             properties: {
                                                 ...feature.properties,
-                                                startdate: dayjs.utc(startdate),
-                                                enddate: dayjs.utc(enddate)
+                                                __startdate: dayjs.utc(startdate),
+                                                __enddate: dayjs.utc(enddate)
                                             }
                                         };
                                     })};
+                                }, {})
+                            },
+                            attributes: {
+                                ...this.state.timeFeatures.attributes,
+                                ...Object.entries(layerFeatures).reduce((res, [layername, features]) => {
+                                    return {...res, [layername]: Object.keys((features[0] || {properties: {}}).properties)};
                                 }, {})
                             },
                             pendingRequests: this.state.timeFeatures.pendingRequests - 1
@@ -527,14 +532,14 @@ class TimeManager extends React.Component {
                 } else {
                     this.setState({timeFeatures: {
                         ...this.state.timeFeatures,
-                        pendingRequests: this.state.timeFeatures.pendingRequests.pending - 1
+                        pendingRequests: this.state.timeFeatures.pendingRequests - 1
                     }});
                 }
             });
             ++pending;
         });
         this.setState({
-            timeFeatures: {features: {}, pendingRequests: pending, reqUUID: reqUUID}
+            timeFeatures: {features: {}, attributes: {}, pendingRequests: pending, reqUUID: reqUUID}
         });
     }
     markerStyle = (feature) => {
@@ -552,8 +557,8 @@ class TimeManager extends React.Component {
                 })
             }));
         }
-        const startDate = Math.max(this.getStartTime(), feature.getProperties().startdate);
-        const endDate = Math.min(this.getEndTime(), feature.getProperties().enddate);
+        const startDate = Math.max(this.getStartTime(), feature.getProperties().__startdate);
+        const endDate = Math.min(this.getEndTime(), feature.getProperties().__enddate);
         const gradientStops = [];
         this.state.ranges.forEach((range, idx) => {
             // Check if ranges overlap

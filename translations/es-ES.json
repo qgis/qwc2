@@ -342,6 +342,9 @@
     },
     "timemanager": {
       "animationinterval": "Intervalo de la animación",
+      "classify": "",
+      "classifynone": "",
+      "endtime": "",
       "home": "",
       "loop": "",
       "markers": "Marcadores",
@@ -349,6 +352,7 @@
       "play": "Reproducir",
       "playrev": "Reproducir al revés",
       "rewind": "Rebobinar",
+      "starttime": "",
       "stepback": "Saltar hacia atrás",
       "stepfwd": "Saltar hacia delante",
       "stepsize": "Tamaño del salto",

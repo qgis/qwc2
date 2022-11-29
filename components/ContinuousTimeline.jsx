@@ -10,9 +10,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import dayjs from 'dayjs';
+import randomcolor from 'randomcolor';
 import {addLayerFeatures, removeLayer, LayerRole} from '../actions/layers';
 import Icon from './Icon';
 import ButtonBar from './widgets/ButtonBar';
+import MiscUtils from '../utils/MiscUtils';
 import NumberInput from './widgets/NumberInput';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/ContinuousTimeline.css';
@@ -35,6 +37,7 @@ class ContinuousTimeline extends React.Component {
         ticksContainer: null,
         currentTimestampDrag: null,
         highlightFeature: null,
+        layerClassifications: {},
         panOffset: 0, // pixels
         timeScale: 1,
         zoomFactor: 1 // 1 = [startTime, endTime] fits dialog width in linear scale
@@ -51,6 +54,15 @@ class ContinuousTimeline extends React.Component {
                 };
                 this.props.addLayerFeatures(layer, [this.state.highlightFeature], true);
             }
+        }
+        if (this.props.timeFeatures !== prevProps.timeFeatures) {
+            const newLayerClassifications = {...this.state.layerClassifications};
+            Object.keys(this.state.layerClassifications).forEach(layername => {
+                if (!this.props.timeFeatures.attributes[layername] || this.props.timeFeatures.attributes[layername] !== prevProps.timeFeatures.attributes[layername]) {
+                    delete newLayerClassifications.layername;
+                }
+            });
+            this.setState({layerClassifications: newLayerClassifications});
         }
     }
     render() {
@@ -272,13 +284,23 @@ class ContinuousTimeline extends React.Component {
         let top = 20;
 
         return Object.entries(this.props.timeFeatures.features).map(([layer, features]) => {
+            const classattr = (this.state.layerClassifications[layer] || {}).attr || "";
             return (
                 <div key={layer}>
-                    <div className="ctimeline-slider-layertitle">{layer}</div>
+                    <div className="ctimeline-slider-layertitle">
+                        <span>{layer}</span>
+                        <span>{LocaleUtils.tr("timemanager.classify")}:&nbsp;</span>
+                        <select onChange={(ev) => this.setClassification(layer, ev.target.value)} value={classattr}>
+                            <option value="">{LocaleUtils.tr("timemanager.classifynone")}</option>
+                            {this.props.timeFeatures.attributes[layer].map(attr => (
+                                <option key={attr} value={attr}>{attr}</option>
+                            ))}
+                        </select>
+                    </div>
                     {features.map(feature => {
 
-                        const tstart = feature.properties.startdate;
-                        const tend = feature.properties.enddate;
+                        const tstart = feature.properties.__startdate;
+                        const tend = feature.properties.__enddate;
 
                         const left = mid + 0.5 * rect.width * Math.sign(tstart - this.props.currentTimestamp) * Math.pow(Math.abs(tstart - this.props.currentTimestamp) / dt, ib);
                         const right = mid + 0.5 * rect.width * Math.sign(tend - this.props.currentTimestamp) * Math.pow(Math.abs(tend - this.props.currentTimestamp) / dt, ib);
@@ -288,21 +310,55 @@ class ContinuousTimeline extends React.Component {
                             left: left + "px",
                             width: (right - left) + "px"
                         };
-                        top += 26;
+                        let attrval = "";
+                        let tooltip =
+                            LocaleUtils.tr("timemanager.starttime") + ": " + tstart.format("YYYY-MM-DD HH:mm:ss") + "\n" +
+                            LocaleUtils.tr("timemanager.endtime") + ": " + tend.format("YYYY-MM-DD HH:mm:ss");
 
-                        const title = tstart.format("YYYY-MM-DD HH:mm:ss") + " - " + tend.format("YYYY-MM-DD HH:mm:ss");
+                        if (this.state.layerClassifications[layer]) {
+                            const layerClass = this.state.layerClassifications[layer];
+                            style.backgroundColor = layerClass.classes[feature.properties[layerClass.attr]][0];
+                            style.color = layerClass.classes[feature.properties[layerClass.attr]][1];
+                            attrval = ": " + feature.properties[layerClass.attr];
+                            tooltip += "\n" + layerClass.attr + ": " + feature.properties[layerClass.attr];
+                        }
+                        top += 26;
 
                         return (
                             <div className="ctimeline-slider-feature" key={feature.id}
                                 onMouseEnter={() => this.setState({highlightFeature: feature})}
                                 onMouseLeave={() => this.setState({highlightFeature: this.state.highlightFeature === feature ? null : this.state.highlightFeature})}
-                                style={style} title={title}>{feature.properties[feature.displayfield]}
+                                style={style} title={tooltip}
+                            >
+                                <span>
+                                    {feature.properties[feature.displayfield]}{attrval}
+                                </span>
                             </div>
                         );
                     })}
                 </div>
             );
         });
+    }
+    setClassification = (layer, attr) => {
+        const classes = {};
+        this.props.timeFeatures.features[layer].forEach(feature => {
+            if (!classes[feature.properties[attr]]) {
+                const color = randomcolor();
+                classes[feature.properties[attr]] = [
+                    color,
+                    MiscUtils.isBrightColor(color) ? "#000" : "#FFF"
+                ];
+            }
+        });
+        const newLayerClassifications = {
+            ...this.state.layerClassifications,
+            [layer]: {
+                attr: attr,
+                classes: classes
+            }
+        };
+        this.setState({layerClassifications: newLayerClassifications});
     }
 }
 

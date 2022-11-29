@@ -342,6 +342,9 @@
     },
     "timemanager": {
       "animationinterval": "Interval d'animació",
+      "classify": "",
+      "classifynone": "",
+      "endtime": "",
       "home": "",
       "loop": "",
       "markers": "Marcadors",
@@ -349,6 +352,7 @@
       "play": "Reproduir",
       "playrev": "Reproduir al reves",
       "rewind": "Rebobinar",
+      "starttime": "",
       "stepback": "Saltar endavant",
       "stepfwd": "Saltar enrere",
       "stepsize": "Mida del salt",

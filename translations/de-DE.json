@@ -342,6 +342,9 @@
     },
     "timemanager": {
       "animationinterval": "Animationsintervall",
+      "classify": "Klassifizierungsattribut",
+      "classifynone": "Keins",
+      "endtime": "Ende",
       "home": "Zeitleiste zurücksetzten",
       "loop": "Schleife",
       "markers": "Marker",
@@ -349,6 +352,7 @@
       "play": "Abspielen",
       "playrev": "Zurück abspielen",
       "rewind": "Zurücksetzten",
+      "starttime": "Beginn",
       "stepback": "Schritt zurück",
       "stepfwd": "Schritt vorwärts",
       "stepsize": "Schritt",
