@@ -345,6 +345,8 @@
       "classify": "Classification attribute",
       "classifynone": "None",
       "endtime": "End",
+      "group": "Grouping attribute",
+      "groupnone": "None",
       "home": "Reset timeline",
       "loop": "Loop",
       "markers": "Markers",

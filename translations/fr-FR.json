@@ -305,7 +305,7 @@
       "title": "Information sur le thème"
     },
     "settings": {
-      "colorscheme": "",
+      "colorscheme": "Schéma de couleurs",
       "confirmlang": "L'application sera rechargée pour changer la langue. Procéder?",
       "language": "Langue",
       "systemlang": "Langue du système"
@@ -345,6 +345,8 @@
       "classify": "Classement par attribut",
       "classifynone": "Aucun",
       "endtime": "Fin",
+      "group": "Attribut de regroupement",
+      "groupnone": "Aucun",
       "home": "Réinitialiser",
       "loop": "Répéter",
       "markers": "Marqueurs",

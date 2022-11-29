@@ -65,6 +65,10 @@ div.ctimeline-slider-layertitle > span:first-child {
     margin-right: 1em;
 }
 
+div.ctimeline-slider-layertitle > select {
+    margin-right: 1em;
+}
+
 div.ctimeline-slider-feature {
     font-size: 75%;
     position: absolute;

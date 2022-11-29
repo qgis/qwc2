@@ -285,6 +285,8 @@
     "timemanager.classify",
     "timemanager.classifynone",
     "timemanager.endtime",
+    "timemanager.group",
+    "timemanager.groupnone",
     "timemanager.home",
     "timemanager.loop",
     "timemanager.markers",

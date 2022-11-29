@@ -345,6 +345,8 @@
       "classify": "Klassifizierungsattribut",
       "classifynone": "Keins",
       "endtime": "Ende",
+      "group": "Grouppierungsattribut",
+      "groupnone": "Keins",
       "home": "Zeitleiste zurücksetzten",
       "loop": "Schleife",
       "markers": "Marker",

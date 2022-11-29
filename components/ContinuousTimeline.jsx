@@ -36,15 +36,16 @@ class ContinuousTimeline extends React.Component {
     state = {
         ticksContainer: null,
         currentTimestampDrag: null,
-        highlightFeature: null,
+        highlightFeatures: null,
         layerClassifications: {},
+        layerAttrGroups: {},
         panOffset: 0, // pixels
         timeScale: 1,
         zoomFactor: 1 // 1 = [startTime, endTime] fits dialog width in linear scale
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.highlightFeature !== prevState.highlightFeature) {
-            if (!this.state.highlightFeature) {
+        if (this.state.highlightFeatures !== prevState.highlightFeatures) {
+            if (!this.state.highlightFeatures) {
                 this.props.removeLayer("ctimelinehighlight");
             } else {
                 const layer = {
@@ -52,7 +53,7 @@ class ContinuousTimeline extends React.Component {
                     role: LayerRole.MARKER,
                     rev: +new Date()
                 };
-                this.props.addLayerFeatures(layer, [this.state.highlightFeature], true);
+                this.props.addLayerFeatures(layer, this.state.highlightFeatures, true);
             }
         }
         if (this.props.timeFeatures !== prevProps.timeFeatures) {
@@ -62,7 +63,13 @@ class ContinuousTimeline extends React.Component {
                     delete newLayerClassifications.layername;
                 }
             });
-            this.setState({layerClassifications: newLayerClassifications});
+            const newLayerAttrGroups = {...this.state.layerAttrGroups};
+            Object.keys(this.state.layerAttrGroups).forEach(layername => {
+                if (!this.props.timeFeatures.attributes[layername] || this.props.timeFeatures.attributes[layername] !== prevProps.timeFeatures.attributes[layername]) {
+                    delete newLayerAttrGroups.layername;
+                }
+            });
+            this.setState({layerAttrGroups: newLayerAttrGroups});
         }
     }
     render() {
@@ -277,18 +284,45 @@ class ContinuousTimeline extends React.Component {
             return null;
         }
 
-        const rect = this.state.ticksContainer.getBoundingClientRect();
-        const mid = 0.5 * rect.width - this.state.panOffset;
-        const ib = 1 / this.state.timeScale;
-        const dt = 0.5 * this.props.endTime.diff(this.props.startTime) * this.state.zoomFactor;
-        let top = 20;
+        const sliderGeom = {
+            rect: this.state.ticksContainer.getBoundingClientRect(),
+            ib: 1 / this.state.timeScale,
+            dt: 0.5 * this.props.endTime.diff(this.props.startTime) * this.state.zoomFactor,
+            top: 30
+        };
+        sliderGeom.mid = 0.5 * sliderGeom.rect.width - this.state.panOffset;
 
         return Object.entries(this.props.timeFeatures.features).map(([layer, features]) => {
             const classattr = (this.state.layerClassifications[layer] || {}).attr || "";
+            const groupattr = (this.state.layerAttrGroups[layer] || {}).attr || "";
+            let sliderFeatures = null;
+            if (this.state.layerAttrGroups[layer]) {
+                const layerAttrGroups = this.state.layerAttrGroups[layer];
+                sliderFeatures = Object.values(layerAttrGroups.groups).map(groupData => {
+                    return this.renderTimeFeature(sliderGeom, groupData.start, groupData.end, groupData.features, "", groupattr, groupData);
+                });
+
+            } else {
+                const layerAttrClasses = this.state.layerClassifications[layer];
+                sliderFeatures = features.map(feature => {
+                    const attrData = layerAttrClasses ? layerAttrClasses.classes[feature.properties[layerAttrClasses.attr]] : null;
+                    const tstart = feature.properties.__startdate;
+                    const tend = feature.properties.__enddate;
+                    const label = feature.properties[feature.displayfield];
+                    return this.renderTimeFeature(sliderGeom, tstart, tend, [feature], label, classattr, attrData);
+                });
+            }
             return (
                 <div key={layer}>
                     <div className="ctimeline-slider-layertitle">
                         <span>{layer}</span>
+                        <span>{LocaleUtils.tr("timemanager.group")}:&nbsp;</span>
+                        <select onChange={(ev) => this.setGroupAttr(layer, ev.target.value)} value={groupattr}>
+                            <option value="">{LocaleUtils.tr("timemanager.groupnone")}</option>
+                            {this.props.timeFeatures.attributes[layer].map(attr => (
+                                <option key={attr} value={attr}>{attr}</option>
+                            ))}
+                        </select>
                         <span>{LocaleUtils.tr("timemanager.classify")}:&nbsp;</span>
                         <select onChange={(ev) => this.setClassification(layer, ev.target.value)} value={classattr}>
                             <option value="">{LocaleUtils.tr("timemanager.classifynone")}</option>
@@ -297,58 +331,54 @@ class ContinuousTimeline extends React.Component {
                             ))}
                         </select>
                     </div>
-                    {features.map(feature => {
-
-                        const tstart = feature.properties.__startdate;
-                        const tend = feature.properties.__enddate;
-
-                        const left = mid + 0.5 * rect.width * Math.sign(tstart - this.props.currentTimestamp) * Math.pow(Math.abs(tstart - this.props.currentTimestamp) / dt, ib);
-                        const right = mid + 0.5 * rect.width * Math.sign(tend - this.props.currentTimestamp) * Math.pow(Math.abs(tend - this.props.currentTimestamp) / dt, ib);
-
-                        const style = {
-                            top: top + "px",
-                            left: left + "px",
-                            width: (right - left) + "px"
-                        };
-                        let attrval = "";
-                        let tooltip =
-                            LocaleUtils.tr("timemanager.starttime") + ": " + tstart.format("YYYY-MM-DD HH:mm:ss") + "\n" +
-                            LocaleUtils.tr("timemanager.endtime") + ": " + tend.format("YYYY-MM-DD HH:mm:ss");
-
-                        if (this.state.layerClassifications[layer]) {
-                            const layerClass = this.state.layerClassifications[layer];
-                            style.backgroundColor = layerClass.classes[feature.properties[layerClass.attr]][0];
-                            style.color = layerClass.classes[feature.properties[layerClass.attr]][1];
-                            attrval = ": " + feature.properties[layerClass.attr];
-                            tooltip += "\n" + layerClass.attr + ": " + feature.properties[layerClass.attr];
-                        }
-                        top += 26;
-
-                        return (
-                            <div className="ctimeline-slider-feature" key={feature.id}
-                                onMouseEnter={() => this.setState({highlightFeature: feature})}
-                                onMouseLeave={() => this.setState({highlightFeature: this.state.highlightFeature === feature ? null : this.state.highlightFeature})}
-                                style={style} title={tooltip}
-                            >
-                                <span>
-                                    {feature.properties[feature.displayfield]}{attrval}
-                                </span>
-                            </div>
-                        );
-                    })}
+                    {sliderFeatures}
                 </div>
             );
         });
+    }
+    renderTimeFeature = (sliderGeom, tstart, tend, features, label, attr, featClass) => {
+        const left = sliderGeom.mid + 0.5 * sliderGeom.rect.width * Math.sign(tstart - this.props.currentTimestamp) * Math.pow(Math.abs(tstart - this.props.currentTimestamp) / sliderGeom.dt, sliderGeom.ib);
+        const right = sliderGeom.mid + 0.5 * sliderGeom.rect.width * Math.sign(tend - this.props.currentTimestamp) * Math.pow(Math.abs(tend - this.props.currentTimestamp) / sliderGeom.dt, sliderGeom.ib);
+
+        const style = {
+            top: sliderGeom.top + "px",
+            left: left + "px",
+            width: (right - left) + "px"
+        };
+        let tooltip =
+            LocaleUtils.tr("timemanager.starttime") + ": " + tstart.format("YYYY-MM-DD HH:mm:ss") + "\n" +
+            LocaleUtils.tr("timemanager.endtime") + ": " + tend.format("YYYY-MM-DD HH:mm:ss");
+
+        if (featClass) {
+            style.backgroundColor = featClass.bg;
+            style.color = featClass.fg;
+            label += (label ? ": " : "") + featClass.val;
+            tooltip += "\n" + attr + ": " + featClass.val;
+        }
+        sliderGeom.top += 26;
+
+        return (
+            <div className="ctimeline-slider-feature" key={features[0].id}
+                onMouseEnter={() => this.setState({highlightFeatures: features})}
+                onMouseLeave={() => this.setState({highlightFeatures: null})}
+                style={style} title={tooltip}
+            >
+                <span>
+                    {label}
+                </span>
+            </div>
+        );
     }
     setClassification = (layer, attr) => {
         const classes = {};
         this.props.timeFeatures.features[layer].forEach(feature => {
             if (!classes[feature.properties[attr]]) {
                 const color = randomcolor();
-                classes[feature.properties[attr]] = [
-                    color,
-                    MiscUtils.isBrightColor(color) ? "#000" : "#FFF"
-                ];
+                classes[feature.properties[attr]] = {
+                    bg: color,
+                    fg: MiscUtils.isBrightColor(color) ? "#000" : "#FFF",
+                    val: feature.properties[attr]
+                };
             }
         });
         const newLayerClassifications = {
@@ -358,7 +388,49 @@ class ContinuousTimeline extends React.Component {
                 classes: classes
             }
         };
-        this.setState({layerClassifications: newLayerClassifications});
+        // Attr classification and grouping cannot be enabled at the same time
+        const newLayerAttrGroups = {
+            ...this.state.layerAttrGroups
+        };
+        delete newLayerAttrGroups[layer];
+        this.setState({layerClassifications: newLayerClassifications, layerAttrGroups: newLayerAttrGroups});
+    }
+    setGroupAttr = (layer, attr) => {
+        const groups = {};
+        this.props.timeFeatures.features[layer].forEach(feature => {
+            if (!groups[feature.properties[attr]]) {
+                const color = randomcolor();
+                groups[feature.properties[attr]] = {
+                    bg: color,
+                    fg: MiscUtils.isBrightColor(color) ? "#000" : "#FFF",
+                    val: feature.properties[attr],
+                    features: [feature],
+                    start: feature.properties.__startdate,
+                    end: feature.properties.__enddate
+                };
+            } else {
+                if (feature.properties.__startdate < groups[feature.properties[attr]].start) {
+                    groups[feature.properties[attr]].start = feature.properties.__startdate;
+                }
+                if (feature.properties.__enddate > groups[feature.properties[attr]].end) {
+                    groups[feature.properties[attr]].end = feature.properties.__enddate;
+                }
+                groups[feature.properties[attr]].features.push(feature);
+            }
+        });
+        const newLayerAttrGroups = {
+            ...this.state.layerAttrGroups,
+            [layer]: {
+                attr: attr,
+                groups: groups
+            }
+        };
+        // Attr classification and grouping cannot be enabled at the same time
+        const newLayerClassifications = {
+            ...this.state.layerClassifications
+        };
+        delete newLayerClassifications[layer];
+        this.setState({layerClassifications: newLayerClassifications, layerAttrGroups: newLayerAttrGroups});
     }
 }
 

@@ -345,6 +345,8 @@
       "classify": "Classifica per attributo",
       "classifynone": "Nessuno",
       "endtime": "Fine",
+      "group": "Raggruppa per attributo",
+      "groupnone": "Nessuno",
       "home": "Ripristina linea temporale",
       "loop": "Ripeti",
       "markers": "Marker",
