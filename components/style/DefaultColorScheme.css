@@ -1,4 +1,4 @@
-:root.default {
+:root, :root.default {
     /* Base colors */
     --text-color: #595959;
     --text-color-link: #337ab7;
