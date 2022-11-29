@@ -91,7 +91,8 @@ div.ctimeline-cursor-label {
     bottom: 0;
     text-align: center;
     padding: 0.25em;
-    background-color: white;
+    background-color: var(--container-bg-color);
+    color: var(--text-color);
     border: 1px solid var(--border-color);
     z-index: 1;
 }
