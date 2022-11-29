@@ -247,7 +247,8 @@ export default class StandardApp extends React.Component {
         this.store.dispatch(changeBrowserProperties(ConfigUtils.getBrowserProperties()));
 
         // Load config.json
-        const configParams = Object.entries(UrlParams.getParams()).reduce((res, [key, value]) => {
+        const urlParams = UrlParams.getParams();
+        const configParams = Object.entries(urlParams).reduce((res, [key, value]) => {
             if (key.startsWith("config:")) {
                 res[key.slice(7)] = value;
             }
@@ -267,7 +268,7 @@ export default class StandardApp extends React.Component {
             }
             olProj4Register(Proj4js);
             // Set color scheme
-            const colorScheme = localStorage.getItem('qwc2-color-scheme') || config.defaultColorScheme || "default";
+            const colorScheme = urlParams.style || localStorage.getItem('qwc2-color-scheme') || config.defaultColorScheme || "default";
             const root = document.querySelector(':root');
             root.classList.add(colorScheme);
         });
