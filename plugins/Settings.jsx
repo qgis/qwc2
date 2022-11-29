@@ -11,27 +11,23 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import isEmpty from 'lodash.isempty';
 import url from 'url';
+import {setColorScheme} from '../actions/localConfig';
 import SideBar from '../components/SideBar';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/Settings.css';
 
 class Settings extends React.Component {
     static propTypes = {
+        colorScheme: PropTypes.string,
         colorSchemes: PropTypes.array,
         languages: PropTypes.array,
+        setColorScheme: PropTypes.func,
         side: PropTypes.string
     }
     static defaultProps = {
         colorSchemes: [],
         languages: [],
         side: 'right'
-    }
-    state = {
-        colorScheme: 'default'
-    }
-    constructor(props) {
-        super(props);
-        this.state.colorScheme = localStorage.getItem('qwc2-color-scheme') || "default";
     }
     render() {
         return (
@@ -77,12 +73,11 @@ class Settings extends React.Component {
         if (isEmpty(this.props.colorSchemes)) {
             return null;
         }
-        const colorScheme = localStorage.getItem('qwc2-color-scheme') || "default";
         return (
             <tr>
                 <td>{LocaleUtils.tr("settings.colorscheme")}</td>
                 <td>
-                    <select onChange={this.changeColorScheme} value={colorScheme}>
+                    <select onChange={this.changeColorScheme} value={this.props.colorScheme}>
                         {this.props.colorSchemes.map(entry => (
                             <option key={entry.value} value={entry.value}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
                         ))}
@@ -109,16 +104,12 @@ class Settings extends React.Component {
         }
     }
     changeColorScheme = (ev) => {
-        const newColorScheme = ev.target.value;
-        const root = document.querySelector(':root');
-        if (this.state.colorScheme) {
-            root.classList.remove(this.state.colorScheme);
-        }
-        if (newColorScheme) {
-            root.classList.add(newColorScheme);
-        }
-        localStorage.setItem('qwc2-color-scheme', newColorScheme);
+        this.props.setColorScheme(ev.target.value);
     }
 }
 
-export default connect(() => ({}), {})(Settings);
+export default connect((state) => ({
+    colorScheme: state.localConfig.colorScheme
+}), {
+    setColorScheme: setColorScheme
+})(Settings);

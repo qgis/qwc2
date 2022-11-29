@@ -25,7 +25,7 @@ import PluginsContainer from './PluginsContainer';
 
 import {changeBrowserProperties} from '../actions/browser';
 import {loadLocale} from '../actions/locale';
-import {localConfigLoaded, setStartupParameters} from '../actions/localConfig';
+import {localConfigLoaded, setStartupParameters, setColorScheme} from '../actions/localConfig';
 import {addLayer} from '../actions/layers';
 import {changeSearch} from '../actions/search';
 import {themesLoaded, setCurrentTheme} from '../actions/theme';
@@ -63,6 +63,7 @@ class AppInitComponent extends React.Component {
         changeSearch: PropTypes.func,
         initialParams: PropTypes.object,
         mapSize: PropTypes.object,
+        setColorScheme: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
         setStartupParameters: PropTypes.func,
@@ -73,6 +74,11 @@ class AppInitComponent extends React.Component {
         this.initialized = false;
     }
     componentDidMount() {
+
+        // Set color scheme
+        const colorScheme = this.props.initialParams.style || localStorage.getItem('qwc2-color-scheme');
+        this.props.setColorScheme(colorScheme);
+
         // The map component needs to have finished loading before theme initialization can proceed
         if (this.props.mapSize && !this.initialized) {
             this.init();
@@ -161,6 +167,7 @@ const AppInit = connect(state => ({
     themesLoaded: themesLoaded,
     setCurrentTask: setCurrentTask,
     changeSearch: changeSearch,
+    setColorScheme: setColorScheme,
     setCurrentTheme: setCurrentTheme,
     setStartupParameters: setStartupParameters,
     addLayer: addLayer
@@ -267,11 +274,6 @@ export default class StandardApp extends React.Component {
                 CoordinatesUtils.setCrsLabels({[proj.code]: proj.label});
             }
             olProj4Register(Proj4js);
-            // Set color scheme
-            const colorScheme = urlParams.style || localStorage.getItem('qwc2-color-scheme') || config.defaultColorScheme || "default";
-            const root = document.querySelector(':root');
-            root.classList.add(colorScheme);
-            localStorage.setItem('qwc2-color-scheme', colorScheme);
         });
     }
 }
