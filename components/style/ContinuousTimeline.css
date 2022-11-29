@@ -51,15 +51,22 @@ div.ctimeline-slider {
 }
 
 div.ctimeline-slider-layertitle {
-    font-weight: bold;
     font-size: 75%;
     padding: 0.25em;
     border-bottom: 1px solid var(--border-color);
+    background-color: white;
+    color: black;
+    display: flex;
+    align-items: center;
+}
+
+div.ctimeline-slider-layertitle > span:first-child {
+    font-weight: bold;
+    margin-right: 1em;
 }
 
 div.ctimeline-slider-feature {
     font-size: 75%;
-    overflow: hidden;
     position: absolute;
     display: flex;
     align-items: center;
@@ -68,9 +75,16 @@ div.ctimeline-slider-feature {
     height: 24px;
     padding: 0.25em;
     border-radius: 4px;
+    background-color: var(--border-color);
+    border: 1px solid transparent;
+}
+
+div.ctimeline-slider-feature > span {
+    flex: 1 1 auto;
+    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    background-color: var(--border-color);
+    text-align: center;
 }
 
 div.ctimeline-slider-feature:hover {
