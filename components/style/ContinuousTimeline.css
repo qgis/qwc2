@@ -13,12 +13,16 @@ div.ctimeline-toolbar {
     flex: 0 0 auto;
 }
 
-div.ctimeline-toolbar-timescale {
-    margin: 0 0.25em;
+div.ctimeline-toolbar-block {
+    margin-left: 1em;
+    display: flex;
+    align-items: center;
 }
 
-div.ctimeline-toolbar-timescale > input {
-    width: 5em;
+div.ctimeline-toolbar-block > input,
+div.ctimeline-toolbar-block > div.ToggleSwitch
+ {
+    width: 6em;
 }
 
 div.ctimeline-toolbar-spacer {
@@ -48,6 +52,7 @@ div.ctimeline-slider {
     overflow-y: auto;
     overflow-x: hidden;
     position: relative;
+    user-select: none;
 }
 
 div.ctimeline-slider-layertitle {
@@ -58,6 +63,8 @@ div.ctimeline-slider-layertitle {
     color: black;
     display: flex;
     align-items: center;
+    position: relative;
+    z-index: 2;
 }
 
 div.ctimeline-slider-layertitle > span:first-child {
@@ -67,6 +74,14 @@ div.ctimeline-slider-layertitle > span:first-child {
 
 div.ctimeline-slider-layertitle > select {
     margin-right: 1em;
+}
+
+div.ctimeline-slider-gradient {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    min-height: 100%;
 }
 
 div.ctimeline-slider-feature {
@@ -81,6 +96,7 @@ div.ctimeline-slider-feature {
     border-radius: 4px;
     background-color: var(--border-color);
     border: 1px solid transparent;
+    z-index: 2;
 }
 
 div.ctimeline-slider-feature > span {
@@ -101,6 +117,7 @@ div.ctimeline-cursor {
     bottom: 0;
     width: 4px;
     background-color: black;
+    z-index: 3;
 }
 
 div.ctimeline-cursor-label {
@@ -112,7 +129,7 @@ div.ctimeline-cursor-label {
     background-color: var(--container-bg-color);
     color: var(--text-color);
     border: 1px solid var(--border-color);
-    z-index: 1;
+    z-index: 4;
 }
 
 div.ctimeline-ticks {

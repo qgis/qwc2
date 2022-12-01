@@ -11,13 +11,16 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import dayjs from 'dayjs';
 import randomcolor from 'randomcolor';
-import {addLayerFeatures, removeLayer, LayerRole} from '../actions/layers';
+import ol from 'openlayers';
+import {addLayerFeatures, refreshLayer, removeLayer, LayerRole} from '../actions/layers';
 import Icon from './Icon';
 import ButtonBar from './widgets/ButtonBar';
+import ToggleSwitch from './widgets/ToggleSwitch';
 import MiscUtils from '../utils/MiscUtils';
 import NumberInput from './widgets/NumberInput';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/ContinuousTimeline.css';
+import markerIcon from '../utils/img/marker-icon.png';
 
 
 class ContinuousTimeline extends React.Component {
@@ -27,6 +30,14 @@ class ContinuousTimeline extends React.Component {
         dialogWidth: PropTypes.number, // Just to trigger a re-render when the width changes
         enabled: PropTypes.bool,
         endTime: PropTypes.object,
+        gradientSteps: PropTypes.array,
+        markerConfiguration: PropTypes.shape({
+            markersAvailable: PropTypes.bool,
+            gradient: PropTypes.arrayOf(PropTypes.string),
+            markerOffset: PropTypes.array,
+            markerPins: PropTypes.bool
+        }),
+        refreshLayer: PropTypes.func,
         removeLayer: PropTypes.func,
         startTime: PropTypes.object,
         stepSizeUnit: PropTypes.string,
@@ -34,6 +45,7 @@ class ContinuousTimeline extends React.Component {
         timestampChanged: PropTypes.func
     }
     state = {
+        markersEnabled: false,
         ticksContainer: null,
         currentTimestampDrag: null,
         highlightFeatures: null,
@@ -71,6 +83,28 @@ class ContinuousTimeline extends React.Component {
             });
             this.setState({layerAttrGroups: newLayerAttrGroups});
         }
+        if (!this.state.markersEnabled && prevState.markersEnabled) {
+            this.props.removeLayer("timemarkers");
+        } else if (this.state.markersEnabled && this.props.timeFeatures) {
+            if (
+                this.state.markersEnabled !== prevState.markersEnabled ||
+                this.props.timeFeatures !== prevProps.timeFeatures
+            ) {
+                const layer = {
+                    id: "timemarkers",
+                    role: LayerRole.MARKER,
+                    styleFunction: this.markerStyle,
+                    rev: +new Date()
+                };
+                const features = Object.values(this.props.timeFeatures.features).flat();
+                this.props.addLayerFeatures(layer, features, true);
+            } else if (
+                this.props.currentTimestamp !== prevProps.currentTimestamp ||
+                this.props.enabled !== prevProps.enabled
+            ) {
+                this.props.refreshLayer(layer => layer.id === "timemarkers");
+            }
+        }
     }
     render() {
         const cursorPos = this.state.currentTimestampDrag ? this.state.currentTimestampDrag.pos : ((-this.state.panOffset) + "px + 50%");
@@ -86,14 +120,27 @@ class ContinuousTimeline extends React.Component {
             {key: "zoomout", tooltip: LocaleUtils.trmsg("timemanager.zoomout"), icon: "zoomout"},
             {key: "zoomin", tooltip: LocaleUtils.trmsg("timemanager.zoomin"), icon: "zoomin"}
         ];
+        const sliderGeom = {
+            rect: this.state.ticksContainer ? this.state.ticksContainer.getBoundingClientRect() : {},
+            dt: this.props.endTime.diff(this.props.startTime),
+            top: 30
+        };
+        sliderGeom.mid = 0.5 * sliderGeom.rect.width - this.state.panOffset;
+
         return (
             <div className="ctimeline" onWheel={this.onSliderWheel}>
                 <div className="ctimeline-toolbar">
                     <ButtonBar buttons={navButtons} onClick={this.navButtonClicked} />
-                    <div className="ctimeline-toolbar-timescale">
+                    <div className="ctimeline-toolbar-block">
                         <span>{LocaleUtils.tr("timemanager.timelinescale")}: &nbsp;</span>
-                        <NumberInput decimals={2} max={10} min={0.01} onChange={(value) => this.setState({timeScale: value})} value={this.state.timeScale} />
+                        <NumberInput decimals={2} max={10} min={0.01} onChange={this.setTimeScale} value={this.state.timeScale} />
                     </div>
+                    {this.props.markerConfiguration.markersAvailable ? (
+                        <div className="ctimeline-toolbar-block">
+                            <span>{LocaleUtils.tr("timemanager.markers")}: &nbsp;</span>
+                            <ToggleSwitch active={this.state.markersEnabled} onChange={value => this.setState({markersEnabled: value})} readOnly={this.state.timeScale !== 1} />
+                        </div>
+                    ) : null}
                     <div className="ctimeline-toolbar-spacer" />
                 </div>
                 <div className="ctimeline-clip">
@@ -109,7 +156,8 @@ class ContinuousTimeline extends React.Component {
                 </div>
                 <div className="ctimeline-slider-container">
                     <div className="ctimeline-slider" onMouseDown={this.pickCurrentTimestamp}>
-                        {this.renderTimeFeatures()}
+                        {this.renderTimeFeatures(sliderGeom)}
+                        {this.renderGradient(sliderGeom)}
                     </div>
                     {this.props.enabled ? (
                         <div className="ctimeline-cursor" style={cursorStyle}>
@@ -122,14 +170,22 @@ class ContinuousTimeline extends React.Component {
             </div>
         );
     }
+    setTimeScale = (value) => {
+        this.setState({timeScale: value, markersEnabled: this.state.markersEnabled && parseFloat(value) === 1});
+    }
     setTicksRef = (el) => {
         if (this.state.ticksContainer !== el) {
             this.setState({ticksContainer: el});
         }
     }
     pixelsToTimeDiffMS = (px, width, dt) => {
-        const b = this.state.timeScale;
-        return Math.sign(px) * Math.pow(Math.abs(px) / (0.5 * width), b) * (0.5 * dt) * this.state.zoomFactor;
+        const exp = this.state.timeScale;
+        return Math.sign(px) * Math.pow(Math.abs(px) / (0.5 * width), exp) * 0.5 * dt * this.state.zoomFactor;
+    }
+    timeToPixelDiff = (time, width, dt) => {
+        const curTimeDelta = time - this.props.currentTimestamp;
+        const iexp = 1 / this.state.timeScale;
+        return 0.5 * width * Math.sign(curTimeDelta) * Math.pow(Math.abs(curTimeDelta) / (0.5 * dt * this.state.zoomFactor), iexp);
     }
     renderTicks = () => {
         if (!this.state.ticksContainer) {
@@ -279,18 +335,10 @@ class ContinuousTimeline extends React.Component {
         ev.preventDefault();
         ev.stopPropagation();
     }
-    renderTimeFeatures = () => {
+    renderTimeFeatures = (sliderGeom) => {
         if (!this.state.ticksContainer) {
             return null;
         }
-
-        const sliderGeom = {
-            rect: this.state.ticksContainer.getBoundingClientRect(),
-            ib: 1 / this.state.timeScale,
-            dt: 0.5 * this.props.endTime.diff(this.props.startTime) * this.state.zoomFactor,
-            top: 30
-        };
-        sliderGeom.mid = 0.5 * sliderGeom.rect.width - this.state.panOffset;
 
         return Object.entries(this.props.timeFeatures.features).map(([layer, features]) => {
             const classattr = (this.state.layerClassifications[layer] || {}).attr || "";
@@ -336,9 +384,26 @@ class ContinuousTimeline extends React.Component {
             );
         });
     }
+    renderGradient = (sliderGeom) => {
+        if (!this.state.ticksContainer || !this.state.markersEnabled) {
+            return null;
+        }
+        const left = sliderGeom.mid + this.timeToPixelDiff(this.props.startTime, sliderGeom.rect.width, sliderGeom.dt);
+        const right = sliderGeom.mid + this.timeToPixelDiff(this.props.endTime, sliderGeom.rect.width, sliderGeom.dt);
+        const style = {
+            left: left + "px",
+            width: (right - left) + "px",
+            height: sliderGeom.top + "px",
+            background: 'linear-gradient(90deg, ' + this.props.markerConfiguration.gradient.join(", ") + ')'
+        };
+        return (
+            <div className="ctimeline-slider-gradient" style={style} />
+        );
+
+    }
     renderTimeFeature = (sliderGeom, tstart, tend, features, label, attr, featClass) => {
-        const left = sliderGeom.mid + 0.5 * sliderGeom.rect.width * Math.sign(tstart - this.props.currentTimestamp) * Math.pow(Math.abs(tstart - this.props.currentTimestamp) / sliderGeom.dt, sliderGeom.ib);
-        const right = sliderGeom.mid + 0.5 * sliderGeom.rect.width * Math.sign(tend - this.props.currentTimestamp) * Math.pow(Math.abs(tend - this.props.currentTimestamp) / sliderGeom.dt, sliderGeom.ib);
+        const left = sliderGeom.mid + this.timeToPixelDiff(tstart, sliderGeom.rect.width, sliderGeom.dt);
+        const right = sliderGeom.mid + this.timeToPixelDiff(tend, sliderGeom.rect.width, sliderGeom.dt);
 
         const style = {
             top: sliderGeom.top + "px",
@@ -370,24 +435,28 @@ class ContinuousTimeline extends React.Component {
         );
     }
     setClassification = (layer, attr) => {
-        const classes = {};
-        this.props.timeFeatures.features[layer].forEach(feature => {
-            if (!classes[feature.properties[attr]]) {
-                const color = randomcolor();
-                classes[feature.properties[attr]] = {
-                    bg: color,
-                    fg: MiscUtils.isBrightColor(color) ? "#000" : "#FFF",
-                    val: feature.properties[attr]
-                };
-            }
-        });
         const newLayerClassifications = {
-            ...this.state.layerClassifications,
-            [layer]: {
+            ...this.state.layerClassifications
+        };
+        if (attr) {
+            const classes = {};
+            this.props.timeFeatures.features[layer].forEach(feature => {
+                if (!classes[feature.properties[attr]]) {
+                    const color = randomcolor();
+                    classes[feature.properties[attr]] = {
+                        bg: color,
+                        fg: MiscUtils.isBrightColor(color) ? "#000" : "#FFF",
+                        val: feature.properties[attr]
+                    };
+                }
+            });
+            newLayerClassifications[layer] = {
                 attr: attr,
                 classes: classes
-            }
-        };
+            };
+        } else {
+            delete newLayerClassifications[layer];
+        }
         // Attr classification and grouping cannot be enabled at the same time
         const newLayerAttrGroups = {
             ...this.state.layerAttrGroups
@@ -396,35 +465,39 @@ class ContinuousTimeline extends React.Component {
         this.setState({layerClassifications: newLayerClassifications, layerAttrGroups: newLayerAttrGroups});
     }
     setGroupAttr = (layer, attr) => {
-        const groups = {};
-        this.props.timeFeatures.features[layer].forEach(feature => {
-            if (!groups[feature.properties[attr]]) {
-                const color = randomcolor();
-                groups[feature.properties[attr]] = {
-                    bg: color,
-                    fg: MiscUtils.isBrightColor(color) ? "#000" : "#FFF",
-                    val: feature.properties[attr],
-                    features: [feature],
-                    start: feature.properties.__startdate,
-                    end: feature.properties.__enddate
-                };
-            } else {
-                if (feature.properties.__startdate < groups[feature.properties[attr]].start) {
-                    groups[feature.properties[attr]].start = feature.properties.__startdate;
-                }
-                if (feature.properties.__enddate > groups[feature.properties[attr]].end) {
-                    groups[feature.properties[attr]].end = feature.properties.__enddate;
-                }
-                groups[feature.properties[attr]].features.push(feature);
-            }
-        });
         const newLayerAttrGroups = {
             ...this.state.layerAttrGroups,
-            [layer]: {
+        };
+        if (attr) {
+            const groups = {};
+            this.props.timeFeatures.features[layer].forEach(feature => {
+                if (!groups[feature.properties[attr]]) {
+                    const color = randomcolor();
+                    groups[feature.properties[attr]] = {
+                        bg: color,
+                        fg: MiscUtils.isBrightColor(color) ? "#000" : "#FFF",
+                        val: feature.properties[attr],
+                        features: [feature],
+                        start: feature.properties.__startdate,
+                        end: feature.properties.__enddate
+                    };
+                } else {
+                    if (feature.properties.__startdate < groups[feature.properties[attr]].start) {
+                        groups[feature.properties[attr]].start = feature.properties.__startdate;
+                    }
+                    if (feature.properties.__enddate > groups[feature.properties[attr]].end) {
+                        groups[feature.properties[attr]].end = feature.properties.__enddate;
+                    }
+                    groups[feature.properties[attr]].features.push(feature);
+                }
+            });
+            newLayerAttrGroups[layer] = {
                 attr: attr,
                 groups: groups
-            }
-        };
+            };
+        } else {
+            delete newLayerAttrGroups[layer];
+        }
         // Attr classification and grouping cannot be enabled at the same time
         const newLayerClassifications = {
             ...this.state.layerClassifications
@@ -432,9 +505,63 @@ class ContinuousTimeline extends React.Component {
         delete newLayerClassifications[layer];
         this.setState({layerClassifications: newLayerClassifications, layerAttrGroups: newLayerAttrGroups});
     }
+    markerStyle = (feature) => {
+        const style = [
+        ];
+        const currentTime = dayjs(this.props.currentTimestamp);
+        if (this.props.enabled && (feature.getProperties().__startdate > currentTime || feature.getProperties().__enddate < currentTime)) {
+            return style;
+        }
+        const offset = this.props.markerConfiguration.markerOffset;
+        if (this.props.markerConfiguration.markerPins) {
+            style.push(new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 1],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    displacement: offset,
+                    src: markerIcon
+                })
+            }));
+        }
+        const deltaT = this.props.endTime.diff(this.props.startTime);
+        const markerStartTime = dayjs(Math.max(this.props.startTime, feature.getProperties().__startdate));
+        const markerEndTime = dayjs(Math.min(this.props.endTime, feature.getProperties().__enddate));
+        const markerMidTime = 0.5 * (markerStartTime + markerEndTime);
+        const gradBarMaxWidth = 192;
+        const gradBarHeight = 16;
+        const gradBarWidth = gradBarMaxWidth * markerEndTime.diff(markerStartTime) / deltaT;
+
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        const gradient = context.createLinearGradient(
+            -gradBarWidth * (markerMidTime - this.props.startTime) / (markerMidTime - markerStartTime), 0,
+            gradBarWidth * (this.props.endTime - markerMidTime) / (markerEndTime - markerMidTime), 0
+        );
+        const nStops = this.props.markerConfiguration.gradient.length;
+
+        this.props.markerConfiguration.gradient.forEach((stop, idx) => {
+            gradient.addColorStop(idx / (nStops - 1), stop);
+        });
+
+        style.push(new ol.style.Style({
+            image: new ol.style.RegularShape({
+                fill: new ol.style.Fill({color: gradient}),
+                stroke: new ol.style.Stroke({color: 'black', width: 1}),
+                points: 4,
+                radius: gradBarWidth / Math.SQRT2,
+                radius2: gradBarWidth,
+                angle: 0,
+                scale: [1, 1 / gradBarWidth * gradBarHeight],
+                displacement: [offset[0], offset[1] * gradBarHeight / gradBarWidth - gradBarWidth]
+            })
+        }));
+        return style;
+    }
 }
 
 export default connect(() => ({}), {
     addLayerFeatures: addLayerFeatures,
+    refreshLayer: refreshLayer,
     removeLayer: removeLayer
 })(ContinuousTimeline);
