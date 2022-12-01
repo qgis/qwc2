@@ -16,6 +16,10 @@ div.ToggleSwitch.toggle-switch-inactive {
     background-color: rgb(255, 127, 127);
 }
 
+div.ToggleSwitch.toggle-switch-read-only {
+    background-color: var(--text-color-disabled);
+}
+
 div.ToggleSwitch > span.toggle-switch-slider {
     flex: 1 1 50%;
     background-color: var(--input-bg-color);
