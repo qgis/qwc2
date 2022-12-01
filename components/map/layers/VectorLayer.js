@@ -111,6 +111,8 @@ export default {
             if (newFeatureObjects) {
                 source.addFeatures(newFeatureObjects);
             }
+        } else if ((oldOptions.rev || 0) !== (newOptions.rev || 0)) {
+            layer.getSource().changed();
         }
     },
     render: () => {
