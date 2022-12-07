@@ -14,13 +14,15 @@ import {createSelector} from 'reselect';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import uuid from 'uuid';
+import ol from 'openlayers';
 import isEqual from 'lodash.isequal';
 import dateParser from 'any-date-parser';
-import {setLayerDimensions, addLayerFeatures, removeLayer, LayerRole} from '../actions/layers';
+import {setLayerDimensions, addLayerFeatures, refreshLayer, removeLayer, LayerRole} from '../actions/layers';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import Icon from '../components/Icon';
-import ContinuousTimeline from '../components/ContinuousTimeline';
-import Timeline from '../components/Timeline';
+import TimelineFeaturesSlider from '../components/timeline/TimelineFeaturesSlider';
+import FixedTimeline from '../components/timeline/FixedTimeline';
+import InfiniteTimeline from '../components/timeline/InfiniteTimeline';
 import ButtonBar from '../components/widgets/ButtonBar';
 import NumberInput from '../components/widgets/NumberInput';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
@@ -30,6 +32,8 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/TimeManager.css';
+
+import markerIcon from '../utils/img/marker-icon.png';
 
 dayjs.extend(utc);
 
@@ -52,6 +56,7 @@ class TimeManager extends React.Component {
         defaultAnimationInterval: PropTypes.number,
         defaultStepSize: PropTypes.number,
         defaultStepUnit: PropTypes.string,
+        defaultTimelineMode: PropTypes.string,
         layerVisibilities: PropTypes.object,
         layers: PropTypes.array,
         map: PropTypes.object,
@@ -61,6 +66,7 @@ class TimeManager extends React.Component {
             markerOffset: PropTypes.array,
             markerPins: PropTypes.bool
         }),
+        refreshLayer: PropTypes.func,
         removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setLayerDimensions: PropTypes.func,
@@ -70,6 +76,7 @@ class TimeManager extends React.Component {
         defaultAnimationInterval: 1,
         defaultStepSize: 1,
         defaultStepUnit: "d",
+        defaultTimelineMode: "fixed",
         markerConfiguration: {
             markersAvailable: true,
             gradient: ["#f7af7d", "#eacc6e", "#fef89a", "#c5e09b", "#a3d29c", "#7cc096", "#79c8c5", "#34afce"],
@@ -80,8 +87,8 @@ class TimeManager extends React.Component {
     }
     static defaultState = {
         timeEnabled: false,
-        startDate: null,
-        endDate: null,
+        startTime: null,
+        endTime: null,
         currentTimestamp: null,
         animationActive: false,
         animationLoop: false,
@@ -90,7 +97,8 @@ class TimeManager extends React.Component {
         stepSizeUnit: 'd', // 1 day
         dialogWidth: 0,
         markersEnabled: false,
-        timeline: 'continuous',
+        markersCanBeEnabled: true,
+        timelineMode: 'continuous',
         timeData: {
             layerDimensions: {},
             values: [],
@@ -110,6 +118,7 @@ class TimeManager extends React.Component {
             TimeManager.defaultState.stepSizeUnit = props.stepUnits[0];
         }
         TimeManager.defaultState.animationInterval = props.defaultAnimationInterval;
+        TimeManager.defaultState.timelineMode = props.defaultTimelineMode;
         this.state = {
             ...this.state,
             ...TimeManager.defaultState
@@ -162,7 +171,12 @@ class TimeManager extends React.Component {
                 }
             });
             timeData.values = [...timeData.values].sort().map(d => dayjs.utc(d));
-            this.setState({timeData: timeData, currentTimestamp: this.state.currentTimestamp ?? +timeData.values[0]});
+            this.setState({
+                timeData: timeData,
+                currentTimestamp: this.state.currentTimestamp ?? +timeData.values[0],
+                startTime: timeData.values.length > 0 ? timeData.values[0].hour(0).minute(0).second(0) : null,
+                endTime: timeData.values.length > 0 ? timeData.values[timeData.values.length - 1].hour(23).minute(59).second(59) : null
+            });
             this.updateLayerTimeDimensions(timeData, this.state.currentTimestamp);
             this.updateTimeFeatures(timeData);
         } else {
@@ -176,6 +190,29 @@ class TimeManager extends React.Component {
 
         if (this.state.animationActive && this.state.animationInterval !== prevState.animationInterval) {
             this.stopAnimation();
+        }
+
+        if (!this.state.markersEnabled && prevState.markersEnabled) {
+            this.props.removeLayer("timemarkers");
+        } else if (this.state.markersEnabled && this.state.timeFeatures) {
+            if (
+                this.state.markersEnabled !== prevState.markersEnabled ||
+                this.state.timeFeatures !== prevState.timeFeatures
+            ) {
+                const layer = {
+                    id: "timemarkers",
+                    role: LayerRole.MARKER,
+                    styleFunction: this.markerStyle,
+                    rev: +new Date()
+                };
+                const features = Object.values(this.state.timeFeatures.features).flat();
+                this.props.addLayerFeatures(layer, features, true);
+            } else if (
+                this.state.currentTimestamp !== prevState.currentTimestamp ||
+                this.state.timeEnabled !== prevState.timeEnabled
+            ) {
+                this.props.refreshLayer(layer => layer.id === "timemarkers");
+            }
         }
     }
     render() {
@@ -239,10 +276,10 @@ class TimeManager extends React.Component {
                         </tr>
                         <tr>
                             <td>{LocaleUtils.tr("timemanager.timeline")}</td>
-                            <td>
-                                <select onChange={ev => this.setState({timeline: ev.target.value})} value={this.state.timeline}>
+                            <td colSpan="2">
+                                <select onChange={ev => this.setState({timelineMode: ev.target.value})} value={this.state.timelineMode}>
                                     <option value="fixed">{LocaleUtils.tr("timemanager.timeline_fixed")}</option>
-                                    <option value="continuous">{LocaleUtils.tr("timemanager.timeline_continuous")}</option>
+                                    <option value="infinite">{LocaleUtils.tr("timemanager.timeline_infinite")}</option>
                                 </select>
                             </td>
                             <td />
@@ -252,6 +289,9 @@ class TimeManager extends React.Component {
             </div>
         );
 
+        const timeSpan = this.state.endTime.diff(this.state.startTime);
+        const Timeline = this.state.timelineMode === 'infinite' ? InfiniteTimeline : FixedTimeline;
+
         return (
             <div className="time-manager-body" role="body">
                 <div className="time-manager-toolbar">
@@ -260,6 +300,10 @@ class TimeManager extends React.Component {
                         <ToggleSwitch active={this.state.timeEnabled} onChange={this.toggleTimeEnabled} />
                     </span>
                     <ButtonBar buttons={timeButtons} disabled={!this.state.timeEnabled} onClick={this.animationButtonClicked} />
+                    <span className="time-manager-toolbar-block">
+                        <span>{LocaleUtils.tr("timemanager.markers")}: &nbsp;</span>
+                        <ToggleSwitch active={this.state.markersEnabled} onChange={value => this.setState({markersEnabled: value})} readOnly={!this.state.markersCanBeEnabled} />
+                    </span>
                     <span className="time-manager-toolbar-spacer" />
                     <span className="time-manager-options-menubutton">
                         <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState({settingsPopup: !this.state.settingsPopup})}>
@@ -269,20 +313,32 @@ class TimeManager extends React.Component {
                     </span>
                 </div>
                 <div className="time-manager-timeline">
-                    {this.state.timeline === "fixed" ? (
-                        <Timeline currentTimestamp={this.state.currentTimestamp} enabled={this.state.timeEnabled}
-                            endTime={this.getEndTime()} endTimeChanged={this.setEndTime}
-                            gradientSteps={this.state.markersEnabled ? this.props.blockColors : []}
-                            startTime={this.getStartTime()} startTimeChanged={this.setStartTime}
-                            stepSizeUnit={this.state.stepSizeUnit} timestampChanged={timestamp => this.setState({currentTimestamp: timestamp})}/>
-                    ) : (
-                        <ContinuousTimeline currentTimestamp={this.state.currentTimestamp}
-                            dialogWidth={this.state.dialogWidth} enabled={this.state.timeEnabled}
-                            endTime={this.getEndTime()} markerConfiguration={markerConfiguration}
-                            startTime={this.getStartTime()}
-                            stepSizeUnit={this.state.stepSizeUnit} timeFeatures={this.state.timeFeatures}
-                            timestampChanged={timestamp => this.setState({currentTimestamp: timestamp})}/>
-                    )}
+                    <Timeline currentTimestamp={this.state.currentTimestamp}
+                        dialogWidth={this.state.dialogWidth}
+                        endTime={this.state.endTime}
+                        setEndTime={this.setEndTime}
+                        setMarkersCanBeEnabled={value => this.setState({markersCanBeEnabled: value, markersEnabled: false})}
+                        setStartTime={this.setStartTime}
+                        startTime={this.state.startTime}
+                        timeSpan={timeSpan}
+                    >
+                        {
+                            (computePixelFromTime, computeTimeFromPixel) => (
+                                <TimelineFeaturesSlider
+                                    computePixelFromTime={computePixelFromTime}
+                                    computeTimeFromPixel={computeTimeFromPixel}
+                                    currentTimestamp={this.state.currentTimestamp}
+                                    endTime={this.state.endTime}
+                                    markerConfiguration={markerConfiguration}
+                                    markersEnabled={this.state.markersEnabled}
+                                    startTime={this.state.startTime}
+                                    timeEnabled={this.state.timeEnabled}
+                                    timeFeatures={this.state.timeFeatures}
+                                    timestampChanged={(timestamp) => this.setState({currentTimestamp: timestamp})}
+                                />
+                            )
+                        }
+                    </Timeline>
                 </div>
             </div>
         );
@@ -295,25 +351,25 @@ class TimeManager extends React.Component {
         clearTimeout(this.updateMapMarkersTimeout);
         this.animationTimer = null;
         this.updateMapMarkersTimeout = null;
-        this.setState({timeEnabled: enabled, currentTimestamp: +this.getStartTime(), animationActive: false, timeMarkers: null});
+        this.setState({timeEnabled: enabled, currentTimestamp: +this.state.startTime, animationActive: false, timeMarkers: null});
     }
     animationButtonClicked = (action) => {
         this.stopAnimation();
         if (action === "rewind") {
-            this.setState({currentTimestamp: +this.getStartTime(), animationActive: false});
+            this.setState({currentTimestamp: +this.state.startTime, animationActive: false});
         } else if (action === "prev") {
             const newday = this.step(-1);
-            this.setState({currentTimestamp: +Math.max(newday, this.getStartTime())});
+            this.setState({currentTimestamp: +Math.max(newday, this.state.startTime)});
         } else if (action === "next") {
             const newday = this.step(+1);
-            this.setState({currentTimestamp: +Math.min(newday, this.getEndTime())});
+            this.setState({currentTimestamp: +Math.min(newday, this.state.endTime)});
         } else if (action === "stop") {
             /* Already stopped above, pass */
         } else if (action === "play") {
             const curday = dayjs(this.state.currentTimestamp);
-            const lastday = this.getEndTime();
+            const lastday = this.state.endTime;
             if (curday >= lastday) {
-                this.setState({currentTimestamp: +this.getStartTime()});
+                this.setState({currentTimestamp: +this.state.startTime});
             }
             this.animationTimer = setInterval(() => {
                 this.advanceAnimation(+1);
@@ -321,9 +377,9 @@ class TimeManager extends React.Component {
             this.setState({animationActive: true});
         } else if (action === "playrev") {
             const curday = dayjs(this.state.currentTimestamp);
-            const firstday = this.getStartTime();
+            const firstday = this.state.startTime;
             if (curday <= firstday) {
-                this.setState({currentTimestamp: +this.getEndTime()});
+                this.setState({currentTimestamp: +this.state.endTime});
             }
             this.animationTimer = setInterval(() => {
                 this.advanceAnimation(-1);
@@ -335,11 +391,11 @@ class TimeManager extends React.Component {
     }
     advanceAnimation = (stepdir) => {
         const newday = this.step(stepdir);
-        const firstday = this.getStartTime();
-        const lastday = this.getEndTime();
+        const firstday = this.state.startTime;
+        const lastday = this.state.endTime;
         if (newday > lastday) {
             if (stepdir > 0 && this.state.animationLoop) {
-                this.setState({currentTimestamp: +this.getStartTime()});
+                this.setState({currentTimestamp: +this.state.startTime});
             } else {
                 this.setState({currentTimestamp: +lastday, animationActive: false});
                 clearInterval(this.animationTimer);
@@ -347,7 +403,7 @@ class TimeManager extends React.Component {
             }
         } else if (newday < firstday) {
             if (stepdir < 0 && this.state.animationLoop) {
-                this.setState({currentTimestamp: +this.getEndTime()});
+                this.setState({currentTimestamp: +this.state.endTime});
             } else {
                 this.setState({currentTimestamp: +firstday, animationActive: false});
                 clearInterval(this.animationTimer);
@@ -396,18 +452,10 @@ class TimeManager extends React.Component {
             this.props.setLayerDimensions(layer.id, dimensions);
         });
     }
-    getStartTime = () => {
-        const date = this.state.startDate || this.state.timeData.values[0];
-        return date ? date.hour(0).minute(0).second(0) : 0;
-    }
-    getEndTime = () => {
-        const date = (this.state.endDate || this.state.timeData.values[this.state.timeData.values.length - 1]);
-        return date ? date.hour(23).minute(59).second(59) : 0;
-    }
     setStartTime = (value) => {
         const date = (value ? dayjs.utc(value) : this.state.timeData.values[0]).hour(0).minute(0).second(0);
-        if (date < this.getEndTime()) {
-            this.setState({startDate: date});
+        if (date < this.state.endTime) {
+            this.setState({startTime: date});
         }
         if (dayjs(this.state.currentTimestamp) < date) {
             this.setState({currentTimestamp: +date});
@@ -415,8 +463,8 @@ class TimeManager extends React.Component {
     }
     setEndTime = (value) => {
         const date = (value ? dayjs.utc(value) : this.state.timeData.values[this.state.timeData.values.length - 1]).hour(23).minute(59).second(59);
-        if (date > this.getStartTime()) {
-            this.setState({endDate: date});
+        if (date > this.state.startTime) {
+            this.setState({endTime: date});
             if (dayjs(this.state.currentTimestamp) > date) {
                 this.setState({currentTimestamp: +date});
             }
@@ -493,6 +541,59 @@ class TimeManager extends React.Component {
             timeFeatures: {features: {}, attributes: {}, pendingRequests: pending, reqUUID: reqUUID}
         });
     }
+    markerStyle = (feature) => {
+        const style = [
+        ];
+        const currentTime = dayjs(this.state.currentTimestamp);
+        if (this.state.timeEnabled && (feature.getProperties().__startdate > currentTime || feature.getProperties().__enddate < currentTime)) {
+            return style;
+        }
+        const offset = this.props.markerConfiguration.markerOffset;
+        if (this.props.markerConfiguration.markerPins) {
+            style.push(new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 1],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    displacement: offset,
+                    src: markerIcon
+                })
+            }));
+        }
+        const deltaT = this.state.endTime.diff(this.state.startTime);
+        const markerStartTime = dayjs(Math.max(this.state.startTime, feature.getProperties().__startdate));
+        const markerEndTime = dayjs(Math.min(this.state.endTime, feature.getProperties().__enddate));
+        const markerMidTime = 0.5 * (markerStartTime + markerEndTime);
+        const gradBarMaxWidth = 192;
+        const gradBarHeight = 16;
+        const gradBarWidth = gradBarMaxWidth * markerEndTime.diff(markerStartTime) / deltaT;
+
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        const gradient = context.createLinearGradient(
+            -gradBarWidth * (markerMidTime - this.state.startTime) / (markerMidTime - markerStartTime), 0,
+            gradBarWidth * (this.state.endTime - markerMidTime) / (markerEndTime - markerMidTime), 0
+        );
+        const nStops = this.props.markerConfiguration.gradient.length;
+
+        this.props.markerConfiguration.gradient.forEach((stop, idx) => {
+            gradient.addColorStop(idx / (nStops - 1), stop);
+        });
+
+        style.push(new ol.style.Style({
+            image: new ol.style.RegularShape({
+                fill: new ol.style.Fill({color: gradient}),
+                stroke: new ol.style.Stroke({color: 'black', width: 1}),
+                points: 4,
+                radius: gradBarWidth / Math.SQRT2,
+                radius2: gradBarWidth,
+                angle: 0,
+                scale: [1, 1 / gradBarWidth * gradBarHeight],
+                displacement: [offset[0], offset[1] * gradBarHeight / gradBarWidth - gradBarWidth]
+            })
+        }));
+        return style;
+    }
 }
 
 const layerVisiblitiesSelector = createSelector([
@@ -515,6 +616,7 @@ const selector = createSelector([state => state, layerVisiblitiesSelector], (sta
 
 export default connect(selector, {
     addLayerFeatures: addLayerFeatures,
+    refreshLayer: refreshLayer,
     removeLayer: removeLayer,
     setLayerDimensions: setLayerDimensions,
     setCurrentTask: setCurrentTask,
