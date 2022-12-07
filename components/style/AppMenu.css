@@ -49,8 +49,8 @@ div.AppMenu div.appmenu-menu-container {
     transform: scaleY(0);
     transition: transform 0.25s, opacity 0.25s;
     overflow-y: auto;
-    max-height: calc(100vh - 5.9em);
-    max-height: calc(var(--vh, 1vh) * 100 - 5.9em);
+    max-height: calc(100vh - 5.8em);
+    max-height: calc(var(--vh, 1vh) * 100 - 5.8em);
 }
 
 div.AppMenu ul.appmenu-menu {
@@ -76,8 +76,9 @@ div.AppMenu ul.appmenu-menu li:not(:last-child) {
     border-bottom: 1px solid var(--app-menu-text-color);
 }
 
-div.AppMenu ul.appmenu-menu > li:hover,
-div.AppMenu ul.appmenu-menu > li.expanded {
+div.AppMenu ul.appmenu-menu > li.appmenu-leaf-active,
+div.AppMenu ul.appmenu-menu > li.appmenu-submenu-active,
+div.AppMenu ul.appmenu-menu > li.appmenu-submenu-expanded {
     background-color: var(--app-menu-bg-color-hover);
     color: var(--app-menu-text-color-hover);
 }
@@ -88,22 +89,23 @@ div.AppMenu ul.appmenu-menu li > .icon {
     margin: 0.5em 1em 0.5em 1em;
 }
 
-div.AppMenu ul.appmenu-menu li ul {
+div.AppMenu ul.appmenu-menu li.appmenu-submenu > ul {
     background-color: var(--app-submenu-bg-color);
     padding: 0;
     display: none;
 }
 
-div.AppMenu ul.appmenu-menu li ul li {
-    color: var(--app-submenu-text-color);
-}
-
-div.AppMenu ul.appmenu-menu li.expanded ul {
+div.AppMenu ul.appmenu-menu li.appmenu-submenu-expanded > ul {
     display: block;
 }
 
-div.AppMenu ul.appmenu-menu ul li:hover,
-div.AppMenu ul.appmenu-menu ul li.expanded {
+div.AppMenu ul.appmenu-menu li.appmenu-submenu > ul > li {
+    color: var(--app-submenu-text-color);
+}
+
+div.AppMenu ul.appmenu-menu li.appmenu-submenu > ul > li.appmenu-leaf-active,
+div.AppMenu ul.appmenu-menu li.appmenu-submenu > ul > li.appmenu-submenu-active,
+div.AppMenu ul.appmenu-menu li.appmenu-submenu > ul > li.appmenu-submenu-expanded {
     background-color: var(--app-submenu-bg-color-hover);
     color: var(--app-submenu-text-color-hover);
 }

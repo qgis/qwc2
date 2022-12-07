@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import Mousetrap from 'mousetrap';
 import {remove as removeDiacritics} from 'diacritics';
 import isEmpty from 'lodash.isempty';
+import classnames from 'classnames';
 import {setCurrentTask} from '../actions/task';
 import InputContainer from '../components/InputContainer';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -19,6 +20,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 import MiscUtils from '../utils/MiscUtils';
 import Icon from './Icon';
 import './style/AppMenu.css';
+import isEqual from 'lodash.isequal';
 
 
 class AppMenu extends React.Component {
@@ -42,7 +44,9 @@ class AppMenu extends React.Component {
     state = {
         menuVisible: false,
         filter: "",
-        submenusVisible: []
+        submenusVisible: [],
+        curEntry: null,
+        keyNav: false
     }
     constructor(props) {
         super(props);
@@ -84,6 +88,76 @@ class AppMenu extends React.Component {
             }
         });
     }
+    onKeyPress = (ev) => {
+        if (ev.keyCode === 13 || ev.keyCode === 37 || ev.keyCode === 38 || ev.keyCode === 39 || ev.keyCode === 40) {
+            if (!this.state.curEntry) {
+                if (ev.keyCode === 38 || ev.keyCode === 40) {
+                    this.setState({curEntry: [ev.keyCode === 38 ? this.props.menuItems.length - 1 : 0]});
+                }
+            } else {
+                const curEntry = [...this.state.curEntry];
+                const stack = [this.props.menuItems];
+                this.state.curEntry.forEach(entry => {
+                    stack.push(stack[stack.length - 1][entry].subitems);
+                });
+                stack.pop();
+                let leaf = curEntry.pop();
+                const level = stack.length - 1;
+                if (ev.keyCode === 13) { // Enter
+                    if (!isEmpty(stack[stack.length - 1][leaf].subitems)) {
+                        this.onSubmenuClicked(stack[stack.length - 1][leaf].key, level);
+                    } else {
+                        this.onMenuitemClicked(stack[stack.length - 1][leaf]);
+                    }
+                } else if (ev.keyCode === 37) { // Left
+                    if (!isEmpty(stack[stack.length - 1][leaf].subitems) && this.state.submenusVisible[level] === stack[stack.length - 1][leaf].key) {
+                        this.onSubmenuClicked(stack[stack.length - 1][leaf].key, level);
+                    }
+                } else if (ev.keyCode === 38) { // Up
+                    leaf -= 1;
+                    if (leaf >= 0 && !isEmpty(stack[stack.length - 1][leaf].subitems) && this.state.submenusVisible[level] === stack[stack.length - 1][leaf].key) {
+                        curEntry.push(leaf);
+                        leaf = stack[stack.length - 1][leaf].subitems.length - 1;
+                    } else {
+                        while (leaf < 0 && curEntry.length > 0) {
+                            leaf = curEntry.pop();
+                        }
+                        if (leaf < 0) {
+                            leaf = this.props.menuItems.length - 1;
+                        }
+                    }
+                } else if (ev.keyCode === 39) { // Right
+                    if (!isEmpty(stack[stack.length - 1][leaf].subitems) && !this.state.submenusVisible[level]) {
+                        this.onSubmenuClicked(stack[stack.length - 1][leaf].key, level);
+                    }
+                } else if (ev.keyCode === 40) { // Down
+                    if (!isEmpty(stack[stack.length - 1][leaf].subitems) && this.state.submenusVisible[level] === stack[stack.length - 1][leaf].key) {
+                        curEntry.push(leaf);
+                        leaf = 0;
+                    } else {
+                        leaf += 1;
+                        while (leaf > stack[stack.length - 1].length - 1 && curEntry.length > 0) {
+                            leaf = curEntry.pop() + 1;
+                            stack.pop();
+                        }
+                        if (leaf > this.props.menuItems.length - 1) {
+                            leaf = 0;
+                        }
+                    }
+                }
+                this.setState({curEntry: [...curEntry, leaf], keyNav: true});
+            }
+            MiscUtils.killEvent(ev);
+        } else if (ev.keyCode === 27) {
+            this.toggleMenu();
+            MiscUtils.killEvent(ev);
+        }
+    }
+    onMouseMove = () => {
+        if (this.state.keyNav) {
+            this.setState({keyNav: false});
+        }
+    }
     toggleMenu = () => {
         if (!this.state.menuVisible && this.props.currentTaskBlocked) {
             return;
@@ -93,8 +167,12 @@ class AppMenu extends React.Component {
         }
         if (!this.state.menuVisible) {
             document.addEventListener('click', this.checkCloseMenu);
+            document.addEventListener('keydown', this.onKeyPress, true);
+            document.addEventListener('mousemove', this.onMouseMove, true);
         } else {
             document.removeEventListener('click', this.checkCloseMenu);
+            document.removeEventListener('keydown', this.onKeyPress, true);
+            document.removeEventListener('mousemove', this.onMouseMove, true);
         }
         this.props.onMenuToggled(!this.state.menuVisible);
         this.setState({ menuVisible: !this.state.menuVisible, submenusVisible: [], filter: "" });
@@ -118,25 +196,33 @@ class AppMenu extends React.Component {
             this.props.setCurrentTask(item.task || item.key, item.mode, item.mapClickAction || (item.identifyEnabled ? "identify" : null));
         }
     }
-    renderMenuItems = (items, level, filter) => {
+    renderMenuItems = (items, level, filter, path) => {
         if (items) {
-            return items.map(item => {
+            return items.map((item, idx) => {
                 if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme.title) || item.themeWhitelist.includes(this.props.currentTheme.name))) {
                     return null;
                 }
                 if (item.requireAuth && !ConfigUtils.getConfigProp("username")) {
                     return null;
                 }
+                const active = isEqual(this.state.curEntry, [...path, idx]);
                 if (item.subitems) {
-                    const subitems = this.renderMenuItems(item.subitems, level + 1, filter);
+                    const subitems = this.renderMenuItems(item.subitems, level + 1, filter, [...path, idx]);
                     if (filter && isEmpty(subitems)) {
                         return null;
                     }
                     const visible = (filter && !isEmpty(subitems)) || this.state.submenusVisible[level] === item.key;
+                    const className = classnames({
+                        "appmenu-submenu": true,
+                        "appmenu-submenu-active": active,
+                        "appmenu-submenu-expanded": visible
+                    });
                     return (
-                        <li className={visible ? "expanded" : ""}
-                            key={item.key}
+                        <li className={className} key={item.key}
                             onClick={() => this.onSubmenuClicked(item.key, level)}
+                            onMouseEnter={() => { if (!this.state.keyNav) { this.setState({curEntry: [...path, idx]}); } } }
+                            onMouseLeave={() => { if (!this.state.keyNav) { this.setState({curEntry: null}); } } }
+                            ref={el => { if (active && el && this.state.keyNav) { el.scrollIntoView(false); } }}
                         >
                             <Icon icon={item.icon} size="xlarge"/>
                             {item.title ? LocaleUtils.tr(item.title) : LocaleUtils.tr("appmenu.items." + item.key)}
@@ -149,8 +235,17 @@ class AppMenu extends React.Component {
                     const label = item.title ? LocaleUtils.tr(item.title) : LocaleUtils.tr("appmenu.items." + item.key + (item.mode || ""));
                     const comment = item.comment ? LocaleUtils.tr("appmenu.items." + item.key + (item.mode || "") + "_comment") : "";
                     if (!filter || removeDiacritics(label.toLowerCase()).match(filter) || (comment && removeDiacritics(comment.toLowerCase()).match(filter))) {
+                        const className = classnames({
+                            "appmenu-leaf": true,
+                            "appmenu-leaf-active": active
+                        });
                         return (
-                            <li className="appmenu-leaf" key={item.key + (item.mode || "")} onClick={() => this.onMenuitemClicked(item)} >
+                            <li className={className} key={item.key + (item.mode || "")}
+                                onClick={() => this.onMenuitemClicked(item)}
+                                onMouseEnter={() => { if (!this.state.keyNav) { this.setState({curEntry: [...path, idx]}); } } }
+                                onMouseLeave={() => { if (!this.state.keyNav) { this.setState({curEntry: null}); } } }
+                                ref={el => { if (active && el && this.state.keyNav) { el.scrollIntoView(false); } }}
+                            >
                                 <Icon icon={item.icon} size="xlarge"/>
                                 <span className="appmenu-leaf-label">
                                     {label}
@@ -186,7 +281,7 @@ class AppMenu extends React.Component {
                             <li className="appmenu-leaf">
                                 <Icon icon={"search"} size="xlarge"/>
                                 <InputContainer className="appmenu-filter">
-                                    <input onChange={ev => this.setState({filter: ev.target.value})}
+                                    <input onChange={ev => this.setState({filter: ev.target.value, curEntry: null})}
                                         placeholder={LocaleUtils.tr("appmenu.filter")} ref={this.setFilterField}
                                         role="input"
                                         type="text"
@@ -195,7 +290,7 @@ class AppMenu extends React.Component {
                                 </InputContainer>
                             </li>
                         ) : null}
-                        {this.renderMenuItems(this.props.menuItems, 0, filter)}
+                        {this.renderMenuItems(this.props.menuItems, 0, filter, [])}
                     </ul>
                 </div>
             </div>
@@ -206,7 +301,6 @@ class AppMenu extends React.Component {
         if (this.props.appMenuShortcut) {
             Mousetrap(el).bind(this.props.appMenuShortcut, this.toggleMenu);
         }
-        Mousetrap(el).bind('esc', this.toggleMenu);
     }
 }
 
