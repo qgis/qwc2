@@ -70,7 +70,7 @@ class TimelineFeaturesSlider extends React.Component {
     render() {
         const timestamp = this.state.currentTimestampDrag ? this.state.currentTimestampDrag.time : this.props.currentTimestamp;
         const sliderGeom = {
-            top: 30
+            top: 35
         };
         return (
             <div className="timeline-slider-container">
