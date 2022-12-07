@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import dayjs from 'dayjs';
 import randomcolor from 'randomcolor';
 import {addLayerFeatures, removeLayer, LayerRole} from '../../actions/layers';
+import Spinner from '../Spinner';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
 import './style/TimelineFeaturesSlider.css';
@@ -79,6 +80,11 @@ class TimelineFeaturesSlider extends React.Component {
                     {this.renderGradient(sliderGeom)}
                 </div>
                 {this.renderCursor(timestamp)}
+                {this.props.timeFeatures.pendingRequests > 0 ? (
+                    <div className="timeline-slider-loading">
+                        <Spinner /><span>{LocaleUtils.tr("timemanager.loading")}</span>
+                    </div>
+                ) : null}
             </div>
         );
     }

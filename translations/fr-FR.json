@@ -348,6 +348,7 @@
       "group": "Attribut de regroupement",
       "groupnone": "Aucun",
       "home": "Réinitialiser",
+      "loading": "Chargement...",
       "loop": "Répéter",
       "markers": "Marqueurs",
       "notemporaldata": "Aucune couche temporelle n'est visible sur la carte.",

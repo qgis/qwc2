@@ -348,6 +348,7 @@
       "group": "Grouping attribute",
       "groupnone": "None",
       "home": "Reset timeline",
+      "loading": "Loading...",
       "loop": "Loop",
       "markers": "Markers",
       "notemporaldata": "No temporal layers are visible in the map.",

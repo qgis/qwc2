@@ -348,6 +348,7 @@
       "group": "Raggruppa per attributo",
       "groupnone": "Nessuno",
       "home": "Ripristina linea temporale",
+      "loading": "Caricamento...",
       "loop": "Ripeti",
       "markers": "Marker",
       "notemporaldata": "Nessun layer con dimensioni temporali è attivo nella cartina.",

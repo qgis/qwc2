@@ -288,6 +288,7 @@
     "timemanager.group",
     "timemanager.groupnone",
     "timemanager.home",
+    "timemanager.loading",
     "timemanager.loop",
     "timemanager.markers",
     "timemanager.notemporaldata",

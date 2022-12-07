@@ -98,3 +98,22 @@ div.timeline-slider-feature:hover {
     border: 1px solid var(--color-active);
 }
 
+div.timeline-slider-loading {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(200, 200, 200, 0.9);
+    color: black;
+    z-index: 10;
+}
+
+div.timeline-slider-loading > div.spinner {
+    width: 4em;
+    height: 4em;
+    margin-right: 1em;
+}
