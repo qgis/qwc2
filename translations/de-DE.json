@@ -138,7 +138,7 @@
       "title": "Objektinformationen"
     },
     "imageeditor": {
-      "confirmclose": "Schliessen, ohne zu speichern?",
+      "confirmclose": "Schließen, ohne zu speichern?",
       "title": "Bildbearbeitung"
     },
     "importlayer": {
@@ -185,7 +185,7 @@
     },
     "linkfeatureform": {
       "cancel": "Abbrechen",
-      "close": "Schliessen",
+      "close": "Schließen",
       "drawhint": "Objekt auf der Karte zeichnen...",
       "pickhint": "Objekt auf der Karte auswählen..."
     },
@@ -377,7 +377,7 @@
         "seconds": "Sekunden",
         "years": "Jahre"
       },
-      "zoomin": "Vergrössern",
+      "zoomin": "Vergrößern",
       "zoomout": "Verkleinern"
     },
     "tooltip": {
@@ -398,7 +398,7 @@
       "minimize": "Minimieren",
       "undock": "Abdocken",
       "unmaximize": "Wiederherstellen",
-      "unminimize": "Vergrössern"
+      "unminimize": "Vergrößern"
     }
   }
 }
