@@ -38,7 +38,9 @@ export default function localConfig(state = defaultState, action) {
         if (UrlParams.getParam("style")) {
             UrlParams.updateParams({style: newColorScheme});
         }
-        localStorage.setItem('qwc2-color-scheme', newColorScheme);
+        if (action.storeInLocalStorage) {
+            localStorage.setItem('qwc2-color-scheme', newColorScheme);
+        }
         return {...state, colorScheme: newColorScheme};
     }
     default:

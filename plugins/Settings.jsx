@@ -104,7 +104,7 @@ class Settings extends React.Component {
         }
     }
     changeColorScheme = (ev) => {
-        this.props.setColorScheme(ev.target.value);
+        this.props.setColorScheme(ev.target.value, true);
     }
 }
 

@@ -28,9 +28,10 @@ export function setStartupParameters(params) {
     };
 }
 
-export function setColorScheme(colorScheme) {
+export function setColorScheme(colorScheme, storeInLocalStorage = false) {
     return {
         type: SET_COLOR_SCHEME,
-        colorScheme
+        colorScheme,
+        storeInLocalStorage
     };
 }

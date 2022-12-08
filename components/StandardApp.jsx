@@ -73,22 +73,22 @@ class AppInitComponent extends React.Component {
         super(props);
         this.initialized = false;
     }
-    componentDidMount() {
-
-        // Set color scheme
-        const colorScheme = this.props.initialParams.style || localStorage.getItem('qwc2-color-scheme');
-        this.props.setColorScheme(colorScheme);
-
+    componentDidMount(prevProps, prevState) {
+        this.componentDidUpdate();
+    }
+    componentDidUpdate() {
         // The map component needs to have finished loading before theme initialization can proceed
         if (this.props.mapSize && !this.initialized) {
             this.init();
         }
     }
-    componentDidUpdate(prevProps, prevState) {
-        this.componentDidMount();
-    }
     init = () => {
         this.initialized = true;
+
+        // Set color scheme
+        const storedColorScheme = ConfigUtils.havePlugin("Settings") ? localStorage.getItem('qwc2-color-scheme') : null;
+        const colorScheme = this.props.initialParams.style || storedColorScheme || ConfigUtils.getConfigProp("defaultColorScheme");
+        this.props.setColorScheme(colorScheme);
 
         // Load themes.json
         axios.get("themes.json").then(response => {
