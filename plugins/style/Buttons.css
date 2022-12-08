@@ -21,6 +21,11 @@ button.map-button:disabled {
     cursor: default;
 }
 
+button.map-button:hover {
+    background-color: var(--map-button-hover-bg-color);
+    color: var(--map-button-hover-text-color);
+}
+
 button.map-button-active {
     background-color: var(--map-button-active-bg-color);
     color: var(--map-button-active-text-color);

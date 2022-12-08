@@ -16,6 +16,8 @@
     /* Map buttons */
     --map-button-bg-color: #595959;
     --map-button-text-color: white;
+    --map-button-hover-bg-color: #f2f2f2;
+    --map-button-hover-text-color: #595959;
     --map-button-active-bg-color: #f2f2f2;
     --map-button-active-text-color: #595959;
     /* Panels (topbar and bottom bar) */
