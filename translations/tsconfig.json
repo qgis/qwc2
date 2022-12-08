@@ -285,6 +285,7 @@
     "timemanager.classify",
     "timemanager.classifynone",
     "timemanager.endtime",
+    "timemanager.featuretimeline",
     "timemanager.group",
     "timemanager.groupnone",
     "timemanager.home",

@@ -44,10 +44,10 @@ export default class FixedTimeline extends React.Component {
                     {this.renderTicks()}
                 </div>
                 {/* Render the slider component passed from the parent */}
-                {this.props.children(
+                {this.props.children ? this.props.children(
                     (time) => FixedTimeline.computePixelFromTime(this, time),
                     (pixel) => FixedTimeline.computeTimeFromPixel(this, pixel)
-                )}
+                ) : null}
             </div>
         );
     }

@@ -345,6 +345,7 @@
       "classify": "Classification attribute",
       "classifynone": "None",
       "endtime": "End",
+      "featuretimeline": "Feature timeline",
       "group": "Grouping attribute",
       "groupnone": "None",
       "home": "Reset timeline",

@@ -57,6 +57,7 @@ class TimeManager extends React.Component {
         defaultStepSize: PropTypes.number,
         defaultStepUnit: PropTypes.string,
         defaultTimelineMode: PropTypes.string,
+        featureTimelineAvailable: PropTypes.bool,
         layerVisibilities: PropTypes.object,
         layers: PropTypes.array,
         map: PropTypes.object,
@@ -83,6 +84,7 @@ class TimeManager extends React.Component {
             markerOffset: [0, 0],
             markerPins: true
         },
+        featureTimelineAvailable: true,
         stepUnits: ["s", "m", "h", "d", "M", "y"]
     }
     static defaultState = {
@@ -98,6 +100,7 @@ class TimeManager extends React.Component {
         dialogWidth: 0,
         markersEnabled: false,
         markersCanBeEnabled: true,
+        featureTimelineEnabled: true,
         timelineMode: 'continuous',
         timeData: {
             layerDimensions: {},
@@ -119,6 +122,7 @@ class TimeManager extends React.Component {
         }
         TimeManager.defaultState.animationInterval = props.defaultAnimationInterval;
         TimeManager.defaultState.timelineMode = props.defaultTimelineMode;
+        TimeManager.defaultState.featureTimelineEnabled = props.featureTimelineAvailable;
         this.state = {
             ...this.state,
             ...TimeManager.defaultState
@@ -295,22 +299,31 @@ class TimeManager extends React.Component {
         return (
             <div className="time-manager-body" role="body">
                 <div className="time-manager-toolbar">
-                    <span className="time-manager-toolbar-block">
-                        <span>{LocaleUtils.tr("timemanager.toggle")}</span>
-                        <ToggleSwitch active={this.state.timeEnabled} onChange={this.toggleTimeEnabled} />
-                    </span>
-                    <ButtonBar buttons={timeButtons} disabled={!this.state.timeEnabled} onClick={this.animationButtonClicked} />
-                    <span className="time-manager-toolbar-block">
-                        <span>{LocaleUtils.tr("timemanager.markers")}: &nbsp;</span>
-                        <ToggleSwitch active={this.state.markersEnabled} onChange={value => this.setState({markersEnabled: value})} readOnly={!this.state.markersCanBeEnabled} />
-                    </span>
-                    <span className="time-manager-toolbar-spacer" />
-                    <span className="time-manager-options-menubutton">
+                    <div className="time-manager-toolbar-controls">
+                        <span className="time-manager-toolbar-block">
+                            <span>{LocaleUtils.tr("timemanager.toggle")}</span>
+                            <ToggleSwitch active={this.state.timeEnabled} onChange={this.toggleTimeEnabled} />
+                        </span>
+                        <ButtonBar buttons={timeButtons} disabled={!this.state.timeEnabled} onClick={this.animationButtonClicked} />
+                        {this.props.markerConfiguration.markersAvailable ? (
+                            <span className="time-manager-toolbar-block">
+                                <span>{LocaleUtils.tr("timemanager.markers")}: &nbsp;</span>
+                                <ToggleSwitch active={this.state.markersEnabled} onChange={value => this.setState({markersEnabled: value})} readOnly={!this.state.markersCanBeEnabled} />
+                            </span>
+                        ) : null}
+                        {this.props.featureTimelineAvailable ? (
+                            <span className="time-manager-toolbar-block">
+                                <span>{LocaleUtils.tr("timemanager.featuretimeline")}: &nbsp;</span>
+                                <ToggleSwitch active={this.state.featureTimelineEnabled} onChange={value => this.setState({featureTimelineEnabled: value})} />
+                            </span>
+                        ) : null}
+                    </div>
+                    <div className="time-manager-options-menubutton">
                         <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState({settingsPopup: !this.state.settingsPopup})}>
                             <Icon icon="cog" />
                         </button>
                         {this.state.settingsPopup ? options : null}
-                    </span>
+                    </div>
                 </div>
                 <div className="time-manager-timeline">
                     <Timeline currentTimestamp={this.state.currentTimestamp}
@@ -323,7 +336,7 @@ class TimeManager extends React.Component {
                         timeSpan={timeSpan}
                     >
                         {
-                            (computePixelFromTime, computeTimeFromPixel) => (
+                            this.state.featureTimelineEnabled ? (computePixelFromTime, computeTimeFromPixel) => (
                                 <TimelineFeaturesSlider
                                     computePixelFromTime={computePixelFromTime}
                                     computeTimeFromPixel={computeTimeFromPixel}
@@ -336,7 +349,7 @@ class TimeManager extends React.Component {
                                     timeFeatures={this.state.timeFeatures}
                                     timestampChanged={(timestamp) => this.setState({currentTimestamp: timestamp})}
                                 />
-                            )
+                            ) : null
                         }
                     </Timeline>
                 </div>

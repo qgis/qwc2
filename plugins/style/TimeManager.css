@@ -12,12 +12,24 @@ div.time-manager-toolbar {
     flex: 0 0 auto;
     margin-bottom: 0.25em;
     display: flex;
-    align-items: center;
-    flex-wrap: wrap;
+    align-items: top;
 }
 
-div.time-manager-toolbar > *:not(:last-child) {
-    margin-right: 0.25em;
+div.time-manager-toolbar-controls {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 0 0.25em;
+}
+
+div.time-manager-options-menubutton {
+    flex: 0 0 auto;
+    position: relative;
+}
+
+div.time-manager-toolbar-controls > *:not(:last-child) {
+    margin-right: 1em;
 }
 
 div.time-manager-toolbar input,
@@ -38,10 +50,6 @@ span.time-manager-toolbar-block {
 
 span.time-manager-toolbar-spacer {
     flex: 1 1 auto;
-}
-
-span.time-manager-options-menubutton {
-    position: relative;
 }
 
 div.time-manager-options {
