@@ -497,37 +497,35 @@ class TimeManager extends React.Component {
             };
             const request = IdentifyUtils.buildFilterRequest(layer, queryLayers, filterGeom, this.props.map, options);
             IdentifyUtils.sendRequest(request, (response) => {
-                if (this.state.timeFeatures && this.state.timeFeatures.reqUUID === reqUUID) {
-                    if (response) {
-                        const layerFeatures = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
-                        this.setState({timeFeatures: {
-                            features: {
-                                ...this.state.timeFeatures.features,
-                                ...Object.entries(layerFeatures).reduce((res, [layername, features]) => {
-                                    return {...res, [layername]: features.map(feature => {
-                                        const startdate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][0]]);
-                                        const enddate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][1]]);
-                                        return {
-                                            ...feature,
-                                            id: feature.layername + "::" + feature.id,
-                                            properties: {
-                                                ...feature.properties,
-                                                __startdate: dayjs.utc(startdate),
-                                                __enddate: dayjs.utc(enddate)
-                                            }
-                                        };
-                                    })};
-                                }, {})
-                            },
-                            attributes: {
-                                ...this.state.timeFeatures.attributes,
-                                ...Object.entries(layerFeatures).reduce((res, [layername, features]) => {
-                                    return {...res, [layername]: Object.keys((features[0] || {properties: {}}).properties)};
-                                }, {})
-                            },
-                            pendingRequests: this.state.timeFeatures.pendingRequests - 1
-                        }});
-                    }
+                if (this.state.timeFeatures && this.state.timeFeatures.reqUUID === reqUUID && response) {
+                    const layerFeatures = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
+                    this.setState({timeFeatures: {
+                        features: {
+                            ...this.state.timeFeatures.features,
+                            ...Object.entries(layerFeatures).reduce((res, [layername, features]) => {
+                                return {...res, [layername]: features.map(feature => {
+                                    const startdate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][0]]);
+                                    const enddate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][1]]);
+                                    return {
+                                        ...feature,
+                                        id: feature.layername + "::" + feature.id,
+                                        properties: {
+                                            ...feature.properties,
+                                            __startdate: dayjs.utc(startdate),
+                                            __enddate: dayjs.utc(enddate)
+                                        }
+                                    };
+                                })};
+                            }, {})
+                        },
+                        attributes: {
+                            ...this.state.timeFeatures.attributes,
+                            ...Object.entries(layerFeatures).reduce((res, [layername, features]) => {
+                                return {...res, [layername]: Object.keys((features[0] || {properties: {}}).properties)};
+                            }, {})
+                        },
+                        pendingRequests: this.state.timeFeatures.pendingRequests - 1
+                    }});
                 } else {
                     this.setState({timeFeatures: {
                         ...this.state.timeFeatures,
