@@ -344,7 +344,7 @@ class TimeManager extends React.Component {
         );
     }
     dialogGeomChanged = (geom) => {
-        this.setState({dialogWidth: geom.width});
+        this.setState({dialogWidth: geom.docked ? document.body.offsetWidth : geom.width});
     }
     toggleTimeEnabled = (enabled) => {
         clearInterval(this.animationTimer);
