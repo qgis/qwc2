@@ -82,7 +82,7 @@ class MapPlugin extends React.Component {
                             // Compress with previous renderlayer
                             renderLayers[renderLayers.length - 1].params.LAYERS += "," + sublayers[i];
                             renderLayers[renderLayers.length - 1].params.OPACITIES += "," + opacities[i];
-                            renderLayers[renderLayers.length - 1].params.STYLES += "," + styles[i] || "";
+                            renderLayers[renderLayers.length - 1].params.STYLES += "," + (styles[i] || "");
                         } else {
                             // Add new renderlayer
                             renderLayers.push({
