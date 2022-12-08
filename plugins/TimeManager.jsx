@@ -232,7 +232,7 @@ class TimeManager extends React.Component {
         }
         return (
             <ResizeableWindow dockable="bottom"  icon="time" initialHeight={320}
-                initialWidth={800} onClose={this.onClose} onGeometryChanged={this.dialogGeomChanged}
+                initialWidth={900} onClose={this.onClose} onGeometryChanged={this.dialogGeomChanged}
                 scrollable title={LocaleUtils.tr("timemanager.title")}>
                 {body}
             </ResizeableWindow>
