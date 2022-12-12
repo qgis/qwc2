@@ -42,7 +42,6 @@ div.timeline-slider-cursor-label {
 
 div.timeline-slider-layertitle {
     font-size: 75%;
-    margin-top: 0.25em;
     padding: 0.25em;
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
@@ -50,7 +49,7 @@ div.timeline-slider-layertitle {
     color: black;
     display: flex;
     align-items: center;
-    position: relative;
+    position: absolute;
     z-index: 4;
 }
 

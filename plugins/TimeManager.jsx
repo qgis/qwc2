@@ -56,8 +56,8 @@ class TimeManager extends React.Component {
         defaultAnimationInterval: PropTypes.number,
         defaultStepSize: PropTypes.number,
         defaultStepUnit: PropTypes.string,
+        defaultTimelineDisplay: PropTypes.string,
         defaultTimelineMode: PropTypes.string,
-        featureTimelineAvailable: PropTypes.bool,
         layerVisibilities: PropTypes.object,
         layers: PropTypes.array,
         map: PropTypes.object,
@@ -100,7 +100,7 @@ class TimeManager extends React.Component {
         dialogWidth: 0,
         markersEnabled: false,
         markersCanBeEnabled: true,
-        featureTimelineEnabled: true,
+        timelineDisplay: true,
         timelineMode: 'continuous',
         timeData: {
             layerDimensions: {},
@@ -122,7 +122,7 @@ class TimeManager extends React.Component {
         }
         TimeManager.defaultState.animationInterval = props.defaultAnimationInterval;
         TimeManager.defaultState.timelineMode = props.defaultTimelineMode;
-        TimeManager.defaultState.featureTimelineEnabled = props.featureTimelineAvailable;
+        TimeManager.defaultState.timelineDisplay = props.defaultTimelineDisplay;
         this.state = {
             ...this.state,
             ...TimeManager.defaultState
@@ -311,10 +311,14 @@ class TimeManager extends React.Component {
                                 <ToggleSwitch active={this.state.markersEnabled} onChange={value => this.setState({markersEnabled: value})} readOnly={!this.state.markersCanBeEnabled} />
                             </span>
                         ) : null}
-                        {this.props.featureTimelineAvailable ? (
+                        {this.state.timelineDisplay !== "hidden" ? (
                             <span className="time-manager-toolbar-block">
-                                <span>{LocaleUtils.tr("timemanager.featuretimeline")}: &nbsp;</span>
-                                <ToggleSwitch active={this.state.featureTimelineEnabled} onChange={value => this.setState({featureTimelineEnabled: value})} />
+                                <span>{LocaleUtils.tr("timemanager.timelinedisplay")}: &nbsp;</span>
+                                <select onChange={ev => this.setState({timelineDisplay: ev.target.value})} style={{width: '20ch'}} value={this.state.timelineDisplay}>
+                                    <option value="minimal">{LocaleUtils.tr("timemanager.displayminimal")}</option>
+                                    <option value="features">{LocaleUtils.tr("timemanager.displayfeatures")}</option>
+                                    <option value="layers">{LocaleUtils.tr("timemanager.displaylayers")}</option>
+                                </select>
                             </span>
                         ) : null}
                     </div>
@@ -336,11 +340,12 @@ class TimeManager extends React.Component {
                         timeSpan={timeSpan}
                     >
                         {
-                            this.state.featureTimelineEnabled ? (computePixelFromTime, computeTimeFromPixel) => (
+                            (this.state.timelineDisplay === "features" || this.state.timelineDisplay === "layers") ? (computePixelFromTime, computeTimeFromPixel) => (
                                 <TimelineFeaturesSlider
                                     computePixelFromTime={computePixelFromTime}
                                     computeTimeFromPixel={computeTimeFromPixel}
                                     currentTimestamp={this.state.currentTimestamp}
+                                    displayMode={this.state.timelineDisplay}
                                     endTime={this.state.endTime}
                                     markerConfiguration={markerConfiguration}
                                     markersEnabled={this.state.markersEnabled}

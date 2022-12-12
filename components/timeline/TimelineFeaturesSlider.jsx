@@ -24,6 +24,7 @@ class TimelineFeaturesSlider extends React.Component {
         computePixelFromTime: PropTypes.func,
         computeTimeFromPixel: PropTypes.func,
         currentTimestamp: PropTypes.number,
+        displayMode: PropTypes.string,
         endTime: PropTypes.object,
         markerConfiguration: PropTypes.object,
         markersEnabled: PropTypes.bool,
@@ -71,12 +72,13 @@ class TimelineFeaturesSlider extends React.Component {
     render() {
         const timestamp = this.state.currentTimestampDrag ? this.state.currentTimestampDrag.time : this.props.currentTimestamp;
         const sliderGeom = {
-            top: 35
+            top: 5
         };
         return (
             <div className="timeline-slider-container">
                 <div className="timeline-slider" onMouseDown={this.pickCurrentTimestamp}>
-                    {this.renderTimeFeatures(sliderGeom)}
+                    {this.props.displayMode === "features" ? this.renderTimeFeatures(sliderGeom) : null}
+                    {this.props.displayMode === "layers" ? this.renderTimeLayers(sliderGeom) : null}
                     {this.renderGradient(sliderGeom)}
                 </div>
                 {this.renderCursor(timestamp)}
@@ -136,6 +138,13 @@ class TimelineFeaturesSlider extends React.Component {
     }
     renderTimeFeatures = (sliderGeom) => {
         return Object.entries(this.props.timeFeatures.features).map(([layer, features]) => {
+            const layerTitleStyle = {
+                top: sliderGeom.top + "px",
+                left: 0,
+                right: 0
+            };
+            sliderGeom.top += 30;
+
             const classattr = (this.state.layerClassifications[layer] || {}).attr || "";
             const groupattr = (this.state.layerAttrGroups[layer] || {}).attr || "";
             let sliderFeatures = null;
@@ -144,7 +153,6 @@ class TimelineFeaturesSlider extends React.Component {
                 sliderFeatures = Object.values(layerAttrGroups.groups).map(groupData => {
                     return this.renderTimeFeature(sliderGeom, groupData.start, groupData.end, groupData.features, "", groupattr, groupData);
                 });
-
             } else {
                 const layerAttrClasses = this.state.layerClassifications[layer];
                 sliderFeatures = features.map(feature => {
@@ -155,9 +163,9 @@ class TimelineFeaturesSlider extends React.Component {
                     return this.renderTimeFeature(sliderGeom, tstart, tend, [feature], label, classattr, attrData);
                 });
             }
-            return (
-                <div key={layer}>
-                    <div className="timeline-slider-layertitle">
+            return [
+                (
+                    <div className="timeline-slider-layertitle" key={layer} style={layerTitleStyle}>
                         <span>{layer}</span>
                         <span>{LocaleUtils.tr("timemanager.group")}:&nbsp;</span>
                         <select onChange={(ev) => this.setGroupAttr(layer, ev.target.value)} value={groupattr}>
@@ -174,27 +182,30 @@ class TimelineFeaturesSlider extends React.Component {
                             ))}
                         </select>
                     </div>
-                    {sliderFeatures}
-                </div>
-            );
+                ),
+                sliderFeatures
+            ];
         });
     }
-    renderGradient = (sliderGeom) => {
-        if (!this.props.markersEnabled) {
-            return null;
-        }
-        const left = this.props.computePixelFromTime(this.props.startTime);
-        const right = this.props.computePixelFromTime(this.props.endTime);
-        const style = {
-            left: left + "px",
-            width: (right - left) + "px",
-            height: sliderGeom.top + "px",
-            background: 'linear-gradient(90deg, ' + this.props.markerConfiguration.gradient.join(", ") + ')'
-        };
-        return (
-            <div className="timeline-slider-gradient" style={style} />
-        );
-
+    renderTimeLayers = (sliderGeom) => {
+        return Object.entries(this.props.timeFeatures.features).reduce((res, [layer, features]) => {
+            if (features.length > 0) {
+                let tstart = features[0].properties.__startdate;
+                let tend = features[0].properties.__enddate;
+                for (let i = 1; i < features.length; ++i) {
+                    if (features[i].properties.__startdate < tstart) {
+                        tstart = features[i].properties.__startdate;
+                    }
+                    if (features[i].properties.__enddate > tend) {
+                        tend = features[i].properties.__enddate;
+                    }
+                }
+                return [
+                    ...res,
+                    this.renderTimeFeature(sliderGeom, tstart, tend, features, layer)
+                ];
+            }
+        }, []);
     }
     renderTimeFeature = (sliderGeom, tstart, tend, features, label, attr, featClass) => {
         const left = this.props.computePixelFromTime(tstart);
@@ -206,8 +217,8 @@ class TimelineFeaturesSlider extends React.Component {
             width: (right - left) + "px"
         };
         let tooltip =
-            LocaleUtils.tr("timemanager.starttime") + ": " + tstart.format("YYYY-MM-DD HH:mm:ss") + "\n" +
-            LocaleUtils.tr("timemanager.endtime") + ": " + tend.format("YYYY-MM-DD HH:mm:ss");
+        LocaleUtils.tr("timemanager.starttime") + ": " + tstart.format("YYYY-MM-DD HH:mm:ss") + "\n" +
+        LocaleUtils.tr("timemanager.endtime") + ": " + tend.format("YYYY-MM-DD HH:mm:ss");
 
         if (featClass) {
             style.backgroundColor = featClass.bg;
@@ -227,6 +238,22 @@ class TimelineFeaturesSlider extends React.Component {
                     {label}
                 </span>
             </div>
+        );
+    }
+    renderGradient = (sliderGeom) => {
+        if (!this.props.markersEnabled) {
+            return null;
+        }
+        const left = this.props.computePixelFromTime(this.props.startTime);
+        const right = this.props.computePixelFromTime(this.props.endTime);
+        const style = {
+            left: left + "px",
+            width: (right - left) + "px",
+            height: sliderGeom.top + "px",
+            background: 'linear-gradient(90deg, ' + this.props.markerConfiguration.gradient.join(", ") + ')'
+        };
+        return (
+            <div className="timeline-slider-gradient" style={style} />
         );
     }
     setClassification = (layer, attr) => {
