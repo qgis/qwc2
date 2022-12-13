@@ -32,12 +32,22 @@ div.timeline-slider-cursor-label {
     font-size: 75%;
     bottom: 0;
     text-align: center;
-    padding: 0.25em;
     background-color: var(--container-bg-color);
     color: var(--text-color);
     border: 1px solid var(--border-color);
     z-index: 4;
     transform: translateX(-50%);
+    padding: 0 0.25em;
+}
+
+div.timeline-slider-cursor-label input {
+    border: none!important;
+    background-color: transparent!important;
+    padding: 0!important;
+}
+
+div.timeline-slider-cursor-label input::-webkit-clear-button {
+    display: none;
 }
 
 div.timeline-slider-layertitle {

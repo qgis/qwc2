@@ -13,6 +13,7 @@ import dayjs from 'dayjs';
 import randomcolor from 'randomcolor';
 import {addLayerFeatures, removeLayer, LayerRole} from '../../actions/layers';
 import Spinner from '../Spinner';
+import Input from '../widgets/Input';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
 import './style/TimelineFeaturesSlider.css';
@@ -101,12 +102,25 @@ class TimelineFeaturesSlider extends React.Component {
             return (
                 <div className="timeline-slider-cursor" style={cursorStyle}>
                     <div className="timeline-slider-cursor-label">
-                        {dayjs(timestamp).format(this.props.dateFormat)}
+                        <div><Input onChange={this.setCursorDate} required type="date" value={dayjs(timestamp).format('YYYY-MM-DD')} /></div>
+                        <div><Input onChange={this.setCursorTime} required type="time" value={dayjs(timestamp).format("HH:mm:ss")} /></div>
                     </div>
                 </div>
             );
         }
         return null;
+    }
+    setCursorDate = (date) => {
+        if (date) {
+            const newdate = dayjs(date, "YYYY-MM-DD");
+            this.props.timestampChanged(+dayjs(this.props.currentTimestamp).year(newdate.year()).month(newdate.month()).date(newdate.date()));
+        }
+    }
+    setCursorTime = (time) => {
+        if (time) {
+            const parts = time.split(":").map(x => parseInt(x, 10));
+            this.props.timestampChanged(+dayjs(this.props.currentTimestamp).hour(parts[0]).minute(parts[1]).second(parts[2]));
+        }
     }
     pickCurrentTimestamp = (event) => {
         if ( ["INPUT", "SELECT", "OPTION"].includes(event.target.nodeName)) {
