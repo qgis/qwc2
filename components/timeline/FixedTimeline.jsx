@@ -61,18 +61,12 @@ export default class FixedTimeline extends React.Component {
         // Render approx 1 tick every 100 px
         const nTicks = Math.round(this.state.timelineWidth / 100);
         const tickInterval =  this.state.timelineWidth  / nTicks;
-        const tickSubinterval = tickInterval / 5;
         const ticks = [];
         for (let x = 0; x < this.state.timelineWidth - 0.5 * tickInterval; x += tickInterval) {
             ticks.push({
                 pixel: x,
                 time: FixedTimeline.computeTimeFromPixel(this, x)
             });
-            for (let i = 1; i < 5; ++i) {
-                ticks.push({
-                    pixel: x + i * tickSubinterval
-                });
-            }
         }
         ticks.push({
             pixel: this.state.timelineWidth,
