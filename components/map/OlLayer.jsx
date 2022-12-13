@@ -179,7 +179,7 @@ class OlLayer extends React.Component {
                         this.props.setLayerLoading(id, false);
                     }
                 });
-            } else if (sublayer.getSource() && sublayer.getSource() instanceof ol.source.Vector) {
+            } else if (sublayer.getSource() && sublayer.getSource() instanceof ol.source.Vector && sublayer.getSource().getUrl()) {
                 sublayer.getSource().on('featuresloadstart', () => {
                     this.props.setLayerLoading(id, true);
                 });
