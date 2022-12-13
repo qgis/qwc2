@@ -149,7 +149,7 @@ class TimelineFeaturesSlider extends React.Component {
                 add = newTimestamp.hour() > 12;
                 newTimestamp = newTimestamp.second(0).minute(0).hour(0);
             } else if (this.props.stepSizeUnit.endsWith("M")) {
-                add = newTimestamp.day() > 15;
+                add = newTimestamp.date() > 15;
                 newTimestamp = newTimestamp.second(0).minute(0).hour(0).date(1);
             } else if (this.props.stepSizeUnit.endsWith("y")) {
                 add = newTimestamp.month() > 5;
