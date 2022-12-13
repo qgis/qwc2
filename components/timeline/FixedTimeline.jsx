@@ -63,7 +63,7 @@ export default class FixedTimeline extends React.Component {
         const tickInterval =  this.state.timelineWidth  / nTicks;
         const tickSubinterval = tickInterval / 5;
         const ticks = [];
-        for (let x = 0; x < this.state.timelineWidth; x += tickInterval) {
+        for (let x = 0; x < this.state.timelineWidth - 0.5 * tickInterval; x += tickInterval) {
             ticks.push({
                 pixel: x,
                 time: FixedTimeline.computeTimeFromPixel(this, x)
