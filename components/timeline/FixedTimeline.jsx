@@ -9,7 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
-import DateInput from '../widgets/DateInput';
+import Input from '../widgets/Input';
 import './style/FixedTimeline.css';
 
 export default class FixedTimeline extends React.Component {
@@ -37,9 +37,9 @@ export default class FixedTimeline extends React.Component {
         return (
             <div className="fixtimeline">
                 <div className="fixtimeline-toolbar">
-                    <div><DateInput onChange={this.props.setStartTime} value={this.props.startTime.format('YYYY-MM-DD')} /></div>
+                    <div><Input onChange={this.props.setStartTime} type="date" value={this.props.startTime.format('YYYY-MM-DD')} /></div>
                     <div className="fixtimeline-toolbar-spacer" />
-                    <div><DateInput onChange={this.props.setEndTime} value={this.props.endTime.format('YYYY-MM-DD')} /></div>
+                    <div><Input onChange={this.props.setEndTime} type="date" value={this.props.endTime.format('YYYY-MM-DD')} /></div>
                 </div>
                 <div className="fixtimeline-ticks" ref={this.setTicksContainerRef}>
                     {this.renderTicks()}

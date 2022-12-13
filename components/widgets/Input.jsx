@@ -9,11 +9,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class DateInput extends React.Component {
+class Input extends React.Component {
     static propTypes = {
+        className: PropTypes.string,
         disabled: PropTypes.bool,
         onChange: PropTypes.func,
         readOnly: PropTypes.bool,
+        required: PropTypes.bool,
+        type: PropTypes.string,
         value: PropTypes.string
     }
     state = {
@@ -29,10 +32,10 @@ class DateInput extends React.Component {
     }
     render() {
         return (
-            <input disabled={this.props.disabled} onBlur={this.onBlur}
-                onChange={this.onChange} onKeyDown={this.onKeyDown}
-                readOnly={this.props.readOnly} type="date"
-                value={this.state.curValue} />
+            <input className={this.props.className} disabled={this.props.disabled}
+                onBlur={this.onBlur} onChange={this.onChange} onKeyDown={this.onKeyDown}
+                readOnly={this.props.readOnly} required={this.props.required}
+                type={this.props.type} value={this.state.curValue} />
         );
     }
     onChange = (ev) => {
@@ -58,4 +61,4 @@ class DateInput extends React.Component {
     }
 }
 
-export default DateInput;
+export default Input;
