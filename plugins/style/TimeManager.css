@@ -69,6 +69,7 @@ div.time-manager-options td {
 
 div.time-manager-options td select {
     width: 100%;
+    min-width: 12ch;
 }
 
 div.time-manager-timeline {

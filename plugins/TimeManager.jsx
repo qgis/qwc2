@@ -281,15 +281,26 @@ class TimeManager extends React.Component {
                             </td>
                         </tr>
                         <tr>
-                            <td>{LocaleUtils.tr("timemanager.timeline")}</td>
+                            <td>{LocaleUtils.tr("timemanager.timeline")}:</td>
                             <td colSpan="2">
                                 <select onChange={ev => this.setState({timelineMode: ev.target.value})} value={this.state.timelineMode}>
                                     <option value="fixed">{LocaleUtils.tr("timemanager.timeline_fixed")}</option>
                                     <option value="infinite">{LocaleUtils.tr("timemanager.timeline_infinite")}</option>
                                 </select>
                             </td>
-                            <td />
                         </tr>
+                        {this.state.timelineDisplay !== "hidden" ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("timemanager.timelinedisplay")}:</td>
+                                <td colSpan="2">
+                                    <select onChange={ev => this.setState({timelineDisplay: ev.target.value})} value={this.state.timelineDisplay}>
+                                        <option value="minimal">{LocaleUtils.tr("timemanager.displayminimal")}</option>
+                                        <option value="features">{LocaleUtils.tr("timemanager.displayfeatures")}</option>
+                                        <option value="layers">{LocaleUtils.tr("timemanager.displaylayers")}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        ) : null}
                     </tbody>
                 </table>
             </div>
@@ -311,16 +322,6 @@ class TimeManager extends React.Component {
                             <span className="time-manager-toolbar-block">
                                 <span>{LocaleUtils.tr("timemanager.markers")}: &nbsp;</span>
                                 <ToggleSwitch active={this.state.markersEnabled} onChange={value => this.setState({markersEnabled: value})} readOnly={!this.state.markersCanBeEnabled} />
-                            </span>
-                        ) : null}
-                        {this.state.timelineDisplay !== "hidden" ? (
-                            <span className="time-manager-toolbar-block">
-                                <span>{LocaleUtils.tr("timemanager.timelinedisplay")}: &nbsp;</span>
-                                <select onChange={ev => this.setState({timelineDisplay: ev.target.value})} style={{width: '20ch'}} value={this.state.timelineDisplay}>
-                                    <option value="minimal">{LocaleUtils.tr("timemanager.displayminimal")}</option>
-                                    <option value="features">{LocaleUtils.tr("timemanager.displayfeatures")}</option>
-                                    <option value="layers">{LocaleUtils.tr("timemanager.displaylayers")}</option>
-                                </select>
                             </span>
                         ) : null}
                     </div>
