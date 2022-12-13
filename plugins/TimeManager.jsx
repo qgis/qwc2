@@ -354,6 +354,7 @@ class TimeManager extends React.Component {
                                     markerConfiguration={markerConfiguration}
                                     markersEnabled={this.state.markersEnabled}
                                     startTime={this.state.startTime}
+                                    stepSizeUnit={this.state.stepSizeUnit}
                                     timeEnabled={this.state.timeEnabled}
                                     timeFeatures={this.state.timeFeatures}
                                     timestampChanged={(timestamp) => this.setState({currentTimestamp: timestamp})}

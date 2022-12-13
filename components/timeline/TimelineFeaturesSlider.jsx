@@ -31,6 +31,7 @@ class TimelineFeaturesSlider extends React.Component {
         markersEnabled: PropTypes.bool,
         removeLayer: PropTypes.func,
         startTime: PropTypes.object,
+        stepSizeUnit: PropTypes.string,
         timeEnabled: PropTypes.bool,
         timeFeatures: PropTypes.object,
         timestampChanged: PropTypes.func
@@ -121,7 +122,29 @@ class TimelineFeaturesSlider extends React.Component {
                 return;
             }
             const pos = ev.clientX - rect.left;
-            const newTimestamp = this.props.computeTimeFromPixel(pos);
+            let newTimestamp = dayjs(this.props.computeTimeFromPixel(pos));
+            // Snap to configured step interval
+            let add = null;
+            if (this.props.stepSizeUnit.endsWith("m")) {
+                add = newTimestamp.second() > 30;
+                newTimestamp = newTimestamp.second(0);
+            } else if (this.props.stepSizeUnit.endsWith("h")) {
+                add = newTimestamp.minute() > 30;
+                newTimestamp = newTimestamp.second(0).minute(0);
+            } else if (this.props.stepSizeUnit.endsWith("d")) {
+                add = newTimestamp.hour() > 12;
+                newTimestamp = newTimestamp.second(0).minute(0).hour(0);
+            } else if (this.props.stepSizeUnit.endsWith("M")) {
+                add = newTimestamp.day() > 15;
+                newTimestamp = newTimestamp.second(0).minute(0).hour(0).date(1);
+            } else if (this.props.stepSizeUnit.endsWith("y")) {
+                add = newTimestamp.month() > 5;
+                newTimestamp = newTimestamp.second(0).minute(0).hour(0).date(1).month(0);
+            }
+            if (add) {
+                const num = parseInt(this.props.stepSizeUnit.slice(0, -1), 10) || 1;
+                newTimestamp = newTimestamp.add(num, this.props.stepSizeUnit.slice(-1));
+            }
             this.setState({currentTimestampDrag: {
                 pos: pos,
                 time: newTimestamp
