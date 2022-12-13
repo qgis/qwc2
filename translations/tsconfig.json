@@ -295,6 +295,7 @@
     "timemanager.loop",
     "timemanager.markers",
     "timemanager.notemporaldata",
+    "timemanager.now",
     "timemanager.play",
     "timemanager.playrev",
     "timemanager.rewind",

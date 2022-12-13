@@ -243,6 +243,7 @@ class TimeManager extends React.Component {
     renderBody = () => {
         const timeButtons = [
             {key: "rewind", tooltip: LocaleUtils.trmsg("timemanager.rewind"), icon: "nav-start"},
+            {key: "now", tooltip: LocaleUtils.trmsg("timemanager.now"), icon: "today"},
             {key: "prev", tooltip: LocaleUtils.trmsg("timemanager.stepback"), icon: "nav-left"},
             {key: "playrev", tooltip: LocaleUtils.trmsg("timemanager.playrev"), icon: "triangle-left", disabled: this.state.animationActive},
             {key: "stop", tooltip: LocaleUtils.trmsg("timemanager.stop"), icon: "square", disabled: !this.state.animationActive},
@@ -381,6 +382,8 @@ class TimeManager extends React.Component {
         this.stopAnimation();
         if (action === "rewind") {
             this.setState({currentTimestamp: +this.state.startTime, animationActive: false});
+        } else if (action === "now") {
+            this.setState({currentTimestamp: +dayjs(), animationActive: false});
         } else if (action === "prev") {
             const newday = this.step(-1);
             this.setState({currentTimestamp: +Math.max(newday, this.state.startTime)});

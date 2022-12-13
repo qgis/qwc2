@@ -355,6 +355,7 @@
       "loop": "Loop",
       "markers": "Markers",
       "notemporaldata": "No temporal layers are visible in the map.",
+      "now": "Now",
       "play": "Play",
       "playrev": "Play backwards",
       "rewind": "Rewind",
