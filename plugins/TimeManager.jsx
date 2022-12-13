@@ -53,6 +53,7 @@ class TimeManager extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
         addLayerFeatures: PropTypes.func,
+        dateFormat: PropTypes.string,
         defaultAnimationInterval: PropTypes.number,
         defaultStepSize: PropTypes.number,
         defaultStepUnit: PropTypes.string,
@@ -74,6 +75,7 @@ class TimeManager extends React.Component {
         stepUnits: PropTypes.arrayOf(PropTypes.string)
     }
     static defaultProps = {
+        dateFormat: "YYYY-MM-DD[\n]HH:mm:ss",
         defaultAnimationInterval: 1,
         defaultStepSize: 1,
         defaultStepUnit: "d",
@@ -331,6 +333,7 @@ class TimeManager extends React.Component {
                 </div>
                 <div className="time-manager-timeline">
                     <Timeline currentTimestamp={this.state.currentTimestamp}
+                        dateFormat={this.props.dateFormat}
                         dialogWidth={this.state.dialogWidth}
                         endTime={this.state.endTime}
                         setEndTime={this.setEndTime}
@@ -345,6 +348,7 @@ class TimeManager extends React.Component {
                                     computePixelFromTime={computePixelFromTime}
                                     computeTimeFromPixel={computeTimeFromPixel}
                                     currentTimestamp={this.state.currentTimestamp}
+                                    dateFormat={this.props.dateFormat}
                                     displayMode={this.state.timelineDisplay}
                                     endTime={this.state.endTime}
                                     markerConfiguration={markerConfiguration}

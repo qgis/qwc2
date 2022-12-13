@@ -20,6 +20,7 @@ export default class InfiniteTimeline extends React.Component {
     static propTypes = {
         children: PropTypes.func,
         currentTimestamp: PropTypes.number,
+        dateFormat: PropTypes.string,
         dialogWidth: PropTypes.number,
         endTime: PropTypes.object,
         setMarkersCanBeEnabled: PropTypes.func,
@@ -145,7 +146,7 @@ export default class InfiniteTimeline extends React.Component {
             };
             return (
                 <span className={tick.time ? "inftimeline-ltick" : "inftimeline-tick"} key={"tick" + tick.pixel} style={style}>
-                    {tick.time ? (<span>{dayjs(tick.time).format("YYYY-MM-DD[\n]HH:mm:ss")}</span>) : null}
+                    {tick.time ? (<span>{dayjs(tick.time).format(this.props.dateFormat)}</span>) : null}
                 </span>
             );
         });

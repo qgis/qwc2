@@ -24,6 +24,7 @@ class TimelineFeaturesSlider extends React.Component {
         computePixelFromTime: PropTypes.func,
         computeTimeFromPixel: PropTypes.func,
         currentTimestamp: PropTypes.number,
+        dateFormat: PropTypes.string,
         displayMode: PropTypes.string,
         endTime: PropTypes.object,
         markerConfiguration: PropTypes.object,
@@ -99,7 +100,7 @@ class TimelineFeaturesSlider extends React.Component {
             return (
                 <div className="timeline-slider-cursor" style={cursorStyle}>
                     <div className="timeline-slider-cursor-label">
-                        {dayjs(timestamp).format("YYYY-MM-DD[\n]HH:mm:ss")}
+                        {dayjs(timestamp).format(this.props.dateFormat)}
                     </div>
                 </div>
             );
@@ -217,8 +218,8 @@ class TimelineFeaturesSlider extends React.Component {
             width: (right - left) + "px"
         };
         let tooltip =
-        LocaleUtils.tr("timemanager.starttime") + ": " + tstart.format("YYYY-MM-DD HH:mm:ss") + "\n" +
-        LocaleUtils.tr("timemanager.endtime") + ": " + tend.format("YYYY-MM-DD HH:mm:ss");
+        LocaleUtils.tr("timemanager.starttime") + ": " + tstart.format(this.props.dateFormat) + "\n" +
+        LocaleUtils.tr("timemanager.endtime") + ": " + tend.format(this.props.dateFormat);
 
         if (featClass) {
             style.backgroundColor = featClass.bg;

@@ -16,6 +16,7 @@ export default class FixedTimeline extends React.Component {
     static propTypes = {
         children: PropTypes.func,
         currentTimestamp: PropTypes.number,
+        dateFormat: PropTypes.string,
         dialogWidth: PropTypes.number,
         endTime: PropTypes.object,
         setEndTime: PropTypes.func,
@@ -85,7 +86,7 @@ export default class FixedTimeline extends React.Component {
             };
             return (
                 <span className={tick.time ? "fixtimeline-ltick" : "fixtimeline-tick"} key={"tick" + tick.pixel} style={style}>
-                    {tick.time ? (<span>{dayjs(tick.time).format("YYYY-MM-DD[\n]HH:mm:ss")}</span>) : null}
+                    {tick.time ? (<span>{dayjs(tick.time).format(this.props.dateFormat)}</span>) : null}
                 </span>
             );
         });
