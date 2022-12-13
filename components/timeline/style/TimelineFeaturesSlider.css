@@ -10,7 +10,7 @@ div.timeline-slider-container {
 div.timeline-slider {
     flex: 1 1 auto;
     background-color: white;
-    height: 100px;
+    height: 35px;
     min-height: 0px;
     overflow-y: auto;
     overflow-x: hidden;

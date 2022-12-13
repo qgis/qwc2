@@ -67,10 +67,10 @@ export default class InfiniteTimeline extends React.Component {
                     </button>
                 </div>
                 {/* Render the slider component passed from the parent */}
-                {this.props.children ? this.props.children(
+                {this.props.children(
                     (time) => InfiniteTimeline.computePixelFromTime(this, time),
                     (pixel) => InfiniteTimeline.computeTimeFromPixel(this, pixel)
-                ) : null}
+                )}
             </div>
         );
     }

@@ -340,7 +340,7 @@ class TimeManager extends React.Component {
                         timeSpan={timeSpan}
                     >
                         {
-                            (this.state.timelineDisplay === "features" || this.state.timelineDisplay === "layers") ? (computePixelFromTime, computeTimeFromPixel) => (
+                            (computePixelFromTime, computeTimeFromPixel) => (
                                 <TimelineFeaturesSlider
                                     computePixelFromTime={computePixelFromTime}
                                     computeTimeFromPixel={computeTimeFromPixel}
@@ -354,7 +354,7 @@ class TimeManager extends React.Component {
                                     timeFeatures={this.state.timeFeatures}
                                     timestampChanged={(timestamp) => this.setState({currentTimestamp: timestamp})}
                                 />
-                            ) : null
+                            )
                         }
                     </Timeline>
                 </div>
