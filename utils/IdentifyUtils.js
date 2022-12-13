@@ -145,7 +145,7 @@ const IdentifyUtils = {
     determineDisplayName(layer, layername, item) {
         const properties = item.properties || {};
         if (item.displayfield) {
-            if (properties[item.displayField] && (properties[item.displayField][0] !== "<")) {
+            if (properties[item.displayfield] && (properties[item.displayfield][0] !== "<")) {
                 return properties[item.displayfield];
             }
         }
