@@ -109,8 +109,8 @@ export default {
             const newParams = wmsToOpenlayersOptions(newOptions);
             if (!changed) {
                 changed = Object.keys(newParams).find(key => {
-                    newParams[key] !== oldParams[key];
-                }) !== null;
+                    return newParams[key] !== oldParams[key];
+                }) !== undefined;
             }
             if (changed) {
                 const queryParameters = {...newParams,  __t: +new Date()};
