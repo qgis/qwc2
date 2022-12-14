@@ -48,11 +48,13 @@ class OlMap extends React.Component {
     }
     static defaultProps = {
         id: 'map',
-        mapOptions: {},
-        panPageSize: 1,
-        panStepSize: 0.5
+        mapOptions: {
+            panPageSize: 1,
+            panStepSize: 0.25
+        }
     }
     state = {
+        mapOptions: {},
         projection: null,
         resolutions: [],
         rebuildView: false
@@ -60,6 +62,10 @@ class OlMap extends React.Component {
     constructor(props) {
         super(props);
         this.ignoreNextClick = false;
+        this.state.mapOptions = {
+            ...OlMap.defaultProps.mapOptions,
+            ...props.mapOptions
+        }
 
         const interactions = ol.interaction.defaults({
             // don't create these default interactions, but create them below with custom params
@@ -71,7 +77,7 @@ class OlMap extends React.Component {
         interactions.extend([
             new ol.interaction.DragPan({kinetic: null}),
             new ol.interaction.MouseWheelZoom({
-                duration: props.mapOptions.zoomDuration || 250,
+                duration: this.state.mapOptions.zoomDuration || 250,
                 constrainResolution: ConfigUtils.getConfigProp('allowFractionalZoom') === true ? false : true
             }),
             new ol.interaction.KeyboardZoom()
@@ -86,7 +92,7 @@ class OlMap extends React.Component {
             controls: controls,
             interactions: interactions,
             keyboardEventTarget: document,
-            view: this.createView(props.center, props.zoom, props.projection, props.resolutions, props.mapOptions.enableRotation, props.mapOptions.rotation)
+            view: this.createView(props.center, props.zoom, props.projection, props.resolutions, this.state.mapOptions.enableRotation, this.state.mapOptions.rotation)
         });
         this.unpauseTimeout = null;
         this.moving = false;
@@ -132,10 +138,10 @@ class OlMap extends React.Component {
             this.map.removeInteraction(interaction);
         });
         this.keyboardPanInteractions = [
-            new ol.interaction.KeyboardPan({pixelDelta: this.props.panStepSize * document.body.offsetWidth, condition: this.panHStepCondition}),
-            new ol.interaction.KeyboardPan({pixelDelta: this.props.panStepSize * document.body.offsetHeight, condition: this.panVStepCondition}),
-            new ol.interaction.KeyboardPan({pixelDelta: this.props.panPageSize * document.body.offsetWidth, condition: this.panHPageCondition}),
-            new ol.interaction.KeyboardPan({pixelDelta: this.props.panPageSize * document.body.offsetHeight, condition: this.panVPageCondition})
+            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panStepSize * document.body.offsetWidth, condition: this.panHStepCondition}),
+            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panStepSize * document.body.offsetHeight, condition: this.panVStepCondition}),
+            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panPageSize * document.body.offsetWidth, condition: this.panHPageCondition}),
+            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panPageSize * document.body.offsetHeight, condition: this.panVPageCondition})
         ];
         this.keyboardPanInteractions.forEach(interaction => {
             this.map.addInteraction(interaction);
@@ -200,7 +206,7 @@ class OlMap extends React.Component {
     render() {
         if (this.state.rebuildView) {
             const overviewMap = this.map.getControls().getArray().find(control => control instanceof ol.control.OverviewMap);
-            const view = this.createView(this.props.center, this.props.zoom, this.props.projection, this.props.resolutions, this.props.mapOptions.enableRotation, this.props.mapOptions.rotation);
+            const view = this.createView(this.props.center, this.props.zoom, this.props.projection, this.props.resolutions, this.state.mapOptions.enableRotation, this.state.mapOptions.rotation);
             if (overviewMap) {
                 overviewMap.getOverviewMap().setView(view);
             }
