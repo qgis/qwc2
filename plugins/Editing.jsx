@@ -11,7 +11,6 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
-import axios from 'axios';
 import uuid from 'uuid';
 import {setEditContext, clearEditContext, getFeatureTemplate} from '../actions/editing';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
