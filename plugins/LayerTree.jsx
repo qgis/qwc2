@@ -297,8 +297,8 @@ class LayerTree extends React.Component {
                     {checkbox}
                     {legendicon}
                     {title}
-                    {layer.loading ? (<Spinner />) : null}
                     {sublayer.queryable && this.props.showQueryableIcon ? (<Icon className="layertree-item-queryable" icon="info-sign" />) : null}
+                    {layer.loading ? (<Spinner />) : null}
                     <span className="layertree-item-spacer" />
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}
                     {allowOptions ? (<Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>) : null}
