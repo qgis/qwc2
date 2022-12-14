@@ -32,6 +32,7 @@ import './style/Editing.css';
 class Editing extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
+        allowCloneGeometry: PropTypes.bool,
         changeLayerProperty: PropTypes.func,
         clearEditContext: PropTypes.func,
         currentEditContext: PropTypes.string,
@@ -59,7 +60,8 @@ class Editing extends React.Component {
         width: "30em",
         side: 'right',
         snapping: true,
-        snappingActive: true
+        snappingActive: true,
+        allowCloneGeometry: true
     }
     state = {
         selectedLayer: null,
@@ -170,7 +172,7 @@ class Editing extends React.Component {
             );
         }
         let pickBar = null;
-        if ((this.props.editContext.action === "Draw" || this.state.drawPick) && !(this.props.editContext.feature || {}).geometry) {
+        if (this.props.allowCloneGeometry && (this.props.editContext.action === "Draw" || this.state.drawPick) && !(this.props.editContext.feature || {}).geometry) {
             const pickButtons = [
                 {key: 'DrawPick', icon: 'pick', label: LocaleUtils.trmsg("editing.pickdrawfeature")}
             ];
