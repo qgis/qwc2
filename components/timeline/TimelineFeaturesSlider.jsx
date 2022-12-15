@@ -25,6 +25,7 @@ class TimelineFeaturesSlider extends React.Component {
         computePixelFromTime: PropTypes.func,
         computeTimeFromPixel: PropTypes.func,
         currentTimestamp: PropTypes.number,
+        cursorFormat: PropTypes.string,
         dateFormat: PropTypes.string,
         displayMode: PropTypes.string,
         endTime: PropTypes.object,
@@ -102,8 +103,12 @@ class TimelineFeaturesSlider extends React.Component {
             return (
                 <div className="timeline-slider-cursor" style={cursorStyle}>
                     <div className="timeline-slider-cursor-label">
-                        <div><Input onChange={this.setCursorDate} required type="date" value={dayjs(timestamp).format('YYYY-MM-DD')} /></div>
-                        <div><Input onChange={this.setCursorTime} required type="time" value={dayjs(timestamp).format("HH:mm:ss")} /></div>
+                        {this.props.cursorFormat.includes("date") ? (
+                            <div><Input onChange={this.setCursorDate} required type="date" value={dayjs(timestamp).format('YYYY-MM-DD')} /></div>
+                        ) : null}
+                        {this.props.cursorFormat.includes("time") ? (
+                            <div><Input onChange={this.setCursorTime} required type="time" value={dayjs(timestamp).format("HH:mm:ss")} /></div>
+                        ) : null}
                     </div>
                 </div>
             );

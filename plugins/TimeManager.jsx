@@ -53,6 +53,7 @@ class TimeManager extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
         addLayerFeatures: PropTypes.func,
+        cursorFormat: PropTypes.string,
         dateFormat: PropTypes.string,
         defaultAnimationInterval: PropTypes.number,
         defaultStepSize: PropTypes.number,
@@ -75,6 +76,7 @@ class TimeManager extends React.Component {
         stepUnits: PropTypes.arrayOf(PropTypes.string)
     }
     static defaultProps = {
+        cursorFormat: "datetime",
         dateFormat: "YYYY-MM-DD[\n]HH:mm:ss",
         defaultAnimationInterval: 1,
         defaultStepSize: 1,
@@ -350,6 +352,7 @@ class TimeManager extends React.Component {
                                     computePixelFromTime={computePixelFromTime}
                                     computeTimeFromPixel={computeTimeFromPixel}
                                     currentTimestamp={this.state.currentTimestamp}
+                                    cursorFormat={this.props.cursorFormat}
                                     dateFormat={this.props.dateFormat}
                                     displayMode={this.state.timelineDisplay}
                                     endTime={this.state.endTime}

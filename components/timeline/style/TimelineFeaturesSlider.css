@@ -43,7 +43,8 @@ div.timeline-slider-cursor-label {
 div.timeline-slider-cursor-label input {
     border: none!important;
     background-color: transparent!important;
-    padding: 0!important;
+    padding: 0.125em!important;
+    height: initial!important;
 }
 
 div.timeline-slider-cursor-label input::-webkit-clear-button {
