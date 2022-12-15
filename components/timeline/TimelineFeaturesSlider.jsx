@@ -251,17 +251,21 @@ class TimelineFeaturesSlider extends React.Component {
         }, []);
     }
     renderTimeFeature = (sliderGeom, tstart, tend, features, label, attr, featClass) => {
-        const left = this.props.computePixelFromTime(tstart);
-        const right = this.props.computePixelFromTime(tend);
+        const left = tstart.isValid() ? this.props.computePixelFromTime(tstart) : 0;
+        const right = tend.isValid() ? this.props.computePixelFromTime(tend) : 0;
 
         const style = {
             top: sliderGeom.top + "px",
             left: left + "px",
-            width: (right - left) + "px"
         };
+        if (tend.isValid()) {
+            style.width = (right - left) + "px";
+        } else {
+            style.right = 0;
+        }
         let tooltip =
-        LocaleUtils.tr("timemanager.starttime") + ": " + tstart.format(this.props.dateFormat) + "\n" +
-        LocaleUtils.tr("timemanager.endtime") + ": " + tend.format(this.props.dateFormat);
+            LocaleUtils.tr("timemanager.starttime") + ": " + (tstart.isValid() ? tstart.format(this.props.dateFormat) : "-") + "\n" +
+            LocaleUtils.tr("timemanager.endtime") + ": " + (tend.isValid() ? tend.format(this.props.dateFormat) : "-");
 
         if (featClass) {
             style.backgroundColor = featClass.bg;
