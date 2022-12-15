@@ -62,6 +62,8 @@ div.timeline-slider-layertitle {
     align-items: center;
     position: absolute;
     z-index: 4;
+    white-space: nowrap;
+    overflow-x: auto;
 }
 
 div.timeline-slider-layertitle > span:first-child {
