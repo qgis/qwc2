@@ -128,7 +128,6 @@
       "loading": "Korkeusprofiilin laskenta käynnissä..."
     },
     "identify": {
-      "bufferlayername": "",
       "export": "Vienti",
       "exportformat": "Viennin formaatti:",
       "featureReport": "Ominaisuustietoraportti",

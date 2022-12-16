@@ -128,7 +128,6 @@
       "loading": "Càlculant el perfil..."
     },
     "identify": {
-      "bufferlayername": "",
       "export": "Exportar",
       "exportformat": "Exportar format",
       "featureReport": "Informe d'element",

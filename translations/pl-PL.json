@@ -128,7 +128,6 @@
       "loading": "Obliczanie profilu wysokości..."
     },
     "identify": {
-      "bufferlayername": "",
       "export": "Eksport",
       "exportformat": "",
       "featureReport": "Feature report",

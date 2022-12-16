@@ -128,7 +128,6 @@
       "loading": "Расчет высоты профиля..."
     },
     "identify": {
-      "bufferlayername": "",
       "export": "Экспорт",
       "exportformat": "",
       "featureReport": "Отчёт об объекте",

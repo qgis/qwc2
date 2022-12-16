@@ -128,7 +128,6 @@
       "loading": "Beräknar höjdprofil..."
     },
     "identify": {
-      "bufferlayername": "",
       "export": "Exportera",
       "exportformat": "",
       "featureReport": "Objektrapport",
