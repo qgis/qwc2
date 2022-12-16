@@ -128,7 +128,6 @@
       "loading": "Beregner høydeprofil..."
     },
     "identify": {
-      "bufferlayername": "",
       "export": "Eksporter",
       "exportformat": "",
       "featureReport": "Objektrapport",

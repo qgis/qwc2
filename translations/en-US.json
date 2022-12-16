@@ -128,7 +128,6 @@
       "loading": "Calculating height profile..."
     },
     "identify": {
-      "bufferlayername": "Buffer",
       "export": "Export",
       "exportformat": "Export format:",
       "featureReport": "Feature report",

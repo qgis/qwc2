@@ -128,7 +128,6 @@
       "loading": "Höhenprofil wird berechnet..."
     },
     "identify": {
-      "bufferlayername": "",
       "export": "Exportieren",
       "exportformat": "Exportformat",
       "featureReport": "Objektblatt",

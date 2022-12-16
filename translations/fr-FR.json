@@ -128,7 +128,6 @@
       "loading": "Calcul du profil de hauteur..."
     },
     "identify": {
-      "bufferlayername": "Buffer",
       "export": "Exporter",
       "exportformat": "Format d'export:",
       "featureReport": "Données de l'objet",
