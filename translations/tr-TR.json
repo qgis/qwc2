@@ -128,6 +128,7 @@
       "loading": "Yükseklik profili hesaplanıyor..."
     },
     "identify": {
+      "bufferlayername": "",
       "export": "Dışarıya aktar",
       "exportformat": "Dışarı aktarma formatı:",
       "featureReport": "Obje raporu",
@@ -155,7 +156,9 @@
     },
     "infotool": {
       "clickhelpPoint": "",
-      "clickhelpPolygon": "Bilgi alınacak alanı poligon çizerek belirleyiniz..."
+      "clickhelpPolygon": "Bilgi alınacak alanı poligon çizerek belirleyiniz...",
+      "clickhelpRadius": "",
+      "radius": ""
     },
     "layercatalog": {
       "windowtitle": ""

@@ -128,6 +128,7 @@
       "loading": "Расчет высоты профиля..."
     },
     "identify": {
+      "bufferlayername": "",
       "export": "Экспорт",
       "exportformat": "",
       "featureReport": "Отчёт об объекте",
@@ -155,7 +156,9 @@
     },
     "infotool": {
       "clickhelpPoint": "",
-      "clickhelpPolygon": "Для получения информации обведите регион многоугольником..."
+      "clickhelpPolygon": "Для получения информации обведите регион многоугольником...",
+      "clickhelpRadius": "",
+      "radius": ""
     },
     "layercatalog": {
       "windowtitle": ""

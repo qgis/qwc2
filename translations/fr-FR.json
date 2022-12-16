@@ -128,6 +128,7 @@
       "loading": "Calcul du profil de hauteur..."
     },
     "identify": {
+      "bufferlayername": "Buffer",
       "export": "Exporter",
       "exportformat": "Format d'export:",
       "featureReport": "Données de l'objet",
@@ -155,7 +156,9 @@
     },
     "infotool": {
       "clickhelpPoint": "Cliquez sur un emplacement pour l'identifier sur la carte...",
-      "clickhelpPolygon": "Dessiner un polygone pour identifier les objets"
+      "clickhelpPolygon": "Dessiner un polygone pour identifier les objets",
+      "clickhelpRadius": "Configurez un rayon et cliquez sur un emplacement pour identifier les objets autour de ce point",
+      "radius": "Rayon"
     },
     "layercatalog": {
       "windowtitle": "Catalogue de couches"

@@ -128,6 +128,7 @@
       "loading": "Höhenprofil wird berechnet..."
     },
     "identify": {
+      "bufferlayername": "",
       "export": "Exportieren",
       "exportformat": "Exportformat",
       "featureReport": "Objektblatt",
@@ -155,7 +156,9 @@
     },
     "infotool": {
       "clickhelpPoint": "Zu identifizierende Position in der Karte auswählen...",
-      "clickhelpPolygon": "Polygon um die zu identifizierende Objekte zeichnen"
+      "clickhelpPolygon": "Polygon um die zu identifizierende Objekte zeichnen",
+      "clickhelpRadius": "",
+      "radius": ""
     },
     "layercatalog": {
       "windowtitle": "Ebenenkatalog"
