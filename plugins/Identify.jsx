@@ -68,7 +68,7 @@ class Identify extends React.Component {
         identifyResults: null,
         pendingRequests: 0,
         radius: 50,
-        units: 'meters'
+        radiusUnits: 'meters'
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.currentIdentifyTool !== prevProps.currentIdentifyTool && prevProps.currentIdentifyTool === "Identify") {
@@ -210,7 +210,7 @@ class Identify extends React.Component {
         }
     };
     changeBufferUnit = (ev) => {
-        this.setState({ units: ev.target.value });
+        this.setState({ radiusUnits: ev.target.value });
     };
     computeBuffer = (point) => {
         const layer = {
@@ -220,7 +220,7 @@ class Identify extends React.Component {
         const feature = turfpoint(point);
         const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.map.projection, "EPSG:4326");
         const wgsFeature = { ...feature, geometry: wgsGeometry };
-        const output = buffer(wgsFeature, this.state.radius, {units: this.state.units});
+        const output = buffer(wgsFeature, this.state.radius, {units: this.state.radiusUnits});
         if (output && output.geometry) {
             output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", this.props.map.projection);
             output.id = "buffer";
@@ -285,7 +285,7 @@ class Identify extends React.Component {
                     />
                     <select
                         onChange={this.changeBufferUnit}
-                        value={this.state.units}
+                        value={this.state.radiusUnits}
                     >
                         <option value="meters">m</option>
                         <option value="feet">ft</option>
