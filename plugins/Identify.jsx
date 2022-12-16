@@ -67,17 +67,8 @@ class Identify extends React.Component {
         mode: 'Point',
         identifyResults: null,
         pendingRequests: 0,
-        layer: null,
         radius: 50,
         units: 'meters'
-    }
-    constructor(props, context) {
-        super(props, context);
-        this.state.layer = {
-            id: "buffer",
-            title: LocaleUtils.tr("identify.bufferlayername"),
-            role: LayerRole.USERLAYER
-        };
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.currentIdentifyTool !== prevProps.currentIdentifyTool && prevProps.currentIdentifyTool === "Identify") {
@@ -222,6 +213,10 @@ class Identify extends React.Component {
         this.setState({ units: ev.target.value });
     };
     computeBuffer = (point) => {
+        const layer = {
+            id: "identifyradiusbuffer",
+            role: LayerRole.SELECTION
+        };
         const feature = turfpoint(point);
         const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.map.projection, "EPSG:4326");
         const wgsFeature = { ...feature, geometry: wgsGeometry };
@@ -234,7 +229,7 @@ class Identify extends React.Component {
                 fillColor: [255, 0, 0, 0.15],
                 strokeColor: [255, 0, 0, 1]
             };
-            this.props.addLayerFeatures(this.state.layer, [output]);
+            this.props.addLayerFeatures(layer, [output]);
         }
         return output;
     };
@@ -263,14 +258,14 @@ class Identify extends React.Component {
     onToolClose = () => {
         this.props.removeMarker('identify');
         this.props.removeLayer("identifyslection");
-        this.props.removeLayer("buffer");
+        this.props.removeLayer("identifyradiusbuffer");
         this.props.changeSelectionState({geomType: undefined});
         this.setState({identifyResults: null, pendingRequests: 0, mode: 'Point'});
     }
     clearResults = () => {
         this.props.removeMarker('identify');
         this.props.removeLayer("identifyslection");
-        this.props.removeLayer("buffer");
+        this.props.removeLayer("identifyradiusbuffer");
         this.setState({identifyResults: null, pendingRequests: 0});
     }
     renderRadiusContent = () => {
