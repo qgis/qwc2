@@ -128,6 +128,7 @@
       "loading": "Calcularea profilului înălțimii..."
     },
     "identify": {
+      "bufferlayername": "",
       "export": "Export",
       "exportformat": "Formatul de export",
       "featureReport": "Raport entitate",
@@ -155,7 +156,9 @@
     },
     "infotool": {
       "clickhelpPoint": "Click pe o locație pentru identificarea elementelor din hartă...",
-      "clickhelpPolygon": "Încadrați într-un poligon elementele de identificat..."
+      "clickhelpPolygon": "Încadrați într-un poligon elementele de identificat...",
+      "clickhelpRadius": "",
+      "radius": ""
     },
     "layercatalog": {
       "windowtitle": "Catalog straturi"

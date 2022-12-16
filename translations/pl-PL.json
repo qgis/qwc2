@@ -128,6 +128,7 @@
       "loading": "Obliczanie profilu wysokości..."
     },
     "identify": {
+      "bufferlayername": "",
       "export": "Eksport",
       "exportformat": "",
       "featureReport": "Feature report",
@@ -155,7 +156,9 @@
     },
     "infotool": {
       "clickhelpPoint": "",
-      "clickhelpPolygon": "Narysuj poligon wokół obiektów, aby zidentyfikować..."
+      "clickhelpPolygon": "Narysuj poligon wokół obiektów, aby zidentyfikować...",
+      "clickhelpRadius": "",
+      "radius": ""
     },
     "layercatalog": {
       "windowtitle": ""

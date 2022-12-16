@@ -128,6 +128,7 @@
       "loading": "Calcolo del profilo di altezza..."
     },
     "identify": {
+      "bufferlayername": "",
       "export": "Esporta",
       "exportformat": "Formato d'esportazione",
       "featureReport": "Oggetto formulario",
@@ -155,7 +156,9 @@
     },
     "infotool": {
       "clickhelpPoint": "Seleziona un luogo da identificare sulla mappa...",
-      "clickhelpPolygon": "Disegna un poligono attorno all'area da identificare"
+      "clickhelpPolygon": "Disegna un poligono attorno all'area da identificare",
+      "clickhelpRadius": "",
+      "radius": ""
     },
     "layercatalog": {
       "windowtitle": "Catalogo livelli"

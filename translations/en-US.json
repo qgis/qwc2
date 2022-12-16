@@ -128,6 +128,7 @@
       "loading": "Calculating height profile..."
     },
     "identify": {
+      "bufferlayername": "Buffer",
       "export": "Export",
       "exportformat": "Export format:",
       "featureReport": "Feature report",
@@ -155,7 +156,9 @@
     },
     "infotool": {
       "clickhelpPoint": "Click a location to identify in the map...",
-      "clickhelpPolygon": "Draw a polygon around the features to identify..."
+      "clickhelpPolygon": "Draw a polygon around the features to identify...",
+      "clickhelpRadius": "Set a radius and click a location to identify features around the point...",
+      "radius": "Radius"
     },
     "layercatalog": {
       "windowtitle": "Layer catalog"

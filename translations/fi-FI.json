@@ -128,6 +128,7 @@
       "loading": "Korkeusprofiilin laskenta käynnissä..."
     },
     "identify": {
+      "bufferlayername": "",
       "export": "Vienti",
       "exportformat": "Viennin formaatti:",
       "featureReport": "Ominaisuustietoraportti",
@@ -155,7 +156,9 @@
     },
     "infotool": {
       "clickhelpPoint": "Tunnista kohde klikkaamalla sijaintia kartalla...",
-      "clickhelpPolygon": "Tunnista kohteet piirtämällä alue niiden ympärille..."
+      "clickhelpPolygon": "Tunnista kohteet piirtämällä alue niiden ympärille...",
+      "clickhelpRadius": "",
+      "radius": ""
     },
     "layercatalog": {
       "windowtitle": ""

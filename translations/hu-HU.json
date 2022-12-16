@@ -128,6 +128,7 @@
       "loading": "A magassági profil kiszámítása..."
     },
     "identify": {
+      "bufferlayername": "",
       "export": "Exportálás",
       "exportformat": "",
       "featureReport": "Lekérdezés eredménye",
@@ -155,7 +156,9 @@
     },
     "infotool": {
       "clickhelpPoint": "",
-      "clickhelpPolygon": "Rajzolj egy poligont a lekérdezni kívánt terület köré..."
+      "clickhelpPolygon": "Rajzolj egy poligont a lekérdezni kívánt terület köré...",
+      "clickhelpRadius": "",
+      "radius": ""
     },
     "layercatalog": {
       "windowtitle": ""

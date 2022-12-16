@@ -128,6 +128,7 @@
       "loading": "Calcular o perfil de altura..."
     },
     "identify": {
+      "bufferlayername": "",
       "export": "Exportação",
       "exportformat": "Formato de exportação",
       "featureReport": "Relatório de recurso",
@@ -155,7 +156,9 @@
     },
     "infotool": {
       "clickhelpPoint": "Clique numa localização para identificar no mapa...",
-      "clickhelpPolygon": "Desenhe um polígono em torno das características para identificar..."
+      "clickhelpPolygon": "Desenhe um polígono em torno das características para identificar...",
+      "clickhelpRadius": "",
+      "radius": ""
     },
     "layercatalog": {
       "windowtitle": ""

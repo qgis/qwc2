@@ -128,6 +128,7 @@
       "loading": "Càlculant el perfil..."
     },
     "identify": {
+      "bufferlayername": "",
       "export": "Exportar",
       "exportformat": "Exportar format",
       "featureReport": "Informe d'element",
@@ -155,7 +156,9 @@
     },
     "infotool": {
       "clickhelpPoint": "Fes click en una ubicació per identificar en el mapa...",
-      "clickhelpPolygon": "Traça un polígon al voltant dels elements per a identificar-los..."
+      "clickhelpPolygon": "Traça un polígon al voltant dels elements per a identificar-los...",
+      "clickhelpRadius": "",
+      "radius": ""
     },
     "layercatalog": {
       "windowtitle": "Titol"
