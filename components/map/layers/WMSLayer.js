@@ -112,7 +112,7 @@ export default {
                     return newParams[key] !== oldParams[key];
                 }) !== undefined;
             }
-            changed = newOptions.visibility !== oldOptions.visibility;
+            changed |= newOptions.visibility !== oldOptions.visibility;
             if (changed) {
                 const queryParameters = {...newParams,  __t: +new Date()};
                 if (layer.get("updateTimeout")) {
