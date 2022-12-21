@@ -179,6 +179,9 @@ class MapPlugin extends React.Component {
         return this.state.renderLayers.map(layer => {
             ++zIndex;
             const options = {...layer, zIndex: zIndex};
+            if (layer.zIndex !== undefined) {
+                options.zIndex = layer.zIndex;
+            }
             const swipe = this.props.swipe !== null && layer === this.state.swipeLayer;
             return (
                 <OlLayer key={layer.uuid} options={options} swipe={swipe ? this.props.swipe : null} />
