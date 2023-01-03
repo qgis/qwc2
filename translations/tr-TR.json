@@ -128,7 +128,7 @@
       "loading": "Yükseklik profili hesaplanıyor..."
     },
     "identify": {
-      "bufferlayername": "",
+      "clipboard": "",
       "export": "Dışarıya aktar",
       "exportformat": "Dışarı aktarma formatı:",
       "featureReport": "Obje raporu",

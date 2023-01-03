@@ -26,11 +26,121 @@ import Icon from './Icon';
 import JSZip from 'jszip';
 import './style/IdentifyViewer.css';
 
+
+const BuiltinExporters = [
+    {
+        id: 'json',
+        title: 'json',
+        allowClipboard: true,
+        export: (json, callback) => {
+            const data = JSON.stringify(json, null, ' ');
+            callback({
+                data: data, type: "text/plain;charset=utf-8", filename: "results.json"
+            });
+        }
+    }, {
+        id: 'geojson',
+        title: 'geojson',
+        allowClipboard: true,
+        export: (json, callback) => {
+            const featureCollection = {
+                type: "FeatureCollection",
+                features: json
+            };
+            const data = JSON.stringify(featureCollection, null, ' ');
+            callback({
+                data: data, type: "application/geo+json;charset=utf-8", filename: "results.json"
+            });
+        }
+    }, {
+        id: 'csv',
+        title: 'CSV',
+        allowClipboard: true,
+        export: (json, callback) => {
+            let data = "";
+            Object.entries(json).forEach(([layerName, features]) => {
+                features.forEach(feature => {
+                    data += layerName + ": " + feature.displayname + "\n";
+                    Object.entries(feature.properties || {}).forEach(([attrib, value]) => {
+                        if (attrib !== "htmlContent" && attrib !== "htmlContentInline") {
+                            data += '\t"' + attrib + '"\t"' + String(value).replace('"', '""') + '"\n';
+                        }
+                    });
+                    if (feature.geometry) {
+                        data += '\t"geometry"\t"' + VectorLayerUtils.geoJSONGeomToWkt(feature.geometry) + '"\n';
+                    }
+                });
+                data += "\n";
+            });
+            callback({
+                data: data, type: "text/plain;charset=utf-8", filename: "results.csv"
+            });
+        }
+    }, {
+        id: 'csvzip',
+        title: 'CSV+ZIP',
+        allowClipboard: false,
+        export: (json, callback) => {
+            let first = true;
+            const data = [];
+            const filenames = [];
+            Object.entries(json).forEach(([layerName, features]) => {
+                let csv = "";
+                if (first) {
+                    Object.entries(features[0].properties || {}).forEach(([attrib]) => {
+                        if (attrib !== "htmlContent" && attrib !== "htmlContentInline") {
+                            csv += attrib  + ';';
+                        }
+                    });
+                    if (features[0].geometry) {
+                        csv += 'geometry';
+                    } else if (csv !== "") {
+                        csv = csv.slice(0, -1); // Remove trailling semi column ;
+                    }
+                    first = false;
+                    csv += '\n';
+                }
+                features.forEach(feature => {
+                    Object.values(feature.properties || {}).forEach((value) => {
+                        csv += String(value).replace('"', '""') + ';';
+                    });
+                    if (feature.geometry) {
+                        csv += VectorLayerUtils.geoJSONGeomToWkt(feature.geometry);
+                    } else if (csv !== "") {
+                        csv = csv.slice(0, -1); // Remove trailling semi column ;
+                    }
+                    csv += '\n';
+                });
+                first = true;
+                data.push(csv);
+                filenames.push(layerName);
+            });
+            if (data.length > 1) {
+                const zip = new JSZip();
+                for (let i = 0; i < data.length; i++) {
+                    const blob = new Blob([data[i]], {type: "text/csv;charset=utf-8"});
+                    zip.file(filenames[i] + ".csv", blob);
+                }
+                zip.generateAsync({type: "arraybuffer"}).then((result) => {
+                    callback({
+                        data: result, type: "application/zip", filename: "results.zip"
+                    });
+                });
+            } else {
+                callback({
+                    data: data[0], type: "text/csv;charset=utf-8", filename: filenames[0] + ".csv"
+                });
+            }
+        }
+    }
+];
+
 class IdentifyViewer extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
         attributeCalculator: PropTypes.func,
         attributeTransform: PropTypes.func,
+        customExporters: PropTypes.array,
         displayResultTree: PropTypes.bool,
         enableExport: PropTypes.bool,
         identifyResults: PropTypes.object,
@@ -47,6 +157,7 @@ class IdentifyViewer extends React.Component {
     }
     static defaultProps = {
         longAttributesDisplay: 'ellipsis',
+        customExporters: [],
         displayResultTree: true,
         attributeCalculator: (/* layer, feature */) => { return []; },
         attributeTransform: (name, value, layer, feature) => value
@@ -158,14 +269,14 @@ class IdentifyViewer extends React.Component {
             currentResult: this.state.currentResult === result ? null : this.state.currentResult
         });
     }
-    exportResults = () => {
+    exportResults = (clipboard = false) => {
         const filteredResults = {};
         Object.keys(this.state.resultTree).map(key => {
             if (!isEmpty(this.state.resultTree[key])) {
                 filteredResults[key] = this.state.resultTree[key];
             }
         });
-        this.export(filteredResults);
+        this.export(filteredResults, clipboard);
     }
     exportResultLayer = (layer) => {
         this.export({[layer]: this.state.resultTree[layer]});
@@ -173,87 +284,16 @@ class IdentifyViewer extends React.Component {
     exportResult = (layer, result) => {
         this.export({[layer]: [result]});
     }
-    export = (json) => {
-        if (this.state.exportFormat === 'json') {
-            const data = JSON.stringify(json, null, ' ');
-            FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "results.json");
-        } else if (this.state.exportFormat === 'geojson') {
-            Object.entries(json).forEach(([layerName, features]) => {
-                const data = {
-                    type: "FeatureCollection",
-                    features: features
-                };
-                FileSaver.saveAs(
-                    new Blob(
-                        [JSON.stringify(data, null, ' ')],
-                        {type: "application/geo+json;charset=utf-8"}
-                    ),
-                    layerName + ".geojson");
-            });
-        } else if (this.state.exportFormat === 'csv') {
-            let csv = "";
-            Object.entries(json).forEach(([layerName, features]) => {
-                features.forEach(feature => {
-                    csv += layerName + ": " + feature.displayname + "\n";
-                    Object.entries(feature.properties || {}).forEach(([attrib, value]) => {
-                        if (attrib !== "htmlContent" && attrib !== "htmlContentInline") {
-                            csv += '\t"' + attrib + '"\t"' + String(value).replace('"', '""') + '"\n';
-                        }
-                    });
-                    if (feature.geometry) {
-                        csv += '\t"geometry"\t"' + VectorLayerUtils.geoJSONGeomToWkt(feature.geometry) + '"\n';
-                    }
-                });
-                csv += "\n";
-            });
-            FileSaver.saveAs(new Blob([csv], {type: "text/plain;charset=utf-8"}), "results.csv");
-        } else if (this.state.exportFormat === 'csvzip') {
-            let first = true;
-            let file = 0;
-            const blobs = [];
-            const filenames = [];
-            Object.entries(json).forEach(([layerName, features]) => {
-                let csv = "";
-                file += 1;
-                if (first) {
-                    Object.entries(features[0].properties || {}).forEach(([attrib]) => {
-                        if (attrib !== "htmlContent" && attrib !== "htmlContentInline") {
-                            csv += attrib  + ';';
-                        }
-                    });
-                    if (features[0].geometry) {
-                        csv += 'geometry';
-                    } else if (csv !== "") {
-                        csv = csv.slice(0, -1); // Remove trailling semi column ;
-                    }
-                    first = false;
-                    csv += '\n';
+    export = (json, clipboard = false) => {
+        const exporter = [...BuiltinExporters, ...this.props.customExporters].find(entry => entry.id === this.state.exportFormat);
+        if (exporter) {
+            exporter.export(json, (result) => {
+                if (clipboard && exporter.allowClipboard) {
+                    navigator.clipboard.writeText(result.data);
+                } else {
+                    FileSaver.saveAs(new Blob([result.data], {type: result.type}), result.filename);
                 }
-                features.forEach(feature => {
-                    Object.values(feature.properties || {}).forEach((value) => {
-                        csv += String(value).replace('"', '""') + ';';
-                    });
-                    if (feature.geometry) {
-                        csv += VectorLayerUtils.geoJSONGeomToWkt(feature.geometry);
-                    } else if (csv !== "") {
-                        csv = csv.slice(0, -1); // Remove trailling semi column ;
-                    }
-                    csv += '\n';
-                });
-                first = true;
-                const blob = new Blob([csv], {type: "text/csv;charset=utf-8"});
-                blobs.push(blob);
-                filenames.push(layerName);
             });
-            if (file > 1) {
-                const zip = new JSZip();
-                for (let i = 0; i < blobs.length; i++) {
-                    zip.file(filenames[i] + ".csv", blobs[i]);
-                }
-                zip.generateAsync({type: "blob"}).then((blob) => { FileSaver.saveAs(blob, "results.zip"); });
-            } else {
-                FileSaver.saveAs(blobs[0], filenames[0] + ".csv");
-            }
         }
     }
     renderLayer = (layer) => {
@@ -446,21 +486,24 @@ class IdentifyViewer extends React.Component {
             );
         }
         // "el.style.background='inherit'": HACK to trigger an additional repaint, since Safari/Chrome on iOS render the element cut off the first time
+        const clipboardExportDisabled = ([...BuiltinExporters, ...this.props.customExporters].find(entry => entry.id === this.state.exportFormat) || {}).allowClipboard !== true;
         return (
             <div className="identify-body" ref={el => { if (el) el.style.background = 'inherit'; } }>
                 {body}
                 {this.props.enableExport ? (
                     <div className="identify-buttonbox">
-                        <div>
-                            {LocaleUtils.tr("identify.exportformat")}&nbsp;
-                            <select className="combo identify-export-format" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
-                                <option value="json">json</option>
-                                <option value="geojson">geojson</option>
-                                <option value="csv">csv</option>
-                                <option value="csvzip">csv + zip</option>
-                            </select>
-                            <button className="button" onClick={this.exportResults}>{LocaleUtils.tr("identify.export")}</button>
-                        </div>
+                        <span className="identify-buttonbox-spacer" />
+                        <span>{LocaleUtils.tr("identify.exportformat")}&nbsp;</span>
+                        <select className="combo identify-export-format" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
+                            {Object.values(BuiltinExporters).map(entry => (
+                                <option key={entry.id} value={entry.id}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
+                            ))}
+                            {Object.values(this.props.customExporters).map(entry => (
+                                <option key={entry.id} value={entry.id}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
+                            ))}
+                        </select>
+                        <button className="button" onClick={() => this.exportResults()}><Icon icon="export" /> {LocaleUtils.tr("identify.export")}</button>
+                        <button className="button" disabled={clipboardExportDisabled} onClick={() => this.exportResults(true)} title={LocaleUtils.tr("identify.clipboard")}><Icon icon="copy" /></button>
                     </div>
                 ) : null}
             </div>

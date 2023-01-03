@@ -124,6 +124,7 @@
     "heightprofile.export",
     "heightprofile.height",
     "heightprofile.loading",
+    "identify.clipboard",
     "identify.export",
     "identify.exportformat",
     "identify.featureReport",

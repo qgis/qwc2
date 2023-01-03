@@ -128,6 +128,7 @@
       "loading": "Calcular o perfil de altura..."
     },
     "identify": {
+      "clipboard": "",
       "export": "Exportação",
       "exportformat": "Formato de exportação",
       "featureReport": "Relatório de recurso",

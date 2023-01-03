@@ -34,6 +34,7 @@ class Identify extends React.Component {
         click: PropTypes.object,
         currentIdentifyTool: PropTypes.string,
         currentTask: PropTypes.string,
+        customExporters: PropTypes.array,
         displayResultTree: PropTypes.bool,
         enableExport: PropTypes.bool,
         featureInfoReturnsLayerName: PropTypes.bool,
@@ -54,6 +55,7 @@ class Identify extends React.Component {
     }
     static defaultProps = {
         enableExport: true,
+        customExporters: [],
         longAttributesDisplay: 'ellipsis',
         displayResultTree: true,
         replaceImageUrls: true,
@@ -329,6 +331,7 @@ class Identify extends React.Component {
                     <IdentifyViewer
                         attributeCalculator={this.props.attributeCalculator}
                         attributeTransform={this.props.attributeTransform}
+                        customExporters={this.props.customExporters}
                         displayResultTree={this.props.displayResultTree}
                         enableExport={this.props.enableExport}
                         identifyResults={this.state.identifyResults}
