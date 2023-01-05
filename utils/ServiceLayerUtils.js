@@ -199,12 +199,8 @@ const ServiceLayerUtils = {
     mergeCalledServiceUrlQuery(capabilityUrl, calledServiceUrlParts) {
         try {
             const urlParts = url.parse(capabilityUrl, true);
-            // override protocol
-            urlParts.protocol = calledServiceUrlParts.protocol;
-            // override host and path of capabilities URI
             urlParts.host = calledServiceUrlParts.host;
-            urlParts.pathname = calledServiceUrlParts.pathname;
-            // merge any input URL params with capabilities URI params
+            urlParts.protocol = calledServiceUrlParts.protocol;
             urlParts.query = {...calledServiceUrlParts.query, ...urlParts.query};
             delete urlParts.search;
             return url.format(urlParts);
