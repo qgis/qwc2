@@ -31,6 +31,7 @@ class Identify extends React.Component {
         attributeCalculator: PropTypes.func,
         attributeTransform: PropTypes.func,
         changeSelectionState: PropTypes.func,
+        clearResultsOnClose: PropTypes.bool,
         click: PropTypes.object,
         currentIdentifyTool: PropTypes.string,
         currentTask: PropTypes.string,
@@ -55,6 +56,7 @@ class Identify extends React.Component {
     }
     static defaultProps = {
         enableExport: true,
+        clearResultsOnClose: true,
         customExporters: [],
         longAttributesDisplay: 'ellipsis',
         displayResultTree: true,
@@ -76,12 +78,14 @@ class Identify extends React.Component {
         if (this.props.currentIdentifyTool !== prevProps.currentIdentifyTool && prevProps.currentIdentifyTool === "Identify") {
             this.clearResults();
         }
-        if ((this.props.currentTask === "Identify" && this.state.mode === "Point") || this.props.currentIdentifyTool === "Identify") {
-            this.identifyPoint(prevProps);
-        } else if (this.props.currentTask === "Identify" && this.state.mode === "Region") {
-            this.identifyRegion(prevProps);
-        } else if (this.props.currentTask === "Identify" && this.state.mode === "Radius") {
-            this.identifyRadius(prevProps);
+        if (this.props.currentIdentifyTool === "Identify" || this.props.currentTask === "Identify") {
+            if (this.state.mode === "Point") {
+                this.identifyPoint(prevProps);
+            } else if (this.state.mode === "Region") {
+                this.identifyRegion(prevProps);
+            } else if (this.state.mode === "Radius") {
+                this.identifyRadius(prevProps);
+            }
         }
     }
     identifyPoint = (prevProps) => {
@@ -258,11 +262,11 @@ class Identify extends React.Component {
         }
     }
     onToolClose = () => {
-        this.props.removeMarker('identify');
-        this.props.removeLayer("identifyslection");
-        this.props.removeLayer("identifyradiusbuffer");
         this.props.changeSelectionState({geomType: undefined});
-        this.setState({identifyResults: null, pendingRequests: 0, mode: 'Point'});
+        this.setState({mode: 'Point'});
+        if (this.props.clearResultsOnClose) {
+            this.clearResults();
+        }
     }
     clearResults = () => {
         this.props.removeMarker('identify');
