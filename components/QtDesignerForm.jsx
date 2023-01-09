@@ -390,14 +390,11 @@ class QtDesignerForm extends React.Component {
                         style={fontStyle} updateField={updateField} value={value} />
                 );
             } else {
-                const haveEmpty = (widget.item || []).map((item) => (item.property.value || item.property.text) === "");
                 return (
                     <select disabled={inputConstraints.readOnly} name={elname} onChange={ev => updateField(widget.name, ev.target.value)} {...inputConstraints} style={fontStyle} value={value}>
-                        {!haveEmpty ? (
-                            <option disabled={inputConstraints.required} value="">
-                                {inputConstraints.placeholder || LocaleUtils.tr("editing.select")}
-                            </option>
-                        ) : null}
+                        <option disabled={inputConstraints.required} value="">
+                            {inputConstraints.placeholder || LocaleUtils.tr("editing.select")}
+                        </option>
                         {(widget.item || []).map((item) => {
                             const optval = item.property.value || item.property.text;
                             return (
