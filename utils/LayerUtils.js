@@ -204,7 +204,11 @@ const LayerUtils = {
             } else if (layer.role === LayerRole.USERLAYER && layer.type === "wms") {
                 const sublayernames = [];
                 LayerUtils.collectWMSSublayerParams(layer, sublayernames, opacities, styles, queryable, visibilities, layer.visibility);
-                layernames.push(...sublayernames.map(name => "wms:" + layer.url + "#" + name));
+                let layerurl = layer.url;
+                if (layer.extwmsparams) {
+                    layerurl += (layerurl.includes('?') ? '&' : '?') + Object.entries(layer.extwmsparams || {}).map(([key, value]) => 'extwms.' + key + "=" + value).join('&');
+                }
+                layernames.push(...sublayernames.map(name => "wms:" + layerurl + "#" + name));
             } else if (layer.role === LayerRole.USERLAYER && (layer.type === "wfs" || layer.type === "wmts")) {
                 layernames.push(layer.type + ':' + (layer.capabilitiesUrl || layer.url) + "#" + layer.name);
                 opacities.push(layer.opacity);
@@ -711,6 +715,9 @@ const LayerUtils = {
                     if (layer.url.includes("?")) {
                         params[identifier + ":IgnoreGetMapUrl"] = "1";
                     }
+                    Object.entries(layer.extwmsparams || {}).forEach(([key, value]) => {
+                        params[identifier + ":" + key] = value;
+                    });
                 }
             }
         }
@@ -721,6 +728,7 @@ const LayerUtils = {
             const themeBackgroundLayer = theme.backgroundLayers.find(entry => entry.name === backgroundLayerName);
             const printBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
             if (printBackgroundLayer) {
+                // Use printLayer defined in qgis project
                 let printBgLayerName = printBackgroundLayer;
                 if (Array.isArray(printBackgroundLayer)) {
                     printBgLayerName = null;
@@ -737,6 +745,7 @@ const LayerUtils = {
                     params.COLORS.push("");
                 }
             } else if (printExternalLayers) {
+                // Inject client-side wms as external layer for print
                 const items = backgroundLayer.type === "group" ? backgroundLayer.items : [backgroundLayer];
                 items.slice(0).reverse().forEach(layer => {
                     if (layer.type === "wms" && LayerUtils.layerScaleInRange(layer, printScale)) {
@@ -754,7 +763,12 @@ const LayerUtils = {
                             params[identifier + ":styles"] = "";
                             params[identifier + ":dpiMode"] = "7";
                             params[identifier + ":contextualWMSLegend"] = "0";
-                            params[identifier + ":ignoregetmapurl"] = "1";
+                            if (layer.url.includes("?")) {
+                                params[identifier + ":IgnoreGetMapUrl"] = "1";
+                            }
+                            Object.entries(layer.extwmsparams || {}).forEach(([key, value]) => {
+                                params[identifier + ":" + key] = value;
+                            });
                         }
                     }
                 });

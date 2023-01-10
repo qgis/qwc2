@@ -102,8 +102,14 @@ const ServiceLayerUtils = {
         const wmsFormat = new ol.format.WMSCapabilities();
         const capabilities = wmsFormat.read(capabilitiesXml);
         const calledUrlParts = url.parse(calledServiceUrl, true);
-        // Filter service and request from calledServiceUrl, but keep other parameters (i.e. MAP)
+        const extwmsparams = {};
         calledUrlParts.query = Object.keys(calledUrlParts.query).filter(key => {
+            // Extract extwms params
+            if ( key.startsWith("extwms.") ) {
+                extwmsparams[key.substring(7)] = calledUrlParts.query[key];
+                return false;
+            }
+            // Filter service and request from calledServiceUrl, but keep other parameters (i.e. MAP)
             return !["service", "request"].includes(key.toLowerCase());
         }).reduce((res, key) => ({...res, [key]: calledUrlParts.query[key]}), {});
         delete calledUrlParts.search;
@@ -127,13 +133,13 @@ const ServiceLayerUtils = {
         }
         const version = capabilities.version;
         if (!topLayer.Layer || asGroup) {
-            return [this.getWMSLayerParams(topLayer, topLayer.CRS, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats)].filter(entry => entry);
+            return [this.getWMSLayerParams(topLayer, topLayer.CRS, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams)].filter(entry => entry);
         } else {
-            const entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats)).filter(entry => entry);
+            const entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, topLayer.CRS, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams)).filter(entry => entry);
             return entries.sort((a, b) => strcmp(a.title, b.title));
         }
     },
-    getWMSLayerParams(layer, parentCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, groupbbox = null) {
+    getWMSLayerParams(layer, parentCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams, groupbbox = null) {
         let supportedCrs = layer.CRS;
         if (isEmpty(supportedCrs)) {
             supportedCrs = [...(parentCrs || [])];
@@ -143,7 +149,7 @@ const ServiceLayerUtils = {
         let sublayers = [];
         const sublayerbounds = {};
         if (!isEmpty(layer.Layer)) {
-            sublayers = layer.Layer.map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, sublayerbounds)).filter(entry => entry);
+            sublayers = layer.Layer.map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams, sublayerbounds)).filter(entry => entry);
         }
         let bbox = null;
         if (isEmpty(layer.BoundingBox)) {
@@ -192,6 +198,7 @@ const ServiceLayerUtils = {
             visibility: true,
             opacity: 255,
             external: true,
+            extwmsparams: extwmsparams,
             minScale: layer.MinScaleDenominator,
             maxScale: layer.MaxScaleDenominator
         };
