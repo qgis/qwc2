@@ -82,7 +82,7 @@ textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]) {
     cursor: text;
 }
 
-input:read-only, textarea:read-only {
+input:read-only, textarea:read-only, input:not([type=checkbox]):not([type=radio]):not([type=range]):read-only {
     color: var(--text-color-disabled);
 }
 
