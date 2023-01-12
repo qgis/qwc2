@@ -29,7 +29,7 @@ class Help extends React.Component {
     componentDidMount() {
         if (this.props.bodyContentsFragmentUrl) {
             axios.get(this.props.bodyContentsFragmentUrl).then(response => {
-                this.bodyEl.innerHTML = response.data;
+                this.bodyEl.innerHTML = response.data.replace('$VERSION$', process.env.BuildDate);
             }).catch(() => {});
         }
     }
