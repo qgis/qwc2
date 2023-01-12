@@ -9,6 +9,7 @@
 import isEmpty from 'lodash.isempty';
 import url from 'url';
 
+import {SearchResultType} from '../actions/search';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 import {LayerRole} from '../actions/layers';
@@ -140,7 +141,7 @@ const ThemeUtils = {
         }
         return capabilityUrl;
     },
-    searchThemes(themes, searchtext, resultType) {
+    searchThemes(themes, searchtext) {
         const filter = new RegExp(removeDiacritics(searchtext).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
         const matches = ThemeUtils.searchThemeGroup(themes, filter);
         return isEmpty(matches) ? [] : [{
@@ -148,7 +149,7 @@ const ThemeUtils = {
             titlemsgid: "search.themes",
             priority: -1,
             items: matches.map(theme => ({
-                type: resultType,
+                type: SearchResultType.THEME,
                 id: theme.id,
                 text: theme.title,
                 theme: theme,

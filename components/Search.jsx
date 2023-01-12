@@ -9,11 +9,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import axios from 'axios';
 import {createSelector} from 'reselect';
 import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
-import ol from 'openlayers';
 import Icon from './Icon';
 import Spinner from './Spinner';
 import MessageBar from './MessageBar';
@@ -123,7 +123,8 @@ class Search extends React.Component {
     search = (props, startup = false)  => {
         if (props.searchText) {
             this.setState({invisibleLayerQuery: null});
-            props.startSearch(props.searchText, {displaycrs: props.displaycrs}, this.activeProviders(props), startup);
+            const searchParams = {displaycrs: this.props.displaycrs, lang: LocaleUtils.lang()};
+            props.startSearch(props.searchText, searchParams, this.activeProviders(props), startup);
         }
     }
     resetSearch = () => {
@@ -440,7 +441,7 @@ class Search extends React.Component {
             let text = item.label !== undefined ? item.label : item.text;
             text = text.replace(/<[^>]*>/g, '');
             if (item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
-                this.props.searchProviders[item.provider].getResultGeometry(item, (itm, geometry, crs, hidemarker) => { this.showFeatureGeometry(itm, geometry, crs, text, hidemarker); });
+                this.props.searchProviders[item.provider].getResultGeometry(item, (response) => { this.showFeatureGeometry(item, response, text); }, axios);
             } else {
                 const layer = {
                     id: "searchselection",
@@ -487,15 +488,15 @@ class Search extends React.Component {
         }
         this.setState({invisibleLayerQuery});
     }
-    showFeatureGeometry = (item, geometry, crs, text, hidemarker) => {
-        if (item === this.props.currentResult && !isEmpty(geometry)) {
+    showFeatureGeometry = (item, response, text) => {
+        if (!isEmpty(response.geometry)) {
             let features = [];
-            const highlightFeature = VectorLayerUtils.wktToGeoJSON(geometry, crs, this.props.map.projection);
+            const highlightFeature = VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, this.props.map.projection);
             if (highlightFeature) {
                 const center = VectorLayerUtils.getFeatureCenter(highlightFeature);
                 features = [highlightFeature];
-                if (!hidemarker) {
-                    features.push(this.createMarker(center, item.crs, text));
+                if (!response.hidemarker) {
+                    features.push(this.createMarker(center, this.props.map.projection, text));
                 }
             } else {
                 features = [this.createMarker([item.x, item.y], item.crs, text)];
@@ -524,8 +525,8 @@ class Search extends React.Component {
     }
 }
 
-export default (searchProviders, providerFactory = () => { return null; }) => {
-    const providersSelector = searchProvidersSelector(searchProviders, providerFactory);
+export default (searchProviders) => {
+    const providersSelector = searchProvidersSelector(searchProviders);
     return connect(
         createSelector([state => state, displayCrsSelector, providersSelector], (state, displaycrs, providers) => ({
             searchText: state.search.text,

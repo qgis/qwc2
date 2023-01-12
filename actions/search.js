@@ -11,6 +11,7 @@ import searchReducer from '../reducers/search';
 ReducerIndex.register("search", searchReducer);
 
 import uuid from 'uuid';
+import axios from 'axios';
 
 export const SEARCH_CHANGE = 'SEARCH_CHANGE';
 export const SEARCH_SET_REQUEST = 'SEARCH_SET_REQUEST';
@@ -39,8 +40,8 @@ export function changeSearch(text, providers) {
     };
 }
 
-export function startSearch(text, options, providers, startup = false) {
-    return (dispatch, getState) => {
+export function startSearch(text, searchParams, providers, startup = false) {
+    return (dispatch) => {
         const reqId = uuid.v1();
         const providerKeys = Object.keys(providers);
         dispatch({
@@ -50,7 +51,15 @@ export function startSearch(text, options, providers, startup = false) {
             startup: startup
         });
         Object.keys(providers).map(provider => {
-            providers[provider].onSearch(text, reqId, options, dispatch, getState());
+            providers[provider].onSearch(text, {...searchParams, params: provider.params}, (response) => {
+                dispatch({
+                    type: SEARCH_ADD_RESULTS,
+                    reqId: reqId,
+                    provider: provider,
+                    results: response.results,
+                    append: true
+                });
+            }, axios);
         });
     };
 }
@@ -66,14 +75,6 @@ export function searchMore(moreItem, text, providers) {
             });
             providers[moreItem.provider].getMoreResults(moreItem, text, reqId, dispatch);
         }
-    };
-}
-
-export function addSearchResults(results, append = true) {
-    return {
-        type: SEARCH_ADD_RESULTS,
-        results: results,
-        append: append
     };
 }
 
