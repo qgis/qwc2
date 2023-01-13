@@ -439,9 +439,13 @@ class SearchBox extends React.Component {
             });
         }
         // Additional provider searches
-        const searchParams = {displaycrs: this.props.displaycrs, lang: LocaleUtils.lang()};
+        const searchParams = {
+            mapcrs: this.props.map.projection,
+            displaycrs: this.props.displaycrs,
+            lang: LocaleUtils.lang()
+        };
         Object.entries(this.props.searchProviders).forEach(([key, entry]) => {
-            entry.onSearch(searchText, {...searchParams, params: entry.params}, (response) => {
+            entry.onSearch(searchText, {...searchParams, cfgParams: entry.params}, (response) => {
                 const count = response.results.reduce((tot, cur) => (tot + cur.items.length), 0);
                 this.addSearchResults(searchSession, key, {results: response.results, tot_result_count: count});
             }, axios);

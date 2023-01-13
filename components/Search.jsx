@@ -123,7 +123,11 @@ class Search extends React.Component {
     search = (props, startup = false)  => {
         if (props.searchText) {
             this.setState({invisibleLayerQuery: null});
-            const searchParams = {displaycrs: this.props.displaycrs, lang: LocaleUtils.lang()};
+            const searchParams = {
+                mapcrs: this.props.map.projection,
+                displaycrs: this.props.displaycrs,
+                lang: LocaleUtils.lang()
+            };
             props.startSearch(props.searchText, searchParams, this.activeProviders(props), startup);
         }
     }

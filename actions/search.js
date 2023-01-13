@@ -51,7 +51,7 @@ export function startSearch(text, searchParams, providers, startup = false) {
             startup: startup
         });
         Object.keys(providers).map(provider => {
-            providers[provider].onSearch(text, {...searchParams, params: provider.params}, (response) => {
+            providers[provider].onSearch(text, {...searchParams, cfgParams: provider.params}, (response) => {
                 dispatch({
                     type: SEARCH_ADD_RESULTS,
                     reqId: reqId,
