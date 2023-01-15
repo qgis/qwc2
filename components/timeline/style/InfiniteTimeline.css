@@ -79,6 +79,12 @@ button.inftimeline-pan-right {
     z-index: 1;
 }
 
+button.inftimeline-pan-left:disabled,
+button.inftimeline-pan-right:disabled {
+    color: var(--text-color-disabled);
+}
+
+
 button.inftimeline-pan-left {
     left: 0;
 }

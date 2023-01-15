@@ -29,7 +29,7 @@ div.timeline-slider-cursor {
 
 div.timeline-slider-cursor-label {
     position: absolute;
-    font-size: 75%;
+    font-size: 70%;
     bottom: 0;
     text-align: center;
     background-color: var(--container-bg-color);

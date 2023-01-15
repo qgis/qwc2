@@ -337,6 +337,8 @@ class TimeManager extends React.Component {
                 </div>
                 <div className="time-manager-timeline">
                     <Timeline currentTimestamp={this.state.currentTimestamp}
+                        dataEndTime={dayjs(this.state.timeData.values[this.state.timeData.values.length - 1]).hour(23).minute(59).second(59)}
+                        dataStartTime={dayjs(this.state.timeData.values[0]).hour(0).minute(0).second(0)}
                         dateFormat={this.props.dateFormat}
                         dialogWidth={this.state.dialogWidth}
                         endTime={this.state.endTime}
