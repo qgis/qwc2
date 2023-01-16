@@ -150,10 +150,7 @@ class ResizeableWindow extends React.Component {
         const dockSide = this.props.dockable === true ? "left" : this.props.dockable;
         const dockIconSuffix = (dockSide === "bottom" || dockSide === "top") ? "_bottom" : "";
         let dockIcon = docked ? 'undock' : 'dock';
-        if (dockSide === "right" || dockSide === "top") {
-            dockIcon = docked? 'dock' : 'undock';
-        }
-        dockIcon = dockIcon + dockIconSuffix;
+        dockIcon = dockIcon + "_" + dockSide;
 
         const content = [
             (<div className="resizeable-window-titlebar" key="titlebar" onDoubleClick={this.toggleMaximize} ref={el => { this.titlebar = el; }}>
