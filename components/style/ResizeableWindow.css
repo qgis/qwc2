@@ -36,6 +36,23 @@ div.resizeable-window-docked-left {
     bottom: initial!important;
 }
 
+div.resizeable-window-docked-right {
+    transform: none!important;
+    left: initial!important;
+    right: 0!important;
+    top: 0!important;
+    bottom: initial!important;
+}
+
+div.resizeable-window-docked-top {
+    transform: none!important;
+    left: 0!important;
+    right: 0!important;
+    top: 0!important;
+    bottom: initial!important;
+    width: initial!important;
+}
+
 div.resizeable-window-docked-bottom {
     transform: none!important;
     left: 0!important;
