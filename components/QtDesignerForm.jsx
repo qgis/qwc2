@@ -517,6 +517,7 @@ class QtDesignerForm extends React.Component {
         const disabled = (widget.property || {}).enabled === "false";
         const tablename = parts[1];
         const sortcol = parts[3] || null;
+        const noreorder = parts[4] || false;
         const datasetname = this.props.mapPrefix + tablename;
         const headerItems = widget.layout.item.filter(item => item.widget && item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
         const widgetItems = widget.layout.item.filter(item => !item.widget || !item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
@@ -573,7 +574,7 @@ class QtDesignerForm extends React.Component {
                                                 return null;
                                             }
                                         })}
-                                        {!this.props.readOnly && !disabled && sortcol ? (
+                                        {!this.props.readOnly && !disabled && sortcol && !noreorder ? (
                                             <td>
                                                 <Icon icon="chevron-up" onClick={() => this.props.reorderRelationRecord(datasetname, idx, -1)} />
                                                 <br />
