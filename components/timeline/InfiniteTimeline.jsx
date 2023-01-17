@@ -39,6 +39,12 @@ export default class InfiniteTimeline extends React.Component {
         if (this.state.timelineContainerEl && (this.props.dialogWidth !== prevProps.dialogWidth || !prevState.timelineContainerEl)) {
             this.setState({timelineWidth: this.state.timelineContainerEl.getBoundingClientRect().width});
         }
+        if (this.props.currentTimestamp !== prevProps.currentTimestamp) {
+            const pixel = InfiniteTimeline.computePixelFromTime(this, this.props.currentTimestamp);
+            if (pixel < 0 || pixel >= this.state.timelineWidth) {
+                this.setState({panOffset: 0});
+            }
+        }
     }
     render() {
         const navButtons = [
