@@ -140,7 +140,7 @@ class TimelineFeaturesSlider extends React.Component {
             if (!this.props.timeEnabled) {
                 return;
             }
-            const pos = ev.clientX - rect.left;
+            const pos = Math.max(0, Math.min(ev.clientX - rect.left, rect.right - rect.left));
             let newTimestamp = dayjs(this.props.computeTimeFromPixel(pos));
             // Snap to configured step interval
             let add = null;
