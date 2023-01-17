@@ -9,10 +9,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { connect } from 'react-redux';
-import { Rnd } from 'react-rnd';
+import {connect} from 'react-redux';
+import {Rnd} from 'react-rnd';
 import uuid from 'uuid';
-import { raiseWindow, registerWindow, unregisterWindow } from '../actions/windows';
+import {raiseWindow, registerWindow, unregisterWindow} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
@@ -64,7 +64,7 @@ class ResizeableWindow extends React.Component {
         minimizeable: false,
         visible: true,
         dockable: true,
-        onGeometryChanged: () => { }
+        onGeometryChanged: () => {}
     }
     state = {
         geometry: null
@@ -97,10 +97,10 @@ class ResizeableWindow extends React.Component {
     }
     componentDidMount() {
         this.props.registerWindow(this.id);
-        const newGeomState = { ...this.state.geometry };
+        const newGeomState = {...this.state.geometry};
         if (this.props.initiallyDocked) {
             newGeomState.docked = true;
-            this.setState({ geometry: newGeomState });
+            this.setState({geometry: newGeomState});
         }
         this.props.onGeometryChanged(newGeomState);
     }
@@ -142,7 +142,7 @@ class ResizeableWindow extends React.Component {
             "resizeable-window-body-scrollable": this.props.scrollable,
             "resizeable-window-body-nonscrollable": !this.props.scrollable
         });
-        const style = { display: this.props.visible ? 'initial' : 'none' };
+        const style = {display: this.props.visible ? 'initial' : 'none'};
         const maximized = this.state.geometry.maximized ? true : false;
         const minimized = this.state.geometry.minimized ? true : false;
         const zIndex = 10 + this.props.windowStacking.findIndex(item => item === this.id);
@@ -174,7 +174,7 @@ class ResizeableWindow extends React.Component {
                 {this.props.onClose ? (<Icon className="resizeable-window-titlebar-control" icon="remove" onClick={this.onClose} titlemsgid={LocaleUtils.trmsg("window.close")} />) : null}
             </div>),
             (<div className={bodyclasses} key="body" onMouseDown={(ev) => { this.stopEvent(ev); this.props.raiseWindow(this.id); }} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
-                <div className="resizeable-window-drag-shield" ref={el => { this.dragShield = el; }} />
+                <div className="resizeable-window-drag-shield" ref={el => {this.dragShield = el;}} />
                 {this.renderRole("body")}
             </div>)
         ];
@@ -219,7 +219,7 @@ class ResizeableWindow extends React.Component {
                     onDragStop={this.onDragStop}
                     onMouseDown={() => this.props.raiseWindow(this.id)}
                     onResizeStop={this.onResizeStop}
-                    ref={c => { this.rnd = c; }} style={{ zIndex: zIndex }}>
+                    ref={c => { this.rnd = c; }} style={{zIndex: zIndex}}>
                     {content}
                 </Rnd>
             </div>
@@ -231,8 +231,8 @@ class ResizeableWindow extends React.Component {
         }
     }
     onDragStop = (ev, data) => {
-        const geometry = { ...this.state.geometry, x: data.x, y: data.y };
-        this.setState({ geometry: geometry });
+        const geometry = {...this.state.geometry, x: data.x, y: data.y};
+        this.setState({geometry: geometry});
         if (this.dragShield) {
             this.dragShield.style.display = 'none';
         }
@@ -245,21 +245,21 @@ class ResizeableWindow extends React.Component {
             width: this.state.geometry.width + delta.width,
             height: this.state.geometry.height + delta.height
         };
-        this.setState({ geometry: geometry });
+        this.setState({geometry: geometry});
     }
     toggleDock = () => {
         const geometry = {
             ...this.state.geometry,
             docked: !this.state.geometry.docked
         };
-        this.setState({ geometry: geometry });
+        this.setState({geometry: geometry});
     }
     toggleMinimize = () => {
         const geometry = {
             ...this.state.geometry,
             minimized: !this.state.geometry.minimized
         };
-        this.setState({ geometry: geometry });
+        this.setState({geometry: geometry});
     }
     toggleMaximize = () => {
         const geometry = {
@@ -267,7 +267,7 @@ class ResizeableWindow extends React.Component {
             maximized: !this.state.geometry.maximized,
             minimized: false
         };
-        this.setState({ geometry: geometry });
+        this.setState({geometry: geometry});
     }
 }
 
