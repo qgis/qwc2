@@ -100,13 +100,17 @@ export default class FixedTimeline extends React.Component {
     pan = (dir) => {
         const delta = 0.1 * this.props.timeSpan;
         if (dir > 0) {
-            const newEndTime = Math.min(this.props.dataEndTime, this.props.endTime + delta);
-            this.props.setStartTime(newEndTime - this.props.timeSpan);
-            this.props.setEndTime(newEndTime);
+            if (this.props.dataEndTime - this.props.endTime > 0) {
+                const newEndTime = Math.min(this.props.dataEndTime, this.props.endTime + delta);
+                this.props.setStartTime(newEndTime - this.props.timeSpan);
+                this.props.setEndTime(newEndTime);
+            }
         } else {
-            const newStartTime = Math.max(this.props.dataStartTime, this.props.startTime - delta);
-            this.props.setStartTime(newStartTime);
-            this.props.setEndTime(newStartTime + this.props.timeSpan);
+            if (this.props.startTime - this.props.dataStartTime > 0) {
+                const newStartTime = Math.max(this.props.dataStartTime, this.props.startTime - delta);
+                this.props.setStartTime(newStartTime);
+                this.props.setEndTime(newStartTime + this.props.timeSpan);
+            }
         }
     }
     startPan = (dir) => {
