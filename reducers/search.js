@@ -36,7 +36,6 @@ export default function search(state = defaultState, action) {
         if (state.requestId !== action.reqId || !(state.pendingProviders || []).includes(action.provider)) {
             return state;
         }
-        console.log(action);
         const results = [...state.results, ...action.results];
         results.sort((a, b) => {
             return (b.priority || 0) - (a.priority || 0);
