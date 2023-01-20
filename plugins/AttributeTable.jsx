@@ -14,7 +14,7 @@ import isEmpty from 'lodash.isempty';
 import ContentEditable from 'react-contenteditable';
 import {getFeatureTemplate} from '../actions/editing';
 import {LayerRole} from '../actions/layers';
-import {zoomToExtent} from '../actions/map';
+import {zoomToExtent, zoomToPoint} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import EditComboField, {KeyValCache} from '../components/EditComboField';
 import EditUploadField from '../components/EditUploadField';
@@ -27,6 +27,7 @@ import EditingInterface from '../utils/EditingInterface';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import './style/AttributeTable.css';
 
 
@@ -41,7 +42,14 @@ class AttributeTable extends React.Component {
         setCurrentTaskBlocked: PropTypes.func,
         taskData: PropTypes.object,
         theme: PropTypes.object,
-        zoomToExtent: PropTypes.func
+        zoomToExtent: PropTypes.func,
+        zoomToPoint: PropTypes.func,
+        zoomLevel: PropTypes.number,
+        showEditFormButton: PropTypes.bool
+    }
+    static defaultProps = {
+        zoomLevel: 1000,
+        showEditFormButton: true
     }
     static defaultState = {
         loading: false,
@@ -222,6 +230,7 @@ class AttributeTable extends React.Component {
         const layerChanged = this.state.selectedLayer !== this.state.loadedLayer;
         const showAddButton = editPermissions.creatable !== false;
         const showDelButton = editPermissions.deletable !== false;
+        const showEditButton = ConfigUtils.havePlugin("Editing") && this.props.showEditFormButton;
 
         return (
             <ResizeableWindow dockable="bottom" icon="editing" initialHeight={480} initialWidth={800} onClose={this.onClose} title={LocaleUtils.tr("attribtable.title")}>
@@ -250,7 +259,7 @@ class AttributeTable extends React.Component {
                         <button className="button" disabled={layerChanged || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
                             <Icon icon="search" />
                         </button>
-                        {ConfigUtils.havePlugin("Editing") ? (
+                        {showEditButton ? (
                             <button className="button" disabled={layerChanged || editing || Object.values(this.state.selectedFeatures).filter(entry => entry === true).length !== 1} onClick={this.switchToFormEditMode} title={LocaleUtils.tr("attribtable.formeditmode")}>
                                 <Icon icon="editing" />
                             </button>
@@ -545,7 +554,12 @@ class AttributeTable extends React.Component {
             features: this.state.filteredSortedFeatures.filter(feature => this.state.selectedFeatures[feature.id] === true && feature.geometry)
         };
         if (!isEmpty(collection.features)) {
-            this.props.zoomToExtent(geojsonBbox(collection), this.props.mapCrs);
+            if (collection.features.length == 1 && collection.features[0].geometry.type === "Point"){
+                let zoom = MapUtils.computeZoom(this.props.mapScales, this.props.zoomLevel);
+                this.props.zoomToPoint(collection.features[0].geometry.coordinates, zoom, this.props.mapCrs);
+            } else {
+                this.props.zoomToExtent(geojsonBbox(collection), this.props.mapCrs);
+            }
         }
     }
     switchToFormEditMode = () => {
@@ -654,11 +668,13 @@ export default (iface = EditingInterface) => {
         iface: iface,
         layers: state.layers.flat,
         mapCrs: state.map.projection,
+        mapScales: state.map.scales,
         taskData: state.task.id === "AttributeTable" ? state.task.data : null,
         theme: state.theme.current
     }), {
         setCurrentTask: setCurrentTask,
         setCurrentTaskBlocked: setCurrentTaskBlocked,
-        zoomToExtent: zoomToExtent
+        zoomToExtent: zoomToExtent,
+        zoomToPoint: zoomToPoint
     })(AttributeTable);
 };
