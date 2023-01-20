@@ -212,6 +212,12 @@
       "elevation": "Altitude",
       "title": "Position"
     },
+    "maplegend": {
+      "bboxdependent": "Légende dépendante de l'étendue de la carte",
+      "onlyvisible": "Seulement les couches visibles",
+      "scaledependent": "Légende dépendante de l'échelle de la carte",
+      "windowtitle": "Légende"
+    },
     "measureComponent": {
       "areaLabel": "Surface",
       "bearingLabel": "Direction",

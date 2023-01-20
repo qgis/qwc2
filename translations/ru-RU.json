@@ -212,6 +212,12 @@
       "elevation": "Высота над уровнем моря",
       "title": "Позиция"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "",
+      "scaledependent": "",
+      "windowtitle": ""
+    },
     "measureComponent": {
       "areaLabel": "Площадь",
       "bearingLabel": "Пеленг",

@@ -212,6 +212,12 @@
       "elevation": "Elevação",
       "title": "Posição"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "",
+      "scaledependent": "",
+      "windowtitle": ""
+    },
     "measureComponent": {
       "areaLabel": "Área",
       "bearingLabel": "Dirección",

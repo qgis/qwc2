@@ -212,6 +212,12 @@
       "elevation": "Korkeus",
       "title": "Sijainti"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "",
+      "scaledependent": "",
+      "windowtitle": ""
+    },
     "measureComponent": {
       "areaLabel": "Alue",
       "bearingLabel": "Suunta",

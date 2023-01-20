@@ -157,8 +157,8 @@
     "infotool": {
       "clickhelpPoint": "Zu identifizierende Position in der Karte auswählen...",
       "clickhelpPolygon": "Polygon um die zu identifizierende Objekte zeichnen",
-      "clickhelpRadius": "",
-      "radius": ""
+      "clickhelpRadius": "Einen Radius setzten und in die Karte clicken um Objekte um den Punkt zu identifizieren...",
+      "radius": "Radius"
     },
     "layercatalog": {
       "windowtitle": "Ebenenkatalog"
@@ -211,6 +211,12 @@
     "mapinfotooltip": {
       "elevation": "Höhe",
       "title": "Position"
+    },
+    "maplegend": {
+      "bboxdependent": "Legende abhängig vom Kartenausschnitt",
+      "onlyvisible": "Legende abhängig von der Ebenensichtbarkeit",
+      "scaledependent": "Legende abhängig vom Kartenmassstab",
+      "windowtitle": "Legende"
     },
     "measureComponent": {
       "areaLabel": "Fläche",

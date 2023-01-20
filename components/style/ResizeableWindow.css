@@ -95,6 +95,21 @@ span.resizeable-window-titlebar-control {
     font-size: large;
 }
 
+span.resizeable-window-titlebar-extra-controls {
+    margin-right: 0.5em;
+}
+
+span.resizeable-window-titlebar-extra-control {
+    flex: 0 0 auto;
+    padding: 0.25em;
+    margin: 0 1px;
+}
+
+span.resizeable-window-titlebar-extra-control-active {
+    background-color: var(--titlebar-text-color);
+    color: var(--titlebar-bg-color);
+}
+
 div.resizeable-window-body {
     padding: 0.25em;
     overflow: hidden;

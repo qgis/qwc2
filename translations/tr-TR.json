@@ -212,6 +212,12 @@
       "elevation": "Yükseklik",
       "title": "Konum"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "",
+      "scaledependent": "",
+      "windowtitle": ""
+    },
     "measureComponent": {
       "areaLabel": "Alan",
       "bearingLabel": "Doğrultu",

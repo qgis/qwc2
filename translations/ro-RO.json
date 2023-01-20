@@ -212,6 +212,12 @@
       "elevation": "Altitudine",
       "title": "Poziție"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "",
+      "scaledependent": "",
+      "windowtitle": ""
+    },
     "measureComponent": {
       "areaLabel": "Arie",
       "bearingLabel": "Direcție",

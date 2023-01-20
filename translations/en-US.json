@@ -212,6 +212,12 @@
       "elevation": "Elevation",
       "title": "Position"
     },
+    "maplegend": {
+      "bboxdependent": "Map extent dependent legend",
+      "onlyvisible": "Only visibile layers",
+      "scaledependent": "Map scale depdendent legend",
+      "windowtitle": "Legend"
+    },
     "measureComponent": {
       "areaLabel": "Area",
       "bearingLabel": "Bearing",

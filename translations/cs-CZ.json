@@ -212,6 +212,12 @@
       "elevation": "Nadmořská výška",
       "title": "Poloha"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "",
+      "scaledependent": "",
+      "windowtitle": ""
+    },
     "measureComponent": {
       "areaLabel": "Plocha",
       "bearingLabel": "Ložisko",

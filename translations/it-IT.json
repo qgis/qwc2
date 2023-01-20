@@ -157,8 +157,8 @@
     "infotool": {
       "clickhelpPoint": "Seleziona un luogo da identificare sulla mappa...",
       "clickhelpPolygon": "Disegna un poligono attorno all'area da identificare",
-      "clickhelpRadius": "",
-      "radius": ""
+      "clickhelpRadius": "Imposta un raggio e clicca nella mappa per identificare gli oggetti attorno al punto...",
+      "radius": "Raggio"
     },
     "layercatalog": {
       "windowtitle": "Catalogo livelli"
@@ -211,6 +211,12 @@
     "mapinfotooltip": {
       "elevation": "Altitudine",
       "title": "Posizione"
+    },
+    "maplegend": {
+      "bboxdependent": "Legenda in base all'estensione della mappa",
+      "onlyvisible": "Mostra solo i livelli attivi nella legenda",
+      "scaledependent": "Legenda in base alla scala della mappa",
+      "windowtitle": "Legenda"
     },
     "measureComponent": {
       "areaLabel": "Area",

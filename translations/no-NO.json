@@ -212,6 +212,12 @@
       "elevation": "Høyde",
       "title": "Posisjon"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "",
+      "scaledependent": "",
+      "windowtitle": ""
+    },
     "measureComponent": {
       "areaLabel": "Areal",
       "bearingLabel": "Orientering",

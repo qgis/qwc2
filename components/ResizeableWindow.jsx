@@ -146,9 +146,8 @@ class ResizeableWindow extends React.Component {
         const maximized = this.state.geometry.maximized ? true : false;
         const minimized = this.state.geometry.minimized ? true : false;
         const zIndex = 10 + this.props.windowStacking.findIndex(item => item === this.id);
-        let docked = this.state.geometry.docked;
+        const docked = this.state.geometry.docked;
         const dockSide = this.props.dockable === true ? "left" : this.props.dockable;
-        const dockIconSuffix = (dockSide === "bottom" || dockSide === "top") ? "_bottom" : "";
         let dockIcon = docked ? 'undock' : 'dock';
         dockIcon = dockIcon + "_" + dockSide;
 
@@ -158,11 +157,19 @@ class ResizeableWindow extends React.Component {
                 <span className="resizeable-window-titlebar-title">
                     {this.props.title ? LocaleUtils.tr(this.props.title) : (this.props.titlelabel || "")}
                 </span>
-                {(this.props.extraControls || []).map(entry => (
-                    <Icon
-                        className="resizeable-window-titlebar-control" icon={entry.icon} key={entry.icon}
-                        onClick={entry.callback} titlemsgid={entry.msgid ? LocaleUtils.trmsg(entry.msgid) : ""} />
-                ))}
+                <span className="resizeable-window-titlebar-extra-controls">
+                    {(this.props.extraControls || []).map(entry => {
+                        const iconClasses = classnames({
+                            "resizeable-window-titlebar-extra-control": true,
+                            "resizeable-window-titlebar-extra-control-active": entry.active
+                        });
+                        return (
+                            <Icon
+                                className={iconClasses} icon={entry.icon} key={entry.icon}
+                                onClick={entry.callback} titlemsgid={entry.msgid ? LocaleUtils.trmsg(entry.msgid) : ""} />
+                        );
+                    })}
+                </span>
                 {!maximized && dockable ? (
                     <Icon
                         className="resizeable-window-titlebar-control" icon={dockIcon}

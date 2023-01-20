@@ -635,7 +635,7 @@ const LayerUtils = {
             }
         }
     },
-    getLegendUrl(layer, sublayer, scale, map, bboxDependentLegend, scaleDependentLegend) {
+    getLegendUrl(layer, sublayer, scale, map, bboxDependentLegend, scaleDependentLegend, extraLegendParams) {
         if (layer.type !== "wms") {
             return layer.legendUrl || "";
         }
@@ -646,6 +646,9 @@ const LayerUtils = {
             CRS: map.projection,
             SLD_VERSION: "1.1.0"
         };
+        if (extraLegendParams) {
+            Object.assign(requestParams, Object.fromEntries(extraLegendParams.split("&").map(entry => entry.split("="))));
+        }
         if (scaleDependentLegend === true || (scaleDependentLegend === "theme" && layer.role === LayerRole.THEME)) {
             requestParams.SCALE = Math.round(scale);
         }
