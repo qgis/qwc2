@@ -554,7 +554,7 @@ class AttributeTable extends React.Component {
             features: this.state.filteredSortedFeatures.filter(feature => this.state.selectedFeatures[feature.id] === true && feature.geometry)
         };
         if (!isEmpty(collection.features)) {
-            if (collection.features.length == 1){
+            if (collection.features.length == 1 && collection.features[0].geometry.type === "Point"){
                 let zoom = MapUtils.computeZoom(this.props.mapScales, this.props.zoomLevel);
                 this.props.zoomToPoint(collection.features[0].geometry.coordinates, zoom, this.props.mapCrs);
             } else {
