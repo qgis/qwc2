@@ -44,10 +44,12 @@ class AttributeTable extends React.Component {
         theme: PropTypes.object,
         zoomToExtent: PropTypes.func,
         zoomToPoint: PropTypes.func,
-        zoomLevel: PropTypes.number
+        zoomLevel: PropTypes.number,
+        showEditFormButton: PropTypes.bool
     }
     static defaultProps = {
-        zoomLevel: 1000
+        zoomLevel: 1000,
+        showEditFormButton: true
     }
     static defaultState = {
         loading: false,
@@ -228,6 +230,7 @@ class AttributeTable extends React.Component {
         const layerChanged = this.state.selectedLayer !== this.state.loadedLayer;
         const showAddButton = editPermissions.creatable !== false;
         const showDelButton = editPermissions.deletable !== false;
+        const showEditButton = ConfigUtils.havePlugin("Editing") && this.props.showEditFormButton;
 
         return (
             <ResizeableWindow dockable="bottom" icon="editing" initialHeight={480} initialWidth={800} onClose={this.onClose} title={LocaleUtils.tr("attribtable.title")}>
@@ -256,7 +259,7 @@ class AttributeTable extends React.Component {
                         <button className="button" disabled={layerChanged || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
                             <Icon icon="search" />
                         </button>
-                        {ConfigUtils.havePlugin("Editing") ? (
+                        {showEditButton ? (
                             <button className="button" disabled={layerChanged || editing || Object.values(this.state.selectedFeatures).filter(entry => entry === true).length !== 1} onClick={this.switchToFormEditMode} title={LocaleUtils.tr("attribtable.formeditmode")}>
                                 <Icon icon="editing" />
                             </button>
