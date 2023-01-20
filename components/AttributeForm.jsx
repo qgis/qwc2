@@ -456,7 +456,8 @@ class AttributeForm extends React.Component {
                         }
                     };
                     const sortcol = this.state.relationTables[relTable].sortcol;
-                    if (sortcol) {
+                    const noreorder = this.state.relationTables[relTable].noreorder;
+                    if (sortcol && !noreorder) {
                         feature.__status__ = feature.__status__ || (feature.properties[sortcol] !== idx ? "changed" : "");
                         feature.properties[sortcol] = idx;
                     }
