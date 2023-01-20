@@ -14,7 +14,7 @@ import isEmpty from 'lodash.isempty';
 import ContentEditable from 'react-contenteditable';
 import {getFeatureTemplate} from '../actions/editing';
 import {LayerRole} from '../actions/layers';
-import {zoomToExtent} from '../actions/map';
+import {zoomToExtent, zoomToPoint} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import EditComboField, {KeyValCache} from '../components/EditComboField';
 import EditUploadField from '../components/EditUploadField';
@@ -27,6 +27,7 @@ import EditingInterface from '../utils/EditingInterface';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import './style/AttributeTable.css';
 
 
@@ -41,7 +42,12 @@ class AttributeTable extends React.Component {
         setCurrentTaskBlocked: PropTypes.func,
         taskData: PropTypes.object,
         theme: PropTypes.object,
-        zoomToExtent: PropTypes.func
+        zoomToExtent: PropTypes.func,
+        zoomToPoint: PropTypes.func,
+        zoomLevel: PropTypes.number
+    }
+    static defaultProps = {
+        zoomLevel: 1000
     }
     static defaultState = {
         loading: false,
@@ -545,7 +551,12 @@ class AttributeTable extends React.Component {
             features: this.state.filteredSortedFeatures.filter(feature => this.state.selectedFeatures[feature.id] === true && feature.geometry)
         };
         if (!isEmpty(collection.features)) {
-            this.props.zoomToExtent(geojsonBbox(collection), this.props.mapCrs);
+            if (collection.features.length == 1){
+                let zoom = MapUtils.computeZoom(this.props.mapScales, this.props.zoomLevel);
+                this.props.zoomToPoint(collection.features[0].geometry.coordinates, zoom, this.props.mapCrs);
+            } else {
+                this.props.zoomToExtent(geojsonBbox(collection), this.props.mapCrs);
+            }
         }
     }
     switchToFormEditMode = () => {
@@ -654,11 +665,13 @@ export default (iface = EditingInterface) => {
         iface: iface,
         layers: state.layers.flat,
         mapCrs: state.map.projection,
+        mapScales: state.map.scales,
         taskData: state.task.id === "AttributeTable" ? state.task.data : null,
         theme: state.theme.current
     }), {
         setCurrentTask: setCurrentTask,
         setCurrentTaskBlocked: setCurrentTaskBlocked,
-        zoomToExtent: zoomToExtent
+        zoomToExtent: zoomToExtent,
+        zoomToPoint: zoomToPoint
     })(AttributeTable);
 };
