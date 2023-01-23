@@ -27,7 +27,7 @@ const autogenExternalLayers = [];
 
 function uniqueThemeId(themeName) {
     if (!themeName) {
-        return uuid.v1();
+        return uuidv1();
     }
     if (usedThemeIds.includes(themeName)) {
         let i = 1;

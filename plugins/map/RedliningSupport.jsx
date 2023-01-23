@@ -9,7 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import uuid from 'uuid';
+import {v1 as uuidv4} from 'uuid';
 import ol from 'openlayers';
 import {changeRedliningState} from '../../actions/redlining';
 import {LayerRole, addLayerFeatures, removeLayerFeatures} from '../../actions/layers';
@@ -160,7 +160,7 @@ class RedliningSupport extends React.Component {
             }
             this.leaveTemporaryPickMode();
             this.currentFeature = evt.feature;
-            this.currentFeature.setId(uuid.v4());
+            this.currentFeature.setId(uuidv4());
             this.currentFeature.set('isText', isText);
             this.updateFeatureStyle(this.props.redlining.style);
         }, this);

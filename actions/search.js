@@ -10,7 +10,7 @@ import ReducerIndex from '../reducers/index';
 import searchReducer from '../reducers/search';
 ReducerIndex.register("search", searchReducer);
 
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import axios from 'axios';
 
 export const SEARCH_CHANGE = 'SEARCH_CHANGE';
@@ -42,7 +42,7 @@ export function changeSearch(text, providers) {
 
 export function startSearch(text, searchParams, providers, startup = false) {
     return (dispatch) => {
-        const reqId = uuid.v1();
+        const reqId = uuidv1();
         const providerKeys = Object.keys(providers);
         dispatch({
             type: SEARCH_SET_REQUEST,
@@ -67,7 +67,7 @@ export function startSearch(text, searchParams, providers, startup = false) {
 export function searchMore(moreItem, text, providers) {
     return (dispatch) => {
         if (moreItem.provider && providers[moreItem.provider].getMoreResults) {
-            const reqId = uuid.v1();
+            const reqId = uuidv1();
             dispatch({
                 type: SEARCH_SET_REQUEST,
                 id: reqId,

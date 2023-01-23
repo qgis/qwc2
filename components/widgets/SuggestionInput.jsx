@@ -8,7 +8,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import './style/SuggestionInput.css';
 
 
@@ -25,7 +25,7 @@ export default class SuggestionInput extends React.Component {
     }
     constructor(props) {
         super(props);
-        this.datalistid = uuid.v1();
+        this.datalistid = uuidv1();
     }
     render() {
         return (

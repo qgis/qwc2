@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import ol from 'openlayers';
 import isEmpty from 'lodash.isempty';
 import geojsonBbox from 'geojson-bounding-box';
@@ -199,7 +199,7 @@ const VectorLayerUtils = {
             return geometry;
         }
     },
-    wktToGeoJSON(wkt, srccrs, dstcrs, id = uuid.v1()) {
+    wktToGeoJSON(wkt, srccrs, dstcrs, id = uuidv1()) {
         wkt = wkt
             .replace(/Point(\w+)/i, "Point $1")
             .replace(/LineString(\w+)/i, "LineString $1")

@@ -9,10 +9,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import axios from 'axios';
 import isEmpty from 'lodash.isempty';
-import ReactHtmlParser from 'react-html-parser';
-import {convertNodeToElement} from 'react-html-parser';
+import htmlReactParser, {domToReact} from 'html-react-parser';
 import {showIframeDialog} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
@@ -148,18 +146,17 @@ class MapTip extends React.Component {
         return null;
     }
     parsedContent = (text) => {
-        return ReactHtmlParser(text, {transform: (node, index) => {
+        const options = {replace: (node) => {
             if (node.name === "a") {
                 return (
-                    <a href={node.attribs.href} key={"a" + index} onClick={node.attribs.onclick ? (ev) => this.evalOnClick(ev, node.attribs.onclick) : this.attributeLinkClicked} target={node.attribs.target || "_blank"}>
-                        {node.children.map((child, idx) => (
-                            <React.Fragment key={"f" + idx}>{convertNodeToElement(child, idx)}</React.Fragment>)
-                        )}
+                    <a href={node.attribs.href} onClick={node.attribs.onclick ? (ev) => this.evalOnClick(ev, node.attribs.onclick) : this.attributeLinkClicked} target={node.attribs.target || "_blank"}>
+                        {domToReact(node.children, options)}
                     </a>
                 );
             }
             return undefined;
-        }});
+        }};
+        return htmlReactParser(text, options);
     }
     evalOnClick = (ev, onclick) => {
         eval(onclick);

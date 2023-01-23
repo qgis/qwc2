@@ -12,7 +12,7 @@ import axios from 'axios';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import {LayerRole} from '../../actions/layers';
 import {setSnappingConfig} from '../../actions/map';
 import Spinner from '../../components/Spinner';
@@ -183,7 +183,7 @@ class SnappingSupport extends React.Component {
             feature_count: snappingConfig.featureCount || 500
         };
         const request = IdentifyUtils.buildFilterRequest(themeLayer, snapLayers.join(","), filterGeom, this.props.mapObj, options);
-        const reqId = uuid.v1();
+        const reqId = uuidv1();
         this.setState({reqId: reqId});
         IdentifyUtils.sendRequest(request, (response) => {
             if (this.state.reqId !== reqId) {

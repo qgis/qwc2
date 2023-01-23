@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import xml2js from 'xml2js';
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import isEmpty from 'lodash.isempty';
 import ButtonBar from './widgets/ButtonBar';
 import TextInput from './widgets/TextInput';
@@ -615,7 +615,7 @@ class QtDesignerForm extends React.Component {
             explicitArray: false,
             mergeAttrs: true
         };
-        const loadingReqId = uuid.v1();
+        const loadingReqId = uuidv1();
         this.setState({loading: true, loadingReqId: loadingReqId});
         xml2js.parseString(data, options, (err, json) => {
             const relationTables = {};

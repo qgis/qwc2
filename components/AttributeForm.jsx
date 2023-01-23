@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import clone from 'clone';
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import {setEditContext, clearEditContext, getFeatureTemplate} from '../actions/editing';
 import {setCurrentTaskBlocked} from '../actions/task';
 import {LayerRole, refreshLayer} from '../actions/layers';
@@ -385,7 +385,7 @@ class AttributeForm extends React.Component {
                         relationValues[datasetname].features[index].properties[field] = "";
                     } else if (element.type === "hidden" && element.value.startsWith("data:")) {
                         const type = element.value.match(/image\/\w+/);
-                        relationUploads[name] = new File([this.dataUriToBlob(element.value)], uuid.v1() + ".jpg", {type: type});
+                        relationUploads[name] = new File([this.dataUriToBlob(element.value)], uuidv1() + ".jpg", {type: type});
                         relationValues[datasetname].features[index].properties[field] = "";
                     }
                 } else {
@@ -405,7 +405,7 @@ class AttributeForm extends React.Component {
                         feature.properties[name] = "";
                     } else if (element.type === "hidden" && element.value.startsWith("data:")) {
                         const type = element.value.match(/image\/\w+/);
-                        featureUploads[name] = new File([this.dataUriToBlob(element.value)], uuid.v1() + ".jpg", {type: type});
+                        featureUploads[name] = new File([this.dataUriToBlob(element.value)], uuidv1() + ".jpg", {type: type});
                         feature.properties[name] = "";
                     }
                 }

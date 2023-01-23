@@ -11,7 +11,7 @@ import isEmpty from 'lodash.isempty';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import LayerUtils from '../utils/LayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
-import uuid from 'uuid';
+import {v1 as uuidv4} from 'uuid';
 import {
     LayerRole,
     SET_LAYER_LOADING,
@@ -128,7 +128,7 @@ export default function layers(state = defaultState, action) {
     }
     case ADD_LAYER: {
         let newLayers = (state.flat || []).concat();
-        const layerId = action.layer.id || uuid.v4();
+        const layerId = action.layer.id || uuidv4();
         const newLayer = {
             ...action.layer,
             id: layerId,
@@ -180,19 +180,19 @@ export default function layers(state = defaultState, action) {
         return {...state, flat: newLayers};
     }
     case ADD_LAYER_FEATURES: {
-        const layerId = action.layer.id || uuid.v4();
+        const layerId = action.layer.id || uuidv4();
         const newLayers = (state.flat || []).concat();
         const idx = newLayers.findIndex(layer => layer.id === layerId);
         if (idx === -1) {
             const newFeatures = action.features.map(function(f) {
-                return {...f, id: f.id || f.properties.id || uuid.v4()};
+                return {...f, id: f.id || f.properties.id || uuidv4()};
             });
             const newLayer = {
                 ...action.layer,
                 id: layerId,
                 type: 'vector',
                 name: action.layer.name || layerId,
-                uuid: uuid.v4(),
+                uuid: uuidv4(),
                 features: newFeatures,
                 role: action.layer.role || LayerRole.USERLAYER,
                 queryable: action.layer.queryable || false,
@@ -206,7 +206,7 @@ export default function layers(state = defaultState, action) {
             newLayers.splice(inspos, 0, newLayer);
         } else {
             const addFeatures = action.features.map(f => ({
-                ...f, id: f.id || f.properties.id || uuid.v4()
+                ...f, id: f.id || f.properties.id || uuidv4()
             }));
             const newFeatures = action.clear ? addFeatures : [
                 ...(newLayers[idx].features || []).filter(f => !addFeatures.find(g => g.id === f.id)),

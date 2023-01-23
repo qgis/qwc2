@@ -13,7 +13,7 @@ import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import ol from 'openlayers';
 import isEqual from 'lodash.isequal';
 import dateParser from 'any-date-parser';
@@ -519,7 +519,7 @@ class TimeManager extends React.Component {
             ]]
         });
         let pending = 0;
-        const reqUUID = uuid.v1();
+        const reqUUID = uuidv1();
         timeData.layers.forEach(layer => {
             const sublayerattrs = timeData.attributes[layer.uuid];
             const queryLayers = Object.keys(sublayerattrs).join(",");

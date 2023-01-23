@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
 import isEmpty from 'lodash.isempty';
 import axios from 'axios';
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import {SearchResultType} from '../actions/search';
 import {logAction} from '../actions/logging';
 import {panTo, zoomToExtent, zoomToPoint} from '../actions/map';
@@ -419,7 +419,7 @@ class SearchBox extends React.Component {
             this.setState({searchResults: {}});
             return;
         }
-        const searchSession = uuid.v1();
+        const searchSession = uuidv1();
         this.setState({searchResults: {query_text: searchText}, searchSession: searchSession, pendingSearches: Object.keys(this.props.searchProviders).concat(["__fulltext"])});
         // Fulltext search
         if (this.props.theme.searchProviders.find(entry => entry.provider === "solr")) {

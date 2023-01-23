@@ -10,7 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import mime from 'mime-to-extensions';
 import Icon from './Icon';
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import ModalDialog from './ModalDialog';
 import ButtonBar from './widgets/ButtonBar';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -152,7 +152,7 @@ export default class EditUploadField extends React.Component {
             const imageData = canvas.toDataURL("image/jpeg");
             this.setState({imageData: imageData});
             this.props.updateField(this.props.fieldId, '');
-            this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(imageData)], uuid.v1() + ".jpg", {type: "image/jpeg"}));
+            this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(imageData)], uuidv1() + ".jpg", {type: "image/jpeg"}));
         }
         this.disableCamera();
     }
@@ -166,7 +166,7 @@ export default class EditUploadField extends React.Component {
             showImageEditor(imageData, (newImageData) => {
                 this.setState({imageData: newImageData});
                 this.props.updateField(this.props.fieldId, '');
-                this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(newImageData)], uuid.v1() + ".jpg", {type: "image/jpeg"}));
+                this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(newImageData)], uuidv1() + ".jpg", {type: "image/jpeg"}));
             });
         } else if (action === "Clear") {
             this.clearImage();

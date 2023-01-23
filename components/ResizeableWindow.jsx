@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {connect} from 'react-redux';
 import {Rnd} from 'react-rnd';
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import {raiseWindow, registerWindow, unregisterWindow} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -87,7 +87,7 @@ class ResizeableWindow extends React.Component {
         }
         this.dragShield = null;
         this.titlebar = null;
-        this.id = uuid.v1();
+        this.id = uuidv1();
     }
     computeInitialX = (x) => {
         return x >= 0 ? x : window.innerWidth - Math.abs(x);

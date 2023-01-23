@@ -11,7 +11,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import ol from 'openlayers';
-import uuid from 'uuid';
+import {v1 as uuidv4} from 'uuid';
 import {LayerRole} from '../../actions/layers';
 import IdentifyUtils from '../../utils/IdentifyUtils';
 
@@ -110,7 +110,7 @@ class SnapSupport extends React.Component {
             for (const i in results) {
                 for (const feature of results[i]) {
                     if (feature.geometry) {
-                        feature.id = uuid.v4();
+                        feature.id = uuidv4();
                         features.push(feature);
                     }
                 }

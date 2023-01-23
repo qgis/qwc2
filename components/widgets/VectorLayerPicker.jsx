@@ -8,7 +8,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import uuid from 'uuid';
+import {v1 as uuidv4} from 'uuid';
 import Icon from '../../components/Icon';
 import LocaleUtils from '../../utils/LocaleUtils';
 
@@ -37,7 +37,7 @@ export default class VectorLayerPicker extends React.Component {
         const name = prompt(message);
         if (name) {
             const layer = {
-                id: uuid.v4(),
+                id: uuidv4(),
                 title: name,
                 type: 'vector'
             };
