@@ -99,7 +99,12 @@ class Identify extends React.Component {
             let queryableLayers = [];
             queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
             queryableLayers.forEach(l => {
-                const request = IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, this.props.params);
+                const params = {...this.props.params};
+                // Apply layer filters to identify request
+                if (l.params.FILTER) {
+                    params.filter = l.params.FILTER
+                }
+                const request = IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, params);
                 ++pendingRequests;
                 IdentifyUtils.sendRequest(request, (response) => {
                     this.setState({pendingRequests: this.state.pendingRequests - 1});
@@ -169,7 +174,7 @@ class Identify extends React.Component {
             delete params.region_feature_count;
         }
         queryableLayers.forEach(layer => {
-            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, this.props.params);
+            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, params);
             ++pendingRequests;
             IdentifyUtils.sendRequest(request, (response) => {
                 this.setState({pendingRequests: this.state.pendingRequests - 1});
