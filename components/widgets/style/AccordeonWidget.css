@@ -5,7 +5,7 @@ div.accordeon-section {
 div.accordeon-section-header {
     display: flex;
     padding: 0.5em;
-    background-color: var(--titlebar-bg-color;
+    background-color: var(--titlebar-bg-color);
     color: var(--titlebar-text-color);
     font-weight: bold;
 }
