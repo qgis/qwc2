@@ -99,12 +99,7 @@ class Identify extends React.Component {
             let queryableLayers = [];
             queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
             queryableLayers.forEach(l => {
-                const params = {...this.props.params};
-                // Apply layer filters to identify request
-                if (l.params.FILTER) {
-                    params.filter = l.params.FILTER
-                }
-                const request = IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, params);
+                const request = IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, this.props.params);
                 ++pendingRequests;
                 IdentifyUtils.sendRequest(request, (response) => {
                     this.setState({pendingRequests: this.state.pendingRequests - 1});
