@@ -51,7 +51,7 @@ export function startSearch(text, searchParams, providers, startup = false) {
             startup: startup
         });
         Object.keys(providers).map(provider => {
-            providers[provider].onSearch(text, {...searchParams, cfgParams: provider.params}, (response) => {
+            providers[provider].onSearch(text, {...searchParams, cfgParams: providers[provider].params}, (response) => {
                 dispatch({
                     type: SEARCH_ADD_RESULTS,
                     reqId: reqId,
@@ -73,7 +73,15 @@ export function searchMore(moreItem, text, providers) {
                 id: reqId,
                 providers: [moreItem.provider]
             });
-            providers[moreItem.provider].getMoreResults(moreItem, text, reqId, dispatch);
+            providers[moreItem.provider].getMoreResults(moreItem, text, (response) => {
+                dispatch({
+                    type: SEARCH_ADD_RESULTS,
+                    reqId: reqId,
+                    provider: moreItem.provider,
+                    results: response.results,
+                    append: true
+                });
+            }, axios);
         }
     };
 }
