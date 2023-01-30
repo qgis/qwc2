@@ -169,7 +169,7 @@ class Identify extends React.Component {
             delete params.region_feature_count;
         }
         queryableLayers.forEach(layer => {
-            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, this.props.params);
+            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, params);
             ++pendingRequests;
             IdentifyUtils.sendRequest(request, (response) => {
                 this.setState({pendingRequests: this.state.pendingRequests - 1});
