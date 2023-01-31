@@ -96,18 +96,14 @@ class MapLegend extends React.Component {
     printLayerLegend = (layer, sublayer, mapScale) => {
         let body = null;
         if (sublayer.sublayers) {
-            if (sublayer.visibility) {
-                body = sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer));
-            }
+            body = sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer));
         } else {
-            if (sublayer.visibility && LayerUtils.layerScaleInRange(sublayer, mapScale)) {
-                const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, mapScale, this.props.map, this.state.bboxDependentLegend, this.state.scaleDependentLegend, this.props.extraLegendParams);
-                body = request ? (
-                    <div className="map-legend-legend-entry" key={sublayer.name}>
-                        <img src={request} />
-                        {this.props.addLayerTitles ? (<span className="map-legend-entry-title">{sublayer.title || sublayer.name}</span>) : null}
-                    </div>) : null;
-            }
+            const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, mapScale, this.props.map, this.state.bboxDependentLegend, this.state.scaleDependentLegend, this.props.extraLegendParams);
+            body = request ? (
+                <div className="map-legend-legend-entry" key={sublayer.name}>
+                    <img src={request} />
+                    {this.props.addLayerTitles ? (<span className="map-legend-entry-title">{sublayer.title || sublayer.name}</span>) : null}
+                </div>) : null;
         }
         return body;
     }
