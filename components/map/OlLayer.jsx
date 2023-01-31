@@ -14,7 +14,12 @@ import omit from 'lodash.omit';
 import ol from 'openlayers';
 import {setLayerLoading} from '../../actions/layers';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
+import Signal from '../../utils/Signal';
 import LayerRegistry from './layers/index';
+
+export const OlLayerAdded = new Signal();
+export const OlLayerUpdated = new Signal();
+
 
 class OlLayer extends React.Component {
     static propTypes = {
@@ -113,10 +118,12 @@ class OlLayer extends React.Component {
                 oldOptions,
                 this.props.map
             );
+            OlLayerUpdated.notify(this.state.layer);
         }
     }
     addLayer = (layer, options) => {
         this.props.map.addLayer(layer);
+        OlLayerAdded.notify(layer);
         layer.on('prerender', (event) => {
             const ctx = event.context;
             ctx.save();

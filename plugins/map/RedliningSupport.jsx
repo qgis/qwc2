@@ -13,6 +13,7 @@ import uuid from 'uuid';
 import ol from 'openlayers';
 import {changeRedliningState} from '../../actions/redlining';
 import {LayerRole, addLayerFeatures, removeLayerFeatures} from '../../actions/layers';
+import {OlLayerAdded, OlLayerUpdated} from '../../components/map/OlLayer';
 import FeatureStyles from '../../utils/FeatureStyles';
 import SnapInteraction from './SnapInteraction';
 
@@ -180,56 +181,81 @@ class RedliningSupport extends React.Component {
             }
         }
     }
-    enterTemporaryPickMode = (feature, layerId) => {
+    waitForFeatureAndLayer = (layerId, featureId, callback) => {
         const redliningLayer = this.searchRedliningLayer(layerId);
         if (!redliningLayer) {
-            return;
-        }
-        this.currentFeature = redliningLayer.getSource().getFeatureById(feature.getId());
-        if (!this.currentFeature) {
-            return;
-        }
-        const circle = this.currentFeature.get('circleParams');
-        if (circle) {
-            this.currentFeature.setGeometry(new ol.geom.Circle(circle.center, circle.radius));
-        }
-        this.updateFeatureStyle(this.props.redlining.style);
-
-        if (this.props.redlining.geomType === "Box") {
-            // Disable a-posteriori editing of box, as editing does not enforce the box geometry (but edits it as a polygon)
-            this.interactions.push(new ol.interaction.Interaction({}));
-        } else {
-            const modifyInteraction = new ol.interaction.Modify({
-                features: new ol.Collection([this.currentFeature]),
-                condition: (event) => {
-                    return event.originalEvent.buttons === 1;
-                },
-                deleteCondition: (event) => {
-                    // delete vertices on SHIFT + click
-                    if (event.type === "pointerdown" && ol.events.condition.shiftKeyOnly(event)) {
-                        this.props.map.setIgnoreNextClick(true);
-                    }
-                    return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
+            OlLayerAdded.connect((layer) => {
+                if (layer.get("id") === layerId) {
+                    const feature = layer.getSource().getFeatureById(featureId);
+                    callback(layer, feature);
+                    return true;
                 }
+                return false;
             });
-            modifyInteraction.on('modifyend', () => {
-                this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
-            });
-            this.props.map.addInteraction(modifyInteraction);
-            if (this.snapInteraction) {
-                this.props.map.removeInteraction(this.snapInteraction);
-                // Reorder as last
-                this.props.map.addInteraction(this.snapInteraction);
-            } else if (this.props.snappingConfig.enabled) {
-                // Snapping interaction was not created previously as layer did not yet exist
-                this.snapInteraction = new SnapInteraction({source: redliningLayer.getSource()});
-                this.snapInteraction.setActive(this.props.snappingConfig.active);
-                this.props.map.addInteraction(this.snapInteraction);
+        } else {
+            const feature = redliningLayer.getSource().getFeatureById(featureId);
+            if (feature) {
+                callback(redliningLayer, feature);
+            } else {
+                OlLayerUpdated.connect((layer) => {
+                    const feat = layer.getSource().getFeatureById(featureId);
+                    if (layer.get("id") === layerId && feat) {
+                        callback(layer, feat);
+                        return true;
+                    }
+                    return false;
+                });
             }
-            this.interactions.push(modifyInteraction);
         }
-        this.picking = true;
-        this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
+    }
+    enterTemporaryPickMode = (featureId, layerId) => {
+        this.waitForFeatureAndLayer(layerId, featureId, (redliningLayer, feature) => {
+            if (!feature) {
+                return;
+            }
+            this.currentFeature = feature;
+            const circle = this.currentFeature.get('circleParams');
+            if (circle) {
+                this.currentFeature.setGeometry(new ol.geom.Circle(circle.center, circle.radius));
+            }
+            this.updateFeatureStyle(this.props.redlining.style);
+
+            if (this.props.redlining.geomType === "Box") {
+                // Disable a-posteriori editing of box, as editing does not enforce the box geometry (but edits it as a polygon)
+                this.interactions.push(new ol.interaction.Interaction({}));
+            } else {
+                const modifyInteraction = new ol.interaction.Modify({
+                    features: new ol.Collection([this.currentFeature]),
+                    condition: (event) => {
+                        return event.originalEvent.buttons === 1;
+                    },
+                    deleteCondition: (event) => {
+                        // delete vertices on SHIFT + click
+                        if (event.type === "pointerdown" && ol.events.condition.shiftKeyOnly(event)) {
+                            this.props.map.setIgnoreNextClick(true);
+                        }
+                        return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
+                    }
+                });
+                modifyInteraction.on('modifyend', () => {
+                    this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
+                });
+                this.props.map.addInteraction(modifyInteraction);
+                if (this.snapInteraction) {
+                    this.props.map.removeInteraction(this.snapInteraction);
+                    // Reorder as last
+                    this.props.map.addInteraction(this.snapInteraction);
+                } else if (this.props.snappingConfig.enabled) {
+                    // Snapping interaction was not created previously as layer did not yet exist
+                    this.snapInteraction = new SnapInteraction({source: redliningLayer.getSource()});
+                    this.snapInteraction.setActive(this.props.snappingConfig.active);
+                    this.props.map.addInteraction(this.snapInteraction);
+                }
+                this.interactions.push(modifyInteraction);
+            }
+            this.picking = true;
+            this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
+        });
     }
     leaveTemporaryPickMode = () => {
         if (this.currentFeature) {
