@@ -98,6 +98,9 @@ class MapLegend extends React.Component {
         if (sublayer.sublayers) {
             body = sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer));
         } else {
+            if (this.state.onlyVisibleLegend && !sublayer.visibility) {
+                return null;
+            }
             const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, mapScale, this.props.map, this.state.bboxDependentLegend, this.state.scaleDependentLegend, this.props.extraLegendParams);
             body = request ? (
                 <div className="map-legend-legend-entry" key={sublayer.name}>
