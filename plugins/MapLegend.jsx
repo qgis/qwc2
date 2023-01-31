@@ -77,7 +77,7 @@ class MapLegend extends React.Component {
                             return this.printLayerLegend(layer, layer, mapScale);
                         } else if (layer.color) {
                             return (
-                                <div className="map-legend-legend-entry">
+                                <div className="map-legend-legend-entry" key={layer.name}>
                                     <span className="map-legend-color-box" style={{backgroundColor: layer.color}} />
                                     <span className="map-legend-entry-title">{layer.title || layer.name}</span>
                                 </div>
