@@ -702,7 +702,17 @@ const LayerUtils = {
                     params.LAYERS.push("EXTERNAL_WMS:" + identifier);
                     params.OPACITIES.push(opacities[idx]);
                     params.COLORS.push("");
-                    params[identifier + ":url"] = layer.url;
+                    let layerUrl = layer.url;
+                    const urlParts = url.parse(layerUrl, true);
+                    // Resolve relative urls
+                    if (!url.host) {
+                        const locationParts = url.parse(window.location.href);
+                        urlParts.protocol = locationParts.protocol;
+                        urlParts.host = locationParts.host;
+                        delete urlParts.search;
+                        layerUrl = url.format(urlParts);
+                    }
+                    params[identifier + ":url"] = layerUrl;
                     params[identifier + ":layers"] = names[idx];
                     params[identifier + ":format"] = "image/png";
                     params[identifier + ":crs"] = printCrs;
