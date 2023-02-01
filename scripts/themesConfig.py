@@ -562,6 +562,7 @@ def genThemes(themesConfig):
             "defaultPrintScales": config["defaultPrintScales"] if "defaultPrintScales" in config else None,
             "defaultPrintResolutions": config["defaultPrintResolutions"] if "defaultPrintResolutions" in config else None,
             "defaultPrintGrid": config["defaultPrintGrid"] if "defaultPrintGrid" in config else None,
+            "defaultSearchProviders": config["defaultSearchProviders"] if "defaultSearchProviders" in config else None,
             "pluginData": config["themes"]["pluginData"] if "pluginData" in config["themes"] else [],
             "themeInfoLinks": config["themes"]["themeInfoLinks"] if "themeInfoLinks" in config["themes"] else [],
             "externalLayers": config["themes"]["externalLayers"] if "externalLayers" in config["themes"] else [],

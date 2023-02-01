@@ -422,7 +422,7 @@ class SearchBox extends React.Component {
         const searchSession = uuidv1();
         this.setState({searchResults: {query_text: searchText}, searchSession: searchSession, pendingSearches: Object.keys(this.props.searchProviders).concat(["__fulltext"])});
         // Fulltext search
-        if (this.props.theme.searchProviders.find(entry => entry.provider === "solr")) {
+        if ((this.props.theme.searchProviders || []).find(entry => entry.provider === "solr")) {
             const params = {
                 searchtext: searchText,
                 filter: this.props.searchFilter,

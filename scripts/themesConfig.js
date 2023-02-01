@@ -542,6 +542,7 @@ function genThemes(themesConfig) {
             defaultPrintScales: config.defaultPrintScales,
             defaultPrintResolutions: config.defaultPrintResolutions,
             defaultPrintGrid: config.defaultPrintGrid,
+            defaultSearchProviders: config.defaultSearchProviders,
             externalLayers: config.themes.externalLayers || [],
             pluginData: config.themes.pluginData,
             themeInfoLinks: config.themes.themeInfoLinks,
