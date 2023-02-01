@@ -12,10 +12,22 @@ import {LayerRole} from '../actions/layers';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 
+let UrlQuery = {};
+
 export const UrlParams = {
-    updateParams(dict) {
+    updateParams(dict, forceLocationUrl=false) {
         if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
-            return;
+            UrlQuery = Object.assign(UrlQuery, dict);
+            const propNames = Object.getOwnPropertyNames(UrlQuery);
+
+            for (const propName of propNames) {
+                if (UrlQuery[propName] === undefined) {
+                    delete UrlQuery[propName];
+                }
+            }
+            if (!forceLocationUrl) {
+                return;
+            }
         }
         // Timeout: avoid wierd issue where Firefox triggers a full reload when invoking history-replaceState directly
         setTimeout(() => {
@@ -34,19 +46,39 @@ export const UrlParams = {
     },
     getParam(key) {
         const urlObj = url.parse(window.location.href, true);
-        return urlObj.query[key];
+        if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
+            return urlObj.query[key] ?? UrlQuery[key];
+        } else {
+            return urlObj.query[key];
+        }
     },
     getParams() {
-        return url.parse(window.location.href, true).query;
+        const query = url.parse(window.location.href, true).query;
+        if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
+            return {...UrlQuery, ...query};
+        } else {
+            return query;
+        }
     },
     clear() {
-        this.updateParams({k: undefined, t: undefined, l: undefined, bl: undefined, c: undefined, s: undefined, e: undefined, crs: undefined, st: undefined, sp: undefined});
+        this.updateParams({k: undefined, t: undefined, l: undefined, bl: undefined, c: undefined, s: undefined, e: undefined, crs: undefined, st: undefined, sp: undefined}, true);
+    },
+    getFullUrl() {
+        if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
+            const urlObj = url.parse(window.location.href, true);
+            urlObj.query = UrlQuery;
+            delete urlObj.search;
+            return url.format(urlObj);
+        } else {
+            return window.location.href;
+        }
     }
 };
 
 export function generatePermaLink(state, callback, user = false) {
+    const fullUrl = UrlParams.getFullUrl();
     if (!ConfigUtils.getConfigProp("permalinkServiceUrl")) {
-        callback(window.location.href);
+        callback(fullUrl);
         return;
     }
     const permalinkState = {};
@@ -61,9 +93,9 @@ export function generatePermaLink(state, callback, user = false) {
         permalinkState.layers = redliningLayers;
     }
     const route = user ? "userpermalink" : "createpermalink";
-    axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/" + route + "?url=" + encodeURIComponent(window.location.href), permalinkState)
-        .then(response => callback(response.data.permalink || window.location.href))
-        .catch(() => callback(window.location.href));
+    axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/" + route + "?url=" + encodeURIComponent(fullUrl), permalinkState)
+        .then(response => callback(response.data.permalink || fullUrl))
+        .catch(() => callback(fullUrl));
 }
 
 export function resolvePermaLink(initialParams, callback) {
@@ -128,7 +160,7 @@ export function createBookmark(state, description, callback) {
         bookmarkState.layers = redliningLayers;
     }
     axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" +
-        "?url=" + encodeURIComponent(window.location.href) + "&description=" + description, bookmarkState)
+        "?url=" + encodeURIComponent(UrlParams.getFullUrl()) + "&description=" + description, bookmarkState)
         .then(() => callback(true))
         .catch(() => callback(false));
 }
@@ -147,7 +179,7 @@ export function updateBookmark(state, bkey, description, callback) {
         layers: redliningLayers
     };
     axios.put(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey +
-        "?url=" + encodeURIComponent(window.location.href) + "&description=" + description, bookmarkState)
+        "?url=" + encodeURIComponent(UrlParams.getFullUrl()) + "&description=" + description, bookmarkState)
         .then(() => callback(true))
         .catch(() => callback(false));
 }
