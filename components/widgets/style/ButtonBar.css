@@ -31,7 +31,7 @@ div.ButtonBar span.buttonbar-button-container:not(:last-child) > button {
     border-right-width: 0;
 }
 
-div.ButtonBar span.buttonbar-button-tooltip {
+span.buttonbar-button-tooltip {
     position: absolute;
     display: none;
     background-color: var(--tooltip-bg-color);
@@ -47,14 +47,37 @@ div.ButtonBar span.buttonbar-button-tooltip {
     z-index: 2;
 }
 
-div.ButtonBar span.buttonbar-button-tooltip-top {
+span.buttonbar-button-tooltip-top {
     bottom: 110%;
 }
 
-div.ButtonBar span.buttonbar-button-tooltip-bottom {
+span.buttonbar-button-tooltip-bottom {
     top: 110%;
 }
 
-div.ButtonBar span.buttonbar-button-container:hover span.buttonbar-button-tooltip {
+span.buttonbar-button-container:hover span.buttonbar-button-tooltip,
+div.ButtonBar div.menubutton-button:hover span.buttonbar-button-tooltip {
     display: inline;
+}
+
+div.buttonbar-combo-entry {
+    display: flex;
+    align-items: center;
+}
+
+div.buttonbar-combo-entry > span.icon {
+    flex: 0 0 auto;
+}
+
+div.buttonbar-combo-entry > span.buttonbar-combo-entry-label {
+    flex: 1 1 auto;
+}
+
+div.buttonbar-combo-entry {
+    display: flex;
+    align-items: center;
+}
+
+div.buttonbar-combo-entry > span.buttonbar-combo-entry-label {
+    margin: 0 0.5em;
 }
