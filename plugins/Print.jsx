@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import FileSaver from 'file-saver';
-import formDataEntries from 'form-data-entries';
+import formDataEntries from 'formdata-json';
 import {LayerRole} from '../actions/layers';
 import {changeRotation} from '../actions/map';
 import Icon from '../components/Icon';
@@ -436,8 +436,8 @@ class Print extends React.Component {
         } else {
             ev.preventDefault();
             this.setState({printing: true});
-            const formData = formDataEntries(this.printForm);
-            const data = Array.from(formData).map(pair =>
+            const formData = formDataEntries(new FormData(this.printForm));
+            const data = Object.entries(formData).map((pair) =>
                 pair.map(entry => encodeURIComponent(entry).replace(/%20/g, '+')).join("=")
             ).join("&");
             const config = {

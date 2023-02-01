@@ -24,7 +24,7 @@
         "fast-xml-parser": "4.0.14",
         "file-saver": "2.0.5",
         "flat": "5.0.2",
-        "form-data-entries": "1.0.4",
+        "formdata-json": "1.0.0",
         "geojson-bounding-box": "0.2.0",
         "html-react-parser": "3.0.8",
         "ismobilejs": "1.1.1",
