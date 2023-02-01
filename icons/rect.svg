@@ -6,7 +6,7 @@
    version="1.1"
    id="svg11"
    inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
-   sodipodi:docname="box.svg"
+   sodipodi:docname="rect.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -41,9 +41,9 @@
      id="namedview13"
      showgrid="true"
      units="px"
-     inkscape:zoom="39.333332"
-     inkscape:cx="7.1694918"
-     inkscape:cy="12.851695"
+     inkscape:zoom="55.625732"
+     inkscape:cx="11.41558"
+     inkscape:cy="8.6740432"
      inkscape:window-x="1600"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -57,7 +57,7 @@
   </sodipodi:namedview>
   <path
      style="color:#000000;fill:#000000;-inkscape-stroke:none"
-     d="M 2,2 V 3.5 22 H 22 V 2 Z M 4,4 H 20 V 20 H 4 Z"
+     d="M 2,4 V 5.5 20 H 22 V 4 Z M 4,6 H 20 V 18 H 4 Z"
      id="rect738"
      sodipodi:nodetypes="ccccccccccc" />
 </svg>

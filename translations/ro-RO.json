@@ -263,6 +263,7 @@
       "delete": "Elimină",
       "draw": "Adaugă",
       "edit": "Modifică",
+      "ellipse": "",
       "fill": "Interior",
       "freehand": "Mână liberă",
       "label": "Text",
@@ -272,8 +273,11 @@
       "pick": "Alege",
       "point": "Punct",
       "polygon": "Poligon",
+      "rectangle": "",
       "size": "Mărime",
+      "square": "",
       "text": "Text",
+      "transform": "",
       "width": "Lățime"
     },
     "scratchdrawing": {

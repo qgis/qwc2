@@ -263,6 +263,7 @@
       "delete": "Slett",
       "draw": "Tegn",
       "edit": "Rediger",
+      "ellipse": "",
       "fill": "Fylling",
       "freehand": "Frihånd",
       "label": "Etikett",
@@ -272,8 +273,11 @@
       "pick": "Velg",
       "point": "Punkt",
       "polygon": "Polygon",
+      "rectangle": "",
       "size": "Størrelse",
+      "square": "",
       "text": "Tekst",
+      "transform": "",
       "width": "Bredde"
     },
     "scratchdrawing": {

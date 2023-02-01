@@ -25,6 +25,7 @@ export default {
                 f.set('styleOptions', feature.styleOptions);
                 f.set('isText', feature.isText);
                 f.set('circleParams', feature.circleParams);
+                f.set('shape', feature.shape);
                 if (feature.styleName) {
                     f.setStyle(FeatureStyles[feature.styleName](f, feature.styleOptions || {}));
                 }

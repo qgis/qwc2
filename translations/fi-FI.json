@@ -263,6 +263,7 @@
       "delete": "Poista",
       "draw": "Piirrä",
       "edit": "Editoi",
+      "ellipse": "",
       "fill": "Täyttö",
       "freehand": "Vapaa piirto",
       "label": "Selite",
@@ -272,8 +273,11 @@
       "pick": "Poimi",
       "point": "Piste",
       "polygon": "Alue",
+      "rectangle": "",
       "size": "Koko",
+      "square": "",
       "text": "Teksti",
+      "transform": "",
       "width": "Leveys"
     },
     "scratchdrawing": {

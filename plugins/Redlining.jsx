@@ -92,7 +92,12 @@ class Redlining extends React.Component {
             {key: "Point", tooltip: LocaleUtils.trmsg("redlining.point"), icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
             {key: "LineString", tooltip: LocaleUtils.trmsg("redlining.line"), icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
             {key: "Polygon", tooltip: LocaleUtils.trmsg("redlining.polygon"), icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
-            {key: "Circle", tooltip: LocaleUtils.trmsg("redlining.circle"), icon: "circle", data: {action: "Draw", geomType: "Circle", text: ""}},
+            [
+                {key: "Circle", tooltip: LocaleUtils.trmsg("redlining.circle"), icon: "circle", data: {action: "Draw", geomType: "Circle", text: ""}},
+                {key: "Ellipse", tooltip: LocaleUtils.trmsg("redlining.ellipse"), icon: "ellipse", data: {action: "Draw", geomType: "Ellipse", text: ""}},
+                {key: "Square", tooltip: LocaleUtils.trmsg("redlining.square"), icon: "box", data: {action: "Draw", geomType: "Square", text: ""}},
+                {key: "Box", tooltip: LocaleUtils.trmsg("redlining.rectangle"), icon: "rect", data: {action: "Draw", geomType: "Box", text: ""}}
+            ],
             {key: "Text", tooltip: LocaleUtils.trmsg("redlining.text"), icon: "text", data: {action: "Draw", geomType: "Text", text: ""}}
         ];
         const activeFreeHand = this.props.redlining.freehand ? "HandDrawing" : null;
@@ -102,7 +107,8 @@ class Redlining extends React.Component {
             disabled: (this.props.redlining.geomType !== "LineString" && this.props.redlining.geomType !== "Polygon")
         }];
         const editButtons = [
-            {key: "Pick", tooltip: LocaleUtils.trmsg("redlining.pick"), icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
+            {key: "Pick", tooltip: LocaleUtils.trmsg("redlining.pick"), icon: "nodetool", data: {action: "Pick", geomType: null, text: ""}},
+            {key: "Transform", tooltip: LocaleUtils.trmsg("redlining.transform"), icon: "transformtool", data: {action: "Transform", geomType: null, text: ""}},
             {key: "Delete", tooltip: LocaleUtils.trmsg("redlining.delete"), icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature}
         ];
         for (const plugin of Object.values(this.props.plugins || {})) {

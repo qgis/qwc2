@@ -263,6 +263,7 @@
       "delete": "Eliminar",
       "draw": "Dibuixar",
       "edit": "Editar",
+      "ellipse": "",
       "fill": "Replè",
       "freehand": "Dibuix a ma alçada",
       "label": "Etiqueta",
@@ -272,8 +273,11 @@
       "pick": "Escollir",
       "point": "Punt",
       "polygon": "Polígon",
+      "rectangle": "",
       "size": "Tamany",
+      "square": "",
       "text": "Text",
+      "transform": "",
       "width": "Amplada"
     },
     "scratchdrawing": {

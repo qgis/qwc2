@@ -263,6 +263,7 @@
       "delete": "",
       "draw": "",
       "edit": "",
+      "ellipse": "",
       "fill": "Заливка",
       "freehand": "",
       "label": "Надпись",
@@ -272,8 +273,11 @@
       "pick": "Выбрать",
       "point": "Точка",
       "polygon": "Полигон",
+      "rectangle": "",
       "size": "Размер",
+      "square": "",
       "text": "Текст",
+      "transform": "",
       "width": "Ширина"
     },
     "scratchdrawing": {

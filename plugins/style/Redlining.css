@@ -58,3 +58,11 @@ div.redlining-controlsbar span.react-numeric-input {
 div.redlining-controlsbar input.redlining-label {
     width: 7em;
 }
+
+div.redlining-shapewarning {
+    border-top: 1px solid var(--border-color);
+    margin-top: 0.25em;
+    padding-top: 0.25em;
+    font-size: 90%;
+    font-style: italic;
+}

@@ -263,6 +263,7 @@
       "delete": "",
       "draw": "",
       "edit": "",
+      "ellipse": "",
       "fill": "Výplň",
       "freehand": "",
       "label": "Popisek",
@@ -272,8 +273,11 @@
       "pick": "Výběr",
       "point": "Bod",
       "polygon": "Polygon",
+      "rectangle": "",
       "size": "Velikost",
+      "square": "",
       "text": "Text",
+      "transform": "",
       "width": "Šířka"
     },
     "scratchdrawing": {

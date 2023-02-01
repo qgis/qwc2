@@ -263,6 +263,7 @@
       "delete": "",
       "draw": "",
       "edit": "",
+      "ellipse": "",
       "fill": "Kitöltés",
       "freehand": "",
       "label": "Címke",
@@ -272,8 +273,11 @@
       "pick": "Kiválaszás",
       "point": "Pont",
       "polygon": "Poligon",
+      "rectangle": "",
       "size": "Méret",
+      "square": "",
       "text": "Szöveg",
+      "transform": "",
       "width": "Szélesség"
     },
     "scratchdrawing": {

@@ -263,6 +263,7 @@
       "delete": "Sil",
       "draw": "Çiz",
       "edit": "Düzenle",
+      "ellipse": "",
       "fill": "Dolgu",
       "freehand": "Serbest çizim",
       "label": "Etiket",
@@ -272,8 +273,11 @@
       "pick": "Seç",
       "point": "Nokta",
       "polygon": "Poligon",
+      "rectangle": "",
       "size": "Boyut",
+      "square": "",
       "text": "Metin",
+      "transform": "",
       "width": "Genişlik"
     },
     "scratchdrawing": {

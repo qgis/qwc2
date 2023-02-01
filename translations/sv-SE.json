@@ -263,6 +263,7 @@
       "delete": "Radera",
       "draw": "Rita",
       "edit": "Redigera",
+      "ellipse": "",
       "fill": "Fyllning",
       "freehand": "",
       "label": "Etikett",
@@ -272,8 +273,11 @@
       "pick": "Välj",
       "point": "Punkt",
       "polygon": "Yta",
+      "rectangle": "",
       "size": "Storlek",
+      "square": "",
       "text": "Text",
+      "transform": "",
       "width": "Bredd"
     },
     "scratchdrawing": {

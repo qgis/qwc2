@@ -263,6 +263,7 @@
       "delete": "Delete",
       "draw": "Draw",
       "edit": "Edit",
+      "ellipse": "Ellipse",
       "fill": "Fill",
       "freehand": "Freehand drawing",
       "label": "Label",
@@ -272,8 +273,11 @@
       "pick": "Pick",
       "point": "Point",
       "polygon": "Polygon",
+      "rectangle": "Rectangle",
       "size": "Size",
+      "square": "Square",
       "text": "Text",
+      "transform": "Transform",
       "width": "Width"
     },
     "scratchdrawing": {

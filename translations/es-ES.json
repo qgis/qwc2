@@ -263,6 +263,7 @@
       "delete": "Eliminar",
       "draw": "Dibujar",
       "edit": "Editar",
+      "ellipse": "",
       "fill": "Relleno",
       "freehand": "Dibujo a mano alzada",
       "label": "Etiqueta",
@@ -272,8 +273,11 @@
       "pick": "Elegir",
       "point": "Punto",
       "polygon": "Polígono",
+      "rectangle": "",
       "size": "Tamaño",
+      "square": "",
       "text": "Texto",
+      "transform": "",
       "width": "Ancho"
     },
     "scratchdrawing": {

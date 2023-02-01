@@ -263,6 +263,7 @@
       "delete": "Löschen",
       "draw": "Zeichnen",
       "edit": "Bearbeiten",
+      "ellipse": "Ellipse",
       "fill": "Füllung",
       "freehand": "Freihand",
       "label": "Beschriftung",
@@ -272,8 +273,11 @@
       "pick": "Auswählen",
       "point": "Punkt",
       "polygon": "Polygon",
+      "rectangle": "Rechteck",
       "size": "Grösse",
+      "square": "Quadrat",
       "text": "Text",
+      "transform": "Transformieren",
       "width": "Breite"
     },
     "scratchdrawing": {
