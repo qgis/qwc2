@@ -3,7 +3,7 @@
   "messages": {
     "appmenu": {
       "filter": "Menú de filtres...",
-      "menulabel": "Mapa i Eines",
+      "menulabel": "Mapa & Eines",
       "items": {
         "AttributeTable": "Taula d'atributs",
         "DxfExport": "Exportar DXF",
@@ -15,7 +15,7 @@
         "LayerTree": "Capes i Llegenda",
         "Login": "Inicio de sessió",
         "Logout": "Tancament de sessió",
-        "MapLegend": "",
+        "MapLegend": "Llegenda",
         "Measure": "Mesurar",
         "MeasureLineString": "Mesurar una línia",
         "MeasurePolygon": "Mesurar un polígon",
@@ -27,7 +27,7 @@
         "Tools": "Eines de Mapa",
         "Bookmark": "Marcador",
         "TimeManager": "Gestor de Temps",
-        "Settings": ""
+        "Settings": "Opcions"
       }
     },
     "attribtable": {
@@ -90,7 +90,7 @@
       "canceldelete": "No esborrar",
       "clearpicture": "Netejar imatge",
       "commit": "Confirmar",
-      "commitfailed": "",
+      "commitfailed": "Ha fallat el commit",
       "create": "Crear",
       "delete": "Esborrar",
       "discard": "Descartar",
@@ -129,7 +129,7 @@
       "loading": "Càlculant el perfil..."
     },
     "identify": {
-      "clipboard": "",
+      "clipboard": "Copiar al porta-retalls",
       "export": "Exportar",
       "exportformat": "Exportar format",
       "featureReport": "Informe d'element",
@@ -158,8 +158,8 @@
     "infotool": {
       "clickhelpPoint": "Fes click en una ubicació per identificar en el mapa...",
       "clickhelpPolygon": "Traça un polígon al voltant dels elements per a identificar-los...",
-      "clickhelpRadius": "",
-      "radius": ""
+      "clickhelpRadius": "Defineix un radi i fes click en una ubicació per identificar elements al voltant del punt...",
+      "radius": "Radi"
     },
     "layercatalog": {
       "windowtitle": "Titol"
@@ -215,9 +215,9 @@
     },
     "maplegend": {
       "bboxdependent": "",
-      "onlyvisible": "",
+      "onlyvisible": "Només capes visibles",
       "scaledependent": "",
-      "windowtitle": ""
+      "windowtitle": "Llegenda"
     },
     "measureComponent": {
       "areaLabel": "Àrea",
@@ -263,7 +263,7 @@
       "delete": "Eliminar",
       "draw": "Dibuixar",
       "edit": "Editar",
-      "ellipse": "",
+      "ellipse": "El·lipse",
       "fill": "Replè",
       "freehand": "Dibuix a ma alçada",
       "label": "Etiqueta",
@@ -273,11 +273,10 @@
       "pick": "Escollir",
       "point": "Punt",
       "polygon": "Polígon",
-      "rectangle": "",
+      "rectangle": "Rectangle",
       "size": "Tamany",
-      "square": "",
+      "square": "Quadrat",
       "text": "Text",
-      "transform": "",
       "width": "Amplada"
     },
     "scratchdrawing": {
@@ -289,7 +288,7 @@
       "existinglayer": "La capa ja existeix en el mapa",
       "invisiblelayer": "El resultat es troba en una capa no visible",
       "more": "Més...",
-      "noresults": "",
+      "noresults": "Cap resultat",
       "providerselection": "Proveidor",
       "search": "Buscar",
       "searchall": "Buscar llocs o agregar mapes...",
@@ -319,10 +318,10 @@
       "title": "Informació del tema"
     },
     "settings": {
-      "colorscheme": "",
-      "confirmlang": "",
-      "language": "",
-      "systemlang": ""
+      "colorscheme": "Tema",
+      "confirmlang": "L'aplicació es reiniciarà per canviar l'idioma. Vol continuar?",
+      "language": "Idioma",
+      "systemlang": "Idioma del sistema"
     },
     "share": {
       "QRCodeLinkTitle": "Codi QR",
@@ -361,26 +360,26 @@
       "displayfeatures": "",
       "displaylayers": "",
       "displayminimal": "",
-      "endtime": "",
-      "future": "",
+      "endtime": "Final",
+      "future": "Futur",
       "group": "",
       "groupnone": "",
       "home": "",
-      "loading": "",
-      "loop": "",
+      "loading": "Carregant...",
+      "loop": "Bucle",
       "markers": "Marcadors",
       "notemporaldata": "No hi ha capes temporals visibles al mapa",
-      "now": "",
-      "past": "",
+      "now": "Ara",
+      "past": "Passat",
       "play": "Reproduir",
       "playrev": "Reproduir al reves",
       "rewind": "Rebobinar",
-      "starttime": "",
+      "starttime": "Inici",
       "stepback": "Saltar endavant",
       "stepfwd": "Saltar enrere",
       "stepsize": "Mida del salt",
       "stop": "Parar",
-      "timeline": "",
+      "timeline": "Línia temporal",
       "timeline_fixed": "",
       "timeline_infinite": "",
       "timelinedisplay": "",
