@@ -15,7 +15,7 @@
         "LayerTree": "Capas & Leyenda",
         "Login": "Inicio de sesión",
         "Logout": "Cierre de sesión",
-        "MapLegend": "",
+        "MapLegend": "Leyenda",
         "Measure": "Medida",
         "MeasureLineString": "Medir una línea",
         "MeasurePolygon": "Medir un polígono",
@@ -27,7 +27,7 @@
         "Tools": "Herramientas de Mapa",
         "Bookmark": "Marcadores",
         "TimeManager": "Gestor de Tiempo",
-        "Settings": ""
+        "Settings": "Opciones"
       }
     },
     "attribtable": {
@@ -60,7 +60,7 @@
       "description": "Descripción",
       "lastUpdate": "Último guardado",
       "manage": "Administrar",
-      "nobookmarks": "",
+      "nobookmarks": "Ningún marcador",
       "notloggedin": "Se necesita tener sesión iniciada para guardar marcadores",
       "open": "Abrir en la pestaña actual",
       "openTab": "Abrir en pestaña",
@@ -90,7 +90,7 @@
       "canceldelete": "No borrar",
       "clearpicture": "Limpiar",
       "commit": "Confirmar",
-      "commitfailed": "",
+      "commitfailed": "Fallo al guardar cambios",
       "create": "Crear",
       "delete": "Borrar",
       "discard": "Descartar",
@@ -158,8 +158,8 @@
     "infotool": {
       "clickhelpPoint": "Haga click en una ubicación para identificar en el mapa...",
       "clickhelpPolygon": "Trace un polígono alrededor de los elementos para identificarlos...",
-      "clickhelpRadius": "",
-      "radius": ""
+      "clickhelpRadius": "Define un radio y haga click en una ubicación para identificar los elementos alrededor del punto...",
+      "radius": "Radio"
     },
     "layercatalog": {
       "windowtitle": "Catálogo de capas"
@@ -215,9 +215,9 @@
     },
     "maplegend": {
       "bboxdependent": "",
-      "onlyvisible": "",
+      "onlyvisible": "Solo capas visibles",
       "scaledependent": "",
-      "windowtitle": ""
+      "windowtitle": "Leyenda"
     },
     "measureComponent": {
       "areaLabel": "Area",
@@ -263,7 +263,7 @@
       "delete": "Eliminar",
       "draw": "Dibujar",
       "edit": "Editar",
-      "ellipse": "",
+      "ellipse": "Elipse",
       "fill": "Relleno",
       "freehand": "Dibujo a mano alzada",
       "label": "Etiqueta",
@@ -273,9 +273,9 @@
       "pick": "Elegir",
       "point": "Punto",
       "polygon": "Polígono",
-      "rectangle": "",
+      "rectangle": "Rectángulo",
       "size": "Tamaño",
-      "square": "",
+      "square": "Cuadrado",
       "text": "Texto",
       "transform": "",
       "width": "Ancho"
@@ -289,7 +289,7 @@
       "existinglayer": "La capa ya existe en el mapa",
       "invisiblelayer": "El resultado se encuentra en una capa no visible",
       "more": "Más...",
-      "noresults": "",
+      "noresults": "Sin resultados",
       "providerselection": "Proveedores de búsqueda",
       "search": "Buscar",
       "searchall": "Buscar lugares o agregar mapas...",
@@ -319,10 +319,10 @@
       "title": "Información del tema"
     },
     "settings": {
-      "colorscheme": "",
-      "confirmlang": "",
-      "language": "",
-      "systemlang": ""
+      "colorscheme": "Tema",
+      "confirmlang": "La aplicación se reiniciará para cambiar de idioma. Quiere continuar?",
+      "language": "Idioma",
+      "systemlang": "Idioma del sistema"
     },
     "share": {
       "QRCodeLinkTitle": "Código QR",
@@ -361,26 +361,26 @@
       "displayfeatures": "",
       "displaylayers": "",
       "displayminimal": "",
-      "endtime": "",
-      "future": "",
+      "endtime": "Final",
+      "future": "Futuro",
       "group": "",
       "groupnone": "",
       "home": "",
-      "loading": "",
-      "loop": "",
+      "loading": "Cargando...",
+      "loop": "Bucle",
       "markers": "Marcadores",
       "notemporaldata": "No hay capas temporales visibles en el mapa",
-      "now": "",
-      "past": "",
+      "now": "Ahora",
+      "past": "Pasado",
       "play": "Reproducir",
       "playrev": "Reproducir al revés",
       "rewind": "Rebobinar",
-      "starttime": "",
+      "starttime": "Inicio",
       "stepback": "Saltar hacia atrás",
       "stepfwd": "Saltar hacia delante",
       "stepsize": "Tamaño del salto",
       "stop": "Parar",
-      "timeline": "",
+      "timeline": "Linea temporal",
       "timeline_fixed": "",
       "timeline_infinite": "",
       "timelinedisplay": "",
