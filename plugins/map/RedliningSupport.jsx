@@ -471,10 +471,15 @@ class RedliningSupport extends React.Component {
         feature.styleName = this.currentFeature.get('styleName');
         feature.styleOptions = this.currentFeature.get('styleOptions');
         feature.shape = this.currentFeature.get('shape');
+        // Don't pollute GeoJSON object properties with internal props
         delete feature.properties.styleName;
         delete feature.properties.styleOptions;
         delete feature.properties.isText;
         delete feature.properties.circleParams;
+        delete feature.properties.shape;
+        // Don't persist measurements
+        delete feature.properties.measurements;
+        // Don't store empty label prop
         if (feature.properties.label === "") {
             delete feature.properties.label;
         }
