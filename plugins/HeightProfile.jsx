@@ -23,6 +23,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 
 import './style/HeightProfile.css';
+import MeasureUtils from '../utils/MeasureUtils';
 
 class HeightProfile extends React.Component {
     static propTypes = {
@@ -80,7 +81,7 @@ class HeightProfile extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.props.measurement.coordinates !== prevProps.measurement.coordinates) {
             if (this.props.measurement.drawing === false && this.props.measurement.geomType === "LineString" && !isEmpty(this.props.measurement.coordinates) ) {
-                this.queryElevations(this.props.measurement.coordinates, this.props.measurement.length, this.props.projection);
+                this.queryElevations(this.props.measurement.coordinates, this.props.measurement.segment_lengths, this.props.projection);
             } else if (!isEmpty(this.state.data)) {
                 this.setState({data: [], pickPositionCallback: null});
             }
@@ -118,7 +119,7 @@ class HeightProfile extends React.Component {
         const distanceStr = LocaleUtils.tr("heightprofile.distance");
         const heightStr = LocaleUtils.tr("heightprofile.height");
         const aslStr = LocaleUtils.tr("heightprofile.asl");
-        const totLength = (this.props.measurement.length || []).reduce((tot, num) => tot + num, 0);
+        const totLength = this.props.measurement.length;
 
         // Compute tick positions (so that there are approx 10 ticks on desktop and 5 ticks on mobile on the x-axis)
         const base = Math.pow(10, Math.floor(Math.log10(totLength / 10))); // 10E<num_digits_totLength - 1>
@@ -194,7 +195,7 @@ class HeightProfile extends React.Component {
         );
     }
     updateMarker = (x) => {
-        const segmentLengths = this.props.measurement.length;
+        const segmentLengths = this.props.measurement.segment_lengths;
         const coo = this.props.measurement.coordinates;
         if (isEmpty(segmentLengths) || isEmpty(coo)) {
             return;
@@ -257,20 +258,19 @@ class HeightProfile extends React.Component {
         }
 
         // Find sample index
-        const segmentLengths = this.props.measurement.length;
+        const segmentLengths = this.props.measurement.segment_lengths;
         const coo = this.props.measurement.coordinates;
         let x = 0;
         for (let iSegment = 0; iSegment < coo.length - 1; ++iSegment) {
             if (this.pointOnSegment(pos, coo[iSegment], coo[iSegment + 1])) {
-                const dx = pos[0] - coo[iSegment][0];
-                const dy = pos[1] - coo[iSegment][1];
-                x += Math.sqrt(dx * dx + dy * dy);
+                const len = MeasureUtils.computeSegmentLengths([pos, coo[iSegment]], this.props.projection, this.props.measurement.geodesic)[0];
+                x += len;
                 break;
             } else {
                 x += segmentLengths[iSegment];
             }
         }
-        const totLength = (this.props.measurement.length || []).reduce((tot, num) => tot + num, 0);
+        const totLength = this.props.measurement.length;
         const k = Math.min(1, x / totLength);
         const idx = Math.min(this.state.data.length - 1, Math.floor(k * this.props.samples));
         this.updateTooltip(x, this.state.data[idx], path.getBoundingClientRect().left + k * path.getBoundingClientRect().width);

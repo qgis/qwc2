@@ -10,10 +10,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
-import isEmpty from 'lodash.isempty';
-import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import measureUtils from '../utils/MeasureUtils';
+import MeasureUtils from '../utils/MeasureUtils';
 import {setSnappingConfig} from '../actions/map.js';
 import {changeMeasurementState} from '../actions/measurement.js';
 import displayCrsSelector from '../selectors/displaycrs';
@@ -73,24 +71,20 @@ class Measure extends React.Component {
     renderResult = () => {
         let resultBody = null;
         if (this.props.measureState.geomType === "Point") {
-            const digits = CoordinatesUtils.getUnits(this.props.displaycrs) === 'degrees' ? 4 : 0;
-            let text = "0 0";
-            if (!isEmpty(this.props.measureState.coordinates)) {
-                const coo = CoordinatesUtils.reproject(this.props.measureState.coordinates, this.props.mapcrs, this.props.displaycrs);
-                text = LocaleUtils.toLocaleFixed(coo[0], digits) + " " + LocaleUtils.toLocaleFixed(coo[1], digits);
-            }
+            const coo = this.props.measureState.coordinates || [0, 0];
+            const text = MeasureUtils.getFormattedCoordinate(coo, this.props.mapcrs, this.props.displaycrs);
             resultBody = (
-                <div className="resultbody">
-                    <span>{text}</span>
+                <div className="measure-body">
+                    <span className="measure-result">{text}</span>
                     <CopyButton buttonClass="copy-measure-button" text={text} />
                 </div>
             );
         } else if (this.props.measureState.geomType === "LineString") {
-            const length = (this.props.measureState.length || []).reduce((tot, num) => tot + num, 0);
-            const text = LocaleUtils.toLocaleFixed(measureUtils.getFormattedLength(this.props.measureState.lenUnit, length), 2);
+            const length = this.props.measureState.length || 0;
+            const text = MeasureUtils.formatMeasurement(length, false, this.props.measureState.lenUnit, this.props.measureState.decimals, false);
             resultBody = (
-                <div className="resultbody">
-                    <span>{text}</span>
+                <div className="measure-body">
+                    <span className="measure-result">{text}</span>
                     <select onChange={this.changeLengthUnit} value={this.props.measureState.lenUnit}>
                         <option value="m">m</option>
                         <option value="ft">ft</option>
@@ -101,10 +95,11 @@ class Measure extends React.Component {
                 </div>
             );
         } else if (this.props.measureState.geomType === "Polygon") {
-            const text = LocaleUtils.toLocaleFixed(measureUtils.getFormattedArea(this.props.measureState.areaUnit, this.props.measureState.area), 2);
+            const area = this.props.measureState.area || 0;
+            const text = MeasureUtils.formatMeasurement(area, false, this.props.measureState.areaUnit, this.props.measureState.decimals, false);
             resultBody = (
-                <div className="resultbody">
-                    <span>{text}</span>
+                <div className="measure-body">
+                    <span className="measure-result">{text}</span>
                     <select onChange={this.changeAreaUnit} value={this.props.measureState.areaUnit}>
                         <option value="sqm">m&#178;</option>
                         <option value="sqft">ft&#178;</option>
@@ -117,10 +112,10 @@ class Measure extends React.Component {
                 </div>
             );
         } else if (this.props.measureState.geomType === "Bearing") {
-            const text = measureUtils.getFormattedBearingValue(this.props.measureState.bearing);
+            const text = MeasureUtils.getFormattedBearingValue(this.props.measureState.bearing);
             resultBody = (
-                <div className="resultbody">
-                    <span>{text}</span>
+                <div className="measure-body">
+                    <span className="measure-result">{text}</span>
                     <CopyButton buttonClass="copy-measure-button" text={text} />
                 </div>
             );

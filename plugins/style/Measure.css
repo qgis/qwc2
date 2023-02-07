@@ -1,4 +1,4 @@
-div.resultbody {
+div.measure-body {
     margin-top: 0.25em;
     white-space: nowrap;
     overflow: visible;
@@ -6,7 +6,7 @@ div.resultbody {
     display: flex;
 }
 
-div.resultbody > span {
+div.measure-body > span.measure-result {
     flex: 1 1 auto;
     border: 1px solid var(--border-color);
     background-color: var(--input-bg-color);
@@ -16,11 +16,12 @@ div.resultbody > span {
     justify-content: center;
 }
 
-div.resultbody > select {
+div.measure-body > select {
     flex: 0 0 auto;
     margin-left: -1px;
+    z-index: 1;
 }
 
-div.resultbody button.copy-measure-button {
+div.measure-body > span.CopyButton {
     margin-left: -1px;
 }

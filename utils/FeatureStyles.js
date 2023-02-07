@@ -8,6 +8,7 @@
 
 import ol from 'openlayers';
 import ConfigUtils from './ConfigUtils';
+import MeasureUtils from './MeasureUtils';
 import markerIcon from './img/marker-icon.png';
 
 const DEFAULT_FEATURE_STYLE = {
@@ -90,5 +91,91 @@ export default {
                 stroke: new ol.style.Stroke({color: options.strokeColor, width: 2})
             })
         });
+    },
+    measurement: (feature, geomType, settings = {}) => {
+        const styles = [];
+        // Line string segment lengths
+        const measurements = feature.get("measurements");
+        if (!measurements) {
+            return styles;
+        }
+        const baseTextStyle = {
+            font: '10pt sans-serif',
+            fill: new ol.style.Fill({color: 'white'}),
+            stroke: new ol.style.Stroke({color: 'red', width: 2.5})
+        };
+        const coo = feature.getGeometry().getCoordinates();
+        if (geomType === "Point") {
+            styles.push(new ol.style.Style({
+                text: new ol.style.Text({
+                    ...baseTextStyle,
+                    text: MeasureUtils.getFormattedCoordinate(coo, settings.mapCrs, settings.displayCrs),
+                    offsetY: 15
+                })
+            }));
+        } else if (geomType === "LineString") {
+            const segmentLengths = measurements.segment_lengths;
+            const segmentAngles = measurements.segment_angles;
+            if (segmentLengths) {
+                for (let i = 0; i < coo.length - 1; ++i) {
+                    const p1 = coo[i];
+                    const p2 = coo[i + 1];
+                    let angle = -Math.atan2(p2[1] - p1[1], p2[0] - p1[0]);
+                    while (angle < -0.5 * Math.PI) {
+                        angle += Math.PI;
+                    }
+                    while (angle > 0.5 * Math.PI) {
+                        angle -= Math.PI;
+                    }
+                    styles.push(new ol.style.Style({
+                        geometry: new ol.geom.Point([0.5 * (p1[0] + p2[0]), 0.5 * (p1[1] + p2[1])]),
+                        text: new ol.style.Text({
+                            ...baseTextStyle,
+                            text: MeasureUtils.formatMeasurement(segmentLengths[i], false, settings.lenUnit, settings.decimals),
+                            rotation: angle,
+                            offsetY: 10
+                        })
+                    }));
+                }
+            }
+            if (segmentAngles) {
+                for (let i = 1; i < coo.length - 1; ++i) {
+                    styles.push(new ol.style.Style({
+                        geometry: new ol.geom.Point(coo[i]),
+                        text: new ol.style.Text({
+                            ...baseTextStyle,
+                            text: segmentAngles[i - 1].toFixed(0) + "°",
+                            offsetY: 10
+                        })
+                    }));
+                }
+            }
+        } else if (["Ellipse", "Polygon", "Square", "Box"].includes(geomType)) {
+            styles.push(new ol.style.Style({
+                text: new ol.style.Text({
+                    ...baseTextStyle,
+                    text: MeasureUtils.formatMeasurement(measurements.area, true, settings.areaUnit, settings.decimals),
+                    overflow: true,
+                    offsetY: 15
+                })
+            }));
+        } else if (geomType === "Circle") {
+            styles.push(new ol.style.Style({
+                text: new ol.style.Text({
+                    ...baseTextStyle,
+                    text: "r = " + MeasureUtils.formatMeasurement(measurements.radius, false, settings.lenUnit, settings.decimals),
+                    offsetY: 15
+                })
+            }));
+        } else if (geomType === "Bearing") {
+            styles.push(new ol.style.Style({
+                text: new ol.style.Text({
+                    ...baseTextStyle,
+                    text: MeasureUtils.getFormattedBearingValue(measurements.bearing),
+                    offsetY: 10
+                })
+            }));
+        }
+        return styles;
     }
 };
