@@ -269,6 +269,7 @@
       "label": "Label",
       "layer": "Layer",
       "line": "Line",
+      "measurements": "Show measurements",
       "outline": "Outline",
       "pick": "Pick",
       "point": "Point",

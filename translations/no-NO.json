@@ -269,6 +269,7 @@
       "label": "Etikett",
       "layer": "Lag",
       "line": "Linje",
+      "measurements": "",
       "outline": "Kant",
       "pick": "Velg",
       "point": "Punkt",

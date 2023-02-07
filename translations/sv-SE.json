@@ -269,6 +269,7 @@
       "label": "Etikett",
       "layer": "Lager",
       "line": "Linje",
+      "measurements": "",
       "outline": "Kant",
       "pick": "Välj",
       "point": "Punkt",

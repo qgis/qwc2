@@ -229,6 +229,7 @@
     "redlining.label",
     "redlining.layer",
     "redlining.line",
+    "redlining.measurements",
     "redlining.outline",
     "redlining.pick",
     "redlining.point",

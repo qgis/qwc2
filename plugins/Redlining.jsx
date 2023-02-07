@@ -14,6 +14,7 @@ import Mousetrap from 'mousetrap';
 import {changeRedliningState} from '../actions/redlining';
 import {LayerRole, addLayer} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
+import Icon from '../components/Icon';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import ColorButton from '../components/widgets/ColorButton';
@@ -184,6 +185,15 @@ class Redlining extends React.Component {
                     <span>
                         <input className="redlining-label" onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})} placeholder={labelPlaceholder} ref={el => this.setLabelRef(el)} type="text" value={this.props.redlining.style.text}/>
                     </span>
+                ) : null}
+                {this.props.redlining.geomType !== 'Text' ? (
+                    <button
+                        className={"button" + (this.props.redlining.measurements ? " pressed" : "")}
+                        onClick={() => this.updateRedliningState({measurements: !this.props.redlining.measurements})}
+                        title={LocaleUtils.tr("redlining.measurements")}
+                    >
+                        <Icon icon="measure" />
+                    </button>
                 ) : null}
             </div>
         );
