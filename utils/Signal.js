@@ -14,7 +14,7 @@ export default class Signal {
             // If a callback returns true, don't re-execute it
             const result = callback(data);
             if (!result) {
-                newcallbacks.append(callback);
+                newcallbacks.push(callback);
             }
         });
         this.callbacks = newcallbacks;
