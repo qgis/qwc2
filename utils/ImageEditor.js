@@ -40,6 +40,10 @@ export function showImageEditor(imageData, imageDataCallback) {
     const modalDialogBody = document.createElement("div");
     modalDialogBody.className = "modal-dialog-body";
     modalDialogBody.id = 'painterro';
+    modalDialogBody.addEventListener('keypress', (ev) => {
+        // Prevent i.e. +/- from triggering map zoom
+        ev.stopPropagation();
+    });
     modalDialog.appendChild(modalDialogBody);
 
     modalDialogContainer.appendChild(modalDialog);
