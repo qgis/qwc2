@@ -222,7 +222,9 @@
     "measureComponent": {
       "areaLabel": "Alan",
       "bearingLabel": "Doğrultu",
+      "imperial": "",
       "lengthLabel": "Uzunluk",
+      "metric": "",
       "pointLabel": "Konum"
     },
     "navbar": {

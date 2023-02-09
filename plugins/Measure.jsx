@@ -81,14 +81,16 @@ class Measure extends React.Component {
             );
         } else if (this.props.measureState.geomType === "LineString") {
             const length = this.props.measureState.length || 0;
-            const text = MeasureUtils.formatMeasurement(length, false, this.props.measureState.lenUnit, this.props.measureState.decimals, false);
+            const text = MeasureUtils.formatMeasurement(length, false, this.props.measureState.lenUnit, this.props.measureState.decimals);
             resultBody = (
                 <div className="measure-body">
                     <span className="measure-result">{text}</span>
                     <select onChange={this.changeLengthUnit} value={this.props.measureState.lenUnit}>
+                        <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
+                        <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
                         <option value="m">m</option>
-                        <option value="ft">ft</option>
                         <option value="km">km</option>
+                        <option value="ft">ft</option>
                         <option value="mi">mi</option>
                     </select>
                     <CopyButton buttonClass="copy-measure-button" text={text} />
@@ -96,17 +98,19 @@ class Measure extends React.Component {
             );
         } else if (this.props.measureState.geomType === "Polygon") {
             const area = this.props.measureState.area || 0;
-            const text = MeasureUtils.formatMeasurement(area, false, this.props.measureState.areaUnit, this.props.measureState.decimals, false);
+            const text = MeasureUtils.formatMeasurement(area, false, this.props.measureState.areaUnit, this.props.measureState.decimals);
             resultBody = (
                 <div className="measure-body">
                     <span className="measure-result">{text}</span>
                     <select onChange={this.changeAreaUnit} value={this.props.measureState.areaUnit}>
+                        <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
+                        <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
                         <option value="sqm">m&#178;</option>
-                        <option value="sqft">ft&#178;</option>
-                        <option value="sqkm">km&#178;</option>
-                        <option value="sqmi">mi&#178;</option>
                         <option value="ha">ha</option>
+                        <option value="sqkm">km&#178;</option>
+                        <option value="sqft">ft&#178;</option>
                         <option value="acre">acre</option>
+                        <option value="sqmi">mi&#178;</option>
                     </select>
                     <CopyButton buttonClass="copy-measure-button" text={text} />
                 </div>

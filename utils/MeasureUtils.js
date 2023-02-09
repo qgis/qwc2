@@ -66,6 +66,28 @@ const MeasureUtils = {
                 }
             }
             break;
+        case 'imperial':
+            if (isArea) {
+                if (valueMetric > 2.58999 * 1000000) {
+                    result = LocaleUtils.toLocaleFixed(valueMetric * 0.000000386102159, decimals);
+                    unitlabel = 'mi²';
+                } else if (valueMetric > 4046.86) {
+                    result = LocaleUtils.toLocaleFixed(valueMetric * 0.0001, decimals);
+                    unitlabel = 'acre';
+                } else {
+                    result = LocaleUtils.toLocaleFixed(valueMetric * 10.7639, decimals);
+                    unitlabel = 'ft²';
+                }
+            } else {
+                if (valueMetric > 1609.34) {
+                    result = LocaleUtils.toLocaleFixed(valueMetric * 0.000621371, decimals);
+                    unitlabel = 'mi';
+                } else {
+                    result = LocaleUtils.toLocaleFixed(valueMetric * 3.28084, decimals);
+                    unitlabel = 'ft';
+                }
+            }
+            break;
         case 'm':
             result = LocaleUtils.toLocaleFixed(valueMetric, decimals); break;
         case 'ft':

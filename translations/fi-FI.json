@@ -222,7 +222,9 @@
     "measureComponent": {
       "areaLabel": "Alue",
       "bearingLabel": "Suunta",
+      "imperial": "",
       "lengthLabel": "Pituus",
+      "metric": "",
       "pointLabel": "Sijainti"
     },
     "navbar": {

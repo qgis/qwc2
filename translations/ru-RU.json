@@ -222,7 +222,9 @@
     "measureComponent": {
       "areaLabel": "Площадь",
       "bearingLabel": "Пеленг",
+      "imperial": "",
       "lengthLabel": "Длина",
+      "metric": "",
       "pointLabel": "Позиция"
     },
     "navbar": {

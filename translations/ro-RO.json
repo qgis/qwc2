@@ -222,7 +222,9 @@
     "measureComponent": {
       "areaLabel": "Arie",
       "bearingLabel": "Direcție",
+      "imperial": "",
       "lengthLabel": "Lungime",
+      "metric": "",
       "pointLabel": "Poziție"
     },
     "navbar": {
