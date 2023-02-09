@@ -51,13 +51,13 @@ class MeasurementSupport extends React.Component {
         } else if (!this.props.measurement.geomType) {
             this.reset();
         } else if (
-            this.measureLayer && (
+            this.sketchFeature && (
                 this.props.measurement.lenUnit !== prevProps.measurement.lenUnit ||
                 this.props.measurement.areaUnit !== prevProps.measurement.areaUnit || 
                 this.props.displayCrs !== prevProps.displayCrs
             )
         ) {
-            this.measureLayer.getSource().changed();
+            this.updateMeasurementResults(this.sketchFeature, this.props.measurement.drawing);
         }
     }
     render() {
@@ -158,7 +158,14 @@ class MeasurementSupport extends React.Component {
     }
     updateMeasurementResults = (feature, drawing = true) => {
         const geomType = this.props.measurement.geomType;
-        MeasureUtils.updateFeatureMeasurements(feature, geomType, this.props.projection, this.getOptions().geodesic);
+        const settings = {
+            lenUnit: this.props.measurement.lenUnit,
+            areaUnit: this.props.measurement.areaUnit,
+            decimals: this.props.measurement.decimals,
+            mapCrs: this.props.mapCrs,
+            displayCrs: this.props.displayCrs
+        };
+        MeasureUtils.updateFeatureMeasurements(feature, geomType, this.props.projection, settings);
 
         // Only one segment for bearing measurement
         if (geomType === 'Bearing' && feature.getGeometry().getCoordinates().length > 2) {
@@ -174,19 +181,15 @@ class MeasurementSupport extends React.Component {
         });
     }
     featureStyleFunction = (feature) => {
-        const measureOpts = {
-            lenUnit: this.props.measurement.lenUnit,
-            areaUnit: this.props.measurement.areaUnit,
-            decimals: this.props.measurement.decimals,
-            mapCrs: this.props.mapCrs,
-            displayCrs: this.props.displayCrs
+        const styleOptions = {
+            strokeColor: 'red',
+            strokeWidth: 4,
+            fillColor: [255, 0, 0, 0.25],
+            strokeDash: []
         };
         return [
             // Base geometry
-            new ol.style.Style({
-                fill: new ol.style.Fill({ color: 'rgba(255, 0, 0, 0.25)' }),
-                stroke: new ol.style.Stroke({ color: 'red', width: 4 })
-            }),
+            ...FeatureStyles.default(feature, styleOptions),
             // Nodes
             new ol.style.Style({
                 image: new ol.style.Circle({
@@ -203,13 +206,8 @@ class MeasurementSupport extends React.Component {
                         return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
                     }
                 }
-            }),
-            // Measure labels
-            ...FeatureStyles.measurement(feature, this.props.measurement.geomType, measureOpts)
+            })
         ];
-    }
-    getOptions = () => {
-        return {...MeasurementSupport.defaultOpts, ...this.props.options};
     }
 }
 

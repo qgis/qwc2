@@ -8,6 +8,7 @@
  */
 
 import ol from 'openlayers';
+import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from "./CoordinatesUtils";
 import LocaleUtils from './LocaleUtils';
 
@@ -146,22 +147,29 @@ const MeasureUtils = {
 
         return ("" + d + "° " + m + "' " + s + "'' ");
     },
-    updateFeatureMeasurements(feature, geomType, featureCrs, geodesic = true) {
-        const measurements = {geodesic: geodesic};
+    updateFeatureMeasurements(feature, geomType, featureCrs, settings) {
+        const geodesic = ConfigUtils.getConfigProp("geodesicMeasurements");
+        const measurements = {};
         const geom = feature.getGeometry();
-        if (geomType === 'LineString') {
+        if (geomType === 'Point') {
+            feature.set('label', MeasureUtils.getFormattedCoordinate(geom.getCoordinates(), settings.mapCrs, settings.displayCrs));
+        } else if (geomType === 'LineString') {
             const lengths = MeasureUtils.computeSegmentLengths(geom.getCoordinates(), featureCrs, geodesic);
             measurements.segment_lengths = lengths;
             measurements.length = lengths.reduce((sum, len) => sum + len, 0);
+            feature.set('segment_labels', lengths.map(length => MeasureUtils.formatMeasurement(length, false, settings.lenUnit, settings.decimals)));
         } else if (["Ellipse", "Polygon", "Square", "Box"].includes(geomType)) {
             const area = MeasureUtils.computeArea(geom, featureCrs, geodesic);
             measurements.area = area;
+            feature.set('label', MeasureUtils.formatMeasurement(area, true, settings.areaUnit, settings.decimals));
         } else if (geomType === 'Circle') {
             const radius = geom.getRadius();
             measurements.radius = radius;
+            feature.set('label', "r = " + MeasureUtils.formatMeasurement(radius, false, settings.lenUnit, settings.decimals));
         } else if (geomType === 'Bearing') {
             const coo = geom.getCoordinates();
             measurements.bearing = CoordinatesUtils.calculateAzimuth(coo[0], coo[1], featureCrs);
+            feature.set('label', MeasureUtils.getFormattedBearingValue(measurements.bearing));
         }
         feature.set('measurements', measurements);
     },

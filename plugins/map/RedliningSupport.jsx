@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
 import {v1 as uuidv4} from 'uuid';
 import ol from 'openlayers';
+import isEqual from 'lodash.isequal';
 import {changeRedliningState} from '../../actions/redlining';
 import {LayerRole, addLayerFeatures, removeLayerFeatures} from '../../actions/layers';
 import {OlLayerAdded, OlLayerUpdated} from '../../components/map/OlLayer';
@@ -108,7 +109,7 @@ class RedliningSupport extends React.Component {
             this.addDrawInteraction(layerChanged);
         } else if (this.props.redlining.freehand !== prevProps.redlining.freehand) {
             this.addDrawInteraction(layerChanged);
-        } else if (this.props.redlining.style !== prevProps.redlining.style) {
+        } else if (!isEqual(this.props.redlining.style, prevProps.redlining.style)) {
             this.updateFeatureStyle(this.props.redlining.style);
         }
         if (this.snapInteraction && this.props.snappingConfig.active !== prevProps.snappingConfig.active) {
@@ -165,9 +166,6 @@ class RedliningSupport extends React.Component {
         if ((geomTypeConfig || {}).drawNodes !== false) {
             styles.push(this.selectedStyle);
         }
-        if (!isText && this.props.redlining.measurements) {
-            styles.push(...FeatureStyles.measurement(feature, shape, {mapCrs: this.props.mapCrs, displayCrs: this.props.displayCrs}));
-        }
         return styles;
     }
     addDrawInteraction = (layerChanged) => {
@@ -218,7 +216,26 @@ class RedliningSupport extends React.Component {
     }
     updateMeasurements = (evt) => {
         const feature = evt.target;
-        MeasureUtils.updateFeatureMeasurements(feature, feature.get('shape'), this.props.mapCrs, false);
+        const hadMeasurements = !!feature.get('measurements');
+        if (this.props.redlining.measurements) {
+            const settings = {
+                mapCrs: this.props.mapCrs,
+                displayCrs: this.props.displayCrs,
+                lenUnit: 'metric',
+                areaUnit: 'metric',
+                decimals: 2
+            }
+            MeasureUtils.updateFeatureMeasurements(feature, feature.get('shape'), this.props.mapCrs, settings);
+        } else if (hadMeasurements) {
+            feature.set('measurements', undefined);
+            feature.set('segment_labels', undefined);
+            feature.set('label', '');
+        }
+        const newStyleProps = {
+            ...this.props.redlining.style,
+            text: feature.get('label')
+        };
+        this.props.changeRedliningState({selectedFeature: this.currentFeatureObject(), style: newStyleProps});
     }
     waitForFeatureAndLayer = (layerId, featureId, callback) => {
         const redliningLayer = this.searchRedliningLayer(layerId);
@@ -356,7 +373,6 @@ class RedliningSupport extends React.Component {
             }
             if (evt.selected.length === 1) {
                 this.currentFeature = evt.selected[0];
-                this.currentFeature.on('change', this.updateMeasurements);
                 const circle = this.currentFeature.get('circleParams');
                 if (circle) {
                     this.currentFeature.setGeometry(new ol.geom.Circle(circle.center, circle.radius));
@@ -364,10 +380,12 @@ class RedliningSupport extends React.Component {
                 const newRedliningState = {
                     geomType: this.currentFeature.get("isText") === true ? 'Text' : this.currentFeature.getGeometry().getType(),
                     style: this.styleProps(this.currentFeature),
+                    measurements: !!this.currentFeature.get('measurements'),
                     selectedFeature: this.currentFeatureObject()
                 };
                 this.updateFeatureStyle(newRedliningState.style);
                 this.props.changeRedliningState(newRedliningState);
+                this.currentFeature.on('change', this.updateMeasurements);
                 const geomTypeConfig = GeomTypeConfig[this.currentFeature.get('shape')];
                 if (geomTypeConfig && geomTypeConfig.editTool === 'Transform') {
                     this.props.map.addInteraction(transformInteraction);
@@ -425,15 +443,16 @@ class RedliningSupport extends React.Component {
             }
             if (evt.feature) {
                 this.currentFeature = evt.feature;
-                this.currentFeature.on('change', this.updateMeasurements);
                 const circle = this.currentFeature.get('circleParams');
                 if (circle) {
                     this.currentFeature.setGeometry(new ol.geom.Circle(circle.center, circle.radius));
                 }
                 this.props.changeRedliningState({
                     selectedFeature: this.currentFeatureObject(),
-                    style: this.styleProps(this.currentFeature)
+                    style: this.styleProps(this.currentFeature),
+                    measurements: !!this.currentFeature.get('measurements')
                 });
+                this.currentFeature.on('change', this.updateMeasurements);
             }
         });
         this.props.map.addInteraction(transformInteraction);
@@ -471,13 +490,13 @@ class RedliningSupport extends React.Component {
         feature.styleName = this.currentFeature.get('styleName');
         feature.styleOptions = this.currentFeature.get('styleOptions');
         feature.shape = this.currentFeature.get('shape');
+        feature.measurements = this.currentFeature.get('measurements');
         // Don't pollute GeoJSON object properties with internal props
         delete feature.properties.styleName;
         delete feature.properties.styleOptions;
         delete feature.properties.isText;
         delete feature.properties.circleParams;
         delete feature.properties.shape;
-        // Don't persist measurements
         delete feature.properties.measurements;
         // Don't store empty label prop
         if (feature.properties.label === "") {

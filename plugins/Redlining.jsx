@@ -99,7 +99,7 @@ class Redlining extends React.Component {
                 {key: "Square", tooltip: LocaleUtils.trmsg("redlining.square"), icon: "box", data: {action: "Draw", geomType: "Square", text: ""}},
                 {key: "Box", tooltip: LocaleUtils.trmsg("redlining.rectangle"), icon: "rect", data: {action: "Draw", geomType: "Box", text: ""}}
             ],
-            {key: "Text", tooltip: LocaleUtils.trmsg("redlining.text"), icon: "text", data: {action: "Draw", geomType: "Text", text: ""}}
+            {key: "Text", tooltip: LocaleUtils.trmsg("redlining.text"), icon: "text", data: {action: "Draw", geomType: "Text", text: "", measurements: false}}
         ];
         const activeFreeHand = this.props.redlining.freehand ? "HandDrawing" : null;
         const freehandButtons = [{
@@ -183,7 +183,7 @@ class Redlining extends React.Component {
                 </span>
                 {(this.props.redlining.geomType === 'Text' || this.props.allowGeometryLabels) ? (
                     <span>
-                        <input className="redlining-label" onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})} placeholder={labelPlaceholder} ref={el => this.setLabelRef(el)} type="text" value={this.props.redlining.style.text}/>
+                        <input className="redlining-label" onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})} placeholder={labelPlaceholder} readOnly={this.props.redlining.measurements} ref={el => this.setLabelRef(el)} type="text" value={this.props.redlining.style.text}/>
                     </span>
                 ) : null}
                 {this.props.redlining.geomType !== 'Text' ? (
