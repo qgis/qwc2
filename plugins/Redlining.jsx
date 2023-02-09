@@ -182,9 +182,7 @@ class Redlining extends React.Component {
                         strict value={this.props.redlining.style.size}/>
                 </span>
                 {(this.props.redlining.geomType === 'Text' || this.props.allowGeometryLabels) ? (
-                    <span>
-                        <input className="redlining-label" onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})} placeholder={labelPlaceholder} readOnly={this.props.redlining.measurements} ref={el => this.setLabelRef(el)} type="text" value={this.props.redlining.style.text}/>
-                    </span>
+                    <input className="redlining-label" onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})} placeholder={labelPlaceholder} readOnly={this.props.redlining.measurements} ref={el => this.setLabelRef(el)} type="text" value={this.props.redlining.style.text}/>
                 ) : null}
                 {this.props.redlining.geomType !== 'Text' ? (
                     <button
