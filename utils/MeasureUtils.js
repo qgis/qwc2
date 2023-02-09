@@ -171,7 +171,10 @@ const MeasureUtils = {
     },
     updateFeatureMeasurements(feature, geomType, featureCrs, settings) {
         const geodesic = ConfigUtils.getConfigProp("geodesicMeasurements");
-        const measurements = {};
+        const measurements = {
+            lenUnit: settings.lenUnit,
+            areaUnit: settings.areaUnit
+        };
         const geom = feature.getGeometry();
         if (geomType === 'Point') {
             feature.set('label', MeasureUtils.getFormattedCoordinate(geom.getCoordinates(), settings.mapCrs, settings.displayCrs));

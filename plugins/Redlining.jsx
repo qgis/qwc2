@@ -181,9 +181,6 @@ class Redlining extends React.Component {
                         mobile onChange={(nr) => this.updateRedliningStyle({size: nr})} precision={0} step={1}
                         strict value={this.props.redlining.style.size}/>
                 </span>
-                {(this.props.redlining.geomType === 'Text' || this.props.allowGeometryLabels) ? (
-                    <input className="redlining-label" onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})} placeholder={labelPlaceholder} readOnly={this.props.redlining.measurements} ref={el => this.setLabelRef(el)} type="text" value={this.props.redlining.style.text}/>
-                ) : null}
                 {this.props.redlining.geomType !== 'Text' ? (
                     <button
                         className={"button" + (this.props.redlining.measurements ? " pressed" : "")}
@@ -192,6 +189,31 @@ class Redlining extends React.Component {
                     >
                         <Icon icon="measure" />
                     </button>
+                ) : null}
+                {(this.props.redlining.geomType === 'Text' || this.props.allowGeometryLabels) && !this.props.redlining.measurements ? (
+                    <input className="redlining-label" onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})} placeholder={labelPlaceholder} readOnly={this.props.redlining.measurements} ref={el => this.setLabelRef(el)} type="text" value={this.props.redlining.style.text}/>
+                ) : null}
+                {this.props.redlining.measurements && ['LineString', 'Circle'].includes(this.props.redlining.geomType) ? (
+                    <select className="redlining-unit" onChange={ev => this.updateRedliningState({lenUnit: ev.target.value})} value={this.props.redlining.lenUnit}>
+                        <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
+                        <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
+                        <option value="m">m</option>
+                        <option value="km">km</option>
+                        <option value="ft">ft</option>
+                        <option value="mi">mi</option>
+                    </select>
+                ) : null}
+                {this.props.redlining.measurements && ['Polygon', 'Ellipse', 'Square', 'Box'].includes(this.props.redlining.geomType) ? (
+                    <select className="redlining-unit" onChange={ev => this.updateRedliningState({areaUnit: ev.target.value})} value={this.props.redlining.areaUnit}>
+                        <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
+                        <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
+                        <option value="sqm">m&#178;</option>
+                        <option value="ha">ha</option>
+                        <option value="sqkm">km&#178;</option>
+                        <option value="sqft">ft&#178;</option>
+                        <option value="acre">acre</option>
+                        <option value="sqmi">mi&#178;</option>
+                    </select>
                 ) : null}
             </div>
         );

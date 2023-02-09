@@ -56,7 +56,8 @@ div.redlining-controlsbar span.react-numeric-input {
     width: 7em;
 }
 
-div.redlining-controlsbar input.redlining-label {
+div.redlining-controlsbar input.redlining-label,
+div.redlining-controlsbar select.redlining-unit {
     flex: 1 1 auto;
     width: 0;
 }
