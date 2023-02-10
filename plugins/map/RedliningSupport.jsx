@@ -33,11 +33,11 @@ const GeomTypeConfig = {
     Point: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true},
     LineString: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "LineString"}), editTool: 'Pick', drawNodes: true},
     Polygon: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Polygon"}), editTool: 'Pick', drawNodes: true},
-    Circle: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Circle"}), editTool: 'Pick', drawNodes: true},
+    Circle: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Circle"}), editTool: 'Pick', drawNodes: true, regular: true},
     Ellipse: {drawInteraction: (opts) => new ol.interaction.DrawRegular({...opts, sides: 0}), editTool: 'Transform', drawNodes: false},
     Box: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Circle", geometryFunction: ol.interaction.createBox()}), editTool: 'Transform', drawNodes: true},
-    Square: {drawInteraction: (opts) => new ol.interaction.DrawRegular({...opts, sides: 4, squareCondition: () => true }), editTool: 'Transform'}
-}
+    Square: {drawInteraction: (opts) => new ol.interaction.DrawRegular({...opts, sides: 4, squareCondition: () => true }), editTool: 'Transform', regular: true}
+};
 
 class RedliningSupport extends React.Component {
     static propTypes = {
@@ -342,7 +342,11 @@ class RedliningSupport extends React.Component {
                 return;
             }
             this.setCurrentFeature(feature);
-            const transformInteraction = new ol.interaction.Transform({});
+            const transformInteraction = new ol.interaction.Transform({
+                keepAspectRatio: () => {
+                    return this.currentFeature ? GeomTypeConfig[this.currentFeature.get('shape')].regular : false;
+                }
+            });
             this.props.map.addInteraction(transformInteraction);
             transformInteraction.select(this.currentFeature, true);
             this.interactions.push(transformInteraction);
@@ -380,7 +384,11 @@ class RedliningSupport extends React.Component {
                 return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
             }
         });
-        const transformInteraction = new ol.interaction.Transform({});
+        const transformInteraction = new ol.interaction.Transform({
+            keepAspectRatio: () => {
+                return this.currentFeature ? GeomTypeConfig[this.currentFeature.get('shape')].regular : false;
+            }
+        });
         let currentEditInteraction = null;
         selectInteraction.on('select', (evt) => {
             if (evt.selected.length === 1 && evt.selected[0] === this.currentFeature) {
@@ -445,7 +453,11 @@ class RedliningSupport extends React.Component {
         if (!redliningLayer) {
             return;
         }
-        const transformInteraction = new ol.interaction.Transform({});
+        const transformInteraction = new ol.interaction.Transform({
+            keepAspectRatio: () => {
+                return this.currentFeature ? GeomTypeConfig[this.currentFeature.get('shape')].regular : false;
+            }
+        });
         transformInteraction.on('select', (evt) => {
             if (evt.feature === this.currentFeature) {
                 return;
