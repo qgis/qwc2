@@ -13,6 +13,17 @@ span.map-legend-color-box {
     border: 1px solid black;
 }
 
+div.map-legend-group-title {
+    font-weight: bold;
+    margin: 0.25em;
+}
+
+div.map-legend-group-entries {
+    margin-left: 0.5em;
+    border-left: 1px solid var(--border-color);
+    padding-left: 1em;
+}
+
 div.map-legend-legend-entry {
     display: flex;
     align-items: center;

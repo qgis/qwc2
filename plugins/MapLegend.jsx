@@ -19,6 +19,7 @@ import './style/MapLegend.css';
 class MapLegend extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
+        addGroupTitles: PropTypes.bool,
         addLayerTitles: PropTypes.bool,
         bboxDependentLegend: PropTypes.bool,
         extraLegendParams: PropTypes.string,
@@ -30,6 +31,7 @@ class MapLegend extends React.Component {
         windowSize: PropTypes.object
     }
     static defaultProps = {
+        addGroupTitles: false,
         addLayerTitles: false,
         bboxDependentLegend: false,
         onlyVisibleLegend: false,
@@ -96,7 +98,18 @@ class MapLegend extends React.Component {
     printLayerLegend = (layer, sublayer, mapScale) => {
         let body = null;
         if (sublayer.sublayers && (!this.state.onlyVisibleLegend || sublayer.visibility)) {
-            body = sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer));
+            if (this.props.addGroupTitles) {
+                body = (
+                    <div className="map-legend-group" key={sublayer.name}>
+                        <div className="map-legend-group-title">{sublayer.title || sublayer.name}</div>
+                        <div className="map-legend-group-entries">
+                            {sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer))}
+                        </div>
+                    </div>
+                );
+            } else {
+                return sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer));
+            }
         } else {
             if (this.state.onlyVisibleLegend && !sublayer.visibility) {
                 return null;
