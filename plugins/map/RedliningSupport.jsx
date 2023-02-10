@@ -148,22 +148,20 @@ class RedliningSupport extends React.Component {
     }
     updateFeatureStyle = (styleProps) => {
         if (this.currentFeature) {
-            const isText = this.currentFeature.get("isText") === true;
-            const styleName = isText ? "text" : "default";
+            const isText = this.currentFeature.get("shape") === "Text";
             const opts = this.styleOptions(styleProps);
             this.blockOnChange = true;
             this.currentFeature.set('label', styleProps.text);
-            this.currentFeature.set('styleName', styleName);
+            this.currentFeature.set('styleName', isText ? "text" : "default");
             this.currentFeature.set('styleOptions', opts);
             this.blockOnChange = false;
         }
     }
     styleFunction = (feature) => {
-        const isText = feature.get("isText") === true;
         const styleOptions = feature.get("styleOptions");
-        const styleName = isText ? "text" : "default";
+        const styleName = feature.get("styleName");
         const styles = [];
-        if (isText) {
+        if (styleName === "text") {
             styles.push(this.selectedTextStyle(feature, styleOptions));
         }
         styles.push(...FeatureStyles[styleName](feature, styleOptions));
@@ -183,7 +181,7 @@ class RedliningSupport extends React.Component {
         }
         const measurements = this.currentFeature.get('measurements');
         const newRedliningState = {
-            geomType: this.currentFeature.get("isText") === true ? 'Text' : this.currentFeature.getGeometry().getType(),
+            geomType: this.currentFeature.get('shape'),
             style: this.styleProps(this.currentFeature),
             measurements: !!this.currentFeature.get('measurements'),
             selectedFeature: this.currentFeatureObject()
@@ -203,7 +201,6 @@ class RedliningSupport extends React.Component {
         if (!geomTypeConfig) {
             return;
         }
-        const isText = this.props.redlining.geomType === "Text";
         const isFreeHand = this.props.redlining.freehand;
         const drawInteraction = geomTypeConfig.drawInteraction({
             stopClick: true,
@@ -218,7 +215,6 @@ class RedliningSupport extends React.Component {
             this.leaveTemporaryEditMode();
             this.currentFeature = evt.feature;
             this.currentFeature.setId(uuidv4());
-            this.currentFeature.set('isText', isText);
             this.currentFeature.set('shape', this.props.redlining.geomType);
             this.currentFeature.setStyle(this.styleFunction);
             this.updateFeatureStyle(this.props.redlining.style);
@@ -469,7 +465,7 @@ class RedliningSupport extends React.Component {
             return;
         }
         this.updateFeatureStyle(this.props.redlining.style);
-        const isText = this.currentFeature.get("isText") === true;
+        const isText = this.currentFeature.get("shape") === "Text";
         if (isText && !this.currentFeature.get("label")) {
             if (!newFeature) {
                 this.props.removeLayerFeatures(this.props.redlining.layer, [this.currentFeature.getId()]);
@@ -542,7 +538,7 @@ class RedliningSupport extends React.Component {
     resetSelectedFeature = () => {
         if (this.currentFeature) {
             // Reset selection style
-            const isText = this.currentFeature.get("isText") === true;
+            const isText = this.currentFeature.get("shape") === "Text";
             const style = FeatureStyles[isText ? "text" : "default"](this.currentFeature, this.currentFeature.get('styleOptions'));
             this.currentFeature.setStyle(style);
             this.currentFeature.un('change', this.updateMeasurements);

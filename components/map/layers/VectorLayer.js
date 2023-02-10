@@ -23,7 +23,6 @@ export default {
                 }
                 f.set('styleName', feature.styleName);
                 f.set('styleOptions', feature.styleOptions);
-                f.set('isText', feature.isText);
                 f.set('circleParams', feature.circleParams);
                 f.set('shape', feature.shape);
                 f.set('measurements', feature.measurements);
@@ -102,7 +101,6 @@ export default {
                     }
                     f.set('styleName', feature.styleName);
                     f.set('styleOptions', feature.styleOptions);
-                    f.set('isText', feature.isText);
                     f.set('circleParams', feature.circleParams);
                     f.set('shape', feature.shape);
                     f.set('measurements', feature.measurements);
