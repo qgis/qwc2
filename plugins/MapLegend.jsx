@@ -95,7 +95,7 @@ class MapLegend extends React.Component {
     }
     printLayerLegend = (layer, sublayer, mapScale) => {
         let body = null;
-        if (sublayer.sublayers) {
+        if (sublayer.sublayers && (!this.state.onlyVisibleLegend || sublayer.visibility)) {
             body = sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer));
         } else {
             if (this.state.onlyVisibleLegend && !sublayer.visibility) {
