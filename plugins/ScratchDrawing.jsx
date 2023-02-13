@@ -70,7 +70,7 @@ class ScratchDrawing extends React.Component {
         };
     }
     keyPressed = (ev) => {
-        if (ev.keyCode === 27) {
+        if (this.props.task.id === "ScratchDrawing" && ev.keyCode === 27) {
             if (this.props.redlining.action === 'Draw' && !this.props.redlining.selectedFeature) {
                 this.props.changeRedliningState({action: 'Delete'});
             }

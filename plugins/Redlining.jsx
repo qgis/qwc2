@@ -64,7 +64,7 @@ class Redlining extends React.Component {
         window.removeEventListener('keydown', this.keyPressed);
     }
     keyPressed = (ev) => {
-        if (ev.keyCode === 27) {
+        if (this.props.redlining.action && ev.keyCode === 27) {
             if (this.props.redlining.action === 'Draw' && !this.props.redlining.selectedFeature) {
                 this.props.changeRedliningState({action: 'Delete'});
             }
