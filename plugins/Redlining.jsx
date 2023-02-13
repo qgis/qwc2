@@ -162,6 +162,9 @@ class Redlining extends React.Component {
         if (this.props.redlining.geomType === "Text") {
             labelPlaceholder = LocaleUtils.tr("redlining.text");
         }
+        if (this.props.redlining.action !== 'Draw' && !this.props.redlining.selectedFeature) {
+            return null;
+        }
 
         return (
             <div className="redlining-controlsbar">
