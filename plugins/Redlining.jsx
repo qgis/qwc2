@@ -187,7 +187,7 @@ class Redlining extends React.Component {
                 {this.props.redlining.geomType !== 'Text' ? (
                     <button
                         className={"button" + (this.props.redlining.measurements ? " pressed" : "")}
-                        onClick={() => this.updateRedliningState({measurements: !this.props.redlining.measurements})}
+                        onClick={() => this.updateRedliningState({measurements: !this.props.redlining.measurements, style: {...this.props.redlining.style, text: ''}})}
                         title={LocaleUtils.tr("redlining.measurements")}
                     >
                         <Icon icon="measure" />
