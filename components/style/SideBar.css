@@ -30,6 +30,16 @@ div.sidebar-resize-handle-right {
     left: -3px;
 }
 
+div.sidebar-resize-handle-bottom {
+    position: absolute;
+    height: 6px;
+    left: 0;
+    right: 0;
+    bottom: -3px;
+    cursor: ns-resize;
+    z-index: 2;
+}
+
 div.sidebar div.sidebar-titlebar {
     color: var(--titlebar-text-color);
     background-color: var(--titlebar-bg-color);

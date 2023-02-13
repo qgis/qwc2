@@ -27,7 +27,7 @@ const autogenExternalLayers = [];
 
 function uniqueThemeId(themeName) {
     if (!themeName) {
-        return uuid.v1();
+        return uuidv1();
     }
     if (usedThemeIds.includes(themeName)) {
         let i = 1;
@@ -542,6 +542,7 @@ function genThemes(themesConfig) {
             defaultPrintScales: config.defaultPrintScales,
             defaultPrintResolutions: config.defaultPrintResolutions,
             defaultPrintGrid: config.defaultPrintGrid,
+            defaultSearchProviders: config.defaultSearchProviders,
             externalLayers: config.themes.externalLayers || [],
             pluginData: config.themes.pluginData,
             themeInfoLinks: config.themes.themeInfoLinks,

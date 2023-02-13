@@ -36,6 +36,23 @@ div.resizeable-window-docked-left {
     bottom: initial!important;
 }
 
+div.resizeable-window-docked-right {
+    transform: none!important;
+    left: initial!important;
+    right: 0!important;
+    top: 0!important;
+    bottom: initial!important;
+}
+
+div.resizeable-window-docked-top {
+    transform: none!important;
+    left: 0!important;
+    right: 0!important;
+    top: 0!important;
+    bottom: initial!important;
+    width: initial!important;
+}
+
 div.resizeable-window-docked-bottom {
     transform: none!important;
     left: 0!important;
@@ -76,6 +93,21 @@ span.resizeable-window-titlebar-control {
     flex: 0 0 auto;
     margin-left: 0.25em;
     font-size: large;
+}
+
+span.resizeable-window-titlebar-extra-controls {
+    margin-right: 0.5em;
+}
+
+span.resizeable-window-titlebar-extra-control {
+    flex: 0 0 auto;
+    padding: 0.25em;
+    margin: 0 1px;
+}
+
+span.resizeable-window-titlebar-extra-control-active {
+    background-color: var(--titlebar-text-color);
+    color: var(--titlebar-bg-color);
 }
 
 div.resizeable-window-body {

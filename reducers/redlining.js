@@ -20,7 +20,10 @@ const defaultState = {
     layer: 'redlining',
     layerTitle: 'Redlining',
     selectedFeature: null,
-    drawMultiple: true
+    drawMultiple: true,
+    measurements: false,
+    lenUnit: 'metric',
+    areaUnit: 'metric'
 };
 
 export default function redlining(state = defaultState, action) {

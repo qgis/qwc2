@@ -15,6 +15,7 @@
         "LayerTree": "Layers & Legend",
         "Login": "Login",
         "Logout": "Logout",
+        "MapLegend": "Legend",
         "Measure": "Measure",
         "MeasureLineString": "Measure a line",
         "MeasurePolygon": "Measure a polygon",
@@ -128,6 +129,7 @@
       "loading": "Calculating height profile..."
     },
     "identify": {
+      "clipboard": "Copy to clipboard",
       "export": "Export",
       "exportformat": "Export format:",
       "featureReport": "Feature report",
@@ -155,7 +157,9 @@
     },
     "infotool": {
       "clickhelpPoint": "Click a location to identify in the map...",
-      "clickhelpPolygon": "Draw a polygon around the features to identify..."
+      "clickhelpPolygon": "Draw a polygon around the features to identify...",
+      "clickhelpRadius": "Set a radius and click a location to identify features around the point...",
+      "radius": "Radius"
     },
     "layercatalog": {
       "windowtitle": "Layer catalog"
@@ -209,10 +213,18 @@
       "elevation": "Elevation",
       "title": "Position"
     },
+    "maplegend": {
+      "bboxdependent": "Map extent dependent legend",
+      "onlyvisible": "Only visibile layers",
+      "scaledependent": "Map scale depdendent legend",
+      "windowtitle": "Legend"
+    },
     "measureComponent": {
       "areaLabel": "Area",
       "bearingLabel": "Bearing",
+      "imperial": "Imperial",
       "lengthLabel": "Length",
+      "metric": "Metric",
       "pointLabel": "Position"
     },
     "navbar": {
@@ -253,17 +265,22 @@
       "delete": "Delete",
       "draw": "Draw",
       "edit": "Edit",
+      "ellipse": "Ellipse",
       "fill": "Fill",
       "freehand": "Freehand drawing",
       "label": "Label",
       "layer": "Layer",
       "line": "Line",
+      "measurements": "Show measurements",
       "outline": "Outline",
       "pick": "Pick",
       "point": "Point",
       "polygon": "Polygon",
+      "rectangle": "Rectangle",
       "size": "Size",
+      "square": "Square",
       "text": "Text",
+      "transform": "Transform",
       "width": "Width"
     },
     "scratchdrawing": {
@@ -344,8 +361,11 @@
       "animationinterval": "Animation interval",
       "classify": "Classification attribute",
       "classifynone": "None",
+      "displayfeatures": "Timeline with features",
+      "displaylayers": "Timeline with layers",
+      "displayminimal": "Timeline only",
       "endtime": "End",
-      "featuretimeline": "Feature timeline",
+      "future": "Future",
       "group": "Grouping attribute",
       "groupnone": "None",
       "home": "Reset timeline",
@@ -353,6 +373,8 @@
       "loop": "Loop",
       "markers": "Markers",
       "notemporaldata": "No temporal layers are visible in the map.",
+      "now": "Now",
+      "past": "Past",
       "play": "Play",
       "playrev": "Play backwards",
       "rewind": "Rewind",
@@ -364,6 +386,7 @@
       "timeline": "Timeline",
       "timeline_fixed": "Fixed",
       "timeline_infinite": "Infinite",
+      "timelinedisplay": "Display",
       "timelinescale": "Timescale (non-linearity)",
       "title": "Time manager",
       "toggle": "Temporal navigation",

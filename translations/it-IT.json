@@ -15,6 +15,7 @@
         "LayerTree": "Livelli",
         "Login": "Accedi",
         "Logout": "Disconnetti",
+        "MapLegend": "Legenda",
         "Measure": "Misura",
         "MeasureLineString": "Misura una linea",
         "MeasurePolygon": "Misura un poligono",
@@ -128,6 +129,7 @@
       "loading": "Calcolo del profilo di altezza..."
     },
     "identify": {
+      "clipboard": "Copia negli appunti",
       "export": "Esporta",
       "exportformat": "Formato d'esportazione",
       "featureReport": "Oggetto formulario",
@@ -155,7 +157,9 @@
     },
     "infotool": {
       "clickhelpPoint": "Seleziona un luogo da identificare sulla mappa...",
-      "clickhelpPolygon": "Disegna un poligono attorno all'area da identificare"
+      "clickhelpPolygon": "Disegna un poligono attorno all'area da identificare",
+      "clickhelpRadius": "Imposta un raggio e clicca nella mappa per identificare gli oggetti attorno al punto...",
+      "radius": "Raggio"
     },
     "layercatalog": {
       "windowtitle": "Catalogo livelli"
@@ -209,10 +213,18 @@
       "elevation": "Altitudine",
       "title": "Posizione"
     },
+    "maplegend": {
+      "bboxdependent": "Legenda in base all'estensione della mappa",
+      "onlyvisible": "Mostra solo i livelli attivi nella legenda",
+      "scaledependent": "Legenda in base alla scala della mappa",
+      "windowtitle": "Legenda"
+    },
     "measureComponent": {
       "areaLabel": "Area",
       "bearingLabel": "Direzione",
+      "imperial": "Imperiale",
       "lengthLabel": "Lunghezza",
+      "metric": "Metrico",
       "pointLabel": "Posizione"
     },
     "navbar": {
@@ -253,17 +265,22 @@
       "delete": "Elimina",
       "draw": "Disegna",
       "edit": "Modifica",
+      "ellipse": "Ellisse",
       "fill": "Riempimento",
       "freehand": "Mano libera",
       "label": "Ettichetta",
       "layer": "Layer",
       "line": "Linea",
+      "measurements": "Mostra misurazioni",
       "outline": "Contorno",
       "pick": "Seleziona",
       "point": "Punto",
       "polygon": "Poligono",
+      "rectangle": "Rettangolo",
       "size": "Dimensione",
+      "square": "Quadrato",
       "text": "Testo",
+      "transform": "Transforma",
       "width": "Larghezza"
     },
     "scratchdrawing": {
@@ -344,8 +361,11 @@
       "animationinterval": "Intervallo animazione",
       "classify": "Classifica per attributo",
       "classifynone": "Nessuno",
+      "displayfeatures": "Linea temporale con oggetti",
+      "displaylayers": "Linea temporale con livelli",
+      "displayminimal": "Solo linea temporale",
       "endtime": "Fine",
-      "featuretimeline": "Cronologia oggetti",
+      "future": "Futuro",
       "group": "Raggruppa per attributo",
       "groupnone": "Nessuno",
       "home": "Ripristina linea temporale",
@@ -353,6 +373,8 @@
       "loop": "Ripeti",
       "markers": "Marker",
       "notemporaldata": "Nessun layer con dimensioni temporali è attivo nella cartina.",
+      "now": "Adesso",
+      "past": "Passato",
       "play": "Anima",
       "playrev": "Anima indietro",
       "rewind": "Resetta animazione",
@@ -364,6 +386,7 @@
       "timeline": "Linea temporale",
       "timeline_fixed": "Fissa",
       "timeline_infinite": "Infinita",
+      "timelinedisplay": "Visualizzazione",
       "timelinescale": "Scala temporale (non-linearità)",
       "title": "Linea temporale",
       "toggle": "Abilità gesitone temporale",

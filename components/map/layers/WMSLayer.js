@@ -109,9 +109,10 @@ export default {
             const newParams = wmsToOpenlayersOptions(newOptions);
             if (!changed) {
                 changed = Object.keys(newParams).find(key => {
-                    newParams[key] !== oldParams[key];
-                }) !== null;
+                    return newParams[key] !== oldParams[key];
+                }) !== undefined;
             }
+            changed |= newOptions.visibility !== oldOptions.visibility;
             if (changed) {
                 const queryParameters = {...newParams,  __t: +new Date()};
                 if (layer.get("updateTimeout")) {

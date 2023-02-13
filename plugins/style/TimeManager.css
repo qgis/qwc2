@@ -56,7 +56,6 @@ div.time-manager-options {
     padding: 0.25em;
     position: absolute;
     right: 0;
-    top: calc(100% - 1px);
     border: 1px solid var(--border-color);
     background-color: var(--container-bg-color);
     box-shadow: 0px 0px 5px rgba(136, 136, 136, 1);
@@ -69,6 +68,7 @@ div.time-manager-options td {
 
 div.time-manager-options td select {
     width: 100%;
+    min-width: 12ch;
 }
 
 div.time-manager-timeline {

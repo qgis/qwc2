@@ -5,6 +5,7 @@
     max-height: calc(var(--vh, 1vh) * 100 - 8.25em); /* viewport - topbar - bottombar - sidebar_titlebar*/
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 #Editing .editing-minimize-maximize {

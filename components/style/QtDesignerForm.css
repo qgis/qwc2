@@ -104,7 +104,7 @@ div.qt-designer-widget-relation {
 div.qt-designer-widget-relation-table-container {
     overflow-y: auto;
     flex: 1 1 auto;
-    height: 3.5em;
+    height: 4.5em;
 }
 
 div.qt-designer-widget-relation-table-container > table {
@@ -132,7 +132,7 @@ div.qt-designer-widget-relation-table-container > table td > label {
 
 div.qt-designer-widget-relation-table-container > table th {
     background-color: var(--border-color);
-    color: var(--list-bg-color);
+    color: white;
 }
 
 div.qt-designer-widget-relation-table-container > table tr:not(:last-child) {

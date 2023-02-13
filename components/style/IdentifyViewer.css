@@ -202,8 +202,13 @@ div.identify-body td.identify-attr-value > a > img {
 
 div.identify-body div.identify-buttonbox {
     margin-top: 0.5em;
-    text-align: right;
     flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+span.identify-buttonbox-spacer {
+    flex: 1 1 auto;
 }
 
 div.identify-body select.identify-export-format {

@@ -15,6 +15,7 @@
         "LayerTree": "Vrstvy & Legenda",
         "Login": "Přihlášení",
         "Logout": "Odhlášení",
+        "MapLegend": "",
         "Measure": "Měření",
         "MeasureLineString": "Změřit čáru",
         "MeasurePolygon": "Měřit mnohoúhelník",
@@ -128,6 +129,7 @@
       "loading": "Výpočet výškového profilu..."
     },
     "identify": {
+      "clipboard": "",
       "export": "Export",
       "exportformat": "",
       "featureReport": "Report prvku",
@@ -155,7 +157,9 @@
     },
     "infotool": {
       "clickhelpPoint": "",
-      "clickhelpPolygon": "Nakreslete polygon pro identifikaci..."
+      "clickhelpPolygon": "Nakreslete polygon pro identifikaci...",
+      "clickhelpRadius": "",
+      "radius": ""
     },
     "layercatalog": {
       "windowtitle": ""
@@ -209,10 +213,18 @@
       "elevation": "Nadmořská výška",
       "title": "Poloha"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "",
+      "scaledependent": "",
+      "windowtitle": ""
+    },
     "measureComponent": {
       "areaLabel": "Plocha",
       "bearingLabel": "Ložisko",
+      "imperial": "",
       "lengthLabel": "Délka",
+      "metric": "",
       "pointLabel": "Poloha"
     },
     "navbar": {
@@ -253,17 +265,22 @@
       "delete": "",
       "draw": "",
       "edit": "",
+      "ellipse": "",
       "fill": "Výplň",
       "freehand": "",
       "label": "Popisek",
       "layer": "Vrstva",
       "line": "Linie",
+      "measurements": "",
       "outline": "Obrys",
       "pick": "Výběr",
       "point": "Bod",
       "polygon": "Polygon",
+      "rectangle": "",
       "size": "Velikost",
+      "square": "",
       "text": "Text",
+      "transform": "",
       "width": "Šířka"
     },
     "scratchdrawing": {
@@ -344,8 +361,11 @@
       "animationinterval": "",
       "classify": "",
       "classifynone": "",
+      "displayfeatures": "",
+      "displaylayers": "",
+      "displayminimal": "",
       "endtime": "",
-      "featuretimeline": "",
+      "future": "",
       "group": "",
       "groupnone": "",
       "home": "",
@@ -353,6 +373,8 @@
       "loop": "",
       "markers": "",
       "notemporaldata": "",
+      "now": "",
+      "past": "",
       "play": "",
       "playrev": "",
       "rewind": "",
@@ -364,6 +386,7 @@
       "timeline": "",
       "timeline_fixed": "",
       "timeline_infinite": "",
+      "timelinedisplay": "",
       "timelinescale": "",
       "title": "",
       "toggle": "",

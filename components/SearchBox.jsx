@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
 import isEmpty from 'lodash.isempty';
 import axios from 'axios';
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import {SearchResultType} from '../actions/search';
 import {logAction} from '../actions/logging';
 import {panTo, zoomToExtent, zoomToPoint} from '../actions/map';
@@ -419,32 +419,36 @@ class SearchBox extends React.Component {
             this.setState({searchResults: {}});
             return;
         }
-        const searchSession = uuid.v1();
+        const searchSession = uuidv1();
         this.setState({searchResults: {query_text: searchText}, searchSession: searchSession, pendingSearches: Object.keys(this.props.searchProviders).concat(["__fulltext"])});
         // Fulltext search
-        const params = {
-            searchtext: searchText,
-            filter: this.props.searchFilter,
-            limit: this.props.searchOptions.resultLimit
-        };
-        axios.get(service, {params}).then(response => {
-            const searchResults = {...response.data, query_text: searchText};
-            searchResults.tot_result_count = (searchResults.result_counts || []).reduce((res, entry) => res + (entry.count || 0), 0);
-            this.addSearchResults(searchSession, "__fulltext", searchResults);
-        }).catch(e => {
-            console.warn("Search failed: " + e);
-            this.addSearchResults(searchSession, "__fulltext", {results: [], tot_result_count: 0});
-        });
-        // Additional provider searches
-        const searchOptions = {displaycrs: this.props.displaycrs};
-        Object.entries(this.props.searchProviders).forEach(entry => {
-            const key = entry[0];
-            const provider = entry[1];
-            provider.onSearch(searchText, null, searchOptions, (response) => {
-                const data = response.results;
-                const count = data.data.reduce((tot, cur) => (tot + cur.items.length), 0);
-                this.addSearchResults(searchSession, key, {results: data.data, tot_result_count: count});
+        if ((this.props.theme.searchProviders || []).find(entry => entry.provider === "solr")) {
+            const params = {
+                searchtext: searchText,
+                filter: this.props.searchFilter,
+                limit: this.props.searchOptions.resultLimit
+            };
+            axios.get(service, {params}).then(response => {
+                const searchResults = {...response.data, query_text: searchText};
+                searchResults.tot_result_count = (searchResults.result_counts || []).reduce((res, entry) => res + (entry.count || 0), 0);
+                this.addSearchResults(searchSession, "__fulltext", searchResults);
+            }).catch(e => {
+                // eslint-disable-next-line
+                console.warn("Search failed: " + e);
+                this.addSearchResults(searchSession, "__fulltext", {results: [], tot_result_count: 0});
             });
+        }
+        // Additional provider searches
+        const searchParams = {
+            mapcrs: this.props.map.projection,
+            displaycrs: this.props.displaycrs,
+            lang: LocaleUtils.lang()
+        };
+        Object.entries(this.props.searchProviders).forEach(([key, entry]) => {
+            entry.onSearch(searchText, {...searchParams, cfgParams: entry.params}, (response) => {
+                const count = response.results.reduce((tot, cur) => (tot + cur.items.length), 0);
+                this.addSearchResults(searchSession, key, {results: response.results, tot_result_count: count});
+            }, axios);
         });
     }
     addSearchResults = (searchSession, searchId, results) => {
@@ -502,7 +506,7 @@ class SearchBox extends React.Component {
             }
             const label = (result.label !== undefined ? result.label : result.text || '').replace(/<\/?\w+\s*\/?>/g, '');
             if (this.props.searchProviders[provider].getResultGeometry) {
-                this.props.searchProviders[provider].getResultGeometry(result, (itm, geometry, crs, hidemarker) => { this.showProviderResultGeometry(itm, geometry, crs, label, hidemarker); });
+                this.props.searchProviders[provider].getResultGeometry(result, (response) => { this.showProviderResultGeometry(result, response, label); }, axios);
             } else {
                 const feature = {
                     geometry: result.geometry || {type: 'Point', coordinates: [result.x, result.y]},
@@ -542,14 +546,14 @@ class SearchBox extends React.Component {
             this.props.setCurrentTheme(result.theme, this.props.themes);
         }
     }
-    showProviderResultGeometry = (item, geometry, crs, text, hidemarker) => {
-        if (!isEmpty(geometry)) {
+    showProviderResultGeometry = (item, response, text) => {
+        if (!isEmpty(response.geometry)) {
             let features = [];
-            const highlightFeature = VectorLayerUtils.wktToGeoJSON(geometry, crs, this.props.map.projection);
+            const highlightFeature = VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, this.props.map.projection);
             if (highlightFeature) {
                 const center = VectorLayerUtils.getFeatureCenter(highlightFeature);
                 features = [highlightFeature];
-                if (!hidemarker) {
+                if (!response.hidemarker) {
                     features.push(this.createMarker(center, this.props.map.projection, text));
                 }
             } else {
@@ -675,8 +679,8 @@ const searchFilterSelector = createSelector([state => state.theme, state => stat
     return [...new Set(searchFilter)].join(",");
 });
 
-export default (searchProviders, providerFactory = () => { return null; }) => {
-    const providersSelector = searchProvidersSelector(searchProviders, providerFactory);
+export default (searchProviders) => {
+    const providersSelector = searchProvidersSelector(searchProviders);
     return connect(
         createSelector([state => state, searchFilterSelector, displayCrsSelector, providersSelector], (state, searchFilter, displaycrs, searchproviders) => ({
             map: state.map,

@@ -139,7 +139,8 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
             scales: theme.scales || themes.defaultScales || MapUtils.getGoogleMercatorScales(0, 21),
             printScales: theme.printScales || themes.defaultPrintScales || undefined,
             printResolutions: theme.printResolutions || themes.defaultPrintResolutions || undefined,
-            printGrid: theme.printGrid || themes.defaultPrintGrid || undefined
+            printGrid: theme.printGrid || themes.defaultPrintGrid || undefined,
+            searchProviders: theme.searchProviders || themes.defaultSearchProviders || undefined
         };
 
         // Preserve extent if desired and possible

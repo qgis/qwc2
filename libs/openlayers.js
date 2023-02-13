@@ -37,6 +37,7 @@ import {defaults as olInteractionDefaults} from 'ol/interaction';
 import OlInteractionDoubleClickZoom from 'ol/interaction/DoubleClickZoom';
 import OlInteractionDragPan from 'ol/interaction/DragPan';
 import OlInteractionDraw from 'ol/interaction/Draw';
+import OlInteractionDrawRegular from 'ol-ext/interaction/DrawRegular';
 import OlInteractionDragBox from 'ol/interaction/DragBox';
 import {createBox as olCreateBox} from 'ol/interaction/Draw';
 import OlInteractionKeyboardPan from 'ol/interaction/KeyboardPan';
@@ -47,6 +48,7 @@ import OlInteractionModify from 'ol/interaction/Modify';
 import OlInteractionMouseWheelZoom from 'ol/interaction/MouseWheelZoom';
 import OlInteractionSelect from 'ol/interaction/Select';
 import OlInteractionSnap from 'ol/interaction/Snap';
+import OlInteractionTransform from 'ol-ext/interaction/Transform';
 import OlInteractionTranslate from 'ol/interaction/Translate';
 import OlLayer from 'ol/layer/Layer';
 import OlLayerImage from 'ol/layer/Image';
@@ -123,6 +125,7 @@ export default {
         DragPan: OlInteractionDragPan,
         DragBox: OlInteractionDragBox,
         Draw: OlInteractionDraw,
+        DrawRegular: OlInteractionDrawRegular,
         createBox: olCreateBox,
         Interaction: OlInteractionInteraction,
         Modify: OlInteractionModify,
@@ -132,6 +135,7 @@ export default {
         Pointer: OlInteractionPointer,
         Select: OlInteractionSelect,
         Snap: OlInteractionSnap,
+        Transform: OlInteractionTransform,
         Translate: OlInteractionTranslate
     },
     layer: {

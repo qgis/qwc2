@@ -15,6 +15,7 @@
         "LayerTree": "Camadas & Leyenda",
         "Login": "Inicio de sesión",
         "Logout": "Cierre de sesión",
+        "MapLegend": "",
         "Measure": "Medir",
         "MeasureLineString": "Medir uma linha",
         "MeasurePolygon": "Medir um polígono",
@@ -128,6 +129,7 @@
       "loading": "Calcular o perfil de altura..."
     },
     "identify": {
+      "clipboard": "",
       "export": "Exportação",
       "exportformat": "Formato de exportação",
       "featureReport": "Relatório de recurso",
@@ -155,7 +157,9 @@
     },
     "infotool": {
       "clickhelpPoint": "Clique numa localização para identificar no mapa...",
-      "clickhelpPolygon": "Desenhe um polígono em torno das características para identificar..."
+      "clickhelpPolygon": "Desenhe um polígono em torno das características para identificar...",
+      "clickhelpRadius": "",
+      "radius": ""
     },
     "layercatalog": {
       "windowtitle": ""
@@ -209,10 +213,18 @@
       "elevation": "Elevação",
       "title": "Posição"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "",
+      "scaledependent": "",
+      "windowtitle": ""
+    },
     "measureComponent": {
       "areaLabel": "Área",
       "bearingLabel": "Dirección",
+      "imperial": "",
       "lengthLabel": "Longitud",
+      "metric": "",
       "pointLabel": "Posição"
     },
     "navbar": {
@@ -253,17 +265,22 @@
       "delete": "Excluir",
       "draw": "Traçar",
       "edit": "Editar",
+      "ellipse": "",
       "fill": "Preencha",
       "freehand": "Desenho à mão livre ",
       "label": "Etiqueta",
       "layer": "Camada",
       "line": "Línha",
+      "measurements": "",
       "outline": "Contorno",
       "pick": "Escolher",
       "point": "Ponto",
       "polygon": "Polígono",
+      "rectangle": "",
       "size": "Tamanho",
+      "square": "",
       "text": "Texto",
+      "transform": "",
       "width": "Largura"
     },
     "scratchdrawing": {
@@ -344,8 +361,11 @@
       "animationinterval": "",
       "classify": "",
       "classifynone": "",
+      "displayfeatures": "",
+      "displaylayers": "",
+      "displayminimal": "",
       "endtime": "",
-      "featuretimeline": "",
+      "future": "",
       "group": "",
       "groupnone": "",
       "home": "",
@@ -353,6 +373,8 @@
       "loop": "",
       "markers": "",
       "notemporaldata": "",
+      "now": "",
+      "past": "",
       "play": "",
       "playrev": "",
       "rewind": "",
@@ -364,6 +386,7 @@
       "timeline": "",
       "timeline_fixed": "",
       "timeline_infinite": "",
+      "timelinedisplay": "",
       "timelinescale": "",
       "title": "",
       "toggle": "",

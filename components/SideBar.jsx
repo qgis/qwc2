@@ -22,11 +22,13 @@ class SideBar extends React.Component {
         extraBeforeContent: PropTypes.object,
         extraClasses: PropTypes.string,
         extraTitlebarContent: PropTypes.object,
+        heightResizeable: PropTypes.bool,
         icon: PropTypes.string,
         id: PropTypes.string.isRequired,
         minWidth: PropTypes.string,
         onHide: PropTypes.func,
         onShow: PropTypes.func,
+        renderWhenHidden: PropTypes.bool,
         setCurrentTask: PropTypes.func,
         side: PropTypes.string,
         title: PropTypes.string,
@@ -59,6 +61,10 @@ class SideBar extends React.Component {
             // Hide the element after the transition period (see SideBar.css)
             setTimeout(() => { this.setState({render: false}); }, 300);
         }
+        if (!this.props.heightResizeable && prevProps.heightResizeable) {
+            const sidebar = document.getElementById(this.props.id);
+            sidebar.style.height = 'initial';
+        }
     }
     closeClicked = () => {
         if (this.props.currentTask.id === this.props.id) {
@@ -70,7 +76,7 @@ class SideBar extends React.Component {
     }
     render() {
         const visible = this.props.currentTask.id === this.props.id;
-        const render = visible || this.state.render;
+        const render = visible || this.state.render || this.props.renderWhenHidden;
         const style = {
             width: this.props.width,
             minWidth: this.props.minWidth,
@@ -117,6 +123,9 @@ class SideBar extends React.Component {
                         <div className="sidebar-body">
                             {body}
                         </div>
+                        {this.props.heightResizeable ? (
+                            <div className="sidebar-resize-handle-bottom" onMouseDown={this.startSidebarBottomResize}/>
+                        ) : null}
                     </div>
                 </Swipeable>
                 {extra}
@@ -133,6 +142,21 @@ class SideBar extends React.Component {
         const sign = this.props.side === 'left' ? -1 : 1;
         const resizeSidebar = (event) => {
             sidebar.style.width = (startWidth + sign * (startMouseX - event.clientX)) + 'px';
+        };
+        window.addEventListener("mousemove", resizeSidebar);
+        window.addEventListener("mouseup", () => {
+            window.removeEventListener("mousemove", resizeSidebar);
+        }, {once: true});
+    }
+    startSidebarBottomResize = (ev) => {
+        const sidebar = document.getElementById(this.props.id);
+        if (!sidebar) {
+            return;
+        }
+        const startHeight = sidebar.offsetHeight;
+        const startMouseY = ev.clientY;
+        const resizeSidebar = (event) => {
+            sidebar.style.height = (startHeight + (event.clientY - startMouseY)) + 'px';
         };
         window.addEventListener("mousemove", resizeSidebar);
         window.addEventListener("mouseup", () => {

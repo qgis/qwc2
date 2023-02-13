@@ -8,7 +8,7 @@
 
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
-import uuid from 'uuid';
+import {v1 as uuidv4} from 'uuid';
 import url from 'url';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
@@ -86,8 +86,8 @@ const LayerUtils = {
             type: "separator",
             title: title,
             role: LayerRole.USERLAYER,
-            uuid: uuid.v4(),
-            id: uuid.v4()
+            uuid: uuidv4(),
+            id: uuidv4()
         }]);
     },
     createExternalLayerPlaceholder(layerConfig, externalLayers, id) {
@@ -105,7 +105,7 @@ const LayerUtils = {
             title: layerConfig.name,
             role: LayerRole.USERLAYER,
             loading: true,
-            uuid: uuid.v4()
+            uuid: uuidv4()
         }]);
     },
     insertPermalinkLayers(exploded, layers) {
@@ -182,7 +182,7 @@ const LayerUtils = {
         };
     },
     addUUIDs(group, usedUUIDs = new Set()) {
-        group.uuid = !group.uuid || usedUUIDs.has(group.uuid) ? uuid.v4() : group.uuid;
+        group.uuid = !group.uuid || usedUUIDs.has(group.uuid) ? uuidv4() : group.uuid;
         usedUUIDs.add(group.uuid);
         if (!isEmpty(group.sublayers)) {
             Object.assign(group, {sublayers: group.sublayers.slice(0)});
@@ -204,7 +204,11 @@ const LayerUtils = {
             } else if (layer.role === LayerRole.USERLAYER && layer.type === "wms") {
                 const sublayernames = [];
                 LayerUtils.collectWMSSublayerParams(layer, sublayernames, opacities, styles, queryable, visibilities, layer.visibility);
-                layernames.push(...sublayernames.map(name => "wms:" + layer.url + "#" + name));
+                let layerurl = layer.url;
+                if (layer.extwmsparams) {
+                    layerurl += (layerurl.includes('?') ? '&' : '?') + Object.entries(layer.extwmsparams || {}).map(([key, value]) => 'extwms.' + key + "=" + value).join('&');
+                }
+                layernames.push(...sublayernames.map(name => "wms:" + layerurl + "#" + name));
             } else if (layer.role === LayerRole.USERLAYER && (layer.type === "wfs" || layer.type === "wmts")) {
                 layernames.push(layer.type + ':' + (layer.capabilitiesUrl || layer.url) + "#" + layer.name);
                 opacities.push(layer.opacity);
@@ -237,7 +241,7 @@ const LayerUtils = {
     },
     splitLayerUrlParam(entry) {
         const nameOpacityPattern = /([^[]+)\[(\d+)]/;
-        const id = uuid.v4();
+        const id = uuidv4();
         let type = 'theme';
         let layerUrl = null;
         let opacity = 255;
@@ -615,7 +619,7 @@ const LayerUtils = {
     },
     completeExternalLayer(externalLayer) {
         externalLayer.title = externalLayer.title || externalLayer.name;
-        externalLayer.uuid = uuid.v4();
+        externalLayer.uuid = uuidv4();
         if (externalLayer.type === "wms" || externalLayer.params) {
             externalLayer.version = externalLayer.version || "1.3.0";
             externalLayer.featureInfoUrl = externalLayer.featureInfoUrl || externalLayer.url;
@@ -631,7 +635,7 @@ const LayerUtils = {
             }
         }
     },
-    getLegendUrl(layer, sublayer, scale, map, bboxDependentLegend, scaleDependentLegend) {
+    getLegendUrl(layer, sublayer, scale, map, bboxDependentLegend, scaleDependentLegend, extraLegendParams) {
         if (layer.type !== "wms") {
             return layer.legendUrl || "";
         }
@@ -642,6 +646,9 @@ const LayerUtils = {
             CRS: map.projection,
             SLD_VERSION: "1.1.0"
         };
+        if (extraLegendParams) {
+            Object.assign(requestParams, Object.fromEntries(extraLegendParams.split("&").map(entry => entry.split("="))));
+        }
         if (scaleDependentLegend === true || (scaleDependentLegend === "theme" && layer.role === LayerRole.THEME)) {
             requestParams.SCALE = Math.round(scale);
         }
@@ -701,7 +708,17 @@ const LayerUtils = {
                     params.LAYERS.push("EXTERNAL_WMS:" + identifier);
                     params.OPACITIES.push(opacities[idx]);
                     params.COLORS.push("");
-                    params[identifier + ":url"] = layer.url;
+                    let layerUrl = layer.url;
+                    const urlParts = url.parse(layerUrl, true);
+                    // Resolve relative urls
+                    if (!url.host) {
+                        const locationParts = url.parse(window.location.href);
+                        urlParts.protocol = locationParts.protocol;
+                        urlParts.host = locationParts.host;
+                        delete urlParts.search;
+                        layerUrl = url.format(urlParts);
+                    }
+                    params[identifier + ":url"] = layerUrl;
                     params[identifier + ":layers"] = names[idx];
                     params[identifier + ":format"] = "image/png";
                     params[identifier + ":crs"] = printCrs;
@@ -711,6 +728,9 @@ const LayerUtils = {
                     if (layer.url.includes("?")) {
                         params[identifier + ":IgnoreGetMapUrl"] = "1";
                     }
+                    Object.entries(layer.extwmsparams || {}).forEach(([key, value]) => {
+                        params[identifier + ":" + key] = value;
+                    });
                 }
             }
         }
@@ -721,6 +741,7 @@ const LayerUtils = {
             const themeBackgroundLayer = theme.backgroundLayers.find(entry => entry.name === backgroundLayerName);
             const printBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
             if (printBackgroundLayer) {
+                // Use printLayer defined in qgis project
                 let printBgLayerName = printBackgroundLayer;
                 if (Array.isArray(printBackgroundLayer)) {
                     printBgLayerName = null;
@@ -737,6 +758,7 @@ const LayerUtils = {
                     params.COLORS.push("");
                 }
             } else if (printExternalLayers) {
+                // Inject client-side wms as external layer for print
                 const items = backgroundLayer.type === "group" ? backgroundLayer.items : [backgroundLayer];
                 items.slice(0).reverse().forEach(layer => {
                     if (layer.type === "wms" && LayerUtils.layerScaleInRange(layer, printScale)) {
@@ -747,14 +769,29 @@ const LayerUtils = {
                             params.LAYERS.push("EXTERNAL_WMS:" + identifier);
                             params.OPACITIES.push(opacities[idx]);
                             params.COLORS.push("");
-                            params[identifier + ":url"] = layer.url;
+                            let layerUrl = layer.url;
+                            const urlParts = url.parse(layerUrl, true);
+                            // Resolve relative urls
+                            if (!url.host) {
+                                const locationParts = url.parse(window.location.href);
+                                urlParts.protocol = locationParts.protocol;
+                                urlParts.host = locationParts.host;
+                                delete urlParts.search;
+                                layerUrl = url.format(urlParts);
+                            }
+                            params[identifier + ":url"] = layerUrl;
                             params[identifier + ":layers"] = names[idx];
                             params[identifier + ":format"] = "image/png";
                             params[identifier + ":crs"] = printCrs;
                             params[identifier + ":styles"] = "";
                             params[identifier + ":dpiMode"] = "7";
                             params[identifier + ":contextualWMSLegend"] = "0";
-                            params[identifier + ":ignoregetmapurl"] = "1";
+                            if (layer.url.includes("?")) {
+                                params[identifier + ":IgnoreGetMapUrl"] = "1";
+                            }
+                            Object.entries(layer.extwmsparams || {}).forEach(([key, value]) => {
+                                params[identifier + ":" + key] = value;
+                            });
                         }
                     }
                 });

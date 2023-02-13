@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   version="1.1"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   viewBox="0 0 24 24"
+   xml:space="preserve"
+   sodipodi:docname="today.svg"
+   width="24"
+   height="24"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs7" /><sodipodi:namedview
+   id="namedview5"
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1.0"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   showgrid="false"
+   inkscape:zoom="21.5625"
+   inkscape:cx="10.017391"
+   inkscape:cy="13.286957"
+   inkscape:window-width="1600"
+   inkscape:window-height="837"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+<g
+   id="XMLID_6_"
+   transform="scale(0.046875)">
+	<path
+   id="XMLID_11_"
+   d="M 435.2,51.2 H 409.6 V 0 H 358.4 V 51.2 H 153.6 V 0 H 102.4 V 51.2 H 76.8 C 48.4,51.2 25.6,74 25.6,102.4 v 358.4 c 0,28.4 22.8,51.2 51.2,51.2 h 358.4 c 28.4,0 51.2,-22.8 51.2,-51.2 V 102.4 C 486.4,74 463.6,51.2 435.2,51.2 Z m 0,409.6 H 76.8 V 179.2 H 435.2 Z M 128,230.4 h 128 v 128 H 128 Z" />
+</g>
+</svg>

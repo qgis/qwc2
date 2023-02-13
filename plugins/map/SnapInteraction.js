@@ -18,7 +18,7 @@ export default class SnapInteraction extends ol.interaction.Snap {
     handleEvent(evt) {
         const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
         this.layer.getSource().clear();
-        if (result.snapped) {
+        if (result && result.snapped) {
             evt.coordinate = result.vertex.slice(0, 2);
             evt.pixel = result.vertexPixel;
             this.layer.getSource().addFeature(new ol.Feature({

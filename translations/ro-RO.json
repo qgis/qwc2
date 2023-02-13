@@ -15,6 +15,7 @@
         "LayerTree": "Straturi & Legendă",
         "Login": "Conectează-te",
         "Logout": "Deconectează-te",
+        "MapLegend": "",
         "Measure": "Măsoară",
         "MeasureLineString": "Măsoară o linie",
         "MeasurePolygon": "Măsoară un poligon",
@@ -128,6 +129,7 @@
       "loading": "Calcularea profilului înălțimii..."
     },
     "identify": {
+      "clipboard": "",
       "export": "Export",
       "exportformat": "Formatul de export",
       "featureReport": "Raport entitate",
@@ -155,7 +157,9 @@
     },
     "infotool": {
       "clickhelpPoint": "Click pe o locație pentru identificarea elementelor din hartă...",
-      "clickhelpPolygon": "Încadrați într-un poligon elementele de identificat..."
+      "clickhelpPolygon": "Încadrați într-un poligon elementele de identificat...",
+      "clickhelpRadius": "",
+      "radius": ""
     },
     "layercatalog": {
       "windowtitle": "Catalog straturi"
@@ -209,10 +213,18 @@
       "elevation": "Altitudine",
       "title": "Poziție"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "",
+      "scaledependent": "",
+      "windowtitle": ""
+    },
     "measureComponent": {
       "areaLabel": "Arie",
       "bearingLabel": "Direcție",
+      "imperial": "",
       "lengthLabel": "Lungime",
+      "metric": "",
       "pointLabel": "Poziție"
     },
     "navbar": {
@@ -253,17 +265,22 @@
       "delete": "Elimină",
       "draw": "Adaugă",
       "edit": "Modifică",
+      "ellipse": "",
       "fill": "Interior",
       "freehand": "Mână liberă",
       "label": "Text",
       "layer": "Strat",
       "line": "Linie",
+      "measurements": "",
       "outline": "Contur",
       "pick": "Alege",
       "point": "Punct",
       "polygon": "Poligon",
+      "rectangle": "",
       "size": "Mărime",
+      "square": "",
       "text": "Text",
+      "transform": "",
       "width": "Lățime"
     },
     "scratchdrawing": {
@@ -344,8 +361,11 @@
       "animationinterval": "",
       "classify": "",
       "classifynone": "",
+      "displayfeatures": "",
+      "displaylayers": "",
+      "displayminimal": "",
       "endtime": "",
-      "featuretimeline": "",
+      "future": "",
       "group": "",
       "groupnone": "",
       "home": "",
@@ -353,6 +373,8 @@
       "loop": "",
       "markers": "",
       "notemporaldata": "",
+      "now": "",
+      "past": "",
       "play": "",
       "playrev": "",
       "rewind": "",
@@ -364,6 +386,7 @@
       "timeline": "",
       "timeline_fixed": "",
       "timeline_infinite": "",
+      "timelinedisplay": "",
       "timelinescale": "",
       "title": "",
       "toggle": "",

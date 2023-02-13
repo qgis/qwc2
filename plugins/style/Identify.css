@@ -1,0 +1,16 @@
+div.identify-radius-controls {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+div.identify-radius-controls > span {
+    display: inline-flex;
+    flex: 1 0 auto;
+    align-items: center;
+    justify-content: center;
+    margin: 0.25em 0.25em;
+}
+
+div.identify-radius-controls span.react-numeric-input {
+    width: 10em;
+}

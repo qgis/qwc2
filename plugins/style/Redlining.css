@@ -40,11 +40,12 @@ div.redlining-group > span > * {
 div.redlining-controlsbar {
     display: flex;
     flex-wrap: wrap;
+    margin: 0 0.25em;
 }
 
 div.redlining-controlsbar > span {
     display: inline-flex;
-    flex: 1 0 auto;
+    flex: 0 0 auto;
     align-items: center;
     justify-content: center;
     margin: 0 0.25em;
@@ -55,6 +56,16 @@ div.redlining-controlsbar span.react-numeric-input {
     width: 7em;
 }
 
-div.redlining-controlsbar input.redlining-label {
-    width: 7em;
+div.redlining-controlsbar input.redlining-label,
+div.redlining-controlsbar select.redlining-unit {
+    flex: 1 1 auto;
+    width: 0;
+}
+
+div.redlining-shapewarning {
+    border-top: 1px solid var(--border-color);
+    margin-top: 0.25em;
+    padding-top: 0.25em;
+    font-size: 90%;
+    font-style: italic;
 }

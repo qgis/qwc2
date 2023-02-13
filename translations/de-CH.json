@@ -15,6 +15,7 @@
         "LayerTree": "Ebenen und Legende",
         "Login": "Anmelden",
         "Logout": "Abmelden",
+        "MapLegend": "Legende",
         "Measure": "Messen",
         "MeasureLineString": "Messen linie",
         "MeasurePolygon": "Messen polygon",
@@ -128,6 +129,7 @@
       "loading": "Höhenprofil wird berechnet..."
     },
     "identify": {
+      "clipboard": "Nach Zwischenablage kopieren",
       "export": "Exportieren",
       "exportformat": "Exportformat",
       "featureReport": "Objektblatt",
@@ -155,7 +157,9 @@
     },
     "infotool": {
       "clickhelpPoint": "Zu identifizierende Position in der Karte auswählen...",
-      "clickhelpPolygon": "Polygon um die zu identifizierende Objekte zeichnen"
+      "clickhelpPolygon": "Polygon um die zu identifizierende Objekte zeichnen",
+      "clickhelpRadius": "Einen Radius setzten und in die Karte clicken um Objekte um den Punkt zu identifizieren...",
+      "radius": "Radius"
     },
     "layercatalog": {
       "windowtitle": "Ebenenkatalog"
@@ -209,10 +213,18 @@
       "elevation": "Höhe",
       "title": "Position"
     },
+    "maplegend": {
+      "bboxdependent": "Legende abhängig vom Kartenausschnitt",
+      "onlyvisible": "Legende abhängig von der Ebenensichtbarkeit",
+      "scaledependent": "Legende abhängig vom Kartenmassstab",
+      "windowtitle": "Legende"
+    },
     "measureComponent": {
       "areaLabel": "Fläche",
       "bearingLabel": "Richtung",
+      "imperial": "Imperial",
       "lengthLabel": "Länge",
+      "metric": "Metrisch",
       "pointLabel": "Position"
     },
     "navbar": {
@@ -253,17 +265,22 @@
       "delete": "Löschen",
       "draw": "Zeichnen",
       "edit": "Bearbeiten",
+      "ellipse": "Ellipse",
       "fill": "Füllung",
       "freehand": "Freihand",
       "label": "Beschriftung",
       "layer": "Ebene",
       "line": "Linie",
+      "measurements": "Messungen anzeigen",
       "outline": "Rand",
       "pick": "Auswählen",
       "point": "Punkt",
       "polygon": "Polygon",
+      "rectangle": "Rechteck",
       "size": "Grösse",
+      "square": "Quadrat",
       "text": "Text",
+      "transform": "Transformieren",
       "width": "Breite"
     },
     "scratchdrawing": {
@@ -344,15 +361,20 @@
       "animationinterval": "Animationsintervall",
       "classify": "Klassifizierungsattribut",
       "classifynone": "Keins",
+      "displayfeatures": "Zeitleiste und Objekte",
+      "displaylayers": "Zeitleiste und Ebenen",
+      "displayminimal": "Nur Zeitleiste",
       "endtime": "Ende",
-      "featuretimeline": "Objektzeitleiste",
-      "group": "Grouppierungsattribut",
+      "future": "Zukunft",
+      "group": "Gruppierungsattribut",
       "groupnone": "Keins",
       "home": "Zeitleiste zurücksetzten",
       "loading": "Laden...",
       "loop": "Schleife",
       "markers": "Marker",
       "notemporaldata": "Keine sichtbare Ebenen in der Karte sind mit Zeitinformationen versehen.",
+      "now": "Jetzt",
+      "past": "Vergangenheit",
       "play": "Abspielen",
       "playrev": "Zurück abspielen",
       "rewind": "Zurücksetzten",
@@ -364,6 +386,7 @@
       "timeline": "Zeitstrahl",
       "timeline_fixed": "Fix",
       "timeline_infinite": "Unendlich",
+      "timelinedisplay": "Anzeige",
       "timelinescale": "Zeitskala (nichtlinearität)",
       "title": "Zeitleiste",
       "toggle": "Zeitsteuerung aktivieren",

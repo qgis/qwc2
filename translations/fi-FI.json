@@ -15,6 +15,7 @@
         "LayerTree": "Karttatasot ja selite",
         "Login": "Kirjaudu",
         "Logout": "Kirjaudu ulos",
+        "MapLegend": "",
         "Measure": "Mittaa",
         "MeasureLineString": "Mittaa viiva",
         "MeasurePolygon": "Mittaa monikulmion",
@@ -128,6 +129,7 @@
       "loading": "Korkeusprofiilin laskenta käynnissä..."
     },
     "identify": {
+      "clipboard": "",
       "export": "Vienti",
       "exportformat": "Viennin formaatti:",
       "featureReport": "Ominaisuustietoraportti",
@@ -155,7 +157,9 @@
     },
     "infotool": {
       "clickhelpPoint": "Tunnista kohde klikkaamalla sijaintia kartalla...",
-      "clickhelpPolygon": "Tunnista kohteet piirtämällä alue niiden ympärille..."
+      "clickhelpPolygon": "Tunnista kohteet piirtämällä alue niiden ympärille...",
+      "clickhelpRadius": "",
+      "radius": ""
     },
     "layercatalog": {
       "windowtitle": ""
@@ -209,10 +213,18 @@
       "elevation": "Korkeus",
       "title": "Sijainti"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "",
+      "scaledependent": "",
+      "windowtitle": ""
+    },
     "measureComponent": {
       "areaLabel": "Alue",
       "bearingLabel": "Suunta",
+      "imperial": "",
       "lengthLabel": "Pituus",
+      "metric": "",
       "pointLabel": "Sijainti"
     },
     "navbar": {
@@ -253,17 +265,22 @@
       "delete": "Poista",
       "draw": "Piirrä",
       "edit": "Editoi",
+      "ellipse": "",
       "fill": "Täyttö",
       "freehand": "Vapaa piirto",
       "label": "Selite",
       "layer": "Taso",
       "line": "Viiva",
+      "measurements": "",
       "outline": "Ääriviiva",
       "pick": "Poimi",
       "point": "Piste",
       "polygon": "Alue",
+      "rectangle": "",
       "size": "Koko",
+      "square": "",
       "text": "Teksti",
+      "transform": "",
       "width": "Leveys"
     },
     "scratchdrawing": {
@@ -344,8 +361,11 @@
       "animationinterval": "",
       "classify": "",
       "classifynone": "",
+      "displayfeatures": "",
+      "displaylayers": "",
+      "displayminimal": "",
       "endtime": "",
-      "featuretimeline": "",
+      "future": "",
       "group": "",
       "groupnone": "",
       "home": "",
@@ -353,6 +373,8 @@
       "loop": "",
       "markers": "",
       "notemporaldata": "",
+      "now": "",
+      "past": "",
       "play": "",
       "playrev": "",
       "rewind": "",
@@ -364,6 +386,7 @@
       "timeline": "",
       "timeline_fixed": "",
       "timeline_infinite": "",
+      "timelinedisplay": "",
       "timelinescale": "",
       "title": "",
       "toggle": "",

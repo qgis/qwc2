@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import xml2js from 'xml2js';
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import isEmpty from 'lodash.isempty';
 import ButtonBar from './widgets/ButtonBar';
 import TextInput from './widgets/TextInput';
@@ -348,7 +348,10 @@ class QtDesignerForm extends React.Component {
                 const fieldId = widget.name.replace(/__upload/, '');
                 const uploadValue = ((feature.properties || {})[fieldId] || "");
                 const uploadElName = elname.replace(/__upload/, '');
-                const constraints = {accept: prop.text || ""};
+                const constraints = {
+                    accept: prop.text || "",
+                    required: inputConstraints.required
+                };
                 return (<EditUploadField constraints={constraints} dataset={dataset} disabled={inputConstraints.readOnly} fieldId={fieldId} name={uploadElName} report={this.props.report} updateField={updateField} value={uploadValue} />);
             } else {
                 if (fieldConstraints.prec !== undefined && typeof value === 'number') {
@@ -390,14 +393,11 @@ class QtDesignerForm extends React.Component {
                         style={fontStyle} updateField={updateField} value={value} />
                 );
             } else {
-                const haveEmpty = (widget.item || []).map((item) => (item.property.value || item.property.text) === "");
                 return (
                     <select disabled={inputConstraints.readOnly} name={elname} onChange={ev => updateField(widget.name, ev.target.value)} {...inputConstraints} style={fontStyle} value={value}>
-                        {!haveEmpty ? (
-                            <option disabled={inputConstraints.required} value="">
-                                {inputConstraints.placeholder || LocaleUtils.tr("editing.select")}
-                            </option>
-                        ) : null}
+                        <option disabled={inputConstraints.required} value="">
+                            {inputConstraints.placeholder || LocaleUtils.tr("editing.select")}
+                        </option>
                         {(widget.item || []).map((item) => {
                             const optval = item.property.value || item.property.text;
                             return (
@@ -517,6 +517,7 @@ class QtDesignerForm extends React.Component {
         const disabled = (widget.property || {}).enabled === "false";
         const tablename = parts[1];
         const sortcol = parts[3] || null;
+        const noreorder = parts[4] || false;
         const datasetname = this.props.mapPrefix + tablename;
         const headerItems = widget.layout.item.filter(item => item.widget && item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
         const widgetItems = widget.layout.item.filter(item => !item.widget || !item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
@@ -573,7 +574,7 @@ class QtDesignerForm extends React.Component {
                                                 return null;
                                             }
                                         })}
-                                        {!this.props.readOnly && !disabled && sortcol ? (
+                                        {!this.props.readOnly && !disabled && sortcol && !noreorder ? (
                                             <td>
                                                 <Icon icon="chevron-up" onClick={() => this.props.reorderRelationRecord(datasetname, idx, -1)} />
                                                 <br />
@@ -614,7 +615,7 @@ class QtDesignerForm extends React.Component {
             explicitArray: false,
             mergeAttrs: true
         };
-        const loadingReqId = uuid.v1();
+        const loadingReqId = uuidv1();
         this.setState({loading: true, loadingReqId: loadingReqId});
         xml2js.parseString(data, options, (err, json) => {
             const relationTables = {};
@@ -699,7 +700,7 @@ class QtDesignerForm extends React.Component {
 
         const parts = widget.name.split("__");
         if (parts.length >= 3 && parts[0] === "nrel") {
-            relationTables[this.props.mapPrefix + parts[1]] = {fk: parts[2], sortcol: parts[3] || null};
+            relationTables[this.props.mapPrefix + parts[1]] = {fk: parts[2], sortcol: parts[3] || null, noreorder: parts[4] || false};
         }
     }
     reformatLayout = (layout, relationTables, fields, buttons, nrels, externalFields, widgets, counters) => {

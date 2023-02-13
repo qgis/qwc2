@@ -9,8 +9,8 @@
 import React from 'react';
 import {applyMiddleware, combineReducers, compose, createStore} from 'redux';
 import {createDevTools} from '@redux-devtools/core';
-import LogMonitor from '@redux-devtools/log-monitor';
-import DockMonitor from '@redux-devtools/dock-monitor';
+import {LogMonitor} from '@redux-devtools/log-monitor';
+import {DockMonitor} from '@redux-devtools/dock-monitor';
 import immutable from 'redux-immutable-state-invariant';
 import logger from 'redux-logger';
 import thunkMiddleware from  'redux-thunk';

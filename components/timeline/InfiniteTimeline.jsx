@@ -20,6 +20,7 @@ export default class InfiniteTimeline extends React.Component {
     static propTypes = {
         children: PropTypes.func,
         currentTimestamp: PropTypes.number,
+        dateFormat: PropTypes.string,
         dialogWidth: PropTypes.number,
         endTime: PropTypes.object,
         setMarkersCanBeEnabled: PropTypes.func,
@@ -29,13 +30,20 @@ export default class InfiniteTimeline extends React.Component {
     state = {
         timelineContainerEl: null,
         timelineWidth: 0,
-        timeScale: 1,
+        timeScalePast: 1,
+        timeScaleFuture: 1,
         panOffset: 0,
         zoomFactor: 1 // 1 = [startTime, endTime] fits dialog width in linear scale,
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.state.timelineContainerEl && (this.props.dialogWidth !== prevProps.dialogWidth || !prevState.timelineContainerEl)) {
             this.setState({timelineWidth: this.state.timelineContainerEl.getBoundingClientRect().width});
+        }
+        if (this.props.currentTimestamp !== prevProps.currentTimestamp) {
+            const pixel = InfiniteTimeline.computePixelFromTime(this, this.props.currentTimestamp);
+            if (pixel < 0 || pixel >= this.state.timelineWidth) {
+                this.setState({panOffset: 0});
+            }
         }
     }
     render() {
@@ -51,7 +59,10 @@ export default class InfiniteTimeline extends React.Component {
                     <ButtonBar buttons={navButtons} onClick={this.navButtonClicked} />
                     <div className="inftimeline-toolbar-block">
                         <span>{LocaleUtils.tr("timemanager.timelinescale")}: &nbsp;</span>
-                        <NumberInput decimals={2} max={10} min={0.01} onChange={this.setTimeScale} value={this.state.timeScale} />
+                        <Icon icon="before" title={LocaleUtils.tr("timemanager.past")} />
+                        <NumberInput decimals={2} max={10} min={0.01} onChange={this.setTimeScalePast} value={this.state.timeScalePast} />
+                        <Icon icon="after" title={LocaleUtils.tr("timemanager.future")} />
+                        <NumberInput decimals={2} max={10} min={0.01} onChange={this.setTimeScaleFuture} value={this.state.timeScaleFuture} />
                     </div>
                     <div className="inftimeline-toolbar-spacer" />
                 </div>
@@ -67,10 +78,10 @@ export default class InfiniteTimeline extends React.Component {
                     </button>
                 </div>
                 {/* Render the slider component passed from the parent */}
-                {this.props.children ? this.props.children(
+                {this.props.children(
                     (time) => InfiniteTimeline.computePixelFromTime(this, time),
                     (pixel) => InfiniteTimeline.computeTimeFromPixel(this, pixel)
-                ) : null}
+                )}
             </div>
         );
     }
@@ -114,8 +125,7 @@ export default class InfiniteTimeline extends React.Component {
             x += 100;
         }
         // Intermediate ticks (lines only)
-        const b = this.state.timeScale;
-        const tickPos = [20, 40, 60, 80].map(p => Math.pow(p / 100, 1 / b) * 100);
+        let tickPos = [20, 40, 60, 80].map(p => Math.pow(p / 100, 1 / this.state.timeScalePast) * 100);
         let i = 0;
         for (x = xnow; x - tickPos[i] >= 0;) {
             if (x - tickPos[i] < width) {
@@ -128,6 +138,7 @@ export default class InfiniteTimeline extends React.Component {
             }
         }
         i = 0;
+        tickPos = [20, 40, 60, 80].map(p => Math.pow(p / 100, 1 / this.state.timeScaleFuture) * 100);
         for (x = xnow; x + tickPos[i] <= width;) {
             if (x + tickPos[i] > 0) {
                 ticks.push({pixel: x + tickPos[i]});
@@ -145,7 +156,7 @@ export default class InfiniteTimeline extends React.Component {
             };
             return (
                 <span className={tick.time ? "inftimeline-ltick" : "inftimeline-tick"} key={"tick" + tick.pixel} style={style}>
-                    {tick.time ? (<span>{dayjs(tick.time).format("YYYY-MM-DD[\n]HH:mm:ss")}</span>) : null}
+                    {tick.time ? (<span>{dayjs(tick.time).format(this.props.dateFormat)}</span>) : null}
                 </span>
             );
         });
@@ -176,9 +187,13 @@ export default class InfiniteTimeline extends React.Component {
             this.setState({zoomFactor: this.state.zoomFactor * 2});
         }
     }
-    setTimeScale = (value) => {
-        this.props.setMarkersCanBeEnabled(value === 1);
-        this.setState({timeScale: value});
+    setTimeScalePast = (value) => {
+        this.props.setMarkersCanBeEnabled(value === 1 && this.state.timeScaleFuture === 1);
+        this.setState({timeScalePast: value});
+    }
+    setTimeScaleFuture = (value) => {
+        this.props.setMarkersCanBeEnabled(this.state.timeScalePast === 1 && value === 1);
+        this.setState({timeScaleFuture: value});
     }
     pan = (offset) => {
         this.setState({panOffset: this.state.panOffset + offset});
@@ -195,13 +210,13 @@ export default class InfiniteTimeline extends React.Component {
         }, {once: true, capture: true});
     }
     static computeTimeFromPixel(self, pixel) {
-        const exp = self.state.timeScale;
         const dpx = self.state.panOffset + pixel - 0.5 * self.state.timelineWidth;
+        const exp = pixel - 0.5 * self.state.timelineWidth < 0 ? self.state.timeScalePast : self.state.timeScaleFuture;
         return self.props.currentTimestamp + Math.sign(dpx) * Math.pow(Math.abs(dpx) / (0.5 * self.state.timelineWidth), exp) * 0.5 * self.props.timeSpan * self.state.zoomFactor;
     }
     static computePixelFromTime(self, time) {
         const dt = time - self.props.currentTimestamp;
-        const iexp = 1 / self.state.timeScale;
+        const iexp = dt < 0 ? 1 / self.state.timeScalePast : 1 / self.state.timeScaleFuture;
         return 0.5 * self.state.timelineWidth * (1 + Math.sign(dt) * Math.pow(Math.abs(dt) / (0.5 * self.props.timeSpan * self.state.zoomFactor), iexp)) - self.state.panOffset;
     }
 }

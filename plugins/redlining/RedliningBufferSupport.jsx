@@ -10,7 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import buffer from '@turf/buffer';
-import uuid from 'uuid';
+import {v1 as uuidv4} from 'uuid';
 import NumericInput from 'react-numeric-input2';
 import {LayerRole, addLayer, addLayerFeatures} from '../../actions/layers';
 import VectorLayerPicker from '../../components/widgets/VectorLayerPicker';
@@ -104,7 +104,7 @@ class RedliningBufferSupport extends React.Component {
         const output = buffer(wgsFeature, this.state.bufferDistance, {units: this.state.bufferUnit});
         if (output && output.geometry) {
             output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", this.props.projection);
-            output.id = uuid.v4();
+            output.id = uuidv4();
             output.styleName = 'default';
             output.styleOptions = {
                 fillColor: [0, 0, 255, 0.5],

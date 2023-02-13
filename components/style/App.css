@@ -18,7 +18,7 @@ html, body {
 }
 
 html, body, #container {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -82,7 +82,7 @@ textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]) {
     cursor: text;
 }
 
-input:read-only, textarea:read-only {
+input:read-only, textarea:read-only, input:not([type=checkbox]):not([type=radio]):not([type=range]):read-only {
     color: var(--text-color-disabled);
 }
 
@@ -91,7 +91,7 @@ input:disabled, select:disabled, textarea:disabled {
     color: var(--text-color-disabled);
 }
 
-input:invalid, select:invalid, textarea:invalid {
+input:invalid, select:invalid, textarea:invalid, input:not([type=checkbox]):not([type=radio]):not([type=range]):invalid {
     background-color: #FFAAAA;
 }
 

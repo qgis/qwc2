@@ -14,7 +14,7 @@
  * editFeature and deleteFeature methods as necessary.
  */
 import axios from 'axios';
-import {isEmpty} from 'lodash';
+import isEmpty from 'lodash.isempty';
 import ConfigUtils from './ConfigUtils';
 import LocaleUtils from './LocaleUtils';
 

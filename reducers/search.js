@@ -16,7 +16,8 @@ import {
 import {UrlParams} from '../utils/PermaLinkUtils';
 
 const defaultState = {
-    text: ''
+    text: '',
+    results: []
 };
 
 export default function search(state = defaultState, action) {
@@ -32,18 +33,15 @@ export default function search(state = defaultState, action) {
         return {...state, requestId: action.id, pendingProviders: action.providers, startup: action.startup, results: []};
     }
     case SEARCH_ADD_RESULTS: {
-        if (state.requestId !== action.results.reqId || !(state.pendingProviders || []).includes(action.results.provider)) {
+        if (state.requestId !== action.reqId || !(state.pendingProviders || []).includes(action.provider)) {
             return state;
         }
-        let results = action.results.data;
-        if (action.append === true && state && state.results) {
-            results = [...state.results, ...action.results.data];
-        }
+        const results = [...state.results, ...action.results];
         results.sort((a, b) => {
             return (b.priority || 0) - (a.priority || 0);
         });
         const pendingProviders = state.pendingProviders.slice(0);
-        pendingProviders.splice(pendingProviders.indexOf(action.results.provider), 1);
+        pendingProviders.splice(pendingProviders.indexOf(action.provider), 1);
         return {...state, results: results, pendingProviders: pendingProviders};
     }
     case SEARCH_SET_CURRENT_RESULT: {

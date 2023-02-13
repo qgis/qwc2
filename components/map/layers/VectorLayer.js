@@ -23,8 +23,9 @@ export default {
                 }
                 f.set('styleName', feature.styleName);
                 f.set('styleOptions', feature.styleOptions);
-                f.set('isText', feature.isText);
                 f.set('circleParams', feature.circleParams);
+                f.set('shape', feature.shape);
+                f.set('measurements', feature.measurements);
                 if (feature.styleName) {
                     f.setStyle(FeatureStyles[feature.styleName](f, feature.styleOptions || {}));
                 }
@@ -100,8 +101,9 @@ export default {
                     }
                     f.set('styleName', feature.styleName);
                     f.set('styleOptions', feature.styleOptions);
-                    f.set('isText', feature.isText);
                     f.set('circleParams', feature.circleParams);
+                    f.set('shape', feature.shape);
+                    f.set('measurements', feature.measurements);
                     if (feature.styleName) {
                         f.setStyle(FeatureStyles[feature.styleName](f, feature.styleOptions || {}));
                     }

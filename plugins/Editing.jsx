@@ -11,8 +11,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
-import axios from 'axios';
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import {setEditContext, clearEditContext, getFeatureTemplate} from '../actions/editing';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import {LayerRole, addLayerFeatures, removeLayer, refreshLayer, changeLayerProperty} from '../actions/layers';
@@ -33,6 +32,7 @@ import './style/Editing.css';
 class Editing extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
+        allowCloneGeometry: PropTypes.bool,
         changeLayerProperty: PropTypes.func,
         clearEditContext: PropTypes.func,
         currentEditContext: PropTypes.string,
@@ -60,7 +60,8 @@ class Editing extends React.Component {
         width: "30em",
         side: 'right',
         snapping: true,
-        snappingActive: true
+        snappingActive: true,
+        allowCloneGeometry: true
     }
     state = {
         selectedLayer: null,
@@ -171,7 +172,7 @@ class Editing extends React.Component {
             );
         }
         let pickBar = null;
-        if ((this.props.editContext.action === "Draw" || this.state.drawPick) && !(this.props.editContext.feature || {}).geometry) {
+        if (this.props.allowCloneGeometry && (this.props.editContext.action === "Draw" || this.state.drawPick) && !(this.props.editContext.feature || {}).geometry) {
             const pickButtons = [
                 {key: 'DrawPick', icon: 'pick', label: LocaleUtils.trmsg("editing.pickdrawfeature")}
             ];
@@ -243,8 +244,9 @@ class Editing extends React.Component {
     render() {
         const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("editing.maximize") : LocaleUtils.tr("editing.minimize");
         const extraTitlebarContent = (<Icon className="editing-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState({minimized: !this.state.minimized})} title={minMaxTooltip}/>);
+        const attribFormVisible = !!(this.props.editContext.feature && (this.props.editContext.action === "Pick" || this.props.editContext.feature.geometry));
         return (
-            <SideBar extraTitlebarContent={extraTitlebarContent} icon={"editing"} id="Editing" onHide={this.onHide} onShow={this.onShow}
+            <SideBar extraTitlebarContent={extraTitlebarContent} heightResizeable={attribFormVisible} icon={"editing"} id="Editing" onHide={this.onHide} onShow={this.onShow}
                 side={this.props.side} title="appmenu.items.Editing" width={this.props.width}>
                 {() => ({
                     body: this.state.minimized ? null : this.renderBody()
@@ -352,7 +354,7 @@ class Editing extends React.Component {
         const editFeature = {
             type: "Feature",
             geometry: geometry,
-            id: uuid.v1()
+            id: uuidv1()
         };
         this.props.setEditContext('Editing', {action: "Draw", feature: editFeature, changed: true});
         this.setState({drawPick: false, drawPickResults: null});

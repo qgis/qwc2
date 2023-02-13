@@ -16,6 +16,28 @@ div.fixtimeline-toolbar-spacer {
     flex: 1 1 auto;
 }
 
+div.fixtimeline-slider {
+    position: relative;
+}
+
+button.fixtimeline-pan-left,
+button.fixtimeline-pan-right {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    width: 1.5em;
+    height: initial;
+    z-index: 1;
+}
+
+button.fixtimeline-pan-left {
+    left: 0;
+}
+
+button.fixtimeline-pan-right {
+    right: 0;
+}
+
 div.fixtimeline-ticks {
     margin-top: 2em;
     position: relative;
@@ -49,15 +71,7 @@ div.fixtimeline-ticks > span.fixtimeline-tick {
     background-color: gray;
 }
 
-div.fixtimeline-ticks > span.fixtimeline-ltick:first-child > span {
-    left: 0;
-    width: auto;
-    text-align: left;
-}
-
-div.fixtimeline-ticks > span.fixtimeline-ltick:last-child > span {
-    left: initial;
-    right: 0;
-    width: auto;
-    text-align: right;
+div.fixtimeline-ticks > span.fixtimeline-ltick:first-child,
+div.fixtimeline-ticks > span.fixtimeline-ltick:last-child {
+    display: none;
 }

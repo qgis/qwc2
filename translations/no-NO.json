@@ -15,6 +15,7 @@
         "LayerTree": "Lag & tegnforklaring",
         "Login": "Logg inn",
         "Logout": "Logg ut",
+        "MapLegend": "",
         "Measure": "Mål",
         "MeasureLineString": "Måle en linje",
         "MeasurePolygon": "Måle en polygon",
@@ -128,6 +129,7 @@
       "loading": "Beregner høydeprofil..."
     },
     "identify": {
+      "clipboard": "",
       "export": "Eksporter",
       "exportformat": "",
       "featureReport": "Objektrapport",
@@ -155,7 +157,9 @@
     },
     "infotool": {
       "clickhelpPoint": "",
-      "clickhelpPolygon": "Tegn et polygon rundt objektene som skal identifieres"
+      "clickhelpPolygon": "Tegn et polygon rundt objektene som skal identifieres",
+      "clickhelpRadius": "",
+      "radius": ""
     },
     "layercatalog": {
       "windowtitle": ""
@@ -209,10 +213,18 @@
       "elevation": "Høyde",
       "title": "Posisjon"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "",
+      "scaledependent": "",
+      "windowtitle": ""
+    },
     "measureComponent": {
       "areaLabel": "Areal",
       "bearingLabel": "Orientering",
+      "imperial": "",
       "lengthLabel": "Lengde",
+      "metric": "",
       "pointLabel": "Posisjon"
     },
     "navbar": {
@@ -253,17 +265,22 @@
       "delete": "Slett",
       "draw": "Tegn",
       "edit": "Rediger",
+      "ellipse": "",
       "fill": "Fylling",
       "freehand": "Frihånd",
       "label": "Etikett",
       "layer": "Lag",
       "line": "Linje",
+      "measurements": "",
       "outline": "Kant",
       "pick": "Velg",
       "point": "Punkt",
       "polygon": "Polygon",
+      "rectangle": "",
       "size": "Størrelse",
+      "square": "",
       "text": "Tekst",
+      "transform": "",
       "width": "Bredde"
     },
     "scratchdrawing": {
@@ -344,8 +361,11 @@
       "animationinterval": "",
       "classify": "",
       "classifynone": "",
+      "displayfeatures": "",
+      "displaylayers": "",
+      "displayminimal": "",
       "endtime": "",
-      "featuretimeline": "",
+      "future": "",
       "group": "",
       "groupnone": "",
       "home": "",
@@ -353,6 +373,8 @@
       "loop": "",
       "markers": "",
       "notemporaldata": "",
+      "now": "",
+      "past": "",
       "play": "",
       "playrev": "",
       "rewind": "",
@@ -364,6 +386,7 @@
       "timeline": "",
       "timeline_fixed": "",
       "timeline_infinite": "",
+      "timelinedisplay": "",
       "timelinescale": "",
       "title": "",
       "toggle": "",

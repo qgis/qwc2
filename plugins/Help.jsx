@@ -9,10 +9,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import axios from 'axios';
 import SideBar from '../components/SideBar';
 
 class Help extends React.Component {
     static propTypes = {
+        bodyContentsFragmentUrl: PropTypes.string,
         renderBody: PropTypes.func,
         side: PropTypes.string
     }
@@ -20,14 +22,32 @@ class Help extends React.Component {
         renderBody: () => { return null; },
         side: 'right'
     }
+    constructor(props) {
+        super(props);
+        this.bodyEl = null;
+    }
+    componentDidMount() {
+        if (this.props.bodyContentsFragmentUrl) {
+            axios.get(this.props.bodyContentsFragmentUrl).then(response => {
+                this.bodyEl.innerHTML = response.data.replace('$VERSION$', process.env.BuildDate);
+            }).catch(() => {});
+        }
+    }
     render() {
         return (
-            <SideBar icon="info" id="Help" side={this.props.side} title="appmenu.items.Help" width="20em">
+            <SideBar icon="info" id="Help" renderWhenHidden side={this.props.side} title="appmenu.items.Help" width="20em">
                 {() => ({
-                    body: (<div>{this.props.renderBody(this.props)}</div>)
+                    body: this.renderBody()
                 })}
             </SideBar>
         );
+    }
+    renderBody = () => {
+        if (this.props.bodyContentsFragmentUrl) {
+            return (<div ref={el => {this.bodyEl = el;}} />);
+        } else {
+            return this.props.renderBody();
+        }
     }
 }
 

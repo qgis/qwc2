@@ -14,6 +14,7 @@ import Mousetrap from 'mousetrap';
 import {changeRedliningState} from '../actions/redlining';
 import {LayerRole, addLayer} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
+import Icon from '../components/Icon';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import ColorButton from '../components/widgets/ColorButton';
@@ -63,7 +64,7 @@ class Redlining extends React.Component {
         window.removeEventListener('keydown', this.keyPressed);
     }
     keyPressed = (ev) => {
-        if (ev.keyCode === 27) {
+        if (this.props.redlining.action && ev.keyCode === 27) {
             if (this.props.redlining.action === 'Draw' && !this.props.redlining.selectedFeature) {
                 this.props.changeRedliningState({action: 'Delete'});
             }
@@ -92,8 +93,13 @@ class Redlining extends React.Component {
             {key: "Point", tooltip: LocaleUtils.trmsg("redlining.point"), icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
             {key: "LineString", tooltip: LocaleUtils.trmsg("redlining.line"), icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
             {key: "Polygon", tooltip: LocaleUtils.trmsg("redlining.polygon"), icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
-            {key: "Circle", tooltip: LocaleUtils.trmsg("redlining.circle"), icon: "circle", data: {action: "Draw", geomType: "Circle", text: ""}},
-            {key: "Text", tooltip: LocaleUtils.trmsg("redlining.text"), icon: "text", data: {action: "Draw", geomType: "Text", text: ""}}
+            [
+                {key: "Circle", tooltip: LocaleUtils.trmsg("redlining.circle"), icon: "circle", data: {action: "Draw", geomType: "Circle", text: ""}},
+                {key: "Ellipse", tooltip: LocaleUtils.trmsg("redlining.ellipse"), icon: "ellipse", data: {action: "Draw", geomType: "Ellipse", text: ""}},
+                {key: "Square", tooltip: LocaleUtils.trmsg("redlining.square"), icon: "box", data: {action: "Draw", geomType: "Square", text: ""}},
+                {key: "Box", tooltip: LocaleUtils.trmsg("redlining.rectangle"), icon: "rect", data: {action: "Draw", geomType: "Box", text: ""}}
+            ],
+            {key: "Text", tooltip: LocaleUtils.trmsg("redlining.text"), icon: "text", data: {action: "Draw", geomType: "Text", text: "", measurements: false}}
         ];
         const activeFreeHand = this.props.redlining.freehand ? "HandDrawing" : null;
         const freehandButtons = [{
@@ -102,7 +108,8 @@ class Redlining extends React.Component {
             disabled: (this.props.redlining.geomType !== "LineString" && this.props.redlining.geomType !== "Polygon")
         }];
         const editButtons = [
-            {key: "Pick", tooltip: LocaleUtils.trmsg("redlining.pick"), icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
+            {key: "Pick", tooltip: LocaleUtils.trmsg("redlining.pick"), icon: "nodetool", data: {action: "Pick", geomType: null, text: ""}},
+            {key: "Transform", tooltip: LocaleUtils.trmsg("redlining.transform"), icon: "transformtool", data: {action: "Transform", geomType: null, text: ""}},
             {key: "Delete", tooltip: LocaleUtils.trmsg("redlining.delete"), icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature}
         ];
         for (const plugin of Object.values(this.props.plugins || {})) {
@@ -155,6 +162,9 @@ class Redlining extends React.Component {
         if (this.props.redlining.geomType === "Text") {
             labelPlaceholder = LocaleUtils.tr("redlining.text");
         }
+        if (this.props.redlining.action !== 'Draw' && !this.props.redlining.selectedFeature) {
+            return null;
+        }
 
         return (
             <div className="redlining-controlsbar">
@@ -174,10 +184,39 @@ class Redlining extends React.Component {
                         mobile onChange={(nr) => this.updateRedliningStyle({size: nr})} precision={0} step={1}
                         strict value={this.props.redlining.style.size}/>
                 </span>
-                {(this.props.redlining.geomType === 'Text' || this.props.allowGeometryLabels) ? (
-                    <span>
-                        <input className="redlining-label" onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})} placeholder={labelPlaceholder} ref={el => this.setLabelRef(el)} type="text" value={this.props.redlining.style.text}/>
-                    </span>
+                {this.props.redlining.geomType !== 'Text' ? (
+                    <button
+                        className={"button" + (this.props.redlining.measurements ? " pressed" : "")}
+                        onClick={() => this.updateRedliningState({measurements: !this.props.redlining.measurements, style: {...this.props.redlining.style, text: ''}})}
+                        title={LocaleUtils.tr("redlining.measurements")}
+                    >
+                        <Icon icon="measure" />
+                    </button>
+                ) : null}
+                {(this.props.redlining.geomType === 'Text' || this.props.allowGeometryLabels) && !this.props.redlining.measurements ? (
+                    <input className="redlining-label" onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})} placeholder={labelPlaceholder} readOnly={this.props.redlining.measurements} ref={el => this.setLabelRef(el)} type="text" value={this.props.redlining.style.text}/>
+                ) : null}
+                {this.props.redlining.measurements && ['LineString', 'Circle'].includes(this.props.redlining.geomType) ? (
+                    <select className="redlining-unit" onChange={ev => this.updateRedliningState({lenUnit: ev.target.value})} value={this.props.redlining.lenUnit}>
+                        <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
+                        <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
+                        <option value="m">m</option>
+                        <option value="km">km</option>
+                        <option value="ft">ft</option>
+                        <option value="mi">mi</option>
+                    </select>
+                ) : null}
+                {this.props.redlining.measurements && ['Polygon', 'Ellipse', 'Square', 'Box'].includes(this.props.redlining.geomType) ? (
+                    <select className="redlining-unit" onChange={ev => this.updateRedliningState({areaUnit: ev.target.value})} value={this.props.redlining.areaUnit}>
+                        <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
+                        <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
+                        <option value="sqm">m&#178;</option>
+                        <option value="ha">ha</option>
+                        <option value="sqkm">km&#178;</option>
+                        <option value="sqft">ft&#178;</option>
+                        <option value="acre">acre</option>
+                        <option value="sqmi">mi&#178;</option>
+                    </select>
                 ) : null}
             </div>
         );

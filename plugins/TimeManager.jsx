@@ -13,7 +13,7 @@ import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import ol from 'openlayers';
 import isEqual from 'lodash.isequal';
 import dateParser from 'any-date-parser';
@@ -53,11 +53,13 @@ class TimeManager extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
         addLayerFeatures: PropTypes.func,
+        cursorFormat: PropTypes.string,
+        dateFormat: PropTypes.string,
         defaultAnimationInterval: PropTypes.number,
         defaultStepSize: PropTypes.number,
         defaultStepUnit: PropTypes.string,
+        defaultTimelineDisplay: PropTypes.string,
         defaultTimelineMode: PropTypes.string,
-        featureTimelineAvailable: PropTypes.bool,
         layerVisibilities: PropTypes.object,
         layers: PropTypes.array,
         map: PropTypes.object,
@@ -74,6 +76,8 @@ class TimeManager extends React.Component {
         stepUnits: PropTypes.arrayOf(PropTypes.string)
     }
     static defaultProps = {
+        cursorFormat: "datetime",
+        dateFormat: "YYYY-MM-DD[\n]HH:mm:ss",
         defaultAnimationInterval: 1,
         defaultStepSize: 1,
         defaultStepUnit: "d",
@@ -100,7 +104,7 @@ class TimeManager extends React.Component {
         dialogWidth: 0,
         markersEnabled: false,
         markersCanBeEnabled: true,
-        featureTimelineEnabled: true,
+        timelineDisplay: true,
         timelineMode: 'continuous',
         timeData: {
             layerDimensions: {},
@@ -122,7 +126,7 @@ class TimeManager extends React.Component {
         }
         TimeManager.defaultState.animationInterval = props.defaultAnimationInterval;
         TimeManager.defaultState.timelineMode = props.defaultTimelineMode;
-        TimeManager.defaultState.featureTimelineEnabled = props.featureTimelineAvailable;
+        TimeManager.defaultState.timelineDisplay = props.defaultTimelineDisplay;
         this.state = {
             ...this.state,
             ...TimeManager.defaultState
@@ -241,6 +245,7 @@ class TimeManager extends React.Component {
     renderBody = () => {
         const timeButtons = [
             {key: "rewind", tooltip: LocaleUtils.trmsg("timemanager.rewind"), icon: "nav-start"},
+            {key: "now", tooltip: LocaleUtils.trmsg("timemanager.now"), icon: "today"},
             {key: "prev", tooltip: LocaleUtils.trmsg("timemanager.stepback"), icon: "nav-left"},
             {key: "playrev", tooltip: LocaleUtils.trmsg("timemanager.playrev"), icon: "triangle-left", disabled: this.state.animationActive},
             {key: "stop", tooltip: LocaleUtils.trmsg("timemanager.stop"), icon: "square", disabled: !this.state.animationActive},
@@ -279,15 +284,26 @@ class TimeManager extends React.Component {
                             </td>
                         </tr>
                         <tr>
-                            <td>{LocaleUtils.tr("timemanager.timeline")}</td>
+                            <td>{LocaleUtils.tr("timemanager.timeline")}:</td>
                             <td colSpan="2">
                                 <select onChange={ev => this.setState({timelineMode: ev.target.value})} value={this.state.timelineMode}>
                                     <option value="fixed">{LocaleUtils.tr("timemanager.timeline_fixed")}</option>
                                     <option value="infinite">{LocaleUtils.tr("timemanager.timeline_infinite")}</option>
                                 </select>
                             </td>
-                            <td />
                         </tr>
+                        {this.state.timelineDisplay !== "hidden" ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("timemanager.timelinedisplay")}:</td>
+                                <td colSpan="2">
+                                    <select onChange={ev => this.setState({timelineDisplay: ev.target.value})} value={this.state.timelineDisplay}>
+                                        <option value="minimal">{LocaleUtils.tr("timemanager.displayminimal")}</option>
+                                        <option value="features">{LocaleUtils.tr("timemanager.displayfeatures")}</option>
+                                        <option value="layers">{LocaleUtils.tr("timemanager.displaylayers")}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        ) : null}
                     </tbody>
                 </table>
             </div>
@@ -311,12 +327,6 @@ class TimeManager extends React.Component {
                                 <ToggleSwitch active={this.state.markersEnabled} onChange={value => this.setState({markersEnabled: value})} readOnly={!this.state.markersCanBeEnabled} />
                             </span>
                         ) : null}
-                        {this.props.featureTimelineAvailable ? (
-                            <span className="time-manager-toolbar-block">
-                                <span>{LocaleUtils.tr("timemanager.featuretimeline")}: &nbsp;</span>
-                                <ToggleSwitch active={this.state.featureTimelineEnabled} onChange={value => this.setState({featureTimelineEnabled: value})} />
-                            </span>
-                        ) : null}
                     </div>
                     <div className="time-manager-options-menubutton">
                         <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState({settingsPopup: !this.state.settingsPopup})}>
@@ -327,6 +337,9 @@ class TimeManager extends React.Component {
                 </div>
                 <div className="time-manager-timeline">
                     <Timeline currentTimestamp={this.state.currentTimestamp}
+                        dataEndTime={dayjs(this.state.timeData.values[this.state.timeData.values.length - 1]).hour(23).minute(59).second(59)}
+                        dataStartTime={dayjs(this.state.timeData.values[0]).hour(0).minute(0).second(0)}
+                        dateFormat={this.props.dateFormat}
                         dialogWidth={this.state.dialogWidth}
                         endTime={this.state.endTime}
                         setEndTime={this.setEndTime}
@@ -336,20 +349,24 @@ class TimeManager extends React.Component {
                         timeSpan={timeSpan}
                     >
                         {
-                            this.state.featureTimelineEnabled ? (computePixelFromTime, computeTimeFromPixel) => (
+                            (computePixelFromTime, computeTimeFromPixel) => (
                                 <TimelineFeaturesSlider
                                     computePixelFromTime={computePixelFromTime}
                                     computeTimeFromPixel={computeTimeFromPixel}
                                     currentTimestamp={this.state.currentTimestamp}
+                                    cursorFormat={this.props.cursorFormat}
+                                    dateFormat={this.props.dateFormat}
+                                    displayMode={this.state.timelineDisplay}
                                     endTime={this.state.endTime}
                                     markerConfiguration={markerConfiguration}
                                     markersEnabled={this.state.markersEnabled}
                                     startTime={this.state.startTime}
+                                    stepSizeUnit={this.state.stepSizeUnit}
                                     timeEnabled={this.state.timeEnabled}
                                     timeFeatures={this.state.timeFeatures}
                                     timestampChanged={(timestamp) => this.setState({currentTimestamp: timestamp})}
                                 />
-                            ) : null
+                            )
                         }
                     </Timeline>
                 </div>
@@ -370,6 +387,8 @@ class TimeManager extends React.Component {
         this.stopAnimation();
         if (action === "rewind") {
             this.setState({currentTimestamp: +this.state.startTime, animationActive: false});
+        } else if (action === "now") {
+            this.setState({currentTimestamp: +dayjs(), animationActive: false});
         } else if (action === "prev") {
             const newday = this.step(-1);
             this.setState({currentTimestamp: +Math.max(newday, this.state.startTime)});
@@ -500,7 +519,7 @@ class TimeManager extends React.Component {
             ]]
         });
         let pending = 0;
-        const reqUUID = uuid.v1();
+        const reqUUID = uuidv1();
         timeData.layers.forEach(layer => {
             const sublayerattrs = timeData.attributes[layer.uuid];
             const queryLayers = Object.keys(sublayerattrs).join(",");

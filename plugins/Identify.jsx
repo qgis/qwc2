@@ -6,12 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import axios from 'axios';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
-import {LayerRole, addMarker, removeMarker, removeLayer} from '../actions/layers';
+import NumericInput from "react-numeric-input2";
+import buffer from "@turf/buffer";
+import { point as turfpoint } from "@turf/helpers";
+import {LayerRole, addLayerFeatures, addMarker, removeMarker, removeLayer} from '../actions/layers';
 import {changeSelectionState} from '../actions/selection';
 import IdentifyViewer from '../components/IdentifyViewer';
 import ResizeableWindow from '../components/ResizeableWindow';
@@ -20,15 +22,20 @@ import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
+import './style/Identify.css';
+
 class Identify extends React.Component {
     static propTypes = {
+        addLayerFeatures: PropTypes.func,
         addMarker: PropTypes.func,
         attributeCalculator: PropTypes.func,
         attributeTransform: PropTypes.func,
         changeSelectionState: PropTypes.func,
+        clearResultsOnClose: PropTypes.bool,
         click: PropTypes.object,
         currentIdentifyTool: PropTypes.string,
         currentTask: PropTypes.string,
+        customExporters: PropTypes.array,
         displayResultTree: PropTypes.bool,
         enableExport: PropTypes.bool,
         featureInfoReturnsLayerName: PropTypes.bool,
@@ -49,6 +56,8 @@ class Identify extends React.Component {
     }
     static defaultProps = {
         enableExport: true,
+        clearResultsOnClose: true,
+        customExporters: [],
         longAttributesDisplay: 'ellipsis',
         displayResultTree: true,
         replaceImageUrls: true,
@@ -61,16 +70,22 @@ class Identify extends React.Component {
     state = {
         mode: 'Point',
         identifyResults: null,
-        pendingRequests: 0
+        pendingRequests: 0,
+        radius: 50,
+        radiusUnits: 'meters'
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.currentIdentifyTool !== prevProps.currentIdentifyTool && prevProps.currentIdentifyTool === "Identify") {
             this.clearResults();
         }
-        if ((this.props.currentTask === "Identify" && this.state.mode === "Point") || this.props.currentIdentifyTool === "Identify") {
-            this.identifyPoint(prevProps);
-        } else if (this.props.currentTask === "Identify" && this.state.mode === "Region") {
-            this.identifyRegion(prevProps);
+        if (this.props.currentIdentifyTool === "Identify" || this.props.currentTask === "Identify") {
+            if (this.state.mode === "Point") {
+                this.identifyPoint(prevProps);
+            } else if (this.state.mode === "Region") {
+                this.identifyRegion(prevProps);
+            } else if (this.state.mode === "Radius") {
+                this.identifyRadius(prevProps);
+            }
         }
     }
     identifyPoint = (prevProps) => {
@@ -154,7 +169,7 @@ class Identify extends React.Component {
             delete params.region_feature_count;
         }
         queryableLayers.forEach(layer => {
-            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, this.props.params);
+            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, params);
             ++pendingRequests;
             IdentifyUtils.sendRequest(request, (response) => {
                 this.setState({pendingRequests: this.state.pendingRequests - 1});
@@ -165,6 +180,65 @@ class Identify extends React.Component {
             this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests});
         });
     }
+    identifyRadius = (prevProps) => {
+        if (!this.props.selection.point || this.props.selection.point === prevProps.selection.point) {
+            return;
+        }
+        const clickPoint = this.props.selection.point;
+        if (clickPoint) {
+            const circle = this.computeBuffer(clickPoint);
+            const queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
+            if (isEmpty(queryableLayers)) {
+                return;
+            }
+            const poly = circle.geometry.coordinates[0];
+            const identifyResults = this.props.click.modifiers.ctrl !== true ? {} : this.state.identifyResults;
+            this.props.changeSelectionState({ reset: true });
+            const geometry = {
+                type: "Polygon",
+                coordinates: [poly]
+            };
+
+            const filter = VectorLayerUtils.geoJSONGeomToWkt(geometry);
+            let pendingRequests = 0;
+            queryableLayers.forEach((layer) => {
+                const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, this.props.params);
+                ++pendingRequests;
+                IdentifyUtils.sendRequest(request, (response) => {
+                    this.setState({pendingRequests: this.state.pendingRequests - 1});
+                    if (response) {
+                        this.parseResult(response, layer, request.params.info_format, clickPoint);
+                    }
+                });
+                this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests});
+            });
+            this.props.addMarker("identify", clickPoint, "", this.props.map.projection);
+        }
+    };
+    changeBufferUnit = (ev) => {
+        this.setState({ radiusUnits: ev.target.value });
+    };
+    computeBuffer = (point) => {
+        const layer = {
+            id: "identifyradiusbuffer",
+            role: LayerRole.SELECTION
+        };
+        const feature = turfpoint(point);
+        const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.map.projection, "EPSG:4326");
+        const wgsFeature = { ...feature, geometry: wgsGeometry };
+        const output = buffer(wgsFeature, this.state.radius, {units: this.state.radiusUnits});
+        if (output && output.geometry) {
+            output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", this.props.map.projection);
+            output.id = "buffer";
+            output.styleName = "default";
+            output.styleOptions = {
+                fillColor: [255, 0, 0, 0.15],
+                strokeColor: [255, 0, 0, 1]
+            };
+            this.props.addLayerFeatures(layer, [output]);
+        }
+        return output;
+    };
     parseResult = (response, layer, format, clickPoint) => {
         const newResults = IdentifyUtils.parseResponse(response, layer, format, clickPoint, this.props.map.projection, this.props.featureInfoReturnsLayerName, this.props.layers);
         // Merge with previous
@@ -183,17 +257,68 @@ class Identify extends React.Component {
         if (mode === "Region") {
             this.props.changeSelectionState({geomType: 'Polygon'});
         }
+        if (mode === "Radius") {
+            this.props.changeSelectionState({geomType: 'Point'});
+        }
     }
     onToolClose = () => {
-        this.props.removeMarker('identify');
-        this.props.removeLayer("identifyslection");
         this.props.changeSelectionState({geomType: undefined});
-        this.setState({identifyResults: null, pendingRequests: 0, mode: 'Point'});
+        this.setState({mode: 'Point'});
+        if (this.props.clearResultsOnClose) {
+            this.clearResults();
+        }
     }
     clearResults = () => {
         this.props.removeMarker('identify');
         this.props.removeLayer("identifyslection");
+        this.props.removeLayer("identifyradiusbuffer");
         this.setState({identifyResults: null, pendingRequests: 0});
+    }
+    renderRadiusContent = () => {
+        return (
+            <div className="identify-radius-controls">
+                <span>
+                    <span>{LocaleUtils.tr("infotool.radius")} &nbsp;</span>
+                    <NumericInput
+                        max={10000}
+                        min={1}
+                        mobile
+                        onChange={(nr) => this.setState({ radius: nr })}
+                        precision={0}
+                        step={10}
+                        strict
+                        value={this.state.radius}
+                    />
+                    <select
+                        onChange={this.changeBufferUnit}
+                        value={this.state.radiusUnits}
+                    >
+                        <option value="meters">m</option>
+                        <option value="feet">ft</option>
+                        <option value="kilometers">km</option>
+                        <option value="miles">mi</option>
+                    </select>
+                </span>
+            </div>
+        );
+    };
+    renderBody = () => {
+        if (this.state.mode === "Point") {
+            return LocaleUtils.tr("infotool.clickhelpPoint");
+        } else if (this.state.mode === "Region") {
+            return LocaleUtils.tr("infotool.clickhelpPolygon");
+        } else if (this.state.mode === "Radius") {
+            const text = LocaleUtils.tr("infotool.clickhelpRadius");
+            return (
+                <div>
+                    <div>
+                        <span>{text}</span>
+                    </div>
+                    {this.renderRadiusContent()}
+                </div>
+            );
+        }
+        return null;
     }
     render() {
         let resultWindow = null;
@@ -210,6 +335,7 @@ class Identify extends React.Component {
                     <IdentifyViewer
                         attributeCalculator={this.props.attributeCalculator}
                         attributeTransform={this.props.attributeTransform}
+                        customExporters={this.props.customExporters}
                         displayResultTree={this.props.displayResultTree}
                         enableExport={this.props.enableExport}
                         identifyResults={this.state.identifyResults}
@@ -233,7 +359,7 @@ class Identify extends React.Component {
         return [resultWindow, (
             <TaskBar key="IdentifyTaskBar" onHide={this.onToolClose} onShow={this.onShow} task="Identify">
                 {() => ({
-                    body: this.state.mode === "Region" ? LocaleUtils.tr("infotool.clickhelpPolygon") : LocaleUtils.tr("infotool.clickhelpPoint")
+                    body: this.renderBody()
                 })}
             </TaskBar>
         )];
@@ -250,6 +376,7 @@ const selector = (state) => ({
 });
 
 export default connect(selector, {
+    addLayerFeatures: addLayerFeatures,
     addMarker: addMarker,
     changeSelectionState: changeSelectionState,
     removeMarker: removeMarker,
