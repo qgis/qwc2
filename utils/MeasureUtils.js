@@ -175,6 +175,8 @@ const MeasureUtils = {
             lenUnit: settings.lenUnit,
             areaUnit: settings.areaUnit
         };
+        feature.set('label', '');
+        feature.set('segment_labels', undefined);
         const geom = feature.getGeometry();
         if (geomType === 'Point') {
             feature.set('label', MeasureUtils.getFormattedCoordinate(geom.getCoordinates(), settings.mapCrs, settings.displayCrs));
