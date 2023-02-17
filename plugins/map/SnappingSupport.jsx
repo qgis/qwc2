@@ -77,6 +77,10 @@ class SnappingSupport extends React.Component {
         if (!this.state.drawing) {
             return null;
         }
+        if (isEmpty(this.props.theme.snapping || {})) {
+            // Don't display snapping control if no snapping is configuted for current theme
+            return null;
+        }
         const toolbarClass = !this.state.havesnaplayers ? "snapping-toolbar-inactive" : "";
         return (
             <div className="snapping-toolbar-container">
