@@ -43,6 +43,7 @@ class LayerTree extends React.Component {
         enableLegendPrint: PropTypes.bool,
         enableServiceInfo: PropTypes.bool,
         enableVisibleFilter: PropTypes.bool,
+        extraLegendParams: PropTypes.string,
         fallbackDrag: PropTypes.bool,
         flattenGroups: PropTypes.bool,
         grayUnchecked: PropTypes.bool,
@@ -263,7 +264,7 @@ class LayerTree extends React.Component {
         }
         let legendicon = null;
         if (this.props.showLegendIcons) {
-            const legendUrl = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
+            const legendUrl = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend, this.props.extraLegendParams);
             if (legendUrl) {
                 legendicon = (<img className="layertree-item-legend-thumbnail" onMouseOut={this.hideLegendTooltip} onMouseOver={ev => this.showLegendTooltip(ev, legendUrl)} onTouchStart={ev => this.showLegendTooltip(ev, legendUrl)} src={legendUrl + "&TYPE=thumbnail"} />);
             } else if (layer.color) {
@@ -562,7 +563,7 @@ class LayerTree extends React.Component {
             }
         } else {
             if (sublayer.visibility && LayerUtils.layerScaleInRange(sublayer, this.props.mapScale)) {
-                const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
+                const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend, this.props.extraLegendParams);
                 body = request ? '<div class="legend-entry"><img src="' + request + '" /></div>' : "";
             }
         }
