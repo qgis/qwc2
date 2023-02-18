@@ -23,7 +23,7 @@ class MapLegend extends React.Component {
         addGroupTitles: PropTypes.bool,
         addLayerTitles: PropTypes.bool,
         bboxDependentLegend: PropTypes.bool,
-        extraLegendParams: PropTypes.string,
+        extraLegendParameters: PropTypes.string,
         layers: PropTypes.array,
         map: PropTypes.object,
         onlyVisibleLegend: PropTypes.bool,
@@ -119,7 +119,7 @@ class MapLegend extends React.Component {
             if (this.state.onlyVisibleLegend && !sublayer.visibility) {
                 return null;
             }
-            const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, mapScale, this.props.map, this.state.bboxDependentLegend, this.state.scaleDependentLegend, this.props.extraLegendParams);
+            const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, mapScale, this.props.map, this.state.bboxDependentLegend, this.state.scaleDependentLegend, this.props.extraLegendParameters);
             return request ? (
                 <div className="map-legend-legend-entry" key={sublayer.name}>
                     <img src={request} />
