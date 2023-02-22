@@ -40,6 +40,9 @@ const MeasureUtils = {
         }
         return coo.map(ord => LocaleUtils.toLocaleFixed(ord, decimals)).join(", ");
     },
+    formatDuration(valueSeconds) {
+        return new Date(valueSeconds * 1000).toISOString().slice(11, 19);
+    },
     formatMeasurement(valueMetric, isArea, unit = 'metric', decimals = 2, withUnit = true) {
         let result = '';
         let unitlabel = unit;
