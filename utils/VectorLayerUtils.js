@@ -332,7 +332,7 @@ const VectorLayerUtils = {
             bounds = [bounds[0], bounds[1], bounds[3], bounds[4]];
         }
         return {
-            crs: featureCrs.size > 0 ? bboxCrs : null,
+            crs: bboxCrs,
             bounds: bounds
         };
     },
