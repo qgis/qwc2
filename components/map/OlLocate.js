@@ -7,6 +7,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 import ol from 'openlayers';
+import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import './OlLocate.css';
 
@@ -104,6 +105,7 @@ export default class OlLocate extends ol.Object {
         }
         if (!this.p) {
             this.set("state", "LOCATING");
+            this.set("position", null);
         } else {
             this._updatePosFt();
         }
@@ -122,6 +124,7 @@ export default class OlLocate extends ol.Object {
             this.map.un('pointerdrag', this.stopFollow, this);
         }
         this.set("state", "DISABLED");
+        this.set("position", null);
     }
     startFollow = () => {
         this.follow = true;
@@ -170,6 +173,8 @@ export default class OlLocate extends ol.Object {
             this.set("state", nState);
         }
         const p = this.geolocate.getPosition();
+        const wgsPos = CoordinatesUtils.reproject(p, this.map.getView().getProjection(), "EPSG:4326");
+        this.set("position", wgsPos);
         this.p = p;
         const point = new ol.geom.Point(p);
         if (this.options.drawCircle) {
