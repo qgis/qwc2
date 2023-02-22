@@ -22,6 +22,7 @@
         "Print": "Imprimir",
         "RasterExport": "Exportar trama",
         "Redlining": "Línea de demarcación",
+        "Routing": "",
         "Share": "Compartilhar enlace",
         "ThemeSwitcher": "Tema",
         "Tools": "Ferramentas de mapa",
@@ -282,6 +283,20 @@
       "text": "Texto",
       "transform": "",
       "width": "Largura"
+    },
+    "routing": {
+      "add": "",
+      "compute": "",
+      "computefailed": "",
+      "export": "",
+      "iso_intervals": "",
+      "iso_mode": "",
+      "iso_mode_distance": "",
+      "iso_mode_time": "",
+      "maxspeed": "",
+      "reachability": "",
+      "route": "",
+      "windowtitle": ""
     },
     "scratchdrawing": {
       "finish": "Terminar"

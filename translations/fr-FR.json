@@ -22,6 +22,7 @@
         "Print": "Imprimer",
         "RasterExport": "Export image",
         "Redlining": "Dessiner",
+        "Routing": "Routage",
         "Share": "Partager",
         "ThemeSwitcher": "Thèmes",
         "Tools": "Outils",
@@ -282,6 +283,20 @@
       "text": "Texte",
       "transform": "Transformer",
       "width": "Largeur"
+    },
+    "routing": {
+      "add": "Ajouter",
+      "compute": "Calculer",
+      "computefailed": "Échec du calcul",
+      "export": "Exporter",
+      "iso_intervals": "Intervalles",
+      "iso_mode": "Mode",
+      "iso_mode_distance": "Distance",
+      "iso_mode_time": "Temps",
+      "maxspeed": "Vitesse maximale",
+      "reachability": "Accessibilité",
+      "route": "Route",
+      "windowtitle": "Routage"
     },
     "scratchdrawing": {
       "finish": "Terminer"

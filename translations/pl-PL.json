@@ -22,6 +22,7 @@
         "Print": "Drukuj",
         "RasterExport": "Eksport Rastra",
         "Redlining": "Redlining",
+        "Routing": "",
         "Share": "Udostępnij Link",
         "ThemeSwitcher": "Motyw",
         "Tools": "Narzędzia Mapy",
@@ -282,6 +283,20 @@
       "text": "Tekst",
       "transform": "",
       "width": "Szerokość"
+    },
+    "routing": {
+      "add": "",
+      "compute": "",
+      "computefailed": "",
+      "export": "",
+      "iso_intervals": "",
+      "iso_mode": "",
+      "iso_mode_distance": "",
+      "iso_mode_time": "",
+      "maxspeed": "",
+      "reachability": "",
+      "route": "",
+      "windowtitle": ""
     },
     "scratchdrawing": {
       "finish": ""

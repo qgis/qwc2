@@ -22,6 +22,7 @@
         "Print": "Yazdır",
         "RasterExport": "Resim Olarak Kaydet",
         "Redlining": "Çizim",
+        "Routing": "",
         "Share": "Bağlantı Paylaş",
         "ThemeSwitcher": "Tema",
         "Tools": "Harita Araçları",
@@ -282,6 +283,20 @@
       "text": "Metin",
       "transform": "",
       "width": "Genişlik"
+    },
+    "routing": {
+      "add": "",
+      "compute": "",
+      "computefailed": "",
+      "export": "",
+      "iso_intervals": "",
+      "iso_mode": "",
+      "iso_mode_distance": "",
+      "iso_mode_time": "",
+      "maxspeed": "",
+      "reachability": "",
+      "route": "",
+      "windowtitle": ""
     },
     "scratchdrawing": {
       "finish": ""

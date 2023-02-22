@@ -22,6 +22,7 @@
         "Print": "Nyomtatás",
         "RasterExport": "Kép exportálása",
         "Redlining": "Vázlat",
+        "Routing": "",
         "Share": "Megosztható link",
         "ThemeSwitcher": "Térkép",
         "Tools": "Térkép eszközök",
@@ -282,6 +283,20 @@
       "text": "Szöveg",
       "transform": "",
       "width": "Szélesség"
+    },
+    "routing": {
+      "add": "",
+      "compute": "",
+      "computefailed": "",
+      "export": "",
+      "iso_intervals": "",
+      "iso_mode": "",
+      "iso_mode_distance": "",
+      "iso_mode_time": "",
+      "maxspeed": "",
+      "reachability": "",
+      "route": "",
+      "windowtitle": ""
     },
     "scratchdrawing": {
       "finish": ""

@@ -22,6 +22,7 @@
         "Print": "Print",
         "RasterExport": "Raster Export",
         "Redlining": "Redlining",
+        "Routing": "Routing",
         "Share": "Share Link",
         "ThemeSwitcher": "Theme",
         "Tools": "Map Tools",
@@ -282,6 +283,20 @@
       "text": "Text",
       "transform": "Transform",
       "width": "Width"
+    },
+    "routing": {
+      "add": "Add route point",
+      "compute": "Compute",
+      "computefailed": "Failed to compute",
+      "export": "Export",
+      "iso_intervals": "Intervals",
+      "iso_mode": "Mode",
+      "iso_mode_distance": "Distance",
+      "iso_mode_time": "Time",
+      "maxspeed": "Max speed",
+      "reachability": "Reachability",
+      "route": "Route",
+      "windowtitle": "Routing"
     },
     "scratchdrawing": {
       "finish": "Finish"

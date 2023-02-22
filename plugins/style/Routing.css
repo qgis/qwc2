@@ -1,0 +1,112 @@
+div.routing-frame {
+    border: 1px solid var(--border-color);
+    padding: 0.25em;
+}
+
+div.routing-buttons {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+div.routing-buttons > div.ButtonBar {
+    flex: 1 1 auto;
+}
+
+div.routing-buttons div.routing-settings-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% - 0.25em - 1px);
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    background-color: var(--container-bg-color);
+    box-shadow: 0px 0px 5px rgba(136, 136, 136, 1);
+    z-index: 1;
+    padding: 0.25em;
+}
+
+div.routing-settings-menu-entry {
+    display: flex;
+    align-items: center;
+}
+
+div.routing-settings-menu-entry > *:first-child {
+    flex: 0 0 auto;
+    margin-right: 0.5em;
+}
+
+div.routing-settings-menu-entry > *:last-child {
+    flex: 1 1 auto;
+}
+
+div.routing-routepoints {
+    display: flex;
+    align-items: center;
+}
+
+div.routing-routepoints > div:first-child {
+    flex: 1 1 auto;
+}
+
+div.routing-routepoints > div:last-child {
+    flex: 0 0 auto;
+    margin-left: 0.25em;
+}
+
+div.routing-search-field {
+    display: flex;
+    margin-bottom: 0.25em;
+}
+
+div.routing-search-field input.search-widget-input[type=text] {
+    border: none;
+    outline: none;
+    height: calc(2em - 2px);
+}
+
+div.routing-search-field button.button {
+    border-right: none;
+    width: 2em;
+}
+
+button.routing-compute-button {
+    width: 100%;
+}
+
+div.routing-status-failure {
+    text-align: center;
+    color: red;
+    font-style: italic;
+    padding: 0.25em;
+}
+
+div.routing-result-summary {
+    margin-top: 0.5em;
+    border-top: 1px solid var(--border-color);
+    padding: 0.25em;
+}
+
+div.routing-result-summary > div {
+    display: flex;
+    align-items: center;
+}
+
+div.routing-result-summary > div > span.icon {
+    margin-right: 0.5em;
+}
+
+table.routing-iso-settings {
+    width: 100%;
+    white-space: nowrap;
+}
+
+table.routing-iso-settings td > input,
+table.routing-iso-settings td > select {
+    width: 100%;
+}
+
+input.routing-input-invalid {
+    background-color: #FFAAAA!important;
+}

@@ -22,6 +22,7 @@
         "Print": "Skriv ut",
         "RasterExport": "Eksporter Raster",
         "Redlining": "Redlining",
+        "Routing": "",
         "Share": "Del lenke",
         "ThemeSwitcher": "Tema",
         "Tools": "Kartverktøy",
@@ -282,6 +283,20 @@
       "text": "Tekst",
       "transform": "",
       "width": "Bredde"
+    },
+    "routing": {
+      "add": "",
+      "compute": "",
+      "computefailed": "",
+      "export": "",
+      "iso_intervals": "",
+      "iso_mode": "",
+      "iso_mode_distance": "",
+      "iso_mode_time": "",
+      "maxspeed": "",
+      "reachability": "",
+      "route": "",
+      "windowtitle": ""
     },
     "scratchdrawing": {
       "finish": ""
