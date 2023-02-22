@@ -185,7 +185,7 @@ export default function layers(state = defaultState, action) {
         const idx = newLayers.findIndex(layer => layer.id === layerId);
         if (idx === -1) {
             const newFeatures = action.features.map(function(f) {
-                return {...f, id: f.id || f.properties.id || uuidv4()};
+                return {...f, id: f.id || (f.properties || {}).id || uuidv4()};
             });
             const newLayer = {
                 ...action.layer,
@@ -206,7 +206,7 @@ export default function layers(state = defaultState, action) {
             newLayers.splice(inspos, 0, newLayer);
         } else {
             const addFeatures = action.features.map(f => ({
-                ...f, id: f.id || f.properties.id || uuidv4()
+                ...f, id: f.id || (f.properties || {}).id || uuidv4()
             }));
             const newFeatures = action.clear ? addFeatures : [
                 ...(newLayers[idx].features || []).filter(f => !addFeatures.find(g => g.id === f.id)),
