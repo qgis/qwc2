@@ -286,9 +286,11 @@
     },
     "routing": {
       "add": "Aggiungi",
+      "addviapoint": "Aggiungi punto di itinerario",
       "compute": "Calcola",
       "computefailed": "Errore durante il calcolo",
       "export": "Esporta",
+      "fromhere": "Percorso da qui",
       "iso_intervals": "Intervalli",
       "iso_mode": "Modalità",
       "iso_mode_distance": "Distanza",
@@ -296,6 +298,8 @@
       "maxspeed": "Velocità massima",
       "reachability": "Raggiungibilità",
       "route": "Rotta",
+      "setcenter": "Imposta il centro qui",
+      "tohere": "Percorso fino a qui",
       "windowtitle": "Routing"
     },
     "scratchdrawing": {

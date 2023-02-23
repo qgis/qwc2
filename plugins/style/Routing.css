@@ -110,3 +110,7 @@ table.routing-iso-settings td > select {
 input.routing-input-invalid {
     background-color: #FFAAAA!important;
 }
+
+div.routing-popup-button > button {
+    width: 100%;
+}

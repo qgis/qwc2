@@ -24,6 +24,7 @@ import ResizeableWindow from '../components/ResizeableWindow';
 import displayCrsSelector from '../selectors/displaycrs';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import MeasureUtils from '../utils/MeasureUtils';
 import RoutingInterface from '../utils/RoutingInterface';
 import './style/Routing.css';
@@ -33,6 +34,7 @@ class Routing extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
         addLayerFeatures: PropTypes.func,
+        click: PropTypes.object,
         displaycrs: PropTypes.string,
         enabledProviders: PropTypes.array,
         locatePos: PropTypes.array,
@@ -48,7 +50,6 @@ class Routing extends React.Component {
         windowSize: {width: 320, height: 320}
     }
     state = {
-        visible: false,
         currentTab: 'Route',
         mode: 'auto',
         settings: {
@@ -80,7 +81,8 @@ class Routing extends React.Component {
             result: null
         },
         searchProviders: [],
-        searchParams: {}
+        searchParams: {},
+        popupPos: null
     }
     constructor(props) {
         super(props);
@@ -92,13 +94,38 @@ class Routing extends React.Component {
             lang: LocaleUtils.lang()
         };
     }
-    componentDidUpdate(prevProps) {
-        if (this.props.active && !prevProps.active) {
-            this.setState({visible: true});
+    componentDidUpdate(prevProps, prevState) {
+        // Window closed
+        if (!this.props.active && prevProps.active) {
+            this.hidePopup();
+            this.props.removeLayer("routingggeometries");
+            this.props.removeLayer("routingmarkers");
+        }
+        // Map popup
+        if (this.props.active) {
+            const newPoint = this.props.click;
+            if (!newPoint) {
+                if (this.state.popupPos) {
+                    this.hidePopup();
+                }
+            } else {
+                const oldPoint = prevProps.click;
+                if (!oldPoint || oldPoint.pixel[0] !== newPoint.pixel[0] || oldPoint.pixel[1] !== newPoint.pixel[1]) {
+                    this.setState({popupPos: newPoint.coordinate});
+                }
+            }
+        }
+        // Routing markers
+        if (
+            this.state.currentTab !== prevState.currentTab || 
+            this.state.routeConfig.routepoints !== prevState.routeConfig.routepoints ||
+            this.state.isoConfig.point !== prevState.isoConfig.point
+        ) {
+            this.updateRoutingMarkers();
         }
     }
     render() {
-        if (!this.state.visible) {
+        if (!this.props.active) {
             return null;
         }
         const tabButtons = [
@@ -115,24 +142,27 @@ class Routing extends React.Component {
             {key: "bicycle", icon: "routing-bicycle", tooltip: "routing.mode_bicycle"},
             {key: "pedestrian", icon: "routing-walking", tooltip: "routing.mode_walking"}
         ];
-        return (
-            <ResizeableWindow icon="routing" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width}
-                onClose={this.onClose} title={LocaleUtils.tr("routing.windowtitle")} >
-                <div role="body">
-                    <ButtonBar active={this.state.currentTab} buttons={tabButtons} onClick={this.changeCurrentTab} />
-                    <div className="routing-frame">
-                        <div className="routing-buttons">
-                            <ButtonBar active={this.state.mode} buttons={buttons} onClick={key => this.setState({mode: key})} />
-                            <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState({settingsPopup: !this.state.settingsPopup}, false)}>
-                                <Icon icon="cog" />
-                            </button>
-                            {this.state.settingsPopup ? this.renderSettings() : null}
+        return [
+            (
+                <ResizeableWindow icon="routing" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width}
+                    key="RoutingDialog" onClose={this.onClose} title={LocaleUtils.tr("routing.windowtitle")} >
+                    <div role="body">
+                        <ButtonBar active={this.state.currentTab} buttons={tabButtons} onClick={this.changeCurrentTab} />
+                        <div className="routing-frame">
+                            <div className="routing-buttons">
+                                <ButtonBar active={this.state.mode} buttons={buttons} onClick={key => this.setState({mode: key})} />
+                                <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState({settingsPopup: !this.state.settingsPopup}, false)}>
+                                    <Icon icon="cog" />
+                                </button>
+                                {this.state.settingsPopup ? this.renderSettings() : null}
+                            </div>
+                            {tabRenderers[this.state.currentTab]()}
                         </div>
-                        {tabRenderers[this.state.currentTab]()}
                     </div>
-                </div>
-            </ResizeableWindow>
-        );
+                </ResizeableWindow>
+            ),
+            this.renderMapPopup()
+        ];
     }
     renderSettings = () => {
         return (
@@ -262,6 +292,55 @@ class Routing extends React.Component {
             </InputContainer>
         );
     }
+    renderMapPopup = () => {
+        if (!this.state.popupPos) {
+            return null;
+        }
+        let body = null;
+        const prec = CoordinatesUtils.getUnits(this.props.mapcrs) === 'degrees' ? 4 : 0;
+        const point = {
+            text: this.state.popupPos.map(x => x.toFixed(prec)).join(", ") + " (" + this.props.mapcrs + ")",
+            pos: [...this.state.popupPos],
+            crs: this.props.mapcrs
+        };
+        if (this.state.currentTab === "Route") {
+            const lastPoint = this.state.routeConfig.routepoints.length - 1;
+            body = (
+                <div className="mapinfotooltip-body">
+                    <div className="routing-popup-button"><button className="button" onClick={() => {this.updateRoutePoint(0, point); this.hidePopup();}}>{LocaleUtils.tr("routing.fromhere")}</button></div>
+                    <div className="routing-popup-button"><button className="button" onClick={() => {this.updateRoutePoint(lastPoint, point); this.hidePopup();}}>{LocaleUtils.tr("routing.tohere")}</button></div>
+                    <div className="routing-popup-button"><button className="button" onClick={() => {this.addRoutePt(point); this.hidePopup();}}>{LocaleUtils.tr("routing.addviapoint")}</button></div>
+                </div>
+            );
+        } else if (this.state.currentTab === "Reachability") {
+            body = (
+                <div className="mapinfotooltip-body">
+                    <div className="routing-popup-button"><button className="button" onClick={() => {this.updateIsoConfig({point}); this.hidePopup();}}>{LocaleUtils.tr("routing.setcenter")}</button></div>
+                </div>
+            );
+        } else {
+            return null;
+        }
+        const pixel = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK)(this.state.popupPos);
+        const style = {
+            left: pixel[0] + "px",
+            top: pixel[1] + "px"
+        };
+        return (
+            <div className="mapinfotooltip" key="RoutingPopup" style={style}>
+                <div className="mapinfotooltip-window">
+                    <div className="mapinfotooltip-titlebar">
+                        <span className="mapinfotooltip-title" />
+                        <Icon className="mapinfotooltip-button" icon="remove" onClick={() => this.setState({popupPos: null})}/>
+                    </div>
+                    {body}
+                </div>
+            </div>
+        );
+    }
+    hidePopup = () => {
+        this.setState({popupPos: null});
+    }
     changeCurrentTab = (key) => {
         this.props.removeLayer("routingggeometries");
         this.setState({
@@ -289,12 +368,12 @@ class Routing extends React.Component {
         }});
         this.recomputeIfNeeded();
     }
-    addRoutePt = () => {
+    addRoutePt = (entry = {text: '', pos: null}) => {
         this.setState({routeConfig: {
             ...this.state.routeConfig,
             routepoints: [
                 ...this.state.routeConfig.routepoints.slice(0, -1),
-                {text: '', pos: null},
+                entry,
                 ...this.state.routeConfig.routepoints.slice(-1)
             ]
         }});
@@ -340,8 +419,7 @@ class Routing extends React.Component {
         }
     }
     onClose = () => {
-        this.setState({visible: false});
-        this.props.removeLayer("routingggeometries");
+        this.props.setCurrentTask(null);
     }
     isoSearchResultSelected = (result) => {
         if (result) {
@@ -356,6 +434,29 @@ class Routing extends React.Component {
         } else {
             this.updateRoutePoint(idx, {text: "", pos: null, crs: null});
         }
+    }
+    updateRoutingMarkers = () => {
+        let points = [];
+        if (this.state.currentTab === "Route") {
+            points = this.state.routeConfig.routepoints
+        } else {
+            points = [this.state.isoConfig.point];
+        }
+        const layer = {
+            id: "routingmarkers",
+            role: LayerRole.MARKER,
+            styleName: 'marker',
+
+        };
+        const features = points.filter(point => point.pos).map(point => ({
+            type: "Feature",
+            crs: point.crs,
+            geometry: {
+                type: "Point",
+                coordinates: point.pos
+            }
+        }));
+        this.props.addLayerFeatures(layer, features, true);
     }
     computeRoute = () => {
         const locations = this.state.routeConfig.routepoints.filter(entry => entry.pos).map(entry => {
@@ -457,6 +558,7 @@ export default (searchProviders) => {
     return connect(createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
         active: state.task.id === "Routing",
         mapcrs: state.map.projection,
+        click: state.map.click,
         searchProviders: providers,
         displaycrs: displaycrs,
         locatePos: state.locate.position
