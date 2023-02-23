@@ -655,7 +655,12 @@ const LayerUtils = {
         if (bboxDependentLegend === true || (bboxDependentLegend === "theme" && layer.role === LayerRole.THEME)) {
             requestParams.WIDTH = map.size.width;
             requestParams.HEIGHT = map.size.height;
-            requestParams.BBOX = map.bbox.bounds.join(",");
+            const bounds = map.bbox.bounds;
+            if (CoordinatesUtils.getAxisOrder(map.projection).substr(0, 2) === 'ne' && layer.version === '1.3.0') {
+                requestParams.BBOX = [bounds[1], bounds[0], bounds[3], bounds[2]].join(",");
+            } else {
+                requestParams.BBOX = bounds.join(",");
+            }
         }
         if (layer.externalLayerMap && layer.externalLayerMap[sublayer.name]) {
             const externalLayer = layer.externalLayerMap[sublayer.name];
