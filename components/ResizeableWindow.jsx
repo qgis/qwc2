@@ -139,6 +139,7 @@ class ResizeableWindow extends React.Component {
         }
         const bodyclasses = classnames({
             "resizeable-window-body": true,
+            "resizeable-window-nodrag": true,
             "resizeable-window-body-scrollable": this.props.scrollable,
             "resizeable-window-body-nonscrollable": !this.props.scrollable
         });
@@ -160,6 +161,7 @@ class ResizeableWindow extends React.Component {
                 <span className="resizeable-window-titlebar-extra-controls">
                     {(this.props.extraControls || []).map(entry => {
                         const iconClasses = classnames({
+                            "resizeable-window-nodrag": true,
                             "resizeable-window-titlebar-extra-control": true,
                             "resizeable-window-titlebar-extra-control-active": entry.active
                         });
@@ -172,13 +174,13 @@ class ResizeableWindow extends React.Component {
                 </span>
                 {!maximized && dockable ? (
                     <Icon
-                        className="resizeable-window-titlebar-control" icon={dockIcon}
+                        className="resizeable-window-nodrag resizeable-window-titlebar-control" icon={dockIcon}
                         onClick={this.toggleDock}
                         titlemsgid={this.state.geometry.docked ? LocaleUtils.trmsg("window.undock") : LocaleUtils.trmsg("window.dock")} />
                 ) : null}
-                {this.props.minimizeable ? (<Icon className="resizeable-window-titlebar-control" icon={minimized ? "unminimize" : "minimize"} onClick={this.toggleMinimize} titlemsgid={minimized ? LocaleUtils.trmsg("window.unminimize") : LocaleUtils.trmsg("window.minimize")} />) : null}
-                {this.props.maximizeable ? (<Icon className="resizeable-window-titlebar-control" icon={maximized ? "unmaximize" : "maximize"} onClick={this.toggleMaximize} titlemsgid={maximized ? LocaleUtils.trmsg("window.unmaximize") : LocaleUtils.trmsg("window.maximize")} />) : null}
-                {this.props.onClose ? (<Icon className="resizeable-window-titlebar-control" icon="remove" onClick={this.onClose} titlemsgid={LocaleUtils.trmsg("window.close")} />) : null}
+                {this.props.minimizeable ? (<Icon className="resizeable-window-nodrag resizeable-window-titlebar-control" icon={minimized ? "unminimize" : "minimize"} onClick={this.toggleMinimize} titlemsgid={minimized ? LocaleUtils.trmsg("window.unminimize") : LocaleUtils.trmsg("window.minimize")} />) : null}
+                {this.props.maximizeable ? (<Icon className="resizeable-window-nodrag resizeable-window-titlebar-control" icon={maximized ? "unmaximize" : "maximize"} onClick={this.toggleMaximize} titlemsgid={maximized ? LocaleUtils.trmsg("window.unmaximize") : LocaleUtils.trmsg("window.maximize")} />) : null}
+                {this.props.onClose ? (<Icon className="resizeable-window-nodrag resizeable-window-titlebar-control" icon="remove" onClick={this.onClose} titlemsgid={LocaleUtils.trmsg("window.close")} />) : null}
             </div>),
             (<div className={bodyclasses} key="body" onMouseDown={(ev) => { this.stopEvent(ev); this.props.raiseWindow(this.id); }} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
                 <div className="resizeable-window-drag-shield" ref={el => {this.dragShield = el;}} />
@@ -217,7 +219,8 @@ class ResizeableWindow extends React.Component {
         }
         return (
             <div className="resizeable-window-container" style={style}>
-                <Rnd bounds="parent" className={windowclasses} default={this.state.geometry}
+                <Rnd bounds="parent" cancel=".resizeable-window-nodrag"
+                    className={windowclasses} default={this.state.geometry}
                     disableDragging={this.state.geometry.maximized || this.state.geometry.docked}
                     enableResizing={resizeMode}
                     maxHeight={this.props.maxHeight || window.innerHeight} maxWidth={this.props.maxWidth || window.innerWidth}
