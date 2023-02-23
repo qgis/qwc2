@@ -151,7 +151,7 @@ class Routing extends React.Component {
                         <div className="routing-frame">
                             <div className="routing-buttons">
                                 <ButtonBar active={this.state.mode} buttons={buttons} onClick={key => this.setState({mode: key})} />
-                                <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState({settingsPopup: !this.state.settingsPopup}, false)}>
+                                <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState({settingsPopup: !this.state.settingsPopup})}>
                                     <Icon icon="cog" />
                                 </button>
                                 {this.state.settingsPopup ? this.renderSettings() : null}
