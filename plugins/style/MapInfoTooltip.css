@@ -1,9 +1,9 @@
-#MapInfoTooltip {
+div.mapinfotooltip {
     position: absolute;
     z-index: 2;
 }
 
-#MapInfoTooltip div.mapinfotooltip-window {
+div.mapinfotooltip-window {
     margin-top: 1em;
     background: var(--container-bg-color);
     box-shadow: 0px 0px 5px rgba(136, 136, 136, 1);
@@ -13,7 +13,7 @@
     white-space: nowrap;
 }
 
-#MapInfoTooltip div.mapinfotooltip-titlebar {
+div.mapinfotooltip-titlebar {
     background-color: var(--titlebar-bg-color);
     color: var(--titlebar-text-color);
     font-weight: bold;
@@ -24,11 +24,11 @@
     font-size: 90%;
 }
 
-#MapInfoTooltip span.mapinfotooltip-title {
+span.mapinfotooltip-title {
     flex: 1 1 auto;
 }
 
-#MapInfoTooltip button.mapinfotooltip-button {
+button.mapinfotooltip-button {
     flex: 0 0 auto;
     margin-right: 0.5em;
     border: none;
@@ -37,17 +37,17 @@
     color: var(--titlebar-text-color);
 }
 
-#MapInfoTooltip button.mapinfotooltip-button:hover {
+button.mapinfotooltip-button:hover {
     color: var(--titlebar-bg-color);
     background-color: var(--titlebar-text-color);
 }
 
-#MapInfoTooltip div.mapinfotooltip-body {
+div.mapinfotooltip-body {
     padding: 0.5em;
     font-size: 75%;
 }
 
-#MapInfoTooltip div.mapinfotooltip-body:after {
+div.mapinfotooltip-body:after {
     content: '';
     display: block;
     position: absolute;
@@ -60,6 +60,6 @@
     border-bottom: 1em solid var(--titlebar-bg-color);
 }
 
-#MapInfoTooltip div.mapinfotooltip-body td {
+div.mapinfotooltip-body td {
     padding: 0.25em;
 }

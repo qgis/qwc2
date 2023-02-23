@@ -110,7 +110,7 @@ class MapInfoTooltip extends React.Component {
         };
         const text = info.map(entry => entry.join(": ")).join("\n");
         return (
-            <div id="MapInfoTooltip" style={style}>
+            <div className="mapinfotooltip" style={style}>
                 <div className="mapinfotooltip-window">
                     <div className="mapinfotooltip-titlebar">
                         <span className="mapinfotooltip-title">{title}</span>
