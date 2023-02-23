@@ -14,6 +14,7 @@ import {setEditContext, clearEditContext} from '../actions/editing';
 import {LayerRole} from '../actions/layers';
 import AttributeForm from '../components/AttributeForm';
 import ResizeableWindow from '../components/ResizeableWindow';
+import TaskBar from '../components/TaskBar';
 import EditingInterface from '../utils/EditingInterface';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -131,57 +132,64 @@ class FeatureForm extends React.Component {
         this.setState({pendingRequests: pendingRequests, pickedFeatures: {}, selectedFeature: ""});
     }
     render() {
-        if (this.state.pickedFeatures === null) {
-            return null;
+        let resultWindow = null;
+        if (this.state.pickedFeatures !== null) {
+            let body = null;
+            if (this.state.pendingRequests > 0) {
+                body = (
+                    <div className="feature-query-body" role="body"><span className="identify-body-message">{LocaleUtils.tr("featureform.querying")}</span></div>
+                );
+            } else if (isEmpty(this.state.pickedFeatures)) {
+                body = (
+                    <div className="feature-query-body" role="body"><span className="identify-body-message">{LocaleUtils.tr("featureform.noresults")}</span></div>
+                );
+            } else {
+                const featureText = LocaleUtils.tr("featureform.feature");
+                const curLayerId = this.state.selectedFeature.split("::")[0];
+                const curConfig = this.props.theme.editConfig[curLayerId];
+                const editPermissions = curConfig.permissions || {};
+                body = (
+                    <div className="feature-query-body" role="body">
+                        {Object.keys(this.state.pickedFeatures).length > 1 ? (
+                            <div className="feature-query-selection">
+                                <select onChange={this.setSelectedFeature} value={this.state.selectedFeature}>
+                                    {Object.entries(this.state.pickedFeatures).map(([id, feature]) => {
+                                        const [layerId, featureId] = id.split("::");
+                                        const editConfig = this.props.theme.editConfig[layerId];
+                                        const match = LayerUtils.searchLayer(this.props.layers, 'name', editConfig.layerName, [LayerRole.THEME]);
+                                        const layerName = match ? match.sublayer.title : editConfig.layerName;
+                                        const featureName = editConfig.displayField ? feature.properties[editConfig.displayField] : featureText + " " + featureId;
+                                        return (
+                                            <option key={id} value={id}>{layerName + ": " + featureName}</option>
+                                        );
+                                    })}
+                                </select>
+                            </div>
+                        ) : null}
+                        {this.props.editContext.feature ? (
+                            <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} readOnly={editPermissions.updatable === false} />
+                        ) : null}
+                    </div>
+                );
+            }
+            resultWindow = (
+                <ResizeableWindow icon="featureform"
+                    initialHeight={this.props.initialHeight} initialWidth={this.props.initialWidth}
+                    initialX={this.props.initialX} initialY={this.props.initialY}
+                    key="FeatureForm"
+                    onClose={this.clearResults} title={LocaleUtils.trmsg("featureform.title")}
+                >
+                    {body}
+                </ResizeableWindow>
+            );
         }
-        let body = null;
-        if (this.state.pendingRequests > 0) {
-            body = (
-                <div className="feature-query-body" role="body"><span className="identify-body-message">{LocaleUtils.tr("featureform.querying")}</span></div>
-            );
-        } else if (isEmpty(this.state.pickedFeatures)) {
-            body = (
-                <div className="feature-query-body" role="body"><span className="identify-body-message">{LocaleUtils.tr("featureform.noresults")}</span></div>
-            );
-        } else {
-            const featureText = LocaleUtils.tr("featureform.feature");
-            const curLayerId = this.state.selectedFeature.split("::")[0];
-            const curConfig = this.props.theme.editConfig[curLayerId];
-            const editPermissions = curConfig.permissions || {};
-            body = (
-                <div className="feature-query-body" role="body">
-                    {Object.keys(this.state.pickedFeatures).length > 1 ? (
-                        <div className="feature-query-selection">
-                            <select onChange={this.setSelectedFeature} value={this.state.selectedFeature}>
-                                {Object.entries(this.state.pickedFeatures).map(([id, feature]) => {
-                                    const [layerId, featureId] = id.split("::");
-                                    const editConfig = this.props.theme.editConfig[layerId];
-                                    const match = LayerUtils.searchLayer(this.props.layers, 'name', editConfig.layerName, [LayerRole.THEME]);
-                                    const layerName = match ? match.sublayer.title : editConfig.layerName;
-                                    const featureName = editConfig.displayField ? feature.properties[editConfig.displayField] : featureText + " " + featureId;
-                                    return (
-                                        <option key={id} value={id}>{layerName + ": " + featureName}</option>
-                                    );
-                                })}
-                            </select>
-                        </div>
-                    ) : null}
-                    {this.props.editContext.feature ? (
-                        <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} readOnly={editPermissions.updatable === false} />
-                    ) : null}
-                </div>
-            );
-        }
-        return (
-            <ResizeableWindow icon="featureform"
-                initialHeight={this.props.initialHeight} initialWidth={this.props.initialWidth}
-                initialX={this.props.initialX} initialY={this.props.initialY}
-                key="FeatureForm"
-                onClose={this.clearResults} title={LocaleUtils.trmsg("featureform.title")}
-            >
-                {body}
-            </ResizeableWindow>
-        );
+        return [resultWindow, (
+            <TaskBar key="FeatureFormTaskBar" task="FeatureForm">
+                {() => ({
+                    body: LocaleUtils.tr("infotool.clickhelpPoint")
+                })}
+            </TaskBar>
+        )];
     }
     setSelectedFeature = (ev) => {
         this.setState({selectedFeature: ev.target.value});
