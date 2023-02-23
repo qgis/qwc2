@@ -271,8 +271,13 @@ class Routing extends React.Component {
                     {isoConfig.result.data.errorMsgId ? LocaleUtils.tr(isoConfig.result.data.errorMsgId) : isoConfig.result.data.error}
                 </div>
             );
+        } else {
+            return (
+                <div className="routing-result-summary">
+                    <div><Icon icon="export" /> <a href="#" onClick={this.exportIsochrone}>{LocaleUtils.tr("routing.export")}</a></div>
+                </div>
+            );
         }
-        return null;
     }
     renderSearchField = (entry, idx) => {
         const numpoints = this.state.routeConfig.routepoints.length;
@@ -550,6 +555,19 @@ class Routing extends React.Component {
             }))
         });
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "route.json");
+    }
+    exportIsochrone = () => {
+        const data = JSON.stringify({
+            type: "FeatureCollection",
+            features: this.state.isoConfig.result.data.areas.map(area => ({
+                type: "Feature",
+                geometry: {
+                    type: "Polygon",
+                    coordinates: [area]
+                }
+            }))
+        });
+        FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "isochrone.json");
     }
 }
 
