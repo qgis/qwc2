@@ -16,8 +16,16 @@ export default class FileSelector extends React.Component {
     static propTypes = {
         accept: PropTypes.string,
         file: PropTypes.object,
-        onFileSelected: PropTypes.func
-    };
+        onFileSelected: PropTypes.func,
+        multiple: PropTypes.bool,
+        showAllFilenames: PropTypes.bool,
+        overrideText: PropTypes.string
+    }
+    static defaultProps = {
+        multiple: false,
+        showAllFilenames: false,
+        overrideText: null
+    }
     constructor(props) {
         super(props);
         this.fileinput = null;
@@ -29,8 +37,21 @@ export default class FileSelector extends React.Component {
     }
     render() {
         let value = "";
-        if (this.props.file) {
-            value = this.props.file.name + " (" + this.humanFileSize(this.props.file.size) + ")";
+        if (this.props.overrideText) {
+            value = this.props.overrideText;
+        }
+        else if (this.props.file) {
+            if (this.props.file instanceof FileList) {
+                // handle multiple files
+                const files = Array.from(this.props.file);
+                const count = files.length;
+                const totalBytes = files.reduce((acc, file) => acc + file.size, 0);
+                value = this.props.showAllFilenames ? files.map(file => file.name).join(", ") : count + " files";
+                value += " (" + this.humanFileSize(totalBytes) + ")";
+            } else {
+                // handle single file
+                value = this.props.file.name + " (" + this.humanFileSize(this.props.file.size) + ")";
+            }
         }
         const placeholder = LocaleUtils.tr("fileselector.placeholder");
         return (
@@ -39,7 +60,7 @@ export default class FileSelector extends React.Component {
                 <button className="button">
                     <Icon icon="folder-open" />
                 </button>
-                <input accept={this.props.accept} onChange={this.fileChanged} ref={el => { this.fileinput = el; }} type="file" />
+                <input accept={this.props.accept} onChange={this.fileChanged} ref={el => { this.fileinput = el; }} type="file" multiple={this.props.multiple} />
             </div>
         );
     }
@@ -49,12 +70,12 @@ export default class FileSelector extends React.Component {
         }
     };
     fileChanged = (ev) => {
-        let file = null;
+        let files = null;
         if (ev.target.files && ev.target.files.length > 0) {
-            file = ev.target.files[0];
+            files = this.props.multiple ? ev.target.files : ev.target.files[0];
         }
-        this.props.onFileSelected(file);
-    };
+        this.props.onFileSelected(files);
+    }
     humanFileSize(bytes) {
         const thresh = 1000;
         const units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
