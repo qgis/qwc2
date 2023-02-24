@@ -121,6 +121,7 @@
       "title": "Formulari d'element"
     },
     "fileselector": {
+      "files": "fitxers",
       "placeholder": "Selecciona arxiu..."
     },
     "heightprofile": {

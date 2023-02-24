@@ -121,6 +121,7 @@
       "title": "Formulaire d'objet"
     },
     "fileselector": {
+      "files": "",
       "placeholder": "Choisir un fichier..."
     },
     "heightprofile": {

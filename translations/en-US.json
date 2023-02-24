@@ -121,6 +121,7 @@
       "title": "Feature form"
     },
     "fileselector": {
+      "files": "files",
       "placeholder": "Select file..."
     },
     "heightprofile": {

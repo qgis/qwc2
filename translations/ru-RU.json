@@ -121,6 +121,7 @@
       "title": ""
     },
     "fileselector": {
+      "files": "",
       "placeholder": "Выберите файл..."
     },
     "heightprofile": {
