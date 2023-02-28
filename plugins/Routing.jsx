@@ -561,6 +561,10 @@ class Routing extends React.Component {
             type: "FeatureCollection",
             features: this.state.routeConfig.result.data.legs.map(leg => ({
                 type: "Feature",
+                properties: {
+                    time: leg.time,
+                    length: leg.length
+                },
                 geometry: {
                     type: "LineString",
                     coordinates: leg.coordinates
