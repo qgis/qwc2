@@ -384,6 +384,7 @@ class Routing extends React.Component {
                 ...this.state.routeConfig.routepoints.slice(-1)
             ]
         }});
+        this.recomputeIfNeeded();
     }
     removeRoutePt = (idx) => {
         this.setState({routeConfig: {
