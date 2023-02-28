@@ -300,11 +300,12 @@ class Routing extends React.Component {
             return null;
         }
         let body = null;
-        const prec = CoordinatesUtils.getUnits(this.props.mapcrs) === 'degrees' ? 4 : 0;
+        const prec = CoordinatesUtils.getUnits(this.props.displaycrs) === 'degrees' ? 4 : 0;
+        const pos = CoordinatesUtils.reproject(this.state.popupPos, this.props.mapcrs, this.props.displaycrs);
         const point = {
-            text: this.state.popupPos.map(x => x.toFixed(prec)).join(", ") + " (" + this.props.mapcrs + ")",
-            pos: [...this.state.popupPos],
-            crs: this.props.mapcrs
+            text: pos.map(x => x.toFixed(prec)).join(", ") + " (" + this.props.displaycrs + ")",
+            pos: [...pos],
+            crs: this.props.displaycrs
         };
         if (this.state.currentTab === "Route") {
             const lastPoint = this.state.routeConfig.routepoints.length - 1;
