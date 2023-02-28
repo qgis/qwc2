@@ -104,10 +104,9 @@ class ImportLayer extends React.Component {
             reqUrl = location.protocol + "//" + reqUrl;
         }
         let pendingRequests = 0;
-        this.setState({pendingRequests: pendingRequests, serviceLayers: null});
         // Attempt to load catalog
         if (reqUrl.toLowerCase().endsWith(".json") || (reqUrl.toLowerCase().endsWith(".xml") && !reqUrl.toLowerCase().endsWith("wmtscapabilities.xml"))) {
-            this.setState({pendingRequests: ++pendingRequests});
+            ++pendingRequests;
             let type;
             if (reqUrl.toLowerCase().endsWith(".json")) {
                 type = "json";
@@ -116,8 +115,7 @@ class ImportLayer extends React.Component {
             }
             axios.get(reqUrl).then(response => {
                 if (type === "xml") {
-                    pendingRequests = this.state.pendingRequests - 1;
-                    this.setState({pendingRequests: pendingRequests});
+                    let catalogPendingRequests = 0;
 
                     // Load from QGIS WMS/WFS connections
                     const parser = new DOMParser();
@@ -130,87 +128,101 @@ class ImportLayer extends React.Component {
                         for (const conn of [].slice.call(connections[0].getElementsByTagName(service))) {
                             let connUrl = conn.attributes.url.value;
                             connUrl += (connUrl.includes("?") ? "&" : "?") + "service=" + service.toUpperCase() + "&request=GetCapabilities";
-                            this.setState({pendingRequests: ++pendingRequests});
+                            ++catalogPendingRequests;
                             axios.get(connUrl).then(connResponse => {
                                 const result = service === "wms" ? ServiceLayerUtils.getWMSLayers(connResponse.data, connUrl, true) : ServiceLayerUtils.getWFSLayers(connResponse.data, connUrl, this.props.mapCrs);
-                                this.setState({
-                                    pendingRequests: this.state.pendingRequests - 1,
-                                    serviceLayers: (this.state.serviceLayers || []).concat(result)
-                                });
+                                this.setState((prevState) => ({
+                                    pendingRequests: prevState.pendingRequests - 1,
+                                    serviceLayers: (prevState.serviceLayers || []).concat(result)
+                                }));
                             }).catch(() => {
-                                this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: this.state.serviceLayers || []});
+                                this.setState((prevState) => ({
+                                    pendingRequests: prevState.pendingRequests - 1,
+                                    serviceLayers: prevState.serviceLayers || []
+                                }));
                             });
                         }
                     }
+                    this.setState((prevState) => ({pendingRequests: prevState.pendingRequests - 1 + catalogPendingRequests }));
                 } else if (type === "json" && response.data.catalog) {
                     // Load as JSON catalog
-                    this.setState({
-                        pendingRequests: this.state.pendingRequests - 1,
-                        serviceLayers: response.data.catalog
-                    });
+                    this.setState((prevState) => ({
+                        pendingRequests: prevState.pendingRequests - 1,
+                        serviceLayers: (prevState.serviceLayers || []).concat(response.data.catalog)
+                    }));
                 }
             }).catch(() => {
-                this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: this.state.serviceLayers || []});
+                this.setState((prevState) => ({
+                    pendingRequests: prevState.pendingRequests - 1,
+                    serviceLayers: prevState.serviceLayers || []
+                }));
             });
             return;
         }
 
         // Attempt to load as WMTS
-        this.setState({pendingRequests: ++pendingRequests});
+        ++pendingRequests;
         axios.get(reqUrl).then(response => {
             const result = ServiceLayerUtils.getWMTSLayers(response.data, reqUrl, this.props.mapCrs);
-            this.setState({
-                pendingRequests: this.state.pendingRequests - 1,
-                serviceLayers: (this.state.serviceLayers || []).concat(result)
-            });
+            this.setState((prevState) => ({
+                pendingRequests: prevState.pendingRequests - 1,
+                serviceLayers: (prevState.serviceLayers || []).concat(result)
+            }));
         }).catch(() => {
-            this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: this.state.serviceLayers || []});
+            this.setState((prevState) => ({
+                pendingRequests: prevState.pendingRequests - 1,
+                serviceLayers: prevState.serviceLayers || []
+            }));
         });
 
         // Attempt to load as WMS
-        {
-            const urlParts = url.parse(reqUrl, true);
-            urlParts.query = {
-                ...Object.entries(urlParts.query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {}),
-                SERVICE: "WMS",
-                REQUEST: "GetCapabilities",
-                VERSION: this.props.themes.defaultWMSVersion || "1.3.0"
-            };
-            delete urlParts.search;
+        ++pendingRequests;
+        const wmsUrlParts = url.parse(reqUrl, true);
+        wmsUrlParts.query = {
+            ...Object.entries(wmsUrlParts.query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {}),
+            SERVICE: "WMS",
+            REQUEST: "GetCapabilities",
+            VERSION: this.props.themes.defaultWMSVersion || "1.3.0"
+        };
+        delete wmsUrlParts.search;
 
-            this.setState({pendingRequests: ++pendingRequests});
-            axios.get(url.format(urlParts)).then(response => {
-                const result = ServiceLayerUtils.getWMSLayers(response.data, reqUrl);
-                this.setState({
-                    pendingRequests: this.state.pendingRequests - 1,
-                    serviceLayers: (this.state.serviceLayers || []).concat(result)
-                });
-            }).catch(() => {
-                this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: this.state.serviceLayers || []});
-            });
-        }
+        axios.get(url.format(wmsUrlParts)).then(response => {
+            const result = ServiceLayerUtils.getWMSLayers(response.data, reqUrl);
+            this.setState((prevState) => ({
+                pendingRequests: prevState.pendingRequests - 1,
+                serviceLayers: (prevState.serviceLayers || []).concat(result)
+            }));
+        }).catch(() => {
+            this.setState((prevState) => ({
+                pendingRequests: prevState.pendingRequests - 1,
+                serviceLayers: prevState.serviceLayers || []
+            }));
+        });
 
         // Attempt to load as WFS
-        {
-            const urlParts = url.parse(reqUrl, true);
-            urlParts.query = {
-                ...Object.entries(urlParts.query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {}),
-                SERVICE: "WFS",
-                REQUEST: "GetCapabilities"
-            };
-            delete urlParts.search;
+        ++pendingRequests;
+        const wfsUrlParts = url.parse(reqUrl, true);
+        wfsUrlParts.query = {
+            ...Object.entries(wfsUrlParts.query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {}),
+            SERVICE: "WFS",
+            REQUEST: "GetCapabilities"
+        };
+        delete wfsUrlParts.search;
 
-            this.setState({pendingRequests: ++pendingRequests});
-            axios.get(url.format(urlParts)).then(response => {
-                const result = ServiceLayerUtils.getWFSLayers(response.data, reqUrl, this.props.mapCrs);
-                this.setState({
-                    pendingRequests: this.state.pendingRequests - 1,
-                    serviceLayers: (this.state.serviceLayers || []).concat(result)
-                });
-            }).catch(() => {
-                this.setState({pendingRequests: this.state.pendingRequests - 1, serviceLayers: this.state.serviceLayers || []});
-            });
-        }
+        axios.get(url.format(wfsUrlParts)).then(response => {
+            const result = ServiceLayerUtils.getWFSLayers(response.data, reqUrl, this.props.mapCrs);
+            this.setState((prevState) => ({
+                pendingRequests: prevState.pendingRequests - 1,
+                serviceLayers: (prevState.serviceLayers || []).concat(result)
+            }));
+        }).catch(() => {
+            this.setState((prevState) => ({
+                pendingRequests: prevState.pendingRequests - 1,
+                serviceLayers: prevState.serviceLayers || []
+            }));
+        });
+
+        this.setState({pendingRequests: pendingRequests, serviceLayers: null});
     }
     importFileLayer = () => {
         if (!this.state.file) {
