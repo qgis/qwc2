@@ -190,7 +190,7 @@ class Routing extends React.Component {
                     </div>
                 </div>
                 <div className="routing-routepoints-commands">
-                    <a href="#" onClick={this.addRoutePt}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
+                    <a href="#" onClick={() => this.addRoutePt()}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
                     <span />
                     <a href="#" onClick={this.clearRoutePts}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
                 </div>
