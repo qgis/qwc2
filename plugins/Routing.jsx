@@ -211,9 +211,13 @@ class Routing extends React.Component {
         } else {
             return (
                 <div className="routing-result-summary">
-                    <div><Icon icon="clock" /> {MeasureUtils.formatDuration(routeConfig.result.data.summary.time)}</div>
-                    <div><Icon icon="measure" /> {MeasureUtils.formatMeasurement(routeConfig.result.data.summary.length * 1000, false)}</div>
-                    <div><Icon icon="export" /> <a href="#" onClick={this.exportRoute}>{LocaleUtils.tr("routing.export")}</a></div>
+                    <div>
+                        <span><Icon icon="clock" /> {MeasureUtils.formatDuration(routeConfig.result.data.summary.time)}</span>
+                        <span className="routing-result-spacer" />
+                        <span><Icon icon="measure" /> {MeasureUtils.formatMeasurement(routeConfig.result.data.summary.length, false)}</span>
+                        <span className="routing-result-spacer" />
+                        <span><Icon icon="export" /> <a href="#" onClick={this.exportRoute}>{LocaleUtils.tr("routing.export")}</a></span>
+                    </div>
                 </div>
             );
         }
