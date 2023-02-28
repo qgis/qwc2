@@ -245,6 +245,7 @@
     "redlining.width",
     "routing.add",
     "routing.addviapoint",
+    "routing.clear",
     "routing.compute",
     "routing.computefailed",
     "routing.export",

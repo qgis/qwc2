@@ -190,8 +190,10 @@ class Routing extends React.Component {
                         <Icon icon="up-down-arrow" onClick={this.reverseRoutePts} />
                     </div>
                 </div>
-                <div>
+                <div className="routing-routepoints-commands">
                     <a href="#" onClick={this.addRoutePt}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
+                    <span />
+                    <a href="#" onClick={this.clearRoutePts}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
                 </div>
                 <div>
                     <button className="button routing-compute-button" disabled={routeConfig.busy || !haveRoutePts} onClick={this.computeRoute}>
@@ -393,6 +395,16 @@ class Routing extends React.Component {
         }});
         this.recomputeIfNeeded();
     }
+    clearRoutePts = () => {
+        this.setState({routeConfig: {
+            ...this.state.routeConfig,
+            routepoints: [
+                {text: '', pos: null, crs: null},
+                {text: '', pos: null, crs: null}
+            ]
+        }});
+        this.recomputeIfNeeded();
+    }
     reverseRoutePts = () => {
         this.setState({routeConfig: {
             ...this.state.routeConfig,
@@ -468,7 +480,10 @@ class Routing extends React.Component {
             return CoordinatesUtils.reproject(entry.pos, entry.crs, "EPSG:4326");
         });
         this.props.removeLayer("routingggeometries");
-        this.updateRouteConfig({busy: true, result: null}, false);
+        this.updateRouteConfig({busy: locations.length >= 2, result: null}, false);
+        if (locations.length < 2) {
+            return;
+        }
         RoutingInterface.computeRoute(this.state.mode, locations, this.state.settings[this.state.mode], (success, result) => {
             if (success) {
                 const layer = {

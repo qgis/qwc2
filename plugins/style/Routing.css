@@ -55,6 +55,14 @@ div.routing-routepoints > div:last-child {
     margin-left: 0.25em;
 }
 
+div.routing-routepoints-commands {
+    display: flex;
+}
+
+div.routing-routepoints-commands > span {
+    flex: 1 1 auto;
+}
+
 div.routing-search-field {
     display: flex;
     margin-bottom: 0.25em;

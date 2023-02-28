@@ -287,6 +287,7 @@
     "routing": {
       "add": "Add route point",
       "addviapoint": "Add itinerary point",
+      "clear": "Clear",
       "compute": "Compute",
       "computefailed": "Failed to compute",
       "export": "Export",
