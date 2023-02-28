@@ -179,7 +179,6 @@ class Routing extends React.Component {
     }
     renderRouteWidget = () => {
         const routeConfig = this.state.routeConfig;
-        const haveRoutePts = routeConfig.routepoints.filter(entry => entry.pos).length >= 2;
         return (
             <div>
                 <div className="routing-routepoints">
@@ -195,12 +194,9 @@ class Routing extends React.Component {
                     <span />
                     <a href="#" onClick={this.clearRoutePts}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
                 </div>
-                <div>
-                    <button className="button routing-compute-button" disabled={routeConfig.busy || !haveRoutePts} onClick={this.computeRoute}>
-                        {routeConfig.busy ? (<Spinner />) : null}
-                        {LocaleUtils.tr("routing.compute")}
-                    </button>
-                </div>
+                {routeConfig.busy ? (
+                    <div className="routing-busy"><Spinner /> {LocaleUtils.tr("routing.computing")}</div>
+                ) : null}
                 {routeConfig.result ? this.renderRouteResult(routeConfig) : null}
             </div>
         );
@@ -224,7 +220,6 @@ class Routing extends React.Component {
     }
     renderIsochroneWidget = () => {
         const isoConfig = this.state.isoConfig;
-        const havePoint = isoConfig.point.pos !== null;
         const intervalValid = !!isoConfig.intervals.match(/^\d+(,\s*\d+)*$/);
         return (
             <div className="routing-frame">
@@ -256,12 +251,9 @@ class Routing extends React.Component {
                         </tr>
                     </tbody>
                 </table>
-                <div>
-                    <button className="button routing-compute-button" disabled={isoConfig.busy || !havePoint || !intervalValid} onClick={this.computeIsochrone}>
-                        {isoConfig.busy ? (<Spinner />) : null}
-                        {LocaleUtils.tr("routing.compute")}
-                    </button>
-                </div>
+                {isoConfig.busy ? (
+                    <div className="routing-busy"><Spinner /> {LocaleUtils.tr("routing.computing")}</div>
+                ) : null}
                 {isoConfig.result ? this.renderIsochroneResult(isoConfig) : null}
             </div>
         );
@@ -551,9 +543,9 @@ class Routing extends React.Component {
     recomputeIfNeeded = () => {
         clearTimeout(this.recomputeTimeout);
         this.recomputeTimeout = setTimeout(() => {
-            if (this.state.currentTab === "Route" && this.state.routeConfig.result) {
+            if (this.state.currentTab === "Route" && this.state.routeConfig.routepoints.filter(entry => entry.pos).length >= 2) {
                 this.computeRoute();
-            } else if (this.state.currentTab === "Reachability" && this.state.isoConfig.result) {
+            } else if (this.state.currentTab === "Reachability" && this.state.isoConfig.point.pos) {
                 this.computeIsochrone();
             }
             this.recomputeTimeout = null;
