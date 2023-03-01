@@ -133,6 +133,10 @@ class ResizeableWindow extends React.Component {
         if (ConfigUtils.getConfigProp("globallyDisableDockableDialogs")) {
             dockable = false;
         }
+        let maximizeable = this.props.maximizeable;
+        if (ConfigUtils.getConfigProp("globallyDisableMaximizeableDialogs")) {
+            maximizeable = false;
+        }
         let icon = null;
         if (this.props.icon) {
             icon = (<Icon className="resizeable-window-titlebar-icon" icon={this.props.icon} />);
@@ -179,7 +183,7 @@ class ResizeableWindow extends React.Component {
                         titlemsgid={this.state.geometry.docked ? LocaleUtils.trmsg("window.undock") : LocaleUtils.trmsg("window.dock")} />
                 ) : null}
                 {this.props.minimizeable ? (<Icon className="resizeable-window-nodrag resizeable-window-titlebar-control" icon={minimized ? "unminimize" : "minimize"} onClick={this.toggleMinimize} titlemsgid={minimized ? LocaleUtils.trmsg("window.unminimize") : LocaleUtils.trmsg("window.minimize")} />) : null}
-                {this.props.maximizeable ? (<Icon className="resizeable-window-nodrag resizeable-window-titlebar-control" icon={maximized ? "unmaximize" : "maximize"} onClick={this.toggleMaximize} titlemsgid={maximized ? LocaleUtils.trmsg("window.unmaximize") : LocaleUtils.trmsg("window.maximize")} />) : null}
+                {maximizeable ? (<Icon className="resizeable-window-nodrag resizeable-window-titlebar-control" icon={maximized ? "unmaximize" : "maximize"} onClick={this.toggleMaximize} titlemsgid={maximized ? LocaleUtils.trmsg("window.unmaximize") : LocaleUtils.trmsg("window.maximize")} />) : null}
                 {this.props.onClose ? (<Icon className="resizeable-window-nodrag resizeable-window-titlebar-control" icon="remove" onClick={this.onClose} titlemsgid={LocaleUtils.trmsg("window.close")} />) : null}
             </div>),
             (<div className={bodyclasses} key="body" onMouseDown={(ev) => { this.stopEvent(ev); this.props.raiseWindow(this.id); }} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
