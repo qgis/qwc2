@@ -24,10 +24,10 @@ class TaskButton extends React.Component {
         position: PropTypes.number,
         setCurrentTask: PropTypes.func,
         task: PropTypes.string
-    }
+    };
     static defaultProps = {
         position: 1
-    }
+    };
     render() {
         const classes = classnames({
             "map-button": true,
@@ -36,15 +36,14 @@ class TaskButton extends React.Component {
         const title = LocaleUtils.tr("appmenu.items." + this.props.task + (this.props.mode || ""));
         return (
             <button className={classes} onClick={this.buttonClicked}
-                title={title}
-                style={{bottom: (5 + 4 * this.props.position) + 'em'}}>
+                style={{bottom: (5 + 4 * this.props.position) + 'em'}} title={title}>
                 <Icon icon={this.props.icon} />
             </button>
         );
     }
     buttonClicked = () => {
         this.props.setCurrentTask(this.props.currentTask === this.props.task ? null : this.props.task, this.props.mode, this.props.mapClickAction);
-    }
+    };
 }
 
 const selector = (state) => ({

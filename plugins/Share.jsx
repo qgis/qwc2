@@ -30,17 +30,17 @@ class Share extends React.Component {
         showSocials: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
         side: PropTypes.string,
         state: PropTypes.object
-    }
+    };
     static defaultProps = {
         showSocials: true,
         showLink: true,
         showQRCode: true,
         side: 'right'
-    }
+    };
     state = {
         location: "",
         pin: false
-    }
+    };
     componentDidUpdate(prevProps, prevState) {
         const isVisible = this.props.state.task.id === "Share";
         const wasVisible = prevProps.state.task.id === "Share";
@@ -90,7 +90,7 @@ class Share extends React.Component {
                 )}
             </div>
         );
-    }
+    };
     render() {
         return (
             <SideBar icon="share" id="Share" onShow={this.onShow} side={this.props.side}
@@ -105,7 +105,7 @@ class Share extends React.Component {
         generatePermaLink(this.props.state, (permalink => {
             this.setState({location: permalink});
         }));
-    }
+    };
 }
 
 export default connect(state => ({

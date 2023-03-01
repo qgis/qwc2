@@ -24,13 +24,13 @@ class BackgroundSwitcher extends React.Component {
         layers: PropTypes.array,
         position: PropTypes.number,
         toggleBackgroundswitcher: PropTypes.func
-    }
+    };
     static defaultProps = {
         position: 0
-    }
+    };
     state = {
         visible: false
-    }
+    };
     render() {
         const tooltip = LocaleUtils.tr("tooltip.background");
         const classes = classnames({
@@ -79,7 +79,7 @@ class BackgroundSwitcher extends React.Component {
     }
     itemTitle = (item) => {
         return item.titleMsgId ? LocaleUtils.tr(item.titleMsgId) : item.title;
-    }
+    };
     renderLayerItem = (layer, visible) => {
         const assetsPath = ConfigUtils.getAssetsPath();
         const itemclasses = classnames({
@@ -96,7 +96,7 @@ class BackgroundSwitcher extends React.Component {
                 </div>
             </div>
         );
-    }
+    };
     renderGroupItem = (entry) => {
         const assetsPath = ConfigUtils.getAssetsPath();
         const layer = (entry.layers.find(l => l.visibility === true) || entry.layers.find(l => l.default === true)) || entry.layers[entry.layers.length - 1];
@@ -130,15 +130,15 @@ class BackgroundSwitcher extends React.Component {
                 </div>
             </div>
         );
-    }
+    };
     updateGroupItem = (ev, layer) => {
         const assetsPath = ConfigUtils.getAssetsPath();
         ev.target.parentElement.parentElement.childNodes[0].firstChild.innerText = this.itemTitle(layer);
         ev.target.parentElement.parentElement.childNodes[1].firstChild.src = assetsPath + "/" + layer.thumbnail;
-    }
+    };
     buttonClicked = () => {
         this.setState({visible: !this.state.visible});
-    }
+    };
     backgroundLayerClicked = (layer) => {
         if (layer) {
             this.props.changeLayerProperty(layer.uuid, "visibility", true);
@@ -149,7 +149,7 @@ class BackgroundSwitcher extends React.Component {
             }
         }
         this.setState({visible: false});
-    }
+    };
 }
 
 const selector = (state) => ({

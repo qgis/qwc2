@@ -26,10 +26,10 @@ class ThemeLayersListWindow extends React.Component {
         theme: PropTypes.object,
         themes: PropTypes.object,
         windowSize: PropTypes.object
-    }
+    };
     state = {
         selectedLayers: []
-    }
+    };
     componentDidUpdate(prevProps) {
         if (this.props.theme !== prevProps.theme) {
             this.setState({selectedLayers: []});
@@ -93,12 +93,12 @@ class ThemeLayersListWindow extends React.Component {
         this.props.addLayer(ThemeUtils.createThemeLayer(this.props.theme, this.props.themes, LayerRole.USERLAYER, subLayers));
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
-    }
+    };
     addSelectedLayers = () => {
         this.props.addLayer(ThemeUtils.createThemeLayer(this.props.theme, this.props.themes, LayerRole.USERLAYER, this.state.selectedLayers));
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
-    }
+    };
     itemSelectionToggled = (layer) => {
         // If item is already in array, this means it is selected so it is removed from the array. Else it is added
         if (this.state.selectedLayers.includes(layer)) {
@@ -115,10 +115,10 @@ class ThemeLayersListWindow extends React.Component {
                 };
             });
         }
-    }
+    };
     onClose = () => {
         this.props.setThemeLayersList(null);
-    }
+    };
 }
 
 const selector = state => ({

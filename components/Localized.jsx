@@ -17,17 +17,17 @@ class Localized extends React.Component {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         locale: PropTypes.string,
         messages: PropTypes.object
-    }
+    };
     static childContextTypes = {
         locale: PropTypes.string,
         messages: PropTypes.object
-    }
+    };
     getChildContext = () => {
         return {
             locale: this.props.locale,
             messages: this.props.messages
         };
-    }
+    };
     render() {
         if (this.props.messages && this.props.locale) {
             return (

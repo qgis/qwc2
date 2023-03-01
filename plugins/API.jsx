@@ -40,7 +40,7 @@ class API extends React.Component {
         mapCrs: PropTypes.string,
         setCurrentTask: PropTypes.func,
         state: PropTypes.object
-    }
+    };
     render() {
         return null;
     }
@@ -56,7 +56,7 @@ class API extends React.Component {
                 this.props.addLayer(layer, null, beforeLayerName);
             }
         });
-    }
+    };
     /*
      * Draw scratch geometries, and return these as GeoJSON to the calling application.
      * - geomType: `Point`, `LineString`, `Polygon`, `Circle` or `Box`.
@@ -67,13 +67,13 @@ class API extends React.Component {
      */
     drawScratch = (geomType, message, drawMultiple, callback, style = null) => {
         this.props.setCurrentTask("ScratchDrawing", null, null, {geomType, message, drawMultiple, callback, style});
-    }
+    };
     /*
      * Return the current application state.
      */
     getState = () => {
         return this.props.state;
-    }
+    };
 }
 
 function extractFunctions(obj) {

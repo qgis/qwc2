@@ -46,6 +46,7 @@ export function loadLocale(defaultLangData, defaultLang = "") {
                     messages: response.data.messages
                 });
             }).catch((e2) => {
+                // eslint-disable-next-line
                 console.warn("Failed to load locale for " + lang + " (" + e2 + "), defaulting to " + defaultLangData.locale);
                 dispatch({
                     type: CHANGE_LOCALE,

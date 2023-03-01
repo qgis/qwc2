@@ -21,12 +21,12 @@ class TextInput extends React.Component {
         required: PropTypes.bool,
         style: PropTypes.object,
         value: PropTypes.string
-    }
+    };
     state = {
         value: "",
         curValue: "",
         changed: false
-    }
+    };
     constructor(props) {
         super(props);
         this.skipNextCommitOnBlur = false;
@@ -61,14 +61,14 @@ class TextInput extends React.Component {
         if (this.props.immediateUpdate) {
             this.props.onChange(ev.target.value);
         }
-    }
+    };
     onBlur = () => {
         if (this.skipNextCommitOnBlur) {
             this.skipNextCommitOnBlur = false;
         } else {
             this.commit();
         }
-    }
+    };
     onKeyDown = (ev) => {
         if (!this.props.multiline && ev.keyCode === 13) { // Enter
             this.commit();
@@ -77,12 +77,12 @@ class TextInput extends React.Component {
             this.skipNextCommitOnBlur = true;
             ev.target.blur();
         }
-    }
+    };
     commit = () => {
         if (this.state.changed) {
             this.props.onChange(this.state.curValue);
         }
-    }
+    };
 }
 
 export default TextInput;

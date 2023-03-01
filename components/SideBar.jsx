@@ -33,7 +33,7 @@ class SideBar extends React.Component {
         side: PropTypes.string,
         title: PropTypes.string,
         width: PropTypes.string
-    }
+    };
     static defaultProps = {
         extraClasses: '',
         onShow: () => {},
@@ -42,15 +42,15 @@ class SideBar extends React.Component {
         minWidth: '15em',
         // allowed values are 'left' and 'right'
         side: 'right'
-    }
+    };
     state = {
         render: false
-    }
+    };
     constructor(props) {
         super(props);
         this.state.render = props.currentTask && props.currentTask.id === props.id;
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         const newVisible = this.props.currentTask && this.props.currentTask.id === this.props.id;
         const oldVisible = prevProps.currentTask && prevProps.currentTask.id === prevProps.id;
         if (newVisible && (!oldVisible || this.props.currentTask.mode !== prevProps.currentTask.mode)) {
@@ -70,10 +70,10 @@ class SideBar extends React.Component {
         if (this.props.currentTask.id === this.props.id) {
             this.props.setCurrentTask(null);
         }
-    }
+    };
     renderRole = (role) => {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
-    }
+    };
     render() {
         const visible = this.props.currentTask.id === this.props.id;
         const render = visible || this.state.render || this.props.renderWhenHidden;
@@ -147,7 +147,7 @@ class SideBar extends React.Component {
         window.addEventListener("mouseup", () => {
             window.removeEventListener("mousemove", resizeSidebar);
         }, {once: true});
-    }
+    };
     startSidebarBottomResize = (ev) => {
         const sidebar = document.getElementById(this.props.id);
         if (!sidebar) {
@@ -162,7 +162,7 @@ class SideBar extends React.Component {
         window.addEventListener("mouseup", () => {
             window.removeEventListener("mousemove", resizeSidebar);
         }, {once: true});
-    }
+    };
 }
 
 const selector = (state) => ({

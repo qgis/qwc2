@@ -30,30 +30,30 @@ class Measure extends React.Component {
         showMeasureModeSwitcher: PropTypes.bool,
         snapping: PropTypes.bool,
         snappingActive: PropTypes.bool
-    }
+    };
     static defaultProps = {
         showMeasureModeSwitcher: true,
         snapping: true,
         snappingActive: true
-    }
+    };
     onShow = (mode) => {
         this.props.changeMeasurementState({geomType: mode || 'Point'});
         this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
-    }
+    };
     onHide = () => {
         this.props.changeMeasurementState({geomType: null});
-    }
+    };
     setMeasureMode = (geomType) => {
         if (geomType !== this.props.measureState.geomType) {
             this.props.changeMeasurementState({geomType: geomType});
         }
-    }
+    };
     changeLengthUnit = (ev) => {
         this.props.changeMeasurementState({...this.props.measureState, lenUnit: ev.target.value});
-    }
+    };
     changeAreaUnit = (ev) => {
         this.props.changeMeasurementState({...this.props.measureState, areaUnit: ev.target.value});
-    }
+    };
     renderModeSwitcher = () => {
         if (!this.props.showMeasureModeSwitcher) {
             return null;
@@ -67,7 +67,7 @@ class Measure extends React.Component {
         return (
             <ButtonBar active={this.props.measureState.geomType} buttons={buttons} onClick={this.setMeasureMode} />
         );
-    }
+    };
     renderResult = () => {
         let resultBody = null;
         if (this.props.measureState.geomType === "Point") {
@@ -125,7 +125,7 @@ class Measure extends React.Component {
             );
         }
         return resultBody;
-    }
+    };
     renderBody = () => {
         return (
             <span>
@@ -133,7 +133,7 @@ class Measure extends React.Component {
                 {this.renderResult()}
             </span>
         );
-    }
+    };
     render() {
         return (
             <TaskBar onHide={this.onHide} onShow={this.onShow} task="Measure">

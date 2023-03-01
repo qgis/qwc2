@@ -72,7 +72,7 @@ class LayerTree extends React.Component {
         transparencyIcon: PropTypes.bool,
         width: PropTypes.string,
         zoomToExtent: PropTypes.func
-    }
+    };
     static defaultProps = {
         layers: [],
         showLegendIcons: true,
@@ -94,14 +94,14 @@ class LayerTree extends React.Component {
         showToggleAllLayersCheckbox: true,
         transparencyIcon: true,
         side: 'right'
-    }
+    };
     state = {
         activemenu: null,
         legendTooltip: null,
         sidebarwidth: null,
         importvisible: false,
         filtervisiblelayers: false
-    }
+    };
     constructor(props) {
         super(props);
         this.legendPrintWindow = null;
@@ -111,7 +111,7 @@ class LayerTree extends React.Component {
             }
         });
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (this.props.theme.mapTips !== undefined && this.props.theme.mapTips !== prevProps.theme.mapTips) {
             this.props.toggleMapTips(this.props.theme.mapTips && !prevProps.mobile);
         }
@@ -125,7 +125,7 @@ class LayerTree extends React.Component {
                 return this.renderLayer(layer, sublayer, subpath, enabled, inMutuallyExclusiveGroup);
             }
         });
-    }
+    };
     renderLayerGroup = (layer, group, path, enabled, inMutuallyExclusiveGroup = false) => {
         const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
         if (flattenGroups) {
@@ -205,7 +205,7 @@ class LayerTree extends React.Component {
                 </Sortable>
             </div>
         );
-    }
+    };
     renderLayer = (layer, sublayer, path, enabled = true, inMutuallyExclusiveGroup = false, skipExpanderPlaceholder = false) => {
         if (this.state.filtervisiblelayers && !sublayer.visibility) {
             return null;
@@ -308,7 +308,7 @@ class LayerTree extends React.Component {
                 {editframe}
             </div>
         );
-    }
+    };
     renderLayerTree = (layer) => {
         if (layer.role === LayerRole.BACKGROUND || layer.layertreehidden) {
             return null;
@@ -326,7 +326,7 @@ class LayerTree extends React.Component {
                 }
             });
         }
-    }
+    };
     renderBody = () => {
         const maptipcheckboxstate = this.props.mapTipsEnabled === true ? 'checked' : 'unchecked';
         let maptipCheckbox = null;
@@ -400,7 +400,7 @@ class LayerTree extends React.Component {
                 </div>
             </div>
         );
-    }
+    };
     render() {
         let legendTooltip = null;
         if (this.state.legendTooltip) {
@@ -428,7 +428,7 @@ class LayerTree extends React.Component {
                 "layertree-visible-filter": true,
                 "layertree-visible-filter-active": this.state.filtervisiblelayers
             });
-            visibleFilterIcon = (<Icon className={classes} icon="eye" onClick={() => this.setState({filtervisiblelayers: !this.state.filtervisiblelayers})} title={visibleFilterTooltip}/>);
+            visibleFilterIcon = (<Icon className={classes} icon="eye" onClick={() => this.setState((state) => ({filtervisiblelayers: !state.filtervisiblelayers}))} title={visibleFilterTooltip}/>);
         }
         let deleteAllLayersIcon = null;
         if (ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true) {
@@ -488,18 +488,18 @@ class LayerTree extends React.Component {
         if (ev.target.naturalWidth > 1) {
             ev.target.style.visibility = 'visible';
         }
-    }
+    };
     onSortChange = (order, sortable, ev) => {
         const moved = JSON.parse(order[ev.newIndex]);
         const layer = this.props.layers.find(l => l.uuid === moved.layer);
         if (layer) {
             this.props.reorderLayer(layer, moved.path, ev.newIndex - ev.oldIndex);
         }
-    }
+    };
     toggleImportLayers = () => {
         const visible = !this.state.importvisible;
         this.setState({importvisible: visible, sidebarwidth: visible ? '40em' : null});
-    }
+    };
     propagateOptions = (layer, options, path = null) => {
         if (layer.sublayers) {
             layer.sublayers = layer.sublayers.map((sublayer, idx) => {
@@ -512,10 +512,10 @@ class LayerTree extends React.Component {
                 }
             });
         }
-    }
+    };
     groupExpandedToggled = (layer, grouppath, oldexpanded) => {
         this.props.changeLayerProperty(layer.uuid, "expanded", !oldexpanded, grouppath);
-    }
+    };
     itemVisibilityToggled = (layer, grouppath, oldvisibility) => {
         let recurseDirection = null;
         // If item becomes visible, also make parents visible
@@ -525,13 +525,13 @@ class LayerTree extends React.Component {
             recurseDirection = !oldvisibility ? "parents" : null;
         }
         this.props.changeLayerProperty(layer.uuid, "visibility", !oldvisibility, grouppath, recurseDirection);
-    }
+    };
     layerTransparencyChanged = (layer, sublayerpath, value) => {
         this.props.changeLayerProperty(layer.uuid, "opacity", Math.max(1, 255 - value), sublayerpath);
-    }
+    };
     layerMenuToggled = (sublayeruuid) => {
         this.setState({activemenu: this.state.activemenu === sublayeruuid ? null : sublayeruuid});
-    }
+    };
     showLegendTooltip = (ev, request) => {
         this.setState({
             legendTooltip: {
@@ -540,16 +540,16 @@ class LayerTree extends React.Component {
                 img: request + "&TYPE=tooltip"
             }
         });
-    }
+    };
     hideLegendTooltip = () => {
         this.setState({legendTooltip: undefined});
-    }
+    };
     toggleMapTips = () => {
         this.props.toggleMapTips(!this.props.mapTipsEnabled);
-    }
+    };
     toggleSwipe = () => {
         this.props.setSwipe(this.props.swipe !== null ? null : 50);
-    }
+    };
     printLayerLegend = (layer, sublayer) => {
         let body = "";
         if (sublayer.sublayers) {
@@ -568,7 +568,7 @@ class LayerTree extends React.Component {
             }
         }
         return body;
-    }
+    };
     printLegend = () => {
         let body = '<p id="legendcontainerbody">';
         const printLabel = LocaleUtils.tr("layertree.printlegend");
@@ -615,7 +615,7 @@ class LayerTree extends React.Component {
                 this.legendPrintWindow.addEventListener('load', setLegendPrintContent, false);
             }
         }
-    }
+    };
     deleteAllLayers = () => {
         for (const layer of this.props.layers) {
             if (layer.role === LayerRole.THEME) {
@@ -627,21 +627,21 @@ class LayerTree extends React.Component {
                 this.props.removeLayer(layer.id);
             }
         }
-    }
+    };
     toggleLayerTreeVisibility = (visibile) => {
         for (const layer of this.props.layers) {
             if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
                 this.props.changeLayerProperty(layer.uuid, "visibility", visibile, [], this.props.groupTogglesSublayers ? "children" : null);
             }
         }
-    }
+    };
     exportRedliningLayer = (layer) => {
         const data = JSON.stringify({
             type: "FeatureCollection",
             features: layer.features.map(feature => ({...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.map.projection, 'EPSG:4326')}))
         }, null, ' ');
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
-    }
+    };
 }
 
 const selector = (state) => ({

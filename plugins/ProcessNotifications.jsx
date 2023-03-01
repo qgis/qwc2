@@ -19,7 +19,7 @@ class ProcessNotifications extends React.Component {
     static propTypes = {
         clearProcess: PropTypes.func,
         processes: PropTypes.object
-    }
+    };
     render() {
         return (
             <div className="process-notifications">
@@ -62,7 +62,7 @@ class ProcessNotifications extends React.Component {
                 ) : null}
             </div>
         );
-    }
+    };
 }
 
 

@@ -21,15 +21,15 @@ export default class EditableSelect extends React.Component {
         options: PropTypes.array,
         placeholder: PropTypes.string,
         readOnly: PropTypes.bool
-    }
+    };
     static defaultProps = {
         onSubmit: () => {}
-    }
+    };
     state = {
         textValue: "",
         selectedOption: null,
         focused: false
-    }
+    };
     render() {
         return (
             <div className="EditableSelect">
@@ -54,10 +54,10 @@ export default class EditableSelect extends React.Component {
     }
     optionLabel = (option) => {
         return typeof option === 'string' ? option : option.label;
-    }
+    };
     optionValue = (option) => {
         return typeof option === 'string' ? option : option.value;
-    }
+    };
     renderOptions = () => {
         return (
             <div className="editable-select-dropdown">
@@ -72,29 +72,29 @@ export default class EditableSelect extends React.Component {
                 })}
             </div>
         );
-    }
+    };
     renderSelectedOption = () => {
         return (
             <div className="editable-select-selopt">
                 <span>{this.optionLabel(this.state.selectedOption)}</span>
             </div>
         );
-    }
+    };
     valueChanged = (ev) => {
         this.setState({textValue: ev.target.value, selectedOption: null});
         this.props.onChange(ev.target.value.trim());
-    }
+    };
     optionSelected = (option) => {
         this.setState({textValue: "", selectedOption: option, focused: false});
         this.props.onChange(this.optionValue(option.value));
-    }
+    };
     clear = () => {
         this.setState({textValue: "", selectedOption: null, focused: false});
         this.props.onChange("");
-    }
+    };
     onKeyPress = (ev) => {
         if (!ev.target.readOnly && ev.key === 'Enter') {
             this.props.onSubmit();
         }
-    }
+    };
 }

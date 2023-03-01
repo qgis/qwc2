@@ -37,13 +37,13 @@ class TimelineFeaturesSlider extends React.Component {
         timeEnabled: PropTypes.bool,
         timeFeatures: PropTypes.object,
         timestampChanged: PropTypes.func
-    }
+    };
     state = {
         currentTimestampDrag: null,
         highlightFeatures: null,
         layerClassifications: {},
         layerAttrGroups: {}
-    }
+    };
     componentDidUpdate(prevProps, prevState) {
         if (this.state.highlightFeatures !== prevState.highlightFeatures) {
             if (!this.state.highlightFeatures) {
@@ -114,19 +114,19 @@ class TimelineFeaturesSlider extends React.Component {
             );
         }
         return null;
-    }
+    };
     setCursorDate = (date) => {
         if (date) {
             const newdate = dayjs(date, "YYYY-MM-DD");
             this.props.timestampChanged(+dayjs(this.props.currentTimestamp).year(newdate.year()).month(newdate.month()).date(newdate.date()));
         }
-    }
+    };
     setCursorTime = (time) => {
         if (time) {
             const parts = time.split(":").map(x => parseInt(x, 10));
             this.props.timestampChanged(+dayjs(this.props.currentTimestamp).hour(parts[0]).minute(parts[1]).second(parts[2]));
         }
-    }
+    };
     pickCurrentTimestamp = (event) => {
         if ( ["INPUT", "SELECT", "OPTION"].includes(event.target.nodeName)) {
             return;
@@ -178,7 +178,7 @@ class TimelineFeaturesSlider extends React.Component {
             document.removeEventListener("mousemove", computeTimestamp);
         }, {once: true, capture: true});
         computeTimestamp(event);
-    }
+    };
     renderTimeFeatures = (sliderGeom) => {
         return Object.entries(this.props.timeFeatures.features).map(([layer, features]) => {
             const layerTitleStyle = {
@@ -229,7 +229,7 @@ class TimelineFeaturesSlider extends React.Component {
                 sliderFeatures
             ];
         });
-    }
+    };
     renderTimeLayers = (sliderGeom) => {
         return Object.entries(this.props.timeFeatures.features).reduce((res, [layer, features]) => {
             if (features.length > 0) {
@@ -248,15 +248,16 @@ class TimelineFeaturesSlider extends React.Component {
                     this.renderTimeFeature(sliderGeom, tstart, tend, features, layer)
                 ];
             }
+            return res;
         }, []);
-    }
+    };
     renderTimeFeature = (sliderGeom, tstart, tend, features, label, attr, featClass) => {
         const left = tstart.isValid() ? this.props.computePixelFromTime(tstart) : 0;
         const right = tend.isValid() ? this.props.computePixelFromTime(tend) : 0;
 
         const style = {
             top: sliderGeom.top + "px",
-            left: left + "px",
+            left: left + "px"
         };
         if (tend.isValid()) {
             style.width = (right - left) + "px";
@@ -286,7 +287,7 @@ class TimelineFeaturesSlider extends React.Component {
                 </span>
             </div>
         );
-    }
+    };
     renderGradient = (sliderGeom) => {
         if (!this.props.markersEnabled) {
             return null;

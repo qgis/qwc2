@@ -28,11 +28,11 @@ export default class FixedTimeline extends React.Component {
         setStartTime: PropTypes.func,
         startTime: PropTypes.object,
         timeSpan: PropTypes.number
-    }
+    };
     state = {
         ticksContainerEl: null,
         timelineWidth: 0
-    }
+    };
     componentDidUpdate(prevProps, prevState) {
         if (this.state.ticksContainerEl && (this.props.dialogWidth !== prevProps.dialogWidth || !prevState.ticksContainerEl)) {
             this.setState({timelineWidth: this.state.ticksContainerEl.getBoundingClientRect().width});
@@ -96,7 +96,7 @@ export default class FixedTimeline extends React.Component {
             this.props.setStartTime(newStartTime);
             this.props.setEndTime(Math.min(this.props.dataEndTime, newStartTime + 2 * this.props.timeSpan));
         }
-    }
+    };
     pan = (dir) => {
         const delta = 0.1 * this.props.timeSpan;
         if (dir > 0) {
@@ -112,7 +112,7 @@ export default class FixedTimeline extends React.Component {
                 this.props.setEndTime(newStartTime + this.props.timeSpan);
             }
         }
-    }
+    };
     startPan = (dir) => {
         this.pan(dir);
         let panInterval = null;
@@ -126,12 +126,12 @@ export default class FixedTimeline extends React.Component {
             clearInterval(panInterval);
             clearTimeout(panTimeout);
         }, {once: true, capture: true});
-    }
+    };
     setTicksContainerRef = (instance) => {
         if (this.state.ticksContainerEl !== instance) {
             this.setState({ticksContainerEl: instance});
         }
-    }
+    };
     renderTicks = () => {
         // Render approx 1 tick every 100 px
         const nTicks = Math.round(this.state.timelineWidth / 100);
@@ -159,7 +159,7 @@ export default class FixedTimeline extends React.Component {
                 </span>
             );
         });
-    }
+    };
     static computeTimeFromPixel(self, pixel) {
         return self.props.startTime + pixel / self.state.timelineWidth * self.props.timeSpan;
     }

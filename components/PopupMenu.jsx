@@ -10,7 +10,7 @@ export default class PopupMenu extends React.Component {
         width: PropTypes.number,
         x: PropTypes.number,
         y: PropTypes.number
-    }
+    };
     constructor(props) {
         super(props);
         this.container = document.createElement("div");

@@ -109,7 +109,7 @@ export default class OlLocate extends ol.Object {
         } else {
             this._updatePosFt();
         }
-    }
+    };
     stop = () => {
         this.geolocate.un('error', this.options.onLocationError, this);
         this.geolocate.setTracking(false);
@@ -125,7 +125,7 @@ export default class OlLocate extends ol.Object {
         }
         this.set("state", "DISABLED");
         this.set("position", null);
-    }
+    };
     startFollow = () => {
         this.follow = true;
         if (this.options.stopFollowingOnDrag) {
@@ -134,12 +134,12 @@ export default class OlLocate extends ol.Object {
         if (this.p) {
             this._updatePosFt();
         }
-    }
+    };
     stopFollow = () => {
         this.follow = false;
         this.map.un('pointerdrag', this.stopFollow, this);
         this.set("state", "ENABLED");
-    }
+    };
     updateView = (point) => {
         if (this.follow) {
             this.map.getView().setCenter(point.getCoordinates());
@@ -147,10 +147,11 @@ export default class OlLocate extends ol.Object {
                 this.map.getView().setZoom(this.options.locateOptions.maxZoom);
             }
         }
-    }
+    };
     onLocationError = (err) => {
+        // eslint-disable-next-line
         alert(err.message);
-    }
+    };
     mapClick = (evt) => {
         const feature = this.map.forEachFeatureAtPixel(evt.pixel, (ft) => ft);
         if (feature && feature.get('id') === '_locate-pos' && this.popup.hidden) {
@@ -158,14 +159,13 @@ export default class OlLocate extends ol.Object {
         } else if (!this.popup.hidden ) {
             this.popUp.hidden = true;
         }
-    }
-
+    };
     setStrings = (newStrings) => {
         this.options.strings = {...this.options.strings, ...newStrings};
-    }
+    };
     setProjection = (projection) => {
         this.geolocate.setProjection(projection);
-    }
+    };
     _updatePosFt = () => {
         const state = this.get("state");
         const nState = (this.follow) ? "FOLLOWING" : "ENABLED";
@@ -193,7 +193,7 @@ export default class OlLocate extends ol.Object {
         if (!this.options.remainActive) {
             this.geolocate.setTracking(false);
         }
-    }
+    };
     _updatePopUpCnt = () => {
         let distance;
         let unit;
@@ -208,7 +208,7 @@ export default class OlLocate extends ol.Object {
         this.popCnt.innerHTML = cnt.replace("{unit}", unit);
         this.overlay.setPosition(this.posFt.getGeometry().getGeometries()[0].getCoordinates());
         this.popup.hidden = false;
-    }
+    };
     _getDefaultStyles = () => {
         return new ol.style.Style({
             image: new ol.style.Circle({
@@ -219,5 +219,5 @@ export default class OlLocate extends ol.Object {
             fill: new ol.style.Fill({color: 'rgba(19,106,236,0.15)'}),
             stroke: new ol.style.Stroke({color: 'rgba(19,106,236,1)', width: 2})
         });
-    }
+    };
 }

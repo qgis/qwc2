@@ -19,11 +19,12 @@ class PluginsContainer extends React.Component {
         plugins: PropTypes.object,
         pluginsAppConfig: PropTypes.object,
         pluginsConfig: PropTypes.object
-    }
+    };
     renderPlugins = (pluginsConfig) => {
         return pluginsConfig.map((pluginConf, idx) => {
             const Plugin = this.props.plugins[pluginConf.name + "Plugin"];
             if (!Plugin) {
+                // eslint-disable-next-line
                 console.warn("Non-existing plugin: " + pluginConf.name);
                 return null;
             }
@@ -31,7 +32,7 @@ class PluginsContainer extends React.Component {
             const appCfg = this.props.pluginsAppConfig[pluginConf.name + "Plugin"] || {};
             return (<Plugin key={pluginConf.name + idx} {...cfg} {...appCfg} />);
         });
-    }
+    };
     render() {
         if (this.props.pluginsConfig) {
             return (

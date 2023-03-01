@@ -65,12 +65,12 @@ class Search extends React.Component {
         startupSearch: PropTypes.bool,
         theme: PropTypes.object,
         themes: PropTypes.object
-    }
+    };
     state = {
         focused: false,
         showfields: false,
         providerSelectionVisible: false
-    }
+    };
     componentDidMount() {
         this.input = null;
         this.searchTimer = 0;
@@ -80,7 +80,7 @@ class Search extends React.Component {
         const sp = UrlParams.getParam('sp');
         this.props.changeSearch(UrlParams.getParam('st') || "", sp ? sp.split(",") : null);
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         // If search text changed, clear result
         if (this.props.searchText !== prevProps.searchText) {
             prevProps.removeLayer('searchselection');
@@ -130,29 +130,29 @@ class Search extends React.Component {
             };
             props.startSearch(props.searchText, searchParams, this.activeProviders(props), startup);
         }
-    }
+    };
     resetSearch = () => {
         this.setState({focused: false, showfields: false, invisibleLayerQuery: null});
         this.props.changeSearch("", this.props.activeProviders);
-    }
+    };
     onChange = (ev) => {
         this.props.changeSearch(ev.target.value, this.props.activeProviders);
         clearTimeout(this.searchTimer);
         this.searchTimer = setTimeout(() => this.search(this.props), 500);
-    }
+    };
     checkShowFields = (ev) => {
         if ((this.props.activeProviders || []).length === 1 && this.props.searchProviders[this.props.activeProviders[0]].fields) {
             this.setState({showfields: true, focused: false});
             ev.preventDefault();
         }
-    }
+    };
     onFocus = () => {
         if (!this.state.showfields && this.props.searchText && !this.props.results) {
             this.search(this.props);
         }
         this.setState({focused: true});
         this.blurred = false;
-    }
+    };
     onBlur = () => {
         if (this.preventBlur && this.input) {
             this.input.focus();
@@ -160,14 +160,14 @@ class Search extends React.Component {
             this.setState({focused: false});
         }
         this.blurred = true;
-    }
+    };
     onKeyDown = (ev) => {
         if (ev.keyCode === 13) {
             this.search(this.props);
         } else if (ev.keyCode === 27) {
             ev.target.blur();
         }
-    }
+    };
     activeProviders = (props) => {
         const keys = isEmpty(props.activeProviders) ? Object.keys(props.searchProviders) : props.activeProviders;
         return keys.reduce((result, key) => {
@@ -176,7 +176,7 @@ class Search extends React.Component {
             }
             return result;
         }, {});
-    }
+    };
     render() {
         let placeholder = "";
         if (this.props.searchOptions.showProvidersInPlaceholder || !isEmpty(this.props.activeProviders)) {
@@ -322,9 +322,8 @@ class Search extends React.Component {
             this.props.changeLayerProperty(this.state.invisibleLayerQuery.layer.uuid, "visibility", true, this.state.invisibleLayerQuery.sublayerpath, "both");
             this.setState({invisibleLayerQuery: null});
         }
-    }
+    };
     submitFormSearch = () => {
-        const comp = this.props.searchProviders[UrlParams.getParam("sp")].comparator;
         const filters = Object.keys(this.formfields).map(key => {
             return  key + "=" + this.formfields[key].value;
         });
@@ -335,7 +334,7 @@ class Search extends React.Component {
         }
         this.input.focus();
         this.setState({showfields: false});
-    }
+    };
     renderSearchResults = () => {
         let results = null;
         if (!this.props.results || !this.state.focused) {
@@ -350,11 +349,11 @@ class Search extends React.Component {
                 {results}
             </ul>
         );
-    }
+    };
     setPreventBlur = () => {
         this.preventBlur = true;
         setTimeout(() => {this.preventBlur = false; return false;}, 100);
-    }
+    };
     renderCategory = (category) => {
         const title = category.titlemsgid ? LocaleUtils.tr(category.titlemsgid) : category.title;
         return (
@@ -363,7 +362,7 @@ class Search extends React.Component {
                 <ul>{category.items.map(item => this.renderItem(item))}</ul>
             </li>
         );
-    }
+    };
     renderItem = (item) => {
         if (item.more) {
             return (
@@ -385,7 +384,7 @@ class Search extends React.Component {
                 {item.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {this.addThemeLayers(ev, item.theme); this.input.blur();}} title={addTitle}/>) : null}
             </li>
         );
-    }
+    };
     showResult = (item, zoom = true, startupSearch = false) => {
         const resultType = item.type || SearchResultType.PLACE;
         if (resultType !== SearchResultType.PLACE && !this.props.searchOptions.zoomToLayers) {
@@ -491,7 +490,7 @@ class Search extends React.Component {
             }
         }
         this.setState({invisibleLayerQuery});
-    }
+    };
     showFeatureGeometry = (item, response, text) => {
         if (!isEmpty(response.geometry)) {
             let features = [];
@@ -511,7 +510,7 @@ class Search extends React.Component {
             };
             this.props.addLayerFeatures(layer, features, true);
         }
-    }
+    };
     createMarker = (center, crs, text) => {
         return {
             geometry: {type: 'Point', coordinates: center},
@@ -520,13 +519,13 @@ class Search extends React.Component {
             crs: crs,
             properties: { label: text }
         };
-    }
+    };
     addThemeLayers = (ev, theme) => {
         ev.stopPropagation();
         this.props.addLayer(ThemeUtils.createThemeLayer(theme, this.props.themes, LayerRole.USERLAYER));
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
-    }
+    };
 }
 
 export default (searchProviders) => {

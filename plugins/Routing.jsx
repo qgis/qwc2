@@ -44,11 +44,11 @@ class Routing extends React.Component {
         setCurrentTask: PropTypes.func,
         windowSize: PropTypes.object,
         zoomToExtent: PropTypes.func
-    }
+    };
     static defaultProps = {
         enabledProviders: ["coordinates", "nominatim"],
         windowSize: {width: 320, height: 320}
-    }
+    };
     state = {
         currentTab: 'Route',
         mode: 'auto',
@@ -83,7 +83,7 @@ class Routing extends React.Component {
         searchProviders: [],
         searchParams: {},
         popupPos: null
-    }
+    };
     constructor(props) {
         super(props);
         this.recomputeTimeout = null;
@@ -117,7 +117,7 @@ class Routing extends React.Component {
         }
         // Routing markers
         if (
-            this.state.currentTab !== prevState.currentTab || 
+            this.state.currentTab !== prevState.currentTab ||
             this.state.routeConfig.routepoints !== prevState.routeConfig.routepoints ||
             this.state.isoConfig.point !== prevState.isoConfig.point
         ) {
@@ -176,7 +176,7 @@ class Routing extends React.Component {
                 </div>
             </div>
         );
-    }
+    };
     renderRouteWidget = () => {
         const routeConfig = this.state.routeConfig;
         return (
@@ -200,7 +200,7 @@ class Routing extends React.Component {
                 {routeConfig.result ? this.renderRouteResult(routeConfig) : null}
             </div>
         );
-    }
+    };
     renderRouteResult = (routeConfig) => {
         if (routeConfig.result.success === false) {
             return (
@@ -221,7 +221,7 @@ class Routing extends React.Component {
                 </div>
             );
         }
-    }
+    };
     renderIsochroneWidget = () => {
         const isoConfig = this.state.isoConfig;
         const intervalValid = !!isoConfig.intervals.match(/^\d+(,\s*\d+)*$/);
@@ -261,7 +261,7 @@ class Routing extends React.Component {
                 {isoConfig.result ? this.renderIsochroneResult(isoConfig) : null}
             </div>
         );
-    }
+    };
     renderIsochroneResult = (isoConfig) => {
         if (isoConfig.result.success === false) {
             return (
@@ -276,7 +276,7 @@ class Routing extends React.Component {
                 </div>
             );
         }
-    }
+    };
     renderSearchField = (entry, idx) => {
         const numpoints = this.state.routeConfig.routepoints.length;
         return (
@@ -294,7 +294,7 @@ class Routing extends React.Component {
                 ) : null}
             </InputContainer>
         );
-    }
+    };
     renderMapPopup = () => {
         if (!this.state.popupPos) {
             return null;
@@ -341,10 +341,10 @@ class Routing extends React.Component {
                 </div>
             </div>
         );
-    }
+    };
     hidePopup = () => {
         this.setState({popupPos: null});
-    }
+    };
     changeCurrentTab = (key) => {
         this.props.removeLayer("routingggeometries");
         this.setState({
@@ -354,14 +354,14 @@ class Routing extends React.Component {
                 result: null
             }
         });
-    }
+    };
     locatePos = () => {
         return {
             pos: [...this.props.locatePos],
             text: this.props.locatePos.map(x => x.toFixed(4)).join(", "),
             crs: 'EPSG:4326'
         };
-    }
+    };
     updateSetting = (mode, diff) => {
         this.setState({settings: {
             ...this.state.settings,
@@ -371,7 +371,7 @@ class Routing extends React.Component {
             }
         }});
         this.recomputeIfNeeded();
-    }
+    };
     addRoutePt = (entry = {text: '', pos: null}) => {
         this.setState({routeConfig: {
             ...this.state.routeConfig,
@@ -382,7 +382,7 @@ class Routing extends React.Component {
             ]
         }});
         this.recomputeIfNeeded();
-    }
+    };
     removeRoutePt = (idx) => {
         this.setState({routeConfig: {
             ...this.state.routeConfig,
@@ -392,7 +392,7 @@ class Routing extends React.Component {
             ]
         }});
         this.recomputeIfNeeded();
-    }
+    };
     clearRoutePts = () => {
         this.setState({routeConfig: {
             ...this.state.routeConfig,
@@ -402,20 +402,20 @@ class Routing extends React.Component {
             ]
         }});
         this.recomputeIfNeeded();
-    }
+    };
     reverseRoutePts = () => {
         this.setState({routeConfig: {
             ...this.state.routeConfig,
             routepoints: this.state.routeConfig.routepoints.reverse()
         }});
         this.recomputeIfNeeded();
-    }
+    };
     updateRouteConfig = (diff, recompute = true) => {
         this.setState({routeConfig: {...this.state.routeConfig, ...diff}});
         if (recompute) {
             this.recomputeIfNeeded();
         }
-    }
+    };
     updateRoutePoint = (idx, diff) => {
         this.setState({routeConfig: {
             ...this.state.routeConfig,
@@ -426,42 +426,41 @@ class Routing extends React.Component {
             ]
         }});
         this.recomputeIfNeeded();
-    }
+    };
     updateIsoConfig = (diff, recompute = true) => {
         this.setState({isoConfig: {...this.state.isoConfig, ...diff}});
         if (recompute) {
             this.recomputeIfNeeded();
         }
-    }
+    };
     onClose = () => {
         this.props.setCurrentTask(null);
-    }
+    };
     isoSearchResultSelected = (result) => {
         if (result) {
             this.updateIsoConfig({point: {text: result.text, pos: [result.x, result.y], crs: result.crs}});
         } else {
             this.updateIsoConfig({point: {text: "", pos: null, crs: null}});
         }
-    }
+    };
     routeSearchResultSelected = (idx, result) => {
         if (result) {
             this.updateRoutePoint(idx, {text: result.text, pos: [result.x, result.y], crs: result.crs});
         } else {
             this.updateRoutePoint(idx, {text: "", pos: null, crs: null});
         }
-    }
+    };
     updateRoutingMarkers = () => {
         let points = [];
         if (this.state.currentTab === "Route") {
-            points = this.state.routeConfig.routepoints
+            points = this.state.routeConfig.routepoints;
         } else {
             points = [this.state.isoConfig.point];
         }
         const layer = {
             id: "routingmarkers",
             role: LayerRole.MARKER,
-            styleName: 'marker',
-
+            styleName: 'marker'
         };
         const features = points.filter(point => point.pos).map(point => ({
             type: "Feature",
@@ -472,7 +471,7 @@ class Routing extends React.Component {
             }
         }));
         this.props.addLayerFeatures(layer, features, true);
-    }
+    };
     computeRoute = () => {
         const locations = this.state.routeConfig.routepoints.filter(entry => entry.pos).map(entry => {
             return CoordinatesUtils.reproject(entry.pos, entry.crs, "EPSG:4326");
@@ -506,7 +505,7 @@ class Routing extends React.Component {
             }
             this.updateRouteConfig({result: {success, data: result}, busy: false}, false);
         });
-    }
+    };
     computeIsochrone = () => {
         const intervalValid = !!this.state.isoConfig.intervals.match(/^\d+(,\s*\d+)*$/);
         if (!intervalValid) {
@@ -544,7 +543,7 @@ class Routing extends React.Component {
             }
             this.updateIsoConfig({result: {success, data: result}, busy: false}, false);
         });
-    }
+    };
     recomputeIfNeeded = () => {
         clearTimeout(this.recomputeTimeout);
         this.recomputeTimeout = setTimeout(() => {
@@ -555,7 +554,7 @@ class Routing extends React.Component {
             }
             this.recomputeTimeout = null;
         }, 750);
-    }
+    };
     exportRoute = () => {
         const data = JSON.stringify({
             type: "FeatureCollection",
@@ -572,7 +571,7 @@ class Routing extends React.Component {
             }))
         });
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "route.json");
-    }
+    };
     exportIsochrone = () => {
         const data = JSON.stringify({
             type: "FeatureCollection",
@@ -585,7 +584,7 @@ class Routing extends React.Component {
             }))
         });
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "isochrone.json");
-    }
+    };
 }
 
 export default (searchProviders) => {

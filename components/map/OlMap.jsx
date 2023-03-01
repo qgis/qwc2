@@ -45,27 +45,27 @@ class OlMap extends React.Component {
         trackMousePos: PropTypes.bool,
         unsetTaskOnMapClick: PropTypes.bool,
         zoom: PropTypes.number.isRequired
-    }
+    };
     static defaultProps = {
         id: 'map',
         mapOptions: {
             panPageSize: 1,
             panStepSize: 0.25
         }
-    }
+    };
     state = {
         mapOptions: {},
         projection: null,
         resolutions: [],
         rebuildView: false
-    }
+    };
     constructor(props) {
         super(props);
         this.ignoreNextClick = false;
         this.state.mapOptions = {
             ...OlMap.defaultProps.mapOptions,
             ...props.mapOptions
-        }
+        };
 
         const interactions = ol.interaction.defaults({
             // don't create these default interactions, but create them below with custom params
@@ -146,7 +146,7 @@ class OlMap extends React.Component {
         this.keyboardPanInteractions.forEach(interaction => {
             this.map.addInteraction(interaction);
         });
-    }
+    };
     unblockRequests = () => {
         if (this.moving) {
             if (this.unpauseTimeout) {
@@ -159,7 +159,7 @@ class OlMap extends React.Component {
                 this.moving = false;
             }, 500);
         }
-    }
+    };
     static getDerivedStateFromProps(nextProps, state) {
         if ((nextProps.projection !== state.projection) || (nextProps.resolutions !== state.resolutions)) {
             return {
@@ -170,7 +170,7 @@ class OlMap extends React.Component {
         }
         return null;
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (prevProps.id !== this.props.mapStateSource) {
             const view = this.map.getView();
             if (prevProps.center !== this.props.center) {
@@ -190,19 +190,19 @@ class OlMap extends React.Component {
     panHStepCondition = (ev) => {
         const horiz = ev.originalEvent.keyCode === 37 || ev.originalEvent.keyCode === 39;
         return horiz && ol.events.condition.noModifierKeys(ev) && ol.events.condition.targetNotEditable(ev);
-    }
+    };
     panVStepCondition = (ev) => {
         const vert = ev.originalEvent.keyCode === 38 || ev.originalEvent.keyCode === 40;
         return vert && ol.events.condition.noModifierKeys(ev) && ol.events.condition.targetNotEditable(ev);
-    }
+    };
     panHPageCondition = (ev) => {
         const horiz = ev.originalEvent.keyCode === 37 || ev.originalEvent.keyCode === 39;
         return horiz && ol.events.condition.shiftKeyOnly(ev) && ol.events.condition.targetNotEditable(ev);
-    }
+    };
     panVPageCondition = (ev) => {
         const vert = ev.originalEvent.keyCode === 38 || ev.originalEvent.keyCode === 40;
         return vert && ol.events.condition.shiftKeyOnly(ev) && ol.events.condition.targetNotEditable(ev);
-    }
+    };
     render() {
         if (this.state.rebuildView) {
             const overviewMap = this.map.getControls().getArray().find(control => control instanceof ol.control.OverviewMap);
@@ -275,7 +275,7 @@ class OlMap extends React.Component {
             button: button
         };
         this.props.onClick(data);
-    }
+    };
     updateMapInfoState = () => {
         const view = this.map.getView();
         const c = view.getCenter() || [0, 0];
@@ -288,7 +288,7 @@ class OlMap extends React.Component {
             height: this.map.getSize()[1]
         };
         this.props.onMapViewChanges(c, view.getZoom() || 0, bbox, size, this.props.id, this.props.projection);
-    }
+    };
     createView = (center, zoom, projection, resolutions, enableRotation, rotation) => {
         const viewOptions = {
             projection: projection,
@@ -301,7 +301,7 @@ class OlMap extends React.Component {
             rotation: MapUtils.degreesToRadians(rotation) || 0
         };
         return new ol.View(viewOptions);
-    }
+    };
     registerHooks = () => {
         MapUtils.registerHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK, (pos) => {
             return this.map.getPixelFromCoordinate(pos);
@@ -309,7 +309,7 @@ class OlMap extends React.Component {
         MapUtils.registerHook(MapUtils.GET_COORDINATES_FROM_PIXEL_HOOK, (pixel) => {
             return this.map.getCoordinateFromPixel(pixel);
         });
-    }
+    };
 }
 
 export default connect((state) => ({

@@ -43,13 +43,13 @@ class TopBar extends React.Component {
         toggleFullscreen: PropTypes.func,
         toolbarItems: PropTypes.array,
         toolbarItemsShortcutPrefix: PropTypes.string
-    }
+    };
     static defaultProps = {
         searchOptions: {},
         menuItems: [],
         toolbarItems: [],
         logoFormat: "svg"
-    }
+    };
     render() {
         let buttonContents;
         let logo;
@@ -124,12 +124,12 @@ class TopBar extends React.Component {
         } else {
             this.props.openExternalUrl(url);
         }
-    }
+    };
     storeHeight = (el) => {
         if (el) {
             this.props.setTopbarHeight(el.clientHeight);
         }
-    }
+    };
 }
 
 export default (components) => {

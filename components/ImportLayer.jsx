@@ -31,14 +31,14 @@ class ImportLayer extends React.Component {
         mapCrs: PropTypes.string,
         theme: PropTypes.object,
         themes: PropTypes.object
-    }
+    };
     state = {
         type: 'URL',
         file: null,
         url: '',
         pendingRequests: 0,
         serviceLayers: null
-    }
+    };
     renderInputField() {
         const placeholder = LocaleUtils.tr("importlayer.urlplaceholder");
         const urlPresets = ConfigUtils.getConfigProp("importLayerUrlPresets", this.props.theme) || [];
@@ -79,7 +79,7 @@ class ImportLayer extends React.Component {
             <div className="ImportLayer">
                 <div className="importlayer-input-fields">
                     <select
-                        disabled={this.state.pendingRequests > 0} 
+                        disabled={this.state.pendingRequests > 0}
                         onChange={ev => this.setState({type: ev.target.value, file: null, url: "", serviceLayers: null})} value={this.state.type}
                     >
                         <option value="URL">{LocaleUtils.tr("importlayer.url")}</option>
@@ -94,7 +94,7 @@ class ImportLayer extends React.Component {
     }
     onFileSelected = (file) => {
         this.setState({file});
-    }
+    };
     scanService = () => {
         let reqUrl = this.state.url;
         if (!reqUrl) {
@@ -223,7 +223,7 @@ class ImportLayer extends React.Component {
         });
 
         this.setState({pendingRequests: pendingRequests, serviceLayers: null});
-    }
+    };
     importFileLayer = () => {
         if (!this.state.file) {
             return;
@@ -245,10 +245,10 @@ class ImportLayer extends React.Component {
             this.setState({file: null});
         };
         reader.readAsText(this.state.file);
-    }
+    };
     addKMLLayer = (filename, data) => {
         this.addGeoJSONLayer(filename, {features: VectorLayerUtils.kmlToGeoJSON(data)});
-    }
+    };
     addGeoJSONLayer = (filename, data) => {
         if (!isEmpty(data.features)) {
             let defaultCrs = "EPSG:4326";
@@ -274,9 +274,10 @@ class ImportLayer extends React.Component {
                 zoomToExtent: true
             }, features, true);
         } else {
+            // eslint-disable-next-line
             alert(LocaleUtils.tr("importlayer.nofeatures"));
         }
-    }
+    };
 }
 
 export default connect((state) => ({

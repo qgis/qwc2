@@ -19,7 +19,7 @@ export default class ModalDialog extends React.Component {
         icon: PropTypes.string,
         onClose: PropTypes.func,
         title: PropTypes.string
-    }
+    };
     constructor(props) {
         super(props);
         this.el = document.createElement("div");

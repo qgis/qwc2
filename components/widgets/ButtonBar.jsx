@@ -34,10 +34,10 @@ class ButtonBar extends React.Component {
         mobile: PropTypes.bool,
         onClick: PropTypes.func,
         tooltipPos: PropTypes.string
-    }
+    };
     static defaultProps = {
         tooltipPos: 'bottom'
-    }
+    };
     render() {
         return (
             <div className={"ButtonBar" + (this.props.disabled ? " buttonbar-disabled" : "")}>

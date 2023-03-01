@@ -18,12 +18,12 @@ class Input extends React.Component {
         required: PropTypes.bool,
         type: PropTypes.string,
         value: PropTypes.string
-    }
+    };
     state = {
         value: "",
         curValue: "",
         changed: false
-    }
+    };
     static getDerivedStateFromProps(nextProps, state) {
         if (state.value !== nextProps.value) {
             return {value: nextProps.value, curValue: nextProps.value || "", changed: false};
@@ -44,21 +44,21 @@ class Input extends React.Component {
             this.setState({value: ev.target.value});
             this.props.onChange(ev.target.value);
         }
-    }
+    };
     onBlur = () => {
         this.commit();
-    }
+    };
     onKeyDown = (ev) => {
         if (ev.keyCode === 13) {
             this.commit();
         }
-    }
+    };
     commit = () => {
         if (this.state.changed) {
             this.setState({value: this.state.curValue});
             this.props.onChange(this.state.curValue);
         }
-    }
+    };
 }
 
 export default Input;

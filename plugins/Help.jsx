@@ -17,11 +17,11 @@ class Help extends React.Component {
         bodyContentsFragmentUrl: PropTypes.string,
         renderBody: PropTypes.func,
         side: PropTypes.string
-    }
+    };
     static defaultProps = {
         renderBody: () => { return null; },
         side: 'right'
-    }
+    };
     constructor(props) {
         super(props);
         this.bodyEl = null;
@@ -48,7 +48,7 @@ class Help extends React.Component {
         } else {
             return this.props.renderBody();
         }
-    }
+    };
 }
 
 export default (renderHelp) => {

@@ -16,11 +16,11 @@ export default class ScaleBarSupport extends React.Component {
         map: PropTypes.object,
         // See https://openlayers.org/en/latest/apidoc/ol.control.ScaleLine.html
         options: PropTypes.object
-    }
+    };
     static defaultOpt = {
         minWidth: 64,
         units: 'metric'
-    }
+    };
     constructor(props) {
         super(props);
         this.scalebar = new ol.control.ScaleLine({...ScaleBarSupport.defaultOpt, ...props.options});

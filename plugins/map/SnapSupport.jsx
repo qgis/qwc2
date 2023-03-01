@@ -22,7 +22,7 @@ class SnapSupport extends React.Component {
         map: PropTypes.object,
         mapObj: PropTypes.object,
         mousepos: PropTypes.object
-    }
+    };
     constructor(props) {
         super(props);
 
@@ -59,7 +59,7 @@ class SnapSupport extends React.Component {
         this.props.map.addLayer(this.snapLayer);
         this.curPos = null;
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (prevProps.drawing && this.props.mousepos &&
                 (!this.curPos ||
                 Math.abs(this.props.mousepos.pixel[0] - this.curPos[0]) > 5 ||
@@ -78,11 +78,11 @@ class SnapSupport extends React.Component {
         for (const feature of features) {
             this.snapSource.addFeature(feature);
         }
-    }
+    };
     addSnapInteraction = () => {
         this.snapInteraction = new ol.interaction.Snap({source: this.snapSource});
         this.props.map.addInteraction(this.snapInteraction);
-    }
+    };
     getFeature = () => {
         this.timeoutId = null;
 
@@ -107,14 +107,14 @@ class SnapSupport extends React.Component {
         axios.get(request.url, {params: request.params}).then(response => {
             const results = IdentifyUtils.parseXmlResponse(response.data, this.props.mapObj.projection);
             const features = [];
-            for (const i in results) {
-                for (const feature of results[i]) {
+            results.forEach(result => {
+                for (const feature of result) {
                     if (feature.geometry) {
                         feature.id = uuidv4();
                         features.push(feature);
                     }
                 }
-            }
+            });
 
             if (!features) {
                 return;
@@ -134,7 +134,7 @@ class SnapSupport extends React.Component {
             this.addSnapFeatures(geojson);
             this.addSnapInteraction();
         });
-    }
+    };
     reset = () => {
         if (this.snapInteractions) {
             this.props.map.removeInteraction(this.snapInteraction);
@@ -142,14 +142,14 @@ class SnapSupport extends React.Component {
         for (const feature of this.snapSource.getFeatures()) {
             this.snapSource.removeFeature(feature);
         }
-    }
+    };
     render() {
         return null;
     }
 }
 
 const selector = (state) => ({
-    drawing: state.task.id == "Redlining" || state.task.id == "Measure" || state.task.id == "Editing" ? true : false,
+    drawing: state.task.id === "Redlining" || state.task.id === "Measure" || state.task.id === "Editing" ? true : false,
     mapObj: state.map,
     mousepos: state.mousePosition.position,
     layers: state.layers.flat

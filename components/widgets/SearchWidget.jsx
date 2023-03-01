@@ -26,14 +26,14 @@ export default class SearchWidget extends React.Component {
         searchParams: PropTypes.object,
         searchProviders: PropTypes.array,
         value: PropTypes.string
-    }
+    };
     state = {
         text: '',
         reqId: null,
         results: [],
         pending: 0,
         active: false
-    }
+    };
     constructor(props) {
         super(props);
         this.searchTimeout = null;
@@ -49,11 +49,11 @@ export default class SearchWidget extends React.Component {
     render() {
         return (
             <div className={"search-widget-container " + (this.props.className || "")}>
-                <input 
-                    className="search-widget-input" 
-                    onBlur={this.onBlur} 
-                    onChange={this.textChanged} 
-                    onFocus={this.onFocus} 
+                <input
+                    className="search-widget-input"
+                    onBlur={this.onBlur}
+                    onChange={this.textChanged}
+                    onFocus={this.onFocus}
                     onKeyDown={this.onKeyDown}
                     placeholder={LocaleUtils.tr("search.search")}
                     ref={el => {this.input = el;}}
@@ -80,11 +80,11 @@ export default class SearchWidget extends React.Component {
                 ))}
             </div>
         );
-    }
+    };
     setPreventBlur = () => {
         this.preventBlur = true;
         setTimeout(() => {this.preventBlur = false; return false;}, 100);
-    }
+    };
     textChanged = (ev) => {
         this.setState({text: ev.target.value, reqId: null, results: [], pending: 0});
         clearTimeout(this.searchTimeout);
@@ -93,26 +93,26 @@ export default class SearchWidget extends React.Component {
         } else {
             this.searchTimeout = setTimeout(this.startSearch, 250);
         }
-    }
+    };
     onBlur = () => {
         if (!this.preventBlur) {
             clearTimeout(this.searchTimeout);
             this.props.onBlur();
             this.setState({active: false, text: this.props.value, reqId: null, results: [], pending: 0});
         }
-    }
+    };
     onFocus = (ev) => {
         ev.target.select();
         this.props.onFocus();
         this.setState({active: true});
-    }
+    };
     onKeyDown = (ev) => {
         if (ev.keyCode === 13) {
             this.startSearch();
         } else if (ev.keyCode === 27) {
             ev.target.blur();
         }
-    }
+    };
     startSearch = () => {
         clearTimeout(this.searchTimeout);
         const reqId = uuidv1();
@@ -129,11 +129,11 @@ export default class SearchWidget extends React.Component {
                 });
             }, axios);
         });
-    }
+    };
     resultSelected = (item) => {
         this.props.resultSelected(item);
         if (this.input) {
             this.input.blur();
         }
-    }
+    };
 }

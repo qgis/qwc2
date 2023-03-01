@@ -20,7 +20,7 @@ class ServiceInfoWindow extends React.Component {
         service: PropTypes.object,
         setActiveServiceInfo: PropTypes.func,
         windowSize: PropTypes.object
-    }
+    };
     renderLink(text, url) {
         if (url) {
             return (<a href={url} rel="noreferrer" target="_blank">{text}</a>);
@@ -41,7 +41,7 @@ class ServiceInfoWindow extends React.Component {
             );
         }
         return null;
-    }
+    };
     render() {
         if (!this.props.service) {
             return null;
@@ -71,7 +71,7 @@ class ServiceInfoWindow extends React.Component {
     }
     onClose = () => {
         this.props.setActiveServiceInfo(null);
-    }
+    };
 }
 
 const selector = state => ({

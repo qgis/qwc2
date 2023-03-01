@@ -30,7 +30,7 @@ class MapLegend extends React.Component {
         scaleDependentLegend: PropTypes.bool,
         setCurrentTask: PropTypes.func,
         windowSize: PropTypes.object
-    }
+    };
     static defaultProps = {
         addGroupTitles: false,
         addLayerTitles: false,
@@ -38,13 +38,13 @@ class MapLegend extends React.Component {
         onlyVisibleLegend: false,
         scaleDependentLegend: false,
         windowSize: {width: 320, height: 320}
-    }
+    };
     state = {
         onlyVisibleLegend: false,
         bboxDependentLegend: false,
         scaleDependentLegend: false,
         visible: false
-    }
+    };
     constructor(props) {
         super(props);
         this.state.onlyVisibleLegend = props.onlyVisibleLegend;
@@ -95,7 +95,7 @@ class MapLegend extends React.Component {
     }
     onClose = () => {
         this.setState({visible: false});
-    }
+    };
     printLayerLegend = (layer, sublayer, mapScale) => {
         if (sublayer.sublayers && (!this.state.onlyVisibleLegend || sublayer.visibility)) {
             if (this.props.addGroupTitles) {
@@ -126,7 +126,7 @@ class MapLegend extends React.Component {
                     {this.props.addLayerTitles ? (<span className="map-legend-entry-title">{sublayer.title || sublayer.name}</span>) : null}
                 </div>) : null;
         }
-    }
+    };
 }
 
 export default connect(state => ({

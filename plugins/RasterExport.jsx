@@ -29,20 +29,20 @@ class RasterExport extends React.Component {
         map: PropTypes.object,
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object
-    }
+    };
     static defaultProps = {
         exportExternalLayers: true
-    }
+    };
     state = {
         selectedFormat: null,
         dpi: 96
-    }
+    };
     formatChanged = (ev) => {
         this.setState({selectedFormat: ev.target.value});
-    }
+    };
     dpiChanged = (ev) => {
         this.setState({dpi: parseInt(ev.target.value, 10)});
-    }
+    };
     renderBody = () => {
         if (!this.props.theme) {
             return null;
@@ -141,7 +141,7 @@ class RasterExport extends React.Component {
                 </form>
             </span>
         );
-    }
+    };
     render() {
         return (
             <TaskBar task="RasterExport">
@@ -162,7 +162,7 @@ class RasterExport extends React.Component {
         this.heightInput.value = Math.round(pixelsize[1] * parseInt(this.state.dpi || 96, 10) / 96);
         this.form.submit();
         this.props.setCurrentTask(null);
-    }
+    };
 }
 
 const selector = (state) => ({

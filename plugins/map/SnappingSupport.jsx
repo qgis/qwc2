@@ -8,7 +8,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
@@ -33,14 +32,14 @@ class SnappingSupport extends React.Component {
         setSnappingConfig: PropTypes.func,
         task: PropTypes.string,
         theme: PropTypes.object
-    }
+    };
     state = {
         reqId: null, // FeatureInfo request ID
         invalid: true, // Whether the feature cache needs to be rebuilt
         havesnaplayers: false, // Whether there are any snaplayers
         active: true, // Whether the interaction is active
         drawing: false // WHether a drawing interaction is active
-    }
+    };
     constructor(props) {
         super(props);
         this.source = new ol.source.Vector();
@@ -51,7 +50,7 @@ class SnappingSupport extends React.Component {
         props.map.getInteractions().on('add', this.handleInteractionAdded);
         props.map.getInteractions().on('remove', this.handleInteractionRemoved);
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (this.props.mapObj.bbox !== prevProps.mapObj.bbox || this.props.theme !== prevProps.theme) {
             this.setState({invalid: true});
             this.refreshFeatureCache(true);
@@ -105,7 +104,7 @@ class SnappingSupport extends React.Component {
         this.inEventHandler = true;
         this.addSnapInteractionIfNeeded(ev.target);
         this.inEventHandler = false;
-    }
+    };
     handleInteractionRemoved = (ev) => {
         if (this.inEventHandler) {
             return;
@@ -118,7 +117,7 @@ class SnappingSupport extends React.Component {
         }
         this.addSnapInteractionIfNeeded(ev.target);
         this.inEventHandler = false;
-    }
+    };
     addSnapInteractionIfNeeded = (interactions) => {
         // Just to be sure
         interactions.remove(this.snapInteraction);
@@ -136,7 +135,7 @@ class SnappingSupport extends React.Component {
             }
         }
         this.setState({drawing: added});
-    }
+    };
     refreshFeatureCache = (force) => {
         if (!this.state.invalid && !force) {
             return;
@@ -208,7 +207,7 @@ class SnappingSupport extends React.Component {
                 this.setState({reqId: null});
             }
         });
-    }
+    };
 }
 
 export default connect((state) => ({

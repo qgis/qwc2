@@ -45,7 +45,7 @@ class Print extends React.Component {
         scaleFactor: PropTypes.number,
         side: PropTypes.string,
         theme: PropTypes.object
-    }
+    };
     static defaultProps = {
         printExternalLayers: true,
         inlinePrintOutput: false,
@@ -55,7 +55,7 @@ class Print extends React.Component {
         displayRotation: true,
         gridInitiallyEnabled: false,
         side: 'right'
-    }
+    };
     state = {
         layout: null,
         scale: null,
@@ -68,7 +68,7 @@ class Print extends React.Component {
         printOutputVisible: false,
         outputLoaded: false,
         printing: false
-    }
+    };
     constructor(props) {
         super(props);
         this.printForm = null;
@@ -99,11 +99,11 @@ class Print extends React.Component {
             scale = this.props.theme.printScales[closestIdx];
         }
         this.setState({scale: scale, initialRotation: this.props.map.bbox.rotation, dpi: this.props.defaultDpi});
-    }
+    };
     onHide = () => {
         this.props.changeRotation(this.state.initialRotation);
         this.setState({minimized: false, scale: null});
-    }
+    };
     renderBody = () => {
         if (!this.state.layout) {
             return (<div className="print-body" role="body">{LocaleUtils.tr("print.nolayouts")}</div>);
@@ -288,7 +288,7 @@ class Print extends React.Component {
                 </form>
             </div>
         );
-    }
+    };
     renderPrintLabelField = (label, opts) => {
         if (this.props.theme.printLabelForSearchResult === label) {
             if (this.props.hideAutopopulatedFields) {
@@ -320,7 +320,7 @@ class Print extends React.Component {
                 </tr>
             );
         }
-    }
+    };
     getSearchMarkerLabel = () => {
         const searchsellayer = this.props.layers.find(layer => layer.id === "searchselection");
         if (searchsellayer && searchsellayer.features) {
@@ -330,7 +330,7 @@ class Print extends React.Component {
             }
         }
         return "";
-    }
+    };
     getAttributionLabel = () => {
         const copyrights = this.props.layers.reduce((res, layer) => ({...res, ...LayerUtils.getAttribution(layer, this.props.map)}), {});
         const el = document.createElement("span");
@@ -343,7 +343,7 @@ class Print extends React.Component {
                 return el.innerText;
             }
         }).join(" | ");
-    }
+    };
     renderPrintFrame = () => {
         let printFrame = null;
         if (this.state.layout) {
@@ -354,7 +354,7 @@ class Print extends React.Component {
             printFrame = (<PrintFrame fixedFrame={frame} key="PrintFrame" map={this.props.map} />);
         }
         return printFrame;
-    }
+    };
     renderPrintOutputWindow = () => {
         return (
             <ResizeableWindow icon="print" initialHeight={0.75 * window.innerHeight} initialWidth={0.5 * window.innerWidth}
@@ -371,7 +371,7 @@ class Print extends React.Component {
                 </div>
             </ResizeableWindow>
         );
-    }
+    };
     render() {
         const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("print.maximize") : LocaleUtils.tr("print.minimize");
         const extraTitlebarContent = (<Icon className="print-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState({minimized: !this.state.minimized})} title={minMaxTooltip}/>);
@@ -394,13 +394,13 @@ class Print extends React.Component {
     changeLayout = (ev) => {
         const layout = this.props.theme.print.find(item => item.name === ev.target.value);
         this.setState({layout: layout});
-    }
+    };
     changeScale = (ev) => {
         this.setState({scale: ev.target.value});
-    }
+    };
     changeResolution = (ev) => {
         this.setState({dpi: ev.target.value});
-    }
+    };
     changeRotation = (ev) => {
         if (!ev.target.value) {
             this.setState({rotationNull: true});
@@ -415,7 +415,7 @@ class Print extends React.Component {
             }
             this.props.changeRotation(angle / 180 * Math.PI);
         }
-    }
+    };
     computeCurrentExtent = () => {
         if (!this.props.map || !this.state.layout || !this.state.scale) {
             return [0, 0, 0, 0];
@@ -429,7 +429,7 @@ class Print extends React.Component {
         const y1 = center[1] - 0.5 * height;
         const y2 = center[1] + 0.5 * height;
         return [x1, y1, x2, y2];
-    }
+    };
     print = (ev) => {
         if (this.props.inlinePrintOutput) {
             this.setState({printOutputVisible: true, outputLoaded: false});
@@ -458,7 +458,7 @@ class Print extends React.Component {
                 alert('Print failed');
             });
         }
-    }
+    };
 }
 
 const selector = (state) => ({

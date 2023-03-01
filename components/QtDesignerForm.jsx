@@ -67,14 +67,14 @@ class QtDesignerForm extends React.Component {
         switchEditContext: PropTypes.func,
         updateField: PropTypes.func,
         updateRelationField: PropTypes.func
-    }
+    };
     static defaultState = {
         activetabs: {},
         formdata: null,
         loading: false,
         loadingReqId: null,
         relationAddPressed: null
-    }
+    };
     constructor(props) {
         super(props);
         this.state = QtDesignerForm.defaultState;
@@ -82,7 +82,7 @@ class QtDesignerForm extends React.Component {
     componentDidMount() {
         this.componentDidUpdate({});
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         // Query form
         if (this.props.form !== prevProps.form || this.props.feature.__version__ !== prevProps.feature.__version__) {
             this.setState({
@@ -193,7 +193,7 @@ class QtDesignerForm extends React.Component {
                 })}
             </div>
         );
-    }
+    };
     computeLayoutColumns = (items, useIndex = false) => {
         const columns = [];
         const fitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
@@ -219,7 +219,7 @@ class QtDesignerForm extends React.Component {
             columns[col] = hasAuto ? (columns[col] || fit) : 'auto';
         }
         return columns;
-    }
+    };
     computeLayoutRows = (items, useIndex = false) => {
         const rows = [];
         const fitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEdit", "QDateEdit", "QTimeEdit", "QPushButton", "QComboBox", "QLineEdit", "QSpinBox", "QDoubleSpinBox", "QSlider"];
@@ -245,7 +245,7 @@ class QtDesignerForm extends React.Component {
             rows[row] = hasAuto ? (rows[row] || fit) : 'auto';
         }
         return rows;
-    }
+    };
     renderWidget = (widget, feature, dataset, updateField, nametransform = (name) => name, disabled = false) => {
         let value = (feature.properties || {})[widget.name] ?? "";
         const prop = widget.property || {};
@@ -433,7 +433,7 @@ class QtDesignerForm extends React.Component {
             return (
                 <InputContainer className="qt-designer-form-datetime">
                     <input
-                        max={max[0]} min={min[0]} 
+                        max={max[0]} min={min[0]}
                         onChange={(ev) => updateField(widget.name, ev.target.value ? ev.target.value + "T" + parts[1] : "")}
                         readOnly={inputConstraints.readOnly} required={inputConstraints.required} role="input"
                         style={fontStyle} type="date" value={parts[0]} />
@@ -508,7 +508,7 @@ class QtDesignerForm extends React.Component {
             return this.renderLayout(widget.widget[parseInt(widget.property.currentIndex, 10)].layout, feature, dataset, updateField, nametransform);
         }
         return null;
-    }
+    };
     renderNRelation = (widget) => {
         const parts = widget.name.split("__");
         if (parts.length < 3) {
@@ -599,17 +599,17 @@ class QtDesignerForm extends React.Component {
                 ) : null}
             </div>
         );
-    }
+    };
     addRelationRecord = (ev, datasetname) => {
         this.setState({relationAddPressed: ev.target});
         this.props.addRelationRecord(datasetname);
-    }
+    };
     groupOrName = (widget) => {
         return widget.attribute && widget.attribute.buttonGroup ? widget.attribute.buttonGroup._ : widget.name;
-    }
+    };
     dateConstraint = (constr) => {
         return (constr.year + "-" + ("0" + constr.month).slice(-2) + "-" + ("0" + constr.day).slice(-2));
-    }
+    };
     parseForm = (data) => {
         const options = {
             explicitArray: false,
@@ -646,7 +646,7 @@ class QtDesignerForm extends React.Component {
             }
             this.props.setRelationTables(relationTables);
         });
-    }
+    };
     reformatWidget = (widget, relationTables, fields, buttons, nrels, externalFields, widgets, counters) => {
         if (widget.property) {
             widget.property = MiscUtils.ensureArray(widget.property).reduce((res, prop) => {
@@ -702,7 +702,7 @@ class QtDesignerForm extends React.Component {
         if (parts.length >= 3 && parts[0] === "nrel") {
             relationTables[this.props.mapPrefix + parts[1]] = {fk: parts[2], sortcol: parts[3] || null, noreorder: parts[4] || false};
         }
-    }
+    };
     reformatLayout = (layout, relationTables, fields, buttons, nrels, externalFields, widgets, counters) => {
         layout.item = MiscUtils.ensureArray(layout.item);
         layout.name = layout.name || (":layout_" + counters.layout++);
@@ -719,7 +719,7 @@ class QtDesignerForm extends React.Component {
                 this.reformatLayout(item.layout, relationTables, fields, buttons, nrels, externalFields, widgets, counters);
             }
         });
-    }
+    };
     buildErrMsg = (record) => {
         let message = record.error;
         const errorDetails = record.error_details || {};
@@ -734,7 +734,7 @@ class QtDesignerForm extends React.Component {
             message += ":\n - " + errorDetails.validation_errors.join("\n - ");
         }
         return message;
-    }
+    };
 }
 
 export default connect((state) => ({

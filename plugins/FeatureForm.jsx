@@ -38,18 +38,18 @@ class FeatureForm extends React.Component {
         map: PropTypes.object,
         setEditContext: PropTypes.func,
         theme: PropTypes.object
-    }
+    };
     static defaultProps = {
         initialWidth: 320,
         initialHeight: 480,
         initialX: 0,
         initialY: 0
-    }
+    };
     static defaultState = {
         pendingRequests: 0,
         pickedFeatures: null,
         selectedFeature: ""
-    }
+    };
     constructor(props) {
         super(props);
         this.state = FeatureForm.defaultState;
@@ -92,7 +92,7 @@ class FeatureForm extends React.Component {
             return this.props.click.geometry;
         }
         return this.props.click.coordinate;
-    }
+    };
     queryFeatures = (pos) => {
         let pendingRequests = 0;
         Object.entries(this.props.theme.editConfig || {}).forEach(([layerId, editConfig]) => {
@@ -130,7 +130,7 @@ class FeatureForm extends React.Component {
             });
         });
         this.setState({pendingRequests: pendingRequests, pickedFeatures: {}, selectedFeature: ""});
-    }
+    };
     render() {
         let resultWindow = null;
         if (this.state.pickedFeatures !== null) {
@@ -193,12 +193,12 @@ class FeatureForm extends React.Component {
     }
     setSelectedFeature = (ev) => {
         this.setState({selectedFeature: ev.target.value});
-    }
+    };
     clearResults = () => {
         if (!this.props.editContext.changed) {
             this.setState(FeatureForm.defaultState);
         }
-    }
+    };
 }
 
 export default (iface = EditingInterface) => {

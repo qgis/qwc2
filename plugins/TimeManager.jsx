@@ -74,7 +74,7 @@ class TimeManager extends React.Component {
         setCurrentTask: PropTypes.func,
         setLayerDimensions: PropTypes.func,
         stepUnits: PropTypes.arrayOf(PropTypes.string)
-    }
+    };
     static defaultProps = {
         cursorFormat: "datetime",
         dateFormat: "YYYY-MM-DD[\n]HH:mm:ss",
@@ -90,7 +90,7 @@ class TimeManager extends React.Component {
         },
         featureTimelineAvailable: true,
         stepUnits: ["s", "m", "h", "d", "M", "y"]
-    }
+    };
     static defaultState = {
         timeEnabled: false,
         startTime: null,
@@ -114,7 +114,7 @@ class TimeManager extends React.Component {
         timeFeatures: null,
         settingsPopup: false,
         visible: false
-    }
+    };
     constructor(props) {
         super(props);
         this.animationTimer = null;
@@ -372,17 +372,17 @@ class TimeManager extends React.Component {
                 </div>
             </div>
         );
-    }
+    };
     dialogGeomChanged = (geom) => {
         this.setState({dialogWidth: geom.docked ? document.body.offsetWidth : geom.width});
-    }
+    };
     toggleTimeEnabled = (enabled) => {
         clearInterval(this.animationTimer);
         clearTimeout(this.updateMapMarkersTimeout);
         this.animationTimer = null;
         this.updateMapMarkersTimeout = null;
         this.setState({timeEnabled: enabled, currentTimestamp: +this.state.startTime, animationActive: false, timeMarkers: null});
-    }
+    };
     animationButtonClicked = (action) => {
         this.stopAnimation();
         if (action === "rewind") {
@@ -420,7 +420,7 @@ class TimeManager extends React.Component {
         } else if (action === "loop") {
             this.setState({animationLoop: !this.state.animationLoop});
         }
-    }
+    };
     advanceAnimation = (stepdir) => {
         const newday = this.step(stepdir);
         const firstday = this.state.startTime;
@@ -444,19 +444,19 @@ class TimeManager extends React.Component {
         } else {
             this.setState({currentTimestamp: +newday});
         }
-    }
+    };
     stopAnimation = () => {
         if (this.state.animationActive) {
             clearInterval(this.animationTimer);
             this.animationTimer = null;
             this.setState({animationActive: false});
         }
-    }
+    };
     onClose = () => {
         this.toggleTimeEnabled(false);
         this.setState({visible: false});
         this.props.removeLayer("timemarkers");
-    }
+    };
     step = (direction) => {
         const day = dayjs(this.state.currentTimestamp);
         const num = parseInt(this.state.stepSizeUnit.slice(0, -1), 10) || 1;
@@ -473,7 +473,7 @@ class TimeManager extends React.Component {
             return newday.second(0).minute(0).hour(0).date(1).month(0);
         }
         return newday;
-    }
+    };
     updateLayerTimeDimensions = (timeData, currentTimestamp) => {
         const currentTime = this.state.timeEnabled ? new Date(currentTimestamp).toISOString() : undefined;
         timeData.layers.forEach(layer => {
@@ -483,7 +483,7 @@ class TimeManager extends React.Component {
             }, {...(layer.dimensionValues || {})});
             this.props.setLayerDimensions(layer.id, dimensions);
         });
-    }
+    };
     setStartTime = (value) => {
         const date = (value ? dayjs.utc(value) : this.state.timeData.values[0]).hour(0).minute(0).second(0);
         if (date < this.state.endTime) {
@@ -492,7 +492,7 @@ class TimeManager extends React.Component {
         if (dayjs(this.state.currentTimestamp) < date) {
             this.setState({currentTimestamp: +date});
         }
-    }
+    };
     setEndTime = (value) => {
         const date = (value ? dayjs.utc(value) : this.state.timeData.values[this.state.timeData.values.length - 1]).hour(23).minute(59).second(59);
         if (date > this.state.startTime) {
@@ -501,7 +501,7 @@ class TimeManager extends React.Component {
                 this.setState({currentTimestamp: +date});
             }
         }
-    }
+    };
     updateTimeFeatures = (timeData) => {
         // Query all features in extent
         const xmin = this.props.map.bbox.bounds[0];
@@ -570,7 +570,7 @@ class TimeManager extends React.Component {
         this.setState({
             timeFeatures: {features: {}, attributes: {}, pendingRequests: pending, reqUUID: reqUUID}
         });
-    }
+    };
     markerStyle = (feature) => {
         const style = [
         ];
@@ -623,7 +623,7 @@ class TimeManager extends React.Component {
             })
         }));
         return style;
-    }
+    };
 }
 
 const layerVisiblitiesSelector = createSelector([

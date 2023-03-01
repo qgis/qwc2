@@ -21,10 +21,10 @@ class MapCopyright extends React.Component {
         map: PropTypes.object,
         prefixCopyrightsWithLayerNames: PropTypes.bool,
         showThemeCopyrightOnly: PropTypes.bool
-    }
+    };
     state = {
         currentCopyrights: {}
-    }
+    };
     static getDerivedStateFromProps(nextProps) {
         if (nextProps.map && nextProps.map.bbox && nextProps.layers) {
             const copyrights = nextProps.layers.reduce((res, layer) => ({...res, ...LayerUtils.getAttribution(layer, nextProps.map, nextProps.showThemeCopyrightOnly)}), {});
@@ -57,7 +57,7 @@ class MapCopyright extends React.Component {
         } else {
             return layers.map(layer => layer.titleMsgId ? LocaleUtils.tr(layer.titleMsgId) : layer.title).join(", ") + ": ";
         }
-    }
+    };
 }
 
 const selector = (state) => ({

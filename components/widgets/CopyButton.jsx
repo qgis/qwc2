@@ -18,13 +18,13 @@ export default class CopyButton extends React.Component {
         buttonClass: PropTypes.string,
         text: PropTypes.string,
         tooltipAlign: PropTypes.string
-    }
+    };
     static defaultProps = {
         tooltipAlign: 'center'
-    }
+    };
     state = {
         copied: false
-    }
+    };
     render() {
         const tooltipStyle = {};
         if (this.props.tooltipAlign === "left") {

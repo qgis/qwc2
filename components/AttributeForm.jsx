@@ -42,18 +42,18 @@ class AttributeForm extends React.Component {
         setEditContext: PropTypes.func,
         theme: PropTypes.object,
         touchFriendly: PropTypes.bool
-    }
+    };
     static defaultProps = {
         deleteMsgId: LocaleUtils.trmsg("editing.delete"),
         touchFriendly: true
-    }
+    };
     state = {
         busy: false,
         deleteClicked: false,
         childEdit: null,
         relationTables: {},
         formValid: true
-    }
+    };
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.editContext.changed !== this.props.editContext.changed) {
             this.props.setCurrentTaskBlocked(this.props.editContext.changed === true, LocaleUtils.tr("editing.unsavedchanged"));
@@ -73,7 +73,7 @@ class AttributeForm extends React.Component {
     }
     editLayerId = (layerId) => {
         return this.props.editConfig || layerId;
-    }
+    };
     render = () => {
         let commitBar = null;
         if (this.props.editContext.changed) {
@@ -144,24 +144,24 @@ class AttributeForm extends React.Component {
             </div>
 
         );
-    }
+    };
     setFormBusy = (busy) => {
         this.setState({busy: busy});
-    }
+    };
     fieldsMap = (fields) => {
         return fields.reduce((res, field) => ({...res, [field.id]: field}), {});
-    }
+    };
     updateField = (key, value) => {
         const newProperties = {...this.props.editContext.feature.properties, [key]: value};
         const newFeature = {...this.props.editContext.feature, properties: newProperties};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
-    }
+    };
     editMapPrefix = () => {
         return (this.props.editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
-    }
+    };
     setRelationTables = (relationTables) => {
         this.setState({relationTables: relationTables});
-    }
+    };
     loadRelationValues = () => {
         if (!isEmpty(this.state.relationTables)) {
             const feature = this.props.editContext.feature;
@@ -190,7 +190,7 @@ class AttributeForm extends React.Component {
                 this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
             }
         }
-    }
+    };
     addRelationRecord = (table) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
         const editConfig = this.props.theme.editConfig[table.split('.').slice(-1)];
@@ -207,7 +207,7 @@ class AttributeForm extends React.Component {
         newRelationValues[table].features = newRelationValues[table].features.concat([newRelFeature]);
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
-    }
+    };
     reorderRelationRecord = (table, idx, dir) => {
         const nFeatures = this.props.editContext.feature.relationValues[table].features.length;
         if ((dir < 0 && idx === 0) || (dir > 0 && idx >= nFeatures - 1)) {
@@ -230,7 +230,7 @@ class AttributeForm extends React.Component {
         newRelationValues[table].features = newFeatures;
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
-    }
+    };
     removeRelationRecord = (table, idx) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
         newRelationValues[table] = {...newRelationValues[table]};
@@ -247,7 +247,7 @@ class AttributeForm extends React.Component {
         }
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
-    }
+    };
     updateRelationField = (table, idx, key, value) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
         newRelationValues[table] = {...newRelationValues[table]};
@@ -262,12 +262,12 @@ class AttributeForm extends React.Component {
         };
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
-    }
+    };
     editRelationRecord = (action, layer, dataset, idx, displayField) => {
         const editConfig = (this.props.theme.editConfig || {})[layer];
         const feature = this.props.editContext.feature.relationValues[dataset].features[idx];
         this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, dataset, idx, feature, finishCallback: this.finishEditRelationRecord, displayField: displayField}});
-    }
+    };
     finishEditRelationRecord = (feature) => {
         this.props.clearEditContext(this.state.childEdit.editContextId, this.props.editContext.id);
         if (feature) {
@@ -292,7 +292,7 @@ class AttributeForm extends React.Component {
             this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: changed});
         }
         this.setState({childEdit: null});
-    }
+    };
     onDiscard = (action) => {
         if (action === "Discard") {
             this.props.setCurrentTaskBlocked(false);
@@ -314,12 +314,12 @@ class AttributeForm extends React.Component {
                 }
             }
         }
-    }
+    };
     checkValidity = (form) => {
         if (form) {
             this.setState({formValid: form.checkValidity()});
         }
-    }
+    };
     onSubmit = (ev) => {
         ev.preventDefault();
         this.setState({busy: true});
@@ -428,7 +428,7 @@ class AttributeForm extends React.Component {
                 this.props.iface.editFeature(this.props.editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
             }
         }
-    }
+    };
     featureCommited = (success, result, relationValues, relationUploads) => {
         if (!success) {
             this.commitFinished(false, result);
@@ -485,11 +485,11 @@ class AttributeForm extends React.Component {
         } else {
             this.commitFinished(true, newFeature);
         }
-    }
+    };
     deleteClicked = () => {
         this.setState({deleteClicked: true});
         this.props.setCurrentTaskBlocked(true, LocaleUtils.tr("editing.unsavedchanged"));
-    }
+    };
     deleteFeature = (action) => {
         if (action === 'Yes') {
             this.setState({busy: true});
@@ -498,7 +498,7 @@ class AttributeForm extends React.Component {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
         }
-    }
+    };
     commitFinished = (success, result) => {
         this.setState({busy: false});
         if (success) {
@@ -512,7 +512,7 @@ class AttributeForm extends React.Component {
             // eslint-disable-next-line
             alert(result);
         }
-    }
+    };
     deleteFinished = (success, result) => {
         this.setState({busy: false});
         if (success) {
@@ -526,7 +526,7 @@ class AttributeForm extends React.Component {
             // eslint-disable-next-line
             alert(result);
         }
-    }
+    };
     dataUriToBlob = (dataUri) => {
         const parts = dataUri.split(',');
         const byteString = parts[0].indexOf('base64') >= 0 ? atob(parts[1]) : decodeURI(parts[1]);
@@ -537,7 +537,7 @@ class AttributeForm extends React.Component {
             ia[i] = byteString.charCodeAt(i);
         }
         return new Blob([ia], {type: mimeString});
-    }
+    };
     startChildEdit = (action, layer, featureId, updateField, displayField) => {
         const editConfig = (this.props.theme.editConfig || {})[layer];
         if (!editConfig) {
@@ -546,14 +546,14 @@ class AttributeForm extends React.Component {
         } else {
             this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, displayField, featureId, updateField, finishCallback: this.finishChildEdit}});
         }
-    }
+    };
     finishChildEdit = (feature) => {
         this.props.clearEditContext(this.state.childEdit.editContextId, this.props.editContext.id);
         if (feature && feature.id !== this.state.childEdit.featureId) {
             this.state.childEdit.updateField(feature.id);
         }
         this.setState({childEdit: null});
-    }
+    };
 }
 
 export default connect(state => ({

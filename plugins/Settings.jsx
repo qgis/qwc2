@@ -23,12 +23,12 @@ class Settings extends React.Component {
         languages: PropTypes.array,
         setColorScheme: PropTypes.func,
         side: PropTypes.string
-    }
+    };
     static defaultProps = {
         colorSchemes: [],
         languages: [],
         side: 'right'
-    }
+    };
     render() {
         return (
             <SideBar icon="cog" id="Settings" side={this.props.side} title="appmenu.items.Settings" width="20em">
@@ -49,7 +49,7 @@ class Settings extends React.Component {
                 </table>
             </div>
         );
-    }
+    };
     renderLanguageSelector = () => {
         if (isEmpty(this.props.languages)) {
             return null;
@@ -68,7 +68,7 @@ class Settings extends React.Component {
                 </td>
             </tr>
         );
-    }
+    };
     renderColorSchemeSelector = () => {
         if (isEmpty(this.props.colorSchemes)) {
             return null;
@@ -85,7 +85,7 @@ class Settings extends React.Component {
                 </td>
             </tr>
         );
-    }
+    };
     changeLocale = (ev) => {
         // eslint-disable-next-line
         if (confirm(LocaleUtils.tr("settings.confirmlang"))) {
@@ -102,10 +102,10 @@ class Settings extends React.Component {
             delete urlParts.search;
             location = url.format(urlParts);
         }
-    }
+    };
     changeColorScheme = (ev) => {
         this.props.setColorScheme(ev.target.value, true);
-    }
+    };
 }
 
 export default connect((state) => ({

@@ -22,8 +22,8 @@ class SelectionSupport extends React.Component {
         map: PropTypes.object,
         projection: PropTypes.string,
         selection: PropTypes.object
-    }
-    componentDidUpdate(prevProps, prevState) {
+    };
+    componentDidUpdate(prevProps) {
         if (this.props.selection.geomType && this.props.selection.geomType !== prevProps.selection.geomType ) {
             this.addDrawInteraction(this.props);
         }
@@ -105,7 +105,7 @@ class SelectionSupport extends React.Component {
         if (newProps.selection.cursor) {
             this.props.map.getViewport().style.cursor = newProps.selection.cursor;
         }
-    }
+    };
     removeDrawInteraction = () => {
         if (this.drawInteraction !== null) {
             this.props.map.removeInteraction(this.drawInteraction);
@@ -113,7 +113,7 @@ class SelectionSupport extends React.Component {
             this.props.map.removeLayer(this.selectionLayer);
         }
         this.props.map.getViewport().style.cursor = '';
-    }
+    };
     updateSelectionState = (geometry) => {
         if (!geometry) {
             return;
@@ -138,7 +138,7 @@ class SelectionSupport extends React.Component {
                 ] : null
         };
         this.props.changeSelectionState(newSelectionState);
-    }
+    };
 }
 
 

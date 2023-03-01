@@ -53,7 +53,7 @@ class Identify extends React.Component {
         removeMarker: PropTypes.func,
         replaceImageUrls: PropTypes.bool,
         selection: PropTypes.object
-    }
+    };
     static defaultProps = {
         enableExport: true,
         clearResultsOnClose: true,
@@ -66,15 +66,15 @@ class Identify extends React.Component {
         initialX: 0,
         initialY: 0,
         featureInfoReturnsLayerName: true
-    }
+    };
     state = {
         mode: 'Point',
         identifyResults: null,
         pendingRequests: 0,
         radius: 50,
         radiusUnits: 'meters'
-    }
-    componentDidUpdate(prevProps, prevState) {
+    };
+    componentDidUpdate(prevProps) {
         if (this.props.currentIdentifyTool !== prevProps.currentIdentifyTool && prevProps.currentIdentifyTool === "Identify") {
             this.clearResults();
         }
@@ -128,7 +128,7 @@ class Identify extends React.Component {
             this.props.addMarker('identify', clickPoint, '', this.props.map.projection);
             this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests});
         }
-    }
+    };
     queryPoint = (prevProps) => {
         if (this.props.click.button !== 0 || this.props.click === prevProps.click || (this.props.click.features || []).find(entry => entry.feature === 'startupposmarker')) {
             return null;
@@ -137,7 +137,7 @@ class Identify extends React.Component {
             return this.props.click.geometry;
         }
         return this.props.click.coordinate;
-    }
+    };
     identifyRegion = (prevProps) => {
         if (!this.props.selection.polygon || this.props.selection === prevProps.selection) {
             return;
@@ -179,7 +179,7 @@ class Identify extends React.Component {
             });
             this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests});
         });
-    }
+    };
     identifyRadius = (prevProps) => {
         if (!this.props.selection.point || this.props.selection.point === prevProps.selection.point) {
             return;
@@ -260,20 +260,20 @@ class Identify extends React.Component {
         if (mode === "Radius") {
             this.props.changeSelectionState({geomType: 'Point'});
         }
-    }
+    };
     onToolClose = () => {
         this.props.changeSelectionState({geomType: undefined});
         this.setState({mode: 'Point'});
         if (this.props.clearResultsOnClose) {
             this.clearResults();
         }
-    }
+    };
     clearResults = () => {
         this.props.removeMarker('identify');
         this.props.removeLayer("identifyslection");
         this.props.removeLayer("identifyradiusbuffer");
         this.setState({identifyResults: null, pendingRequests: 0});
-    }
+    };
     renderRadiusContent = () => {
         return (
             <div className="identify-radius-controls">
@@ -319,7 +319,7 @@ class Identify extends React.Component {
             );
         }
         return null;
-    }
+    };
     render() {
         let resultWindow = null;
         if (this.state.pendingRequests > 0 || this.state.identifyResults !== null) {

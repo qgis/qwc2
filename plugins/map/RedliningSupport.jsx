@@ -49,10 +49,10 @@ class RedliningSupport extends React.Component {
         redlining: PropTypes.object,
         removeLayerFeatures: PropTypes.func,
         snappingConfig: PropTypes.object
-    }
+    };
     static defaultProps = {
         redlining: {}
-    }
+    };
     constructor(props) {
         super(props);
 
@@ -135,7 +135,7 @@ class RedliningSupport extends React.Component {
             circleRadius: 5 + style.size,
             strokeDash: []
         };
-    }
+    };
     styleProps = (feature) => {
         const styleOptions = feature.get('styleOptions');
         const label = feature.get("label") || "";
@@ -145,7 +145,7 @@ class RedliningSupport extends React.Component {
             fillColor: styleOptions.fillColor,
             text: label
         };
-    }
+    };
     updateFeatureStyle = (styleProps) => {
         if (this.currentFeature) {
             const isText = this.currentFeature.get("shape") === "Text";
@@ -156,7 +156,7 @@ class RedliningSupport extends React.Component {
             this.currentFeature.set('styleOptions', opts);
             this.blockOnChange = false;
         }
-    }
+    };
     styleFunction = (feature) => {
         const styleOptions = feature.get("styleOptions");
         const styleName = feature.get("styleName");
@@ -171,7 +171,7 @@ class RedliningSupport extends React.Component {
             styles.push(this.selectedStyle);
         }
         return styles;
-    }
+    };
     setCurrentFeature = (feature) => {
         this.currentFeature = feature;
         this.currentFeature.setStyle(this.styleFunction);
@@ -194,7 +194,7 @@ class RedliningSupport extends React.Component {
         this.props.changeRedliningState(newRedliningState);
 
         this.currentFeature.on('change', this.updateMeasurements);
-    }
+    };
     addDrawInteraction = (layerChanged) => {
         this.reset(layerChanged);
         const geomTypeConfig = GeomTypeConfig[this.props.redlining.geomType];
@@ -239,7 +239,7 @@ class RedliningSupport extends React.Component {
                 this.props.map.addInteraction(this.snapInteraction);
             }
         }
-    }
+    };
     updateMeasurements = (evt) => {
         if (this.blockOnChange) {
             return;
@@ -270,7 +270,7 @@ class RedliningSupport extends React.Component {
             };
             this.props.changeRedliningState({selectedFeature: this.currentFeatureObject(), style: newStyleProps});
         }
-    }
+    };
     waitForFeatureAndLayer = (layerId, featureId, callback) => {
         const redliningLayer = this.searchRedliningLayer(layerId);
         if (!redliningLayer) {
@@ -297,7 +297,7 @@ class RedliningSupport extends React.Component {
                 });
             }
         }
-    }
+    };
     enterTemporaryPickMode = (featureId, layerId) => {
         this.waitForFeatureAndLayer(layerId, featureId, (redliningLayer, feature) => {
             if (!feature) {
@@ -335,7 +335,7 @@ class RedliningSupport extends React.Component {
             this.picking = true;
             this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
         });
-    }
+    };
     enterTemporaryTransformMode = (featureId, layerId) => {
         this.waitForFeatureAndLayer(layerId, featureId, (redliningLayer, feature) => {
             if (!feature) {
@@ -353,7 +353,7 @@ class RedliningSupport extends React.Component {
             this.picking = true;
             this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
         });
-    }
+    };
     leaveTemporaryEditMode = () => {
         if (this.currentFeature) {
             this.commitCurrentFeature();
@@ -364,7 +364,7 @@ class RedliningSupport extends React.Component {
             // If snapping interaction was added, it will remain as last interaction
             this.picking = false;
         }
-    }
+    };
     addPickInteraction = (layerChanged) => {
         this.reset(layerChanged);
         const redliningLayer = this.searchRedliningLayer(this.props.redlining.layer);
@@ -446,7 +446,7 @@ class RedliningSupport extends React.Component {
         this.props.map.addInteraction(selectInteraction);
         this.interactions = [selectInteraction, modifyInteraction];
         this.picking = true;
-    }
+    };
     addTransformInteraction = (layerChanged) => {
         this.reset(layerChanged);
         const redliningLayer = this.searchRedliningLayer(this.props.redlining.layer);
@@ -471,7 +471,7 @@ class RedliningSupport extends React.Component {
         });
         this.props.map.addInteraction(transformInteraction);
         this.interactions = [transformInteraction];
-    }
+    };
     commitCurrentFeature = (newFeature = false) => {
         if (!this.currentFeature) {
             return;
@@ -524,14 +524,14 @@ class RedliningSupport extends React.Component {
         };
         this.props.addLayerFeatures(layer, [feature]);
         this.resetSelectedFeature();
-    }
+    };
     deleteCurrentFeature = (oldProps) => {
         if (this.currentFeature) {
             this.props.removeLayerFeatures(this.props.redlining.layer, [this.currentFeature.getId()], true);
             this.currentFeature = null;
             this.props.changeRedliningState({...oldProps.redlining, selectedFeature: null});
         }
-    }
+    };
     reset = (layerChanged = false) => {
         while (this.interactions.length > 0) {
             this.props.map.removeInteraction(this.interactions.shift());
@@ -546,7 +546,7 @@ class RedliningSupport extends React.Component {
             this.resetSelectedFeature();
         }
         this.picking = false;
-    }
+    };
     resetSelectedFeature = () => {
         if (this.currentFeature) {
             // Reset selection style
@@ -557,7 +557,7 @@ class RedliningSupport extends React.Component {
             this.currentFeature = null;
             this.props.changeRedliningState({selectedFeature: null});
         }
-    }
+    };
     searchRedliningLayer = (layerId) => {
         let redliningLayer = null;
         this.props.map.getLayers().forEach(olLayer => {
@@ -566,14 +566,14 @@ class RedliningSupport extends React.Component {
             }
         });
         return redliningLayer;
-    }
+    };
     currentFeatureObject = () => {
         if (!this.currentFeature) {
             return null;
         }
         const format = new ol.format.GeoJSON();
         return format.writeFeatureObject(this.currentFeature);
-    }
+    };
 }
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({

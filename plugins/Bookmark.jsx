@@ -25,16 +25,16 @@ class Bookmark extends React.Component {
         side: PropTypes.string,
         state: PropTypes.object,
         task: PropTypes.string
-    }
+    };
     static defaultProps = {
         side: 'right'
-    }
+    };
     state = {
         bookmarks: [],
         currentBookmark: null,
         description: "",
         saving: false
-    }
+    };
     componentDidMount() {
         this.refresh();
     }
@@ -109,14 +109,14 @@ class Bookmark extends React.Component {
         } else {
             location.href = url;
         }
-    }
+    };
     toggleCurrentBookmark = (bookmark) => {
         if (this.state.currentBookmark === bookmark.key) {
             this.setState({currentBookmark: null, description: ""});
         } else {
             this.setState({currentBookmark: bookmark.key, description: bookmark.description});
         }
-    }
+    };
     addBookmark = () => {
         createBookmark(this.props.state, this.state.description, (success) => {
             if (!success) {
@@ -126,7 +126,7 @@ class Bookmark extends React.Component {
             this.refresh();
         });
         this.setState({description: "", currentBookmark: null});
-    }
+    };
     updateBookmark = (bookmark) => {
         this.setState({saving: true});
         updateBookmark(this.props.state, bookmark.key, this.state.description, (success) => {
@@ -137,7 +137,7 @@ class Bookmark extends React.Component {
             this.setState({saving: false});
             this.refresh();
         });
-    }
+    };
     removeBookmark = (bookmark) => {
         removeBookmark(bookmark.key, (success) => {
             if (!success) {
@@ -146,12 +146,12 @@ class Bookmark extends React.Component {
             }
             this.refresh();
         });
-    }
+    };
     refresh = () => {
         getUserBookmarks(ConfigUtils.getConfigProp("username"), (bookmarks) => {
             this.setState({bookmarks: bookmarks});
         });
-    }
+    };
 }
 
 const selector = state => ({

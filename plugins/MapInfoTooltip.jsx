@@ -27,15 +27,15 @@ class MapInfoTooltip extends React.Component {
         enabled: PropTypes.bool,
         includeWGS84: PropTypes.bool,
         map: PropTypes.object
-    }
+    };
     static defaultProps = {
         elevationPrecision: 0,
         includeWGS84: true
-    }
+    };
     state = {
         coordinate: null, elevation: null, extraInfo: null
-    }
-    componentDidUpdate(prevProps, prevState) {
+    };
+    componentDidUpdate(prevProps) {
         if (!this.props.enabled && this.state.coordinate) {
             this.clear();
             return;
@@ -68,7 +68,7 @@ class MapInfoTooltip extends React.Component {
     }
     clear = () => {
         this.setState({coordinate: null, height: null, extraInfo: null});
-    }
+    };
     render() {
         if (!this.state.coordinate) {
             return null;

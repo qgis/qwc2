@@ -24,7 +24,7 @@ class OverviewMap extends React.Component {
         options: PropTypes.object,
         projection: PropTypes.string,
         theme: PropTypes.object
-    }
+    };
     constructor(props) {
         super(props);
         const opt = {

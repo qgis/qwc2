@@ -19,10 +19,10 @@ class HomeButton extends React.Component {
         currentTheme: PropTypes.object,
         position: PropTypes.number,
         zoomToExtent: PropTypes.func
-    }
+    };
     static defaultProps = {
         position: 5
-    }
+    };
     render() {
         const tooltip = LocaleUtils.tr("tooltip.home");
         return (
@@ -36,7 +36,7 @@ class HomeButton extends React.Component {
             const bbox = this.props.currentTheme.initialBbox;
             this.props.zoomToExtent(bbox.bounds, bbox.crs);
         }
-    }
+    };
 }
 
 export default connect((state) => ({

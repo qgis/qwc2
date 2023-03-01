@@ -24,7 +24,7 @@ export default class AutoEditForm extends React.Component {
         touchFriendly: PropTypes.bool,
         updateField: PropTypes.func,
         values: PropTypes.object
-    }
+    };
     render() {
         return (
             <table className="AutoEditForm">
@@ -120,5 +120,5 @@ export default class AutoEditForm extends React.Component {
                 {input ? (<td>{input}</td>) : null}
             </tr>
         );
-    }
+    };
 }

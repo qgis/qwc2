@@ -24,10 +24,10 @@ class LocateSupport extends React.Component {
         options: PropTypes.object,
         projection: PropTypes.string,
         startupParams: PropTypes.object
-    }
+    };
     static defaultProps = {
         options: {}
-    }
+    };
     static defaultOpt = {
         startupMode: "DISABLED", // either "DISABLED", "ENABLED" or "FOLLOWING"
         follow: false, // follow with zoom and pan the user's location
@@ -41,7 +41,7 @@ class LocateSupport extends React.Component {
             timeout: 10000,
             maxZoom: 18
         }
-    }
+    };
     componentDidMount() {
         const options = {...LocateSupport.defaultOpt, ...this.props.options};
         this.locate = new OlLocate(this.props.map, options);
@@ -55,7 +55,7 @@ class LocateSupport extends React.Component {
             this.props.changeLocateState(startupMode);
         }
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (this.props.locateState.state !== prevProps.locateState.state) {
             this.configureLocate(this.props.locateState.state);
         }
@@ -75,18 +75,18 @@ class LocateSupport extends React.Component {
         } else if (newState === "DISABLED") {
             this.locate.stop();
         }
-    }
+    };
     onPropChange = (key, value) => {
         if (key === "state" && this.props.locateState.state !== value) {
             this.props.changeLocateState(value);
         } else if (key === "position" && this.props.locateState.position !== value) {
             this.props.changeLocatePosition(value);
         }
-    }
+    };
     onLocationError = (err) => {
         this.props.onLocateError(err.message);
         this.props.changeLocateState("DISABLED");
-    }
+    };
     render() {
         return null;
     }

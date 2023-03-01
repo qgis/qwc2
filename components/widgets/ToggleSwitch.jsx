@@ -19,7 +19,7 @@ export default class ToggleSwitch extends React.Component {
         onChange: PropTypes.func.isRequired,
         readOnly: PropTypes.bool,
         required: PropTypes.bool
-    }
+    };
     render() {
         const classNames = classnames({
             "ToggleSwitch": true,
@@ -44,5 +44,5 @@ export default class ToggleSwitch extends React.Component {
         if (!this.props.readOnly) {
             this.props.onChange(!this.props.active);
         }
-    }
+    };
 }

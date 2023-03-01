@@ -17,7 +17,7 @@ class EditingSupport extends React.Component {
         editContext: PropTypes.object,
         map: PropTypes.object,
         setEditContext: PropTypes.func
-    }
+    };
     constructor(props) {
         super(props);
 
@@ -57,7 +57,7 @@ class EditingSupport extends React.Component {
             })
         ];
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (this.props.editContext === prevProps.editContext) {
             // pass
         } else if (this.props.editContext.action === 'Pick' && this.props.editContext.feature) {
@@ -89,7 +89,7 @@ class EditingSupport extends React.Component {
             style: this.editStyle
         });
         this.props.map.addLayer(this.layer);
-    }
+    };
     addDrawInteraction = () => {
         this.reset();
         this.createLayer();
@@ -109,7 +109,7 @@ class EditingSupport extends React.Component {
         }, this);
         this.props.map.addInteraction(drawInteraction);
         this.interaction = drawInteraction;
-    }
+    };
     addEditInteraction = () => {
         this.reset();
         this.createLayer();
@@ -134,7 +134,7 @@ class EditingSupport extends React.Component {
         modifyInteraction.setActive(!this.props.editContext.geomReadOnly && this.props.editContext.geomType);
         this.props.map.addInteraction(modifyInteraction);
         this.interaction = modifyInteraction;
-    }
+    };
     commitCurrentFeature = () => {
         if (!this.currentFeature) {
             return;
@@ -149,7 +149,7 @@ class EditingSupport extends React.Component {
             feature.geometry.coordinates = feature.geometry.coordinates.map(addZCoordinateIfNeeded);
         }
         this.props.setEditContext(this.props.editContext.id, {feature: feature, changed: true});
-    }
+    };
     reset = () => {
         if (this.interaction) {
             this.props.map.removeInteraction(this.interaction);
@@ -160,7 +160,7 @@ class EditingSupport extends React.Component {
             this.props.map.removeLayer(this.layer);
         }
         this.layer = null;
-    }
+    };
 }
 
 export default connect((state) => ({

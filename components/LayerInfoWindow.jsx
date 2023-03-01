@@ -26,7 +26,7 @@ class LayerInfoWindow extends React.Component {
         setActiveLayerInfo: PropTypes.func,
         sublayer: PropTypes.object,
         windowSize: PropTypes.object
-    }
+    };
     renderLink(text, url) {
         if (url) {
             return (<a href={url} rel="noreferrer" target="_blank">{text}</a>);
@@ -47,10 +47,10 @@ class LayerInfoWindow extends React.Component {
             );
         }
         return null;
-    }
+    };
     renderMetadata = (metadata) => {
         return metadata.map(entry => this.renderRow(entry.label, entry.content, true));
-    }
+    };
     render() {
         if (!this.props.layer || !this.props.sublayer) {
             return null;
@@ -95,10 +95,10 @@ class LayerInfoWindow extends React.Component {
         } else {
             return Math.round(1 / scale) + ":1";
         }
-    }
+    };
     onClose = () => {
         this.props.setActiveLayerInfo(null, null);
-    }
+    };
 }
 
 const selector = state => ({

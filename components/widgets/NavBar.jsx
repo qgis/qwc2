@@ -22,10 +22,10 @@ export default class NavBar extends React.Component {
         pageSize: PropTypes.number,
         pageSizeChanged: PropTypes.func,
         pageSizes: PropTypes.array
-    }
+    };
     static defaultProps = {
         pageSizes: [10, 25, 50, 100]
-    }
+    };
     render() {
         const pages = [this.props.currentPage];
         const extraright = Math.max(0, 3 - this.props.currentPage);
@@ -75,5 +75,5 @@ export default class NavBar extends React.Component {
                 {page + 1}
             </button>
         );
-    }
+    };
 }

@@ -18,12 +18,12 @@ class NumberInput extends React.Component {
         onChange: PropTypes.func,
         placeholder: PropTypes.string,
         value: PropTypes.number
-    }
+    };
     state = {
         value: "",
         curValue: "",
         changed: false
-    }
+    };
     static getDerivedStateFromProps(nextProps, state) {
         if (state.value !== nextProps.value) {
             return {value: nextProps.value, curValue: (typeof nextProps.value === "number") ? nextProps.value.toFixed(nextProps.decimals) : "", changed: false};
@@ -54,25 +54,24 @@ class NumberInput extends React.Component {
         } else {
             this.setState({curValue: "", changed: true});
         }
-    }
+    };
     onFocus = () => {
         this.focused = true;
-    }
+    };
     onBlur = () => {
         this.commit();
         this.focused = false;
-    }
+    };
     onKeyDown = (ev) => {
         if (ev.keyCode === 13) {
             this.commit();
         }
-    }
+    };
     commit = () => {
         if (this.state.changed) {
             this.props.onChange(this.state.curValue === "" ? null : this.state.curValue);
         }
-    }
-
+    };
 }
 
 export default NumberInput;

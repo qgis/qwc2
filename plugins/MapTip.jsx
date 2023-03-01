@@ -20,6 +20,7 @@ import './style/MapTip.css';
 class MapTip extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
+        iframeDialogsInitiallyDocked: PropTypes.bool,
         layerFeatureCount: PropTypes.number,
         layers: PropTypes.array,
         map: PropTypes.object,
@@ -30,17 +31,17 @@ class MapTip extends React.Component {
         removeLayer: PropTypes.func,
         showIframeDialog: PropTypes.func,
         theme: PropTypes.object
-    }
+    };
     static defaultProps = {
         layerFeatureCount: 5,
         maxHeight: "15em",
         maxWidth: "20em"
-    }
+    };
     state = {
         maptips: [],
         pos: null
-    }
-    componentDidUpdate(prevProps, prevState) {
+    };
+    componentDidUpdate(prevProps) {
         if (this.props.map !== prevProps.map || this.props.theme !== prevProps.theme) {
             clearTimeout(this.timeoutId);
         }
@@ -67,7 +68,7 @@ class MapTip extends React.Component {
             this.props.removeLayer('maptipselection');
         }
         this.setState({maptips: [], pos: null});
-    }
+    };
     queryMapTip = () => {
         this.timeoutId = null;
         const options = {
@@ -114,7 +115,7 @@ class MapTip extends React.Component {
             }
             this.setState({maptips: mapTips});
         });
-    }
+    };
     render() {
         if (!isEmpty(this.state.maptips) && this.state.pos) {
             // Render off-screen first to measure dimensions, then place as necessary
@@ -157,11 +158,12 @@ class MapTip extends React.Component {
             return undefined;
         }};
         return htmlReactParser(text, options);
-    }
+    };
     evalOnClick = (ev, onclick) => {
+        // eslint-disable-next-line
         eval(onclick);
         ev.preventDefault();
-    }
+    };
     attributeLinkClicked = (ev) => {
         if (ev.currentTarget.target.startsWith(":")) {
             const target = ev.target.target.split(":");
@@ -181,7 +183,7 @@ class MapTip extends React.Component {
                 ev.preventDefault();
             }
         }
-    }
+    };
     positionMapTip = (el) => {
         if (el) {
             let x = this.state.pos[0];
@@ -196,7 +198,7 @@ class MapTip extends React.Component {
             el.style.left = x + "px";
             el.style.top = y + "px";
         }
-    }
+    };
 }
 
 

@@ -9,7 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import Mousetrap from 'mousetrap';
+import mousetrap from 'mousetrap';
 import {remove as removeDiacritics} from 'diacritics';
 import isEmpty from 'lodash.isempty';
 import classnames from 'classnames';
@@ -37,17 +37,17 @@ class AppMenu extends React.Component {
         setCurrentTask: PropTypes.func,
         showFilterField: PropTypes.bool,
         showOnStartup: PropTypes.bool
-    }
+    };
     static defaultProps = {
         onMenuToggled: () => {}
-    }
+    };
     state = {
         menuVisible: false,
         filter: "",
         submenusVisible: [],
         curEntry: null,
         keyNav: false
-    }
+    };
     constructor(props) {
         super(props);
         this.menuEl = null;
@@ -60,7 +60,7 @@ class AppMenu extends React.Component {
         }
         this.addKeyBindings(this.props.menuItems);
         if (this.props.appMenuShortcut) {
-            Mousetrap.bind(this.props.appMenuShortcut, this.toggleMenu);
+            mousetrap.bind(this.props.appMenuShortcut, this.toggleMenu);
         }
     }
     componentDidUpdate(prevProps, prevState) {
@@ -70,9 +70,9 @@ class AppMenu extends React.Component {
         }
     }
     componentWillUnmount() {
-        this.boundShortcuts.forEach(shortcut => Mousetrap.unbind(shortcut));
+        this.boundShortcuts.forEach(shortcut => mousetrap.unbind(shortcut));
         if (this.props.appMenuShortcut) {
-            Mousetrap.unbind(this.props.appMenuShortcut, this.toggleMenu);
+            mousetrap.unbind(this.props.appMenuShortcut, this.toggleMenu);
         }
     }
     addKeyBindings = (items) => {
@@ -80,14 +80,14 @@ class AppMenu extends React.Component {
             if (item.subitems) {
                 this.addKeyBindings(item.subitems);
             } else if (item.shortcut) {
-                Mousetrap.bind(item.shortcut, () => {
+                mousetrap.bind(item.shortcut, () => {
                     this.onMenuitemClicked(item);
                     this.boundShortcuts.push(item.shortcut);
                     return false;
                 });
             }
         });
-    }
+    };
     onKeyPress = (ev) => {
         if (ev.keyCode === 13 || ev.keyCode === 37 || ev.keyCode === 38 || ev.keyCode === 39 || ev.keyCode === 40) {
             if (!this.state.curEntry) {
@@ -152,12 +152,12 @@ class AppMenu extends React.Component {
             this.toggleMenu();
             MiscUtils.killEvent(ev);
         }
-    }
+    };
     onMouseMove = () => {
         if (this.state.keyNav) {
             this.setState({keyNav: false});
         }
-    }
+    };
     toggleMenu = () => {
         if (!this.state.menuVisible && this.props.currentTaskBlocked) {
             return;
@@ -176,16 +176,16 @@ class AppMenu extends React.Component {
         }
         this.props.onMenuToggled(!this.state.menuVisible);
         this.setState({ menuVisible: !this.state.menuVisible, submenusVisible: [], filter: "" });
-    }
+    };
     checkCloseMenu = (ev) => {
         if (this.menuEl && !this.menuEl.contains(ev.target) && !this.props.keepMenuOpen) {
             this.toggleMenu();
         }
-    }
+    };
     onSubmenuClicked = (key, level) => {
         const a = this.state.submenusVisible[level] === key ? [] : [key];
         this.setState({ submenusVisible: this.state.submenusVisible.slice(0, level).concat(a) });
-    }
+    };
     onMenuitemClicked = (item) => {
         if (!this.props.keepMenuOpen && this.state.menuVisible) {
             this.toggleMenu();
@@ -195,7 +195,7 @@ class AppMenu extends React.Component {
         } else {
             this.props.setCurrentTask(item.task || item.key, item.mode, item.mapClickAction || (item.identifyEnabled ? "identify" : null));
         }
-    }
+    };
     renderMenuItems = (items, level, filter, path) => {
         if (items) {
             return items.map((item, idx) => {
@@ -260,7 +260,7 @@ class AppMenu extends React.Component {
         } else {
             return null;
         }
-    }
+    };
     render() {
         let className = "";
         if (this.props.currentTaskBlocked) {
@@ -299,9 +299,9 @@ class AppMenu extends React.Component {
     setFilterField = (el) => {
         this.filterfield = el;
         if (this.props.appMenuShortcut) {
-            Mousetrap(el).bind(this.props.appMenuShortcut, this.toggleMenu);
+            mousetrap(el).bind(this.props.appMenuShortcut, this.toggleMenu);
         }
-    }
+    };
 }
 
 export default connect((state) => ({

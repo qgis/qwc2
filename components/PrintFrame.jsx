@@ -20,17 +20,17 @@ export default class PrintFrame extends React.Component {
             height: PropTypes.number // in meters
         }),
         map: PropTypes.object.isRequired
-    }
+    };
     static defaultProps = {
         bboxSelected: () => {}
-    }
+    };
     state = {
         x: 0, y: 0, width: 0, height: 0, moving: false
-    }
+    };
     componentDidMount() {
         this.recomputeBox(this.props, {});
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (this.props.map !== prevProps.map || !isEqual(this.props.fixedFrame, prevProps.fixedFrame)) {
             this.recomputeBox(this.props, prevProps);
         }
@@ -61,7 +61,7 @@ export default class PrintFrame extends React.Component {
             };
             this.setState(newState);
         }
-    }
+    };
     startSelection = (ev) => {
         const x = Math.round(ev.clientX);
         const y = Math.round(ev.clientY);
@@ -72,7 +72,7 @@ export default class PrintFrame extends React.Component {
             height: 0,
             moving: true
         });
-    }
+    };
     updateSelection = (ev) => {
         if (this.state.moving) {
             const x = Math.round(ev.clientX);
@@ -84,7 +84,7 @@ export default class PrintFrame extends React.Component {
                 height: height
             });
         }
-    }
+    };
     endSelection = () => {
         this.setState({moving: false});
         const getCoordinateFromPixel = MapUtils.getHook(MapUtils.GET_COORDINATES_FROM_PIXEL_HOOK);
@@ -99,7 +99,7 @@ export default class PrintFrame extends React.Component {
         if (bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
             this.props.bboxSelected(bbox, this.props.map.projection, [this.state.width, this.state.height]);
         }
-    }
+    };
     render() {
         const boxStyle = {
             left: this.state.x + 'px',

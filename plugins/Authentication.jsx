@@ -19,7 +19,7 @@ class Authentication extends React.Component {
         logoutTargetUrl: PropTypes.string,
         requireLogin: PropTypes.bool,
         task: PropTypes.string
-    }
+    };
     constructor(props) {
         super(props);
         this.idleTimer = null;
@@ -36,7 +36,7 @@ class Authentication extends React.Component {
             window.addEventListener('wheel', this.resetIdleTimer, {passive: true});
         }
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (this.props.task !== prevProps.task) {
             if (this.props.task === "Login") {
                 this.showLogin();
@@ -53,19 +53,19 @@ class Authentication extends React.Component {
         }
         urlObj.search = undefined;
         window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "login?url=" + encodeURIComponent(url.format(urlObj));
-    }
+    };
     resetIdleTimer = () => {
         if (this.idleTimer) {
             clearTimeout(this.idleTimer);
             this.idleTimer = setTimeout(this.idleAutologout, this.props.idleTimeout * 1000);
         }
-    }
+    };
     idleAutologout = () => {
         const urlObj = url.parse(window.location.href, true);
         urlObj.search = undefined;
         const loginUrl = ConfigUtils.getConfigProp("authServiceUrl") + "login?url=" + encodeURIComponent(url.format(urlObj));
         window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "logout?url=" + encodeURIComponent(loginUrl);
-    }
+    };
     render() {
         return null;
     }

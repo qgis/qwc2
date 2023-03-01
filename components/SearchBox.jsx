@@ -62,7 +62,7 @@ class SearchBox extends React.Component {
         themes: PropTypes.object,
         zoomToExtent: PropTypes.func,
         zoomToPoint: PropTypes.func
-    }
+    };
     state = {
         searchText: "",
         searchSession: null,
@@ -73,7 +73,7 @@ class SearchBox extends React.Component {
         collapsedSections: {},
         expandedLayerGroup: null,
         activeLayerInfo: null
-    }
+    };
     constructor(props) {
         super(props);
         this.searchBox = null;
@@ -82,7 +82,7 @@ class SearchBox extends React.Component {
         this.state.searchText = UrlParams.getParam('st') || "";
         UrlParams.updateParams({st: undefined});
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         // Restore highlight from URL as soon as theme is loaded
         if (this.props.theme && !prevProps.theme) {
             const hp = UrlParams.getParam('hp');
@@ -140,7 +140,7 @@ class SearchBox extends React.Component {
                 ) : null}
             </div>
         );
-    }
+    };
     renderFilters = (searchResults) => {
         if (isEmpty(searchResults.result_counts) || searchResults.result_counts.length < 2) {
             return null;
@@ -168,7 +168,7 @@ class SearchBox extends React.Component {
                 ) : null}
             </div>
         );
-    }
+    };
     renderProviderResults = () => {
         const results = Object.keys(this.props.searchProviders).reduce((result, provider) => {
             if (!this.state.searchResults[provider]) {
@@ -201,7 +201,7 @@ class SearchBox extends React.Component {
         }, []);
         results.sort((a, b) => (b.priority - a.priority));
         return isEmpty(results) ? null : results.map(entry => entry.tree);
-    }
+    };
     renderPlaces = (searchResults) => {
         const features = (searchResults.results || []).filter(result => result.feature);
         if (isEmpty(features)) {
@@ -232,7 +232,7 @@ class SearchBox extends React.Component {
                 ) : null}
             </div>
         );
-    }
+    };
     renderLayers = (searchResults) => {
         const layers = (searchResults.results || []).filter(result => result.dataproduct);
         if (isEmpty(layers)) {
@@ -256,7 +256,7 @@ class SearchBox extends React.Component {
                 ) : null}
             </div>
         );
-    }
+    };
     renderLayer = (dataproduct, idx) => {
         const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
         const showAbstract = dataproduct.dataproduct_id in (this.state.activeLayerInfo || {});
@@ -274,7 +274,7 @@ class SearchBox extends React.Component {
                 ) : null}
             </div>
         );
-    }
+    };
     renderLayerGroup = (dataproduct, idx) => {
         const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
         const showAbstract = dataproduct.dataproduct_id in (this.state.activeLayerInfo || {});
@@ -296,18 +296,18 @@ class SearchBox extends React.Component {
             <div className="searchbox-result-group" key={"eg" + idx}>{dataproduct.sublayers.map(this.renderLayer)}</div>
         ) : null
         ];
-    }
+    };
     getLayerDescription = (layer) => {
         if (isEmpty(layer.abstract)) {
             return LocaleUtils.tr("searchbox.nodescription");
         } else {
             return MiscUtils.addLinkAnchors(layer.abstract);
         }
-    }
+    };
     toggleLayerGroup = (ev, dataproductId) => {
         MiscUtils.killEvent(ev);
         this.setState({expandedLayerGroup: this.state.expandedLayerGroup === dataproductId ? null : dataproductId});
-    }
+    };
     renderSearchResults = () => {
         if (!this.state.resultsVisible) {
             return false;
@@ -334,21 +334,21 @@ class SearchBox extends React.Component {
                 {children}
             </div>
         );
-    }
+    };
     setPreventBlur = () => {
         this.preventBlur = true;
         setTimeout(() => {this.preventBlur = false; return false;}, 100);
-    }
+    };
     toggleSection = (key) => {
         const newCollapsedSections = {...this.state.collapsedSections};
         const deflt = (this.props.searchOptions.sectionsDefaultCollapsed || false);
         newCollapsedSections[key] = !(newCollapsedSections[key] ?? deflt);
         this.setState({collapsedSections: newCollapsedSections});
-    }
+    };
     isCollapsed = (section, deflt = null) => {
         deflt = deflt ?? (this.props.searchOptions.sectionsDefaultCollapsed || false);
         return this.state.collapsedSections[section] ?? deflt;
-    }
+    };
     render() {
         const placeholder = LocaleUtils.tr("searchbox.placeholder");
         return (
@@ -379,7 +379,7 @@ class SearchBox extends React.Component {
         this.setState({searchText: text, expandedLayerGroup: null, activeLayerInfo: null});
         clearTimeout(this.searchTimeout);
         this.searchTimeout = setTimeout(() => this.startSearch(pasted), 250);
-    }
+    };
     onFocus = () => {
         this.setState({resultsVisible: true});
         if (this.searchBox) {
@@ -388,14 +388,14 @@ class SearchBox extends React.Component {
         if (isEmpty(this.state.searchResults)) {
             this.startSearch(false);
         }
-    }
+    };
     onBlur = () => {
         if (this.preventBlur && this.searchBox) {
             this.searchBox.focus();
         } else {
             this.setState({resultsVisible: false, collapsedSections: {}, expandedLayerGroup: null, activeLayerInfo: null});
         }
-    }
+    };
     onKeyDown = (ev) => {
         if (ev.keyCode === 27 && this.searchBox) {
             if (this.searchBox.selectionStart !== this.searchBox.selectionEnd) {
@@ -404,16 +404,17 @@ class SearchBox extends React.Component {
                 this.searchBox.blur();
             }
         }
-    }
+    };
     clear = () => {
         if (this.searchBox) {
             this.searchBox.blur();
         }
         this.setState({searchText: '', searchResults: {}});
         this.props.removeLayer('searchselection');
-    }
+    };
     startSearch = () => {
         const service = ConfigUtils.getConfigProp("searchServiceUrl").replace(/\/$/g, "") + '/';
+        // eslint-disable-next-line
         const searchText = this.state.searchText.trim();
         if (isEmpty(searchText)) {
             this.setState({searchResults: {}});
@@ -450,7 +451,7 @@ class SearchBox extends React.Component {
                 this.addSearchResults(searchSession, key, {results: response.results, tot_result_count: count});
             }, axios);
         });
-    }
+    };
     addSearchResults = (searchSession, searchId, results) => {
         if (searchSession !== this.state.searchSession) {
             return;
@@ -484,12 +485,12 @@ class SearchBox extends React.Component {
         if (!this.state.recentSearches.includes(text)) {
             this.setState({recentSearches: [text, ...this.state.recentSearches.slice(0, 4)]});
         }
-    }
+    };
     blur = () => {
         if (this.searchBox) {
             this.searchBox.blur();
         }
-    }
+    };
     selectProviderResult = (result, provider, zoom = true) => {
         this.updateRecentSearches();
         const resultType = result.type || SearchResultType.PLACE;
@@ -545,7 +546,7 @@ class SearchBox extends React.Component {
         } else if (resultType === SearchResultType.THEME) {
             this.props.setCurrentTheme(result.theme, this.props.themes);
         }
-    }
+    };
     showProviderResultGeometry = (item, response, text) => {
         if (!isEmpty(response.geometry)) {
             let features = [];
@@ -565,7 +566,7 @@ class SearchBox extends React.Component {
             };
             this.props.addLayerFeatures(layer, features, true);
         }
-    }
+    };
     createMarker = (center, crs, text) => {
         return {
             geometry: {type: 'Point', coordinates: center},
@@ -574,7 +575,7 @@ class SearchBox extends React.Component {
             crs: crs,
             properties: { label: text }
         };
-    }
+    };
     selectFeatureResult = (result) => {
         this.updateRecentSearches();
         // URL example: /api/data/v1/ch.so.afu.fliessgewaesser.netz/?filter=[["gewissnr","=",1179]]
@@ -590,7 +591,7 @@ class SearchBox extends React.Component {
 
         this.props.logAction("SEARCH_TEXT", {searchText: this.state.searchText});
         this.props.logAction("SEARCH_RESULT_SELECTED", {feature: result.display});
-    }
+    };
     showFeatureGeometry = (data, scale = undefined, label = "") => {
         // Zoom to bbox
         const bbox = CoordinatesUtils.reprojectBbox(data.bbox, data.crs.properties.name, this.props.map.projection);
@@ -618,7 +619,7 @@ class SearchBox extends React.Component {
             data.features[0].id = 'searchmarker';
         }
         this.props.addLayerFeatures(layer, data.features, true);
-    }
+    };
     selectLayerResult = (result, info = false) => {
         if (!info) {
             this.updateRecentSearches();
@@ -640,21 +641,21 @@ class SearchBox extends React.Component {
             }
         });
         UrlParams.updateParams({hp: undefined, hf: undefined, hc: undefined});
-    }
+    };
     addLayer = (item, data) => {
         if (!isEmpty(data[item.dataproduct_id])) {
             this.props.addThemeSublayer({sublayers: data[item.dataproduct_id]});
             // Show layer tree to notify user that something has happened
             this.props.setCurrentTask('LayerTree');
         }
-    }
+    };
     openUrl = (url, target, title) => {
         if (target === "iframe") {
             this.props.showIframeDialog("externallinkiframe", url, {title: title});
         } else {
             this.props.openExternalUrl(url);
         }
-    }
+    };
 }
 
 const searchFilterSelector = createSelector([state => state.theme, state => state.layers.flat], (theme, layers) => {

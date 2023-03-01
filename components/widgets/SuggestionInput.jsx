@@ -19,10 +19,10 @@ export default class SuggestionInput extends React.Component {
         onBlur: PropTypes.func,
         onChange: PropTypes.func,
         value: PropTypes.string
-    }
+    };
     state = {
         suggestions: []
-    }
+    };
     constructor(props) {
         super(props);
         this.datalistid = uuidv1();
@@ -43,9 +43,9 @@ export default class SuggestionInput extends React.Component {
         this.props.loadSuggestions(result => {
             this.setState({suggestions: result});
         });
-    }
+    };
     onBlur = (ev) => {
         this.setState({suggestions: []});
         this.props.onBlur(ev);
-    }
+    };
 }

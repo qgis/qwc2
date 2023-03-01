@@ -24,7 +24,7 @@ class Toolbar extends React.Component {
         setCurrentTask: PropTypes.func,
         toolbarItems: PropTypes.array,
         toolbarItemsShortcutPrefix: PropTypes.string
-    }
+    };
     componentDidMount() {
         if (this.props.toolbarItemsShortcutPrefix) {
             this.props.toolbarItems.forEach((item, index) => {
@@ -59,7 +59,7 @@ class Toolbar extends React.Component {
                 title={title}
             />
         );
-    }
+    };
     itemClicked = (item, active) => {
         if (item.url) {
             this.props.openExternalUrl(item.url, item.target, LocaleUtils.tr("appmenu.items." + item.key));
@@ -68,7 +68,7 @@ class Toolbar extends React.Component {
         } else {
             this.props.setCurrentTask(item.task || item.key, item.mode, item.mapClickAction || (item.identifyEnabled ? "identify" : null));
         }
-    }
+    };
     render() {
         return (
             <div className="Toolbar">

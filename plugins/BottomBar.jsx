@@ -39,18 +39,18 @@ class BottomBar extends React.Component {
         termsUrlTarget: PropTypes.string,
         viewertitleUrl: PropTypes.string,
         viewertitleUrlTarget: PropTypes.string
-    }
+    };
     static defaultProps = {
         displayCoordinates: true,
         displayScales: true
-    }
+    };
     state = {
         scale: 0
-    }
+    };
     componentDidMount() {
         this.props.changeMousePositionState({crs: this.props.map.projection});
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (this.props.map.projection !== prevProps.map.projection) {
             this.props.changeMousePositionState({crs: this.props.map.projection, position: null});
         }
@@ -148,7 +148,7 @@ class BottomBar extends React.Component {
         } else {
             this.props.openExternalUrl(url);
         }
-    }
+    };
     setScale = (value) => {
         const scale = parseInt(value, 10);
         if (!isNaN(scale)) {
@@ -157,7 +157,7 @@ class BottomBar extends React.Component {
         } else {
             this.props.changeZoomLevel(this.props.map.zoom);
         }
-    }
+    };
 }
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => {

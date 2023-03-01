@@ -21,11 +21,11 @@ export default class Icon extends React.Component {
         size: PropTypes.string,
         title: PropTypes.string,
         titlemsgid: PropTypes.string
-    }
+    };
     static defaultProps = {
         className: "",
         title: ""
-    }
+    };
     render() {
         const classes = classnames({
             icon: true,

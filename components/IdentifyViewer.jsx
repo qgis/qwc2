@@ -153,21 +153,21 @@ class IdentifyViewer extends React.Component {
         showIframeDialog: PropTypes.func,
         theme: PropTypes.object,
         zoomToExtent: PropTypes.func
-    }
+    };
     static defaultProps = {
         longAttributesDisplay: 'ellipsis',
         customExporters: [],
         displayResultTree: true,
         attributeCalculator: (/* layer, feature */) => { return []; },
-        attributeTransform: (name, value, layer, feature) => value
-    }
+        attributeTransform: (name, value /* , layer, feature */) => value
+    };
     state = {
         expanded: {},
         resultTree: {},
         currentResult: null,
         currentLayer: null,
         exportFormat: 'json'
-    }
+    };
     constructor(props) {
         super(props);
         this.currentResultElRef = null;
@@ -208,7 +208,7 @@ class IdentifyViewer extends React.Component {
             currentResult: currentResult,
             currentLayer: currentLayer
         });
-    }
+    };
     setHighlightedResults = (results, resultTree) => {
         if (!results) {
             results = Object.keys(resultTree).reduce((res, layer) => {
@@ -225,11 +225,11 @@ class IdentifyViewer extends React.Component {
         } else {
             this.props.removeLayer("identifyslection");
         }
-    }
+    };
     getExpandedClass = (path, deflt) => {
         const expanded = this.state.expanded[path] !== undefined ? this.state.expanded[path] : deflt;
         return expanded ? "identify-layer-expandable identify-layer-expanded" : "identify-layer-expandable";
-    }
+    };
     toggleExpanded = (path, deflt) => {
         const newstate = this.state.expanded[path] !== undefined ? !this.state.expanded[path] : !deflt;
         const diff = {};
@@ -239,7 +239,7 @@ class IdentifyViewer extends React.Component {
         } else {
             this.setState({...this.state, expanded: {...this.state.expanded, ...diff}});
         }
-    }
+    };
     setCurrentResult = (layer, result) => {
         if (this.state.currentResult === result) {
             this.setState({currentResult: null, currentLayer: null});
@@ -247,7 +247,7 @@ class IdentifyViewer extends React.Component {
             this.setState({currentResult: result, currentLayer: layer});
             this.scrollIntoView = true;
         }
-    }
+    };
     removeResultLayer = (layer) => {
         const newResultTree = {...this.state.resultTree};
         delete newResultTree[layer];
@@ -256,7 +256,7 @@ class IdentifyViewer extends React.Component {
             currentResult: this.state.currentLayer === layer ? null : this.state.currentResult,
             currentLayer: this.state.currentLayer === layer ? null : this.state.currentLayer
         });
-    }
+    };
     removeResult = (layer, result) => {
         const newResultTree = {...this.state.resultTree};
         newResultTree[layer] = this.state.resultTree[layer].filter(item => item !== result);
@@ -267,7 +267,7 @@ class IdentifyViewer extends React.Component {
             resultTree: newResultTree,
             currentResult: this.state.currentResult === result ? null : this.state.currentResult
         });
-    }
+    };
     exportResults = (clipboard = false) => {
         const filteredResults = {};
         Object.keys(this.state.resultTree).map(key => {
@@ -276,13 +276,13 @@ class IdentifyViewer extends React.Component {
             }
         });
         this.export(filteredResults, clipboard);
-    }
+    };
     exportResultLayer = (layer) => {
         this.export({[layer]: this.state.resultTree[layer]});
-    }
+    };
     exportResult = (layer, result) => {
         this.export({[layer]: [result]});
-    }
+    };
     export = (json, clipboard = false) => {
         const exporter = [...BuiltinExporters, ...this.props.customExporters].find(entry => entry.id === this.state.exportFormat);
         if (exporter) {
@@ -294,7 +294,7 @@ class IdentifyViewer extends React.Component {
                 }
             });
         }
-    }
+    };
     renderLayer = (layer) => {
         const results = this.state.resultTree[layer];
         if (results.length === 0) {
@@ -315,7 +315,7 @@ class IdentifyViewer extends React.Component {
                 </div>
             </div>
         );
-    }
+    };
     renderResult = (layer, result) => {
         const ref = this.state.currentResult === result && this.scrollIntoView ? el => { this.currentResultElRef = el; } : null;
         return (
@@ -329,7 +329,7 @@ class IdentifyViewer extends React.Component {
                 {this.props.enableExport ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResult(layer, result)} />) : null}
             </div>
         );
-    }
+    };
     renderResultAttributes = (layer, result, resultClass) => {
         if (!result) {
             return null;
@@ -450,7 +450,7 @@ class IdentifyViewer extends React.Component {
                 </div>
             </div>
         );
-    }
+    };
     render() {
         const tree = this.props.displayResultTree;
         let body = null;
@@ -516,7 +516,7 @@ class IdentifyViewer extends React.Component {
         iframe.contentWindow.document.open();
         iframe.contentWindow.document.write(html);
         iframe.contentWindow.document.close();
-    }
+    };
     pollIframe = (iframe, html) => {
         if (iframe && !iframe.getAttribute("identify-content-set")) {
             const interval = setInterval(() => {
@@ -533,7 +533,7 @@ class IdentifyViewer extends React.Component {
                 return true;
             }, 500);
         }
-    }
+    };
     collectFeatureReportTemplates = (entry) => {
         let reports = {};
         if (entry.sublayers) {
@@ -544,14 +544,14 @@ class IdentifyViewer extends React.Component {
             reports[entry.title] = entry.featureReport;
         }
         return reports;
-    }
+    };
     findFeatureReportTemplate = (layer) => {
         const themeLayer = this.props.layers.find(l => l.role === LayerRole.THEME);
         if (!themeLayer) {
             return null;
         }
         return this.collectFeatureReportTemplates(themeLayer)[layer] || null;
-    }
+    };
     getFeatureReportUrl = (template, result) => {
         const serviceUrl = ConfigUtils.getConfigProp("featureReportService").replace(/\/$/, "");
         const params = {
@@ -561,7 +561,7 @@ class IdentifyViewer extends React.Component {
             crs: this.props.mapcrs
         };
         return serviceUrl + "/" + template + "?" + Object.keys(params).map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&");
-    }
+    };
     showLayerInfo = (featureInfoLayerId, result) => {
         let match = null;
         // Search matching layer by technical name
@@ -578,7 +578,7 @@ class IdentifyViewer extends React.Component {
         if (match) {
             this.props.setActiveLayerInfo(match.layer, match.sublayer);
         }
-    }
+    };
     attribValue = (text, attrName, layer, result) => {
         if (this.props.replaceImageUrls && /^https?:\/\/.*\.(jpg|jpeg|png|bmp)$/i.exec(text)) {
             return (<a href={text} rel="noreferrer" target="_blank"><img src={text} /></a>);
@@ -587,7 +587,7 @@ class IdentifyViewer extends React.Component {
         text = this.props.attributeTransform(attrName, text, layer, result);
         text = MiscUtils.addLinkAnchors(text);
         return this.parsedContent(text);
-    }
+    };
     parsedContent = (text) => {
         text = text.replace('&#10;', '<br />');
         const options = {replace: (node) => {
@@ -601,11 +601,12 @@ class IdentifyViewer extends React.Component {
             return undefined;
         }};
         return htmlReactParser(text, options);
-    }
+    };
     evalOnClick = (ev, onclick) => {
+        // eslint-disable-next-line
         eval(onclick);
         ev.preventDefault();
-    }
+    };
     attributeLinkClicked = (ev) => {
         if (ev.currentTarget.target.startsWith(":")) {
             const target = ev.target.target.split(":");
@@ -625,7 +626,7 @@ class IdentifyViewer extends React.Component {
                 ev.preventDefault();
             }
         }
-    }
+    };
 }
 
 const selector = (state) => ({

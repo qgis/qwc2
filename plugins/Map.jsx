@@ -32,7 +32,7 @@ class MapPlugin extends React.Component {
         swipeLayerNameBlacklist: PropTypes.array,
         tools: PropTypes.object,
         toolsOptions: PropTypes.object
-    }
+    };
     static defaultProps = {
         mapOptions: {},
         showLoading: true,
@@ -40,11 +40,11 @@ class MapPlugin extends React.Component {
         swipeLayerNameBlacklist: [],
         tools: {},
         toolsOptions: {}
-    }
+    };
     state = {
         renderLayers: [],
         swipeLayer: null
-    }
+    };
     constructor(props) {
         super(props);
         this.loadingEl = null;
@@ -184,13 +184,13 @@ class MapPlugin extends React.Component {
                 <OlLayer key={layer.uuid} options={options} swipe={swipe ? this.props.swipe : null} />
             );
         });
-    }
+    };
     renderSupportTools = () => {
         return Object.entries(this.props.tools).map(([key, Tool]) => {
             const options = this.props.toolsOptions[key] || {};
             return <Tool key={key} options={options}/>;
         });
-    }
+    };
     render() {
         let loadingIndicator = null;
         if (this.props.showLoading && this.props.layers.find(layer => layer.loading === true) !== undefined) {

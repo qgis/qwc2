@@ -68,12 +68,12 @@ class AppInitComponent extends React.Component {
         setCurrentTheme: PropTypes.func,
         setStartupParameters: PropTypes.func,
         themesLoaded: PropTypes.func
-    }
+    };
     constructor(props) {
         super(props);
         this.initialized = false;
     }
-    componentDidMount(prevProps, prevState) {
+    componentDidMount() {
         this.componentDidUpdate();
     }
     componentDidUpdate() {
@@ -144,6 +144,7 @@ class AppInitComponent extends React.Component {
                     try {
                         this.props.setCurrentTheme(theme, themes, false, initialView, layerParams, visibleBgLayer, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer);
                     } catch (e) {
+                        // eslint-disable-next-line
                         console.log(e.stack);
                     }
                 }
@@ -153,7 +154,7 @@ class AppInitComponent extends React.Component {
         if (task) {
             this.props.setCurrentTask(task.key, task.mode, task.mapClickAction);
         }
-    }
+    };
     render() {
         return null;
     }
@@ -177,7 +178,7 @@ const AppInit = connect(state => ({
 export default class StandardApp extends React.Component {
     static propTypes = {
         appConfig: PropTypes.object
-    }
+    };
     constructor(props) {
         super(props);
         StandardStore.init(this.props.appConfig.initialState || {}, this.props.appConfig.actionLogger);
@@ -197,7 +198,7 @@ export default class StandardApp extends React.Component {
     computeVh = () => {
         // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
         document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01 ) + 'px');
-    }
+    };
     render() {
         const plugins = this.props.appConfig.pluginsDef.plugins;
         return (
@@ -216,7 +217,7 @@ export default class StandardApp extends React.Component {
             this.touchY = ev.targetTouches[0].clientY;
         }, { passive: false });
         el.addEventListener('touchmove', this.preventOverscroll, { passive: false });
-    }
+    };
     preventOverscroll = (ev) => {
         if (ev.touches[0].touchType !== "direct") {
             // Don't do anything for stylus inputs
@@ -248,7 +249,7 @@ export default class StandardApp extends React.Component {
         if (!scrollEvent) {
             ev.preventDefault();
         }
-    }
+    };
     init = () => {
         // Detect browser properties
         this.store.dispatch(changeBrowserProperties(ConfigUtils.getBrowserProperties()));
@@ -275,5 +276,5 @@ export default class StandardApp extends React.Component {
             }
             olProj4Register(Proj4js);
         });
-    }
+    };
 }

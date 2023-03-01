@@ -33,12 +33,12 @@ class LinkFeatureForm extends React.Component {
         readOnly: PropTypes.bool,
         removeLayer: PropTypes.func,
         setEditContext: PropTypes.func
-    }
+    };
     state = {
         editContext: {},
         pickedFeatures: null,
         highlightedFeature: null
-    }
+    };
     componentDidMount() {
         if (this.props.action === 'Edit') {
             if (this.props.feature) {
@@ -138,11 +138,11 @@ class LinkFeatureForm extends React.Component {
                 this.setState({pickedFeatures: features});
             }
         });
-    }
+    };
     finish = () => {
         const editContext = this.props.editing.contexts[this.props.editContextId];
         this.props.finished(editContext.feature);
-    }
+    };
     hoverFeature = (feature) => {
         const layer = {
             id: this.props.editContextId + "-pick-selection",
@@ -150,13 +150,13 @@ class LinkFeatureForm extends React.Component {
         };
         this.props.addLayerFeatures(layer, [feature], true);
         this.setState({highlightedFeature: feature.id});
-    }
+    };
     unhoverFeature = (feature) => {
         if (this.state.highlightedFeature === feature.id) {
             this.props.removeLayer(this.props.editContextId + "-pick-selection");
             this.setState({highlightedFeature: null});
         }
-    }
+    };
     pickFeatureSelected = (feature) => {
         this.unhoverFeature(feature);
         if (!this.props.pickFilter) {
@@ -167,14 +167,14 @@ class LinkFeatureForm extends React.Component {
                 this.props.finished(newFeature);
             }
         }
-    }
+    };
     onDiscard = () => {
         const editContext = this.props.editing.contexts[this.props.editContextId];
         if (editContext.action === "Draw") {
             // Discarded draw = cancel
             this.props.finished(null);
         }
-    }
+    };
 }
 
 export default connect((state) => ({

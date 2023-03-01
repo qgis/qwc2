@@ -27,16 +27,16 @@ class ThemeSwitcher extends React.Component {
         side: PropTypes.string,
         themeLayersListWindowSize: PropTypes.object,
         width: PropTypes.string
-    }
+    };
     static defaultProps = {
         width: "50%",
         showLayerAfterChangeTheme: false,
         themeLayersListWindowSize: {width: 400, height: 300},
         side: 'right'
-    }
+    };
     state = {
         filter: ""
-    }
+    };
     render() {
         const allowAddingOtherThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.activeTheme) ===  true;
         const extraTitlebarContent = (
@@ -76,7 +76,7 @@ class ThemeSwitcher extends React.Component {
                 }
             }, 500);
         }
-    }
+    };
 }
 
 const selector = (state) => ({

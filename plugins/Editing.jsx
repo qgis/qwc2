@@ -54,7 +54,7 @@ class Editing extends React.Component {
         theme: PropTypes.object,
         touchFriendly: PropTypes.bool,
         width: PropTypes.string
-    }
+    };
     static defaultProps = {
         touchFriendly: true,
         width: "30em",
@@ -62,7 +62,7 @@ class Editing extends React.Component {
         snapping: true,
         snappingActive: true,
         allowCloneGeometry: true
-    }
+    };
     state = {
         selectedLayer: null,
         selectedLayerVisibility: null,
@@ -71,7 +71,7 @@ class Editing extends React.Component {
         minimized: false,
         drawPick: false,
         drawPickResults: null
-    }
+    };
     onShow = () => {
         if (this.props.taskData) {
             this.changeSelectedLayer(this.props.taskData.layer, "Pick", this.props.taskData.feature);
@@ -79,12 +79,12 @@ class Editing extends React.Component {
             this.changeSelectedLayer(this.state.selectedLayer, "Pick");
         }
         this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
-    }
+    };
     onHide = () => {
         this.props.clearEditContext('Editing');
         this.setLayerVisibility(this.state.selectedLayer, this.state.selectedLayerVisibility);
         this.setState({minimized: false, drawPick: false, drawPickResults: null});
-    }
+    };
     componentDidUpdate(prevProps, prevState) {
         const themeSublayers = this.props.layers.reduce((accum, layer) => {
             return layer.role === LayerRole.THEME ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
@@ -240,7 +240,7 @@ class Editing extends React.Component {
             </div>
 
         );
-    }
+    };
     render() {
         const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("editing.maximize") : LocaleUtils.tr("editing.minimize");
         const extraTitlebarContent = (<Icon className="editing-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState({minimized: !this.state.minimized})} title={minMaxTooltip}/>);
@@ -269,7 +269,7 @@ class Editing extends React.Component {
         } else {
             this.props.setEditContext('Editing', {...data});
         }
-    }
+    };
     setLayerVisibility = (selectedLayer, visibility) => {
         if (selectedLayer !== null) {
             const path = [];
@@ -285,7 +285,7 @@ class Editing extends React.Component {
             }
         }
         return null;
-    }
+    };
     changeSelectedLayer = (selectedLayer, action = null, feature = null) => {
         const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
         const editPermissions = curConfig ? (curConfig.permissions || {}) : {};
@@ -303,18 +303,18 @@ class Editing extends React.Component {
             drawPick: false,
             drawPickResults: null
         });
-    }
+    };
     setEditFeature = (featureId) => {
         const feature = this.state.pickedFeatures.find(f => f.id.toString() === featureId);
         const editConfig = this.props.theme.editConfig[this.state.selectedLayer];
         const editPermissions = editConfig.permissions || {};
         this.props.setEditContext('Editing', {feature: feature, changed: false, geomReadOnly: editPermissions.updatable === false});
-    }
+    };
     toggleDrawPick = () => {
         const pickActive = !this.state.drawPick;
         this.setState({drawPick: pickActive, drawPickResults: null});
         this.props.setEditContext('Editing', {action: pickActive ? null : "Draw"});
-    }
+    };
     drawPickQuery = (coordinates) => {
         const queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
         if (!queryableLayers) {
@@ -329,7 +329,7 @@ class Editing extends React.Component {
                 }
             });
         });
-    }
+    };
     drawPickFeature = (feature) => {
         const curConfig = this.props.theme.editConfig[this.state.selectedLayer];
         let geometry = feature.geometry;
@@ -359,17 +359,17 @@ class Editing extends React.Component {
         this.props.setEditContext('Editing', {action: "Draw", feature: editFeature, changed: true});
         this.setState({drawPick: false, drawPickResults: null});
         this.drawPickClearHighlight();
-    }
+    };
     drawPickSetHighlight = (feature) => {
         const layer = {
             id: "pickhighlight",
             role: LayerRole.SELECTION
         };
         this.props.addLayerFeatures(layer, [feature], true);
-    }
+    };
     drawPickClearHighlight = () => {
         this.props.removeLayer("pickhighlight");
-    }
+    };
 }
 
 export default (iface = EditingInterface) => {

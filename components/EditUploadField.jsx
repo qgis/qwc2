@@ -31,15 +31,15 @@ export default class EditUploadField extends React.Component {
         updateField: PropTypes.func,
         updateFile: PropTypes.func,
         value: PropTypes.string
-    }
+    };
     static defaultProps = {
         showThumbnails: true,
         updateFile: () => {}
-    }
+    };
     state = {
         camera: false,
         imageData: null
-    }
+    };
     constructor(props) {
         super(props);
         this.cameraStream = null;
@@ -122,14 +122,14 @@ export default class EditUploadField extends React.Component {
             this.props.updateField(this.props.fieldId, '');
             this.props.updateFile(this.props.fieldId, ev.target.files[0]);
         }
-    }
+    };
     enableCamera = () => {
         this.setState({camera: true});
-    }
+    };
     disableCamera = () => {
         this.disableMediaStream();
         this.setState({camera: false});
-    }
+    };
     renderCaptureFrame = () => {
         return (
             <ModalDialog icon="camera" onClose={this.disableCamera} title={LocaleUtils.tr("editing.takepicture")}>
@@ -139,7 +139,7 @@ export default class EditUploadField extends React.Component {
                 </div>
             </ModalDialog>
         );
-    }
+    };
     capturePicture = () => {
         if (this.cameraStream) {
             const width = this.videoElement.videoWidth;
@@ -155,7 +155,7 @@ export default class EditUploadField extends React.Component {
             this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(imageData)], uuidv1() + ".jpg", {type: "image/jpeg"}));
         }
         this.disableCamera();
-    }
+    };
     imageButtonClicked = (action) => {
         if (action === "Draw") {
             const fileValue = this.props.value.startsWith("attachment:") ? this.props.value.replace(/attachment:\/\//, '') : "";
@@ -171,12 +171,12 @@ export default class EditUploadField extends React.Component {
         } else if (action === "Clear") {
             this.clearImage();
         }
-    }
+    };
     clearImage = () => {
         this.setState({imageData: null});
         this.props.updateField(this.props.fieldId, '');
         this.props.updateFile(this.props.fieldId, null);
-    }
+    };
     activateMediaStream = (el) => {
         if (this.state.camera && !this.cameraStream) {
             const constraints = {
@@ -191,24 +191,25 @@ export default class EditUploadField extends React.Component {
                 el.play();
                 this.videoElement = el;
             }).catch((err) => {
+                // eslint-disable-next-line
                 console.warn("Unable to access camera: " + err);
             });
         }
-    }
+    };
     disableMediaStream = () => {
         if (this.cameraStream) {
             this.cameraStream.getTracks()[0].stop();
             this.cameraStream = null;
             this.videoElement = null;
         }
-    }
+    };
     download = (href, filename) => {
         const a = document.createElement("a");
         a.href = href;
         a.target = "_blank";
         a.setAttribute("download", filename);
         a.click();
-    }
+    };
     dataUriToBlob = (dataUri) => {
         const parts = dataUri.split(',');
         const byteString = parts[0].indexOf('base64') >= 0 ? atob(parts[1]) : decodeURI(parts[1]);
@@ -219,5 +220,5 @@ export default class EditUploadField extends React.Component {
             ia[i] = byteString.charCodeAt(i);
         }
         return new Blob([ia], {type: mimeString});
-    }
+    };
 }

@@ -38,19 +38,20 @@ class AttributeTable extends React.Component {
         iface: PropTypes.object,
         layers: PropTypes.array,
         mapCrs: PropTypes.string,
+        mapScales: PropTypes.array,
         setCurrentTask: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
+        showEditFormButton: PropTypes.bool,
         taskData: PropTypes.object,
         theme: PropTypes.object,
-        zoomToExtent: PropTypes.func,
-        zoomToPoint: PropTypes.func,
         zoomLevel: PropTypes.number,
-        showEditFormButton: PropTypes.bool
-    }
+        zoomToExtent: PropTypes.func,
+        zoomToPoint: PropTypes.func
+    };
     static defaultProps = {
         zoomLevel: 1000,
         showEditFormButton: true
-    }
+    };
     static defaultState = {
         loading: false,
         selectedLayer: "",
@@ -69,7 +70,7 @@ class AttributeTable extends React.Component {
         deleteTask: null,
         newFeature: false,
         confirmDelete: false
-    }
+    };
     constructor(props) {
         super(props);
         this.changedFiles = {};
@@ -231,6 +232,11 @@ class AttributeTable extends React.Component {
         const showAddButton = editPermissions.creatable !== false;
         const showDelButton = editPermissions.deletable !== false;
         const showEditButton = ConfigUtils.havePlugin("Editing") && this.props.showEditFormButton;
+        const deleteButton = showDelButton ? (
+            <button className="button" disabled={layerChanged || editing || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
+                <Icon icon="trash" />
+            </button>
+        ) : null;
 
         return (
             <ResizeableWindow dockable="bottom" icon="editing" initialHeight={480} initialWidth={800} onClose={this.onClose} title={LocaleUtils.tr("attribtable.title")}>
@@ -269,12 +275,7 @@ class AttributeTable extends React.Component {
                                 <Icon icon="ok" />
                                 <span>{LocaleUtils.tr("attribtable.delete")}</span>
                             </button>
-                        ) : (
-                            showDelButton ? (<button className="button" disabled={layerChanged || editing || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
-                                <Icon icon="trash" />
-                            </button>
-                        ) : null
-                        )}
+                        ) : deleteButton}
                         {this.state.confirmDelete ? (
                             <button className="button button-reject" onClick={() => this.setState({confirmDelete: false})}>
                                 <Icon icon="remove" />
@@ -308,30 +309,30 @@ class AttributeTable extends React.Component {
         } else {
             return null;
         }
-    }
+    };
     renderColumnResizeHandle = (col, pos) => {
         return (
             <span className={"attribtable-table-" + pos + "draghandle"}
                 onClick={ev => { ev.preventDefault(); ev.stopPropagation(); }}
                 onMouseDown={(ev) => this.resizeTable(ev, col, true)} />
         );
-    }
+    };
     renderRowResizeHandle = (row, pos) => {
         return (
             <span className={"attribtable-table-" + pos + "draghandle"}
                 onClick={ev => { ev.preventDefault(); ev.stopPropagation(); }}
                 onMouseDown={(ev) => this.resizeTable(ev, row, false)} />
         );
-    }
+    };
     onClose = () => {
         if (this.state.changedFeatureIdx === null) {
             this.setState(AttributeTable.defaultState);
             this.props.setCurrentTask(null);
         }
-    }
+    };
     changeSelectedLayer = (value) => {
         this.setState({selectedLayer: value});
-    }
+    };
     reload = (layer = null) => {
         const selectedLayer = layer || this.state.selectedLayer;
         this.setState({...AttributeTable.defaultState, loading: true, selectedLayer: selectedLayer});
@@ -346,7 +347,7 @@ class AttributeTable extends React.Component {
                 this.setState({loading: false, features: [], filteredSortedFeatures: [], loadedLayer: ""});
             }
         });
-    }
+    };
     sortBy = (field) => {
         let newState = {};
         if (this.state.sortField && this.state.sortField.field === field) {
@@ -356,7 +357,7 @@ class AttributeTable extends React.Component {
         }
         newState.filteredSortedFeatures = this.filteredSortedFeatures(this.state.features, {...this.state, ...newState});
         this.setState(newState);
-    }
+    };
     editLayerId = (layerId) => {
         if (this.props.theme && this.props.theme.editConfig && this.props.theme.editConfig[layerId]) {
             return this.props.theme.editConfig[layerId].editDataset || layerId;
@@ -383,11 +384,10 @@ class AttributeTable extends React.Component {
                     updateField={updateField} value={value} values={constraints.values} />
             );
         } else if (field.type === "number") {
-            const precision = constraints.step > 0 ? Math.ceil(-Math.log10(constraints.step)) : 6;
             input = (
                 <input disabled={disabled} max={constraints.max} min={constraints.min}
                     name={field.id} onChange={ev => updateField(field.id, ev.target.value, true)}
-                    precision={precision} readOnly={constraints.readOnly} required={constraints.required}
+                    readOnly={constraints.readOnly} required={constraints.required}
                     step={constraints.step || 1} type="number" value={value} />
             );
         } else if (field.type === "date") {
@@ -421,7 +421,7 @@ class AttributeTable extends React.Component {
             );
         }
         return input;
-    }
+    };
     addFeature = () => {
         const editConfig = this.props.theme.editConfig || {};
         const currentEditConfig = editConfig[this.state.loadedLayer];
@@ -453,7 +453,7 @@ class AttributeTable extends React.Component {
             newFeature: true
         });
         this.props.setCurrentTaskBlocked(true, LocaleUtils.tr("editing.unsavedchanged"));
-    }
+    };
     deleteSelectedFeatured = () => {
         const features = this.state.filteredSortedFeatures.filter(feature => this.state.selectedFeatures[feature.id] === true);
         this.setState({deleteTask: {
@@ -486,7 +486,7 @@ class AttributeTable extends React.Component {
                 this.setState(newState);
             });
         });
-    }
+    };
     updateField = (featureidx, filteredIdx, fieldid, value, emptynull) => {
         value = value === "" && emptynull ? null : value;
         const newFeatures = [...this.state.features];
@@ -498,7 +498,7 @@ class AttributeTable extends React.Component {
         const originalFeatureProps = this.state.originalFeatureProps || {...this.state.features[featureidx].properties};
         this.setState({features: newFeatures, filteredSortedFeatures: newfilteredSortedFeatures, changedFeatureIdx: featureidx, originalFeatureProps: originalFeatureProps});
         this.props.setCurrentTaskBlocked(true, LocaleUtils.tr("editing.unsavedchanged"));
-    }
+    };
     commit = () => {
         const feature = {
             ...this.state.features[this.state.changedFeatureIdx],
@@ -522,7 +522,7 @@ class AttributeTable extends React.Component {
                 (success, result) => this.featureCommited(success, result)
             );
         }
-    }
+    };
     featureCommited = (success, result) => {
         if (!success) {
             // eslint-disable-next-line
@@ -534,7 +534,7 @@ class AttributeTable extends React.Component {
             this.setState({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeatureProps: null, newFeature: false});
         }
         this.props.setCurrentTaskBlocked(false);
-    }
+    };
     discard = () => {
         const newFeatures = [...this.state.features];
         if (this.state.newFeature) {
@@ -547,21 +547,21 @@ class AttributeTable extends React.Component {
         this.changedFiles = {};
         this.setState({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeatureProps: null, newFeature: false});
         this.props.setCurrentTaskBlocked(false);
-    }
+    };
     zoomToSelection = () => {
         const collection = {
             type: "FeatureCollection",
             features: this.state.filteredSortedFeatures.filter(feature => this.state.selectedFeatures[feature.id] === true && feature.geometry)
         };
         if (!isEmpty(collection.features)) {
-            if (collection.features.length == 1 && collection.features[0].geometry.type === "Point"){
-                let zoom = MapUtils.computeZoom(this.props.mapScales, this.props.zoomLevel);
+            if (collection.features.length === 1 && collection.features[0].geometry.type === "Point") {
+                const zoom = MapUtils.computeZoom(this.props.mapScales, this.props.zoomLevel);
                 this.props.zoomToPoint(collection.features[0].geometry.coordinates, zoom, this.props.mapCrs);
             } else {
                 this.props.zoomToExtent(geojsonBbox(collection), this.props.mapCrs);
             }
         }
-    }
+    };
     switchToFormEditMode = () => {
         const editConfig = this.props.theme.editConfig || {};
         const currentEditConfig = editConfig[this.state.loadedLayer];
@@ -581,7 +581,7 @@ class AttributeTable extends React.Component {
             currentPage: resetPage ? 0 : this.state.currentPage,
             filteredSortedFeatures: this.filteredSortedFeatures(this.state.features, {...this.state, ...newState})
         });
-    }
+    };
     filteredSortedFeatures = (features, state) => {
         let filteredFeatures = [];
         if (!state.filterVal) {
@@ -632,7 +632,7 @@ class AttributeTable extends React.Component {
         } else {
             return filteredFeatures;
         }
-    }
+    };
     resizeTable = (ev, index, resizeCol) => {
         if (this.table) {
             const element = this.table.getElementsByTagName(resizeCol ? "th" : "tr")[index];
@@ -659,7 +659,7 @@ class AttributeTable extends React.Component {
             ev.preventDefault();
             ev.stopPropagation();
         }
-    }
+    };
 }
 
 export default (iface = EditingInterface) => {

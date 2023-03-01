@@ -25,12 +25,12 @@ class RedliningBufferSupport extends React.Component {
         layers: PropTypes.array,
         projection: PropTypes.string,
         redlining: PropTypes.object
-    }
+    };
     state = {
         bufferDistance: 0,
         bufferLayer: null,
         bufferUnit: "meters"
-    }
+    };
     constructor(props, context) {
         super(props, context);
         this.state.bufferLayer = {
@@ -39,7 +39,7 @@ class RedliningBufferSupport extends React.Component {
             role: LayerRole.USERLAYER
         };
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate() {
         if (this.state.bufferLayer && this.state.bufferLayer.id !== "buffer" && !this.props.layers.find(layer => layer.id === this.state.bufferLayer.id)) {
             this.setState({bufferLayer: {
                 id: "buffer",
@@ -93,7 +93,7 @@ class RedliningBufferSupport extends React.Component {
     }
     changeBufferUnit = (ev) => {
         this.setState({bufferUnit: ev.target.value});
-    }
+    };
     computeBuffer = () => {
         const feature = this.props.redlining.selectedFeature;
         if (!feature || !feature.geometry || !this.state.bufferLayer) {
@@ -112,7 +112,7 @@ class RedliningBufferSupport extends React.Component {
             };
             this.props.addLayerFeatures(this.state.bufferLayer, [output]);
         }
-    }
+    };
 }
 
 export default {

@@ -17,11 +17,11 @@ class LayerCatalogWidget extends React.PureComponent {
         catalog: PropTypes.array,
         mapCrs: PropTypes.string,
         pendingRequests: PropTypes.number
-    }
+    };
     state = {
         catalog: [],
         filter: ""
-    }
+    };
     constructor(props) {
         super(props);
         this.state.catalog = props.catalog || [];
@@ -80,7 +80,7 @@ class LayerCatalogWidget extends React.PureComponent {
             <div className="layer-catalog-widget">
                 <InputContainer className="layer-catalog-widget-filter">
                     <input
-                        onChange={ev => this.setState({filter: ev.target.value})} placeholder={filterplaceholder} 
+                        onChange={ev => this.setState({filter: ev.target.value})} placeholder={filterplaceholder}
                         role="input" type="text" value={this.state.filter} />
                     <Icon icon="clear" onClick={() => this.setState({filter: ""})} role="suffix" />
                 </InputContainer>
@@ -98,13 +98,14 @@ class LayerCatalogWidget extends React.PureComponent {
                 if (layer) {
                     this.props.addLayer(layer);
                 } else {
+                    // eslint-disable-next-line
                     alert(LocaleUtils.tr("importlayer.addfailed"));
                 }
             });
         } else if (entry.type === "wms" || entry.type === "wfs" || entry.type === "wmts") {
             this.props.addLayer({...entry, sublayers: null});
         }
-    }
+    };
 }
 
 export default connect(() => ({

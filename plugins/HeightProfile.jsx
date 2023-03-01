@@ -13,7 +13,7 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import Chartist from 'chartist';
 import ChartistComponent from 'react-chartist';
-import ChartistAxisTitle from 'chartist-plugin-axistitle';
+import chartistAxisTitle from 'chartist-plugin-axistitle';
 import FileSaver from 'file-saver';
 import {addMarker, removeMarker} from '../actions/layers';
 import {changeMeasurementState} from '../actions/measurement';
@@ -36,12 +36,12 @@ class HeightProfile extends React.Component {
         projection: PropTypes.string,
         removeMarker: PropTypes.func,
         samples: PropTypes.number
-    }
+    };
     static defaultProps = {
         samples: 500,
         heighProfilePrecision: 0,
         height: 100
-    }
+    };
     constructor(props) {
         super(props);
         this.tooltip = null;
@@ -52,7 +52,7 @@ class HeightProfile extends React.Component {
         width: window.innerWidth,
         data: [],
         isloading: false
-    }
+    };
     componentDidMount() {
         window.addEventListener('resize', this.handleResize);
     }
@@ -77,8 +77,8 @@ class HeightProfile extends React.Component {
     }
     handleResize = () => {
         this.setState({width: window.innerWidth});
-    }
-    componentDidUpdate(prevProps, prevState) {
+    };
+    componentDidUpdate(prevProps) {
         if (this.props.measurement.coordinates !== prevProps.measurement.coordinates) {
             if (this.props.measurement.drawing === false && this.props.measurement.geomType === "LineString" && !isEmpty(this.props.measurement.coordinates) ) {
                 this.queryElevations(this.props.measurement.coordinates, this.props.measurement.segment_lengths, this.props.projection);
@@ -97,6 +97,7 @@ class HeightProfile extends React.Component {
                 this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: this.pickPositionCallback});
             }).catch(e => {
                 this.setState({ isloading: false });
+                // eslint-disable-next-line
                 console.log("Query failed: " + e);
             });
         }
@@ -151,7 +152,7 @@ class HeightProfile extends React.Component {
                 low: minHeight - (maxHeight - minHeight) / 10
             },
             plugins: [
-                ChartistAxisTitle({
+                chartistAxisTitle({
                     axisX: {
                         axisTitle: distanceStr + " [m]",
                         axisClass: 'ct-axis-title',
@@ -211,7 +212,7 @@ class HeightProfile extends React.Component {
             coo[i][1] + lambda * (coo[i + 1][1] - coo[i][1])
         ];
         this.props.addMarker('heightprofile', p, '', this.props.projection, 1000001); // 1000001: one higher than the zIndex in MeasurementSupport...
-    }
+    };
     updateTooltip = (x, y, plotPos) => {
         if (!this.tooltip) {
             return;
@@ -229,13 +230,13 @@ class HeightProfile extends React.Component {
         this.tooltip.style.bottom = this.props.height + 'px';
         this.tooltip.innerHTML = "<b>" + distanceStr + ":</b> " + distance + " m<br />" +
                                  "<b>" + heightStr + ":</b> " + height + " m " + aslStr;
-    }
+    };
     clearMarkerAndTooltip = () => {
         this.props.removeMarker('heightprofile');
         if (this.tooltip) {
             this.marker.style.visibility = this.tooltip.style.visibility = 'hidden';
         }
-    }
+    };
     pickPositionCallback = (pos) => {
         if (!pos) {
             this.clearMarkerAndTooltip();
@@ -274,7 +275,7 @@ class HeightProfile extends React.Component {
         const k = Math.min(1, x / totLength);
         const idx = Math.min(this.state.data.length - 1, Math.floor(k * this.props.samples));
         this.updateTooltip(x, this.state.data[idx], path.getBoundingClientRect().left + k * path.getBoundingClientRect().width);
-    }
+    };
     pointOnSegment = (q, p1, p2) => {
         const tol = 1E-3;
         // Determine whether points lie on same line: cross-product (P2-P1) x (Q - P1) zero?
@@ -288,7 +289,7 @@ class HeightProfile extends React.Component {
         } else {
             return (p1[1] <= q[1] && q[1] <= p2[1]) || (p2[1] <= q[1] && q[1] <= p1[1]);
         }
-    }
+    };
 }
 
 export default connect((state) => ({

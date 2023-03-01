@@ -22,17 +22,18 @@ class LayerCatalog extends React.Component {
         catalogUrl: PropTypes.string,
         setCurrentTask: PropTypes.func,
         windowSize: PropTypes.object
-    }
+    };
     static defaultProps = {
         windowSize: {width: 320, height: 320}
-    }
+    };
     state = {
         catalog: null
-    }
+    };
     componentDidUpdate(prevProps) {
         if (this.props.active && !prevProps.active && this.props.catalogUrl) {
             axios.get(this.props.catalogUrl).then(this.setCatalog).catch(e => {
                 this.setState({catalog: []});
+                // eslint-disable-next-line
                 console.warn("Failed to load catalog: " + e);
             });
         }
@@ -42,7 +43,7 @@ class LayerCatalog extends React.Component {
             catalog: response.data.catalog || []
         });
         this.props.setCurrentTask("LayerTree");
-    }
+    };
     render() {
         if (!this.state.catalog) {
             return null;
@@ -58,7 +59,7 @@ class LayerCatalog extends React.Component {
     }
     onClose = () => {
         this.setState({catalog: null});
-    }
+    };
 }
 
 export default connect(state => ({

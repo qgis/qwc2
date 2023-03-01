@@ -31,21 +31,21 @@ export default class ShareSocials extends React.Component {
         getCount: PropTypes.func,
         shareTitle: PropTypes.string,
         shareUrl: PropTypes.string,
-        showSocials: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
-    }
+        showSocials: PropTypes.oneOfType([PropTypes.bool, PropTypes.array])
+    };
     static defaultProps = {
         shareTitle: 'GeoSolutions'
-    }
+    };
     render() {
         const countProps = {};
         if (this.props.getCount) {
             countProps.getCount = this.props.getCount;
         }
         const title = this.props.shareTitle;
-        const url = this.props.shareUrl
+        const url = this.props.shareUrl;
 
-        const social_types = {
-            "email": (
+        const socialTypes = {
+            email: (
                 <div className="social-box" key="email">
                     <EmailShareButton subject={title} url={url}>
                         <EmailIcon round size={32} />
@@ -55,7 +55,7 @@ export default class ShareSocials extends React.Component {
                     </div>
                 </div>
             ),
-            "facebook": (
+            facebook: (
                 <div className="social-box" key="facebook">
                     <FacebookShareButton quote={title} url={url}>
                         <FacebookIcon round size={32} />
@@ -65,7 +65,7 @@ export default class ShareSocials extends React.Component {
                     </FacebookShareCount>
                 </div>
             ),
-            "twitter": (
+            twitter: (
                 <div className="social-box" key="twitter">
                     <TwitterShareButton title={title} url={url}>
                         <TwitterIcon round size={32} />
@@ -75,7 +75,7 @@ export default class ShareSocials extends React.Component {
                     </div>
                 </div>
             ),
-            "linkedin": (
+            linkedin: (
                 <div className="social-box" key="linkedin">
                     <LinkedinShareButton title={title} url={url}>
                         <LinkedinIcon round size={32} />
@@ -85,7 +85,7 @@ export default class ShareSocials extends React.Component {
                     </div>
                 </div>
             ),
-            "whatsapp": (
+            whatsapp: (
                 <div className="social-box" key="whatsapp">
                     <WhatsappShareButton title={title} url={url}>
                         <WhatsappIcon round size={32} />
@@ -95,20 +95,19 @@ export default class ShareSocials extends React.Component {
                     </div>
                 </div>
             )
-        }
-        let social_boxes = [];
+        };
+        let socialBoxes = [];
         if (this.props.showSocials === true) {
-            social_boxes = Object.values(social_types)
-        }
-        else {
+            socialBoxes = Object.values(socialTypes);
+        } else {
             this.props.showSocials.map(name => {
-                if (name in social_types) {
-                    social_boxes.push(social_types[name]);
+                if (name in socialTypes) {
+                    socialBoxes.push(socialTypes[name]);
+                } else {
+                    // eslint-disable-next-line
+                    console.warn("`%s` is not a valid social network", name);
                 }
-                else {
-                    console.error("`%s` is not a valid social network", name);
-                }
-            })
+            });
         }
 
         return (
@@ -117,7 +116,7 @@ export default class ShareSocials extends React.Component {
                     {LocaleUtils.tr("share.socialIntro")}
                 </h4>
                 <div className="social-boxes">
-                    {social_boxes}
+                    {socialBoxes}
                 </div>
             </div>
         );

@@ -44,6 +44,7 @@ export default {
             }
         }
         if (!format) {
+            // eslint-disable-next-line
             console.warn("No supported WFS format found");
             return null;
         }

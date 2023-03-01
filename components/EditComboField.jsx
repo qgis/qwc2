@@ -37,18 +37,18 @@ export class KeyValCache {
                 }
             });
         }
-    }
+    };
     static getSync = (keyvalrel) => {
         if (keyvalrel in this.store) {
             return this.store[keyvalrel];
         } else {
             return [];
         }
-    }
+    };
     static clear = () => {
         this.store = {};
         this.requests = {};
-    }
+    };
 }
 
 
@@ -65,10 +65,10 @@ export default class EditComboField extends React.Component {
         updateField: PropTypes.func,
         value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         values: PropTypes.array
-    }
+    };
     state = {
         values: []
-    }
+    };
     componentDidMount() {
         if (this.props.values) {
             // eslint-disable-next-line

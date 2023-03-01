@@ -13,14 +13,14 @@ export default class MenuButton extends React.Component {
         menuClassName: PropTypes.string,
         onActivate: PropTypes.func,
         readOnly: PropTypes.bool
-    }
+    };
     state = {
         popup: false,
         selected: null
-    }
+    };
     static defaultProps = {
         readOnly: false
-    }
+    };
     constructor(props) {
         super(props);
         this.el = null;
@@ -70,11 +70,11 @@ export default class MenuButton extends React.Component {
     }
     onButtonClicked = () => {
         this.props.onActivate(this.state.selected);
-    }
+    };
     onChildClicked = (child) => {
         if (!child.props.disabled) {
             this.setState({selected: child.props.value});
             this.props.onActivate(child.props.value);
         }
-    }
+    };
 }

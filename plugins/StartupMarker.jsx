@@ -21,15 +21,15 @@ class StartupMarker extends React.Component {
         removeMode: PropTypes.string, // onpan, onzoom, onclickonmarker
         startupParams: PropTypes.object,
         theme: PropTypes.object
-    }
+    };
     static defaultProps = {
         removeMode: 'onpan'
-    }
+    };
     constructor(props) {
         super(props);
         this.markerSet = false;
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         const highlight = ["true", "1"].includes("" + (this.props.startupParams && this.props.startupParams.hc || "").toLowerCase());
         if (highlight && this.props.theme && !prevProps.theme && this.props.startupParams.c) {
             UrlParams.updateParams({hc: undefined});

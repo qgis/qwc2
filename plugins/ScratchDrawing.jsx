@@ -31,7 +31,7 @@ class ScratchDrawing extends React.Component {
         removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         task: PropTypes.object
-    }
+    };
     constructor(props) {
         super(props);
         window.addEventListener('keydown', this.keyPressed);
@@ -41,7 +41,7 @@ class ScratchDrawing extends React.Component {
     componentWillUnmount() {
         window.removeEventListener('keydown', this.keyPressed);
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         // Remove layers when not used anymore
         if (prevProps.redlining.layer === "__scratchdrawing" && this.props.redlining.layer !== "__scratchdrawing") {
             this.props.removeLayer("__scratchdrawing");
@@ -68,7 +68,7 @@ class ScratchDrawing extends React.Component {
             text: "",
             ...style
         };
-    }
+    };
     keyPressed = (ev) => {
         if (this.props.task.id === "ScratchDrawing" && ev.keyCode === 27) {
             if (this.props.redlining.action === 'Draw' && !this.props.redlining.selectedFeature) {
@@ -88,16 +88,16 @@ class ScratchDrawing extends React.Component {
         this.props.changeRedliningState({action: 'Draw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
         this.submitted = false;
         Mousetrap.bind('del', this.triggerDelete);
-    }
+    };
     onHide = () => {
         this.props.changeRedliningState({action: null, geomType: null, layer: null, layerTitle: null, drawMultiple: true, style: this.prevstyle || this.props.redlining.style});
         this.prevstyle = null;
         Mousetrap.unbind('del', this.triggerDelete);
-    }
+    };
     updateRedliningState = (diff) => {
         const newState = {...this.props.redlining, ...diff};
         this.props.changeRedliningState(newState);
-    }
+    };
     renderBody = () => {
         return (
             <div className="scratch-drawing-taskbar-body">
@@ -107,7 +107,7 @@ class ScratchDrawing extends React.Component {
                 </button>
             </div>
         );
-    }
+    };
     render() {
         return (
             <TaskBar onHide={this.onHide} onShow={this.onShow} task="ScratchDrawing">
@@ -119,14 +119,14 @@ class ScratchDrawing extends React.Component {
     }
     triggerDelete = () => {
         this.updateRedliningState({action: "Delete", geomType: null});
-    }
+    };
     submitGeometry = () => {
         const layer = this.props.layers.find(l => l.id === "__scratchdrawing");
         const features = (layer || {}).features || [];
         this.submitted = true;
         this.props.task.data.callback(features, this.props.projection);
         this.props.setCurrentTask(null);
-    }
+    };
 }
 
 export default connect((state) => ({

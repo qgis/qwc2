@@ -21,9 +21,10 @@ class ZoomButton extends React.Component {
         direction: PropTypes.number,
         maxZoom: PropTypes.number,
         position: PropTypes.number
-    }
+    };
     render() {
-        const position = this.props.position >= 0 ? this.props.position : (this.props.direction > 0 ? 4 : 3);
+        const defaultPosition = (this.props.direction > 0 ? 4 : 3);
+        const position = this.props.position >= 0 ? this.props.position : defaultPosition;
         let disabled = false;
         if (this.props.direction > 0) {
             disabled = this.props.currentZoom >= this.props.maxZoom;

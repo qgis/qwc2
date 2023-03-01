@@ -15,10 +15,10 @@ export default class InputContainer extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         className: PropTypes.string
-    }
+    };
     state = {
         focused: false
-    }
+    };
     render() {
         const containerClasses = classnames({
             "input-container": true,
@@ -48,17 +48,17 @@ export default class InputContainer extends React.Component {
     }
     findChild = (role) => {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
-    }
+    };
     onInputBlur = (ev, origHandler) => {
         if (origHandler) {
             origHandler(ev);
         }
         this.setState({focused: false});
-    }
+    };
     onInputFocus = (ev, origHandler) => {
         if (origHandler) {
             origHandler(ev);
         }
         this.setState({focused: true});
-    }
+    };
 }

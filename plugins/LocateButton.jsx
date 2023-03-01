@@ -23,10 +23,10 @@ class LocateButton extends React.Component {
         changeLocateState: PropTypes.func,
         locateState: PropTypes.string,
         position: PropTypes.number
-    }
+    };
     static defaultProps = {
         position: 2
-    }
+    };
     constructor(props) {
         super(props);
 
@@ -50,7 +50,7 @@ class LocateButton extends React.Component {
         } else {
             this.props.changeLocateState("DISABLED");
         }
-    }
+    };
     render = () => {
         const tooltipMsg = {
             DISABLED: LocaleUtils.tr("locate.statustooltip.DISABLED"),
@@ -78,7 +78,7 @@ class LocateButton extends React.Component {
                 {contents}
             </button>
         );
-    }
+    };
 }
 
 export default connect(state => ({

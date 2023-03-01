@@ -28,10 +28,10 @@ class DxfExport extends React.Component {
         serviceUrl: PropTypes.string,
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object
-    }
+    };
     state = {
         selectedLayers: ""
-    }
+    };
     constructor(props) {
         super(props);
         this.state.selectedLayers = !isEmpty(props.layerOptions) ? props.layerOptions[0].layers : "";
@@ -96,7 +96,7 @@ class DxfExport extends React.Component {
                 </form>
             </span>
         );
-    }
+    };
     render() {
         return (
             <TaskBar task="DxfExport">
@@ -115,7 +115,7 @@ class DxfExport extends React.Component {
         this.extentInput.value = extent;
         this.form.submit();
         this.props.setCurrentTask(null);
-    }
+    };
 }
 
 const selector = (state) => ({

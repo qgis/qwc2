@@ -17,13 +17,13 @@ export default class FileSelector extends React.Component {
         accept: PropTypes.string,
         file: PropTypes.object,
         onFileSelected: PropTypes.func
-    }
+    };
     constructor(props) {
         super(props);
         this.fileinput = null;
     }
-    componentDidUpdate(prevProps, prevState) {
-        if (!this.props.file && this.fileinput) {
+    componentDidUpdate(prevProps) {
+        if (prevProps.file && !this.props.file && this.fileinput) {
             this.fileinput.value = null;
         }
     }
@@ -47,14 +47,14 @@ export default class FileSelector extends React.Component {
         if (this.fileinput) {
             this.fileinput.click();
         }
-    }
+    };
     fileChanged = (ev) => {
         let file = null;
         if (ev.target.files && ev.target.files.length > 0) {
             file = ev.target.files[0];
         }
         this.props.onFileSelected(file);
-    }
+    };
     humanFileSize(bytes) {
         const thresh = 1000;
         const units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];

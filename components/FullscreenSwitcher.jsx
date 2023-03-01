@@ -18,10 +18,10 @@ class FullscreenSwitcher extends React.Component {
         fullscreen: PropTypes.bool,
         fullscreenToggled: PropTypes.func,
         mobile: PropTypes.bool
-    }
+    };
     toggleFullscreen = () => {
         this.props.fullscreenToggled(!this.props.fullscreen);
-    }
+    };
     componentDidMount() {
         if (document.onfullscreenchange !== undefined) {
             document.onfullscreenchange = this.checkFullscreenState;
@@ -52,7 +52,7 @@ class FullscreenSwitcher extends React.Component {
         if (isFullScreen !== this.props.fullscreen) {
             this.props.fullscreenToggled(!this.props.fullscreen);
         }
-    }
+    };
     render() {
         // Render nothing on mobile, but keep the component for the onfullscreenchange logic
         if (this.props.mobile) {

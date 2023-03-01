@@ -36,10 +36,10 @@ class MeasurementSupport extends React.Component {
         // See defaultOpts below
         options: PropTypes.object,
         projection: PropTypes.string
-    }
+    };
     static defaultOpts = {
         geodesic: true
-    }
+    };
     constructor(props) {
         super(props);
         this.pickPositionCallbackTimeout = null;
@@ -53,7 +53,7 @@ class MeasurementSupport extends React.Component {
         } else if (
             this.sketchFeature && (
                 this.props.measurement.lenUnit !== prevProps.measurement.lenUnit ||
-                this.props.measurement.areaUnit !== prevProps.measurement.areaUnit || 
+                this.props.measurement.areaUnit !== prevProps.measurement.areaUnit ||
                 this.props.displayCrs !== prevProps.displayCrs
             )
         ) {
@@ -100,7 +100,7 @@ class MeasurementSupport extends React.Component {
         });
 
         this.props.map.addInteraction(this.drawInteraction);
-    }
+    };
     reset = () => {
         if (this.drawInteraction !== null) {
             this.props.map.removeInteraction(this.drawInteraction);
@@ -110,7 +110,7 @@ class MeasurementSupport extends React.Component {
             this.measureLayer = null;
             this.sketchFeature = null;
         }
-    }
+    };
     enterTemporaryPickMode = () => {
         this.modifyInteraction = new ol.interaction.Modify({
             features: new ol.Collection([this.sketchFeature]),
@@ -137,14 +137,14 @@ class MeasurementSupport extends React.Component {
             this.updateMeasurementResults(this.sketchFeature, false);
         });
         this.props.map.addInteraction(this.modifyInteraction);
-    }
+    };
     leaveTemporaryPickMode = () => {
         if (this.modifyInteraction) {
             this.props.map.un('pointermove', this.clearPickPosition);
             this.props.map.removeInteraction(this.modifyInteraction);
             this.modifyInteraction = null;
         }
-    }
+    };
     clearPickPosition = () => {
         if (this.props.measurement.pickPositionCallback) {
             clearTimeout(this.pickPositionCallbackTimeout);
@@ -155,7 +155,7 @@ class MeasurementSupport extends React.Component {
                 }
             }, 50);
         }
-    }
+    };
     updateMeasurementResults = (feature, drawing = true) => {
         const geomType = this.props.measurement.geomType;
         const settings = {
@@ -179,7 +179,7 @@ class MeasurementSupport extends React.Component {
             coordinates: feature.getGeometry().getCoordinates(),
             ...feature.get('measurements')
         });
-    }
+    };
     featureStyleFunction = (feature) => {
         const styleOptions = {
             strokeColor: 'red',
@@ -208,7 +208,7 @@ class MeasurementSupport extends React.Component {
                 }
             })
         ];
-    }
+    };
 }
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({

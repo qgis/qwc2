@@ -29,15 +29,15 @@ class OlLayer extends React.Component {
         setLayerLoading: PropTypes.func,
         swipe: PropTypes.number,
         zIndex: PropTypes.number
-    }
+    };
     state = {
         layer: null
-    }
+    };
     componentDidMount() {
         this.tilestoload = 0;
         this.createLayer(this.makeOptions(this.props.options));
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (!this.state.layer) {
             return;
         }
@@ -75,7 +75,7 @@ class OlLayer extends React.Component {
             projection: options.srs || options.crs || options.projection || this.props.projection,
             opacity: options.opacity !== undefined ? options.opacity : 255
         };
-    }
+    };
     createLayer = (options) => {
         let layer = null;
         if (options.type === 'group') {
@@ -104,7 +104,7 @@ class OlLayer extends React.Component {
             this.addLayer(layer, options);
             this.setState({layer: layer});
         }
-    }
+    };
     updateLayer = (newOptions, oldOptions) => {
         // optimization to avoid to update the layer if not necessary
         if (isEqual(omit(newOptions, ["loading"]), omit(oldOptions, ["loading"]) ) ) {
@@ -120,7 +120,7 @@ class OlLayer extends React.Component {
             );
             OlLayerUpdated.notify(this.state.layer);
         }
-    }
+    };
     addLayer = (layer, options) => {
         this.props.map.addLayer(layer);
         OlLayerAdded.notify(layer);
@@ -198,7 +198,7 @@ class OlLayer extends React.Component {
                 });
             }
         });
-    }
+    };
 }
 
 export default connect(() => ({}), {

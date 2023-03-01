@@ -13,7 +13,7 @@ import ol from 'openlayers';
 let layersMap;
 let rendererItem;
 // internal state for visibility of all Google Maps layers in layer tree
-let layerVisibilities = {};
+const layerVisibilities = {};
 const gmaps = {};
 const isTouchSupported = 'ontouchstart' in window;
 const startEvent = isTouchSupported ? 'touchstart' : 'mousedown';
@@ -27,9 +27,9 @@ export default {
     create: (options, map) => {
         const google = window.google;
         const mapId = map.get('id');
-        if (mapId != 'map') {
+        if (mapId !== 'map') {
             // ignore if not main map, e.g. overview
-            return;
+            return null;
         }
 
         if (!layersMap) {
@@ -172,7 +172,7 @@ export default {
     },
     render(options, map) {
         const mapId = map.get('id');
-        if (mapId != 'map') {
+        if (mapId !== 'map') {
             // ignore if not main map, e.g. overview
             return null;
         }
@@ -193,7 +193,7 @@ export default {
             height: '100%'
         };
 
-        const visibilityChanged = (layerVisibilities[options.id] != options.visibility);
+        const visibilityChanged = (layerVisibilities[options.id] !== options.visibility);
         layerVisibilities[options.id] = options.visibility;
 
         if (options.visibility === true) {

@@ -21,7 +21,7 @@ export default class VectorLayerPicker extends React.Component {
         layers: PropTypes.array,
         onChange: PropTypes.func,
         value: PropTypes.string
-    }
+    };
     render() {
         return (
             <div className="VectorLayerPicker">
@@ -34,6 +34,7 @@ export default class VectorLayerPicker extends React.Component {
     }
     addLayer = () => {
         const message = LocaleUtils.tr("vectorlayerpicker.prompt");
+        // eslint-disable-next-line
         const name = prompt(message);
         if (name) {
             const layer = {
@@ -44,5 +45,5 @@ export default class VectorLayerPicker extends React.Component {
             this.props.addLayer(layer);
             this.props.onChange(layer);
         }
-    }
+    };
 }

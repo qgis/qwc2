@@ -19,18 +19,18 @@ class MessageBar extends React.Component {
         hideOnTaskChange: PropTypes.bool,
         onHide: PropTypes.func,
         task: PropTypes.string
-    }
+    };
     static defaultProps = {
         onHide: () => {}
-    }
-    componentDidUpdate(prevProps, prevState) {
+    };
+    componentDidUpdate(prevProps) {
         if (this.props.task !== prevProps.task && this.props.hideOnTaskChange) {
             this.props.onHide();
         }
     }
     renderRole = (role) => {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
-    }
+    };
     render() {
         const contents = (typeof this.props.children === "function") ? this.props.children() : null;
         return (

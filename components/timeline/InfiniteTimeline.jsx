@@ -26,7 +26,7 @@ export default class InfiniteTimeline extends React.Component {
         setMarkersCanBeEnabled: PropTypes.func,
         startTime: PropTypes.object,
         timeSpan: PropTypes.number
-    }
+    };
     state = {
         timelineContainerEl: null,
         timelineWidth: 0,
@@ -89,7 +89,7 @@ export default class InfiniteTimeline extends React.Component {
         if (this.state.timelineContainerEl !== instance) {
             this.setState({timelineContainerEl: instance});
         }
-    }
+    };
     renderTicks = () => {
         const width = this.state.timelineWidth;
         const now = dayjs(this.props.currentTimestamp);
@@ -160,7 +160,7 @@ export default class InfiniteTimeline extends React.Component {
                 </span>
             );
         });
-    }
+    };
     onSliderWheel = (ev) => {
         if (ev.shiftKey) {
             if (ev.deltaY < 0) {
@@ -177,7 +177,7 @@ export default class InfiniteTimeline extends React.Component {
         }
         ev.preventDefault();
         ev.stopPropagation();
-    }
+    };
     navButtonClicked = (key) => {
         if (key === "home") {
             this.setState({panOffset: 0, zoomFactor: 1});
@@ -186,15 +186,15 @@ export default class InfiniteTimeline extends React.Component {
         } else if (key === "zoomout") {
             this.setState({zoomFactor: this.state.zoomFactor * 2});
         }
-    }
+    };
     setTimeScalePast = (value) => {
         this.props.setMarkersCanBeEnabled(value === 1 && this.state.timeScaleFuture === 1);
         this.setState({timeScalePast: value});
-    }
+    };
     setTimeScaleFuture = (value) => {
         this.props.setMarkersCanBeEnabled(this.state.timeScalePast === 1 && value === 1);
         this.setState({timeScaleFuture: value});
-    }
+    };
     pan = (offset) => {
         this.setState({panOffset: this.state.panOffset + offset});
         let panInterval = null;
@@ -208,7 +208,7 @@ export default class InfiniteTimeline extends React.Component {
             clearInterval(panInterval);
             clearTimeout(panTimeout);
         }, {once: true, capture: true});
-    }
+    };
     static computeTimeFromPixel(self, pixel) {
         const dpx = self.state.panOffset + pixel - 0.5 * self.state.timelineWidth;
         const exp = pixel - 0.5 * self.state.timelineWidth < 0 ? self.state.timeScalePast : self.state.timeScaleFuture;
