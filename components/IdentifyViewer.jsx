@@ -235,9 +235,9 @@ class IdentifyViewer extends React.Component {
         const diff = {};
         diff[path] = newstate;
         if (this.state.currentLayer === path && !newstate) {
-            this.setState({...this.state, expanded: {...this.state.expanded, ...diff}, currentResult: null, currentLayer: null});
+            this.setState((state) => ({...state, expanded: {...state.expanded, ...diff}, currentResult: null, currentLayer: null}));
         } else {
-            this.setState({...this.state, expanded: {...this.state.expanded, ...diff}});
+            this.setState((state) => ({...state, expanded: {...state.expanded, ...diff}}));
         }
     };
     setCurrentResult = (layer, result) => {
@@ -249,23 +249,27 @@ class IdentifyViewer extends React.Component {
         }
     };
     removeResultLayer = (layer) => {
-        const newResultTree = {...this.state.resultTree};
-        delete newResultTree[layer];
-        this.setState({
-            resultTree: newResultTree,
-            currentResult: this.state.currentLayer === layer ? null : this.state.currentResult,
-            currentLayer: this.state.currentLayer === layer ? null : this.state.currentLayer
+        this.setState((state) => {
+            const newResultTree = {...state.resultTree};
+            delete newResultTree[layer];
+            this.setState({
+                resultTree: newResultTree,
+                currentResult: state.currentLayer === layer ? null : state.currentResult,
+                currentLayer: state.currentLayer === layer ? null : state.currentLayer
+            });
         });
     };
     removeResult = (layer, result) => {
-        const newResultTree = {...this.state.resultTree};
-        newResultTree[layer] = this.state.resultTree[layer].filter(item => item !== result);
-        if (isEmpty(newResultTree[layer])) {
-            delete newResultTree[layer];
-        }
-        this.setState({
-            resultTree: newResultTree,
-            currentResult: this.state.currentResult === result ? null : this.state.currentResult
+        this.setState((state) => {
+            const newResultTree = {...state.resultTree};
+            newResultTree[layer] = state.resultTree[layer].filter(item => item !== result);
+            if (isEmpty(newResultTree[layer])) {
+                delete newResultTree[layer];
+            }
+            return {
+                resultTree: newResultTree,
+                currentResult: state.currentResult === result ? null : state.currentResult
+            };
         });
     };
     exportResults = (clipboard = false) => {

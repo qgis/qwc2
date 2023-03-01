@@ -64,9 +64,9 @@ class MapLegend extends React.Component {
         }
         const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
         const extraControls = [
-            {icon: "eye", callback: () => this.setState({onlyVisibleLegend: !this.state.onlyVisibleLegend}), active: this.state.onlyVisibleLegend, msgid: LocaleUtils.trmsg("maplegend.onlyvisible")},
-            {icon: "box", callback: () => this.setState({bboxDependentLegend: !this.state.bboxDependentLegend}), active: this.state.bboxDependentLegend, msgid: LocaleUtils.trmsg("maplegend.bboxdependent")},
-            {icon: "scale", callback: () => this.setState({scaleDependentLegend: !this.state.scaleDependentLegend}), active: this.state.scaleDependentLegend, msgid: LocaleUtils.trmsg("maplegend.scaledependent")}
+            {icon: "eye", callback: () => this.setState((state) => ({onlyVisibleLegend: !state.onlyVisibleLegend})), active: this.state.onlyVisibleLegend, msgid: LocaleUtils.trmsg("maplegend.onlyvisible")},
+            {icon: "box", callback: () => this.setState((state) => ({bboxDependentLegend: !state.bboxDependentLegend})), active: this.state.bboxDependentLegend, msgid: LocaleUtils.trmsg("maplegend.bboxdependent")},
+            {icon: "scale", callback: () => this.setState((state) => ({scaleDependentLegend: !state.scaleDependentLegend})), active: this.state.scaleDependentLegend, msgid: LocaleUtils.trmsg("maplegend.scaledependent")}
         ];
 
         return (

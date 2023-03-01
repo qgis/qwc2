@@ -53,16 +53,18 @@ class LayerCatalogWidget extends React.PureComponent {
         );
     }
     toggleLayerListEntry = (path) => {
-        const newCatalog = [...this.state.catalog];
-        newCatalog[path[0]] = {...newCatalog[path[0]]};
-        let cur = newCatalog[path[0]];
-        for (const idx of path.slice(1)) {
-            cur.sublayers[idx] = {...cur.sublayers[idx]};
-            cur = cur.sublayers[idx];
-        }
-        cur.expanded = !cur.expanded;
-        this.setState({catalog: newCatalog});
-    }
+        this.setState((state) => {
+            const newCatalog = [...state.catalog];
+            newCatalog[path[0]] = {...newCatalog[path[0]]};
+            let cur = newCatalog[path[0]];
+            for (const idx of path.slice(1)) {
+                cur.sublayers[idx] = {...cur.sublayers[idx]};
+                cur = cur.sublayers[idx];
+            }
+            cur.expanded = !cur.expanded;
+            this.setState({catalog: newCatalog});
+        });
+    };
     render() {
         const filter = new RegExp(removeDiacritics(this.state.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
         let emptyEntry = null;

@@ -243,7 +243,7 @@ class Editing extends React.Component {
     };
     render() {
         const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("editing.maximize") : LocaleUtils.tr("editing.minimize");
-        const extraTitlebarContent = (<Icon className="editing-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState({minimized: !this.state.minimized})} title={minMaxTooltip}/>);
+        const extraTitlebarContent = (<Icon className="editing-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState((state) => ({minimized: !state.minimized}))} title={minMaxTooltip}/>);
         const attribFormVisible = !!(this.props.editContext.feature && (this.props.editContext.action === "Pick" || this.props.editContext.feature.geometry));
         return (
             <SideBar extraTitlebarContent={extraTitlebarContent} heightResizeable={attribFormVisible} icon={"editing"} id="Editing" onHide={this.onHide} onShow={this.onShow}
@@ -311,9 +311,11 @@ class Editing extends React.Component {
         this.props.setEditContext('Editing', {feature: feature, changed: false, geomReadOnly: editPermissions.updatable === false});
     };
     toggleDrawPick = () => {
-        const pickActive = !this.state.drawPick;
-        this.setState({drawPick: pickActive, drawPickResults: null});
-        this.props.setEditContext('Editing', {action: pickActive ? null : "Draw"});
+        this.setState((state) => {
+            const pickActive = !state.drawPick;
+            this.props.setEditContext('Editing', {action: pickActive ? null : "Draw"});
+            return {drawPick: pickActive, drawPickResults: null};
+        });
     };
     drawPickQuery = (coordinates) => {
         const queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
@@ -325,7 +327,7 @@ class Editing extends React.Component {
             const request = IdentifyUtils.buildRequest(layer, layer.queryLayers.join(","), coordinates, this.props.map);
             IdentifyUtils.sendRequest(request, (response) => {
                 if (response) {
-                    this.setState({drawPickResults: {...this.state.drawPickResults, ...IdentifyUtils.parseXmlResponse(response, this.props.map.projection)}});
+                    this.setState((state) => ({drawPickResults: {...state.drawPickResults, ...IdentifyUtils.parseXmlResponse(response, this.props.map.projection)}}));
                 }
             });
         });

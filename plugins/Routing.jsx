@@ -151,7 +151,7 @@ class Routing extends React.Component {
                         <div className="routing-frame">
                             <div className="routing-buttons">
                                 <ButtonBar active={this.state.mode} buttons={buttons} onClick={key => this.setState({mode: key})} />
-                                <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState({settingsPopup: !this.state.settingsPopup})}>
+                                <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState((state) => ({settingsPopup: !state.settingsPopup}))}>
                                     <Icon icon="cog" />
                                 </button>
                                 {this.state.settingsPopup ? this.renderSettings() : null}
@@ -347,13 +347,13 @@ class Routing extends React.Component {
     };
     changeCurrentTab = (key) => {
         this.props.removeLayer("routingggeometries");
-        this.setState({
+        this.setState((state) => ({
             currentTab: key,
             routeConfig: {
-                ...this.state.routeConfig,
+                ...state.routeConfig,
                 result: null
             }
-        });
+        }));
     };
     locatePos = () => {
         return {
@@ -363,72 +363,72 @@ class Routing extends React.Component {
         };
     };
     updateSetting = (mode, diff) => {
-        this.setState({settings: {
-            ...this.state.settings,
+        this.setState((state) => ({settings: {
+            ...state.settings,
             [mode]: {
-                ...this.state.settings[mode],
+                ...state.settings[mode],
                 ...diff
             }
-        }});
+        }}));
         this.recomputeIfNeeded();
     };
     addRoutePt = (entry = {text: '', pos: null}) => {
-        this.setState({routeConfig: {
-            ...this.state.routeConfig,
+        this.setState((state) => ({routeConfig: {
+            ...state.routeConfig,
             routepoints: [
-                ...this.state.routeConfig.routepoints.slice(0, -1),
+                ...state.routeConfig.routepoints.slice(0, -1),
                 entry,
-                ...this.state.routeConfig.routepoints.slice(-1)
+                ...state.routeConfig.routepoints.slice(-1)
             ]
-        }});
+        }}));
         this.recomputeIfNeeded();
     };
     removeRoutePt = (idx) => {
-        this.setState({routeConfig: {
-            ...this.state.routeConfig,
+        this.setState((state) => ({routeConfig: {
+            ...state.routeConfig,
             routepoints: [
-                ...this.state.routeConfig.routepoints.slice(0, idx),
-                ...this.state.routeConfig.routepoints.slice(idx + 1)
+                ...state.routeConfig.routepoints.slice(0, idx),
+                ...state.routeConfig.routepoints.slice(idx + 1)
             ]
-        }});
+        }}));
         this.recomputeIfNeeded();
     };
     clearRoutePts = () => {
-        this.setState({routeConfig: {
-            ...this.state.routeConfig,
+        this.setState((state) => ({routeConfig: {
+            ...state.routeConfig,
             routepoints: [
                 {text: '', pos: null, crs: null},
                 {text: '', pos: null, crs: null}
             ]
-        }});
+        }}));
         this.recomputeIfNeeded();
     };
     reverseRoutePts = () => {
-        this.setState({routeConfig: {
-            ...this.state.routeConfig,
-            routepoints: this.state.routeConfig.routepoints.reverse()
-        }});
+        this.setState((state) => ({routeConfig: {
+            ...state.routeConfig,
+            routepoints: state.routeConfig.routepoints.reverse()
+        }}));
         this.recomputeIfNeeded();
     };
     updateRouteConfig = (diff, recompute = true) => {
-        this.setState({routeConfig: {...this.state.routeConfig, ...diff}});
+        this.setState((state) => ({routeConfig: {...state.routeConfig, ...diff}}));
         if (recompute) {
             this.recomputeIfNeeded();
         }
     };
     updateRoutePoint = (idx, diff) => {
-        this.setState({routeConfig: {
-            ...this.state.routeConfig,
+        this.setState((state) => ({routeConfig: {
+            ...state.routeConfig,
             routepoints: [
-                ...this.state.routeConfig.routepoints.slice(0, idx),
-                {...this.state.routeConfig.routepoints[idx], ...diff},
-                ...this.state.routeConfig.routepoints.slice(idx + 1)
+                ...state.routeConfig.routepoints.slice(0, idx),
+                {...state.routeConfig.routepoints[idx], ...diff},
+                ...state.routeConfig.routepoints.slice(idx + 1)
             ]
-        }});
+        }}));
         this.recomputeIfNeeded();
     };
     updateIsoConfig = (diff, recompute = true) => {
-        this.setState({isoConfig: {...this.state.isoConfig, ...diff}});
+        this.setState((state) => ({isoConfig: {...state.isoConfig, ...diff}}));
         if (recompute) {
             this.recomputeIfNeeded();
         }

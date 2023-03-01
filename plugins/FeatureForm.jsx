@@ -111,21 +111,21 @@ class FeatureForm extends React.Component {
             const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
             this.props.iface.getFeature(editDataset, pos, this.props.map.projection, scale, 96, (featureCollection) => {
                 if (featureCollection && !isEmpty(featureCollection.features)) {
-                    this.setState({
+                    this.setState((state) => ({
                         pickedFeatures: {
-                            ...this.state.pickedFeatures,
+                            ...state.pickedFeatures,
                             ...featureCollection.features.reduce((res, feature) => ({
                                 ...res,
                                 [layerId + "::" + feature.id]: feature
                             }), {})
                         },
-                        pendingRequests: this.state.pendingRequests - 1,
-                        selectedFeature: this.state.selectedFeature || (layerId + "::" + featureCollection.features[0].id)
-                    });
+                        pendingRequests: state.pendingRequests - 1,
+                        selectedFeature: state.selectedFeature || (layerId + "::" + featureCollection.features[0].id)
+                    }));
                 } else {
-                    this.setState({
-                        pendingRequests: this.state.pendingRequests - 1
-                    });
+                    this.setState((state) => ({
+                        pendingRequests: state.pendingRequests - 1
+                    }));
                 }
             });
         });

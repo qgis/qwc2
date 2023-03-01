@@ -241,43 +241,48 @@ class ResizeableWindow extends React.Component {
         }
     };
     onDragStop = (ev, data) => {
-        const geometry = {...this.state.geometry, x: data.x, y: data.y};
-        this.setState({geometry: geometry});
+        this.setState((state) => ({
+            geometry: {...state.geometry, x: data.x, y: data.y}
+        }));
         if (this.dragShield) {
             this.dragShield.style.display = 'none';
         }
     };
     onResizeStop = (ev, dir, ref, delta, position) => {
-        const geometry = {
-            ...this.state.geometry,
-            x: position.x,
-            y: position.y,
-            width: this.state.geometry.width + delta.width,
-            height: this.state.geometry.height + delta.height
-        };
-        this.setState({geometry: geometry});
+        this.setState((state) => ({
+            geometry: {
+                ...state.geometry,
+                x: position.x,
+                y: position.y,
+                width: state.geometry.width + delta.width,
+                height: state.geometry.height + delta.height
+            }
+        }));
     };
     toggleDock = () => {
-        const geometry = {
-            ...this.state.geometry,
-            docked: !this.state.geometry.docked
-        };
-        this.setState({geometry: geometry});
+        this.setState((state) => ({
+            geometry: {
+                ...state.geometry,
+                docked: !state.geometry.docked
+            }
+        }));
     };
     toggleMinimize = () => {
-        const geometry = {
-            ...this.state.geometry,
-            minimized: !this.state.geometry.minimized
-        };
-        this.setState({geometry: geometry});
+        this.setState((state) => ({
+            geometry: {
+                ...state.geometry,
+                minimized: !state.geometry.minimized
+            }
+        }));
     };
     toggleMaximize = () => {
-        const geometry = {
-            ...this.state.geometry,
-            maximized: !this.state.geometry.maximized,
-            minimized: false
-        };
-        this.setState({geometry: geometry});
+        this.setState((state) => ({
+            geometry: {
+                ...state.geometry,
+                maximized: !state.geometry.maximized,
+                minimized: false
+            }
+        }));
     };
 }
 

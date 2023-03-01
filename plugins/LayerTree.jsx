@@ -497,8 +497,10 @@ class LayerTree extends React.Component {
         }
     };
     toggleImportLayers = () => {
-        const visible = !this.state.importvisible;
-        this.setState({importvisible: visible, sidebarwidth: visible ? '40em' : null});
+        this.setState((state) => {
+            const visible = !state.importvisible;
+            return {importvisible: visible, sidebarwidth: visible ? '40em' : null};
+        });
     };
     propagateOptions = (layer, options, path = null) => {
         if (layer.sublayers) {
@@ -530,7 +532,7 @@ class LayerTree extends React.Component {
         this.props.changeLayerProperty(layer.uuid, "opacity", Math.max(1, 255 - value), sublayerpath);
     };
     layerMenuToggled = (sublayeruuid) => {
-        this.setState({activemenu: this.state.activemenu === sublayeruuid ? null : sublayeruuid});
+        this.setState((state) => ({activemenu: state.activemenu === sublayeruuid ? null : sublayeruuid}));
     };
     showLegendTooltip = (ev, request) => {
         this.setState({

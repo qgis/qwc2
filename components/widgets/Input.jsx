@@ -55,7 +55,7 @@ class Input extends React.Component {
     };
     commit = () => {
         if (this.state.changed) {
-            this.setState({value: this.state.curValue});
+            this.setState((state) => ({value: state.curValue}));
             this.props.onChange(this.state.curValue);
         }
     };

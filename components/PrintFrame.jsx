@@ -75,13 +75,15 @@ export default class PrintFrame extends React.Component {
     };
     updateSelection = (ev) => {
         if (this.state.moving) {
-            const x = Math.round(ev.clientX);
-            const y = Math.round(ev.clientY);
-            const width = Math.round(Math.max(0, x - this.state.x));
-            const height = Math.round(Math.max(0, y - this.state.y));
-            this.setState({
-                width: width,
-                height: height
+            this.setState((state) => {
+                const x = Math.round(ev.clientX);
+                const y = Math.round(ev.clientY);
+                const width = Math.round(Math.max(0, x - state.x));
+                const height = Math.round(Math.max(0, y - state.y));
+                return {
+                    width: width,
+                    height: height
+                };
             });
         }
     };

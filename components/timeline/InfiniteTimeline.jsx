@@ -34,10 +34,10 @@ export default class InfiniteTimeline extends React.Component {
         timeScaleFuture: 1,
         panOffset: 0,
         zoomFactor: 1 // 1 = [startTime, endTime] fits dialog width in linear scale,
-    }
+    };
     componentDidUpdate(prevProps, prevState) {
         if (this.state.timelineContainerEl && (this.props.dialogWidth !== prevProps.dialogWidth || !prevState.timelineContainerEl)) {
-            this.setState({timelineWidth: this.state.timelineContainerEl.getBoundingClientRect().width});
+            this.setState((state) => ({timelineWidth: state.timelineContainerEl.getBoundingClientRect().width}));
         }
         if (this.props.currentTimestamp !== prevProps.currentTimestamp) {
             const pixel = InfiniteTimeline.computePixelFromTime(this, this.props.currentTimestamp);
@@ -164,15 +164,15 @@ export default class InfiniteTimeline extends React.Component {
     onSliderWheel = (ev) => {
         if (ev.shiftKey) {
             if (ev.deltaY < 0) {
-                this.setState({zoomFactor: this.state.zoomFactor * 0.5});
+                this.setState((state) => ({zoomFactor: state.zoomFactor * 0.5}));
             } else if (ev.deltaY > 0) {
-                this.setState({zoomFactor: this.state.zoomFactor * 2});
+                this.setState((state) => ({zoomFactor: state.zoomFactor * 2}));
             }
         } else {
             if (ev.deltaX < 0) {
-                this.setState({panOffset: this.state.panOffset - 20});
+                this.setState((state) => ({panOffset: state.panOffset - 20}));
             } else if (ev.deltaX > 0) {
-                this.setState({panOffset: this.state.panOffset + 20});
+                this.setState((state) => ({panOffset: state.panOffset + 20}));
             }
         }
         ev.preventDefault();
@@ -182,9 +182,9 @@ export default class InfiniteTimeline extends React.Component {
         if (key === "home") {
             this.setState({panOffset: 0, zoomFactor: 1});
         } else if (key === "zoomin") {
-            this.setState({zoomFactor: this.state.zoomFactor * 0.5});
+            this.setState((state) => ({zoomFactor: state.zoomFactor * 0.5}));
         } else if (key === "zoomout") {
-            this.setState({zoomFactor: this.state.zoomFactor * 2});
+            this.setState((state) => ({zoomFactor: state.zoomFactor * 2}));
         }
     };
     setTimeScalePast = (value) => {
@@ -196,12 +196,12 @@ export default class InfiniteTimeline extends React.Component {
         this.setState({timeScaleFuture: value});
     };
     pan = (offset) => {
-        this.setState({panOffset: this.state.panOffset + offset});
+        this.setState((state) => ({panOffset: state.panOffset + offset}));
         let panInterval = null;
         const panTimeout = setTimeout(() => {
-            this.setState({panOffset: this.state.panOffset + offset});
+            this.setState((state) => ({panOffset: state.panOffset + offset}));
             panInterval = setInterval(() => {
-                this.setState({panOffset: this.state.panOffset + offset});
+                this.setState((state) => ({panOffset: state.panOffset + offset}));
             }, 50);
         }, 250);
         document.addEventListener("mouseup", () => {

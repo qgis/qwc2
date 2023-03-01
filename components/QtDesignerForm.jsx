@@ -85,10 +85,10 @@ class QtDesignerForm extends React.Component {
     componentDidUpdate(prevProps) {
         // Query form
         if (this.props.form !== prevProps.form || this.props.feature.__version__ !== prevProps.feature.__version__) {
-            this.setState({
+            this.setState((state) => ({
                 ...QtDesignerForm.defaultState,
-                activetabs: this.props.form === prevProps.form ? this.state.activetabs : {}
-            });
+                activetabs: this.props.form === prevProps.form ? state.activetabs : {}
+            }));
             let url = this.props.form;
             if (url && url.startsWith(":/")) {
                 const assetsPath = ConfigUtils.getAssetsPath();
@@ -324,7 +324,7 @@ class QtDesignerForm extends React.Component {
                             <span
                                 className={tab.name === activetab ? "qt-designer-form-tab-active" : ""}
                                 key={tab.name}
-                                onClick={() => this.setState({activetabs: {...this.state.activetabs, [widget.name]: tab.name}})}
+                                onClick={() => this.setState((state) => ({activetabs: {...state.activetabs, [widget.name]: tab.name}}))}
                             >
                                 {tab.attribute.title}
                             </span>

@@ -35,7 +35,7 @@ export default class FixedTimeline extends React.Component {
     };
     componentDidUpdate(prevProps, prevState) {
         if (this.state.ticksContainerEl && (this.props.dialogWidth !== prevProps.dialogWidth || !prevState.ticksContainerEl)) {
-            this.setState({timelineWidth: this.state.ticksContainerEl.getBoundingClientRect().width});
+            this.setState((state) => ({timelineWidth: state.ticksContainerEl.getBoundingClientRect().width}));
         }
         // Automatically pan if nearing the start/end of timeline
         if (this.props.currentTimestamp > this.props.endTime - 0.1 * this.props.timeSpan) {

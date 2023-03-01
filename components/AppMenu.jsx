@@ -175,7 +175,7 @@ class AppMenu extends React.Component {
             document.removeEventListener('mousemove', this.onMouseMove, true);
         }
         this.props.onMenuToggled(!this.state.menuVisible);
-        this.setState({ menuVisible: !this.state.menuVisible, submenusVisible: [], filter: "" });
+        this.setState((state) => ({menuVisible: !state.menuVisible, submenusVisible: [], filter: ""}));
     };
     checkCloseMenu = (ev) => {
         if (this.menuEl && !this.menuEl.contains(ev.target) && !this.props.keepMenuOpen) {
@@ -184,7 +184,7 @@ class AppMenu extends React.Component {
     };
     onSubmenuClicked = (key, level) => {
         const a = this.state.submenusVisible[level] === key ? [] : [key];
-        this.setState({ submenusVisible: this.state.submenusVisible.slice(0, level).concat(a) });
+        this.setState((state) => ({submenusVisible: state.submenusVisible.slice(0, level).concat(a)}));
     };
     onMenuitemClicked = (item) => {
         if (!this.props.keepMenuOpen && this.state.menuVisible) {

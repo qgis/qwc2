@@ -179,12 +179,12 @@ class TimeManager extends React.Component {
                 }
             });
             timeData.values = [...timeData.values].sort().map(d => dayjs.utc(d));
-            this.setState({
+            this.setState((state) => ({
                 timeData: timeData,
-                currentTimestamp: this.state.currentTimestamp ?? +timeData.values[0],
+                currentTimestamp: state.currentTimestamp ?? +timeData.values[0],
                 startTime: timeData.values.length > 0 ? timeData.values[0].hour(0).minute(0).second(0) : null,
                 endTime: timeData.values.length > 0 ? timeData.values[timeData.values.length - 1].hour(23).minute(59).second(59) : null
-            });
+            }));
             this.updateLayerTimeDimensions(timeData, this.state.currentTimestamp);
             this.updateTimeFeatures(timeData);
         } else {
@@ -329,7 +329,7 @@ class TimeManager extends React.Component {
                         ) : null}
                     </div>
                     <div className="time-manager-options-menubutton">
-                        <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState({settingsPopup: !this.state.settingsPopup})}>
+                        <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState((state) => ({settingsPopup: !state.settingsPopup}))}>
                             <Icon icon="cog" />
                         </button>
                         {this.state.settingsPopup ? options : null}
@@ -381,27 +381,27 @@ class TimeManager extends React.Component {
         clearTimeout(this.updateMapMarkersTimeout);
         this.animationTimer = null;
         this.updateMapMarkersTimeout = null;
-        this.setState({timeEnabled: enabled, currentTimestamp: +this.state.startTime, animationActive: false, timeMarkers: null});
+        this.setState((state) => ({timeEnabled: enabled, currentTimestamp: +state.startTime, animationActive: false, timeMarkers: null}));
     };
     animationButtonClicked = (action) => {
         this.stopAnimation();
         if (action === "rewind") {
-            this.setState({currentTimestamp: +this.state.startTime, animationActive: false});
+            this.setState((state) => ({currentTimestamp: +state.startTime, animationActive: false}));
         } else if (action === "now") {
             this.setState({currentTimestamp: +dayjs(), animationActive: false});
         } else if (action === "prev") {
             const newday = this.step(-1);
-            this.setState({currentTimestamp: +Math.max(newday, this.state.startTime)});
+            this.setState((state) => ({currentTimestamp: +Math.max(newday, state.startTime)}));
         } else if (action === "next") {
             const newday = this.step(+1);
-            this.setState({currentTimestamp: +Math.min(newday, this.state.endTime)});
+            this.setState((state) => ({currentTimestamp: +Math.min(newday, state.endTime)}));
         } else if (action === "stop") {
             /* Already stopped above, pass */
         } else if (action === "play") {
             const curday = dayjs(this.state.currentTimestamp);
             const lastday = this.state.endTime;
             if (curday >= lastday) {
-                this.setState({currentTimestamp: +this.state.startTime});
+                this.setState((state) => ({currentTimestamp: +state.startTime}));
             }
             this.animationTimer = setInterval(() => {
                 this.advanceAnimation(+1);
@@ -411,14 +411,14 @@ class TimeManager extends React.Component {
             const curday = dayjs(this.state.currentTimestamp);
             const firstday = this.state.startTime;
             if (curday <= firstday) {
-                this.setState({currentTimestamp: +this.state.endTime});
+                this.setState((state) => ({currentTimestamp: +state.endTime}));
             }
             this.animationTimer = setInterval(() => {
                 this.advanceAnimation(-1);
             }, 1000 * this.state.animationInterval);
             this.setState({animationActive: true});
         } else if (action === "loop") {
-            this.setState({animationLoop: !this.state.animationLoop});
+            this.setState((state) => ({animationLoop: !state.animationLoop}));
         }
     };
     advanceAnimation = (stepdir) => {
@@ -427,7 +427,7 @@ class TimeManager extends React.Component {
         const lastday = this.state.endTime;
         if (newday > lastday) {
             if (stepdir > 0 && this.state.animationLoop) {
-                this.setState({currentTimestamp: +this.state.startTime});
+                this.setState((state) => ({currentTimestamp: +state.startTime}));
             } else {
                 this.setState({currentTimestamp: +lastday, animationActive: false});
                 clearInterval(this.animationTimer);
@@ -435,7 +435,7 @@ class TimeManager extends React.Component {
             }
         } else if (newday < firstday) {
             if (stepdir < 0 && this.state.animationLoop) {
-                this.setState({currentTimestamp: +this.state.endTime});
+                this.setState((state) => ({currentTimestamp: +state.endTime}));
             } else {
                 this.setState({currentTimestamp: +firstday, animationActive: false});
                 clearInterval(this.animationTimer);
@@ -531,9 +531,9 @@ class TimeManager extends React.Component {
             IdentifyUtils.sendRequest(request, (response) => {
                 if (this.state.timeFeatures && this.state.timeFeatures.reqUUID === reqUUID && response) {
                     const layerFeatures = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
-                    this.setState({timeFeatures: {
+                    this.setState((state) => ({timeFeatures: {
                         features: {
-                            ...this.state.timeFeatures.features,
+                            ...state.timeFeatures.features,
                             ...Object.entries(layerFeatures).reduce((res, [layername, features]) => {
                                 return {...res, [layername]: features.map(feature => {
                                     const startdate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][0]]);
@@ -551,18 +551,18 @@ class TimeManager extends React.Component {
                             }, {})
                         },
                         attributes: {
-                            ...this.state.timeFeatures.attributes,
+                            ...state.timeFeatures.attributes,
                             ...Object.entries(layerFeatures).reduce((res, [layername, features]) => {
                                 return {...res, [layername]: Object.keys((features[0] || {properties: {}}).properties)};
                             }, {})
                         },
-                        pendingRequests: this.state.timeFeatures.pendingRequests - 1
-                    }});
+                        pendingRequests: state.timeFeatures.pendingRequests - 1
+                    }}));
                 } else {
-                    this.setState({timeFeatures: {
-                        ...this.state.timeFeatures,
-                        pendingRequests: this.state.timeFeatures.pendingRequests - 1
-                    }});
+                    this.setState((state) => ({timeFeatures: {
+                        ...state.timeFeatures,
+                        pendingRequests: state.timeFeatures.pendingRequests - 1
+                    }}));
                 }
             });
             ++pending;

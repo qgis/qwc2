@@ -91,42 +91,44 @@ class Identify extends React.Component {
     identifyPoint = (prevProps) => {
         const clickPoint = this.queryPoint(prevProps);
         if (clickPoint) {
-            // Remove any search selection layer to avoid confusion
-            this.props.removeLayer("searchselection");
-            let pendingRequests = 0;
-            const identifyResults = this.props.click.modifiers.ctrl !== true ? {} : this.state.identifyResults;
+            this.setState((state) => {
+                // Remove any search selection layer to avoid confusion
+                this.props.removeLayer("searchselection");
+                let pendingRequests = 0;
+                const identifyResults = this.props.click.modifiers.ctrl !== true ? {} : state.identifyResults;
 
-            let queryableLayers = [];
-            queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
-            queryableLayers.forEach(l => {
-                const request = IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, this.props.params);
-                ++pendingRequests;
-                IdentifyUtils.sendRequest(request, (response) => {
-                    this.setState({pendingRequests: this.state.pendingRequests - 1});
-                    if (response) {
-                        this.parseResult(response, l, request.params.info_format, clickPoint);
-                    }
-                });
-            });
-
-            if (!isEmpty(this.props.click.features)) {
-                this.props.click.features.forEach((result) => {
-                    const layer = this.props.layers.find(l => l.id === result.layer);
-                    if (layer && layer.role === LayerRole.USERLAYER && layer.type === "vector" && !isEmpty(layer.features)) {
-                        const queryFeature = layer.features.find(feature =>  feature.id === result.feature);
-                        if (queryFeature && !isEmpty(queryFeature.properties)) {
-                            if (!identifyResults[layer.name]) {
-                                identifyResults[layer.name] = [];
-                            }
-                            queryFeature.displayname = queryFeature.properties.name || queryFeature.properties.Name || queryFeature.properties.NAME || queryFeature.properties.label || queryFeature.properties.id || queryFeature.id;
-                            queryFeature.layertitle = layer.title || layer.name || layer.id;
-                            identifyResults[layer.name].push(queryFeature);
+                let queryableLayers = [];
+                queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
+                queryableLayers.forEach(l => {
+                    const request = IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, this.props.params);
+                    ++pendingRequests;
+                    IdentifyUtils.sendRequest(request, (response) => {
+                        this.setState((state2) => ({pendingRequests: state2.pendingRequests - 1}));
+                        if (response) {
+                            this.parseResult(response, l, request.params.info_format, clickPoint);
                         }
-                    }
+                    });
                 });
-            }
-            this.props.addMarker('identify', clickPoint, '', this.props.map.projection);
-            this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests});
+
+                if (!isEmpty(this.props.click.features)) {
+                    this.props.click.features.forEach((result) => {
+                        const layer = this.props.layers.find(l => l.id === result.layer);
+                        if (layer && layer.role === LayerRole.USERLAYER && layer.type === "vector" && !isEmpty(layer.features)) {
+                            const queryFeature = layer.features.find(feature =>  feature.id === result.feature);
+                            if (queryFeature && !isEmpty(queryFeature.properties)) {
+                                if (!identifyResults[layer.name]) {
+                                    identifyResults[layer.name] = [];
+                                }
+                                queryFeature.displayname = queryFeature.properties.name || queryFeature.properties.Name || queryFeature.properties.NAME || queryFeature.properties.label || queryFeature.properties.id || queryFeature.id;
+                                queryFeature.layertitle = layer.title || layer.name || layer.id;
+                                identifyResults[layer.name].push(queryFeature);
+                            }
+                        }
+                    });
+                }
+                this.props.addMarker('identify', clickPoint, '', this.props.map.projection);
+                return {identifyResults: identifyResults, pendingRequests: pendingRequests};
+            });
         }
     };
     queryPoint = (prevProps) => {
@@ -172,7 +174,7 @@ class Identify extends React.Component {
             const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, params);
             ++pendingRequests;
             IdentifyUtils.sendRequest(request, (response) => {
-                this.setState({pendingRequests: this.state.pendingRequests - 1});
+                this.setState((state) => ({pendingRequests: state.pendingRequests - 1}));
                 if (response) {
                     this.parseResult(response, layer, request.params.info_format, center);
                 }
@@ -205,7 +207,7 @@ class Identify extends React.Component {
                 const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, this.props.params);
                 ++pendingRequests;
                 IdentifyUtils.sendRequest(request, (response) => {
-                    this.setState({pendingRequests: this.state.pendingRequests - 1});
+                    this.setState((state) => ({pendingRequests: state.pendingRequests - 1}));
                     if (response) {
                         this.parseResult(response, layer, request.params.info_format, clickPoint);
                     }
@@ -242,16 +244,18 @@ class Identify extends React.Component {
     parseResult = (response, layer, format, clickPoint) => {
         const newResults = IdentifyUtils.parseResponse(response, layer, format, clickPoint, this.props.map.projection, this.props.featureInfoReturnsLayerName, this.props.layers);
         // Merge with previous
-        const identifyResults = {...this.state.identifyResults};
-        Object.keys(newResults).map(layername => {
-            const newFeatureIds = newResults[layername].map(feature => feature.id);
-            identifyResults[layername] = [
-                ...(identifyResults[layername] || []).filter(feature => !newFeatureIds.includes(feature.id)),
-                ...newResults[layername]
-            ];
+        this.setState((state) => {
+            const identifyResults = {...state.identifyResults};
+            Object.keys(newResults).map(layername => {
+                const newFeatureIds = newResults[layername].map(feature => feature.id);
+                identifyResults[layername] = [
+                    ...(identifyResults[layername] || []).filter(feature => !newFeatureIds.includes(feature.id)),
+                    ...newResults[layername]
+                ];
+            });
+            return {identifyResults: identifyResults};
         });
-        this.setState({identifyResults: identifyResults});
-    }
+    };
     onShow = (mode) => {
         this.setState({mode: mode || 'Point'});
         if (mode === "Region") {

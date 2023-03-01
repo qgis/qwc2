@@ -170,7 +170,7 @@ class AttributeTable extends React.Component {
                                     <td>
                                         <span>
                                             {filteredIndex > 0 ? this.renderRowResizeHandle(filteredIndex, 't') : null}
-                                            {<input checked={this.state.selectedFeatures[feature.id] === true} onChange={(ev) => this.setState({selectedFeatures: {...this.state.selectedFeatures, [feature.id]: ev.target.checked}})} type="checkbox" />}
+                                            {<input checked={this.state.selectedFeatures[feature.id] === true} onChange={(ev) => this.setState((state) => ({selectedFeatures: {...state.selectedFeatures, [feature.id]: ev.target.checked}}))} type="checkbox" />}
                                             {this.renderRowResizeHandle(filteredIndex + 1, 'b')}
                                         </span>
                                     </td>
@@ -334,18 +334,20 @@ class AttributeTable extends React.Component {
         this.setState({selectedLayer: value});
     };
     reload = (layer = null) => {
-        const selectedLayer = layer || this.state.selectedLayer;
-        this.setState({...AttributeTable.defaultState, loading: true, selectedLayer: selectedLayer});
-        KeyValCache.clear();
-        this.props.iface.getFeatures(this.editLayerId(selectedLayer), this.props.mapCrs, (result) => {
-            if (result) {
-                const features = result.features || [];
-                this.setState({loading: false, features: features, filteredSortedFeatures: this.filteredSortedFeatures(features, this.state), loadedLayer: selectedLayer});
-            } else {
-                // eslint-disable-next-line
-                alert(LocaleUtils.tr("attribtable.loadfailed"));
-                this.setState({loading: false, features: [], filteredSortedFeatures: [], loadedLayer: ""});
-            }
+        this.setState((state) => {
+            const selectedLayer = layer || state.selectedLayer;
+            KeyValCache.clear();
+            this.props.iface.getFeatures(this.editLayerId(selectedLayer), this.props.mapCrs, (result) => {
+                if (result) {
+                    const features = result.features || [];
+                    this.setState((state2) => ({loading: false, features: features, filteredSortedFeatures: this.filteredSortedFeatures(features, state2), loadedLayer: selectedLayer}));
+                } else {
+                    // eslint-disable-next-line
+                    alert(LocaleUtils.tr("attribtable.loadfailed"));
+                    this.setState({loading: false, features: [], filteredSortedFeatures: [], loadedLayer: ""});
+                }
+            });
+            return {...AttributeTable.defaultState, loading: true, selectedLayer: selectedLayer};
         });
     };
     sortBy = (field) => {
@@ -444,60 +446,66 @@ class AttributeTable extends React.Component {
                 return res;
             }, {})
         });
-        this.setState({
-            features: [...this.state.features, feature],
-            filteredSortedFeatures: [...this.state.filteredSortedFeatures, {...feature, originalIndex: this.state.features.length}],
+        this.setState((state) => ({
+            features: [...state.features, feature],
+            filteredSortedFeatures: [...state.filteredSortedFeatures, {...feature, originalIndex: state.features.length}],
             filterVal: "",
-            currentPage: Math.floor(this.state.features.length / this.state.pageSize),
-            changedFeatureIdx: this.state.filteredSortedFeatures.length,
+            currentPage: Math.floor(state.features.length / state.pageSize),
+            changedFeatureIdx: state.filteredSortedFeatures.length,
             newFeature: true
-        });
+        }));
         this.props.setCurrentTaskBlocked(true, LocaleUtils.tr("editing.unsavedchanged"));
     };
     deleteSelectedFeatured = () => {
-        const features = this.state.filteredSortedFeatures.filter(feature => this.state.selectedFeatures[feature.id] === true);
-        this.setState({deleteTask: {
-            pending: features.map(feature => feature.id),
-            failed: [],
-            deleted: []
-        }});
-        features.forEach(feature => {
-            this.props.iface.deleteFeature(this.editLayerId(this.state.selectedLayer), feature.id, (success) => {
-                const newState = {
-                    deleteTask: {
-                        ...this.state.deleteTask,
-                        pending: this.state.deleteTask.pending.filter(entry => entry !== feature.id),
-                        failed: success ? this.state.deleteTask.failed : [...this.state.deleteTask.failed, feature.id],
-                        deleted: !success ? this.state.deleteTask.deleted : [...this.state.deleteTask.deleted, feature.id]
-                    }
-                };
-                if (isEmpty(newState.deleteTask.pending)) {
-                    newState.features = this.state.features.filter(f => !newState.deleteTask.deleted.includes(f.id));
-                    newState.filteredSortedFeatures = this.filteredSortedFeatures(newState.features, this.state);
-                    if (!isEmpty(newState.deleteTask.failed)) {
-                        // eslint-disable-next-line
-                        alert(LocaleUtils.tr("attribtable.deletefailed"));
-                    }
-                    newState.deleteTask = null;
-                    newState.currentPage = Math.floor((newState.features.length - 1) / this.state.pageSize);
-                    newState.selectedFeatures = {};
-                    newState.confirmDelete = false;
-                }
-                this.setState(newState);
+        this.setState((state) => {
+            const features = state.filteredSortedFeatures.filter(feature => state.selectedFeatures[feature.id] === true);
+            features.forEach(feature => {
+                this.props.iface.deleteFeature(this.editLayerId(state.selectedLayer), feature.id, (success) => {
+                    this.setState((state2) => {
+                        const newState = {
+                            deleteTask: {
+                                ...state2.deleteTask,
+                                pending: state2.deleteTask.pending.filter(entry => entry !== feature.id),
+                                failed: success ? state2.deleteTask.failed : [...state2.deleteTask.failed, feature.id],
+                                deleted: !success ? state2.deleteTask.deleted : [...state2.deleteTask.deleted, feature.id]
+                            }
+                        };
+                        if (isEmpty(newState.deleteTask.pending)) {
+                            newState.features = state.features.filter(f => !newState.deleteTask.deleted.includes(f.id));
+                            newState.filteredSortedFeatures = this.filteredSortedFeatures(newState.features, state);
+                            if (!isEmpty(newState.deleteTask.failed)) {
+                                // eslint-disable-next-line
+                                alert(LocaleUtils.tr("attribtable.deletefailed"));
+                            }
+                            newState.deleteTask = null;
+                            newState.currentPage = Math.floor((newState.features.length - 1) / state.pageSize);
+                            newState.selectedFeatures = {};
+                            newState.confirmDelete = false;
+                        }
+                        return newState;
+                    });
+                });
             });
+            return {deleteTask: {
+                pending: features.map(feature => feature.id),
+                failed: [],
+                deleted: []
+            }};
         });
     };
     updateField = (featureidx, filteredIdx, fieldid, value, emptynull) => {
-        value = value === "" && emptynull ? null : value;
-        const newFeatures = [...this.state.features];
-        newFeatures[featureidx] = {...newFeatures[featureidx]};
-        newFeatures[featureidx].properties = {...newFeatures[featureidx].properties, [fieldid]: value};
-        const newfilteredSortedFeatures = [...this.state.filteredSortedFeatures];
-        newfilteredSortedFeatures[filteredIdx] = {...newfilteredSortedFeatures[filteredIdx]};
-        newfilteredSortedFeatures[filteredIdx].properties = {...newfilteredSortedFeatures[filteredIdx].properties, [fieldid]: value};
-        const originalFeatureProps = this.state.originalFeatureProps || {...this.state.features[featureidx].properties};
-        this.setState({features: newFeatures, filteredSortedFeatures: newfilteredSortedFeatures, changedFeatureIdx: featureidx, originalFeatureProps: originalFeatureProps});
         this.props.setCurrentTaskBlocked(true, LocaleUtils.tr("editing.unsavedchanged"));
+        this.setState((state) => {
+            value = value === "" && emptynull ? null : value;
+            const newFeatures = [...state.features];
+            newFeatures[featureidx] = {...newFeatures[featureidx]};
+            newFeatures[featureidx].properties = {...newFeatures[featureidx].properties, [fieldid]: value};
+            const newfilteredSortedFeatures = [...state.filteredSortedFeatures];
+            newfilteredSortedFeatures[filteredIdx] = {...newfilteredSortedFeatures[filteredIdx]};
+            newfilteredSortedFeatures[filteredIdx].properties = {...newfilteredSortedFeatures[filteredIdx].properties, [fieldid]: value};
+            const originalFeatureProps = state.originalFeatureProps || {...state.features[featureidx].properties};
+            return {features: newFeatures, filteredSortedFeatures: newfilteredSortedFeatures, changedFeatureIdx: featureidx, originalFeatureProps: originalFeatureProps};
+        });
     };
     commit = () => {
         const feature = {
@@ -528,10 +536,12 @@ class AttributeTable extends React.Component {
             // eslint-disable-next-line
             alert(result);
         } else {
-            const newFeatures = [...this.state.features];
-            newFeatures[this.state.changedFeatureIdx] = result;
             this.changedFiles = {};
-            this.setState({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeatureProps: null, newFeature: false});
+            this.setState((state) => {
+                const newFeatures = [...state.features];
+                newFeatures[state.changedFeatureIdx] = result;
+                return {features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, state), changedFeatureIdx: null, originalFeatureProps: null, newFeature: false};
+            });
         }
         this.props.setCurrentTaskBlocked(false);
     };
@@ -545,7 +555,7 @@ class AttributeTable extends React.Component {
             newFeatures[featureidx].properties = this.state.originalFeatureProps;
         }
         this.changedFiles = {};
-        this.setState({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, this.state), changedFeatureIdx: null, originalFeatureProps: null, newFeature: false});
+        this.setState((state) => ({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, state), changedFeatureIdx: null, originalFeatureProps: null, newFeature: false}));
         this.props.setCurrentTaskBlocked(false);
     };
     zoomToSelection = () => {
@@ -573,14 +583,13 @@ class AttributeTable extends React.Component {
         }
         const feature = this.state.filteredSortedFeatures.find(f => this.state.selectedFeatures[f.id] === true);
         this.props.setCurrentTask("Editing", null, null, {layer: this.state.loadedLayer, feature: feature});
-    }
-    updateFilter = (state, val, resetPage = false) => {
-        const newState = {...this.state, [state]: val};
-        this.setState({
-            [state]: val,
-            currentPage: resetPage ? 0 : this.state.currentPage,
-            filteredSortedFeatures: this.filteredSortedFeatures(this.state.features, {...this.state, ...newState})
-        });
+    };
+    updateFilter = (field, val, resetPage = false) => {
+        this.setState((state) => ({
+            [field]: val,
+            currentPage: resetPage ? 0 : state.currentPage,
+            filteredSortedFeatures: this.filteredSortedFeatures(state.features, {...state, [field]: val})
+        }));
     };
     filteredSortedFeatures = (features, state) => {
         let filteredFeatures = [];

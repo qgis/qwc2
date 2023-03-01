@@ -64,13 +64,15 @@ class TimelineFeaturesSlider extends React.Component {
                     delete newLayerClassifications.layername;
                 }
             });
-            const newLayerAttrGroups = {...this.state.layerAttrGroups};
-            Object.keys(this.state.layerAttrGroups).forEach(layername => {
-                if (!this.props.timeFeatures.attributes[layername] || this.props.timeFeatures.attributes[layername] !== prevProps.timeFeatures.attributes[layername]) {
-                    delete newLayerAttrGroups.layername;
-                }
+            this.setState((state) => {
+                const newLayerAttrGroups = {...state.layerAttrGroups};
+                Object.keys(state.layerAttrGroups).forEach(layername => {
+                    if (!this.props.timeFeatures.attributes[layername] || this.props.timeFeatures.attributes[layername] !== prevProps.timeFeatures.attributes[layername]) {
+                        delete newLayerAttrGroups.layername;
+                    }
+                });
+                return {layerAttrGroups: newLayerAttrGroups};
             });
-            this.setState({layerAttrGroups: newLayerAttrGroups});
         }
     }
     render() {
@@ -303,78 +305,82 @@ class TimelineFeaturesSlider extends React.Component {
         return (
             <div className="timeline-slider-gradient" style={style} />
         );
-    }
+    };
     setClassification = (layer, attr) => {
-        const newLayerClassifications = {
-            ...this.state.layerClassifications
-        };
-        if (attr) {
-            const classes = {};
-            this.props.timeFeatures.features[layer].forEach(feature => {
-                if (!classes[feature.properties[attr]]) {
-                    const color = randomcolor();
-                    classes[feature.properties[attr]] = {
-                        bg: color,
-                        fg: MiscUtils.isBrightColor(color) ? "#000" : "#FFF",
-                        val: feature.properties[attr]
-                    };
-                }
-            });
-            newLayerClassifications[layer] = {
-                attr: attr,
-                classes: classes
+        this.setState((state) => {
+            const newLayerClassifications = {
+                ...state.layerClassifications
             };
-        } else {
-            delete newLayerClassifications[layer];
-        }
-        // Attr classification and grouping cannot be enabled at the same time
-        const newLayerAttrGroups = {
-            ...this.state.layerAttrGroups
-        };
-        delete newLayerAttrGroups[layer];
-        this.setState({layerClassifications: newLayerClassifications, layerAttrGroups: newLayerAttrGroups});
-    }
-    setGroupAttr = (layer, attr) => {
-        const newLayerAttrGroups = {
-            ...this.state.layerAttrGroups,
-        };
-        if (attr) {
-            const groups = {};
-            this.props.timeFeatures.features[layer].forEach(feature => {
-                if (!groups[feature.properties[attr]]) {
-                    const color = randomcolor();
-                    groups[feature.properties[attr]] = {
-                        bg: color,
-                        fg: MiscUtils.isBrightColor(color) ? "#000" : "#FFF",
-                        val: feature.properties[attr],
-                        features: [feature],
-                        start: feature.properties.__startdate,
-                        end: feature.properties.__enddate
-                    };
-                } else {
-                    if (feature.properties.__startdate < groups[feature.properties[attr]].start) {
-                        groups[feature.properties[attr]].start = feature.properties.__startdate;
+            if (attr) {
+                const classes = {};
+                this.props.timeFeatures.features[layer].forEach(feature => {
+                    if (!classes[feature.properties[attr]]) {
+                        const color = randomcolor();
+                        classes[feature.properties[attr]] = {
+                            bg: color,
+                            fg: MiscUtils.isBrightColor(color) ? "#000" : "#FFF",
+                            val: feature.properties[attr]
+                        };
                     }
-                    if (feature.properties.__enddate > groups[feature.properties[attr]].end) {
-                        groups[feature.properties[attr]].end = feature.properties.__enddate;
-                    }
-                    groups[feature.properties[attr]].features.push(feature);
-                }
-            });
-            newLayerAttrGroups[layer] = {
-                attr: attr,
-                groups: groups
+                });
+                newLayerClassifications[layer] = {
+                    attr: attr,
+                    classes: classes
+                };
+            } else {
+                delete newLayerClassifications[layer];
+            }
+            // Attr classification and grouping cannot be enabled at the same time
+            const newLayerAttrGroups = {
+                ...state.layerAttrGroups
             };
-        } else {
             delete newLayerAttrGroups[layer];
-        }
-        // Attr classification and grouping cannot be enabled at the same time
-        const newLayerClassifications = {
-            ...this.state.layerClassifications
-        };
-        delete newLayerClassifications[layer];
-        this.setState({layerClassifications: newLayerClassifications, layerAttrGroups: newLayerAttrGroups});
-    }
+            return {layerClassifications: newLayerClassifications, layerAttrGroups: newLayerAttrGroups};
+        });
+    };
+    setGroupAttr = (layer, attr) => {
+        this.setState((state) => {
+            const newLayerAttrGroups = {
+                ...state.layerAttrGroups
+            };
+            if (attr) {
+                const groups = {};
+                this.props.timeFeatures.features[layer].forEach(feature => {
+                    if (!groups[feature.properties[attr]]) {
+                        const color = randomcolor();
+                        groups[feature.properties[attr]] = {
+                            bg: color,
+                            fg: MiscUtils.isBrightColor(color) ? "#000" : "#FFF",
+                            val: feature.properties[attr],
+                            features: [feature],
+                            start: feature.properties.__startdate,
+                            end: feature.properties.__enddate
+                        };
+                    } else {
+                        if (feature.properties.__startdate < groups[feature.properties[attr]].start) {
+                            groups[feature.properties[attr]].start = feature.properties.__startdate;
+                        }
+                        if (feature.properties.__enddate > groups[feature.properties[attr]].end) {
+                            groups[feature.properties[attr]].end = feature.properties.__enddate;
+                        }
+                        groups[feature.properties[attr]].features.push(feature);
+                    }
+                });
+                newLayerAttrGroups[layer] = {
+                    attr: attr,
+                    groups: groups
+                };
+            } else {
+                delete newLayerAttrGroups[layer];
+            }
+            // Attr classification and grouping cannot be enabled at the same time
+            const newLayerClassifications = {
+                ...state.layerClassifications
+            };
+            delete newLayerClassifications[layer];
+            return {layerClassifications: newLayerClassifications, layerAttrGroups: newLayerAttrGroups};
+        });
+    };
 }
 
 export default connect(() => ({}), {

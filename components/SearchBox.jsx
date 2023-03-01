@@ -306,7 +306,7 @@ class SearchBox extends React.Component {
     };
     toggleLayerGroup = (ev, dataproductId) => {
         MiscUtils.killEvent(ev);
-        this.setState({expandedLayerGroup: this.state.expandedLayerGroup === dataproductId ? null : dataproductId});
+        this.setState((state) => ({expandedLayerGroup: state.expandedLayerGroup === dataproductId ? null : dataproductId}));
     };
     renderSearchResults = () => {
         if (!this.state.resultsVisible) {
@@ -340,10 +340,12 @@ class SearchBox extends React.Component {
         setTimeout(() => {this.preventBlur = false; return false;}, 100);
     };
     toggleSection = (key) => {
-        const newCollapsedSections = {...this.state.collapsedSections};
-        const deflt = (this.props.searchOptions.sectionsDefaultCollapsed || false);
-        newCollapsedSections[key] = !(newCollapsedSections[key] ?? deflt);
-        this.setState({collapsedSections: newCollapsedSections});
+        return this.setState((state) => {
+            const newCollapsedSections = {...state.collapsedSections};
+            const deflt = (this.props.searchOptions.sectionsDefaultCollapsed || false);
+            newCollapsedSections[key] = !(newCollapsedSections[key] ?? deflt);
+            return {collapsedSections: newCollapsedSections};
+        });
     };
     isCollapsed = (section, deflt = null) => {
         deflt = deflt ?? (this.props.searchOptions.sectionsDefaultCollapsed || false);
@@ -456,34 +458,36 @@ class SearchBox extends React.Component {
         if (searchSession !== this.state.searchSession) {
             return;
         }
-        const pendingSearches = this.state.pendingSearches.filter(entry => entry !== searchId);
-        const searchResults = {...this.state.searchResults, [searchId]: results};
-        this.setState({
-            searchResults: searchResults,
-            pendingSearches: pendingSearches
-        });
-        if (isEmpty(pendingSearches)) {
-            const uniqueResults = Object.entries(searchResults).filter((key, value) => { value.tot_result_count === 1; });
-            // If a single result is returned, select it immediately if it is a feature or provider result
-            if (uniqueResults.length === 1) {
-                const uniqueResult = uniqueResults[0];
-                if (uniqueResult[0] === "__fulltext" && uniqueResult[1].feature) {
-                    this.selectFeatureResult(uniqueResult[1].feature);
-                    this.blur();
-                } else if (uniqueResults[0] !== "__fulltext" && uniqueResults[1][0].items[0].bbox) {
-                    this.selectProviderResult(uniqueResults[1][0].items[0], uniqueResult[0]);
-                    this.blur();
+        this.setState((state) => {
+            const pendingSearches = state.pendingSearches.filter(entry => entry !== searchId);
+            const searchResults = {...state.searchResults, [searchId]: results};
+            if (isEmpty(pendingSearches)) {
+                const uniqueResults = Object.entries(searchResults).filter((key, value) => { value.tot_result_count === 1; });
+                // If a single result is returned, select it immediately if it is a feature or provider result
+                if (uniqueResults.length === 1) {
+                    const uniqueResult = uniqueResults[0];
+                    if (uniqueResult[0] === "__fulltext" && uniqueResult[1].feature) {
+                        this.selectFeatureResult(uniqueResult[1].feature);
+                        this.blur();
+                    } else if (uniqueResults[0] !== "__fulltext" && uniqueResults[1][0].items[0].bbox) {
+                        this.selectProviderResult(uniqueResults[1][0].items[0], uniqueResult[0]);
+                        this.blur();
+                    }
                 }
             }
-        }
-    }
+            return {
+                searchResults: searchResults,
+                pendingSearches: pendingSearches
+            };
+        });
+    };
     updateRecentSearches = () => {
         if (!this.state.searchResults || !this.state.searchResults.query_text) {
             return;
         }
         const text = this.state.searchResults.query_text;
         if (!this.state.recentSearches.includes(text)) {
-            this.setState({recentSearches: [text, ...this.state.recentSearches.slice(0, 4)]});
+            this.setState((state) => ({recentSearches: [text, ...state.recentSearches.slice(0, 4)]}));
         }
     };
     blur = () => {

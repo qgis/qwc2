@@ -123,10 +123,10 @@ export default class SearchWidget extends React.Component {
                 if (this.state.reqId !== reqId) {
                     return;
                 }
-                this.setState({
-                    results: [...this.state.results, ...response.results],
-                    pending: this.state.pending - 1
-                });
+                this.setState((state) => ({
+                    results: [...state.results, ...response.results],
+                    pending: state.pending - 1
+                }));
             }, axios);
         });
     };

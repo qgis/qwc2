@@ -137,7 +137,7 @@ class BackgroundSwitcher extends React.Component {
         ev.target.parentElement.parentElement.childNodes[1].firstChild.src = assetsPath + "/" + layer.thumbnail;
     };
     buttonClicked = () => {
-        this.setState({visible: !this.state.visible});
+        this.setState((state) => ({visible: !state.visible}));
     };
     backgroundLayerClicked = (layer) => {
         if (layer) {

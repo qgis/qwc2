@@ -241,7 +241,7 @@ class Search extends React.Component {
                 'searchbar-addon-filter-active': !isEmpty(this.props.activeProviders)
             });
             providerSelection = (
-                <span className={addonClasses} onClick={() => this.setState({providerSelectionVisible: !this.state.providerSelectionVisible})} title={providerSelectionTooltip}>
+                <span className={addonClasses} onClick={() => this.setState((state) => ({providerSelectionVisible: !state.providerSelectionVisible}))} title={providerSelectionTooltip}>
                     <Icon icon="filter" title={providerSelectionTooltip} />
                     <Icon className="searchbar-addon-menu-icon" icon="chevron-down" title={providerSelectionTooltip} />
                     {providerSelectionMenu}

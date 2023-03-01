@@ -75,7 +75,7 @@ class ThemeList extends React.Component {
             }
             return (
                 <li className={"theme-group-header " + (expanded ? "theme-group-header-expanded" : "")} key={subdir.id}>
-                    <span onClick={() => this.setState({expandedGroups: expanded ? this.state.expandedGroups.filter(id => id !== subdir.id) : [...this.state.expandedGroups, subdir.id]})}>
+                    <span onClick={() => this.setState((state) => ({expandedGroups: expanded ? state.expandedGroups.filter(id => id !== subdir.id) : [...state.expandedGroups, subdir.id]}))}>
                         {this.props.collapsibleGroups ? (<Icon icon={expanded ? "collapse" : "expand"} />) : null} {subdir.title}
                     </span>
                     {expanded ? this.renderThemeGroup(subdir, filter) : null}
@@ -210,7 +210,7 @@ class ThemeList extends React.Component {
     };
     toggleThemeInfoMenu = (ev, themeId) => {
         ev.stopPropagation();
-        this.setState({visibleThemeInfoMenu: this.state.visibleThemeInfoMenu === themeId ? null : themeId});
+        this.setState((state) => ({visibleThemeInfoMenu: state.visibleThemeInfoMenu === themeId ? null : themeId}));
     };
     addThemeLayers = (ev, theme) => {
         ev.stopPropagation();

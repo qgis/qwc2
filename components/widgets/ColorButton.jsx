@@ -88,7 +88,7 @@ export default class ColorButton extends React.Component {
             document.removeEventListener('click', this.checkClosePicker);
         }
         ev.stopPropagation();
-        this.setState({hexStr: null, pickerVisible: !this.state.pickerVisible});
+        this.setState((state) => ({hexStr: null, pickerVisible: !state.pickerVisible}));
     };
     checkClosePicker = (ev) => {
         if (this.pickerEl && !this.pickerEl.contains(ev.target)) {

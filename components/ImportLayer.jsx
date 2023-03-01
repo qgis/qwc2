@@ -131,30 +131,30 @@ class ImportLayer extends React.Component {
                             ++catalogPendingRequests;
                             axios.get(connUrl).then(connResponse => {
                                 const result = service === "wms" ? ServiceLayerUtils.getWMSLayers(connResponse.data, connUrl, true) : ServiceLayerUtils.getWFSLayers(connResponse.data, connUrl, this.props.mapCrs);
-                                this.setState((prevState) => ({
-                                    pendingRequests: prevState.pendingRequests - 1,
-                                    serviceLayers: (prevState.serviceLayers || []).concat(result)
+                                this.setState((state) => ({
+                                    pendingRequests: state.pendingRequests - 1,
+                                    serviceLayers: (state.serviceLayers || []).concat(result)
                                 }));
                             }).catch(() => {
-                                this.setState((prevState) => ({
-                                    pendingRequests: prevState.pendingRequests - 1,
-                                    serviceLayers: prevState.serviceLayers || []
+                                this.setState((state) => ({
+                                    pendingRequests: state.pendingRequests - 1,
+                                    serviceLayers: state.serviceLayers || []
                                 }));
                             });
                         }
                     }
-                    this.setState((prevState) => ({pendingRequests: prevState.pendingRequests - 1 + catalogPendingRequests }));
+                    this.setState((state) => ({pendingRequests: state.pendingRequests - 1 + catalogPendingRequests }));
                 } else if (type === "json" && response.data.catalog) {
                     // Load as JSON catalog
-                    this.setState((prevState) => ({
-                        pendingRequests: prevState.pendingRequests - 1,
-                        serviceLayers: (prevState.serviceLayers || []).concat(response.data.catalog)
+                    this.setState((state) => ({
+                        pendingRequests: state.pendingRequests - 1,
+                        serviceLayers: (state.serviceLayers || []).concat(response.data.catalog)
                     }));
                 }
             }).catch(() => {
-                this.setState((prevState) => ({
-                    pendingRequests: prevState.pendingRequests - 1,
-                    serviceLayers: prevState.serviceLayers || []
+                this.setState((state) => ({
+                    pendingRequests: state.pendingRequests - 1,
+                    serviceLayers: state.serviceLayers || []
                 }));
             });
             return;
@@ -164,14 +164,14 @@ class ImportLayer extends React.Component {
         ++pendingRequests;
         axios.get(reqUrl).then(response => {
             const result = ServiceLayerUtils.getWMTSLayers(response.data, reqUrl, this.props.mapCrs);
-            this.setState((prevState) => ({
-                pendingRequests: prevState.pendingRequests - 1,
-                serviceLayers: (prevState.serviceLayers || []).concat(result)
+            this.setState((state) => ({
+                pendingRequests: state.pendingRequests - 1,
+                serviceLayers: (state.serviceLayers || []).concat(result)
             }));
         }).catch(() => {
-            this.setState((prevState) => ({
-                pendingRequests: prevState.pendingRequests - 1,
-                serviceLayers: prevState.serviceLayers || []
+            this.setState((state) => ({
+                pendingRequests: state.pendingRequests - 1,
+                serviceLayers: state.serviceLayers || []
             }));
         });
 
@@ -188,14 +188,14 @@ class ImportLayer extends React.Component {
 
         axios.get(url.format(wmsUrlParts)).then(response => {
             const result = ServiceLayerUtils.getWMSLayers(response.data, reqUrl);
-            this.setState((prevState) => ({
-                pendingRequests: prevState.pendingRequests - 1,
-                serviceLayers: (prevState.serviceLayers || []).concat(result)
+            this.setState((state) => ({
+                pendingRequests: state.pendingRequests - 1,
+                serviceLayers: (state.serviceLayers || []).concat(result)
             }));
         }).catch(() => {
-            this.setState((prevState) => ({
-                pendingRequests: prevState.pendingRequests - 1,
-                serviceLayers: prevState.serviceLayers || []
+            this.setState((state) => ({
+                pendingRequests: state.pendingRequests - 1,
+                serviceLayers: state.serviceLayers || []
             }));
         });
 
@@ -211,14 +211,14 @@ class ImportLayer extends React.Component {
 
         axios.get(url.format(wfsUrlParts)).then(response => {
             const result = ServiceLayerUtils.getWFSLayers(response.data, reqUrl, this.props.mapCrs);
-            this.setState((prevState) => ({
-                pendingRequests: prevState.pendingRequests - 1,
-                serviceLayers: (prevState.serviceLayers || []).concat(result)
+            this.setState((state) => ({
+                pendingRequests: state.pendingRequests - 1,
+                serviceLayers: (state.serviceLayers || []).concat(result)
             }));
         }).catch(() => {
-            this.setState((prevState) => ({
-                pendingRequests: prevState.pendingRequests - 1,
-                serviceLayers: prevState.serviceLayers || []
+            this.setState((state) => ({
+                pendingRequests: state.pendingRequests - 1,
+                serviceLayers: state.serviceLayers || []
             }));
         });
 
