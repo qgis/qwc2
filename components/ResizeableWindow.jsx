@@ -85,6 +85,9 @@ class ResizeableWindow extends React.Component {
                 docked: false
             };
         }
+        if (props.initiallyDocked) {
+            this.state.geometry.docked = true;
+        }
         this.dragShield = null;
         this.titlebar = null;
         this.id = uuidv1();
@@ -97,12 +100,7 @@ class ResizeableWindow extends React.Component {
     };
     componentDidMount() {
         this.props.registerWindow(this.id);
-        const newGeomState = {...this.state.geometry};
-        if (this.props.initiallyDocked) {
-            newGeomState.docked = true;
-            this.setState({geometry: newGeomState});
-        }
-        this.props.onGeometryChanged(newGeomState);
+        this.props.onGeometryChanged(this.state.geometry);
     }
     componentWillUnmount() {
         this.props.unregisterWindow(this.id);
