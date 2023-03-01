@@ -23,6 +23,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/ImportLayer.css';
+import MiscUtils from '../utils/MiscUtils';
 
 
 class ImportLayer extends React.Component {
@@ -102,6 +103,8 @@ class ImportLayer extends React.Component {
         }
         if (!reqUrl.match(/^[^:]+:\/\/.*$/) && !reqUrl.startsWith("/")) {
             reqUrl = location.protocol + "//" + reqUrl;
+        } else {
+            reqUrl = MiscUtils.adjustProtocol(reqUrl);
         }
         let pendingRequests = 0;
         // Attempt to load catalog

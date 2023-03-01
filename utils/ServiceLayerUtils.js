@@ -343,23 +343,23 @@ const ServiceLayerUtils = {
     },
     findLayers(type, serviceUrl, layerConfigs, mapCrs, callback) {
         // Scan the capabilities of the specified service for the specified layers
-        let url = serviceUrl.replace(/\?$/, '');
+        serviceUrl = MiscUtils.adjustProtocol(serviceUrl).replace(/\?$/, '');
         if (type === "wmts") {
             // Do nothing
-        } else if (url.includes('?')) {
-            url += "&service=" + type.toUpperCase() + "&request=GetCapabilities";
+        } else if (serviceUrl.includes('?')) {
+            serviceUrl += "&service=" + type.toUpperCase() + "&request=GetCapabilities";
         } else {
-            url += "?service=" + type.toUpperCase() + "&request=GetCapabilities";
+            serviceUrl += "?service=" + type.toUpperCase() + "&request=GetCapabilities";
         }
-        axios.get(url).then(response => {
+        axios.get(serviceUrl).then(response => {
             for (const layerConfig of layerConfigs) {
                 let result = null;
                 if (type === "wms") {
-                    result = ServiceLayerUtils.getWMSLayers(response.data, url, true);
+                    result = ServiceLayerUtils.getWMSLayers(response.data, serviceUrl, true);
                 } else if (type === "wfs") {
-                    result = ServiceLayerUtils.getWFSLayers(response.data, url, mapCrs);
+                    result = ServiceLayerUtils.getWFSLayers(response.data, serviceUrl, mapCrs);
                 } else if (type === "wmts") {
-                    result = ServiceLayerUtils.getWMTSLayers(response.data, url, mapCrs);
+                    result = ServiceLayerUtils.getWMTSLayers(response.data, serviceUrl, mapCrs);
                 }
                 let layer = LayerUtils.searchSubLayer({sublayers: result}, "name", layerConfig.name);
                 if (layer) {
