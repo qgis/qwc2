@@ -74,7 +74,7 @@ textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]), select
     color: var(--text-color);
 }
 
-input:not([type=checkbox]):not([type=radio]):not([type=range]), select {
+input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]), select {
     height: 2em;
 }
 
