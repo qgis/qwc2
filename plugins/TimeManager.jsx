@@ -575,7 +575,8 @@ class TimeManager extends React.Component {
         const style = [
         ];
         const currentTime = dayjs(this.state.currentTimestamp);
-        if (this.state.timeEnabled && (feature.getProperties().__startdate > currentTime || feature.getProperties().__enddate < currentTime)) {
+        const featprops = feature.getProperties();
+        if (this.state.timeEnabled && (featprops.__startdate > currentTime || featprops.__enddate < currentTime)) {
             return style;
         }
         const offset = this.props.markerConfiguration.markerOffset;
@@ -590,38 +591,40 @@ class TimeManager extends React.Component {
                 })
             }));
         }
-        const deltaT = this.state.endTime.diff(this.state.startTime);
-        const markerStartTime = dayjs(Math.max(this.state.startTime, feature.getProperties().__startdate));
-        const markerEndTime = dayjs(Math.min(this.state.endTime, feature.getProperties().__enddate));
-        const markerMidTime = 0.5 * (markerStartTime + markerEndTime);
-        const gradBarMaxWidth = 192;
-        const gradBarHeight = 16;
-        const gradBarWidth = gradBarMaxWidth * markerEndTime.diff(markerStartTime) / deltaT;
+        if (featprops.__startdate.isValid() && featprops.__enddate.isValid()) {
+            const deltaT = this.state.endTime.diff(this.state.startTime);
+            const markerStartTime = dayjs(Math.max(this.state.startTime, featprops.__startdate));
+            const markerEndTime = dayjs(Math.min(this.state.endTime, featprops.__enddate));
+            const markerMidTime = 0.5 * (markerStartTime + markerEndTime);
+            const gradBarMaxWidth = 192;
+            const gradBarHeight = 16;
+            const gradBarWidth = gradBarMaxWidth * markerEndTime.diff(markerStartTime) / deltaT;
 
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        const gradient = context.createLinearGradient(
-            -gradBarWidth * (markerMidTime - this.state.startTime) / (markerMidTime - markerStartTime), 0,
-            gradBarWidth * (this.state.endTime - markerMidTime) / (markerEndTime - markerMidTime), 0
-        );
-        const nStops = this.props.markerConfiguration.gradient.length;
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            const gradient = context.createLinearGradient(
+                -gradBarWidth * (markerMidTime - this.state.startTime) / (markerMidTime - markerStartTime), 0,
+                gradBarWidth * (this.state.endTime - markerMidTime) / (markerEndTime - markerMidTime), 0
+            );
+            const nStops = this.props.markerConfiguration.gradient.length;
 
-        this.props.markerConfiguration.gradient.forEach((stop, idx) => {
-            gradient.addColorStop(idx / (nStops - 1), stop);
-        });
+            this.props.markerConfiguration.gradient.forEach((stop, idx) => {
+                gradient.addColorStop(idx / (nStops - 1), stop);
+            });
 
-        style.push(new ol.style.Style({
-            image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({color: gradient}),
-                stroke: new ol.style.Stroke({color: 'black', width: 1}),
-                points: 4,
-                radius: gradBarWidth / Math.SQRT2,
-                radius2: gradBarWidth,
-                angle: 0,
-                scale: [1, 1 / gradBarWidth * gradBarHeight],
-                displacement: [offset[0], offset[1] * gradBarHeight / gradBarWidth - gradBarWidth]
-            })
-        }));
+            style.push(new ol.style.Style({
+                image: new ol.style.RegularShape({
+                    fill: new ol.style.Fill({color: gradient}),
+                    stroke: new ol.style.Stroke({color: 'black', width: 1}),
+                    points: 4,
+                    radius: gradBarWidth / Math.SQRT2,
+                    radius2: gradBarWidth,
+                    angle: 0,
+                    scale: [1, 1 / gradBarWidth * gradBarHeight],
+                    displacement: [offset[0], offset[1] * gradBarHeight / gradBarWidth - gradBarWidth]
+                })
+            }));
+        }
         return style;
     }
 }
