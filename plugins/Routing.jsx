@@ -179,7 +179,6 @@ class Routing extends React.Component {
     }
     renderRouteWidget = () => {
         const routeConfig = this.state.routeConfig;
-        const haveRoutePts = routeConfig.routepoints.filter(entry => entry.pos).length >= 2;
         return (
             <div>
                 <div className="routing-routepoints">
@@ -190,15 +189,14 @@ class Routing extends React.Component {
                         <Icon icon="up-down-arrow" onClick={this.reverseRoutePts} />
                     </div>
                 </div>
-                <div>
-                    <a href="#" onClick={this.addRoutePt}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
+                <div className="routing-routepoints-commands">
+                    <a href="#" onClick={() => this.addRoutePt()}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
+                    <span />
+                    <a href="#" onClick={this.clearRoutePts}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
                 </div>
-                <div>
-                    <button className="button routing-compute-button" disabled={routeConfig.busy || !haveRoutePts} onClick={this.computeRoute}>
-                        {routeConfig.busy ? (<Spinner />) : null}
-                        {LocaleUtils.tr("routing.compute")}
-                    </button>
-                </div>
+                {routeConfig.busy ? (
+                    <div className="routing-busy"><Spinner /> {LocaleUtils.tr("routing.computing")}</div>
+                ) : null}
                 {routeConfig.result ? this.renderRouteResult(routeConfig) : null}
             </div>
         );
@@ -213,16 +211,19 @@ class Routing extends React.Component {
         } else {
             return (
                 <div className="routing-result-summary">
-                    <div><Icon icon="clock" /> {MeasureUtils.formatDuration(routeConfig.result.data.summary.time)}</div>
-                    <div><Icon icon="measure" /> {MeasureUtils.formatMeasurement(routeConfig.result.data.summary.length * 1000, false)}</div>
-                    <div><Icon icon="export" /> <a href="#" onClick={this.exportRoute}>{LocaleUtils.tr("routing.export")}</a></div>
+                    <div>
+                        <span><Icon icon="clock" /> {MeasureUtils.formatDuration(routeConfig.result.data.summary.time)}</span>
+                        <span className="routing-result-spacer" />
+                        <span><Icon icon="measure" /> {MeasureUtils.formatMeasurement(routeConfig.result.data.summary.length, false)}</span>
+                        <span className="routing-result-spacer" />
+                        <span><Icon icon="export" /> <a href="#" onClick={this.exportRoute}>{LocaleUtils.tr("routing.export")}</a></span>
+                    </div>
                 </div>
             );
         }
     }
     renderIsochroneWidget = () => {
         const isoConfig = this.state.isoConfig;
-        const havePoint = isoConfig.point.pos !== null;
         const intervalValid = !!isoConfig.intervals.match(/^\d+(,\s*\d+)*$/);
         return (
             <div className="routing-frame">
@@ -254,12 +255,9 @@ class Routing extends React.Component {
                         </tr>
                     </tbody>
                 </table>
-                <div>
-                    <button className="button routing-compute-button" disabled={isoConfig.busy || !havePoint || !intervalValid} onClick={this.computeIsochrone}>
-                        {isoConfig.busy ? (<Spinner />) : null}
-                        {LocaleUtils.tr("routing.compute")}
-                    </button>
-                </div>
+                {isoConfig.busy ? (
+                    <div className="routing-busy"><Spinner /> {LocaleUtils.tr("routing.computing")}</div>
+                ) : null}
                 {isoConfig.result ? this.renderIsochroneResult(isoConfig) : null}
             </div>
         );
@@ -302,11 +300,12 @@ class Routing extends React.Component {
             return null;
         }
         let body = null;
-        const prec = CoordinatesUtils.getUnits(this.props.mapcrs) === 'degrees' ? 4 : 0;
+        const prec = CoordinatesUtils.getUnits(this.props.displaycrs) === 'degrees' ? 4 : 0;
+        const pos = CoordinatesUtils.reproject(this.state.popupPos, this.props.mapcrs, this.props.displaycrs);
         const point = {
-            text: this.state.popupPos.map(x => x.toFixed(prec)).join(", ") + " (" + this.props.mapcrs + ")",
-            pos: [...this.state.popupPos],
-            crs: this.props.mapcrs
+            text: pos.map(x => x.toFixed(prec)).join(", ") + " (" + this.props.displaycrs + ")",
+            pos: [...pos],
+            crs: this.props.displaycrs
         };
         if (this.state.currentTab === "Route") {
             const lastPoint = this.state.routeConfig.routepoints.length - 1;
@@ -382,6 +381,7 @@ class Routing extends React.Component {
                 ...this.state.routeConfig.routepoints.slice(-1)
             ]
         }});
+        this.recomputeIfNeeded();
     }
     removeRoutePt = (idx) => {
         this.setState({routeConfig: {
@@ -389,6 +389,16 @@ class Routing extends React.Component {
             routepoints: [
                 ...this.state.routeConfig.routepoints.slice(0, idx),
                 ...this.state.routeConfig.routepoints.slice(idx + 1)
+            ]
+        }});
+        this.recomputeIfNeeded();
+    }
+    clearRoutePts = () => {
+        this.setState({routeConfig: {
+            ...this.state.routeConfig,
+            routepoints: [
+                {text: '', pos: null, crs: null},
+                {text: '', pos: null, crs: null}
             ]
         }});
         this.recomputeIfNeeded();
@@ -468,7 +478,10 @@ class Routing extends React.Component {
             return CoordinatesUtils.reproject(entry.pos, entry.crs, "EPSG:4326");
         });
         this.props.removeLayer("routingggeometries");
-        this.updateRouteConfig({busy: true, result: null}, false);
+        this.updateRouteConfig({busy: locations.length >= 2, result: null}, false);
+        if (locations.length < 2) {
+            return;
+        }
         RoutingInterface.computeRoute(this.state.mode, locations, this.state.settings[this.state.mode], (success, result) => {
             if (success) {
                 const layer = {
@@ -535,9 +548,9 @@ class Routing extends React.Component {
     recomputeIfNeeded = () => {
         clearTimeout(this.recomputeTimeout);
         this.recomputeTimeout = setTimeout(() => {
-            if (this.state.currentTab === "Route" && this.state.routeConfig.result) {
+            if (this.state.currentTab === "Route" && this.state.routeConfig.routepoints.filter(entry => entry.pos).length >= 2) {
                 this.computeRoute();
-            } else if (this.state.currentTab === "Reachability" && this.state.isoConfig.result) {
+            } else if (this.state.currentTab === "Reachability" && this.state.isoConfig.point.pos) {
                 this.computeIsochrone();
             }
             this.recomputeTimeout = null;
@@ -548,6 +561,10 @@ class Routing extends React.Component {
             type: "FeatureCollection",
             features: this.state.routeConfig.result.data.legs.map(leg => ({
                 type: "Feature",
+                properties: {
+                    time: leg.time,
+                    length: leg.length
+                },
                 geometry: {
                     type: "LineString",
                     coordinates: leg.coordinates

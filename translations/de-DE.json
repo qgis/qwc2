@@ -287,8 +287,9 @@
     "routing": {
       "add": "Hinzufügen",
       "addviapoint": "Routenpunkt hinzufügen",
-      "compute": "Berechnen",
+      "clear": "Zurücksetzten",
       "computefailed": "Berechnung fehlgeschlagen",
+      "computing": "Berechnung...",
       "export": "Exportieren",
       "fromhere": "Route von hier",
       "iso_intervals": "Intervalle",

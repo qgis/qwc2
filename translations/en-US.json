@@ -287,8 +287,9 @@
     "routing": {
       "add": "Add route point",
       "addviapoint": "Add itinerary point",
-      "compute": "Compute",
+      "clear": "Clear",
       "computefailed": "Failed to compute",
+      "computing": "Computing...",
       "export": "Export",
       "fromhere": "Directions from here",
       "iso_intervals": "Intervals",

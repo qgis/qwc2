@@ -55,6 +55,14 @@ div.routing-routepoints > div:last-child {
     margin-left: 0.25em;
 }
 
+div.routing-routepoints-commands {
+    display: flex;
+}
+
+div.routing-routepoints-commands > span {
+    flex: 1 1 auto;
+}
+
 div.routing-search-field {
     display: flex;
     margin-bottom: 0.25em;
@@ -82,6 +90,17 @@ div.routing-status-failure {
     padding: 0.25em;
 }
 
+div.routing-busy {
+    display: flex;
+    align-items: center;
+}
+
+div.routing-busy > div.spinner {
+    width: 2em;
+    height: 2em;
+    margin-right: 0.25em;
+}
+
 div.routing-result-summary {
     margin-top: 0.5em;
     border-top: 1px solid var(--border-color);
@@ -95,6 +114,10 @@ div.routing-result-summary > div {
 
 div.routing-result-summary > div > span.icon {
     margin-right: 0.5em;
+}
+
+div.routing-result-summary > div > span.routing-result-spacer {
+    flex: 1 1 auto;
 }
 
 table.routing-iso-settings {

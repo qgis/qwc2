@@ -287,8 +287,9 @@
     "routing": {
       "add": "",
       "addviapoint": "",
-      "compute": "",
+      "clear": "",
       "computefailed": "",
+      "computing": "",
       "export": "",
       "fromhere": "",
       "iso_intervals": "",

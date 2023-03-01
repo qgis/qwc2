@@ -10,7 +10,7 @@ import ol from 'openlayers';
 import axios from 'axios';
 import deepmerge from 'deepmerge';
 import isEmpty from 'lodash.isempty';
-import fastXmlParser from 'fast-xml-parser';
+import {XMLParser} from 'fast-xml-parser';
 import randomColor from 'randomcolor';
 import url from 'url';
 import ConfigUtils from './ConfigUtils';
@@ -226,11 +226,11 @@ const ServiceLayerUtils = {
         const options = {
             attributeNamePrefix: "",
             ignoreAttributes: false,
-            parseNodeValue: true,
+            parseTagValue: true,
             parseAttributeValue: true,
-            ignoreNameSpace: true
+            removeNSPrefix: true
         };
-        const capabilities = fastXmlParser.convertToJson(fastXmlParser.getTraversalObj(capabilitiesXml, options), options);
+        const capabilities = (new XMLParser(options)).parse(capabilitiesXml);
         if (!capabilities || !capabilities.WFS_Capabilities || !capabilities.WFS_Capabilities.version) {
             return [];
         } else if (capabilities.WFS_Capabilities.version < "1.1.0") {

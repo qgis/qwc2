@@ -16,7 +16,7 @@ button.map-button {
     cursor: pointer;
 }
 
-button.map-button:disabled {
+button.map-button.locate-button-DISABLED {
     opacity: 0.7;
     cursor: default;
 }
