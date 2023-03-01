@@ -120,6 +120,7 @@
       "title": ""
     },
     "fileselector": {
+      "files": "",
       "placeholder": "Velg fil..."
     },
     "heightprofile": {

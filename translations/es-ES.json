@@ -120,6 +120,7 @@
       "title": "Formulario de elemento"
     },
     "fileselector": {
+      "files": "archivos",
       "placeholder": "Seleccionar archivo..."
     },
     "heightprofile": {

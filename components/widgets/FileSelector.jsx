@@ -17,6 +17,7 @@ export default class FileSelector extends React.Component {
         accept: PropTypes.string,
         file: PropTypes.object,
         onFileSelected: PropTypes.func,
+        onFilesSelected: PropTypes.func,
         multiple: PropTypes.bool,
         showAllFilenames: PropTypes.bool,
         overrideText: PropTypes.string
@@ -46,7 +47,7 @@ export default class FileSelector extends React.Component {
                 const files = Array.from(this.props.file);
                 const count = files.length;
                 const totalBytes = files.reduce((acc, file) => acc + file.size, 0);
-                value = this.props.showAllFilenames ? files.map(file => file.name).join(", ") : count + " files";
+                value = this.props.showAllFilenames ? files.map(file => file.name).join(", ") : count + " " + LocaleUtils.tr("fileselector.files");
                 value += " (" + this.humanFileSize(totalBytes) + ")";
             } else {
                 // handle single file
@@ -72,9 +73,9 @@ export default class FileSelector extends React.Component {
     fileChanged = (ev) => {
         let files = null;
         if (ev.target.files && ev.target.files.length > 0) {
-            files = this.props.multiple ? ev.target.files : ev.target.files[0];
+            files = ev.target.files;
         }
-        this.props.onFileSelected(files);
+        this.props.multiple ? this.props.onFilesSelected(files) : this.props.onFileSelected(files[0]);
     }
     humanFileSize(bytes) {
         const thresh = 1000;

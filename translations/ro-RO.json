@@ -120,6 +120,7 @@
       "title": ""
     },
     "fileselector": {
+      "files": "",
       "placeholder": "Selectează fișierul"
     },
     "heightprofile": {

@@ -120,6 +120,7 @@
       "title": ""
     },
     "fileselector": {
+      "files": "",
       "placeholder": "Wybierz plik..."
     },
     "heightprofile": {
