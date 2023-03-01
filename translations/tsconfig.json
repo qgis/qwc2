@@ -120,6 +120,7 @@
     "featureform.noresults",
     "featureform.querying",
     "featureform.title",
+    "fileselector.files",
     "fileselector.placeholder",
     "heightprofile.asl",
     "heightprofile.distance",
