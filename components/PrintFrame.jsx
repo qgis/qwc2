@@ -32,17 +32,17 @@ export default class PrintFrame extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (this.props.map !== prevProps.map || !isEqual(this.props.fixedFrame, prevProps.fixedFrame)) {
-            this.recomputeBox(this.props, prevProps);
+            this.recomputeBox();
         }
     }
-    recomputeBox = (newProps, oldProps) => {
-        if (newProps.fixedFrame) {
+    recomputeBox = () => {
+        if (this.props.fixedFrame) {
             const getPixelFromCoordinate = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK);
             let newState = {x: 0, y: 0, width: 0, height: 0, moving: false};
-            const cosa = Math.cos(-newProps.map.bbox.rotation);
-            const sina = Math.sin(-newProps.map.bbox.rotation);
-            const center = newProps.map.center;
-            const {width, height} = MapUtils.transformExtent(newProps.map.projection, center, newProps.fixedFrame.width, newProps.fixedFrame.height);
+            const cosa = Math.cos(-this.props.map.bbox.rotation);
+            const sina = Math.sin(-this.props.map.bbox.rotation);
+            const center = this.props.map.center;
+            const {width, height} = MapUtils.transformExtent(this.props.map.projection, center, this.props.fixedFrame.width, this.props.fixedFrame.height);
             const mapp1 = [
                 center[0] - 0.5 * width * cosa - 0.5 * height * sina,
                 center[1] + 0.5 * width * sina - 0.5 * height * cosa

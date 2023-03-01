@@ -132,8 +132,6 @@ class AttributeTable extends React.Component {
                 return res;
             }, []);
 
-            const editDataset = this.editLayerId(this.state.selectedLayer);
-            const mapPrefix = editDataset.replace(new RegExp("." + this.state.selectedLayer + "$"), ".");
             const indexOffset = this.state.currentPage * this.state.pageSize;
             const features = this.state.filteredSortedFeatures.slice(indexOffset, indexOffset + this.state.pageSize);
             table = (
@@ -177,7 +175,7 @@ class AttributeTable extends React.Component {
                                     <td>{feature.id}</td>
                                     {fields.map(field => (
                                         <td key={field.id}>
-                                            {this.renderField(field, featureidx, indexOffset + filteredIndex, disabled || (!!this.state.filterVal && field.id === this.state.filterField), mapPrefix)}
+                                            {this.renderField(field, featureidx, indexOffset + filteredIndex, disabled || (!!this.state.filterVal && field.id === this.state.filterField))}
                                         </td>
                                     ))}
                                 </tr>
@@ -365,8 +363,8 @@ class AttributeTable extends React.Component {
             return this.props.theme.editConfig[layerId].editDataset || layerId;
         }
         return layerId;
-    }
-    renderField = (field, featureidx, filteredIndex, fielddisabled, mapPrefix) => {
+    };
+    renderField = (field, featureidx, filteredIndex, fielddisabled) => {
         const feature = this.state.features[featureidx];
         let value = feature.properties[field.id];
         if (value === undefined || value === null) {

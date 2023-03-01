@@ -13,10 +13,6 @@ import './style/LoginUser.css';
 
 
 export default class LoginUser extends React.Component {
-    static propTypes = {
-    }
-    state = {
-    }
     render() {
         const username = ConfigUtils.getConfigProp("username");
         if (!username) {
