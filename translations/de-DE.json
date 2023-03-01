@@ -120,6 +120,7 @@
       "title": "Objektformular"
     },
     "fileselector": {
+      "files": "",
       "placeholder": "Datei auswählen"
     },
     "heightprofile": {
