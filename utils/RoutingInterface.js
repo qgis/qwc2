@@ -103,13 +103,15 @@ function computeRoute(costing, locations, options, callback) {
         const result = {
             legs: trip.legs.map(leg => {
                 return {
-                    coordinates: decodeShape(leg.shape)
+                    coordinates: decodeShape(leg.shape),
+                    time: leg.summary.time,
+                    length: leg.summary.length * 1000
                 };
             }),
             summary: {
                 bounds: [trip.summary.min_lon, trip.summary.min_lat, trip.summary.max_lon, trip.summary.max_lat],
                 time: trip.summary.time,
-                length: trip.summary.length
+                length: trip.summary.length * 1000
             }
         };
         callback(true, result);
