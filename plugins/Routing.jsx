@@ -161,7 +161,7 @@ class Routing extends React.Component {
             <ResizeableWindow icon="routing" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width}
                 onClose={this.onClose} title={LocaleUtils.tr("routing.windowtitle")} >
                 <div role="body">
-                    <ButtonBar active={this.state.currentTab} buttons={tabButtons} onClick={this.changeCurrentTab} />
+                    <ButtonBar active={this.state.currentTab} buttons={tabButtons} onClick={(key) => this.setState({currentTab: key})} />
                     <div className="routing-frame">
                         <div className="routing-buttons">
                             <ButtonBar active={this.state.mode} buttons={buttons} onClick={key => this.setState({mode: key})} />
@@ -306,16 +306,6 @@ class Routing extends React.Component {
                 ) : null}
             </InputContainer>
         );
-    };
-    changeCurrentTab = (key) => {
-        this.props.removeLayer("routingggeometries");
-        this.setState((state) => ({
-            currentTab: key,
-            routeConfig: {
-                ...state.routeConfig,
-                result: null
-            }
-        }));
     };
     locatePos = () => {
         return {
