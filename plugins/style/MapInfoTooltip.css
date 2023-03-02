@@ -63,3 +63,11 @@ div.mapinfotooltip-body:after {
 div.mapinfotooltip-body td {
     padding: 0.25em;
 }
+
+table.mapinfotooltip-body-routing td:last-child {
+    display: flex;
+}
+
+table.mapinfotooltip-body-routing td:last-child button {
+    flex: 1 1 auto;
+}

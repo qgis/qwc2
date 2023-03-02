@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
 import axios from 'axios';
+import {setCurrentTask} from '../actions/task';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -26,7 +27,8 @@ class MapInfoTooltip extends React.Component {
         elevationPrecision: PropTypes.number,
         enabled: PropTypes.bool,
         includeWGS84: PropTypes.bool,
-        map: PropTypes.object
+        map: PropTypes.object,
+        setCurrentTask: PropTypes.func
     };
     static defaultProps = {
         elevationPrecision: 0,
@@ -109,6 +111,36 @@ class MapInfoTooltip extends React.Component {
             top: pixel[1] + "px"
         };
         const text = info.map(entry => entry.join(": ")).join("\n");
+        let routingButtons = null;
+        if (ConfigUtils.havePlugin("Routing")) {
+            const prec = CoordinatesUtils.getUnits(this.props.displaycrs) === 'degrees' ? 4 : 0;
+            const pos = CoordinatesUtils.reproject(this.state.coordinate, this.props.map.projection, this.props.displaycrs);
+            const point = {
+                text: pos.map(x => x.toFixed(prec)).join(", ") + " (" + this.props.displaycrs + ")",
+                pos: [...pos],
+                crs: this.props.displaycrs
+            };
+            routingButtons = (
+                <table className="mapinfotooltip-body-routing">
+                    <tbody>
+                        <tr>
+                            <td><b>{LocaleUtils.tr("routing.route")}:</b></td>
+                            <td>
+                                <button className="button" onClick={() => {this.props.setCurrentTask("Routing", null, null, {from: point}); this.hidePopup();}}>{LocaleUtils.tr("routing.fromhere")}</button>
+                                <button className="button" onClick={() => {this.props.setCurrentTask("Routing", null, null, {to: point}); this.hidePopup();}}>{LocaleUtils.tr("routing.tohere")}</button>
+                                <button className="button" onClick={() => {this.props.setCurrentTask("Routing", null, null, {via: point}); this.hidePopup();}}>{LocaleUtils.tr("routing.addviapoint")}</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>{LocaleUtils.tr("routing.reachability")}:</b></td>
+                            <td>
+                                <button className="button" onClick={() => {this.props.setCurrentTask("Routing", null, null, {isocenter: point}); this.hidePopup();}}>{LocaleUtils.tr("routing.isocenter")}</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            );
+        }
         return (
             <div className="mapinfotooltip" style={style}>
                 <div className="mapinfotooltip-window">
@@ -128,6 +160,7 @@ class MapInfoTooltip extends React.Component {
                                 ))}
                             </tbody>
                         </table>
+                        {routingButtons}
                     </div>
                 </div>
             </div>
@@ -141,4 +174,6 @@ const selector = createSelector([state => state, displayCrsSelector], (state, di
     displaycrs: displaycrs
 }));
 
-export default connect(selector, {})(MapInfoTooltip);
+export default connect(selector, {
+    setCurrentTask: setCurrentTask
+})(MapInfoTooltip);
