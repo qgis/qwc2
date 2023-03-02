@@ -343,6 +343,7 @@ class RedliningSupport extends React.Component {
             }
             this.setCurrentFeature(feature);
             const transformInteraction = new ol.interaction.Transform({
+                stretch: false,
                 keepAspectRatio: () => {
                     return this.currentFeature ? GeomTypeConfig[this.currentFeature.get('shape')].regular : false;
                 }
@@ -454,6 +455,7 @@ class RedliningSupport extends React.Component {
             return;
         }
         const transformInteraction = new ol.interaction.Transform({
+            stretch: false,
             keepAspectRatio: () => {
                 return this.currentFeature ? GeomTypeConfig[this.currentFeature.get('shape')].regular : false;
             }
