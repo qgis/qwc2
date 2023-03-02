@@ -445,7 +445,7 @@ class RedliningSupport extends React.Component {
 
         });
         this.props.map.addInteraction(selectInteraction);
-        this.interactions = [selectInteraction, modifyInteraction];
+        this.interactions = [selectInteraction, modifyInteraction, transformInteraction];
         this.picking = true;
     };
     addTransformInteraction = (layerChanged) => {
