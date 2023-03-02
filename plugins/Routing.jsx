@@ -123,6 +123,10 @@ class Routing extends React.Component {
             this.props.removeLayer("routingmarkers");
             this.recomputeIfNeeded();
         }
+        // Mode changed
+        if (this.state.mode !== prevState.mode) {
+            this.recomputeIfNeeded();
+        }
         // Window closed
         if (!this.state.visible && prevState.visible) {
             this.props.removeLayer("routingggeometries");
