@@ -471,6 +471,15 @@ class RedliningSupport extends React.Component {
                 this.setCurrentFeature(evt.feature);
             }
         });
+        transformInteraction.on('rotateend', () => {
+            this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
+        });
+        transformInteraction.on('translateend', () => {
+            this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
+        });
+        transformInteraction.on('scaleend', () => {
+            this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
+        });
         this.props.map.addInteraction(transformInteraction);
         this.interactions = [transformInteraction];
     };
