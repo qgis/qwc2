@@ -231,6 +231,15 @@
     "navbar": {
       "perpage": "per pagina"
     },
+    "numericinput": {
+      "angle": "Angolo",
+      "featureunsupported": "Formulario numerico non disponibile per questa geometria",
+      "height": "Altezza",
+      "nofeature": "Nessun oggetto attivo",
+      "side": "Lato",
+      "width": "Larghezza",
+      "windowtitle": "Formulario numerico"
+    },
     "print": {
       "grid": "Griglia",
       "layout": "Layout",
@@ -273,6 +282,7 @@
       "layer": "Layer",
       "line": "Linea",
       "measurements": "Mostra misurazioni",
+      "numericinput": "",
       "outline": "Contorno",
       "pick": "Seleziona",
       "point": "Punto",

@@ -231,6 +231,15 @@
     "navbar": {
       "perpage": "pro Seite"
     },
+    "numericinput": {
+      "angle": "Winkel",
+      "featureunsupported": "Numerische Eingabe nicht verfügbar für dieses Objekt",
+      "height": "Höhe",
+      "nofeature": "Kein Objekt aktiv",
+      "side": "Seite",
+      "width": "Breite",
+      "windowtitle": "Numerische Eingabe"
+    },
     "print": {
       "grid": "Gitter",
       "layout": "Format",
@@ -273,6 +282,7 @@
       "layer": "Ebene",
       "line": "Linie",
       "measurements": "Messungen anzeigen",
+      "numericinput": "",
       "outline": "Rand",
       "pick": "Auswählen",
       "point": "Punkt",

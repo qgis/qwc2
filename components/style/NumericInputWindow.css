@@ -1,0 +1,11 @@
+div.numeric-input-widget-body > table {
+    width: 100%;
+}
+
+div.numeric-input-widget-body > table input {
+    width: 100%;
+}
+
+div.numeric-input-widget-body > table tr:hover {
+    background-color: var(--list-item-bg-color-hover);
+}

@@ -231,6 +231,15 @@
     "navbar": {
       "perpage": ""
     },
+    "numericinput": {
+      "angle": "",
+      "featureunsupported": "",
+      "height": "",
+      "nofeature": "",
+      "side": "",
+      "width": "",
+      "windowtitle": ""
+    },
     "print": {
       "grid": "Grid",
       "layout": "Șablon",
@@ -273,6 +282,7 @@
       "layer": "Strat",
       "line": "Linie",
       "measurements": "",
+      "numericinput": "",
       "outline": "Contur",
       "pick": "Alege",
       "point": "Punct",

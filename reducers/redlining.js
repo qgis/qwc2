@@ -22,6 +22,7 @@ const defaultState = {
     selectedFeature: null,
     drawMultiple: true,
     measurements: false,
+    numericInput: false,
     lenUnit: 'metric',
     areaUnit: 'metric'
 };

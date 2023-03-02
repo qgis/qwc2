@@ -231,6 +231,15 @@
     "navbar": {
       "perpage": ""
     },
+    "numericinput": {
+      "angle": "",
+      "featureunsupported": "",
+      "height": "",
+      "nofeature": "",
+      "side": "",
+      "width": "",
+      "windowtitle": ""
+    },
     "print": {
       "grid": "Ristikko",
       "layout": "Layout",
@@ -273,6 +282,7 @@
       "layer": "Taso",
       "line": "Viiva",
       "measurements": "",
+      "numericinput": "",
       "outline": "Ääriviiva",
       "pick": "Poimi",
       "point": "Piste",

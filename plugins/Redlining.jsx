@@ -76,7 +76,7 @@ class Redlining extends React.Component {
         Mousetrap.bind('del', this.triggerDelete);
     }
     onHide = () => {
-        this.props.changeRedliningState({action: null, geomType: null});
+        this.props.changeRedliningState({action: null, geomType: null, numericInput: false});
         Mousetrap.unbind('del', this.triggerDelete);
     }
     updateRedliningState = (diff) => {
@@ -112,6 +112,9 @@ class Redlining extends React.Component {
             {key: "Transform", tooltip: LocaleUtils.trmsg("redlining.transform"), icon: "transformtool", data: {action: "Transform", geomType: null, text: ""}},
             {key: "Delete", tooltip: LocaleUtils.trmsg("redlining.delete"), icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature}
         ];
+        const extraButtons = [
+            {key: "NumericInput", tooltip: LocaleUtils.trmsg("redlining.numericinput"), icon: "numericinput"}
+        ];
         for (const plugin of Object.values(this.props.plugins || {})) {
             editButtons.push(plugin.cfg);
         }
@@ -145,6 +148,10 @@ class Redlining extends React.Component {
                     <div className="redlining-group">
                         <div>{LocaleUtils.tr("redlining.edit")}</div>
                         <ButtonBar active={activeButton} buttons={editButtons} onClick={(key, data) => this.actionChanged(data)} />
+                    </div>
+                    <div className="redlining-group">
+                        <div>&nbsp;</div>
+                        <ButtonBar active={this.props.redlining.numericInput ? "NumericInput" : null} buttons={extraButtons} onClick={() => this.updateRedliningState({numericInput: !this.props.redlining.numericInput})} />
                     </div>
                 </div>
                 {controls}

@@ -231,6 +231,15 @@
     "navbar": {
       "perpage": "per pàgina"
     },
+    "numericinput": {
+      "angle": "",
+      "featureunsupported": "",
+      "height": "",
+      "nofeature": "",
+      "side": "",
+      "width": "",
+      "windowtitle": ""
+    },
     "print": {
       "grid": "Graella",
       "layout": "Diseny",
@@ -273,6 +282,7 @@
       "layer": "Capa",
       "line": "Línia",
       "measurements": "",
+      "numericinput": "",
       "outline": "Vora",
       "pick": "Escollir",
       "point": "Punt",

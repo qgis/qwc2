@@ -15,6 +15,7 @@ import ol from 'openlayers';
 import {changeRedliningState} from '../../actions/redlining';
 import {LayerRole, addLayerFeatures, removeLayerFeatures} from '../../actions/layers';
 import {OlLayerAdded, OlLayerUpdated} from '../../components/map/OlLayer';
+import NumericInputWindow from '../../components/NumericInputWindow';
 import displayCrsSelector from '../../selectors/displaycrs';
 import FeatureStyles from '../../utils/FeatureStyles';
 import MeasureUtils from '../../utils/MeasureUtils';
@@ -125,8 +126,27 @@ class RedliningSupport extends React.Component {
         }
     }
     render() {
+        if (this.props.redlining.numericInput) {
+            return (
+                <NumericInputWindow feature={this.props.redlining.selectedFeature} onClose={this.closeNumericInput} onFeatureChanged={this.updateCurrentFeature} />
+            );
+        }
         return null;
     }
+    closeNumericInput = () => {
+        this.props.changeRedliningState({numericInput: false});
+    };
+    updateCurrentFeature = (feature) => {
+        if (this.currentFeature && this.props.redlining.selectedFeature) {
+            if (feature.properties.circleParams) {
+                const circleParams = feature.properties.circleParams;
+                this.currentFeature.setGeometry(new ol.geom.Circle(circleParams.center, circleParams.radius));
+            } else {
+                this.currentFeature.getGeometry().setCoordinates(feature.geometry.coordinates);
+            }
+            this.props.changeRedliningState({selectedFeature: feature});
+        }
+    };
     styleOptions = (style) => {
         return {
             strokeColor: style.borderColor,

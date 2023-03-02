@@ -231,6 +231,15 @@
     "navbar": {
       "perpage": ""
     },
+    "numericinput": {
+      "angle": "",
+      "featureunsupported": "",
+      "height": "",
+      "nofeature": "",
+      "side": "",
+      "width": "",
+      "windowtitle": ""
+    },
     "print": {
       "grid": "Mřížka:",
       "layout": "Rovržení:",
@@ -273,6 +282,7 @@
       "layer": "Vrstva",
       "line": "Linie",
       "measurements": "",
+      "numericinput": "",
       "outline": "Obrys",
       "pick": "Výběr",
       "point": "Bod",
