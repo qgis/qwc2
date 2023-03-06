@@ -301,6 +301,7 @@
       "computefailed": "",
       "computing": "",
       "export": "",
+      "fastest": "",
       "fromhere": "",
       "iso_intervals": "",
       "iso_mode": "",
@@ -308,8 +309,10 @@
       "iso_mode_time": "",
       "isocenter": "",
       "maxspeed": "",
+      "method": "",
       "reachability": "",
       "route": "",
+      "shortest": "",
       "tohere": "",
       "windowtitle": ""
     },

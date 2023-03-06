@@ -27,18 +27,12 @@ div.routing-buttons div.routing-settings-menu {
     padding: 0.25em;
 }
 
-div.routing-settings-menu-entry {
-    display: flex;
-    align-items: center;
+table.routing-settings-menu-entries td {
+    white-space: nowrap;
 }
 
-div.routing-settings-menu-entry > *:first-child {
-    flex: 0 0 auto;
-    margin-right: 0.5em;
-}
-
-div.routing-settings-menu-entry > *:last-child {
-    flex: 1 1 auto;
+table.routing-settings-menu-entries td:last-child > * {
+    width: 100%;
 }
 
 div.routing-routepoints {

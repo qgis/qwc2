@@ -301,6 +301,7 @@
       "computefailed": "Échec du calcul",
       "computing": "Calculation...",
       "export": "Exporter",
+      "fastest": "Plus rapide",
       "fromhere": "À partir d'ici",
       "iso_intervals": "Intervalles",
       "iso_mode": "Mode",
@@ -308,8 +309,10 @@
       "iso_mode_time": "Temps",
       "isocenter": "Centre ici",
       "maxspeed": "Vitesse maximale",
+      "method": "Méthode",
       "reachability": "Accessibilité",
       "route": "Route",
+      "shortest": "Plus courte",
       "tohere": "Jusqu'ici",
       "windowtitle": "Routage"
     },

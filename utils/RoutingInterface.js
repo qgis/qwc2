@@ -64,13 +64,25 @@ function decodeShape(str, precision = null) {
 function getValhallaParams(costing, locations, options, extraOptions) {
     const costingOptions = {};
     if (costing === 'auto') {
-        costingOptions.auto = {top_speed: options.maxSpeed};
+        costingOptions.auto = {
+            top_speed: options.maxSpeed,
+            shortest: options.method === 'shortest'
+        };
     } else if (costing === 'bus') {
-        costingOptions.bus = {top_speed: options.maxSpeed};
+        costingOptions.bus = {
+            top_speed: options.maxSpeed,
+            shortest: options.method === 'shortest'
+        };
     } else if (costing === 'bicycle') {
-        costingOptions.bicycle = {cycling_speed: options.maxSpeed};
+        costingOptions.bicycle = {
+            cycling_speed: options.maxSpeed,
+            shortest: options.method === 'shortest'
+        };
     } else if (costing === 'pedestrian') {
-        costingOptions.pedestrian = {walking_speed: options.maxSpeed};
+        costingOptions.pedestrian = {
+            walking_speed: options.maxSpeed,
+            shortest: options.method === 'shortest'
+        };
     }
     const payload = {
         costing: costing,

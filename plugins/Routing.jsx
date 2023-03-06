@@ -53,15 +53,19 @@ class Routing extends React.Component {
         mode: 'auto',
         settings: {
             auto: {
+                method: 'fastest',
                 maxSpeed: 130
             },
             bus: {
+                method: 'fastest',
                 maxSpeed: 100
             },
             bicycle: {
+                method: 'fastest',
                 maxSpeed: 25
             },
             pedestrian: {
+                method: 'fastest',
                 maxSpeed: 4
             }
         },
@@ -183,13 +187,28 @@ class Routing extends React.Component {
     renderSettings = () => {
         return (
             <div className="routing-settings-menu">
-                <div className="routing-settings-menu-entry">
-                    <span>{LocaleUtils.tr("routing.maxspeed")}:</span>
-                    <NumericInput
-                        format={x => x + " km/h"} max={250} min={1} mobile
-                        onChange={(value) => this.updateSetting(this.state.mode, {maxSpeed: value})}
-                        precision={0} step={1} strict value={this.state.settings[this.state.mode].maxSpeed} />
-                </div>
+                <table className="routing-settings-menu-entries">
+                    <tbody>
+                        <tr>
+                            <td>{LocaleUtils.tr("routing.method")}:</td>
+                            <td>
+                                <select onChange={(ev) => this.updateSetting(this.state.mode, {method: ev.target.value})} value={this.state.settings[this.state.mode].method}>
+                                    <option value="fastest">{LocaleUtils.tr("routing.fastest")}</option>
+                                    <option value="shortest">{LocaleUtils.tr("routing.shortest")}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{LocaleUtils.tr("routing.maxspeed")}:</td>
+                            <td>
+                                <NumericInput
+                                    format={x => x + " km/h"} max={250} min={1} mobile
+                                    onChange={(value) => this.updateSetting(this.state.mode, {maxSpeed: value})}
+                                    precision={0} step={1} strict value={this.state.settings[this.state.mode].maxSpeed} />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         );
     };
