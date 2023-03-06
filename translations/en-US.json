@@ -311,6 +311,7 @@
       "maxspeed": "Max speed",
       "method": "Method",
       "reachability": "Reachability",
+      "roundtrip": "Roundtrip",
       "route": "Route",
       "shortest": "Shortest",
       "tohere": "To here",

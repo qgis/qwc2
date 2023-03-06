@@ -311,6 +311,7 @@
       "maxspeed": "Vitesse maximale",
       "method": "Méthode",
       "reachability": "Accessibilité",
+      "roundtrip": "Aller-retour",
       "route": "Route",
       "shortest": "Plus courte",
       "tohere": "Jusqu'ici",

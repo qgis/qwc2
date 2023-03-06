@@ -75,7 +75,8 @@ class Routing extends React.Component {
                 {text: '', pos: null, crs: null},
                 {text: '', pos: null, crs: null}
             ],
-            result: null
+            result: null,
+            roundtrip: false
         },
         isoConfig: {
             point: {text: '', pos: null, crs: null},
@@ -223,6 +224,9 @@ class Routing extends React.Component {
                     <div>
                         <Icon icon="up-down-arrow" onClick={this.reverseRoutePts} />
                     </div>
+                </div>
+                <div className="routing-routepoints-commands">
+                    <label><input onChange={(ev) => this.updateRouteConfig({roundtrip: ev.target.checked})} type="checkbox" value={routeConfig.roundtrip} /> {LocaleUtils.tr("routing.roundtrip")}</label>
                 </div>
                 <div className="routing-routepoints-commands">
                     <a href="#" onClick={() => this.addRoutePt()}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
@@ -455,6 +459,9 @@ class Routing extends React.Component {
         this.updateRouteConfig({busy: locations.length >= 2, result: null}, false);
         if (locations.length < 2) {
             return;
+        }
+        if (this.state.routeConfig.roundtrip) {
+            locations.push(locations[0]);
         }
         RoutingInterface.computeRoute(this.state.mode, locations, this.state.settings[this.state.mode], (success, result) => {
             if (success) {

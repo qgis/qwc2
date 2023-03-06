@@ -50,6 +50,7 @@ div.routing-routepoints > div:last-child {
 }
 
 div.routing-routepoints-commands {
+    margin: 0.25em 0;
     display: flex;
 }
 

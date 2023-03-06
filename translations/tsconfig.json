@@ -267,6 +267,7 @@
     "routing.maxspeed",
     "routing.method",
     "routing.reachability",
+    "routing.roundtrip",
     "routing.route",
     "routing.shortest",
     "routing.tohere",
