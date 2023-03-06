@@ -122,8 +122,10 @@ class MapLegend extends React.Component {
             const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, mapScale, this.props.map, this.state.bboxDependentLegend, this.state.scaleDependentLegend, this.props.extraLegendParameters);
             return request ? (
                 <div className="map-legend-legend-entry" key={sublayer.name}>
-                    <img src={request} />
-                    {this.props.addLayerTitles ? (<span className="map-legend-entry-title">{sublayer.title || sublayer.name}</span>) : null}
+                    <div>
+                        {this.props.addLayerTitles ? (<div className="map-legend-entry-title">{sublayer.title || sublayer.name}</div>) : null}
+                        <div><img src={request} /></div>
+                    </div>
                 </div>) : null;
         }
     };

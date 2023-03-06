@@ -3,13 +3,14 @@ div.map-legend {
     overflow: auto;
     height: calc(100% + 0.5em);
     margin: -0.25em;
+    padding: 0.25em;
 }
 
 span.map-legend-color-box {
     display: inline-block;
     width: 1em;
     height: 1em;
-    margin: 0.25em;
+    margin: 0.25em 1em 0.25em 0.25em;
     border: 1px solid black;
 }
 
@@ -29,6 +30,6 @@ div.map-legend-legend-entry {
     align-items: center;
 }
 
-span.map-legend-entry-title {
-    margin-left: 1em;
+div.map-legend-entry-title {
+    font-size: 95%;
 }
