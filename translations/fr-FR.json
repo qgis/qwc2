@@ -232,13 +232,13 @@
       "perpage": "Par page"
     },
     "numericinput": {
-      "angle": "",
-      "featureunsupported": "",
-      "height": "",
-      "nofeature": "",
-      "side": "",
-      "width": "",
-      "windowtitle": ""
+      "angle": "Angle",
+      "featureunsupported": "Entrée numérique non disponible pour cette géométrie",
+      "height": "Hauteur",
+      "nofeature": "Aucune objet active",
+      "side": "Côté",
+      "width": "Largeur",
+      "windowtitle": "Entrée numérique"
     },
     "print": {
       "grid": "Grille",
@@ -282,7 +282,7 @@
       "layer": "Couche",
       "line": "Ligne",
       "measurements": "Montrer les mesures",
-      "numericinput": "",
+      "numericinput": "Entrée numérique",
       "outline": "Contour",
       "pick": "Choisir",
       "point": "Point",
