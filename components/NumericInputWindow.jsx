@@ -9,18 +9,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {createSelector} from 'reselect';
 import {addLayerFeatures, LayerRole, removeLayer} from '../actions/layers';
 import ResizeableWindow from './ResizeableWindow';
+import displayCrsSelector from '../selectors/displaycrs';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/NumericInputWindow.css';
 import Icon from './Icon';
 import TextInput from './widgets/TextInput';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 
 class NumericInputWindow extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
+        displayCrs: PropTypes.string,
         feature: PropTypes.object,
         mapCrs: PropTypes.string,
         onClose: PropTypes.func,
@@ -28,12 +32,27 @@ class NumericInputWindow extends React.Component {
         removeLayer: PropTypes.func
     };
     state = {
-        highlightedNode: null
+        highlightedNode: null,
+        displayCrs: null,
+        feature: null,
+        geometry: null
     };
+    componentDidMount() {
+        this.componentDidUpdate({});
+    }
     componentDidUpdate(prevProps) {
-        if (this.props.feature !== prevProps.feature) {
+        if (prevProps.feature && this.props.feature !== prevProps.feature) {
             this.props.removeLayer("numericinputselection");
         }
+    }
+    static getDerivedStateFromProps(nextProps, state) {
+        const newState = {feature: nextProps.feature, displayCrs: nextProps.displayCrs};
+        if (state.feature && !nextProps.feature) {
+            newState.geometry = null;
+        } else if (nextProps.feature && (nextProps.feature !== state.feature || nextProps.displayCrs !== state.displayCrs)) {
+            newState.geometry = VectorLayerUtils.reprojectGeometry(nextProps.feature.geometry, nextProps.mapCrs, nextProps.displayCrs);
+        }
+        return newState;
     }
     render() {
         const shapeInputForms = {
@@ -45,10 +64,10 @@ class NumericInputWindow extends React.Component {
             Square: this.renderBoxInputForm
         };
         let body = null;
-        if (!this.props.feature) {
+        if (!this.state.geometry) {
             body = (<span>{LocaleUtils.tr("numericinput.nofeature")}</span>);
-        } else if (shapeInputForms[this.props.feature.properties.shape]) {
-            body = shapeInputForms[this.props.feature.properties.shape]();
+        } else if (shapeInputForms[this.state.feature.properties.shape]) {
+            body = shapeInputForms[this.state.feature.properties.shape]();
         } else {
             body = LocaleUtils.tr("numericinput.featureunsupported");
         }
@@ -60,8 +79,17 @@ class NumericInputWindow extends React.Component {
             </ResizeableWindow>
         );
     }
+    coordinatesChanged = (coordinates) => {
+        this.props.onFeatureChanged({
+            ...this.state.feature,
+            geometry: VectorLayerUtils.reprojectGeometry({
+                ...this.state.geometry,
+                coordinates: coordinates
+            }, this.state.displayCrs, this.props.mapCrs)
+        });
+    };
     renderOrdinateInput = (ordinate, onChange) => {
-        const decimals = CoordinatesUtils.getUnits(this.props.mapCrs) === 'degrees' ? 4 : 0;
+        const decimals = CoordinatesUtils.getUnits(this.state.displayCrs) === 'degrees' ? 4 : 0;
         const value = ordinate.toFixed(decimals);
         return (
             <TextInput onChange={(text) => this.onOrdinateChanged(text, onChange)} value={value} />
@@ -74,7 +102,7 @@ class NumericInputWindow extends React.Component {
         }
     };
     renderPointInputForm = () => {
-        const coordinates = this.props.feature.geometry.coordinates;
+        const coordinates = this.state.geometry.coordinates;
         return (
             <table>
                 <tbody>
@@ -87,19 +115,13 @@ class NumericInputWindow extends React.Component {
         );
     };
     updatePoint = (number, ord) => {
-        const newCoordinates = [...this.props.feature.geometry.coordinates];
+        const newCoordinates = [...this.state.geometry.coordinates];
         newCoordinates[ord] = number;
-        this.props.onFeatureChanged({
-            type: "Feature",
-            geometry: {
-                ...this.props.feature.geometry,
-                coordinates: newCoordinates
-            }
-        });
+        this.coordinatesChanged(newCoordinates);
     };
     renderCoordinateListInputForm = () => {
-        let coordinates = this.props.feature.geometry.coordinates;
-        if (this.props.feature.properties.shape === 'Polygon') {
+        let coordinates = this.state.geometry.coordinates;
+        if (this.state.feature.properties.shape === 'Polygon') {
             coordinates = coordinates[0];
         }
         return (
@@ -122,9 +144,9 @@ class NumericInputWindow extends React.Component {
         );
     };
     updateListCoordinate = (number, nodeidx, ord) => {
-        const newCoordinates = [...this.props.feature.geometry.coordinates];
+        const newCoordinates = [...this.state.geometry.coordinates];
         let newpoint = null;
-        if (this.props.feature.properties.shape === 'Polygon') {
+        if (this.state.feature.properties.shape === 'Polygon') {
             newCoordinates[0] = [...newCoordinates[0]];
             newCoordinates[0][nodeidx] = [...newCoordinates[0][nodeidx]];
             newCoordinates[0][nodeidx][ord] = number;
@@ -134,13 +156,7 @@ class NumericInputWindow extends React.Component {
             newCoordinates[nodeidx][ord] = number;
             newpoint = newCoordinates[nodeidx];
         }
-        this.props.onFeatureChanged({
-            ...this.props.feature,
-            geometry: {
-                ...this.props.feature.geometry,
-                coordinates: newCoordinates
-            }
-        });
+        this.coordinatesChanged(newCoordinates);
         this.highlightListCoordinate(nodeidx, newpoint);
     };
     computeInsPoint = (coordinates, idx) => {
@@ -156,43 +172,31 @@ class NumericInputWindow extends React.Component {
         }
     };
     insertCoordinate = (idx) => {
-        const newCoordinates = [...this.props.feature.geometry.coordinates];
-        if (this.props.feature.properties.shape === 'Polygon') {
+        const newCoordinates = [...this.state.geometry.coordinates];
+        if (this.state.feature.properties.shape === 'Polygon') {
             newCoordinates[0] = [...newCoordinates[0]];
             newCoordinates[0].splice(idx, 0, this.computeInsPoint(newCoordinates[0], idx));
         } else {
             newCoordinates.splice(idx, 0, this.computeInsPoint(newCoordinates, idx));
         }
-        this.props.onFeatureChanged({
-            ...this.props.feature,
-            geometry: {
-                ...this.props.feature.geometry,
-                coordinates: newCoordinates
-            }
-        });
+        this.coordinatesChanged(newCoordinates);
         this.props.removeLayer("numericinputselection");
     };
     removeCoordinate = (idx) => {
-        const newCoordinates = [...this.props.feature.geometry.coordinates];
-        if (this.props.feature.properties.shape === 'Polygon') {
+        const newCoordinates = [...this.state.geometry.coordinates];
+        if (this.state.feature.properties.shape === 'Polygon') {
             newCoordinates[0] = [...newCoordinates[0]];
             newCoordinates[0].splice(idx, 1);
         } else {
             newCoordinates.splice(idx, 1);
         }
-        this.props.onFeatureChanged({
-            ...this.props.feature,
-            geometry: {
-                ...this.props.feature.geometry,
-                coordinates: newCoordinates
-            }
-        });
+        this.coordinatesChanged(newCoordinates);
         this.props.removeLayer("numericinputselection");
     };
     highlightListCoordinate = (idx, newpoint = null) => {
-        const isPolygon = this.props.feature.properties.shape === 'Polygon';
-        const coordinates = this.props.feature.geometry.coordinates;
-        const point = newpoint || (isPolygon ? coordinates[0][idx] : coordinates[idx]);
+        const isPolygon = this.state.feature.properties.shape === 'Polygon';
+        const coordinates = this.state.geometry.coordinates;
+        const point = CoordinatesUtils.reproject(newpoint || (isPolygon ? coordinates[0][idx] : coordinates[idx]), this.state.displayCrs, this.props.mapCrs);
         this.setState({highlightedNode: idx});
         const feature = {
             type: "Feature",
@@ -214,43 +218,41 @@ class NumericInputWindow extends React.Component {
         }
     };
     renderCircleInputForm = () => {
-        const circleParams = this.props.feature.properties.circleParams;
+        const circleParams = this.state.feature.properties.circleParams;
+        const center = CoordinatesUtils.reproject(circleParams.center, this.props.mapCrs, this.state.displayCrs);
         return (
             <table>
                 <tbody>
                     <tr>
-                        <td>x:&nbsp;</td><td>{this.renderOrdinateInput(circleParams.center[0], value => this.updateCircle(value, 'x'))}</td>
+                        <td>x:&nbsp;</td><td>{this.renderOrdinateInput(center[0], value => this.updateCircle(value, center[1], circleParams.radius))}</td>
                     </tr>
                     <tr>
-                        <td>y:&nbsp;</td><td>{this.renderOrdinateInput(circleParams.center[1], value => this.updateCircle(value, 'y'))}</td>
+                        <td>y:&nbsp;</td><td>{this.renderOrdinateInput(center[1], value => this.updateCircle(center[0], value, circleParams.radius))}</td>
                     </tr>
                     <tr>
-                        <td>r:&nbsp;</td><td>{this.renderOrdinateInput(circleParams.radius, value => this.updateCircle(value, 'r'))}</td>
+                        <td>r:&nbsp;</td><td>{this.renderOrdinateInput(circleParams.radius, value => this.updateCircle(center[0], center[1], value))}</td>
                     </tr>
                 </tbody>
             </table>
         );
     };
-    updateCircle = (value, field) => {
+    updateCircle = (x, y, r) => {
+        const center = CoordinatesUtils.reproject([x, y], this.state.displayCrs, this.props.mapCrs);
         const newFeature = {
-            ...this.props.feature,
+            ...this.state.feature,
             properties: {
-                ...this.props.feature.properties,
-                circleParams: {...this.props.feature.properties.circleParams}
+                ...this.state.feature.properties,
+                circleParams: {
+                    center: center,
+                    radius: r
+                }
             }
         };
-        if (field === 'x') {
-            newFeature.properties.circleParams.center = [value, newFeature.properties.circleParams.center[1]];
-        } else if (field === 'y') {
-            newFeature.properties.circleParams.center = [newFeature.properties.circleParams.center[0], value];
-        } else if (field === 'r') {
-            newFeature.properties.circleParams.radius = value;
-        }
         this.props.onFeatureChanged(newFeature);
     };
     renderBoxInputForm = () => {
-        const shape = this.props.feature.properties.shape;
-        const coordinates = this.props.feature.geometry.coordinates[0];
+        const shape = this.state.feature.properties.shape;
+        const coordinates = this.state.geometry.coordinates[0];
         const x = 0.5 * (coordinates[0][0] + coordinates[2][0]);
         const y = 0.5 * (coordinates[0][1] + coordinates[2][1]);
         const d1x = Math.abs(coordinates[1][0] - coordinates[0][0]);
@@ -308,19 +310,16 @@ class NumericInputWindow extends React.Component {
             [x + cosa * w2 + sina * h2, y + sina * w2 - cosa * h2],
             [x + cosa * w2 - sina * h2, y + sina * w2 + cosa * h2]
         ];
-        this.props.onFeatureChanged({
-            ...this.props.feature,
-            geometry: {
-                ...this.props.feature.geometry,
-                coordinates: [coordinates]
-            }
-        });
+        this.coordinatesChanged(newCoordinates);
     };
 }
 
-export default connect((state) => ({
+const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
+    displayCrs: displaycrs,
     mapCrs: state.map.projection
-}), {
+}));
+
+export default connect(selector, {
     addLayerFeatures: addLayerFeatures,
     removeLayer: removeLayer
 })(NumericInputWindow);
