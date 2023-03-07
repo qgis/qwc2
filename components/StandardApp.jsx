@@ -18,6 +18,7 @@ import "regenerator-runtime/runtime";
 import axios from 'axios';
 import Proj4js from 'proj4';
 import {register as olProj4Register} from 'ol/proj/proj4';
+import deepmerge from 'deepmerge';
 
 import Localized from './Localized';
 import StandardStore from '../stores/StandardStore';
@@ -263,6 +264,17 @@ export default class StandardApp extends React.Component {
             return res;
         }, {});
         ConfigUtils.loadConfiguration(configParams).then((config) => {
+            // Merge common config into mobile/desktop config
+            const commonConfig = (config.plugins.common || []).reduce((res, entry) => ({
+                ...res, [entry.name]: entry
+            }), {});
+            config.plugins.desktop = Object.values(deepmerge(commonConfig, config.plugins.desktop.reduce((res, entry) => ({
+                ...res, [entry.name]: entry
+            }), {})));
+            config.plugins.mobile = Object.values(deepmerge(commonConfig, config.plugins.mobile.reduce((res, entry) => ({
+                ...res, [entry.name]: entry
+            }), {})));
+            delete config.plugins.common;
             this.store.dispatch(localConfigLoaded(config));
             const defaultLocale = this.props.appConfig.getDefaultLocale ? this.props.appConfig.getDefaultLocale() : "";
             // Dispatch user locale
