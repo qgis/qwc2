@@ -346,8 +346,9 @@ class LayerTree extends React.Component {
             );
         }
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filtervisiblelayers;
+        const haveMapCompare = ConfigUtils.havePlugin("MapCompare");
         let compareCheckbox = null;
-        if (this.props.allowCompare && allowReordering) {
+        if (haveMapCompare && this.props.allowCompare && allowReordering) {
             const swipecheckboxstate = this.props.swipe || this.props.swipe === 0 ? 'checked' : 'unchecked';
             compareCheckbox = (
                 <div className="layertree-option">
