@@ -621,7 +621,7 @@ class TimeManager extends React.Component {
                     radius2: gradBarWidth,
                     angle: 0,
                     scale: [1, 1 / gradBarWidth * gradBarHeight],
-                    displacement: [offset[0], offset[1] * gradBarHeight / gradBarWidth - gradBarWidth]
+                    displacement: [offset[0], offset[1] * gradBarHeight / gradBarWidth - gradBarHeight]
                 })
             }));
         }
