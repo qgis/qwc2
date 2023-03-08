@@ -303,13 +303,13 @@ class NumericInputWindow extends React.Component {
         const h2 = 0.5 * h;
         const cosa = Math.cos(alpha);
         const sina = Math.sin(alpha);
-        const coordinates = [
+        const newCoordinates = [[
             [x + cosa * w2 - sina * h2, y + sina * w2 + cosa * h2],
             [x - cosa * w2 - sina * h2, y - sina * w2 + cosa * h2],
             [x - cosa * w2 + sina * h2, y - sina * w2 - cosa * h2],
             [x + cosa * w2 + sina * h2, y + sina * w2 - cosa * h2],
             [x + cosa * w2 - sina * h2, y + sina * w2 + cosa * h2]
-        ];
+        ]];
         this.coordinatesChanged(newCoordinates);
     };
 }
