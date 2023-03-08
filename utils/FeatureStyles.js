@@ -8,7 +8,6 @@
 
 import ol from 'openlayers';
 import ConfigUtils from './ConfigUtils';
-import MeasureUtils from './MeasureUtils';
 import markerIcon from './img/marker-icon.png';
 
 const DEFAULT_FEATURE_STYLE = {
