@@ -147,12 +147,12 @@ class RedliningSupport extends React.Component {
             this.props.changeRedliningState({selectedFeature: feature});
         }
     };
-    styleOptions = (style) => {
+    styleOptions = (styleProps) => {
         return {
-            strokeColor: style.borderColor,
-            strokeWidth: 1 + 0.5 * style.size,
-            fillColor: style.fillColor,
-            circleRadius: 5 + style.size,
+            strokeColor: styleProps.borderColor,
+            strokeWidth: 1 + 0.5 * styleProps.size,
+            fillColor: styleProps.fillColor,
+            circleRadius: 5 + styleProps.size,
             strokeDash: []
         };
     };
@@ -210,7 +210,6 @@ class RedliningSupport extends React.Component {
             newRedliningState.lenUnit = measurements.lenUnit;
             newRedliningState.areaUnit = measurements.areaUnit;
         }
-        this.updateFeatureStyle(newRedliningState.style);
         this.props.changeRedliningState(newRedliningState);
 
         this.currentFeature.on('change', this.updateMeasurements);
@@ -260,11 +259,11 @@ class RedliningSupport extends React.Component {
             }
         }
     };
-    updateMeasurements = (evt) => {
+    updateMeasurements = () => {
         if (this.blockOnChange) {
             return;
         }
-        const feature = evt.target;
+        const feature = this.currentFeature;
         const hadMeasurements = !!feature.get('measurements');
         if (this.props.redlining.measurements) {
             const settings = {
@@ -275,20 +274,10 @@ class RedliningSupport extends React.Component {
                 decimals: 2
             };
             MeasureUtils.updateFeatureMeasurements(feature, feature.get('shape'), this.props.mapCrs, settings);
-            const newStyleProps = {
-                ...this.props.redlining.style,
-                text: feature.get('label')
-            };
-            this.props.changeRedliningState({selectedFeature: this.currentFeatureObject(), style: newStyleProps});
         } else if (hadMeasurements) {
             feature.set('measurements', undefined);
             feature.set('segment_labels', undefined);
             feature.set('label', '');
-            const newStyleProps = {
-                ...this.props.redlining.style,
-                text: ''
-            };
-            this.props.changeRedliningState({selectedFeature: this.currentFeatureObject(), style: newStyleProps});
         }
     };
     waitForFeatureAndLayer = (layerId, featureId, callback) => {
@@ -353,7 +342,6 @@ class RedliningSupport extends React.Component {
             }
             this.interactions.push(modifyInteraction);
             this.picking = true;
-            this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
         });
     };
     enterTemporaryTransformMode = (featureId, layerId) => {
@@ -370,9 +358,17 @@ class RedliningSupport extends React.Component {
             });
             this.props.map.addInteraction(transformInteraction);
             transformInteraction.select(this.currentFeature, true);
+            transformInteraction.on('rotateend', () => {
+                this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
+            });
+            transformInteraction.on('translateend', () => {
+                this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
+            });
+            transformInteraction.on('scaleend', () => {
+                this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
+            });
             this.interactions.push(transformInteraction);
             this.picking = true;
-            this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
         });
     };
     leaveTemporaryEditMode = () => {
@@ -507,7 +503,7 @@ class RedliningSupport extends React.Component {
         if (!this.currentFeature) {
             return;
         }
-        this.updateFeatureStyle(this.props.redlining.style);
+        // Don't commit empty text features
         const isText = this.currentFeature.get("shape") === "Text";
         if (isText && !this.currentFeature.get("label")) {
             if (!newFeature) {
@@ -516,8 +512,9 @@ class RedliningSupport extends React.Component {
             this.resetSelectedFeature();
             return;
         }
-        const format = new ol.format.GeoJSON();
-        const feature = format.writeFeatureObject(this.currentFeature);
+        this.updateMeasurements();
+
+        const feature = this.currentFeatureObject();
         if (this.currentFeature.getGeometry() instanceof ol.geom.Circle) {
             const center = this.currentFeature.getGeometry().getCenter();
             const radius = this.currentFeature.getGeometry().getRadius();
