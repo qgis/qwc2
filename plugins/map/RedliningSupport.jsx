@@ -600,7 +600,14 @@ class RedliningSupport extends React.Component {
             return null;
         }
         const format = new ol.format.GeoJSON();
-        return format.writeFeatureObject(this.currentFeature);
+        const feature = format.writeFeatureObject(this.currentFeature);
+        if (this.currentFeature.getGeometry() instanceof ol.geom.Circle) {
+            feature.properties.circleParams = {
+                center: this.currentFeature.getGeometry().getCenter(),
+                radius: this.currentFeature.getGeometry().getRadius()
+            };
+        }
+        return feature;
     };
 }
 
