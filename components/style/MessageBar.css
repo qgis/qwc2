@@ -11,7 +11,7 @@
 #MessageBar div.messagebar {
     display: inline-block;
     position: relative;
-    max-width: 95%;
+    max-width: calc(100% - 0.5em);
     pointer-events: all;
     padding: 0 1.25em 0 0.25em;
     background-color: var(--container-bg-color);

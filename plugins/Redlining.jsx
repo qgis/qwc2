@@ -89,7 +89,7 @@ class Redlining extends React.Component {
     }
     renderBody = () => {
         const activeButton = this.props.redlining.action === "Draw" ? this.props.redlining.geomType : this.props.redlining.action;
-        const drawButtons = [
+        let drawButtons = [
             {key: "Point", tooltip: LocaleUtils.trmsg("redlining.point"), icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
             {key: "LineString", tooltip: LocaleUtils.trmsg("redlining.line"), icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
             {key: "Polygon", tooltip: LocaleUtils.trmsg("redlining.polygon"), icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
@@ -101,6 +101,9 @@ class Redlining extends React.Component {
             ],
             {key: "Text", tooltip: LocaleUtils.trmsg("redlining.text"), icon: "text", data: {action: "Draw", geomType: "Text", text: "", measurements: false}}
         ];
+        if (this.props.mobile) {
+            drawButtons = [drawButtons.flat()];
+        }
         const activeFreeHand = this.props.redlining.freehand ? "HandDrawing" : null;
         const freehandButtons = [{
             key: "HandDrawing", tooltip: LocaleUtils.trmsg("redlining.freehand"), icon: "freehand",
@@ -176,12 +179,12 @@ class Redlining extends React.Component {
         return (
             <div className="redlining-controlsbar">
                 <span>
-                    <span>{LocaleUtils.tr("redlining.outline")}:&nbsp;</span>
+                    <Icon className="redlining-control-icon" icon="pen" size="large" />
                     <ColorButton color={this.props.redlining.style.borderColor} onColorChanged={(color) => this.updateRedliningStyle({borderColor: color})} />
                 </span>
                 {this.props.redlining.geomType === 'LineString' ? null : (
                     <span>
-                        <span>{LocaleUtils.tr("redlining.fill")}:&nbsp;</span>
+                        <Icon className="redlining-control-icon" icon="fill" size="large" />
                         <ColorButton color={this.props.redlining.style.fillColor} onColorChanged={(color) => this.updateRedliningStyle({fillColor: color})} />
                     </span>
                 )}

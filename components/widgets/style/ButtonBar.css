@@ -55,6 +55,11 @@ span.buttonbar-button-tooltip-bottom {
     top: 110%;
 }
 
+div.ButtonBar div.menubutton {
+    height: 2em;
+    flex: 1 1 auto;
+}
+
 span.buttonbar-button-container:hover span.buttonbar-button-tooltip,
 div.ButtonBar div.menubutton-button:hover span.buttonbar-button-tooltip {
     display: inline;
