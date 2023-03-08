@@ -260,7 +260,7 @@ class RedliningSupport extends React.Component {
         }
     };
     updateMeasurements = () => {
-        if (this.blockOnChange) {
+        if (this.blockOnChange || !this.currentFeature) {
             return;
         }
         const feature = this.currentFeature;
