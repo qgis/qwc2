@@ -36,6 +36,13 @@ class Routing extends React.Component {
         addLayerFeatures: PropTypes.func,
         displaycrs: PropTypes.string,
         enabledProviders: PropTypes.array,
+        geometry: PropTypes.shape({
+            initialWidth: PropTypes.number,
+            initialHeight: PropTypes.number,
+            initialX: PropTypes.number,
+            initialY: PropTypes.number,
+            initiallyDocked: PropTypes.bool
+        }),
         locatePos: PropTypes.array,
         mapcrs: PropTypes.string,
         removeLayer: PropTypes.func,
@@ -43,12 +50,17 @@ class Routing extends React.Component {
         setCurrentTask: PropTypes.func,
         task: PropTypes.object,
         theme: PropTypes.object,
-        windowSize: PropTypes.object,
         zoomToExtent: PropTypes.func
     };
     static defaultProps = {
         enabledProviders: ["coordinates", "nominatim"],
-        windowSize: {width: 320, height: 320}
+        geometry: {
+            initialWidth: 320,
+            initialHeight: 320,
+            initialX: 0,
+            initialY: 0,
+            initiallyDocked: true
+        }
     };
     state = {
         visible: false,
@@ -182,8 +194,7 @@ class Routing extends React.Component {
             {key: "pedestrian", icon: "routing-walking", tooltip: "routing.mode_walking"}
         ];
         return (
-            <ResizeableWindow icon="routing" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width}
-                onClose={this.onClose} title={LocaleUtils.tr("routing.windowtitle")} >
+            <ResizeableWindow icon="routing" onClose={this.onClose} title={LocaleUtils.tr("routing.windowtitle")} {...this.props.geometry}>
                 <div role="body">
                     <ButtonBar active={this.state.currentTab} buttons={tabButtons} onClick={(key) => this.setState({currentTab: key})} />
                     <div className="routing-frame">
