@@ -313,9 +313,9 @@
       "route": "Route",
       "shortest": "Shortest",
       "tohere": "To here",
-      "useferries": "Utiliser les ferries",
-      "usehighways": "Utiliser les autoroutes",
-      "usetollways": "Utiliser les péages",
+      "useferries": "Use ferries",
+      "usehighways": "Use highways",
+      "usetollways": "Use tollways",
       "windowtitle": "Routing"
     },
     "scratchdrawing": {
