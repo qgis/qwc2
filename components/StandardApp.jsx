@@ -265,15 +265,18 @@ export default class StandardApp extends React.Component {
         }, {});
         ConfigUtils.loadConfiguration(configParams).then((config) => {
             // Merge common config into mobile/desktop config
-            const commonConfig = (config.plugins.common || []).reduce((res, entry) => ({
-                ...res, [entry.name]: entry
-            }), {});
-            config.plugins.desktop = Object.values(deepmerge(commonConfig, config.plugins.desktop.reduce((res, entry) => ({
-                ...res, [entry.name]: entry
-            }), {})));
-            config.plugins.mobile = Object.values(deepmerge(commonConfig, config.plugins.mobile.reduce((res, entry) => ({
-                ...res, [entry.name]: entry
-            }), {})));
+            const commonConfig = (config.plugins.common || []).reduce((res, entry) => {
+                const key = entry.name + (entry.name === "TaskButton" ? "#" + (entry.cfg || {}).task : "");
+                return {...res, [key]: entry};
+            }, {});
+            config.plugins.desktop = Object.values(deepmerge(commonConfig, config.plugins.desktop.reduce((res, entry) => {
+                const key = entry.name + (entry.name === "TaskButton" ? "#" + (entry.cfg || {}).task : "");
+                return {...res, [key]: entry};
+            }, {})));
+            config.plugins.mobile = Object.values(deepmerge(commonConfig, config.plugins.mobile.reduce((res, entry) => {
+                const key = entry.name + (entry.name === "TaskButton" ? "#" + (entry.cfg || {}).task : "");
+                return {...res, [key]: entry};
+            }, {})));
             delete config.plugins.common;
             this.store.dispatch(localConfigLoaded(config));
             const defaultLocale = this.props.appConfig.getDefaultLocale ? this.props.appConfig.getDefaultLocale() : "";
