@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
 import FileSaver from 'file-saver';
 import NumericInput from 'react-numeric-input2';
+import Sortable from 'react-sortablejs';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
@@ -218,9 +219,9 @@ class Routing extends React.Component {
         return (
             <div>
                 <div className="routing-routepoints">
-                    <div>
+                    <Sortable onChange={this.onSortChange} options={{ghostClass: 'drop-ghost', delay: 200}}>
                         {routeConfig.routepoints.map((entry, idx) => this.renderSearchField(entry, idx))}
-                    </div>
+                    </Sortable>
                     <div>
                         <Icon icon="up-down-arrow" onClick={this.reverseRoutePts} />
                     </div>
@@ -566,6 +567,12 @@ class Routing extends React.Component {
             }))
         });
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "isochrone.json");
+    };
+    onSortChange = (order, sortable, ev) => {
+        const newRoutePoints = this.state.routeConfig.routepoints.slice(0);
+        const moved = newRoutePoints.splice(ev.oldIndex, 1)[0];
+        newRoutePoints.splice(ev.newIndex, 0, moved);
+        this.updateRouteConfig({routepoints: newRoutePoints});
     };
 }
 
