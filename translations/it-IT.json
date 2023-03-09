@@ -313,6 +313,9 @@
       "route": "Rotta",
       "shortest": "Più corta",
       "tohere": "A qui",
+      "useferries": "Utilizza traghetti",
+      "usehighways": "Utilizza autostrade",
+      "usetollways": "Utilizza strade a pedaggio",
       "windowtitle": "Routing"
     },
     "scratchdrawing": {

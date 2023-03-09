@@ -313,6 +313,9 @@
       "route": "Route",
       "shortest": "Kürzeste",
       "tohere": "Nach hier",
+      "useferries": "Fähren benutzen",
+      "usehighways": "Autobahnen benutzen",
+      "usetollways": "Mautstraßen benutzen",
       "windowtitle": "Routing"
     },
     "scratchdrawing": {

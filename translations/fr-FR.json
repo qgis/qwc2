@@ -313,6 +313,9 @@
       "route": "Route",
       "shortest": "Plus courte",
       "tohere": "Jusqu'ici",
+      "useferries": "",
+      "usehighways": "",
+      "usetollways": "",
       "windowtitle": "Routage"
     },
     "scratchdrawing": {

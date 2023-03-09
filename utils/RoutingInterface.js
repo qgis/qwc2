@@ -66,22 +66,30 @@ function getValhallaParams(costing, locations, options, extraOptions) {
     if (costing === 'auto') {
         costingOptions.auto = {
             top_speed: options.maxSpeed,
-            shortest: options.method === 'shortest'
+            shortest: options.method === 'shortest',
+            use_ferry: options.useFerries ? 1 : 0,
+            use_tolls: options.useTollways ? 1 : 0,
+            use_highways: options.useHighways ? 1 : 0
         };
     } else if (costing === 'bus') {
         costingOptions.bus = {
             top_speed: options.maxSpeed,
-            shortest: options.method === 'shortest'
+            shortest: options.method === 'shortest',
+            use_ferry: options.useFerries ? 1 : 0,
+            use_tolls: options.useTollways ? 1 : 0,
+            use_highways: options.useHighways ? 1 : 0
         };
     } else if (costing === 'bicycle') {
         costingOptions.bicycle = {
             cycling_speed: options.maxSpeed,
-            shortest: options.method === 'shortest'
+            shortest: options.method === 'shortest',
+            use_ferry: options.useFerries ? 1 : 0
         };
     } else if (costing === 'pedestrian') {
         costingOptions.pedestrian = {
             walking_speed: options.maxSpeed,
-            shortest: options.method === 'shortest'
+            shortest: options.method === 'shortest',
+            use_ferry: options.useFerries ? 1 : 0
         };
     }
     const payload = {

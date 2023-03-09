@@ -22,6 +22,7 @@ import ButtonBar from '../components/widgets/ButtonBar';
 import SearchWidget from '../components/widgets/SearchWidget';
 import Spinner from '../components/Spinner';
 import ResizeableWindow from '../components/ResizeableWindow';
+import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import displayCrsSelector from '../selectors/displaycrs';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -55,19 +56,27 @@ class Routing extends React.Component {
         settings: {
             auto: {
                 method: 'fastest',
-                maxSpeed: 130
+                maxSpeed: 130,
+                useFerries: true,
+                useHighways: true,
+                useTollways: true
             },
             bus: {
                 method: 'fastest',
-                maxSpeed: 100
+                maxSpeed: 100,
+                useFerries: true,
+                useHighways: true,
+                useTollways: true
             },
             bicycle: {
                 method: 'fastest',
-                maxSpeed: 25
+                maxSpeed: 25,
+                useFerries: true
             },
             pedestrian: {
                 method: 'fastest',
-                maxSpeed: 4
+                maxSpeed: 4,
+                useFerries: true
             }
         },
         settingsPopup: false,
@@ -187,6 +196,7 @@ class Routing extends React.Component {
         );
     }
     renderSettings = () => {
+        const settings = this.state.settings[this.state.mode];
         return (
             <div className="routing-settings-menu">
                 <table className="routing-settings-menu-entries">
@@ -194,7 +204,7 @@ class Routing extends React.Component {
                         <tr>
                             <td>{LocaleUtils.tr("routing.method")}:</td>
                             <td>
-                                <select onChange={(ev) => this.updateSetting(this.state.mode, {method: ev.target.value})} value={this.state.settings[this.state.mode].method}>
+                                <select onChange={(ev) => this.updateSetting(this.state.mode, {method: ev.target.value})} value={settings.method}>
                                     <option value="fastest">{LocaleUtils.tr("routing.fastest")}</option>
                                     <option value="shortest">{LocaleUtils.tr("routing.shortest")}</option>
                                 </select>
@@ -206,9 +216,31 @@ class Routing extends React.Component {
                                 <NumericInput
                                     format={x => x + " km/h"} max={250} min={1} mobile
                                     onChange={(value) => this.updateSetting(this.state.mode, {maxSpeed: value})}
-                                    precision={0} step={1} strict value={this.state.settings[this.state.mode].maxSpeed} />
+                                    precision={0} step={1} strict value={settings.maxSpeed} />
                             </td>
                         </tr>
+                        <tr>
+                            <td>{LocaleUtils.tr("routing.useferries")}:</td>
+                            <td>
+                                <ToggleSwitch active={settings.useFerries} onChange={(value) => this.updateSetting(this.state.mode, {useFerries: value})} />
+                            </td>
+                        </tr>
+                        {settings.useHighways !== undefined ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("routing.usehighways")}:</td>
+                                <td>
+                                    <ToggleSwitch active={settings.useHighways} onChange={(value) => this.updateSetting(this.state.mode, {useHighways: value})} />
+                                </td>
+                            </tr>
+                        ) : null}
+                        {settings.useTollways !== undefined ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("routing.usetollways")}:</td>
+                                <td>
+                                    <ToggleSwitch active={settings.useTollways} onChange={(value) => this.updateSetting(this.state.mode, {useTollways: value})} />
+                                </td>
+                            </tr>
+                        ) : null}
                     </tbody>
                 </table>
             </div>
