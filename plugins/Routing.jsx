@@ -42,6 +42,7 @@ class Routing extends React.Component {
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
         task: PropTypes.object,
+        theme: PropTypes.object,
         windowSize: PropTypes.object,
         zoomToExtent: PropTypes.func
     };
@@ -156,6 +157,10 @@ class Routing extends React.Component {
             this.state.isoConfig.point !== prevState.isoConfig.point
         ) {
             this.updateRoutingMarkers();
+        }
+        // Theme changed
+        if (this.props.theme !== prevProps.theme) {
+            this.setState({visible: false});
         }
     }
     render() {
@@ -612,6 +617,7 @@ export default (searchProviders) => {
     const providers = {...searchProviders, ...window.QWC2SearchProviders || {}};
     return connect(createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
         task: state.task,
+        theme: state.theme.current,
         mapcrs: state.map.projection,
         searchProviders: providers,
         displaycrs: displaycrs,
