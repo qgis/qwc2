@@ -126,15 +126,15 @@ class MapInfoTooltip extends React.Component {
                         <tr>
                             <td><b>{LocaleUtils.tr("routing.route")}:</b></td>
                             <td>
-                                <button className="button" onClick={() => {this.props.setCurrentTask("Routing", null, null, {from: point}); this.hidePopup();}}>{LocaleUtils.tr("routing.fromhere")}</button>
-                                <button className="button" onClick={() => {this.props.setCurrentTask("Routing", null, null, {to: point}); this.hidePopup();}}>{LocaleUtils.tr("routing.tohere")}</button>
-                                <button className="button" onClick={() => {this.props.setCurrentTask("Routing", null, null, {via: point}); this.hidePopup();}}>{LocaleUtils.tr("routing.addviapoint")}</button>
+                                <button className="button" onClick={() => this.props.setCurrentTask("Routing", null, null, {from: point})}>{LocaleUtils.tr("routing.fromhere")}</button>
+                                <button className="button" onClick={() => this.props.setCurrentTask("Routing", null, null, {to: point})}>{LocaleUtils.tr("routing.tohere")}</button>
+                                <button className="button" onClick={() => this.props.setCurrentTask("Routing", null, null, {via: point})}>{LocaleUtils.tr("routing.addviapoint")}</button>
                             </td>
                         </tr>
                         <tr>
                             <td><b>{LocaleUtils.tr("routing.reachability")}:</b></td>
                             <td>
-                                <button className="button" onClick={() => {this.props.setCurrentTask("Routing", null, null, {isocenter: point}); this.hidePopup();}}>{LocaleUtils.tr("routing.isocenter")}</button>
+                                <button className="button" onClick={() => this.props.setCurrentTask("Routing", null, null, {isocenter: point})}>{LocaleUtils.tr("routing.isocenter")}</button>
                             </td>
                         </tr>
                     </tbody>
