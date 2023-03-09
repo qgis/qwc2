@@ -97,7 +97,7 @@ function getValhallaParams(costing, locations, options, extraOptions) {
         costing_options: costingOptions,
         exclude_polygons: [],
         locations: locations.map(loc => ({lon: loc[0], lat: loc[1]})),
-        directions_options: {units: "kilometers"},
+        directions_options: {units: "kilometers", language: LocaleUtils.lang()},
         ...extraOptions
     };
     return {
