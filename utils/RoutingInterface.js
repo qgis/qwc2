@@ -125,7 +125,15 @@ function computeRoute(costing, locations, options, callback) {
                 return {
                     coordinates: decodeShape(leg.shape),
                     time: leg.summary.time,
-                    length: leg.summary.length * 1000
+                    length: leg.summary.length * 1000,
+                    maneuvers: leg.maneuvers.map(entry => ({
+                        instruction: entry.instruction,
+                        post_instruction: entry.verbal_post_transition_instruction,
+                        geom_indices: [entry.begin_shape_index, entry.end_shape_index],
+                        travel_type: entry.travel_type,
+                        time: entry.time,
+                        length: entry.length * 1000
+                    }))
                 };
             }),
             summary: {

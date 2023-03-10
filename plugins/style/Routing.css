@@ -1,12 +1,27 @@
+div.routing-body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+div.routing-buttonbar {
+    flex: 0 0 auto;
+}
+
 div.routing-frame {
     border: 1px solid var(--border-color);
     padding: 0.25em;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 div.routing-buttons {
     display: flex;
     align-items: center;
     position: relative;
+    flex: 0 0 auto;
 }
 
 div.routing-buttons > div.ButtonBar {
@@ -25,6 +40,17 @@ div.routing-buttons div.routing-settings-menu {
     box-shadow: 0px 0px 5px rgba(136, 136, 136, 1);
     z-index: 1;
     padding: 0.25em;
+}
+
+div.routing-tab-widget {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+div.routing-input {
+    flex: 0 0 auto;
 }
 
 table.routing-settings-menu-entries td {
@@ -88,6 +114,7 @@ div.routing-status-failure {
 div.routing-busy {
     display: flex;
     align-items: center;
+    flex: 0 0 auto;
 }
 
 div.routing-busy > div.spinner {
@@ -96,22 +123,64 @@ div.routing-busy > div.spinner {
     margin-right: 0.25em;
 }
 
+div.routing-result {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
 div.routing-result-summary {
     margin-top: 0.5em;
     border-top: 1px solid var(--border-color);
     padding: 0.25em;
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
 }
 
-div.routing-result-summary > div {
+div.routing-result-summary > span.icon {
+    margin-right: 0.5em;
+}
+
+div.routing-result-summary > span.routing-result-spacer {
+    flex: 1 1 auto;
+}
+
+div.routing-result-instructions {
+    background-color: var(--input-bg-color);
+    border-top: 1px solid var(--border-color);
+    padding: 0.25em;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: scroll;
+    font-size: 90%;
+}
+
+div.routing-result-instruction {
+    padding: 0.5em;
+}
+
+div.routing-result-instruction:hover {
+    background-color: var(--list-item-bg-color-hover);
+    color: var(--list-item-text-color-hover);
+}
+
+div.routing-result-instruction:not(:last-child) {
+    border-bottom: 1px solid var(--border-color);
+}
+
+div.routing-result-instruction-summary {
+    padding: 0.25em;
     display: flex;
     align-items: center;
 }
 
-div.routing-result-summary > div > span.icon {
+div.routing-result-instruction-summary > span.icon {
     margin-right: 0.5em;
 }
 
-div.routing-result-summary > div > span.routing-result-spacer {
+div.routing-result-instruction-summary > span.routing-result-spacer {
     flex: 1 1 auto;
 }
 

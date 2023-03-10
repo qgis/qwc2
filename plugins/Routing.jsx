@@ -108,7 +108,8 @@ class Routing extends React.Component {
             result: null
         },
         searchProviders: [],
-        searchParams: {}
+        searchParams: {},
+        highlightId: null
     };
     constructor(props) {
         super(props);
@@ -195,8 +196,8 @@ class Routing extends React.Component {
         ];
         return (
             <ResizeableWindow icon="routing" onClose={this.onClose} title={LocaleUtils.tr("routing.windowtitle")} {...this.props.geometry}>
-                <div role="body">
-                    <ButtonBar active={this.state.currentTab} buttons={tabButtons} onClick={(key) => this.setState({currentTab: key})} />
+                <div className="routing-body" role="body">
+                    <ButtonBar active={this.state.currentTab} buttons={tabButtons} className="routing-buttonbar" onClick={(key) => this.setState({currentTab: key})} />
                     <div className="routing-frame">
                         <div className="routing-buttons">
                             <ButtonBar active={this.state.mode} buttons={buttons} onClick={key => this.setState({mode: key})} />
@@ -265,22 +266,24 @@ class Routing extends React.Component {
     renderRouteWidget = () => {
         const routeConfig = this.state.routeConfig;
         return (
-            <div>
-                <div className="routing-routepoints">
-                    <Sortable onChange={this.onSortChange} options={{ghostClass: 'drop-ghost', delay: 200}}>
-                        {routeConfig.routepoints.map((entry, idx) => this.renderSearchField(entry, idx))}
-                    </Sortable>
-                    <div>
-                        <Icon icon="up-down-arrow" onClick={this.reverseRoutePts} />
+            <div className="routing-tab-widget">
+                <div className="routing-input">
+                    <div className="routing-routepoints">
+                        <Sortable onChange={this.onSortChange} options={{ghostClass: 'drop-ghost', delay: 200}}>
+                            {routeConfig.routepoints.map((entry, idx) => this.renderSearchField(entry, idx))}
+                        </Sortable>
+                        <div>
+                            <Icon icon="up-down-arrow" onClick={this.reverseRoutePts} />
+                        </div>
                     </div>
-                </div>
-                <div className="routing-routepoints-commands">
-                    <label><input onChange={(ev) => this.updateRouteConfig({roundtrip: ev.target.checked})} type="checkbox" value={routeConfig.roundtrip} /> {LocaleUtils.tr("routing.roundtrip")}</label>
-                </div>
-                <div className="routing-routepoints-commands">
-                    <a href="#" onClick={() => this.addRoutePt()}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
-                    <span />
-                    <a href="#" onClick={this.clearRoutePts}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
+                    <div className="routing-routepoints-commands">
+                        <label><input onChange={(ev) => this.updateRouteConfig({roundtrip: ev.target.checked})} type="checkbox" value={routeConfig.roundtrip} /> {LocaleUtils.tr("routing.roundtrip")}</label>
+                    </div>
+                    <div className="routing-routepoints-commands">
+                        <a href="#" onClick={() => this.addRoutePt()}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
+                        <span />
+                        <a href="#" onClick={this.clearRoutePts}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
+                    </div>
                 </div>
                 {routeConfig.busy ? (
                     <div className="routing-busy"><Spinner /> {LocaleUtils.tr("routing.computing")}</div>
@@ -298,51 +301,96 @@ class Routing extends React.Component {
             );
         } else {
             return (
-                <div className="routing-result-summary">
-                    <div>
+                <div className="routing-result">
+                    <div className="routing-result-summary">
                         <span><Icon icon="clock" /> {MeasureUtils.formatDuration(routeConfig.result.data.summary.time)}</span>
                         <span className="routing-result-spacer" />
                         <span><Icon icon="measure" /> {MeasureUtils.formatMeasurement(routeConfig.result.data.summary.length, false)}</span>
                         <span className="routing-result-spacer" />
                         <span><Icon icon="export" /> <a href="#" onClick={this.exportRoute}>{LocaleUtils.tr("routing.export")}</a></span>
                     </div>
+                    <div className="routing-result-instructions">
+                        {routeConfig.result.data.legs.map((leg, lidx) => leg.maneuvers.map((entry, eidx) => (
+                            <div className="routing-result-instruction"
+                                key={"instr" + lidx + ":" + eidx}
+                                onMouseEnter={() => this.highlightRouteSection(lidx + ":" + eidx, entry, leg)}
+                                onMouseLeave={() => this.clearRouteSectionHighlight(lidx + ":" + eidx)}
+                            >
+                                <div><b>{entry.instruction}</b></div>
+                                <div className="routing-result-instruction-summary">
+                                    <span><Icon icon="clock" /> {MeasureUtils.formatDuration(entry.time)}</span>
+                                    <span className="routing-result-spacer" />
+                                    <span><Icon icon="measure" /> {MeasureUtils.formatMeasurement(entry.length, false)}</span>
+                                </div>
+                            </div>
+                        )))}
+                    </div>
                 </div>
             );
         }
     };
+    highlightRouteSection = (id, entry, leg) => {
+        this.setState({highlightId: id});
+        const feature = {
+            type: "Feature",
+            crs: "EPSG:4326",
+            geometry: {
+                type: "LineString",
+                coordinates: leg.coordinates.slice(entry.geom_indices[0], entry.geom_indices[1])
+            }
+        };
+        const sellayer = {
+            id: "routingselection",
+            role: LayerRole.SELECTION,
+            styleOptions: {
+                strokeWidth: 3,
+                strokeColor: [255, 255, 0, 1],
+                strokeDash: []
+            }
+        };
+        this.props.addLayerFeatures(sellayer, [feature], true);
+    }
+    clearRouteSectionHighlight = (id) => {
+        if (this.state.highlightId === id) {
+            this.setState({highlightId: null});
+            this.props.removeLayer("routingselection");
+        }
+    }
     renderIsochroneWidget = () => {
         const isoConfig = this.state.isoConfig;
         const intervalValid = !!isoConfig.intervals.match(/^\d+(,\s*\d+)*$/);
         return (
-            <div className="routing-frame">
-                <div>
-                    <InputContainer className="routing-search-field">
-                        <SearchWidget resultSelected={(result) => this.isoSearchResultSelected(result)} role="input" searchParams={this.state.searchParams} searchProviders={this.state.searchProviders} value={isoConfig.point.text} />
-                        <button className="button" disabled={!this.props.locatePos} onClick={() => this.updateRoutePoint(0, this.locatePos())} role="suffix">
-                            <Icon icon="screenshot" />
-                        </button>
-                    </InputContainer>
+            <div className="routing-tab-widget">
+                <div className="routing-input">
+                    <div>
+                        <InputContainer className="routing-search-field">
+                            <SearchWidget resultSelected={(result) => this.isoSearchResultSelected(result)} role="input" searchParams={this.state.searchParams} searchProviders={this.state.searchProviders} value={isoConfig.point.text} />
+                            <button className="button" disabled={!this.props.locatePos} onClick={() => this.updateRoutePoint(0, this.locatePos())} role="suffix">
+                                <Icon icon="screenshot" />
+                            </button>
+                        </InputContainer>
+                    </div>
+                    <table className="routing-iso-settings">
+                        <tbody>
+                            <tr>
+                                <td>{LocaleUtils.tr("routing.iso_mode")}: </td>
+                                <td colSpan="2">
+                                    <select onChange={ev =>this.updateIsoConfig({mode: ev.target.value})} value={isoConfig.mode}>
+                                        <option value="time">{LocaleUtils.tr("routing.iso_mode_time")}</option>
+                                        <option value="distance">{LocaleUtils.tr("routing.iso_mode_distance")}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{LocaleUtils.tr("routing.iso_intervals")}: </td>
+                                <td>
+                                    <input className={isoConfig.intervals && !intervalValid ? "routing-input-invalid" : ""} onChange={(ev) => this.updateIsoConfig({intervals: ev.target.value})} placeholder="5, 10, 15" type="text" value={isoConfig.intervals} />
+                                </td>
+                                <td>{isoConfig.mode === "time" ? "min" : "km"}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <table className="routing-iso-settings">
-                    <tbody>
-                        <tr>
-                            <td>{LocaleUtils.tr("routing.iso_mode")}: </td>
-                            <td colSpan="2">
-                                <select onChange={ev =>this.updateIsoConfig({mode: ev.target.value})} value={isoConfig.mode}>
-                                    <option value="time">{LocaleUtils.tr("routing.iso_mode_time")}</option>
-                                    <option value="distance">{LocaleUtils.tr("routing.iso_mode_distance")}</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{LocaleUtils.tr("routing.iso_intervals")}: </td>
-                            <td>
-                                <input className={isoConfig.intervals && !intervalValid ? "routing-input-invalid" : ""} onChange={(ev) => this.updateIsoConfig({intervals: ev.target.value})} placeholder="5, 10, 15" type="text" value={isoConfig.intervals} />
-                            </td>
-                            <td>{isoConfig.mode === "time" ? "min" : "km"}</td>
-                        </tr>
-                    </tbody>
-                </table>
                 {isoConfig.busy ? (
                     <div className="routing-busy"><Spinner /> {LocaleUtils.tr("routing.computing")}</div>
                 ) : null}
@@ -359,8 +407,10 @@ class Routing extends React.Component {
             );
         } else {
             return (
-                <div className="routing-result-summary">
-                    <div><Icon icon="export" /> <a href="#" onClick={this.exportIsochrone}>{LocaleUtils.tr("routing.export")}</a></div>
+                <div className="routing-result">
+                    <div className="routing-result-summary">
+                        <Icon icon="export" /> <a href="#" onClick={this.exportIsochrone}>{LocaleUtils.tr("routing.export")}</a>
+                    </div>
                 </div>
             );
         }
