@@ -43,34 +43,53 @@ const VectorLayerUtils = {
                 if (!feature.geometry) {
                     continue;
                 }
+                const properties = feature.properties || {};
                 let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
-                params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, layer.opacity, dpi, scaleFactor));
-                params.labels.push(feature.properties && feature.properties.label || " ");
-                if (feature.styleName === "text") {
-                    // Make point a tiny square, so that QGIS server centers the text inside the polygon when labelling
-                    const x = geometry.coordinates[0];
-                    const y = geometry.coordinates[1];
-                    geometry = {
-                        type: "Polygon",
-                        coordinates: [[
-                            [x - 0.01, y - 0.01],
-                            [x + 0.01, y - 0.01],
-                            [x + 0.01, y + 0.01],
-                            [x - 0.01, y + 0.01],
-                            [x - 0.01, y - 0.01]
-                        ]]
-                    };
-                    params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 2));
-                    params.labelFillColors.push(ensureHex(feature.styleOptions.fillColor));
-                    params.labelOultineColors.push(ensureHex(feature.styleOptions.strokeColor));
-                    params.labelOutlineSizes.push(scaleFactor * feature.styleOptions.strokeWidth * 0.5);
-                    params.labelSizes.push(Math.round(10 * feature.styleOptions.strokeWidth * scaleFactor));
+                if (feature.geometry.type === "LineString" && !isEmpty(properties.segment_labels)) {
+                    // Split line into single segments and label them individually
+                    const coords = geometry.coordinates;
+                    for (let i = 0; i < coords.length - 1; ++i) {
+                        const segment = {
+                            type: "LineString",
+                            coordinates: [coords[i], coords[i + 1]]
+                        };
+                        params.styles.push(VectorLayerUtils.createSld(segment.type, feature.styleName, feature.styleOptions, layer.opacity, dpi, scaleFactor));
+                        params.labels.push(properties.segment_labels[i] || " ");
+                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(segment, printCrs === "EPSG:4326" ? 4 : 2));
+                        params.labelFillColors.push(defaultFeatureStyle.textFill);
+                        params.labelOultineColors.push(defaultFeatureStyle.textStroke);
+                        params.labelOutlineSizes.push(scaleFactor);
+                        params.labelSizes.push(Math.round(10 * scaleFactor));
+                    }
                 } else {
-                    params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 2));
-                    params.labelFillColors.push(defaultFeatureStyle.textFill);
-                    params.labelOultineColors.push(defaultFeatureStyle.textStroke);
-                    params.labelOutlineSizes.push(scaleFactor);
-                    params.labelSizes.push(Math.round(10 * scaleFactor));
+                    params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, layer.opacity, dpi, scaleFactor));
+                    params.labels.push(properties.label || " ");
+                    if (feature.styleName === "text") {
+                        // Make point a tiny square, so that QGIS server centers the text inside the polygon when labelling
+                        const x = geometry.coordinates[0];
+                        const y = geometry.coordinates[1];
+                        geometry = {
+                            type: "Polygon",
+                            coordinates: [[
+                                [x - 0.01, y - 0.01],
+                                [x + 0.01, y - 0.01],
+                                [x + 0.01, y + 0.01],
+                                [x - 0.01, y + 0.01],
+                                [x - 0.01, y - 0.01]
+                            ]]
+                        };
+                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 2));
+                        params.labelFillColors.push(ensureHex(feature.styleOptions.fillColor));
+                        params.labelOultineColors.push(ensureHex(feature.styleOptions.strokeColor));
+                        params.labelOutlineSizes.push(scaleFactor * feature.styleOptions.strokeWidth * 0.5);
+                        params.labelSizes.push(Math.round(10 * feature.styleOptions.strokeWidth * scaleFactor));
+                    } else {
+                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 2));
+                        params.labelFillColors.push(defaultFeatureStyle.textFill);
+                        params.labelOultineColors.push(defaultFeatureStyle.textStroke);
+                        params.labelOutlineSizes.push(scaleFactor);
+                        params.labelSizes.push(Math.round(10 * scaleFactor));
+                    }
                 }
             }
         }
