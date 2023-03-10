@@ -390,6 +390,10 @@ class Routing extends React.Component {
                             </tr>
                         </tbody>
                     </table>
+                    <div className="routing-routepoints-commands">
+                        <span />
+                        <a href="#" onClick={this.clearIsoConfig}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
+                    </div>
                 </div>
                 {isoConfig.busy ? (
                     <div className="routing-busy"><Spinner /> {LocaleUtils.tr("routing.computing")}</div>
@@ -510,6 +514,16 @@ class Routing extends React.Component {
         if (recompute) {
             this.recomputeIfNeeded();
         }
+    };
+    clearIsoConfig = () => {
+        this.updateIsoConfig({
+            point: {text: '', pos: null, crs: null},
+            mode: 'time',
+            intervals: '5, 10',
+            result: null
+        });
+        this.props.removeLayer("routingggeometries");
+        this.props.removeLayer("routingmarkers");
     };
     onClose = () => {
         this.setState({visible: false});
