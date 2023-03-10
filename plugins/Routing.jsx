@@ -481,8 +481,11 @@ class Routing extends React.Component {
             routepoints: [
                 {text: '', pos: null, crs: null},
                 {text: '', pos: null, crs: null}
-            ]
+            ],
+            result: null
         }}));
+        this.props.removeLayer("routingggeometries");
+        this.props.removeLayer("routingmarkers");
         this.recomputeIfNeeded();
     };
     reverseRoutePts = () => {
