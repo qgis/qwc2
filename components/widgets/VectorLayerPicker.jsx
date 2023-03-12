@@ -30,7 +30,9 @@ export default class VectorLayerPicker extends React.Component {
                     {this.props.showNone ? (<option value="">{LocaleUtils.tr("vectorlayerpicker.none")}</option>) : null}
                     {this.props.layers.map(layer => (<option key={layer.id} value={layer.id}>{layer.title}</option>))}
                 </select>
-                <button className="button" onClick={this.addLayer} style={{borderLeftWidth: 0}}><Icon icon="plus" /></button>
+                {this.props.addLayer ? (
+                    <button className="button" onClick={this.addLayer} style={{borderLeftWidth: 0}}><Icon icon="plus" /></button>
+                ) : null}
             </div>
         );
     }
