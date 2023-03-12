@@ -448,6 +448,7 @@
       "zoomout": "Уменьшить"
     },
     "vectorlayerpicker": {
+      "none": "",
       "prompt": ""
     },
     "window": {

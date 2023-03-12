@@ -448,6 +448,7 @@
       "zoomout": "Allunyar"
     },
     "vectorlayerpicker": {
+      "none": "",
       "prompt": "Nom de la capa"
     },
     "window": {

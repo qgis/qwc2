@@ -448,6 +448,7 @@
       "zoomout": "Alejarse"
     },
     "vectorlayerpicker": {
+      "none": "",
       "prompt": "Ingrese nombre de la capa"
     },
     "window": {

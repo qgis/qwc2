@@ -448,6 +448,7 @@
       "zoomout": "Zoomaa ulos"
     },
     "vectorlayerpicker": {
+      "none": "",
       "prompt": "Syötä tason nimi"
     },
     "window": {

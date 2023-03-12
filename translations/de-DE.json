@@ -448,6 +448,7 @@
       "zoomout": "Hinauszoomen"
     },
     "vectorlayerpicker": {
+      "none": "Keine",
       "prompt": "Ebenenname eingeben"
     },
     "window": {

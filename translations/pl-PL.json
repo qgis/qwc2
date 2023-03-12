@@ -448,6 +448,7 @@
       "zoomout": "Oddal"
     },
     "vectorlayerpicker": {
+      "none": "",
       "prompt": ""
     },
     "window": {

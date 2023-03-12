@@ -448,6 +448,7 @@
       "zoomout": "Zoom out"
     },
     "vectorlayerpicker": {
+      "none": "None",
       "prompt": "Enter layer name"
     },
     "window": {

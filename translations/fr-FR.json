@@ -448,6 +448,7 @@
       "zoomout": "Dézoomer"
     },
     "vectorlayerpicker": {
+      "none": "Aucune",
       "prompt": "Entrez le nom de la couche"
     },
     "window": {

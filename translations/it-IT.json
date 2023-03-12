@@ -448,6 +448,7 @@
       "zoomout": "Rimpicciolisci"
     },
     "vectorlayerpicker": {
+      "none": "Nessuno",
       "prompt": "Nome del layer"
     },
     "window": {

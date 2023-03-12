@@ -448,6 +448,7 @@
       "zoomout": "Micșorare"
     },
     "vectorlayerpicker": {
+      "none": "",
       "prompt": "Introdu numele stratului"
     },
     "window": {
