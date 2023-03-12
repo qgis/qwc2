@@ -160,8 +160,8 @@ class Routing extends React.Component {
         if (!this.state.visible && prevState.visible) {
             this.props.removeLayer("routingggeometries");
             this.props.removeLayer("routingmarkers");
-            this.updateRouteConfig({routepoints: [{text: '', pos: null, crs: null}, {text: '', pos: null, crs: null}]});
-            this.updateIsoConfig({point: {text: '', pos: null, crs: null}});
+            this.updateRouteConfig({routepoints: [{text: '', pos: null, crs: null}, {text: '', pos: null, crs: null}], result: null});
+            this.updateIsoConfig({point: {text: '', pos: null, crs: null}, result: null});
         }
         // Routing markers
         if (
