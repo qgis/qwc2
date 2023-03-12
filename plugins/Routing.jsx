@@ -23,12 +23,15 @@ import SearchWidget from '../components/widgets/SearchWidget';
 import Spinner from '../components/Spinner';
 import ResizeableWindow from '../components/ResizeableWindow';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
+import VectorLayerPicker from '../components/widgets/VectorLayerPicker';
 import displayCrsSelector from '../selectors/displaycrs';
+import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MeasureUtils from '../utils/MeasureUtils';
 import RoutingInterface from '../utils/RoutingInterface';
 import './style/Routing.css';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 
 class Routing extends React.Component {
@@ -43,6 +46,7 @@ class Routing extends React.Component {
             initialY: PropTypes.number,
             initiallyDocked: PropTypes.bool
         }),
+        layers: PropTypes.array,
         locatePos: PropTypes.array,
         mapcrs: PropTypes.string,
         removeLayer: PropTypes.func,
@@ -99,7 +103,8 @@ class Routing extends React.Component {
                 {text: '', pos: null, crs: null}
             ],
             result: null,
-            roundtrip: false
+            roundtrip: false,
+            excludeLayer: null
         },
         isoConfig: {
             point: {text: '', pos: null, crs: null},
@@ -175,6 +180,14 @@ class Routing extends React.Component {
         if (this.props.theme !== prevProps.theme) {
             this.setState({visible: false});
         }
+        // Recompute when exclude layer changes
+        if (this.state.currentTab === 'Route' && this.state.routeConfig.excludeLayer && this.props.layers !== prevProps.layers) {
+            const newlayer = this.props.layers.find(layer => layer.id === this.state.routeConfig.excludeLayer);
+            const prevLayer = prevProps.layers.find(layer => layer.id === this.state.routeConfig.excludeLayer);
+            if (newlayer !== prevLayer) {
+                this.recomputeIfNeeded();
+            }
+        }
     }
     render() {
         if (!this.state.visible) {
@@ -189,10 +202,10 @@ class Routing extends React.Component {
             Reachability: this.renderIsochroneWidget
         };
         const buttons = [
-            {key: "auto", icon: "routing-car", tooltip: "routing.mode_auto"},
-            {key: "bus", icon: "routing-bus", tooltip: "routing.mode_bus"},
-            {key: "bicycle", icon: "routing-bicycle", tooltip: "routing.mode_bicycle"},
-            {key: "pedestrian", icon: "routing-walking", tooltip: "routing.mode_walking"}
+            {key: "auto", icon: "routing-car", tooltip: LocaleUtils.trmsg("routing.mode_auto")},
+            {key: "bus", icon: "routing-bus", tooltip: LocaleUtils.trmsg("routing.mode_bus")},
+            {key: "bicycle", icon: "routing-bicycle", tooltip: LocaleUtils.trmsg("routing.mode_bicycle")},
+            {key: "pedestrian", icon: "routing-walking", tooltip: LocaleUtils.trmsg("routing.mode_walking")}
         ];
         return (
             <ResizeableWindow icon="routing" onClose={this.onClose} title={LocaleUtils.tr("routing.windowtitle")} {...this.props.geometry}>
@@ -265,6 +278,7 @@ class Routing extends React.Component {
     };
     renderRouteWidget = () => {
         const routeConfig = this.state.routeConfig;
+        const vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER && !layer.readonly);
         return (
             <div className="routing-tab-widget">
                 <div className="routing-input">
@@ -279,9 +293,18 @@ class Routing extends React.Component {
                     <div className="routing-routepoints-commands">
                         <label><input onChange={(ev) => this.updateRouteConfig({roundtrip: ev.target.checked})} type="checkbox" value={routeConfig.roundtrip} /> {LocaleUtils.tr("routing.roundtrip")}</label>
                     </div>
+                    {ConfigUtils.havePlugin("Redlining") ? (
+                        <div className="routing-routepoints-commands">
+                            <span>{LocaleUtils.tr("routing.excludepolygons")}:&nbsp;</span>
+                            <VectorLayerPicker
+                                layers={vectorLayers} onChange={layer => this.updateRouteConfig({excludeLayer: (layer || {}).id})}
+                                showNone value={routeConfig.excludeLayer || ""} />
+                            <button className="button" onClick={this.setRedliningTool}><Icon icon="draw" /></button>
+                        </div>
+                    ) : null}
                     <div className="routing-routepoints-commands">
                         <a href="#" onClick={() => this.addRoutePt()}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
-                        <span />
+                        <span className="routing-routepoints-commands-spacer" />
                         <a href="#" onClick={this.clearRoutePts}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
                     </div>
                 </div>
@@ -291,6 +314,9 @@ class Routing extends React.Component {
                 {routeConfig.result ? this.renderRouteResult(routeConfig) : null}
             </div>
         );
+    };
+    setRedliningTool = () => {
+        this.props.setCurrentTask("Redlining", null, null, {layerId: this.state.routeConfig.excludeLayer});
     };
     renderRouteResult = (routeConfig) => {
         if (routeConfig.result.success === false) {
@@ -391,7 +417,7 @@ class Routing extends React.Component {
                         </tbody>
                     </table>
                     <div className="routing-routepoints-commands">
-                        <span />
+                        <span className="routing-routepoints-commands-spacer" />
                         <a href="#" onClick={this.clearIsoConfig}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
                     </div>
                 </div>
@@ -579,7 +605,21 @@ class Routing extends React.Component {
         if (this.state.routeConfig.roundtrip) {
             locations.push(locations[0]);
         }
-        RoutingInterface.computeRoute(this.state.mode, locations, this.state.settings[this.state.mode], (success, result) => {
+        const settings = {
+            ...this.state.settings[this.state.mode]
+        };
+        if (this.state.routeConfig.excludeLayer) {
+            const layer = this.props.layers.find(l => l.id === this.state.routeConfig.excludeLayer);
+            console.log(layer);
+            if (layer) {
+                settings.exclude_polygons = layer.features.filter(feature => {
+                    return feature.geometry.type === "Polygon";
+                }).map(feature => {
+                    return VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.mapcrs, "EPSG:4326").coordinates[0];
+                });
+            }
+        }
+        RoutingInterface.computeRoute(this.state.mode, locations, settings, (success, result) => {
             if (success) {
                 const layer = {
                     id: "routingggeometries",
@@ -599,7 +639,7 @@ class Routing extends React.Component {
                     }
                 }));
                 this.props.addLayerFeatures(layer, features, true);
-                this.props.zoomToExtent(result.summary.bounds, "EPSG:4326", -1);
+                this.props.zoomToExtent(result.summary.bounds, "EPSG:4326", -0.5);
             }
             this.updateRouteConfig({result: {success, data: result}, busy: false}, false);
         });
@@ -637,7 +677,7 @@ class Routing extends React.Component {
                     }
                 }));
                 this.props.addLayerFeatures(layer, features, true);
-                this.props.zoomToExtent(result.bounds, "EPSG:4326", -1);
+                this.props.zoomToExtent(result.bounds, "EPSG:4326", -0.5);
             }
             this.updateIsoConfig({result: {success, data: result}, busy: false}, false);
         });
@@ -699,6 +739,7 @@ export default (searchProviders) => {
         mapcrs: state.map.projection,
         searchProviders: providers,
         displaycrs: displaycrs,
+        layers: state.layers.flat,
         locatePos: state.locate.position
     })), {
         addLayerFeatures: addLayerFeatures,

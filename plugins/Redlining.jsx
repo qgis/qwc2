@@ -70,10 +70,16 @@ class Redlining extends React.Component {
             }
         }
     };
-    onShow = (mode) => {
+    onShow = (mode, data) => {
         this.props.changeRedliningState({action: mode || 'Pick', geomType: null});
         this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
         Mousetrap.bind('del', this.triggerDelete);
+        if (data && data.layerId) {
+            const layer = this.props.layers.find(l => l.id === data.layerId);
+            if (layer) {
+                this.changeRedliningLayer(layer);
+            }
+        }
     }
     onHide = () => {
         this.props.changeRedliningState({action: null, geomType: null, numericInput: false});
