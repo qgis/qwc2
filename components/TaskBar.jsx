@@ -31,7 +31,7 @@ class TaskBar extends React.Component {
         const newVisible = this.props.currentTask && this.props.currentTask.id === this.props.task;
         const oldVisible = prevProps.currentTask && prevProps.currentTask.id === this.props.task;
         if (newVisible && (!oldVisible || this.props.currentTask.mode !== prevProps.currentTask.mode)) {
-            this.props.onShow(this.props.currentTask.mode);
+            this.props.onShow(this.props.currentTask.mode, this.props.currentTask.data);
         } else if (!newVisible && oldVisible) {
             this.props.onHide();
         }
