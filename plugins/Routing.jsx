@@ -610,7 +610,6 @@ class Routing extends React.Component {
         };
         if (this.state.routeConfig.excludeLayer) {
             const layer = this.props.layers.find(l => l.id === this.state.routeConfig.excludeLayer);
-            console.log(layer);
             if (layer) {
                 settings.exclude_polygons = layer.features.filter(feature => {
                     return feature.geometry.type === "Polygon";
