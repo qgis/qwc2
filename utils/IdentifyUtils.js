@@ -164,7 +164,7 @@ const IdentifyUtils = {
         } else if (format === "text/xml") {
             results = IdentifyUtils.parseXmlResponse(response, projection, posstr, featureInfoReturnsLayerName, layers);
         } else if (format === "application/vnd.ogc.gml") {
-            results = IdentifyUtils.parseGmlResponse(response, projection, posstr, layer.name);
+            results = IdentifyUtils.parseGmlResponse(response, projection, posstr, layer);
         } else if (format === "text/plain") {
             results[layer.name] = [{type: "text", text: response, id: posstr, layername: layer.name, layertitle: layer.title}];
         } else if (format === "text/html") {
@@ -304,7 +304,7 @@ const IdentifyUtils = {
         });
         return result;
     },
-    parseGmlResponse(response, geometrycrs, posstr, layername) {
+    parseGmlResponse(response, geometrycrs, posstr, layer) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(response, "text/xml");
         const result = {};
@@ -314,7 +314,6 @@ const IdentifyUtils = {
             let count = 0;
             for (const layerEl of [].slice.call(msGMLOutput.children)) {
                 const layerName = layerEl.nodeName.replace(/_layer$/, "");
-                const layerTitle = layerEl.getElementsByTagName("gml:name")[0].textContent;
                 const featureName = layerName + "_feature";
                 result[layerName] = [];
 
@@ -325,14 +324,14 @@ const IdentifyUtils = {
                     }];
                     const feature = new ol.format.GeoJSON().writeFeatureObject(new ol.format.GML2().readFeatureElement(featureEl, context));
                     feature.id = count++;
-                    feature.layername = layerName;
-                    feature.layertitle = layerTitle;
+                    feature.layername = layer.name;
+                    feature.layertitle = layer.title;
                     delete feature.properties.boundedBy;
                     result[layerName].push(feature);
                 }
             }
         } else {
-            result[layername] = [{type: "text", text: response, id: posstr}];
+            result[layer.name] = [{type: "text", text: response, id: posstr}];
         }
         return result;
     }
