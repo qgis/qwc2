@@ -11,6 +11,7 @@ import geojsonBbox from 'geojson-bounding-box';
 import ol from 'openlayers';
 import url from 'url';
 import axios from 'axios';
+import {v1 as uuidv1} from 'uuid';
 import {LayerRole} from '../actions/layers';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -24,6 +25,10 @@ function identifyRequestParams(layer, queryLayers, projection, params) {
     const infoFormats = layer.infoFormats || [];
     if (infoFormats.includes('text/xml') && (!layer.external || infoFormats.length === 1)) {
         format = 'text/xml';
+    } else if (infoFormats.includes('application/geojson')) {
+        format = 'application/geojson';
+    } else if (infoFormats.includes('application/geo+json')) {
+        format = 'application/geo+json';
     } else if (infoFormats.includes('application/json')) {
         format = 'application/json';
     } else if (infoFormats.includes('text/html')) {
@@ -154,8 +159,8 @@ const IdentifyUtils = {
         const digits = CoordinatesUtils.getUnits(projection).units === 'degrees' ? 4 : 0;
         const posstr = clickPoint[0].toFixed(digits) + ", " + clickPoint[1].toFixed(digits);
         let results = {};
-        if (format === "application/json" || format === "GeoJSON") {
-            results = IdentifyUtils.parseGeoJSONResponse(response, projection);
+        if (["application/json", "application/geojson", "application/geo+json", "GeoJSON"].includes(format)) {
+            results = IdentifyUtils.parseGeoJSONResponse(response, projection, layer);
         } else if (format === "text/xml") {
             results = IdentifyUtils.parseXmlResponse(response, projection, posstr, featureInfoReturnsLayerName, layers);
         } else if (format === "application/vnd.ogc.gml") {
@@ -277,19 +282,25 @@ const IdentifyUtils = {
         }
         return result;
     },
-    parseGeoJSONResponse(response, geometrycrs) {
+    parseGeoJSONResponse(response, geometrycrs, layer) {
         const result = {};
         (response.features || []).map(feature => {
-            // HACK Deduce layer name from feature id
-            const layer = feature.id.substr(0, feature.id.lastIndexOf("."));
-            if (result[layer] === undefined) {
-                result[layer] = [];
+            // Deduce layer name as far as possible from feature id
+            const id = feature.id || (feature.properties || {}).OBJECTID || uuidv1();
+            if (result[layer.name] === undefined) {
+                result[layer.name] = [];
             }
             let geometry = feature.geometry;
             if (geometry) {
                 geometry = VectorLayerUtils.reprojectGeometry(geometry, "EPSG:4326", geometrycrs); // GeoJSON always wgs84
             }
-            result[layer].push({...feature, geometry: geometry, id: feature.id.substr(feature.id.lastIndexOf(".") + 1)});
+            result[layer.name].push({
+                ...feature,
+                id: id,
+                geometry: geometry,
+                layername: layer.name,
+                layertitle: layer.title
+            });
         });
         return result;
     },
