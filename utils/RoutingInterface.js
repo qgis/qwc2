@@ -8,9 +8,21 @@
 
 
 import axios from 'axios';
+import {v1 as uuidv1} from 'uuid';
 import ConfigUtils from './ConfigUtils';
 import LocaleUtils from './LocaleUtils';
 import VectorLayerUtils from './VectorLayerUtils';
+
+const ValhallaSession = {
+    reqId: null,
+    pending: 0,
+    result: null,
+    clear: () => {
+        ValhallaSession.reqId = null;
+        ValhallaSession.pending = 0;
+        ValhallaSession.result = null;
+    }
+};
 
 function decodeShape(str, precision = null) {
     let index = 0;
@@ -111,7 +123,8 @@ function computeRoute(costing, locations, options, callback) {
     };
     const params = getValhallaParams(costing, locations, options, extraOptions);
     const serviceUrl = ConfigUtils.getConfigProp("routingServiceUrl").replace(/\/$/, '');
-    axios.get(serviceUrl + '/route', {params}).then(response => {
+    const endpoint = options.optimized_route ? 'optimized_route' : 'route';
+    axios.get(serviceUrl + '/' + endpoint, {params}).then(response => {
         if (!response.data || !response.data.trip) {
             callback(false, {errorMsgId: LocaleUtils.trmsg("routing.computefailed")});
             return;
@@ -155,29 +168,49 @@ function computeRoute(costing, locations, options, callback) {
     });
 }
 
-function computeIsochrone(costing, location, contourOptions, options, callback) {
+function computeIsochrone(costing, locations, contourOptions, options, callback) {
     const extraOptions = {
         contours: contourOptions.intervals.map(entry => ({[contourOptions.mode]: entry})),
         id: "valhalla_isochrone"
     };
-    const params = getValhallaParams(costing, [location], options, extraOptions);
     const serviceUrl = ConfigUtils.getConfigProp("routingServiceUrl").replace(/\/$/, '');
-    axios.get(serviceUrl + '/isochrone', {params}).then(response => {
-        if (!response.data || !response.data.features) {
-            callback(false, {errorMsgId: LocaleUtils.trmsg("routing.computefailed")});
-            return;
-        }
-        const areas = response.data.features.map(feature => feature.geometry.coordinates);
-        callback(true, {areas: areas, bounds: VectorLayerUtils.computeFeatureBBox(response.data)});
-    }).catch((e) => {
-        const error = ((e.response || {}).data || {}).error;
-        const data = {};
-        if (error) {
-            data.error = error;
-        } else {
-            data.errorMsgId = LocaleUtils.trmsg("routing.computefailed");
-        }
-        callback(false, data);
+    const reqId = uuidv1();
+    ValhallaSession.reqId = reqId;
+    ValhallaSession.pending = locations.length;
+    locations.forEach(location => {
+        const params = getValhallaParams(costing, [location], options, extraOptions);
+
+        axios.get(serviceUrl + '/isochrone', {params}).then(response => {
+            if (reqId !== ValhallaSession.reqId) {
+                return;
+            }
+            if (!response.data || !response.data.features) {
+                ValhallaSession.clear();
+                callback(false, {errorMsgId: LocaleUtils.trmsg("routing.computefailed")});
+                return;
+            }
+            ValhallaSession.pending -= 1;
+            if (!ValhallaSession.result) {
+                ValhallaSession.result = response.data;
+            } else {
+                ValhallaSession.result.features.push(...response.data.features);
+            }
+            if (ValhallaSession.pending === 0) {
+                const areas = ValhallaSession.result.features.map(feature => feature.geometry.coordinates);
+                callback(true, {areas: areas, bounds: VectorLayerUtils.computeFeatureBBox(ValhallaSession.result)});
+                ValhallaSession.clear();
+            }
+        }).catch((e) => {
+            ValhallaSession.clear();
+            const error = ((e.response || {}).data || {}).error;
+            const data = {};
+            if (error) {
+                data.error = error;
+            } else {
+                data.errorMsgId = LocaleUtils.trmsg("routing.computefailed");
+            }
+            callback(false, data);
+        });
     });
 }
 

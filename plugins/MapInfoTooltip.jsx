@@ -135,6 +135,7 @@ class MapInfoTooltip extends React.Component {
                             <td><b>{LocaleUtils.tr("routing.reachability")}:</b></td>
                             <td>
                                 <button className="button" onClick={() => this.props.setCurrentTask("Routing", null, null, {isocenter: point})}>{LocaleUtils.tr("routing.isocenter")}</button>
+                                <button className="button" onClick={() => this.props.setCurrentTask("Routing", null, null, {isoextracenter: point})}>{LocaleUtils.tr("routing.isoextracenter")}</button>
                             </td>
                         </tr>
                     </tbody>

@@ -98,16 +98,19 @@ class Routing extends React.Component {
         },
         settingsPopup: false,
         routeConfig: {
-            routepoints: [
+            points: [
                 {text: '', pos: null, crs: null},
                 {text: '', pos: null, crs: null}
             ],
             result: null,
             roundtrip: false,
+            optimized_route: false,
             excludeLayer: null
         },
         isoConfig: {
-            point: {text: '', pos: null, crs: null},
+            points: [
+                {text: '', pos: null, crs: null}
+            ],
             mode: 'time',
             intervals: '5, 10',
             result: null
@@ -140,15 +143,19 @@ class Routing extends React.Component {
             }
             if (taskData.to) {
                 this.setState({currentTab: 'Route'});
-                this.updateRoutePoint(this.state.routeConfig.routepoints.length - 1, taskData.to);
+                this.updateRoutePoint(this.state.routeConfig.points.length - 1, taskData.to);
             }
             if (taskData.via) {
                 this.setState({currentTab: 'Route'});
-                this.addRoutePt(taskData.via);
+                this.addPoint('routeConfig', -1, taskData.via);
             }
             if (taskData.isocenter) {
                 this.setState({currentTab: 'Reachability'});
-                this.updateIsoConfig({point: taskData.isocenter});
+                this.updateIsoConfig({points: [taskData.isocenter]});
+            }
+            if (taskData.isoextracenter) {
+                this.setState({currentTab: 'Reachability'});
+                this.updateIsoConfig({points: [...this.state.isoConfig.points, taskData.isoextracenter]});
             }
         }
         // Tab changed
@@ -165,14 +172,14 @@ class Routing extends React.Component {
         if (!this.state.visible && prevState.visible) {
             this.props.removeLayer("routingggeometries");
             this.props.removeLayer("routingmarkers");
-            this.updateRouteConfig({routepoints: [{text: '', pos: null, crs: null}, {text: '', pos: null, crs: null}], result: null});
+            this.updateRouteConfig({points: [{text: '', pos: null, crs: null}, {text: '', pos: null, crs: null}], result: null});
             this.updateIsoConfig({point: {text: '', pos: null, crs: null}, result: null});
         }
         // Routing markers
         if (
             this.state.currentTab !== prevState.currentTab ||
-            this.state.routeConfig.routepoints !== prevState.routeConfig.routepoints ||
-            this.state.isoConfig.point !== prevState.isoConfig.point
+            this.state.routeConfig.points !== prevState.routeConfig.points ||
+            this.state.isoConfig.points !== prevState.isoConfig.points
         ) {
             this.updateRoutingMarkers();
         }
@@ -208,7 +215,7 @@ class Routing extends React.Component {
             {key: "pedestrian", icon: "routing-walking", tooltip: LocaleUtils.trmsg("routing.mode_walking")}
         ];
         return (
-            <ResizeableWindow icon="routing" onClose={this.onClose} title={LocaleUtils.tr("routing.windowtitle")} {...this.props.geometry}>
+            <ResizeableWindow icon="routing" onClose={() => this.setState({visible: false})} title={LocaleUtils.tr("routing.windowtitle")} {...this.props.geometry}>
                 <div className="routing-body" role="body">
                     <ButtonBar active={this.state.currentTab} buttons={tabButtons} className="routing-buttonbar" onClick={(key) => this.setState({currentTab: key})} />
                     <div className="routing-frame">
@@ -279,22 +286,26 @@ class Routing extends React.Component {
     renderRouteWidget = () => {
         const routeConfig = this.state.routeConfig;
         const vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER && !layer.readonly);
+        const numpoints = routeConfig.points.length;
         return (
             <div className="routing-tab-widget">
                 <div className="routing-input">
-                    <div className="routing-routepoints">
+                    <div className="routing-points">
                         <Sortable onChange={this.onSortChange} options={{ghostClass: 'drop-ghost', delay: 200}}>
-                            {routeConfig.routepoints.map((entry, idx) => this.renderSearchField(entry, idx))}
+                            {routeConfig.points.map((entry, idx) => this.renderSearchField(entry, idx, 'routeConfig', idx > 0 && idx < numpoints - 1))}
                         </Sortable>
                         <div>
                             <Icon icon="up-down-arrow" onClick={this.reverseRoutePts} />
                         </div>
                     </div>
-                    <div className="routing-routepoints-commands">
+                    <div className="routing-points-commands">
                         <label><input onChange={(ev) => this.updateRouteConfig({roundtrip: ev.target.checked})} type="checkbox" value={routeConfig.roundtrip} /> {LocaleUtils.tr("routing.roundtrip")}</label>
                     </div>
+                    <div className="routing-points-commands">
+                        <label><input onChange={(ev) => this.updateRouteConfig({optimized_route: ev.target.checked})} type="checkbox" value={routeConfig.optimized_route} /> {LocaleUtils.tr("routing.optimized_route")}</label>
+                    </div>
                     {ConfigUtils.havePlugin("Redlining") ? (
-                        <div className="routing-routepoints-commands">
+                        <div className="routing-points-commands">
                             <span>{LocaleUtils.tr("routing.excludepolygons")}:&nbsp;</span>
                             <VectorLayerPicker
                                 layers={vectorLayers} onChange={layer => this.updateRouteConfig({excludeLayer: (layer || {}).id})}
@@ -302,10 +313,10 @@ class Routing extends React.Component {
                             <button className="button" onClick={this.setRedliningTool}><Icon icon="draw" /></button>
                         </div>
                     ) : null}
-                    <div className="routing-routepoints-commands">
-                        <a href="#" onClick={() => this.addRoutePt()}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
-                        <span className="routing-routepoints-commands-spacer" />
-                        <a href="#" onClick={this.clearRoutePts}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
+                    <div className="routing-points-commands">
+                        <a href="#" onClick={() => this.addPoint('routeConfig', -1)}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
+                        <span className="routing-points-commands-spacer" />
+                        <a href="#" onClick={() => this.clearConfig('routeConfig')}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
                     </div>
                 </div>
                 {routeConfig.busy ? (
@@ -389,12 +400,7 @@ class Routing extends React.Component {
             <div className="routing-tab-widget">
                 <div className="routing-input">
                     <div>
-                        <InputContainer className="routing-search-field">
-                            <SearchWidget resultSelected={(result) => this.isoSearchResultSelected(result)} role="input" searchParams={this.state.searchParams} searchProviders={this.state.searchProviders} value={isoConfig.point.text} />
-                            <button className="button" disabled={!this.props.locatePos} onClick={() => this.updateRoutePoint(0, this.locatePos())} role="suffix">
-                                <Icon icon="screenshot" />
-                            </button>
-                        </InputContainer>
+                        {isoConfig.points.map((entry, idx) => this.renderSearchField(entry, idx, 'isoConfig', idx > 0))}
                     </div>
                     <table className="routing-iso-settings">
                         <tbody>
@@ -416,9 +422,10 @@ class Routing extends React.Component {
                             </tr>
                         </tbody>
                     </table>
-                    <div className="routing-routepoints-commands">
-                        <span className="routing-routepoints-commands-spacer" />
-                        <a href="#" onClick={this.clearIsoConfig}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
+                    <div className="routing-points-commands">
+                        <a href="#" onClick={() => this.addPoint('isoConfig', isoConfig.points.length)}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
+                        <span className="routing-points-commands-spacer" />
+                        <a href="#" onClick={() => this.clearConfig('isoConfig')}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
                     </div>
                 </div>
                 {isoConfig.busy ? (
@@ -445,18 +452,17 @@ class Routing extends React.Component {
             );
         }
     };
-    renderSearchField = (entry, idx) => {
-        const numpoints = this.state.routeConfig.routepoints.length;
+    renderSearchField = (entry, idx, config, removeable) => {
         return (
             <InputContainer className="routing-search-field" key={"field" + idx}>
-                <SearchWidget resultSelected={(result) => this.routeSearchResultSelected(idx, result)} role="input" searchParams={this.state.searchParams} searchProviders={this.state.searchProviders} value={entry.text} />
+                <SearchWidget resultSelected={(result) => this.searchResultSelected(config, idx, result)} role="input" searchParams={this.state.searchParams} searchProviders={this.state.searchProviders} value={entry.text} />
                 {idx === 0 ? (
-                    <button className="button" disabled={!this.props.locatePos} onClick={() => this.updateRoutePoint(0, this.locatePos())} role="suffix">
+                    <button className="button" disabled={!this.props.locatePos} onClick={() => this.updatePoint(config, 0, this.locatePos())} role="suffix">
                         <Icon icon="screenshot" />
                     </button>
                 ) : null}
-                {idx > 0 && idx < numpoints - 1 ? (
-                    <button className="button" onClick={() => this.removeRoutePt(idx)} role="suffix">
+                {removeable ? (
+                    <button className="button" onClick={() => this.removePoint(config, idx)} role="suffix">
                         <Icon icon="remove" />
                     </button>
                 ) : null}
@@ -480,34 +486,48 @@ class Routing extends React.Component {
         }}));
         this.recomputeIfNeeded();
     };
-    addRoutePt = (entry = {text: '', pos: null}) => {
-        this.setState((state) => ({routeConfig: {
-            ...state.routeConfig,
-            routepoints: [
-                ...state.routeConfig.routepoints.slice(0, -1),
+    addPoint = (config, index = -1, entry = {text: '', pos: null}) => {
+        this.setState((state) => ({[config]: {
+            ...state[config],
+            points: [
+                ...state[config].points.slice(0, index),
                 entry,
-                ...state.routeConfig.routepoints.slice(-1)
+                ...state[config].points.slice(index)
             ]
         }}));
         this.recomputeIfNeeded();
     };
-    removeRoutePt = (idx) => {
-        this.setState((state) => ({routeConfig: {
-            ...state.routeConfig,
-            routepoints: [
-                ...state.routeConfig.routepoints.slice(0, idx),
-                ...state.routeConfig.routepoints.slice(idx + 1)
+    updatePoint = (config, idx, diff) => {
+        this.setState((state) => ({[config]: {
+            ...state[config],
+            points: [
+                ...state[config].points.slice(0, idx),
+                {...state[config].points[idx], ...diff},
+                ...state[config].points.slice(idx + 1)
             ]
         }}));
         this.recomputeIfNeeded();
     };
-    clearRoutePts = () => {
-        this.setState((state) => ({routeConfig: {
-            ...state.routeConfig,
-            routepoints: [
-                {text: '', pos: null, crs: null},
-                {text: '', pos: null, crs: null}
-            ],
+    removePoint = (config, idx) => {
+        this.setState((state) => ({[config]: {
+            ...state[config],
+            points: [
+                ...state[config].points.slice(0, idx),
+                ...state[config].points.slice(idx + 1)
+            ]
+        }}));
+        this.recomputeIfNeeded();
+    };
+    clearConfig = (config) => {
+        const newPoints = config === 'routeConfig' ? [
+            {text: '', pos: null, crs: null},
+            {text: '', pos: null, crs: null}
+        ] : [
+            {text: '', pos: null, crs: null}
+        ];
+        this.setState((state) => ({[config]: {
+            ...state[config],
+            points: newPoints,
             result: null
         }}));
         this.props.removeLayer("routingggeometries");
@@ -517,7 +537,7 @@ class Routing extends React.Component {
     reverseRoutePts = () => {
         this.setState((state) => ({routeConfig: {
             ...state.routeConfig,
-            routepoints: state.routeConfig.routepoints.reverse()
+            points: state.routeConfig.points.reverse()
         }}));
         this.recomputeIfNeeded();
     };
@@ -527,56 +547,25 @@ class Routing extends React.Component {
             this.recomputeIfNeeded();
         }
     };
-    updateRoutePoint = (idx, diff) => {
-        this.setState((state) => ({routeConfig: {
-            ...state.routeConfig,
-            routepoints: [
-                ...state.routeConfig.routepoints.slice(0, idx),
-                {...state.routeConfig.routepoints[idx], ...diff},
-                ...state.routeConfig.routepoints.slice(idx + 1)
-            ]
-        }}));
-        this.recomputeIfNeeded();
-    };
     updateIsoConfig = (diff, recompute = true) => {
         this.setState((state) => ({isoConfig: {...state.isoConfig, ...diff}}));
         if (recompute) {
             this.recomputeIfNeeded();
         }
     };
-    clearIsoConfig = () => {
-        this.updateIsoConfig({
-            point: {text: '', pos: null, crs: null},
-            mode: 'time',
-            intervals: '5, 10',
-            result: null
-        });
-        this.props.removeLayer("routingggeometries");
-        this.props.removeLayer("routingmarkers");
-    };
-    onClose = () => {
-        this.setState({visible: false});
-    };
-    isoSearchResultSelected = (result) => {
+    searchResultSelected = (config, idx, result) => {
         if (result) {
-            this.updateIsoConfig({point: {text: result.text, pos: [result.x, result.y], crs: result.crs}});
+            this.updatePoint(config, idx, {text: result.text, pos: [result.x, result.y], crs: result.crs});
         } else {
-            this.updateIsoConfig({point: {text: "", pos: null, crs: null}});
-        }
-    };
-    routeSearchResultSelected = (idx, result) => {
-        if (result) {
-            this.updateRoutePoint(idx, {text: result.text, pos: [result.x, result.y], crs: result.crs});
-        } else {
-            this.updateRoutePoint(idx, {text: "", pos: null, crs: null});
+            this.updatePoint(config, idx, {text: "", pos: null, crs: null});
         }
     };
     updateRoutingMarkers = () => {
         let points = [];
         if (this.state.currentTab === "Route") {
-            points = this.state.routeConfig.routepoints;
+            points = this.state.routeConfig.points;
         } else {
-            points = [this.state.isoConfig.point];
+            points = this.state.isoConfig.points;
         }
         const layer = {
             id: "routingmarkers",
@@ -594,7 +583,7 @@ class Routing extends React.Component {
         this.props.addLayerFeatures(layer, features, true);
     };
     computeRoute = () => {
-        const locations = this.state.routeConfig.routepoints.filter(entry => entry.pos).map(entry => {
+        const locations = this.state.routeConfig.points.filter(entry => entry.pos).map(entry => {
             return CoordinatesUtils.reproject(entry.pos, entry.crs, "EPSG:4326");
         });
         this.props.removeLayer("routingggeometries");
@@ -618,6 +607,7 @@ class Routing extends React.Component {
                 });
             }
         }
+        settings.optimized_route = this.state.routeConfig.optimized_route;
         RoutingInterface.computeRoute(this.state.mode, locations, settings, (success, result) => {
             if (success) {
                 const layer = {
@@ -648,14 +638,16 @@ class Routing extends React.Component {
         if (!intervalValid) {
             return;
         }
-        const location = CoordinatesUtils.reproject(this.state.isoConfig.point.pos, this.state.isoConfig.point.crs, "EPSG:4326");
+        const locations = this.state.isoConfig.points.filter(entry => entry.pos).map(entry => {
+            return CoordinatesUtils.reproject(entry.pos, entry.crs, "EPSG:4326");
+        });
         this.props.removeLayer("routingggeometries");
         this.updateIsoConfig({busy: true, result: null}, false);
         const contourOptions = {
             mode: this.state.isoConfig.mode,
             intervals: this.state.isoConfig.intervals.split(",").map(entry => parseInt(entry.trim(), 10)).sort()
         };
-        RoutingInterface.computeIsochrone(this.state.mode, location, contourOptions, this.state.settings[this.state.mode], (success, result) => {
+        RoutingInterface.computeIsochrone(this.state.mode, locations, contourOptions, this.state.settings[this.state.mode], (success, result) => {
             if (success) {
                 const layer = {
                     id: "routingggeometries",
@@ -684,9 +676,9 @@ class Routing extends React.Component {
     recomputeIfNeeded = () => {
         clearTimeout(this.recomputeTimeout);
         this.recomputeTimeout = setTimeout(() => {
-            if (this.state.currentTab === "Route" && this.state.routeConfig.routepoints.filter(entry => entry.pos).length >= 2) {
+            if (this.state.currentTab === "Route" && this.state.routeConfig.points.filter(entry => entry.pos).length >= 2) {
                 this.computeRoute();
-            } else if (this.state.currentTab === "Reachability" && this.state.isoConfig.point.pos) {
+            } else if (this.state.currentTab === "Reachability" && this.state.isoConfig.points.filter(entry => entry.pos).length > 0) {
                 this.computeIsochrone();
             }
             this.recomputeTimeout = null;
@@ -723,10 +715,10 @@ class Routing extends React.Component {
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "isochrone.json");
     };
     onSortChange = (order, sortable, ev) => {
-        const newRoutePoints = this.state.routeConfig.routepoints.slice(0);
-        const moved = newRoutePoints.splice(ev.oldIndex, 1)[0];
-        newRoutePoints.splice(ev.newIndex, 0, moved);
-        this.updateRouteConfig({routepoints: newRoutePoints});
+        const newpoints = this.state.routeConfig.points.slice(0);
+        const moved = newpoints.splice(ev.oldIndex, 1)[0];
+        newpoints.splice(ev.newIndex, 0, moved);
+        this.updateRouteConfig({points: newpoints});
     };
 }
 

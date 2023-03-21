@@ -61,31 +61,31 @@ table.routing-settings-menu-entries td:last-child > * {
     width: 100%;
 }
 
-div.routing-routepoints {
+div.routing-points {
     display: flex;
     align-items: center;
 }
 
-div.routing-routepoints > div:first-child {
+div.routing-points > div:first-child {
     flex: 1 1 auto;
 }
 
-div.routing-routepoints > div:last-child {
+div.routing-points > div:last-child {
     flex: 0 0 auto;
     margin-left: 0.25em;
 }
 
-div.routing-routepoints-commands {
+div.routing-points-commands {
     margin: 0.25em 0;
     display: flex;
     align-items: center;
 }
 
-div.routing-routepoints-commands > span.routing-routepoints-commands-spacer {
+div.routing-points-commands > span.routing-points-commands-spacer {
     flex: 1 1 auto;
 }
 
-div.routing-routepoints-commands > div.VectorLayerPicker {
+div.routing-points-commands > div.VectorLayerPicker {
     flex: 1 1 auto;
 }
 
