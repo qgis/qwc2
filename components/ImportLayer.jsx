@@ -247,7 +247,7 @@ class ImportLayer extends React.Component {
             const features = data.features.map(feature => {
                 let crs = defaultCrs;
                 if (feature.crs && feature.crs.properties && feature.crs.properties.name) {
-                    crs = CoordinatesUtils.fromOgcUrnCrs(data.crs.properties.name);
+                    crs = CoordinatesUtils.fromOgcUrnCrs(feature.crs.properties.name);
                 } else if (typeof feature.crs === "string") {
                     crs = feature.crs;
                 }
