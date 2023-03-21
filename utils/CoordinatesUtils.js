@@ -108,6 +108,9 @@ const CoordinatesUtils = {
         );
     },
     fromOgcUrnCrs(crsStr) {
+        if (crsStr.endsWith(":CRS84")) {
+            return "EPSG:4326";
+        }
         const parts = crsStr.split(":");
         return "EPSG:" + parts.slice(-1);
     },

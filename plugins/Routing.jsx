@@ -60,7 +60,7 @@ class Routing extends React.Component {
         enabledProviders: ["coordinates", "nominatim"],
         geometry: {
             initialWidth: 320,
-            initialHeight: 320,
+            initialHeight: 640,
             initialX: 0,
             initialY: 0,
             initiallyDocked: true
@@ -316,6 +316,8 @@ class Routing extends React.Component {
                     <div className="routing-points-commands">
                         <a href="#" onClick={() => this.addPoint('routeConfig', -1)}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
                         <span className="routing-points-commands-spacer" />
+                        {this.renderImportButton('routeConfig')}
+                        <span className="routing-points-commands-spacer" />
                         <a href="#" onClick={() => this.clearConfig('routeConfig')}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
                     </div>
                 </div>
@@ -425,6 +427,8 @@ class Routing extends React.Component {
                     <div className="routing-points-commands">
                         <a href="#" onClick={() => this.addPoint('isoConfig', isoConfig.points.length)}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
                         <span className="routing-points-commands-spacer" />
+                        {this.renderImportButton('isoConfig')}
+                        <span className="routing-points-commands-spacer" />
                         <a href="#" onClick={() => this.clearConfig('isoConfig')}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
                     </div>
                 </div>
@@ -469,6 +473,14 @@ class Routing extends React.Component {
             </InputContainer>
         );
     };
+    renderImportButton = (config) => {
+        return (
+            <label className="routing-import-button" title={LocaleUtils.tr("routing.importhint")}>
+                <Icon icon="import" /> {LocaleUtils.tr("routing.importpoints")}
+                <input onChange={(ev) => this.importPoints(ev, config)} type="file" />
+            </label>
+        );
+    };
     locatePos = () => {
         return {
             pos: [...this.props.locatePos],
@@ -507,6 +519,35 @@ class Routing extends React.Component {
             ]
         }}));
         this.recomputeIfNeeded();
+    };
+    importPoints = (ev, config) => {
+        const reader = new FileReader();
+        reader.onload = (loadev) => {
+            try {
+                const obj = JSON.parse(loadev.target.result);
+                let crs = "EPSG:4326";
+                if (obj.crs && obj.crs.properties) {
+                    crs = CoordinatesUtils.fromOgcUrnCrs(obj.crs.properties.name);
+                }
+                const prec = CoordinatesUtils.getUnits(crs) === 'degrees' ? 4 : 0;
+                this.setState((state) => ({[config]: {
+                    ...state[config],
+                    points: obj.features.map(feature => {
+                        const coordinates = feature.geometry.coordinates;
+                        return {
+                            text: coordinates.map(x => x.toFixed(prec)).join(", ") + " (" + crs + ")",
+                            pos: coordinates,
+                            crs: crs
+                        };
+                    })
+                }}));
+                this.recomputeIfNeeded();
+            } catch (e) {
+                // eslint-disable-next-line
+                alert(LocaleUtils.tr("routing.importerror"));
+            }
+        };
+        reader.readAsText(ev.target.files[0]);
     };
     removePoint = (config, idx) => {
         this.setState((state) => ({[config]: {

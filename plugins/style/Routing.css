@@ -206,3 +206,26 @@ input.routing-input-invalid {
 div.routing-popup-button > button {
     width: 100%;
 }
+
+label.routing-import-button {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    color: var(--text-color-link);
+}
+
+label.routing-import-button:hover {
+    text-decoration: underline;
+}
+
+label.routing-import-button > input {
+    cursor: pointer;
+    outline: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+}
