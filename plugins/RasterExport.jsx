@@ -120,7 +120,7 @@ class RasterExport extends React.Component {
                     <input name="TILED" readOnly type="hidden" value="false" />
                     <input name="STYLES" readOnly type="hidden" value="" />
                     <input name="CRS" readOnly type="hidden" value={this.props.map.projection} />
-                    <input name="FILENAME" readOnly type="hidden" value={filename} />
+                    <input name="filename" readOnly type="hidden" value={filename} />
                     <input name="BBOX" readOnly ref={input => { this.extentInput = input; }} type="hidden" value="" />
                     <input name="WIDTH" readOnly ref={input => { this.widthInput = input; }} type="hidden" value="" />
                     <input name="HEIGHT" readOnly ref={input => { this.heightInput = input; }} type="hidden" value="" />
