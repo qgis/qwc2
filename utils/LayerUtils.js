@@ -605,7 +605,7 @@ const LayerUtils = {
             layer.sublayers = layer.sublayers.map(sublayer => {
                 if (sublayer.externalLayer) {
                     const externalLayer = {...sublayer.externalLayer};
-                    LayerUtils.completeExternalLayer(externalLayer);
+                    LayerUtils.completeExternalLayer(externalLayer, sublayer);
                     toplayer.externalLayerMap[sublayer.name] = externalLayer;
                     sublayer = {...sublayer};
                     delete sublayer.externalLayer;
@@ -617,8 +617,8 @@ const LayerUtils = {
             });
         }
     },
-    completeExternalLayer(externalLayer) {
-        externalLayer.title = externalLayer.title || externalLayer.name;
+    completeExternalLayer(externalLayer, sublayer) {
+        externalLayer.title = externalLayer.title || (sublayer || {}).title || externalLayer.name;
         externalLayer.uuid = uuidv4();
         if (externalLayer.type === "wms" || externalLayer.params) {
             externalLayer.version = externalLayer.version || "1.3.0";

@@ -119,7 +119,7 @@ const ThemeUtils = {
                     res[cur.internalLayer] = {
                         ...themes.externalLayers.find(entry => entry.name === cur.name)
                     };
-                    LayerUtils.completeExternalLayer(res[cur.internalLayer]);
+                    LayerUtils.completeExternalLayer(res[cur.internalLayer], LayerUtils.searchSubLayer(theme, 'name', cur.internalLayer));
                     return res;
                 }, {})
             }
