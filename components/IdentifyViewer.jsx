@@ -13,17 +13,19 @@ import FileSaver from 'file-saver';
 import ReactHtmlParser from 'react-html-parser';
 import {convertNodeToElement} from 'react-html-parser';
 import clone from 'clone';
-import ConfigUtils from '../utils/ConfigUtils';
+import omit from 'lodash.omit';
+import JSZip from 'jszip';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import {showIframeDialog} from '../actions/windows';
 import {zoomToExtent} from '../actions/map';
+import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
-import JSZip from 'jszip';
 import './style/IdentifyViewer.css';
 
 
@@ -45,7 +47,15 @@ const BuiltinExporters = [
         export: (json, callback) => {
             const featureCollection = {
                 type: "FeatureCollection",
-                features: json
+                features: Object.values(json).flat().map(entry => ({
+                    ...omit(entry, ['featurereport', 'displayfield', 'layername', 'layertitle', 'layerinfo', 'attribnames', 'clickPos', 'displayname', 'bbox']),
+                    crs: {
+                        type: "name",
+                        properties: {
+                            name: CoordinatesUtils.toOgcUrnCrs(entry.crs)
+                        }
+                    }
+                }))
             };
             const data = JSON.stringify(featureCollection, null, ' ');
             callback({
