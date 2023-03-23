@@ -41,6 +41,15 @@ div.redlining-group > span > * {
     flex: 1 0 auto;
 }
 
+div.redlining-export-menu {
+    height: 2em;
+    margin: 0.25em 0;
+}
+
+div.redlining-export-menu-entry {
+    font-size: 90%;
+}
+
 div.redlining-controlsbar {
     display: flex;
 }

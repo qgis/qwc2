@@ -11,6 +11,8 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import NumericInput from 'react-numeric-input2';
 import Mousetrap from 'mousetrap';
+import FileSaver from 'file-saver';
+import ol from 'openlayers';
 import {changeRedliningState} from '../actions/redlining';
 import {LayerRole, addLayer} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
@@ -18,9 +20,11 @@ import Icon from '../components/Icon';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import ColorButton from '../components/widgets/ColorButton';
+import MenuButton from '../components/widgets/MenuButton';
 import VectorLayerPicker from '../components/widgets/VectorLayerPicker';
 import LocaleUtils from '../utils/LocaleUtils';
-
+import MapUtils from '../utils/MapUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/Redlining.css';
 
 
@@ -30,6 +34,7 @@ class Redlining extends React.Component {
         allowGeometryLabels: PropTypes.bool,
         changeRedliningState: PropTypes.func,
         layers: PropTypes.array,
+        mapCrs: PropTypes.string,
         mobile: PropTypes.bool,
         plugins: PropTypes.object,
         redlining: PropTypes.object,
@@ -162,11 +167,48 @@ class Redlining extends React.Component {
                         <div>&nbsp;</div>
                         <ButtonBar active={this.props.redlining.numericInput ? "NumericInput" : null} buttons={extraButtons} onClick={() => this.updateRedliningState({numericInput: !this.props.redlining.numericInput})} />
                     </div>
+                    <div className="redlining-group">
+                        <div>&nbsp;</div>
+                        <MenuButton className="redlining-export-menu" menuIcon="export" onActivate={this.export}>
+                            <div className="redlining-export-menu-entry" key="GeoJSON" value="geojson">GeoJSON</div>
+                            <div className="redlining-export-menu-entry" key="KML" value="kml">KML</div>
+                        </MenuButton>
+                    </div>
                 </div>
                 {controls}
             </div>
         );
-    }
+    };
+    export = (type) => {
+        if (type === "geojson") {
+            const layer = this.props.layers.find(l => l.id === this.props.redlining.layer);
+            if (!layer) {
+                return;
+            }
+            const geojson = JSON.stringify({
+                type: "FeatureCollection",
+                features: layer.features.map(feature => ({...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.mapCrs, 'EPSG:4326')}))
+            }, null, ' ');
+            FileSaver.saveAs(new Blob([geojson], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
+        } else if (type === "kml") {
+            const getNativeLayer = MapUtils.getHook(MapUtils.GET_NATIVE_LAYER);
+            const layer = getNativeLayer(this.props.redlining.layer);
+            if (!layer) {
+                return;
+            }
+            const kmlFormat = new ol.format.KML();
+            const features = layer.getSource().getFeatures().map(feature => {
+                // Circle is not supported by kml format
+                if (feature.getGeometry() instanceof ol.geom.Circle) {
+                    feature = feature.clone();
+                    feature.setGeometry(ol.geom.Polygon.fromCircle(feature.getGeometry()));
+                }
+                return feature;
+            });
+            const data = kmlFormat.writeFeatures(features, {featureProjection: this.props.mapCrs});
+            FileSaver.saveAs(new Blob([data], {type: "application/vnd.google-earth.kml+xml"}), layer.title + ".kml");
+        }
+    };
     renderStandardControls = () => {
         let sizeLabel = LocaleUtils.tr("redlining.size");
         if (this.props.redlining.geomType === "LineString") {
@@ -272,6 +314,7 @@ export default (plugins) => {
     return connect((state) => ({
         layers: state.layers.flat,
         redlining: state.redlining,
+        mapCrs: state.map.projection,
         mobile: state.browser.mobile,
         plugins: plugins
     }), {
