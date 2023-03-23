@@ -11,6 +11,8 @@ export default class MenuButton extends React.Component {
         children: PropTypes.array,
         className: PropTypes.string,
         menuClassName: PropTypes.string,
+        menuIcon: PropTypes.string,
+        menuLabel: PropTypes.string,
         onActivate: PropTypes.func,
         readOnly: PropTypes.bool
     };
@@ -24,7 +26,9 @@ export default class MenuButton extends React.Component {
     constructor(props) {
         super(props);
         this.el = null;
-        this.state.selected = this.props.active ?? props.children.length > 0 ? props.children[0].props.value : null;
+        if (!props.menuIcon && !props.menuLabel) {
+            this.state.selected = this.props.active ?? props.children.length > 0 ? props.children[0].props.value : null;
+        }
     }
     componentDidUpdate(prevProps) {
         if (this.props.active !== prevProps.active && this.props.active && this.props.active !== this.state.selected) {
@@ -34,7 +38,15 @@ export default class MenuButton extends React.Component {
     render() {
         const children = React.Children.toArray(this.props.children);
         const rect = this.el ? this.el.getBoundingClientRect() : null;
-        const selectedOption = children.filter((child) => child.props.value === this.state.selected);
+        let buttonContents = null;
+        if (this.props.menuIcon || this.props.menuLabel) {
+            buttonContents = [
+                this.props.menuIcon ? (<Icon icon={this.props.menuIcon} key="icon" />) : null,
+                this.props.menuLabel ? (<span>{this.props.menuLabel}</span>) : null
+            ];
+        } else {
+            buttonContents = children.filter((child) => child.props.value === this.state.selected);
+        }
         const buttonClassnames = classnames({
             "menubutton-button": true,
             "menubutton-button-active": !!this.props.active,
@@ -44,9 +56,9 @@ export default class MenuButton extends React.Component {
             <div className={"menubutton " + (this.props.className || "")} ref={el => { this.el = el; }}>
                 <div className={buttonClassnames}>
                     <span className="menubutton-button-content" onClick={this.onButtonClicked}>
-                        {selectedOption}
+                        {buttonContents}
                     </span>
-                    <span className="menubotton-combo-arrow" onClick={this.props.readOnly ? null : () => this.setState({popup: true})}>
+                    <span className="menubotton-combo-arrow" onClick={this.onMenuClicked}>
                         <Icon icon="chevron-down" />
                     </span>
                 </div>
@@ -58,7 +70,7 @@ export default class MenuButton extends React.Component {
                                 "menubutton-menu-disabled": child.props.disabled
                             });
                             return (
-                                <div className={classNames} key={child.props.value} onClickCapture={() => this.onChildClicked(child)}>
+                                <div className={classNames + " " + (child.props.className || "")} key={child.props.value} onClickCapture={() => this.onChildClicked(child)}>
                                     {child}
                                 </div>
                             );
@@ -68,12 +80,23 @@ export default class MenuButton extends React.Component {
             </div>
         );
     }
+    onMenuClicked = () => {
+        if (!this.props.readOnly) {
+            this.setState({popup: true});
+        }
+    };
     onButtonClicked = () => {
-        this.props.onActivate(this.state.selected);
+        if (this.state.selected) {
+            this.props.onActivate(this.state.selected);
+        } else {
+            this.onMenuClicked();
+        }
     };
     onChildClicked = (child) => {
         if (!child.props.disabled) {
-            this.setState({selected: child.props.value});
+            if (this.state.selected) {
+                this.setState({selected: child.props.value});
+            }
             this.props.onActivate(child.props.value);
         }
     };
