@@ -32,7 +32,7 @@ export default class PopupMenu extends React.Component {
             position: 'absolute',
             left: this.props.x + 'px',
             top: this.props.y + 'px',
-            width: this.props.width + 'px',
+            minWidth: this.props.width + 'px',
             maxHeight: (window.innerHeight - this.props.y) + 'px',
             overflowY: 'auto'
         };
