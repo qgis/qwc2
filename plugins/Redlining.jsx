@@ -201,7 +201,7 @@ class Redlining extends React.Component {
                 // Circle is not supported by kml format
                 if (feature.getGeometry() instanceof ol.geom.Circle) {
                     feature = feature.clone();
-                    feature.setGeometry(ol.geom.Polygon.fromCircle(feature.getGeometry()));
+                    feature.setGeometry(ol.geom.polygonFromCircle(feature.getGeometry()));
                 }
                 return feature;
             });
