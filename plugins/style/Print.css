@@ -82,6 +82,11 @@ span.print-output-window-wait div.spinner {
     align-items: center;
 }
 
+#Print span.print-wait {
+    display: flex;
+    align-items: center;
+}
+
 #Print span.print-wait div.spinner {
     width: 1.25em;
     height: 1.25em;
