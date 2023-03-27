@@ -1,12 +1,55 @@
-.RasterExport div.help-text {
-    font-style: italic;
-    padding-bottom: 0.5em;
+#RasterExport div.rasterexport-body {
+    padding: 0.25em;
 }
 
-.RasterExport div.raster-export-settings {
-    font-size: small;
+#RasterExport .rasterexport-minimize-maximize {
+    margin-left: 1em;
+    padding: 0.25em;
 }
 
-.RasterExport div.raster-export-settings > span {
-    margin: 0.5em;
+#RasterExport table.options-table {
+    width: 100%;
+}
+
+#RasterExport table.options-table td {
+    padding: 0.125em 0;
+}
+
+#RasterExport table.options-table td:first-child {
+    max-width: 10em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 0.25em;
+}
+
+#RasterExport table.options-table td:nth-child(2) {
+    width: 99%;
+}
+
+#RasterExport table.options-table td:nth-child(2) > * {
+    width: 100%;
+}
+
+#RasterExport table.options-table textarea {
+    resize: vertical;
+}
+
+#RasterExport div.button-bar {
+    margin-top: 0.5em;
+}
+
+#RasterExport div.button-bar > button {
+    width: 100%;
+}
+
+#RasterExport span.rasterexport-wait {
+    display: flex;
+    align-items: center;
+}
+
+#RasterExport span.rasterexport-wait div.spinner {
+    width: 1.25em;
+    height: 1.25em;
+    margin-right: 0.5em;
+    flex: 0 0 auto;
 }

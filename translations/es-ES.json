@@ -261,7 +261,11 @@
     "rasterexport": {
       "format": "Formato:",
       "resolution": "Resolución:",
-      "selectinfo": "Arrastre un rectángulo alrededor de la región para su exportación..."
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "redlining": {
       "border": "Límite",

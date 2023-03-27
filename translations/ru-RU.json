@@ -261,7 +261,11 @@
     "rasterexport": {
       "format": "Формат бумаги:",
       "resolution": "Разрешение:",
-      "selectinfo": "Для экспорта обведите регион многоугольником..."
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "redlining": {
       "border": "Граница",

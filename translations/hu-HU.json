@@ -261,7 +261,11 @@
     "rasterexport": {
       "format": "Formátum:",
       "resolution": "Felbontás:",
-      "selectinfo": "Rajzolj egy négyszöget az exportálni kívánt terület köré..."
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "redlining": {
       "border": "Szegély",

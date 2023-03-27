@@ -261,7 +261,11 @@
     "rasterexport": {
       "format": "Formát:",
       "resolution": "Rozlišení:",
-      "selectinfo": "Vyberte obdélníkem oblast pro export..."
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "redlining": {
       "border": "Okraj",

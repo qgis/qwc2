@@ -261,7 +261,11 @@
     "rasterexport": {
       "format": "Formaatti:",
       "resolution": "Resoluutio:",
-      "selectinfo": "Piirrä suorakulmio alueen ympäri vientiä varten ..."
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "redlining": {
       "border": "Reunat",

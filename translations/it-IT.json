@@ -259,9 +259,13 @@
       "loading": "Caricando formulario..."
     },
     "rasterexport": {
-      "format": "Formato:",
-      "resolution": "Risoluzione:",
-      "selectinfo": "Seleziona l'area da esportare"
+      "format": "Formato",
+      "resolution": "Risoluzione",
+      "scale": "Scala",
+      "size": "Dimensione",
+      "submit": "Esporta",
+      "usersize": "Seleziona sulla mappa...",
+      "wait": "Attendere..."
     },
     "redlining": {
       "border": "Bordo",

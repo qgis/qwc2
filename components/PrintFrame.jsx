@@ -103,6 +103,8 @@ export default class PrintFrame extends React.Component {
         ];
         if (bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
             this.props.bboxSelected(bbox, this.props.map.projection, [this.state.width, this.state.height]);
+        } else {
+            this.props.bboxSelected(null, this.props.map.projection, [0, 0]);
         }
     };
     render() {

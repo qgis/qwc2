@@ -259,9 +259,13 @@
       "loading": "Formular wird geladen..."
     },
     "rasterexport": {
-      "format": "Format:",
-      "resolution": "Auflösung:",
-      "selectinfo": "Rechteck um die zu exportierende Region aufziehen"
+      "format": "Format",
+      "resolution": "Auflösung",
+      "scale": "Maßstab",
+      "size": "Dimensionen",
+      "submit": "Exportieren",
+      "usersize": "Auf Karte auswählen...",
+      "wait": "Bitte warten..."
     },
     "redlining": {
       "border": "Rand",

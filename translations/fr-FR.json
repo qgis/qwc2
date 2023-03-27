@@ -259,9 +259,13 @@
       "loading": "Chargement du formulaire..."
     },
     "rasterexport": {
-      "format": "Format:",
-      "resolution": "Résolution:",
-      "selectinfo": "Dessiner un rectangle pour définir la zone à exporter"
+      "format": "Format",
+      "resolution": "Résolution",
+      "scale": "Echelle",
+      "size": "Dimension",
+      "submit": "Exporter",
+      "usersize": "Selectionner sur la carte...",
+      "wait": "Veuillez patienter..."
     },
     "redlining": {
       "border": "Bordure",

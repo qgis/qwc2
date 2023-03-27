@@ -259,9 +259,13 @@
       "loading": "Loading form..."
     },
     "rasterexport": {
-      "format": "Format:",
-      "resolution": "Resolution:",
-      "selectinfo": "Drag a rectangle around the region to export..."
+      "format": "Format",
+      "resolution": "Resolution",
+      "scale": "Scale",
+      "size": "Size",
+      "submit": "Export",
+      "usersize": "Select on map...",
+      "wait": "Please wait..."
     },
     "redlining": {
       "border": "Border",

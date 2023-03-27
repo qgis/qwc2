@@ -261,7 +261,11 @@
     "rasterexport": {
       "format": "Format:",
       "resolution": "Çözünürlük:",
-      "selectinfo": "Dışarı aktarılacak alana dikdörtgen çiziniz..."
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "redlining": {
       "border": "Border",

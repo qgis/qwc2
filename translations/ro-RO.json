@@ -261,7 +261,11 @@
     "rasterexport": {
       "format": "Format:",
       "resolution": "Rezoluție",
-      "selectinfo": "Încadrați într-un dreptunghi zona de exportat.."
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "redlining": {
       "border": "Margine",

@@ -261,7 +261,11 @@
     "rasterexport": {
       "format": "Format:",
       "resolution": "Rozdzielczość:",
-      "selectinfo": "Narysuj prostokąt, określając obszar do eksportu..."
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "redlining": {
       "border": "Obramowanie",
