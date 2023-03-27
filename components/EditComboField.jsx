@@ -67,18 +67,31 @@ export default class EditComboField extends React.Component {
         values: PropTypes.array
     }
     state = {
+        showPlaceholder: true,
         values: []
     }
     componentDidMount() {
         if (this.props.values) {
             // eslint-disable-next-line
-            this.setState({values: this.props.values});
+            this.setState({values: this.props.values, showPlaceholder: !this.hasEmptyValue(this.props.values)});
         } else if (this.props.keyvalrel) {
             KeyValCache.get(this.props.editIface, this.props.keyvalrel, (values) => {
                 // eslint-disable-next-line
-                this.setState({values});
+                this.setState({values, showPlaceholder: !this.hasEmptyValue(values)});
             });
         }
+    }
+    hasEmptyValue = (values) => {
+        for (let i = 0; i < values.length; ++i) {
+            if (typeof(values[i]) === 'string') {
+                if (values[i] === '') {
+                    return true;
+                }
+            } else if (values[i].value === '') {
+                return true;
+            }
+        }
+        return false;
     }
     render() {
         return (
@@ -86,9 +99,11 @@ export default class EditComboField extends React.Component {
                 onChange={ev => this.props.updateField(this.props.fieldId, ev.target.value)}
                 required={this.props.required} style={this.props.style} value={String(this.props.value)}
             >
-                <option disabled={this.props.required} value="">
-                    {this.props.placeholder || LocaleUtils.tr("editing.select")}
-                </option>
+                {this.state.showPlaceholder ? (
+                    <option disabled={this.props.required} value="">
+                        {this.props.placeholder || LocaleUtils.tr("editing.select")}
+                    </option>
+                ) : null}
                 {this.state.values.map((item, index) => {
                     let optValue = "";
                     let label = "";
