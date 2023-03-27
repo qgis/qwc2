@@ -393,18 +393,17 @@ class QtDesignerForm extends React.Component {
                         style={fontStyle} updateField={updateField} value={value} />
                 );
             } else {
+                const values = (widget.item || []).map((item) => ({
+                    label: item.property.text,
+                    value: item.property.value || item.property.text
+                }));
                 return (
-                    <select disabled={inputConstraints.readOnly} name={elname} onChange={ev => updateField(widget.name, ev.target.value)} {...inputConstraints} style={fontStyle} value={value}>
-                        <option disabled={inputConstraints.required} value="">
-                            {inputConstraints.placeholder || LocaleUtils.tr("editing.select")}
-                        </option>
-                        {(widget.item || []).map((item) => {
-                            const optval = item.property.value || item.property.text;
-                            return (
-                                <option key={optval} value={optval}>{item.property.text}</option>
-                            );
-                        })}
-                    </select>
+                    <EditComboField
+                        editIface={this.props.iface} fieldId={widget.name} key={widget.name}
+                        name={elname} placeholder={inputConstraints.placeholder}
+                        readOnly={inputConstraints.readOnly || inputConstraints.readOnly}
+                        required={inputConstraints.required || inputConstraints.required}
+                        style={fontStyle} updateField={updateField} value={value} values={values} />
                 );
             }
         } else if (widget.class === "QSpinBox" || widget.class === "QDoubleSpinBox" || widget.class === "QSlider") {
