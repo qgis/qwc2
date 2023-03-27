@@ -34,6 +34,9 @@ export default class PrintFrame extends React.Component {
         if (this.props.map !== prevProps.map || !isEqual(this.props.fixedFrame, prevProps.fixedFrame)) {
             this.recomputeBox();
         }
+        if (!this.props.fixedFrame && prevProps.fixedFrame) {
+            this.setState({x: 0, y: 0, width: 0, height: 0, moving: false});
+        }
     }
     recomputeBox = () => {
         if (this.props.fixedFrame) {
