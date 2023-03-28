@@ -34,7 +34,7 @@ export default (searchProviders) => createSelector(
             availableProviders.themes = {
                 labelmsgid: LocaleUtils.trmsg("search.themes"),
                 onSearch: (text, options, callback) => {
-                    callback({results: ThemeUtils.searchThemes(theme.themes, text)});
+                    setTimeout(() => callback({results: ThemeUtils.searchThemes(theme.themes, text)}), 50);
                 }
             };
         }
