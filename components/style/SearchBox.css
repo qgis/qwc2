@@ -11,6 +11,11 @@ div.SearchBox > div.searchbox-field {
     width: 100%;
 }
 
+div.SearchBox > div.searchbox-field > div.spinner {
+    width: calc(2em - 2px);
+    height: calc(2em - 2px);
+}
+
 div.SearchBox > div.searchbox-results {
     position: absolute;
     left: 0;
