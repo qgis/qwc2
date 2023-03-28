@@ -22,6 +22,7 @@ import {openExternalUrl, setCurrentTask} from '../actions/task';
 import {showIframeDialog, showNotification} from '../actions/windows';
 import Icon from './Icon';
 import InputContainer from './InputContainer';
+import Spinner from './Spinner';
 import displayCrsSelector from '../selectors/displaycrs';
 import searchProvidersSelector from '../selectors/searchproviders';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -360,7 +361,7 @@ class SearchBox extends React.Component {
                         placeholder={placeholder} ref={el => { this.searchBox = el; }}
                         role="input"
                         type="text" value={this.state.searchText} />
-                    <Icon icon="remove" onClick={this.clear} role="suffix" />
+                    {this.state.pendingSearches.length > 0 ? (<Spinner role="suffix" />) : (<Icon icon="remove" onClick={this.clear} role="suffix" />)}
                 </InputContainer>
                 {this.renderSearchResults()}
             </div>
@@ -370,10 +371,10 @@ class SearchBox extends React.Component {
         if (this.props.layers.find(layer => layer.id === 'searchselection')) {
             this.props.removeLayer('searchselection');
         }
-        this.setState({searchText: text, expandedLayerGroup: null, activeLayerInfo: null});
+        this.setState({searchText: text, expandedLayerGroup: null, activeLayerInfo: null, pendingSearches: [], searchSession: null});
         clearTimeout(this.searchTimeout);
-        this.searchTimeout = setTimeout(() => this.startSearch(pasted), 250);
-    }
+        this.searchTimeout = setTimeout(this.startSearch, 250);
+    };
     onFocus = () => {
         this.setState({resultsVisible: true});
         if (this.searchBox) {
@@ -414,7 +415,11 @@ class SearchBox extends React.Component {
             return;
         }
         const searchSession = uuid.v1();
-        this.setState({searchResults: {query_text: searchText}, searchSession: searchSession, pendingSearches: Object.keys(this.props.searchProviders).concat(["__fulltext"])});
+        this.setState({
+            searchResults: {query_text: searchText},
+            searchSession: searchSession,
+            pendingSearches: Object.keys(this.props.searchProviders).concat(["__fulltext"])
+        });
         // Fulltext search
         if (this.props.theme.searchProviders.find(entry => entry.provider === "solr")) {
             const params = {
