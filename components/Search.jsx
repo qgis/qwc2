@@ -53,7 +53,13 @@ class Search extends React.Component {
         removeLayer: PropTypes.func,
         results: PropTypes.array,
         searchMore: PropTypes.func,
-        searchOptions: PropTypes.object,
+        searchOptions: PropTypes.shape({
+            showProviderSelection: PropTypes.bool,
+            showProvidersInPlaceholder: PropTypes.bool,
+            providerSelectionAllowAll: PropTypes.bool,
+            zoomToLayers: PropTypes.bool,
+            minScaleDenom: PropTypes.number
+        }),
         searchProviders: PropTypes.object, // All available search providers
         searchText: PropTypes.string,
         setCurrentSearchResult: PropTypes.func,

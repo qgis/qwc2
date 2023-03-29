@@ -21,16 +21,30 @@ import LocaleUtils from '../utils/LocaleUtils';
 import './style/Map.css';
 
 
+/**
+ * The main map component.
+ */
 class MapPlugin extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
         map: PropTypes.object,
-        mapOptions: PropTypes.object,
+        /** Zoom duration in ms, rotation in degrees, panStepSize and panPageSize as fraction of map width/height. */
+        mapOptions: PropTypes.shape({
+            zoomDuration: PropTypes.number,
+            enableRotation: PropTypes.bool,
+            rotation: PropTypes.number,
+            panStepSize: PropTypes.number,
+            panPageSize: PropTypes.number
+        }),
+        /** Whether to display the loading spinner when layers are loading. */
         showLoading: PropTypes.bool,
         swipe: PropTypes.number,
-        swipeGeometryTypeBlacklist: PropTypes.array,
-        swipeLayerNameBlacklist: PropTypes.array,
+        /** A list of layer geometry types to ignore when determining the top-most layer to compare. */
+        swipeGeometryTypeBlacklist: PropTypes.arrayOf(PropTypes.string),
+        /** A list of layer names to ignore when determining the top-most layer to compare. You can use `*` as a whildcard character. */
+        swipeLayerNameBlacklist: PropTypes.arrayOf(PropTypes.string),
         tools: PropTypes.object,
+        /** Map tool configuraiton options. Refer to the sample config.json. */
         toolsOptions: PropTypes.object
     };
     static defaultProps = {

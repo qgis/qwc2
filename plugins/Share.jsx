@@ -21,13 +21,21 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import {generatePermaLink} from '../utils/PermaLinkUtils';
 import './style/Share.css';
 
+
+/**
+ * Share the current map as a URL/permalink.
+ */
 class Share extends React.Component {
     static propTypes = {
         addMarker: PropTypes.func,
         removeMarker: PropTypes.func,
+        /** Show the map URL. */
         showLink: PropTypes.bool,
+        /** Show the QR code of the map URL. */
         showQRCode: PropTypes.bool,
-        showSocials: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
+        /** Show the social buttons. Either `true` or `false`to enable/disable all, or an array of specific buttons to display (possible choices: `email`, `facebook`, `twitter`, `linkedin`, `whatsapp`). */
+        showSocials: PropTypes.oneOfType([PropTypes.bool, PropTypes.arrayOf(PropTypes.string)]),
+        /** Whether snapping is enabled by default when editing. */
         side: PropTypes.string,
         state: PropTypes.object
     };

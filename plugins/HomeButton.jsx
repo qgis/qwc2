@@ -14,9 +14,14 @@ import {zoomToExtent} from '../actions/map';
 import Icon from '../components/Icon';
 import './style/Buttons.css';
 
+
+/**
+ * Map button for reverting to the home extent of the theme.
+ */
 class HomeButton extends React.Component {
     static propTypes = {
         currentTheme: PropTypes.object,
+        /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number,
         zoomToExtent: PropTypes.func
     };

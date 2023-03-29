@@ -17,19 +17,34 @@ import MapUtils from '../utils/MapUtils';
 import './style/MapLegend.css';
 import isEmpty from 'lodash.isempty';
 
+/**
+ * Displays the map legend in a floating dialog.
+ * 
+ * The user can toggle whether to display only layers which are enabled, visible in the current extent and/or visible at the current scale.
+ */
 class MapLegend extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
+        /** Whether to add group titles to the legend. */
         addGroupTitles: PropTypes.bool,
+        /** Whether to add layer titles to the legend. Note that often the legend image itself already contains the layer title. */
         addLayerTitles: PropTypes.bool,
+        /** Whether to display a BBOX-dependent legend by default. */
         bboxDependentLegend: PropTypes.bool,
+        /** Extra parameters to add to the GetLegendGraphics request. */
         extraLegendParameters: PropTypes.string,
         layers: PropTypes.array,
         map: PropTypes.object,
+        /** Whether to only include enabled layers in the legend by default. */
         onlyVisibleLegend: PropTypes.bool,
+        /** Whether to display a scale-dependent legend by default. */
         scaleDependentLegend: PropTypes.bool,
         setCurrentTask: PropTypes.func,
-        windowSize: PropTypes.object
+        /** The default window size. */
+        windowSize: PropTypes.shape({
+            width: PropTypes.number,
+            height: PropTypes.number
+        })
     };
     static defaultProps = {
         addGroupTitles: false,

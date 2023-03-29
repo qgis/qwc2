@@ -15,14 +15,21 @@ import Icon from '../components/Icon';
 import LocaleUtils from "../utils/LocaleUtils";
 import './style/BackgroundSwitcher.css';
 
+/**
+ * Generic map button to launch a task.
+ */
 class TaskButton extends React.Component {
     static propTypes = {
         currentTask: PropTypes.string,
+        /** The icon name.  */
         icon: PropTypes.string,
         mapClickAction: PropTypes.string,
+        /** The task mode. */
         mode: PropTypes.string,
+        /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number,
         setCurrentTask: PropTypes.func,
+        /** The task name. */
         task: PropTypes.string
     };
     static defaultProps = {

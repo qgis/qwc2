@@ -12,6 +12,9 @@ import ConfigUtils from '../utils/ConfigUtils';
 import './style/LoginUser.css';
 
 
+/**
+ * Displays the currently logged in user.
+ */
 export default class LoginUser extends React.Component {
     render() {
         const username = ConfigUtils.getConfigProp("username");

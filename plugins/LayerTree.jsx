@@ -32,44 +32,72 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/LayerTree.css';
 
 
+/**
+ * Displays the map layer tree in a sidebar.
+ */
 class LayerTree extends React.Component {
     static propTypes = {
+        /** Whether to allow adding separator entries in the layer tree, useful for organizing the tree. */
         addLayerSeparator: PropTypes.func,
+        /** Whether to enable the compare function. Requires the `MapCompare` plugin. */
         allowCompare: PropTypes.bool,
+        /** Whether to allow importing external layers. */
         allowImport: PropTypes.bool,
+        /** Whether to allow enabling map tips. */
         allowMapTips: PropTypes.bool,
+        /** Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. */
         bboxDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         changeLayerProperty: PropTypes.func,
+        /** Whether to enable the legend print functionality. */
         enableLegendPrint: PropTypes.bool,
+        /** Whether to display a service info button to display the WMS service metadata. */
         enableServiceInfo: PropTypes.bool,
+        /** Whether to display a button to filter invisible layers from the layertree. */
         enableVisibleFilter: PropTypes.bool,
+        /** Additional parameters to pass to the GetLegendGraphics request- */
         extraLegendParameters: PropTypes.string,
         fallbackDrag: PropTypes.bool,
+        /** Whether to display a flat layer tree, omitting any groups. */
         flattenGroups: PropTypes.bool,
+        /** Whether to display unchecked layers gray in the layertree. */
         grayUnchecked: PropTypes.bool,
+        /** Whether toggling a group also toggles all sublayers. */
         groupTogglesSublayers: PropTypes.bool,
+        /** Whether to display the layer info button inside the layer settings menu rather than next to the layer title. */
         infoInSettings: PropTypes.bool,
-        layerInfoWindowSize: PropTypes.object,
+        /** The initial size of the layer info window. */
+        layerInfoWindowSize: PropTypes.shape({
+            width: PropTypes.number,
+            height: PropTypes.number
+        }),
         layers: PropTypes.array,
         map: PropTypes.object,
         mapScale: PropTypes.number,
+        /** Whether map tips are enabled by default. */
         mapTipsEnabled: PropTypes.bool,
         mobile: PropTypes.bool,
         removeLayer: PropTypes.func,
         reorderLayer: PropTypes.func,
+        /** Whether to display a scale dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. */
         scaleDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         setActiveLayerInfo: PropTypes.func,
         setActiveServiceInfo: PropTypes.func,
         setSwipe: PropTypes.func,
+        /** Whether to display legend icons. */
         showLegendIcons: PropTypes.bool,
+        /** Whether to display the queryable icon to indicate that a layer is identifyable. */
         showQueryableIcon: PropTypes.bool,
+        /** Whether to display the root entry of the layertree. */
         showRootEntry: PropTypes.bool,
+        /** Whether to display a checkbox to toggle all layers. */
         showToggleAllLayersCheckbox: PropTypes.bool,
+        /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         swipe: PropTypes.number,
         theme: PropTypes.object,
         toggleMapTips: PropTypes.func,
         transparencyIcon: PropTypes.bool,
+        /** The initial width of the layertree, as a CSS width string. */
         width: PropTypes.string,
         zoomToExtent: PropTypes.func
     };

@@ -20,6 +20,11 @@ import './style/Redlining.css';
 import './style/ScratchDrawing.css';
 
 
+/**
+ * Task which which can be invoked by other tools to draw a geometry and pass it to a callback.
+ *
+ * Invoke as setCurrentTask("ScratchDrawing", null, null, {callback: <function(features, crs)>});
+ */
 class ScratchDrawing extends React.Component {
     static propTypes = {
         addLayer: PropTypes.func,

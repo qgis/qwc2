@@ -30,10 +30,17 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import './style/AttributeTable.css';
 
-
+/**
+ * Displaying the attribute table of layers in a dialog.
+ *
+ * To make a layer available in the attribute table, create a a data resource and matching permissions for it in the qwc-admin-gui.
+ *
+ * The attribute table works for both read-only as well as read-write data resources.
+ */
 class AttributeTable extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
+        /** Whether to allow adding records for datasets which have a geometry column. */
         allowAddForGeometryLayers: PropTypes.bool,
         iface: PropTypes.object,
         layers: PropTypes.array,
@@ -41,9 +48,11 @@ class AttributeTable extends React.Component {
         mapScales: PropTypes.array,
         setCurrentTask: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
+        /** Whether to show a button to open the edit form for selected layer. Requires the Editing plugin to be enabled. */
         showEditFormButton: PropTypes.bool,
         taskData: PropTypes.object,
         theme: PropTypes.object,
+        /** The zoom level for zooming to point features. */
         zoomLevel: PropTypes.number,
         zoomToExtent: PropTypes.func,
         zoomToPoint: PropTypes.func

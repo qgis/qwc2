@@ -19,12 +19,24 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import './style/DxfExport.css';
 
+
+/**
+ * Allows exporting a selected extent of the map as DXF.
+ *
+ * Uses the DXF format support of QGIS Server.
+ */
 class DxfExport extends React.Component {
     static propTypes = {
+        /** Optional format options to pass to QGIS Server via FORMAT_OPTIONS. */
         formatOptions: PropTypes.string,
-        layerOptions: PropTypes.array,
+        /** Optional choice of layer sets to pass to QGIS Server via LAYERS. */
+        layerOptions: PropTypes.arrayOf(PropTypes.shape({
+            label: PropTypes.string,
+            layers: PropTypes.string
+        })),
         layers: PropTypes.array,
         map: PropTypes.object,
+        /** Optional URL invoked on export instead of the default QGIS Server URL. */
         serviceUrl: PropTypes.string,
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object

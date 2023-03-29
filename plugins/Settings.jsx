@@ -16,12 +16,25 @@ import SideBar from '../components/SideBar';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/Settings.css';
 
+
+/**
+ * Settings panel.
+ *
+ * Allows configuring language and color scheme.
+ */
 class Settings extends React.Component {
     static propTypes = {
         colorScheme: PropTypes.string,
-        colorSchemes: PropTypes.array,
+        /** List of available color schemes. Value is the css class name, title/titleMsgId the display name. */
+        colorSchemes: PropTypes.arrayOf(PropTypes.shape({
+            title: PropTypes.string,
+            titleMsgId: PropTypes.string,
+            value: PropTypes.string
+        })),
+        /** List of available languages. Value is the lang code, title/titleMsgId the display name. */
         languages: PropTypes.array,
         setColorScheme: PropTypes.func,
+        /** Whether snapping is enabled by default when editing. */
         side: PropTypes.string
     };
     static defaultProps = {

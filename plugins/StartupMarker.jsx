@@ -12,12 +12,17 @@ import {connect} from 'react-redux';
 import {addMarker, removeMarker} from '../actions/layers';
 import {UrlParams} from '../utils/PermaLinkUtils';
 
+
+/**
+ * Displays a marker in the center of the map if c=<x>,<y>&hc=1 is set in the URL.
+ */
 class StartupMarker extends React.Component {
     static propTypes = {
         addMarker: PropTypes.func,
         click: PropTypes.object,
         map: PropTypes.object,
         removeMarker: PropTypes.func,
+        /** When to remove the marker. Possible choices: onpan, onzoom, onclickonmarker. */
         removeMode: PropTypes.string, // onpan, onzoom, onclickonmarker
         startupParams: PropTypes.object,
         theme: PropTypes.object

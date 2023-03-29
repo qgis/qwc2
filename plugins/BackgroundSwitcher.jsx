@@ -18,10 +18,15 @@ import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/BackgroundSwitcher.css';
 
+
+/**
+ * Map button for switching the background layer.
+ */
 class BackgroundSwitcher extends React.Component {
     static propTypes = {
         changeLayerProperty: PropTypes.func,
         layers: PropTypes.array,
+        /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number,
         toggleBackgroundswitcher: PropTypes.func
     };

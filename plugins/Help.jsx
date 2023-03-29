@@ -12,10 +12,19 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import SideBar from '../components/SideBar';
 
+
+/**
+ * Displays a custom help dialog in a sidebar.
+ *
+ * Define the help contents by specifying the `bodyContentsFragmentUrl` prop.
+ * See also https://github.com/qgis/qwc2-demo-app/blob/master/doc/src/qwc_configuration.md#help-dialog.
+ */
 class Help extends React.Component {
     static propTypes = {
+        /** URL to a document containing a HTML fragment to display in the Help sidebar. */
         bodyContentsFragmentUrl: PropTypes.string,
         renderBody: PropTypes.func,
+        /** The side of the application on which to display the sidebar. */
         side: PropTypes.string
     };
     static defaultProps = {

@@ -12,11 +12,19 @@ import {connect} from 'react-redux';
 import url from 'url';
 import ConfigUtils from '../utils/ConfigUtils';
 
+
+/**
+ * Handles authentication via the authentication service specified by `authServiceUrl`.
+ */
 class Authentication extends React.Component {
     static propTypes = {
+        /** Whether to clear the layer parameter from the URL on login. */
         clearLayerParam: PropTypes.bool,
+        /** An idle timeout in seconds after which the user is automatically logged of. */
         idleTimeout: PropTypes.number,
+        /** An URL to redirect to on logout, instead of the viewer URL. */
         logoutTargetUrl: PropTypes.string,
+        /** Whether authentication is required, i.e. the viewer automatically redirects to the login page if no user is authenticated. */
         requireLogin: PropTypes.bool,
         task: PropTypes.string
     };

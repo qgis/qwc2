@@ -14,12 +14,18 @@ import {changeZoomLevel} from '../actions/map';
 import Icon from '../components/Icon';
 import './style/Buttons.css';
 
+/**
+ * Map button for zooming the map.
+ *
+ * Two specific plugins exist: ZoomInPlugin and ZoomOutPlugin, which are instances of ZoomButton for the respective zoom directions.
+ */
 class ZoomButton extends React.Component {
     static propTypes = {
         changeZoomLevel: PropTypes.func,
         currentZoom: PropTypes.number,
         direction: PropTypes.number,
         maxZoom: PropTypes.number,
+        /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number
     };
     render() {

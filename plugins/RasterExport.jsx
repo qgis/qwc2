@@ -29,17 +29,31 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/RasterExport.css';
 
 
+/**
+ * Allows exporting a selected portion of the map to an image ("screenshot").
+ */
 class RasterExport extends React.Component {
     static propTypes = {
-        allowedFormats: PropTypes.array,
-        allowedScales: PropTypes.array,
+        /** Whitelist of allowed export format mimetypes. If empty, supported formats are listed. */
+        allowedFormats: PropTypes.arrayOf(PropTypes.string),
+        /** List of scales at which to export the map. */
+        allowedScales: PropTypes.array(PropTypes.number),
+        /** The factor to apply to the map scale to determine the initial export map scale.  */
         defaultScaleFactor: PropTypes.number,
-        dpis: PropTypes.array,
+        /** List of dpis at which to export the map. If empty, the default server dpi is used.  */
+        dpis: PropTypes.arrayOf(PropTypes.number),
+        /** Whether to include external layers in the image. Requires QGIS Server 3.x! */
         exportExternalLayers: PropTypes.bool,
         layers: PropTypes.array,
         map: PropTypes.object,
-        pageSizes: PropTypes.array,
+        /** List of image sizes to offer, in addition to the free-hand selection. The width and height are in millimeters. */
+        pageSizes: PropTypes.arrayOf(PropTypes.shape({
+            name: PropTypes.string,
+            width: PropTypes.number,
+            height: PropTypes.number
+        })),
         setCurrentTask: PropTypes.func,
+        /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         theme: PropTypes.object
     };
@@ -55,6 +69,7 @@ class RasterExport extends React.Component {
     constructor(props) {
         super(props);
         this.form = null;
+        this.state.dpi = props.dpis[0] || 96;
     }
     state = {
         extent: '',
@@ -200,7 +215,7 @@ class RasterExport extends React.Component {
                                 <tr>
                                     <td>{LocaleUtils.tr("rasterexport.resolution")}</td>
                                     <td>
-                                        <select defaultValue={this.props.dpis[0]} name="DPI" onChange={this.dpiChanged}>
+                                        <select name="DPI" onChange={this.dpiChanged} value={this.state.dpi}>
                                             {this.props.dpis.map(dpi => {
                                                 return (<option key={dpi + "dpi"} value={dpi}>{dpi + " dpi"}</option>);
                                             })}

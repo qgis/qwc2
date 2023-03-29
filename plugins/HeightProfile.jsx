@@ -25,16 +25,27 @@ import LocaleUtils from '../utils/LocaleUtils';
 import './style/HeightProfile.css';
 import MeasureUtils from '../utils/MeasureUtils';
 
+
+/**
+ * Displays a height profile along a measured line.
+ *
+ * Triggered automatically when a line is measured via the `Measure` plugin.
+ *
+ * Requires `elevationServiceUrl` to point to a qwc-elevation-service.
+ */
 class HeightProfile extends React.Component {
     static propTypes = {
         addMarker: PropTypes.func,
         changeMeasurementState: PropTypes.func,
+        /** The precision of displayed and exported values (0: no decimals, 0.1: 1 decimal position, etc). */
         heighProfilePrecision: PropTypes.number,
+        /** The height of the height profile widget in pixels. */
         height: PropTypes.number,
         measurement: PropTypes.object,
         mobile: PropTypes.bool,
         projection: PropTypes.string,
         removeMarker: PropTypes.func,
+        /** The number of elevation samples to query. */
         samples: PropTypes.number
     };
     static defaultProps = {

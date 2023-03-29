@@ -49,20 +49,32 @@ const DateUnitLabels = {
     "100y": LocaleUtils.trmsg("timemanager.unit.century")
 };
 
+
+/**
+ * Allows controling the time dimension of temporal WMS layers.
+ */
 class TimeManager extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
         addLayerFeatures: PropTypes.func,
+        /** The format of the time cursor label. Either `date`, `time` or `datetime`. */
         cursorFormat: PropTypes.string,
+        /** The date format in the time controls, i.e. YYYY-MM-DD. */
         dateFormat: PropTypes.string,
+        /** The default interval for the temporal animation, in seconds. */
         defaultAnimationInterval: PropTypes.number,
+        /** The default step size for the temporal animation, in step units. */
         defaultStepSize: PropTypes.number,
+        /** The default step unit for the temporal animation, one of `ms`, `s`, `m`, `d`, `M`, `y`, `10y`, `100y` */
         defaultStepUnit: PropTypes.string,
+        /** The default timeline display mode. One of `hidden`, `minimal`, `features`, `layers`. */
         defaultTimelineDisplay: PropTypes.string,
+        /** The default timeline mode. One of `fixed`, `infinite`. */
         defaultTimelineMode: PropTypes.string,
         layerVisibilities: PropTypes.object,
         layers: PropTypes.array,
         map: PropTypes.object,
+        /** The feature marker configuration. */
         markerConfiguration: PropTypes.shape({
             markersAvailable: PropTypes.bool,
             gradient: PropTypes.arrayOf(PropTypes.string),
@@ -73,6 +85,7 @@ class TimeManager extends React.Component {
         removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setLayerDimensions: PropTypes.func,
+        /** The available temporal anumation step units. */
         stepUnits: PropTypes.arrayOf(PropTypes.string)
     };
     static defaultProps = {
@@ -126,7 +139,6 @@ class TimeManager extends React.Component {
         }
         TimeManager.defaultState.animationInterval = props.defaultAnimationInterval;
         TimeManager.defaultState.timelineMode = props.defaultTimelineMode;
-        TimeManager.defaultState.timelineDisplay = props.defaultTimelineDisplay;
         this.state = {
             ...this.state,
             ...TimeManager.defaultState

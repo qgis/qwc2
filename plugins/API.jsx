@@ -22,6 +22,9 @@ import * as themeActions from '../actions/theme';
 import * as windowsActions from '../actions/windows';
 
 
+/**
+ * Exposes an API for interacting with QWC2 to `window.qwc2`.
+ */
 class API extends React.Component {
     componentDidMount() {
         window.qwc2 = {};
@@ -44,7 +47,7 @@ class API extends React.Component {
     render() {
         return null;
     }
-    /*
+    /**
      * Convenience method for adding an external layer.
      * - resource: An external resource of the form `wms:<service_url>#<layername>` or `wmts:<capabilities_url>#<layername>`.
      * - beforeLayerName: Insert the new layer before the layer with the specified name. If `null` or the layer does not exist, the layer is inserted on top.
@@ -57,7 +60,7 @@ class API extends React.Component {
             }
         });
     };
-    /*
+    /**
      * Draw scratch geometries, and return these as GeoJSON to the calling application.
      * - geomType: `Point`, `LineString`, `Polygon`, `Circle` or `Box`.
      * - message: A descriptive string to display in the tool taskbar.
@@ -68,7 +71,7 @@ class API extends React.Component {
     drawScratch = (geomType, message, drawMultiple, callback, style = null) => {
         this.props.setCurrentTask("ScratchDrawing", null, null, {geomType, message, drawMultiple, callback, style});
     };
-    /*
+    /**
      * Return the current application state.
      */
     getState = () => {

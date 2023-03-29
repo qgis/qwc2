@@ -18,10 +18,14 @@ import Spinner from '../components/Spinner';
 import './style/Buttons.css';
 
 
+/**
+ * Map button for controling the locate (GPS) state.
+ */
 class LocateButton extends React.Component {
     static propTypes = {
         changeLocateState: PropTypes.func,
         locateState: PropTypes.string,
+        /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number
     };
     static defaultProps = {

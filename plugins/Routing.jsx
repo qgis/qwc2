@@ -34,11 +34,18 @@ import './style/Routing.css';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 
+/**
+ * Compute routes and isochrones.
+ * 
+ * Uses Valhalla as backend by default, with `routingServiceUrl` pointing to a Valhalla server.
+ */
 class Routing extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
         displaycrs: PropTypes.string,
-        enabledProviders: PropTypes.array,
+        /** List of search providers to use for routing location search. */
+        enabledProviders: PropTypes.arrayOf(PropTypes.string),
+        /** Default window geometry. */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
             initialHeight: PropTypes.number,

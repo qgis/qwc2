@@ -15,11 +15,16 @@ import LocaleUtils from '../utils/LocaleUtils';
 import './style/MapCopyright.css';
 
 
+/**
+ * Displays layer attributions in the bottom right corner of the map.
+ */
 class MapCopyright extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
         map: PropTypes.object,
+        /** Whether to prepend the layer name to the attribution string. */
         prefixCopyrightsWithLayerNames: PropTypes.bool,
+        /** Whether to only display the attribution of the theme, omitting external layers. */
         showThemeCopyrightOnly: PropTypes.bool
     };
     state = {

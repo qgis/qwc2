@@ -20,6 +20,10 @@ import ButtonBar from '../components/widgets/ButtonBar';
 import CopyButton from '../components/widgets/CopyButton';
 import './style/Measure.css';
 
+
+/**
+ * Allows measuring points/lines/areas on the map.
+ */
 class Measure extends React.Component {
     static propTypes = {
         changeMeasurementState: PropTypes.func,
@@ -27,8 +31,11 @@ class Measure extends React.Component {
         mapcrs: PropTypes.string,
         measureState: PropTypes.object,
         setSnappingConfig: PropTypes.func,
+        /** Whether to show the widget to switch between measure modes. */
         showMeasureModeSwitcher: PropTypes.bool,
+        /** Whether snapping is available when editing. */
         snapping: PropTypes.bool,
+        /** Whether snapping is enabled by default when editing. */
         snappingActive: PropTypes.bool
     };
     static defaultProps = {

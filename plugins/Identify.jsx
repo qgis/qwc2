@@ -24,26 +24,49 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/Identify.css';
 
+
+/**
+ * Displays queried feature attributes.
+ *
+ * Uses WMS GetFeatureInfo to query features and displays the result in
+ * table, as a HTML fragment or as plain text based on the supported GetFeatureInfo
+ * format.
+ *
+ * Extendable in combination with the `qwc-feature-info-service`, which provides support
+ * for customized queries and templates for the result presentation.
+ */
 class Identify extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
         addMarker: PropTypes.func,
+        /** Optional function for computing derived attributes. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. */
         attributeCalculator: PropTypes.func,
+        /** Optional function for transforming attribute values. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. */
         attributeTransform: PropTypes.func,
         changeSelectionState: PropTypes.func,
+        /** Whether to clear the identify results when exiting the identify tool. */
         clearResultsOnClose: PropTypes.bool,
         click: PropTypes.object,
         currentIdentifyTool: PropTypes.string,
         currentTask: PropTypes.string,
+        /** Optional list of custom exporters to offer along with the built-in exporters. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. */
         customExporters: PropTypes.array,
+        /** Whether to display a tree overview of results (as opposed to a flat list of results). */
         displayResultTree: PropTypes.bool,
+        /** Whether to enable the export functionality. */
         enableExport: PropTypes.bool,
+        /** Whether to assume that XML GetFeatureInfo responses specify the technical layer name in the `name` attribute, rather than the layer title. */
         featureInfoReturnsLayerName: PropTypes.bool,
         iframeDialogsInitiallyDocked: PropTypes.bool,
+        /** The initial height of the identify dialog. */
         initialHeight: PropTypes.number,
+        /** The initial width of the identify dialog. */
         initialWidth: PropTypes.number,
+        /** The initial x coordinate of the identify dialog. */
         initialX: PropTypes.number,
+        /** The initial y coordinate of the identify dialog. */
         initialY: PropTypes.number,
+        /** Whether the identify dialog should be initially docked. */
         initiallyDocked: PropTypes.bool,
         layers: PropTypes.array,
         longAttributesDisplay: PropTypes.string,
@@ -51,6 +74,7 @@ class Identify extends React.Component {
         params: PropTypes.object,
         removeLayer: PropTypes.func,
         removeMarker: PropTypes.func,
+        /** Whether to replace an attribute value containing an URL to an image with an inline image. */
         replaceImageUrls: PropTypes.bool,
         selection: PropTypes.object
     };

@@ -14,6 +14,11 @@ import Icon from '../components/Icon';
 
 import './style/MapCompare.css';
 
+/**
+ * Allows comparing the top layer with the rest of the map.
+ *
+ * Activated through a checkbox in the LayerTree.
+ */
 class MapComparePlugin extends React.Component {
     constructor(props) {
         super(props);

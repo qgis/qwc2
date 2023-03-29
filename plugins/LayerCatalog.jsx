@@ -16,12 +16,25 @@ import ResizeableWindow from '../components/ResizeableWindow';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/LayerCatalog.css';
 
+
+/**
+ * Displays a pre-configured catalog of external layers in a window.
+ *
+ * Configured through a catalog JSON containing a tree of external layer identifiers.
+ *
+ * See [https://qwc2.sourcepole.ch/assets/catalog.json](https://qwc2.sourcepole.ch/assets/catalog.json) for an example.
+ */
 class LayerCatalog extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
+        /** The URL to the catalog JSON file. */
         catalogUrl: PropTypes.string,
         setCurrentTask: PropTypes.func,
-        windowSize: PropTypes.object
+        /** The default window size.  */
+        windowSize: PropTypes.shape({
+            width: PropTypes.number,
+            height: PropTypes.number
+        })
     };
     static defaultProps = {
         windowSize: {width: 320, height: 320}

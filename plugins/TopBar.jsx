@@ -22,26 +22,40 @@ import LocaleUtils from '../utils/LocaleUtils';
 import './style/TopBar.css';
 
 
+/**
+ * Top bar, containing the logo, searchbar, task buttons and app menu.
+ */
 class TopBar extends React.Component {
     static propTypes = {
+        /** Whether opening the app menu clears the active task. */
         appMenuClearsTask: PropTypes.bool,
+        /** Whether to display the filter field in the app menu. */
         appMenuFilterField: PropTypes.bool,
+        /** The shortcut for tiggering the app menu, i.e. alt+shift+m. */
         appMenuShortcut: PropTypes.string,
+        /** Whether to open the app menu on application startup. */
         appMenuVisibleOnStartup: PropTypes.bool,
         components: PropTypes.object,
         fullscreen: PropTypes.bool,
+        /** The logo file format. */
         logoFormat: PropTypes.string,
+        /** The logo image URL if a different source than the default assets/img/logo.<ext> and assets/img/logo-mobile.<ext> is desired. */
         logoSrc: PropTypes.string,
+        /** The hyperlink to open when the logo is clicked. */
         logoUrl: PropTypes.string,
+        /** The menu items. Refer to the corresponding chapter of the viewer documentation and the sample config.json. */
         menuItems: PropTypes.array,
         mobile: PropTypes.bool,
         openExternalUrl: PropTypes.func,
         restoreDefaultTheme: PropTypes.func,
+        /** Options passed down to the search component. */
         searchOptions: PropTypes.object,
         setTopbarHeight: PropTypes.func,
         showIframeDialog: PropTypes.func,
         toggleFullscreen: PropTypes.func,
+        /** The toolbar. Refer to the corresponding chapter of the viewer documentation and the sample config.json. */
         toolbarItems: PropTypes.array,
+        /** The keyboard shortcut prefix for triggering toolbar tasks. I.e. alt+shift. The task are then triggered by <prefix>+{1,2,3,...} for the 1st, 2nd, 3rd... toolbar icon. */
         toolbarItemsShortcutPrefix: PropTypes.string
     };
     static defaultProps = {

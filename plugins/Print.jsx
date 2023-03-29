@@ -30,19 +30,32 @@ import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/Print.css';
 
+
+/**
+ * Invokes QGIS Server WMS GetPrint to print the map to PDF.
+ */
 class Print extends React.Component {
     static propTypes = {
         changeRotation: PropTypes.func,
+        /** The default print dpi.  */
         defaultDpi: PropTypes.number,
+        /** The factor to apply to the map scale to determine the initial print map scale.  */
         defaultScaleFactor: PropTypes.number,
+        /** Whether to display the map rotation control. */
         displayRotation: PropTypes.bool,
+        /** Whether the grid is enabled by default. */
         gridInitiallyEnabled: PropTypes.bool,
+        /** Whether to hide form fields which contain autopopulated values (i.e. search result label). */
         hideAutopopulatedFields: PropTypes.bool,
+        /** Whether to display the print output in an inline dialog instead triggering a download. */
         inlinePrintOutput: PropTypes.bool,
         layers: PropTypes.array,
         map: PropTypes.object,
-        printExternalLayers: PropTypes.bool, // Caution: requires explicit server-side support!
+        /** Whether to print external layers. Requires QGIS Server 3.x! */
+        printExternalLayers: PropTypes.bool,
+        /** Scale factor to apply to line widths, font sizes, ... of redlining drawings passed to GetPrint.  */
         scaleFactor: PropTypes.number,
+        /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         theme: PropTypes.object
     };

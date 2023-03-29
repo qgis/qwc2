@@ -28,9 +28,13 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/Redlining.css';
 
 
+/**
+ * Allows drawing figures and text labels on the map.
+ */
 class Redlining extends React.Component {
     static propTypes = {
         addLayer: PropTypes.func,
+        /** Whether to allow labeling geometric figures. */
         allowGeometryLabels: PropTypes.bool,
         changeRedliningState: PropTypes.func,
         layers: PropTypes.array,
@@ -40,7 +44,9 @@ class Redlining extends React.Component {
         redlining: PropTypes.object,
         setCurrentTask: PropTypes.func,
         setSnappingConfig: PropTypes.func,
+        /** Whether snapping is available when editing. */
         snapping: PropTypes.bool,
+        /** Whether snapping is enabled by default when editing. */
         snappingActive: PropTypes.bool
     }
     static defaultProps = {

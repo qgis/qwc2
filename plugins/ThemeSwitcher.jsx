@@ -18,14 +18,26 @@ import LocaleUtils from '../utils/LocaleUtils';
 import ThemeLayersListWindow from '../components/ThemeLayersListWindow';
 import './style/ThemeSwitcher.css';
 
+
+/**
+ * Theme switcher panel.
+ */
 class ThemeSwitcher extends React.Component {
     static propTypes = {
         activeTheme: PropTypes.object,
+        /** Whether to allow collapsing theme groups. */
         collapsibleGroups: PropTypes.bool,
         currentTask: PropTypes.object,
+        /** Whether to show the LayerTree by default after switching the theme. */
         showLayerAfterChangeTheme: PropTypes.bool,
+        /** Whether snapping is enabled by default when editing. */
         side: PropTypes.string,
-        themeLayersListWindowSize: PropTypes.object,
+        /** The default window size for the theme layers dialog. */
+        themeLayersListWindowSize: PropTypes.shape({
+            width: PropTypes.number,
+            height: PropTypes.number
+        }),
+        /** Default width as a CSS string. */
         width: PropTypes.string
     };
     static defaultProps = {

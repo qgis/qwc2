@@ -22,6 +22,20 @@ import MapUtils from '../utils/MapUtils';
 import './style/FeatureForm.css';
 
 
+/**
+ * Displays queried feature attributes in a form.
+ *
+ * The attribute form is generated from the QGIS attribute form configuration.
+ *
+ * If the dataset it editable, allows editing the attributes directly in the
+ * displayed form.
+ *
+ * This plugin queries the feature via the editing service specified by
+ * `editServiceUrl` (by default the qwc-data-service), rather than over WMS
+ * GetFeatureInfo like the `Identify` plugin.
+ * 
+ * Can be used as default identify tool by setting `"identifyTool": "FeatureForm"` in `config.json`.
+ */
 class FeatureForm extends React.Component {
     static propTypes = {
         clearEditContext: PropTypes.func,
@@ -30,9 +44,13 @@ class FeatureForm extends React.Component {
         editContext: PropTypes.object,
         enabled: PropTypes.bool,
         iface: PropTypes.object,
+        /** Initial height of the form window. */
         initialHeight: PropTypes.number,
+        /** Initial width of the form window. */
         initialWidth: PropTypes.number,
+        /** Initial x position of the form window. */
         initialX: PropTypes.number,
+        /** Initial y position of the form window. */
         initialY: PropTypes.number,
         layers: PropTypes.array,
         map: PropTypes.object,

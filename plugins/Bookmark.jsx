@@ -20,8 +20,16 @@ import './style/Bookmark.css';
 import isEmpty from 'lodash.isempty';
 
 
+/**
+ * Allows managing user bookmarks.
+ *
+ * Bookmarks are only allowed for authenticated users.
+ *
+ * Requires `permalinkServiceUrl` to point to a qwc-permalink-service.
+ */
 class Bookmark extends React.Component {
     static propTypes = {
+        /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         state: PropTypes.object,
         task: PropTypes.string

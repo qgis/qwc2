@@ -29,9 +29,19 @@ import MapUtils from '../utils/MapUtils';
 import './style/Editing.css';
 
 
+/**
+ * Allows editing geometries and attributes of datasets.
+ *
+ * The attribute form is generated from the QGIS attribute form configuration.
+ *
+ * By default, requires `editServiceUrl` to point to a qwc-data-service. See
+ * [https://github.com/qwc-services/qwc-data-service](https://github.com/qwc-services/qwc-data-service)
+ * for more information.
+ */
 class Editing extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
+        /** Whether to enable the "Clone existing geometry" functionality. */
         allowCloneGeometry: PropTypes.bool,
         changeLayerProperty: PropTypes.func,
         clearEditContext: PropTypes.func,
@@ -47,16 +57,18 @@ class Editing extends React.Component {
         setCurrentTaskBlocked: PropTypes.func,
         setEditContext: PropTypes.func,
         setSnappingConfig: PropTypes.func,
+        /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
+        /** Whether snapping is available when editing. */
         snapping: PropTypes.bool,
+        /** Whether snapping is enabled by default when editing. */
         snappingActive: PropTypes.bool,
         taskData: PropTypes.object,
         theme: PropTypes.object,
-        touchFriendly: PropTypes.bool,
+        /** The default width of the editing sidebar, as a CSS width string. */
         width: PropTypes.string
     };
     static defaultProps = {
-        touchFriendly: true,
         width: "30em",
         side: 'right',
         snapping: true,

@@ -23,21 +23,31 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import './style/BottomBar.css';
 
+
+/**
+ * Bottom bar, displaying mouse coordinate, scale, etc.
+ */
 class BottomBar extends React.Component {
     static propTypes = {
         additionalMouseCrs: PropTypes.array,
         changeMousePositionState: PropTypes.func,
         changeZoomLevel: PropTypes.func,
+        /** Whether to display the coordinates in the bottom bar. */
         displayCoordinates: PropTypes.bool,
+        /** Whether to display the scale in the bottom bar. */
         displayScales: PropTypes.bool,
         displaycrs: PropTypes.string,
         fullscreen: PropTypes.bool,
         map: PropTypes.object,
         openExternalUrl: PropTypes.func,
         showIframeDialog: PropTypes.func,
+        /** The URL of the terms label anchor. */
         termsUrl: PropTypes.string,
+        /** The target where to open the terms URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. */
         termsUrlTarget: PropTypes.string,
+        /** The URL of the viewer title label anchor. */
         viewertitleUrl: PropTypes.string,
+        /** The target where to open the viewer title URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. */
         viewertitleUrlTarget: PropTypes.string
     };
     static defaultProps = {

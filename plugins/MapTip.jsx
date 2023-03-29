@@ -17,15 +17,23 @@ import IdentifyUtils from '../utils/IdentifyUtils';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import './style/MapTip.css';
 
+/**
+ * Displays maptips by hovering over features on the map.
+ *
+ * Queries the map tips configured in the QGIS layer properites over GetFeatureInfo.
+ */
 class MapTip extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
         iframeDialogsInitiallyDocked: PropTypes.bool,
+        /** The maximum number of feature maptips to display for a single layer. */
         layerFeatureCount: PropTypes.number,
         layers: PropTypes.array,
         map: PropTypes.object,
         mapTipsEnabled: PropTypes.bool,
+        /* The maximum height of the maptip popop bubble, as a CSS string. */
         maxHeight: PropTypes.string,
+        /* The maximum height of the maptip popop bubble, as a CSS string. */
         maxWidth: PropTypes.string,
         mousepos: PropTypes.object,
         removeLayer: PropTypes.func,
