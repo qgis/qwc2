@@ -198,10 +198,12 @@ class RedliningSupport extends React.Component {
                 callback(redliningLayer, feature);
             } else {
                 OlLayerUpdated.connect((layer) => {
-                    const feat = layer.getSource().getFeatureById(featureId);
-                    if (layer.get("id") === layerId && feat) {
-                        callback(layer, feat);
-                        return true;
+                    if (layer.get("id") === layerId) {
+                        const feat = layer.getSource().getFeatureById(featureId);
+                        if (feat) {
+                            callback(layer, feat);
+                            return true;
+                        }
                     }
                     return false;
                 });
