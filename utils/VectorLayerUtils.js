@@ -233,6 +233,7 @@ const VectorLayerUtils = {
             featureObj.id = id;
             return featureObj;
         } catch (e) {
+            /* eslint-disable-next-line */
             console.warn("Failed to parse geometry: " + wkt);
             return null;
         }
@@ -263,7 +264,7 @@ const VectorLayerUtils = {
             return 'MULTILINESTRING (' + ringsWKT(gj.coordinates) + ')';
         case 'GeometryCollection':
             return 'GEOMETRYCOLLECTION (' + gj.geometries.map(
-                function (x) { return VectorLayerUtils.geoJSONGeomToWkt(x, precision); }
+                (x) => VectorLayerUtils.geoJSONGeomToWkt(x, precision)
             ).join(', ') + ')';
         default:
             throw new Error('Invalid geometry object');

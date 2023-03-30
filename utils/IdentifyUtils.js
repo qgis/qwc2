@@ -97,7 +97,7 @@ const IdentifyUtils = {
             bbox = [center[1] - dx, center[0] - dy, center[1] + dx, center[0] + dy];
         }
         if (layer.params.FILTER) {
-            options.filter = layer.params.FILTER
+            options.filter = layer.params.FILTER;
         }
         const params = {
             height: size[0],

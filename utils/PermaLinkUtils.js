@@ -15,7 +15,7 @@ import LayerUtils from '../utils/LayerUtils';
 let UrlQuery = {};
 
 export const UrlParams = {
-    updateParams(dict, forceLocationUrl=false) {
+    updateParams(dict, forceLocationUrl = false) {
         if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
             UrlQuery = Object.assign(UrlQuery, dict);
             const propNames = Object.getOwnPropertyNames(UrlQuery);
@@ -139,7 +139,7 @@ export function removeBookmark(bkey, callback) {
         axios.delete(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey)
             .then(() => {
                 callback(true);
-            }).catch(err => callback(false));
+            }).catch(() => callback(false));
     }
 }
 

@@ -39,6 +39,7 @@ const ConfigUtils = {
             if (typeof response.data === 'object') {
                 defaultConfig = {...defaultConfig, ...response.data};
             } else {
+                /* eslint-disable-next-line */
                 console.warn("Broken configuration file " + configFile + "!");
             }
             return defaultConfig;

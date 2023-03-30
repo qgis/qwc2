@@ -36,7 +36,7 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 /**
  * Compute routes and isochrones.
- * 
+ *
  * Uses Valhalla as backend by default, with `routingServiceUrl` pointing to a Valhalla server.
  */
 class Routing extends React.Component {
@@ -395,13 +395,13 @@ class Routing extends React.Component {
             }
         };
         this.props.addLayerFeatures(sellayer, [feature], true);
-    }
+    };
     clearRouteSectionHighlight = (id) => {
         if (this.state.highlightId === id) {
             this.setState({highlightId: null});
             this.props.removeLayer("routingselection");
         }
-    }
+    };
     renderIsochroneWidget = () => {
         const isoConfig = this.state.isoConfig;
         const intervalValid = !!isoConfig.intervals.match(/^\d+(,\s*\d+)*$/);

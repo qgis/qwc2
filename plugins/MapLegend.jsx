@@ -19,7 +19,7 @@ import isEmpty from 'lodash.isempty';
 
 /**
  * Displays the map legend in a floating dialog.
- * 
+ *
  * The user can toggle whether to display only layers which are enabled, visible in the current extent and/or visible at the current scale.
  */
 class MapLegend extends React.Component {

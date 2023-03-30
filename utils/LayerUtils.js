@@ -743,7 +743,7 @@ const LayerUtils = {
             OPACITIES: [],
             COLORS: []
         };
-        let counterRef = [0];
+        const counterRef = [0];
 
         for (const layer of layers) {
             if (layer.role === LayerRole.THEME && layer.params.LAYERS) {

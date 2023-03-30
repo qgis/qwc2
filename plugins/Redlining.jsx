@@ -48,22 +48,22 @@ class Redlining extends React.Component {
         snapping: PropTypes.bool,
         /** Whether snapping is enabled by default when editing. */
         snappingActive: PropTypes.bool
-    }
+    };
     static defaultProps = {
         allowGeometryLabels: true,
         snapping: true,
         snappingActive: true,
         plugins: []
-    }
+    };
     state = {
         selectText: false
-    }
+    };
     constructor(props) {
         super(props);
         this.labelInput = null;
         window.addEventListener('keydown', this.keyPressed);
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (prevProps.redlining.geomType !== this.props.redlining.geomType && this.props.redlining.geomType === 'Text' && !this.state.selectText) {
             this.setState({selectText: true});
         }
@@ -91,19 +91,19 @@ class Redlining extends React.Component {
                 this.changeRedliningLayer(layer);
             }
         }
-    }
+    };
     onHide = () => {
         this.props.changeRedliningState({action: null, geomType: null, numericInput: false});
         Mousetrap.unbind('del', this.triggerDelete);
-    }
+    };
     updateRedliningState = (diff) => {
         const newState = {...this.props.redlining, ...diff};
         this.props.changeRedliningState(newState);
-    }
+    };
     updateRedliningStyle = (diff) => {
         const newStyle = {...this.props.redlining.style, ...diff};
         this.updateRedliningState({style: newStyle});
-    }
+    };
     renderBody = () => {
         const activeButton = this.props.redlining.action === "Draw" ? this.props.redlining.geomType : this.props.redlining.action;
         let drawButtons = [
@@ -284,7 +284,7 @@ class Redlining extends React.Component {
                 ) : null}
             </div>
         );
-    }
+    };
     render() {
         return (
             <TaskBar onHide={this.onHide} onShow={this.onShow} task="Redlining">
@@ -301,19 +301,19 @@ class Redlining extends React.Component {
             el.select();
             this.setState({selectText: false});
         }
-    }
+    };
     triggerDelete = () => {
         this.updateRedliningState({action: "Delete", geomType: null});
-    }
+    };
     actionChanged = (data) => {
         if (data.action === "Draw" && data.geomType === "Text") {
             data = {...data, text: LocaleUtils.tr("redlining.text")};
         }
         this.updateRedliningState(data);
-    }
+    };
     changeRedliningLayer = (layer) => {
         this.updateRedliningState({layer: layer.id, layerTitle: layer.title});
-    }
+    };
 }
 
 export default (plugins) => {
