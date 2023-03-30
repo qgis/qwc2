@@ -691,25 +691,14 @@ const LayerUtils = {
     layerScaleInRange(layer, mapScale) {
         return (layer.minScale === undefined || mapScale >= layer.minScale) && (layer.maxScale === undefined || mapScale < layer.maxScale);
     },
-    collectPrintParams(layers, theme, printScale, printCrs, printExternalLayers) {
-        printExternalLayers = printExternalLayers && (ConfigUtils.getConfigProp("qgisServerVersion") || 3) >= 3;
-        const params = {
-            LAYERS: [],
-            OPACITIES: [],
-            COLORS: []
-        };
-        let counter = 0;
-
-        for (const layer of layers) {
-            if (layer.role === LayerRole.THEME && layer.params.LAYERS) {
-                params.LAYERS.push(layer.params.LAYERS);
-                params.OPACITIES.push(layer.params.OPACITIES);
-                params.COLORS.push(layer.params.LAYERS.split(",").map(() => "").join(","));
-            } else if (printExternalLayers && layer.role === LayerRole.USERLAYER && layer.visibility && layer.type === "wms") {
+    addExternalLayerPrintParams(layer, params, printCrs, counterRef) {
+        const qgisServerVersion = (ConfigUtils.getConfigProp("qgisServerVersion") || 3);
+        if (qgisServerVersion >= 3) {
+            if (layer.type === "wms") {
                 const names = layer.params.LAYERS.split(",");
                 const opacities = layer.params.OPACITIES.split(",");
                 for (let idx = 0; idx < names.length; ++idx) {
-                    const identifier = String.fromCharCode(65 + (counter++));
+                    const identifier = String.fromCharCode(65 + (counterRef[0]++));
                     params.LAYERS.push("EXTERNAL_WMS:" + identifier);
                     params.OPACITIES.push(opacities[idx]);
                     params.COLORS.push("");
@@ -727,6 +716,32 @@ const LayerUtils = {
                         params[identifier + ":" + key] = value;
                     });
                 }
+            }
+        } else if (qgisServerVersion === 2) {
+            if (layer.type === "wms") {
+                // Handled by qwc-print-service
+                params.LAYERS.push(`wms:${layer.url}#${layer.params.LAYERS}`);
+            } else if (layer.type === "wfs") {
+                // Handled by qwc-print-service
+                params.LAYERS.push(`wfs:${layer.url}#${layer.name}`);
+            }
+        }
+    },
+    collectPrintParams(layers, theme, printScale, printCrs, printExternalLayers) {
+        const params = {
+            LAYERS: [],
+            OPACITIES: [],
+            COLORS: []
+        };
+        let counterRef = [0];
+
+        for (const layer of layers) {
+            if (layer.role === LayerRole.THEME && layer.params.LAYERS) {
+                params.LAYERS.push(layer.params.LAYERS);
+                params.OPACITIES.push(layer.params.OPACITIES);
+                params.COLORS.push(layer.params.LAYERS.split(",").map(() => "").join(","));
+            } else if (printExternalLayers && layer.role === LayerRole.USERLAYER) {
+                LayerUtils.addExternalLayerPrintParams(layer, params, printCrs, counterRef);
             }
         }
 
@@ -756,28 +771,8 @@ const LayerUtils = {
                 // Inject client-side wms as external layer for print
                 const items = backgroundLayer.type === "group" ? backgroundLayer.items : [backgroundLayer];
                 items.slice(0).reverse().forEach(layer => {
-                    if (layer.type === "wms" && LayerUtils.layerScaleInRange(layer, printScale)) {
-                        const names = layer.params.LAYERS.split(",");
-                        const opacities = layer.params.OPACITIES.split(",");
-                        for (let idx = 0; idx < names.length; ++idx) {
-                            const identifier = String.fromCharCode(65 + (counter++));
-                            params.LAYERS.push("EXTERNAL_WMS:" + identifier);
-                            params.OPACITIES.push(opacities[idx]);
-                            params.COLORS.push("");
-                            params[identifier + ":url"] = layer.url;
-                            params[identifier + ":layers"] = names[idx];
-                            params[identifier + ":format"] = "image/png";
-                            params[identifier + ":crs"] = printCrs;
-                            params[identifier + ":styles"] = "";
-                            params[identifier + ":dpiMode"] = "7";
-                            params[identifier + ":contextualWMSLegend"] = "0";
-                            if (layer.url.includes("?")) {
-                                params[identifier + ":IgnoreGetMapUrl"] = "1";
-                            }
-                            Object.entries(layer.extwmsparams || {}).forEach(([key, value]) => {
-                                params[identifier + ":" + key] = value;
-                            });
-                        }
+                    if (LayerUtils.layerScaleInRange(layer, printScale)) {
+                        LayerUtils.addExternalLayerPrintParams(layer, params, printCrs, counterRef);
                     }
                 });
             }
