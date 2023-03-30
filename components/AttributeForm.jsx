@@ -335,7 +335,7 @@ class AttributeForm extends React.Component {
         feature = {
             ...feature,
             type: "Feature",
-            properties: feature.properties || {},
+            properties: {...(feature.properties || {})},
             crs: {
                 type: "name",
                 properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.projection)}
