@@ -38,7 +38,7 @@ class RasterExport extends React.Component {
         /** Whitelist of allowed export format mimetypes. If empty, supported formats are listed. */
         allowedFormats: PropTypes.arrayOf(PropTypes.string),
         /** List of scales at which to export the map. */
-        allowedScales: PropTypes.array(PropTypes.number),
+        allowedScales: PropTypes.arrayOf(PropTypes.number),
         /** The factor to apply to the map scale to determine the initial export map scale.  */
         defaultScaleFactor: PropTypes.number,
         /** List of dpis at which to export the map. If empty, the default server dpi is used.  */
