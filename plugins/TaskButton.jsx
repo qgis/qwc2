@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import classnames from 'classnames';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
+import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from "../utils/LocaleUtils";
 import './style/BackgroundSwitcher.css';
 
@@ -23,7 +24,6 @@ class TaskButton extends React.Component {
         currentTask: PropTypes.string,
         /** The icon name.  */
         icon: PropTypes.string,
-        mapClickAction: PropTypes.string,
         /** The task mode. */
         mode: PropTypes.string,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
@@ -49,7 +49,8 @@ class TaskButton extends React.Component {
         );
     }
     buttonClicked = () => {
-        this.props.setCurrentTask(this.props.currentTask === this.props.task ? null : this.props.task, this.props.mode, this.props.mapClickAction);
+        const mapClickAction = ConfigUtils.getPluginConfig(this.props.task).mapClickAction;
+        this.props.setCurrentTask(this.props.currentTask === this.props.task ? null : this.props.task, this.props.mode, mapClickAction);
     };
 }
 
