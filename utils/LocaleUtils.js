@@ -13,7 +13,7 @@ import ConfigUtils from './ConfigUtils';
 const LocaleUtils = {
     tr(key) {
         const state = StandardStore.get().getState();
-        const text = key in state.locale.messages ? state.locale.messages[key] : key;
+        const text = key in state.locale.messages ? (state.locale.messages[key] ?? key) : key;
 
         const args = Array.prototype.slice.call(arguments, 1);
         if (args.length > 0) {
