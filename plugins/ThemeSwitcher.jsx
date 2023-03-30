@@ -30,7 +30,7 @@ class ThemeSwitcher extends React.Component {
         currentTask: PropTypes.object,
         /** Whether to show the LayerTree by default after switching the theme. */
         showLayerAfterChangeTheme: PropTypes.bool,
-        /** Whether snapping is enabled by default when editing. */
+        /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         /** The default window size for the theme layers dialog. */
         themeLayersListWindowSize: PropTypes.shape({

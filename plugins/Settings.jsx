@@ -34,7 +34,7 @@ class Settings extends React.Component {
         /** List of available languages. Value is the lang code, title/titleMsgId the display name. */
         languages: PropTypes.array,
         setColorScheme: PropTypes.func,
-        /** Whether snapping is enabled by default when editing. */
+        /** The side of the application on which to display the sidebar. */
         side: PropTypes.string
     };
     static defaultProps = {

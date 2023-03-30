@@ -35,7 +35,7 @@ class Share extends React.Component {
         showQRCode: PropTypes.bool,
         /** Show the social buttons. Either `true` or `false`to enable/disable all, or an array of specific buttons to display (possible choices: `email`, `facebook`, `twitter`, `linkedin`, `whatsapp`). */
         showSocials: PropTypes.oneOfType([PropTypes.bool, PropTypes.arrayOf(PropTypes.string)]),
-        /** Whether snapping is enabled by default when editing. */
+        /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         state: PropTypes.object
     };

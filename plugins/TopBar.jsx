@@ -48,7 +48,7 @@ class TopBar extends React.Component {
         mobile: PropTypes.bool,
         openExternalUrl: PropTypes.func,
         restoreDefaultTheme: PropTypes.func,
-        /** Options passed down to the search component. */
+        /** Options passed down to the search component. See the searchOption propType of the used search component. */
         searchOptions: PropTypes.object,
         setTopbarHeight: PropTypes.func,
         showIframeDialog: PropTypes.func,
