@@ -360,7 +360,7 @@ class AttributeForm extends React.Component {
                 const parts = name.split("__");
                 let value = element.type === "radio" || element.type === "checkbox" ? element.checked : element.value;
                 const nullElements = ["date", "number", "radio"];
-                const nullFieldTypes = ["date", "number", "list"];
+                const nullFieldTypes = ["date", "number"];
                 if (parts.length >= 3) {
                     // Relation value
                     // Usually <table>__<field>__<index>, but <field> might also contain __ (i.e. upload__user)
@@ -395,7 +395,8 @@ class AttributeForm extends React.Component {
                         relationValues[datasetname].features[index].properties[field] = "";
                     }
                 } else {
-                    if ((element instanceof RadioNodeList || nullElements.includes(element.type) || nullFieldTypes.includes(fieldConfig.type)) && element.value === "") {
+                    const dataType = fieldConfig.data_type ?? fieldConfig.type;
+                    if ((element instanceof RadioNodeList || nullElements.includes(element.type) || nullFieldTypes.includes(dataType)) && element.value === "") {
                         // Set empty value to null instead of empty string
                         value = null;
                     }
