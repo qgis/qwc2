@@ -127,6 +127,10 @@ const ConfigUtils = {
     havePlugin(name) {
         const state = StandardStore.get().getState();
         return defaultConfig.plugins[state.browser.mobile ? "mobile" : "desktop"].find(entry => entry.name === name);
+    },
+    getPluginConfig(name) {
+        const state = StandardStore.get().getState();
+        return defaultConfig.plugins[state.browser.mobile ? "mobile" : "desktop"].find(entry => entry.name === name) || {};
     }
 };
 
