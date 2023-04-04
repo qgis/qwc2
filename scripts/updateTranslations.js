@@ -67,7 +67,7 @@ const listDir = (dir, pattern) => {
 
 const updateTsConfig = (topdir, tsconfig, collectedMsgIds=null) => {
     const files = listDir(topdir, new RegExp("^.*\.jsx?$"));
-    const trRegEx = /LocaleUtils\.tr(?:msg)?\((['\"])([A-Za-z0-9\._]+)\1\)/g;
+    const trRegEx = /LocaleUtils\.tr(?:msg)?\((['\"])([A-Za-z0-9\._]+)\1/g;
     const msgIds =  new Set();
     for (const file of files) {
         const data = fs.readFileSync(file).toString();
