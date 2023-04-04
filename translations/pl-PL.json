@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "",
-      "menulabel": "Zawartość mapy i narzędzia",
       "items": {
+        "": "",
         "AttributeTable": "",
         "DxfExport": "Eksport DXF",
         "Editing": "Edycja",
@@ -29,7 +29,8 @@
         "Bookmark": "",
         "TimeManager": "",
         "Settings": ""
-      }
+      },
+      "menulabel": "Zawartość mapy i narzędzia"
     },
     "attribtable": {
       "addfeature": "",
@@ -241,6 +242,7 @@
       "windowtitle": ""
     },
     "print": {
+      "atlasfeature": "",
       "grid": "Siatka",
       "layout": "Layout",
       "legend": "",
@@ -249,6 +251,7 @@
       "nolayouts": "Wybrany motyw nie umożliwia drukowania",
       "notheme": "Brak wybranego motywu",
       "output": "Drukuj output",
+      "pickatlasfeature": "",
       "resolution": "Rozdzielczość",
       "rotation": "Obrót",
       "scale": "Skala",

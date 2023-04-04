@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "Filtra menù...",
-      "menulabel": "Mappa e strumenti",
       "items": {
+        "": "",
         "AttributeTable": "Tabella attributi",
         "DxfExport": "Esporta su DXF",
         "Editing": "Strumenti di modifica",
@@ -29,7 +29,8 @@
         "Bookmark": "Segnalibri",
         "TimeManager": "Linea temporale",
         "Settings": "Impostazioni"
-      }
+      },
+      "menulabel": "Mappa e strumenti"
     },
     "attribtable": {
       "addfeature": "Aggiungi oggetto",
@@ -241,6 +242,7 @@
       "windowtitle": "Formulario numerico"
     },
     "print": {
+      "atlasfeature": "Oggetto atlante",
       "grid": "Griglia",
       "layout": "Layout",
       "legend": "Legenda",
@@ -249,6 +251,7 @@
       "nolayouts": "Nessun layout di stampa",
       "notheme": "Nessun tema selezionato",
       "output": "Stampa",
+      "pickatlasfeature": "Seleziona nel livello {1}...",
       "resolution": "Risoluzione",
       "rotation": "Rotazione",
       "scale": "Scala",

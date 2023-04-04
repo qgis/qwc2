@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "",
-      "menulabel": "Hărți & Unelte",
       "items": {
+        "": "",
         "AttributeTable": "Tabela de atribute",
         "DxfExport": "Export DXF",
         "Editing": "Editare",
@@ -29,7 +29,8 @@
         "Bookmark": "Marcaj",
         "TimeManager": "",
         "Settings": ""
-      }
+      },
+      "menulabel": "Hărți & Unelte"
     },
     "attribtable": {
       "addfeature": "",
@@ -241,6 +242,7 @@
       "windowtitle": ""
     },
     "print": {
+      "atlasfeature": "",
       "grid": "Grid",
       "layout": "Șablon",
       "legend": "Legendă",
@@ -249,6 +251,7 @@
       "nolayouts": "Această temă nu are șabloane de print",
       "notheme": "Nu avem selectată tema",
       "output": "Rezultat tipărire",
+      "pickatlasfeature": "",
       "resolution": "Rezoluție",
       "rotation": "Rotație",
       "scale": "Scară",

@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "",
-      "menulabel": "Kartat & Työkalut",
       "items": {
+        "": "",
         "AttributeTable": "",
         "DxfExport": "DXF vienti",
         "Editing": "Editointi",
@@ -29,7 +29,8 @@
         "Bookmark": "Kirjanmerkit",
         "TimeManager": "",
         "Settings": ""
-      }
+      },
+      "menulabel": "Kartat & Työkalut"
     },
     "attribtable": {
       "addfeature": "",
@@ -241,6 +242,7 @@
       "windowtitle": ""
     },
     "print": {
+      "atlasfeature": "",
       "grid": "Ristikko",
       "layout": "Layout",
       "legend": "Selite",
@@ -249,6 +251,7 @@
       "nolayouts": "Valittu teema ei tue tulostamista",
       "notheme": "Teemaa ei ole valittu",
       "output": "Tulosta tuotos",
+      "pickatlasfeature": "",
       "resolution": "Resoluutio",
       "rotation": "Rotaatio",
       "scale": "Mittakaava",

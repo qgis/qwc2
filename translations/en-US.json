@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "Filter menu...",
-      "menulabel": "Map & Tools",
       "items": {
+        "": "",
         "AttributeTable": "Attribute Table",
         "DxfExport": "DXF Export",
         "Editing": "Editing",
@@ -29,7 +29,8 @@
         "Bookmark": "Bookmarks",
         "TimeManager": "Time Manager",
         "Settings": "Settings"
-      }
+      },
+      "menulabel": "Map & Tools"
     },
     "attribtable": {
       "addfeature": "Add feature",
@@ -241,6 +242,7 @@
       "windowtitle": "Numeric input"
     },
     "print": {
+      "atlasfeature": "Atlas feature",
       "grid": "Grid",
       "layout": "Layout",
       "legend": "Legend",
@@ -249,6 +251,7 @@
       "nolayouts": "The selected theme does not support printing",
       "notheme": "No theme selected",
       "output": "Print output",
+      "pickatlasfeature": "Pick in layer {0}...",
       "resolution": "Resolution",
       "rotation": "Rotation",
       "scale": "Scale",

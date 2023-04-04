@@ -25,6 +25,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     padding-right: 0.25em;
+    white-space: nowrap;
 }
 
 #Print table.options-table td:nth-child(2) {

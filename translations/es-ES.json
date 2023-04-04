@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "Menú de filtros...",
-      "menulabel": "Mapa & Herramientas",
       "items": {
+        "": "",
         "AttributeTable": "Tabla de Atributos",
         "DxfExport": "Exportar DXF",
         "Editing": "Editando",
@@ -29,7 +29,8 @@
         "Bookmark": "Marcadores",
         "TimeManager": "Gestor de Tiempo",
         "Settings": "Opciones"
-      }
+      },
+      "menulabel": "Mapa & Herramientas"
     },
     "attribtable": {
       "addfeature": "Añadir elemento",
@@ -241,6 +242,7 @@
       "windowtitle": ""
     },
     "print": {
+      "atlasfeature": "",
       "grid": "Grilla:",
       "layout": "Diseño:",
       "legend": "Leyenda",
@@ -249,6 +251,7 @@
       "nolayouts": "El tema seleccionado no admite su impresión",
       "notheme": "No hay tema seleccionado",
       "output": "Salida de impresión",
+      "pickatlasfeature": "",
       "resolution": "Resolución",
       "rotation": "Rotación",
       "scale": "Escala:",

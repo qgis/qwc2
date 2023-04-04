@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "",
-      "menulabel": "Eszközök",
       "items": {
+        "": "",
         "AttributeTable": "",
         "DxfExport": "DXF Exportálás",
         "Editing": "Szerkesztés",
@@ -29,7 +29,8 @@
         "Bookmark": "",
         "TimeManager": "",
         "Settings": ""
-      }
+      },
+      "menulabel": "Eszközök"
     },
     "attribtable": {
       "addfeature": "",
@@ -241,6 +242,7 @@
       "windowtitle": ""
     },
     "print": {
+      "atlasfeature": "",
       "grid": "Rács",
       "layout": "Elrendezés",
       "legend": "",
@@ -249,6 +251,7 @@
       "nolayouts": "A kiválasztott térkép nem támogatja a nyomtatást",
       "notheme": "Nincs térkép kiválasztva",
       "output": "",
+      "pickatlasfeature": "",
       "resolution": "Felbontás",
       "rotation": "Forgatás",
       "scale": "Méretarány",

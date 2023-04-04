@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "Menú de filtres...",
-      "menulabel": "Mapa & Eines",
       "items": {
+        "": "",
         "AttributeTable": "Taula d'atributs",
         "DxfExport": "Exportar DXF",
         "Editing": "Editant",
@@ -29,7 +29,8 @@
         "Bookmark": "Marcador",
         "TimeManager": "Gestor de Temps",
         "Settings": "Opcions"
-      }
+      },
+      "menulabel": "Mapa & Eines"
     },
     "attribtable": {
       "addfeature": "Afegir element",
@@ -241,6 +242,7 @@
       "windowtitle": ""
     },
     "print": {
+      "atlasfeature": "",
       "grid": "Graella",
       "layout": "Diseny",
       "legend": "Llegenda",
@@ -249,6 +251,7 @@
       "nolayouts": "El tema seleccionat no admet la impresió",
       "notheme": "No hi ha tema seleccionat",
       "output": "Sortida d'impressió",
+      "pickatlasfeature": "",
       "resolution": "Resolució",
       "rotation": "Rotació",
       "scale": "Escala",

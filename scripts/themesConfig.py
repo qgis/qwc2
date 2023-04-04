@@ -353,6 +353,16 @@ def getTheme(config, configItem, result, resultItem):
 
                     if labels:
                         printTemplate["labels"] = labels
+                    if composerTemplate.getAttribute('atlasEnabled') == '1':
+                        atlasLayer = composerTemplate.getAttribute('atlasCoverageLayer')
+                        try:
+                            layers = capabilities.getElementsByTagName("Layer")
+                            pk = getChildElementValue(list(filter(lambda l: getChildElementValue(l, "Name") == atlasLayer, layers))[0], "PrimaryKey/PrimaryKeyAttribute")
+                            printTemplate["atlasCoverageLayer"] = atlasLayer
+                            printTemplate["atlas_pk"] = pk
+                        except:
+                            print("Failed to determine primary key for atlas layer " + atlasLayer)
+
                     printTemplates.append(printTemplate)
 
         # drawing order

@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "",
-      "menulabel": "Karta & Verktyg",
       "items": {
+        "": "",
         "AttributeTable": "",
         "DxfExport": "DXF Export",
         "Editing": "Redigera",
@@ -29,7 +29,8 @@
         "Bookmark": "",
         "TimeManager": "",
         "Settings": ""
-      }
+      },
+      "menulabel": "Karta & Verktyg"
     },
     "attribtable": {
       "addfeature": "",
@@ -241,6 +242,7 @@
       "windowtitle": ""
     },
     "print": {
+      "atlasfeature": "",
       "grid": "Rutnät",
       "layout": "Layout:",
       "legend": "",
@@ -249,6 +251,7 @@
       "nolayouts": "Valt tema stöder inte utskrift",
       "notheme": "Inget tema valt",
       "output": "Utskrift",
+      "pickatlasfeature": "",
       "resolution": "Upplösning",
       "rotation": "Rotation",
       "scale": "Skala",

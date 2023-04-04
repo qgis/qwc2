@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "",
-      "menulabel": "Kart & Verktøy",
       "items": {
+        "": "",
         "AttributeTable": "",
         "DxfExport": "Eksporter DXF",
         "Editing": "Rediger",
@@ -29,7 +29,8 @@
         "Bookmark": "",
         "TimeManager": "",
         "Settings": ""
-      }
+      },
+      "menulabel": "Kart & Verktøy"
     },
     "attribtable": {
       "addfeature": "",
@@ -241,6 +242,7 @@
       "windowtitle": ""
     },
     "print": {
+      "atlasfeature": "",
       "grid": "Rutenett",
       "layout": "Layout",
       "legend": "",
@@ -249,6 +251,7 @@
       "nolayouts": "Valgt tema støtter ikke utskrift",
       "notheme": "Ingen tema valgt",
       "output": "Utskrift",
+      "pickatlasfeature": "",
       "resolution": "Oppløsning",
       "rotation": "Rotasjon",
       "scale": "Skala",

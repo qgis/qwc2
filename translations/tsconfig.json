@@ -47,6 +47,7 @@
   ],
   "strings": [
     "appmenu.filter",
+    "appmenu.items.",
     "appmenu.menulabel",
     "attribtable.addfeature",
     "attribtable.commit",
@@ -205,6 +206,7 @@
     "numericinput.side",
     "numericinput.width",
     "numericinput.windowtitle",
+    "print.atlasfeature",
     "print.grid",
     "print.layout",
     "print.legend",
@@ -213,6 +215,7 @@
     "print.nolayouts",
     "print.notheme",
     "print.output",
+    "print.pickatlasfeature",
     "print.resolution",
     "print.rotation",
     "print.scale",

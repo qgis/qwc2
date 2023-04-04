@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "Filtrer le menu...",
-      "menulabel": "Cartes et outils",
       "items": {
+        "": "",
         "AttributeTable": "Table d'attributs",
         "DxfExport": "Export DXF",
         "Editing": "Editer",
@@ -29,7 +29,8 @@
         "Bookmark": "Marque-pages",
         "TimeManager": "Ligne du temps",
         "Settings": "Paramètres"
-      }
+      },
+      "menulabel": "Cartes et outils"
     },
     "attribtable": {
       "addfeature": "Ajouter un objet",
@@ -241,6 +242,7 @@
       "windowtitle": "Entrée numérique"
     },
     "print": {
+      "atlasfeature": "Objet atlas",
       "grid": "Grille",
       "layout": "Format",
       "legend": "Légende",
@@ -249,6 +251,7 @@
       "nolayouts": "Il n'y a pas de mise en page disponible pour le thème choisi.",
       "notheme": "Pas de thème sélectionné",
       "output": "Impression",
+      "pickatlasfeature": "Choisir dans la couche {0}",
       "resolution": "Résolution",
       "rotation": "Rotation",
       "scale": "Echelle",

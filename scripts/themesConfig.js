@@ -260,6 +260,12 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
     titleNameMap[layer.TreeName] = layer.Name;
 }
 
+function flatLayers(layer) {
+    const result = [layer];
+    (layer.Layer || []).forEach(sublayer => result.push(sublayer));
+    return result;
+}
+
 // parse GetCapabilities for theme
 function getTheme(config, configItem, result, resultItem, proxy) {
     const parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
@@ -367,6 +373,17 @@ function getTheme(config, configItem, result, resultItem, proxy) {
                             printTemplate.labels = toArray(composerTemplate.ComposerLabel).map((entry) => {
                                 return entry.$.name;
                             }).filter(label => !(configItem.printLabelBlacklist || []).includes(label));
+                        }
+                        if (composerTemplate.$.atlasEnabled === '1') {
+                            const atlasLayer = composerTemplate.$.atlasCoverageLayer;
+                            try {
+                                const layers = flatLayers(capabilities.Capability.Layer);
+                                const pk = layers.find(l => l.Name === atlasLayer).PrimaryKey.PrimaryKeyAttribute;
+                                printTemplate.atlasCoverageLayer = atlasLayer;
+                                printTemplate.atlas_pk = pk;
+                            } catch (e) {
+                                console.warn("Failed to determine primary key for atlas layer " + atlasLayer);
+                            }
                         }
                         printTemplates.push(printTemplate);
                     }

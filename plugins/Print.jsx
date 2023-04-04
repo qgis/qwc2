@@ -13,10 +13,11 @@ import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import FileSaver from 'file-saver';
 import formDataEntries from 'formdata-json';
-import {LayerRole} from '../actions/layers';
-import {changeRotation} from '../actions/map';
+import {LayerRole, addLayerFeatures, clearLayer} from '../actions/layers';
+import {changeRotation, panTo} from '../actions/map';
 import Icon from '../components/Icon';
 import InputContainer from '../components/InputContainer';
+import PickFeature from '../components/PickFeature';
 import PrintFrame from '../components/PrintFrame';
 import ResizeableWindow from '../components/ResizeableWindow';
 import SideBar from '../components/SideBar';
@@ -36,7 +37,10 @@ import './style/Print.css';
  */
 class Print extends React.Component {
     static propTypes = {
+        active: PropTypes.bool,
+        addLayerFeatures: PropTypes.func,
         changeRotation: PropTypes.func,
+        clearLayer: PropTypes.func,
         /** The default print dpi.  */
         defaultDpi: PropTypes.number,
         /** The factor to apply to the map scale to determine the initial print map scale.  */
@@ -51,6 +55,7 @@ class Print extends React.Component {
         inlinePrintOutput: PropTypes.bool,
         layers: PropTypes.array,
         map: PropTypes.object,
+        panTo: PropTypes.func,
         /** Whether to print external layers. Requires QGIS Server 3.x! */
         printExternalLayers: PropTypes.bool,
         /** Scale factor to apply to line widths, font sizes, ... of redlining drawings passed to GetPrint.  */
@@ -80,21 +85,42 @@ class Print extends React.Component {
         minimized: false,
         printOutputVisible: false,
         outputLoaded: false,
-        printing: false
+        printing: false,
+        atlasFeature: null
     };
     constructor(props) {
         super(props);
         this.printForm = null;
         this.state.grid = props.gridInitiallyEnabled;
+        this.fixedMapCenter = null;
     }
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (prevProps.theme !== this.props.theme) {
             if (this.props.theme && !isEmpty(this.props.theme.print)) {
                 const layout = this.props.theme.print.find(l => l.default) || this.props.theme.print[0];
-                this.setState({layout: layout});
+                this.setState({layout: layout, atlasFeature: null});
             } else {
-                this.setState({layout: null});
+                this.setState({layout: null, atlasFeature: null});
             }
+            this.fixedMapCenter = null;
+        }
+        if (this.state.atlasFeature !== prevState.atlasFeature) {
+            if (this.state.atlasFeature) {
+                const layer = {
+                    id: "print-pick-selection",
+                    role: LayerRole.SELECTION,
+                    skipPrint: true
+                };
+                this.props.addLayerFeatures(layer, [this.state.atlasFeature], true);
+            } else {
+                this.props.clearLayer("print-pick-selection");
+            }
+        }
+        if (this.state.atlasFeature && (
+            Math.abs(this.props.map.center[0] - this.fixedMapCenter[0]) > 1E-6 ||
+            Math.abs(this.props.map.center[1] - this.fixedMapCenter[1]) > 1E-6
+        )) {
+            this.props.panTo(this.fixedMapCenter, this.props.map.projection);
         }
     }
     onShow = () => {
@@ -211,6 +237,21 @@ class Print extends React.Component {
                                 </select>
                             </td>
                         </tr>
+                        {this.state.layout.atlasCoverageLayer ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("print.atlasfeature")}</td>
+                                <td>
+                                    {this.state.atlasFeature ? (
+                                        <InputContainer>
+                                            <input defaultValue={this.state.atlasFeature.properties[this.state.layout.atlas_pk]} name="ATLAS_PK" role="input" type="text" />
+                                            <Icon icon="remove" onClick={this.setAtlasFeature(null, null)} role="suffix" />
+                                        </InputContainer>
+                                    ) : (
+                                        <input disabled placeholder={LocaleUtils.tr("print.pickatlasfeature", this.state.layout.atlasCoverageLayer)} type="text" />
+                                    )}
+                                </td>
+                            </tr>
+                        ) : null}
                         <tr>
                             <td>{LocaleUtils.tr("print.scale")}</td>
                             <td>
@@ -364,7 +405,7 @@ class Print extends React.Component {
                 width: this.state.scale * this.state.layout.map.width / 1000,
                 height: this.state.scale * this.state.layout.map.height / 1000
             };
-            printFrame = (<PrintFrame fixedFrame={frame} key="PrintFrame" map={this.props.map} />);
+            printFrame = (<PrintFrame fixedFrame={frame} key="PrintFrame" map={this.props.map} modal={!!this.state.atlasFeature} />);
         }
         return printFrame;
     };
@@ -401,12 +442,29 @@ class Print extends React.Component {
                     })}
                 </SideBar>
             ),
-            this.renderPrintOutputWindow()
+            this.renderPrintOutputWindow(),
+            this.state.layout && this.state.layout.atlasCoverageLayer ? (
+                <PickFeature
+                    featurePicked={this.setAtlasFeature}
+                    key="FeaturePicker"
+                    layer={this.state.layout.atlasCoverageLayer}
+                />
+            ) : null
         ];
+    }
+    setAtlasFeature = (layer, feature) =>{
+        this.setState({atlasFeature: feature});
+        if (feature) {
+            this.fixedMapCenter = VectorLayerUtils.getFeatureCenter(feature);
+            this.props.panTo(this.fixedMapCenter, this.props.map.projection);
+        } else {
+            this.fixedMapCenter = null;
+        }
     }
     changeLayout = (ev) => {
         const layout = this.props.theme.print.find(item => item.name === ev.target.value);
-        this.setState({layout: layout});
+        this.setState({layout: layout, atlasFeature: null});
+        this.fixedMapCenter = null;
     };
     changeScale = (ev) => {
         this.setState({scale: ev.target.value});
@@ -475,11 +533,15 @@ class Print extends React.Component {
 }
 
 const selector = (state) => ({
+    active: state.task.id === 'Print',
     theme: state.theme.current,
     map: state.map,
     layers: state.layers.flat
 });
 
 export default connect(selector, {
-    changeRotation: changeRotation
+    addLayerFeatures: addLayerFeatures,
+    clearLayer: clearLayer,
+    changeRotation: changeRotation,
+    panTo: panTo
 })(Print);

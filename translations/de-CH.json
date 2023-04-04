@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "Menü filtern...",
-      "menulabel": "Karte & Werkzeuge",
       "items": {
+        "": "",
         "AttributeTable": "Attributtabelle",
         "DxfExport": "DXF-Export",
         "Editing": "Editieren",
@@ -29,7 +29,8 @@
         "Bookmark": "Lesezeichen",
         "TimeManager": "Zeitleiste",
         "Settings": "Einstellungen"
-      }
+      },
+      "menulabel": "Karte & Werkzeuge"
     },
     "attribtable": {
       "addfeature": "Objekt hinzufügen",
@@ -241,6 +242,7 @@
       "windowtitle": "Numerische Eingabe"
     },
     "print": {
+      "atlasfeature": "Atlasobjekt",
       "grid": "Gitter",
       "layout": "Format",
       "legend": "Legende",
@@ -249,6 +251,7 @@
       "nolayouts": "Das gewählte Thema stellt keine Druck-Vorlagen zur Verfügung.",
       "notheme": "Kein Thema selektiert",
       "output": "Druckausgabe",
+      "pickatlasfeature": "In Ebene {0} auswählen...",
       "resolution": "Auflösung",
       "rotation": "Rotation",
       "scale": "Massstab",
