@@ -36,7 +36,7 @@ const VectorLayerUtils = {
         }
 
         for (const layer of layers.slice(0).reverse()) {
-            if (layer.type !== 'vector' || (layer.features || []).length === 0 || layer.visibility === false) {
+            if (layer.type !== 'vector' || (layer.features || []).length === 0 || layer.visibility === false || layer.skipPrint === true) {
                 continue;
             }
             for (const feature of layer.features) {
