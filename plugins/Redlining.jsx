@@ -198,12 +198,13 @@ class Redlining extends React.Component {
             FileSaver.saveAs(new Blob([geojson], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
         } else if (type === "kml") {
             const getNativeLayer = MapUtils.getHook(MapUtils.GET_NATIVE_LAYER);
-            const layer = getNativeLayer(this.props.redlining.layer);
-            if (!layer) {
+            const layer = this.props.layers.find(l => l.id === this.props.redlining.layer);
+            const nativeLayer = getNativeLayer(this.props.redlining.layer);
+            if (!nativeLayer) {
                 return;
             }
             const kmlFormat = new ol.format.KML();
-            const features = layer.getSource().getFeatures().map(feature => {
+            const features = nativeLayer.getSource().getFeatures().map(feature => {
                 // Circle is not supported by kml format
                 if (feature.getGeometry() instanceof ol.geom.Circle) {
                     feature = feature.clone();
