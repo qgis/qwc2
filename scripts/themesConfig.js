@@ -13,7 +13,7 @@ const fs = require('fs');
 const path = require('path');
 const objectPath = require('object-path');
 const isEmpty = require('lodash.isempty');
-const uuid = require('uuid');
+const uuidv1 = require('uuid').v1;
 const os = require('os');
 const dns = require('dns');
 
