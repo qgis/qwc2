@@ -95,7 +95,7 @@ export default {
                     serverType: options.serverType,
                     tileGrid: tileGrid,
                     hidpi: ConfigUtils.getConfigProp("wmsHidpi") !== false ? true : false,
-                    tileLoadFunction: (imageTile, src) => wmsImageLoadFunction(imageTile.imageTile(), src)
+                    tileLoadFunction: (imageTile, src) => wmsImageLoadFunction(imageTile.getImage(), src)
                 })
             });
             layer.set("empty", !queryParameters.LAYERS);
