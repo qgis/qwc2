@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "",
+      "menulabel": "Kart & Verktøy",
       "items": {
-        "": "",
         "AttributeTable": "",
         "DxfExport": "Eksporter DXF",
         "Editing": "Rediger",
@@ -29,8 +29,7 @@
         "Bookmark": "",
         "TimeManager": "",
         "Settings": ""
-      },
-      "menulabel": "Kart & Verktøy"
+      }
     },
     "attribtable": {
       "addfeature": "",

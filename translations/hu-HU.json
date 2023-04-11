@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "",
+      "menulabel": "Eszközök",
       "items": {
-        "": "",
         "AttributeTable": "",
         "DxfExport": "DXF Exportálás",
         "Editing": "Szerkesztés",
@@ -29,8 +29,7 @@
         "Bookmark": "",
         "TimeManager": "",
         "Settings": ""
-      },
-      "menulabel": "Eszközök"
+      }
     },
     "attribtable": {
       "addfeature": "",

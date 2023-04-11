@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "Menú de filtres...",
+      "menulabel": "Mapa & Eines",
       "items": {
-        "": "",
         "AttributeTable": "Taula d'atributs",
         "DxfExport": "Exportar DXF",
         "Editing": "Editant",
@@ -29,8 +29,7 @@
         "Bookmark": "Marcador",
         "TimeManager": "Gestor de Temps",
         "Settings": "Opcions"
-      },
-      "menulabel": "Mapa & Eines"
+      }
     },
     "attribtable": {
       "addfeature": "Afegir element",

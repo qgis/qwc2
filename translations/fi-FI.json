@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "",
+      "menulabel": "Kartat & Työkalut",
       "items": {
-        "": "",
         "AttributeTable": "",
         "DxfExport": "DXF vienti",
         "Editing": "Editointi",
@@ -29,8 +29,7 @@
         "Bookmark": "Kirjanmerkit",
         "TimeManager": "",
         "Settings": ""
-      },
-      "menulabel": "Kartat & Työkalut"
+      }
     },
     "attribtable": {
       "addfeature": "",

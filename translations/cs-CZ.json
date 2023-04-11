@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "",
+      "menulabel": "Mapa & Nástroje",
       "items": {
-        "": "",
         "AttributeTable": "",
         "DxfExport": "DXF Export",
         "Editing": "Úpravy",
@@ -29,8 +29,7 @@
         "Bookmark": "",
         "TimeManager": "",
         "Settings": ""
-      },
-      "menulabel": "Mapa & Nástroje"
+      }
     },
     "attribtable": {
       "addfeature": "",

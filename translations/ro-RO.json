@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "",
+      "menulabel": "Hărți & Unelte",
       "items": {
-        "": "",
         "AttributeTable": "Tabela de atribute",
         "DxfExport": "Export DXF",
         "Editing": "Editare",
@@ -29,8 +29,7 @@
         "Bookmark": "Marcaj",
         "TimeManager": "",
         "Settings": ""
-      },
-      "menulabel": "Hărți & Unelte"
+      }
     },
     "attribtable": {
       "addfeature": "",

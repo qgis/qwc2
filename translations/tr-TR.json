@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "",
+      "menulabel": "Harita & Araçlar",
       "items": {
-        "": "",
         "AttributeTable": "",
         "DxfExport": "DXF'e Veri Aktar",
         "Editing": "Düzenleme",
@@ -29,8 +29,7 @@
         "Bookmark": "",
         "TimeManager": "",
         "Settings": ""
-      },
-      "menulabel": "Harita & Araçlar"
+      }
     },
     "attribtable": {
       "addfeature": "",

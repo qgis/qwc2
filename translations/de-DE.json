@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "Menü filtern...",
+      "menulabel": "Karte & Werkzeuge",
       "items": {
-        "": "",
         "AttributeTable": "Attributtabelle",
         "DxfExport": "DXF-Export",
         "Editing": "Editieren",
@@ -29,8 +29,7 @@
         "Bookmark": "Lesezeichen",
         "TimeManager": "Zeitleiste",
         "Settings": "Einstellungen"
-      },
-      "menulabel": "Karte & Werkzeuge"
+      }
     },
     "attribtable": {
       "addfeature": "Objekt hinzufügen",
@@ -121,7 +120,7 @@
       "title": "Objektformular"
     },
     "fileselector": {
-      "files": "",
+      "files": "Dateien",
       "placeholder": "Datei auswählen"
     },
     "heightprofile": {

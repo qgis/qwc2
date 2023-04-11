@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "Filtrer le menu...",
+      "menulabel": "Cartes et outils",
       "items": {
-        "": "",
         "AttributeTable": "Table d'attributs",
         "DxfExport": "Export DXF",
         "Editing": "Editer",
@@ -29,8 +29,7 @@
         "Bookmark": "Marque-pages",
         "TimeManager": "Ligne du temps",
         "Settings": "Paramètres"
-      },
-      "menulabel": "Cartes et outils"
+      }
     },
     "attribtable": {
       "addfeature": "Ajouter un objet",
@@ -121,7 +120,7 @@
       "title": "Formulaire d'objet"
     },
     "fileselector": {
-      "files": "",
+      "files": "Fichiers",
       "placeholder": "Choisir un fichier..."
     },
     "heightprofile": {

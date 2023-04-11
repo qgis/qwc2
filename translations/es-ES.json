@@ -3,8 +3,8 @@
   "messages": {
     "appmenu": {
       "filter": "Menú de filtros...",
+      "menulabel": "Mapa & Herramientas",
       "items": {
-        "": "",
         "AttributeTable": "Tabla de Atributos",
         "DxfExport": "Exportar DXF",
         "Editing": "Editando",
@@ -29,8 +29,7 @@
         "Bookmark": "Marcadores",
         "TimeManager": "Gestor de Tiempo",
         "Settings": "Opciones"
-      },
-      "menulabel": "Mapa & Herramientas"
+      }
     },
     "attribtable": {
       "addfeature": "Añadir elemento",
