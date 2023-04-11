@@ -72,7 +72,7 @@ const updateTsConfig = (topdir, tsconfig, collectedMsgIds=null) => {
     for (const file of files) {
         const data = fs.readFileSync(file).toString();
         for (const match of data.matchAll(trRegEx)) {
-            if (!collectedMsgIds || !collectedMsgIds.has(match[2])) {
+            if ((!collectedMsgIds || !collectedMsgIds.has(match[2])) && !match[2].endsWith(".")) {
                 msgIds.add(match[2]);
             }
         }
