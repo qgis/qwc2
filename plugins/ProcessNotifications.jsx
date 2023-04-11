@@ -18,16 +18,11 @@ import './style/ProcessNotifications.css';
 class ProcessNotifications extends React.Component {
     static propTypes = {
         clearProcess: PropTypes.func,
-        processes: PropTypes.object,
-        drawOnTop: PropTypes.bool
+        processes: PropTypes.object
     };
-    static defaultProps = {
-        drawOnTop: false
-    }
     render() {
-        const style = this.props.drawOnTop ? { zIndex: 1000 } : {}
         return (
-            <div className="process-notifications" style={style}>
+            <div className="process-notifications">
                 {Object.values(this.props.processes).map(this.renderProcessNotification)}
             </div>
         );
