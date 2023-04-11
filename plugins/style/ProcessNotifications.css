@@ -4,6 +4,7 @@ div.process-notifications {
     top: 3.5em;
     box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
     width: 20em;
+    z-index: 1000;
 }
 
 div.process-notification {
