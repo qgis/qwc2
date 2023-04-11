@@ -233,6 +233,11 @@
     "navbar": {
       "perpage": "pro Seite"
     },
+    "newspopup": {
+      "dialogclose": "Schließen",
+      "dontshowagain": "Nicht mehr anzeigen",
+      "title": "Aktuelles"
+    },
     "numericinput": {
       "angle": "Winkel",
       "featureunsupported": "Numerische Eingabe nicht verfügbar für dieses Objekt",

@@ -1,0 +1,72 @@
+div.newspopup-dialog-container {
+    z-index: 202;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(127, 127, 127, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.newspopup-dialog-popup {
+    flex: 0 0 50%;
+    height: 66%;
+    background-color: var(--container-bg-color);
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.75);
+    display: flex;
+    flex-direction: column;
+}
+
+div.newspopup-dialog-popup-title {
+    font-weight: bold;
+    color: var(--titlebar-text-color);
+    background-color: var(--titlebar-bg-color);
+    flex: 0 0 2.5em;
+    display: flex;
+    align-items: center;
+    padding: 0 0.25em;
+    display: flex;
+    align-items: center;
+}
+
+div.newspopup-dialog-popup-title span:first-child {
+    flex: 1 1 auto;
+}
+
+div.newspopup-dialog-popup-title span.icon {
+    flex: 0 0 auto;
+    margin-right: 0.25em;
+    font-size: large;
+}
+
+div.newspopup-dialog-popup-body {
+    padding: 0.25em;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+div.newspopup-dialog-popup-body > iframe {
+    width: 100%;
+    border-width: 0;
+    background-color: transparent;
+    flex: 1 1 auto;
+}
+
+div.newspopup-dialog-popup-body > div.newspopup-dialog-popup-buttonbar {
+    border-top: 1px solid var(--border-color);
+    flex: 0 0 auto;
+    text-align: center;
+}
+
+div.newspopup-dialog-popup-body > div.newspopup-dialog-popup-buttonbar button {
+    margin: 0.5em;
+    padding: 0.5em;
+    background-color: var(--titlebar-bg-color);
+    color: white;
+    font-weight: bold;
+    border: 1px solid var(--border-color);
+}

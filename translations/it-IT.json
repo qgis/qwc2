@@ -233,6 +233,11 @@
     "navbar": {
       "perpage": "per pagina"
     },
+    "newspopup": {
+      "dialogclose": "Chiudi",
+      "dontshowagain": "Non mostrare nuovamente",
+      "title": "Attualità"
+    },
     "numericinput": {
       "angle": "Angolo",
       "featureunsupported": "Formulario numerico non disponibile per questa geometria",
