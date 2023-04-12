@@ -22,6 +22,7 @@ export default class SearchWidget extends React.Component {
         className: PropTypes.string,
         onBlur: PropTypes.func,
         onFocus: PropTypes.func,
+        placeholder: PropTypes.string,
         resultSelected: PropTypes.func,
         searchParams: PropTypes.object,
         searchProviders: PropTypes.array,
@@ -55,7 +56,7 @@ export default class SearchWidget extends React.Component {
                     onChange={this.textChanged}
                     onFocus={this.onFocus}
                     onKeyDown={this.onKeyDown}
-                    placeholder={LocaleUtils.tr("search.search")}
+                    placeholder={this.props.placeholder ?? LocaleUtils.tr("search.search")}
                     ref={el => {this.input = el;}}
                     type="text"
                     value={this.state.text} />
