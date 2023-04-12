@@ -299,7 +299,15 @@ class Routing extends React.Component {
                 <div className="routing-input">
                     <div className="routing-points">
                         <Sortable onChange={this.onSortChange} options={{ghostClass: 'drop-ghost', delay: 200}}>
-                            {routeConfig.points.map((entry, idx) => this.renderSearchField(entry, idx, 'routeConfig', idx > 0 && idx < numpoints - 1))}
+                            {routeConfig.points.map((entry, idx) => {
+                                let placeholder = LocaleUtils.tr("routing.addviapoint");
+                                if (idx === 0) {
+                                    placeholder = LocaleUtils.tr("routing.fromhere");
+                                } else if (idx === routeConfig.points.length - 1) {
+                                    placeholder = LocaleUtils.tr("routing.tohere");
+                                }
+                                return this.renderSearchField(entry, idx, 'routeConfig', idx > 0 && idx < numpoints - 1, placeholder);
+                            })}
                         </Sortable>
                         <div>
                             <Icon icon="up-down-arrow" onClick={this.reverseRoutePts} />
@@ -463,10 +471,10 @@ class Routing extends React.Component {
             );
         }
     };
-    renderSearchField = (entry, idx, config, removeable) => {
+    renderSearchField = (entry, idx, config, removeable, placeholder = null) => {
         return (
             <InputContainer className="routing-search-field" key={"field" + idx}>
-                <SearchWidget resultSelected={(result) => this.searchResultSelected(config, idx, result)} role="input" searchParams={this.state.searchParams} searchProviders={this.state.searchProviders} value={entry.text} />
+                <SearchWidget placeholder={placeholder} resultSelected={(result) => this.searchResultSelected(config, idx, result)} role="input" searchParams={this.state.searchParams} searchProviders={this.state.searchProviders} value={entry.text} />
                 {idx === 0 ? (
                     <button className="button" disabled={!this.props.locatePos} onClick={() => this.updatePoint(config, 0, this.locatePos())} role="suffix">
                         <Icon icon="screenshot" />
