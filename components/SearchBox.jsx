@@ -418,11 +418,7 @@ class SearchBox extends React.Component {
             return;
         }
         const searchSession = uuidv1();
-        this.setState({
-            searchResults: {query_text: searchText},
-            searchSession: searchSession,
-            pendingSearches: Object.keys(this.props.searchProviders).concat(["__fulltext"])
-        });
+        const pendingSearches = [];
         // Fulltext search
         if ((this.props.theme.searchProviders || []).find(entry => entry.provider === "solr")) {
             const params = {
@@ -439,6 +435,7 @@ class SearchBox extends React.Component {
                 console.warn("Search failed: " + e);
                 this.addSearchResults(searchSession, "__fulltext", {results: [], tot_result_count: 0});
             });
+            pendingSearches.push("__fulltext");
         }
         // Additional provider searches
         const searchParams = {
@@ -447,10 +444,16 @@ class SearchBox extends React.Component {
             lang: LocaleUtils.lang()
         };
         Object.entries(this.props.searchProviders).forEach(([key, entry]) => {
+            pendingSearches.push(key);
             entry.onSearch(searchText, {...searchParams, cfgParams: entry.params}, (response) => {
                 const count = response.results.reduce((tot, cur) => (tot + cur.items.length), 0);
                 this.addSearchResults(searchSession, key, {results: response.results, tot_result_count: count});
             }, axios);
+        });
+        this.setState({
+            searchResults: {query_text: searchText},
+            searchSession: searchSession,
+            pendingSearches: pendingSearches
         });
     };
     addSearchResults = (searchSession, searchId, results) => {
