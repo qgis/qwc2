@@ -146,11 +146,11 @@ class Routing extends React.Component {
             const taskData = (this.props.task.data || {});
             if (taskData.from) {
                 this.setState({currentTab: 'Route'});
-                this.updateRoutePoint(0, taskData.from);
+                this.updatePoint('routeConfig', 0, taskData.from);
             }
             if (taskData.to) {
                 this.setState({currentTab: 'Route'});
-                this.updateRoutePoint(this.state.routeConfig.points.length - 1, taskData.to);
+                this.updatePoint('routeConfig', this.state.routeConfig.points.length - 1, taskData.to);
             }
             if (taskData.via) {
                 this.setState({currentTab: 'Route'});
