@@ -314,6 +314,13 @@ class Routing extends React.Component {
                         </div>
                     </div>
                     <div className="routing-points-commands">
+                        <a href="#" onClick={() => this.addPoint('routeConfig', -1)}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
+                        <span className="routing-points-commands-spacer" />
+                        {this.renderImportButton('routeConfig')}
+                        <span className="routing-points-commands-spacer" />
+                        <a href="#" onClick={() => this.clearConfig('routeConfig')}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
+                    </div>
+                    <div className="routing-points-commands">
                         <label><input onChange={(ev) => this.updateRouteConfig({roundtrip: ev.target.checked})} type="checkbox" value={routeConfig.roundtrip} /> {LocaleUtils.tr("routing.roundtrip")}</label>
                     </div>
                     <div className="routing-points-commands">
@@ -328,13 +335,6 @@ class Routing extends React.Component {
                             <button className="button" onClick={this.setRedliningTool}><Icon icon="draw" /></button>
                         </div>
                     ) : null}
-                    <div className="routing-points-commands">
-                        <a href="#" onClick={() => this.addPoint('routeConfig', -1)}><Icon icon="plus" /> {LocaleUtils.tr("routing.add")}</a>
-                        <span className="routing-points-commands-spacer" />
-                        {this.renderImportButton('routeConfig')}
-                        <span className="routing-points-commands-spacer" />
-                        <a href="#" onClick={() => this.clearConfig('routeConfig')}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
-                    </div>
                 </div>
                 {routeConfig.busy ? (
                     <div className="routing-busy"><Spinner /> {LocaleUtils.tr("routing.computing")}</div>
