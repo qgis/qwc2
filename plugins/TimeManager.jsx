@@ -69,6 +69,8 @@ class TimeManager extends React.Component {
         defaultStepUnit: PropTypes.string,
         /** The default timeline display mode. One of `hidden`, `minimal`, `features`, `layers`. */
         defaultTimelineDisplay: PropTypes.string,
+        /** The default number of features that will be requested. */
+        defaultFeatureCount: PropTypes.number,
         /** The default timeline mode. One of `fixed`, `infinite`. */
         defaultTimelineMode: PropTypes.string,
         layerVisibilities: PropTypes.object,
@@ -94,6 +96,7 @@ class TimeManager extends React.Component {
         defaultAnimationInterval: 1,
         defaultStepSize: 1,
         defaultStepUnit: "d",
+        defaultFeatureCount: 100,
         defaultTimelineMode: "fixed",
         markerConfiguration: {
             markersAvailable: true,
@@ -118,6 +121,7 @@ class TimeManager extends React.Component {
         markersEnabled: false,
         markersCanBeEnabled: true,
         timelineDisplay: true,
+        featureCount: 100,
         timelineMode: 'continuous',
         timeData: {
             layerDimensions: {},
@@ -138,6 +142,7 @@ class TimeManager extends React.Component {
             TimeManager.defaultState.stepSizeUnit = props.stepUnits[0];
         }
         TimeManager.defaultState.animationInterval = props.defaultAnimationInterval;
+        TimeManager.defaultState.featureCount = props.defaultFeatureCount;
         TimeManager.defaultState.timelineMode = props.defaultTimelineMode;
         this.state = {
             ...this.state,
@@ -537,7 +542,8 @@ class TimeManager extends React.Component {
             const queryLayers = Object.keys(sublayerattrs).join(",");
             const options = {
                 GEOMCENTROID: true,
-                with_htmlcontent: false
+                with_htmlcontent: false,
+                feature_count: this.state.featureCount
             };
             const request = IdentifyUtils.buildFilterRequest(layer, queryLayers, filterGeom, this.props.map, options);
             IdentifyUtils.sendRequest(request, (response) => {
