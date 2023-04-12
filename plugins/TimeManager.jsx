@@ -16,7 +16,7 @@ import utc from 'dayjs/plugin/utc';
 import {v1 as uuidv1} from 'uuid';
 import ol from 'openlayers';
 import isEqual from 'lodash.isequal';
-import dateParser from 'any-date-parser';
+import dateParser, { Format } from 'any-date-parser';
 import {setLayerDimensions, addLayerFeatures, refreshLayer, removeLayer, LayerRole} from '../actions/layers';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import Icon from '../components/Icon';
@@ -49,6 +49,34 @@ const DateUnitLabels = {
     "100y": LocaleUtils.trmsg("timemanager.unit.century")
 };
 
+let qgis_date_format = new Format({
+    //        $dateExpr           $hour        $minute         $second             $millisecond                 $zone                 $offset
+    matcher: /^(.*?)[\s,-]*([01]\d|2[0-3])\:([0-5]\d)(?:\:([0-5]\d|60)(?:[\.,](\d{9}|\d{6}|\d{1,3}))?)?[\s,-]*\(?(UTC)?[\s,-]*([+-]0\d?\:?(?:[0-5]\d)?)?[\s,-]*\)?$/i,
+    handler: function ([match, dateExpr, hour, minute, second, millisecond, zone, offset]) {
+        let result = {};
+        if (dateExpr) {
+            result = this.parser.attempt(dateExpr);
+            if (result.invalid) {
+                return result;
+            }
+        }
+        result["hour"] = hour;
+        result["minute"] = minute;
+        if (second) {
+            result["second"] = second;
+        }
+        if (millisecond && millisecond.length > 3) {
+            result["millisecond"] = millisecond.slice(0, 3);
+        } else if (millisecond) {
+            result["millisecond"] = millisecond;
+        }
+        if (offset) {
+            result["offset"] = offset;
+        }
+        return result;
+    },
+});
+dateParser.addFormat(qgis_date_format)
 
 /**
  * Allows controling the time dimension of temporal WMS layers.
