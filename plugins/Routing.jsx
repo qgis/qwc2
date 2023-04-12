@@ -85,12 +85,16 @@ class Routing extends React.Component {
                 useHighways: true,
                 useTollways: true
             },
-            bus: {
+            heavyvehicle: {
                 method: 'fastest',
                 maxSpeed: 100,
                 useFerries: true,
                 useHighways: true,
                 useTollways: true
+            },
+            transit: {
+                timepoint: 'now',
+                time: null
             },
             bicycle: {
                 method: 'fastest',
@@ -217,7 +221,8 @@ class Routing extends React.Component {
         };
         const buttons = [
             {key: "auto", icon: "routing-car", tooltip: LocaleUtils.trmsg("routing.mode_auto")},
-            {key: "bus", icon: "routing-bus", tooltip: LocaleUtils.trmsg("routing.mode_bus")},
+            {key: "heavyvehicle", icon: "routing-truck", tooltip: LocaleUtils.trmsg("routing.mode_heavyvehicle")},
+            {key: "transit", icon: "routing-train", tooltip: LocaleUtils.trmsg("routing.mode_transit")},
             {key: "bicycle", icon: "routing-bicycle", tooltip: LocaleUtils.trmsg("routing.mode_bicycle")},
             {key: "pedestrian", icon: "routing-walking", tooltip: LocaleUtils.trmsg("routing.mode_walking")}
         ];
@@ -245,30 +250,36 @@ class Routing extends React.Component {
             <div className="routing-settings-menu">
                 <table className="routing-settings-menu-entries">
                     <tbody>
-                        <tr>
-                            <td>{LocaleUtils.tr("routing.method")}:</td>
-                            <td>
-                                <select onChange={(ev) => this.updateSetting(this.state.mode, {method: ev.target.value})} value={settings.method}>
-                                    <option value="fastest">{LocaleUtils.tr("routing.fastest")}</option>
-                                    <option value="shortest">{LocaleUtils.tr("routing.shortest")}</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{LocaleUtils.tr("routing.maxspeed")}:</td>
-                            <td>
-                                <NumericInput
-                                    format={x => x + " km/h"} max={250} min={1} mobile
-                                    onChange={(value) => this.updateSetting(this.state.mode, {maxSpeed: value})}
-                                    precision={0} step={1} strict value={settings.maxSpeed} />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{LocaleUtils.tr("routing.useferries")}:</td>
-                            <td>
-                                <ToggleSwitch active={settings.useFerries} onChange={(value) => this.updateSetting(this.state.mode, {useFerries: value})} />
-                            </td>
-                        </tr>
+                        {settings.method !== undefined ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("routing.method")}:</td>
+                                <td>
+                                    <select onChange={(ev) => this.updateSetting(this.state.mode, {method: ev.target.value})} value={settings.method}>
+                                        <option value="fastest">{LocaleUtils.tr("routing.fastest")}</option>
+                                        <option value="shortest">{LocaleUtils.tr("routing.shortest")}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        ) : null}
+                        {settings.maxSpeed !== undefined ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("routing.maxspeed")}:</td>
+                                <td>
+                                    <NumericInput
+                                        format={x => x + " km/h"} max={250} min={1} mobile
+                                        onChange={(value) => this.updateSetting(this.state.mode, {maxSpeed: value})}
+                                        precision={0} step={1} strict value={settings.maxSpeed} />
+                                </td>
+                            </tr>
+                        ) : null}
+                        {settings.useFerries !== undefined ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("routing.useferries")}:</td>
+                                <td>
+                                    <ToggleSwitch active={settings.useFerries} onChange={(value) => this.updateSetting(this.state.mode, {useFerries: value})} />
+                                </td>
+                            </tr>
+                        ) : null}
                         {settings.useHighways !== undefined ? (
                             <tr>
                                 <td>{LocaleUtils.tr("routing.usehighways")}:</td>

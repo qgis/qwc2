@@ -83,13 +83,18 @@ function getValhallaParams(costing, locations, options, extraOptions) {
             use_tolls: options.useTollways ? 1 : 0,
             use_highways: options.useHighways ? 1 : 0
         };
-    } else if (costing === 'bus') {
-        costingOptions.bus = {
+    } else if (costing === 'heavyvehicle') {
+        costing = 'truck';
+        costingOptions.truck = {
             top_speed: options.maxSpeed,
             shortest: options.method === 'shortest',
             use_ferry: options.useFerries ? 1 : 0,
             use_tolls: options.useTollways ? 1 : 0,
             use_highways: options.useHighways ? 1 : 0
+        };
+    } else if (costing === 'transit') {
+        costing = 'multimodal';
+        costingOptions.multimodal = {
         };
     } else if (costing === 'bicycle') {
         costingOptions.bicycle = {
