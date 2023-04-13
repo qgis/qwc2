@@ -199,6 +199,9 @@ class AppMenu extends React.Component {
     renderMenuItems = (items, level, filter, path) => {
         if (items) {
             return items.map((item, idx) => {
+                if (item.themeBlacklist && (item.themeBlacklist.includes(this.props.currentTheme.title) || item.themeBlacklist.includes(this.props.currentTheme.name))) {
+                    return null
+                }
                 if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme.title) || item.themeWhitelist.includes(this.props.currentTheme.name))) {
                     return null;
                 }

@@ -44,6 +44,9 @@ class Toolbar extends React.Component {
         }
     }
     renderToolbarItem = (item) => {
+        if (item.themeBlacklist && (item.themeBlacklist.includes(this.props.currentTheme.title) || item.themeBlacklist.includes(this.props.currentTheme.name))) {
+            return null
+        }
         if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme.title) || item.themeWhitelist.includes(this.props.currentTheme.name))) {
             return null;
         }
