@@ -13,7 +13,6 @@ div.search-widget-container > div.spinner {
     height: calc(2em - 2px);
     right: 0;
     top: 0;
-    background-color: white;
 }
 
 div.search-widget-results {
