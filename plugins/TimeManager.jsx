@@ -78,6 +78,12 @@ const qgis_date_format = new Format({
 });
 dateParser.addFormat(qgis_date_format)
 
+// QGIS server does not return any feature that does not have "enddate" set.
+// To workaround this limitation, a placeholder date is used to make features
+// with no "enddate" visible. This variable represents that placeholder date.
+// This information is needed in the QWC2 so that features with no "enddate"
+// are represented correctly. It is also used to differentiate them from features with
+// a valid "enddate".
 const DUMMY_END_DATE = new Date('9999-01-01 00:00:00');
 
 /**
