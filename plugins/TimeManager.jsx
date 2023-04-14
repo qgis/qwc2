@@ -16,7 +16,7 @@ import utc from 'dayjs/plugin/utc';
 import {v1 as uuidv1} from 'uuid';
 import ol from 'openlayers';
 import isEqual from 'lodash.isequal';
-import dateParser from 'any-date-parser';
+import dateParser, { Format } from 'any-date-parser';
 import {setLayerDimensions, addLayerFeatures, refreshLayer, removeLayer, LayerRole} from '../actions/layers';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import Icon from '../components/Icon';
@@ -49,6 +49,42 @@ const DateUnitLabels = {
     "100y": LocaleUtils.trmsg("timemanager.unit.century")
 };
 
+const qgis_date_format = new Format({
+    //        $dateExpr           $hour        $minute         $second             $millisecond                 $zone                 $offset
+    matcher: /^(.*?)[\s,-]*([01]\d|2[0-3])\:([0-5]\d)(?:\:([0-5]\d|60)(?:[\.,](\d{9}|\d{6}|\d{1,3}))?)?[\s,-]*\(?(UTC)?[\s,-]*([+-]0\d?\:?(?:[0-5]\d)?)?[\s,-]*\)?$/i,
+    handler: function ([match, dateExpr, hour, minute, second, millisecond, zone, offset]) {
+        let result = {};
+        if (dateExpr) {
+            result = this.parser.attempt(dateExpr);
+            if (result.invalid) {
+                return result;
+            }
+        }
+        result["hour"] = hour;
+        result["minute"] = minute;
+        if (second) {
+            result["second"] = second;
+        }
+        if (millisecond && millisecond.length > 3) {
+            result["millisecond"] = millisecond.slice(0, 3);
+        } else if (millisecond) {
+            result["millisecond"] = millisecond;
+        }
+        if (offset) {
+            result["offset"] = offset;
+        }
+        return result;
+    },
+});
+dateParser.addFormat(qgis_date_format)
+
+// QGIS server does not return any feature that does not have "enddate" set.
+// To workaround this limitation, a placeholder date is used to make features
+// with no "enddate" visible. This variable represents that placeholder date.
+// This information is needed in the QWC2 so that features with no "enddate"
+// are represented correctly. It is also used to differentiate them from features with
+// a valid "enddate".
+const DUMMY_END_DATE = new Date('9999-01-01 00:00:00');
 
 /**
  * Allows controling the time dimension of temporal WMS layers.
@@ -69,6 +105,8 @@ class TimeManager extends React.Component {
         defaultStepUnit: PropTypes.string,
         /** The default timeline display mode. One of `hidden`, `minimal`, `features`, `layers`. */
         defaultTimelineDisplay: PropTypes.string,
+        /** The default number of features that will be requested. */
+        defaultFeatureCount: PropTypes.number,
         /** The default timeline mode. One of `fixed`, `infinite`. */
         defaultTimelineMode: PropTypes.string,
         layerVisibilities: PropTypes.object,
@@ -94,6 +132,7 @@ class TimeManager extends React.Component {
         defaultAnimationInterval: 1,
         defaultStepSize: 1,
         defaultStepUnit: "d",
+        defaultFeatureCount: 100,
         defaultTimelineMode: "fixed",
         markerConfiguration: {
             markersAvailable: true,
@@ -118,6 +157,7 @@ class TimeManager extends React.Component {
         markersEnabled: false,
         markersCanBeEnabled: true,
         timelineDisplay: true,
+        featureCount: 100,
         timelineMode: 'continuous',
         timeData: {
             layerDimensions: {},
@@ -138,6 +178,7 @@ class TimeManager extends React.Component {
             TimeManager.defaultState.stepSizeUnit = props.stepUnits[0];
         }
         TimeManager.defaultState.animationInterval = props.defaultAnimationInterval;
+        TimeManager.defaultState.featureCount = props.defaultFeatureCount;
         TimeManager.defaultState.timelineMode = props.defaultTimelineMode;
         this.state = {
             ...this.state,
@@ -191,11 +232,12 @@ class TimeManager extends React.Component {
                 }
             });
             timeData.values = [...timeData.values].sort().map(d => dayjs.utc(d));
+            const enddate = timeData.values.length > 0 ? timeData.values[timeData.values.length - 1].hour(23).minute(59).second(59) : null;
             this.setState((state) => ({
                 timeData: timeData,
                 currentTimestamp: state.currentTimestamp ?? +timeData.values[0],
                 startTime: timeData.values.length > 0 ? timeData.values[0].hour(0).minute(0).second(0) : null,
-                endTime: timeData.values.length > 0 ? timeData.values[timeData.values.length - 1].hour(23).minute(59).second(59) : null
+                endTime: enddate.year() !== DUMMY_END_DATE.getFullYear() ? enddate : null
             }));
             this.updateLayerTimeDimensions(timeData, this.state.currentTimestamp);
             this.updateTimeFeatures(timeData);
@@ -321,7 +363,7 @@ class TimeManager extends React.Component {
             </div>
         );
 
-        const timeSpan = this.state.endTime.diff(this.state.startTime);
+        const timeSpan = this.state.endTime !== null ? this.state.endTime.diff(this.state.startTime) : dayjs().diff(this.state.startTime);
         const Timeline = this.state.timelineMode === 'infinite' ? InfiniteTimeline : FixedTimeline;
 
         return (
@@ -537,7 +579,8 @@ class TimeManager extends React.Component {
             const queryLayers = Object.keys(sublayerattrs).join(",");
             const options = {
                 GEOMCENTROID: true,
-                with_htmlcontent: false
+                with_htmlcontent: false,
+                feature_count: this.state.featureCount
             };
             const request = IdentifyUtils.buildFilterRequest(layer, queryLayers, filterGeom, this.props.map, options);
             IdentifyUtils.sendRequest(request, (response) => {
@@ -549,7 +592,10 @@ class TimeManager extends React.Component {
                             ...Object.entries(layerFeatures).reduce((res, [layername, features]) => {
                                 return {...res, [layername]: features.map(feature => {
                                     const startdate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][0]]);
-                                    const enddate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][1]]);
+                                    let enddate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][1]]);
+                                    if (enddate.getFullYear() === DUMMY_END_DATE.getFullYear()) {
+                                        enddate = null;
+                                    }
                                     return {
                                         ...feature,
                                         id: feature.layername + "::" + feature.id,
