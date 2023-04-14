@@ -347,9 +347,11 @@ class Routing extends React.Component {
                     <div className="routing-points-commands">
                         <label><input onChange={(ev) => this.updateRouteConfig({roundtrip: ev.target.checked})} type="checkbox" value={routeConfig.roundtrip} /> {LocaleUtils.tr("routing.roundtrip")}</label>
                     </div>
-                    <div className="routing-points-commands">
-                        <label><input onChange={(ev) => this.updateRouteConfig({optimized_route: ev.target.checked})} type="checkbox" value={routeConfig.optimized_route} /> {LocaleUtils.tr("routing.optimized_route")}</label>
-                    </div>
+                    {this.state.mode !== 'transit' ? (
+                        <div className="routing-points-commands">
+                            <label><input onChange={(ev) => this.updateRouteConfig({optimized_route: ev.target.checked})} type="checkbox" value={routeConfig.optimized_route} /> {LocaleUtils.tr("routing.optimized_route")}</label>
+                        </div>
+                    ) : null}
                     {ConfigUtils.havePlugin("Redlining") ? (
                         <div className="routing-points-commands">
                             <span>{LocaleUtils.tr("routing.excludepolygons")}:&nbsp;</span>
