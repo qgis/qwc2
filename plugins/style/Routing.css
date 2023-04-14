@@ -229,3 +229,17 @@ label.routing-import-button > input {
     overflow: hidden;
     opacity: 0;
 }
+
+div.routing-time-settings {
+    padding: 0.5em 0;
+    display: flex;
+    align-items: center;
+}
+
+div.routing-time-settings > select {
+    flex: 0 0 auto;
+}
+
+div.routing-time-settings > div {
+    flex: 1 1 auto;
+}

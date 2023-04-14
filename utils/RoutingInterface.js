@@ -94,8 +94,15 @@ function getValhallaParams(costing, locations, options, extraOptions) {
         };
     } else if (costing === 'transit') {
         costing = 'multimodal';
-        costingOptions.multimodal = {
+        const timepointMap = {
+            now: 0,
+            leaveat: 1,
+            arriveat: 2
         };
+        extraOptions.date_time = {
+            value: options.time.slice(0, 16),
+            type: timepointMap[options.timepoint]
+        }
     } else if (costing === 'bicycle') {
         costingOptions.bicycle = {
             cycling_speed: options.maxSpeed,

@@ -19,6 +19,7 @@ import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import InputContainer from '../components/InputContainer';
 import ButtonBar from '../components/widgets/ButtonBar';
+import DateTimeInput from '../components/widgets/DateTimeInput';
 import SearchWidget from '../components/widgets/SearchWidget';
 import Spinner from '../components/Spinner';
 import ResizeableWindow from '../components/ResizeableWindow';
@@ -94,7 +95,7 @@ class Routing extends React.Component {
             },
             transit: {
                 timepoint: 'now',
-                time: null
+                time: ''
             },
             bicycle: {
                 method: 'fastest',
@@ -331,6 +332,18 @@ class Routing extends React.Component {
                         <span className="routing-points-commands-spacer" />
                         <a href="#" onClick={() => this.clearConfig('routeConfig')}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
                     </div>
+                    {this.state.mode === 'transit' ? (
+                        <div className="routing-time-settings">
+                            <select onChange={this.updateTransitTimepoint} value={this.state.settings.transit.timepoint}>
+                                <option value="now">{LocaleUtils.tr("routing.leavenow")}</option>
+                                <option value="leaveat">{LocaleUtils.tr("routing.leaveat")}</option>
+                                <option value="arriveat">{LocaleUtils.tr("routing.arriveat")}</option>
+                            </select>
+                            {this.state.settings.transit.timepoint !== 'now' ? (
+                                <DateTimeInput onChange={value => this.updateSetting('transit', {time: value})} value={this.state.settings.transit.time} />
+                            ) : null}
+                        </div>
+                    ) : null}
                     <div className="routing-points-commands">
                         <label><input onChange={(ev) => this.updateRouteConfig({roundtrip: ev.target.checked})} type="checkbox" value={routeConfig.roundtrip} /> {LocaleUtils.tr("routing.roundtrip")}</label>
                     </div>
@@ -354,6 +367,14 @@ class Routing extends React.Component {
             </div>
         );
     };
+    updateTransitTimepoint = (ev) => {
+        const diff = {timepoint: ev.target.value};
+        if (ev.target.value !== 'now' && this.state.settings.transit.timepoint === 'now') {
+            const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+            diff.time = new Date(Date.now() - tzoffset).toISOString().slice(0, -1);
+        }
+        this.updateSetting('transit', diff);
+    }
     setRedliningTool = () => {
         this.props.setCurrentTask("Redlining", null, null, {layerId: this.state.routeConfig.excludeLayer});
     };
