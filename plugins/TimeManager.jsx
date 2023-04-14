@@ -78,6 +78,8 @@ const qgis_date_format = new Format({
 });
 dateParser.addFormat(qgis_date_format)
 
+const DUMMY_END_DATE = new Date('9999-01-01 00:00:00');
+
 /**
  * Allows controling the time dimension of temporal WMS layers.
  */
@@ -229,7 +231,7 @@ class TimeManager extends React.Component {
                 timeData: timeData,
                 currentTimestamp: state.currentTimestamp ?? +timeData.values[0],
                 startTime: timeData.values.length > 0 ? timeData.values[0].hour(0).minute(0).second(0) : null,
-                endTime: enddate.year() !== 9999 ? enddate : null
+                endTime: enddate.year() !== DUMMY_END_DATE.getFullYear() ? enddate : null
             }));
             this.updateLayerTimeDimensions(timeData, this.state.currentTimestamp);
             this.updateTimeFeatures(timeData);
@@ -585,7 +587,7 @@ class TimeManager extends React.Component {
                                 return {...res, [layername]: features.map(feature => {
                                     const startdate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][0]]);
                                     let enddate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][1]]);
-                                    if (enddate.getFullYear() === 9999) {
+                                    if (enddate.getFullYear() === DUMMY_END_DATE.getFullYear()) {
                                         enddate = null;
                                     }
                                     return {
