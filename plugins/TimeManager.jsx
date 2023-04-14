@@ -224,11 +224,12 @@ class TimeManager extends React.Component {
                 }
             });
             timeData.values = [...timeData.values].sort().map(d => dayjs.utc(d));
+            const enddate = timeData.values.length > 0 ? timeData.values[timeData.values.length - 1].hour(23).minute(59).second(59) : null;
             this.setState((state) => ({
                 timeData: timeData,
                 currentTimestamp: state.currentTimestamp ?? +timeData.values[0],
                 startTime: timeData.values.length > 0 ? timeData.values[0].hour(0).minute(0).second(0) : null,
-                endTime: timeData.values.length > 0 ? timeData.values[timeData.values.length - 1].hour(23).minute(59).second(59) : null
+                endTime: enddate.year() !== 9999 ? enddate : null
             }));
             this.updateLayerTimeDimensions(timeData, this.state.currentTimestamp);
             this.updateTimeFeatures(timeData);
@@ -354,7 +355,7 @@ class TimeManager extends React.Component {
             </div>
         );
 
-        const timeSpan = this.state.endTime.diff(this.state.startTime);
+        const timeSpan = this.state.endTime !== null ? this.state.endTime.diff(this.state.startTime) : dayjs().diff(this.state.startTime);
         const Timeline = this.state.timelineMode === 'infinite' ? InfiniteTimeline : FixedTimeline;
 
         return (
@@ -583,7 +584,10 @@ class TimeManager extends React.Component {
                             ...Object.entries(layerFeatures).reduce((res, [layername, features]) => {
                                 return {...res, [layername]: features.map(feature => {
                                     const startdate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][0]]);
-                                    const enddate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][1]]);
+                                    let enddate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][1]]);
+                                    if (enddate.getFullYear() === 9999) {
+                                        enddate = null;
+                                    }
                                     return {
                                         ...feature,
                                         id: feature.layername + "::" + feature.id,
