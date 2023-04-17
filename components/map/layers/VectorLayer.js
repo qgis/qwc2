@@ -21,13 +21,15 @@ export default {
                 if (feature.crs && feature.crs !== options.projection) {
                     f.getGeometry().transform(feature.crs, options.projection);
                 }
-                f.set('styleName', feature.styleName);
-                f.set('styleOptions', feature.styleOptions);
+                const featureStyleName = feature.styleName || options.styleName;
+                const featureStyleOptions = {...options.styleOptions, ...feature.styleOptions};
+                f.set('styleName', featureStyleName);
+                f.set('styleOptions', featureStyleOptions);
                 f.set('circleParams', feature.circleParams);
                 f.set('shape', feature.shape);
                 f.set('measurements', feature.measurements);
-                if (feature.styleName) {
-                    f.setStyle(FeatureStyles[feature.styleName](f, feature.styleOptions || {}));
+                if (featureStyleName) {
+                    f.setStyle(FeatureStyles[featureStyleName](f, featureStyleOptions));
                 }
             });
             return collection.concat(featureObject);
@@ -99,13 +101,15 @@ export default {
                     if (feature.crs && feature.crs !== newOptions.projection) {
                         f.getGeometry().transform(feature.crs, newOptions.projection);
                     }
-                    f.set('styleName', feature.styleName);
-                    f.set('styleOptions', feature.styleOptions);
+                    const featureStyleName = feature.styleName || newOptions.styleName;
+                    const featureStyleOptions = {...newOptions.styleOptions, ...feature.styleOptions};
+                    f.set('styleName', featureStyleName);
+                    f.set('styleOptions', featureStyleOptions);
                     f.set('circleParams', feature.circleParams);
                     f.set('shape', feature.shape);
                     f.set('measurements', feature.measurements);
-                    if (feature.styleName) {
-                        f.setStyle(FeatureStyles[feature.styleName](f, feature.styleOptions || {}));
+                    if (featureStyleName) {
+                        f.setStyle(FeatureStyles[featureStyleName](f, featureStyleOptions));
                     }
                 });
                 newFeatureObjects = newFeatureObjects.concat(featureObject);
