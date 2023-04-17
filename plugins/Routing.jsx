@@ -404,7 +404,7 @@ class Routing extends React.Component {
                                 onMouseEnter={() => this.highlightRouteSection(lidx + ":" + eidx, entry, leg)}
                                 onMouseLeave={() => this.clearRouteSectionHighlight(lidx + ":" + eidx)}
                             >
-                                <div><b>{entry.instruction}</b></div>
+                                <div><Icon icon={entry.icon} /><b>{entry.instruction}</b></div>
                                 <div className="routing-result-instruction-summary">
                                     <span><Icon icon="clock" /> {MeasureUtils.formatDuration(entry.time)}</span>
                                     <span className="routing-result-spacer" />

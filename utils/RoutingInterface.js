@@ -102,7 +102,7 @@ function getValhallaParams(costing, locations, options, extraOptions) {
         extraOptions.date_time = {
             value: options.time.slice(0, 16),
             type: timepointMap[options.timepoint]
-        }
+        };
     } else if (costing === 'bicycle') {
         costingOptions.bicycle = {
             cycling_speed: options.maxSpeed,
@@ -145,6 +145,20 @@ function computeRoute(costing, locations, options, callback) {
         if (trip.status !== 0) {
             callback(false, response.data.trip.status_message);
         }
+        // https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
+        const travelTypeMap = {
+            car: "routing-car",
+            foot: "routing-walking",
+            road: "routing-bicycle",
+            tram: "routing-tram",
+            metro: "routing-tram",
+            rail: "routing-train",
+            bus: "routing-bus",
+            ferry: "routing-ship",
+            cable_car: "routing-cablecar",
+            gondola: "routing-cablecar",
+            funicular: "routing-cablecar"
+        };
         const result = {
             legs: trip.legs.map(leg => {
                 return {
@@ -155,7 +169,7 @@ function computeRoute(costing, locations, options, callback) {
                         instruction: entry.instruction,
                         post_instruction: entry.verbal_post_transition_instruction,
                         geom_indices: [entry.begin_shape_index, entry.end_shape_index],
-                        travel_type: entry.travel_type,
+                        icon: travelTypeMap[entry.travel_type],
                         time: entry.time,
                         length: entry.length * 1000
                     }))

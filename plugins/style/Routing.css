@@ -175,6 +175,10 @@ div.routing-result-instruction:not(:last-child) {
     border-bottom: 1px solid var(--border-color);
 }
 
+div.routing-result-instruction span.icon {
+    margin-right: 0.5em;
+}
+
 div.routing-result-instruction-summary {
     padding: 0.25em;
     display: flex;
