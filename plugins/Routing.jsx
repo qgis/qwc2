@@ -424,7 +424,7 @@ class Routing extends React.Component {
             crs: "EPSG:4326",
             geometry: {
                 type: "LineString",
-                coordinates: leg.coordinates.slice(entry.geom_indices[0], entry.geom_indices[1])
+                coordinates: leg.coordinates.slice(entry.geom_indices[0], entry.geom_indices[1] + 1)
             }
         };
         const sellayer = {
@@ -703,20 +703,29 @@ class Routing extends React.Component {
                 const layer = {
                     id: "routingggeometries",
                     role: LayerRole.SELECTION,
+                    styleName: "default",
                     styleOptions: {
                         strokeColor: [10, 10, 255, 1],
                         strokeWidth: 4,
                         strokeDash: []
                     }
                 };
-                const features = result.legs.map(leg => ({
-                    type: "Feature",
-                    crs: "EPSG:4326",
-                    geometry: {
-                        type: "LineString",
-                        coordinates: leg.coordinates
-                    }
-                }));
+                const features = [];
+                result.legs.forEach(leg => {
+                    leg.maneuvers.forEach(man => {
+                        features.push({
+                            type: "Feature",
+                            crs: "EPSG:4326",
+                            styleOptions: {
+                                strokeColor: man.color
+                            },
+                            geometry: {
+                                type: "LineString",
+                                coordinates: leg.coordinates.slice(man.geom_indices[0], man.geom_indices[1] + 1)
+                            }
+                        });
+                    });
+                });
                 this.props.addLayerFeatures(layer, features, true);
                 this.props.zoomToExtent(result.summary.bounds, "EPSG:4326", -0.5);
             }

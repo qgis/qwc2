@@ -147,17 +147,17 @@ function computeRoute(costing, locations, options, callback) {
         }
         // https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
         const travelTypeMap = {
-            car: "routing-car",
-            foot: "routing-walking",
-            road: "routing-bicycle",
-            tram: "routing-tram",
-            metro: "routing-tram",
-            rail: "routing-train",
-            bus: "routing-bus",
-            ferry: "routing-ship",
-            cable_car: "routing-cablecar",
-            gondola: "routing-cablecar",
-            funicular: "routing-cablecar"
+            car: {icon: "routing-car", color: [0, 0, 255, 1]},
+            foot: {icon: "routing-walking", color: [127, 127, 255, 1]},
+            road: {icon: "routing-bicycle", color: [0, 127, 0, 1]},
+            tram: {icon: "routing-tram", color: [255, 0, 0, 1]},
+            metro: {icon: "routing-tram", color: [255, 0, 0, 1]},
+            rail: {icon: "routing-train", color: [255, 0, 0, 1]},
+            bus: {icon: "routing-bus", color: [255, 0, 0, 1]},
+            ferry: {icon: "routing-ship", color: [0, 0, 200, 1]},
+            cable_car: {icon: "routing-cablecar", color: [255, 0, 0, 1]},
+            gondola: {icon: "routing-cablecar", color: [255, 0, 0, 1]},
+            funicular: {icon: "routing-cablecar", color: [255, 0, 0, 1]}
         };
         const result = {
             legs: trip.legs.map(leg => {
@@ -169,7 +169,8 @@ function computeRoute(costing, locations, options, callback) {
                         instruction: entry.instruction,
                         post_instruction: entry.verbal_post_transition_instruction,
                         geom_indices: [entry.begin_shape_index, entry.end_shape_index],
-                        icon: travelTypeMap[entry.travel_type],
+                        icon: (travelTypeMap[entry.travel_type] || {}).icon,
+                        color: (travelTypeMap[entry.travel_type] || {}).color || "#0000FF",
                         time: entry.time,
                         length: entry.length * 1000
                     }))
