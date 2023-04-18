@@ -230,7 +230,9 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
                 units: dim.$.units,
                 name: dim.$.name,
                 multiple: dim.$.multipleValues === "1",
-                value: dim._
+                value: dim._,
+                fieldName: dim.$.fieldName,
+                endFieldName: dim.$.endFieldName
             });
         });
 
