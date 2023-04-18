@@ -102,6 +102,8 @@ class TimeManager extends React.Component {
         dateFormat: PropTypes.string,
         /** The default interval for the temporal animation, in seconds. */
         defaultAnimationInterval: PropTypes.number,
+        /** Default for TimeManager enabled when loading application. `true` or `false` */
+        defaultEnabled: PropTypes.bool,
         /** The default step size for the temporal animation, in step units. */
         defaultStepSize: PropTypes.number,
         /** The default step unit for the temporal animation, one of `ms`, `s`, `m`, `d`, `M`, `y`, `10y`, `100y` */
@@ -133,6 +135,7 @@ class TimeManager extends React.Component {
         cursorFormat: "datetime",
         dateFormat: "YYYY-MM-DD[\n]HH:mm:ss",
         defaultAnimationInterval: 1,
+        defaultEnabled: false,
         defaultStepSize: 1,
         defaultStepUnit: "d",
         defaultFeatureCount: 100,
@@ -178,6 +181,8 @@ class TimeManager extends React.Component {
         this.updateMapMarkersTimeout = null;
         TimeManager.defaultState.stepSize = props.defaultStepSize;
         TimeManager.defaultState.stepSizeUnit = props.defaultStepUnit;
+        TimeManager.defaultState.timelineDisplay = props.defaultTimelineDisplay;
+        TimeManager.defaultState.timeEnabled = props.defaultEnabled;
         if (!props.stepUnits.includes(TimeManager.defaultState.stepSizeUnit)) {
             TimeManager.defaultState.stepSizeUnit = props.stepUnits[0];
         }
