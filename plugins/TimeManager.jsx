@@ -165,7 +165,8 @@ class TimeManager extends React.Component {
         timeData: {
             layerDimensions: {},
             values: [],
-            attributes: {}
+            attributes: {},
+            layers: []
         },
         timeFeatures: null,
         settingsPopup: false,
