@@ -13,6 +13,7 @@ import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import {v1 as uuidv1} from 'uuid';
 import ol from 'openlayers';
 import isEqual from 'lodash.isequal';
@@ -36,6 +37,7 @@ import './style/TimeManager.css';
 import markerIcon from '../utils/img/marker-icon.png';
 
 dayjs.extend(utc);
+dayjs.extend(customParseFormat);
 
 const DateUnitLabels = {
     "ms": LocaleUtils.trmsg("timemanager.unit.milliseconds"),
@@ -78,12 +80,13 @@ const qgis_date_format = new Format({
 });
 dateParser.addFormat(qgis_date_format)
 
-// QGIS server does not return any feature that does not have "enddate" set.
+// QGIS server does not return any feature that does not have "startdate"/"enddate" set.
 // To workaround this limitation, a placeholder date is used to make features
-// with no "enddate" visible. This variable represents that placeholder date.
-// This information is needed in the QWC2 so that features with no "enddate"
+// with no "startdate"/"enddate" visible. This variable represents that placeholder date.
+// This information is needed in the QWC2 so that features with no "startdate"/"enddate"
 // are represented correctly. It is also used to differentiate them from features with
-// a valid "enddate".
+// a valid "startdate"/"enddate".
+const DUMMY_START_DATE = new Date('0000-01-01 00:00:00');
 const DUMMY_END_DATE = new Date('9999-01-01 00:00:00');
 
 /**
@@ -232,12 +235,13 @@ class TimeManager extends React.Component {
                 }
             });
             timeData.values = [...timeData.values].sort().map(d => dayjs.utc(d));
+            const startdate = timeData.values.length > 0 ? timeData.values[0].hour(0).minute(0).second(0) : null;
             const enddate = timeData.values.length > 0 ? timeData.values[timeData.values.length - 1].hour(23).minute(59).second(59) : null;
             this.setState((state) => ({
                 timeData: timeData,
-                currentTimestamp: state.currentTimestamp ?? +timeData.values[0],
-                startTime: timeData.values.length > 0 ? timeData.values[0].hour(0).minute(0).second(0) : null,
-                endTime: enddate.year() !== DUMMY_END_DATE.getFullYear() ? enddate : null
+                currentTimestamp: timeData.values.length > 0 ? state.currentTimestamp ?? +timeData.values[0] : Date.now(),
+                startTime: startdate?.year() !== DUMMY_START_DATE ? startdate : null,
+                endTime: enddate?.year() !== DUMMY_END_DATE.getFullYear() ? enddate : null
             }));
             this.updateLayerTimeDimensions(timeData, this.state.currentTimestamp);
             this.updateTimeFeatures(timeData);
@@ -591,10 +595,27 @@ class TimeManager extends React.Component {
                             ...state.timeFeatures.features,
                             ...Object.entries(layerFeatures).reduce((res, [layername, features]) => {
                                 return {...res, [layername]: features.map(feature => {
-                                    const startdate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][0]]);
-                                    let enddate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][1]]);
-                                    if (enddate.getFullYear() === DUMMY_END_DATE.getFullYear()) {
-                                        enddate = null;
+                                    let startdate = feature.properties[sublayerattrs[feature.layername][0]];
+                                    let enddate = feature.properties[sublayerattrs[feature.layername][1]];
+                                    if (startdate !== null && startdate !== undefined) {
+                                        if (dayjs(startdate, 'YYYY-MM-DD').isValid()) {
+                                            startdate = dateParser.fromString(startdate);
+                                            if (startdate?.getFullYear() === DUMMY_START_DATE.getFullYear()) {
+                                                startdate = null;
+                                            }
+                                        } else {
+                                            startdate = null;
+                                        }
+                                    }
+                                    if (enddate !== null && enddate !== undefined) {
+                                        if (dayjs(enddate, 'YYYY-MM-DD').isValid()) {
+                                            enddate = dateParser.fromString(enddate);
+                                            if (enddate?.getFullYear() === DUMMY_END_DATE.getFullYear()) {
+                                                enddate = null;
+                                            }
+                                        } else {
+                                            enddate = null;
+                                        }
                                     }
                                     return {
                                         ...feature,
