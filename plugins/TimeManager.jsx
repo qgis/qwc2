@@ -159,13 +159,14 @@ class TimeManager extends React.Component {
         dialogWidth: 0,
         markersEnabled: false,
         markersCanBeEnabled: true,
-        timelineDisplay: true,
+        timelineDisplay: 'features',
         featureCount: 100,
         timelineMode: 'continuous',
         timeData: {
             layerDimensions: {},
             values: [],
-            attributes: {}
+            attributes: {},
+            layers: []
         },
         timeFeatures: null,
         settingsPopup: false,
