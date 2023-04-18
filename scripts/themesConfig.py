@@ -256,7 +256,9 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
                 "units": dim.getAttribute("units"),
                 "name": dim.getAttribute("name"),
                 "multiple": dim.getAttribute("multipleValues") == "1",
-                "value": getElementValue(dim)
+                "value": getElementValue(dim),
+                "fieldName": dim.getAttribute("fieldName"),
+                "endFieldName": dim.getAttribute("endFieldName")
             })
 
     else:
