@@ -244,7 +244,7 @@ class Print extends React.Component {
                                     {this.state.atlasFeature ? (
                                         <InputContainer>
                                             <input defaultValue={this.state.atlasFeature.properties[this.state.layout.atlas_pk]} name="ATLAS_PK" role="input" type="text" />
-                                            <Icon icon="remove" onClick={this.setAtlasFeature(null, null)} role="suffix" />
+                                            <Icon icon="remove" onClick={() => this.setAtlasFeature(null, null)} role="suffix" />
                                         </InputContainer>
                                     ) : (
                                         <input disabled placeholder={LocaleUtils.tr("print.pickatlasfeature", this.state.layout.atlasCoverageLayer)} type="text" />
