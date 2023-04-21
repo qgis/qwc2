@@ -307,7 +307,7 @@
     "routing": {
       "add": "Hinzufügen",
       "addviapoint": "Über hier",
-      "arriveat": "Ankunft am",
+      "arriveat": "Ankunft bis",
       "clear": "Zurücksetzen",
       "computefailed": "Berechnung fehlgeschlagen",
       "computing": "Berechnung...",
@@ -324,7 +324,7 @@
       "iso_mode_time": "Zeit",
       "isocenter": "Zentrum",
       "isoextracenter": "Zusätzliches Zentrum",
-      "leaveat": "Abfahrt am",
+      "leaveat": "Abfahrt ab",
       "leavenow": "Abfahrt jetzt",
       "maxspeed": "Max. Geschwindigkeit",
       "method": "Methode",
