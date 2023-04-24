@@ -156,7 +156,7 @@ class TimeManager extends React.Component {
         dialogWidth: 0,
         markersEnabled: false,
         markersCanBeEnabled: true,
-        timelineDisplay: true,
+        timelineDisplay: 'layers',
         featureCount: 100,
         timelineMode: 'continuous',
         timeData: {
@@ -180,6 +180,7 @@ class TimeManager extends React.Component {
         TimeManager.defaultState.animationInterval = props.defaultAnimationInterval;
         TimeManager.defaultState.featureCount = props.defaultFeatureCount;
         TimeManager.defaultState.timelineMode = props.defaultTimelineMode;
+        TimeManager.defaultState.timelineDisplay = props.defaultTimelineDisplay;
         this.state = {
             ...this.state,
             ...TimeManager.defaultState
