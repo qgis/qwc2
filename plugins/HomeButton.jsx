@@ -23,15 +23,23 @@ class HomeButton extends React.Component {
         currentTheme: PropTypes.object,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number,
+        splitScreen: PropTypes.object,
         zoomToExtent: PropTypes.func
     };
     static defaultProps = {
         position: 5
     };
     render() {
+        const splitWindows = Object.values(this.props.splitScreen);
+        const right = splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0);
+        const bottom = splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0);
+        const style = {
+            right: 'calc(1.5em + ' + right + 'px)',
+            bottom: 'calc(' + bottom + 'px + ' + (5 + 4 * this.props.position) + 'em)'
+        };
         const tooltip = LocaleUtils.tr("tooltip.home");
         return (
-            <button className="map-button" onClick={this.resetExtent} style={{bottom: (5 + 4 * this.props.position) + 'em'}} title={tooltip}>
+            <button className="map-button" onClick={this.resetExtent} style={style} title={tooltip}>
                 <Icon icon="home" title={tooltip}/>
             </button>
         );
@@ -45,7 +53,8 @@ class HomeButton extends React.Component {
 }
 
 export default connect((state) => ({
-    currentTheme: state.theme.current
+    currentTheme: state.theme.current,
+    splitScreen: state.windows.splitScreen
 }), {
     zoomToExtent: zoomToExtent
 })(HomeButton);

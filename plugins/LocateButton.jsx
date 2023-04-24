@@ -26,7 +26,8 @@ class LocateButton extends React.Component {
         changeLocateState: PropTypes.func,
         locateState: PropTypes.string,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
-        position: PropTypes.number
+        position: PropTypes.number,
+        splitScreen: PropTypes.object
     };
     static defaultProps = {
         position: 2
@@ -56,6 +57,13 @@ class LocateButton extends React.Component {
         }
     };
     render = () => {
+        const splitWindows = Object.values(this.props.splitScreen);
+        const right = splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0);
+        const bottom = splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0);
+        const style = {
+            right: 'calc(1.5em + ' + right + 'px)',
+            bottom: 'calc(' + bottom + 'px + ' + (5 + 4 * this.props.position) + 'em)'
+        };
         const tooltipMsg = {
             DISABLED: LocaleUtils.tr("locate.statustooltip.DISABLED"),
             ENABLED: LocaleUtils.tr("locate.statustooltip.ENABLED"),
@@ -76,7 +84,7 @@ class LocateButton extends React.Component {
         return (
             <button className={classes}
                 disabled={this.props.locateState === "PERMISSION_DENIED"} onClick={this.onClick}
-                style={{bottom: (5 + 4 * this.props.position) + 'em'}}
+                style={style}
                 title={tooltipMsg[this.props.locateState]}
             >
                 {contents}
@@ -86,7 +94,8 @@ class LocateButton extends React.Component {
 }
 
 export default connect(state => ({
-    locateState: state.locate.state
+    locateState: state.locate.state,
+    splitScreen: state.windows.splitScreen
 }), {
     changeLocateState: changeLocateState
 })(LocateButton);

@@ -13,11 +13,13 @@ import {
     CLOSE_ALL_WINDOWS,
     REGISTER_WINDOW,
     UNREGISTER_WINDOW,
-    RAISE_WINDOW
+    RAISE_WINDOW,
+    SET_SPLIT_SCREEN
 } from '../actions/windows';
 
 const defaultState = {
     stacking: [],
+    splitScreen: {},
     entries: {}
 };
 
@@ -72,6 +74,27 @@ export default function windows(state = defaultState, action) {
             ...state,
             stacking: [...state.stacking.filter(x => x !== action.id), action.id]
         };
+    }
+    case SET_SPLIT_SCREEN: {
+        if (action.side === null) {
+            const newSplitScreen = {...state.splitScreen};
+            delete newSplitScreen[action.windowId];
+            return {
+                ...state,
+                splitScreen: newSplitScreen
+            };
+        } else {
+            return {
+                ...state,
+                splitScreen: {
+                    ...state.splitScreen,
+                    [action.windowId]: {
+                        side: action.side,
+                        size: action.size
+                    }
+                }
+            };
+        }
     }
     default:
         return state;

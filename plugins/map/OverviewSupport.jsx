@@ -36,9 +36,18 @@ class OverviewMap extends React.Component {
             ...props.options
         };
         this.overview = new ol.control.OverviewMap(opt);
-        props.map.addControl(this.overview);
         this.overview.getOverviewMap().set('id', 'overview');
     }
+    componentDidMount() {
+        this.overviewContainer = document.createElement("div");
+        this.overviewContainer.id = this.props.map.get('id') + "-overview";
+        document.getElementById("PluginsContainer").appendChild(this.overviewContainer);
+        this.overview.setTarget(this.props.map.get('id') + "-overview");
+        this.props.map.addControl(this.overview);
+    }
+    componentWillUnmount = () => {
+        document.getElementById("PluginsContainer").removeChild(this.overviewContainer);
+    };
     render() {
         const overviewMap = (((this.props.theme || {}).backgroundLayers || []).find(entry => entry.overview) || {}).name;
         let layer = null;

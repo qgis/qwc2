@@ -7,6 +7,7 @@ div.overview-map {
     position: absolute;
     bottom: 0;
     right: 0;
+    z-index: 101;
 }
 
 div.overview-map > button {

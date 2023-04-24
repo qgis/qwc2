@@ -26,11 +26,19 @@ class ZoomButton extends React.Component {
         direction: PropTypes.number,
         maxZoom: PropTypes.number,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
-        position: PropTypes.number
+        position: PropTypes.number,
+        splitScreen: PropTypes.object
     };
     render() {
         const defaultPosition = (this.props.direction > 0 ? 4 : 3);
         const position = this.props.position >= 0 ? this.props.position : defaultPosition;
+        const splitWindows = Object.values(this.props.splitScreen);
+        const right = splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0);
+        const bottom = splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0);
+        const style = {
+            right: 'calc(1.5em + ' + right + 'px)',
+            bottom: 'calc(' + bottom + 'px  + ' + (5 + 4 * position) + 'em)'
+        };
         let disabled = false;
         if (this.props.direction > 0) {
             disabled = this.props.currentZoom >= this.props.maxZoom;
@@ -42,7 +50,7 @@ class ZoomButton extends React.Component {
             <button className="map-button"
                 disabled={disabled}
                 onClick={() => this.props.changeZoomLevel(this.props.currentZoom + this.props.direction)}
-                style={{bottom: (5 + 4 * position) + 'em'}}
+                style={style}
                 title={tooltip}
             >
                 <Icon icon={this.props.direction > 0 ? "plus" : "minus"} title={tooltip}/>
@@ -54,7 +62,8 @@ class ZoomButton extends React.Component {
 export const ZoomInPlugin = connect((state) => ({
     currentZoom: state.map.zoom,
     maxZoom: state.map.resolutions.length - 1,
-    direction: +1
+    direction: +1,
+    splitScreen: state.windows.splitScreen
 }), {
     changeZoomLevel: changeZoomLevel
 })(ZoomButton);
@@ -62,7 +71,8 @@ export const ZoomInPlugin = connect((state) => ({
 export const ZoomOutPlugin = connect((state) => ({
     currentZoom: state.map.zoom,
     maxZoom: state.map.resolutions.length - 1,
-    direction: -1
+    direction: -1,
+    splitScreen: state.windows.splitScreen
 }), {
     changeZoomLevel: changeZoomLevel
 })(ZoomButton);

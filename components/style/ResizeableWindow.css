@@ -44,6 +44,26 @@ div.resizeable-window-docked-right {
     bottom: initial!important;
 }
 
+div.resizeable-window-split-left {
+    transform: none!important;
+    left: 0!important;
+    right: initial!important;
+    top: 0!important;
+    bottom: 0!important;
+    height: initial!important;
+    max-height: initial!important;
+}
+
+div.resizeable-window-split-right {
+    transform: none!important;
+    left: initial!important;
+    right: 0!important;
+    top: 0!important;
+    bottom: 0!important;
+    height: initial!important;
+    max-height: initial!important;
+}
+
 div.resizeable-window-docked-top {
     transform: none!important;
     left: 0!important;
@@ -51,6 +71,7 @@ div.resizeable-window-docked-top {
     top: 0!important;
     bottom: initial!important;
     width: initial!important;
+    max-width: initial!important;
 }
 
 div.resizeable-window-docked-bottom {
@@ -60,6 +81,7 @@ div.resizeable-window-docked-bottom {
     top: initial!important;
     bottom: 0!important;
     width: initial!important;
+    max-width: initial!important;
 }
 
 div.resizeable-window-titlebar {
