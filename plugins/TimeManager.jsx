@@ -237,7 +237,7 @@ class TimeManager extends React.Component {
                 timeData: timeData,
                 currentTimestamp: state.currentTimestamp ?? +timeData.values[0],
                 startTime: timeData.values.length > 0 ? timeData.values[0].hour(0).minute(0).second(0) : null,
-                endTime: enddate.year() !== DUMMY_END_DATE.getFullYear() ? enddate : null
+                endTime: enddate && enddate.year() !== DUMMY_END_DATE.getFullYear() ? enddate : null
             }));
             this.updateLayerTimeDimensions(timeData, this.state.currentTimestamp);
             this.updateTimeFeatures(timeData);
