@@ -92,6 +92,8 @@ class ResizeableWindow extends React.Component {
         }
         if (props.initiallyDocked) {
             this.state.geometry.docked = true;
+        }
+        if (props.splitScreenWhenDocked && this.state.geometry.docked) {
             const dockSide = props.dockable === true ? "left" : props.dockable;
             const dockSize = ["left", "right"].includes(dockSide) ? this.state.geometry.width : this.state.geometry.height;
             props.setSplitScreen(this.id, dockSide, dockSize);
@@ -116,6 +118,15 @@ class ResizeableWindow extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.rnd && this.props.visible && this.props.visible !== prevProps.visible) {
             this.rnd.updatePosition(this.state.geometry);
+        }
+        if (this.props.splitScreenWhenDocked && this.props.visible !== prevProps.visible && this.state.geometry.docked) {
+            if (this.props.visible) {
+                const dockSide = this.props.dockable === true ? "left" : this.props.dockable;
+                const dockSize = ["left", "right"].includes(dockSide) ? this.state.geometry.width : this.state.geometry.height;
+                this.props.setSplitScreen(this.id, dockSide, dockSize);
+            } else {
+                this.props.setSplitScreen(this.id, null);
+            }
         }
         if (this.state.geometry !== prevState.geometry) {
             this.props.onGeometryChanged(this.state.geometry);
