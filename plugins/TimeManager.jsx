@@ -594,7 +594,7 @@ class TimeManager extends React.Component {
                                 return {...res, [layername]: features.map(feature => {
                                     const startdate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][0]]);
                                     let enddate = dateParser.fromString(feature.properties[sublayerattrs[feature.layername][1]]);
-                                    if (enddate.getFullYear() === DUMMY_END_DATE.getFullYear()) {
+                                    if (enddate && !enddate.invalid && enddate.getFullYear() === DUMMY_END_DATE.getFullYear()) {
                                         enddate = null;
                                     }
                                     return {
