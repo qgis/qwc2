@@ -109,6 +109,9 @@ class ResizeableWindow extends React.Component {
     }
     componentWillUnmount() {
         this.props.unregisterWindow(this.id);
+        if (this.props.splitScreenWhenDocked) {
+            this.props.setSplitScreen(this.id, null);
+        }
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.rnd && this.props.visible && this.props.visible !== prevProps.visible) {
