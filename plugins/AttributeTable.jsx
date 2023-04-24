@@ -246,7 +246,7 @@ class AttributeTable extends React.Component {
         ) : null;
 
         return (
-            <ResizeableWindow dockable="bottom" icon="editing" initialHeight={480} initialWidth={800} onClose={this.onClose} title={LocaleUtils.tr("attribtable.title")}>
+            <ResizeableWindow dockable="bottom" icon="editing" initialHeight={480} initialWidth={800} onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("attribtable.title")}>
                 <div className="attribtable-body" role="body">
                     {loadOverlay}
                     <div className="attribtable-toolbar">
