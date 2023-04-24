@@ -141,7 +141,7 @@ class Print extends React.Component {
     };
     onHide = () => {
         this.props.changeRotation(this.state.initialRotation);
-        this.setState({minimized: false, scale: null});
+        this.setState({minimized: false, scale: null, atlasFeature: null});
     };
     renderBody = () => {
         if (!this.state.layout) {
@@ -443,7 +443,7 @@ class Print extends React.Component {
                 </SideBar>
             ),
             this.renderPrintOutputWindow(),
-            this.state.layout && this.state.layout.atlasCoverageLayer ? (
+            this.props.active && this.state.layout && this.state.layout.atlasCoverageLayer ? (
                 <PickFeature
                     featurePicked={this.setAtlasFeature}
                     key="FeaturePicker"
@@ -460,7 +460,7 @@ class Print extends React.Component {
         } else {
             this.fixedMapCenter = null;
         }
-    }
+    };
     changeLayout = (ev) => {
         const layout = this.props.theme.print.find(item => item.name === ev.target.value);
         this.setState({layout: layout, atlasFeature: null});
