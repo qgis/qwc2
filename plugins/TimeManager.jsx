@@ -200,6 +200,7 @@ class TimeManager extends React.Component {
             this.props.setCurrentTask(null);
         }
         if (!this.state.visible && prevState.visible) {
+            this.updateLayerTimeDimensions(this.state.timeData, this.state.currentTimestamp);
             this.setState(TimeManager.defaultState);
             return;
         }
