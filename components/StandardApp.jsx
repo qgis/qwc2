@@ -150,12 +150,12 @@ class AppInitComponent extends React.Component {
                     }
                 }
             });
+            const task = ConfigUtils.getConfigProp("startupTask");
+            if (task) {
+                const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
+                this.props.setCurrentTask(task.key, task.mode, mapClickAction);
+            }
         });
-        const task = ConfigUtils.getConfigProp("startupTask");
-        if (task) {
-            const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
-            this.props.setCurrentTask(task.key, task.mode, mapClickAction);
-        }
     };
     render() {
         return null;
