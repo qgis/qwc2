@@ -49,10 +49,10 @@ const DateUnitLabels = {
     "100y": LocaleUtils.trmsg("timemanager.unit.century")
 };
 
-const qgis_date_format = new Format({
+const qgisDateFormat = new Format({
     //        $dateExpr           $hour        $minute         $second             $millisecond                 $zone                 $offset
-    matcher: /^(.*?)[\s,-]*([01]\d|2[0-3])\:([0-5]\d)(?:\:([0-5]\d|60)(?:[\.,](\d{9}|\d{6}|\d{1,3}))?)?[\s,-]*\(?(UTC)?[\s,-]*([+-]0\d?\:?(?:[0-5]\d)?)?[\s,-]*\)?$/i,
-    handler: function ([match, dateExpr, hour, minute, second, millisecond, zone, offset]) {
+    matcher: /^(.*?)[\s,-]*([01]\d|2[0-3]):([0-5]\d)(?::([0-5]\d|60)(?:[.,](\d{9}|\d{6}|\d{1,3}))?)?[\s,-]*\(?(UTC)?[\s,-]*([+-]0\d?:?(?:[0-5]\d)?)?[\s,-]*\)?$/i,
+    handler: function([match, dateExpr, hour, minute, second, millisecond, zone, offset]) {
         let result = {};
         if (dateExpr) {
             result = this.parser.attempt(dateExpr);
@@ -60,23 +60,23 @@ const qgis_date_format = new Format({
                 return result;
             }
         }
-        result["hour"] = hour;
-        result["minute"] = minute;
+        result.hour = hour;
+        result.minute = minute;
         if (second) {
-            result["second"] = second;
+            result.second = second;
         }
         if (millisecond && millisecond.length > 3) {
-            result["millisecond"] = millisecond.slice(0, 3);
+            result.millisecond = millisecond.slice(0, 3);
         } else if (millisecond) {
-            result["millisecond"] = millisecond;
+            result.millisecond = millisecond;
         }
         if (offset) {
-            result["offset"] = offset;
+            result.offset = offset;
         }
         return result;
     },
 });
-dateParser.addFormat(qgis_date_format)
+dateParser.addFormat(qgisDateFormat);
 
 // QGIS server does not return any feature that does not have "enddate" set.
 // To workaround this limitation, a placeholder date is used to make features
@@ -101,14 +101,14 @@ class TimeManager extends React.Component {
         defaultAnimationInterval: PropTypes.number,
         /** Default for TimeManager enabled when loading application. `true` or `false` */
         defaultEnabled: PropTypes.bool,
+        /** The default number of features that will be requested. */
+        defaultFeatureCount: PropTypes.number,
         /** The default step size for the temporal animation, in step units. */
         defaultStepSize: PropTypes.number,
         /** The default step unit for the temporal animation, one of `ms`, `s`, `m`, `d`, `M`, `y`, `10y`, `100y` */
         defaultStepUnit: PropTypes.string,
         /** The default timeline display mode. One of `hidden`, `minimal`, `features`, `layers`. */
         defaultTimelineDisplay: PropTypes.string,
-        /** The default number of features that will be requested. */
-        defaultFeatureCount: PropTypes.number,
         /** The default timeline mode. One of `fixed`, `infinite`. */
         defaultTimelineMode: PropTypes.string,
         layerVisibilities: PropTypes.object,
