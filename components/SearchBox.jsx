@@ -160,7 +160,7 @@ class SearchBox extends React.Component {
                     <div className="searchbox-results-section-body">
                         {values.map((value, idx) => {
                             return (
-                                <div className="searchbox-result" key={"f" + idx} onClick={() => this.searchTextChanged(null, value)} onMouseDown={MiscUtils.killEvent}>
+                                <div className="searchbox-result" key={"f" + idx} onClick={() => this.searchTextChanged(null, value, true)} onMouseDown={MiscUtils.killEvent}>
                                     <span className="searchbox-result-label">{value}</span>
                                 </div>
                             );
@@ -369,11 +369,15 @@ class SearchBox extends React.Component {
             </div>
         );
     }
-    searchTextChanged = (el, text) => {
+    searchTextChanged = (el, text, expandSections = false) => {
         if (this.props.layers.find(layer => layer.id === 'searchselection')) {
             this.props.removeLayer('searchselection');
         }
-        this.setState({searchText: text, expandedLayerGroup: null, activeLayerInfo: null, pendingSearches: [], searchSession: null});
+        const newState = {searchText: text, expandedLayerGroup: null, activeLayerInfo: null, pendingSearches: [], searchSession: null};
+        if (expandSections) {
+            newState.collapsedSections = {};
+        }
+        this.setState(newState);
         clearTimeout(this.searchTimeout);
         this.searchTimeout = setTimeout(this.startSearch, 250);
     };
