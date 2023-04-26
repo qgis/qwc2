@@ -23,7 +23,12 @@ import './style/MapInfoTooltip.css';
 
 class MapInfoTooltip extends React.Component {
     static propTypes = {
+        /** The number of decimal places to display for metric/imperial coordinates. */
+        cooPrecision: PropTypes.number,
+        /** The number of decimal places to display for degree coordinates. */
+        degreeCooPrecision: PropTypes.number,
         displaycrs: PropTypes.string,
+        /** The number of decimal places to display for elevation values. */
         elevationPrecision: PropTypes.number,
         enabled: PropTypes.bool,
         includeWGS84: PropTypes.bool,
@@ -31,6 +36,8 @@ class MapInfoTooltip extends React.Component {
         setCurrentTask: PropTypes.func
     };
     static defaultProps = {
+        cooPrecision: 0,
+        degreeCooPrecision: 4,
         elevationPrecision: 0,
         includeWGS84: true
     };
@@ -87,7 +94,7 @@ class MapInfoTooltip extends React.Component {
         }
         projections.map(crs => {
             const coo = CoordinatesUtils.reproject(this.state.coordinate, this.props.map.projection, crs);
-            const digits = CoordinatesUtils.getUnits(crs) === 'degrees' ? 4 : 0;
+            const digits = CoordinatesUtils.getUnits(crs) === 'degrees' ? this.props.degreeCooPrecision : this.props.cooPrecision;
             info.push([
                 (CoordinatesUtils.getAvailableCRS()[crs] || {label: crs}).label,
                 coo.map(x => LocaleUtils.toLocaleFixed(x, digits)).join(", ")
