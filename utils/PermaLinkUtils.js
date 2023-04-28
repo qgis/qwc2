@@ -92,8 +92,9 @@ export function generatePermaLink(state, callback, user = false) {
             .map(entry => ({...entry.layer, pos: entry.pos}));
         permalinkState.layers = redliningLayers;
     }
+    permalinkState.url = fullUrl;
     const route = user ? "userpermalink" : "createpermalink";
-    axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/" + route + "?url=" + encodeURIComponent(fullUrl), permalinkState)
+    axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/" + route, permalinkState)
         .then(response => callback(response.data.permalink || fullUrl))
         .catch(() => callback(fullUrl));
 }
@@ -159,8 +160,9 @@ export function createBookmark(state, description, callback) {
             .map(entry => ({...entry.layer, pos: entry.pos}));
         bookmarkState.layers = redliningLayers;
     }
+    bookmarkState.url = UrlParams.getFullUrl();
     axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" +
-        "?url=" + encodeURIComponent(UrlParams.getFullUrl()) + "&description=" + description, bookmarkState)
+        "?description=" + description, bookmarkState)
         .then(() => callback(true))
         .catch(() => callback(false));
 }
@@ -178,8 +180,9 @@ export function updateBookmark(state, bkey, description, callback) {
     const bookmarkState = {
         layers: redliningLayers
     };
+    bookmarkState.url = UrlParams.getFullUrl();
     axios.put(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey +
-        "?url=" + encodeURIComponent(UrlParams.getFullUrl()) + "&description=" + description, bookmarkState)
+        "?description=" + description, bookmarkState)
         .then(() => callback(true))
         .catch(() => callback(false));
 }
