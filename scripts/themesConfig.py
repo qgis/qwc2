@@ -421,7 +421,7 @@ def getTheme(config, configItem, result, resultItem):
         }
         if "extent" in configItem:
             resultItem["initialBbox"] = {
-                "crs": configItem["mapCrs"] if "mapCrs" in configItem else "EPSG:4326",
+                "crs": configItem["mapCrs"] if "mapCrs" in configItem else result["themes"]["defaultMapCrs"],
                 "bounds": configItem["extent"]
             }
         else:
@@ -456,7 +456,7 @@ def getTheme(config, configItem, result, resultItem):
         if "mapCrs" in configItem:
             resultItem["mapCrs"] = configItem["mapCrs"]
         else:
-            resultItem["mapCrs"] = "EPSG:3857"
+            resultItem["mapCrs"] = result["themes"]["defaultMapCrs"]
         if printTemplates:
             resultItem["print"] = printTemplates
         resultItem["drawingOrder"] = drawingOrder
@@ -569,12 +569,14 @@ def genThemes(themesConfig):
             "title": "root",
             "subdirs": [],
             "items": [],
-            "defaultTheme": None,
+            "defaultTheme": config["defaultTheme"] if "defaultTheme" in config else None,
+            "defaultMapCrs": config["defaultMapCrs"] if "defaultMapCrs" in config else "EPSG:3857",
             "defaultScales": config["defaultScales"],
             "defaultPrintScales": config["defaultPrintScales"] if "defaultPrintScales" in config else None,
             "defaultPrintResolutions": config["defaultPrintResolutions"] if "defaultPrintResolutions" in config else None,
             "defaultPrintGrid": config["defaultPrintGrid"] if "defaultPrintGrid" in config else None,
             "defaultSearchProviders": config["defaultSearchProviders"] if "defaultSearchProviders" in config else None,
+            "defaultBackgroundLayers": config["defaultBackgroundLayers"] if "defaultBackgroundLayers" in config else [],
             "pluginData": config["themes"]["pluginData"] if "pluginData" in config["themes"] else [],
             "themeInfoLinks": config["themes"]["themeInfoLinks"] if "themeInfoLinks" in config["themes"] else [],
             "externalLayers": config["themes"]["externalLayers"] if "externalLayers" in config["themes"] else [],

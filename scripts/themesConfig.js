@@ -435,7 +435,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             };
             if (configItem.extent) {
                 resultItem.initialBbox = {
-                    crs: configItem.mapCrs || 'EPSG:3857',
+                    crs: configItem.mapCrs || result.themes.defaultMapCrs,
                     bounds: configItem.extent
                 };
             } else {
@@ -452,7 +452,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             resultItem.backgroundLayers = configItem.backgroundLayers;
             resultItem.searchProviders = configItem.searchProviders;
             resultItem.additionalMouseCrs = configItem.additionalMouseCrs;
-            resultItem.mapCrs = configItem.mapCrs || 'EPSG:3857';
+            resultItem.mapCrs = configItem.mapCrs || result.themes.defaultMapCrs;
             if (printTemplates.length > 0) {
                 resultItem.print = printTemplates;
             }
@@ -556,12 +556,14 @@ function genThemes(themesConfig) {
             title: "root",
             subdirs: [],
             items: [],
-            defaultTheme: undefined,
+            defaultTheme: config.defaultTheme,
+            defaultMapCrs: config.defaultMapCrs || 'EPSG:3857',
             defaultScales: config.defaultScales,
             defaultPrintScales: config.defaultPrintScales,
             defaultPrintResolutions: config.defaultPrintResolutions,
             defaultPrintGrid: config.defaultPrintGrid,
             defaultSearchProviders: config.defaultSearchProviders,
+            defaultBackgroundLayers: config.defaultBackgroundLayers || [],
             externalLayers: config.themes.externalLayers || [],
             pluginData: config.themes.pluginData,
             themeInfoLinks: config.themes.themeInfoLinks,

@@ -134,13 +134,14 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
         // Inherit defaults if necessary
         theme = {
             ...theme,
-            mapCrs: theme.mapCrs || "EPSG:3857",
+            mapCrs: theme.mapCrs || themes.defaultMapCrs || "EPSG:3857",
             version: theme.version || themes.defaultWMSVersion || "1.3.0",
             scales: theme.scales || themes.defaultScales || MapUtils.getGoogleMercatorScales(0, 21),
             printScales: theme.printScales || themes.defaultPrintScales || undefined,
             printResolutions: theme.printResolutions || themes.defaultPrintResolutions || undefined,
             printGrid: theme.printGrid || themes.defaultPrintGrid || undefined,
-            searchProviders: theme.searchProviders || themes.defaultSearchProviders || undefined
+            searchProviders: theme.searchProviders || themes.defaultSearchProviders || undefined,
+            backgroundLayers: theme.backgroundLayers || themes.defaultBackgroundLayers || []
         };
 
         // Preserve extent if desired and possible
