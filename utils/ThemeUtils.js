@@ -8,12 +8,13 @@
 
 import isEmpty from 'lodash.isempty';
 import url from 'url';
+import {v4 as uuidv4} from 'uuid';
+import {remove as removeDiacritics} from 'diacritics';
 
 import {SearchResultType} from '../actions/search';
-import ConfigUtils from '../utils/ConfigUtils';
-import LayerUtils from '../utils/LayerUtils';
 import {LayerRole} from '../actions/layers';
-import {remove as removeDiacritics} from 'diacritics';
+import ConfigUtils from './ConfigUtils';
+import LayerUtils from './LayerUtils';
 
 const ThemeUtils = {
     getThemeById(themes, id) {
@@ -30,7 +31,7 @@ const ThemeUtils = {
         }
         return null;
     },
-    createThemeBackgroundLayers(theme, themes, visibleLayer = null) {
+    createThemeBackgroundLayers(theme, themes, visibleLayer, externalLayers) {
         const bgLayers = [];
         let visibleIdx = -1;
         let defaultVisibleIdx = -1;
@@ -52,7 +53,15 @@ const ThemeUtils = {
                     visibility: false,
                     opacity: bgLayer.opacity !== undefined ? bgLayer.opacity : 255
                 };
-                if (bgLayer.type === "wms") {
+                if (bgLayer.resource) {
+                    bgLayer.id = uuidv4();
+                    bgLayer.type = "placeholder";
+                    const params = LayerUtils.splitLayerUrlParam(bgLayer.resource);
+                    params.id = bgLayer.id;
+                    const key = params.type + ":" + params.url;
+                    (externalLayers[key] = externalLayers[key] || []).push(params);
+                    delete bgLayer.resource;
+                } else if (bgLayer.type === "wms") {
                     bgLayer.version = bgLayer.params.VERSION || bgLayer.version || themes.defaultWMSVersion || "1.3.0";
                 } else if (bgLayer.type === "group") {
                     bgLayer.items = bgLayer.items.map(item => {

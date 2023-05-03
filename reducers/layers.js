@@ -280,7 +280,7 @@ export default function layers(state = defaultState, action) {
         if (action.layer) {
             newLayers = newLayers.map(layer => {
                 if (layer.type === 'placeholder' && layer.id === action.id) {
-                    const newLayer = {...action.layer};
+                    const newLayer = {...action.layer, ...layer, type: action.layer.type};
                     LayerUtils.addUUIDs(newLayer);
                     if (newLayer.type === "wms") {
                         Object.assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));

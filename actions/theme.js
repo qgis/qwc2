@@ -42,7 +42,7 @@ export function setThemeLayersList(theme) {
     };
 }
 
-export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer) {
+export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer) {
     // Create layer
     const themeLayer = ThemeUtils.createThemeLayer(theme, themes);
     let layers = [themeLayer];
@@ -62,6 +62,14 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
         if (isEmpty(layers)) {
             layers = [{...themeLayer, sublayers: []}];
         }
+    }
+
+    // Add background layers for theme
+    for (const bgLayer of ThemeUtils.createThemeBackgroundLayers(theme, themes, visibleBgLayer, externalLayers)) {
+        dispatch(addLayer(bgLayer));
+    }
+    if (visibleBgLayer === "") {
+        UrlParams.updateParams({bl: ""});
     }
 
     for (const layer of layers.reverse()) {
@@ -162,16 +170,7 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
         // Reconfigure map
         dispatch(configureMap(theme.mapCrs, theme.scales, initialView || theme.initialBbox));
 
-        // Add background layers for theme
-        for (const bgLayer of ThemeUtils.createThemeBackgroundLayers(theme, themes, visibleBgLayer)) {
-            dispatch(addLayer(bgLayer));
-        }
-        if (visibleBgLayer === "") {
-            UrlParams.updateParams({bl: ""});
-        }
-
         let layerConfigs = layerParams ? layerParams.map(param => LayerUtils.splitLayerUrlParam(param)) : null;
-
         if (layerConfigs) {
             layerConfigs = LayerUtils.replaceLayerGroups(layerConfigs, theme);
         }
@@ -200,10 +199,10 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
                         }
                     }, []);
                 }
-                finishThemeSetup(dispatch, newTheme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer);
+                finishThemeSetup(dispatch, newTheme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer);
             });
         } else {
-            finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer);
+            finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer);
         }
     };
 }
