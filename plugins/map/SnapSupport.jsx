@@ -11,7 +11,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import ol from 'openlayers';
-import {v1 as uuidv4} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {LayerRole} from '../../actions/layers';
 import IdentifyUtils from '../../utils/IdentifyUtils';
 

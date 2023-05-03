@@ -8,7 +8,7 @@
 
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
-import {v1 as uuidv4} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import url from 'url';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';

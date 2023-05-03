@@ -11,7 +11,7 @@ import isEmpty from 'lodash.isempty';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import LayerUtils from '../utils/LayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
-import {v1 as uuidv4} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {
     LayerRole,
     SET_LAYER_LOADING,
