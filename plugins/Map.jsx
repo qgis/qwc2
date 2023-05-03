@@ -177,6 +177,9 @@ class MapPlugin extends React.Component {
     renderLayers = () => {
         let zIndex = 0;
         return this.state.renderLayers.map(layer => {
+            if (layer.type === "placeholder") {
+                return null;
+            }
             ++zIndex;
             const options = {...layer, zIndex: layer.zIndex ?? zIndex};
             const swipe = this.props.swipe !== null && layer === this.state.swipeLayer;
