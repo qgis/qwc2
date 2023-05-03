@@ -54,6 +54,9 @@ for tms in contents.getElementsByTagName("TileMatrixSet"):
         continue
     ident = tms.getElementsByTagName("ows:Identifier")[0].firstChild.nodeValue
     crs = tms.getElementsByTagName("ows:SupportedCRS")[0].firstChild.nodeValue
+    crsMatch = re.search('(EPSG).*:(\d+)', crs)
+    if crsMatch:
+        crs = "EPSG:" + crsMatch.group(2)
     matrices = tms.getElementsByTagName("TileMatrix")
     origin = list(map(float, matrices[0].getElementsByTagName("TopLeftCorner")[0].firstChild.nodeValue.split(" ")))
     tilesize = [
