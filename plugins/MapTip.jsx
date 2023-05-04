@@ -49,7 +49,12 @@ class MapTip extends React.Component {
         maptips: [],
         pos: null
     };
-    componentDidUpdate(prevProps) {
+    componentDidMount() {
+        document.getElementById('map').addEventListener('mouseleave', () => {
+            this.clearMaptip();
+        });
+    }
+    componentDidUpdate(prevProps, prevState) {
         if (this.props.map !== prevProps.map || this.props.theme !== prevProps.theme) {
             clearTimeout(this.timeoutId);
         }
@@ -68,13 +73,14 @@ class MapTip extends React.Component {
         } else if (!this.props.mapTipsEnabled && prevProps.mapTipsEnabled) {
             this.clearMaptip();
         }
+        if (!isEmpty(prevState.maptips) && isEmpty(this.state.maptips)) {
+            this.clearMaptip();
+        }
     }
     clearMaptip = () => {
         clearTimeout(this.timeoutId);
         this.timeoutId = null;
-        if (!isEmpty(this.state.maptips)) {
-            this.props.removeLayer('maptipselection');
-        }
+        this.props.removeLayer('maptipselection');
         this.setState({maptips: [], pos: null});
     };
     queryMapTip = () => {
