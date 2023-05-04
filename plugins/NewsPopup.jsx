@@ -35,8 +35,8 @@ export default class NewsPopup extends React.Component {
         this.state.showPopup = !document.cookie.split(';').some((item) => item.includes('newsrev=' + props.newsRev));
     }
     render() {
-        if (!this.state.showPopup) {
-            return false;
+        if (!this.state.showPopup || !this.props.newsDocument) {
+            return null;
         }
         return (
             <div className="newspopup-dialog-container">
@@ -61,5 +61,5 @@ export default class NewsPopup extends React.Component {
             document.cookie = "newsrev=" + this.props.newsRev + "; SameSite=Lax; expires=" + d.toUTCString();
         }
         this.setState({showPopup: false});
-    }
+    };
 }
