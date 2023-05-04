@@ -86,7 +86,7 @@ class DxfExport extends React.Component {
                     <input name="REQUEST" readOnly type="hidden" value="GetMap" />
                     <input name="FORMAT" readOnly type="hidden" value="application/dxf" />
                     <input name="CRS" readOnly type="hidden" value={this.props.map.projection} />
-                    <input name="FILE_NAME" readOnly type="hidden" value={basename + ".dxf"} />
+                    <input name="filename" readOnly type="hidden" value={basename + ".dxf"} />
                     <input name="BBOX" readOnly ref={input => { this.extentInput = input; }} type="hidden" value="" />
                     {Object.entries(dimensionValues).map(([key, value]) => (
                         <input key={key} name={key} readOnly type="hidden" value={value} />
