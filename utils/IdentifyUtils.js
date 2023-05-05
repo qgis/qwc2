@@ -23,7 +23,7 @@ import VectorLayerUtils from './VectorLayerUtils';
 function identifyRequestParams(layer, queryLayers, projection, params) {
     let format = 'text/plain';
     const infoFormats = layer.infoFormats || [];
-    if (infoFormats.includes('text/xml') && (!layer.external || infoFormats.length === 1)) {
+    if (infoFormats.includes('text/xml') && (layer.serverType === 'qgis' || infoFormats.length === 1)) {
         format = 'text/xml';
     } else if (infoFormats.includes('application/geojson')) {
         format = 'application/geojson';
