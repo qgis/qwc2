@@ -729,11 +729,19 @@ const LayerUtils = {
             }
         } else if (qgisServerVersion === 2) {
             if (layer.type === "wms") {
-                // Handled by qwc-print-service
-                params.LAYERS.push(`wms:${layer.url}#${layer.params.LAYERS}`);
+                const names = layer.params.LAYERS.split(",");
+                const opacities = layer.params.OPACITIES.split(",");
+                for (let idx = 0; idx < names.length; ++idx) {
+                    // Handled by qwc-print-service
+                    params.LAYERS.push(`wms:${layer.url}#${names[idx]}`);
+                    params.OPACITIES.push(opacities[idx]);
+                    params.COLORS.push("");
+                }
             } else if (layer.type === "wfs") {
                 // Handled by qwc-print-service
                 params.LAYERS.push(`wfs:${layer.url}#${layer.name}`);
+                params.OPACITIES.push(layer.opacity);
+                params.COLORS.push(layer.color);
             }
         }
     },
