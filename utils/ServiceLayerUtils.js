@@ -197,7 +197,6 @@ const ServiceLayerUtils = {
             bbox: bbox,
             visibility: true,
             opacity: 255,
-            external: true,
             extwmsparams: extwmsparams,
             minScale: layer.MinScaleDenominator,
             maxScale: layer.MaxScaleDenominator
