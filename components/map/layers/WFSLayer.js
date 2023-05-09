@@ -53,7 +53,10 @@ export default {
 
         const vectorSource = new ol.source.Vector({
             format: olformat,
-            url: function(extent) {
+            loader: options.loader ? function(extent, resolution, projection, success, failure) {
+                options.loader(vectorSource, extent, resolution, projection, success, failure);
+            } : null,
+            url: options.url ? function(extent) {
                 let bbox = extent.join(',');
                 let srsName = options.projection;
                 if (options.version >= "1.1.0") {
@@ -77,7 +80,7 @@ export default {
                     bbox: bbox
                 };
                 return url.format(urlParts);
-            },
+            } : null,
             strategy: ol.loadingstrategy.bbox
         });
 
