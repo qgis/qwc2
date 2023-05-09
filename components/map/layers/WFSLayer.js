@@ -90,7 +90,8 @@ export default {
                 fillColor: options.color,
                 strokeColor: feature.getGeometry().getType().endsWith("LineString") ? options.color : "#000",
                 strokeWidth: 1,
-                strokeDash: []
+                strokeDash: [],
+                circleRadius: 5
             })
         });
     },
