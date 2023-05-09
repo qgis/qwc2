@@ -62,17 +62,22 @@ if not targetLayer:
     print("Could not find layer %s in capabilities" % layerName, file=sys.stderr)
     sys.exit(1)
 
+# Get supported tile matrix
+layerTileMatrixSet = []
+for tileMatrixSetLink in targetLayer.getElementsByTagName("TileMatrixSetLink"):
+    layerTileMatrixSet.append(getFirstElementValueByTagName(tileMatrixSetLink, "TileMatrixSet"))
+
 # Get best tile matrix
 tileMatrix = None
 tileMatrixName = ""
 for child in contents.childNodes:
     if child.nodeName == "TileMatrixSet":
         tileMatrixSet = child
+        tileMatrixName = getFirstElementValueByTagName(tileMatrixSet, "ows:Identifier")
         supportedCrs = getFirstElementValueByTagName(tileMatrixSet, "ows:SupportedCRS")
         crsMatch = re.search('(EPSG).*:(\d+)', supportedCrs)
-        if crsMatch and crs == "EPSG:" + crsMatch.group(2):
+        if crsMatch and crs == "EPSG:" + crsMatch.group(2) and tileMatrixName in layerTileMatrixSet:
             tileMatrix = tileMatrixSet.getElementsByTagName("TileMatrix")
-            tileMatrixName = getFirstElementValueByTagName(tileMatrixSet, "ows:Identifier")
             break
 
 if not tileMatrix:
