@@ -114,6 +114,17 @@ export default {
             })
         ];
     },
+    image: (feature, options) => {
+        return new ol.style.Style({
+            image: new ol.style.Icon({
+                img: options.img,
+                rotation: options.rotation,
+                anchor: [0.5, 1],
+                imgSize: options.size,
+                rotateWithView: true
+            })
+        });
+    },
     text: (feature, options) => {
         return [
             new ol.style.Style({
