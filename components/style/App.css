@@ -173,6 +173,7 @@ button.button > div.spinner {
 /** Range slider **/
 input[type=range] {
     -webkit-appearance: none;
+    appearance: none;
     background-color: transparent;
     height: 2em;
 }
@@ -188,6 +189,7 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 input[type=range]::-moz-range-thumb {
+    appearance: none;
     -webkit-appearance: none;
     border: 1px solid var(--border-color);
     border-radius: 50%;
