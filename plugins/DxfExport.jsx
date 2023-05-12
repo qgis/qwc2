@@ -9,7 +9,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import axios from 'axios';
 import isEmpty from 'lodash.isempty';
+import formDataEntries from 'formdata-json';
+import FileSaver from 'file-saver';
 import {LayerRole} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import TaskBar from '../components/TaskBar';
@@ -73,7 +76,7 @@ class DxfExport extends React.Component {
 
         return (
             <span>
-                <form action={action} method="POST" ref={form => { this.form = form; }} target="_blank">
+                <form action={action} method="POST" onSubmit={this.export} ref={form => { this.form = form; }} target="_blank">
                     <div className="help-text">{LocaleUtils.tr("dxfexport.selectinfo")}</div>
                     <div className="export-settings">
                         <span>
@@ -119,6 +122,28 @@ class DxfExport extends React.Component {
             </TaskBar>
         );
     }
+    export = (ev) => {
+        ev.preventDefault();
+        const formData = formDataEntries(new FormData(this.form));
+        const data = Object.entries(formData).map((pair) =>
+            pair.map(entry => encodeURIComponent(entry).replace(/%20/g, '+')).join("=")
+        ).join("&");
+        const config = {
+            headers: {'Content-Type': 'application/x-www-form-urlencoded' },
+            responseType: "arraybuffer"
+        };
+        axios.post(this.props.theme.url, data, config).then(response => {
+            const contentType = response.headers["content-type"];
+            FileSaver.saveAs(new Blob([response.data], {type: contentType}), this.props.theme.name + '.dxf');
+        }).catch(e => {
+            if (e.response) {
+                /* eslint-disable-next-line */
+                console.log(new TextDecoder().decode(e.response.data));
+            }
+            /* eslint-disable-next-line */
+            alert('Export failed');
+        });
+    };
     bboxSelected = (bbox, crs) => {
         if (!bbox) {
             return;
