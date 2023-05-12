@@ -97,7 +97,7 @@ class RasterExport extends React.Component {
                     const widthm = state.scale * pageSize.width / 1000;
                     const heightm = state.scale * pageSize.height / 1000;
                     const {width, height} = MapUtils.transformExtent(mapCrs, center, widthm, heightm);
-                    let extent = [center[0] - 0.5 * width, center[0] + 0.5 * width, center[1] - 0.5 * height, center[1] + 0.5 * height];
+                    let extent = [center[0] - 0.5 * width, center[1] - 0.5 * height, center[0] + 0.5 * width, center[1] + 0.5 * height];
                     extent = (CoordinatesUtils.getAxisOrder(mapCrs).substr(0, 2) === 'ne' && this.props.theme.version === '1.3.0') ?
                         extent[1] + "," + extent[0] + "," + extent[3] + "," + extent[2] :
                         extent.join(',');
