@@ -76,7 +76,7 @@ class DxfExport extends React.Component {
 
         return (
             <span>
-                <form action={action} method="POST" onSubmit={this.export} ref={form => { this.form = form; }} target="_blank">
+                <form action={action} method="POST" onSubmit={this.export} ref={form => { this.form = form; }}>
                     <div className="help-text">{LocaleUtils.tr("dxfexport.selectinfo")}</div>
                     <div className="export-settings">
                         <span>
@@ -122,8 +122,10 @@ class DxfExport extends React.Component {
             </TaskBar>
         );
     }
-    export = (ev) => {
-        ev.preventDefault();
+    export = (ev = null) => {
+        if (ev) {
+            ev.preventDefault();
+        }
         const formData = formDataEntries(new FormData(this.form));
         const data = Object.entries(formData).map((pair) =>
             pair.map(entry => encodeURIComponent(entry).replace(/%20/g, '+')).join("=")
@@ -132,7 +134,8 @@ class DxfExport extends React.Component {
             headers: {'Content-Type': 'application/x-www-form-urlencoded' },
             responseType: "arraybuffer"
         };
-        axios.post(this.props.theme.url, data, config).then(response => {
+        const action = this.props.serviceUrl || this.props.theme.url;
+        axios.post(action, data, config).then(response => {
             const contentType = response.headers["content-type"];
             FileSaver.saveAs(new Blob([response.data], {type: contentType}), this.props.theme.name + '.dxf');
         }).catch(e => {
@@ -153,7 +156,7 @@ class DxfExport extends React.Component {
             bbox[1] + "," + bbox[0] + "," + bbox[3] + "," + bbox[2] :
             bbox.join(',');
         this.extentInput.value = extent;
-        this.form.submit();
+        this.export();
         this.props.setCurrentTask(null);
     };
 }
