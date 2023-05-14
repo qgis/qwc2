@@ -148,6 +148,7 @@ function computeRoute(costing, locations, options, callback) {
         // https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/
         const travelTypeMap = {
             car: {icon: "routing-car", color: [0, 0, 255, 1]},
+            tractor_trailer: {icon: "routing-truck", color: [0, 0, 255, 1]},
             foot: {icon: "routing-walking", color: [127, 127, 255, 1]},
             road: {icon: "routing-bicycle", color: [0, 127, 0, 1]},
             tram: {icon: "routing-tram", color: [255, 0, 0, 1]},
@@ -169,7 +170,7 @@ function computeRoute(costing, locations, options, callback) {
                         instruction: entry.instruction,
                         post_instruction: entry.verbal_post_transition_instruction,
                         geom_indices: [entry.begin_shape_index, entry.end_shape_index],
-                        icon: (travelTypeMap[entry.travel_type] || {}).icon,
+                        icon: (travelTypeMap[entry.travel_type] || {}).icon || "routing",
                         color: (travelTypeMap[entry.travel_type] || {}).color || "#0000FF",
                         time: entry.time,
                         length: entry.length * 1000
