@@ -27,7 +27,6 @@ function wmsToOpenlayersOptions(options) {
         CRS: options.projection,
         TILED: String(urlParams.TILED ?? options.tiled ?? false).toLowerCase() === "true",
         VERSION: options.version,
-        DPI: options.dpi || ConfigUtils.getConfigProp("wmsDpi") || 96,
         ...options.params
     };
 }
