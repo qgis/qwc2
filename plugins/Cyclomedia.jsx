@@ -33,6 +33,8 @@ class Cyclomedia extends React.Component {
         apikey: PropTypes.string,
         changeLayerProperty: PropTypes.func,
         click: PropTypes.object,
+        /** OAuth client ID. */
+        clientId: PropTypes.string,
         /** The cyclomedia version. */
         cyclomediaVersion: PropTypes.string,
         /** Default window geometry. */
@@ -43,6 +45,10 @@ class Cyclomedia extends React.Component {
             initialY: PropTypes.number,
             initiallyDocked: PropTypes.bool
         }),
+        /** The relative path to the redirect login handling of oauth. */
+        loginRedirectUri: PropTypes.string,
+        /** The relative path to the redirect logout handling of oauth. */
+        logoutRedirectUri: PropTypes.string,
         mapScale: PropTypes.number,
         /** The maximum map scale above which the recordings WFS won't be displayed. */
         maxMapScale: PropTypes.number,
@@ -282,9 +288,12 @@ class Cyclomedia extends React.Component {
             function initApi() {
                 StreetSmartApi.init({
                     targetElement: document.getElementById("streetsmartApi"),
-                    username: "${this.state.username}",
-                    password: "${this.state.password}",
+                    username: "${this.state.username || undefined}",
+                    password: "${this.state.password || undefined}",
                     apiKey: "${this.props.apikey}",
+                    clientId: "${this.props.clientId}",
+                    loginRedirectUri: "${this.props.loginRedirectUri}",
+                    logoutRedirectUri: "${this.props.logoutRedirectUri}",
                     srs: "EPSG:3857",
                     locale: "${lang}",
                     configurationUrl: 'https://atlas.cyclomedia.com/configuration',
