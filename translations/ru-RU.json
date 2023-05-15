@@ -6,6 +6,7 @@
       "menulabel": "Карта и инструменты",
       "items": {
         "AttributeTable": "",
+        "Cyclomedia": "",
         "DxfExport": "Экспорт в DXF",
         "Editing": "Правка",
         "FeatureForm": "",

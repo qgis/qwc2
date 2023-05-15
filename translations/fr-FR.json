@@ -6,6 +6,7 @@
       "menulabel": "Cartes et outils",
       "items": {
         "AttributeTable": "Table d'attributs",
+        "Cyclomedia": "Cyclomedia",
         "DxfExport": "Export DXF",
         "Editing": "Editer",
         "FeatureForm": "Formulaire d'objet",

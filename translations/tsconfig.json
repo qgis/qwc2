@@ -21,6 +21,7 @@
   ],
   "extra_strings": [
     "appmenu.items.AttributeTable",
+    "appmenu.items.Cyclomedia",
     "appmenu.items.DxfExport",
     "appmenu.items.Editing",
     "appmenu.items.FeatureForm",

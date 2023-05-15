@@ -6,6 +6,7 @@
       "menulabel": "Map & Tools",
       "items": {
         "AttributeTable": "Attribute Table",
+        "Cyclomedia": "Cyclomedia",
         "DxfExport": "DXF Export",
         "Editing": "Editing",
         "FeatureForm": "Feature Form",

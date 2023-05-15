@@ -6,6 +6,7 @@
       "menulabel": "Mapa & Eines",
       "items": {
         "AttributeTable": "Taula d'atributs",
+        "Cyclomedia": "",
         "DxfExport": "Exportar DXF",
         "Editing": "Editant",
         "FeatureForm": "Formulari d'element",
