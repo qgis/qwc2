@@ -65,7 +65,8 @@ class Cyclomedia extends React.Component {
             initialX: 0,
             initialY: 0,
             initiallyDocked: true
-        }
+        },
+        maxMapScale: 10000
     };
     state = {
         status: Status.LOGIN,
