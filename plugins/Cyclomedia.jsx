@@ -89,7 +89,7 @@ class Cyclomedia extends React.Component {
             this.onClose();
         }
         // Load WFS when loading
-        if (this.state.status === Status.LOADING && !prevState.status !== Status.LOADING) {
+        if (this.state.status === Status.LOADING && prevState.status < Status.LOADING) {
             this.addRecordingsWFS();
         }
         // Handle map click events
