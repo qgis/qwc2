@@ -80,6 +80,14 @@
       "click_to_copy": "In Zwischenablage kopieren",
       "copied": "Kopiert"
     },
+    "cyclomedia": {
+      "clickonmap": "Wähle eine Aufnahme in der Karte aus",
+      "loaderror": "Fehler beim Initialisieren von Cyclomedia",
+      "loading": "Cyclomedia wird initialisiert...",
+      "login": "Anmelden",
+      "scalehint": "Die Aufnahmen sind nur ab Massstab 1:{0} auf der Karte sichtbar.",
+      "title": "Cyclomedia Viewer"
+    },
     "dxfexport": {
       "layers": "Ebenen",
       "selectinfo": "Rechteck um die zu exportierende Region aufziehen",

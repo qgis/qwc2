@@ -80,6 +80,14 @@
       "click_to_copy": "Cliquer pour copier",
       "copied": "Copié"
     },
+    "cyclomedia": {
+      "clickonmap": "Cliquez sur un enregistrement sur la carte",
+      "loaderror": "Échec de l'initialisation de Cyclomedia",
+      "loading": "Initialisation de Cyclomedia...",
+      "login": "Connexion",
+      "scalehint": "Les enregistrements ne sont visibles que sur la carte sous l'échelle 1 :{0}.",
+      "title": "Visualiseur Cyclomedia"
+    },
     "dxfexport": {
       "layers": "Couches",
       "selectinfo": "Faites glisser un rectangle autour de la région à exporter..",

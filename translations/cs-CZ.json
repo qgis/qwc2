@@ -80,6 +80,14 @@
       "click_to_copy": "Klikněte pro kopírování",
       "copied": "Zkopírováno"
     },
+    "cyclomedia": {
+      "clickonmap": "",
+      "loaderror": "",
+      "loading": "",
+      "login": "",
+      "scalehint": "",
+      "title": ""
+    },
     "dxfexport": {
       "layers": "",
       "selectinfo": "Vyberte obdélníkem oblast pro export...",

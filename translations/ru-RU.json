@@ -80,6 +80,14 @@
       "click_to_copy": "Копировать",
       "copied": "Скопировано"
     },
+    "cyclomedia": {
+      "clickonmap": "",
+      "loaderror": "",
+      "loading": "",
+      "login": "",
+      "scalehint": "",
+      "title": ""
+    },
     "dxfexport": {
       "layers": "",
       "selectinfo": "Для экспорта обведите регион многоугольником...",

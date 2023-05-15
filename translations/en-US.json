@@ -80,6 +80,14 @@
       "click_to_copy": "Click to copy",
       "copied": "Copied"
     },
+    "cyclomedia": {
+      "clickonmap": "Click on a recording on the map",
+      "loaderror": "Failed to initialize Cyclomedia",
+      "loading": "Initializing Cyclomedia...",
+      "login": "Login",
+      "scalehint": "The recordings are only visible on the map below scale 1:{0}.",
+      "title": "Cyclomedia Viewer"
+    },
     "dxfexport": {
       "layers": "Layers",
       "selectinfo": "Drag a rectangle around the region to export...",

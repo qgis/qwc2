@@ -80,6 +80,14 @@
       "click_to_copy": "Click pt. copiere",
       "copied": "Copiat"
     },
+    "cyclomedia": {
+      "clickonmap": "",
+      "loaderror": "",
+      "loading": "",
+      "login": "",
+      "scalehint": "",
+      "title": ""
+    },
     "dxfexport": {
       "layers": "Straturi",
       "selectinfo": "Încadrați într-un dreptunghi zona de exportat..",

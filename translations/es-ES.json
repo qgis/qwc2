@@ -80,6 +80,14 @@
       "click_to_copy": "Clic para copiar",
       "copied": "Copiado"
     },
+    "cyclomedia": {
+      "clickonmap": "",
+      "loaderror": "",
+      "loading": "",
+      "login": "",
+      "scalehint": "",
+      "title": ""
+    },
     "dxfexport": {
       "layers": "Capas",
       "selectinfo": "Arrastre un rectángulo alrededor de la zona para exportar...",

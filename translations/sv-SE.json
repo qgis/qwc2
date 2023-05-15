@@ -80,6 +80,14 @@
       "click_to_copy": "Klicka för att kopiera",
       "copied": "Kopierade"
     },
+    "cyclomedia": {
+      "clickonmap": "",
+      "loaderror": "",
+      "loading": "",
+      "login": "",
+      "scalehint": "",
+      "title": ""
+    },
     "dxfexport": {
       "layers": "",
       "selectinfo": "Rita en rektangel runt området som ska exporteras...",

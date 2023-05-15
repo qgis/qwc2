@@ -80,6 +80,14 @@
       "click_to_copy": "Kliknij, aby skopiować",
       "copied": "Skopiowano"
     },
+    "cyclomedia": {
+      "clickonmap": "",
+      "loaderror": "",
+      "loading": "",
+      "login": "",
+      "scalehint": "",
+      "title": ""
+    },
     "dxfexport": {
       "layers": "",
       "selectinfo": "Narysuj prostokąt, określając obszar do eksportu...",

@@ -80,6 +80,14 @@
       "click_to_copy": "Kopyalamak için tıkla",
       "copied": "Kopyalandı"
     },
+    "cyclomedia": {
+      "clickonmap": "",
+      "loaderror": "",
+      "loading": "",
+      "login": "",
+      "scalehint": "",
+      "title": ""
+    },
     "dxfexport": {
       "layers": "",
       "selectinfo": "Export edilecek alana bir dikdörtgen çizin...",

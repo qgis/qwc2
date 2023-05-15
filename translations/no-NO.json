@@ -80,6 +80,14 @@
       "click_to_copy": "Klikk for å kopiere",
       "copied": "Kopiert"
     },
+    "cyclomedia": {
+      "clickonmap": "",
+      "loaderror": "",
+      "loading": "",
+      "login": "",
+      "scalehint": "",
+      "title": ""
+    },
     "dxfexport": {
       "layers": "",
       "selectinfo": "Tegn et rektangel rundt området som skal eksporteres...",

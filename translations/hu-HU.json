@@ -80,6 +80,14 @@
       "click_to_copy": "Kattints a másoláshoz",
       "copied": "Kimásolva"
     },
+    "cyclomedia": {
+      "clickonmap": "",
+      "loaderror": "",
+      "loading": "",
+      "login": "",
+      "scalehint": "",
+      "title": ""
+    },
     "dxfexport": {
       "layers": "",
       "selectinfo": "Rajzolj egy négyszöget az exportálni kívánt terület köré...",
