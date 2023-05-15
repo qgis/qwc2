@@ -211,7 +211,7 @@ class Cyclomedia extends React.Component {
                 iframe.setAttribute("callback-registered", true);
                 iframe.contentWindow.registerCallbacks(this.apiInitialized, this.panoramaPositionChanged);
             }
-        } else if(!iframe.getAttribute("init-called")) {
+        } else if (!iframe.getAttribute("init-called")) {
             if (iframe.contentWindow.StreetSmartApi) {
                 iframe.setAttribute("init-called", true);
                 iframe.contentWindow.initApi();
@@ -405,7 +405,12 @@ class Cyclomedia extends React.Component {
                 xhr.onerror = onError;
                 xhr.onload = function() {
                     if (xhr.status === 200) {
-                        const features = vectorSource.getFormat().readFeatures(xhr.responseText);
+                        const features = vectorSource.getFormat().readFeatures(xhr.responseText,
+                            {
+                                dataProjection: 'EPSG:3857',
+                                featureProjection: projection.getCode()
+                            }
+                        );
                         vectorSource.addFeatures(features);
                         success(features);
                     } else {
