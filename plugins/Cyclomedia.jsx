@@ -81,7 +81,7 @@ class Cyclomedia extends React.Component {
     }
     componentDidUpdate(prevProps, prevState) {
         if (!prevProps.active && this.props.active) {
-            this.setState({status: Status.LOGIN});
+            this.setState({status: this.props.clientId ? Status.LOADING : Status.LOGIN});
         } else if (
             (prevProps.active && !this.props.active) ||
             (prevProps.theme && !this.props.theme)
