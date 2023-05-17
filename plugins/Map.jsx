@@ -45,7 +45,10 @@ class MapPlugin extends React.Component {
         swipeLayerNameBlacklist: PropTypes.arrayOf(PropTypes.string),
         tools: PropTypes.object,
         /** Map tool configuraiton options. Refer to the sample config.json. */
-        toolsOptions: PropTypes.object
+        toolsOptions: PropTypes.object,
+        /** Enables setting a map request key to avoid browser cache. */
+        useMapRequestKey: PropTypes.bool,
+
     };
     static defaultProps = {
         mapOptions: {},
@@ -53,7 +56,8 @@ class MapPlugin extends React.Component {
         swipeGeometryTypeBlacklist: [],
         swipeLayerNameBlacklist: [],
         tools: {},
-        toolsOptions: {}
+        toolsOptions: {},
+        useMapRequestKey: false
     };
     state = {
         renderLayers: [],
@@ -195,7 +199,7 @@ class MapPlugin extends React.Component {
                 return null;
             }
             ++zIndex;
-            const options = {...layer, zIndex: layer.zIndex ?? zIndex};
+            const options = {...layer, zIndex: layer.zIndex ?? zIndex, mapRequestKey: this.props.useMapRequestKey ? this.props.map.mapRequestKey : null};
             const swipe = this.props.swipe !== null && layer === this.state.swipeLayer;
             return (
                 <OlLayer key={layer.uuid} options={options} swipe={swipe ? this.props.swipe : null} />
