@@ -13,6 +13,7 @@ import {Swipeable} from './Swipeable';
 import Icon from './Icon';
 import {setCurrentTask} from '../actions/task';
 import LocaleUtils from '../utils/LocaleUtils';
+import classnames from 'classnames';
 import './style/SideBar.css';
 
 class SideBar extends React.Component {
@@ -80,23 +81,18 @@ class SideBar extends React.Component {
         const style = {
             width: this.props.width,
             minWidth: this.props.minWidth,
-            transform: '',
-            left: '',
-            right: '',
             zIndex: visible ? 5 : 4
         };
-        let closeIcon;
-        if (this.props.side === "left") {
-            style.transform = visible ? '' : 'translateX(-100%) translateX(-8px)';
-            style.right = '';
-            style.left = 0;
-            closeIcon = "chevron-left";
-        } else /* if (this.props.side === "right")*/ {
-            style.transform = visible ? '' : 'translateX(100%) translateX(8px)';
-            style.left = '';
-            style.right = 0;
-            closeIcon = "chevron-right";
-        }
+        
+        const isLeftSide = this.props.side === "left";
+        const classes = classnames({
+            "sidebar": true,
+            "sidebar-open": visible,
+            "sidebar-left": isLeftSide,
+            "sidebar-right": !isLeftSide,
+        });
+        const closeIcon = isLeftSide ? "chevron-left" : "chevron-right";
+
         let contents = null;
         if (render && typeof this.props.children === "function") {
             contents = this.props.children();
@@ -110,7 +106,7 @@ class SideBar extends React.Component {
         return (
             <div>
                 <Swipeable delta={30} onSwipedRight={this.closeClicked}>
-                    <div className={"sidebar" + " " + this.props.extraClasses} id={this.props.id} style={style}>
+                    <div className={`${classes} ${this.props.extraClasses}`} id={this.props.id} style={style}>
                         <div className={"sidebar-resize-handle sidebar-resize-handle-" + this.props.side} onMouseDown={this.startSidebarResize}/>
                         <div className="sidebar-titlebar">
                             {this.state.render ? this.props.extraBeforeContent : null}

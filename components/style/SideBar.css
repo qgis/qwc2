@@ -13,6 +13,22 @@ div.sidebar {
     max-width: 100vw;
 }
 
+div.sidebar-right {
+    right: 0;
+}
+
+div.sidebar-left {
+    left: 0;
+}
+
+div.sidebar-right:not(.sidebar-open) {
+    transform: translateX(100%) translateX(8px);
+}
+
+div.sidebar-left:not(.sidebar-open) {
+    transform: translateX(-100%) translateX(-8px);
+}
+
 div.sidebar-resize-handle {
     position: absolute;
     width: 6px;
