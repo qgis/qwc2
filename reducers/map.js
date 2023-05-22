@@ -9,8 +9,7 @@
 
 import {
     CHANGE_MAP_VIEW, CONFIGURE_MAP, CHANGE_ZOOM_LVL, ZOOM_TO_EXTENT, ZOOM_TO_POINT,
-    PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, TOGGLE_MAPTIPS, SET_TOPBAR_HEIGHT, SET_SNAPPING_CONFIG,
-    SET_MAP_REQUEST_KEY
+    PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, TOGGLE_MAPTIPS, SET_TOPBAR_HEIGHT, SET_SNAPPING_CONFIG
 } from '../actions/map';
 import isEmpty from 'lodash.isempty';
 import MapUtils from '../utils/MapUtils';
@@ -31,8 +30,7 @@ const defaultState = {
     snapping: {
         enabled: false,
         active: false
-    },
-    mapRequestKey: +new Date()
+    }
 };
 
 export default function map(state = defaultState, action) {
@@ -42,10 +40,6 @@ export default function map(state = defaultState, action) {
     }
 
     switch (action.type) {
-    case SET_MAP_REQUEST_KEY: {
-        return {...state, mapRequestKey: action.mapRequestKey};
-    }
-    
     case CHANGE_MAP_VIEW: {
         const {type, ...params} = action;
         const newState = {...state, ...params};

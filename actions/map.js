@@ -22,14 +22,6 @@ export const CHANGE_ROTATION = 'CHANGE_ROTATION';
 export const TOGGLE_MAPTIPS = 'TOGGLE_MAPTIPS';
 export const SET_TOPBAR_HEIGHT = 'SET_TOPBAR_HEIGHT';
 export const SET_SNAPPING_CONFIG = 'SET_SNAPPING_CONFIG';
-export const SET_MAP_REQUEST_KEY = 'SET_MAP_REQUEST_KEY';
-
-export function setMapRequestKey(mapRequestKey) {
-    return {
-        type: SET_MAP_REQUEST_KEY,
-        mapRequestKey
-    };
-}
 
 export function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
     return {
