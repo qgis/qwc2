@@ -58,7 +58,7 @@ class Cyclomedia extends React.Component {
         theme: PropTypes.object
     };
     static defaultProps = {
-        cyclomediaVersion: '22.17',
+        cyclomediaVersion: '23.6',
         geometry: {
             initialWidth: 480,
             initialHeight: 640,
