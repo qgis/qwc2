@@ -17,7 +17,7 @@ function getWMSURLs(urls) {
 function createWMTSSource(options) {
     const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]).map((url) => {
         if (options.rev) {
-            return url + "&rev=" + options.rev
+            return url + "?rev=" + options.rev
         } else {
             return url
         }
