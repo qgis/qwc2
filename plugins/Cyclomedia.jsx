@@ -49,9 +49,11 @@ class Cyclomedia extends React.Component {
         loginRedirectUri: PropTypes.string,
         /** The relative path to the redirect logout handling of oauth. */
         logoutRedirectUri: PropTypes.string,
+        mapCrs: PropTypes.string,
         mapScale: PropTypes.number,
         /** The maximum map scale above which the recordings WFS won't be displayed. */
         maxMapScale: PropTypes.number,
+        /** The projection to use for Cyclomedia. */
         projection: PropTypes.string,
         removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
@@ -66,7 +68,8 @@ class Cyclomedia extends React.Component {
             initialY: 0,
             initiallyDocked: true
         },
-        maxMapScale: 10000
+        maxMapScale: 10000,
+        projection: 'EPSG:3857'
     };
     state = {
         status: Status.LOGIN,
@@ -97,7 +100,7 @@ class Cyclomedia extends React.Component {
             const clickPoint = this.queryPoint(prevProps);
             if (clickPoint) {
                 const posStr = clickPoint[0] + "," + clickPoint[1];
-                this.iframe.contentWindow.openImage(posStr, this.props.projection);
+                this.iframe.contentWindow.openImage(posStr, this.props.mapCrs);
                 if (this.state.status === Status.LOADED) {
                     this.setState({status: Status.HAVEPOS});
                 }
@@ -295,7 +298,7 @@ class Cyclomedia extends React.Component {
                     clientId: "${this.props.clientId}",
                     loginRedirectUri: "${this.props.loginRedirectUri}",
                     logoutRedirectUri: "${this.props.logoutRedirectUri}",
-                    srs: "EPSG:3857",
+                    srs: "${this.props.projection}",
                     locale: "${lang}",
                     configurationUrl: 'https://atlas.cyclomedia.com/configuration',
                     addressSettings: {
@@ -375,14 +378,14 @@ class Cyclomedia extends React.Component {
             id: 'cyclomedia-recordings',
             type: 'wfs',
             loader: (vectorSource, extent, resolution, projection, success, failure) => {
-                const bbox = CoordinatesUtils.reprojectBbox(extent, projection.getCode(), "EPSG:3857");
+                const bbox = CoordinatesUtils.reprojectBbox(extent, projection.getCode(), this.props.projection);
                 const postData = `
                     <wfs:GetFeature service="WFS" version="1.1.0" resultType="results" outputFormat="text/xml; subtype=gml/3.1.1" xmlns:wfs="http://www.opengis.net/wfs">
-                        <wfs:Query typeName="atlas:Recording" srsName="EPSG:3857" xmlns:atlas="http://www.cyclomedia.com/atlas">
+                        <wfs:Query typeName="atlas:Recording" srsName="${this.props.projection}" xmlns:atlas="http://www.cyclomedia.com/atlas">
                             <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
                                 <ogc:And>
                                     <ogc:BBOX>
-                                        <gml:Envelope srsName="EPSG:3857" xmlns:gml="http://www.opengis.net/gml">
+                                        <gml:Envelope srsName="${this.props.projection}" xmlns:gml="http://www.opengis.net/gml">
                                         <gml:lowerCorner>${bbox[0]} ${bbox[1]}</gml:lowerCorner>
                                         <gml:upperCorner>${bbox[2]} ${bbox[3]}</gml:upperCorner>
                                         </gml:Envelope>
@@ -403,11 +406,11 @@ class Cyclomedia extends React.Component {
                     failure();
                 };
                 xhr.onerror = onError;
-                xhr.onload = function() {
+                xhr.onload = () => {
                     if (xhr.status === 200) {
                         const features = vectorSource.getFormat().readFeatures(xhr.responseText,
                             {
-                                dataProjection: 'EPSG:3857',
+                                dataProjection: this.props.projection,
                                 featureProjection: projection.getCode()
                             }
                         );
@@ -421,7 +424,7 @@ class Cyclomedia extends React.Component {
             },
             name: 'atlas:Recording',
             version: '1.1.0',
-            projection: 'EPSG:3857',
+            projection: this.props.projection,
             formats: ['text/xml; subtype=gml/3.1.1'],
             invertAxisOrientation: true,
             role: LayerRole.SELECTION,
@@ -443,7 +446,7 @@ class Cyclomedia extends React.Component {
 export default connect((state) => ({
     active: state.task.id === "Cyclomedia",
     click: state.map.click,
-    projection: state.map.projection,
+    mapCrs: state.map.projection,
     mapScale: MapUtils.computeForZoom(state.map.scales, state.map.zoom),
     theme: state.theme.current
 }), {
