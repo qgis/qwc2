@@ -102,6 +102,7 @@ const LayerUtils = {
         return LayerUtils.explodeLayers([{
             id: id,
             type: "placeholder",
+            name: layerConfig.name,
             title: layerConfig.name,
             role: LayerRole.USERLAYER,
             loading: true,
