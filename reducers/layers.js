@@ -261,7 +261,7 @@ export default function layers(state = defaultState, action) {
     case REFRESH_LAYER: {
         const newLayers = (state.flat || []).map((layer) => {
             if (action.filter(layer)) {
-                return {...layer, rev: (layer.rev || 0) + 1};
+                return {...layer, rev: +new Date()};
             }
             return layer;
         });

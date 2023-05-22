@@ -116,6 +116,7 @@ const ThemeUtils = {
             ratio: !theme.tiled ? 1 : undefined,
             serverType: 'qgis',
             format: theme.format,
+            rev: +new Date(),
             role: role,
             attribution: theme.attribution,
             legendUrl: ThemeUtils.inheritBaseUrlParams(theme.legendUrl, theme.url, baseParams),
