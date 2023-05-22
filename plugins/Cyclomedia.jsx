@@ -93,7 +93,7 @@ class Cyclomedia extends React.Component {
             this.addRecordingsWFS();
         }
         // Handle map click events
-        if (this.state.status === Status.LOADED && this.iframe) {
+        if ((this.state.status === Status.LOADED || this.state.status === Status.HAVEPOS) && this.iframe) {
             const clickPoint = this.queryPoint(prevProps);
             if (clickPoint) {
                 const posStr = clickPoint[0] + "," + clickPoint[1];
