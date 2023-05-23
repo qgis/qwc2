@@ -88,6 +88,7 @@ class MapPlugin extends React.Component {
                                         OPACITIES: opacities[i],
                                         STYLES: ""
                                     },
+                                    rev: layer.rev,
                                     opacity: parseInt(opacities[i], 10),
                                     visibility: true
                                 });
