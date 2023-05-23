@@ -278,6 +278,7 @@ class Cyclomedia extends React.Component {
                 lang = "en-US";
             }
         }
+        const loginOauth = !!this.props.clientId;
         return `
             <html>
             <head>
@@ -296,6 +297,7 @@ class Cyclomedia extends React.Component {
                     password: "${this.state.password || undefined}",
                     apiKey: "${this.props.apikey}",
                     clientId: "${this.props.clientId}",
+                    loginOauth: ${loginOauth},
                     loginRedirectUri: "${this.props.loginRedirectUri}",
                     logoutRedirectUri: "${this.props.logoutRedirectUri}",
                     srs: "${this.props.projection}",
