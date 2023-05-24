@@ -75,7 +75,8 @@ class Cyclomedia extends React.Component {
         status: Status.LOGIN,
         message: "",
         username: "",
-        password: ""
+        password: "",
+        loginFailed: false
     };
     constructor(props) {
         super(props);
@@ -84,7 +85,7 @@ class Cyclomedia extends React.Component {
     }
     componentDidUpdate(prevProps, prevState) {
         if (!prevProps.active && this.props.active) {
-            this.setState({status: this.props.clientId ? Status.LOADING : Status.LOGIN});
+            this.setState({status: this.props.clientId ? Status.LOADING : Status.LOGIN, loginFailed: false});
         } else if (
             (prevProps.active && !this.props.active) ||
             (prevProps.theme && !this.props.theme)
@@ -117,7 +118,7 @@ class Cyclomedia extends React.Component {
     }
     onClose = () => {
         this.props.setCurrentTask(null);
-        this.setState({status: Status.LOGIN});
+        this.setState({status: Status.LOGIN, loginFailed: false});
     };
     render() {
         if (!this.props.active) {
@@ -225,7 +226,7 @@ class Cyclomedia extends React.Component {
         }
     };
     apiInitialized = (success, message = "") => {
-        this.setState({status: success ? Status.LOADED : Status.LOGIN, message: message});
+        this.setState({status: success ? Status.LOADED : Status.LOGIN, message: message, loginFailed: !success});
     };
     panoramaPositionChanged = (posData) => {
         const scale = 50;
@@ -297,7 +298,7 @@ class Cyclomedia extends React.Component {
                 lang = "en-US";
             }
         }
-        const loginOauth = !!this.props.clientId;
+        const loginOauth = !!this.props.clientId && !this.state.loginFailed;
         return `
             <html>
             <head>
