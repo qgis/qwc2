@@ -11,15 +11,17 @@ import ol from 'openlayers';
 import FeatureStyles from '../../../utils/FeatureStyles';
 
 export default {
-    create: (options) => {
+    create: (options, map) => {
         const source = new ol.source.Vector();
         const format = new ol.format.GeoJSON();
+        const mapCrs = map.getView().getProjection();
 
         const features = (options.features || []).reduce((collection, feature) => {
             const featureObject = format.readFeatures({...feature, type: "Feature"});
             featureObject.forEach(f => {
-                if (feature.crs && feature.crs !== options.projection) {
-                    f.getGeometry().transform(feature.crs, options.projection);
+                const featureCrs = feature.crs ?? options.projection ?? mapCrs;
+                if (featureCrs !== mapCrs) {
+                    f.getGeometry().transform(featureCrs, mapCrs);
                 }
                 const featureStyleName = feature.styleName || options.styleName;
                 const featureStyleOptions = {...options.styleOptions, ...feature.styleOptions};
@@ -46,14 +48,9 @@ export default {
         });
         return vectorLayer;
     },
-    update: (layer, newOptions, oldOptions) => {
-        const oldCrs = oldOptions.projection;
-        const newCrs = newOptions.projection;
-        if (newCrs !== oldCrs) {
-            layer.getSource().forEachFeature((f) => {
-                f.getGeometry().transform(oldCrs, newCrs);
-            });
-        }
+    update: (layer, newOptions, oldOptions, map) => {
+        const mapCrs = map.getView().getProjection();
+
         if (newOptions.styleName !== oldOptions.styleName || newOptions.styleOptions !== oldOptions.styleOptions) {
             layer.setStyle(feature => {
                 const styleName = newOptions.styleName || 'default';
@@ -98,8 +95,9 @@ export default {
                 // Add new
                 const featureObject = format.readFeatures({...feature, type: "Feature"});
                 featureObject.forEach(f => {
-                    if (feature.crs && feature.crs !== newOptions.projection) {
-                        f.getGeometry().transform(feature.crs, newOptions.projection);
+                    const featureCrs = feature.crs ?? newOptions.projection ?? mapCrs;
+                    if (featureCrs !== mapCrs) {
+                        f.getGeometry().transform(featureCrs, mapCrs);
                     }
                     const featureStyleName = feature.styleName || newOptions.styleName;
                     const featureStyleOptions = {...newOptions.styleOptions, ...feature.styleOptions};
