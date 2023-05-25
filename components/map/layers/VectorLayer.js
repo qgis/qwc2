@@ -20,7 +20,7 @@ export default {
             const featureObject = format.readFeatures({...feature, type: "Feature"});
             featureObject.forEach(f => {
                 const featureCrs = feature.crs ?? options.projection ?? mapCrs;
-                if (featureCrs !== mapCrs) {
+                if (f !== null && f.getGeometry() !== null &&  featureCrs !== mapCrs) {
                     f.getGeometry().transform(featureCrs, mapCrs);
                 }
                 const featureStyleName = feature.styleName || options.styleName;
@@ -96,7 +96,7 @@ export default {
                 const featureObject = format.readFeatures({...feature, type: "Feature"});
                 featureObject.forEach(f => {
                     const featureCrs = feature.crs ?? newOptions.projection ?? mapCrs;
-                    if (featureCrs !== mapCrs) {
+                    if (f !== null && f.getGeometry() !== null && featureCrs !== mapCrs) {
                         f.getGeometry().transform(featureCrs, mapCrs);
                     }
                     const featureStyleName = feature.styleName || newOptions.styleName;
