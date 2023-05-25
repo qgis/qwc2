@@ -30,7 +30,7 @@ export function loadLocale(defaultLangData, defaultLang = "") {
         axios.get(translationsPath + '/' + lang + '.json', config).then(response => {
             const messages = response.data.messages;
             if (ConfigUtils.getConfigProp("loadTranslationOverrides")) {
-                axios.get(translationsPath + '/' + lang + '-overrides.json', config).then(response2 => {
+                axios.get(translationsPath + '/' + lang + '_overrides.json', config).then(response2 => {
                     const overrideMessages = response2.data.messages;
                     dispatch({
                         type: CHANGE_LOCALE,
@@ -59,11 +59,29 @@ export function loadLocale(defaultLangData, defaultLang = "") {
             console.warn("Failed to load locale for " + lang + " (" + e + "), trying " + langCode + "-" + country);
             lang = langCode + "-" + country;
             axios.get(translationsPath + '/' + lang + '.json', config).then(response => {
-                dispatch({
-                    type: CHANGE_LOCALE,
-                    locale: lang,
-                    messages: response.data.messages
-                });
+                const messages = response.data.messages;
+                if (ConfigUtils.getConfigProp("loadTranslationOverrides")) {
+                    axios.get(translationsPath + '/' + lang + '_overrides.json', config).then(response2 => {
+                        const overrideMessages = response2.data.messages;
+                        dispatch({
+                            type: CHANGE_LOCALE,
+                            locale: lang,
+                            messages: deepmerge(messages, overrideMessages)
+                        });
+                    }).catch(() => {
+                        dispatch({
+                            type: CHANGE_LOCALE,
+                            locale: lang,
+                            messages: messages
+                        });
+                    });
+                } else {
+                    dispatch({
+                        type: CHANGE_LOCALE,
+                        locale: lang,
+                        messages: messages
+                    });
+                }
             }).catch((e2) => {
                 // eslint-disable-next-line
                 console.warn("Failed to load locale for " + lang + " (" + e2 + "), defaulting to " + defaultLangData.locale);
