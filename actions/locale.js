@@ -15,6 +15,7 @@ import axios from 'axios';
 import {getLanguageCountries} from 'country-language';
 import ConfigUtils from '../utils/ConfigUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
+import deepmerge from 'deepmerge';
 
 export const CHANGE_LOCALE = 'CHANGE_LOCALE';
 
@@ -27,11 +28,29 @@ export function loadLocale(defaultLangData, defaultLang = "") {
         };
         const translationsPath = ConfigUtils.getTranslationsPath();
         axios.get(translationsPath + '/' + lang + '.json', config).then(response => {
-            dispatch({
-                type: CHANGE_LOCALE,
-                locale: lang,
-                messages: response.data.messages
-            });
+            const messages = response.data.messages;
+            if (ConfigUtils.getConfigProp("loadTranslationOverrides")) {
+                axios.get(translationsPath + '/' + lang + '-overrides.json', config).then(response2 => {
+                    const overrideMessages = response2.data.messages;
+                    dispatch({
+                        type: CHANGE_LOCALE,
+                        locale: lang,
+                        messages: deepmerge(messages, overrideMessages)
+                    });
+                }).catch(() => {
+                    dispatch({
+                        type: CHANGE_LOCALE,
+                        locale: lang,
+                        messages: messages
+                    });
+                });
+            } else {
+                dispatch({
+                    type: CHANGE_LOCALE,
+                    locale: lang,
+                    messages: messages
+                });
+            }
         }).catch((e) => {
             const langCode = lang.slice(0, 2).toLowerCase();
             const countries = getLanguageCountries(langCode);
