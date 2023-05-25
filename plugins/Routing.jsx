@@ -44,6 +44,8 @@ class Routing extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
         displaycrs: PropTypes.string,
+        /** List of enabled routing modes. */
+        enabledModes: PropTypes.arrayOf(PropTypes.string),
         /** List of search providers to use for routing location search. */
         enabledProviders: PropTypes.arrayOf(PropTypes.string),
         /** Default window geometry. */
@@ -65,6 +67,7 @@ class Routing extends React.Component {
         zoomToExtent: PropTypes.func
     };
     static defaultProps = {
+        enabledModes: ["auto", "heavyvehicle", "transit", "bicycle", "pedestrian"],
         enabledProviders: ["coordinates", "nominatim"],
         geometry: {
             initialWidth: 320,
@@ -140,6 +143,7 @@ class Routing extends React.Component {
             displaycrs: this.props.displaycrs,
             lang: LocaleUtils.lang()
         };
+        this.state.mode = this.props.enabledModes.includes("auto") ? "auto" : this.props.enabledModes[0];
     }
     componentDidUpdate(prevProps, prevState) {
         // Activated / message
@@ -226,7 +230,7 @@ class Routing extends React.Component {
             {key: "transit", icon: "routing-train", tooltip: LocaleUtils.trmsg("routing.mode_transit")},
             {key: "bicycle", icon: "routing-bicycle", tooltip: LocaleUtils.trmsg("routing.mode_bicycle")},
             {key: "pedestrian", icon: "routing-walking", tooltip: LocaleUtils.trmsg("routing.mode_walking")}
-        ];
+        ].filter(entry => this.props.enabledModes.includes(entry.key));
         return (
             <ResizeableWindow icon="routing" onClose={() => this.setState({visible: false})} title={LocaleUtils.tr("routing.windowtitle")} {...this.props.geometry}>
                 <div className="routing-body" role="body">
