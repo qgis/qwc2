@@ -24,6 +24,47 @@ import * as windowsActions from '../actions/windows';
 
 /**
  * Exposes an API for interacting with QWC2 to `window.qwc2`.
+ *
+ * All following action functions are available:
+ *
+ * - [display](https://github.com/qgis/qwc2/blob/master/actions/display.js)
+ * - [layers](https://github.com/qgis/qwc2/blob/master/actions/layers.js)
+ * - [locate](https://github.com/qgis/qwc2/blob/master/actions/locate.js)
+ * - [map](https://github.com/qgis/qwc2/blob/master/actions/map.js)
+ * - [task](https://github.com/qgis/qwc2/blob/master/actions/task.js)
+ * - [theme](https://github.com/qgis/qwc2/blob/master/actions/theme.js)
+ * - [windows](https://github.com/qgis/qwc2/blob/master/actions/windows.js)
+ *
+ * I.e. `setCurrentTask` is available via `window.qwc2.setCurrentTask`.
+ *
+ * Additionally, the following functions are available:
+ *
+ * ---
+ *
+ * `window.qwc2.addExternalLayer(resource, beforeLayerName = null)`
+ *
+ * Convenience method for adding an external layer.
+ *
+ *   * `resource`: An external resource of the form `wms:<service_url>#<layername>` or `wmts:<capabilities_url>#<layername>`.
+ *   * `beforeLayerName`: Insert the new layer before the layer with the specified name. If `null` or the layer does not exist, the layer is inserted on top.
+ *
+ * ---
+ *
+ * `window.qwc2.drawScratch(geomType, message, drawMultiple, callback, style = null)`
+ *
+ *  Draw scratch geometries, and return these as GeoJSON to the calling application.
+ *
+ *   * `geomType`: `Point`, `LineString`, `Polygon`, `Circle` or `Box`.
+ *   * `message`: A descriptive string to display in the tool taskbar.
+ *   * `drawMultiple`: Whether to allow drawing multiple geometries.
+ *   * `callback`: A `function(result, crs)`, the `result` being an array of GeoJSON features, and `crs` the projection of the feature coordinates.
+ *   * `style`: Optional, a custom style object to use for the drawn features, in the same format as `DEFAULT_FEATURE_STYLE` in `qwc2/utils/FeatureStyles.js`.
+ *
+ * ---
+ *
+ * `window.qwc2.getState()`
+ *
+ * Return the current application state.
  */
 class API extends React.Component {
     componentDidMount() {
@@ -47,11 +88,6 @@ class API extends React.Component {
     render() {
         return null;
     }
-    /**
-     * Convenience method for adding an external layer.
-     * - resource: An external resource of the form `wms:<service_url>#<layername>` or `wmts:<capabilities_url>#<layername>`.
-     * - beforeLayerName: Insert the new layer before the layer with the specified name. If `null` or the layer does not exist, the layer is inserted on top.
-     */
     addExternalLayer = (resource, beforeLayerName = null) => {
         const params = LayerUtils.splitLayerUrlParam(resource);
         ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
@@ -60,20 +96,9 @@ class API extends React.Component {
             }
         });
     };
-    /**
-     * Draw scratch geometries, and return these as GeoJSON to the calling application.
-     * - geomType: `Point`, `LineString`, `Polygon`, `Circle` or `Box`.
-     * - message: A descriptive string to display in the tool taskbar.
-     * - drawMultiple: Whether to allow drawing multiple geometries.
-     * - callback: A `function(result, crs)`, the `result` being an array of GeoJSON features, and `crs` the projection of the feature coordinates.
-     * - style: Optional, a custom style object to use for the drawn features, in the same format as `DEFAULT_FEATURE_STYLE` in `qwc2/utils/FeatureStyles.js`.
-     */
     drawScratch = (geomType, message, drawMultiple, callback, style = null) => {
         this.props.setCurrentTask("ScratchDrawing", null, null, {geomType, message, drawMultiple, callback, style});
     };
-    /**
-     * Return the current application state.
-     */
     getState = () => {
         return this.props.state;
     };
