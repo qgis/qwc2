@@ -13,15 +13,13 @@ const fs = require('fs');
 const path = require('path');
 const objectPath = require('object-path');
 const isEmpty = require('lodash.isempty');
-let fqdn = null;
-try {
-    fqdn = require('node-fqdn');
-} catch (e) {
-    /* Pass */
-}
-const uuid = require('uuid');
+const uuidv1 = require('uuid').v1;
+const os = require('os');
+const dns = require('dns');
 
-const hostFqdn = fqdn ? "http://" + String(fqdn()) : "";
+const { lookup, lookupService } = dns.promises;
+
+let hostFqdn = "";
 const themesConfigPath = process.env.QWC2_THEMES_CONFIG || "themesConfig.json";
 
 const usedThemeIds = [];
@@ -29,7 +27,7 @@ const autogenExternalLayers = [];
 
 function uniqueThemeId(themeName) {
     if (!themeName) {
-        return uuid.v1();
+        return uuidv1();
     }
     if (usedThemeIds.includes(themeName)) {
         let i = 1;
@@ -46,7 +44,7 @@ function uniqueThemeId(themeName) {
 function getThumbnail(configItem, resultItem, layers, crs, extent, resolve, proxy) {
     if (configItem.thumbnail !== undefined) {
         // check if thumbnail can be read
-        if (fs.existsSync("./assets/img/mapthumbs/" + configItem.thumbnail)) {
+        if (fs.existsSync("./static/assets/img/mapthumbs/" + configItem.thumbnail)) {
             resultItem.thumbnail = "img/mapthumbs/" + configItem.thumbnail;
             // finish task
             resolve(true);
@@ -98,11 +96,11 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve, prox
     }).then((response) => {
         const basename = configItem.url.replace(/.*\//, "").replace(/\?.*$/, "") + ".png";
         try {
-            fs.mkdirSync("./assets/img/genmapthumbs/");
+            fs.mkdirSync("./static/assets/img/genmapthumbs/");
         } catch (err) {
             if (err.code !== 'EEXIST') throw err;
         }
-        fs.writeFileSync("./assets/img/genmapthumbs/" + basename, response.data);
+        fs.writeFileSync("./static/assets/img/genmapthumbs/" + basename, response.data);
         resultItem.thumbnail = "img/genmapthumbs/" + basename;
         // finish task
         resolve(true);
@@ -117,6 +115,8 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve, prox
 function getEditConfig(editConfig) {
     if (isEmpty(editConfig)) {
         return null;
+    } else if (typeof editConfig === "object") {
+        return editConfig;
     } else if (path.isAbsolute(editConfig) && fs.existsSync(editConfig)) {
         return JSON.parse(fs.readFileSync(path, "utf8"));
     } else if (fs.existsSync(process.cwd() + '/' + editConfig)) {
@@ -158,7 +158,11 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
 
         // layer
         layerEntry.geometryType = layer.$.geometryType;
-        layerEntry.visibility = layer.$.visible === '1';
+        if (layer.$.visibilityChecked !== undefined) {
+            layerEntry.visibility = layer.$.visibilityChecked === '1';
+        } else {
+            layerEntry.visibility = layer.$.visible === '1';
+        }
         if (layerEntry.visibility) {
             // collect visible layers
             visibleLayers.push(layer.Name);
@@ -219,9 +223,27 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         if (featureReports[layer.Name]) {
             layerEntry.featureReport = featureReports[layer.Name];
         }
+
+        layerEntry.dimensions = [];
+        toArray(layer.Dimension).forEach(dim => {
+            layerEntry.dimensions.push({
+                units: dim.$.units,
+                name: dim.$.name,
+                multiple: dim.$.multipleValues === "1",
+                value: dim._,
+                fieldName: dim.$.fieldName,
+                endFieldName: dim.$.endFieldName
+            });
+        });
+
     } else {
         // group
         layerEntry.mutuallyExclusive = (layer.$ || {}).mutuallyExclusive === '1';
+        if (layer.$.visibilityChecked !== undefined) {
+            layerEntry.visibility = layer.$.visibilityChecked === '1';
+        } else {
+            layerEntry.visibility = layer.$.visible === '1';
+        }
         layerEntry.sublayers = [];
         if ((layer.$ || {}).expanded === '0' || (collapseBelowLevel >= 0 && level >= collapseBelowLevel)) {
             layerEntry.expanded = false;
@@ -238,6 +260,12 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
     }
     resultLayers.push(layerEntry);
     titleNameMap[layer.TreeName] = layer.Name;
+}
+
+function flatLayers(layer) {
+    const result = [layer];
+    (layer.Layer || []).forEach(sublayer => result.push(sublayer));
+    return result;
 }
 
 // parse GetCapabilities for theme
@@ -332,24 +360,35 @@ function getTheme(config, configItem, result, resultItem, proxy) {
                     templates = [templates];
                 }
                 for (const composerTemplate of templates) {
-                    const printTemplate = {
-                        name: composerTemplate.$.name
-                    };
                     if (composerTemplate.ComposerMap !== undefined) {
                         // use first map from GetProjectSettings
                         const composerMap = toArray(composerTemplate.ComposerMap)[0];
-                        printTemplate.map = {
-                            name: composerMap.$.name,
-                            width: parseFloat(composerMap.$.width),
-                            height: parseFloat(composerMap.$.height)
+                        const printTemplate = {
+                            name: composerTemplate.$.name,
+                            map: {
+                                name: composerMap.$.name,
+                                width: parseFloat(composerMap.$.width),
+                                height: parseFloat(composerMap.$.height)
+                            }
                         };
+                        if (composerTemplate.ComposerLabel !== undefined) {
+                            printTemplate.labels = toArray(composerTemplate.ComposerLabel).map((entry) => {
+                                return entry.$.name;
+                            }).filter(label => !(configItem.printLabelBlacklist || []).includes(label));
+                        }
+                        if (composerTemplate.$.atlasEnabled === '1') {
+                            const atlasLayer = composerTemplate.$.atlasCoverageLayer;
+                            try {
+                                const layers = flatLayers(capabilities.Capability.Layer);
+                                const pk = layers.find(l => l.Name === atlasLayer).PrimaryKey.PrimaryKeyAttribute;
+                                printTemplate.atlasCoverageLayer = atlasLayer;
+                                printTemplate.atlas_pk = pk;
+                            } catch (e) {
+                                console.warn("Failed to determine primary key for atlas layer " + atlasLayer);
+                            }
+                        }
+                        printTemplates.push(printTemplate);
                     }
-                    if (composerTemplate.ComposerLabel !== undefined) {
-                        printTemplate.labels = toArray(composerTemplate.ComposerLabel).map((entry) => {
-                            return entry.$.name;
-                        }).filter(label => !(configItem.printLabelBlacklist || []).includes(label));
-                    }
-                    printTemplates.push(printTemplate);
                 }
             }
 
@@ -396,7 +435,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             };
             if (configItem.extent) {
                 resultItem.initialBbox = {
-                    crs: configItem.mapCrs || 'EPSG:3857',
+                    crs: configItem.mapCrs || result.themes.defaultMapCrs,
                     bounds: configItem.extent
                 };
             } else {
@@ -413,7 +452,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             resultItem.backgroundLayers = configItem.backgroundLayers;
             resultItem.searchProviders = configItem.searchProviders;
             resultItem.additionalMouseCrs = configItem.additionalMouseCrs;
-            resultItem.mapCrs = configItem.mapCrs || 'EPSG:3857';
+            resultItem.mapCrs = configItem.mapCrs || result.themes.defaultMapCrs;
             if (printTemplates.length > 0) {
                 resultItem.print = printTemplates;
             }
@@ -436,6 +475,9 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             if (configItem.printLabelForSearchResult) {
                 resultItem.printLabelForSearchResult = configItem.printLabelForSearchResult;
             }
+            if (configItem.printLabelForAttribution) {
+                resultItem.printLabelForAttribution = configItem.printLabelForAttribution;
+            }
             if (configItem.printLabelConfig) {
                 resultItem.printLabelConfig = configItem.printLabelConfig;
             }
@@ -444,6 +486,9 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             }
             if (configItem.pluginData) {
                 resultItem.pluginData = configItem.pluginData;
+            }
+            if (configItem.snapping) {
+                resultItem.snapping = configItem.snapping;
             }
             if (configItem.minSearchScaleDenom) {
                 resultItem.minSearchScaleDenom = configItem.minSearchScaleDenom;
@@ -511,11 +556,14 @@ function genThemes(themesConfig) {
             title: "root",
             subdirs: [],
             items: [],
-            defaultTheme: undefined,
+            defaultTheme: config.defaultTheme,
+            defaultMapCrs: config.defaultMapCrs || 'EPSG:3857',
             defaultScales: config.defaultScales,
             defaultPrintScales: config.defaultPrintScales,
             defaultPrintResolutions: config.defaultPrintResolutions,
             defaultPrintGrid: config.defaultPrintGrid,
+            defaultSearchProviders: config.defaultSearchProviders,
+            defaultBackgroundLayers: config.defaultBackgroundLayers || [],
             externalLayers: config.themes.externalLayers || [],
             pluginData: config.themes.pluginData,
             themeInfoLinks: config.themes.themeInfoLinks,
@@ -554,7 +602,7 @@ function genThemes(themesConfig) {
             // get thumbnails for background layers
             result.themes.backgroundLayers.map((backgroundLayer) => {
                 let imgPath = "img/mapthumbs/" + backgroundLayer.thumbnail;
-                if (!fs.existsSync("./assets/" + imgPath)) {
+                if (!fs.existsSync("./static/assets/" + imgPath)) {
                     imgPath = "img/mapthumbs/default.jpg";
                 }
                 backgroundLayer.thumbnail = imgPath;
@@ -562,7 +610,7 @@ function genThemes(themesConfig) {
         }
 
         // write config file
-        fs.writeFile(process.cwd() + '/themes.json', JSON.stringify(result, null, 2), (error) => {
+        fs.writeFile(process.cwd() + '/static/themes.json', JSON.stringify(result, null, 2), (error) => {
             if (error) {
                 console.error("ERROR:", error);
                 process.exit(1);
@@ -579,6 +627,16 @@ function genThemes(themesConfig) {
     return result;
 }
 
-console.log("Reading " + themesConfigPath);
+lookup(os.hostname(), { hints: dns.ADDRCONFIG })
+  .then((result) => lookupService(result.address, 0))
+  .then((result) => {
+    hostFqdn = "http://" + result.hostname;
+    console.log("Reading " + themesConfigPath);
 
-genThemes(themesConfigPath);
+    genThemes(themesConfigPath);
+  })
+  .catch((error) => {
+    process.nextTick(() => {
+      throw error;
+    });
+  });

@@ -10,69 +10,41 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
-import CoordinatesUtils from '../utils/CoordinatesUtils';
-import {LayerRole} from '../actions/layers';
+import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import './style/MapCopyright.css';
 
 
+/**
+ * Displays layer attributions in the bottom right corner of the map.
+ */
 class MapCopyright extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
         map: PropTypes.object,
+        /** Whether to prepend the layer name to the attribution string. */
+        prefixCopyrightsWithLayerNames: PropTypes.bool,
+        /** Whether to only display the attribution of the theme, omitting external layers. */
         showThemeCopyrightOnly: PropTypes.bool
-    }
+    };
     state = {
-        currentCopyrights: []
-    }
+        currentCopyrights: {}
+    };
     static getDerivedStateFromProps(nextProps) {
         if (nextProps.map && nextProps.map.bbox && nextProps.layers) {
-            const transformedbboxes = {};
-            transformedbboxes[nextProps.map.projection] = nextProps.map.bbox.bounds;
-            const copyrights = {};
-            nextProps.layers.map(layer => MapCopyright.collectCopyrigths(layer, nextProps.map, transformedbboxes, copyrights, nextProps.showThemeCopyrightOnly));
+            const copyrights = nextProps.layers.reduce((res, layer) => ({...res, ...LayerUtils.getAttribution(layer, nextProps.map, nextProps.showThemeCopyrightOnly)}), {});
             return {currentCopyrights: copyrights};
         }
         return null;
     }
-    static collectCopyrigths = (layer, map, transformedbboxes, copyrights, showThemeCopyrightOnly) => {
-        if (layer.sublayers) {
-            layer.sublayers.map(sublayer => MapCopyright.collectCopyrigths(sublayer, map, transformedbboxes, copyrights, showThemeCopyrightOnly));
-        }
-        if (!layer.attribution || !layer.attribution.Title || !layer.visibility) {
-            return;
-        }
-        if (showThemeCopyrightOnly) {
-            if (layer.role === LayerRole.THEME) {
-                copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
-            }
-        } else if (layer.role === LayerRole.BACKGROUND) {
-            copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
-        } else {
-            if (!layer.bbox) {
-                return;
-            }
-            if (!transformedbboxes[layer.bbox.crs]) {
-                transformedbboxes[layer.bbox.crs] = CoordinatesUtils.reprojectBbox(map.bbox.bounds, map.projection, layer.bbox.crs);
-            }
-            const mapbbox = transformedbboxes[layer.bbox.crs];
-            const laybbox = layer.bbox.bounds;
-            if (
-                mapbbox[0] < laybbox[2] && mapbbox[2] > laybbox[0] &&
-                mapbbox[1] < laybbox[3] && mapbbox[3] > laybbox[1]
-            ) {
-                // Extents overlap
-                copyrights[layer.attribution.OnlineResource || layer.attribution.Title] = layer.attribution.OnlineResource ? layer.attribution.Title : null;
-            }
-        }
-    }
     render() {
-        // If attribution has both url and label, "key" is the url and "value" the label.
+        // If attribution has both url and label, "key" is the url and "value.title" the label.
         // If it only has a label, "key" is the label and "value" is null.
         const copyrights = Object.entries(this.state.currentCopyrights).map(([key, value]) => {
-            if (value) {
-                return (<span key={key}><a href={key} rel="noreferrer" target="_blank">{value}</a></span>);
+            if (value.title) {
+                return (<span key={key}><a href={key} rel="noreferrer" target="_blank">{this.layerNames(value.layers) + value.title}</a></span>);
             } else {
-                return (<span dangerouslySetInnerHTML={{__html: key}} key={key} />);
+                return (<span key={key}>{this.layerNames(value.layers)}<span dangerouslySetInnerHTML={{__html: key}} /></span>);
             }
         });
         if (isEmpty(copyrights)) {
@@ -84,6 +56,13 @@ class MapCopyright extends React.Component {
             </div>
         );
     }
+    layerNames = (layers) => {
+        if (!this.props.prefixCopyrightsWithLayerNames) {
+            return "";
+        } else {
+            return layers.map(layer => layer.titleMsgId ? LocaleUtils.tr(layer.titleMsgId) : layer.title).join(", ") + ": ";
+        }
+    };
 }
 
 const selector = (state) => ({

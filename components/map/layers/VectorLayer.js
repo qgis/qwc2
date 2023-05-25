@@ -11,20 +11,27 @@ import ol from 'openlayers';
 import FeatureStyles from '../../../utils/FeatureStyles';
 
 export default {
-    create: (options) => {
+    create: (options, map) => {
         const source = new ol.source.Vector();
         const format = new ol.format.GeoJSON();
+        const mapCrs = map.getView().getProjection();
 
         const features = (options.features || []).reduce((collection, feature) => {
             const featureObject = format.readFeatures({...feature, type: "Feature"});
             featureObject.forEach(f => {
-                if (feature.crs && feature.crs !== options.projection) {
-                    f.getGeometry().transform(feature.crs, options.projection);
+                const featureCrs = feature.crs ?? options.projection ?? mapCrs;
+                if (featureCrs !== mapCrs) {
+                    f.getGeometry().transform(featureCrs, mapCrs);
                 }
-                f.set('styleName', feature.styleName);
-                f.set('styleOptions', feature.styleOptions);
-                if (feature.styleName) {
-                    f.setStyle(FeatureStyles[feature.styleName](f, feature.styleOptions || {}));
+                const featureStyleName = feature.styleName || options.styleName;
+                const featureStyleOptions = {...options.styleOptions, ...feature.styleOptions};
+                f.set('styleName', featureStyleName);
+                f.set('styleOptions', featureStyleOptions);
+                f.set('circleParams', feature.circleParams);
+                f.set('shape', feature.shape);
+                f.set('measurements', feature.measurements);
+                if (featureStyleName) {
+                    f.setStyle(FeatureStyles[featureStyleName](f, featureStyleOptions));
                 }
             });
             return collection.concat(featureObject);
@@ -33,28 +40,25 @@ export default {
         const vectorLayer = new ol.layer.Vector({
             msId: options.id,
             source: source,
-            style: feature => {
+            style: options.styleFunction || (feature => {
                 const styleName = options.styleName || 'default';
                 const styleOptions = options.styleOptions || {};
                 return FeatureStyles[styleName](feature, styleOptions);
-            }
+            })
         });
         return vectorLayer;
     },
-    update: (layer, newOptions, oldOptions) => {
-        const oldCrs = oldOptions.projection;
-        const newCrs = newOptions.projection;
-        if (newCrs !== oldCrs) {
-            layer.getSource().forEachFeature((f) => {
-                f.getGeometry().transform(oldCrs, newCrs);
-            });
-        }
+    update: (layer, newOptions, oldOptions, map) => {
+        const mapCrs = map.getView().getProjection();
+
         if (newOptions.styleName !== oldOptions.styleName || newOptions.styleOptions !== oldOptions.styleOptions) {
             layer.setStyle(feature => {
                 const styleName = newOptions.styleName || 'default';
                 const styleOptions = newOptions.styleOptions || {};
                 return FeatureStyles[styleName](feature, styleOptions);
             });
+        } else if (newOptions.styleFunction !== oldOptions.styleFunction) {
+            layer.setStyle(newOptions.styleFunction);
         }
         if (newOptions.features !== oldOptions.features) {
             const format = new ol.format.GeoJSON();
@@ -91,13 +95,19 @@ export default {
                 // Add new
                 const featureObject = format.readFeatures({...feature, type: "Feature"});
                 featureObject.forEach(f => {
-                    if (feature.crs && feature.crs !== newOptions.projection) {
-                        f.getGeometry().transform(feature.crs, newOptions.projection);
+                    const featureCrs = feature.crs ?? newOptions.projection ?? mapCrs;
+                    if (featureCrs !== mapCrs) {
+                        f.getGeometry().transform(featureCrs, mapCrs);
                     }
-                    f.set('styleName', feature.styleName);
-                    f.set('styleOptions', feature.styleOptions);
-                    if (feature.styleName) {
-                        f.setStyle(FeatureStyles[feature.styleName](f, feature.styleOptions || {}));
+                    const featureStyleName = feature.styleName || newOptions.styleName;
+                    const featureStyleOptions = {...newOptions.styleOptions, ...feature.styleOptions};
+                    f.set('styleName', featureStyleName);
+                    f.set('styleOptions', featureStyleOptions);
+                    f.set('circleParams', feature.circleParams);
+                    f.set('shape', feature.shape);
+                    f.set('measurements', feature.measurements);
+                    if (featureStyleName) {
+                        f.setStyle(FeatureStyles[featureStyleName](f, featureStyleOptions));
                     }
                 });
                 newFeatureObjects = newFeatureObjects.concat(featureObject);
@@ -105,6 +115,8 @@ export default {
             if (newFeatureObjects) {
                 source.addFeatures(newFeatureObjects);
             }
+        } else if ((oldOptions.rev || 0) !== (newOptions.rev || 0)) {
+            layer.getSource().changed();
         }
     },
     render: () => {

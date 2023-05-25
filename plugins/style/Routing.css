@@ -1,0 +1,249 @@
+div.routing-body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+div.routing-buttonbar {
+    flex: 0 0 auto;
+}
+
+div.routing-frame {
+    border: 1px solid var(--border-color);
+    padding: 0.25em;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+div.routing-buttons {
+    display: flex;
+    align-items: center;
+    position: relative;
+    flex: 0 0 auto;
+}
+
+div.routing-buttons > div.ButtonBar {
+    flex: 1 1 auto;
+}
+
+div.routing-buttons div.routing-settings-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% - 0.25em - 1px);
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    background-color: var(--container-bg-color);
+    box-shadow: 0px 0px 5px rgba(136, 136, 136, 1);
+    z-index: 1;
+    padding: 0.25em;
+}
+
+div.routing-tab-widget {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+div.routing-input {
+    flex: 0 0 auto;
+}
+
+table.routing-settings-menu-entries td {
+    white-space: nowrap;
+}
+
+table.routing-settings-menu-entries td:last-child > * {
+    width: 100%;
+}
+
+div.routing-points {
+    display: flex;
+    align-items: center;
+}
+
+div.routing-points > div:first-child {
+    flex: 1 1 auto;
+}
+
+div.routing-points > div:last-child {
+    flex: 0 0 auto;
+    margin-left: 0.25em;
+}
+
+div.routing-points-commands {
+    margin: 0.25em 0;
+    display: flex;
+    align-items: center;
+}
+
+div.routing-points-commands > span.routing-points-commands-spacer {
+    flex: 1 1 auto;
+}
+
+div.routing-points-commands > div.VectorLayerPicker {
+    flex: 1 1 auto;
+}
+
+div.routing-search-field {
+    display: flex;
+    margin-bottom: 0.25em;
+}
+
+div.routing-search-field input.search-widget-input[type=text] {
+    border: none;
+    outline: none;
+    height: calc(2em - 2px);
+}
+
+div.routing-search-field button.button {
+    border-right: none;
+    width: 2em;
+}
+
+button.routing-compute-button {
+    width: 100%;
+}
+
+div.routing-status-failure {
+    text-align: center;
+    color: red;
+    font-style: italic;
+    padding: 0.25em;
+}
+
+div.routing-busy {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+div.routing-busy > div.spinner {
+    width: 2em;
+    height: 2em;
+    margin-right: 0.25em;
+}
+
+div.routing-result {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+div.routing-result-summary {
+    margin-top: 0.5em;
+    border-top: 1px solid var(--border-color);
+    padding: 0.25em;
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+div.routing-result-summary > span.icon {
+    margin-right: 0.5em;
+}
+
+div.routing-result-summary > span.routing-result-spacer {
+    flex: 1 1 auto;
+}
+
+div.routing-result-instructions {
+    background-color: var(--input-bg-color);
+    border-top: 1px solid var(--border-color);
+    padding: 0.25em;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: scroll;
+    font-size: 90%;
+}
+
+div.routing-result-instruction {
+    padding: 0.5em;
+}
+
+div.routing-result-instruction:hover {
+    background-color: var(--list-item-bg-color-hover);
+    color: var(--list-item-text-color-hover);
+}
+
+div.routing-result-instruction:not(:last-child) {
+    border-bottom: 1px solid var(--border-color);
+}
+
+div.routing-result-instruction span.icon {
+    margin-right: 0.5em;
+}
+
+div.routing-result-instruction-summary {
+    padding: 0.25em;
+    display: flex;
+    align-items: center;
+}
+
+div.routing-result-instruction-summary > span.icon {
+    margin-right: 0.5em;
+}
+
+div.routing-result-instruction-summary > span.routing-result-spacer {
+    flex: 1 1 auto;
+}
+
+table.routing-iso-settings {
+    width: 100%;
+    white-space: nowrap;
+}
+
+table.routing-iso-settings td > input,
+table.routing-iso-settings td > select {
+    width: 100%;
+}
+
+input.routing-input-invalid {
+    background-color: #FFAAAA!important;
+}
+
+div.routing-popup-button > button {
+    width: 100%;
+}
+
+label.routing-import-button {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    color: var(--text-color-link);
+}
+
+label.routing-import-button:hover {
+    text-decoration: underline;
+}
+
+label.routing-import-button > input {
+    cursor: pointer;
+    outline: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+}
+
+div.routing-time-settings {
+    padding: 0.5em 0;
+    display: flex;
+    align-items: center;
+}
+
+div.routing-time-settings > select {
+    flex: 0 0 auto;
+}
+
+div.routing-time-settings > div {
+    flex: 1 1 auto;
+}

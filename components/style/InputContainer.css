@@ -1,0 +1,29 @@
+div.input-container {
+    display: inline-flex;
+    align-items: center;
+    height: 2em;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg-color);
+}
+
+div.input-container-focus {
+    outline: var(--focus-outline);
+}
+
+div.input-container .input-container-prefix,
+div.input-container .input-container-suffix {
+    flex: 0 0 auto;
+    padding: 0 0.25em;
+}
+
+div.input-container .input-container-input {
+    flex: 1 1 auto;
+    border: none!important;
+    outline: none!important;
+    width: 0;
+    min-width: 0;
+}
+
+div.input-container .input-container-input {
+    height: calc(2em - 2px)!important;
+}

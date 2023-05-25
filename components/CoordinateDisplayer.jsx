@@ -19,7 +19,7 @@ class CoordinateDisplayer extends React.Component {
         displaycrs: PropTypes.string,
         mapcrs: PropTypes.string,
         mousepos: PropTypes.object
-    }
+    };
     render() {
         let value = "";
         if (this.props.mousepos) {

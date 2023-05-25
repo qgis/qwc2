@@ -21,8 +21,8 @@ table.AutoEditForm select.editing-layer-select,
 table.AutoEditForm select.editing-feature-select,
 table.AutoEditForm span.input-frame select {
     width: 100%;
-    border: 1px solid @item_border@;
-    background-color: white;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg-color);
     padding: 0.25em;
 }
 
@@ -43,6 +43,7 @@ table.AutoEditForm label > input {
 
 table.AutoEditForm textarea {
     width: 100%;
+    border: 1px solid var(--border-color);
 }
 
 table.AutoEditForm span.input-frame input {
@@ -51,9 +52,9 @@ table.AutoEditForm span.input-frame input {
 }
 
 table.AutoEditForm span.input-frame {
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     padding: 0.25em;
-    background-color: white;
+    background-color: var(--input-bg-color);
     display: flex;
     align-items: center;
     height: 2em;
@@ -65,20 +66,4 @@ table.AutoEditForm span.input-frame select {
     flex: 1;
     min-width: 0;
     width: 0;
-}
-
-span.upload-file-field {
-    border: 1px solid @item_border@;
-    display: flex;
-    align-items: center;
-    background-color: white;
-    padding: 0.25em;
-}
-
-span.upload-file-field > a {
-    flex: 1 1 auto;
-}
-
-span.upload-file-field > span.icon {
-    flex: 0 0 auto;
 }

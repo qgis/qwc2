@@ -1,0 +1,131 @@
+div.timeline-slider-container {
+    position: relative;
+    margin-top: 0.125em;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+}
+
+div.timeline-slider {
+    flex: 1 1 auto;
+    background-color: white;
+    height: 35px;
+    min-height: 0px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    user-select: none;
+}
+
+div.timeline-slider-cursor {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: black;
+    z-index: 3;
+}
+
+div.timeline-slider-cursor-label {
+    position: absolute;
+    font-size: 70%;
+    bottom: 0;
+    text-align: center;
+    background-color: var(--container-bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    z-index: 4;
+    transform: translateX(-50%);
+    padding: 0 0.25em;
+}
+
+div.timeline-slider-cursor-label input {
+    border: none!important;
+    background-color: transparent!important;
+    padding: 0.125em!important;
+    height: initial!important;
+}
+
+div.timeline-slider-cursor-label input::-webkit-clear-button {
+    display: none;
+}
+
+div.timeline-slider-layertitle {
+    font-size: 75%;
+    padding: 0.25em;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    background-color: white;
+    color: black;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    z-index: 4;
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+div.timeline-slider-layertitle > span:first-child {
+    font-weight: bold;
+    margin-right: 1em;
+}
+
+div.timeline-slider-layertitle > select {
+    margin-right: 1em;
+}
+
+div.timeline-slider-gradient {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    min-height: 100%;
+}
+
+div.timeline-slider-feature {
+    font-size: 75%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    height: 24px;
+    padding: 0.25em;
+    border-radius: 4px;
+    background-color: var(--border-color);
+    border: 1px solid transparent;
+    z-index: 2;
+}
+
+div.timeline-slider-feature > span {
+    flex: 1 1 auto;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+
+div.timeline-slider-feature:hover {
+    border: 1px solid var(--color-active);
+}
+
+div.timeline-slider-loading {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(200, 200, 200, 0.9);
+    color: black;
+    z-index: 10;
+}
+
+div.timeline-slider-loading > div.spinner {
+    width: 4em;
+    height: 4em;
+    margin-right: 1em;
+}

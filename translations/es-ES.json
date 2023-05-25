@@ -2,26 +2,74 @@
   "locale": "es-ES",
   "messages": {
     "appmenu": {
+      "filter": "Menú de filtros...",
       "menulabel": "Mapa & Herramientas",
       "items": {
+        "AttributeTable": "Tabla de Atributos",
+        "Cyclomedia": "",
         "DxfExport": "Exportar DXF",
         "Editing": "Editando",
+        "FeatureForm": "Formulario de Elemento",
         "Help": "Ayuda",
         "IdentifyRegion": "Identificar zona",
+        "LayerCatalog": "Capa catálogo",
         "LayerTree": "Capas & Leyenda",
         "Login": "Inicio de sesión",
         "Logout": "Cierre de sesión",
+        "MapLegend": "Leyenda",
         "Measure": "Medida",
+        "MeasureLineString": "Medir una línea",
+        "MeasurePolygon": "Medir un polígono",
         "Print": "Imprimir",
         "RasterExport": "Exportar trama",
         "Redlining": "Línea de demarcación",
+        "Routing": "",
         "Share": "Compartir enlace",
         "ThemeSwitcher": "Tema",
-        "Tools": "Herramientas de Mapa"
+        "Tools": "Herramientas de Mapa",
+        "Bookmark": "Marcadores",
+        "TimeManager": "Gestor de Tiempo",
+        "Settings": "Opciones"
       }
+    },
+    "attribtable": {
+      "addfeature": "Añadir elemento",
+      "commit": "Commit de la fila modificada",
+      "delete": "Eliminar",
+      "deletefailed": "Uno o más elementos no han podido eliminarse",
+      "deletefeatures": "Eliminar elementos seleccionados",
+      "deleting": "Eliminando elementos...",
+      "discard": "Descartar fila modificada",
+      "formeditmode": "Abrir el formulario de edición del elemento seleccionado",
+      "geomnoadd": "Por favor use el formulario de edición para añadir elementos a esta capa",
+      "layer": "Capa",
+      "loadfailed": "No se han podido cargar los datos del elemento",
+      "loading": "Cargando...",
+      "nodelete": "No eliminar",
+      "nogeomnoform": "El formulario de edición no está disponible para capas sin geometría",
+      "pleasereload": "Presione 'Recargar' para cargar la tabla de atributos",
+      "reload": "Recargar",
+      "selectlayer": "Seleccionar capa",
+      "title": "Tabla de Atributos",
+      "zoomtoselection": "Hacer zoom a elementos seleccionado"
     },
     "bgswitcher": {
       "nobg": "Sin fondo"
+    },
+    "bookmark": {
+      "add": "Añadir",
+      "addfailed": "Error al crear",
+      "description": "Descripción",
+      "lastUpdate": "Último guardado",
+      "manage": "Administrar",
+      "nobookmarks": "Ningún marcador",
+      "notloggedin": "Se necesita tener sesión iniciada para guardar marcadores",
+      "open": "Abrir en la pestaña actual",
+      "openTab": "Abrir en pestaña",
+      "remove": "Eliminar",
+      "removefailed": "Error al eliminar el marcador",
+      "savefailed": "Error al actualizar el marcador",
+      "update": "Actualizar marcador"
     },
     "bottombar": {
       "mousepos_label": "Coordenadas",
@@ -33,34 +81,66 @@
       "click_to_copy": "Clic para copiar",
       "copied": "Copiado"
     },
+    "cyclomedia": {
+      "clickonmap": "",
+      "loaderror": "",
+      "loading": "",
+      "login": "",
+      "scalehint": "",
+      "title": ""
+    },
     "dxfexport": {
+      "layers": "Capas",
       "selectinfo": "Arrastre un rectángulo alrededor de la zona para exportar...",
       "symbologyscale": "Escala de la simbología:"
     },
     "editing": {
+      "add": "Añadir",
+      "attrtable": "Tabla",
       "canceldelete": "No borrar",
+      "clearpicture": "Limpiar",
       "commit": "Confirmar",
+      "commitfailed": "Fallo al guardar cambios",
+      "create": "Crear",
       "delete": "Borrar",
       "discard": "Descartar",
       "draw": "Trazar",
       "feature": "Elemento",
+      "geomreadonly": "La geometría contiene valores Z diferentes de cero por lo que es sólo lectura",
+      "invalidform": "Formulario inválido",
       "maximize": "Maximizar",
       "minimize": "Minimizar",
+      "nocompatpick": "Ninguna geometría compatible encontrada",
       "noeditablelayers": "Sin capas a modificar.",
+      "paint": "Modificar",
       "pick": "Elegir",
+      "pickdrawfeature": "Clonar geometría existente",
       "reallydelete": "Borrar",
-      "select": "Seleccionar"
+      "relationcommitfailed": "Algunos valores de las relaciones no han podido guardarse, verifique los tooltips de los iconos para más detalles",
+      "select": "Seleccionar",
+      "selectedpicture": "Imagen seleccionada",
+      "takepicture": "Tomar fotografía",
+      "unsavedchanged": "Hay cambios sin guardar. Quieres salir de la página sin guardar?"
+    },
+    "featureform": {
+      "feature": "Elemento",
+      "noresults": "Sin resultados",
+      "querying": "Consultando...",
+      "title": "Formulario de elemento"
     },
     "fileselector": {
+      "files": "archivos",
       "placeholder": "Seleccionar archivo..."
     },
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Distancia",
+      "export": "Exportar perfil",
       "height": "Altura",
       "loading": "Cálculo del perfil de altura..."
     },
     "identify": {
+      "clipboard": "",
       "export": "Exportar",
       "exportformat": "Exportar formato",
       "featureReport": "Informe del elemento",
@@ -70,10 +150,12 @@
       "querying": "Consultando...",
       "title": "Información del elemento"
     },
-    "identifyregion": {
-      "info": "Trace un polígono alrededor de los elementos para identificarlos..."
+    "imageeditor": {
+      "confirmclose": "Cerrar sin guardar?",
+      "title": "Editor de imágenes"
     },
     "importlayer": {
+      "addfailed": "Error al añadir capa",
       "addlayer": "Agregar capa",
       "connect": "Conectar",
       "filter": "Filtrar...",
@@ -85,7 +167,13 @@
       "urlplaceholder": "Ingrese dirección URL o WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": "Haga click en una ubicación para identificar en el mapa..."
+      "clickhelpPoint": "Haga click en una ubicación para identificar en el mapa...",
+      "clickhelpPolygon": "Trace un polígono alrededor de los elementos para identificarlos...",
+      "clickhelpRadius": "Define un radio y haga click en una ubicación para identificar los elementos alrededor del punto...",
+      "radius": "Radio"
+    },
+    "layercatalog": {
+      "windowtitle": "Catálogo de capas"
     },
     "layerinfo": {
       "abstract": "Resumen",
@@ -110,6 +198,12 @@
       "visiblefilter": "Filtrar capas no visibles",
       "zoomtolayer": "Zoom a la capa"
     },
+    "linkfeatureform": {
+      "cancel": "Cancelar",
+      "close": "Cerrar",
+      "drawhint": "Dibujar elemento en el mapa...",
+      "pickhint": "Elegir elemento en el mapa..."
+    },
     "locate": {
       "feetUnit": "pies",
       "metersUnit": "metros",
@@ -123,36 +217,72 @@
       }
     },
     "map": {
-      "loading": "Cargando..."
+      "loading": "Cargando...",
+      "resetrotation": "Reiniciar rotación"
     },
     "mapinfotooltip": {
       "elevation": "Elevación",
       "title": "Posición"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "Solo capas visibles",
+      "scaledependent": "",
+      "windowtitle": "Leyenda"
+    },
     "measureComponent": {
       "areaLabel": "Area",
       "bearingLabel": "Dirección",
+      "imperial": "",
       "lengthLabel": "Longitud",
+      "metric": "",
       "pointLabel": "Posición"
     },
+    "navbar": {
+      "perpage": "por página"
+    },
+    "newspopup": {
+      "dialogclose": "",
+      "dontshowagain": "",
+      "title": ""
+    },
+    "numericinput": {
+      "angle": "",
+      "featureunsupported": "",
+      "height": "",
+      "nofeature": "",
+      "side": "",
+      "width": "",
+      "windowtitle": ""
+    },
     "print": {
+      "atlasfeature": "",
       "grid": "Grilla:",
       "layout": "Diseño:",
+      "legend": "Leyenda",
       "maximize": "Maximizar",
       "minimize": "Minimizar",
       "nolayouts": "El tema seleccionado no admite su impresión",
       "notheme": "No hay tema seleccionado",
       "output": "Salida de impresión",
-      "resolution": "Resolución:",
-      "rotation": "Rotación:",
+      "pickatlasfeature": "",
+      "resolution": "Resolución",
+      "rotation": "Rotación",
       "scale": "Escala:",
       "submit": "Imprimir",
       "wait": "Por favor espere..."
     },
+    "qtdesignerform": {
+      "loading": "Cargando formulario..."
+    },
     "rasterexport": {
       "format": "Formato:",
       "resolution": "Resolución:",
-      "selectinfo": "Arrastre un rectángulo alrededor de la región para su exportación..."
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "redlining": {
       "border": "Límite",
@@ -166,18 +296,62 @@
       "delete": "Eliminar",
       "draw": "Dibujar",
       "edit": "Editar",
-      "fill": "Relleno",
+      "ellipse": "Elipse",
       "freehand": "Dibujo a mano alzada",
       "label": "Etiqueta",
       "layer": "Capa",
       "line": "Línea",
-      "outline": "Contorno",
+      "measurements": "",
+      "numericinput": "",
       "pick": "Elegir",
       "point": "Punto",
       "polygon": "Polígono",
+      "rectangle": "Rectángulo",
       "size": "Tamaño",
+      "square": "Cuadrado",
       "text": "Texto",
+      "transform": "",
       "width": "Ancho"
+    },
+    "routing": {
+      "add": "",
+      "addviapoint": "",
+      "arriveat": "",
+      "clear": "",
+      "computefailed": "",
+      "computing": "",
+      "excludepolygons": "",
+      "export": "",
+      "fastest": "",
+      "fromhere": "",
+      "importerror": "",
+      "importhint": "",
+      "importpoints": "",
+      "iso_intervals": "",
+      "iso_mode": "",
+      "iso_mode_distance": "",
+      "iso_mode_time": "",
+      "isocenter": "",
+      "isoextracenter": "",
+      "leaveat": "",
+      "leavenow": "",
+      "maxspeed": "",
+      "method": "",
+      "mode_auto": "",
+      "mode_bicycle": "",
+      "mode_heavyvehicle": "",
+      "mode_transit": "",
+      "mode_walking": "",
+      "optimized_route": "",
+      "reachability": "",
+      "roundtrip": "",
+      "route": "",
+      "shortest": "",
+      "tohere": "",
+      "useferries": "",
+      "usehighways": "",
+      "usetollways": "",
+      "windowtitle": ""
     },
     "scratchdrawing": {
       "finish": "Finalizar"
@@ -188,8 +362,12 @@
       "existinglayer": "La capa ya existe en el mapa",
       "invisiblelayer": "El resultado se encuentra en una capa no visible",
       "more": "Más...",
+      "noresults": "Sin resultados",
+      "providerselection": "Proveedores de búsqueda",
       "search": "Buscar",
       "searchall": "Buscar lugares o agregar mapas...",
+      "searchinprogress": "Buscando...",
+      "searchreset": "Reiniciar búsqueda",
       "themes": "Temas"
     },
     "searchbox": {
@@ -213,11 +391,23 @@
       "onlineResource": "Recurso en línea",
       "title": "Información del tema"
     },
+    "settings": {
+      "colorscheme": "Tema",
+      "confirmlang": "La aplicación se reiniciará para cambiar de idioma. Quiere continuar?",
+      "language": "Idioma",
+      "systemlang": "Idioma del sistema"
+    },
     "share": {
       "QRCodeLinkTitle": "Código QR",
       "directLinkTitle": "Vía un vínculo directo",
-      "generatingpermalink": "Generando un enlace permanente...",
+      "refresh": "Generar un enlace permanente",
+      "shareTitle": "QWC2",
+      "showpin": "Mostrar pin",
       "socialIntro": "En tu red social favorita"
+    },
+    "snapping": {
+      "loading": "Cargando geometrías de snapping...",
+      "snappingenabled": "Snapping"
     },
     "themelayerslist": {
       "addlayer": "Agregar capa",
@@ -227,6 +417,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Agregar capas al mapa actual",
       "addtotheme": "Agregar al actual tema",
+      "confirmswitch": "Las capas sin tema se perderán al cambiar de tema. Continuar?",
       "filter": "Filtrar...",
       "match": {
         "abstract": "Resumen",
@@ -236,19 +427,73 @@
       "openintab": "Abrir en pestaña",
       "restrictedthemeinfo": "Ud. no tiene permitido ver el tema o no está conectado"
     },
+    "timemanager": {
+      "animationinterval": "Intervalo de la animación",
+      "classify": "",
+      "classifynone": "",
+      "displayfeatures": "",
+      "displaylayers": "",
+      "displayminimal": "",
+      "endtime": "Final",
+      "future": "Futuro",
+      "group": "",
+      "groupnone": "",
+      "home": "",
+      "loading": "Cargando...",
+      "loop": "Bucle",
+      "markers": "Marcadores",
+      "notemporaldata": "No hay capas temporales visibles en el mapa",
+      "now": "Ahora",
+      "past": "Pasado",
+      "play": "Reproducir",
+      "playrev": "Reproducir al revés",
+      "rewind": "Rebobinar",
+      "starttime": "Inicio",
+      "stepback": "Saltar hacia atrás",
+      "stepfwd": "Saltar hacia delante",
+      "stepsize": "Tamaño del salto",
+      "stop": "Parar",
+      "timeline": "Linea temporal",
+      "timeline_fixed": "",
+      "timeline_infinite": "",
+      "timelinedisplay": "",
+      "timelinescale": "",
+      "title": "Gestor de tiempo",
+      "toggle": "Navegación temporal",
+      "unit": {
+        "century": "siglos",
+        "days": "días",
+        "decade": "décadas",
+        "hours": "horas",
+        "milliseconds": "milisegundos",
+        "minutes": "minutos",
+        "months": "meses",
+        "seconds": "segundos",
+        "years": "años"
+      },
+      "zoomin": "",
+      "zoomout": ""
+    },
     "tooltip": {
       "background": "Cambiar fondo",
+      "fullscreendisable": "Descativar pantalla completa",
+      "fullscreenenable": "Activar pantalla completa",
       "home": "Mostrar todo el mapa",
       "zoomin": "Acercarse",
       "zoomout": "Alejarse"
     },
     "vectorlayerpicker": {
+      "none": "",
       "prompt": "Ingrese nombre de la capa"
     },
     "window": {
       "close": "Cerrar",
       "dock": "Acoplar",
-      "undock": "Desacoplar"
+      "maximize": "Maximizar",
+      "minimize": "Minimizar",
+      "undock": "Desacoplar",
+      "unmaximize": "Restaurar",
+      "unminimize": "Desminimizar"
     }
   }
 }

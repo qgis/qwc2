@@ -45,7 +45,21 @@ export function setCurrentTask(task, mode = null, mapClickAction = null, data = 
     };
 }
 
-export function setCurrentTaskBlocked(blocked) {
+let beforeUnloadListener = null;
+
+export function setCurrentTaskBlocked(blocked, unloadmsg = null) {
+    if (beforeUnloadListener) {
+        window.removeEventListener('beforeunload', beforeUnloadListener);
+        beforeUnloadListener = null;
+    }
+    if (blocked && unloadmsg !== null) {
+        beforeUnloadListener = (event) => {
+            event.preventDefault();
+            event.returnValue = unloadmsg;
+            return unloadmsg;
+        };
+        window.addEventListener('beforeunload', beforeUnloadListener);
+    }
     return {
         type: SET_CURRENT_TASK_BLOCKED,
         blocked

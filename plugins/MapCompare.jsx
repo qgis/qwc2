@@ -14,6 +14,11 @@ import Icon from '../components/Icon';
 
 import './style/MapCompare.css';
 
+/**
+ * Allows comparing the top layer with the rest of the map.
+ *
+ * Activated through a checkbox in the LayerTree.
+ */
 class MapComparePlugin extends React.Component {
     constructor(props) {
         super(props);
@@ -23,7 +28,7 @@ class MapComparePlugin extends React.Component {
     static propTypes = {
         setSwipe: PropTypes.func,
         swipe: PropTypes.number
-    }
+    };
     render() {
         if (this.props.swipe === null) {
             return null;
@@ -47,31 +52,31 @@ class MapComparePlugin extends React.Component {
         }
         ev.preventDefault();
         ev.stopPropagation();
-    }
+    };
     mouseDrag = (ev) => {
         let perc = (ev.clientX - this.clickOffset) / document.body.clientWidth * 100;
         perc = Math.min(100, Math.max(0, perc));
         this.props.setSwipe(perc);
         ev.preventDefault();
         ev.stopPropagation();
-    }
+    };
     mouseDragEnd = (ev) => {
         document.removeEventListener("mousemove", this.mouseDrag);
         document.removeEventListener("mouseup", this.mouseDragEnd);
         ev.preventDefault();
         ev.stopPropagation();
-    }
+    };
     touchDragStart = (ev) => {
         if (this.el) {
             const rect = this.el.getBoundingClientRect();
             this.clickOffset = ev.touches[0].clientX - rect.left;
         }
-    }
+    };
     touchDrag = (ev) => {
         let perc = (ev.touches[0].clientX - this.clickOffset) / document.body.clientWidth * 100;
         perc = Math.min(100, Math.max(0, perc));
         this.props.setSwipe(perc);
-    }
+    };
 }
 
 export default connect((state) => ({

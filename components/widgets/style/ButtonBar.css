@@ -14,8 +14,8 @@ div.ButtonBar.buttonbar-disabled:before {
 }
 
 div.ButtonBar.buttonbar-disabled span.buttonbar-button-container > button {
-    background-color: transparent;
-    color: #ccc;
+    background-color: var(--button-bg-color-disabled);
+    color: var(--button-text-color-disabled);
 }
 
 div.ButtonBar span.buttonbar-button-container {
@@ -25,30 +25,64 @@ div.ButtonBar span.buttonbar-button-container {
 
 div.ButtonBar span.buttonbar-button-container > button {
     width: 100%;
-    border-left-width: 0;
 }
 
-div.ButtonBar span.buttonbar-button-container:first-child > button {
-    border-left-width: 1px;
+div.ButtonBar span.buttonbar-button-container:not(:last-child) > button {
+    border-right-width: 0;
 }
 
-div.ButtonBar span.buttonbar-button-tooltip {
+span.buttonbar-button-tooltip {
     position: absolute;
     display: none;
-    background-color: rgba(0, 0, 0, 0.75);
-    border: 1px solid black;
-    color: white;
+    background-color: var(--tooltip-bg-color);
+    border: 1px solid var(--tooltip-border-color);
+    color: var(--tooltip-text-color);
     font-size: 75%;
     font-weight: normal;
     padding: 0.5em;
     border-radius: 0.5em;
-    top: 110%;
     white-space: nowrap;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
 }
 
-div.ButtonBar span.buttonbar-button-container:hover span.buttonbar-button-tooltip {
+span.buttonbar-button-tooltip-top {
+    bottom: 110%;
+}
+
+span.buttonbar-button-tooltip-bottom {
+    top: 110%;
+}
+
+div.ButtonBar div.menubutton {
+    height: 2em;
+    flex: 1 1 auto;
+}
+
+span.buttonbar-button-container:hover span.buttonbar-button-tooltip,
+div.ButtonBar div.menubutton-button:hover span.buttonbar-button-tooltip {
     display: inline;
+}
+
+div.buttonbar-combo-entry {
+    display: flex;
+    align-items: center;
+}
+
+div.buttonbar-combo-entry > span.icon {
+    flex: 0 0 auto;
+}
+
+div.buttonbar-combo-entry > span.buttonbar-combo-entry-label {
+    flex: 1 1 auto;
+}
+
+div.buttonbar-combo-entry {
+    display: flex;
+    align-items: center;
+}
+
+div.buttonbar-combo-entry > span.buttonbar-combo-entry-label {
+    margin: 0 0.5em;
 }

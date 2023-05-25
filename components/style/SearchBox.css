@@ -3,26 +3,17 @@ div.SearchBox {
     position: relative;
     height: 2em;
     max-width: 70ch;
-    background-color: white;
+    background-color: var(--input-bg-color);
+    color: var(--text-color);
 }
 
 div.SearchBox > div.searchbox-field {
     width: 100%;
-    border: 1px solid @item_border@;
-    height: 2em;
-    display: flex;
-    align-items: center;
 }
 
-div.SearchBox > div.searchbox-field > span.icon {
-    flex: 0 0 2em;
-    text-align: center;
-}
-div.SearchBox > div.searchbox-field > input {
-    border: 0;
-    outline: 0;
-    min-width: 0;
-    flex: 1 1 auto;
+div.SearchBox > div.searchbox-field > div.spinner {
+    width: calc(2em - 2px);
+    height: calc(2em - 2px);
 }
 
 div.SearchBox > div.searchbox-results {
@@ -30,22 +21,25 @@ div.SearchBox > div.searchbox-results {
     left: 0;
     top: 100%;
     width: 100%;
-    max-height: calc(100vh - 4em);
-    max-height: calc(var(--vh, 1vh) * 100 - 4em);
-    background-color: white;
-    border-left: 1px solid @item_border@;
-    border-right: 1px solid @item_border@;
-    border-bottom: 1px solid @item_border@;
+    max-height: calc(100vh - 5em);
+    max-height: calc(var(--vh, 1vh) * 100 - 5em);
+    background-color: var(--list-bg-color);
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
     box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
     overflow-x: hidden;
     overflow-y: auto;
 }
 
 div.SearchBox div.searchbox-results-section-title {
-    background-color: @container_bg@;
+    background-color: var(--list-section-bg-color);
+    color: var(--list-section-text-color);
     font-weight: bold;
     padding: 0.5em;
     cursor: pointer;
+    display: flex;
+    align-items: center;
 }
 
 div.SearchBox div.searchbox-results-section-title > span.icon {
@@ -56,15 +50,22 @@ div.searchbox-result {
     padding: 0.125em 0.5em;
     display: flex;
     align-items: center;
-    height: 1.75em;
+}
+
+div.searchbox-noresults {
+    padding: 0.125em 0.5em;
+    font-style: italic;
+    color: var(--text-color-disabled);
 }
 
 div.searchbox-result:hover {
-    background-color: @button_hover_bg@;
+    background-color: var(--list-item-bg-color-hover);
+    color: var(--list-item-text-color-hover);
 }
 
 div.searchbox-result-expandedinfo {
-    background-color: @button_hover_bg@;
+    background-color: var(--list-item-bg-color-hover);
+    color: var(--list-item-text-color-hover);
 }
 
 div.searchbox-result > img {
@@ -86,7 +87,7 @@ span.searchbox-result-label {
 
 div.searchbox-result-abstract {
     padding: .5em;
-    border-bottom: 1px solid @button_hover_bg@;
+    border-bottom: 1px solid var(--list-item-bg-color-hover);
     max-height: 10em;
     overflow-y: auto;
     font-size: 95%;
@@ -103,5 +104,5 @@ div.searchbox-more-results {
 
 div.searchbox-result-group {
     margin-left: 1em;
-    border-left: 1px solid @button_hover_bg@;
+    border-left: 1px solid var(--list-item-bg-color-hover);
 }

@@ -20,29 +20,32 @@ export default class PrintFrame extends React.Component {
             height: PropTypes.number // in meters
         }),
         map: PropTypes.object.isRequired
-    }
+    };
     static defaultProps = {
         bboxSelected: () => {}
-    }
+    };
     state = {
         x: 0, y: 0, width: 0, height: 0, moving: false
-    }
+    };
     componentDidMount() {
         this.recomputeBox(this.props, {});
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (this.props.map !== prevProps.map || !isEqual(this.props.fixedFrame, prevProps.fixedFrame)) {
-            this.recomputeBox(this.props, prevProps);
+            this.recomputeBox();
+        }
+        if (!this.props.fixedFrame && prevProps.fixedFrame) {
+            this.setState({x: 0, y: 0, width: 0, height: 0, moving: false});
         }
     }
-    recomputeBox = (newProps, oldProps) => {
-        if (newProps.fixedFrame) {
+    recomputeBox = () => {
+        if (this.props.fixedFrame) {
             const getPixelFromCoordinate = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK);
             let newState = {x: 0, y: 0, width: 0, height: 0, moving: false};
-            const cosa = Math.cos(-newProps.map.bbox.rotation);
-            const sina = Math.sin(-newProps.map.bbox.rotation);
-            const center = newProps.map.center;
-            const {width, height} = MapUtils.transformExtent(newProps.map.projection, center, newProps.fixedFrame.width, newProps.fixedFrame.height);
+            const cosa = Math.cos(-this.props.map.bbox.rotation);
+            const sina = Math.sin(-this.props.map.bbox.rotation);
+            const center = this.props.map.center;
+            const {width, height} = MapUtils.transformExtent(this.props.map.projection, center, this.props.fixedFrame.width, this.props.fixedFrame.height);
             const mapp1 = [
                 center[0] - 0.5 * width * cosa - 0.5 * height * sina,
                 center[1] + 0.5 * width * sina - 0.5 * height * cosa
@@ -61,7 +64,7 @@ export default class PrintFrame extends React.Component {
             };
             this.setState(newState);
         }
-    }
+    };
     startSelection = (ev) => {
         const x = Math.round(ev.clientX);
         const y = Math.round(ev.clientY);
@@ -72,19 +75,21 @@ export default class PrintFrame extends React.Component {
             height: 0,
             moving: true
         });
-    }
+    };
     updateSelection = (ev) => {
         if (this.state.moving) {
-            const x = Math.round(ev.clientX);
-            const y = Math.round(ev.clientY);
-            const width = Math.round(Math.max(0, x - this.state.x));
-            const height = Math.round(Math.max(0, y - this.state.y));
-            this.setState({
-                width: width,
-                height: height
+            this.setState((state) => {
+                const x = Math.round(ev.clientX);
+                const y = Math.round(ev.clientY);
+                const width = Math.round(Math.max(0, x - state.x));
+                const height = Math.round(Math.max(0, y - state.y));
+                return {
+                    width: width,
+                    height: height
+                };
             });
         }
-    }
+    };
     endSelection = () => {
         this.setState({moving: false});
         const getCoordinateFromPixel = MapUtils.getHook(MapUtils.GET_COORDINATES_FROM_PIXEL_HOOK);
@@ -98,8 +103,10 @@ export default class PrintFrame extends React.Component {
         ];
         if (bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
             this.props.bboxSelected(bbox, this.props.map.projection, [this.state.width, this.state.height]);
+        } else {
+            this.props.bboxSelected(null, this.props.map.projection, [0, 0]);
         }
-    }
+    };
     render() {
         const boxStyle = {
             left: this.state.x + 'px',

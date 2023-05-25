@@ -10,115 +10,29 @@
 html, body {
     overflow: hidden;
     cursor: default;
-    color: @base_fg@;
+    color: var(--text-color);
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 14px;
     margin: 0;
     padding: 0;
 }
 
-input, select, button, textarea {
-    border-radius: 0;
-    color: inherit;
-    font-family: inherit;
-    font-size: inherit;
-    margin: 0;
-}
-
-textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]) {
-    -webkit-appearance: none;
-    cursor:text;
-    padding: 0.25em;
-}
-
-/** Range slider **/
-input[type=range]{
-    -webkit-appearance: none;
-    outline: none;
-}
-
-input[type=range]::-moz-range-track {
-    background: #ddd;
-    height: 4px;
-}
-
-input[type=range]::-webkit-slider-runnable-track {
-    background: #ddd;
-    height: 4px;
-}
-
-input[type=range]::-moz-range-thumb {
-    -webkit-appearance: none;
-    border: 1px solid @map_button_bg@;
-    border-radius: 50%;
-    height: 12px;
-    width: 12px;
-    box-sizing: border-box;
-    background: @map_button_fg@;
-    margin-top: -3.5px;
-}
-
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    border: 1px solid @map_button_bg@;
-    border-radius: 50%;
-    height: 12px;
-    width: 12px;
-    box-sizing: border-box;
-    background: @map_button_fg@;
-    margin-top: -3.5px;
-}
-
-/* IE */
-input[type=range]::-ms-track {
-    color: transparent;
-    box-sizing: border-box;
-    height: 12px;
-    border: 4px solid transparent;
-}
-input[type=range]::-ms-fill-lower {
-    background: #777;
-}
-input[type=range]::-ms-fill-upper {
-    background: #ccc;
-}
-input[type=range]::-ms-thumb {
-    border: 1px solid @map_button_bg@;
-    border-radius: 50%;
-    height: 12px;
-    width: 12px;
-    box-sizing: border-box;
-    background: @map_button_fg@;
-}
-
-input[type=range]::-ms-tooltip {
-    display: none;
-}
-
-a {
-    cursor:pointer;
-    color: #337ab7;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
 html, body, #container {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
 }
 
-ul {
-    margin: 0;
+a {
+    cursor: pointer;
+    color: var(--text-color-link);
+    text-decoration: none;
 }
 
-table {
-    border-collapse: collapse;
+a:hover {
+    text-decoration: underline;
 }
 
 h1, h2, h3, h4 {
@@ -133,37 +47,112 @@ h4 { font-size: 130%; }
 h5 { font-size: 120%; }
 h6 { font-size: 110%; }
 
+table {
+    border-collapse: collapse;
+}
 
-button.button {
-    display: inline-flex;
-    border: 1px solid @item_border@;
+ul {
+    margin: 0;
+}
+
+input, select, button, textarea {
+    border-radius: 0;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    margin: 0;
+}
+
+input:focus, select:focus, button:focus, textarea:focus {
+    outline: var(--focus-outline);
+}
+
+textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]), select {
     padding: 0.25em;
-    align-items: center;
-    justify-content: center;
-    background-color: @button_bg@;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg-color);
+    color: var(--text-color);
+}
+
+input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]), select {
     height: 2em;
 }
 
+textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]) {
+    cursor: text;
+}
+
+input:read-only, textarea:read-only, input:not([type=checkbox]):not([type=radio]):not([type=range]):read-only {
+    color: var(--text-color-disabled);
+}
+
+input:disabled, select:disabled, textarea:disabled {
+    background-color: var(--input-bg-color-disabled);
+    color: var(--text-color-disabled);
+}
+
+input:invalid, select:invalid, textarea:invalid, input:not([type=checkbox]):not([type=radio]):not([type=range]):invalid {
+    background-color: #FFAAAA;
+}
+
+/** Button **/
+button.button {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: 1px solid var(--border-color);
+    display: inline-flex;
+    padding: 0.5em;
+    align-items: center;
+    justify-content: center;
+    height: 2em;
+    overflow: hidden;
+    cursor: pointer;
+    outline: none;
+}
+
 button.button:disabled {
-    color: @item_border@;
+    background-color: var(--button-bg-color-disabled);
+    color: var(--button-text-color-disabled);
     cursor: default;
+}
+
+button.button:not(:disabled):hover {
+    background-color: var(--button-bg-color-hover);
+    color: var(--button-text-color-hover);
+}
+
+button.button.pressed:not(:disabled):hover {
+    background-color: var(--button-bg-color-active-hover);
+    color: var(--button-text-color-active-hover);
+}
+
+button.button.pressed:not(:disabled) {
+    background-color: var(--button-bg-color-active);
+    color: var(--button-text-color-active);
+}
+
+button.button-accept {
+    background-color: rgb(127,255,127);
+}
+
+button.button-warning {
+    background-color: #ffd979;
+}
+
+button.button-reject {
+    background-color: rgb(255,127,127);
+}
+
+button.button-accept:not(:disabled):hover {
+    background-color: rgb(127,225,127);
+}
+
+button.button-reject:not(:disabled):hover {
+    background-color: rgb(225,127,127);
 }
 
 button.button > * {
     flex: 0 0 auto;
-}
-
-button.button:focus {
-    outline: 0;
-}
-
-button.button > .icon
-{
-    margin-right: 0.25em;
-}
-button.button.pressed:not(:disabled) {
-    background-color: @item_active@;
-    color: white;
 }
 
 button.button:not(:disabled):active > * {
@@ -172,33 +161,70 @@ button.button:not(:disabled):active > * {
     top: 1px;
 }
 
-button.button:not(:disabled):hover {
-    background-color: @button_hover_bg@;
+button.button > span:not(.icon) {
+    margin: 0 0.5em;
 }
 
-button.button.pressed:not(:disabled):hover {
-    background-color: @item_active_hover@;
+button.button > div.spinner {
+    width: 1.5em;
+    height: 1.5em;
 }
 
-select.combo {
-    border: 1px solid @item_border@;
-    background-color: white;
+/** Range slider **/
+input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: transparent;
     height: 2em;
 }
 
+input[type=range]::-moz-range-track {
+    background: #ddd;
+    height: 4px;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    background: #ddd;
+    height: 4px;
+}
+
+input[type=range]::-moz-range-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    height: 12px;
+    width: 12px;
+    box-sizing: border-box;
+    background: var(--input-bg-color);
+    margin-top: -3.5px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    height: 12px;
+    width: 12px;
+    box-sizing: border-box;
+    background: var(--input-bg-color);
+    margin-top: -3.5px;
+}
+
+/* react-numeric-input */
 span.react-numeric-input > input {
-  border-radius: 0!important;
-  height: 2em;
-  width: 100%;
-  border: 1px solid @item_border@!important;
+    border-radius: 0!important;
+    height: 2em;
+    width: 100%;
+    border: 1px solid var(--border-color)!important;
 }
 
 span.react-numeric-input > b {
-    border: 1px solid @item_border@!important;
-    background: @button_bg@!important;
-    color: @base_fg@!important;
+    border: 1px solid var(--border-color)!important;
+    background-color: var(--button-bg-color)!important;
+    color: var(--button-text-color)!important;
 }
 
 span.react-numeric-input > b:hover {
-    background: @button_hover_bg@!important;
+    background-color: var(--button-bg-color-hover)!important;
 }

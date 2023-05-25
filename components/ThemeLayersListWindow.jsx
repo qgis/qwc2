@@ -26,9 +26,14 @@ class ThemeLayersListWindow extends React.Component {
         theme: PropTypes.object,
         themes: PropTypes.object,
         windowSize: PropTypes.object
-    }
+    };
     state = {
         selectedLayers: []
+    };
+    componentDidUpdate(prevProps) {
+        if (this.props.theme !== prevProps.theme) {
+            this.setState({selectedLayers: []});
+        }
     }
     renderLayer(layer) {
         const checkboxstate = this.state.selectedLayers.includes(layer) ? 'checked' : 'unchecked';
@@ -42,9 +47,22 @@ class ThemeLayersListWindow extends React.Component {
         );
     }
     renderLayers(layer) {
+        const addLayerTitle = LocaleUtils.tr("themelayerslist.addlayer");
         return layer.sublayers.map((sublayer) => {
             if (sublayer.sublayers) {
-                return this.renderLayers(sublayer);
+                const checkboxstate = this.state.selectedLayers.includes(sublayer) ? 'checked' : 'unchecked';
+                return (
+                    <div className="layerlist-group" key={sublayer.name}>
+                        <div className="layerlist-item" key={sublayer.name}>
+                            <Icon className="layerlist-item-checkbox" icon={checkboxstate} onClick={() => this.itemSelectionToggled(sublayer)} />
+                            <span className="layerlist-item-title" title={sublayer.title}>{sublayer.title}</span>
+                            <Icon className="layerlist-item-add" icon="plus" onClick={ev => this.addLayer(ev, sublayer)} title={addLayerTitle} />
+                        </div>
+                        <div className="layerlist-group-items">
+                            {this.renderLayers(sublayer)}
+                        </div>
+                    </div>
+                );
             } else {
                 return this.renderLayer(sublayer);
             }
@@ -75,12 +93,12 @@ class ThemeLayersListWindow extends React.Component {
         this.props.addLayer(ThemeUtils.createThemeLayer(this.props.theme, this.props.themes, LayerRole.USERLAYER, subLayers));
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
-    }
+    };
     addSelectedLayers = () => {
         this.props.addLayer(ThemeUtils.createThemeLayer(this.props.theme, this.props.themes, LayerRole.USERLAYER, this.state.selectedLayers));
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
-    }
+    };
     itemSelectionToggled = (layer) => {
         // If item is already in array, this means it is selected so it is removed from the array. Else it is added
         if (this.state.selectedLayers.includes(layer)) {
@@ -97,15 +115,15 @@ class ThemeLayersListWindow extends React.Component {
                 };
             });
         }
-    }
+    };
     onClose = () => {
         this.props.setThemeLayersList(null);
-    }
+    };
 }
 
 const selector = state => ({
     theme: state.theme.themelist,
-    themes: state.layers
+    themes: state.theme.themes
 });
 
 export default connect(selector, {

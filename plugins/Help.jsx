@@ -9,24 +9,55 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import axios from 'axios';
 import SideBar from '../components/SideBar';
 
+
+/**
+ * Displays a custom help dialog in a sidebar.
+ *
+ * Define the help contents by specifying the `bodyContentsFragmentUrl` prop.
+ * See also https://github.com/qgis/qwc2-demo-app/blob/master/doc/src/qwc_configuration.md#help-dialog.
+ */
 class Help extends React.Component {
     static propTypes = {
-        renderBody: PropTypes.func
-    }
+        /** URL to a document containing a HTML fragment to display in the Help sidebar. */
+        bodyContentsFragmentUrl: PropTypes.string,
+        renderBody: PropTypes.func,
+        /** The side of the application on which to display the sidebar. */
+        side: PropTypes.string
+    };
     static defaultProps = {
-        renderBody: () => { return null; }
+        renderBody: () => { return null; },
+        side: 'right'
+    };
+    constructor(props) {
+        super(props);
+        this.bodyEl = null;
+    }
+    componentDidMount() {
+        if (this.props.bodyContentsFragmentUrl) {
+            axios.get(this.props.bodyContentsFragmentUrl).then(response => {
+                this.bodyEl.innerHTML = response.data.replace('$VERSION$', process.env.BuildDate);
+            }).catch(() => {});
+        }
     }
     render() {
         return (
-            <SideBar icon="info" id="Help" title="appmenu.items.Help" width="20em">
+            <SideBar icon="info" id="Help" renderWhenHidden side={this.props.side} title="appmenu.items.Help" width="20em">
                 {() => ({
-                    body: (<div>{this.props.renderBody(this.props)}</div>)
+                    body: this.renderBody()
                 })}
             </SideBar>
         );
     }
+    renderBody = () => {
+        if (this.props.bodyContentsFragmentUrl) {
+            return (<div ref={el => {this.bodyEl = el;}} />);
+        } else {
+            return this.props.renderBody();
+        }
+    };
 }
 
 export default (renderHelp) => {

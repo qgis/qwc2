@@ -1,0 +1,86 @@
+div.menubutton {
+    display: inline-flex;
+    align-items: center;
+}
+
+div.menubutton-button {
+    position: relative;
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: 1px solid var(--border-color);
+}
+
+div.menubutton-button:active > span.menubutton-button-content {
+    position: relative!important;
+    left: 1px;
+    top: 1px;
+}
+
+div.menubutton-button:hover,
+div.menubutton-button-hover {
+    background-color: var(--button-bg-color-hover);
+    color: var(--button-text-color-hover);
+}
+
+div.menubutton-button-active {
+    background-color: var(--button-bg-color-active);
+    color: var(--button-text-color-active);
+}
+
+div.menubutton-button-active:hover,
+div.menubutton-button-active.menubutton-button-hover {
+    background-color: var(--button-bg-color-active-hover);
+    color: var(--button-text-color-active-hover);
+}
+
+span.menubutton-button-content {
+    padding: 0 0.5em;
+    flex: 1 1 auto;
+    display: inline-block;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+span.menubotton-combo-arrow {
+    padding: 0 0.125em;
+    display: inline-block;
+    flex: 0 0 1em;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    border-left: 1px solid var(--border-color);
+}
+
+div.menubutton-menu {
+    background-color: var(--list-bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+div.menubutton-menu > div {
+    padding: 0.25em;
+}
+
+div.menubutton-menu > div:hover {
+    background-color: var(--list-item-bg-color-hover);
+    color: var(--list-item-text-color-hover);
+}
+
+div.menubutton-menu > div.menubutton-menu-active {
+    background-color: var(--list-item-bg-color-active);
+    color: var(--list-item-text-color-active);
+}
+
+div.menubutton-menu > div.menubutton-menu-active:hover {
+    background-color: var(--list-item-bg-color-active-hover);
+    color: var(--list-item-text-color-active-hover);
+}
+
+div.menubutton-menu-disabled {
+    color: var(--text-color-disabled);
+}

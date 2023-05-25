@@ -1,0 +1,94 @@
+div.inftimeline {
+    padding: 0 0.25em 0.25em 0.25em;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+}
+
+div.inftimeline-toolbar {
+    display: flex;
+    font-size: 75%;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+div.inftimeline-toolbar-block {
+    margin-left: 1em;
+    display: flex;
+    align-items: center;
+}
+
+div.inftimeline-toolbar-block > input,
+div.inftimeline-toolbar-block > div.ToggleSwitch
+ {
+    width: 6em;
+}
+
+div.inftimeline-toolbar-spacer {
+    flex: 1 1 auto;
+}
+
+div.inftimeline-clip {
+    overflow: hidden;
+    position: relative;
+    flex: 0 0 auto;
+}
+
+div.inftimeline-ticks {
+    margin: 2em 0.25em 0 0.25em;
+    position: relative;
+    height: 10px;
+}
+
+
+div.inftimeline-ticks > span.inftimeline-ltick {
+    position: absolute;
+    display: inline-block;
+    width: 2px;
+    height: 100%;
+    background-color: black;
+}
+
+div.inftimeline-ticks > span.inftimeline-ltick > span {
+    position: absolute;
+    width: 10em;
+    text-align: center;
+    white-space: pre;
+    font-size: 70%;
+    left: -5em;
+    top: -2.5em;
+}
+
+div.inftimeline-ticks > span.inftimeline-tick {
+    position: absolute;
+    display: inline-block;
+    width: 2px;
+    height: 50%;
+    bottom: 0;
+    background-color: gray;
+}
+
+button.inftimeline-pan-left,
+button.inftimeline-pan-right {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    width: 1.5em;
+    height: initial;
+    z-index: 1;
+}
+
+button.inftimeline-pan-left:disabled,
+button.inftimeline-pan-right:disabled {
+    color: var(--text-color-disabled);
+}
+
+
+button.inftimeline-pan-left {
+    left: 0;
+}
+
+button.inftimeline-pan-right {
+    right: 0;
+}

@@ -11,7 +11,7 @@ import isEmpty from 'lodash.isempty';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import LayerUtils from '../utils/LayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
-import uuid from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {
     LayerRole,
     SET_LAYER_LOADING,
@@ -20,6 +20,7 @@ import {
     REMOVE_LAYER,
     REORDER_LAYER,
     CHANGE_LAYER_PROPERTY,
+    SET_LAYER_DIMENSIONS,
     ADD_LAYER_FEATURES,
     REMOVE_LAYER_FEATURES,
     CLEAR_LAYER,
@@ -114,9 +115,20 @@ export default function layers(state = defaultState, action) {
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
         return {...state, flat: newLayers};
     }
+    case SET_LAYER_DIMENSIONS: {
+        const newLayers = (state.flat || []).map((layer) => {
+            if (layer.id === action.layerId) {
+                const newLayer = {...layer, dimensionValues: action.dimensions};
+                Object.assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
+                return newLayer;
+            }
+            return layer;
+        });
+        return {...state, flat: newLayers};
+    }
     case ADD_LAYER: {
         let newLayers = (state.flat || []).concat();
-        const layerId = action.layer.id || uuid.v4();
+        const layerId = action.layer.id || uuidv4();
         const newLayer = {
             ...action.layer,
             id: layerId,
@@ -168,58 +180,61 @@ export default function layers(state = defaultState, action) {
         return {...state, flat: newLayers};
     }
     case ADD_LAYER_FEATURES: {
-        const layerId = action.layer.id || uuid.v4();
+        const layerId = action.layer.id || uuidv4();
         const newLayers = (state.flat || []).concat();
         const idx = newLayers.findIndex(layer => layer.id === layerId);
         if (idx === -1) {
+            const newFeatures = action.features.map(function(f) {
+                return {...f, id: f.id || (f.properties || {}).id || uuidv4()};
+            });
             const newLayer = {
                 ...action.layer,
                 id: layerId,
                 type: 'vector',
                 name: action.layer.name || layerId,
-                uuid: uuid.v4(),
-                features: action.features,
+                uuid: uuidv4(),
+                features: newFeatures,
                 role: action.layer.role || LayerRole.USERLAYER,
                 queryable: action.layer.queryable || false,
                 visibility: action.layer.visibility || true,
                 opacity: action.layer.opacity || 255,
                 layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER,
-                bbox: {bounds: VectorLayerUtils.computeFeaturesBBox(action.features)}
+                bbox: VectorLayerUtils.computeFeaturesBBox(action.features)
             };
             let inspos = 0;
             for (; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);
             newLayers.splice(inspos, 0, newLayer);
         } else {
-            const addFeatures = action.features.concat();
-            let newFeatures = [];
-            if (!action.clear) {
-                newFeatures = (newLayers[idx].features || []).map( f => {
-                    const fidx = addFeatures.findIndex(g => g.id === f.id);
-                    if (fidx === -1) {
-                        return f;
-                    } else {
-                        return addFeatures.splice(fidx, 1)[0];
-                    }
-                });
-            }
-            newFeatures = newFeatures.concat(addFeatures);
-            newLayers[idx] = {...newLayers[idx], features: newFeatures, bbox: {bounds: VectorLayerUtils.computeFeaturesBBox(newFeatures)}};
+            const addFeatures = action.features.map(f => ({
+                ...f, id: f.id || (f.properties || {}).id || uuidv4()
+            }));
+            const newFeatures = action.clear ? addFeatures : [
+                ...(newLayers[idx].features || []).filter(f => !addFeatures.find(g => g.id === f.id)),
+                ...addFeatures
+            ];
+            newLayers[idx] = {...newLayers[idx], features: newFeatures, bbox: VectorLayerUtils.computeFeaturesBBox(newFeatures), rev: action.layer.rev};
         }
         return {...state, flat: newLayers};
     }
     case REMOVE_LAYER_FEATURES: {
+        let changed = false;
         const newLayers = (state.flat || []).reduce((result, layer) => {
             if (layer.id === action.layerId) {
-                const newFeatures = layer.features.filter(f => action.featureIds.includes(f.id) === false);
+                const newFeatures = (layer.features || []).filter(f => action.featureIds.includes(f.id) === false);
                 if (!isEmpty(newFeatures) || action.keepEmptyLayer) {
-                    result.push({...layer, features: newFeatures, bbox: {bounds: VectorLayerUtils.computeFeaturesBBox(newFeatures)}});
+                    result.push({...layer, features: newFeatures, bbox: VectorLayerUtils.computeFeaturesBBox(newFeatures)});
                 }
+                changed = true;
             } else {
                 result.push(layer);
             }
             return result;
         }, []);
-        return {...state, flat: newLayers};
+        if (changed) {
+            return {...state, flat: newLayers};
+        } else {
+            return state;
+        }
     }
     case CLEAR_LAYER: {
         const newLayers = (state.flat || []).map(layer => {
@@ -246,7 +261,7 @@ export default function layers(state = defaultState, action) {
     case REFRESH_LAYER: {
         const newLayers = (state.flat || []).map((layer) => {
             if (action.filter(layer)) {
-                return {...layer, rev: (layer.rev || 0) + 1};
+                return {...layer, rev: +new Date()};
             }
             return layer;
         });
@@ -265,7 +280,7 @@ export default function layers(state = defaultState, action) {
         if (action.layer) {
             newLayers = newLayers.map(layer => {
                 if (layer.type === 'placeholder' && layer.id === action.id) {
-                    const newLayer = {...action.layer};
+                    const newLayer = {...action.layer, ...layer, type: action.layer.type};
                     LayerUtils.addUUIDs(newLayer);
                     if (newLayer.type === "wms") {
                         Object.assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));

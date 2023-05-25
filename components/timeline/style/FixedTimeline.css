@@ -1,0 +1,77 @@
+div.fixtimeline {
+    padding: 0.25em;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+}
+
+div.fixtimeline-toolbar {
+    display: flex;
+    font-size: 70%;
+    padding-top: 
+}
+
+div.fixtimeline-toolbar-spacer {
+    flex: 1 1 auto;
+}
+
+div.fixtimeline-slider {
+    position: relative;
+}
+
+button.fixtimeline-pan-left,
+button.fixtimeline-pan-right {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    width: 1.5em;
+    height: initial;
+    z-index: 1;
+}
+
+button.fixtimeline-pan-left {
+    left: 0;
+}
+
+button.fixtimeline-pan-right {
+    right: 0;
+}
+
+div.fixtimeline-ticks {
+    margin-top: 2em;
+    position: relative;
+    height: 10px;
+}
+
+div.fixtimeline-ticks > span.fixtimeline-ltick {
+    position: absolute;
+    display: inline-block;
+    width: 2px;
+    height: 100%;
+    background-color: black;
+}
+
+div.fixtimeline-ticks > span.fixtimeline-ltick > span {
+    position: absolute;
+    width: 10em;
+    text-align: center;
+    white-space: pre;
+    font-size: 70%;
+    left: -5em;
+    top: -2.5em;
+}
+
+div.fixtimeline-ticks > span.fixtimeline-tick {
+    position: absolute;
+    display: inline-block;
+    width: 2px;
+    height: 50%;
+    bottom: 0;
+    background-color: gray;
+}
+
+div.fixtimeline-ticks > span.fixtimeline-ltick:first-child,
+div.fixtimeline-ticks > span.fixtimeline-ltick:last-child {
+    display: none;
+}

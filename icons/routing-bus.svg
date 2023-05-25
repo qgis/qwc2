@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 24 24"
+   version="1.1"
+   id="svg245"
+   sodipodi:docname="routing-bus.svg"
+   width="24"
+   height="24"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs249" />
+  <sodipodi:namedview
+     id="namedview247"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="11.3125"
+     inkscape:cx="36.243094"
+     inkscape:cy="34.254144"
+     inkscape:window-width="1920"
+     inkscape:window-height="1051"
+     inkscape:window-x="1600"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg245" />
+  <!--! Font Awesome Pro 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+  <path
+     d="m 12,1 c 5.775,0 9.625,1.5125 9.625,3.4375 V 5.125 6.5 C 22.385547,6.5 23,7.1144531 23,7.875 v 2.75 C 23,11.385547 22.385547,12 21.625,12 v 6.875 c 0,0.760547 -0.614453,1.375 -1.375,1.375 v 1.375 C 20.25,22.385547 19.635547,23 18.875,23 H 17.5 c -0.760547,0 -1.375,-0.614453 -1.375,-1.375 V 20.25 h -8.25 v 1.375 C 7.875,22.385547 7.2605469,23 6.5,23 H 5.125 C 4.3644531,23 3.75,22.385547 3.75,21.625 V 20.25 c -0.7605469,0 -1.375,-0.614453 -1.375,-1.375 V 12 C 1.6144531,12 1,11.385547 1,10.625 V 7.875 C 1,7.1144531 1.6144531,6.5 2.375,6.5 v 0 -1.375 0 -0.6875 C 2.375,2.5125 6.225,1 12,1 Z M 5.125,7.875 V 12 c 0,0.760547 0.6144531,1.375 1.375,1.375 h 4.8125 V 6.5 H 6.5 C 5.7394531,6.5 5.125,7.1144531 5.125,7.875 Z m 7.5625,5.5 H 17.5 c 0.760547,0 1.375,-0.614453 1.375,-1.375 V 7.875 C 18.875,7.1144531 18.260547,6.5 17.5,6.5 h -4.8125 z m -6.875,4.8125 a 1.375,1.375 0 1 0 0,-2.75 1.375,1.375 0 1 0 0,2.75 z m 12.375,0 a 1.375,1.375 0 1 0 0,-2.75 1.375,1.375 0 1 0 0,2.75 z M 16.125,4.4375 C 16.125,4.059375 15.815625,3.75 15.4375,3.75 h -6.875 c -0.378125,0 -0.6875,0.309375 -0.6875,0.6875 0,0.378125 0.309375,0.6875 0.6875,0.6875 h 6.875 c 0.378125,0 0.6875,-0.309375 0.6875,-0.6875 z"
+     id="path243"
+     style="stroke-width:0.0429688" />
+</svg>

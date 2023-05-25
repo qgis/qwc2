@@ -1,0 +1,57 @@
+div.AttributeForm {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 0.25em;
+}
+
+div.AttributeForm > form {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+div.AttributeForm > form > * {
+    flex: 1 1 auto;
+}
+
+div.AttributeForm > form > div.ButtonBar {
+    flex: 0 0 auto;
+}
+
+div.AttributeForm div.attrib-form-geom-readonly {
+    background-color: #FF6600;
+    border: 1px solid #FF0000;
+    color: white;
+    padding: 0.25em;
+    margin-bottom: 0.25em;
+    font-weight: bold;
+}
+
+div.AttributeForm div.attrib-form-busy {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(127, 127, 127, 0.25);
+    cursor: wait;
+    z-index: 2;
+}
+
+div.link-feature-form-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(200, 200, 200, 0.5);
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+}
+
+div.link-feature-form-container > div.link-feature-form {
+    flex: 1 1 auto;
+}

@@ -10,7 +10,8 @@ import ReducerIndex from '../reducers/index';
 import searchReducer from '../reducers/search';
 ReducerIndex.register("search", searchReducer);
 
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
+import axios from 'axios';
 
 export const SEARCH_CHANGE = 'SEARCH_CHANGE';
 export const SEARCH_SET_REQUEST = 'SEARCH_SET_REQUEST';
@@ -39,9 +40,9 @@ export function changeSearch(text, providers) {
     };
 }
 
-export function startSearch(text, options, providers, startup = false) {
-    return (dispatch, getState) => {
-        const reqId = uuid.v1();
+export function startSearch(text, searchParams, providers, startup = false) {
+    return (dispatch) => {
+        const reqId = uuidv1();
         const providerKeys = Object.keys(providers);
         dispatch({
             type: SEARCH_SET_REQUEST,
@@ -50,7 +51,15 @@ export function startSearch(text, options, providers, startup = false) {
             startup: startup
         });
         Object.keys(providers).map(provider => {
-            providers[provider].onSearch(text, reqId, options, dispatch, getState());
+            providers[provider].onSearch(text, {...searchParams, cfgParams: providers[provider].params}, (response) => {
+                dispatch({
+                    type: SEARCH_ADD_RESULTS,
+                    reqId: reqId,
+                    provider: provider,
+                    results: response.results,
+                    append: true
+                });
+            }, axios);
         });
     };
 }
@@ -58,22 +67,22 @@ export function startSearch(text, options, providers, startup = false) {
 export function searchMore(moreItem, text, providers) {
     return (dispatch) => {
         if (moreItem.provider && providers[moreItem.provider].getMoreResults) {
-            const reqId = uuid.v1();
+            const reqId = uuidv1();
             dispatch({
                 type: SEARCH_SET_REQUEST,
                 id: reqId,
                 providers: [moreItem.provider]
             });
-            providers[moreItem.provider].getMoreResults(moreItem, text, reqId, dispatch);
+            providers[moreItem.provider].getMoreResults(moreItem, text, (response) => {
+                dispatch({
+                    type: SEARCH_ADD_RESULTS,
+                    reqId: reqId,
+                    provider: moreItem.provider,
+                    results: response.results,
+                    append: true
+                });
+            }, axios);
         }
-    };
-}
-
-export function addSearchResults(results, append = true) {
-    return {
-        type: SEARCH_ADD_RESULTS,
-        results: results,
-        append: append
     };
 }
 

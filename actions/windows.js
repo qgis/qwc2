@@ -14,6 +14,10 @@ export const SHOW_IFRAME_DIALOG = 'SHOW_IFRAME_DIALOG';
 export const SHOW_NOTIFICATION = 'SHOW_NOTIFICATION';
 export const CLOSE_WINDOW = 'CLOSE_WINDOW';
 export const CLOSE_ALL_WINDOWS = 'CLOSE_ALL_WINDOWS';
+export const REGISTER_WINDOW = 'REGISTER_WINDOW';
+export const UNREGISTER_WINDOW = 'UNREGISTER_WINDOW';
+export const RAISE_WINDOW = 'RAISE_WINDOW';
+export const SET_SPLIT_SCREEN = 'SET_SPLIT_SCREEN';
 
 
 export function showIframeDialog(name, url, options) {
@@ -43,5 +47,35 @@ export function closeWindow(name) {
 export function closeAllWindows() {
     return {
         type: CLOSE_ALL_WINDOWS
+    };
+}
+
+export function registerWindow(id) {
+    return {
+        type: REGISTER_WINDOW,
+        id: id
+    };
+}
+
+export function unregisterWindow(id) {
+    return {
+        type: UNREGISTER_WINDOW,
+        id: id
+    };
+}
+
+export function raiseWindow(id) {
+    return {
+        type: RAISE_WINDOW,
+        id: id
+    };
+}
+
+export function setSplitScreen(windowId, side, size) {
+    return {
+        type: SET_SPLIT_SCREEN,
+        windowId: windowId,
+        side: side,
+        size: size
     };
 }

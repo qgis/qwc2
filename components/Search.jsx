@@ -9,11 +9,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import axios from 'axios';
 import {createSelector} from 'reselect';
 import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
-import ol from 'openlayers';
 import Icon from './Icon';
 import Spinner from './Spinner';
 import MessageBar from './MessageBar';
@@ -30,6 +30,7 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -52,7 +53,13 @@ class Search extends React.Component {
         removeLayer: PropTypes.func,
         results: PropTypes.array,
         searchMore: PropTypes.func,
-        searchOptions: PropTypes.object,
+        searchOptions: PropTypes.shape({
+            showProviderSelection: PropTypes.bool,
+            showProvidersInPlaceholder: PropTypes.bool,
+            providerSelectionAllowAll: PropTypes.bool,
+            zoomToLayers: PropTypes.bool,
+            minScaleDenom: PropTypes.number
+        }),
         searchProviders: PropTypes.object, // All available search providers
         searchText: PropTypes.string,
         setCurrentSearchResult: PropTypes.func,
@@ -64,12 +71,12 @@ class Search extends React.Component {
         startupSearch: PropTypes.bool,
         theme: PropTypes.object,
         themes: PropTypes.object
-    }
+    };
     state = {
         focused: false,
         showfields: false,
         providerSelectionVisible: false
-    }
+    };
     componentDidMount() {
         this.input = null;
         this.searchTimer = 0;
@@ -79,7 +86,7 @@ class Search extends React.Component {
         const sp = UrlParams.getParam('sp');
         this.props.changeSearch(UrlParams.getParam('st') || "", sp ? sp.split(",") : null);
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         // If search text changed, clear result
         if (this.props.searchText !== prevProps.searchText) {
             prevProps.removeLayer('searchselection');
@@ -96,7 +103,7 @@ class Search extends React.Component {
             } else {
                 activeProviders = (activeProviders || []).filter(key => this.props.searchProviders[key] !== undefined);
                 if (isEmpty(activeProviders)) {
-                    activeProviders = this.props.searchOptions.providerSelectionAllowAll ? null : [this.props.searchProviders[0].key];
+                    activeProviders = this.props.searchOptions.providerSelectionAllowAll ? null : [Object.keys(this.props.searchProviders)[0]];
                 }
             }
 
@@ -119,38 +126,39 @@ class Search extends React.Component {
             }
         }
     }
-    killEvent = (ev) => {
-        ev.preventDefault();
-        ev.stopPropagation();
-    }
     search = (props, startup = false)  => {
         if (props.searchText) {
             this.setState({invisibleLayerQuery: null});
-            props.startSearch(props.searchText, {displaycrs: props.displaycrs}, this.activeProviders(props), startup);
+            const searchParams = {
+                mapcrs: this.props.map.projection,
+                displaycrs: this.props.displaycrs,
+                lang: LocaleUtils.lang()
+            };
+            props.startSearch(props.searchText, searchParams, this.activeProviders(props), startup);
         }
-    }
+    };
     resetSearch = () => {
         this.setState({focused: false, showfields: false, invisibleLayerQuery: null});
         this.props.changeSearch("", this.props.activeProviders);
-    }
+    };
     onChange = (ev) => {
         this.props.changeSearch(ev.target.value, this.props.activeProviders);
         clearTimeout(this.searchTimer);
         this.searchTimer = setTimeout(() => this.search(this.props), 500);
-    }
+    };
     checkShowFields = (ev) => {
         if ((this.props.activeProviders || []).length === 1 && this.props.searchProviders[this.props.activeProviders[0]].fields) {
             this.setState({showfields: true, focused: false});
             ev.preventDefault();
         }
-    }
+    };
     onFocus = () => {
         if (!this.state.showfields && this.props.searchText && !this.props.results) {
             this.search(this.props);
         }
         this.setState({focused: true});
         this.blurred = false;
-    }
+    };
     onBlur = () => {
         if (this.preventBlur && this.input) {
             this.input.focus();
@@ -158,14 +166,14 @@ class Search extends React.Component {
             this.setState({focused: false});
         }
         this.blurred = true;
-    }
+    };
     onKeyDown = (ev) => {
         if (ev.keyCode === 13) {
             this.search(this.props);
         } else if (ev.keyCode === 27) {
             ev.target.blur();
         }
-    }
+    };
     activeProviders = (props) => {
         const keys = isEmpty(props.activeProviders) ? Object.keys(props.searchProviders) : props.activeProviders;
         return keys.reduce((result, key) => {
@@ -174,7 +182,7 @@ class Search extends React.Component {
             }
             return result;
         }, {});
-    }
+    };
     render() {
         let placeholder = "";
         if (this.props.searchOptions.showProvidersInPlaceholder || !isEmpty(this.props.activeProviders)) {
@@ -189,14 +197,19 @@ class Search extends React.Component {
             placeholder = LocaleUtils.tr("search.searchall");
         }
         let addonAfter = null;
+        let addonAfterTooltip = null;
         if (!this.props.searchText) {
-            addonAfter = (<Icon icon="search"/>);
-        } else if(this.props.searchText && this.state.focused && this.props.pendingProviders && this.props.pendingProviders.length > 0) {
+            addonAfterTooltip = LocaleUtils.tr("search.search");
+            addonAfter = (<Icon icon="search" title={addonAfterTooltip}/>);
+        } else if (this.props.searchText && this.state.focused && this.props.pendingProviders && this.props.pendingProviders.length > 0) {
+            addonAfterTooltip = LocaleUtils.tr("search.searchinprogress");
             addonAfter = (<Spinner/>);
         } else {
-            addonAfter = (<Icon icon="remove" onClick={this.resetSearch}/>);
+            addonAfterTooltip = LocaleUtils.tr("search.searchreset");
+            addonAfter = (<Icon icon="remove" onClick={this.resetSearch} title={addonAfterTooltip}/>);
         }
         let providerSelection = null;
+        const providerSelectionTooltip = LocaleUtils.tr("search.providerselection");
         if (this.props.searchOptions.showProviderSelection) {
             let providerSelectionMenu = null;
             if (this.state.providerSelectionVisible) {
@@ -207,7 +220,7 @@ class Search extends React.Component {
                         'searchbar-provider-selection-active': isEmpty(this.props.activeProviders)
                     });
                     allEntry = (
-                        <li className={itemClass} key="all" onClick={() => this.props.changeSearch("", null)}>{LocaleUtils.tr("search.all")}</li>
+                        <li className={itemClass} key="all" onClick={() => this.props.changeSearch("", null)} title="">{LocaleUtils.tr("search.all")}</li>
                     );
                 }
                 providerSelectionMenu = (
@@ -218,7 +231,7 @@ class Search extends React.Component {
                                 'searchbar-provider-selection-active': (this.props.activeProviders || []).length === 1 && this.props.activeProviders[0] === key
                             });
                             return (
-                                <li className={itemClass} key={key} onClick={() => this.props.changeSearch("", [key])}>
+                                <li className={itemClass} key={key} onClick={() => this.props.changeSearch("", [key])} title="">
                                     {
                                         prov.labelmsgid ? LocaleUtils.tr(prov.labelmsgid) : prov.label
                                     }
@@ -234,9 +247,9 @@ class Search extends React.Component {
                 'searchbar-addon-filter-active': !isEmpty(this.props.activeProviders)
             });
             providerSelection = (
-                <span className={addonClasses} onClick={() => this.setState({providerSelectionVisible: !this.state.providerSelectionVisible})}>
-                    <Icon icon="filter" />
-                    <Icon className="searchbar-addon-menu-icon" icon="chevron-down" />
+                <span className={addonClasses} onClick={() => this.setState((state) => ({providerSelectionVisible: !state.providerSelectionVisible}))} title={providerSelectionTooltip}>
+                    <Icon icon="filter" title={providerSelectionTooltip} />
+                    <Icon className="searchbar-addon-menu-icon" icon="chevron-down" title={providerSelectionTooltip} />
                     {providerSelectionMenu}
                 </span>
             );
@@ -298,7 +311,7 @@ class Search extends React.Component {
                                 ref={el => { this.input = el; }}
                                 type="text"
                                 value={this.props.searchText} />
-                            <span className="searchbar-addon">
+                            <span className="searchbar-addon" title={addonAfterTooltip}>
                                 {addonAfter}
                             </span>
                         </div>
@@ -312,12 +325,11 @@ class Search extends React.Component {
     }
     enableLayer = () => {
         if (this.state.invisibleLayerQuery) {
-            this.props.changeLayerProperty(this.state.invisibleLayerQuery.layer.uuid, "visibility", true, this.state.invisibleLayerQuery.sublayerpath);
+            this.props.changeLayerProperty(this.state.invisibleLayerQuery.layer.uuid, "visibility", true, this.state.invisibleLayerQuery.sublayerpath, "both");
             this.setState({invisibleLayerQuery: null});
         }
-    }
+    };
     submitFormSearch = () => {
-        const comp = this.props.searchProviders[UrlParams.getParam("sp")].comparator;
         const filters = Object.keys(this.formfields).map(key => {
             return  key + "=" + this.formfields[key].value;
         });
@@ -328,41 +340,41 @@ class Search extends React.Component {
         }
         this.input.focus();
         this.setState({showfields: false});
-    }
+    };
     renderSearchResults = () => {
-        if (!this.props.results || this.props.results.length === 0 || !this.state.focused) {
+        let results = null;
+        if (!this.props.results || !this.state.focused) {
             return null;
+        } else if (this.props.results.length === 0 && isEmpty(this.props.pendingProviders)) {
+            results = (<li className="search-results-noresults">{LocaleUtils.tr("search.noresults")}</li>);
+        } else {
+            results = (this.props.results.map(category => this.renderCategory(category)));
         }
         return (
-            <ul className="search-results" onMouseDown={this.setPreventBlur} ref={this.setupKillTouchEvents}>
-                {this.props.results.map(category => this.renderCategory(category))}
+            <ul className="search-results" onMouseDown={this.setPreventBlur} ref={MiscUtils.setupKillTouchEvents}>
+                {results}
             </ul>
         );
-    }
+    };
     setPreventBlur = () => {
         this.preventBlur = true;
         setTimeout(() => {this.preventBlur = false; return false;}, 100);
-    }
-    setupKillTouchEvents = (el) => {
-        if (el) {
-            el.addEventListener('touchmove', ev => ev.stopPropagation(), { passive: false });
-        }
-    }
+    };
     renderCategory = (category) => {
         const title = category.titlemsgid ? LocaleUtils.tr(category.titlemsgid) : category.title;
         return (
-            <li key={category.id} onMouseDown={this.killEvent}>
+            <li key={category.id} onMouseDown={MiscUtils.killEvent}>
                 <span className="search-results-category-title">{title}</span>
                 <ul>{category.items.map(item => this.renderItem(item))}</ul>
             </li>
         );
-    }
+    };
     renderItem = (item) => {
         if (item.more) {
             return (
                 <li key={item.id}
                     onClick={() => this.props.searchMore(item, this.props.searchText, this.activeProviders(this.props))}
-                    onMouseDown={this.killEvent}>
+                    onMouseDown={MiscUtils.killEvent}>
                     <i>{LocaleUtils.tr("search.more")}</i>
                 </li>
             );
@@ -370,7 +382,7 @@ class Search extends React.Component {
         const addTitle = LocaleUtils.tr("themeswitcher.addtotheme");
         const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
         return (
-            <li key={item.id} onClick={() => {this.showResult(item); this.input.blur(); }} onMouseDown={this.killEvent}
+            <li key={item.id} onClick={() => {this.showResult(item); this.input.blur(); }} onMouseDown={MiscUtils.killEvent}
                 title={item.text}
             >
                 {item.thumbnail ? (<img src={item.thumbnail} />) : null}
@@ -378,8 +390,8 @@ class Search extends React.Component {
                 {item.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {this.addThemeLayers(ev, item.theme); this.input.blur();}} title={addTitle}/>) : null}
             </li>
         );
-    }
-    showResult = (item, zoom=true, startupSearch=false) => {
+    };
+    showResult = (item, zoom = true, startupSearch = false) => {
         const resultType = item.type || SearchResultType.PLACE;
         if (resultType !== SearchResultType.PLACE && !this.props.searchOptions.zoomToLayers) {
             zoom = false;
@@ -420,7 +432,7 @@ class Search extends React.Component {
             // zoom to result using max zoom level
             let newZoom;
             if (!isEmpty(bbox) && bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
-                const mapbbox = CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection)
+                const mapbbox = CoordinatesUtils.reprojectBbox(bbox, crs, this.props.map.projection);
                 newZoom = Math.max(0, MapUtils.getZoomForExtent(mapbbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom + 1) - 1);
             } else {
                 newZoom = MapUtils.computeZoom(this.props.map.scales, item.scale || 0);
@@ -438,7 +450,7 @@ class Search extends React.Component {
             let text = item.label !== undefined ? item.label : item.text;
             text = text.replace(/<[^>]*>/g, '');
             if (item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
-                this.props.searchProviders[item.provider].getResultGeometry(item, (itm, geometry, crs) => { this.showFeatureGeometry(itm, geometry, crs, text); });
+                this.props.searchProviders[item.provider].getResultGeometry(item, (response) => { this.showFeatureGeometry(item, response, text); }, axios);
             } else {
                 const layer = {
                     id: "searchselection",
@@ -456,7 +468,7 @@ class Search extends React.Component {
             // Check if layer is already in the LayerTree
             const sublayers = LayerUtils.getSublayerNames(item.layer);
             const existing = this.props.layers.find(l => {
-                return l.type === item.layer.type && l.url === item.layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)))
+                return l.type === item.layer.type && l.url === item.layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)));
             });
             if (existing) {
                 const text = LocaleUtils.tr("search.existinglayer") + ":" + item.layer.title;
@@ -484,14 +496,17 @@ class Search extends React.Component {
             }
         }
         this.setState({invisibleLayerQuery});
-    }
-    showFeatureGeometry = (item, geometry, crs, text) => {
-        if (item === this.props.currentResult && !isEmpty(geometry)) {
+    };
+    showFeatureGeometry = (item, response, text) => {
+        if (!isEmpty(response.geometry)) {
             let features = [];
-            const highlightFeature = VectorLayerUtils.wktToGeoJSON(geometry, crs, this.props.map.projection);
+            const highlightFeature = VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, this.props.map.projection);
             if (highlightFeature) {
-                const center = this.getFeatureCenter(highlightFeature);
-                features = [highlightFeature, this.createMarker(center, item.crs, text)];
+                const center = VectorLayerUtils.getFeatureCenter(highlightFeature);
+                features = [highlightFeature];
+                if (!response.hidemarker) {
+                    features.push(this.createMarker(center, this.props.map.projection, text));
+                }
             } else {
                 features = [this.createMarker([item.x, item.y], item.crs, text)];
             }
@@ -501,7 +516,7 @@ class Search extends React.Component {
             };
             this.props.addLayerFeatures(layer, features, true);
         }
-    }
+    };
     createMarker = (center, crs, text) => {
         return {
             geometry: {type: 'Point', coordinates: center},
@@ -510,49 +525,17 @@ class Search extends React.Component {
             crs: crs,
             properties: { label: text }
         };
-    }
-    getFeatureCenter = (feature) => {
-        const geojson = new ol.format.GeoJSON().readFeature(feature);
-        const geometry = geojson.getGeometry();
-        const type = geometry.getType();
-        let center = null;
-        switch (type) {
-        case "Polygon":
-            center = geometry.getInteriorPoint().getCoordinates();
-            break;
-        case "MultiPolygon":
-            center = geometry.getInteriorPoints().getClosestPoint(ol.extent.getCenter(geometry.getExtent()));
-            break;
-        case "Point":
-            center = geometry.getCoordinates();
-            break;
-        case "MultiPoint":
-            center = geometry.getClosestPoint(ol.extent.getCenter(geometry.getExtent()));
-            break;
-        case "LineString":
-            center = geometry.getCoordinateAt(0.5);
-            break;
-        case "MultiLineString":
-            center = geometry.getClosestPoint(ol.extent.getCenter(geometry.getExtent()));
-            break;
-        case "Circle":
-            center = geometry.getCenter();
-            break;
-        default:
-            break;
-        }
-        return center;
-    }
+    };
     addThemeLayers = (ev, theme) => {
         ev.stopPropagation();
         this.props.addLayer(ThemeUtils.createThemeLayer(theme, this.props.themes, LayerRole.USERLAYER));
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
-    }
+    };
 }
 
-export default (searchProviders, providerFactory = () => { return null; }) => {
-    const providersSelector = searchProvidersSelector(searchProviders, providerFactory);
+export default (searchProviders) => {
+    const providersSelector = searchProvidersSelector(searchProviders);
     return connect(
         createSelector([state => state, displayCrsSelector, providersSelector], (state, displaycrs, providers) => ({
             searchText: state.search.text,

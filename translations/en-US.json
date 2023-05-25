@@ -2,26 +2,74 @@
   "locale": "en-US",
   "messages": {
     "appmenu": {
+      "filter": "Filter menu...",
       "menulabel": "Map & Tools",
       "items": {
+        "AttributeTable": "Attribute Table",
+        "Cyclomedia": "Cyclomedia",
         "DxfExport": "DXF Export",
         "Editing": "Editing",
+        "FeatureForm": "Feature Form",
         "Help": "Help",
         "IdentifyRegion": "Identify Region",
+        "LayerCatalog": "Layer catalog",
         "LayerTree": "Layers & Legend",
         "Login": "Login",
         "Logout": "Logout",
+        "MapLegend": "Legend",
         "Measure": "Measure",
+        "MeasureLineString": "Measure a line",
+        "MeasurePolygon": "Measure a polygon",
         "Print": "Print",
         "RasterExport": "Raster Export",
         "Redlining": "Redlining",
+        "Routing": "Routing",
         "Share": "Share Link",
         "ThemeSwitcher": "Theme",
-        "Tools": "Map Tools"
+        "Tools": "Map Tools",
+        "Bookmark": "Bookmarks",
+        "TimeManager": "Time Manager",
+        "Settings": "Settings"
       }
+    },
+    "attribtable": {
+      "addfeature": "Add feature",
+      "commit": "Commit changed row",
+      "delete": "Delete",
+      "deletefailed": "One or more features could not be deleted",
+      "deletefeatures": "Delete selected features",
+      "deleting": "Deleting features...",
+      "discard": "Discard changed row",
+      "formeditmode": "Open the edit form for the selected feature",
+      "geomnoadd": "Please use the edit form for adding new features to this layer",
+      "layer": "Layer",
+      "loadfailed": "Failed to load the feature data",
+      "loading": "Loading...",
+      "nodelete": "Don't delete",
+      "nogeomnoform": "The edit form is not available for geometryless layers",
+      "pleasereload": "Press 'Reload' to load the attribute table...",
+      "reload": "Reload",
+      "selectlayer": "Select layer...",
+      "title": "Attribute Table",
+      "zoomtoselection": "Zoom to selected features"
     },
     "bgswitcher": {
       "nobg": "No background"
+    },
+    "bookmark": {
+      "add": "Create new bookmark",
+      "addfailed": "Failed to create bookmark",
+      "description": "Enter description...",
+      "lastUpdate": "Last saved",
+      "manage": "Manage bookmarks",
+      "nobookmarks": "No bookmarks",
+      "notloggedin": "You need to be logged in to store bookmarks",
+      "open": "Open bookmark in current tab",
+      "openTab": "Open bookmark in tab",
+      "remove": "Remove bookmark",
+      "removefailed": "Failed to remove bookmark",
+      "savefailed": "Failed to update bookmark",
+      "update": "Update bookmark"
     },
     "bottombar": {
       "mousepos_label": "Coordinates",
@@ -33,34 +81,66 @@
       "click_to_copy": "Click to copy",
       "copied": "Copied"
     },
+    "cyclomedia": {
+      "clickonmap": "Click on a recording on the map",
+      "loaderror": "Failed to initialize Cyclomedia",
+      "loading": "Initializing Cyclomedia...",
+      "login": "Login",
+      "scalehint": "The recordings are only visible on the map below scale 1:{0}.",
+      "title": "Cyclomedia Viewer"
+    },
     "dxfexport": {
+      "layers": "Layers",
       "selectinfo": "Drag a rectangle around the region to export...",
-      "symbologyscale": "Symbology scale:"
+      "symbologyscale": "Symbology scale"
     },
     "editing": {
+      "add": "Add",
+      "attrtable": "Table",
       "canceldelete": "Don't delete",
+      "clearpicture": "Clear",
       "commit": "Commit",
+      "commitfailed": "Commit failed",
+      "create": "Create",
       "delete": "Delete",
       "discard": "Discard",
       "draw": "Draw",
       "feature": "Feature",
+      "geomreadonly": "The geometry contains non-zero Z values and is therefore read only.",
+      "invalidform": "Invalid form",
       "maximize": "Maximize",
       "minimize": "Minimize",
+      "nocompatpick": "No compatible geometry found",
       "noeditablelayers": "No editable layers.",
+      "paint": "Modify",
       "pick": "Pick",
+      "pickdrawfeature": "Clone existing geometry",
       "reallydelete": "Delete",
-      "select": "Select"
+      "relationcommitfailed": "Some relation values could not be committed, check the icon tooltips for details",
+      "select": "Select",
+      "selectedpicture": "Selected picture",
+      "takepicture": "Take picture",
+      "unsavedchanged": "There are unsaved changes. Do you want to leave the page anyway?"
+    },
+    "featureform": {
+      "feature": "Feature",
+      "noresults": "No results",
+      "querying": "Querying...",
+      "title": "Feature form"
     },
     "fileselector": {
+      "files": "files",
       "placeholder": "Select file..."
     },
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Distance",
+      "export": "Export profile",
       "height": "Height",
       "loading": "Calculating height profile..."
     },
     "identify": {
+      "clipboard": "Copy to clipboard",
       "export": "Export",
       "exportformat": "Export format:",
       "featureReport": "Feature report",
@@ -70,10 +150,12 @@
       "querying": "Querying...",
       "title": "Feature Info"
     },
-    "identifyregion": {
-      "info": "Draw a polygon around the features to identify..."
+    "imageeditor": {
+      "confirmclose": "Close without saving?",
+      "title": "Image editor"
     },
     "importlayer": {
+      "addfailed": "Failed to add layer.",
       "addlayer": "Add layer",
       "connect": "Connect",
       "filter": "Filter...",
@@ -85,7 +167,13 @@
       "urlplaceholder": "Enter URL to WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": "Click a location to identify in the map..."
+      "clickhelpPoint": "Click a location to identify in the map...",
+      "clickhelpPolygon": "Draw a polygon around the features to identify...",
+      "clickhelpRadius": "Set a radius and click a location to identify features around the point...",
+      "radius": "Radius"
+    },
+    "layercatalog": {
+      "windowtitle": "Layer catalog"
     },
     "layerinfo": {
       "abstract": "Abstract",
@@ -110,6 +198,12 @@
       "visiblefilter": "Filter invisible layers",
       "zoomtolayer": "Zoom to layer"
     },
+    "linkfeatureform": {
+      "cancel": "Cancel",
+      "close": "Close",
+      "drawhint": "Draw the feature on the map...",
+      "pickhint": "Pick a feature on the map..."
+    },
     "locate": {
       "feetUnit": "feet",
       "metersUnit": "meters",
@@ -123,36 +217,72 @@
       }
     },
     "map": {
-      "loading": "Loading..."
+      "loading": "Loading...",
+      "resetrotation": "Reset rotation"
     },
     "mapinfotooltip": {
       "elevation": "Elevation",
       "title": "Position"
     },
+    "maplegend": {
+      "bboxdependent": "Map extent dependent legend",
+      "onlyvisible": "Only visibile layers",
+      "scaledependent": "Map scale depdendent legend",
+      "windowtitle": "Legend"
+    },
     "measureComponent": {
       "areaLabel": "Area",
       "bearingLabel": "Bearing",
+      "imperial": "Imperial",
       "lengthLabel": "Length",
+      "metric": "Metric",
       "pointLabel": "Position"
     },
+    "navbar": {
+      "perpage": "per page"
+    },
+    "newspopup": {
+      "dialogclose": "Close",
+      "dontshowagain": "Don't show again",
+      "title": "News"
+    },
+    "numericinput": {
+      "angle": "Angle",
+      "featureunsupported": "Numeric input unavailable for this geometry",
+      "height": "Height",
+      "nofeature": "No active feature",
+      "side": "Side",
+      "width": "Width",
+      "windowtitle": "Numeric input"
+    },
     "print": {
-      "grid": "Grid:",
-      "layout": "Layout:",
+      "atlasfeature": "Atlas feature",
+      "grid": "Grid",
+      "layout": "Layout",
+      "legend": "Legend",
       "maximize": "Maximize",
       "minimize": "Minimize",
       "nolayouts": "The selected theme does not support printing",
       "notheme": "No theme selected",
       "output": "Print output",
-      "resolution": "Resolution:",
-      "rotation": "Rotation:",
-      "scale": "Scale:",
+      "pickatlasfeature": "Pick in layer {0}...",
+      "resolution": "Resolution",
+      "rotation": "Rotation",
+      "scale": "Scale",
       "submit": "Print",
       "wait": "Please wait..."
     },
+    "qtdesignerform": {
+      "loading": "Loading form..."
+    },
     "rasterexport": {
-      "format": "Format:",
-      "resolution": "Resolution:",
-      "selectinfo": "Drag a rectangle around the region to export..."
+      "format": "Format",
+      "resolution": "Resolution",
+      "scale": "Scale",
+      "size": "Size",
+      "submit": "Export",
+      "usersize": "Select on map...",
+      "wait": "Please wait..."
     },
     "redlining": {
       "border": "Border",
@@ -166,18 +296,62 @@
       "delete": "Delete",
       "draw": "Draw",
       "edit": "Edit",
-      "fill": "Fill",
+      "ellipse": "Ellipse",
       "freehand": "Freehand drawing",
       "label": "Label",
       "layer": "Layer",
       "line": "Line",
-      "outline": "Outline",
+      "measurements": "Show measurements",
+      "numericinput": "Show numeric input panel",
       "pick": "Pick",
       "point": "Point",
       "polygon": "Polygon",
+      "rectangle": "Rectangle",
       "size": "Size",
+      "square": "Square",
       "text": "Text",
+      "transform": "Transform",
       "width": "Width"
+    },
+    "routing": {
+      "add": "Add point",
+      "addviapoint": "Via here",
+      "arriveat": "Arrive at",
+      "clear": "Clear",
+      "computefailed": "Failed to compute",
+      "computing": "Computing...",
+      "excludepolygons": "Exclude areas",
+      "export": "Export",
+      "fastest": "Fastest",
+      "fromhere": "From here",
+      "importerror": "Import failed. The file contents must be a GeoJSON FeatureCollection of Point features.",
+      "importhint": "File with a GeoJSON FeatureCollection of Point features",
+      "importpoints": "Import",
+      "iso_intervals": "Intervals",
+      "iso_mode": "Mode",
+      "iso_mode_distance": "Distance",
+      "iso_mode_time": "Time",
+      "isocenter": "Center",
+      "isoextracenter": "Additional center",
+      "leaveat": "Leave at",
+      "leavenow": "Leave now",
+      "maxspeed": "Max speed",
+      "method": "Method",
+      "mode_auto": "Car",
+      "mode_bicycle": "Bicycle",
+      "mode_heavyvehicle": "Heavy vehicle",
+      "mode_transit": "Transit",
+      "mode_walking": "Walking",
+      "optimized_route": "Optimized route",
+      "reachability": "Reachability",
+      "roundtrip": "Roundtrip",
+      "route": "Route",
+      "shortest": "Shortest",
+      "tohere": "To here",
+      "useferries": "Use ferries",
+      "usehighways": "Use highways",
+      "usetollways": "Use tollways",
+      "windowtitle": "Routing"
     },
     "scratchdrawing": {
       "finish": "Finish"
@@ -188,8 +362,12 @@
       "existinglayer": "The layer already exists in the map",
       "invisiblelayer": "The result lies on a layer which is not visible.",
       "more": "More...",
+      "noresults": "No results",
+      "providerselection": "Search providers",
       "search": "Search",
       "searchall": "Search places or add maps...",
+      "searchinprogress": "Search in progress",
+      "searchreset": "Reset search",
       "themes": "Themes"
     },
     "searchbox": {
@@ -213,11 +391,23 @@
       "onlineResource": "Online resource",
       "title": "Theme Information"
     },
+    "settings": {
+      "colorscheme": "Color scheme",
+      "confirmlang": "The application will be reloaded to change the language. Proceed?",
+      "language": "Language",
+      "systemlang": "System language"
+    },
     "share": {
       "QRCodeLinkTitle": "QR Code",
       "directLinkTitle": "Via a direct link",
-      "generatingpermalink": "Generating permalink...",
+      "refresh": "Generate permalink",
+      "shareTitle": "QWC2",
+      "showpin": "Show pin",
       "socialIntro": "In your favourite social network"
+    },
+    "snapping": {
+      "loading": "Loading snapping geometries...",
+      "snappingenabled": "Snapping"
     },
     "themelayerslist": {
       "addlayer": "Add layer",
@@ -227,6 +417,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Add layers to current map",
       "addtotheme": "Add to current theme",
+      "confirmswitch": "Non-theme layers will be lost when switching theme. Proceed?",
       "filter": "Filter...",
       "match": {
         "abstract": "Abstract",
@@ -236,19 +427,73 @@
       "openintab": "Open in Tab",
       "restrictedthemeinfo": "You are not permitted to view the theme or not logged in"
     },
+    "timemanager": {
+      "animationinterval": "Animation interval",
+      "classify": "Classification attribute",
+      "classifynone": "None",
+      "displayfeatures": "Timeline with features",
+      "displaylayers": "Timeline with layers",
+      "displayminimal": "Timeline only",
+      "endtime": "End",
+      "future": "Future",
+      "group": "Grouping attribute",
+      "groupnone": "None",
+      "home": "Reset timeline",
+      "loading": "Loading...",
+      "loop": "Loop",
+      "markers": "Markers",
+      "notemporaldata": "No temporal layers are visible in the map.",
+      "now": "Now",
+      "past": "Past",
+      "play": "Play",
+      "playrev": "Play backwards",
+      "rewind": "Rewind",
+      "starttime": "Start",
+      "stepback": "Step back",
+      "stepfwd": "Step forward",
+      "stepsize": "Step size",
+      "stop": "Stop",
+      "timeline": "Timeline",
+      "timeline_fixed": "Fixed",
+      "timeline_infinite": "Infinite",
+      "timelinedisplay": "Display",
+      "timelinescale": "Timescale (non-linearity)",
+      "title": "Time manager",
+      "toggle": "Temporal navigation",
+      "unit": {
+        "century": "centuries",
+        "days": "days",
+        "decade": "decades",
+        "hours": "hours",
+        "milliseconds": "milliseconds",
+        "minutes": "minutes",
+        "months": "months",
+        "seconds": "seconds",
+        "years": "years"
+      },
+      "zoomin": "Zoom in",
+      "zoomout": "Zoom out"
+    },
     "tooltip": {
       "background": "Switch background",
+      "fullscreendisable": "Disable full screen mode",
+      "fullscreenenable": "Enable full screen mode",
       "home": "Show entire map",
       "zoomin": "Zoom in",
       "zoomout": "Zoom out"
     },
     "vectorlayerpicker": {
+      "none": "None",
       "prompt": "Enter layer name"
     },
     "window": {
       "close": "Close",
       "dock": "Dock",
-      "undock": "Undock"
+      "maximize": "Maximize",
+      "minimize": "Minimize",
+      "undock": "Undock",
+      "unmaximize": "Restore",
+      "unminimize": "Unminimize"
     }
   }
 }

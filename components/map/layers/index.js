@@ -10,6 +10,7 @@
 import bingLayer from './BingLayer';
 import googleLayer from './GoogleLayer';
 import graticuleLayer from './GraticuleLayer';
+import mvtLayer from './MVTLayer';
 import osmLayer from './OSMLayer';
 import overlayLayer from './OverlayLayer';
 import tileproviderLayer from './TileProviderLayer';
@@ -17,16 +18,19 @@ import vectorLayer from './VectorLayer';
 import wmsLayer from './WMSLayer';
 import wmtsLayer from './WMTSLayer';
 import wfsLayer from './WFSLayer';
+import xyzLayer from './XYZLayer';
 
 export default {
     bing: bingLayer,
     google: googleLayer,
     graticule: graticuleLayer,
+    mvt: mvtLayer,
     osm: osmLayer,
     overlay: overlayLayer,
     tileprovider: tileproviderLayer,
     vector: vectorLayer,
     wms: wmsLayer,
     wmts: wmtsLayer,
-    wfs: wfsLayer
+    wfs: wfsLayer,
+    xyz: xyzLayer
 };

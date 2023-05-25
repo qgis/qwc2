@@ -22,8 +22,9 @@ class OverviewMap extends React.Component {
         map: PropTypes.object,
         // See https://openlayers.org/en/latest/apidoc/ol.control.OverviewMap.html
         options: PropTypes.object,
-        projection: PropTypes.string
-    }
+        projection: PropTypes.string,
+        theme: PropTypes.object
+    };
     constructor(props) {
         super(props);
         const opt = {
@@ -35,11 +36,29 @@ class OverviewMap extends React.Component {
             ...props.options
         };
         this.overview = new ol.control.OverviewMap(opt);
-        props.map.addControl(this.overview);
         this.overview.getOverviewMap().set('id', 'overview');
     }
+    componentDidMount() {
+        this.overviewContainer = document.createElement("div");
+        this.overviewContainer.id = this.props.map.get('id') + "-overview";
+        document.getElementById("PluginsContainer").appendChild(this.overviewContainer);
+        this.overview.setTarget(this.props.map.get('id') + "-overview");
+        this.props.map.addControl(this.overview);
+    }
+    componentWillUnmount = () => {
+        document.getElementById("PluginsContainer").removeChild(this.overviewContainer);
+    };
     render() {
-        const layer = this.props.layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility);
+        const overviewMap = (((this.props.theme || {}).backgroundLayers || []).find(entry => entry.overview) || {}).name;
+        let layer = null;
+        if (overviewMap) {
+            layer = this.props.layers.find(l => l.role === LayerRole.BACKGROUND && l.name === overviewMap);
+            if (layer) {
+                layer = {...layer, visibility: true};
+            }
+        } else {
+            layer = this.props.layers.find(l => l.role === LayerRole.BACKGROUND && l.visibility);
+        }
         if (layer) {
             return (
                 <OlLayer key={layer.uuid} map={this.overview.getOverviewMap()} options={layer} projection={this.props.projection} />
@@ -50,6 +69,7 @@ class OverviewMap extends React.Component {
 }
 
 export default connect((state) => ({
+    theme: state.theme.current,
     layers: state.layers.flat,
     projection: state.map.projection
 }), {})(OverviewMap);

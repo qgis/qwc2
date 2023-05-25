@@ -7,7 +7,7 @@ div.ThemeList li.theme-group-header > span {
     font-weight: bold;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #a6a6a6;
+    border-bottom: 1px solid var(--border-color);
     padding: 0.25em;
     margin: 0 0.5em 0.5em 0.5em;
 }
@@ -25,10 +25,10 @@ div.ThemeList li.theme-group-header ul.theme-group-body {
 }
 
 div.ThemeList li.theme-item {
-    background-color: white;
+    background-color: var(--list-bg-color);
     font-weight: bold;
     font-size: small;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     margin: 0.5em;
     text-align: center;
     display: inline-block;
@@ -54,9 +54,12 @@ div.ThemeList div.theme-item-title > span.icon {
     font-size: large;
 }
 
-div.ThemeList li.theme-item-active div.theme-item-title > span:first-child
-{
-    color: @item_active@;
+div.ThemeList div.theme-item-body {
+    background-color: white;
+}
+
+div.ThemeList li.theme-item-active div.theme-item-title > span:first-child {
+    color: var(--color-active);
 }
 
 div.ThemeList img.theme-item-thumbnail {
@@ -76,17 +79,17 @@ div.ThemeList div.theme-item-icons > span.icon {
     flex: 0 0 auto;
     font-size: large;
     padding: 0.25em;
-    background-color: rgba(255, 255, 255, 0.75);
-    color: @base_fg@;
+    background-color: var(--button-bg-color);
+    color: var(--text-color);
     z-index: 2;
 }
 
 div.ThemeList div.theme-item-icons > span.icon:hover {
-    color: @item_active@;
+    color: var(--color-active);
 }
 
 div.ThemeList li.theme-item:hover {
-    border: 1px solid @item_active@;
+    border: 1px solid var(--color-active);
 }
 
 div.ThemeList div.theme-item-keywords {
@@ -102,7 +105,7 @@ div.ThemeList div.theme-item-keywords {
 }
 
 div.ThemeList li.theme-item-active {
-    border: 1px solid @item_active@;
+    border: 1px solid var(--color-active);
 }
 
 div.ThemeList div.theme-item-info-menu {
@@ -110,12 +113,12 @@ div.ThemeList div.theme-item-info-menu {
     display: flex;
     align-items: center;
     position: relative;
-    color: @item_active@;
+    color: var(--color-active);
     padding: 0.25em;
 }
 
 div.ThemeList div.theme-item-info-menu-active {
-    background-color: @item_active@;
+    background-color: var(--color-active);
     color: white;
 }
 
@@ -135,7 +138,7 @@ div.ThemeList div.theme-item-info-links {
     left: -1px;
     right: -1px;
     background-color: rgba(255, 255, 255, 0.85);
-    border: 1px solid @item_active@;
+    border: 1px solid var(--color-active);
 }
 
 div.ThemeList div.theme-item-info-links > a {
@@ -151,16 +154,16 @@ div.ThemeList div.theme-item-filterinfo-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
-    right: 0;
+    right: 2.29em;
     font-size: 90%;
     background-color: rgba(255, 255, 255, 0.85);
-    color: black;
+    color: var(--text-color);
     font-weight: normal;
     text-align: left;
     padding: 0.25em;
-    border-top: 1px solid @item_border@;
+    border-top: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
     z-index: 1;
-    padding-right: 2em;
 }
 
 div.ThemeList div.theme-item-filterinfo-overlay > div {

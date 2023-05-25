@@ -8,7 +8,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import uuid from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import Icon from '../../components/Icon';
 import LocaleUtils from '../../utils/LocaleUtils';
 
@@ -20,29 +20,34 @@ export default class VectorLayerPicker extends React.Component {
         addLayer: PropTypes.func,
         layers: PropTypes.array,
         onChange: PropTypes.func,
+        showNone: PropTypes.bool,
         value: PropTypes.string
-    }
+    };
     render() {
         return (
             <div className="VectorLayerPicker">
-                <select className="combo" onChange={ev => this.props.onChange(this.props.layers.find(layer => layer.id === ev.target.value))} value={this.props.value}>
+                <select onChange={ev => this.props.onChange(this.props.layers.find(layer => layer.id === ev.target.value))} value={this.props.value}>
+                    {this.props.showNone ? (<option value="">{LocaleUtils.tr("vectorlayerpicker.none")}</option>) : null}
                     {this.props.layers.map(layer => (<option key={layer.id} value={layer.id}>{layer.title}</option>))}
                 </select>
-                <button className="button" onClick={this.addLayer} style={{borderLeftWidth: 0}}><Icon icon="plus" /></button>
+                {this.props.addLayer ? (
+                    <button className="button" onClick={this.addLayer} style={{borderLeftWidth: 0}}><Icon icon="plus" /></button>
+                ) : null}
             </div>
         );
     }
     addLayer = () => {
         const message = LocaleUtils.tr("vectorlayerpicker.prompt");
+        // eslint-disable-next-line
         const name = prompt(message);
         if (name) {
             const layer = {
-                id: uuid.v4(),
+                id: uuidv4(),
                 title: name,
                 type: 'vector'
             };
             this.props.addLayer(layer);
             this.props.onChange(layer);
         }
-    }
+    };
 }

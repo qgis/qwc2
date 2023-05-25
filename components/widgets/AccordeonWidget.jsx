@@ -21,10 +21,10 @@ export default class AccordeonWidget extends React.Component {
             widget: PropTypes.function,
             title: PropTypes.string
         }))
-    }
+    };
     state = {
         currentSections: []
-    }
+    };
     renderSection = (section) => {
         return (
             <div className="accordeon-section" key={section.key}>
@@ -39,7 +39,7 @@ export default class AccordeonWidget extends React.Component {
                 ) : null}
             </div>
         );
-    }
+    };
     toggleSection = (key) => {
         let currentSections = [];
         if (this.props.allowMultiple) {
@@ -52,7 +52,7 @@ export default class AccordeonWidget extends React.Component {
             currentSections = this.state.currentSections.includes(key) ? [] : [key];
         }
         this.setState({currentSections});
-    }
+    };
     render() {
         return (
             <div className={this.props.className} role="body">

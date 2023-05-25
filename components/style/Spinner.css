@@ -8,7 +8,7 @@
   -moz-animation: spinner_anim 1.2s linear infinite;
   animation: spinner_anim 1.2s linear infinite;
   border-radius: 5px;
-  background-color: black;
+  background-color: var(--text-color);
   position: absolute;
   width: 20%;
   height: 7.8%;

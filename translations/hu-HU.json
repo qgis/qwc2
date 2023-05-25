@@ -2,26 +2,74 @@
   "locale": "hu-HU",
   "messages": {
     "appmenu": {
+      "filter": "",
       "menulabel": "Eszközök",
       "items": {
+        "AttributeTable": "",
+        "Cyclomedia": "",
         "DxfExport": "DXF Exportálás",
         "Editing": "Szerkesztés",
+        "FeatureForm": "",
         "Help": "Segítség",
         "IdentifyRegion": "Adatok lekérdezése",
+        "LayerCatalog": "",
         "LayerTree": "Fóliák és jelmagyarázat",
         "Login": "",
         "Logout": "",
+        "MapLegend": "",
         "Measure": "Mérés",
+        "MeasureLineString": "Mérési vonal",
+        "MeasurePolygon": "Mérési sokszög",
         "Print": "Nyomtatás",
         "RasterExport": "Kép exportálása",
         "Redlining": "Vázlat",
+        "Routing": "",
         "Share": "Megosztható link",
         "ThemeSwitcher": "Térkép",
-        "Tools": "Térkép eszközök"
+        "Tools": "Térkép eszközök",
+        "Bookmark": "",
+        "TimeManager": "",
+        "Settings": ""
       }
+    },
+    "attribtable": {
+      "addfeature": "",
+      "commit": "",
+      "delete": "",
+      "deletefailed": "",
+      "deletefeatures": "",
+      "deleting": "",
+      "discard": "",
+      "formeditmode": "",
+      "geomnoadd": "",
+      "layer": "",
+      "loadfailed": "",
+      "loading": "",
+      "nodelete": "",
+      "nogeomnoform": "",
+      "pleasereload": "",
+      "reload": "",
+      "selectlayer": "",
+      "title": "",
+      "zoomtoselection": ""
     },
     "bgswitcher": {
       "nobg": "Nincs háttér"
+    },
+    "bookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "bottombar": {
       "mousepos_label": "Koordináták",
@@ -33,34 +81,66 @@
       "click_to_copy": "Kattints a másoláshoz",
       "copied": "Kimásolva"
     },
+    "cyclomedia": {
+      "clickonmap": "",
+      "loaderror": "",
+      "loading": "",
+      "login": "",
+      "scalehint": "",
+      "title": ""
+    },
     "dxfexport": {
+      "layers": "",
       "selectinfo": "Rajzolj egy négyszöget az exportálni kívánt terület köré...",
       "symbologyscale": "Jel méretatarány:"
     },
     "editing": {
+      "add": "",
+      "attrtable": "",
       "canceldelete": "Ne töröld",
+      "clearpicture": "",
       "commit": "Jóváhagyás",
+      "commitfailed": "",
+      "create": "",
       "delete": "Törlés",
       "discard": "Elvetés",
       "draw": "Rajzolás",
       "feature": "",
+      "geomreadonly": "",
+      "invalidform": "",
       "maximize": "",
       "minimize": "",
+      "nocompatpick": "",
       "noeditablelayers": "Nincs szerkeszthető fólia.",
+      "paint": "",
       "pick": "Kiválasztás",
+      "pickdrawfeature": "",
       "reallydelete": "Törlés",
-      "select": ""
+      "relationcommitfailed": "",
+      "select": "",
+      "selectedpicture": "",
+      "takepicture": "",
+      "unsavedchanged": ""
+    },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
     },
     "fileselector": {
+      "files": "",
       "placeholder": "Fájl választása..."
     },
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Távolság",
+      "export": "",
       "height": "Magasság",
       "loading": "A magassági profil kiszámítása..."
     },
     "identify": {
+      "clipboard": "",
       "export": "Exportálás",
       "exportformat": "",
       "featureReport": "Lekérdezés eredménye",
@@ -70,10 +150,12 @@
       "querying": "Lekérdezés...",
       "title": "Lekérdezés információ"
     },
-    "identifyregion": {
-      "info": "Rajzolj egy poligont a lekérdezni kívánt terület köré..."
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
+      "addfailed": "",
       "addlayer": "Fólia hozzáadása",
       "connect": "Kapcsolódás",
       "filter": "Szűrés...",
@@ -85,7 +167,13 @@
       "urlplaceholder": "URL a WMS, WMTS, WFS adatokhoz..."
     },
     "infotool": {
-      "clickhelpPoint": ""
+      "clickhelpPoint": "",
+      "clickhelpPolygon": "Rajzolj egy poligont a lekérdezni kívánt terület köré...",
+      "clickhelpRadius": "",
+      "radius": ""
+    },
+    "layercatalog": {
+      "windowtitle": ""
     },
     "layerinfo": {
       "abstract": "Kivonat",
@@ -110,6 +198,12 @@
       "visiblefilter": "",
       "zoomtolayer": ""
     },
+    "linkfeatureform": {
+      "cancel": "",
+      "close": "",
+      "drawhint": "",
+      "pickhint": ""
+    },
     "locate": {
       "feetUnit": "láb",
       "metersUnit": "méter",
@@ -123,36 +217,72 @@
       }
     },
     "map": {
-      "loading": "Betöltés..."
+      "loading": "Betöltés...",
+      "resetrotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Magasság",
       "title": "Pozíció"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "",
+      "scaledependent": "",
+      "windowtitle": ""
+    },
     "measureComponent": {
       "areaLabel": "Terület",
       "bearingLabel": "Szög",
+      "imperial": "",
       "lengthLabel": "Hossz",
+      "metric": "",
       "pointLabel": "Pozíció"
     },
+    "navbar": {
+      "perpage": ""
+    },
+    "newspopup": {
+      "dialogclose": "",
+      "dontshowagain": "",
+      "title": ""
+    },
+    "numericinput": {
+      "angle": "",
+      "featureunsupported": "",
+      "height": "",
+      "nofeature": "",
+      "side": "",
+      "width": "",
+      "windowtitle": ""
+    },
     "print": {
-      "grid": "Rács:",
-      "layout": "Elrendezés:",
+      "atlasfeature": "",
+      "grid": "Rács",
+      "layout": "Elrendezés",
+      "legend": "",
       "maximize": "",
       "minimize": "",
       "nolayouts": "A kiválasztott térkép nem támogatja a nyomtatást",
       "notheme": "Nincs térkép kiválasztva",
       "output": "",
-      "resolution": "Felbontás:",
-      "rotation": "Forgatás:",
-      "scale": "Méretarány:",
+      "pickatlasfeature": "",
+      "resolution": "Felbontás",
+      "rotation": "Forgatás",
+      "scale": "Méretarány",
       "submit": "Nyomtatás",
       "wait": ""
+    },
+    "qtdesignerform": {
+      "loading": ""
     },
     "rasterexport": {
       "format": "Formátum:",
       "resolution": "Felbontás:",
-      "selectinfo": "Rajzolj egy négyszöget az exportálni kívánt terület köré..."
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "redlining": {
       "border": "Szegély",
@@ -166,18 +296,62 @@
       "delete": "",
       "draw": "",
       "edit": "",
-      "fill": "Kitöltés",
+      "ellipse": "",
       "freehand": "",
       "label": "Címke",
       "layer": "",
       "line": "Vonaé",
-      "outline": "Körvonal",
+      "measurements": "",
+      "numericinput": "",
       "pick": "Kiválaszás",
       "point": "Pont",
       "polygon": "Poligon",
+      "rectangle": "",
       "size": "Méret",
+      "square": "",
       "text": "Szöveg",
+      "transform": "",
       "width": "Szélesség"
+    },
+    "routing": {
+      "add": "",
+      "addviapoint": "",
+      "arriveat": "",
+      "clear": "",
+      "computefailed": "",
+      "computing": "",
+      "excludepolygons": "",
+      "export": "",
+      "fastest": "",
+      "fromhere": "",
+      "importerror": "",
+      "importhint": "",
+      "importpoints": "",
+      "iso_intervals": "",
+      "iso_mode": "",
+      "iso_mode_distance": "",
+      "iso_mode_time": "",
+      "isocenter": "",
+      "isoextracenter": "",
+      "leaveat": "",
+      "leavenow": "",
+      "maxspeed": "",
+      "method": "",
+      "mode_auto": "",
+      "mode_bicycle": "",
+      "mode_heavyvehicle": "",
+      "mode_transit": "",
+      "mode_walking": "",
+      "optimized_route": "",
+      "reachability": "",
+      "roundtrip": "",
+      "route": "",
+      "shortest": "",
+      "tohere": "",
+      "useferries": "",
+      "usehighways": "",
+      "usetollways": "",
+      "windowtitle": ""
     },
     "scratchdrawing": {
       "finish": ""
@@ -188,8 +362,12 @@
       "existinglayer": "",
       "invisiblelayer": "",
       "more": "Több...",
+      "noresults": "",
+      "providerselection": "",
       "search": "Keresés",
       "searchall": "",
+      "searchinprogress": "",
+      "searchreset": "",
       "themes": ""
     },
     "searchbox": {
@@ -213,11 +391,23 @@
       "onlineResource": "",
       "title": ""
     },
+    "settings": {
+      "colorscheme": "",
+      "confirmlang": "",
+      "language": "",
+      "systemlang": ""
+    },
     "share": {
       "QRCodeLinkTitle": "QR-kód",
       "directLinkTitle": "Közvetlen hivatkozással...",
-      "generatingpermalink": "Hivatkozás készítése...",
+      "refresh": "",
+      "shareTitle": "QWC2",
+      "showpin": "",
       "socialIntro": "A kedvenc közösségi hálózatodon"
+    },
+    "snapping": {
+      "loading": "",
+      "snappingenabled": ""
     },
     "themelayerslist": {
       "addlayer": "",
@@ -227,6 +417,7 @@
     "themeswitcher": {
       "addlayerstotheme": "",
       "addtotheme": "",
+      "confirmswitch": "",
       "filter": "Szűrés...",
       "match": {
         "abstract": "",
@@ -236,19 +427,73 @@
       "openintab": "",
       "restrictedthemeinfo": ""
     },
+    "timemanager": {
+      "animationinterval": "",
+      "classify": "",
+      "classifynone": "",
+      "displayfeatures": "",
+      "displaylayers": "",
+      "displayminimal": "",
+      "endtime": "",
+      "future": "",
+      "group": "",
+      "groupnone": "",
+      "home": "",
+      "loading": "",
+      "loop": "",
+      "markers": "",
+      "notemporaldata": "",
+      "now": "",
+      "past": "",
+      "play": "",
+      "playrev": "",
+      "rewind": "",
+      "starttime": "",
+      "stepback": "",
+      "stepfwd": "",
+      "stepsize": "",
+      "stop": "",
+      "timeline": "",
+      "timeline_fixed": "",
+      "timeline_infinite": "",
+      "timelinedisplay": "",
+      "timelinescale": "",
+      "title": "",
+      "toggle": "",
+      "unit": {
+        "century": "",
+        "days": "",
+        "decade": "",
+        "hours": "",
+        "milliseconds": "",
+        "minutes": "",
+        "months": "",
+        "seconds": "",
+        "years": ""
+      },
+      "zoomin": "",
+      "zoomout": ""
+    },
     "tooltip": {
       "background": "",
+      "fullscreendisable": "",
+      "fullscreenenable": "",
       "home": "",
       "zoomin": "",
       "zoomout": ""
     },
     "vectorlayerpicker": {
+      "none": "",
       "prompt": ""
     },
     "window": {
       "close": "",
       "dock": "",
-      "undock": ""
+      "maximize": "",
+      "minimize": "",
+      "undock": "",
+      "unmaximize": "",
+      "unminimize": ""
     }
   }
 }

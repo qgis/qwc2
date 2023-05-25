@@ -9,8 +9,8 @@ h4.service-info-window-title {
 }
 
 div.service-info-window-frame {
-    border: 1px solid @item_border@;
-    background-color: white;
+    border: 1px solid var(--border-color);
+    background-color: var(--list-bg-color);
     font-size: small;
     flex: 1 1 auto;
     overflow: auto;

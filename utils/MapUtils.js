@@ -25,6 +25,7 @@ const MapUtils = {
 
     GET_PIXEL_FROM_COORDINATES_HOOK: 'GET_PIXEL_FROM_COORDINATES_HOOK',
     GET_COORDINATES_FROM_PIXEL_HOOK: 'GET_COORDINATES_FROM_PIXEL_HOOK',
+    GET_NATIVE_LAYER: 'GET_NATIVE_LAYER',
 
     registerHook(name, hook) {
         hooks[name] = hook;
@@ -199,6 +200,16 @@ const MapUtils = {
             }
             return closestIdx;
         }
+    },
+
+    /**
+     * Convert degrees to radians
+     * @param degrees {number}
+     * @return {number} in radians
+     */
+    degreesToRadians(degrees) {
+        const pi = Math.PI;
+        return degrees * (pi / 180);
     }
 };
 

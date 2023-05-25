@@ -9,8 +9,8 @@ h4.layer-info-window-title {
 }
 
 div.layer-info-window-frame {
-    border: 1px solid @item_border@;
-    background-color: white;
+    border: 1px solid var(--border-color);
+    background-color: var(--list-bg-color);
     font-size: small;
     flex: 1 1 auto;
     overflow: auto;
@@ -35,6 +35,7 @@ table.layer-info-window-table td:last-child {
 
 img.layer-info-window-legend {
     box-shadow: 0px 2px 5px rgba(136, 136, 136, 0.5);
+    background-color: white;
 }
 
 span.layer-info-window-coloricon {

@@ -7,6 +7,7 @@
  */
 
 import ol from 'openlayers';
+import url from 'url';
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import FeatureStyles from '../../../utils/FeatureStyles';
 
@@ -14,22 +15,22 @@ import FeatureStyles from '../../../utils/FeatureStyles';
 export default {
     create: (options) => {
         const formatMap = {
-            "gml3": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
-            "gml32": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
-            "application/gml+xml; version=3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
+            "gml3": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
+            "gml32": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
+            "application/gml+xml; version=3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
 
-            "gml2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), defaultDataProjection: proj}),
+            "gml2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2({dataProjection: proj}), version: options.version}),
 
-            "text/xml; subtype=gml/3.1.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
-            "text/xml; subtype=gml/3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3(), defaultDataProjection: proj}),
-            "text/xml; subtype=gml/2.1.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2(), defaultDataProjection: proj}),
+            "text/xml; subtype=gml/3.1.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
+            "text/xml; subtype=gml/3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
+            "text/xml; subtype=gml/2.1.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2({dataProjection: proj}), version: options.version}),
 
             "kml": (proj) => new ol.format.KML({defaultDataProjection: proj}),
-            "application/vnd.google-earth.kml+xml": (proj) => new ol.format.KML({defaultDataProjection: proj}),
+            "application/vnd.google-earth.kml+xml": (proj) => new ol.format.KML({dataProjection: proj}),
 
-            "geojson": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
-            "json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj}),
-            "application/json": (proj) => new ol.format.GeoJSON({defaultDataProjection: proj})
+            "geojson": (proj) => new ol.format.GeoJSON({dataProjection: proj}),
+            "json": (proj) => new ol.format.GeoJSON({dataProjection: proj}),
+            "application/json": (proj) => new ol.format.GeoJSON({dataProjection: proj})
         };
 
         let olformat = null;
@@ -43,6 +44,7 @@ export default {
             }
         }
         if (!format) {
+            // eslint-disable-next-line
             console.warn("No supported WFS format found");
             return null;
         }
@@ -51,23 +53,34 @@ export default {
 
         const vectorSource = new ol.source.Vector({
             format: olformat,
-            url: function(extent) {
-                let requestExtent;
+            loader: options.loader ? function(extent, resolution, projection, success, failure) {
+                options.loader(vectorSource, extent, resolution, projection, success, failure);
+            } : null,
+            url: options.url ? function(extent) {
+                let bbox = extent.join(',');
+                let srsName = options.projection;
                 if (options.version >= "1.1.0") {
-                    extent = CoordinatesUtils.reprojectBbox(extent, options.projection, 'EPSG:4326');
                     // http://augusttown.blogspot.com/2010/08/mysterious-bbox-parameter-in-web.html
                     // Invert WGS axis orentation
-                    requestExtent = [extent[1], extent[0], extent[3], extent[2]];
-                } else {
-                    requestExtent = extent;
+                    const requestExtent = options.projection === 'EPSG:4326' ? [extent[1], extent[0], extent[3], extent[2]] : extent;
+                    bbox = requestExtent.join(',') + "," + CoordinatesUtils.toOgcUrnCrs(options.projection);
+                    srsName = CoordinatesUtils.toOgcUrnCrs(options.projection);
                 }
-                const url = options.url + (options.url.endsWith('?') ? '' : '?') + 'service=WFS&version=' + options.version +
-                    '&request=GetFeature&' + typeName + '=' + options.name +
-                    '&outputFormat=' + encodeURIComponent(format) +
-                    '&srsName=' + options.projection +
-                    '&bbox=' + requestExtent.join(',');
-                return url;
-            },
+                const urlParts = url.parse(options.url, true);
+                const urlParams = Object.entries(urlParts.query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {});
+                delete urlParts.search;
+                urlParts.query = {
+                    ...urlParams,
+                    SERVICE: 'WFS',
+                    VERSION: options.version,
+                    REQUEST: 'GetFeature',
+                    [typeName]: options.name,
+                    outputFormat: format,
+                    srsName: srsName,
+                    bbox: bbox
+                };
+                return url.format(urlParts);
+            } : null,
             strategy: ol.loadingstrategy.bbox
         });
 
@@ -77,7 +90,8 @@ export default {
                 fillColor: options.color,
                 strokeColor: feature.getGeometry().getType().endsWith("LineString") ? options.color : "#000",
                 strokeWidth: 1,
-                strokeDash: []
+                strokeDash: [],
+                circleRadius: 5
             })
         });
     },

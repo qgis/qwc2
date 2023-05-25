@@ -2,26 +2,74 @@
   "locale": "ro-RO",
   "messages": {
     "appmenu": {
+      "filter": "",
       "menulabel": "Hărți & Unelte",
       "items": {
+        "AttributeTable": "Tabela de atribute",
+        "Cyclomedia": "",
         "DxfExport": "Export DXF",
         "Editing": "Editare",
+        "FeatureForm": "",
         "Help": "Ajutor",
         "IdentifyRegion": "Interogare regiune",
+        "LayerCatalog": "Catalog",
         "LayerTree": "Straturi & Legendă",
         "Login": "Conectează-te",
         "Logout": "Deconectează-te",
+        "MapLegend": "",
         "Measure": "Măsoară",
+        "MeasureLineString": "Măsoară o linie",
+        "MeasurePolygon": "Măsoară un poligon",
         "Print": "Tipărire",
         "RasterExport": "Export Raster",
         "Redlining": "Evidențiere",
+        "Routing": "",
         "Share": "Trimite Link",
         "ThemeSwitcher": "Hărți tematice",
-        "Tools": "Unelte hartă"
+        "Tools": "Unelte hartă",
+        "Bookmark": "Marcaj",
+        "TimeManager": "",
+        "Settings": ""
       }
+    },
+    "attribtable": {
+      "addfeature": "",
+      "commit": "Salvează",
+      "delete": "",
+      "deletefailed": "",
+      "deletefeatures": "",
+      "deleting": "",
+      "discard": "Renunță",
+      "formeditmode": "",
+      "geomnoadd": "",
+      "layer": "Strat",
+      "loadfailed": "Încărcarea a eșuat",
+      "loading": "Se încarcă",
+      "nodelete": "",
+      "nogeomnoform": "",
+      "pleasereload": "Te rog reîncarcă",
+      "reload": "Reîncarcă",
+      "selectlayer": "Selectează strat",
+      "title": "Titlu",
+      "zoomtoselection": "Zoom la selecție"
     },
     "bgswitcher": {
       "nobg": "Fără fundal"
+    },
+    "bookmark": {
+      "add": "Adaugă",
+      "addfailed": "",
+      "description": "Descriere",
+      "lastUpdate": "Ultima actualizare",
+      "manage": "Gestionează",
+      "nobookmarks": "",
+      "notloggedin": "Nelogat",
+      "open": "Deschide",
+      "openTab": "",
+      "remove": "Elimină",
+      "removefailed": "",
+      "savefailed": "",
+      "update": "Actualizează"
     },
     "bottombar": {
       "mousepos_label": "Coordonate",
@@ -33,36 +81,68 @@
       "click_to_copy": "Click pt. copiere",
       "copied": "Copiat"
     },
+    "cyclomedia": {
+      "clickonmap": "",
+      "loaderror": "",
+      "loading": "",
+      "login": "",
+      "scalehint": "",
+      "title": ""
+    },
     "dxfexport": {
+      "layers": "Straturi",
       "selectinfo": "Încadrați într-un dreptunghi zona de exportat..",
       "symbologyscale": "Scara simboluri:"
     },
     "editing": {
+      "add": "",
+      "attrtable": "",
       "canceldelete": "Elimină modificările",
+      "clearpicture": "Elimină poza",
       "commit": "Salvează",
+      "commitfailed": "",
+      "create": "",
       "delete": "Șterge",
       "discard": "Renunță",
       "draw": "Adaugă",
       "feature": "Entitate",
+      "geomreadonly": "",
+      "invalidform": "",
       "maximize": "Maximizează",
       "minimize": "Minimizează",
+      "nocompatpick": "",
       "noeditablelayers": "Tema nu conține straturi ce se pot modifica",
+      "paint": "",
       "pick": "Alege",
+      "pickdrawfeature": "",
       "reallydelete": "Șterge",
-      "select": "Selectează"
+      "relationcommitfailed": "Salvarea relației a eșuat",
+      "select": "Selectează",
+      "selectedpicture": "",
+      "takepicture": "Fotografiază",
+      "unsavedchanged": ""
+    },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
     },
     "fileselector": {
+      "files": "",
       "placeholder": "Selectează fișierul"
     },
     "heightprofile": {
       "asl": "dM",
       "distance": "Distanța",
+      "export": "Export",
       "height": "Înălțimea",
       "loading": "Calcularea profilului înălțimii..."
     },
     "identify": {
+      "clipboard": "",
       "export": "Export",
-      "exportformat": "",
+      "exportformat": "Formatul de export",
       "featureReport": "Raport entitate",
       "link": "Link",
       "noattributes": "Fără atribute",
@@ -70,10 +150,12 @@
       "querying": "Interogare...",
       "title": "Info Entități"
     },
-    "identifyregion": {
-      "info": "Încadrați într-un poligon entitățile de identificat..."
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
+      "addfailed": "",
       "addlayer": "Adaugă strat",
       "connect": "Conectare",
       "filter": "Filtrare",
@@ -85,7 +167,13 @@
       "urlplaceholder": "Introdu URL către WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": ""
+      "clickhelpPoint": "Click pe o locație pentru identificarea elementelor din hartă...",
+      "clickhelpPolygon": "Încadrați într-un poligon elementele de identificat...",
+      "clickhelpRadius": "",
+      "radius": ""
+    },
+    "layercatalog": {
+      "windowtitle": "Catalog straturi"
     },
     "layerinfo": {
       "abstract": "Abstract",
@@ -106,9 +194,15 @@
       "printlegend": "Tipărește legenda",
       "separator": "separator",
       "separatortooltip": "Indiciu separator",
-      "transparency": "",
+      "transparency": "Transparență",
       "visiblefilter": "Filtrează straturile invizibile",
       "zoomtolayer": "Zoom la strat"
+    },
+    "linkfeatureform": {
+      "cancel": "",
+      "close": "",
+      "drawhint": "",
+      "pickhint": ""
     },
     "locate": {
       "feetUnit": "picioare",
@@ -123,36 +217,72 @@
       }
     },
     "map": {
-      "loading": "Se încarcă..."
+      "loading": "Se încarcă...",
+      "resetrotation": "Resetează rotația"
     },
     "mapinfotooltip": {
       "elevation": "Altitudine",
       "title": "Poziție"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "",
+      "scaledependent": "",
+      "windowtitle": ""
+    },
     "measureComponent": {
       "areaLabel": "Arie",
       "bearingLabel": "Direcție",
+      "imperial": "",
       "lengthLabel": "Lungime",
+      "metric": "",
       "pointLabel": "Poziție"
     },
+    "navbar": {
+      "perpage": ""
+    },
+    "newspopup": {
+      "dialogclose": "",
+      "dontshowagain": "",
+      "title": ""
+    },
+    "numericinput": {
+      "angle": "",
+      "featureunsupported": "",
+      "height": "",
+      "nofeature": "",
+      "side": "",
+      "width": "",
+      "windowtitle": ""
+    },
     "print": {
+      "atlasfeature": "",
       "grid": "Grid",
-      "layout": "Șablon:",
+      "layout": "Șablon",
+      "legend": "Legendă",
       "maximize": "Maximizează",
       "minimize": "Minimizează",
       "nolayouts": "Această temă nu are șabloane de print",
       "notheme": "Nu avem selectată tema",
       "output": "Rezultat tipărire",
-      "resolution": "Rezoluție:",
-      "rotation": "Rotație:",
-      "scale": "Scară:",
+      "pickatlasfeature": "",
+      "resolution": "Rezoluție",
+      "rotation": "Rotație",
+      "scale": "Scară",
       "submit": "Tipărește",
       "wait": "Așteaptă te rog.."
+    },
+    "qtdesignerform": {
+      "loading": ""
     },
     "rasterexport": {
       "format": "Format:",
       "resolution": "Rezoluție",
-      "selectinfo": "Încadrați într-un dreptunghi zona de exportat.."
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "redlining": {
       "border": "Margine",
@@ -162,25 +292,69 @@
       "bufferlayer": "Destinația",
       "bufferlayername": "Zonă tampon",
       "bufferselectfeature": "Selectați o entitate pentru zonarea tampon",
-      "circle": "",
+      "circle": "Cerc",
       "delete": "Elimină",
       "draw": "Adaugă",
       "edit": "Modifică",
-      "fill": "Interior",
+      "ellipse": "",
       "freehand": "Mână liberă",
       "label": "Text",
       "layer": "Strat",
       "line": "Linie",
-      "outline": "Contur",
+      "measurements": "",
+      "numericinput": "",
       "pick": "Alege",
       "point": "Punct",
       "polygon": "Poligon",
+      "rectangle": "",
       "size": "Mărime",
+      "square": "",
       "text": "Text",
+      "transform": "",
       "width": "Lățime"
     },
+    "routing": {
+      "add": "",
+      "addviapoint": "",
+      "arriveat": "",
+      "clear": "",
+      "computefailed": "",
+      "computing": "",
+      "excludepolygons": "",
+      "export": "",
+      "fastest": "",
+      "fromhere": "",
+      "importerror": "",
+      "importhint": "",
+      "importpoints": "",
+      "iso_intervals": "",
+      "iso_mode": "",
+      "iso_mode_distance": "",
+      "iso_mode_time": "",
+      "isocenter": "",
+      "isoextracenter": "",
+      "leaveat": "",
+      "leavenow": "",
+      "maxspeed": "",
+      "method": "",
+      "mode_auto": "",
+      "mode_bicycle": "",
+      "mode_heavyvehicle": "",
+      "mode_transit": "",
+      "mode_walking": "",
+      "optimized_route": "",
+      "reachability": "",
+      "roundtrip": "",
+      "route": "",
+      "shortest": "",
+      "tohere": "",
+      "useferries": "",
+      "usehighways": "",
+      "usetollways": "",
+      "windowtitle": ""
+    },
     "scratchdrawing": {
-      "finish": ""
+      "finish": "Salvează"
     },
     "search": {
       "all": "Toate",
@@ -188,8 +362,12 @@
       "existinglayer": "Strat existent",
       "invisiblelayer": "Rezultatul este într-un strat invizibil",
       "more": "Mai multe...",
+      "noresults": "",
+      "providerselection": "",
       "search": "Caută",
       "searchall": "Caută în toate",
+      "searchinprogress": "Căutare în progres",
+      "searchreset": "Resetează căutarea",
       "themes": "Hărți tematice"
     },
     "searchbox": {
@@ -203,30 +381,43 @@
       "recent": "Căutări recente"
     },
     "serviceinfo": {
-      "abstract": "",
-      "contactEmail": "",
-      "contactOrganization": "",
-      "contactPerson": "",
-      "contactPhone": "",
-      "contactPosition": "",
-      "keywords": "",
-      "onlineResource": "",
-      "title": ""
+      "abstract": "Abstract",
+      "contactEmail": "Email de contact",
+      "contactOrganization": "Organizația de contact",
+      "contactPerson": "Persoana de contact",
+      "contactPhone": "Tel. de contact",
+      "contactPosition": "Poziția",
+      "keywords": "Cuvinte cheie",
+      "onlineResource": "Resursă online",
+      "title": "Titlu"
+    },
+    "settings": {
+      "colorscheme": "",
+      "confirmlang": "",
+      "language": "",
+      "systemlang": ""
     },
     "share": {
       "QRCodeLinkTitle": "Cod QR",
       "directLinkTitle": "Via link direct",
-      "generatingpermalink": "Generare permalink...",
+      "refresh": "",
+      "shareTitle": "QWC2",
+      "showpin": "Arată pin",
       "socialIntro": "În rețeaua socială favorită"
     },
+    "snapping": {
+      "loading": "",
+      "snappingenabled": ""
+    },
     "themelayerslist": {
-      "addlayer": "",
-      "addlayerstotheme": "",
-      "addselectedlayers": ""
+      "addlayer": "Adaugă strat",
+      "addlayerstotheme": "Adaugă strat la temă",
+      "addselectedlayers": "Adaugă straturile selectate"
     },
     "themeswitcher": {
-      "addlayerstotheme": "",
+      "addlayerstotheme": "Adaugă straturi la temă",
       "addtotheme": "Adaugă la temă",
+      "confirmswitch": "Confirmă schimbarea",
       "filter": "Filtrare",
       "match": {
         "abstract": "Abstract",
@@ -234,21 +425,75 @@
         "title": "Titlu"
       },
       "openintab": "Deschide în tab nou",
-      "restrictedthemeinfo": ""
+      "restrictedthemeinfo": "Nu ai permisiunea de a accesa tema sau nu ești logat."
+    },
+    "timemanager": {
+      "animationinterval": "",
+      "classify": "",
+      "classifynone": "",
+      "displayfeatures": "",
+      "displaylayers": "",
+      "displayminimal": "",
+      "endtime": "",
+      "future": "",
+      "group": "",
+      "groupnone": "",
+      "home": "",
+      "loading": "",
+      "loop": "",
+      "markers": "",
+      "notemporaldata": "",
+      "now": "",
+      "past": "",
+      "play": "",
+      "playrev": "",
+      "rewind": "",
+      "starttime": "",
+      "stepback": "",
+      "stepfwd": "",
+      "stepsize": "",
+      "stop": "",
+      "timeline": "",
+      "timeline_fixed": "",
+      "timeline_infinite": "",
+      "timelinedisplay": "",
+      "timelinescale": "",
+      "title": "",
+      "toggle": "",
+      "unit": {
+        "century": "",
+        "days": "",
+        "decade": "",
+        "hours": "",
+        "milliseconds": "",
+        "minutes": "",
+        "months": "",
+        "seconds": "",
+        "years": ""
+      },
+      "zoomin": "",
+      "zoomout": ""
     },
     "tooltip": {
       "background": "Straturi suport",
+      "fullscreendisable": "Dezactivează fullscreen",
+      "fullscreenenable": "Activează fullscreen",
       "home": "Arată toată harta",
       "zoomin": "Mărire",
       "zoomout": "Micșorare"
     },
     "vectorlayerpicker": {
-      "prompt": ""
+      "none": "",
+      "prompt": "Introdu numele stratului"
     },
     "window": {
       "close": "Închide",
       "dock": "Andocare",
-      "undock": "Anulează andocarea"
+      "maximize": "Maximizează",
+      "minimize": "",
+      "undock": "Anulează andocarea",
+      "unmaximize": "Revenire",
+      "unminimize": ""
     }
   }
 }

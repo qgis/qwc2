@@ -2,26 +2,74 @@
   "locale": "no-NO",
   "messages": {
     "appmenu": {
+      "filter": "",
       "menulabel": "Kart & Verktøy",
       "items": {
+        "AttributeTable": "",
+        "Cyclomedia": "",
         "DxfExport": "Eksporter DXF",
         "Editing": "Rediger",
+        "FeatureForm": "",
         "Help": "Hjelp",
         "IdentifyRegion": "Identifiser med område",
+        "LayerCatalog": "",
         "LayerTree": "Lag & tegnforklaring",
         "Login": "Logg inn",
         "Logout": "Logg ut",
+        "MapLegend": "",
         "Measure": "Mål",
+        "MeasureLineString": "Måle en linje",
+        "MeasurePolygon": "Måle en polygon",
         "Print": "Skriv ut",
         "RasterExport": "Eksporter Raster",
         "Redlining": "Redlining",
+        "Routing": "",
         "Share": "Del lenke",
         "ThemeSwitcher": "Tema",
-        "Tools": "Kartverktøy"
+        "Tools": "Kartverktøy",
+        "Bookmark": "",
+        "TimeManager": "",
+        "Settings": ""
       }
+    },
+    "attribtable": {
+      "addfeature": "",
+      "commit": "",
+      "delete": "",
+      "deletefailed": "",
+      "deletefeatures": "",
+      "deleting": "",
+      "discard": "",
+      "formeditmode": "",
+      "geomnoadd": "",
+      "layer": "",
+      "loadfailed": "",
+      "loading": "",
+      "nodelete": "",
+      "nogeomnoform": "",
+      "pleasereload": "",
+      "reload": "",
+      "selectlayer": "",
+      "title": "",
+      "zoomtoselection": ""
     },
     "bgswitcher": {
       "nobg": "Ingen bakgrunn"
+    },
+    "bookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "bottombar": {
       "mousepos_label": "Koordinater",
@@ -33,34 +81,66 @@
       "click_to_copy": "Klikk for å kopiere",
       "copied": "Kopiert"
     },
+    "cyclomedia": {
+      "clickonmap": "",
+      "loaderror": "",
+      "loading": "",
+      "login": "",
+      "scalehint": "",
+      "title": ""
+    },
     "dxfexport": {
+      "layers": "",
       "selectinfo": "Tegn et rektangel rundt området som skal eksporteres...",
       "symbologyscale": "Symbolskala:"
     },
     "editing": {
+      "add": "",
+      "attrtable": "",
       "canceldelete": "Ikke slett",
+      "clearpicture": "",
       "commit": "Bekreft",
+      "commitfailed": "",
+      "create": "",
       "delete": "Slett",
       "discard": "Forkast",
       "draw": "Tegn",
       "feature": "Objekt",
+      "geomreadonly": "",
+      "invalidform": "",
       "maximize": "Maksimer",
       "minimize": "Minimer",
+      "nocompatpick": "",
       "noeditablelayers": "Ingen redigerbare lag",
+      "paint": "",
       "pick": "Velg",
+      "pickdrawfeature": "",
       "reallydelete": "Virkelig slette",
-      "select": "Velg"
+      "relationcommitfailed": "",
+      "select": "Velg",
+      "selectedpicture": "",
+      "takepicture": "",
+      "unsavedchanged": ""
+    },
+    "featureform": {
+      "feature": "",
+      "noresults": "",
+      "querying": "",
+      "title": ""
     },
     "fileselector": {
+      "files": "",
       "placeholder": "Velg fil..."
     },
     "heightprofile": {
       "asl": "m.o.h.",
       "distance": "Avstand",
+      "export": "",
       "height": "Høyde",
       "loading": "Beregner høydeprofil..."
     },
     "identify": {
+      "clipboard": "",
       "export": "Eksporter",
       "exportformat": "",
       "featureReport": "Objektrapport",
@@ -70,10 +150,12 @@
       "querying": "Søker...",
       "title": "Objektinformasjon"
     },
-    "identifyregion": {
-      "info": "Tegn et polygon rundt objektene som skal identifieres"
+    "imageeditor": {
+      "confirmclose": "",
+      "title": ""
     },
     "importlayer": {
+      "addfailed": "",
       "addlayer": "Legg til lag",
       "connect": "Koble til",
       "filter": "Filter...",
@@ -85,7 +167,13 @@
       "urlplaceholder": "Skriv inn URL til WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": ""
+      "clickhelpPoint": "",
+      "clickhelpPolygon": "Tegn et polygon rundt objektene som skal identifieres",
+      "clickhelpRadius": "",
+      "radius": ""
+    },
+    "layercatalog": {
+      "windowtitle": ""
     },
     "layerinfo": {
       "abstract": "Oppsummering",
@@ -110,6 +198,12 @@
       "visiblefilter": "Filtrer usynlige lag",
       "zoomtolayer": "Zoom til lag"
     },
+    "linkfeatureform": {
+      "cancel": "",
+      "close": "",
+      "drawhint": "",
+      "pickhint": ""
+    },
     "locate": {
       "feetUnit": "fot",
       "metersUnit": "meter",
@@ -123,36 +217,72 @@
       }
     },
     "map": {
-      "loading": "Laster inn..."
+      "loading": "Laster inn...",
+      "resetrotation": ""
     },
     "mapinfotooltip": {
       "elevation": "Høyde",
       "title": "Posisjon"
     },
+    "maplegend": {
+      "bboxdependent": "",
+      "onlyvisible": "",
+      "scaledependent": "",
+      "windowtitle": ""
+    },
     "measureComponent": {
       "areaLabel": "Areal",
       "bearingLabel": "Orientering",
+      "imperial": "",
       "lengthLabel": "Lengde",
+      "metric": "",
       "pointLabel": "Posisjon"
     },
+    "navbar": {
+      "perpage": ""
+    },
+    "newspopup": {
+      "dialogclose": "",
+      "dontshowagain": "",
+      "title": ""
+    },
+    "numericinput": {
+      "angle": "",
+      "featureunsupported": "",
+      "height": "",
+      "nofeature": "",
+      "side": "",
+      "width": "",
+      "windowtitle": ""
+    },
     "print": {
+      "atlasfeature": "",
       "grid": "Rutenett",
-      "layout": "Layout:",
+      "layout": "Layout",
+      "legend": "",
       "maximize": "Maksimer",
       "minimize": "Minimer",
       "nolayouts": "Valgt tema støtter ikke utskrift",
       "notheme": "Ingen tema valgt",
       "output": "Utskrift",
-      "resolution": "Oppløsning:",
-      "rotation": "Rotasjon:",
-      "scale": "Skala:",
+      "pickatlasfeature": "",
+      "resolution": "Oppløsning",
+      "rotation": "Rotasjon",
+      "scale": "Skala",
       "submit": "Skriv ut",
       "wait": "Venter..."
+    },
+    "qtdesignerform": {
+      "loading": ""
     },
     "rasterexport": {
       "format": "Format:",
       "resolution": "Oppløsning:",
-      "selectinfo": "Tegn en rektangel rundt området som skal eksporteres..."
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "redlining": {
       "border": "Kant",
@@ -166,18 +296,62 @@
       "delete": "Slett",
       "draw": "Tegn",
       "edit": "Rediger",
-      "fill": "Fylling",
+      "ellipse": "",
       "freehand": "Frihånd",
       "label": "Etikett",
       "layer": "Lag",
       "line": "Linje",
-      "outline": "Kant",
+      "measurements": "",
+      "numericinput": "",
       "pick": "Velg",
       "point": "Punkt",
       "polygon": "Polygon",
+      "rectangle": "",
       "size": "Størrelse",
+      "square": "",
       "text": "Tekst",
+      "transform": "",
       "width": "Bredde"
+    },
+    "routing": {
+      "add": "",
+      "addviapoint": "",
+      "arriveat": "",
+      "clear": "",
+      "computefailed": "",
+      "computing": "",
+      "excludepolygons": "",
+      "export": "",
+      "fastest": "",
+      "fromhere": "",
+      "importerror": "",
+      "importhint": "",
+      "importpoints": "",
+      "iso_intervals": "",
+      "iso_mode": "",
+      "iso_mode_distance": "",
+      "iso_mode_time": "",
+      "isocenter": "",
+      "isoextracenter": "",
+      "leaveat": "",
+      "leavenow": "",
+      "maxspeed": "",
+      "method": "",
+      "mode_auto": "",
+      "mode_bicycle": "",
+      "mode_heavyvehicle": "",
+      "mode_transit": "",
+      "mode_walking": "",
+      "optimized_route": "",
+      "reachability": "",
+      "roundtrip": "",
+      "route": "",
+      "shortest": "",
+      "tohere": "",
+      "useferries": "",
+      "usehighways": "",
+      "usetollways": "",
+      "windowtitle": ""
     },
     "scratchdrawing": {
       "finish": ""
@@ -188,8 +362,12 @@
       "existinglayer": "Laget finnes allerede på kartet",
       "invisiblelayer": "Resultatet finnes på et lag som er usynlig",
       "more": "Flere resultater",
+      "noresults": "",
+      "providerselection": "",
       "search": "Søk",
       "searchall": "Søk etter steder eller legg til kart",
+      "searchinprogress": "",
+      "searchreset": "",
       "themes": "Tema"
     },
     "searchbox": {
@@ -213,11 +391,23 @@
       "onlineResource": "",
       "title": ""
     },
+    "settings": {
+      "colorscheme": "",
+      "confirmlang": "",
+      "language": "",
+      "systemlang": ""
+    },
     "share": {
       "QRCodeLinkTitle": "QR kode",
       "directLinkTitle": "Direktelenke",
-      "generatingpermalink": "Generer permalink...",
+      "refresh": "",
+      "shareTitle": "QWC2",
+      "showpin": "",
       "socialIntro": "Sosiale nettvert"
+    },
+    "snapping": {
+      "loading": "",
+      "snappingenabled": ""
     },
     "themelayerslist": {
       "addlayer": "",
@@ -227,6 +417,7 @@
     "themeswitcher": {
       "addlayerstotheme": "",
       "addtotheme": "Legg til nåværende tema",
+      "confirmswitch": "",
       "filter": "Filtrer...",
       "match": {
         "abstract": "Sammendrag",
@@ -236,19 +427,73 @@
       "openintab": "Åpne i nytt vindu",
       "restrictedthemeinfo": ""
     },
+    "timemanager": {
+      "animationinterval": "",
+      "classify": "",
+      "classifynone": "",
+      "displayfeatures": "",
+      "displaylayers": "",
+      "displayminimal": "",
+      "endtime": "",
+      "future": "",
+      "group": "",
+      "groupnone": "",
+      "home": "",
+      "loading": "",
+      "loop": "",
+      "markers": "",
+      "notemporaldata": "",
+      "now": "",
+      "past": "",
+      "play": "",
+      "playrev": "",
+      "rewind": "",
+      "starttime": "",
+      "stepback": "",
+      "stepfwd": "",
+      "stepsize": "",
+      "stop": "",
+      "timeline": "",
+      "timeline_fixed": "",
+      "timeline_infinite": "",
+      "timelinedisplay": "",
+      "timelinescale": "",
+      "title": "",
+      "toggle": "",
+      "unit": {
+        "century": "",
+        "days": "",
+        "decade": "",
+        "hours": "",
+        "milliseconds": "",
+        "minutes": "",
+        "months": "",
+        "seconds": "",
+        "years": ""
+      },
+      "zoomin": "",
+      "zoomout": ""
+    },
     "tooltip": {
       "background": "Bytt bakgrunn",
+      "fullscreendisable": "",
+      "fullscreenenable": "",
       "home": "Vis hele kartet",
       "zoomin": "Zoom inn",
       "zoomout": "Zoom ut"
     },
     "vectorlayerpicker": {
+      "none": "",
       "prompt": ""
     },
     "window": {
       "close": "Lukk",
       "dock": "Fest",
-      "undock": "Utløs"
+      "maximize": "",
+      "minimize": "",
+      "undock": "Utløs",
+      "unmaximize": "",
+      "unminimize": ""
     }
   }
 }

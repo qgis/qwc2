@@ -1,26 +1,9 @@
 div.qt-designer-form {
-    height: 100%;
-}
-
-div.qt-designer-form input[type=text],
-div.qt-designer-form input[type=number],
-div.qt-designer-form input[type=date],
-div.qt-designer-form select {
-    border: 1px solid @item_border@;
-    background-color: white;
-    padding: 0.25em;
-    height: 2em;
-}
-
-div.qt-designer-form input[type=range] {
-    background-color: transparent;
-    height: 2em;
+    overflow: auto;
 }
 
 div.qt-designer-form textarea {
-    border: 1px solid @item_border@;
-    background-color: white;
-    padding: 0.25em;
+    height: 100%;
 }
 
 div.qt-designer-form label > input {
@@ -31,6 +14,7 @@ div.qt-designer-layout-grid {
     display: grid;
     grid-column-gap: 6px;
     grid-row-gap: 6px;
+    height: 100%;
 }
 
 div.qt-designer-layout-grid > div {
@@ -38,7 +22,7 @@ div.qt-designer-layout-grid > div {
     align-items: center;
 }
 
-div.qt-designer-layout-grid > div > * {
+div.qt-designer-layout-grid > div > *:not(.qt-designer-form-vline) {
     width: 100%;
 }
 
@@ -60,71 +44,165 @@ div.qt-designer-layout-vbox > div {
     align-items: center;
 }
 
-div.qt-designer-form-line {
-    border-bottom: 1px solid @item_border@;
+div.qt-designer-form-hline {
+    border-bottom: 1px solid var(--border-color);
 }
 
-div.qt-designer-widget-relation {
-    border: 1px solid @item_border@;
+div.qt-designer-form-vline {
+    border-right: 1px solid var(--border-color);
+    height: 100%;
 }
 
-div.qt-designer-widget-relation > div {
+div.qt-designer-form-container {
+    height: 100%;
     display: flex;
+    flex-direction: column;
+}
+
+div.qt-designer-form-frame-title {
+    font-weight: bold;
+    flex: 0 0 auto;
+}
+
+div.qt-designer-form-frame {
+    padding: 0.25em;
+    flex: 1 1 auto;
+    width: 100%;
+    border: 1px solid var(--border-color);
+}
+
+div.qt-designer-form-tabbar {
+    overflow-x: auto;
+}
+
+div.qt-designer-form-tabbar > span {
+    padding: 0.25em;
+    border-left: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
+    display: inline-block;
+    background-color: var(--button-bg-color);
+    height: 2em;
+    display: inline-flex;
     align-items: center;
 }
 
-div.qt-designer-widget-relation > div:not(:last-child) {
-    padding: 0.125em;
-    border-bottom: 1px solid @item_border@;
+div.qt-designer-form-tabbar > span:last-child {
+    border-right: 1px solid var(--border-color);
 }
 
-div.qt-designer-widget-relation > div > div.qt-designer-layout-grid {
+div.qt-designer-form-tabbar > span.qt-designer-form-tab-active {
+    background-color: var(--button-bg-color-active);
+    color: var(--button-text-color-active);
+}
+
+div.qt-designer-widget-relation {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+div.qt-designer-widget-relation-table-container {
+    overflow-y: auto;
     flex: 1 1 auto;
+    height: 4.5em;
+}
+
+div.qt-designer-widget-relation-table-container > table {
+    width: 100%;
+    border: 1px solid var(--border-color);
+}
+
+div.qt-designer-widget-relation-table-container > table td {
+    padding: 0.25em 0.125em;
+    text-align: center;
+}
+
+div.qt-designer-widget-relation-table-container > table td.qt-designer-widget-relation-record-icon {
+    width: 1px;
+}
+div.qt-designer-widget-relation-table-container > table td.qt-designer-widget-relation-row-widget > * {
+    width: 100%;
+}
+
+div.qt-designer-widget-relation-table-container > table td > label {
+    display: block;
+    text-align: center;
+    white-space: nowrap;
+}
+
+div.qt-designer-widget-relation-table-container > table th {
+    background-color: var(--border-color);
+    color: white;
+}
+
+div.qt-designer-widget-relation-table-container > table tr:not(:last-child) {
+    border-bottom: 1px solid var(--border-color);
+}
+
+tr.qt-designer-widget-relation-record-deleted {
+    background-color: rgb(255,127,127);
+}
+
+div.qt-designer-widget-relation-buttons {
+    flex: 0 0 auto;
 }
 
 button.qt-designer-widget-relation-add {
-    border: none;
     width: 100%;
-    padding: 0.25em;
-    background-color: @button_bg@;
 }
+
 div.qt-designer-form label {
     display: flex;
     align-items: center;
 }
 
-div.qt-designer-widget-relation-record-deleted {
-    background-color: rgb(255,127,127);
-}
-
-div.qt-designer-widget-relation-record > span:first-child {
-    display: inline-block;
-    width: 1.5em;
-    text-align: center;
-}
-
-div.qt-designer-widget-relation-record > span.icon-trash {
-    flex: 0 0 auto;
-    padding: 0.25em;
-    margin-left: 1em;
-}
-
-div.qt-designer-widget-relation-record-new {
-    background-color: rgb(127,255,127);
-}
-
-span.qt-designer-uploaded-file {
-    border: 1px solid @item_border@;
+div.qt-designer-form-featurelink-buttons {
     display: flex;
-    align-items: center;
-    background-color: white;
-    padding: 0.25em;
 }
 
-span.qt-designer-uploaded-file > a {
+div.qt-designer-form-featurelink-buttons > div.ButtonBar {
     flex: 1 1 auto;
 }
 
-span.qt-designer-uploaded-file > span.icon {
-    flex: 0 0 auto;
+div.qt-designer-form-featurelink-buttons > button.button {
+    margin: 0.25em 0;
+}
+
+div.qt-designer-report {
+    background-color: white;
+}
+
+div.qt-designer-report input,
+div.qt-designer-report textarea,
+div.qt-designer-report select {
+    border: none!important;
+    outline: none!important;
+}
+
+div.qt-designer-report select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+div.qt-designer-form-textarea {
+    padding: 0.25em;
+    white-space: pre-wrap;
+}
+
+div.qt-designer-form-image img {
+    width: 100%;
+    max-width: 400px;
+}
+
+div.qt-designer-form-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.qt-designer-form-loading > div.spinner {
+    width: 4em;
+    height: 4em;
+    margin-right: 1em;
 }

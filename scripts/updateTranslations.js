@@ -67,12 +67,12 @@ const listDir = (dir, pattern) => {
 
 const updateTsConfig = (topdir, tsconfig, collectedMsgIds=null) => {
     const files = listDir(topdir, new RegExp("^.*\.jsx?$"));
-    const trRegEx = /LocaleUtils\.tr(?:msg)?\((['\"])([A-Za-z0-9\._]+)\1\)/g;
+    const trRegEx = /LocaleUtils\.tr(?:msg)?\((['\"])([A-Za-z0-9\._]+)\1/g;
     const msgIds =  new Set();
     for (const file of files) {
         const data = fs.readFileSync(file).toString();
         for (const match of data.matchAll(trRegEx)) {
-            if (!collectedMsgIds || !collectedMsgIds.has(match[2])) {
+            if ((!collectedMsgIds || !collectedMsgIds.has(match[2])) && !match[2].endsWith(".")) {
                 msgIds.add(match[2]);
             }
         }
@@ -118,8 +118,8 @@ for (const workspace of workspaces) {
 }
 
 // Generate application translations
-updateTsConfig(process.cwd() + '/js', '/translations/tsconfig.json', collectedMsgIds);
-const config = readJSON('/translations/tsconfig.json');
+updateTsConfig(process.cwd() + '/js', '/static/translations/tsconfig.json', collectedMsgIds);
+const config = readJSON('/static/translations/tsconfig.json');
 const strings = [
     ...(config.strings || []),
     ...(config.extra_strings || [])
@@ -128,8 +128,8 @@ const skel = createSkel(strings);
 for (const lang of config.languages || []) {
     const langskel = merge(skel, {locale: lang});
 
-    const origData = readJSON('/translations/' + lang + '.json');
-    let data = merge(langskel, cleanMessages(readJSON('/translations/' + lang + '.json'), langskel));
+    const origData = readJSON('/static/translations/' + lang + '.json');
+    let data = merge(langskel, cleanMessages(readJSON('/static/translations/' + lang + '.json'), langskel));
 
     // Merge translations from workspaces
     for (const workspace of workspaces) {
@@ -146,9 +146,9 @@ for (const lang of config.languages || []) {
 
     // Write output
     try {
-        fs.writeFileSync(process.cwd() + '/translations/' + lang + '.json', JSON.stringify(data, null, 2) + "\n");
-        console.log('Wrote translations/' + lang + '.json');
+        fs.writeFileSync(process.cwd() + '/static/translations/' + lang + '.json', JSON.stringify(data, null, 2) + "\n");
+        console.log('Wrote static/translations/' + lang + '.json');
     } catch (e) {
-        console.error('Failed to write translations/' + lang + '.json: ' + e);
+        console.error('Failed to write static/translations/' + lang + '.json: ' + e);
     }
 }

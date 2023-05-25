@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 24 24"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="routing-car.svg"
+   width="24"
+   height="24"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     id="namedview6"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="0.95846115"
+     inkscape:cx="135.63408"
+     inkscape:cy="245.70636"
+     inkscape:window-width="1600"
+     inkscape:window-height="841"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4" />
+  <!--! Font Awesome Pro 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+  <path
+     d="M 6.809375,6.044531 5.6878906,9.25 H 18.312109 L 17.190625,6.044531 C 16.997266,5.494531 16.477344,5.125 15.892969,5.125 H 8.1070313 c -0.584375,0 -1.1042969,0.369531 -1.2976563,0.919531 z M 2.7015625,9.45625 4.2140625,5.137891 C 4.7941406,3.483594 6.3539062,2.375 8.1070313,2.375 h 7.7859377 c 1.753125,0 3.31289,1.108594 3.892969,2.762891 l 1.5125,4.318359 C 22.295313,9.86875 23,10.852734 23,12 v 6.1875 2.0625 c 0,0.760547 -0.614453,1.375 -1.375,1.375 H 20.25 c -0.760547,0 -1.375,-0.614453 -1.375,-1.375 V 18.1875 H 5.125 V 20.25 c 0,0.760547 -0.6144531,1.375 -1.375,1.375 H 2.375 C 1.6144531,21.625 1,21.010547 1,20.25 V 18.1875 12 C 1,10.852734 1.7046875,9.86875 2.7015625,9.45625 Z M 6.5,13.375 a 1.375,1.375 0 1 0 -2.75,0 1.375,1.375 0 1 0 2.75,0 z m 12.375,1.375 a 1.375,1.375 0 1 0 0,-2.75 1.375,1.375 0 1 0 0,2.75 z"
+     id="path2"
+     style="stroke-width:0.0429688" />
+</svg>

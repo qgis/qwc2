@@ -28,48 +28,80 @@ import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/LayerTree.css';
 
 
+/**
+ * Displays the map layer tree in a sidebar.
+ */
 class LayerTree extends React.Component {
     static propTypes = {
+        /** Whether to allow adding separator entries in the layer tree, useful for organizing the tree. */
         addLayerSeparator: PropTypes.func,
+        /** Whether to enable the compare function. Requires the `MapCompare` plugin. */
         allowCompare: PropTypes.bool,
+        /** Whether to allow importing external layers. */
         allowImport: PropTypes.bool,
+        /** Whether to allow enabling map tips. */
         allowMapTips: PropTypes.bool,
-        bboxDependentLegend: PropTypes.bool,
+        /** Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. */
+        bboxDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         changeLayerProperty: PropTypes.func,
+        /** Whether to enable the legend print functionality. */
         enableLegendPrint: PropTypes.bool,
+        /** Whether to display a service info button to display the WMS service metadata. */
         enableServiceInfo: PropTypes.bool,
+        /** Whether to display a button to filter invisible layers from the layertree. */
         enableVisibleFilter: PropTypes.bool,
+        /** Additional parameters to pass to the GetLegendGraphics request- */
+        extraLegendParameters: PropTypes.string,
         fallbackDrag: PropTypes.bool,
+        /** Whether to display a flat layer tree, omitting any groups. */
         flattenGroups: PropTypes.bool,
+        /** Whether to display unchecked layers gray in the layertree. */
         grayUnchecked: PropTypes.bool,
+        /** Whether toggling a group also toggles all sublayers. */
         groupTogglesSublayers: PropTypes.bool,
+        /** Whether to display the layer info button inside the layer settings menu rather than next to the layer title. */
         infoInSettings: PropTypes.bool,
-        layerInfoWindowSize: PropTypes.object,
+        /** The initial size of the layer info window. */
+        layerInfoWindowSize: PropTypes.shape({
+            width: PropTypes.number,
+            height: PropTypes.number
+        }),
         layers: PropTypes.array,
-        mapCrs: PropTypes.string,
+        map: PropTypes.object,
         mapScale: PropTypes.number,
+        /** Whether map tips are enabled by default. */
         mapTipsEnabled: PropTypes.bool,
         mobile: PropTypes.bool,
         removeLayer: PropTypes.func,
         reorderLayer: PropTypes.func,
+        /** Whether to display a scale dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. */
+        scaleDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         setActiveLayerInfo: PropTypes.func,
         setActiveServiceInfo: PropTypes.func,
         setSwipe: PropTypes.func,
+        /** Whether to display legend icons. */
         showLegendIcons: PropTypes.bool,
+        /** Whether to display the queryable icon to indicate that a layer is identifyable. */
         showQueryableIcon: PropTypes.bool,
+        /** Whether to display the root entry of the layertree. */
         showRootEntry: PropTypes.bool,
+        /** Whether to display a checkbox to toggle all layers. */
         showToggleAllLayersCheckbox: PropTypes.bool,
+        /** The side of the application on which to display the sidebar. */
+        side: PropTypes.string,
         swipe: PropTypes.number,
         theme: PropTypes.object,
         toggleMapTips: PropTypes.func,
         transparencyIcon: PropTypes.bool,
+        /** The initial width of the layertree, as a CSS width string. */
         width: PropTypes.string,
         zoomToExtent: PropTypes.func
-    }
+    };
     static defaultProps = {
         layers: [],
         showLegendIcons: true,
@@ -89,15 +121,16 @@ class LayerTree extends React.Component {
         enableServiceInfo: false,
         infoInSettings: true,
         showToggleAllLayersCheckbox: true,
-        transparencyIcon: true
-    }
+        transparencyIcon: true,
+        side: 'right'
+    };
     state = {
         activemenu: null,
         legendTooltip: null,
         sidebarwidth: null,
         importvisible: false,
         filtervisiblelayers: false
-    }
+    };
     constructor(props) {
         super(props);
         this.legendPrintWindow = null;
@@ -107,25 +140,10 @@ class LayerTree extends React.Component {
             }
         });
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (this.props.theme.mapTips !== undefined && this.props.theme.mapTips !== prevProps.theme.mapTips) {
             this.props.toggleMapTips(this.props.theme.mapTips && !prevProps.mobile);
         }
-    }
-    getGroupVisibility = (group) => {
-        if (isEmpty(group.sublayers) || group.visibility === false) {
-            return 0;
-        }
-        let visible = 0;
-        group.sublayers.map(sublayer => {
-            const sublayervisibility = sublayer.visibility === undefined ? true : sublayer.visibility;
-            if (sublayer.sublayers && sublayervisibility) {
-                visible += this.getGroupVisibility(sublayer);
-            } else {
-                visible += sublayervisibility ? 1 : 0;
-            }
-        });
-        return visible / group.sublayers.length;
     }
     renderSubLayers = (layer, group, path, enabled, inMutuallyExclusiveGroup = false) => {
         return (group.sublayers || []).map((sublayer, idx) => {
@@ -136,13 +154,13 @@ class LayerTree extends React.Component {
                 return this.renderLayer(layer, sublayer, subpath, enabled, inMutuallyExclusiveGroup);
             }
         });
-    }
+    };
     renderLayerGroup = (layer, group, path, enabled, inMutuallyExclusiveGroup = false) => {
         const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
         if (flattenGroups) {
             return this.renderSubLayers(layer, group, path, enabled, false);
         }
-        const subtreevisibility = this.getGroupVisibility(group);
+        const subtreevisibility = LayerUtils.computeLayerVisibility(group);
         if (subtreevisibility === 0 && this.state.filtervisiblelayers) {
             return null;
         }
@@ -158,7 +176,7 @@ class LayerTree extends React.Component {
                 checkboxstate = "tristate";
             }
         } else {
-            visibility = group.visibility === undefined ? true : group.visibility;
+            visibility = group.visibility === undefined ? subtreevisibility > 0 : group.visibility;
             if (visibility) {
                 checkboxstate = subtreevisibility === 1 ? 'checked' : 'tristate';
             } else {
@@ -182,6 +200,10 @@ class LayerTree extends React.Component {
             "layertree-item-cog-active": this.state.activemenu === group.uuid
         });
         let editframe = null;
+        let infoButton = null;
+        if (layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts") {
+            infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.props.setActiveLayerInfo(layer, group)}/>);
+        }
         const allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filtervisiblelayers;
         const sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true;
@@ -191,6 +213,7 @@ class LayerTree extends React.Component {
                     <div className="layertree-item-edit-items">
                         <Icon className="layertree-item-move" icon="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />
                         <Icon className="layertree-item-move" icon="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />
+                        {infoButton}
                     </div>
                 </div>
             );
@@ -211,7 +234,7 @@ class LayerTree extends React.Component {
                 </Sortable>
             </div>
         );
-    }
+    };
     renderLayer = (layer, sublayer, path, enabled = true, inMutuallyExclusiveGroup = false, skipExpanderPlaceholder = false) => {
         if (this.state.filtervisiblelayers && !sublayer.visibility) {
             return null;
@@ -248,7 +271,7 @@ class LayerTree extends React.Component {
             let zoomToLayerButton = null;
             if (sublayer.bbox && sublayer.bbox.bounds) {
                 const zoomToLayerTooltip = LocaleUtils.tr("layertree.zoomtolayer");
-                const crs = sublayer.bbox.crs || this.props.mapCrs;
+                const crs = sublayer.bbox.crs || this.props.map.projection;
                 zoomToLayerButton = (
                     <Icon icon="zoom" onClick={() => this.props.zoomToExtent(sublayer.bbox.bounds, crs)} title={zoomToLayerTooltip} />
                 );
@@ -258,7 +281,9 @@ class LayerTree extends React.Component {
                     <div className="layertree-item-edit-items">
                         {zoomToLayerButton}
                         {this.props.transparencyIcon ? (<Icon icon="transparency" />) : LocaleUtils.tr("layertree.transparency")}
-                        <input className="layertree-item-transparency-slider" defaultValue={255 - sublayer.opacity} max="255" min="0" onMouseUp={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} onTouchEnd={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)} step="1" type="range" />
+                        <input className="layertree-item-transparency-slider" max="255" min="0"
+                            onChange={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)}
+                            step="1" type="range" value={255 - sublayer.opacity} />
                         {reorderButtons}
                         {this.props.infoInSettings ? infoButton : null}
                         {layer.type === 'vector' ? (<Icon icon="export" onClick={() => this.exportRedliningLayer(layer)} />) : null}
@@ -268,7 +293,7 @@ class LayerTree extends React.Component {
         }
         let legendicon = null;
         if (this.props.showLegendIcons) {
-            const legendUrl = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.mapCrs);
+            const legendUrl = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend, this.props.extraLegendParameters);
             if (legendUrl) {
                 legendicon = (<img className="layertree-item-legend-thumbnail" onMouseOut={this.hideLegendTooltip} onMouseOver={ev => this.showLegendTooltip(ev, legendUrl)} onTouchStart={ev => this.showLegendTooltip(ev, legendUrl)} src={legendUrl + "&TYPE=thumbnail"} />);
             } else if (layer.color) {
@@ -303,6 +328,7 @@ class LayerTree extends React.Component {
                     {legendicon}
                     {title}
                     {sublayer.queryable && this.props.showQueryableIcon ? (<Icon className="layertree-item-queryable" icon="info-sign" />) : null}
+                    {layer.loading ? (<Spinner />) : null}
                     <span className="layertree-item-spacer" />
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}
                     {allowOptions ? (<Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>) : null}
@@ -311,7 +337,7 @@ class LayerTree extends React.Component {
                 {editframe}
             </div>
         );
-    }
+    };
     renderLayerTree = (layer) => {
         if (layer.role === LayerRole.BACKGROUND || layer.layertreehidden) {
             return null;
@@ -329,7 +355,7 @@ class LayerTree extends React.Component {
                 }
             });
         }
-    }
+    };
     renderBody = () => {
         const maptipcheckboxstate = this.props.mapTipsEnabled === true ? 'checked' : 'unchecked';
         let maptipCheckbox = null;
@@ -349,8 +375,9 @@ class LayerTree extends React.Component {
             );
         }
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filtervisiblelayers;
+        const haveMapCompare = ConfigUtils.havePlugin("MapCompare");
         let compareCheckbox = null;
-        if (this.props.allowCompare && allowReordering) {
+        if (haveMapCompare && this.props.allowCompare && allowReordering) {
             const swipecheckboxstate = this.props.swipe || this.props.swipe === 0 ? 'checked' : 'unchecked';
             compareCheckbox = (
                 <div className="layertree-option">
@@ -373,10 +400,25 @@ class LayerTree extends React.Component {
             <div className="layertree-container-wrapper" role="body">
                 <div className="layertree-container">
                     <div className="layertree-tree"
-                        onContextMenuCapture={ev => {ev.stopPropagation(); ev.preventDefault(); return false; }}
-                        onTouchEnd={ev => { ev.stopPropagation(); }}
-                        onTouchMove={ev => { ev.stopPropagation(); }}
-                        onTouchStart={ev => { ev.stopPropagation(); }}>
+                        onContextMenuCapture={ev => {
+                            // Prevent context menu on drag-sort
+                            ev.stopPropagation(); ev.preventDefault(); return false;
+                        }}
+                        onTouchEnd={ev => {
+                            const target = ev.currentTarget;
+                            clearTimeout(target.preventScrollTimeout);
+                            target.preventScrollTimeout = null;
+                            target.removeEventListener("touchmove", MiscUtils.killEvent);
+                        }}
+                        onTouchStart={ev => {
+                            // Prevent touch-scroll after sortable trigger delay
+                            const target = ev.currentTarget;
+                            target.preventScrollTimeout = setTimeout(() => {
+                                target.addEventListener("touchmove", MiscUtils.killEvent, {passive: false});
+                            }, 200);
+                        }}
+                        ref={MiscUtils.setupKillTouchEvents}
+                    >
                         <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
                             {this.props.layers.map(this.renderLayerTree)}
                         </Sortable>
@@ -388,7 +430,7 @@ class LayerTree extends React.Component {
                 </div>
             </div>
         );
-    }
+    };
     render() {
         let legendTooltip = null;
         if (this.state.legendTooltip) {
@@ -416,7 +458,7 @@ class LayerTree extends React.Component {
                 "layertree-visible-filter": true,
                 "layertree-visible-filter-active": this.state.filtervisiblelayers
             });
-            visibleFilterIcon = (<Icon className={classes} icon="eye" onClick={() => this.setState({filtervisiblelayers: !this.state.filtervisiblelayers})} title={visibleFilterTooltip}/>);
+            visibleFilterIcon = (<Icon className={classes} icon="eye" onClick={() => this.setState((state) => ({filtervisiblelayers: !state.filtervisiblelayers}))} title={visibleFilterTooltip}/>);
         }
         let deleteAllLayersIcon = null;
         if (ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true) {
@@ -424,7 +466,7 @@ class LayerTree extends React.Component {
             deleteAllLayersIcon = (<Icon className="layertree-delete-legend" icon="trash" onClick={this.deleteAllLayers} title={deleteAllLayersTooltip}/>);
         }
         let serviceInfoIcon = null;
-        if(this.props.enableServiceInfo) {
+        if (this.props.enableServiceInfo) {
             serviceInfoIcon = (<Icon className="layertree-theme-metadata" icon="info-sign" onClick={() => this.props.setActiveServiceInfo(this.props.theme)}/>);
         }
 
@@ -443,7 +485,7 @@ class LayerTree extends React.Component {
         const visibilities = [];
         for (const layer of this.props.layers) {
             if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
-                visibilities.push(isEmpty(layer.sublayers) ? layer.visibility : this.getGroupVisibility(layer));
+                visibilities.push(LayerUtils.computeLayerVisibility(layer));
             }
         }
         const vis = visibilities.reduce((sum, x) => sum + x, 0) / (visibilities.length || 1);
@@ -458,15 +500,16 @@ class LayerTree extends React.Component {
         return (
             <div>
                 <SideBar extraBeforeContent={visibilityCheckbox} extraTitlebarContent={extraTitlebarContent}
-                    icon="layers" id="LayerTree"
-                    onHide={this.hideLegendTooltip}
+                    icon="layers"
+                    id="LayerTree" onHide={this.hideLegendTooltip}
+                    side={this.props.side}
                     title="appmenu.items.LayerTree" width={this.state.sidebarwidth || this.props.width}>
                     {() => ({
                         body: this.renderBody()
                     })}
                 </SideBar>
                 {legendTooltip}
-                <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} windowSize={this.props.layerInfoWindowSize} />
+                <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} scaleDependentLegend={this.props.scaleDependentLegend} windowSize={this.props.layerInfoWindowSize} />
                 <ServiceInfoWindow windowSize={this.props.layerInfoWindowSize} />
             </div>
         );
@@ -475,18 +518,20 @@ class LayerTree extends React.Component {
         if (ev.target.naturalWidth > 1) {
             ev.target.style.visibility = 'visible';
         }
-    }
+    };
     onSortChange = (order, sortable, ev) => {
         const moved = JSON.parse(order[ev.newIndex]);
         const layer = this.props.layers.find(l => l.uuid === moved.layer);
         if (layer) {
             this.props.reorderLayer(layer, moved.path, ev.newIndex - ev.oldIndex);
         }
-    }
+    };
     toggleImportLayers = () => {
-        const visible = !this.state.importvisible;
-        this.setState({importvisible: visible, sidebarwidth: visible ? '40em' : null});
-    }
+        this.setState((state) => {
+            const visible = !state.importvisible;
+            return {importvisible: visible, sidebarwidth: visible ? '40em' : null};
+        });
+    };
     propagateOptions = (layer, options, path = null) => {
         if (layer.sublayers) {
             layer.sublayers = layer.sublayers.map((sublayer, idx) => {
@@ -499,10 +544,10 @@ class LayerTree extends React.Component {
                 }
             });
         }
-    }
+    };
     groupExpandedToggled = (layer, grouppath, oldexpanded) => {
         this.props.changeLayerProperty(layer.uuid, "expanded", !oldexpanded, grouppath);
-    }
+    };
     itemVisibilityToggled = (layer, grouppath, oldvisibility) => {
         let recurseDirection = null;
         // If item becomes visible, also make parents visible
@@ -512,13 +557,13 @@ class LayerTree extends React.Component {
             recurseDirection = !oldvisibility ? "parents" : null;
         }
         this.props.changeLayerProperty(layer.uuid, "visibility", !oldvisibility, grouppath, recurseDirection);
-    }
+    };
     layerTransparencyChanged = (layer, sublayerpath, value) => {
         this.props.changeLayerProperty(layer.uuid, "opacity", Math.max(1, 255 - value), sublayerpath);
-    }
+    };
     layerMenuToggled = (sublayeruuid) => {
-        this.setState({activemenu: this.state.activemenu === sublayeruuid ? null : sublayeruuid});
-    }
+        this.setState((state) => ({activemenu: state.activemenu === sublayeruuid ? null : sublayeruuid}));
+    };
     showLegendTooltip = (ev, request) => {
         this.setState({
             legendTooltip: {
@@ -527,16 +572,35 @@ class LayerTree extends React.Component {
                 img: request + "&TYPE=tooltip"
             }
         });
-    }
+    };
     hideLegendTooltip = () => {
         this.setState({legendTooltip: undefined});
-    }
+    };
     toggleMapTips = () => {
         this.props.toggleMapTips(!this.props.mapTipsEnabled);
-    }
+    };
     toggleSwipe = () => {
         this.props.setSwipe(this.props.swipe !== null ? null : 50);
-    }
+    };
+    printLayerLegend = (layer, sublayer) => {
+        let body = "";
+        if (sublayer.sublayers) {
+            if (sublayer.visibility) {
+                body = '<div class="legend-group">' +
+                       '<h3 class="legend-group-title">' + (sublayer.title || sublayer.name) + '</h3>' +
+                       '<div class="legend-group-body">' +
+                       sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer)).join("\n") +
+                       '</div>' +
+                       '</div>';
+            }
+        } else {
+            if (sublayer.visibility && LayerUtils.layerScaleInRange(sublayer, this.props.mapScale)) {
+                const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend, this.props.extraLegendParameters);
+                body = request ? '<div class="legend-entry"><img src="' + request + '" /></div>' : "";
+            }
+        }
+        return body;
+    };
     printLegend = () => {
         let body = '<p id="legendcontainerbody">';
         const printLabel = LocaleUtils.tr("layertree.printlegend");
@@ -548,12 +612,9 @@ class LayerTree extends React.Component {
             if (!layer.visibility) {
                 return "";
             } else if (layer.legendUrl) {
-                return layer.params.LAYERS ? layer.params.LAYERS.split(",").reverse().map(sublayer => {
-                    const request = LayerUtils.getLegendUrl(layer, {name: sublayer}, this.props.mapScale, this.props.mapCrs);
-                    return request ? '<div><img src="' + request + '" /></div>' : "";
-                }).join("\n") : "";
+                return this.printLayerLegend(layer, layer);
             } else if (layer.color) {
-                return '<div><span style="display: inline-block; width: 1em; height: 1em; box-shadow: inset 0 0 0 1000px ' + layer.color + '; margin: 0.25em; border: 1px solid black;">&nbsp;</span>' + (layer.title || layer.name) + '</div>';
+                return '<div class="legend-entry"><span style="display: inline-block; width: 1em; height: 1em; box-shadow: inset 0 0 0 1000px ' + layer.color + '; margin: 0.25em; border: 1px solid black;">&nbsp;</span>' + (layer.title || layer.name) + '</div>';
             } else {
                 return "";
             }
@@ -586,7 +647,7 @@ class LayerTree extends React.Component {
                 this.legendPrintWindow.addEventListener('load', setLegendPrintContent, false);
             }
         }
-    }
+    };
     deleteAllLayers = () => {
         for (const layer of this.props.layers) {
             if (layer.role === LayerRole.THEME) {
@@ -598,18 +659,18 @@ class LayerTree extends React.Component {
                 this.props.removeLayer(layer.id);
             }
         }
-    }
+    };
     toggleLayerTreeVisibility = (visibile) => {
         for (const layer of this.props.layers) {
             if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
                 this.props.changeLayerProperty(layer.uuid, "visibility", visibile, [], this.props.groupTogglesSublayers ? "children" : null);
             }
         }
-    }
+    };
     exportRedliningLayer = (layer) => {
         const data = JSON.stringify({
             type: "FeatureCollection",
-            features: layer.features.map(feature => ({...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.mapCrs, 'EPSG:4326')}))
+            features: layer.features.map(feature => ({...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.map.projection, 'EPSG:4326')}))
         }, null, ' ');
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
     }
@@ -621,7 +682,7 @@ const selector = (state) => ({
     ie: state.browser.ie,
     fallbackDrag: state.browser.ie || (state.browser.platform === 'Win32' && state.browser.chrome),
     layers: state.layers.flat,
-    mapCrs: state.map.projection,
+    map: state.map,
     mapScale: MapUtils.computeForZoom(state.map.scales, state.map.zoom),
     swipe: state.layers.swipe,
     theme: state.theme.current || {},

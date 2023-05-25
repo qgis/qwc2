@@ -1,0 +1,66 @@
+div.cyclomedia-body {
+    height: calc(100% + 0.5em);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: -0.25em;
+}
+
+div.cyclomedia-body-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(200, 200, 200, 0.9);
+    z-index: 2;
+}
+
+div.cyclomedia-body-overlay > div.spinner {
+    width: 4em;
+    height: 4em;
+    margin-right: 1em;
+}
+
+div.cyclomedia-scale-hint {
+    flex: 0 0 auto;
+    background-color: #8f8fff;
+    color: white;
+    font-weight: bold;
+    padding: 0.25em;
+    text-align: center;
+    z-index: 3;
+}
+
+iframe.cyclomedia-frame {
+    width: 100%;
+    flex: 1 1 auto;
+    border: none;
+    background-color: white;
+}
+
+div.cyclomedia-login {
+    background-color: var(--container-bg-color);
+    padding: 0.5em;
+    border: 1px solid var(--border-color);
+    width: 90%;
+}
+
+div.cyclomedia-login table {
+    width: 100%
+}
+
+div.cyclomedia-login table input {
+    width: 100%;
+}
+
+div.cyclomedia-login button {
+    width: 100%;
+}
+
+td.cyclomedia-login-message {
+    font-style: italic;
+}

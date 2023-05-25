@@ -18,19 +18,24 @@ import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/BackgroundSwitcher.css';
 
+
+/**
+ * Map button for switching the background layer.
+ */
 class BackgroundSwitcher extends React.Component {
     static propTypes = {
         changeLayerProperty: PropTypes.func,
         layers: PropTypes.array,
+        /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number,
         toggleBackgroundswitcher: PropTypes.func
-    }
+    };
     static defaultProps = {
         position: 0
-    }
+    };
     state = {
         visible: false
-    }
+    };
     render() {
         const tooltip = LocaleUtils.tr("tooltip.background");
         const classes = classnames({
@@ -66,7 +71,7 @@ class BackgroundSwitcher extends React.Component {
                 <div>
                     <button className={classes} onClick={this.buttonClicked}
                         style={{bottom: (5 + 4 * this.props.position) + 'em'}} title={tooltip}>
-                        <Icon icon="bglayer" />
+                        <Icon icon="bglayer" title={tooltip} />
                     </button>
                     <div className={this.state.visible ? 'bgswitcher-active' : ''} id="BackgroundSwitcher">
                         {this.renderLayerItem(null, backgroundLayers.filter(layer => layer.visibility === true).length === 0)}
@@ -77,6 +82,9 @@ class BackgroundSwitcher extends React.Component {
         }
         return null;
     }
+    itemTitle = (item) => {
+        return item.titleMsgId ? LocaleUtils.tr(item.titleMsgId) : item.title;
+    };
     renderLayerItem = (layer, visible) => {
         const assetsPath = ConfigUtils.getAssetsPath();
         const itemclasses = classnames({
@@ -86,17 +94,17 @@ class BackgroundSwitcher extends React.Component {
         return (
             <div className={itemclasses} key={layer ? layer.name : "empty"} onClick={() => this.backgroundLayerClicked(layer)}>
                 <div className="background-layer-title">
-                    {layer ? (<span>{layer.title}</span>) : (<span>{LocaleUtils.tr("bgswitcher.nobg")}</span>)}
+                    {layer ? (<span>{this.itemTitle(layer)}</span>) : (<span>{LocaleUtils.tr("bgswitcher.nobg")}</span>)}
                 </div>
                 <div className="background-layer-thumbnail">
                     <img src={layer ? assetsPath + "/" + layer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="} />
                 </div>
             </div>
         );
-    }
+    };
     renderGroupItem = (entry) => {
         const assetsPath = ConfigUtils.getAssetsPath();
-        const layer = (entry.layers.find(l => l.visibility === true) || entry.layers.find(l => l.default === true)) || entry.layers[entry.layers.length-1];
+        const layer = (entry.layers.find(l => l.visibility === true) || entry.layers.find(l => l.default === true)) || entry.layers[entry.layers.length - 1];
 
         const itemclasses = classnames({
             "background-switcher-item": true,
@@ -105,31 +113,37 @@ class BackgroundSwitcher extends React.Component {
         return (
             <div className={itemclasses} key={layer.name}>
                 <div className="background-layer-title">
-                    <span>{layer.title}</span><Icon icon="chevron-down" />
+                    <span>{this.itemTitle(layer)}</span><Icon icon="chevron-down" />
                 </div>
                 <div className="background-layer-thumbnail">
                     <img onClick={() => this.backgroundLayerClicked(layer)} src={assetsPath + "/" + layer.thumbnail} />
                 </div>
                 <div className="background-group-menu">
-                    {entry.layers.map(l => (
-                        <div className={l.visibility === true ? "background-group-menu-item-active" : ""} key={l.name}
-                            onClick={() => this.backgroundLayerClicked(l)}
-                            onMouseEnter={ev => this.updateGroupItem(ev, l)}
-                            onMouseLeave={ev => this.updateGroupItem(ev, layer)}
-                        >{l.title}</div>
-                    ))}
+                    {entry.layers.map(l => {
+                        const menuitemclasses = classnames({
+                            "background-group-menu-item": true,
+                            "background-group-menu-item-active": l.visibility
+                        });
+                        return (
+                            <div className={menuitemclasses} key={l.name}
+                                onClick={() => this.backgroundLayerClicked(l)}
+                                onMouseEnter={ev => this.updateGroupItem(ev, l)}
+                                onMouseLeave={ev => this.updateGroupItem(ev, layer)}
+                            >{this.itemTitle(l)}</div>
+                        );
+                    })}
                 </div>
             </div>
         );
-    }
+    };
     updateGroupItem = (ev, layer) => {
         const assetsPath = ConfigUtils.getAssetsPath();
-        ev.target.parentElement.parentElement.childNodes[0].firstChild.innerText = layer.title;
+        ev.target.parentElement.parentElement.childNodes[0].firstChild.innerText = this.itemTitle(layer);
         ev.target.parentElement.parentElement.childNodes[1].firstChild.src = assetsPath + "/" + layer.thumbnail;
-    }
+    };
     buttonClicked = () => {
-        this.setState({visible: !this.state.visible});
-    }
+        this.setState((state) => ({visible: !state.visible}));
+    };
     backgroundLayerClicked = (layer) => {
         if (layer) {
             this.props.changeLayerProperty(layer.uuid, "visibility", true);
@@ -140,7 +154,7 @@ class BackgroundSwitcher extends React.Component {
             }
         }
         this.setState({visible: false});
-    }
+    };
 }
 
 const selector = (state) => ({

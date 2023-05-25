@@ -18,13 +18,13 @@ export default class CopyButton extends React.Component {
         buttonClass: PropTypes.string,
         text: PropTypes.string,
         tooltipAlign: PropTypes.string
-    }
+    };
     static defaultProps = {
         tooltipAlign: 'center'
-    }
+    };
     state = {
         copied: false
-    }
+    };
     render() {
         const tooltipStyle = {};
         if (this.props.tooltipAlign === "left") {
@@ -37,8 +37,10 @@ export default class CopyButton extends React.Component {
         }
         return (
             <CopyToClipboard onCopy={ () => this.setState({copied: true}) } text={this.props.text} >
-                <span className={"CopyButton " + this.props.buttonClass} onMouseLeave={() => {this.setState({copied: false}); }} >
-                    <Icon icon="copy"/>
+                <span className="CopyButton">
+                    <button className={"button " + this.props.buttonClass} onMouseLeave={() => {this.setState({copied: false}); }} >
+                        <Icon icon="copy"/>
+                    </button>
                     <span className="copybutton-tooltip" style={tooltipStyle}>
                         {this.state.copied ? LocaleUtils.tr("copybtn.copied") : LocaleUtils.tr("copybtn.click_to_copy")}
                     </span>

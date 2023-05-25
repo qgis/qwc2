@@ -10,11 +10,64 @@ import ReducerIndex from '../reducers/index';
 import editingReducer from '../reducers/editing';
 ReducerIndex.register("editing", editingReducer);
 
-export const CHANGE_EDITING_STATE = 'CHANGE_EDITING_STATE';
+export const SET_EDIT_CONTEXT = 'SET_EDIT_CONTEXT';
+export const CLEAR_EDIT_CONTEXT = 'CLEAR_EDIT_CONTEXT';
 
-export function changeEditingState(editingState) {
+export function setEditContext(contextId, editContext) {
     return {
-        type: CHANGE_EDITING_STATE,
-        data: editingState
+        type: SET_EDIT_CONTEXT,
+        contextId: contextId,
+        editContext: editContext
     };
+}
+
+export function clearEditContext(contextId, newActiveContextId = null) {
+    return {
+        type: CLEAR_EDIT_CONTEXT,
+        contextId: contextId,
+        newActiveContextId: newActiveContextId
+    };
+}
+
+const FeatureTemplateFactories = {};
+
+export function setFeatureTemplateFactory(dataset, factory) {
+    FeatureTemplateFactories[dataset] = factory;
+}
+
+function evaluateDefaultValue(field) {
+    if (field.defaultValue.startsWith("expr:")) {
+        const expr = field.defaultValue.slice(5);
+        if (expr === "now()") {
+            if (field.type === "date") {
+                return (new Date()).toISOString().split("T")[0];
+            } else {
+                return (new Date()).toISOString();
+            }
+        } else if (expr === "true") {
+            return true;
+        } else if (expr === "false") {
+            return false;
+        }
+        return "";
+    } else {
+        return field.defaultValue;
+    }
+}
+
+export function getFeatureTemplate(editConfig, feature) {
+    if (editConfig.editDataset in FeatureTemplateFactories) {
+        feature = FeatureTemplateFactories[editConfig.editDataset](feature);
+    }
+    // Apply default values
+    editConfig.fields.forEach(field => {
+        if (field.defaultValue) {
+            feature.properties = {
+                ...feature.properties,
+                [field.id]: evaluateDefaultValue(field)
+            };
+        }
+    });
+
+    return feature;
 }

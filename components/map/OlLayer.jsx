@@ -13,7 +13,13 @@ import isEqual from 'lodash.isequal';
 import omit from 'lodash.omit';
 import ol from 'openlayers';
 import {setLayerLoading} from '../../actions/layers';
+import CoordinatesUtils from '../../utils/CoordinatesUtils';
+import Signal from '../../utils/Signal';
 import LayerRegistry from './layers/index';
+
+export const OlLayerAdded = new Signal();
+export const OlLayerUpdated = new Signal();
+
 
 class OlLayer extends React.Component {
     static propTypes = {
@@ -23,25 +29,28 @@ class OlLayer extends React.Component {
         setLayerLoading: PropTypes.func,
         swipe: PropTypes.number,
         zIndex: PropTypes.number
-    }
+    };
     state = {
         layer: null
-    }
+    };
     componentDidMount() {
         this.tilestoload = 0;
         this.createLayer(this.makeOptions(this.props.options));
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (!this.state.layer) {
             return;
         }
         const newOptions = this.makeOptions(this.props.options);
         const oldOptions = this.makeOptions(prevProps.options);
 
-        this.state.layer.setVisible(newOptions.visibility);
+        this.updateLayer(newOptions, oldOptions);
+        // WMS layer handles visibility separately
+        if (newOptions.type !== "wms") {
+            this.state.layer.setVisible(newOptions.visibility);
+        }
         this.state.layer.setOpacity(newOptions.opacity / 255.0);
         this.state.layer.setZIndex(newOptions.zIndex);
-        this.updateLayer(newOptions, oldOptions);
 
         if (this.props.swipe !== prevProps.swipe) {
             this.props.map.render();
@@ -54,7 +63,8 @@ class OlLayer extends React.Component {
     }
     render() {
         const layerCreator = LayerRegistry[this.props.options.type];
-        if (this.state.layer && layerCreator && layerCreator.render) {
+        if (layerCreator && layerCreator.render) {
+            // NOTE: required for Google Maps layer
             return layerCreator.render(this.props.options, this.props.map, this.state.layer);
         }
         return null;
@@ -65,7 +75,7 @@ class OlLayer extends React.Component {
             projection: options.srs || options.crs || options.projection || this.props.projection,
             opacity: options.opacity !== undefined ? options.opacity : 255
         };
-    }
+    };
     createLayer = (options) => {
         let layer = null;
         if (options.type === 'group') {
@@ -88,13 +98,13 @@ class OlLayer extends React.Component {
         }
         if (layer) {
             layer.set('id', options.id);
-            layer.setVisible(options.visibility);
+            layer.setVisible(layer.get("empty") !== true && options.visibility);
             layer.setOpacity(options.opacity / 255.0);
             layer.setZIndex(this.props.zIndex);
             this.addLayer(layer, options);
             this.setState({layer: layer});
         }
-    }
+    };
     updateLayer = (newOptions, oldOptions) => {
         // optimization to avoid to update the layer if not necessary
         if (isEqual(omit(newOptions, ["loading"]), omit(oldOptions, ["loading"]) ) ) {
@@ -108,10 +118,12 @@ class OlLayer extends React.Component {
                 oldOptions,
                 this.props.map
             );
+            OlLayerUpdated.notify(this.state.layer);
         }
-    }
+    };
     addLayer = (layer, options) => {
         this.props.map.addLayer(layer);
+        OlLayerAdded.notify(layer);
         layer.on('prerender', (event) => {
             const ctx = event.context;
             ctx.save();
@@ -127,16 +139,14 @@ class OlLayer extends React.Component {
             event.context.restore();
         });
 
-        if (options.zoomToExtent && layer.getSource()) {
+        if (options.zoomToExtent && options.bbox && options.bbox.bounds) {
             const map = this.props.map;
-            const source = layer.getSource();
-            source.once('change', () => {
-                if (source.getState() === 'ready') {
-                    if (source.getFeatures().length > 0) {
-                        map.getView().fit(source.getExtent(), map.getSize());
-                    }
-                }
-            });
+            const extent = CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, map.getView().getProjection());
+            try {
+                map.getView().fit(extent, map.getSize());
+            } catch (e) {
+                /* pass */
+            }
         }
         const sublayers = {};
         if (layer instanceof ol.layer.Group) {
@@ -147,7 +157,7 @@ class OlLayer extends React.Component {
             sublayers[options.id] = layer;
         }
         Object.entries(sublayers).map(([id, sublayer]) => {
-            if (!sublayer.getTileLoadFunction) {
+            if (sublayer.getSource() && sublayer.getSource().getImageLoadFunction) {
                 sublayer.getSource().on('imageloadstart', () => {
                     this.props.setLayerLoading(id, true);
                 });
@@ -157,7 +167,7 @@ class OlLayer extends React.Component {
                 sublayer.getSource().on('imageloaderror', () => {
                     this.props.setLayerLoading(id, false);
                 });
-            } else {
+            } else if (sublayer.getSource() && sublayer.getSource().getTileLoadFunction) {
                 sublayer.getSource().on('tileloadstart', () => {
                     if (this.tilestoload === 0) {
                         this.props.setLayerLoading(id, true);
@@ -176,9 +186,19 @@ class OlLayer extends React.Component {
                         this.props.setLayerLoading(id, false);
                     }
                 });
+            } else if (sublayer.getSource() && sublayer.getSource() instanceof ol.source.Vector && sublayer.getSource().getUrl()) {
+                sublayer.getSource().on('featuresloadstart', () => {
+                    this.props.setLayerLoading(id, true);
+                });
+                sublayer.getSource().on('featuresloadend', () => {
+                    this.props.setLayerLoading(id, false);
+                });
+                sublayer.getSource().on('featuresloaderror', () => {
+                    this.props.setLayerLoading(id, false);
+                });
             }
         });
-    }
+    };
 }
 
 export default connect(() => ({}), {

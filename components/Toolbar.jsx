@@ -9,8 +9,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import Mousetrap from 'mousetrap';
 import LocaleUtils from '../utils/LocaleUtils';
-import {setCurrentTask, openExternalUrl} from '../actions/task';
+import {setCurrentTask} from '../actions/task';
 import Icon from './Icon';
 import './style/Toolbar.css';
 
@@ -21,14 +22,36 @@ class Toolbar extends React.Component {
         currentTheme: PropTypes.object,
         openExternalUrl: PropTypes.func,
         setCurrentTask: PropTypes.func,
-        toolbarItems: PropTypes.array
+        toolbarItems: PropTypes.array,
+        toolbarItemsShortcutPrefix: PropTypes.string
+    };
+    componentDidMount() {
+        if (this.props.toolbarItemsShortcutPrefix) {
+            this.props.toolbarItems.forEach((item, index) => {
+                Mousetrap.bind(this.props.toolbarItemsShortcutPrefix + '+' + (index + 1), () => {
+                    const active = this.props.currentTask === (item.task || item.key) && this.props.currentTaskMode === (item.mode || null);
+                    this.itemClicked(item, active);
+                    return false;
+                });
+            });
+        }
+    }
+    componentWillUnmount() {
+        if (this.props.toolbarItemsShortcutPrefix) {
+            this.props.toolbarItems.forEach((item, index) => {
+                Mousetrap.unbind(this.props.toolbarItemsShortcutPrefix + '+' +  (index + 1));
+            });
+        }
     }
     renderToolbarItem = (item) => {
+        if (item.themeBlacklist && (item.themeBlacklist.includes(this.props.currentTheme.title) || item.themeBlacklist.includes(this.props.currentTheme.name))) {
+            return null
+        }
         if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme.title) || item.themeWhitelist.includes(this.props.currentTheme.name))) {
             return null;
         }
         const active = this.props.currentTask === (item.task || item.key) && this.props.currentTaskMode === (item.mode || null);
-        const title = LocaleUtils.tr("appmenu.items." + item.key) || null;
+        const title = LocaleUtils.tr("appmenu.items." + item.key + (item.mode || ""));
         return (
             <Icon
                 className={active ? "toolbar-item-active" : ""}
@@ -39,21 +62,21 @@ class Toolbar extends React.Component {
                 title={title}
             />
         );
-    }
+    };
     itemClicked = (item, active) => {
         if (item.url) {
-            this.props.openExternalUrl(item.url);
+            this.props.openExternalUrl(item.url, item.target, LocaleUtils.tr("appmenu.items." + item.key));
         } else if (active) {
             this.props.setCurrentTask(null);
         } else {
             this.props.setCurrentTask(item.task || item.key, item.mode, item.mapClickAction || (item.identifyEnabled ? "identify" : null));
         }
-    }
+    };
     render() {
         return (
-            <span id="Toolbar">
+            <div className="Toolbar">
                 {this.props.toolbarItems.map(this.renderToolbarItem)}
-            </span>
+            </div>
         );
     }
 }
@@ -63,6 +86,5 @@ export default connect((state) => ({
     currentTaskMode: state.task.mode,
     currentTheme: state.theme.current || {}
 }), {
-    setCurrentTask: setCurrentTask,
-    openExternalUrl: openExternalUrl
+    setCurrentTask: setCurrentTask
 })(Toolbar);

@@ -19,7 +19,9 @@ import OlFeature from 'ol/Feature';
 import OlFormatGeoJSON from 'ol/format/GeoJSON';
 import OlFormatGML2 from 'ol/format/GML2';
 import OlFormatGML3 from 'ol/format/GML3';
+import OlFormatGML32 from 'ol/format/GML32';
 import OlFormatKML from 'ol/format/KML';
+import OlFormatMVT from 'ol/format/MVT';
 import OlFormatWFS from 'ol/format/WFS';
 import OlFormatWMSCapabilities from 'ol/format/WMSCapabilities';
 import OlFormatWMTSCapabilities from 'ol/format/WMTSCapabilities';
@@ -30,21 +32,30 @@ import OlGeomGeometryCollection from 'ol/geom/GeometryCollection';
 import OlGeomMultiPoint from 'ol/geom/MultiPoint';
 import OlGeomPoint from 'ol/geom/Point';
 import OlGeomPolygon from 'ol/geom/Polygon';
+import {fromCircle as olPolygonFromCircle} from 'ol/geom/Polygon';
 import OlGraticule from 'ol/layer/Graticule';
 import {defaults as olInteractionDefaults} from 'ol/interaction';
 import OlInteractionDoubleClickZoom from 'ol/interaction/DoubleClickZoom';
 import OlInteractionDragPan from 'ol/interaction/DragPan';
 import OlInteractionDraw from 'ol/interaction/Draw';
+import OlInteractionDrawRegular from 'ol-ext/interaction/DrawRegular';
+import OlInteractionDragBox from 'ol/interaction/DragBox';
 import {createBox as olCreateBox} from 'ol/interaction/Draw';
+import OlInteractionKeyboardPan from 'ol/interaction/KeyboardPan';
+import OlInteractionKeyboardZoom from 'ol/interaction/KeyboardZoom';
 import OlInteractionInteraction from 'ol/interaction/Interaction';
+import OlInteractionPointer from 'ol/interaction/Pointer';
 import OlInteractionModify from 'ol/interaction/Modify';
 import OlInteractionMouseWheelZoom from 'ol/interaction/MouseWheelZoom';
 import OlInteractionSelect from 'ol/interaction/Select';
 import OlInteractionSnap from 'ol/interaction/Snap';
+import OlInteractionTransform from 'ol-ext/interaction/Transform';
 import OlInteractionTranslate from 'ol/interaction/Translate';
+import OlLayer from 'ol/layer/Layer';
 import OlLayerImage from 'ol/layer/Image';
 import OlLayerTile from 'ol/layer/Tile';
 import OlLayerVector from 'ol/layer/Vector';
+import OlLayerVectorTile from 'ol/layer/VectorTile';
 import OlLayerGroup from 'ol/layer/Group';
 import * as OlLoadingstrategy from 'ol/loadingstrategy';
 import OlMap from 'ol/Map';
@@ -56,6 +67,7 @@ import OlSourceImageWMS from 'ol/source/ImageWMS';
 import OlSourceOSM from 'ol/source/OSM';
 import OlSourceTileWMS from 'ol/source/TileWMS';
 import OlSourceVector from 'ol/source/Vector';
+import OlSourceVectorTile from 'ol/source/VectorTile';
 import OlSourceWMTS from 'ol/source/WMTS';
 import OlSourceXYZ from 'ol/source/XYZ';
 import * as OlSphere from 'ol/sphere';
@@ -66,6 +78,7 @@ import OlStyleRegularShape from 'ol/style/RegularShape';
 import OlStyleStroke from 'ol/style/Stroke';
 import OlStyleStyle from 'ol/style/Style';
 import OlStyleText from 'ol/style/Text';
+import OlTileQueue from 'ol/TileQueue';
 import OlTilegridTileGrid from 'ol/tilegrid/TileGrid';
 import OlTilegridWMTS from 'ol/tilegrid/WMTS';
 import OlView from 'ol/View';
@@ -90,7 +103,9 @@ export default {
         GeoJSON: OlFormatGeoJSON,
         GML2: OlFormatGML2,
         GML3: OlFormatGML3,
+        GML32: OlFormatGML32,
         KML: OlFormatKML,
+        MVT: OlFormatMVT,
         WFS: OlFormatWFS,
         WMSCapabilities: OlFormatWMSCapabilities,
         WMTSCapabilities: OlFormatWMTSCapabilities,
@@ -102,26 +117,35 @@ export default {
         GeometryCollection: OlGeomGeometryCollection,
         MultiPoint: OlGeomMultiPoint,
         Point: OlGeomPoint,
-        Polygon: OlGeomPolygon
+        Polygon: OlGeomPolygon,
+        polygonFromCircle: olPolygonFromCircle
     },
     Graticule: OlGraticule,
     interaction: {
         defaults: olInteractionDefaults,
         DoubleClickZoom: OlInteractionDoubleClickZoom,
         DragPan: OlInteractionDragPan,
+        DragBox: OlInteractionDragBox,
         Draw: OlInteractionDraw,
+        DrawRegular: OlInteractionDrawRegular,
         createBox: olCreateBox,
         Interaction: OlInteractionInteraction,
         Modify: OlInteractionModify,
         MouseWheelZoom: OlInteractionMouseWheelZoom,
+        KeyboardZoom: OlInteractionKeyboardZoom,
+        KeyboardPan: OlInteractionKeyboardPan,
+        Pointer: OlInteractionPointer,
         Select: OlInteractionSelect,
         Snap: OlInteractionSnap,
+        Transform: OlInteractionTransform,
         Translate: OlInteractionTranslate
     },
     layer: {
+        Layer: OlLayer,
         Image: OlLayerImage,
         Tile: OlLayerTile,
         Vector: OlLayerVector,
+        VectorTile: OlLayerVectorTile,
         Group: OlLayerGroup
     },
     loadingstrategy: OlLoadingstrategy,
@@ -135,6 +159,7 @@ export default {
         OSM: OlSourceOSM,
         TileWMS: OlSourceTileWMS,
         Vector: OlSourceVector,
+        VectorTile: OlSourceVectorTile,
         WMTS: OlSourceWMTS,
         XYZ: OlSourceXYZ
     },
@@ -152,5 +177,43 @@ export default {
         TileGrid: OlTilegridTileGrid,
         WMTS: OlTilegridWMTS
     },
-    View: OlView
+    View: OlView,
+    TileQueue: OlTileQueue
+};
+
+// Overrides to inject requestsPaused into view state
+OlView.prototype.superGetState = OlView.prototype.getState;
+OlView.prototype.getState = function() {
+    return {
+        ...this.superGetState(),
+        requestsPaused: this.requestsPaused_
+    };
+};
+
+OlView.prototype.setRequestsPaused = function(paused) {
+    this.requestsPaused_ = paused;
+};
+
+// Overrides to pause image loading when requests are paused
+OlLayer.prototype.superRender = OlLayer.prototype.render;
+OlLayer.prototype.render = function(frameState, target) {
+    if (!frameState.viewState.requestsPaused || !this.getRenderer().getImage) {
+        return this.superRender(frameState, target);
+    } else if (this.getRenderer().getImage()) {
+        return this.getRenderer().renderFrame(frameState, target);
+    } else {
+        return null;
+    }
+};
+
+// Overrides to pause tile loading when requests are paused
+OlTileQueue.prototype.superLoadMoreTiles = OlTileQueue.prototype.loadMoreTiles;
+OlTileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
+    if (!this.requestsPaused_) {
+        this.superLoadMoreTiles(maxTotalLoading, maxNewLoads);
+    }
+};
+
+OlTileQueue.prototype.setRequestsPaused = function(paused) {
+    this.requestsPaused_ = paused;
 };

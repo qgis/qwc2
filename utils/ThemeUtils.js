@@ -7,12 +7,14 @@
  */
 
 import isEmpty from 'lodash.isempty';
-import uuid from 'uuid';
-
-import ConfigUtils from '../utils/ConfigUtils';
-import LayerUtils from '../utils/LayerUtils';
-import {LayerRole} from '../actions/layers';
+import url from 'url';
+import {v4 as uuidv4} from 'uuid';
 import {remove as removeDiacritics} from 'diacritics';
+
+import {SearchResultType} from '../actions/search';
+import {LayerRole} from '../actions/layers';
+import ConfigUtils from './ConfigUtils';
+import LayerUtils from './LayerUtils';
 
 const ThemeUtils = {
     getThemeById(themes, id) {
@@ -29,7 +31,7 @@ const ThemeUtils = {
         }
         return null;
     },
-    createThemeBackgroundLayers(theme, themes, visibleLayer = null) {
+    createThemeBackgroundLayers(theme, themes, visibleLayer, externalLayers) {
         const bgLayers = [];
         let visibleIdx = -1;
         let defaultVisibleIdx = -1;
@@ -48,14 +50,28 @@ const ThemeUtils = {
                 bgLayer = {
                     ...bgLayer,
                     role: LayerRole.BACKGROUND,
-                    visibility: false
+                    visibility: false,
+                    opacity: bgLayer.opacity !== undefined ? bgLayer.opacity : 255
                 };
-                if (bgLayer.type === "group") {
+                if (bgLayer.resource) {
+                    bgLayer.id = uuidv4();
+                    bgLayer.type = "placeholder";
+                    const params = LayerUtils.splitLayerUrlParam(bgLayer.resource);
+                    params.id = bgLayer.id;
+                    const key = params.type + ":" + params.url;
+                    (externalLayers[key] = externalLayers[key] || []).push(params);
+                    delete bgLayer.resource;
+                } else if (bgLayer.type === "wms") {
+                    bgLayer.version = bgLayer.params.VERSION || bgLayer.version || themes.defaultWMSVersion || "1.3.0";
+                } else if (bgLayer.type === "group") {
                     bgLayer.items = bgLayer.items.map(item => {
                         if (item.ref) {
                             const sublayer = themes.backgroundLayers.find(l => l.name === item.ref);
                             if (sublayer) {
                                 item = {...item, ...sublayer, ...LayerUtils.buildWMSLayerParams(sublayer)};
+                                if (item.type === "wms") {
+                                    item.version = item.params.VERSION || item.version || themes.defaultWMSVersion || "1.3.0";
+                                }
                                 delete item.ref;
                             } else {
                                 item = null;
@@ -66,6 +82,7 @@ const ThemeUtils = {
                 }
                 bgLayers.push(bgLayer);
             } else {
+                // eslint-disable-next-line
                 console.warn("Could not find background layer " + entry.name);
             }
         }
@@ -77,10 +94,18 @@ const ThemeUtils = {
         return bgLayers;
     },
     createThemeLayer(theme, themes, role = LayerRole.THEME, subLayers = []) {
+        const urlParts = url.parse(theme.url, true);
+        // Resolve relative urls
+        if (!urlParts.host) {
+            const locationParts = url.parse(window.location.href);
+            urlParts.protocol = locationParts.protocol;
+            urlParts.host = locationParts.host;
+        }
+        const baseParams = urlParts.query;
         const layer = {
             type: "wms",
-            url: theme.url,
-            version: theme.version,
+            url: url.format(urlParts),
+            version: theme.version || themes.defaultWMSVersion || "1.3.0",
             visibility: true,
             expanded: theme.expanded,
             name: theme.name,
@@ -91,11 +116,12 @@ const ThemeUtils = {
             ratio: !theme.tiled ? 1 : undefined,
             serverType: 'qgis',
             format: theme.format,
+            rev: +new Date(),
             role: role,
             attribution: theme.attribution,
-            legendUrl: theme.legendUrl,
-            printUrl: theme.printUrl,
-            featureInfoUrl: theme.featureInfoUrl,
+            legendUrl: ThemeUtils.inheritBaseUrlParams(theme.legendUrl, theme.url, baseParams),
+            printUrl: ThemeUtils.inheritBaseUrlParams(theme.printUrl, theme.url, baseParams),
+            featureInfoUrl: ThemeUtils.inheritBaseUrlParams(theme.featureInfoUrl, theme.url, baseParams),
             infoFormats: theme.infoFormats,
             externalLayerMap: {
                 ...theme.externalLayerMap,
@@ -103,7 +129,7 @@ const ThemeUtils = {
                     res[cur.internalLayer] = {
                         ...themes.externalLayers.find(entry => entry.name === cur.name)
                     };
-                    LayerUtils.completeExternalLayer(res[cur.internalLayer]);
+                    LayerUtils.completeExternalLayer(res[cur.internalLayer], LayerUtils.searchSubLayer(theme, 'name', cur.internalLayer));
                     return res;
                 }, {})
             }
@@ -114,7 +140,18 @@ const ThemeUtils = {
         }
         return layer;
     },
-    searchThemes(themes, searchtext, resultType) {
+    inheritBaseUrlParams(capabilityUrl, baseUrl, baseParams) {
+        if (!capabilityUrl) {
+            return baseUrl;
+        }
+        if (capabilityUrl.split("?")[0] === baseUrl.split("?")[0]) {
+            const parts = url.parse(capabilityUrl, true);
+            parts.query = {...baseParams, ...parts.query};
+            return url.format(parts);
+        }
+        return capabilityUrl;
+    },
+    searchThemes(themes, searchtext) {
         const filter = new RegExp(removeDiacritics(searchtext).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
         const matches = ThemeUtils.searchThemeGroup(themes, filter);
         return isEmpty(matches) ? [] : [{
@@ -122,7 +159,7 @@ const ThemeUtils = {
             titlemsgid: "search.themes",
             priority: -1,
             items: matches.map(theme => ({
-                type: resultType,
+                type: SearchResultType.THEME,
                 id: theme.id,
                 text: theme.title,
                 theme: theme,
@@ -134,7 +171,7 @@ const ThemeUtils = {
         const matches = [];
         (themeGroup.subdirs || []).map(subdir => matches.push(...ThemeUtils.searchThemeGroup(subdir, filter)));
         matches.push(...(themeGroup.items || []).filter(item => {
-            return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords).match(filter) || removeDiacritics(item.abstract).match(filter);
+            return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords || "").match(filter) || removeDiacritics(item.abstract || "").match(filter);
         }));
         return matches;
     }

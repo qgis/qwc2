@@ -12,69 +12,115 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import FileSaver from 'file-saver';
-import formDataEntries from 'form-data-entries';
-import {LayerRole} from '../actions/layers';
-import {changeRotation} from '../actions/map';
+import formDataEntries from 'formdata-json';
+import {LayerRole, addLayerFeatures, clearLayer} from '../actions/layers';
+import {changeRotation, panTo} from '../actions/map';
 import Icon from '../components/Icon';
+import InputContainer from '../components/InputContainer';
+import PickFeature from '../components/PickFeature';
 import PrintFrame from '../components/PrintFrame';
 import ResizeableWindow from '../components/ResizeableWindow';
 import SideBar from '../components/SideBar';
 import Spinner from '../components/Spinner';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/Print.css';
 
+
+/**
+ * Invokes QGIS Server WMS GetPrint to print the map to PDF.
+ */
 class Print extends React.Component {
     static propTypes = {
+        active: PropTypes.bool,
+        addLayerFeatures: PropTypes.func,
         changeRotation: PropTypes.func,
+        clearLayer: PropTypes.func,
+        /** The default print dpi.  */
         defaultDpi: PropTypes.number,
+        /** The factor to apply to the map scale to determine the initial print map scale.  */
         defaultScaleFactor: PropTypes.number,
+        /** Whether to display the map rotation control. */
         displayRotation: PropTypes.bool,
+        /** Whether the grid is enabled by default. */
         gridInitiallyEnabled: PropTypes.bool,
+        /** Whether to hide form fields which contain autopopulated values (i.e. search result label). */
+        hideAutopopulatedFields: PropTypes.bool,
+        /** Whether to display the print output in an inline dialog instead triggering a download. */
         inlinePrintOutput: PropTypes.bool,
         layers: PropTypes.array,
         map: PropTypes.object,
-        printExternalLayers: PropTypes.bool, // Caution: requires explicit server-side support!
+        panTo: PropTypes.func,
+        /** Whether to print external layers. Requires QGIS Server 3.x! */
+        printExternalLayers: PropTypes.bool,
+        /** Scale factor to apply to line widths, font sizes, ... of redlining drawings passed to GetPrint.  */
         scaleFactor: PropTypes.number,
+        /** The side of the application on which to display the sidebar. */
+        side: PropTypes.string,
         theme: PropTypes.object
-    }
+    };
     static defaultProps = {
-        printExternalLayers: false,
+        printExternalLayers: true,
         inlinePrintOutput: false,
         scaleFactor: 1.9, // Experimentally determined...
         defaultDpi: 300,
         defaultScaleFactor: 0.5,
         displayRotation: true,
-        gridInitiallyEnabled: false
-    }
+        gridInitiallyEnabled: false,
+        side: 'right'
+    };
     state = {
         layout: null,
         scale: null,
         dpi: 300,
         initialRotation: 0,
         grid: false,
+        legend: false,
         rotationNull: false,
         minimized: false,
         printOutputVisible: false,
         outputLoaded: false,
-        printing: false
-    }
+        printing: false,
+        atlasFeature: null
+    };
     constructor(props) {
         super(props);
         this.printForm = null;
         this.state.grid = props.gridInitiallyEnabled;
+        this.fixedMapCenter = null;
     }
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.theme !== this.props.theme) {
             if (this.props.theme && !isEmpty(this.props.theme.print)) {
-                const layout = this.props.theme.print.find(l => l.default) || this.props.theme.print[0];
-                this.setState({layout: layout});
+                const layout = this.props.theme.print.filter(l => l.map).find(l => l.default) || this.props.theme.print[0];
+                this.setState({layout: layout, atlasFeature: null});
             } else {
-                this.setState({layout: null});
+                this.setState({layout: null, atlasFeature: null});
             }
+            this.fixedMapCenter = null;
+        }
+        if (this.state.atlasFeature !== prevState.atlasFeature) {
+            if (this.state.atlasFeature) {
+                const layer = {
+                    id: "print-pick-selection",
+                    role: LayerRole.SELECTION,
+                    skipPrint: true
+                };
+                this.props.addLayerFeatures(layer, [this.state.atlasFeature], true);
+            } else {
+                this.props.clearLayer("print-pick-selection");
+            }
+        }
+        if (this.state.atlasFeature && (
+            Math.abs(this.props.map.center[0] - this.fixedMapCenter[0]) > 1E-6 ||
+            Math.abs(this.props.map.center[1] - this.fixedMapCenter[1]) > 1E-6
+        )) {
+            this.props.panTo(this.fixedMapCenter, this.props.map.projection);
         }
     }
     onShow = () => {
@@ -92,11 +138,11 @@ class Print extends React.Component {
             scale = this.props.theme.printScales[closestIdx];
         }
         this.setState({scale: scale, initialRotation: this.props.map.bbox.rotation, dpi: this.props.defaultDpi});
-    }
+    };
     onHide = () => {
         this.props.changeRotation(this.state.initialRotation);
-        this.setState({minimized: false, scale: null});
-    }
+        this.setState({minimized: false, scale: null, atlasFeature: null});
+    };
     renderBody = () => {
         if (!this.state.layout) {
             return (<div className="print-body" role="body">{LocaleUtils.tr("print.nolayouts")}</div>);
@@ -105,53 +151,15 @@ class Print extends React.Component {
         if (!this.props.theme || (!this.props.printExternalLayers && isEmpty(themeLayers))) {
             return (<div className="print-body" role="body">{LocaleUtils.tr("print.notheme")}</div>);
         }
-        let printLayers = [];
-        let printOpacities = [];
-        let printColors = [];
-        for (const layer of this.props.layers) {
-            if (layer.role === LayerRole.THEME && layer.params.LAYERS) {
-                printLayers.push(layer.params.LAYERS);
-                printOpacities.push(layer.params.OPACITIES);
-                printColors.push(layer.params.LAYERS.split(",").map(() => "").join(","));
-            } else if (this.props.printExternalLayers && layer.role === LayerRole.USERLAYER && layer.visibility && (layer.type === "wms" || layer.type === "wfs")) {
-                printLayers.push(layer.type + ':' + layer.url + "#" + layer.name);
-                printOpacities.push(layer.opacity);
-                printColors.push(layer.color ? layer.color : "");
-            }
-        }
-
-        const currentLayoutname = this.state.layout ? this.state.layout.name : "";
-        const mapName = this.state.layout ? this.state.layout.map.name : "";
-
-        const backgroundLayer = this.props.layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
-        const backgroundLayerName = backgroundLayer ? backgroundLayer.name : null;
-        const themeBackgroundLayer = this.props.theme.backgroundLayers.find(entry => entry.name === backgroundLayerName);
-        const printBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
-        if (printBackgroundLayer) {
-            let printBgLayerName = printBackgroundLayer;
-            if (Array.isArray(printBackgroundLayer)) {
-                printBgLayerName = null;
-                for (let i = 0; i < printBackgroundLayer.length; ++i) {
-                    printBgLayerName = printBackgroundLayer[i].name;
-                    if (this.state.scale <= printBackgroundLayer[i].maxScale) {
-                        break;
-                    }
-                }
-            }
-            if (printBgLayerName) {
-                printLayers.push(printBgLayerName);
-                printOpacities.push("255");
-                printColors.push("");
-            }
-        }
-        printLayers = printLayers.reverse().join(",");
-        printOpacities = printOpacities.reverse().join(",");
-        printColors = printColors.reverse().join(",");
 
         const formvisibility = 'hidden';
         const printDpi = parseInt(this.state.dpi, 10);
         const mapCrs = this.props.map.projection;
-        const version = this.props.theme.version || "1.3.0";
+        const version = this.props.theme.version;
+
+        const mapName = this.state.layout.map.name;
+        const printParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, mapCrs, this.props.printExternalLayers);
+
         let extent = this.computeCurrentExtent();
         extent = (CoordinatesUtils.getAxisOrder(mapCrs).substr(0, 2) === 'ne' && version === '1.3.0') ?
             extent[1] + "," + extent[0] + "," + extent[3] + "," + extent[2] :
@@ -160,11 +168,11 @@ class Print extends React.Component {
         if (!this.state.rotationNull) {
             rotation = this.props.map.bbox ? Math.round(this.props.map.bbox.rotation / Math.PI * 180) : 0;
         }
-        let scaleChooser = (<input min="1" name={mapName + ":scale"} onChange={this.changeScale} type="number" value={this.state.scale || ""}/>);
+        let scaleChooser = (<input min="1" name={mapName + ":scale"} onChange={this.changeScale} role="input" type="number" value={this.state.scale || ""}/>);
 
         if (this.props.theme.printScales && this.props.theme.printScales.length > 0) {
             scaleChooser = (
-                <select name={mapName + ":scale"} onChange={this.changeScale} value={this.state.scale || ""}>
+                <select name={mapName + ":scale"} onChange={this.changeScale} role="input" value={this.state.scale || ""}>
                     {this.props.theme.printScales.map(scale => (<option key={scale} value={scale}>{scale}</option>))}
                 </select>);
         }
@@ -173,14 +181,14 @@ class Print extends React.Component {
         if (!isEmpty(this.props.theme.printResolutions)) {
             if (this.props.theme.printResolutions.length > 1) {
                 resolutionChooser = (
-                    <select name={"DPI"} onChange={this.changeResolution} value={this.state.dpi || ""}>
+                    <select name={"DPI"} onChange={this.changeResolution} role="input" value={this.state.dpi || ""}>
                         {this.props.theme.printResolutions.map(res => (<option key={res} value={res}>{res}</option>))}
                     </select>);
             } else {
-                resolutionInput = (<input name="DPI" readOnly type={formvisibility} value={this.props.theme.printResolutions[0]} />);
+                resolutionInput = (<input name="DPI" readOnly role="input" type={formvisibility} value={this.props.theme.printResolutions[0]} />);
             }
         } else {
-            resolutionChooser = (<input max="1200" min="50" name="DPI" onChange={this.changeResolution} type="number" value={this.state.dpi || ""} />);
+            resolutionChooser = (<input max="1200" min="50" name="DPI" onChange={this.changeResolution} role="input" type="number" value={this.state.dpi || ""} />);
         }
 
         let gridIntervalX = null;
@@ -192,10 +200,22 @@ class Print extends React.Component {
             gridIntervalX = (<input name={mapName + ":GRID_INTERVAL_X"} readOnly type={formvisibility} value={printGrid[cur].x} />);
             gridIntervalY = (<input name={mapName + ":GRID_INTERVAL_Y"} readOnly type={formvisibility} value={printGrid[cur].y} />);
         }
+        const printLegend = this.state.layout.legendLayout;
 
         const labels = this.state.layout && this.state.layout.labels ? this.state.layout.labels : [];
 
         const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, printDpi, this.props.scaleFactor);
+
+        const dimensionValues = this.props.layers.reduce((res, layer) => {
+            if (layer.role === LayerRole.THEME) {
+                Object.entries(layer.dimensionValues || {}).forEach(([key, value]) => {
+                    if (value !== undefined) {
+                        res[key] = value;
+                    }
+                });
+            }
+            return res;
+        }, {});
 
         return (
             <div className="print-body">
@@ -203,12 +223,13 @@ class Print extends React.Component {
                     onSubmit={this.print} ref={el => { this.printForm = el; }}
                     target="print-output-window"
                 >
+                    <input name="TEMPLATE" type="hidden" value={printLegend && this.state.legend ? printLegend : this.state.layout.name} />
                     <table className="options-table"><tbody>
                         <tr>
                             <td>{LocaleUtils.tr("print.layout")}</td>
                             <td>
-                                <select name="TEMPLATE" onChange={this.changeLayout} value={currentLayoutname}>
-                                    {this.props.theme.print.map(item => {
+                                <select onChange={this.changeLayout} value={this.state.layout.name}>
+                                    {this.props.theme.print.filter(l => l.map).map(item => {
                                         return (
                                             <option key={item.name} value={item.name}>{item.name}</option>
                                         );
@@ -216,23 +237,38 @@ class Print extends React.Component {
                                 </select>
                             </td>
                         </tr>
+                        {this.state.layout.atlasCoverageLayer ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("print.atlasfeature")}</td>
+                                <td>
+                                    {this.state.atlasFeature ? (
+                                        <InputContainer>
+                                            <input defaultValue={this.state.atlasFeature.properties[this.state.layout.atlas_pk]} name="ATLAS_PK" role="input" type="text" />
+                                            <Icon icon="remove" onClick={() => this.setAtlasFeature(null, null)} role="suffix" />
+                                        </InputContainer>
+                                    ) : (
+                                        <input disabled placeholder={LocaleUtils.tr("print.pickatlasfeature", this.state.layout.atlasCoverageLayer)} type="text" />
+                                    )}
+                                </td>
+                            </tr>
+                        ) : null}
                         <tr>
                             <td>{LocaleUtils.tr("print.scale")}</td>
                             <td>
-                                <span className="input-frame">
-                                    <span>1&nbsp;:&nbsp;</span>
+                                <InputContainer>
+                                    <span role="prefix">1&nbsp;:&nbsp;</span>
                                     {scaleChooser}
-                                </span>
+                                </InputContainer>
                             </td>
                         </tr>
                         {resolutionChooser ? (
                             <tr>
                                 <td>{LocaleUtils.tr("print.resolution")}</td>
                                 <td>
-                                    <span className="input-frame">
+                                    <InputContainer>
                                         {resolutionChooser}
-                                        <span>&nbsp;dpi</span>
-                                    </span>
+                                        <span role="suffix">&nbsp;dpi</span>
+                                    </InputContainer>
                                 </td>
                             </tr>
                         ) : null}
@@ -240,9 +276,7 @@ class Print extends React.Component {
                             <tr>
                                 <td>{LocaleUtils.tr("print.rotation")}</td>
                                 <td>
-                                    <span className="input-frame">
-                                        <input name={mapName + ":rotation"} onChange={this.changeRotation} type="number" value={rotation}/>
-                                    </span>
+                                    <input name={mapName + ":rotation"} onChange={this.changeRotation} type="number" value={rotation}/>
                                 </td>
                             </tr>
                         ) : null}
@@ -254,38 +288,38 @@ class Print extends React.Component {
                                 </td>
                             </tr>
                         ) : null}
+                        {printLegend ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("print.legend")}</td>
+                                <td>
+                                    <ToggleSwitch active={this.state.legend} onChange={(newstate) => this.setState({legend: newstate})} />
+                                </td>
+                            </tr>
+                        ) : null}
                         {(labels || []).map(label => {
+                            // Omit labels which start with __
+                            if (label.startsWith("__")) {
+                                return null;
+                            }
                             const opts = {rows: 1, name: label.toUpperCase()};
                             if (this.props.theme.printLabelConfig) {
                                 Object.assign(opts, this.props.theme.printLabelConfig[label]);
                             }
-                            return (<tr key={"label." + label}>
-                                <td>{label}:</td>
-                                <td>
-                                    {
-                                        this.props.theme.printLabelForSearchResult === label ?
-                                            (<textarea {...opts} defaultValue={this.getSearchMarkerLabel()}/>) :
-                                            (<textarea {...opts}/>)
-                                    }
-                                </td>
-                            </tr>);
+                            return this.renderPrintLabelField(label, opts);
                         })}
                     </tbody></table>
                     <div>
+                        <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
                         <input name={mapName + ":extent"} readOnly type={formvisibility} value={extent || ""} />
                         <input name="SERVICE" readOnly type={formvisibility} value="WMS" />
-                        <input name="VERSION" readOnly type={formvisibility} value={version || "1.3.0"} />
+                        <input name="VERSION" readOnly type={formvisibility} value={version} />
                         <input name="REQUEST" readOnly type={formvisibility} value="GetPrint" />
                         <input name="FORMAT" readOnly type={formvisibility} value="pdf" />
                         <input name="TRANSPARENT" readOnly type={formvisibility} value="true" />
                         <input name="SRS" readOnly type={formvisibility} value={mapCrs} />
-                        {!isEmpty(themeLayers) && themeLayers[0].params.MAP ? (<input name="MAP" readOnly type={formvisibility} value={themeLayers[0].params.MAP} />) : null}
-                        <input name="OPACITIES" readOnly type={formvisibility} value={printOpacities || ""} />
-                        {/* This following one is needed for opacities to work!*/}
-                        <input name="LAYERS" readOnly type={formvisibility} value={printLayers || ""} />
-                        <input name="COLORS" readOnly type={formvisibility} value={printColors || ""} />
+                        {Object.entries(printParams).map(([key, value]) => (<input key={key} name={key} type={formvisibility} value={value} />))}
                         <input name="CONTENT_DISPOSITION" readOnly type={formvisibility} value={this.props.inlinePrintOutput ? "inline" : "attachment"} />
-                        <input name={mapName + ":LAYERS"} readOnly type={formvisibility} value={printLayers || ""} />
+                        <input name={mapName + ":LAYERS"} readOnly type={formvisibility} value={printParams.LAYERS} />
                         <input name={mapName + ":HIGHLIGHT_GEOM"} readOnly type={formvisibility} value={highlightParams.geoms.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_SYMBOL"} readOnly type={formvisibility} value={highlightParams.styles.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_LABELSTRING"} readOnly type={formvisibility} value={highlightParams.labels.join(";")} />
@@ -296,16 +330,51 @@ class Print extends React.Component {
                         {gridIntervalX}
                         {gridIntervalY}
                         {resolutionInput}
+                        {Object.entries(dimensionValues).map(([key, value]) => (
+                            <input key={key} name={key} readOnly type="hidden" value={value} />
+                        ))}
                     </div>
                     <div className="button-bar">
-                        <button className="button" disabled={!printLayers || this.state.printing} type="submit">
+                        <button className="button" disabled={!printParams.LAYERS || this.state.printing} type="submit">
                             {this.state.printing ? (<span className="print-wait"><Spinner /> {LocaleUtils.tr("print.wait")}</span>) : LocaleUtils.tr("print.submit")}
                         </button>
                     </div>
                 </form>
             </div>
         );
-    }
+    };
+    renderPrintLabelField = (label, opts) => {
+        if (this.props.theme.printLabelForSearchResult === label) {
+            if (this.props.hideAutopopulatedFields) {
+                return (<tr key={"label." + label}><td colSpan="2"><input defaultValue={this.getSearchMarkerLabel()} name={opts.name} type="hidden" /></td></tr>);
+            } else {
+                return (
+                    <tr key={"label." + label}>
+                        <td>{MiscUtils.capitalizeFirst(label)}</td>
+                        <td><textarea {...opts} defaultValue={this.getSearchMarkerLabel()} readOnly /></td>
+                    </tr>
+                );
+            }
+        } else if (this.props.theme.printLabelForAttribution === label) {
+            if (this.props.hideAutopopulatedFields) {
+                return (<tr key={"label." + label}><td colSpan="2"><input defaultValue={this.getAttributionLabel()} name={opts.name} type="hidden" /></td></tr>);
+            } else {
+                return (
+                    <tr key={"label." + label}>
+                        <td>{MiscUtils.capitalizeFirst(label)}</td>
+                        <td><textarea {...opts} defaultValue={this.getAttributionLabel()} readOnly /></td>
+                    </tr>
+                );
+            }
+        } else {
+            return (
+                <tr key={"label." + label}>
+                    <td>{MiscUtils.capitalizeFirst(label)}</td>
+                    <td><textarea {...opts}/></td>
+                </tr>
+            );
+        }
+    };
     getSearchMarkerLabel = () => {
         const searchsellayer = this.props.layers.find(layer => layer.id === "searchselection");
         if (searchsellayer && searchsellayer.features) {
@@ -315,7 +384,20 @@ class Print extends React.Component {
             }
         }
         return "";
-    }
+    };
+    getAttributionLabel = () => {
+        const copyrights = this.props.layers.reduce((res, layer) => ({...res, ...LayerUtils.getAttribution(layer, this.props.map)}), {});
+        const el = document.createElement("span");
+        return Object.entries(copyrights).map(([key, value]) => {
+            if (value.title) {
+                el.innerHTML = value.title;
+                return el.innerText;
+            } else {
+                el.innerHTML = key;
+                return el.innerText;
+            }
+        }).join(" | ");
+    };
     renderPrintFrame = () => {
         let printFrame = null;
         if (this.state.layout) {
@@ -323,10 +405,10 @@ class Print extends React.Component {
                 width: this.state.scale * this.state.layout.map.width / 1000,
                 height: this.state.scale * this.state.layout.map.height / 1000
             };
-            printFrame = (<PrintFrame fixedFrame={frame} key="PrintFrame" map={this.props.map} />);
+            printFrame = (<PrintFrame fixedFrame={frame} key="PrintFrame" map={this.props.map} modal={!!this.state.atlasFeature} />);
         }
         return printFrame;
-    }
+    };
     renderPrintOutputWindow = () => {
         return (
             <ResizeableWindow icon="print" initialHeight={0.75 * window.innerHeight} initialWidth={0.5 * window.innerWidth}
@@ -343,34 +425,53 @@ class Print extends React.Component {
                 </div>
             </ResizeableWindow>
         );
-    }
+    };
     render() {
         const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("print.maximize") : LocaleUtils.tr("print.minimize");
-        const extraTitlebarContent = (<Icon className="print-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState({minimized: !this.state.minimized})} title={minMaxTooltip}/>);
-        return (
-            <SideBar extraTitlebarContent={extraTitlebarContent} icon={"print"} id="Print"
-                onHide={this.onHide} onShow={this.onShow} title="appmenu.items.Print"
-                width="20em">
-                {() => ({
-                    body: this.state.minimized ? null : this.renderBody(),
-                    extra: [
-                        this.renderPrintFrame(),
-                        this.props.inlinePrintOutput ? this.renderPrintOutputWindow() : null
-                    ]
-                })}
-            </SideBar>
-        );
+        const extraTitlebarContent = (<Icon className="print-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState((state) => ({minimized: !state.minimized}))} title={minMaxTooltip}/>);
+        return [
+            (
+                <SideBar extraTitlebarContent={extraTitlebarContent} icon={"print"} id="Print" key="Print"
+                    onHide={this.onHide} onShow={this.onShow} side={this.props.side}
+                    title="appmenu.items.Print" width="20em">
+                    {() => ({
+                        body: this.state.minimized ? null : this.renderBody(),
+                        extra: [
+                            this.renderPrintFrame()
+                        ]
+                    })}
+                </SideBar>
+            ),
+            this.renderPrintOutputWindow(),
+            this.props.active && this.state.layout && this.state.layout.atlasCoverageLayer ? (
+                <PickFeature
+                    featurePicked={this.setAtlasFeature}
+                    key="FeaturePicker"
+                    layer={this.state.layout.atlasCoverageLayer}
+                />
+            ) : null
+        ];
     }
+    setAtlasFeature = (layer, feature) =>{
+        this.setState({atlasFeature: feature});
+        if (feature) {
+            this.fixedMapCenter = VectorLayerUtils.getFeatureCenter(feature);
+            this.props.panTo(this.fixedMapCenter, this.props.map.projection);
+        } else {
+            this.fixedMapCenter = null;
+        }
+    };
     changeLayout = (ev) => {
         const layout = this.props.theme.print.find(item => item.name === ev.target.value);
-        this.setState({layout: layout});
-    }
+        this.setState({layout: layout, atlasFeature: null});
+        this.fixedMapCenter = null;
+    };
     changeScale = (ev) => {
         this.setState({scale: ev.target.value});
-    }
+    };
     changeResolution = (ev) => {
         this.setState({dpi: ev.target.value});
-    }
+    };
     changeRotation = (ev) => {
         if (!ev.target.value) {
             this.setState({rotationNull: true});
@@ -385,7 +486,7 @@ class Print extends React.Component {
             }
             this.props.changeRotation(angle / 180 * Math.PI);
         }
-    }
+    };
     computeCurrentExtent = () => {
         if (!this.props.map || !this.state.layout || !this.state.scale) {
             return [0, 0, 0, 0];
@@ -399,15 +500,15 @@ class Print extends React.Component {
         const y1 = center[1] - 0.5 * height;
         const y2 = center[1] + 0.5 * height;
         return [x1, y1, x2, y2];
-    }
+    };
     print = (ev) => {
         if (this.props.inlinePrintOutput) {
             this.setState({printOutputVisible: true, outputLoaded: false});
         } else {
             ev.preventDefault();
             this.setState({printing: true});
-            const formData = formDataEntries(this.printForm);
-            const data = Array.from(formData).map(pair =>
+            const formData = formDataEntries(new FormData(this.printForm));
+            const data = Object.entries(formData).map((pair) =>
                 pair.map(entry => encodeURIComponent(entry).replace(/%20/g, '+')).join("=")
             ).join("&");
             const config = {
@@ -421,20 +522,26 @@ class Print extends React.Component {
             }).catch(e => {
                 this.setState({printing: false});
                 if (e.response) {
+                    /* eslint-disable-next-line */
                     console.log(new TextDecoder().decode(e.response.data));
                 }
+                /* eslint-disable-next-line */
                 alert('Print failed');
             });
         }
-    }
+    };
 }
 
 const selector = (state) => ({
+    active: state.task.id === 'Print',
     theme: state.theme.current,
     map: state.map,
     layers: state.layers.flat
 });
 
 export default connect(selector, {
-    changeRotation: changeRotation
+    addLayerFeatures: addLayerFeatures,
+    clearLayer: clearLayer,
+    changeRotation: changeRotation,
+    panTo: panTo
 })(Print);

@@ -9,32 +9,55 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import axios from 'axios';
 import isEmpty from 'lodash.isempty';
+import htmlReactParser, {domToReact} from 'html-react-parser';
+import {showIframeDialog} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import './style/MapTip.css';
 
+/**
+ * Displays maptips by hovering over features on the map.
+ *
+ * Queries the map tips configured in the QGIS layer properites over GetFeatureInfo.
+ */
 class MapTip extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
+        iframeDialogsInitiallyDocked: PropTypes.bool,
+        /** The maximum number of feature maptips to display for a single layer. */
         layerFeatureCount: PropTypes.number,
         layers: PropTypes.array,
         map: PropTypes.object,
         mapTipsEnabled: PropTypes.bool,
+        /* The maximum height of the maptip popop bubble, as a CSS string. */
+        maxHeight: PropTypes.string,
+        /* The maximum height of the maptip popop bubble, as a CSS string. */
+        maxWidth: PropTypes.string,
         mousepos: PropTypes.object,
         removeLayer: PropTypes.func,
+        showIframeDialog: PropTypes.func,
         theme: PropTypes.object
-    }
+    };
     static defaultProps = {
-        layerFeatureCount: 5
-    }
+        layerFeatureCount: 5,
+        maxHeight: "15em",
+        maxWidth: "20em"
+    };
     state = {
         maptips: [],
         pos: null
+    };
+    componentDidMount() {
+        document.getElementById('map').addEventListener('mouseleave', () => {
+            this.clearMaptip();
+        });
     }
     componentDidUpdate(prevProps, prevState) {
+        if (this.props.map !== prevProps.map || this.props.theme !== prevProps.theme) {
+            clearTimeout(this.timeoutId);
+        }
         if (this.props.mapTipsEnabled && this.props.mousepos &&
             this.props.mousepos !== prevProps.mousepos &&
             (
@@ -46,20 +69,21 @@ class MapTip extends React.Component {
             this.clearMaptip();
             const pos = this.props.mousepos.pixel;
             this.setState({pos});
-            this.timeoutId = setTimeout(() => this.queryMapTip(pos[0], pos[1]), 500);
+            this.timeoutId = setTimeout(() => this.queryMapTip(), 500);
         } else if (!this.props.mapTipsEnabled && prevProps.mapTipsEnabled) {
+            this.clearMaptip();
+        }
+        if (!isEmpty(prevState.maptips) && isEmpty(this.state.maptips)) {
             this.clearMaptip();
         }
     }
     clearMaptip = () => {
         clearTimeout(this.timeoutId);
         this.timeoutId = null;
-        if (!isEmpty(this.state.maptips)) {
-            this.props.removeLayer('maptipselection');
-        }
+        this.props.removeLayer('maptipselection');
         this.setState({maptips: [], pos: null});
-    }
-    queryMapTip = (x, y) => {
+    };
+    queryMapTip = () => {
         this.timeoutId = null;
         const options = {
             info_format: 'text/xml',
@@ -67,7 +91,8 @@ class MapTip extends React.Component {
             FI_POINT_TOLERANCE: 16,
             FI_LINE_TOLERANCE: 8,
             FI_POLYGON_TOLERANCE: 4,
-            with_maptip: true
+            with_maptip: true,
+            with_htmlcontent: false
         };
         const layer = this.props.layers.find(l => l.role === LayerRole.THEME);
         let queryLayers = this.props.layers.reduce((accum, l) => {
@@ -81,35 +106,38 @@ class MapTip extends React.Component {
         }
 
         const request = IdentifyUtils.buildRequest(layer, queryLayers, this.props.mousepos.coordinate, this.props.map, options);
-
-        axios.get(request.url, {params: request.params}).then(response => {
+        IdentifyUtils.sendRequest(request, (response) => {
             const mapTips = [];
-            const result = IdentifyUtils.parseXmlResponse({data: response.data, request}, this.props.map.projection);
-            const features = [];
-            for (const layerName of request.params.layers.split(",")) {
-                for (const feature of result[layerName] || []) {
-                    if (feature.properties.maptip) {
-                        features.push(feature);
-                        mapTips.push(feature.properties.maptip);
+            if (response) {
+                const result = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
+                const features = [];
+                for (const layerName of request.params.layers.split(",")) {
+                    for (const feature of result[layerName] || []) {
+                        if (feature.properties.maptip) {
+                            features.push(feature);
+                            mapTips.push(feature.properties.maptip);
+                        }
                     }
                 }
-            }
-            if (!isEmpty(features)) {
-                const sellayer = {
-                    id: "maptipselection",
-                    role: LayerRole.SELECTION
-                };
-                this.props.addLayerFeatures(sellayer, features, true);
+                if (!isEmpty(features)) {
+                    const sellayer = {
+                        id: "maptipselection",
+                        role: LayerRole.SELECTION
+                    };
+                    this.props.addLayerFeatures(sellayer, features, true);
+                }
             }
             this.setState({maptips: mapTips});
         });
-    }
+    };
     render() {
         if (!isEmpty(this.state.maptips) && this.state.pos) {
             // Render off-screen first to measure dimensions, then place as necessary
-            const position = {
+            const style = {
                 left: 10000 + "px",
-                top: 10000 + "px"
+                top: 10000 + "px",
+                maxHeight: this.props.maxHeight,
+                maxWidth: this.props.maxWidth
             };
             const bufferPos = {
                 left: (this.state.pos[0] - 8) + "px",
@@ -121,15 +149,55 @@ class MapTip extends React.Component {
                 <div
                     id="MapTip" key="MapTip"
                     ref={this.positionMapTip}
-                    style={position}>
+                    style={style}>
                     {this.state.maptips.map((maptip, idx) => (
-                        <div dangerouslySetInnerHTML={{__html: maptip}} key={"tip" + idx} />
+                        <div key={"tip" + idx}>
+                            {this.parsedContent(maptip)}
+                        </div>
                     ))}
                 </div>
             )];
         }
         return null;
     }
+    parsedContent = (text) => {
+        const options = {replace: (node) => {
+            if (node.name === "a") {
+                return (
+                    <a href={node.attribs.href} onClick={node.attribs.onclick ? (ev) => this.evalOnClick(ev, node.attribs.onclick) : this.attributeLinkClicked} target={node.attribs.target || "_blank"}>
+                        {domToReact(node.children, options)}
+                    </a>
+                );
+            }
+            return undefined;
+        }};
+        return htmlReactParser(text, options);
+    };
+    evalOnClick = (ev, onclick) => {
+        // eslint-disable-next-line
+        eval(onclick);
+        ev.preventDefault();
+    };
+    attributeLinkClicked = (ev) => {
+        if (ev.currentTarget.target.startsWith(":")) {
+            const target = ev.target.target.split(":");
+            const options = target.slice(2).reduce((res, cur) => {
+                const parts = cur.split("=");
+                if (parts.length === 2) {
+                    const value = parseFloat(parts[1]);
+                    res[parts[0]] = isNaN(value) ? parts[1] : value;
+                }
+                return res;
+            }, {});
+            if (target[1] === "iframedialog") {
+                if (this.props.iframeDialogsInitiallyDocked) {
+                    options.docked = true;
+                }
+                this.props.showIframeDialog(target[2], ev.target.href, options);
+                ev.preventDefault();
+            }
+        }
+    };
     positionMapTip = (el) => {
         if (el) {
             let x = this.state.pos[0];
@@ -144,7 +212,7 @@ class MapTip extends React.Component {
             el.style.left = x + "px";
             el.style.top = y + "px";
         }
-    }
+    };
 }
 
 
@@ -158,5 +226,6 @@ const selector = (state) => ({
 
 export default connect(selector, {
     addLayerFeatures: addLayerFeatures,
-    removeLayer: removeLayer
+    removeLayer: removeLayer,
+    showIframeDialog: showIframeDialog
 })(MapTip);

@@ -8,7 +8,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import uuid from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import './style/SuggestionInput.css';
 
 
@@ -19,13 +19,13 @@ export default class SuggestionInput extends React.Component {
         onBlur: PropTypes.func,
         onChange: PropTypes.func,
         value: PropTypes.string
-    }
+    };
     state = {
         suggestions: []
-    }
+    };
     constructor(props) {
         super(props);
-        this.datalistid = uuid.v1();
+        this.datalistid = uuidv1();
     }
     render() {
         return (
@@ -43,9 +43,9 @@ export default class SuggestionInput extends React.Component {
         this.props.loadSuggestions(result => {
             this.setState({suggestions: result});
         });
-    }
+    };
     onBlur = (ev) => {
         this.setState({suggestions: []});
         this.props.onBlur(ev);
-    }
+    };
 }

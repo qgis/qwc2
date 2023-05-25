@@ -22,16 +22,16 @@ class TaskBar extends React.Component {
         setCurrentTaskBlocked: PropTypes.func,
         task: PropTypes.string.isRequired,
         unblockOnClose: PropTypes.bool
-    }
+    };
     static defaultProps = {
         onShow: () => {},
         onHide: () => {}
-    }
-    componentDidUpdate(prevProps, prevState) {
+    };
+    componentDidUpdate(prevProps) {
         const newVisible = this.props.currentTask && this.props.currentTask.id === this.props.task;
         const oldVisible = prevProps.currentTask && prevProps.currentTask.id === this.props.task;
         if (newVisible && (!oldVisible || this.props.currentTask.mode !== prevProps.currentTask.mode)) {
-            this.props.onShow(this.props.currentTask.mode);
+            this.props.onShow(this.props.currentTask.mode, this.props.currentTask.data);
         } else if (!newVisible && oldVisible) {
             this.props.onHide();
         }
@@ -43,10 +43,10 @@ class TaskBar extends React.Component {
             }
             this.props.setCurrentTask(null);
         }
-    }
+    };
     renderRole = (role) => {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
-    }
+    };
     render() {
         if (this.props.currentTask.id !== this.props.task) {
             return null;

@@ -12,7 +12,7 @@ try:
 except:
     import urllib2 as request
 try:
-    from urllib.parse import quote, urljoin
+    from urllib.parse import quote, urljoin, urlparse, parse_qsl, urlencode, urlunparse
 except:
     from urllib import quote
     from urlparse import urljoin
@@ -55,18 +55,26 @@ def getUrlOpener(configItem):
         opener = request.urlopen
     return opener
 
+def update_params(url,params):
+    url_parse = urlparse(url)
+    query = url_parse.query
+    url_dict = dict(parse_qsl(query))
+    url_dict.update(params)
+    url_new_query = urlencode(url_dict)
+    new_url = url_parse._replace(query=url_new_query).geturl()
+    return new_url
 
 # load thumbnail from file or GetMap
 def getThumbnail(configItem, resultItem, layers, crs, extent):
     if "thumbnail" in configItem:
-        if os.path.exists(qwc2_path + "/assets/img/mapthumbs/" + configItem["thumbnail"]):
+        if os.path.exists(qwc2_path + "/static/assets/img/mapthumbs/" + configItem["thumbnail"]):
             resultItem["thumbnail"] = "img/mapthumbs/" + configItem["thumbnail"]
             return
 
     print("Using WMS GetMap to generate thumbnail for " + configItem["url"])
 
     # WMS GetMap request
-    url = urljoin(baseUrl, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&STYLES=&WIDTH=200&HEIGHT=100&CRS=" + crs
+    url = update_params(urljoin(baseUrl, configItem["url"]), {'SERVICE': 'WMS', 'VERSION': '1.3.0', 'REQUEST': 'GetMap', 'FORMAT': 'image/png', 'STYLES': '', 'WIDTH': '200', 'HEIGHT': '100', 'CRS': crs})
     bboxw = extent[2] - extent[0]
     bboxh = extent[3] - extent[1]
     bboxcx = 0.5 * (extent[0] + extent[2])
@@ -90,10 +98,10 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
         reply = opener(url).read()
         basename = configItem["url"].rsplit("/")[-1].rstrip("?") + ".png"
         try:
-            os.makedirs(qwc2_path + "/assets/img/genmapthumbs/")
+            os.makedirs(qwc2_path + "/static/assets/img/genmapthumbs/")
         except Exception as e:
             if not isinstance(e, FileExistsError): raise e
-        thumbnail = qwc2_path + "/assets/img/genmapthumbs/" + basename
+        thumbnail = qwc2_path + "/static/assets/img/genmapthumbs/" + basename
         with open(thumbnail, "wb") as fh:
             fh.write(reply)
         resultItem["thumbnail"] = "img/genmapthumbs/" + basename
@@ -105,6 +113,8 @@ def getThumbnail(configItem, resultItem, layers, crs, extent):
 def getEditConfig(editConfig):
     if not editConfig:
         return None
+    elif isinstance(editConfig, dict):
+        return editConfig
     elif os.path.isabs(editConfig) and os.path.exists(editConfig):
         with open(editConfig, encoding='utf-8') as fh:
             config = json.load(fh)
@@ -150,6 +160,7 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
     layers = getDirectChildElements(layer, "Layer")
     treeName = getChildElementValue(layer, "TreeName")
 
+
     # skip print layers
     for printLayer in printLayers:
         if type(printLayer) is list:
@@ -168,7 +179,10 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
 
         # layer
         layerEntry["geometryType"] = layer.getAttribute("geometryType")
-        layerEntry["visibility"] = layer.getAttribute("visible") == "1"
+        if layer.getAttribute("visibilityChecked") != "":
+            layerEntry["visibility"] = layer.getAttribute("visibilityChecked") == "1"
+        else:
+            layerEntry["visibility"] = layer.getAttribute("visible") == "1"
         if layerEntry["visibility"]:
             # collect visible layers
             visibleLayers.append(name)
@@ -235,9 +249,25 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             }
         if name in featureReports:
             layerEntry["featureReport"] = featureReports[name]
+
+        layerEntry["dimensions"] = []
+        for dim in getDirectChildElements(layer, "Dimension"):
+            layerEntry["dimensions"].append({
+                "units": dim.getAttribute("units"),
+                "name": dim.getAttribute("name"),
+                "multiple": dim.getAttribute("multipleValues") == "1",
+                "value": getElementValue(dim),
+                "fieldName": dim.getAttribute("fieldName"),
+                "endFieldName": dim.getAttribute("endFieldName")
+            })
+
     else:
         # group
         layerEntry["mutuallyExclusive"] = layer.getAttribute("mutuallyExclusive") == "1"
+        if layer.getAttribute("visibilityChecked") != "":
+            layerEntry["visibility"] = layer.getAttribute("visibilityChecked") == "1"
+        else:
+            layerEntry["visibility"] = layer.getAttribute("visible") == "1"
         layerEntry["sublayers"] = []
         if layer.getAttribute("expanded") == "0":
             layerEntry["expanded"] = False
@@ -253,12 +283,11 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
     resultLayers.append(layerEntry)
     titleNameMap[treeName] = name
 
-
 # parse GetCapabilities for theme
 def getTheme(config, configItem, result, resultItem):
     global autogenExternalLayers
 
-    url = urljoin(baseUrl, configItem["url"]) + "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetProjectSettings"
+    url = update_params(urljoin(baseUrl, configItem["url"]), {'SERVICE': 'WMS', 'VERSION': '1.3.0', 'REQUEST': 'GetProjectSettings'})
 
     try:
         opener = getUrlOpener(configItem)
@@ -309,24 +338,34 @@ def getTheme(config, configItem, result, resultItem):
         composerTemplates = getChildElement(capabilities, "Capability/ComposerTemplates")
         if composerTemplates:
             for composerTemplate in composerTemplates.getElementsByTagName("ComposerTemplate"):
-                printTemplate = {
-                    "name": composerTemplate.getAttribute("name")
-                }
                 composerMap = getChildElement(composerTemplate, "ComposerMap")
                 if composerMap:
-                    printTemplate["map"] = {
-                        "name": composerMap.getAttribute("name"),
-                        "width": float(composerMap.getAttribute("width")),
-                        "height": float(composerMap.getAttribute("height"))
+                    printTemplate = {
+                        "name": composerTemplate.getAttribute("name"),
+                        "map": {
+                            "name": composerMap.getAttribute("name"),
+                            "width": float(composerMap.getAttribute("width")),
+                            "height": float(composerMap.getAttribute("height"))
+                        }
                     }
-                composerLabels = composerTemplate.getElementsByTagName("ComposerLabel")
-                labels = [composerLabel.getAttribute("name") for composerLabel in composerLabels]
-                if "printLabelBlacklist" in configItem:
-                    labels = list(filter(lambda label: label not in configItem["printLabelBlacklist"], labels))
+                    composerLabels = composerTemplate.getElementsByTagName("ComposerLabel")
+                    labels = [composerLabel.getAttribute("name") for composerLabel in composerLabels]
+                    if "printLabelBlacklist" in configItem:
+                        labels = list(filter(lambda label: label not in configItem["printLabelBlacklist"], labels))
 
-                if labels:
-                    printTemplate["labels"] = labels
-                printTemplates.append(printTemplate)
+                    if labels:
+                        printTemplate["labels"] = labels
+                    if composerTemplate.getAttribute('atlasEnabled') == '1':
+                        atlasLayer = composerTemplate.getAttribute('atlasCoverageLayer')
+                        try:
+                            layers = capabilities.getElementsByTagName("Layer")
+                            pk = getChildElementValue(list(filter(lambda l: getChildElementValue(l, "Name") == atlasLayer, layers))[0], "PrimaryKey/PrimaryKeyAttribute")
+                            printTemplate["atlasCoverageLayer"] = atlasLayer
+                            printTemplate["atlas_pk"] = pk
+                        except:
+                            print("Failed to determine primary key for atlas layer " + atlasLayer)
+
+                    printTemplates.append(printTemplate)
 
         # drawing order
         drawingOrder = getChildElementValue(capabilities, "Capability/LayerDrawingOrder").split(",")
@@ -382,7 +421,7 @@ def getTheme(config, configItem, result, resultItem):
         }
         if "extent" in configItem:
             resultItem["initialBbox"] = {
-                "crs": configItem["mapCrs"] if "mapCrs" in configItem else "EPSG:4326",
+                "crs": configItem["mapCrs"] if "mapCrs" in configItem else result["themes"]["defaultMapCrs"],
                 "bounds": configItem["extent"]
             }
         else:
@@ -403,6 +442,8 @@ def getTheme(config, configItem, result, resultItem):
         resultItem["externalLayers"] = externalLayers
         if "pluginData" in configItem:
             resultItem["pluginData"] = configItem["pluginData"]
+        if "snapping" in configItem:
+            resultItem["snapping"] = configItem["snapping"]
         if "minSearchScaleDenom" in configItem:
             resultItem["minSearchScaleDenom"] = configItem["minSearchScaleDenom"]
         elif "minSearchScale" in configItem: # Legacy name
@@ -415,7 +456,7 @@ def getTheme(config, configItem, result, resultItem):
         if "mapCrs" in configItem:
             resultItem["mapCrs"] = configItem["mapCrs"]
         else:
-            resultItem["mapCrs"] = "EPSG:3857"
+            resultItem["mapCrs"] = result["themes"]["defaultMapCrs"]
         if printTemplates:
             resultItem["print"] = printTemplates
         resultItem["drawingOrder"] = drawingOrder
@@ -434,6 +475,8 @@ def getTheme(config, configItem, result, resultItem):
             resultItem["printUrl"] = getChildElement(capabilities, "Capability/Request/GetPrint/DCPType/HTTP/Get/OnlineResource").getAttribute("xlink:href").rstrip("?") + "?"
         if "printLabelForSearchResult" in configItem:
             resultItem["printLabelForSearchResult"] = configItem["printLabelForSearchResult"]
+        if "printLabelForAttribution" in configItem:
+            resultItem["printLabelForAttribution"] = configItem["printLabelForAttribution"]
         if "printLabelConfig" in configItem:
             resultItem["printLabelConfig"] = configItem["printLabelConfig"]
 
@@ -526,11 +569,14 @@ def genThemes(themesConfig):
             "title": "root",
             "subdirs": [],
             "items": [],
-            "defaultTheme": None,
+            "defaultTheme": config["defaultTheme"] if "defaultTheme" in config else None,
+            "defaultMapCrs": config["defaultMapCrs"] if "defaultMapCrs" in config else "EPSG:3857",
             "defaultScales": config["defaultScales"],
             "defaultPrintScales": config["defaultPrintScales"] if "defaultPrintScales" in config else None,
             "defaultPrintResolutions": config["defaultPrintResolutions"] if "defaultPrintResolutions" in config else None,
             "defaultPrintGrid": config["defaultPrintGrid"] if "defaultPrintGrid" in config else None,
+            "defaultSearchProviders": config["defaultSearchProviders"] if "defaultSearchProviders" in config else None,
+            "defaultBackgroundLayers": config["defaultBackgroundLayers"] if "defaultBackgroundLayers" in config else [],
             "pluginData": config["themes"]["pluginData"] if "pluginData" in config["themes"] else [],
             "themeInfoLinks": config["themes"]["themeInfoLinks"] if "themeInfoLinks" in config["themes"] else [],
             "externalLayers": config["themes"]["externalLayers"] if "externalLayers" in config["themes"] else [],
@@ -559,7 +605,7 @@ def genThemes(themesConfig):
         # get thumbnails for background layers
         for backgroundLayer in result["themes"]["backgroundLayers"]:
             imgPath = "img/mapthumbs/" + backgroundLayer.get("thumbnail", "default.jpg")
-            if not os.path.isfile(qwc2_path + "/assets/" + imgPath):
+            if not os.path.isfile(qwc2_path + "/static/assets/" + imgPath):
                 imgPath = "img/mapthumbs/default.jpg"
             backgroundLayer["thumbnail"] = imgPath
 
@@ -570,5 +616,5 @@ if __name__ == '__main__':
     print("Reading " + themesConfig)
     themes = genThemes(themesConfig)
     # write config file
-    with open("./themes.json", "w") as fh:
+    with open("./static/themes.json", "w") as fh:
         json.dump(themes, fh, indent=2, separators=(',', ': '), sort_keys=True)

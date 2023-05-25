@@ -1,9 +1,9 @@
-#Toolbar {
+div.Toolbar {
     margin: 0.25em;
     flex: 0 0 auto;
 }
 
-#Toolbar > .icon {
+div.Toolbar > .icon {
     width: 2.5em;
     height: 2.5em;
     margin-right: 0.25em;
@@ -11,8 +11,9 @@
     border: 1px solid transparent;
 }
 
-#Toolbar > .icon:hover,
-#Toolbar > .toolbar-item-active {
-    border: 1px solid @item_border@;
-    background-color: @button_hover_bg@;
+div.Toolbar > .icon:hover,
+div.Toolbar > .toolbar-item-active {
+    border: 1px solid var(--border-color);
+    background-color: var(--button-bg-color-hover);
+    color: var(--button-text-color-hover);
 }

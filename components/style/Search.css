@@ -5,8 +5,8 @@
     align-items: center;
     vertical-align: middle;
     max-width: 70ch;
-    color: @base_fg@;
     z-index: 4;
+    color: var(--text-color);
 }
 
 #Search div.searchbar-wrapper {
@@ -24,8 +24,6 @@
 #Search input.searchbar {
     flex: 1 1 auto;
     height: 2.5em;
-    padding: 0.25em 0.75em;
-    border: 1px solid @item_border@;
     width: 0;
     min-width: 10ch;
 }
@@ -34,10 +32,11 @@
     flex: 0 0 auto;
     height: 2.5em;
     width: 2.5em;
-    background-color: @button_bg@;
-    border-top: 1px solid @item_border@;;
-    border-right: 1px solid @item_border@;;
-    border-bottom: 1px solid @item_border@;;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border-top: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
     position: relative;
     align-items: center;
     display: flex;
@@ -45,12 +44,13 @@
 }
 
 #Search span.searchbar-addon-active {
-    background-color: white;
+    background-color: var(--button-bg-color-hover);
+    color: var(--button-text-color-hover);
 }
 
 #Search span.searchbar-addon-filter-active {
-    color: @item_active@;
-    background-color: white;
+    background-color: var(--button-bg-color-active);
+    color: var(--button-text-color-active);
 }
 
 #Search span.searchbar-addon-menu-icon {
@@ -58,19 +58,19 @@
     right: 0.125em;
     bottom: 0.125em;
     font-size: 70%;
-    color: @base_fg@;
+    color: var(--text-color);
 }
 
 #Search ul.searchbar-provider-selection {
     position: absolute;
     top: 100%;
     right: -1px;
-    background-color: @appmenu_bg1@;
-    border: 1px solid @item_border@;
+    background-color: var(--list-bg-color);
+    border: 1px solid var(--border-color);
     list-style-type: none;
     margin: 0;
     padding: 0;
-    color: @base_fg@;
+    color: var(--text-color);
 }
 
 #Search ul.searchbar-provider-selection li {
@@ -79,16 +79,17 @@
 }
 
 #Search li.searchbar-provider-selection-all {
-    border-bottom: 1px solid @item_border@;
+    border-bottom: 1px solid var(--border-color);
 }
 
 #Search li.searchbar-provider-selection-active {
-    background-color: white;
+    background-color: var(--list-item-bg-color-active);
+    color: var(--list-item-text-color-active);
 }
 
 #Search ul.searchbar-provider-selection li:hover {
-    background-color: @appmenu_active_bg1@;
-
+    background-color: var(--list-item-bg-color-hover);
+    color: var(--list-item-text-color-hover);
 }
 
 #Search div.spinner {
@@ -97,29 +98,17 @@
     margin: 0.25em;
 }
 
-#Search select.provider-selection {
-    border-top: 1px solid @item_border@;
-    border-right: 1px solid @item_border@;
-    border-bottom: 1px solid @item_border@;
-    border-left: 0;
-    background-color: @button_bg@;
-    vertical-align: bottom;
-    height: 2.5em;
-    flex: 0 0 auto;
-}
-
 #Search div.search-form {
     top: 0;
     width: 100%;
     position: absolute;
     z-index: 100;
-    background-color: @button_bg@;
-    border: 1px solid @item_border@;
+    background-color: var(--button-bg-color);
+    border: 1px solid var(--border-color);
 }
 
 #Search div.search-form > table {
     width: 100%;
-    border-collapse: collapse;
 }
 
 #Search div.search-form > table td {
@@ -145,7 +134,7 @@
 #Search ul.search-results {
     top: 100%;
     position: absolute;
-    background-color: rgba(255,255, 255, 0.85);
+    background-color: var(--list-bg-color);
     max-height: calc(100vh - 4em);
     max-height: calc(var(--vh, 1vh) * 100 - 4em);
     width: 100%;
@@ -169,11 +158,17 @@
     cursor: pointer;
 }
 
+#Search ul.search-results li.search-results-noresults {
+    padding: 0.25em 0.25em 0.25em 1em;
+    font-style: italic;
+    color: var(--text-color-disabled);
+}
+
 #Search ul.search-results ul li > img {
     flex: 0 0 6em;
     width: 6em;
     height: auto;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
     background-color: white;
     border-radius: 0.5em;
     margin-right: 1em;
@@ -188,22 +183,24 @@
 
 #Search ul.search-results ul li > span.icon {
     flex: 0 0 auto;
-     border: 1px solid @item_border@;
-     background-color: white;
-     padding: 0.25em;
-     border-radius: 0.25em;
+    border: 1px solid var(--border-color);
+    background-color: white;
+    padding: 0.25em;
+    border-radius: 0.25em;
 }
 
 #Search ul.search-results ul li > span.icon:hover {
-    border-color: @item_active@;
+    border-color: var(--color-active);
 }
 
 #Search ul.search-results ul li:hover {
-    background-color: @button_hover_bg@;
+    background-color: var(--list-item-bg-color-hover);
+    color: var(--list-item-text-color-hover);
 }
 
 #Search ul.search-results .search-results-category-title {
-    background-color: @container_bg@;
+    background-color: var(--list-section-bg-color);
+    color: var(--list-section-text-color);
     font-weight: bold;
     display: block;
     padding: 0.5em;

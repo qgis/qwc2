@@ -13,7 +13,7 @@ import ConfigUtils from './ConfigUtils';
 const LocaleUtils = {
     tr(key) {
         const state = StandardStore.get().getState();
-        const text = key in state.locale.messages ? state.locale.messages[key] : key;
+        const text = key in state.locale.messages ? (state.locale.messages[key] ?? key) : key;
 
         const args = Array.prototype.slice.call(arguments, 1);
         if (args.length > 0) {
@@ -28,9 +28,13 @@ const LocaleUtils = {
     trmsg(key) {
         return key;
     },
+    trWithFallback(key, fallback) {
+        const state = StandardStore.get().getState();
+        return state.locale.messages[key] || fallback;
+    },
     lang() {
         const state = StandardStore.get().getState();
-        return state.locale.lang;
+        return state.locale.current;
     },
     toLocaleFixed(number, digits) {
         if (ConfigUtils.getConfigProp("localeAwareNumbers")) {

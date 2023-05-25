@@ -46,6 +46,59 @@ const MiscUtils = {
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
+    },
+    getCsrfToken() {
+        const csrfTag = Array.from(document.getElementsByTagName('meta')).find(tag => tag.getAttribute('name') === "csrf-token");
+        return csrfTag ? csrfTag.getAttribute('content') : "";
+    },
+    setupKillTouchEvents(el) {
+        if (el) {
+            // To stop touchmove propagating to parent which can trigger a swipe
+            el.addEventListener('touchmove', (ev) => { ev.stopPropagation(); }, {passive: false});
+        }
+    },
+    killEvent(ev) {
+        if (ev.cancelable) {
+            ev.stopPropagation();
+            ev.preventDefault();
+        }
+    },
+    blendColors(color1, color2, ratio) {
+        color1 = [parseInt(color1[1] + color1[2], 16), parseInt(color1[3] + color1[4], 16), parseInt(color1[5] + color1[6], 16)];
+        color2 = [parseInt(color2[1] + color2[2], 16), parseInt(color2[3] + color2[4], 16), parseInt(color2[5] + color2[6], 16)];
+        const color3 = [
+            (1 - ratio) * color1[0] + ratio * color2[0],
+            (1 - ratio) * color1[1] + ratio * color2[1],
+            (1 - ratio) * color1[2] + ratio * color2[2]
+        ];
+        const toHex = (num) => ("0" + Math.round(num).toString(16)).slice(-2);
+        return '#' + toHex(color3[0]) + toHex(color3[1]) + toHex(color3[2]);
+    },
+    ensureArray(el) {
+        if (el === undefined) {
+            return [];
+        } else if (Array.isArray(el)) {
+            return el;
+        }
+        return [el];
+    },
+    capitalizeFirst(text) {
+        return text.slice(0, 1).toUpperCase() + text.slice(1).toLowerCase();
+    },
+    isBrightColor(hex) {
+        const color = +("0x" + hex.slice(1).replace(hex.length < 5 && /./g, '$&$&'));
+        const r = color >> 16;
+        const g = color >> 8 & 255;
+        const b = color & 255;
+
+        const hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+        return hsp > 127.5;
+    },
+    adjustProtocol(url) {
+        if (location.protocol === 'https:' && url.startsWith('http:')) {
+            return 'https:' + url.substr(5);
+        }
+        return url;
     }
 };
 

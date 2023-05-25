@@ -20,7 +20,7 @@ class ServiceInfoWindow extends React.Component {
         service: PropTypes.object,
         setActiveServiceInfo: PropTypes.func,
         windowSize: PropTypes.object
-    }
+    };
     renderLink(text, url) {
         if (url) {
             return (<a href={url} rel="noreferrer" target="_blank">{text}</a>);
@@ -41,14 +41,14 @@ class ServiceInfoWindow extends React.Component {
             );
         }
         return null;
-    }
+    };
     render() {
         if (!this.props.service) {
             return null;
         }
         return (
             <ResizeableWindow icon="info-sign" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width} onClose={this.onClose}
-                title={LocaleUtils.trmsg("serviceinfo.title")} zIndex={10}>
+                title={LocaleUtils.trmsg("serviceinfo.title")}>
                 <div className="service-info-window-body" role="body">
                     <h4 className="service-info-window-title">{this.props.service.title}</h4>
                     <div className="service-info-window-frame">
@@ -71,7 +71,7 @@ class ServiceInfoWindow extends React.Component {
     }
     onClose = () => {
         this.props.setActiveServiceInfo(null);
-    }
+    };
 }
 
 const selector = state => ({

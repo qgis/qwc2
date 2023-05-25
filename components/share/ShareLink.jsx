@@ -15,7 +15,7 @@ import './style/ShareLink.css';
 export default class ShareLink extends React.Component {
     static propTypes = {
         shareUrl: PropTypes.string
-    }
+    };
     render() {
         return (
             <div className="share-link">

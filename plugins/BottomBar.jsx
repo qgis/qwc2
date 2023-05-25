@@ -13,42 +13,59 @@ import {createSelector} from 'reselect';
 import pickBy from 'lodash.pickby';
 import {changeMousePositionState} from '../actions/mousePosition';
 import {changeZoomLevel} from '../actions/map';
+import {openExternalUrl} from '../actions/task';
+import {showIframeDialog} from '../actions/windows';
 import CoordinateDisplayer from '../components/CoordinateDisplayer';
+import InputContainer from '../components/InputContainer';
 import displayCrsSelector from '../selectors/displaycrs';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import './style/BottomBar.css';
 
+
+/**
+ * Bottom bar, displaying mouse coordinate, scale, etc.
+ */
 class BottomBar extends React.Component {
     static propTypes = {
         additionalMouseCrs: PropTypes.array,
         changeMousePositionState: PropTypes.func,
         changeZoomLevel: PropTypes.func,
+        /** Whether to display the coordinates in the bottom bar. */
         displayCoordinates: PropTypes.bool,
+        /** Whether to display the scale in the bottom bar. */
         displayScales: PropTypes.bool,
         displaycrs: PropTypes.string,
         fullscreen: PropTypes.bool,
         map: PropTypes.object,
+        openExternalUrl: PropTypes.func,
+        showIframeDialog: PropTypes.func,
+        /** The URL of the terms label anchor. */
         termsUrl: PropTypes.string,
-        viewertitleUrl: PropTypes.string
-    }
+        /** The target where to open the terms URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. */
+        termsUrlTarget: PropTypes.string,
+        /** The URL of the viewer title label anchor. */
+        viewertitleUrl: PropTypes.string,
+        /** The target where to open the viewer title URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. */
+        viewertitleUrlTarget: PropTypes.string
+    };
     static defaultProps = {
         displayCoordinates: true,
         displayScales: true
-    }
+    };
     state = {
         scale: 0
-    }
+    };
     componentDidMount() {
         this.props.changeMousePositionState({crs: this.props.map.projection});
     }
-    static getDerivedStateFromProps(nextProps) {
-        return {scale: Math.round(MapUtils.computeForZoom(nextProps.map.scales, nextProps.map.zoom))};
-    }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (this.props.map.projection !== prevProps.map.projection) {
             this.props.changeMousePositionState({crs: this.props.map.projection, position: null});
+        }
+        if (this.props.map !== prevProps.map) {
+            this.setState({scale: Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom))});
         }
     }
     render() {
@@ -59,7 +76,7 @@ class BottomBar extends React.Component {
         let viewertitleLink;
         if (this.props.viewertitleUrl) {
             viewertitleLink = (
-                <a href={this.props.viewertitleUrl} rel="noreferrer" target="_blank">
+                <a href={this.props.viewertitleUrl} onClick={(ev) => this.openUrl(ev, this.props.viewertitleUrl, this.props.viewertitleUrlTarget, LocaleUtils.tr("bottombar.viewertitle_label"))}>
                     <span className="viewertitle_label">{LocaleUtils.tr("bottombar.viewertitle_label")}</span>
                 </a>
             );
@@ -67,7 +84,7 @@ class BottomBar extends React.Component {
         let termsLink;
         if (this.props.termsUrl) {
             termsLink = (
-                <a href={this.props.termsUrl} rel="noreferrer" target="_blank">
+                <a href={this.props.termsUrl} onClick={(ev) => this.openUrl(ev, this.props.termsUrl, this.props.termsUrlTarget, LocaleUtils.tr("bottombar.viewertitle_label"))}>
                     <span className="terms_label">{LocaleUtils.tr("bottombar.terms_label")}</span>
                 </a>
             );
@@ -94,7 +111,7 @@ class BottomBar extends React.Component {
                 <span>
                     <span>{LocaleUtils.tr("bottombar.mousepos_label")}:&nbsp;</span>
                     <CoordinateDisplayer className={"bottombar-mousepos"} displaycrs={this.props.displaycrs} />
-                    <select className="bottombar-crs-selector" onChange={ev => this.props.changeMousePositionState({crs: ev.target.value})} value={this.props.displaycrs}>
+                    <select onChange={ev => this.props.changeMousePositionState({crs: ev.target.value})} value={this.props.displaycrs}>
                         {Object.keys(availableCRS).map(crs =>
                             (<option key={crs} value={crs}>{availableCRS[crs].label}</option>)
                         )}
@@ -105,21 +122,22 @@ class BottomBar extends React.Component {
         let scales = null;
         if (this.props.displayScales) {
             scales = (
-                <span>
+                <div>
                     <span>{LocaleUtils.tr("bottombar.scale_label")}:&nbsp;</span>
-                    <span className="bottombar-scale-combo">
-                        <span> 1 : </span>
-                        <select onChange={ev => this.props.changeZoomLevel(parseInt(ev.target.value, 10))} value={Math.round(this.props.map.zoom)}>
+                    <InputContainer className="bottombar-scale-combo">
+                        <span className="bottombar-scale-combo-prefix" role="prefix"> 1 : </span>
+                        <select onChange={ev => this.props.changeZoomLevel(parseInt(ev.target.value, 10))} role="input" value={Math.round(this.props.map.zoom)}>
                             {this.props.map.scales.map((item, index) =>
                                 (<option key={index} value={index}>{LocaleUtils.toLocaleFixed(item, 0)}</option>)
                             )}
                         </select>
-                        <input onBlur={ev => this.setScale(ev.target.value)} onChange={ev => this.setState({scale: ev.target.value})}
+                        <input
+                            onBlur={ev => this.setScale(ev.target.value)}
+                            onChange={ev => this.setState({scale: ev.target.value})}
                             onKeyUp={ev => { if (ev.keyCode === 13) this.setScale(ev.target.value); } }
-                            type="text"
-                            value={this.state.scale}/>
-                    </span>
-                </span>
+                            role="input" type="text" value={this.state.scale}/>
+                    </InputContainer>
+                </div>
             );
         }
 
@@ -133,6 +151,14 @@ class BottomBar extends React.Component {
             </div>
         );
     }
+    openUrl = (ev, url, target, title) => {
+        ev.preventDefault();
+        if (target === "iframe") {
+            this.props.showIframeDialog("externallinkiframe", url, {title: title});
+        } else {
+            this.props.openExternalUrl(url);
+        }
+    };
     setScale = (value) => {
         const scale = parseInt(value, 10);
         if (!isNaN(scale)) {
@@ -141,7 +167,7 @@ class BottomBar extends React.Component {
         } else {
             this.props.changeZoomLevel(this.props.map.zoom);
         }
-    }
+    };
 }
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => {
@@ -155,5 +181,7 @@ const selector = createSelector([state => state, displayCrsSelector], (state, di
 
 export default connect(selector, {
     changeMousePositionState: changeMousePositionState,
-    changeZoomLevel: changeZoomLevel
+    changeZoomLevel: changeZoomLevel,
+    openExternalUrl: openExternalUrl,
+    showIframeDialog: showIframeDialog
 })(BottomBar);

@@ -15,7 +15,7 @@ import LocaleUtils from '../../utils/LocaleUtils';
 export default class ShareQRCode extends React.Component {
     static propTypes = {
         shareUrl: PropTypes.string
-    }
+    };
     render() {
         return (
             <div className="qr-code">

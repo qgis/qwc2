@@ -1,34 +1,18 @@
 div#map {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
 }
 
 /** Move and re-style scalebar */
-div.ol-scale-line,
-div.leaflet-control-scale-line {
+div.ol-scale-line {
     z-index: 101;
     bottom: 3px !important;
     left: 3px!important;
     background-color: transparent!important;
 }
 
-div.leaflet-control-scale-line {
-    color: @panel_fg@!important;
-    border-color: @panel_fg@!important;
-}
-
 div.ol-scale-line > div.ol-scale-line-inner {
-    color: @panel_fg@!important;
-    border-color: @panel_fg@!important;
-}
-
-/** Hide attribution element */
-div.ol-attribution,
-div.leaflet-control-attribution {
-    display: none;
+    color: var(--panel-text-color)!important;
+    border-color: var(--panel-text-color)!important;
 }
 
 /* Move and re-style rotation reset button */
@@ -40,7 +24,7 @@ div.ol-rotate {
 
 div.ol-rotate button {
     font-size: 1.25em!important;
-    background-color: @panel_fg@!important;
+    background-color: var(--panel-text-color)!important;
 }
 
 div.ol-overlaycontainer-stopevent {
@@ -52,8 +36,8 @@ span.map-loading-indicator {
     align-items: center;
     opacity: 0;
     transition: opacity 0.5s;
-    color: @panel_fg@;
-    background-color: @panel_bg@;
+    color: var(--panel-text-color);
+    background-color: var(--panel-bg-color);
     box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
     position: absolute;
     bottom: 2.7em;

@@ -9,12 +9,7 @@
 
 #Print .print-minimize-maximize {
     margin-left: 1em;
-    border: 1px solid transparent;
     padding: 0.25em;
-}
-
-#LayerTree span.print-minimize-maximize:hover {
-    border: 1px solid white;
 }
 
 #Print table.options-table {
@@ -22,58 +17,31 @@
 }
 
 #Print table.options-table td {
-    padding: 0.25em;
+    padding: 0.125em 0;
 }
 
 #Print table.options-table td:first-child {
     max-width: 10em;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding-right: 0.25em;
+    white-space: nowrap;
 }
 
 #Print table.options-table td:nth-child(2) {
     width: 99%;
 }
 
-#Print table.options-table select {
+#Print table.options-table td:nth-child(2) > * {
     width: 100%;
-    border: 1px solid @item_border@;
-    background-color: white;
-    padding: 0.25em;
-}
-
-#Print table.options-table input {
-    outline: none;
-}
-
-#Print table.options-table span.input-frame {
-    border: 1px solid @item_border@;
-    padding: 0.25em;
-    background-color: white;
-    display: flex;
-    align-items: center;
-}
-
-#Print table.options-table span.input-frame input,
-#Print table.options-table span.input-frame select {
-    border: 0;
-    flex: 1;
-    min-width: 0;
-    width: 0;
-    margin: 0;
 }
 
 #Print table.options-table textarea {
-    border: 1px solid @item_border@;
-    padding: 0.25em;
-    background-color: white;
-    width: 100%;
     resize: vertical;
 }
 
 #Print div.button-bar {
-    margin: 1em 0.25em 0.25em 0.25em;
-    text-align: center;
+    margin-top: 0.5em;
 }
 
 #Print div.button-bar > button {
@@ -96,17 +64,23 @@ span.print-output-window-wait {
     position: absolute;
     top: 0;
     left: 0;
-    background-color: rgba(255, 255, 255, 0.75);
-    border-radius: 0.5em;
-    padding: 0.5em;
+    bottom: 0;
+    right: 0;
     display: flex;
     align-items: center;
+    justify-content: center;
+    background-color: rgba(200, 200, 200, 0.9);
 }
 
-span.print-output-window-wait > div.spinner {
-    width: 1.25em;
-    height: 1.25em;
-    margin-right: 0.5em;
+span.print-output-window-wait div.spinner {
+    width: 4em;
+    height: 4em;
+    margin-right: 1em;
+}
+
+#Print span.print-wait {
+    display: flex;
+    align-items: center;
 }
 
 #Print span.print-wait {

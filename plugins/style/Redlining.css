@@ -1,17 +1,22 @@
+div.Redlining  > div.body {
+    width: 100%;
+}
+
 div.redlining-buttongroups {
     display: flex;
     align-items: center;
+    margin: 0 -0.125em;
 }
 
 div.redlining-separator {
-    border-bottom: 1px solid @item_border@;
+    border-bottom: 1px solid var(--border-color);
     margin-bottom: 0.25em;
 }
 
 div.redlining-group {
     margin: 0;
     flex: 1 1 auto;
-    margin: 0 0.25em;
+    margin: 0 0.125em;
 }
 
 div.redlining-group > div:first-child {
@@ -34,17 +39,24 @@ div.redlining-group > span {
 
 div.redlining-group > span > * {
     flex: 1 0 auto;
-    margin-right: 0.25em;
+}
+
+div.redlining-export-menu {
+    height: 2em;
+    margin: 0.25em 0;
+}
+
+div.redlining-export-menu-entry {
+    font-size: 90%;
 }
 
 div.redlining-controlsbar {
     display: flex;
-    flex-wrap: wrap;
 }
 
 div.redlining-controlsbar > span {
     display: inline-flex;
-    flex: 1 0 auto;
+    flex: 0 0 auto;
     align-items: center;
     justify-content: center;
     margin: 0 0.25em;
@@ -52,12 +64,24 @@ div.redlining-controlsbar > span {
 
 div.redlining-group span.react-numeric-input,
 div.redlining-controlsbar span.react-numeric-input {
-    width: 7em;
+    width: 6em;
 }
 
-div.redlining-controlsbar input.redlining-label {
-  width: 7em;
-  height: 2em;
-  padding: 0.25em;
-  border: 1px solid @item_border@;
+div.redlining-controlsbar input.redlining-label,
+div.redlining-controlsbar select.redlining-unit {
+    flex: 1 1 auto;
+    width: 0;
+    min-width: 5em;
+}
+
+div.redlining-shapewarning {
+    border-top: 1px solid var(--border-color);
+    margin-top: 0.25em;
+    padding-top: 0.25em;
+    font-size: 90%;
+    font-style: italic;
+}
+
+span.redlining-control-icon {
+    margin-right: 0.125em;
 }

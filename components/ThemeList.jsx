@@ -29,7 +29,7 @@ class ThemeList extends React.Component {
         allowAddingOtherThemes: PropTypes.bool,
         changeTheme: PropTypes.func,
         collapsibleGroups: PropTypes.bool,
-        dontPreserveLayersOnSwitch: PropTypes.bool,
+        dontPreserveSettingsOnSwitch: PropTypes.bool,
         filter: PropTypes.string,
         layers: PropTypes.array,
         mapConfig: PropTypes.object,
@@ -38,16 +38,17 @@ class ThemeList extends React.Component {
         setThemeLayersList: PropTypes.func,
         showLayerAfterChangeTheme: PropTypes.bool,
         themes: PropTypes.object
-    }
+    };
     state = {
         expandedGroups: [],
         visibleThemeInfoMenu: null
-    }
+    };
     groupMatchesFilter = (group, filter) => {
         if (group && group.items) {
             for (let i = 0, n = group.items.length; i < n; ++i) {
                 if (removeDiacritics(group.items[i].title).match(filter) ||
-                   removeDiacritics(group.items[i].keywords).match(filter)) {
+                    removeDiacritics(group.items[i].keywords || "").match(filter) ||
+                    removeDiacritics(group.items[i].abstract || "").match(filter)) {
                     return true;
                 }
             }
@@ -60,7 +61,7 @@ class ThemeList extends React.Component {
             }
         }
         return false;
-    }
+    };
     renderThemeGroup = (group, filter) => {
         const assetsPath = ConfigUtils.getAssetsPath();
         let subdirs = (group && group.subdirs ? group.subdirs : []);
@@ -74,7 +75,7 @@ class ThemeList extends React.Component {
             }
             return (
                 <li className={"theme-group-header " + (expanded ? "theme-group-header-expanded" : "")} key={subdir.id}>
-                    <span onClick={() => this.setState({expandedGroups: expanded ? this.state.expandedGroups.filter(id => id !== subdir.id) : [...this.state.expandedGroups, subdir.id]})}>
+                    <span onClick={() => this.setState((state) => ({expandedGroups: expanded ? state.expandedGroups.filter(id => id !== subdir.id) : [...state.expandedGroups, subdir.id]}))}>
                         {this.props.collapsibleGroups ? (<Icon icon={expanded ? "collapse" : "expand"} />) : null} {subdir.title}
                     </span>
                     {expanded ? this.renderThemeGroup(subdir, filter) : null}
@@ -95,10 +96,10 @@ class ThemeList extends React.Component {
                         if ((match = removeDiacritics(item.title).match(filter))) {
                             matches.push([LocaleUtils.trmsg("themeswitcher.match.title"), this.extractSubstr(match, item.title), item.title]);
                         }
-                        if ((match = removeDiacritics(item.keywords).match(filter))) {
+                        if ((match = removeDiacritics(item.keywords || "").match(filter))) {
                             matches.push([LocaleUtils.trmsg("themeswitcher.match.keywords"), this.extractSubstr(match, item.keywords), item.keywords]);
                         }
-                        if ((match = removeDiacritics(item.abstract).match(filter))) {
+                        if ((match = removeDiacritics(item.abstract || "").match(filter))) {
                             matches.push([LocaleUtils.trmsg("themeswitcher.match.abstract"), this.extractSubstr(match, item.abstract), item.abstract]);
                         }
                     }
@@ -151,7 +152,7 @@ class ThemeList extends React.Component {
                 {subtree}
             </ul>
         );
-    }
+    };
     groupContainsActiveTheme = (group) => {
         for (const item of (group.items || [])) {
             if (item.id === this.props.activeTheme.id) {
@@ -164,7 +165,7 @@ class ThemeList extends React.Component {
             }
         }
         return false;
-    }
+    };
     render() {
         const filter = this.props.filter ? new RegExp(removeDiacritics(this.props.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i") : null;
         return (
@@ -186,10 +187,17 @@ class ThemeList extends React.Component {
             cleanText.substr(match.index, cleanFilter.length),
             cleanText.substr(match.index + cleanFilter.length)
         ];
-    }
+    };
     setTheme = (theme) => {
         if (theme.restricted) {
+            // eslint-disable-next-line
             alert(LocaleUtils.tr("themeswitcher.restrictedthemeinfo"));
+            return;
+        }
+        const hasUserLayer = this.props.layers.find(layer => layer.role === LayerRole.USERLAYER);
+        const preserveNonThemeLayers = ConfigUtils.getConfigProp("preserveNonThemeLayersOnThemeSwitch", this.props.activeTheme);
+        // eslint-disable-next-line
+        if (hasUserLayer && !preserveNonThemeLayers && !confirm(LocaleUtils.tr("themeswitcher.confirmswitch"))) {
             return;
         }
         this.props.setActiveLayerInfo(null, null);
@@ -198,29 +206,29 @@ class ThemeList extends React.Component {
         } else {
             this.props.setCurrentTask(null);
         }
-        this.props.changeTheme(theme, this.props.themes, !this.props.dontPreserveLayersOnSwitch);
-    }
+        this.props.changeTheme(theme, this.props.themes, !this.props.dontPreserveSettingsOnSwitch);
+    };
     toggleThemeInfoMenu = (ev, themeId) => {
         ev.stopPropagation();
-        this.setState({visibleThemeInfoMenu: this.state.visibleThemeInfoMenu === themeId ? null : themeId});
-    }
+        this.setState((state) => ({visibleThemeInfoMenu: state.visibleThemeInfoMenu === themeId ? null : themeId}));
+    };
     addThemeLayers = (ev, theme) => {
         ev.stopPropagation();
         this.props.addLayer(ThemeUtils.createThemeLayer(theme, this.props.themes, LayerRole.USERLAYER));
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
-    }
+    };
     getThemeLayersToList = (ev, theme) => {
         ev.stopPropagation();
         this.props.setThemeLayersList(theme);
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
-    }
+    };
     openInTab = (ev, themeid) => {
         ev.stopPropagation();
         const url = location.href.split("?")[0] + '?t=' + themeid;
         window.open(url, '_blank');
-    }
+    };
 }
 
 const selector = (state) => ({

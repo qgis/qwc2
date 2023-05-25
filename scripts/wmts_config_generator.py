@@ -12,97 +12,134 @@ import sys
 import urllib.request
 from xml.dom.minidom import parseString
 
+
+def getFirstElementByTagName(parent, name):
+    try:
+        return parent.getElementsByTagName(name)[0]
+    except:
+        return None
+
+def getFirstElementValueByTagName(parent, name):
+    try:
+        return parent.getElementsByTagName(name)[0].firstChild.nodeValue
+    except:
+        return ""
+
+
 if len(sys.argv) < 4:
-    print("Usage: %s WMTS_Capabilities_URL LayerName Projection [format=png] [style=default]" % sys.argv[0], file=sys.stderr)
+    print("Usage: %s WMTS_Capabilities_URL LayerName Projection [style=default]" % sys.argv[0], file=sys.stderr)
     sys.exit(1)
 
-url = sys.argv[1]
-layername = sys.argv[2]
-projection = sys.argv[3]
-fmt = sys.argv[4] if len(sys.argv) > 4 else "png"
-style = sys.argv[5] if len(sys.argv) > 5 else "default"
+capabilitiesUrl = sys.argv[1]
+layerName = sys.argv[2]
+crs = sys.argv[3]
+styleIdentifier = sys.argv[4] if len(sys.argv) > 4 else ""
+
 
 try:
-    response = urllib.request.urlopen(sys.argv[1])
+    response = urllib.request.urlopen(capabilitiesUrl)
 except:
-    print("Error: failed to download %s" % url, file=sys.stderr)
+    print("Failed to download capabilities", file=sys.stderr)
+    sys.exit(1)
 
 try:
     capabilities = parseString(response.read())
-    contents = capabilities.getElementsByTagName("Contents")[0]
 except:
-    print("Error: failed to parse %s" % url, file=sys.stderr)
-
-# Search for layer
-layer = None
-try:
-    for l in contents.getElementsByTagName("Layer"):
-        ident = l.getElementsByTagName("ows:Identifier")[0]
-        if ident.firstChild.nodeValue == layername:
-            layer = l
-            break
-except:
-    pass
-
-if not layer:
-    print("Error: failed to find layer %s" % layername, file=sys.stderr)
-
-# Scan all tile matrix sets
-tilematrixsets = {}
-for tms in contents.getElementsByTagName("TileMatrixSet"):
-    if not tms.parentNode == contents:
-        continue
-    ident = tms.getElementsByTagName("ows:Identifier")[0].firstChild.nodeValue
-    crs = tms.getElementsByTagName("ows:SupportedCRS")[0].firstChild.nodeValue
-    matrices = tms.getElementsByTagName("TileMatrix")
-    origin = list(map(float, matrices[0].getElementsByTagName("TopLeftCorner")[0].firstChild.nodeValue.split(" ")))
-    tilesize = [
-        int(matrices[0].getElementsByTagName("TileWidth")[0].firstChild.nodeValue),
-        int(matrices[0].getElementsByTagName("TileHeight")[0].firstChild.nodeValue)
-    ]
-    resolutions = []
-    for matrix in matrices:
-        sd = matrix.getElementsByTagName("ScaleDenominator")[0]
-        # 0.00028: assumed pixel width in meters, as per WMTS standard
-        resolutions.append(float(sd.firstChild.nodeValue) * 0.00028)
-
-    tilematrixsets[ident] = {
-        "crs": crs,
-        "origin": origin,
-        "tilesize": tilesize,
-        "resolutions": resolutions
-    }
-
-# Look for a matching tile matrix set
-matrixconfig = None
-for tmsl in layer.getElementsByTagName("TileMatrixSetLink"):
-    ident = tmsl.getElementsByTagName("TileMatrixSet")[0].firstChild.nodeValue
-
-    if ident in tilematrixsets and tilematrixsets[ident]["crs"] == projection:
-        matrixconfig = tilematrixsets[ident]
-        break
-
-if not matrixconfig:
-    print("Error: failed to find file matrix for projection %s" % projection, file=sys.stderr)
-    print("Available tile matrix sets:")
-    print(json.dumps(tilematrixsets, indent=2))
+    print("Failed to parse capabilities", file=sys.stderr)
     sys.exit(1)
 
-# Generate config
-resurl = re.sub("\.\w+$", '', layer.getElementsByTagName("ResourceURL")[0].getAttribute("template")) + "." + fmt
-resurl = resurl.replace("{Style}", style)
-config = {
+contents = getFirstElementByTagName(capabilities, "Contents")
+
+# Search for layer
+targetLayer = None
+for layer in contents.getElementsByTagName("Layer"):
+    identifier = getFirstElementValueByTagName(layer, "ows:Identifier")
+    if identifier == layerName:
+        targetLayer = layer
+        break
+
+if not targetLayer:
+    print("Could not find layer %s in capabilities" % layerName, file=sys.stderr)
+    sys.exit(1)
+
+# Get supported tile matrix
+layerTileMatrixSet = []
+for tileMatrixSetLink in targetLayer.getElementsByTagName("TileMatrixSetLink"):
+    layerTileMatrixSet.append(getFirstElementValueByTagName(tileMatrixSetLink, "TileMatrixSet"))
+
+# Get best tile matrix
+tileMatrix = None
+tileMatrixName = ""
+for child in contents.childNodes:
+    if child.nodeName == "TileMatrixSet":
+        tileMatrixSet = child
+        tileMatrixName = getFirstElementValueByTagName(tileMatrixSet, "ows:Identifier")
+        supportedCrs = getFirstElementValueByTagName(tileMatrixSet, "ows:SupportedCRS")
+        crsMatch = re.search('(EPSG).*:(\d+)', supportedCrs)
+        if crsMatch and crs == "EPSG:" + crsMatch.group(2) and tileMatrixName in layerTileMatrixSet:
+            tileMatrix = tileMatrixSet.getElementsByTagName("TileMatrix")
+            break
+
+if not tileMatrix:
+    print("Could not find compatible tile matrix", file=sys.stderr)
+    sys.exit(1)
+
+# Compute origin and resolutions
+origin = list(map(float, filter(bool, getFirstElementValueByTagName(tileMatrix[0], "TopLeftCorner").split(" "))))
+tileSize = [
+    int(getFirstElementValueByTagName(tileMatrix[0], "TileWidth")),
+    int(getFirstElementValueByTagName(tileMatrix[0], "TileHeight"))
+]
+resolutions = []
+for entry in tileMatrix:
+    scaleDenominator = getFirstElementValueByTagName(entry, "ScaleDenominator")
+    # 0.00028: assumed pixel width in meters, as per WMTS standard
+    resolutions.append(float(scaleDenominator) * 0.00028)
+
+# Determine style
+if not styleIdentifier:
+    for style in targetLayer.getElementsByTagName("Style"):
+        if style.getAttribute("isDefault") == "true":
+            styleIdentifier = getFirstElementValueByTagName(style, "ows:Identifier")
+            break
+
+# Resource URL
+tileUrl = None
+for resourceURL in targetLayer.getElementsByTagName("ResourceURL"):
+    if resourceURL.getAttribute("resourceType") == "tile":
+        tileUrl = resourceURL.getAttribute("template")
+
+# Dimensions
+for dimension in targetLayer.getElementsByTagName("Dimension"):
+    dimensionIdentifier = getFirstElementValueByTagName(dimension, "ows:Identifier")
+    dimensionValue = getFirstElementValueByTagName(dimension, "Default")
+    tileUrl = tileUrl.replace("{%s}" % dimensionIdentifier, dimensionValue)
+
+# BBox
+bounds = []
+wgs84BoundingBox = getFirstElementByTagName(targetLayer, "ows:WGS84BoundingBox")
+if wgs84BoundingBox is not None:
+    lowerCorner = list(map(float, filter(bool, getFirstElementValueByTagName(wgs84BoundingBox,"ows:LowerCorner").split(" "))))
+    upperCorner = list(map(float, filter(bool, getFirstElementValueByTagName(wgs84BoundingBox,"ows:UpperCorner").split(" "))))
+    bounds = lowerCorner + upperCorner
+
+result = {
     "type": "wmts",
-    "url": resurl,
-    "title": layer.getElementsByTagName("ows:Title")[0].firstChild.nodeValue,
-    "name": layername,
-    "originX": matrixconfig["origin"][0],
-    "originY": matrixconfig["origin"][1],
+    "url": tileUrl,
+    "name": layerName,
     "tileMatrixPrefix": "",
-    "tileMatrixSet": ident,
-    "projection:": projection,
-    "tileSize": matrixconfig["tilesize"],
-    "thumbnail": "img/mapthumbs/" + layername + ".jpg",
-    "resolutions": matrixconfig["resolutions"]
+    "tileMatrixSet": tileMatrixName,
+    "originX": origin[0],
+    "originY": origin[1],
+    "projection": crs,
+    "tileSize": tileSize,
+    "style": styleIdentifier,
+    "bbox": {
+        "crs": "EPSG:4326",
+        "bounds": bounds
+    },
+    "resolutions": resolutions,
+    "thumbnail": "img/mapthumbs/" + layerName + ".jpg",
 }
-print(json.dumps(config, indent=2))
+
+print(json.dumps(result, indent=2))

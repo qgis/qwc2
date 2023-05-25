@@ -1,9 +1,7 @@
-input.theme-switcher-filter {
-    flex: 100;
+div.theme-switcher-filter {
+    flex: 100 1 auto;
     max-width: 15em;
-    min-width: 0;
     font-weight: normal;
-    padding: 0.25em;
+    color: var(--text-color);
     margin: 0 0.5em;
-    color: @base_fg@;
 }

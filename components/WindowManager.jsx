@@ -21,12 +21,8 @@ class WindowManager extends React.Component {
         closeWindow: PropTypes.func,
         currentTheme: PropTypes.object,
         windows: PropTypes.object
-    }
-    constructor(props) {
-        super(props);
-        this.iframes = {};
-    }
-    componentDidUpdate(prevProps, prevState) {
+    };
+    componentDidUpdate(prevProps) {
         if (this.props.currentTheme !== prevProps.currentTheme) {
             this.props.closeAllWindows();
         }
@@ -55,27 +51,27 @@ class WindowManager extends React.Component {
                 initialWidth={data.options.w || 640}
                 initiallyDocked={docked} key={key}
                 onClose={() => this.closeWindow(key)}
-                title={"windows." + key}>
-                <iframe className="windows-iframe-dialog-body" onLoad={(ev) => { this.iframes[key] = ev.target; }} role="body" src={data.url} />
+                title={data.options.title || "windows." + key}>
+                <iframe className="windows-iframe-dialog-body" name={key} role="body" src={data.url} />
             </ResizeableWindow>
         );
-    }
+    };
     renderNotification = (key, data) => {
         return (
             <MessageBar hideOnTaskChange key={key} onHide={() => this.closeWindow(key)}>
                 <span role="body">{data.text}</span>
             </MessageBar>
         );
-    }
+    };
     closeWindow = (key) => {
-        delete this.iframes[key];
         this.props.closeWindow(key);
-    }
+    };
     printIframe = (key) => {
-        if (this.iframes[key]) {
-            this.iframes[key].contentWindow.print();
+        if (window.frames[key]) {
+            window.frames[key].focus();
+            window.frames[key].print();
         }
-    }
+    };
     boolVal = (value, delft = false) => {
         if (value === undefined || value === null) {
             return delft;
@@ -85,17 +81,17 @@ class WindowManager extends React.Component {
             return delft;
         }
         return ["0", "false"].includes(textVal) ? false : true;
-    }
+    };
     get = (obj, key, deflt) => {
         if (obj[key] === undefined) {
             return deflt;
         }
         return obj[key];
-    }
+    };
 }
 
 const selector = (state) => ({
-    windows: state.windows,
+    windows: state.windows.entries,
     currentTheme: state.theme.current
 });
 

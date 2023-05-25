@@ -12,12 +12,20 @@ import locateReducer from '../reducers/locate';
 ReducerIndex.register("locate", locateReducer);
 
 export const CHANGE_LOCATE_STATE = 'CHANGE_LOCATE_STATE';
+export const CHANGE_LOCATE_POSITION = 'CHANGE_LOCATE_POSITION';
 export const LOCATE_ERROR = 'LOCATE_ERROR';
 
 export function changeLocateState(state) {
     return {
         type: CHANGE_LOCATE_STATE,
         state: state
+    };
+}
+
+export function changeLocatePosition(position) {
+    return {
+        type: CHANGE_LOCATE_POSITION,
+        position: position
     };
 }
 

@@ -1,0 +1,234 @@
+div.attribtable-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+}
+
+div.attribtable-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 2.75em;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(200, 200, 200, 0.9);
+    z-index: 2;
+}
+
+div.attribtable-overlay > div.spinner {
+    width: 4em;
+    height: 4em;
+    margin-right: 1em;
+}
+
+div.dock-window > div.resizeable-window-body > div.attribtable-body {
+    max-height: calc(100vh - 8.75em); /* viewport - topbar - bottombar - sidebar_titlebar - window padding*/
+    max-height: calc(var(--vh, 1vh) * 100 - 8.75em); /* viewport - topbar - bottombar - sidebar_titlebar - window padding*/
+}
+
+div.attribtable-toolbar {
+    display: flex;
+    align-items: center;
+    padding: 0.25em;
+    flex: 0 0 auto;
+}
+
+div.attribtable-toolbar > * {
+    margin: 0.125em;
+}
+
+div.attribtable-toolbar > select {
+    border: 1px solid var(--border-color);
+    height: 2em;
+}
+
+div.attribtable-contents {
+    flex: 1 1 auto;
+    background-color: var(--list-bg-color);
+    overflow: auto;
+    border: 1px solid var(--border-color);
+}
+
+table.attribtable-table {
+    min-width: 100%;
+}
+
+table.attribtable-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 0;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    box-shadow: inset -1px 0 0 var(--border-color),
+                inset 0 -1px 0 var(--border-color);
+}
+
+table.attribtable-table th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+}
+
+table.attribtable-table th > span {
+    margin: 0 0 -1px -1px;
+    padding: 0.25em;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+span.attribtable-table-headername {
+    flex: 1 1 auto;
+    text-align: left;
+}
+
+table.attribtable-table th > span > span.icon {
+    flex: 0 0 auto;
+    margin-left: 0.5em;
+}
+
+table.attribtable-table tr:nth-child(even) {
+    background-color: var(--list-item-bg-color-even);
+}
+
+table.attribtable-table tr:hover:not(.row-disabled) {
+    background-color: var(--list-item-bg-color-hover);
+    color: var(--list-item-text-color-hover);
+}
+
+table.attribtable-table td:first-child {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    align-items: center;
+    padding: 0.25em 0.5em;
+    background-clip: padding-box;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    width: 2.5em;
+}
+
+table.attribtable-table td:first-child::after {
+    position: absolute;
+    right: -1px;
+    top: 0;
+    bottom: 0;
+    border-right: 1px solid var(--border-color);
+    content: '';
+}
+
+span.attribtable-table-ldraghandle,
+span.attribtable-table-rdraghandle {
+    display: block;
+    position: absolute;
+    width: 4px;
+    top: 0;
+    bottom: 0;
+    cursor: ew-resize;
+}
+
+span.attribtable-table-ldraghandle {
+    left: -1px;
+}
+
+span.attribtable-table-rdraghandle {
+    right: 0px;
+}
+
+span.attribtable-table-tdraghandle,
+span.attribtable-table-bdraghandle {
+    display: block;
+    position: absolute;
+    height: 4px;
+    left: 0;
+    right: 0;
+    cursor: ns-resize;
+}
+
+span.attribtable-table-tdraghandle {
+    top: -1px;
+}
+
+span.attribtable-table-bdraghandle {
+    bottom: 0px;
+}
+
+table.attribtable-table td {
+    border: 1px solid var(--border-color);
+    text-align: center;
+    vertical-align: center;
+    position: relative;
+}
+
+table.attribtable-table td > input:not([type=checkbox]),
+table.attribtable-table td > select,
+table.attribtable-table td > span.edit-upload-field {
+    width: 100%;
+    min-width: 4em;
+    border: none!important;
+    background-color: transparent!important;
+    margin: 0;
+}
+
+table.attribtable-table td > input.attribtable-content-editable-hiddeninput {
+    visibility: hidden;
+    min-width: 6em;
+}
+
+table.attribtable-table td > div.attribtable-content-editable {
+    padding: 0.125em;
+    text-align: left;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+table.attribtable-table td > div.attribtable-content-editable:focus {
+    outline: var(--focus-outline);
+}
+
+table.attribtable-table td > *:disabled,
+table.attribtable-table tr.row-disabled,
+table.attribtable-table tr.row-disabled * {
+    color: var(--text-color-disabled);
+    cursor: not-allowed!important;
+}
+
+div.attribtable-footbar {
+    flex: 0 0 auto;
+    display: flex;
+}
+
+div.attribtable-footbar > div {
+    margin: 0.25em;
+}
+
+div.attribtable-footbar > div.navbar {
+    flex: 0 0 auto;
+}
+
+div.attribtable-filter {
+    display: inline-flex;
+    align-items: center;
+    flex: 1 1 auto;
+}
+
+div.attribtable-filter input {
+    flex: 1 1 auto;
+    width: 0;
+}
+
+body.ewresizing, body.ewresizing * {
+    cursor: ew-resize!important;
+}
+
+body.nsresizing, body.nsresizing * {
+    cursor: ns-resize!important;
+}

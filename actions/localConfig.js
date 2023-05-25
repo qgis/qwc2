@@ -12,6 +12,7 @@ ReducerIndex.register("localConfig", localConfigReducer);
 
 export const LOCAL_CONFIG_LOADED = 'LOCAL_CONFIG_LOADED';
 export const SET_STARTUP_PARAMETERS = 'SET_STARTUP_PARAMETERS';
+export const SET_COLOR_SCHEME = 'SET_COLOR_SCHEME';
 
 export function localConfigLoaded(config) {
     return {
@@ -24,5 +25,13 @@ export function setStartupParameters(params) {
     return {
         type: SET_STARTUP_PARAMETERS,
         params
+    };
+}
+
+export function setColorScheme(colorScheme, storeInLocalStorage = false) {
+    return {
+        type: SET_COLOR_SCHEME,
+        colorScheme,
+        storeInLocalStorage
     };
 }

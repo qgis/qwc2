@@ -7,11 +7,56 @@
  */
 
 import isEmpty from 'lodash.isempty';
+import geojsonBbox from 'geojson-bounding-box';
+import ol from 'openlayers';
+import url from 'url';
+import axios from 'axios';
+import {v1 as uuidv1} from 'uuid';
 import {LayerRole} from '../actions/layers';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from './VectorLayerUtils';
+
+
+function identifyRequestParams(layer, queryLayers, projection, params) {
+    let format = 'text/plain';
+    const infoFormats = layer.infoFormats || [];
+    if (infoFormats.includes('text/xml') && (layer.serverType === 'qgis' || infoFormats.length === 1)) {
+        format = 'text/xml';
+    } else if (infoFormats.includes('application/geojson')) {
+        format = 'application/geojson';
+    } else if (infoFormats.includes('application/geo+json')) {
+        format = 'application/geo+json';
+    } else if (infoFormats.includes('application/json')) {
+        format = 'application/json';
+    } else if (infoFormats.includes('text/html')) {
+        format = 'text/html';
+    } else if (infoFormats.includes('application/vnd.ogc.gml')) {
+        format = 'application/vnd.ogc.gml';
+    }
+    return {
+        url: layer.featureInfoUrl.split("?")[0],
+        params: {
+            ...url.parse(layer.featureInfoUrl,  true).query,
+            service: 'WMS',
+            version: layer.version,
+            request: 'GetFeatureInfo',
+            id: layer.id,
+            layers: queryLayers,
+            query_layers: queryLayers,
+            styles: layer.style,
+            srs: projection,
+            crs: projection,
+            info_format: format,
+            with_geometry: true,
+            with_maptip: false,
+            ...layer.dimensionValues,
+            ...params
+        }
+    };
+}
 
 const IdentifyUtils = {
     getQueryLayers(maplayers, map) {
@@ -27,8 +72,8 @@ const IdentifyUtils = {
             for (let i = 0; i < queryLayers.length; ++i) {
                 if (layer.externalLayerMap && layer.externalLayerMap[queryLayers[i]]) {
                     const sublayer = LayerUtils.searchSubLayer(layer, "name", queryLayers[i]);
-                    const sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
-                    if (!isEmpty(layer.externalLayerMap[queryLayers[i]].queryLayers) && !sublayerInvisible) {
+                    const sublayerVisible = LayerUtils.layerScaleInRange(sublayer, mapScale);
+                    if (!isEmpty(layer.externalLayerMap[queryLayers[i]].queryLayers) && sublayerVisible) {
                         layers.push(layer.externalLayerMap[queryLayers[i]]);
                     }
                 } else if (layers.length > 0 && layers[layers.length - 1].id === layer.id) {
@@ -46,104 +91,121 @@ const IdentifyUtils = {
         const resolution = MapUtils.computeForZoom(map.resolutions, map.zoom);
         const dx = 0.5 * resolution * size[0];
         const dy = 0.5 * resolution * size[1];
-        const version = layer.version || "1.3.0";
+        const version = layer.version;
         let bbox = [center[0] - dx, center[1] - dy, center[0] + dx, center[1] + dy];
         if (CoordinatesUtils.getAxisOrder(map.projection).substr(0, 2) === 'ne' && version === '1.3.0') {
             bbox = [center[1] - dx, center[0] - dy, center[1] + dx, center[0] + dy];
         }
-        const digits = CoordinatesUtils.getUnits(map.projection).units === 'degrees' ? 4 : 0;
-
-        let format = 'text/plain';
-        const infoFormats = layer.infoFormats || [];
-        if (infoFormats.includes('text/xml') && (!layer.external || infoFormats.length === 1)) {
-            format = 'text/xml';
-        } else if (infoFormats.includes('application/json')) {
-            format = 'application/json';
-        } else if (infoFormats.includes('text/html')) {
-            format = 'text/html';
-        } else if (infoFormats.includes('application/vnd.ogc.gml')) {
-            format = 'application/vnd.ogc.gml';
+        if (layer.params.FILTER) {
+            options.filter = layer.params.FILTER;
         }
-        return {
-            url: layer.featureInfoUrl.replace(/[?].*$/g, ''),
-            params: {
-                service: 'WMS',
-                version: version,
-                request: 'GetFeatureInfo',
-                id: layer.id,
-                layers: queryLayers,
-                query_layers: queryLayers,
-                styles: layer.style,
-                x: Math.round(size[0] * 0.5),
-                y: Math.round(size[1] * 0.5),
-                i: Math.round(size[0] * 0.5),
-                j: Math.round(size[1] * 0.5),
-                height: size[0],
-                width: size[1],
-                srs: map.projection,
-                crs: map.projection,
-                bbox: bbox.join(","),
-                info_format: format,
-                with_geometry: true,
-                with_maptip: false,
-                feature_count: 10,
-                map: layer.params.MAP,
-                ...options
-            },
-            metadata: {
-                layer: layer.title,
-                posstr: center[0].toFixed(digits) + ", " + center[1].toFixed(digits),
-                pos: center
-            }
+        const params = {
+            height: size[0],
+            width: size[1],
+            feature_count: 100,
+            x: Math.round(size[0] * 0.5),
+            y: Math.round(size[1] * 0.5),
+            i: Math.round(size[0] * 0.5),
+            j: Math.round(size[1] * 0.5),
+            bbox: bbox.join(","),
+            ...options
         };
+        return identifyRequestParams(layer, queryLayers, map.projection, params);
     },
     buildFilterRequest(layer, queryLayers, filterGeom, map, options = {}) {
         const size = [101, 101];
-        const version = layer.version || "1.3.0";
-
-        let format = 'text/plain';
-        if (layer.infoFormats.includes('text/xml') && (!layer.external || layer.infoFormats.length === 1)) {
-            format = 'text/xml';
-        } else if (layer.infoFormats.includes('application/json')) {
-            format = 'application/json';
-        } else if (layer.infoFormats.includes('text/html')) {
-            format = 'text/html';
-        }
-        return {
-            url: layer.featureInfoUrl.replace(/[?].*$/g, ''),
-            params: {
-                service: 'WMS',
-                version: version,
-                request: 'GetFeatureInfo',
-                FILTER_GEOM: filterGeom,
-                height: size[0],
-                width: size[1],
-                id: layer.id,
-                layers: queryLayers,
-                query_layers: queryLayers,
-                styles: layer.style,
-                srs: map.projection,
-                crs: map.projection,
-                info_format: format,
-                with_geometry: true,
-                with_maptip: false,
-                feature_count: 100,
-                map: layer.params.MAP,
-                ...options
-            },
-            metadata: {
-                layer: layer.title,
-                posstr: "Region"
-            }
+        const params = {
+            height: size[0],
+            width: size[1],
+            feature_count: 100,
+            FILTER_GEOM: filterGeom,
+            ...options
         };
+        return identifyRequestParams(layer, queryLayers, map.projection, params);
     },
-    parseXmlFeature(feature, geometrycrs, id, featurereport, displayfield, layername, layerinfo) {
+    sendRequest(request, responseHandler) {
+        const urlParts = url.parse(request.url, true);
+        urlParts.query = {
+            ...urlParts.query,
+            ...request.params
+        };
+        delete urlParts.search;
+        const requestUrl = url.format(urlParts);
+        const maxUrlLength = ConfigUtils.getConfigProp("wmsMaxGetUrlLength", null, 2048);
+        if (requestUrl.length > maxUrlLength) {
+            // Switch to POST if url is too long
+            const reqUrlParts = requestUrl.split("?");
+            const options = {
+                headers: {'content-type': 'application/x-www-form-urlencoded'}
+            };
+            axios.post(reqUrlParts[0], reqUrlParts[1], options).then(postResp => {
+                responseHandler(postResp.data);
+            }).catch(() => {
+                axios.get(request.url, {params: request.params}).then(getResp => {
+                    responseHandler(getResp.data);
+                }).catch(() => {
+                    responseHandler(null);
+                });
+            });
+        } else {
+            axios.get(request.url, {params: request.params}).then(getResp => {
+                responseHandler(getResp.data);
+            }).catch(() => {
+                responseHandler(null);
+            });
+        }
+    },
+    parseResponse(response, layer, format, clickPoint, projection, featureInfoReturnsLayerName, layers) {
+        const digits = CoordinatesUtils.getUnits(projection).units === 'degrees' ? 4 : 0;
+        const posstr = clickPoint[0].toFixed(digits) + ", " + clickPoint[1].toFixed(digits);
+        let results = {};
+        if (["application/json", "application/geojson", "application/geo+json", "GeoJSON"].includes(format)) {
+            results = IdentifyUtils.parseGeoJSONResponse(response, projection, layer);
+        } else if (format === "text/xml") {
+            results = IdentifyUtils.parseXmlResponse(response, projection, posstr, featureInfoReturnsLayerName, layers);
+        } else if (format === "application/vnd.ogc.gml") {
+            results = IdentifyUtils.parseGmlResponse(response, projection, posstr, layer);
+        } else if (format === "text/plain") {
+            results[layer.name] = [{type: "text", text: response, id: posstr, layername: layer.name, layertitle: layer.title}];
+        } else if (format === "text/html") {
+            results[layer.name] = [{type: "html", text: response, id: posstr, layername: layer.name, layertitle: layer.title}];
+        }
+        // Add clickPos, bounding box, displayname and layer name / title
+        for (const layername of Object.keys(results)) {
+            for (const item of results[layername]) {
+                if (item.type === "Feature" && !item.bbox && item.geometry) {
+                    item.crs = projection;
+                    item.bbox = geojsonBbox(item);
+                }
+                item.clickPos = clickPoint;
+                item.displayname = IdentifyUtils.determineDisplayName(layer, layername, item);
+            }
+        }
+        return results;
+    },
+    determineDisplayName(layer, layername, item) {
+        const properties = item.properties || {};
+        if (item.displayfield) {
+            if (properties[item.displayfield] && (properties[item.displayfield][0] !== "<")) {
+                return properties[item.displayfield];
+            }
+        }
+        const sublayer = LayerUtils.searchSubLayer(layer, 'name', layername);
+        if (sublayer && sublayer.displayField) {
+            if (properties[sublayer.displayField] && (properties[sublayer.displayField][0] !== "<")) {
+                return properties[sublayer.displayField];
+            }
+        }
+        return properties.name || properties.Name || properties.NAME || item.id;
+    },
+    parseXmlFeature(feature, geometrycrs, id, featurereport, displayfield, layername, layertitle, layerinfo) {
         const featureResult = {};
         featureResult.type = "Feature";
         featureResult.id = id;
         featureResult.featurereport = featurereport;
         featureResult.displayfield = displayfield;
         featureResult.layername = layername;
+        featureResult.layertitle = layertitle;
         featureResult.layerinfo = layerinfo;
         const bboxes = feature.getElementsByTagName("BoundingBox");
         if (bboxes.length > 0) {
@@ -185,47 +247,66 @@ const IdentifyUtils = {
         }
         return featureResult;
     },
-    parseXmlResponse(response, geometrycrs) {
+    parseXmlResponse(response, geometrycrs, posstr = null, featureInfoReturnsLayerName = false, mapLayers = null) {
         const parser = new DOMParser();
-        const doc = parser.parseFromString(response.data, "text/xml");
+
+        const doc = parser.parseFromString(response, "text/xml");
         const layers = [].slice.call(doc.firstChild.getElementsByTagName("Layer"));
         const result = {};
+        let idcounter = 0;
         for (const layer of layers) {
             const featurereport = layer.attributes.featurereport ? layer.attributes.featurereport.value : null;
             const displayfield = layer.attributes.displayfield ? layer.attributes.displayfield.value : null;
-            const layername = layer.attributes.layername ? layer.attributes.layername.value : null;
+            let layername = "";
+            let layertitle = "";
+            if (featureInfoReturnsLayerName) {
+                layername = layer.attributes.name.value;
+                const match = LayerUtils.searchLayer(mapLayers, 'name', layername);
+                layertitle = match ? match.sublayer.title : layername;
+            } else {
+                layertitle = layer.attributes.name.value;
+                layername = layer.attributes.layername ? layer.attributes.layername.value : layertitle;
+            }
+
             const layerinfo = layer.attributes.layerinfo ? layer.attributes.layerinfo.value : null;
             const features = [].slice.call(layer.getElementsByTagName("Feature"));
             if (features.length > 0) {
-                result[layer.attributes.name.value] = features.map(feature => this.parseXmlFeature(feature, geometrycrs, feature.attributes.id.value, featurereport, displayfield, layername, layerinfo));
+                result[layername] = features.map(feature => this.parseXmlFeature(feature, geometrycrs, feature.attributes.id.value, featurereport, displayfield, layername, layertitle, layerinfo));
             } else {
                 const attributes = [].slice.call(layer.getElementsByTagName("Attribute"));
                 if (attributes.length > 0) {
-                    result[layer.attributes.name.value] = [this.parseXmlFeature(layer, geometrycrs, response.request.metadata.posstr, featurereport, displayfield, layername, layerinfo)];
+                    const id = posstr || "" + (idcounter++);
+                    result[layername] = [this.parseXmlFeature(layer, geometrycrs, id, featurereport, displayfield, layername, layertitle, layerinfo)];
                 }
             }
         }
         return result;
     },
-    parseGeoJSONResponse(response, geometrycrs) {
+    parseGeoJSONResponse(response, geometrycrs, layer) {
         const result = {};
         (response.features || []).map(feature => {
-            // HACK Deduce layer name from feature id
-            const layer = feature.id.substr(0, feature.id.lastIndexOf("."));
-            if (result[layer] === undefined) {
-                result[layer] = [];
+            // Deduce layer name as far as possible from feature id
+            const id = feature.id || (feature.properties || {}).OBJECTID || uuidv1();
+            if (result[layer.name] === undefined) {
+                result[layer.name] = [];
             }
             let geometry = feature.geometry;
             if (geometry) {
                 geometry = VectorLayerUtils.reprojectGeometry(geometry, "EPSG:4326", geometrycrs); // GeoJSON always wgs84
             }
-            result[layer].push({...feature, geometry: geometry, id: feature.id.substr(feature.id.lastIndexOf(".") + 1)});
+            result[layer.name].push({
+                ...feature,
+                id: id,
+                geometry: geometry,
+                layername: layer.name,
+                layertitle: layer.title
+            });
         });
         return result;
     },
-    parseGmlResponse(response) {
+    parseGmlResponse(response, geometrycrs, posstr, layer) {
         const parser = new DOMParser();
-        const doc = parser.parseFromString(response.data, "text/xml");
+        const doc = parser.parseFromString(response, "text/xml");
         const result = {};
 
         const msGMLOutput = doc.getElementsByTagName("msGMLOutput")[0];
@@ -235,32 +316,22 @@ const IdentifyUtils = {
                 const layerName = layerEl.nodeName.replace(/_layer$/, "");
                 const featureName = layerName + "_feature";
                 result[layerName] = [];
+
                 for (const featureEl of [].slice.call(layerEl.getElementsByTagName(featureName))) {
-                    const feature = {
-                        type: "Feature",
-                        id: count++,
-                        layername: layerName,
-                        properties: {}
-                    };
-                    for (const propEl of [].slice.call(featureEl.children)) {
-                        if (propEl.nodeName === "gml:boundedBy") {
-                            const boxEl = propEl.getElementsByTagName("gml:Box")[0];
-                            if (boxEl) {
-                                const coordinatesEl = boxEl.getElementsByTagName("gml:coordinates")[0];
-                                if (coordinatesEl) {
-                                    feature.crs = boxEl.getAttribute("srsName");
-                                    feature.bbox = coordinatesEl.textContent.split(/[,\s]/).map(coo => parseFloat(coo));
-                                }
-                            }
-                        } else {
-                            feature.properties[propEl.nodeName] = propEl.textContent;
-                        }
-                    }
+
+                    const context = [{
+                        featureType: featureName
+                    }];
+                    const feature = new ol.format.GeoJSON().writeFeatureObject(new ol.format.GML2().readFeatureElement(featureEl, context));
+                    feature.id = count++;
+                    feature.layername = layer.name;
+                    feature.layertitle = layer.title;
+                    delete feature.properties.boundedBy;
                     result[layerName].push(feature);
                 }
             }
         } else {
-            result[response.request.metadata.layer] = [{type: "text", text: response.data, id: response.request.metadata.posstr}];
+            result[layer.name] = [{type: "text", text: response, id: posstr}];
         }
         return result;
     }

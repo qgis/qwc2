@@ -29,11 +29,11 @@ export default class ColorButton extends React.Component {
     static propTypes = {
         color: PropTypes.array,
         onColorChanged: PropTypes.func
-    }
+    };
     static defaultProps = {
         color: [255, 255, 255, 1],
         onColorChanged: (/* color */) => {}
-    }
+    };
     constructor(props) {
         super(props);
         this.state = {
@@ -53,11 +53,13 @@ export default class ColorButton extends React.Component {
                     <span style={{backgroundColor: this.cssColor(curColor)}} />
                 </span>
                 <div className="colorbutton-picker" ref={el => { this.pickerEl = el; }} style={pickerStyle}>
-                    {defaultColors.map((color, idx) => (
-                        <span className="colorbutton-icon" key={"color" + idx} onClick={() => this.selectColor(idx)} onContextMenu={ev => this.replaceDefaultColor(ev, idx)}>
-                            <span style={{backgroundColor: this.cssColor(color)}} />
-                        </span>
-                    ))}
+                    <div className="colorbutton-picker-icons">
+                        {defaultColors.map((color, idx) => (
+                            <span className="colorbutton-icon" key={"color" + idx} onClick={() => this.selectColor(idx)} onContextMenu={ev => this.replaceDefaultColor(ev, idx)}>
+                                <span style={{backgroundColor: this.cssColor(color)}} />
+                            </span>
+                        ))}
+                    </div>
                     <div className="colorbutton-picker-input">
                         <span className="colorbutton-icon">
                             <span style={{backgroundColor: this.cssColor(curColor)}} />
@@ -86,22 +88,22 @@ export default class ColorButton extends React.Component {
             document.removeEventListener('click', this.checkClosePicker);
         }
         ev.stopPropagation();
-        this.setState({hexStr: null, pickerVisible: !this.state.pickerVisible});
-    }
+        this.setState((state) => ({hexStr: null, pickerVisible: !state.pickerVisible}));
+    };
     checkClosePicker = (ev) => {
         if (this.pickerEl && !this.pickerEl.contains(ev.target)) {
             this.togglePicker(ev);
         }
-    }
+    };
     selectColor = (idx) => {
         this.setState({hexStr: null});
         this.props.onColorChanged([...defaultColors[idx]]);
-    }
+    };
     replaceDefaultColor = (ev, idx) => {
         defaultColors[idx] = [...this.props.color];
         this.forceUpdate();
         ev.preventDefault();
-    }
+    };
     changeColor = (hexStr) => {
         const match = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexStr);
         if (match) {
@@ -111,9 +113,9 @@ export default class ColorButton extends React.Component {
         } else {
             this.setState({hexStr: hexStr});
         }
-    }
+    };
     changeColorAlpha = (alpha) => {
         const newColor = [...this.props.color.slice(0, 3), parseFloat(alpha)];
         this.props.onColorChanged(newColor);
-    }
+    };
 }

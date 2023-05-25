@@ -12,24 +12,29 @@ import {connect} from 'react-redux';
 import {addMarker, removeMarker} from '../actions/layers';
 import {UrlParams} from '../utils/PermaLinkUtils';
 
+
+/**
+ * Displays a marker in the center of the map if c=<x>,<y>&hc=1 is set in the URL.
+ */
 class StartupMarker extends React.Component {
     static propTypes = {
         addMarker: PropTypes.func,
         click: PropTypes.object,
         map: PropTypes.object,
         removeMarker: PropTypes.func,
+        /** When to remove the marker. Possible choices: onpan, onzoom, onclickonmarker. */
         removeMode: PropTypes.string, // onpan, onzoom, onclickonmarker
         startupParams: PropTypes.object,
         theme: PropTypes.object
-    }
+    };
     static defaultProps = {
         removeMode: 'onpan'
-    }
+    };
     constructor(props) {
         super(props);
         this.markerSet = false;
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         const highlight = ["true", "1"].includes("" + (this.props.startupParams && this.props.startupParams.hc || "").toLowerCase());
         if (highlight && this.props.theme && !prevProps.theme && this.props.startupParams.c) {
             UrlParams.updateParams({hc: undefined});
@@ -38,9 +43,9 @@ class StartupMarker extends React.Component {
             this.markerSet = true;
         } else if (this.markerSet) {
             if (
-                (prevProps.removeMode === 'onpan' && this.props.map.center !== prevProps.map.center && this.props.map.zoom === prevProps.map.zoom) ||
-                (prevProps.removeMode === 'onzoom' && this.props.map.zoom !== prevProps.map.zoom) ||
-                (prevProps.removeMode === 'onclickonmarker' && this.props.click && this.props.click.feature === 'startupposmarker')
+                (this.props.removeMode === 'onpan' && this.props.map.center !== prevProps.map.center && this.props.map.zoom === prevProps.map.zoom) ||
+                (this.props.removeMode === 'onzoom' && this.props.map.zoom !== prevProps.map.zoom) ||
+                (this.props.removeMode === 'onclickonmarker' && this.props.click && (this.props.click.features || []).find(entry => entry.feature === 'startupposmarker'))
             ) {
                 prevProps.removeMarker('startupposmarker');
                 this.markerSet = false;

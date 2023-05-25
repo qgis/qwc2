@@ -18,9 +18,9 @@ import {UrlParams} from '../utils/PermaLinkUtils';
 
 export const CHANGE_LOCALE = 'CHANGE_LOCALE';
 
-export function loadLocale(defaultLangData) {
+export function loadLocale(defaultLangData, defaultLang = "") {
     return dispatch => {
-        let lang = UrlParams.getParam("lang") || (navigator ? (navigator.language || navigator.browserLanguage) : "en-US");
+        let lang = defaultLang || UrlParams.getParam("lang") || (navigator ? (navigator.language || navigator.browserLanguage) : "en-US");
         const config = {
             headers: {'Content-Type': 'application/json'},
             data: {}
@@ -36,6 +36,7 @@ export function loadLocale(defaultLangData) {
             const langCode = lang.slice(0, 2).toLowerCase();
             const countries = getLanguageCountries(langCode);
             const country = countries.find(entry => entry.code_2 === langCode.toUpperCase()) ? langCode.toUpperCase() : ((countries[0] || {}).code_2 || "");
+            // eslint-disable-next-line
             console.warn("Failed to load locale for " + lang + " (" + e + "), trying " + langCode + "-" + country);
             lang = langCode + "-" + country;
             axios.get(translationsPath + '/' + lang + '.json', config).then(response => {
@@ -45,6 +46,7 @@ export function loadLocale(defaultLangData) {
                     messages: response.data.messages
                 });
             }).catch((e2) => {
+                // eslint-disable-next-line
                 console.warn("Failed to load locale for " + lang + " (" + e2 + "), defaulting to " + defaultLangData.locale);
                 dispatch({
                     type: CHANGE_LOCALE,

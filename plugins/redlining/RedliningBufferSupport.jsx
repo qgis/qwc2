@@ -10,7 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import buffer from '@turf/buffer';
-import uuid from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import NumericInput from 'react-numeric-input2';
 import {LayerRole, addLayer, addLayerFeatures} from '../../actions/layers';
 import VectorLayerPicker from '../../components/widgets/VectorLayerPicker';
@@ -25,11 +25,12 @@ class RedliningBufferSupport extends React.Component {
         layers: PropTypes.array,
         projection: PropTypes.string,
         redlining: PropTypes.object
-    }
+    };
     state = {
         bufferDistance: 0,
-        bufferLayer: null
-    }
+        bufferLayer: null,
+        bufferUnit: "meters"
+    };
     constructor(props, context) {
         super(props, context);
         this.state.bufferLayer = {
@@ -38,7 +39,7 @@ class RedliningBufferSupport extends React.Component {
             role: LayerRole.USERLAYER
         };
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate() {
         if (this.state.bufferLayer && this.state.bufferLayer.id !== "buffer" && !this.props.layers.find(layer => layer.id === this.state.bufferLayer.id)) {
             this.setState({bufferLayer: {
                 id: "buffer",
@@ -64,10 +65,16 @@ class RedliningBufferSupport extends React.Component {
         return (
             <div className="redlining-controlsbar">
                 <span>
-                    <span>{LocaleUtils.tr("redlining.bufferdistance")} [m]:&nbsp;</span>
+                    <span>{LocaleUtils.tr("redlining.bufferdistance")} &nbsp;</span>
                     <NumericInput max={99999} min={-99999}
                         mobile onChange={(nr) => this.setState({bufferDistance: nr})} precision={0} step={1}
                         strict value={this.state.bufferDistance} />
+                    <select onChange={this.changeBufferUnit} value={this.state.bufferUnit}>
+                        <option value="meters">m</option>
+                        <option value="feet">ft</option>
+                        <option value="kilometers">km</option>
+                        <option value="miles">mi</option>
+                    </select>
                 </span>
                 <span>
                     <span>{LocaleUtils.tr("redlining.bufferlayer")}:&nbsp;</span>
@@ -84,6 +91,9 @@ class RedliningBufferSupport extends React.Component {
             </div>
         );
     }
+    changeBufferUnit = (ev) => {
+        this.setState({bufferUnit: ev.target.value});
+    };
     computeBuffer = () => {
         const feature = this.props.redlining.selectedFeature;
         if (!feature || !feature.geometry || !this.state.bufferLayer) {
@@ -91,10 +101,10 @@ class RedliningBufferSupport extends React.Component {
         }
         const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.projection, "EPSG:4326");
         const wgsFeature = {...feature, geometry: wgsGeometry};
-        const output = buffer(wgsFeature, this.state.bufferDistance, {units: 'meters'});
+        const output = buffer(wgsFeature, this.state.bufferDistance, {units: this.state.bufferUnit});
         if (output && output.geometry) {
             output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", this.props.projection);
-            output.id = uuid.v4();
+            output.id = uuidv4();
             output.styleName = 'default';
             output.styleOptions = {
                 fillColor: [0, 0, 255, 0.5],
@@ -102,7 +112,7 @@ class RedliningBufferSupport extends React.Component {
             };
             this.props.addLayerFeatures(this.state.bufferLayer, [output]);
         }
-    }
+    };
 }
 
 export default {

@@ -8,9 +8,9 @@
  */
 import React from 'react';
 import {applyMiddleware, combineReducers, compose, createStore} from 'redux';
-import {createDevTools} from 'redux-devtools';
-import LogMonitor from 'redux-devtools-log-monitor';
-import DockMonitor from 'redux-devtools-dock-monitor';
+import {createDevTools} from '@redux-devtools/core';
+import {LogMonitor} from '@redux-devtools/log-monitor';
+import {DockMonitor} from '@redux-devtools/dock-monitor';
 import immutable from 'redux-immutable-state-invariant';
 import logger from 'redux-logger';
 import thunkMiddleware from  'redux-thunk';
@@ -52,7 +52,7 @@ export default class StandardStore {
 
         let finalCreateStore;
         const urlQuery = url.parse(window.location.href, true).query;
-        if (process.env.NODE_ENV !== "production" && urlQuery.debug) {
+        if (process.env.NODE_ENV !== "production" && (urlQuery.debug || "").toLowerCase() === "true") {
             const middlewares = [immutable(), thunkMiddleware, logger];
             finalCreateStore = compose(
                 applyMiddleware.apply(null, middlewares),

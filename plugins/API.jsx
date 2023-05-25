@@ -22,6 +22,9 @@ import * as themeActions from '../actions/theme';
 import * as windowsActions from '../actions/windows';
 
 
+/**
+ * Exposes an API for interacting with QWC2 to `window.qwc2`.
+ */
 class API extends React.Component {
     componentDidMount() {
         window.qwc2 = {};
@@ -33,16 +36,18 @@ class API extends React.Component {
         window.qwc2.LayerRole = LayerRole;
         window.qwc2.addExternalLayer = this.addExternalLayer;
         window.qwc2.drawScratch = this.drawScratch;
+        window.qwc2.getState = this.getState;
     }
     static propTypes = {
         addLayer: PropTypes.func,
         mapCrs: PropTypes.string,
-        setCurrentTask: PropTypes.func
-    }
+        setCurrentTask: PropTypes.func,
+        state: PropTypes.object
+    };
     render() {
         return null;
     }
-    /*
+    /**
      * Convenience method for adding an external layer.
      * - resource: An external resource of the form `wms:<service_url>#<layername>` or `wmts:<capabilities_url>#<layername>`.
      * - beforeLayerName: Insert the new layer before the layer with the specified name. If `null` or the layer does not exist, the layer is inserted on top.
@@ -54,8 +59,8 @@ class API extends React.Component {
                 this.props.addLayer(layer, null, beforeLayerName);
             }
         });
-    }
-    /*
+    };
+    /**
      * Draw scratch geometries, and return these as GeoJSON to the calling application.
      * - geomType: `Point`, `LineString`, `Polygon`, `Circle` or `Box`.
      * - message: A descriptive string to display in the tool taskbar.
@@ -65,7 +70,13 @@ class API extends React.Component {
      */
     drawScratch = (geomType, message, drawMultiple, callback, style = null) => {
         this.props.setCurrentTask("ScratchDrawing", null, null, {geomType, message, drawMultiple, callback, style});
-    }
+    };
+    /**
+     * Return the current application state.
+     */
+    getState = () => {
+        return this.props.state;
+    };
 }
 
 function extractFunctions(obj) {
@@ -78,7 +89,8 @@ function extractFunctions(obj) {
 }
 
 export default connect(state => ({
-    mapCrs: state.map.projection
+    mapCrs: state.map.projection,
+    state: state
 }), {
     ...extractFunctions(displayActions),
     ...extractFunctions(layerActions),

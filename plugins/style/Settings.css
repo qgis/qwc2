@@ -1,0 +1,11 @@
+div.settings-body {
+    padding: 0.25em;
+}
+
+table.settings-table {
+    width: 100%;
+}
+
+table.settings-table td select {
+    width: 100%;
+}

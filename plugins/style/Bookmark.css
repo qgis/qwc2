@@ -1,0 +1,81 @@
+.bookmark-body {
+    padding: 0.5em;
+    height: 100%;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.bookmark-body > h4 {
+    flex: 0 0 auto;
+}
+
+div.bookmark-create {
+    display: flex;
+    flex: 0 0 auto;
+}
+
+div.bookmark-create > input {
+    flex: 1 1 auto;
+    border-radius: 0;
+}
+
+div.bookmark-actions {
+    display: flex;
+    margin: 0.5em 0;
+}
+
+span.bookmark-actions-buttonbox {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+span.bookmark-actions-spacer {
+    flex: 1 1 auto;
+}
+
+
+span.bookmark-actions-buttonbox > button:not(:last-child) {
+    margin-right: -1px;
+}
+
+span.bookmark-actions-buttonbox > button:not(:disabled) > span.icon-trash {
+    color: red;
+}
+
+div.bookmark-list {
+    border: 1px solid var(--border-color);
+    background-color: var(--list-bg-color);
+}
+
+div.bookmark-list-item {
+    padding: 0.5em;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+div.bookmark-list-item-empty {
+    padding: 0.5em;
+    font-style: italic;
+    color: var(--text-color-disabled);
+}
+
+div.bookmark-list-item:not(.bookmark-list-item-active):nth-child(even) {
+    background-color: var(--list-item-bg-color-even);
+}
+
+div.bookmark-list-item:hover {
+    background-color: var(--list-item-bg-color-hover);
+    color: var(--list-item-text-color-hover);
+}
+
+div.bookmark-list-item-active {
+    background-color: var(--list-item-bg-color-active);
+    color: var(--list-item-text-color-active);
+}
+
+div.bookmark-list-item-active:hover {
+    background-color: var(--list-item-bg-color-active-hover);
+    color: var(--list-item-text-color-active-hover);
+}

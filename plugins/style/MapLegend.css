@@ -1,0 +1,35 @@
+div.map-legend {
+    background-color: white;
+    overflow: auto;
+    height: calc(100% + 0.5em);
+    margin: -0.25em;
+    padding: 0.25em;
+}
+
+span.map-legend-color-box {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin: 0.25em 1em 0.25em 0.25em;
+    border: 1px solid black;
+}
+
+div.map-legend-group-title {
+    font-weight: bold;
+    margin: 0.25em;
+}
+
+div.map-legend-group-entries {
+    margin-left: 0.5em;
+    border-left: 1px solid var(--border-color);
+    padding-left: 1em;
+}
+
+div.map-legend-legend-entry {
+    display: flex;
+    align-items: center;
+}
+
+div.map-legend-entry-title {
+    font-size: 95%;
+}

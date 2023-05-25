@@ -6,7 +6,7 @@ span.ColorButton {
 }
 
 span.colorbutton-icon {
-    border-radius: 0.25em;
+    border-radius: 4px;
     overflow: hidden;
     width: 2em;
     height: 2em;
@@ -15,12 +15,12 @@ span.colorbutton-icon {
     background-image: linear-gradient(45deg, #808080 25%, transparent 25%), linear-gradient(-45deg, #808080 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #808080 75%), linear-gradient(-45deg, transparent 75%, #808080 75%);
     background-size: 12px 12px;
     background-position: 0 0, 0 6px, 6px -6px, -6px 0;
-    border: 1px solid @item_border@;
+    border: 1px solid var(--border-color);
 }
 
 span.colorbutton-icon-selected {
     outline-offset: 2px;
-    outline: 1px solid @item_border@;
+    outline: 1px solid var(--border-color);
 }
 
 span.colorbutton-icon > span {
@@ -32,23 +32,21 @@ span.colorbutton-icon > span {
 div.colorbutton-picker {
     visibility: hidden;
     position: absolute;
-    left: -5.75em;
+    left: -5.5em;
     top: 2.75em;
     background-color: white;
     box-shadow: 0px 0px 5px rgba(136, 136, 136, 1);
-    padding: 0.5em;
     border-radius: 0.25em;
-    display: flex;
-    flex-wrap: wrap;
-    width: 13.5em;
+    width: 13em;
     z-index: 1;
+    padding: 0.25em;
 }
 
 div.colorbutton-picker:before {
     content: '';
     display: block;
     position: absolute;
-    left: 6em;
+    left: 5.75em;
     top: -0.7em;
     width: 0;
     height: 0;
@@ -57,54 +55,53 @@ div.colorbutton-picker:before {
     border-bottom: 0.75em solid white;
 }
 
-div.colorbutton-picker > span.colorbutton-icon {
+div.colorbutton-picker-icons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+div.colorbutton-picker-icons > span.colorbutton-icon {
     flex: 0 0 auto;
     margin: 0.25em;
 }
 
 div.colorbutton-picker-input {
     margin: 0.25em;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    width: 13em;
-    height: 2em;
 }
 
 div.colorbutton-picker-input > input[type=text] {
+    font-size: 100%;
     display: inline-block;
-    border-style: solid;
-    border-color: @item_border@;
-    border-width: 1px 1px 1px 0;
-    height: 2em;
-    width: 5em;
-    padding: 0.25em;
-    color: gray;
+    margin-left: -1px;
+    min-width: 0;
+    flex: 1 1 5em;
 }
 
 span.colorbutton-picker-alpha {
-    border-radius: 0 0.25em 0.25em 0;
+    border-radius: 0 4px 4px 0;
     border-style: solid;
-    border-color: @item_border@;
+    border-color: var(--border-color);
     border-width: 1px 1px 1px 0;
     display: inline-block;
-    width: 5em;
     height: 2em;
     background-image: linear-gradient(45deg, #808080 25%, transparent 25%), linear-gradient(-45deg, #808080 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #808080 75%), linear-gradient(-45deg, transparent 75%, #808080 75%);
     background-size: 12px 12px;
     background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+    flex: 1 1 5em;
 }
 
 span.colorbutton-picker-alpha > span {
     padding: 0.25em 0;
     display: inline-block;
-    width: calc(5em - 1px);
+    width: 100%;
     height: calc(2em - 2px);
     background-image: linear-gradient(90deg, rgba(255,255,255,0.5) 0%, white 100%);
 }
 
 span.colorbutton-picker-alpha input[type=range] {
     display: inline-block;
-    width: 4.5em;
+    width: 100%;
     padding: 0;
-    outline: 0;
 }

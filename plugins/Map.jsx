@@ -21,18 +21,32 @@ import LocaleUtils from '../utils/LocaleUtils';
 import './style/Map.css';
 
 
+/**
+ * The main map component.
+ */
 class MapPlugin extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
         map: PropTypes.object,
-        mapOptions: PropTypes.object,
+        /** Zoom duration in ms, rotation in degrees, panStepSize and panPageSize as fraction of map width/height. */
+        mapOptions: PropTypes.shape({
+            zoomDuration: PropTypes.number,
+            enableRotation: PropTypes.bool,
+            rotation: PropTypes.number,
+            panStepSize: PropTypes.number,
+            panPageSize: PropTypes.number
+        }),
+        /** Whether to display the loading spinner when layers are loading. */
         showLoading: PropTypes.bool,
         swipe: PropTypes.number,
-        swipeGeometryTypeBlacklist: PropTypes.array,
-        swipeLayerNameBlacklist: PropTypes.array,
+        /** A list of layer geometry types to ignore when determining the top-most layer to compare. */
+        swipeGeometryTypeBlacklist: PropTypes.arrayOf(PropTypes.string),
+        /** A list of layer names to ignore when determining the top-most layer to compare. You can use `*` as a whildcard character. */
+        swipeLayerNameBlacklist: PropTypes.arrayOf(PropTypes.string),
         tools: PropTypes.object,
+        /** Map tool configuraiton options. Refer to the sample config.json. */
         toolsOptions: PropTypes.object
-    }
+    };
     static defaultProps = {
         mapOptions: {},
         showLoading: true,
@@ -40,11 +54,11 @@ class MapPlugin extends React.Component {
         swipeLayerNameBlacklist: [],
         tools: {},
         toolsOptions: {}
-    }
+    };
     state = {
         renderLayers: [],
         swipeLayer: null
-    }
+    };
     constructor(props) {
         super(props);
         this.loadingEl = null;
@@ -61,28 +75,39 @@ class MapPlugin extends React.Component {
                     const opacities = layer.params.OPACITIES.split(",");
                     const styles = (layer.params.STYLES || "").split(",");
                     for (let i = 0; i < sublayers.length; ++i) {
-                        if (layer.externalLayerMap[sublayers[i]]) {
+                        if (layer.externalLayerMap && layer.externalLayerMap[sublayers[i]]) {
+                            // Sublayer is mapped to an external layer
                             const sublayer = LayerUtils.searchSubLayer(layer, "name", sublayers[i]);
-                            const sublayerInvisible = (sublayer.minScale !== undefined && mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && mapScale > sublayer.maxScale);
-                            if (!sublayerInvisible) {
+                            const sublayerVisible = LayerUtils.layerScaleInRange(sublayer, mapScale);
+                            if (sublayerVisible) {
                                 renderLayers.push({
                                     ...layer.externalLayerMap[sublayers[i]],
+                                    params: {
+                                        ...layer.params,
+                                        ...layer.externalLayerMap[sublayers[i]].params,
+                                        OPACITIES: opacities[i],
+                                        STYLES: ""
+                                    },
+                                    rev: layer.rev,
                                     opacity: parseInt(opacities[i], 10),
                                     visibility: true
                                 });
                             }
                         } else if (renderLayers.length > 0 && renderLayers[renderLayers.length - 1].id === layer.id) {
+                            // Compress with previous renderlayer
                             renderLayers[renderLayers.length - 1].params.LAYERS += "," + sublayers[i];
                             renderLayers[renderLayers.length - 1].params.OPACITIES += "," + opacities[i];
-                            renderLayers[renderLayers.length - 1].params.STYLES += "," + styles[i] || "";
+                            renderLayers[renderLayers.length - 1].params.STYLES += "," + (styles[i] || "");
                         } else {
+                            // Add new renderlayer
                             renderLayers.push({
                                 ...layer,
-                                uuid: layer.uuid + "-" + i, params: {
+                                uuid: layer.uuid + "-" + i,
+                                params: {
+                                    ...layer.params,
                                     LAYERS: sublayers[i],
                                     OPACITIES: opacities[i],
-                                    STYLES: styles[i] || "",
-                                    MAP: layer.params.MAP
+                                    STYLES: styles[i] || ""
                                 }
                             });
                         }
@@ -99,7 +124,9 @@ class MapPlugin extends React.Component {
                 // Pick candidate swipe layer according to rules
                 for (let i = renderLayers.length - 1; swipeLayer === null && i >= 0; --i) {
                     const layer = renderLayers[i];
-                    if (layer.type === "wms" && layer.params.LAYERS.split(",").length > 1) {
+                    if (layer.role > LayerRole.USERLAYER) {
+                        continue;
+                    } else if (layer.type === "wms" && layer.params.LAYERS.split(",").length >= 1) {
                         const paramLayers = layer.params.LAYERS.split(",");
                         const paramOpacities = layer.params.OPACITIES.split(",");
                         const paramStyles = layer.params.STYLES.split(",");
@@ -120,8 +147,7 @@ class MapPlugin extends React.Component {
                                     params: {
                                         LAYERS: paramLayers.slice(0, j).join(","),
                                         OPACITIES: paramOpacities.slice(0, j).join(","),
-                                        STYLES: paramStyles.slice(0, j).join(","),
-                                        MAP: layer.params.MAP
+                                        STYLES: paramStyles.slice(0, j).join(",")
                                     }
                                 });
                             }
@@ -131,8 +157,7 @@ class MapPlugin extends React.Component {
                                 params: {
                                     LAYERS: paramLayers[j],
                                     OPACITIES: paramOpacities[j],
-                                    STYLES: paramStyles[j],
-                                    MAP: layer.params.MAP
+                                    STYLES: paramStyles[j]
                                 }
                             };
                             newLayers.push(swipeLayer);
@@ -143,8 +168,7 @@ class MapPlugin extends React.Component {
                                     params: {
                                         LAYERS: paramLayers.slice(j + 1).join(","),
                                         OPACITIES: paramOpacities.slice(j + 1).join(","),
-                                        STYLES: paramStyles.slice(j + 1).join(","),
-                                        MAP: layer.params.MAP
+                                        STYLES: paramStyles.slice(j + 1).join(",")
                                     }
                                 });
                             }
@@ -168,20 +192,23 @@ class MapPlugin extends React.Component {
     renderLayers = () => {
         let zIndex = 0;
         return this.state.renderLayers.map(layer => {
+            if (layer.type === "placeholder") {
+                return null;
+            }
             ++zIndex;
-            const options = {...layer, zIndex: zIndex};
+            const options = {...layer, zIndex: layer.zIndex ?? zIndex};
             const swipe = this.props.swipe !== null && layer === this.state.swipeLayer;
             return (
                 <OlLayer key={layer.uuid} options={options} swipe={swipe ? this.props.swipe : null} />
             );
         });
-    }
+    };
     renderSupportTools = () => {
         return Object.entries(this.props.tools).map(([key, Tool]) => {
             const options = this.props.toolsOptions[key] || {};
             return <Tool key={key} options={options}/>;
         });
-    }
+    };
     render() {
         let loadingIndicator = null;
         if (this.props.showLoading && this.props.layers.find(layer => layer.loading === true) !== undefined) {
