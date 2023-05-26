@@ -22,7 +22,34 @@ import './style/LayerCatalog.css';
  *
  * Configured through a catalog JSON containing a tree of external layer identifiers.
  *
- * See [https://qwc2.sourcepole.ch/assets/catalog.json](https://qwc2.sourcepole.ch/assets/catalog.json) for an example.
+ * Example:
+ * ```json
+ * {
+ *   "catalog": [
+ *     {
+ *       "title": "Bauzonen",
+ *       "resource": "wms:http://wms.geo.admin.ch#ch.are.bauzonen"
+ *     },
+ *     {
+ *       "title": "Gewässerschutz",
+ *        "resource": "wms:https://geo.so.ch/api/wms#ch.so.afu.gewaesserschutz[50]"
+ *     },
+ *     {
+ *       "title": "Landeskarten",
+ *       "sublayers": [
+ *         {
+ *           "title": "Landeskarte 1:1 Million | LK1000",
+ *           "resource": "wms:http://wms.geo.admin.ch#ch.swisstopo.pixelkarte-farbe-pk1000.noscale"
+ *         },
+ *         {
+ *           "title": "Landeskarte 1:100`000 | LK100",
+ *           "resource": "wms:http://wms.geo.admin.ch#ch.swisstopo.pixelkarte-farbe-pk100.noscale"
+ *         }
+ *       ]
+ *     }
+ *   ]
+ * }
+ * ```
  */
 class LayerCatalog extends React.Component {
     static propTypes = {

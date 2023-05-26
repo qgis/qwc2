@@ -21,6 +21,18 @@ import Icon from '../components/Icon';
 import displayCrsSelector from '../selectors/displaycrs';
 import './style/MapInfoTooltip.css';
 
+
+/**
+ * Provides map context information when right-clicking on the map.
+ * 
+ * Displays the coordinates at the picked position by default.
+ * 
+ * If `elevationServiceUrl` in `config.json` to points to a `qwc-elevation-service`,
+ * the height at the picked position is also displayed.
+ * 
+ * If `mapInfoService` in `config.json` points to a `qwc-mapinfo-service`, additional
+ * custom information according to the `qwc-mapinfo-service` configuration is returned.
+ */
 class MapInfoTooltip extends React.Component {
     static propTypes = {
         /** The number of decimal places to display for metric/imperial coordinates. */

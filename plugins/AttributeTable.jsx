@@ -33,9 +33,12 @@ import './style/AttributeTable.css';
 /**
  * Displaying the attribute table of layers in a dialog.
  *
- * To make a layer available in the attribute table, create a a data resource and matching permissions for it in the qwc-admin-gui.
+ * To make a layer available in the attribute table, create a a data resource and matching permissions for it in the `qwc-admin-gui`.
  *
  * The attribute table works for both read-only as well as read-write data resources.
+ *
+ * This plugin queries the dataset via the editing service specified by
+ * `editServiceUrl` in `config.json` (by default the `qwc-data-service`).
  */
 class AttributeTable extends React.Component {
     static propTypes = {

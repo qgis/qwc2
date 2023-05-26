@@ -21,6 +21,8 @@ import './style/MapTip.css';
  * Displays maptips by hovering over features on the map.
  *
  * Queries the map tips configured in the QGIS layer properites over GetFeatureInfo.
+ *
+ * The map tip needs to be configured in QGIS Layer Properties &rarr; Display.
  */
 class MapTip extends React.Component {
     static propTypes = {

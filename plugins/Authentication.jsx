@@ -14,7 +14,9 @@ import ConfigUtils from '../utils/ConfigUtils';
 
 
 /**
- * Handles authentication via the authentication service specified by `authServiceUrl`.
+ * Handles authentication
+ *
+ * Invokes the the authentication service specified by `authServiceUrl` in `config.json`.
  */
 class Authentication extends React.Component {
     static propTypes = {

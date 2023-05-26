@@ -31,7 +31,7 @@ import MeasureUtils from '../utils/MeasureUtils';
  *
  * Triggered automatically when a line is measured via the `Measure` plugin.
  *
- * Requires `elevationServiceUrl` to point to a qwc-elevation-service.
+ * Requires `elevationServiceUrl` in `config.json` to point to a `qwc-elevation-service`.
  */
 class HeightProfile extends React.Component {
     static propTypes = {

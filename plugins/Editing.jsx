@@ -34,9 +34,8 @@ import './style/Editing.css';
  *
  * The attribute form is generated from the QGIS attribute form configuration.
  *
- * By default, requires `editServiceUrl` to point to a qwc-data-service. See
- * [https://github.com/qwc-services/qwc-data-service](https://github.com/qwc-services/qwc-data-service)
- * for more information.
+ * This plugin queries the dataset via the editing service specified by
+ * `editServiceUrl` in `config.json` (by default the `qwc-data-service`).
  */
 class Editing extends React.Component {
     static propTypes = {

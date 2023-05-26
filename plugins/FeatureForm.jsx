@@ -31,7 +31,7 @@ import './style/FeatureForm.css';
  * displayed form.
  *
  * This plugin queries the feature via the editing service specified by
- * `editServiceUrl` (by default the qwc-data-service), rather than over WMS
+ * `editServiceUrl` in `config.json` (by default the `qwc-data-service`), rather than over WMS
  * GetFeatureInfo like the `Identify` plugin.
  *
  * Can be used as default identify tool by setting `"identifyTool": "FeatureForm"` in `config.json`.

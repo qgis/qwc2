@@ -24,6 +24,8 @@ import './style/Share.css';
 
 /**
  * Share the current map as a URL/permalink.
+ *
+ * Compact permalinks will be generated if `permalinkServiceUrl` in `config.json` points to a `qwc-permalink-service`.
  */
 class Share extends React.Component {
     static propTypes = {

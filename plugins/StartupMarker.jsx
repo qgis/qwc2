@@ -14,7 +14,9 @@ import {UrlParams} from '../utils/PermaLinkUtils';
 
 
 /**
- * Displays a marker in the center of the map if c=<x>,<y>&hc=1 is set in the URL.
+ * Displays a marker when starting up the viewer.
+ *
+ * The marked is displayed in the center of the map if `c=<x>,<y>&hc=1` is set in the URL.
  */
 class StartupMarker extends React.Component {
     static propTypes = {

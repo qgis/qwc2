@@ -17,7 +17,6 @@ import SideBar from '../components/SideBar';
  * Displays a custom help dialog in a sidebar.
  *
  * Define the help contents by specifying the `bodyContentsFragmentUrl` prop.
- * See also https://github.com/qgis/qwc2-demo-app/blob/master/doc/src/qwc_configuration.md#help-dialog.
  */
 class Help extends React.Component {
     static propTypes = {

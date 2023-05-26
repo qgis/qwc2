@@ -25,7 +25,7 @@ import isEmpty from 'lodash.isempty';
  *
  * Bookmarks are only allowed for authenticated users.
  *
- * Requires `permalinkServiceUrl` to point to a qwc-permalink-service.
+ * Requires `permalinkServiceUrl` to point to a `qwc-permalink-service`.
  */
 class Bookmark extends React.Component {
     static propTypes = {

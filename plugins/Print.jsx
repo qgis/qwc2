@@ -34,6 +34,8 @@ import './style/Print.css';
 
 /**
  * Invokes QGIS Server WMS GetPrint to print the map to PDF.
+ *
+ * Uses the print layouts defined in the QGIS project.
  */
 class Print extends React.Component {
     static propTypes = {

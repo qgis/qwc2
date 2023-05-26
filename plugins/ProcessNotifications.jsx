@@ -15,6 +15,11 @@ import Icon from '../components/Icon';
 import Spinner from '../components/Spinner';
 import './style/ProcessNotifications.css';
 
+/**
+ * Adds support for displaying notifications of background processes.
+ *
+ * Only useful for third-party plugins which use this functionality.
+ */
 class ProcessNotifications extends React.Component {
     static propTypes = {
         clearProcess: PropTypes.func,

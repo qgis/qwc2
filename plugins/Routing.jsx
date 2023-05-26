@@ -38,7 +38,7 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
 /**
  * Compute routes and isochrones.
  *
- * Uses Valhalla as backend by default, with `routingServiceUrl` pointing to a Valhalla server.
+ * Requites `routingServiceUrl` in `config.json` pointing to a Valhalla routing service.
  */
 class Routing extends React.Component {
     static propTypes = {
