@@ -143,7 +143,7 @@ class Routing extends React.Component {
             displaycrs: this.props.displaycrs,
             lang: LocaleUtils.lang()
         };
-        this.state.mode = this.props.enabledModes.includes("auto") ? "auto" : this.props.enabledModes[0];
+        this.state.mode = this.props.enabledModes[0];
     }
     componentDidUpdate(prevProps, prevState) {
         // Activated / message
