@@ -230,14 +230,15 @@ class Routing extends React.Component {
             {key: "transit", icon: "routing-train", tooltip: LocaleUtils.trmsg("routing.mode_transit")},
             {key: "bicycle", icon: "routing-bicycle", tooltip: LocaleUtils.trmsg("routing.mode_bicycle")},
             {key: "pedestrian", icon: "routing-walking", tooltip: LocaleUtils.trmsg("routing.mode_walking")}
-        ].filter(entry => this.props.enabledModes.includes(entry.key));
+        ];
+        const enabledButtons = this.props.enabledModes.map(entry => buttons.find(button => button.key === entry));
         return (
             <ResizeableWindow icon="routing" onClose={() => this.setState({visible: false})} title={LocaleUtils.tr("routing.windowtitle")} {...this.props.geometry}>
                 <div className="routing-body" role="body">
                     <ButtonBar active={this.state.currentTab} buttons={tabButtons} className="routing-buttonbar" onClick={(key) => this.setState({currentTab: key})} />
                     <div className="routing-frame">
                         <div className="routing-buttons">
-                            <ButtonBar active={this.state.mode} buttons={buttons} onClick={key => this.setState({mode: key})} />
+                            <ButtonBar active={this.state.mode} buttons={enabledButtons} onClick={key => this.setState({mode: key})} />
                             <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState((state) => ({settingsPopup: !state.settingsPopup}))}>
                                 <Icon icon="cog" />
                             </button>
