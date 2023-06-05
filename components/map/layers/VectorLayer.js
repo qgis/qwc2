@@ -21,7 +21,7 @@ export default {
             featureObject.forEach(f => {
                 const featureCrs = feature.crs ?? options.projection ?? mapCrs;
                 if (featureCrs !== mapCrs) {
-                    f.getGeometry().transform(featureCrs, mapCrs);
+                    f.getGeometry()?.transform(featureCrs, mapCrs);
                 }
                 const featureStyleName = feature.styleName || options.styleName;
                 const featureStyleOptions = {...options.styleOptions, ...feature.styleOptions};
@@ -97,7 +97,7 @@ export default {
                 featureObject.forEach(f => {
                     const featureCrs = feature.crs ?? newOptions.projection ?? mapCrs;
                     if (featureCrs !== mapCrs) {
-                        f.getGeometry().transform(featureCrs, mapCrs);
+                        f.getGeometry()?.transform(featureCrs, mapCrs);
                     }
                     const featureStyleName = feature.styleName || newOptions.styleName;
                     const featureStyleOptions = {...newOptions.styleOptions, ...feature.styleOptions};
