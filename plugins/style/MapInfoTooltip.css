@@ -1,6 +1,7 @@
 div.mapinfotooltip {
     position: absolute;
     z-index: 2;
+    pointer-events: none;
 }
 
 div.mapinfotooltip-window {
@@ -11,6 +12,7 @@ div.mapinfotooltip-window {
     transform: translate(-50%, 0);
     -webkit-font-smoothing: antialiased;
     white-space: nowrap;
+    pointer-events: all;
 }
 
 div.mapinfotooltip-titlebar {
