@@ -37,6 +37,8 @@ class Cyclomedia extends React.Component {
         clientId: PropTypes.string,
         /** The cyclomedia version. */
         cyclomediaVersion: PropTypes.string,
+        /** Whether to display Cyclomedia measurement geometries on the map. */
+        displayMeasurements: PropTypes.bool,
         /** Default window geometry. */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
@@ -61,6 +63,7 @@ class Cyclomedia extends React.Component {
     };
     static defaultProps = {
         cyclomediaVersion: '23.6',
+        displayMeasurements: true,
         geometry: {
             initialWidth: 480,
             initialHeight: 640,
@@ -272,21 +275,23 @@ class Cyclomedia extends React.Component {
         this.props.addLayerFeatures(layer, [feature], true);
     };
     measurementChanged = (measurement) => {
-        if (measurement) {
-            const layer = {
-                id: "cyclomedia-measurements",
-                role: LayerRole.MARKER,
-                crs: measurement.crs.properties.name,
-                styleOptions: {
-                    strokeColor: 'red',
-                    strokeWidth: 4,
-                    fillColor: [255, 0, 0, 0.25],
-                    strokeDash: []
-                }
-            };
-            this.props.addLayerFeatures(layer, measurement.features, true);
-        } else {
-            this.props.removeLayer("cyclomedia-measurements");
+        if (this.props.displayMeasurements) {
+            if (measurement) {
+                const layer = {
+                    id: "cyclomedia-measurements",
+                    role: LayerRole.MARKER,
+                    crs: measurement.crs.properties.name,
+                    styleOptions: {
+                        strokeColor: 'red',
+                        strokeWidth: 4,
+                        fillColor: [255, 0, 0, 0.25],
+                        strokeDash: []
+                    }
+                };
+                this.props.addLayerFeatures(layer, measurement.features, true);
+            } else {
+                this.props.removeLayer("cyclomedia-measurements");
+            }
         }
     }
     cyclomediaIndexHtml = () => {
