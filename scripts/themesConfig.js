@@ -460,6 +460,9 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             if (configItem.extraDxfParameters) {
                 resultItem.extraDxfParameters = configItem.extraDxfParameters;
             }
+            if (configItem.extraPrintParameters) {
+                resultItem.extraPrintParameters = configItem.extraPrintParameters;
+            }
             if (configItem.legendUrl) {
                 resultItem.legendUrl = configItem.legendUrl;
             } else {

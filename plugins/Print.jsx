@@ -219,6 +219,8 @@ class Print extends React.Component {
             return res;
         }, {});
 
+        const extraOptions = Object.fromEntries((this.props.theme.extraPrintParameters || "").split("&").map(entry => entry.split("=")));
+
         return (
             <div className="print-body">
                 <form action={this.props.theme.printUrl} method="POST"
@@ -335,6 +337,7 @@ class Print extends React.Component {
                         {Object.entries(dimensionValues).map(([key, value]) => (
                             <input key={key} name={key} readOnly type="hidden" value={value} />
                         ))}
+                        {Object.entries(extraOptions).map(([key, value]) => (<input key={key} name={key} readOnly type="hidden" value={value} />))}
                     </div>
                     <div className="button-bar">
                         <button className="button" disabled={!printParams.LAYERS || this.state.printing} type="submit">
