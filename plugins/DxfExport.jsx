@@ -74,6 +74,15 @@ class DxfExport extends React.Component {
             }
             return res;
         }, {});
+        const extraOptions = Object.fromEntries((this.props.theme.extraDxfParameters || "").split("&").map(entry => entry.split("=")));
+        const paramValue = (key, deflt) => {
+            if (key in extraOptions) {
+                const value = extraOptions[key];
+                delete extraOptions[key];
+                return value;
+            }
+            return deflt;
+        };
 
         return (
             <span>
@@ -84,12 +93,12 @@ class DxfExport extends React.Component {
                             {LocaleUtils.tr("dxfexport.symbologyscale")}:&nbsp;
                             <InputContainer>
                                 <span role="prefix">&nbsp;1&nbsp;:&nbsp;</span>
-                                <input defaultValue="500" name="SCALE" role="input" type="number" />
+                                <input defaultValue={paramValue("SCALE", 500)} name="SCALE" role="input" type="number" />
                             </InputContainer>
                         </span>
                         {!isEmpty(this.props.layerOptions) ? (
                             <span>
-                                {LocaleUtils.tr("dxfexport.layers")}&nbsp;
+                                {LocaleUtils.tr("dxfexport.layers")}:&nbsp;
                                 <select name="LAYERS" onChange={ev => this.setState({selectedLayers: ev.target.value})} value={this.state.selectedLayers}>
                                     {this.props.layerOptions.map(opt => (
                                         <option key={opt.layers} value={opt.layers}>{opt.label}</option>
@@ -97,7 +106,7 @@ class DxfExport extends React.Component {
                                 </select>
                             </span>
                         ) : (
-                            <input name="LAYERS" readOnly type="hidden" value={themeSubLayers} />
+                            <input name="LAYERS" readOnly type="hidden" value={paramValue("LAYERS", themeSubLayers)} />
                         )}
                     </div>
                     <input name="SERVICE" readOnly type="hidden" value="WMS" />
@@ -105,12 +114,13 @@ class DxfExport extends React.Component {
                     <input name="REQUEST" readOnly type="hidden" value="GetMap" />
                     <input name="FORMAT" readOnly type="hidden" value="application/dxf" />
                     <input name="CRS" readOnly type="hidden" value={this.props.map.projection} />
-                    <input name="filename" readOnly type="hidden" value={basename + ".dxf"} />
+                    <input name="filename" readOnly type="hidden" value={paramValue("filename", basename + ".dxf")} />
                     <input name="BBOX" readOnly ref={input => { this.extentInput = input; }} type="hidden" value="" />
                     {Object.entries(dimensionValues).map(([key, value]) => (
                         <input key={key} name={key} readOnly type="hidden" value={value} />
                     ))}
                     <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
+                    {Object.entries(extraOptions).map(([key, value]) => (<input key={key} name={key} readOnly type="hidden" value={value} />))}
                     {formatOptions}
                 </form>
             </span>
