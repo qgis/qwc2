@@ -15,6 +15,7 @@ import formDataEntries from 'formdata-json';
 import FileSaver from 'file-saver';
 import {LayerRole} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
+import InputContainer from '../components/InputContainer';
 import TaskBar from '../components/TaskBar';
 import PrintFrame from '../components/PrintFrame';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -80,8 +81,11 @@ class DxfExport extends React.Component {
                     <div className="help-text">{LocaleUtils.tr("dxfexport.selectinfo")}</div>
                     <div className="export-settings">
                         <span>
-                            {LocaleUtils.tr("dxfexport.symbologyscale")}&nbsp;
-                            <span className="input-frame"><span>&nbsp;1&nbsp;:&nbsp;</span><input defaultValue="500" name="SCALE" type="number" /></span>
+                            {LocaleUtils.tr("dxfexport.symbologyscale")}:&nbsp;
+                            <InputContainer>
+                                <span role="prefix">&nbsp;1&nbsp;:&nbsp;</span>
+                                <input defaultValue="500" name="SCALE" role="input" type="number" />
+                            </InputContainer>
                         </span>
                         {!isEmpty(this.props.layerOptions) ? (
                             <span>
