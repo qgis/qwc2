@@ -41,6 +41,8 @@ class Print extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
         addLayerFeatures: PropTypes.func,
+        /** Whether to allow GeoPDF export. Requires QGIS Server 3.32 or newer. */
+        allowGeoPdfExport: PropTypes.bool,
         changeRotation: PropTypes.func,
         clearLayer: PropTypes.func,
         /** The default print dpi.  */
@@ -88,7 +90,8 @@ class Print extends React.Component {
         printOutputVisible: false,
         outputLoaded: false,
         printing: false,
-        atlasFeature: null
+        atlasFeature: null,
+        geoPdf: false
     };
     constructor(props) {
         super(props);
@@ -311,6 +314,14 @@ class Print extends React.Component {
                             }
                             return this.renderPrintLabelField(label, opts);
                         })}
+                        {this.props.allowGeoPdfExport ? (
+                            <tr>
+                                <td>GeoPDF</td>
+                                <td>
+                                    <ToggleSwitch active={this.state.geoPdf} onChange={(newstate) => this.setState({geoPdf: newstate})} />
+                                </td>
+                            </tr>
+                        ) : null}
                     </tbody></table>
                     <div>
                         <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
@@ -331,6 +342,7 @@ class Print extends React.Component {
                         <input name={mapName + ":HIGHLIGHT_LABELBUFFERCOLOR"} readOnly type={formvisibility} value={highlightParams.labelOultineColors.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_LABELBUFFERSIZE"} readOnly type={formvisibility} value={highlightParams.labelOutlineSizes.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_LABELSIZE"} readOnly type={formvisibility} value={highlightParams.labelSizes.join(";")} />
+                        {this.props.allowGeoPdfExport  ? (<input name="WRITE_GEO_PDF" readOnly type={formvisibility} value={this.state.geoPdf ? "true" : "false"} />) : null}
                         {gridIntervalX}
                         {gridIntervalY}
                         {resolutionInput}
