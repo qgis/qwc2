@@ -337,35 +337,49 @@ def getTheme(config, configItem, result, resultItem):
         printTemplates = []
         composerTemplates = getChildElement(capabilities, "Capability/ComposerTemplates")
         if composerTemplates:
+
+            composerTemplateMap = {}
             for composerTemplate in composerTemplates.getElementsByTagName("ComposerTemplate"):
                 composerMap = getChildElement(composerTemplate, "ComposerMap")
                 if composerMap:
-                    printTemplate = {
-                        "name": composerTemplate.getAttribute("name"),
-                        "map": {
-                            "name": composerMap.getAttribute("name"),
-                            "width": float(composerMap.getAttribute("width")),
-                            "height": float(composerMap.getAttribute("height"))
-                        }
+                    composerTemplateMap[composerTemplate.getAttribute("name")] = composerTemplate;
+
+
+            for composerTemplate in composerTemplateMap.values():
+                templateName = composerTemplate.getAttribute("name")
+                if templateName.endswith("_legend") and templateName[:-7] in composerTemplateMap:
+                    continue
+
+                composerMap = getChildElement(composerTemplate, "ComposerMap")
+                printTemplate = {
+                    "name": templateName,
+                    "map": {
+                        "name": composerMap.getAttribute("name"),
+                        "width": float(composerMap.getAttribute("width")),
+                        "height": float(composerMap.getAttribute("height"))
                     }
-                    composerLabels = composerTemplate.getElementsByTagName("ComposerLabel")
-                    labels = [composerLabel.getAttribute("name") for composerLabel in composerLabels]
-                    if "printLabelBlacklist" in configItem:
-                        labels = list(filter(lambda label: label not in configItem["printLabelBlacklist"], labels))
+                }
+                if printTemplate["name"] + "_legend" in composerTemplateMap:
+                    printTemplate["legendLayout"] = printTemplate["name"] + "_legend";
 
-                    if labels:
-                        printTemplate["labels"] = labels
-                    if composerTemplate.getAttribute('atlasEnabled') == '1':
-                        atlasLayer = composerTemplate.getAttribute('atlasCoverageLayer')
-                        try:
-                            layers = capabilities.getElementsByTagName("Layer")
-                            pk = getChildElementValue(list(filter(lambda l: getChildElementValue(l, "Name") == atlasLayer, layers))[0], "PrimaryKey/PrimaryKeyAttribute")
-                            printTemplate["atlasCoverageLayer"] = atlasLayer
-                            printTemplate["atlas_pk"] = pk
-                        except:
-                            print("Failed to determine primary key for atlas layer " + atlasLayer)
+                composerLabels = composerTemplate.getElementsByTagName("ComposerLabel")
+                labels = [composerLabel.getAttribute("name") for composerLabel in composerLabels]
+                if "printLabelBlacklist" in configItem:
+                    labels = list(filter(lambda label: label not in configItem["printLabelBlacklist"], labels))
 
-                    printTemplates.append(printTemplate)
+                if labels:
+                    printTemplate["labels"] = labels
+                if composerTemplate.getAttribute('atlasEnabled') == '1':
+                    atlasLayer = composerTemplate.getAttribute('atlasCoverageLayer')
+                    try:
+                        layers = capabilities.getElementsByTagName("Layer")
+                        pk = getChildElementValue(list(filter(lambda l: getChildElementValue(l, "Name") == atlasLayer, layers))[0], "PrimaryKey/PrimaryKeyAttribute")
+                        printTemplate["atlasCoverageLayer"] = atlasLayer
+                        printTemplate["atlas_pk"] = pk
+                    except:
+                        print("Failed to determine primary key for atlas layer " + atlasLayer)
+
+                printTemplates.append(printTemplate)
 
         # drawing order
         drawingOrder = getChildElementValue(capabilities, "Capability/LayerDrawingOrder").split(",")

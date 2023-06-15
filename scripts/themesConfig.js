@@ -359,37 +359,48 @@ function getTheme(config, configItem, result, resultItem, proxy) {
                 if (!templates.length) {
                     templates = [templates];
                 }
+                const composerTemplateMap = {};
                 for (const composerTemplate of templates) {
                     if (composerTemplate.ComposerMap !== undefined) {
-                        // use first map from GetProjectSettings
-                        const composerMap = toArray(composerTemplate.ComposerMap)[0];
-                        const printTemplate = {
-                            name: composerTemplate.$.name,
-                            map: {
-                                name: composerMap.$.name,
-                                width: parseFloat(composerMap.$.width),
-                                height: parseFloat(composerMap.$.height)
-                            }
-                        };
-                        if (composerTemplate.ComposerLabel !== undefined) {
-                            printTemplate.labels = toArray(composerTemplate.ComposerLabel).map((entry) => {
-                                return entry.$.name;
-                            }).filter(label => !(configItem.printLabelBlacklist || []).includes(label));
-                        }
-                        if (composerTemplate.$.atlasEnabled === '1') {
-                            const atlasLayer = composerTemplate.$.atlasCoverageLayer;
-                            try {
-                                const layers = flatLayers(capabilities.Capability.Layer);
-                                const pk = layers.find(l => l.Name === atlasLayer).PrimaryKey.PrimaryKeyAttribute;
-                                printTemplate.atlasCoverageLayer = atlasLayer;
-                                printTemplate.atlas_pk = pk;
-                            } catch (e) {
-                                console.warn("Failed to determine primary key for atlas layer " + atlasLayer);
-                            }
-                        }
-                        printTemplates.push(printTemplate);
+                        composerTemplateMap[composerTemplate.$.name] = composerTemplate;
                     }
                 }
+                Object.values(composerTemplateMap).forEach(composerTemplate => {
+                    const templateName = composerTemplate.$.name;
+                    if (templateName.endsWith("_legend") && templateName.slice(0, -7) in composerTemplateMap) {
+                        return;
+                    }
+                    // use first map from GetProjectSettings
+                    const composerMap = toArray(composerTemplate.ComposerMap)[0];
+                    const printTemplate = {
+                        name: templateName,
+                        map: {
+                            name: composerMap.$.name,
+                            width: parseFloat(composerMap.$.width),
+                            height: parseFloat(composerMap.$.height)
+                        }
+                    };
+                    if (printTemplate.name + "_legend" in composerTemplateMap) {
+                        printTemplate.legendLayout = printTemplate.name + "_legend";
+                    }
+                    if (composerTemplate.ComposerLabel !== undefined) {
+                        printTemplate.labels = toArray(composerTemplate.ComposerLabel).map((entry) => {
+                            return entry.$.name;
+                        }).filter(label => !(configItem.printLabelBlacklist || []).includes(label));
+                    }
+                    if (composerTemplate.$.atlasEnabled === '1') {
+                        const atlasLayer = composerTemplate.$.atlasCoverageLayer;
+                        try {
+                            const layers = flatLayers(capabilities.Capability.Layer);
+                            const pk = layers.find(l => l.Name === atlasLayer).PrimaryKey.PrimaryKeyAttribute;
+                            printTemplate.atlasCoverageLayer = atlasLayer;
+                            printTemplate.atlas_pk = pk;
+                        } catch (e) {
+                            console.warn("Failed to determine primary key for atlas layer " + atlasLayer);
+                        }
+                    }
+                    printTemplates.push(printTemplate);
+                });
             }
 
             // drawing order
