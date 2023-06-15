@@ -123,10 +123,25 @@ if wgs84BoundingBox is not None:
     upperCorner = list(map(float, filter(bool, getFirstElementValueByTagName(wgs84BoundingBox,"ows:UpperCorner").split(" "))))
     bounds = lowerCorner + upperCorner
 
+# Format
+format = getFirstElementValueByTagName(targetLayer, "Format")
+
+# RequestEncoding
+requestEncoding = ""
+operationsMetadata = getFirstElementByTagName(capabilities, "ows:OperationsMetadata")
+if operationsMetadata is not None:
+    for operation in operationsMetadata.getElementsByTagName("ows:Operation"):
+        if operation.getAttribute("name") == "GetCapabilities":
+            constraint = getFirstElementByTagName(operation, "ows:Constraint")
+            if constraint.getAttribute("name") == "GetEncoding":
+                requestEncoding = getFirstElementValueByTagName(constraint, "ows:Value")
+
 result = {
     "type": "wmts",
     "url": tileUrl,
     "name": layerName,
+    "format": format,
+    "requestEncoding": requestEncoding,
     "tileMatrixPrefix": "",
     "tileMatrixSet": tileMatrixName,
     "originX": origin[0],
