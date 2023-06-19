@@ -26,6 +26,7 @@
     "appmenu.items.Editing",
     "appmenu.items.FeatureForm",
     "appmenu.items.Help",
+    "appmenu.items.IdentifyPoint",
     "appmenu.items.IdentifyRegion",
     "appmenu.items.LayerCatalog",
     "appmenu.items.LayerTree",
