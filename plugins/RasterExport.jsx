@@ -128,7 +128,8 @@ class RasterExport extends React.Component {
             "image/png; mode=16bit": "PNG 16bit",
             "image/png; mode=8bit": "PNG 8bit",
             "image/png; mode=1bit": "PNG 1bit",
-            "image/geotiff": "GeoTIFF"
+            "image/geotiff": "GeoTIFF",
+            "image/tiff": "GeoTIFF"
         };
 
         let availableFormats = this.props.theme.availableFormats;
