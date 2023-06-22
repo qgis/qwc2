@@ -39,6 +39,8 @@ class RasterExport extends React.Component {
         allowedFormats: PropTypes.arrayOf(PropTypes.string),
         /** List of scales at which to export the map. */
         allowedScales: PropTypes.arrayOf(PropTypes.number),
+        /** Default export format mimetype. If empty, first available format is used. */
+        defaultFormat: PropTypes.string,
         /** The factor to apply to the map scale to determine the initial export map scale.  */
         defaultScaleFactor: PropTypes.number,
         /** List of dpis at which to export the map. If empty, the default server dpi is used.  */
@@ -77,6 +79,7 @@ class RasterExport extends React.Component {
         width: 0,
         height: 0,
         exporting: false,
+        availableFormats: [],
         selectedFormat: null,
         scale: '',
         pageSize: null,
@@ -119,7 +122,7 @@ class RasterExport extends React.Component {
         this.setState({dpi: parseInt(ev.target.value, 10)});
     };
     renderBody = () => {
-        if (!this.props.theme) {
+        if (!this.props.theme || !this.state.selectedFormat) {
             return null;
         }
         const formatMap = {
@@ -132,13 +135,6 @@ class RasterExport extends React.Component {
             "image/tiff": "GeoTIFF"
         };
 
-        let availableFormats = this.props.theme.availableFormats;
-        if (!isEmpty(this.props.allowedFormats)) {
-            availableFormats = availableFormats.filter(fmt => this.props.allowedFormats.includes(fmt));
-        }
-        const defaultFormat = availableFormats.includes('image/geotiff') ? 'image/geotiff' : availableFormats[0];
-        const selectedFormat = this.state.selectedFormat || defaultFormat;
-
         let scaleChooser = null;
         if (!isEmpty(this.props.allowedScales)) {
             scaleChooser = (
@@ -150,7 +146,7 @@ class RasterExport extends React.Component {
                 <input min="1" onChange={ev => this.setState({scale: ev.target.value})} role="input" type="number" value={this.state.scale} />
             );
         }
-        const filename = this.props.theme.name + "." + selectedFormat.split(";")[0].split("/").pop();
+        const filename = this.props.theme.name + "." + this.state.selectedFormat.split(";")[0].split("/").pop();
         const action = this.props.theme.url;
         const exportExternalLayers = this.props.exportExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion") >= 3;
 
@@ -179,8 +175,8 @@ class RasterExport extends React.Component {
                             <tr>
                                 <td>{LocaleUtils.tr("rasterexport.format")}</td>
                                 <td>
-                                    <select name="FORMAT" onChange={this.formatChanged} value={selectedFormat}>
-                                        {availableFormats.map(format => {
+                                    <select name="FORMAT" onChange={this.formatChanged} value={this.state.selectedFormat}>
+                                        {this.state.availableFormats.map(format => {
                                             if (format.startsWith('image/')) {
                                                 return (<option key={format} value={format}>{formatMap[format] || format}</option>);
                                             } else {
@@ -307,7 +303,12 @@ class RasterExport extends React.Component {
             }
             scale = this.props.allowedScales[closestIdx];
         }
-        this.setState({scale: scale});
+        let availableFormats = this.props.theme.availableFormats;
+        if (!isEmpty(this.props.allowedFormats)) {
+            availableFormats = availableFormats.filter(fmt => this.props.allowedFormats.includes(fmt));
+        }
+        const selectedFormat = this.props.defaultFormat && availableFormats.includes(this.props.defaultFormat) ? this.props.defaultFormat : availableFormats[0];
+        this.setState({scale: scale, availableFormats: availableFormats, selectedFormat: selectedFormat});
     };
     onHide = () => {
         this.setState({
