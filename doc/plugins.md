@@ -164,6 +164,7 @@ Cyclomedia integration for QWC2.
 | apikey | `string` | The Cyclomedia API key | `undefined` |
 | clientId | `string` | OAuth client ID. | `undefined` |
 | cyclomediaVersion | `string` | The cyclomedia version. | `'23.6'` |
+| displayMeasurements | `bool` | Whether to display Cyclomedia measurement geometries on the map. | `true` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry. | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true`<br />`}` |
 | loginRedirectUri | `string` | The relative path to the redirect login handling of oauth. | `undefined` |
 | logoutRedirectUri | `string` | The relative path to the redirect logout handling of oauth. | `undefined` |
@@ -473,6 +474,7 @@ Uses the print layouts defined in the QGIS project.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| allowGeoPdfExport | `bool` | Whether to allow GeoPDF export. Requires QGIS Server 3.32 or newer. | `undefined` |
 | defaultDpi | `number` | The default print dpi. | `300` |
 | defaultScaleFactor | `number` | The factor to apply to the map scale to determine the initial print map scale. | `0.5` |
 | displayRotation | `bool` | Whether to display the map rotation control. | `true` |
@@ -501,6 +503,7 @@ Allows exporting a selected portion of the map to an image ("screenshot").
 |----------|------|-------------|---------------|
 | allowedFormats | `[string]` | Whitelist of allowed export format mimetypes. If empty, supported formats are listed. | `undefined` |
 | allowedScales | `[number]` | List of scales at which to export the map. | `undefined` |
+| defaultFormat | `string` | Default export format mimetype. If empty, first available format is used. | `undefined` |
 | defaultScaleFactor | `number` | The factor to apply to the map scale to determine the initial export map scale. | `0.5` |
 | dpis | `[number]` | List of dpis at which to export the map. If empty, the default server dpi is used. | `undefined` |
 | exportExternalLayers | `bool` | Whether to include external layers in the image. Requires QGIS Server 3.x! | `true` |
