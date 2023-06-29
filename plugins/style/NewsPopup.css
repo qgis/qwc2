@@ -12,7 +12,7 @@ div.newspopup-dialog-container {
 }
 
 div.newspopup-dialog-popup {
-    flex: 0 0 50%;
+    flex: 0 0 75%;
     height: 66%;
     background-color: var(--container-bg-color);
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.75);
@@ -54,6 +54,7 @@ div.newspopup-dialog-popup-body > iframe {
     border-width: 0;
     background-color: transparent;
     flex: 1 1 auto;
+    height: 0;
 }
 
 div.newspopup-dialog-popup-body > div.newspopup-dialog-popup-buttonbar {

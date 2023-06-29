@@ -6,6 +6,7 @@
     transform: scaleX(0);
     transform-origin: right;
     transition: transform 0.1s;
+    text-align: right;
 }
 
 #BackgroundSwitcher.bgswitcher-active {
