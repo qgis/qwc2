@@ -393,7 +393,7 @@ class QtDesignerForm extends React.Component {
                         style={fontStyle} updateField={updateField} value={value} />
                 );
             } else {
-                const values = (widget.item || []).map((item) => ({
+                const values = MiscUtils.ensureArray(widget.item || []).map((item) => ({
                     label: item.property.text,
                     value: item.property.value || item.property.text
                 }));
