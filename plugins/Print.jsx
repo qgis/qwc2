@@ -90,7 +90,7 @@ class Print extends React.Component {
         printOutputVisible: false,
         outputLoaded: false,
         printing: false,
-        atlasFeature: null,
+        atlasFeatures: [],
         geoPdf: false
     };
     constructor(props) {
@@ -103,29 +103,23 @@ class Print extends React.Component {
         if (prevProps.theme !== this.props.theme) {
             if (this.props.theme && !isEmpty(this.props.theme.print)) {
                 const layout = this.props.theme.print.filter(l => l.map).find(l => l.default) || this.props.theme.print[0];
-                this.setState({layout: layout, atlasFeature: null});
+                this.setState({layout: layout, atlasFeatures: []});
             } else {
-                this.setState({layout: null, atlasFeature: null});
+                this.setState({layout: null, atlasFeatures: []});
             }
             this.fixedMapCenter = null;
         }
-        if (this.state.atlasFeature !== prevState.atlasFeature) {
-            if (this.state.atlasFeature) {
+        if (this.state.atlasFeatures !== prevState.atlasFeatures) {
+            if (!isEmpty(this.state.atlasFeatures)) {
                 const layer = {
                     id: "print-pick-selection",
                     role: LayerRole.SELECTION,
                     skipPrint: true
                 };
-                this.props.addLayerFeatures(layer, [this.state.atlasFeature], true);
+                this.props.addLayerFeatures(layer, this.state.atlasFeatures, true);
             } else {
                 this.props.clearLayer("print-pick-selection");
             }
-        }
-        if (this.state.atlasFeature && (
-            Math.abs(this.props.map.center[0] - this.fixedMapCenter[0]) > 1E-6 ||
-            Math.abs(this.props.map.center[1] - this.fixedMapCenter[1]) > 1E-6
-        )) {
-            this.props.panTo(this.fixedMapCenter, this.props.map.projection);
         }
     }
     onShow = () => {
@@ -146,7 +140,7 @@ class Print extends React.Component {
     };
     onHide = () => {
         this.props.changeRotation(this.state.initialRotation);
-        this.setState({minimized: false, scale: null, atlasFeature: null});
+        this.setState({minimized: false, scale: null, atlasFeatures: []});
     };
     renderBody = () => {
         if (!this.state.layout) {
@@ -169,6 +163,9 @@ class Print extends React.Component {
         extent = (CoordinatesUtils.getAxisOrder(mapCrs).substr(0, 2) === 'ne' && version === '1.3.0') ?
             extent[1] + "," + extent[0] + "," + extent[3] + "," + extent[2] :
             extent.join(',');
+        if (!isEmpty(this.state.atlasFeatures)) {
+            extent = "";
+        }
         let rotation = "";
         if (!this.state.rotationNull) {
             rotation = this.props.map.bbox ? Math.round(this.props.map.bbox.rotation / Math.PI * 180) : 0;
@@ -179,7 +176,8 @@ class Print extends React.Component {
             scaleChooser = (
                 <select name={mapName + ":scale"} onChange={this.changeScale} role="input" value={this.state.scale || ""}>
                     {this.props.theme.printScales.map(scale => (<option key={scale} value={scale}>{scale}</option>))}
-                </select>);
+                </select>
+            );
         }
         let resolutionChooser = null;
         let resolutionInput = null;
@@ -248,26 +246,33 @@ class Print extends React.Component {
                             <tr>
                                 <td>{LocaleUtils.tr("print.atlasfeature")}</td>
                                 <td>
-                                    {this.state.atlasFeature ? (
-                                        <InputContainer>
-                                            <input defaultValue={this.state.atlasFeature.properties[this.state.layout.atlas_pk]} name="ATLAS_PK" role="input" type="text" />
-                                            <Icon icon="remove" onClick={() => this.setAtlasFeature(null, null)} role="suffix" />
-                                        </InputContainer>
+                                    {!isEmpty(this.state.atlasFeatures) ? (
+                                        <div className="print-atlas-features">
+                                            {this.state.atlasFeatures.map(feature => (
+                                                <span key={feature.id}>
+                                                    <span>{feature.properties[feature.displayfield]}</span>
+                                                    <Icon icon="remove" onClick={() => this.deselectAtlasFeature(feature)} />
+                                                </span>
+                                            ))}
+                                            <input name="ATLAS_PK" type="hidden" value={this.state.atlasFeatures.map(feature => feature.properties[this.state.layout.atlas_pk] ?? feature.id).join(",")} />
+                                        </div>
                                     ) : (
                                         <input disabled placeholder={LocaleUtils.tr("print.pickatlasfeature", this.state.layout.atlasCoverageLayer)} type="text" />
                                     )}
                                 </td>
                             </tr>
                         ) : null}
-                        <tr>
-                            <td>{LocaleUtils.tr("print.scale")}</td>
-                            <td>
-                                <InputContainer>
-                                    <span role="prefix">1&nbsp;:&nbsp;</span>
-                                    {scaleChooser}
-                                </InputContainer>
-                            </td>
-                        </tr>
+                        {isEmpty(this.state.atlasFeatures) ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("print.scale")}</td>
+                                <td>
+                                    <InputContainer>
+                                        <span role="prefix">1&nbsp;:&nbsp;</span>
+                                        {scaleChooser}
+                                    </InputContainer>
+                                </td>
+                            </tr>
+                        ) : null}
                         {resolutionChooser ? (
                             <tr>
                                 <td>{LocaleUtils.tr("print.resolution")}</td>
@@ -417,12 +422,12 @@ class Print extends React.Component {
     };
     renderPrintFrame = () => {
         let printFrame = null;
-        if (this.state.layout) {
+        if (this.state.layout && isEmpty(this.state.atlasFeatures)) {
             const frame = {
                 width: this.state.scale * this.state.layout.map.width / 1000,
                 height: this.state.scale * this.state.layout.map.height / 1000
             };
-            printFrame = (<PrintFrame fixedFrame={frame} key="PrintFrame" map={this.props.map} modal={!!this.state.atlasFeature} />);
+            printFrame = (<PrintFrame fixedFrame={frame} key="PrintFrame" map={this.props.map} modal={!isEmpty(this.state.atlasFeatures)} />);
         }
         return printFrame;
     };
@@ -462,21 +467,35 @@ class Print extends React.Component {
             this.renderPrintOutputWindow(),
             this.props.active && this.state.layout && this.state.layout.atlasCoverageLayer ? (
                 <PickFeature
-                    featurePicked={this.setAtlasFeature}
+                    featurePicked={this.selectAtlasFeature}
                     key="FeaturePicker"
                     layer={this.state.layout.atlasCoverageLayer}
                 />
             ) : null
         ];
     }
-    setAtlasFeature = (layer, feature) =>{
-        this.setState({atlasFeature: feature});
-        if (feature) {
-            this.fixedMapCenter = VectorLayerUtils.getFeatureCenter(feature);
-            this.props.panTo(this.fixedMapCenter, this.props.map.projection);
-        } else {
-            this.fixedMapCenter = null;
+    selectAtlasFeature = (layer, feature) => {
+        if (!feature) {
+            return;
         }
+        this.setState((state) => {
+            const index = state.atlasFeatures.findIndex(f => f.id === feature.id);
+            if (index >= 0) {
+                const newAtlasFeatures = state.atlasFeatures.slice(0);
+                newAtlasFeatures.splice(index, 1);
+                return {atlasFeatures: newAtlasFeatures};
+            } else {
+                return {atlasFeatures: [...state.atlasFeatures, feature]};
+            }
+        });
+    };
+    deselectAtlasFeature = (feature) => {
+        this.setState((state) => {
+            const index = state.atlasFeatures.find(f => f.id === feature.id);
+            const newAtlasFeatures = state.atlasFeatures.slice(0);
+            newAtlasFeatures.splice(index, 1);
+            return {atlasFeatures: newAtlasFeatures};
+        });
     };
     changeLayout = (ev) => {
         const layout = this.props.theme.print.find(item => item.name === ev.target.value);

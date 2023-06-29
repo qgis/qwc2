@@ -94,3 +94,23 @@ span.print-output-window-wait div.spinner {
     margin-right: 0.5em;
     flex: 0 0 auto;
 }
+
+#Print div.print-atlas-features {
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg-color);
+}
+
+#Print div.print-atlas-features > span {
+    background-color: var(--border-color);
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    padding: 0.25em;
+    margin: 0.125em;
+}
+
+#Print div.print-atlas-features > span > span:first-child {
+    margin-right: 0.5em;
+}
