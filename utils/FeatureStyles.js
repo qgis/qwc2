@@ -21,6 +21,17 @@ const DEFAULT_FEATURE_STYLE = {
     textFont: "11pt sans-serif"
 };
 
+const DEFAULT_MARKER_STYLE = {
+    iconAnchor: [0.5, 1],
+    opacity: 1,
+    iconSrc: markerIcon,
+    color: undefined,
+    scale: undefined,
+    crossOrigin: undefined,
+    textColor: '#000000',
+    textStroke: '#FFFFFF',
+}
+
 export default {
     default: (feature, options) => {
         const opts = {...DEFAULT_FEATURE_STYLE, ...ConfigUtils.getConfigProp("defaultFeatureStyle"), ...options};
@@ -95,21 +106,25 @@ export default {
         return styles;
     },
     marker: (feature, options) => {
+        const opts = {...DEFAULT_MARKER_STYLE, ...ConfigUtils.getConfigProp("defaultMarkerStyle"), ...options};
         return [
             new ol.style.Style({
                 image: new ol.style.Icon({
-                    anchor: options.iconAnchor || [0.5, 1],
+                    anchor: opts.iconAnchor,
                     anchorXUnits: 'fraction',
                     anchorYUnits: 'fraction',
-                    opacity: 1,
-                    src: options.iconSrc || markerIcon
+                    opacity: opts.opacity,
+                    crossOrigin: opts.crossOrigin,
+                    src: opts.iconSrc,
+                    scale: opts.scale,
+                    color: opts.color,
                 }),
                 text: new ol.style.Text({
-                    font: '11pt sans-serif',
+                    font: opts.textFont || '11pt sans-serif',
                     text: feature.getProperties().label || "",
                     offsetY: 8,
-                    fill: new ol.style.Fill({color: '#000000'}),
-                    stroke: new ol.style.Stroke({color: '#FFFFFF', width: 3})
+                    fill: new ol.style.Fill({color: opts.textColor}),
+                    stroke: new ol.style.Stroke({color: opts.textStroke, width: 3})
                 })
             })
         ];
