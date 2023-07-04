@@ -18,14 +18,6 @@ import MeasureUtils from '../../utils/MeasureUtils';
 import FeatureStyles from '../../utils/FeatureStyles';
 
 
-const DrawToolStyle = new ol.style.Style({
-    image: new ol.style.Circle({
-        fill: new ol.style.Fill({color: '#0099FF'}),
-        stroke: new ol.style.Stroke({color: '#FFFFFF', width: 1.5}),
-        radius: 6
-    })
-});
-
 class MeasurementSupport extends React.Component {
     static propTypes = {
         changeMeasurementState: PropTypes.func,
@@ -84,7 +76,7 @@ class MeasurementSupport extends React.Component {
             source: this.measureLayer.getSource(),
             condition: (event) => { return event.originalEvent.buttons === 1; },
             type: geometryType,
-            style: () => { return this.modifyInteraction ? [] : DrawToolStyle; }
+            style: () => { return this.modifyInteraction ? [] : FeatureStyles.sketchInteraction(); }
         });
 
         this.drawInteraction.on('drawstart', (ev) => {
@@ -123,13 +115,7 @@ class MeasurementSupport extends React.Component {
                     clearTimeout(this.pickPositionCallbackTimeout);
                     this.props.measurement.pickPositionCallback(feature.getGeometry().getCoordinates());
                 }
-                return new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius: 6,
-                        fill: new ol.style.Fill({color: '#0099ff'}),
-                        stroke: new ol.style.Stroke({ color: 'white', width: 2 })
-                    })
-                });
+                return FeatureStyles.sketchInteraction();
             }
         });
         this.props.map.on('pointermove', this.clearPickPosition);
@@ -181,33 +167,16 @@ class MeasurementSupport extends React.Component {
         });
     };
     featureStyleFunction = (feature) => {
-        const styleOptions = {
-            strokeColor: 'red',
-            strokeWidth: 4,
-            fillColor: [255, 0, 0, 0.25],
-            strokeDash: []
-        };
-        return [
-            // Base geometry
-            ...FeatureStyles.default(feature, styleOptions),
-            // Nodes
-            new ol.style.Style({
-                image: new ol.style.Circle({
-                    radius: 5,
-                    fill: new ol.style.Fill({color: 'white'}),
-                    stroke: new ol.style.Stroke({ color: 'red', width: 2 })
-                }),
-                geometry: (f) => {
-                    if (f.getGeometry().getType() === "Point") {
-                        return new ol.geom.MultiPoint([f.getGeometry().getCoordinates()]);
-                    } else if (f.getGeometry().getType() === "LineString") {
-                        return new ol.geom.MultiPoint(f.getGeometry().getCoordinates());
-                    } else {
-                        return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
-                    }
-                }
-            })
-        ];
+        const styles = FeatureStyles.measureInteraction(feature);
+        styles[1].setGeometry((f) => {
+            if (f.getGeometry().getType() === "Point") {
+                return new ol.geom.MultiPoint([f.getGeometry().getCoordinates()]);
+            } else if (f.getGeometry().getType() === "LineString") {
+                return new ol.geom.MultiPoint(f.getGeometry().getCoordinates());
+            }
+            return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
+        });
+        return styles;
     };
 }
 

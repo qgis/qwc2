@@ -21,14 +21,6 @@ import FeatureStyles from '../../utils/FeatureStyles';
 import MeasureUtils from '../../utils/MeasureUtils';
 import SnapInteraction from './SnapInteraction';
 
-const DrawStyle = new ol.style.Style({
-    image: new ol.style.Circle({
-        fill: new ol.style.Fill({color: '#0099FF'}),
-        stroke: new ol.style.Stroke({color: '#FFFFFF', width: 1.5}),
-        radius: 6
-    })
-});
-
 const GeomTypeConfig = {
     Text: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true},
     Point: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true},
@@ -71,27 +63,19 @@ class RedliningSupport extends React.Component {
                 stroke: new ol.style.Stroke({color: [0, 0, 0, 0.5], width: 4})
             })
         });
-        this.selectedStyle = new ol.style.Style({
-            image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({color: 'white'}),
-                stroke: new ol.style.Stroke({color: 'red', width: 2}),
-                points: 4,
-                radius: 5,
-                angle: Math.PI / 4
-            }),
-            geometry: (f) => {
-                if (f.getGeometry().getType() === "Point") {
-                    return new ol.geom.MultiPoint([f.getGeometry().getCoordinates()]);
-                } else if (f.getGeometry().getType() === "LineString") {
-                    return new ol.geom.MultiPoint(f.getGeometry().getCoordinates());
-                } else if (f.getGeometry().getType() === "Polygon") {
-                    return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
-                } else if (f.getGeometry().getType() === "Circle") {
-                    const center = f.getGeometry().getCenter();
-                    return new ol.geom.MultiPoint([center, [center[0] + f.getGeometry().getRadius(), center[1]]]);
-                }
-                return null;
+        this.selectedStyle = FeatureStyles.interaction()[1];
+        this.selectedStyle.setGeometry((feature) => {
+            if (feature.getGeometry().getType() === "Point") {
+                return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
+            } else if (feature.getGeometry().getType() === "LineString") {
+                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
+            } else if (feature.getGeometry().getType() === "Polygon") {
+                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
+            } else if (feature.getGeometry().getType() === "Circle") {
+                const center = feature.getGeometry().getCenter();
+                return new ol.geom.MultiPoint([center, [center[0] + feature.getGeometry().getRadius(), center[1]]]);
             }
+            return null;
         });
     }
     componentDidUpdate(prevProps) {
@@ -224,7 +208,7 @@ class RedliningSupport extends React.Component {
         const drawInteraction = geomTypeConfig.drawInteraction({
             stopClick: true,
             condition: (event) => { return event.originalEvent.buttons === 1; },
-            style: () => { return this.picking ? [] : DrawStyle; },
+            style: () => { return this.picking ? [] : FeatureStyles.sketchInteraction(); },
             freehand: isFreeHand
         });
         drawInteraction.on('drawstart', (evt) => {

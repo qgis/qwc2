@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
 import {changeRedliningPickState} from '../../actions/redliningPick';
+import featureStyles from "../../utils/FeatureStyles";
 
 class RedliningPickSupport extends React.Component {
     static propTypes = {
@@ -25,23 +26,14 @@ class RedliningPickSupport extends React.Component {
 
         this.interactions = [];
         this.selectedFeatures = [];
-        this.selectedStyle = new ol.style.Style({
-            image: new ol.style.RegularShape({
-                fill: new ol.style.Fill({color: 'white'}),
-                stroke: new ol.style.Stroke({color: 'red', width: 2}),
-                points: 4,
-                radius: 5,
-                angle: Math.PI / 4
-            }),
-            geometry: (f) => {
-                if (f.getGeometry().getType() === "Point") {
-                    return new ol.geom.MultiPoint([f.getGeometry().getCoordinates()]);
-                } else if (f.getGeometry().getType() === "LineString") {
-                    return new ol.geom.MultiPoint(f.getGeometry().getCoordinates());
-                } else {
-                    return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
-                }
+        this.selectedStyle = featureStyles.interaction()[1];
+        this.selectedStyle.setGeometry((feature) => {
+            if (feature.getGeometry().getType() === "Point") {
+                return new ol.geom.MultiPoint([f.getGeometry().getCoordinates()]);
+            } else if (feature.getGeometry().getType() === "LineString") {
+                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
             }
+            return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
         });
     }
     componentDidUpdate(prevProps) {

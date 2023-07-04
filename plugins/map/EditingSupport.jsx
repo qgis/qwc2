@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import ol from 'openlayers';
 import {setEditContext} from '../../actions/editing';
+import FeatureStyles from '../../utils/FeatureStyles';
 
 class EditingSupport extends React.Component {
     static propTypes = {
@@ -24,38 +25,23 @@ class EditingSupport extends React.Component {
         this.interaction = null;
         this.layer = null;
         this.currentFeature = null;
-        this.editStyle = [
-            new ol.style.Style({
-                fill: new ol.style.Fill({ color: [255, 0, 0, 0.5] }),
-                stroke: new ol.style.Stroke({ color: 'red', width: 2})
-            }),
-            new ol.style.Style({
-                image: new ol.style.RegularShape({
-                    fill: new ol.style.Fill({color: 'white'}),
-                    stroke: new ol.style.Stroke({color: 'red', width: 2}),
-                    points: 4,
-                    radius: 5,
-                    angle: Math.PI / 4
-                }),
-                geometry: (feature) => {
-                    if (feature.getGeometry().getType() === "Point") {
-                        return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
-                    } else if (feature.getGeometry().getType() === "LineString") {
-                        return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
-                    } else if (feature.getGeometry().getType() === "Polygon") {
-                        return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
-                    } else if (feature.getGeometry().getType() === "MultiPoint") {
-                        return feature.getGeometry();
-                    } else if (feature.getGeometry().getType() === "MultiLineString") {
-                        return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
-                    } else if (feature.getGeometry().getType() === "MultiPolygon") {
-                        return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0][0]);
-                    } else {
-                        return feature.getGeometry();
-                    }
-                }
-            })
-        ];
+        this.editStyle = FeatureStyles.interaction();
+        this.editStyle[1].setGeometry((feature) => {
+            if (feature.getGeometry().getType() === "Point") {
+                return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
+            } else if (feature.getGeometry().getType() === "LineString") {
+                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
+            } else if (feature.getGeometry().getType() === "Polygon") {
+                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
+            } else if (feature.getGeometry().getType() === "MultiPoint") {
+                return feature.getGeometry();
+            } else if (feature.getGeometry().getType() === "MultiLineString") {
+                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
+            } else if (feature.getGeometry().getType() === "MultiPolygon") {
+                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0][0]);
+            }
+            return feature.getGeometry();
+        });
     }
     componentDidUpdate(prevProps) {
         if (this.props.editContext === prevProps.editContext) {

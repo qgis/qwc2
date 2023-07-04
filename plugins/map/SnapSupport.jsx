@@ -14,6 +14,7 @@ import ol from 'openlayers';
 import {v4 as uuidv4} from 'uuid';
 import {LayerRole} from '../../actions/layers';
 import IdentifyUtils from '../../utils/IdentifyUtils';
+import FeatureStyles from "../../utils/FeatureStyles";
 
 class SnapSupport extends React.Component {
     static propTypes = {
@@ -26,30 +27,15 @@ class SnapSupport extends React.Component {
     constructor(props) {
         super(props);
 
-        const snapStyle = [
-            new ol.style.Style({
-                fill: new ol.style.Fill({ color: [255, 255, 255, 0.05] }),
-                stroke: new ol.style.Stroke({ color: '#3399CC', width: 1})
-            }),
-            new ol.style.Style({
-                image: new ol.style.RegularShape({
-                    fill: new ol.style.Fill({ color: [255, 255, 255, 0.05] }),
-                    stroke: new ol.style.Stroke({color: '#3399CC', width: 1}),
-                    points: 4,
-                    radius: 5,
-                    angle: Math.PI / 4
-                }),
-                geometry: (feature) => {
-                    if (feature.getGeometry().getType() === "Point") {
-                        return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
-                    } else if (feature.getGeometry().getType() === "LineString") {
-                        return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
-                    } else {
-                        return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
-                    }
-                }
-            })
-        ];
+        const snapStyle = FeatureStyles.interaction({}, true);
+        snapStyle[1].setGeometry((feature) => {
+            if (feature.getGeometry().getType() === "Point") {
+                return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
+            } else if (feature.getGeometry().getType() === "LineString") {
+                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
+            }
+            return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
+        })
         this.snapSource = new ol.source.Vector();
         this.snapLayer = new ol.layer.Vector({
             source: this.snapSource,
