@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
 import {changeRedliningPickState} from '../../actions/redliningPick';
-import featureStyles from "../../utils/FeatureStyles";
+import FeatureStyles from "../../utils/FeatureStyles";
 
 class RedliningPickSupport extends React.Component {
     static propTypes = {
@@ -26,15 +26,15 @@ class RedliningPickSupport extends React.Component {
 
         this.interactions = [];
         this.selectedFeatures = [];
-        this.selectedStyle = featureStyles.interaction()[1];
-        this.selectedStyle.setGeometry((feature) => {
+        const geometryFunction = (feature) => {
             if (feature.getGeometry().getType() === "Point") {
                 return new ol.geom.MultiPoint([f.getGeometry().getCoordinates()]);
             } else if (feature.getGeometry().getType() === "LineString") {
                 return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
             }
             return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
-        });
+        }
+        this.selectedStyle = FeatureStyles.interactionVertex({geometryFunction});
     }
     componentDidUpdate(prevProps) {
         if (this.props.redliningPick === prevProps.redliningPick) {

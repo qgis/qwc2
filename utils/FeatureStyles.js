@@ -46,9 +46,9 @@ const DEFAULT_INTERACTION_STYLE = {
     measureFillColor: [255, 0, 0, 0.25],
     measureStrokeColor: "red",
     measureStrokeWidth: 4,
-    measurePointFillColor: "white",
-    measurePointStrokeColor: "red",
-    measurePointStrokeWidth: 2,
+    measureVertexFillColor: "white",
+    measureVertexStrokeColor: "red",
+    measureVertexStrokeWidth: 2,
     measurePointRadius: 6,
     sketchPointFillColor: "#0099FF",
     sketchPointStrokeColor: "white",
@@ -159,30 +159,36 @@ export default {
         let fillColor = opts.fillColor;
         let strokeColor = opts.strokeColor;
         let strokeWidth = opts.strokeWidth;
-        let vertexFill = opts.vertexFillColor;
-        let vertexStroke = opts.vertexStrokeColor;
         if (isSnap) {
             fillColor = opts.snapFillColor;
             strokeColor = opts.snapStrokeColor;
-            strokeWidth = opts.SnapStrokeWidth;
+            strokeWidth = opts.snapStrokeWidth;
+        }
+        return new ol.style.Style({
+            fill: new ol.style.Fill({ color: fillColor }),
+            stroke: new ol.style.Stroke({ color: strokeColor, width: strokeWidth})
+        });
+    },
+    interactionVertex: (options, isSnap) => {
+        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        let strokeWidth = opts.strokeWidth;
+        let vertexFill = opts.vertexFillColor;
+        let vertexStroke = opts.vertexStrokeColor;
+        if (isSnap) {
+            strokeWidth = opts.snapStrokeWidth;
             vertexFill = opts.snapVertexFillColor;
             vertexStroke = opts.snapVertexStrokeColor;
         }
-        return [
-            new ol.style.Style({
-                fill: new ol.style.Fill({ color: fillColor }),
-                stroke: new ol.style.Stroke({ color: strokeColor, width: strokeWidth})
+        return new ol.style.Style({
+            image: new ol.style.RegularShape({
+                fill: new ol.style.Fill({ color: vertexFill }),
+                stroke: new ol.style.Stroke({ color: vertexStroke, width: strokeWidth }),
+                points: 4,
+                radius: 5,
+                angle: Math.PI / 4
             }),
-            new ol.style.Style({
-                image: new ol.style.RegularShape({
-                    fill: new ol.style.Fill({ color: vertexFill }),
-                    stroke: new ol.style.Stroke({ color: vertexStroke, width: strokeWidth }),
-                    points: 4,
-                    radius: 5,
-                    angle: Math.PI / 4
-                }),
-            })
-        ]
+            geometry: opts.geometryFunction,
+        });
     },
     measureInteraction: (feature, options) => {
         const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
@@ -192,18 +198,18 @@ export default {
             fillColor: opts.measureFillColor,
             strokeDash: []
         };
-        return [
-            // Base geometry
-            ...defaultStyle(feature, styleOptions),
-            // Points
-            new ol.style.Style({
-                image: new ol.style.Circle({
-                    radius: opts.measurePointRadius,
-                    fill: new ol.style.Fill({color: opts.measurePointFillColor}),
-                    stroke: new ol.style.Stroke({ color: opts.measurePointStrokeColor, width: opts.measurePointStrokeWidth })
-                }),
-            })
-        ]
+        return defaultStyle(feature, styleOptions);
+    },
+    measureInteractionVertex: (options) => {
+        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        return new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: opts.measurePointRadius,
+                fill: new ol.style.Fill({color: opts.measureVertexFillColor}),
+                stroke: new ol.style.Stroke({ color: opts.measureVertexStrokeColor, width: opts.measureVertexStrokeWidth })
+            }),
+            geometry: opts.geometryFunction,
+        });
     },
     sketchInteraction: (options) => {
         const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};

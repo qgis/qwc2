@@ -63,8 +63,7 @@ class RedliningSupport extends React.Component {
                 stroke: new ol.style.Stroke({color: [0, 0, 0, 0.5], width: 4})
             })
         });
-        this.selectedStyle = FeatureStyles.interaction()[1];
-        this.selectedStyle.setGeometry((feature) => {
+        const geometryFunction = (feature) => {
             if (feature.getGeometry().getType() === "Point") {
                 return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
             } else if (feature.getGeometry().getType() === "LineString") {
@@ -76,7 +75,8 @@ class RedliningSupport extends React.Component {
                 return new ol.geom.MultiPoint([center, [center[0] + feature.getGeometry().getRadius(), center[1]]]);
             }
             return null;
-        });
+        };
+        this.selectedStyle = FeatureStyles.interactionVertex({geometryFunction});
     }
     componentDidUpdate(prevProps) {
         const layerChanged = this.props.redlining.layer !== prevProps.redlining.layer;

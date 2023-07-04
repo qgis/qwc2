@@ -26,21 +26,22 @@ class SnapSupport extends React.Component {
     };
     constructor(props) {
         super(props);
-
-        const snapStyle = FeatureStyles.interaction({}, true);
-        snapStyle[1].setGeometry((feature) => {
+        const geometryFunction = (feature) => {
             if (feature.getGeometry().getType() === "Point") {
                 return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
             } else if (feature.getGeometry().getType() === "LineString") {
                 return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
             }
             return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
-        })
+        };
         this.snapSource = new ol.source.Vector();
         this.snapLayer = new ol.layer.Vector({
             source: this.snapSource,
             zIndex: 1000000,
-            style: snapStyle
+            style: [
+                FeatureStyles.interaction( {}, true),
+                FeatureStyles.interactionVertex({geometryFunction}, true),
+            ],
         });
         this.props.map.addLayer(this.snapLayer);
         this.curPos = null;

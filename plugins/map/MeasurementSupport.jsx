@@ -167,16 +167,18 @@ class MeasurementSupport extends React.Component {
         });
     };
     featureStyleFunction = (feature) => {
-        const styles = FeatureStyles.measureInteraction(feature);
-        styles[1].setGeometry((f) => {
+        const geometryFunction = (f) => {
             if (f.getGeometry().getType() === "Point") {
                 return new ol.geom.MultiPoint([f.getGeometry().getCoordinates()]);
             } else if (f.getGeometry().getType() === "LineString") {
                 return new ol.geom.MultiPoint(f.getGeometry().getCoordinates());
             }
             return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
-        });
-        return styles;
+        };
+        return [
+            ...FeatureStyles.measureInteraction(feature),
+            FeatureStyles.measureInteractionVertex({geometryFunction})
+        ];
     };
 }
 

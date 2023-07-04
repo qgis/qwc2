@@ -11,8 +11,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import ol from 'openlayers';
 import {setEditContext} from '../../actions/editing';
-import FeatureStyles from '../../utils/FeatureStyles';
-import featureStyles from "../../utils/FeatureStyles";
+import FeatureStyles from "../../utils/FeatureStyles";
 
 class EditingSupport extends React.Component {
     static propTypes = {
@@ -26,8 +25,7 @@ class EditingSupport extends React.Component {
         this.interaction = null;
         this.layer = null;
         this.currentFeature = null;
-        this.editStyle = FeatureStyles.interaction();
-        this.editStyle[1].setGeometry((feature) => {
+        const geometryFunction = (feature) => {
             if (feature.getGeometry().getType() === "Point") {
                 return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
             } else if (feature.getGeometry().getType() === "LineString") {
@@ -42,7 +40,11 @@ class EditingSupport extends React.Component {
                 return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0][0]);
             }
             return feature.getGeometry();
-        });
+        };
+        this.editStyle = [
+            FeatureStyles.interaction(),
+            FeatureStyles.interactionVertex({geometryFunction})
+        ];
     }
     componentDidUpdate(prevProps) {
         if (this.props.editContext === prevProps.editContext) {
@@ -114,7 +116,7 @@ class EditingSupport extends React.Component {
                 }
                 return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
             },
-            style: featureStyles.sketchInteraction(),
+            style: FeatureStyles.sketchInteraction(),
         });
         modifyInteraction.on('modifyend', () => {
             this.commitCurrentFeature();
