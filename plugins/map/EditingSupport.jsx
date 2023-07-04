@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import ol from 'openlayers';
 import {setEditContext} from '../../actions/editing';
 import FeatureStyles from '../../utils/FeatureStyles';
+import featureStyles from "../../utils/FeatureStyles";
 
 class EditingSupport extends React.Component {
     static propTypes = {
@@ -112,7 +113,8 @@ class EditingSupport extends React.Component {
                     this.props.map.setIgnoreNextClick(true);
                 }
                 return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
-            }
+            },
+            style: featureStyles.sketchInteraction(),
         });
         modifyInteraction.on('modifyend', () => {
             this.commitCurrentFeature();

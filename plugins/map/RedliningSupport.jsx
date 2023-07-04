@@ -310,7 +310,8 @@ class RedliningSupport extends React.Component {
                         this.props.map.setIgnoreNextClick(true);
                     }
                     return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
-                }
+                },
+                style: FeatureStyles.sketchInteraction(),
             });
             modifyInteraction.on('modifyend', () => {
                 this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
