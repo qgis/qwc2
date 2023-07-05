@@ -506,20 +506,11 @@ class SearchBox extends React.Component {
         this.updateRecentSearches();
         const resultType = result.type || SearchResultType.PLACE;
         if (resultType === SearchResultType.PLACE) {
-            if (zoom) {
-                if (result.bbox && !(result.bbox[0] === result.bbox[2] && result.bbox[1] === result.bbox[3])) {
-                    this.props.zoomToExtent(result.bbox, result.crs);
-                } else {
-                    const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom);
-                    this.props.zoomToPoint([result.x, result.y], maxZoom, result.crs);
-                }
-            } else {
-                this.props.panTo([result.x, result.y], result.crs);
-            }
             const label = (result.label !== undefined ? result.label : result.text || '').replace(/<\/?\w+\s*\/?>/g, '');
             if (this.props.searchProviders[provider].getResultGeometry) {
-                this.props.searchProviders[provider].getResultGeometry(result, (response) => { this.showProviderResultGeometry(result, response, label); }, axios);
+                this.props.searchProviders[provider].getResultGeometry(result, (response) => { this.showProviderResultGeometry(result, response, label, zoom); }, axios);
             } else {
+                this.zoomToResult(result, zoom);
                 const feature = {
                     geometry: result.geometry || {type: 'Point', coordinates: [result.x, result.y]},
                     properties: { label: label },
@@ -558,12 +549,20 @@ class SearchBox extends React.Component {
             this.props.setCurrentTheme(result.theme, this.props.themes);
         }
     };
-    showProviderResultGeometry = (item, response, text) => {
+    showProviderResultGeometry = (item, response, text, zoom) => {
         if (!isEmpty(response.geometry)) {
             let features = [];
             const highlightFeature = VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, this.props.map.projection);
             if (highlightFeature) {
                 const center = VectorLayerUtils.getFeatureCenter(highlightFeature);
+                if (!item.x || !item.y) {
+                    item.x = center[0];
+                    item.y = center[1];
+                }
+                if (!item.bbox) {
+                    item.bbox = VectorLayerUtils.computeFeatureBBox(highlightFeature);
+                }
+
                 features = [highlightFeature];
                 if (!response.hidemarker) {
                     features.push(this.createMarker(center, this.props.map.projection, text));
@@ -571,11 +570,25 @@ class SearchBox extends React.Component {
             } else {
                 features = [this.createMarker([item.x, item.y], item.crs, text)];
             }
+            this.zoomToResult(item, zoom);
+            
             const layer = {
                 id: "searchselection",
                 role: LayerRole.SELECTION
             };
             this.props.addLayerFeatures(layer, features, true);
+        }
+    };
+    zoomToResult = (result, zoom) => {
+        if (zoom) {
+            if (result.bbox && !(result.bbox[0] === result.bbox[2] && result.bbox[1] === result.bbox[3])) {
+                this.props.zoomToExtent(result.bbox, result.crs);
+            } else {
+                const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom);
+                this.props.zoomToPoint([result.x, result.y], maxZoom, result.crs);
+            }
+        } else {
+            this.props.panTo([result.x, result.y], result.crs);
         }
     };
     createMarker = (center, crs, text) => {
