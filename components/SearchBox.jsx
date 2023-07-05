@@ -445,7 +445,8 @@ class SearchBox extends React.Component {
         const searchParams = {
             mapcrs: this.props.map.projection,
             displaycrs: this.props.displaycrs,
-            lang: LocaleUtils.lang()
+            lang: LocaleUtils.lang(),
+            theme: this.props.theme
         };
         Object.entries(this.props.searchProviders).forEach(([key, entry]) => {
             pendingSearches.push(key);
