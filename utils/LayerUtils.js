@@ -834,7 +834,7 @@ const LayerUtils = {
             return {};
         }
 
-        if (layer.bbox) {
+        if (layer.bbox && layer.bbox.bounds) {
             const layerCrs = layer.bbox.crs || map.projection;
             if (!transformedMapBBoxes[layerCrs]) {
                 transformedMapBBoxes[layerCrs] = CoordinatesUtils.reprojectBbox(map.bbox.bounds, map.projection, layerCrs);
