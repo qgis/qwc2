@@ -15,7 +15,7 @@ export default {
                 }
             },
             DE: {
-                url: 'http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
+                url: 'http://tile.openstreetmap.de/{z}/{x}/{y}.png',
                 options: {
                     maxZoom: 18
                 }
