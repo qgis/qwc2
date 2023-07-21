@@ -298,6 +298,7 @@ class ResizeableWindow extends React.Component {
                 docked: !state.geometry.docked
             }
         }));
+        this.rnd.updatePosition(this.state.geometry);
     };
     toggleMinimize = () => {
         this.setState((state) => ({
