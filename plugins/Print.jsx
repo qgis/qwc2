@@ -347,7 +347,7 @@ class Print extends React.Component {
                         <input name={mapName + ":HIGHLIGHT_LABELBUFFERCOLOR"} readOnly type={formvisibility} value={highlightParams.labelOultineColors.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_LABELBUFFERSIZE"} readOnly type={formvisibility} value={highlightParams.labelOutlineSizes.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_LABELSIZE"} readOnly type={formvisibility} value={highlightParams.labelSizes.join(";")} />
-                        {this.props.allowGeoPdfExport  ? (<input name="WRITE_GEO_PDF" readOnly type={formvisibility} value={this.state.geoPdf ? "true" : "false"} />) : null}
+                        {this.props.allowGeoPdfExport  ? (<input name="FORMAT_OPTIONS" readOnly type={formvisibility} value={this.state.geoPdf ? "WRITE_GEO_PDF:true" : "WRITE_GEO_PDF:false"} />) : null}
                         {gridIntervalX}
                         {gridIntervalY}
                         {resolutionInput}
