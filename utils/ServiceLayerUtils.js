@@ -361,6 +361,8 @@ const ServiceLayerUtils = {
                     result = ServiceLayerUtils.getWMTSLayers(response.data, serviceUrl, mapCrs);
                 }
                 let layer = LayerUtils.searchSubLayer({sublayers: result}, "name", layerConfig.name);
+                // Some services (i.e. wms.geo.admin.ch) have same-named sublayers
+                layer = LayerUtils.searchSubLayer(layer, "name", layerConfig.name) ?? layer;
                 if (layer) {
                     layer = {
                         ...layer,
