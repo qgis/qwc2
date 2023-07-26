@@ -144,7 +144,15 @@ class TimeManager extends React.Component {
             markerPins: true
         },
         featureTimelineAvailable: true,
-        stepUnits: ["s", "m", "h", "d", "M", "y"]
+        stepUnits: ["s", "m", "h", "d", "M", "y"],
+        /** Default window geometry with size, position and docking status. */
+        geometry: PropTypes.shape({
+            initialWidth: PropTypes.number,
+            initialHeight: PropTypes.number,
+            initialX: PropTypes.number,
+            initialY: PropTypes.number,
+            initiallyDocked: PropTypes.bool
+        }),
     };
     static defaultState = {
         timeEnabled: false,
@@ -170,7 +178,14 @@ class TimeManager extends React.Component {
         },
         timeFeatures: null,
         settingsPopup: false,
-        visible: false
+        visible: false,
+        geometry: {
+            initialWidth: 900,
+            initialHeight: 320,
+            initialX: null,
+            initialY: null,
+            initiallyDocked: false
+        }
     };
     constructor(props) {
         super(props);
@@ -297,8 +312,9 @@ class TimeManager extends React.Component {
             body = this.renderBody(timeValues);
         }
         return (
-            <ResizeableWindow dockable="bottom"  icon="time" initialHeight={320}
-                initialWidth={900} onClose={this.onClose} onGeometryChanged={this.dialogGeomChanged}
+            <ResizeableWindow dockable="bottom"  icon="clock" initialHeight={this.props.geometry.initialHeight}
+                initialWidth={this.props.geometry.initialWidth} initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
+                initiallyDocked={this.props.geometry.initiallyDocked} onClose={this.onClose} onGeometryChanged={this.dialogGeomChanged}
                 scrollable splitScreenWhenDocked title={LocaleUtils.tr("timemanager.title")}>
                 {body}
             </ResizeableWindow>

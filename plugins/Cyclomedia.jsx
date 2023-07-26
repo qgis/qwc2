@@ -39,7 +39,7 @@ class Cyclomedia extends React.Component {
         cyclomediaVersion: PropTypes.string,
         /** Whether to display Cyclomedia measurement geometries on the map. */
         displayMeasurements: PropTypes.bool,
-        /** Default window geometry. */
+        /** Default window geometry with size, position and docking status. */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
             initialHeight: PropTypes.number,
@@ -69,7 +69,7 @@ class Cyclomedia extends React.Component {
             initialHeight: 640,
             initialX: 0,
             initialY: 0,
-            initiallyDocked: true
+            initiallyDocked: false
         },
         maxMapScale: 10000,
         projection: 'EPSG:3857'
@@ -370,7 +370,7 @@ class Cyclomedia extends React.Component {
                         window.panoramaViewer.on(StreetSmartApi.Events.panoramaViewer.VIEW_CHANGE, changeView);
                         StreetSmartApi.on(StreetSmartApi.Events.measurement.MEASUREMENT_CHANGED, changeMeasurement);
                         StreetSmartApi.on(StreetSmartApi.Events.measurement.MEASUREMENT_STOPPED, stopMeasurement);
-                    }          
+                    }
                 }).catch((reason) => {
                     console.log('Failed to create component(s) through API: ' + reason);
                 });

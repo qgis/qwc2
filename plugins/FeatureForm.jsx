@@ -44,24 +44,27 @@ class FeatureForm extends React.Component {
         editContext: PropTypes.object,
         enabled: PropTypes.bool,
         iface: PropTypes.object,
-        /** Initial height of the form window. */
-        initialHeight: PropTypes.number,
-        /** Initial width of the form window. */
-        initialWidth: PropTypes.number,
-        /** Initial x position of the form window. */
-        initialX: PropTypes.number,
-        /** Initial y position of the form window. */
-        initialY: PropTypes.number,
+        /** Default window geometry with size, position and docking status. */
+        geometry: PropTypes.shape({
+            initialWidth: PropTypes.number,
+            initialHeight: PropTypes.number,
+            initialX: PropTypes.number,
+            initialY: PropTypes.number,
+            initiallyDocked: PropTypes.bool
+        }),
         layers: PropTypes.array,
         map: PropTypes.object,
         setEditContext: PropTypes.func,
         theme: PropTypes.object
     };
     static defaultProps = {
-        initialWidth: 320,
-        initialHeight: 480,
-        initialX: 0,
-        initialY: 0
+        geometry: {
+            initialWidth: 320,
+            initialHeight: 480,
+            initialX: 0,
+            initialY: 0,
+            initiallyDocked: false
+        }
     };
     static defaultState = {
         pendingRequests: 0,
@@ -192,9 +195,9 @@ class FeatureForm extends React.Component {
             }
             resultWindow = (
                 <ResizeableWindow icon="featureform"
-                    initialHeight={this.props.initialHeight} initialWidth={this.props.initialWidth}
-                    initialX={this.props.initialX} initialY={this.props.initialY}
-                    key="FeatureForm"
+                    initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
+                    initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
+                    initiallyDocked={this.props.geometry.initiallyDocked} key="FeatureForm"
                     onClose={this.clearResults} title={LocaleUtils.trmsg("featureform.title")}
                 >
                     {body}

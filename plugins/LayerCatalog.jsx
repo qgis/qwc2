@@ -57,14 +57,23 @@ class LayerCatalog extends React.Component {
         /** The URL to the catalog JSON file. */
         catalogUrl: PropTypes.string,
         setCurrentTask: PropTypes.func,
-        /** The default window size.  */
-        windowSize: PropTypes.shape({
-            width: PropTypes.number,
-            height: PropTypes.number
-        })
+        /** Default window geometry with size, position and docking status. */
+        geometry: PropTypes.shape({
+            initialWidth: PropTypes.number,
+            initialHeight: PropTypes.number,
+            initialX: PropTypes.number,
+            initialY: PropTypes.number,
+            initiallyDocked: PropTypes.bool
+        }),
     };
     static defaultProps = {
-        windowSize: {width: 320, height: 320}
+        geometry: {
+            initialWidth: 320,
+            initialHeight: 320,
+            initialX: 0,
+            initialY: 0,
+            initiallyDocked: false
+        }
     };
     state = {
         catalog: null
@@ -89,7 +98,8 @@ class LayerCatalog extends React.Component {
             return null;
         }
         return (
-            <ResizeableWindow icon="catalog" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width}
+            <ResizeableWindow icon="catalog" initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
+                initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY} initiallyDocked={this.props.geometry.initiallyDocked}
                 onClose={this.onClose} title={LocaleUtils.trmsg("layercatalog.windowtitle")} >
                 <div className="layer-catalog" role="body">
                     <LayerCatalogWidget catalog={this.state.catalog} pendingRequests={0} />
