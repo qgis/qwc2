@@ -65,10 +65,13 @@ class LayerTree extends React.Component {
         groupTogglesSublayers: PropTypes.bool,
         /** Whether to display the layer info button inside the layer settings menu rather than next to the layer title. */
         infoInSettings: PropTypes.bool,
-        /** The initial size of the layer info window. */
-        layerInfoWindowSize: PropTypes.shape({
-            width: PropTypes.number,
-            height: PropTypes.number
+        /** Default layer info window geometry with size, position and docking status. */
+        layerInfoGeometry: PropTypes.shape({
+            initialWidth: PropTypes.number,
+            initialHeight: PropTypes.number,
+            initialX: PropTypes.number,
+            initialY: PropTypes.number,
+            initiallyDocked: PropTypes.bool
         }),
         layers: PropTypes.array,
         map: PropTypes.object,
@@ -111,7 +114,13 @@ class LayerTree extends React.Component {
         allowImport: true,
         groupTogglesSublayers: false,
         grayUnchecked: true,
-        layerInfoWindowSize: {width: 320, height: 480},
+        layerInfoGeometry: {
+            initialWidth: 480,
+            initialHeight: 480,
+            initialX: null,
+            initialY: null,
+            initiallyDocked: false
+        },
         bboxDependentLegend: false,
         flattenGroups: false,
         width: "25em",
@@ -508,8 +517,8 @@ class LayerTree extends React.Component {
                     })}
                 </SideBar>
                 {legendTooltip}
-                <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} scaleDependentLegend={this.props.scaleDependentLegend} windowSize={this.props.layerInfoWindowSize} />
-                <ServiceInfoWindow windowSize={this.props.layerInfoWindowSize} />
+                <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} scaleDependentLegend={this.props.scaleDependentLegend} layerInfoGeometry={this.props.layerInfoGeometry} />
+                <ServiceInfoWindow layerInfoGeometry={this.props.layerInfoGeometry} />
             </div>
         );
     }

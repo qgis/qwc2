@@ -40,11 +40,14 @@ class MapLegend extends React.Component {
         /** Whether to display a scale-dependent legend by default. */
         scaleDependentLegend: PropTypes.bool,
         setCurrentTask: PropTypes.func,
-        /** The default window size. */
-        windowSize: PropTypes.shape({
-            width: PropTypes.number,
-            height: PropTypes.number
-        })
+        /** Default window geometry with size, position and docking status. */
+        geometry: PropTypes.shape({
+            initialWidth: PropTypes.number,
+            initialHeight: PropTypes.number,
+            initialX: PropTypes.number,
+            initialY: PropTypes.number,
+            initiallyDocked: PropTypes.bool
+        }),
     };
     static defaultProps = {
         addGroupTitles: false,
@@ -52,7 +55,13 @@ class MapLegend extends React.Component {
         bboxDependentLegend: false,
         onlyVisibleLegend: false,
         scaleDependentLegend: false,
-        windowSize: {width: 320, height: 320}
+        geometry: {
+            initialWidth: 320,
+            initialHeight: 320,
+            initialX: 0,
+            initialY: 0,
+            initiallyDocked: false
+        }
     };
     state = {
         onlyVisibleLegend: false,
@@ -85,8 +94,9 @@ class MapLegend extends React.Component {
         ];
 
         return (
-            <ResizeableWindow extraControls={extraControls} icon="list-alt" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width}
-                onClose={this.onClose} title={LocaleUtils.trmsg("maplegend.windowtitle")} >
+            <ResizeableWindow extraControls={extraControls} icon="list-alt" initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
+                initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
+                initiallyDocked={this.props.geometry.initiallyDocked} onClose={this.onClose} title={LocaleUtils.trmsg("maplegend.windowtitle")} >
                 <div className="map-legend" role="body">
                     {this.props.layers.map(layer => {
                         if (this.state.onlyVisibleLegend && !layer.visibility) {

@@ -25,7 +25,7 @@ class LayerInfoWindow extends React.Component {
         scaleDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         setActiveLayerInfo: PropTypes.func,
         sublayer: PropTypes.object,
-        windowSize: PropTypes.object
+        geometry: PropTypes.object,
     };
     renderLink(text, url) {
         if (url) {
@@ -64,7 +64,8 @@ class LayerInfoWindow extends React.Component {
             legend = (<span className="layer-info-window-coloricon" style={{backgroundColor: this.props.layer.color}} />);
         }
         return (
-            <ResizeableWindow icon="info-sign" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width} onClose={this.onClose}
+            <ResizeableWindow icon="info-sign" initialHeight={this.props.layerInfoGeometry.initialHeight} initialWidth={this.props.layerInfoGeometry.initialWidth}
+                    initialX={this.props.layerInfoGeometry.initialX} initialY={this.props.layerInfoGeometry.initialY} initiallyDocked={this.props.layerInfoGeometry.initiallyDocked} onClose={this.onClose}
                 title={LocaleUtils.trmsg("layerinfo.title")}>
                 <div className="layer-info-window-body" role="body">
                     <h4 className="layer-info-window-title">{this.props.sublayer.title}</h4>

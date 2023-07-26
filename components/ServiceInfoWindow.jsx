@@ -19,7 +19,7 @@ class ServiceInfoWindow extends React.Component {
     static propTypes = {
         service: PropTypes.object,
         setActiveServiceInfo: PropTypes.func,
-        windowSize: PropTypes.object
+        layerInfoGeometry: PropTypes.object
     };
     renderLink(text, url) {
         if (url) {
@@ -47,7 +47,9 @@ class ServiceInfoWindow extends React.Component {
             return null;
         }
         return (
-            <ResizeableWindow icon="info-sign" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width} onClose={this.onClose}
+            <ResizeableWindow icon="info-sign" initialHeight={this.props.layerInfoGeometry.initialHeight} initialWidth={this.props.layerInfoGeometry.initialWidth}
+                    initialX={this.props.layerInfoGeometry.initialX} initialY={this.props.layerInfoGeometry.initialY}
+                    initiallyDocked={this.props.layerInfoGeometry.initiallyDocked} onClose={this.onClose}
                 title={LocaleUtils.trmsg("serviceinfo.title")}>
                 <div className="service-info-window-body" role="body">
                     <h4 className="service-info-window-title">{this.props.service.title}</h4>
