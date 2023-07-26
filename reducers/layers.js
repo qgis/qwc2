@@ -280,7 +280,12 @@ export default function layers(state = defaultState, action) {
         if (action.layer) {
             newLayers = newLayers.map(layer => {
                 if (layer.type === 'placeholder' && layer.id === action.id) {
-                    const newLayer = {...layer, ...action.layer};
+                    const newLayer = {
+                        ...layer,
+                        ...action.layer,
+                        id: layer.id,
+                        uuid: layer.uuid
+                    };
                     delete newLayer.loading;
                     LayerUtils.addUUIDs(newLayer);
                     if (newLayer.type === "wms") {
