@@ -677,12 +677,13 @@ const LayerUtils = {
             delete urlParts.search;
             return url.format(urlParts);
         } else {
+            const layername = layer === sublayer ? layer.name.replace(/.*\//, '') : sublayer.name;
             const urlParts = url.parse(layer.legendUrl, true);
             urlParts.query = {
                 VERSION: layer.version,
                 ...urlParts.query,
                 ...requestParams,
-                LAYER: sublayer.name
+                LAYER: layername
             };
             delete urlParts.search;
             return url.format(urlParts);
