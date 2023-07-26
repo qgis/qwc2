@@ -62,7 +62,7 @@ class LayerCatalogWidget extends React.PureComponent {
                 cur = cur.sublayers[idx];
             }
             cur.expanded = !cur.expanded;
-            this.setState({catalog: newCatalog});
+            return {catalog: newCatalog};
         });
     };
     render() {
