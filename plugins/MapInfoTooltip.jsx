@@ -45,16 +45,18 @@ class MapInfoTooltip extends React.Component {
         enabled: PropTypes.bool,
         includeWGS84: PropTypes.bool,
         map: PropTypes.object,
-        setCurrentTask: PropTypes.func
+        setCurrentTask: PropTypes.func,
+        plugins: PropTypes.object
     };
     static defaultProps = {
         cooPrecision: 0,
         degreeCooPrecision: 4,
         elevationPrecision: 0,
-        includeWGS84: true
+        includeWGS84: true,
+        plugins: {}
     };
     state = {
-        coordinate: null, elevation: null, extraInfo: null
+        coordinate: null, elevation: null, extraInfo: null, newPoint: null
     };
     componentDidUpdate(prevProps) {
         if (!this.props.enabled && this.state.coordinate) {
@@ -69,7 +71,7 @@ class MapInfoTooltip extends React.Component {
         } else {
             const oldPoint = prevProps.map.click;
             if (!oldPoint || oldPoint.pixel[0] !== newPoint.pixel[0] || oldPoint.pixel[1] !== newPoint.pixel[1]) {
-                this.setState({coordinate: newPoint.coordinate, elevation: null});
+                this.setState({coordinate: newPoint.coordinate, elevation: null, newPoint: newPoint});
                 const serviceParams = {pos: newPoint.coordinate.join(","), crs: this.props.map.projection};
                 const elevationService = (ConfigUtils.getConfigProp("elevationServiceUrl") || "").replace(/\/$/, '');
                 const elevationPrecision = prevProps.elevationPrecision;
@@ -94,7 +96,7 @@ class MapInfoTooltip extends React.Component {
         if (!this.state.coordinate) {
             return null;
         }
-
+        
         const info = [];
 
         const projections = [this.props.displaycrs];
@@ -181,6 +183,23 @@ class MapInfoTooltip extends React.Component {
                             </tbody>
                         </table>
                         {routingButtons}
+                        {Object.values(this.props.plugins).map((ComponentRender, index) => {
+                            const componentProps = {};
+                            if (ComponentRender.controls){
+                                const propsMapping = {
+                                    newPoint: this.state.newPoint,
+                                    removeCoordinates: this.clear,
+                                    coordinates: this.state.coordinate,
+                                };
+                                Object.entries(ComponentRender.cfg).map(([key, value]) => {
+                                    if (value){
+                                        componentProps[key] = propsMapping[key];
+                                    }
+                                });
+                                ComponentRender = ComponentRender.controls
+                            }
+                            return (<ComponentRender key={index} {...componentProps}/>);
+                        })} 
                     </div>
                 </div>
             </div>
@@ -188,12 +207,13 @@ class MapInfoTooltip extends React.Component {
     }
 }
 
-const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
-    enabled: state.identify.tool !== null,
-    map: state.map,
-    displaycrs: displaycrs
-}));
-
-export default connect(selector, {
-    setCurrentTask: setCurrentTask
-})(MapInfoTooltip);
+export default (plugins) => {
+    return connect(createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
+        enabled: state.identify.tool !== null,
+        map: state.map,
+        displaycrs: displaycrs,
+        plugins: plugins
+    })), {
+        setCurrentTask: setCurrentTask 
+    })(MapInfoTooltip);
+};
