@@ -148,8 +148,8 @@ const LayerUtils = {
         if (!Array.isArray(layer.sublayers)) {
             newParams = {
                 LAYERS: params.LAYERS || layer.name,
-                OPACITIES: params.OPACITIES || ("" + (layer.opacity !== undefined ? layer.opacity : 255)),
-                STYLES: params.STYLES || "",
+                OPACITIES: "" + (layer.opacity ?? params.OPACITIES ?? 255),
+                STYLES: params.STYLES ?? "",
                 ...layer.dimensionValues
             };
             queryLayers = layer.queryable ? [layer.name] : [];
