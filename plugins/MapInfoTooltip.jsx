@@ -24,14 +24,29 @@ import './style/MapInfoTooltip.css';
 
 /**
  * Provides map context information when right-clicking on the map.
- * 
+ *
  * Displays the coordinates at the picked position by default.
- * 
+ *
  * If `elevationServiceUrl` in `config.json` to points to a `qwc-elevation-service`,
  * the height at the picked position is also displayed.
- * 
+ *
  * If `mapInfoService` in `config.json` points to a `qwc-mapinfo-service`, additional
  * custom information according to the `qwc-mapinfo-service` configuration is returned.
+ *
+ * You can pass additional plugin components to the `MapInfoTooltip` in `appConfig.js`:
+ * ```json
+ * MapInfoTooltipPlugin: MapInfoTooltipPlugin([FirstPlugin, SecondPlugin])
+ * ```
+ * where a Plugin is a React component of the form
+ * ```jsx
+ * class MapInfoTooltipPlugin extends React.Component {
+ *   static propTypes = {
+ *     point: PropTypes.object,
+ *     closePopup: PropTypes.func
+ *   }
+ *   render() { return ...; }
+ * };
+ * ```
  */
 class MapInfoTooltip extends React.Component {
     static propTypes = {
@@ -45,31 +60,34 @@ class MapInfoTooltip extends React.Component {
         enabled: PropTypes.bool,
         includeWGS84: PropTypes.bool,
         map: PropTypes.object,
+        /** Additional plugin components for the map info tooltip. */
+        plugins: PropTypes.array,
         setCurrentTask: PropTypes.func
     };
     static defaultProps = {
         cooPrecision: 0,
         degreeCooPrecision: 4,
         elevationPrecision: 0,
-        includeWGS84: true
+        includeWGS84: true,
+        plugins: []
     };
     state = {
-        coordinate: null, elevation: null, extraInfo: null
+        point: null, elevation: null, extraInfo: null
     };
     componentDidUpdate(prevProps) {
-        if (!this.props.enabled && this.state.coordinate) {
+        if (!this.props.enabled && this.state.point) {
             this.clear();
             return;
         }
         const newPoint = this.props.map.click;
         if (!newPoint || newPoint.button !== 2) {
-            if (this.state.coordinate) {
+            if (this.state.point) {
                 this.clear();
             }
         } else {
             const oldPoint = prevProps.map.click;
             if (!oldPoint || oldPoint.pixel[0] !== newPoint.pixel[0] || oldPoint.pixel[1] !== newPoint.pixel[1]) {
-                this.setState({coordinate: newPoint.coordinate, elevation: null});
+                this.setState({point: newPoint, elevation: null});
                 const serviceParams = {pos: newPoint.coordinate.join(","), crs: this.props.map.projection};
                 const elevationService = (ConfigUtils.getConfigProp("elevationServiceUrl") || "").replace(/\/$/, '');
                 const elevationPrecision = prevProps.elevationPrecision;
@@ -88,10 +106,10 @@ class MapInfoTooltip extends React.Component {
         }
     }
     clear = () => {
-        this.setState({coordinate: null, height: null, extraInfo: null});
+        this.setState({point: null, height: null, extraInfo: null});
     };
     render() {
-        if (!this.state.coordinate) {
+        if (!this.state.point) {
             return null;
         }
 
@@ -105,7 +123,7 @@ class MapInfoTooltip extends React.Component {
             projections.push("EPSG:4326");
         }
         projections.map(crs => {
-            const coo = CoordinatesUtils.reproject(this.state.coordinate, this.props.map.projection, crs);
+            const coo = CoordinatesUtils.reproject(this.state.point.coordinate, this.props.map.projection, crs);
             const digits = CoordinatesUtils.getUnits(crs) === 'degrees' ? this.props.degreeCooPrecision : this.props.cooPrecision;
             info.push([
                 (CoordinatesUtils.getAvailableCRS()[crs] || {label: crs}).label,
@@ -124,7 +142,7 @@ class MapInfoTooltip extends React.Component {
             info.push(...this.state.extraInfo);
         }
         const title = LocaleUtils.tr("mapinfotooltip.title");
-        const pixel = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK)(this.state.coordinate);
+        const pixel = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK)(this.state.point.coordinate);
         const style = {
             left: pixel[0] + "px",
             top: pixel[1] + "px"
@@ -133,7 +151,7 @@ class MapInfoTooltip extends React.Component {
         let routingButtons = null;
         if (ConfigUtils.havePlugin("Routing")) {
             const prec = CoordinatesUtils.getUnits(this.props.displaycrs) === 'degrees' ? 4 : 0;
-            const pos = CoordinatesUtils.reproject(this.state.coordinate, this.props.map.projection, this.props.displaycrs);
+            const pos = CoordinatesUtils.reproject(this.state.point.coordinate, this.props.map.projection, this.props.displaycrs);
             const point = {
                 text: pos.map(x => x.toFixed(prec)).join(", ") + " (" + this.props.displaycrs + ")",
                 pos: [...pos],
@@ -181,6 +199,7 @@ class MapInfoTooltip extends React.Component {
                             </tbody>
                         </table>
                         {routingButtons}
+                        {this.props.plugins.map((Plugin, idx) => (<Plugin key={idx} point={this.state.point} closePopup={this.clear} />))}
                     </div>
                 </div>
             </div>
@@ -188,12 +207,13 @@ class MapInfoTooltip extends React.Component {
     }
 }
 
-const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
-    enabled: state.identify.tool !== null,
-    map: state.map,
-    displaycrs: displaycrs
-}));
-
-export default connect(selector, {
-    setCurrentTask: setCurrentTask
-})(MapInfoTooltip);
+export default (plugins) => {
+    return connect(createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
+        enabled: state.identify.tool !== null,
+        map: state.map,
+        displaycrs: displaycrs,
+        plugins: plugins
+    })), {
+        setCurrentTask: setCurrentTask 
+    })(MapInfoTooltip);
+};
