@@ -148,7 +148,7 @@ const LayerUtils = {
 
         if (!Array.isArray(layer.sublayers)) {
             newParams = {
-                LAYERS: layer.name || params.LAYERS,
+                LAYERS: params.LAYERS || layer.name,
                 OPACITIES: "" + (layer.opacity ?? params.OPACITIES ?? 255),
                 STYLES: params.STYLES ?? "",
                 ...layer.dimensionValues
