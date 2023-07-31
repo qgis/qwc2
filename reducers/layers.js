@@ -283,6 +283,7 @@ export default function layers(state = defaultState, action) {
                     const newLayer = {
                         ...layer,
                         ...action.layer,
+                        role: layer.role,
                         id: layer.id,
                         uuid: layer.uuid
                     };
