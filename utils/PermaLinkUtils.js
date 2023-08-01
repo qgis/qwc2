@@ -140,12 +140,16 @@ export function updateBookmark(state, bkey, description, callback) {
     }
     // Only store redlining layers
     const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
-    const redliningLayers = exploded.map((entry, idx) => ({...entry, pos: idx}))
-        .filter(entry => entry.layer.role === LayerRole.USERLAYER && entry.layer.type === 'vector')
-        .map(entry => ({...entry.layer, pos: entry.pos}));
-    const bookmarkState = {
-        layers: redliningLayers
-    };
+    const bookmarkState = {};
+    if (ConfigUtils.getConfigProp("storeAllLayersInPermalink")) {
+        bookmarkState.layers = state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND);
+    } else {
+        const redliningLayers = exploded.map((entry, idx) => ({...entry, pos: idx}))
+            .filter(entry => entry.layer.role === LayerRole.USERLAYER && entry.layer.type === 'vector')
+            .map(entry => ({...entry.layer, pos: entry.pos}));
+        bookmarkState.layers = redliningLayers;
+    }
+    bookmarkState.url = UrlParams.getFullUrl();
     axios.put(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey +
         "?url=" + encodeURIComponent(window.location.href) + "&description=" + description, bookmarkState)
         .then(() => callback(true))
