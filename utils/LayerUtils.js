@@ -759,7 +759,7 @@ const LayerUtils = {
                 params.LAYERS.push(layer.params.LAYERS);
                 params.OPACITIES.push(layer.params.OPACITIES);
                 params.COLORS.push(layer.params.LAYERS.split(",").map(() => "").join(","));
-            } else if (printExternalLayers && layer.role === LayerRole.USERLAYER) {
+            } else if (printExternalLayers && layer.role === LayerRole.USERLAYER && layer.visibility !== false && LayerUtils.layerScaleInRange(layer, printScale)) {
                 LayerUtils.addExternalLayerPrintParams(layer, params, printCrs, counterRef);
             }
         }
