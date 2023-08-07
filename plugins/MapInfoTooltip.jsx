@@ -71,7 +71,7 @@ class MapInfoTooltip extends React.Component {
         } else {
             const oldPoint = prevProps.map.click;
             if (!oldPoint || oldPoint.pixel[0] !== newPoint.pixel[0] || oldPoint.pixel[1] !== newPoint.pixel[1]) {
-                this.setState({coordinate: newPoint.coordinate, elevation: null, newPoint: newPoint});
+                this.setState({point: newPoint, elevation: null});
                 const serviceParams = {pos: newPoint.coordinate.join(","), crs: this.props.map.projection};
                 const elevationService = (ConfigUtils.getConfigProp("elevationServiceUrl") || "").replace(/\/$/, '');
                 const elevationPrecision = prevProps.elevationPrecision;
@@ -90,10 +90,10 @@ class MapInfoTooltip extends React.Component {
         }
     }
     clear = () => {
-        this.setState({coordinate: null, height: null, extraInfo: null});
+        this.setState({point: null, height: null, extraInfo: null});
     };
     render() {
-        if (!this.state.coordinate) {
+        if (!this.state.point) {
             return null;
         }
         
@@ -107,7 +107,7 @@ class MapInfoTooltip extends React.Component {
             projections.push("EPSG:4326");
         }
         projections.map(crs => {
-            const coo = CoordinatesUtils.reproject(this.state.coordinate, this.props.map.projection, crs);
+            const coo = CoordinatesUtils.reproject(this.state.point.coordinate, this.props.map.projection, crs);
             const digits = CoordinatesUtils.getUnits(crs) === 'degrees' ? this.props.degreeCooPrecision : this.props.cooPrecision;
             info.push([
                 (CoordinatesUtils.getAvailableCRS()[crs] || {label: crs}).label,
@@ -126,7 +126,7 @@ class MapInfoTooltip extends React.Component {
             info.push(...this.state.extraInfo);
         }
         const title = LocaleUtils.tr("mapinfotooltip.title");
-        const pixel = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK)(this.state.coordinate);
+        const pixel = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK)(this.state.point.coordinate);
         const style = {
             left: pixel[0] + "px",
             top: pixel[1] + "px"
@@ -135,7 +135,7 @@ class MapInfoTooltip extends React.Component {
         let routingButtons = null;
         if (ConfigUtils.havePlugin("Routing")) {
             const prec = CoordinatesUtils.getUnits(this.props.displaycrs) === 'degrees' ? 4 : 0;
-            const pos = CoordinatesUtils.reproject(this.state.coordinate, this.props.map.projection, this.props.displaycrs);
+            const pos = CoordinatesUtils.reproject(this.state.point.coordinate, this.props.map.projection, this.props.displaycrs);
             const point = {
                 text: pos.map(x => x.toFixed(prec)).join(", ") + " (" + this.props.displaycrs + ")",
                 pos: [...pos],
@@ -183,23 +183,7 @@ class MapInfoTooltip extends React.Component {
                             </tbody>
                         </table>
                         {routingButtons}
-                        {Object.values(this.props.plugins).map((ComponentRender, index) => {
-                            const componentProps = {};
-                            if (ComponentRender.controls){
-                                const propsMapping = {
-                                    newPoint: this.state.newPoint,
-                                    removeCoordinates: this.clear,
-                                    coordinates: this.state.coordinate,
-                                };
-                                Object.entries(ComponentRender.cfg).map(([key, value]) => {
-                                    if (value){
-                                        componentProps[key] = propsMapping[key];
-                                    }
-                                });
-                                ComponentRender = ComponentRender.controls
-                            }
-                            return (<ComponentRender key={index} {...componentProps}/>);
-                        })} 
+                        {Object.values(this.props.plugins).map((Plugin, idx) => (<Plugin key={idx} point={this.state.point} closePopup={this.clear} />))}
                     </div>
                 </div>
             </div>
