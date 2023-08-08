@@ -188,7 +188,7 @@ class SearchBox extends React.Component {
                             {!this.isCollapsed(sectionId) ? (
                                 <div className="searchbox-results-section-body">
                                     {group.items.map((entry, idx) => (
-                                        <div className="searchbox-result" key={"c" + idx} onClick={() => {this.selectProviderResult(entry, provider); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
+                                        <div className="searchbox-result" key={"c" + idx} onClick={() => {this.selectProviderResult(entry, provider); this.blur(); this.updateSearchText(null,  entry.label || entry.text)}} onMouseDown={MiscUtils.killEvent}>
                                             <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: entry.text.replace(/<br\s*\/>/ig, ' ')}} title={entry.label || entry.text} />
                                             {entry.externalLink ? <Icon icon="info-sign" onClick={ev => { MiscUtils.killEvent(ev); this.openUrl(entry.externalLink, entry.target, entry.label || entry.text); } } /> : null}
                                         </div>
@@ -373,6 +373,15 @@ class SearchBox extends React.Component {
         if (this.props.layers.find(layer => layer.id === 'searchselection')) {
             this.props.removeLayer('searchselection');
         }
+        const newState = {searchText: text, expandedLayerGroup: null, activeLayerInfo: null, pendingSearches: [], searchSession: null};
+        if (expandSections) {
+            newState.collapsedSections = {};
+        }
+        this.setState(newState);
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(this.startSearch, 250);
+    };
+    updateSearchText = (el, text, expandSections = false) => {
         const newState = {searchText: text, expandedLayerGroup: null, activeLayerInfo: null, pendingSearches: [], searchSession: null};
         if (expandSections) {
             newState.collapsedSections = {};
