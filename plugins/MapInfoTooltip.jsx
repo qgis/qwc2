@@ -32,6 +32,16 @@ import './style/MapInfoTooltip.css';
  * 
  * If `mapInfoService` in `config.json` points to a `qwc-mapinfo-service`, additional
  * custom information according to the `qwc-mapinfo-service` configuration is returned.
+ * 
+ * To add external plugins to the tooltip, include your plugin in the `plugins` array
+ * inside the `MapInfoTooltip` section of the `AppConfig` file.
+ * 
+ * Example:
+ * ```json
+ * {
+ *  MapInfoTooltipPlugin: MapInfoTooltipPlugin([FirstPlugin, SecondPlugin])
+ * }
+ * ```
  */
 class MapInfoTooltip extends React.Component {
     static propTypes = {
@@ -46,7 +56,7 @@ class MapInfoTooltip extends React.Component {
         includeWGS84: PropTypes.bool,
         map: PropTypes.object,
         setCurrentTask: PropTypes.func,
-        plugins: PropTypes.object
+        plugins: PropTypes.array
     };
     static defaultProps = {
         cooPrecision: 0,
@@ -96,7 +106,7 @@ class MapInfoTooltip extends React.Component {
         if (!this.state.point) {
             return null;
         }
-        
+
         const info = [];
 
         const projections = [this.props.displaycrs];
@@ -183,7 +193,7 @@ class MapInfoTooltip extends React.Component {
                             </tbody>
                         </table>
                         {routingButtons}
-                        {Object.values(this.props.plugins).map((Plugin, idx) => (<Plugin key={idx} point={this.state.point} closePopup={this.clear} />))}
+                        {this.props.plugins.map((Plugin, idx) => (<Plugin key={idx} point={this.state.point} closePopup={this.clear} />))}
                     </div>
                 </div>
             </div>
