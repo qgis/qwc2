@@ -56,16 +56,16 @@ class MapInfoTooltip extends React.Component {
         plugins: {}
     };
     state = {
-        coordinate: null, elevation: null, extraInfo: null, newPoint: null
+        point: null, elevation: null, extraInfo: null
     };
     componentDidUpdate(prevProps) {
-        if (!this.props.enabled && this.state.coordinate) {
+        if (!this.props.enabled && this.state.point) {
             this.clear();
             return;
         }
         const newPoint = this.props.map.click;
         if (!newPoint || newPoint.button !== 2) {
-            if (this.state.coordinate) {
+            if (this.state.point) {
                 this.clear();
             }
         } else {
