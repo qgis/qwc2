@@ -75,7 +75,8 @@ class MapPlugin extends React.Component {
                                         STYLES: ""
                                     },
                                     opacity: parseInt(opacities[i], 10),
-                                    visibility: true
+                                    visibility: true,
+                                    role: LayerRole.THEME
                                 });
                             }
                         } else if (renderLayers.length > 0 && renderLayers[renderLayers.length - 1].id === layer.id) {
