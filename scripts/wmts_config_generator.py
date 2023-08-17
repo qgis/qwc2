@@ -75,7 +75,7 @@ for child in contents.childNodes:
         tileMatrixSet = child
         tileMatrixName = getFirstElementValueByTagName(tileMatrixSet, "ows:Identifier")
         supportedCrs = getFirstElementValueByTagName(tileMatrixSet, "ows:SupportedCRS")
-        crsMatch = re.search('(EPSG).*:(\d+)', supportedCrs)
+        crsMatch = re.search(r'(EPSG).*:(\d+)', supportedCrs)
         if crsMatch and crs == "EPSG:" + crsMatch.group(2) and tileMatrixName in layerTileMatrixSet:
             tileMatrix = tileMatrixSet.getElementsByTagName("TileMatrix")
             break
