@@ -415,7 +415,7 @@ class QtDesignerForm extends React.Component {
                 <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} size={5} step={step} style={fontStyle} type={type} value={value} />
             );
         } else if (widget.class === "QDateEdit") {
-            const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1900-01-01";
+            const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1600-01-01";
             const max = prop.maximumDate ? this.dateConstraint(prop.maximumDate) : "9999-12-31";
             return (
                 <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} style={fontStyle} type="date" value={value} />
@@ -425,7 +425,7 @@ class QtDesignerForm extends React.Component {
                 <input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} style={fontStyle} type="time" value={value} />
             );
         } else if (widget.class === "QDateTimeEdit") {
-            const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1900-01-01";
+            const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1600-01-01";
             const max = prop.maximumDate ? this.dateConstraint(prop.maximumDate) : "9999-12-31";
             const parts = (value || "T").split("T");
             parts[1] = (parts[1] || "").replace(/\.\d+$/, ''); // Strip milliseconds
