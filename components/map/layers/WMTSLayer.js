@@ -17,9 +17,9 @@ function getWMSURLs(urls) {
 function createWMTSSource(options) {
     const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]).map((url) => {
         if (options.rev) {
-            return url + "?" + options.rev
+            return url + "?" + options.rev;
         } else {
-            return url
+            return url;
         }
     });
     const projection = ol.proj.get(options.projection);
@@ -46,7 +46,7 @@ function createWMTSSource(options) {
         style: options.style !== undefined ? options.style : '',
         wrapX: options.wrapX !== undefined ? options.wrapX : true,
         requestEncoding: options.requestEncoding !== undefined ? options.requestEncoding : "REST"
-    })
+    });
 }
 
 export default {
@@ -58,8 +58,8 @@ export default {
         });
     },
     update: (layer, newOptions, oldOptions) => {
-        if (newOptions.rev !== oldOptions.rev){
-            layer.setSource(createWMTSSource(newOptions))
+        if (newOptions.rev !== oldOptions.rev) {
+            layer.setSource(createWMTSSource(newOptions));
         }
     }
 };
