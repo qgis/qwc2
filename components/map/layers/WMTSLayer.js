@@ -30,6 +30,7 @@ function createWMTSSource(options) {
     for (let z = 0; z < options.resolutions.length; ++z) {
         matrixIds[z] = options.tileMatrixPrefix + z;
     }
+    const extent = options.bbox ? CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, options.projection) : null;
 
     return new ol.source.WMTS({
         urls: urls,
@@ -38,6 +39,7 @@ function createWMTSSource(options) {
         projection: projection ? projection : null,
         matrixSet: options.tileMatrixSet,
         tileGrid: new ol.tilegrid.WMTS({
+            extent: extent,
             origin: [options.originX, options.originY],
             resolutions: resolutions,
             matrixIds: matrixIds,

@@ -84,6 +84,15 @@ if not tileMatrix:
     print("Could not find compatible tile matrix", file=sys.stderr)
     sys.exit(1)
 
+# Boundingbox
+bboxEl = getFirstElementByTagName(layer, "ows:WGS84BoundingBox")
+bboxLower = list(map(float, getFirstElementValueByTagName(bboxEl, "ows:LowerCorner").split(" ")))
+bboxUpper = list(map(float, getFirstElementValueByTagName(bboxEl, "ows:UpperCorner").split(" ")))
+bbox = {
+    "crs": "EPSG:4326",
+    "bounds": [bboxLower[0], bboxLower[1], bboxUpper[0], bboxUpper[1]]
+}
+
 # Compute origin and resolutions
 origin = list(map(float, filter(bool, getFirstElementValueByTagName(tileMatrix[0], "TopLeftCorner").split(" "))))
 tileSize = [
