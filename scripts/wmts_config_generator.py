@@ -154,7 +154,7 @@ result = {
         "bounds": bounds
     },
     "resolutions": resolutions,
-    "thumbnail": "img/mapthumbs/" + layerName + ".jpg",
+    "thumbnail": layerName + ".jpg",
 }
 
 print(json.dumps(result, indent=2))
