@@ -706,7 +706,7 @@ const LayerUtils = {
                     let layerUrl = layer.url;
                     const urlParts = url.parse(layerUrl, true);
                     // Resolve relative urls
-                    if (!url.host) {
+                    if (!urlParts.host) {
                         const locationParts = url.parse(window.location.href);
                         urlParts.protocol = locationParts.protocol;
                         urlParts.host = locationParts.host;
