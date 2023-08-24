@@ -6,13 +6,13 @@
       "menulabel": "Mapa & Nástroje",
       "items": {
         "AttributeTable": "Atributy",
-        "Cyclomedia": "",
+        "Cyclomedia": "Cyclomedia",
         "DxfExport": "DXF Export",
         "Editing": "Úpravy",
-        "FeatureForm": "",
+        "FeatureForm": "Editační formulář",
         "Help": "Nápověda",
-        "IdentifyPoint": "Určit bod",
-        "IdentifyRegion": "Určit oblast",
+        "IdentifyPoint": "Informace o bodu",
+        "IdentifyRegion": "Informace o oblasti",
         "LayerCatalog": "Katalog vrstev",
         "LayerTree": "Vrstvy & legenda",
         "Login": "Přihlášení",
@@ -34,25 +34,25 @@
       }
     },
     "attribtable": {
-      "addfeature": "",
-      "commit": "",
-      "delete": "",
-      "deletefailed": "",
-      "deletefeatures": "",
-      "deleting": "",
-      "discard": "",
-      "formeditmode": "",
-      "geomnoadd": "",
-      "layer": "",
-      "loadfailed": "",
-      "loading": "",
-      "nodelete": "",
-      "nogeomnoform": "",
-      "pleasereload": "",
-      "reload": "",
-      "selectlayer": "",
-      "title": "",
-      "zoomtoselection": ""
+      "addfeature": "Přidat prvek",
+      "commit": "Uložit změněný řádek",
+      "delete": "Smazat",
+      "deletefailed": "Chyba při mazání jednoho nebo více prvků",
+      "deletefeatures": "Smazat vybrané prvky",
+      "deleting": "Mazání prvků...",
+      "discard": "Zahodit změny v řádku",
+      "formeditmode": "Otevřít editační formulář pro vybrané prvky",
+      "geomnoadd": "Pro přidání nových prvků do této vrstvy použijte editační formulář",
+      "layer": "Vrstva",
+      "loadfailed": "Chyba při načítání prvků",
+      "loading": "Načítání...",
+      "nodelete": "Nemazat",
+      "nogeomnoform": "Editační formulář není dostupný pro vrstvy bez geometrie",
+      "pleasereload": "Kliknutím na 'Obnovit' načtete tabulku atributů",
+      "reload": "Obnovit",
+      "selectlayer": "Vybrat vrstvu",
+      "title": "Tabulka atributů",
+      "zoomtoselection": "Přiblížit na vybrané prvky"
     },
     "bgswitcher": {
       "nobg": "Bez podkladu"
@@ -85,28 +85,28 @@
     "cyclomedia": {
       "clickonmap": "",
       "loaderror": "",
-      "loading": "",
+      "loading": "Načítání...",
       "login": "",
       "scalehint": "",
-      "title": ""
+      "title": "Cyclomedia"
     },
     "dxfexport": {
-      "layers": "",
-      "selectinfo": "Vyberte obdélníkem oblast pro export...",
+      "layers": "Vrstvy",
+      "selectinfo": "Vyberte oblast pro export...",
       "symbologyscale": "Meřítko symbolů:"
     },
     "editing": {
-      "add": "",
+      "add": "Přidat",
       "attrtable": "",
       "canceldelete": "Neodstraňovat",
       "clearpicture": "",
       "commit": "Potvrdit",
       "commitfailed": "",
-      "create": "",
+      "create": "Vytvořit",
       "delete": "Odstranit",
       "discard": "Vyřadit",
       "draw": "Kreslit",
-      "feature": "",
+      "feature": "Prvek",
       "geomreadonly": "",
       "invalidform": "",
       "maximize": "Maximální",
@@ -124,13 +124,13 @@
       "unsavedchanged": ""
     },
     "featureform": {
-      "feature": "",
-      "noresults": "",
-      "querying": "",
-      "title": ""
+      "feature": "Prvek",
+      "noresults": "Žádné výsledky",
+      "querying": "Načítání...",
+      "title": "Editační formulář"
     },
     "fileselector": {
-      "files": "",
+      "files": "Soubory",
       "placeholder": "Vybrat soubor..."
     },
     "heightprofile": {
@@ -147,7 +147,7 @@
       "featureReport": "Report prvku",
       "link": "Odkaz",
       "noattributes": "Bez atributů",
-      "noresults": "Pro vybraný bod nejsou k dispozici žádné informace",
+      "noresults": "V tomto bodu nejsou k dispozici informace o žádném prvku",
       "querying": "Dotazování...",
       "title": "Informace o prvku"
     },
@@ -168,36 +168,36 @@
       "urlplaceholder": "Vložit URL pro WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": "",
-      "clickhelpPolygon": "Nakreslete polygon pro identifikaci...",
-      "clickhelpRadius": "",
-      "radius": ""
+      "clickhelpPoint": "Klikněte na bod, o kterém chcete zobrazit další informace.",
+      "clickhelpPolygon": "Nakreslete polygon okolo prvků, ke kterým chcete zobrazit další informace.",
+      "clickhelpRadius": "Nastavte velikost okruhu a klikněte na místo, okolo kterého chcete načíst informace o prvcích.",
+      "radius": "Velikost okruhu"
     },
     "layercatalog": {
-      "windowtitle": ""
+      "windowtitle": "Katalog vrstev"
     },
     "layerinfo": {
       "abstract": "Abstraktní",
-      "attribution": "Atributy",
+      "attribution": "Vlastník",
       "dataUrl": "Data URL",
       "keywords": "Klíčová slova",
       "legend": "Legenda",
-      "maxscale": "",
+      "maxscale": "Největší měřítko",
       "metadataUrl": "Metadata URL",
-      "minscale": "",
+      "minscale": "Nejmenší měřítko",
       "title": "Informace o vrstvě"
     },
     "layertree": {
       "compare": "Porovnat vrchní vrstvy",
-      "deletealllayers": "",
+      "deletealllayers": "Odstranit všechny vrstvy",
       "importlayer": "Importovat vrstvu",
       "maptip": "Zobrazovat bubliny nad mapou",
       "printlegend": "Tisk legendy",
       "separator": "",
       "separatortooltip": "",
-      "transparency": "",
-      "visiblefilter": "",
-      "zoomtolayer": ""
+      "transparency": "Průhlednost",
+      "visiblefilter": "Skrýt nezobrazující se vrstvy",
+      "zoomtolayer": "Vycentrovat na vrstvu"
     },
     "linkfeatureform": {
       "cancel": "",
@@ -219,16 +219,16 @@
     },
     "map": {
       "loading": "Načítání...",
-      "resetrotation": ""
+      "resetrotation": "Obnovit orientaci mapy"
     },
     "mapinfotooltip": {
       "elevation": "Nadmořská výška",
       "title": "Poloha"
     },
     "maplegend": {
-      "bboxdependent": "",
-      "onlyvisible": "",
-      "scaledependent": "",
+      "bboxdependent": "Pouze pro prvky v zobrazující se oblasti",
+      "onlyvisible": "Pouze pro zobrazené vrstvy",
+      "scaledependent": "Pouze pro prvky v současném přiblížení",
       "windowtitle": "Legenda"
     },
     "measureComponent": {
@@ -240,12 +240,12 @@
       "pointLabel": "Poloha"
     },
     "navbar": {
-      "perpage": ""
+      "perpage": "na stránku"
     },
     "newspopup": {
-      "dialogclose": "",
-      "dontshowagain": "",
-      "title": ""
+      "dialogclose": "Zavřít",
+      "dontshowagain": "Znovu nezobrazovat",
+      "title": "Novinky"
     },
     "numericinput": {
       "angle": "",
@@ -268,10 +268,10 @@
       "output": "",
       "pickatlasfeature": "",
       "resolution": "Rozlišení",
-      "rotation": "Rotace",
+      "rotation": "Orientace",
       "scale": "Měřítko",
       "submit": "Tisk",
-      "wait": ""
+      "wait": "Čekejte..."
     },
     "qtdesignerform": {
       "loading": ""
@@ -279,11 +279,11 @@
     "rasterexport": {
       "format": "Formát:",
       "resolution": "Rozlišení:",
-      "scale": "",
-      "size": "",
-      "submit": "",
-      "usersize": "",
-      "wait": ""
+      "scale": "Měřítko",
+      "size": "Velikost",
+      "submit": "Export",
+      "usersize": "Vybrat na mapě...",
+      "wait": "Čekejte..."
     },
     "redlining": {
       "border": "Okraj",
@@ -360,8 +360,8 @@
     "search": {
       "all": "Vše",
       "enablelayer": "Zapnout vrstvu",
-      "existinglayer": "",
-      "invisiblelayer": "",
+      "existinglayer": "Vrstva v mapě již existuje",
+      "invisiblelayer": "Výsledek je ve vrstvě, která se nezobrazuje.",
       "more": "Více...",
       "noresults": "Nenalezeno",
       "providerselection": "Poskytovatelé vyhledávání",
@@ -407,7 +407,7 @@
       "socialIntro": "Na sociální síti"
     },
     "snapping": {
-      "loading": "",
+      "loading": "Načítání...",
       "snappingenabled": ""
     },
     "themelayerslist": {
@@ -440,7 +440,7 @@
       "group": "",
       "groupnone": "",
       "home": "",
-      "loading": "",
+      "loading": "Načítání...",
       "loop": "",
       "markers": "",
       "notemporaldata": "",
@@ -479,13 +479,13 @@
       "background": "Podkladové mapy",
       "fullscreendisable": "Ukončit režim celé obrazovky",
       "fullscreenenable": "Na celou obrazovku",
-      "home": "Zobrazit celou mapu",
+      "home": "Výchozí zobrazení mapy",
       "zoomin": "Přiblížit",
       "zoomout": "Oddálit"
     },
     "vectorlayerpicker": {
-      "none": "",
-      "prompt": ""
+      "none": "Žádná",
+      "prompt": "Zadejte název vrstvy"
     },
     "window": {
       "close": "Zavřít",
