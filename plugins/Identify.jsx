@@ -68,7 +68,7 @@ class Identify extends React.Component {
         iframeDialogsInitiallyDocked: PropTypes.bool,
         /** The initial radius of the identify dialog in radius mode. */
         initialRadius: PropTypes.number,
-        /** The initial radius units of the identify dialog in radius mode. */
+        /** The initial radius units of the identify dialog in radius mode. One of 'meters', 'feet', 'kilometers', 'miles'. */
         initialRadiusUnits: PropTypes.string,
         layers: PropTypes.array,
         longAttributesDisplay: PropTypes.string,
