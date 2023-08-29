@@ -57,7 +57,6 @@ class Identify extends React.Component {
         enableExport: PropTypes.bool,
         /** Whether to assume that XML GetFeatureInfo responses specify the technical layer name in the `name` attribute, rather than the layer title. */
         featureInfoReturnsLayerName: PropTypes.bool,
-        iframeDialogsInitiallyDocked: PropTypes.bool,
         /** Default window geometry with size, position and docking status. */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
@@ -66,6 +65,11 @@ class Identify extends React.Component {
             initialY: PropTypes.number,
             initiallyDocked: PropTypes.bool
         }),
+        iframeDialogsInitiallyDocked: PropTypes.bool,
+        /** The initial radius of the identify dialog in radius mode. */
+        initialRadius: PropTypes.number,
+        /** The initial radius units of the identify dialog in radius mode. One of 'meters', 'feet', 'kilometers', 'miles'. */
+        initialRadiusUnits: PropTypes.string,
         layers: PropTypes.array,
         longAttributesDisplay: PropTypes.string,
         map: PropTypes.object,
@@ -90,14 +94,16 @@ class Identify extends React.Component {
             initialX: 0,
             initialY: 0,
             initiallyDocked: false
-        }
+        },
+        initialRadius: 50,
+        initialRadiusUnits: 'meters'
     };
     state = {
         mode: 'Point',
         identifyResults: null,
         pendingRequests: 0,
-        radius: 50,
-        radiusUnits: 'meters'
+        radius: this.props.initialRadius,
+        radiusUnits: this.props.initialRadiusUnits
     };
     componentDidUpdate(prevProps) {
         if (this.props.currentIdentifyTool !== prevProps.currentIdentifyTool && prevProps.currentIdentifyTool === "Identify") {
