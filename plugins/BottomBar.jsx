@@ -84,7 +84,7 @@ class BottomBar extends React.Component {
         let termsLink;
         if (this.props.termsUrl) {
             termsLink = (
-                <a href={this.props.termsUrl} onClick={(ev) => this.openUrl(ev, this.props.termsUrl, this.props.termsUrlTarget, LocaleUtils.tr("bottombar.viewertitle_label"))}>
+                <a href={this.props.termsUrl} onClick={(ev) => this.openUrl(ev, this.props.termsUrl, this.props.termsUrlTarget, LocaleUtils.tr("bottombar.terms_label"))}>
                     <span className="terms_label">{LocaleUtils.tr("bottombar.terms_label")}</span>
                 </a>
             );
