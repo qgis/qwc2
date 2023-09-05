@@ -165,7 +165,7 @@ Cyclomedia integration for QWC2.
 | clientId | `string` | OAuth client ID. | `undefined` |
 | cyclomediaVersion | `string` | The cyclomedia version. | `'23.6'` |
 | displayMeasurements | `bool` | Whether to display Cyclomedia measurement geometries on the map. | `true` |
-| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry. | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true`<br />`}` |
+| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry with size, position and docking status. | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false`<br />`}` |
 | loginRedirectUri | `string` | The relative path to the redirect login handling of oauth. | `undefined` |
 | logoutRedirectUri | `string` | The relative path to the redirect logout handling of oauth. | `undefined` |
 | maxMapScale | `number` | The maximum map scale above which the recordings WFS won't be displayed. | `10000` |
@@ -217,10 +217,7 @@ Can be used as default identify tool by setting `"identifyTool": "FeatureForm"` 
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| initialHeight | `number` | Initial height of the form window. | `480` |
-| initialWidth | `number` | Initial width of the form window. | `320` |
-| initialX | `number` | Initial x position of the form window. | `0` |
-| initialY | `number` | Initial y position of the form window. | `0` |
+| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry with size, position and docking status. | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 480,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false`<br />`}` |
 
 HeightProfile<a name="heightprofile"></a>
 ----------------------------------------------------------------
@@ -275,11 +272,7 @@ for customized queries and templates for the result presentation.
 | displayResultTree | `bool` | Whether to display a tree overview of results (as opposed to a flat list of results). | `true` |
 | enableExport | `bool` | Whether to enable the export functionality. | `true` |
 | featureInfoReturnsLayerName | `bool` | Whether to assume that XML GetFeatureInfo responses specify the technical layer name in the `name` attribute, rather than the layer title. | `true` |
-| initialHeight | `number` | The initial height of the identify dialog. | `320` |
-| initialWidth | `number` | The initial width of the identify dialog. | `240` |
-| initialX | `number` | The initial x coordinate of the identify dialog. | `0` |
-| initialY | `number` | The initial y coordinate of the identify dialog. | `0` |
-| initiallyDocked | `bool` | Whether the identify dialog should be initially docked. | `undefined` |
+| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry with size, position and docking status. | `{`<br />`    initialWidth: 240,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false`<br />`}` |
 | replaceImageUrls | `bool` | Whether to replace an attribute value containing an URL to an image with an inline image. | `true` |
 
 LayerCatalog<a name="layercatalog"></a>
@@ -320,7 +313,7 @@ Example:
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | catalogUrl | `string` | The URL to the catalog JSON file. | `undefined` |
-| windowSize | `{`<br />`  width: number,`<br />`  height: number,`<br />`}` | The default window size. | `{width: 320, height: 320}` |
+| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry with size, position and docking status. | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false`<br />`}` |
 
 LayerTree<a name="layertree"></a>
 ----------------------------------------------------------------
@@ -341,7 +334,7 @@ Displays the map layer tree in a sidebar.
 | grayUnchecked | `bool` | Whether to display unchecked layers gray in the layertree. | `true` |
 | groupTogglesSublayers | `bool` | Whether toggling a group also toggles all sublayers. | `false` |
 | infoInSettings | `bool` | Whether to display the layer info button inside the layer settings menu rather than next to the layer title. | `true` |
-| layerInfoWindowSize | `{`<br />`  width: number,`<br />`  height: number,`<br />`}` | The initial size of the layer info window. | `{width: 320, height: 480}` |
+| layerInfoGeometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default layer info window geometry with size, position and docking status. | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 480,`<br />`    initialX: null,`<br />`    initialY: null,`<br />`    initiallyDocked: false`<br />`}` |
 | mapTipsEnabled | `bool` | Whether map tips are enabled by default. | `undefined` |
 | scaleDependentLegend | `{bool, string}` | Whether to display a scale dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `undefined` |
 | showLegendIcons | `bool` | Whether to display legend icons. | `true` |
@@ -410,11 +403,27 @@ the height at the picked position is also displayed.
 If `mapInfoService` in `config.json` points to a `qwc-mapinfo-service`, additional
 custom information according to the `qwc-mapinfo-service` configuration is returned.
 
+You can pass additional plugin components to the `MapInfoTooltip` in `appConfig.js`:
+```json
+MapInfoTooltipPlugin: MapInfoTooltipPlugin([FirstPlugin, SecondPlugin])
+```
+where a Plugin is a React component of the form
+```jsx
+class MapInfoTooltipPlugin extends React.Component {
+  static propTypes = {
+    point: PropTypes.object,
+    closePopup: PropTypes.func
+  }
+  render() { return ...; }
+};
+```
+
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | cooPrecision | `number` | The number of decimal places to display for metric/imperial coordinates. | `0` |
 | degreeCooPrecision | `number` | The number of decimal places to display for degree coordinates. | `4` |
 | elevationPrecision | `number` | The number of decimal places to display for elevation values. | `0` |
+| plugins | `array` | Additional plugin components for the map info tooltip. | `[]` |
 
 MapLegend<a name="maplegend"></a>
 ----------------------------------------------------------------
@@ -430,7 +439,7 @@ The user can toggle whether to display only layers which are enabled, visible in
 | extraLegendParameters | `string` | Extra parameters to add to the GetLegendGraphics request. | `undefined` |
 | onlyVisibleLegend | `bool` | Whether to only include enabled layers in the legend by default. | `false` |
 | scaleDependentLegend | `bool` | Whether to display a scale-dependent legend by default. | `false` |
-| windowSize | `{`<br />`  width: number,`<br />`  height: number,`<br />`}` | The default window size. | `{width: 320, height: 320}` |
+| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry with size, position and docking status. | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false`<br />`}` |
 
 MapTip<a name="maptip"></a>
 ----------------------------------------------------------------
@@ -530,7 +539,7 @@ Requites `routingServiceUrl` in `config.json` pointing to a Valhalla routing ser
 |----------|------|-------------|---------------|
 | enabledModes | `[string]` | List of enabled routing modes. | `["auto", "heavyvehicle", "transit", "bicycle", "pedestrian"]` |
 | enabledProviders | `[string]` | List of search providers to use for routing location search. | `["coordinates", "nominatim"]` |
-| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry. | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true`<br />`}` |
+| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry with size, position and docking status. | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true`<br />`}` |
 
 ScratchDrawing<a name="scratchdrawing"></a>
 ----------------------------------------------------------------
