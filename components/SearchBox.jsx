@@ -387,8 +387,6 @@ class SearchBox extends React.Component {
             newState.collapsedSections = {};
         }
         this.setState(newState);
-        clearTimeout(this.searchTimeout);
-        this.searchTimeout = setTimeout(this.startSearch, 250);
     };
     onFocus = () => {
         this.setState({resultsVisible: true});
