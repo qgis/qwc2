@@ -13,7 +13,7 @@ const MiscUtils = {
         if (tagRegEx.exec(text)) {
             return text;
         }
-        const urlRegEx = /(\s|^)((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g;
+        const urlRegEx = /(\s|^)((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=\u00C0-\u00FF\u0370-\u03FF]*)/g;
 
         let value = text;
         let match = null;
