@@ -188,7 +188,7 @@ class SearchBox extends React.Component {
                             {!this.isCollapsed(sectionId) ? (
                                 <div className="searchbox-results-section-body">
                                     {group.items.map((entry, idx) => (
-                                        <div className="searchbox-result" key={"c" + idx} onClick={() => {this.selectProviderResult(entry, provider); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
+                                        <div className="searchbox-result" key={"c" + idx} onClick={() => {this.selectProviderResult(group, entry, provider); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
                                             <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: entry.text.replace(/<br\s*\/>/ig, ' ')}} title={entry.label || entry.text} />
                                             {entry.externalLink ? <Icon icon="info-sign" onClick={ev => { MiscUtils.killEvent(ev); this.openUrl(entry.externalLink, entry.target, entry.label || entry.text); } } /> : null}
                                         </div>
@@ -477,7 +477,7 @@ class SearchBox extends React.Component {
                         this.selectFeatureResult(uniqueResult[1].feature);
                         this.blur();
                     } else if (uniqueResults[0] !== "__fulltext" && uniqueResults[1][0].items[0].bbox) {
-                        this.selectProviderResult(uniqueResults[1][0].items[0], uniqueResult[0]);
+                        this.selectProviderResult(uniqueResults[1][0], uniqueResults[1][0].items[0], uniqueResult[0]);
                         this.blur();
                     }
                 }
@@ -502,7 +502,21 @@ class SearchBox extends React.Component {
             this.searchBox.blur();
         }
     };
-    selectProviderResult = (result, provider, zoom = true) => {
+    setProviderResult = (text, provider, group, result) => {
+        const results = {
+            query_text: text,
+            [provider]: {
+                results: [{...group, items: [result]}],
+                tot_result_count: 1
+            }
+        };
+        this.setState({
+            searchText: text,
+            searchResults: results
+        });
+    };
+    selectProviderResult = (group, result, provider, zoom = true) => {
+        this.setProviderResult(result.text.replace(/<\/?\w+\s*\/?>/g, ''), provider, group, result);
         this.updateRecentSearches();
         const resultType = result.type || SearchResultType.PLACE;
         if (resultType === SearchResultType.PLACE) {
@@ -571,7 +585,7 @@ class SearchBox extends React.Component {
                 features = [this.createMarker([item.x, item.y], item.crs, text)];
             }
             this.zoomToResult(item, zoom);
-            
+
             const layer = {
                 id: "searchselection",
                 role: LayerRole.SELECTION
@@ -600,7 +614,27 @@ class SearchBox extends React.Component {
             properties: { label: text }
         };
     };
+    setFeatureResult = (text, result) => {
+        this.setState(state => {
+            const results = {
+                query_text: text,
+                __fulltext: {
+                    result_counts: [{
+                        ...state.searchResults.__fulltext.result_counts.find(entry => entry.dataproduct_id === result.dataproduct_id),
+                        count: 1
+                    }],
+                    tot_result_count: 1,
+                    results: [{feature: result}]
+                }
+            };
+            return {
+                searchText: text,
+                searchResults: results
+            };
+        });
+    };
     selectFeatureResult = (result) => {
+        this.setFeatureResult(result.display, result);
         this.updateRecentSearches();
         // URL example: /api/data/v1/ch.so.afu.fliessgewaesser.netz/?filter=[["gewissnr","=",1179]]
         let filter = `[["${result.id_field_name}","=",`;
@@ -644,8 +678,23 @@ class SearchBox extends React.Component {
         }
         this.props.addLayerFeatures(layer, data.features, true);
     };
+    setLayerResult = (text, result) => {
+        const results = {
+            query_text: text,
+            __fulltext: {
+                result_counts: [],
+                tot_result_count: 0,
+                results: [{dataproduct: result}]
+            }
+        };
+        this.setState({
+            searchText: text,
+            searchResults: results
+        });
+    };
     selectLayerResult = (result, info = false) => {
         if (!info) {
+            this.setLayerResult(result.display, result);
             this.updateRecentSearches();
         } else if (result.dataproduct_id in (this.state.activeLayerInfo || {})) {
             this.setState({activeLayerInfo: null});
