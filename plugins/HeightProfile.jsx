@@ -114,6 +114,9 @@ class HeightProfile extends React.Component {
         }
     }
     render() {
+        if (!this.props.measurement.length) {
+            return null;
+        }
         if (isEmpty(this.state.data)) {
             if (this.state.isloading) {
                 return (
