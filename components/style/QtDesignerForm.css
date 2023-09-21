@@ -105,6 +105,25 @@ div.qt-designer-widget-relation-table-container {
     overflow-y: auto;
     flex: 1 1 auto;
     height: 4.5em;
+    position: relative;
+}
+
+div.qt-designer-widget-relation-table-loading {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(200, 200, 200, 0.9);
+    z-index: 2;
+}
+
+div.qt-designer-widget-relation-table-loading > div.spinner {
+    width: 4em;
+    height: 4em;
 }
 
 div.qt-designer-widget-relation-table-container > table {
