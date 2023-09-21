@@ -4,10 +4,12 @@ div.link-feature-form {
     display: flex;
     flex-direction: column;
     padding: 0.5em;
+    height: 100%;
 }
 
 div.link-feature-form > div.AttributeForm {
     flex: 1 1 auto;
+    height: 0;
 }
 
 div.link-feature-form-feature-list {
@@ -31,6 +33,7 @@ div.link-feature-form-feature-list > div:hover {
 div.link-feature-form-close {
     border-top: 1px solid var(--border-color);
     padding-top: 0.5em;
+    flex: 0 0 auto;
 }
 
 div.link-feature-form-hint {
