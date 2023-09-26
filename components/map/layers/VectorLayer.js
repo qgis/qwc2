@@ -14,12 +14,15 @@ export default {
     create: (options, map) => {
         const source = new ol.source.Vector();
         const format = new ol.format.GeoJSON();
-        const mapCrs = map.getView().getProjection();
+        const mapCrs = map.getView().getProjection().getCode();
 
         const features = (options.features || []).reduce((collection, feature) => {
             const featureObject = format.readFeatures({...feature, type: "Feature"});
             featureObject.forEach(f => {
-                const featureCrs = feature.crs ?? options.projection ?? mapCrs;
+                let featureCrs = feature.crs ?? options.projection ?? mapCrs;
+                if (featureCrs.type === "name") {
+                    featureCrs = featureCrs.properties.name;
+                }
                 if (featureCrs !== mapCrs) {
                     f.getGeometry()?.transform(featureCrs, mapCrs);
                 }
@@ -49,7 +52,7 @@ export default {
         return vectorLayer;
     },
     update: (layer, newOptions, oldOptions, map) => {
-        const mapCrs = map.getView().getProjection();
+        const mapCrs = map.getView().getProjection().getCode();
 
         if (newOptions.styleName !== oldOptions.styleName || newOptions.styleOptions !== oldOptions.styleOptions) {
             layer.setStyle(feature => {
@@ -95,7 +98,10 @@ export default {
                 // Add new
                 const featureObject = format.readFeatures({...feature, type: "Feature"});
                 featureObject.forEach(f => {
-                    const featureCrs = feature.crs ?? newOptions.projection ?? mapCrs;
+                    let featureCrs = feature.crs ?? newOptions.projection ?? mapCrs;
+                    if (featureCrs.type === "name") {
+                        featureCrs = featureCrs.properties.name;
+                    }
                     if (featureCrs !== mapCrs) {
                         f.getGeometry()?.transform(featureCrs, mapCrs);
                     }
