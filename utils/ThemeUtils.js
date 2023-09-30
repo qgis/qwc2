@@ -113,6 +113,7 @@ const ThemeUtils = {
             bbox: theme.bbox,
             sublayers: (Array.isArray(subLayers) && subLayers.length) ? subLayers : theme.sublayers,
             tiled: theme.tiled,
+            tileSize: theme.tileSize,
             ratio: !theme.tiled ? 1 : undefined,
             serverType: 'qgis',
             format: theme.format,
