@@ -55,7 +55,7 @@ export default {
             format: olformat,
             loader: options.loader ? function(extent, resolution, projection, success, failure) {
                 options.loader(vectorSource, extent, resolution, projection, success, failure);
-            } : null,
+            } : undefined,
             url: options.url ? function(extent) {
                 let bbox = extent.join(',');
                 let srsName = options.projection;
@@ -80,7 +80,7 @@ export default {
                     bbox: bbox
                 };
                 return url.format(urlParts);
-            } : null,
+            } : undefined,
             strategy: ol.loadingstrategy.bbox
         });
 
