@@ -13,6 +13,7 @@ import Mousetrap from 'mousetrap';
 import LocaleUtils from '../utils/LocaleUtils';
 import {setCurrentTask} from '../actions/task';
 import Icon from './Icon';
+import ConfigUtils from '../utils/ConfigUtils';
 import './style/Toolbar.css';
 
 class Toolbar extends React.Component {
@@ -25,29 +26,33 @@ class Toolbar extends React.Component {
         toolbarItems: PropTypes.array,
         toolbarItemsShortcutPrefix: PropTypes.string
     };
-    componentDidMount() {
-        if (this.props.toolbarItemsShortcutPrefix) {
-            this.props.toolbarItems.forEach((item, index) => {
-                Mousetrap.bind(this.props.toolbarItemsShortcutPrefix + '+' + (index + 1), () => {
-                    const active = this.props.currentTask === (item.task || item.key) && this.props.currentTaskMode === (item.mode || null);
-                    this.itemClicked(item, active);
-                    return false;
-                });
-            });
-        }
+    constructor(props) {
+        super(props);
+        this.boundShortcuts = [];
     }
-    componentWillUnmount() {
-        if (this.props.toolbarItemsShortcutPrefix) {
-            this.props.toolbarItems.forEach((item, index) => {
-                Mousetrap.unbind(this.props.toolbarItemsShortcutPrefix + '+' +  (index + 1));
-            });
+    componentDidUpdate(prevProps) {
+        if (this.props.currentTheme !== prevProps.currentTheme) {
+            this.boundShortcuts.forEach(shortcut => Mousetrap.unbind(shortcut));
+            this.boundShortcuts = [];
+            if (this.props.toolbarItemsShortcutPrefix) {
+                let index = 1;
+                this.props.toolbarItems.forEach(item => {
+                    if (this.itemAllowed(item)) {
+                        const shortcut = this.props.toolbarItemsShortcutPrefix + '+' + index;
+                        Mousetrap.bind(shortcut, () => {
+                            const active = this.props.currentTask === (item.task || item.key) && this.props.currentTaskMode === (item.mode || null);
+                            this.itemClicked(item, active);
+                            return false;
+                        });
+                        this.boundShortcuts.push(shortcut);
+                        index += 1;
+                    }
+                });
+            }
         }
     }
     renderToolbarItem = (item) => {
-        if (item.themeBlacklist && (item.themeBlacklist.includes(this.props.currentTheme.title) || item.themeBlacklist.includes(this.props.currentTheme.name))) {
-            return null
-        }
-        if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme.title) || item.themeWhitelist.includes(this.props.currentTheme.name))) {
+        if (!this.itemAllowed(item)) {
             return null;
         }
         const active = this.props.currentTask === (item.task || item.key) && this.props.currentTaskMode === (item.mode || null);
@@ -62,6 +67,18 @@ class Toolbar extends React.Component {
                 title={title}
             />
         );
+    };
+    itemAllowed = (item) => {
+        if (item.themeBlacklist && (item.themeBlacklist.includes(this.props.currentTheme.title) || item.themeBlacklist.includes(this.props.currentTheme.name))) {
+            return false;
+        }
+        if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme.title) || item.themeWhitelist.includes(this.props.currentTheme.name))) {
+            return false;
+        }
+        if (item.requireAuth && !ConfigUtils.getConfigProp("username")) {
+            return false;
+        }
+        return true;
     };
     itemClicked = (item, active) => {
         if (item.url) {

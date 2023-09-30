@@ -81,10 +81,12 @@ class AppMenu extends React.Component {
                 this.addKeyBindings(item.subitems);
             } else if (item.shortcut) {
                 mousetrap.bind(item.shortcut, () => {
-                    this.onMenuitemClicked(item);
-                    this.boundShortcuts.push(item.shortcut);
+                    if (this.itemAllowed(item)) {
+                        this.onMenuitemClicked(item);
+                    }
                     return false;
                 });
+                this.boundShortcuts.push(item.shortcut);
             }
         });
     };
@@ -199,13 +201,7 @@ class AppMenu extends React.Component {
     renderMenuItems = (items, level, filter, path) => {
         if (items) {
             return items.map((item, idx) => {
-                if (item.themeBlacklist && (item.themeBlacklist.includes(this.props.currentTheme.title) || item.themeBlacklist.includes(this.props.currentTheme.name))) {
-                    return null
-                }
-                if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme.title) || item.themeWhitelist.includes(this.props.currentTheme.name))) {
-                    return null;
-                }
-                if (item.requireAuth && !ConfigUtils.getConfigProp("username")) {
+                if (!this.itemAllowed(item)) {
                     return null;
                 }
                 const active = isEqual(this.state.curEntry, [...path, idx]);
@@ -304,6 +300,18 @@ class AppMenu extends React.Component {
         if (this.props.appMenuShortcut) {
             mousetrap(el).bind(this.props.appMenuShortcut, this.toggleMenu);
         }
+    };
+    itemAllowed = (item) => {
+        if (item.themeBlacklist && (item.themeBlacklist.includes(this.props.currentTheme.title) || item.themeBlacklist.includes(this.props.currentTheme.name))) {
+            return false;
+        }
+        if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme.title) || item.themeWhitelist.includes(this.props.currentTheme.name))) {
+            return false;
+        }
+        if (item.requireAuth && !ConfigUtils.getConfigProp("username")) {
+            return false;
+        }
+        return true;
     };
 }
 
