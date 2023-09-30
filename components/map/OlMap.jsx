@@ -16,6 +16,7 @@ import {setCurrentTask} from '../../actions/task';
 import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MapUtils from '../../utils/MapUtils';
+import CoordinatesUtils from '../../utils/CoordinatesUtils';
 
 ol.Map.prototype.setRequestsPaused = function(paused) {
     this.requestsPaused_ = paused;
@@ -31,6 +32,7 @@ class OlMap extends React.Component {
         bbox: PropTypes.object,
         center: PropTypes.array,
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+        fullExtent: PropTypes.object,
         id: PropTypes.string,
         mapOptions: PropTypes.object,
         mapStateSource: PropTypes.string,
@@ -299,6 +301,7 @@ class OlMap extends React.Component {
         this.props.onMapViewChanges(c, view.getZoom() || 0, bbox, size, this.props.id, this.props.projection);
     };
     createView = (center, zoom, projection, resolutions, enableRotation, rotation) => {
+        const extent = this.props.mapOptions.constrainExtent && this.props.fullExtent ? CoordinatesUtils.reprojectBbox(this.props.fullExtent.bounds, this.props.fullExtent.crs, projection) : undefined;
         const viewOptions = {
             projection: projection,
             center: center,
@@ -307,7 +310,8 @@ class OlMap extends React.Component {
             resolutions: resolutions,
             constrainRotation: false,
             enableRotation: enableRotation !== false,
-            rotation: MapUtils.degreesToRadians(rotation) || 0
+            rotation: MapUtils.degreesToRadians(rotation) || 0,
+            extent: extent
         };
         return new ol.View(viewOptions);
     };

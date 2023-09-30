@@ -34,7 +34,8 @@ class MapPlugin extends React.Component {
             enableRotation: PropTypes.bool,
             rotation: PropTypes.number,
             panStepSize: PropTypes.number,
-            panPageSize: PropTypes.number
+            panPageSize: PropTypes.number,
+            constrainExtent: PropTypes.bool
         }),
         /** Whether to display the loading spinner when layers are loading. */
         showLoading: PropTypes.bool,
@@ -43,6 +44,7 @@ class MapPlugin extends React.Component {
         swipeGeometryTypeBlacklist: PropTypes.arrayOf(PropTypes.string),
         /** A list of layer names to ignore when determining the top-most layer to compare. You can use `*` as a whildcard character. */
         swipeLayerNameBlacklist: PropTypes.arrayOf(PropTypes.string),
+        theme: PropTypes.object,
         tools: PropTypes.object,
         /** Map tool configuraiton options. Refer to the sample config.json. */
         toolsOptions: PropTypes.object
@@ -226,7 +228,7 @@ class MapPlugin extends React.Component {
             }, 1000);
         }
         return [(
-            <OlMap id="map" key="map" mapOptions={this.props.mapOptions} {...this.props.map}>
+            <OlMap id="map" key="map" mapOptions={this.props.mapOptions} {...this.props.map} fullExtent={this.props.theme?.bbox}>
                 {this.renderLayers()}
                 {this.renderSupportTools()}
             </OlMap>
@@ -239,6 +241,7 @@ export default (tools) => {
         map: state.map,
         layers: state.layers.flat,
         swipe: state.layers.swipe,
+        theme: state.theme.current,
         tools
     }))(MapPlugin);
 };
