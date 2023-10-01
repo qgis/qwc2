@@ -57,16 +57,35 @@ const ServiceLayerUtils = {
             const matchingMatrix = layer.TileMatrixSetLink.find(link => tileMatrices[link.TileMatrixSet].crs === mapCrs);
             const tileMatrixSet = matchingMatrix ? matchingMatrix.TileMatrixSet : layer.TileMatrixSetLink[0].TileMatrixSet;
             const topMatrix = tileMatrices[tileMatrixSet].matrix[0];
-            const origin = CoordinatesUtils.getAxisOrder(tileMatrices[tileMatrixSet].crs).substr(0, 2) === 'ne' ? [topMatrix.TopLeftCorner[1], topMatrix.TopLeftCorner[0]] : [topMatrix.TopLeftCorner[0], topMatrix.TopLeftCorner[1]];
+            let origin = [topMatrix.TopLeftCorner[0], topMatrix.TopLeftCorner[1]];
+            try {
+                const axisOrder = CoordinatesUtils.getAxisOrder(tileMatrices[tileMatrixSet].crs).substr(0, 2);
+                if (axisOrder  === 'ne') {
+                    origin = [topMatrix.TopLeftCorner[1], topMatrix.TopLeftCorner[0]];
+                }
+            } catch (e) {
+                // eslint-disable-next-line
+                console.warn("Could not determine axis order for projection " + tileMatrices[tileMatrixSet].crs);
+                return null;
+            }
             const resolutions = tileMatrices[tileMatrixSet].matrix.map(entry => {
                 // 0.00028: assumed pixel width in meters, as per WMTS standard
                 return entry.ScaleDenominator * 0.00028;
             });
-            const style = ((layer.Style || []).find(entry => entry.isDefault) || {Identifier: ""}).Identifier;
-            let serviceUrl = layer.ResourceURL.find(u => u.resourceType === "tile").template;
-            layer.Dimension && layer.Dimension.forEach(dim => {
-                serviceUrl = serviceUrl.replace("{" + dim.Identifier + "}", dim.Default);
-            });
+            const styles = MiscUtils.ensureArray(layer.Style || []);
+            const style = (styles.find(entry => entry.isDefault) || styles[0] || {Identifier: ""}).Identifier;
+            const getTile = MiscUtils.ensureArray(capabilities.OperationsMetadata.GetTile.DCP.HTTP.Get)[0];
+            const getEncoding = MiscUtils.ensureArray(getTile.Constraint).find(c => c.name === "GetEncoding");
+            const requestEncoding = MiscUtils.ensureArray(getEncoding.AllowedValues.Value)[0];
+            let serviceUrl = null;
+            if (requestEncoding === 'KVP') {
+                serviceUrl = getTile.href;
+            } else {
+                serviceUrl = layer.ResourceURL.find(u => u.resourceType === "tile").template;
+                (layer.Dimension || []).forEach(dim => {
+                    serviceUrl = serviceUrl.replace("{" + dim.Identifier + "}", dim.Default);
+                });
+            }
             return {
                 type: "wmts",
                 url: serviceUrl,
@@ -87,6 +106,8 @@ const ServiceLayerUtils = {
                     crs: "EPSG:4326",
                     bounds: layer.WGS84BoundingBox
                 },
+                format: MiscUtils.ensureArray(layer.Format)[0],
+                requestEncoding: requestEncoding,
                 resolutions: resolutions,
                 abstract: layer.Abstract,
                 attribution: {
@@ -94,7 +115,7 @@ const ServiceLayerUtils = {
                     OnlineResource: capabilities.ServiceProvider?.ProviderSite || ""
                 }
             };
-        });
+        }).filter(Boolean);
         layers.sort((a, b) => a.title.localeCompare(b.title));
         return layers;
     },
