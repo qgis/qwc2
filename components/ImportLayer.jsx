@@ -160,7 +160,6 @@ class ImportLayer extends React.Component {
                     serviceLayers: state.serviceLayers || []
                 }));
             });
-            return;
         }
 
         // Attempt to load as WMTS
