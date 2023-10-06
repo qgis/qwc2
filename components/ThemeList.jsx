@@ -107,7 +107,7 @@ class ThemeList extends React.Component {
                         <li className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
                             key={item.id}
                             onClick={() => this.setTheme(item)}
-                            title={item.keywords}
+                            title={item.abstract + "\n\n" + LocaleUtils.tr("themeswitcher.match.keywords") + ": " + item.keywords}
                         >
                             <div className="theme-item-title" title={item.title}>
                                 <span>{item.title}</span>
