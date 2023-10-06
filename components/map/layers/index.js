@@ -13,7 +13,6 @@ import graticuleLayer from './GraticuleLayer';
 import mvtLayer from './MVTLayer';
 import osmLayer from './OSMLayer';
 import overlayLayer from './OverlayLayer';
-import tileproviderLayer from './TileProviderLayer';
 import vectorLayer from './VectorLayer';
 import wmsLayer from './WMSLayer';
 import wmtsLayer from './WMTSLayer';
@@ -27,7 +26,6 @@ export default {
     mvt: mvtLayer,
     osm: osmLayer,
     overlay: overlayLayer,
-    tileprovider: tileproviderLayer,
     vector: vectorLayer,
     wms: wmsLayer,
     wmts: wmtsLayer,
