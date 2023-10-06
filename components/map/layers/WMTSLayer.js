@@ -47,7 +47,8 @@ function createWMTSSource(options) {
         }),
         style: options.style !== undefined ? options.style : '',
         wrapX: options.wrapX !== undefined ? options.wrapX : true,
-        requestEncoding: options.requestEncoding !== undefined ? options.requestEncoding : "REST"
+        requestEncoding: options.requestEncoding !== undefined ? options.requestEncoding : "REST",
+        ...(options.sourceConfig || {})
     });
 }
 
@@ -56,7 +57,8 @@ export default {
         return new ol.layer.Tile({
             minResolution: options.minResolution,
             maxResolution: options.maxResolution,
-            source: createWMTSSource(options)
+            source: createWMTSSource(options),
+            ...(options.layerConfig || {})
         });
     },
     update: (layer, newOptions, oldOptions) => {

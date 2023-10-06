@@ -15,8 +15,10 @@ export default {
             maxResolution: options.maxResolution,
             source: new ol.source.XYZ({
                 url: options.url,
-                projection: options.projection
-            })
+                projection: options.projection,
+                ...(options.sourceConfig || {})
+            }),
+            ...(options.layerConfig || {})
         });
     }
 };

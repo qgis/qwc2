@@ -7,7 +7,7 @@
  */
 
 import ol from 'openlayers';
-import { applyStyle } from 'ol-mapbox-style';
+import {applyStyle} from 'ol-mapbox-style';
 
 export default {
     create: (options) => {
@@ -15,12 +15,12 @@ export default {
             minResolution: options.minResolution,
             maxResolution: options.maxResolution,
             source: new ol.source.VectorTile({
-                minZoom: options.minZoom ? options.minZoom : 0,
-                maxZoom: options.maxZoom ? options.maxZoom : 18,
-                projection: options.projection ? options.projection : 'EPSG:3857',
+                projection: options.projection,
                 format: new ol.format.MVT({}),
-                url: options.url
-            })
+                url: options.url,
+                ...(options.sourceConfig || {})
+            }),
+            ...(options.layerConfig || {})
         });
         if (options.style) {
             fetch(options.style).then(function(response) {

@@ -23,7 +23,9 @@ export default {
                 projection: options.projection,
                 key: options.apiKey,
                 imagerySet: options.imagerySet ?? options.name,
-            })
+                ...(options.sourceConfig || {})
+            }),
+            ...(options.layerConfig || {})
         });
         return layer;
     }
