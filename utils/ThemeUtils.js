@@ -50,6 +50,7 @@ const ThemeUtils = {
                 bgLayer = {
                     ...bgLayer,
                     role: LayerRole.BACKGROUND,
+                    thumbnail: bgLayer.thumbnail || "img/mapthumbs/default.jpg",
                     visibility: false,
                     opacity: bgLayer.opacity !== undefined ? bgLayer.opacity : 255
                 };
