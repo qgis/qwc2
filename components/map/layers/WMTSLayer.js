@@ -9,7 +9,6 @@
 
 import ol from 'openlayers';
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
-import MapUtils from '../../../utils/MapUtils';
 
 function getWMSURLs(urls) {
     return urls.map((url) => url.split("?")[0]);
@@ -55,8 +54,8 @@ function createWMTSSource(options) {
 export default {
     create: (options) => {
         return new ol.layer.Tile({
-            minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.projection)[0] : undefined,
-            maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.projection)[0] : undefined,
+            minResolution: options.minResolution,
+            maxResolution: options.maxResolution,
             source: createWMTSSource(options)
         });
     },

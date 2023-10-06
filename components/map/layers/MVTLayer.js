@@ -12,6 +12,8 @@ import { applyStyle } from 'ol-mapbox-style';
 export default {
     create: (options) => {
         const layer = new ol.layer.VectorTile({
+            minResolution: options.minResolution,
+            maxResolution: options.maxResolution,
             source: new ol.source.VectorTile({
                 minZoom: options.minZoom ? options.minZoom : 0,
                 maxZoom: options.maxZoom ? options.maxZoom : 18,

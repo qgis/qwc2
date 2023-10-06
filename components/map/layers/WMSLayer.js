@@ -12,7 +12,6 @@ import url from 'url';
 import axios from 'axios';
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import ConfigUtils from '../../../utils/ConfigUtils';
-import MapUtils from '../../../utils/MapUtils';
 
 
 function wmsToOpenlayersOptions(options) {
@@ -64,8 +63,8 @@ export default {
         }
         if (!queryParameters.TILED || !options.bbox) {
             const layer = new ol.layer.Image({
-                minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.projection)[0] : undefined,
-                maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.projection)[0] : undefined,
+                minResolution: options.minResolution,
+                maxResolution: options.maxResolution,
                 source: new ol.source.ImageWMS({
                     url: options.url.split("?")[0],
                     serverType: options.serverType,
@@ -86,8 +85,8 @@ export default {
                 resolutions: map.getView().getResolutions()
             });
             const layer = new ol.layer.Tile({
-                minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.projection)[0] : undefined,
-                maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.projection)[0] : undefined,
+                minResolution: options.minResolution,
+                maxResolution: options.maxResolution,
                 source: new ol.source.TileWMS({
                     urls: [options.url.split("?")[0]],
                     params: queryParameters,

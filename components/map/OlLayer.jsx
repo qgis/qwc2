@@ -16,6 +16,7 @@ import {setLayerLoading} from '../../actions/layers';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import Signal from '../../utils/Signal';
 import LayerRegistry from './layers/index';
+import MapUtils from '../../utils/MapUtils';
 
 export const OlLayerAdded = new Signal();
 export const OlLayerUpdated = new Signal();
@@ -70,10 +71,13 @@ class OlLayer extends React.Component {
         return null;
     }
     makeOptions = (options) => {
+        const projection = options.srs || options.crs || options.projection || this.props.projection;
         return {
             ...options,
-            projection: options.srs || options.crs || options.projection || this.props.projection,
-            opacity: options.opacity !== undefined ? options.opacity : 255
+            projection: projection,
+            opacity: options.opacity !== undefined ? options.opacity : 255,
+            minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], projection)[0] : undefined,
+            maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], projection)[0] : undefined,
         };
     };
     createLayer = (options) => {

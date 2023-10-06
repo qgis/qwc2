@@ -16,6 +16,8 @@ export default {
             console.warn("No api-key provided for BingMaps layer");
         }
         const layer = new ol.layer.Tile({
+            minResolution: options.minResolution,
+            maxResolution: options.maxResolution,
             preload: Infinity,
             source: new ol.source.BingMaps({
                 projection: options.projection,

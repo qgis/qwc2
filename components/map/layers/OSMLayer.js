@@ -8,13 +8,12 @@
  */
 
 import ol from 'openlayers';
-import MapUtils from '../../../utils/MapUtils';
 
 export default {
     create: (options) => {
         return new ol.layer.Tile({
-            minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], options.projection)[0] : undefined,
-            maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], options.projection)[0] : undefined,
+            minResolution: options.minResolution,
+            maxResolution: options.maxResolution,
             source: new ol.source.OSM({
                 url: options.url,
                 projection: options.projection
