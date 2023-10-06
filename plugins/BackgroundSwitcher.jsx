@@ -83,7 +83,7 @@ class BackgroundSwitcher extends React.Component {
         return null;
     }
     itemTitle = (item) => {
-        return item.titleMsgId ? LocaleUtils.tr(item.titleMsgId) : item.title;
+        return item.titleMsgId ? LocaleUtils.tr(item.titleMsgId) : item.title ?? item.name;
     };
     renderLayerItem = (layer, visible) => {
         const assetsPath = ConfigUtils.getAssetsPath();
