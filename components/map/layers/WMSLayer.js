@@ -12,6 +12,7 @@ import url from 'url';
 import axios from 'axios';
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import ConfigUtils from '../../../utils/ConfigUtils';
+import MiscUtils from '../../../utils/MiscUtils';
 
 
 function wmsToOpenlayersOptions(options) {
@@ -35,6 +36,9 @@ function wmsImageLoadFunction(image, src) {
     if (src.length > maxUrlLength) {
         // Switch to POST if url is too long
         const urlParts = src.split("?");
+        if (location.origin === (new URL(urlParts)).origin) {
+            urlParts[1] += "&csrf_token=" + MiscUtils.getCsrfToken();
+        }
         const options = {
             headers: {'content-type': 'application/x-www-form-urlencoded'},
             responseType: "blob"
