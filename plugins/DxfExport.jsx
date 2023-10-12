@@ -23,11 +23,15 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import './style/DxfExport.css';
 
+/* eslint-disable-next-line */
+console.warn("The DxfExport plugin is deprecated. Use the MapExport plugin instead.");
 
 /**
  * Allows exporting a selected extent of the map as DXF.
  *
  * Uses the DXF format support of QGIS Server.
+ *
+ * Deprecated. Use the MapExport plugin instead.
  */
 class DxfExport extends React.Component {
     static propTypes = {
