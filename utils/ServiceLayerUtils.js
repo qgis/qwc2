@@ -138,7 +138,12 @@ const ServiceLayerUtils = {
         const topLayer = capabilities.Capability.Layer;
 
         const getMapUrl = this.mergeCalledServiceUrlQuery(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetMap.DCPType).HTTP.Get.OnlineResource, calledUrlParts);
-        const featureInfoUrl = this.mergeCalledServiceUrlQuery(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType).HTTP.Get.OnlineResource, calledUrlParts);
+        let featureInfoUrl = getMapUrl;
+        try {
+            featureInfoUrl = this.mergeCalledServiceUrlQuery(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType).HTTP.Get.OnlineResource, calledUrlParts);
+        } catch (e) {
+            // pass
+        }
         let infoFormats = null;
         try {
             infoFormats = capabilities.Capability.Request.GetFeatureInfo.Format;
