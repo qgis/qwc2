@@ -30,9 +30,6 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/RasterExport.css';
 
 
-/* eslint-disable-next-line */
-console.warn("The RasterExport plugin is deprecated. Use the MapExport plugin instead.");
-
 /**
  * Allows exporting a selected portion of the map to an image ("screenshot").
  *
@@ -78,6 +75,9 @@ class RasterExport extends React.Component {
         super(props);
         this.form = null;
         this.state.dpi = props.dpis[0] || 96;
+
+        /* eslint-disable-next-line */
+        console.warn("The RasterExport plugin is deprecated. Use the MapExport plugin instead.");
     }
     state = {
         extent: '',

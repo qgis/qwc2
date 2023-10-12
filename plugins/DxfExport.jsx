@@ -23,8 +23,6 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import './style/DxfExport.css';
 
-/* eslint-disable-next-line */
-console.warn("The DxfExport plugin is deprecated. Use the MapExport plugin instead.");
 
 /**
  * Allows exporting a selected extent of the map as DXF.
@@ -55,6 +53,9 @@ class DxfExport extends React.Component {
     constructor(props) {
         super(props);
         this.state.selectedLayers = !isEmpty(props.layerOptions) ? props.layerOptions[0].layers : "";
+
+        /* eslint-disable-next-line */
+        console.warn("The DxfExport plugin is deprecated. Use the MapExport plugin instead.");
     }
     renderBody = () => {
         const themeLayers = this.props.layers.filter(layer => layer.role === LayerRole.THEME);
