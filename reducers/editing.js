@@ -22,7 +22,7 @@ const checkGeomReadOnly = (oldState, newFeature) => {
     if (!newFeature) {
         return false;
     } else if (newFeature.id !== ((oldState || {}).feature || {}).id) {
-        return nonZeroZCoordinate((newFeature.geometry || {}).coordinates || []);
+        return nonZeroZCoordinate([newFeature.geometry?.coordinates || []]) !== undefined;
     }
     return (oldState || {}).geomReadOnly || false;
 };
