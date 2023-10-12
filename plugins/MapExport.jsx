@@ -51,7 +51,7 @@ class MapExport extends React.Component {
          *  If more than one configuration per format is provided, a selection combo will be displayed.
          *  `query` will be appended to the query string (replacing any existing parameters).
          *  `formatOptions` will be passed as FORMAT_OPTIONS.
-         *  `baseLayer` will be appended to the LAYERS */
+         *  `baseLayer` will be appended to the LAYERS. */
         formatConfiguration: PropTypes.shape({
             format: PropTypes.arrayOf(PropTypes.shape({
                 name: PropTypes.string,
