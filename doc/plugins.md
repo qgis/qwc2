@@ -22,6 +22,7 @@ Plugin reference
 * [MapPlugin](#mapplugin)
 * [MapComparePlugin](#mapcompareplugin)
 * [MapCopyright](#mapcopyright)
+* [MapExport](#mapexport)
 * [MapInfoTooltip](#mapinfotooltip)
 * [MapLegend](#maplegend)
 * [MapTip](#maptip)
@@ -151,8 +152,10 @@ Bottom bar, displaying mouse coordinate, scale, etc.
 | displayCoordinates | `bool` | Whether to display the coordinates in the bottom bar. | `true` |
 | displayScales | `bool` | Whether to display the scale in the bottom bar. | `true` |
 | termsUrl | `string` | The URL of the terms label anchor. | `undefined` |
+| termsUrlIcon | `string` | Icon of the terms inline window. Relevant only when `termsUrlTarget` is `iframe`. | `undefined` |
 | termsUrlTarget | `string` | The target where to open the terms URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. | `undefined` |
 | viewertitleUrl | `string` | The URL of the viewer title label anchor. | `undefined` |
+| viewertitleUrlIcon | `string` | Icon of the viewer title inline window. Relevant only when `viewertitleUrl` is `iframe`. | `undefined` |
 | viewertitleUrlTarget | `string` | The target where to open the viewer title URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. | `undefined` |
 
 Cyclomedia<a name="cyclomedia"></a>
@@ -176,6 +179,8 @@ DxfExport<a name="dxfexport"></a>
 Allows exporting a selected extent of the map as DXF.
 
 Uses the DXF format support of QGIS Server.
+
+Deprecated. Use the MapExport plugin instead.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
@@ -273,6 +278,8 @@ for customized queries and templates for the result presentation.
 | enableExport | `bool` | Whether to enable the export functionality. | `true` |
 | featureInfoReturnsLayerName | `bool` | Whether to assume that XML GetFeatureInfo responses specify the technical layer name in the `name` attribute, rather than the layer title. | `true` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry with size, position and docking status. | `{`<br />`    initialWidth: 240,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false`<br />`}` |
+| initialRadius | `number` | The initial radius of the identify dialog in radius mode. | `50` |
+| initialRadiusUnits | `string` | The initial radius units of the identify dialog in radius mode. One of 'meters', 'feet', 'kilometers', 'miles'. | `'meters'` |
 | replaceImageUrls | `bool` | Whether to replace an attribute value containing an URL to an image with an inline image. | `true` |
 
 LayerCatalog<a name="layercatalog"></a>
@@ -366,7 +373,7 @@ The main map component.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| mapOptions | `{`<br />`  zoomDuration: number,`<br />`  enableRotation: bool,`<br />`  rotation: number,`<br />`  panStepSize: number,`<br />`  panPageSize: number,`<br />`}` | Zoom duration in ms, rotation in degrees, panStepSize and panPageSize as fraction of map width/height. | `{}` |
+| mapOptions | `{`<br />`  zoomDuration: number,`<br />`  enableRotation: bool,`<br />`  rotation: number,`<br />`  panStepSize: number,`<br />`  panPageSize: number,`<br />`  constrainExtent: bool,`<br />`}` | Zoom duration in ms, rotation in degrees, panStepSize and panPageSize as fraction of map width/height. | `{}` |
 | showLoading | `bool` | Whether to display the loading spinner when layers are loading. | `true` |
 | swipeGeometryTypeBlacklist | `[string]` | A list of layer geometry types to ignore when determining the top-most layer to compare. | `[]` |
 | swipeLayerNameBlacklist | `[string]` | A list of layer names to ignore when determining the top-most layer to compare. You can use `*` as a whildcard character. | `[]` |
@@ -390,6 +397,26 @@ Displays layer attributions in the bottom right corner of the map.
 |----------|------|-------------|---------------|
 | prefixCopyrightsWithLayerNames | `bool` | Whether to prepend the layer name to the attribution string. | `undefined` |
 | showThemeCopyrightOnly | `bool` | Whether to only display the attribution of the theme, omitting external layers. | `undefined` |
+
+MapExport<a name="mapexport"></a>
+----------------------------------------------------------------
+Allows exporting a selected portion of the map to a variety of formats.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| allowedFormats | `[string]` | Whitelist of allowed export format mimetypes. If empty, supported formats are listed. | `undefined` |
+| allowedScales | `[number]` | List of scales at which to export the map. | `undefined` |
+| defaultFormat | `string` | Default export format mimetype. If empty, first available format is used. | `undefined` |
+| defaultScaleFactor | `number` | The factor to apply to the map scale to determine the initial export map scale. | `0.5` |
+| dpis | `[number]` | List of dpis at which to export the map. If empty, the default server dpi is used. | `undefined` |
+| exportExternalLayers | `bool` | Whether to include external layers in the image. Requires QGIS Server 3.x! | `true` |
+| formatConfiguration | `{`<br />`  format: [{`<br />`  name: string,`<br />`  extraQuery: string,`<br />`  formatOptions: string,`<br />`  baseLayer: string,`<br />`}],`<br />`}` | Custom export configuration per format.
+ If more than one configuration per format is provided, a selection combo will be displayed.
+ `query` will be appended to the query string (replacing any existing parameters).
+ `formatOptions` will be passed as FORMAT_OPTIONS.
+ `baseLayer` will be appended to the LAYERS | `undefined` |
+| pageSizes | `[{`<br />`  name: string,`<br />`  width: number,`<br />`  height: number,`<br />`}]` | List of image sizes to offer, in addition to the free-hand selection. The width and height are in millimeters. | `[`<br />`    {name: '15 x 15 cm', width: 150, height: 150},`<br />`    {name: '30 x 30 cm', width: 300, height: 300}`<br />`]` |
+| side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 
 MapInfoTooltip<a name="mapinfotooltip"></a>
 ----------------------------------------------------------------
@@ -507,6 +534,8 @@ Only useful for third-party plugins which use this functionality.
 RasterExport<a name="rasterexport"></a>
 ----------------------------------------------------------------
 Allows exporting a selected portion of the map to an image ("screenshot").
+
+Deprecated. Use the MapExport plugin instead.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
