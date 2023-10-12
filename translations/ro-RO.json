@@ -23,6 +23,7 @@
         "MeasurePolygon": "Măsoară un poligon",
         "Print": "Tipărire",
         "RasterExport": "Export Raster",
+        "MapExport": "",
         "Redlining": "Evidențiere",
         "Routing": "Traseu",
         "Share": "Trimite Link",
@@ -220,6 +221,16 @@
     "map": {
       "loading": "Se încarcă...",
       "resetrotation": "Resetează rotația"
+    },
+    "mapexport": {
+      "configuration": "",
+      "format": "",
+      "resolution": "",
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "mapinfotooltip": {
       "elevation": "Altitudine",
