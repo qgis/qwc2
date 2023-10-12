@@ -23,6 +23,7 @@
         "MeasurePolygon": "Misura un poligono",
         "Print": "Stampa",
         "RasterExport": "Esporta su immagine",
+        "MapExport": "Esporta mappa",
         "Redlining": "Strumenti di disegno",
         "Routing": "Routing",
         "Share": "Condividi",
@@ -221,6 +222,16 @@
       "loading": "In caricamento...",
       "resetrotation": "Resetta orientamento"
     },
+    "mapexport": {
+      "configuration": "Configurazione",
+      "format": "Formato",
+      "resolution": "Risoluzione",
+      "scale": "Scala",
+      "size": "Dimensione",
+      "submit": "Esporta",
+      "usersize": "Seleziona sulla mappa...",
+      "wait": "Attendere..."
+    },
     "mapinfotooltip": {
       "elevation": "Altitudine",
       "title": "Posizione"
@@ -335,7 +346,7 @@
       "isocenter": "Centro",
       "isoextracenter": "Ulteriore centro",
       "leaveat": "Partenza il",
-      "leavenow": "",
+      "leavenow": "Parti ora",
       "maxspeed": "Velocità massima",
       "method": "Metodo",
       "mode_auto": "Automobile",

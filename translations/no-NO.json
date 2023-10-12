@@ -23,6 +23,7 @@
         "MeasurePolygon": "Måle en polygon",
         "Print": "Skriv ut",
         "RasterExport": "Eksporter Raster",
+        "MapExport": "Eksport kart",
         "Redlining": "Redlining",
         "Routing": "",
         "Share": "Del lenke",
@@ -220,6 +221,16 @@
     "map": {
       "loading": "Laster inn...",
       "resetrotation": ""
+    },
+    "mapexport": {
+      "configuration": "",
+      "format": "Format:",
+      "resolution": "Oppløsning:",
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "mapinfotooltip": {
       "elevation": "Høyde",

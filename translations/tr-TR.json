@@ -23,6 +23,7 @@
         "MeasurePolygon": "Bir çokgen ölçmek",
         "Print": "Yazdır",
         "RasterExport": "Resim Olarak Kaydet",
+        "MapExport": "Ihracat haritası",
         "Redlining": "Çizim",
         "Routing": "",
         "Share": "Bağlantı Paylaş",
@@ -220,6 +221,16 @@
     "map": {
       "loading": "Yükleniyor...",
       "resetrotation": ""
+    },
+    "mapexport": {
+      "configuration": "",
+      "format": "Format:",
+      "resolution": "Çözünürlük:",
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "mapinfotooltip": {
       "elevation": "Yükseklik",

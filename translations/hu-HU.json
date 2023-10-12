@@ -23,6 +23,7 @@
         "MeasurePolygon": "Mérési sokszög",
         "Print": "Nyomtatás",
         "RasterExport": "Kép exportálása",
+        "MapExport": "Export térkép",
         "Redlining": "Vázlat",
         "Routing": "",
         "Share": "Megosztható link",
@@ -220,6 +221,16 @@
     "map": {
       "loading": "Betöltés...",
       "resetrotation": ""
+    },
+    "mapexport": {
+      "configuration": "",
+      "format": "Formátum:",
+      "resolution": "Felbontás:",
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "mapinfotooltip": {
       "elevation": "Magasság",

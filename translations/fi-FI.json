@@ -23,6 +23,7 @@
         "MeasurePolygon": "Mittaa monikulmion",
         "Print": "Tulosta",
         "RasterExport": "Rasterin vienti",
+        "MapExport": "Vienti kartta",
         "Redlining": "Omat merkinnät",
         "Routing": "",
         "Share": "Jaa linkki",
@@ -220,6 +221,16 @@
     "map": {
       "loading": "Lataa...",
       "resetrotation": ""
+    },
+    "mapexport": {
+      "configuration": "",
+      "format": "Formaatti:",
+      "resolution": "Resoluutio:",
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "mapinfotooltip": {
       "elevation": "Korkeus",

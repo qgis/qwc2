@@ -1,0 +1,55 @@
+#MapExport div.mapexport-body {
+    padding: 0.25em;
+}
+
+#MapExport .mapexport-minimize-maximize {
+    margin-left: 1em;
+    padding: 0.25em;
+}
+
+#MapExport table.options-table {
+    width: 100%;
+}
+
+#MapExport table.options-table td {
+    padding: 0.125em 0;
+}
+
+#MapExport table.options-table td:first-child {
+    max-width: 10em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 0.25em;
+}
+
+#MapExport table.options-table td:nth-child(2) {
+    width: 99%;
+}
+
+#MapExport table.options-table td:nth-child(2) > * {
+    width: 100%;
+}
+
+#MapExport table.options-table textarea {
+    resize: vertical;
+}
+
+#MapExport div.button-bar {
+    margin-top: 0.5em;
+}
+
+#MapExport div.button-bar > button {
+    width: 100%;
+}
+
+#MapExport span.mapexport-wait {
+    display: flex;
+    align-items: center;
+}
+
+#MapExport span.mapexport-wait div.spinner {
+    width: 1.25em;
+    height: 1.25em;
+    margin-right: 0.5em;
+    flex: 0 0 auto;
+}

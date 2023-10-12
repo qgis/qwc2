@@ -23,6 +23,7 @@
         "MeasurePolygon": "Zmierzyć wielokąt",
         "Print": "Drukuj",
         "RasterExport": "Eksport Rastra",
+        "MapExport": "Eksportuj mapę",
         "Redlining": "Redlining",
         "Routing": "",
         "Share": "Udostępnij Link",
@@ -220,6 +221,16 @@
     "map": {
       "loading": "Ładowanie...",
       "resetrotation": ""
+    },
+    "mapexport": {
+      "configuration": "",
+      "format": "Format:",
+      "resolution": "Rozdzielczość:",
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "mapinfotooltip": {
       "elevation": "Wysokość",

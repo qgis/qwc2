@@ -23,6 +23,7 @@
         "MeasurePolygon": "Mesurar un polígon",
         "Print": "Imprimir",
         "RasterExport": "Exportar trama",
+        "MapExport": "Exportar mapa",
         "Redlining": "Línia de demarcació",
         "Routing": "",
         "Share": "Compartir link",
@@ -220,6 +221,16 @@
     "map": {
       "loading": "Carregant...",
       "resetrotation": "Reiniciar rotació"
+    },
+    "mapexport": {
+      "configuration": "",
+      "format": "Format:",
+      "resolution": "Resolució:",
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "mapinfotooltip": {
       "elevation": "Elevació",

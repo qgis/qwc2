@@ -23,6 +23,7 @@
         "MeasurePolygon": "Measure a polygon",
         "Print": "Print",
         "RasterExport": "Raster Export",
+        "MapExport": "Export map",
         "Redlining": "Redlining",
         "Routing": "Routing",
         "Share": "Share Link",
@@ -220,6 +221,16 @@
     "map": {
       "loading": "Loading...",
       "resetrotation": "Reset rotation"
+    },
+    "mapexport": {
+      "configuration": "Configuration",
+      "format": "Format",
+      "resolution": "Resolution",
+      "scale": "Scale",
+      "size": "Size",
+      "submit": "Export",
+      "usersize": "Select on map...",
+      "wait": "Please wait..."
     },
     "mapinfotooltip": {
       "elevation": "Elevation",

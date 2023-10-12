@@ -23,6 +23,7 @@
         "MeasurePolygon": "измерить многоугольник",
         "Print": "Печать",
         "RasterExport": "Экспорт в растровый Формат бумаги",
+        "MapExport": "экспортировать карту",
         "Redlining": "Обводка",
         "Routing": "",
         "Share": "Поделиться ссылкой",
@@ -220,6 +221,16 @@
     "map": {
       "loading": "Загрузка...",
       "resetrotation": ""
+    },
+    "mapexport": {
+      "configuration": "",
+      "format": "Формат бумаги:",
+      "resolution": "Разрешение:",
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "mapinfotooltip": {
       "elevation": "Высота над уровнем моря",

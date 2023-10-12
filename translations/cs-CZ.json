@@ -23,6 +23,7 @@
         "MeasurePolygon": "Měřit mnohoúhelník",
         "Print": "Tisk",
         "RasterExport": "Export rastru",
+        "MapExport": "Export mapu",
         "Redlining": "Připomínkování",
         "Routing": "Trasy",
         "Share": "Sdílet odkaz",
@@ -220,6 +221,16 @@
     "map": {
       "loading": "Načítání...",
       "resetrotation": "Obnovit orientaci mapy"
+    },
+    "mapexport": {
+      "configuration": "",
+      "format": "Formát:",
+      "resolution": "Rozlišení:",
+      "scale": "Měřítko",
+      "size": "Velikost",
+      "submit": "Export",
+      "usersize": "Vybrat na mapě...",
+      "wait": "Čekejte..."
     },
     "mapinfotooltip": {
       "elevation": "Nadmořská výška",

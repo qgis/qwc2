@@ -23,6 +23,7 @@
         "MeasurePolygon": "Mäta en polygon",
         "Print": "Skriv ut",
         "RasterExport": "Raster Export",
+        "MapExport": "Exportera karta",
         "Redlining": "Rita",
         "Routing": "",
         "Share": "Dela länk",
@@ -220,6 +221,16 @@
     "map": {
       "loading": "Laddar...",
       "resetrotation": ""
+    },
+    "mapexport": {
+      "configuration": "",
+      "format": "Format:",
+      "resolution": "Upplösning:",
+      "scale": "",
+      "size": "",
+      "submit": "",
+      "usersize": "",
+      "wait": ""
     },
     "mapinfotooltip": {
       "elevation": "Höjd",
