@@ -9,15 +9,56 @@
 import Proj4js from 'proj4';
 import ol from 'openlayers';
 
+/**
+ * Internal singleton that maps CRS codes to human readable labels.
+ * @private
+ */
 const crsLabels = {
     "EPSG:4326": "WGS 84",
     "EPSG:3857": "WGS 84 / Pseudo Mercator"
 };
 
+/**
+ * Utility functions for coordinate handling and transformations.
+ * 
+ * @namespace
+ */
 const CoordinatesUtils = {
+    /**
+     * Register names for CRS codes.
+     *
+     * @param {Object.<string, string>} labels - object with
+     *  key/value pairs with CRS code and label
+     * @see {@link CoordinatesUtils.getCrsLabel}
+     * @see {@link CoordinatesUtils.getAvailableCRS}
+     */
     setCrsLabels(labels) {
         Object.assign(crsLabels, labels);
     },
+
+    /**
+     * Return the label for a given CRS code. If no label is found, the CRS
+     * code is returned.
+     *
+     * @param {string} crs - the CRS code
+     * @return {string} the label for the given CRS code
+     * @see {@link CoordinatesUtils.setCrsLabels}
+     * @see {@link CoordinatesUtils.getAvailableCRS}
+     */
+    getCrsLabel(crs) {
+        return crsLabels[crs] || crs;
+    },
+
+    /**
+     * Return the list of available CRS codes.
+     * 
+     * The `label` property of each CRS code is set to the
+     * previously registered label of the CRS code, if available.
+     *
+     * @return {Object.<string, {label: string}>} the list of available CRS codes
+     * @see {@link CoordinatesUtils.setCrsLabels}
+     * @see {@link CoordinatesUtils.getCrsLabel}
+     */
     getAvailableCRS() {
         const crsList = {};
         for (const a in Proj4js.defs) {
@@ -27,6 +68,14 @@ const CoordinatesUtils = {
         }
         return crsList;
     },
+
+    /**
+     * Return the string representing the units of a projection.
+     * 
+     * @param {string} projection - the projection code
+     * @return {string} the units of the projection
+     * 
+     */
     getUnits(projection) {
         const proj = ol.proj.get(projection);
         return proj.getUnits() || 'degrees';

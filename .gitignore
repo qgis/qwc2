@@ -1,8 +1,22 @@
 node_modules/
 npm-debug.log
 
-# On a fresh install with yarn 3.3.0 these extra files were generated.
 .yarn
 .pnp.cjs
 .pnp.loader.mjs
 yarn.lock
+
+.cache/
+coverage/
+dist/*
+dist-dev/*
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
