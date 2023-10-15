@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createSelector} from 'reselect';
-import {LayerRole} from '../actions/layers';
+import { createSelector } from 'reselect';
+import { LayerRole } from '../actions/layers';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
@@ -17,15 +17,31 @@ import ThemeUtils from '../utils/ThemeUtils';
  * @memberof Redux Store.Selectors
  */
 const getSearchProviders = (searchProviders) => createSelector(
-    [state => state.theme, state => state.layers && state.layers.flat || null], (theme, layers) => {
-        searchProviders = {...searchProviders, ...window.QWC2SearchProviders || {}};
+    [
+        state => state.theme,
+        state => state.layers && state.layers.flat || null
+    ], (theme, layers) => {
+        searchProviders = {
+            ...searchProviders,
+            ...window.QWC2SearchProviders || {}
+        };
         const availableProviders = {};
-        const themeLayerNames = layers.map(layer => layer.role === LayerRole.THEME ? layer.params.LAYERS : "").join(",").split(",").filter(entry => entry);
-        const themeProviders = theme && theme.current && theme.current.searchProviders ? theme.current.searchProviders : [];
+        const themeLayerNames = layers.map(
+            layer => layer.role === LayerRole.THEME ? layer.params.LAYERS : ""
+        ).join(",").split(",").filter(entry => entry);
+        const themeProviders = (
+            theme &&
+            theme.current &&
+            theme.current.searchProviders
+        ) ? theme.current.searchProviders : [];
+
         for (const entry of themeProviders) {
             const provider = searchProviders[entry.key ?? entry];
             if (provider) {
-                if (provider.requiresLayer && !themeLayerNames.includes(provider.requiresLayer)) {
+                if (
+                    provider.requiresLayer &&
+                    !themeLayerNames.includes(provider.requiresLayer)
+                ) {
                     continue;
                 }
                 availableProviders[entry.key ?? entry] = {
@@ -38,7 +54,9 @@ const getSearchProviders = (searchProviders) => createSelector(
             availableProviders.themes = {
                 labelmsgid: LocaleUtils.trmsg("search.themes"),
                 onSearch: (text, options, callback) => {
-                    setTimeout(() => callback({results: ThemeUtils.searchThemes(theme.themes, text)}), 50);
+                    setTimeout(() => callback({
+                        results: ThemeUtils.searchThemes(theme.themes, text)
+                    }), 50);
                 }
             };
         }

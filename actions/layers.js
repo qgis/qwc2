@@ -61,6 +61,7 @@ export const LayerRole = {
  * @param {number|null} pos - The position to add the layer at.
  * @param {string|null} beforename - The name of the layer to
  *  insert the new layer before.
+ * @memberof Redux Store.Actions
  */
 export function addLayer(layer, pos = null, beforename = null) {
     return {
@@ -80,6 +81,7 @@ export function addLayer(layer, pos = null, beforename = null) {
  *  insert the separator after.
  * @param {string[]} afterSublayerPath - The sublayer path of the layer to
  *  insert the separator after.
+ * @memberof Redux Store.Actions
  */
 export function addLayerSeparator(title, afterLayerId, afterSublayerPath) {
     return {
@@ -95,6 +97,7 @@ export function addLayerSeparator(title, afterLayerId, afterSublayerPath) {
  * 
  * @param {string} layerId - The id of the layer to remove.
 *  @param {string[]} sublayerpath - The sublayer path of the layer to remove.
+ * @memberof Redux Store.Actions
  */
 export function removeLayer(layerId, sublayerpath = []) {
     return {
@@ -111,6 +114,7 @@ export function removeLayer(layerId, sublayerpath = []) {
  * @param {Layer} layer - The layer to reorder.
  * @param {string[]} sublayerpath - The sublayer path of the layer to reorder.
  * @param {number} direction - The direction to move the layer in.
+ * @memberof Redux Store.Actions
  */
 export function reorderLayer(layer, sublayerpath, direction) {
     return (dispatch, getState) => {
@@ -134,6 +138,7 @@ export function reorderLayer(layer, sublayerpath, direction) {
  * @param {Layer} layer - The layer to add the features to.
  * @param {object[]} features - The features to add.
  * @param {boolean} clear - Whether to clear the layer first.
+ * @memberof Redux Store.Actions
  */
 export function addLayerFeatures(layer, features, clear = false) {
     return {
@@ -153,6 +158,7 @@ export function addLayerFeatures(layer, features, clear = false) {
  * @param {string[]} featureIds - The ids of the features to remove.
  * @param {boolean} keepEmptyLayer - Whether to keep the
  *  layer if it becomes empty.
+ * @memberof Redux Store.Actions
  */
 export function removeLayerFeatures(
     layerId, featureIds, keepEmptyLayer = false
@@ -170,6 +176,7 @@ export function removeLayerFeatures(
  * Remove all features from a layer and clear its bounding box.
  * 
  * @param {string} layerId - The id of the layer to clear.
+ * @memberof Redux Store.Actions
  */
 export function clearLayer(layerId) {
     return {
@@ -183,6 +190,7 @@ export function clearLayer(layerId) {
  * Add a sublayer to a theme layer.
  * 
  * @param {Layer} layer - The layer to add the sublayer to.
+ * @memberof Redux Store.Actions
  */
 export function addThemeSublayer(layer) {
     return {
@@ -200,6 +208,7 @@ export function addThemeSublayer(layer) {
  * @param {string[]} sublayerpath - The sublayer path of the layer to change.
  * @param {"parents"|"children"|"both"|null} recurseDirection - The
  *  direction to recurse in (null means don't recurse).
+ * @memberof Redux Store.Actions
  */
 export function changeLayerProperty(
     layerUuid, property, newvalue, sublayerpath = [], recurseDirection = null
@@ -221,6 +230,7 @@ export function changeLayerProperty(
  * @param {string} layerId - The id of the layer to change.
  * @param {{width: number, height: number}} dimensions - The new
  *  dimensions of the layer.
+ * @memberof Redux Store.Actions
  */
 export function setLayerDimensions(layerId, dimensions) {
     return {
@@ -236,6 +246,7 @@ export function setLayerDimensions(layerId, dimensions) {
  * 
  * @param {string} layerId - The id of the layer to change.
  * @param {boolean} loading - The new loading state of the layer.
+ * @memberof Redux Store.Actions
  */
 export function setLayerLoading(layerId, loading) {
     return {
@@ -254,6 +265,7 @@ export function setLayerLoading(layerId, loading) {
  * @param {string} label - The label of the layer.
  * @param {string} crs - The CRS of the layer.
  * @param {number} zIndex - The z-index of the layer.
+ * @memberof Redux Store.Actions
  */
 export function addMarker(
     id, point, label = '', crs = 'EPSG:4326', zIndex = null
@@ -281,6 +293,8 @@ export function addMarker(
  * Removes a marker feature.
  * 
  * @param {string} id - The id of the feature to remove.
+ * 
+ * @memberof Redux Store.Actions
  */
 export function removeMarker(id) {
     return removeLayerFeatures("markers", [id]);
@@ -292,6 +306,8 @@ export function removeMarker(id) {
  * 
  * @param {(layer: any) => boolean} filter - The filter 
  *  callback that decides which layers to refresh.
+ * 
+ * @memberof Redux Store.Actions
  */
 export function refreshLayer(filter) {
     return {
@@ -303,6 +319,8 @@ export function refreshLayer(filter) {
 
 /**
  * Removes all layers from the map.
+ * 
+ * @memberof Redux Store.Actions
  */
 export function removeAllLayers() {
     return {
@@ -316,6 +334,8 @@ export function removeAllLayers() {
  * 
  * @param {string} id - The id of the placeholder layer.
  * @param {Layer} layer - The layer to replace the placeholder with.
+ * 
+ * @memberof Redux Store.Actions
  */
 export function replacePlaceholderLayer(id, layer) {
     return {
@@ -330,6 +350,8 @@ export function replacePlaceholderLayer(id, layer) {
  * Set the swipe state.
  * 
  * @param {object|null} swipe - The new swipe state.
+ * 
+ * @memberof Redux Store.Actions
  */
 export function setSwipe(swipe) {
     return {
@@ -343,6 +365,8 @@ export function setSwipe(swipe) {
  * Set the flat list of layers.
  * 
  * @param {Layer[]} layers - The new layers.
+ * 
+ * @memberof Redux Store.Actions
  */
 export function setLayers(layers) {
     return {

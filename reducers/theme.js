@@ -12,26 +12,26 @@ import {
     SET_CURRENT_THEME,
     SWITCHING_THEME
 } from '../actions/theme';
-import {UrlParams} from '../utils/PermaLinkUtils';
+import { UrlParams } from '../utils/PermaLinkUtils';
 
 const defaultState = {};
 
 export default function theme(state = defaultState, action) {
     switch (action.type) {
-    case SWITCHING_THEME: {
-        return {...state, switching: action.switching};
-    }
-    case THEMES_LOADED: {
-        return {...state, themes: action.themes};
-    }
-    case SET_THEME_LAYERS_LIST: {
-        return {...state, themelist: action.themelist};
-    }
-    case SET_CURRENT_THEME: {
-        UrlParams.updateParams({t: action.theme.id});
-        return {...state, current: action.theme};
-    }
-    default:
-        return state;
+        case SWITCHING_THEME: {
+            return { ...state, switching: action.switching };
+        }
+        case THEMES_LOADED: {
+            return { ...state, themes: action.themes };
+        }
+        case SET_THEME_LAYERS_LIST: {
+            return { ...state, themelist: action.themelist };
+        }
+        case SET_CURRENT_THEME: {
+            UrlParams.updateParams({ t: action.theme.id });
+            return { ...state, current: action.theme };
+        }
+        default:
+            return state;
     }
 }

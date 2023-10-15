@@ -8,9 +8,27 @@
 
 import { SET_ACTIVE_LAYERINFO } from '../actions/layerinfo';
 
-const defaultState = {};
+/**
+ * @typedef {object} LayerInfoState
+ * @property {string|null} layer - the active layer
+ * @property {string[]|null} sublayer - the active sublayer
+ */
 
-export default function layerInfo(state = defaultState, action) {
+
+/**
+ * Default state for the layerinfo reducer.
+ * @type {LayerInfoState}
+ * @private
+ */
+const defaultState = {
+    layer: null,
+    sublayer: null
+};
+
+
+export default function layerInfo(
+    state = defaultState, action
+) {
     switch (action.type) {
         case SET_ACTIVE_LAYERINFO: {
             return {

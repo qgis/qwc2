@@ -23,7 +23,11 @@ const defaultState = {
 export default function measurement(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_MEASUREMENT_STATE: {
-        return {lenUnit: state.lenUnit, areaUnit: state.areaUnit, ...action.data};
+        return {
+            lenUnit: state.lenUnit, 
+            areaUnit: state.areaUnit, 
+            ...action.data
+        };
     }
     default:
         return state;

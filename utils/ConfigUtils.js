@@ -12,6 +12,22 @@ import url from 'url';
 import isMobile from 'ismobilejs';
 import StandardStore from '../stores/StandardStore';
 
+/**
+ * @typedef {import("qwc2/typings").Config} Config
+ */
+
+/**
+ * @typedef {import("qwc2/typings").Theme} Theme
+ */
+
+/**
+ * @typedef {import("qwc2/typings").Plugin} Plugin
+ */
+
+/**
+ * Default configuration.
+ * @type {Config}
+ */
 let defaultConfig = {
     translationsPath: "translations",
     defaultFeatureStyle: {
@@ -31,31 +47,57 @@ let defaultConfig = {
  * @namespace
  */
 const ConfigUtils = {
+    /**
+     * Get the default configuration.
+     * 
+     * @returns {Config} the default configuration
+     */
     getDefaults() {
         return defaultConfig;
     },
+
+    /**
+     * Load the configuration from the remote config.json file.
+     * 
+     * @param {object} configParams additional parameters to pass
+     *  to the config.json request
+     * 
+     * @returns {Promise<Config>} a promise resolving to
+     *  the configuration
+     */
     loadConfiguration(configParams = {}) {
         let configFile = 'config.json';
-        const urlQuery = url.parse(window.location.href, true).query;
+        const urlQuery = url.parse(
+            window.location.href, true
+        ).query;
         if (urlQuery.localConfig) {
             configFile = urlQuery.localConfig + '.json';
         }
-        return axios.get(configFile, {params: configParams}).then(response => {
+        return axios.get(configFile, {
+            params: configParams
+        }).then(response => {
             if (typeof response.data === 'object') {
-                defaultConfig = {...defaultConfig, ...response.data};
+                defaultConfig = {
+                    ...defaultConfig,
+                    ...response.data
+                };
             } else {
                 /* eslint-disable-next-line */
-                console.warn("Broken configuration file " + configFile + "!");
+                console.warn(
+                    "Broken configuration file " + configFile + "!"
+                );
             }
             return defaultConfig;
         });
     },
+
     /**
     * Utility to detect browser properties.
     * Code from leaflet-src.js
+    * 
+    * @returns {import("qwc2/typings").BrowserData}
     */
     getBrowserProperties() {
-
         const ie = 'ActiveXObject' in window;
         const ielt9 = ie && !document.addEventListener;
         const ie11 = ie && (window.location.hash === !!window.MSInputMethodContext && !!document.documentMode);
@@ -73,8 +115,8 @@ const ConfigUtils = {
         const msPointer = !window.PointerEvent && window.MSPointerEvent;
         const pointer = (window.PointerEvent && window.navigator.pointerEnabled && window.navigator.maxTouchPoints) || msPointer;
         const retina = ('devicePixelRatio' in window && window.devicePixelRatio > 1) ||
-                 ('matchMedia' in window && window.matchMedia('(min-resolution:144dpi)') &&
-                  window.matchMedia('(min-resolution:144dpi)').matches);
+            ('matchMedia' in window && window.matchMedia('(min-resolution:144dpi)') &&
+                window.matchMedia('(min-resolution:144dpi)').matches);
 
         const doc = document.documentElement;
         const ie3d = ie && ('transition' in doc.style);
@@ -118,25 +160,96 @@ const ConfigUtils = {
             platform: navigator.platform
         };
     },
+
+    /**
+     * Get a configuration property from the theme or
+     * default configuration.
+     * 
+     * If there is a theme and the property is defined
+     * in the theme configuration, return that value. 
+     * If the property is defined in the default
+     * configuration, return that value.
+     * Otherwise return the default value.
+     * 
+     * @param {keyof Config} prop - the property name
+     * @param {Theme|null} theme - the theme to get
+     *  the property from
+     * @param {*} defval - the default value
+     */
     getConfigProp(prop, theme, defval = undefined) {
-        if (theme && theme.config && theme.config[prop] !== undefined) {
+        if (
+            theme &&
+            theme.config &&
+            theme.config[prop] !== undefined
+        ) {
             return theme.config[prop];
         }
         return defaultConfig[prop] ?? defval;
     },
+
+    /**
+     * Get the assets path from default configuration.
+     * 
+     * If not set in the default configuration, return
+     * "assets".
+     * 
+     * @returns {string} the assets path
+     */
     getAssetsPath() {
-        return (ConfigUtils.getConfigProp("assetsPath") || "assets").replace(/\/$/g, "");
+        return (
+            ConfigUtils.getConfigProp("assetsPath") ||
+            "assets"
+        ).replace(/\/$/g, "");
     },
+
+    /**
+     * Get the translations path from default configuration.
+     * 
+     * If not set in the default configuration, return
+     * "translations".
+     * 
+     * @returns {string} the assets path
+     */
     getTranslationsPath() {
-        return (ConfigUtils.getConfigProp("translationsPath") || "translations").replace(/\/$/g, "");
+        return (
+            ConfigUtils.getConfigProp("translationsPath") ||
+            "translations"
+        ).replace(/\/$/g, "");
     },
+
+    /**
+     * See if we have a plugin configuration by this name.
+     * 
+     * The function looks into the store to determine if the
+     * browser is mobile or desktop and searches in
+     * that list of plugins for the `name`.
+     * 
+     * @param {string} name - the plugin name
+     * @returns {Plugin} the plugin
+     */
     havePlugin(name) {
         const state = StandardStore.get().getState();
-        return defaultConfig.plugins[state.browser.mobile ? "mobile" : "desktop"].find(entry => entry.name === name);
+        return defaultConfig.plugins[
+            state.browser.mobile
+                ? "mobile"
+                : "desktop"
+        ].find(
+            entry => entry.name === name
+        );
     },
+
+    /**
+     * Get a plugin configuration from default configuration.
+     * 
+     * The function looks into the store to determine if the
+     * browser is mobile or desktop and searches in
+     * that list of plugins for the `name`.
+     * 
+     * @param {string} name - the plugin name
+     * @returns {Plugin} the plugin
+     */
     getPluginConfig(name) {
-        const state = StandardStore.get().getState();
-        return defaultConfig.plugins[state.browser.mobile ? "mobile" : "desktop"].find(entry => entry.name === name) || {};
+        return ConfigUtils.havePlugin(name) || {};
     }
 };
 

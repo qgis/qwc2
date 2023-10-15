@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {CHANGE_REDLINING_STATE} from '../actions/redlining';
+import { CHANGE_REDLINING_STATE } from '../actions/redlining';
 
 const defaultState = {
     action: null,
@@ -29,10 +29,10 @@ const defaultState = {
 
 export default function redlining(state = defaultState, action) {
     switch (action.type) {
-    case CHANGE_REDLINING_STATE: {
-        return {...state, ...action.data};
-    }
-    default:
-        return state;
+        case CHANGE_REDLINING_STATE: {
+            return { ...state, ...action.data };
+        }
+        default:
+            return state;
     }
 }

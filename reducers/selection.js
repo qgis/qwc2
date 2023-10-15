@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {CHANGE_SELECTION_STATE} from '../actions/selection';
+import { CHANGE_SELECTION_STATE } from '../actions/selection';
 
 const defaultState = {
     geomType: null,
@@ -17,22 +17,22 @@ const defaultState = {
 
 export default function selection(state = defaultState, action) {
     switch (action.type) {
-    case CHANGE_SELECTION_STATE: {
-        return {
-            ...state,
-            geomType: action.geomType,
-            box: action.box,
-            circle: action.circle,
-            point: action.point,
-            line: action.line,
-            polygon: action.polygon,
-            style: action.style || 'default',
-            styleOptions: action.styleOptions || {},
-            cursor: action.cursor || null,
-            reset: action.reset || false
-        };
-    }
-    default:
-        return state;
+        case CHANGE_SELECTION_STATE: {
+            return {
+                ...state,
+                geomType: action.geomType,
+                box: action.box,
+                circle: action.circle,
+                point: action.point,
+                line: action.line,
+                polygon: action.polygon,
+                style: action.style || 'default',
+                styleOptions: action.styleOptions || {},
+                cursor: action.cursor || null,
+                reset: action.reset || false
+            };
+        }
+        default:
+            return state;
     }
 }

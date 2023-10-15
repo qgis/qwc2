@@ -10,11 +10,11 @@ import ReducerIndex from '../reducers/index';
 import taskReducer from '../reducers/task';
 ReducerIndex.register("task", taskReducer);
 
-import {setIdentifyEnabled} from './identify';
+import { setIdentifyEnabled } from './identify';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import MapUtils from '../utils/MapUtils';
-import {UrlParams} from '../utils/PermaLinkUtils';
+import { UrlParams } from '../utils/PermaLinkUtils';
 
 export const SET_CURRENT_TASK = 'SET_CURRENT_TASK';
 export const SET_CURRENT_TASK_BLOCKED = 'SET_CURRENT_TASK_BLOCKED';

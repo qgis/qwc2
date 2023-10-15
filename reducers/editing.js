@@ -6,15 +6,24 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {SET_EDIT_CONTEXT, CLEAR_EDIT_CONTEXT} from '../actions/editing';
+import { SET_EDIT_CONTEXT, CLEAR_EDIT_CONTEXT } from '../actions/editing';
 
+/**
+ * Default state for the editing reducer.
+ * @type {import("qwc2/typings").QwcContextState}
+ * @private
+ */
 const defaultState = {
     contexts: {},
     currentContext: null
 };
 
 const nonZeroZCoordinate = (coordinates) => {
-    return coordinates.find(entry => Array.isArray(entry[0]) ? nonZeroZCoordinate(entry) : entry.length >= 3 && entry[2] !== 0);
+    return coordinates.find(
+        entry => Array.isArray(entry[0])
+            ? nonZeroZCoordinate(entry)
+            : entry.length >= 3 && entry[2] !== 0
+    );
 };
 
 const checkGeomReadOnly = (oldState, newFeature) => {
@@ -22,42 +31,45 @@ const checkGeomReadOnly = (oldState, newFeature) => {
     if (!newFeature) {
         return false;
     } else if (newFeature.id !== ((oldState || {}).feature || {}).id) {
-        return nonZeroZCoordinate([newFeature.geometry?.coordinates || []]) !== undefined;
+        return nonZeroZCoordinate(
+            [newFeature.geometry?.coordinates || []]
+        ) !== undefined;
     }
     return (oldState || {}).geomReadOnly || false;
 };
 
+
 export default function editing(state = defaultState, action) {
     switch (action.type) {
-    case SET_EDIT_CONTEXT: {
-        return {
-            contexts: {
-                ...state.contexts,
-                [action.contextId]: {
-                    action: null,
-                    feature: null,
-                    geomType: null,
-                    changed: false,
-                    ...state.contexts[action.contextId],
-                    ...action.editContext,
-                    geomReadOnly: action.editContext.geomReadOnly === true || checkGeomReadOnly(state.contexts[action.contextId], action.editContext.feature),
-                    id: action.contextId
-                }
-            },
-            currentContext: action.contextId
-        };
-    }
-    case CLEAR_EDIT_CONTEXT: {
-        const newState = {
-            contexts: {
-                ...state.contexts
-            },
-            currentContext: state.currentContext === action.contextId ? action.newActiveContextId : state.currentContext
-        };
-        delete newState.contexts[action.contextId];
-        return newState;
-    }
-    default:
-        return state;
+        case SET_EDIT_CONTEXT: {
+            return {
+                contexts: {
+                    ...state.contexts,
+                    [action.contextId]: {
+                        action: null,
+                        feature: null,
+                        geomType: null,
+                        changed: false,
+                        ...state.contexts[action.contextId],
+                        ...action.editContext,
+                        geomReadOnly: action.editContext.geomReadOnly === true || checkGeomReadOnly(state.contexts[action.contextId], action.editContext.feature),
+                        id: action.contextId
+                    }
+                },
+                currentContext: action.contextId
+            };
+        }
+        case CLEAR_EDIT_CONTEXT: {
+            const newState = {
+                contexts: {
+                    ...state.contexts
+                },
+                currentContext: state.currentContext === action.contextId ? action.newActiveContextId : state.currentContext
+            };
+            delete newState.contexts[action.contextId];
+            return newState;
+        }
+        default:
+            return state;
     }
 }

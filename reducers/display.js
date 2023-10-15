@@ -6,18 +6,28 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {TOGGLE_FULLSCREEN} from '../actions/display';
+import { TOGGLE_FULLSCREEN } from '../actions/display';
 
+
+/**
+ * Default state for the display reducer.
+ * @private
+ */
 const defaultState = {
     fullscreen: false
 };
 
-export default function toggleFullscreen(state = defaultState, action) {
+export default function toggleFullscreen(
+    state = defaultState, action
+) {
     switch (action.type) {
-    case TOGGLE_FULLSCREEN: {
-        return {...state, fullscreen: action.fullscreen};
-    }
-    default:
-        return state;
+        case TOGGLE_FULLSCREEN: {
+            return {
+                ...state,
+                fullscreen: action.fullscreen
+            };
+        }
+        default:
+            return state;
     }
 }

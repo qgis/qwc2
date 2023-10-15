@@ -14,5 +14,6 @@
     ],
     "entryPointStrategy": "resolve",
     "theme": "hierarchy",
-    "plugin": ["typedoc-theme-hierarchy"]
+    "plugin": ["typedoc-theme-hierarchy"],
+    "excludeNotDocumented": true
 }

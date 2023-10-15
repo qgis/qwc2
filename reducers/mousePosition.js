@@ -7,7 +7,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {CHANGE_MOUSE_POSITION_STATE} from '../actions/mousePosition';
+import { CHANGE_MOUSE_POSITION_STATE } from '../actions/mousePosition';
 
 const defaultState = {
     enabled: true
@@ -15,10 +15,10 @@ const defaultState = {
 
 export default function mousePosition(state = defaultState, action) {
     switch (action.type) {
-    case CHANGE_MOUSE_POSITION_STATE: {
-        return {...state, ...action.data};
-    }
-    default:
-        return state;
+        case CHANGE_MOUSE_POSITION_STATE: {
+            return { ...state, ...action.data };
+        }
+        default:
+            return state;
     }
 }

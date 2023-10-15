@@ -10,7 +10,7 @@ import ReducerIndex from '../reducers/index';
 import searchReducer from '../reducers/search';
 ReducerIndex.register("search", searchReducer);
 
-import {v1 as uuidv1} from 'uuid';
+import { v1 as uuidv1 } from 'uuid';
 import axios from 'axios';
 
 export const SEARCH_CHANGE = 'SEARCH_CHANGE';
@@ -51,7 +51,7 @@ export function startSearch(text, searchParams, providers, startup = false) {
             startup: startup
         });
         Object.keys(providers).map(provider => {
-            providers[provider].onSearch(text, {...searchParams, cfgParams: providers[provider].params}, (response) => {
+            providers[provider].onSearch(text, { ...searchParams, cfgParams: providers[provider].params }, (response) => {
                 dispatch({
                     type: SEARCH_ADD_RESULTS,
                     reqId: reqId,

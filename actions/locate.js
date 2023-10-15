@@ -15,13 +15,28 @@ export const CHANGE_LOCATE_STATE = 'CHANGE_LOCATE_STATE';
 export const CHANGE_LOCATE_POSITION = 'CHANGE_LOCATE_POSITION';
 export const LOCATE_ERROR = 'LOCATE_ERROR';
 
+
+/**
+ * Change locate state.
+ * 
+ * @param {string} state - The new state.
+ * 
+ * @memberof Redux Store.Actions
+ */
 export function changeLocateState(state) {
     return {
         type: CHANGE_LOCATE_STATE,
-        state: state
+        state
     };
 }
 
+/**
+ * Change locate position.
+ *
+ * @param {object} position - The new position.
+ *
+ * @memberof Redux Store.Actions
+ */
 export function changeLocatePosition(position) {
     return {
         type: CHANGE_LOCATE_POSITION,

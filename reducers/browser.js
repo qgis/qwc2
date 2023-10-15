@@ -7,16 +7,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {CHANGE_BROWSER_PROPERTIES} from '../actions/browser';
+import { CHANGE_BROWSER_PROPERTIES } from '../actions/browser';
 
+
+/**
+ * Default state for the browser reducer.
+ * 
+ * @type {import("qwc2/typings").BrowserData}
+ * @private
+ */
 const defaultState = {};
 
-export default function browser(state = defaultState, action) {
+
+export default function browser(
+    state = defaultState, action
+) {
     switch (action.type) {
-    case CHANGE_BROWSER_PROPERTIES: {
-        return {...state, ...action.newProperties};
-    }
-    default:
-        return state;
+        case CHANGE_BROWSER_PROPERTIES: {
+            return { ...state, ...action.newProperties };
+        }
+        default:
+            return state;
     }
 }

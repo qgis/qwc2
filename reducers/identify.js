@@ -8,9 +8,19 @@
 
 import {SET_IDENTIFY_TOOL} from '../actions/identify';
 
+/**
+ * @typedef {object} IdentifyState 
+ * @property {string|null} tool the active tool
+ */
+
+/**
+ * Default state for the identify reducer.
+ * @type {IdentifyState} 
+ */
 const defaultState = {
     tool: null
 };
+
 
 export default function identify(state = defaultState, action) {
     switch (action.type) {

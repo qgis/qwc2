@@ -13,12 +13,22 @@ import {
 } from '../actions/map';
 import isEmpty from 'lodash.isempty';
 import MapUtils from '../utils/MapUtils';
-import {UrlParams} from '../utils/PermaLinkUtils';
+import { UrlParams } from '../utils/PermaLinkUtils';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 
+/**
+ * @typedef {import('qwc2/typings').MapData} MapData
+ */
+
+
+/**
+ * State of map in the store.
+ * @type {MapData}
+ * @private
+ */
 const defaultState = {
-    bbox: {bounds: [0, 0, 0, 0], rotation: 0},
+    bbox: { bounds: [0, 0, 0, 0], rotation: 0 },
     center: [0, 0],
     dpi: MapUtils.DEFAULT_SCREEN_DPI,
     projection: "EPSG:3857",
@@ -33,113 +43,176 @@ const defaultState = {
     }
 };
 
+
 export default function map(state = defaultState, action) {
     // Always reset mapStateSource, CHANGE_MAP_VIEW will set it if necessary
     if (state.mapStateSource) {
-        state = {...state, mapStateSource: null};
+        state = { ...state, mapStateSource: null };
     }
 
     switch (action.type) {
-    case CHANGE_MAP_VIEW: {
-        const {type, ...params} = action;
-        const newState = {...state, ...params};
+        case CHANGE_MAP_VIEW: {
+            const { type, ...params } = action;
+            const newState = { ...state, ...params };
 
-        const newParams = {};
-        const positionFormat = ConfigUtils.getConfigProp("urlPositionFormat");
-        const positionCrs = ConfigUtils.getConfigProp("urlPositionCrs") || newState.projection;
-        const prec = CoordinatesUtils.getUnits(positionCrs) === 'degrees' ? 4 : 0;
-        if (positionFormat === "centerAndZoom") {
-            const center = CoordinatesUtils.reproject(newState.center, newState.projection, positionCrs);
-            const scale = Math.round(MapUtils.computeForZoom(newState.scales, newState.zoom));
-            Object.assign(newParams, {c: center.map(x => x.toFixed(prec)).join(","), s: scale});
-        } else {
-            const bounds = CoordinatesUtils.reprojectBbox(newState.bbox.bounds, newState.projection, positionCrs);
-            Object.assign(newParams, {e: bounds.map(x => x.toFixed(prec)).join(",")});
-        }
-        if (positionCrs !== newState.projection) {
-            Object.assign(newParams, {crs: positionCrs});
-        }
-        if (!isEmpty(newParams)) {
-            UrlParams.updateParams(newParams);
+            const newParams = {};
+            const positionFormat = ConfigUtils.getConfigProp(
+                "urlPositionFormat"
+            );
+            const positionCrs = ConfigUtils.getConfigProp(
+                "urlPositionCrs"
+            ) || newState.projection;
+            const prec = CoordinatesUtils.getUnits(
+                positionCrs
+            ) === 'degrees' ? 4 : 0;
+            if (positionFormat === "centerAndZoom") {
+                const center = CoordinatesUtils.reproject(
+                    newState.center, newState.projection, positionCrs
+                );
+                const scale = Math.round(
+                    MapUtils.computeForZoom(newState.scales, newState.zoom)
+                );
+                Object.assign(newParams, {
+                    c: center.map(x => x.toFixed(prec)).join(","),
+                    s: scale
+                });
+            } else {
+                const bounds = CoordinatesUtils.reprojectBbox(
+                    newState.bbox.bounds, newState.projection, positionCrs
+                );
+                Object.assign(newParams, {
+                    e: bounds.map(x => x.toFixed(prec)).join(",")
+                });
+            }
+            if (positionCrs !== newState.projection) {
+                Object.assign(newParams, { crs: positionCrs });
+            }
+            if (!isEmpty(newParams)) {
+                UrlParams.updateParams(newParams);
+            }
+
+            return newState;
         }
 
-        return newState;
-    }
-    case CONFIGURE_MAP: {
-        const resolutions = MapUtils.getResolutionsForScales(action.scales, action.crs, state.dpi);
-        let bounds;
-        let center;
-        let zoom;
-        if (action.view.center) {
-            center = CoordinatesUtils.reproject(action.view.center, action.view.crs || action.crs, action.crs);
-            zoom = action.view.zoom;
-            bounds = MapUtils.getExtentForCenterAndZoom(center, zoom, resolutions, state.size);
-        } else {
-            bounds = CoordinatesUtils.reprojectBbox(action.view.bounds, action.view.crs || state.projection, action.crs);
-            center = [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])];
-            zoom = MapUtils.getZoomForExtent(bounds, resolutions, state.size, 0, action.scales.length - 1);
+        case CONFIGURE_MAP: {
+            const resolutions = MapUtils.getResolutionsForScales(
+                action.scales, action.crs, state.dpi
+            );
+            let bounds;
+            let center;
+            let zoom;
+            if (action.view.center) {
+                center = CoordinatesUtils.reproject(
+                    action.view.center,
+                    action.view.crs || action.crs,
+                    action.crs
+                );
+                zoom = action.view.zoom;
+                bounds = MapUtils.getExtentForCenterAndZoom(
+                    center, zoom, resolutions, state.size
+                );
+            } else {
+                bounds = CoordinatesUtils.reprojectBbox(
+                    action.view.bounds,
+                    action.view.crs || state.projection,
+                    action.crs
+                );
+                center = [
+                    0.5 * (bounds[0] + bounds[2]),
+                    0.5 * (bounds[1] + bounds[3])
+                ];
+                zoom = MapUtils.getZoomForExtent(
+                    bounds, resolutions,
+                    state.size, 0,
+                    action.scales.length - 1
+                );
+            }
+            return {
+                ...state,
+                bbox: { ...state.bbox, bounds: bounds },
+                center: center,
+                zoom: zoom,
+                projection: action.crs,
+                scales: action.scales,
+                resolutions: resolutions
+            };
         }
-        return {
-            ...state,
-            bbox: {...state.bbox, bounds: bounds},
-            center: center,
-            zoom: zoom,
-            projection: action.crs,
-            scales: action.scales,
-            resolutions: resolutions
-        };
-    }
-    case CHANGE_ZOOM_LVL: {
-        return {...state, zoom: action.zoom};
-    }
-    case ZOOM_TO_EXTENT: {
-        const bounds = CoordinatesUtils.reprojectBbox(action.extent, action.crs || state.projection, state.projection);
-        const padding = (state.topbarHeight + 10) / state.size.height;
-        const width = bounds[2] - bounds[0];
-        const height = bounds[3] - bounds[1];
-        bounds[0] -= padding * width;
-        bounds[2] += padding * width;
-        bounds[1] -= padding * height;
-        bounds[3] += padding * height;
-        return {
-            ...state,
-            center: [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])],
-            zoom: MapUtils.getZoomForExtent(bounds, state.resolutions, state.size, 0, state.scales.length - 1) + action.zoomOffset,
-            bbox: {...state.bbox, bounds: bounds}
-        };
-    }
-    case ZOOM_TO_POINT: {
-        return {
-            ...state,
-            center: CoordinatesUtils.reproject(action.pos, action.crs || state.projection, state.projection),
-            zoom: action.zoom
-        };
-    }
-    case PAN_TO: {
-        return {
-            ...state,
-            center: CoordinatesUtils.reproject(action.pos, action.crs || state.projection, state.projection)
-        };
-    }
-    case CHANGE_ROTATION: {
-        return {
-            ...state,
-            bbox: {...state.bbox, rotation: action.rotation}
-        };
-    }
-    case CLICK_ON_MAP: {
-        return {...state, click: action.click};
-    }
-    case TOGGLE_MAPTIPS: {
-        return {...state, maptips: action.active};
-    }
-    case SET_TOPBAR_HEIGHT: {
-        return {...state, topbarHeight: action.height};
-    }
-    case SET_SNAPPING_CONFIG: {
-        return {...state, snapping: {enabled: action.enabled, active: action.active}};
-    }
-    default:
-        return state;
+
+        case CHANGE_ZOOM_LVL: {
+            return { ...state, zoom: action.zoom };
+        }
+        case ZOOM_TO_EXTENT: {
+            const bounds = CoordinatesUtils.reprojectBbox(
+                action.extent,
+                action.crs || state.projection,
+                state.projection
+            );
+            const padding = (state.topbarHeight + 10) / state.size.height;
+            const width = bounds[2] - bounds[0];
+            const height = bounds[3] - bounds[1];
+            bounds[0] -= padding * width;
+            bounds[2] += padding * width;
+            bounds[1] -= padding * height;
+            bounds[3] += padding * height;
+            return {
+                ...state,
+                center: [
+                    0.5 * (bounds[0] + bounds[2]),
+                    0.5 * (bounds[1] + bounds[3])
+                ],
+                zoom: MapUtils.getZoomForExtent(
+                    bounds, state.resolutions, state.size,
+                    0, state.scales.length - 1
+                ) + action.zoomOffset,
+                bbox: { ...state.bbox, bounds: bounds }
+            };
+        }
+        case ZOOM_TO_POINT: {
+            return {
+                ...state,
+                center: CoordinatesUtils.reproject(
+                    action.pos,
+                    action.crs || state.projection,
+                    state.projection
+                ),
+                zoom: action.zoom
+            };
+        }
+        case PAN_TO: {
+            return {
+                ...state,
+                center: CoordinatesUtils.reproject(
+                    action.pos,
+                    action.crs || state.projection,
+                    state.projection
+                )
+            };
+        }
+        case CHANGE_ROTATION: {
+            return {
+                ...state,
+                bbox: { ...state.bbox, rotation: action.rotation }
+            };
+        }
+        case CLICK_ON_MAP: {
+            return { ...state, click: action.click };
+        }
+        case TOGGLE_MAPTIPS: {
+            return { ...state, maptips: action.active };
+        }
+        case SET_TOPBAR_HEIGHT: {
+            return { ...state, topbarHeight: action.height };
+        }
+        case SET_SNAPPING_CONFIG: {
+            return {
+                ...state,
+                snapping: {
+                    enabled: action.enabled,
+                    active: action.active
+                }
+            };
+        }
+        default:
+            return state;
     }
 }

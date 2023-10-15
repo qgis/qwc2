@@ -16,7 +16,7 @@ export const SET_IDENTIFY_TOOL = 'SET_IDENTIFY_TOOL';
 
 
 /**
- * Sets the current tool to be the identify tool.
+ * Sets the current identify tool.
  * 
  * The function will use the `identifyTool` property from the
  * `theme` argument or from current theme if `theme` is not specified.
