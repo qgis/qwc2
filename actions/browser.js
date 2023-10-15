@@ -13,7 +13,13 @@ ReducerIndex.register("browser", browserReducer);
 
 export const CHANGE_BROWSER_PROPERTIES = 'CHANGE_BROWSER_PROPERTIES';
 
-
+/**
+ * Update browser properties.
+ * 
+ * @param {object} properties - information retrieved by 
+ *      {@link ConfigUtils.getBrowserProperties}.
+ * @memberof Redux Store.Actions
+ */
 export function changeBrowserProperties(properties) {
     return {
         type: CHANGE_BROWSER_PROPERTIES,

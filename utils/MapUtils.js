@@ -21,6 +21,12 @@ const METERS_PER_UNIT = {
 
 const hooks = {};
 
+
+/**
+ * Utility functions for working with the map.
+ * 
+ * @namespace
+ */
 const MapUtils = {
 
     GET_PIXEL_FROM_COORDINATES_HOOK: 'GET_PIXEL_FROM_COORDINATES_HOOK',

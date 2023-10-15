@@ -10,6 +10,12 @@
 import StandardStore from '../stores/StandardStore';
 import ConfigUtils from './ConfigUtils';
 
+
+/**
+ * Utility functions for locating stuff on the map.
+ * 
+ * @namespace
+ */
 const LocaleUtils = {
     tr(key) {
         const state = StandardStore.get().getState();

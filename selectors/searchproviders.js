@@ -12,7 +12,11 @@ import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 
-export default (searchProviders) => createSelector(
+/**
+ * Retrieve search providers.
+ * @memberof Redux Store.Selectors
+ */
+const getSearchProviders = (searchProviders) => createSelector(
     [state => state.theme, state => state.layers && state.layers.flat || null], (theme, layers) => {
         searchProviders = {...searchProviders, ...window.QWC2SearchProviders || {}};
         const availableProviders = {};
@@ -41,3 +45,4 @@ export default (searchProviders) => createSelector(
         return availableProviders;
     }
 );
+export default getSearchProviders;

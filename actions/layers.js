@@ -29,7 +29,18 @@ export const REPLACE_PLACEHOLDER_LAYER = 'REPLACE_PLACEHOLDER_LAYER';
 export const SET_SWIPE = 'SET_SWIPE';
 export const SET_LAYERS = 'SET_LAYERS';
 
-
+/**
+ * Layer role constants.
+ * 
+ * - `BACKGROUND`: Background layer.
+ * - `THEME`: The layer belongs to a theme.
+ * - `USERLAYER`: The user provided this layer manually.
+ * - `SELECTION`: Selection layer.
+ * - `MARKER`: Marker layer.
+ * 
+ * The order is important (e.g. the types below user
+ * layer are hidden by default).
+ */
 export const LayerRole = {
     BACKGROUND: 1,
     THEME: 2,

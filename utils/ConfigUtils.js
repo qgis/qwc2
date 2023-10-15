@@ -25,6 +25,11 @@ let defaultConfig = {
     }
 };
 
+/**
+ * Utility functions for configuration handling.
+ * 
+ * @namespace
+ */
 const ConfigUtils = {
     getDefaults() {
         return defaultConfig;

@@ -14,6 +14,11 @@ import LayerUtils from '../utils/LayerUtils';
 
 let UrlQuery = {};
 
+/**
+ * Utility functions for working with permanent links.
+ * 
+ * @namespace
+ */
 export const UrlParams = {
     updateParams(dict, forceLocationUrl = false) {
         if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {

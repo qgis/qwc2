@@ -6,11 +6,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createSelector} from 'reselect';
+import { createSelector } from 'reselect';
 
-export default createSelector([
+/**
+ * Selects the current display CRS.
+ * @memberof Redux Store.Selectors
+ */
+const displayCrs = createSelector([
     state => state.map && state.map.projection || undefined,
     state => state.mousePosition && state.mousePosition.crs || undefined
 ], (mapcrs, mousecrs) => {
     return mousecrs || mapcrs || "EPSG:4326";
 });
+
+export default displayCrs;

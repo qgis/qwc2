@@ -12,6 +12,11 @@ import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from "./CoordinatesUtils";
 import LocaleUtils from './LocaleUtils';
 
+/**
+ * Utility functions for measurements on the map.
+ * 
+ * @namespace
+ */
 const MeasureUtils = {
     getFormattedBearingValue(azimuth) {
         let bearing = "";

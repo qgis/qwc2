@@ -128,7 +128,10 @@ const defaultStyle = (feature, options) => {
     return styles;
 };
 
-export default {
+/**
+ * @namespace
+ */
+const FeatureStyles = {
     default: defaultStyle,
     marker: (feature, options) => {
         const opts = {...DEFAULT_MARKER_STYLE, ...ConfigUtils.getConfigProp("defaultMarkerStyle"), ...options};
@@ -246,3 +249,5 @@ export default {
         ];
     }
 };
+
+export default FeatureStyles;

@@ -15,6 +15,11 @@ import CoordinatesUtils from './CoordinatesUtils';
 import MapUtils from './MapUtils';
 import {LayerRole} from '../actions/layers';
 
+/**
+ * Utility functions for working with layers.
+ * 
+ * @namespace
+ */
 const LayerUtils = {
     restoreLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers) {
         let exploded = LayerUtils.explodeLayers([themeLayer]);

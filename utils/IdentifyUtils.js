@@ -58,6 +58,11 @@ function identifyRequestParams(layer, queryLayers, projection, params) {
     };
 }
 
+/**
+ * Utility functions for identifying features on the map.
+ * 
+ * @namespace
+ */
 const IdentifyUtils = {
     getQueryLayers(maplayers, map) {
         const queryableLayers = maplayers.filter((l) => {

@@ -1,5 +1,5 @@
 {
-    "plugins": [],
+    "plugins": ["plugins/markdown", "better-docs/component"],
     "recurseDepth": 10,
     "source": {
         "includePattern": ".+\\.js(doc|x)?$",
@@ -16,5 +16,13 @@
     "templates": {
         "cleverLinks": true,
         "monospaceLinks": false
+    },
+    "opts": {
+        "destination": "./documentation/",
+        "encoding": "utf8",
+        "private": true,
+        "recurse": true,
+        "verbose": true,
+        "readme": "./README.md"
     }
 }

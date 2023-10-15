@@ -261,7 +261,12 @@ function getKeyValues(keyvalues, callback, filter = null) {
     }).catch(() => callback({}));
 }
 
-export default {
+/**
+ * Utility functions for editing in the map.
+ * 
+ * @namespace
+ */
+const EditingInterface = {
     getFeature,
     getFeatureById,
     getFeatures,
@@ -273,3 +278,5 @@ export default {
     getRelations,
     getKeyValues
 };
+
+export default EditingInterface;

@@ -12,6 +12,18 @@ ReducerIndex.register("layerinfo", layerinfoReducer);
 
 export const SET_ACTIVE_LAYERINFO = 'SET_ACTIVE_LAYERINFO';
 
+
+/**
+ * Sets the current layer and sub-layer in the store.
+ * 
+ * It changes the `layer` and `sublayer` properties of the store.
+ * 
+ * @param {string} layer - the layer to mark as being the active one.
+ * @param {string} sublayer - a sublayer of the active layer
+ *  to mark as the active one.
+ * 
+ * @memberof Redux Store.Actions
+ */
 export function setActiveLayerInfo(layer, sublayer) {
     return {
         type: SET_ACTIVE_LAYERINFO,

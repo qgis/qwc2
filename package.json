@@ -23,7 +23,7 @@
         "test": "jest",
         "test-watch": "jest --watch",
         "start": "webpack serve --hot --mode development --config webpack.dev.js",
-        "doc": "jsdoc -d documentation -c jsdoc.json -r utils"
+        "doc": "jsdoc -c jsdoc.json actions components plugins reducers selectors stores utils"
     },
     "peerDependencies": {
         "@turf/buffer": "^6.5.0",

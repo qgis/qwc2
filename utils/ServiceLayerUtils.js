@@ -10,14 +10,14 @@ import ol from 'openlayers';
 import axios from 'axios';
 import deepmerge from 'deepmerge';
 import isEmpty from 'lodash.isempty';
-import {XMLParser} from 'fast-xml-parser';
+import { XMLParser } from 'fast-xml-parser';
 import randomColor from 'randomcolor';
 import url from 'url';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import LayerUtils from './LayerUtils';
 import MiscUtils from './MiscUtils';
-import {LayerRole} from '../actions/layers';
+import { LayerRole } from '../actions/layers';
 
 function strcmp(a, b) {
     const al = a.toLowerCase();
@@ -34,6 +34,12 @@ function array(obj) {
     return Array.isArray(obj) ? obj : [obj];
 }
 
+
+/**
+ * Utility functions for service layers.
+ * 
+ * @namespace
+ */
 const ServiceLayerUtils = {
     getDCPTypes(dcpTypes) {
         let result = {};
@@ -60,7 +66,7 @@ const ServiceLayerUtils = {
             let origin = [topMatrix.TopLeftCorner[0], topMatrix.TopLeftCorner[1]];
             try {
                 const axisOrder = CoordinatesUtils.getAxisOrder(tileMatrices[tileMatrixSet].crs).substr(0, 2);
-                if (axisOrder  === 'ne') {
+                if (axisOrder === 'ne') {
                     origin = [topMatrix.TopLeftCorner[1], topMatrix.TopLeftCorner[0]];
                 }
             } catch (e) {
@@ -73,7 +79,7 @@ const ServiceLayerUtils = {
                 return entry.ScaleDenominator * 0.00028;
             });
             const styles = MiscUtils.ensureArray(layer.Style || []);
-            const style = (styles.find(entry => entry.isDefault) || styles[0] || {Identifier: ""}).Identifier;
+            const style = (styles.find(entry => entry.isDefault) || styles[0] || { Identifier: "" }).Identifier;
             const getTile = MiscUtils.ensureArray(capabilities.OperationsMetadata.GetTile.DCP.HTTP.Get)[0];
             const getEncoding = MiscUtils.ensureArray(getTile.Constraint).find(c => c.name === "GetEncoding");
             const requestEncoding = MiscUtils.ensureArray(getEncoding.AllowedValues.Value)[0];
@@ -126,13 +132,13 @@ const ServiceLayerUtils = {
         const extwmsparams = {};
         calledUrlParts.query = Object.keys(calledUrlParts.query).filter(key => {
             // Extract extwms params
-            if ( key.startsWith("extwms.") ) {
+            if (key.startsWith("extwms.")) {
                 extwmsparams[key.substring(7)] = calledUrlParts.query[key];
                 return false;
             }
             // Filter service and request from calledServiceUrl, but keep other parameters (i.e. MAP)
             return !["service", "request"].includes(key.toLowerCase());
-        }).reduce((res, key) => ({...res, [key]: calledUrlParts.query[key]}), {});
+        }).reduce((res, key) => ({ ...res, [key]: calledUrlParts.query[key] }), {});
         delete calledUrlParts.search;
 
         const topLayer = capabilities.Capability.Layer;
@@ -233,7 +239,7 @@ const ServiceLayerUtils = {
             const urlParts = url.parse(capabilityUrl, true);
             urlParts.host = calledServiceUrlParts.host;
             urlParts.protocol = calledServiceUrlParts.protocol ?? location.protocol;
-            urlParts.query = {...calledServiceUrlParts.query, ...urlParts.query};
+            urlParts.query = { ...calledServiceUrlParts.query, ...urlParts.query };
             delete urlParts.search;
             return url.format(urlParts);
         } catch (e) {
@@ -245,7 +251,7 @@ const ServiceLayerUtils = {
         // Filter service and request from calledServiceUrl, but keep other parameters (i.e. MAP)
         calledUrlParts.query = Object.keys(calledUrlParts.query).filter(key => {
             return !["service", "request"].includes(key.toLowerCase());
-        }).reduce((res, key) => ({...res, [key]: calledUrlParts.query[key]}), {});
+        }).reduce((res, key) => ({ ...res, [key]: calledUrlParts.query[key] }), {});
         delete calledUrlParts.search;
 
         const options = {
@@ -272,7 +278,7 @@ const ServiceLayerUtils = {
             serviceUrl = ServiceLayerUtils.getDCPTypes(array(capabilities.Capability.Request.GetFeature.DCPType)).HTTP.Get.onlineResource;
             serviceUrl = this.mergeCalledServiceUrlQuery(serviceUrl, calledUrlParts);
             formats = Object.keys(capabilities.Capability.Request.GetFeature.ResultFormat);
-            if (typeof(formats) === 'string') {
+            if (typeof (formats) === 'string') {
                 // convert to list if single entry
                 formats = [formats];
             }
@@ -386,7 +392,7 @@ const ServiceLayerUtils = {
                 } else if (type === "wmts") {
                     result = ServiceLayerUtils.getWMTSLayers(response.data, serviceUrl, mapCrs);
                 }
-                let layer = LayerUtils.searchSubLayer({sublayers: result}, "name", layerConfig.name);
+                let layer = LayerUtils.searchSubLayer({ sublayers: result }, "name", layerConfig.name);
                 // Some services (i.e. wms.geo.admin.ch) have same-named sublayers
                 layer = LayerUtils.searchSubLayer(layer, "name", layerConfig.name) ?? layer;
                 if (layer) {

@@ -6,6 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/**
+ * Various other utility functions.
+ * 
+ * @namespace
+ */
 const MiscUtils = {
     addLinkAnchors(text) {
         // If text already contains tags, do nothing

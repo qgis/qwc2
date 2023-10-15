@@ -6,16 +6,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {SET_ACTIVE_LAYERINFO} from '../actions/layerinfo';
+import { SET_ACTIVE_LAYERINFO } from '../actions/layerinfo';
 
 const defaultState = {};
 
 export default function layerInfo(state = defaultState, action) {
     switch (action.type) {
-    case SET_ACTIVE_LAYERINFO: {
-        return {...state, layer: action.layer, sublayer: action.sublayer};
-    }
-    default:
-        return state;
+        case SET_ACTIVE_LAYERINFO: {
+            return {
+                ...state,
+                layer: action.layer,
+                sublayer: action.sublayer
+            };
+        }
+        default:
+            return state;
     }
 }

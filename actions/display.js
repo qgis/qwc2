@@ -12,6 +12,10 @@ ReducerIndex.register("display", displayReducer);
 
 export const TOGGLE_FULLSCREEN = 'TOGGLE_FULLSCREEN';
 
+/**
+ * Issues a request to the browser to
+ * enter full screen mode.
+ */
 export function requestFullscreen() {
     if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();
@@ -24,6 +28,10 @@ export function requestFullscreen() {
     }
 }
 
+/**
+ * Issues a request to the browser to
+ * exit full screen mode.
+ */
 export function endFullscreen() {
     if (document.exitFullscreen) {
         document.exitFullscreen();
@@ -36,6 +44,14 @@ export function endFullscreen() {
     }
 }
 
+
+/**
+ * Change full screen mode.
+ * 
+ * @param {boolean} fullscreen - true to enter full
+ *  screen mode, false to exit it.
+ * @memberof Redux Store.Actions
+ */
 export function toggleFullscreen(fullscreen) {
     if (fullscreen) {
         requestFullscreen();
