@@ -6,6 +6,7 @@ npm-debug.log
 .pnp.loader.mjs
 yarn.lock
 
+documentation/
 .cache/
 coverage/
 dist/*
